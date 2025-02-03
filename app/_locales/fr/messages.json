@@ -113,10 +113,6 @@
     "message": "J’ai lu et j’accepte les $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNoticeNFT": {
-    "message": "$1 peut accéder à cet actif et le dépenser",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessYourWalletWithSRP": {
     "message": "Accédez à votre portefeuille en utilisant votre phrase secrète de récupération"
   },
@@ -290,9 +286,6 @@
   "addNewSolanaAccount": {
     "message": "Ajouter un nouveau compte Solana (Bêta)"
   },
-  "addNewToken": {
-    "message": "Ajouter un nouveau jeton"
-  },
   "addNft": {
     "message": "Ajouter un NFT"
   },
@@ -395,9 +388,6 @@
   "alert": {
     "message": "Alerte"
   },
-  "alertActionBuy": {
-    "message": "Acheter de l’ETH"
-  },
   "alertActionUpdateGas": {
     "message": "Mettre à jour la limite de gaz"
   },
@@ -424,9 +414,6 @@
   },
   "alertMessageGasTooLow": {
     "message": "Pour effectuer cette transaction, vous devez augmenter la limite de gaz à 21 000 ou plus."
-  },
-  "alertMessageInsufficientBalance2": {
-    "message": "Vous n’avez pas assez d’ETH sur votre compte pour payer les frais de réseau."
   },
   "alertMessageNetworkBusy": {
     "message": "Les prix du gaz sont élevés et les estimations sont moins précises."
@@ -485,16 +472,6 @@
   "all": {
     "message": "Tout"
   },
-  "allCustodianAccountsConnectedSubtitle": {
-    "message": "Soit vous avez déjà connecté tous vos comptes dépositaires, soit vous n’avez aucun compte à connecter à MetaMask Institutional."
-  },
-  "allCustodianAccountsConnectedTitle": {
-    "message": "Aucun compte à connecter"
-  },
-  "allOfYour": {
-    "message": "Tous vos $1",
-    "description": "$1 is the symbol or name of the token that the user is approving spending"
-  },
   "allPermissions": {
     "message": "Toutes les autorisations"
   },
@@ -504,22 +481,8 @@
   "allTimeLow": {
     "message": "Le plus bas niveau jamais atteint"
   },
-  "allYourNFTsOf": {
-    "message": "Tous vos NFT via $1",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "allow": {
-    "message": "Autoriser"
-  },
-  "allowMmiToConnectToCustodian": {
-    "message": "Cela permettra à MMI de se connecter à $1 pour importer vos comptes."
-  },
   "allowNotifications": {
     "message": "Autoriser les notifications"
-  },
-  "allowSpendToken": {
-    "message": "Donner l’autorisation d’accéder à votre $1 ?",
-    "description": "$1 is the symbol of the token that are requesting to spend"
   },
   "allowWithdrawAndSpend": {
     "message": "Permettre à $1 de retirer et de dépenser jusqu’au montant suivant :",
@@ -565,14 +528,6 @@
   "approve": {
     "message": "Approuver"
   },
-  "approveAllTokensTitle": {
-    "message": "Voulez-vous lui accorder l’autorisation d’accéder et de transférer tous vos $1 ?",
-    "description": "$1 is the symbol of the token for which the user is granting approval"
-  },
-  "approveAllTokensTitleWithoutSymbol": {
-    "message": "Autoriser l’accès et le transfert de vos NFT via $1 ?",
-    "description": "$1 a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "approveButtonText": {
     "message": "Approuver"
   },
@@ -584,22 +539,8 @@
     "message": "Approuver le plafond de dépenses de $1",
     "description": "The token symbol that is being approved"
   },
-  "approveTokenDescription": {
-    "message": "Tant que vous n’aurez pas révoqué cette autorisation, l’autre partie pourra accéder à votre portefeuille et transférer sans préavis les NFT suivants."
-  },
-  "approveTokenDescriptionWithoutSymbol": {
-    "message": "Tant que vous n’aurez pas révoqué cette autorisation, l’autre partie pourra accéder à votre portefeuille et transférer sans préavis les NFT via $1.",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "approveTokenTitle": {
-    "message": "Autoriser l’accès et le transfert de vos $1 ?",
-    "description": "$1 is the symbol of the token for which the user is granting approval"
-  },
   "approved": {
     "message": "Approuvé"
-  },
-  "approvedAsset": {
-    "message": "Actif approuvé"
   },
   "approvedOn": {
     "message": "Approuver le $1",
@@ -654,9 +595,6 @@
   },
   "average": {
     "message": "Moyen"
-  },
-  "awaitingApproval": {
-    "message": "En attente d’approbation..."
   },
   "back": {
     "message": "Retour"
@@ -722,9 +660,6 @@
   "betaHeaderText": {
     "message": "Il s’agit d’une version bêta. Veuillez signaler les bogues $1",
     "description": "$1 represents the word 'here' in a hyperlink"
-  },
-  "betaMetamaskInstitutionalVersion": {
-    "message": "Version Beta de MetaMask Institutional"
   },
   "betaMetamaskVersion": {
     "message": "Version MetaMask Beta"
@@ -982,15 +917,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "J’ai pris connaissance de l’alerte, mais je souhaite quand même continuer"
   },
-  "confirmConnectCustodianRedirect": {
-    "message": "Nous vous redirigerons vers $1 une fois que vous cliquerez sur « Continuer »."
-  },
-  "confirmConnectCustodianText": {
-    "message": "Pour associer vos comptes, connectez-vous à votre compte $1 et cliquez sur le bouton « Se connecter à MMI »."
-  },
-  "confirmConnectionTitle": {
-    "message": "Confirmer la connexion à $1"
-  },
   "confirmFieldPaymaster": {
     "message": "Frais payés par"
   },
@@ -1071,18 +997,6 @@
   },
   "connectAccounts": {
     "message": "Connecter les comptes"
-  },
-  "connectCustodialAccountMenu": {
-    "message": "Connexion au compte de dépôt"
-  },
-  "connectCustodialAccountMsg": {
-    "message": "Veuillez choisir le dépositaire auquel vous souhaitez vous connecter afin d’ajouter ou d’actualiser un jeton."
-  },
-  "connectCustodialAccountTitle": {
-    "message": "Comptes de dépôt"
-  },
-  "connectCustodianAccounts": {
-    "message": "Associer $1 comptes"
   },
   "connectManually": {
     "message": "Se connecter manuellement au site actuel"
@@ -1205,12 +1119,6 @@
   },
   "continue": {
     "message": "Continuer"
-  },
-  "continueMmiOnboarding": {
-    "message": "Poursuivre le processus d’intégration de MetaMask Institutional"
-  },
-  "continueToWallet": {
-    "message": "Accéder au portefeuille"
   },
   "contract": {
     "message": "Contrat"
@@ -1344,60 +1252,6 @@
   },
   "curveMediumGasEstimate": {
     "message": "Graphique d’estimation de gas du marché"
-  },
-  "custodian": {
-    "message": "Dépôt"
-  },
-  "custodianAccountAddedDesc": {
-    "message": "Vous pouvez maintenant utiliser vos comptes de dépôt dans MetaMask Institutional."
-  },
-  "custodianAccountAddedTitle": {
-    "message": "Les comptes de dépôt $1 sélectionnés ont été ajoutés."
-  },
-  "custodianQRCodeScan": {
-    "message": "Scannez le code QR avec votre application mobile $1"
-  },
-  "custodianQRCodeScanDescription": {
-    "message": "Ou connectez-vous à votre compte $1 et cliquez sur le bouton « Se connecter à MMI »"
-  },
-  "custodianReplaceRefreshTokenChangedFailed": {
-    "message": "Accédez à $1 et cliquez sur le bouton « Se connecter à MMI » dans l’interface utilisateur pour reconnecter vos comptes à MMI."
-  },
-  "custodianReplaceRefreshTokenChangedSubtitle": {
-    "message": "Vous pouvez désormais utiliser vos comptes de dépôt dans MetaMask Institutional."
-  },
-  "custodianReplaceRefreshTokenChangedTitle": {
-    "message": "Votre jeton de dépôt a été actualisé"
-  },
-  "custodianReplaceRefreshTokenSubtitle": {
-    "message": "Ceci remplacera le jeton de dépôt pour l’adresse suivante :"
-  },
-  "custodianReplaceRefreshTokenTitle": {
-    "message": "Remplacer le jeton de dépôt"
-  },
-  "custodyDeeplinkDescription": {
-    "message": "Approuvez la transaction dans l’application $1. La transaction sera effectuée une fois que toutes les approbations de dépôt auront été obtenues. Vérifiez l’état de votre application $1."
-  },
-  "custodyRefreshTokenModalDescription": {
-    "message": "Accédez à $1 et cliquez sur le bouton « Se connecter à MMI » dans l’interface utilisateur pour reconnecter vos comptes à MMI."
-  },
-  "custodyRefreshTokenModalDescription1": {
-    "message": "Votre dépositaire émet un jeton qui authentifie l’extension « MetaMask Institutional » et vous permet ainsi de connecter vos comptes."
-  },
-  "custodyRefreshTokenModalDescription2": {
-    "message": "Ce jeton expire après un certain temps pour des raisons de sécurité. Si le jeton expire, vous devrez vous reconnecter à MMI."
-  },
-  "custodyRefreshTokenModalSubtitle": {
-    "message": "Pourquoi ce message s’affiche-t-il ?"
-  },
-  "custodyRefreshTokenModalTitle": {
-    "message": "Votre session en mode dépositaire a expiré"
-  },
-  "custodySessionExpired": {
-    "message": "La session du dépositaire a expiré."
-  },
-  "custodyWrongChain": {
-    "message": "Ce compte n’est pas configuré pour être utilisé avec $1"
   },
   "custom": {
     "message": "Paramètres avancés"
@@ -1559,9 +1413,6 @@
   "deleteNetworkTitle": {
     "message": "Supprimer le réseau $1 ?",
     "description": "$1 represents the name of the network"
-  },
-  "deposit": {
-    "message": "Effectuez un dépôt"
   },
   "depositCrypto": {
     "message": "Déposez des crypto-monnaies à partir d’un autre compte à l’aide d’une adresse de portefeuille ou d’un code QR."
@@ -1752,10 +1603,6 @@
   "editGasPriceTooltip": {
     "message": "Ce réseau exige un champ « Prix du carburant » lors de la soumission d’une transaction. Le prix du carburant correspond au montant que vous paierez par unité de carburant."
   },
-  "editGasSubTextAmountLabel": {
-    "message": "Montant maximal :",
-    "description": "This is meant to be used as the $1 substitution editGasSubTextAmount"
-  },
   "editGasSubTextFeeLabel": {
     "message": "Frais maximaux :"
   },
@@ -1860,9 +1707,6 @@
   },
   "enterChainId": {
     "message": "Saisissez l’ID de chaîne"
-  },
-  "enterCustodianToken": {
-    "message": "Saisissez votre jeton de $1 ou ajoutez un nouveau jeton"
   },
   "enterMaxSpendLimit": {
     "message": "Saisissez la limite de dépenses maximale"
@@ -2000,12 +1844,6 @@
     "message": "Explorez les Snaps créés par la communauté pour personnaliser votre expérience web3",
     "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
-  "extensionInsallCompleteDescription": {
-    "message": "Retournez à la page d’intégration des produits MetaMask Institutional pour connecter vos compte-titres ou vos comptes de dépôt."
-  },
-  "extensionInsallCompleteTitle": {
-    "message": "L’extension a été installée avec succès"
-  },
   "externalExtension": {
     "message": "Extension externe"
   },
@@ -2026,9 +1864,6 @@
   },
   "fast": {
     "message": "Rapide"
-  },
-  "feeAssociatedRequest": {
-    "message": "Des frais sont associés à cette demande."
   },
   "feeDetails": {
     "message": "Détails des frais"
@@ -2091,12 +1926,6 @@
   },
   "function": {
     "message": "Fonction : $1"
-  },
-  "functionApprove": {
-    "message": "Fonction : approuver"
-  },
-  "functionSetApprovalForAll": {
-    "message": "Fonction : SetApprovalForAll"
   },
   "functionType": {
     "message": "Type de fonction"
@@ -2202,9 +2031,6 @@
   "gotIt": {
     "message": "D’accord"
   },
-  "grantedToWithColon": {
-    "message": "Accordé à :"
-  },
   "gwei": {
     "message": "GWEI"
   },
@@ -2245,9 +2071,6 @@
   },
   "hideAccount": {
     "message": "Compte caché"
-  },
-  "hideFullTransactionDetails": {
-    "message": "Masquer tous les détails de la transaction"
   },
   "hideSeedPhrase": {
     "message": "Masquer la phrase mnémonique"
@@ -2466,12 +2289,6 @@
   "install": {
     "message": "Installez"
   },
-  "installExtension": {
-    "message": "Installer l’extension"
-  },
-  "installExtensionDescription": {
-    "message": "La version est conforme aux normes institutionnelles du principal fournisseur de portefeuilles Web3 au monde, MetaMask."
-  },
   "installOrigin": {
     "message": "Installer Origin"
   },
@@ -2488,10 +2305,6 @@
   "insufficientCurrencyBuyOrDeposit": {
     "message": "Vous n’avez pas assez de $1 sur votre compte pour payer les frais de transaction sur le réseau de $2. $3 ou effectuez un dépôt depuis un autre compte.",
     "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
-  },
-  "insufficientCurrencyBuyOrReceive": {
-    "message": "Vous n’avez pas assez de $1 sur votre compte pour payer les frais de transaction sur le réseau $2. $3 ou $4 depuis un autre compte.",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button, $4 is the key 'deposit' button"
   },
   "insufficientCurrencyDeposit": {
     "message": "Vous n’avez pas assez de $1 sur votre compte pour payer les frais de transaction sur le réseau de $2. Effectuez un dépôt de $1 à partir d’un autre compte.",
@@ -2763,9 +2576,6 @@
   "loading": {
     "message": "Chargement..."
   },
-  "loadingScreenHardwareWalletMessage": {
-    "message": "Veuillez conclure la transaction sur le portefeuille matériel."
-  },
   "loadingScreenSnapMessage": {
     "message": "Veuillez conclure la transaction sur le snap."
   },
@@ -2864,9 +2674,6 @@
     "message": "$1 est hébergé sur npm et $2 est l’identifiant unique de ce Snap.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
   },
-  "metamaskInstitutionalVersion": {
-    "message": "Version MetaMask Institutional"
-  },
   "metamaskNotificationsAreOff": {
     "message": "Les notifications du portefeuille ne sont actuellement pas activées."
   },
@@ -2891,9 +2698,6 @@
   "millionAbbreviation": {
     "message": "M",
     "description": "Shortened form of 'million'"
-  },
-  "mismatchAccount": {
-    "message": "Le compte sélectionné ($1) est différent du compte que vous essayez de signer ($2)"
   },
   "mismatchedChainLinkText": {
     "message": "vérifier les détails du réseau",
@@ -2920,15 +2724,6 @@
   },
   "missingSettingRequest": {
     "message": "Demandez ici"
-  },
-  "mmiBuiltAroundTheWorld": {
-    "message": "MetaMask Institutional est conçu et établi dans le monde entier."
-  },
-  "mmiNewNFTDetectedInNFTsTabMessage": {
-    "message": "Laissez MetaMask Institutional détecter et afficher automatiquement les NFT dans votre portefeuille."
-  },
-  "mmiPasswordSetupDetails": {
-    "message": "Ce mot de passe déverrouillera uniquement votre extension MetaMask Institutional."
   },
   "more": {
     "message": "plus"
@@ -3222,10 +3017,6 @@
   "next": {
     "message": "Suivant"
   },
-  "nextNonceWarning": {
-    "message": "Le nonce est supérieur au nonce suggéré de $1",
-    "description": "The next nonce according to MetaMask's internal logic"
-  },
   "nftAddFailedMessage": {
     "message": "Ce NFT ne peut pas être ajouté, car les informations de propriété ne correspondent pas. Vérifiez que votre saisie est correcte."
   },
@@ -3304,20 +3095,8 @@
   "noWebcamFoundTitle": {
     "message": "Webcam introuvable"
   },
-  "nonCustodialAccounts": {
-    "message": "MetaMask Institutional vous permet d’utiliser des comptes de détention en propre pour sauvegarder la phrase secrète de récupération."
-  },
   "nonce": {
     "message": "Nonce"
-  },
-  "nonceField": {
-    "message": "Personnaliser le nonce de transaction"
-  },
-  "nonceFieldDesc": {
-    "message": "Activez cette option pour modifier le nonce (numéro de transaction) lors de l’envoi d’actifs. Il s’agit d’une fonctionnalité avancée que vous devez utiliser avec prudence."
-  },
-  "nonceFieldHeading": {
-    "message": "Nonce personnalisé"
   },
   "none": {
     "message": "Aucun"
@@ -3333,12 +3112,6 @@
   },
   "notEnoughGas": {
     "message": "Pas assez de gaz"
-  },
-  "note": {
-    "message": "Note"
-  },
-  "notePlaceholder": {
-    "message": "L’approbateur verra cette note lorsqu’il approuvera la transaction auprès du dépositaire."
   },
   "notificationDetail": {
     "message": "Détails"
@@ -3674,9 +3447,6 @@
   "onboardingPinExtensionTitle": {
     "message": "Votre installation de MetaMask est terminée !"
   },
-  "onboardingPinMmiExtensionLabel": {
-    "message": "Épingler MetaMask Institutional"
-  },
   "oneDayAbbreviation": {
     "message": "1 j",
     "description": "Shortened form of '1 day'"
@@ -3700,10 +3470,6 @@
     "message": "Ne vous connectez qu’aux sites auxquels vous faites confiance. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
-  "openCustodianApp": {
-    "message": "Ouvrir l’application $1",
-    "description": "The $1 is the name of the Custodian that will be open"
-  },
   "openFullScreenForLedgerWebHid": {
     "message": "Passez en plein écran pour connecter votre Ledger.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
@@ -3714,17 +3480,11 @@
   "openSeaNew": {
     "message": "OpenSea"
   },
-  "operationFailed": {
-    "message": "L’opération a échoué"
-  },
   "optional": {
     "message": "Facultatif"
   },
   "options": {
     "message": "Options"
-  },
-  "or": {
-    "message": "ou"
   },
   "origin": {
     "message": "Origine"
@@ -3760,9 +3520,6 @@
   "password": {
     "message": "Mot de passe"
   },
-  "passwordMmiTermsWarning": {
-    "message": "Je comprends que MetaMask Institutional ne pourra pas m’aider à récupérer ce mot de passe. $1"
-  },
   "passwordNotLongEnough": {
     "message": "Mot de passe trop court"
   },
@@ -3781,9 +3538,6 @@
   },
   "passwordsDontMatch": {
     "message": "Les mots de passe ne correspondent pas"
-  },
-  "pasteJWTToken": {
-    "message": "Collez ou déposez votre jeton ici :"
   },
   "pastePrivateKey": {
     "message": "Collez votre clé privée ici:",
@@ -3814,9 +3568,6 @@
   },
   "permissionFrom": {
     "message": "Autorisation de"
-  },
-  "permissionRequest": {
-    "message": "Demande d’autorisation"
   },
   "permissionRequested": {
     "message": "Demandé maintenant"
@@ -4068,12 +3819,6 @@
   "petnamesEnabledToggleDescription": {
     "message": "Cette option vous permet d’attribuer un pseudonyme à n’importe quelle adresse. Nous vous suggérerons, si possible, des pseudonymes que vous pourrez attribuer aux adresses avec lesquelles vous interagissez."
   },
-  "pinExtensionDescription": {
-    "message": "Allez dans le menu de l’extension et épinglez MetaMask Institutional pour y faciliter l’accès."
-  },
-  "pinExtensionTitle": {
-    "message": "Épingler l’extension"
-  },
   "pinToTop": {
     "message": "Épingler en haut de la page"
   },
@@ -4094,9 +3839,6 @@
   },
   "portfolio": {
     "message": "Portefeuille"
-  },
-  "portfolioDashboard": {
-    "message": "Tableau de bord du portefeuille"
   },
   "preparingSwap": {
     "message": "Préparation du swap..."
@@ -4343,12 +4085,6 @@
   "removeAccountDescription": {
     "message": "Ce compte va être supprimé de votre portefeuille. Veuillez vérifier que vous avez la phrase secrète de récupération originale de ce compte ou la clé privée pour ce compte importé avant de continuer. Vous pouvez importer ou créer à nouveau des comptes à partir du menu des comptes. "
   },
-  "removeJWT": {
-    "message": "Supprimer le jeton de dépôt"
-  },
-  "removeJWTDescription": {
-    "message": "Êtes-vous sûr de vouloir supprimer ce jeton ? Tous les comptes attribués à ce jeton seront également supprimés de l’extension : "
-  },
   "removeKeyringSnap": {
     "message": "En supprimant ce snap, vous supprimerez ces comptes de MetaMask :"
   },
@@ -4527,31 +4263,11 @@
   "reviewPermissions": {
     "message": "Revoir les autorisations"
   },
-  "revokeAllTokensTitle": {
-    "message": "Révoquer l’autorisation d’accès et de transfert de tous vos $1 ?",
-    "description": "$1 is the symbol of the token for which the user is revoking approval"
-  },
-  "revokeAllTokensTitleWithoutSymbol": {
-    "message": "Révoquer l’autorisation d’accès et de transfert de tous vos NFT via $1 ?",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "revokeApproveForAllDescription": {
-    "message": "Cela révoque l’autorisation pour un tiers d’accéder et de transférer la totalité de vos $1 sans préavis.",
-    "description": "$1 is either a string or link of a given token symbol or name"
-  },
-  "revokeApproveForAllDescriptionWithoutSymbol": {
-    "message": "Tant que vous n’aurez pas révoqué cette autorisation, l’autre partie pourra accéder à votre portefeuille et transférer sans préavis les NFT via $1.",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "revokePermission": {
     "message": "Retirer l'autorisation"
   },
   "revokeSimulationDetailsDesc": {
     "message": "Vous révoquez l’autorisation que vous avez accordée à quelqu’un d’autre de dépenser des jetons à partir de votre compte."
-  },
-  "revokeSpendingCap": {
-    "message": "Supprimez le plafond des dépenses pour vos $1",
-    "description": "$1 is a token symbol"
   },
   "revokeSpendingCapTooltipText": {
     "message": "Ce tiers ne pourra plus dépenser vos jetons actuels ou futurs."
@@ -4694,26 +4410,17 @@
   "selectAll": {
     "message": "Tout sélectionner"
   },
-  "selectAllAccounts": {
-    "message": "Sélectionner tous les comptes"
-  },
   "selectAnAccount": {
     "message": "Sélectionner un compte"
   },
   "selectAnAccountAlreadyConnected": {
     "message": "Ce compte a déjà été connecté à MetaMask"
   },
-  "selectAnAccountHelp": {
-    "message": "Sélectionnez les comptes de dépôt que vous voulez utiliser dans MetaMask Institutional."
-  },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "Activer l’option « Afficher les supports NFT »"
   },
   "selectHdPath": {
     "message": "Sélectionner le chemin HD"
-  },
-  "selectJWT": {
-    "message": "Sélectionnez un jeton"
   },
   "selectNFTPrivacyPreference": {
     "message": "Activez la détection automatique des NFT"
@@ -5246,9 +4953,6 @@
   "spendingCapErrorDescription": {
     "message": "Saisissez uniquement le nombre de jetons $1 que vous êtes prêt à utiliser maintenant ou à l’avenir. Vous pourrez toujours augmenter la limite de jetons plus tard.",
     "description": "$1 is origin of the site requesting the token limit"
-  },
-  "spendingCapRequest": {
-    "message": "Demande de fixer un plafond de dépenses pour votre $1"
   },
   "spendingCapTooltipDesc": {
     "message": "Il s’agit du nombre de jetons auquel le dépenseur pourra accéder en votre nom."
@@ -5928,9 +5632,6 @@
     "message": "Avis sur les logiciels développés par des tiers",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
   },
-  "thisCollection": {
-    "message": "cette collection"
-  },
   "threeMonthsAbbreviation": {
     "message": "3 mois",
     "description": "Shortened form of '3 months'"
@@ -6045,29 +5746,8 @@
   "transactionDataFunction": {
     "message": "Fonction"
   },
-  "transactionDetailDappGasMoreInfo": {
-    "message": "Site suggéré"
-  },
-  "transactionDetailDappGasTooltip": {
-    "message": "Modifier pour utiliser les frais de carburant recommandé par MetaMask selon le dernier bloc."
-  },
   "transactionDetailGasHeading": {
     "message": "Frais de carburant estimés"
-  },
-  "transactionDetailGasTooltipConversion": {
-    "message": "En savoir plus sur les frais de carburant"
-  },
-  "transactionDetailGasTooltipExplanation": {
-    "message": "Les frais de carburant sont définis par le réseau et fluctuent selon le trafic réseau et la complexité de la transaction."
-  },
-  "transactionDetailGasTooltipIntro": {
-    "message": "Les frais de carburant sont payés aux mineurs de cryptomonnaies qui traitent les transactions sur le réseau $1. MetaMask ne tire aucun profit des frais de carburant."
-  },
-  "transactionDetailGasTotalSubtitle": {
-    "message": "Montant + frais de carburant"
-  },
-  "transactionDetailLayer2GasHeading": {
-    "message": "Frais de carburant de couche 2 (L2)"
   },
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Montant + frais"
@@ -6083,12 +5763,6 @@
   },
   "transactionErrored": {
     "message": "La transaction a rencontré une erreur."
-  },
-  "transactionFailed": {
-    "message": "La transaction a échoué"
-  },
-  "transactionFee": {
-    "message": "Frais de transaction"
   },
   "transactionFlowNetwork": {
     "message": "Réseau"
@@ -6113,9 +5787,6 @@
   },
   "transactionHistoryTotalGasFee": {
     "message": "Total des frais de transaction"
-  },
-  "transactionNote": {
-    "message": "Note de transaction"
   },
   "transactionResubmitted": {
     "message": "La transaction a été soumise à nouveau avec une augmentation du prix du gaz, désormais de $1 à $2"
@@ -6170,9 +5841,6 @@
   },
   "troubleStarting": {
     "message": "Impossible de démarrer MetaMask. Cette erreur peut être occasionnelle, essayez donc de redémarrer lextension."
-  },
-  "trustSiteApprovePermission": {
-    "message": "En accordant cette autorisation, vous permettez au(x) $1 suivant(s) d’accéder à vos fonds"
   },
   "tryAgain": {
     "message": "Réessayez"
@@ -6366,12 +6034,6 @@
   "viewContact": {
     "message": "Voir le contact"
   },
-  "viewDetails": {
-    "message": "Afficher les détails"
-  },
-  "viewFullTransactionDetails": {
-    "message": "Afficher tous les détails de la transaction"
-  },
   "viewMore": {
     "message": "Afficher plus"
   },
@@ -6394,9 +6056,6 @@
   },
   "viewTransaction": {
     "message": "Voir la transaction"
-  },
-  "viewinCustodianApp": {
-    "message": "Afficher dans l’application dépositaire"
   },
   "viewinExplorer": {
     "message": "Voir $1 dans l’explorateur",
