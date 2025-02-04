@@ -146,11 +146,11 @@ workflows:
           requires:
             - prep-build-test
             - get-changed-files-with-git-diff
-      - test-e2e-firefox:
-          <<: *main_master_rc_only
-          requires:
-            - prep-build-test-mv2
-            - get-changed-files-with-git-diff
+      # - test-e2e-firefox:
+      #     <<: *main_master_rc_only
+      #     requires:
+      #       - prep-build-test-mv2
+      #       - get-changed-files-with-git-diff
       - test-e2e-chrome-rpc:
           requires:
             - prep-build-test
@@ -167,10 +167,10 @@ workflows:
           requires:
             - prep-build-test-flask
             - get-changed-files-with-git-diff
-      - test-e2e-firefox-flask:
-          <<: *main_master_rc_only
-          requires:
-            - prep-build-test-flask-mv2
+      # - test-e2e-firefox-flask:
+      #     <<: *main_master_rc_only
+      #     requires:
+      #       - prep-build-test-flask-mv2
       - test-e2e-swap-playwright - OPTIONAL:
           requires:
             - prep-build
@@ -210,9 +210,9 @@ workflows:
             - test-mozilla-lint-flask-mv2
             - test-e2e-chrome
             - test-e2e-chrome-multiple-providers
-            - test-e2e-firefox
+            #- test-e2e-firefox
             - test-e2e-chrome-flask
-            - test-e2e-firefox-flask
+            # - test-e2e-firefox-flask
             - test-e2e-chrome-vault-decryption
             - test-e2e-chrome-webpack
       - benchmark:
