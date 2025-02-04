@@ -9,7 +9,8 @@
   "scripts": {
     "webpack": "tsx ./development/webpack/launch.ts",
     "webpack:clearcache": "./development/clear-webpack-cache.js",
-    "postinstall": "yarn webpack:clearcache",
+    "foundryup": "tsx ./test/helpers/foundry/foundryup.ts",
+    "postinstall": "yarn webpack:clearcache && yarn foundryup",
     "env:e2e": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn",
     "start": "yarn build:dev dev --apply-lavamoat=false --snow=false",
     "start:with-state": "node ./app/scripts/start-with-wallet-state.mjs",
@@ -23,6 +24,8 @@
     "dist:mmi:debug": "yarn dist --build-type mmi --apply-lavamoat=false --snow=false",
     "build": "yarn lavamoat:build",
     "build:dev": "node development/build/index.js",
+    "circular-deps:check": "tsx development/circular-deps.ts check",
+    "circular-deps:update": "tsx development/circular-deps.ts update",
     "start:test": "yarn env:e2e build:dev testDev --apply-lavamoat=false",
     "start:test:flask": "yarn start:test --build-type flask --apply-lavamoat=false",
     "start:test:mv2:flask": "ENABLE_MV3=false yarn start:test:flask --apply-lavamoat=false --snow=false",
@@ -44,6 +47,7 @@
     "forwarder": "node ./development/static-server.js ./node_modules/@metamask/forwarder/dist/ --port 9010",
     "dapp-forwarder": "concurrently -k -n forwarder,dapp -p '[{time}][{name}]' 'yarn forwarder' 'yarn dapp'",
     "test:unit": "jest",
+    "anvil": "node_modules/.bin/anvil",
     "test:unit:watch": "jest --watch",
     "test:unit:coverage": "jest --coverage",
     "test:unit:webpack": "tsx --test development/webpack/test/*.test.ts",
@@ -65,7 +69,7 @@
     "ganache:start": "./development/run-ganache.sh",
     "sentry:publish": "node ./development/sentry-publish.js",
     "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:tsc && yarn lint:styles",
-    "lint:fix": "yarn lint:prettier:fix && yarn lint:eslint:fix && yarn lint:styles:fix",
+    "lint:fix": "yarn lint:prettier:fix && yarn lint:eslint:fix && yarn lint:styles:fix && yarn circular-deps:update",
     "lint:prettier": "prettier --check --cache -- '**/*.json'",
     "lint:prettier:fix": "prettier --write --cache -- '**/*.json'",
     "lint:changed": "./development/get-changed-file-names.sh | grep -E --regexp='[.](js|ts|tsx)$' | tr '\\n' '\\0' | xargs -0 eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache",
@@ -216,7 +220,7 @@
     "@trezor/schema-utils@npm:1.0.2": "patch:@trezor/schema-utils@npm%3A1.0.2#~/.yarn/patches/@trezor-schema-utils-npm-1.0.2-7dd48689b2.patch",
     "lavamoat-core@npm:^15.1.1": "patch:lavamoat-core@npm%3A15.1.1#~/.yarn/patches/lavamoat-core-npm-15.1.1-51fbe39988.patch",
     "lavamoat-core@npm:^16.2.2": "patch:lavamoat-core@npm%3A16.2.2#~/.yarn/patches/lavamoat-core-npm-16.2.2-e361ff1f8a.patch",
-    "@metamask/snaps-sdk": "^6.16.0",
+    "@metamask/snaps-sdk": "^6.17.1",
     "@swc/types@0.1.5": "^0.1.6",
     "@babel/core": "patch:@babel/core@npm%3A7.25.9#~/.yarn/patches/@babel-core-npm-7.25.9-4ae3bff7f3.patch",
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -253,7 +257,8 @@
     "tslib@npm:^2.3.0": "~2.6.0",
     "tslib@npm:^2.3.1": "~2.6.0",
     "tslib@npm:^2.4.0": "~2.6.0",
-    "tslib@npm:^2.6.2": "~2.6.0"
+    "tslib@npm:^2.6.2": "~2.6.0",
+    "@metamask/providers@npm:^18.3.1": "patch:@metamask/providers@npm%3A19.0.0#~/.yarn/patches/@metamask-providers-npm-19.0.0-3d962c6f1a.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -334,7 +339,7 @@
     "@metamask/ppom-validator": "0.36.0",
     "@metamask/preinstalled-example-snap": "^0.3.0",
     "@metamask/profile-sync-controller": "^4.1.1",
-    "@metamask/providers": "^19.0.0",
+    "@metamask/providers": "patch:@metamask/providers@npm%3A19.0.0#~/.yarn/patches/@metamask-providers-npm-19.0.0-3d962c6f1a.patch",
     "@metamask/queued-request-controller": "^9.0.0",
     "@metamask/rate-limit-controller": "^6.0.0",
     "@metamask/remote-feature-flag-controller": "^1.3.0",
@@ -344,13 +349,13 @@
     "@metamask/selected-network-controller": "^21.0.0",
     "@metamask/signature-controller": "^23.1.0",
     "@metamask/smart-transactions-controller": "^16.0.1",
-    "@metamask/snaps-controllers": "^9.18.0",
-    "@metamask/snaps-execution-environments": "^6.13.0",
-    "@metamask/snaps-rpc-methods": "^11.10.0",
-    "@metamask/snaps-sdk": "^6.16.0",
-    "@metamask/snaps-utils": "^8.9.1",
+    "@metamask/snaps-controllers": "^9.19.1",
+    "@metamask/snaps-execution-environments": "^6.14.0",
+    "@metamask/snaps-rpc-methods": "^11.11.0",
+    "@metamask/snaps-sdk": "^6.17.1",
+    "@metamask/snaps-utils": "^8.10.0",
     "@metamask/solana-wallet-snap": "^1.2.0",
-    "@metamask/transaction-controller": "^43.0.0",
+    "@metamask/transaction-controller": "^44.1.0",
     "@metamask/user-operation-controller": "^22.0.0",
     "@metamask/utils": "^10.0.1",
     "@ngraveio/bc-ur": "^1.1.12",
@@ -456,7 +461,6 @@
     "@lavamoat/allow-scripts": "^3.3.1",
     "@lavamoat/lavadome-core": "0.0.20",
     "@lavamoat/lavapack": "^7.0.5",
-    "@lgbot/madge": "^6.2.0",
     "@lydell/node-pty": "^1.0.1",
     "@metamask/api-specs": "^0.9.3",
     "@metamask/auto-changelog": "^2.1.0",
@@ -515,6 +519,7 @@
     "@types/he": "^1",
     "@types/jest": "^29.5.12",
     "@types/luxon": "^3.4.2",
+    "@types/madge": "^5.0.3",
     "@types/mocha": "^10.0.3",
     "@types/node": "^20",
     "@types/path-browserify": "^1.0.2",
@@ -533,6 +538,7 @@
     "@types/serve-handler": "^6.1.4",
     "@types/sinon": "^10.0.13",
     "@types/sprintf-js": "^1",
+    "@types/unzipper": "^0.10.10",
     "@types/w3c-web-hid": "^1.0.3",
     "@types/watchify": "^3.11.1",
     "@types/webextension-polyfill": "^0.10.4",
@@ -615,7 +621,9 @@
     "level": "^8.0.1",
     "lockfile-lint": "^4.10.6",
     "loose-envify": "^1.4.0",
+    "madge": "^8.0.0",
     "mini-css-extract-plugin": "^2.9.1",
+    "minipass": "^7.1.2",
     "mocha": "^10.2.0",
     "mocha-junit-reporter": "^2.2.1",
     "mockttp": "^3.10.1",
@@ -658,13 +666,15 @@
     "style-loader": "^0.21.0",
     "stylelint": "^13.6.1",
     "superstruct": "^1.0.3",
+    "tar": "^7.4.3",
     "terser": "^5.7.0",
     "terser-webpack-plugin": "^5.3.10",
     "through2": "^4.0.2",
     "ts-node": "^10.9.2",
-    "tsx": "^4.7.1",
+    "tsx": "^4.19.2",
     "ttest": "^2.1.1",
     "typescript": "~5.4.5",
+    "unzipper": "^0.12.3",
     "vinyl": "^2.2.1",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
@@ -681,7 +691,7 @@
     "yargs-parser": "^21.1.1"
   },
   "engines": {
-    "node": ">= 20",
+    "node": ">=20.12.0 <20.15.0 || >=20.17.0",
     "yarn": "^4.4.1"
   },
   "lavamoat": {
@@ -764,5 +774,23 @@
       "@lavamoat/allow-scripts>@lavamoat/preinstall-always-fail": false
     }
   },
-  "packageManager": "yarn@4.5.1"
+  "packageManager": "yarn@4.5.1",
+  "foundryup": {
+    "binaries": [
+      "anvil"
+    ],
+    "checksums": {
+      "algorithm": "sha256",
+      "binaries": {
+        "anvil": {
+          "darwin-amd64": "8404e555223fe884557d5e22de494baf8b5f0b82c6f87a4c790c5150e546c9d0",
+          "darwin-arm64": "888500bc210752e71a355ed4d492ad6dcb4c0ef54d283c105a29a5ccc73d0dbd",
+          "linux-amd64": "6104069b183fa0f3cdcb692681da9dbd203a3c1bceb435853bbf7abd991c649e",
+          "linux-arm64": "d66ed8f848e829882ebb65d28aaac72aeab6a101655bb62147186040655928b5",
+          "win32-amd64": "6c71d9a7be39ed32b53c89bdbc83aa748f41587517212ffe2a8b955c3e9c2e9b"
+        }
+      }
+    },
+    "version": "v0.3.0"
+  }
 }
