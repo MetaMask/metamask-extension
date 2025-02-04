@@ -1147,10 +1147,7 @@ export default class SecurityTab extends PureComponent {
     const { showDataCollectionDisclaimer } = this.state;
 
     return (
-      <div
-        className="settings-page__body"
-        data-testid="settings-page-body-section"
-      >
+      <div className="settings-page__body">
         {this.renderUseExternalServices()}
         {showDataCollectionDisclaimer
           ? this.renderDataCollectionWarning()

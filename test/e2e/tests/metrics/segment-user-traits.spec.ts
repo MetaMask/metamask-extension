@@ -6,10 +6,8 @@ import {
   completeCreateNewWalletOnboardingFlow,
   createNewWalletOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
+import SecurityAndPrivacySettings from '../../page-objects/pages/settings/security-and-privacy-settings';
 import { MOCK_META_METRICS_ID } from '../../constants';
-import HeaderNavbar from "../../page-objects/pages/header-navbar";
-import SettingsPage from "../../page-objects/pages/settings/settings-page";
-import PrivacySettings from "../../page-objects/pages/settings/privacy-settings";
 
 async function mockSegment(mockServer: Mockttp) {
   return [
@@ -121,14 +119,11 @@ describe('Segment User Traits', function () {
         });
         events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 0);
-        await new HeaderNavbar(driver).openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
-        await settingsPage.goToPrivacySettings();
-
-        const privacySettings = new PrivacySettings(driver);
-        await privacySettings.check_pageIsLoaded();
-        await privacySettings.toggleParticipateInMetaMetrics();
+        const securityAndPrivacySettings = new SecurityAndPrivacySettings(
+          driver,
+        );
+        await securityAndPrivacySettings.navigateToPage();
+        await securityAndPrivacySettings.toggleParticipateInMetaMetrics();
         events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 1);
         assert.deepStrictEqual(events[0].traits.is_metrics_opted_in, true);
@@ -157,15 +152,12 @@ describe('Segment User Traits', function () {
         });
         events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 0);
-        await new HeaderNavbar(driver).openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
-        await settingsPage.goToPrivacySettings();
-
-        const privacySettings = new PrivacySettings(driver);
-        await privacySettings.check_pageIsLoaded();
-        await privacySettings.toggleParticipateInMetaMetrics();
-        await privacySettings.toggleDataCollectionForMarketing();
+        const securityAndPrivacySettings = new SecurityAndPrivacySettings(
+          driver,
+        );
+        await securityAndPrivacySettings.navigateToPage();
+        await securityAndPrivacySettings.toggleParticipateInMetaMetrics();
+        await securityAndPrivacySettings.toggleDataCollectionForMarketing();
         events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 1);
         assert.deepStrictEqual(events[0].traits.is_metrics_opted_in, true);
@@ -194,14 +186,11 @@ describe('Segment User Traits', function () {
         });
         events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 1);
-        await new HeaderNavbar(driver).openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
-        await settingsPage.goToPrivacySettings();
-
-        const privacySettings = new PrivacySettings(driver);
-        await privacySettings.check_pageIsLoaded();
-        await privacySettings.toggleParticipateInMetaMetrics();
+        const securityAndPrivacySettings = new SecurityAndPrivacySettings(
+          driver,
+        );
+        await securityAndPrivacySettings.navigateToPage();
+        await securityAndPrivacySettings.toggleParticipateInMetaMetrics();
         events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 1);
       },

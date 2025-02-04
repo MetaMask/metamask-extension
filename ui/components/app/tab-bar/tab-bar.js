@@ -13,7 +13,7 @@ const TabBar = (props) => {
   const { tabs = [], onSelect, isActive } = props;
 
   return (
-    <div className="tab-bar" data-testid="tab-bar-wrapper">
+    <div className="tab-bar">
       {tabs.map(({ key, content, icon }) => (
         <Box
           as="button"
@@ -37,12 +37,7 @@ const TabBar = (props) => {
           )}
           <div className="tab-bar__tab__content">
             <div className="tab-bar__tab__content__icon">{icon}</div>
-            <div
-              className="tab-bar__tab__content__title"
-              data-testid={`tab-content-${content}`}
-            >
-              {content}
-            </div>
+            <div className="tab-bar__tab__content__title">{content}</div>
           </div>
           <Icon
             name={IconName.ArrowRight}
