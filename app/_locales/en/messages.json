@@ -5719,6 +5719,9 @@
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
   "stxOptInDescription": {
+    "message": "Turn on Smart Transactions for more reliable and secure transactions on Ethereum Mainnet. $1"
+  },
+  "stxOptInEthereumBnbDescription": {
     "message": "Turn on Smart Transactions for more reliable and secure transactions on Ethereum Mainnet and BNB Smart Chain. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
