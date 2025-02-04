@@ -89,8 +89,8 @@ function transformState(
     );
     return state;
   }
-  const accounts = internalAccounts.accounts;
-  const selectedAccountKey = internalAccounts.selectedAccount;
+  const { accounts } = internalAccounts;
+  const { selectedAccount: selectedAccountKey } = internalAccounts;
   if (
     !hasProperty(accounts, selectedAccountKey) ||
     !isObject(accounts[selectedAccountKey])
