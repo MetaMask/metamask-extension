@@ -171,7 +171,10 @@ export const getFromToken = createSelector(
       image:
         CHAIN_ID_TOKEN_IMAGE_MAP[
           fromChain.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-        ],
+        ] ??
+        SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
+          fromChain.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
+        ].iconUrl,
       balance: '0',
       string: '0',
       type: AssetType.native,
