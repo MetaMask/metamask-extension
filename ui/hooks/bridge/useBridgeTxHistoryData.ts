@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import {
   TransactionMeta,
   TransactionStatus,
