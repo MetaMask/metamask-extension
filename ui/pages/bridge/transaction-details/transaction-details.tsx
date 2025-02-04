@@ -63,15 +63,24 @@ import {
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
   AllowedBridgeChainIds,
 } from '../../../../shared/constants/bridge';
+import { type MultichainProviderConfig } from '../../../../shared/constants/multichain/networks';
 import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
 import BridgeStepList from './bridge-step-list';
 
 const getBlockExplorerUrl = (
-  networkConfiguration: NetworkConfiguration | undefined,
+  networkConfiguration:
+    | NetworkConfiguration
+    | MultichainProviderConfig
+    | undefined,
   txHash: string | undefined,
 ) => {
-  if (!networkConfiguration || !txHash) {
+  if (
+    !networkConfiguration ||
+    !txHash ||
+    !('defaultBlockExplorerUrlIndex' in networkConfiguration) ||
+    !('blockExplorerUrls' in networkConfiguration)
+  ) {
     return undefined;
   }
   const index = networkConfiguration.defaultBlockExplorerUrlIndex;
@@ -242,7 +251,7 @@ const CrossChainSwapTxDetails = () => {
 
   const srcNetworkIconName = (
     <Box display={Display.Flex} gap={1} alignItems={AlignItems.center}>
-      {srcNetwork && (
+      {srcNetwork && 'name' in srcNetwork && (
         <AvatarNetwork
           size={AvatarNetworkSize.Xs}
           src={srcChainIconUrl}
@@ -254,7 +263,7 @@ const CrossChainSwapTxDetails = () => {
   );
   const destNetworkIconName = (
     <Box display={Display.Flex} gap={1} alignItems={AlignItems.center}>
-      {destNetwork && (
+      {destNetwork && 'name' in destNetwork && (
         <AvatarNetwork
           size={AvatarNetworkSize.Xs}
           src={destChainIconUrl}
