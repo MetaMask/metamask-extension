@@ -228,14 +228,18 @@ export type StartPollingForBridgeTxStatusArgsSerialized = Omit<
 
 export type SourceChainTxMetaId = string;
 
-export type BridgeStatusControllerState = {
+export type BridgeStatusState = {
   txHistory: Record<SourceChainTxMetaId, BridgeHistoryItem>;
 };
-export type BridgeStatusAppState = ProviderConfigState & {
-  metamask: {
-    bridgeStatusState: BridgeStatusControllerState;
-  };
+
+export type BridgeStatusControllerState = {
+  bridgeStatusState: BridgeStatusState;
 };
+
+export type BridgeStatusAppState = ProviderConfigState & {
+  metamask: BridgeStatusControllerState;
+};
+
 export type MetricsBackgroundState = BridgeStatusAppState['metamask'] &
   SmartTransactionsMetaMaskState['metamask'] &
   NetworkState['metamask'] &

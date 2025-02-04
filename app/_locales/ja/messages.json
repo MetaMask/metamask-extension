@@ -113,10 +113,6 @@
     "message": "$1を読んで同意しました",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNoticeNFT": {
-    "message": "$1はこのアセットにアクセスし、使用できます",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessYourWalletWithSRP": {
     "message": "シークレットリカバリーフレーズでウォレットにアクセス"
   },
@@ -392,9 +388,6 @@
   "alert": {
     "message": "アラート"
   },
-  "alertActionBuy": {
-    "message": "ETHを購入"
-  },
   "alertActionUpdateGas": {
     "message": "ガスリミットを更新"
   },
@@ -421,9 +414,6 @@
   },
   "alertMessageGasTooLow": {
     "message": "このトランザクションを続行するには、ガスリミットを21000以上に上げる必要があります。"
-  },
-  "alertMessageInsufficientBalance2": {
-    "message": "アカウントにネットワーク手数料を支払うのに十分なETHがありません。"
   },
   "alertMessageNetworkBusy": {
     "message": "ガス価格が高く、見積もりはあまり正確ではありません。"
@@ -482,10 +472,6 @@
   "all": {
     "message": "すべて"
   },
-  "allOfYour": {
-    "message": "すべての$1",
-    "description": "$1 is the symbol or name of the token that the user is approving spending"
-  },
   "allPermissions": {
     "message": "すべてのアクセス許可"
   },
@@ -495,16 +481,8 @@
   "allTimeLow": {
     "message": "最低記録"
   },
-  "allYourNFTsOf": {
-    "message": "$1のすべてのNFT",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "allowNotifications": {
     "message": "通知を許可する"
-  },
-  "allowSpendToken": {
-    "message": "$1へのアクセス許可を与えますか？",
-    "description": "$1 is the symbol of the token that are requesting to spend"
   },
   "allowWithdrawAndSpend": {
     "message": "$1に以下の額までの引き出しと使用を許可します。",
@@ -550,14 +528,6 @@
   "approve": {
     "message": "使用限度額の承認"
   },
-  "approveAllTokensTitle": {
-    "message": "すべての$1へのアクセスとその送金を許可しますか？",
-    "description": "$1 is the symbol of the token for which the user is granting approval"
-  },
-  "approveAllTokensTitleWithoutSymbol": {
-    "message": "$1のすべてのNFTへのアクセスとそれらの転送を許可しますか？",
-    "description": "$1 a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "approveButtonText": {
     "message": "承認"
   },
@@ -569,22 +539,8 @@
     "message": "$1の使用上限を承認する",
     "description": "The token symbol that is being approved"
   },
-  "approveTokenDescription": {
-    "message": "これにより、アクセス許可を取り消すまで、第三者が今後通知なしに次のNFTにアクセスし、転送できるようになります。"
-  },
-  "approveTokenDescriptionWithoutSymbol": {
-    "message": "これにより、アクセス許可を取り消すまで、第三者が今後通知なしに$1のすべてのNFTにアクセスし、それらを転送できるようになります。",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "approveTokenTitle": {
-    "message": "$1へのアクセスと転送を許可しますか？",
-    "description": "$1 is the symbol of the token for which the user is granting approval"
-  },
   "approved": {
     "message": "承認済み"
-  },
-  "approvedAsset": {
-    "message": "承認済みのアセット"
   },
   "approvedOn": {
     "message": "$1に承認",
@@ -1458,9 +1414,6 @@
     "message": "$1ネットワークを削除しますか？",
     "description": "$1 represents the name of the network"
   },
-  "deposit": {
-    "message": "入金"
-  },
   "depositCrypto": {
     "message": "ウォレットアドレスまたはQRコードを使った別のアカウントからの仮想通貨のデポジット"
   },
@@ -1649,10 +1602,6 @@
   },
   "editGasPriceTooltip": {
     "message": "このネットワークは、トランザクションの送信時に「ガス価格」フィールドが必要です。ガス価格は、ガス1単位あたりに支払う金額です。"
-  },
-  "editGasSubTextAmountLabel": {
-    "message": "最大額:",
-    "description": "This is meant to be used as the $1 substitution editGasSubTextAmount"
   },
   "editGasSubTextFeeLabel": {
     "message": "最大手数料:"
@@ -1916,9 +1865,6 @@
   "fast": {
     "message": "高速"
   },
-  "feeAssociatedRequest": {
-    "message": "このリクエストには手数料がかかります。"
-  },
   "feeDetails": {
     "message": "手数料の詳細"
   },
@@ -1980,12 +1926,6 @@
   },
   "function": {
     "message": "機能: $1"
-  },
-  "functionApprove": {
-    "message": "機能: 承認"
-  },
-  "functionSetApprovalForAll": {
-    "message": "関数: SetApprovalForAll"
   },
   "functionType": {
     "message": "機能の種類"
@@ -2091,9 +2031,6 @@
   "gotIt": {
     "message": "了解"
   },
-  "grantedToWithColon": {
-    "message": "付与先:"
-  },
   "gwei": {
     "message": "gwei"
   },
@@ -2134,9 +2071,6 @@
   },
   "hideAccount": {
     "message": "アカウントを非表示"
-  },
-  "hideFullTransactionDetails": {
-    "message": "完全なトランザクション情報を非表示"
   },
   "hideSeedPhrase": {
     "message": "シードフレーズを非表示"
@@ -2371,10 +2305,6 @@
   "insufficientCurrencyBuyOrDeposit": {
     "message": "アカウントに、$2ネットワークでトランザクション手数料を支払うのに十分な$1がありません。$3するか、別のアカウントからデポジットしてください。",
     "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
-  },
-  "insufficientCurrencyBuyOrReceive": {
-    "message": "アカウントに、$2ネットワークでトランザクション手数料を支払うのに十分な$1がありません。$3するか、別のアカウントから$4してください。",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button, $4 is the key 'deposit' button"
   },
   "insufficientCurrencyDeposit": {
     "message": "アカウントに、$2ネットワークでトランザクション手数料を支払うのに十分な$1がありません。別のアカウントから$1を入金してください。",
@@ -2645,9 +2575,6 @@
   },
   "loading": {
     "message": "ロードしています..."
-  },
-  "loadingScreenHardwareWalletMessage": {
-    "message": "ハードウェアウォレットでトランザクションを完了させてください。"
   },
   "loadingScreenSnapMessage": {
     "message": "Snapでトランザクションを完了させてください。"
@@ -3090,10 +3017,6 @@
   "next": {
     "message": "次へ"
   },
-  "nextNonceWarning": {
-    "message": "ナンスが提案された$1よりも大きいです",
-    "description": "The next nonce according to MetaMask's internal logic"
-  },
   "nftAddFailedMessage": {
     "message": "所有者情報が一致していないため、NFTを追加できません。入力された情報が正しいことを確認してください。"
   },
@@ -3174,15 +3097,6 @@
   },
   "nonce": {
     "message": "ナンス"
-  },
-  "nonceField": {
-    "message": "トランザクション ナンスのカスタマイズ"
-  },
-  "nonceFieldDesc": {
-    "message": "資産を送る際にナンス (トランザクション番号) を変更するには、この機能をオンにします。これは高度な機能であり、慎重に使用してください。"
-  },
-  "nonceFieldHeading": {
-    "message": "カスタムナンス"
   },
   "none": {
     "message": "なし"
@@ -3654,9 +3568,6 @@
   },
   "permissionFrom": {
     "message": "次からのアクセス許可:"
-  },
-  "permissionRequest": {
-    "message": "許可のリクエスト"
   },
   "permissionRequested": {
     "message": "現在リクエスト中"
@@ -4352,31 +4263,11 @@
   "reviewPermissions": {
     "message": " アクセス許可を確認する"
   },
-  "revokeAllTokensTitle": {
-    "message": "すべての$1へのアクセスおよび転送許可を取り消しますか？",
-    "description": "$1 is the symbol of the token for which the user is revoking approval"
-  },
-  "revokeAllTokensTitleWithoutSymbol": {
-    "message": "$1のすべてのNFTへのアクセスおよびそれらの転送の許可を取り消しますか？",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "revokeApproveForAllDescription": {
-    "message": "これにより、別途通知なしで第三者によるユーザーの$1へのアクセスおよび転送の許可が取り消されます。",
-    "description": "$1 is either a string or link of a given token symbol or name"
-  },
-  "revokeApproveForAllDescriptionWithoutSymbol": {
-    "message": "これにより、第三者が別途通知なしで$1のすべてのNFTにアクセスし、それらを転送する許可が取り消されます。",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "revokePermission": {
     "message": "許可を取り消す"
   },
   "revokeSimulationDetailsDesc": {
     "message": "別のユーザーに付与したアカウントのトークン使用許可を取り消そうとしています。"
-  },
-  "revokeSpendingCap": {
-    "message": "$1の使用上限を取り消す",
-    "description": "$1 is a token symbol"
   },
   "revokeSpendingCapTooltipText": {
     "message": "このサードパーティは、現在または今後のトークンをこれ以上使用できなくなります。"
@@ -5063,9 +4954,6 @@
     "message": "現在または今後$1がアクセスしても構わない額のみを入力してください。トークン上限は後でいつでも増額できます。",
     "description": "$1 is origin of the site requesting the token limit"
   },
-  "spendingCapRequest": {
-    "message": "$1の使用上限のリクエスト"
-  },
   "spendingCapTooltipDesc": {
     "message": "これは、使用者が代理でアクセスできるようになるトークンの金額です。"
   },
@@ -5744,9 +5632,6 @@
     "message": "サードパーティソフトウェアに関する通知",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
   },
-  "thisCollection": {
-    "message": "このコレクション"
-  },
   "threeMonthsAbbreviation": {
     "message": "3か月",
     "description": "Shortened form of '3 months'"
@@ -5861,29 +5746,8 @@
   "transactionDataFunction": {
     "message": "関数"
   },
-  "transactionDetailDappGasMoreInfo": {
-    "message": "サイトが提案されました"
-  },
-  "transactionDetailDappGasTooltip": {
-    "message": "最新のブロックに基づくMetaMaskの推奨ガス代を使用するように編集します。"
-  },
   "transactionDetailGasHeading": {
     "message": "ガス代見積もり"
-  },
-  "transactionDetailGasTooltipConversion": {
-    "message": "ガス代に関する詳細"
-  },
-  "transactionDetailGasTooltipExplanation": {
-    "message": "ガス代はネットワークにより設定され、ネットワークトラフィックとトランザクションの複雑さに基づき変動します。"
-  },
-  "transactionDetailGasTooltipIntro": {
-    "message": "ガス代は、$1ネットワークでトランザクションを処理するクリプトマイナーに支払われます。MetaMaskはガス代から利益を得ません。"
-  },
-  "transactionDetailGasTotalSubtitle": {
-    "message": "金額 + ガス代"
-  },
-  "transactionDetailLayer2GasHeading": {
-    "message": "レイヤー2のガス代"
   },
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "金額 + 手数料"
@@ -5899,9 +5763,6 @@
   },
   "transactionErrored": {
     "message": "トランザクションでエラーが発生しました。"
-  },
-  "transactionFee": {
-    "message": "トランザクション手数料"
   },
   "transactionFlowNetwork": {
     "message": "ネットワーク"
@@ -5980,9 +5841,6 @@
   },
   "troubleStarting": {
     "message": "MetaMaskがうまく起動しませんでした。このエラーは断続的に発生する可能性があるため、拡張機能を再起動してみてください。"
-  },
-  "trustSiteApprovePermission": {
-    "message": "アクセス許可を付与することで、次の$1による資金へのアクセスが許可されます"
   },
   "tryAgain": {
     "message": "再試行"
@@ -6175,12 +6033,6 @@
   },
   "viewContact": {
     "message": "連絡先を表示"
-  },
-  "viewDetails": {
-    "message": "詳細を表示"
-  },
-  "viewFullTransactionDetails": {
-    "message": "トランザクションの完全な詳細を表示"
   },
   "viewMore": {
     "message": "詳細を表示"

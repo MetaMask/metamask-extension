@@ -147,7 +147,6 @@ const jsonData = JSON.stringify({
   },
   preferences: {
     useBlockie: false,
-    useNonceField: false,
     usePhishDetect: true,
     dismissSeedBackUpReminder: false,
     overrideContentSecurityPolicyHeader: true,

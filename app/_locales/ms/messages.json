@@ -688,9 +688,6 @@
   "transactionErrored": {
     "message": "Transaksi berdepan ralat."
   },
-  "transactionFee": {
-    "message": "Yuran Transaksi"
-  },
   "transactionResubmitted": {
     "message": "Transaksi dihantar semula dengan fi gas ditingkatkan kepada $1 pada $2."
   },
