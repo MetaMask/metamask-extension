@@ -49,6 +49,7 @@ import { SnapUIMarkdown } from '../snaps/snap-ui-markdown';
 import { SnapUIRadioGroup } from '../snaps/snap-ui-radio-group';
 import { SnapUISelector } from '../snaps/snap-ui-selector';
 import { SnapUITooltip } from '../snaps/snap-ui-tooltip';
+import { SnapUIAccountSelector } from '../snaps/snap-ui-account-selector';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SnapAccountErrorMessage } from '../../../pages/confirmations/components/snap-account-error-message';
 import { SnapAccountSuccessMessage } from '../../../pages/confirmations/components/snap-account-success-message';
@@ -88,6 +89,7 @@ export const safeComponentList = {
   Popover,
   Preloader,
   SnapDelineator,
+  SnapUIAccountSelector,
   SnapUIAddress,
   SnapUIAvatar,
   SnapUIBanner,
@@ -125,5 +127,6 @@ export const safeComponentList = {
   SnapAccountRedirect,
   SnapAccountSuccessMessage,
   SnapAuthorshipHeader,
+
   ///: END:ONLY_INCLUDE_IF
 };

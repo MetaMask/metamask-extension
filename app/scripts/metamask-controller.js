@@ -1553,6 +1553,8 @@ export default class MetamaskController extends EventEmitter {
           `${this.approvalController.name}:hasRequest`,
           `${this.approvalController.name}:acceptRequest`,
           `${this.snapController.name}:get`,
+          `${this.accountsController.name}:getAccountByAddress`,
+          `${this.accountsController.name}:getSelectedMultichainAccount`,
         ],
         allowedEvents: [
           'NotificationServicesController:notificationsListUpdated',
