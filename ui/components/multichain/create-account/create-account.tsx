@@ -21,6 +21,7 @@ import { FormTextField } from '../../component-library/form-text-field/form-text
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAccountNameErrorMessage } from '../../../helpers/utils/accounts';
 import { getMetaMaskAccountsOrdered } from '../../../selectors';
+import { getHDSrpIndex } from '../../../selectors/selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
   MetaMetricsEventAccountType,
@@ -68,6 +69,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
 
       const history = useHistory();
       const trackEvent = useContext(MetaMetricsContext);
+      const hdSrpIndex = useSelector(getHDSrpIndex);
 
       const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
 
@@ -104,6 +106,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
               properties: {
                 account_type: MetaMetricsEventAccountType.Default,
                 location: 'Home',
+                hd_srp_index: hdSrpIndex,
               },
             });
             history.push(mostRecentOverviewPage);
@@ -114,6 +117,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
               properties: {
                 account_type: MetaMetricsEventAccountType.Default,
                 error: (error as Error).message,
+                hd_srp_index: hdSrpIndex,
               },
             });
           }
