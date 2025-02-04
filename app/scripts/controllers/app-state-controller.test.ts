@@ -1,4 +1,4 @@
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import type {
   AcceptRequest,
   AddApprovalRequest,
@@ -565,7 +565,7 @@ type WithControllerCallback<ReturnValue> = ({
   controllerMessenger,
 }: {
   controller: AppStateController;
-  controllerMessenger: ControllerMessenger<
+  controllerMessenger: Messenger<
     | AppStateControllerActions
     | AddApprovalRequest
     | AcceptRequest
@@ -586,7 +586,7 @@ async function withController<ReturnValue>(
   const [{ ...rest }, fn] = args.length === 2 ? args : [{}, args[0]];
   const { addRequestMock, options = {} } = rest;
 
-  const controllerMessenger = new ControllerMessenger<
+  const controllerMessenger = new Messenger<
     | AppStateControllerActions
     | AddApprovalRequest
     | AcceptRequest
