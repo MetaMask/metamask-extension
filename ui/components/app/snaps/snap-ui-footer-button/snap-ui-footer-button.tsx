@@ -4,6 +4,7 @@ import {
   ButtonVariant,
   UserInputEventType,
 } from '@metamask/snaps-sdk';
+import type { ButtonProps as SnapButtonProps } from '@metamask/snaps-sdk/jsx';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import {
@@ -26,7 +27,7 @@ import { getHideSnapBranding } from '../../../../selectors';
 type SnapUIFooterButtonProps = {
   name?: string;
   variant?: ButtonVariant;
-  snapVariant?: ButtonVariant & 'destructive';
+  snapVariant?: SnapButtonProps['variant'];
   isSnapAction?: boolean;
   onCancel?: () => void;
 };
