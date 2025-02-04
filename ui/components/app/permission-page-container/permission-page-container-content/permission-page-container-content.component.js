@@ -106,7 +106,7 @@ export default class PermissionPageContainerContent extends PureComponent {
           borderRadius={BorderRadius.XL}
         >
           <PermissionsConnectPermissionList
-            isLegacySwitchEthereumChain={request.isLegacySwitchEthereumChain}
+            isLegacySwitchEthereumChain={request?.isLegacySwitchEthereumChain}
             permissions={selectedPermissions}
             subjectName={subjectMetadata.origin}
             accounts={accounts}

@@ -654,7 +654,7 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
 /**
  * @typedef {object} PermissionDescriptionParamsObject
  * @property {Function} t - The translation function.
- * @property {boolean} isLegacySwitchEthereumChain - Flag for checking if request incoming from 'wallet_switchEthereumChain'.
+ * @property {boolean} [isLegacySwitchEthereumChain] - Flag for checking if request incoming from 'wallet_switchEthereumChain'.
  * @property {string} permissionName - The name of the permission.
  * @property {object} permissionValue - The permission object.
  * @property {string} subjectName - The name of the subject.
