@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
 
-import fs from 'fs';
+import fs, { readFileSync } from 'fs';
 import madge from 'madge';
 import fg from 'fast-glob';
 
@@ -88,26 +88,7 @@ function normalizeJson(cycles: CircularDeps): CircularDeps {
 }
 
 // Common madge configuration
-const MADGE_CONFIG = {
-  circular: true,
-  extensions: ['js', 'jsx', 'ts', 'tsx'],
-  excludeRegExp: IGNORE_PATTERNS.map(globToRegExp),
-  tsConfig: 'tsconfig.json',
-  webpackConfig: 'webpack.config.js',
-  detectiveOptions: {
-    es6: {
-      skipTypeImports: true,
-    },
-    ts: {
-      skipTypeImports: true,
-      skipAsyncImports: true,
-    },
-    tsx: {
-      skipTypeImports: true,
-      skipAsyncImports: true,
-    },
-  },
-};
+const MADGE_CONFIG = JSON.parse(readFileSync('.madgerc', 'utf-8'));
 
 async function getMadgeCircularDeps(): Promise<CircularDeps> {
   console.log('Running madge to detect circular dependencies...');
