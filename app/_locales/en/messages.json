@@ -3819,7 +3819,7 @@
   },
   "permission_assets": {
     "message": "Display account assets in MetaMask.",
-    "description": "The description for the `endowment:name-assets` permission."
+    "description": "The description for the `endowment:assets` permission."
   },
   "permission_assetsDescription": {
     "message": "Allow $1 to provide asset information to the MetaMask client. The assets can be onchain or offchain.",
@@ -3944,6 +3944,14 @@
   "permission_notificationsDescription": {
     "message": "Allow $1 to display notifications within MetaMask. A short notification text can be triggered by a snap for actionable or time-sensitive information.",
     "description": "An extended description for the `snap_notify` permission. $1 is the snap name."
+  },
+  "permission_protocol": {
+    "message": "Provide protocol data for one or more chains.",
+    "description": "The description for the `endowment:protocol` permission."
+  },
+  "permission_protocolDescription": {
+    "message": "Allow $1 to provide MetaMask with protocol data such as gas estimates or token information.",
+    "description": "An extended description for the `endowment:protocol` permission. $1 is the name of the Snap."
   },
   "permission_rpc": {
     "message": "Allow $1 to communicate directly with $2.",
