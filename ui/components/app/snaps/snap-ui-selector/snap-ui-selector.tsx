@@ -34,7 +34,7 @@ import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 export type SnapUISelectorProps = {
   name: string;
   title: string;
-  options: [{ value: string; disabled: boolean }];
+  options: { value: string; disabled: boolean }[];
   optionComponents: React.ReactNode[];
   form?: string;
   label?: string;
