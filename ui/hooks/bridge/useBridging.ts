@@ -91,7 +91,7 @@ const useBridging = () => {
           },
         });
         let url = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
-        url += `?token=${token.address?.toLowerCase()}`;
+        url += `?token=${token.address}`;
         if (isSwap) {
           url += '&swaps=true';
         }
