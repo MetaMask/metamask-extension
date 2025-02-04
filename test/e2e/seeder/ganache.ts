@@ -25,14 +25,15 @@ export class Ganache {
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async start(opts: any) {
-    // Check if mnemonic is provided in options
-    let options = {
+    let customOptions = {
       ...defaultOptions,
       ...opts,
     };
-    if (!options.mnemonic) {
-      options = {
-        ...options,
+    // Check if mnemonic and custom accounts are provided in options
+    // and add a default account value if not
+    if (!customOptions.mnemonic && !customOptions.accounts) {
+      customOptions = {
+        ...customOptions,
         accounts: [
           {
             secretKey: PRIVATE_KEY,
@@ -44,8 +45,8 @@ export class Ganache {
       };
     }
 
-    this.#server = server(options);
-    await this.#server.listen(options.port);
+    this.#server = server(customOptions);
+    await this.#server.listen(customOptions.port);
   }
 
   getProvider() {

@@ -21,7 +21,7 @@ describe('eth_sendTransaction', function () {
         localNodeOptions: generateGanacheOptions({
           hardfork: 'london',
           mnemonic:
-          'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
+            'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
         }),
         title: this.test.fullTitle(),
       },
