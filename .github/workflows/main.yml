@@ -66,10 +66,6 @@ jobs:
     name: Wait for CircleCI workflow status
     uses: ./.github/workflows/wait-for-circleci-workflow-status.yml
 
-  validate-page-object-usage:
-    name: Verify E2E Page Object Usage on modified files
-    uses: ./.github/workflows/validate-page-object-usage.yml
-
   runway:
     name: Runway
     # For a `pull_request` event, the branch is `github.head_ref``.

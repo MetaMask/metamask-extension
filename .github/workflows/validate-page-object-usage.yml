@@ -1,7 +1,11 @@
 name: Validate E2E Page Object usage on modified files
 
 on:
-  workflow_call:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
 
 jobs:
   run-e2e-pom-validation:
