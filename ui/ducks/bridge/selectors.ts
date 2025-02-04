@@ -1,13 +1,14 @@
-import type {
-  AddNetworkFields,
-  NetworkConfiguration,
-  NetworkState,
+import {
+  type AddNetworkFields,
+  type NetworkConfiguration,
+  type NetworkState,
 } from '@metamask/network-controller';
 import { orderBy, uniqBy } from 'lodash';
 import { createSelector } from 'reselect';
 import type { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
+import { type Hex } from '@metamask/utils';
 import {
   getIsBridgeEnabled,
   getMarketData,
@@ -23,10 +24,7 @@ import {
 import type { BridgeControllerState } from '../../../shared/types/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
-import {
-  getProviderConfig,
-  getNetworkConfigurationsByChainId,
-} from '../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
 import { getConversionRate, getGasFeeEstimates } from '../metamask/metamask';
 import {
   type L1GasFees,
@@ -53,6 +51,13 @@ import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
   FEATURED_RPCS,
 } from '../../../shared/constants/network';
+import { getMultichainProviderConfig } from '../../selectors/multichain';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+  MULTICHAIN_PROVIDER_CONFIGS,
+  ///: END:ONLY_INCLUDE_IF
+  MultichainNetworks,
+} from '../../../shared/constants/multichain/networks';
 import {
   exchangeRatesFromNativeAndCurrencyRates,
   exchangeRateFromMarketData,
@@ -74,12 +79,26 @@ type BridgeAppState = {
   bridge: BridgeState;
 };
 
-// only includes networks user has added
+// includes all networks user has added
 export const getAllBridgeableNetworks = createDeepEqualSelector(
-  getNetworkConfigurationsByChainId,
+  [getNetworkConfigurationsByChainId],
   (networkConfigurationsByChainId) => {
     return uniqBy(
-      Object.values(networkConfigurationsByChainId),
+      [
+        ...Object.values(networkConfigurationsByChainId),
+        ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+        // TODO: get this from network controller, use placeholder values for now
+        {
+          ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
+          blockExplorerUrls: [],
+          name: '',
+          nativeCurrency: '',
+          rpcEndpoints: [{ url: '', type: '', networkClientId: '' }],
+          defaultRpcEndpointIndex: 0,
+          chainId: MultichainNetworks.SOLANA as unknown as Hex,
+        } as unknown as NetworkConfiguration,
+        ///: END:ONLY_INCLUDE_IF
+      ],
       'chainId',
     ).filter(({ chainId }) =>
       ALLOWED_BRIDGE_CHAIN_IDS.includes(
@@ -89,6 +108,7 @@ export const getAllBridgeableNetworks = createDeepEqualSelector(
   },
 );
 
+// only includes networks that are enabled
 export const getFromChains = createDeepEqualSelector(
   getAllBridgeableNetworks,
   (state: BridgeAppState) => state.metamask.bridgeState?.bridgeFeatureFlags,
@@ -102,15 +122,13 @@ export const getFromChains = createDeepEqualSelector(
 );
 
 export const getFromChain = createDeepEqualSelector(
-  getNetworkConfigurationsByChainId,
-  getProviderConfig,
-  (
-    networkConfigurationsByChainId,
-    providerConfig,
-  ): NetworkConfiguration | undefined =>
-    providerConfig?.chainId
-      ? networkConfigurationsByChainId[providerConfig.chainId]
-      : undefined,
+  getMultichainProviderConfig,
+  getFromChains,
+  (providerConfig, fromChains): NetworkConfiguration | undefined => {
+    return providerConfig?.chainId
+      ? fromChains.find(({ chainId }) => chainId === providerConfig.chainId)
+      : undefined;
+  },
 );
 
 export const getToChains = createDeepEqualSelector(

@@ -3,7 +3,6 @@ import { MultichainNetworks } from './multichain/networks';
 ///: END:ONLY_INCLUDE_IF
 import { CHAIN_IDS, NETWORK_TO_NAME_MAP } from './network';
 
-// TODO read from feature flags
 export const ALLOWED_BRIDGE_CHAIN_IDS = [
   CHAIN_IDS.MAINNET,
   CHAIN_IDS.BSC,
@@ -39,7 +38,7 @@ export const BRIDGE_PREFERRED_GAS_ESTIMATE = 'high';
 export const BRIDGE_DEFAULT_SLIPPAGE = 0.5;
 
 export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
-  AllowedBridgeChainIds,
+  AllowedBridgeChainIds | MultichainNetworks,
   string
 > = {
   [CHAIN_IDS.MAINNET]: 'Ethereum',
