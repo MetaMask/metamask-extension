@@ -8,7 +8,8 @@ const { exitWithError } = require('../../development/lib/exit-with-error');
 const { loadBuildTypesConfig } = require('../../development/lib/build-type');
 const {
   filterE2eChangedFiles,
-  readChangedFiles,
+  getChangedAndNewFiles,
+  readChangedAndNewFilesWithStatus,
 } = require('./changedFilesUtil');
 
 // These tests should only be run on Flask for now.
@@ -67,8 +68,11 @@ function applyQualityGate(fullTestList, changedOrNewTests) {
 
 // For running E2Es in parallel in CI
 function runningOnCircleCI(testPaths) {
-  const changedFilesPaths = readChangedFiles();
-  const changedOrNewTests = filterE2eChangedFiles(changedFilesPaths);
+  const changedandNewFilesPathsWithStatus = readChangedAndNewFilesWithStatus();
+  const changedandNewFilesPaths = getChangedAndNewFiles(
+    changedandNewFilesPathsWithStatus,
+  );
+  const changedOrNewTests = filterE2eChangedFiles(changedandNewFilesPaths);
   console.log('Changed or new test list:', changedOrNewTests);
 
   const fullTestList = applyQualityGate(

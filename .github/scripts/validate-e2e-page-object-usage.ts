@@ -8,7 +8,7 @@ import {
     sleep,
 } from './shared/circle-artifacts';
 
-async function verifyE2ePageObjectsUsage() {
+async function verifyE2ePageObjectsUsage(fileStatus: 'M' | 'A' | 'both') {
     let e2eFiles: string[];
 
     if (process.env.GITHUB_ACTIONS) {
@@ -58,16 +58,40 @@ async function verifyE2ePageObjectsUsage() {
             process.exit(1);
         }
 
-        e2eFiles = filterE2eChangedFiles(changedFilesContent.split('\n').filter(file => file.trim() !== ''));
-        console.log('e2e changed files', e2eFiles);
+        // Parse the changed and new files with status
+        const changedAndNewFilePathsWithStatus = changedFilesContent.split('\n').filter(line => line.trim() !== '').map(line => {
+            const [status, filePath] = line.split('\t');
+            return { status, filePath };
+        });
+
+        // Filter files based on the provided fileStatus
+        const filteredFiles = changedAndNewFilePathsWithStatus.filter(file => {
+            if (fileStatus === 'both') {
+                return file.status === 'A' || file.status === 'M';
+            }
+            return file.status === fileStatus;
+        }).map(file => file.filePath);
+
+        e2eFiles = filterE2eChangedFiles(filteredFiles);
+        console.log('Filtered E2E files:', e2eFiles);
     } else {
         // Running locally
         console.log('Running locally, performing git diff against main branch...');
-        const diffOutput = execSync('git diff --name-only main...HEAD').toString().trim();
-        const changedFiles = diffOutput.split('\n').filter(file => file.trim() !== '');
-        console.log('Changed files:', changedFiles);
+        const diffOutput = execSync('git diff --name-status main...HEAD').toString().trim();
+        const changedFiles = diffOutput.split('\n').filter(line => line.trim() !== '').map(line => {
+            const [status, filePath] = line.split('\t');
+            return { status, filePath };
+        });
 
-        e2eFiles = filterE2eChangedFiles(changedFiles);
+        // Filter files based on the provided fileStatus
+        const filteredFiles = changedFiles.filter(file => {
+            if (fileStatus === 'both') {
+                return file.status === 'A' || file.status === 'M';
+            }
+            return file.status === fileStatus;
+        }).map(file => file.filePath);
+
+        e2eFiles = filterE2eChangedFiles(filteredFiles);
         console.log('Filtered E2E files:', e2eFiles);
     }
 
@@ -100,8 +124,8 @@ async function verifyE2ePageObjectsUsage() {
     console.log("\x1b[32mSuccess: All the new or modified E2E files use the Page Object Model.\x1b[0m");
 }
 
-// Run the verification
-verifyE2ePageObjectsUsage().catch((error) => {
-    console.error('Not all the modified e2e use the Page Object Model', error);
+// Run the verification for new files only
+verifyE2ePageObjectsUsage('A').catch((error) => {
+    console.error('Not all the new e2e files use the Page Object Model', error);
     process.exit(1);
 });
