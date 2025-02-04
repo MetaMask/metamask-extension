@@ -1,16 +1,18 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { Hex } from '@metamask/utils';
 import {
   type BridgeToken,
   type QuoteMetadata,
   type QuoteResponse,
   SortOrder,
 } from '../../../shared/types/bridge';
-import { BRIDGE_DEFAULT_SLIPPAGE } from '../../../shared/constants/bridge';
+import {
+  type AllowedBridgeChainIds,
+  BRIDGE_DEFAULT_SLIPPAGE,
+} from '../../../shared/constants/bridge';
 import { getTokenExchangeRate } from './utils';
 
 export type BridgeState = {
-  toChainId: Hex | null;
+  toChainId: AllowedBridgeChainIds | null;
   fromToken: BridgeToken;
   toToken: BridgeToken;
   fromTokenInputValue: string | null;

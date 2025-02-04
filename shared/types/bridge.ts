@@ -1,7 +1,6 @@
-import type { Hex } from '@metamask/utils';
 import type { BigNumber } from 'bignumber.js';
+import type { CaipChainId, Hex } from '@metamask/utils';
 import type { AssetType } from '../constants/transaction';
-import { AllowedBridgeChainIds } from '../constants/bridge';
 
 export type ChainConfiguration = {
   isActiveSrc: boolean;
@@ -41,7 +40,7 @@ export type BridgeToken = {
   symbol: string;
   image: string;
   decimals: number;
-  chainId: Hex;
+  chainId: Hex | CaipChainId;
   balance: string; // raw balance
   string: string | undefined; // normalized balance as a stringified number
   tokenFiatAmount?: number | null;
@@ -171,7 +170,7 @@ export type BridgeFeatureFlags = {
     refreshRate: number;
     maxRefreshCount: number;
     support: boolean;
-    chains: Record<AllowedBridgeChainIds, ChainConfiguration>;
+    chains: Record<Hex | CaipChainId, ChainConfiguration>;
   };
 };
 export enum RequestStatus {
