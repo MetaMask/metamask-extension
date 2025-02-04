@@ -5,7 +5,7 @@ import {
   getFromToken,
   getToToken,
 } from '../../../ducks/bridge/selectors';
-import { Numeric } from '../../../../shared/modules/Numeric';
+import { formatChainIdFromApi } from '../../../../shared/modules/bridge-utils/multichain';
 
 export const useRequestProperties = () => {
   const { srcChainId, destChainId, srcTokenAddress, destTokenAddress } =
@@ -13,10 +13,8 @@ export const useRequestProperties = () => {
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
 
-  const chain_id_source =
-    srcChainId && new Numeric(srcChainId, 10).toPrefixedHexString();
-  const chain_id_destination =
-    destChainId && new Numeric(destChainId, 10).toPrefixedHexString();
+  const chain_id_source = srcChainId && formatChainIdFromApi(srcChainId);
+  const chain_id_destination = destChainId && formatChainIdFromApi(destChainId);
   const token_symbol_source = fromToken?.symbol;
   const token_symbol_destination = toToken?.symbol;
   const token_address_source = srcTokenAddress?.toLowerCase();
