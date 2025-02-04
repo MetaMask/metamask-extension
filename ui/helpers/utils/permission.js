@@ -53,7 +53,6 @@ function getSnapNameComponent(snapName) {
 const PERMISSION_DESCRIPTIONS = deepFreeze({
   // "endowment:caip25" entry is needed for the Snaps Permissions Review UI
   [Caip25EndowmentPermissionName]: ({ t, isLegacySwitchEthereumChain }) => {
-    console.log({ isLegacySwitchEthereumChain });
     if (isLegacySwitchEthereumChain) {
       return {
         label: t('permission_walletSwitchEthereumChain'),
