@@ -7,7 +7,6 @@ import {
   BridgeStatusControllerBridgeTransactionCompleteEvent,
   BridgeStatusControllerBridgeTransactionFailedEvent,
 } from '../../controllers/bridge-status/types';
-import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 // eslint-disable-next-line import/no-restricted-paths
 import {
@@ -24,6 +23,7 @@ import {
 } from '../../../../shared/types/bridge-status';
 import { isEthUsdt } from '../../../../shared/modules/bridge-utils/bridge.util';
 import { getCommonProperties } from '../../../../shared/lib/bridge-status/metrics';
+import { formatChainIdFromApi } from '../../../../shared/modules/bridge-utils/multichain';
 import { getTokenUsdValue } from './metrics-utils';
 
 type TrackEvent = (
@@ -81,7 +81,7 @@ export const handleBridgeTransactionComplete = async (
   const destination_transaction = StatusTypes.COMPLETE;
 
   const isEthUsdtTx = isEthUsdt(
-    decimalToPrefixedHex(quote.srcChainId),
+    formatChainIdFromApi(quote.srcChainId),
     quote.srcAsset.address,
   );
 
@@ -149,7 +149,7 @@ export const handleBridgeTransactionFailed = async (
     : StatusTypes.FAILED;
 
   const isEthUsdtTx = isEthUsdt(
-    decimalToPrefixedHex(quote.srcChainId),
+    formatChainIdFromApi(quote.srcChainId),
     quote.srcAsset.address,
   );
 
@@ -213,7 +213,7 @@ export const handleTransactionFailedTypeBridge = async (
   const source_transaction = StatusTypes.FAILED;
 
   const isEthUsdtTx = isEthUsdt(
-    decimalToPrefixedHex(quote.srcChainId),
+    formatChainIdFromApi(quote.srcChainId),
     quote.srcAsset.address,
   );
   const allowanceResetTransaction =
