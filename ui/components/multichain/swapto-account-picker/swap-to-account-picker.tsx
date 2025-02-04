@@ -55,7 +55,12 @@ export const SwapToAccountPicker = ({
         className="swap-to-account-picker"
         style={{
           borderRadius: '8px',
-          border: '1px solid var(--color-border-default)',
+          border: '2px solid #E2E4E929',
+          boxShadow: '0px 0px 24px #E2E4E940',
+          width: '90%',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          marginTop: '100px',
         }}
       >
         <Box
@@ -103,10 +108,26 @@ export const SwapToAccountPicker = ({
       className="swap-to-account-picker"
       style={{
         borderRadius: '8px',
-        border: '1px solid var(--color-border-default)',
+        border: '2px solid #E2E4E929',
+        boxShadow: '0px 0px 24px #E2E4E940',
+        width: '90%',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        marginTop: '100px',
       }}
     >
-      <Box className="search-container">
+      <Box
+        className="search-container"
+        style={{
+          height: '45px',
+          borderBottomWidth: '1px',
+          borderBottomStyle: 'solid',
+          borderBottomColor: '#B7BBC866',
+          alignItems: 'center',
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
         <TextFieldSearch
           placeholder="Receiving address or SNS"
           value={searchQuery}
@@ -117,16 +138,20 @@ export const SwapToAccountPicker = ({
             width: '100%',
             borderRadius: 0,
             borderWidth: 0,
-            borderBottomWidth: 1,
-            borderBottomColor: 'var(--color-border-default)',
+            color: '#9FA6AE',
           }}
         />
       </Box>
 
-      <Box className="swap-to-account-picker__list">
+      <Box
+        className="swap-to-account-picker__list"
+        style={{ minHeight: '79px' }}
+      >
         {filteredAccounts.map((account) => (
           <AccountListItem
             key={account.id}
+            // TODO: fix below error.
+            // @ts-expect-error: todo
             account={account}
             onClick={() => onAccountSelect(account)}
             isSelected={account.id === selectedAccount?.id}
@@ -135,7 +160,20 @@ export const SwapToAccountPicker = ({
         ))}
 
         {filteredAccounts.length === 0 && (
-          <Text textAlign={TextAlign.Center}>No matching accounts found</Text>
+          <Box
+            display={Display.Flex}
+            style={{
+              height: '100%',
+              width: '100%',
+              minHeight: '79px',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Text textAlign={TextAlign.Center}>
+              No matching accounts found.
+            </Text>
+          </Box>
         )}
       </Box>
     </Box>

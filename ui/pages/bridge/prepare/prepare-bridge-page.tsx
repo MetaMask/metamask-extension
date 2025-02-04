@@ -87,6 +87,7 @@ import {
   getLocale,
   getSelectedInternalAccount,
   getTokenList,
+  getInternalAccounts,
 } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
@@ -98,6 +99,7 @@ import {
   getMultichainProviderConfig,
 } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { SwapToAccountPicker } from '../../../components/multichain/swapto-account-picker/swap-to-account-picker';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 
@@ -140,6 +142,7 @@ const PrepareBridgePage = () => {
   const selectedAccount = useMultichainSelector(getSelectedInternalAccount);
 
   const slippage = useSelector(getSlippage);
+  const internalAccounts = useSelector(getInternalAccounts);
 
   const quoteRequest = useSelector(getQuoteRequest);
   const {
@@ -562,6 +565,11 @@ const PrepareBridgePage = () => {
           isTokenListLoading={isToTokensLoading}
         />
         {/* // TODO: place swap-to-account-picker here */}
+        <SwapToAccountPicker
+          accounts={internalAccounts}
+          chainId={toChain?.chainId}
+          accountId={selectedAccount?.id}
+        />
         <Column height={BlockSize.Full} justifyContent={JustifyContent.center}>
           {isLoading && !activeQuote ? (
             <>
