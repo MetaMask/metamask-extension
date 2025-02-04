@@ -1,4 +1,4 @@
-import type { Hex } from '@metamask/utils';
+import { type CaipChainId, type Hex, isCaipChainId } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { getAddress } from 'ethers/lib/utils';
 import type { ContractMarketData } from '@metamask/assets-controllers';
@@ -48,9 +48,9 @@ export const getTxGasEstimates = async ({
   networkAndAccountSupports1559: boolean;
   networkGasFeeEstimates: NetworkGasFeeEstimates;
   txParams: TxData;
-  hexChainId: Hex;
+  hexChainId: Hex | CaipChainId;
 }) => {
-  if (networkAndAccountSupports1559) {
+  if (networkAndAccountSupports1559 && !isCaipChainId(hexChainId)) {
     const { estimatedBaseFee = '0' } = networkGasFeeEstimates;
     const hexEstimatedBaseFee = decGWEIToHexWEI(estimatedBaseFee) as Hex;
     const txGasFeeEstimates = await getTransaction1559GasFeeEstimates(
@@ -95,7 +95,7 @@ const fetchTokenExchangeRates = async (
 // rate is not available in the TokenRatesController, which happens when the selected token has not been
 // imported into the wallet
 export const getTokenExchangeRate = async (request: {
-  chainId: Hex;
+  chainId: Hex | CaipChainId;
   tokenAddress: string;
   currency: string;
 }) => {
