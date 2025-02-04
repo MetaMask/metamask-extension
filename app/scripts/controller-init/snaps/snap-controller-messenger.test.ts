@@ -1,15 +1,12 @@
-import {
-  ControllerMessenger,
-  RestrictedMessenger,
-} from '@metamask/base-controller';
+import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
 import {
   getSnapControllerInitMessenger,
   getSnapControllerMessenger,
 } from './snap-controller-messenger';
 
 describe('getSnapControllerMessenger', () => {
-  it('returns a restricted controller messenger', () => {
-    const controllerMessenger = new ControllerMessenger<never, never>();
+  it('returns a restricted messenger', () => {
+    const controllerMessenger = new Messenger<never, never>();
     const snapControllerMessenger =
       getSnapControllerMessenger(controllerMessenger);
 
@@ -18,8 +15,8 @@ describe('getSnapControllerMessenger', () => {
 });
 
 describe('getSnapControllerInitMessenger', () => {
-  it('returns a restricted controller messenger', () => {
-    const controllerMessenger = new ControllerMessenger<never, never>();
+  it('returns a restricted messenger', () => {
+    const controllerMessenger = new Messenger<never, never>();
     const snapControllerMessenger =
       getSnapControllerInitMessenger(controllerMessenger);
 

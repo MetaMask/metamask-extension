@@ -1,4 +1,4 @@
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import {
   ExecuteSnapAction,
   TerminateSnapAction,
@@ -77,17 +77,16 @@ export type SnapControllerMessenger = ReturnType<
 >;
 
 /**
- * Get a restricted controller messenger for the Snap controller. This is
- * scoped to the actions and events that the Snap controller is allowed to
- * handle.
+ * Get a restricted messenger for the Snap controller. This is scoped to the
+ * actions and events that the Snap controller is allowed to handle.
  *
- * @param controllerMessenger - The controller messenger to restrict.
- * @returns The restricted controller messenger.
+ * @param messenger - The messenger to restrict.
+ * @returns The restricted messenger.
  */
 export function getSnapControllerMessenger(
-  controllerMessenger: ControllerMessenger<Actions, Events>,
+  messenger: Messenger<Actions, Events>,
 ) {
-  return controllerMessenger.getRestricted({
+  return messenger.getRestricted({
     name: 'SnapController',
     allowedEvents: [
       'ExecutionService:unhandledError',
@@ -134,17 +133,16 @@ export type SnapControllerInitMessenger = ReturnType<
 >;
 
 /**
- * Get a restricted controller messenger for the Snap controller init. This is
- * scoped to the actions and events that the Snap controller init is allowed to
- * handle.
+ * Get a restricted messenger for the Snap controller init. This is scoped to
+ * the actions and events that the Snap controller init is allowed to handle.
  *
- * @param controllerMessenger - The controller messenger to restrict.
- * @returns The restricted controller messenger.
+ * @param messenger - The messenger to restrict.
+ * @returns The restricted messenger.
  */
 export function getSnapControllerInitMessenger(
-  controllerMessenger: ControllerMessenger<InitActions, never>,
+  messenger: Messenger<InitActions, never>,
 ) {
-  return controllerMessenger.getRestricted({
+  return messenger.getRestricted({
     name: 'SnapControllerInit',
     allowedEvents: [],
     allowedActions: [

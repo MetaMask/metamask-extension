@@ -6,8 +6,7 @@ import { SnapInsightsControllerMessenger } from './snap-insights-controller-mess
  * Initialize the Snap insights controller.
  *
  * @param request - The request object.
- * @param request.controllerMessenger - The controller messenger to use for the
- * controller.
+ * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state of the extension.
  * @returns The initialized controller.
  */

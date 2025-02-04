@@ -1,4 +1,4 @@
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import {
   SnapInstalled,
   SnapUpdated,
@@ -24,17 +24,16 @@ export type CronjobControllerMessenger = ReturnType<
 >;
 
 /**
- * Get a restricted controller messenger for the cronjob controller. This is
- * scoped to the actions and events that the cronjob controller is allowed to
- * handle.
+ * Get a restricted messenger for the cronjob controller. This is scoped to the
+ * actions and events that the cronjob controller is allowed to handle.
  *
- * @param controllerMessenger - The controller messenger to restrict.
+ * @param messenger - The controller messenger to restrict.
  * @returns The restricted controller messenger.
  */
 export function getCronjobControllerMessenger(
-  controllerMessenger: ControllerMessenger<Actions, Events>,
+  messenger: Messenger<Actions, Events>,
 ) {
-  return controllerMessenger.getRestricted({
+  return messenger.getRestricted({
     name: 'CronjobController',
     allowedEvents: [
       'SnapController:snapInstalled',

@@ -35,10 +35,6 @@ export const RateLimitControllerInit: ControllerInitFunction<
 }) => {
   const controller = new RateLimitController({
     state: persistedState.RateLimitController,
-    // @ts-expect-error: Property `#private` in type` RestrictedMessenger`
-    // refers to a different member that cannot be accessed from within type
-    // `RestrictedControllerMessenger`.
-    // TODO: Remove this when switched to `RestrictedMessenger`.
     messenger: controllerMessenger,
 
     implementations: {

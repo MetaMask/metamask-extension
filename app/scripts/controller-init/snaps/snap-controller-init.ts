@@ -21,8 +21,7 @@ import {
  * @param request.initMessenger - The init messenger. This has access to
  * different functions than the controller messenger, and should be used for
  * initialization purposes only.
- * @param request.controllerMessenger - The controller messenger to use for the
- * controller.
+ * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state of the extension.
  * @param request.removeAllConnections - Function to remove all connections for
  * a given origin.

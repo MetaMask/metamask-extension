@@ -1,8 +1,8 @@
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
+import { RateLimitController } from '@metamask/rate-limit-controller';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { RateLimitControllerInit } from './rate-limit-controller-init';
-import { RateLimitController } from '@metamask/rate-limit-controller';
 import {
   getRateLimitControllerInitMessenger,
   getRateLimitControllerMessenger,
@@ -13,14 +13,17 @@ import {
 jest.mock('@metamask/rate-limit-controller');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<RateLimitControllerMessenger, RateLimitControllerInitMessenger>
+  ControllerInitRequest<
+    RateLimitControllerMessenger,
+    RateLimitControllerInitMessenger
+  >
 > {
-  const baseControllerMessenger = new ControllerMessenger<never, never>();
+  const baseMessenger = new Messenger<never, never>();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),
-    controllerMessenger: getRateLimitControllerMessenger(baseControllerMessenger),
-    initMessenger: getRateLimitControllerInitMessenger(baseControllerMessenger),
+    controllerMessenger: getRateLimitControllerMessenger(baseMessenger),
+    initMessenger: getRateLimitControllerInitMessenger(baseMessenger),
   };
 
   return requestMock;
@@ -48,8 +51,8 @@ describe('RateLimitController', () => {
           method: expect.any(Function),
           rateLimitCount: 2,
           rateLimitTimeout: 300_000,
-        }
-      }
+        },
+      },
     });
   });
 });

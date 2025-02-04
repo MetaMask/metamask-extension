@@ -1,4 +1,4 @@
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import {
   DeleteInterface,
   GetAllSnaps,
@@ -27,17 +27,17 @@ export type SnapInsightsControllerMessenger = ReturnType<
 >;
 
 /**
- * Get a restricted controller messenger for the Snap insights controller. This
- * is scoped to the actions and events that the Snap insights controller is
- * allowed to handle.
+ * Get a restricted messenger for the Snap insights controller. This is scoped
+ * to the actions and events that the Snap insights controller is allowed to
+ * handle.
  *
- * @param controllerMessenger - The controller messenger to restrict.
- * @returns The restricted controller messenger.
+ * @param messenger - The messenger to restrict.
+ * @returns The restricted messenger.
  */
 export function getSnapInsightsControllerMessenger(
-  controllerMessenger: ControllerMessenger<Actions, Events>,
+  messenger: Messenger<Actions, Events>,
 ) {
-  return controllerMessenger.getRestricted({
+  return messenger.getRestricted({
     name: 'SnapInsightsController',
     allowedActions: [
       'SnapController:handleRequest',

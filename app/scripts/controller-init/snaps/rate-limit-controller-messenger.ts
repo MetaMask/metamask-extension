@@ -1,4 +1,4 @@
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import {
   SnapInstalled,
   SnapUpdated,
@@ -32,13 +32,13 @@ export type RateLimitControllerMessenger = ReturnType<
  * scoped to the actions and events that the rate limit controller is allowed to
  * handle.
  *
- * @param controllerMessenger - The controller messenger to restrict.
+ * @param messenger - The messenger to restrict.
  * @returns The restricted controller messenger.
  */
 export function getRateLimitControllerMessenger(
-  controllerMessenger: ControllerMessenger<Actions, Events>,
+  messenger: Messenger<Actions, Events>,
 ) {
-  return controllerMessenger.getRestricted({
+  return messenger.getRestricted({
     name: 'RateLimitController',
     allowedEvents: [],
     allowedActions: [],
@@ -58,13 +58,13 @@ export type RateLimitControllerInitMessenger = ReturnType<
  * scoped to the actions and events that the rate limit controller is allowed to
  * handle.
  *
- * @param controllerMessenger - The controller messenger to restrict.
+ * @param messenger - The messenger to restrict.
  * @returns The restricted controller messenger.
  */
 export function getRateLimitControllerInitMessenger(
-  controllerMessenger: ControllerMessenger<InitActions, never>,
+  messenger: Messenger<InitActions, never>,
 ) {
-  return controllerMessenger.getRestricted({
+  return messenger.getRestricted({
     name: 'RateLimitController',
     allowedActions: [
       'SubjectMetadataController:getState',

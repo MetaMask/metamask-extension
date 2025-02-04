@@ -6,8 +6,7 @@ import { CronjobControllerMessenger } from './cronjob-controller-messenger';
  * Initialize the cronjob controller.
  *
  * @param request - The request object.
- * @param request.controllerMessenger - The controller messenger to use for the
- * controller.
+ * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state of the extension.
  * @returns The initialized controller.
  */

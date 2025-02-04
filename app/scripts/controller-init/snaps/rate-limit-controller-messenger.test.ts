@@ -1,7 +1,4 @@
-import {
-  ControllerMessenger,
-  RestrictedMessenger,
-} from '@metamask/base-controller';
+import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
 import {
   getRateLimitControllerInitMessenger,
   getRateLimitControllerMessenger,
@@ -9,9 +6,9 @@ import {
 
 describe('getRateLimitControllerMessenger', () => {
   it('returns a restricted controller messenger', () => {
-    const controllerMessenger = new ControllerMessenger<never, never>();
+    const messenger = new Messenger<never, never>();
     const rateLimitControllerMessenger =
-      getRateLimitControllerMessenger(controllerMessenger);
+      getRateLimitControllerMessenger(messenger);
 
     expect(rateLimitControllerMessenger).toBeInstanceOf(RestrictedMessenger);
   });
@@ -19,10 +16,12 @@ describe('getRateLimitControllerMessenger', () => {
 
 describe('getRateLimitControllerInitMessenger', () => {
   it('returns a restricted controller messenger', () => {
-    const controllerMessenger = new ControllerMessenger<never, never>();
+    const messenger = new Messenger<never, never>();
     const rateLimitControllerInitMessenger =
-      getRateLimitControllerInitMessenger(controllerMessenger);
+      getRateLimitControllerInitMessenger(messenger);
 
-    expect(rateLimitControllerInitMessenger).toBeInstanceOf(RestrictedMessenger);
+    expect(rateLimitControllerInitMessenger).toBeInstanceOf(
+      RestrictedMessenger,
+    );
   });
 });

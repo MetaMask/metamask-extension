@@ -1,4 +1,4 @@
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import { JsonSnapsRegistry } from '@metamask/snaps-controllers';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
@@ -13,11 +13,11 @@ jest.mock('@metamask/snaps-controllers');
 function getInitRequestMock(): jest.Mocked<
   ControllerInitRequest<SnapsRegistryMessenger>
 > {
-  const baseControllerMessenger = new ControllerMessenger<never, never>();
+  const baseMessenger = new Messenger<never, never>();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),
-    controllerMessenger: getSnapsRegistryMessenger(baseControllerMessenger),
+    controllerMessenger: getSnapsRegistryMessenger(baseMessenger),
   };
 
   return requestMock;
