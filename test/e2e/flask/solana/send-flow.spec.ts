@@ -5,10 +5,9 @@ import SendSolanaPage from '../../page-objects/pages/send/solana-send-page';
 import ConfirmSolanaTxPage from '../../page-objects/pages/send/solana-confirm-tx-page';
 import SolanaTxresultPage from '../../page-objects/pages/send/solana-tx-result-page';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
-import { withSolanaAccountSnap } from './common-solana';
+import { commonSolanaAddress, withSolanaAccountSnap } from './common-solana';
 
-const commonSolanaAddress = 'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna';
-describe.skip('Send flow', function (this: Suite) {
+describe('Send flow', function (this: Suite) {
   // skipped due tohttps://github.com/MetaMask/snaps/issues/3019
   it('with some field validation', async function () {
     this.timeout(120000);
@@ -229,6 +228,7 @@ describe('Send full flow of SOL', function (this: Suite) {
         showNativeTokenAsMainBalance: true,
         mockCalls: true,
         mockSendTransaction: true,
+        simulateTransaction: true,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
@@ -265,7 +265,7 @@ describe('Send full flow of SOL', function (this: Suite) {
         const confirmSolanaPage = new ConfirmSolanaTxPage(driver);
         await sendSolanaPage.clickOnContinue();
         assert.equal(
-          await confirmSolanaPage.checkAmountDisplayed('0.1'),
+          await confirmSolanaPage.checkAmountDisplayed('0.1', ''),
           true,
           'Check amount displayed is wrong',
         );
@@ -352,6 +352,7 @@ describe('Send flow', function (this: Suite) {
         showNativeTokenAsMainBalance: true,
         mockCalls: true,
         mockSendTransaction: false,
+        simulateTransaction: true,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
@@ -369,7 +370,7 @@ describe('Send flow', function (this: Suite) {
         await confirmSolanaPage.clickOnSend();
         const failedTxPage = new SolanaTxresultPage(driver);
         assert.equal(
-          await failedTxPage.check_TransactionStatusText('0.1', false),
+          await failedTxPage.check_TransactionStatusText('0.1', false, ''),
           true,
           'Transaction amount is not correct',
         );
