@@ -1,6 +1,8 @@
 import { createSelector } from 'reselect';
 import { AccountsControllerState } from '@metamask/accounts-controller';
+
 import { getAccountName } from '../selectors';
+
 import { getInternalAccounts } from '../accounts';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 

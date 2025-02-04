@@ -41,7 +41,7 @@ export const useGetFormattedTokensPerChain = (
     (singleChain) => {
       const tokens = importedTokens?.[singleChain]?.[account?.address] ?? [];
 
-      const tokensWithBalances = tokens.reduce(
+      const tokensWithBalances: TokenWithBalance[] = tokens.reduce(
         (acc: TokenWithBalance[], token: Token) => {
           const hexBalance =
             currentTokenBalances.tokenBalances[account.address]?.[
@@ -50,9 +50,7 @@ export const useGetFormattedTokensPerChain = (
           if (hexBalance !== '0x0' || !shouldHideZeroBalanceTokens) {
             const decimalBalance = hexToDecimal(hexBalance);
             acc.push({
-              address: token.address,
-              symbol: token.symbol,
-              decimals: token.decimals,
+              ...token,
               balance: decimalBalance,
               string: stringifyBalance(
                 new BN(decimalBalance),
