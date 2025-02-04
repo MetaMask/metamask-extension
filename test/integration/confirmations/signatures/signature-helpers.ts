@@ -118,7 +118,6 @@ export const getMetamaskStateWithMaliciousPermit = (accountAddress: string) => {
     ...unapprovedTypedMessage,
   };
 
-  console.log(state);
   return {
     ...state,
     signatureSecurityAlertResponses: {
