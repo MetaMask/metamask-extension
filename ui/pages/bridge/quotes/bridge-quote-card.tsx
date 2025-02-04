@@ -46,7 +46,7 @@ import {
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
 } from '../../../../shared/constants/bridge';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
-import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
+import { formatChainIdFromApi } from '../../../../shared/modules/bridge-utils/multichain';
 import { TERMS_OF_USE_LINK } from '../../../../shared/constants/terms';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
@@ -132,7 +132,7 @@ export const BridgeQuoteCard = () => {
                   name={fromChain?.name ?? ''}
                   src={
                     CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                      decimalToPrefixedHex(
+                      formatChainIdFromApi(
                         activeQuote.quote.srcChainId,
                       ) as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
                     ]
@@ -143,7 +143,7 @@ export const BridgeQuoteCard = () => {
                 <Text style={{ whiteSpace: 'nowrap' }}>
                   {
                     NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-                      decimalToPrefixedHex(
+                      formatChainIdFromApi(
                         activeQuote.quote.srcChainId,
                       ) as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
                     ]
@@ -154,7 +154,7 @@ export const BridgeQuoteCard = () => {
                   name={toChain?.name ?? ''}
                   src={
                     CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                      decimalToPrefixedHex(
+                      formatChainIdFromApi(
                         activeQuote.quote.destChainId,
                       ) as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
                     ]
@@ -165,7 +165,7 @@ export const BridgeQuoteCard = () => {
                 <Text style={{ whiteSpace: 'nowrap' }}>
                   {
                     NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-                      decimalToPrefixedHex(
+                      formatChainIdFromApi(
                         activeQuote.quote.destChainId,
                       ) as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
                     ]
