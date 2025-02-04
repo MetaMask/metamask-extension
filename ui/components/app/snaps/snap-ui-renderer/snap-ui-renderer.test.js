@@ -6,6 +6,7 @@ import {
   Footer,
   Button,
   Input,
+  Form,
 } from '@metamask/snaps-sdk/jsx';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
@@ -65,6 +66,10 @@ function renderInterface(
 }
 
 describe('SnapUIRenderer', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
   it('renders loading state', () => {
     const { container } = renderInterface(null);
 
@@ -173,6 +178,7 @@ describe('SnapUIRenderer', () => {
       'updateInterfaceState',
       [MOCK_INTERFACE_ID, { input: 'a' }],
     );
+
     expect(submitRequestToBackground).toHaveBeenNthCalledWith(
       2,
       'handleSnapRequest',
@@ -209,4 +215,103 @@ describe('SnapUIRenderer', () => {
 
     expect(container).toMatchSnapshot();
   });
+
+  it('supports forms', () => {
+    const { container, getByRole } = renderInterface(
+      Box({
+        children: Form({
+          name: 'form',
+          children: [
+            Input({ name: 'input' }),
+            Button({ type: 'submit', name: 'submit', children: 'Submit' }),
+          ],
+        }),
+      }),
+    );
+
+    const input = getByRole('textbox');
+    fireEvent.change(input, { target: { value: 'abc' } });
+
+    expect(submitRequestToBackground).toHaveBeenNthCalledWith(
+      1,
+      'updateInterfaceState',
+      [MOCK_INTERFACE_ID, { form: { input: 'abc' } }],
+    );
+
+    expect(submitRequestToBackground).toHaveBeenNthCalledWith(
+      2,
+      'handleSnapRequest',
+      [
+        {
+          handler: 'onUserInput',
+          origin: '',
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+            params: {
+              context: null,
+              event: { name: 'input', type: 'InputChangeEvent', value: 'abc' },
+              id: MOCK_INTERFACE_ID,
+            },
+          },
+          snapId: MOCK_SNAP_ID,
+        },
+      ],
+    );
+
+    const button = getByRole('button');
+    fireEvent.click(button);
+
+    expect(submitRequestToBackground).toHaveBeenNthCalledWith(
+      3,
+      'handleSnapRequest',
+      [
+        {
+          handler: 'onUserInput',
+          origin: '',
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+            params: {
+              context: null,
+              event: { name: 'submit', type: 'ButtonClickEvent' },
+              id: MOCK_INTERFACE_ID,
+            },
+          },
+          snapId: MOCK_SNAP_ID,
+        },
+      ],
+    );
+
+    expect(submitRequestToBackground).toHaveBeenNthCalledWith(
+      4,
+      'handleSnapRequest',
+      [
+        {
+          handler: 'onUserInput',
+          origin: '',
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+            params: {
+              context: null,
+              event: {
+                name: 'form',
+                type: 'FormSubmitEvent',
+                value: {
+                  input: 'abc',
+                },
+              },
+              id: MOCK_INTERFACE_ID,
+            },
+          },
+          snapId: MOCK_SNAP_ID,
+        },
+      ],
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it.todo('re-focuses input after re-render');
 });
