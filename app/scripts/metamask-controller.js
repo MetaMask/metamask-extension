@@ -3360,7 +3360,7 @@ export default class MetamaskController extends EventEmitter {
     }
 
     const metadata =
-    this.networkController.state.networksMetadata[networkClientId];
+      this.networkController.state.networksMetadata[networkClientId];
 
     return {
       chainId,
