@@ -105,7 +105,7 @@ export default class PermissionPageContainerContent extends PureComponent {
         >
           <PermissionsConnectPermissionList
             permissions={selectedPermissions}
-            subjectName={displayOrigin}
+            subjectName={subjectMetadata.origin}
             accounts={accounts}
             requestedChainIds={requestedChainIds}
           />
