@@ -61,7 +61,6 @@ export type Controller =
  */
 export type ControllerFlatState = AccountsController['state'] &
   CronjobController['state'] &
-  ExecutionService['state'] &
   GasFeeController['state'] &
   JsonSnapsRegistry['state'] &
   KeyringController['state'] &
