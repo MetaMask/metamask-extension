@@ -1,5 +1,5 @@
 import { Contract } from '@ethersproject/contracts';
-import { Hex, add0x } from '@metamask/utils';
+import { type Hex } from '@metamask/utils';
 import { abiERC20 } from '@metamask/metamask-eth-abis';
 import {
   BRIDGE_API_BASE_URL,
@@ -10,10 +10,9 @@ import {
 } from '../../constants/bridge';
 import { MINUTE } from '../../constants/time';
 import fetchWithCache from '../../lib/fetch-with-cache';
-import { decimalToHex, hexToDecimal } from '../conversion.utils';
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
-  SwapsTokenObject,
+  type SwapsTokenObject,
 } from '../../constants/swaps';
 import {
   isSwapsDefaultTokenAddress,
@@ -32,6 +31,7 @@ import {
   TxData,
   BridgeFeatureFlagsKey,
   BridgeFeatureFlags,
+  ChainId,
 } from '../../types/bridge';
 import {
   FEATURE_FLAG_VALIDATORS,
@@ -42,6 +42,11 @@ import {
   QUOTE_RESPONSE_VALIDATORS,
   FEE_DATA_VALIDATORS,
 } from './validators';
+import {
+  formatChainIdFromApi,
+  formatChainIdToApi,
+  isMultichainRequest,
+} from './multichain';
 
 const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };
 const CACHE_REFRESH_TEN_MINUTES = 10 * MINUTE;
@@ -65,12 +70,16 @@ export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
     return {
       [BridgeFeatureFlagsKey.EXTENSION_CONFIG]: {
         ...rawFeatureFlags[BridgeFlag.EXTENSION_CONFIG],
-        chains: Object.entries(
-          rawFeatureFlags[BridgeFlag.EXTENSION_CONFIG].chains,
-        ).reduce(
+        chains: Object.entries({
+          ...rawFeatureFlags[BridgeFlag.EXTENSION_CONFIG].chains,
+          [ChainId.SOLANA]: {
+            isActiveSrc: true,
+            isActiveDest: true,
+          },
+        }).reduce(
           (acc, [chainId, value]) => ({
             ...acc,
-            [add0x(decimalToHex(chainId))]: value,
+            [formatChainIdFromApi(chainId)]: value,
           }),
           {},
         ),
@@ -93,7 +102,7 @@ export async function fetchBridgeTokens(
   chainId: Hex,
 ): Promise<Record<string, SwapsTokenObject>> {
   // TODO make token api v2 call
-  const url = `${BRIDGE_API_BASE_URL}/getTokens?chainId=${hexToDecimal(
+  const url = `${BRIDGE_API_BASE_URL}/getTokens?chainId=${formatChainIdToApi(
     chainId,
   )}`;
   const tokens = await fetchWithCache({
@@ -142,6 +151,8 @@ export async function fetchBridgeQuotes(
     slippage: request.slippage.toString(),
     insufficientBal: request.insufficientBal ? 'true' : 'false',
     resetApproval: request.resetApproval ? 'true' : 'false',
+    aggIds: isMultichainRequest(request) ? 'lifi' : 'lifi,squid,socket',
+    destWalletAddress: request.destWalletAddress,
   });
   const url = `${BRIDGE_API_BASE_URL}/getQuote?${queryParams}`;
   const quotes = await fetchWithCache({
@@ -154,7 +165,12 @@ export async function fetchBridgeQuotes(
     cacheOptions: { cacheRefreshTime: 0 },
     functionName: 'fetchBridgeQuotes',
   });
-
+  if (
+    // TODO implement quote validation
+    isMultichainRequest(request)
+  ) {
+    return quotes;
+  }
   const filteredQuotes = quotes.filter((quoteResponse: QuoteResponse) => {
     const { quote, approval, trade } = quoteResponse;
     return (

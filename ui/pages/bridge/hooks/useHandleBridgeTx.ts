@@ -1,11 +1,14 @@
 import { BigNumber } from 'bignumber.js';
 import { TransactionType } from '@metamask/transaction-controller';
+import { useSelector } from 'react-redux';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { FeeType, type QuoteResponse } from '../../../../shared/types/bridge';
+import { getMultichainIsSolana } from '../../../selectors/multichain';
 import useHandleTx from './useHandleTx';
 
 export default function useHandleBridgeTx() {
-  const { handleTx } = useHandleTx();
+  const { handleTx, handleSolanaTx } = useHandleTx();
+  const isSolana = useSelector(getMultichainIsSolana);
 
   const handleBridgeTx = async ({
     quoteResponse,
@@ -21,6 +24,12 @@ export default function useHandleBridgeTx() {
       .shiftedBy(quoteResponse.quote.srcAsset.decimals)
       .toString();
 
+    if (isSolana) {
+      return await handleSolanaTx({
+        txType: TransactionType.bridge,
+        trade: quoteResponse.trade,
+      });
+    }
     const txMeta = await handleTx({
       txType: TransactionType.bridge,
       txParams: quoteResponse.trade,

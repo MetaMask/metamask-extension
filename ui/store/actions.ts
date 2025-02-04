@@ -6008,3 +6008,31 @@ export async function sendMultichainTransaction(
     },
   });
 }
+
+export async function bridgeMultichainTransaction(
+  snapId: string,
+  {
+    account,
+    scope,
+    base64EncodedTransactionMessage,
+  }: {
+    account: string;
+    scope: string;
+    base64EncodedTransactionMessage: string;
+  },
+) {
+  await handleSnapRequest({
+    snapId,
+    origin: 'metamask',
+    handler: HandlerType.OnRpcRequest,
+    request: {
+      id: crypto.randomUUID(),
+      method: 'submitBridgeTx',
+      params: {
+        account,
+        scope,
+        base64EncodedTransactionMessage,
+      },
+    },
+  });
+}

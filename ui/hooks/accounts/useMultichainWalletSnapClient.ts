@@ -3,6 +3,7 @@ import { HandlerType } from '@metamask/snaps-utils';
 import { CaipChainId, Json, JsonRpcRequest } from '@metamask/utils';
 import { SnapId } from '@metamask/snaps-sdk';
 import { useMemo } from 'react';
+import { KeyringRequest } from '@metamask/keyring-api';
 import {
   handleSnapRequest,
   multichainUpdateBalance,
@@ -62,6 +63,21 @@ export class MultichainWalletSnapClient {
     // However, the balance won't be fetched right away. To workaround this, we trigger the
     // fetch explicitly here (since we are already in a `async` call) and wait for it to be updated!
     await multichainUpdateBalance(account.id);
+  }
+
+  async submitRequest(request: KeyringRequest) {
+    // This will trigger the Snap account creation flow (+ account renaming)
+    const accounts = await this.#client.submitRequest({
+      origin: 'metamask',
+      handler: HandlerType.OnRpcRequest,
+      request,
+      params: {
+        scope: request.scope,
+        account: request.account,
+        id: request.id,
+      },
+    });
+    return accounts;
   }
 }
 

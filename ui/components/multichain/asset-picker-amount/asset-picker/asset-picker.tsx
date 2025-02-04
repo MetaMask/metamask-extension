@@ -48,6 +48,12 @@ import {
   SEPOLIA_DISPLAY_NAME,
 } from '../../../../../shared/constants/network';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
+import {
+  getMultichainCurrentChainId,
+  getMultichainCurrentNetwork,
+} from '../../../../selectors/multichain';
+import { MULTICHAIN_PROVIDER_CONFIGS } from '../../../../../shared/constants/multichain/networks';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 
 const ELLIPSIFY_LENGTH = 13; // 6 (start) + 4 (end) + 3 (...)
 
@@ -127,12 +133,15 @@ export function AssetPicker({
       : symbol;
 
   // Badge details
-  const currentChainId = useSelector(getCurrentChainId);
-  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const currentNetwork = allNetworks[currentChainId];
-  const selectedNetwork =
-    networkProps?.network ??
-    (currentNetwork?.chainId && allNetworks[currentNetwork.chainId]);
+  const currentChainId = useSelector(getMultichainCurrentChainId);
+  const allEvmNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const allNetworks = { ...MULTICHAIN_PROVIDER_CONFIGS, ...allEvmNetworks };
+  const currentNetwork_ = allNetworks[currentChainId];
+  const currentNetwork = useMultichainSelector(getMultichainCurrentNetwork);
+  const selectedNetwork = networkProps?.network ?? currentNetwork_;
+  //   (
+  //   currentNetwork?.chainId && allNetworks[currentNetwork.chainId],
+  // );
 
   const allNetworksToUse = networkProps?.networks ?? Object.values(allNetworks);
   const { balanceByChainId } = useMultichainBalances();
