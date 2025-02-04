@@ -1,4 +1,3 @@
-import { Hex } from '@metamask/utils';
 import { calcHexGasTotal } from '../../../../shared/lib/transaction-breakdown-utils';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import {
@@ -15,6 +14,7 @@ import {
   getUSDConversionRateByChainId,
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../ui/selectors';
+import { type AllowedBridgeChainIds } from '../../../../shared/constants/bridge';
 
 export const getHexGasTotalUsd = ({
   bridgeHistoryItem,
@@ -43,7 +43,7 @@ export const getTokenUsdValue = async ({
   tokenAddress,
   state,
 }: {
-  chainId: Hex;
+  chainId: AllowedBridgeChainIds;
   tokenAmount: number;
   tokenAddress: string;
   state: { metamask: MetricsBackgroundState };
