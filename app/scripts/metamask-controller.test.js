@@ -120,7 +120,8 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
 };
 jest.mock('./lib/createLoggerMiddleware', () => createLoggerMiddlewareMock);
 
-const rpcMethodMiddlewareMock = {
+jest.mock('./lib/rpc-method-middleware', () => ({
+  ...jest.requireActual('./lib/rpc-method-middleware'),
   createEip1193MethodMiddleware: () => (_req, _res, next, _end) => {
     next();
   },
@@ -133,8 +134,7 @@ const rpcMethodMiddlewareMock = {
   createUnsupportedMethodMiddleware: () => (_req, _res, next, _end) => {
     next();
   },
-};
-jest.mock('./lib/rpc-method-middleware', () => rpcMethodMiddlewareMock);
+}));
 
 const KNOWN_PUBLIC_KEY =
   '02065bc80d3d12b3688e4ad5ab1e9eda6adf24aec2518bfc21b87c99d4c5077ab0';
@@ -959,8 +959,65 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe('#requestPermissionApproval', () => {
+      it('requests permissions for the origin from the ApprovalController', async () => {
+        jest
+          .spyOn(
+            metamaskController.approvalController,
+            'addAndShowApprovalRequest',
+          )
+          .mockResolvedValue();
+
+        await metamaskController.requestPermissionApproval('test.com', {
+          eth_accounts: {},
+        });
+
+        expect(
+          metamaskController.approvalController.addAndShowApprovalRequest,
+        ).toHaveBeenCalledWith(
+          expect.objectContaining({
+            id: expect.stringMatching(/.{21}/u),
+            origin: 'test.com',
+            requestData: {
+              metadata: {
+                id: expect.stringMatching(/.{21}/u),
+                origin: 'test.com',
+              },
+              permissions: {
+                eth_accounts: {},
+              },
+            },
+            type: 'wallet_requestPermissions',
+          }),
+        );
+
+        const [params] =
+          metamaskController.approvalController.addAndShowApprovalRequest.mock
+            .calls[0];
+        expect(params.id).toStrictEqual(params.requestData.metadata.id);
+      });
+
+      it('returns the result from the ApprovalController', async () => {
+        jest
+          .spyOn(
+            metamaskController.approvalController,
+            'addAndShowApprovalRequest',
+          )
+          .mockResolvedValue('approvalResult');
+
+        const result = await metamaskController.requestPermissionApproval(
+          'test.com',
+          {
+            eth_accounts: {},
+          },
+        );
+
+        expect(result).toStrictEqual('approvalResult');
+      });
+    });
+
     describe('#requestCaip25Approval', () => {
-      it('requests approval with well formed id and origin', async () => {
+      it('requests approval', async () => {
         jest
           .spyOn(
             metamaskController.approvalController,
@@ -1626,12 +1683,9 @@ describe('MetaMaskController', () => {
     });
 
     describe('requestApprovalPermittedChainsPermission', () => {
-      it('requests approval with well formed id and origin', async () => {
+      it('requests approval', async () => {
         jest
-          .spyOn(
-            metamaskController.approvalController,
-            'addAndShowApprovalRequest',
-          )
+          .spyOn(metamaskController, 'requestPermissionApproval')
           .mockResolvedValue();
 
         await metamaskController.requestApprovalPermittedChainsPermission(
@@ -1640,51 +1694,36 @@ describe('MetaMaskController', () => {
         );
 
         expect(
-          metamaskController.approvalController.addAndShowApprovalRequest,
+          metamaskController.requestPermissionApproval,
         ).toHaveBeenCalledWith(
-          expect.objectContaining({
-            id: expect.stringMatching(/.{21}/u),
-            origin: 'test.com',
-            requestData: expect.objectContaining({
-              metadata: {
-                id: expect.stringMatching(/.{21}/u),
-                origin: 'test.com',
-              },
-              permissions: {
-                [Caip25EndowmentPermissionName]: {
-                  caveats: [
-                    {
-                      type: Caip25CaveatType,
-                      value: {
-                        requiredScopes: {},
-                        optionalScopes: {
-                          'eip155:1': {
-                            accounts: [],
-                          },
-                        },
-                        isMultichainOrigin: false,
+          'test.com',
+          {
+            [Caip25EndowmentPermissionName]: {
+              caveats: [
+                {
+                  type: Caip25CaveatType,
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        accounts: [],
                       },
                     },
-                  ],
+                    isMultichainOrigin: false,
+                  },
                 },
-              },
-            }),
-            type: 'wallet_requestPermissions',
-          }),
+              ],
+            },
+          },
+          {
+            isLegacySwitchEthereumChain: true,
+          },
         );
-
-        const [params] =
-          metamaskController.approvalController.addAndShowApprovalRequest.mock
-            .calls[0];
-        expect(params.id).toStrictEqual(params.requestData.metadata.id);
       });
 
       it('throws if the approval is rejected', async () => {
         jest
-          .spyOn(
-            metamaskController.approvalController,
-            'addAndShowApprovalRequest',
-          )
+          .spyOn(metamaskController, 'requestPermissionApproval')
           .mockRejectedValue(new Error('approval rejected'));
 
         await expect(() =>
@@ -2245,19 +2284,19 @@ describe('MetaMaskController', () => {
     describe('NetworkConfiguration is removed', () => {
       it('should remove the permitted chain from all existing permissions', () => {
         jest
-          .spyOn(metamaskController, 'removeAllChainIdPermissions')
+          .spyOn(metamaskController, 'removeAllScopePermissions')
           .mockReturnValue();
 
         metamaskController.controllerMessenger.publish(
           'NetworkController:networkRemoved',
           {
-            chainId: '0xdeadbeef',
+            chainId: '0xa',
           },
         );
 
         expect(
-          metamaskController.removeAllChainIdPermissions,
-        ).toHaveBeenCalledWith('0xdeadbeef');
+          metamaskController.removeAllScopePermissions,
+        ).toHaveBeenCalledWith('eip155:10');
       });
     });
 
@@ -2789,8 +2828,6 @@ describe('MetaMaskController', () => {
     });
 
     describe('#setupUntrustedCommunicationEip1193', () => {
-      const mockTxParams = { from: TEST_ADDRESS };
-
       beforeEach(() => {
         initializeMockMiddlewareLog();
         metamaskController.preferencesController.setSecurityAlertsEnabled(
@@ -2874,6 +2911,7 @@ describe('MetaMaskController', () => {
           expect.anything(),
           'test.metamask-phishing.io',
         );
+        streamTest.end();
       });
 
       it('adds a tabId, origin and networkClient to requests', async () => {
@@ -2897,8 +2935,7 @@ describe('MetaMaskController', () => {
         const message = {
           id: 1999133338649204,
           jsonrpc: '2.0',
-          params: [{ ...mockTxParams }],
-          method: 'eth_sendTransaction',
+          method: 'eth_chainId',
         };
         await new Promise((resolve) => {
           streamTest.write(
@@ -2926,6 +2963,7 @@ describe('MetaMaskController', () => {
             },
           );
         });
+        streamTest.end();
       });
 
       it('should add only origin to request if tabId not provided', async () => {
@@ -2946,10 +2984,8 @@ describe('MetaMaskController', () => {
         });
 
         const message = {
-          id: 1999133338649204,
           jsonrpc: '2.0',
-          params: [{ ...mockTxParams }],
-          method: 'eth_sendTransaction',
+          method: 'eth_chainId',
         };
         await new Promise((resolve) => {
           streamTest.write(
@@ -2972,15 +3008,247 @@ describe('MetaMaskController', () => {
             },
           );
         });
+        streamTest.end();
       });
 
-      it.todo(
-        'should only process `metamask-provider` multiplex formatted messages',
-      );
+      it('should only process `metamask-provider` multiplex formatted messages', async () => {
+        const messageSender = {
+          url: 'http://mycrypto.com',
+          tab: { id: 456 },
+        };
+        const streamTest = createThroughStream((chunk, _, cb) => {
+          if (chunk.data && chunk.data.method) {
+            cb(null, chunk);
+            return;
+          }
+          cb();
+        });
+
+        metamaskController.setupUntrustedCommunicationEip1193({
+          connectionStream: streamTest,
+          sender: messageSender,
+        });
+
+        const message = {
+          jsonrpc: '2.0',
+          method: 'eth_chainId',
+        };
+        await new Promise((resolve) => {
+          streamTest.write(
+            {
+              type: 'caip-x',
+              data: {
+                method: 'wallet_invokeMethod',
+                params: {
+                  scope: 'eip155:1',
+                  request: message,
+                },
+              },
+            },
+            null,
+            () => {
+              setTimeout(() => {
+                expect(loggerMiddlewareMock.requests).toHaveLength(0);
+                resolve();
+              });
+            },
+          );
+        });
+        await new Promise((resolve) => {
+          streamTest.write(
+            {
+              name: 'metamask-provider',
+              data: message,
+            },
+            null,
+            () => {
+              setTimeout(() => {
+                expect(loggerMiddlewareMock.requests).toHaveLength(1);
+                resolve();
+              });
+            },
+          );
+        });
+        streamTest.end();
+      });
     });
 
     describe('#setupUntrustedCommunicationCaip', () => {
-      it.todo('should only process `caip-x` CAIP formatted messages');
+      beforeEach(() => {
+        initializeMockMiddlewareLog();
+        jest
+          .spyOn(metamaskController.onboardingController, 'state', 'get')
+          .mockReturnValue({ completedOnboarding: true });
+      });
+
+      afterAll(() => {
+        tearDownMockMiddlewareLog();
+      });
+
+      it('adds a tabId and origin to requests', async () => {
+        const messageSender = {
+          url: 'http://mycrypto.com',
+          tab: { id: 456 },
+        };
+        const streamTest = createThroughStream((chunk, _, cb) => {
+          if (chunk.data && chunk.data.method) {
+            cb(null, chunk);
+            return;
+          }
+          cb();
+        });
+
+        metamaskController.setupUntrustedCommunicationCaip({
+          connectionStream: streamTest,
+          sender: messageSender,
+        });
+
+        const message = {
+          jsonrpc: '2.0',
+          method: 'eth_chainId',
+        };
+        await new Promise((resolve) => {
+          streamTest.write(
+            {
+              type: 'caip-x',
+              data: {
+                method: 'wallet_invokeMethod',
+                params: {
+                  scope: 'eip155:1',
+                  request: message,
+                },
+              },
+            },
+            null,
+            () => {
+              setTimeout(() => {
+                expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
+                  'origin',
+                  'http://mycrypto.com',
+                );
+                expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
+                  'tabId',
+                  456,
+                );
+                resolve();
+              });
+            },
+          );
+        });
+        streamTest.end();
+      });
+
+      it('should add only origin to request if tabId not provided', async () => {
+        const messageSender = {
+          url: 'http://mycrypto.com',
+        };
+        const streamTest = createThroughStream((chunk, _, cb) => {
+          if (chunk.data && chunk.data.method) {
+            cb(null, chunk);
+            return;
+          }
+          cb();
+        });
+
+        metamaskController.setupUntrustedCommunicationCaip({
+          connectionStream: streamTest,
+          sender: messageSender,
+        });
+
+        const message = {
+          jsonrpc: '2.0',
+          method: 'eth_chainId',
+        };
+        await new Promise((resolve) => {
+          streamTest.write(
+            {
+              type: 'caip-x',
+              data: {
+                method: 'wallet_invokeMethod',
+                params: {
+                  scope: 'eip155:1',
+                  request: message,
+                },
+              },
+            },
+            null,
+            () => {
+              setTimeout(() => {
+                expect(loggerMiddlewareMock.requests[0]).not.toHaveProperty(
+                  'tabId',
+                );
+                expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
+                  'origin',
+                  'http://mycrypto.com',
+                );
+                resolve();
+              });
+            },
+          );
+        });
+        streamTest.end();
+      });
+
+      it('should only process `caip-x` CAIP formatted messages', async () => {
+        const messageSender = {
+          url: 'http://mycrypto.com',
+          tab: { id: 456 },
+        };
+        const streamTest = createThroughStream((chunk, _, cb) => {
+          if (chunk.data && chunk.data.method) {
+            cb(null, chunk);
+            return;
+          }
+          cb();
+        });
+
+        metamaskController.setupUntrustedCommunicationCaip({
+          connectionStream: streamTest,
+          sender: messageSender,
+        });
+
+        const message = {
+          jsonrpc: '2.0',
+          method: 'eth_chainId',
+        };
+        await new Promise((resolve) => {
+          streamTest.write(
+            {
+              name: 'metamask-provider',
+              data: message,
+            },
+            null,
+            () => {
+              setTimeout(() => {
+                expect(loggerMiddlewareMock.requests).toHaveLength(0);
+                resolve();
+              });
+            },
+          );
+        });
+        await new Promise((resolve) => {
+          streamTest.write(
+            {
+              type: 'caip-x',
+              data: {
+                method: 'wallet_invokeMethod',
+                params: {
+                  scope: 'eip155:1',
+                  request: message,
+                },
+              },
+            },
+            null,
+            () => {
+              setTimeout(() => {
+                expect(loggerMiddlewareMock.requests).toHaveLength(1);
+                resolve();
+              });
+            },
+          );
+        });
+        streamTest.end();
+      });
     });
 
     describe('#setupTrustedCommunication', () => {
