@@ -1,3 +1,4 @@
+import { AccountsControllerState } from '@metamask/accounts-controller';
 import { hasProperty } from '@metamask/utils';
 import { cloneDeep, isObject } from 'lodash';
 import log from 'loglevel';
@@ -35,7 +36,8 @@ function transformState(state: Record<string, unknown>): void {
     return;
   }
 
-  const accountsControllerState = state.AccountsController;
+  const accountsControllerState =
+    state.AccountsController as unknown as AccountsControllerState;
 
   if (!isObject(accountsControllerState)) {
     global.sentry?.captureException(
