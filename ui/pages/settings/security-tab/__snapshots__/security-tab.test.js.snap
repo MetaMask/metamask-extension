@@ -1442,7 +1442,7 @@ exports[`Security Tab should match snapshot 1`] = `
           </div>
           <div
             class="settings-page__content-item-col"
-            data-testid="participateInMetaMetrics"
+            data-testid="participate-in-meta-metrics-toggle"
           >
             <label
               class="toggle-button toggle-button--off"
@@ -1469,7 +1469,7 @@ exports[`Security Tab should match snapshot 1`] = `
                   />
                 </div>
                 <input
-                  data-testid="toggleButton"
+                  data-testid="participate-in-meta-metrics-toggle-button"
                   style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
                   type="checkbox"
                   value="false"
@@ -1512,7 +1512,7 @@ exports[`Security Tab should match snapshot 1`] = `
         </div>
         <div
           class="settings-page__content-item-col"
-          data-testid="dataCollectionForMarketing"
+          data-testid="data-collection-for-marketing-toggle"
         >
           <label
             class="toggle-button toggle-button--off"
