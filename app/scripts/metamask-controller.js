@@ -77,10 +77,6 @@ import { LoggingController, LogType } from '@metamask/logging-controller';
 import { PermissionLogController } from '@metamask/permission-log-controller';
 
 import {
-  IframeExecutionService,
-  OffscreenExecutionService,
-} from '@metamask/snaps-controllers';
-import {
   createSnapsMethodMiddleware,
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
