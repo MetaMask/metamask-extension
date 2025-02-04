@@ -59,7 +59,7 @@
       "gasEstimateType": "none",
       "gasFeeEstimates": {}
     },
-    "KeyringController": { "vault": "string", "keyringsMetadata": "object" },
+    "KeyringController": { "vault": "string" },
     "MetaMetricsController": {
       "eventsBeforeMetricsOptIn": "object",
       "fragments": "object",

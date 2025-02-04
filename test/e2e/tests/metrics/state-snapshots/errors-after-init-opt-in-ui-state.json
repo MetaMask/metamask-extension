@@ -165,7 +165,6 @@
     },
     "networkConfigurationsByChainId": "object",
     "keyrings": "object",
-    "keyringsMetadata": "object",
     "selectedAddress": "string",
     "usePhishDetect": true,
     "dismissSeedBackUpReminder": true,
