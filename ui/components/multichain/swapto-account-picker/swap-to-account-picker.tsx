@@ -60,7 +60,6 @@ export const SwapToAccountPicker = ({
           width: '90%',
           marginLeft: 'auto',
           marginRight: 'auto',
-          marginTop: '100px',
         }}
       >
         <Box
@@ -113,7 +112,6 @@ export const SwapToAccountPicker = ({
         width: '90%',
         marginLeft: 'auto',
         marginRight: 'auto',
-        marginTop: '100px',
       }}
     >
       <Box

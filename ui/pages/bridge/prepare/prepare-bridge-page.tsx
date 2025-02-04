@@ -564,12 +564,14 @@ const PrepareBridgePage = () => {
           }}
           isTokenListLoading={isToTokensLoading}
         />
-        {/* // TODO: place swap-to-account-picker here */}
-        <SwapToAccountPicker
-          accounts={internalAccounts}
-          chainId={toChain?.chainId}
-          accountId={selectedAccount?.id}
-        />
+        {/* // TODO: conditionally render this based on sol <-> EVM or not */}
+        <Box style={{ marginTop: '50px' }}>
+          <SwapToAccountPicker
+            accounts={internalAccounts}
+            chainId={toChain?.chainId}
+            accountId={selectedAccount?.id}
+          />
+        </Box>
         <Column height={BlockSize.Full} justifyContent={JustifyContent.center}>
           {isLoading && !activeQuote ? (
             <>
