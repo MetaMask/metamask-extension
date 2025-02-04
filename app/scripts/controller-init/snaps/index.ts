@@ -1,5 +1,7 @@
 export { CronjobControllerInit } from './cronjob-controller-init';
 export { getCronjobControllerMessenger } from './cronjob-controller-messenger';
+export { ExecutionServiceInit } from './execution-service-init';
+export { getExecutionServiceMessenger } from './execution-service-messenger';
 export { RateLimitControllerInit } from './rate-limit-controller-init';
 export {
   getRateLimitControllerMessenger,

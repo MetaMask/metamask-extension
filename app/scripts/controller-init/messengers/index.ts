@@ -1,5 +1,6 @@
 import {
   getCronjobControllerMessenger,
+  getExecutionServiceMessenger,
   getRateLimitControllerInitMessenger,
   getRateLimitControllerMessenger,
   getSnapControllerInitMessenger,
@@ -20,6 +21,9 @@ import {
 export const CONTROLLER_MESSENGERS = {
   CronjobController: {
     getMessenger: getCronjobControllerMessenger,
+  },
+  ExecutionService: {
+    getMessenger: getExecutionServiceMessenger,
   },
   RateLimitController: {
     getMessenger: getRateLimitControllerMessenger,

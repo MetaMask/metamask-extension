@@ -6,7 +6,10 @@ import {
   RestrictedMessenger,
 } from '@metamask/base-controller';
 import { Hex } from '@metamask/utils';
+import { Duplex } from 'readable-stream';
+import { SubjectType } from '@metamask/permission-controller';
 import { TransactionMetricsRequest } from '../lib/transaction/metrics';
+import { MessageSender } from '../../../types/global';
 import { Controller, ControllerFlatState } from './controller-list';
 
 /** The supported controller names. */
@@ -39,6 +42,12 @@ export type BaseRestrictedControllerMessenger = RestrictedMessenger<
   string,
   string
 >;
+
+type SnapSender = {
+  snapId: string;
+};
+
+type Sender = MessageSender | SnapSender;
 
 /**
  * Request to initialize and return a controller instance.
@@ -105,6 +114,11 @@ export type ControllerInitRequest<
   getTransactionMetricsRequest(): TransactionMetricsRequest;
 
   /**
+   * A promise that resolves when the offscreen document is ready.
+   */
+  offscreenPromise: Promise<void>;
+
+  /**
    * The full persisted state for all controllers.
    * Includes controller name properties.
    * e.g. `{ TransactionController: { transactions: [] } }`.
@@ -118,6 +132,22 @@ export type ControllerInitRequest<
    * @param origin - The origin for which to remove all connections.
    */
   removeAllConnections(origin: string): void;
+
+  /**
+   * Create a multiplexed stream for connecting to an untrusted context like a
+   * like a website, Snap, or other extension.
+   *
+   * @param options - The options for creating the stream.
+   * @param options.connectionStream - The stream to connect to the untrusted
+   * context.
+   * @param options.sender - The sender of the stream.
+   * @param options.subjectType - The type of the subject of the stream.
+   */
+  setupUntrustedCommunicationEip1193(options: {
+    connectionStream: Duplex;
+    sender: Sender;
+    subjectType: SubjectType;
+  }): void;
 
   /**
    * Show a native notification.

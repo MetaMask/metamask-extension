@@ -13,6 +13,7 @@ import { TransactionUpdateController } from '@metamask-institutional/transaction
 import { AccountsController } from '@metamask/accounts-controller';
 import {
   CronjobController,
+  ExecutionService,
   JsonSnapsRegistry,
   SnapController,
   SnapInsightsController,
@@ -31,6 +32,7 @@ import SwapsController from '../controllers/swaps';
  */
 export type Controller =
   | CronjobController
+  | ExecutionService
   | GasFeeController
   | JsonSnapsRegistry
   | KeyringController
@@ -44,7 +46,6 @@ export type Controller =
   | PreferencesController
   | RateLimitController<RateLimitedApiMap>
   | SmartTransactionsController
-  // TODO: Update `name` to `SnapController` instead of `string`.
   | SnapController
   | SnapInterfaceController
   | SnapInsightsController
@@ -60,6 +61,7 @@ export type Controller =
  */
 export type ControllerFlatState = AccountsController['state'] &
   CronjobController['state'] &
+  ExecutionService['state'] &
   GasFeeController['state'] &
   JsonSnapsRegistry['state'] &
   KeyringController['state'] &
