@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import { isSnapId } from '@metamask/snaps-utils';
 import PermissionsConnectPermissionList from '../../permissions-connect-permission-list';
 import {
   AlignItems,
@@ -56,7 +57,8 @@ export default class PermissionPageContainerContent extends PureComponent {
       });
       return accumulator;
     }, []);
-
+    const { origin } = subjectMetadata;
+    const dappOrigin = isSnapId(origin) ? origin : getURLHost(origin);
     return (
       <Box
         display={Display.Flex}
@@ -83,10 +85,10 @@ export default class PermissionPageContainerContent extends PureComponent {
             {t('nativeNetworkPermissionRequestDescription', [
               <Text
                 as="span"
-                key={`description_key_${subjectMetadata.origin}`}
+                key={`description_key_${dappOrigin}`}
                 fontWeight={FontWeight.Medium}
               >
-                {getURLHost(subjectMetadata.origin)}
+                {dappOrigin}
               </Text>,
             ])}
           </Text>
@@ -102,7 +104,7 @@ export default class PermissionPageContainerContent extends PureComponent {
         >
           <PermissionsConnectPermissionList
             permissions={selectedPermissions}
-            subjectName={subjectMetadata.origin}
+            subjectName={dappOrigin}
             accounts={accounts}
             requestedChainIds={requestedChainIds}
           />
