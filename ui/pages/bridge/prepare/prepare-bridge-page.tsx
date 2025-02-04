@@ -84,9 +84,10 @@ import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import { useBridgeTokens } from '../../../hooks/bridge/useBridgeTokens';
-import { getCurrentKeyring, getLocale } from '../../../selectors';
+import { getCurrentKeyring } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
+import { getIntlLocale } from '../../../ducks/locale/locale';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 
@@ -131,7 +132,7 @@ const PrepareBridgePage = () => {
   const keyring = useSelector(getCurrentKeyring);
   // @ts-expect-error keyring type is wrong maybe?
   const isUsingHardwareWallet = isHardwareKeyring(keyring.type);
-  const locale = useSelector(getLocale);
+  const locale = useSelector(getIntlLocale);
 
   const ticker = useSelector(getNativeCurrency);
   const {
