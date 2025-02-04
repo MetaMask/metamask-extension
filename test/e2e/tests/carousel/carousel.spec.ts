@@ -3,7 +3,7 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-describe('Carousel component e2e tests TEST', () => {
+describe('Carousel component e2e tests', () => {
   it('should display correct slides with expected content', async function () {
     await withFixtures(
       {
