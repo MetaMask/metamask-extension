@@ -33,6 +33,7 @@ function renderInterface(
     useDelineator = false,
     onCancel,
     contentBackgroundColor,
+    state = {},
   } = {},
 ) {
   const mockStore = configureMockStore([thunk])({
@@ -43,7 +44,7 @@ function renderInterface(
         [MOCK_INTERFACE_ID]: {
           snapId: MOCK_SNAP_ID,
           content,
-          state: {},
+          state,
           context: null,
           contentType: null,
         },
@@ -131,7 +132,29 @@ describe('SnapUIRenderer', () => {
 
     expect(
       container.getElementsByClassName(
-        'mm-box--background-color-background-alternative',
+        'mm-box--background-color-background-default',
+      ),
+    ).toHaveLength(1);
+    expect(container).toMatchSnapshot();
+  });
+
+  it('supports container backgrounds', () => {
+    const { container } = renderInterface(
+      Container({
+        backgroundColor: 'alternative',
+        children: [
+          Box({ children: Text({ children: 'Hello world!' }) }),
+          Footer({ children: Button({ children: 'Foo' }) }),
+        ],
+      }),
+      {
+        useFooter: true,
+      },
+    );
+
+    expect(
+      container.getElementsByClassName(
+        'mm-box snap-ui-renderer__content mm-box--background-color-background-default',
       ),
     ).toHaveLength(1);
     expect(container).toMatchSnapshot();
@@ -139,13 +162,7 @@ describe('SnapUIRenderer', () => {
 
   it('supports interactive inputs', () => {
     const { container, getByRole } = renderInterface(
-      Container({
-        children: [
-          Box({ children: Input({ name: 'input' }) }),
-          Footer({ children: Button({ children: 'Foo' }) }),
-        ],
-      }),
-      { useFooter: true },
+      Box({ children: Input({ name: 'input' }) }),
     );
 
     const input = getByRole('textbox');
@@ -176,6 +193,19 @@ describe('SnapUIRenderer', () => {
         },
       ],
     );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('prefills interactive inputs with existing state', () => {
+    const { container, getByRole } = renderInterface(
+      Box({ children: Input({ name: 'input' }) }),
+      { state: { input: 'bar' } },
+    );
+
+    const input = getByRole('textbox');
+    expect(input).toBeDefined();
+    expect(input.value).toStrictEqual('bar');
 
     expect(container).toMatchSnapshot();
   });
