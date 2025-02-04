@@ -701,7 +701,7 @@ export const getPermissionDescription = ({
 /**
  * @typedef {object} WeightedPermissionDescriptionParamsObject
  * @property {Function} t - The translation function.
- * @property {boolean} isLegacySwitchEthereumChain - Flag for checking if request incoming from 'wallet_switchEthereumChain'.
+ * @property {boolean} [isLegacySwitchEthereumChain] - Flag for checking if request incoming from 'wallet_switchEthereumChain'.
  * @property {string} permissions - The permissions object.
  * @property {Function} [getSubjectName] - The function to get a subject name.
  * @property {string} [subjectName] - The name of the subject.
