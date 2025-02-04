@@ -7,19 +7,19 @@ import {
 } from '../../ducks/bridge/selectors';
 import { getMarketData, getParticipateInMetaMetrics } from '../../selectors';
 import { getCurrentCurrency } from '../../ducks/metamask/metamask';
-import { decimalToPrefixedHex } from '../../../shared/modules/conversion.utils';
-import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import {
   setDestTokenExchangeRates,
   setDestTokenUsdExchangeRates,
   setSrcTokenExchangeRates,
 } from '../../ducks/bridge/bridge';
 import { exchangeRateFromMarketData } from '../../ducks/bridge/utils';
+import { formatChainIdFromApi } from '../../../shared/modules/bridge-utils/multichain';
+import { getMultichainCurrentChainId } from '../../selectors/multichain';
 
 export const useBridgeExchangeRates = () => {
   const { srcTokenAddress, destTokenAddress } = useSelector(getQuoteRequest);
   const { activeQuote } = useSelector(getBridgeQuotes);
-  const chainId = useSelector(getCurrentChainId);
+  const chainId = useSelector(getMultichainCurrentChainId);
   const toChain = useSelector(getToChain);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
 
@@ -35,10 +35,10 @@ export const useBridgeExchangeRates = () => {
     activeQuote ? activeQuote.quote.destAsset.address : destTokenAddress
   )?.toLowerCase();
   const fromChainId = activeQuote
-    ? decimalToPrefixedHex(activeQuote.quote.srcChainId)
+    ? formatChainIdFromApi(activeQuote.quote.srcChainId)
     : chainId;
   const toChainId = activeQuote
-    ? decimalToPrefixedHex(activeQuote.quote.destChainId)
+    ? formatChainIdFromApi(activeQuote.quote.destChainId)
     : toChain?.chainId;
 
   const marketData = useSelector(getMarketData);

@@ -1,8 +1,7 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { ChainId } from '@metamask/controller-utils';
-import { Hex } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
+import { type Hex, type CaipChainId } from '@metamask/utils';
 import {
   getAllDetectedTokensForSelectedAddress,
   selectERC20TokensByChain,
@@ -42,7 +41,7 @@ type FilterPredicate = (
  *
  * @param chainId - the selected src/dest chainId
  */
-export const useTokensWithFiltering = (chainId?: ChainId | Hex) => {
+export const useTokensWithFiltering = (chainId?: Hex | CaipChainId) => {
   const allDetectedTokens: Record<string, Token[]> = useSelector(
     getAllDetectedTokensForSelectedAddress,
   );
@@ -83,8 +82,13 @@ export const useTokensWithFiltering = (chainId?: ChainId | Hex) => {
     if (!chainId || !token) {
       return undefined;
     }
+
     // Only tokens on the active chain are processed here here
-    const sharedFields = { ...token, chainId };
+    const sharedFields = {
+      ...token,
+      // TODO remove this once asset-picker supports multichain
+      chainId: chainId as unknown as Hex,
+    };
 
     if (isNativeAddress(token.address)) {
       return {
@@ -115,9 +119,7 @@ export const useTokensWithFiltering = (chainId?: ChainId | Hex) => {
   // shouldAddToken is a filter condition passed in from the AssetPicker that determines whether a token should be included
   const filteredTokenListGenerator = useCallback(
     (shouldAddToken: FilterPredicate) =>
-      (function* (): Generator<
-        AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>
-      > {
+      (function* (): Generator<AssetWithDisplayData<NativeAsset | ERC20Asset>> {
         if (
           !chainId ||
           !topTokens ||
