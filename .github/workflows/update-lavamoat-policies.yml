@@ -175,6 +175,12 @@ jobs:
           path: lavamoat/browserify/flask
           key: cache-flask-${{ needs.prepare.outputs.COMMIT_SHA }}
           fail-on-cache-miss: true
+      - name: Restore MMI application policy
+        uses: actions/cache/restore@v4
+        with:
+          path: lavamoat/browserify/mmi
+          key: cache-mmi-${{ needs.prepare.outputs.COMMIT_SHA }}
+          fail-on-cache-miss: true
       - name: Check whether there are policy changes
         id: policy-changes
         run: |
