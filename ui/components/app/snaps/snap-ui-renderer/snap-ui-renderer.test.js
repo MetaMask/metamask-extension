@@ -8,13 +8,13 @@ import {
   Input,
 } from '@metamask/snaps-sdk/jsx';
 import configureMockStore from 'redux-mock-store';
-import mockState from '../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import { SnapUIRenderer } from './snap-ui-renderer';
 import { fireEvent } from '@testing-library/react';
 import thunk from 'redux-thunk';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import mockState from '../../../../../test/data/mock-state.json';
 import * as backgroundConnection from '../../../../store/background-connection';
 import { BackgroundColor } from '../../../../helpers/constants/design-system';
+import { SnapUIRenderer } from './snap-ui-renderer';
 
 jest.mock('../../../../store/background-connection', () => ({
   ...jest.requireActual('../../../../store/background-connection'),
@@ -67,7 +67,7 @@ describe('SnapUIRenderer', () => {
   it('renders loading state', () => {
     const { container } = renderInterface(null);
 
-    expect(container.getElementsByClassName('pulse-loader').length).toBe(1);
+    expect(container.getElementsByClassName('pulse-loader')).toHaveLength(1);
     expect(container).toMatchSnapshot();
   });
 
@@ -116,7 +116,7 @@ describe('SnapUIRenderer', () => {
   });
 
   it('supports the contentBackgroundColor prop', () => {
-    const { container, getByText } = renderInterface(
+    const { container } = renderInterface(
       Container({
         children: [
           Box({ children: Text({ children: 'Hello world!' }) }),
@@ -129,12 +129,16 @@ describe('SnapUIRenderer', () => {
       },
     );
 
-    expect(container.getElementsByClassName('mm-box--background-color-background-alternative').length).toBe(1);
+    expect(
+      container.getElementsByClassName(
+        'mm-box--background-color-background-alternative',
+      ),
+    ).toHaveLength(1);
     expect(container).toMatchSnapshot();
   });
 
   it('supports interactive inputs', () => {
-    const { container, getByText, getByRole } = renderInterface(
+    const { container, getByRole } = renderInterface(
       Container({
         children: [
           Box({ children: Input({ name: 'input' }) }),

@@ -1,4 +1,4 @@
-import { JSXElementStruct, Box, Text } from '@metamask/snaps-sdk/jsx';
+import { JSXElementStruct } from '@metamask/snaps-sdk/jsx';
 import { COMPONENT_MAPPING } from './components';
 
 const EXCLUDED_COMPONENTS = ['Option', 'Radio', 'SelectorOption'];
