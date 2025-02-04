@@ -308,21 +308,17 @@ describe('Permit Confirmation', () => {
 
     let updateSignatureEventFragment;
 
-    await waitFor(() => {
-      updateSignatureEventFragment =
-        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) =>
-            call[0] === 'updateEventFragment' &&
-            JSON.stringify(call[1]).includes(
-              JSON.stringify({
-                properties: {
-                  external_link_clicked: 'security_alert_support_link',
-                },
-              }),
-            ),
-        );
-
-      expect(updateSignatureEventFragment).toBeDefined();
-    });
+expect(
+      mockedBackgroundConnection.submitRequestToBackground,
+    ).toHaveBeenCalledWith(
+      'updateEventFragment',
+      expect.arrayContaining([
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            external_link_clicked: 'security_alert_support_link',
+          }),
+        }),
+      ]),
+    );
   });
 });
