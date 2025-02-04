@@ -77,7 +77,45 @@ function transformState(
     return state;
   }
 
-  const { selectedAccount } = internalAccounts;
+  // NEW: Extract the selected account's address from internalAccounts.accounts
+  if (
+    !hasProperty(internalAccounts, 'accounts') ||
+    !isObject(internalAccounts.accounts)
+  ) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: Missing or invalid internalAccounts.accounts.`,
+      ),
+    );
+    return state;
+  }
+  const { accounts } = internalAccounts;
+  const selectedAccountKey = internalAccounts.selectedAccount;
+  if (
+    !hasProperty(accounts, selectedAccountKey) ||
+    !isObject(accounts[selectedAccountKey])
+  ) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: Selected account entry not found in internalAccounts.accounts.`,
+      ),
+    );
+    return state;
+  }
+  const selectedAccountEntry = accounts[selectedAccountKey];
+  if (
+    !hasProperty(selectedAccountEntry, 'address') ||
+    typeof selectedAccountEntry.address !== 'string' ||
+    selectedAccountEntry.address === ''
+  ) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: Invalid or missing address in selected account entry.`,
+      ),
+    );
+    return state;
+  }
+  const selectedAccountAddress = selectedAccountEntry.address;
 
   if (!hasProperty(state, 'NetworkController')) {
     global.sentry?.captureException?.(
@@ -179,11 +217,11 @@ function transformState(
     return state;
   }
 
-  const accountTokens = allTokensForChain[selectedAccount];
+  const accountTokens = allTokensForChain[selectedAccountAddress];
   if (!Array.isArray(accountTokens)) {
     global.sentry?.captureException?.(
       new Error(
-        `Migration ${version}: allTokens["${currentChainId}"]["${selectedAccount}"] is not an array; skipping migration.`,
+        `Migration ${version}: allTokens["${currentChainId}"]["${selectedAccountAddress}"] is not an array; skipping migration.`,
       ),
     );
     return state;
