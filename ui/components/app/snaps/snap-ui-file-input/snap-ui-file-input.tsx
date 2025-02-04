@@ -42,6 +42,7 @@ export type SnapUIFileInputProps = {
   compact?: boolean;
   error?: boolean;
   helpText?: string;
+  disabled?: boolean;
 };
 
 /**
@@ -65,6 +66,7 @@ export type SnapUIFileInputProps = {
  * has an error, the help text is displayed in red.
  * @param props.helpText - The help text of the file input, which is displayed
  * below the file input field.
+ * @param props.disabled - Whether the file input is disabled.
  * @returns A file input element.
  */
 export const SnapUIFileInput: FunctionComponent<SnapUIFileInputProps> = ({
@@ -75,6 +77,7 @@ export const SnapUIFileInput: FunctionComponent<SnapUIFileInputProps> = ({
   compact,
   error,
   helpText,
+  disabled,
 }) => {
   const t = useI18nContext();
   const { handleFileChange } = useSnapInterfaceContext();
@@ -126,6 +129,7 @@ export const SnapUIFileInput: FunctionComponent<SnapUIFileInputProps> = ({
         onChange={handleChange}
         accept={accept?.join(',')}
         hidden={true}
+        disabled={disabled}
       />
     </>
   );
@@ -167,6 +171,7 @@ export const SnapUIFileInput: FunctionComponent<SnapUIFileInputProps> = ({
           borderRadius={BorderRadius.MD}
           onClick={handleClick}
           ariaLabel={t('uploadFile')}
+          disabled={disabled}
         />
         {footer}
       </Box>
@@ -183,7 +188,10 @@ export const SnapUIFileInput: FunctionComponent<SnapUIFileInputProps> = ({
     >
       {header}
       <Box
-        className="snap-ui-renderer__file-input__drop-zone"
+        className={classnames('snap-ui-renderer__file-input__drop-zone', {
+          'snap-ui-snap-ui-renderer__file-input__drop-zone--disabled':
+            disabled === true,
+        })}
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.center}
@@ -197,7 +205,6 @@ export const SnapUIFileInput: FunctionComponent<SnapUIFileInputProps> = ({
         borderWidth={1}
         borderRadius={BorderRadius.MD}
         style={{
-          cursor: 'pointer',
           backgroundColor: active
             ? 'var(--color-background-default-hover)'
             : 'var(--color-background-default)',
