@@ -9,11 +9,12 @@ import TestDapp, {
   DAPP_HOST_ADDRESS,
   DAPP_TWO_URL,
 } from '../page-objects/pages/test-dapp';
+import ActivityListPage from '../page-objects/pages/home/activity-list';
 import ConfirmTxPage from '../page-objects/pages/send/confirm-tx-page';
 import ConnectConfirmation from '../page-objects/pages/confirmations/redesign/connect-confirmation';
 import ExperimentalSettings from '../page-objects/pages/settings/experimental-settings';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
-import HomePage from '../page-objects/pages/homepage';
+import HomePage from '../page-objects/pages/home/homepage';
 import ReviewPermissionConfirmation from '../page-objects/pages/confirmations/redesign/review-permission-confirmation';
 import SettingsPage from '../page-objects/pages/settings/settings-page';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
@@ -36,17 +37,6 @@ describe('Switch Ethereum Chain for two dapps', function () {
       },
       async ({ driver, ganacheServer }) => {
         await loginWithBalanceValidation(driver, ganacheServer);
-
-        // Go to experimental settings page and toggle off request queue setting (on by default now)
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
-        await settingsPage.goToExperimentalSettings();
-
-        const experimentalSettings = new ExperimentalSettings(driver);
-        await experimentalSettings.check_pageIsLoaded();
-        await experimentalSettings.toggleRequestQueue();
 
         // open two dapps
         const testDapp = new TestDapp(driver);
@@ -96,6 +86,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
+          .withPreferencesControllerSmartTransactionsOptedOut()
           .build(),
         dappOptions: { numberOfDapps: 2 },
         ganacheOptions: {
@@ -107,24 +98,16 @@ describe('Switch Ethereum Chain for two dapps', function () {
       async ({ driver, ganacheServer }) => {
         await loginWithBalanceValidation(driver, ganacheServer);
 
-        // Go to experimental settings page and toggle off request queue setting (on by default now)
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
-        await settingsPage.goToExperimentalSettings();
-
-        const experimentalSettings = new ExperimentalSettings(driver);
-        await experimentalSettings.check_pageIsLoaded();
-        await experimentalSettings.toggleRequestQueue();
-
         // Open two dapps and connect account to dapp two
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage({ url: DAPP_HOST_ADDRESS });
         await testDapp.check_pageIsLoaded();
         await testDapp.openTestDappPage({ url: DAPP_TWO_URL });
         await testDapp.check_pageIsLoaded();
-        await testDapp.connectAccount(ACCOUNT_1, DAPP_TWO_URL);
+        await testDapp.connectAccount({
+          publicAddress: ACCOUNT_1,
+          testDappUrl: DAPP_TWO_URL,
+        });
 
         // Switch to Dapp One and disconnect Localhost 8545
         await driver.switchToWindowWithUrl(DAPP_HOST_ADDRESS);
@@ -165,7 +148,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
 
         // Confirm switch ethereum chain
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        if (await confirmTxPage.actionNameIsDisplayed('Sending ETH')) {
+        if (await confirmTxPage.check_actionNameIsDisplayed('Sending ETH')) {
           await confirmTxPage.rejectTx();
         }
         const reviewPermissionConfirmation = new ReviewPermissionConfirmation(
@@ -286,7 +269,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
         await homePage.goToActivityList();
-        await homePage.check_noTransactionMessageIsDisplayed();
+        await new ActivityListPage(driver).check_noTxInActivity();
       },
     );
   });
@@ -382,7 +365,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const confirmTxPage = new ConfirmTxPage(driver);
         await confirmTxPage.check_pageIsLoaded('0.00021');
-        await confirmTxPage.confirmTx();
+        await confirmTxPage.clickConfirmButton();
       },
     );
   });

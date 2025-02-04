@@ -159,7 +159,6 @@ describe('Incoming Transactions', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         const activityList = await changeNetworkAndGoToActivity(driver);
-        await driver.delay(2000);
         await activityList.check_noTxInActivity();
       },
     );
