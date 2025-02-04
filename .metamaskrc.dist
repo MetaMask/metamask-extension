@@ -31,9 +31,6 @@ BLOCKAID_PUBLIC_KEY=
 ; Set this to true to enable the snap path for the Firefox WebDriver (Linux)
 ; FIREFOX_SNAP=
 
-; Enable the redesigned confirmations still in development, without needing to toggle the developer setting.
-; ENABLE_CONFIRMATION_REDESIGN=
-
 ; URL of security alerts API used to validate dApp requests
 ; SECURITY_ALERTS_API_URL='http://localhost:3000'
 ; Temporary mechanism to enable security alerts API prior to release

@@ -4,10 +4,10 @@ import {
   BtcMethod,
   BtcAccountType,
   isEvmAccountType,
-  EthScopes,
-  BtcScopes,
+  EthScope,
+  BtcScope,
   SolAccountType,
-  SolScopes,
+  SolScope,
   SolMethod,
 } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
@@ -216,7 +216,7 @@ export function createMockInternalAccount({
 
   switch (type) {
     case EthAccountType.Eoa:
-      scopes = [EthScopes.Namespace];
+      scopes = [EthScope.Eoa];
       methods = [
         EthMethod.PersonalSign,
         EthMethod.SignTransaction,
@@ -228,7 +228,7 @@ export function createMockInternalAccount({
     case EthAccountType.Erc4337:
       // NOTE: This is not really valid here, cause a SC account might not be deployed on
       // every EVM chains, but for testing purposes we enable everything.
-      scopes = [EthScopes.Namespace];
+      scopes = [EthScope.Testnet];
       methods = [
         EthMethod.PatchUserOperation,
         EthMethod.PrepareUserOperation,
@@ -239,12 +239,12 @@ export function createMockInternalAccount({
       // If no address is given, we fallback to testnet
       const isMainnet = Boolean(address) && isBtcMainnetAddress(address);
 
-      scopes = [isMainnet ? BtcScopes.Mainnet : BtcScopes.Testnet];
+      scopes = [isMainnet ? BtcScope.Mainnet : BtcScope.Testnet];
       methods = [BtcMethod.SendBitcoin];
       break;
     }
     case SolAccountType.DataAccount:
-      scopes = [SolScopes.Mainnet, SolScopes.Testnet, SolScopes.Devnet];
+      scopes = [SolScope.Mainnet, SolScope.Testnet, SolScope.Devnet];
       methods = [SolMethod.SendAndConfirmTransaction];
       break;
     default:

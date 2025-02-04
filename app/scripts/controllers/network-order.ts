@@ -1,7 +1,4 @@
-import {
-  BaseController,
-  RestrictedControllerMessenger,
-} from '@metamask/base-controller';
+import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
 import {
   NetworkControllerStateChangeEvent,
   NetworkState,
@@ -42,7 +39,7 @@ export type NetworkOrderControllerMessengerActions =
   NetworkOrderControllerupdateNetworksListAction;
 
 // Type for the messenger of NetworkOrderController
-export type NetworkOrderControllerMessenger = RestrictedControllerMessenger<
+export type NetworkOrderControllerMessenger = RestrictedMessenger<
   typeof controllerName,
   NetworkOrderControllerMessengerActions,
   NetworkOrderStateChange | NetworkControllerStateChangeEvent,
