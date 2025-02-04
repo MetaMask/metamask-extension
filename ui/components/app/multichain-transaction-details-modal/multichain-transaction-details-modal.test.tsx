@@ -2,13 +2,12 @@ import React from 'react';
 import { CaipChainId } from '@metamask/utils';
 import { CaipAssetType, TransactionStatus } from '@metamask/keyring-api';
 import { screen, fireEvent } from '@testing-library/react';
-import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { MultichainTransactionDetailsModal } from './multichain-transaction-details-modal';
-import { getTransactionUrl } from './helpers';
+import { getTransactionUrl, shortenTransactionId } from './helpers';
 
 jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(),
@@ -117,8 +116,8 @@ describe('MultichainTransactionDetailsModal', () => {
   it('shows transaction ID in shortened format', () => {
     renderComponent();
     const txId = mockTransaction.id;
-    const shortenedTxId = screen.getByText(shortenAddress(txId));
-    expect(shortenedTxId).toBeInTheDocument();
+    const shortenedId = screen.getByText(shortenTransactionId(txId));
+    expect(shortenedId).toBeInTheDocument();
   });
 
   it('displays network fee when present', () => {
