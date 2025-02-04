@@ -2319,6 +2319,7 @@ export default class MetamaskController extends EventEmitter {
         allowedActions: [],
         allowedEvents: [],
       }),
+      fetchInterval: 15 * 60, // 15 minutes
       disabled: !this.preferencesController.state.useExternalServices,
       getMetaMetricsId: () => this.metaMetricsController.getMetaMetricsId(),
       clientConfigApiService: new ClientConfigApiService({
