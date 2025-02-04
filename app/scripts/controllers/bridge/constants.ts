@@ -1,5 +1,5 @@
 import { zeroAddress } from 'ethereumjs-util';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import {
   BRIDGE_DEFAULT_SLIPPAGE,
   DEFAULT_MAX_REFRESH_COUNT,
@@ -8,10 +8,10 @@ import {
 } from '../../../../shared/constants/bridge';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { BridgeFeatureFlagsKey } from '../../../../shared/types/bridge';
-import type { BridgeControllerState } from '../../../../shared/types/bridge';
+import type { BridgeState } from '../../../../shared/types/bridge';
 
 export const BRIDGE_CONTROLLER_NAME = 'BridgeController';
-export const DEFAULT_BRIDGE_CONTROLLER_STATE: BridgeControllerState = {
+export const DEFAULT_BRIDGE_STATE: BridgeState = {
   bridgeFeatureFlags: {
     [BridgeFeatureFlagsKey.EXTENSION_CONFIG]: {
       refreshRate: REFRESH_INTERVAL_MS,
@@ -20,9 +20,6 @@ export const DEFAULT_BRIDGE_CONTROLLER_STATE: BridgeControllerState = {
       chains: {},
     },
   },
-  destTokensLoadingStatus: undefined,
-  destTokens: {},
-  destTopAssets: [],
   quoteRequest: {
     walletAddress: undefined,
     srcTokenAddress: zeroAddress(),
@@ -34,6 +31,10 @@ export const DEFAULT_BRIDGE_CONTROLLER_STATE: BridgeControllerState = {
   quotesLoadingStatus: undefined,
   quoteFetchError: undefined,
   quotesRefreshCount: 0,
+};
+
+export const DEFAULT_BRIDGE_CONTROLLER_STATE = {
+  bridgeState: { ...DEFAULT_BRIDGE_STATE },
 };
 
 export const METABRIDGE_CHAIN_TO_ADDRESS_MAP: Record<Hex, string> = {

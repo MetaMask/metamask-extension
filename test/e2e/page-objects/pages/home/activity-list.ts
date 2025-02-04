@@ -19,6 +19,8 @@ class ActivityListPage {
     css: '.transaction-status-label--failed',
   };
 
+  private readonly tooltip = '.tippy-tooltip-content';
+
   private readonly transactionAmountsInActivity =
     '[data-testid="transaction-list-item-primary-currency"]';
 
@@ -104,25 +106,46 @@ class ActivityListPage {
     );
   }
 
-  /**
+    /**
    * This function checks if the specified number of failed transactions are displayed in the activity list on homepage.
    * It waits up to 10 seconds for the expected number of failed transactions to be visible.
    *
    * @param expectedNumber - The number of failed transactions expected to be displayed in activity list. Defaults to 1.
    * @returns A promise that resolves if the expected number of failed transactions is displayed within the timeout period.
    */
-  async check_failedTxNumberDisplayedInActivity(
-    expectedNumber: number = 1,
-  ): Promise<void> {
-    console.log(
-      `Wait for ${expectedNumber} failed transactions to be displayed in activity list`,
+    async check_failedTxNumberDisplayedInActivity(
+      expectedNumber: number = 1,
+    ): Promise<void> {
+      console.log(
+        `Wait for ${expectedNumber} failed transactions to be displayed in activity list`,
+      );
+      await this.driver.wait(async () => {
+        const failedTxs = await this.driver.findElements(this.failedTransactions);
+        return failedTxs.length === expectedNumber;
+      }, 10000);
+      console.log(
+        `${expectedNumber} failed transactions found in activity list on homepage`,
+      );
+    }
+
+  async check_noTxInActivity(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.completedTransactions);
+  }
+
+  async check_txAction(expectedAction: string, expectedNumber: number = 1) {
+    const transactionActions = await this.driver.findElements(
+      this.activityListAction,
     );
+
     await this.driver.wait(async () => {
-      const failedTxs = await this.driver.findElements(this.failedTransactions);
-      return failedTxs.length === expectedNumber;
-    }, 10000);
+      const transactionActionText = await transactionActions[
+        expectedNumber - 1
+      ].getText();
+      return transactionActionText === expectedAction;
+    });
+
     console.log(
-      `${expectedNumber} failed transactions found in activity list on homepage`,
+      `Action for transaction ${expectedNumber} is displayed as ${expectedAction}`,
     );
   }
 
@@ -158,30 +181,6 @@ class ActivityListPage {
     );
   }
 
-  async check_txAction(expectedAction: string, expectedNumber: number = 1) {
-    const transactionActions = await this.driver.findElements(
-      this.activityListAction,
-    );
-
-    const transactionActionText = await transactionActions[
-      expectedNumber - 1
-    ].getText();
-
-    assert.equal(
-      transactionActionText,
-      expectedAction,
-      `${transactionActionText} is displayed as transaction action instead of ${expectedAction} for transaction ${expectedNumber}`,
-    );
-
-    console.log(
-      `Action for transaction ${expectedNumber} is displayed as ${expectedAction}`,
-    );
-  }
-
-  async check_noTxInActivity(): Promise<void> {
-    await this.driver.assertElementNotPresent(this.completedTransactions);
-  }
-
   /**
    * Verifies that a specific warning message is displayed on the activity list.
    *
@@ -197,6 +196,35 @@ class ActivityListPage {
       tag: 'div',
       text: warningText,
     });
+  }
+
+  async check_noFailedTransactions(): Promise<void> {
+    try {
+      await this.driver.findElement(this.failedTransactions, 1);
+    } catch (error) {
+      return;
+    }
+
+    const failedTxs = await this.driver.findElements(this.failedTransactions);
+
+    if (!failedTxs.length) {
+      return;
+    }
+
+    const errorMessages = [];
+
+    for (const failedTx of failedTxs) {
+      await this.driver.hoverElement(failedTx);
+
+      const tooltip = await this.driver.findElement(this.tooltip);
+      const errorMessage = await tooltip.getText();
+
+      errorMessages.push(errorMessage);
+    }
+
+    throw new Error(
+      `Failed transactions found in activity list: ${errorMessages.join('\n')}`,
+    );
   }
 }
 

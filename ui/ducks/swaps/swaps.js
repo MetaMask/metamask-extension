@@ -86,6 +86,7 @@ import {
   SWAPS_FETCH_ORDER_CONFLICT,
   ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS,
   Slippage,
+  SWAPS_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
 } from '../../../shared/constants/swaps';
 import {
   IN_PROGRESS_TRANSACTION_STATUSES,
@@ -100,6 +101,7 @@ import {
 import { EtherDenomination } from '../../../shared/constants/common';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { calculateMaxGasLimit } from '../../../shared/lib/swaps-utils';
+import { useTokenFiatAmount } from '../../hooks/useTokenFiatAmount';
 
 const debugLog = createProjectLogger('swaps');
 
@@ -1366,24 +1368,9 @@ export function fetchMetaSwapsGasPriceEstimates() {
       dispatch(swapGasPriceEstimatesFetchFailed());
 
       try {
-        const gasPrice = await new Promise((resolve, reject) => {
-          global.ethereumProvider.sendAsync(
-            {
-              method: 'eth_gasPrice',
-              params: [],
-            },
-            (err, response) => {
-              let error = err;
-              if (!error && response.error) {
-                error = new Error(`RPC Error - ${response.error.message}`);
-              }
-              if (error) {
-                reject(error);
-                return;
-              }
-              resolve(response.result);
-            },
-          );
+        const gasPrice = await global.ethereumProvider.request({
+          method: 'eth_gasPrice',
+          params: [],
         });
         const gasPriceInDecGWEI = hexWEIToDecGWEI(gasPrice.toString(10));
 
@@ -1450,3 +1437,55 @@ export function cancelSwapsSmartTransaction(uuid) {
     }
   };
 }
+
+export const getIsEstimatedReturnLow = ({ usedQuote, rawNetworkFees }) => {
+  const sourceTokenAmount = calcTokenAmount(
+    usedQuote?.sourceAmount,
+    usedQuote?.sourceTokenInfo?.decimals,
+  );
+  // Disabled because it's not a hook
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const sourceTokenFiatAmount = useTokenFiatAmount(
+    usedQuote?.sourceTokenInfo?.address,
+    sourceTokenAmount || 0,
+    usedQuote?.sourceTokenInfo?.symbol,
+    {
+      showFiat: true,
+    },
+    true,
+    null,
+    false,
+  );
+  const destinationTokenAmount = calcTokenAmount(
+    usedQuote?.destinationAmount,
+    usedQuote?.destinationTokenInfo?.decimals,
+  );
+  // Disabled because it's not a hook
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const destinationTokenFiatAmount = useTokenFiatAmount(
+    usedQuote?.destinationTokenInfo?.address,
+    destinationTokenAmount || 0,
+    usedQuote?.destinationTokenInfo?.symbol,
+    {
+      showFiat: true,
+    },
+    true,
+    null,
+    false,
+  );
+  const adjustedReturnValue =
+    destinationTokenFiatAmount && rawNetworkFees
+      ? new BigNumber(destinationTokenFiatAmount).minus(
+          new BigNumber(rawNetworkFees),
+        )
+      : null;
+  const isEstimatedReturnLow =
+    sourceTokenFiatAmount && adjustedReturnValue
+      ? adjustedReturnValue.lt(
+          new BigNumber(sourceTokenFiatAmount).times(
+            1 - SWAPS_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
+          ),
+        )
+      : false;
+  return isEstimatedReturnLow;
+};

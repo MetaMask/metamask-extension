@@ -1,11 +1,16 @@
 /**
  * @jest-environment node
  */
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import { AccountsController } from '@metamask/accounts-controller';
 import { KeyringControllerStateChangeEvent } from '@metamask/keyring-controller';
 import { SnapControllerStateChangeEvent } from '@metamask/snaps-controllers';
 import { Hex } from '@metamask/utils';
+import {
+  SnapKeyringAccountAssetListUpdatedEvent,
+  SnapKeyringAccountBalancesUpdatedEvent,
+  SnapKeyringAccountTransactionsUpdatedEvent,
+} from '@metamask/eth-snap-keyring';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { ThemeType } from '../../../shared/constants/preferences';
@@ -39,14 +44,17 @@ const setupController = ({
 }: {
   state?: Partial<PreferencesControllerState>;
 }) => {
-  const controllerMessenger = new ControllerMessenger<
+  const messenger = new Messenger<
     AllowedActions,
     | AllowedEvents
     | KeyringControllerStateChangeEvent
     | SnapControllerStateChangeEvent
+    | SnapKeyringAccountAssetListUpdatedEvent
+    | SnapKeyringAccountBalancesUpdatedEvent
+    | SnapKeyringAccountTransactionsUpdatedEvent
   >();
   const preferencesControllerMessenger: PreferencesControllerMessenger =
-    controllerMessenger.getRestricted({
+    messenger.getRestricted({
       name: 'PreferencesController',
       allowedActions: [
         'AccountsController:getAccountByAddress',
@@ -58,7 +66,7 @@ const setupController = ({
       allowedEvents: ['AccountsController:stateChange'],
     });
 
-  controllerMessenger.registerActionHandler(
+  messenger.registerActionHandler(
     'NetworkController:getState',
     jest.fn().mockReturnValue({
       networkConfigurationsByChainId: NETWORK_CONFIGURATION_DATA,
@@ -69,11 +77,14 @@ const setupController = ({
     state,
   });
 
-  const accountsControllerMessenger = controllerMessenger.getRestricted({
+  const accountsControllerMessenger = messenger.getRestricted({
     name: 'AccountsController',
     allowedEvents: [
       'KeyringController:stateChange',
       'SnapController:stateChange',
+      'SnapKeyring:accountAssetListUpdated',
+      'SnapKeyring:accountBalancesUpdated',
+      'SnapKeyring:accountTransactionsUpdated',
     ],
     allowedActions: [],
   });
@@ -90,7 +101,7 @@ const setupController = ({
 
   return {
     controller,
-    messenger: controllerMessenger,
+    messenger,
     accountsController,
   };
 };
@@ -331,15 +342,6 @@ describe('preferences controller', () => {
       expect(controller.state.useMultiAccountBalanceChecker).toStrictEqual(
         false,
       );
-    });
-  });
-
-  describe('isRedesignedConfirmationsFeatureEnabled', () => {
-    const { controller } = setupController({});
-    it('isRedesignedConfirmationsFeatureEnabled should default to false', () => {
-      expect(
-        controller.state.preferences.isRedesignedConfirmationsDeveloperEnabled,
-      ).toStrictEqual(false);
     });
   });
 
@@ -591,19 +593,6 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('useNonceField', () => {
-    it('defaults useNonceField to false', () => {
-      const { controller } = setupController({});
-      expect(controller.state.useNonceField).toStrictEqual(false);
-    });
-
-    it('setUseNonceField to true', () => {
-      const { controller } = setupController({});
-      controller.setUseNonceField(true);
-      expect(controller.state.useNonceField).toStrictEqual(true);
-    });
-  });
-
   describe('globalThis.setPreference', () => {
     it('setFeatureFlags to true', () => {
       const { controller } = setupController({});
@@ -725,10 +714,8 @@ describe('preferences controller', () => {
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
-        redesignedConfirmationsEnabled: true,
         shouldShowAggregatedBalancePopover: true,
         featureNotificationsEnabled: false,
-        isRedesignedConfirmationsDeveloperEnabled: false,
         showConfirmationAdvancedDetails: false,
         showMultiRpcModal: false,
         showNativeTokenAsMainBalance: false,
@@ -755,10 +742,8 @@ describe('preferences controller', () => {
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
         privacyMode: false,
-        redesignedConfirmationsEnabled: true,
         shouldShowAggregatedBalancePopover: true,
         featureNotificationsEnabled: false,
-        isRedesignedConfirmationsDeveloperEnabled: false,
         showConfirmationAdvancedDetails: true,
         showMultiRpcModal: false,
         showNativeTokenAsMainBalance: false,

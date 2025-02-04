@@ -1,4 +1,4 @@
-import { errorCodes, rpcErrors } from '@metamask/rpc-errors';
+import { rpcErrors } from '@metamask/rpc-errors';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -164,26 +164,22 @@ export function validateAddEthereumChainParams(params) {
  * @param end - The JSON RPC request's end callback.
  * @param {string} chainId - The chainId being switched to.
  * @param {string} networkClientId - The network client being switched to.
- * @param {string} [approvalFlowId] - The optional approval flow ID to handle.
  * @param {object} hooks - The hooks object.
- * @param {boolean} hooks.isAddFlow - The boolean determining if this call originates from wallet_addEthereumChain.
+ * @param {boolean} [hooks.autoApprove] - A boolean indicating whether the request should prompt the user or be automatically approved.
  * @param {Function} hooks.setActiveNetwork - The callback to change the current network for the origin.
- * @param {Function} hooks.endApprovalFlow - The optional callback to end the approval flow when approvalFlowId is provided.
  * @param {Function} hooks.getCaveat - The callback to get the CAIP-25 caveat for the origin.
  * @param {Function} hooks.requestPermittedChainsPermissionForOrigin - The callback to request a new permittedChains-equivalent CAIP-25 permission.
  * @param {Function} hooks.requestPermittedChainsPermissionIncrementalForOrigin - The callback to add a new chain to the permittedChains-equivalent CAIP-25 permission.
- * @returns a null response on success or an error if user rejects an approval when isAddFlow is false or on unexpected errors.
+ * @returns a null response on success or an error if user rejects an approval when autoApprove is false or on unexpected errors.
  */
 export async function switchChain(
   response,
   end,
   chainId,
   networkClientId,
-  approvalFlowId,
   {
-    isAddFlow,
+    autoApprove,
     setActiveNetwork,
-    endApprovalFlow,
     getCaveat,
     requestPermittedChainsPermissionForOrigin,
     requestPermittedChainsPermissionIncrementalForOrigin,
@@ -201,36 +197,20 @@ export async function switchChain(
       if (!ethChainIds.includes(chainId)) {
         await requestPermittedChainsPermissionIncrementalForOrigin({
           chainId,
-          autoApprove: isAddFlow,
+          autoApprove,
         });
       }
     } else {
       await requestPermittedChainsPermissionForOrigin({
         chainId,
-        autoApprove: isAddFlow,
+        autoApprove,
       });
     }
 
     await setActiveNetwork(networkClientId);
     response.result = null;
+    return end();
   } catch (error) {
-    // We don't want to return an error if user rejects the request
-    // and this is a chained switch request after wallet_addEthereumChain.
-    // approvalFlowId is only defined when this call is of a
-    // wallet_addEthereumChain request so we can use it to determine
-    // if we should return an error
-    if (
-      error.code === errorCodes.provider.userRejectedRequest &&
-      approvalFlowId
-    ) {
-      response.result = null;
-      return end();
-    }
     return end(error);
-  } finally {
-    if (approvalFlowId) {
-      endApprovalFlow({ id: approvalFlowId });
-    }
   }
-  return end();
 }
