@@ -106,27 +106,27 @@ class ActivityListPage {
     );
   }
 
-    /**
+  /**
    * This function checks if the specified number of failed transactions are displayed in the activity list on homepage.
    * It waits up to 10 seconds for the expected number of failed transactions to be visible.
    *
    * @param expectedNumber - The number of failed transactions expected to be displayed in activity list. Defaults to 1.
    * @returns A promise that resolves if the expected number of failed transactions is displayed within the timeout period.
    */
-    async check_failedTxNumberDisplayedInActivity(
-      expectedNumber: number = 1,
-    ): Promise<void> {
-      console.log(
-        `Wait for ${expectedNumber} failed transactions to be displayed in activity list`,
-      );
-      await this.driver.wait(async () => {
-        const failedTxs = await this.driver.findElements(this.failedTransactions);
-        return failedTxs.length === expectedNumber;
-      }, 10000);
-      console.log(
-        `${expectedNumber} failed transactions found in activity list on homepage`,
-      );
-    }
+  async check_failedTxNumberDisplayedInActivity(
+    expectedNumber: number = 1,
+  ): Promise<void> {
+    console.log(
+      `Wait for ${expectedNumber} failed transactions to be displayed in activity list`,
+    );
+    await this.driver.wait(async () => {
+      const failedTxs = await this.driver.findElements(this.failedTransactions);
+      return failedTxs.length === expectedNumber;
+    }, 10000);
+    console.log(
+      `${expectedNumber} failed transactions found in activity list on homepage`,
+    );
+  }
 
   async check_noTxInActivity(): Promise<void> {
     await this.driver.assertElementNotPresent(this.completedTransactions);
