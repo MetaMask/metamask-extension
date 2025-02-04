@@ -5615,18 +5615,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/json-rpc-engine@npm:^10.0.0, @metamask/json-rpc-engine@npm:^10.0.1":
-  version: 10.0.1
-  resolution: "@metamask/json-rpc-engine@npm:10.0.1"
-  dependencies:
-    "@metamask/rpc-errors": "npm:^7.0.1"
-    "@metamask/safe-event-emitter": "npm:^3.0.0"
-    "@metamask/utils": "npm:^10.0.0"
-  checksum: 10/15a8eeab9af39b9ed87311da728e81169484ace733a8ef9fc469bd887654e37afa19f9e5228246dc80daad3fbf9b16067e73b2969d37d44acf5bc6ffa2c70082
-  languageName: node
-  linkType: hard
-
-"@metamask/json-rpc-engine@npm:^10.0.2":
+"@metamask/json-rpc-engine@npm:^10.0.0, @metamask/json-rpc-engine@npm:^10.0.1, @metamask/json-rpc-engine@npm:^10.0.2":
   version: 10.0.2
   resolution: "@metamask/json-rpc-engine@npm:10.0.2"
   dependencies:
@@ -5648,19 +5637,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/json-rpc-middleware-stream@npm:^8.0.4, @metamask/json-rpc-middleware-stream@npm:^8.0.5":
-  version: 8.0.5
-  resolution: "@metamask/json-rpc-middleware-stream@npm:8.0.5"
-  dependencies:
-    "@metamask/json-rpc-engine": "npm:^10.0.1"
-    "@metamask/safe-event-emitter": "npm:^3.0.0"
-    "@metamask/utils": "npm:^10.0.0"
-    readable-stream: "npm:^3.6.2"
-  checksum: 10/486a4c64d445dc7ac7927ac5b9d01818ecef3fbb23d17eadada4748ed6cae9e259741e3c9380829b04a5c141d0972384647aedfde906dc83501b9d7f700ed621
-  languageName: node
-  linkType: hard
-
-"@metamask/json-rpc-middleware-stream@npm:^8.0.6":
+"@metamask/json-rpc-middleware-stream@npm:^8.0.4, @metamask/json-rpc-middleware-stream@npm:^8.0.5, @metamask/json-rpc-middleware-stream@npm:^8.0.6":
   version: 8.0.6
   resolution: "@metamask/json-rpc-middleware-stream@npm:8.0.6"
   dependencies:
@@ -6222,17 +6199,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/rpc-errors@npm:^7.0.0, @metamask/rpc-errors@npm:^7.0.1":
-  version: 7.0.1
-  resolution: "@metamask/rpc-errors@npm:7.0.1"
-  dependencies:
-    "@metamask/utils": "npm:^10.0.0"
-    fast-safe-stringify: "npm:^2.0.6"
-  checksum: 10/819708b4a7d9695ee67fd867d8f94bb5a273b479a242b17bd53c83d1fceec421fc42928f0bb340f4f138ec803dd82ec9659ce7b09a86aedad6a81d5a39ec5c35
-  languageName: node
-  linkType: hard
-
-"@metamask/rpc-errors@npm:^7.0.2":
+"@metamask/rpc-errors@npm:^7.0.0, @metamask/rpc-errors@npm:^7.0.1, @metamask/rpc-errors@npm:^7.0.2":
   version: 7.0.2
   resolution: "@metamask/rpc-errors@npm:7.0.2"
   dependencies:
