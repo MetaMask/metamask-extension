@@ -605,7 +605,7 @@
     "@metamask/multichain>@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": {
       "packages": {
         "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": true,
-        "@metamask/multichain>@open-rpc/schema-utils-js>@json-schema-tools/dereferencer>@json-schema-tools/traverse": true,
+        "@open-rpc/schema-utils-js>@json-schema-tools/dereferencer>@json-schema-tools/traverse": true,
         "@metamask/rpc-errors>fast-safe-stringify": true
       }
     },
