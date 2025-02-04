@@ -175,6 +175,7 @@ export const CHAIN_IDS = {
   INK: '0xdef1',
   MODE_SEPOLIA: '0x397',
   MODE: '0x868b',
+  PEAQ: '0xd0a',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -242,6 +243,7 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   SONEIUM_TESTNET: '0x79a',
   MODE_SEPOLIA: '0x397',
   MODE: '0x868b',
+  PEAQ: '0xd0a',
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
@@ -298,6 +300,7 @@ export const INK_DISPLAY_NAME = 'Ink Mainnet';
 export const SONEIUM_DISPLAY_NAME = 'Soneium Mainnet';
 export const MODE_SEPOLIA_DISPLAY_NAME = 'Mode Sepolia';
 export const MODE_DISPLAY_NAME = 'Mode Mainnet';
+export const PEAQ_DISPLAY_NAME = 'peaq';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -425,6 +428,7 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   SONEIUM_MAINNET: 'ETH',
   SONEIUM_TESTNET: 'ETH',
   MODE: 'ETH',
+  PEAQ: 'PEAQ',
 } as const;
 
 export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
@@ -516,6 +520,7 @@ export const SONIC_MAINNET_IMAGE_URL = './images/sonic.svg';
 export const SONEIUM_IMAGE_URL = './images/soneium.svg';
 export const MODE_SEPOLIA_IMAGE_URL = './images/mode-sepolia.svg';
 export const MODE_IMAGE_URL = './images/mode.svg';
+export const PEAQ_IMAGE_URL = './images/peaq.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -751,6 +756,8 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
     CHAINLIST_CURRENCY_SYMBOLS_MAP.SONEIUM_MAINNET,
   [CHAINLIST_CHAIN_IDS_MAP.SONEIUM_TESTNET]:
     CHAINLIST_CURRENCY_SYMBOLS_MAP.SONEIUM_TESTNET,
+  [CHAINLIST_CHAIN_IDS_MAP.PEAQ]:
+    CHAINLIST_CURRENCY_SYMBOLS_MAP.PEAQ,
 } as const;
 
 /**
@@ -877,6 +884,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.SONEIUM_TESTNET]: SONEIUM_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.MODE_SEPOLIA]: MODE_SEPOLIA_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.MODE]: MODE_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.PEAQ]: PEAQ_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -921,6 +929,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.INK]: ETH_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.SONIC_MAINNET]: SONIC_MAINNET_IMAGE_URL,
   [CHAIN_IDS.MODE]: ETH_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.PEAQ]: PEAQ_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
