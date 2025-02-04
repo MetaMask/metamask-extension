@@ -37,13 +37,7 @@ const useLatestBalance = (
       );
     }
     return undefined;
-  }, [
-    chainId,
-    currentChainId,
-    token,
-    selectedAddress,
-    global.ethereumProvider,
-  ]);
+  }, [currentChainId, token?.address, selectedAddress]);
 
   if (token && !token.decimals) {
     throw new Error(

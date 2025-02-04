@@ -19,8 +19,8 @@ export const useRequestProperties = () => {
     destChainId && new Numeric(destChainId, 10).toPrefixedHexString();
   const token_symbol_source = fromToken?.symbol;
   const token_symbol_destination = toToken?.symbol;
-  const token_address_source = srcTokenAddress?.toLowerCase();
-  const token_address_destination = destTokenAddress?.toLowerCase();
+  const token_address_source = srcTokenAddress;
+  const token_address_destination = destTokenAddress;
 
   if (
     chain_id_source &&

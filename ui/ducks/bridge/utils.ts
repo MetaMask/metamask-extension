@@ -1,11 +1,11 @@
-import type { Hex } from '@metamask/utils';
+import { isStrictHexString, type Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
-import { getAddress } from 'ethers/lib/utils';
 import type { ContractMarketData } from '@metamask/assets-controllers';
 import {
   AddNetworkFields,
   NetworkConfiguration,
 } from '@metamask/network-controller';
+import { toChecksumAddress } from 'ethereumjs-util';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../shared/modules/Numeric';
 import type { TxData } from '../../../shared/types/bridge';
@@ -84,7 +84,7 @@ const fetchTokenExchangeRates = async (
   );
   return Object.keys(exchangeRates).reduce(
     (acc: Record<string, number | undefined>, address) => {
-      acc[address.toLowerCase()] = exchangeRates[address];
+      acc[address] = exchangeRates[address];
       return acc;
     },
     {},
@@ -105,9 +105,10 @@ export const getTokenExchangeRate = async (request: {
     currency,
     tokenAddress,
   );
+  // The exchange rate can be checksummed or not, so we need to check both
   const exchangeRate =
-    exchangeRates?.[tokenAddress.toLowerCase()] ??
-    exchangeRates?.[getAddress(tokenAddress)];
+    exchangeRates?.[toChecksumAddress(tokenAddress)] ??
+    exchangeRates?.[tokenAddress.toLowerCase()];
   return exchangeRate;
 };
 
@@ -118,10 +119,9 @@ export const exchangeRateFromMarketData = (
   tokenAddress: string,
   marketData?: Record<string, ContractMarketData>,
 ) =>
-  (
-    marketData?.[chainId]?.[tokenAddress.toLowerCase() as Hex] ??
-    marketData?.[chainId]?.[getAddress(tokenAddress) as Hex]
-  )?.price;
+  isStrictHexString(tokenAddress)
+    ? marketData?.[chainId]?.[tokenAddress]?.price
+    : undefined;
 
 export const tokenAmountToCurrency = (
   amount: string | BigNumber,
