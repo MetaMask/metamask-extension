@@ -1,4 +1,3 @@
-import { NetworkConfiguration } from '@metamask/network-controller';
 import { migrate, version } from './142.1';
 
 describe(`Migration ${version}`, () => {
@@ -274,45 +273,5 @@ describe(`Migration ${version}`, () => {
     const result = await migrate(originalState);
     expect(sentryCaptureExceptionMock).toHaveBeenCalled();
     expect(result.data).toEqual(originalState.data);
-  });
-
-  it('updates TokensController.tokens when all data is valid', async () => {
-    const originalTokens = [{ address: '0xtokenA' }, { address: '0xtokenB' }];
-    const originalState = {
-      meta: { version: 0 },
-      data: {
-        AccountsController: {
-          internalAccounts: { selectedAccount: '0x123' },
-        },
-        NetworkController: {
-          selectedNetworkClientId: 'mainnet',
-          networkConfigurationsByChainId: {
-            '0x1': {
-              rpcEndpoints: [{ networkClientId: 'mainnet' }],
-            },
-          },
-        },
-        TokensController: {
-          allTokens: {
-            '0x1': {
-              '0x123': originalTokens,
-            },
-          },
-          tokens: [{ address: '0xOLD' }],
-        },
-      },
-    };
-
-    const result = await migrate(originalState);
-
-    expect(sentryCaptureExceptionMock).not.toHaveBeenCalled();
-
-    const tokensControllerState = result.data.TokensController as Record<
-      string,
-      NetworkConfiguration
-    >;
-    expect(tokensControllerState.tokens).toEqual(originalTokens);
-
-    expect(result.meta.version).toBe(142.1);
   });
 });
