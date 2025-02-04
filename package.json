@@ -251,7 +251,8 @@
     "secp256k1@npm:^4.0.1": "4.0.4",
     "secp256k1@npm:4.0.2": "4.0.4",
     "secp256k1@npm:4.0.3": "4.0.4",
-    "undici@npm:5.28.4": "5.28.5"
+    "undici@npm:5.28.4": "5.28.5",
+    "@metamask/providers@npm:^18.1.1": "patch:@metamask/providers@npm%3A18.2.0#~/.yarn/patches/@metamask-providers-npm-18.2.0-3616fe3170.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -332,7 +333,7 @@
     "@metamask/ppom-validator": "0.36.0",
     "@metamask/preinstalled-example-snap": "^0.2.0",
     "@metamask/profile-sync-controller": "^3.1.1",
-    "@metamask/providers": "^18.2.0",
+    "@metamask/providers": "patch:@metamask/providers@npm%3A18.2.0#~/.yarn/patches/@metamask-providers-npm-18.2.0-3616fe3170.patch",
     "@metamask/queued-request-controller": "^7.0.1",
     "@metamask/rate-limit-controller": "^6.0.0",
     "@metamask/remote-feature-flag-controller": "^1.1.0",
