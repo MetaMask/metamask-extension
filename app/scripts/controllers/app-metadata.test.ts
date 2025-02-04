@@ -1,4 +1,4 @@
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import AppMetadataController, {
   getDefaultAppMetadataControllerState,
   type AppMetadataControllerOptions,
@@ -137,9 +137,9 @@ function withController<ReturnValue>(
 ): ReturnValue {
   const [options = {}, fn] = args.length === 2 ? args : [{}, args[0]];
 
-  const controllerMessenger = new ControllerMessenger<never, never>();
+  const messenger = new Messenger<never, never>();
 
-  const messenger = controllerMessenger.getRestricted({
+  const appMetadataControllerMessenger = messenger.getRestricted({
     name: 'AppMetadataController',
     allowedActions: [],
     allowedEvents: [],
@@ -147,7 +147,7 @@ function withController<ReturnValue>(
 
   return fn({
     controller: new AppMetadataController({
-      messenger,
+      messenger: appMetadataControllerMessenger,
       ...options,
     }),
   });

@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 
+const { promisify } = require('util');
 const { promises: fs } = require('fs');
+const execFile = promisify(require('child_process').execFile);
 const path = require('path');
 // Fetch is part of node js in future versions, thus triggering no-shadow
 // eslint-disable-next-line no-shadow
 const fetch = require('node-fetch');
 const VERSION = require('../package.json').version;
-const { getHighlights } = require('./highlights');
 
 start().catch(console.error);
 
@@ -58,13 +59,8 @@ async function start() {
     MERGE_BASE_COMMIT_HASH,
     CIRCLE_BUILD_NUM,
     CIRCLE_WORKFLOW_JOB_ID,
+    HOST_URL,
   } = process.env;
-
-  console.log('PR_NUMBER', PR_NUMBER);
-  console.log('HEAD_COMMIT_HASH', HEAD_COMMIT_HASH);
-  console.log('MERGE_BASE_COMMIT_HASH', MERGE_BASE_COMMIT_HASH);
-  console.log('CIRCLE_BUILD_NUM', CIRCLE_BUILD_NUM);
-  console.log('CIRCLE_WORKFLOW_JOB_ID', CIRCLE_WORKFLOW_JOB_ID);
 
   if (!PR_NUMBER) {
     console.warn(`No pull request detected for commit "${HEAD_COMMIT_HASH}"`);
@@ -73,7 +69,6 @@ async function start() {
 
   const SHORT_SHA1 = HEAD_COMMIT_HASH.slice(0, 7);
   const BUILD_LINK_BASE = `https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0`;
-  // build the github comment content
 
   // links to extension builds
   const buildMap = {
@@ -97,6 +92,21 @@ async function start() {
       firefox: `${BUILD_LINK_BASE}/builds-test-flask-mv2/metamask-flask-firefox-${VERSION}-flask.0.zip`,
     },
   };
+
+  const commitMessage = (
+    await execFile('git', ['show', '-s', '--format=%s', HEAD_COMMIT_HASH])
+  ).stdout.trim();
+  const betaVersionRegex = /Version v[0-9]+\.[0-9]+\.[0-9]+-beta\.[0-9]+/u;
+  const betaMatch = commitMessage.match(betaVersionRegex);
+
+  // only include beta build link if a beta version is detected in the commit message
+  if (betaMatch) {
+    const betaVersion = betaMatch[0].split('-beta.')[1];
+    console.log(`Beta version ${betaVersion} detected, adding beta build link`);
+    buildMap['builds (beta)'] = {
+      chrome: `${HOST_URL}/builds-beta/metamask-beta-chrome-${VERSION}-beta.${betaVersion}.zip`,
+    };
+  }
 
   const buildContentRows = Object.entries(buildMap).map(([label, builds]) => {
     const buildLinks = Object.entries(builds).map(([platform, url]) => {
@@ -139,7 +149,7 @@ async function start() {
   const bundleSizeDataUrl =
     'https://raw.githubusercontent.com/MetaMask/extension_bundlesize_stats/main/stats/bundle_size_data.json';
 
-  const storybookUrl = `${BUILD_LINK_BASE}/storybook/index.html`;
+  const storybookUrl = `${HOST_URL}/storybook-build/index.html`;
   const storybookLink = `<a href="${storybookUrl}">Storybook</a>`;
 
   const tsMigrationDashboardUrl = `${BUILD_LINK_BASE}/ts-migration-dashboard/index.html`;
@@ -344,16 +354,6 @@ async function start() {
     commentBody += sizeDiffBody;
   } catch (error) {
     console.error(`Error constructing bundle size diffs results: '${error}'`);
-  }
-
-  try {
-    const highlights = await getHighlights({ artifactBase: BUILD_LINK_BASE });
-    if (highlights) {
-      const highlightsBody = `### highlights:\n${highlights}\n`;
-      commentBody += highlightsBody;
-    }
-  } catch (error) {
-    console.error(`Error constructing highlight results: '${error}'`);
   }
 
   const JSON_PAYLOAD = JSON.stringify({ body: commentBody });

@@ -1,4 +1,4 @@
-import EthQuery from '@metamask/eth-query';
+import type { Provider } from '@metamask/network-controller';
 import {
   TRANSACTION_DATA_FOUR_BYTE,
   TRANSACTION_DATA_SOURCIFY,
@@ -20,7 +20,7 @@ jest.mock('./proxy');
 
 const CONTRACT_ADDRESS_MOCK = '0x456';
 const CHAIN_ID_MOCK = '0x123';
-const ETH_QUERY_MOCK = {} as EthQuery;
+const PROVIDER_MOCK = {} as Provider;
 
 describe('Transaction Decode Utils', () => {
   const decodeUniswapRouterTransactionDataMock = jest.mocked(
@@ -56,7 +56,7 @@ describe('Transaction Decode Utils', () => {
         transactionData: TRANSACTION_DATA_UNISWAP,
         contractAddress: CONTRACT_ADDRESS_MOCK,
         chainId: CHAIN_ID_MOCK,
-        ethQuery: ETH_QUERY_MOCK,
+        provider: PROVIDER_MOCK,
       });
 
       expect(result).toStrictEqual(TRANSACTION_DECODE_UNISWAP);
@@ -71,7 +71,7 @@ describe('Transaction Decode Utils', () => {
         transactionData: TRANSACTION_DATA_SOURCIFY,
         contractAddress: CONTRACT_ADDRESS_MOCK,
         chainId: CHAIN_ID_MOCK,
-        ethQuery: ETH_QUERY_MOCK,
+        provider: PROVIDER_MOCK,
       });
 
       expect(result).toStrictEqual(TRANSACTION_DECODE_SOURCIFY);
@@ -86,7 +86,7 @@ describe('Transaction Decode Utils', () => {
         transactionData: TRANSACTION_DATA_FOUR_BYTE,
         contractAddress: CONTRACT_ADDRESS_MOCK,
         chainId: CHAIN_ID_MOCK,
-        ethQuery: ETH_QUERY_MOCK,
+        provider: PROVIDER_MOCK,
       });
 
       expect(result).toStrictEqual(TRANSACTION_DECODE_FOUR_BYTE);
@@ -97,7 +97,7 @@ describe('Transaction Decode Utils', () => {
         transactionData: TRANSACTION_DATA_FOUR_BYTE,
         contractAddress: CONTRACT_ADDRESS_MOCK,
         chainId: CHAIN_ID_MOCK,
-        ethQuery: ETH_QUERY_MOCK,
+        provider: PROVIDER_MOCK,
       });
 
       expect(result).toBeUndefined();
