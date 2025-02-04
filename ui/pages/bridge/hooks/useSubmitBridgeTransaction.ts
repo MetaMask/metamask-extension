@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { zeroAddress } from 'ethereumjs-util';
 import { useHistory } from 'react-router-dom';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { createProjectLogger, Hex } from '@metamask/utils';
+import { createProjectLogger, isCaipChainId, type Hex } from '@metamask/utils';
 import type {
   QuoteMetadata,
   QuoteResponse,
@@ -91,6 +91,10 @@ export default function useSubmitBridgeTransaction() {
       history.push(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`);
     }
 
+    if (isCaipChainId(srcChainId)) {
+      // TODO handle non-evm chains
+      return;
+    }
     const statusRequestCommon = {
       bridgeId: quoteResponse.quote.bridgeId,
       bridge: quoteResponse.quote.bridges[0],
@@ -103,7 +107,10 @@ export default function useSubmitBridgeTransaction() {
     // Execute transaction(s)
     let approvalTxMeta: TransactionMeta | undefined;
     try {
-      if (quoteResponse?.approval) {
+      if (
+        quoteResponse?.approval &&
+        !isCaipChainId(quoteResponse.approval.chainId)
+      ) {
         // This will never be an STX
         approvalTxMeta = await handleApprovalTx({
           approval: quoteResponse.approval,
@@ -196,10 +203,15 @@ export default function useSubmitBridgeTransaction() {
       return;
     }
 
+    if (!bridgeTxMeta) {
+      // TODO handle non-evm chains
+      return;
+    }
+
     // Get bridge tx status
     const statusRequest = {
       ...statusRequestCommon,
-      srcTxHash: bridgeTxMeta.hash, // This might be undefined for STX
+      srcTxHash: bridgeTxMeta?.hash, // This might be undefined for STX
     };
     dispatch(
       startPollingForBridgeTxStatus({
@@ -207,7 +219,7 @@ export default function useSubmitBridgeTransaction() {
         statusRequest,
         quoteResponse: serializeQuoteMetadata(quoteResponse),
         slippagePercentage: slippage ?? 0,
-        startTime: bridgeTxMeta.time,
+        startTime: bridgeTxMeta?.time,
       }),
     );
 

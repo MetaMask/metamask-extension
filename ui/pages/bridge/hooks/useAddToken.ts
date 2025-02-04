@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import type { NetworkConfiguration } from '@metamask/network-controller';
+import { isCaipChainId } from '@metamask/utils';
 import type { QuoteResponse } from '../../../../shared/types/bridge';
 import { FEATURED_RPCS } from '../../../../shared/constants/network';
 import { addToken, addNetwork } from '../../../store/actions';
@@ -7,7 +8,7 @@ import {
   getNetworkConfigurationsByChainId,
   getSelectedNetworkClientId,
 } from '../../../../shared/modules/selectors/networks';
-import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
+import { formatChainIdFromApi } from '../../../../shared/modules/bridge-utils/multichain';
 
 export default function useAddToken() {
   const dispatch = useDispatch();
@@ -34,9 +35,13 @@ export default function useAddToken() {
 
   const addDestToken = async (quoteResponse: QuoteResponse) => {
     // Look up the destination chain
-    const hexDestChainId = decimalToPrefixedHex(
+    const hexDestChainId = formatChainIdFromApi(
       quoteResponse.quote.destChainId,
     );
+    if (isCaipChainId(hexDestChainId)) {
+      // TODO: Add solana token
+      return;
+    }
     const foundDestNetworkConfig: NetworkConfiguration | undefined =
       networkConfigurations[hexDestChainId];
     let addedDestNetworkConfig: NetworkConfiguration | undefined;
