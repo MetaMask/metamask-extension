@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { chain } from 'lodash';
@@ -10,8 +10,13 @@ import {
 } from '../../../store/actions';
 import {
   getCurrentChainId,
-  getDetectedTokensInCurrentNetwork,
   getSelectedNetworkClientId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../shared/modules/selectors/networks';
+import {
+  getAllDetectedTokensForSelectedAddress,
+  getDetectedTokensInCurrentNetwork,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
@@ -38,8 +43,8 @@ const sortingBasedOnTokenSelection = (tokensDetected) => {
       // ditch the 'selected' property and get just the tokens'
       .mapValues((group) =>
         group.map(({ token }) => {
-          const { address, symbol, decimals, aggregators } = token;
-          return { address, symbol, decimals, aggregators };
+          const { address, symbol, decimals, aggregators, chainId } = token;
+          return { address, symbol, decimals, aggregators, chainId };
         }),
       )
       // Exit the chain and get the underlying value, an object.
@@ -51,16 +56,71 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const chainId = useSelector(getCurrentChainId);
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
   const networkClientId = useSelector(getSelectedNetworkClientId);
-
-  const [tokensListDetected, setTokensListDetected] = useState(() =>
-    detectedTokens.reduce((tokenObj, token) => {
-      tokenObj[token.address] = { token, selected: true };
-      return tokenObj;
-    }, {}),
+  const detectedTokensMultichain = useSelector(
+    getAllDetectedTokensForSelectedAddress,
   );
+  const currentChainId = useSelector(getCurrentChainId);
+  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+
+  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
+    getIsTokenNetworkFilterEqualCurrentNetwork,
+  );
+
+  const totalDetectedTokens = useMemo(() => {
+    return process.env.PORTFOLIO_VIEW &&
+      !isTokenNetworkFilterEqualCurrentNetwork
+      ? Object.values(detectedTokensMultichain).flat().length
+      : detectedTokens.length;
+  }, [
+    detectedTokens,
+    detectedTokensMultichain,
+    isTokenNetworkFilterEqualCurrentNetwork,
+  ]);
+
+  const [tokensListDetected, setTokensListDetected] = useState({});
+
+  useEffect(() => {
+    const newTokensList = () => {
+      if (
+        process.env.PORTFOLIO_VIEW &&
+        !isTokenNetworkFilterEqualCurrentNetwork
+      ) {
+        return Object.entries(detectedTokensMultichain).reduce(
+          (acc, [chainId, tokens]) => {
+            if (Array.isArray(tokens)) {
+              tokens.forEach((token) => {
+                acc[token.address] = {
+                  token: { ...token, chainId },
+                  selected: tokensListDetected[token.address]?.selected ?? true,
+                };
+              });
+            }
+            return acc;
+          },
+          {},
+        );
+      }
+
+      return detectedTokens.reduce((tokenObj, token) => {
+        tokenObj[token.address] = {
+          token,
+          selected: tokensListDetected[token.address]?.selected ?? true,
+          chainId: currentChainId,
+        };
+        return tokenObj;
+      }, {});
+    };
+
+    setTokensListDetected(newTokensList());
+  }, [
+    isTokenNetworkFilterEqualCurrentNetwork,
+    detectedTokensMultichain,
+    detectedTokens,
+    currentChainId,
+  ]);
+
   const [showDetectedTokenIgnoredPopover, setShowDetectedTokenIgnoredPopover] =
     useState(false);
   const [partiallyIgnoreDetectedTokens, setPartiallyIgnoreDetectedTokens] =
@@ -79,22 +139,56 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
           token_standard: TokenStandard.ERC20,
           asset_type: AssetType.token,
           token_added_type: 'detected',
-          chain_id: chainId,
+          chain_id: importedToken.chainId,
         },
       });
     });
-    await dispatch(addImportedTokens(selectedTokens, networkClientId));
-    const tokenSymbols = selectedTokens.map(({ symbol }) => symbol);
-    dispatch(setNewTokensImported(tokenSymbols.join(', ')));
+
+    if (
+      process.env.PORTFOLIO_VIEW &&
+      !isTokenNetworkFilterEqualCurrentNetwork
+    ) {
+      const tokensByChainId = selectedTokens.reduce((acc, token) => {
+        const { chainId } = token;
+
+        if (!acc[chainId]) {
+          acc[chainId] = { tokens: [] };
+        }
+
+        acc[chainId].tokens.push(token);
+
+        return acc;
+      }, {});
+
+      const importPromises = Object.entries(tokensByChainId).map(
+        async ([networkId, { tokens }]) => {
+          const chainConfig = allNetworks[networkId];
+          const { defaultRpcEndpointIndex } = chainConfig;
+          const { networkClientId: networkInstanceId } =
+            chainConfig.rpcEndpoints[defaultRpcEndpointIndex];
+
+          await dispatch(addImportedTokens(tokens, networkInstanceId));
+          const tokenSymbols = tokens.map(({ symbol }) => symbol);
+          dispatch(setNewTokensImported(tokenSymbols.join(', ')));
+        },
+      );
+
+      await Promise.all(importPromises);
+    } else {
+      await dispatch(addImportedTokens(selectedTokens, networkClientId));
+      const tokenSymbols = selectedTokens.map(({ symbol }) => symbol);
+      dispatch(setNewTokensImported(tokenSymbols.join(', ')));
+    }
   };
 
   const handleClearTokensSelection = async () => {
     const { selected: selectedTokens = [], deselected: deSelectedTokens = [] } =
       sortingBasedOnTokenSelection(tokensListDetected);
 
-    if (deSelectedTokens.length < detectedTokens.length) {
+    if (deSelectedTokens.length < totalDetectedTokens) {
       await importSelectedTokens(selectedTokens);
     }
+
     const tokensDetailsList = deSelectedTokens.map(
       ({ symbol, address }) => `${symbol} - ${address}`,
     );
@@ -108,17 +202,58 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
         asset_type: AssetType.token,
       },
     });
-    const deSelectedTokensAddresses = deSelectedTokens.map(
-      ({ address }) => address,
-    );
-    await dispatch(
-      ignoreTokens({
-        tokensToIgnore: deSelectedTokensAddresses,
-        dontShowLoadingIndicator: true,
-      }),
-    );
-    setShowDetectedTokens(false);
-    setPartiallyIgnoreDetectedTokens(false);
+
+    if (
+      process.env.PORTFOLIO_VIEW &&
+      !isTokenNetworkFilterEqualCurrentNetwork
+    ) {
+      // group deselected tokens by chainId
+      const groupedByChainId = deSelectedTokens.reduce((acc, token) => {
+        const { chainId } = token;
+        if (!acc[chainId]) {
+          acc[chainId] = [];
+        }
+        acc[chainId].push(token);
+        return acc;
+      }, {});
+
+      const promises = Object.entries(groupedByChainId).map(
+        async ([chainId, tokens]) => {
+          const { defaultRpcEndpointIndex, rpcEndpoints } =
+            allNetworks[chainId];
+          const networkInstanceId =
+            rpcEndpoints[defaultRpcEndpointIndex].networkClientId;
+
+          const tokensToIgnore = tokens.map((token) => token.address);
+
+          await dispatch(
+            ignoreTokens({
+              tokensToIgnore,
+              dontShowLoadingIndicator: true,
+              networkClientId: networkInstanceId,
+            }),
+          );
+        },
+      );
+
+      await Promise.all(promises);
+      setShowDetectedTokens(false);
+      setPartiallyIgnoreDetectedTokens(false);
+    } else {
+      const deSelectedTokensAddresses = deSelectedTokens.map(
+        ({ address }) => address,
+      );
+
+      await dispatch(
+        ignoreTokens({
+          tokensToIgnore: deSelectedTokensAddresses,
+          dontShowLoadingIndicator: true,
+        }),
+      );
+
+      setShowDetectedTokens(false);
+      setPartiallyIgnoreDetectedTokens(false);
+    }
   };
 
   const handleTokenSelection = (token) => {
@@ -135,7 +270,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
     const { selected: selectedTokens = [] } =
       sortingBasedOnTokenSelection(tokensListDetected);
 
-    if (selectedTokens.length < detectedTokens.length) {
+    if (selectedTokens.length < totalDetectedTokens) {
       setShowDetectedTokenIgnoredPopover(true);
       setPartiallyIgnoreDetectedTokens(true);
     } else {
@@ -169,9 +304,13 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
           partiallyIgnoreDetectedTokens={partiallyIgnoreDetectedTokens}
         />
       )}
-      {detectedTokens.length > 0 && (
+      {totalDetectedTokens > 0 && (
         <DetectedTokenSelectionPopover
-          detectedTokens={detectedTokens}
+          detectedTokens={
+            process.env.PORTFOLIO_VIEW
+              ? detectedTokensMultichain
+              : detectedTokens
+          }
           tokensListDetected={tokensListDetected}
           handleTokenSelection={handleTokenSelection}
           onImport={onImport}

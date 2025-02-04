@@ -355,7 +355,7 @@ class Driver {
     // bucket that can include the state attribute to wait for elements that
     // match the selector to be removed from the DOM.
     let element;
-    if (!['visible', 'detached'].includes(state)) {
+    if (!['visible', 'detached', 'enabled'].includes(state)) {
       throw new Error(`Provided state selector ${state} is not supported`);
     }
     if (state === 'visible') {
@@ -368,7 +368,13 @@ class Driver {
         until.stalenessOf(await this.findElement(rawLocator)),
         timeout,
       );
+    } else if (state === 'enabled') {
+      element = await this.driver.wait(
+        until.elementIsEnabled(await this.findElement(rawLocator)),
+        timeout,
+      );
     }
+
     return wrapElementWithAPI(element, this);
   }
 
@@ -499,13 +505,14 @@ class Driver {
    * and returns a reference to the first matching element.
    *
    * @param {string | object} rawLocator - Element locator
+   * @param {number} timeout - Timeout in milliseconds
    * @returns {Promise<WebElement>} A promise that resolves to the found element.
    */
-  async findElement(rawLocator) {
+  async findElement(rawLocator, timeout = this.timeout) {
     const locator = this.buildLocator(rawLocator);
     const element = await this.driver.wait(
       until.elementLocated(locator),
-      this.timeout,
+      timeout,
     );
     return wrapElementWithAPI(element, this);
   }
@@ -540,13 +547,14 @@ class Driver {
    * Finds a clickable element on the page using the given locator.
    *
    * @param {string | object} rawLocator - Element locator
+   * @param {number} timeout - Timeout in milliseconds
    * @returns {Promise<WebElement>} A promise that resolves to the found clickable element.
    */
-  async findClickableElement(rawLocator) {
-    const element = await this.findElement(rawLocator);
+  async findClickableElement(rawLocator, timeout = this.timeout) {
+    const element = await this.findElement(rawLocator, timeout);
     await Promise.all([
-      this.driver.wait(until.elementIsVisible(element), this.timeout),
-      this.driver.wait(until.elementIsEnabled(element), this.timeout),
+      this.driver.wait(until.elementIsVisible(element), timeout),
+      this.driver.wait(until.elementIsEnabled(element), timeout),
     ]);
     return wrapElementWithAPI(element, this);
   }
@@ -601,10 +609,18 @@ class Driver {
         await element.click();
         return;
       } catch (error) {
-        if (
-          error.name === 'StaleElementReferenceError' &&
-          attempt < retries - 1
-        ) {
+        const retryableErrors = [
+          'StaleElementReferenceError',
+          'ElementClickInterceptedError',
+          'ElementNotInteractableError',
+        ];
+
+        if (retryableErrors.includes(error.name) && attempt < retries - 1) {
+          console.warn(
+            `Retrying click (attempt ${attempt + 1}/${retries}) due to: ${
+              error.name
+            }`,
+          );
           await this.delay(1000);
         } else {
           throw error;
@@ -691,12 +707,15 @@ class Driver {
   async clickElementSafe(rawLocator, timeout = 1000) {
     try {
       const locator = this.buildLocator(rawLocator);
-
       const elements = await this.driver.wait(
         until.elementsLocated(locator),
         timeout,
       );
 
+      await Promise.all([
+        this.driver.wait(until.elementIsVisible(elements[0]), timeout),
+        this.driver.wait(until.elementIsEnabled(elements[0]), timeout),
+      ]);
       await elements[0].click();
     } catch (e) {
       console.log(`Element ${rawLocator} not found (${e})`);
@@ -755,6 +774,16 @@ class Driver {
   }
 
   /**
+   * Move the mouse to the given element to test hover behaviour.
+   *
+   * @param element - Previously located element
+   * @returns {Promise<void>} promise resolving after mouse move completed
+   */
+  async hoverElement(element) {
+    await this.driver.actions().move({ origin: element, x: 1, y: 1 }).perform();
+  }
+
+  /**
    * Scrolls the page until the given web element is in view.
    *
    * @param {string | object} element - Element locator
@@ -765,6 +794,29 @@ class Driver {
       'arguments[0].scrollIntoView(true)',
       element,
     );
+  }
+
+  /**
+   * Waits for a condition to be met within a given timeout period.
+   *
+   * @param {Function} condition - The condition to wait for. This function should return a boolean indicating whether the condition is met.
+   * @param {object} options - Options for the wait.
+   * @param {number} options.timeout - The maximum amount of time (in milliseconds) to wait for the condition to be met.
+   * @param {number} options.interval - The interval (in milliseconds) between checks for the condition.
+   * @returns {Promise<void>} A promise that resolves when the condition is met or the timeout is reached.
+   * @throws {Error} Throws an error if the condition is not met within the timeout period.
+   */
+  async waitUntil(condition, options) {
+    const { timeout, interval } = options;
+    const endTime = Date.now() + timeout;
+
+    while (Date.now() < endTime) {
+      if (await condition()) {
+        return true;
+      }
+      await new Promise((resolve) => setTimeout(resolve, interval));
+    }
+    throw new Error('Condition not met within timeout');
   }
 
   /**
@@ -805,15 +857,13 @@ class Driver {
    * @returns {Promise<WebElement>}  promise that resolves to the WebElement
    */
   async pasteIntoField(rawLocator, contentToPaste) {
-    // Throw if double-quote is present in content to paste
-    // so that we don't have to worry about escaping double-quotes
-    if (contentToPaste.includes('"')) {
-      throw new Error('Cannot paste content with double-quote');
-    }
     // Click to focus the field
     await this.clickElement(rawLocator);
     await this.executeScript(
-      `navigator.clipboard.writeText("${contentToPaste}")`,
+      `navigator.clipboard.writeText("${contentToPaste.replace(
+        /"/gu,
+        '\\"',
+      )}")`,
     );
     await this.fill(rawLocator, Key.chord(this.Key.MODIFIER, 'v'));
   }
@@ -1177,12 +1227,13 @@ class Driver {
 
     const filepathBase = `${artifactDir(title)}/test-failure`;
     await fs.mkdir(artifactDir(title), { recursive: true });
+
+    const windowHandles = await this.driver.getAllWindowHandles();
     // On occasion there may be a bug in the offscreen document which does
     // not render visibly to the user and therefore no screenshot can be
     // taken. In this case we skip the screenshot and log the error.
     try {
       // If there's more than one tab open, we want to iterate through all of them and take a screenshot with a unique name
-      const windowHandles = await this.driver.getAllWindowHandles();
       for (const handle of windowHandles) {
         await this.driver.switchTo().window(handle);
         const windowTitle = await this.driver.getTitle();
@@ -1202,12 +1253,24 @@ class Driver {
     } catch (e) {
       console.error('Failed to take screenshot', e);
     }
-    const htmlSource = await this.driver.getPageSource();
-    await fs.writeFile(`${filepathBase}-dom.html`, htmlSource);
+
+    try {
+      for (const handle of windowHandles) {
+        const windowNumber = windowHandles.indexOf(handle) + 1;
+        await this.driver.switchTo().window(handle);
+
+        const htmlSource = await this.driver.getPageSource();
+        await fs.writeFile(
+          `${filepathBase}-dom-${windowNumber}.html`,
+          htmlSource,
+        );
+      }
+    } catch (e) {
+      console.error('Failed to capture DOM snapshot', e);
+    }
 
     // We want to take a state snapshot of the app if possible, this is useful for debugging
     try {
-      const windowHandles = await this.driver.getAllWindowHandles();
       for (const handle of windowHandles) {
         await this.driver.switchTo().window(handle);
         const uiState = await this.driver.executeScript(
@@ -1311,7 +1374,23 @@ class Driver {
 
   #getErrorFromEvent(event) {
     // Extract the values from the array
-    const values = event.args.map((a) => a.value);
+    const values = event.args.map((a) => {
+      // Handle snaps error type
+      if (a && a.preview && Array.isArray(a.preview.properties)) {
+        return a.preview.properties
+          .filter((prop) => prop.value !== 'Object')
+          .map((prop) => prop.value)
+          .join(', ');
+      } else if (a.description) {
+        // Handle RPC error type
+        return a.description;
+      } else if (a.value) {
+        // Handle generic error types
+        return a.value;
+      }
+      // Fallback for other error structures
+      return JSON.stringify(a, null, 2);
+    });
 
     if (values[0]?.includes('%s')) {
       // The values are in the "printf" form of [message, ...substitutions]

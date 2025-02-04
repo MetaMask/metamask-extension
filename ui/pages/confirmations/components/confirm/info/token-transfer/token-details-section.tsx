@@ -4,10 +4,13 @@ import {
 } from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { ORIGIN_METAMASK } from '../../../../../../../shared/constants/app';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../shared/constants/network';
+import { getNetworkConfigurationsByChainId } from '../../../../../../../shared/modules/selectors/networks';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
+  ConfirmInfoRowDivider,
 } from '../../../../../../components/app/confirm/info/row';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import {
@@ -26,10 +29,10 @@ import {
   TextVariant,
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { getNetworkConfigurationsByChainId } from '../../../../../../selectors';
 import { useConfirmContext } from '../../../../context/confirm';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../selectors/preferences';
 import { useBalanceChanges } from '../../../simulation-details/useBalanceChanges';
+import { OriginRow } from '../shared/transaction-details/transaction-details';
 
 export const TokenDetailsSection = () => {
   const t = useI18nContext();
@@ -80,22 +83,29 @@ export const TokenDetailsSection = () => {
     </ConfirmInfoRow>
   );
 
-  const tokenRow = transactionMeta.type !== TransactionType.simpleSend &&
-    (showAdvancedDetails || isSimulationEmpty || isSimulationError) && (
-      <ConfirmInfoRow
-        label={t('interactingWith')}
-        tooltip={t('interactingWithTransactionDescription')}
-      >
-        <ConfirmInfoRowAddress
-          address={transactionMeta.txParams.to as string}
-          chainId={chainId}
-        />
-      </ConfirmInfoRow>
-    );
+  const shouldShowTokenRow =
+    transactionMeta.type !== TransactionType.simpleSend &&
+    (showAdvancedDetails || isSimulationEmpty || isSimulationError);
+
+  const tokenRow = shouldShowTokenRow && (
+    <ConfirmInfoRow
+      label={t('interactingWith')}
+      tooltip={t('interactingWithTransactionDescription')}
+    >
+      <ConfirmInfoRowAddress
+        address={transactionMeta.txParams.to as string}
+        chainId={chainId}
+      />
+    </ConfirmInfoRow>
+  );
+
+  const shouldShowOriginRow = transactionMeta?.origin !== ORIGIN_METAMASK;
 
   return (
-    <ConfirmInfoSection data-testid="confirmation__transaction-flow">
+    <ConfirmInfoSection data-testid="confirmation__token-details-section">
       {networkRow}
+      {(shouldShowOriginRow || shouldShowTokenRow) && <ConfirmInfoRowDivider />}
+      {shouldShowOriginRow && <OriginRow />}
       {tokenRow}
     </ConfirmInfoSection>
   );

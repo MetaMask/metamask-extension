@@ -76,7 +76,7 @@ const waitForDappConnected = async (driver) => {
   });
 };
 
-describe('Dapp viewed Event @no-mmi', function () {
+describe('Dapp viewed Event', function () {
   const validFakeMetricsId = 'fake-metrics-fd20';
   it('is not sent when metametrics ID is not valid', async function () {
     async function mockSegment(mockServer) {
@@ -296,10 +296,6 @@ describe('Dapp viewed Event @no-mmi', function () {
         await driver.clickElement({
           text: 'All Permissions',
           tag: 'div',
-        });
-        await driver.clickElementAndWaitToDisappear({
-          text: 'Got it',
-          tag: 'button',
         });
         await driver.clickElement({
           text: '127.0.0.1:8080',

@@ -85,6 +85,7 @@ export default function InsightWarnings({
               isCollapsable
               isCollapsed={warningState[snapId]}
               boxProps={{ marginBottom: idx === lastWarningIdx ? 0 : 4 }}
+              contentBackgroundColor={BackgroundColor.backgroundDefault}
             />
           );
         })}

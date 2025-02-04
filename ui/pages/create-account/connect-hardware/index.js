@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import * as actions from '../../../store/actions';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
-  getCurrentChainId,
   getMetaMaskAccounts,
   getRpcPrefsForCurrentProvider,
   getMetaMaskAccountsConnected,
@@ -74,6 +74,7 @@ const HD_PATHS = {
   ledger: LEDGER_HD_PATHS,
   lattice: LATTICE_HD_PATHS,
   trezor: TREZOR_HD_PATHS,
+  onekey: TREZOR_HD_PATHS,
 };
 
 const getErrorMessage = (errorCode, t) => {
@@ -128,6 +129,7 @@ class ConnectHardwareForm extends Component {
   async checkIfUnlocked() {
     for (const device of [
       HardwareDeviceNames.trezor,
+      HardwareDeviceNames.oneKey,
       HardwareDeviceNames.ledger,
       HardwareDeviceNames.lattice,
     ]) {
@@ -277,7 +279,7 @@ class ConnectHardwareForm extends Component {
       });
   };
 
-  onUnlockAccounts = async (device, path) => {
+  onUnlockAccounts = async (deviceName, path) => {
     const { history, mostRecentOverviewPage, unlockHardwareWalletAccounts } =
       this.props;
     const { selectedAccounts } = this.state;
@@ -291,15 +293,9 @@ class ConnectHardwareForm extends Component {
         ? this.context.t('hardwareWalletLegacyDescription')
         : '';
 
-    // Get preferred device name for metrics.
-    const metricDeviceName = await this.props.getDeviceNameForMetric(
-      device,
-      path,
-    );
-
     return unlockHardwareWalletAccounts(
       selectedAccounts,
-      device,
+      deviceName,
       path || null,
       description,
     )
@@ -309,7 +305,9 @@ class ConnectHardwareForm extends Component {
           event: MetaMetricsEventName.AccountAdded,
           properties: {
             account_type: MetaMetricsEventAccountType.Hardware,
-            account_hardware_type: metricDeviceName,
+            // For now we keep using the device name to avoid any discrepancies with our current metrics.
+            // TODO: This will be addressed later, see: https://github.com/MetaMask/metamask-extension/issues/29777
+            account_hardware_type: deviceName,
           },
         });
         history.push(mostRecentOverviewPage);
@@ -320,7 +318,8 @@ class ConnectHardwareForm extends Component {
           event: MetaMetricsEventName.AccountAddFailed,
           properties: {
             account_type: MetaMetricsEventAccountType.Hardware,
-            account_hardware_type: metricDeviceName,
+            // See comment above about `account_hardware_type`.
+            account_hardware_type: deviceName,
             error: e.message,
           },
         });
@@ -446,7 +445,6 @@ class ConnectHardwareForm extends Component {
 ConnectHardwareForm.propTypes = {
   connectHardware: PropTypes.func,
   checkHardwareStatus: PropTypes.func,
-  getDeviceNameForMetric: PropTypes.func,
   forgetDevice: PropTypes.func,
   showAlert: PropTypes.func,
   hideAlert: PropTypes.func,
@@ -479,9 +477,6 @@ const mapDispatchToProps = (dispatch) => {
     },
     connectHardware: (deviceName, page, hdPath, t) => {
       return dispatch(actions.connectHardware(deviceName, page, hdPath, t));
-    },
-    getDeviceNameForMetric: (deviceName, hdPath) => {
-      return dispatch(actions.getDeviceNameForMetric(deviceName, hdPath));
     },
     checkHardwareStatus: (deviceName, hdPath) => {
       return dispatch(actions.checkHardwareStatus(deviceName, hdPath));

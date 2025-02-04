@@ -14,8 +14,7 @@ import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { PreferencesController } from '../../controllers/preferences-controller';
 import { AppStateController } from '../../controllers/app-state-controller';
 import { SECURITY_ALERT_RESPONSE_CHECKING_CHAIN } from '../../../../shared/constants/security-provider';
-// eslint-disable-next-line import/no-restricted-paths
-import { getProviderConfig } from '../../../../ui/ducks/metamask/metamask';
+import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import { trace, TraceContext, TraceName } from '../../../../shared/lib/trace';
 import {
   generateSecurityAlertId,

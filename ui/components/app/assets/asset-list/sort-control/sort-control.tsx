@@ -1,11 +1,15 @@
 import React, { ReactNode, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
-import { Box } from '../../../../component-library';
+import { Box, Text } from '../../../../component-library';
 import { SortOrder, SortingCallbacksT } from '../../util/sort';
 import {
+  AlignItems,
   BackgroundColor,
+  BlockSize,
   BorderRadius,
+  Display,
+  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { setTokenSortConfig } from '../../../../../store/actions';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
@@ -14,7 +18,8 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../../../../../shared/constants/metametrics';
-import { getCurrentCurrency, getPreferences } from '../../../../../selectors';
+import { getPreferences } from '../../../../../selectors';
+import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getCurrencySymbol } from '../../../../../helpers/utils/common.util';
 
@@ -22,7 +27,7 @@ import { getCurrencySymbol } from '../../../../../helpers/utils/common.util';
 // inspired from ui/components/multichain/network-list-item
 // should probably be broken out into component library
 type SelectableListItemProps = {
-  isSelected: boolean;
+  isSelected?: boolean;
   onClick?: React.MouseEventHandler<HTMLSpanElement>;
   testId?: string;
   children: ReactNode;
@@ -36,15 +41,21 @@ export const SelectableListItem = ({
 }: SelectableListItemProps) => {
   return (
     <Box className="selectable-list-item-wrapper" data-testid={testId}>
-      <Box
+      <Text
         data-testid={`${testId}__button`}
         className={classnames('selectable-list-item', {
-          'selectable-list-item--selected': isSelected,
+          'selectable-list-item--selected': Boolean(isSelected),
         })}
         onClick={onClick}
+        variant={TextVariant.bodyMd}
+        as="button"
+        width={BlockSize.Full}
+        backgroundColor={BackgroundColor.backgroundDefault}
+        display={Display.Flex}
+        alignItems={AlignItems.center}
       >
         {children}
-      </Box>
+      </Text>
       {isSelected && (
         <Box
           className="selectable-list-item__selected-indicator"

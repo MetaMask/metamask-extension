@@ -1,5 +1,5 @@
 import React from 'react';
-import { EthAccountType } from '@metamask/keyring-api';
+import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest/rendering';
@@ -30,6 +30,7 @@ const render = () => {
           },
         },
         methods: ETH_EOA_METHODS,
+        scopes: [EthScope.Eoa],
         type: EthAccountType.Eoa,
         options: {},
         name: 'Custody Account A',

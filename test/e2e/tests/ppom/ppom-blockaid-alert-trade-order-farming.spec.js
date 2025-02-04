@@ -85,7 +85,7 @@ async function mockInfura(mockServer) {
   ]);
 }
 
-describe('PPOM Blockaid Alert - Set Trade farming order @no-mmi', function () {
+describe('PPOM Blockaid Alert - Set Trade farming order', function () {
   it('should show banner alert', async function () {
     // we need to use localhost instead of the ip
     // see issue: https://github.com/MetaMask/MetaMask-planning/issues/3560
@@ -118,7 +118,9 @@ describe('PPOM Blockaid Alert - Set Trade farming order @no-mmi', function () {
         await driver.clickElement('#maliciousTradeOrder');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.assertElementNotPresent('.loading-indicator');
+        await driver.assertElementNotPresent('.loading-indicator', {
+          timeout: 20000,
+        });
 
         await driver.waitForSelector({
           css: '.mm-text--body-lg-medium',

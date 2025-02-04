@@ -6,14 +6,14 @@ import {
   getConversionRate,
   getGasFeeEstimates,
   getNativeCurrency,
+  getCurrentCurrency,
 } from '../../../../../../../ducks/metamask/metamask';
 import { EtherDenomination } from '../../../../../../../../shared/constants/common';
 import {
-  getCurrentCurrency,
   checkNetworkAndAccountSupports1559,
-  getCurrentChainId,
   getIsSwapsChain,
 } from '../../../../../../../selectors/selectors';
+import { getCurrentChainId } from '../../../../../../../../shared/modules/selectors/networks';
 import {
   fetchAndSetSwapsGasPriceInfo,
   getUsedSwapsGasPrice,

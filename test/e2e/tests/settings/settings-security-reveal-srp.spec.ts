@@ -2,7 +2,7 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { E2E_SRP } from '../../default-fixture';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import HomePage from '../../page-objects/pages/homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -29,7 +29,7 @@ describe('Reveal SRP through settings', function () {
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.check_pageIsLoaded();
         await privacySettings.openRevealSrpQuiz();
-        await privacySettings.completeRevealSrpQuiz(true);
+        await privacySettings.completeRevealSrpQuiz();
         await privacySettings.fillPasswordToRevealSrp(
           wrongTestPassword,
           'Incorrect password',
@@ -58,7 +58,7 @@ describe('Reveal SRP through settings', function () {
 
         // fill password to reveal SRP and check the displayed SRP
         await privacySettings.openRevealSrpQuiz();
-        await privacySettings.completeRevealSrpQuiz(true);
+        await privacySettings.completeRevealSrpQuiz();
         await privacySettings.fillPasswordToRevealSrp(testPassword);
         await privacySettings.check_srpTextIsDisplayed(E2E_SRP);
         await privacySettings.check_displayedSrpCanBeCopied();

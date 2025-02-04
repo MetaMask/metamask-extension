@@ -369,9 +369,6 @@
   "loading": {
     "message": "በመጫን ላይ…"
   },
-  "loadingTokens": {
-    "message": "ተለዋጭ ስሞችን በመጫን ላይ..."
-  },
   "lock": {
     "message": "ዘግተህ ውጣ"
   },
@@ -430,9 +427,6 @@
   },
   "noConversionRateAvailable": {
     "message": "ምንም የልወጣ ተመን አይገኝም"
-  },
-  "noTransactions": {
-    "message": "ግብይቶች የሉዎትም"
   },
   "noWebcamFound": {
     "message": "የኮምፒዩተርዎ ካሜራ አልተገኘም። እባክዎ እንደገና ይሞክሩ።"
@@ -697,9 +691,6 @@
   },
   "transactionErrored": {
     "message": "ግብይቱ እንከን አጋጥሞታል።"
-  },
-  "transactionFee": {
-    "message": " የግብይት ክፍያ"
   },
   "transactionResubmitted": {
     "message": "ግብይቱ በድጋሚ ሲቀርብ የነዳጅ ክፍያ ወደ $1በ$2ጨምሯል"

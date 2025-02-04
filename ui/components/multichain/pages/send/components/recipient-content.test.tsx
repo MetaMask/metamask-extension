@@ -21,7 +21,7 @@ jest.mock('reselect', () => ({
   createSelector: jest.fn(),
 }));
 
-jest.mock('../../../../../selectors/util', () => ({
+jest.mock('../../../../../../shared/modules/selectors/util', () => ({
   createDeepEqualSelector: jest.fn(),
 }));
 

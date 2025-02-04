@@ -15,10 +15,8 @@ import {
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  SIGNATURE_TRANSACTION_TYPES,
-  REDESIGN_DEV_TRANSACTION_TYPES,
-} from '../../utils';
+import { SIGNATURE_TRANSACTION_TYPES } from '../../utils';
+import { isCorrectDeveloperTransactionType } from '../../../../../shared/lib/confirmation.utils';
 import {
   SecurityAlertResponse,
   SignatureRequestType,
@@ -29,11 +27,6 @@ import { normalizeProviderAlert } from './utils';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const zlib = require('zlib');
-
-const SUPPORTED_TRANSACTION_TYPES = [
-  ...SIGNATURE_TRANSACTION_TYPES,
-  ...REDESIGN_DEV_TRANSACTION_TYPES,
-];
 
 const IGNORED_RESULT_TYPES = [
   BlockaidResultType.Benign,
@@ -74,7 +67,8 @@ const useBlockaidAlerts = (): Alert[] => {
     signatureSecurityAlertResponse || transactionSecurityAlertResponse;
 
   const isTransactionTypeSupported =
-    SUPPORTED_TRANSACTION_TYPES.includes(transactionType);
+    isCorrectDeveloperTransactionType(transactionType) ||
+    SIGNATURE_TRANSACTION_TYPES.includes(transactionType);
 
   const isResultTypeIgnored = IGNORED_RESULT_TYPES.includes(
     securityAlertResponse?.result_type as BlockaidResultType,

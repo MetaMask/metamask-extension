@@ -368,9 +368,6 @@
   "loading": {
     "message": "Načítám..."
   },
-  "loadingTokens": {
-    "message": "Načítám tokeny..."
-  },
   "lock": {
     "message": "Odhlásit"
   },
@@ -420,9 +417,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Nie je k dispozícii žiadna sadzba konverzie"
-  },
-  "noTransactions": {
-    "message": "Žádné transakce"
   },
   "noWebcamFound": {
     "message": "Webová kamera vášho počítača sa nenašla. Skúste znova."
@@ -678,9 +672,6 @@
   },
   "transactionErrored": {
     "message": "Pri transakcii sa vyskytla chyba."
-  },
-  "transactionFee": {
-    "message": "Poplatok za transakciu"
   },
   "transactionResubmitted": {
     "message": "Transakcia znovu odoslaná s poplatkom za GAS zvýšeným na $1 na $2"

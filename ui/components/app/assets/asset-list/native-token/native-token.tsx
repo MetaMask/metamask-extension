@@ -10,23 +10,14 @@ import {
 } from '../../../../../selectors/multichain';
 import { getPreferences } from '../../../../../selectors';
 import { TokenListItem } from '../../../../multichain';
-import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { AssetListProps } from '../asset-list';
 import { useNativeTokenBalance } from './use-native-token-balance';
 
 const NativeToken = ({ onClickAsset }: AssetListProps) => {
   const nativeCurrency = useSelector(getMultichainNativeCurrency);
   const isMainnet = useSelector(getMultichainIsMainnet);
-  const { chainId, ticker, type, rpcUrl } = useSelector(
-    getMultichainCurrentNetwork,
-  );
+  const { chainId } = useSelector(getMultichainCurrentNetwork);
   const { privacyMode } = useSelector(getPreferences);
-  const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
-    chainId,
-    ticker,
-    type,
-    rpcUrl,
-  );
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
   const balanceIsLoading = !balance;
 
@@ -36,10 +27,7 @@ const NativeToken = ({ onClickAsset }: AssetListProps) => {
 
   const isEvm = useSelector(getMultichainIsEvm);
 
-  let isStakeable = isMainnet && isEvm;
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  isStakeable = false;
-  ///: END:ONLY_INCLUDE_IF
+  const isStakeable = isMainnet && isEvm;
 
   return (
     <TokenListItem
@@ -50,7 +38,6 @@ const NativeToken = ({ onClickAsset }: AssetListProps) => {
       tokenSymbol={symbol}
       secondary={secondary}
       tokenImage={balanceIsLoading ? null : primaryTokenImage}
-      isOriginalTokenSymbol={isOriginalNativeSymbol}
       isNativeCurrency
       isStakeable={isStakeable}
       showPercentage

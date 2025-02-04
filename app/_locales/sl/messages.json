@@ -375,9 +375,6 @@
   "loading": {
     "message": "Nalaganje ..."
   },
-  "loadingTokens": {
-    "message": "Nalaganje žetonov ..."
-  },
   "lock": {
     "message": "Odjava"
   },
@@ -433,9 +430,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Menjalni tečaj ni na voljo"
-  },
-  "noTransactions": {
-    "message": "Nimate transakcij"
   },
   "noWebcamFound": {
     "message": "Spletna kamera ni najdena. Poskusite znova kasneje."
@@ -700,9 +694,6 @@
   },
   "transactionErrored": {
     "message": "Napaka pri transakciji."
-  },
-  "transactionFee": {
-    "message": "Transakcijska provizija"
   },
   "transactionResubmitted": {
     "message": "Transakcija ponovno oddana s povečanim gas fee $1 na $2"

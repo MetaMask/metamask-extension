@@ -352,6 +352,7 @@ export const getFeeForSmartTransaction = ({
   const chainCurrencySymbolToUse =
     nativeCurrencySymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId]?.symbol;
   return {
+    rawNetworkFees,
     feeInUsd,
     feeInFiat: formattedNetworkFee,
     feeInEth: `${ethFee} ${chainCurrencySymbolToUse}`,
@@ -823,7 +824,7 @@ export const getSwap1559GasFeeEstimates = async (
   };
 };
 
-async function getTransaction1559GasFeeEstimates(
+export async function getTransaction1559GasFeeEstimates(
   transactionParams: TransactionParams,
   estimatedBaseFee: Hex,
   chainId: Hex,

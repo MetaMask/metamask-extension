@@ -24,10 +24,12 @@ import {
   updateNetworksList,
   setNetworkClientIdForDomain,
   setEditedNetwork,
-  grantPermittedChain,
   showPermittedNetworkToast,
   updateCustomNonce,
   setNextNonce,
+  addPermittedChain,
+  setTokenNetworkFilter,
+  detectNfts,
 } from '../../../store/actions';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -36,20 +38,22 @@ import {
   TEST_CHAINS,
 } from '../../../../shared/constants/network';
 import {
+  getNetworkConfigurationsByChainId,
   getCurrentChainId,
+} from '../../../../shared/modules/selectors/networks';
+import {
   getShowTestNetworks,
   getOnboardedInThisUISession,
   getShowNetworkBanner,
   getOriginOfCurrentTab,
-  getUseRequestQueue,
   getEditedNetwork,
-  getNetworkConfigurationsByChainId,
   getOrderedNetworksList,
   getIsAddingNewNetwork,
   getIsMultiRpcOnboarding,
   getAllDomains,
   getPermittedChainsForSelectedTab,
   getPermittedAccountsForSelectedTab,
+  getPreferences,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -111,10 +115,10 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
+  const { tokenNetworkFilter } = useSelector(getPreferences);
   const showTestNetworks = useSelector(getShowTestNetworks);
   const currentChainId = useSelector(getCurrentChainId);
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
-  const useRequestQueue = useSelector(getUseRequestQueue);
   const isUnlocked = useSelector(getIsUnlocked);
   const domains = useSelector(getAllDomains);
   const orderedNetworksList = useSelector(getOrderedNetworksList);
@@ -123,6 +127,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
   const showNetworkBanner = useSelector(getShowNetworkBanner);
+  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const { chainId: editingChainId, editCompleted } =
     useSelector(getEditedNetwork) ?? {};
@@ -247,6 +252,53 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     ...searchedTestNetworks,
   ].some((network) => network.rpcEndpoints.length > 1);
 
+  const handleNetworkChange = (network: NetworkConfiguration) => {
+    const allOpts = Object.keys(allNetworks).reduce((acc, chainId) => {
+      acc[chainId] = true;
+      return acc;
+    }, {} as Record<string, boolean>);
+
+    const { networkClientId } =
+      network.rpcEndpoints[network.defaultRpcEndpointIndex];
+    dispatch(setActiveNetwork(networkClientId));
+    dispatch(toggleNetworkMenu());
+    dispatch(updateCustomNonce(''));
+    dispatch(setNextNonce(''));
+    dispatch(detectNfts());
+
+    // as a user, I don't want my network selection to force update my filter when I have "All Networks" toggled on
+    // however, if I am already filtered on "Current Network", we'll want to filter by the selected network when the network changes
+    if (Object.keys(tokenNetworkFilter || {}).length <= 1) {
+      dispatch(setTokenNetworkFilter({ [network.chainId]: true }));
+    } else if (process.env.PORTFOLIO_VIEW) {
+      dispatch(setTokenNetworkFilter(allOpts));
+    }
+
+    if (permittedAccountAddresses.length > 0) {
+      dispatch(addPermittedChain(selectedTabOrigin, network.chainId));
+      if (!permittedChainIds.includes(network.chainId)) {
+        dispatch(showPermittedNetworkToast());
+      }
+    }
+    // If presently on a dapp, communicate a change to
+    // the dapp via silent switchEthereumChain that the
+    // network has changed due to user action
+    if (selectedTabOrigin && domains[selectedTabOrigin]) {
+      setNetworkClientIdForDomain(selectedTabOrigin, networkClientId);
+    }
+
+    trackEvent({
+      event: MetaMetricsEventName.NavNetworkSwitched,
+      category: MetaMetricsEventCategory.Network,
+      properties: {
+        location: 'Network Menu',
+        chain_id: currentChainId,
+        from_network: currentChainId,
+        to_network: network.chainId,
+      },
+    });
+  };
+
   // Renders a network in the network list
   const generateNetworkListItem = (network: NetworkConfiguration) => {
     const isCurrentNetwork = network.chainId === currentChainId;
@@ -272,40 +324,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         selected={isCurrentNetwork && !focusSearch}
         focus={isCurrentNetwork && !focusSearch}
         onClick={() => {
-          const { networkClientId } =
-            network.rpcEndpoints[network.defaultRpcEndpointIndex];
-          dispatch(setActiveNetwork(networkClientId));
-          dispatch(toggleNetworkMenu());
-          dispatch(updateCustomNonce(''));
-          dispatch(setNextNonce(''));
-
-          if (permittedAccountAddresses.length > 0) {
-            grantPermittedChain(selectedTabOrigin, network.chainId);
-            if (!permittedChainIds.includes(network.chainId)) {
-              dispatch(showPermittedNetworkToast());
-            }
-          }
-          // If presently on a dapp, communicate a change to
-          // the dapp via silent switchEthereumChain that the
-          // network has changed due to user action
-          if (
-            useRequestQueue &&
-            selectedTabOrigin &&
-            domains[selectedTabOrigin]
-          ) {
-            setNetworkClientIdForDomain(selectedTabOrigin, networkClientId);
-          }
-
-          trackEvent({
-            event: MetaMetricsEventName.NavNetworkSwitched,
-            category: MetaMetricsEventCategory.Network,
-            properties: {
-              location: 'Network Menu',
-              chain_id: currentChainId,
-              from_network: currentChainId,
-              to_network: network.chainId,
-            },
-          });
+          handleNetworkChange(network);
         }}
         onDeleteClick={
           canDeleteNetwork
@@ -544,6 +563,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       return (
         <SelectRpcUrlModal
           networkConfiguration={networkConfigurations[editedNetwork.chainId]}
+          onNetworkChange={handleNetworkChange}
         />
       );
     }

@@ -42,7 +42,7 @@ export const DefaultStory = Template.bind({});
 
 export const NotConnectedStory = Template.bind({});
 NotConnectedStory.args = {
-  badgeBackgroundColor: Color.borderMuted,
+  badgeBackgroundColor: BackgroundColor.iconAlternative,
   badgeBorderColor: BackgroundColor.backgroundDefault,
 };
 

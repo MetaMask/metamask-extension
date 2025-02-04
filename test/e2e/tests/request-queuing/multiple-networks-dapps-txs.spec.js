@@ -9,10 +9,9 @@ const {
   defaultGanacheOptions,
   largeDelayMs,
 } = require('../../helpers');
-const { PAGES } = require('../../webdriver/driver');
 
 describe('Request Queuing for Multiple Dapps and Txs on different networks.', function () {
-  it('should switch to the dapps network automatically when handling sendTransaction calls @no-mmi', async function () {
+  it('should switch to the dapps network automatically when handling sendTransaction calls', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -20,7 +19,6 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
           .withSelectedNetworkControllerPerDomain()
           .build(),
         dappOptions: { numberOfDapps: 2 },
@@ -38,9 +36,6 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
       },
       async ({ driver }) => {
         await unlockWallet(driver);
-
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
 
         // Open Dapp One
         await openDapp(driver, undefined, DAPP_URL);
@@ -104,10 +99,8 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Reject Transaction
-        await driver.findClickableElement({ text: 'Reject', tag: 'button' });
-        await driver.clickElement(
-          '[data-testid="page-container-footer-cancel"]',
-        );
+        await driver.findClickableElement({ text: 'Cancel', tag: 'button' });
+        await driver.clickElement({ text: 'Cancel', tag: 'button' });
 
         // TODO: No second confirmation from dapp two will show, have to go back to the extension to see the switch chain & dapp two's tx.
         await driver.switchToWindowWithTitle(
@@ -134,7 +127,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         });
 
         // Confirm Tx
-        await driver.clickElement('[data-testid="page-container-footer-next"]');
+        await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         // Check for Confirmed Transaction
         await driver.wait(async () => {

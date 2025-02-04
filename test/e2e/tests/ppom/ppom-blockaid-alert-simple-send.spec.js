@@ -1,6 +1,5 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
-
 const {
   defaultGanacheOptions,
   withFixtures,
@@ -8,6 +7,9 @@ const {
   logInWithBalanceValidation,
   WINDOW_TITLES,
 } = require('../../helpers');
+const {
+  mockMultiNetworkBalancePolling,
+} = require('../../mock-balance-polling/mock-balance-polling');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
@@ -32,13 +34,13 @@ const SEND_REQUEST_BASE_MOCK = {
 };
 
 async function mockInfura(mockServer) {
+  await mockMultiNetworkBalancePolling(mockServer);
   await mockServerJsonRpc(mockServer, [
     ['eth_blockNumber'],
     ['eth_call'],
     ['eth_estimateGas'],
     ['eth_feeHistory'],
     ['eth_gasPrice'],
-    ['eth_getBalance'],
     ['eth_getBlockByNumber'],
     ['eth_getCode'],
     ['eth_getTransactionCount'],
@@ -115,7 +117,7 @@ async function mockInfuraWithFailedResponses(mockServer) {
  *
  * @see {@link https://wobbly-nutmeg-8a5.notion.site/MM-E2E-Testing-1e51b617f79240a49cd3271565c6e12d}
  */
-describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
+describe('Simple Send Security Alert - Blockaid', function () {
   it('should not show security alerts for benign requests', async function () {
     await withFixtures(
       {
@@ -214,7 +216,7 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
         const expectedTitle = 'Be careful';
 
         const bannerAlert = await driver.findElement({
-          css: bannerAlertSelector,
+          css: '[data-testid="confirm-banner-alert"]',
           text: expectedTitle,
         });
 

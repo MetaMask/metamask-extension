@@ -86,7 +86,12 @@ function getClientOptions() {
     integrations: [
       Sentry.dedupeIntegration(),
       Sentry.extraErrorDataIntegration(),
-      Sentry.browserTracingIntegration(),
+      Sentry.browserTracingIntegration({
+        shouldCreateSpanForRequest: (url) => {
+          // Do not create spans for outgoing requests to a 'sentry.io' domain.
+          return !url.match(/^https?:\/\/([\w\d.@-]+\.)?sentry\.io(\/|$)/u);
+        },
+      }),
       filterEvents({ getMetaMetricsEnabled, log }),
     ],
     release: RELEASE,
@@ -122,9 +127,9 @@ function getTracesSampleRate(sentryTarget) {
   }
 
   if (flags.circleci) {
-    // Report very frequently on develop branch, and never on other branches
+    // Report very frequently on main branch, and never on other branches
     // (Unless you use a `flags = {"sentry": {"tracesSampleRate": x.xx}}` override)
-    if (flags.circleci.branch === 'develop') {
+    if (flags.circleci.branch === 'main') {
       return 0.015;
     }
     return 0;
@@ -134,7 +139,7 @@ function getTracesSampleRate(sentryTarget) {
     return 1.0;
   }
 
-  return 0.02;
+  return 0.01;
 }
 
 /**

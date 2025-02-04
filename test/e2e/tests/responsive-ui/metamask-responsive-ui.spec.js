@@ -10,7 +10,7 @@ const {
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('MetaMask Responsive UI', function () {
-  it('Creating a new wallet @no-mmi', async function () {
+  it('Creating a new wallet', async function () {
     const driverOptions = { constrainWindowSize: true };
 
     await withFixtures(
@@ -21,6 +21,7 @@ describe('MetaMask Responsive UI', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
+
         // agree to terms of use
         await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
 
@@ -94,7 +95,7 @@ describe('MetaMask Responsive UI', function () {
 
         // Import Secret Recovery Phrase
         await driver.waitForSelector({
-          tag: 'span',
+          tag: 'p',
           text: 'Localhost 8545',
         });
         await driver.clickElement({
@@ -145,8 +146,8 @@ describe('MetaMask Responsive UI', function () {
 
         // wait for transaction value to be rendered and confirm
         await driver.waitForSelector({
-          css: '.currency-display-component__text',
-          text: '1.000042',
+          css: 'h2',
+          text: '1 ETH',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 

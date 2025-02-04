@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, ReactNode } from 'react';
 import {
   Display,
   FlexDirection,
@@ -13,7 +13,7 @@ import { SnapUIImage } from '../snap-ui-image';
 
 export type SnapUICardProps = {
   image?: string | undefined;
-  title: string;
+  title: string | ReactNode;
   description?: string | undefined;
   value: string;
   extra?: string | undefined;
@@ -33,13 +33,18 @@ export const SnapUICard: FunctionComponent<SnapUICardProps> = ({
       justifyContent={JustifyContent.spaceBetween}
       alignItems={AlignItems.center}
     >
-      <Box display={Display.Flex} gap={4} alignItems={AlignItems.center}>
+      <Box
+        display={Display.Flex}
+        gap={4}
+        alignItems={AlignItems.center}
+        style={{ overflow: 'hidden' }}
+      >
         {image && (
           <SnapUIImage
             width="32px"
             height="32px"
             value={image}
-            style={{ borderRadius: '999px' }}
+            borderRadius="999px"
           />
         )}
         <Box

@@ -335,9 +335,6 @@
   "loading": {
     "message": "Naglo-load..."
   },
-  "loadingTokens": {
-    "message": "Naglo-load ng Mga Token..."
-  },
   "lock": {
     "message": "Mag-log out"
   },
@@ -383,9 +380,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Walang Presyo ng Palitan na Available"
-  },
-  "noTransactions": {
-    "message": "Wala kang mga transaksyon"
   },
   "noWebcamFound": {
     "message": "Hindi nakita ang webcam ng iyong computer. Pakisubukang muli."
@@ -628,9 +622,6 @@
   },
   "transactionErrored": {
     "message": "Nagkaroon ng error ang transaksyon."
-  },
-  "transactionFee": {
-    "message": "Fee sa Transaksyon"
   },
   "transactionResubmitted": {
     "message": "Nasumite ulit ang transaksyon nang may gas fee na ginawang $1 sa ganap na $2"

@@ -1,14 +1,17 @@
-import React, { createContext, useContext, useEffect, useMemo } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import { useSelector } from 'react-redux';
-import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { useListNotifications } from '../../hooks/metamask-notifications/useNotifications';
-import { useAccountSyncingEffect } from '../../hooks/metamask-notifications/useProfileSyncing';
-import { selectIsProfileSyncingEnabled } from '../../selectors/metamask-notifications/profile-syncing';
+import { selectIsProfileSyncingEnabled } from '../../selectors/identity/profile-syncing';
 import { selectIsMetamaskNotificationsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
 import { getUseExternalServices } from '../../selectors';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
-
-type Notification = NotificationServicesController.Types.INotification;
+import { type Notification } from '../../pages/notifications/notification-components/types/notifications/notifications';
 
 type MetamaskNotificationsContextType = {
   listNotifications: () => void;
@@ -33,6 +36,7 @@ export const useMetamaskNotificationsContext = () => {
 
 export const MetamaskNotificationsProvider: React.FC = ({ children }) => {
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const isProfileSyncingEnabledRef = useRef(isProfileSyncingEnabled);
   const isNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
@@ -41,12 +45,22 @@ export const MetamaskNotificationsProvider: React.FC = ({ children }) => {
   const { listNotifications, notificationsData, isLoading, error } =
     useListNotifications();
 
+  const wasProfileSyncingDisabled =
+    isProfileSyncingEnabledRef.current && !isProfileSyncingEnabled;
+
+  useEffect(() => {
+    if (wasProfileSyncingDisabled) {
+      // list notifications to update the counter
+      listNotifications();
+    }
+
+    isProfileSyncingEnabledRef.current = isProfileSyncingEnabled;
+  }, [isProfileSyncingEnabled]);
+
   const shouldFetchNotifications = useMemo(
     () => isProfileSyncingEnabled && isNotificationsEnabled,
     [isProfileSyncingEnabled, isNotificationsEnabled],
   );
-
-  useAccountSyncingEffect();
 
   useEffect(() => {
     if (basicFunctionality && shouldFetchNotifications && isUnlocked) {

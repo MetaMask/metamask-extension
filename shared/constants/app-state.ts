@@ -18,3 +18,13 @@ export const ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP = {
   [AccountOverviewTabKey.Nfts]: TraceName.AccountOverviewNftsTab,
   [AccountOverviewTabKey.Activity]: TraceName.AccountOverviewActivityTab,
 } as const;
+
+export type CarouselSlide = {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  dismissed?: boolean;
+  href?: string;
+  undismissable?: boolean;
+};

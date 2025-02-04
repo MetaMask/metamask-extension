@@ -1,9 +1,9 @@
 import { ListNames, PhishingController } from '@metamask/phishing-controller';
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import { isBlockedUrl } from './isBlockedUrl';
 
 describe('isBlockedUrl', () => {
-  const messenger = new ControllerMessenger();
+  const messenger = new Messenger();
   const phishingControllerMessenger = messenger.getRestricted({
     name: 'PhishingController',
     allowedActions: [],

@@ -381,9 +381,6 @@
   "loading": {
     "message": "Ladataan..."
   },
-  "loadingTokens": {
-    "message": "Käyttötunnuksia ladataan..."
-  },
   "localhost": {
     "message": "Paikallisjoukko 8545"
   },
@@ -445,9 +442,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Vaihtokurssi ei saatavilla"
-  },
-  "noTransactions": {
-    "message": "Sinulla ei ole tapahtumia"
   },
   "noWebcamFound": {
     "message": "Tietokoneesi verkkokameraa ei löytynyt. Ole hyvä ja yritä uudestaan."
@@ -709,9 +703,6 @@
   },
   "transactionErrored": {
     "message": "Tapahtumissa tapahtui virhe."
-  },
-  "transactionFee": {
-    "message": "Siirtomaksu"
   },
   "transactionResubmitted": {
     "message": "Tapahtuma toimitettiin uudelleen bensataksan noustessa summaan $1 kohdassa $2."

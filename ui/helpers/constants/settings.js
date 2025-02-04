@@ -122,20 +122,12 @@ const SETTINGS_CONSTANTS = [
   // advanced settingsRefs[6]
   {
     tabMessage: (t) => t('advanced'),
-    sectionMessage: (t) => t('nonceField'),
-    descriptionMessage: (t) => t('nonceFieldDesc'),
-    route: `${ADVANCED_ROUTE}#customize-nonce`,
-    icon: 'fas fa-sliders-h',
-  },
-  // advanced settingsRefs[7]
-  {
-    tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('autoLockTimeLimit'),
     descriptionMessage: (t) => t('autoLockTimeLimitDescription'),
     route: `${ADVANCED_ROUTE}#autolock-timer`,
     icon: 'fas fa-sliders-h',
   },
-  // advanced settingsRefs[8]
+  // advanced settingsRefs[7]
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('showExtensionInFullSizeView'),
@@ -143,7 +135,7 @@ const SETTINGS_CONSTANTS = [
     route: `${ADVANCED_ROUTE}#extension-full-size-view`,
     icon: 'fas fa-sliders-h',
   },
-  // advanced settingsRefs[9]
+  // advanced settingsRefs[8]
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('dismissReminderField'),
@@ -151,7 +143,7 @@ const SETTINGS_CONSTANTS = [
     route: `${ADVANCED_ROUTE}#dismiss-secretrecovery`,
     icon: 'fas fa-sliders-h',
   },
-  // advanced settingsRefs[10]
+  // advanced settingsRefs[9]
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('exportYourData'),
@@ -159,7 +151,7 @@ const SETTINGS_CONSTANTS = [
     route: `${ADVANCED_ROUTE}#export-data`,
     icon: 'fas fa-download',
   },
-  // advanced settingsRefs[11]
+  // advanced settingsRefs[10]
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('overrideContentSecurityPolicyHeader'),
@@ -212,7 +204,7 @@ const SETTINGS_CONSTANTS = [
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('use4ByteResolution'),
-    descriptionMessage: (t) => t('use4ByteResolutionDescription'),
+    descriptionMessage: (t) => t('toggleDecodeDescription'),
     route: `${SECURITY_ROUTE}#decode-smart-contracts`,
     icon: 'fa fa-lock',
   },
@@ -475,22 +467,6 @@ const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('notificationsFeatureToggle'),
     descriptionMessage: (t) => t('notificationsFeatureToggleDescription'),
     route: `${EXPERIMENTAL_ROUTE}#notifications`,
-    icon: 'fas fa-flask',
-  },
-  // experimental settingsRefs[2]
-  {
-    tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('redesignedConfirmationsEnabledToggle'),
-    descriptionMessage: (t) => t('redesignedConfirmationsToggleDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#redesigned-confirmations`,
-    icon: 'fas fa-flask',
-  },
-  // experimental settingsRefs[3]
-  {
-    tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('redesignedTransactionsEnabledToggle'),
-    descriptionMessage: (t) => t('redesignedTransactionsToggleDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#redesigned-transactions`,
     icon: 'fas fa-flask',
   },
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)

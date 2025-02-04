@@ -372,9 +372,6 @@
   "loading": {
     "message": "Inapakia..."
   },
-  "loadingTokens": {
-    "message": "Inapakia Vianzio..."
-  },
   "lock": {
     "message": "Toka kwenye akaunti"
   },
@@ -427,9 +424,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Hakuna Kiwango cha Ubadilishaji"
-  },
-  "noTransactions": {
-    "message": "Huna miamala."
   },
   "noWebcamFound": {
     "message": "Kamera yako ya kumpyuta haikupatikana. Tafadhali jaribu tena."
@@ -694,9 +688,6 @@
   },
   "transactionErrored": {
     "message": "Muamala umepata hitilafu."
-  },
-  "transactionFee": {
-    "message": "Ada ya Muamala"
   },
   "transactionResubmitted": {
     "message": "Muamala umewasilishwa tena ukiwa na ada ya gesi iliyoongezeka hadi $1 manamo $2"

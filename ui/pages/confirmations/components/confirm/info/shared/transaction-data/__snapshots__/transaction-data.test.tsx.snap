@@ -7,13 +7,13 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
     data-testid="advanced-details-data-section"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <button
         aria-label="copy-button"
         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-        style="cursor: pointer; position: absolute; right: 4px; top: 4px;"
+        style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -38,7 +38,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       />
     </div>
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
@@ -88,9 +88,10 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       >
         <div
           class="mm-box mm-box--padding-left-2"
+          data-testid="advanced-details-WRAP_ETH-params"
         >
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-0"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
@@ -130,10 +131,11 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                  class=""
                 >
                   <div
-                    class="mm-avatar-account__jazzicon"
+                    class="identicon"
+                    style="height: 16px; width: 16px; border-radius: 8px;"
                   />
                 </div>
                 <p
@@ -146,7 +148,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             </div>
           </div>
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-1"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
@@ -197,7 +199,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       style="height: 1px; margin-left: -8px; margin-right: -8px;"
     />
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
@@ -247,9 +249,10 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       >
         <div
           class="mm-box mm-box--padding-left-2"
+          data-testid="advanced-details-V3_SWAP_EXACT_IN-params"
         >
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-0"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
@@ -289,10 +292,11 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                  class=""
                 >
                   <div
-                    class="mm-avatar-account__jazzicon"
+                    class="identicon"
+                    style="height: 16px; width: 16px; border-radius: 8px;"
                   />
                 </div>
                 <p
@@ -305,7 +309,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             </div>
           </div>
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-1"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
@@ -350,7 +354,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             </div>
           </div>
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-2"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
@@ -395,7 +399,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             </div>
           </div>
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-3"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
@@ -438,10 +442,11 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                   class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                 >
                   <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                    class=""
                   >
                     <div
-                      class="mm-avatar-account__jazzicon"
+                      class="identicon"
+                      style="height: 16px; width: 16px; border-radius: 8px;"
                     />
                   </div>
                   <p
@@ -469,10 +474,11 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                   class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                 >
                   <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                    class=""
                   >
                     <div
-                      class="mm-avatar-account__jazzicon"
+                      class="identicon"
+                      style="height: 16px; width: 16px; border-radius: 8px;"
                     />
                   </div>
                   <p
@@ -500,10 +506,11 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                   class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                 >
                   <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                    class=""
                   >
                     <div
-                      class="mm-avatar-account__jazzicon"
+                      class="identicon"
+                      style="height: 16px; width: 16px; border-radius: 8px;"
                     />
                   </div>
                   <p
@@ -517,7 +524,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             </div>
           </div>
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-4"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
@@ -568,7 +575,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       style="height: 1px; margin-left: -8px; margin-right: -8px;"
     />
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
@@ -618,9 +625,10 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       >
         <div
           class="mm-box mm-box--padding-left-2"
+          data-testid="advanced-details-PAY_PORTION-params"
         >
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-0"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
@@ -660,10 +668,11 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                  class=""
                 >
                   <div
-                    class="mm-avatar-account__jazzicon"
+                    class="identicon"
+                    style="height: 16px; width: 16px; border-radius: 8px;"
                   />
                 </div>
                 <p
@@ -676,7 +685,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             </div>
           </div>
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-1"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
@@ -716,10 +725,11 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                  class=""
                 >
                   <div
-                    class="mm-avatar-account__jazzicon"
+                    class="identicon"
+                    style="height: 16px; width: 16px; border-radius: 8px;"
                   />
                 </div>
                 <p
@@ -732,7 +742,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             </div>
           </div>
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-2"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
@@ -783,7 +793,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       style="height: 1px; margin-left: -8px; margin-right: -8px;"
     />
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
@@ -833,9 +843,10 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       >
         <div
           class="mm-box mm-box--padding-left-2"
+          data-testid="advanced-details-SWEEP-params"
         >
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-0"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
@@ -875,10 +886,11 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                  class=""
                 >
                   <div
-                    class="mm-avatar-account__jazzicon"
+                    class="identicon"
+                    style="height: 16px; width: 16px; border-radius: 8px;"
                   />
                 </div>
                 <p
@@ -891,7 +903,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             </div>
           </div>
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-1"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
@@ -931,10 +943,11 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                  class=""
                 >
                   <div
-                    class="mm-avatar-account__jazzicon"
+                    class="identicon"
+                    style="height: 16px; width: 16px; border-radius: 8px;"
                   />
                 </div>
                 <p
@@ -947,7 +960,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             </div>
           </div>
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-2"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
@@ -1005,13 +1018,13 @@ exports[`TransactionData renders decoded data with no names 1`] = `
     data-testid="advanced-details-data-section"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <button
         aria-label="copy-button"
         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-        style="cursor: pointer; position: absolute; right: 4px; top: 4px;"
+        style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -1036,7 +1049,7 @@ exports[`TransactionData renders decoded data with no names 1`] = `
       />
     </div>
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       data-testid="advanced-details-data-function"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
@@ -1066,9 +1079,10 @@ exports[`TransactionData renders decoded data with no names 1`] = `
     </div>
     <div
       class="mm-box mm-box--padding-left-2"
+      data-testid="advanced-details-someFunction-params"
     >
       <div
-        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
         data-testid="advanced-details-data-param-0"
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
@@ -1113,7 +1127,7 @@ exports[`TransactionData renders decoded data with no names 1`] = `
         </div>
       </div>
       <div
-        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
         data-testid="advanced-details-data-param-1"
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
@@ -1153,10 +1167,11 @@ exports[`TransactionData renders decoded data with no names 1`] = `
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
           >
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+              class=""
             >
               <div
-                class="mm-avatar-account__jazzicon"
+                class="identicon"
+                style="height: 16px; width: 16px; border-radius: 8px;"
               />
             </div>
             <p
@@ -1169,7 +1184,7 @@ exports[`TransactionData renders decoded data with no names 1`] = `
         </div>
       </div>
       <div
-        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
         data-testid="advanced-details-data-param-2"
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
@@ -1225,13 +1240,13 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
     data-testid="advanced-details-data-section"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <button
         aria-label="copy-button"
         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-        style="cursor: pointer; position: absolute; right: 4px; top: 4px;"
+        style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -1256,7 +1271,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
       />
     </div>
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       data-testid="advanced-details-data-function"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
@@ -1302,9 +1317,10 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
     </div>
     <div
       class="mm-box mm-box--padding-left-2"
+      data-testid="advanced-details-permit-params"
     >
       <div
-        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
         data-testid="advanced-details-data-param-0"
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
@@ -1344,10 +1360,11 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
           >
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+              class=""
             >
               <div
-                class="mm-avatar-account__jazzicon"
+                class="identicon"
+                style="height: 16px; width: 16px; border-radius: 8px;"
               />
             </div>
             <p
@@ -1360,7 +1377,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         </div>
       </div>
       <div
-        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
         data-testid="advanced-details-data-param-1"
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
@@ -1398,7 +1415,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         class="mm-box mm-box--padding-left-2"
       >
         <div
-          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
           data-testid="advanced-details-data-param-0"
           style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
         >
@@ -1436,7 +1453,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           class="mm-box mm-box--padding-left-2"
         >
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-0"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
@@ -1474,7 +1491,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             class="mm-box mm-box--padding-left-2"
           >
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               data-testid="advanced-details-data-param-0"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
@@ -1514,10 +1531,11 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                   class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                 >
                   <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                    class=""
                   >
                     <div
-                      class="mm-avatar-account__jazzicon"
+                      class="identicon"
+                      style="height: 16px; width: 16px; border-radius: 8px;"
                     />
                   </div>
                   <p
@@ -1530,7 +1548,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               </div>
             </div>
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               data-testid="advanced-details-data-param-1"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
@@ -1575,7 +1593,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               </div>
             </div>
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               data-testid="advanced-details-data-param-2"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
@@ -1620,7 +1638,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               </div>
             </div>
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               data-testid="advanced-details-data-param-3"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
@@ -1666,7 +1684,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             </div>
           </div>
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-1"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
@@ -1704,7 +1722,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             class="mm-box mm-box--padding-left-2"
           >
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               data-testid="advanced-details-data-param-0"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
@@ -1744,10 +1762,11 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                   class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                 >
                   <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                    class=""
                   >
                     <div
-                      class="mm-avatar-account__jazzicon"
+                      class="identicon"
+                      style="height: 16px; width: 16px; border-radius: 8px;"
                     />
                   </div>
                   <p
@@ -1760,7 +1779,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               </div>
             </div>
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               data-testid="advanced-details-data-param-1"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
@@ -1805,7 +1824,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               </div>
             </div>
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               data-testid="advanced-details-data-param-2"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
@@ -1850,7 +1869,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               </div>
             </div>
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               data-testid="advanced-details-data-param-3"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
@@ -1896,7 +1915,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             </div>
           </div>
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-2"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
@@ -1934,7 +1953,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             class="mm-box mm-box--padding-left-2"
           >
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               data-testid="advanced-details-data-param-0"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
@@ -1974,10 +1993,11 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                   class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                 >
                   <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                    class=""
                   >
                     <div
-                      class="mm-avatar-account__jazzicon"
+                      class="identicon"
+                      style="height: 16px; width: 16px; border-radius: 8px;"
                     />
                   </div>
                   <p
@@ -1990,7 +2010,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               </div>
             </div>
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               data-testid="advanced-details-data-param-1"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
@@ -2035,7 +2055,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               </div>
             </div>
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               data-testid="advanced-details-data-param-2"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
@@ -2080,7 +2100,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               </div>
             </div>
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               data-testid="advanced-details-data-param-3"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
@@ -2127,7 +2147,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           </div>
         </div>
         <div
-          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
           data-testid="advanced-details-data-param-1"
           style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
         >
@@ -2167,10 +2187,11 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
             >
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                class=""
               >
                 <div
-                  class="mm-avatar-account__jazzicon"
+                  class="identicon"
+                  style="height: 16px; width: 16px; border-radius: 8px;"
                 />
               </div>
               <p
@@ -2183,7 +2204,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           </div>
         </div>
         <div
-          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
           data-testid="advanced-details-data-param-2"
           style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
         >
@@ -2229,7 +2250,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         </div>
       </div>
       <div
-        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
         data-testid="advanced-details-data-param-2"
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
@@ -2287,13 +2308,13 @@ exports[`TransactionData renders raw hexadecimal if no decoded data 1`] = `
     data-testid="advanced-details-data-section"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <button
         aria-label="copy-button"
         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-        style="cursor: pointer; position: absolute; right: 4px; top: 4px;"
+        style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -2318,7 +2339,7 @@ exports[`TransactionData renders raw hexadecimal if no decoded data 1`] = `
       />
     </div>
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div

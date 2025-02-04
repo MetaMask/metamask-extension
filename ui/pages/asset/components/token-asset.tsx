@@ -3,11 +3,12 @@ import { Token } from '@metamask/assets-controllers';
 import { useSelector, useDispatch } from 'react-redux';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import { useHistory } from 'react-router-dom';
+import { Hex } from '@metamask/utils';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import {
-  getCurrentChainId,
-  getRpcPrefsForCurrentProvider,
   getSelectedInternalAccount,
   getTokenList,
+  selectERC20TokensByChain,
 } from '../../../selectors';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
@@ -20,27 +21,45 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { showModal } from '../../../store/actions';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import AssetOptions from './asset-options';
 import AssetPage from './asset-page';
 
-const TokenAsset = ({ token }: { token: Token }) => {
+const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
   const { address, symbol, isERC721 } = token;
 
   const tokenList = useSelector(getTokenList);
-  const chainId = useSelector(getCurrentChainId);
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const allNetworks: {
+    [key: `0x${string}`]: NetworkConfiguration;
+  } = useSelector(getNetworkConfigurationsByChainId);
+  // get the correct rpc url for the current token
+  const defaultIdx = allNetworks[chainId]?.defaultBlockExplorerUrlIndex;
+  const currentTokenBlockExplorer =
+    defaultIdx === undefined
+      ? null
+      : allNetworks[chainId]?.blockExplorerUrls[defaultIdx];
+
   const { address: walletAddress } = useSelector(getSelectedInternalAccount);
+  const erc20TokensByChain = useSelector(selectERC20TokensByChain);
 
   const history = useHistory();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const { name, iconUrl, aggregators } =
-    Object.values(tokenList).find(
-      (t) =>
-        isEqualCaseInsensitive(t.symbol, symbol) &&
-        isEqualCaseInsensitive(t.address, address),
-    ) ?? {};
+  // Fetch token data from tokenList
+  const tokenData = Object.values(tokenList).find(
+    (t) =>
+      isEqualCaseInsensitive(t.symbol, symbol) &&
+      isEqualCaseInsensitive(t.address, address),
+  );
+
+  // If not found in tokenList, try erc20TokensByChain
+  const tokenDataFromChain =
+    erc20TokensByChain?.[chainId]?.data?.[address.toLowerCase()];
+
+  const name = tokenData?.name || tokenDataFromChain?.name || symbol;
+  const iconUrl = tokenData?.iconUrl || tokenDataFromChain?.iconUrl || '';
+  const aggregators = tokenData?.aggregators;
 
   const {
     tokensWithBalances,
@@ -55,7 +74,7 @@ const TokenAsset = ({ token }: { token: Token }) => {
     chainId,
     '',
     walletAddress,
-    rpcPrefs,
+    { blockExplorerUrl: currentTokenBlockExplorer ?? '' },
   );
 
   return (

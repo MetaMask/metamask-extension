@@ -113,10 +113,6 @@
     "message": "I have read and agree to the $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNoticeNFT": {
-    "message": "$1 may access and spend this asset",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessYourWalletWithSRP": {
     "message": "Access your wallet with your Secret Recovery Phrase"
   },
@@ -290,9 +286,6 @@
   "addNewSolanaAccount": {
     "message": "Add a new Solana account (Beta)"
   },
-  "addNewToken": {
-    "message": "Add new token"
-  },
   "addNft": {
     "message": "Add NFT"
   },
@@ -329,9 +322,6 @@
   },
   "addingCustomNetwork": {
     "message": "Adding Network"
-  },
-  "addingTokens": {
-    "message": "Adding tokens"
   },
   "additionalNetworks": {
     "message": "Additional networks"
@@ -398,8 +388,8 @@
   "alert": {
     "message": "Alert"
   },
-  "alertActionBuy": {
-    "message": "Buy ETH"
+  "alertActionBuyWithNativeCurrency": {
+    "message": "Buy $1"
   },
   "alertActionUpdateGas": {
     "message": "Update gas limit"
@@ -419,6 +409,9 @@
   "alertMessageChangeInSimulationResults": {
     "message": "Estimated changes for this transaction have been updated. Review them closely before proceeding."
   },
+  "alertMessageFirstTimeInteraction": {
+    "message": "You're interacting with this address for the first time. Make sure that it's correct before you continue."
+  },
   "alertMessageGasEstimateFailed": {
     "message": "We’re unable to provide an accurate fee and this estimate might be high. We suggest you to input a custom gas limit, but there’s a risk the transaction will still fail."
   },
@@ -428,8 +421,8 @@
   "alertMessageGasTooLow": {
     "message": "To continue with this transaction, you’ll need to increase the gas limit to 21000 or higher."
   },
-  "alertMessageInsufficientBalance2": {
-    "message": "You do not have enough ETH in your account to pay for network fees."
+  "alertMessageInsufficientBalanceWithNativeCurrency": {
+    "message": "You do not have enough $1 in your account to pay for network fees."
   },
   "alertMessageNetworkBusy": {
     "message": "Gas prices are high and estimates are less accurate."
@@ -437,17 +430,11 @@
   "alertMessageNoGasPrice": {
     "message": "We can’t move forward with this transaction until you manually update the fee."
   },
-  "alertMessagePendingTransactions": {
-    "message": "This transaction won’t go through until a previous transaction is complete. Learn how to cancel or speed up a transaction."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "The site making the request is not the site you’re signing into. This could be an attempt to steal your login credentials."
   },
   "alertMessageSignInWrongAccount": {
     "message": "This site is asking you to sign in using the wrong account."
-  },
-  "alertMessageSigningOrSubmitting": {
-    "message": "This transaction will only go through once your previous transaction is complete."
   },
   "alertModalAcknowledge": {
     "message": "I have acknowledged the risk and still want to proceed"
@@ -460,6 +447,9 @@
   },
   "alertReasonChangeInSimulationResults": {
     "message": "Results have changed"
+  },
+  "alertReasonFirstTimeInteraction": {
+    "message": "1st interaction"
   },
   "alertReasonGasEstimateFailed": {
     "message": "Inaccurate fee"
@@ -488,25 +478,17 @@
   "alertReasonWrongAccount": {
     "message": "Wrong account"
   },
+  "alertSelectedAccountWarning": {
+    "message": "This request is for a different account than the one selected in your wallet. To use another account, connect it to the site."
+  },
   "alerts": {
     "message": "Alerts"
   },
   "all": {
     "message": "All"
   },
-  "allCustodianAccountsConnectedSubtitle": {
-    "message": "You have either already connected all your custodian accounts or don’t have any account to connect to MetaMask Institutional."
-  },
-  "allCustodianAccountsConnectedTitle": {
-    "message": "No accounts available to connect"
-  },
   "allNetworks": {
-    "message": "All Networks",
-    "description": "Speicifies to token network filter to filter by all Networks"
-  },
-  "allOfYour": {
-    "message": "All of your $1",
-    "description": "$1 is the symbol or name of the token that the user is approving spending"
+    "message": "All networks"
   },
   "allPermissions": {
     "message": "All Permissions"
@@ -517,22 +499,8 @@
   "allTimeLow": {
     "message": "All time low"
   },
-  "allYourNFTsOf": {
-    "message": "All of your NFTs from $1",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "allow": {
-    "message": "Allow"
-  },
-  "allowMmiToConnectToCustodian": {
-    "message": "This will allow MMI to connect to $1 to import your accounts."
-  },
   "allowNotifications": {
     "message": "Allow notifications"
-  },
-  "allowSpendToken": {
-    "message": "Give permission to access your $1?",
-    "description": "$1 is the symbol of the token that are requesting to spend"
   },
   "allowWithdrawAndSpend": {
     "message": "Allow $1 to withdraw and spend up to the following amount:",
@@ -575,16 +543,11 @@
     "message": "MetaMask Institutional",
     "description": "The name of the application (MMI)"
   },
+  "apply": {
+    "message": "Apply"
+  },
   "approve": {
     "message": "Approve spend limit"
-  },
-  "approveAllTokensTitle": {
-    "message": "Allow access to and transfer of all your $1?",
-    "description": "$1 is the symbol of the token for which the user is granting approval"
-  },
-  "approveAllTokensTitleWithoutSymbol": {
-    "message": "Allow access to and transfer all of your NFTs from $1?",
-    "description": "$1 a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
   "approveButtonText": {
     "message": "Approve"
@@ -597,22 +560,8 @@
     "message": "Approve $1 spending cap",
     "description": "The token symbol that is being approved"
   },
-  "approveTokenDescription": {
-    "message": "This allows a third party to access and transfer the following NFTs without further notice until you revoke its access."
-  },
-  "approveTokenDescriptionWithoutSymbol": {
-    "message": "This allows a third party to access and transfer all of your NFTs from $1 without further notice until you revoke its access.",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "approveTokenTitle": {
-    "message": "Allow access to and transfer of your $1?",
-    "description": "$1 is the symbol of the token for which the user is granting approval"
-  },
   "approved": {
     "message": "Approved"
-  },
-  "approvedAsset": {
-    "message": "Approved asset"
   },
   "approvedOn": {
     "message": "Approved on $1",
@@ -628,20 +577,20 @@
   "asset": {
     "message": "Asset"
   },
+  "assetMultipleNFTsBalance": {
+    "message": "$1 NFTs"
+  },
   "assetOptions": {
     "message": "Asset options"
+  },
+  "assetSingleNFTBalance": {
+    "message": "$1 NFT"
   },
   "assets": {
     "message": "Assets"
   },
   "assetsDescription": {
     "message": "Autodetect tokens in your wallet, display NFTs, and get batched account balance updates"
-  },
-  "attemptSendingAssets": {
-    "message": "You may lose your assets if you try to send them from another network. Transfer funds safely between networks by using a bridge."
-  },
-  "attemptSendingAssetsWithPortfolio": {
-    "message": "You may lose your assets if you try to send them from another network. Transfer funds safely between networks by using a bridge, like $1"
   },
   "attemptToCancelSwapForFree": {
     "message": "Attempt to cancel swap for free"
@@ -673,9 +622,6 @@
   },
   "average": {
     "message": "Average"
-  },
-  "awaitingApproval": {
-    "message": "Awaiting approval..."
   },
   "back": {
     "message": "Back"
@@ -735,15 +681,14 @@
   "beCareful": {
     "message": "Be careful"
   },
+  "bestPrice": {
+    "message": "Best price"
+  },
   "beta": {
     "message": "Beta"
   },
   "betaHeaderText": {
-    "message": "This is a beta version. Please report bugs $1",
-    "description": "$1 represents the word 'here' in a hyperlink"
-  },
-  "betaMetamaskInstitutionalVersion": {
-    "message": "MetaMask Institutional Beta Version"
+    "message": "This is a beta version. Please report bugs $1"
   },
   "betaMetamaskVersion": {
     "message": "MetaMask Beta Version"
@@ -754,9 +699,6 @@
   "billionAbbreviation": {
     "message": "B",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinActivityNotSupported": {
-    "message": "Bitcoin activity is not supported"
   },
   "bitcoinSupportSectionTitle": {
     "message": "Bitcoin"
@@ -847,20 +789,50 @@
   "bridge": {
     "message": "Bridge"
   },
+  "bridgeAllowSwappingOf": {
+    "message": "Allow exact access to $1 $2 on $3 for bridging",
+    "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
+  },
+  "bridgeApproval": {
+    "message": "Approve $1 for bridge",
+    "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
+  },
+  "bridgeApprovalWarning": {
+    "message": "You are allowing access to the specified amount, $1 $2. The contract will not access any additional funds."
+  },
+  "bridgeApprovalWarningForHardware": {
+    "message": "You will need to allow access to $1 $2 for bridging, and then approve bridging to $2. This will require two separate confirmations."
+  },
   "bridgeCalculatingAmount": {
     "message": "Calculating..."
   },
-  "bridgeDontSend": {
-    "message": "Bridge, don't send"
+  "bridgeConfirmTwoTransactions": {
+    "message": "You'll need to confirm 2 transactions on your hardware wallet:"
   },
   "bridgeEnterAmount": {
-    "message": "Enter amount"
+    "message": "Select amount"
+  },
+  "bridgeExplorerLinkViewOn": {
+    "message": "View on $1"
+  },
+  "bridgeFetchNewQuotes": {
+    "message": "Fetch a new one?"
   },
   "bridgeFrom": {
     "message": "Bridge from"
   },
-  "bridgeOverallCost": {
-    "message": "Overall cost"
+  "bridgeFromTo": {
+    "message": "Bridge $1 $2 to $3",
+    "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
+  },
+  "bridgeGasFeesSplit": {
+    "message": "Any network fee quoted on the previous screen includes both transactions and will be split."
+  },
+  "bridgeNetCost": {
+    "message": "Net cost"
+  },
+  "bridgeQuoteExpired": {
+    "message": "Your quote timed out."
   },
   "bridgeSelectNetwork": {
     "message": "Select network"
@@ -868,18 +840,81 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Select token and amount"
   },
-  "bridgeTimingMinutes": {
-    "message": "$1 minutes",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
+  "bridgeStepActionBridgeComplete": {
+    "message": "$1 received on $2",
+    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
   },
-  "bridgeTimingTooltipText": {
-    "message": "This is the estimated time it will take for the bridging to be complete."
+  "bridgeStepActionBridgePending": {
+    "message": "Receiving $1 on $2",
+    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
+  },
+  "bridgeStepActionSwapComplete": {
+    "message": "Swapped $1 for $2",
+    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeStepActionSwapPending": {
+    "message": "Swapping $1 for $2",
+    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeTerms": {
+    "message": "Terms"
+  },
+  "bridgeTimingMinutes": {
+    "message": "$1 min",
+    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "Bridge to"
   },
-  "bridgeTotalFeesTooltipText": {
-    "message": "This includes gas fees (paid to crypto miners) and relayer fees (paid to power complex services like bridging).\nFees are based on network traffic and transaction complexity. MetaMask does not profit from either fee."
+  "bridgeToChain": {
+    "message": "Bridge to $1"
+  },
+  "bridgeTxDetailsBridging": {
+    "message": "Bridging"
+  },
+  "bridgeTxDetailsDelayedDescription": {
+    "message": "Reach out to"
+  },
+  "bridgeTxDetailsDelayedDescriptionSupport": {
+    "message": "MetaMask Support"
+  },
+  "bridgeTxDetailsDelayedTitle": {
+    "message": "Has it been longer than 3 hours?"
+  },
+  "bridgeTxDetailsNonce": {
+    "message": "Nonce"
+  },
+  "bridgeTxDetailsStatus": {
+    "message": "Status"
+  },
+  "bridgeTxDetailsTimestamp": {
+    "message": "Time stamp"
+  },
+  "bridgeTxDetailsTimestampValue": {
+    "message": "$1 at $2",
+    "description": "$1 is the date, $2 is the time"
+  },
+  "bridgeTxDetailsTokenAmountOnChain": {
+    "message": "$1 $2 on",
+    "description": "$1 is the amount of the token, $2 is the ticker symbol of the token"
+  },
+  "bridgeTxDetailsTotalGasFee": {
+    "message": "Total gas fee"
+  },
+  "bridgeTxDetailsYouReceived": {
+    "message": "You received"
+  },
+  "bridgeTxDetailsYouSent": {
+    "message": "You sent"
+  },
+  "bridgeValidationInsufficientGasMessage": {
+    "message": "You don't have enough $1 to pay the gas fee for this bridge. Enter a smaller amount or buy more $1."
+  },
+  "bridgeValidationInsufficientGasTitle": {
+    "message": "More $1 needed for gas"
+  },
+  "bridging": {
+    "message": "Bridging"
   },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
@@ -889,6 +924,9 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMask is designed and built around the world."
+  },
+  "bulletpoint": {
+    "message": "·"
   },
   "busy": {
     "message": "Busy"
@@ -977,9 +1015,6 @@
     "message": "Click here to connect your Ledger via WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
   },
-  "clickToManuallyAdd": {
-    "message": "You can always add tokens manually."
-  },
   "close": {
     "message": "Close"
   },
@@ -1023,15 +1058,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "I have acknowledged the alert and still want to proceed"
   },
-  "confirmConnectCustodianRedirect": {
-    "message": "We will redirect you to $1 upon clicking continue."
-  },
-  "confirmConnectCustodianText": {
-    "message": "To connect your accounts log into your $1 account and click on the 'connect to MMI' button."
-  },
-  "confirmConnectionTitle": {
-    "message": "Confirm connection to $1"
-  },
   "confirmFieldPaymaster": {
     "message": "Fee paid by"
   },
@@ -1044,8 +1070,8 @@
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
   },
-  "confirmTitleApproveTransaction": {
-    "message": "Allowance request"
+  "confirmTitleApproveTransactionNFT": {
+    "message": "Withdrawal request"
   },
   "confirmTitleDeployContract": {
     "message": "Deploy a contract"
@@ -1086,8 +1112,8 @@
   "confirmTitleTransaction": {
     "message": "Transaction request"
   },
-  "confirmationAlertModalDetails": {
-    "message": "To protect your assets and login information, we suggest you reject the request."
+  "confirmationAlertDetails": {
+    "message": "To protect your assets, we suggest you reject the request."
   },
   "confirmationAlertModalTitle": {
     "message": "This request is suspicious"
@@ -1118,18 +1144,6 @@
   },
   "connectAccounts": {
     "message": "Connect accounts"
-  },
-  "connectCustodialAccountMenu": {
-    "message": "Connect Custodial Account"
-  },
-  "connectCustodialAccountMsg": {
-    "message": "Please choose the custodian you want to connect in order to add or refresh a token."
-  },
-  "connectCustodialAccountTitle": {
-    "message": "Custodial Accounts"
-  },
-  "connectCustodianAccounts": {
-    "message": "Connect $1 accounts"
   },
   "connectManually": {
     "message": "Manually connect to current site"
@@ -1253,12 +1267,6 @@
   "continue": {
     "message": "Continue"
   },
-  "continueMmiOnboarding": {
-    "message": "Continue MetaMask Institutional onboarding"
-  },
-  "continueToWallet": {
-    "message": "Continue to wallet"
-  },
   "contract": {
     "message": "Contract"
   },
@@ -1343,8 +1351,15 @@
   "creatorAddress": {
     "message": "Creator address"
   },
+  "crossChainAggregatedBalancePopover": {
+    "message": "This reflects the value of all tokens you own on all networks. If you prefer seeing this value in ETH or other currencies, go to $1.",
+    "description": "$1 represents the settings page"
+  },
   "crossChainSwapsLink": {
     "message": "Swap across networks with MetaMask Portfolio"
+  },
+  "crossChainSwapsLinkNative": {
+    "message": "Swap across networks with Bridge"
   },
   "cryptoCompare": {
     "message": "CryptoCompare"
@@ -1375,7 +1390,7 @@
     "message": "Current language"
   },
   "currentNetwork": {
-    "message": "Current Network",
+    "message": "Current network",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
   },
   "currentRpcUrlDeprecated": {
@@ -1396,66 +1411,15 @@
   "curveMediumGasEstimate": {
     "message": "Market gas estimate graph"
   },
-  "custodian": {
-    "message": "Custodian"
-  },
-  "custodianAccountAddedDesc": {
-    "message": "You can now use your accounts in MetaMask Institutional."
-  },
-  "custodianAccountAddedTitle": {
-    "message": "Selected $1 accounts have been added."
-  },
-  "custodianQRCodeScan": {
-    "message": "Scan QR code with your $1 mobile app"
-  },
-  "custodianQRCodeScanDescription": {
-    "message": "Or log into your $1 account and click on the 'Connect to MMI' button"
-  },
-  "custodianReplaceRefreshTokenChangedFailed": {
-    "message": "Please go to $1 and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again."
-  },
-  "custodianReplaceRefreshTokenChangedSubtitle": {
-    "message": "You can now use your custodian accounts in MetaMask Institutional."
-  },
-  "custodianReplaceRefreshTokenChangedTitle": {
-    "message": "Your custodian token has been refreshed"
-  },
-  "custodianReplaceRefreshTokenSubtitle": {
-    "message": "This is will replace the custodian token for the following address:"
-  },
-  "custodianReplaceRefreshTokenTitle": {
-    "message": "Replace custodian token"
-  },
-  "custodyDeeplinkDescription": {
-    "message": "Approve the transaction in the $1 app. Once all required custody approvals have been performed the transaction will complete. Check your $1 app for status."
-  },
-  "custodyRefreshTokenModalDescription": {
-    "message": "Please go to $1 and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again."
-  },
-  "custodyRefreshTokenModalDescription1": {
-    "message": "Your custodian issues a token that authenticates the MetaMask Institutional extension, allowing you to connect your accounts."
-  },
-  "custodyRefreshTokenModalDescription2": {
-    "message": "This token expires after a certain period for security reasons. This requires you to reconnect to MMI."
-  },
-  "custodyRefreshTokenModalSubtitle": {
-    "message": "Why am I seeing this?"
-  },
-  "custodyRefreshTokenModalTitle": {
-    "message": "Your custodian session has expired"
-  },
-  "custodySessionExpired": {
-    "message": "Custodian session expired."
-  },
-  "custodyWrongChain": {
-    "message": "This account is not set up for use with $1"
-  },
   "custom": {
     "message": "Advanced"
   },
   "customGasSettingToolTipMessage": {
     "message": "Use $1 to customize the gas price. This can be confusing if you aren’t familiar. Interact at your own risk.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
+  },
+  "customSlippage": {
+    "message": "Custom"
   },
   "customSpendLimit": {
     "message": "Custom spend limit"
@@ -1611,9 +1575,6 @@
     "message": "Delete $1 network?",
     "description": "$1 represents the name of the network"
   },
-  "deposit": {
-    "message": "Deposit"
-  },
   "depositCrypto": {
     "message": "Deposit crypto from another account with a wallet address or QR code."
   },
@@ -1730,6 +1691,12 @@
   "dropped": {
     "message": "Dropped"
   },
+  "duplicateContactTooltip": {
+    "message": "This contact name collides with an existing account or contact"
+  },
+  "duplicateContactWarning": {
+    "message": "You have duplicate contacts"
+  },
   "edit": {
     "message": "Edit"
   },
@@ -1803,10 +1770,6 @@
   "editGasPriceTooltip": {
     "message": "This network requires a “Gas price” field when submitting a transaction. Gas price is the amount you will pay pay per unit of gas."
   },
-  "editGasSubTextAmountLabel": {
-    "message": "Max amount:",
-    "description": "This is meant to be used as the $1 substitution editGasSubTextAmount"
-  },
   "editGasSubTextFeeLabel": {
     "message": "Max fee:"
   },
@@ -1815,6 +1778,9 @@
   },
   "editGasTooLow": {
     "message": "Unknown processing time"
+  },
+  "editInPortfolio": {
+    "message": "Edit in Portfolio"
   },
   "editNetworkLink": {
     "message": "edit the original network"
@@ -1912,9 +1878,6 @@
   "enterChainId": {
     "message": "Enter Chain ID"
   },
-  "enterCustodianToken": {
-    "message": "Enter your $1 token or add a new token"
-  },
   "enterMaxSpendLimit": {
     "message": "Enter max spend limit"
   },
@@ -2007,9 +1970,6 @@
   "estimatedFeeTooltip": {
     "message": "Amount paid to process the transaction on network."
   },
-  "estimatedTime": {
-    "message": "Estimated time"
-  },
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
   },
@@ -2054,12 +2014,6 @@
     "message": "Explore community-built Snaps to customize your web3 experience",
     "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
-  "extensionInsallCompleteDescription": {
-    "message": "Return to the MetaMask Institutional product onboarding to connect your custodial or self-custodial accounts."
-  },
-  "extensionInsallCompleteTitle": {
-    "message": "Extension install complete"
-  },
   "externalExtension": {
     "message": "External extension"
   },
@@ -2080,9 +2034,6 @@
   },
   "fast": {
     "message": "Fast"
-  },
-  "feeAssociatedRequest": {
-    "message": "A fee is associated with this request."
   },
   "feeDetails": {
     "message": "Fee details"
@@ -2146,12 +2097,6 @@
   "function": {
     "message": "Function: $1"
   },
-  "functionApprove": {
-    "message": "Function: Approve"
-  },
-  "functionSetApprovalForAll": {
-    "message": "Function: SetApprovalForAll"
-  },
   "functionType": {
     "message": "Function type"
   },
@@ -2170,9 +2115,6 @@
   },
   "gasFee": {
     "message": "Gas fee"
-  },
-  "gasIsETH": {
-    "message": "Gas is $1 "
   },
   "gasLimit": {
     "message": "Gas limit"
@@ -2259,8 +2201,8 @@
   "gotIt": {
     "message": "Got it"
   },
-  "grantedToWithColon": {
-    "message": "Granted to:"
+  "grantExactAccess": {
+    "message": "Grant exact access"
   },
   "gwei": {
     "message": "GWEI"
@@ -2302,9 +2244,6 @@
   },
   "hideAccount": {
     "message": "Hide account"
-  },
-  "hideFullTransactionDetails": {
-    "message": "Hide full transaction details"
   },
   "hideSeedPhrase": {
     "message": "Hide seed phrase"
@@ -2386,6 +2325,12 @@
   },
   "holdToRevealUnlockedLabel": {
     "message": "hold to reveal circle unlocked"
+  },
+  "howQuotesWork": {
+    "message": "How quotes work"
+  },
+  "howQuotesWorkExplanation": {
+    "message": "This quote has the best return of the quotes we searched. This is based on the swap rate, which includes bridging fees and a $1% MetaMask fee, minus gas fees. Gas fees depend on how busy the network is and how complex the transaction is."
   },
   "id": {
     "message": "ID"
@@ -2523,12 +2468,6 @@
   "install": {
     "message": "Install"
   },
-  "installExtension": {
-    "message": "Install extension"
-  },
-  "installExtensionDescription": {
-    "message": "The institution-compliant version of the world's leading web3 wallet, MetaMask."
-  },
   "installOrigin": {
     "message": "Install origin"
   },
@@ -2545,10 +2484,6 @@
   "insufficientCurrencyBuyOrDeposit": {
     "message": "You do not have enough $1 in your account to pay for transaction fees on $2 network. $3 or deposit from another account.",
     "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
-  },
-  "insufficientCurrencyBuyOrReceive": {
-    "message": "You do not have enough $1 in your account to pay for transaction fees on $2 network. $3 or $4 from another account.",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button, $4 is the key 'deposit' button"
   },
   "insufficientCurrencyDeposit": {
     "message": "You do not have enough $1 in your account to pay for transaction fees on $2 network. Deposit $1 from another account.",
@@ -2735,9 +2670,6 @@
   "learnScamRisk": {
     "message": "scams and security risks."
   },
-  "learnToBridge": {
-    "message": "Learn to bridge"
-  },
   "leaveMetaMask": {
     "message": "Leave MetaMask?"
   },
@@ -2823,14 +2755,11 @@
   "loading": {
     "message": "Loading..."
   },
-  "loadingScreenHardwareWalletMessage": {
-    "message": "Please complete the transaction on the hardware wallet."
-  },
   "loadingScreenSnapMessage": {
     "message": "Please complete the transaction on the Snap."
   },
-  "loadingTokens": {
-    "message": "Loading tokens..."
+  "loadingTokenList": {
+    "message": "Loading token list"
   },
   "localhost": {
     "message": "Localhost 8545"
@@ -2850,6 +2779,12 @@
   },
   "low": {
     "message": "Low"
+  },
+  "lowEstimatedReturnTooltipMessage": {
+    "message": "You’ll pay more than $1% of your starting amount in fees. Check your receiving amount and network fees."
+  },
+  "lowEstimatedReturnTooltipTitle": {
+    "message": "High cost"
   },
   "lowGasSettingToolTipMessage": {
     "message": "Use $1 to wait for a cheaper price. Time estimates are much less accurate as prices are somewhat unpredictable.",
@@ -2927,14 +2862,8 @@
     "message": "$1 is hosted on npm and $2 is this Snap’s unique identifier.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
   },
-  "metamaskInstitutionalVersion": {
-    "message": "MetaMask Institutional Version"
-  },
   "metamaskNotificationsAreOff": {
     "message": "Wallet notifications are currently not active."
-  },
-  "metamaskPortfolio": {
-    "message": "MetaMask Portfolio."
   },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swaps is undergoing maintenance. Please check back later."
@@ -2957,9 +2886,6 @@
   "millionAbbreviation": {
     "message": "M",
     "description": "Shortened form of 'million'"
-  },
-  "mismatchAccount": {
-    "message": "Your selected account ($1) is different than the account trying to sign ($2)"
   },
   "mismatchedChainLinkText": {
     "message": "verify the network details",
@@ -2987,15 +2913,6 @@
   "missingSettingRequest": {
     "message": "Request here"
   },
-  "mmiBuiltAroundTheWorld": {
-    "message": "MetaMask Institutional is designed and built around the world."
-  },
-  "mmiNewNFTDetectedInNFTsTabMessage": {
-    "message": "Let MetaMask Institutional automatically detect and display NFTs in your wallet."
-  },
-  "mmiPasswordSetupDetails": {
-    "message": "This password will unlock your MetaMask Institutional extension only."
-  },
   "more": {
     "message": "more"
   },
@@ -3006,6 +2923,9 @@
   "moreNetworks": {
     "message": "+ $1 more networks",
     "description": "$1 is the number of networks"
+  },
+  "moreQuotes": {
+    "message": "More quotes"
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "You're adding this network to MetaMask and giving this site permission to use it."
@@ -3023,6 +2943,9 @@
   "nameAddressLabel": {
     "message": "Address",
     "description": "Label above address field in name component modal."
+  },
+  "nameAlreadyInUse": {
+    "message": "Name is already in use"
   },
   "nameInstructionsNew": {
     "message": "If you know this address, give it a nickname to recognize it in the future.",
@@ -3080,10 +3003,6 @@
     "message": "$1 is asking for your approval to:",
     "description": "$1 represents dapp name"
   },
-  "nativeToken": {
-    "message": "The native token on this network is $1. It is the token used for gas fees. ",
-    "description": "$1 represents the name of the native token on the current network"
-  },
   "nativeTokenScamWarningConversion": {
     "message": "Edit network details"
   },
@@ -3131,6 +3050,9 @@
   "networkFee": {
     "message": "Network fee"
   },
+  "networkFees": {
+    "message": "Network fees"
+  },
   "networkIsBusy": {
     "message": "Network is busy. Gas prices are high and estimates are less accurate."
   },
@@ -3175,6 +3097,9 @@
   },
   "networkNamePolygon": {
     "message": "Polygon"
+  },
+  "networkNameSolana": {
+    "message": "Solana"
   },
   "networkNameTestnet": {
     "message": "Testnet"
@@ -3292,10 +3217,6 @@
   "next": {
     "message": "Next"
   },
-  "nextNonceWarning": {
-    "message": "Nonce is higher than suggested nonce of $1",
-    "description": "The next nonce according to MetaMask's internal logic"
-  },
   "nftAddFailedMessage": {
     "message": "NFT can’t be added as the ownership details do not match. Make sure you have entered correct information."
   },
@@ -3362,6 +3283,9 @@
   "noNetworksFound": {
     "message": "No networks found for the given search query"
   },
+  "noOptionsAvailableMessage": {
+    "message": "This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option."
+  },
   "noSnaps": {
     "message": "You don't have any snaps installed."
   },
@@ -3377,20 +3301,8 @@
   "noWebcamFoundTitle": {
     "message": "Webcam not found"
   },
-  "nonCustodialAccounts": {
-    "message": "MetaMask Institutional allows you to use non-custodial accounts, if you plan to use these accounts backup the Secret Recovery Phrase."
-  },
   "nonce": {
     "message": "Nonce"
-  },
-  "nonceField": {
-    "message": "Customize transaction nonce"
-  },
-  "nonceFieldDesc": {
-    "message": "Turn this on to change the nonce (transaction number) when sending assets. This is an advanced feature, use cautiously."
-  },
-  "nonceFieldHeading": {
-    "message": "Custom nonce"
   },
   "none": {
     "message": "None"
@@ -3406,12 +3318,6 @@
   },
   "notEnoughGas": {
     "message": "Not enough gas"
-  },
-  "note": {
-    "message": "Note"
-  },
-  "notePlaceholder": {
-    "message": "The approver will see this note when approving the transaction at the custodian."
   },
   "notificationDetail": {
     "message": "Details"
@@ -3747,9 +3653,6 @@
   "onboardingPinExtensionTitle": {
     "message": "Your MetaMask install is complete!"
   },
-  "onboardingPinMmiExtensionLabel": {
-    "message": "Pin MetaMask Institutional"
-  },
   "oneDayAbbreviation": {
     "message": "1D",
     "description": "Shortened form of '1 day'"
@@ -3773,10 +3676,6 @@
     "message": "Only connect with sites you trust. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
-  "openCustodianApp": {
-    "message": "Open $1 app",
-    "description": "The $1 is the name of the Custodian that will be open"
-  },
   "openFullScreenForLedgerWebHid": {
     "message": "Go to full screen to connect your Ledger.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
@@ -3787,17 +3686,11 @@
   "openSeaNew": {
     "message": "OpenSea"
   },
-  "operationFailed": {
-    "message": "Operation Failed"
-  },
   "optional": {
     "message": "Optional"
   },
   "options": {
     "message": "Options"
-  },
-  "or": {
-    "message": "or"
   },
   "origin": {
     "message": "Origin"
@@ -3833,9 +3726,6 @@
   "password": {
     "message": "Password"
   },
-  "passwordMmiTermsWarning": {
-    "message": "I understand that MetaMask Institutional cannot recover this password for me. $1"
-  },
   "passwordNotLongEnough": {
     "message": "Password not long enough"
   },
@@ -3855,9 +3745,6 @@
   "passwordsDontMatch": {
     "message": "Passwords don't match"
   },
-  "pasteJWTToken": {
-    "message": "Paste or drop your token here:"
-  },
   "pastePrivateKey": {
     "message": "Enter your private key string here:",
     "description": "For importing an account from a private key"
@@ -3868,6 +3755,14 @@
   },
   "pending": {
     "message": "Pending"
+  },
+  "pendingTransactionAlertMessage": {
+    "message": "This transaction won't go through until a previous transaction is complete. $1",
+    "description": "$1 represents the words 'how to cancel or speed up a transaction' in a hyperlink"
+  },
+  "pendingTransactionAlertMessageHyperlink": {
+    "message": "Learn how to cancel or speed up a transaction.",
+    "description": "The text for the hyperlink in the pending transaction alert message"
   },
   "pendingTransactionInfo": {
     "message": "This transaction will not process until that one is complete."
@@ -3887,9 +3782,6 @@
   },
   "permissionFrom": {
     "message": "Permission from"
-  },
-  "permissionRequest": {
-    "message": "Permission request"
   },
   "permissionRequested": {
     "message": "Requested now"
@@ -3924,6 +3816,14 @@
   "permission_accessSnapDescription": {
     "message": "Allow the website or snap to interact with $1.",
     "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
+  },
+  "permission_assets": {
+    "message": "Display account assets in MetaMask.",
+    "description": "The description for the `endowment:name-assets` permission."
+  },
+  "permission_assetsDescription": {
+    "message": "Allow $1 to provide asset information to the MetaMask client. The assets can be onchain or offchain.",
+    "description": "An extended description for the `endowment:assets` permission. $1 is the name of the Snap."
   },
   "permission_cronjob": {
     "message": "Schedule and execute periodic actions.",
@@ -4126,11 +4026,26 @@
   "permissionsPageEmptySubContent": {
     "message": "This is where you can see the permissions you've given to installed Snaps or connected sites."
   },
-  "permissionsPageTourDescription": {
-    "message": "This is your control panel for managing permissions given to connected sites and installed Snaps."
+  "permitSimulationChange_approve": {
+    "message": "Spending cap"
   },
-  "permissionsPageTourTitle": {
-    "message": "Connected sites are now permissions"
+  "permitSimulationChange_bidding": {
+    "message": "You bid"
+  },
+  "permitSimulationChange_listing": {
+    "message": "You list"
+  },
+  "permitSimulationChange_nft_listing": {
+    "message": "Listing price"
+  },
+  "permitSimulationChange_receive": {
+    "message": "You receive"
+  },
+  "permitSimulationChange_revoke": {
+    "message": "Spending cap"
+  },
+  "permitSimulationChange_transfer": {
+    "message": "You send"
   },
   "permitSimulationDetailInfo": {
     "message": "You're giving the spender permission to spend this many tokens from your account."
@@ -4146,12 +4061,6 @@
   },
   "petnamesEnabledToggleDescription": {
     "message": "This lets you assign a nickname to any address. We’ll suggest names for addresses that you interact with when possible."
-  },
-  "pinExtensionDescription": {
-    "message": "Navigate to the extension menu and pin MetaMask Institutional for seamless access."
-  },
-  "pinExtensionTitle": {
-    "message": "Pin extension"
   },
   "pinToTop": {
     "message": "Pin to top"
@@ -4171,11 +4080,11 @@
     "message": "Some of these networks rely on third parties. The connections may be less reliable or enable third-parties to track activity. $1",
     "description": "$1 is Learn more link"
   },
+  "popularNetworks": {
+    "message": "Popular networks"
+  },
   "portfolio": {
     "message": "Portfolio"
-  },
-  "portfolioDashboard": {
-    "message": "Portfolio Dashboard"
   },
   "preparingSwap": {
     "message": "Preparing swap..."
@@ -4335,8 +4244,17 @@
   "quoteRate": {
     "message": "Quote rate"
   },
+  "quotedReceiveAmount": {
+    "message": "$1 receive amount"
+  },
+  "quotedTotalCost": {
+    "message": "$1 total cost"
+  },
   "rank": {
     "message": "Rank"
+  },
+  "rateIncludesMMFee": {
+    "message": "Rate includes $1% fee"
   },
   "reAddAccounts": {
     "message": "re-add any other accounts"
@@ -4383,18 +4301,6 @@
   "recoveryPhraseReminderTitle": {
     "message": "Protect your funds"
   },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "Improved signature requests"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "Turn this on to see signature requests in an enhanced format."
-  },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "Improved transaction requests"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "Turn this on to see transactions requests in an enhanced format."
-  },
   "refreshList": {
     "message": "Refresh list"
   },
@@ -4433,12 +4339,6 @@
   },
   "removeAccountDescription": {
     "message": "This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
-  },
-  "removeJWT": {
-    "message": "Remove custodian token"
-  },
-  "removeJWTDescription": {
-    "message": "Are you sure you want to remove this token? All accounts assigned to this token will be removed from extension as well: "
   },
   "removeKeyringSnap": {
     "message": "Removing this Snap removes these accounts from MetaMask:"
@@ -4618,31 +4518,11 @@
   "reviewPermissions": {
     "message": "Review permissions"
   },
-  "revokeAllTokensTitle": {
-    "message": "Revoke permission to access and transfer all of your $1?",
-    "description": "$1 is the symbol of the token for which the user is revoking approval"
-  },
-  "revokeAllTokensTitleWithoutSymbol": {
-    "message": "Revoke permission to access and transfer all of your NFTs from $1?",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "revokeApproveForAllDescription": {
-    "message": "This revokes the permission for a third party to access and transfer all of your $1 without further notice.",
-    "description": "$1 is either a string or link of a given token symbol or name"
-  },
-  "revokeApproveForAllDescriptionWithoutSymbol": {
-    "message": "This revokes the permission for a third party to access and transfer all of your NFTs from $1 without further notice.",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "revokePermission": {
     "message": "Revoke permission"
   },
   "revokeSimulationDetailsDesc": {
     "message": "You're removing someone's permission to spend tokens from your account."
-  },
-  "revokeSpendingCap": {
-    "message": "Revoke spending cap for your $1",
-    "description": "$1 is a token symbol"
   },
   "revokeSpendingCapTooltipText": {
     "message": "This third party will be unable to spend any more of your current or future tokens."
@@ -4680,6 +4560,9 @@
   "searchTokens": {
     "message": "Search tokens"
   },
+  "searchTokensByNameOrAddress": {
+    "message": "Search tokens by name or address"
+  },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
   },
@@ -4696,7 +4579,7 @@
     "message": "Security alerts"
   },
   "securityAlertsDescription": {
-    "message": "This feature alerts you to malicious activity by actively reviewing transaction and signature requests. $1",
+    "message": "This feature alerts you to malicious or unusual activity by actively reviewing transaction and signature requests. $1",
     "description": "Link to learn more about security alerts"
   },
   "securityAndPrivacy": {
@@ -4785,26 +4668,17 @@
   "selectAll": {
     "message": "Select all"
   },
-  "selectAllAccounts": {
-    "message": "Select all accounts"
-  },
   "selectAnAccount": {
     "message": "Select an account"
   },
   "selectAnAccountAlreadyConnected": {
     "message": "This account has already been connected to MetaMask"
   },
-  "selectAnAccountHelp": {
-    "message": "Select the custodian accounts to use in MetaMask Institutional."
-  },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "Turn on Display NFT Media"
   },
   "selectHdPath": {
     "message": "Select HD path"
-  },
-  "selectJWT": {
-    "message": "Select token"
   },
   "selectNFTPrivacyPreference": {
     "message": "Enable NFT Autodetection"
@@ -4817,6 +4691,9 @@
   },
   "selectType": {
     "message": "Select Type"
+  },
+  "selectedAccountMismatch": {
+    "message": "Different account selected"
   },
   "selectingAllWillAllow": {
     "message": "Selecting all will allow this site to view all of your current accounts. Make sure you trust this site."
@@ -4969,6 +4846,12 @@
   "signatureRequestGuidance": {
     "message": "Only sign this message if you fully understand the content and trust the requesting site."
   },
+  "signature_decoding_bid_nft_tooltip": {
+    "message": "The NFT will be reflected in your wallet, when the bid is accepted."
+  },
+  "signature_decoding_list_nft_tooltip": {
+    "message": "Expect changes only if someone buys your NFTs."
+  },
   "signed": {
     "message": "Signed"
   },
@@ -4980,6 +4863,9 @@
   },
   "signingInWith": {
     "message": "Signing in with"
+  },
+  "signingWith": {
+    "message": "Signing with"
   },
   "simulationApproveHeading": {
     "message": "Withdraw"
@@ -5028,10 +4914,13 @@
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
   "simulationsSettingDescription": {
-    "message": "Turn this on to estimate balance changes of transactions before you confirm them. This doesn't guarantee the final outcome of your transactions. $1"
+    "message": "Turn this on to estimate balance changes of transactions and signatures before you confirm them. This doesn't guarantee their final outcome. $1"
   },
   "simulationsSettingSubHeader": {
     "message": "Estimate balance changes"
+  },
+  "singleNetwork": {
+    "message": "1 network"
   },
   "siweIssued": {
     "message": "Issued"
@@ -5056,6 +4945,30 @@
   },
   "skipAccountSecurityDetails": {
     "message": "I understand that until I back up my Secret Recovery Phrase, I may lose my accounts and all of their assets."
+  },
+  "slideBridgeDescription": {
+    "message": "Move across 9 chains, all within your wallet"
+  },
+  "slideBridgeTitle": {
+    "message": "Ready to bridge?"
+  },
+  "slideCashOutDescription": {
+    "message": "Sell your crypto for cash"
+  },
+  "slideCashOutTitle": {
+    "message": "Cash out with MetaMask"
+  },
+  "slideDebitCardDescription": {
+    "message": "Available in selected regions"
+  },
+  "slideDebitCardTitle": {
+    "message": "MetaMask debit card"
+  },
+  "slideFundWalletDescription": {
+    "message": "Get started by adding funds"
+  },
+  "slideFundWalletTitle": {
+    "message": "Fund your wallet"
   },
   "smartContracts": {
     "message": "Smart contracts"
@@ -5086,6 +4999,15 @@
   },
   "smartTransactions": {
     "message": "Smart Transactions"
+  },
+  "smartTransactionsEnabledDescription": {
+    "message": " and MEV protection. Now on by default."
+  },
+  "smartTransactionsEnabledLink": {
+    "message": "Higher success rates"
+  },
+  "smartTransactionsEnabledTitle": {
+    "message": "Transactions just got smarter"
   },
   "snapAccountCreated": {
     "message": "Account created"
@@ -5262,6 +5184,9 @@
   "solanaSupportToggleTitle": {
     "message": "Enable \"Add a new Solana account (Beta)\""
   },
+  "someNetworks": {
+    "message": "$1 networks"
+  },
   "somethingDoesntLookRight": {
     "message": "Something doesn't look right? $1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
@@ -5341,11 +5266,11 @@
     "message": "Only enter a number that you're comfortable with $1 accessing now or in the future. You can always increase the token limit later.",
     "description": "$1 is origin of the site requesting the token limit"
   },
-  "spendingCapRequest": {
-    "message": "Spending cap request for your $1"
-  },
   "spendingCapTooltipDesc": {
     "message": "This is the amount of tokens the spender will be able to access on your behalf."
+  },
+  "spendingCaps": {
+    "message": "Spending caps"
   },
   "srpInputNumberOfWords": {
     "message": "I have a $1-word phrase",
@@ -5468,6 +5393,13 @@
   "step1LedgerWalletMsg": {
     "message": "Download, set up, and enter your password to unlock $1.",
     "description": "$1 represents the `ledgerLiveApp` localization value"
+  },
+  "step1OneKeyWallet": {
+    "message": "Connect your OneKey"
+  },
+  "step1OneKeyWalletMsg": {
+    "message": "Plug your OneKey directly into your computer and unlock it. Make sure you use the correct passphrase.",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1TrezorWallet": {
     "message": "Connect your Trezor"
@@ -5982,8 +5914,9 @@
     "message": "$1 is now active on $2",
     "description": "$1 represents the account name, $2 represents the network name"
   },
-  "switchedTo": {
-    "message": "You're now using"
+  "switchedNetworkToastMessageNoOrigin": {
+    "message": "You're now using $1",
+    "description": "$1 represents the network name"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Switching networks will cancel all pending confirmations"
@@ -6021,15 +5954,9 @@
   "themeDescription": {
     "message": "Choose your preferred MetaMask theme."
   },
-  "thingsToKeep": {
-    "message": "Keep in mind:"
-  },
   "thirdPartySoftware": {
     "message": "Third-party software notice",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
-  },
-  "thisCollection": {
-    "message": "this collection"
   },
   "threeMonthsAbbreviation": {
     "message": "3M",
@@ -6054,17 +5981,8 @@
     "message": "To: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleRequestQueueDescription": {
-    "message": "This allows you to select a network for each site instead of a single selected network for all sites. This feature will prevent you from switching networks manually, which may break your user experience on certain sites."
-  },
-  "toggleRequestQueueField": {
-    "message": "Select networks for each site"
-  },
-  "toggleRequestQueueOff": {
-    "message": "Off"
-  },
-  "toggleRequestQueueOn": {
-    "message": "On"
+  "toggleDecodeDescription": {
+    "message": "We use 4byte.directory and Sourcify services to decode and display more readable transaction data. This helps you understand the outcome of pending and past transactions, but can result in your IP address being shared."
   },
   "token": {
     "message": "Token"
@@ -6105,9 +6023,6 @@
   "tokenScamSecurityRisk": {
     "message": "token scams and security risks"
   },
-  "tokenShowUp": {
-    "message": "Your tokens may not automatically show up in your wallet. "
-  },
   "tokenStandard": {
     "message": "Token standard"
   },
@@ -6139,9 +6054,6 @@
   "total": {
     "message": "Total"
   },
-  "totalFees": {
-    "message": "Total fees"
-  },
   "totalVolume": {
     "message": "Total volume"
   },
@@ -6163,29 +6075,8 @@
   "transactionDataFunction": {
     "message": "Function"
   },
-  "transactionDetailDappGasMoreInfo": {
-    "message": "Site suggested"
-  },
-  "transactionDetailDappGasTooltip": {
-    "message": "Edit to use MetaMask's recommended gas fee based on the latest block."
-  },
   "transactionDetailGasHeading": {
     "message": "Estimated gas fee"
-  },
-  "transactionDetailGasTooltipConversion": {
-    "message": "Learn more about gas fees"
-  },
-  "transactionDetailGasTooltipExplanation": {
-    "message": "Gas fees are set by the network and fluctuate based on network traffic and transaction complexity."
-  },
-  "transactionDetailGasTooltipIntro": {
-    "message": "Gas fees are paid to crypto miners who process transactions on the $1 network. MetaMask does not profit from gas fees."
-  },
-  "transactionDetailGasTotalSubtitle": {
-    "message": "Amount + gas fee"
-  },
-  "transactionDetailLayer2GasHeading": {
-    "message": "Layer 2 gas fee"
   },
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Amount + fees"
@@ -6202,11 +6093,8 @@
   "transactionErrored": {
     "message": "Transaction encountered an error."
   },
-  "transactionFailed": {
-    "message": "Transaction Failed"
-  },
-  "transactionFee": {
-    "message": "Transaction fee"
+  "transactionFailedBannerMessage": {
+    "message": "This transaction would have cost you extra fees, so we stopped it. Your money is still in your wallet."
   },
   "transactionFlowNetwork": {
     "message": "Network"
@@ -6231,9 +6119,6 @@
   },
   "transactionHistoryTotalGasFee": {
     "message": "Total gas fee"
-  },
-  "transactionNote": {
-    "message": "Transaction note"
   },
   "transactionResubmitted": {
     "message": "Transaction resubmitted with estimated gas fee increased to $1 at $2"
@@ -6288,9 +6173,6 @@
   },
   "troubleStarting": {
     "message": "MetaMask had trouble starting. This error could be intermittent, so try restarting the extension."
-  },
-  "trustSiteApprovePermission": {
-    "message": "By granting permission, you are allowing the following $1 to access your funds"
   },
   "tryAgain": {
     "message": "Try again"
@@ -6423,9 +6305,6 @@
   "use4ByteResolution": {
     "message": "Decode smart contracts"
   },
-  "use4ByteResolutionDescription": {
-    "message": "To improve user experience, we customize the activity tab with messages based on the smart contracts you interact with. MetaMask uses a service called 4byte.directory to decode data and show you a version of a smart contract that's easier to read. This helps reduce your chances of approving malicious smart contract actions, but can result in your IP address being shared."
-  },
   "useMultiAccountBalanceChecker": {
     "message": "Batch account balance requests"
   },
@@ -6487,12 +6366,6 @@
   "viewContact": {
     "message": "View contact"
   },
-  "viewDetails": {
-    "message": "View details"
-  },
-  "viewFullTransactionDetails": {
-    "message": "View full transaction details"
-  },
   "viewMore": {
     "message": "View more"
   },
@@ -6515,9 +6388,6 @@
   },
   "viewTransaction": {
     "message": "View transaction"
-  },
-  "viewinCustodianApp": {
-    "message": "View in custodian app"
   },
   "viewinExplorer": {
     "message": "View $1 in explorer",
@@ -6589,7 +6459,7 @@
     "message": "Welcome back!"
   },
   "welcomeExploreDescription": {
-    "message": "Store, send and spend crypto currencies and assets."
+    "message": "Store, send, and spend crypto currencies and assets."
   },
   "welcomeExploreTitle": {
     "message": "Explore decentralized apps"
@@ -6613,21 +6483,26 @@
   "whatsThis": {
     "message": "What's this?"
   },
+  "willApproveAmountForBridging": {
+    "message": "This will approve $1 for bridging."
+  },
+  "willApproveAmountForBridgingHardware": {
+    "message": "You’ll need to confirm two transactions on your hardware wallet."
+  },
   "withdrawing": {
     "message": "Withdrawing"
   },
   "wrongNetworkName": {
     "message": "According to our records, the network name may not correctly match this chain ID."
   },
-  "xOfYPending": {
-    "message": "$1 of $2 pending",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
-  },
   "yes": {
     "message": "Yes"
   },
   "you": {
     "message": "You"
+  },
+  "youDeclinedTheTransaction": {
+    "message": "You declined the transaction."
   },
   "youNeedToAllowCameraAccess": {
     "message": "You need to allow camera access to use this feature."
@@ -6649,6 +6524,9 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Your NFT may be at risk"
+  },
+  "yourNetworks": {
+    "message": "Your networks"
   },
   "yourPrivateSeedPhrase": {
     "message": "Your Secret Recovery Phrase"

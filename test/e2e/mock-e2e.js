@@ -43,11 +43,14 @@ const blacklistedHosts = [
   'goerli.infura.io',
   'mainnet.infura.io',
   'sepolia.infura.io',
+  'linea-mainnet.infura.io',
+  'linea-sepolia.infura.io',
 ];
 const {
   mockEmptyStalelistAndHotlist,
 } = require('./tests/phishing-controller/mocks');
 const { mockNotificationServices } = require('./tests/notifications/mocks');
+const { mockIdentityServices } = require('./tests/identity/mocks');
 
 const emptyHtmlPage = () => `<!DOCTYPE html>
 <html lang="en">
@@ -80,7 +83,11 @@ const browserAPIRequestDomains =
  */
 const privateHostMatchers = [
   // { pattern: RegExp, host: string }
-  { pattern: /^.*\.btc.*\.quiknode.pro$/iu, host: '*.btc*.quiknode.pro' },
+  { pattern: /^.*\.btc.*\.quiknode\.pro$/iu, host: '*.btc*.quiknode.pro' },
+  {
+    pattern: /^.*-solana.*-.*\.mainnet\.rpcpool\.com/iu,
+    host: '*solana*.mainnet.rpcpool.com',
+  },
 ];
 
 /**
@@ -123,7 +130,6 @@ async function setupMocking(
   });
 
   const mockedEndpoint = await testSpecificMock(server);
-
   // Mocks below this line can be overridden by test-specific mocks
 
   // Account link
@@ -730,11 +736,52 @@ async function setupMocking(
   // Notification APIs
   await mockNotificationServices(server);
 
+  // Identity APIs
+  await mockIdentityServices(server);
+
   await server.forGet(/^https:\/\/sourcify.dev\/(.*)/u).thenCallback(() => {
     return {
       statusCode: 404,
     };
   });
+
+  // remote feature flags
+  await server
+    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+      environment: 'dev',
+    })
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: [
+          { feature1: true },
+          { feature2: false },
+          {
+            feature3: [
+              {
+                value: 'valueA',
+                name: 'groupA',
+                scope: { type: 'threshold', value: 0.3 },
+              },
+              {
+                value: 'valueB',
+                name: 'groupB',
+                scope: { type: 'threshold', value: 0.5 },
+              },
+              {
+                scope: { type: 'threshold', value: 1 },
+                value: 'valueC',
+                name: 'groupC',
+              },
+            ],
+          },
+        ],
+      };
+    });
 
   /**
    * Returns an array of alphanumerically sorted hostnames that were requested

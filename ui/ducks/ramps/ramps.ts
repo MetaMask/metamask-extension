@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getCurrentChainId, getUseExternalServices } from '../../selectors';
+import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
+import { getUseExternalServices } from '../../selectors';
 import RampAPI from '../../helpers/ramps/rampApi/rampAPI';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { getMultichainIsBitcoin } from '../../selectors/multichain';

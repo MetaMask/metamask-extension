@@ -15,26 +15,25 @@ import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 ///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import {
-  getMmiPortfolioEnabled,
-  getMmiPortfolioUrl,
-} from '../../../selectors/institutional/selectors';
-///: END:ONLY_INCLUDE_IF
 import {
   getIsSwapsChain,
-  getCurrentChainId,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getIsBridgeChain,
   getCurrentKeyring,
   ///: END:ONLY_INCLUDE_IF
+  getNetworkConfigurationIdByChainId,
 } from '../../../selectors';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import useBridging from '../../../hooks/bridge/useBridging';
 ///: END:ONLY_INCLUDE_IF
 
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
-import { showModal } from '../../../store/actions';
+import {
+  showModal,
+  setSwitchedNetworkDetails,
+  setActiveNetworkWithError,
+} from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -68,39 +67,23 @@ const TokenButtons = ({
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
-
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const keyring = useSelector(getCurrentKeyring);
   // @ts-expect-error keyring type is wrong maybe?
   const usingHardwareWallet = isHardwareKeyring(keyring.type);
   ///: END:ONLY_INCLUDE_IF
 
-  const chainId = useSelector(getCurrentChainId);
+  const currentChainId = useSelector(getCurrentChainId);
+  const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
+    string,
+    string
+  >;
   const isSwapsChain = useSelector(getIsSwapsChain);
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBridgeChain = useSelector(getIsBridgeChain);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const { openBuyCryptoInPdapp } = useRamps();
   const { openBridgeExperience } = useBridging();
-  ///: END:ONLY_INCLUDE_IF
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
-  const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
-
-  const portfolioEvent = () => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.MMIPortfolioButtonClicked,
-    });
-  };
-
-  const stakingEvent = () => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.MMIPortfolioButtonClicked,
-    });
-  };
   ///: END:ONLY_INCLUDE_IF
 
   useEffect(() => {
@@ -113,6 +96,26 @@ const TokenButtons = ({
       );
     }
   }, [token.isERC721, token.address, dispatch]);
+
+  const setCorrectChain = async () => {
+    // If we aren't presently on the chain of the asset, change to it
+    if (currentChainId !== token.chainId) {
+      try {
+        const networkConfigurationId = networks[token.chainId];
+        await dispatch(setActiveNetworkWithError(networkConfigurationId));
+        await dispatch(
+          setSwitchedNetworkDetails({
+            networkClientId: networkConfigurationId,
+          }),
+        );
+      } catch (err) {
+        console.error(`Failed to switch chains.
+        Target chainId: ${token.chainId}, Current chainId: ${currentChainId}.
+        ${err}`);
+        throw err;
+      }
+    }
+  };
 
   return (
     <Box display={Display.Flex} justifyContent={JustifyContent.spaceEvenly}>
@@ -137,7 +140,7 @@ const TokenButtons = ({
               properties: {
                 location: 'Token Overview',
                 text: 'Buy',
-                chain_id: chainId,
+                chain_id: currentChainId,
                 token_symbol: token.symbol,
               },
             });
@@ -145,53 +148,6 @@ const TokenButtons = ({
           disabled={token.isERC721 || !isBuyableChain}
           tooltipRender={null}
         />
-        ///: END:ONLY_INCLUDE_IF
-      }
-
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        <>
-          <IconButton
-            className="eth-overview__button"
-            Icon={
-              <Icon
-                name={IconName.Stake}
-                color={IconColor.primaryInverse}
-                size={IconSize.Sm}
-              />
-            }
-            label={t('stake')}
-            data-testid="token-overview-mmi-stake"
-            tooltipRender={null}
-            onClick={() => {
-              stakingEvent();
-              global.platform.openTab({
-                url: `${mmiPortfolioUrl}/stake`,
-              });
-            }}
-          />
-          {mmiPortfolioEnabled && (
-            <IconButton
-              className="eth-overview__button"
-              Icon={
-                <Icon
-                  name={IconName.Diagram}
-                  color={IconColor.primaryInverse}
-                  size={IconSize.Sm}
-                />
-              }
-              label={t('portfolio')}
-              data-testid="token-overview-mmi-portfolio"
-              tooltipRender={null}
-              onClick={() => {
-                portfolioEvent();
-                global.platform.openTab({
-                  url: mmiPortfolioUrl,
-                });
-              }}
-            />
-          )}
-        </>
         ///: END:ONLY_INCLUDE_IF
       }
 
@@ -206,12 +162,13 @@ const TokenButtons = ({
                 token_symbol: token.symbol,
                 location: MetaMetricsSwapsEventSource.TokenView,
                 text: 'Send',
-                chain_id: chainId,
+                chain_id: token.chainId,
               },
             },
             { excludeMetaMetricsId: false },
           );
           try {
+            await setCorrectChain();
             await dispatch(
               startNewDraftTransaction({
                 type: AssetType.token,
@@ -248,12 +205,8 @@ const TokenButtons = ({
               size={IconSize.Sm}
             />
           }
-          onClick={() => {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            global.platform.openTab({
-              url: `${mmiPortfolioUrl}/swap`,
-            });
-            ///: END:ONLY_INCLUDE_IF
+          onClick={async () => {
+            await setCorrectChain();
 
             ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
             trackEvent({
@@ -263,16 +216,16 @@ const TokenButtons = ({
                 token_symbol: token.symbol,
                 location: MetaMetricsSwapsEventSource.TokenView,
                 text: 'Swap',
-                chain_id: chainId,
+                chain_id: currentChainId,
               },
             });
             dispatch(
               setSwapsFromToken({
                 ...token,
-                address: token.address.toLowerCase(),
+                address: token.address?.toLowerCase(),
                 iconUrl: token.image,
-                balance: token.balance.value,
-                string: token.balance.display,
+                balance: token?.balance?.value,
+                string: token?.balance?.display,
               }),
             );
             if (usingHardwareWallet) {
@@ -305,12 +258,13 @@ const TokenButtons = ({
               />
             }
             label={t('bridge')}
-            onClick={() => {
+            onClick={async () => {
+              await setCorrectChain();
               openBridgeExperience(MetaMetricsSwapsEventSource.TokenView, {
                 ...token,
                 iconUrl: token.image,
-                balance: token.balance.value,
-                string: token.balance.display,
+                balance: token?.balance?.value,
+                string: token?.balance?.display,
                 name: token.name ?? '',
               });
             }}
