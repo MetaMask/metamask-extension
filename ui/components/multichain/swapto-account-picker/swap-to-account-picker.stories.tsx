@@ -29,7 +29,7 @@ const mockAccounts = [
 ] as InternalAccount[];
 
 const Template: StoryFn<typeof SwapToAccountPicker> = (args) => (
-  <div style={{ width: '400px', border: '1px solid #ccc' }}>
+  <div style={{ width: '400px' }}>
     <SwapToAccountPicker {...args} />
   </div>
 );
@@ -45,5 +45,13 @@ export const SolanaAccounts = Template.bind({});
 SolanaAccounts.args = {
   accounts: mockAccounts,
   chainType: 'solana',
+  onAccountSelect: (account) => console.log('Selected:', account),
+};
+
+export const WithSelectedAccount = Template.bind({});
+WithSelectedAccount.args = {
+  accounts: mockAccounts,
+  chainType: 'evm',
+  selectedSwapToAccount: mockAccounts[0],
   onAccountSelect: (account) => console.log('Selected:', account),
 };

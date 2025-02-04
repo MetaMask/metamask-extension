@@ -53,6 +53,10 @@ export const SwapToAccountPicker = ({
         justifyContent={JustifyContent.spaceBetween}
         width={BlockSize.Full}
         className="swap-to-account-picker"
+        style={{
+          borderRadius: '8px',
+          border: '1px solid var(--color-border-default)',
+        }}
       >
         <Box
           className="swap-to-account-picker__selected"
@@ -62,6 +66,7 @@ export const SwapToAccountPicker = ({
             account={selectedSwapToAccount}
             isSelected={selectedSwapToAccount.id === selectedAccount?.id}
             showOptions={false}
+            disableHover
           />
         </Box>
         <Box className="deselect-button-container">
@@ -72,6 +77,16 @@ export const SwapToAccountPicker = ({
             size="sm"
             className="deselect-button"
             iconName="close-outline"
+            style={{
+              paddingRight: '8px',
+              color: 'var(--color-icon-alternative)',
+              textDecoration: 'none',
+              // not working
+              '&:hover': {
+                textDecoration: 'none',
+                color: 'var(--color-icon-default)',
+              },
+            }}
           >
             ✕
           </Button>
@@ -86,6 +101,10 @@ export const SwapToAccountPicker = ({
       flexDirection={FlexDirection.Column}
       width={BlockSize.Full}
       className="swap-to-account-picker"
+      style={{
+        borderRadius: '8px',
+        border: '1px solid var(--color-border-default)',
+      }}
     >
       <Box className="search-container">
         <TextFieldSearch
@@ -94,6 +113,13 @@ export const SwapToAccountPicker = ({
           onChange={(e) => setSearchQuery(e.target.value)}
           clearButtonOnClick={() => setSearchQuery('')}
           className="text-field-search"
+          style={{
+            width: '100%',
+            borderRadius: 0,
+            borderWidth: 0,
+            borderBottomWidth: 1,
+            borderBottomColor: 'var(--color-border-default)',
+          }}
         />
       </Box>
 
