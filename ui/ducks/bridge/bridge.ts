@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { Hex } from '@metamask/utils';
+import { type Hex, isStrictHexString } from '@metamask/utils';
+import { toChecksumAddress } from 'ethereumjs-util';
 import {
   type BridgeToken,
   type QuoteMetadata,
@@ -61,9 +62,25 @@ const bridgeSlice = createSlice({
     },
     setFromToken: (state, action) => {
       state.fromToken = action.payload;
+      if (action.payload) {
+        state.fromToken = {
+          ...action.payload,
+          address: isStrictHexString(action.payload.address)
+            ? toChecksumAddress(action.payload.address)
+            : action.payload.address,
+        };
+      }
     },
     setToToken: (state, action) => {
       state.toToken = action.payload;
+      if (action.payload) {
+        state.toToken = {
+          ...action.payload,
+          address: isStrictHexString(action.payload.address)
+            ? toChecksumAddress(action.payload.address)
+            : action.payload.address,
+        };
+      }
     },
     setFromTokenInputValue: (state, action) => {
       state.fromTokenInputValue = action.payload;

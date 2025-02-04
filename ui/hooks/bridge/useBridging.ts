@@ -1,6 +1,8 @@
 import { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { toChecksumAddress } from 'ethereumjs-util';
+import { isStrictHexString } from '@metamask/utils';
 import { setBridgeFeatureFlags } from '../../ducks/bridge/actions';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -91,7 +93,11 @@ const useBridging = () => {
           },
         });
         let url = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
-        url += `?token=${token.address?.toLowerCase()}`;
+        url += `?token=${
+          isStrictHexString(token.address)
+            ? toChecksumAddress(token.address)
+            : token.address
+        }`;
         if (isSwap) {
           url += '&swaps=true';
         }

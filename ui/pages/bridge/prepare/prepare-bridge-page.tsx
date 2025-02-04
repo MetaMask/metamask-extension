@@ -11,6 +11,7 @@ import { debounce } from 'lodash';
 import { useHistory, useLocation } from 'react-router-dom';
 import { BigNumber } from 'bignumber.js';
 import { type TokenListMap } from '@metamask/assets-controllers';
+import { toChecksumAddress } from 'ethereumjs-util';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -233,7 +234,7 @@ const PrepareBridgePage = () => {
             ...destAsset,
             chainId: quoteDestChainId,
             image: destAsset.icon,
-            address: destAsset.address.toLowerCase(),
+            address: destAsset.address,
           }),
         );
         dispatch(
@@ -241,7 +242,7 @@ const PrepareBridgePage = () => {
             ...srcAsset,
             chainId: quoteSrcChainId,
             image: srcAsset.icon,
-            address: srcAsset.address.toLowerCase(),
+            address: srcAsset.address,
           }),
         );
       }
@@ -361,14 +362,19 @@ const PrepareBridgePage = () => {
       });
     };
 
+    // fromTokens is for EVM chains so it's ok to lowercase the token address
+    const matchedToken = fromTokens[tokenAddressFromUrl.toLowerCase()];
+
     switch (tokenAddressFromUrl) {
-      case fromToken?.address?.toLowerCase():
+      case fromToken?.address:
         // If the token is already set, remove the query param
         removeTokenFromUrl();
         break;
-      case fromTokens[tokenAddressFromUrl]?.address?.toLowerCase(): {
+      case matchedToken?.address:
+      case matchedToken?.address
+        ? toChecksumAddress(matchedToken.address)
+        : undefined: {
         // If there is a match, set it as the fromToken
-        const matchedToken = fromTokens[tokenAddressFromUrl];
         dispatch(
           setFromToken({
             ...matchedToken,
