@@ -19,6 +19,7 @@ import { getURLHost } from '../../../../helpers/utils/util';
 
 export default class PermissionPageContainerContent extends PureComponent {
   static propTypes = {
+    request: PropTypes.object.isRequired,
     subjectMetadata: PropTypes.shape({
       name: PropTypes.string.isRequired,
       origin: PropTypes.string.isRequired,
@@ -48,6 +49,7 @@ export default class PermissionPageContainerContent extends PureComponent {
       selectedAccounts,
       subjectMetadata,
       requestedChainIds,
+      request,
     } = this.props;
 
     const accounts = selectedAccounts.reduce((accumulator, account) => {
@@ -104,6 +106,7 @@ export default class PermissionPageContainerContent extends PureComponent {
           borderRadius={BorderRadius.XL}
         >
           <PermissionsConnectPermissionList
+            isLegacySwitchEthereumChain={request.isLegacySwitchEthereumChain}
             permissions={selectedPermissions}
             subjectName={subjectMetadata.origin}
             accounts={accounts}
