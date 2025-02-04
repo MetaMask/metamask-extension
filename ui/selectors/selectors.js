@@ -543,6 +543,17 @@ export function getMetaMaskKeyringsMetadata(state) {
   return state.metamask.keyringsMetadata;
 }
 
+export function getHDSrpIndex(state) {
+  const selectedAddress = getSelectedAddress(state);
+  const keyrings = getMetaMaskKeyrings(state);
+  const hdKeyrings = keyrings.filter(
+    (keyring) => keyring.type === KeyringType.hd,
+  );
+  return hdKeyrings.findIndex((keyring) =>
+    keyring.accounts.includes(selectedAddress),
+  );
+}
+
 /**
  * Get account balances state.
  *

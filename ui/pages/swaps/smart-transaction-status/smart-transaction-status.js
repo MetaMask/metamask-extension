@@ -53,6 +53,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import CreateNewSwap from '../create-new-swap';
 import ViewOnBlockExplorer from '../view-on-block-explorer';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
+import { getHDSrpIndex } from '../../../selectors/selectors';
 import SuccessIcon from './success-icon';
 import RevertedIcon from './reverted-icon';
 import CanceledIcon from './canceled-icon';
@@ -65,6 +66,7 @@ export default function SmartTransactionStatusPage() {
   const t = useContext(I18nContext);
   const history = useHistory();
   const dispatch = useDispatch();
+  const hdSrpIndex = useSelector(getHDSrpIndex);
   const fetchParams = useSelector(getFetchParams, isEqual) || {};
   const {
     destinationTokenInfo: fetchParamsDestinationTokenInfo = {},
@@ -150,6 +152,9 @@ export default function SmartTransactionStatusPage() {
       event: 'STX Status Page Loaded',
       category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties,
+      properties: {
+        hd_srp_index: hdSrpIndex,
+      },
     });
     // eslint-disable-next-line
   }, []);
@@ -273,6 +278,9 @@ export default function SmartTransactionStatusPage() {
               event: 'Cancel STX',
               category: MetaMetricsEventCategory.Swaps,
               sensitiveProperties,
+              properties: {
+                hd_srp_index: hdSrpIndex,
+              },
             });
             dispatch(cancelSwapsSmartTransaction(latestSmartTransactionUuid));
           }}

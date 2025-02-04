@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import Button from '../../../components/ui/button';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
@@ -27,12 +28,14 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getHDSrpIndex } from '../../../selectors/selectors';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
 export default function RecoveryPhrase({ secretRecoveryPhrase }) {
   const history = useHistory();
   const t = useI18nContext();
   const { search } = useLocation();
+  const hdSrpIndex = useSelector(getHDSrpIndex);
   const [copied, handleCopy] = useCopyToClipboard();
   const [phraseRevealed, setPhraseRevealed] = useState(false);
   const [hiddenPhrase, setHiddenPhrase] = useState(false);
@@ -141,6 +144,9 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
                   category: MetaMetricsEventCategory.Onboarding,
                   event:
                     MetaMetricsEventName.OnboardingWalletSecurityPhraseWrittenDown,
+                  properties: {
+                    hd_srp_index: hdSrpIndex,
+                  },
                 });
                 history.push(
                   `${ONBOARDING_CONFIRM_SRP_ROUTE}${isFromReminderParam}`,
@@ -160,6 +166,9 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
                 category: MetaMetricsEventCategory.Onboarding,
                 event:
                   MetaMetricsEventName.OnboardingWalletSecurityPhraseRevealed,
+                properties: {
+                  hd_srp_index: hdSrpIndex,
+                },
               });
               setPhraseRevealed(true);
             }}

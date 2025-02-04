@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { setAccountDetailsAddress } from '../../../store/actions';
 
@@ -12,6 +12,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { IconName, Text } from '../../component-library';
+import { getHDSrpIndex } from '../../../selectors/selectors';
 
 export const AccountDetailsMenuItem = ({
   metricsLocation,
@@ -22,6 +23,7 @@ export const AccountDetailsMenuItem = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
+  const hdSrpIndex = useSelector(getHDSrpIndex);
 
   const LABEL = t('accountDetails');
 
@@ -34,6 +36,7 @@ export const AccountDetailsMenuItem = ({
           category: MetaMetricsEventCategory.Navigation,
           properties: {
             location: metricsLocation,
+            hd_srp_index: hdSrpIndex,
           },
         });
         closeMenu?.();

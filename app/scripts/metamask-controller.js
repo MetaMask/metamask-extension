@@ -3019,6 +3019,7 @@ export default class MetamaskController extends EventEmitter {
             version: truncatedSnap.version,
             origin,
             snap_category: snapCategory,
+            hd_srp_index: this.getHDSrpIndex(),
           },
         });
       },
@@ -5719,6 +5720,21 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
+  /**
+   * Returns the index of the HD keyring containing the selected account.
+   *
+   * @returns {number} The index of the HD keyring containing the selected account.
+   */
+  getHDSrpIndex() {
+    const selectedAccount = this.accountsController.getSelectedAccount();
+    const hdKeyrings = this.keyringController.state.keyrings.filter(
+      (keyring) => keyring.type === KeyringTypes.hd,
+    );
+    return hdKeyrings.findIndex((keyring) =>
+      keyring.accounts.includes(selectedAccount.address),
+    );
+  }
+
   //=============================================================================
   // PASSWORD MANAGEMENT
   //=============================================================================
@@ -6296,6 +6312,11 @@ export default class MetamaskController extends EventEmitter {
       createRPCMethodTrackingMiddleware({
         getAccountType: this.getAccountType.bind(this),
         getDeviceModel: this.getDeviceModel.bind(this),
+        getHDSrpIndex: this.getHDSrpIndex.bind(this),
+        isConfirmationRedesignEnabled:
+          this.isConfirmationRedesignEnabled.bind(this),
+        isRedesignedConfirmationsDeveloperEnabled:
+          this.isConfirmationRedesignDeveloperEnabled.bind(this),
         getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
         snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
           name: 'SnapAndHardwareMessenger',
@@ -7385,6 +7406,7 @@ export default class MetamaskController extends EventEmitter {
         return this.preferencesController.state.preferences
           .showConfirmationAdvancedDetails;
       },
+      getHDSrpIndex: this.getHDSrpIndex.bind(this),
     };
     return {
       ...controllerActions,
