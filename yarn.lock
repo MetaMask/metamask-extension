@@ -6227,9 +6227,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-controllers@npm:^9.10.0, @metamask/snaps-controllers@npm:^9.19.0":
-  version: 9.19.0
-  resolution: "@metamask/snaps-controllers@npm:9.19.0"
+"@metamask/snaps-controllers@npm:^9.10.0, @metamask/snaps-controllers@npm:^9.19.1":
+  version: 9.19.1
+  resolution: "@metamask/snaps-controllers@npm:9.19.1"
   dependencies:
     "@metamask/approval-controller": "npm:^7.1.2"
     "@metamask/base-controller": "npm:^7.0.3"
@@ -6243,7 +6243,7 @@ __metadata:
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/snaps-registry": "npm:^3.2.3"
     "@metamask/snaps-rpc-methods": "npm:^11.11.0"
-    "@metamask/snaps-sdk": "npm:^6.17.0"
+    "@metamask/snaps-sdk": "npm:^6.17.1"
     "@metamask/snaps-utils": "npm:^8.10.0"
     "@metamask/utils": "npm:^11.0.1"
     "@xstate/fsm": "npm:^2.0.0"
@@ -6264,7 +6264,7 @@ __metadata:
   peerDependenciesMeta:
     "@metamask/snaps-execution-environments":
       optional: true
-  checksum: 10/8d58a8097b6a289950441a8e6ba1266bbe36280a230bea37cf4b3f4a61f730455ca5a1875cf1e5c6474a5795a2534c4bf29ebe49e425b55ef36e3e76d2d720ce
+  checksum: 10/4744c6c3b5309b43f07c5f4f36169a0cda7c19b4565ed1925579b9d3831eb0cfcb204d73ce3c38a6c2d666f9c033b70320b4a0251bc2a10c0a678cc4e37b059e
   languageName: node
   linkType: hard
 
@@ -6316,16 +6316,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-sdk@npm:^6.17.0":
-  version: 6.17.0
-  resolution: "@metamask/snaps-sdk@npm:6.17.0"
+"@metamask/snaps-sdk@npm:^6.17.1":
+  version: 6.17.1
+  resolution: "@metamask/snaps-sdk@npm:6.17.1"
   dependencies:
     "@metamask/key-tree": "npm:^10.0.2"
     "@metamask/providers": "npm:^18.3.1"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^11.0.1"
-  checksum: 10/96dd2555d354234ce6a5fbe00912e75fe86af482bb9df4c225927d125ca1e0e1880c0d806ce6ad097c6778d00d35d290204db17797685a8dd0bc63fc8f4a0991
+  checksum: 10/05c5170c6250115535bc6d06a417157bb55005dd6fe86e768d70fabfba610ec8114cf45a8a5aad1219b1cfb0bcf5e080974735a0ac9a8c8bd0ac102f5c3cf42f
   languageName: node
   linkType: hard
 
@@ -26665,10 +26665,10 @@ __metadata:
     "@metamask/selected-network-controller": "npm:^19.0.0"
     "@metamask/signature-controller": "npm:^23.1.0"
     "@metamask/smart-transactions-controller": "npm:^16.0.1"
-    "@metamask/snaps-controllers": "npm:^9.19.0"
+    "@metamask/snaps-controllers": "npm:^9.19.1"
     "@metamask/snaps-execution-environments": "npm:^6.14.0"
     "@metamask/snaps-rpc-methods": "npm:^11.11.0"
-    "@metamask/snaps-sdk": "npm:^6.17.0"
+    "@metamask/snaps-sdk": "npm:^6.17.1"
     "@metamask/snaps-utils": "npm:^8.10.0"
     "@metamask/solana-wallet-snap": "npm:^1.2.0"
     "@metamask/test-bundler": "npm:^1.0.0"
