@@ -1,12 +1,11 @@
 import { createSelector } from 'reselect';
-import { Hex } from '@metamask/utils';
 import {
   BridgeHistoryItem,
   BridgeStatusAppState,
 } from '../../../shared/types/bridge-status';
 import { getSelectedAddress } from '../../selectors';
-import { Numeric } from '../../../shared/modules/Numeric';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
+import { formatChainIdFromApi } from '../../../shared/modules/bridge-utils/multichain';
 
 export const selectBridgeStatusState = (state: BridgeStatusAppState) =>
   state.metamask.bridgeStatusState;
@@ -42,11 +41,9 @@ export const selectIncomingBridgeHistory = createSelector(
     // Get all history items with dest chain that matches current chain
     return Object.values(bridgeHistory)
       .filter((bridgeHistoryItem) => {
-        const hexDestChainId = new Numeric(
+        const hexDestChainId = formatChainIdFromApi(
           bridgeHistoryItem.quote.destChainId,
-          10,
-        ).toPrefixedHexString() as Hex;
-
+        );
         return hexDestChainId === currentChainId;
       })
       .sort((a, b) => {
