@@ -1,5 +1,5 @@
 import { Contract } from '@ethersproject/contracts';
-import { Hex } from '@metamask/utils';
+import { isCaipChainId, type Hex, type CaipChainId } from '@metamask/utils';
 import { abiERC20 } from '@metamask/metamask-eth-abis';
 import {
   BRIDGE_API_BASE_URL,
@@ -10,7 +10,6 @@ import {
 } from '../../constants/bridge';
 import { MINUTE } from '../../constants/time';
 import fetchWithCache from '../../lib/fetch-with-cache';
-import { hexToDecimal } from '../conversion.utils';
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   SwapsTokenObject,
@@ -42,7 +41,7 @@ import {
   QUOTE_RESPONSE_VALIDATORS,
   FEE_DATA_VALIDATORS,
 } from './validators';
-import { formatChainIdFromApi } from './multichain';
+import { formatChainIdFromApi, formatChainIdToApi } from './multichain';
 
 const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };
 const CACHE_REFRESH_TEN_MINUTES = 10 * MINUTE;
@@ -91,10 +90,24 @@ export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
 
 // Returns a list of enabled (unblocked) tokens
 export async function fetchBridgeTokens(
-  chainId: Hex,
+  chainId: Hex | CaipChainId,
 ): Promise<Record<string, SwapsTokenObject>> {
+  const transformedTokens: Record<string, SwapsTokenObject> = {};
+  const nativeToken =
+    SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
+      chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
+    ];
+  if (nativeToken) {
+    transformedTokens[nativeToken.address] = nativeToken;
+  }
+
+  if (isCaipChainId(chainId)) {
+    // TODO call token endpoint for solana
+    return transformedTokens;
+  }
+
   // TODO make token api v2 call
-  const url = `${BRIDGE_API_BASE_URL}/getTokens?chainId=${hexToDecimal(
+  const url = `${BRIDGE_API_BASE_URL}/getTokens?chainId=${formatChainIdToApi(
     chainId,
   )}`;
   const tokens = await fetchWithCache({
@@ -103,16 +116,6 @@ export async function fetchBridgeTokens(
     cacheOptions: { cacheRefreshTime: CACHE_REFRESH_TEN_MINUTES },
     functionName: 'fetchBridgeTokens',
   });
-
-  const nativeToken =
-    SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
-      chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
-    ];
-
-  const transformedTokens: Record<string, SwapsTokenObject> = {};
-  if (nativeToken) {
-    transformedTokens[nativeToken.address] = nativeToken;
-  }
 
   tokens.forEach((token: unknown) => {
     if (
@@ -196,6 +199,8 @@ export const getEthUsdtResetData = () => {
   return data;
 };
 
-export const isEthUsdt = (chainId: Hex, address: string) =>
-  chainId === CHAIN_IDS.MAINNET &&
-  address.toLowerCase() === ETH_USDT_ADDRESS.toLowerCase();
+export const isEthUsdt = (chainId: Hex | CaipChainId, address: string) =>
+  isCaipChainId(chainId)
+    ? false
+    : chainId === CHAIN_IDS.MAINNET &&
+      address.toLowerCase() === ETH_USDT_ADDRESS.toLowerCase();
