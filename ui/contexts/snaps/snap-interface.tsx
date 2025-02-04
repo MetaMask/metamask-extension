@@ -20,6 +20,7 @@ import {
   updateInterfaceState,
   forceUpdateMetamaskState,
 } from '../../store/actions';
+import { useScrollRequired } from '../../hooks/useScrollRequired';
 import { mergeValue } from './utils';
 
 export type HandleEvent = <Type extends State>(args: {
@@ -52,6 +53,7 @@ export type SnapInterfaceContextType = {
   setCurrentFocusedInput: SetCurrentInputFocus;
   focusedInput: string | null;
   snapId: string;
+  requireScroll: boolean;
 };
 
 export const SnapInterfaceContext =
@@ -62,6 +64,7 @@ export type SnapInterfaceContextProviderProps = {
   snapId: string;
   initialState: InterfaceState;
   context: Json;
+  requireScroll: boolean;
 };
 
 /**
@@ -73,11 +76,20 @@ export type SnapInterfaceContextProviderProps = {
  * @param params.snapId - The Snap ID that requested the interface.
  * @param params.initialState - The initial state of the interface.
  * @param params.context - The context blob of the interface.
+ * @param params.requireScroll - Whether the interface requires scrolling.
  * @returns The context provider.
  */
 export const SnapInterfaceContextProvider: FunctionComponent<
   SnapInterfaceContextProviderProps
-> = ({ children, interfaceId, snapId, initialState, context }) => {
+> = ({
+  children,
+  interfaceId,
+  snapId,
+  initialState,
+  context,
+  requireScroll,
+}) => {
+  const scrollData = useScrollRequired([], { enabled: requireScroll });
   const dispatch = useDispatch();
 
   // We keep an internal copy of the state to speed up the state update in the
@@ -255,6 +267,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
         setCurrentFocusedInput,
         focusedInput: focusedInput.current,
         snapId,
+        requireScroll,
       }}
     >
       {children}

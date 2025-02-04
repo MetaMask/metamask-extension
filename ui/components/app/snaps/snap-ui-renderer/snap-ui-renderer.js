@@ -264,6 +264,7 @@ const SnapUIRendererComponent = ({
       interfaceId={interfaceId}
       initialState={initialState}
       context={context}
+      requireScroll={requireScroll}
     >
       <Box
         className="snap-ui-renderer__content"
