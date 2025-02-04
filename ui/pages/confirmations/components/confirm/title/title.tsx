@@ -36,16 +36,15 @@ function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
     return null;
   }
 
-  const onClickSupportLink = () => {
-    const properties = {
-      properties: {
-        external_link_clicked: 'security_alert_support_link',
-      },
-    };
-    updateSignatureEventFragment(properties);
-    updateTransactionEventFragment(properties, ownerId);
-  };
-
+const onClickSupportLink = useCallback(() => {
+       const properties = {
+         properties: {
+           external_link_clicked: 'security_alert_support_link',
+         },
+       };
+       updateSignatureEventFragment(properties);
+       updateTransactionEventFragment(properties, ownerId);
+     }, [ownerId]);
   return (
     <Box marginTop={3}>
       {generalAlerts.map((alert) => (
