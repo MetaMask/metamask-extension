@@ -1,6 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { act, waitFor } from '@testing-library/react';
+import { act } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import { BtcAccountType } from '@metamask/keyring-api';
 import { SEND_STAGES } from '../../ducks/send';
@@ -15,10 +15,6 @@ import { useIsOriginalNativeTokenSymbol } from '../../hooks/useIsOriginalNativeT
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
-import {
-  MOCK_ACCOUNT_BIP122_P2WPKH,
-  MOCK_ACCOUNT_EOA,
-} from '../../../test/data/mock-accounts';
 import useMultiPolling from '../../hooks/useMultiPolling';
 import Routes from '.';
 
@@ -189,96 +185,6 @@ describe('Routes Component', () => {
       };
       const { getByTestId } = await render(undefined, state);
       expect(getByTestId('account-menu-icon')).not.toBeDisabled();
-    });
-  });
-
-  describe('new network popup', () => {
-    const mockBtcAccount = MOCK_ACCOUNT_BIP122_P2WPKH;
-    const mockEvmAccount = MOCK_ACCOUNT_EOA;
-
-    const mockNewlyAddedNetwork = {
-      chainId: CHAIN_IDS.BASE,
-      name: 'Base',
-      nativeCurrency: 'ETH',
-      defaultRpcEndpointIndex: 0,
-      rpcEndpoints: [
-        {
-          type: 'custom',
-          url: 'https://base.com',
-          networkClientId: CHAIN_IDS.BASE,
-        },
-      ],
-    };
-
-    const renderPopup = async (account) => {
-      // This popup does not show up for tests, so we have to disable this:
-      process.env.IN_TEST = '';
-      const state = {
-        ...mockSendState,
-        metamask: {
-          ...mockState.metamask,
-          completedOnboarding: true,
-          selectedNetworkClientId: mockNewlyAddedNetwork.chainId,
-          internalAccounts: {
-            accounts: {
-              [account.id]: account,
-            },
-            selectedAccount: account.id,
-          },
-          networkConfigurationsByChainId: {
-            ...mockState.metamask.networkConfigurationsByChainId,
-            [mockNewlyAddedNetwork.chainId]: mockNewlyAddedNetwork,
-          },
-          networksMetadata: {
-            ...mockState.metamask.networksMetadata,
-            [mockNewlyAddedNetwork.chainId]: {
-              EIPS: {
-                1559: true,
-              },
-              status: 'available',
-            },
-          },
-          tokens: [],
-          swapsState: { swapsFeatureIsLive: false },
-          announcements: {},
-          pendingApprovals: {},
-          termsOfUseLastAgreed: new Date('2999-03-25'),
-          shouldShowSeedPhraseReminder: false,
-          useExternalServices: true,
-        },
-        send: {
-          ...mockSendState.send,
-          stage: SEND_STAGES.INACTIVE,
-          currentTransactionUUID: null,
-          draftTransactions: {},
-        },
-        appState: {
-          ...mockSendState.appState,
-          showWhatsNewPopup: false,
-          onboardedInThisUISession: false,
-        },
-      };
-      return await render(['/'], state);
-    };
-
-    it('displays new EVM network popup for EVM accounts', async () => {
-      const { getAllByText, queryByTestId } = await renderPopup(mockEvmAccount);
-
-      await waitFor(() => {
-        expect(getAllByText(mockNewlyAddedNetwork.name).length).toBeGreaterThan(
-          0,
-        );
-        expect(
-          queryByTestId('new-network-info__bullet-paragraph'),
-        ).not.toBeInTheDocument();
-      });
-    });
-
-    it('does not display new EVM network popup for non-EVM accounts', async () => {
-      const { queryByTestId } = await renderPopup(mockBtcAccount);
-
-      const networkInfo = queryByTestId('new-network-info__bullet-paragraph');
-      expect(networkInfo).not.toBeInTheDocument();
     });
   });
 });

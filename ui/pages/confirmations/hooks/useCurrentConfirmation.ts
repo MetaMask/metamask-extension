@@ -7,11 +7,9 @@ import {
   ApprovalsMetaMaskState,
   getIsRedesignedConfirmationsDeveloperEnabled,
   getRedesignedConfirmationsEnabled,
-  getRedesignedTransactionsEnabled,
   getUnapprovedTransaction,
   oldestPendingConfirmationSelector,
   selectPendingApproval,
-  use4ByteResolutionSelector,
 } from '../../../selectors';
 import { selectUnapprovedMessage } from '../../../selectors/signatures';
 import {
@@ -31,14 +29,9 @@ const useCurrentConfirmation = () => {
   const { id: paramsConfirmationId } = useParams<{ id: string }>();
   const oldestPendingApproval = useSelector(oldestPendingConfirmationSelector);
   const confirmationId = paramsConfirmationId ?? oldestPendingApproval?.id;
-  const isDecodingEnabled = Boolean(useSelector(use4ByteResolutionSelector));
 
   const isRedesignedSignaturesUserSettingEnabled = useSelector(
     getRedesignedConfirmationsEnabled,
-  );
-
-  const isRedesignedTransactionsUserSettingEnabled = useSelector(
-    getRedesignedTransactionsEnabled,
   );
 
   const isRedesignedConfirmationsDeveloperEnabled = useSelector(
@@ -66,9 +59,7 @@ const useCurrentConfirmation = () => {
 
   const useRedesignedForTransaction = shouldUseRedesignForTransactions({
     transactionMetadataType: transactionMetadata?.type,
-    isRedesignedTransactionsUserSettingEnabled,
     isRedesignedConfirmationsDeveloperEnabled,
-    isDecodingEnabled,
   });
 
   const shouldUseRedesign =

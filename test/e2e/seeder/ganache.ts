@@ -76,6 +76,13 @@ export class Ganache {
     });
   }
 
+  async mineBlock() {
+    return await this.getProvider()?.request({
+      method: 'evm_mine',
+      params: [],
+    });
+  }
+
   async quit() {
     if (!this.#server) {
       throw new Error('Server not running yet');

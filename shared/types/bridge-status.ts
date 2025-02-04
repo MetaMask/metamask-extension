@@ -1,12 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-// TODO fix this
-import {
-  ChainId,
-  Quote,
-  QuoteMetadata,
-  QuoteResponse,
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../ui/pages/bridge/types';
+import type { ChainId, Quote, QuoteMetadata, QuoteResponse } from './bridge';
 
 // All fields need to be types not interfaces, same with their children fields
 // o/w you get a type error
@@ -153,9 +146,8 @@ export enum BridgeStatusAction {
   GET_STATE = 'getState',
 }
 
-// The BigNumber values are serialized to strings
 export type QuoteMetadataSerialized = {
-  sentAmount: { amount: string; fiat: string | null };
+  sentAmount: { amount: string; valueInCurrency: string | null };
 };
 
 export type StartPollingForBridgeTxStatusArgs = {
@@ -168,6 +160,11 @@ export type StartPollingForBridgeTxStatusArgs = {
   targetContractAddress?: BridgeHistoryItem['targetContractAddress'];
 };
 
+/**
+ * Chrome: The BigNumber values are automatically serialized to strings when sent to the background
+ * Firefox: The BigNumber values are not serialized to strings when sent to the background,
+ * so we force the ui to do it manually, by using StartPollingForBridgeTxStatusArgsSerialized type on the startPollingForBridgeTxStatus action
+ */
 export type StartPollingForBridgeTxStatusArgsSerialized = Omit<
   StartPollingForBridgeTxStatusArgs,
   'quoteResponse'

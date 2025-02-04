@@ -1,6 +1,6 @@
 import {
-  StartPollingForBridgeTxStatusArgs,
   BridgeStatusAction,
+  StartPollingForBridgeTxStatusArgsSerialized,
 } from '../../../shared/types/bridge-status';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
@@ -17,14 +17,15 @@ const callBridgeStatusControllerMethod = <T extends unknown[]>(
 };
 
 export const startPollingForBridgeTxStatus = (
-  startPollingForBridgeTxStatusArgs: StartPollingForBridgeTxStatusArgs,
+  startPollingForBridgeTxStatusArgs: StartPollingForBridgeTxStatusArgsSerialized,
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     return dispatch(
-      callBridgeStatusControllerMethod<[StartPollingForBridgeTxStatusArgs]>(
-        BridgeStatusAction.START_POLLING_FOR_BRIDGE_TX_STATUS,
-        [startPollingForBridgeTxStatusArgs],
-      ),
+      callBridgeStatusControllerMethod<
+        [StartPollingForBridgeTxStatusArgsSerialized]
+      >(BridgeStatusAction.START_POLLING_FOR_BRIDGE_TX_STATUS, [
+        startPollingForBridgeTxStatusArgs,
+      ]),
     );
   };
 };

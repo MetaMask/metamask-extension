@@ -4,13 +4,19 @@ import { getCleanAppState, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { MOCK_META_METRICS_ID } from '../../constants';
 import { MOCK_REMOTE_FEATURE_FLAGS_RESPONSE } from './mock-data';
 
 describe('Remote feature flag', function (this: Suite) {
-  it('should be fetched when basic functionality toggle is on', async function () {
+  it('should be fetched with threshold value when basic functionality toggle is on', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder()
+          .withMetaMetricsController({
+            metaMetricsId: MOCK_META_METRICS_ID,
+            participateInMetaMetrics: true,
+          })
+          .build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: TestSuiteArguments) => {

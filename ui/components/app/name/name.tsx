@@ -106,7 +106,7 @@ const Name = memo(
     const MAX_PET_NAME_LENGTH = 12;
     const formattedName = shortenString(name || undefined, {
       truncatedCharLimit: MAX_PET_NAME_LENGTH,
-      truncatedStartChars: MAX_PET_NAME_LENGTH,
+      truncatedStartChars: MAX_PET_NAME_LENGTH - 3,
       truncatedEndChars: 0,
       skipCharacterInEnd: true,
     });

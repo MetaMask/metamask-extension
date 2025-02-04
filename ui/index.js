@@ -29,7 +29,6 @@ import {
   getUnapprovedTransactions,
   getNetworkToAutomaticallySwitchTo,
   getSwitchedNetworkDetails,
-  getUseRequestQueue,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
@@ -243,10 +242,7 @@ async function runInitialActions(store) {
 
   // Register this window as the current popup
   // and set in background state
-  if (
-    getUseRequestQueue(state) &&
-    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-  ) {
+  if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
     const thisPopupId = Date.now();
     global.metamask.id = thisPopupId;
     await store.dispatch(actions.setCurrentExtensionPopupId(thisPopupId));

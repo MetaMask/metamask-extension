@@ -80,6 +80,7 @@ describe('Swaps - notifications @no-mmi', function () {
           amount: 2,
           swapTo: 'INUINU',
         });
+
         await checkNotification(driver, {
           title: 'Potentially inauthentic token',
           text: 'INUINU is only verified on 1 source. Consider verifying it on Etherscan before proceeding.',

@@ -14,6 +14,7 @@ import {
   getBridgeQuotes,
   getFromChain,
   getToChain,
+  getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -21,8 +22,10 @@ import {
   formatTokenAmount,
   formatEtaInMinutes,
 } from '../utils/quote';
-import { getCurrentCurrency, getLocale } from '../../../selectors';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
+import {
+  getCurrentCurrency,
+  getNativeCurrency,
+} from '../../../ducks/metamask/metamask';
 import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
 import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
 import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
@@ -45,6 +48,7 @@ import {
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import { TERMS_OF_USE_LINK } from '../../../../shared/constants/terms';
+import { getLocale } from '../../../selectors';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 export const BridgeQuoteCard = () => {
@@ -52,6 +56,7 @@ export const BridgeQuoteCard = () => {
   const { activeQuote } = useSelector(getBridgeQuotes);
   const currency = useSelector(getCurrentCurrency);
   const ticker = useSelector(getNativeCurrency);
+  const { isEstimatedReturnLow } = useSelector(getValidationErrors);
 
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
   const { quoteRequestProperties } = useRequestProperties();
@@ -169,70 +174,82 @@ export const BridgeQuoteCard = () => {
               </Row>
             </Row>
 
-            <Row>
+            <Row
+              className="row-with-warning"
+              backgroundColor={
+                isEstimatedReturnLow ? BackgroundColor.warningMuted : undefined
+              }
+            >
               <Text
+                style={{ whiteSpace: 'nowrap' }}
                 variant={TextVariant.bodyMdMedium}
-                color={TextColor.textAlternativeSoft}
+                color={
+                  isEstimatedReturnLow
+                    ? TextColor.warningDefault
+                    : TextColor.textAlternativeSoft
+                }
               >
                 {t('networkFees')}
               </Text>
               <Row gap={1}>
-                {shouldShowNetworkFeesInGasToken ? (
-                  <>
-                    {/* Network fee in gas token amounts  */}
-                    <Text>
-                      {activeQuote.totalNetworkFee?.valueInCurrency
-                        ? formatTokenAmount(
-                            locale,
-                            activeQuote.totalNetworkFee?.amount,
-                            ticker,
-                          )
-                        : undefined}
-                    </Text>
-                    <Text>-</Text>
-                    <Text>
-                      {activeQuote.totalMaxNetworkFee?.valueInCurrency
-                        ? formatTokenAmount(
-                            locale,
-                            activeQuote.totalMaxNetworkFee?.amount,
-                            ticker,
-                          )
-                        : undefined}
-                    </Text>
-                  </>
-                ) : (
-                  <>
-                    {/* Network fee in display currency */}
-                    <Text>
-                      {formatCurrencyAmount(
-                        activeQuote.totalNetworkFee?.valueInCurrency,
-                        currency,
-                        2,
-                      ) ??
+                <Text
+                  style={{
+                    whiteSpace: 'nowrap',
+                    overflow: 'visible',
+                  }}
+                  color={
+                    isEstimatedReturnLow ? TextColor.warningDefault : undefined
+                  }
+                >
+                  {shouldShowNetworkFeesInGasToken
+                    ? //  Network fee in gas token amounts
+                      `${
+                        activeQuote.totalNetworkFee?.valueInCurrency
+                          ? formatTokenAmount(
+                              locale,
+                              activeQuote.totalNetworkFee?.amount,
+                            )
+                          : undefined
+                      } - ${
+                        activeQuote.totalMaxNetworkFee?.valueInCurrency
+                          ? formatTokenAmount(
+                              locale,
+                              activeQuote.totalMaxNetworkFee?.amount,
+                              ticker,
+                            )
+                          : undefined
+                      }`
+                    : // Network fee in display currency
+                      `${
+                        formatCurrencyAmount(
+                          activeQuote.totalNetworkFee?.valueInCurrency,
+                          currency,
+                          2,
+                        ) ??
                         formatTokenAmount(
                           locale,
                           activeQuote.totalNetworkFee?.amount,
-                          ticker,
-                        )}
-                    </Text>
-                    <Text>-</Text>
-                    <Text>
-                      {formatCurrencyAmount(
-                        activeQuote.totalMaxNetworkFee?.valueInCurrency,
-                        currency,
-                        2,
-                      ) ??
+                        )
+                      } - ${
+                        formatCurrencyAmount(
+                          activeQuote.totalMaxNetworkFee?.valueInCurrency,
+                          currency,
+                          2,
+                        ) ??
                         formatTokenAmount(
                           locale,
                           activeQuote.totalMaxNetworkFee?.amount,
                           ticker,
-                        )}
-                    </Text>
-                  </>
-                )}
+                        )
+                      }`}
+                </Text>
                 <Icon
                   style={{ cursor: 'pointer' }}
-                  color={IconColor.iconAlternativeSoft}
+                  color={
+                    isEstimatedReturnLow
+                      ? IconColor.warningDefault
+                      : IconColor.iconAlternativeSoft
+                  }
                   name={IconName.SwapVertical}
                   size={IconSize.Md}
                   onClick={() =>

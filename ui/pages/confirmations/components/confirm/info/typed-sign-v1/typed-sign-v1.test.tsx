@@ -2,10 +2,10 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { TransactionType } from '@metamask/transaction-controller';
 
+import { isSnapId } from '@metamask/snaps-utils';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import { getMockTypedSignConfirmStateForRequest } from '../../../../../../../test/data/confirmations/helper';
 import { unapprovedTypedSignMsgV1 } from '../../../../../../../test/data/confirmations/typed_sign';
-import * as snapUtils from '../../../../../../helpers/utils/snaps';
 import TypedSignInfoV1 from './typed-sign-v1';
 
 jest.mock(
@@ -25,12 +25,9 @@ jest.mock('../../../../../../../node_modules/@metamask/snaps-utils', () => {
     ...originalUtils,
     stripSnapPrefix: jest.fn().mockReturnValue('@metamask/examplesnap'),
     getSnapPrefix: jest.fn().mockReturnValue('npm:'),
+    isSnapId: jest.fn(),
   };
 });
-
-jest.mock('../../../../../../helpers/utils/snaps', () => ({
-  isSnapId: jest.fn(),
-}));
 
 describe('TypedSignInfo', () => {
   it('correctly renders typed sign data request', () => {
@@ -65,7 +62,7 @@ describe('TypedSignInfo', () => {
       type: TransactionType.signTypedData,
       chainId: '0x5',
     });
-    (snapUtils.isSnapId as jest.Mock).mockReturnValue(true);
+    (isSnapId as unknown as jest.Mock).mockReturnValue(true);
     const mockStore = configureMockStore([])(mockState);
     const { queryByText } = renderWithConfirmContextProvider(
       <TypedSignInfoV1 />,
@@ -88,7 +85,7 @@ describe('TypedSignInfo', () => {
       type: TransactionType.signTypedData,
       chainId: '0x5',
     });
-    (snapUtils.isSnapId as jest.Mock).mockReturnValue(false);
+    (isSnapId as unknown as jest.Mock).mockReturnValue(false);
     const mockStore = configureMockStore([])(mockState);
     const { queryByText } = renderWithConfirmContextProvider(
       <TypedSignInfoV1 />,

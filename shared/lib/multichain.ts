@@ -6,7 +6,8 @@ import {
 } from '@metamask/utils';
 import { validate, Network } from 'bitcoin-address-validation';
 import { isAddress } from '@solana/addresses';
-import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
+import { isEvmAccountType } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 
 /**
  * Returns whether an address is on the Bitcoin mainnet.

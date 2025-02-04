@@ -8,10 +8,10 @@ import {
   getMultichainShouldShowFiat,
 } from '../../../../../selectors/multichain';
 import {
-  getCurrentCurrency,
   getPreferences,
   getSelectedInternalAccount,
 } from '../../../../../selectors';
+import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { PRIMARY, SECONDARY } from '../../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../../hooks/useUserPreferencedCurrency';

@@ -338,64 +338,6 @@ describe('Sign Typed Data Signature Request', function () {
 
   describe('Redesigned confirmation screens', function () {
     testData.forEach((data) => {
-      it(`can initiate and confirm a Signature Request of ${data.type}`, async function () {
-        await withFixtures(
-          {
-            dapp: true,
-            fixtures: new FixtureBuilder()
-              .withPermissionControllerConnectedToTestDapp()
-              .build(),
-            ganacheOptions: defaultGanacheOptions,
-            title: this.test.fullTitle(),
-          },
-          async ({ driver, ganacheServer }) => {
-            const addresses = await ganacheServer.getAccounts();
-            const publicAddress = addresses[0];
-            await unlockWallet(driver);
-
-            await openDapp(driver);
-
-            // creates a sign typed data signature request
-            await driver.clickElement(data.buttonId);
-
-            await driver.waitUntilXWindowHandles(3);
-            let windowHandles = await driver.getAllWindowHandles();
-            await driver.switchToWindowWithTitle(
-              WINDOW_TITLES.Dialog,
-              windowHandles,
-            );
-
-            await verifyAndAssertRedesignedSignTypedData(
-              driver,
-              data.expectedMessage,
-            );
-
-            // Approve signing typed data
-            await finalizeSignatureRequest(
-              driver,
-              '.confirm-scroll-to-bottom__button',
-              'Confirm',
-            );
-            await driver.waitUntilXWindowHandles(2);
-            windowHandles = await driver.getAllWindowHandles();
-
-            // switch to the Dapp and verify the signed address
-            await driver.switchToWindowWithTitle(
-              'E2E Test Dapp',
-              windowHandles,
-            );
-            await driver.clickElement(data.verifyId);
-            const recoveredAddress = await driver.findElement(
-              data.verifyResultId,
-            );
-
-            assert.equal(await recoveredAddress.getText(), publicAddress);
-          },
-        );
-      });
-    });
-
-    testData.forEach((data) => {
       it(`can queue multiple Signature Requests of ${data.type} and confirm`, async function () {
         await withFixtures(
           {

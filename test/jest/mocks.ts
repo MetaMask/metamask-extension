@@ -3,9 +3,9 @@ import {
   EthMethod,
   BtcMethod,
   BtcAccountType,
-  InternalAccount,
   isEvmAccountType,
 } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { v4 as uuidv4 } from 'uuid';
 import { keyringTypeToName } from '@metamask/accounts-controller';
@@ -186,7 +186,11 @@ export function createMockInternalAccount({
   type = EthAccountType.Eoa,
   keyringType = KeyringTypes.hd,
   lastSelected = 0,
-  snapOptions = undefined,
+  snapOptions = {
+    enabled: true,
+    id: 'npm:snap-id',
+    name: 'snap-name',
+  },
   options = undefined,
 }: {
   name?: string;
@@ -236,7 +240,7 @@ export function createMockInternalAccount({
       keyring: {
         type: keyringType,
       },
-      snap: snapOptions,
+      snap: keyringType === KeyringTypes.snap ? snapOptions : undefined,
       lastSelected,
     },
     options: options ?? {},

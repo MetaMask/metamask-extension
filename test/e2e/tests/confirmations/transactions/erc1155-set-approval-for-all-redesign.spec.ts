@@ -86,6 +86,7 @@ async function createTransactionAssertDetailsAndConfirm(
   const testDapp = new TestDapp(driver);
 
   await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await testDapp.clickERC1155SetApprovalForAllButton();
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);

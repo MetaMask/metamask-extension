@@ -57,3 +57,41 @@ index 343b343b8300136756d96acac77aab8140efc95a..69d8e2ea84d6303a3af02bd95458ef30
          const checksummedTokenAddresses = tokenAddressesToIgnore.map((address) => {
              const checksumAddress = (0, controller_utils_1.toChecksumHexAddress)(address);
              ignoredTokensMap[address.toLowerCase()] = true;
+diff --git a/dist/TokensController.cjs b/dist/TokensController.cjs
+index 343b343b8300136756d96acac77aab8140efc95a..62055b3aa42b5de2e627da2248a81fd571992f4e 100644
+--- a/dist/TokensController.cjs
++++ b/dist/TokensController.cjs
+@@ -210,13 +210,14 @@ class TokensController extends base_controller_1.BaseController {
+         const releaseLock = await __classPrivateFieldGet(this, _TokensController_mutex, "f").acquire();
+         const { allTokens, ignoredTokens, allDetectedTokens } = this.state;
+         const importedTokensMap = {};
+-        let interactingChainId;
++        let interactingChainId = __classPrivateFieldGet(this, _TokensController_chainId, "f");
+         if (networkClientId) {
+             interactingChainId = this.messagingSystem.call('NetworkController:getNetworkClientById', networkClientId).configuration.chainId;
+         }
+         // Used later to dedupe imported tokens
+         const newTokensMap = [
+-            ...(allTokens[interactingChainId ?? __classPrivateFieldGet(this, _TokensController_chainId, "f")]?.[__classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAccount).call(this).address] || []),
++            ...(allTokens[interactingChainId]?.[__classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAccount).call(this).address] ||
++                []),
+             ...tokensToImport,
+         ].reduce((output, token) => {
+             output[token.address] = token;
+@@ -251,11 +252,13 @@ class TokensController extends base_controller_1.BaseController {
+                 interactingChainId,
+             });
+             this.update((state) => {
+-                state.tokens = newTokens;
++                if (interactingChainId === __classPrivateFieldGet(this, _TokensController_chainId, "f")) {
++                    state.tokens = newTokens;
++                    state.detectedTokens = newDetectedTokens;
++                    state.ignoredTokens = newIgnoredTokens;
++                }
+                 state.allTokens = newAllTokens;
+-                state.detectedTokens = newDetectedTokens;
+                 state.allDetectedTokens = newAllDetectedTokens;
+-                state.ignoredTokens = newIgnoredTokens;
+                 state.allIgnoredTokens = newAllIgnoredTokens;
+             });
+         }

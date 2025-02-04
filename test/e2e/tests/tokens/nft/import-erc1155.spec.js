@@ -44,10 +44,9 @@ describe('Import ERC1155 NFT', function () {
         assert.equal(await newNftNotification.isDisplayed(), true);
 
         // Check the imported ERC1155 and its image are displayed in the ERC1155 tab
-        const importedERC1155 = await driver.waitForSelector({
-          css: 'h5',
-          text: 'Unnamed collection',
-        });
+        const importedERC1155 = await driver.findElement(
+          '[data-testid="nft-item"]',
+        );
         assert.equal(await importedERC1155.isDisplayed(), true);
 
         const importedERC1155Image = await driver.findVisibleElement(

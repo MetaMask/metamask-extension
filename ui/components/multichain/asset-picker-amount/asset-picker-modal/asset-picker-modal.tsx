@@ -36,7 +36,6 @@ import {
 } from '../../../../../shared/modules/selectors/networks';
 import {
   getAllTokens,
-  getCurrentCurrency,
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
   getSelectedInternalAccount,
@@ -46,6 +45,7 @@ import {
 } from '../../../../selectors';
 import {
   getConversionRate,
+  getCurrentCurrency,
   getNativeCurrency,
 } from '../../../../ducks/metamask/metamask';
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
@@ -78,8 +78,11 @@ type AssetPickerModalProps = {
   isOpen: boolean;
   onClose: () => void;
   action?: 'send' | 'receive';
+  asset?:
+    | ERC20Asset
+    | NativeAsset
+    | Pick<NFT, 'type' | 'tokenId' | 'image' | 'symbol' | 'address'>;
   onBack?: () => void;
-  asset?: ERC20Asset | NativeAsset | Pick<NFT, 'type' | 'tokenId' | 'image'>;
   onAssetChange: (
     asset: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
   ) => void;

@@ -2,6 +2,7 @@ import { Mockttp } from 'mockttp';
 import FixtureBuilder from '../../fixture-builder';
 import { withFixtures } from '../../helpers';
 import {
+  ACCOUNT_TYPE,
   DEFAULT_BTC_ACCOUNT,
   DEFAULT_BTC_BALANCE,
   DEFAULT_BTC_FEES_RATE,
@@ -192,7 +193,7 @@ export async function withBtcAccountSnap(
   await withFixtures(
     {
       fixtures: new FixtureBuilder()
-        .withPreferencesControllerAndFeatureFlag({
+        .withPreferencesController({
           bitcoinSupportEnabled: bitcoinSupportEnabled ?? true,
         })
         .build(),
@@ -217,7 +218,7 @@ export async function withBtcAccountSnap(
       await new HeaderNavbar(driver).openAccountMenu();
       const accountListPage = new AccountListPage(driver);
       await accountListPage.check_pageIsLoaded();
-      await accountListPage.addNewBtcAccount();
+      await accountListPage.addAccount({ accountType: ACCOUNT_TYPE.Bitcoin });
       await test(driver, mockServer);
     },
   );

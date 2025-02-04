@@ -5,13 +5,11 @@ const {
   unlockWallet,
   defaultGanacheOptions,
   openActionMenuAndStartSendFlow,
-  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   expectName,
   focusTestDapp,
-  rejectSignatureOrTransactionRequest,
   saveName,
   rejectRedesignedSignatureOrTransactionRequest,
 } = require('./petnames-helpers');
@@ -38,196 +36,86 @@ const CUSTOM_NAME_MOCK = 'Custom Name';
 const PROPOSED_NAME_MOCK = 'test4.lens';
 
 describe('Petnames - Transactions', function () {
-  describe('Old confirmation screens', function () {
-    it('can save petnames for addresses in dapp send transactions', async function () {
-      await withFixtures(
-        {
-          dapp: true,
-          fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDapp()
-            .withNoNames()
-            .build(),
-          ganacheOptions: defaultGanacheOptions,
-          title: this.test.fullTitle(),
-        },
-        async ({ driver }) => {
-          await unlockWallet(driver);
+  it('can save petnames for addresses in dapp send transactions', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .withNoNames()
+          .build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
 
-          await tempToggleSettingRedesignedTransactionConfirmations(driver);
+        await openDapp(driver);
+        await createDappSendTransaction(driver);
+        await switchToNotificationWindow(driver, 3);
+        await expectName(driver, ABBREVIATED_ADDRESS_MOCK, false);
 
-          await openDapp(driver);
-          await createDappSendTransaction(driver);
-          await switchToNotificationWindow(driver, 3);
-          await expectName(driver, ABBREVIATED_ADDRESS_MOCK, false);
+        // Test custom name.
+        await saveName(
+          driver,
+          ABBREVIATED_ADDRESS_MOCK,
+          CUSTOM_NAME_MOCK,
+          undefined,
+        );
+        await rejectRedesignedSignatureOrTransactionRequest(driver);
+        await focusTestDapp(driver);
+        await createDappSendTransaction(driver);
+        await switchToNotificationWindow(driver, 3);
+        await expectName(driver, CUSTOM_NAME_MOCK, true);
 
-          // Test custom name.
-          await saveName(
-            driver,
-            ABBREVIATED_ADDRESS_MOCK,
-            CUSTOM_NAME_MOCK,
-            undefined,
-          );
-          await rejectSignatureOrTransactionRequest(driver);
-          await focusTestDapp(driver);
-          await createDappSendTransaction(driver);
-          await switchToNotificationWindow(driver, 3);
-          await expectName(driver, CUSTOM_NAME_MOCK, true);
-
-          // Test proposed name.
-          await saveName(
-            driver,
-            CUSTOM_NAME_MOCK,
-            undefined,
-            PROPOSED_NAME_MOCK,
-          );
-          await rejectSignatureOrTransactionRequest(driver);
-          await focusTestDapp(driver);
-          await createDappSendTransaction(driver);
-          await switchToNotificationWindow(driver, 3);
-          await expectName(driver, PROPOSED_NAME_MOCK, true);
-        },
-      );
-    });
-
-    it('can save petnames for addresses in wallet send transactions', async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder()
-            .withPreferencesController({
-              featureFlags: {
-                sendHexData: true,
-              },
-            })
-            .withNoNames()
-            .build(),
-          ganacheOptions: defaultGanacheOptions,
-          title: this.test.fullTitle(),
-        },
-        async ({ driver }) => {
-          await unlockWallet(driver);
-          await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
-          await createWalletSendTransaction(driver, ADDRESS_MOCK);
-          await expectName(driver, ABBREVIATED_ADDRESS_MOCK, false);
-
-          // Test custom name.
-          await saveName(
-            driver,
-            ABBREVIATED_ADDRESS_MOCK,
-            CUSTOM_NAME_MOCK,
-            undefined,
-          );
-          await rejectSignatureOrTransactionRequest(driver);
-          await createWalletSendTransaction(driver, ADDRESS_MOCK);
-          await expectName(driver, CUSTOM_NAME_MOCK, true);
-
-          // Test proposed name.
-          await saveName(
-            driver,
-            CUSTOM_NAME_MOCK,
-            undefined,
-            PROPOSED_NAME_MOCK,
-          );
-          await rejectSignatureOrTransactionRequest(driver);
-          await createWalletSendTransaction(driver, ADDRESS_MOCK);
-          await expectName(driver, PROPOSED_NAME_MOCK, true);
-        },
-      );
-    });
+        // Test proposed name.
+        await saveName(driver, CUSTOM_NAME_MOCK, undefined, PROPOSED_NAME_MOCK);
+        await rejectRedesignedSignatureOrTransactionRequest(driver);
+        await focusTestDapp(driver);
+        await createDappSendTransaction(driver);
+        await switchToNotificationWindow(driver, 3);
+        await expectName(driver, PROPOSED_NAME_MOCK, true);
+      },
+    );
   });
 
-  describe('Redesigned confirmation screens', function () {
-    it('can save petnames for addresses in dapp send transactions', async function () {
-      await withFixtures(
-        {
-          dapp: true,
-          fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDapp()
-            .withNoNames()
-            .build(),
-          ganacheOptions: defaultGanacheOptions,
-          title: this.test.fullTitle(),
-        },
-        async ({ driver }) => {
-          await unlockWallet(driver);
+  it('can save petnames for addresses in wallet send transactions', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withPreferencesController({
+            featureFlags: {
+              sendHexData: true,
+            },
+          })
+          .withNoNames()
+          .build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
 
-          await openDapp(driver);
-          await createDappSendTransaction(driver);
-          await switchToNotificationWindow(driver, 3);
-          await expectName(driver, ABBREVIATED_ADDRESS_MOCK, false);
+        await createWalletSendTransaction(driver, ADDRESS_MOCK);
+        await expectName(driver, ABBREVIATED_ADDRESS_MOCK, false);
 
-          // Test custom name.
-          await saveName(
-            driver,
-            ABBREVIATED_ADDRESS_MOCK,
-            CUSTOM_NAME_MOCK,
-            undefined,
-          );
-          await rejectRedesignedSignatureOrTransactionRequest(driver);
-          await focusTestDapp(driver);
-          await createDappSendTransaction(driver);
-          await switchToNotificationWindow(driver, 3);
-          await expectName(driver, CUSTOM_NAME_MOCK, true);
+        // Test custom name.
+        await saveName(
+          driver,
+          ABBREVIATED_ADDRESS_MOCK,
+          CUSTOM_NAME_MOCK,
+          undefined,
+        );
+        await rejectRedesignedSignatureOrTransactionRequest(driver);
+        await createWalletSendTransaction(driver, ADDRESS_MOCK);
+        await expectName(driver, CUSTOM_NAME_MOCK, true);
 
-          // Test proposed name.
-          await saveName(
-            driver,
-            CUSTOM_NAME_MOCK,
-            undefined,
-            PROPOSED_NAME_MOCK,
-          );
-          await rejectRedesignedSignatureOrTransactionRequest(driver);
-          await focusTestDapp(driver);
-          await createDappSendTransaction(driver);
-          await switchToNotificationWindow(driver, 3);
-          await expectName(driver, PROPOSED_NAME_MOCK, true);
-        },
-      );
-    });
-
-    it('can save petnames for addresses in wallet send transactions', async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder()
-            .withPreferencesController({
-              featureFlags: {
-                sendHexData: true,
-              },
-            })
-            .withNoNames()
-            .build(),
-          ganacheOptions: defaultGanacheOptions,
-          title: this.test.fullTitle(),
-        },
-        async ({ driver }) => {
-          await unlockWallet(driver);
-
-          await createWalletSendTransaction(driver, ADDRESS_MOCK);
-          await expectName(driver, ABBREVIATED_ADDRESS_MOCK, false);
-
-          // Test custom name.
-          await saveName(
-            driver,
-            ABBREVIATED_ADDRESS_MOCK,
-            CUSTOM_NAME_MOCK,
-            undefined,
-          );
-          await rejectRedesignedSignatureOrTransactionRequest(driver);
-          await createWalletSendTransaction(driver, ADDRESS_MOCK);
-          await expectName(driver, CUSTOM_NAME_MOCK, true);
-
-          // Test proposed name.
-          await saveName(
-            driver,
-            CUSTOM_NAME_MOCK,
-            undefined,
-            PROPOSED_NAME_MOCK,
-          );
-          await rejectRedesignedSignatureOrTransactionRequest(driver);
-          await createWalletSendTransaction(driver, ADDRESS_MOCK);
-          await expectName(driver, PROPOSED_NAME_MOCK, true);
-        },
-      );
-    });
+        // Test proposed name.
+        await saveName(driver, CUSTOM_NAME_MOCK, undefined, PROPOSED_NAME_MOCK);
+        await rejectRedesignedSignatureOrTransactionRequest(driver);
+        await createWalletSendTransaction(driver, ADDRESS_MOCK);
+        await expectName(driver, PROPOSED_NAME_MOCK, true);
+      },
+    );
   });
 });

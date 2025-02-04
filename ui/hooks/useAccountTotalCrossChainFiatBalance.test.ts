@@ -2,11 +2,13 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-dom/test-utils';
 import {
-  getCurrentCurrency,
   getCrossChainTokenExchangeRates,
   getCrossChainMetaMaskCachedBalances,
 } from '../selectors';
-import { getCurrencyRates } from '../ducks/metamask/metamask';
+import {
+  getCurrentCurrency,
+  getCurrencyRates,
+} from '../ducks/metamask/metamask';
 import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
 import {
   FormattedTokensWithBalances,
@@ -18,11 +20,11 @@ jest.mock('react-redux', () => ({
 }));
 
 jest.mock('../selectors', () => ({
-  getCurrentCurrency: jest.fn(),
   getCrossChainTokenExchangeRates: jest.fn(),
   getCrossChainMetaMaskCachedBalances: jest.fn(),
 }));
 jest.mock('../ducks/metamask/metamask', () => ({
+  getCurrentCurrency: jest.fn(),
   getCurrencyRates: jest.fn(),
 }));
 jest.mock('../../shared/modules/selectors/networks', () => ({
