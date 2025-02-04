@@ -32,12 +32,14 @@ import {
   BUTTON_SIZES,
   Text,
 } from '../../../components/component-library';
+import { getHDSrpIndex } from '../../../selectors/selectors';
 import SkipSRPBackup from './skip-srp-backup-popover';
 
 export default function SecureYourWallet() {
   const history = useHistory();
   const t = useI18nContext();
   const { search } = useLocation();
+  const hdSrpIndex = useSelector(getHDSrpIndex);
   const currentLocale = useSelector(getCurrentLocale);
   const [showSkipSRPBackupPopover, setShowSkipSRPBackupPopover] =
     useState(false);
@@ -52,6 +54,9 @@ export default function SecureYourWallet() {
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.OnboardingWalletSecurityStarted,
+      properties: {
+        hd_srp_index: hdSrpIndex,
+      },
     });
     history.push(`${ONBOARDING_REVIEW_SRP_ROUTE}${isFromReminderParam}`);
   };
@@ -60,6 +65,9 @@ export default function SecureYourWallet() {
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.OnboardingWalletSecuritySkipInitiated,
+      properties: {
+        hd_srp_index: hdSrpIndex,
+      },
     });
     setShowSkipSRPBackupPopover(true);
   };

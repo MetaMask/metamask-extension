@@ -35,11 +35,13 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
+import { getHDSrpIndex } from '../../../selectors/selectors';
 
 export default function CreationSuccessful() {
   const history = useHistory();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const hdSrpIndex = useSelector(getHDSrpIndex);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
   const learnMoreLink =
@@ -200,6 +202,7 @@ export default function CreationSuccessful() {
               properties: {
                 method: firstTimeFlowType,
                 is_profile_syncing_enabled: isProfileSyncingEnabled,
+                hd_srp_index: hdSrpIndex,
               },
             });
             history.push(ONBOARDING_PIN_EXTENSION_ROUTE);

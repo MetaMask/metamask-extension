@@ -15,6 +15,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  getHDSrpIndex,
   getInternalAccountByAddress,
   getMetaMaskAccountsOrdered,
   getUseBlockie,
@@ -46,6 +47,7 @@ export const AccountDetails = ({ address }) => {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const hdSrpIndex = useSelector(getHDSrpIndex);
   const useBlockie = useSelector(getUseBlockie);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
   const {
@@ -154,6 +156,7 @@ export const AccountDetails = ({ address }) => {
             event: MetaMetricsEventName.KeyExportCanceled,
             properties: {
               key_type: MetaMetricsEventKeyType.Pkey,
+              hd_srp_index: hdSrpIndex,
             },
           });
           setPrivateKey('');

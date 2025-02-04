@@ -105,6 +105,7 @@ export default class SecurityTab extends PureComponent {
     toggleExternalServices: PropTypes.func.isRequired,
     setSecurityAlertsEnabled: PropTypes.func,
     metaMetricsDataDeletionId: PropTypes.string,
+    hdSrpIndex: PropTypes.number,
   };
 
   state = {
@@ -187,6 +188,7 @@ export default class SecurityTab extends PureComponent {
                 properties: {
                   key_type: MetaMetricsEventKeyType.Srp,
                   location: 'Settings',
+                  hd_srp_index: this.props.hdSrpIndex,
                 },
               });
               this.context.trackEvent({
