@@ -14,10 +14,7 @@ import type {
   DecryptMessageManagerState,
   DecryptMessageManagerUnapprovedMessageAddedEvent,
 } from '@metamask/message-manager';
-import {
-  BaseController,
-  RestrictedControllerMessenger,
-} from '@metamask/base-controller';
+import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
 import {
   AcceptRequest,
   AddApprovalRequest,
@@ -121,7 +118,7 @@ type AllowedEvents =
   | DecryptMessageManagerStateChangeEvent
   | DecryptMessageManagerUnapprovedMessageAddedEvent;
 
-export type DecryptMessageControllerMessenger = RestrictedControllerMessenger<
+export type DecryptMessageControllerMessenger = RestrictedMessenger<
   typeof controllerName,
   DecryptMessageControllerActions | AllowedActions,
   DecryptMessageControllerEvents | AllowedEvents,
