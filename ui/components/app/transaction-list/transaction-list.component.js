@@ -48,6 +48,7 @@ import {
 import TransactionIcon from '../transaction-icon';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import { MultichainTransactionDetailsModal } from '../multichain-transaction-details-modal';
+import { formatTimestamp } from '../multichain-transaction-details-modal/helpers';
 ///: END:ONLY_INCLUDE_IF
 
 import {
@@ -419,17 +420,16 @@ export default function TransactionList({
                                 title="Primary Currency"
                                 variant="body-lg-medium"
                               >
-                                {`${transaction.from[0]?.asset?.amount} ${transaction.from[0]?.asset?.unit}`}
+                                {transaction.from?.[0]?.asset?.amount &&
+                                transaction.from[0]?.asset?.unit
+                                  ? `${transaction.from[0].asset.amount} ${transaction.from[0].asset.unit}`
+                                  : ''}
                               </Text>
                             </>
                           }
                           subtitle={
                             <TransactionStatusLabel
-                              date={formatDateWithYearContext(
-                                transaction.timestamp,
-                                'MMM d, y',
-                                'MMM d',
-                              )}
+                              date={formatTimestamp(transaction.timestamp)}
                               error={{}}
                               status={transaction.status}
                               statusOnly

@@ -3,7 +3,10 @@ import {
   MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP,
   MultichainNetworks,
 } from '../../../../shared/constants/multichain/networks';
-import { formatDateWithYearContext } from '../../../helpers/utils/util';
+import {
+  formatDateWithYearContext,
+  shortenAddress,
+} from '../../../helpers/utils/util';
 
 /**
  * Creates a transaction URL for block explorer based on network type
@@ -94,3 +97,14 @@ export const formatTimestamp = (timestamp: number | null) => {
 
   return `${date}, ${time}`;
 };
+
+/**
+ * Formats a shorten version of a transaction ID.
+ *
+ * @param txId - Transaction ID.
+ * @returns Formatted transaction ID.
+ */
+export function shortenTransactionId(txId: string) {
+  // For transactions we use a similar output for now, but shortenTransactionId will be added later.
+  return shortenAddress(txId);
+}

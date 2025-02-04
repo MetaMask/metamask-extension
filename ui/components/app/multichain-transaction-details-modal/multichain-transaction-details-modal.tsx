@@ -34,7 +34,12 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
 import { ConfirmInfoRowDivider as Divider } from '../confirm/info/row';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { formatTimestamp, getTransactionUrl, getAddressUrl } from './helpers';
+import {
+  formatTimestamp,
+  getTransactionUrl,
+  getAddressUrl,
+  shortenTransactionId,
+} from './helpers';
 
 export type MultichainTransactionDetailsModalProps = {
   transaction: Transaction;
@@ -167,8 +172,7 @@ export function MultichainTransactionDetailsModal({
                   externalLink
                   href={getTransactionUrl(txId, chain)}
                 >
-                  {/* For transactions we use a similar output for now, but shortenTransactionId will be added later */}
-                  {shortenAddress(txId)}
+                  {shortenTransactionId(txId)}
                   <Icon
                     marginLeft={2}
                     name={IconName.Export}
