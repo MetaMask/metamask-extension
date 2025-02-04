@@ -1,14 +1,13 @@
 import { StateMetadata } from '@metamask/base-controller';
 import { StaticIntervalPollingController } from '@metamask/polling-controller';
-import { Hex } from '@metamask/utils';
-// eslint-disable-next-line import/no-restricted-paths
+import { type CaipChainId, type Hex } from '@metamask/utils';
 import {
   StatusTypes,
   BridgeStatusControllerState,
   StartPollingForBridgeTxStatusArgsSerialized,
   BridgeStatusState,
 } from '../../../../shared/types/bridge-status';
-import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
+import { formatChainIdFromApi } from '../../../../shared/modules/bridge-utils/multichain';
 import {
   BRIDGE_STATUS_CONTROLLER_NAME,
   DEFAULT_BRIDGE_STATUS_STATE,
@@ -336,14 +335,17 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
 
   // Wipes the bridge status for the given address and chainId
   // Will match only source chainId to the selectedChainId
-  #wipeBridgeStatusByChainId = (address: string, selectedChainId: Hex) => {
+  #wipeBridgeStatusByChainId = (
+    address: string,
+    selectedChainId: Hex | CaipChainId,
+  ) => {
     const sourceTxMetaIdsToDelete = Object.keys(
       this.state.bridgeStatusState.txHistory,
     ).filter((txMetaId) => {
       const bridgeHistoryItem =
         this.state.bridgeStatusState.txHistory[txMetaId];
 
-      const hexSourceChainId = decimalToPrefixedHex(
+      const hexSourceChainId = formatChainIdFromApi(
         bridgeHistoryItem.quote.srcChainId,
       );
 
