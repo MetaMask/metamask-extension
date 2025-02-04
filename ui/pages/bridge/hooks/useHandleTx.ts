@@ -3,6 +3,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { useDispatch, useSelector } from 'react-redux';
+import { isCaipChainId } from '@metamask/utils';
 import {
   forceUpdateMetamaskState,
   addTransaction,
@@ -15,9 +16,9 @@ import {
 } from '../../../ducks/bridge/utils';
 import { getGasFeeEstimates } from '../../../ducks/metamask/metamask';
 import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
-import type { ChainId } from '../../../../shared/types/bridge';
-import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
+import { formatChainIdFromApi } from '../../../../shared/modules/bridge-utils/multichain';
+import type { ChainId } from '../../../../shared/types/bridge';
 
 export default function useHandleTx() {
   const dispatch = useDispatch();
@@ -43,8 +44,12 @@ export default function useHandleTx() {
     };
     fieldsToAddToTxMeta: Omit<Partial<TransactionMeta>, 'status'>; // We don't add status, so omit it to fix the type error
   }) => {
-    const hexChainId = decimalToPrefixedHex(txParams.chainId);
+    const hexChainId = formatChainIdFromApi(txParams.chainId);
 
+    if (isCaipChainId(hexChainId)) {
+      // TODO handle non-evm chains
+      return undefined;
+    }
     const { maxFeePerGas, maxPriorityFeePerGas } = await getTxGasEstimates({
       networkAndAccountSupports1559,
       networkGasFeeEstimates,

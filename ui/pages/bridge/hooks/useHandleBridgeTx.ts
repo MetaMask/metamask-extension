@@ -1,7 +1,9 @@
 import { BigNumber } from 'bignumber.js';
 import { TransactionType } from '@metamask/transaction-controller';
+import { isCaipChainId } from '@metamask/utils';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { FeeType, type QuoteResponse } from '../../../../shared/types/bridge';
+import { formatChainIdFromApi } from '../../../../shared/modules/bridge-utils/multichain';
 import useHandleTx from './useHandleTx';
 
 export default function useHandleBridgeTx() {
@@ -21,13 +23,18 @@ export default function useHandleBridgeTx() {
       .shiftedBy(quoteResponse.quote.srcAsset.decimals)
       .toString();
 
+    const hexDestChainId = formatChainIdFromApi(
+      quoteResponse.quote.destChainId,
+    );
+    if (isCaipChainId(hexDestChainId)) {
+      // TODO handle non-evm chains
+      return undefined;
+    }
     const txMeta = await handleTx({
       txType: TransactionType.bridge,
       txParams: quoteResponse.trade,
       fieldsToAddToTxMeta: {
-        destinationChainId: new Numeric(quoteResponse.quote.destChainId, 10)
-          .toPrefixedHexString()
-          .toLowerCase() as `0x${string}`,
+        destinationChainId: hexDestChainId,
         // estimatedBaseFee: decEstimatedBaseFee,
 
         sourceTokenAmount: quoteResponse.quote.srcTokenAmount,
