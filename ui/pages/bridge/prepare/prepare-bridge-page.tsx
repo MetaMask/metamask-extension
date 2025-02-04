@@ -217,7 +217,7 @@ const PrepareBridgePage = () => {
             ...destAsset,
             chainId: quoteDestChainId,
             image: destAsset.icon,
-            address: destAsset.address.toLowerCase(),
+            address: destAsset.address,
           }),
         );
         dispatch(
@@ -225,7 +225,7 @@ const PrepareBridgePage = () => {
             ...srcAsset,
             chainId: quoteSrcChainId,
             image: srcAsset.icon,
-            address: srcAsset.address.toLowerCase(),
+            address: srcAsset.address,
           }),
         );
       }
@@ -334,7 +334,7 @@ const PrepareBridgePage = () => {
       });
     };
 
-    switch (tokenAddressFromUrl) {
+    switch (tokenAddressFromUrl?.toLowerCase()) {
       case fromToken?.address?.toLowerCase():
         // If the token is already set, remove the query param
         removeTokenFromUrl();

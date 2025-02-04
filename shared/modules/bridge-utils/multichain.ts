@@ -1,4 +1,5 @@
 import { add0x, type CaipChainId, type Hex } from '@metamask/utils';
+import { getAddress as ethersGetAddress } from 'ethers/lib/utils';
 import { ChainId } from '../../types/bridge';
 import { decimalToHex, hexToDecimal } from '../conversion.utils';
 import { MultichainNetworks } from '../../constants/multichain/networks';
@@ -36,5 +37,19 @@ export const formatChainIdToApi = (
       return ChainId.SOLANA;
     default:
       return Number(hexToDecimal(chainId));
+  }
+};
+
+/**
+ * Returns the address in the format used by the rest of the app.
+ *
+ * @param address - The address to format.
+ * @returns The formatted address.
+ */
+export const getAddress = (address: string) => {
+  try {
+    return ethersGetAddress(address);
+  } catch {
+    return address;
   }
 };
