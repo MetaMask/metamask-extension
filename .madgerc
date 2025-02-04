@@ -8,8 +8,7 @@
     "/.[^/]*\/storybook\/.[^/]*/u",
     "/.[^/]*\/[^/]*.stories.[^/]*/u"
   ],
-  "circular": true,
-  "extensions": ["js", "jsx", "ts", "tsx"],
+  "fileExtensions": ["js", "jsx", "ts", "tsx"],
   "tsConfig": "tsconfig.json",
   "webpackConfig": "webpack.config.js",
   "detectiveOptions": {
