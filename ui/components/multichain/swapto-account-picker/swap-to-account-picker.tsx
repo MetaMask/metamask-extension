@@ -144,7 +144,11 @@ export const SwapToAccountPicker = ({
 
       <Box
         className="swap-to-account-picker__list"
-        style={{ minHeight: '79px' }}
+        style={{
+          minHeight: '79px',
+          maxHeight: '195px',
+          overflowY: 'auto',
+        }}
       >
         {filteredAccounts.map((account) => (
           <AccountListItem
