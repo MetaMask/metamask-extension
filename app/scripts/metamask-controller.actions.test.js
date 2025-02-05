@@ -62,6 +62,19 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
 };
 jest.mock('./lib/createLoggerMiddleware', () => createLoggerMiddlewareMock);
 
+function* ulidGenerator() {
+  yield '01JKAF3DSGM3AB87EM9N0K41AJ';
+  while (true) {
+    yield '01JKAF3KP7VPAG0YXEDTDRB6ZV';
+  }
+}
+
+let mockUlidGenerator = ulidGenerator();
+
+jest.mock('ulid', () => ({
+  ulid: jest.fn().mockImplementation(() => mockUlidGenerator.next().value),
+}));
+
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
 
@@ -110,6 +123,8 @@ describe('MetaMaskController', function () {
       infuraProjectId: 'foo',
     });
     initializeMockMiddlewareLog();
+
+    mockUlidGenerator = ulidGenerator();
   });
 
   afterEach(function () {

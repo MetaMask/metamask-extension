@@ -1,6 +1,10 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
+import {
+  KeyringMetadata,
+  KeyringObject,
+  KeyringTypes,
+} from '@metamask/keyring-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import Card from '../../../ui/card';
 import {
@@ -33,6 +37,8 @@ import { EtherDenomination } from '../../../../../shared/constants/common';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import { getMultichainConversionRate } from '../../../../selectors/multichain';
 
+type KeyringObjectWithMetadata = KeyringObject & { metadata: KeyringMetadata };
+
 export const SRPList = ({
   onActionComplete,
   hideShowAccounts,
@@ -40,7 +46,8 @@ export const SRPList = ({
   onActionComplete: (id: string) => void;
   hideShowAccounts?: boolean;
 }) => {
-  const keyrings: KeyringObject[] = useSelector(getMetaMaskKeyrings);
+  const keyrings: KeyringObjectWithMetadata[] =
+    useSelector(getMetaMaskKeyrings);
   const accounts: InternalAccount[] = useSelector(getInternalAccounts);
   const accountBalances: Record<string, string> = useSelector(
     getMetaMaskCachedBalances,
@@ -84,10 +91,8 @@ export const SRPList = ({
       {hdKeyrings.map((keyring, index) => (
         <Card
           key={`srp-${index + 1}`}
-          data-testid={`hd-keyring-${keyring?.fingerprint}`}
-          onClick={() =>
-            onActionComplete((keyring as KeyringObject)?.fingerprint || '')
-          }
+          data-testid={`hd-keyring-${keyring?.metadata.id}`}
+          onClick={() => onActionComplete(keyring?.metadata.id || '')}
           className="select-srp__container"
           marginBottom={3}
         >

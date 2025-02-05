@@ -173,6 +173,11 @@
       "packages": {
         "@metamask/utils": true
       }
+    },
+    "ulid": {
+      "globals": {
+        "crypto": true
+      }
     }
   }
 }

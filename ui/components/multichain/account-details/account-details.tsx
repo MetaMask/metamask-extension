@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { KeyringObject } from '@metamask/keyring-controller';
+import { KeyringMetadata, KeyringObject } from '@metamask/keyring-controller';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
@@ -62,9 +62,12 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
   const {
     metadata: { name },
   } = useSelector((state) => getInternalAccountByAddress(state, address));
-  const keyrings: KeyringObject[] = useSelector(getMetaMaskKeyrings);
-  const keyringId =
-    keyrings.find((kr) => kr.accounts.includes(address))?.fingerprint || '';
+  const keyrings: {
+    accounts: string[];
+    metadata: KeyringMetadata;
+  }[] = useSelector(getMetaMaskKeyrings);
+  const keyringId = keyrings.find((kr) => kr.accounts.includes(address))
+    ?.metadata.id;
 
   const [showHoldToReveal, setShowHoldToReveal] = useState(false);
   const [attemptingExport, setAttemptingExport] = useState<AttemptExportState>(

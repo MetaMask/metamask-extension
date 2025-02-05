@@ -4564,7 +4564,10 @@ export default class MetamaskController extends EventEmitter {
         this.accountsController.getAccountByAddress(newAccountAddress);
       this.accountsController.setSelectedAccount(account.id);
 
-      const { fingerprint: keyringId } = await displayForKeyring(newKeyring);
+      const keyringId =
+        this.keyringController.state.keyringsMetadata[
+          this.keyringController.state.keyrings.length - 1
+        ].id;
       await this._addAccountsWithBalance(keyringId);
 
       return newAccountAddress;
@@ -5131,7 +5134,7 @@ export default class MetamaskController extends EventEmitter {
   async addNewAccount(accountCount, _keyringId) {
     const oldAccounts = await this.keyringController.getAccounts();
     const keyringSelector = _keyringId
-      ? { fingerprint: _keyringId }
+      ? { id: _keyringId }
       : { type: KeyringTypes.hd };
 
     const addedAccountAddress = await this.keyringController.withKeyring(

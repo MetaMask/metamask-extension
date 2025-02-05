@@ -116,6 +116,11 @@ if (!window.crypto.getRandomValues) {
   window.crypto.getRandomValues = require('crypto').webcrypto.getRandomValues;
 }
 
+if (!window.crypto.randomBytes) {
+  // eslint-disable-next-line node/global-require
+  window.crypto.randomBytes = require('crypto').webcrypto.randomBytes;
+}
+
 // TextEncoder/TextDecoder
 window.TextEncoder = TextEncoder;
 window.TextDecoder = TextDecoder;

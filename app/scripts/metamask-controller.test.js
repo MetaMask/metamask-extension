@@ -96,6 +96,19 @@ const browserPolyfillMock = {
   },
 };
 
+function* ulidGenerator() {
+  yield '01JKAF3DSGM3AB87EM9N0K41AJ';
+  while (true) {
+    yield '01JKAF3KP7VPAG0YXEDTDRB6ZV';
+  }
+}
+
+let mockUlidGenerator = ulidGenerator();
+
+jest.mock('ulid', () => ({
+  ulid: jest.fn().mockImplementation(() => mockUlidGenerator.next().value),
+}));
+
 let loggerMiddlewareMock;
 const initializeMockMiddlewareLog = () => {
   loggerMiddlewareMock = {
@@ -323,6 +336,8 @@ describe('MetaMaskController', () => {
     globalThis.sentry = {
       withIsolationScope: jest.fn(),
     };
+
+    mockUlidGenerator = ulidGenerator();
   });
 
   afterEach(() => {
@@ -4212,11 +4227,26 @@ describe('MetaMaskController', () => {
         const currentKeyrings =
           metamaskController.keyringController.state.keyrings;
 
+        const oldId =
+          metamaskController.keyringController.state.keyringsMetadata[0].id;
+        const newlyAddedKeyringId =
+          metamaskController.keyringController.state.keyringsMetadata[
+            metamaskController.keyringController.state.keyringsMetadata.length -
+              1
+          ].id;
+
+        console.log('oldid', oldId);
+        console.log('new id', newlyAddedKeyringId);
+
+        const newSRP = Buffer.from(
+          await metamaskController.getSeedPhrase(password, newlyAddedKeyringId),
+        ).toString('utf8');
+
         expect(
           currentKeyrings.filter((kr) => kr.type === 'HD Key Tree'),
         ).toHaveLength(2);
         expect(currentKeyrings).toHaveLength(previousKeyrings.length + 1);
-        // expect(newSRP).toStrictEqual(TEST_SEED_ALT);
+        expect(newSRP).toStrictEqual(TEST_SEED_ALT);
       });
     });
   });
