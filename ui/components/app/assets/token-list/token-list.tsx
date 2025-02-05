@@ -6,20 +6,17 @@ import { TEST_CHAINS } from '../../../../../shared/constants/network';
 import { sortAssets } from '../util/sort';
 import {
   getChainIdsToPoll,
-  getCurrencyRates,
   getCurrentNetwork,
   getIsTestnet,
-  getIsTokenNetworkFilterEqualCurrentNetwork,
-  getMarketData,
   getNetworkConfigurationIdByChainId,
   getNewTokensImported,
   getPreferences,
   getSelectedAccount,
-  getSelectedAccountNativeTokenCachedBalanceByChainId,
   getSelectedAccountTokensAcrossChains,
   getShowFiatInTestnets,
   getTokenExchangeRates,
   getTokenNetworkFilter,
+  getTokenBalancesEvm,
 } from '../../../../selectors';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { filterAssets } from '../util/filter';
@@ -27,11 +24,7 @@ import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { useTokenBalances } from '../../../../hooks/useTokenBalances';
 import { setTokenNetworkFilter } from '../../../../store/actions';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
-import {
-  getMultichainShouldShowFiat,
-  getTokenBalancesEvm,
-} from '../../../../selectors/multichain';
-import { consolidateTokenBalances } from '../util/consolidateTokenBalances';
+import { getMultichainShouldShowFiat } from '../../../../selectors/multichain';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -89,8 +82,7 @@ export default function TokenList({
   const dispatch = useDispatch();
   const currentNetwork = useSelector(getCurrentNetwork);
   const allNetworks = useSelector(getNetworkConfigurationIdByChainId);
-  const { tokenSortConfig, privacyMode, hideZeroBalanceTokens } =
-    useSelector(getPreferences);
+  const { tokenSortConfig, privacyMode } = useSelector(getPreferences);
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const selectedAccount = useSelector(getSelectedAccount);
   const conversionRate = useSelector(getConversionRate);
@@ -101,28 +93,13 @@ export default function TokenList({
   );
   const newTokensImported = useSelector(getNewTokensImported);
   const selectedAccountTokensChains = useFilteredAccountTokens(currentNetwork);
-  const isOnCurrentNetwork = useSelector(
-    getIsTokenNetworkFilterEqualCurrentNetwork,
-  );
 
-  // EVM specific tokenBalance polling
-  const { tokenBalances } = useTokenBalances({
+  // EVM specific tokenBalance polling, updates state via polling loop per chainId
+  useTokenBalances({
     chainIds: chainIdsToPoll as Hex[],
   });
-  const selectedAccountTokenBalancesAcrossChains =
-    tokenBalances[selectedAccount.address];
 
-  // const evmBalances = useSelector(getTokenBalancesEvm);
-  // console.log('evmBalances', evmBalances);
-
-  const marketData: ChainAddressMarketData = useSelector(
-    getMarketData,
-  ) as ChainAddressMarketData;
-
-  const currencyRates = useSelector(getCurrencyRates);
-  const nativeBalances: Record<Hex, Hex> = useSelector(
-    getSelectedAccountNativeTokenCachedBalanceByChainId,
-  ) as Record<Hex, Hex>;
+  const evmBalances = useSelector(getTokenBalancesEvm);
   const isTestnet = useSelector(getIsTestnet);
   // Ensure newly added networks are included in the tokenNetworkFilter
   useEffect(() => {
@@ -137,16 +114,7 @@ export default function TokenList({
   }, [Object.keys(allNetworks).length]);
 
   const sortedFilteredTokens = useMemo(() => {
-    const consolidatedTokensWithBalances = consolidateTokenBalances(
-      selectedAccountTokensChains, // done
-      nativeBalances, // done
-      selectedAccountTokenBalancesAcrossChains, // can't bc needs polling
-      marketData, // done
-      currencyRates, // done
-      hideZeroBalanceTokens, // done (getPreferences)
-      isOnCurrentNetwork, // done
-    );
-    const filteredAssets = filterAssets(consolidatedTokensWithBalances, [
+    const filteredAssets = filterAssets(evmBalances, [
       {
         key: 'chainId',
         opts: tokenNetworkFilter,

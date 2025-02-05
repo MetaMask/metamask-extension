@@ -90,6 +90,7 @@ import {
   isAddressLedger,
   getIsUnlocked,
   getCompletedOnboarding,
+  getTokenBalances,
 } from '../ducks/metamask/metamask';
 import {
   getLedgerWebHidConnectedStatus,
@@ -109,6 +110,8 @@ import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
+import { calculateTokenBalance } from '../components/app/assets/util/calculateTokenBalance';
+import { calculateTokenFiatAmount } from '../components/app/assets/util/calculateTokenFiatAmount';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
@@ -564,6 +567,8 @@ export function getCrossChainMetaMaskCachedBalances(state) {
     return acc;
   }, {});
 }
+
+export function getMultichainTokenBalances(state) {}
 /**
  * Based on the current account address, return the balance for the native token of all chain networks on that account
  *
@@ -2977,3 +2982,83 @@ export function getKeyringSnapAccounts(state) {
   return keyringAccounts;
 }
 ///: END:ONLY_INCLUDE_IF
+
+// consolidateTokenBalances
+export const getTokenBalancesEvm = createDeepEqualSelector(
+  getSelectedAccountTokensAcrossChains, // TODO: useFilteredAccountTokens, we need to filter Testnets
+  getSelectedAccountNativeTokenCachedBalanceByChainId,
+  getTokenBalances,
+  (state) => state.metamask.marketData,
+  getCurrencyRates,
+  getPreferences,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
+  getSelectedAccount,
+  (
+    selectedAccountTokensChains,
+    nativeBalances,
+    tokenBalances,
+    marketData,
+    currencyRates,
+    preferences,
+    isOnCurrentNetwork,
+    selectedAccount,
+  ) => {
+    const { hideZeroBalanceTokens } = preferences;
+    const selectedAccountTokenBalancesAcrossChains =
+      tokenBalances[selectedAccount.address];
+
+    const tokensWithBalance = [];
+    Object.entries(selectedAccountTokensChains).forEach(
+      ([stringChainKey, tokens]) => {
+        const chainId = stringChainKey;
+        // @ts-ignore
+        tokens.forEach((token) => {
+          const { isNative, address, decimals } = token;
+          const balance =
+            calculateTokenBalance({
+              isNative,
+              chainId,
+              address,
+              decimals,
+              // @ts-ignore
+              nativeBalances,
+              // @ts-ignore
+              selectedAccountTokenBalancesAcrossChains,
+            }) || '0';
+
+          const tokenFiatAmount = calculateTokenFiatAmount({
+            token,
+            chainId,
+            balance,
+            marketData,
+            currencyRates,
+          });
+
+          // Respect the "hide zero balance" setting (when true):
+          // - Native tokens should always display with zero balance when on the current network filter.
+          // - Native tokens should not display with zero balance when on all networks filter
+          // - ERC20 tokens with zero balances should respect the setting on both the current and all networks.
+
+          // Respect the "hide zero balance" setting (when false):
+          // - Native tokens should always display with zero balance when on the current network filter.
+          // - Native tokens should always display with zero balance when on all networks filter
+          // - ERC20 tokens always display with zero balance on both the current and all networks filter.
+          if (
+            !hideZeroBalanceTokens ||
+            balance !== '0' ||
+            (token.isNative && isOnCurrentNetwork)
+          ) {
+            tokensWithBalance.push({
+              ...token,
+              balance,
+              tokenFiatAmount,
+              chainId,
+              string: String(balance),
+            });
+          }
+        });
+      },
+    );
+    return tokensWithBalance;
+  },
+);
