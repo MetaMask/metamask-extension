@@ -9,7 +9,6 @@ import {
   Step,
 } from '../../../../shared/types/bridge-status';
 import { formatDate } from '../../../helpers/utils/util';
-import { type MultichainProviderConfig } from '../../../../shared/constants/multichain/networks';
 import BridgeStepDescription, {
   getStepStatus,
 } from './bridge-step-description';
@@ -35,7 +34,7 @@ type BridgeStepsProps = {
   srcChainTxMeta?: TransactionMeta;
   networkConfigurationsByChainId: Record<
     Hex | CaipChainId,
-    NetworkConfiguration | MultichainProviderConfig
+    NetworkConfiguration
   >;
 };
 
