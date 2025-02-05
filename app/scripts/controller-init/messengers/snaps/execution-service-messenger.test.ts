@@ -1,5 +1,5 @@
 import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
-import { getExecutionServiceMessenger } from './execution-service-messenger.ts';
+import { getExecutionServiceMessenger } from './execution-service-messenger';
 
 describe('getExecutionServiceMessenger', () => {
   it('returns a restricted messenger', () => {

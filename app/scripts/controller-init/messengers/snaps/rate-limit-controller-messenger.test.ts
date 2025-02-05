@@ -2,7 +2,7 @@ import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
 import {
   getRateLimitControllerInitMessenger,
   getRateLimitControllerMessenger,
-} from './rate-limit-controller-messenger.ts';
+} from './rate-limit-controller-messenger';
 
 describe('getRateLimitControllerMessenger', () => {
   it('returns a restricted controller messenger', () => {
