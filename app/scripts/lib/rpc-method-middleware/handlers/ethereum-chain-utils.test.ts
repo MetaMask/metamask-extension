@@ -13,12 +13,24 @@ describe('Ethereum Chain Utils', () => {
       autoApprove: false,
       setActiveNetwork: jest.fn(),
       getCaveat: jest.fn(),
+      requestPermittedChainsPermission: jest.fn(),
       requestPermittedChainsPermissionForOrigin: jest.fn(),
       requestPermittedChainsPermissionIncrementalForOrigin: jest.fn(),
+      getChainPermissionsFeatureFlag: jest.fn(),
+      requestUserApproval: jest.fn(),
     };
-    const response: { result?: true } = {};
+    const response = { result: true, id: '0', jsonrpc: '2.0' } as const;
     const switchChain = (chainId: Hex, networkClientId: string) =>
-      EthChainUtils.switchChain(response, end, chainId, networkClientId, mocks);
+      EthChainUtils.switchChain(
+        response,
+        end,
+        '',
+        chainId,
+        {},
+        networkClientId,
+        '',
+        mocks,
+      );
 
     return {
       mocks,
@@ -305,6 +317,7 @@ describe('Ethereum Chain Utils', () => {
           params: [
             {
               chainId: '0x1',
+              // @ts-expect-error Intentionally passing in invalid input for testing
               [unexpectedParam]: 'parameter',
             },
           ],
@@ -321,6 +334,7 @@ describe('Ethereum Chain Utils', () => {
         EthChainUtils.validateSwitchEthereumChainParams({
           params: [
             {
+              // @ts-expect-error Intentionally passing in invalid input for testing
               chainId: 'invalid_chain_id',
             },
           ],
