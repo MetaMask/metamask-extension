@@ -35,7 +35,17 @@ import log from 'loglevel';
 import { v4 as uuid } from 'uuid';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/initializeInpageProvider';
+// eslint-disable-next-line import/order
 import shouldInjectProvider from '../../shared/modules/provider-injection';
+
+///: BEGIN:ONLY_INCLUDE_IF(build-beta)
+import {
+  getMultichainClient,
+  getDefaultTransport,
+} from '@metamask/multichain-api-client';
+import { registerSolanaWalletStandard } from '@metamask/solana-wallet-standard';
+import { METAMASK_BETA_CHROME_ID } from '../../shared/constants/app';
+///: END:ONLY_INCLUDE_IF
 
 // contexts
 const CONTENT_SCRIPT = 'metamask-contentscript';
@@ -55,6 +65,14 @@ if (shouldInjectProvider()) {
     name: INPAGE,
     target: CONTENT_SCRIPT,
   });
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
+  getMultichainClient({
+    transport: getDefaultTransport({ extensionId: METAMASK_BETA_CHROME_ID }),
+  }).then((client) => {
+    registerSolanaWalletStandard({ client });
+  });
+  ///: END:ONLY_INCLUDE_IF
 
   initializeProvider({
     connectionStream: metamaskStream,
