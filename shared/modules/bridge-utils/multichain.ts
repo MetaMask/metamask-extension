@@ -11,7 +11,7 @@ import { type AllowedBridgeChainIds } from '../../constants/bridge';
  * @param chainId - The chain ID to format.
  * @returns The formatted chain ID.
  */
-export const formatChainIdFromApi = (chainId: ChainId | string) => {
+export const formatChainIdFromDecimal = (chainId: ChainId | string) => {
   switch (chainId) {
     case ChainId.SOLANA:
     case ChainId.SOLANA.toString():
@@ -27,7 +27,7 @@ export const formatChainIdFromApi = (chainId: ChainId | string) => {
  * @param chainId - The chain ID to format.
  * @returns The formatted chain ID.
  */
-export const formatChainIdToApi = (
+export const formatChainIdToDecimal = (
   chainId?: AllowedBridgeChainIds | Hex | CaipChainId,
 ) => {
   switch (chainId) {

@@ -23,7 +23,7 @@ import {
   type AllowedBridgeChainIds,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
 } from '../../../../shared/constants/bridge';
-import { formatChainIdFromApi } from '../../../../shared/modules/bridge-utils/multichain';
+import { formatChainIdFromDecimal } from '../../../../shared/modules/bridge-utils/multichain';
 import { type MultichainProviderConfig } from '../../../../shared/constants/multichain/networks';
 
 type I18nFunction = (
@@ -51,7 +51,7 @@ const getBridgeActionText = (
   >,
 ) => {
   const hexDestChainId = step.destChainId
-    ? formatChainIdFromApi(step.destChainId)
+    ? formatChainIdFromDecimal(step.destChainId)
     : undefined;
   const destNetworkConfiguration = hexDestChainId
     ? networkConfigurationsByChainId[hexDestChainId]

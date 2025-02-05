@@ -13,7 +13,7 @@ import {
   setSrcTokenExchangeRates,
 } from '../../ducks/bridge/bridge';
 import { exchangeRateFromMarketData } from '../../ducks/bridge/utils';
-import { formatChainIdFromApi } from '../../../shared/modules/bridge-utils/multichain';
+import { formatChainIdFromDecimal } from '../../../shared/modules/bridge-utils/multichain';
 import { getMultichainCurrentChainId } from '../../selectors/multichain';
 
 export const useBridgeExchangeRates = () => {
@@ -35,10 +35,10 @@ export const useBridgeExchangeRates = () => {
     ? activeQuote.quote.destAsset.address
     : destTokenAddress;
   const fromChainId = activeQuote
-    ? formatChainIdFromApi(activeQuote.quote.srcChainId)
+    ? formatChainIdFromDecimal(activeQuote.quote.srcChainId)
     : chainId;
   const toChainId = activeQuote
-    ? formatChainIdFromApi(activeQuote.quote.destChainId)
+    ? formatChainIdFromDecimal(activeQuote.quote.destChainId)
     : toChain?.chainId;
 
   const marketData = useSelector(getMarketData);
