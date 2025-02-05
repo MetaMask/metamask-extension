@@ -411,14 +411,14 @@ export const fetchWithSentryInstrumentation = async (
       span.setAttribute('http.response.status_code', response.status);
       span.setAttribute(
         'http.response_content_length',
-        Number(response.headers.get('content-length')),
+        Number(response.headers?.get('content-length')),
       );
 
       const cloudflareRayId =
-        response.headers.get('CF-RAY') ??
-        response.headers.get('CF-Ray') ??
-        response.headers.get('CF-ray') ??
-        response.headers.get('cf_ray');
+        response.headers?.get('CF-RAY') ??
+        response.headers?.get('CF-Ray') ??
+        response.headers?.get('CF-ray') ??
+        response.headers?.get('cf_ray');
       if (cloudflareRayId) {
         span.setAttribute('CF-Ray', cloudflareRayId);
         const scope = Sentry.getCurrentScope();
