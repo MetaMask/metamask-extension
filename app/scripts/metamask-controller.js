@@ -7030,7 +7030,7 @@ export default class MetamaskController extends EventEmitter {
       // send request to provider
       provider.sendAsync(req, (err, providerRes) => {
         // forward any error
-        if (err instanceof Error) {
+        if (err) {
           return end(err);
         }
         // copy provider response onto original response
