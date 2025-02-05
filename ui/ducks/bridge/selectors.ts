@@ -61,7 +61,8 @@ import {
 import type { BridgeState } from './bridge';
 
 type BridgeAppState = {
-  metamask: { bridgeState: BridgeControllerState } & NetworkState & {
+  metamask: BridgeControllerState &
+    NetworkState & {
       useExternalServices: boolean;
       currencyRates: {
         [currency: string]: {
@@ -547,7 +548,7 @@ export const getValidationErrors = createDeepEqualSelector(
         fromTokenInputValue
           ? activeQuote.adjustedReturn.valueInCurrency.lt(
               new BigNumber(
-                BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
+                1 - BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
               ).times(activeQuote.sentAmount.valueInCurrency),
             )
           : false,

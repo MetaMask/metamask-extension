@@ -186,7 +186,7 @@ export enum BridgeBackgroundAction {
   RESET_STATE = 'resetState',
   GET_BRIDGE_ERC20_ALLOWANCE = 'getBridgeERC20Allowance',
 }
-export type BridgeControllerState = {
+export type BridgeState = {
   bridgeFeatureFlags: BridgeFeatureFlags;
   quoteRequest: Partial<QuoteRequest>;
   quotes: (QuoteResponse & L1GasFees)[];
@@ -195,4 +195,8 @@ export type BridgeControllerState = {
   quotesLoadingStatus?: RequestStatus;
   quoteFetchError?: string;
   quotesRefreshCount: number;
+};
+
+export type BridgeControllerState = {
+  bridgeState: BridgeState;
 };

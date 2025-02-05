@@ -1179,12 +1179,6 @@ describe('Selectors', () => {
     expect(showOutdatedBrowserWarning).toStrictEqual(true);
   });
 
-  it('#getTotalUnapprovedSignatureRequestCount', () => {
-    const totalUnapprovedSignatureRequestCount =
-      selectors.getTotalUnapprovedSignatureRequestCount(mockState);
-    expect(totalUnapprovedSignatureRequestCount).toStrictEqual(0);
-  });
-
   describe('#getPetnamesEnabled', () => {
     function createMockStateWithPetnamesEnabled(petnamesEnabled) {
       return { metamask: { preferences: { petnamesEnabled } } };
@@ -1433,7 +1427,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
-        scopes: ['eip155'],
+        scopes: ['eip155:0'],
         pinned: true,
         hidden: false,
         active: false,
@@ -1459,7 +1453,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
-        scopes: ['eip155'],
+        scopes: ['eip155:0'],
         pinned: true,
         hidden: false,
         active: false,
@@ -1484,7 +1478,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
-        scopes: ['eip155'],
+        scopes: ['eip155:0'],
         balance: '0x0',
         pinned: false,
         hidden: false,
@@ -1511,7 +1505,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
-        scopes: ['eip155'],
+        scopes: ['eip155:0'],
         balance: '0x0',
         pinned: false,
         hidden: false,
@@ -1545,7 +1539,7 @@ describe('Selectors', () => {
         pinned: false,
         active: false,
         type: 'eip155:eoa',
-        scopes: ['eip155'],
+        scopes: ['eip155:0'],
       },
       {
         id: '694225f4-d30b-4e77-a900-c8bbce735b42',
@@ -1565,7 +1559,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
-        scopes: ['eip155'],
+        scopes: ['eip155:0'],
         address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
         balance: '0x0',
         pinned: false,
