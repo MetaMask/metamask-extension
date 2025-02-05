@@ -639,7 +639,7 @@ class TestDapp {
       await this.check_connectedAccounts(publicAddress);
       await this.driver.waitForSelector({
         css: '#chainId',
-        text: networkId,
+        text: chainId,
       });
     }
   }
