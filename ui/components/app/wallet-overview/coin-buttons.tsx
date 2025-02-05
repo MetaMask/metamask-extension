@@ -100,6 +100,7 @@ import { getCurrentChainId } from '../../../../shared/modules/selectors/networks
 ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 ///: END:ONLY_INCLUDE_IF
+import { useSample } from '../../../hooks/sample/useSample';
 
 type CoinButtonsProps = {
   account: InternalAccount;
@@ -409,6 +410,12 @@ const CoinButtons = ({
     ///: END:ONLY_INCLUDE_IF
   ]);
 
+  const { openSampleFeature } = useSample();
+
+  const handleSampleClick = useCallback(() => {
+    openSampleFeature();
+  }, [openSampleFeature]);
+
   return (
     <Box display={Display.Flex} justifyContent={JustifyContent.spaceEvenly}>
       {
@@ -529,6 +536,25 @@ const CoinButtons = ({
           />
         </>
       }
+
+      <IconButton
+        className={`${classPrefix}-overview__button`}
+        iconButtonClassName={iconButtonClassName}
+        disabled={false}
+        Icon={
+          <Icon
+            name={IconName.Gas}
+            color={IconColor.primaryInverse}
+            size={IconSize.Sm}
+          />
+        }
+        onClick={handleSampleClick}
+        label="Sample"
+        data-testid="token-overview-button-sample"
+        tooltipRender={(contents: React.ReactElement) =>
+          generateTooltip('swapButton', contents)
+        }
+      />
     </Box>
   );
 };
