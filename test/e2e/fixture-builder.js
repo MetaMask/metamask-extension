@@ -75,7 +75,6 @@ function onboardingFixture() {
           showNativeTokenAsMainBalance: true,
           petnamesEnabled: true,
           showMultiRpcModal: false,
-          isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
           tokenSortConfig: {
             key: 'tokenFiatAmount',
@@ -89,7 +88,6 @@ function onboardingFixture() {
         theme: 'light',
         useBlockie: false,
         useNftDetection: false,
-        useNonceField: false,
         usePhishDetect: true,
         useTokenDetection: false,
         useCurrencyRateCheck: true,
@@ -488,7 +486,7 @@ class FixtureBuilder {
     });
   }
 
-  withPermissionControllerConnectedToTestDappWithChain() {
+  withPermissionControllerConnectedToTestDappWithChains(chainIds) {
     return this.withPermissionController({
       subjects: {
         [DAPP_URL]: {
@@ -513,7 +511,7 @@ class FixtureBuilder {
               caveats: [
                 {
                   type: 'restrictNetworkSwitching',
-                  value: ['0x539'],
+                  value: chainIds,
                 },
               ],
               date: 1664388714637,
