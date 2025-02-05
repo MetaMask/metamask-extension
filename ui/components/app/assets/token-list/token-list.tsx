@@ -27,7 +27,10 @@ import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { useTokenBalances } from '../../../../hooks/useTokenBalances';
 import { setTokenNetworkFilter } from '../../../../store/actions';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
-import { getMultichainShouldShowFiat } from '../../../../selectors/multichain';
+import {
+  getMultichainShouldShowFiat,
+  getTokenBalancesEvm,
+} from '../../../../selectors/multichain';
 import { consolidateTokenBalances } from '../util/consolidateTokenBalances';
 
 type TokenListProps = {
@@ -102,11 +105,15 @@ export default function TokenList({
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
 
+  // EVM specific tokenBalance polling
   const { tokenBalances } = useTokenBalances({
     chainIds: chainIdsToPoll as Hex[],
   });
   const selectedAccountTokenBalancesAcrossChains =
     tokenBalances[selectedAccount.address];
+
+  // const evmBalances = useSelector(getTokenBalancesEvm);
+  // console.log('evmBalances', evmBalances);
 
   const marketData: ChainAddressMarketData = useSelector(
     getMarketData,
@@ -131,13 +138,13 @@ export default function TokenList({
 
   const sortedFilteredTokens = useMemo(() => {
     const consolidatedTokensWithBalances = consolidateTokenBalances(
-      selectedAccountTokensChains,
-      nativeBalances,
-      selectedAccountTokenBalancesAcrossChains,
-      marketData,
-      currencyRates,
-      hideZeroBalanceTokens,
-      isOnCurrentNetwork,
+      selectedAccountTokensChains, // done
+      nativeBalances, // done
+      selectedAccountTokenBalancesAcrossChains, // can't bc needs polling
+      marketData, // done
+      currencyRates, // done
+      hideZeroBalanceTokens, // done (getPreferences)
+      isOnCurrentNetwork, // done
     );
     const filteredAssets = filterAssets(consolidatedTokensWithBalances, [
       {
