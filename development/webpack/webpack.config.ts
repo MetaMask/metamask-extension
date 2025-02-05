@@ -187,7 +187,65 @@ if (args.lavamoat) {
       readableResourceIds: true,
       inlineLockdown: /^runtime|contentscript\.js/u,
       unlockedChunksUnsafe: /inpage\.js/u,
-      debugRuntime: true,
+      debugRuntime: false,
+      __unsafeAllowContextModules: true,
+      scuttleGlobalThis: {
+        enabled: true,
+        // scuttlerName: 'SCUTTLER', // TODO(weizman) SUPPORT SNOW AND SCUTTLER
+        exceptions: [
+          // globals used by different mm deps outside of lm compartment
+          'Proxy',
+          'toString',
+          'getComputedStyle',
+          'addEventListener',
+          'removeEventListener',
+          'ShadowRoot',
+          'HTMLElement',
+          'Element',
+          'pageXOffset',
+          'pageYOffset',
+          'visualViewport',
+          'Reflect',
+          'Set',
+          'Object',
+          'navigator',
+          'harden',
+          'console',
+          'WeakSet',
+          'Event',
+          'Image', // Used by browser to generate notifications
+          'fetch', // Used by browser to generate notifications
+          'OffscreenCanvas', // Used by browser to generate notifications
+          // globals chromedriver needs to function
+          /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
+          'name',
+          'performance',
+          'parseFloat',
+          'innerWidth',
+          'innerHeight',
+          'Symbol',
+          'Math',
+          'DOMRect',
+          'Number',
+          'Array',
+          'crypto',
+          'Function',
+          'Uint8Array',
+          'String',
+          'Promise',
+          'JSON',
+          'Date',
+          // globals sentry needs to function
+          '__SENTRY__',
+          'appState',
+          'extra',
+          'stateHooks',
+          'sentryHooks',
+          'sentry',
+          // webpack
+          'webpackChunk',
+        ],
+      }
     }),
   );
 }
