@@ -73,12 +73,6 @@ export const SwapToAccountPicker = ({
           className="swap-to-account-picker__selected"
           width={BlockSize.Full}
         >
-          {/* <AccountListItem
-            account={selectedSwapToAccount}
-            isSelected={selectedSwapToAccount.id === selectedAccount?.id}
-            showOptions={false}
-            disableHover
-          /> */}
           <SwapToAccountListItem
             account={selectedSwapToAccount}
             // TODO: fix
