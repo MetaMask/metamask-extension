@@ -94,7 +94,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       network.chainId === currentlySelectedNetworkChainId,
   );
 
-  const selectedNetworksList = selectedTestNetwork
+  const defaultSelectedNetworkList = selectedTestNetwork
     ? [...nonTestNetworks, selectedTestNetwork].map(({ chainId }) => chainId)
     : nonTestNetworks.map(({ chainId }) => chainId);
 
@@ -109,7 +109,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const defaultSelectedChainIds =
     supportedRequestedChainIds.length > 0
       ? supportedRequestedChainIds
-      : selectedNetworksList;
+      : defaultSelectedNetworkList;
 
   const [selectedChainIds, setSelectedChainIds] = useState(
     defaultSelectedChainIds,
