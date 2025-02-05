@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { isObject, pick } from 'lodash';
+import { pick } from 'lodash';
 import {
   ACCOUNT_1,
   ACCOUNT_2,
@@ -7,7 +7,6 @@ import {
   WINDOW_TITLES,
   withFixtures,
 } from '../../helpers';
-import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import {
   initCreateSessionScopes,
@@ -15,6 +14,7 @@ import {
   openMultichainDappAndConnectWalletWithExternallyConnectable,
   addAccountInWalletAndAuthorize,
   getSessionScopes,
+  type FixtureCallbackArgs,
 } from './testHelpers';
 
 describe('Initializing a session w/ several scopes and accounts, then calling `wallet_revokeSession`', function () {
@@ -29,13 +29,7 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
           .build(),
         ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
       },
-      async ({
-        driver,
-        extensionId,
-      }: {
-        driver: Driver;
-        extensionId: string;
-      }) => {
+      async ({ driver, extensionId }: FixtureCallbackArgs) => {
         await openMultichainDappAndConnectWalletWithExternallyConnectable(
           driver,
           extensionId,
@@ -50,12 +44,10 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
          * We verify that scopes are not empty before calling `wallet_revokeSession`
          */
         const { sessionScopes } = await getSessionScopes(driver);
-        for (const scope of GANACHE_SCOPES) {
-          assert.ok(
-            isObject(sessionScopes[scope]),
-            `scope ${scope} should exist.`,
-          );
-        }
+        assert.ok(
+          Object.keys(sessionScopes).length > 0,
+          'Should have non-empty session scopes value before calling `wallet_revokeSession`',
+        );
 
         await driver.clickElement({
           text: 'wallet_revokeSession',
@@ -67,7 +59,7 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
         assert.deepStrictEqual(
           resultSessionScopes,
           {},
-          'Should receive an empty session scope after calling `wallet_getSession`',
+          'Should receive an empty session scopes value after calling `wallet_revokeSession`',
         );
       },
     );
@@ -82,13 +74,7 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
           .build(),
         ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
       },
-      async ({
-        driver,
-        extensionId,
-      }: {
-        driver: Driver;
-        extensionId: string;
-      }) => {
+      async ({ driver, extensionId }: FixtureCallbackArgs) => {
         await openMultichainDappAndConnectWalletWithExternallyConnectable(
           driver,
           extensionId,

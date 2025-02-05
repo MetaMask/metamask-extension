@@ -1,6 +1,5 @@
 import { strict as assert } from 'assert';
 import { withFixtures } from '../../helpers';
-import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import {
@@ -8,6 +7,7 @@ import {
   getExpectedSessionScope,
   getSessionScopes,
   openMultichainDappAndConnectWalletWithExternallyConnectable,
+  type FixtureCallbackArgs,
 } from './testHelpers';
 
 describe('Multichain API', function () {
@@ -19,13 +19,7 @@ describe('Multichain API', function () {
           fixtures: new FixtureBuilder().withPopularNetworks().build(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
-        async ({
-          driver,
-          extensionId,
-        }: {
-          driver: Driver;
-          extensionId: string;
-        }) => {
+        async ({ driver, extensionId }: FixtureCallbackArgs) => {
           await openMultichainDappAndConnectWalletWithExternallyConnectable(
             driver,
             extensionId,
@@ -53,13 +47,7 @@ describe('Multichain API', function () {
             .build(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
-        async ({
-          driver,
-          extensionId,
-        }: {
-          driver: Driver;
-          extensionId: string;
-        }) => {
+        async ({ driver, extensionId }: FixtureCallbackArgs) => {
           /**
            * check {@link FixtureBuilder.withPermissionControllerConnectedToTestDapp} for default scopes returned
            */

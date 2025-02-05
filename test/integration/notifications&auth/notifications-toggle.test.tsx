@@ -53,9 +53,7 @@ describe('Notifications Toggle', () => {
   };
 
   const waitForElement = async (testId: string) => {
-    await waitFor(async () => {
-      expect(await screen.findByTestId(testId)).toBeInTheDocument();
-    });
+    expect(await screen.findByTestId(testId)).toBeInTheDocument();
   };
 
   it('disabling notifications from settings', async () => {

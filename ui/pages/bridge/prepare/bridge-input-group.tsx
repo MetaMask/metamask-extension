@@ -13,7 +13,6 @@ import {
 import { AssetPicker } from '../../../components/multichain/asset-picker-amount/asset-picker';
 import { TabName } from '../../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getLocale } from '../../../selectors';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   formatCurrencyAmount,
@@ -39,6 +38,8 @@ import { shortenString } from '../../../helpers/utils/util';
 import type { BridgeToken } from '../../../../shared/types/bridge';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
+import { getMultichainIsSolana } from '../../../selectors/multichain';
+import { getIntlLocale } from '../../../ducks/locale/locale';
 import { BridgeAssetPickerButton } from './components/bridge-asset-picker-button';
 
 export const BridgeInputGroup = ({
@@ -77,7 +78,7 @@ export const BridgeInputGroup = ({
   const { isInsufficientBalance, isEstimatedReturnLow } =
     useSelector(getValidationErrors);
   const currency = useSelector(getCurrentCurrency);
-  const locale = useSelector(getLocale);
+  const locale = useSelector(getIntlLocale);
 
   const selectedChainId = networkProps?.network?.chainId;
   const { balanceAmount } = useLatestBalance(token, selectedChainId);
@@ -89,15 +90,17 @@ export const BridgeInputGroup = ({
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
+  const isAmountReadOnly =
+    amountFieldProps?.readOnly || amountFieldProps?.disabled;
+
   useEffect(() => {
-    if (inputRef.current) {
+    if (!isAmountReadOnly && inputRef.current) {
       inputRef.current.value = amountFieldProps?.value?.toString() ?? '';
       inputRef.current.focus();
     }
-  }, [amountFieldProps]);
+  }, [amountFieldProps?.value, isAmountReadOnly, token]);
 
-  const isAmountReadOnly =
-    amountFieldProps?.readOnly || amountFieldProps?.disabled;
+  const isSolana = useSelector(getMultichainIsSolana);
 
   return (
     <Column paddingInline={6} gap={1}>
@@ -161,7 +164,6 @@ export const BridgeInputGroup = ({
           customTokenListGenerator={customTokenListGenerator}
           isTokenListLoading={isTokenListLoading}
           isMultiselectEnabled={isMultiselectEnabled}
-          autoFocus={false}
         >
           {(onClickHandler, networkImageSrc) =>
             isAmountReadOnly && !token ? (
@@ -173,7 +175,7 @@ export const BridgeInputGroup = ({
                 fontWeight={FontWeight.Normal}
                 style={{ whiteSpace: 'nowrap' }}
               >
-                {t('bridgeTo')}
+                {isSolana ? t('swapSwapTo') : t('bridgeTo')}
               </Button>
             ) : (
               <BridgeAssetPickerButton

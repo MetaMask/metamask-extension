@@ -480,50 +480,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('#getDeviceNameForMetric', () => {
-    const deviceName = 'ledger';
-    const hdPath = "m/44'/60'/0'/0/0";
-
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls getDeviceNameForMetric in background', async () => {
-      const store = mockStore();
-
-      const mockGetDeviceName = background.getDeviceNameForMetric.callsFake(
-        (_, __, cb) => cb(),
-      );
-
-      setBackgroundConnection(background);
-
-      await store.dispatch(actions.getDeviceNameForMetric(deviceName, hdPath));
-      expect(mockGetDeviceName.callCount).toStrictEqual(1);
-    });
-
-    it('shows loading indicator and displays error', async () => {
-      const store = mockStore();
-
-      background.getDeviceNameForMetric.callsFake((_, __, cb) =>
-        cb(new Error('error')),
-      );
-
-      setBackgroundConnection(background);
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
-      await expect(
-        store.dispatch(actions.getDeviceNameForMetric(deviceName, hdPath)),
-      ).rejects.toThrow('error');
-
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
   describe('#forgetDevice', () => {
     afterEach(() => {
       sinon.restore();
@@ -2659,6 +2615,61 @@ describe('Actions', () => {
         ),
       ).toBe(true);
       expect(store.getActions()).toStrictEqual([]);
+    });
+  });
+
+  describe('setSmartTransactionsRefreshInterval', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls setStatusRefreshInterval in the background with provided interval', async () => {
+      const store = mockStore();
+      const refreshInterval = 1000;
+
+      background = {
+        setStatusRefreshInterval: sinon.stub().callsFake((_, cb) => cb()),
+      };
+      setBackgroundConnection(background);
+
+      await store.dispatch(
+        actions.setSmartTransactionsRefreshInterval(refreshInterval),
+      );
+
+      expect(
+        background.setStatusRefreshInterval.calledWith(
+          refreshInterval,
+          sinon.match.func,
+        ),
+      ).toBe(true);
+    });
+
+    it('does not call background if refresh interval is undefined', async () => {
+      const store = mockStore();
+
+      background = {
+        setStatusRefreshInterval: sinon.stub().callsFake((_, cb) => cb()),
+      };
+      setBackgroundConnection(background);
+
+      await store.dispatch(
+        actions.setSmartTransactionsRefreshInterval(undefined),
+      );
+
+      expect(background.setStatusRefreshInterval.called).toBe(false);
+    });
+
+    it('does not call background if refresh interval is null', async () => {
+      const store = mockStore();
+
+      background = {
+        setStatusRefreshInterval: sinon.stub().callsFake((_, cb) => cb()),
+      };
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.setSmartTransactionsRefreshInterval(null));
+
+      expect(background.setStatusRefreshInterval.called).toBe(false);
     });
   });
 });

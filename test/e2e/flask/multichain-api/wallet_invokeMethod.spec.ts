@@ -7,7 +7,6 @@ import {
   WINDOW_TITLES,
   withFixtures,
 } from '../../helpers';
-import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import { DEFAULT_GANACHE_ETH_BALANCE_DEC } from '../../constants';
 import {
@@ -16,6 +15,7 @@ import {
   openMultichainDappAndConnectWalletWithExternallyConnectable,
   addAccountInWalletAndAuthorize,
   escapeColon,
+  type FixtureCallbackArgs,
 } from './testHelpers';
 
 describe('Multichain API', function () {
@@ -36,13 +36,7 @@ describe('Multichain API', function () {
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
-          async ({
-            driver,
-            extensionId,
-          }: {
-            driver: Driver;
-            extensionId: string;
-          }) => {
+          async ({ driver, extensionId }: FixtureCallbackArgs) => {
             await openMultichainDappAndConnectWalletWithExternallyConnectable(
               driver,
               extensionId,
@@ -105,13 +99,7 @@ describe('Multichain API', function () {
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
-          async ({
-            driver,
-            extensionId,
-          }: {
-            driver: Driver;
-            extensionId: string;
-          }) => {
+          async ({ driver, extensionId }: FixtureCallbackArgs) => {
             await openMultichainDappAndConnectWalletWithExternallyConnectable(
               driver,
               extensionId,
@@ -176,13 +164,7 @@ describe('Multichain API', function () {
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
-          async ({
-            driver,
-            extensionId,
-          }: {
-            driver: Driver;
-            extensionId: string;
-          }) => {
+          async ({ driver, extensionId }: FixtureCallbackArgs) => {
             await openMultichainDappAndConnectWalletWithExternallyConnectable(
               driver,
               extensionId,

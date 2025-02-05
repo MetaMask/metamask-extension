@@ -16,9 +16,8 @@ import {
   signTypedDataV4WithSnapAccount,
   signTypedDataWithSnapAccount,
 } from '../../page-objects/flows/sign.flow';
-import { DAPP_URL } from '../../constants';
 
-describe('Snap Account Signatures @no-mmi', function (this: Suite) {
+describe('Snap Account Signatures', function (this: Suite) {
   this.timeout(200000); // This test is very long, so we need an unusually high timeout
   // Run sync, async approve, and async reject flows
   // (in Jest we could do this with test.each, but that does not exist here)
@@ -57,22 +56,11 @@ describe('Snap Account Signatures @no-mmi', function (this: Suite) {
 
           const experimentalSettings = new ExperimentalSettings(driver);
           await experimentalSettings.check_pageIsLoaded();
-          await experimentalSettings.toggleRedesignedSignature();
 
           // Connect the SSK account
-          await new TestDapp(driver).openTestDappPage();
-
-          await driver.findClickableElement({ text: 'Connect', tag: 'button' });
-          await driver.clickElement('#connectButton');
-
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-          await driver.clickElementAndWaitForWindowToClose({
-            text: 'Connect',
-            tag: 'button',
-          });
-
-          await driver.switchToWindowWithUrl(DAPP_URL);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.connectAccount({ publicAddress: newPublicKey });
 
           // Run all 5 signature types
           await personalSignWithSnapAccount(

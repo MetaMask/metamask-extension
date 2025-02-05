@@ -112,6 +112,7 @@ export const getTokenExchangeRate = async (request: {
 };
 
 // This extracts a token's exchange rate from the marketData state object
+// These exchange rates are against the native asset of the chain
 export const exchangeRateFromMarketData = (
   chainId: string,
   tokenAddress: string,
@@ -160,4 +161,5 @@ export const exchangeRatesFromNativeAndCurrencyRates = (
 export const isNetworkAdded = (
   v: NetworkConfiguration | AddNetworkFields | undefined,
 ): v is NetworkConfiguration =>
-  !v || 'networkClientId' in v.rpcEndpoints[v.defaultRpcEndpointIndex];
+  v !== undefined &&
+  'networkClientId' in v.rpcEndpoints[v.defaultRpcEndpointIndex];

@@ -1,9 +1,9 @@
 import { strict as assert } from 'assert';
 import { withFixtures } from '../../helpers';
-import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
+  type FixtureCallbackArgs,
   openMultichainDappAndConnectWalletWithExternallyConnectable,
 } from './testHelpers';
 
@@ -13,17 +13,11 @@ describe('Calling `eth_subscribe` on a particular network event', function () {
       {
         title: this.test?.fullTitle(),
         fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDappMultichain()
+          .withPermissionControllerConnectedToMultichainTestDapp()
           .build(),
         ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
       },
-      async ({
-        driver,
-        extensionId,
-      }: {
-        driver: Driver;
-        extensionId: string;
-      }) => {
+      async ({ driver, extensionId }: FixtureCallbackArgs) => {
         await openMultichainDappAndConnectWalletWithExternallyConnectable(
           driver,
           extensionId,
