@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import Box from '../box';
+import { Box } from '../../component-library';
 import {
   BackgroundColor,
-  DISPLAY,
+  Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 
@@ -14,6 +14,9 @@ const Tabs = ({
   children,
   tabsClassName,
   subHeader,
+  tabListProps = {},
+  tabContentProps = {},
+  ...props
 }) => {
   // This ignores any 'null' child elements that are a result of a conditional
   // based on a feature flag setting.
@@ -76,19 +79,22 @@ const Tabs = ({
   };
 
   return (
-    <Box className="tabs">
+    <Box className="tabs" {...props}>
       <Box
         as="ul"
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         justifyContent={JustifyContent.flexStart}
         backgroundColor={BackgroundColor.backgroundDefault}
         className={classnames('tabs__list', tabsClassName)}
         gap={0}
+        {...tabListProps}
       >
         {renderTabs()}
       </Box>
       {subHeader}
-      <Box className="tabs__content">{renderActiveTabContent()}</Box>
+      <Box className="tabs__content" {...tabContentProps}>
+        {renderActiveTabContent()}
+      </Box>
     </Box>
   );
 };
@@ -100,4 +106,6 @@ Tabs.propTypes = {
   children: PropTypes.node.isRequired,
   tabsClassName: PropTypes.string,
   subHeader: PropTypes.node,
+  tabListProps: PropTypes.object,
+  tabContentProps: PropTypes.object,
 };
