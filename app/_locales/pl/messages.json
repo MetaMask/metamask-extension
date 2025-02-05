@@ -254,9 +254,6 @@
   "from": {
     "message": "Z"
   },
-  "functionType": {
-    "message": "Typ funkcji"
-  },
   "gasLimit": {
     "message": "Limit gazu"
   },
@@ -461,9 +458,6 @@
   "origin": {
     "message": "Pochodzenie"
   },
-  "parameters": {
-    "message": "Parametry"
-  },
   "participateInMetaMetrics": {
     "message": "Weź udział w MetaMetrics"
   },
@@ -532,9 +526,6 @@
   "removeAccountDescription": {
     "message": "To konto będzie usunięte z Twojego portfela. Zanim przejdziesz dalej, upewnij się, że masz frazę seed i klucz prywatny do tego importowanego konta. Możesz później importować lub utworzyć nowe konta z rozwijanego menu kont. "
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "wnioski oczekujące na zatwierdzenie"
-  },
   "required": {
     "message": "Wymagane"
   },
@@ -601,9 +592,6 @@
   },
   "showHexDataDescription": {
     "message": "Wybierz to żeby pokazać pole danych hex na ekranie wysyłania"
-  },
-  "sigRequest": {
-    "message": "Prośba o podpis"
   },
   "sign": {
     "message": "Podpisz"
@@ -722,9 +710,6 @@
   "unknown": {
     "message": "Nieznane"
   },
-  "unknownNetwork": {
-    "message": "Nieznana sieć prywatna"
-  },
   "unknownQrCode": {
     "message": "Błąd: nie mogliśmy odczytać tego kodu QR"
   },
@@ -754,9 +739,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Żeby użyć tej opcji należy podłączyć kamerę"
-  },
-  "youSign": {
-    "message": "Podpisujesz"
   },
   "yourPrivateSeedPhrase": {
     "message": "Twoja prywatna fraza seed"
