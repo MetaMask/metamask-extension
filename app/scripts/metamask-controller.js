@@ -13,6 +13,7 @@ import {
   RatesController,
   fetchMultiExchangeRate,
   TokenBalancesController,
+  MultichainAssetsController,
   MultichainBalancesController,
 } from '@metamask/assets-controllers';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
@@ -787,6 +788,29 @@ export default class MetamaskController extends EventEmitter {
       disabled: !this.preferencesController.state.useNftDetection,
     });
 
+    // MultichainAssetsController
+    const multichainAssetsControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'MultichainAssetsController',
+        allowedEvents: [
+          'AccountsController:accountAdded',
+          'AccountsController:accountRemoved',
+        ],
+        allowedActions: [
+          'SnapController:handleRequest',
+          'SnapController:getAll',
+          'PermissionController:getPermissions',
+          'AccountsController:listMultichainAccounts',
+        ],
+      });
+
+    this.multichainAssetsController = new MultichainAssetsController({
+      state: initState.MultichainAssetsController,
+      messenger: multichainAssetsControllerMessenger,
+    });
+
+    // MultichainAssetsController
+
     const metaMetricsControllerMessenger =
       this.controllerMessenger.getRestricted({
         name: 'MetaMetricsController',
@@ -1000,10 +1024,12 @@ export default class MetamaskController extends EventEmitter {
         allowedEvents: [
           'AccountsController:accountAdded',
           'AccountsController:accountRemoved',
+          'MultichainAssetsController:stateChange',
         ],
         allowedActions: [
           'AccountsController:listMultichainAccounts',
           'SnapController:handleRequest',
+          'MultichainAssetsController:getState',
         ],
       });
 
@@ -2377,6 +2403,13 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
+    this.controllerMessenger.subscribe(
+      'notify:accountAssetListUpdated',
+      ({ assetsChanged }) => {
+        this.multichainAssetsController.updateAccountAssetsList(assetsChanged);
+      },
+    );
+
     this.metamaskMiddleware = createMetamaskMiddleware({
       static: {
         eth_syncing: false,
@@ -2491,6 +2524,7 @@ export default class MetamaskController extends EventEmitter {
       AppStateController: this.appStateController,
       AppMetadataController: this.appMetadataController,
       MultichainBalancesController: this.multichainBalancesController,
+      MultichainAssetsController: this.multichainAssetsController,
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       MultichainTransactionsController: this.multichainTransactionsController,
       ///: END:ONLY_INCLUDE_IF
@@ -2549,6 +2583,7 @@ export default class MetamaskController extends EventEmitter {
         AppStateController: this.appStateController,
         AppMetadataController: this.appMetadataController,
         MultichainBalancesController: this.multichainBalancesController,
+        MultichainAssetsController: this.multichainAssetsController,
         ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
         MultichainTransactionsController: this.multichainTransactionsController,
         ///: END:ONLY_INCLUDE_IF
