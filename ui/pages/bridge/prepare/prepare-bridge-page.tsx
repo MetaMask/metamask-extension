@@ -356,14 +356,18 @@ const PrepareBridgePage = () => {
       });
     };
 
-    switch (tokenAddressFromUrl?.toLowerCase()) {
+    const lowerCaseTokenAddressFromUrl = tokenAddressFromUrl.toLowerCase();
+    const matchedToken =
+      fromTokens[tokenAddressFromUrl] ??
+      fromTokens[lowerCaseTokenAddressFromUrl];
+
+    switch (lowerCaseTokenAddressFromUrl) {
       case fromToken?.address?.toLowerCase():
         // If the token is already set, remove the query param
         removeTokenFromUrl();
         break;
-      case fromTokens[tokenAddressFromUrl]?.address?.toLowerCase(): {
+      case matchedToken?.address?.toLowerCase(): {
         // If there is a match, set it as the fromToken
-        const matchedToken = fromTokens[tokenAddressFromUrl];
         dispatch(
           setFromToken({
             ...matchedToken,
