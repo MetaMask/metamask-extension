@@ -25,6 +25,9 @@ class HeaderNavbar {
 
   private readonly switchNetworkDropDown = '[data-testid="network-display"]';
 
+  private readonly notificationsMenuItem =
+    '[data-testid="notifications-menu-item"]';
+
   private readonly networkPicker = '.mm-picker-network';
 
   constructor(driver: Driver) {
@@ -63,6 +66,7 @@ class HeaderNavbar {
   async openThreeDotMenu(): Promise<void> {
     console.log('Open account options menu');
     await this.driver.clickElement(this.threeDotMenuButton);
+    await this.driver.waitForSelector(this.notificationsMenuItem);
   }
 
   async openPermissionsPage(): Promise<void> {
@@ -80,7 +84,7 @@ class HeaderNavbar {
   async openSettingsPage(): Promise<void> {
     console.log('Open settings page');
     await this.openThreeDotMenu();
-    await this.driver.clickElement(this.settingsButton);
+    await this.driver.clickElementAndWaitToDisappear(this.settingsButton);
   }
 
   async clickSwitchNetworkDropDown(): Promise<void> {

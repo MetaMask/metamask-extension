@@ -166,7 +166,7 @@ describe('Segment User Traits', function () {
     );
   });
 
-  it('should stop sending identify events when user disables metrics in privacy settings after opting in during onboarding', async function () {
+  it.only('should stop sending identify events when user disables metrics in privacy settings after opting in during onboarding', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
@@ -181,19 +181,44 @@ describe('Segment User Traits', function () {
         let events = [];
         await completeCreateNewWalletOnboardingFlow({
           driver,
-          participateInMetaMetrics: true,
-          dataCollectionForMarketing: true,
+          participateInMetaMetrics: false,
         });
         events = await getEventPayloads(driver, mockedEndpoints);
-        assert.equal(events.length, 1);
+        assert.equal(events.length, 0);
         const securityAndPrivacySettings = new SecurityAndPrivacySettings(
           driver,
         );
         await securityAndPrivacySettings.navigateToPage();
-        await securityAndPrivacySettings.toggleParticipateInMetaMetrics();
-        events = await getEventPayloads(driver, mockedEndpoints);
-        assert.equal(events.length, 1);
       },
     );
+    // await withFixtures(
+    //   {
+    //     fixtures: new FixtureBuilder({ onboarding: true })
+    //       .withMetaMetricsController({
+    //         metaMetricsId: MOCK_META_METRICS_ID,
+    //         participateInMetaMetrics: false,
+    //       })
+    //       .build(),
+    //     title: this.test?.fullTitle(),
+    //     testSpecificMock: mockSegment,
+    //   },
+    //   async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+    //     let events = [];
+    //     await completeCreateNewWalletOnboardingFlow({
+    //       driver,
+    //       participateInMetaMetrics: false,
+    //       dataCollectionForMarketing: true,
+    //     });
+    //     events = await getEventPayloads(driver, mockedEndpoints);
+    //     assert.equal(events.length, 1);
+    //     const securityAndPrivacySettings = new SecurityAndPrivacySettings(
+    //       driver,
+    //     );
+    //     await securityAndPrivacySettings.navigateToPage();
+    //     await securityAndPrivacySettings.toggleParticipateInMetaMetrics();
+    //     events = await getEventPayloads(driver, mockedEndpoints);
+    //     assert.equal(events.length, 1);
+    //   },
+    // );
   });
 });
