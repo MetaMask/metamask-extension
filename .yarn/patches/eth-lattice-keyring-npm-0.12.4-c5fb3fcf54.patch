@@ -1,5 +1,5 @@
 diff --git a/index.js b/index.js
-index 806efc9587acf7e91a37e22c6a26c477f2ead538..a3f539e8fc2adc47ac804d5101ffc46d47e8c729 100644
+index 806efc9587acf7e91a37e22c6a26c477f2ead538..d9fed7067dc595e622ed26d66ff8628d6df478b0 100644
 --- a/index.js
 +++ b/index.js
 @@ -1,11 +1,11 @@
@@ -99,7 +99,7 @@ index 806efc9587acf7e91a37e22c6a26c477f2ead538..a3f539e8fc2adc47ac804d5101ffc46d
      if (this.isUnlocked()) {
        return "Unlocked";
      }
-@@ -101,42 +93,46 @@ class LatticeKeyring extends EventEmitter {
+@@ -101,42 +93,44 @@ class LatticeKeyring extends EventEmitter {
    }
  
    // Add addresses to the local store and return the full result
@@ -152,14 +152,12 @@ index 806efc9587acf7e91a37e22c6a26c477f2ead538..a3f539e8fc2adc47ac804d5101ffc46d
 -    return this.accounts;
 +    });
 +
-+    /** PATCH to support new keyring change which addAccounts returns an array of last added account */
-+    const newAccounts = [];
-+    newAccounts.push(this.accounts[this.accounts.length - 1]);
-+    return newAccounts;
++    /** PATCH: Patch the account array to return the new account */
++    return [this.accounts[this.accounts.length - 1]];
    }
  
    // Return the local store of addresses. This gets called when the extension unlocks.
-@@ -144,7 +140,7 @@ class LatticeKeyring extends EventEmitter {
+@@ -144,7 +138,7 @@ class LatticeKeyring extends EventEmitter {
      return this.accounts ? [...this.accounts] : [];
    }
  
@@ -168,7 +166,7 @@ index 806efc9587acf7e91a37e22c6a26c477f2ead538..a3f539e8fc2adc47ac804d5101ffc46d
      let signedTx, v;
      // We will be adding a signature to hydration data for a new
      // transaction object since the sig data is not mutable.
-@@ -161,7 +157,7 @@ class LatticeKeyring extends EventEmitter {
+@@ -161,7 +155,7 @@ class LatticeKeyring extends EventEmitter {
      // Lattice firmware v0.11.0 implemented EIP1559 and EIP2930
      // We should throw an error if we cannot support this.
      if (fwVersion.major === 0 && fwVersion.minor <= 11) {
@@ -177,7 +175,7 @@ index 806efc9587acf7e91a37e22c6a26c477f2ead538..a3f539e8fc2adc47ac804d5101ffc46d
      }
      // Build the signing request
      if (fwVersion.major > 0 || fwVersion.minor >= 15) {
-@@ -169,17 +165,23 @@ class LatticeKeyring extends EventEmitter {
+@@ -169,17 +163,23 @@ class LatticeKeyring extends EventEmitter {
        const data = {
          // Legacy transactions return tx params. Newer transactions
          // return the raw, serialized transaction
@@ -206,7 +204,7 @@ index 806efc9587acf7e91a37e22c6a26c477f2ead538..a3f539e8fc2adc47ac804d5101ffc46d
        if (def) {
          data.decoder = def;
        }
-@@ -190,11 +192,11 @@ class LatticeKeyring extends EventEmitter {
+@@ -190,11 +190,11 @@ class LatticeKeyring extends EventEmitter {
        const data = getLegacyTxReq(tx);
        data.chainId = chainId;
        data.signerPath = signerPath;
@@ -220,7 +218,7 @@ index 806efc9587acf7e91a37e22c6a26c477f2ead538..a3f539e8fc2adc47ac804d5101ffc46d
      }
      // Construct the `v` signature param
      if (signedTx.sig.v === undefined) {
-@@ -202,12 +204,12 @@ class LatticeKeyring extends EventEmitter {
+@@ -202,12 +202,12 @@ class LatticeKeyring extends EventEmitter {
        v = SDK.Utils.getV(tx, signedTx);
      } else {
        // Legacy signatures have `v` in the response
@@ -236,7 +234,7 @@ index 806efc9587acf7e91a37e22c6a26c477f2ead538..a3f539e8fc2adc47ac804d5101ffc46d
      txToReturn.v = addHexPrefix(v);
  
      // Make sure the active wallet is correct to avoid returning
-@@ -215,29 +217,33 @@ class LatticeKeyring extends EventEmitter {
+@@ -215,29 +215,33 @@ class LatticeKeyring extends EventEmitter {
      const foundIdx = await this._accountIdxInCurrentWallet(address);
      if (foundIdx === null) {
        throw new Error(
@@ -278,7 +276,7 @@ index 806efc9587acf7e91a37e22c6a26c477f2ead538..a3f539e8fc2adc47ac804d5101ffc46d
      const accountIdx = await this._findSignerIdx(address);
      let { payload, protocol } = msg;
      // If the message is not an object we assume it is a legacy signPersonal request
-@@ -274,8 +280,8 @@ class LatticeKeyring extends EventEmitter {
+@@ -274,8 +278,8 @@ class LatticeKeyring extends EventEmitter {
      const foundIdx = await this._accountIdxInCurrentWallet(address);
      if (foundIdx === null) {
        throw new Error(
@@ -289,7 +287,7 @@ index 806efc9587acf7e91a37e22c6a26c477f2ead538..a3f539e8fc2adc47ac804d5101ffc46d
        );
      }
      // Return the sig string
-@@ -283,7 +289,7 @@ class LatticeKeyring extends EventEmitter {
+@@ -283,7 +287,7 @@ class LatticeKeyring extends EventEmitter {
    }
  
    async exportAccount(address) {
@@ -298,7 +296,7 @@ index 806efc9587acf7e91a37e22c6a26c477f2ead538..a3f539e8fc2adc47ac804d5101ffc46d
    }
  
    removeAccount(address) {
-@@ -294,7 +300,7 @@ class LatticeKeyring extends EventEmitter {
+@@ -294,7 +298,7 @@ class LatticeKeyring extends EventEmitter {
          this.accountOpts.splice(i, 1);
          return;
        }
@@ -307,7 +305,7 @@ index 806efc9587acf7e91a37e22c6a26c477f2ead538..a3f539e8fc2adc47ac804d5101ffc46d
    }
  
    async getFirstPage() {
-@@ -302,19 +308,19 @@ class LatticeKeyring extends EventEmitter {
+@@ -302,19 +306,19 @@ class LatticeKeyring extends EventEmitter {
      return this._getPage(0);
    }
  
@@ -332,7 +330,7 @@ index 806efc9587acf7e91a37e22c6a26c477f2ead538..a3f539e8fc2adc47ac804d5101ffc46d
      this._resetDefaults();
    }
  
-@@ -323,7 +329,7 @@ class LatticeKeyring extends EventEmitter {
+@@ -323,7 +327,7 @@ class LatticeKeyring extends EventEmitter {
    //-------------------------------------------------------------------
    // Find the account index of the requested address.
    // Note that this is the BIP39 path index, not the index in the address cache.
@@ -341,7 +339,7 @@ index 806efc9587acf7e91a37e22c6a26c477f2ead538..a3f539e8fc2adc47ac804d5101ffc46d
      // Take note if this was already unlocked
      const wasUnlocked = this.isUnlocked();
      // Unlock and get the wallet UID. We will bypass the reconnection
-@@ -372,27 +378,26 @@ class LatticeKeyring extends EventEmitter {
+@@ -372,27 +376,26 @@ class LatticeKeyring extends EventEmitter {
      const addrs = await this.getAccounts();
      let accountIdx = -1;
      addrs.forEach((addr, i) => {
@@ -376,7 +374,7 @@ index 806efc9587acf7e91a37e22c6a26c477f2ead538..a3f539e8fc2adc47ac804d5101ffc46d
          idx += insertIdx;
          usedX = true;
        } else if (isHardened) {
-@@ -401,7 +406,7 @@ class LatticeKeyring extends EventEmitter {
+@@ -401,7 +404,7 @@ class LatticeKeyring extends EventEmitter {
          idx += Number(_idx);
        }
        indices.push(idx);
@@ -385,7 +383,7 @@ index 806efc9587acf7e91a37e22c6a26c477f2ead538..a3f539e8fc2adc47ac804d5101ffc46d
      // If this path string does not include an `x`, we just append the index
      // to the end of the extracted set
      if (usedX === false) {
-@@ -409,7 +414,7 @@ class LatticeKeyring extends EventEmitter {
+@@ -409,7 +412,7 @@ class LatticeKeyring extends EventEmitter {
      }
      // Sanity check -- Lattice firmware will throw an error for large paths
      if (indices.length > 5)
@@ -394,7 +392,7 @@ index 806efc9587acf7e91a37e22c6a26c477f2ead538..a3f539e8fc2adc47ac804d5101ffc46d
      return indices;
    }
  
-@@ -443,13 +448,15 @@ class LatticeKeyring extends EventEmitter {
+@@ -443,13 +446,15 @@ class LatticeKeyring extends EventEmitter {
          // `window.open`. Instead, we need to use the `browser` API to open a tab.
          // We will surveille this tab to see if its URL parameters change, which
          // will indicate that the user has logged in.
@@ -413,7 +411,7 @@ index 806efc9587acf7e91a37e22c6a26c477f2ead538..a3f539e8fc2adc47ac804d5101ffc46d
      }
    }
  
-@@ -461,28 +468,28 @@ class LatticeKeyring extends EventEmitter {
+@@ -461,28 +466,28 @@ class LatticeKeyring extends EventEmitter {
    _getCreds() {
      return new Promise((resolve, reject) => {
        // We only need to setup if we don't have a deviceID
@@ -449,7 +447,7 @@ index 806efc9587acf7e91a37e22c6a26c477f2ead538..a3f539e8fc2adc47ac804d5101ffc46d
            return resolve(creds);
          } catch (err) {
            return reject(err);
-@@ -490,8 +497,7 @@ class LatticeKeyring extends EventEmitter {
+@@ -490,8 +495,7 @@ class LatticeKeyring extends EventEmitter {
        }
  
        // Open the tab
@@ -459,7 +457,7 @@ index 806efc9587acf7e91a37e22c6a26c477f2ead538..a3f539e8fc2adc47ac804d5101ffc46d
          if (conn.chromium) {
            // On a Chromium browser we can just listen for a window message
            window.addEventListener("message", receiveMessage, false);
-@@ -499,7 +505,7 @@ class LatticeKeyring extends EventEmitter {
+@@ -499,7 +503,7 @@ class LatticeKeyring extends EventEmitter {
            listenInterval = setInterval(() => {
              if (conn.chromium.closed) {
                clearInterval(listenInterval);
@@ -468,7 +466,7 @@ index 806efc9587acf7e91a37e22c6a26c477f2ead538..a3f539e8fc2adc47ac804d5101ffc46d
              }
            }, 500);
          } else if (conn.firefox) {
-@@ -509,52 +515,56 @@ class LatticeKeyring extends EventEmitter {
+@@ -509,52 +513,56 @@ class LatticeKeyring extends EventEmitter {
            // the login info.
            // NOTE: This will only work if have `https://lattice.gridplus.io/*`
            // host permissions in your manifest file (and also `activeTab` permission)
@@ -542,7 +540,7 @@ index 806efc9587acf7e91a37e22c6a26c477f2ead538..a3f539e8fc2adc47ac804d5101ffc46d
      } finally {
        // Reset to normal timeout no matter what
        this.sdkSession.timeout = SDK_TIMEOUT;
-@@ -565,9 +575,8 @@ class LatticeKeyring extends EventEmitter {
+@@ -565,9 +573,8 @@ class LatticeKeyring extends EventEmitter {
      if (this.isUnlocked()) {
        return;
      }
@@ -554,7 +552,7 @@ index 806efc9587acf7e91a37e22c6a26c477f2ead538..a3f539e8fc2adc47ac804d5101ffc46d
      let setupData = {
        name: this.appName,
        baseUrl: url,
-@@ -594,14 +603,14 @@ class LatticeKeyring extends EventEmitter {
+@@ -594,14 +601,14 @@ class LatticeKeyring extends EventEmitter {
      return !!setupData.stateData;
    }
  
@@ -572,7 +570,7 @@ index 806efc9587acf7e91a37e22c6a26c477f2ead538..a3f539e8fc2adc47ac804d5101ffc46d
      // Determine if we need to do a recursive call here. We prefer not to
      // because they will be much slower, but Ledger paths require it since
      // they are non-standard.
-@@ -612,31 +621,34 @@ class LatticeKeyring extends EventEmitter {
+@@ -612,31 +619,34 @@ class LatticeKeyring extends EventEmitter {
  
      // Make the request to get the requested address
      const addrData = {
@@ -615,7 +613,7 @@ index 806efc9587acf7e91a37e22c6a26c477f2ead538..a3f539e8fc2adc47ac804d5101ffc46d
        const accounts = addrs.map((address, i) => {
          return {
            address,
-@@ -655,37 +667,42 @@ class LatticeKeyring extends EventEmitter {
+@@ -655,37 +665,42 @@ class LatticeKeyring extends EventEmitter {
        try {
          const isPaired = await this._connect();
          if (!isPaired) {
@@ -668,7 +666,7 @@ index 806efc9587acf7e91a37e22c6a26c477f2ead538..a3f539e8fc2adc47ac804d5101ffc46d
    }
  
    // Determine if an HD path has a variable index internal to it.
-@@ -693,10 +710,9 @@ class LatticeKeyring extends EventEmitter {
+@@ -693,10 +708,9 @@ class LatticeKeyring extends EventEmitter {
    // This is just a hacky helper to avoid having to recursively call for non-ledger
    // derivation paths. Ledger is SO ANNOYING TO SUPPORT.
    _hdPathHasInternalVarIdx() {
@@ -682,7 +680,7 @@ index 806efc9587acf7e91a37e22c6a26c477f2ead538..a3f539e8fc2adc47ac804d5101ffc46d
      }
      return false;
    }
-@@ -709,15 +725,15 @@ class LatticeKeyring extends EventEmitter {
+@@ -709,15 +723,15 @@ class LatticeKeyring extends EventEmitter {
      if (!activeWallet || !activeWallet.uid) {
        return null;
      }
@@ -701,7 +699,7 @@ index 806efc9587acf7e91a37e22c6a26c477f2ead538..a3f539e8fc2adc47ac804d5101ffc46d
      return tx.common.chainIdBN();
    } else if (tx && tx.chainId) {
      return new BN(tx.chainId);
-@@ -727,50 +743,58 @@ function getTxChainId (tx) {
+@@ -727,50 +741,58 @@ function getTxChainId (tx) {
  
  // Legacy versions of Lattice firmware signed ETH transactions out of
  // a now deprecated pathway. The request data is built by this helper.
