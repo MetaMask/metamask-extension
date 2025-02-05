@@ -23,6 +23,10 @@ import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import { debounce, throttle, memoize, wrap, pick } from 'lodash';
 import {
   KeyringController,
+  KeyringTypes,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  displayForKeyring,
+  ///: END:ONLY_INCLUDE_IF
   keyringBuilderFactory,
 } from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
@@ -3808,6 +3812,11 @@ export default class MetamaskController extends EventEmitter {
       setLocked: this.setLocked.bind(this),
       createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),
       createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
+      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+      generateNewMnemonicAndAddToVault:
+        this.generateNewMnemonicAndAddToVault.bind(this),
+      addNewMnemonicToVault: this.addNewMnemonicToVault.bind(this),
+      ///: END:ONLY_INCLUDE_IF
       exportAccount: this.exportAccount.bind(this),
 
       // txController
@@ -4540,6 +4549,54 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Adds a new mnemonic to the vault.
+   *
+   * @param {string} mnemonic
+   * @returns {object} new account address
+   */
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  async addNewMnemonicToVault(mnemonic) {
+    const releaseLock = await this.createVaultMutex.acquire();
+    try {
+      const newKeyring = await this.keyringController.addNewKeyring(
+        KeyringTypes.hd,
+        {
+          mnemonic,
+          numberOfAccounts: 1,
+        },
+      );
+      const newAccountAddress = (await newKeyring.getAccounts())[0];
+      const account =
+        this.accountsController.getAccountByAddress(newAccountAddress);
+      this.accountsController.setSelectedAccount(account.id);
+
+      const { fingerprint: keyringId } = await displayForKeyring(newKeyring);
+      await this._addAccountsWithBalance(keyringId);
+
+      return newAccountAddress;
+    } finally {
+      releaseLock();
+    }
+  }
+
+  async generateNewMnemonicAndAddToVault() {
+    const releaseLock = await this.createVaultMutex.acquire();
+    try {
+      const newHdkeyring = await this.keyringController.addNewKeyring(
+        KeyringTypes.hd,
+      );
+      const newAccount = (await newHdkeyring.getAccounts())[0];
+      const account = this.accountsController.getAccountByAddress(newAccount);
+      this.accountsController.setSelectedAccount(account.id);
+
+      return newAccount;
+    } finally {
+      releaseLock();
+    }
+  }
+  ///: END:ONLY_INCLUDE_IF
+
+  /**
    * Create a new Vault and restore an existent keyring.
    *
    * @param {string} password
@@ -4591,11 +4648,21 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  async _addAccountsWithBalance() {
+  async _addAccountsWithBalance(keyringId) {
     try {
       // Scan accounts until we find an empty one
       const chainId = this.#getGlobalChainId();
-      const accounts = await this.keyringController.getAccounts();
+
+      const keyringSelector = keyringId
+        ? { fingerprint: keyringId }
+        : { type: KeyringTypes.hd };
+
+      const accounts = await this.keyringController.withKeyring(
+        keyringSelector,
+        async (keyring) => {
+          return await keyring.getAccounts();
+        },
+      );
       let address = accounts[accounts.length - 1];
 
       for (let count = accounts.length; ; count++) {
@@ -4626,7 +4693,12 @@ export default class MetamaskController extends EventEmitter {
         }
 
         // This account has assets, so check the next one
-        address = await this.keyringController.addNewAccount(count);
+        address = await this.keyringController.withKeyring(
+          keyringSelector,
+          async (keyring) => {
+            return (await keyring.addAccounts(1))[0];
+          },
+        );
       }
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
@@ -5058,14 +5130,22 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Adds a new account to the default (first) HD seed phrase Keyring.
    *
-   * @param accountCount
+   * @param {number} accountCount - The number of accounts to create
+   * @param {string} _keyringId - The keyring identifier.
    * @returns {Promise<string>} The address of the newly-created account.
    */
-  async addNewAccount(accountCount) {
+  async addNewAccount(accountCount, _keyringId) {
     const oldAccounts = await this.keyringController.getAccounts();
+    const keyringSelector = _keyringId
+      ? { fingerprint: _keyringId }
+      : { type: KeyringTypes.hd };
 
-    const addedAccountAddress = await this.keyringController.addNewAccount(
-      accountCount,
+    const addedAccountAddress = await this.keyringController.withKeyring(
+      keyringSelector,
+      async (keyring) => {
+        const [newAddress] = await keyring.addAccounts(accountCount);
+        return newAddress;
+      },
     );
 
     if (!oldAccounts.includes(addedAccountAddress)) {
@@ -5082,13 +5162,19 @@ export default class MetamaskController extends EventEmitter {
    *
    * Called when the first account is created and on unlocking the vault.
    *
-   * @param password
+   * @param {string} password
+   * @param {string} _keyringId - This is the identifier for the hd keyring.
    * @returns {Promise<number[]>} The seed phrase to be confirmed by the user,
    * encoded as an array of UTF-8 bytes.
    */
-  async getSeedPhrase(password) {
+  async getSeedPhrase(password, _keyringId) {
     return this._convertEnglishWordlistIndicesToCodepoints(
-      await this.keyringController.exportSeedPhrase(password),
+      await this.keyringController.exportSeedPhrase(
+        password,
+        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+        _keyringId,
+        ///: END:ONLY_INCLUDE_IF
+      ),
     );
   }
 

@@ -65,6 +65,7 @@ buildTypes:
       - build-flask
       - keyring-snaps
       - solana
+      - multi-srp
       - solana-swaps
     env:
       - INFURA_FLASK_PROJECT_ID
@@ -140,6 +141,10 @@ features:
   solana:
     assets:
       - ./{app,shared,ui}/**/solana/**
+  multi-srp:
+    assets:
+      # srp-list is a special case and is used in the srp recovery flow now.
+      - ./{app,shared,ui}/**/multi-srp/(?!.*srp-list)/**
   solana-swaps:
 
 # Env variables that are required for all types of builds
