@@ -11,6 +11,7 @@ import { debounce } from 'lodash';
 import { useHistory, useLocation } from 'react-router-dom';
 import { BigNumber } from 'bignumber.js';
 import { type TokenListMap } from '@metamask/assets-controllers';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -87,6 +88,7 @@ import {
   getLocale,
   getSelectedInternalAccount,
   getTokenList,
+  getInternalAccounts,
 } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
@@ -98,6 +100,7 @@ import {
   getMultichainProviderConfig,
 } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { SwapToAccountPicker } from '../../../components/multichain/swapto-account-picker/swap-to-account-picker';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 
@@ -140,6 +143,7 @@ const PrepareBridgePage = () => {
   const selectedAccount = useMultichainSelector(getSelectedInternalAccount);
 
   const slippage = useSelector(getSlippage);
+  const internalAccounts = useSelector(getInternalAccounts);
 
   const quoteRequest = useSelector(getQuoteRequest);
   const {
@@ -382,6 +386,9 @@ const PrepareBridgePage = () => {
     }
   }, [fromChain, fromToken, fromTokens, search, isFromTokensLoading]);
 
+  const [selectedBridgeAccount, setSelectedBridgeAccount] =
+    useState<InternalAccount | null>(null);
+
   return (
     <Column className="prepare-bridge-page" gap={8}>
       <BridgeInputGroup
@@ -561,6 +568,15 @@ const PrepareBridgePage = () => {
           }}
           isTokenListLoading={isToTokensLoading}
         />
+        {/* // TODO: conditionally render this based on sol <-> EVM or not */}
+        <Box style={{ marginTop: '35px' }}>
+          <SwapToAccountPicker
+            accounts={internalAccounts}
+            chainType={isSolana ? 'solana' : 'evm'}
+            onAccountSelect={setSelectedBridgeAccount}
+            selectedSwapToAccount={selectedBridgeAccount}
+          />
+        </Box>
         <Column height={BlockSize.Full} justifyContent={JustifyContent.center}>
           {isLoading && !activeQuote ? (
             <>
