@@ -92,3 +92,67 @@ export const findAssetByAddress = (
       token.address && token.address.toLowerCase() === address.toLowerCase(),
   );
 };
+
+type ParsedAssetId = {
+  namespace: string; // Namespace (e.g., eip155, solana, bip122)
+  chainId: string; // Full chain ID (namespace + blockchain ID)
+  assetNamespace: string; // Asset namespace (e.g., slip44, erc20, token, ordinal)
+  assetReference: string; // Asset reference (on-chain address, token identifier, etc.)
+};
+
+const parseAssetId = (assetId: string): ParsedAssetId => {
+  // Split the assetId into chain_id and asset details
+  const [chainId, assetDetails] = assetId.split('/');
+
+  if (!chainId || !assetDetails) {
+    throw new Error(
+      'Invalid assetId format. Must include both chainId and asset details.',
+    );
+  }
+
+  // Split asset details into namespace and reference
+  const [assetNamespace, assetReference] = assetDetails.split(':');
+
+  if (!assetNamespace || !assetReference) {
+    throw new Error(
+      'Invalid asset details format. Must include both assetNamespace and assetReference.',
+    );
+  }
+
+  // Validate the chainId format (namespace:blockchainId)
+  const [namespace, blockchainId] = chainId.split(':');
+  if (!namespace || !blockchainId) {
+    throw new Error(
+      'Invalid chainId format. Must include both namespace and blockchain ID.',
+    );
+  }
+
+  // Validate assetNamespace (must match [-a-z0-9]{3,8})
+  // https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-19.md#syntax
+  const assetNamespaceRegex = /^[-a-z0-9]{3,8}$/u;
+  if (!assetNamespaceRegex.test(assetNamespace)) {
+    throw new Error(
+      `Invalid assetNamespace format: "${assetNamespace}". Must be 3-8 characters, containing only lowercase letters, numbers, or dashes.`,
+    );
+  }
+
+  // Validate assetReference (must match [-.%a-zA-Z0-9]{1,128})
+  // https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-19.md#syntax
+  const assetReferenceRegex = /^[-.%a-zA-Z0-9]{1,128}$/u;
+  if (!assetReferenceRegex.test(assetReference)) {
+    throw new Error(
+      `Invalid assetReference format: "${assetReference}". Must be 1-128 characters, containing only alphanumerics, dashes, dots, or percent signs.`,
+    );
+  }
+
+  // Ensure assetReference is URL-decoded if necessary
+  // https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-19.md#syntax
+  const decodedAssetReference = decodeURIComponent(assetReference);
+
+  return {
+    namespace,
+    chainId,
+    assetNamespace,
+    assetReference: decodedAssetReference,
+  };
+};
