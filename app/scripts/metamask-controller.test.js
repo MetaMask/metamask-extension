@@ -959,7 +959,7 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('#requestCaip25Approval', () => {
+    describe('#requestCaip25Permission', () => {
       it('requests approval with well formed id and origin', async () => {
         jest
           .spyOn(
@@ -977,7 +977,7 @@ describe('MetaMaskController', () => {
             },
           });
 
-        await metamaskController.requestCaip25Approval('test.com', {});
+        await metamaskController.requestCaip25Permission('test.com', {});
 
         expect(
           metamaskController.approvalController.addAndShowApprovalRequest,
@@ -1018,7 +1018,7 @@ describe('MetaMaskController', () => {
             },
           });
 
-        await metamaskController.requestCaip25Approval('test.com', {
+        await metamaskController.requestCaip25Permission('test.com', {
           [PermissionNames.eth_accounts]: {
             caveats: [
               {
@@ -1081,7 +1081,7 @@ describe('MetaMaskController', () => {
             },
           });
 
-        await metamaskController.requestCaip25Approval('test.com', {
+        await metamaskController.requestCaip25Permission('test.com', {
           [PermissionNames.permittedChains]: {
             caveats: [
               {
@@ -1147,7 +1147,7 @@ describe('MetaMaskController', () => {
             },
           });
 
-        await metamaskController.requestCaip25Approval('test.com', {
+        await metamaskController.requestCaip25Permission('test.com', {
           [PermissionNames.eth_accounts]: {
             caveats: [
               {
@@ -1221,7 +1221,7 @@ describe('MetaMaskController', () => {
             },
           });
 
-        await metamaskController.requestCaip25Approval('npm:snap', {
+        await metamaskController.requestCaip25Permission('npm:snap', {
           [PermissionNames.eth_accounts]: {
             caveats: [
               {
@@ -1284,7 +1284,7 @@ describe('MetaMaskController', () => {
             },
           });
 
-        await metamaskController.requestCaip25Approval('npm:snap', {
+        await metamaskController.requestCaip25Permission('npm:snap', {
           [PermissionNames.permittedChains]: {
             caveats: [
               {
@@ -1347,7 +1347,7 @@ describe('MetaMaskController', () => {
             },
           });
 
-        await metamaskController.requestCaip25Approval('npm:snap', {
+        await metamaskController.requestCaip25Permission('npm:snap', {
           [PermissionNames.eth_accounts]: {
             caveats: [
               {
@@ -1410,7 +1410,7 @@ describe('MetaMaskController', () => {
           .mockRejectedValue(new Error('approval rejected'));
 
         await expect(() =>
-          metamaskController.requestCaip25Approval('test.com', {
+          metamaskController.requestCaip25Permission('test.com', {
             eth_accounts: {},
           }),
         ).rejects.toThrow(new Error('approval rejected'));
@@ -1441,7 +1441,7 @@ describe('MetaMaskController', () => {
             },
           });
 
-        await metamaskController.requestCaip25Approval('test.com', {
+        await metamaskController.requestCaip25Permission('test.com', {
           [RestrictedEthMethods.eth_accounts]: {
             caveats: [
               {
@@ -1533,7 +1533,7 @@ describe('MetaMaskController', () => {
             },
           });
 
-        await metamaskController.requestCaip25Approval(origin, {
+        await metamaskController.requestCaip25Permission(origin, {
           [RestrictedEthMethods.eth_accounts]: {
             caveats: [
               {
@@ -1616,7 +1616,7 @@ describe('MetaMaskController', () => {
             permissions: expectedPermissions,
           });
 
-        const result = await metamaskController.requestCaip25Approval(
+        const result = await metamaskController.requestCaip25Permission(
           'test.com',
           {},
         );
