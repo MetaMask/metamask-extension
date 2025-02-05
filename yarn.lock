@@ -5052,6 +5052,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/controller-utils@npm:^11.5.0":
+  version: 11.5.0
+  resolution: "@metamask/controller-utils@npm:11.5.0"
+  dependencies:
+    "@ethereumjs/util": "npm:^8.1.0"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/ethjs-unit": "npm:^0.3.0"
+    "@metamask/utils": "npm:^11.1.0"
+    "@spruceid/siwe-parser": "npm:2.1.0"
+    "@types/bn.js": "npm:^5.1.5"
+    bignumber.js: "npm:^9.1.2"
+    bn.js: "npm:^5.2.1"
+    cockatiel: "npm:^3.1.2"
+    eth-ens-namehash: "npm:^2.0.8"
+    fast-deep-equal: "npm:^3.1.3"
+  peerDependencies:
+    "@babel/runtime": ^7.0.0
+  checksum: 10/ef3ca4c36fdd4658233467d639154321015be7985008d90c5e870ef69f92024143fe81908e398e6e79e10f9b40d5c33e8742beae0ed5690db0fbce3731fbfd0b
+  languageName: node
+  linkType: hard
+
 "@metamask/design-tokens@npm:^4.0.0, @metamask/design-tokens@npm:^4.2.0":
   version: 4.2.0
   resolution: "@metamask/design-tokens@npm:4.2.0"
@@ -5725,12 +5746,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain@npm:@metamask-previews/multichain@2.1.0-preview-082735ba":
-  version: 2.1.0-preview-082735ba
-  resolution: "@metamask-previews/multichain@npm:2.1.0-preview-082735ba"
+"@metamask/multichain@npm:@metamask-previews/multichain@2.1.0-preview-0d0d258d":
+  version: 2.1.0-preview-0d0d258d
+  resolution: "@metamask-previews/multichain@npm:2.1.0-preview-0d0d258d"
   dependencies:
     "@metamask/api-specs": "npm:^0.10.12"
-    "@metamask/controller-utils": "npm:^11.4.5"
+    "@metamask/controller-utils": "npm:^11.5.0"
     "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/safe-event-emitter": "npm:^3.0.0"
@@ -5741,7 +5762,7 @@ __metadata:
   peerDependencies:
     "@metamask/network-controller": ^22.0.0
     "@metamask/permission-controller": ^11.0.0
-  checksum: 10/8a3d1854fdcccf0a4943ea7665bc6d5e0e557679b0a22db68db73f08b6e5e2497e1edb6314f82d965dea8de0fa439f2ec1a1484ffc5e08b15d2ed45b39d0fbfa
+  checksum: 10/b2789132ba503cb87425d7ca72858b2c0c80853763de9a8529986e7905403a7c4f7e90c90c36f210a9a9c81976db37bc8b4b8293815f9c099cc70d106c3dc327
   languageName: node
   linkType: hard
 
@@ -26663,7 +26684,7 @@ __metadata:
     "@metamask/message-manager": "npm:^12.0.0"
     "@metamask/message-signing-snap": "npm:^0.6.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain": "npm:@metamask-previews/multichain@2.1.0-preview-082735ba"
+    "@metamask/multichain": "npm:@metamask-previews/multichain@2.1.0-preview-0d0d258d"
     "@metamask/multichain-transactions-controller": "npm:^0.0.1"
     "@metamask/name-controller": "npm:^8.0.0"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A22.1.1#~/.yarn/patches/@metamask-network-controller-npm-22.1.1-09b6510f1e.patch"
