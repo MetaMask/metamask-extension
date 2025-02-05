@@ -8,6 +8,7 @@ const {
   unlockWallet,
   withFixtures,
 } = require('../../helpers');
+const { mockSecurityAlertsAPIFailed } = require('./utils');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
 const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
@@ -23,6 +24,7 @@ const CONTRACT_ADDRESS = {
 };
 
 async function mockInfura(mockServer) {
+  await mockSecurityAlertsAPIFailed(mockServer);
   await mockServerJsonRpc(mockServer, [
     ['eth_blockNumber'],
     [

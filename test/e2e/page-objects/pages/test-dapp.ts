@@ -164,6 +164,12 @@ class TestDapp {
 
   private readonly simpleSendButton = '#sendButton';
 
+  private maliciousApprovalButton = '#maliciousApprovalButton';
+
+  private maliciousSetApprovalForAllButton = '#maliciousSetApprovalForAll';
+
+  private maliciousTradeOrder = '#maliciousTradeOrder';
+
   private readonly transactionRequestMessage = {
     text: 'Transaction request',
     tag: 'h2',
@@ -706,6 +712,18 @@ class TestDapp {
     await this.driver.pasteFromClipboardIntoField(
       this.eip747ContractAddressInput,
     );
+  }
+
+  async clickMaliciousApproval() {
+    await this.driver.clickElement(this.maliciousApprovalButton);
+  }
+
+  async clickMaliciousSetApprovalForAll() {
+    await this.driver.clickElement(this.maliciousSetApprovalForAllButton);
+  }
+
+  async clickMaliciousTradeOrder() {
+    await this.driver.clickElement(this.maliciousTradeOrder);
   }
 
   /**
