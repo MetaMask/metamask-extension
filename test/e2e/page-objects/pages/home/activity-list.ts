@@ -19,6 +19,11 @@ class ActivityListPage {
     css: '.transaction-status-label--failed',
   };
 
+  private readonly noTransactionMessage = {
+    text: 'You have no transactions',
+    tag: 'div',
+  };
+
   private readonly transactionAmountsInActivity =
     '[data-testid="transaction-list-item-primary-currency"]';
 
@@ -99,7 +104,8 @@ class ActivityListPage {
   }
 
   async check_noTxInActivity(): Promise<void> {
-    await this.driver.assertElementNotPresent(this.completedTransactions);
+    console.log('Check that no transaction message is displayed on homepage');
+    await this.driver.waitForSelector(this.noTransactionMessage);
   }
 
   async check_txAction(expectedAction: string, expectedNumber: number = 1) {

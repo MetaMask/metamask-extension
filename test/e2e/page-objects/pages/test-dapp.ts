@@ -2,8 +2,8 @@ import { strict as assert } from 'assert';
 import { WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 
-const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
-const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
+export const DAPP_HOST_ADDRESS = 'http://127.0.0.1:8080';
+export const DAPP_TWO_URL = 'http://127.0.0.1:8081';
 
 class TestDapp {
   private readonly driver: Driver;
@@ -41,6 +41,8 @@ class TestDapp {
   private readonly connectedAccount = '#accounts';
 
   private readonly createTokenButton = { text: 'Create Token', tag: 'button' };
+
+  private readonly currentChainId = '#chainId';
 
   private readonly depositPiggyBankContractButton = '#depositButton';
 
@@ -82,26 +84,31 @@ class TestDapp {
 
   private readonly personalSignResult = '#personalSignVerifyECRecoverResult';
 
-  private readonly personalSignVerifyButton = '#personalSignVerify';
+  private readonly personalSignSignatureRequestMessage = {
+    text: 'personal_sign',
+    tag: 'div',
+  };
 
-  private personalSignSigUtilResultSelector =
+  private readonly personalSignSigUtilResultSelector =
     '#personalSignVerifySigUtilResult';
+
+  private readonly personalSignVerifyButton = '#personalSignVerify';
 
   private readonly revokePermissionButton = '#revokeAccountsPermission';
 
   private readonly sign721PermitButton = '#sign721Permit';
 
-  private sign721PermitResult = '#sign721PermitResult';
+  private readonly sign721PermitResult = '#sign721PermitResult';
 
-  private sign721PermitResultR = '#sign721PermitResultR';
+  private readonly sign721PermitResultR = '#sign721PermitResultR';
 
-  private sign721PermitResultS = '#sign721PermitResultS';
+  private readonly sign721PermitResultS = '#sign721PermitResultS';
 
-  private sign721PermitResultV = '#sign721PermitResultV';
+  private readonly sign721PermitResultV = '#sign721PermitResultV';
 
-  private sign721PermitVerifyButton = '#sign721PermitVerify';
+  private readonly sign721PermitVerifyButton = '#sign721PermitVerify';
 
-  private sign721PermitVerifyResult = '#sign721PermitVerifyResult';
+  private readonly sign721PermitVerifyResult = '#sign721PermitVerifyResult';
 
   private readonly signPermitButton = '#signPermit';
 
@@ -136,6 +143,11 @@ class TestDapp {
 
   private readonly signTypedDataV3Result = '#signTypedDataV3Result';
 
+  private readonly signTypedDataSignatureRequestMessage = {
+    text: 'Hi, Alice!',
+    tag: 'div',
+  };
+
   private readonly signTypedDataV3V4SignatureRequestMessage = {
     text: 'Hello, Bob!',
     tag: 'div',
@@ -169,9 +181,9 @@ class TestDapp {
     tag: 'h2',
   };
 
-  private transferTokensButton = '#transferTokens';
+  private readonly transferTokensButton = '#transferTokens';
 
-  private transferTokensWithoutGasButton = '#transferTokensWithoutGas';
+  private readonly transferTokensWithoutGasButton = '#transferTokensWithoutGas';
 
   private readonly userRejectedRequestMessage = {
     tag: 'span',
@@ -205,6 +217,23 @@ class TestDapp {
         text: connectedAccounts.toLowerCase(),
       });
     }
+    console.log('Test Dapp page is loaded');
+  }
+
+  async clickConnectButton() {
+    await this.driver.clickElement(this.connectAccountButton);
+  }
+
+  /**
+   * Verify the current connected chainId.
+   *
+   * @param chainId - The chainId to verify.
+   */
+  async check_currentConnectedChainId(chainId: string) {
+    await this.driver.waitForSelector({
+      css: this.currentChainId,
+      text: chainId,
+    });
   }
 
   /**
@@ -603,7 +632,6 @@ class TestDapp {
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmDialogButton,
     );
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   }
 
   /**
@@ -612,18 +640,22 @@ class TestDapp {
    * @param options - Options for connecting account to test dapp.
    * @param [options.connectAccountButtonEnabled] - Indicates if the connect account button should be enabled.
    * @param options.publicAddress - The public address to connect to test dapp.
+   * @param testDappUrl - The URL of the test dapp, defaults to DAPP_HOST_ADDRESS.
    */
   async connectAccount({
     connectAccountButtonEnabled = true,
     publicAddress,
+    testDappUrl = DAPP_HOST_ADDRESS,
   }: {
     connectAccountButtonEnabled?: boolean;
     publicAddress?: string;
+    testDappUrl?: string;
   }) {
     console.log('Connect account to test dapp');
-    await this.driver.clickElement(this.connectAccountButton);
+    await this.clickConnectButton();
     if (connectAccountButtonEnabled) {
       await this.confirmConnectAccountModal();
+      await this.driver.switchToWindowWithUrl(testDappUrl);
     } else {
       await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
       await this.driver.waitForSelector(this.connectMetaMaskMessage);
@@ -690,7 +722,7 @@ class TestDapp {
    */
   async openTestDappPage({
     contractAddress = null,
-    url = DAPP_URL,
+    url = DAPP_HOST_ADDRESS,
   }: {
     contractAddress?: string | null;
     url?: string;
@@ -715,6 +747,7 @@ class TestDapp {
     console.log('Sign message with personal sign');
     await this.clickPersonalSign();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForSelector(this.personalSignSignatureRequestMessage);
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmSignatureButtonRedesign,
     );
@@ -727,6 +760,7 @@ class TestDapp {
     console.log('Sign message with signPermit');
     await this.clickPermit();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForSelector(this.signPermitSignatureRequestMessage);
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmSignatureButtonRedesign,
     );
@@ -739,6 +773,9 @@ class TestDapp {
     console.log('Sign message with signTypedData');
     await this.clickSignTypedData();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForSelector(
+      this.signTypedDataSignatureRequestMessage,
+    );
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmSignatureButtonRedesign,
     );
@@ -799,7 +836,7 @@ class TestDapp {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async request(method: string, params: any[]) {
     await this.openTestDappPage({
-      url: `${DAPP_URL}/request?method=${method}&params=${JSON.stringify(
+      url: `${DAPP_HOST_ADDRESS}/request?method=${method}&params=${JSON.stringify(
         params,
       )}`,
     });

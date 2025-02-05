@@ -22,6 +22,9 @@ class ExperimentalSettings {
   private readonly watchAccountToggle =
     '[data-testid="watch-account-toggle-div"]';
 
+  private readonly requestQueueToggle =
+    '[data-testid="experimental-setting-toggle-request-queue"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -65,6 +68,11 @@ class ExperimentalSettings {
   async toggleWatchAccount(): Promise<void> {
     console.log('Toggle Watch Account on experimental setting page');
     await this.driver.clickElement(this.watchAccountToggle);
+  }
+
+  async toggleRequestQueue(): Promise<void> {
+    console.log('Toggle Request Queue on experimental setting page');
+    await this.driver.clickElement(this.requestQueueToggle);
   }
 }
 
