@@ -15,6 +15,8 @@ import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
 import { selectSwitchedNetworkNeverShowMessage } from '../components/app/toast-master/selectors';
 import * as networkSelectors from '../../shared/modules/selectors/networks';
 import * as selectors from './selectors';
+import * as getMetaMaskAccounts from './accounts-get';
+import * as getMetaMaskAccountsConnected from './accounts-updated-and-sorted';
 
 jest.mock('../../shared/modules/selectors/networks', () => ({
   ...jest.requireActual('../../shared/modules/selectors/networks'),
@@ -114,27 +116,6 @@ describe('Selectors', () => {
           EthMethod.SignTransaction,
         ),
       ).toBe(false);
-    });
-  });
-
-  describe('#getInternalAccount', () => {
-    it("returns undefined if the account doesn't exist", () => {
-      expect(
-        selectors.getInternalAccount(mockState, 'unknown'),
-      ).toBeUndefined();
-    });
-
-    it('returns the account', () => {
-      expect(
-        selectors.getInternalAccount(
-          mockState,
-          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-        ),
-      ).toStrictEqual(
-        mockState.metamask.internalAccounts.accounts[
-          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
-        ],
-      );
     });
   });
 
@@ -984,7 +965,7 @@ describe('Selectors', () => {
   });
 
   it('returns selected account', () => {
-    const account = selectors.getSelectedAccount(mockState);
+    const account = getMetaMaskAccounts.getSelectedAccount(mockState);
     expect(account.balance).toStrictEqual('0x346ba7725f412cbfdb');
     expect(account.address).toStrictEqual(
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -1299,19 +1280,6 @@ describe('Selectors', () => {
     expect(selectors.getAnySnapUpdateAvailable(mockState)).toStrictEqual(true);
   });
 
-  it('#getTargetSubjectMetadata', () => {
-    const targetSubjectsMetadata = selectors.getTargetSubjectMetadata(
-      mockState,
-      'npm:@metamask/test-snap-bip44',
-    );
-    expect(targetSubjectsMetadata).toStrictEqual({
-      iconUrl: null,
-      name: '@metamask/test-snap-bip44',
-      subjectType: 'snap',
-      version: '1.2.3',
-    });
-  });
-
   it('#getMultipleTargetsSubjectMetadata', () => {
     const targetSubjectsMetadata = selectors.getMultipleTargetsSubjectMetadata(
       mockState,
@@ -1574,7 +1542,9 @@ describe('Selectors', () => {
       },
     ];
     expect(
-      selectors.getUpdatedAndSortedAccounts(pinnedAccountState),
+      getMetaMaskAccountsConnected.getUpdatedAndSortedAccounts(
+        pinnedAccountState,
+      ),
     ).toStrictEqual(expectedResult);
   });
 });

@@ -8,10 +8,8 @@ import {
 } from '../../shared/constants/network';
 import { DAY } from '../../shared/constants/time';
 import { useSafeChainsListValidationSelector } from '../selectors';
-import {
-  getMultichainIsEvm,
-  getMultichainCurrentNetwork,
-} from '../selectors/multichain';
+import { getMultichainCurrentNetwork } from '../selectors/multichain-network';
+import { getMultichainIsEvm } from '../selectors/multichain-isevm';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getValidUrl } from '../../app/scripts/lib/util';

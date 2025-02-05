@@ -25,8 +25,34 @@ jest.mock('../../../selectors', () => ({
   getRpcPrefsForCurrentProvider: () => {
     return {};
   },
-  getMetaMaskAccountsConnected: () => [],
   getMetaMaskAccounts: () => {
+    return {};
+  },
+  getMetaMaskAccountsConnected: () => {
+    return {};
+  },
+}));
+
+jest.mock('../../../selectors/accounts-get', () => ({
+  getMetaMaskAccounts: () => {
+    return {};
+  },
+  getMetaMaskAccountsConnected: () => {
+    return {};
+  },
+}));
+
+jest.mock('../../../selectors/accounts-get', () => ({
+  getInternalAccountsSortedByKeyring: () => {
+    return {};
+  },
+  getMetaMaskAccounts: () => {
+    return {};
+  },
+  getTargetSubjectMetadata: () => {
+    return {};
+  },
+  getSubjectMetadata: () => {
     return {};
   },
 }));

@@ -3,10 +3,10 @@ import { useSelector } from 'react-redux';
 
 import {
   getMultichainCurrencyImage,
-  getMultichainCurrentNetwork,
-  getMultichainSelectedAccountCachedBalance,
   getMultichainShouldShowFiat,
 } from '../../../../../selectors/multichain';
+import { getMultichainCurrentNetwork } from '../../../../../selectors/multichain-network';
+import { getMultichainSelectedAccountCachedBalance } from '../../../../../selectors/multichain-selected-account-cached-balance';
 import {
   getPreferences,
   getSelectedInternalAccount,

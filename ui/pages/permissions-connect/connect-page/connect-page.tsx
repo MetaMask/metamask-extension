@@ -10,6 +10,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getSelectedInternalAccount,
   getUpdatedAndSortedAccounts,
+  getMultichainNetwork,
 } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import {
@@ -35,7 +36,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
 import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
-import { getMultichainNetwork } from '../../../selectors/multichain';
 import {
   getRequestedSessionScopes,
   getCaip25PermissionsResponse,

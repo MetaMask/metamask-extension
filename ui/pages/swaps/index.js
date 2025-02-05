@@ -18,12 +18,13 @@ import { TransactionStatus } from '@metamask/transaction-controller';
 import { I18nContext } from '../../contexts/i18n';
 
 import {
-  getSelectedAccount,
   getIsSwapsChain,
   isHardwareWallet,
   getHardwareWalletType,
   getTokenList,
-} from '../../selectors/selectors';
+  getSelectedAccount,
+  getCurrentNetworkTransactions,
+} from '../../selectors';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import {
   getQuotes,
@@ -44,7 +45,6 @@ import {
   setTransactionSettingsOpened,
   getLatestAddedTokenTo,
 } from '../../ducks/swaps/swaps';
-import { getCurrentNetworkTransactions } from '../../selectors';
 import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,

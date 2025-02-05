@@ -12,10 +12,10 @@ import {
   getSelectedAccount,
   getSelectedAddress,
   getUseTokenDetection,
-} from '../../../../selectors';
-import {
   getMultichainIsEvm,
   getMultichainSelectedAccountCachedBalance,
+} from '../../../../selectors';
+import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getMultichainIsBitcoin,
   getMultichainSelectedAccountCachedBalanceIsZero,

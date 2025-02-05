@@ -1,14 +1,14 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import {
-  getMultichainCurrentNetwork,
   getMultichainNativeCurrency,
-  getMultichainIsEvm,
   getMultichainCurrencyImage,
   getMultichainIsMainnet,
+  getMultichainCurrentNetwork,
+  getMultichainIsEvm,
   getMultichainSelectedAccountCachedBalance,
-} from '../../../../../selectors/multichain';
-import { getPreferences } from '../../../../../selectors';
+  getPreferences,
+} from '../../../../../selectors';
 import { TokenListItem } from '../../../../multichain';
 import { AssetListProps } from '../asset-list';
 import { useNativeTokenBalance } from './use-native-token-balance';

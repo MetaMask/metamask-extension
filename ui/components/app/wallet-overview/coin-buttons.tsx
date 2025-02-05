@@ -52,6 +52,7 @@ import {
   getMemoizedUnapprovedTemplatedConfirmations,
   ///: END:ONLY_INCLUDE_IF
   getNetworkConfigurationIdByChainId,
+  getMultichainNetwork,
 } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -91,10 +92,7 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { isMultichainWalletSnap } from '../../../../shared/lib/accounts/snaps';
 ///: END:ONLY_INCLUDE_IF
-import {
-  getMultichainNativeCurrency,
-  getMultichainNetwork,
-} from '../../../selectors/multichain';
+import { getMultichainNativeCurrency } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)

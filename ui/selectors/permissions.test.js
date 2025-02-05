@@ -6,9 +6,9 @@ import { mockNetworkState } from '../../test/stub/networks';
 import {
   getConnectedSubjectsForSelectedAddress,
   getLastConnectedInfo,
-  getOrderedConnectedAccountsForActiveTab,
   getPermissionsForActiveTab,
 } from './permissions';
+import { getOrderedConnectedAccountsForActiveTab } from './accounts-for-tab';
 
 describe('selectors', () => {
   describe('getConnectedSubjectsForSelectedAddress', () => {

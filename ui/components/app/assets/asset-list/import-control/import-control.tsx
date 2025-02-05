@@ -9,8 +9,7 @@ import {
   BackgroundColor,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
-
-import { getMultichainIsEvm } from '../../../../../selectors/multichain';
+import { getMultichainIsEvm } from '../../../../../selectors';
 
 type AssetListControlBarProps = {
   showTokensLinks?: boolean;
