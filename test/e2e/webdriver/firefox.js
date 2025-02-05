@@ -63,6 +63,9 @@ class FirefoxDriver {
       parseInt(proxyServerURL.port, 10),
     );
 
+    // Temporarily lock to version 134 until fix provided by Firefox/Selenium
+    options.setBrowserVersion('134');
+
     options.setAcceptInsecureCerts(true);
     options.setPreference('browser.download.folderList', 2);
     options.setPreference(
