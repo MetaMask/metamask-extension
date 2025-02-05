@@ -13,8 +13,8 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import * as backgroundConnection from '../../../../store/background-connection';
 import { BackgroundColor } from '../../../../helpers/constants/design-system';
-import { SnapUIRenderer } from './snap-ui-renderer';
 import configureStore from '../../../../store/store';
+import { SnapUIRenderer } from './snap-ui-renderer';
 
 jest.mock('../../../../store/background-connection', () => ({
   ...jest.requireActual('../../../../store/background-connection'),
@@ -52,12 +52,12 @@ function renderInterface(
     },
   });
 
-  const reducer = (state, action) => {
+  const reducer = (storeState, action) => {
     if (action.type === 'updateInterface') {
       return {
-        ...state,
+        ...storeState,
         metamask: {
-          ...state.metamask,
+          ...storeState.metamask,
           interfaces: {
             [MOCK_INTERFACE_ID]: {
               snapId: MOCK_SNAP_ID,
@@ -70,13 +70,17 @@ function renderInterface(
         },
       };
     }
-    return state;
+    return storeState;
   };
 
   store.replaceReducer(reducer);
 
-  const updateInterface = (content, state = null) => {
-    store.dispatch({ type: 'updateInterface', content, state });
+  const updateInterface = (newContent, newState = null) => {
+    store.dispatch({
+      type: 'updateInterface',
+      content: newContent,
+      state: newState,
+    });
   };
 
   const result = renderWithProvider(
@@ -87,16 +91,14 @@ function renderInterface(
       useFooter={useFooter}
       onCancel={onCancel}
       contentBackgroundColor={contentBackgroundColor}
-      PERF_DEBUG={true}
+      PERF_DEBUG
     />,
     store,
   );
 
   const getRenderCount = () =>
     parseInt(
-      result
-        .getByTestId('performance')
-        .getAttribute('data-renders'),
+      result.getByTestId('performance').getAttribute('data-renders'),
       10,
     );
 
@@ -357,16 +359,16 @@ describe('SnapUIRenderer', () => {
       renderInterface(Box({ children: Input({ name: 'input' }) }));
 
     const inputs = getAllByRole('textbox');
-    expect(inputs.length).toBe(1);
+    expect(inputs).toHaveLength(1);
 
     updateInterface(
       Box({ children: [Input({ name: 'input' }), Input({ name: 'input2' })] }),
     );
 
     const inputsAfterRerender = getAllByRole('textbox');
-    expect(inputsAfterRerender.length).toBe(2);
+    expect(inputsAfterRerender).toHaveLength(2);
 
-    expect(getRenderCount()).toBe(2)
+    expect(getRenderCount()).toBe(2);
 
     expect(container).toMatchSnapshot();
   });
@@ -384,14 +386,19 @@ describe('SnapUIRenderer', () => {
     expect(inputsAfterRerender[0].value).toStrictEqual('bar');
     expect(inputsAfterRerender[1].value).toStrictEqual('foo');
 
-    expect(getRenderCount()).toBe(2)
+    expect(getRenderCount()).toBe(2);
 
     expect(container).toMatchSnapshot();
   });
 
   it('re-focuses input after re-render', async () => {
-    const { container, getAllByRole, getByRole, updateInterface, getRenderCount } =
-      renderInterface(Box({ children: Input({ name: 'input' }) }));
+    const {
+      container,
+      getAllByRole,
+      getByRole,
+      updateInterface,
+      getRenderCount,
+    } = renderInterface(Box({ children: Input({ name: 'input' }) }));
 
     const input = getByRole('textbox');
     input.focus();
@@ -402,11 +409,11 @@ describe('SnapUIRenderer', () => {
     );
 
     const inputs = getAllByRole('textbox');
-    expect(inputs.length).toBe(2);
+    expect(inputs).toHaveLength(2);
 
     await waitFor(() => expect(inputs[0]).toHaveFocus());
 
-    expect(getRenderCount()).toBe(2)
+    expect(getRenderCount()).toBe(2);
 
     expect(container).toMatchSnapshot();
   });

@@ -24,7 +24,7 @@ import { mapToExtensionCompatibleColor, mapToTemplate } from './utils';
 // DO NOT USE IN PRODUCTION
 const PerformanceTracker = () => {
   const rendersRef = useRef(0);
-  rendersRef.current++;
+  rendersRef.current += 1;
 
   return <span data-testid="performance" data-renders={rendersRef.current} />;
 };
