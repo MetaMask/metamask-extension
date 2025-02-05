@@ -41,6 +41,7 @@ export const DEFAULT_GANACHE_ETH_BALANCE_DEC = '25';
 
 /* Dapp host addresses and URL*/
 export const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
+export const DAPP_ONE_ADDRESS = '127.0.0.1:8081';
 export const DAPP_URL_LOCALHOST = 'http://localhost:8080';
 export const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 export const DAPP_ONE_URL = 'http://127.0.0.1:8081';

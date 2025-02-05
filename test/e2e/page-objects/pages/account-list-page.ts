@@ -132,6 +132,11 @@ class AccountListPage {
   private readonly selectAccountSelector =
     '.multichain-account-list-item__account-name';
 
+  private readonly viewAccountOnExplorerButton = {
+    text: 'View on explorer',
+    tag: 'p',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -376,6 +381,19 @@ class AccountListPage {
     await this.driver.clickElement(
       `button[data-testid="account-list-item-menu-button"][aria-label="${accountLabel} Options"]`,
     );
+  }
+
+  /**
+   * View the account on explorer for the specified account in account list.
+   *
+   * @param accountLabel - The label of the account to view on explorer.
+   */
+  async viewAccountOnExplorer(accountLabel: string): Promise<void> {
+    console.log(
+      `View account on explorer in account list for account ${accountLabel}`,
+    );
+    await this.openAccountOptionsInAccountList(accountLabel);
+    await this.driver.clickElement(this.viewAccountOnExplorerButton);
   }
 
   /**
