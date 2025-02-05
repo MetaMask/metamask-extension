@@ -930,17 +930,6 @@ describe('util', () => {
     });
   });
 
-  describe('getNetworkNameFromProviderType()', () => {
-    it('should return providerConfig.type if the type is not rpc', () => {
-      expect(util.getNetworkNameFromProviderType('mainnet')).toStrictEqual(
-        'mainnet',
-      );
-    });
-    it('should return empty string if teh providerConfig.type is rpc', () => {
-      expect(util.getNetworkNameFromProviderType('rpc')).toStrictEqual('');
-    });
-  });
-
   describe('checkTokenIdExists()', () => {
     const data = {
       '0x2df920B180c58766951395c26ecF1EC2063490Fa': {

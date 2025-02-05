@@ -16,7 +16,7 @@ import { isObject, isStrictHexString } from '@metamask/utils';
 import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import { logErrorWithMessage } from '../../../shared/modules/error';
 import {
   toChecksumHexAddress,
@@ -704,21 +704,6 @@ export const sanitizeString = (value) => {
   }
   const regex = /\u202E/giu;
   return value.replace(regex, '\\u202E');
-};
-
-/**
- * This method checks current provider type and returns its string representation
- *
- * @param {*} provider
- * @param {*} t
- * @returns
- */
-
-export const getNetworkNameFromProviderType = (providerName) => {
-  if (providerName === NETWORK_TYPES.RPC) {
-    return '';
-  }
-  return providerName;
 };
 
 /**

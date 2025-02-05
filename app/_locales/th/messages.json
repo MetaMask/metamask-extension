@@ -298,9 +298,6 @@
   "settings": {
     "message": "การตั้งค่า"
   },
-  "sigRequest": {
-    "message": "ขอลายเซ็น"
-  },
   "sign": {
     "message": "เซ็นชื่อ"
   },
@@ -352,9 +349,6 @@
   "unknown": {
     "message": "ไม่รู้จัก"
   },
-  "unknownNetwork": {
-    "message": "ไม่รู้จักเครือข่ายส่วนตัว"
-  },
   "unlock": {
     "message": "ปลดล็อก"
   },
@@ -366,8 +360,5 @@
   },
   "visitWebSite": {
     "message": "เยี่ยมชมเว็บไซต์ของเรา"
-  },
-  "youSign": {
-    "message": "คุณกำลังเซ็นชื่อ"
   }
 }

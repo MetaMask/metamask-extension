@@ -254,9 +254,6 @@
   "from": {
     "message": "Fra"
   },
-  "functionType": {
-    "message": "Funktionstype"
-  },
   "gasLimit": {
     "message": "Gas-grænse"
   },
@@ -449,9 +446,6 @@
   "on": {
     "message": "Til"
   },
-  "parameters": {
-    "message": "Parametre"
-  },
   "participateInMetaMetrics": {
     "message": "Deltag i MetaMetrics"
   },
@@ -520,9 +514,6 @@
   "removeAccountDescription": {
     "message": "Denne konto fjernes fra din pung. Sikr dig venligst, at du har den originale seedfrase eller private nøgle til denne importerede konto, inden du fortsætter. Du kan importere eller skabe konti igen via kontomenuen."
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "forespørgsler der afventer anerkendelse"
-  },
   "required": {
     "message": "Nødvendig"
   },
@@ -586,9 +577,6 @@
   },
   "showHexDataDescription": {
     "message": "Vælg dette for at vise hex-datafeltet på send-skærmen"
-  },
-  "sigRequest": {
-    "message": "Signaturforespørgsel"
   },
   "sign": {
     "message": "Underskriv"
@@ -704,9 +692,6 @@
   "unknown": {
     "message": "ukendt"
   },
-  "unknownNetwork": {
-    "message": "Ukendt privat netværk"
-  },
   "unknownQrCode": {
     "message": "Fejl: Vi kunne ikke identificere QR-koden"
   },
@@ -736,9 +721,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Du skal tillade kameraadgang for at bruge denne funktion."
-  },
-  "youSign": {
-    "message": "Du skriver under"
   },
   "yourPrivateSeedPhrase": {
     "message": "Din private seed-sætning"

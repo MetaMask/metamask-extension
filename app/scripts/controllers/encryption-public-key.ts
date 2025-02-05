@@ -13,10 +13,7 @@ import type {
   EncryptionPublicKeyManagerState,
   EncryptionPublicKeyManagerUnapprovedMessageAddedEvent,
 } from '@metamask/message-manager';
-import {
-  BaseController,
-  RestrictedControllerMessenger,
-} from '@metamask/base-controller';
+import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
 import { Patch } from 'immer';
 import {
   AcceptRequest,
@@ -86,14 +83,13 @@ type AllowedEvents =
   | EncryptionPublicKeyManagerStateChange
   | EncryptionPublicKeyManagerUnapprovedMessageAddedEvent;
 
-export type EncryptionPublicKeyControllerMessenger =
-  RestrictedControllerMessenger<
-    typeof controllerName,
-    EncryptionPublicKeyControllerActions | AllowedActions,
-    EncryptionPublicKeyControllerEvents | AllowedEvents,
-    AllowedActions['type'],
-    AllowedEvents['type']
-  >;
+export type EncryptionPublicKeyControllerMessenger = RestrictedMessenger<
+  typeof controllerName,
+  EncryptionPublicKeyControllerActions | AllowedActions,
+  EncryptionPublicKeyControllerEvents | AllowedEvents,
+  AllowedActions['type'],
+  AllowedEvents['type']
+>;
 
 export type EncryptionPublicKeyControllerOptions = {
   messenger: EncryptionPublicKeyControllerMessenger;
