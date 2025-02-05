@@ -306,9 +306,7 @@ describe('Permit Confirmation', () => {
 
     fireEvent.click(await screen.findByTestId('confirm-footer-cancel-button'));
 
-    let updateSignatureEventFragment;
-
-expect(
+    expect(
       mockedBackgroundConnection.submitRequestToBackground,
     ).toHaveBeenCalledWith(
       'updateEventFragment',
