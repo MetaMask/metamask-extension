@@ -77,13 +77,7 @@ export const PermissionsPage = () => {
           />
         }
       >
-        <Text
-          as="span"
-          variant={TextVariant.headingMd}
-          textAlign={TextAlign.Center}
-        >
-          {t('permissions')}
-        </Text>
+        {t('permissions')}
       </Header>
       <Content padding={0}>
         <Box ref={headerRef}></Box>
