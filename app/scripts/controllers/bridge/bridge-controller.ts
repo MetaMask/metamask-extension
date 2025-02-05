@@ -140,7 +140,8 @@ export default class BridgeController extends StaticIntervalPollingController<Br
 
     if (isValidQuoteRequest(updatedQuoteRequest)) {
       this.#quotesFirstFetched = Date.now();
-      const walletAddress = this.#getSelectedAccount().address;
+      const walletAddress =
+        paramsToUpdate.walletAddress ?? this.#getSelectedAccount().address;
       const srcChainIdInHex = formatChainIdFromApi(
         updatedQuoteRequest.srcChainId,
       );
