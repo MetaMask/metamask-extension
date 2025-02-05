@@ -612,7 +612,7 @@ class TestDapp {
    * @param options - Options for connecting account to test dapp.
    * @param [options.connectAccountButtonEnabled] - Indicates if the connect account button should be enabled.
    * @param options.publicAddress - The public address to connect to test dapp.
-   * @param [options.networkId] - The network to connect to, defaults to 0x539.
+   * @param [options.chainId] - The chain id to connect to, defaults to 0x539.
    */
   async connectAccount({
     connectAccountButtonEnabled = true,
