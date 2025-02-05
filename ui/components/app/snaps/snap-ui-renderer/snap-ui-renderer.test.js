@@ -8,14 +8,14 @@ import {
   Input,
   Form,
 } from '@metamask/snaps-sdk/jsx';
-import configureMockStore from 'redux-mock-store';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import * as backgroundConnection from '../../../../store/background-connection';
 import { BackgroundColor } from '../../../../helpers/constants/design-system';
 import { SnapUIRenderer } from './snap-ui-renderer';
+import configureStore from '../../../../store/store';
 
 jest.mock('../../../../store/background-connection', () => ({
   ...jest.requireActual('../../../../store/background-connection'),
@@ -37,7 +37,7 @@ function renderInterface(
     state = {},
   } = {},
 ) {
-  const mockStore = configureMockStore([thunk])({
+  const store = configureStore({
     ...mockState,
     metamask: {
       ...mockState.metamask,
@@ -52,7 +52,35 @@ function renderInterface(
       },
     },
   });
-  return renderWithProvider(
+
+  const reducer = (state, action) => {
+    if (action.type === 'updateInterface') {
+      return {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          interfaces: {
+            [MOCK_INTERFACE_ID]: {
+              snapId: MOCK_SNAP_ID,
+              content: action.content,
+              state: action.state ?? state,
+              context: null,
+              contentType: null,
+            },
+          },
+        },
+      };
+    }
+    return state;
+  };
+
+  store.replaceReducer(reducer);
+
+  const updateInterface = (content, state = null) => {
+    store.dispatch({ type: 'updateInterface', content, state });
+  };
+
+  const result = renderWithProvider(
     <SnapUIRenderer
       snapId={MOCK_SNAP_ID}
       interfaceId={MOCK_INTERFACE_ID}
@@ -61,8 +89,10 @@ function renderInterface(
       onCancel={onCancel}
       contentBackgroundColor={contentBackgroundColor}
     />,
-    mockStore,
+    store,
   );
+
+  return { ...result, updateInterface };
 }
 
 describe('SnapUIRenderer', () => {
@@ -313,5 +343,56 @@ describe('SnapUIRenderer', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it.todo('re-focuses input after re-render');
+  it('re-renders when the interface changes', () => {
+    const { container, getAllByRole, getByRole, updateInterface } =
+      renderInterface(Box({ children: Input({ name: 'input' }) }));
+
+    const inputs = getAllByRole('textbox');
+    expect(inputs.length).toBe(1);
+
+    updateInterface(
+      Box({ children: [Input({ name: 'input' }), Input({ name: 'input2' })] }),
+    );
+
+    const inputsAfterRerender = getAllByRole('textbox');
+    expect(inputsAfterRerender.length).toBe(2);
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('re-syncs state when the interface changes', () => {
+    const { container, getAllByRole, getByRole, updateInterface } =
+      renderInterface(Box({ children: Input({ name: 'input' }) }));
+
+    updateInterface(
+      Box({ children: [Input({ name: 'input' }), Input({ name: 'input2' })] }),
+      { input: 'bar', input2: 'foo' },
+    );
+
+    const inputsAfterRerender = getAllByRole('textbox');
+    expect(inputsAfterRerender[0].value).toStrictEqual('bar');
+    expect(inputsAfterRerender[1].value).toStrictEqual('foo');
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('re-focuses input after re-render', async () => {
+    const { container, getAllByRole, getByRole, updateInterface } =
+      renderInterface(Box({ children: Input({ name: 'input' }) }));
+
+    const input = getByRole('textbox');
+    input.focus();
+    expect(input).toHaveFocus();
+
+    updateInterface(
+      Box({ children: [Input({ name: 'input' }), Input({ name: 'input2' })] }),
+    );
+
+    const inputs = getAllByRole('textbox');
+    expect(inputs.length).toBe(2);
+
+    await waitFor(() => expect(inputs[0]).toHaveFocus());
+
+    expect(container).toMatchSnapshot();
+  });
 });
