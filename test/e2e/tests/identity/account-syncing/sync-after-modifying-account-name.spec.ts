@@ -48,7 +48,7 @@ describe('Account syncing - Rename Accounts', function () {
           });
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed();
+          await homePage.check_expectedBalanceIsDisplayed('0');
           await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
           const header = new HeaderNavbar(driver);
@@ -97,7 +97,7 @@ describe('Account syncing - Rename Accounts', function () {
           });
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed();
+          await homePage.check_expectedBalanceIsDisplayed('0');
           await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
           const header = new HeaderNavbar(driver);

@@ -18,7 +18,11 @@ describe('eth_sendTransaction', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: generateGanacheOptions({
+          hardfork: 'london',
+          mnemonic:
+            'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
+        }),
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -64,7 +68,11 @@ describe('eth_sendTransaction', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: generateGanacheOptions({
+          hardfork: 'london',
+          mnemonic:
+            'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
+        }),
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

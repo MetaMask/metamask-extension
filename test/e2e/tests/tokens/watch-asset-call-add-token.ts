@@ -1,8 +1,4 @@
-import {
-  defaultGanacheOptions,
-  withFixtures,
-  WINDOW_TITLES,
-} from '../../helpers';
+import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import AddTokenConfirmation from '../../page-objects/pages/confirmations/redesign/add-token-confirmations';
@@ -20,7 +16,6 @@ describe('Add token using wallet_watchAsset', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test?.fullTitle(),
       },
@@ -67,7 +62,6 @@ describe('Add token using wallet_watchAsset', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test?.fullTitle(),
       },

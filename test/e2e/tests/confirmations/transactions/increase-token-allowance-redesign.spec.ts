@@ -1,6 +1,5 @@
 import FixtureBuilder from '../../../fixture-builder';
 import {
-  defaultGanacheOptions,
   defaultGanacheOptionsForType2Transactions,
   WINDOW_TITLES,
   withFixtures,
@@ -79,7 +78,6 @@ function generateFixtureOptionsForLegacyTx(mochaContext: Mocha.Context) {
     fixtures: new FixtureBuilder()
       .withPermissionControllerConnectedToTestDapp()
       .build(),
-    ganacheOptions: defaultGanacheOptions,
     smartContract: SMART_CONTRACTS.HST,
     testSpecificMock: mocks,
     title: mochaContext.test?.fullTitle(),
@@ -92,7 +90,7 @@ function generateFixtureOptionsForEIP1559Tx(mochaContext: Mocha.Context) {
     fixtures: new FixtureBuilder()
       .withPermissionControllerConnectedToTestDapp()
       .build(),
-    ganacheOptions: defaultGanacheOptionsForType2Transactions,
+    localNodeOptions: defaultGanacheOptionsForType2Transactions,
     smartContract: SMART_CONTRACTS.HST,
     testSpecificMock: mocks,
     title: mochaContext.test?.fullTitle(),

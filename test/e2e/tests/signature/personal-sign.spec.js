@@ -1,7 +1,6 @@
 const { strict: assert } = require('assert');
 const { By } = require('selenium-webdriver');
 const {
-  defaultGanacheOptions,
   withFixtures,
   openDapp,
   regularDelayMs,
@@ -18,7 +17,6 @@ describe('Personal sign', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {

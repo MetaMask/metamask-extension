@@ -14,7 +14,7 @@ describe('Editing Confirm Transaction', function (this: Suite) {
         fixtures: new FixtureBuilder()
           .withTransactionControllerApprovedTransaction()
           .build(),
-        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test?.fullTitle(),
       },
       async ({

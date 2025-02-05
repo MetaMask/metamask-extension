@@ -27,7 +27,7 @@ describe('Snap Account Contract interaction', function (this: Suite) {
         fixtures: new FixtureBuilder()
           .withPermissionControllerSnapAccountConnectedToTestDapp()
           .build(),
-        ganacheOptions: multipleGanacheOptionsForType2Transactions,
+        localNodeOptions: multipleGanacheOptionsForType2Transactions,
         smartContract,
         title: this.test?.fullTitle(),
       },

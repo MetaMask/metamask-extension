@@ -196,7 +196,7 @@ describe('Request-queue UI changes', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {
@@ -258,7 +258,7 @@ describe('Request-queue UI changes', function () {
           .withNetworkControllerTripleGanache()
 
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             // Ganache for network 1
@@ -382,7 +382,7 @@ describe('Request-queue UI changes', function () {
           })
 
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {
@@ -450,7 +450,6 @@ describe('Request-queue UI changes', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         driverOptions: { constrainWindowSize: true },
       },
@@ -495,7 +494,7 @@ describe('Request-queue UI changes', function () {
           .withNetworkControllerDoubleGanache()
 
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {
@@ -547,7 +546,7 @@ describe('Request-queue UI changes', function () {
           .withNetworkControllerDoubleGanache()
 
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {
@@ -616,7 +615,7 @@ describe('Request-queue UI changes', function () {
           .withNetworkControllerDoubleGanache()
 
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {
@@ -682,7 +681,7 @@ describe('Request-queue UI changes', function () {
           .withNetworkControllerDoubleGanache()
 
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {

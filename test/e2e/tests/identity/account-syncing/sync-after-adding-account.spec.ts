@@ -48,7 +48,7 @@ describe('Account syncing - Add Account', function () {
           });
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed();
+          await homePage.check_expectedBalanceIsDisplayed('0');
           await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
           const header = new HeaderNavbar(driver);
@@ -93,7 +93,7 @@ describe('Account syncing - Add Account', function () {
           });
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed();
+          await homePage.check_expectedBalanceIsDisplayed('0');
           await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
           const header = new HeaderNavbar(driver);
@@ -150,7 +150,7 @@ describe('Account syncing - Add Account', function () {
           });
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed();
+          await homePage.check_expectedBalanceIsDisplayed('0');
           await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
           const header = new HeaderNavbar(driver);
@@ -194,7 +194,7 @@ describe('Account syncing - Add Account', function () {
           });
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed();
+          await homePage.check_expectedBalanceIsDisplayed('0');
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();

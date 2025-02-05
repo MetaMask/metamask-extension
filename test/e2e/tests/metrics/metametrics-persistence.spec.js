@@ -23,7 +23,7 @@ describe('MetaMetrics ID persistence', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: generateGanacheOptions({
+        localNodeOptions: generateGanacheOptions({
           accounts: [
             {
               secretKey: defaultGanacheOptions.accounts[0].secretKey,

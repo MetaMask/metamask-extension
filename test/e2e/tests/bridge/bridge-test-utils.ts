@@ -157,7 +157,7 @@ export const getBridgeFixtures = (
     testSpecificMock: mockServer(featureFlags),
     smartContract: SMART_CONTRACTS.HST,
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
-    ganacheOptions: generateGanacheOptions({
+    localNodeOptions: generateGanacheOptions({
       hardfork: 'london',
       chain: { chainId: CHAIN_IDS.MAINNET },
     }),

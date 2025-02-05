@@ -1,7 +1,6 @@
 const { strict: assert } = require('assert');
 const {
   TEST_SEED_PHRASE_TWO,
-  defaultGanacheOptions,
   locateAccountBalanceDOM,
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
@@ -90,7 +89,7 @@ describe('MetaMask Responsive UI', function () {
         driverOptions,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
+      async ({ driver }) => {
         await driver.navigate();
 
         // Import Secret Recovery Phrase
@@ -113,7 +112,7 @@ describe('MetaMask Responsive UI', function () {
         await driver.press('#confirm-password', driver.Key.ENTER);
 
         // balance renders
-        await locateAccountBalanceDOM(driver, ganacheServer);
+        await locateAccountBalanceDOM(driver);
       },
     );
   });
@@ -124,7 +123,6 @@ describe('MetaMask Responsive UI', function () {
       {
         fixtures: new FixtureBuilder().build(),
         driverOptions,
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {

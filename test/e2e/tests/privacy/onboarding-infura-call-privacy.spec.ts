@@ -116,7 +116,7 @@ describe('MetaMask onboarding', function () {
         await onboardingCompletePage.completeOnboarding();
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.check_expectedBalanceIsDisplayed('0');
 
         // network requests happen here
         for (const mockedEndpoint of mockedEndpoints) {
@@ -166,7 +166,7 @@ describe('MetaMask onboarding', function () {
         await onboardingCompletePage.completeOnboarding();
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.check_expectedBalanceIsDisplayed('0');
 
         // requests happen here
         for (const mockedEndpoint of mockedEndpoints) {

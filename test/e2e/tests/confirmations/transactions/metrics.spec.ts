@@ -35,7 +35,7 @@ describe('Metrics', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptionsForType2Transactions,
+        localNodeOptions: defaultGanacheOptionsForType2Transactions,
         title: this.test?.fullTitle(),
         testSpecificMock: mocks,
       },

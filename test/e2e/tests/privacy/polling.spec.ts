@@ -3,7 +3,7 @@ import { JsonRpcRequest } from '@metamask/utils';
 import { MockedEndpoint } from 'mockttp';
 import { expect } from '@playwright/test';
 import FixtureBuilder from '../../fixture-builder';
-import { defaultGanacheOptions, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { Mockttp } from '../../mock-e2e';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -266,7 +266,6 @@ describe('Account Tracker API polling', function () {
           .withNetworkControllerOnMainnet()
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
       },
@@ -358,7 +357,6 @@ describe('Token Detection', function () {
             .withNetworkControllerOnMainnet()
             .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test?.fullTitle(),
           testSpecificMock: mockAccountApiForPortfolioView,
         },

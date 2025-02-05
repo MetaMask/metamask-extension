@@ -2,7 +2,6 @@ const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   WINDOW_TITLES,
-  defaultGanacheOptions,
   openDapp,
   unlockWallet,
   withFixtures,
@@ -269,7 +268,6 @@ describe('Confirmation Security Alert - Blockaid', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockInfuraWithMaliciousResponses,
       },

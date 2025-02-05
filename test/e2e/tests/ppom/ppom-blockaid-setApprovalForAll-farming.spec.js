@@ -3,7 +3,6 @@ const FixtureBuilder = require('../../fixture-builder');
 
 const {
   WINDOW_TITLES,
-  defaultGanacheOptions,
   openDapp,
   unlockWallet,
   withFixtures,
@@ -260,7 +259,6 @@ describe('PPOM Blockaid Alert - Set Approval to All', function () {
             securityAlertsEnabled: true,
           })
           .build(),
-        defaultGanacheOptions,
         testSpecificMock: mockInfura,
         title: this.test.title,
       },

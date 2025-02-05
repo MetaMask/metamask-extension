@@ -44,7 +44,7 @@ describe('Add Ethereum Chain', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: {
+          localNodeOptions: {
             ...defaultGanacheOptions,
             concurrent: [{ port: 8546, chainId: 1338 }],
           },
@@ -98,7 +98,7 @@ describe('Add Ethereum Chain', function () {
           fixtures: new FixtureBuilder()
             .withNetworkControllerDoubleGanache()
             .build(),
-          ganacheOptions: {
+          localNodeOptions: {
             ...defaultGanacheOptions,
             concurrent: [{ port: 8546, chainId: 1338 }],
           },
@@ -153,7 +153,7 @@ describe('Add Ethereum Chain', function () {
           fixtures: new FixtureBuilder()
             .withNetworkControllerDoubleGanache()
             .build(),
-          ganacheOptions: {
+          localNodeOptions: {
             ...defaultGanacheOptions,
             concurrent: [{ port: 8546, chainId: 1338 }],
           },
@@ -210,7 +210,6 @@ describe('Add Ethereum Chain', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
@@ -262,7 +261,6 @@ describe('Add Ethereum Chain', function () {
           fixtures: new FixtureBuilder()
             .withNetworkControllerDoubleGanache()
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
@@ -322,7 +320,7 @@ describe('Add Ethereum Chain', function () {
               '0x53a',
             ])
             .build(),
-          ganacheOptions: {
+          localNodeOptions: {
             ...defaultGanacheOptions,
             concurrent: [{ port: 8546, chainId: 1338 }],
           },
@@ -386,7 +384,7 @@ describe('Add Ethereum Chain', function () {
               '0x53a',
             ])
             .build(),
-          ganacheOptions: {
+          localNodeOptions: {
             ...defaultGanacheOptions,
             concurrent: [{ port: 8546, chainId: 1338 }],
           },
@@ -442,7 +440,7 @@ describe('Add Ethereum Chain', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
             .build(),
-          ganacheOptions: defaultGanacheOptions,
+          localNodeOptions: defaultGanacheOptions,
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {

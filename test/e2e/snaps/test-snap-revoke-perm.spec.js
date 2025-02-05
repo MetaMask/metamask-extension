@@ -1,9 +1,4 @@
-const {
-  defaultGanacheOptions,
-  withFixtures,
-  WINDOW_TITLES,
-  unlockWallet,
-} = require('../helpers');
+const { withFixtures, WINDOW_TITLES, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -12,7 +7,6 @@ describe('Test Snap revoke permission', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

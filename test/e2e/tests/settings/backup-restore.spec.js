@@ -3,7 +3,6 @@ const { promises: fs } = require('fs');
 
 const {
   createDownloadFolder,
-  defaultGanacheOptions,
   openMenuSafe,
   unlockWallet,
   withFixtures,
@@ -49,7 +48,6 @@ describe('Backup and Restore', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

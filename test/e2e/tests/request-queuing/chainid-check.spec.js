@@ -24,7 +24,7 @@ describe('Request Queueing chainId proxy sync', function () {
 
           .withSelectedNetworkControllerPerDomain()
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {

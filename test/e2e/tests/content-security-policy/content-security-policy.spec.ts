@@ -1,11 +1,6 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import {
-  defaultGanacheOptions,
-  openDapp,
-  unlockWallet,
-  withFixtures,
-} from '../../helpers';
+import { openDapp, unlockWallet, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 
 describe('Content-Security-Policy', function (this: Suite) {
@@ -30,7 +25,6 @@ describe('Content-Security-Policy', function (this: Suite) {
           ],
         },
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

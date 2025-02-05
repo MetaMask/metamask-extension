@@ -1,5 +1,4 @@
 const {
-  defaultGanacheOptions,
   withFixtures,
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
@@ -17,7 +16,6 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         fixtures: new FixtureBuilder()
           .withPreferencesControllerPetnamesDisabled()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
@@ -63,7 +61,6 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         fixtures: new FixtureBuilder()
           .withPreferencesControllerPetnamesDisabled()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
@@ -114,7 +111,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           .withPreferencesControllerPetnamesDisabled()
           .withTokensControllerERC20()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
@@ -177,7 +173,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           .withPreferencesControllerPetnamesDisabled()
           .withTokensControllerERC20()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },

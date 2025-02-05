@@ -18,7 +18,6 @@ import {
 
 const { hexToNumber } = require('@metamask/utils');
 const {
-  defaultGanacheOptions,
   defaultGanacheOptionsForType2Transactions,
   WINDOW_TITLES,
   withFixtures,
@@ -41,7 +40,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           smartContract,
           title: this.test?.fullTitle(),
         },
@@ -61,7 +59,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
+          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           title: this.test?.fullTitle(),
         },
@@ -84,7 +82,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
               account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
             })
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           smartContract,
           title: this.test?.fullTitle(),
         },
@@ -98,6 +95,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
             '0x100000000000000000000',
           );
+
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
           await createDepositTransaction(driver);
@@ -129,7 +127,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             })
             .withNetworkControllerOnOptimism()
             .build(),
-          ganacheOptions: {
+          localNodeOptions: {
             ...defaultGanacheOptionsForType2Transactions,
             network_id: hexToNumber(CHAIN_IDS.OPTIMISM),
             chainId: hexToNumber(CHAIN_IDS.OPTIMISM),
@@ -166,7 +164,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
+          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           title: this.test?.fullTitle(),
         },
@@ -187,7 +185,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
+          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           title: this.test?.fullTitle(),
         },
@@ -216,7 +214,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
+          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           title: this.test?.fullTitle(),
         },
@@ -241,7 +239,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
+          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           title: this.test?.fullTitle(),
         },

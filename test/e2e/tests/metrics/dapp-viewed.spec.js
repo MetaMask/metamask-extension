@@ -7,7 +7,6 @@ const {
   openDapp,
   logInWithBalanceValidation,
   WINDOW_TITLES,
-  defaultGanacheOptions,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -120,7 +119,6 @@ describe('Dapp viewed Event', function () {
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
-        ganacheOptions: defaultGanacheOptions,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
@@ -155,7 +153,6 @@ describe('Dapp viewed Event', function () {
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
-        ganacheOptions: defaultGanacheOptions,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
@@ -193,7 +190,6 @@ describe('Dapp viewed Event', function () {
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
-        ganacheOptions: defaultGanacheOptions,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
@@ -235,7 +231,6 @@ describe('Dapp viewed Event', function () {
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
-        ganacheOptions: defaultGanacheOptions,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
@@ -276,7 +271,6 @@ describe('Dapp viewed Event', function () {
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
-        ganacheOptions: defaultGanacheOptions,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);

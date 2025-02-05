@@ -35,7 +35,7 @@ export const ganacheOptions: ServerOptions & { miner: { blockTime?: number } } =
 
 export const withFixturesOptions = {
   fixtures: new FixtureBuilder().build(),
-  ganacheOptions,
+  localNodeOptions: ganacheOptions,
 };
 
 type SwapOptions = {

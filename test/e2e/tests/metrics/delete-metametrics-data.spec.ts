@@ -1,12 +1,7 @@
 import { strict as assert } from 'assert';
 import { MockedEndpoint, Mockttp } from 'mockttp';
 import { Suite } from 'mocha';
-import {
-  defaultGanacheOptions,
-  withFixtures,
-  getEventPayloads,
-  unlockWallet,
-} from '../../helpers';
+import { withFixtures, getEventPayloads, unlockWallet } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
@@ -93,7 +88,6 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
             participateInMetaMetrics: true,
           })
           .build(),
-        defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -162,7 +156,6 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
             participateInMetaMetrics: false,
           })
           .build(),
-        defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -187,7 +180,6 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },

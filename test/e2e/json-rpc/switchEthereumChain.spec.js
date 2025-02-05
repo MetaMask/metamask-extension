@@ -22,7 +22,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
           .build(),
         dappOptions: { numberOfDapps: 2 },
 
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [{ port: 8546, chainId: 1338 }],
         },
@@ -86,7 +86,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
           .withPreferencesControllerSmartTransactionsOptedOut()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [{ port: 8546, chainId: 1338 }],
         },
@@ -196,7 +196,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
           .withNetworkControllerDoubleGanache()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [{ port: 8546, chainId: 1338 }],
         },
@@ -304,7 +304,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
           .withNetworkControllerDoubleGanache()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [{ port: 8546, chainId: 1338 }],
         },

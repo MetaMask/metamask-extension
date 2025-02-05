@@ -23,7 +23,7 @@ describe('Request Queuing', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withSelectedNetworkControllerPerDomain()
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
         },
         title: this.test?.fullTitle(),

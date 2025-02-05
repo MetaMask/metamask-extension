@@ -103,7 +103,7 @@ describe('Swap Eth for another Token', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: generateGanacheOptions({
+        localNodeOptions: generateGanacheOptions({
           balance: initialBalanceInHex,
         }),
         title: this.test.fullTitle(),

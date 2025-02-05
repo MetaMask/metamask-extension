@@ -1,7 +1,6 @@
 /* eslint-disable no-useless-escape */
 const { isEqual, omit } = require('lodash');
 const {
-  defaultGanacheOptions,
   withFixtures,
   sendTransaction,
   getEventPayloads,
@@ -143,7 +142,6 @@ describe('Transaction Finalized Event', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },

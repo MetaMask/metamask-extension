@@ -76,7 +76,7 @@ async function withFixturesForSimulationDetails(
       title,
       testSpecificMock,
       dapp: true,
-      ganacheOptions: {
+      localNodeOptions: {
         hardfork: 'london',
         chainId: hexToNumber(inputChainId),
       },
