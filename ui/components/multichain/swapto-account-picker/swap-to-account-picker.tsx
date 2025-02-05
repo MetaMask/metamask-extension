@@ -63,8 +63,8 @@ export const SwapToAccountPicker = ({
         className="swap-to-account-picker"
         style={{
           borderRadius: '8px',
-          border: '2px solid #E2E4E929',
-          boxShadow: '0px 0px 24px #E2E4E940',
+          border: '1px solid #E2E4E929',
+          boxShadow: '0px 0px 8px #B7BBC866',
           width: '90%',
           marginLeft: 'auto',
           marginRight: 'auto',
@@ -89,7 +89,10 @@ export const SwapToAccountPicker = ({
             disableHover
           />
         </Box>
-        <Box className="deselect-button-container">
+        <Box
+          className="deselect-button-container"
+          style={{ paddingRight: '20px' }}
+        >
           <Button
             onClick={() => onAccountSelect(null)}
             aria-label="Deselect account"
@@ -98,7 +101,7 @@ export const SwapToAccountPicker = ({
             className="deselect-button"
             iconName="close-outline"
             style={{
-              paddingRight: '8px',
+              padding: '5px',
               color: 'var(--color-icon-alternative)',
               textDecoration: 'none',
               // TODO: fix
@@ -124,8 +127,8 @@ export const SwapToAccountPicker = ({
       className="swap-to-account-picker"
       style={{
         borderRadius: '8px',
-        border: '2px solid #E2E4E929',
-        boxShadow: '0px 0px 24px #E2E4E940',
+        border: '1px solid #E2E4E929',
+        boxShadow: '0px 0px 8px #B7BBC866',
         width: '90%',
         marginLeft: 'auto',
         marginRight: 'auto',
@@ -189,7 +192,9 @@ export const SwapToAccountPicker = ({
             }}
           >
             <Text textAlign={TextAlign.Center}>
-              No matching accounts found.
+              {searchQuery
+                ? 'No matching accounts found.'
+                : 'No eligible accounts found.'}
             </Text>
           </Box>
         )}
