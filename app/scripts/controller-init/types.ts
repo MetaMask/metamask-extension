@@ -6,7 +6,7 @@ import {
   RestrictedMessenger,
 } from '@metamask/base-controller';
 import { Hex } from '@metamask/utils';
-import { TransactionMetricsRequest } from '../lib/transaction/metrics';
+import { TransactionMetricsRequest } from '../../../shared/types/metametrics';
 import { Controller, ControllerFlatState } from './controller-list';
 
 /** The supported controller names. */

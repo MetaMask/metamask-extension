@@ -36,7 +36,6 @@ import {
   handleTransactionFailed,
   handleTransactionRejected,
   handleTransactionSubmitted,
-  TransactionMetricsRequest,
 } from '../../lib/transaction/metrics';
 import {
   ControllerInitFunction,
@@ -45,6 +44,7 @@ import {
 } from '../types';
 import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import { ControllerFlatState } from '../controller-list';
+import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
