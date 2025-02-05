@@ -8,7 +8,7 @@ module.exports = {
     '<rootDir>/test/helpers/foundry/**/*.(js|ts|tsx)',
   ],
   coverageDirectory: './coverage/unit',
-  coveragePathIgnorePatterns: ['.stories.*', '.snap'],
+  coveragePathIgnorePatterns: ['.stories.*', '.snap$'],
   coverageReporters: ['html', 'json'],
   reporters: [
     'default',
