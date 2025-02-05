@@ -4,20 +4,27 @@ import {
   isBtcMainnetAddress,
   isBtcTestnetAddress,
   isSolanaAddress,
-} from '../../lib/multichain';
+} from '../../lib/multichain/accounts';
+import { MultichainBlockExplorerFormatUrls } from '../../lib/multichain/networks';
 
 export type ProviderConfigWithImageUrl = {
   rpcUrl?: string;
   type: string;
   ticker: string;
   nickname?: string;
-  rpcPrefs?: { blockExplorerUrl?: string; imageUrl?: string };
+  rpcPrefs?: {
+    imageUrl?: string;
+    // Mainly for EVM.
+    blockExplorerUrl?: string;
+  };
   id?: string;
 };
 
 export type MultichainProviderConfig = ProviderConfigWithImageUrl & {
   nickname: string;
   chainId: CaipChainId;
+  // Variant of block explorer URLs for non-EVM.
+  blockExplorerFormatUrls?: MultichainBlockExplorerFormatUrls;
   // NOTE: For now we use a callback to check if the address is compatible with
   // the given network or not
   isAddressCompatible: (address: string) => boolean;
@@ -42,16 +49,31 @@ export const MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET = {
 export const BITCOIN_TOKEN_IMAGE_URL = './images/bitcoin-logo.svg';
 export const SOLANA_TOKEN_IMAGE_URL = './images/solana-logo.svg';
 
-export const MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP = {
-  [MultichainNetworks.BITCOIN]: 'https://blockstream.info/address',
-  [MultichainNetworks.BITCOIN_TESTNET]:
-    'https://blockstream.info/testnet/address',
+export const MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP: Record<
+  CaipChainId,
+  MultichainBlockExplorerFormatUrls
+> = {
+  [MultichainNetworks.BITCOIN]: {
+    url: 'https://blockstream.info',
+    address: 'https://blockstream.info/address/{address}',
+  },
+  [MultichainNetworks.BITCOIN_TESTNET]: {
+    url: 'https://blockstream.info',
+    address: 'https://blockstream.info/testnet/address/{address}',
+  },
 
-  [MultichainNetworks.SOLANA]: 'https://explorer.solana.com/',
-  [MultichainNetworks.SOLANA_DEVNET]:
-    'https://explorer.solana.com/?cluster=devnet',
-  [MultichainNetworks.SOLANA_TESTNET]:
-    'https://explorer.solana.com/?cluster=testnet',
+  [MultichainNetworks.SOLANA]: {
+    url: 'https://explorer.solana.com',
+    address: 'https://explorer.solana.com/{address}',
+  },
+  [MultichainNetworks.SOLANA_DEVNET]: {
+    url: 'https://explorer.solana.com',
+    address: 'https://explorer.solana.com/{address}?cluster=devnet',
+  },
+  [MultichainNetworks.SOLANA_TESTNET]: {
+    url: 'https://explorer.solana.com',
+    address: 'https://explorer.solana.com/{address}?cluster=testnet',
+  },
 } as const;
 
 export const MULTICHAIN_TOKEN_IMAGE_MAP = {
@@ -76,8 +98,14 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
     rpcPrefs: {
       imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.BITCOIN],
       blockExplorerUrl:
-        MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP[MultichainNetworks.BITCOIN],
+        MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+          MultichainNetworks.BITCOIN
+        ].url,
     },
+    blockExplorerFormatUrls:
+      MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+        MultichainNetworks.BITCOIN
+      ],
     isAddressCompatible: isBtcMainnetAddress,
   },
   [MultichainNetworks.BITCOIN_TESTNET]: {
@@ -90,10 +118,14 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
     rpcPrefs: {
       imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.BITCOIN],
       blockExplorerUrl:
-        MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP[
+        MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
           MultichainNetworks.BITCOIN_TESTNET
-        ],
+        ].url,
     },
+    blockExplorerFormatUrls:
+      MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+        MultichainNetworks.BITCOIN_TESTNET
+      ],
     isAddressCompatible: isBtcTestnetAddress,
   },
   /**
@@ -109,8 +141,14 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
     rpcPrefs: {
       imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.SOLANA],
       blockExplorerUrl:
-        MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP[MultichainNetworks.SOLANA],
+        MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+          MultichainNetworks.SOLANA
+        ].url,
     },
+    blockExplorerFormatUrls:
+      MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+        MultichainNetworks.SOLANA
+      ],
     isAddressCompatible: isSolanaAddress,
   },
   [MultichainNetworks.SOLANA_DEVNET]: {
@@ -123,10 +161,14 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
     rpcPrefs: {
       imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.SOLANA],
       blockExplorerUrl:
-        MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP[
+        MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
           MultichainNetworks.SOLANA_DEVNET
-        ],
+        ].url,
     },
+    blockExplorerFormatUrls:
+      MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+        MultichainNetworks.SOLANA_DEVNET
+      ],
     isAddressCompatible: isSolanaAddress,
   },
   [MultichainNetworks.SOLANA_TESTNET]: {
@@ -139,10 +181,14 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
     rpcPrefs: {
       imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.SOLANA],
       blockExplorerUrl:
-        MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP[
+        MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
           MultichainNetworks.SOLANA_TESTNET
-        ],
+        ].url,
     },
+    blockExplorerFormatUrls:
+      MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+        MultichainNetworks.SOLANA_TESTNET
+      ],
     isAddressCompatible: isSolanaAddress,
   },
 };
