@@ -111,6 +111,7 @@
     "ensEntries": "object",
     "ensResolutionsByAddress": "object"
   },
+  "ExecutionService": "undefined",
   "GasFeeController": {
     "gasFeeEstimatesByChainId": {},
     "gasFeeEstimates": {},
@@ -249,6 +250,7 @@
     "showIncomingTransactions": "object"
   },
   "QueuedRequestController": { "queuedRequestCount": 0 },
+  "RateLimitController": "object",
   "RemoteFeatureFlagController": {
     "remoteFeatureFlags": {},
     "cacheTimestamp": "number"
