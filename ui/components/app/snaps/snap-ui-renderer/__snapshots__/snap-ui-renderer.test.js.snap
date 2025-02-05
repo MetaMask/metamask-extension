@@ -450,8 +450,12 @@ exports[`SnapUIRenderer supports forms with fields 1`] = `
                 class="mm-checkbox__input-wrapper"
               >
                 <input
-                  class="mm-box mm-checkbox__input mm-box--margin-0 mm-box--margin-right-0 mm-box--display-flex mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-color-border-muted mm-box--border-width-2 box--border-style-solid"
+                  class="mm-box mm-checkbox__input mm-checkbox__input--checked mm-box--margin-0 mm-box--margin-right-0 mm-box--display-flex mm-box--background-color-primary-default mm-box--rounded-sm mm-box--border-color-border-muted mm-box--border-width-2 box--border-style-solid"
                   type="checkbox"
+                />
+                <span
+                  class="mm-box mm-checkbox__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+                  style="mask-image: url('./images/icons/check-bold.svg');"
                 />
               </span>
             </label>
