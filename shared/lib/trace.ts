@@ -421,6 +421,8 @@ export const fetchWithSentryInstrumentation = async (
         response.headers.get('cf_ray');
       if (cloudflareRayId) {
         span.setAttribute('CF-Ray', cloudflareRayId);
+        const scope = Sentry.getCurrentScope();
+        scope.setTag('CF-Ray', cloudflareRayId);
       }
     },
   );
