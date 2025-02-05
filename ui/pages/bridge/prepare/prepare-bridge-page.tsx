@@ -11,6 +11,7 @@ import { debounce } from 'lodash';
 import { useHistory, useLocation } from 'react-router-dom';
 import { BigNumber } from 'bignumber.js';
 import { type TokenListMap } from '@metamask/assets-controllers';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -385,6 +386,9 @@ const PrepareBridgePage = () => {
     }
   }, [fromChain, fromToken, fromTokens, search, isFromTokensLoading]);
 
+  const [selectedBridgeAccount, setSelectedBridgeAccount] =
+    useState<InternalAccount | null>(null);
+
   return (
     <Column className="prepare-bridge-page" gap={8}>
       <BridgeInputGroup
@@ -568,8 +572,9 @@ const PrepareBridgePage = () => {
         <Box style={{ marginTop: '50px' }}>
           <SwapToAccountPicker
             accounts={internalAccounts}
-            chainId={toChain?.chainId}
-            accountId={selectedAccount?.id}
+            chainType={isSolana ? 'solana' : 'evm'}
+            onAccountSelect={setSelectedBridgeAccount}
+            selectedSwapToAccount={selectedBridgeAccount}
           />
         </Box>
         <Column height={BlockSize.Full} justifyContent={JustifyContent.center}>

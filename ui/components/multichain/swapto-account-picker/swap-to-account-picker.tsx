@@ -112,6 +112,7 @@ export const SwapToAccountPicker = ({
         width: '90%',
         marginLeft: 'auto',
         marginRight: 'auto',
+        // marginTop: '100px',
       }}
     >
       <Box
@@ -148,11 +149,9 @@ export const SwapToAccountPicker = ({
         {filteredAccounts.map((account) => (
           <AccountListItem
             key={account.id}
-            // TODO: fix below error.
-            // @ts-expect-error: todo
             account={account}
             onClick={() => onAccountSelect(account)}
-            isSelected={account.id === selectedAccount?.id}
+            isSelected={account.id === selectedSwapToAccount?.id} // Fixed check
             showOptions={false}
           />
         ))}
