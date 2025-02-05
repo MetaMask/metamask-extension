@@ -85,14 +85,21 @@ const Tabs = ({
         display={Display.Flex}
         justifyContent={JustifyContent.flexStart}
         backgroundColor={BackgroundColor.backgroundDefault}
-        className={classnames('tabs__list', tabsClassName)}
         gap={0}
         {...tabListProps}
+        className={classnames(
+          'tabs__list',
+          tabsClassName,
+          tabListProps.className,
+        )}
       >
         {renderTabs()}
       </Box>
       {subHeader}
-      <Box className="tabs__content" {...tabContentProps}>
+      <Box
+        {...tabContentProps}
+        className={classnames('tabs__content', tabContentProps.className)}
+      >
         {renderActiveTabContent()}
       </Box>
     </Box>

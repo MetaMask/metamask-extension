@@ -33,11 +33,6 @@ const Tab = (props) => {
   return (
     <Box
       as="li"
-      className={classnames('tab', className, {
-        'tab--single': isSingleTab,
-        'tab--active': isActive,
-        [activeClassName]: activeClassName && isActive,
-      })}
       data-testid={dataTestId}
       onClick={(event) => {
         event.preventDefault();
@@ -45,6 +40,12 @@ const Tab = (props) => {
       }}
       key={tabKey}
       {...rest}
+      className={classnames('tab', className, {
+        'tab--single': isSingleTab,
+        'tab--active': isActive,
+        [activeClassName]: activeClassName && isActive,
+        ...rest?.className,
+      })}
     >
       <Text
         as="button"
@@ -52,10 +53,10 @@ const Tab = (props) => {
         textAlign={TextAlign.Center}
         display={Display.Block}
         width={BlockSize.Full}
-        className={buttonClassName}
         variant={TextVariant.bodyMd}
         color={TextColor.inherit}
         {...textProps}
+        className={classnames(buttonClassName, textProps?.className)}
       >
         {name}
       </Text>
