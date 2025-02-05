@@ -617,7 +617,7 @@ class TestDapp {
   async connectAccount({
     connectAccountButtonEnabled = true,
     publicAddress,
-    networkId = '0x539',
+    chainId = '0x539',
   }: {
     connectAccountButtonEnabled?: boolean;
     publicAddress?: string;
