@@ -51,18 +51,6 @@ const ENTRYPOINT_PATTERNS = [
   'ui/**/*', // UI components and styles
 ];
 
-// Converts a glob pattern to a RegExp pattern
-function globToRegExp(pattern: string): RegExp {
-  return new RegExp(
-    pattern
-      // Convert '**' to '.*' to match any characters.
-      .replace(/\*\*/gu, '.*')
-      // Convert '*' to '[^/]*' to match any characters except directory separators.
-      .replace(/\*/gu, '[^/]*'),
-    'u',
-  );
-}
-
 /**
  * Circular dependencies are represented as an array of arrays, where each
  * inner array represents a cycle of dependencies.
