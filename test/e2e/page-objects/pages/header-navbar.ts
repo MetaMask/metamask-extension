@@ -83,7 +83,7 @@ class HeaderNavbar {
   async openSettingsPage(): Promise<void> {
     console.log('Open settings page');
     await this.openThreeDotMenu();
-    await this.driver.clickElementAndWaitToDisappear(this.settingsButton);
+    await this.driver.clickElement(this.settingsButton);
   }
 
   async clickSwitchNetworkDropDown(): Promise<void> {
