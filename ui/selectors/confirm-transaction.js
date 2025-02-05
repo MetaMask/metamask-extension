@@ -2,7 +2,6 @@ import { createSelector } from 'reselect';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import txHelper from '../helpers/utils/tx-helper';
 import {
-  roundExponential,
   getTransactionFee,
   addFiat,
   addEth,
@@ -20,8 +19,6 @@ import {
   getMaximumGasTotalInHexWei,
   getMinimumGasTotalInHexWei,
 } from '../../shared/modules/gas.utils';
-import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { calcTokenAmount } from '../../shared/lib/transactions-controller-utils';
 import {
   decGWEIToHexWEI,
   getValueFromWeiHex,
@@ -36,7 +33,6 @@ import { getAveragePriceEstimateInHexWEI } from './custom-gas';
 import {
   checkNetworkAndAccountSupports1559,
   getMetaMaskAccounts,
-  getTokenExchangeRates,
 } from './selectors';
 import {
   getUnapprovedTransactions,
@@ -139,18 +135,6 @@ export const currentCurrencySelector = (state) =>
 export const conversionRateSelector = (state) =>
   state.metamask.currencyRates[getProviderConfig(state).ticker]?.conversionRate;
 export const txDataSelector = (state) => state.confirmTransaction.txData;
-const tokenDataSelector = (state) => state.confirmTransaction.tokenData;
-const tokenPropsSelector = (state) => state.confirmTransaction.tokenProps;
-
-const tokenDecimalsSelector = createSelector(
-  tokenPropsSelector,
-  (tokenProps) => tokenProps && tokenProps.decimals,
-);
-
-const tokenDataArgsSelector = createSelector(
-  tokenDataSelector,
-  (tokenData) => (tokenData && tokenData.args) || [],
-);
 
 const txParamsSelector = createSelector(
   txDataSelector,
@@ -160,49 +144,6 @@ const txParamsSelector = createSelector(
 export const tokenAddressSelector = createSelector(
   txParamsSelector,
   (txParams) => txParams && txParams.to,
-);
-
-const TOKEN_PARAM_TO = '_to';
-const TOKEN_PARAM_VALUE = '_value';
-
-export const sendTokenTokenAmountAndToAddressSelector = createSelector(
-  tokenDataArgsSelector,
-  tokenDecimalsSelector,
-  (args, tokenDecimals) => {
-    let toAddress = '';
-    let tokenAmount = '0';
-
-    // Token params here are ethers BigNumbers, which have a different
-    // interface than bignumber.js
-    if (args && args.length) {
-      toAddress = args[TOKEN_PARAM_TO];
-      let value = args[TOKEN_PARAM_VALUE].toString();
-
-      if (tokenDecimals) {
-        // bignumber.js return value
-        value = calcTokenAmount(value, tokenDecimals).toFixed();
-      }
-
-      tokenAmount = roundExponential(value);
-    }
-
-    return {
-      toAddress,
-      tokenAmount,
-    };
-  },
-);
-
-export const contractExchangeRateSelector = createSelector(
-  (state) => getTokenExchangeRates(state),
-  tokenAddressSelector,
-  (contractExchangeRates, tokenAddress) => {
-    return contractExchangeRates[
-      Object.keys(contractExchangeRates).find((address) => {
-        return isEqualCaseInsensitive(address, tokenAddress);
-      })
-    ];
-  },
 );
 
 export const transactionFeeSelector = function (state, txData) {

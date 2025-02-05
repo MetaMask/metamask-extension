@@ -258,9 +258,6 @@
   "from": {
     "message": "من"
   },
-  "functionType": {
-    "message": "نوع الوظيفة"
-  },
   "gasLimit": {
     "message": "الحد الأقصى لوحدات جاس"
   },
@@ -468,9 +465,6 @@
   "origin": {
     "message": "الأصل"
   },
-  "parameters": {
-    "message": "معلّمات"
-  },
   "participateInMetaMetrics": {
     "message": "المشاركة في MetaMetrics"
   },
@@ -539,9 +533,6 @@
   "removeAccountDescription": {
     "message": "ستتم إزالة هذا الحساب من محفظتك. يرجى التأكد من وجود عبارة الأمان الأصلية أو المفتاح الخاص لهذا الحساب الذي تم استيراده قبل المتابعة. يمكنك استيراد أو إنشاء حسابات مرة أخرى من القائمة المنسدلة للحساب."
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "طلبات في انتظار الاعتراف بها"
-  },
   "required": {
     "message": "مطلوب"
   },
@@ -608,9 +599,6 @@
   },
   "showHexDataDescription": {
     "message": "حدد هذا لإظهار حقل بيانات سداسي عشرية على شاشة الإرسال"
-  },
-  "sigRequest": {
-    "message": "طلب التوقيع"
   },
   "sign": {
     "message": "توقيع"
@@ -735,9 +723,6 @@
   "unknown": {
     "message": "غير معروف"
   },
-  "unknownNetwork": {
-    "message": "شبكة خاصة مجهولة"
-  },
   "unknownQrCode": {
     "message": "خطأ: لم نتمكن من تحديد رمز الاستجابة السريعة هذا"
   },
@@ -767,9 +752,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "أنت بحاجة إلى السماح بالوصول إلى الكاميرا لاستخدام هذه الميزة."
-  },
-  "youSign": {
-    "message": "أنت بصدد التوقيع"
   },
   "yourPrivateSeedPhrase": {
     "message": "عبارة الأمان الشخصية الخاصة بك"

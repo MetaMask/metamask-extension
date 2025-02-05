@@ -156,6 +156,46 @@ export const CONFIRMATION_V_NEXT_ROUTE = '/confirmation';
 PATH_NAME_MAP[CONFIRMATION_V_NEXT_ROUTE] = 'New Confirmation Page';
 PATH_NAME_MAP[`${CONFIRMATION_V_NEXT_ROUTE}/:id`] = 'New Confirmation Page';
 
+export const CONFIRM_SEND_ETHER_PATH = '/send-ether';
+PATH_NAME_MAP[`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SEND_ETHER_PATH}`] =
+  'Confirm Send Ether Transaction Page';
+
+export const CONFIRM_SEND_TOKEN_PATH = '/send-token';
+PATH_NAME_MAP[`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SEND_TOKEN_PATH}`] =
+  'Confirm Send Token Transaction Page';
+
+export const CONFIRM_DEPLOY_CONTRACT_PATH = '/deploy-contract';
+PATH_NAME_MAP[
+  `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_DEPLOY_CONTRACT_PATH}`
+] = 'Confirm Deploy Contract Transaction Page';
+
+export const CONFIRM_APPROVE_PATH = '/approve';
+PATH_NAME_MAP[`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_APPROVE_PATH}`] =
+  'Confirm Approve Transaction Page';
+
+export const CONFIRM_SET_APPROVAL_FOR_ALL_PATH = '/set-approval-for-all';
+PATH_NAME_MAP[
+  `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SET_APPROVAL_FOR_ALL_PATH}`
+] = 'Confirm Set Approval For All Transaction Page';
+
+export const CONFIRM_TRANSFER_FROM_PATH = '/transfer-from';
+PATH_NAME_MAP[`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_TRANSFER_FROM_PATH}`] =
+  'Confirm Transfer From Transaction Page';
+
+export const CONFIRM_SAFE_TRANSFER_FROM_PATH = '/safe-transfer-from';
+PATH_NAME_MAP[
+  `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SAFE_TRANSFER_FROM_PATH}`
+] = 'Confirm Safe Transfer From Transaction Page';
+
+export const CONFIRM_TOKEN_METHOD_PATH = '/token-method';
+PATH_NAME_MAP[`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_TOKEN_METHOD_PATH}`] =
+  'Confirm Token Method Transaction Page';
+
+export const CONFIRM_INCREASE_ALLOWANCE_PATH = '/increase-allowance';
+PATH_NAME_MAP[
+  `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_INCREASE_ALLOWANCE_PATH}`
+] = 'Confirm Increase Allowance Transaction Page';
+
 export const SIGNATURE_REQUEST_PATH = '/signature-request';
 PATH_NAME_MAP[`${CONFIRM_TRANSACTION_ROUTE}/:id${SIGNATURE_REQUEST_PATH}`] =
   'Signature Request Page';

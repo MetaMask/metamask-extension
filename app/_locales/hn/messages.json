@@ -250,9 +250,6 @@
   "settings": {
     "message": "सेटिंग्स"
   },
-  "sigRequest": {
-    "message": "हस्ताक्षर अनुरोध"
-  },
   "sign": {
     "message": "हस्ताक्षर"
   },
@@ -286,9 +283,6 @@
   "unknown": {
     "message": "अज्ञात नेटवर्क"
   },
-  "unknownNetwork": {
-    "message": "अज्ञात निजी नेटवर्क"
-  },
   "unlock": {
     "message": "लॉग इन करें"
   },
@@ -300,8 +294,5 @@
   },
   "visitWebSite": {
     "message": "हमारी वेब साइट पर जाएं"
-  },
-  "youSign": {
-    "message": "आप हस्ताक्षर कर रहे हैं"
   }
 }

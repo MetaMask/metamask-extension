@@ -5206,16 +5206,6 @@
         "react": true
       }
     },
-    "react-inspector": {
-      "globals": {
-        "Node": true,
-        "chromeDark": true,
-        "chromeLight": true
-      },
-      "packages": {
-        "react": true
-      }
-    },
     "prop-types>react-is": {
       "globals": {
         "console": true

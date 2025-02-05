@@ -254,9 +254,6 @@
   "from": {
     "message": "De la"
   },
-  "functionType": {
-    "message": "Tip funcție"
-  },
   "gasLimit": {
     "message": "Limită gas"
   },
@@ -458,9 +455,6 @@
   "origin": {
     "message": "Origine"
   },
-  "parameters": {
-    "message": "Parametri"
-  },
   "participateInMetaMetrics": {
     "message": "Participați la MetaMetrics"
   },
@@ -529,9 +523,6 @@
   "removeAccountDescription": {
     "message": "Acest cont va fi eliminat din portofelul dvs. Înainte de a continua, vă rugăm să vă asigurați că aveți expresia seed inițială sau cheia privată pentru acest cont importat. Puteți importa sau crea conturi din nou din meniul derulant al contului."
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "solicitări care așteaptă să fie confirmate"
-  },
   "required": {
     "message": "Obligatoriu"
   },
@@ -598,9 +589,6 @@
   },
   "showHexDataDescription": {
     "message": "Selectați această opțiune pentru a arăta câmpul de date hexazecimale în ecranul de trimitere."
-  },
-  "sigRequest": {
-    "message": "Solicitare de semnătură"
   },
   "sign": {
     "message": "Semnați"
@@ -719,9 +707,6 @@
   "unknown": {
     "message": "Necunoscută"
   },
-  "unknownNetwork": {
-    "message": "Rețea privată necunoscută"
-  },
   "unknownQrCode": {
     "message": "Eroare: Acel cod QR nu a putut fi identificat"
   },
@@ -751,9 +736,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Trebuie să permiteți accesul la cameră pentru a folosi această funcție."
-  },
-  "youSign": {
-    "message": "Semnați"
   },
   "yourPrivateSeedPhrase": {
     "message": "Expresia dvs. seed privată"

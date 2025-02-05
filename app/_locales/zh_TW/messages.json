@@ -159,9 +159,6 @@
   "cancel": {
     "message": "取消"
   },
-  "cancelSpeedUp": {
-    "message": "cancel or speed up a tranaction."
-  },
   "cancelled": {
     "message": "已取消"
   },
@@ -302,9 +299,6 @@
   },
   "customSpendLimit": {
     "message": "自訂花費限制"
-  },
-  "customSpendingCap": {
-    "message": "自訂花費上限"
   },
   "customToken": {
     "message": "自訂代幣"
@@ -484,9 +478,6 @@
   "fromAddress": {
     "message": "來自：$1",
     "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
-  },
-  "functionType": {
-    "message": "函式型別"
   },
   "gasLimit": {
     "message": "Gas 上限"
@@ -839,9 +830,6 @@
   "origin": {
     "message": "來源"
   },
-  "parameters": {
-    "message": "參數"
-  },
   "participateInMetaMetrics": {
     "message": "參與 MetaMetrics"
   },
@@ -931,9 +919,6 @@
   },
   "removeAccountDescription": {
     "message": "此帳戶將由錢包中移除。在繼續進行之前請確認您已經匯出並妥善備份助憶詞或私鑰。您可以從帳戶下拉選單中匯入或再次建立帳戶。"
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "請求正在等待確認"
   },
   "required": {
     "message": "必填"
@@ -1072,9 +1057,6 @@
   },
   "showPermissions": {
     "message": "顯示權限"
-  },
-  "sigRequest": {
-    "message": "請求簽署"
   },
   "sign": {
     "message": "簽署"
@@ -1279,9 +1261,6 @@
   "unknown": {
     "message": "未知"
   },
-  "unknownNetwork": {
-    "message": "未知私有網路"
-  },
   "unknownQrCode": {
     "message": "錯誤：無法辨識 QR code"
   },
@@ -1349,9 +1328,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "需要准許存取攝影鏡頭才能啟用此功能"
-  },
-  "youSign": {
-    "message": "正在簽署"
   },
   "yourPrivateSeedPhrase": {
     "message": "您的助憶詞"
