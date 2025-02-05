@@ -3116,14 +3116,10 @@ export default class MetamaskController extends EventEmitter {
               scopeObject.notifications.includes('eth_subscription') &&
               scopeObject.methods.includes('eth_subscribe')
             ) {
-              this.multichainMiddlewareManager.removeMiddlewareByScopeAndOrigin(
+              this.removeMultichainApiEthSubscriptionMiddleware({
                 scope,
                 origin,
-              );
-              this.multichainSubscriptionManager.unsubscribeByScopeAndOrigin(
-                scope,
-                origin,
-              );
+              });
             }
           });
         }
@@ -3141,28 +3137,17 @@ export default class MetamaskController extends EventEmitter {
             ) {
               // for each tabId
               Object.values(this.connections[origin]).forEach(({ tabId }) => {
-                const subscriptionManager =
-                  this.multichainSubscriptionManager.subscribe({
-                    scope,
-                    origin,
-                    tabId,
-                  });
-                this.multichainMiddlewareManager.addMiddleware({
+                this.addMultichainApiEthSubscriptionMiddleware({
                   scope,
                   origin,
                   tabId,
-                  middleware: subscriptionManager.middleware,
                 });
               });
             } else {
-              this.multichainMiddlewareManager.removeMiddlewareByScopeAndOrigin(
+              this.removeMultichainApiEthSubscriptionMiddleware({
                 scope,
                 origin,
-              );
-              this.multichainSubscriptionManager.unsubscribeByScopeAndOrigin(
-                scope,
-                origin,
-              );
+              });
             }
           });
 
@@ -3180,14 +3165,10 @@ export default class MetamaskController extends EventEmitter {
                     scopeObject.notifications.includes('eth_subscription') &&
                     scopeObject.methods.includes('eth_subscribe')
                   ) {
-                    this.multichainMiddlewareManager.removeMiddlewareByScopeAndOrigin(
+                    this.removeMultichainApiEthSubscriptionMiddleware({
                       scope,
                       origin,
-                    );
-                    this.multichainSubscriptionManager.unsubscribeByScopeAndOrigin(
-                      scope,
-                      origin,
-                    );
+                    });
                   }
                 }
               },
@@ -3438,6 +3419,51 @@ export default class MetamaskController extends EventEmitter {
           this.multichainRatesController.setFiatCurrency(currentCurrency);
         }
       },
+    );
+  }
+
+  /**
+   * If it does not already exist, creates and inserts middleware to handle eth
+   * subscriptions for a particular evm scope on a specific Multichain API
+   * JSON-RPC pipeline by origin and tabId.
+   *
+   * @param {object} options - The options object.
+   * @param {string} options.scope - The evm scope to handle eth susbcriptions for.
+   * @param {string} options.origin - The origin to handle eth subscriptions for.
+   * @param {string} options.tabId - The tabId to handle eth subscriptions for.
+   */
+  addMultichainApiEthSubscriptionMiddleware({ scope, origin, tabId }) {
+    const subscriptionManager = this.multichainSubscriptionManager.subscribe({
+      scope,
+      origin,
+      tabId,
+    });
+    this.multichainMiddlewareManager.addMiddleware({
+      scope,
+      origin,
+      tabId,
+      middleware: subscriptionManager.middleware,
+    });
+  }
+
+  /**
+   * If it does exist, removes all middleware that were handling eth
+   * subscriptions for a particular evm scope for all Multichain API
+   * JSON-RPC pipelines for an origin.
+   *
+   * @param {object} options - The options object.
+   * @param {string} options.scope - The evm scope to handle eth susbcriptions for.
+   * @param {string} options.origin - The origin to handle eth subscriptions for.
+   */
+
+  removeMultichainApiEthSubscriptionMiddleware({ scope, origin }) {
+    this.multichainMiddlewareManager.removeMiddlewareByScopeAndOrigin(
+      scope,
+      origin,
+    );
+    this.multichainSubscriptionManager.unsubscribeByScopeAndOrigin(
+      scope,
+      origin,
     );
   }
 
@@ -6988,17 +7014,10 @@ export default class MetamaskController extends EventEmitter {
           scopeObject.notifications.includes('eth_subscription') &&
           scopeObject.methods.includes('eth_subscribe')
         ) {
-          const subscriptionManager =
-            this.multichainSubscriptionManager.subscribe({
-              scope,
-              origin,
-              tabId,
-            });
-          this.multichainMiddlewareManager.addMiddleware({
+          this.addMultichainApiEthSubscriptionMiddleware({
             scope,
             origin,
             tabId,
-            middleware: subscriptionManager.middleware,
           });
         }
       });
