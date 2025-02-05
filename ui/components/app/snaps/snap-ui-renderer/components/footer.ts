@@ -12,7 +12,7 @@ import { UIComponent, UIComponentFactory, UIComponentParams } from './types';
 import { button as buttonFn } from './button';
 
 export const DEFAULT_FOOTER = {
-  element: 'Box',
+  element: 'SnapUIFooter',
   key: 'default-footer',
   props: {
     display: Display.Flex,
@@ -35,7 +35,6 @@ const getDefaultButtons = (
   footer: FooterElement,
   t: (value: string) => string,
   onCancel?: () => void,
-  disabled?: boolean,
 ) => {
   const children = getJsxChildren(footer);
 
@@ -48,7 +47,6 @@ const getDefaultButtons = (
         onCancel,
         variant: ButtonVariant.Secondary,
         isSnapAction: false,
-        disabled,
       },
       children: t('cancel'),
     };
@@ -61,12 +59,9 @@ export const footer: UIComponentFactory<FooterElement> = ({
   element,
   t,
   onCancel,
-  requireScroll = false,
-  isScrolledToBottom = false,
   ...params
 }) => {
-  const disabled = requireScroll && !isScrolledToBottom;
-  const defaultButtons = getDefaultButtons(element, t, onCancel, disabled);
+  const defaultButtons = getDefaultButtons(element, t, onCancel);
 
   const providedChildren = getJsxChildren(element);
   const footerChildren: UIComponent[] = (
@@ -87,7 +82,6 @@ export const footer: UIComponentFactory<FooterElement> = ({
             ? ButtonVariant.Secondary
             : ButtonVariant.Primary,
         isSnapAction: true,
-        disabled,
       },
       children: buttonMapped.children,
     };

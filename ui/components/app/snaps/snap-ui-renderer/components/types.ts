@@ -14,8 +14,6 @@ export type UIComponentParams<T extends JSXElement> = {
   };
   t: (key: string) => string;
   contentBackgroundColor: string | undefined;
-  isScrolledToBottom?: boolean | undefined;
-  requireScroll?: boolean | undefined;
 };
 
 export type UIComponent = {

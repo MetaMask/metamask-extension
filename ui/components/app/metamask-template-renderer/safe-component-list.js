@@ -39,6 +39,7 @@ import { SnapUICard } from '../snaps/snap-ui-card';
 import { SnapUICheckbox } from '../snaps/snap-ui-checkbox';
 import { SnapUIDropdown } from '../snaps/snap-ui-dropdown';
 import { SnapUIFileInput } from '../snaps/snap-ui-file-input';
+import { SnapUIFooter } from '../snaps/snap-ui-footer';
 import { SnapUIFooterButton } from '../snaps/snap-ui-footer-button';
 import { SnapUIForm } from '../snaps/snap-ui-form';
 import { SnapUIIcon } from '../snaps/snap-ui-icon';
@@ -98,6 +99,7 @@ export const safeComponentList = {
   SnapUIDropdown,
   SnapUIFileInput,
   SnapUIForm,
+  SnapUIFooter,
   SnapUIFooterButton,
   SnapUIIcon,
   SnapUIImage,

@@ -14,7 +14,7 @@ import { UIComponent } from './components/types';
 
 export type MapToTemplateParams = {
   map: Record<string, number>;
-  element: JSXElement & { ref?: React.Ref<unknown> };
+  element: JSXElement;
   form?: string;
   useFooter?: boolean;
   onCancel?: () => void;
