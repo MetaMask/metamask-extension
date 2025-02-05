@@ -63,16 +63,12 @@ import {
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
   AllowedBridgeChainIds,
 } from '../../../../shared/constants/bridge';
-import { type MultichainProviderConfig } from '../../../../shared/constants/multichain/networks';
 import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
 import BridgeStepList from './bridge-step-list';
 
 const getBlockExplorerUrl = (
-  networkConfiguration:
-    | NetworkConfiguration
-    | MultichainProviderConfig
-    | undefined,
+  networkConfiguration: NetworkConfiguration | undefined,
   txHash: string | undefined,
 ) => {
   if (

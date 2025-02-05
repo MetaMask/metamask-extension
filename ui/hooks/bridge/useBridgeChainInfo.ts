@@ -4,7 +4,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { NetworkConfiguration } from '@metamask/network-controller';
-import { isCaipChainId } from '@metamask/utils';
+import { type Hex, isCaipChainId } from '@metamask/utils';
 import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
 import { BridgeHistoryItem } from '../../../shared/types/bridge-status';
 import {
@@ -64,7 +64,16 @@ export default function useBridgeChainInfo({
 
   // Source chain info
   const srcNetwork = isCaipChainId(hexSrcChainId)
-    ? MULTICHAIN_PROVIDER_CONFIGS[hexSrcChainId]
+    ? // TODO: get this from network controller, use placeholder values for now
+      ({
+        ...MULTICHAIN_PROVIDER_CONFIGS[hexSrcChainId],
+        blockExplorerUrls: [],
+        name: '',
+        nativeCurrency: '',
+        rpcEndpoints: [{ url: '', type: '', networkClientId: '' }],
+        defaultRpcEndpointIndex: 0,
+        chainId: hexSrcChainId as unknown as Hex,
+      } as unknown as NetworkConfiguration)
     : networkConfigurationsByChainId[hexSrcChainId];
 
   const fallbackSrcNetwork: NetworkConfiguration | undefined = isCaipChainId(
@@ -90,7 +99,16 @@ export default function useBridgeChainInfo({
 
   // Dest chain info
   const destNetwork = isCaipChainId(hexDestChainId)
-    ? MULTICHAIN_PROVIDER_CONFIGS[hexDestChainId]
+    ? // TODO: get this from network controller, use placeholder values for now
+      ({
+        ...MULTICHAIN_PROVIDER_CONFIGS[hexDestChainId],
+        blockExplorerUrls: [],
+        name: '',
+        nativeCurrency: '',
+        rpcEndpoints: [{ url: '', type: '', networkClientId: '' }],
+        defaultRpcEndpointIndex: 0,
+        chainId: hexDestChainId as unknown as Hex,
+      } as unknown as NetworkConfiguration)
     : networkConfigurationsByChainId[hexDestChainId];
 
   const fallbackDestNetwork: NetworkConfiguration | undefined = isCaipChainId(
