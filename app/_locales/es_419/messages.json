@@ -269,9 +269,6 @@
   "cancelPopoverTitle": {
     "message": "Cancelar transacción"
   },
-  "cancelSpeedUp": {
-    "message": "cancelar o acelerar una transacción."
-  },
   "cancelSpeedUpLabel": {
     "message": "Esta tarifa de gas va a $1 el original.",
     "description": "$1 is text 'replace' in bold"
@@ -401,9 +398,6 @@
   "copyAddress": {
     "message": "Copiar dirección al Portapapeles"
   },
-  "copyRawTransactionData": {
-    "message": "Copiar los datos de las transacciones en bruto"
-  },
   "copyToClipboard": {
     "message": "Copiar al Portapapeles"
   },
@@ -468,9 +462,6 @@
   },
   "data": {
     "message": "Datos"
-  },
-  "dataHex": {
-    "message": "Hex"
   },
   "decimal": {
     "message": "Decimales del token"
@@ -770,9 +761,6 @@
     "message": "De: $1",
     "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
   },
-  "functionType": {
-    "message": "Tipo de función"
-  },
   "gas": {
     "message": "Gas"
   },
@@ -1002,10 +990,6 @@
   },
   "lastConnected": {
     "message": "Última conexión"
-  },
-  "learnCancelSpeeedup": {
-    "message": "Aprenda cómo $1",
-    "description": "$1 is link to cancel or speed up transactions"
   },
   "learnMore": {
     "message": "más información"
@@ -1341,9 +1325,6 @@
   "origin": {
     "message": "Origen"
   },
-  "parameters": {
-    "message": "Parámetros"
-  },
   "participateInMetaMetrics": {
     "message": "Participar en MetaMetrics"
   },
@@ -1371,16 +1352,6 @@
   },
   "pending": {
     "message": "Pendiente"
-  },
-  "pendingTransactionInfo": {
-    "message": "Esta transacción no se procesará hasta que aquella haya finalizado."
-  },
-  "pendingTransactionMultiple": {
-    "message": "Tiene ($1) transacciones pendientes."
-  },
-  "pendingTransactionSingle": {
-    "message": "Tiene (1) transacción pendiente.",
-    "description": "$1 is count of pending transactions"
   },
   "permission_ethereumAccounts": {
     "message": "Ver dirección, saldo de cuenta, actividad e iniciar transacciones",
@@ -1498,9 +1469,6 @@
   },
   "replace": {
     "message": "reemplazar"
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "solicitudes en espera de confirmación"
   },
   "required": {
     "message": "Requerido"
@@ -1679,9 +1647,6 @@
   },
   "showTestnetNetworksDescription": {
     "message": "Seleccione esta opción para mostrar las redes de prueba en la lista de redes"
-  },
-  "sigRequest": {
-    "message": "Solicitud de firma"
   },
   "sign": {
     "message": "Firmar"
@@ -2199,9 +2164,6 @@
   "unknown": {
     "message": "Desconocido"
   },
-  "unknownNetwork": {
-    "message": "Red privada desconocida"
-  },
   "unknownQrCode": {
     "message": "Error: No se pudo identificar ese código QR"
   },
@@ -2308,9 +2270,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Necesita permitir el acceso a la cámara para usar esta función."
-  },
-  "youSign": {
-    "message": "Está firmando"
   },
   "yourPrivateSeedPhrase": {
     "message": "Su frase secreta de recuperación privada"
