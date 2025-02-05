@@ -12,17 +12,17 @@ import {
   NETWORK_TO_NAME_MAP,
 } from '../../../shared/constants/network';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../shared/constants/common';
-import { formatChainIdFromApi } from '../../../shared/modules/bridge-utils/multichain';
+import { formatChainIdFromDecimal } from '../../../shared/modules/bridge-utils/multichain';
 import { MULTICHAIN_PROVIDER_CONFIGS } from '../../../shared/constants/multichain/networks';
 
 const getSourceAndDestChainIds = ({
   bridgeHistoryItem,
 }: UseBridgeChainInfoProps) => {
   const hexSrcChainId = bridgeHistoryItem
-    ? formatChainIdFromApi(bridgeHistoryItem.quote.srcChainId)
+    ? formatChainIdFromDecimal(bridgeHistoryItem.quote.srcChainId)
     : undefined;
   const hexDestChainId = bridgeHistoryItem
-    ? formatChainIdFromApi(bridgeHistoryItem.quote.destChainId)
+    ? formatChainIdFromDecimal(bridgeHistoryItem.quote.destChainId)
     : undefined;
 
   return {

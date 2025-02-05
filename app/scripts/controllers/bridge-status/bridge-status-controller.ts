@@ -7,7 +7,7 @@ import {
   StartPollingForBridgeTxStatusArgsSerialized,
   BridgeStatusState,
 } from '../../../../shared/types/bridge-status';
-import { formatChainIdFromApi } from '../../../../shared/modules/bridge-utils/multichain';
+import { formatChainIdFromDecimal } from '../../../../shared/modules/bridge-utils/multichain';
 import {
   BRIDGE_STATUS_CONTROLLER_NAME,
   DEFAULT_BRIDGE_STATUS_STATE,
@@ -345,7 +345,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       const bridgeHistoryItem =
         this.state.bridgeStatusState.txHistory[txMetaId];
 
-      const hexSourceChainId = formatChainIdFromApi(
+      const hexSourceChainId = formatChainIdFromDecimal(
         bridgeHistoryItem.quote.srcChainId,
       );
 

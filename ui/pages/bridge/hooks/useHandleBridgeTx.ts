@@ -3,7 +3,7 @@ import { TransactionType } from '@metamask/transaction-controller';
 import { isCaipChainId } from '@metamask/utils';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { FeeType, type QuoteResponse } from '../../../../shared/types/bridge';
-import { formatChainIdFromApi } from '../../../../shared/modules/bridge-utils/multichain';
+import { formatChainIdFromDecimal } from '../../../../shared/modules/bridge-utils/multichain';
 import useHandleTx from './useHandleTx';
 
 export default function useHandleBridgeTx() {
@@ -23,7 +23,7 @@ export default function useHandleBridgeTx() {
       .shiftedBy(quoteResponse.quote.srcAsset.decimals)
       .toString();
 
-    const hexDestChainId = formatChainIdFromApi(
+    const hexDestChainId = formatChainIdFromDecimal(
       quoteResponse.quote.destChainId,
     );
     if (isCaipChainId(hexDestChainId)) {
