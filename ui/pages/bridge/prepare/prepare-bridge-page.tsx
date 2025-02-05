@@ -569,7 +569,7 @@ const PrepareBridgePage = () => {
           isTokenListLoading={isToTokensLoading}
         />
         {/* // TODO: conditionally render this based on sol <-> EVM or not */}
-        <Box style={{ marginTop: '50px' }}>
+        <Box style={{ marginTop: '35px' }}>
           <SwapToAccountPicker
             accounts={internalAccounts}
             chainType={isSolana ? 'solana' : 'evm'}

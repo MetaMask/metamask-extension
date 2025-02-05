@@ -2,7 +2,14 @@ import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { useState } from 'react';
-import { TextFieldSearch, Box, Text, Button } from '../../component-library';
+import {
+  TextFieldSearch,
+  Box,
+  Text,
+  Button,
+  ButtonSize,
+  ButtonVariant,
+} from '../../component-library';
 import { AccountListItem } from '../account-list-item';
 import { getSelectedInternalAccount } from '../../../selectors';
 import {
@@ -13,6 +20,7 @@ import {
   TextAlign,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
+import SwapToAccountListItem from './swap-to-account-list-item';
 
 type SwapToAccountPickerProps = {
   accounts: InternalAccount[];
@@ -66,8 +74,16 @@ export const SwapToAccountPicker = ({
           className="swap-to-account-picker__selected"
           width={BlockSize.Full}
         >
-          <AccountListItem
+          {/* <AccountListItem
             account={selectedSwapToAccount}
+            isSelected={selectedSwapToAccount.id === selectedAccount?.id}
+            showOptions={false}
+            disableHover
+          /> */}
+          <SwapToAccountListItem
+            account={selectedSwapToAccount}
+            // TODO: fix
+            // @ts-expect-error-error: not working
             isSelected={selectedSwapToAccount.id === selectedAccount?.id}
             showOptions={false}
             disableHover
@@ -77,15 +93,16 @@ export const SwapToAccountPicker = ({
           <Button
             onClick={() => onAccountSelect(null)}
             aria-label="Deselect account"
-            variant="link"
-            size="sm"
+            variant={ButtonVariant.Link}
+            size={ButtonSize.Sm}
             className="deselect-button"
             iconName="close-outline"
             style={{
               paddingRight: '8px',
               color: 'var(--color-icon-alternative)',
               textDecoration: 'none',
-              // not working
+              // TODO: fix
+              // @ts-expect-error-error: not working
               '&:hover': {
                 textDecoration: 'none',
                 color: 'var(--color-icon-default)',
