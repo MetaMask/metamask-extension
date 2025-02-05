@@ -64,6 +64,7 @@ class FirefoxDriver {
     );
 
     // Temporarily lock to version 134 until fix provided by Firefox/Selenium
+    // See issue https://github.com/MetaMask/MetaMask-planning/issues/4122
     options.setBrowserVersion('134');
 
     options.setAcceptInsecureCerts(true);
