@@ -5,7 +5,7 @@ import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getSnapsRegistryMessenger,
   SnapsRegistryMessenger,
-} from './snaps-registry-messenger';
+} from '../messengers/snaps';
 import { SnapsRegistryInit } from './snaps-registry-init';
 
 jest.mock('@metamask/snaps-controllers');

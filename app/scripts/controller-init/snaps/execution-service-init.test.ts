@@ -8,7 +8,7 @@ import { buildControllerInitRequestMock } from '../test/utils';
 import {
   ExecutionServiceMessenger,
   getExecutionServiceMessenger,
-} from './execution-service-messenger';
+} from '../messengers/snaps';
 import { ExecutionServiceInit } from './execution-service-init';
 
 jest.mock('@metamask/snaps-controllers');

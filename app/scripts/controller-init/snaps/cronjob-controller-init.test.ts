@@ -2,11 +2,11 @@ import { CronjobController, GetAllSnaps } from '@metamask/snaps-controllers';
 import { Messenger } from '@metamask/base-controller';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { CronjobControllerInit } from './cronjob-controller-init';
 import {
   CronjobControllerMessenger,
   getCronjobControllerMessenger,
-} from './cronjob-controller-messenger';
+} from '../messengers/snaps';
+import { CronjobControllerInit } from './cronjob-controller-init';
 
 function getInitRequestMock(): jest.Mocked<
   ControllerInitRequest<CronjobControllerMessenger>

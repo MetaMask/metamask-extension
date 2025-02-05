@@ -1,4 +1,8 @@
 import {
+  getPPOMControllerMessenger,
+  getPPOMControllerInitMessenger,
+} from './ppom-controller-messenger';
+import {
   getCronjobControllerMessenger,
   getExecutionServiceMessenger,
   getRateLimitControllerInitMessenger,
@@ -8,11 +12,7 @@ import {
   getSnapInsightsControllerMessenger,
   getSnapInterfaceControllerMessenger,
   getSnapsRegistryMessenger,
-} from '../snaps';
-import {
-  getPPOMControllerMessenger,
-  getPPOMControllerInitMessenger,
-} from './ppom-controller-messenger';
+} from './snaps';
 import {
   getTransactionControllerMessenger,
   getTransactionControllerInitMessenger,

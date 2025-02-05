@@ -1,5 +1,5 @@
 import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
-import { getSnapsRegistryMessenger } from './snaps-registry-messenger';
+import { getSnapsRegistryMessenger } from './snaps-registry-messenger.ts';
 
 describe('getSnapsRegistryMessenger', () => {
   it('returns a restricted controller messenger', () => {

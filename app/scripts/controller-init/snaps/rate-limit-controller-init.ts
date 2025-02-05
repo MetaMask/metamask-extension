@@ -8,7 +8,7 @@ import { ControllerInitFunction } from '../types';
 import {
   RateLimitControllerInitMessenger,
   RateLimitControllerMessenger,
-} from './rate-limit-controller-messenger';
+} from '../messengers/snaps';
 
 /**
  * Initialize the Snap insights controller.

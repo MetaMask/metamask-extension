@@ -2,11 +2,11 @@ import { SnapInterfaceController } from '@metamask/snaps-controllers';
 import { Messenger } from '@metamask/base-controller';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { SnapInterfaceControllerInit } from './snap-interface-controller-init';
 import {
   getSnapInterfaceControllerMessenger,
   SnapInterfaceControllerMessenger,
-} from './snap-interface-controller-messenger';
+} from '../messengers/snaps';
+import { SnapInterfaceControllerInit } from './snap-interface-controller-init';
 
 jest.mock('@metamask/snaps-controllers');
 

@@ -1,5 +1,5 @@
 import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
-import { getSnapInterfaceControllerMessenger } from './snap-interface-controller-messenger';
+import { getSnapInterfaceControllerMessenger } from './snap-interface-controller-messenger.ts';
 
 describe('getSnapInterfaceControllerMessenger', () => {
   it('returns a restricted messenger', () => {

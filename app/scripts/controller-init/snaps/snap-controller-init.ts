@@ -12,7 +12,7 @@ import { KeyringType } from '../../../../shared/constants/keyring';
 import {
   SnapControllerInitMessenger,
   SnapControllerMessenger,
-} from './snap-controller-messenger';
+} from '../messengers/snaps';
 
 /**
  * Initialize the Snap controller.

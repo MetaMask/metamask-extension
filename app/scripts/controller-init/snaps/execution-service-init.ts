@@ -9,7 +9,7 @@ import { SubjectType } from '@metamask/permission-controller';
 import { Duplex } from 'readable-stream';
 import { ControllerInitFunction } from '../types';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
-import { ExecutionServiceMessenger } from './execution-service-messenger';
+import { ExecutionServiceMessenger } from '../messengers/snaps';
 
 /**
  * Initialize the Snaps execution service.

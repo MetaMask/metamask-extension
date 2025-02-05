@@ -1,6 +1,6 @@
 import { JsonSnapsRegistry } from '@metamask/snaps-controllers';
 import { ControllerInitFunction } from '../types';
-import { SnapsRegistryMessenger } from './snaps-registry-messenger';
+import { SnapsRegistryMessenger } from '../messengers/snaps';
 
 /**
  * Initialize the Snaps registry controller.

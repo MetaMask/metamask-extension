@@ -5,7 +5,7 @@ import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getSnapInsightsControllerMessenger,
   SnapInsightsControllerMessenger,
-} from './snap-insights-controller-messenger';
+} from '../messengers/snaps';
 import { SnapInsightsControllerInit } from './snap-insights-controller-init';
 
 jest.mock('@metamask/snaps-controllers');
