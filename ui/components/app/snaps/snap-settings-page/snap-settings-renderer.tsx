@@ -72,7 +72,6 @@ export const SnapSettingsRenderer: FunctionComponent<
           snapId={snapId}
           interfaceId={interfaceId}
           isLoading={loading}
-          useDelineator={false}
           contentBackgroundColor={BackgroundColor.backgroundDefault}
         />
       )}
