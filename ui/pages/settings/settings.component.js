@@ -139,10 +139,7 @@ class SettingsPage extends PureComponent {
           padding={4}
           paddingBottom={[2, 4]}
         >
-          <div
-            className="settings-page__header__title-container"
-            data-testid="settings-page-container"
-          >
+          <div className="settings-page__header__title-container">
             {isPopup && (
               <>
                 {currentPath === SETTINGS_ROUTE ? (

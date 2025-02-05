@@ -23,8 +23,10 @@ class PrivacySettings {
     tag: 'button',
   };
 
-  private readonly privacyPageBasicFunctionalityContainer =
-    '[data-testid="advanced-setting-show-testnet-conversion"]';
+  private readonly privacySettingsPageTitle = {
+    text: 'Security & privacy',
+    tag: 'h4',
+  };
 
   // reveal SRP related locators
   private readonly displayedSrpText = '[data-testid="srp_text"]';
@@ -95,9 +97,7 @@ class PrivacySettings {
 
   async check_pageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(
-        this.privacyPageBasicFunctionalityContainer,
-      );
+      await this.driver.waitForSelector(this.privacySettingsPageTitle);
     } catch (e) {
       console.log(
         'Timeout while waiting for Privacy & Security Settings page to be loaded',

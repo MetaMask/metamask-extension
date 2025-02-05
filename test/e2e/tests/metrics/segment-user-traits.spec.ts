@@ -1,12 +1,12 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
-import { Driver } from '../../webdriver/driver';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import {
   completeCreateNewWalletOnboardingFlow,
   createNewWalletOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
+import SecurityAndPrivacySettings from '../../page-objects/pages/settings/security-and-privacy-settings';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import HeaderNavbar from "../../page-objects/pages/header-navbar";
 import SettingsPage from "../../page-objects/pages/settings/settings-page";
@@ -25,17 +25,6 @@ async function mockSegment(mockServer: Mockttp) {
         };
       }),
   ];
-}
-
-async function navigateToPrivacySettingsPage(driver: Driver) {
-  await new HeaderNavbar(driver).openSettingsPage();
-  const settingsPage = new SettingsPage(driver);
-  await settingsPage.check_pageIsLoaded();
-  await settingsPage.goToPrivacySettings();
-
-  const privacySettings = new PrivacySettings(driver);
-  await privacySettings.check_pageIsLoaded();
-  return privacySettings;
 }
 
 describe('Segment User Traits', function () {
@@ -133,7 +122,13 @@ describe('Segment User Traits', function () {
         });
         events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 0);
-        const privacySettings = await navigateToPrivacySettingsPage(driver);
+        await new HeaderNavbar(driver).openSettingsPage();
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.check_pageIsLoaded();
+        await settingsPage.goToPrivacySettings();
+
+        const privacySettings = new PrivacySettings(driver);
+        await privacySettings.check_pageIsLoaded();
         await privacySettings.toggleParticipateInMetaMetrics();
         events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 1);
@@ -163,7 +158,13 @@ describe('Segment User Traits', function () {
         });
         events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 0);
-        const privacySettings = await navigateToPrivacySettingsPage(driver);
+        await new HeaderNavbar(driver).openSettingsPage();
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.check_pageIsLoaded();
+        await settingsPage.goToPrivacySettings();
+
+        const privacySettings = new PrivacySettings(driver);
+        await privacySettings.check_pageIsLoaded();
         await privacySettings.toggleParticipateInMetaMetrics();
         await privacySettings.toggleDataCollectionForMarketing();
         events = await getEventPayloads(driver, mockedEndpoints);
@@ -174,7 +175,7 @@ describe('Segment User Traits', function () {
     );
   });
 
-  it.only('should stop sending identify events when user disables metrics in privacy settings after opting in during onboarding', async function () {
+  it('should stop sending identify events when user disables metrics in privacy settings after opting in during onboarding', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
@@ -190,36 +191,21 @@ describe('Segment User Traits', function () {
         await completeCreateNewWalletOnboardingFlow({
           driver,
           participateInMetaMetrics: true,
+          dataCollectionForMarketing: true,
         });
-        const privacySettings = await navigateToPrivacySettingsPage(driver);
+        events = await getEventPayloads(driver, mockedEndpoints);
+        assert.equal(events.length, 1);
+        await new HeaderNavbar(driver).openSettingsPage();
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.check_pageIsLoaded();
+        await settingsPage.goToPrivacySettings();
 
+        const privacySettings = new PrivacySettings(driver);
+        await privacySettings.check_pageIsLoaded();
+        await privacySettings.toggleParticipateInMetaMetrics();
+        events = await getEventPayloads(driver, mockedEndpoints);
+        assert.equal(events.length, 1);
       },
     );
-    // await withFixtures(
-    //   {
-    //     fixtures: new FixtureBuilder({ onboarding: true })
-    //       .withMetaMetricsController({
-    //         metaMetricsId: MOCK_META_METRICS_ID,
-    //         participateInMetaMetrics: false,
-    //       })
-    //       .build(),
-    //     title: this.test?.fullTitle(),
-    //     testSpecificMock: mockSegment,
-    //   },
-    //   async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-    //     let events = [];
-    //     await completeCreateNewWalletOnboardingFlow({
-    //       driver,
-    //       participateInMetaMetrics: false,
-    //       dataCollectionForMarketing: true,
-    //     });
-    //     events = await getEventPayloads(driver, mockedEndpoints);
-    //     assert.equal(events.length, 1);
-    //     const privacySettings = await navigateToPrivacySettingsPage(driver);
-    //     await privacySettings.toggleParticipateInMetaMetrics();
-    //     events = await getEventPayloads(driver, mockedEndpoints);
-    //     assert.equal(events.length, 1);
-    //   },
-    // );
   });
 });

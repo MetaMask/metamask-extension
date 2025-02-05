@@ -21,8 +21,10 @@ class SettingsPage {
     css: '.tab-bar__tab__content__title',
   };
 
-  private readonly settingPageContainer =
-    '[data-testid="settings-page-container"]';
+  private readonly settingsPageTitle = {
+    text: 'Settings',
+    css: 'h3',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -30,7 +32,7 @@ class SettingsPage {
 
   async check_pageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.settingPageContainer);
+      await this.driver.waitForSelector(this.settingsPageTitle);
     } catch (e) {
       console.log('Timeout while waiting for Settings page to be loaded', e);
       throw e;
