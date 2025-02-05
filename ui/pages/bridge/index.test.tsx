@@ -71,7 +71,12 @@ describe('Bridge', () => {
   it('renders the component with initial props', async () => {
     const swapsMockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: { support: true },
+        extensionConfig: {
+          support: true,
+          chains: {
+            '0x1': { isActiveSrc: true, isActiveDest: false },
+          },
+        },
       },
       metamaskStateOverrides: {
         useExternalServices: true,
