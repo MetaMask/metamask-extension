@@ -202,8 +202,9 @@ export default function Notifications() {
         {hasNotifySnaps && (
           <Tabs
             defaultActiveTabKey={activeTab}
-            onTabClick={(tab) => setActiveTab(tab)}
+            onTabClick={(tab: string) => setActiveTab(tab as TAB_KEYS)}
             tabsClassName="notifications__tabs"
+            subHeader={null}
           >
             <Tab
               activeClassName="notifications__tab--active"

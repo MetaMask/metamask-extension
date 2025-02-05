@@ -116,3 +116,12 @@ Tabs.propTypes = {
   tabListProps: PropTypes.object,
   tabContentProps: PropTypes.object,
 };
+
+Tabs.defaultProps = {
+  defaultActiveTabKey: '',
+  onTabClick: () => null,
+  tabsClassName: '',
+  subHeader: null,
+  tabListProps: {},
+  tabContentProps: {},
+};

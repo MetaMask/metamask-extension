@@ -5,8 +5,15 @@ import Tab from './tab/tab.component';
 
 describe('Tabs', () => {
   const renderTabs = (props = {}) => {
+    const defaultProps = {
+      defaultActiveTabKey: '',
+      onTabClick: () => null,
+      tabsClassName: '',
+      subHeader: null,
+    };
+
     return render(
-      <Tabs {...props}>
+      <Tabs {...defaultProps} {...props}>
         <Tab tabKey="tab1" name="Tab 1">
           Tab 1 Content
         </Tab>
@@ -102,7 +109,7 @@ describe('Tabs', () => {
 
   it('handles null children gracefully', () => {
     const { getByText } = render(
-      <Tabs>
+      <Tabs defaultActiveTabKey="" onTabClick={() => null} tabsClassName="" subHeader={null}>
         {null}
         <Tab tabKey="tab1" name="Tab 1">
           Tab 1 Content
