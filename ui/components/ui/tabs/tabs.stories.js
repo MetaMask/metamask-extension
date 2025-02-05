@@ -1,5 +1,4 @@
 import React from 'react';
-import DropdownTab from './snaps/dropdown-tab';
 import Tab from './tab/tab.component';
 import Tabs from './tabs.component';
 

@@ -98,24 +98,26 @@ const SnapUIRendererComponent = ({
   // or if the footer component has been used.
   const hasFooter = onCancel || content?.props?.children?.[1] !== undefined;
 
-  return <SnapInterfaceContextProvider
-    snapId={snapId}
-    interfaceId={interfaceId}
-    initialState={initialState}
-    context={context}
-  >
-    <Box
-      className="snap-ui-renderer__content"
-      height={BlockSize.Full}
-      backgroundColor={backgroundColor}
-      style={{
-        overflowY: 'auto',
-        marginBottom: useFooter && hasFooter ? '80px' : '0',
-      }}
+  return (
+    <SnapInterfaceContextProvider
+      snapId={snapId}
+      interfaceId={interfaceId}
+      initialState={initialState}
+      context={context}
     >
-      <MetaMaskTemplateRenderer sections={sections} />
-    </Box>
-  </SnapInterfaceContextProvider>
+      <Box
+        className="snap-ui-renderer__content"
+        height={BlockSize.Full}
+        backgroundColor={backgroundColor}
+        style={{
+          overflowY: 'auto',
+          marginBottom: useFooter && hasFooter ? '80px' : '0',
+        }}
+      >
+        <MetaMaskTemplateRenderer sections={sections} />
+      </Box>
+    </SnapInterfaceContextProvider>
+  );
 };
 
 // SnapUIRenderer is memoized to avoid useless re-renders if one of the parents element re-renders.
