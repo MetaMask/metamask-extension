@@ -24,6 +24,7 @@ describe('Dapp interactions', function () {
       async ({ driver }) => {
         await driver.navigate();
         await openDapp(driver);
+        await driver.delay(1000);
 
         // Trigger Notification
         await driver.clickElement('#addEthereumChain');
