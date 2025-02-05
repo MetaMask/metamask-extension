@@ -34,6 +34,7 @@ import {
   gasFeeStartPollingByNetworkClientId,
   gasFeeStopPollingByPollingToken,
   getContractMethodData,
+  hideLoadingIndication,
   setDefaultHomeActiveTabName,
 } from '../../../store/actions';
 import ConfirmDecryptMessage from '../../confirm-decrypt-message';
@@ -160,6 +161,8 @@ const ConfirmTransaction = () => {
       dispatch(setDefaultHomeActiveTabName('activity')).then(() => {
         history.replace(DEFAULT_ROUTE);
       });
+      // Hide loading indication when redirecting to the default route
+      dispatch(hideLoadingIndication());
     } else if (
       prevTransactionId &&
       transactionId &&
