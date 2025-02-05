@@ -54,15 +54,7 @@ if (false) {
   // eslint-disable-next-line import/no-unresolved
   require('@typescript-eslint/parser');
   require('eslint');
-  require('eslint-config-prettier');
-  require('eslint-import-resolver-node');
-  require('eslint-import-resolver-typescript');
-  require('eslint-plugin-import');
-  require('eslint-plugin-jsdoc');
-  require('eslint-plugin-node');
-  require('eslint-plugin-prettier');
-  require('eslint-plugin-react');
-  require('eslint-plugin-react-hooks');
+ ;
   require('eslint-plugin-jest');
 }
 /* eslint-enable no-constant-condition, node/global-require */

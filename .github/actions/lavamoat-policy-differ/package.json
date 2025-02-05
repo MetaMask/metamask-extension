@@ -1,0 +1,31 @@
+{
+  "name": "json-resource-analyzer",
+  "version": "1.0.0",
+  "description": "Analyzes changes in the resources field of multiple JSON files",
+  "main": "index.js",
+  "scripts": {
+    "test": "ava"
+  },
+  "devDependencies": {
+    "ava": "^5.0.0"
+  },
+  "ava": {
+    "files": [
+      "test/*.spec.js"
+    ],
+    "timeout": "30s"
+  },
+  "keywords": [
+    "github",
+    "action",
+    "lavamoat",
+    "policy",
+    "analysis"
+  ],
+  "author": "LavaMoat Project",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.10.0",
+    "@actions/github": "^5.1.1"
+  }
+}

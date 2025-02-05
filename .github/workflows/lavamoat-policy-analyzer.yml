@@ -1,0 +1,28 @@
+name: "LavaMoat Policy Diff Analyzer"
+
+on:
+  pull_request:
+    paths:
+      - "lavamoat/**/policy.json"
+  push:
+    paths:
+      - "lavamoat/**/policy.json"
+  workflow_dispatch:
+
+jobs:
+  run-lavamoat-policy-analysis:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Analyze policy diff
+        uses: ./.github/actions/lavamoat-policy-differ
+        with:
+          json_file_paths: |
+            lavamoat/browserify/main/policy.json
+            lavamoat/build-system/policy.json
+          github_token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
