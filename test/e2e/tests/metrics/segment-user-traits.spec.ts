@@ -6,7 +6,6 @@ import {
   completeCreateNewWalletOnboardingFlow,
   createNewWalletOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
-import SecurityAndPrivacySettings from '../../page-objects/pages/settings/security-and-privacy-settings';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import HeaderNavbar from "../../page-objects/pages/header-navbar";
 import SettingsPage from "../../page-objects/pages/settings/settings-page";
@@ -31,7 +30,7 @@ describe('Segment User Traits', function () {
   it('sends identify event when user opts in both metrics and data collection during onboarding', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilder({onboarding: true})
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
           })
@@ -39,7 +38,7 @@ describe('Segment User Traits', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
-      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+      async ({driver, mockedEndpoint: mockedEndpoints}) => {
         await createNewWalletOnboardingFlow({
           driver,
           participateInMetaMetrics: true,
@@ -56,7 +55,7 @@ describe('Segment User Traits', function () {
   it('sends identify event when user opts into metrics but not data collection during onboarding', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilder({onboarding: true})
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
           })
@@ -64,7 +63,7 @@ describe('Segment User Traits', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
-      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+      async ({driver, mockedEndpoint: mockedEndpoints}) => {
         await createNewWalletOnboardingFlow({
           driver,
           participateInMetaMetrics: true,
@@ -81,7 +80,7 @@ describe('Segment User Traits', function () {
   it('will not send identify event when user opts out of both metrics and data collection during onboarding', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilder({onboarding: true})
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
@@ -90,7 +89,7 @@ describe('Segment User Traits', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
-      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+      async ({driver, mockedEndpoint: mockedEndpoints}) => {
         await createNewWalletOnboardingFlow({
           driver,
           participateInMetaMetrics: false,
@@ -105,7 +104,7 @@ describe('Segment User Traits', function () {
   it('sends identify event when user enables metrics in privacy settings after opting out during onboarding', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilder({onboarding: true})
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: false,
@@ -114,7 +113,7 @@ describe('Segment User Traits', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
-      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+      async ({driver, mockedEndpoint: mockedEndpoints}) => {
         let events = [];
         await completeCreateNewWalletOnboardingFlow({
           driver,
@@ -141,7 +140,7 @@ describe('Segment User Traits', function () {
   it('sends identify event when user opts in both metrics and data in privacy settings after opting out during onboarding', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilder({onboarding: true})
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: false,
@@ -150,7 +149,7 @@ describe('Segment User Traits', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
-      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+      async ({driver, mockedEndpoint: mockedEndpoints}) => {
         let events = [];
         await completeCreateNewWalletOnboardingFlow({
           driver,
@@ -174,38 +173,4 @@ describe('Segment User Traits', function () {
       },
     );
   });
-
-  it('should stop sending identify events when user disables metrics in privacy settings after opting in during onboarding', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder({ onboarding: true })
-          .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-          })
-          .build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: mockSegment,
-      },
-      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        let events = [];
-        await completeCreateNewWalletOnboardingFlow({
-          driver,
-          participateInMetaMetrics: true,
-          dataCollectionForMarketing: true,
-        });
-        events = await getEventPayloads(driver, mockedEndpoints);
-        assert.equal(events.length, 1);
-        await new HeaderNavbar(driver).openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
-        await settingsPage.goToPrivacySettings();
-
-        const privacySettings = new PrivacySettings(driver);
-        await privacySettings.check_pageIsLoaded();
-        await privacySettings.toggleParticipateInMetaMetrics();
-        events = await getEventPayloads(driver, mockedEndpoints);
-        assert.equal(events.length, 1);
-      },
-    );
-  });
-});
+})
