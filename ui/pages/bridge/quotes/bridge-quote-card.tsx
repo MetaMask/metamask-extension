@@ -21,7 +21,7 @@ import {
   formatTokenAmount,
   formatEtaInMinutes,
 } from '../utils/quote';
-import { getCurrentCurrency, getLocale } from '../../../selectors';
+import { getCurrentCurrency } from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
 import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
@@ -45,6 +45,7 @@ import {
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import { TERMS_OF_USE_LINK } from '../../../../shared/constants/terms';
+import { getIntlLocale } from '../../../ducks/locale/locale';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 export const BridgeQuoteCard = () => {
@@ -60,7 +61,7 @@ export const BridgeQuoteCard = () => {
 
   const fromChain = useSelector(getFromChain);
   const toChain = useSelector(getToChain);
-  const locale = useSelector(getLocale);
+  const locale = useSelector(getIntlLocale);
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
   const [shouldShowNetworkFeesInGasToken, setShouldShowNetworkFeesInGasToken] =
