@@ -24,7 +24,6 @@ import {
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
 } from '../../../../shared/constants/bridge';
 import { formatChainIdFromDecimal } from '../../../../shared/modules/bridge-utils/multichain';
-import { type MultichainProviderConfig } from '../../../../shared/constants/multichain/networks';
 
 type I18nFunction = (
   key: string,
@@ -47,7 +46,7 @@ const getBridgeActionText = (
   step: Step,
   networkConfigurationsByChainId: Record<
     Hex | CaipChainId,
-    NetworkConfiguration | MultichainProviderConfig
+    NetworkConfiguration
   >,
 ) => {
   const hexDestChainId = step.destChainId
@@ -154,10 +153,7 @@ export const getStepStatus = ({
 
 type BridgeStepProps = {
   step: Step;
-  networkConfigurationsByChainId: Record<
-    `0x${string}`,
-    NetworkConfiguration | MultichainProviderConfig
-  >;
+  networkConfigurationsByChainId: Record<`0x${string}`, NetworkConfiguration>;
   time?: string;
   stepStatus: StatusTypes | null;
 };
