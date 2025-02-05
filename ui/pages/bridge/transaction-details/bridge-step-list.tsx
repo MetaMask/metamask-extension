@@ -1,7 +1,7 @@
 import React from 'react';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { Hex } from '@metamask/utils';
+import { type Hex, type CaipChainId } from '@metamask/utils';
 import { Box } from '../../../components/component-library';
 import {
   BridgeHistoryItem,
@@ -32,7 +32,10 @@ const getTime = (
 type BridgeStepsProps = {
   bridgeHistoryItem?: BridgeHistoryItem;
   srcChainTxMeta?: TransactionMeta;
-  networkConfigurationsByChainId: Record<Hex, NetworkConfiguration>;
+  networkConfigurationsByChainId: Record<
+    Hex | CaipChainId,
+    NetworkConfiguration
+  >;
 };
 
 export default function BridgeStepList({

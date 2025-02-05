@@ -1,4 +1,4 @@
-import { add0x, Hex } from '@metamask/utils';
+import { type Hex, isCaipChainId } from '@metamask/utils';
 import { StaticIntervalPollingController } from '@metamask/polling-controller';
 import { NetworkClientId } from '@metamask/network-controller';
 import { StateMetadata } from '@metamask/base-controller';
@@ -12,10 +12,7 @@ import {
   fetchBridgeFeatureFlags,
   fetchBridgeQuotes,
 } from '../../../../shared/modules/bridge-utils/bridge.util';
-import {
-  decimalToHex,
-  sumHexes,
-} from '../../../../shared/modules/conversion.utils';
+import { sumHexes } from '../../../../shared/modules/conversion.utils';
 import {
   type L1GasFees,
   type QuoteRequest,
@@ -28,7 +25,11 @@ import {
 import { isValidQuoteRequest } from '../../../../shared/modules/bridge-utils/quote';
 import { hasSufficientBalance } from '../../../../shared/modules/bridge-utils/balance';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { REFRESH_INTERVAL_MS } from '../../../../shared/constants/bridge';
+import {
+  type AllowedBridgeChainIds,
+  REFRESH_INTERVAL_MS,
+} from '../../../../shared/constants/bridge';
+import { formatChainIdFromDecimal } from '../../../../shared/modules/bridge-utils/multichain';
 import {
   BRIDGE_CONTROLLER_NAME,
   DEFAULT_BRIDGE_STATE,
@@ -139,9 +140,10 @@ export default class BridgeController extends StaticIntervalPollingController<Br
 
     if (isValidQuoteRequest(updatedQuoteRequest)) {
       this.#quotesFirstFetched = Date.now();
-      const walletAddress = this.#getSelectedAccount().address;
-      const srcChainIdInHex = add0x(
-        decimalToHex(updatedQuoteRequest.srcChainId),
+      const walletAddress =
+        paramsToUpdate.walletAddress ?? this.#getSelectedAccount().address;
+      const srcChainIdInHex = formatChainIdFromDecimal(
+        updatedQuoteRequest.srcChainId,
       );
 
       const insufficientBal =
@@ -162,7 +164,9 @@ export default class BridgeController extends StaticIntervalPollingController<Br
 
   #hasSufficientBalance = async (quoteRequest: QuoteRequest) => {
     const walletAddress = this.#getSelectedAccount().address;
-    const srcChainIdInHex = add0x(decimalToHex(quoteRequest.srcChainId));
+    const srcChainIdInHexOrCaip = formatChainIdFromDecimal(
+      quoteRequest.srcChainId,
+    );
     const provider = this.#getSelectedNetworkClient()?.provider;
 
     return (
@@ -172,7 +176,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
         walletAddress,
         quoteRequest.srcTokenAddress,
         quoteRequest.srcTokenAmount,
-        srcChainIdInHex,
+        srcChainIdInHexOrCaip,
       ))
     );
   };
@@ -287,8 +291,9 @@ export default class BridgeController extends StaticIntervalPollingController<Br
     return await Promise.all(
       quotes.map(async (quoteResponse) => {
         const { quote, trade, approval } = quoteResponse;
-        const chainId = add0x(decimalToHex(quote.srcChainId)) as ChainId;
+        const chainId = formatChainIdFromDecimal(quote.srcChainId);
         if (
+          !isCaipChainId(chainId) &&
           [CHAIN_IDS.OPTIMISM.toString(), CHAIN_IDS.BASE.toString()].includes(
             chainId,
           )
@@ -303,12 +308,12 @@ export default class BridgeController extends StaticIntervalPollingController<Br
           const approvalL1GasFees = approval
             ? await this.#getLayer1GasFee({
                 transactionParams: getTxParams(approval),
-                chainId,
+                chainId: chainId as ChainId,
               })
             : '0';
           const tradeL1GasFees = await this.#getLayer1GasFee({
             transactionParams: getTxParams(trade),
-            chainId,
+            chainId: chainId as ChainId,
           });
           return {
             ...quoteResponse,
@@ -330,7 +335,11 @@ export default class BridgeController extends StaticIntervalPollingController<Br
     );
   }
 
-  #getSelectedNetworkClientId(chainId: Hex) {
+  #getSelectedNetworkClientId(chainId: AllowedBridgeChainIds) {
+    if (isCaipChainId(chainId)) {
+      // TODO get solana network client id
+      return chainId;
+    }
     return this.messagingSystem.call(
       'NetworkController:findNetworkClientIdByChainId',
       chainId,
