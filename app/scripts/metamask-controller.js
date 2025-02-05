@@ -24,9 +24,6 @@ import { debounce, throttle, memoize, wrap, pick } from 'lodash';
 import {
   KeyringController,
   KeyringTypes,
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  displayForKeyring,
-  ///: END:ONLY_INCLUDE_IF
   keyringBuilderFactory,
 } from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
