@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { KeyringObject } from '@metamask/keyring-controller';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
@@ -17,6 +18,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getInternalAccountByAddress,
   getMetaMaskAccountsOrdered,
+  getMetaMaskKeyrings,
   getUseBlockie,
 } from '../../../selectors';
 import {
@@ -38,11 +40,20 @@ import {
   ModalBody,
 } from '../../component-library';
 import { AddressCopyButton } from '../address-copy-button';
+import SRPQuiz from '../../app/srp-quiz-modal';
 import { AccountDetailsAuthenticate } from './account-details-authenticate';
 import { AccountDetailsDisplay } from './account-details-display';
 import { AccountDetailsKey } from './account-details-key';
 
-export const AccountDetails = ({ address }) => {
+export enum AttemptExportState {
+  None = 'None',
+  PrivateKey = 'PrivateKey',
+  SRP = 'SRP',
+}
+
+type AccountDetailsProps = { address: string };
+
+export const AccountDetails = ({ address }: AccountDetailsProps) => {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -51,8 +62,15 @@ export const AccountDetails = ({ address }) => {
   const {
     metadata: { name },
   } = useSelector((state) => getInternalAccountByAddress(state, address));
+  const keyrings: KeyringObject[] = useSelector(getMetaMaskKeyrings);
+  const keyringId =
+    keyrings.find((kr) => kr.accounts.includes(address))?.fingerprint || '';
+
   const [showHoldToReveal, setShowHoldToReveal] = useState(false);
-  const [attemptingExport, setAttemptingExport] = useState(false);
+  const [attemptingExport, setAttemptingExport] = useState<AttemptExportState>(
+    AttemptExportState.None,
+  );
+  const [srpQuizModalVisible, setSrpQuizModalVisible] = useState(false);
 
   // This is only populated when the user properly authenticates
   const [privateKey, setPrivateKey] = useState('');
@@ -80,7 +98,7 @@ export const AccountDetails = ({ address }) => {
     <>
       {/* This is the Modal that says "Show private key" on top and has a few states */}
       <Modal
-        isOpen={!showHoldToReveal}
+        isOpen={!showHoldToReveal && !srpQuizModalVisible}
         onClose={onClose}
         data-testid="account-details-modal"
       >
@@ -89,18 +107,32 @@ export const AccountDetails = ({ address }) => {
           <ModalHeader
             onClose={onClose}
             onBack={
-              attemptingExport &&
-              (() => {
-                dispatch(hideWarning());
-                setPrivateKey('');
-                setAttemptingExport(false);
-              })
+              attemptingExport
+                ? () => {
+                    dispatch(hideWarning());
+                    setPrivateKey('');
+                    setAttemptingExport(AttemptExportState.None);
+                  }
+                : undefined
             }
           >
             {attemptingExport ? t('showPrivateKey') : avatar}
           </ModalHeader>
           <ModalBody>
-            {attemptingExport ? (
+            {attemptingExport === AttemptExportState.None && (
+              <AccountDetailsDisplay
+                accounts={accounts}
+                accountName={name}
+                address={address}
+                onExportClick={(attemptExportMode: AttemptExportState) => {
+                  if (attemptExportMode === AttemptExportState.SRP) {
+                    setSrpQuizModalVisible(true);
+                  }
+                  setAttemptingExport(attemptExportMode);
+                }}
+              />
+            )}
+            {attemptingExport === AttemptExportState.PrivateKey && (
               <>
                 <Box
                   display={Display.Flex}
@@ -133,13 +165,6 @@ export const AccountDetails = ({ address }) => {
                   />
                 )}
               </>
-            ) : (
-              <AccountDetailsDisplay
-                accounts={accounts}
-                accountName={name}
-                address={address}
-                onExportClick={() => setAttemptingExport(true)}
-              />
             )}
           </ModalBody>
         </ModalContent>
@@ -163,6 +188,15 @@ export const AccountDetails = ({ address }) => {
           setShowHoldToReveal(false);
         }}
         holdToRevealType="PrivateKey"
+      />
+      <SRPQuiz
+        keyringId={keyringId}
+        isOpen={srpQuizModalVisible}
+        onClose={() => {
+          setSrpQuizModalVisible(false);
+          onClose();
+        }}
+        closeAfterCompleting
       />
     </>
   );

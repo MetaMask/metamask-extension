@@ -114,9 +114,6 @@
     "message": "Importeren",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Account importeren"
-  },
   "importAccountMsg": {
     "message": " Geïmporteerde accounts worden niet gekoppeld aan de seedphrase van uw oorspronkelijk gemaakte MetaMask-account. Meer informatie over geïmporteerde accounts"
   },

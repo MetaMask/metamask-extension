@@ -2352,9 +2352,6 @@
     "message": "Import",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Import account"
-  },
   "importAccountError": {
     "message": "Error importing account."
   },
@@ -2391,6 +2388,27 @@
   "importNFTTokenIdToolTip": {
     "message": "An NFT's ID is a unique identifier since no two NFTs are alike. Again, on OpenSea this number is under 'Details'. Make a note of it, or copy it onto your clipboard."
   },
+  "importNWordSRP": {
+    "message": "I have a $1, word recovery phrase",
+    "description": "$1 is the number of words in the recovery phrase"
+  },
+  "importPrivateKey": {
+    "message": "Import Private Key"
+  },
+  "importSRPDescription": {
+    "message": "Enter your wallet's secret recovery phrase. You can import any Ethereum, Solana, or Bitcoin secret recovery phrase."
+  },
+  "importSRPWordError": {
+    "message": "Word $1 is incorrect or misspelled.",
+    "description": "$1 is the word that is incorrect or misspelled"
+  },
+  "importSRPWordErrorAlternative": {
+    "message": "Word $1 and $2 is incorrect or misspelled.",
+    "description": "$1 and $2 are multiple words that are mispelled."
+  },
+  "importSecretRecoveryPhrase": {
+    "message": "Import Secret Recovery Phrase"
+  },
   "importSelectedTokens": {
     "message": "Import selected tokens?"
   },
@@ -2408,6 +2426,12 @@
   },
   "importTokensError": {
     "message": "We could not import the tokens. Please try again later."
+  },
+  "importWallet": {
+    "message": "Import wallet"
+  },
+  "importWalletSuccess": {
+    "message": "Wallet successfully imported"
   },
   "importWithCount": {
     "message": "Import $1",
@@ -4474,6 +4498,9 @@
   "reusedTokenNameWarning": {
     "message": "A token here reuses a symbol from another token you watch, this can be confusing or deceptive."
   },
+  "revealSecretRecoveryPhrase": {
+    "message": "Reveal Secret Recovery Phrase"
+  },
   "revealSeedWords": {
     "message": "Reveal Secret Recovery Phrase"
   },
@@ -4835,6 +4862,9 @@
   },
   "showPrivateKey": {
     "message": "Show private key"
+  },
+  "showSRP": {
+    "message": "Show secret recovery phrase"
   },
   "showTestnetNetworks": {
     "message": "Show test networks"

@@ -2173,9 +2173,6 @@
     "message": "Импорт",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Импортировать счет"
-  },
   "importAccountError": {
     "message": "Ошибка импорта счета."
   },

@@ -9,6 +9,10 @@ import React, {
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
+///: END:ONLY_INCLUDE_IF
+
 import {
   Box,
   ButtonPrimary,
@@ -20,7 +24,12 @@ import {
 import { FormTextField } from '../../component-library/form-text-field/form-text-field';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAccountNameErrorMessage } from '../../../helpers/utils/accounts';
-import { getMetaMaskAccountsOrdered } from '../../../selectors';
+import {
+  getMetaMaskAccountsOrdered,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  getMetaMaskKeyrings,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
   MetaMetricsEventAccountType,
@@ -29,6 +38,10 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { Display } from '../../../helpers/constants/design-system';
+
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+import { SelectSRP } from '../multi-srp/select-srp/select-srp';
+///: END:ONLY_INCLUDE_IF
 
 type Props = {
   /**
@@ -45,6 +58,14 @@ type Props = {
    * Callback called once the account has been created
    */
   onActionComplete: (completed: boolean) => Promise<void>;
+
+  /**
+   * Callback to select the SRP
+   */
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  onSelectSRP?: () => void;
+  selectedKeyringId?: string;
+  ///: END:ONLY_INCLUDE_IF
 };
 
 type CreateAccountProps<C extends React.ElementType> =
@@ -60,6 +81,10 @@ export const CreateAccount: CreateAccountComponent = React.memo(
       {
         getNextAvailableAccountName,
         onCreateAccount,
+        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+        onSelectSRP,
+        selectedKeyringId,
+        ///: END:ONLY_INCLUDE_IF
         onActionComplete,
       }: CreateAccountProps<C>,
       ref?: PolymorphicRef<C>,
@@ -91,6 +116,16 @@ export const CreateAccount: CreateAccountComponent = React.memo(
         trimmedAccountName || defaultAccountName,
         defaultAccountName,
       );
+      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+      const keyrings = useSelector(getMetaMaskKeyrings);
+      const selectedKeyring = keyrings.find(
+        (keyring: KeyringObject) => keyring?.fingerprint === selectedKeyringId,
+      );
+      const hdKeyrings = keyrings.filter(
+        (keyring: KeyringObject) => keyring.type === KeyringTypes.hd,
+      );
+      const selectedKeyringIndex = hdKeyrings.indexOf(selectedKeyring);
+      ///: END:ONLY_INCLUDE_IF(multi-srp)
 
       const onSubmit = useCallback(
         async (event: KeyboardEvent<HTMLFormElement>) => {
@@ -142,6 +177,19 @@ export const CreateAccount: CreateAccountComponent = React.memo(
               }
             }}
           />
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+            hdKeyrings.length > 1 && onSelectSRP ? (
+              <Box marginBottom={3}>
+                <SelectSRP
+                  onClick={onSelectSRP}
+                  srpName={`Secret Phrase ${selectedKeyringIndex + 1}`}
+                  srpAccounts={selectedKeyring.accounts.length}
+                />
+              </Box>
+            ) : null
+            ///: END:ONLY_INCLUDE_IF
+          }
           <Box display={Display.Flex} marginTop={1} gap={2}>
             <ButtonSecondary
               data-testid="cancel-add-account-with-name"
