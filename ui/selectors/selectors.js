@@ -2988,7 +2988,7 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
   getSelectedAccountTokensAcrossChains, // TODO: useFilteredAccountTokens, we need to filter Testnets
   getSelectedAccountNativeTokenCachedBalanceByChainId,
   getTokenBalances,
-  (state) => state.metamask.marketData,
+  getMarketData,
   getCurrencyRates,
   getPreferences,
   getIsTokenNetworkFilterEqualCurrentNetwork,

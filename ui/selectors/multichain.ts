@@ -21,7 +21,6 @@ import {
   getConversionRate,
   getNativeCurrency,
   getCurrentCurrency,
-  // getTokenBalances,
 } from '../ducks/metamask/metamask';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -37,26 +36,12 @@ import {
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
 } from '../../shared/modules/selectors/networks';
-// import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
-// import {
-//   Token,
-//   TokenWithFiatAmount,
-// } from '../components/app/assets/token-list/token-list';
-// import { calculateTokenBalance } from '../components/app/assets/util/calculateTokenBalance';
-// import { calculateTokenFiatAmount } from '../components/app/assets/util/calculateTokenFiatAmount';
 import { AccountsState, getSelectedInternalAccount } from './accounts';
 import {
-  // getCurrencyRates,
   getIsMainnet,
-  // getIsTokenNetworkFilterEqualCurrentNetwork,
-  // getMarketData,
   getMaybeSelectedInternalAccount,
   getNativeCurrencyImage,
-  // getPreferences,
-  // getSelectedAccount,
   getSelectedAccountCachedBalance,
-  // getSelectedAccountNativeTokenCachedBalanceByChainId,
-  // getSelectedAccountTokensAcrossChains,
   getShouldShowFiat,
   getShowFiatInTestnets,
 } from './selectors';
@@ -483,83 +468,3 @@ export function getMultichainConversionRate(
     ? getConversionRate(state)
     : getMultichainCoinRates(state)?.[ticker.toLowerCase()]?.conversionRate;
 }
-
-// // consolidateTokenBalances
-// export const getTokenBalancesEvm = createDeepEqualSelector(
-//   getSelectedAccountTokensAcrossChains, // TODO: useFilteredAccountTokens, we need to filter Testnets
-//   getSelectedAccountNativeTokenCachedBalanceByChainId,
-//   getTokenBalances,
-//   (state) => state.metamask.marketData,
-//   getCurrencyRates,
-//   getPreferences,
-//   getIsTokenNetworkFilterEqualCurrentNetwork,
-//   getSelectedAccount,
-//   (
-//     selectedAccountTokensChains,
-//     nativeBalances,
-//     tokenBalances,
-//     marketData,
-//     currencyRates,
-//     preferences,
-//     isOnCurrentNetwork,
-//     selectedAccount,
-//   ) => {
-//     const { hideZeroBalanceTokens } = preferences;
-//     const selectedAccountTokenBalancesAcrossChains =
-//       tokenBalances[selectedAccount.address];
-
-//     const tokensWithBalance: TokenWithFiatAmount[] = [];
-//     Object.entries(selectedAccountTokensChains).forEach(
-//       ([stringChainKey, tokens]) => {
-//         const chainId = stringChainKey as Hex;
-//         // @ts-ignore
-//         tokens.forEach((token: Token) => {
-//           const { isNative, address, decimals } = token;
-//           const balance =
-//             calculateTokenBalance({
-//               isNative,
-//               chainId,
-//               address,
-//               decimals,
-//               // @ts-ignore
-//               nativeBalances,
-//               // @ts-ignore
-//               selectedAccountTokenBalancesAcrossChains,
-//             }) || '0';
-
-//           const tokenFiatAmount = calculateTokenFiatAmount({
-//             token,
-//             chainId,
-//             balance,
-//             marketData,
-//             currencyRates,
-//           });
-
-//           // Respect the "hide zero balance" setting (when true):
-//           // - Native tokens should always display with zero balance when on the current network filter.
-//           // - Native tokens should not display with zero balance when on all networks filter
-//           // - ERC20 tokens with zero balances should respect the setting on both the current and all networks.
-
-//           // Respect the "hide zero balance" setting (when false):
-//           // - Native tokens should always display with zero balance when on the current network filter.
-//           // - Native tokens should always display with zero balance when on all networks filter
-//           // - ERC20 tokens always display with zero balance on both the current and all networks filter.
-//           if (
-//             !hideZeroBalanceTokens ||
-//             balance !== '0' ||
-//             (token.isNative && isOnCurrentNetwork)
-//           ) {
-//             tokensWithBalance.push({
-//               ...token,
-//               balance,
-//               tokenFiatAmount,
-//               chainId,
-//               string: String(balance),
-//             });
-//           }
-//         });
-//       },
-//     );
-//     return tokensWithBalance;
-//   },
-// );
