@@ -822,8 +822,6 @@ jobs:
     executor: node-browsers-medium-plus
     parallelism: 10
     steps:
-      - run: ls -l /opt/firefox/firefox
-      - run: which firefox
       - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
