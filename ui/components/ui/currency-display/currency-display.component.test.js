@@ -27,7 +27,6 @@ describe('CurrencyDisplay Component', () => {
     expect(container).toMatchSnapshot();
   });
 
-
   it('should render without title (tooltip)', () => {
     const props = {
       displayValue: '$123.45',
