@@ -128,7 +128,8 @@
     "attributions:check": "./development/attributions-check.sh",
     "attributions:generate": "./development/generate-attributions.sh",
     "ci-rerun-from-failed": "tsx .circleci/scripts/rerun-ci-workflow-from-failed.ts",
-    "git-diff-default-branch": "tsx .circleci/scripts/git-diff-default-branch.ts"
+    "git-diff-default-branch": "tsx .circleci/scripts/git-diff-default-branch.ts",
+    "validate-e2e-page-object-usage": "tsx .github/scripts/validate-e2e-page-object-usage.ts"
   },
   "resolutions": {
     "chokidar": "^3.6.0",

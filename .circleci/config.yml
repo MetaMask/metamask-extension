@@ -369,6 +369,9 @@ jobs:
           root: .
           paths:
             - changed-files
+      - store_artifacts:
+          path: changed-files
+          destination: changed-files
 
   validate-locales-only:
     executor: node-browsers-small
