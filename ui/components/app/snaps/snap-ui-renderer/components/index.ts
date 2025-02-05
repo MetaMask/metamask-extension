@@ -28,6 +28,7 @@ import { icon } from './icon';
 import { section } from './section';
 import { avatar } from './avatar';
 import { banner } from './banner';
+import { avatarIcon } from './avatar-icon';
 import { skeleton } from './skeleton';
 
 export const COMPONENT_MAPPING = {
@@ -61,5 +62,6 @@ export const COMPONENT_MAPPING = {
   Selector: selector,
   Section: section,
   Banner: banner,
+  AvatarIcon: avatarIcon,
   Skeleton: skeleton,
 };
