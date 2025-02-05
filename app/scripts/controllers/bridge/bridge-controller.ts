@@ -29,7 +29,7 @@ import {
   type AllowedBridgeChainIds,
   REFRESH_INTERVAL_MS,
 } from '../../../../shared/constants/bridge';
-import { formatChainIdFromApi } from '../../../../shared/modules/bridge-utils/multichain';
+import { formatChainIdFromDecimal } from '../../../../shared/modules/bridge-utils/multichain';
 import {
   BRIDGE_CONTROLLER_NAME,
   DEFAULT_BRIDGE_STATE,
@@ -142,7 +142,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
       this.#quotesFirstFetched = Date.now();
       const walletAddress =
         paramsToUpdate.walletAddress ?? this.#getSelectedAccount().address;
-      const srcChainIdInHex = formatChainIdFromApi(
+      const srcChainIdInHex = formatChainIdFromDecimal(
         updatedQuoteRequest.srcChainId,
       );
 
@@ -164,7 +164,9 @@ export default class BridgeController extends StaticIntervalPollingController<Br
 
   #hasSufficientBalance = async (quoteRequest: QuoteRequest) => {
     const walletAddress = this.#getSelectedAccount().address;
-    const srcChainIdInHexOrCaip = formatChainIdFromApi(quoteRequest.srcChainId);
+    const srcChainIdInHexOrCaip = formatChainIdFromDecimal(
+      quoteRequest.srcChainId,
+    );
     const provider = this.#getSelectedNetworkClient()?.provider;
 
     return (
@@ -289,7 +291,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
     return await Promise.all(
       quotes.map(async (quoteResponse) => {
         const { quote, trade, approval } = quoteResponse;
-        const chainId = formatChainIdFromApi(quote.srcChainId);
+        const chainId = formatChainIdFromDecimal(quote.srcChainId);
         if (
           !isCaipChainId(chainId) &&
           [CHAIN_IDS.OPTIMISM.toString(), CHAIN_IDS.BASE.toString()].includes(

@@ -99,8 +99,8 @@ import {
 } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
-  formatChainIdFromApi,
-  formatChainIdToApi,
+  formatChainIdFromDecimal,
+  formatChainIdToDecimal,
 } from '../../../../shared/modules/bridge-utils/multichain';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
@@ -218,8 +218,8 @@ const PrepareBridgePage = () => {
       // Get input data from active quote
       const { srcAsset, destAsset, destChainId, srcChainId } =
         activeQuote.quote;
-      const quoteDestChainId = formatChainIdFromApi(destChainId);
-      const quoteSrcChainId = formatChainIdFromApi(srcChainId);
+      const quoteDestChainId = formatChainIdFromDecimal(destChainId);
+      const quoteSrcChainId = formatChainIdFromDecimal(srcChainId);
 
       if (srcAsset && destAsset && quoteDestChainId) {
         // Set inputs to values from active quote
@@ -281,8 +281,8 @@ const PrepareBridgePage = () => {
               fromToken.decimals,
             ).toFixed()
           : undefined,
-      srcChainId: formatChainIdToApi(fromChain?.chainId),
-      destChainId: formatChainIdToApi(toChain?.chainId),
+      srcChainId: formatChainIdToDecimal(fromChain?.chainId),
+      destChainId: formatChainIdToDecimal(toChain?.chainId),
       // This override allows quotes to be returned when the rpcUrl is a tenderly fork
       // Otherwise quotes get filtered out by the bridge-api when the wallet's real
       // balance is less than the tenderly balance

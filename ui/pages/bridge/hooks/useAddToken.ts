@@ -8,7 +8,7 @@ import {
   getNetworkConfigurationsByChainId,
   getSelectedNetworkClientId,
 } from '../../../../shared/modules/selectors/networks';
-import { formatChainIdFromApi } from '../../../../shared/modules/bridge-utils/multichain';
+import { formatChainIdFromDecimal } from '../../../../shared/modules/bridge-utils/multichain';
 
 export default function useAddToken() {
   const dispatch = useDispatch();
@@ -35,7 +35,7 @@ export default function useAddToken() {
 
   const addDestToken = async (quoteResponse: QuoteResponse) => {
     // Look up the destination chain
-    const hexDestChainId = formatChainIdFromApi(
+    const hexDestChainId = formatChainIdFromDecimal(
       quoteResponse.quote.destChainId,
     );
     if (isCaipChainId(hexDestChainId)) {

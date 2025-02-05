@@ -17,7 +17,7 @@ import {
 import { getGasFeeEstimates } from '../../../ducks/metamask/metamask';
 import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
-import { formatChainIdFromApi } from '../../../../shared/modules/bridge-utils/multichain';
+import { formatChainIdFromDecimal } from '../../../../shared/modules/bridge-utils/multichain';
 import type { ChainId } from '../../../../shared/types/bridge';
 
 export default function useHandleTx() {
@@ -44,7 +44,7 @@ export default function useHandleTx() {
     };
     fieldsToAddToTxMeta: Omit<Partial<TransactionMeta>, 'status'>; // We don't add status, so omit it to fix the type error
   }) => {
-    const hexChainId = formatChainIdFromApi(txParams.chainId);
+    const hexChainId = formatChainIdFromDecimal(txParams.chainId);
 
     if (isCaipChainId(hexChainId)) {
       // TODO handle non-evm chains

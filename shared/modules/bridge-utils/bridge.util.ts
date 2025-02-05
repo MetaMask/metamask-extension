@@ -41,7 +41,7 @@ import {
   QUOTE_RESPONSE_VALIDATORS,
   FEE_DATA_VALIDATORS,
 } from './validators';
-import { formatChainIdFromApi, formatChainIdToApi } from './multichain';
+import { formatChainIdFromDecimal, formatChainIdToDecimal } from './multichain';
 
 const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };
 const CACHE_REFRESH_TEN_MINUTES = 10 * MINUTE;
@@ -70,7 +70,7 @@ export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
         ).reduce(
           (acc, [chainId, value]) => ({
             ...acc,
-            [formatChainIdFromApi(chainId)]: value,
+            [formatChainIdFromDecimal(chainId)]: value,
           }),
           {},
         ),
@@ -107,7 +107,7 @@ export async function fetchBridgeTokens(
   }
 
   // TODO make token api v2 call
-  const url = `${BRIDGE_API_BASE_URL}/getTokens?chainId=${formatChainIdToApi(
+  const url = `${BRIDGE_API_BASE_URL}/getTokens?chainId=${formatChainIdToDecimal(
     chainId,
   )}`;
   const tokens = await fetchWithCache({

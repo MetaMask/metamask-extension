@@ -10,7 +10,7 @@ import { formatProviderLabel } from '../../../ui/pages/bridge/utils/quote';
 import { getCurrentKeyring } from '../../../ui/selectors';
 import { BRIDGE_DEFAULT_SLIPPAGE } from '../../constants/bridge';
 import { getIsSmartTransaction } from '../../modules/selectors';
-import { formatChainIdFromApi } from '../../modules/bridge-utils/multichain';
+import { formatChainIdFromDecimal } from '../../modules/bridge-utils/multichain';
 
 export const getCommonProperties = (
   bridgeHistoryItem: BridgeHistoryItem,
@@ -20,10 +20,10 @@ export const getCommonProperties = (
   // @ts-expect-error keyring type is possibly wrong
   const is_hardware_wallet = isHardwareKeyring(keyring.type) ?? false;
 
-  const chain_id_source = formatChainIdFromApi(
+  const chain_id_source = formatChainIdFromDecimal(
     bridgeHistoryItem.quote.srcChainId,
   );
-  const chain_id_destination = formatChainIdFromApi(
+  const chain_id_destination = formatChainIdFromDecimal(
     bridgeHistoryItem.quote.destChainId,
   );
 
