@@ -9,7 +9,6 @@ import {
   Form,
 } from '@metamask/snaps-sdk/jsx';
 import { fireEvent, waitFor } from '@testing-library/react';
-import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import * as backgroundConnection from '../../../../store/background-connection';
@@ -88,11 +87,20 @@ function renderInterface(
       useFooter={useFooter}
       onCancel={onCancel}
       contentBackgroundColor={contentBackgroundColor}
+      PERF_DEBUG={true}
     />,
     store,
   );
 
-  return { ...result, updateInterface };
+  const getRenderCount = () =>
+    parseInt(
+      result
+        .getByTestId('performance')
+        .getAttribute('data-renders'),
+      10,
+    );
+
+  return { ...result, updateInterface, getRenderCount };
 }
 
 describe('SnapUIRenderer', () => {
@@ -108,11 +116,12 @@ describe('SnapUIRenderer', () => {
   });
 
   it('renders basic UI', () => {
-    const { container, getByText } = renderInterface(
+    const { container, getByText, getRenderCount } = renderInterface(
       Box({ children: Text({ children: 'Hello world!' }) }),
     );
 
     expect(getByText('Hello world!')).toBeDefined();
+    expect(getRenderCount()).toBe(1);
     expect(container).toMatchSnapshot();
   });
 
@@ -344,7 +353,7 @@ describe('SnapUIRenderer', () => {
   });
 
   it('re-renders when the interface changes', () => {
-    const { container, getAllByRole, getByRole, updateInterface } =
+    const { container, getAllByRole, updateInterface, getRenderCount } =
       renderInterface(Box({ children: Input({ name: 'input' }) }));
 
     const inputs = getAllByRole('textbox');
@@ -357,11 +366,13 @@ describe('SnapUIRenderer', () => {
     const inputsAfterRerender = getAllByRole('textbox');
     expect(inputsAfterRerender.length).toBe(2);
 
+    expect(getRenderCount()).toBe(2)
+
     expect(container).toMatchSnapshot();
   });
 
   it('re-syncs state when the interface changes', () => {
-    const { container, getAllByRole, getByRole, updateInterface } =
+    const { container, getAllByRole, getRenderCount, updateInterface } =
       renderInterface(Box({ children: Input({ name: 'input' }) }));
 
     updateInterface(
@@ -373,11 +384,13 @@ describe('SnapUIRenderer', () => {
     expect(inputsAfterRerender[0].value).toStrictEqual('bar');
     expect(inputsAfterRerender[1].value).toStrictEqual('foo');
 
+    expect(getRenderCount()).toBe(2)
+
     expect(container).toMatchSnapshot();
   });
 
   it('re-focuses input after re-render', async () => {
-    const { container, getAllByRole, getByRole, updateInterface } =
+    const { container, getAllByRole, getByRole, updateInterface, getRenderCount } =
       renderInterface(Box({ children: Input({ name: 'input' }) }));
 
     const input = getByRole('textbox');
@@ -392,6 +405,8 @@ describe('SnapUIRenderer', () => {
     expect(inputs.length).toBe(2);
 
     await waitFor(() => expect(inputs[0]).toHaveFocus());
+
+    expect(getRenderCount()).toBe(2)
 
     expect(container).toMatchSnapshot();
   });

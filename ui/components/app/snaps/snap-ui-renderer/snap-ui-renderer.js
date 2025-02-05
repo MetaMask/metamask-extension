@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Container } from '@metamask/snaps-sdk/jsx';
@@ -20,6 +20,15 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { mapToExtensionCompatibleColor, mapToTemplate } from './utils';
 
+// Component for tracking the number of re-renders
+// DO NOT USE IN PRODUCTION
+const PerformanceTracker = () => {
+  const rendersRef = useRef(0);
+  rendersRef.current++;
+
+  return <span data-testid="performance" data-renders={rendersRef.current} />;
+};
+
 // Component that maps Snaps UI JSON format to MetaMask Template Renderer format
 const SnapUIRendererComponent = ({
   snapId,
@@ -33,6 +42,7 @@ const SnapUIRendererComponent = ({
   useFooter = false,
   onCancel,
   contentBackgroundColor,
+  PERF_DEBUG,
 }) => {
   const t = useI18nContext();
 
@@ -115,6 +125,7 @@ const SnapUIRendererComponent = ({
         }}
       >
         <MetaMaskTemplateRenderer sections={sections} />
+        {PERF_DEBUG && <PerformanceTracker />}
       </Box>
     </SnapInterfaceContextProvider>
   );
@@ -137,4 +148,5 @@ SnapUIRendererComponent.propTypes = {
   useFooter: PropTypes.bool,
   onCancel: PropTypes.func,
   contentBackgroundColor: PropTypes.string,
+  PERF_DEBUG: PropTypes.bool, // DO NOT USE THIS IN PRODUCTION
 };
