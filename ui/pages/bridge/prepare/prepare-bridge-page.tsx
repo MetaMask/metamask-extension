@@ -11,6 +11,7 @@ import { debounce } from 'lodash';
 import { useHistory, useLocation } from 'react-router-dom';
 import { BigNumber } from 'bignumber.js';
 import { type TokenListMap } from '@metamask/assets-controllers';
+import { isCaipChainId } from '@metamask/utils';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -68,7 +69,6 @@ import {
   isQuoteExpired as isQuoteExpiredUtil,
 } from '../utils/quote';
 import { isValidQuoteRequest } from '../../../../shared/modules/bridge-utils/quote';
-import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import {
   CrossChainSwapsEventProperties,
   useCrossChainSwapsEventTracker,
@@ -80,15 +80,24 @@ import { Footer } from '../../../components/multichain/pages/page';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
 import { Column, Row, Tooltip } from '../layout';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
-import { getCurrentKeyring, getTokenList } from '../../../selectors';
+import { getIntlLocale } from '../../../ducks/locale/locale';
+import {
+  getCurrentKeyring,
+  getSelectedEvmInternalAccount,
+  getSelectedInternalAccount,
+  getTokenList,
+} from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
 import { BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE } from '../../../../shared/constants/bridge';
-import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
+import {
+  getMultichainCurrentCurrency,
+  getMultichainProviderConfig,
+} from '../../../selectors/multichain';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
   formatChainIdFromApi,
   formatChainIdToApi,
@@ -118,7 +127,7 @@ const PrepareBridgePage = () => {
   const fromAmount = useSelector(getFromAmount);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
 
-  const providerConfig = useSelector(getProviderConfig);
+  const providerConfig = useMultichainSelector(getMultichainProviderConfig);
   const slippage = useSelector(getSlippage);
 
   const quoteRequest = useSelector(getQuoteRequest);
@@ -146,7 +155,10 @@ const PrepareBridgePage = () => {
   const isUsingHardwareWallet = isHardwareKeyring(keyring.type);
   const locale = useSelector(getIntlLocale);
 
-  const ticker = useSelector(getNativeCurrency);
+  const ticker = useMultichainSelector(getMultichainCurrentCurrency);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const selectedEvmAccount = useSelector(getSelectedEvmInternalAccount);
+
   const {
     isEstimatedReturnLow,
     isNoQuotesAvailable,
@@ -276,6 +288,14 @@ const PrepareBridgePage = () => {
       // balance is less than the tenderly balance
       insufficientBal: Boolean(providerConfig?.rpcUrl?.includes('tenderly')),
       slippage,
+      walletAddress:
+        fromChain?.chainId && isCaipChainId(fromChain.chainId)
+          ? selectedAccount?.address
+          : selectedEvmAccount?.address,
+      destWalletAddress:
+        toChain?.chainId && isCaipChainId(toChain.chainId)
+          ? selectedAccount?.address
+          : selectedEvmAccount?.address,
     }),
     [
       fromToken,
@@ -285,6 +305,8 @@ const PrepareBridgePage = () => {
       fromAmount,
       providerConfig,
       slippage,
+      selectedAccount?.address,
+      selectedEvmAccount?.address,
     ],
   );
 
