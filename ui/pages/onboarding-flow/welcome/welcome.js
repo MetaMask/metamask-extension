@@ -7,8 +7,7 @@ import { Carousel } from 'react-responsive-carousel';
 ///: END:ONLY_INCLUDE_IF
 import Mascot from '../../../components/ui/mascot';
 import Button from '../../../components/ui/button';
-import { Text } from '../../../components/component-library';
-import CheckBox from '../../../components/ui/check-box';
+import { Text, Checkbox } from '../../../components/component-library';
 import Box from '../../../components/ui/box';
 import {
   TextVariant,
@@ -192,10 +191,10 @@ export default function OnboardingWelcome() {
             alignItems={AlignItems.center}
             className="onboarding__terms-of-use"
           >
-            <CheckBox
+            <Checkbox
               id="onboarding__terms-checkbox"
               className="onboarding__terms-checkbox"
-              dataTestId="onboarding-terms-checkbox"
+              data-testid="onboarding-terms-checkbox"
               checked={termsChecked}
               onClick={toggleTermsCheck}
             />
