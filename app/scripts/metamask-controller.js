@@ -3124,7 +3124,7 @@ export default class MetamaskController extends EventEmitter {
           });
         }
 
-        // add new notification subscriptions for changed authorizations
+        // add new notification subscriptions for added/changed authorizations
         for (const [origin, authorization] of changedAuthorizations.entries()) {
           const sessionScopes = getSessionScopes(authorization);
 
@@ -3150,32 +3150,6 @@ export default class MetamaskController extends EventEmitter {
               });
             }
           });
-
-          // TODO: could be pushed into selectors?
-          const previousAuthorization = previousValue.get(origin);
-          if (previousAuthorization) {
-            const previousSessionScopes = getSessionScopes(
-              previousAuthorization,
-            );
-
-            Object.entries(previousSessionScopes).forEach(
-              ([scope, scopeObject]) => {
-                if (!sessionScopes[scope]) {
-                  if (
-                    scopeObject.notifications.includes('eth_subscription') &&
-                    scopeObject.methods.includes('eth_subscribe')
-                  ) {
-                    this.removeMultichainApiEthSubscriptionMiddleware({
-                      scope,
-                      origin,
-                    });
-                  }
-                }
-              },
-            );
-          }
-
-          this._notifyAuthorizationChange(origin, authorization);
         }
       },
       getAuthorizedScopesByOrigin,

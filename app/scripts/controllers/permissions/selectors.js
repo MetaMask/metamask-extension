@@ -142,7 +142,7 @@ export const diffMap = (currentMap, previousMap) => {
 
 /**
  * Given the current and previous exposed CAIP-25 authorization for each PermissionController
- * subject, returns a new map containing all authorizations that have changed.
+ * subject, returns a new map containing the current value of scopes added/changed in an authorization.
  * The values of each map must be immutable values directly from the
  * PermissionController state, or an empty object instantiated in this
  * function.
@@ -193,10 +193,12 @@ export const getChangedAuthorizations = (
 };
 
 /**
+ * Given the current and previous exposed CAIP-25 authorization for each PermissionController
+ * subject, returns a new map containing the only the scopes removed entirely from an authorization.
  *
  * @param {Map<string, Caip25Authorization>} newAuthorizationsMap - The new origin:authorization map.
  * @param {Map<string, Caip25Authorization>} [previousAuthorizationsMap] - The previous origin:authorization map.
- * @returns {Map<string, Caip25Authorization>} The origin:authorization map of changed authorizations.
+ * @returns {Map<string, Caip25Authorization>} The origin:authorization map of scopes removed from authorizations.
  */
 export const getRemovedAuthorizations = (
   newAuthorizationsMap,
@@ -214,13 +216,44 @@ export const getRemovedAuthorizations = (
     return removedAuthorizations;
   }
 
-  const previousOrigins = new Set([...previousAuthorizationsMap.keys()]);
-  for (const origin of newAuthorizationsMap.keys()) {
-    previousOrigins.delete(origin);
-  }
+  for (const origin of previousAuthorizationsMap.keys()) {
+    const previousAuthorization = previousAuthorizationsMap.get(origin);
 
-  for (const origin of previousOrigins.keys()) {
-    removedAuthorizations.set(origin, previousAuthorizationsMap.get(origin));
+    const newAuthorization = newAuthorizationsMap.get(origin);
+    if (!newAuthorization) {
+      removedAuthorizations.set(origin, previousAuthorization);
+      continue;
+    }
+
+    const removedRequiredScopes = {};
+    Object.entries(previousAuthorization.requiredScopes).forEach(
+      ([scope, prevScopeObject]) => {
+        const newScopeObject = newAuthorization.requiredScopes[scope];
+        if (!newScopeObject) {
+          removedRequiredScopes[scope] = prevScopeObject;
+        }
+      },
+    );
+
+    const removedOptionalScopes = {};
+    Object.entries(previousAuthorization.optionalScopes).forEach(
+      ([scope, prevScopeObject]) => {
+        const newScopeObject = newAuthorization.optionalScopes[scope];
+        if (!newScopeObject) {
+          removedOptionalScopes[scope] = prevScopeObject;
+        }
+      },
+    );
+
+    if (
+      Object.keys(removedRequiredScopes).length > 0 ||
+      Object.keys(removedOptionalScopes).length > 0
+    ) {
+      removedAuthorizations.set(origin, {
+        requiredScopes: removedRequiredScopes,
+        optionalScopes: removedOptionalScopes,
+      });
+    }
   }
 
   return removedAuthorizations;
