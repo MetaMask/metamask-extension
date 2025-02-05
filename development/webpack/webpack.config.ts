@@ -17,6 +17,7 @@ import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
 import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
+import discardFonts from 'postcss-discard-font-face';
 import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
 import { SelfInjectPlugin } from './utils/plugins/SelfInjectPlugin';
 import {
@@ -112,6 +113,14 @@ const plugins: WebpackPluginInstance[] = [
       isTest: args.test,
       shouldIncludeSnow: args.snow,
     },
+    preload: [
+      {
+        attributes: { as: 'font', crossorigin: true },
+        // preload our own fonts, as other fonts use fallback formats we don't
+        // want to preload
+        test: /fonts\/\.(?:woff2)$/u,
+      },
+    ],
   }),
   new ManifestPlugin({
     web_accessible_resources: webAccessibleResources,
@@ -282,6 +291,7 @@ const config = {
                 plugins: [
                   autoprefixer({ overrideBrowserslist: browsersListQuery }),
                   rtlCss({ processEnv: false }),
+                  discardFonts(['woff2']), // keep woff2 fonts
                 ],
               },
             },
@@ -323,7 +333,7 @@ const config = {
       },
       // images, fonts, wasm, etc.
       {
-        test: /\.(?:png|jpe?g|ico|webp|svg|gif|ttf|eot|woff2?|wasm)$/u,
+        test: /\.(?:png|jpe?g|ico|webp|svg|gif|woff2|wasm)$/u,
         type: 'asset/resource',
         generator: { filename: 'assets/[name].[contenthash][ext]' },
       },

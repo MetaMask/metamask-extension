@@ -1,4 +1,4 @@
-import { InternalAccount } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import type { CurrencyDisplayProps } from '../../ui/currency-display/currency-display.component';
 import type { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 

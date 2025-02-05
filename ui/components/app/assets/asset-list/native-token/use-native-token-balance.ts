@@ -7,7 +7,11 @@ import {
   getMultichainSelectedAccountCachedBalance,
   getMultichainShouldShowFiat,
 } from '../../../../../selectors/multichain';
-import { getCurrentCurrency, getPreferences } from '../../../../../selectors';
+import {
+  getPreferences,
+  getSelectedInternalAccount,
+} from '../../../../../selectors';
+import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { PRIMARY, SECONDARY } from '../../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../../hooks/useUserPreferencedCurrency';
@@ -16,6 +20,7 @@ import { TokenWithBalance } from '../asset-list';
 
 export const useNativeTokenBalance = () => {
   const showFiat = useSelector(getMultichainShouldShowFiat);
+  const account = useSelector(getSelectedInternalAccount);
   const primaryTokenImage = useSelector(getMultichainCurrencyImage);
   const { showNativeTokenAsMainBalance } = useSelector(getPreferences);
   const { chainId, ticker, type, rpcUrl } = useSelector(
@@ -46,12 +51,14 @@ export const useNativeTokenBalance = () => {
 
   const [primaryCurrencyDisplay, primaryCurrencyProperties] =
     useCurrencyDisplay(balance, {
+      account,
       numberOfDecimals: primaryNumberOfDecimals,
       currency: primaryCurrency,
     });
 
   const [secondaryCurrencyDisplay, secondaryCurrencyProperties] =
     useCurrencyDisplay(balance, {
+      account,
       numberOfDecimals: secondaryNumberOfDecimals,
       currency: secondaryCurrency,
     });

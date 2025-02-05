@@ -1,10 +1,9 @@
 const {
   withFixtures,
-  clickSignOnSignatureConfirmation,
+  clickSignOnRedesignedSignatureConfirmation,
   defaultGanacheOptions,
   openDapp,
   unlockWallet,
-  tempToggleSettingRedesignedConfirmations,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -269,7 +268,6 @@ describe('Test Snap Signature Insights', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
-        await tempToggleSettingRedesignedConfirmations(driver);
 
         // navigate to test snaps page and connect
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
@@ -332,12 +330,6 @@ describe('Test Snap Signature Insights', function () {
         // switch back to MetaMask window and switch to tx insights pane
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // wait for and click sign
-        await clickSignOnSignatureConfirmation({
-          driver,
-          snapSigInsights: true,
-        });
-
         // look for returned signature insights data
         await driver.waitForSelector({
           text: '0x4578616d706c652060706572736f6e616c5f7369676e60206d657373616765',
@@ -347,14 +339,14 @@ describe('Test Snap Signature Insights', function () {
         // wait for host to render and click checkbox to authorize signing
         await driver.waitForSelector({
           text: '127.0.0.1:8080',
-          tag: 'span',
+          tag: 'p',
         });
-        await driver.clickElement('.mm-checkbox__input-wrapper');
 
-        // click sign button and wait for window to close
-        await driver.clickElementAndWaitForWindowToClose(
-          '[data-testid="snapInsightsButtonConfirm"]',
-        );
+        // wait for and click sign
+        await clickSignOnRedesignedSignatureConfirmation({
+          driver,
+          snapSigInsights: true,
+        });
 
         // switch back to test-dapp window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -374,12 +366,6 @@ describe('Test Snap Signature Insights', function () {
         // switch back to MetaMask window and switch to tx insights pane
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // wait for and click sign
-        await clickSignOnSignatureConfirmation({
-          driver,
-          snapSigInsights: true,
-        });
-
         // look for returned signature insights data
         await driver.waitForSelector({
           text: '1',
@@ -389,14 +375,14 @@ describe('Test Snap Signature Insights', function () {
         // wait for host to render and click checkbox to authorize signing
         await driver.waitForSelector({
           text: '127.0.0.1:8080',
-          tag: 'span',
+          tag: 'p',
         });
-        await driver.clickElement('.mm-checkbox__input-wrapper');
 
-        // click sign button and wait for window to close
-        await driver.clickElementAndWaitForWindowToClose(
-          '[data-testid="snapInsightsButtonConfirm"]',
-        );
+        // wait for and click sign
+        await clickSignOnRedesignedSignatureConfirmation({
+          driver,
+          snapSigInsights: true,
+        });
 
         // switch back to test-dapp window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -416,16 +402,6 @@ describe('Test Snap Signature Insights', function () {
         // switch back to MetaMask window and switch to tx insights pane
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // click down arrow
-        await driver.waitForSelector('.fa-arrow-down');
-        await driver.clickElement('.fa-arrow-down');
-
-        // wait for and click sign
-        await clickSignOnSignatureConfirmation({
-          driver,
-          snapSigInsights: true,
-        });
-
         // look for returned signature insights data
         await driver.waitForSelector({
           text: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC has been identified as a malicious verifying contract.',
@@ -435,14 +411,14 @@ describe('Test Snap Signature Insights', function () {
         // wait for host to render and click checkbox to authorize signing
         await driver.waitForSelector({
           text: '127.0.0.1:8080',
-          tag: 'span',
+          tag: 'p',
         });
-        await driver.clickElement('.mm-checkbox__input-wrapper');
 
-        // click sign button and wait for window to close
-        await driver.clickElementAndWaitForWindowToClose(
-          '[data-testid="snapInsightsButtonConfirm"]',
-        );
+        // wait for and click sign
+        await clickSignOnRedesignedSignatureConfirmation({
+          driver,
+          snapSigInsights: true,
+        });
 
         // switch back to test-dapp window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -462,16 +438,6 @@ describe('Test Snap Signature Insights', function () {
         // switch back to MetaMask window and switch to tx insights pane
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // click down arrow
-        await driver.waitForSelector('.fa-arrow-down');
-        await driver.clickElement('.fa-arrow-down');
-
-        // wait for and click sign
-        await clickSignOnSignatureConfirmation({
-          driver,
-          snapSigInsights: true,
-        });
-
         // look for returned signature insights data
         await driver.waitForSelector({
           text: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC has been identified as a malicious verifying contract.',
@@ -481,14 +447,14 @@ describe('Test Snap Signature Insights', function () {
         // wait for host to render and click checkbox to authorize signing
         await driver.waitForSelector({
           text: '127.0.0.1:8080',
-          tag: 'span',
+          tag: 'p',
         });
-        await driver.clickElement('.mm-checkbox__input-wrapper');
 
-        // click sign button and wait for window to close
-        await driver.clickElementAndWaitForWindowToClose(
-          '[data-testid="snapInsightsButtonConfirm"]',
-        );
+        // wait for and click sign
+        await clickSignOnRedesignedSignatureConfirmation({
+          driver,
+          snapSigInsights: true,
+        });
 
         // switch back to test-dapp window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);

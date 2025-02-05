@@ -9,6 +9,12 @@ import {
 import { Box } from '..';
 import README from './README.mdx';
 import { PickerNetwork } from './picker-network';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  CHAIN_IDS,
+} from '../../../../shared/constants/network';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
+import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
 
 export default {
   title: 'Components/ComponentLibrary/PickerNetwork',
@@ -77,4 +83,30 @@ export const Width: StoryFn<typeof PickerNetwork> = (args) => (
     <PickerNetwork marginBottom={2} {...args} />
     <PickerNetwork {...args} width={BlockSize.Full} />
   </>
+);
+
+export const AvatarGroupProps: StoryFn<typeof PickerNetwork> = () => (
+  <PickerNetwork
+    label="Arbitrum One"
+    src="./images/arbitrum.svg"
+    avatarGroupProps={{
+      limit: 2,
+      members: [
+        CHAIN_IDS.MAINNET,
+        CHAIN_IDS.POLYGON,
+        CHAIN_IDS.AVALANCHE,
+        CHAIN_IDS.BASE,
+      ].map((c) => ({
+        avatarValue:
+          CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+            c as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+          ],
+        symbol:
+          NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+            c as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
+          ],
+      })),
+      avatarType: AvatarType.NETWORK,
+    }}
+  />
 );

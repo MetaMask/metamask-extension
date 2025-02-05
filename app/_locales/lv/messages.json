@@ -381,9 +381,6 @@
   "loading": {
     "message": "Notiek ielāde..."
   },
-  "loadingTokens": {
-    "message": "Ielādē marķierus..."
-  },
   "localhost": {
     "message": "Resursdators 8545"
   },
@@ -445,9 +442,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Konversijas kurss nav pieejams"
-  },
-  "noTransactions": {
-    "message": "Jums nav neviena darījuma."
   },
   "noWebcamFound": {
     "message": "Jūsu datora tīmekļa kamera netika atrasta. Lūdzu, mēģiniet vēlreiz."
@@ -712,9 +706,6 @@
   },
   "transactionErrored": {
     "message": "Darījumā radusies kļūda."
-  },
-  "transactionFee": {
-    "message": "Darījuma nodeva"
   },
   "transactionResubmitted": {
     "message": "Darījums atkārtoti iesniegts ar maksu par Gas, palielinātu līdz $1 pie $2"

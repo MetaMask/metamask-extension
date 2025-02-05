@@ -11,7 +11,6 @@ const {
   defaultGanacheOptions,
   largeDelayMs,
 } = require('../../helpers');
-const { PAGES } = require('../../webdriver/driver');
 
 describe('Request Queuing for Multiple Dapps and Txs on same networks', function () {
   it('should batch confirmation txs for different dapps on same networks ', async function () {
@@ -22,7 +21,6 @@ describe('Request Queuing for Multiple Dapps and Txs on same networks', function
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerTripleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
           .build(),
         dappOptions: { numberOfDapps: 3 },
         ganacheOptions: {
@@ -45,9 +43,6 @@ describe('Request Queuing for Multiple Dapps and Txs on same networks', function
 
       async ({ driver }) => {
         await unlockWallet(driver);
-
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
 
         // Open Dapp One
         await openDapp(driver, undefined, DAPP_URL);
@@ -136,19 +131,17 @@ describe('Request Queuing for Multiple Dapps and Txs on same networks', function
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.waitForSelector(
-          By.xpath("//div[normalize-space(.)='1 of 2']"),
+          By.xpath("//p[normalize-space(.)='1 of 2']"),
         );
 
         // Check correct network on confirm tx.
         await driver.findElement({
-          css: '[data-testid="network-display"]',
+          css: 'p',
           text: 'Localhost 7777',
         });
 
         // Reject All Transactions
-        await driver.clickElement('.page-container__footer-secondary a');
-
-        await driver.clickElement({ text: 'Reject all', tag: 'button' }); // TODO: Do we want to confirm here?
+        await driver.clickElement({ text: 'Reject all', tag: 'button' });
 
         // Wait for confirmation to close
         await driver.waitUntilXWindowHandles(4);
@@ -158,12 +151,12 @@ describe('Request Queuing for Multiple Dapps and Txs on same networks', function
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.waitForSelector(
-          By.xpath("//div[normalize-space(.)='1 of 2']"),
+          By.xpath("//p[normalize-space(.)='1 of 2']"),
         );
 
         // Check correct network on confirm tx.
         await driver.findElement({
-          css: '[data-testid="network-display"]',
+          css: 'p',
           text: 'Localhost 8546',
         });
       },

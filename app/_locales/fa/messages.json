@@ -381,9 +381,6 @@
   "loading": {
     "message": "در حال بارکردن…"
   },
-  "loadingTokens": {
-    "message": "در حال بارگیری رمزیاب ها..."
-  },
   "localhost": {
     "message": "Localhost 8545 "
   },
@@ -445,9 +442,6 @@
   },
   "noConversionRateAvailable": {
     "message": "هیچ نرخ تغییر موجود نمیباشد"
-  },
-  "noTransactions": {
-    "message": "شما هیچ معامله ندارید"
   },
   "noWebcamFound": {
     "message": "وب کم کمپیوتر تان پیدا نشد. لطفًا دوباره کوشش کنید."
@@ -712,9 +706,6 @@
   },
   "transactionErrored": {
     "message": "معامله با خطا مواجه شد."
-  },
-  "transactionFee": {
-    "message": "فیس معامله"
   },
   "transactionResubmitted": {
     "message": "معامله دوباره با فیس افزایش یافته گاز به 1$1 در 2$2 تسلیم داده شد"

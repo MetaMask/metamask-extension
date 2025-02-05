@@ -15,10 +15,6 @@ import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  MMI_ONBOARDING_COMPLETION_ROUTE,
-  SRP_REMINDER,
-  ///: END:ONLY_INCLUDE_IF
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
@@ -40,10 +36,6 @@ import {
 } from '../../../shared/constants/metametrics';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import ExperimentalArea from '../../components/app/flask/experimental-area';
-///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import OnboardingSuccessful from '../institutional/onboarding-successful/onboarding-successful';
-import { RemindSRP } from '../institutional/remind-srp/remind-srp';
 ///: END:ONLY_INCLUDE_IF
 import { submitRequestToBackgroundAndCatch } from '../../components/app/toast-master/utils';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
@@ -169,22 +161,6 @@ export default function OnboardingFlow() {
             path={ONBOARDING_COMPLETION_ROUTE}
             component={CreationSuccessful}
           />
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          }
-          <Route
-            path={MMI_ONBOARDING_COMPLETION_ROUTE}
-            component={OnboardingSuccessful}
-          />
-          <Route
-            path={SRP_REMINDER}
-            render={() => (
-              <RemindSRP secretRecoveryPhrase={secretRecoveryPhrase} />
-            )}
-          />
-          {
-            ///: END:ONLY_INCLUDE_IF
-          }
           <Route
             path={ONBOARDING_WELCOME_ROUTE}
             component={OnboardingWelcome}

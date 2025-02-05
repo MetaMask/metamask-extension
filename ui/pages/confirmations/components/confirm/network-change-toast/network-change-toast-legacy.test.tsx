@@ -35,7 +35,6 @@ const render = () => {
           expectsResult: false,
         },
       },
-      preferences: { redesignedConfirmationsEnabled: true },
     },
   };
 

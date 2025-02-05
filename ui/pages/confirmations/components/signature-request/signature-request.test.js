@@ -54,7 +54,7 @@ const mockStore = {
           metadata: {
             name: 'John Doe',
             keyring: {
-              type: 'Custody',
+              type: 'HD Key Tree',
             },
           },
           options: {},
@@ -88,17 +88,6 @@ const mockStore = {
     },
   },
 };
-
-const mockCustodySignFn = jest.fn();
-
-jest.mock('../../../../hooks/useMMICustodySignMessage', () => ({
-  useMMICustodySignMessage: () => ({
-    custodySignFn: mockCustodySignFn,
-  }),
-}));
-
-jest.mock('@metamask-institutional/extension');
-
 describe('Signature Request Component', () => {
   const store = configureMockStore()(mockStore);
 
@@ -431,84 +420,6 @@ describe('Signature Request Component', () => {
       expect(queryByText('OpenSea')).toBeNull();
     });
 
-    it('should render a warning when the selected account is not the one being used to sign', () => {
-      const storeOverride = configureMockStore()({
-        ...mockStore,
-        metamask: {
-          ...mockStore.metamask,
-          accounts: {
-            ...mockStore.metamask.accounts,
-            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-              address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-              balance: '0x0',
-              name: 'Account 1',
-            },
-            '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5': {
-              address: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
-              balance: '0x0',
-              name: 'Account 2',
-            },
-          },
-          internalAccounts: {
-            accounts: {
-              'b7e813d6-e31c-4bad-8615-8d4eff9f44f1': {
-                address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-                id: 'b7e813d6-e31c-4bad-8615-8d4eff9f44f1',
-                metadata: {
-                  name: 'Account 1',
-                  keyring: {
-                    type: 'HD Key Tree',
-                  },
-                },
-                options: {},
-                methods: ETH_EOA_METHODS,
-                type: EthAccountType.Eoa,
-              },
-              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-                address: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
-                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-                metadata: {
-                  name: 'Account 2',
-                  keyring: {
-                    type: 'HD Key Tree',
-                  },
-                },
-                options: {},
-                methods: ETH_EOA_METHODS,
-                type: EthAccountType.Eoa,
-              },
-            },
-            selectedAccount: 'b7e813d6-e31c-4bad-8615-8d4eff9f44f1',
-          },
-        },
-      });
-
-      const msgParams = {
-        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
-        data: JSON.stringify(messageData),
-        version: 'V4',
-        origin: 'test',
-      };
-
-      const { container } = renderWithProvider(
-        <SignatureRequest
-          {...baseProps}
-          txData={{
-            ...TRANSACTION_DATA_MOCK,
-            msgParams,
-            securityProviderResponse: {
-              flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS,
-            },
-          }}
-        />,
-        storeOverride,
-      );
-
-      expect(
-        container.querySelector('.request-signature__mismatch-info'),
-      ).toBeInTheDocument();
-    });
-
     it('should display security alert if present', () => {
       const msgParams = {
         from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
@@ -541,31 +452,6 @@ describe('Signature Request Component', () => {
       );
 
       expect(getByText('This is a deceptive request')).toBeInTheDocument();
-    });
-
-    it('should click onSign with custodyId as a accountType and call custodySignFn', () => {
-      const msgParams = {
-        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
-        data: JSON.stringify(messageData),
-        version: 'V4',
-        origin: 'test',
-      };
-      const { getByTestId } = renderWithProvider(
-        <SignatureRequest
-          {...baseProps}
-          txData={{
-            ...TRANSACTION_DATA_MOCK,
-            msgParams,
-          }}
-        />,
-        store,
-      );
-
-      const rejectRequestsLink = getByTestId('page-container-footer-next');
-      fireEvent.click(rejectRequestsLink);
-      expect(mockCustodySignFn).toHaveBeenCalledWith(
-        expect.objectContaining({ msgParams }),
-      );
     });
   });
 });

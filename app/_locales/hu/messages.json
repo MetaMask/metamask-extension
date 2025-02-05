@@ -381,9 +381,6 @@
   "loading": {
     "message": "Betöltés..."
   },
-  "loadingTokens": {
-    "message": "Tokenek betöltése..."
-  },
   "lock": {
     "message": "Kilépés"
   },
@@ -442,9 +439,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Nincs elérhető átváltási díj"
-  },
-  "noTransactions": {
-    "message": "Nincsenek tranzakciói"
   },
   "noWebcamFound": {
     "message": "Nem található számítógéped webkamerája. Kérünk, próbáld újra."
@@ -706,9 +700,6 @@
   },
   "transactionErrored": {
     "message": "Hiba történt a tranzakció során."
-  },
-  "transactionFee": {
-    "message": "Tranzakciós költség"
   },
   "transactionResubmitted": {
     "message": "A tranzakció újra beküldve $1 / $2 emelt gázdíjjal."

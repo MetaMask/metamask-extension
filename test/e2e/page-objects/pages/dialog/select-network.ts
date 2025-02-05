@@ -86,6 +86,7 @@ class SelectNetwork {
     console.log(`Click ${networkName}`);
     const networkNameItem = `[data-testid="${networkName}"]`;
     await this.driver.clickElementAndWaitToDisappear(networkNameItem);
+    await this.driver.assertElementNotPresent('.loading-overlay');
   }
 
   async selectRPC(rpcName: string): Promise<void> {

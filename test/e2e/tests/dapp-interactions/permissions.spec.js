@@ -46,10 +46,6 @@ describe('Permissions', function () {
           text: 'All Permissions',
           tag: 'div',
         });
-        await driver.clickElementAndWaitToDisappear({
-          text: 'Got it',
-          tag: 'button',
-        });
         await driver.waitForSelector({
           text: '127.0.0.1:8080',
           tag: 'p',

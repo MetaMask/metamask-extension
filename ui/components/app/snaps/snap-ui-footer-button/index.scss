@@ -2,8 +2,6 @@
   &:not(.hide-snap-branding) {
     &.mm-button-primary {
       box-shadow: none;
-      color: var(--color-text-alternative);
-      background-color: var(--color-icon-default);
 
       &:hover:not(&--disabled) {
         opacity: 80%;
@@ -13,11 +11,15 @@
       &:active:not(&--disabled) {
         opacity: 60%;
       }
+
+      &:not(.mm-button-primary--type-danger) {
+        color: var(--color-text-alternative);
+        background-color: var(--color-icon-default);
+      }
     }
 
     &.mm-button-secondary {
       border-color: var(--color-icon-default);
-      color: var(--color-icon-default);
 
       & span {
         color: var(--color-icon-default);
@@ -41,6 +43,10 @@
         & span {
           color: var(--color-icon-default);
         }
+      }
+
+      &:not(.mm-button-primary--type-danger) {
+        color: var(--color-icon-default);
       }
     }
   }

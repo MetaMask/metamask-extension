@@ -1,7 +1,7 @@
 import punycode from 'punycode/punycode';
 import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
-import * as ethUtil from 'ethereumjs-util';
+import BN from 'bn.js';
 import { DateTime } from 'luxon';
 import {
   getFormattedIpfsUrl,
@@ -13,6 +13,8 @@ import bowser from 'bowser';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { stripSnapPrefix } from '@metamask/snaps-utils';
 import { isObject, isStrictHexString } from '@metamask/utils';
+import { Web3Provider } from '@ethersproject/providers';
+import { Contract } from '@ethersproject/contracts';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 import { logErrorWithMessage } from '../../../shared/modules/error';
 import {
@@ -168,10 +170,10 @@ export function isOriginContractAddress(to, sendTokenAddress) {
 // Takes wei Hex, returns wei BN, even if input is null
 export function numericBalance(balance) {
   if (!balance) {
-    return new ethUtil.BN(0, 16);
+    return new BN(0, 16);
   }
   const stripped = stripHexPrefix(balance);
-  return new ethUtil.BN(stripped, 16);
+  return new BN(stripped, 16);
 }
 
 // Takes  hex, returns [beforeDecimal, afterDecimal]
@@ -227,7 +229,11 @@ export function formatBalance(
 }
 
 export function getContractAtAddress(tokenAddress) {
-  return global.eth.contract(abi).at(tokenAddress);
+  return new Contract(
+    tokenAddress,
+    abi,
+    new Web3Provider(global.ethereumProvider),
+  );
 }
 
 export function getRandomFileName() {

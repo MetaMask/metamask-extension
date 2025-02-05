@@ -3,12 +3,13 @@ import {
   TransactionStatus,
   TransactionController,
 } from '@metamask/transaction-controller';
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import SmartTransactionsController, {
   SmartTransactionsControllerMessenger,
 } from '@metamask/smart-transactions-controller';
 import { NetworkControllerStateChangeEvent } from '@metamask/network-controller';
 import type { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
+import { ClientId } from '@metamask/smart-transactions-controller/dist/types';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { submitSmartTransactionHook } from './smart-transactions';
 import type {
@@ -67,53 +68,49 @@ function withRequest<ReturnValue>(
 ): ReturnValue {
   const [{ ...rest }, fn] = args.length === 2 ? args : [{}, args[0]];
   const { options } = rest;
-  const controllerMessenger = new ControllerMessenger<
+  const messenger = new Messenger<
     AllowedActions,
     NetworkControllerStateChangeEvent | AllowedEvents
   >();
 
   const startFlowSpy = jest.fn().mockResolvedValue({ id: 'approvalId' });
-  controllerMessenger.registerActionHandler(
-    'ApprovalController:startFlow',
-    startFlowSpy,
-  );
+  messenger.registerActionHandler('ApprovalController:startFlow', startFlowSpy);
 
   const addRequestSpy = jest.fn().mockImplementation(() => ({
     then: (callback: () => void) => {
       addRequestCallback = callback;
     },
   }));
-  controllerMessenger.registerActionHandler(
+  messenger.registerActionHandler(
     'ApprovalController:addRequest',
     addRequestSpy,
   );
 
   const updateRequestStateSpy = jest.fn();
-  controllerMessenger.registerActionHandler(
+  messenger.registerActionHandler(
     'ApprovalController:updateRequestState',
     updateRequestStateSpy,
   );
 
   const endFlowSpy = jest.fn();
-  controllerMessenger.registerActionHandler(
-    'ApprovalController:endFlow',
-    endFlowSpy,
-  );
+  messenger.registerActionHandler('ApprovalController:endFlow', endFlowSpy);
 
-  const messenger = controllerMessenger.getRestricted({
+  const smartTransactionsControllerMessenger = messenger.getRestricted({
     name: 'SmartTransactionsController',
     allowedActions: [],
     allowedEvents: ['NetworkController:stateChange'],
   });
 
   const smartTransactionsController = new SmartTransactionsController({
-    // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
-    messenger,
+    messenger: smartTransactionsControllerMessenger,
     getNonceLock: jest.fn(),
     confirmExternalTransaction: jest.fn(),
     trackMetaMetricsEvent: jest.fn(),
     getTransactions: jest.fn(),
     getMetaMetricsProps: jest.fn(),
+    clientId: ClientId.Extension,
+    getFeatureFlags: jest.fn(),
+    updateTransaction: jest.fn(),
   });
 
   jest.spyOn(smartTransactionsController, 'getFees').mockResolvedValue({
@@ -147,6 +144,7 @@ function withRequest<ReturnValue>(
       },
       type: TransactionType.simpleSend,
       chainId: CHAIN_IDS.MAINNET,
+      networkClientId: 'testNetworkClientId',
       time: 1624408066355,
       defaultGasEstimates: {
         gas: '0x7b0d',
@@ -162,14 +160,14 @@ function withRequest<ReturnValue>(
     signedTransactionInHex:
       '0x02f8b104058504a817c8008504a817c80082b427949ba60bbf4ba1de43f3b4983a539feebfbd5fd97680b844095ea7b30000000000000000000000002f318c334780961fb129d2a6c30d0763d9a5c9700000000000000000000000000000000000000000000000000000000000011170c080a0fdd2cb46203b5e7bba99cc56a37da3e5e3f36163a5bd9c51cddfd8d7028f5dd0a054c35cfa10b3350a3fd3a0e7b4aeb0b603d528c07a8cfdf4a78505d9864edef4',
     // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
-    controllerMessenger,
+    controllerMessenger: messenger,
     featureFlags: {
       extensionActive: true,
       mobileActive: false,
       smartTransactions: {
         expectedDeadline: 45,
         maxDeadline: 150,
-        returnTxHashAsap: false,
+        extensionReturnTxHashAsap: false,
       },
     },
     ...options,
@@ -177,8 +175,7 @@ function withRequest<ReturnValue>(
 
   return fn({
     request,
-    // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
-    messenger,
+    messenger: smartTransactionsControllerMessenger,
     startFlowSpy,
     addRequestSpy,
     updateRequestStateSpy,
@@ -238,7 +235,7 @@ describe('submitSmartTransactionHook', () => {
 
   it('returns a txHash asap if the feature flag requires it', async () => {
     withRequest(async ({ request }) => {
-      request.featureFlags.smartTransactions.returnTxHashAsap = true;
+      request.featureFlags.smartTransactions.extensionReturnTxHashAsap = true;
       const result = await submitSmartTransactionHook(request);
       expect(result).toEqual({ transactionHash: txHash });
     });

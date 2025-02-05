@@ -18,7 +18,6 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerTripleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
           .withSelectedNetworkControllerPerDomain()
           .build(),
         dappOptions: { numberOfDapps: 2 },
@@ -134,7 +133,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         // Check correct network on the send confirmation.
         await driver.findElement({
-          css: '[data-testid="network-display"]',
+          css: 'p',
           text: 'Localhost 8546',
         });
 
@@ -171,7 +170,6 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerTripleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
           .withSelectedNetworkControllerPerDomain()
           .build(),
         dappOptions: { numberOfDapps: 2 },
@@ -279,7 +277,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         // Check correct network on the send confirmation.
         await driver.findElement({
-          css: '[data-testid="network-display"]',
+          css: 'p',
           text: 'Localhost 8546',
         });
 

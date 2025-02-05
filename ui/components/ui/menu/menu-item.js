@@ -66,7 +66,7 @@ const MenuItem = React.forwardRef(
         />
       )}
       <div>
-        <div>{children}</div>
+        <Text as="div">{children}</Text>
         {subtitle ? <Text variant={TextVariant.bodyXs}>{subtitle}</Text> : null}
       </div>
     </button>

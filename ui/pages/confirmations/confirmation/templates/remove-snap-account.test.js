@@ -57,6 +57,9 @@ describe('remove-snap-account confirmation', () => {
           },
         },
       },
+      appState: {
+        ...mockBaseStore.appState,
+      },
       activeTab: {
         origin: 'https://uniswap.org/',
       },

@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import { SubjectType } from '@metamask/permission-controller';
 import PermissionsConnectPermissionList from '../../permissions-connect-permission-list';
 import {
   AlignItems,
@@ -27,10 +28,12 @@ export default class PermissionPageContainerContent extends PureComponent {
     }),
     selectedPermissions: PropTypes.object.isRequired,
     selectedAccounts: PropTypes.array,
+    requestedChainIds: PropTypes.array,
   };
 
   static defaultProps = {
     selectedAccounts: [],
+    requestedChainIds: [],
   };
 
   static contextTypes = {
@@ -40,8 +43,12 @@ export default class PermissionPageContainerContent extends PureComponent {
   render() {
     const { t } = this.context;
 
-    const { selectedPermissions, selectedAccounts, subjectMetadata } =
-      this.props;
+    const {
+      selectedPermissions,
+      selectedAccounts,
+      subjectMetadata,
+      requestedChainIds,
+    } = this.props;
 
     const accounts = selectedAccounts.reduce((accumulator, account) => {
       accumulator.push({
@@ -50,7 +57,9 @@ export default class PermissionPageContainerContent extends PureComponent {
       });
       return accumulator;
     }, []);
-
+    const { origin, subjectType } = subjectMetadata;
+    const displayOrigin =
+      subjectType === SubjectType.Website ? getURLHost(origin) : origin;
     return (
       <Box
         display={Display.Flex}
@@ -77,10 +86,10 @@ export default class PermissionPageContainerContent extends PureComponent {
             {t('nativeNetworkPermissionRequestDescription', [
               <Text
                 as="span"
-                key={`description_key_${subjectMetadata.origin}`}
+                key={`description_key_${displayOrigin}`}
                 fontWeight={FontWeight.Medium}
               >
-                {getURLHost(subjectMetadata.origin)}
+                {displayOrigin}
               </Text>,
             ])}
           </Text>
@@ -98,6 +107,7 @@ export default class PermissionPageContainerContent extends PureComponent {
             permissions={selectedPermissions}
             subjectName={subjectMetadata.origin}
             accounts={accounts}
+            requestedChainIds={requestedChainIds}
           />
         </Box>
       </Box>

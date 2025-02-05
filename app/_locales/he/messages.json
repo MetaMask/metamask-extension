@@ -381,9 +381,6 @@
   "loading": {
     "message": "טוען..."
   },
-  "loadingTokens": {
-    "message": "טוען טוקנים..."
-  },
   "lock": {
     "message": "התנתקות"
   },
@@ -442,9 +439,6 @@
   },
   "noConversionRateAvailable": {
     "message": "אין שער המרה זמין"
-  },
-  "noTransactions": {
-    "message": "אין לך עסקאות"
   },
   "noWebcamFound": {
     "message": "מצלמת הרשת של מחשבך לא נמצאה. נא לנסות שוב."
@@ -709,9 +703,6 @@
   },
   "transactionErrored": {
     "message": "העסקה נתקלה בשגיאה."
-  },
-  "transactionFee": {
-    "message": "עמלת עסקה"
   },
   "transactionResubmitted": {
     "message": "העסקה הוגשה מחדש עם עמלת דלק שעלתה ל-$1 ב-$2"

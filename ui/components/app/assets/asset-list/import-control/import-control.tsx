@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import {
   ButtonBase,
   ButtonBaseSize,
@@ -7,27 +7,20 @@ import {
 } from '../../../../component-library';
 import {
   BackgroundColor,
-  BorderColor,
-  BorderStyle,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
-import { showImportTokensModal } from '../../../../../store/actions';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../../shared/constants/metametrics';
+
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 type AssetListControlBarProps = {
   showTokensLinks?: boolean;
+  onClick?: () => void;
 };
 
-const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
-  const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
-  const t = useI18nContext();
+const AssetListControlBar = ({
+  showTokensLinks,
+  onClick,
+}: AssetListControlBarProps) => {
   const isEvm = useSelector(getMultichainIsEvm);
   // NOTE: Since we can parametrize it now, we keep the original behavior
   // for EVM assets
@@ -39,24 +32,12 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
       data-testid="import-token-button"
       disabled={!shouldShowTokensLinks}
       size={ButtonBaseSize.Sm}
-      startIconName={IconName.Add}
+      startIconName={IconName.MoreVertical}
+      startIconProps={{ marginInlineEnd: 0 }}
       backgroundColor={BackgroundColor.backgroundDefault}
-      borderColor={BorderColor.borderMuted}
-      borderStyle={BorderStyle.solid}
       color={TextColor.textDefault}
-      onClick={() => {
-        dispatch(showImportTokensModal());
-        trackEvent({
-          category: MetaMetricsEventCategory.Navigation,
-          event: MetaMetricsEventName.TokenImportButtonClicked,
-          properties: {
-            location: 'HOME',
-          },
-        });
-      }}
-    >
-      {t('import')}
-    </ButtonBase>
+      onClick={onClick}
+    />
   );
 };
 
