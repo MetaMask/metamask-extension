@@ -486,9 +486,6 @@
     "message": "Mula kay/sa: $1",
     "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
   },
-  "functionType": {
-    "message": "Uri ng Function"
-  },
   "gasLimit": {
     "message": "Limitasyon sa Gas"
   },
@@ -846,9 +843,6 @@
   "origin": {
     "message": "Pinagmulan"
   },
-  "parameters": {
-    "message": "Mga Parameter"
-  },
   "participateInMetaMetrics": {
     "message": "Sumali sa MetaMetrics"
   },
@@ -966,9 +960,6 @@
   },
   "removeAccountDescription": {
     "message": "Aalisin ang account na ito sa iyong wallet. Tiyaking nasa iyo ang orihinal na Secret Recovery Phrase o private key para sa na-import na account na ito bago magpatuloy. Puwede kang mag-import o gumawa ulit ng mga account mula sa drop-down ng account. "
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "mga request na hinihintay na tanggapin"
   },
   "required": {
     "message": "Kinakailangan"
@@ -1104,9 +1095,6 @@
   },
   "showPermissions": {
     "message": "Ipakita ang mga pahintulot"
-  },
-  "sigRequest": {
-    "message": "Request ng Signature"
   },
   "sign": {
     "message": "Lumagda"
@@ -1506,9 +1494,6 @@
   "unknown": {
     "message": "Hindi Alam"
   },
-  "unknownNetwork": {
-    "message": "Hindi Alam na Pribadong Network"
-  },
   "unknownQrCode": {
     "message": "Error: Hindi namin matukoy ang QR code na iyon"
   },
@@ -1568,9 +1553,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Kailangan mong payagan ang pag-access sa camera para magamit ang feature na ito."
-  },
-  "youSign": {
-    "message": "Sina-sign mo ang"
   },
   "yourPrivateSeedPhrase": {
     "message": "Ang iyong Secret Recovery Phrase"
