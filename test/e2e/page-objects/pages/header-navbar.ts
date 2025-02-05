@@ -14,6 +14,8 @@ class HeaderNavbar {
   private readonly threeDotMenuButton =
     '[data-testid="account-options-menu-button"]';
 
+  private readonly globalMenu = '[data-testid="global-menu"]';
+
   private readonly accountSnapButton = { text: 'Snaps', tag: 'div' };
 
   private readonly lockMetaMaskButton = '[data-testid="global-menu-lock"]';
@@ -63,6 +65,7 @@ class HeaderNavbar {
   async openThreeDotMenu(): Promise<void> {
     console.log('Open account options menu');
     await this.driver.clickElement(this.threeDotMenuButton);
+    await this.driver.waitForSelector(this.globalMenu);
   }
 
   async openPermissionsPage(): Promise<void> {
