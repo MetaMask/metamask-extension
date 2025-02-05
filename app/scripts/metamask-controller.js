@@ -2002,6 +2002,7 @@ export default class MetamaskController extends EventEmitter {
         ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
         beforePublish: deferPublicationHookFactory(
           (...args) => this.txController.updateCustodialTransaction(...args),
+          (...args) => this.handleSnapRequest.bind(this)(...args),
           this._getMetaMaskState.bind(this),
         ),
         beforeCheckPendingTransactions:
