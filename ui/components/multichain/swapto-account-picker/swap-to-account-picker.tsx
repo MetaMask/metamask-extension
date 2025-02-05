@@ -63,7 +63,6 @@ export const SwapToAccountPicker = ({
         className="swap-to-account-picker"
         style={{
           borderRadius: '8px',
-          width: '90%',
           backgroundColor: 'var(--color-background-default)',
           marginLeft: 'auto',
           marginRight: 'auto',
@@ -121,7 +120,6 @@ export const SwapToAccountPicker = ({
       style={{
         borderRadius: '8px',
         backgroundColor: 'var(--color-background-default)',
-        width: '90%',
         marginLeft: 'auto',
         marginRight: 'auto',
         // marginTop: '100px',
