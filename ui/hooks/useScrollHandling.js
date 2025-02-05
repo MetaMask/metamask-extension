@@ -1,6 +1,7 @@
 import { useReducer, useRef, useCallback, useEffect } from 'react';
 
 const scrollReducer = (state, action) => {
+  let hasReachedBottom;
   switch (action.type) {
     case 'START_PROGRAMMATIC_SCROLL':
       return { ...state, isProgrammaticScroll: true };
@@ -9,15 +10,19 @@ const scrollReducer = (state, action) => {
         isProgrammaticScroll: false,
         buttonsEnabled: true,
         showArrow: false,
+        hasReachedBottom: true,
       };
     case 'MANUAL_SCROLL':
-      return state.isProgrammaticScroll
-        ? state
-        : {
-            ...state,
-            buttonsEnabled: action.isAtBottom,
-            showArrow: !action.isAtBottom && action.isScrollable,
-          };
+      if (state.isProgrammaticScroll) {
+        return state;
+      }
+      hasReachedBottom = state.hasReachedBottom || action.isAtBottom;
+      return {
+        ...state,
+        buttonsEnabled: hasReachedBottom,
+        showArrow: !hasReachedBottom && action.isScrollable,
+        hasReachedBottom,
+      };
     default:
       return state;
   }
@@ -37,6 +42,7 @@ export const useScrollHandling = (requireScroll, isScrollable) => {
     isProgrammaticScroll: false,
     buttonsEnabled: !requireScroll,
     showArrow: requireScroll && isScrollable,
+    hasReachedBottom: false,
   });
 
   const isProgrammaticScrollRef = useRef(false);
@@ -52,12 +58,6 @@ export const useScrollHandling = (requireScroll, isScrollable) => {
         type: 'MANUAL_SCROLL',
         isAtBottom: false,
         isScrollable: true,
-      });
-    } else {
-      dispatch({
-        type: 'MANUAL_SCROLL',
-        isAtBottom: true,
-        isScrollable: false,
       });
     }
   }, [isScrollable, requireScroll]);
