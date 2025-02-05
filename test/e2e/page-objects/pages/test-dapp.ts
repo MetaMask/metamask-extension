@@ -621,7 +621,7 @@ class TestDapp {
   }: {
     connectAccountButtonEnabled?: boolean;
     publicAddress?: string;
-    networkId?: string;
+    chainId?: string;
   }) {
     console.log('Connect account to test dapp');
     await this.driver.clickElement(this.connectAccountButton);
