@@ -68,7 +68,7 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
         // Connect to dapp and check the chainId is still the same as the wallet
         await testDapp.connectAccount({
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
-          networkId: '0x1',
+          chainId: '0x1',
         });
         const chainIdAfterConnect: string = await driver.executeScript(
           `return window.ethereum.request(${chainIdRequest})`,
