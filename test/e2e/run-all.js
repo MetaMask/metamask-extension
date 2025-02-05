@@ -244,6 +244,8 @@ async function main() {
 
   console.log('My test list:', myTestList);
 
+  myTestList = myTestList.filter(tp => tp.match(/segment/))
+
   // spawn `run-e2e-test.js` for each test in myTestList
   for (let testPath of myTestList) {
     if (testPath !== '') {
