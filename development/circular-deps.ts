@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
 
-import fs from 'fs';
+import fs, { readFileSync } from 'fs';
 import madge from 'madge';
 import fg from 'fast-glob';
 
@@ -51,18 +51,6 @@ const ENTRYPOINT_PATTERNS = [
   'ui/**/*', // UI components and styles
 ];
 
-// Converts a glob pattern to a RegExp pattern
-function globToRegExp(pattern: string): RegExp {
-  return new RegExp(
-    pattern
-      // Convert '**' to '.*' to match any characters.
-      .replace(/\*\*/gu, '.*')
-      // Convert '*' to '[^/]*' to match any characters except directory separators.
-      .replace(/\*/gu, '[^/]*'),
-    'u',
-  );
-}
-
 /**
  * Circular dependencies are represented as an array of arrays, where each
  * inner array represents a cycle of dependencies.
@@ -88,13 +76,7 @@ function normalizeJson(cycles: CircularDeps): CircularDeps {
 }
 
 // Common madge configuration
-const MADGE_CONFIG = {
-  circular: true,
-  extensions: ['js', 'jsx', 'ts', 'tsx'],
-  excludeRegExp: IGNORE_PATTERNS.map(globToRegExp),
-  tsConfig: 'tsconfig.json',
-  webpackConfig: 'webpack.config.js',
-};
+const MADGE_CONFIG = JSON.parse(readFileSync('.madgerc', 'utf-8'));
 
 async function getMadgeCircularDeps(): Promise<CircularDeps> {
   console.log('Running madge to detect circular dependencies...');
