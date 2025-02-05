@@ -1,6 +1,5 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-
 import SendSolanaPage from '../../page-objects/pages/send/solana-send-page';
 import ConfirmSolanaTxPage from '../../page-objects/pages/send/solana-confirm-tx-page';
 import SolanaTxresultPage from '../../page-objects/pages/send/solana-tx-result-page';
@@ -26,6 +25,7 @@ describe('Send flow', function (this: Suite) {
         await homePage.check_pageIsLoaded();
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
+        await sendSolanaPage.check_pageIsLoaded('50'); // Get price might take a bit to get executed, so to avoid flakiness, wait until the call is made and mocked
         assert.equal(
           await sendSolanaPage.isContinueButtonEnabled(),
           false,
@@ -154,7 +154,7 @@ describe('Send flow', function (this: Suite) {
         await homePage.clickOnSendButton();
 
         const sendSolanaPage = new SendSolanaPage(driver);
-        await sendSolanaPage.check_pageIsLoaded();
+        await sendSolanaPage.check_pageIsLoaded('50');
         await sendSolanaPage.setToAddress(commonSolanaAddress);
         await sendSolanaPage.openTokenList();
         await sendSolanaPage.selectTokenFromTokenList(splTokenName);
@@ -223,12 +223,13 @@ describe('Send flow', function (this: Suite) {
         await homePage.clickOnSendButton();
 
         const sendSolanaPage = new SendSolanaPage(driver);
-        await sendSolanaPage.check_pageIsLoaded();
+        await sendSolanaPage.check_pageIsLoaded('50');
         await sendSolanaPage.setToAddress(commonSolanaAddress);
         await sendSolanaPage.openTokenList();
         await sendSolanaPage.selectTokenFromTokenList(splTokenName);
         await sendSolanaPage.check_amountCurrencyIsDisplayed(splTokenName);
         await sendSolanaPage.setAmount('0.1');
+        await sendSolanaPage.clickOnContinue();
         await sendSolanaPage.check_TxSimulationFailed();
         assert.equal(
           await sendSolanaPage.isContinueButtonEnabled(),

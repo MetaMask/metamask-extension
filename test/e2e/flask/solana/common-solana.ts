@@ -9,7 +9,8 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 
 const SOLANA_URL_REGEX =
   /^https:\/\/(solana-mainnet\.infura\.io|api\.devnet\.solana\.com)/u;
-const SOLANA_PRICE_API = 'https://price.uat-api.cx.metamask.io/v3/spot-prices';
+const SOLANA_PRICE_API =
+  /^https:\/\/price\.(uat-api|api)\.cx\.metamask\.io\/v3\/spot-prices/u;
 const SOLANA_STATIC_TOKEN_IMAGE_REGEX =
   /^https:\/\/static\.metamask\.io\/token-images\/solana\//u;
 const SOLANA_BITCOIN_MIN_API =
@@ -576,6 +577,50 @@ export async function mockGetAccountInfo(mockServer: Mockttp) {
           data: {
             parsed: {
               info: {
+                decimals: 6,
+                freezeAuthority: null,
+                isInitialized: true,
+                mintAuthority: null,
+                supply: '999943585864185',
+              },
+              type: 'mint',
+            },
+            program: 'spl-token',
+            space: 82,
+          },
+          executable: false,
+          lamports: 37002092583,
+          owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+          rentEpoch: 18446744073709552000,
+          space: 82,
+        },
+      },
+    },
+  };
+  return await mockServer
+    .forPost(SOLANA_URL_REGEX)
+    .withJsonBodyIncluding({
+      method: 'getAccountInfo',
+    })
+    .withBody('2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin')
+    .thenCallback(() => {
+      return response;
+    });
+}
+
+export async function mockGetTokenAccountInfo(mockServer: Mockttp) {
+  const response = {
+    statusCode: 200,
+    json: {
+      result: {
+        context: {
+          apiVersion: '2.0.21',
+          slot: 317161313,
+        },
+        value: {
+          data: {
+            parsed: {
+              info: {
                 isNative: false,
                 mint: '2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
                 owner: '3xTPAZxmpwd8GrNEKApaTw6VH4jqJ31WFXUvQzgwhR7c',
@@ -606,49 +651,14 @@ export async function mockGetAccountInfo(mockServer: Mockttp) {
     .withJsonBodyIncluding({
       method: 'getAccountInfo',
     })
-    .thenCallback(() => {
-      return response;
-    });
-}
-
-export async function mockGetAccountTokenInfo(mockServer: Mockttp) {
-  const response = {
-    statusCode: 200,
-    json: {
-      result: {
-        context: {
-          apiVersion: '2.0.21',
-          slot: 317161313,
-        },
-        value: {
-          data: {
-            parsed: {
-              info: {
-                decimals: 6,
-                freezeAuthority: null,
-                isInitialized: true,
-                mintAuthority: null,
-                supply: '999943812088003',
-              },
-              type: 'mint',
-            },
-            program: 'spl-token',
-            space: 82,
-          },
-          executable: false,
-          lamports: 37002092583,
-          owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-          rentEpoch: 18446744073709552000,
-          space: 82,
-        },
-      },
-    },
-  };
-  return await mockServer
-    .forPost(SOLANA_URL_REGEX)
-    .withBodyIncluding('2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin')
     .withJsonBodyIncluding({
-      method: 'getAccountInfo',
+      params: [
+        '4Dt7hvLAzSXGvxvpqFU7cRdQXXhU3orACV6ujY4KPv9D',
+        {
+          encoding: 'jsonParsed',
+          commitment: 'confirmed',
+        },
+      ],
     })
     .thenCallback(() => {
       return response;
@@ -722,13 +732,13 @@ export async function withSolanaAccountSnap(
         if (mockCalls) {
           mockList.push([
             await mockSolanaBalanceQuote(mockServer),
-            await mockGetTransaction(mockServer),
+            // await mockGetTransaction(mockServer),
             await mockGetTokenAccountsByOwner(mockServer),
             await mockGetSignaturesForAddress(mockServer),
             await mockMultiCoinPrice(mockServer),
             await mockGetLatestBlockhash(mockServer),
             await mockGetFeeForMessage(mockServer),
-            await mockGetAccountTokenInfo(mockServer),
+            await mockGetTokenAccountInfo(mockServer),
             await mockGetAccountInfo(mockServer),
           ]);
         }

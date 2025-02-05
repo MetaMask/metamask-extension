@@ -31,6 +31,10 @@ class HeaderNavbar {
     this.driver = driver;
   }
 
+  async copyAccountAddress(): Promise<void> {
+    await this.driver.clickElement(this.copyAddressButton);
+  }
+
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([

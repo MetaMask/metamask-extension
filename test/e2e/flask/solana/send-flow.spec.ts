@@ -27,7 +27,8 @@ describe('Send flow', function (this: Suite) {
           false,
           'Continue button is enabled and it shouldn`t',
         );
-        await driver.delay(7000); // Added because of https://github.com/MetaMask/snaps/issues/3019
+        await sendSolanaPage.check_pageIsLoaded('0');
+        // await driver.delay(7000); // Added because of https://github.com/MetaMask/snaps/issues/3019
         await sendSolanaPage.setToAddress('2433asd');
         assert.equal(
           await sendSolanaPage.check_validationErrorAppears(
@@ -250,6 +251,7 @@ describe('Send full flow of SOL', function (this: Suite) {
         );
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
+        await sendSolanaPage.check_pageIsLoaded('50');
         assert.equal(
           await sendSolanaPage.isContinueButtonEnabled(),
           false,
@@ -360,7 +362,7 @@ describe('Send flow', function (this: Suite) {
         await homePage.clickOnSendButton();
 
         const sendSolanaPage = new SendSolanaPage(driver);
-        await sendSolanaPage.check_pageIsLoaded();
+        await sendSolanaPage.check_pageIsLoaded('50');
         await sendSolanaPage.setToAddress(commonSolanaAddress);
         await sendSolanaPage.setAmount('0.1');
         // assert.equal(await sendSolanaPage.isContinueButtonEnabled(), true, "Continue button is not enabled when address and amount are set");
