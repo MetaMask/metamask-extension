@@ -138,6 +138,7 @@ export async function fetchBridgeQuotes(
 ): Promise<QuoteResponse[]> {
   const queryParams = new URLSearchParams({
     walletAddress: request.walletAddress,
+    destWalletAddress: request.destWalletAddress ?? request.walletAddress,
     srcChainId: request.srcChainId.toString(),
     destChainId: request.destChainId.toString(),
     srcTokenAddress: request.srcTokenAddress,
