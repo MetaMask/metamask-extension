@@ -1380,9 +1380,6 @@
       }
     },
     "@metamask/keyring-controller": {
-      "globals": {
-        "console.log": true
-      },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/base-controller": true,
@@ -1393,6 +1390,7 @@
         "@metamask/keyring-controller>@metamask/utils": true,
         "@metamask/name-controller>async-mutex": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
+        "ulid": true,
         "@metamask/keyring-controller>ulid": true
       }
     },
