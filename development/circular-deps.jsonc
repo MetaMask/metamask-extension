@@ -57,12 +57,8 @@
     "ui/components/app/assets/asset-list/native-token/use-native-token-balance.ts"
   ],
   [
-    "ui/components/app/assets/token-list/token-list.tsx",
-    "ui/components/app/assets/util/calculateTokenBalance.ts"
-  ],
-  [
-    "ui/components/app/assets/token-list/token-list.tsx",
-    "ui/components/app/assets/util/calculateTokenFiatAmount.ts"
+    "ui/components/app/assets/hooks/useSortedFilteredTokens.tsx",
+    "ui/components/app/assets/token-list/token-list.tsx"
   ],
   [
     "ui/components/app/name/name-details/name-details.tsx",
