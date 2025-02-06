@@ -15,11 +15,7 @@ import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { storeAsStream } from '@metamask/obs-store';
 import { isObject } from '@metamask/utils';
-import { ApprovalType } from '@metamask/controller-utils';
 import PortStream from 'extension-port-stream';
-
-import { providerErrors } from '@metamask/rpc-errors';
-import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 
 import {
@@ -29,9 +25,6 @@ import {
   EXTENSION_MESSAGES,
   PLATFORM_FIREFOX,
   MESSAGE_TYPE,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../shared/constants/app';
 import {
   REJECT_NOTIFICATION_CLOSE,
@@ -56,11 +49,12 @@ import {
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { addNonceToCsp } from '../../shared/modules/add-nonce-to-csp';
 import { checkURLForProviderInjection } from '../../shared/modules/provider-injection';
+import { PersistenceManager } from './lib/stores/persistence-manager';
+import ExtensionStore from './lib/stores/extension-store';
+import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
-import LocalStore from './lib/local-store';
-import ReadOnlyNetworkStore from './lib/network-store';
 import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
 
 import createStreamSink from './lib/createStreamSink';
@@ -70,7 +64,6 @@ import NotificationManager, {
 import MetamaskController, {
   METAMASK_CONTROLLER_EVENTS,
 } from './metamask-controller';
-import rawFirstTimeState from './first-time-state';
 import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
@@ -79,8 +72,9 @@ import {
   getPlatform,
   shouldEmitDappViewedEvent,
 } from './lib/util';
-import { generateWalletState } from './fixtures/generate-wallet-state';
 import { createOffscreen } from './offscreen';
+import { generateWalletState } from './fixtures/generate-wallet-state';
+import rawFirstTimeState from './first-time-state';
 
 /* eslint-enable import/first */
 
@@ -94,9 +88,17 @@ const BADGE_MAX_COUNT = 9;
 
 // Setup global hook for improved Sentry state snapshots during initialization
 const inTest = process.env.IN_TEST;
-const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
+const migrator = new Migrator({
+  migrations,
+  defaultVersion: process.env.WITH_STATE
+    ? FIXTURE_STATE_METADATA_VERSION
+    : null,
+});
+
+const localStore = inTest ? new ReadOnlyNetworkStore() : new ExtensionStore();
+const persistenceManager = new PersistenceManager({ localStore });
 global.stateHooks.getMostRecentPersistedState = () =>
-  localStore.mostRecentRetrievedState;
+  persistenceManager.mostRecentRetrievedState;
 
 const { sentry } = global;
 let firstTimeState = { ...rawFirstTimeState };
@@ -120,11 +122,11 @@ let uiIsTriggering = false;
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
-let versionedData;
 const tabOriginMapping = {};
 
 if (inTest || process.env.METAMASK_DEBUG) {
-  global.stateHooks.metamaskGetState = localStore.get.bind(localStore);
+  global.stateHooks.metamaskGetState =
+    persistenceManager.get.bind(persistenceManager);
 }
 
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
@@ -315,22 +317,21 @@ function maybeDetectPhishing(theController) {
       // blocking is better than tab redirection, as blocking will prevent
       // the browser from loading the page at all
       if (isManifestV2) {
-        if (details.type === 'sub_frame') {
-          // redirect the entire tab to the
-          // phishing warning page instead.
-          redirectTab(details.tabId, redirectHref);
-          // don't let the sub_frame load at all
-          return { cancel: true };
+        // We can redirect `main_frame` requests directly to the warning page.
+        // For non-`main_frame` requests (e.g. `sub_frame` or WebSocket), we cancel them
+        // and redirect the whole tab asynchronously so that the user sees the warning.
+        if (details.type === 'main_frame') {
+          return { redirectUrl: redirectHref };
         }
-        // redirect the whole tab
-        return { redirectUrl: redirectHref };
+        redirectTab(details.tabId, redirectHref);
+        return { cancel: true };
       }
       // redirect the whole tab (even if it's a sub_frame request)
       redirectTab(details.tabId, redirectHref);
       return {};
     },
     {
-      urls: ['http://*/*', 'https://*/*'],
+      urls: ['http://*/*', 'https://*/*', 'ws://*/*', 'wss://*/*'],
     },
     isManifestV2 ? ['blocking'] : [],
   );
@@ -607,12 +608,6 @@ async function loadPhishingWarningPage() {
  */
 export async function loadStateFromPersistence() {
   // migrations
-  const migrator = new Migrator({
-    migrations,
-    defaultVersion: process.env.WITH_STATE
-      ? FIXTURE_STATE_METADATA_VERSION
-      : null,
-  });
   migrator.on('error', console.warn);
 
   if (process.env.WITH_STATE) {
@@ -622,23 +617,14 @@ export async function loadStateFromPersistence() {
 
   // read from disk
   // first from preferred, async API:
-  versionedData =
-    (await localStore.get()) || migrator.generateInitialState(firstTimeState);
-
-  // check if somehow state is empty
-  // this should never happen but new error reporting suggests that it has
-  // for a small number of users
-  // https://github.com/metamask/metamask-extension/issues/3919
-  if (versionedData && !versionedData.data) {
-    // unable to recover, clear state
-    versionedData = migrator.generateInitialState(firstTimeState);
-    sentry.captureMessage('MetaMask - Empty vault found - unable to recover');
-  }
+  const preMigrationVersionedData =
+    (await persistenceManager.get()) ||
+    migrator.generateInitialState(firstTimeState);
 
   // report migration errors to sentry
   migrator.on('error', (err) => {
     // get vault structure without secrets
-    const vaultStructure = getObjStructure(versionedData);
+    const vaultStructure = getObjStructure(preMigrationVersionedData);
     sentry.captureException(err, {
       // "extra" key is required by Sentry
       extra: { vaultStructure },
@@ -646,7 +632,7 @@ export async function loadStateFromPersistence() {
   });
 
   // migrate data
-  versionedData = await migrator.migrateData(versionedData);
+  const versionedData = await migrator.migrateData(preMigrationVersionedData);
   if (!versionedData) {
     throw new Error('MetaMask - migrator returned undefined');
   } else if (!isObject(versionedData.meta)) {
@@ -664,10 +650,10 @@ export async function loadStateFromPersistence() {
     );
   }
   // this initializes the meta/version data as a class variable to be used for future writes
-  localStore.setMetadata(versionedData.meta);
+  persistenceManager.setMetadata(versionedData.meta);
 
   // write to disk
-  localStore.set(versionedData.data);
+  persistenceManager.set(versionedData.data);
 
   // return just the data
   return versionedData;
@@ -685,13 +671,9 @@ function emitDappViewedMetricEvent(origin) {
     return;
   }
 
-  const permissions = controller.controllerMessenger.call(
-    'PermissionController:getPermissions',
-    origin,
-  );
   const numberOfConnectedAccounts =
-    permissions?.eth_accounts?.caveats[0]?.value.length;
-  if (!numberOfConnectedAccounts) {
+    controller.getPermittedAccounts(origin).length;
+  if (numberOfConnectedAccounts === 0) {
     return;
   }
 
@@ -749,6 +731,49 @@ function trackDappView(remotePort) {
 }
 
 /**
+ * Emit App Opened event
+ */
+function emitAppOpenedMetricEvent() {
+  const { metaMetricsId, participateInMetaMetrics } =
+    controller.metaMetricsController.state;
+
+  // Skip if user hasn't opted into metrics
+  if (metaMetricsId === null && !participateInMetaMetrics) {
+    return;
+  }
+
+  controller.metaMetricsController.trackEvent({
+    event: MetaMetricsEventName.AppOpened,
+    category: MetaMetricsEventCategory.App,
+  });
+}
+
+/**
+ * This function checks if the app is being opened
+ * and emits an event only if no other UI instances are currently open.
+ *
+ * @param {string} environment - The environment type where the app is opening
+ */
+function trackAppOpened(environment) {
+  // List of valid environment types to track
+  const environmentTypeList = [
+    ENVIRONMENT_TYPE_POPUP,
+    ENVIRONMENT_TYPE_NOTIFICATION,
+    ENVIRONMENT_TYPE_FULLSCREEN,
+  ];
+
+  // Check if any UI instances are currently open
+  const isFullscreenOpen = Object.values(openMetamaskTabsIDs).some(Boolean);
+  const isAlreadyOpen =
+    isFullscreenOpen || notificationIsOpen || openPopupCount > 0;
+
+  // Only emit event if no UI is open and environment is valid
+  if (!isAlreadyOpen && environmentTypeList.includes(environment)) {
+    emitAppOpenedMetricEvent();
+  }
+}
+
+/**
  * Initializes the MetaMask Controller with any initial state and default language.
  * Configures platform-specific error reporting strategy.
  * Streams emitted state updates to platform-specific storage strategy.
@@ -790,7 +815,7 @@ export function setupController(
     getOpenMetamaskTabsIds: () => {
       return openMetamaskTabsIDs;
     },
-    localStore,
+    persistenceManager,
     overrides,
     isFirstMetaMaskControllerSetup,
     currentMigrationVersion: stateMetadata.version,
@@ -814,7 +839,7 @@ export function setupController(
     storeAsStream(controller.store),
     debounce(1000),
     createStreamSink(async (state) => {
-      await localStore.set(state);
+      await persistenceManager.set(state);
       statePersistenceEvents.emit('state-persisted', state);
     }),
     (error) => {
@@ -890,6 +915,7 @@ export function setupController(
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
+      trackAppOpened(processName);
 
       initializeRemoteFeatureFlags();
 
@@ -1013,12 +1039,12 @@ export function setupController(
   //
   updateBadge();
 
-  controller.decryptMessageController.hub.on(
-    METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
+  controller.controllerMessenger.subscribe(
+    METAMASK_CONTROLLER_EVENTS.DECRYPT_MESSAGE_MANAGER_UPDATE_BADGE,
     updateBadge,
   );
-  controller.encryptionPublicKeyController.hub.on(
-    METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
+  controller.controllerMessenger.subscribe(
+    METAMASK_CONTROLLER_EVENTS.ENCRYPTION_PUBLIC_KEY_MANAGER_UPDATE_BADGE,
     updateBadge,
   );
   controller.signatureController.hub.on(
@@ -1117,10 +1143,8 @@ export function setupController(
         controller.appStateController.waitingForUnlock.length +
         controller.approvalController.getTotalApprovalCount();
 
-      if (controller.preferencesController.getUseRequestQueue()) {
-        pendingApprovalCount +=
-          controller.queuedRequestController.state.queuedRequestCount;
-      }
+      pendingApprovalCount +=
+        controller.queuedRequestController.state.queuedRequestCount;
       return pendingApprovalCount;
     } catch (error) {
       console.error('Failed to get pending approval count:', error);
@@ -1201,34 +1225,7 @@ export function setupController(
       REJECT_NOTIFICATION_CLOSE,
     );
 
-    // Finally, resolve snap dialog approvals on Flask and reject all the others managed by the ApprovalController.
-    Object.values(controller.approvalController.state.pendingApprovals).forEach(
-      ({ id, type }) => {
-        switch (type) {
-          case ApprovalType.SnapDialogAlert:
-          case ApprovalType.SnapDialogPrompt:
-          case DIALOG_APPROVAL_TYPES.default:
-            controller.approvalController.accept(id, null);
-            break;
-          case ApprovalType.SnapDialogConfirmation:
-            controller.approvalController.accept(id, false);
-            break;
-          ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-          case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation:
-          case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval:
-          case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect:
-            controller.approvalController.accept(id, false);
-            break;
-          ///: END:ONLY_INCLUDE_IF
-          default:
-            controller.approvalController.reject(
-              id,
-              providerErrors.userRejectedRequest(),
-            );
-            break;
-        }
-      },
-    );
+    controller.rejectAllPendingApprovals();
   }
 
   // Updates the snaps registry and check for newly blocked snaps to block if the user has at least one snap installed that isn't preinstalled.
@@ -1301,12 +1298,14 @@ const addAppInstalledEvent = () => {
 
 // On first install, open a new tab with MetaMask
 async function onInstall() {
-  const storeAlreadyExisted = Boolean(await localStore.get());
+  const storeAlreadyExisted = Boolean(await persistenceManager.get());
   // If the store doesn't exist, then this is the first time running this script,
   // and is therefore an install
   if (process.env.IN_TEST) {
     addAppInstalledEvent();
   } else if (!storeAlreadyExisted && !process.env.METAMASK_DEBUG) {
+    // If storeAlreadyExisted is true then this is a fresh installation
+    // and an app installed event should be tracked.
     addAppInstalledEvent();
     platform.openExtensionInBrowser();
   }
@@ -1355,7 +1354,7 @@ async function initBackground() {
         window.document?.documentElement?.classList.add('controller-loaded');
       }
     }
-    localStore.cleanUpMostRecentRetrievedState();
+    persistenceManager.cleanUpMostRecentRetrievedState();
   } catch (error) {
     log.error(error);
   }

@@ -6,7 +6,7 @@ import {
   MetaMetricsEventLocation,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { shortenAddress } from '../../../../ui/helpers/utils/util';
+import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { integrationTestRender } from '../../../lib/render-helpers';
 import mockMetaMaskState from '../../data/integration-init-state.json';
@@ -18,10 +18,20 @@ jest.mock('../../../../ui/store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
 }));
 
+jest.mock('../../../../ui/pages/confirmations/hooks/useAssetDetails', () => ({
+  ...jest.requireActual(
+    '../../../../ui/pages/confirmations/hooks/useAssetDetails',
+  ),
+  useAssetDetails: jest.fn().mockResolvedValue({
+    decimals: '4',
+  }),
+}));
+
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
 };
+const mockedAssetDetails = jest.mocked(useAssetDetails);
 
 describe('Permit Confirmation', () => {
   beforeEach(() => {
@@ -31,6 +41,10 @@ describe('Permit Confirmation', () => {
         getTokenStandardAndDetails: { decimals: '2', standard: 'ERC20' },
       }),
     );
+    mockedAssetDetails.mockImplementation(() => ({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      decimals: '4' as any,
+    }));
   });
 
   afterEach(() => {
@@ -235,37 +249,5 @@ describe('Permit Confirmation', () => {
 
     scope.done();
     expect(scope.isDone()).toBe(true);
-  });
-
-  it('displays the MMI header warning when account signing is not the same as the account selected', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        '07c2cfec-36c9-46c4-8115-3836d3ac9047'
-      ];
-    const selectedAccount =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
-
-    const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPermitSign(
-      account.address,
-      'Permit',
-    );
-
-    await act(async () => {
-      await integrationTestRender({
-        preloadedState: mockedMetaMaskState,
-        backgroundConnection: backgroundConnectionMocked,
-      });
-    });
-
-    const mismatchAccountText = `Your selected account (${shortenAddress(
-      selectedAccount.address,
-    )}) is different than the account trying to sign (${shortenAddress(
-      account.address,
-    )})`;
-
-    expect(await screen.findByText(mismatchAccountText)).toBeInTheDocument();
   });
 });

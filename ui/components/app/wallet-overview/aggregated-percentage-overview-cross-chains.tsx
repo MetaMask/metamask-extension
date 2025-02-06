@@ -5,13 +5,13 @@ import { toChecksumAddress } from 'ethereumjs-util';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
 import {
-  getCurrentCurrency,
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
   getPreferences,
   getMarketData,
   getChainIdsToPoll,
 } from '../../../selectors';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths

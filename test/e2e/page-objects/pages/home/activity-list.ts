@@ -4,6 +4,9 @@ import { Driver } from '../../../webdriver/driver';
 class ActivityListPage {
   private readonly driver: Driver;
 
+  private readonly activityListAction =
+    '[data-testid="activity-list-item-action"]';
+
   private readonly completedTransactions = '[data-testid="activity-list-item"]';
 
   private readonly confirmedTransactions = {
@@ -19,8 +22,32 @@ class ActivityListPage {
   private readonly transactionAmountsInActivity =
     '[data-testid="transaction-list-item-primary-currency"]';
 
+  private readonly tooltip = '.tippy-tooltip-content';
+
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  /**
+   * This function checks if the specified number of failed transactions are displayed in the activity list on homepage.
+   * It waits up to 10 seconds for the expected number of failed transactions to be visible.
+   *
+   * @param expectedNumber - The number of failed transactions expected to be displayed in activity list. Defaults to 1.
+   * @returns A promise that resolves if the expected number of failed transactions is displayed within the timeout period.
+   */
+  async check_failedTxNumberDisplayedInActivity(
+    expectedNumber: number = 1,
+  ): Promise<void> {
+    console.log(
+      `Wait for ${expectedNumber} failed transactions to be displayed in activity list`,
+    );
+    await this.driver.wait(async () => {
+      const failedTxs = await this.driver.findElements(this.failedTransactions);
+      return failedTxs.length === expectedNumber;
+    }, 10000);
+    console.log(
+      `${expectedNumber} failed transactions found in activity list on homepage`,
+    );
   }
 
   /**
@@ -71,25 +98,24 @@ class ActivityListPage {
     );
   }
 
-  /**
-   * This function checks if the specified number of failed transactions are displayed in the activity list on homepage.
-   * It waits up to 10 seconds for the expected number of failed transactions to be visible.
-   *
-   * @param expectedNumber - The number of failed transactions expected to be displayed in activity list. Defaults to 1.
-   * @returns A promise that resolves if the expected number of failed transactions is displayed within the timeout period.
-   */
-  async check_failedTxNumberDisplayedInActivity(
-    expectedNumber: number = 1,
-  ): Promise<void> {
-    console.log(
-      `Wait for ${expectedNumber} failed transactions to be displayed in activity list`,
+  async check_noTxInActivity(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.completedTransactions);
+  }
+
+  async check_txAction(expectedAction: string, expectedNumber: number = 1) {
+    const transactionActions = await this.driver.findElements(
+      this.activityListAction,
     );
+
     await this.driver.wait(async () => {
-      const failedTxs = await this.driver.findElements(this.failedTransactions);
-      return failedTxs.length === expectedNumber;
-    }, 10000);
+      const transactionActionText = await transactionActions[
+        expectedNumber - 1
+      ].getText();
+      return transactionActionText === expectedAction;
+    });
+
     console.log(
-      `${expectedNumber} failed transactions found in activity list on homepage`,
+      `Action for transaction ${expectedNumber} is displayed as ${expectedAction}`,
     );
   }
 
@@ -122,6 +148,52 @@ class ActivityListPage {
     );
     console.log(
       `Amount for transaction ${expectedNumber} is displayed as ${expectedAmount}`,
+    );
+  }
+
+  /**
+   * Verifies that a specific warning message is displayed on the activity list.
+   *
+   * @param warningText - The expected warning text to validate against.
+   * @returns A promise that resolves if the warning message matches the expected text.
+   * @throws Assertion error if the warning message does not match the expected text.
+   */
+  async check_warningMessage(warningText: string): Promise<void> {
+    console.log(
+      `Check warning message "${warningText}" is displayed on activity list`,
+    );
+    await this.driver.waitForSelector({
+      tag: 'div',
+      text: warningText,
+    });
+  }
+
+  async check_noFailedTransactions(): Promise<void> {
+    try {
+      await this.driver.findElement(this.failedTransactions, 1);
+    } catch (error) {
+      return;
+    }
+
+    const failedTxs = await this.driver.findElements(this.failedTransactions);
+
+    if (!failedTxs.length) {
+      return;
+    }
+
+    const errorMessages = [];
+
+    for (const failedTx of failedTxs) {
+      await this.driver.hoverElement(failedTx);
+
+      const tooltip = await this.driver.findElement(this.tooltip);
+      const errorMessage = await tooltip.getText();
+
+      errorMessages.push(errorMessage);
+    }
+
+    throw new Error(
+      `Failed transactions found in activity list: ${errorMessages.join('\n')}`,
     );
   }
 }

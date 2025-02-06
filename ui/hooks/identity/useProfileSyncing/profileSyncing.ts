@@ -1,12 +1,14 @@
 import { useState, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import log from 'loglevel';
-import { useMetamaskNotificationsContext } from '../../../contexts/metamask-notifications/metamask-notifications';
+import { getParticipateInMetaMetrics } from '../../../selectors';
+import { selectIsSignedIn } from '../../../selectors/identity/authentication';
 import {
   disableProfileSyncing as disableProfileSyncingAction,
   enableProfileSyncing as enableProfileSyncingAction,
   setIsProfileSyncingEnabled as setIsProfileSyncingEnabledAction,
   hideLoadingIndication,
+  performSignOut,
 } from '../../../store/actions';
 
 /**
@@ -52,7 +54,8 @@ export function useDisableProfileSyncing(): {
   error: string | null;
 } {
   const dispatch = useDispatch();
-  const { listNotifications } = useMetamaskNotificationsContext();
+  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const isSignedIn = useSelector(selectIsSignedIn);
 
   const [error, setError] = useState<string | null>(null);
 
@@ -63,8 +66,10 @@ export function useDisableProfileSyncing(): {
       // disable profile syncing
       await dispatch(disableProfileSyncingAction());
 
-      // list notifications to update the counter
-      await listNotifications();
+      // sign out the user if MetaMetrics is not enabled and the user is signed in
+      if (!isMetaMetricsEnabled && isSignedIn) {
+        await dispatch(performSignOut());
+      }
     } catch (e) {
       const errorMessage =
         e instanceof Error ? e.message : JSON.stringify(e ?? '');

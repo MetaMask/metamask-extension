@@ -2,7 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { render, fireEvent } from '@testing-library/react';
-import * as MetametricsHooks from '../../../../hooks/identity/useMetametrics';
+import * as MetametricsHooks from '../../../../hooks/useMetametrics';
 import MetametricsToggle from './metametrics-toggle';
 
 let mockUseSelectorReturnValue = false;
@@ -24,6 +24,8 @@ describe('MetametricsToggle', () => {
   const enableMetametricsMock = jest.fn(() => Promise.resolve());
   const disableMetametricsMock = jest.fn(() => Promise.resolve());
 
+  const PARTICIPATE_IN_METRICS_BUTTON_TEST_ID =
+    'participate-in-meta-metrics-toggle-button';
   beforeEach(() => {
     jest.spyOn(MetametricsHooks, 'useEnableMetametrics').mockReturnValue({
       enableMetametrics: enableMetametricsMock,
@@ -67,7 +69,7 @@ describe('MetametricsToggle', () => {
         />
       </Provider>,
     );
-    fireEvent.click(getByTestId('toggleButton'));
+    fireEvent.click(getByTestId(PARTICIPATE_IN_METRICS_BUTTON_TEST_ID));
     expect(enableMetametricsMock).toHaveBeenCalled();
   });
 
@@ -82,7 +84,7 @@ describe('MetametricsToggle', () => {
         />
       </Provider>,
     );
-    fireEvent.click(getByTestId('toggleButton'));
+    fireEvent.click(getByTestId(PARTICIPATE_IN_METRICS_BUTTON_TEST_ID));
     expect(disableMetametricsMock).toHaveBeenCalled();
   });
 });

@@ -1,9 +1,14 @@
 import PropTypes from 'prop-types';
-import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
-import type { RatesControllerState } from '@metamask/assets-controllers';
+import { isEvmAccountType, Transaction } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
+import type {
+  MultichainBalancesControllerState,
+  RatesControllerState,
+} from '@metamask/assets-controllers';
 import { CaipChainId, Hex, KnownCaipNamespace } from '@metamask/utils';
 import { createSelector } from 'reselect';
 import { NetworkType } from '@metamask/controller-utils';
+import { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import { Numeric } from '../../shared/modules/Numeric';
 import {
   MultichainProviderConfig,
@@ -15,10 +20,10 @@ import {
   getCompletedOnboarding,
   getConversionRate,
   getNativeCurrency,
+  getCurrentCurrency,
 } from '../ducks/metamask/metamask';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { BalancesControllerState } from '../../app/scripts/lib/accounts/BalancesController';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -33,7 +38,6 @@ import {
 } from '../../shared/modules/selectors/networks';
 import { AccountsState, getSelectedInternalAccount } from './accounts';
 import {
-  getCurrentCurrency,
   getIsMainnet,
   getMaybeSelectedInternalAccount,
   getNativeCurrencyImage,
@@ -47,12 +51,17 @@ export type RatesState = {
 };
 
 export type BalancesState = {
-  metamask: BalancesControllerState;
+  metamask: MultichainBalancesControllerState;
+};
+
+export type TransactionsState = {
+  metamask: MultichainTransactionsControllerState;
 };
 
 export type MultichainState = AccountsState &
   RatesState &
   BalancesState &
+  TransactionsState &
   NetworkState;
 
 // TODO: Remove after updating to @metamask/network-controller 20.0.0
@@ -220,6 +229,16 @@ export function getMultichainIsBitcoin(
   return !isEvm && symbol === 'BTC';
 }
 
+export function getMultichainIsSolana(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
+  const isEvm = getMultichainIsEvm(state, account);
+  const { symbol } = getMultichainDefaultToken(state, account);
+
+  return !isEvm && symbol === 'SOL';
+}
+
 /**
  * Retrieves the provider configuration for a multichain network.
  *
@@ -254,22 +273,8 @@ export function getMultichainNativeCurrency(
     : getMultichainProviderConfig(state, account).ticker;
 }
 
-export function getMultichainCurrentCurrency(
-  state: MultichainState,
-  account?: InternalAccount,
-) {
-  const currentCurrency = getCurrentCurrency(state);
-
-  if (getMultichainIsEvm(state, account)) {
-    return currentCurrency;
-  }
-
-  // For non-EVM:
-  // To mimic `getCurrentCurrency` we only consider fiat values, otherwise we
-  // fallback to the current ticker symbol value
-  return currentCurrency && currentCurrency.toLowerCase() === 'usd'
-    ? 'usd'
-    : getMultichainProviderConfig(state, account).ticker;
+export function getMultichainCurrentCurrency(state: MultichainState) {
+  return getCurrentCurrency(state);
 }
 
 export function getMultichainCurrencyImage(
@@ -371,13 +376,36 @@ export function getMultichainBalances(
   return state.metamask.balances;
 }
 
+export function getMultichainTransactions(
+  state: MultichainState,
+): TransactionsState['metamask']['nonEvmTransactions'] {
+  return state.metamask.nonEvmTransactions;
+}
+
+export function getSelectedAccountMultichainTransactions(
+  state: MultichainState,
+):
+  | { transactions: Transaction[]; next: string | null; lastUpdated: number }
+  | undefined {
+  const selectedAccount = getSelectedInternalAccount(state);
+
+  if (isEvmAccountType(selectedAccount.type)) {
+    return undefined;
+  }
+
+  return state.metamask.nonEvmTransactions[selectedAccount.id];
+}
+
 export const getMultichainCoinRates = (state: MultichainState) => {
   return state.metamask.rates;
 };
 
-function getNonEvmCachedBalance(state: MultichainState) {
+function getNonEvmCachedBalance(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
   const balances = getMultichainBalances(state);
-  const account = getSelectedInternalAccount(state);
+  const selectedAccount = account ?? getSelectedInternalAccount(state);
   const network = getMultichainCurrentNetwork(state);
 
   // We assume that there's at least one asset type in and that is the native
@@ -387,7 +415,21 @@ function getNonEvmCachedBalance(state: MultichainState) {
       network.chainId as MultichainNetworks
     ]?.[0];
 
-  return balances?.[account.id]?.[asset]?.amount;
+  if (!asset) {
+    console.warn('Could not find asset type for network:', network);
+  }
+
+  const balancesForAccount = balances?.[selectedAccount.id];
+  if (!balancesForAccount) {
+    console.warn('Could not find balances for account:', selectedAccount);
+  }
+
+  const balanceOfAsset = balancesForAccount?.[asset];
+  if (!balanceOfAsset) {
+    console.warn('Could not find balance for asset:', asset);
+  }
+
+  return balanceOfAsset?.amount ?? 0;
 }
 
 export function getImageForChainId(chainId: string) {

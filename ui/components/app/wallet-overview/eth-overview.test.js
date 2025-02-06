@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { fireEvent, waitFor, act } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
@@ -253,7 +253,25 @@ describe('EthOverview', () => {
     });
 
     it('should open the Bridge URI when clicking on Bridge button on supported network', async () => {
-      const { queryByTestId } = renderWithProvider(<EthOverview />, store);
+      const mockedStore = configureMockStore([thunk])({
+        ...store,
+        metamask: {
+          ...mockStore.metamask,
+          ...mockNetworkState({ chainId: '0xa86a' }),
+          useExternalServices: true,
+          bridgeState: {
+            bridgeFeatureFlags: {
+              extensionConfig: {
+                support: false,
+              },
+            },
+          },
+        },
+      });
+      const { queryByTestId } = renderWithProvider(
+        <EthOverview />,
+        mockedStore,
+      );
 
       const bridgeButton = queryByTestId(ETH_OVERVIEW_BRIDGE);
 
@@ -261,59 +279,13 @@ describe('EthOverview', () => {
       expect(bridgeButton).not.toBeDisabled();
 
       fireEvent.click(bridgeButton);
-      expect(openTabSpy).toHaveBeenCalledTimes(1);
-
-      await waitFor(() =>
-        expect(openTabSpy).toHaveBeenCalledWith({
-          url: expect.stringContaining(
-            '/bridge?metamaskEntry=ext_bridge_button',
-          ),
-        }),
-      );
-    });
-
-    it('should open the MMI PD Swaps URI when clicking on Swap button with a Custody account', async () => {
-      const mockedStoreWithCustodyKeyring = {
-        ...mockStore,
-        metamask: {
-          ...mockStore.metamask,
-          mmiConfiguration: {
-            portfolio: {
-              enabled: true,
-              url: 'https://metamask-institutional.io',
-            },
-          },
-          keyrings: [
-            {
-              type: 'Custody',
-              accounts: ['0x1'],
-            },
-          ],
-        },
-      };
-
-      const mockedStore = configureMockStore([thunk])(
-        mockedStoreWithCustodyKeyring,
-      );
-
-      const { queryByTestId } = renderWithProvider(
-        <EthOverview />,
-        mockedStore,
-      );
-
-      const swapButton = queryByTestId(ETH_OVERVIEW_SWAP);
-
-      expect(swapButton).toBeInTheDocument();
-      expect(swapButton).not.toBeDisabled();
-
-      await act(async () => {
-        fireEvent.click(swapButton);
-      });
 
       await waitFor(() => {
         expect(openTabSpy).toHaveBeenCalledTimes(1);
         expect(openTabSpy).toHaveBeenCalledWith({
-          url: 'https://metamask-institutional.io/swap',
+          url: expect.stringContaining(
+            '/bridge?metamaskEntry=ext_bridge_button',
+          ),
         });
       });
     });

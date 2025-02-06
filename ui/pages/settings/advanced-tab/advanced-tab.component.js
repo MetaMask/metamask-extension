@@ -41,8 +41,6 @@ export default class AdvancedTab extends PureComponent {
   };
 
   static propTypes = {
-    setUseNonceField: PropTypes.func,
-    useNonceField: PropTypes.bool,
     setHexDataFeatureFlag: PropTypes.func,
     displayErrorInSettings: PropTypes.func,
     hideErrorInSettings: PropTypes.func,
@@ -406,40 +404,6 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
-  renderUseNonceOptIn() {
-    const { t } = this.context;
-    const { useNonceField, setUseNonceField } = this.props;
-
-    return (
-      <Box
-        ref={this.settingsRefs[6]}
-        className="settings-page__content-row"
-        data-testid="advanced-setting-custom-nonce"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        gap={4}
-      >
-        <div className="settings-page__content-item">
-          <span>{t('nonceField')}</span>
-          <div className="settings-page__content-description">
-            {t('nonceFieldDesc')}
-          </div>
-        </div>
-
-        <div className="settings-page__content-item-col">
-          <ToggleButton
-            className="custom-nonce-toggle"
-            value={useNonceField}
-            onToggle={(value) => setUseNonceField(!value)}
-            offLabel={t('off')}
-            onLabel={t('on')}
-          />
-        </div>
-      </Box>
-    );
-  }
-
   renderAutoLockTimeLimit() {
     const { t } = this.context;
     const { lockTimeError } = this.state;
@@ -681,7 +645,6 @@ export default class AdvancedTab extends PureComponent {
         {this.renderShowConversionInTestnets()}
         {this.renderToggleTestNetworks()}
         {this.renderToggleExtensionInFullSizeView()}
-        {this.renderUseNonceOptIn()}
         {this.renderAutoLockTimeLimit()}
         {this.renderUserDataBackup()}
         {this.renderDismissSeedBackupReminderControl()}

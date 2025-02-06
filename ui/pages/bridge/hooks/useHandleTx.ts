@@ -7,6 +7,7 @@ import {
   forceUpdateMetamaskState,
   addTransaction,
   updateTransaction,
+  addTransactionAndWaitForPublish,
 } from '../../../store/actions';
 import {
   getHexMaxGasLimit,
@@ -14,8 +15,9 @@ import {
 } from '../../../ducks/bridge/utils';
 import { getGasFeeEstimates } from '../../../ducks/metamask/metamask';
 import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
-import { ChainId } from '../types';
+import type { ChainId } from '../../../../shared/types/bridge';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
+import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 
 export default function useHandleTx() {
   const dispatch = useDispatch();
@@ -23,6 +25,7 @@ export default function useHandleTx() {
     checkNetworkAndAccountSupports1559,
   );
   const networkGasFeeEstimates = useSelector(getGasFeeEstimates);
+  const shouldUseSmartTransaction = useSelector(getIsSmartTransaction);
 
   const handleTx = async ({
     txType,
@@ -59,13 +62,22 @@ export default function useHandleTx() {
       maxPriorityFeePerGas,
     };
 
+    // For the bridge tx only
     // Need access to the txMeta.id right away so we can track it in BridgeStatusController,
     // so we call addTransaction instead of addTransactionAndWaitForPublish
     // if it's an STX, addTransactionAndWaitForPublish blocks until there is a txHash
-    const txMeta = await addTransaction(finalTxParams, {
-      requireApproval: false,
-      type: txType,
-    });
+    let txMeta: TransactionMeta;
+    if (txType === TransactionType.bridge && shouldUseSmartTransaction) {
+      txMeta = await addTransaction(finalTxParams, {
+        requireApproval: false,
+        type: txType,
+      });
+    } else {
+      txMeta = await addTransactionAndWaitForPublish(finalTxParams, {
+        requireApproval: false,
+        type: txType,
+      });
+    }
 
     // Note that updateTransaction doesn't actually error if you add fields that don't conform the to the txMeta type
     // they will be there at runtime, but you just don't get any type safety checks on them

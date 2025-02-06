@@ -123,15 +123,9 @@ import { DecodedTransactionDataResponse } from '../../shared/types/transaction-d
 import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
 import { EndTraceRequest } from '../../shared/lib/trace';
 import { SortCriteria } from '../components/app/assets/util/sort';
-import {
-  CaveatTypes,
-  EndowmentTypes,
-} from '../../shared/constants/permissions';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import * as actionConstants from './actionConstants';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { updateCustodyState } from './institutional/institution-actions';
-///: END:ONLY_INCLUDE_IF
+
 import {
   generateActionId,
   callBackgroundMethod,
@@ -505,33 +499,6 @@ export function checkHardwareStatus(
 
     await forceUpdateMetamaskState(dispatch);
     return unlocked;
-  };
-}
-
-export function getDeviceNameForMetric(
-  deviceName: HardwareDeviceNames,
-  hdPath: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  log.debug(`background.getDeviceNameForMetric`, deviceName, hdPath);
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-
-    let result: string;
-    try {
-      result = await submitRequestToBackground<string>(
-        'getDeviceNameForMetric',
-        [deviceName, hdPath],
-      );
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning(error));
-      throw error;
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-
-    await forceUpdateMetamaskState(dispatch);
-    return result;
   };
 }
 
@@ -919,6 +886,32 @@ export async function restoreUserData(jsonString: Json): Promise<true> {
   }
 
   return true;
+}
+
+export function updateSlides(
+  slides,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    try {
+      await submitRequestToBackground('updateSlides', [slides]);
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+export function removeSlide(
+  id: string,
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    try {
+      await submitRequestToBackground('removeSlide', [id]);
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
 }
 
 // TODO: Not a thunk, but rather a wrapper around a background call
@@ -1676,10 +1669,6 @@ export function updateMetamaskState(
 
       dispatch(initializeSendState({ chainHasChanged: true }));
     }
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    updateCustodyState(dispatch, newState, getState());
-    ///: END:ONLY_INCLUDE_IF
 
     return newState;
   };
@@ -2856,6 +2845,13 @@ export function hideLoadingIndication(): Action {
   };
 }
 
+export function setSlides(slides): Action {
+  return {
+    type: actionConstants.SET_SLIDES,
+    slides,
+  };
+}
+
 export function hideNftStillFetchingIndication(): Action {
   return {
     type: actionConstants.HIDE_NFT_STILL_FETCHING_INDICATION,
@@ -3133,16 +3129,8 @@ export function setPetnamesEnabled(value: boolean) {
   return setPreference('petnamesEnabled', value);
 }
 
-export function setRedesignedConfirmationsEnabled(value: boolean) {
-  return setPreference('redesignedConfirmationsEnabled', value);
-}
-
 export function setPrivacyMode(value: boolean) {
   return setPreference('privacyMode', value, false);
-}
-
-export function setRedesignedTransactionsEnabled(value: boolean) {
-  return setPreference('redesignedTransactionsEnabled', value);
 }
 
 export function setFeatureNotificationsEnabled(value: boolean) {
@@ -3151,10 +3139,6 @@ export function setFeatureNotificationsEnabled(value: boolean) {
 
 export function setShowExtensionInFullSizeView(value: boolean) {
   return setPreference('showExtensionInFullSizeView', value);
-}
-
-export function setRedesignedConfirmationsDeveloperEnabled(value: boolean) {
-  return setPreference('isRedesignedConfirmationsDeveloperEnabled', value);
 }
 
 export function setTokenSortConfig(value: SortCriteria) {
@@ -3380,21 +3364,6 @@ export function setUseBlockie(
         dispatch(displayWarning(err));
       }
     });
-  };
-}
-
-export function setUseNonceField(
-  val: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`background.setUseNonceField`);
-    try {
-      await submitRequestToBackground('setUseNonceField', [val]);
-    } catch (error) {
-      dispatch(displayWarning(error));
-    }
-    dispatch(hideLoadingIndication());
   };
 }
 
@@ -3953,19 +3922,6 @@ export function setInitialGasEstimate(
 
 // Permissions
 
-export function requestAccountsPermissionWithId(
-  origin: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    const id = await submitRequestToBackground(
-      'requestAccountsPermissionWithId',
-      [origin],
-    );
-    await forceUpdateMetamaskState(dispatch);
-    return id;
-  };
-}
-
 export function requestAccountsAndChainPermissionsWithId(
   origin: string,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
@@ -4095,12 +4051,10 @@ export function resolvePendingApproval(
     // Before closing the current window, check if any additional confirmations
     // are added as a result of this confirmation being accepted
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask,build-mmi)
     const { pendingApprovals } = await forceUpdateMetamaskState(_dispatch);
     if (Object.values(pendingApprovals).length === 0) {
       _dispatch(closeCurrentNotificationWindow());
     }
-    ///: END:ONLY_INCLUDE_IF
   };
 }
 
@@ -5062,6 +5016,9 @@ export function setSmartTransactionsRefreshInterval(
   refreshInterval: number,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
+    if (refreshInterval === undefined || refreshInterval === null) {
+      return;
+    }
     try {
       await submitRequestToBackground('setStatusRefreshInterval', [
         refreshInterval,
@@ -5226,14 +5183,6 @@ export async function getSnapAccountsById(snapId: string): Promise<string[]> {
 }
 ///: END:ONLY_INCLUDE_IF
 
-export function setUseRequestQueue(val: boolean): void {
-  try {
-    submitRequestToBackground('setUseRequestQueue', [val]);
-  } catch (error) {
-    logErrorWithMessage(error);
-  }
-}
-
 export function setUseExternalNameSources(val: boolean): void {
   try {
     submitRequestToBackground('setUseExternalNameSources', [val]);
@@ -5311,6 +5260,18 @@ export function requestUserApproval({
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning('Had trouble requesting user approval'));
+    }
+  };
+}
+
+export function rejectAllApprovals() {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('rejectAllPendingApprovals');
+
+    const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
+
+    if (Object.values(pendingApprovals).length === 0) {
+      dispatch(closeCurrentNotificationWindow());
     }
   };
 }
@@ -5944,48 +5905,6 @@ export async function getNextAvailableAccountName(
     'getNextAvailableAccountName',
     [keyring],
   );
-}
-
-export async function grantPermittedChain(
-  selectedTabOrigin: string,
-  chainId?: string,
-): Promise<string> {
-  return await submitRequestToBackground<void>('grantPermissionsIncremental', [
-    {
-      subject: { origin: selectedTabOrigin },
-      approvedPermissions: {
-        [EndowmentTypes.permittedChains]: {
-          caveats: [
-            {
-              type: CaveatTypes.restrictNetworkSwitching,
-              value: [chainId],
-            },
-          ],
-        },
-      },
-    },
-  ]);
-}
-
-export async function grantPermittedChains(
-  selectedTabOrigin: string,
-  chainIds: string[],
-): Promise<string> {
-  return await submitRequestToBackground<void>('grantPermissions', [
-    {
-      subject: { origin: selectedTabOrigin },
-      approvedPermissions: {
-        [EndowmentTypes.permittedChains]: {
-          caveats: [
-            {
-              type: CaveatTypes.restrictNetworkSwitching,
-              value: chainIds,
-            },
-          ],
-        },
-      },
-    },
-  ]);
 }
 
 export async function decodeTransactionData({

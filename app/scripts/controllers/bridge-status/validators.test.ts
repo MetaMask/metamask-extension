@@ -162,10 +162,57 @@ const BridgeTxStatusResponses = {
       },
     },
   },
+  STATUS_COMPLETE_VALID_MISSING_FIELDS_2: {
+    status: 'COMPLETE',
+    isExpectedToken: false,
+    bridge: 'across',
+    srcChain: {
+      chainId: 10,
+      txHash:
+        '0x4c57876fad21fb5149af5a58a4aba2ca9d6b212014505dd733b75667ca4f0f2b',
+      amount: '991250000000000',
+      token: {
+        chainId: 10,
+        address: '0x4200000000000000000000000000000000000006',
+        symbol: 'WETH',
+        name: 'Wrapped Ether',
+        decimals: 18,
+        icon: 'https://media.socket.tech/tokens/all/WETH',
+        // logoURI: 'https://media.socket.tech/tokens/all/WETH',
+        // chainAgnosticId: 'ETH',
+      },
+    },
+    destChain: {
+      chainId: 8453,
+      txHash:
+        '0x60c4cad7c3eb14c7b3ace40cd4015b90927dadacbdc8673f404bea6a5603844b',
+      amount: '988339336750062',
+      token: {
+        chainId: 8453,
+        address: '0x4200000000000000000000000000000000000006',
+        symbol: 'WETH',
+        name: 'Wrapped Ether',
+        decimals: 18,
+        icon: null,
+        // logoURI: null,
+        // chainAgnosticId: null,
+      },
+    },
+  },
   STATUS_COMPLETE_INVALID_MISSING_FIELDS: {
     status: 'COMPLETE',
     isExpectedToken: true,
     bridge: 'across',
+  },
+  STATUS_FAILED_VALID: {
+    status: 'FAILED',
+    bridge: 'across',
+    srcChain: {
+      chainId: 42161,
+      txHash:
+        '0x4c57876fad21fb5149af5a58a4aba2ca9d6b212014505dd733b75667ca4f0f2b',
+      token: {},
+    },
   },
 };
 
@@ -204,9 +251,19 @@ describe('validators', () => {
         description: 'complete bridge status with missing fields',
       },
       {
+        input: BridgeTxStatusResponses.STATUS_COMPLETE_VALID_MISSING_FIELDS_2,
+        expected: true,
+        description: 'complete bridge status with missing fields 2',
+      },
+      {
         input: BridgeTxStatusResponses.STATUS_COMPLETE_VALID_MISSING_FIELDS,
         expected: true,
         description: 'complete bridge status with missing fields',
+      },
+      {
+        input: BridgeTxStatusResponses.STATUS_FAILED_VALID,
+        expected: true,
+        description: 'valid failed bridge status',
       },
       {
         input: undefined,

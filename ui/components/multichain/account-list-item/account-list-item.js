@@ -4,7 +4,7 @@ import classnames from 'classnames';
 
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { shortenAddress } from '../../../helpers/utils/util';
+import { getSnapName, shortenAddress } from '../../../helpers/utils/util';
 
 import { AccountListItemMenu } from '../account-list-item-menu';
 import { AvatarGroup } from '../avatar-group';
@@ -53,6 +53,7 @@ import {
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getShowFiatInTestnets,
   getChainIdsToPoll,
+  getSnapsMetadata,
 } from '../../../selectors';
 import {
   getMultichainIsTestnet,
@@ -62,17 +63,14 @@ import {
   getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
 import { useMultichainAccountTotalFiatBalance } from '../../../hooks/useMultichainAccountTotalFiatBalance';
-import { ConnectedStatus } from '../connected-status/connected-status';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
-import { useTheme } from '../../../hooks/useTheme';
-///: END:ONLY_INCLUDE_IF
+import { ConnectedStatus } from '../connected-status';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
+import { getAccountLabel } from '../../../helpers/utils/accounts';
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -99,6 +97,14 @@ const AccountListItem = ({
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
+  const snapMetadata = useSelector(getSnapsMetadata);
+  const accountLabel = getAccountLabel(
+    account.metadata.keyring.type,
+    account,
+    account.metadata.keyring.type === KeyringType.snap
+      ? getSnapName(snapMetadata)(account.metadata?.snap.id)
+      : null,
+  );
 
   const useBlockie = useSelector(getUseBlockie);
   const { isEvmNetwork } = useMultichainSelector(getMultichainNetwork, account);
@@ -150,13 +156,6 @@ const AccountListItem = ({
   } else {
     balanceToTranslate = accountTotalFiatBalances.totalBalance;
   }
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const custodianIcon = useSelector((state) =>
-    getCustodianIconForAddress(state, account.address),
-  );
-  const theme = useTheme();
-  ///: END:ONLY_INCLUDE_IF
 
   // If this is the selected item in the Account menu,
   // scroll the item into view
@@ -236,34 +235,6 @@ const AccountListItem = ({
               }
               marginInlineEnd={2}
             />
-            ///: END:ONLY_INCLUDE_IF
-          }
-
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            custodianIcon ? (
-              <img
-                src={custodianIcon}
-                data-testid="custody-logo"
-                className="custody-logo"
-                alt="custody logo"
-                style={{
-                  backgroundColor: theme === 'light' ? 'transparent' : 'white',
-                }}
-              />
-            ) : (
-              <AvatarAccount
-                borderColor={BorderColor.transparent}
-                size={Size.MD}
-                address={account.address}
-                variant={
-                  useBlockie
-                    ? AvatarAccountVariant.Blockies
-                    : AvatarAccountVariant.Jazzicon
-                }
-                marginInlineEnd={2}
-              />
-            )
             ///: END:ONLY_INCLUDE_IF
           }
         </Box>
@@ -367,8 +338,7 @@ const AccountListItem = ({
               {shortenAddress(normalizeSafeAddress(account.address))}
             </Text>
           </Box>
-          {/* For non-EVM networks we always want to show tokens */}
-          {mappedOrderedTokenList.length > 1 || !isEvmNetwork ? (
+          {mappedOrderedTokenList.length > 1 ? (
             <AvatarGroup members={mappedOrderedTokenList} limit={4} />
           ) : (
             <Box
@@ -393,7 +363,7 @@ const AccountListItem = ({
                 <UserPreferencedCurrencyDisplay
                   account={account}
                   ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                  value={account.balance}
+                  value={isEvmNetwork ? account.balance : balanceToTranslate}
                   type={SECONDARY}
                   showNative
                   data-testid="second-currency-display"
@@ -403,9 +373,9 @@ const AccountListItem = ({
             </Box>
           )}
         </Box>
-        {account.label ? (
+        {accountLabel ? (
           <Tag
-            label={account.label}
+            label={accountLabel}
             labelProps={{
               variant: TextVariant.bodyXs,
               color: Color.textAlternative,
@@ -447,7 +417,7 @@ const AccountListItem = ({
           account={account}
           onClose={() => setAccountOptionsMenuOpen(false)}
           isOpen={accountOptionsMenuOpen}
-          isRemovable={account.keyring.type !== KeyringType.hdKeyTree}
+          isRemovable={account.metadata.keyring.type !== KeyringType.hdKeyTree}
           closeMenu={closeMenu}
           isPinned={isPinned}
           isHidden={isHidden}
@@ -488,10 +458,6 @@ AccountListItem.propTypes = {
         type: PropTypes.string.isRequired,
       }).isRequired,
     }).isRequired,
-    keyring: PropTypes.shape({
-      type: PropTypes.string.isRequired,
-    }).isRequired,
-    label: PropTypes.string,
   }).isRequired,
   /**
    * Represents if this account is currently selected

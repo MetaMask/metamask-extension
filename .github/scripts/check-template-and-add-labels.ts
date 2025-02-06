@@ -22,7 +22,8 @@ import { TemplateType, templates } from './shared/template';
 import { retrievePullRequest } from './shared/pull-request';
 
 enum RegressionStage {
-  Development,
+  DevelopmentFeature,
+  DevelopmentMain,
   Testing,
   Beta,
   Production
@@ -217,8 +218,10 @@ function extractRegressionStageFromBugReportIssueBody(
   const extractedAnswer = match ? match[1].trim() : undefined;
 
   switch (extractedAnswer) {
-    case 'On the development branch':
-      return RegressionStage.Development;
+    case 'On a feature branch':
+      return RegressionStage.DevelopmentFeature;
+    case 'On main branch':
+      return RegressionStage.DevelopmentMain;
     case 'During release testing':
       return RegressionStage.Testing;
     case 'In beta':
@@ -332,11 +335,18 @@ async function userBelongsToMetaMaskOrg(
 // This function crafts appropriate label, corresponding to regression stage and release version.
 function craftRegressionLabel(regressionStage: RegressionStage | undefined, releaseVersion: string | undefined): Label {
   switch (regressionStage) {
-    case RegressionStage.Development:
+    case RegressionStage.DevelopmentFeature:
+      return {
+        name: `feature-branch-bug`,
+        color: '5319E7', // violet
+        description: `bug that was found on a feature branch, but not yet merged in main branch`,
+      };
+
+    case RegressionStage.DevelopmentMain:
       return {
         name: `regression-main`,
         color: '5319E7', // violet
-        description: `Regression bug that was found on development branch, but not yet present in production`,
+        description: `Regression bug that was found on main branch, but not yet present in production`,
       };
 
     case RegressionStage.Testing:

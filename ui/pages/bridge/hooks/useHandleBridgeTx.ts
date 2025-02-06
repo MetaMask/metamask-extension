@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import { TransactionType } from '@metamask/transaction-controller';
 import { Numeric } from '../../../../shared/modules/Numeric';
-import { FeeType, QuoteResponse } from '../types';
+import { FeeType, type QuoteResponse } from '../../../../shared/types/bridge';
 import useHandleTx from './useHandleTx';
 
 export default function useHandleBridgeTx() {
@@ -25,7 +25,6 @@ export default function useHandleBridgeTx() {
       txType: TransactionType.bridge,
       txParams: quoteResponse.trade,
       fieldsToAddToTxMeta: {
-        // @ts-expect-error TODO get this added to TxMeta type
         destinationChainId: new Numeric(quoteResponse.quote.destChainId, 10)
           .toPrefixedHexString()
           .toLowerCase() as `0x${string}`,

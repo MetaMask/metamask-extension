@@ -62,6 +62,9 @@ PATH_NAME_MAP[CONTACT_ADD_ROUTE] = 'Add Contact Settings Page';
 export const CONTACT_VIEW_ROUTE = '/settings/contact-list/view-contact';
 PATH_NAME_MAP[`${CONTACT_VIEW_ROUTE}/:address`] = 'View Contact Settings Page';
 
+export const SNAP_SETTINGS_ROUTE = '/settings/snap';
+PATH_NAME_MAP[`${SNAP_SETTINGS_ROUTE}/:snapId`] = 'Snap Settings Page';
+
 export const REVEAL_SEED_ROUTE = '/seed';
 PATH_NAME_MAP[REVEAL_SEED_ROUTE] = 'Reveal Secret Recovery Phrase Page';
 
@@ -90,29 +93,6 @@ PATH_NAME_MAP[CONFIRM_ADD_SUGGESTED_NFT_ROUTE] =
 
 export const CONNECT_HARDWARE_ROUTE = '/new-account/connect';
 PATH_NAME_MAP[CONNECT_HARDWARE_ROUTE] = 'Connect Hardware Wallet Page';
-
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-export const CUSTODY_ACCOUNT_ROUTE = '/new-account/custody';
-PATH_NAME_MAP[CUSTODY_ACCOUNT_ROUTE] = 'Connect Custody';
-
-export const INSTITUTIONAL_FEATURES_DONE_ROUTE = '/institutional-features/done';
-PATH_NAME_MAP[INSTITUTIONAL_FEATURES_DONE_ROUTE] =
-  'Institutional Features Done Page';
-
-export const CUSTODY_ACCOUNT_DONE_ROUTE = '/new-account/custody/done';
-PATH_NAME_MAP[CUSTODY_ACCOUNT_DONE_ROUTE] = 'Connect Custody Account done';
-
-export const CONFIRM_ADD_CUSTODIAN_TOKEN = '/confirm-add-custodian-token';
-PATH_NAME_MAP[CONFIRM_ADD_CUSTODIAN_TOKEN] = 'Confirm Add Custodian Token';
-
-export const INTERACTIVE_REPLACEMENT_TOKEN_PAGE =
-  '/interactive-replacement-token-page';
-PATH_NAME_MAP[INTERACTIVE_REPLACEMENT_TOKEN_PAGE] =
-  'Interactive replacement token page';
-
-export const SRP_REMINDER = '/onboarding/remind-srp';
-PATH_NAME_MAP[SRP_REMINDER] = 'Secret Recovery Phrase Reminder';
-///: END:ONLY_INCLUDE_IF
 
 export const SEND_ROUTE = '/send';
 PATH_NAME_MAP[SEND_ROUTE] = 'Send Page';
@@ -232,6 +212,7 @@ PATH_NAME_MAP[
 ] = 'Encryption Public Key Request Page';
 
 export const CROSS_CHAIN_SWAP_ROUTE = '/cross-chain';
+PATH_NAME_MAP[CROSS_CHAIN_SWAP_ROUTE] = 'Prepare Cross Chain Swap Page';
 export const CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE = '/cross-chain/tx-details';
 
 export const SWAPS_ROUTE = '/swaps';
@@ -263,7 +244,6 @@ export const ONBOARDING_CONFIRM_SRP_ROUTE =
   '/onboarding/confirm-recovery-phrase';
 export const ONBOARDING_CREATE_PASSWORD_ROUTE = '/onboarding/create-password';
 export const ONBOARDING_COMPLETION_ROUTE = '/onboarding/completion';
-export const MMI_ONBOARDING_COMPLETION_ROUTE = '/onboarding/account-completion';
 export const ONBOARDING_UNLOCK_ROUTE = '/onboarding/unlock';
 export const ONBOARDING_HELP_US_IMPROVE_ROUTE = '/onboarding/help-us-improve';
 export const ONBOARDING_IMPORT_WITH_SRP_ROUTE =

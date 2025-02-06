@@ -1,15 +1,10 @@
 import React from 'react';
-
 import {
   LedgerTransportTypes,
   WebHIDConnectedStatuses,
 } from '../../../../../../shared/constants/hardware-wallets';
 import { BlockaidResultType } from '../../../../../../shared/constants/security-provider';
-import {
-  signatureRequestSIWE,
-  unapprovedPersonalSignMsg,
-} from '../../../../../../test/data/confirmations/personal_sign';
-import { permitSignatureMsg } from '../../../../../../test/data/confirmations/typed_sign';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import {
   getMockContractInteractionConfirmState,
   getMockPersonalSignConfirmState,
@@ -17,17 +12,20 @@ import {
   getMockTypedSignConfirmState,
   getMockTypedSignConfirmStateForRequest,
 } from '../../../../../../test/data/confirmations/helper';
+import {
+  signatureRequestSIWE,
+  unapprovedPersonalSignMsg,
+} from '../../../../../../test/data/confirmations/personal_sign';
+import { permitSignatureMsg } from '../../../../../../test/data/confirmations/typed_sign';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { fireEvent } from '../../../../../../test/jest';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
-import * as MMIConfirmations from '../../../../../hooks/useMMIConfirmations';
+import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import { Severity } from '../../../../../helpers/constants/design-system';
 import * as Actions from '../../../../../store/actions';
 import configureStore from '../../../../../store/store';
-import { Severity } from '../../../../../helpers/constants/design-system';
-import { SignatureRequestType } from '../../../types/confirm';
 import * as confirmContext from '../../../context/confirm';
-
-import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import { SignatureRequestType } from '../../../types/confirm';
 import Footer from './footer';
 
 jest.mock('react-redux', () => ({
@@ -107,28 +105,12 @@ describe('ConfirmFooter', () => {
   describe('renders disabled "Confirm" Button', () => {
     it('when isScrollToBottomCompleted is false', () => {
       jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
-        currentConfirmation: unapprovedPersonalSignMsg,
+        currentConfirmation: genUnapprovedContractInteractionConfirmation(),
         isScrollToBottomCompleted: false,
         setIsScrollToBottomCompleted: () => undefined,
       });
-      const mockStateTypedSign = getMockPersonalSignConfirmStateForRequest(
-        unapprovedPersonalSignMsg,
-      );
+      const mockStateTypedSign = getMockContractInteractionConfirmState();
       const { getByText } = render(mockStateTypedSign);
-
-      const confirmButton = getByText('Confirm');
-      expect(confirmButton).toBeDisabled();
-    });
-
-    it('when the confirmation is a Permit with the transaction simulation setting disabled', () => {
-      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
-        currentConfirmation: permitSignatureMsg,
-        isScrollToBottomCompleted: false,
-        setIsScrollToBottomCompleted: () => undefined,
-      });
-      const mockStatePermit =
-        getMockTypedSignConfirmStateForRequest(permitSignatureMsg);
-      const { getByText } = render(mockStatePermit);
 
       const confirmButton = getByText('Confirm');
       expect(confirmButton).toBeDisabled();
@@ -240,34 +222,6 @@ describe('ConfirmFooter', () => {
     expect(submitButton).toBeDisabled();
   });
 
-  it('submit button should be disabled if useMMIConfirmations returns true for mmiSubmitDisabled', () => {
-    jest
-      .spyOn(MMIConfirmations, 'useMMIConfirmations')
-      .mockImplementation(() => ({
-        mmiOnSignCallback: () => Promise.resolve(),
-        mmiOnTransactionCallback: () => Promise.resolve(),
-        mmiSubmitDisabled: true,
-      }));
-    const { getAllByRole } = render();
-    const submitButton = getAllByRole('button')[1];
-    expect(submitButton).toBeDisabled();
-  });
-
-  it('invoke mmiOnSignCallback returned from hook useMMIConfirmations when submit button is clicked', () => {
-    const mockFn = jest.fn();
-    jest
-      .spyOn(MMIConfirmations, 'useMMIConfirmations')
-      .mockImplementation(() => ({
-        mmiOnSignCallback: mockFn,
-        mmiOnTransactionCallback: mockFn,
-        mmiSubmitDisabled: false,
-      }));
-    const { getAllByRole } = render();
-    const submitButton = getAllByRole('button')[1];
-    fireEvent.click(submitButton);
-    expect(mockFn).toHaveBeenCalledTimes(1);
-  });
-
   describe('ConfirmButton', () => {
     const OWNER_ID_MOCK = '123';
     const KEY_ALERT_KEY_MOCK = 'Key';
@@ -356,6 +310,24 @@ describe('ConfirmFooter', () => {
       );
       const { getByText } = render(stateWithConfirmedDangerAlertMock);
       expect(getByText('Confirm')).toBeInTheDocument();
+    });
+
+    it('renders the "confirm" button disabled when there are blocking dangerous banner alerts', () => {
+      const stateWithBannerDangerAlertMock = createStateWithAlerts(
+        [
+          {
+            ...alertsMock[0],
+            isBlocking: true,
+            field: undefined,
+          },
+        ],
+        {
+          [KEY_ALERT_KEY_MOCK]: false,
+        },
+      );
+      const { getByText } = render(stateWithBannerDangerAlertMock);
+      expect(getByText('Confirm')).toBeInTheDocument();
+      expect(getByText('Confirm')).toBeDisabled();
     });
 
     it('renders the "confirm" button when there are no alerts', () => {

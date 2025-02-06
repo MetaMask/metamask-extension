@@ -1,8 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import {
-  getCurrentCurrency,
   getTokenList,
   selectERC20TokensByChain,
   getNativeCurrencyForChain,
@@ -98,10 +98,7 @@ export default function TokenCell({
     new BigNumber(Number(string) || '0', 10),
   );
 
-  let isStakeable = isMainnet && isEvm && isNative;
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  isStakeable = false;
-  ///: END:ONLY_INCLUDE_IF
+  const isStakeable = isMainnet && isEvm && isNative;
 
   function handleOnClick() {
     if (!onClick || !chainId) {

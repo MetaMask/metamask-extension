@@ -19,7 +19,6 @@ import {
   EthAccountType,
   SolAccountType,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  InternalAccount,
   KeyringAccountType,
   ///: END:ONLY_INCLUDE_IF
 } from '@metamask/keyring-api';
@@ -91,15 +90,11 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   SETTINGS_ROUTE,
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  CUSTODY_ACCOUNT_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { getAccountLabel } from '../../../helpers/utils/accounts';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import {
   ACCOUNT_WATCHER_NAME,
@@ -189,36 +184,6 @@ export const getActionTitle = (
     default:
       return t('selectAnAccount');
   }
-};
-
-/**
- * Merges ordered accounts with balances with each corresponding account data from internal accounts
- *
- * @param accountsWithBalances - ordered accounts with balances
- * @param internalAccounts - internal accounts
- * @returns merged accounts list with balances and internal account data
- */
-export const mergeAccounts = (
-  accountsWithBalances: MergedInternalAccount[],
-  internalAccounts: InternalAccount[],
-) => {
-  return accountsWithBalances.map((account) => {
-    const internalAccount = internalAccounts.find(
-      (intAccount) => intAccount.address === account.address,
-    );
-    if (internalAccount) {
-      return {
-        ...account,
-        ...internalAccount,
-        keyring: internalAccount.metadata.keyring,
-        label: getAccountLabel(
-          internalAccount.metadata.keyring.type,
-          internalAccount,
-        ),
-      };
-    }
-    return account;
-  });
 };
 
 type AccountListMenuProps = {
@@ -355,7 +320,6 @@ export const AccountListMenu = ({
     fuse.setCollection(filteredAccounts);
     searchResults = fuse.search(searchQuery);
   }
-  searchResults = mergeAccounts(searchResults, filteredAccounts);
 
   const title = useMemo(
     () => getActionTitle(t as (text: string) => string, actionMode),
@@ -627,33 +591,6 @@ export const AccountListMenu = ({
                   </ButtonLink>
                 </Box>
               ) : null
-              ///: END:ONLY_INCLUDE_IF
-            }
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-              <Box marginTop={4}>
-                <ButtonLink
-                  size={ButtonLinkSize.Sm}
-                  startIconName={IconName.Custody}
-                  onClick={() => {
-                    onClose();
-                    trackEvent({
-                      category: MetaMetricsEventCategory.Navigation,
-                      event:
-                        MetaMetricsEventName.ConnectCustodialAccountClicked,
-                    });
-                    if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-                      global.platform.openExtensionInBrowser?.(
-                        CUSTODY_ACCOUNT_ROUTE,
-                      );
-                    } else {
-                      history.push(CUSTODY_ACCOUNT_ROUTE);
-                    }
-                  }}
-                >
-                  {t('connectCustodialAccountMenu')}
-                </ButtonLink>
-              </Box>
               ///: END:ONLY_INCLUDE_IF
             }
             {

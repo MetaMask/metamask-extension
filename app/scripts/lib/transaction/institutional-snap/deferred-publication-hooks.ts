@@ -1,32 +1,23 @@
 import {
+  TransactionController,
   TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
 import type { HandleSnapRequest } from '@metamask/snaps-controllers';
 import { SnapId } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
+import { RestrictedMessenger } from '@metamask/base-controller';
 import { accountRequiresPublicationDeferral } from '../../../../../shared/modules/selectors';
 
-import { MetaMaskState } from '../../../controllers/metametrics-controller';
-
 import InstitutionalWalletSnap from '../../../snaps/preinstalled-snap.json';
+import { ControllerFlatState } from '../../../controller-init/controller-list';
 
 const snapId = InstitutionalWalletSnap.snapId as SnapId;
 
 type SnapRPCRequest = Parameters<HandleSnapRequest['handler']>[0];
 
-type updateTransactionMethod = (
-  transactionId: string,
-  params: {
-    status: TransactionStatus;
-    hash: string;
-    nonce: string;
-    gasLimit: string;
-    maxFeePerGas: string;
-    maxPriorityFeePerGas: string;
-  },
-) => void;
 
+// Todo: obtain this type from the snap package
 export type InstitutionalSnapResponse = {
   keyringRequest: {
     id: string;
@@ -89,13 +80,29 @@ export type InstitutionalSnapRequestSearchParameters = {
   chainId: string;
 };
 
+type AllowedActions = HandleSnapRequest;
+
+export type InstitutionalSnapMessenger = RestrictedMessenger<
+  'SnapsNameProvider',
+  AllowedActions,
+  never,
+  AllowedActions['type'],
+  never
+>;
+
 export const deferPublicationHookFactory = (
-  updateTransaction: updateTransactionMethod,
-  handleSnapRequest: (
-    payload: SnapRPCRequest,
-  ) => Promise<InstitutionalSnapResponse>,
-  getMetaMaskState: () => MetaMaskState,
+  getTransactionController: () => TransactionController,
+  controllerMessenger: InstitutionalSnapMessenger,
+  getMetaMaskState: () => ControllerFlatState,
 ) => {
+  async function handleSnapRequest(args: SnapRPCRequest) {
+    const response = await controllerMessenger.call(
+      'SnapController:handleRequest',
+      args,
+    );
+    return response;
+  }
+
   return async function (transactionMeta: TransactionMeta) {
     const state = getMetaMaskState();
     const shouldDeferPublication = accountRequiresPublicationDeferral(
@@ -138,14 +145,17 @@ export const deferPublicationHookFactory = (
 
       // Tell the transaction controller to update the transaction with the hash and mark as submitted, finishing the lifecycle and allowing
       // the block tracker to start watching for the transaction to be mined
-      updateTransaction(transactionMeta.id, {
-        status: TransactionStatus.submitted,
-        hash,
-        nonce: snapResponse.transaction.nonce,
-        gasLimit: snapResponse.transaction.gasLimit,
-        maxFeePerGas: snapResponse.transaction.maxFeePerGas,
-        maxPriorityFeePerGas: snapResponse.transaction.maxPriorityFeePerGas,
-      });
+      getTransactionController().updateCustodialTransaction(
+        transactionMeta.id,
+        {
+          status: TransactionStatus.submitted,
+          hash,
+          nonce: snapResponse.transaction.nonce,
+          gasLimit: snapResponse.transaction.gasLimit,
+          maxFeePerGas: snapResponse.transaction.maxFeePerGas,
+          maxPriorityFeePerGas: snapResponse.transaction.maxPriorityFeePerGas,
+        },
+      );
       return false;
     }
     return true;
@@ -153,7 +163,7 @@ export const deferPublicationHookFactory = (
 };
 
 export const beforeCheckPendingTransactionHookFactory = (
-  getMetaMaskState: () => any,
+  getMetaMaskState: () => ControllerFlatState,
 ) => {
   return function (transactionMeta: TransactionMeta) {
     const state = getMetaMaskState();

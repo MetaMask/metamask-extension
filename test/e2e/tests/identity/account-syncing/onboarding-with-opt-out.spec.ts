@@ -7,6 +7,7 @@ import {
   IDENTITY_TEAM_PASSWORD,
   IDENTITY_TEAM_SEED_PHRASE,
 } from '../constants';
+import { ACCOUNT_TYPE } from '../../../constants';
 import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
@@ -23,7 +24,7 @@ import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 import { accountsSyncMockResponse } from './mockData';
 
-describe('Account syncing - Opt-out Profile Sync @no-mmi', function () {
+describe('Account syncing - Opt-out Profile Sync', function () {
   if (!IS_ACCOUNT_SYNCING_ENABLED) {
     return;
   }
@@ -135,7 +136,11 @@ describe('Account syncing - Opt-out Profile Sync @no-mmi', function () {
           await accountListPage.check_accountDisplayedInAccountList(
             'Account 1',
           );
-          await accountListPage.addNewAccount('New Account');
+          await accountListPage.addAccount({
+            accountType: ACCOUNT_TYPE.Ethereum,
+            accountName: 'New Account',
+          });
+
           // Set SRP to use for retreival
           const headerNavbar = new HeaderNavbar(driver);
           await headerNavbar.check_pageIsLoaded();

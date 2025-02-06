@@ -14,7 +14,7 @@ import {
   FlexDirection,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { UseBridgeTxHistoryDataProps } from '../../../hooks/bridge/useBridgeTxHistoryData';
+import { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import Segment from './segment';
 
 const getTxIndex = (srcTxStatus: StatusTypes) => {
@@ -64,7 +64,7 @@ export default function BridgeActivityItemTxSegments({
   transactionGroup,
 }: {
   bridgeTxHistoryItem?: BridgeHistoryItem;
-  transactionGroup: UseBridgeTxHistoryDataProps['transactionGroup'];
+  transactionGroup: TransactionGroup;
 }) {
   const { initialTransaction } = transactionGroup;
   const srcTxStatus = getSrcTxStatus(initialTransaction);

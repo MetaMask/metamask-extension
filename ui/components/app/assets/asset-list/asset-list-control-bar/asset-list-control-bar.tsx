@@ -1,6 +1,11 @@
 import React, { useEffect, useRef, useState, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCurrentNetwork, getPreferences } from '../../../../../selectors';
+import {
+  getCurrentNetwork,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
+  getSelectedInternalAccount,
+  getTokenNetworkFilter,
+} from '../../../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
   Box,
@@ -23,7 +28,10 @@ import {
 import ImportControl from '../import-control';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import { TEST_CHAINS } from '../../../../../../shared/constants/network';
+import {
+  FEATURED_NETWORK_CHAIN_IDS,
+  TEST_CHAINS,
+} from '../../../../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -42,6 +50,8 @@ import {
   showImportTokensModal,
 } from '../../../../../store/actions';
 import Tooltip from '../../../../ui/tooltip';
+import { useMultichainSelector } from '../../../../../hooks/useMultichainSelector';
+import { getMultichainNetwork } from '../../../../../selectors/multichain';
 
 type AssetListControlBarProps = {
   showTokensLinks?: boolean;
@@ -54,13 +64,19 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   const popoverRef = useRef<HTMLDivElement>(null);
   const currentNetwork = useSelector(getCurrentNetwork);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
+    getIsTokenNetworkFilterEqualCurrentNetwork,
+  );
 
-  const { tokenNetworkFilter } = useSelector(getPreferences);
+  const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
   const [isImportTokensPopoverOpen, setIsImportTokensPopoverOpen] =
     useState(false);
   const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
     useState(false);
+
+  const account = useSelector(getSelectedInternalAccount);
+  const { isEvmNetwork } = useMultichainSelector(getMultichainNetwork, account);
 
   const isTestNetwork = useMemo(() => {
     return (TEST_CHAINS as string[]).includes(currentNetwork.chainId);
@@ -70,10 +86,6 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   Object.keys(allNetworks || {}).forEach((chainId) => {
     allOpts[chainId] = true;
   });
-
-  const allNetworksFilterShown =
-    Object.keys(tokenNetworkFilter || {}).length !==
-    Object.keys(allOpts || {}).length;
 
   useEffect(() => {
     if (isTestNetwork) {
@@ -88,7 +100,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   useEffect(() => {
     if (
       process.env.PORTFOLIO_VIEW &&
-      Object.keys(tokenNetworkFilter || {}).length === 0
+      Object.keys(tokenNetworkFilter).length === 0
     ) {
       dispatch(setTokenNetworkFilter(allOpts));
     } else {
@@ -99,7 +111,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   // When a network gets added/removed we want to make sure that we switch to the filtered list of the current network
   // We only want to do this if the "Current Network" filter is selected
   useEffect(() => {
-    if (Object.keys(tokenNetworkFilter || {}).length === 1) {
+    if (Object.keys(tokenNetworkFilter).length === 1) {
       dispatch(setTokenNetworkFilter({ [currentNetwork.chainId]: true }));
     }
   }, [Object.keys(allNetworks).length]);
@@ -148,6 +160,10 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   const handleRefresh = () => {
     dispatch(detectTokens());
     closePopover();
+    trackEvent({
+      category: MetaMetricsEventCategory.Tokens,
+      event: MetaMetricsEventName.TokenListRefreshed,
+    });
   };
 
   return (
@@ -160,19 +176,23 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
       <Box
         display={Display.Flex}
         justifyContent={
-          process.env.PORTFOLIO_VIEW
+          process.env.PORTFOLIO_VIEW && isEvmNetwork
             ? JustifyContent.spaceBetween
             : JustifyContent.flexEnd
         }
       >
-        {process.env.PORTFOLIO_VIEW && (
+        {/* TODO: Remove isEvmNetwork check when we are ready to show the network filter in all networks including non-EVM */}
+        {process.env.PORTFOLIO_VIEW && isEvmNetwork ? (
           <ButtonBase
             data-testid="sort-by-networks"
             variant={TextVariant.bodyMdMedium}
             className="asset-list-control-bar__button asset-list-control-bar__network_control"
             onClick={toggleNetworkFilterPopover}
             size={ButtonBaseSize.Sm}
-            disabled={isTestNetwork}
+            disabled={
+              isTestNetwork ||
+              !FEATURED_NETWORK_CHAIN_IDS.includes(currentNetwork.chainId)
+            }
             endIconName={IconName.ArrowDown}
             backgroundColor={
               isNetworkFilterPopoverOpen
@@ -183,11 +203,11 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
             marginRight={isFullScreen ? 2 : null}
             ellipsis
           >
-            {allNetworksFilterShown
+            {isTokenNetworkFilterEqualCurrentNetwork
               ? currentNetwork?.nickname ?? t('currentNetwork')
-              : t('allNetworks')}
+              : t('popularNetworks')}
           </ButtonBase>
-        )}
+        ) : null}
 
         <Box
           className="asset-list-control-bar__buttons"

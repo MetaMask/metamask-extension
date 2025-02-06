@@ -21,10 +21,16 @@ jest.mock('../../../../../../store/actions', () => ({
   }),
 }));
 
+jest.mock('../../../../hooks/useAssetDetails', () => ({
+  useAssetDetails: jest.fn(() => ({
+    decimals: 18,
+  })),
+}));
+
 describe('TokenTransferInfo', () => {
   it('renders correctly', () => {
     const state = getMockTokenTransferConfirmState({});
-    const mockStore = configureMockStore([])(state);
+    const mockStore = configureMockStore()(state);
     const { container } = renderWithConfirmContextProvider(
       <TokenTransferInfo />,
       mockStore,

@@ -10,9 +10,9 @@ import {
   Token,
   TokensControllerState,
 } from '@metamask/assets-controllers';
-import { InternalAccount } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { Browser } from 'webextension-polyfill';
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import { merge } from 'lodash';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { createSegmentMock } from '../lib/segment';
@@ -1669,12 +1669,12 @@ describe('MetaMetricsController', function () {
           },
           ShowNativeTokenAsMainBalance: true,
           allNfts: {},
-          names: {
-            ethereumAddress: {},
-          },
           participateInMetaMetrics: true,
           dataCollectionForMarketing: false,
           preferences: { privacyMode: true, tokenNetworkFilter: [] },
+          names: {
+            ethereumAddress: {},
+          },
           securityAlertsEnabled: true,
           security_providers: ['blockaid'],
           currentCurrency: 'usd',
@@ -1842,6 +1842,40 @@ describe('MetaMetricsController', function () {
       );
     });
   });
+  describe('updateExtensionUninstallUrl', function () {
+    it('should include extension version in uninstall URL regardless of MetaMetrics participation', async function () {
+      await withController(({ controller }) => {
+        const setUninstallURLSpy = jest.spyOn(
+          MOCK_EXTENSION.runtime,
+          'setUninstallURL',
+        );
+
+        // Test with MetaMetrics disabled
+        controller.updateExtensionUninstallUrl(false, 'test-id');
+        expect(setUninstallURLSpy).toHaveBeenCalledWith(
+          expect.stringContaining(`av=${VERSION}`),
+        );
+        expect(setUninstallURLSpy).toHaveBeenCalledWith(
+          expect.not.stringContaining('mmi='),
+        );
+        expect(setUninstallURLSpy).toHaveBeenCalledWith(
+          expect.not.stringContaining('env='),
+        );
+
+        // Test with MetaMetrics enabled
+        controller.updateExtensionUninstallUrl(true, 'test-id');
+        expect(setUninstallURLSpy).toHaveBeenCalledWith(
+          expect.stringContaining(`av=${VERSION}`),
+        );
+        expect(setUninstallURLSpy).toHaveBeenCalledWith(
+          expect.stringContaining('mmi='),
+        );
+        expect(setUninstallURLSpy).toHaveBeenCalledWith(
+          expect.stringContaining('env='),
+        );
+      });
+    });
+  });
 });
 
 type WithControllerOptions = {
@@ -1889,19 +1923,16 @@ async function withController<ReturnValue>(
         },
       },
     } = rest;
-    const controllerMessenger = new ControllerMessenger<
-      AllowedActions,
-      AllowedEvents
-    >();
+    const messenger = new Messenger<AllowedActions, AllowedEvents>();
 
-    controllerMessenger.registerActionHandler(
+    messenger.registerActionHandler(
       'PreferencesController:getState',
       jest.fn().mockReturnValue({
         currentLocale,
       }),
     );
 
-    controllerMessenger.registerActionHandler(
+    messenger.registerActionHandler(
       'NetworkController:getState',
       jest.fn().mockReturnValue({
         selectedNetworkClientId: Object.keys(
@@ -1910,7 +1941,7 @@ async function withController<ReturnValue>(
       }),
     );
 
-    controllerMessenger.registerActionHandler(
+    messenger.registerActionHandler(
       'NetworkController:getNetworkClientById',
       jest.fn().mockReturnValue({
         configuration: Object.values(
@@ -1922,7 +1953,7 @@ async function withController<ReturnValue>(
     return fn({
       controller: new MetaMetricsController({
         segment: segmentMock,
-        messenger: controllerMessenger.getRestricted({
+        messenger: messenger.getRestricted({
           name: 'MetaMetricsController',
           allowedActions: [
             'PreferencesController:getState',
@@ -1950,16 +1981,9 @@ async function withController<ReturnValue>(
         },
       }),
       triggerPreferencesControllerStateChange: (state) =>
-        controllerMessenger.publish(
-          'PreferencesController:stateChange',
-          state,
-          [],
-        ),
+        messenger.publish('PreferencesController:stateChange', state, []),
       triggerNetworkDidChange: (state) =>
-        controllerMessenger.publish(
-          'NetworkController:networkDidChange',
-          state,
-        ),
+        messenger.publish('NetworkController:networkDidChange', state),
     });
   } finally {
     // flush the queues manually after each test

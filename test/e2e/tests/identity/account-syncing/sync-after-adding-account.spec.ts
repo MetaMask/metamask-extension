@@ -3,6 +3,7 @@ import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sd
 import { withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
+import { ACCOUNT_TYPE } from '../../../constants';
 import {
   IDENTITY_TEAM_PASSWORD,
   IDENTITY_TEAM_SEED_PHRASE,
@@ -15,7 +16,7 @@ import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onb
 import { accountsSyncMockResponse } from './mockData';
 import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 
-describe('Account syncing - Add Account @no-mmi', function () {
+describe('Account syncing - Add Account', function () {
   if (!IS_ACCOUNT_SYNCING_ENABLED) {
     return;
   }
@@ -65,7 +66,10 @@ describe('Account syncing - Add Account @no-mmi', function () {
           await accountListPage.check_accountDisplayedInAccountList(
             'My Second Synced Account',
           );
-          await accountListPage.addNewAccount('My third account');
+          await accountListPage.addAccount({
+            accountType: ACCOUNT_TYPE.Ethereum,
+            accountName: 'My third account',
+          });
         },
       );
 
@@ -164,7 +168,9 @@ describe('Account syncing - Add Account @no-mmi', function () {
           await accountListPage.check_accountDisplayedInAccountList(
             'My Second Synced Account',
           );
-          await accountListPage.addNewAccount();
+          await accountListPage.addAccount({
+            accountType: ACCOUNT_TYPE.Ethereum,
+          });
         },
       );
 

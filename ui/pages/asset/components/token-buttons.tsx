@@ -15,12 +15,6 @@ import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 ///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import {
-  getMmiPortfolioEnabled,
-  getMmiPortfolioUrl,
-} from '../../../selectors/institutional/selectors';
-///: END:ONLY_INCLUDE_IF
 import {
   getIsSwapsChain,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -92,25 +86,6 @@ const TokenButtons = ({
   const { openBridgeExperience } = useBridging();
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
-  const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
-
-  const portfolioEvent = () => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.MMIPortfolioButtonClicked,
-    });
-  };
-
-  const stakingEvent = () => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.MMIPortfolioButtonClicked,
-    });
-  };
-  ///: END:ONLY_INCLUDE_IF
-
   useEffect(() => {
     if (token.isERC721) {
       dispatch(
@@ -176,53 +151,6 @@ const TokenButtons = ({
         ///: END:ONLY_INCLUDE_IF
       }
 
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        <>
-          <IconButton
-            className="eth-overview__button"
-            Icon={
-              <Icon
-                name={IconName.Stake}
-                color={IconColor.primaryInverse}
-                size={IconSize.Sm}
-              />
-            }
-            label={t('stake')}
-            data-testid="token-overview-mmi-stake"
-            tooltipRender={null}
-            onClick={() => {
-              stakingEvent();
-              global.platform.openTab({
-                url: `${mmiPortfolioUrl}/stake`,
-              });
-            }}
-          />
-          {mmiPortfolioEnabled && (
-            <IconButton
-              className="eth-overview__button"
-              Icon={
-                <Icon
-                  name={IconName.Diagram}
-                  color={IconColor.primaryInverse}
-                  size={IconSize.Sm}
-                />
-              }
-              label={t('portfolio')}
-              data-testid="token-overview-mmi-portfolio"
-              tooltipRender={null}
-              onClick={() => {
-                portfolioEvent();
-                global.platform.openTab({
-                  url: mmiPortfolioUrl,
-                });
-              }}
-            />
-          )}
-        </>
-        ///: END:ONLY_INCLUDE_IF
-      }
-
       <IconButton
         className="token-overview__button"
         onClick={async () => {
@@ -279,11 +207,6 @@ const TokenButtons = ({
           }
           onClick={async () => {
             await setCorrectChain();
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            global.platform.openTab({
-              url: `${mmiPortfolioUrl}/swap`,
-            });
-            ///: END:ONLY_INCLUDE_IF
 
             ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
             trackEvent({
@@ -335,7 +258,8 @@ const TokenButtons = ({
               />
             }
             label={t('bridge')}
-            onClick={() => {
+            onClick={async () => {
+              await setCorrectChain();
               openBridgeExperience(MetaMetricsSwapsEventSource.TokenView, {
                 ...token,
                 iconUrl: token.image,

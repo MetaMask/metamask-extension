@@ -15,10 +15,7 @@ import {
   doesAddressRequireLedgerHidConnection,
   getCustomNonceValue,
 } from '../../../../../selectors';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { useMMIConfirmations } from '../../../../../hooks/useMMIConfirmations';
-import { getNoteToTraderMessage } from '../../../../../selectors/institutional/selectors';
-///: END:ONLY_INCLUDE_IF
+
 import useAlerts from '../../../../../hooks/useAlerts';
 import {
   rejectPendingApproval,
@@ -29,12 +26,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   updateCustomNonce,
 } from '../../../../../store/actions';
-import { selectUseTransactionSimulations } from '../../../selectors/preferences';
-
-import {
-  isPermitSignatureRequest,
-  isSIWESignatureRequest,
-} from '../../../utils';
+import { isSignatureTransactionType } from '../../../utils';
 import { useConfirmContext } from '../../../context/confirm';
 import { getConfirmationSender } from '../utils';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
@@ -96,14 +88,14 @@ const ConfirmButton = ({
     useState<boolean>(false);
 
   const {
+    alerts,
     hasDangerAlerts,
     hasUnconfirmedDangerAlerts,
-    fieldAlerts,
     hasUnconfirmedFieldDangerAlerts,
     unconfirmedFieldDangerAlerts,
   } = useAlerts(alertOwnerId);
 
-  const hasDangerBlockingAlerts = fieldAlerts.some(
+  const hasDangerBlockingAlerts = alerts.some(
     (alert) => alert.severity === Severity.Danger && alert.isBlocking,
   );
 
@@ -164,18 +156,10 @@ const Footer = () => {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const customNonceValue = useSelector(getCustomNonceValue);
-  const useTransactionSimulations = useSelector(
-    selectUseTransactionSimulations,
-  );
+
   const { currentConfirmation, isScrollToBottomCompleted } =
     useConfirmContext();
   const { from } = getConfirmationSender(currentConfirmation);
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const noteToTraderMessage = useSelector(getNoteToTraderMessage);
-  const { mmiOnTransactionCallback, mmiOnSignCallback, mmiSubmitDisabled } =
-    useMMIConfirmations();
-  ///: END:ONLY_INCLUDE_IF
 
   const hardwareWalletRequiresConnection = useSelector((state) => {
     if (from) {
@@ -184,15 +168,10 @@ const Footer = () => {
     return false;
   });
 
-  const isSIWE = isSIWESignatureRequest(currentConfirmation);
-  const isPermit = isPermitSignatureRequest(currentConfirmation);
-  const isPermitSimulationShown = isPermit && useTransactionSimulations;
+  const isSignature = isSignatureTransactionType(currentConfirmation);
 
   const isConfirmDisabled =
-    (!isScrollToBottomCompleted && !isSIWE && !isPermitSimulationShown) ||
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    mmiSubmitDisabled ||
-    ///: END:ONLY_INCLUDE_IF
+    (!isScrollToBottomCompleted && !isSignature) ||
     hardwareWalletRequiresConnection;
 
   const onCancel = useCallback(
@@ -234,30 +213,15 @@ const Footer = () => {
       const updatedTx = mergeTxDataWithNonce(
         currentConfirmation as TransactionMeta,
       );
-
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      mmiOnTransactionCallback(updatedTx, noteToTraderMessage);
-      ///: END:ONLY_INCLUDE_IF
-
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       dispatch(updateAndApproveTx(updatedTx, true, ''));
       ///: END:ONLY_INCLUDE_IF
     } else {
       dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
-
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      mmiOnSignCallback();
-      ///: END:ONLY_INCLUDE_IF
     }
     dispatch(updateCustomNonce(''));
     dispatch(setNextNonce(''));
-  }, [
-    currentConfirmation,
-    customNonceValue,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    noteToTraderMessage,
-    ///: END:ONLY_INCLUDE_IF
-  ]);
+  }, [currentConfirmation, customNonceValue]);
 
   const onFooterCancel = useCallback(() => {
     onCancel({ location: MetaMetricsEventLocation.Confirmation });

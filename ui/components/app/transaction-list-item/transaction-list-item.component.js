@@ -11,7 +11,7 @@ import {
 } from '@metamask/transaction-controller';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-
+import CancelSpeedupPopover from '../cancel-speedup-popover';
 import TransactionListItemDetails from '../transaction-list-item-details';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
@@ -34,10 +34,6 @@ import {
   Text,
 } from '../../component-library';
 
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { IconColor } from '../../../helpers/constants/design-system';
-import { Icon, IconName, IconSize } from '../../component-library';
-///: END:ONLY_INCLUDE_IF
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -62,7 +58,6 @@ import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import Button from '../../ui/button';
 import AdvancedGasFeePopover from '../../../pages/confirmations/components/advanced-gas-fee-popover';
 import CancelButton from '../cancel-button';
-import CancelSpeedupPopover from '../cancel-speedup-popover';
 import EditGasFeePopover from '../../../pages/confirmations/components/edit-gas-fee-popover';
 import EditGasPopover from '../../../pages/confirmations/components/edit-gas-popover';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -99,6 +94,7 @@ function TransactionListItemInner({
   const { bridgeTxHistoryItem, isBridgeComplete, showBridgeTxDetails } =
     useBridgeTxHistoryData({
       transactionGroup,
+      isEarliestNonce,
     });
 
   const {
@@ -189,9 +185,6 @@ function TransactionListItemInner({
   ].includes(category);
   const isSigning = status === TransactionStatus.approved;
   const isSubmitting = status === TransactionStatus.signed;
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const isCustodian = Boolean(transactionGroup.primaryTransaction.custodyId);
-  ///: END:ONLY_INCLUDE_IF
 
   const className = classnames('transaction-list-item', {
     'transaction-list-item--unconfirmed':
@@ -222,25 +215,7 @@ function TransactionListItemInner({
     });
   }, [isUnapproved, history, id, trackEvent, category]);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const debugTransactionMeta = {
-    'data-hash': transactionGroup.primaryTransaction.hash,
-    ...(isCustodian
-      ? {
-          'data-custodiantransactionid':
-            transactionGroup.primaryTransaction.custodyId,
-        }
-      : {}),
-  };
-  ///: END:ONLY_INCLUDE_IF
-
   const speedUpButton = useMemo(() => {
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    if (isCustodian) {
-      return null;
-    }
-    ///: END:ONLY_INCLUDE_IF
-
     if (
       !shouldShowSpeedUp ||
       !isPending ||
@@ -271,32 +246,10 @@ function TransactionListItemInner({
     hasCancelled,
     retryTransaction,
     cancelTransaction,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    isCustodian,
-    ///: END:ONLY_INCLUDE_IF
   ]);
   const currentChain = useSelector(getCurrentNetwork);
-  let showCancelButton =
+  const showCancelButton =
     !hasCancelled && isPending && !isUnapproved && !isSubmitting && !isBridgeTx;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  showCancelButton = showCancelButton && !isCustodian;
-  const PENDING_COLOR = IconColor.iconAlternative;
-  const OK_COLOR = IconColor.primaryDefault;
-  const FAIL_COLOR = IconColor.errorDefault;
-  const getTransactionColor = (tsStatus) => {
-    switch (tsStatus) {
-      case TransactionStatus.signed:
-        return PENDING_COLOR;
-      case TransactionStatus.rejected:
-      case TransactionStatus.failed:
-      case TransactionStatus.dropped:
-        return FAIL_COLOR;
-      default:
-        return OK_COLOR;
-    }
-  };
-  ///: END:ONLY_INCLUDE_IF
 
   return (
     <>
@@ -310,48 +263,23 @@ function TransactionListItemInner({
         className={className}
         title={title}
         icon={
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          isCustodian ? (
-            <Box style={{ position: 'relative' }} data-testid="custody-icon">
-              <TransactionIcon
-                category={category}
-                status={displayedStatusKey}
+          <BadgeWrapper
+            anchorElementShape={BadgeWrapperAnchorElementShape.circular}
+            display={Display.Block}
+            badge={
+              <AvatarNetwork
+                className="activity-tx__network-badge"
+                data-testid="activity-tx-network-badge"
+                size={AvatarNetworkSize.Xs}
+                name={currentChain?.nickname}
+                src={currentChain?.rpcPrefs?.imageUrl}
+                borderColor={BackgroundColor.backgroundDefault}
+                backgroundColor={testNetworkBackgroundColor}
               />
-              <Icon
-                data-testid="custody-icon-badge"
-                name={IconName.Custody}
-                className="transaction-list-item__icon-badge"
-                color={getTransactionColor(status)}
-                size={IconSize.Xs}
-              />
-            </Box>
-          ) : (
-            ///: END:ONLY_INCLUDE_IF
-            <BadgeWrapper
-              anchorElementShape={BadgeWrapperAnchorElementShape.circular}
-              positionObj={{ top: -4, right: -4 }}
-              display={Display.Block}
-              badge={
-                <AvatarNetwork
-                  className="activity-tx__network-badge"
-                  data-testid="activity-tx-network-badge"
-                  size={AvatarNetworkSize.Xs}
-                  name={currentChain?.nickname}
-                  src={currentChain?.rpcPrefs?.imageUrl}
-                  borderWidth={1}
-                  borderColor={BackgroundColor.backgroundDefault}
-                  backgroundColor={testNetworkBackgroundColor}
-                />
-              }
-            >
-              <TransactionIcon
-                category={category}
-                status={displayedStatusKey}
-              />
-            </BadgeWrapper>
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          )
-          ///: END:ONLY_INCLUDE_IF
+            }
+          >
+            <TransactionIcon category={category} status={displayedStatusKey} />
+          </BadgeWrapper>
         }
         subtitle={
           !FINAL_NON_CONFIRMED_STATUSES.includes(status) &&
@@ -369,12 +297,6 @@ function TransactionListItemInner({
               error={error}
               date={date}
               status={displayedStatusKey}
-              ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-              custodyStatus={transactionGroup.primaryTransaction.custodyStatus}
-              custodyStatusDisplayText={
-                transactionGroup.primaryTransaction.custodyStatusDisplayText
-              }
-              ///: END:ONLY_INCLUDE_IF
             />
           )
         }
@@ -421,11 +343,6 @@ function TransactionListItemInner({
             {speedUpButton}
           </Box>
         )}
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          <a {...debugTransactionMeta} className="test-transaction-meta" />
-          ///: END:ONLY_INCLUDE_IF
-        }
       </ActivityListItem>
       {showDetails && (
         <TransactionListItemDetails
@@ -437,29 +354,15 @@ function TransactionListItemInner({
           recipientAddress={recipientAddress}
           onRetry={retryTransaction}
           showRetry={
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            !isCustodian &&
-            ///: END:ONLY_INCLUDE_IF
             status === TransactionStatus.failed &&
             !isSwap &&
             !isSmartTransaction
           }
-          showSpeedUp={
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            !isCustodian &&
-            ///: END:ONLY_INCLUDE_IF
-            shouldShowSpeedUp
-          }
+          showSpeedUp={shouldShowSpeedUp}
           isEarliestNonce={isEarliestNonce}
           onCancel={cancelTransaction}
-          showCancel={
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            !isCustodian &&
-            ///: END:ONLY_INCLUDE_IF
-            isPending &&
-            !hasCancelled &&
-            !isBridgeTx
-          }
+          showCancel={isPending && !hasCancelled && !isBridgeTx}
+          showErrorBanner={Boolean(error)}
           transactionStatus={() => (
             <TransactionStatusLabel
               isPending={isPending}
@@ -468,12 +371,7 @@ function TransactionListItemInner({
               date={date}
               status={displayedStatusKey}
               statusOnly
-              ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-              custodyStatus={transactionGroup.primaryTransaction.custodyStatus}
-              custodyStatusDisplayText={
-                transactionGroup.primaryTransaction.custodyStatusDisplayText
-              }
-              ///: END:ONLY_INCLUDE_IF
+              shouldShowTooltip={false}
             />
           )}
         />
@@ -511,8 +409,6 @@ const TransactionListItem = (props) => {
     useSelector(checkNetworkAndAccountSupports1559) &&
     !isLegacyTransaction(transaction?.txParams);
 
-  const isCustodian = Boolean(transactionGroup.primaryTransaction.custodyId);
-
   return (
     <GasFeeContextProvider
       transaction={transactionGroup.primaryTransaction}
@@ -522,7 +418,7 @@ const TransactionListItem = (props) => {
         <TransactionListItemInner {...props} setEditGasMode={setEditGasMode} />
         {supportsEIP1559 && (
           <>
-            {!isCustodian && <CancelSpeedupPopover />}
+            <CancelSpeedupPopover />
             <EditGasFeePopover />
             <AdvancedGasFeePopover />
           </>

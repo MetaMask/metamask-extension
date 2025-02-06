@@ -1,7 +1,7 @@
 import {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedControllerMessenger,
+  RestrictedMessenger,
 } from '@metamask/base-controller';
 import {
   NetworkControllerFindNetworkClientIdByChainIdAction,
@@ -11,12 +11,14 @@ import {
 import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import { TransactionControllerGetStateAction } from '@metamask/transaction-controller';
 import {
+  BridgeHistoryItem,
   BridgeStatusAction,
   BridgeStatusControllerState,
 } from '../../../../shared/types/bridge-status';
 import { BRIDGE_STATUS_CONTROLLER_NAME } from './constants';
 import BridgeStatusController from './bridge-status-controller';
 
+// Actions
 type BridgeStatusControllerAction<
   FunctionName extends keyof BridgeStatusController,
 > = {
@@ -33,10 +35,26 @@ type BridgeStatusControllerActions =
       BridgeStatusControllerState
     >;
 
-type BridgeStatusControllerEvents = ControllerStateChangeEvent<
+// Events
+export type BridgeStatusControllerStateChangeEvent = ControllerStateChangeEvent<
   typeof BRIDGE_STATUS_CONTROLLER_NAME,
   BridgeStatusControllerState
 >;
+
+export type BridgeStatusControllerBridgeTransactionCompleteEvent = {
+  type: `${typeof BRIDGE_STATUS_CONTROLLER_NAME}:bridgeTransactionComplete`;
+  payload: [{ bridgeHistoryItem: BridgeHistoryItem }];
+};
+
+export type BridgeStatusControllerBridgeTransactionFailedEvent = {
+  type: `${typeof BRIDGE_STATUS_CONTROLLER_NAME}:bridgeTransactionFailed`;
+  payload: [{ bridgeHistoryItem: BridgeHistoryItem }];
+};
+
+type BridgeStatusControllerEvents =
+  | BridgeStatusControllerStateChangeEvent
+  | BridgeStatusControllerBridgeTransactionCompleteEvent
+  | BridgeStatusControllerBridgeTransactionFailedEvent;
 
 /**
  * The external actions available to the BridgeStatusController.
@@ -56,7 +74,7 @@ type AllowedEvents = never;
 /**
  * The messenger for the BridgeStatusController.
  */
-export type BridgeStatusControllerMessenger = RestrictedControllerMessenger<
+export type BridgeStatusControllerMessenger = RestrictedMessenger<
   typeof BRIDGE_STATUS_CONTROLLER_NAME,
   BridgeStatusControllerActions | AllowedActions,
   BridgeStatusControllerEvents | AllowedEvents,

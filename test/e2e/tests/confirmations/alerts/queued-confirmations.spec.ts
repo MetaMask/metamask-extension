@@ -30,10 +30,6 @@ const PORT_ONE = 7777;
 const CHAIN_ID_ONE = 1000;
 
 describe('Queued Confirmations', function () {
-  if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
-    return;
-  }
-
   describe('Queued Requests Banner Alert', function () {
     it('Banner is shown on dApp 1, but not on dApp 2 after adding transaction on dApp 1, and one on dApp 2 (old confirmation flow)', async function () {
       await withFixtures(
@@ -41,7 +37,6 @@ describe('Queued Confirmations', function () {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withNetworkControllerTripleGanache()
-            .withPreferencesControllerUseRequestQueueEnabled()
             .withSelectedNetworkControllerPerDomain()
             .build(),
           dappOptions: { numberOfDapps: 2 },
@@ -86,7 +81,7 @@ describe('Queued Confirmations', function () {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withNetworkControllerTripleGanache()
-            .withPreferencesControllerUseRequestQueueEnabled()
+
             .withSelectedNetworkControllerPerDomain()
             .build(),
           dappOptions: { numberOfDapps: 2 },
@@ -139,10 +134,6 @@ describe('Queued Confirmations', function () {
           fixtures: new FixtureBuilder()
             .withNetworkControllerTripleGanache()
             .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: { redesignedConfirmationsEnabled: true },
-              useRequestQueue: true,
-            })
             .withSelectedNetworkControllerPerDomain()
             .build(),
           dappOptions: { numberOfDapps: 2 },
@@ -193,7 +184,7 @@ describe('Queued Confirmations', function () {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withNetworkControllerTripleGanache()
-            .withPreferencesControllerUseRequestQueueEnabled()
+
             .withSelectedNetworkControllerPerDomain()
             .withMetaMetricsController({
               metaMetricsId: 'fake-metrics-id',
@@ -279,10 +270,6 @@ describe('Queued Confirmations', function () {
           fixtures: new FixtureBuilder()
             .withNetworkControllerTripleGanache()
             .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: { redesignedConfirmationsEnabled: true },
-              useRequestQueue: true,
-            })
             .withSelectedNetworkControllerPerDomain()
             .withMetaMetricsController({
               metaMetricsId: 'fake-metrics-id',
@@ -325,7 +312,7 @@ describe('Queued Confirmations', function () {
           // create deposit transaction in dapp 1
           await createDepositTransaction(driver);
 
-          await driver.delay(2000);
+          await driver.delay(5000);
 
           await switchToDAppTwoAndCreateSignTypedDataRequest(driver);
 
@@ -381,15 +368,8 @@ async function connectToDappOne(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.clickElement({
-    text: 'Next',
+    text: 'Connect',
     tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
-  });
-
-  await driver.clickElement({
-    text: 'Confirm',
-    tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
   });
 
   await driver.waitUntilXWindowHandles(2);
@@ -412,16 +392,9 @@ async function connectToDappTwoAndSwitchBackToOne(
   await driver.waitUntilXWindowHandles(4);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-  await driver.clickElement({
-    text: 'Next',
+  await driver.clickElementAndWaitForWindowToClose({
+    text: 'Connect',
     tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
-  });
-
-  await driver.clickElement({
-    text: 'Confirm',
-    tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
   });
 
   const url = `${DAPP_URL}${
@@ -444,10 +417,11 @@ async function switchChainToDappOne(driver: Driver) {
     `window.ethereum.request(${switchEthereumChainRequest})`,
   );
 
-  await driver.waitUntilXWindowHandles(4);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-  await driver.clickElement({ text: 'Switch network', tag: 'button' });
+  // No dialog should appear as we already gave permissions to this network
+  await driver.waitForSelector({
+    css: '[id="chainId"]',
+    text: '0x3e8',
+  });
 }
 
 async function switchToDAppAndCreateTransactionRequest(driver: Driver) {
@@ -475,7 +449,7 @@ async function assertBannerExistsOnConfirmation(driver: Driver) {
 }
 
 async function rejectConfirmation(driver: Driver) {
-  await driver.clickElement({ css: 'button', text: 'Reject' });
+  await driver.clickElement({ css: 'button', text: 'Cancel' });
 }
 
 async function assertBannerDoesNotExistOnConfirmation(driver: Driver) {

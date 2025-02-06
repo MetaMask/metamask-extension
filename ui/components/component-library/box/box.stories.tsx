@@ -390,6 +390,11 @@ export const BackgroundColorStory = () => {
           BackgroundColor.backgroundAlternative
         </Text>
       </Box>
+      <Box padding={3} backgroundColor={BackgroundColor.backgroundMuted}>
+        <Text color={TextColor.textDefault}>
+          BackgroundColor.backgroundMuted
+        </Text>
+      </Box>
       <Box padding={3} backgroundColor={BackgroundColor.overlayDefault}>
         <Text color={TextColor.overlayInverse}>
           BackgroundColor.overlayDefault

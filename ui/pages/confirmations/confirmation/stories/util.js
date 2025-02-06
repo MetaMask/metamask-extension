@@ -56,7 +56,7 @@ const STORE_MOCK = {
       'npm:@test/test-snap': {
         id: 'npm:@test/test-snap',
         manifest: {
-          description: 'Test Snap',
+          proposedName: 'Test Snap',
         },
       },
     },
@@ -64,8 +64,12 @@ const STORE_MOCK = {
 };
 
 // eslint-disable-next-line react/prop-types
-export function PendingApproval({ children, requestData, type }) {
-  const mockState = { ...STORE_MOCK };
+export function PendingApproval({ children, requestData, state, type }) {
+  const mockState = {
+    ...STORE_MOCK,
+    metamask: { ...STORE_MOCK.metamask, ...state },
+  };
+
   const pendingApproval = mockState.metamask.pendingApprovals.testId;
 
   pendingApproval.type = type;

@@ -305,7 +305,6 @@ describe('Selectors', () => {
       },
       metamask: {
         isUnlocked: true,
-        useRequestQueue: true,
         selectedTabOrigin: SELECTED_ORIGIN,
         unapprovedDecryptMsgs: [],
         unapprovedPersonalMsgs: [],
@@ -1083,16 +1082,6 @@ describe('Selectors', () => {
     );
   });
 
-  it('#getGasIsLoading', () => {
-    const gasIsLoading = selectors.getGasIsLoading(mockState);
-    expect(gasIsLoading).toStrictEqual(false);
-  });
-
-  it('#getCurrentCurrency', () => {
-    const currentCurrency = selectors.getCurrentCurrency(mockState);
-    expect(currentCurrency).toStrictEqual('usd');
-  });
-
   it('#getTotalUnapprovedCount', () => {
     const totalUnapprovedCount = selectors.getTotalUnapprovedCount(mockState);
     expect(totalUnapprovedCount).toStrictEqual(1);
@@ -1188,12 +1177,6 @@ describe('Selectors', () => {
     const showOutdatedBrowserWarning =
       selectors.getShowOutdatedBrowserWarning(mockState);
     expect(showOutdatedBrowserWarning).toStrictEqual(true);
-  });
-
-  it('#getTotalUnapprovedSignatureRequestCount', () => {
-    const totalUnapprovedSignatureRequestCount =
-      selectors.getTotalUnapprovedSignatureRequestCount(mockState);
-    expect(totalUnapprovedSignatureRequestCount).toStrictEqual(0);
   });
 
   describe('#getPetnamesEnabled', () => {
@@ -1302,6 +1285,7 @@ describe('Selectors', () => {
       'npm:@metamask/test-snap-networkAccess': false,
       'npm:@metamask/test-snap-notify': false,
       'npm:@metamask/test-snap-wasm': false,
+      'local:snap-id': false,
     });
   });
 
@@ -1391,15 +1375,25 @@ describe('Selectors', () => {
         subjects: {
           'https://test.dapp': {
             permissions: {
-              eth_accounts: {
+              'endowment:caip25': {
                 caveats: [
                   {
-                    type: 'restrictReturnedAccounts',
-                    value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                    type: 'authorizedScopes',
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        'eip155:1': {
+                          accounts: [
+                            'eip155:1:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                          ],
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
                   },
                 ],
                 invoker: 'https://test.dapp',
-                parentCapability: 'eth_accounts',
+                parentCapability: 'endowment:caip25',
               },
             },
           },
@@ -1433,6 +1427,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
+        scopes: ['eip155:0'],
         pinned: true,
         hidden: false,
         active: false,
@@ -1458,6 +1453,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
+        scopes: ['eip155:0'],
         pinned: true,
         hidden: false,
         active: false,
@@ -1482,6 +1478,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
+        scopes: ['eip155:0'],
         balance: '0x0',
         pinned: false,
         hidden: false,
@@ -1508,6 +1505,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
+        scopes: ['eip155:0'],
         balance: '0x0',
         pinned: false,
         hidden: false,
@@ -1525,7 +1523,7 @@ describe('Selectors', () => {
           name: 'Snap Account 1',
           snap: {
             enabled: true,
-            id: 'snap-id',
+            id: 'local:snap-id',
             name: 'snap-name',
           },
         },
@@ -1541,6 +1539,7 @@ describe('Selectors', () => {
         pinned: false,
         active: false,
         type: 'eip155:eoa',
+        scopes: ['eip155:0'],
       },
       {
         id: '694225f4-d30b-4e77-a900-c8bbce735b42',
@@ -1560,6 +1559,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
+        scopes: ['eip155:0'],
         address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
         balance: '0x0',
         pinned: false,
@@ -2176,6 +2176,65 @@ describe('#getConnectedSitesList', () => {
       expect(selectors.getRemoteFeatureFlags(state)).toStrictEqual({
         existingFlag: true,
       });
+    });
+  });
+
+  describe('getIsTokenNetworkFilterEqualCurrentNetwork', () => {
+    beforeEach(() => {
+      process.env.PORTFOLIO_VIEW = 'true';
+    });
+
+    afterEach(() => {
+      process.env.PORTFOLIO_VIEW = undefined;
+    });
+
+    it('returns true when the token network filter is equal to the current network', () => {
+      const state = {
+        metamask: {
+          preferences: {
+            tokenNetworkFilter: {
+              '0x1': true,
+            },
+          },
+          selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              rpcEndpoints: [
+                { networkClientId: 'mainnetNetworkConfigurationId' },
+              ],
+            },
+          },
+        },
+      };
+      expect(selectors.getIsTokenNetworkFilterEqualCurrentNetwork(state)).toBe(
+        true,
+      );
+    });
+
+    it('returns false when the token network filter is on multiple networks', () => {
+      const state = {
+        metamask: {
+          preferences: {
+            tokenNetworkFilter: {
+              '0x1': true,
+              '0x89': true,
+            },
+          },
+          selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              rpcEndpoints: [
+                { networkClientId: 'mainnetNetworkConfigurationId' },
+              ],
+            },
+          },
+        },
+      };
+      expect(selectors.getIsTokenNetworkFilterEqualCurrentNetwork(state)).toBe(
+        false,
+      );
     });
   });
 });

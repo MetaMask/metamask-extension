@@ -14,19 +14,23 @@ export const FINAL_NON_CONFIRMED_STATUSES = [
   TransactionStatus.rejected,
 ];
 
+export type TransactionGroup = {
+  hasCancelled: boolean;
+  hasRetried: boolean;
+  initialTransaction: TransactionMeta;
+  nonce: Hex;
+  primaryTransaction: TransactionMeta;
+  transactions: TransactionMeta[];
+};
+
 export type UseBridgeTxHistoryDataProps = {
-  transactionGroup: {
-    hasCancelled: boolean;
-    hasRetried: boolean;
-    initialTransaction: TransactionMeta;
-    nonce: Hex;
-    primaryTransaction: TransactionMeta;
-    transactions: TransactionMeta[];
-  };
+  transactionGroup: TransactionGroup;
+  isEarliestNonce: boolean;
 };
 
 export function useBridgeTxHistoryData({
   transactionGroup,
+  isEarliestNonce,
 }: UseBridgeTxHistoryDataProps) {
   const history = useHistory();
   const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
@@ -47,7 +51,10 @@ export function useBridgeTxHistoryData({
   )
     ? undefined
     : () => {
-        history.push(`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${srcTxMetaId}`);
+        history.push({
+          pathname: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${srcTxMetaId}`,
+          state: { transactionGroup, isEarliestNonce },
+        });
       };
 
   return {

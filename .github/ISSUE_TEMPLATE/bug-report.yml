@@ -57,7 +57,8 @@ body:
        - In production (default)
        - In beta
        - During release testing
-       - On the development branch
+       - On main branch
+       - On a feature branch
    validations:
      required: true
  - type: input
