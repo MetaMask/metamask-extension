@@ -8,7 +8,6 @@ const {
   ThenableWebDriver, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
 } = require('selenium-webdriver');
 const firefox = require('selenium-webdriver/firefox');
-const logging = require('selenium-webdriver/lib/logging');
 const { retry } = require('../../../development/lib/retry');
 const { isHeadless } = require('../../helpers/env');
 
@@ -51,8 +50,6 @@ class FirefoxDriver {
    * @returns {Promise<{driver: !ThenableWebDriver, extensionUrl: string, extensionId: string}>}
    */
   static async build({ responsive, port, constrainWindowSize, proxyPort }) {
-    const logger = logging.getLogger('webdriver');
-    logger.setLevel(logging.Level.DEBUG);
     const templateProfile = fs.mkdtempSync(TEMP_PROFILE_PATH_PREFIX);
     const options = new firefox.Options().setProfile(templateProfile);
 
