@@ -998,6 +998,7 @@ export default class MetamaskController extends EventEmitter {
         allowedEvents: [
           'AccountsController:accountAdded',
           'AccountsController:accountRemoved',
+          'AccountsController:accountBalancesUpdated',
         ],
         allowedActions: [
           'AccountsController:listMultichainAccounts',
@@ -3027,8 +3028,6 @@ export default class MetamaskController extends EventEmitter {
         this.multichainRatesController.start();
       },
     );
-    this.multichainBalancesController.start();
-    this.multichainBalancesController.updateBalances();
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     this.multichainTransactionsController.start();
@@ -3525,6 +3524,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setOnboardingDate.bind(appStateController),
       setLastViewedUserSurvey:
         appStateController.setLastViewedUserSurvey.bind(appStateController),
+      setRampCardClosed:
+        appStateController.setRampCardClosed.bind(appStateController),
       setNewPrivacyPolicyToastClickedOrClosed:
         appStateController.setNewPrivacyPolicyToastClickedOrClosed.bind(
           appStateController,
