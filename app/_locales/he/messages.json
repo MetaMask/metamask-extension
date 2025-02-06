@@ -254,9 +254,6 @@
   "from": {
     "message": "מאת"
   },
-  "functionType": {
-    "message": "סוג פונקציה"
-  },
   "gasLimit": {
     "message": "הגבלת דלק"
   },
@@ -464,9 +461,6 @@
   "origin": {
     "message": "מקור"
   },
-  "parameters": {
-    "message": "פרמטרים"
-  },
   "participateInMetaMetrics": {
     "message": "קח/י חלק ב- MetaMetrics"
   },
@@ -535,9 +529,6 @@
   "removeAccountDescription": {
     "message": "חשבון זה יוסר מארנקך. יש לוודא שיש לך את ה-seed phrase המקורי או המפתח האישי לחשבון מיובא זה לפני שתמשיך/י. באפשרותך ליבוא או לפתוח חשבונות שוב מהתפריט הנפתח של החשבון."
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "בקשות הממתינות לאישור"
-  },
   "required": {
     "message": "נדרש"
   },
@@ -604,9 +595,6 @@
   },
   "showHexDataDescription": {
     "message": "בחר/י בזה כדי להציג את שדה הנתונים ההקסדצימאלים על מסך השליחה"
-  },
-  "sigRequest": {
-    "message": "בקשת חתימה"
   },
   "sign": {
     "message": "חתימה"
@@ -731,9 +719,6 @@
   "unknown": {
     "message": "לא ידוע"
   },
-  "unknownNetwork": {
-    "message": "רשת פרטית לא ידועה"
-  },
   "unknownQrCode": {
     "message": "שגיאה: לא הצלחנו לזהות את קוד ה- QR הזה"
   },
@@ -763,9 +748,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "עליך לאפשר גישה למצלמה כדי להשתמש בתכונה זו."
-  },
-  "youSign": {
-    "message": "הנך חותמ/ת"
   },
   "yourPrivateSeedPhrase": {
     "message": "ה-seed phrase הפרטי שלך"

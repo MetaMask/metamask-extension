@@ -184,7 +184,7 @@ describe('addEthereumChainHandler', () => {
       NON_INFURA_CHAIN_ID,
       123,
       {
-        isAddFlow: true,
+        autoApprove: true,
         getCaveat: mocks.getCaveat,
         setActiveNetwork: mocks.setActiveNetwork,
         requestPermittedChainsPermissionForOrigin:
@@ -251,7 +251,7 @@ describe('addEthereumChainHandler', () => {
           '0x1',
           123,
           {
-            isAddFlow: true,
+            autoApprove: true,
             getCaveat: mocks.getCaveat,
             setActiveNetwork: mocks.setActiveNetwork,
             requestPermittedChainsPermissionForOrigin:
@@ -264,7 +264,7 @@ describe('addEthereumChainHandler', () => {
     });
 
     describe('if the proposed networkConfiguration does not have a different rpcUrl from the one already in state', () => {
-      it('should only switch to the existing networkConfiguration if one already exists for the given chain id', async () => {
+      it('should only switch to the existing networkConfiguration if one already exists for the given chain id without auto approving the chain permission', async () => {
         const { mocks, end, handler } = createMockedHandler();
         mocks.getCurrentChainIdForDomain.mockReturnValue(CHAIN_IDS.MAINNET);
         mocks.getNetworkConfigurationByChainId.mockReturnValue(
@@ -298,7 +298,7 @@ describe('addEthereumChainHandler', () => {
           '0xa',
           createMockOptimismConfiguration().rpcEndpoints[0].networkClientId,
           {
-            isAddFlow: true,
+            autoApprove: false,
             getCaveat: mocks.getCaveat,
             setActiveNetwork: mocks.setActiveNetwork,
             requestPermittedChainsPermissionForOrigin:
@@ -337,31 +337,5 @@ describe('addEthereumChainHandler', () => {
         message: `nativeCurrency.symbol does not match currency symbol for a network the user already has added with the same chainId. Received:\nWRONG`,
       }),
     );
-  });
-
-  it('should add result set to null to response object if the requested rpcUrl (and chainId) is currently selected', async () => {
-    const CURRENT_RPC_CONFIG = createMockNonInfuraConfiguration();
-
-    const { mocks, response, handler } = createMockedHandler();
-    mocks.getCurrentChainIdForDomain.mockReturnValue(
-      CURRENT_RPC_CONFIG.chainId,
-    );
-    mocks.getNetworkConfigurationByChainId.mockReturnValue(CURRENT_RPC_CONFIG);
-    await handler({
-      origin: 'example.com',
-      params: [
-        {
-          chainId: CURRENT_RPC_CONFIG.chainId,
-          chainName: 'Custom Network',
-          rpcUrls: [CURRENT_RPC_CONFIG.rpcEndpoints[0].url],
-          nativeCurrency: {
-            symbol: CURRENT_RPC_CONFIG.nativeCurrency,
-            decimals: 18,
-          },
-          blockExplorerUrls: ['https://custom.blockexplorer'],
-        },
-      ],
-    });
-    expect(response.result).toBeNull();
   });
 });

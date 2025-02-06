@@ -91,7 +91,6 @@ export const SnapHomeRenderer = ({ snapId }) => {
       snapId={snapId}
       interfaceId={interfaceId}
       isLoading={loading}
-      useDelineator={false}
       useFooter
     />
   );
