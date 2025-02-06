@@ -25,6 +25,7 @@ import {
   AssetType,
   TokenStandard,
 } from '../../../../../shared/constants/transaction';
+import { addImportedTokens } from '../../../../store/actions';
 
 const useAssetListTokenDetection = () => {
   const trackEvent = useContext(MetaMetricsContext);
@@ -50,7 +51,7 @@ const useAssetListTokenDetection = () => {
 
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
 
-  const addImportedTokens = async (
+  const handleAddImportedTokens = async (
     tokens: Token[],
     networkClientIdProp: string,
   ) => {
@@ -87,7 +88,7 @@ const useAssetListTokenDetection = () => {
       networkClientId,
       currentChainId,
       detectedTokens,
-      addImportedTokens,
+      handleAddImportedTokens,
       trackTokenAddedEvent,
     );
   }, [
