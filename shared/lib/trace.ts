@@ -401,6 +401,9 @@ export const fetchWithSentryInstrumentation = async (
   await Sentry.startSpan(
     { op: 'http.client', name: `${method} ${url}` },
     async (span) => {
+      if (!span) {
+        return;
+      }
       const parsedURL = new URL(url, location.origin);
 
       span.setAttribute('http.request.method', method);
@@ -422,7 +425,7 @@ export const fetchWithSentryInstrumentation = async (
       if (cloudflareRayId) {
         span.setAttribute('CF-Ray', cloudflareRayId);
         const scope = Sentry.getCurrentScope();
-        scope.setTag('CF-Ray', cloudflareRayId);
+        scope?.setTag('CF-Ray', cloudflareRayId);
       }
     },
   );
