@@ -2,7 +2,6 @@ import {
   AbstractExecutionService,
   IframeExecutionService,
   OffscreenExecutionService,
-  ExecutionServiceArgs,
 } from '@metamask/snaps-controllers';
 import { assert } from '@metamask/utils';
 import { SubjectType } from '@metamask/permission-controller';
@@ -42,7 +41,7 @@ export const ExecutionServiceInit: ControllerInitFunction<
    * @param connectionStream - The stream to connect to the Snap.
    */
   function setupSnapProvider(snapId: string, connectionStream: Duplex) {
-    return setupUntrustedCommunicationEip1193({
+    setupUntrustedCommunicationEip1193({
       connectionStream,
       sender: { snapId },
       subjectType: SubjectType.Snap,
