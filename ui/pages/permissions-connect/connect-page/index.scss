@@ -1,0 +1,10 @@
+@use "design-system";
+
+.connect-page {
+  .multichain-account-list-item {
+    &:hover,
+    &:focus-within {
+      background: var(--color-background-default);
+    }
+  }
+}
