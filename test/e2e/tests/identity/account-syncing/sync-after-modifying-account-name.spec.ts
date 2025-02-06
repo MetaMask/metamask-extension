@@ -8,8 +8,8 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountDetailsModal from '../../../page-objects/pages/dialog/account-details-modal';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 import { completeOnboardFlowIdentity } from '../flows';
+import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 import {
   accountsToMockForAccountsSync,
   getAccountsSyncMockResponse,

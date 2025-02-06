@@ -138,7 +138,7 @@ describe('Account syncing - User already has balances on multiple accounts', asy
             await mockInfuraAndAccountSync(
               server,
               userStorageMockttpController,
-              { accountsToMockBalances: accountsToMockBalances },
+              { accountsToMockBalances },
             );
           },
         },
@@ -193,7 +193,7 @@ describe('Account syncing - User already has balances on multiple accounts', asy
             await mockInfuraAndAccountSync(
               server,
               userStorageMockttpController,
-              { accountsToMockBalances: accountsToMockBalances },
+              { accountsToMockBalances },
             );
           },
         },

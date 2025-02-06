@@ -11,11 +11,11 @@ import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import PrivacySettings from '../../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
-import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 import {
   completeNewWalletFlowIdentity,
   completeOnboardFlowIdentity,
 } from '../flows';
+import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 
 describe('Account syncing - New User', function () {
   if (!IS_ACCOUNT_SYNCING_ENABLED) {

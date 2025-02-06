@@ -20,8 +20,8 @@ import {
 } from '../../../page-objects/flows/onboarding.flow';
 import PrivacySettings from '../../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
-import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 import { completeOnboardFlowIdentity } from '../flows';
+import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 import {
   accountsToMockForAccountsSync,
   getAccountsSyncMockResponse,
