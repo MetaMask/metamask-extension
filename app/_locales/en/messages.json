@@ -5926,6 +5926,15 @@
   "swapSwapTo": {
     "message": "Swap to"
   },
+  "swapToAccountPickerNoEligible": {
+    "message": "No eligible accounts found"
+  },
+  "swapToAccountPickerNoMatching": {
+    "message": "No matching accounts found"
+  },
+  "swapToAccountPickerSearchPlaceholder": {
+    "message": "Receiving address or SNS"
+  },
   "swapToConfirmWithHwWallet": {
     "message": "to confirm with your hardware wallet"
   },

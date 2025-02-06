@@ -21,6 +21,7 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import SwapToAccountListItem from './swap-to-account-list-item';
+import { t } from '../../../../app/scripts/translate';
 
 type SwapToAccountPickerProps = {
   accounts: InternalAccount[];
@@ -138,7 +139,7 @@ export const SwapToAccountPicker = ({
         }}
       >
         <TextFieldSearch
-          placeholder="Receiving address or SNS"
+          placeholder={t('swapToAccountPickerSearchPlaceholder')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           clearButtonOnClick={() => setSearchQuery('')}
@@ -183,8 +184,8 @@ export const SwapToAccountPicker = ({
           >
             <Text textAlign={TextAlign.Center}>
               {searchQuery
-                ? 'No matching accounts found.'
-                : 'No eligible accounts found.'}
+                ? t('swapToAccountPickerNoMatching')
+                : t('swapToAccountPickerNoEligible')}
             </Text>
           </Box>
         )}
