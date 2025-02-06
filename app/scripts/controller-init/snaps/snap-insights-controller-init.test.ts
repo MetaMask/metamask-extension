@@ -23,7 +23,7 @@ function getInitRequestMock(): jest.Mocked<
   return requestMock;
 }
 
-describe('SnapControllerInit', () => {
+describe('SnapInsightsControllerInit', () => {
   it('initializes the controller', () => {
     const { controller } = SnapInsightsControllerInit(getInitRequestMock());
     expect(controller).toBeInstanceOf(SnapInsightsController);
