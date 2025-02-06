@@ -57,7 +57,7 @@ const useBridging = () => {
 
   const openBridgeExperience = useCallback(
     (
-      location: string,
+      location: MetaMetricsSwapsEventSource | 'Carousel',
       token: SwapsTokenObject | SwapsEthToken,
       portfolioUrlSuffix?: string,
       isSwap = false,
@@ -71,23 +71,10 @@ const useBridging = () => {
           event: MetaMetricsEventName.ActionOpened,
           category: MetaMetricsEventCategory.Navigation,
           properties: {
-            location:
-              location === 'Home'
-                ? MetaMetricsSwapsEventSource.MainView
-                : MetaMetricsSwapsEventSource.TokenView,
+            location,
             chain_id_source: providerConfig.chainId,
             token_symbol_source: token.symbol,
             token_address_source: token.address,
-          },
-        });
-        trackEvent({
-          event: MetaMetricsEventName.BridgeLinkClicked,
-          category: MetaMetricsEventCategory.Navigation,
-          properties: {
-            token_symbol: token.symbol,
-            location,
-            text: 'Bridge',
-            chain_id: providerConfig.chainId,
           },
         });
         let url = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
