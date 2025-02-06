@@ -6191,7 +6191,7 @@ export default class MetamaskController extends EventEmitter {
       }),
     );
 
-    engine.push(createUnsupportedMethodMiddleware(UNSUPPORTED_RPC_METHODS));
+    engine.push(createUnsupportedMethodMiddleware());
 
     // Legacy RPC method that needs to be implemented _ahead of_ the permission
     // middleware.
