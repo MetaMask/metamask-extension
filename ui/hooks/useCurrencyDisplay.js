@@ -220,7 +220,9 @@ export function useCurrencyDisplay(
   }
 
   return [
-    `${prefix || ''}${value}${suffix && suffix !== nativeCurrency ? ` ${suffix}` : ''}`,
+    `${prefix || ''}${value}${
+      suffix && suffix !== nativeCurrency ? ` ${suffix}` : ''
+    }`,
     { prefix, value, suffix },
   ];
 }
