@@ -1,5 +1,5 @@
-import type { Provider } from '@metamask/network-controller';
 import { FetchGasFeeEstimateOptions } from '@metamask/gas-fee-controller';
+import type { Provider } from '@metamask/network-controller';
 import { BigNumber } from 'bignumber.js';
 import { isHexString } from 'ethereumjs-util';
 
@@ -17,8 +17,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventFragment,
   MetaMetricsEventName,
-  MetaMetricsEventUiCustomization,
   MetaMetricsEventTransactionEstimateType,
+  MetaMetricsEventUiCustomization,
   MetaMetricsPageObject,
   MetaMetricsReferrerObject,
 } from '../../../../shared/constants/metametrics';
@@ -40,21 +40,21 @@ import {
 import { getSmartTransactionMetricsProperties } from '../../../../shared/modules/metametrics';
 import {
   determineTransactionAssetType,
+  GetTokenStandardAndDetails,
   isEIP1559Transaction,
 } from '../../../../shared/modules/transaction.utils';
 import {
   getBlockaidMetricsProps,
   getSwapAndSendMetricsProps,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../ui/helpers/utils/metrics';
 
+import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
+import { shouldUseRedesignForTransactions } from '../../../../shared/lib/confirmation.utils';
 import {
   getSnapAndHardwareInfoForMetrics,
   type SnapAndHardwareMessenger,
 } from '../snap-keyring/metrics';
-import { shouldUseRedesignForTransactions } from '../../../../shared/lib/confirmation.utils';
-import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
+import { getTransactionValue } from './util';
 
 export type TransactionMetricsRequest = {
   createEventFragment: (
@@ -88,12 +88,7 @@ export type TransactionMetricsRequest = {
   getEIP1559GasFeeEstimates(options?: FetchGasFeeEstimateOptions): Promise<any>;
   getParticipateInMetrics: () => boolean;
   getSelectedAddress: () => string;
-  getTokenStandardAndDetails: () => Promise<{
-    decimals?: string;
-    balance?: string;
-    symbol?: string;
-    standard?: TokenStandard;
-  }>;
+  getTokenStandardAndDetails: GetTokenStandardAndDetails;
   getTransaction: (transactionId: string) => TransactionMeta;
   provider: Provider;
   snapAndHardwareMessenger: SnapAndHardwareMessenger;
@@ -106,6 +101,9 @@ export type TransactionMetricsRequest = {
   ) => SmartTransaction;
   getMethodData: (data: string) => Promise<{ name: string }>;
   getIsConfirmationAdvancedDetailsOpen: () => boolean;
+  getConversionRate: () => string;
+  getNativeCurrency: () => string;
+  useCurrencyRateCheck: () => boolean;
 };
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
@@ -231,6 +229,10 @@ export const handleTransactionConfirmed = async (
   extraParams.gas_used = txReceipt?.gasUsed;
   extraParams.block_number =
     txReceipt?.blockNumber && hexToDecimal(txReceipt.blockNumber);
+  extraParams.transaction_value = await getTransactionValue(
+    transactionMeta,
+    transactionMetricsRequest,
+  );
 
   const { submittedTime, blockTimestamp } = transactionMeta;
 

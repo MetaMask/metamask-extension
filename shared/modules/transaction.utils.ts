@@ -199,7 +199,7 @@ export async function determineTransactionType(
   return { type: TransactionType.simpleSend, getCodeResponse: contractCode };
 }
 
-type GetTokenStandardAndDetails = (to: string | undefined) => Promise<{
+export type GetTokenStandardAndDetails = (to: string | undefined) => Promise<{
   decimals?: string;
   balance?: string;
   symbol?: string;

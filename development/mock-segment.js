@@ -8,6 +8,7 @@ const prefix = '[mock-segment]';
 function onRequest(request, response, events) {
   console.log(`${prefix}: ${request.method} ${request.url}`);
   const eventDescriptions = events.map((event) => {
+    console.log(event);
     if (event.type === 'track') {
       return event.event;
     } else if (event.type === 'page') {

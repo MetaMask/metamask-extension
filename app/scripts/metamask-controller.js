@@ -372,6 +372,7 @@ import {
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
 import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
 import { initControllers } from './controller-init/utils';
+import { getConversionRate } from '../../ui/ducks/metamask/metamask';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -7061,6 +7062,16 @@ export default class MetamaskController extends EventEmitter {
       getIsConfirmationAdvancedDetailsOpen: () => {
         return this.preferencesController.state.preferences
           .showConfirmationAdvancedDetails;
+      },
+      getConversionRate: () => {
+        return getConversionRate(this._getMetaMaskState());
+      },
+      getNativeCurrency: () => {
+        return getNativeCurrency(this._getMetaMaskState());
+      },
+      useCurrencyRateCheck: () => {
+        return this.preferencesController.state.preferences
+          .useCurrencyRateCheck;
       },
     };
     return {
