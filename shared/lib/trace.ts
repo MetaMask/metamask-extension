@@ -398,37 +398,41 @@ export const fetchWithSentryInstrumentation = async (
     return response;
   }
 
-  await Sentry.startSpan(
-    { op: 'http.client', name: `${method} ${url}` },
-    async (span) => {
-      if (!span) {
-        return;
-      }
-      const parsedURL = new URL(url, location.origin);
+  try {
+    await Sentry.startSpan(
+      { op: 'http.client', name: `${method} ${url}` },
+      async (span) => {
+        if (!span) {
+          return;
+        }
+        const parsedURL = new URL(url, location.origin);
 
-      span.setAttribute('http.request.method', method);
+        span.setAttribute('http.request.method', method);
 
-      span.setAttribute('server.address', parsedURL.hostname);
-      span.setAttribute('server.port', parsedURL.port || undefined);
+        span.setAttribute('server.address', parsedURL.hostname);
+        span.setAttribute('server.port', parsedURL.port || undefined);
 
-      span.setAttribute('http.response.status_code', response.status);
-      span.setAttribute(
-        'http.response_content_length',
-        Number(response.headers?.get('content-length')),
-      );
+        span.setAttribute('http.response.status_code', response.status);
+        span.setAttribute(
+          'http.response_content_length',
+          Number(response.headers?.get('content-length')),
+        );
 
-      const cloudflareRayId =
-        response.headers?.get('CF-RAY') ??
-        response.headers?.get('CF-Ray') ??
-        response.headers?.get('CF-ray') ??
-        response.headers?.get('cf_ray');
-      if (cloudflareRayId) {
-        span.setAttribute('CF-Ray', cloudflareRayId);
-        const scope = Sentry.getCurrentScope();
-        scope?.setTag('CF-Ray', cloudflareRayId);
-      }
-    },
-  );
+        const cloudflareRayId =
+          response.headers?.get('CF-RAY') ??
+          response.headers?.get('CF-Ray') ??
+          response.headers?.get('CF-ray') ??
+          response.headers?.get('cf_ray');
+        if (cloudflareRayId) {
+          span.setAttribute('CF-Ray', cloudflareRayId);
+          const scope = Sentry.getCurrentScope();
+          scope?.setTag('CF-Ray', cloudflareRayId);
+        }
+      },
+    );
+  } catch (error) {
+    log(error);
+  }
 
   return response;
 };
