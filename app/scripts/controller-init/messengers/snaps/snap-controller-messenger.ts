@@ -37,7 +37,7 @@ import {
   KeyringControllerGetKeyringsByTypeAction,
   KeyringControllerLockEvent,
 } from '@metamask/keyring-controller';
-import { PreferencesControllerGetStateAction } from '@metamask/preferences-controller';
+import { PreferencesControllerGetStateAction } from '../../../controllers/preferences-controller';
 
 type Actions =
   | GetEndowments
