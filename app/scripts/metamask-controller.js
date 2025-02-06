@@ -199,8 +199,10 @@ import {
   CHAIN_SPEC_URL,
   NETWORK_TYPES,
   NetworkStatus,
-  UNSUPPORTED_RPC_METHODS,
   MAINNET_DISPLAY_NAME,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  UNSUPPORTED_RPC_METHODS,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../shared/constants/network';
 import { getAllowedSmartTransactionsChainIds } from '../../shared/constants/smartTransactions';
 
