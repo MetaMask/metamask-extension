@@ -13,6 +13,7 @@ import {
   SnapControllerInitMessenger,
   SnapControllerMessenger,
 } from '../messengers/snaps';
+import { getBooleanFlag } from '../../lib/util.ts';
 
 /**
  * Initialize the Snap controller.
@@ -37,9 +38,9 @@ export const SnapControllerInit: ControllerInitFunction<
   persistedState,
   removeAllConnections,
 }) => {
-  const allowLocalSnaps = Boolean(process.env.ALLOW_LOCAL_SNAPS);
-  const requireAllowlist = Boolean(process.env.REQUIRE_SNAPS_ALLOWLIST);
-  const rejectInvalidPlatformVersion = Boolean(
+  const allowLocalSnaps = getBooleanFlag(process.env.ALLOW_LOCAL_SNAPS);
+  const requireAllowlist = getBooleanFlag(process.env.REQUIRE_SNAPS_ALLOWLIST);
+  const rejectInvalidPlatformVersion = getBooleanFlag(
     process.env.REJECT_INVALID_SNAPS_PLATFORM_VERSION,
   );
 

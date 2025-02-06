@@ -1,6 +1,8 @@
 import { JsonSnapsRegistry } from '@metamask/snaps-controllers';
+import { assert } from '@metamask/utils';
 import { ControllerInitFunction } from '../types';
 import { SnapsRegistryMessenger } from '../messengers/snaps';
+import { getBooleanFlag } from '../../lib/util.ts';
 
 /**
  * Initialize the Snaps registry controller.
@@ -14,7 +16,7 @@ export const SnapsRegistryInit: ControllerInitFunction<
   JsonSnapsRegistry,
   SnapsRegistryMessenger
 > = ({ controllerMessenger, persistedState }) => {
-  const requireAllowlist = Boolean(process.env.REQUIRE_SNAPS_ALLOWLIST);
+  const requireAllowlist = getBooleanFlag(process.env.REQUIRE_SNAPS_ALLOWLIST);
 
   const controller = new JsonSnapsRegistry({
     // @ts-expect-error: `persistedState.SnapsRegistry` is not compatible
