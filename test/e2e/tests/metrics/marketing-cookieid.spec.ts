@@ -17,7 +17,7 @@ const selectors = {
   globalMenuSettingsButton: '[data-testid="global-menu-settings"]',
   securityAndPrivacySettings: { text: 'Security & privacy', tag: 'div' },
   dataCollectionForMarketingToggle:
-    '[data-testid="dataCollectionForMarketing"] .toggle-button',
+    '[data-testid="data-collection-for-marketing-toggle"] .toggle-button',
   dataCollectionWarningAckButton: { text: 'Okay', tag: 'Button' },
 };
 
