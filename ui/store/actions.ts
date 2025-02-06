@@ -5864,25 +5864,6 @@ export function disableMetamaskNotifications(): ThunkAction<
   };
 }
 
-export function setIsProfileSyncingEnabled(
-  isProfileSyncingEnabled: boolean,
-): ThunkAction<void, unknown, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    try {
-      dispatch(showLoadingIndication());
-      await submitRequestToBackground('setIsProfileSyncingEnabled', [
-        isProfileSyncingEnabled,
-      ]);
-      dispatch(hideLoadingIndication());
-    } catch (error) {
-      logErrorWithMessage(error);
-      throw error;
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-  };
-}
-
 export function setConfirmationAdvancedDetailsOpen(value: boolean) {
   return setPreference('showConfirmationAdvancedDetails', value);
 }

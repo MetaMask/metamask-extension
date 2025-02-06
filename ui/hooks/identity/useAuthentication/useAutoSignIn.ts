@@ -1,11 +1,13 @@
-import { useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import log from 'loglevel';
+import { useCallback, useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { getIsUnlocked } from '../../../ducks/metamask/metamask';
 import {
-  getCompletedOnboarding,
-  getIsUnlocked,
-} from '../../../ducks/metamask/metamask';
-import { performSignIn } from '../../../store/actions';
+  getParticipateInMetaMetrics,
+  getUseExternalServices,
+} from '../../../selectors';
+import { selectIsSignedIn } from '../../../selectors/identity/authentication';
+import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
+import { selectIsMetamaskNotificationsEnabled } from '../../../selectors/metamask-notifications/metamask-notifications';
 import { useSignIn } from './useSignIn';
 
 /**
@@ -13,36 +15,54 @@ import { useSignIn } from './useSignIn';
  *
  * @returns An object containing:
  * - `autoSignIn`: A function to automatically sign in the user if necessary.
- * - `shouldAutoSignIn`: A function to determine if the user should be automatically signed in.
+ * - `shouldAutoSignIn`: A boolean indicating whether the user should be automatically signed in.
  */
 export function useAutoSignIn(): {
   autoSignIn: () => Promise<void>;
-  shouldAutoSignIn: () => boolean;
+  shouldAutoSignIn: boolean;
 } {
-  const dispatch = useDispatch();
+  const { signIn } = useSignIn();
 
-  const isUnlocked: boolean | undefined = useSelector(getIsUnlocked);
-  const completedOnboarding: boolean | undefined = useSelector(
-    getCompletedOnboarding,
+  // Base prerequisites
+  const isUnlocked = Boolean(useSelector(getIsUnlocked));
+  const isBasicFunctionalityEnabled = Boolean(
+    useSelector(getUseExternalServices),
+  );
+  const isSignedIn = useSelector(selectIsSignedIn);
+
+  const areBasePrerequisitesMet = useMemo(
+    () => !isSignedIn && isUnlocked && isBasicFunctionalityEnabled,
+    [isSignedIn, isUnlocked, isBasicFunctionalityEnabled],
   );
 
-  const { shouldSignIn } = useSignIn();
+  // Auth dependent features
+  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const isParticipateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+  const isNotificationServicesEnabled = useSelector(
+    selectIsMetamaskNotificationsEnabled,
+  );
 
-  const shouldAutoSignIn = useCallback(() => {
-    return Boolean(shouldSignIn() && isUnlocked && completedOnboarding);
-  }, [shouldSignIn, isUnlocked, completedOnboarding]);
+  const isAtLeastOneAuthDependentFeatureEnabled = useMemo(
+    () =>
+      isProfileSyncingEnabled ||
+      isParticipateInMetaMetrics ||
+      isNotificationServicesEnabled,
+    [
+      isProfileSyncingEnabled,
+      isParticipateInMetaMetrics,
+      isNotificationServicesEnabled,
+    ],
+  );
+
+  const shouldAutoSignIn = useMemo(() => {
+    return areBasePrerequisitesMet && isAtLeastOneAuthDependentFeatureEnabled;
+  }, [areBasePrerequisitesMet, isAtLeastOneAuthDependentFeatureEnabled]);
 
   const autoSignIn = useCallback(async () => {
-    if (shouldAutoSignIn()) {
-      try {
-        await dispatch(performSignIn());
-      } catch (e) {
-        const errorMessage =
-          e instanceof Error ? e.message : JSON.stringify(e ?? '');
-        log.error(errorMessage);
-      }
+    if (shouldAutoSignIn) {
+      await signIn();
     }
-  }, [dispatch, shouldAutoSignIn]);
+  }, [shouldAutoSignIn]);
 
   return {
     autoSignIn,

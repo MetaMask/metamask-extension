@@ -1,7 +1,11 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import * as redux from 'react-redux';
 import { useAccountSyncing } from '../../hooks/identity/useProfileSyncing';
-import { useAutoSignIn } from '../../hooks/identity/useAuthentication';
+import {
+  useAutoSignIn,
+  useSignOut,
+} from '../../hooks/identity/useAuthentication';
 import { MetamaskIdentityProvider } from '.';
 
 jest.mock('../../hooks/identity/useProfileSyncing');
@@ -10,6 +14,7 @@ jest.mock('../../hooks/identity/useAuthentication');
 describe('MetamaskIdentityProvider', () => {
   const mockUseAccountSyncing = jest.mocked(useAccountSyncing);
   const mockUseAutoSignIn = jest.mocked(useAutoSignIn);
+  const mockUseSignOut = jest.mocked(useSignOut);
 
   beforeEach(() => {
     mockUseAccountSyncing.mockReturnValue({
@@ -21,6 +26,12 @@ describe('MetamaskIdentityProvider', () => {
       autoSignIn: jest.fn(),
       shouldAutoSignIn: jest.fn().mockReturnValue(false),
     });
+
+    mockUseSignOut.mockReturnValue({
+      signOut: jest.fn(),
+    });
+
+    jest.spyOn(redux, 'useSelector').mockImplementation(() => true);
   });
 
   it('renders children correctly', () => {
@@ -97,5 +108,24 @@ describe('MetamaskIdentityProvider', () => {
     );
 
     expect(autoSignIn).not.toHaveBeenCalled();
+  });
+
+  it('calls signOut if basic functionality is disabled', async () => {
+    jest.spyOn(redux, 'useSelector').mockImplementation(() => false);
+
+    const signOut = jest.fn();
+    mockUseSignOut.mockReturnValue({
+      signOut,
+    });
+
+    render(
+      <MetamaskIdentityProvider>
+        <div>Child Component</div>
+      </MetamaskIdentityProvider>,
+    );
+
+    await waitFor(() => {
+      expect(signOut).toHaveBeenCalled();
+    });
   });
 });

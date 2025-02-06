@@ -2,15 +2,12 @@ import { act } from '@testing-library/react-hooks';
 import { renderHookWithProviderTyped } from '../../../../test/lib/render-helpers';
 import * as actions from '../../../store/actions';
 import { MetamaskIdentityProvider } from '../../../contexts/identity';
-import { useAutoSignIn } from './useAutoSignIn';
+import { useAutoSignOut } from './useAutoSignOut';
 
 type ArrangeMocksMetamaskStateOverrides = {
   isUnlocked: boolean;
   useExternalServices: boolean;
   isSignedIn: boolean;
-  isProfileSyncingEnabled: boolean;
-  participateInMetaMetrics: boolean;
-  isNotificationServicesEnabled: boolean;
 };
 
 const arrangeMockState = (
@@ -24,7 +21,7 @@ const arrangeMockState = (
 };
 
 const arrangeMocks = () => {
-  const mockPerformSignInAction = jest.spyOn(actions, 'performSignIn');
+  const mockPerformSignInAction = jest.spyOn(actions, 'performSignOut');
   return {
     mockPerformSignInAction,
   };
@@ -36,14 +33,8 @@ const prerequisitesStateKeys = [
   'isSignedIn',
 ];
 
-const authDependentFeaturesStateKeys = [
-  'isProfileSyncingEnabled',
-  'participateInMetaMetrics',
-  'isNotificationServicesEnabled',
-];
-
-const shouldAutoSignInTestCases: ArrangeMocksMetamaskStateOverrides[] = [];
-const shouldNotAutoSignInTestCases: ArrangeMocksMetamaskStateOverrides[] = [];
+const shouldAutoSignOutTestCases: ArrangeMocksMetamaskStateOverrides[] = [];
+const shouldNotAutoSignOutTestCases: ArrangeMocksMetamaskStateOverrides[] = [];
 
 const generateCombinations = (keys: string[]) => {
   const result: ArrangeMocksMetamaskStateOverrides[] = [];
@@ -61,85 +52,71 @@ const generateCombinations = (keys: string[]) => {
 };
 
 const prerequisiteCombinations = generateCombinations(prerequisitesStateKeys);
-const authDependentCombinations = generateCombinations(
-  authDependentFeaturesStateKeys,
-);
 
-prerequisiteCombinations.forEach((prerequisiteState) => {
-  authDependentCombinations.forEach((authDependentState) => {
-    const combinedState = {
-      ...prerequisiteState,
-      ...authDependentState,
-    };
+
+prerequisiteCombinations.forEach((combinedState) => {
     if (
       combinedState.isUnlocked &&
-      combinedState.useExternalServices &&
-      !combinedState.isSignedIn &&
-      authDependentFeaturesStateKeys.some(
-        (key) => combinedState[key as keyof ArrangeMocksMetamaskStateOverrides],
-      )
+      !combinedState.useExternalServices &&
+      combinedState.isSignedIn
     ) {
-      shouldAutoSignInTestCases.push(combinedState);
+      shouldAutoSignOutTestCases.push(combinedState);
     } else {
-      shouldNotAutoSignInTestCases.push(combinedState);
+      shouldNotAutoSignOutTestCases.push(combinedState);
     }
-  });
 });
 
 describe('useAutoSignIn', () => {
   it('should initialize correctly', () => {
     const state = arrangeMockState({
       isUnlocked: false,
-      isProfileSyncingEnabled: false,
       isSignedIn: false,
-      participateInMetaMetrics: false,
       useExternalServices: false,
-      isNotificationServicesEnabled: false,
     });
     arrangeMocks();
     const hook = renderHookWithProviderTyped(
-      () => useAutoSignIn(),
+      () => useAutoSignOut(),
       state,
       undefined,
       MetamaskIdentityProvider,
     );
 
-    expect(hook.result.current.autoSignIn).toBeDefined();
-    expect(hook.result.current.shouldAutoSignIn).toBeDefined();
+    expect(hook.result.current.autoSignOut).toBeDefined();
+    expect(hook.result.current.shouldAutoSignOut).toBeDefined();
   });
 
-  shouldNotAutoSignInTestCases.forEach((stateOverrides) => {
-    it(`should not call performSignIn if conditions are not met`, async () => {
+  shouldNotAutoSignOutTestCases.forEach((stateOverrides) => {
+    it(`should not call performSignOut if conditions are not met`, async () => {
       const state = arrangeMockState(stateOverrides);
       const { mockPerformSignInAction } = arrangeMocks();
       const hook = renderHookWithProviderTyped(
-        () => useAutoSignIn(),
+        () => useAutoSignOut(),
         state,
         undefined,
         MetamaskIdentityProvider,
       );
 
       await act(async () => {
-        await hook.result.current.autoSignIn();
+        await hook.result.current.autoSignOut();
       });
 
       expect(mockPerformSignInAction).not.toHaveBeenCalled();
     });
   });
 
-  shouldAutoSignInTestCases.forEach((stateOverrides) => {
-    it(`should call performSignIn if conditions are met`, async () => {
+  shouldAutoSignOutTestCases.forEach((stateOverrides) => {
+    it(`should call performSignOut if conditions are met`, async () => {
       const state = arrangeMockState(stateOverrides);
       const { mockPerformSignInAction } = arrangeMocks();
       const hook = renderHookWithProviderTyped(
-        () => useAutoSignIn(),
+        () => useAutoSignOut(),
         state,
         undefined,
         MetamaskIdentityProvider,
       );
 
       await act(async () => {
-        await hook.result.current.autoSignIn();
+        await hook.result.current.autoSignOut();
       });
 
       expect(mockPerformSignInAction).toHaveBeenCalled();
