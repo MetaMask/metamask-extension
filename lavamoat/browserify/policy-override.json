@@ -164,14 +164,9 @@
         "immer": true
       }
     },
-    "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util": {
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true
-      }
-    },
-    "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/key-tree": {
-      "packages": {
-        "@metamask/utils": true
+    "ulid": {
+      "globals": {
+        "crypto": true
       }
     }
   }
