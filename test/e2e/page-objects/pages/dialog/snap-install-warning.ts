@@ -4,9 +4,11 @@ class SnapInstallWarning {
   private driver: Driver;
 
   private readonly checkBoxPermission = '.mm-checkbox__input';
+
   private readonly buttonConfirm =
     '[data-testid="snap-install-warning-modal-confirm"]';
-  private readonly permissionConnect ='.permissions-connect';
+
+  private readonly permissionConnect = '.permissions-connect';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -16,7 +18,7 @@ class SnapInstallWarning {
     try {
       await this.driver.waitForMultipleSelectors([
         this.checkBoxPermission,
-        this.permissionConnect
+        this.permissionConnect,
       ]);
     } catch (e) {
       console.log(

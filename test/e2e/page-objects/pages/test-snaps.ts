@@ -49,9 +49,12 @@ export class TestSnaps {
     text: 'Get Compressed Public Key',
   };
 
-  private readonly inputMessageEd255 ='#bip32Message-ed25519';
+  private readonly inputMessageEd255 = '#bip32Message-ed25519';
+
   private readonly inputMessageSecp256k1 = '#bip32Message-secp256k1';
+
   private readonly buttonMessageSecp256k1 = '#sendBip32-secp256k1';
+
   private readonly buttonSignEd25519Message = '#sendBip32-ed25519';
 
   constructor(driver: Driver) {
@@ -85,13 +88,13 @@ export class TestSnaps {
     await this.driver.clickElement(this.connectBip32);
   }
 
-  async clickGetPublicKeyButton(){
+  async clickGetPublicKeyButton() {
     console.log('Wait and click get public key button');
     await this.driver.waitForSelector(this.getPublicKeyButton);
     await this.driver.clickElement(this.getPublicKeyButton);
   }
 
-  async clickGetCompressedPublicKeyButton(){
+  async clickGetCompressedPublicKeyButton() {
     console.log('Wait and click get compressed public key button');
     await this.driver.waitForSelector(this.getCompressedKeyButton);
     await this.driver.clickElement(this.getCompressedKeyButton);
@@ -144,9 +147,9 @@ export class TestSnaps {
   }
 
   async scrollToSendEd25519() {
-      console.log('Scroll to send ed25519');
-      const sendEd25519 = await this.driver.findElement(this.inputMessageEd255);
-      await this.driver.scrollToElement(sendEd25519);
+    console.log('Scroll to send ed25519');
+    const sendEd25519 = await this.driver.findElement(this.inputMessageEd255);
+    await this.driver.scrollToElement(sendEd25519);
   }
 
   async waitForReconnectButton() {

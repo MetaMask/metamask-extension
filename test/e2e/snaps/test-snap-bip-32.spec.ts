@@ -2,8 +2,8 @@ import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
-import { withFixtures,WINDOW_TITLES } from '../helpers';
-import NetworkSwitchModalConfirmation  from '../page-objects/pages/dialog/network-switch-modal-confirmation';
+import { withFixtures, WINDOW_TITLES } from '../helpers';
+import NetworkSwitchModalConfirmation from '../page-objects/pages/dialog/network-switch-modal-confirmation';
 import PermissionConnection from '../page-objects/pages/dialog/permission-connection';
 import SnapInstallWarning from '../page-objects/pages/dialog/snap-install-warning';
 
@@ -20,7 +20,8 @@ describe('Test Snap bip-32', function () {
         const testSnaps = new TestSnaps(driver);
         const permissionConnection = new PermissionConnection(driver);
         const snapInstallWarning = new SnapInstallWarning(driver);
-        const networkSwitchModalConfirmation = new NetworkSwitchModalConfirmation(driver);
+        const networkSwitchModalConfirmation =
+          new NetworkSwitchModalConfirmation(driver);
 
         // navigate to test snaps page and connect wait for page to load
         await testSnaps.openPage();
@@ -88,7 +89,7 @@ describe('Test Snap bip-32', function () {
         await testSnaps.scrollToSendEd25519();
 
         // wait then run ed25519 test
-        await testSnaps.fillMessageEd25519('foo bar')
+        await testSnaps.fillMessageEd25519('foo bar');
 
         // switch to dialog window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);

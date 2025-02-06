@@ -3,9 +3,13 @@ import { Driver } from '../../../webdriver/driver';
 class PermissionConnection {
   private driver: Driver;
 
-  private readonly nextPageButton = '[data-testid="page-container-footer-next"]';
+  private readonly nextPageButton =
+    '[data-testid="page-container-footer-next"]';
+
   private readonly pageFooter = '.page-container__footer';
-  private readonly permissionConnect ='.permissions-connect';
+
+  private readonly permissionConnect = '.permissions-connect';
+
   private readonly scrollSnapInstall = '[data-testid="snap-install-scroll"]';
 
   constructor(driver: Driver) {
@@ -16,7 +20,7 @@ class PermissionConnection {
     try {
       await this.driver.waitForMultipleSelectors([
         this.pageFooter,
-        this.permissionConnect
+        this.permissionConnect,
       ]);
     } catch (e) {
       console.log(
