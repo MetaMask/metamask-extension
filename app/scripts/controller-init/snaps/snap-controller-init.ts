@@ -13,7 +13,7 @@ import {
   SnapControllerInitMessenger,
   SnapControllerMessenger,
 } from '../messengers/snaps';
-import { getBooleanFlag } from '../../lib/util.ts';
+import { getBooleanFlag } from '../../lib/util';
 
 /**
  * Initialize the Snap controller.
