@@ -39,7 +39,8 @@ const locks = new Set();
  * @param options.getUnlockPromise - A hook that resolves when the wallet is unlocked.
  * @param options.sendMetrics - A hook that helps track metric events.
  * @param options.metamaskState - The MetaMask app state.
- * @param options.requestCaip25PermissionForOrigin - A hook that requests approval for the CAIP-25 permission for the origin.
+ * @param options.getCaip25PermissionFromLegacyPermissionsForOrigin - A hook that requests approval for the CAIP-25 permission for the origin.
+ * @param "options.requestPermissionsForOrigin" - A hook that requests CAIP-25 permissions for the origin.
  * @returns A promise that resolves to nothing
  */
 async function requestEthereumAccountsHandler(
@@ -83,10 +84,9 @@ async function requestEthereumAccountsHandler(
   }
 
   try {
-    const caip25Permission = getCaip25PermissionFromLegacyPermissionsForOrigin()
-    await requestPermissionsForOrigin(
-      caip25Permission,
-    );
+    const caip25Permission =
+      getCaip25PermissionFromLegacyPermissionsForOrigin();
+    await requestPermissionsForOrigin(caip25Permission);
   } catch (error) {
     return end(error);
   }

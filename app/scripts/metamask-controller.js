@@ -59,7 +59,6 @@ import {
 } from '@metamask/network-controller';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import {
-  MethodNames,
   PermissionController,
   PermissionDoesNotExistError,
   PermissionsRequestNotFoundError,
@@ -5326,29 +5325,19 @@ export default class MetamaskController extends EventEmitter {
       [chainId],
     );
 
-    const id = nanoid();
-    await this.approvalController.addAndShowApprovalRequest({
-      id,
-      origin,
-      requestData: {
-        metadata: {
-          id,
-          origin,
+    await this.permissionController.requestPermissions(
+      { origin },
+      {
+        [Caip25EndowmentPermissionName]: {
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: caveatValueWithChains,
+            },
+          ],
         },
-        permissions: {
-          [Caip25EndowmentPermissionName]: {
-            caveats: [
-              {
-                type: Caip25CaveatType,
-                value: caveatValueWithChains,
-              },
-            ],
-          },
-        },
-        isLegacySwitchEthereumChain: true,
       },
-      type: MethodNames.RequestPermissions,
-    });
+    );
   }
 
   /**
@@ -5498,7 +5487,7 @@ export default class MetamaskController extends EventEmitter {
       requestedAccounts,
     );
 
-    return       {
+    return {
       [Caip25EndowmentPermissionName]: {
         caveats: [
           {
@@ -5507,7 +5496,7 @@ export default class MetamaskController extends EventEmitter {
           },
         ],
       },
-    }
+    };
   }
   // ---------------------------------------------------------------------------
   // Identity Management (signature operations)
@@ -6284,10 +6273,8 @@ export default class MetamaskController extends EventEmitter {
         ),
         // Permission-related
         getAccounts: this.getPermittedAccounts.bind(this, origin),
-        getCaip25PermissionFromLegacyPermissionsForOrigin: this.getCaip25PermissionFromLegacyPermissions.bind(
-          this,
-          origin,
-        ),
+        getCaip25PermissionFromLegacyPermissionsForOrigin:
+          this.getCaip25PermissionFromLegacyPermissions.bind(this, origin),
         getPermissionsForOrigin: this.permissionController.getPermissions.bind(
           this.permissionController,
           origin,
