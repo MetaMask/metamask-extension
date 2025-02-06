@@ -1,9 +1,8 @@
 import { useMemo } from 'react';
+import { shallowEqual, useSelector } from 'react-redux';
 import { sortAssets } from '../util/sort';
 import { filterAssets } from '../util/filter';
 import { TokenWithFiatAmount } from '../token-list/token-list';
-import useNetworkFilter from './useNetworkFilter';
-import { shallowEqual, useSelector } from 'react-redux';
 import {
   getCurrentNetwork,
   getNewTokensImported,
@@ -13,6 +12,7 @@ import {
   getTokenExchangeRates,
 } from '../../../../selectors';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
+import useNetworkFilter from './useNetworkFilter';
 
 const useSortedFilteredTokens = () => {
   const currentNetwork = useSelector(getCurrentNetwork);

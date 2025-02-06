@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { ReceiveModal } from '../../../../multichain';
 import { FundingMethodModal } from '../../../../multichain/funding-method-modal/funding-method-modal';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useSelector } from 'react-redux';
 import { getSelectedAccount } from '../../../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import {

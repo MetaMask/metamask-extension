@@ -1,4 +1,6 @@
+import { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import { Token } from '../token-list/token-list';
 import {
   getAllDetectedTokensForSelectedAddress,
@@ -7,14 +9,12 @@ import {
   getSelectedAddress,
   getUseTokenDetection,
 } from '../../../../selectors';
-import { useContext, useEffect, useState } from 'react';
 import { importAllDetectedTokens } from '../util/importAllDetectedTokens';
 import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
   getSelectedNetworkClientId,
 } from '../../../../../shared/modules/selectors/networks';
-import { NetworkConfiguration } from '@metamask/network-controller';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -52,9 +52,9 @@ const useAssetListTokenDetection = () => {
 
   const addImportedTokens = async (
     tokens: Token[],
-    networkClientId: string,
+    networkClientIdProp: string,
   ) => {
-    await dispatch(addImportedTokens(tokens as Token[], networkClientId));
+    await dispatch(addImportedTokens(tokens as Token[], networkClientIdProp));
   };
 
   const trackTokenAddedEvent = (importedToken: Token, chainId: string) => {

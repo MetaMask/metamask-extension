@@ -1,6 +1,6 @@
+import { useSelector } from 'react-redux';
 import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
-import { useSelector } from 'react-redux';
 import { getMultichainSelectedAccountCachedBalance } from '../../../../selectors/multichain';
 
 const usePrimaryCurrencyProperties = () => {
