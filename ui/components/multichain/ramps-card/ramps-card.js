@@ -2,11 +2,20 @@ import React, { useCallback, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
-import { Box, Text, ButtonBase } from '../../component-library';
+import {
+  Box,
+  Text,
+  ButtonBase,
+  IconName,
+  ButtonIconSize,
+  ButtonIcon,
+} from '../../component-library';
 import {
   BorderRadius,
   Display,
   FlexDirection,
+  IconColor,
+  JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -24,6 +33,7 @@ import useRamps, {
 } from '../../../hooks/ramps/useRamps/useRamps';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
+import { submitRequestToBackground } from '../../../store/background-connection';
 
 const darkenGradient =
   'linear-gradient(rgba(0, 0, 0, 0.12),rgba(0, 0, 0, 0.12))';
@@ -78,6 +88,10 @@ export const RampsCard = ({ variant, handleOnClick }) => {
   const { chainId, nickname } = useSelector(getMultichainCurrentNetwork);
   const { symbol } = useSelector(getMultichainDefaultToken);
 
+  const isRampsCardClosed = useSelector(
+    (state) => state.metamask.isRampCardClosed,
+  );
+
   useEffect(() => {
     trackEvent({
       event: MetaMetricsEventName.EmptyBuyBannerDisplayed,
@@ -107,6 +121,29 @@ export const RampsCard = ({ variant, handleOnClick }) => {
     });
   }, [chainId, openBuyCryptoInPdapp, symbol, trackEvent, variant]);
 
+  const onClose = useCallback(() => {
+    trackEvent({
+      event: MetaMetricsEventName.EmptyBuyBannerClosed,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        location: `${variant} tab`,
+        chain_id: chainId,
+        token_symbol: symbol,
+      },
+    });
+
+    submitRequestToBackground('setRampCardClosed')?.catch((error) => {
+      console.error(
+        'Error caught in setRampCardClosed submitRequestToBackground',
+        error,
+      );
+    });
+  }, [chainId, symbol, trackEvent, variant]);
+
+  if (isRampsCardClosed) {
+    return null;
+  }
+
   return (
     <Box
       className={classnames('ramps-card', `ramps-card-${variant}`)}
@@ -120,9 +157,19 @@ export const RampsCard = ({ variant, handleOnClick }) => {
             ${darkenGradient}, ${gradient}`,
       }}
     >
-      <Text className="ramps-card__title" variant={TextVariant.headingSm}>
-        {t(title)}
-      </Text>
+      <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
+        <Text className="ramps-card__title" variant={TextVariant.headingSm}>
+          {t(title)}
+        </Text>
+        <ButtonIcon
+          data-testid="ramp-card-close-btn"
+          color={IconColor.infoInverse}
+          iconName={IconName.Close}
+          size={ButtonIconSize.Sm}
+          ariaLabel={t('close')}
+          onClick={onClose}
+        />
+      </Box>
       <Text className="ramps-card__body">{t(body)}</Text>
       <ButtonBase
         className="ramps-card__cta-button"
