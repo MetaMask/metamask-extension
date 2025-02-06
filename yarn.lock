@@ -6090,14 +6090,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/rate-limit-controller@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@metamask/rate-limit-controller@npm:6.0.0"
+"@metamask/rate-limit-controller@npm:^6.0.2":
+  version: 6.0.2
+  resolution: "@metamask/rate-limit-controller@npm:6.0.2"
   dependencies:
-    "@metamask/base-controller": "npm:^6.0.0"
-    "@metamask/rpc-errors": "npm:^6.2.1"
-    "@metamask/utils": "npm:^8.3.0"
-  checksum: 10/76923decf784a06c255db56b81174a6fad884658e03ff8e8e9324e8deb1214bd5e23aa69b199d7196d18a9bc01c3c0844716c59f0b6336477ff6f35005751e9c
+    "@metamask/base-controller": "npm:^7.0.2"
+    "@metamask/rpc-errors": "npm:^7.0.1"
+    "@metamask/utils": "npm:^10.0.0"
+  checksum: 10/c7393d0abd2e3dd23af11da4f589f71291e1be2f652aa9511afbedbdbe04021884355a29c11eee8fd5f3cb2de0bcbfe616b607963c7f1072859c39b98d2c93b0
   languageName: node
   linkType: hard
 
@@ -6113,7 +6113,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/rpc-errors@npm:^6.2.1, @metamask/rpc-errors@npm:^6.3.1":
+"@metamask/rpc-errors@npm:^6.3.1":
   version: 6.4.0
   resolution: "@metamask/rpc-errors@npm:6.4.0"
   dependencies:
@@ -18822,7 +18822,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-lattice-keyring@npm:^0.12.4":
+"eth-lattice-keyring@npm:0.12.4":
   version: 0.12.4
   resolution: "eth-lattice-keyring@npm:0.12.4"
   dependencies:
@@ -18833,6 +18833,20 @@ __metadata:
     gridplus-sdk: "npm:^2.5.1"
     rlp: "npm:^3.0.0"
   checksum: 10/258adbdd9c0ca3a39956d32b38e69b70784a1e29a115a7c569019c2ce0d9443de07d2601404d5b17d9aeec3d7015931346ca0f8398cc71e05e8eefda0ba734d4
+  languageName: node
+  linkType: hard
+
+"eth-lattice-keyring@patch:eth-lattice-keyring@npm%3A0.12.4#~/.yarn/patches/eth-lattice-keyring-npm-0.12.4-c5fb3fcf54.patch":
+  version: 0.12.4
+  resolution: "eth-lattice-keyring@patch:eth-lattice-keyring@npm%3A0.12.4#~/.yarn/patches/eth-lattice-keyring-npm-0.12.4-c5fb3fcf54.patch::version=0.12.4&hash=07f93f"
+  dependencies:
+    "@ethereumjs/tx": "npm:4.1.1"
+    "@ethereumjs/util": "npm:^8.0.0"
+    "@noble/secp256k1": "npm:^1.7.0"
+    bn.js: "npm:^5.2.0"
+    gridplus-sdk: "npm:^2.5.1"
+    rlp: "npm:^3.0.0"
+  checksum: 10/01cd6261b0c2127c4345fa2407e3446c294999025f6c07bb1fbd7fe53e4eb4c0a7b2f9ce07d8ec7313d258ea15c7aad3242e5ab1e7d2fecddc165f155cde4036
   languageName: node
   linkType: hard
 
@@ -26651,7 +26665,7 @@ __metadata:
     "@metamask/profile-sync-controller": "npm:^4.1.1"
     "@metamask/providers": "patch:@metamask/providers@npm%3A19.0.0#~/.yarn/patches/@metamask-providers-npm-19.0.0-3d962c6f1a.patch"
     "@metamask/queued-request-controller": "npm:^7.0.1"
-    "@metamask/rate-limit-controller": "npm:^6.0.0"
+    "@metamask/rate-limit-controller": "npm:^6.0.2"
     "@metamask/remote-feature-flag-controller": "npm:^1.3.0"
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
@@ -26809,7 +26823,7 @@ __metadata:
     eta: "npm:^3.2.0"
     eth-chainlist: "npm:~0.0.498"
     eth-ens-namehash: "npm:^2.0.8"
-    eth-lattice-keyring: "npm:^0.12.4"
+    eth-lattice-keyring: "patch:eth-lattice-keyring@npm%3A0.12.4#~/.yarn/patches/eth-lattice-keyring-npm-0.12.4-c5fb3fcf54.patch"
     eth-method-registry: "npm:^4.0.0"
     ethereumjs-util: "npm:^7.0.10"
     ethers: "npm:5.7.0"
