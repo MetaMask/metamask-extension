@@ -1,30 +1,12 @@
-import React, { ReactNode, useEffect, useMemo } from 'react';
-import { shallowEqual, useSelector, useDispatch } from 'react-redux';
+import React, { ReactNode, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import TokenCell from '../token-cell';
-import { TEST_CHAINS } from '../../../../../shared/constants/network';
-import { sortAssets } from '../util/sort';
-import {
-  getChainIdsToPoll,
-  getCurrentNetwork,
-  getIsTestnet,
-  getNetworkConfigurationIdByChainId,
-  getNewTokensImported,
-  getPreferences,
-  getSelectedAccount,
-  getSelectedAccountTokensAcrossChains,
-  getShowFiatInTestnets,
-  getTokenExchangeRates,
-  getTokenNetworkFilter,
-  getTokenBalancesEvm,
-} from '../../../../selectors';
-import { getConversionRate } from '../../../../ducks/metamask/metamask';
-import { filterAssets } from '../util/filter';
+import { getChainIdsToPoll, getPreferences } from '../../../../selectors';
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
-import { useTokenBalances } from '../../../../hooks/useTokenBalances';
-import { setTokenNetworkFilter } from '../../../../store/actions';
-import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
-import { getMultichainShouldShowFiat } from '../../../../selectors/multichain';
+import { useTokenBalances as pollAndUpdateEvmBalances } from '../../../../hooks/useTokenBalances';
+import useSortedFilteredTokens from '../hooks/useSortedFilteredTokens';
+import useShouldShowFiat from '../hooks/useShouldShowFiat';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -57,73 +39,16 @@ export default function TokenList({
   onTokenClick,
   nativeToken,
 }: TokenListProps) {
-  const dispatch = useDispatch();
-  const currentNetwork = useSelector(getCurrentNetwork);
-  const allNetworks = useSelector(getNetworkConfigurationIdByChainId);
-  const { tokenSortConfig, privacyMode } = useSelector(getPreferences);
-  const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
-  const selectedAccount = useSelector(getSelectedAccount);
-  const conversionRate = useSelector(getConversionRate);
+  const { privacyMode } = useSelector(getPreferences);
   const chainIdsToPoll = useSelector(getChainIdsToPoll);
-  const contractExchangeRates = useSelector(
-    getTokenExchangeRates,
-    shallowEqual,
-  );
-  const newTokensImported = useSelector(getNewTokensImported);
 
   // EVM specific tokenBalance polling, updates state via polling loop per chainId
-  useTokenBalances({
+  pollAndUpdateEvmBalances({
     chainIds: chainIdsToPoll as Hex[],
   });
 
-  const evmBalances = useSelector(getTokenBalancesEvm);
-  const isTestnet = useSelector(getIsTestnet);
-  // Ensure newly added networks are included in the tokenNetworkFilter
-  useEffect(() => {
-    if (process.env.PORTFOLIO_VIEW) {
-      const allNetworkFilters = Object.fromEntries(
-        Object.keys(allNetworks).map((chainId) => [chainId, true]),
-      );
-      if (Object.keys(tokenNetworkFilter).length > 1) {
-        dispatch(setTokenNetworkFilter(allNetworkFilters));
-      }
-    }
-  }, [Object.keys(allNetworks).length]);
-
-  const sortedFilteredTokens = useMemo(() => {
-    const filteredAssets = filterAssets(evmBalances, [
-      {
-        key: 'chainId',
-        opts: tokenNetworkFilter,
-        filterCallback: 'inclusive',
-      },
-    ]);
-
-    const { nativeTokens, nonNativeTokens } = filteredAssets.reduce<{
-      nativeTokens: TokenWithFiatAmount[];
-      nonNativeTokens: TokenWithFiatAmount[];
-    }>(
-      (acc, token) => {
-        if (token.isNative) {
-          acc.nativeTokens.push(token);
-        } else {
-          acc.nonNativeTokens.push(token);
-        }
-        return acc;
-      },
-      { nativeTokens: [], nonNativeTokens: [] },
-    );
-    const assets = [...nativeTokens, ...nonNativeTokens];
-    return sortAssets(assets, tokenSortConfig);
-  }, [
-    tokenSortConfig,
-    tokenNetworkFilter,
-    conversionRate,
-    contractExchangeRates,
-    currentNetwork,
-    selectedAccount,
-    newTokensImported,
-  ]);
+  const sortedFilteredTokens = useSortedFilteredTokens();
+  const shouldShowFiat = useShouldShowFiat();
 
   useEffect(() => {
     if (sortedFilteredTokens) {
@@ -136,16 +61,6 @@ export default function TokenList({
     return React.cloneElement(nativeToken as React.ReactElement);
   }
 
-  const shouldShowFiat = useMultichainSelector(
-    getMultichainShouldShowFiat,
-    selectedAccount,
-  );
-  const isMainnet = !isTestnet;
-  // Check if show conversion is enabled
-  const showFiatInTestnets = useSelector(getShowFiatInTestnets);
-  const showFiat =
-    shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
-
   return (
     <div>
       {sortedFilteredTokens.map((tokenData) => (
@@ -154,7 +69,7 @@ export default function TokenList({
           chainId={tokenData.chainId}
           address={tokenData.address}
           symbol={tokenData.symbol}
-          tokenFiatAmount={showFiat ? tokenData.tokenFiatAmount : null}
+          tokenFiatAmount={shouldShowFiat ? tokenData.tokenFiatAmount : null}
           image={tokenData?.image}
           isNative={tokenData.isNative}
           string={tokenData.string}
