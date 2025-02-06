@@ -10,9 +10,9 @@ import {
   getMultichainSelectedAccountCachedBalanceIsZero,
 } from '../../../../../selectors/multichain';
 import { getIsNativeTokenBuyable } from '../../../../../ducks/ramps';
-///: END:ONLY_INCLUDE_IF
 import { RampsCard } from '../../../../multichain/ramps-card';
 import { RAMPS_CARD_VARIANT_TYPES } from '../../../../multichain/ramps-card/ramps-card';
+///: END:ONLY_INCLUDE_IF
 
 const AssetListFundingModals = () => {
   const t = useI18nContext();
