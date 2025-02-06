@@ -287,7 +287,6 @@
     "queuedRequestCount": 0,
     "fcmToken": "string",
     "remoteFeatureFlags": {},
-    "requests": "object",
     "cacheTimestamp": "number",
     "accounts": "object",
     "accountsByChainId": "object",

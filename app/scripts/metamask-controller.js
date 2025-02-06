@@ -2298,11 +2298,6 @@ export default class MetamaskController extends EventEmitter {
       SelectedNetworkController: this.selectedNetworkController,
       LoggingController: this.loggingController,
       MultichainRatesController: this.multichainRatesController,
-      SnapController: this.snapController,
-      CronjobController: this.cronjobController,
-      SnapsRegistry: this.snapsRegistry,
-      SnapInterfaceController: this.snapInterfaceController,
-      SnapInsightsController: this.snapInsightsController,
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       CustodyController: this.custodyController.store,
       InstitutionalFeaturesController:

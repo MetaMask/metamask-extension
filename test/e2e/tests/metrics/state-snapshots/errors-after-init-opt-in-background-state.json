@@ -111,7 +111,6 @@
     "ensEntries": "object",
     "ensResolutionsByAddress": "object"
   },
-  "ExecutionService": "undefined",
   "GasFeeController": {
     "gasFeeEstimatesByChainId": {},
     "gasFeeEstimates": {},

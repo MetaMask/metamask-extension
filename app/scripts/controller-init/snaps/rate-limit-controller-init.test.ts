@@ -35,6 +35,15 @@ describe('RateLimitController', () => {
     expect(controller).toBeInstanceOf(RateLimitController);
   });
 
+  it('does not store state', () => {
+    const { memStateKey, persistedStateKey } = RateLimitControllerInit(
+      getInitRequestMock(),
+    );
+
+    expect(memStateKey).toBeNull();
+    expect(persistedStateKey).toBeNull();
+  });
+
   it('passes the proper arguments to the controller', () => {
     RateLimitControllerInit(getInitRequestMock());
 

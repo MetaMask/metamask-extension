@@ -56,6 +56,7 @@ export const ExecutionServiceInit: ControllerInitFunction<
 
   if (useOffscreenDocument) {
     return {
+      memStateKey: null,
       persistedStateKey: null,
       controller: new OffscreenExecutionService({
         ...args,
@@ -68,6 +69,7 @@ export const ExecutionServiceInit: ControllerInitFunction<
   assert(iframeUrl, 'Missing iframe URL.');
 
   return {
+    memStateKey: null,
     persistedStateKey: null,
     controller: new IframeExecutionService({
       ...args,

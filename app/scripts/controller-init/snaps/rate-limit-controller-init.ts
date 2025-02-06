@@ -100,5 +100,7 @@ export const RateLimitControllerInit: ControllerInitFunction<
 
   return {
     controller,
+    memStateKey: null,
+    persistedStateKey: null,
   };
 };

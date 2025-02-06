@@ -35,6 +35,15 @@ describe('ExecutionServiceInit', () => {
     expect(controller).toBeInstanceOf(IframeExecutionService);
   });
 
+  it('does not store state', () => {
+    const { memStateKey, persistedStateKey } = ExecutionServiceInit(
+      getInitRequestMock(),
+    );
+
+    expect(memStateKey).toBeNull();
+    expect(persistedStateKey).toBeNull();
+  });
+
   it('initializes the offscreen execution service if `chrome.offscreen` is available', () => {
     Object.defineProperty(global, 'chrome', {
       value: {
