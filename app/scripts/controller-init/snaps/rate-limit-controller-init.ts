@@ -11,7 +11,7 @@ import {
 } from '../messengers/snaps';
 
 /**
- * Initialize the Snap insights controller.
+ * Initialize the rate limit controller.
  *
  * @param request - The request object.
  * @param request.controllerMessenger - The controller messenger to use for the
