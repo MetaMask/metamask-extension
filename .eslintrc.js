@@ -54,6 +54,15 @@ module.exports = {
   },
   overrides: [
     /**
+     * Circular dependencies
+     */
+    {
+      files: ['development/**/*.*'],
+      rules: {
+        'import/no-cycle': 'error',
+      },
+    },
+    /**
      * == Modules ==
      *
      * The first two sections here, which cover module syntax, are mutually
