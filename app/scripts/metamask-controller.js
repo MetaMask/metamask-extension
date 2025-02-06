@@ -1000,6 +1000,7 @@ export default class MetamaskController extends EventEmitter {
         allowedEvents: [
           'AccountsController:accountAdded',
           'AccountsController:accountRemoved',
+          'AccountsController:accountBalancesUpdated',
         ],
         allowedActions: [
           'AccountsController:listMultichainAccounts',
@@ -3253,8 +3254,6 @@ export default class MetamaskController extends EventEmitter {
         this.multichainRatesController.start();
       },
     );
-    this.multichainBalancesController.start();
-    this.multichainBalancesController.updateBalances();
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     this.multichainTransactionsController.start();
