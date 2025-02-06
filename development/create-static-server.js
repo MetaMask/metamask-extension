@@ -22,11 +22,6 @@ const createStaticServer = (options) => {
       });
     }
 
-    // Handle test-dapp-multichain URLs by removing the prefix
-    if (request.url.startsWith('/test-dapp-multichain/')) {
-      request.url = request.url.slice('/test-dapp-multichain'.length);
-    }
-
     return serveHandler(request, response, {
       directoryListing: false,
       ...options,
