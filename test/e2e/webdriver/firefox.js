@@ -72,19 +72,7 @@ class FirefoxDriver {
       'browser.download.dir',
       `${process.cwd()}/test-artifacts/downloads`,
     );
-    // if (process.env.CI === 'true') {
-    //   const pathFF = '/opt/firefox/firefox';
 
-    //   fs.promises.access(pathFF, fs.constants.F_OK, (err) => {
-    //     if (err) {
-    //       console.error(`File does not exist: ${pathFF}`);
-    //     } else {
-    //       console.log(`File exists: ${pathFF}`);
-    //     }
-    //   });
-
-    //   options.setBinary('/opt/firefox/firefox');
-    // }
     if (isHeadless('SELENIUM')) {
       // TODO: Remove notice and consider non-experimental when results are consistent
       console.warn(
