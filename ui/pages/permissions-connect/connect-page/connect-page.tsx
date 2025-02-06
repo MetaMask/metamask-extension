@@ -13,8 +13,13 @@ import {
 } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import {
+  AvatarBase,
+  AvatarBaseSize,
+  AvatarFavicon,
+  AvatarFaviconSize,
   Box,
   Button,
+  ButtonLink,
   ButtonSize,
   ButtonVariant,
   Text,
@@ -27,18 +32,30 @@ import {
 } from '../../../components/multichain/pages/page';
 import { SiteCell } from '../../../components/multichain/pages/review-permissions-page/site-cell/site-cell';
 import {
+  AlignItems,
   BackgroundColor,
   BlockSize,
+  BorderRadius,
   Display,
   FlexDirection,
+  JustifyContent,
+  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
-import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
 import { getMultichainNetwork } from '../../../selectors/multichain';
+import { Tab, Tabs } from '../../../components/ui/tabs';
 import {
-  getRequestedSessionScopes,
+  AccountListItem,
+  EditAccountsModal,
+} from '../../../components/multichain';
+import {
+  getAvatarFallbackLetter,
+  transformOriginToTitle,
+} from '../../../helpers/utils/util';
+import {
   getCaip25PermissionsResponse,
+  getRequestedSessionScopes,
   PermissionsRequest,
 } from './utils';
 
@@ -54,6 +71,13 @@ export type ConnectPageProps = {
   rejectPermissionsRequest: (id: string) => void;
   approveConnection: (request: ConnectPageRequest) => void;
   activeTabOrigin: string;
+  targetSubjectMetadata: {
+    extensionId: string;
+    iconUrl: string;
+    name: string;
+    origin: string;
+    subjectType: string;
+  };
 };
 
 export const ConnectPage: React.FC<ConnectPageProps> = ({
@@ -61,6 +85,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   permissionsRequestId,
   rejectPermissionsRequest,
   approveConnection,
+  targetSubjectMetadata,
 }) => {
   const t = useI18nContext();
 
@@ -83,6 +108,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       ),
     [networkConfigurations],
   );
+
+  const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);
 
   // By default, if a non test network is the globally selected network. We will only show non test networks as default selected.
   const currentlySelectedNetwork = useSelector(getMultichainNetwork);
@@ -152,6 +179,14 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     approveConnection(_request);
   };
 
+  const selectedAccounts = accounts.filter(({ address }) =>
+    selectedAccountAddresses.some((selectedAccountAddress) =>
+      isEqualCaseInsensitive(selectedAccountAddress, address),
+    ),
+  );
+
+  const title = transformOriginToTitle(targetSubjectMetadata.origin);
+
   return (
     <Page
       data-testid="connect-page"
@@ -159,20 +194,99 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       backgroundColor={BackgroundColor.backgroundAlternative}
     >
       <Header paddingBottom={0}>
-        <Text variant={TextVariant.headingLg}>{t('connectWithMetaMask')}</Text>
-        <Text>{t('connectionDescription')}: </Text>
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.center}
+          marginBottom={2}
+        >
+          {targetSubjectMetadata.iconUrl ? (
+            <AvatarFavicon
+              backgroundColor={BackgroundColor.backgroundAlternative}
+              size={AvatarFaviconSize.Lg}
+              src={targetSubjectMetadata.iconUrl}
+              name={title}
+            />
+          ) : (
+            <AvatarBase
+              size={AvatarBaseSize.Lg}
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+              justifyContent={JustifyContent.center}
+              color={TextColor.textAlternative}
+              style={{ borderWidth: '0px' }}
+              backgroundColor={BackgroundColor.backgroundAlternative}
+            >
+              {getAvatarFallbackLetter(title)}
+            </AvatarBase>
+          )}
+        </Box>
+        <Text variant={TextVariant.headingLg} marginTop={2}>
+          {title}
+        </Text>
+        <Text>{t('connectionDescription')}</Text>
       </Header>
-      <Content paddingLeft={4} paddingRight={4}>
-        <SiteCell
-          nonTestNetworks={nonTestNetworks}
-          testNetworks={testNetworks}
-          accounts={evmAccounts}
-          onSelectAccountAddresses={setSelectedAccountAddresses}
-          onSelectChainIds={setSelectedChainIds}
-          selectedAccountAddresses={selectedAccountAddresses}
-          selectedChainIds={selectedChainIds}
-          isConnectFlow
-        />
+      <Content
+        paddingLeft={4}
+        paddingRight={4}
+        backgroundColor={BackgroundColor.transparent}
+      >
+        <Tabs
+          onTabClick={() => null}
+          backgroundColor={BackgroundColor.backgroundAlternative}
+          justifyContent={JustifyContent.center}
+        >
+          <Tab name="Accounts" tabKey="accounts" width={BlockSize.Full}>
+            <Box marginTop={4}>
+              <Box
+                backgroundColor={BackgroundColor.backgroundDefault}
+                borderRadius={BorderRadius.XL}
+                style={{ overflow: 'auto', maxHeight: '240px' }}
+              >
+                {selectedAccounts.map((account) => (
+                  <AccountListItem
+                    account={account}
+                    key={account.address}
+                    selected={false}
+                  />
+                ))}
+              </Box>
+              <Box
+                marginTop={4}
+                display={Display.Flex}
+                justifyContent={JustifyContent.center}
+              >
+                <ButtonLink
+                  onClick={() => setShowEditAccountsModal(true)}
+                  data-testid="edit"
+                >
+                  {t('editAccounts')}
+                </ButtonLink>
+              </Box>
+              {showEditAccountsModal && (
+                <EditAccountsModal
+                  accounts={accounts}
+                  defaultSelectedAccountAddresses={selectedAccountAddresses}
+                  onClose={() => setShowEditAccountsModal(false)}
+                  onSubmit={setSelectedAccountAddresses}
+                />
+              )}
+            </Box>
+          </Tab>
+          <Tab name="Permissions" tabKey="permissions" width={BlockSize.Full}>
+            <Box marginTop={4}>
+              <SiteCell
+                nonTestNetworks={nonTestNetworks}
+                testNetworks={testNetworks}
+                accounts={evmAccounts}
+                onSelectAccountAddresses={setSelectedAccountAddresses}
+                onSelectChainIds={setSelectedChainIds}
+                selectedAccountAddresses={selectedAccountAddresses}
+                selectedChainIds={selectedChainIds}
+                isConnectFlow
+              />
+            </Box>
+          </Tab>
+        </Tabs>
       </Content>
       <Footer>
         <Box
@@ -181,7 +295,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
           gap={4}
           width={BlockSize.Full}
         >
-          <PermissionsConnectFooter />
           <Box display={Display.Flex} gap={4} width={BlockSize.Full}>
             <Button
               block

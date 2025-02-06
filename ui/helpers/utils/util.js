@@ -799,6 +799,23 @@ export const getAvatarFallbackLetter = (subjectName) => {
 };
 
 /**
+ * Transforms full raw URLs to something that can be used as title.
+ * Basically, it removes protocol prefixes like http:// or similar.
+ *
+ * @param {string} rawOrigin - Name of a subject.
+ * @returns User friendly title extracted from raw URL.
+ */
+export const transformOriginToTitle = (rawOrigin) => {
+  try {
+    const url = new URL(rawOrigin);
+    const parts = url.hostname.split('.');
+    return parts.slice(-2).join('.');
+  } catch (e) {
+    return 'Unknown Origin';
+  }
+};
+
+/**
  * Get abstracted Snap permissions filtered by weight.
  *
  * @param weightedPermissions - Set of Snap permissions that have 'weight' property assigned.
