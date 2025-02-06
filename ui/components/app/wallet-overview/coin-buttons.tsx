@@ -363,8 +363,8 @@ const CoinButtons = ({
       openBridgeExperience(
         MetaMetricsSwapsEventSource.MainView,
         defaultSwapsToken,
-        isSwap,
         location.pathname.includes('asset') ? '&token=native' : '',
+        isSwap,
       );
     },
     [defaultSwapsToken, location, openBridgeExperience],

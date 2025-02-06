@@ -59,8 +59,8 @@ const useBridging = () => {
     (
       location: string,
       token: SwapsTokenObject | SwapsEthToken,
-      isSwap = false,
       portfolioUrlSuffix?: string,
+      isSwap = false,
     ) => {
       if (!isBridgeChain || !providerConfig) {
         return;

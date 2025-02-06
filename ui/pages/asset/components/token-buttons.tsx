@@ -260,17 +260,13 @@ const TokenButtons = ({
             label={t('bridge')}
             onClick={async () => {
               await setCorrectChain();
-              openBridgeExperience(
-                MetaMetricsSwapsEventSource.TokenView,
-                {
-                  ...token,
-                  iconUrl: token.image,
-                  balance: token?.balance?.value,
-                  string: token?.balance?.display,
-                  name: token.name ?? '',
-                },
-                false,
-              );
+              openBridgeExperience(MetaMetricsSwapsEventSource.TokenView, {
+                ...token,
+                iconUrl: token.image,
+                balance: token?.balance?.value,
+                string: token?.balance?.display,
+                name: token.name ?? '',
+              });
             }}
             tooltipRender={null}
           />

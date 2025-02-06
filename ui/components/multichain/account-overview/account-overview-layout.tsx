@@ -90,7 +90,6 @@ export const AccountOverviewLayout = ({
       openBridgeExperience(
         'Carousel',
         defaultSwapsToken,
-        false,
         location.pathname.includes('asset') ? '&token=native' : '',
       );
     }
