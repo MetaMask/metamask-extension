@@ -1119,11 +1119,6 @@
         "@metamask/eth-sig-util>tweetnacl": true
       }
     },
-    "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util": {
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true
-      }
-    },
     "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util": {
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
@@ -1348,11 +1343,6 @@
         "readable-stream": true
       }
     },
-    "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/key-tree": {
-      "packages": {
-        "@metamask/utils": true
-      }
-    },
     "@metamask/snaps-sdk>@metamask/key-tree": {
       "globals": {
         "crypto.subtle": true
@@ -1395,7 +1385,7 @@
         "@metamask/keyring-controller>@metamask/utils": true,
         "@metamask/name-controller>async-mutex": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
-        "ulid": true
+        "@metamask/keyring-controller>ulid": true
       }
     },
     "@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client": {
@@ -5733,7 +5723,7 @@
         "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": true
       }
     },
-    "ulid": {
+    "@metamask/keyring-controller>ulid": {
       "globals": {
         "console.error": true,
         "crypto": true,

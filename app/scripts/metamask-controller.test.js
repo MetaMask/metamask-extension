@@ -96,10 +96,20 @@ const browserPolyfillMock = {
   },
 };
 
-function* ulidGenerator() {
-  yield '01JKAF3DSGM3AB87EM9N0K41AJ';
+const mockULIDs = [
+  '01JKAF3DSGM3AB87EM9N0K41AJ',
+  '01JKAF3KP7VPAG0YXEDTDRB6ZV',
+  '01JKAF3KP7VPAG0YXEDTDRB6ZW',
+  '01JKAF3KP7VPAG0YXEDTDRB6ZX',
+];
+
+function* ulidGenerator(ulids = mockULIDs) {
+  for (const id of ulids) {
+    yield id;
+  }
+
   while (true) {
-    yield '01JKAF3KP7VPAG0YXEDTDRB6ZV';
+    yield 'should not be called after exhausting provided IDs';
   }
 }
 
@@ -2392,8 +2402,6 @@ describe('MetaMaskController', () => {
 
       describe('forgetDevice', () => {
         it('should throw if it receives an unknown device name', async () => {
-          // mock keyringController.update
-          jest.spyOn(metamaskController.keyringController, 'update');
           const result = metamaskController.forgetDevice(
             'Some random device name',
           );
@@ -2600,9 +2608,7 @@ describe('MetaMaskController', () => {
 
       it('#addNewAccount', async () => {
         await metamaskController.createNewVaultAndKeychain('password');
-        console.log(111);
         await metamaskController.addNewAccount(1);
-        console.log(222);
         const getAccounts =
           await metamaskController.keyringController.getAccounts();
         expect(getAccounts).toHaveLength(2);
@@ -4227,16 +4233,11 @@ describe('MetaMaskController', () => {
         const currentKeyrings =
           metamaskController.keyringController.state.keyrings;
 
-        const oldId =
-          metamaskController.keyringController.state.keyringsMetadata[0].id;
         const newlyAddedKeyringId =
           metamaskController.keyringController.state.keyringsMetadata[
             metamaskController.keyringController.state.keyringsMetadata.length -
               1
           ].id;
-
-        console.log('oldid', oldId);
-        console.log('new id', newlyAddedKeyringId);
 
         const newSRP = Buffer.from(
           await metamaskController.getSeedPhrase(password, newlyAddedKeyringId),

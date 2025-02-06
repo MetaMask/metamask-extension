@@ -62,10 +62,20 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
 };
 jest.mock('./lib/createLoggerMiddleware', () => createLoggerMiddlewareMock);
 
-function* ulidGenerator() {
-  yield '01JKAF3DSGM3AB87EM9N0K41AJ';
+const mockULIDs = [
+  '01JKAF3DSGM3AB87EM9N0K41AJ',
+  '01JKAF3KP7VPAG0YXEDTDRB6ZV',
+  '01JKAF3KP7VPAG0YXEDTDRB6ZW',
+  '01JKAF3KP7VPAG0YXEDTDRB6ZX',
+];
+
+function* ulidGenerator(ulids = mockULIDs) {
+  for (const id of ulids) {
+    yield id;
+  }
+
   while (true) {
-    yield '01JKAF3KP7VPAG0YXEDTDRB6ZV';
+    yield 'should not be called after exhausting provided IDs';
   }
 }
 
@@ -200,7 +210,19 @@ describe('MetaMaskController', function () {
       const result1 = metamaskController.keyringController.state;
       await metamaskController.createNewVaultAndRestore('test@123', TEST_SEED);
       const result2 = metamaskController.keyringController.state;
-      expect(result1).toStrictEqual(result2);
+
+      // on restore, a new keyring metadata is generated
+      expect(result2).toStrictEqual(
+        expect.objectContaining({
+          ...result1,
+          keyringsMetadata: [
+            {
+              id: mockULIDs[1],
+              name: '',
+            },
+          ],
+        }),
+      );
     });
   });
 
