@@ -650,11 +650,11 @@ export const getSelectedAccountNonEvmTokensForCurrentNetwork = createSelector(
 );
 
 export function getAllNonEvmTokens(state) {
-  return state.metamask.allNonEvmTokens;
+  return state.metamask.accountsAssets;
 }
 
 export function getAllNonEvmMetadata(state) {
-  return state.metamask.metadata;
+  return state.metamask.assetsMetadata;
 }
 
 /**
