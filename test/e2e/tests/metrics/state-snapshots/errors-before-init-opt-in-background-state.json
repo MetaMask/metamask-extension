@@ -109,7 +109,6 @@
         "smartTransactionsOptInStatus": true,
         "showNativeTokenAsMainBalance": true,
         "petnamesEnabled": true,
-        "isRedesignedConfirmationsDeveloperEnabled": "boolean",
         "showConfirmationAdvancedDetails": false,
         "tokenSortConfig": "object",
         "tokenNetworkFilter": {},
@@ -120,7 +119,6 @@
       "theme": "light",
       "useBlockie": false,
       "useNftDetection": false,
-      "useNonceField": false,
       "usePhishDetect": true,
       "useTokenDetection": false,
       "useCurrencyRateCheck": true,
@@ -150,11 +148,7 @@
               "0xe708": "object"
             }
           }
-        },
-        "destTokens": {},
-        "destTopAssets": {},
-        "srcTokens": {},
-        "srcTopAssets": {}
+        }
       }
     },
     "SubjectMetadataController": { "subjectMetadata": "object" },

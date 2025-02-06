@@ -59,7 +59,6 @@ import {
   HardwareTransportStates,
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
-import { getIsSmartTransaction } from '../../shared/modules/selectors';
 
 import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
 
@@ -79,10 +78,7 @@ import {
   sortSelectedInternalAccounts,
 } from '../helpers/utils/util';
 
-import {
-  PRIORITY_APPROVAL_TEMPLATE_TYPES,
-  TEMPLATED_CONFIRMATION_APPROVAL_TYPES,
-} from '../pages/confirmations/confirmation/templates';
+import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmations/confirmation/templates';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
@@ -165,11 +161,6 @@ export function getShowWhatsNewPopup(state) {
 export function getShowPermittedNetworkToastOpen(state) {
   return state.appState.showPermittedNetworkToastOpen;
 }
-
-export const getMemoizedTxId = createDeepEqualSelector(
-  (state) => state.appState.txId,
-  (txId) => txId,
-);
 
 export function getNewNftAddedMessage(state) {
   return state.appState.newNftAddedMessage;
@@ -362,12 +353,6 @@ export function getAccountTypeForKeyring(keyring) {
   }
 
   const { type } = keyring;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  if (type.startsWith('Custody')) {
-    return 'custody';
-  }
-  ///: END:ONLY_INCLUDE_IF
 
   switch (type) {
     case KeyringType.trezor:
@@ -1007,15 +992,6 @@ export const selectNftsByChainId = createSelector(
   },
 );
 
-export const selectNftContractsByChainId = createSelector(
-  getSelectedInternalAccount,
-  (state) => state.metamask.allNftContracts,
-  (_state, chainId) => chainId,
-  (selectedAccount, nftContracts, chainId) => {
-    return nftContracts?.[selectedAccount.address]?.[chainId] ?? [];
-  },
-);
-
 export const selectNetworkIdentifierByChainId = createSelector(
   selectNetworkConfigurationByChainId,
   selectDefaultRpcEndpointByChainId,
@@ -1039,11 +1015,9 @@ export function getRequestingNetworkInfo(state, chainIds) {
   // Ensure chainIds is flattened if it contains nested arrays
   const flattenedChainIds = processedChainIds.flat();
 
-  // Filter the non-test networks to include only those with chainId in flattenedChainIds
+  // Filter the networks to include only those with chainId in flattenedChainIds
   return Object.values(getNetworkConfigurationsByChainId(state)).filter(
-    (network) =>
-      !TEST_CHAINS.includes(network.chainId) &&
-      flattenedChainIds.includes(network.chainId),
+    (network) => flattenedChainIds.includes(network.chainId),
   );
 }
 
@@ -1088,29 +1062,6 @@ export function getSlides(state) {
   return state.metamask.slides || [];
 }
 
-export function getTotalUnapprovedMessagesCount(state) {
-  const {
-    unapprovedPersonalMsgCount = 0,
-    unapprovedDecryptMsgCount = 0,
-    unapprovedEncryptionPublicKeyMsgCount = 0,
-    unapprovedTypedMessagesCount = 0,
-  } = state.metamask;
-
-  return (
-    unapprovedPersonalMsgCount +
-    unapprovedDecryptMsgCount +
-    unapprovedEncryptionPublicKeyMsgCount +
-    unapprovedTypedMessagesCount
-  );
-}
-
-export function getTotalUnapprovedSignatureRequestCount(state) {
-  const { unapprovedPersonalMsgCount = 0, unapprovedTypedMessagesCount = 0 } =
-    state.metamask;
-
-  return unapprovedPersonalMsgCount + unapprovedTypedMessagesCount;
-}
-
 export function getUnapprovedTxCount(state) {
   const unapprovedTxs = getUnapprovedTransactions(state);
   return Object.keys(unapprovedTxs).length;
@@ -1127,14 +1078,6 @@ export function getUnapprovedTemplatedConfirmations(state) {
     TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(approval.type),
   );
 }
-
-export const getPrioritizedUnapprovedTemplatedConfirmations = createSelector(
-  getUnapprovedTemplatedConfirmations,
-  (unapprovedTemplatedConfirmations) =>
-    unapprovedTemplatedConfirmations.filter(({ type }) =>
-      PRIORITY_APPROVAL_TEMPLATE_TYPES.includes(type),
-    ),
-);
 
 export function getSuggestedTokens(state) {
   return (
@@ -1238,16 +1181,6 @@ export function getUseTransactionSimulations(state) {
   return Boolean(state.metamask.useTransactionSimulations);
 }
 
-export function getRedesignedConfirmationsEnabled(state) {
-  const { redesignedConfirmationsEnabled } = getPreferences(state);
-  return redesignedConfirmationsEnabled;
-}
-
-export function getRedesignedTransactionsEnabled(state) {
-  const { redesignedTransactionsEnabled } = getPreferences(state);
-  return redesignedTransactionsEnabled;
-}
-
 export function getFeatureNotificationsEnabled(state) {
   const { featureNotificationsEnabled = false } = getPreferences(state);
   return featureNotificationsEnabled;
@@ -1292,11 +1225,6 @@ export function getShouldHideZeroBalanceTokens(state) {
 
 export function getAdvancedInlineGasShown(state) {
   return Boolean(state.metamask.featureFlags.advancedInlineGas);
-}
-
-export function getUseNonceField(state) {
-  const isSmartTransaction = getIsSmartTransaction(state);
-  return Boolean(!isSmartTransaction && state.metamask.useNonceField);
 }
 
 /**
@@ -1675,12 +1603,12 @@ export function getSwapsDefaultToken(state, overrideChainId = null) {
 export function getIsSwapsChain(state, overrideChainId) {
   const currentChainId = getCurrentChainId(state);
   const chainId = overrideChainId ?? currentChainId;
-  const isNotDevelopment =
-    process.env.METAMASK_ENVIRONMENT !== 'development' &&
-    process.env.METAMASK_ENVIRONMENT !== 'testing';
-  return isNotDevelopment
-    ? ALLOWED_PROD_SWAPS_CHAIN_IDS.includes(chainId)
-    : ALLOWED_DEV_SWAPS_CHAIN_IDS.includes(chainId);
+  const isDevelopment =
+    process.env.METAMASK_ENVIRONMENT === 'development' ||
+    process.env.METAMASK_ENVIRONMENT === 'testing';
+  return isDevelopment
+    ? ALLOWED_DEV_SWAPS_CHAIN_IDS.includes(chainId)
+    : ALLOWED_PROD_SWAPS_CHAIN_IDS.includes(chainId);
 }
 
 export function getIsBridgeChain(state, overrideChainId) {
@@ -1723,11 +1651,6 @@ export function getNativeCurrencyForChain(chainId) {
 export const getMemoizedMetaMaskInternalAccounts = createDeepEqualSelector(
   getInternalAccounts,
   (internalAccounts) => internalAccounts,
-);
-
-export const getMemoizedAddressBook = createDeepEqualSelector(
-  getAddressBook,
-  (addressBook) => addressBook,
 );
 
 export const selectERC20TokensByChain = createDeepEqualSelector(
@@ -1896,16 +1819,6 @@ export const getConnectedSnapsList = createDeepEqualSelector(
 export const getMemoizedCurrentChainId = createDeepEqualSelector(
   getCurrentChainId,
   (chainId) => chainId,
-);
-
-export const getMemoizedUnapprovedPersonalMessages = createDeepEqualSelector(
-  (state) => state.metamask.unapprovedPersonalMsgs,
-  (unapprovedPersonalMsgs) => unapprovedPersonalMsgs,
-);
-
-export const getMemoizedUnapprovedTypedMessages = createDeepEqualSelector(
-  (state) => state.metamask.unapprovedTypedMessages,
-  (unapprovedTypedMessages) => unapprovedTypedMessages,
 );
 
 export function getSnaps(state) {

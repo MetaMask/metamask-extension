@@ -30,7 +30,7 @@ describe('ExperimentalTab', () => {
     const { getAllByRole } = render();
     const toggle = getAllByRole('checkbox');
 
-    expect(toggle).toHaveLength(8);
+    expect(toggle).toHaveLength(6);
   });
 
   it('enables add account snap', async () => {
@@ -70,24 +70,6 @@ describe('ExperimentalTab', () => {
 
     await waitFor(() => {
       expect(setPetnamesEnabled).toHaveBeenCalledWith(false);
-    });
-  });
-
-  it('enables redesigned confirmations', async () => {
-    const setRedesignedConfirmationsEnabled = jest.fn();
-    const { getByTestId } = render(
-      {},
-      {
-        setRedesignedConfirmationsEnabled,
-        redesignedConfirmationsEnabled: false,
-      },
-    );
-
-    const toggle = getByTestId('toggle-redesigned-confirmations');
-    fireEvent.click(toggle);
-
-    await waitFor(() => {
-      expect(setRedesignedConfirmationsEnabled).toHaveBeenCalledWith(true);
     });
   });
 

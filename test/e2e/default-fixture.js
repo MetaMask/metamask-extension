@@ -138,10 +138,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
               },
             },
           },
-          destTokens: {},
-          destTopAssets: [],
-          srcTokens: {},
-          srcTopAssets: [],
         },
       },
       CurrencyController: {
@@ -225,7 +221,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           showNativeTokenAsMainBalance: true,
           petnamesEnabled: true,
           showMultiRpcModal: false,
-          isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
           tokenSortConfig: {
             key: 'tokenFiatAmount',
@@ -239,7 +234,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         theme: 'light',
         useBlockie: false,
         useNftDetection: false,
-        useNonceField: false,
         usePhishDetect: true,
         useTokenDetection: false,
         useCurrencyRateCheck: true,

@@ -54,6 +54,7 @@ import {
   type SnapAndHardwareMessenger,
 } from '../snap-keyring/metrics';
 import { shouldUseRedesignForTransactions } from '../../../../shared/lib/confirmation.utils';
+import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
 
 export type TransactionMetricsRequest = {
   createEventFragment: (
@@ -78,6 +79,7 @@ export type TransactionMetricsRequest = {
   getDeviceModel: (
     address: string,
   ) => Promise<'ledger' | 'lattice' | 'N/A' | string>;
+  getHardwareTypeForMetric: (address: string) => Promise<HardwareKeyringType>;
   // According to the type GasFeeState returned from getEIP1559GasFeeEstimates
   // doesn't include some properties used in buildEventFragmentProperties,
   // hence returning any here to avoid type errors.
@@ -102,9 +104,7 @@ export type TransactionMetricsRequest = {
   getSmartTransactionByMinedTxHash: (
     txhash: string | undefined,
   ) => SmartTransaction;
-  getRedesignedTransactionsEnabled: () => boolean;
   getMethodData: (data: string) => Promise<{ name: string }>;
-  getIsRedesignedConfirmationsDeveloperEnabled: () => boolean;
   getIsConfirmationAdvancedDetailsOpen: () => boolean;
 };
 
@@ -232,10 +232,17 @@ export const handleTransactionConfirmed = async (
   extraParams.block_number =
     txReceipt?.blockNumber && hexToDecimal(txReceipt.blockNumber);
 
-  const { submittedTime } = transactionMeta;
+  const { submittedTime, blockTimestamp } = transactionMeta;
 
   if (submittedTime) {
     extraParams.completion_time = getTransactionCompletionTime(submittedTime);
+  }
+
+  if (submittedTime && blockTimestamp) {
+    extraParams.completion_time_onchain = getTransactionOnchainCompletionTime(
+      submittedTime,
+      blockTimestamp,
+    );
   }
 
   if (txReceipt?.status === '0x0') {
@@ -1017,10 +1024,6 @@ async function buildEventFragmentProperties({
 
   const isRedesignedForTransaction = shouldUseRedesignForTransactions({
     transactionMetadataType: transactionMeta.type as TransactionType,
-    isRedesignedTransactionsUserSettingEnabled:
-      transactionMetricsRequest.getRedesignedTransactionsEnabled(),
-    isRedesignedConfirmationsDeveloperEnabled:
-      transactionMetricsRequest.getIsRedesignedConfirmationsDeveloperEnabled(),
   });
   if (isRedesignedForTransaction) {
     uiCustomizations.push(
@@ -1076,6 +1079,7 @@ async function buildEventFragmentProperties({
   const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
     transactionMetricsRequest.getAccountType,
     transactionMetricsRequest.getDeviceModel,
+    transactionMetricsRequest.getHardwareTypeForMetric,
     transactionMetricsRequest.snapAndHardwareMessenger,
   );
   Object.assign(properties, snapAndHardwareInfo);
@@ -1133,6 +1137,30 @@ function getGasValuesInGWEI(gasParams: Record<string, any>) {
 
 function getTransactionCompletionTime(submittedTime: number) {
   return Math.round((Date.now() - submittedTime) / 1000).toString();
+}
+
+/**
+ * Returns number of seconds (rounded to the hundredths) between submitted time
+ * and the block timestamp.
+ *
+ * @param submittedTimeMs - The UNIX timestamp in milliseconds in which the
+ * transaction has been submitted
+ * @param blockTimestampHex - The UNIX timestamp in seconds in hexadecimal in which
+ * the transaction has been confirmed in a block
+ */
+function getTransactionOnchainCompletionTime(
+  submittedTimeMs: number,
+  blockTimestampHex: string,
+): string {
+  const DECIMAL_DIGITS = 2;
+
+  const blockTimestampSeconds = Number(hexToDecimal(blockTimestampHex));
+  const completionTimeSeconds = blockTimestampSeconds - submittedTimeMs / 1000;
+  const completionTimeSecondsRounded =
+    Math.round(completionTimeSeconds * 10 ** DECIMAL_DIGITS) /
+    10 ** DECIMAL_DIGITS;
+
+  return completionTimeSecondsRounded.toString();
 }
 
 /**
