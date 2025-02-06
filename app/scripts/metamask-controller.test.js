@@ -438,6 +438,9 @@ describe('MetaMaskController', () => {
           initLangCode: 'en_US',
           browser: browserPolyfillMock,
           infuraProjectId: 'foo',
+          platform: {
+            _showNotification: jest.fn(),
+          },
         });
 
         expect(localController.loggingController.add).toHaveBeenCalledTimes(1);
