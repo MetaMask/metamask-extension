@@ -164,7 +164,7 @@
         "immer": true
       }
     },
-    "ulid": {
+    "@metamask/keyring-controller>ulid": {
       "globals": {
         "crypto": true
       }

@@ -5720,14 +5720,10 @@
         "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": true
       }
     },
-    "ulid": {
-      "globals": {
-        "crypto": true
-      }
-    },
     "@metamask/keyring-controller>ulid": {
       "globals": {
         "console.error": true,
+        "crypto": true,
         "define": true
       }
     },
