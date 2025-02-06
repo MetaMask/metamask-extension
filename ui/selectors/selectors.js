@@ -632,11 +632,11 @@ export function getSelectedAccountTokensAcrossChains(state) {
   return tokensByChain;
 }
 
-export function getAllNonEvmTokens(state) {
+export function getAccountAssets(state) {
   return state.metamask.accountsAssets;
 }
 
-export function getAllNonEvmMetadata(state) {
+export function getAssetsMetadata(state) {
   return state.metamask.assetsMetadata;
 }
 
