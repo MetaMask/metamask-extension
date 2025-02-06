@@ -3144,6 +3144,12 @@
   "noWebcamFoundTitle": {
     "message": "Webcam not found"
   },
+  "nonContractAddressAlertDesc": {
+    "message": "You're sending call data to an address that isn't a contract. This could cause you to lose funds. Make sure you're using the correct address and network before continuing."
+  },
+  "nonContractAddressAlertTitle": {
+    "message": "Potential mistake"
+  },
   "nonce": {
     "message": "Nonce"
   },
