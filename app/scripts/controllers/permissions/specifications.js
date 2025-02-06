@@ -52,12 +52,14 @@ export const getCaveatSpecifications = ({
   listAccounts,
   findNetworkClientIdByChainId,
   isNonEvmScopeSupported,
+  getNonEvmAccountAddresses,
 }) => {
   return {
     [Caip25CaveatType]: caip25CaveatBuilder({
       listAccounts,
       findNetworkClientIdByChainId,
       isNonEvmScopeSupported,
+      getNonEvmAccountAddresses,
     }),
     ...snapsCaveatsSpecifications,
     ...snapsEndowmentCaveatSpecifications,
