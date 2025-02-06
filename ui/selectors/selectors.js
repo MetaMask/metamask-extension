@@ -2993,6 +2993,7 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
   getPreferences,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getSelectedAccount,
+  getCurrentNetwork,
   (
     selectedAccountTokensChains,
     nativeBalances,
@@ -3002,13 +3003,22 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
     preferences,
     isOnCurrentNetwork,
     selectedAccount,
+    currentNetwork,
   ) => {
     const { hideZeroBalanceTokens } = preferences;
     const selectedAccountTokenBalancesAcrossChains =
       tokenBalances[selectedAccount.address];
 
+    const isTestNetwork = TEST_CHAINS.includes(currentNetwork.chainId);
+    const filteredAccountTokensChains = Object.fromEntries(
+      Object.entries(selectedAccountTokensChains).filter(([chainId]) =>
+        isTestNetwork
+          ? TEST_CHAINS.includes(chainId)
+          : !TEST_CHAINS.includes(chainId),
+      ),
+    );
     const tokensWithBalance = [];
-    Object.entries(selectedAccountTokensChains).forEach(
+    Object.entries(filteredAccountTokensChains).forEach(
       ([stringChainKey, tokens]) => {
         const chainId = stringChainKey;
         // @ts-ignore

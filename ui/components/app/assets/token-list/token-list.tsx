@@ -53,28 +53,6 @@ export type ChainAddressMarketData = Record<
   Record<Hex, Record<string, string | number>>
 >;
 
-const useFilteredAccountTokens = (currentNetwork: { chainId: string }) => {
-  const isTestNetwork = useMemo(() => {
-    return (TEST_CHAINS as string[]).includes(currentNetwork.chainId);
-  }, [currentNetwork.chainId, TEST_CHAINS]);
-
-  const selectedAccountTokensChains: Record<string, Token[]> = useSelector(
-    getSelectedAccountTokensAcrossChains,
-  ) as Record<string, Token[]>;
-
-  const filteredAccountTokensChains = useMemo(() => {
-    return Object.fromEntries(
-      Object.entries(selectedAccountTokensChains).filter(([chainId]) =>
-        isTestNetwork
-          ? (TEST_CHAINS as string[]).includes(chainId)
-          : !(TEST_CHAINS as string[]).includes(chainId),
-      ),
-    );
-  }, [selectedAccountTokensChains, isTestNetwork, TEST_CHAINS]);
-
-  return filteredAccountTokensChains;
-};
-
 export default function TokenList({
   onTokenClick,
   nativeToken,
@@ -92,7 +70,6 @@ export default function TokenList({
     shallowEqual,
   );
   const newTokensImported = useSelector(getNewTokensImported);
-  const selectedAccountTokensChains = useFilteredAccountTokens(currentNetwork);
 
   // EVM specific tokenBalance polling, updates state via polling loop per chainId
   useTokenBalances({
@@ -145,7 +122,6 @@ export default function TokenList({
     contractExchangeRates,
     currentNetwork,
     selectedAccount,
-    selectedAccountTokensChains,
     newTokensImported,
   ]);
 
