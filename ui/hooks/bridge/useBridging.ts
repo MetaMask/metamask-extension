@@ -92,11 +92,9 @@ const useBridging = () => {
         });
         let url = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
         url += `?token=${token.address?.toLowerCase()}`;
-        ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
         if (isSwap) {
           url += '&swaps=true';
         }
-        ///: END:ONLY_INCLUDE_IF
         history.push(url);
       } else {
         const portfolioUrl = getPortfolioUrl(
