@@ -130,7 +130,6 @@ export const components: NotificationComponent<SnapNotification> = {
                   (notification.data as DetailedViewData).detailedView
                     .interfaceId as string
                 }
-                useDelineator={false}
                 contentBackgroundColor={BackgroundColor.backgroundDefault}
               />
             </Box>
