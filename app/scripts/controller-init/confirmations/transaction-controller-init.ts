@@ -7,6 +7,7 @@ import {
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
 import { Hex } from '@metamask/utils';
+import { init } from '@sentry/browser';
 import {
   getCurrentChainSupportsSmartTransactions,
   getFeatureFlagsByChainId,
@@ -38,9 +39,11 @@ import {
 } from '../types';
 import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import { ControllerFlatState } from '../controller-list';
-import { deferPublicationHookFactory, InstitutionalSnapMessenger } from '../../lib/transaction/institutional-snap/deferred-publication-hooks';
-import { beforeCheckPendingTransactionHookFactory } from '../../lib/transaction/institutional-snap/deferred-publication-hooks';
-import { init } from '@sentry/browser';
+import {
+  deferPublicationHookFactory,
+  InstitutionalSnapMessenger,
+  beforeCheckPendingTransactionHookFactory,
+} from '../../lib/transaction/institutional-snap/deferred-publication-hooks';
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
@@ -123,18 +126,17 @@ export const TransactionControllerInit: ControllerInitFunction<
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
     hooks: {
-        ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
-        beforePublish: deferPublicationHookFactory(
-          () => controller,
-          initMessenger as InstitutionalSnapMessenger,
-          () => getFlatState(),
-        ),
+      ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+      beforePublish: deferPublicationHookFactory(
+        () => controller,
+        initMessenger as InstitutionalSnapMessenger,
+        () => getFlatState(),
+      ),
 
-        beforeCheckPendingTransactions:
-          beforeCheckPendingTransactionHookFactory(
-            () => getFlatState(),
-          ),
-        ///: END:ONLY_INCLUDE_IF
+      beforeCheckPendingTransactions: beforeCheckPendingTransactionHookFactory(
+        () => getFlatState(),
+      ),
+      ///: END:ONLY_INCLUDE_IF
       // @ts-expect-error Controller type does not support undefined return value
       publish: (transactionMeta, rawTx: Hex) =>
         publishSmartTransactionHook(
