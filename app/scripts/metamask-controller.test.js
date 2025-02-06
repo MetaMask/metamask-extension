@@ -966,7 +966,10 @@ describe('MetaMaskController', () => {
     describe('#getCaip25PermissionFromLegacyPermissions', () => {
       it('returns valid CAIP-25 permissions', async () => {
         jest
-          .spyOn(metamaskController.permissionController, 'requestPermissions')
+          .spyOn(
+            metamaskController.permissionController,
+            'requestPermissionsIncremental',
+          )
           .mockResolvedValue({
             permissions: {},
           });
@@ -1391,7 +1394,10 @@ describe('MetaMaskController', () => {
     describe('requestApprovalPermittedChainsPermission', () => {
       it('requests approval with well formed origin', async () => {
         jest
-          .spyOn(metamaskController.permissionController, 'requestPermissions')
+          .spyOn(
+            metamaskController.permissionController,
+            'requestPermissionsIncremental',
+          )
           .mockResolvedValue();
 
         await metamaskController.requestApprovalPermittedChainsPermission(
@@ -1400,7 +1406,7 @@ describe('MetaMaskController', () => {
         );
 
         expect(
-          metamaskController.permissionController.requestPermissions,
+          metamaskController.permissionController.requestPermissionsIncremental,
         ).toHaveBeenCalledWith(
           { origin: 'test.com' },
           {
@@ -1421,6 +1427,10 @@ describe('MetaMaskController', () => {
               ],
             },
           },
+          expect.objectContaining({
+            id: expect.any(String),
+            metadata: expect.any(Object),
+          }),
         );
       });
 

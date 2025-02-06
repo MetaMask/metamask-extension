@@ -55,14 +55,13 @@ const mapStateToProps = (state, ownProps) => {
     (req) => req.metadata.id === permissionsRequestId,
   );
 
-  const { metadata = {}, isLegacySwitchEthereumChain } =
-    permissionsRequest || {};
-  const { origin } = metadata;
+  const { metadata = {} } = permissionsRequest || {};
+  const { origin, isRequestApprovalPermittedChains } = metadata;
   const nativeCurrency = getNativeCurrency(state);
 
   const isRequestingAccounts = Boolean(
     permissionsRequest?.permissions?.[Caip25EndowmentPermissionName] &&
-      !isLegacySwitchEthereumChain,
+      !isRequestApprovalPermittedChains,
   );
 
   const targetSubjectMetadata = getTargetSubjectMetadata(state, origin) ?? {

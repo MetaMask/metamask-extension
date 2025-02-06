@@ -5105,7 +5105,7 @@ export default class MetamaskController extends EventEmitter {
       [chainId],
     );
 
-    await this.permissionController.requestPermissions(
+    await this.permissionController.requestPermissionsIncremental(
       { origin },
       {
         [Caip25EndowmentPermissionName]: {
@@ -5117,6 +5117,7 @@ export default class MetamaskController extends EventEmitter {
           ],
         },
       },
+      { id: nanoid(), metadata: { isRequestApprovalPermittedChains: true } },
     );
   }
 
