@@ -11,7 +11,7 @@ import {
   BaseController,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedControllerMessenger,
+  RestrictedMessenger,
 } from '@metamask/base-controller';
 import { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import {
@@ -85,7 +85,7 @@ export type AllowedActions =
  */
 export type AllowedEvents = AccountsControllerChangeEvent;
 
-export type PreferencesControllerMessenger = RestrictedControllerMessenger<
+export type PreferencesControllerMessenger = RestrictedMessenger<
   typeof controllerName,
   PreferencesControllerActions | AllowedActions,
   PreferencesControllerEvents | AllowedEvents,
