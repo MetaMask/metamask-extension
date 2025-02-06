@@ -1005,7 +1005,7 @@
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/keyring-api": true,
+        "@metamask/assets-controllers>@metamask/keyring-api": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/polling-controller": true,
@@ -1015,7 +1015,6 @@
         "@metamask/name-controller>async-mutex": true,
         "bitcoin-address-validation": true,
         "bn.js": true,
-        "cockatiel": true,
         "lodash": true,
         "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": true,
         "single-call-balance-checker-abi": true,
@@ -1039,14 +1038,6 @@
       }
     },
     "@metamask/name-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/rate-limit-controller>@metamask/base-controller": {
       "globals": {
         "setTimeout": true
       },
@@ -1089,6 +1080,7 @@
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
         "bn.js": true,
         "browserify>buffer": true,
+        "cockatiel": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true
       }
@@ -1455,6 +1447,14 @@
         "@metamask/keyring-api>bech32": true
       }
     },
+    "@metamask/assets-controllers>@metamask/keyring-api": {
+      "packages": {
+        "@metamask/keyring-api>@metamask/keyring-utils": true,
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/assets-controllers>@metamask/utils": true,
+        "@metamask/keyring-api>bech32": true
+      }
+    },
     "@metamask/profile-sync-controller>@metamask/keyring-api": {
       "packages": {
         "@metamask/profile-sync-controller>@metamask/keyring-api>@metamask/keyring-utils": true,
@@ -1797,9 +1797,9 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/rate-limit-controller>@metamask/base-controller": true,
-        "@metamask/rate-limit-controller>@metamask/rpc-errors": true,
-        "@metamask/rate-limit-controller>@metamask/utils": true
+        "@metamask/base-controller": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/remote-feature-flag-controller": {
@@ -1812,12 +1812,6 @@
     "@metamask/rpc-errors": {
       "packages": {
         "@metamask/rpc-errors>@metamask/utils": true,
-        "@metamask/rpc-errors>fast-safe-stringify": true
-      }
-    },
-    "@metamask/rate-limit-controller>@metamask/rpc-errors": {
-      "packages": {
-        "@metamask/rate-limit-controller>@metamask/rpc-errors>@metamask/utils": true,
         "@metamask/rpc-errors>fast-safe-stringify": true
       }
     },
@@ -2532,37 +2526,7 @@
         "semver": true
       }
     },
-    "@metamask/rate-limit-controller>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "@metamask/utils>pony-cause": true,
-        "semver": true
-      }
-    },
     "@metamask/rpc-errors>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "@metamask/utils>pony-cause": true,
-        "semver": true
-      }
-    },
-    "@metamask/rate-limit-controller>@metamask/rpc-errors>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
@@ -5081,7 +5045,7 @@
         "react": true
       }
     },
-    "@storybook/addon-knobs>qs": {
+    "browserify>url>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
       }
@@ -5268,16 +5232,6 @@
       },
       "packages": {
         "prop-types": true,
-        "react": true
-      }
-    },
-    "react-inspector": {
-      "globals": {
-        "Node": true,
-        "chromeDark": true,
-        "chromeLight": true
-      },
-      "packages": {
         "react": true
       }
     },
@@ -5893,7 +5847,7 @@
     "browserify>url": {
       "packages": {
         "browserify>punycode": true,
-        "@storybook/addon-knobs>qs": true
+        "browserify>url>qs": true
       }
     },
     "react-focus-lock>use-callback-ref": {
