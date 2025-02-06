@@ -1303,28 +1303,32 @@ describe('util', () => {
     const mockHDKeyring = {
       id: 'hd-keyring-id',
       type: 'HD Key Tree',
+      metadata: {
+        id: '01JKDQSHNJH3EP2N4MPR0S5RQS',
+        name: '',
+      },
     };
 
     const mockSnapKeyring = {
       id: 'snap-keyring-id',
       type: 'Snap Keyring',
+      metadata: {
+        id: '01JKDQSPB36DENHN7HWF8XED78',
+        name: '',
+      },
     };
 
     const mockLedgerKeyring = {
       id: 'ledger-keyring-id',
       type: 'Ledger Hardware',
+      metadata: {
+        id: '01JKDQSWKN9AHG8DKX29QE3PGA',
+        name: '',
+      },
     };
 
     it('should return true for HD Key Tree accounts', () => {
-      const hdAccount = {
-        type: 'HD Key Tree',
-        address: '0x123',
-        metadata: {
-          keyring: {
-            id: 'hd-keyring-id',
-          },
-        },
-      };
+      const hdAccount = createMockInternalAccount();
 
       expect(util.isAbleToRevealSrp(hdAccount, [mockHDKeyring])).toBe(true);
     });
