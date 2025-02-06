@@ -42,9 +42,6 @@ async function main() {
   const doc = await parseOpenRPCDocument(
     MultiChainOpenRPCDocument as OpenrpcDocument,
   );
-  const providerAuthorize = doc.methods.find(
-    (m) => (m as MethodObject).name === 'wallet_createSession',
-  );
 
   const walletRpcMethods: string[] = [
     'wallet_registerOnboarding',
