@@ -38,11 +38,6 @@ class PrivacySettings {
 
   private readonly revealSrpButton = '[data-testid="reveal-seed-words"]';
 
-  private readonly firstSRPInSRPList = {
-    text: 'Secret Phrase 1',
-    tag: 'p',
-  };
-
   private readonly revealSrpNextButton = {
     text: 'Next',
     tag: 'button',
@@ -182,10 +177,15 @@ class PrivacySettings {
     return (await this.driver.findElement(this.displayedSrpText)).getText();
   }
 
-  async openRevealSrpQuiz(): Promise<void> {
+  async openRevealSrpQuiz(srpIndex: number = 1): Promise<void> {
     console.log('Open reveal SRP quiz on privacy settings page');
+    const srpSelector = {
+      text: `Secret Phrase ${srpIndex.toString()}`,
+      tag: 'p',
+    };
+
     await this.driver.clickElement(this.revealSrpButton);
-    await this.driver.clickElement(this.firstSRPInSRPList);
+    await this.driver.clickElement(srpSelector);
     await this.driver.waitForSelector(this.revealSrpQuizModalTitle);
   }
 

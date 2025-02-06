@@ -132,6 +132,33 @@ class AccountListPage {
   private readonly selectAccountSelector =
     '.multichain-account-list-item__account-name';
 
+  private readonly importSRPButton = {
+    text: 'Import Secret Recovery Phrase',
+    tag: 'button',
+  };
+
+  private readonly importSRPModalTitle = {
+    text: 'Import Secret Recovery Phrase',
+    tag: 'h4',
+  };
+
+  private readonly importSRPInput = '#import-srp__srp-word-0';
+
+  private readonly importSRPConfirmButton = {
+    text: 'Import wallet',
+    tag: 'button',
+  };
+
+  private readonly exportSRPButton = {
+    text: 'Show secret recovery phrase',
+    tag: 'button',
+  };
+
+  private readonly srpListTitle = {
+    text: 'Select Secret Recovery Phrase',
+    tag: 'label',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -258,6 +285,7 @@ class AccountListPage {
    * @param options - Options for adding a new account
    * @param options.accountType - The type of account to add (Ethereum, Bitcoin, or Solana)
    * @param [options.accountName] - Optional custom name for the new account
+   * @param [options.srpIndex] - Optional SRP index for the new account
    * @throws {Error} If the specified account type is not supported
    * @example
    * // Add a new Ethereum account with default name
@@ -269,9 +297,11 @@ class AccountListPage {
   async addAccount({
     accountType,
     accountName,
+    srpIndex,
   }: {
     accountType: ACCOUNT_TYPE;
     accountName?: string;
+    srpIndex?: number;
   }) {
     console.log(`Adding new account of type: ${ACCOUNT_TYPE[accountType]}`);
     await this.driver.clickElement(this.createAccountButton);
@@ -291,6 +321,18 @@ class AccountListPage {
     }
 
     await this.driver.clickElement(addAccountButton);
+
+    // Run if there are multiple srps
+    if (accountType === ACCOUNT_TYPE.Ethereum && srpIndex) {
+      const srpName = `Secret Phrase ${srpIndex.toString()}`;
+      await this.driver.clickElement(
+        '[data-testid="select-srp-Secret Phrase 1"]',
+      );
+      await this.driver.clickElement({
+        text: srpName,
+      });
+    }
+
     if (accountName) {
       console.log(
         `Customize the new account with account name: ${accountName}`,
@@ -675,6 +717,31 @@ class AccountListPage {
     await this.driver.clickElement({
       css: this.selectAccountSelector,
       text: accountLabel,
+    });
+  }
+
+  async startImportSecretPhrase(srp: string): Promise<void> {
+    console.log(`Importing ${srp.split(' ').length} word srp`);
+    await this.driver.clickElement(this.createAccountButton);
+    await this.driver.clickElement(this.importSRPButton);
+    await this.driver.waitForSelector(this.importSRPModalTitle);
+    await this.driver.pasteIntoField(this.importSRPInput, srp);
+    await this.driver.clickElement(this.importSRPConfirmButton);
+  }
+
+  async startExportSRPForAccount(accountLabel: string): Promise<string> {
+    console.log(`Exporting SRP for account ${accountLabel}`);
+    await this.openAccountDetailsModal(accountLabel);
+    await this.driver.clickElement(this.exportSRPButton);
+
+    return '';
+  }
+
+  async check_currentAccountIsSRPAccount(srpIndex: number): Promise<void> {
+    console.log(`Check that current account is an imported account`);
+    await this.driver.waitForSelector({
+      css: this.currentSelectedAccount,
+      text: `SRP #${srpIndex}`,
     });
   }
 }
