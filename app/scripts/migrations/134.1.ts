@@ -7,7 +7,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 138.1;
+export const version = 134.1;
 
 /**
  * This migration attempts to reset `TokensController.tokens` to the list of tokens

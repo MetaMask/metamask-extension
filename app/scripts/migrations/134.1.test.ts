@@ -21,14 +21,14 @@ describe(`Migration ${version}`, () => {
     sentryCaptureExceptionMock.mockClear();
   });
 
-  it('updates the meta version to 138.1 regardless of state content', async () => {
+  it('updates the meta version to 134.1 regardless of state content', async () => {
     const dummyState = {
       meta: { version: 0 },
       data: {},
     };
 
     const migrated = await migrate(dummyState);
-    expect(migrated.meta.version).toBe(138.1);
+    expect(migrated.meta.version).toBe(134.1);
   });
 
   it('returns original state if AccountsController is missing', async () => {
@@ -42,7 +42,7 @@ describe(`Migration ${version}`, () => {
     const result = await migrate(originalState);
 
     expect(result.data).toEqual(originalState.data);
-    expect(result.meta.version).toBe(138.1);
+    expect(result.meta.version).toBe(134.1);
   });
 
   it('returns original state if AccountsController is not an object', async () => {
@@ -311,7 +311,7 @@ describe(`Migration ${version}`, () => {
     >;
     expect(tokensControllerState.tokens).toEqual(originalTokens);
 
-    expect(result.meta.version).toBe(138.1);
+    expect(result.meta.version).toBe(134.1);
   });
 
   it('returns original state and logs error if tokens is not empty but allTokensForChain is not an object', async () => {
