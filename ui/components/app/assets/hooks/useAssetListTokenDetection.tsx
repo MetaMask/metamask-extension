@@ -15,8 +15,16 @@ import {
   getSelectedNetworkClientId,
 } from '../../../../../shared/modules/selectors/networks';
 import { NetworkConfiguration } from '@metamask/network-controller';
-import { addImportedTokens } from '../../../../store/actions';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsTokenEventSource,
+} from '../../../../../shared/constants/metametrics';
+import {
+  AssetType,
+  TokenStandard,
+} from '../../../../../shared/constants/transaction';
 
 const useAssetListTokenDetection = () => {
   const trackEvent = useContext(MetaMetricsContext);
@@ -42,19 +50,45 @@ const useAssetListTokenDetection = () => {
 
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
 
+  const addImportedTokens = async (
+    tokens: Token[],
+    networkClientId: string,
+  ) => {
+    await dispatch(addImportedTokens(tokens as Token[], networkClientId));
+  };
+
+  const trackTokenAddedEvent = (importedToken: Token, chainId: string) => {
+    trackEvent({
+      event: MetaMetricsEventName.TokenAdded,
+      category: MetaMetricsEventCategory.Wallet,
+      sensitiveProperties: {
+        token_symbol: importedToken.symbol,
+        token_contract_address: importedToken.address,
+        token_decimal_precision: importedToken.decimals,
+        source: MetaMetricsTokenEventSource.Detected,
+        token_standard: TokenStandard.ERC20,
+        asset_type: AssetType.token,
+        token_added_type: 'detected',
+        chain_id: chainId,
+      },
+    });
+  };
+
   // Add detected tokens to sate
   useEffect(() => {
+    if (!useTokenDetection) {
+      return;
+    }
+
     importAllDetectedTokens(
-      useTokenDetection,
       isOnCurrentNetwork,
       detectedTokensMultichain,
       allNetworks,
       networkClientId,
-      addImportedTokens,
       currentChainId,
-      trackEvent,
       detectedTokens,
-      dispatch,
+      addImportedTokens,
+      trackTokenAddedEvent,
     );
   }, [
     isOnCurrentNetwork,

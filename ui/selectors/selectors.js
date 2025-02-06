@@ -568,7 +568,6 @@ export function getCrossChainMetaMaskCachedBalances(state) {
   }, {});
 }
 
-export function getMultichainTokenBalances(state) {}
 /**
  * Based on the current account address, return the balance for the native token of all chain networks on that account
  *

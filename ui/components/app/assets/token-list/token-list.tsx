@@ -63,16 +63,16 @@ export default function TokenList({
 
   return (
     <div>
-      {sortedFilteredTokens.map((tokenData) => (
+      {sortedFilteredTokens.map((token) => (
         <TokenCell
-          key={`${tokenData.chainId}-${tokenData.symbol}-${tokenData.address}`}
-          chainId={tokenData.chainId}
-          address={tokenData.address}
-          symbol={tokenData.symbol}
-          tokenFiatAmount={shouldShowFiat ? tokenData.tokenFiatAmount : null}
-          image={tokenData?.image}
-          isNative={tokenData.isNative}
-          string={tokenData.string}
+          key={`${token.chainId}-${token.symbol}-${token.address}`}
+          chainId={token.chainId}
+          address={token.address}
+          symbol={token.symbol}
+          tokenFiatAmount={shouldShowFiat ? token.tokenFiatAmount : null}
+          image={token?.image}
+          isNative={token.isNative}
+          string={token.string}
           privacyMode={privacyMode}
           onClick={onTokenClick}
         />
