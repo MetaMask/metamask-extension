@@ -27,9 +27,6 @@ import {
 import {
   RatesController,
   TokenListController,
-  MultichainBalancesController,
-  BalancesTracker as MultichainBalancesTracker,
-  BALANCE_UPDATE_INTERVALS as MULTICHAIN_BALANCES_UPDATE_TIME,
 } from '@metamask/assets-controllers';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { TrezorKeyring } from '@metamask/eth-trezor-keyring';
@@ -4212,106 +4209,6 @@ describe('MetaMaskController', () => {
         expect(
           localMetamaskController.multichainRatesController.setFiatCurrency,
         ).toHaveBeenCalledWith(mockCurrency);
-      });
-    });
-
-    describe('MultichainBalancesController', () => {
-      const mockEvmAccount = createMockInternalAccount();
-      const mockNonEvmAccount = {
-        ...mockEvmAccount,
-        id: '21690786-6abd-45d8-a9f0-9ff1d8ca76a1',
-        type: BtcAccountType.P2wpkh,
-        methods: [BtcMethod.SendBitcoin],
-        address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
-        // We need to have a "Snap account" account here, since the MultichainBalancesController will
-        // filter it out otherwise!
-        metadata: {
-          name: 'Bitcoin Account',
-          importTime: Date.now(),
-          keyring: {
-            type: KeyringType.snap,
-          },
-          snap: {
-            id: 'npm:@metamask/bitcoin-wallet-snap',
-          },
-        },
-      };
-      let localMetamaskController;
-      let spyBalancesTrackerUpdateBalance;
-
-      beforeEach(() => {
-        jest.useFakeTimers();
-        jest.spyOn(MultichainBalancesController.prototype, 'updateBalances');
-        jest
-          .spyOn(MultichainBalancesController.prototype, 'updateBalance')
-          .mockResolvedValue();
-        spyBalancesTrackerUpdateBalance = jest
-          .spyOn(MultichainBalancesTracker.prototype, 'updateBalance')
-          .mockResolvedValue();
-        localMetamaskController = new MetaMaskController({
-          showUserConfirmation: noop,
-          encryptor: mockEncryptor,
-          initState: {
-            ...cloneDeep(firstTimeState),
-            AccountsController: {
-              internalAccounts: {
-                accounts: {
-                  [mockNonEvmAccount.id]: mockNonEvmAccount,
-                  [mockEvmAccount.id]: mockEvmAccount,
-                },
-                selectedAccount: mockNonEvmAccount.id,
-              },
-            },
-          },
-          initLangCode: 'en_US',
-          platform: {
-            showTransactionNotification: () => undefined,
-            getVersion: () => 'foo',
-          },
-          browser: browserPolyfillMock,
-          infuraProjectId: 'foo',
-          isFirstMetaMaskControllerSetup: true,
-        });
-      });
-
-      afterEach(() => {
-        jest.clearAllMocks();
-        jest.useRealTimers();
-      });
-
-      it('calls updateBalances during startup', async () => {
-        expect(
-          localMetamaskController.multichainBalancesController.updateBalances,
-        ).toHaveBeenCalled();
-      });
-
-      it('calls updateBalances after the interval has passed', async () => {
-        // 1st call is during startup:
-        // updatesBalances is going to call updateBalance for the only non-EVM
-        // account that we have
-        expect(
-          localMetamaskController.multichainBalancesController.updateBalances,
-        ).toHaveBeenCalledTimes(1);
-        expect(spyBalancesTrackerUpdateBalance).toHaveBeenCalledTimes(1);
-        expect(spyBalancesTrackerUpdateBalance).toHaveBeenCalledWith(
-          mockNonEvmAccount.id,
-        );
-
-        // Wait for "block time", so balances will have to be refreshed
-        jest.advanceTimersByTime(
-          MULTICHAIN_BALANCES_UPDATE_TIME[BtcAccountType.P2wpkh],
-        );
-
-        // Check that we tried to fetch the balances more than once
-        // NOTE: For now, this method might be called a lot more than just twice, but this
-        // method has some internal logic to prevent fetching the balance too often if we
-        // consider the balance to be "up-to-date"
-        expect(
-          spyBalancesTrackerUpdateBalance.mock.calls.length,
-        ).toBeGreaterThan(1);
-        expect(spyBalancesTrackerUpdateBalance).toHaveBeenLastCalledWith(
-          mockNonEvmAccount.id,
-        );
       });
     });
 
