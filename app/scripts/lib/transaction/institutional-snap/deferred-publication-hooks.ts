@@ -9,7 +9,9 @@ import { accountRequiresPublicationDeferral } from '../../../../../shared/module
 
 import { MetaMaskState } from '../../../controllers/metametrics-controller';
 
-const snapId = 'local:http://localhost:8080' as SnapId;
+import InstitutionalWalletSnap from '../../../snaps/preinstalled-snap.json';
+
+const snapId = InstitutionalWalletSnap.snapId as SnapId;
 
 type SnapRPCRequest = Parameters<HandleSnapRequest['handler']>[0];
 
@@ -79,7 +81,7 @@ export type InstitutionalSnapResponse = {
   };
 };
 
-export type MutableTransactionSearchParams = {
+export type InstitutionalSnapRequestSearchParameters = {
   from: string;
   to: string;
   value: string;
@@ -110,7 +112,7 @@ export const deferPublicationHookFactory = (
       // use the original transaction parameters to help the snap find the correct
       // transaction request
 
-      const searchParams: MutableTransactionSearchParams = {
+      const searchParams: InstitutionalSnapRequestSearchParameters = {
         from: transactionMeta.txParams.from as string,
         to: transactionMeta.txParams.to as string,
         value: transactionMeta.txParams.value as string,
