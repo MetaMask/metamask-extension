@@ -96,6 +96,29 @@ const browserPolyfillMock = {
   },
 };
 
+const mockULIDs = [
+  '01JKAF3DSGM3AB87EM9N0K41AJ',
+  '01JKAF3KP7VPAG0YXEDTDRB6ZV',
+  '01JKAF3KP7VPAG0YXEDTDRB6ZW',
+  '01JKAF3KP7VPAG0YXEDTDRB6ZX',
+];
+
+function* ulidGenerator(ulids = mockULIDs) {
+  for (const id of ulids) {
+    yield id;
+  }
+
+  while (true) {
+    yield 'should not be called after exhausting provided IDs';
+  }
+}
+
+let mockUlidGenerator = ulidGenerator();
+
+jest.mock('ulid', () => ({
+  ulid: jest.fn().mockImplementation(() => mockUlidGenerator.next().value),
+}));
+
 let loggerMiddlewareMock;
 const initializeMockMiddlewareLog = () => {
   loggerMiddlewareMock = {
@@ -323,6 +346,8 @@ describe('MetaMaskController', () => {
     globalThis.sentry = {
       withIsolationScope: jest.fn(),
     };
+
+    mockUlidGenerator = ulidGenerator();
   });
 
   afterEach(() => {
@@ -2571,7 +2596,9 @@ describe('MetaMaskController', () => {
       it('errors when an primary keyring is does not exist', async () => {
         const addNewAccount = metamaskController.addNewAccount();
 
-        await expect(addNewAccount).rejects.toThrow('No HD keyring found');
+        await expect(addNewAccount).rejects.toThrow(
+          'KeyringController - Keyring not found.',
+        );
       });
     });
 
@@ -4169,6 +4196,61 @@ describe('MetaMaskController', () => {
           distribution: 'main',
           environment: 'rc',
         });
+      });
+    });
+
+    describe('generateNewMnemonicAndAddToVault', () => {
+      it('generates a new hd keyring instance', async () => {
+        const password = 'what-what-what';
+        jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
+
+        await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+
+        const previousKeyrings =
+          metamaskController.keyringController.state.keyrings;
+
+        await metamaskController.addNewMnemonicToVault(TEST_SEED_ALT);
+
+        const currentKeyrings =
+          metamaskController.keyringController.state.keyrings;
+
+        expect(
+          currentKeyrings.filter((kr) => kr.type === 'HD Key Tree'),
+        ).toHaveLength(2);
+        expect(currentKeyrings).toHaveLength(previousKeyrings.length + 1);
+      });
+    });
+
+    describe('addNewMnemonicToVault', () => {
+      it('generates a new hd keyring instance with a mnemonic', async () => {
+        const password = 'what-what-what';
+        jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
+
+        await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+
+        const previousKeyrings =
+          metamaskController.keyringController.state.keyrings;
+
+        await metamaskController.addNewMnemonicToVault(TEST_SEED_ALT);
+
+        const currentKeyrings =
+          metamaskController.keyringController.state.keyrings;
+
+        const newlyAddedKeyringId =
+          metamaskController.keyringController.state.keyringsMetadata[
+            metamaskController.keyringController.state.keyringsMetadata.length -
+              1
+          ].id;
+
+        const newSRP = Buffer.from(
+          await metamaskController.getSeedPhrase(password, newlyAddedKeyringId),
+        ).toString('utf8');
+
+        expect(
+          currentKeyrings.filter((kr) => kr.type === 'HD Key Tree'),
+        ).toHaveLength(2);
+        expect(currentKeyrings).toHaveLength(previousKeyrings.length + 1);
+        expect(newSRP).toStrictEqual(TEST_SEED_ALT);
       });
     });
   });
