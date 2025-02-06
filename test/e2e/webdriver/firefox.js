@@ -66,6 +66,10 @@ class FirefoxDriver {
       parseInt(proxyServerURL.port, 10),
     );
 
+    // Temporarily lock to version 134 until fix provided by Firefox/Selenium
+    // See issue https://github.com/MetaMask/MetaMask-planning/issues/4122
+    options.setBrowserVersion('134');
+
     options.setAcceptInsecureCerts(true);
     options.setPreference('browser.download.folderList', 2);
     options.setPreference(

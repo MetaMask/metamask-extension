@@ -254,9 +254,6 @@
   "from": {
     "message": "Від"
   },
-  "functionType": {
-    "message": "Тип функції"
-  },
   "gasLimit": {
     "message": "Ліміт газу"
   },
@@ -467,9 +464,6 @@
   "origin": {
     "message": "Походження"
   },
-  "parameters": {
-    "message": "Параметри"
-  },
   "participateInMetaMetrics": {
     "message": "Взяти участь у MetaMetrics"
   },
@@ -538,9 +532,6 @@
   "removeAccountDescription": {
     "message": "Цей обліковий запис буде видалено з вашого гаманця. Будь ласка, переконайтесь, що у вас є оригінальна seed-фраза чи секретний ключ для цього облікового запису. Ви можете імпортувати або створювати облікові записи у випадаючому меню вашого облікового запису."
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "запити, що очікують на визнання"
-  },
   "required": {
     "message": "Обов'язкове"
   },
@@ -607,9 +598,6 @@
   },
   "showHexDataDescription": {
     "message": "Оберіть це, щоб показати поле для шістнадцятирикових даних на екрані надсилання"
-  },
-  "sigRequest": {
-    "message": "Запит підпису"
   },
   "sign": {
     "message": "Підписати"
@@ -734,9 +722,6 @@
   "unknown": {
     "message": "невідомо"
   },
-  "unknownNetwork": {
-    "message": "Незнайома приватна мережа"
-  },
   "unknownQrCode": {
     "message": "Помилка: ми не змогли ідентифікувати цей QR-код "
   },
@@ -766,9 +751,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Вам потрібно дозволити доступ до камери, щоб користуватись цією функцією."
-  },
-  "youSign": {
-    "message": "Ви підписуєте"
   },
   "yourPrivateSeedPhrase": {
     "message": "Ваша секретна seed-фраза"
