@@ -12,7 +12,7 @@ import { UIComponent, UIComponentFactory, UIComponentParams } from './types';
 import { button as buttonFn } from './button';
 
 export const DEFAULT_FOOTER = {
-  element: 'SnapUIFooter',
+  element: 'Box',
   key: 'default-footer',
   props: {
     display: Display.Flex,
