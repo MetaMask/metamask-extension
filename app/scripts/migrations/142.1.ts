@@ -171,11 +171,6 @@ function transformState(
   const { allTokens } = tokensControllerState;
   const allTokensForChain = allTokens[currentChainId];
   if (!isObject(allTokensForChain)) {
-    global.sentry?.captureException?.(
-      new Error(
-        `Migration ${version}: allTokens["${currentChainId}"] is missing or not an object.`,
-      ),
-    );
     return state;
   }
 
