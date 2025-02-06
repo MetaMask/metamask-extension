@@ -12,6 +12,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { BigNumber } from 'bignumber.js';
 import { type TokenListMap } from '@metamask/assets-controllers';
 import { isCaipChainId } from '@metamask/utils';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -88,6 +89,7 @@ import {
   getSelectedEvmInternalAccount,
   getSelectedInternalAccount,
   getTokenList,
+  getInternalAccounts,
 } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
@@ -102,6 +104,7 @@ import {
   formatChainIdFromDecimal,
   formatChainIdToDecimal,
 } from '../../../../shared/modules/bridge-utils/multichain';
+import { DestinationAccountPicker } from '../../../components/multichain/destination-account-picker/destination-account-picker';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 
@@ -129,6 +132,9 @@ const PrepareBridgePage = () => {
 
   const providerConfig = useMultichainSelector(getMultichainProviderConfig);
   const slippage = useSelector(getSlippage);
+  const internalAccounts = useSelector(getInternalAccounts);
+  const [selectedBridgeAccount, setSelectedBridgeAccount] =
+    useState<InternalAccount | null>(null);
 
   const quoteRequest = useSelector(getQuoteRequest);
   const {
@@ -558,6 +564,17 @@ const PrepareBridgePage = () => {
           }}
           isTokenListLoading={isToTokensLoading}
         />
+        {/* // TODO: conditionally render this based on sol <-> EVM or not */}
+        <Box style={{ marginTop: '35px', padding: '24px' }}>
+          <DestinationAccountPicker
+            accounts={internalAccounts}
+            // TODO: figure this out.
+            chainType={'evm'}
+            chainId={activeQuote?.quote.destChainId}
+            onAccountSelect={setSelectedBridgeAccount}
+            selectedSwapToAccount={selectedBridgeAccount}
+          />
+        </Box>
         <Column height={BlockSize.Full} justifyContent={JustifyContent.center}>
           {isLoading && !activeQuote ? (
             <>
