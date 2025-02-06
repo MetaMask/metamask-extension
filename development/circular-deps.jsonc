@@ -16,19 +16,6 @@
     "app/scripts/controllers/bridge-status/validators.ts"
   ],
   [
-    "app/scripts/controllers/bridge/bridge-controller.ts",
-    "app/scripts/controllers/bridge/types.ts"
-  ],
-  [
-    "app/scripts/controllers/swaps/index.ts",
-    "app/scripts/controllers/swaps/swaps.constants.ts",
-    "app/scripts/controllers/swaps/swaps.types.ts"
-  ],
-  [
-    "app/scripts/controllers/swaps/swaps.constants.ts",
-    "app/scripts/controllers/swaps/swaps.types.ts"
-  ],
-  [
     "app/scripts/lib/transaction/metrics.ts",
     "shared/modules/metametrics.ts"
   ],
@@ -147,51 +134,16 @@
   ],
   [
     "ui/components/component-library/avatar-account/avatar-account.tsx",
-    "ui/components/component-library/avatar-account/avatar-account.types.ts",
     "ui/components/component-library/avatar-account/index.ts",
-    "ui/components/component-library/avatar-base/avatar-base.types.ts",
+    "ui/components/component-library/avatar-base/avatar-base.tsx",
+    "ui/components/component-library/avatar-base/index.ts",
     "ui/components/component-library/index.ts",
     "ui/components/component-library/text/index.ts",
     "ui/components/component-library/text/text.tsx"
   ],
   [
     "ui/components/component-library/badge-wrapper/badge-wrapper.tsx",
-    "ui/components/component-library/badge-wrapper/badge-wrapper.types.ts",
     "ui/components/component-library/badge-wrapper/index.ts",
-    "ui/components/component-library/index.ts"
-  ],
-  [
-    "ui/components/component-library/badge-wrapper/badge-wrapper.tsx",
-    "ui/components/component-library/badge-wrapper/index.ts",
-    "ui/components/component-library/index.ts"
-  ],
-  [
-    "ui/components/component-library/banner-alert/banner-alert.tsx",
-    "ui/components/component-library/banner-alert/banner-alert.types.ts",
-    "ui/components/component-library/banner-alert/index.ts",
-    "ui/components/component-library/banner-base/banner-base.types.ts",
-    "ui/components/component-library/button-base/button-base.tsx",
-    "ui/components/component-library/button-base/index.ts",
-    "ui/components/component-library/button-link/button-link.tsx",
-    "ui/components/component-library/button-link/index.ts",
-    "ui/components/component-library/index.ts"
-  ],
-  [
-    "ui/components/component-library/banner-alert/banner-alert.tsx",
-    "ui/components/component-library/banner-alert/banner-alert.types.ts",
-    "ui/components/component-library/banner-alert/index.ts",
-    "ui/components/component-library/banner-base/banner-base.types.ts",
-    "ui/components/component-library/button-icon/button-icon.tsx",
-    "ui/components/component-library/button-icon/index.ts",
-    "ui/components/component-library/index.ts"
-  ],
-  [
-    "ui/components/component-library/banner-alert/banner-alert.tsx",
-    "ui/components/component-library/banner-alert/banner-alert.types.ts",
-    "ui/components/component-library/banner-alert/index.ts",
-    "ui/components/component-library/banner-base/banner-base.types.ts",
-    "ui/components/component-library/button-link/button-link.tsx",
-    "ui/components/component-library/button-link/index.ts",
     "ui/components/component-library/index.ts"
   ],
   [
@@ -209,6 +161,21 @@
   [
     "ui/components/component-library/banner-tip/banner-tip.tsx",
     "ui/components/component-library/banner-tip/index.ts",
+    "ui/components/component-library/index.ts"
+  ],
+  [
+    "ui/components/component-library/button-base/button-base.tsx",
+    "ui/components/component-library/button-base/index.ts",
+    "ui/components/component-library/index.ts"
+  ],
+  [
+    "ui/components/component-library/button-icon/button-icon.tsx",
+    "ui/components/component-library/button-icon/index.ts",
+    "ui/components/component-library/index.ts"
+  ],
+  [
+    "ui/components/component-library/button-link/button-link.tsx",
+    "ui/components/component-library/button-link/index.ts",
     "ui/components/component-library/index.ts"
   ],
   [
