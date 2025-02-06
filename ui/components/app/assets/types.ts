@@ -21,3 +21,5 @@ export type ChainAddressMarketData = Record<
   Hex,
   Record<Hex, Record<string, string | number>>
 >;
+
+export type SymbolCurrencyRateMapping = Record<string, Record<string, number>>;

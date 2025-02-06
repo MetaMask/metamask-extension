@@ -2981,9 +2981,8 @@ export function getKeyringSnapAccounts(state) {
 }
 ///: END:ONLY_INCLUDE_IF
 
-// consolidateTokenBalances
 export const getTokenBalancesEvm = createDeepEqualSelector(
-  getSelectedAccountTokensAcrossChains, // TODO: useFilteredAccountTokens, we need to filter Testnets
+  getSelectedAccountTokensAcrossChains,
   getSelectedAccountNativeTokenCachedBalanceByChainId,
   (state) => state.metamask.tokenBalances,
   getMarketData,
@@ -3007,6 +3006,7 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
     const selectedAccountTokenBalancesAcrossChains =
       tokenBalances[selectedAccount.address];
 
+    // we need to filter Testnets
     const isTestNetwork = TEST_CHAINS.includes(currentNetwork.chainId);
     const filteredAccountTokensChains = Object.fromEntries(
       Object.entries(selectedAccountTokensChains).filter(([chainId]) =>
@@ -3019,7 +3019,6 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
     Object.entries(filteredAccountTokensChains).forEach(
       ([stringChainKey, tokens]) => {
         const chainId = stringChainKey;
-        // @ts-ignore
         tokens.forEach((token) => {
           const { isNative, address, decimals } = token;
           const balance =
@@ -3028,9 +3027,7 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
               chainId,
               address,
               decimals,
-              // @ts-ignore
               nativeBalances,
-              // @ts-ignore
               selectedAccountTokenBalancesAcrossChains,
             }) || '0';
 
