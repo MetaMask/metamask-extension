@@ -2402,8 +2402,6 @@ describe('MetaMaskController', () => {
 
       describe('forgetDevice', () => {
         it('should throw if it receives an unknown device name', async () => {
-          // mock keyringController.update
-          jest.spyOn(metamaskController.keyringController, 'update');
           const result = metamaskController.forgetDevice(
             'Some random device name',
           );
@@ -2610,9 +2608,7 @@ describe('MetaMaskController', () => {
 
       it('#addNewAccount', async () => {
         await metamaskController.createNewVaultAndKeychain('password');
-        console.log(111);
         await metamaskController.addNewAccount(1);
-        console.log(222);
         const getAccounts =
           await metamaskController.keyringController.getAccounts();
         expect(getAccounts).toHaveLength(2);
