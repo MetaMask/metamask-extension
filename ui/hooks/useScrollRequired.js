@@ -24,6 +24,7 @@ export const useScrollRequired = (
   const [hasScrolledToBottomState, setHasScrolledToBottom] = useState(false);
   const [isScrollableState, setIsScrollable] = useState(false);
   const [isScrolledToBottomState, setIsScrolledToBottom] = useState(false);
+  const [hasMeasured, setHasMeasured] = useState(false);
 
   const update = () => {
     if (!ref.current || !enabled) {
@@ -45,6 +46,10 @@ export const useScrollRequired = (
     if (isScrollable !== isScrollableState) {
       setHasScrolledToBottom(false);
       setIsScrollable(isScrollable);
+    }
+
+    if (!hasMeasured) {
+      setHasMeasured(true);
     }
 
     setIsScrolledToBottom(!isScrollable || isScrolledToBottom);
@@ -83,6 +88,7 @@ export const useScrollRequired = (
     isScrollable: isScrollableState,
     isScrolledToBottom: isScrolledToBottomState,
     hasScrolledToBottom: hasScrolledToBottomState,
+    hasMeasured,
     scrollToBottom,
     setHasScrolledToBottom,
     ref,

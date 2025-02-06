@@ -35,9 +35,10 @@ const scrollReducer = (state, action) => {
  *
  * @param {boolean} requireScroll - Whether the content requires scrolling.
  * @param {boolean} isScrollable - Whether the content is scrollable.
+ * @param {boolean} hasMeasured - Whether the content has been measured.
  * @returns {object} The scroll state and the handlers for the scroll events.
  */
-export const useScrollHandling = (requireScroll, isScrollable) => {
+export const useScrollHandling = (requireScroll, isScrollable, hasMeasured) => {
   const [scrollState, dispatch] = useReducer(scrollReducer, {
     isProgrammaticScroll: false,
     buttonsEnabled: !requireScroll,
@@ -49,18 +50,16 @@ export const useScrollHandling = (requireScroll, isScrollable) => {
 
   useEffect(() => {
     // If the content doesn't require scrolling, we don't need to update the scroll state
-    if (!requireScroll) {
+    if (!requireScroll || !hasMeasured) {
       return;
     }
 
-    if (isScrollable) {
-      dispatch({
-        type: 'MANUAL_SCROLL',
-        isAtBottom: false,
-        isScrollable: true,
-      });
-    }
-  }, [isScrollable, requireScroll]);
+    dispatch({
+      type: 'MANUAL_SCROLL',
+      isAtBottom: !isScrollable,
+      isScrollable,
+    });
+  }, [isScrollable, requireScroll, hasMeasured]);
 
   /**
    * Handle scroll events on the content.

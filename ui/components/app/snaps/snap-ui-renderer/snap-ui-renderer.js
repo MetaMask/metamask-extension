@@ -66,6 +66,7 @@ const SnapUIRendererComponent = ({
   const { scrollState, handleScroll, handleScrollToBottom } = useScrollHandling(
     requireScroll,
     scrollData.isScrollable,
+    scrollData.hasMeasured,
   );
 
   const buttonsEnabled = requireScroll ? scrollState.buttonsEnabled : true;
