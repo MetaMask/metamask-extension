@@ -11,8 +11,8 @@ import {
   getTokenExchangeRates,
 } from '../../../../selectors';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
-import useNetworkFilter from './useNetworkFilter';
 import { TokenWithFiatAmount } from '../types';
+import useNetworkFilter from './useNetworkFilter';
 
 const useSortedFilteredTokens = () => {
   const currentNetwork = useSelector(getCurrentNetwork);
