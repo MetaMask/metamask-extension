@@ -2,17 +2,14 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Token } from '@metamask/assets-controllers';
 import { NetworkConfiguration } from '@metamask/network-controller';
-import { CaipAssetType } from '@metamask/utils';
 import TokenList from '../token-list';
 import { PRIMARY } from '../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
 import {
   getAllDetectedTokensForSelectedAddress,
-  getAllNonEvmMetadata,
   getDetectedTokensInCurrentNetwork,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getSelectedAccount,
-  getSelectedAccountNonEvmTokensForCurrentNetwork,
   getSelectedAddress,
   getUseTokenDetection,
 } from '../../../../selectors';
@@ -104,19 +101,6 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const selectedAddress = useSelector(getSelectedAddress);
   const useTokenDetection = useSelector(getUseTokenDetection);
   const currentChainId = useSelector(getCurrentChainId);
-
-  // to be removed
-  const selectedAccountTokens: CaipAssetType[] = useSelector(
-    getSelectedAccountNonEvmTokensForCurrentNetwork,
-  );
-  console.log('🚀 ~ selectedAccountTokens:', selectedAccountTokens);
-
-  const selectedAccountTokensMetadata = useSelector(getAllNonEvmMetadata);
-  console.log(
-    '🚀 ~ selectedAccountTokensMetadata:',
-    selectedAccountTokensMetadata,
-  );
-  // to be removed
 
   const [showFundingMethodModal, setShowFundingMethodModal] = useState(false);
   const [showReceiveModal, setShowReceiveModal] = useState(false);

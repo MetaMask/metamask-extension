@@ -125,7 +125,6 @@ import {
 import { getSelectedInternalAccount, getInternalAccounts } from './accounts';
 import {
   getMultichainBalances,
-  getMultichainCurrentNetwork,
   getMultichainNetworkProviders,
 } from './multichain';
 
@@ -632,22 +631,6 @@ export function getSelectedAccountTokensAcrossChains(state) {
 
   return tokensByChain;
 }
-
-export const getSelectedAccountNonEvmTokensForCurrentNetwork = createSelector(
-  getMultichainCurrentNetwork,
-  getAllNonEvmTokens,
-  getSelectedInternalAccount,
-  (currentNetwork, allNonEvmTokens, selectedInternalAccount) => {
-    console.log('🚀 ~ allNonEvmTokens:', allNonEvmTokens);
-    const selectedAccountTokens =
-      allNonEvmTokens[selectedInternalAccount.id] || [];
-    // TODO: use a helper function instead to get if an asset is on a current network
-    const filteredAssetsForCurrentNetwork = selectedAccountTokens.filter(
-      (asset) => asset.split('/')[0] === currentNetwork.chainId,
-    );
-    return filteredAssetsForCurrentNetwork;
-  },
-);
 
 export function getAllNonEvmTokens(state) {
   return state.metamask.accountsAssets;
