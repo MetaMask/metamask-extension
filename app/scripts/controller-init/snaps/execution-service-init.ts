@@ -49,17 +49,13 @@ export const ExecutionServiceInit: ControllerInitFunction<
     });
   }
 
-  const args: ExecutionServiceArgs = {
-    messenger: controllerMessenger,
-    setupSnapProvider,
-  };
-
   if (useOffscreenDocument) {
     return {
       memStateKey: null,
       persistedStateKey: null,
       controller: new OffscreenExecutionService({
-        ...args,
+        messenger: controllerMessenger,
+        setupSnapProvider,
         offscreenPromise,
       }),
     };
@@ -72,8 +68,9 @@ export const ExecutionServiceInit: ControllerInitFunction<
     memStateKey: null,
     persistedStateKey: null,
     controller: new IframeExecutionService({
-      ...args,
+      messenger: controllerMessenger,
       iframeUrl: new URL(iframeUrl),
+      setupSnapProvider,
     }),
   };
 };
