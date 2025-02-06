@@ -74,7 +74,11 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   getIsSolanaSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+  getManageInstitutionalWallets,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
+
 import { setSelectedAccount } from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
@@ -130,7 +134,11 @@ import {
   SOLANA_WALLET_SNAP_ID,
 } from '../../../../shared/lib/accounts/solana-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
+import { INSTITUTIONAL_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/institutional-wallet-snap';
+///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
 import { HiddenAccountList } from './hidden-account-list';
+
+///: END:ONLY_INCLUDE_IF
 
 const ACTION_MODES = {
   // Displays the search box and account list
@@ -292,6 +300,10 @@ export const AccountListMenu = ({
     WalletClientType.Solana,
   );
 
+  ///: END:ONLY_INCLUDE_IF
+
+  ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+  const manageInstitutionalWallets = useSelector(getManageInstitutionalWallets);
   ///: END:ONLY_INCLUDE_IF
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -595,6 +607,28 @@ export const AccountListMenu = ({
                     data-testid="multichain-account-menu-popover-add-watch-only-account"
                   >
                     {t('addEthereumWatchOnlyAccount')}
+                  </ButtonLink>
+                </Box>
+              )
+              ///: END:ONLY_INCLUDE_IF
+            }
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+              manageInstitutionalWallets && (
+                <Box marginTop={4}>
+                  <ButtonLink
+                    size={ButtonLinkSize.Sm}
+                    startIconName={IconName.Add}
+                    onClick={() => {
+                      onClose();
+                      history.push(
+                        `/snaps/view/${encodeURIComponent(
+                          INSTITUTIONAL_WALLET_SNAP_ID,
+                        )}`,
+                      );
+                    }}
+                  >
+                    {t('manageInstitutionalWallets')}
                   </ButtonLink>
                 </Box>
               )

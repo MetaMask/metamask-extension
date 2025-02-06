@@ -259,6 +259,7 @@
     "tslib@npm:^2.3.1": "~2.6.0",
     "tslib@npm:^2.4.0": "~2.6.0",
     "tslib@npm:^2.6.2": "~2.6.0",
+    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@45.0.0-preview-224dff25",
     "@ethersproject/signing-key/elliptic": "^6.6.1",
     "gridplus-sdk/elliptic": "^6.6.1"
   },
@@ -314,6 +315,7 @@
     "@metamask/eth-trezor-keyring": "^6.0.0",
     "@metamask/etherscan-link": "^3.0.0",
     "@metamask/gas-fee-controller": "^22.0.3",
+    "@metamask/institutional-wallet-snap": "0.3.1",
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/json-rpc-engine": "^10.0.0",
     "@metamask/json-rpc-middleware-stream": "^8.0.4",

@@ -113,10 +113,85 @@ export async function showAccountNameSuggestionDialog(
   }
 }
 
+<<<<<<< HEAD
 class SnapKeyringImpl implements SnapKeyringCallbacks {
   readonly #messenger: SnapKeyringBuilderMessenger;
 
   readonly #trackEvent: SnapKeyringHelpers['trackEvent'];
+=======
+/**
+ * Constructs a SnapKeyring builder with specified handlers for managing snap accounts.
+ *
+ * @param controllerMessenger - The controller messenger instance.
+ * @param persistKeyringHelper - A function that persists all keyrings in the vault.
+ * @param removeAccountHelper - A function to help remove an account based on its address.
+ * @param trackEvent - A function to track MetaMetrics events.
+ * @param getSnapName - A function to get a snap's localized
+ * (or non-localized if there are no localization files) name from its manifest.
+ * @param isSnapPreinstalled - A function to check if a Snap is pre-installed.
+ * @returns The constructed SnapKeyring builder instance with the following methods:
+ * - `saveState`: Persists all keyrings in the keyring controller.
+ * - `addAccount`: Initiates the process of adding an account with user confirmation and handling the user input.
+ * - `removeAccount`: Initiates the process of removing an account with user confirmation and handling the user input.
+ */
+export const snapKeyringBuilder = (
+  controllerMessenger: SnapKeyringBuilderMessenger,
+  persistKeyringHelper: () => Promise<void>,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  removeAccountHelper: (address: string) => Promise<any>,
+  trackEvent: (
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    payload: Record<string, any>,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    options?: Record<string, any>,
+  ) => void,
+  getSnapName: (snapId: string) => string,
+  isSnapPreinstalled: (snapId: string) => boolean,
+) => {
+  const builder = (() => {
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return new SnapKeyring(controllerMessenger, {
+      addressExists: async (address) => {
+        const addresses = await controllerMessenger.call(
+          'KeyringController:getAccounts',
+        );
+        return addresses.includes(address.toLowerCase());
+      },
+      redirectUser: async (snapId: string, url: string, message: string) => {
+        // Either url or message must be defined
+        if (url.length > 0 || message.length > 0) {
+          // If the url is empty, we don't need to check if it's blocked
+          const isBlocked =
+            url.length === 0
+              ? false
+              : await isBlockedUrl(
+                  url,
+                  async () => {
+                    return await controllerMessenger.call(
+                      'PhishingController:maybeUpdateState',
+                    );
+                  },
+                  (urlToTest: string) => {
+                    return controllerMessenger.call(
+                      'PhishingController:testOrigin',
+                      urlToTest,
+                    );
+                  },
+                );
+          const confirmationResult = await controllerMessenger.call(
+            'ApprovalController:addRequest',
+            {
+              origin: snapId,
+              requestData: { url, message, isBlockedUrl: isBlocked },
+              type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
+            },
+            true,
+          );
+>>>>>>> 75d4db55d7 (feat(institutional-snap): enable institutional snap)
 
   readonly #persistKeyringHelper: SnapKeyringHelpers['persistKeyringHelper'];
 
