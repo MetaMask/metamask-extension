@@ -1,7 +1,7 @@
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { UserStorageResponseData } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import { IDENTITY_TEAM_STORAGE_KEY } from '../constants';
-import { createEncryptedResponse } from '../generate-encrypted-data';
+import { createEncryptedResponse } from '../../../helpers/identity/user-storage/generateEncryptedData';
 import { UserStorageAccount } from './helpers';
 
 export const accountsToMockForAccountsSync: UserStorageAccount[] = [

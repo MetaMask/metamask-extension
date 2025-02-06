@@ -4,7 +4,7 @@ import {
   createSHA256Hash,
   getFeatureAndKeyFromPath,
 } from '@metamask/profile-sync-controller/sdk';
-import { UserStorageResponseData } from '../../helpers/identity/user-storage/userStorageMockttpController';
+import { UserStorageResponseData } from './userStorageMockttpController';
 
 /**
  * Encrypts the given data object using the specified storage key.
@@ -37,7 +37,7 @@ const generateEncryptedHash = (
 
 /**
  * Creates an encrypted response object containing a hashed key and encrypted data.
- * This will simulate how our clients will encrypt data before sending to our User Storagr
+ * This will simulate how our clients will encrypt data before sending to our User Storagrget
  *
  * @param options - The options for creating the encrypted response.
  * @param options.data - The data to be encrypted.
