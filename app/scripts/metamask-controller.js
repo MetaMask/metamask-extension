@@ -4654,7 +4654,7 @@ export default class MetamaskController extends EventEmitter {
       const chainId = this.#getGlobalChainId();
 
       const keyringSelector = keyringId
-        ? { fingerprint: keyringId }
+        ? { id: keyringId }
         : { type: KeyringTypes.hd };
 
       const accounts = await this.keyringController.withKeyring(
