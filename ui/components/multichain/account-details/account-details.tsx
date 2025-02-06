@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { KeyringMetadata, KeyringObject } from '@metamask/keyring-controller';
+import { KeyringMetadata } from '@metamask/keyring-controller';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,

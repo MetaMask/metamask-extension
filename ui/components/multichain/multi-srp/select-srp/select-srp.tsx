@@ -34,6 +34,7 @@ export const SelectSRP = ({
         paddingTop={1}
         paddingBottom={1}
         className="select-srp__container"
+        data-testid={`select-srp-${srpName}`}
       >
         <Box
           display={Display.Flex}

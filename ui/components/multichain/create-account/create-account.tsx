@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
+import { KeyringTypes } from '@metamask/keyring-controller';
 ///: END:ONLY_INCLUDE_IF
 
 import {
@@ -117,14 +117,22 @@ export const CreateAccount: CreateAccountComponent = React.memo(
         defaultAccountName,
       );
       ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-      const keyrings = useSelector(getMetaMaskKeyrings);
-      const selectedKeyring = keyrings.find(
-        (keyring: KeyringObject) => keyring?.fingerprint === selectedKeyringId,
-      );
+      const keyrings: {
+        accounts: InternalAccount[];
+        type: KeyringTypes;
+        metadata: { id: string; name: string };
+      }[] = useSelector(getMetaMaskKeyrings);
       const hdKeyrings = keyrings.filter(
-        (keyring: KeyringObject) => keyring.type === KeyringTypes.hd,
+        (keyring) => keyring.type === KeyringTypes.hd,
       );
-      const selectedKeyringIndex = hdKeyrings.indexOf(selectedKeyring);
+
+      const selectedKeyring = selectedKeyringId
+        ? keyrings.find((keyring) => keyring.metadata.id === selectedKeyringId)
+        : hdKeyrings[0];
+
+      const selectedKeyringIndex = keyrings.findIndex(
+        (keyring) => keyring.metadata.id === selectedKeyring?.metadata.id,
+      );
       ///: END:ONLY_INCLUDE_IF(multi-srp)
 
       const onSubmit = useCallback(

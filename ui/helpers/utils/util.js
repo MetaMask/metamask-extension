@@ -718,14 +718,14 @@ export const isAbleToExportAccount = (keyringType = '') => {
 
 export const isAbleToRevealSrp = (accountToExport, keyrings) => {
   if (
-    accountToExport.type !== KeyringTypes.hd &&
-    accountToExport.type !== KeyringTypes.snap
+    accountToExport.metadata.keyring.type !== KeyringTypes.hd &&
+    accountToExport.metadata.keyring.type !== KeyringTypes.snap
   ) {
     return false;
   }
 
   // All hd keyrings can reveal their srp.
-  if (accountToExport.type === KeyringTypes.hd) {
+  if (accountToExport.metadata.keyring.type === KeyringTypes.hd) {
     return true;
   }
 
