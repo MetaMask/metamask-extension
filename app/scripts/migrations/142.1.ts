@@ -168,8 +168,23 @@ function transformState(
     return state;
   }
 
+  const { tokens } = tokensControllerState;
   const { allTokens } = tokensControllerState;
   const allTokensForChain = allTokens[currentChainId];
+
+  if (
+    Array.isArray(tokens) &&
+    tokens.length > 0 &&
+    !isObject(allTokensForChain)
+  ) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: tokens is not an empty array, but allTokensForChain is not an object.`,
+      ),
+    );
+    return state;
+  }
+
   if (!isObject(allTokensForChain)) {
     return state;
   }
