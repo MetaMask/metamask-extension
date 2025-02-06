@@ -24,9 +24,6 @@ import { debounce, throttle, memoize, wrap, pick } from 'lodash';
 import {
   KeyringController,
   KeyringTypes,
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  displayForKeyring,
-  ///: END:ONLY_INCLUDE_IF
   keyringBuilderFactory,
 } from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
@@ -4570,7 +4567,10 @@ export default class MetamaskController extends EventEmitter {
         this.accountsController.getAccountByAddress(newAccountAddress);
       this.accountsController.setSelectedAccount(account.id);
 
-      const { fingerprint: keyringId } = await displayForKeyring(newKeyring);
+      const keyringId =
+        this.keyringController.state.keyringsMetadata[
+          this.keyringController.state.keyrings.length - 1
+        ].id;
       await this._addAccountsWithBalance(keyringId);
 
       return newAccountAddress;
@@ -5137,7 +5137,7 @@ export default class MetamaskController extends EventEmitter {
   async addNewAccount(accountCount, _keyringId) {
     const oldAccounts = await this.keyringController.getAccounts();
     const keyringSelector = _keyringId
-      ? { fingerprint: _keyringId }
+      ? { id: _keyringId }
       : { type: KeyringTypes.hd };
 
     const addedAccountAddress = await this.keyringController.withKeyring(
