@@ -5,6 +5,7 @@ import { Text } from '../../components/component-library';
 import { TextVariant, TextColor } from '../../helpers/constants/design-system';
 import Button from '../../components/ui/button';
 import TextField from '../../components/ui/text-field';
+import Mascot from '../../components/ui/mascot';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   MetaMetricsContextProp,
@@ -156,21 +157,16 @@ export default class UnlockPage extends Component {
     const { t } = this.context;
     const { onRestore } = this.props;
 
-    let needHelpText = t('appNameMmi');
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    needHelpText = t('needHelpLinkText');
-    ///: END:ONLY_INCLUDE_IF
+    const needHelpText = t('needHelpLinkText');
 
     return (
       <div className="unlock-page__container">
         <div className="unlock-page" data-testid="unlock-page">
           <div className="unlock-page__mascot-container">
-            <img
-              src="images/logo/metamask-fox.svg"
-              width="120px"
-              height="120px"
-              style={{ marginBottom: '16px' }}
+            <Mascot
+              animationEventEmitter={this.animationEventEmitter}
+              width="120"
+              height="120"
             />
             {isBeta() ? (
               <div className="unlock-page__mascot-container__beta">
