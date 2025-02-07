@@ -32,6 +32,7 @@ export const AssetPickerModalTabs = ({
       <Tabs
         defaultActiveTabKey={defaultActiveTabKey}
         tabsClassName="modal-tab__tabs"
+        onTabClick={() => null}
       >
         {visibleTabs.map((tabName) => {
           return (
