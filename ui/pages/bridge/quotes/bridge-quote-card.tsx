@@ -71,35 +71,6 @@ export const BridgeQuoteCard = () => {
   const [shouldShowNetworkFeesInGasToken, setShouldShowNetworkFeesInGasToken] =
     useState(false);
 
-  const networkFee = shouldShowNetworkFeesInGasToken
-    ? //  Network fee in gas token amounts
-      `${
-        activeQuote.totalNetworkFee?.valueInCurrency
-          ? formatTokenAmount(
-              locale,
-              activeQuote.totalNetworkFee?.amount,
-              ticker,
-            )
-          : undefined
-      }`
-    : // Network fee in display currency
-      `${
-        formatCurrencyAmount(
-          activeQuote.totalNetworkFee?.valueInCurrency,
-          currency,
-          2,
-        ) ??
-        formatTokenAmount(locale, activeQuote.totalNetworkFee?.amount, ticker)
-      }`;
-
-  const maxNetworkFee = shouldShowNetworkFeesInGasToken
-    ? formatTokenAmount(locale, activeQuote.totalMaxNetworkFee.amount, ticker)
-    : formatCurrencyAmount(
-        activeQuote.totalMaxNetworkFee.valueInCurrency,
-        currency,
-        2,
-      );
-
   return (
     <>
       <BridgeQuotesModal
@@ -239,11 +210,46 @@ export const BridgeQuoteCard = () => {
                           : undefined
                       }
                     >
-                      {networkFee}
+                      {shouldShowNetworkFeesInGasToken
+                        ? //  Network fee in gas token amounts
+                          `${
+                            activeQuote?.totalNetworkFee?.valueInCurrency
+                              ? formatTokenAmount(
+                                  locale,
+                                  activeQuote?.totalNetworkFee?.amount,
+                                  ticker,
+                                )
+                              : undefined
+                          }`
+                        : // Network fee in display currency
+                          `${
+                            formatCurrencyAmount(
+                              activeQuote?.totalNetworkFee?.valueInCurrency,
+                              currency,
+                              2,
+                            ) ??
+                            formatTokenAmount(
+                              locale,
+                              activeQuote?.totalNetworkFee?.amount,
+                              ticker,
+                            )
+                          }`}
                     </Text>
                   }
                 >
-                  {t('howNetworkFeesWorkExplanation', [maxNetworkFee])}
+                  {t('howNetworkFeesWorkExplanation', [
+                    shouldShowNetworkFeesInGasToken
+                      ? formatTokenAmount(
+                          locale,
+                          activeQuote?.totalMaxNetworkFee.amount,
+                          ticker,
+                        )
+                      : formatCurrencyAmount(
+                          activeQuote?.totalMaxNetworkFee.valueInCurrency,
+                          currency,
+                          2,
+                        ),
+                  ])}
                 </Tooltip>
 
                 <Icon
