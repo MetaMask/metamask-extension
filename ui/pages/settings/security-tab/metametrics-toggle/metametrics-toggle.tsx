@@ -101,14 +101,14 @@ const MetametricsToggle = ({
 
         <div
           className="settings-page__content-item-col"
-          data-testid="participateInMetaMetrics"
+          data-testid="participate-in-meta-metrics-toggle"
         >
           <ToggleButton
             value={participateInMetaMetrics}
             onToggle={handleUseParticipateInMetaMetrics}
             offLabel={t('off')}
             onLabel={t('on')}
-            dataTestId="toggleButton"
+            dataTestId="participate-in-meta-metrics-toggle-button"
           />
         </div>
       </Box>

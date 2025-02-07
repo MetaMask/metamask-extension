@@ -1,7 +1,7 @@
 import {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedControllerMessenger,
+  RestrictedMessenger,
 } from '@metamask/base-controller';
 import {
   NetworkControllerFindNetworkClientIdByChainIdAction,
@@ -74,7 +74,7 @@ type AllowedEvents = never;
 /**
  * The messenger for the BridgeStatusController.
  */
-export type BridgeStatusControllerMessenger = RestrictedControllerMessenger<
+export type BridgeStatusControllerMessenger = RestrictedMessenger<
   typeof BRIDGE_STATUS_CONTROLLER_NAME,
   BridgeStatusControllerActions | AllowedActions,
   BridgeStatusControllerEvents | AllowedEvents,
