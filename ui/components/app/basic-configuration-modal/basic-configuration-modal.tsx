@@ -12,7 +12,11 @@ import {
   FontWeight,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { toggleExternalServices } from '../../../store/actions';
+import {
+  setDataCollectionForMarketing,
+  setParticipateInMetaMetrics,
+  toggleExternalServices,
+} from '../../../store/actions';
 import {
   ModalOverlay,
   ModalContent,
@@ -179,6 +183,9 @@ export function BasicConfigurationModal() {
                   closeModal();
                   dispatch(toggleExternalServices(!isExternalServicesEnabled));
                 }
+
+                dispatch(setParticipateInMetaMetrics(false));
+                dispatch(setDataCollectionForMarketing(false));
               }}
               danger={isExternalServicesEnabled}
             >
