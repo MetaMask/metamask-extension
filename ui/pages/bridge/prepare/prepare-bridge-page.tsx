@@ -397,7 +397,8 @@ const PrepareBridgePage = () => {
 
   const isSwap = useIsMultichainSwap();
 
-  const shouldShowAccountPicker = isToOrFromSolana && fromAmount;
+  const shouldShowAccountPicker = isToOrFromSolana;
+  // TODO: pass as prop to CTA button to disable if user needs to select account.
   const canProceedWithBridge =
     activeQuote && (!isToOrFromSolana || selectedBridgeAccount);
 
@@ -601,8 +602,6 @@ const PrepareBridgePage = () => {
             </Text>
           )}
         </Column>
-        {/* // TODO: display this only when an account has been selected. */}
-        {/* {canProceedWithBridge && ( */}
         <Row padding={6}>
           <Column
             gap={3}
@@ -631,6 +630,7 @@ const PrepareBridgePage = () => {
             )}
             {!wasTxDeclined && activeQuote && <BridgeQuoteCard />}
             <Footer padding={0} flexDirection={FlexDirection.Column} gap={2}>
+              // TODO: add prop here to disable if user needs to select account.
               <BridgeCTAButton
                 onFetchNewQuotes={() => {
                   debouncedUpdateQuoteRequestInController(quoteParams);
