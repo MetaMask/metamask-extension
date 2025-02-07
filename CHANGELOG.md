@@ -92,6 +92,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed ERC-1155 token send flow in transaction component ([#29973](https://github.com/MetaMask/metamask-extension/pull/29973))
 - Updated undici dependency to address security audit (5.28.4 → 5.28.5) ([#29976](https://github.com/MetaMask/metamask-extension/pull/29976))
 
+## [12.10.4]
+
 ## [12.10.3]
 ### Fixed
 - Ensure recipient address is shown on when sending erc 1155 tokens ([#29775](https://github.com/MetaMask/metamask-extension/pull/29775))
@@ -5654,7 +5656,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.11.0...HEAD
-[12.11.0]: https://github.com/MetaMask/metamask-extension/compare/v12.10.3...v12.11.0
+[12.11.0]: https://github.com/MetaMask/metamask-extension/compare/v12.10.4...v12.11.0
+[12.10.4]: https://github.com/MetaMask/metamask-extension/compare/v12.10.3...v12.10.4
 [12.10.3]: https://github.com/MetaMask/metamask-extension/compare/v12.10.2...v12.10.3
 [12.10.2]: https://github.com/MetaMask/metamask-extension/compare/v12.10.1...v12.10.2
 [12.10.1]: https://github.com/MetaMask/metamask-extension/compare/v12.10.0...v12.10.1
