@@ -9,8 +9,10 @@ import {
   Form,
   Field,
   Checkbox,
+  FileInput,
 } from '@metamask/snaps-sdk/jsx';
 import { fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import * as backgroundConnection from '../../../../store/background-connection';
@@ -363,7 +365,10 @@ describe('SnapUIRenderer', () => {
           name: 'form',
           children: [
             Field({ label: 'My Input', children: Input({ name: 'input' }) }),
-            Field({ label: 'Checkbox', children: Checkbox({ name: 'checkbox' }) }),
+            Field({
+              label: 'Checkbox',
+              children: Checkbox({ name: 'checkbox' }),
+            }),
             Button({ type: 'submit', name: 'submit', children: 'Submit' }),
           ],
         }),
@@ -421,7 +426,11 @@ describe('SnapUIRenderer', () => {
             method: ' ',
             params: {
               context: null,
-              event: { name: 'checkbox', type: 'InputChangeEvent', value: true },
+              event: {
+                name: 'checkbox',
+                type: 'InputChangeEvent',
+                value: true,
+              },
               id: MOCK_INTERFACE_ID,
             },
           },
@@ -545,6 +554,139 @@ describe('SnapUIRenderer', () => {
     await waitFor(() => expect(inputs[0]).toHaveFocus());
 
     expect(getRenderCount()).toBe(2);
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('supports file inputs', async () => {
+    const { container, getByRole } = renderInterface(
+      Box({
+        children: Form({
+          name: 'form',
+          children: [
+            Field({
+              label: 'My Input',
+              children: FileInput({ name: 'input' }),
+            }),
+            Button({ type: 'submit', name: 'submit', children: 'Submit' }),
+          ],
+        }),
+      }),
+    );
+
+    const file = new File(['foo'], 'foo.svg', { type: 'image/svg' });
+
+    // JSDOM doesn't support array buffer so we overwrite it
+    file.arrayBuffer = async () => {
+      return new Uint8Array([102, 111, 111]);
+    };
+
+    const input = container.querySelector('#input');
+    await userEvent.upload(input, file);
+
+    expect(submitRequestToBackground).toHaveBeenNthCalledWith(
+      1,
+      'updateInterfaceState',
+      [
+        MOCK_INTERFACE_ID,
+        {
+          form: {
+            input: {
+              contentType: 'image/svg',
+              contents: 'Zm9v',
+              name: 'foo.svg',
+              size: 3,
+            },
+          },
+        },
+      ],
+    );
+
+    expect(submitRequestToBackground).toHaveBeenNthCalledWith(
+      2,
+      'handleSnapRequest',
+      [
+        {
+          handler: 'onUserInput',
+          origin: '',
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+            params: {
+              context: null,
+              event: {
+                name: 'input',
+                type: 'FileUploadEvent',
+                file: {
+                  contentType: 'image/svg',
+                  contents: 'Zm9v',
+                  name: 'foo.svg',
+                  size: 3,
+                },
+              },
+              id: MOCK_INTERFACE_ID,
+            },
+          },
+          snapId: MOCK_SNAP_ID,
+        },
+      ],
+    );
+
+    const button = getByRole('button');
+    fireEvent.click(button);
+
+    expect(submitRequestToBackground).toHaveBeenNthCalledWith(
+      5,
+      'handleSnapRequest',
+      [
+        {
+          handler: 'onUserInput',
+          origin: '',
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+            params: {
+              context: null,
+              event: { name: 'submit', type: 'ButtonClickEvent' },
+              id: MOCK_INTERFACE_ID,
+            },
+          },
+          snapId: MOCK_SNAP_ID,
+        },
+      ],
+    );
+
+    expect(submitRequestToBackground).toHaveBeenNthCalledWith(
+      6,
+      'handleSnapRequest',
+      [
+        {
+          handler: 'onUserInput',
+          origin: '',
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+            params: {
+              context: null,
+              event: {
+                name: 'form',
+                type: 'FormSubmitEvent',
+                value: {
+                  input: {
+                    contentType: 'image/svg',
+                    contents: 'Zm9v',
+                    name: 'foo.svg',
+                    size: 3,
+                  },
+                },
+              },
+              id: MOCK_INTERFACE_ID,
+            },
+          },
+          snapId: MOCK_SNAP_ID,
+        },
+      ],
+    );
 
     expect(container).toMatchSnapshot();
   });
