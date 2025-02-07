@@ -2951,6 +2951,8 @@ export default class MetamaskController extends EventEmitter {
               });
             }
           });
+
+          this._notifyAuthorizationChange(origin, authorization);
         }
       },
       getAuthorizedScopesByOrigin,
@@ -7614,18 +7616,16 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async _notifyAuthorizationChange(origin, newAuthorization) {
-    if (this.isUnlocked()) {
-      this.notifyConnections(
-        origin,
-        {
-          method: NOTIFICATION_NAMES.sessionChanged,
-          params: {
-            sessionScopes: getSessionScopes(newAuthorization),
-          },
+    this.notifyConnections(
+      origin,
+      {
+        method: NOTIFICATION_NAMES.sessionChanged,
+        params: {
+          sessionScopes: getSessionScopes(newAuthorization),
         },
-        API_TYPE.CAIP_MULTICHAIN,
-      );
-    }
+      },
+      API_TYPE.CAIP_MULTICHAIN,
+    );
   }
 
   async _notifyChainChange() {
