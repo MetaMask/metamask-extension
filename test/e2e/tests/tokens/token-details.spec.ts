@@ -1,17 +1,22 @@
-import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { Context } from 'mocha';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { formatCurrency } from '../../../../ui/helpers/utils/confirm-tx.util';
 import FixtureBuilder from '../../fixture-builder';
 import {
-  clickNestedButton,
   defaultGanacheOptions,
   unlockWallet,
   withFixtures,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
+import HomePage from '../../page-objects/pages/home/homepage';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
+import {
+  mockEmptyHistoricalPrices,
+  mockEmptyPrices,
+  mockHistoricalPrices,
+  mockSpotPrices,
+} from './utils/mocks';
 
 describe('Token Details', function () {
   const chainId = CHAIN_IDS.MAINNET;
@@ -26,87 +31,29 @@ describe('Token Details', function () {
     },
   };
 
-  const importToken = async (driver: Driver) => {
-    await driver.clickElement(`[data-testid="import-token-button"]`);
-    await driver.clickElement(`[data-testid="importTokens"]`);
-    await clickNestedButton(driver, 'Custom token');
-    await driver.fill(
-      '[data-testid="import-tokens-modal-custom-address"]',
-      tokenAddress,
-    );
-    await driver.waitForSelector('p.mm-box--color-error-default');
-    await driver.fill(
-      '[data-testid="import-tokens-modal-custom-symbol"]',
-      symbol,
-    );
-    await driver.clickElement({ text: 'Next', tag: 'button' });
-    await driver.clickElement(
-      '[data-testid="import-tokens-modal-import-button"]',
-    );
-  };
-
-  const openTokenDetails = async (driver: Driver) => {
-    await driver.clickElement('[data-testid="account-overview__asset-tab"]');
-    const [, , tkn] = await driver.findElements(
-      '[data-testid="multichain-token-list-button"]',
-    );
-    await tkn.click();
-  };
-
-  const verifyToken = async (driver: Driver) => {
-    // Verify token name
-    const name = await (
-      await driver.findElement('[data-testid="asset-name"]')
-    ).getText();
-    assert.equal(name, symbol);
-
-    // Verify token address
-    const address = await (
-      await driver.findElement('[data-testid="address-copy-button-text"]')
-    ).getText();
-    assert.equal(
-      address,
-      `${tokenAddress.slice(0, 7)}...${tokenAddress.slice(37)}`,
-    );
-  };
-
   it('shows details for an ERC20 token without prices available', async function () {
     await withFixtures(
       {
         ...fixtures,
         title: (this as Context).test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => [
-          // Mock no current price
-          await mockServer
-            .forGet(
-              `https://price.api.cx.metamask.io/v2/chains/${parseInt(
-                chainId,
-                16,
-              )}/spot-prices`,
-            )
-            .thenCallback(() => ({
-              statusCode: 200,
-              json: {},
-            })),
-          // Mock no historical prices
-          await mockServer
-            .forGet(
-              `https://price.api.cx.metamask.io/v1/chains/${chainId}/historical-prices/${tokenAddress}`,
-            )
-            .thenCallback(() => ({
-              statusCode: 200,
-              json: {},
-            })),
+          await mockEmptyPrices(mockServer, chainId),
+          await mockEmptyHistoricalPrices(mockServer, tokenAddress, chainId),
         ],
       },
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
-        await importToken(driver);
-        await driver.clickElement(
-          '.actionable-message__message button[aria-label="Close"]',
+
+        const homePage = new HomePage(driver);
+        const assetListPage = new AssetListPage(driver);
+        await homePage.check_pageIsLoaded();
+        await assetListPage.importCustomToken(tokenAddress, symbol);
+        await assetListPage.dismissTokenImportedMessage();
+        await assetListPage.openTokenDetails(symbol);
+        await assetListPage.check_tokenSymbolAndAddressDetails(
+          symbol,
+          tokenAddress,
         );
-        await openTokenDetails(driver);
-        await verifyToken(driver);
       },
     );
   });
@@ -126,66 +73,48 @@ describe('Token Details', function () {
         title: (this as Context).test?.fullTitle(),
         ethConversionInUsd,
         testSpecificMock: async (mockServer: Mockttp) => [
-          // Mock current price
-          await mockServer
-            .forGet(
-              `https://price.api.cx.metamask.io/v2/chains/${parseInt(
-                chainId,
-                16,
-              )}/spot-prices`,
-            )
-            .thenCallback(() => ({
-              statusCode: 200,
-              json: { [tokenAddress.toLowerCase()]: marketData },
-            })),
-          // Mock historical prices
-          await mockServer
-            .forGet(
-              `https://price.api.cx.metamask.io/v1/chains/${chainId}/historical-prices/${toChecksumHexAddress(
-                tokenAddress,
-              )}`,
-            )
-            .thenCallback(() => ({
-              statusCode: 200,
-              json: {
-                prices: [
-                  [1717566000000, marketData.price * 0.9],
-                  [1717566322300, marketData.price],
-                  [1717566611338, marketData.price * 1.1],
-                ],
-              },
-            })),
+          await mockSpotPrices(mockServer, chainId, {
+            [tokenAddress.toLowerCase()]: marketData,
+          }),
+          await mockHistoricalPrices(mockServer, {
+            address: tokenAddress,
+            chainId,
+            historicalPrices: [
+              { timestamp: 1717566000000, price: marketData.price * 0.9 },
+              { timestamp: 1717566322300, price: marketData.price },
+              { timestamp: 1717566611338, price: marketData.price * 1.1 },
+            ],
+          }),
         ],
       },
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
-        await importToken(driver);
-        await driver.clickElement(
-          '.actionable-message__message button[aria-label="Close"]',
-        );
-        await openTokenDetails(driver);
-        await verifyToken(driver);
 
-        // Verify token price
-        const price = await (
-          await driver.findElement('[data-testid="asset-hovered-price"]')
-        ).getText();
-        assert.equal(
-          price,
-          formatCurrency(`${marketData.price * ethConversionInUsd}`, 'USD'),
+        const homePage = new HomePage(driver);
+        const assetListPage = new AssetListPage(driver);
+        await homePage.check_pageIsLoaded();
+        await assetListPage.importCustomToken(tokenAddress, symbol);
+        await assetListPage.dismissTokenImportedMessage();
+        await assetListPage.openTokenDetails(symbol);
+        await assetListPage.check_tokenSymbolAndAddressDetails(
+          symbol,
+          tokenAddress,
         );
 
-        // Verify token market data
-        const marketCap = await (
-          await driver.findElement('[data-testid="asset-market-cap"]')
-        ).getText();
-        assert.equal(
-          marketCap,
-          `${marketData.marketCap * ethConversionInUsd}.00`,
+        const expectedPrice = formatCurrency(
+          `${marketData.price * ethConversionInUsd}`,
+          'USD',
+        );
+        const expectedMarketCap = `${
+          marketData.marketCap * ethConversionInUsd
+        }.00`;
+
+        await assetListPage.check_tokenPriceAndMarketCap(
+          expectedPrice,
+          expectedMarketCap,
         );
 
-        // Verify a chart was rendered
-        await driver.waitForSelector('[data-testid="asset-price-chart"]');
+        await assetListPage.check_priceChartIsShown();
       },
     );
   });

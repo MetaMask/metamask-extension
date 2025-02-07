@@ -254,9 +254,6 @@
   "from": {
     "message": "Nuo"
   },
-  "functionType": {
-    "message": "Funkcijos tipas"
-  },
   "gasLimit": {
     "message": "Dujų apribojimas"
   },
@@ -467,9 +464,6 @@
   "origin": {
     "message": "Kilmė"
   },
-  "parameters": {
-    "message": "Parametrai"
-  },
   "participateInMetaMetrics": {
     "message": "Dalyvaukite „MetaMetrics“"
   },
@@ -538,9 +532,6 @@
   "removeAccountDescription": {
     "message": "Ši paskyra bus pašalinta iš jūsų piniginės. Prieš tęsdami įsitikinkite, kad turite šios importuotos paskyros pradinę atkūrimo frazę arba asmeninį raktą. Paskyras importuoti ir vėl susikurti galite paskyros išskleidžiamajame meniu."
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "patvirtinimo laukiančios užklausos"
-  },
   "required": {
     "message": "Reikalaujama"
   },
@@ -607,9 +598,6 @@
   },
   "showHexDataDescription": {
     "message": "Pasirinkite tai, kad siuntimo ekrane būtų rodomas šešioliktainių duomenų laukas"
-  },
-  "sigRequest": {
-    "message": "Parašo užklausa"
   },
   "sign": {
     "message": "Prisijunkite"
@@ -707,9 +695,6 @@
   "transactionErrored": {
     "message": "Įvyko operacijos klaida"
   },
-  "transactionFee": {
-    "message": "Operacijos mokestis"
-  },
   "transactionResubmitted": {
     "message": "Operacija pakartotinai pateikta$2 su iki $1 padidintu dujų mokesčiu"
   },
@@ -736,9 +721,6 @@
   },
   "unknown": {
     "message": "Nežinoma"
-  },
-  "unknownNetwork": {
-    "message": "Nežinomas privatusis tinklas"
   },
   "unknownQrCode": {
     "message": "Klaida: negalime identifikuoti šio QR kodo"
@@ -769,9 +751,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Norint naudotis šia funkcija, reikia leisti prieigą prie kameros.."
-  },
-  "youSign": {
-    "message": "Pasirašote"
   },
   "yourPrivateSeedPhrase": {
     "message": "Jūsų asmeninė atkūrimo frazė"

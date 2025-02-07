@@ -519,7 +519,6 @@ export default function ConfirmationPage({
               placeholder={
                 isSnapPrompt && pendingConfirmation?.requestData.placeholder
               }
-              useDelineator={false}
               onCancel={handleSnapDialogCancel}
               useFooter={isSnapDefaultDialog}
             />
