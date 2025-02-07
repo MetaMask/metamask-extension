@@ -116,6 +116,9 @@ describe('Token List', function () {
           tokenAddress,
           '+0.05%',
         );
+
+        // We made this due to a change on Firefox v125
+        // The 2 decimals are not displayed with values which are "rounded",
         if (isFirefox) {
           await assetListPage.check_tokenGeneralChangeValue('+$50');
         } else {
