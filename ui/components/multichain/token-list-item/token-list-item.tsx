@@ -405,7 +405,11 @@ export const TokenListItem = ({
                 isHidden={privacyMode}
                 length={SensitiveTextLength.Short}
               >
-                {primary} {isPrimaryTokenSymbolHidden ? '' : tokenSymbol}
+                {primary}{' '}
+                {isPrimaryTokenSymbolHidden ||
+                primary?.includes(NON_EVM_CURRENCY_SYMBOLS.SOL)
+                  ? ''
+                  : tokenSymbol}
               </SensitiveText>
             ) : (
               <SensitiveText
@@ -416,7 +420,11 @@ export const TokenListItem = ({
                 isHidden={privacyMode}
                 length={SensitiveTextLength.Short}
               >
-                {primary} {isPrimaryTokenSymbolHidden ? '' : tokenSymbol}
+                {primary}{' '}
+                {isPrimaryTokenSymbolHidden ||
+                primary?.includes(NON_EVM_CURRENCY_SYMBOLS.SOL)
+                  ? ''
+                  : tokenSymbol}
               </SensitiveText>
             )}
           </Box>
