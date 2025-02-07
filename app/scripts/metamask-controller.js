@@ -316,6 +316,8 @@ import {
   NOTIFICATION_NAMES,
   unrestrictedMethods,
   PermissionNames,
+  validateCaveatAccounts,
+  validateCaveatNetworks,
 } from './controllers/permissions';
 import { MetaMetricsDataDeletionController } from './controllers/metametrics-data-deletion/metametrics-data-deletion';
 import { DataDeletionService } from './services/data-deletion-service';
@@ -5291,6 +5293,18 @@ export default class MetamaskController extends EventEmitter {
       permissions[PermissionNames.eth_accounts]?.caveats?.find(
         (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
       )?.value ?? [];
+
+    validateCaveatAccounts(
+      requestedAccounts,
+      this.accountsController.listAccounts.bind(this.accountsController),
+    );
+    console.log('i passed here');
+    validateCaveatNetworks(
+      requestedChains,
+      this.networkController.findNetworkClientIdByChainId.bind(
+        this.networkController,
+      ),
+    );
 
     const newCaveatValue = {
       requiredScopes: {},
