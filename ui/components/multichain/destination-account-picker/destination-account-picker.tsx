@@ -119,15 +119,16 @@ export const DestinationAccountPicker = ({
       className="destination-account-picker"
       style={{
         borderRadius: '8px',
+        position: 'relative',
         backgroundColor: 'var(--color-background-default)',
         marginLeft: 'auto',
         marginRight: 'auto',
-        // marginTop: '100px',
       }}
     >
       <Box
         className="search-container"
         style={{
+          width: '100%',
           height: '45px',
           borderBottomWidth: '1px',
           borderBottomStyle: 'solid',
@@ -135,6 +136,8 @@ export const DestinationAccountPicker = ({
           alignItems: 'center',
           display: 'flex',
           justifyContent: 'center',
+          borderRadius: '8px 8px 0 0',
+          backgroundColor: 'var(--color-background-default)',
         }}
       >
         <TextField
@@ -145,7 +148,7 @@ export const DestinationAccountPicker = ({
           clearButtonOnClick={() => setSearchQuery('')}
           className="text-field-search"
           style={{
-            width: '100%',
+            width: '98%',
             borderRadius: 0,
             borderWidth: 0,
             color: 'var(--color-text-alternative)',
@@ -156,9 +159,16 @@ export const DestinationAccountPicker = ({
       <Box
         className="destination-account-picker__list"
         style={{
+          position: 'absolute',
+          top: '45px',
+          left: 0,
+          right: 0,
           minHeight: '79px',
-          maxHeight: '195px',
+          maxHeight: '240px',
           overflowY: 'auto',
+          backgroundColor: 'var(--color-background-default)',
+          borderRadius: '0 0 8px 8px',
+          zIndex: 1000,
         }}
       >
         {filteredAccounts.map((account) => (
