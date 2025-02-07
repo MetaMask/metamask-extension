@@ -100,6 +100,10 @@ export const SENTRY_BACKGROUND_STATE = {
   MultichainBalancesController: {
     balances: false,
   },
+  MultichainAssetsController: {
+    accountsAssets: false,
+    assetsMetadata: false,
+  },
   BridgeController: {
     bridgeState: {
       bridgeFeatureFlags: {
