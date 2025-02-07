@@ -4555,6 +4555,20 @@ export default class MetamaskController extends EventEmitter {
   async addNewMnemonicToVault(mnemonic) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
+      const alreadyImportedSRP = await this.keyringController
+        .getKeyringsByType(KeyringTypes.hd)
+        .some((keyring) => {
+          return (
+            Buffer.from(
+              this._convertEnglishWordlistIndicesToCodepoints(keyring.mnemonic),
+            ).toString('utf8') === mnemonic
+          );
+        });
+
+      if (alreadyImportedSRP) {
+        throw new Error('This mnemonic has already been imported.');
+      }
+
       const newKeyring = await this.keyringController.addNewKeyring(
         KeyringTypes.hd,
         {
