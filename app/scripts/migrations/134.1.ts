@@ -7,7 +7,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 142.1;
+export const version = 134.1;
 
 /**
  * This migration attempts to reset `TokensController.tokens` to the list of tokens
@@ -168,14 +168,24 @@ function transformState(
     return state;
   }
 
+  const { tokens } = tokensControllerState;
   const { allTokens } = tokensControllerState;
   const allTokensForChain = allTokens[currentChainId];
-  if (!isObject(allTokensForChain)) {
+
+  if (
+    Array.isArray(tokens) &&
+    tokens.length > 0 &&
+    !isObject(allTokensForChain)
+  ) {
     global.sentry?.captureException?.(
       new Error(
-        `Migration ${version}: allTokens["${currentChainId}"] is missing or not an object.`,
+        `Migration ${version}: tokens is not an empty array, but allTokensForChain is not an object.`,
       ),
     );
+    return state;
+  }
+
+  if (!isObject(allTokensForChain)) {
     return state;
   }
 
