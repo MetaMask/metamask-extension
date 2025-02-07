@@ -5272,6 +5272,32 @@ export default class MetamaskController extends EventEmitter {
       PermissionNames.permittedChains,
     ]);
 
+    const requestedAccounts =
+      permissions[PermissionNames.eth_accounts]?.caveats?.find(
+        (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
+      )?.value ?? [];
+
+    const requestedChains =
+      permissions[PermissionNames.permittedChains]?.caveats?.find(
+        (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
+      )?.value ?? [];
+
+    if (permissions[RestrictedMethods.eth_accounts]) {
+      validateCaveatAccounts(
+        requestedAccounts,
+        this.accountsController.listAccounts.bind(this.accountsController),
+      );
+    }
+
+    if (permissions[PermissionNames.permittedChains]) {
+      validateCaveatNetworks(
+        requestedChains,
+        this.networkController.findNetworkClientIdByChainId.bind(
+          this.networkController,
+        ),
+      );
+    }
+
     if (!permissions[RestrictedMethods.eth_accounts]) {
       permissions[RestrictedMethods.eth_accounts] = {};
     }
@@ -5283,28 +5309,6 @@ export default class MetamaskController extends EventEmitter {
     if (isSnapId(origin)) {
       delete permissions[PermissionNames.permittedChains];
     }
-
-    const requestedChains =
-      permissions[PermissionNames.permittedChains]?.caveats?.find(
-        (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
-      )?.value ?? [];
-
-    const requestedAccounts =
-      permissions[PermissionNames.eth_accounts]?.caveats?.find(
-        (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
-      )?.value ?? [];
-
-    validateCaveatAccounts(
-      requestedAccounts,
-      this.accountsController.listAccounts.bind(this.accountsController),
-    );
-
-    validateCaveatNetworks(
-      requestedChains,
-      this.networkController.findNetworkClientIdByChainId.bind(
-        this.networkController,
-      ),
-    );
 
     const newCaveatValue = {
       requiredScopes: {},
