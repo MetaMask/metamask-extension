@@ -113,7 +113,7 @@ describe('Token List', function () {
           tokenAddress,
           '+0.05%',
         );
-        await assetListPage.check_tokenGeneralChangeValue('+$50.00');
+        await assetListPage.check_tokenGeneralChangeValue('+$50');
       },
     );
   });
