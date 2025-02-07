@@ -1,7 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSnapName, shortenAddress } from '../../../helpers/utils/util';
 
 import {
@@ -17,7 +16,6 @@ import {
   BackgroundColor,
   BorderColor,
   Display,
-  Size,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -53,7 +51,6 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
   selected,
   onClick,
 }) => {
-  const t = useI18nContext();
   const snapMetadata = useSelector(getSnapsMetadata);
   const accountLabel = getAccountLabel(
     account.metadata.keyring.type,
