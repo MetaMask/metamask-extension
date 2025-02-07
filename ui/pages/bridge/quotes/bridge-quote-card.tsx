@@ -71,6 +71,35 @@ export const BridgeQuoteCard = () => {
   const [shouldShowNetworkFeesInGasToken, setShouldShowNetworkFeesInGasToken] =
     useState(false);
 
+  const networkFee = shouldShowNetworkFeesInGasToken
+    ? //  Network fee in gas token amounts
+      `${
+        activeQuote.totalNetworkFee?.valueInCurrency
+          ? formatTokenAmount(
+              locale,
+              activeQuote.totalNetworkFee?.amount,
+              ticker,
+            )
+          : undefined
+      }`
+    : // Network fee in display currency
+      `${
+        formatCurrencyAmount(
+          activeQuote.totalNetworkFee?.valueInCurrency,
+          currency,
+          2,
+        ) ??
+        formatTokenAmount(locale, activeQuote.totalNetworkFee?.amount, ticker)
+      }`;
+
+  const maxNetworkFee = shouldShowNetworkFeesInGasToken
+    ? formatTokenAmount(locale, activeQuote.totalMaxNetworkFee.amount, ticker)
+    : formatCurrencyAmount(
+        activeQuote.totalMaxNetworkFee.valueInCurrency,
+        currency,
+        2,
+      );
+
   return (
     <>
       <BridgeQuotesModal
@@ -192,38 +221,32 @@ export const BridgeQuoteCard = () => {
                 {t('networkFee')}
               </Text>
               <Row gap={1}>
-                <Text
-                  style={{
-                    whiteSpace: 'nowrap',
-                    overflow: 'visible',
-                  }}
-                  color={
-                    isEstimatedReturnLow ? TextColor.warningDefault : undefined
+                <Tooltip
+                  title={t('howQuotesWork')}
+                  position={PopoverPosition.TopStart}
+                  offset={[-16, 16]}
+                  iconName={IconName.Question}
+                  triggerElement={
+                    <Text
+                      style={{
+                        whiteSpace: 'nowrap',
+                        overflow: 'visible',
+                        textDecoration: 'underline',
+                        cursor: 'pointer',
+                      }}
+                      color={
+                        isEstimatedReturnLow
+                          ? TextColor.warningDefault
+                          : undefined
+                      }
+                    >
+                      {networkFee}
+                    </Text>
                   }
                 >
-                  {shouldShowNetworkFeesInGasToken
-                    ? //  Network fee in gas token amounts
-                      `${
-                        activeQuote.totalNetworkFee?.valueInCurrency
-                          ? formatTokenAmount(
-                              locale,
-                              activeQuote.totalNetworkFee?.amount,
-                            )
-                          : undefined
-                      }`
-                    : // Network fee in display currency
-                      `${
-                        formatCurrencyAmount(
-                          activeQuote.totalNetworkFee?.valueInCurrency,
-                          currency,
-                          2,
-                        ) ??
-                        formatTokenAmount(
-                          locale,
-                          activeQuote.totalNetworkFee?.amount,
-                        )
-                      }`}
-                </Text>
+                  {t('howNetworkFeesWorkExplanation', [maxNetworkFee])}
+                </Tooltip>
+
                 <Icon
                   style={{ cursor: 'pointer' }}
                   color={
