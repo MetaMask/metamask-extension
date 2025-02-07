@@ -2224,6 +2224,9 @@
   "howQuotesWork": {
     "message": "How quotes work"
   },
+  "howQuotesWorkExplanation": {
+    "message": "This quote has the best return of the quotes we searched. This is based on the swap rate, which includes bridging fees and a $1% MetaMask fee, minus gas fees. Gas fees depend on how busy the network is and how complex the transaction is."
+  },
   "id": {
     "message": "ID"
   },
