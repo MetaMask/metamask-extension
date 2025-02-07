@@ -8,16 +8,11 @@ import {
   setCompletedOnboarding,
   toggleExternalServices,
 } from '../../../store/actions';
-import { useSignIn } from '../../../hooks/identity/useAuthentication';
 import PinExtension from './pin-extension';
 
 jest.mock('../../../store/actions', () => ({
   toggleExternalServices: jest.fn(),
   setCompletedOnboarding: jest.fn(),
-}));
-
-jest.mock('../../../hooks/identity/useAuthentication', () => ({
-  useSignIn: jest.fn().mockReturnValue({ signIn: jest.fn() }),
 }));
 
 const mockPromises = [];
@@ -44,6 +39,8 @@ describe('Creation Successful Onboarding View', () => {
       metamask: {
         isProfileSyncingEnabled: false,
         participateInMetaMetrics: true,
+        isSignedIn: false,
+        useExternalServices: true,
       },
       appState: {
         externalServicesOnboardingToggleState: true,
@@ -65,7 +62,6 @@ describe('Creation Successful Onboarding View', () => {
 
     toggleExternalServices.mockClear();
     setCompletedOnboarding.mockClear();
-    useSignIn.mockClear();
 
     const pushMock = jest.fn();
     jest
@@ -80,8 +76,6 @@ describe('Creation Successful Onboarding View', () => {
     it('should call toggleExternalServices, setCompletedOnboarding and signIn when the "Done" button is clicked', async () => {
       const store = arrangeMocks();
 
-      const { signIn } = useSignIn();
-
       const { getByText } = renderWithProvider(<PinExtension />, store);
       const nextButton = getByText('Next');
       fireEvent.click(nextButton);
@@ -90,7 +84,6 @@ describe('Creation Successful Onboarding View', () => {
       await Promise.all(mockPromises);
       expect(toggleExternalServices).toHaveBeenCalledTimes(1);
       expect(setCompletedOnboarding).toHaveBeenCalledTimes(1);
-      expect(signIn).toHaveBeenCalledTimes(1);
     });
   });
 });
