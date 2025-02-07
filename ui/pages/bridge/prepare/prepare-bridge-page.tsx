@@ -288,10 +288,8 @@ const PrepareBridgePage = () => {
       // balance is less than the tenderly balance
       insufficientBal: Boolean(providerConfig?.rpcUrl?.includes('tenderly')),
       slippage,
-      walletAddress:
-        fromChain?.chainId && isCaipChainId(fromChain.chainId)
-          ? selectedAccount?.address
-          : selectedEvmAccount?.address,
+      walletAddress: selectedAccount?.address,
+      // TODO: Remove this once we have a way to get the dest wallet address
       destWalletAddress:
         toChain?.chainId && isCaipChainId(toChain.chainId)
           ? selectedAccount?.address
