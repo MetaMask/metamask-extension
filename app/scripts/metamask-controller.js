@@ -786,7 +786,6 @@ export default class MetamaskController extends EventEmitter {
       disabled: !this.preferencesController.state.useNftDetection,
     });
 
-    // MultichainAssetsController
     const multichainAssetsControllerMessenger =
       this.controllerMessenger.getRestricted({
         name: 'MultichainAssetsController',
@@ -807,8 +806,6 @@ export default class MetamaskController extends EventEmitter {
       state: initState.MultichainAssetsController,
       messenger: multichainAssetsControllerMessenger,
     });
-
-    // MultichainAssetsController
 
     const metaMetricsControllerMessenger =
       this.controllerMessenger.getRestricted({
