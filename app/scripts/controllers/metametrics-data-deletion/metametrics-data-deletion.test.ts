@@ -1,4 +1,4 @@
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import {
   AllowedActions,
   MetaMetricsDataDeletionController,
@@ -143,16 +143,16 @@ function setupController({
   dataDeletionService: ConstructorParameters<
     typeof MetaMetricsDataDeletionController
   >[0]['dataDeletionService'];
-  messenger: ControllerMessenger<
+  messenger: Messenger<
     MetaMetricsDataDeletionControllerMessengerActions | AllowedActions,
     never
   >;
 } {
-  const controllerMessenger = new ControllerMessenger<
+  const messenger = new Messenger<
     MetaMetricsDataDeletionControllerMessengerActions | AllowedActions,
     never
   >();
-  controllerMessenger.registerActionHandler(
+  messenger.registerActionHandler(
     'MetaMetricsController:getState',
     jest.fn().mockReturnValue({ metaMetricsId }),
   );
@@ -170,7 +170,7 @@ function setupController({
   const constructorOptions = {
     dataDeletionService: mockDataDeletionService,
     getMetaMetricsId: jest.fn().mockReturnValue('mockMetaMetricsId'),
-    messenger: controllerMessenger.getRestricted({
+    messenger: messenger.getRestricted({
       name: 'MetaMetricsDataDeletionController',
       allowedActions: ['MetaMetricsController:getState'],
       allowedEvents: [],
@@ -182,6 +182,6 @@ function setupController({
   return {
     controller,
     dataDeletionService: constructorOptions.dataDeletionService,
-    messenger: controllerMessenger,
+    messenger,
   };
 }

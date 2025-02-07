@@ -251,9 +251,6 @@
   "from": {
     "message": "Daripada"
   },
-  "functionType": {
-    "message": "Jenis Fungsi"
-  },
   "gasLimit": {
     "message": "Had Gas"
   },
@@ -451,9 +448,6 @@
   "origin": {
     "message": "Asal"
   },
-  "parameters": {
-    "message": "Parameter"
-  },
   "participateInMetaMetrics": {
     "message": "Sertai MetaMetrics"
   },
@@ -522,9 +516,6 @@
   "removeAccountDescription": {
     "message": "Akaun ini akan dibuang daripada dompet anda. Sila pastikan anda mempunyai ungkapan benih asal atau kunci persendirian untuk akaun yang diimport ini sebelum meneruskan. Anda boleh import atau cipta akaun semula daripada juntai bawah akaun."
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "permintaan menunggu untuk diakui"
-  },
   "required": {
     "message": "Diwajibkan"
   },
@@ -591,9 +582,6 @@
   },
   "showHexDataDescription": {
     "message": "Pilih ini untuk menunjukkan medan data hex pada skrin hantar"
-  },
-  "sigRequest": {
-    "message": "Permintaan Tandatangan"
   },
   "sign": {
     "message": "Tandatangan"
@@ -715,9 +703,6 @@
   "unknown": {
     "message": "Tidak diketahui"
   },
-  "unknownNetwork": {
-    "message": "Rangkaian Persendirian Tidak Dikenali"
-  },
   "unknownQrCode": {
     "message": "Ralat: Kami tidak dapat mengenal pasti kod QR tersebut"
   },
@@ -747,9 +732,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Anda perlu membenarkan akses kamera untuk menggunakan ciri ini."
-  },
-  "youSign": {
-    "message": "Anda menandatangani"
   },
   "yourPrivateSeedPhrase": {
     "message": "Ungkapan benih peribadi anda"
