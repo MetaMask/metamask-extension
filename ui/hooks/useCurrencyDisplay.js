@@ -9,7 +9,7 @@ import {
 } from '../selectors/multichain';
 
 import { getValueFromWeiHex } from '../../shared/modules/conversion.utils';
-import { TEST_NETWORK_TICKER_MAP } from '../../shared/constants/network';
+import { NON_EVM_CURRENCY_SYMBOLS, TEST_NETWORK_TICKER_MAP } from '../../shared/constants/network';
 import { Numeric } from '../../shared/modules/Numeric';
 import { EtherDenomination } from '../../shared/constants/common';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
@@ -219,10 +219,8 @@ export function useCurrencyDisplay(
     suffix = opts.suffix || currencyTickerSymbol;
   }
 
-  return [
-    `${prefix || ''}${value}${
-      suffix && suffix !== nativeCurrency ? ` ${suffix}` : ''
-    }`,
-    { prefix, value, suffix },
-  ];
+  const isCryptoSuffix = suffix === NON_EVM_CURRENCY_SYMBOLS.SOL || suffix === NON_EVM_CURRENCY_SYMBOLS.BTC;
+  const displayString = `${prefix || ''}${value}${(!isCryptoSuffix && suffix) ? ` ${suffix}` : ''}`;
+
+  return [displayString, { prefix, value, suffix }];
 }
