@@ -111,14 +111,17 @@ export const TokenListItem = ({
   showPercentage = false,
   privacyMode = false,
 }: TokenListItemProps) => {
+  const dispatch = useDispatch();
+  const history = useHistory();
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
   const trackEvent = useContext(MetaMetricsContext);
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
-  const { safeChains } = useSafeChains();
   const currencyRates = useSelector(getCurrencyRates);
+  const multiChainMarketData = useSelector(getMarketData);
+  const { safeChains } = useSafeChains();
 
   const decimalChainId = isEvm && parseInt(hexToDecimal(chainId), 10);
 
@@ -139,9 +142,7 @@ export const TokenListItem = ({
   const showScamWarning =
     isNativeCurrency && !isOriginalTokenSymbol && shouldShowPercentage;
 
-  const dispatch = useDispatch();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
-  const history = useHistory();
 
   const getTokenTitle = () => {
     if (isTitleNetworkName) {
@@ -163,8 +164,6 @@ export const TokenListItem = ({
         return title;
     }
   };
-
-  const multiChainMarketData = useSelector(getMarketData);
 
   const tokenPercentageChange = address
     ? multiChainMarketData?.[chainId]?.[address]?.pricePercentChange1d
