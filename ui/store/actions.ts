@@ -893,6 +893,13 @@ export function updateSlides(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
+      console.log('in the updateSlides action');
+      console.log(
+        'do the new slides have the changes? ',
+        slides.find((slide) => slide.id === 'fund')?.useRampPortfolioUrl ===
+          true,
+      );
+      console.log('submitting "updateSlides" method to background');
       await submitRequestToBackground('updateSlides', [slides]);
     } catch (error) {
       logErrorWithMessage(error);

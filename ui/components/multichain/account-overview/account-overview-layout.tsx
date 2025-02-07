@@ -67,7 +67,7 @@ export const AccountOverviewLayout = ({
       undismissable: hasZeroBalance,
     };
 
-    const defaultSlides = [
+    const defaultSlides: CarouselSlide[] = [
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       BRIDGE_SLIDE,
       ///: END:ONLY_INCLUDE_IF
@@ -80,6 +80,15 @@ export const AccountOverviewLayout = ({
     } else {
       defaultSlides.splice(2, 0, fundSlide);
     }
+
+    // dispatching an update to the slides - I expect the changes in the constants to be present here
+
+    console.log('defaultSlides', defaultSlides);
+    console.log(
+      'do the new slides have the changes? ',
+      defaultSlides.find((slide) => slide.id === 'fund')
+        ?.useRampPortfolioUrl === true,
+    );
 
     dispatch(updateSlides(defaultSlides));
   }, [hasZeroBalance]);

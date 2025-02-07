@@ -9,6 +9,7 @@ import {
   FontWeight,
   BorderColor,
 } from '../../../helpers/constants/design-system';
+import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import type { CarouselProps } from './carousel.types';
 import { BANNER_STYLES, MAX_SLIDES } from './constants';
 import {
@@ -31,6 +32,7 @@ export const Carousel = React.forwardRef(
   ) => {
     const [selectedIndex, setSelectedIndex] = useState(0);
     const t = useI18nContext();
+    const { openBuyCryptoInPdapp } = useRamps();
 
     const visibleSlides = slides
       .filter((slide) => !slide.dismissed || slide.undismissable)
@@ -158,7 +160,10 @@ export const Carousel = React.forwardRef(
                 if (index !== selectedIndex) {
                   return;
                 }
-                if (slide.href) {
+
+                if (slide.useRampPortfolioUrl) {
+                  openBuyCryptoInPdapp();
+                } else if (slide.href) {
                   global.platform.openTab({ url: slide.href });
                 }
                 onClick?.(slide.id);

@@ -27,4 +27,5 @@ export type CarouselSlide = {
   dismissed?: boolean;
   href?: string;
   undismissable?: boolean;
+  useRampPortfolioUrl?: boolean;
 };

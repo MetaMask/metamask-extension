@@ -30,6 +30,15 @@ export function submitRequestToBackground<R>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   args?: any[],
 ): Promise<R> {
+  if (method === 'updateSlides') {
+    console.log(
+      'submitRequestToBackground updateSlides -- this should invoke appStateController.updateSlides next',
+      args,
+    );
+  }
+
+  // the slides *are* changed but the background submission to update the BG with new slide info is dropped here.
+  // appStateController.updateSlides is never called
   return promisifiedBackground?.[method](
     ...(args ?? []),
   ) as unknown as Promise<R>;

@@ -546,21 +546,29 @@ export class AppStateController extends BaseController<
    * @param slides - Array of new slides to add
    */
   updateSlides(slides: CarouselSlide[]): void {
+
+
+
+    // THESE LOGS NEVER SHOW UP IN THE CONSOLE
+
+    console.log('AppStateController: updateSlides', slides);
+    console.log(
+      'do the new slides have the changes? ',
+      slides.find((slide) => slide.id === 'fund')?.useRampPortfolioUrl === true,
+    );
     this.update((state) => {
       const currentSlides = state.slides || [];
 
-      // Updates the undismissable property for slides that already exist in state
       const updatedCurrentSlides = currentSlides.map((currentSlide) => {
         const matchingNewSlide = slides.find((s) => s.id === currentSlide.id);
         if (matchingNewSlide) {
           return {
             ...currentSlide,
-            undismissable: matchingNewSlide.undismissable,
+            ...matchingNewSlide,
           };
         }
         return currentSlide;
       });
-
       // Adds new slides that don't already exist in state
       const newSlides = slides.filter((newSlide) => {
         return !currentSlides.some(

@@ -4,6 +4,7 @@ export const FUND_SLIDE = {
   description: 'slideFundWalletDescription',
   image: './images/slide-fund-icon.svg',
   href: 'https://portfolio.metamask.io/buy/build-quote',
+  useRampPortfolioUrl: true,
 };
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -29,6 +30,7 @@ export const CASH_SLIDE = {
   description: 'slideCashOutDescription',
   image: './images/slide-sell-icon.svg',
   href: 'https://portfolio.metamask.io/sell',
+  useRampPortfolioUrl: true,
 };
 
 export const ZERO_BALANCE = '0x00';
