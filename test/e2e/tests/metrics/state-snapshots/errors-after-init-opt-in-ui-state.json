@@ -291,6 +291,8 @@
     "cacheTimestamp": "number",
     "accounts": "object",
     "accountsByChainId": "object",
+    "accountsAssets": "object",
+    "assetsMetadata": "object",
     "marketData": "object",
     "unapprovedDecryptMsgs": "object",
     "unapprovedDecryptMsgCount": 0,

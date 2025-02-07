@@ -1664,6 +1664,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@bazel/runfiles@npm:^6.3.1":
+  version: 6.3.1
+  resolution: "@bazel/runfiles@npm:6.3.1"
+  checksum: 10/c2170ce459332e015b5810cc2c9bb5e09ff4bf47edf28c796fb6b7017804006aaaa223a18d007f7dc31bc7a05d1b8fa54840150920068c0019ba4cd754a59943
+  languageName: node
+  linkType: hard
+
 "@bcoe/v8-coverage@npm:^0.2.3":
   version: 0.2.3
   resolution: "@bcoe/v8-coverage@npm:0.2.3"
@@ -11177,12 +11184,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/selenium-webdriver@npm:^4.1.19":
-  version: 4.1.19
-  resolution: "@types/selenium-webdriver@npm:4.1.19"
+"@types/selenium-webdriver@npm:^4.1.28":
+  version: 4.1.28
+  resolution: "@types/selenium-webdriver@npm:4.1.28"
   dependencies:
+    "@types/node": "npm:*"
     "@types/ws": "npm:*"
-  checksum: 10/95e47c7028d1f78bef3c59ea66ba5922d6bf003f8c078366b5f74e94952c94fd3636b9e08ce160f1e0882a20087ef8da0edc4a0d0c7caaeb01c05494682cf6e0
+  checksum: 10/f34ad2aa003aae975f40a1497953b84adca66fafc32a715113f7e2818d11a5779ebebb59181c77e02b9179643579bf6eed745e9f3c3bba1ac9f80cebcf851f5b
   languageName: node
   linkType: hard
 
@@ -26801,7 +26809,7 @@ __metadata:
     "@types/readable-stream-3": "npm:^4.0.4"
     "@types/redux-mock-store": "npm:1.0.6"
     "@types/remote-redux-devtools": "npm:^0.5.5"
-    "@types/selenium-webdriver": "npm:^4.1.19"
+    "@types/selenium-webdriver": "npm:^4.1.28"
     "@types/serve-handler": "npm:^6.1.4"
     "@types/sinon": "npm:^10.0.13"
     "@types/sprintf-js": "npm:^1"
@@ -26984,7 +26992,7 @@ __metadata:
     sass-embedded: "npm:^1.71.0"
     sass-loader: "npm:^14.1.1"
     schema-utils: "npm:^4.2.0"
-    selenium-webdriver: "npm:^4.15.0"
+    selenium-webdriver: "npm:^4.28.1"
     semver: "npm:^7.5.4"
     serve-handler: "npm:^6.1.2"
     ses: "npm:^1.1.0"
@@ -33305,14 +33313,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"selenium-webdriver@npm:^4.15.0":
-  version: 4.15.0
-  resolution: "selenium-webdriver@npm:4.15.0"
+"selenium-webdriver@npm:^4.28.1":
+  version: 4.28.1
+  resolution: "selenium-webdriver@npm:4.28.1"
   dependencies:
+    "@bazel/runfiles": "npm:^6.3.1"
     jszip: "npm:^3.10.1"
-    tmp: "npm:^0.2.1"
-    ws: "npm:>=8.14.2"
-  checksum: 10/77c0c3b250e04a7eea70aa4edad3abbe9f4683fac29c6bc0fb365423c986de657bc6a174e25e8a679f32ff9be39fdd397c84d60168dafefb621f18b04031f0e3
+    tmp: "npm:^0.2.3"
+    ws: "npm:^8.18.0"
+  checksum: 10/a8917b532d16904d6a76a69be1f3a5db23e1dc520821b3bc276845eb835856691594c2c142eff91519d72bafacd285cf50e9b0db51025ab493b1263bab9caa19
   languageName: node
   linkType: hard
 
@@ -35401,12 +35410,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tmp@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "tmp@npm:0.2.1"
-  dependencies:
-    rimraf: "npm:^3.0.0"
-  checksum: 10/445148d72df3ce99356bc89a7857a0c5c3b32958697a14e50952c6f7cf0a8016e746ababe9a74c1aa52f04c526661992f14659eba34d3c6701d49ba2f3cf781b
+"tmp@npm:^0.2.3":
+  version: 0.2.3
+  resolution: "tmp@npm:0.2.3"
+  checksum: 10/7b13696787f159c9754793a83aa79a24f1522d47b87462ddb57c18ee93ff26c74cbb2b8d9138f571d2e0e765c728fb2739863a672b280528512c6d83d511c6fa
   languageName: node
   linkType: hard
 
@@ -37993,7 +38000,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:*, ws@npm:>=8.14.2, ws@npm:^8.0.0, ws@npm:^8.11.0, ws@npm:^8.16.0, ws@npm:^8.17.1, ws@npm:^8.18.0, ws@npm:^8.2.3, ws@npm:^8.5.0, ws@npm:^8.8.0":
+"ws@npm:*, ws@npm:^8.0.0, ws@npm:^8.11.0, ws@npm:^8.16.0, ws@npm:^8.17.1, ws@npm:^8.18.0, ws@npm:^8.2.3, ws@npm:^8.5.0, ws@npm:^8.8.0":
   version: 8.18.0
   resolution: "ws@npm:8.18.0"
   peerDependencies:
