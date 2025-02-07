@@ -13,6 +13,8 @@ import {
 import { AssetPicker } from '../../../components/multichain/asset-picker-amount/asset-picker';
 import { TabName } from '../../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getLocale } from '../../../selectors';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   formatCurrencyAmount,
   formatTokenAmount,
@@ -37,8 +39,6 @@ import { shortenString } from '../../../helpers/utils/util';
 import type { BridgeToken } from '../../../../shared/types/bridge';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
-import { getIntlLocale } from '../../../ducks/locale/locale';
-import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { BridgeAssetPickerButton } from './components/bridge-asset-picker-button';
 
 export const BridgeInputGroup = ({
@@ -77,7 +77,7 @@ export const BridgeInputGroup = ({
   const { isInsufficientBalance, isEstimatedReturnLow } =
     useSelector(getValidationErrors);
   const currency = useSelector(getCurrentCurrency);
-  const locale = useSelector(getIntlLocale);
+  const locale = useSelector(getLocale);
 
   const selectedChainId = networkProps?.network?.chainId;
   const { balanceAmount } = useLatestBalance(token, selectedChainId);

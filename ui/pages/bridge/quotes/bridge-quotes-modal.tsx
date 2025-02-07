@@ -24,6 +24,7 @@ import {
   formatTokenAmount,
 } from '../utils/quote';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getLocale } from '../../../selectors';
 import { setSelectedQuote, setSortOrder } from '../../../ducks/bridge/actions';
 import {
   type QuoteMetadata,
@@ -45,7 +46,6 @@ import { useRequestProperties } from '../../../hooks/bridge/events/useRequestPro
 import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { useTradeProperties } from '../../../hooks/bridge/events/useTradeProperties';
-import { getIntlLocale } from '../../../ducks/locale/locale';
 
 export const BridgeQuotesModal = ({
   onClose,
@@ -59,7 +59,7 @@ export const BridgeQuotesModal = ({
   const sortOrder = useSelector(getBridgeSortOrder);
   const currency = useSelector(getCurrentCurrency);
   const nativeCurrency = useSelector(getNativeCurrency);
-  const locale = useSelector(getIntlLocale);
+  const locale = useSelector(getLocale);
 
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
   const { quoteRequestProperties } = useRequestProperties();
