@@ -1,6 +1,9 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { getIsUnlocked } from '../../../ducks/metamask/metamask';
+import {
+  getCompletedOnboarding,
+  getIsUnlocked,
+} from '../../../ducks/metamask/metamask';
 import {
   getParticipateInMetaMetrics,
   getUseExternalServices,
@@ -28,10 +31,15 @@ export function useAutoSignIn(): {
   const isBasicFunctionalityEnabled = Boolean(
     useSelector(getUseExternalServices),
   );
+  const completedOnboarding = Boolean(useSelector(getCompletedOnboarding));
   const isSignedIn = useSelector(selectIsSignedIn);
 
   const areBasePrerequisitesMet = useMemo(
-    () => !isSignedIn && isUnlocked && isBasicFunctionalityEnabled,
+    () =>
+      !isSignedIn &&
+      isUnlocked &&
+      isBasicFunctionalityEnabled &&
+      completedOnboarding,
     [isSignedIn, isUnlocked, isBasicFunctionalityEnabled],
   );
 

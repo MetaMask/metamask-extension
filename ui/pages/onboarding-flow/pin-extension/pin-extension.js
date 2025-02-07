@@ -37,7 +37,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import { useSignIn } from '../../../hooks/identity/useAuthentication';
 import OnboardingPinBillboard from './pin-billboard';
 ///: END:ONLY_INCLUDE_IF
 
@@ -54,8 +53,6 @@ export default function OnboardingPinExtension() {
     getExternalServicesOnboardingToggleState,
   );
 
-  const { signIn } = useSignIn();
-
   const handleClick = async () => {
     if (selectedIndex === 0) {
       setSelectedIndex(1);
@@ -64,8 +61,6 @@ export default function OnboardingPinExtension() {
         toggleExternalServices(externalServicesOnboardingToggleState),
       );
       await dispatch(setCompletedOnboarding());
-
-      await signIn();
 
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
