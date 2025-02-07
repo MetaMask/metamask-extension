@@ -18,7 +18,7 @@ describe('Request Queuing SwitchChain -> SendTx', function () {
           .withNetworkControllerDoubleGanache()
 
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {

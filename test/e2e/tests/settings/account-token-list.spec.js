@@ -1,7 +1,6 @@
 const { strict: assert } = require('assert');
 const {
   withFixtures,
-  defaultGanacheOptions,
   logInWithBalanceValidation,
   unlockWallet,
 } = require('../../helpers');
@@ -42,7 +41,6 @@ describe('Settings', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withConversionRateDisabled().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
@@ -76,7 +74,6 @@ describe('Settings', function () {
           .withShowFiatTestnetEnabled()
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockInfuraResponses,
       },
@@ -126,7 +123,6 @@ describe('Settings', function () {
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .withConversionRateDisabled()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockInfuraResponses,
       },
