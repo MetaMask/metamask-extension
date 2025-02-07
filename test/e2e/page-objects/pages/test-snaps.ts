@@ -58,7 +58,9 @@ export class TestSnaps {
 
   private readonly publicKeyBip44Button = '#sendBip44Test';
 
-  private readonly inputMessageEd255 = '#bip32Message-ed25519';
+  private readonly inputMessageEd25519 = '#bip32Message-ed25519';
+
+  private readonly inputMessageEd25519Bip32 = '#bip32Message-ed25519Bip32';
 
   private readonly inputMessageSecp256k1 = '#bip32Message-secp256k1';
 
@@ -69,6 +71,8 @@ export class TestSnaps {
   private readonly inputMessageBip44 = '#bip44Message';
 
   private readonly buttonSignBip44Message = '#signBip44Message';
+
+  private readonly buttonSignEd25519Bip32Message = '#sendBip32-ed25519Bip32';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -170,9 +174,16 @@ export class TestSnaps {
 
   async fillMessageEd25519(message: string) {
     console.log('Wait and fill message in ed25519');
-    await this.driver.waitForSelector(this.inputMessageEd255);
-    await this.driver.fill(this.inputMessageEd255, message);
+    await this.driver.waitForSelector(this.inputMessageEd25519);
+    await this.driver.fill(this.inputMessageEd25519, message);
     await this.driver.clickElement(this.buttonSignEd25519Message);
+  }
+
+  async fillMessageEd25519Bip32(message: string) {
+    console.log('Wait and fill message in ed25519 bip32');
+    await this.driver.waitForSelector(this.inputMessageEd25519Bip32);
+    await this.driver.fill(this.inputMessageEd25519Bip32, message);
+    await this.driver.clickElement(this.buttonSignEd25519Bip32Message);
   }
 
   async fillBip44MessageAndSign(message: string) {
@@ -188,7 +199,7 @@ export class TestSnaps {
 
   async scrollToSendEd25519() {
     console.log('Scroll to send ed25519');
-    const sendEd25519 = await this.driver.findElement(this.inputMessageEd255);
+    const sendEd25519 = await this.driver.findElement(this.inputMessageEd25519);
     await this.driver.scrollToElement(sendEd25519);
   }
 

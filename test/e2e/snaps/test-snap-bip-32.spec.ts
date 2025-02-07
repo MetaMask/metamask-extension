@@ -104,6 +104,23 @@ describe('Test Snap bip-32', function () {
           css: '#bip32MessageResult-ed25519',
           text: '"0xf3215b4d6c59aac7e01b4ceef530d1e2abf4857926b85a81aaae3894505699243768a887b7da4a8c2e0f25196196ba290b6531050db8dc15c252bdd508532a0a"',
         });
+
+        // wait then run ed25519 test
+        await testSnaps.fillMessageEd25519Bip32('foo bar');
+
+        // switch to dialog window
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        await networkSwitchModalConfirmation.clickSnapApproveButton();
+
+        // switch back to test-snaps window
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+
+        // check results of ed25519 signature with waitForSelector
+        await driver.waitForSelector({
+          css: '#bip32MessageResult-ed25519Bip32',
+          text: '"0xc279ee3e49f7e392a4e511136c39791e076f9be01d8648f3f1586ecf0f41def1739fa2978f90cfb2da4cf53ccb99405558cffcc4d190199b6949b03b1b8dae05"',
+        });
       },
     );
   });
