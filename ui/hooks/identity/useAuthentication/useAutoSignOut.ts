@@ -27,7 +27,7 @@ export function useAutoSignOut(): {
 
   const areBasePrerequisitesMet = useMemo(
     () => isSignedIn && isUnlocked && !isBasicFunctionalityEnabled,
-    [isUnlocked, isBasicFunctionalityEnabled],
+    [isSignedIn, isUnlocked, isBasicFunctionalityEnabled],
   );
 
   const shouldAutoSignOut = useMemo(
@@ -39,7 +39,7 @@ export function useAutoSignOut(): {
     if (shouldAutoSignOut) {
       await signOut();
     }
-  }, [signOut]);
+  }, [shouldAutoSignOut, signOut]);
 
   return {
     autoSignOut,

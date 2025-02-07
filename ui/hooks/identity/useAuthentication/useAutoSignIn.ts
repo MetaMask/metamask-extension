@@ -40,7 +40,7 @@ export function useAutoSignIn(): {
       isUnlocked &&
       isBasicFunctionalityEnabled &&
       completedOnboarding,
-    [isSignedIn, isUnlocked, isBasicFunctionalityEnabled],
+    [isSignedIn, isUnlocked, isBasicFunctionalityEnabled, completedOnboarding],
   );
 
   // Auth dependent features
@@ -70,7 +70,7 @@ export function useAutoSignIn(): {
     if (shouldAutoSignIn) {
       await signIn();
     }
-  }, [shouldAutoSignIn]);
+  }, [shouldAutoSignIn, signIn]);
 
   return {
     autoSignIn,

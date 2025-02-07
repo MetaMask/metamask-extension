@@ -1491,6 +1491,7 @@ export default class MetamaskController extends EventEmitter {
             'KeyringController:getState',
             'AuthenticationController:getBearerToken',
             'AuthenticationController:isSignedIn',
+            'AuthenticationController:performSignIn',
             'UserStorageController:getStorageKey',
             'UserStorageController:performGetStorage',
             'UserStorageController:performSetStorage',
