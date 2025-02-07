@@ -5,10 +5,12 @@ import flaskJson from '../../../app/build-types/flask/images/flask-mascot.json';
 import mmiJson from '../../../app/build-types/mmi/mmi-mascot.json';
 ///: END:ONLY_INCLUDE_IF
 
+import foxJson from '../../../app/build-types/main/fox.json';
+
 const assetList = {
   main: {
     // Will use default provided by the @metamask/logo library
-    foxMeshJson: undefined,
+    foxMeshJson: foxJson,
   },
   ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
   beta: {
