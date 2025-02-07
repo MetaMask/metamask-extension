@@ -12,6 +12,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { BigNumber } from 'bignumber.js';
 import { type TokenListMap } from '@metamask/assets-controllers';
 import { isCaipChainId } from '@metamask/utils';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -102,6 +103,7 @@ import {
   formatChainIdFromDecimal,
   formatChainIdToDecimal,
 } from '../../../../shared/modules/bridge-utils/multichain';
+import { DestinationAccountPicker } from '../../../components/multichain/destination-account-picker/destination-account-picker';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 
@@ -124,11 +126,19 @@ const PrepareBridgePage = () => {
   const fromChain = useSelector(getFromChain);
   const toChain = useSelector(getToChain);
 
+  const isToOrFromSolana =
+    (toChain?.chainId.startsWith('solana:') &&
+      !fromChain?.chainId.startsWith('solana:')) ||
+    (!toChain?.chainId.startsWith('solana:') &&
+      fromChain?.chainId.startsWith('solana:'));
+
   const fromAmount = useSelector(getFromAmount);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
 
   const providerConfig = useMultichainSelector(getMultichainProviderConfig);
   const slippage = useSelector(getSlippage);
+  const [selectedBridgeAccount, setSelectedBridgeAccount] =
+    useState<InternalAccount | null>(null);
 
   const quoteRequest = useSelector(getQuoteRequest);
   const {
@@ -385,6 +395,11 @@ const PrepareBridgePage = () => {
 
   const isSwap = useIsMultichainSwap();
 
+  const shouldShowAccountPicker = isToOrFromSolana;
+  // TODO: pass as prop to CTA button to disable if user needs to select account.
+  const canProceedWithBridge =
+    activeQuote && (!isToOrFromSolana || selectedBridgeAccount);
+
   return (
     <Column className="prepare-bridge-page" gap={8}>
       <BridgeInputGroup
@@ -510,7 +525,6 @@ const PrepareBridgePage = () => {
             }}
           />
         </Box>
-
         <BridgeInputGroup
           header={t('swapSelectToken')}
           token={toToken}
@@ -556,6 +570,15 @@ const PrepareBridgePage = () => {
           }}
           isTokenListLoading={isToTokensLoading}
         />
+        {shouldShowAccountPicker && (
+          <Box style={{ padding: '24px' }}>
+            <DestinationAccountPicker
+              isDestinationSolana={toChain?.chainId.startsWith('solana:')}
+              onAccountSelect={setSelectedBridgeAccount}
+              selectedSwapToAccount={selectedBridgeAccount}
+            />
+          </Box>
+        )}
         <Column height={BlockSize.Full} justifyContent={JustifyContent.center}>
           {isLoading && !activeQuote ? (
             <>
@@ -568,8 +591,15 @@ const PrepareBridgePage = () => {
               <MascotBackgroundAnimation height="64" width="64" />
             </>
           ) : null}
+          {shouldShowAccountPicker && !selectedBridgeAccount && (
+            <Text
+              textAlign={TextAlign.Center}
+              color={TextColor.textAlternativeSoft}
+            >
+              {t('swapSelectDestinationAccount')}
+            </Text>
+          )}
         </Column>
-
         <Row padding={6}>
           <Column
             gap={3}
@@ -598,6 +628,7 @@ const PrepareBridgePage = () => {
             )}
             {!wasTxDeclined && activeQuote && <BridgeQuoteCard />}
             <Footer padding={0} flexDirection={FlexDirection.Column} gap={2}>
+              // TODO: add prop here to disable if user needs to select account.
               <BridgeCTAButton
                 onFetchNewQuotes={() => {
                   debouncedUpdateQuoteRequestInController(quoteParams);

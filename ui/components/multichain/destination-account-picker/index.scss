@@ -1,0 +1,115 @@
+.destination-account-picker {
+  background-color: var(--color-background-default);
+  border-radius: 12px;
+  padding: 16px;
+
+  .mm-text-field-search {
+    width: 100%;
+  }
+  .destination-account-picker {
+    border-radius: 8px;
+    border: 1px solid var(--color-border-default);
+  }
+  // Search container styles
+  .search-container {
+    margin-bottom: 8px;
+    width: 100%;
+
+    // Override base search field styles
+    .field-search {
+      width: 100%;
+      border: none;
+      border-bottom: 1px solid var(--color-border-default);
+    }
+
+    // Override TextFieldSearch component styles
+    .text-field-search {
+      width: 100% !important;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--color-border-default);
+      border-radius: 0;
+      padding: 8px 0;
+      position: relative;
+
+      input {
+        background-color: transparent;
+        border: none;
+        padding: 8px 0;
+        padding-right: 40px;
+        width: 100%;
+        color: var(--color-text-default);
+
+        &::placeholder {
+          color: var(--color-text-alternative);
+        }
+      }
+
+      // Style for the clear button
+      button {
+        color: var(--color-icon-alternative);
+        padding: 8px;
+        background: transparent;
+        border: none;
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+
+        &:hover {
+          background-color: transparent;
+          color: var(--color-icon-default);
+        }
+      }
+    }
+  }
+
+  // List container styles
+  &__list {
+    max-height: 400px;
+    overflow-y: auto;
+    gap: 8px;
+
+    .multichain-account-list-item {
+      padding: 8px 16px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: var(--color-background-default-hover);
+      }
+    }
+  }
+
+  // Selected account styles
+  &__selected {
+    .multichain-account-list-item {
+      padding: 0;
+      cursor: default;
+
+      &:hover {
+        background-color: transparent;
+      }
+    }
+  }
+
+  // Deselect button styles
+  .deselect-button {
+    background: transparent;
+    border: none;
+    color: var(--color-icon-alternative);
+    padding: 8px;
+    border-radius: 50%;
+    min-width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-left: 8px;
+
+    &:hover {
+      background-color: var(--color-background-alternative);
+      color: var(--color-icon-default);
+    }
+  }
+}
