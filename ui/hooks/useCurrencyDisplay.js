@@ -225,9 +225,13 @@ export function useCurrencyDisplay(
   const isCryptoSuffix =
     suffix === NON_EVM_CURRENCY_SYMBOLS.SOL ||
     suffix === NON_EVM_CURRENCY_SYMBOLS.BTC;
+
   const displayString = `${prefix || ''}${value}${
     !isCryptoSuffix && suffix ? ` ${suffix}` : ''
   }`;
 
-  return [displayString, { prefix, value, suffix }];
+  return [
+    displayString,
+    { prefix, value, suffix: isCryptoSuffix ? null : suffix },
+  ];
 }
