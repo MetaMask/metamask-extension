@@ -107,6 +107,11 @@ class HomePage {
     await this.driver.clickElement(this.nftTab);
   }
 
+  async goToTokensTab(): Promise<void> {
+    console.log(`Go to tokens tab on homepage`);
+    await this.driver.clickElement(this.tokensTab);
+  }
+
   async openPortfolioPage(): Promise<void> {
     console.log(`Open portfolio page on homepage`);
     await this.driver.clickElement(this.portfolioLink);
@@ -175,11 +180,11 @@ class HomePage {
   /**
    * Checks if the expected balance is displayed on homepage.
    *
-   * @param expectedBalance - The expected balance to be displayed. Defaults to '0'.
+   * @param expectedBalance - The expected balance to be displayed. Defaults to '25'.
    * @param symbol - The symbol of the currency or token. Defaults to 'ETH'.
    */
   async check_expectedBalanceIsDisplayed(
-    expectedBalance: string = '0',
+    expectedBalance: string = '25',
     symbol: string = 'ETH',
   ): Promise<void> {
     try {
@@ -243,15 +248,13 @@ class HomePage {
     return true;
   }
 
-  async check_localBlockchainBalanceIsDisplayed(
-    localBlockchainServer?: Ganache,
+  async check_localNodeBalanceIsDisplayed(
+    localNode?: Ganache,
     address = null,
   ): Promise<void> {
     let expectedBalance: string;
-    if (localBlockchainServer) {
-      expectedBalance = (
-        await localBlockchainServer.getBalance(address)
-      ).toString();
+    if (localNode) {
+      expectedBalance = (await localNode.getBalance(address)).toString();
     } else {
       expectedBalance = '0';
     }

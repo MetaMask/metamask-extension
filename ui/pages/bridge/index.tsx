@@ -17,11 +17,8 @@ import {
   ButtonIconSize,
   IconName,
 } from '../../components/component-library';
-import {
-  getCurrentChainId,
-  getSelectedNetworkClientId,
-} from '../../../shared/modules/selectors/networks';
-import { getIsBridgeChain, getIsBridgeEnabled } from '../../selectors';
+import { getSelectedNetworkClientId } from '../../../shared/modules/selectors/networks';
+import { getIsBridgeEnabled } from '../../selectors';
 import useBridging from '../../hooks/bridge/useBridging';
 import {
   Content,
@@ -30,7 +27,7 @@ import {
   Page,
 } from '../../components/multichain/pages/page';
 import { useSwapsFeatureFlags } from '../swaps/hooks/useSwapsFeatureFlags';
-import { resetBridgeState, setFromChain } from '../../ducks/bridge/actions';
+import { resetBridgeState } from '../../ducks/bridge/actions';
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRates';
 import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
@@ -39,6 +36,7 @@ import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
 import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
+import { useIsMultichainSwap } from './hooks/useIsMultichainSwap';
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
@@ -51,15 +49,7 @@ const CrossChainSwap = () => {
   const dispatch = useDispatch();
 
   const isBridgeEnabled = useSelector(getIsBridgeEnabled);
-  const isBridgeChain = useSelector(getIsBridgeChain);
   const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
-  const chainId = useSelector(getCurrentChainId);
-
-  useEffect(() => {
-    if (isBridgeChain && isBridgeEnabled && chainId) {
-      dispatch(setFromChain(chainId));
-    }
-  }, [isBridgeChain, isBridgeEnabled, chainId]);
 
   const resetControllerAndInputStates = async () => {
     await dispatch(resetBridgeState());
@@ -67,8 +57,6 @@ const CrossChainSwap = () => {
 
   useEffect(() => {
     // Reset controller and inputs before unloading the page
-    resetControllerAndInputStates();
-
     window.addEventListener('beforeunload', resetControllerAndInputStates);
 
     return () => {
@@ -83,6 +71,8 @@ const CrossChainSwap = () => {
   useBridgeExchangeRates();
   // Emits events related to quote-fetching
   useQuoteFetchEvents();
+
+  const isSwap = useIsMultichainSwap();
 
   const redirectToDefaultRoute = async () => {
     history.push({
@@ -119,7 +109,7 @@ const CrossChainSwap = () => {
           />
         }
       >
-        {t('bridge')}
+        {isSwap ? t('swap') : t('bridge')}
       </Header>
       <Content padding={0}>
         <Switch>

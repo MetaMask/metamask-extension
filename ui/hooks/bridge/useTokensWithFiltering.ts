@@ -1,20 +1,16 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { isEqual } from 'lodash';
 import { ChainId } from '@metamask/controller-utils';
 import { Hex } from '@metamask/utils';
-import { useParams } from 'react-router-dom';
 import { zeroAddress } from 'ethereumjs-util';
 import {
   getAllDetectedTokensForSelectedAddress,
-  getSelectedInternalAccountWithBalance,
-  getTokenExchangeRates,
+  selectERC20TokensByChain,
 } from '../../selectors';
 import {
-  getConversionRate,
-  getCurrentCurrency,
-} from '../../ducks/metamask/metamask';
-import { SwapsTokenObject } from '../../../shared/constants/swaps';
+  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
+  SwapsTokenObject,
+} from '../../../shared/constants/swaps';
 import {
   AssetWithDisplayData,
   ERC20Asset,
@@ -23,9 +19,12 @@ import {
 import { AssetType } from '../../../shared/constants/transaction';
 import { isNativeAddress } from '../../pages/bridge/utils/quote';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
-import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
-import { Token } from '../../components/app/assets/token-list/token-list';
+import { Token } from '../../components/app/assets/types';
 import { useMultichainBalances } from '../useMultichainBalances';
+import { useAsyncResult } from '../useAsyncResult';
+import { fetchTopAssetsList } from '../../pages/swaps/swaps.util';
+import { fetchBridgeTokens } from '../../../shared/modules/bridge-utils/bridge.util';
+import { MINUTE } from '../../../shared/constants/time';
 
 type FilterPredicate = (
   symbol: string,
@@ -35,38 +34,47 @@ type FilterPredicate = (
 
 /**
  * Returns a token list generator that filters and sorts tokens in this order
- * - matches URL token parameter
  * - matches search query
- * - highest balance in selected currency
- * - detected tokens (with balance)
+ * - tokens with highest to lowest balance in selected currency
+ * - detected tokens (without balance)
  * - popularity
  * - all other tokens
  *
- * @param tokenList - a mapping of token addresses in the selected chainId to token metadata from the bridge-api
- * @param topTokens - a list of top tokens from the swap-api
- * @param tokenAddressAllowlistByChainId - a mapping of all supported chainIds to a Set of allowed token addresses
  * @param chainId - the selected src/dest chainId
  */
-export const useTokensWithFiltering = (
-  tokenList: Record<string, SwapsTokenObject>,
-  topTokens: { address: string }[],
-  tokenAddressAllowlistByChainId: Record<string, Set<string>>,
-  chainId?: ChainId | Hex,
-) => {
-  const { token: tokenAddressFromUrl } = useParams();
+export const useTokensWithFiltering = (chainId?: ChainId | Hex) => {
   const allDetectedTokens: Record<string, Token[]> = useSelector(
     getAllDetectedTokensForSelectedAddress,
   );
 
-  const { balance } = useSelector(getSelectedInternalAccountWithBalance);
-
-  const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
-  const conversionRate = useSelector(getConversionRate);
-  const currentCurrency = useSelector(getCurrentCurrency);
-  const currentChainId = useSelector(getCurrentChainId);
-
   const { assetsWithBalance: multichainTokensWithBalance } =
     useMultichainBalances();
+
+  const cachedTokens = useSelector(selectERC20TokensByChain);
+
+  const { value: tokenList, pending: isTokenListLoading } = useAsyncResult<
+    Record<string, SwapsTokenObject>
+  >(async () => {
+    if (chainId) {
+      const timestamp = cachedTokens[chainId]?.timestamp;
+      // Use cached token data if updated in the last 10 minutes
+      if (timestamp && Date.now() - timestamp <= 10 * MINUTE) {
+        return cachedTokens[chainId]?.data;
+      }
+      // Otherwise fetch new token data
+      return await fetchBridgeTokens(chainId);
+    }
+    return {};
+  }, [chainId, cachedTokens]);
+
+  const { value: topTokens, pending: isTopTokenListLoading } = useAsyncResult<
+    { address: string }[]
+  >(async () => {
+    if (chainId) {
+      return await fetchTopAssetsList(chainId);
+    }
+    return [];
+  }, [chainId]);
 
   // This transforms the token object from the bridge-api into the format expected by the AssetPicker
   const buildTokenData = (
@@ -87,8 +95,9 @@ export const useTokensWithFiltering = (
           CHAIN_ID_TOKEN_IMAGE_MAP[
             chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
           ],
-        balance: currentChainId === chainId ? balance : '',
-        string: currentChainId === chainId ? balance : '',
+        // Only unimported native assets are processed here so hardcode balance to 0
+        balance: '0',
+        string: '0',
       };
     }
 
@@ -103,31 +112,19 @@ export const useTokensWithFiltering = (
     };
   };
 
-  // This returns whether the token is blocked by any of the supported chainIds
-  const isTokenBlocked = (tokenAddress: string, tokenChainId: string) =>
-    !tokenAddressAllowlistByChainId[tokenChainId]?.has(
-      tokenAddress.toLowerCase(),
-    );
-
   // shouldAddToken is a filter condition passed in from the AssetPicker that determines whether a token should be included
   const filteredTokenListGenerator = useCallback(
     (shouldAddToken: FilterPredicate) =>
       (function* (): Generator<
         AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>
       > {
-        // If a token address is in the URL (e.g. from a deep link), yield that token first
-        if (tokenAddressFromUrl) {
-          const token =
-            tokenList?.[tokenAddressFromUrl] ??
-            tokenList?.[tokenAddressFromUrl.toLowerCase()];
-          if (
-            shouldAddToken(token.symbol, token.address ?? undefined, chainId)
-          ) {
-            const tokenWithData = buildTokenData(token);
-            if (tokenWithData) {
-              yield tokenWithData;
-            }
-          }
+        if (
+          !chainId ||
+          !topTokens ||
+          !tokenList ||
+          Object.keys(tokenList).length === 0
+        ) {
+          return;
         }
 
         // Yield multichain tokens with balances and are not blocked
@@ -137,13 +134,29 @@ export const useTokensWithFiltering = (
               token.symbol,
               token.address ?? undefined,
               token.chainId,
-            ) &&
-            (token.address
-              ? !isTokenBlocked(token.address, token.chainId)
-              : true)
+            )
           ) {
             // If there's no address, set it to the native address in swaps/bridge
             yield { ...token, address: token.address || zeroAddress() };
+          }
+        }
+
+        // Yield the native token for the selected chain
+        const nativeToken =
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
+            chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
+          ];
+        if (
+          nativeToken &&
+          shouldAddToken(
+            nativeToken.symbol,
+            nativeToken.address ?? undefined,
+            chainId,
+          )
+        ) {
+          const tokenWithData = buildTokenData(nativeToken);
+          if (tokenWithData) {
+            yield tokenWithData;
           }
         }
 
@@ -154,10 +167,7 @@ export const useTokensWithFiltering = (
               token.symbol,
               token.address ?? undefined,
               token.chainId,
-            ) &&
-            (token.address
-              ? !isTokenBlocked(token.address, token.chainId)
-              : true)
+            )
           ) {
             yield {
               ...token,
@@ -206,15 +216,13 @@ export const useTokensWithFiltering = (
     [
       multichainTokensWithBalance,
       topTokens,
-      tokenConversionRates,
-      conversionRate,
-      currentCurrency,
       chainId,
       tokenList,
-      tokenAddressFromUrl,
       allDetectedTokens,
     ],
   );
-
-  return filteredTokenListGenerator;
+  return {
+    filteredTokenListGenerator,
+    isLoading: isTokenListLoading || isTopTokenListLoading,
+  };
 };

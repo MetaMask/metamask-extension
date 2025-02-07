@@ -1,7 +1,6 @@
 /* eslint-disable no-useless-escape */
 const { isEqual, omit } = require('lodash');
 const {
-  defaultGanacheOptions,
   withFixtures,
   sendTransaction,
   getEventPayloads,
@@ -134,7 +133,7 @@ const eventHasZeroAddressAnonymousId = (payload) =>
   payload.anonymousId === '0x0000000000000000';
 
 describe('Transaction Finalized Event', function () {
-  it('Successfully tracked when sending a transaction @no-mmi', async function () {
+  it('Successfully tracked when sending a transaction', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -143,7 +142,6 @@ describe('Transaction Finalized Event', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },

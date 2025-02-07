@@ -10,12 +10,17 @@
     "url": "https://metamask.github.io/test-dapp/"
   },
   "appState": {
+    "isAccountMenuOpen": false,
+    "confirmationExchangeRates": {},
+    "nextNonce": 71,
+    "welcomeScreenSeen": false,
+    "pendingTokens": {},
+    "customTokenAmount": "10",
     "networkDropdownOpen": false,
     "importNftsModal": {
       "open": false
     },
     "showPermittedNetworkToastOpen": false,
-    "gasIsLoading": false,
     "isLoading": false,
     "modal": {
       "open": false,
@@ -27,8 +32,7 @@
         "name": null
       }
     },
-    "warning": null,
-    "customTokenAmount": "10"
+    "warning": null
   },
   "confirmAlerts": {
     "alerts": [],
@@ -40,7 +44,8 @@
         "gas": "0x153e2",
         "value": "0x0"
       }
-    }
+    },
+    "maxValueMode": {}
   },
   "history": {
     "mostRecentOverviewPage": "/mostRecentOverviewPage"
@@ -407,7 +412,6 @@
     },
     "preferences": {
       "hideZeroBalanceTokens": false,
-      "isRedesignedConfirmationsDeveloperEnabled": false,
       "petnamesEnabled": false,
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
@@ -419,11 +423,9 @@
         "key": "tokenFiatAmount",
         "order": "dsc",
         "sortCallback": "stringNumeric"
-      },
-      "tokenNetworkFilter": {}
+      }
     },
     "ensResolutionsByAddress": {},
-    "isAccountMenuOpen": false,
     "isUnlocked": true,
     "alertEnabledness": {
       "unconnectedAccount": true
@@ -481,6 +483,7 @@
             "eth_signTypedData_v3",
             "eth_signTypedData_v4"
           ],
+          "scopes": ["eip155:0"],
           "type": "eip155:eoa"
         },
         "07c2cfec-36c9-46c4-8115-3836d3ac9047": {
@@ -501,6 +504,7 @@
             "eth_signTypedData_v3",
             "eth_signTypedData_v4"
           ],
+          "scopes": ["eip155:0"],
           "type": "eip155:eoa"
         },
         "15e69915-2a1a-4019-93b3-916e11fd432f": {
@@ -521,6 +525,7 @@
             "eth_signTypedData_v3",
             "eth_signTypedData_v4"
           ],
+          "scopes": ["eip155:0"],
           "type": "eip155:eoa"
         },
         "784225f4-d30b-4e77-a900-c8bbce735b88": {
@@ -541,6 +546,7 @@
             "eth_signTypedData_v3",
             "eth_signTypedData_v4"
           ],
+          "scopes": ["eip155:0"],
           "type": "eip155:eoa"
         },
         "694225f4-d30b-4e77-a900-c8bbce735b42": {
@@ -561,6 +567,7 @@
             "eth_signTypedData_v3",
             "eth_signTypedData_v4"
           ],
+          "scopes": ["eip155:0"],
           "type": "eip155:eoa"
         },
         "c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3": {
@@ -586,6 +593,7 @@
             "eth_signTypedData_v3",
             "eth_signTypedData_v4"
           ],
+          "scopes": ["eip155:0"],
           "type": "eip155:eoa"
         }
       },
@@ -1148,6 +1156,7 @@
           "gas": "0x5208",
           "gasPrice": "0x3b9aca00"
         },
+        "gasLimitNoBuffer": "0x5208",
         "history": [
           {
             "id": 8393540981007587,
@@ -1197,6 +1206,7 @@
           "gasPrice": "0x3b9aca00",
           "nonce": "0xb5"
         },
+        "gasLimitNoBuffer": "0xcf08",
         "history": [
           {
             "id": 3387511061307736,
@@ -1329,6 +1339,7 @@
           "gasPrice": "0x3b9aca00",
           "nonce": "0xb6"
         },
+        "gasLimitNoBuffer": "0xcf08",
         "history": [
           {
             "id": 3387511061307737,
@@ -1461,6 +1472,7 @@
           "gasPrice": "0x12a05f200",
           "nonce": "0xb7"
         },
+        "gasLimitNoBuffer": "0xcf08",
         "history": [
           {
             "id": 3387511061307738,
@@ -1594,6 +1606,7 @@
           "gas": "0x6169e",
           "nonce": "0xb8"
         },
+        "gasLimitNoBuffer": "0x6169e",
         "history": [
           {
             "id": 3387511061307739,
@@ -1731,6 +1744,7 @@
           "gasPrice": "0x3b9aca00",
           "nonce": "0xb9"
         },
+        "gasLimitNoBuffer": "0xd508",
         "history": [
           {
             "id": 3387511061307740,
@@ -1863,6 +1877,7 @@
           "gasPrice": "0x3b9aca00",
           "gas": "0x5208"
         },
+        "gasLimitNoBuffer": "0x5208",
         "history": [
           {
             "id": 3387511061307741,

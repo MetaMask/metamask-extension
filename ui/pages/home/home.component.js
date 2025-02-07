@@ -58,12 +58,9 @@ import {
   CONNECTED_ACCOUNTS_ROUTE,
   AWAITING_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  CONFIRM_ADD_CUSTODIAN_TOKEN,
-  INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
   ///: END:ONLY_INCLUDE_IF
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
@@ -76,9 +73,6 @@ import {
 import { AccountOverview } from '../../components/multichain/account-overview';
 import { setEditedNetwork } from '../../store/actions';
 import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { AccountType } from '../../../shared/constants/custody';
-///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
@@ -91,26 +85,14 @@ function shouldCloseNotificationPopup({
   totalUnapprovedAndQueuedRequestCount,
   hasApprovalFlows,
   isSigningQRHardwareTransaction,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  waitForConfirmDeepLinkDialog,
-  institutionalConnectRequests,
-  ///: END:ONLY_INCLUDE_IF
 }) {
   // we can't use totalUnapproved because there are also queued requests
 
-  let shouldClose =
+  const shouldClose =
     isNotification &&
     totalUnapprovedAndQueuedRequestCount === 0 &&
     !hasApprovalFlows &&
     !isSigningQRHardwareTransaction;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  shouldClose &&=
-    // MMI User must be shown a deeplink
-    !waitForConfirmDeepLinkDialog &&
-    // MMI User is connecting to custodian
-    institutionalConnectRequests.length === 0;
-  ///: END:ONLY_INCLUDE_IF
 
   return shouldClose;
 }
@@ -159,6 +141,7 @@ export default class Home extends PureComponent {
     onTabClick: PropTypes.func.isRequired,
     haveSwapsQuotes: PropTypes.bool.isRequired,
     showAwaitingSwapScreen: PropTypes.bool.isRequired,
+    haveBridgeQuotes: PropTypes.bool.isRequired,
     setDataCollectionForMarketing: PropTypes.func.isRequired,
     dataCollectionForMarketing: PropTypes.bool,
     swapsFetchParams: PropTypes.object,
@@ -195,16 +178,6 @@ export default class Home extends PureComponent {
     hasAllowedPopupRedirectApprovals: PropTypes.bool.isRequired,
     useExternalServices: PropTypes.bool,
     setBasicFunctionalityModalOpen: PropTypes.func,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    institutionalConnectRequests: PropTypes.arrayOf(PropTypes.object),
-    modalOpen: PropTypes.bool,
-    setWaitForConfirmDeepLinkDialog: PropTypes.func,
-    waitForConfirmDeepLinkDialog: PropTypes.bool,
-    showCustodianDeepLink: PropTypes.func,
-    cleanCustodianDeepLink: PropTypes.func,
-    custodianDeepLink: PropTypes.object,
-    accountType: PropTypes.string,
-    ///: END:ONLY_INCLUDE_IF
     fetchBuyableChains: PropTypes.func.isRequired,
   };
 
@@ -220,6 +193,7 @@ export default class Home extends PureComponent {
     const {
       closeNotificationPopup,
       haveSwapsQuotes,
+      haveBridgeQuotes,
       isNotification,
       pendingApprovals,
       showAwaitingSwapScreen,
@@ -235,60 +209,21 @@ export default class Home extends PureComponent {
       pendingApprovals.length ||
       (!isNotification &&
         !stayOnHomePage &&
-        (showAwaitingSwapScreen || haveSwapsQuotes || swapsFetchParams))
+        (showAwaitingSwapScreen ||
+          haveSwapsQuotes ||
+          swapsFetchParams ||
+          haveBridgeQuotes))
     ) {
       this.state.redirecting = true;
     }
   }
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  checkInstitutionalConnectRequest() {
-    const { history, institutionalConnectRequests } = this.props;
-    if (
-      institutionalConnectRequests &&
-      institutionalConnectRequests.length > 0 &&
-      institutionalConnectRequests[0].feature === 'custodian'
-    ) {
-      if (
-        institutionalConnectRequests[0].method ===
-        'metamaskinstitutional_reauthenticate'
-      ) {
-        history.push(INTERACTIVE_REPLACEMENT_TOKEN_PAGE);
-      } else if (
-        institutionalConnectRequests[0].method ===
-        'metamaskinstitutional_authenticate'
-      ) {
-        history.push(CONFIRM_ADD_CUSTODIAN_TOKEN);
-      }
-    }
-  }
-
-  shouldCloseCurrentWindow() {
-    const {
-      isNotification,
-      modalOpen,
-      totalUnapprovedCount,
-      institutionalConnectRequests,
-      waitForConfirmDeepLinkDialog,
-    } = this.props;
-
-    if (
-      isNotification &&
-      totalUnapprovedCount === 0 &&
-      institutionalConnectRequests.length === 0 &&
-      !waitForConfirmDeepLinkDialog &&
-      !modalOpen
-    ) {
-      global.platform.closeCurrentWindow();
-    }
-  }
-  ///: END:ONLY_INCLUDE_IF
 
   checkStatusAndNavigate() {
     const {
       history,
       isNotification,
       haveSwapsQuotes,
+      haveBridgeQuotes,
       showAwaitingSwapScreen,
       swapsFetchParams,
       location,
@@ -297,39 +232,25 @@ export default class Home extends PureComponent {
     } = this.props;
     const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    this.shouldCloseCurrentWindow();
-    ///: END:ONLY_INCLUDE_IF
-
     const canRedirect = !isNotification && !stayOnHomePage;
     if (canRedirect && showAwaitingSwapScreen) {
       history.push(AWAITING_SWAP_ROUTE);
     } else if (canRedirect && (haveSwapsQuotes || swapsFetchParams)) {
       history.push(PREPARE_SWAP_ROUTE);
-    } else if (pendingApprovals.length) {
+    } else if (canRedirect && haveBridgeQuotes) {
+      history.push(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
+    } else if (pendingApprovals.length || hasApprovalFlows) {
       navigateToConfirmation(
-        pendingApprovals[0].id,
+        pendingApprovals?.[0]?.id,
         pendingApprovals,
         hasApprovalFlows,
         history,
       );
     }
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    this.checkInstitutionalConnectRequest();
-    ///: END:ONLY_INCLUDE_IF
   }
 
   componentDidMount() {
     this.checkStatusAndNavigate();
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    const { setWaitForConfirmDeepLinkDialog } = this.props;
-
-    window.addEventListener('beforeunload', () => {
-      // If user closes notification window manually, change waitForConfirmDeepLinkDialog to false
-      setWaitForConfirmDeepLinkDialog(false);
-    });
-    ///: END:ONLY_INCLUDE_IF
 
     this.props.fetchBuyableChains();
   }
@@ -349,12 +270,6 @@ export default class Home extends PureComponent {
       newNetworkAddedConfigurationId,
       setActiveNetwork,
       clearNewNetworkAdded,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      custodianDeepLink,
-      showCustodianDeepLink,
-      cleanCustodianDeepLink,
-      accountType,
-      ///: END:ONLY_INCLUDE_IF
     } = this.props;
 
     const {
@@ -375,30 +290,6 @@ export default class Home extends PureComponent {
     } else if (isNotification || hasAllowedPopupRedirectApprovals) {
       this.checkStatusAndNavigate();
     }
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    if (
-      accountType === AccountType.CUSTODY &&
-      custodianDeepLink &&
-      Object.keys(custodianDeepLink).length
-    ) {
-      const { custodyId, fromAddress } = custodianDeepLink;
-
-      showCustodianDeepLink({
-        fromAddress,
-        custodyId,
-        isSignature: true,
-        isNotification,
-        onDeepLinkShown: () => {
-          this.context.trackEvent({
-            category: MetaMetricsEventCategory.MMI,
-            event: MetaMetricsEventName.SignatureDeeplinkDisplayed,
-          });
-          cleanCustodianDeepLink();
-        },
-      });
-    }
-    ///: END:ONLY_INCLUDE_IF
   }
 
   onRecoveryPhraseReminderClose = () => {

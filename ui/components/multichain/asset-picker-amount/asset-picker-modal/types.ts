@@ -8,20 +8,23 @@ import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_ID_TOKEN_IMAGE_MAP,
 } from '../../../../../shared/constants/network';
-import { TokenWithFiatAmount } from '../../../app/assets/token-list/token-list';
+import { TokenWithFiatAmount } from '../../../app/assets/types';
 
 export type NFT = {
   address: string;
   description: string | null;
   favorite: boolean;
-  image: string | null;
+  image?: string;
   isCurrentlyOwned: boolean;
   name: string | null;
   standard: TokenStandard;
   tokenId: number;
   tokenURI?: string;
-  type: AssetType.NFT;
+  type?: AssetType.NFT;
   symbol?: string;
+  imageOriginal?: string;
+  ipfsImageUpdated?: string;
+  collection?: Record<string, string | number | boolean>;
 };
 
 /**
@@ -58,7 +61,7 @@ export type AssetWithDisplayData<T extends ERC20Asset | NativeAsset> = T & {
 
 export type Collection = {
   collectionName: string;
-  collectionImage: string | null;
+  collectionImage: string | undefined;
   nfts: NFT[];
 };
 

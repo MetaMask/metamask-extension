@@ -1,6 +1,6 @@
 import { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { Hex } from '@metamask/utils';
+import { add0x, Hex } from '@metamask/utils';
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { EtherDenomination } from '../../../../../../../shared/constants/common';
@@ -80,6 +80,7 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
         currentCurrencyFee,
         currentCurrencyFeeWith18SignificantDigits,
         nativeCurrencyFee,
+        preciseNativeFeeInHex: add0x(hexFee),
       };
     },
     [conversionRate, currentCurrency, fiatFormatter],
@@ -157,9 +158,10 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
       minimumFeePerGas = decimalToHex(maxFeePerGas);
     }
 
+    const gasLimitNoBuffer = transactionMeta.gasLimitNoBuffer || HEX_ZERO;
     const estimatedFee = multiplyHexes(
       supportsEIP1559 ? (minimumFeePerGas as Hex) : (gasPrice as Hex),
-      gasLimit as Hex,
+      gasLimitNoBuffer as Hex,
     );
 
     return getFeesFromHex(estimatedFee);
@@ -187,5 +189,6 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
     maxFeeFiat,
     maxFeeFiatWith18SignificantDigits,
     maxFeeNative,
+    preciseNativeFeeInHex: estimatedFees.preciseNativeFeeInHex,
   };
 }

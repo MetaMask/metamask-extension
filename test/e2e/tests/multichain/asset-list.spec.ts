@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
-import { withFixtures, defaultGanacheOptions } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { Ganache } from '../../seeder/ganache';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -23,7 +23,6 @@ function buildFixtures(title: string, chainId: number = 1337) {
       .withNetworkControllerOnPolygon()
       .withTokensControllerERC20({ chainId })
       .build(),
-    ganacheOptions: defaultGanacheOptions,
     smartContract: SMART_CONTRACTS.HST,
     title,
   };
