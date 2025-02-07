@@ -109,12 +109,7 @@ describe('Tabs', () => {
 
   it('handles null children gracefully', () => {
     const { getByText } = render(
-      <Tabs
-        defaultActiveTabKey=""
-        onTabClick={() => null}
-        tabsClassName=""
-        subHeader={null}
-      >
+      <Tabs defaultActiveTabKey="" onTabClick={() => null}>
         {null}
         <Tab tabKey="tab1" name="Tab 1">
           Tab 1 Content

@@ -118,7 +118,6 @@ export const AccountOverviewTabs = ({
         defaultActiveTabKey={defaultHomeActiveTabName}
         onTabClick={handleTabClick}
         tabsClassName="account-overview__tabs"
-        subHeader={null}
       >
         {showTokens && (
           <Tab

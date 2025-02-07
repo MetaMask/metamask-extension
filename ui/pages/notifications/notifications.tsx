@@ -204,7 +204,6 @@ export default function Notifications() {
             defaultActiveTabKey={activeTab}
             onTabClick={(tab: string) => setActiveTab(tab as TAB_KEYS)}
             tabsClassName="notifications__tabs"
-            subHeader={null}
           >
             <Tab
               activeClassName="notifications__tab--active"

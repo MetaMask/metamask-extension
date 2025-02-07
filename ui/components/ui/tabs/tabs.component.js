@@ -12,8 +12,8 @@ const Tabs = ({
   defaultActiveTabKey,
   onTabClick,
   children,
-  tabsClassName,
-  subHeader,
+  tabsClassName = '',
+  subHeader = null,
   tabListProps = {},
   tabContentProps = {},
   ...props
@@ -115,13 +115,4 @@ Tabs.propTypes = {
   subHeader: PropTypes.node,
   tabListProps: PropTypes.object,
   tabContentProps: PropTypes.object,
-};
-
-Tabs.defaultProps = {
-  defaultActiveTabKey: '',
-  onTabClick: () => null,
-  tabsClassName: '',
-  subHeader: null,
-  tabListProps: {},
-  tabContentProps: {},
 };
