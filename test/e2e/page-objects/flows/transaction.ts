@@ -38,3 +38,35 @@ export const createDappTransaction = async (
     },
   ]);
 };
+
+/**
+ * This function creates the steps required to send a transaction from the homepage to final confirmation without confirm.
+ *
+ * @param params - An object containing the parameters.
+ * @param params.driver - The webdriver instance.
+ * @param params.recipientAddress - The recipient address.
+ * @param params.amount - The amount of the asset to be sent in the transaction.
+ */
+export const createTransactionToAddress = async ({
+  driver,
+  recipientAddress,
+  amount,
+}: {
+  driver: Driver;
+  recipientAddress: string;
+  amount: string;
+}): Promise<void> => {
+  console.log(
+    `Start flow to send amount ${amount} to recipient ${recipientAddress} on home screen`,
+  );
+  // click send button on homepage to start flow
+  const homePage = new HomePage(driver);
+  await homePage.startSendFlow();
+
+  // user should land on send token screen to fill recipient and amount
+  const sendToPage = new SendTokenPage(driver);
+  await sendToPage.check_pageIsLoaded();
+  await sendToPage.fillRecipient(recipientAddress);
+  await sendToPage.fillAmount(amount);
+  await sendToPage.goToNextScreen();
+};
