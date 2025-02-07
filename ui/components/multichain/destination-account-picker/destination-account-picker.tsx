@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { useState } from 'react';
 import {
-  TextFieldSearch,
+  TextField,
   Box,
   Text,
   Button,
@@ -141,8 +141,8 @@ export const DestinationAccountPicker = ({
           justifyContent: 'center',
         }}
       >
-        <TextFieldSearch
-          // @ts-expect-error-error: fine.
+        <TextField
+          // @ts-expect-error-error:
           placeholder={t('destinationAccountPickerSearchPlaceholder')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
