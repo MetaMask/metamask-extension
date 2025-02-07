@@ -5298,7 +5298,7 @@ export default class MetamaskController extends EventEmitter {
       requestedAccounts,
       this.accountsController.listAccounts.bind(this.accountsController),
     );
-    console.log('i passed here');
+
     validateCaveatNetworks(
       requestedChains,
       this.networkController.findNetworkClientIdByChainId.bind(

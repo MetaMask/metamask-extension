@@ -201,7 +201,7 @@ export const unrestrictedMethods = Object.freeze([
  * @param {string[]} accounts - The accounts associated with the caveat.
  * @param {() => Record<string, import('@metamask/keyring-internal-api').InternalAccount>} getInternalAccounts -
  * Gets all AccountsController InternalAccounts.
- * TODO: Remove this function once permission refactor/factory differ work is merged into main
+ * TODO: Remove this function once the CAIP-25  permission refactor/factory differ work is merged into main
  */
 export function validateCaveatAccounts(accounts, getInternalAccounts) {
   if (!Array.isArray(accounts) || accounts.length === 0) {
@@ -238,7 +238,7 @@ export function validateCaveatAccounts(accounts, getInternalAccounts) {
  * @param {string[]} chainIdsForCaveat - The list of chain IDs to validate.
  * @param {function(string): string} findNetworkClientIdByChainId - Function to find network client ID by chain ID.
  * @throws {Error} If the chainIdsForCaveat is not a non-empty array of valid chain IDs.
- * TODO: Remove this function once permission refactor/factory differ work is merged into main
+ * TODO: Remove this function once the CAIP-25  permission refactor/factory differ work is merged into main
  */
 export function validateCaveatNetworks(
   chainIdsForCaveat,

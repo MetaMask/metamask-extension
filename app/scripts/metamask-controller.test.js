@@ -1649,10 +1649,6 @@ describe('MetaMaskController', () => {
             );
           });
 
-          afterEach(() => {
-            PermissionSpecifications.validateCaveatAccounts.mockClear();
-          });
-
           it('should throw exception when requesting invalid account', async () => {
             await expect(
               metamaskController.requestCaip25Approval('test.com', {
@@ -1683,11 +1679,6 @@ describe('MetaMaskController', () => {
                 );
               },
             );
-          });
-
-          afterEach(() => {
-            PermissionSpecifications.validateCaveatAccounts.mockClear();
-            PermissionSpecifications.validateCaveatNetworks.mockClear();
           });
 
           it('should throw exception when requesting invalid chain id', async () => {
