@@ -5282,14 +5282,14 @@ export default class MetamaskController extends EventEmitter {
         (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
       )?.value ?? [];
 
-    if (permissions[RestrictedMethods.eth_accounts]) {
+    if (permissions[PermissionNames.permittedChains]?.caveats) {
       validateCaveatAccounts(
         requestedAccounts,
         this.accountsController.listAccounts.bind(this.accountsController),
       );
     }
 
-    if (permissions[PermissionNames.permittedChains]) {
+    if (permissions[PermissionNames.permittedChains]?.caveat) {
       validateCaveatNetworks(
         requestedChains,
         this.networkController.findNetworkClientIdByChainId.bind(
