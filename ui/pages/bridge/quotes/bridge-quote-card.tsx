@@ -189,7 +189,7 @@ export const BridgeQuoteCard = () => {
                     : TextColor.textAlternativeSoft
                 }
               >
-                {t('networkFees')}
+                {t('networkFee')}
               </Text>
               <Row gap={1}>
                 <Text
@@ -210,14 +210,6 @@ export const BridgeQuoteCard = () => {
                               activeQuote.totalNetworkFee?.amount,
                             )
                           : undefined
-                      } - ${
-                        activeQuote.totalMaxNetworkFee?.valueInCurrency
-                          ? formatTokenAmount(
-                              locale,
-                              activeQuote.totalMaxNetworkFee?.amount,
-                              ticker,
-                            )
-                          : undefined
                       }`
                     : // Network fee in display currency
                       `${
@@ -229,17 +221,6 @@ export const BridgeQuoteCard = () => {
                         formatTokenAmount(
                           locale,
                           activeQuote.totalNetworkFee?.amount,
-                        )
-                      } - ${
-                        formatCurrencyAmount(
-                          activeQuote.totalMaxNetworkFee?.valueInCurrency,
-                          currency,
-                          2,
-                        ) ??
-                        formatTokenAmount(
-                          locale,
-                          activeQuote.totalMaxNetworkFee?.amount,
-                          ticker,
                         )
                       }`}
                 </Text>
