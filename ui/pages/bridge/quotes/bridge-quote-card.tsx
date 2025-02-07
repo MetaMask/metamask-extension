@@ -222,7 +222,6 @@ export const BridgeQuoteCard = () => {
               </Text>
               <Row gap={1}>
                 <Tooltip
-                  title={t('howQuotesWork')}
                   position={PopoverPosition.TopStart}
                   offset={[-16, 16]}
                   iconName={IconName.Question}
