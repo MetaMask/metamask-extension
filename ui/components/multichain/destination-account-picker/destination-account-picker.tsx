@@ -22,24 +22,22 @@ import {
 } from '../../../helpers/constants/design-system';
 import DestinationAccountListItem from './destination-account-list-item';
 import { t } from '../../../../app/scripts/translate';
+import { getInternalAccounts } from '../../../selectors';
 
 type DestinationAccountPickerProps = {
-  accounts: InternalAccount[];
   onAccountSelect: (account: InternalAccount | null) => void;
   selectedSwapToAccount: InternalAccount | null;
-  chainType: 'evm' | 'solana';
-  chainId: string; // TODO: update to caipChainId type
+  isDestinationSolana: boolean;
 };
 
 export const DestinationAccountPicker = ({
-  accounts,
   onAccountSelect,
   selectedSwapToAccount,
-  chainType,
-  chainId,
+  isDestinationSolana,
 }: DestinationAccountPickerProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const selectedAccount = useSelector(getSelectedInternalAccount);
+  const accounts = useSelector(getInternalAccounts);
 
   console.log('accounts', accounts);
   const filteredAccounts = accounts.filter((account) => {
@@ -47,11 +45,9 @@ export const DestinationAccountPicker = ({
       .toLowerCase()
       .includes(searchQuery.toLowerCase());
 
-    // TODO: Replace with actual chain type check once Solana support is added
-    const matchesChain =
-      chainType === 'solana'
-        ? account.metadata.keyring?.type === 'Solana'
-        : account.metadata.keyring?.type !== 'Solana';
+    const matchesChain = isDestinationSolana
+      ? account.type === 'solana:data-account'
+      : account.type !== 'solana:data-account';
 
     return matchesSearch && matchesChain;
   });
