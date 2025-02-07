@@ -632,14 +632,6 @@ export function getSelectedAccountTokensAcrossChains(state) {
   return tokensByChain;
 }
 
-export function getAccountAssets(state) {
-  return state.metamask.accountsAssets;
-}
-
-export function getAssetsMetadata(state) {
-  return state.metamask.assetsMetadata;
-}
-
 /**
  * Retrieves native token information (symbol, decimals, name) for a given chainId from the state,
  * without hardcoding any values.
