@@ -1055,6 +1055,7 @@ export default class MetamaskController extends EventEmitter {
           'SnapController:handleRequest',
           'CurrencyRateController:getState',
           'MultichainAssetsController:getState',
+          'MultichainBalancesController:getState',
         ],
         allowedEvents: [
           'AccountsController:accountAdded',
