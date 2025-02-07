@@ -77,8 +77,6 @@ export const ImportSRP = ({
           newSrpError = t('seedPhraseReq');
         } else if (hasUpperCase(joinedDraftSrp)) {
           newSrpError = t('invalidSeedPhraseCaseSensitive');
-        } else if (newDraftSrp.length !== numberOfWords) {
-          newSrpError = t('invalidSeedPhrase');
         } else if (invalidWords.some((word) => word === true)) {
           const invalidWordIndex = invalidWords.reduce((acc, word, index) => {
             if (word) {
