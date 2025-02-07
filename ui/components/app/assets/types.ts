@@ -2,10 +2,10 @@ import { Hex } from '@metamask/utils';
 
 export type Token = {
   address: Hex;
-  aggregators: string[];
+  aggregators?: string[];
   chainId: Hex;
   decimals: number;
-  isNative: boolean;
+  isNative?: boolean;
   symbol: string;
   image: string;
 };

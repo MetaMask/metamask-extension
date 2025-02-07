@@ -293,14 +293,16 @@ const AssetPage = ({
         </Text>
         <TokenCell
           key={`${symbol}-${address}`}
-          address={address}
-          chainId={chainId}
-          symbol={symbol}
-          image={image}
-          tokenFiatAmount={
-            showFiat && tokenMarketPrice ? tokenFiatAmount : null
-          }
-          string={balance?.toString()}
+          token={{
+            address: address as Hex,
+            chainId,
+            symbol,
+            image,
+            tokenFiatAmount:
+              showFiat && tokenMarketPrice ? tokenFiatAmount : null,
+            string: balance ? balance.toString() : '',
+            decimals: asset.decimals,
+          }}
         />
         <Box
           marginTop={2}
