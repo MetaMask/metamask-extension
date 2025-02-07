@@ -19,7 +19,7 @@ export const completeOnboardFlowIdentity = async (
 
   const homePage = new HomePage(driver);
   await homePage.check_pageIsLoaded();
-  await homePage.check_expectedBalanceIsDisplayed();
+  await homePage.check_expectedBalanceIsDisplayed('0');
 
   const header = new HeaderNavbar(driver);
   await header.check_pageIsLoaded();
@@ -34,7 +34,7 @@ export const completeNewWalletFlowIdentity = async (driver: Driver) => {
 
   const homePage = new HomePage(driver);
   await homePage.check_pageIsLoaded();
-  await homePage.check_expectedBalanceIsDisplayed();
+  await homePage.check_expectedBalanceIsDisplayed('0');
 
   const header = new HeaderNavbar(driver);
   await header.check_pageIsLoaded();

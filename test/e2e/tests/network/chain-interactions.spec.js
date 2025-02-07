@@ -19,7 +19,7 @@ describe('Chain Interactions', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
+        localNodeOptions: ganacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
