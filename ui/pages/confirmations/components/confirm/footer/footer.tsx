@@ -186,8 +186,6 @@ const Footer = () => {
       dispatch(
         rejectPendingApproval(currentConfirmation.id, serializeError(error)),
       );
-      dispatch(updateCustomNonce(''));
-      dispatch(setNextNonce(''));
     },
     [currentConfirmation],
   );
@@ -219,8 +217,6 @@ const Footer = () => {
     } else {
       dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
     }
-    dispatch(updateCustomNonce(''));
-    dispatch(setNextNonce(''));
   }, [currentConfirmation, customNonceValue]);
 
   const onFooterCancel = useCallback(() => {
