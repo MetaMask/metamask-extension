@@ -55,8 +55,8 @@ type GrantedPermissions = Awaited<
  * @param end - JsonRpcEngine end() callback
  * @param options - Method hooks passed to the method implementation
  * @param options.getAccounts - A hook that returns the permitted eth accounts for the origin sorted by lastSelected.
- * @param options.requestCaip25PermissionForOrigin - A hook that requests approval for the CAIP-25 permission for the origin.
- * @param options.requestPermissionsForOrigin - A hook that requests permissions for the origin.
+ * @param options.getCaip25PermissionFromLegacyPermissionsForOrigin - A hook that requests approval for the CAIP-25 permission for the origin.
+ * @param options.requestPermissionsForOrigin - A hook that requests CAIP-25 permissions for the origin.
  * @returns A promise that resolves to nothing
  */
 async function requestPermissionsImplementation(
@@ -86,6 +86,7 @@ async function requestPermissionsImplementation(
 
   let [requestedPermissions] = params;
   delete requestedPermissions[Caip25EndowmentPermissionName];
+
   const caip25EquivalentPermissions: Partial<
     Pick<RequestedPermissions, 'eth_accounts' | 'endowment:permitted-chains'>
   > = pick(requestedPermissions, [
@@ -99,8 +100,10 @@ async function requestPermissionsImplementation(
     Object.keys(caip25EquivalentPermissions).length > 0;
 
   if (hasCaip25EquivalentPermissions) {
-    const caip25Permission = getCaip25PermissionFromLegacyPermissionsForOrigin(caip25EquivalentPermissions)
-    requestedPermissions = {...requestedPermissions, ...caip25Permission}
+    const caip25Permission = getCaip25PermissionFromLegacyPermissionsForOrigin(
+      caip25EquivalentPermissions,
+    );
+    requestedPermissions = { ...requestedPermissions, ...caip25Permission };
   }
 
   let grantedPermissions: GrantedPermissions = {};
@@ -108,6 +111,7 @@ async function requestPermissionsImplementation(
   const [frozenGrantedPermissions] = await requestPermissionsForOrigin(
     requestedPermissions,
   );
+
   grantedPermissions = { ...frozenGrantedPermissions };
 
   if (hasCaip25EquivalentPermissions) {
