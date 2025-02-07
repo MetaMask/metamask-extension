@@ -182,6 +182,7 @@ export default class PermissionPageContainer extends Component {
 
   render() {
     const {
+      request,
       requestMetadata,
       targetSubjectMetadata,
       selectedAccounts,
@@ -217,6 +218,7 @@ export default class PermissionPageContainer extends Component {
           />
         )}
         <PermissionPageContainerContent
+          request={request}
           requestMetadata={requestMetadata}
           subjectMetadata={targetSubjectMetadata}
           selectedPermissions={requestedPermissions}
