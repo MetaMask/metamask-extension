@@ -5273,7 +5273,7 @@ export default class MetamaskController extends EventEmitter {
     ]);
 
     const requestedAccounts =
-      permissions[PermissionNames.eth_accounts]?.caveats?.find(
+      permissions[RestrictedMethods.eth_accounts]?.caveats?.find(
         (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
       )?.value ?? [];
 
@@ -5282,14 +5282,14 @@ export default class MetamaskController extends EventEmitter {
         (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
       )?.value ?? [];
 
-    if (permissions[PermissionNames.permittedChains]?.caveats) {
+    if (permissions[RestrictedMethods.eth_accounts]?.caveats) {
       validateCaveatAccounts(
         requestedAccounts,
         this.accountsController.listAccounts.bind(this.accountsController),
       );
     }
 
-    if (permissions[PermissionNames.permittedChains]?.caveat) {
+    if (permissions[PermissionNames.permittedChains]?.caveats) {
       validateCaveatNetworks(
         requestedChains,
         this.networkController.findNetworkClientIdByChainId.bind(

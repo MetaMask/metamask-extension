@@ -55,6 +55,7 @@ import {
   CaveatTypes,
   EndowmentTypes,
   RestrictedEthMethods,
+  RestrictedMethods,
 } from '../../shared/constants/permissions';
 import { deferredPromise } from './lib/util';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
@@ -1643,7 +1644,7 @@ describe('MetaMaskController', () => {
             PermissionSpecifications.validateCaveatAccounts.mockImplementation(
               () => {
                 throw new Error(
-                  `${PermissionNames.eth_accounts} error: Received unrecognized address: "${INVALID_ADDRESS}".`,
+                  `${RestrictedMethods.eth_accounts} error: Received unrecognized address: "${INVALID_ADDRESS}".`,
                 );
               },
             );
@@ -1652,7 +1653,7 @@ describe('MetaMaskController', () => {
           it('should throw exception when requesting invalid account', async () => {
             await expect(
               metamaskController.requestCaip25Approval('test.com', {
-                [PermissionNames.eth_accounts]: {
+                [RestrictedMethods.eth_accounts]: {
                   caveats: [
                     {
                       type: CaveatTypes.restrictReturnedAccounts,
@@ -1662,7 +1663,7 @@ describe('MetaMaskController', () => {
                 },
               }),
             ).rejects.toThrow(
-              `${PermissionNames.eth_accounts} error: Received unrecognized address: "${INVALID_ADDRESS}".`,
+              `${RestrictedMethods.eth_accounts} error: Received unrecognized address: "${INVALID_ADDRESS}".`,
             );
           });
         });
@@ -1684,7 +1685,7 @@ describe('MetaMaskController', () => {
           it('should throw exception when requesting invalid chain id', async () => {
             await expect(
               metamaskController.requestCaip25Approval('test.com', {
-                [PermissionNames.eth_accounts]: {
+                [RestrictedMethods.eth_accounts]: {
                   caveats: [
                     {
                       type: CaveatTypes.restrictReturnedAccounts,
