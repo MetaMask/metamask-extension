@@ -2896,9 +2896,6 @@
   "networkFee": {
     "message": "Network fee"
   },
-  "networkFees": {
-    "message": "Network fees"
-  },
   "networkIsBusy": {
     "message": "Network is busy. Gas prices are high and estimates are less accurate."
   },
