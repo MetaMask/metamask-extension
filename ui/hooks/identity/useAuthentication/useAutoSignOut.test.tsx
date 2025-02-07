@@ -53,17 +53,16 @@ const generateCombinations = (keys: string[]) => {
 
 const prerequisiteCombinations = generateCombinations(prerequisitesStateKeys);
 
-
 prerequisiteCombinations.forEach((combinedState) => {
-    if (
-      combinedState.isUnlocked &&
-      !combinedState.useExternalServices &&
-      combinedState.isSignedIn
-    ) {
-      shouldAutoSignOutTestCases.push(combinedState);
-    } else {
-      shouldNotAutoSignOutTestCases.push(combinedState);
-    }
+  if (
+    combinedState.isUnlocked &&
+    !combinedState.useExternalServices &&
+    combinedState.isSignedIn
+  ) {
+    shouldAutoSignOutTestCases.push(combinedState);
+  } else {
+    shouldNotAutoSignOutTestCases.push(combinedState);
+  }
 });
 
 describe('useAutoSignIn', () => {
