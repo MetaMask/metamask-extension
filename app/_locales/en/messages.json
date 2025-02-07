@@ -5557,6 +5557,9 @@
   "swapSelectAToken": {
     "message": "Select token"
   },
+  "swapSelectDestinationAccount": {
+    "message": "Select a destination account"
+  },
   "swapSelectQuotePopoverDescription": {
     "message": "Below are all the quotes gathered from multiple liquidity sources."
   },

@@ -397,6 +397,10 @@ const PrepareBridgePage = () => {
 
   const isSwap = useIsMultichainSwap();
 
+  const shouldShowAccountPicker = isToOrFromSolana && fromAmount;
+  const canProceedWithBridge =
+    activeQuote && (!isToOrFromSolana || selectedBridgeAccount);
+
   return (
     <Column className="prepare-bridge-page" gap={8}>
       <BridgeInputGroup
@@ -522,7 +526,6 @@ const PrepareBridgePage = () => {
             }}
           />
         </Box>
-
         <BridgeInputGroup
           header={t('swapSelectToken')}
           token={toToken}
@@ -568,7 +571,7 @@ const PrepareBridgePage = () => {
           }}
           isTokenListLoading={isToTokensLoading}
         />
-        {isToOrFromSolana && (
+        {shouldShowAccountPicker && (
           <Box style={{ padding: '24px' }}>
             <DestinationAccountPicker
               isDestinationSolana={toChain?.chainId.startsWith('solana:')}
@@ -589,8 +592,17 @@ const PrepareBridgePage = () => {
               <MascotBackgroundAnimation height="64" width="64" />
             </>
           ) : null}
+          {shouldShowAccountPicker && !selectedBridgeAccount && (
+            <Text
+              textAlign={TextAlign.Center}
+              color={TextColor.textAlternativeSoft}
+            >
+              {t('swapSelectDestinationAccount')}
+            </Text>
+          )}
         </Column>
-
+        {/* // TODO: display this only when an account has been selected. */}
+        {/* {canProceedWithBridge && ( */}
         <Row padding={6}>
           <Column
             gap={3}
