@@ -310,8 +310,9 @@ function transformState(oldState: Record<string, unknown>) {
     const permittedChainsPermission =
       permissions[PermissionNames.permittedChains];
 
-    // if there is no eth_accounts permission we can't create a valid CAIP-25 permission so we remove the permission
-    if (permittedChainsPermission && !ethAccountsPermission) {
+    // if there is no eth_accounts permission we can't create a valid CAIP-25 permission so
+    // we remove the permitted-chains permission if present and then continue
+    if (!ethAccountsPermission) {
       delete permissions[PermissionNames.permittedChains];
       continue;
     }
