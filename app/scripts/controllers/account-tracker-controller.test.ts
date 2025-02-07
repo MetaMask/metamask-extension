@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 import { ControllerMessenger } from '@metamask/base-controller';
-import { InternalAccount } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { BlockTracker, Provider } from '@metamask/network-controller';
 
 import { flushPromises } from '../../../test/lib/timer-helpers';

@@ -1,8 +1,5 @@
-import {
-  EthAccountType,
-  BtcAccountType,
-  InternalAccount,
-} from '@metamask/keyring-api';
+import { EthAccountType, BtcAccountType } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import {
   isBtcMainnetAddress,

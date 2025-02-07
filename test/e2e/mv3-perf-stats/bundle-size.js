@@ -37,7 +37,7 @@ const UIFileRegex = /ui-[0-9]*.js/u;
 async function main() {
   const { argv } = yargs(hideBin(process.argv)).usage(
     '$0 [options]',
-    'Run a page load benchmark',
+    'Capture bundle size stats',
     (_yargs) =>
       _yargs.option('out', {
         description:

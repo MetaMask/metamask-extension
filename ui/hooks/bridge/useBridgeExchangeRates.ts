@@ -5,11 +5,8 @@ import {
   getQuoteRequest,
   getToChain,
 } from '../../ducks/bridge/selectors';
-import {
-  getCurrentCurrency,
-  getMarketData,
-  getParticipateInMetaMetrics,
-} from '../../selectors';
+import { getMarketData, getParticipateInMetaMetrics } from '../../selectors';
+import { getCurrentCurrency } from '../../ducks/metamask/metamask';
 import { decimalToPrefixedHex } from '../../../shared/modules/conversion.utils';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import {

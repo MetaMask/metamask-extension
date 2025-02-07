@@ -4,9 +4,7 @@ import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/jest/mock-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { RequestStatus } from '../../../../app/scripts/controllers/bridge/constants';
+import { RequestStatus } from '../../../../shared/types/bridge';
 import { BridgeCTAButton } from './bridge-cta-button';
 
 describe('BridgeCTAButton', () => {
@@ -23,7 +21,7 @@ describe('BridgeCTAButton', () => {
       bridgeSliceOverrides: { fromTokenInputValue: 1 },
     });
     const { container, getByText } = renderWithProvider(
-      <BridgeCTAButton />,
+      <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
       configureStore(mockStore),
     );
 
@@ -54,7 +52,7 @@ describe('BridgeCTAButton', () => {
       },
     });
     const { getByText } = renderWithProvider(
-      <BridgeCTAButton />,
+      <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
       configureStore(mockStore),
     );
 
@@ -83,7 +81,7 @@ describe('BridgeCTAButton', () => {
       },
     });
     const { getByText, container } = renderWithProvider(
-      <BridgeCTAButton />,
+      <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
       configureStore(mockStore),
     );
 
@@ -118,7 +116,7 @@ describe('BridgeCTAButton', () => {
       },
     });
     const { getByText, getByRole } = renderWithProvider(
-      <BridgeCTAButton />,
+      <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
       configureStore(mockStore),
     );
 
@@ -159,7 +157,7 @@ describe('BridgeCTAButton', () => {
       },
     });
     const { container } = renderWithProvider(
-      <BridgeCTAButton />,
+      <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
       configureStore(mockStore),
     );
 
@@ -199,7 +197,7 @@ describe('BridgeCTAButton', () => {
       },
     });
     const { getByText, getByRole, container } = renderWithProvider(
-      <BridgeCTAButton />,
+      <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
       configureStore(mockStore),
     );
 

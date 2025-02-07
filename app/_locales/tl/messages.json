@@ -330,9 +330,6 @@
   "addingCustomNetwork": {
     "message": "Nagdaragdag ng Network"
   },
-  "addingTokens": {
-    "message": "Nagdaragdag ng mga token"
-  },
   "additionalNetworks": {
     "message": "Mga karagdagang network"
   },
@@ -398,9 +395,6 @@
   "alert": {
     "message": "Alerto"
   },
-  "alertActionBuy": {
-    "message": "Bumili ng ETH"
-  },
   "alertActionUpdateGas": {
     "message": "I-update ang gas limit"
   },
@@ -427,9 +421,6 @@
   },
   "alertMessageGasTooLow": {
     "message": "Para magpatuloy sa transaksyong ito, kakailanganin mong dagdagan ang gas limit sa 21000 o mas mataas."
-  },
-  "alertMessageInsufficientBalance2": {
-    "message": "Wala kang sapat na ETH sa iyong account para bayaran ang mga bayarin sa network."
   },
   "alertMessageNetworkBusy": {
     "message": "Ang mga presyo ng gas ay mataas at ang pagtantiya ay hindi gaanong tumpak."
@@ -626,12 +617,6 @@
   },
   "assetsDescription": {
     "message": "I-autodetect ang mga token sa wallet mo, ipakita ang mga NFT, at kumuha ng naka-batch na mga update sa balanse ng account"
-  },
-  "attemptSendingAssets": {
-    "message": "Maaari mong mawala ang mga asset kung susubukan mo itong ipadala mula sa isang network papunta sa isa pa. Ligtas ng maglipat ng pondo sa pagitan ng mga network sa pamamagitan ng paggamit ng bridge."
-  },
-  "attemptSendingAssetsWithPortfolio": {
-    "message": "Maaaring mawala ang iyong mga asset kung susubukan mong ipadala ito mula sa ibang network. Ilipat ang mga pondo nang ligtas sa pagitan ng mga network gamit ang isang bridge, tulad ng $1"
   },
   "attemptToCancelSwapForFree": {
     "message": "Subukang kanselahin ang swap nang libre"
@@ -840,9 +825,6 @@
   "bridgeCalculatingAmount": {
     "message": "Nagkakalkula..."
   },
-  "bridgeDontSend": {
-    "message": "Bridge, huwag ipadala"
-  },
   "bridgeEnterAmount": {
     "message": "Ilagay ang halaga"
   },
@@ -858,7 +840,6 @@
   "bridgeTo": {
     "message": "I-bridge papunta sa"
   },
-
   "browserNotSupported": {
     "message": "Hindi sinusuportahan ang iyong browser..."
   },
@@ -954,9 +935,6 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "Mag-click dito upang ikonekta ang iyong Ledger sa pamamagitan ng WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
-  },
-  "clickToManuallyAdd": {
-    "message": "Maaari ka ring magdagdag ng mga token nang manu-mano."
   },
   "close": {
     "message": "Isara"
@@ -1060,9 +1038,6 @@
   },
   "confirmTitleTransaction": {
     "message": "Hiling na Transaksyon"
-  },
-  "confirmationAlertModalDetails": {
-    "message": "Para protektahan ang iyong mga asset at impormasyon sa pag-login, iminumungkahi namin na tanggihan mo ang kahilingan."
   },
   "confirmationAlertModalTitle": {
     "message": "Kahina-hinala ang kahilingang ito"
@@ -2139,9 +2114,6 @@
   "gasFee": {
     "message": "Bayad sa gas"
   },
-  "gasIsETH": {
-    "message": "Ang gas ay $1 "
-  },
   "gasLimit": {
     "message": "Limitasyon ng gas"
   },
@@ -2703,9 +2675,6 @@
   "learnScamRisk": {
     "message": "mga panloloko at panganib sa seguridad."
   },
-  "learnToBridge": {
-    "message": "Matutong mag-bridge"
-  },
   "leaveMetaMask": {
     "message": "Umalis sa MetaMask?"
   },
@@ -2796,9 +2765,6 @@
   },
   "loadingScreenSnapMessage": {
     "message": "Mangyaring kumpletuhin ang transaksyon sa Snap."
-  },
-  "loadingTokens": {
-    "message": "Nilo-load ang Mga Token..."
   },
   "localhost": {
     "message": "Localhost 8545"
@@ -2900,9 +2866,6 @@
   },
   "metamaskNotificationsAreOff": {
     "message": "Hindi active sa kasalukuyan ang mga notipikasyon sa wallet."
-  },
-  "metamaskPortfolio": {
-    "message": "MetaMask Portfolio."
   },
   "metamaskSwapsOfflineDescription": {
     "message": "Kasalukuyang minementina ang MetaMask Swaps. Bumalik sa ibang pagkakataon."
@@ -3047,10 +3010,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "Ang $1 ay humihiling ng iyong pag-apruba para:",
     "description": "$1 represents dapp name"
-  },
-  "nativeToken": {
-    "message": "Ang native token sa network na ito ay $1. Ito ang token na ginagamit para sa mga gas fee. ",
-    "description": "$1 represents the name of the native token on the current network"
   },
   "nativeTokenScamWarningConversion": {
     "message": "I-edit ang mga detalye ng network"
@@ -3335,9 +3294,6 @@
   },
   "noThanks": {
     "message": "Salamat na lang"
-  },
-  "noTransactions": {
-    "message": "Wala kang transaksyon"
   },
   "noWebcamFound": {
     "message": "Hindi nakita ang webcam ng iyong computer. Pakisubukan ulit."
@@ -4350,12 +4306,6 @@
   },
   "redesignedConfirmationsToggleDescription": {
     "message": "I-on ito upang makita ang mga hiling sa pirma sa isang pinahusay na format."
-  },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "Pinahusay na mga hiling sa transaksyon"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "I-on ito upang makita ang mga hiling sa transaksyon sa isang pinahusay na format."
   },
   "refreshList": {
     "message": "I-refresh ang listahan"
@@ -5941,9 +5891,6 @@
     "message": "Ang $1 ay aktibo ngayon sa $2",
     "description": "$1 represents the account name, $2 represents the network name"
   },
-  "switchedTo": {
-    "message": "Lumipat ka sa"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Ang paglipat ng network ay magkakansela ng lahat ng nakabinbing kumpirmasyon"
   },
@@ -5980,9 +5927,6 @@
   "themeDescription": {
     "message": "Piliin ang mas gusto mong tema ng MetaMask."
   },
-  "thingsToKeep": {
-    "message": "Mga bagay na dapat tandaan:"
-  },
   "thirdPartySoftware": {
     "message": "Paunawa ng third-party na software",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
@@ -6012,18 +5956,6 @@
   "toAddress": {
     "message": "Para kay/sa: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toggleRequestQueueDescription": {
-    "message": "Pinahihintulutan ka nitong pumili ng network para sa bawat site sa halip na iisang piniling network para sa lahat ng site. Pipigilan ka ng feature na ito na magpalit ng network nang mano-mano, na maaaring makasira sa iyong karanasan bilang user sa ilang partikular na site."
-  },
-  "toggleRequestQueueField": {
-    "message": "Piliin ang mga network para sa bawat site"
-  },
-  "toggleRequestQueueOff": {
-    "message": "Naka-off"
-  },
-  "toggleRequestQueueOn": {
-    "message": "Naka-on"
   },
   "token": {
     "message": "Token"
@@ -6063,9 +5995,6 @@
   },
   "tokenScamSecurityRisk": {
     "message": "mga panloloko sa token at panganib sa seguridad"
-  },
-  "tokenShowUp": {
-    "message": "Maaaring hindi awtomatikong lumabas ang iyong mga token sa iyong wallet. "
   },
   "tokenStandard": {
     "message": "Pamantayan ng token"

@@ -14,7 +14,11 @@ import {
 } from '../../../hooks/useTokensToSearch';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import { I18nContext } from '../../../contexts/i18n';
-import { getTokens, getConversionRate } from '../../../ducks/metamask/metamask';
+import {
+  getTokens,
+  getConversionRate,
+  getCurrentCurrency,
+} from '../../../ducks/metamask/metamask';
 import Box from '../../../components/ui/box';
 import {
   DISPLAY,
@@ -58,7 +62,6 @@ import { getCurrentChainId } from '../../../../shared/modules/selectors/networks
 import {
   getSwapsDefaultToken,
   getTokenExchangeRates,
-  getCurrentCurrency,
   getRpcPrefsForCurrentProvider,
   getTokenList,
   isHardwareWallet,
@@ -141,6 +144,7 @@ import SelectedToken from '../selected-token/selected-token';
 import ListWithSearch from '../list-with-search/list-with-search';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import useBridging from '../../../hooks/bridge/useBridging';
+import { SmartTransactionsBannerAlert } from '../../confirmations/components/smart-transactions-banner-alert';
 import QuotesLoadingAnimation from './quotes-loading-animation';
 import ReviewQuote from './review-quote';
 
@@ -819,6 +823,9 @@ export default function PrepareSwapPage({
         {tokenForImport && isImportTokenModalOpen && (
           <ImportToken isOpen {...importTokenProps} />
         )}
+        <Box>
+          <SmartTransactionsBannerAlert marginType="onlyTop" />
+        </Box>
         <Modal
           onClose={onSwapToClose}
           isOpen={isSwapToOpen}
@@ -893,6 +900,7 @@ export default function PrepareSwapPage({
             display={DISPLAY.FLEX}
             justifyContent={JustifyContent.spaceBetween}
             alignItems={AlignItems.center}
+            gap={4}
           >
             <SelectedToken
               onClick={onSwapFromOpen}

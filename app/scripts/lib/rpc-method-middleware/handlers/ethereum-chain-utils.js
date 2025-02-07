@@ -25,7 +25,7 @@ export function validateChainId(chainId) {
   return _chainId;
 }
 
-export function validateSwitchEthereumChainParams(req, end) {
+export function validateSwitchEthereumChainParams(req) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
     throw rpcErrors.invalidParams({
       message: `Expected single, object parameter. Received:\n${JSON.stringify(
@@ -43,10 +43,10 @@ export function validateSwitchEthereumChainParams(req, end) {
     });
   }
 
-  return validateChainId(chainId, end);
+  return validateChainId(chainId);
 }
 
-export function validateAddEthereumChainParams(params, end) {
+export function validateAddEthereumChainParams(params) {
   if (!params || typeof params !== 'object') {
     throw rpcErrors.invalidParams({
       message: `Expected single, object parameter. Received:\n${JSON.stringify(
@@ -75,7 +75,7 @@ export function validateAddEthereumChainParams(params, end) {
     });
   }
 
-  const _chainId = validateChainId(chainId, end);
+  const _chainId = validateChainId(chainId);
   if (!rpcUrls || !Array.isArray(rpcUrls) || rpcUrls.length === 0) {
     throw rpcErrors.invalidParams({
       message: `Expected an array with at least one valid string HTTPS url 'rpcUrls', Received:\n${rpcUrls}`,

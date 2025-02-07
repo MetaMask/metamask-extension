@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { isSnapId } from '@metamask/snaps-utils';
 import { Content, Header, Page } from '../page';
 import {
   Box,
@@ -26,7 +27,6 @@ import {
   REVIEW_PERMISSIONS,
 } from '../../../../helpers/constants/routes';
 import { getConnectedSitesListWithNetworkInfo } from '../../../../selectors';
-import { isSnapId } from '../../../../helpers/utils/snaps';
 import { ConnectionListItem } from './connection-list-item';
 
 export const PermissionsPage = () => {

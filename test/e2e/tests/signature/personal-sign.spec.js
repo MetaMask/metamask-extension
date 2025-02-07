@@ -116,43 +116,6 @@ describe('Personal sign', function () {
   });
 
   describe('Redesigned confirmation screens', function () {
-    it('can initiate and confirm a personal sign', async function () {
-      await withFixtures(
-        {
-          dapp: true,
-          fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDapp()
-            .build(),
-          ganacheOptions: defaultGanacheOptions,
-          title: this.test.fullTitle(),
-        },
-        async ({ driver, ganacheServer }) => {
-          const addresses = await ganacheServer.getAccounts();
-          const publicAddress = addresses[0];
-          await unlockWallet(driver);
-
-          await openDapp(driver);
-          await driver.clickElement('#personalSign');
-
-          await driver.waitUntilXWindowHandles(3);
-          const windowHandles = await driver.getAllWindowHandles();
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.Dialog,
-            windowHandles,
-          );
-
-          await driver.findElement({
-            css: 'p',
-            text: 'Example `personal_sign` message',
-          });
-
-          await driver.clickElement('[data-testid="confirm-footer-button"]');
-
-          await verifyAndAssertPersonalMessage(driver, publicAddress);
-        },
-      );
-    });
-
     it('can queue multiple personal signs and confirm', async function () {
       await withFixtures(
         {

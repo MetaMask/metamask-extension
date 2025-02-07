@@ -48,16 +48,12 @@ type ExperimentalTabProps = {
   addSnapAccountEnabled: boolean;
   setAddSnapAccountEnabled: (value: boolean) => void;
   ///: END:ONLY_INCLUDE_IF
-  useRequestQueue: boolean;
-  setUseRequestQueue: (value: boolean) => void;
   petnamesEnabled: boolean;
   setPetnamesEnabled: (value: boolean) => void;
   featureNotificationsEnabled: boolean;
   setFeatureNotificationsEnabled: (value: boolean) => void;
   redesignedConfirmationsEnabled: boolean;
   setRedesignedConfirmationsEnabled: (value: boolean) => void;
-  redesignedTransactionsEnabled: boolean;
-  setRedesignedTransactionsEnabled: (value: boolean) => void;
 };
 
 export default class ExperimentalTab extends PureComponent<ExperimentalTabProps> {
@@ -168,23 +164,6 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
     });
   }
 
-  renderToggleRedesignedTransactions() {
-    const { t } = this.context;
-    const { redesignedTransactionsEnabled, setRedesignedTransactionsEnabled } =
-      this.props;
-
-    return this.renderToggleSection({
-      title: t('redesignedTransactionsEnabledToggle'),
-      description: t('redesignedTransactionsToggleDescription'),
-      toggleValue: redesignedTransactionsEnabled,
-      toggleCallback: (value) => setRedesignedTransactionsEnabled(!value),
-      toggleContainerDataTestId: 'toggle-redesigned-transactions-container',
-      toggleDataTestId: 'toggle-redesigned-transactions',
-      toggleOffLabel: t('off'),
-      toggleOnLabel: t('on'),
-    });
-  }
-
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   renderKeyringSnapsToggle() {
     const { t, trackEvent } = this.context;
@@ -236,21 +215,6 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
     );
   }
   ///: END:ONLY_INCLUDE_IF
-
-  renderToggleRequestQueue() {
-    const { t } = this.context;
-    const { useRequestQueue, setUseRequestQueue } = this.props;
-    return this.renderToggleSection({
-      title: t('toggleRequestQueueField'),
-      description: t('toggleRequestQueueDescription'),
-      toggleValue: useRequestQueue || false,
-      toggleCallback: (value) => setUseRequestQueue(!value),
-      toggleContainerDataTestId: 'experimental-setting-toggle-request-queue',
-      toggleDataTestId: 'experimental-setting-toggle-request-queue',
-      toggleOffLabel: t('toggleRequestQueueOff'),
-      toggleOnLabel: t('toggleRequestQueueOn'),
-    });
-  }
 
   renderNotificationsToggle() {
     const { t } = this.context;
@@ -421,9 +385,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
       <div className="settings-page__body">
         {this.renderTogglePetnames()}
         {this.renderToggleRedesignedSignatures()}
-        {this.renderToggleRedesignedTransactions()}
         {process.env.NOTIFICATIONS ? this.renderNotificationsToggle() : null}
-        {this.renderToggleRequestQueue()}
         {/* Section: Account Management Snaps */}
         {
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)

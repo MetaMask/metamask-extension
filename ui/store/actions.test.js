@@ -2734,4 +2734,59 @@ describe('Actions', () => {
       expect(store.getActions()).toStrictEqual([]);
     });
   });
+
+  describe('setSmartTransactionsRefreshInterval', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls setStatusRefreshInterval in the background with provided interval', async () => {
+      const store = mockStore();
+      const refreshInterval = 1000;
+
+      background = {
+        setStatusRefreshInterval: sinon.stub().callsFake((_, cb) => cb()),
+      };
+      setBackgroundConnection(background);
+
+      await store.dispatch(
+        actions.setSmartTransactionsRefreshInterval(refreshInterval),
+      );
+
+      expect(
+        background.setStatusRefreshInterval.calledWith(
+          refreshInterval,
+          sinon.match.func,
+        ),
+      ).toBe(true);
+    });
+
+    it('does not call background if refresh interval is undefined', async () => {
+      const store = mockStore();
+
+      background = {
+        setStatusRefreshInterval: sinon.stub().callsFake((_, cb) => cb()),
+      };
+      setBackgroundConnection(background);
+
+      await store.dispatch(
+        actions.setSmartTransactionsRefreshInterval(undefined),
+      );
+
+      expect(background.setStatusRefreshInterval.called).toBe(false);
+    });
+
+    it('does not call background if refresh interval is null', async () => {
+      const store = mockStore();
+
+      background = {
+        setStatusRefreshInterval: sinon.stub().callsFake((_, cb) => cb()),
+      };
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.setSmartTransactionsRefreshInterval(null));
+
+      expect(background.setStatusRefreshInterval.called).toBe(false);
+    });
+  });
 });

@@ -38,6 +38,7 @@ type SiteCellProps = {
   selectedAccountAddresses: string[];
   selectedChainIds: string[];
   isConnectFlow?: boolean;
+  hideAllToasts?: () => void;
 };
 
 export const SiteCell: React.FC<SiteCellProps> = ({
@@ -49,6 +50,7 @@ export const SiteCell: React.FC<SiteCellProps> = ({
   selectedAccountAddresses,
   selectedChainIds,
   isConnectFlow,
+  hideAllToasts = () => undefined,
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -91,6 +93,30 @@ export const SiteCell: React.FC<SiteCellProps> = ({
       ? t('requestingForNetwork', [selectedNetworks[0].name])
       : t('requestingFor');
 
+  const handleOpenAccountsModal = () => {
+    hideAllToasts?.();
+    setShowEditAccountsModal(true);
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.ViewPermissionedAccounts,
+      properties: {
+        location: 'Connect view, Permissions toast, Permissions (dapp)',
+      },
+    });
+  };
+
+  const handleOpenNetworksModal = () => {
+    hideAllToasts?.();
+    setShowEditNetworksModal(true);
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.ViewPermissionedNetworks,
+      properties: {
+        location: 'Connect view, Permissions toast, Permissions (dapp)',
+      },
+    });
+  };
+
   return (
     <>
       <Box
@@ -105,16 +131,7 @@ export const SiteCell: React.FC<SiteCellProps> = ({
           connectedMessage={accountMessageConnectedState}
           unconnectedMessage={accountMessageNotConnectedState}
           isConnectFlow={isConnectFlow}
-          onClick={() => {
-            setShowEditAccountsModal(true);
-            trackEvent({
-              category: MetaMetricsEventCategory.Navigation,
-              event: MetaMetricsEventName.ViewPermissionedAccounts,
-              properties: {
-                location: 'Connect view, Permissions toast, Permissions (dapp)',
-              },
-            });
-          }}
+          onClick={handleOpenAccountsModal}
           paddingBottomValue={2}
           paddingTopValue={0}
           content={
@@ -136,16 +153,7 @@ export const SiteCell: React.FC<SiteCellProps> = ({
           connectedMessage={networkMessageConnectedState}
           unconnectedMessage={networkMessageNotConnectedState}
           isConnectFlow={isConnectFlow}
-          onClick={() => {
-            setShowEditNetworksModal(true);
-            trackEvent({
-              category: MetaMetricsEventCategory.Navigation,
-              event: MetaMetricsEventName.ViewPermissionedNetworks,
-              properties: {
-                location: 'Connect view, Permissions toast, Permissions (dapp)',
-              },
-            });
-          }}
+          onClick={handleOpenNetworksModal}
           paddingTopValue={2}
           paddingBottomValue={0}
           content={<SiteCellTooltip networks={selectedNetworks} />}

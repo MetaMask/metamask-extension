@@ -7,11 +7,13 @@ import { useParams } from 'react-router-dom';
 import { zeroAddress } from 'ethereumjs-util';
 import {
   getAllDetectedTokensForSelectedAddress,
-  getCurrentCurrency,
   getSelectedInternalAccountWithBalance,
   getTokenExchangeRates,
 } from '../../selectors';
-import { getConversionRate } from '../../ducks/metamask/metamask';
+import {
+  getConversionRate,
+  getCurrentCurrency,
+} from '../../ducks/metamask/metamask';
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
 import {
   AssetWithDisplayData,

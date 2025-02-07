@@ -1,10 +1,11 @@
 import { act, fireEvent, screen } from '@testing-library/react';
 import nock from 'nock';
-import mockMetaMaskState from '../../data/integration-init-state.json';
-import { integrationTestRender } from '../../../lib/render-helpers';
+import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
-import { createMockImplementation } from '../../helpers';
 import { tEn } from '../../../lib/i18n-helpers';
+import { integrationTestRender } from '../../../lib/render-helpers';
+import mockMetaMaskState from '../../data/integration-init-state.json';
+import { createMockImplementation } from '../../helpers';
 import {
   getMetaMaskStateWithUnapprovedPermitSign,
   verifyDetails,
@@ -15,10 +16,20 @@ jest.mock('../../../../ui/store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
 }));
 
+jest.mock('../../../../ui/pages/confirmations/hooks/useAssetDetails', () => ({
+  ...jest.requireActual(
+    '../../../../ui/pages/confirmations/hooks/useAssetDetails',
+  ),
+  useAssetDetails: jest.fn().mockResolvedValue({
+    decimals: '4',
+  }),
+}));
+
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
 };
+const mockedAssetDetails = jest.mocked(useAssetDetails);
 
 const renderPermitBatchSignature = async () => {
   const account =
@@ -58,6 +69,10 @@ describe('Permit Batch Signature Tests', () => {
         getTokenStandardAndDetails: { decimals: '2' },
       }),
     );
+    mockedAssetDetails.mockImplementation(() => ({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      decimals: '4' as any,
+    }));
   });
 
   afterEach(() => {

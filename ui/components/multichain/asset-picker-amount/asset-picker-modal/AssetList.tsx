@@ -7,11 +7,13 @@ import {
 } from '@metamask/network-controller';
 import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import {
-  getCurrentCurrency,
   getCurrentNetwork,
   getSelectedAccountCachedBalance,
 } from '../../../../selectors';
-import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
+import {
+  getCurrentCurrency,
+  getNativeCurrency,
+} from '../../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { Box } from '../../../component-library';
@@ -27,13 +29,16 @@ import LoadingScreen from '../../../ui/loading-screen';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import AssetComponent from './Asset';
-import { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
+import { AssetWithDisplayData, ERC20Asset, NFT, NativeAsset } from './types';
 
 type AssetListProps = {
   handleAssetChange: (
     token: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
   ) => void;
-  asset?: ERC20Asset | NativeAsset;
+  asset?:
+    | ERC20Asset
+    | NativeAsset
+    | Pick<NFT, 'type' | 'tokenId' | 'image' | 'symbol' | 'address'>;
   tokenList: (
     | AssetWithDisplayData<ERC20Asset>
     | AssetWithDisplayData<NativeAsset>

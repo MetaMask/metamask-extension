@@ -49,6 +49,8 @@ export class SignUpPage {
 
   readonly skipSrpBackupBtn: Locator;
 
+  readonly popOverBtn: Locator;
+
   constructor(page: Page) {
     this.page = page;
     this.getStartedBtn = page.locator('button:has-text("Get started")');
@@ -77,6 +79,7 @@ export class SignUpPage {
     this.nextBtn = page.getByTestId('pin-extension-next');
     this.agreeBtn = page.locator('button:has-text("I agree")');
     this.enableBtn = page.locator('button:has-text("Enable")');
+    this.popOverBtn = page.getByTestId('popover-close');
   }
 
   async importWallet() {
@@ -114,5 +117,6 @@ export class SignUpPage {
     await this.gotItBtn.click();
     await this.nextBtn.click();
     await this.doneBtn.click();
+    await this.popOverBtn.click();
   }
 }

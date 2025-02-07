@@ -38,10 +38,15 @@
       display: flex;
       align-items: center;
       position: relative;
+      overflow: hidden;
       width: 100%;
 
       &__title {
         @include design-system.H4;
+
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
 
         @include design-system.screen-sm-min {
           @include design-system.H6;

@@ -3,7 +3,6 @@ import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/jest/mock-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { RequestStatus } from '../../../../app/scripts/controllers/bridge/constants';
 import CrossChainSwap from '../index';
 import { MemoryRouter } from 'react-router-dom';
 import {
@@ -11,6 +10,7 @@ import {
   PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
+import { RequestStatus } from '../../../../shared/types/bridge';
 
 const storybook = {
   title: 'Pages/Bridge/CrossChainSwapPage',
@@ -28,12 +28,15 @@ const Wrapper = ({ children }) => (
 );
 
 const mockFeatureFlags = {
-  srcNetworkAllowlist: [CHAIN_IDS.MAINNET, CHAIN_IDS.LINEA_MAINNET],
-  destNetworkAllowlist: [CHAIN_IDS.MAINNET, CHAIN_IDS.LINEA_MAINNET],
   extensionSupport: true,
   extensionConfig: {
     refreshRate: 30000,
     maxRefreshCount: 5,
+    support: true,
+    chains: {
+      '0x1': { isActiveSrc: true, isActiveDest: true },
+      '0xa': { isActiveSrc: true, isActiveDest: true },
+    },
   },
 };
 const mockBridgeSlice = {

@@ -11,8 +11,6 @@ import 'react-devtools';
 import PortStream from 'extension-port-stream';
 import browser from 'webextension-polyfill';
 
-import Eth from '@metamask/ethjs';
-import EthQuery from '@metamask/eth-query';
 import StreamProvider from 'web3-stream-provider';
 import log from 'loglevel';
 // TODO: Remove restricted import
@@ -362,8 +360,6 @@ function setupWeb3Connection(connectionStream) {
   connectionStream.on('error', console.error.bind(console));
   providerStream.on('error', console.error.bind(console));
   global.ethereumProvider = providerStream;
-  global.ethQuery = new EthQuery(providerStream);
-  global.eth = new Eth(providerStream);
 }
 
 /**
