@@ -16,15 +16,11 @@ import { TokenListItem } from '../../../multichain';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { formatAmount } from '../../../../pages/confirmations/components/simulation-details/formatAmount';
+import { TokenWithFiatAmount } from '../types';
+import useShouldShowFiat from '../hooks/useShouldShowFiat';
 
 type TokenCellProps = {
-  address: string;
-  symbol: string;
-  string?: string;
-  chainId: string;
-  tokenFiatAmount: number | null;
-  image: string;
-  isNative?: boolean;
+  token: TokenWithFiatAmount;
   privacyMode?: boolean;
   onClick?: (chainId: string, address: string) => void;
 };
@@ -47,13 +43,7 @@ export const formatWithThreshold = (
 };
 
 export default function TokenCell({
-  address,
-  image,
-  symbol,
-  chainId,
-  string,
-  tokenFiatAmount,
-  isNative,
+  token,
   privacyMode = false,
   onClick,
 }: TokenCellProps) {
@@ -62,72 +52,78 @@ export default function TokenCell({
   const tokenList = useSelector(getTokenList);
   const isEvm = useSelector(getMultichainIsEvm);
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
-  const isMainnet = chainId ? isChainIdMainnet(chainId) : false;
+  const isEvmMainnet =
+    token.chainId && isEvm ? isChainIdMainnet(token.chainId) : false;
   const tokenData = Object.values(tokenList).find(
-    (token) =>
-      isEqualCaseInsensitive(token.symbol, symbol) &&
-      isEqualCaseInsensitive(token.address, address),
+    (tokenToFind) =>
+      isEqualCaseInsensitive(tokenToFind.symbol, token.symbol) &&
+      isEqualCaseInsensitive(tokenToFind.address, token.address),
   );
+
+  const shouldShowFiat = useShouldShowFiat(); // TODO: break out currency formatter into a useFormattedFiatHook (chain agnostic)
 
   const title =
     tokenData?.name ||
-    (chainId === '0x1' && symbol === 'ETH'
+    (token.chainId === '0x1' && token.symbol === 'ETH'
       ? 'Ethereum'
-      : chainId &&
-        erc20TokensByChain?.[chainId]?.data?.[address.toLowerCase()]?.name) ||
-    symbol;
+      : token.chainId &&
+        erc20TokensByChain?.[token.chainId]?.data?.[token.address.toLowerCase()]
+          ?.name) ||
+    token.symbol;
 
   const tokenImage =
     tokenData?.iconUrl ||
-    (chainId &&
-      erc20TokensByChain?.[chainId]?.data?.[address.toLowerCase()]?.iconUrl) ||
-    image;
+    (token.chainId &&
+      erc20TokensByChain?.[token.chainId]?.data?.[token.address.toLowerCase()]
+        ?.iconUrl) ||
+    token.image;
 
   const secondaryThreshold = 0.01;
   // Format for fiat balance with currency style
-  const secondary =
-    tokenFiatAmount === null
-      ? undefined
-      : formatWithThreshold(tokenFiatAmount, secondaryThreshold, locale, {
-          style: 'currency',
-          currency: currentCurrency.toUpperCase(),
-        });
+  const secondary = shouldShowFiat
+    ? formatWithThreshold(token.tokenFiatAmount, secondaryThreshold, locale, {
+        style: 'currency',
+        currency: currentCurrency.toUpperCase(),
+      })
+    : undefined;
 
   const primary = formatAmount(
     locale,
-    new BigNumber(Number(string) || '0', 10),
+    new BigNumber(Number(token.string) || '0', 10),
   );
 
-  const isStakeable = isMainnet && isEvm && isNative;
+  const isStakeable = isEvmMainnet && isEvm && token.isNative;
 
   function handleOnClick() {
-    if (!onClick || !chainId) {
+    if (!onClick || !token.chainId) {
       return;
     }
-    onClick(chainId, address);
+    onClick(token.chainId, token.address);
   }
 
-  if (!chainId) {
+  if (!token.chainId) {
     return null;
   }
 
-  const tokenChainImage = getImageForChainId(chainId);
+  const tokenChainImage = getImageForChainId(token.chainId);
 
   return (
     <TokenListItem
       onClick={handleOnClick}
-      tokenSymbol={symbol}
-      tokenImage={isNative ? getNativeCurrencyForChain(chainId) : tokenImage}
+      tokenSymbol={token.symbol}
+      tokenImage={
+        token.isNative ? getNativeCurrencyForChain(token.chainId) : tokenImage
+      }
       tokenChainImage={tokenChainImage || undefined}
       primary={primary}
       secondary={secondary}
       title={title}
-      address={address}
+      address={token.address}
       isStakeable={isStakeable}
       showPercentage
       privacyMode={privacyMode}
-      isNativeCurrency={isNative}
-      chainId={chainId}
+      isNativeCurrency={token.isNative}
+      chainId={token.chainId}
     />
   );
 }

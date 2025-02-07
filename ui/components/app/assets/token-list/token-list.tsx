@@ -6,7 +6,7 @@ import { getChainIdsToPoll, getPreferences } from '../../../../selectors';
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { useTokenBalances as pollAndUpdateEvmBalances } from '../../../../hooks/useTokenBalances';
 import useSortedFilteredTokens from '../hooks/useSortedFilteredTokens';
-import useShouldShowFiat from '../hooks/useShouldShowFiat';
+import { TokenWithFiatAmount } from '../types';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -26,7 +26,6 @@ export default function TokenList({
   });
 
   const sortedFilteredTokens = useSortedFilteredTokens();
-  const shouldShowFiat = useShouldShowFiat();
 
   useEffect(() => {
     if (sortedFilteredTokens) {
@@ -41,16 +40,10 @@ export default function TokenList({
 
   return (
     <div>
-      {sortedFilteredTokens.map((token) => (
+      {sortedFilteredTokens.map((token: TokenWithFiatAmount) => (
         <TokenCell
           key={`${token.chainId}-${token.symbol}-${token.address}`}
-          chainId={token.chainId}
-          address={token.address}
-          symbol={token.symbol}
-          tokenFiatAmount={shouldShowFiat ? token.tokenFiatAmount : null}
-          image={token?.image}
-          isNative={token.isNative}
-          string={token.string}
+          token={token}
           privacyMode={privacyMode}
           onClick={onTokenClick}
         />
