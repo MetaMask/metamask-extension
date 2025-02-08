@@ -354,23 +354,27 @@ const CoinButtons = ({
     });
   }, [chainId, defaultSwapsToken]);
 
-  const handleBridgeOnClick = useCallback(async () => {
-    if (!defaultSwapsToken) {
-      return;
-    }
-    await setCorrectChain();
-    openBridgeExperience(
-      'Home',
-      defaultSwapsToken,
-      location.pathname.includes('asset') ? '&token=native' : '',
-    );
-  }, [defaultSwapsToken, location, openBridgeExperience]);
+  const handleBridgeOnClick = useCallback(
+    async (isSwap: boolean) => {
+      if (!defaultSwapsToken) {
+        return;
+      }
+      await setCorrectChain();
+      openBridgeExperience(
+        MetaMetricsSwapsEventSource.MainView,
+        defaultSwapsToken,
+        location.pathname.includes('asset') ? '&token=native' : '',
+        isSwap,
+      );
+    },
+    [defaultSwapsToken, location, openBridgeExperience],
+  );
   ///: END:ONLY_INCLUDE_IF
 
   const handleSwapOnClick = useCallback(async () => {
     ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
     if (multichainChainId === MultichainNetworks.SOLANA) {
-      handleBridgeOnClick();
+      handleBridgeOnClick(true);
       return;
     }
     ///: END:ONLY_INCLUDE_IF
@@ -469,7 +473,7 @@ const CoinButtons = ({
             />
           }
           label={t('bridge')}
-          onClick={handleBridgeOnClick}
+          onClick={() => handleBridgeOnClick(false)}
           tooltipRender={(contents: React.ReactElement) =>
             generateTooltip('bridgeButton', contents)
           }

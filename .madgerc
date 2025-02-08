@@ -1,0 +1,27 @@
+{
+  "excludeRegExp": [
+    "/.[^/]*\/test\/.[^/]*/u",
+    "/.[^/]*\/tests\/.[^/]*/u",
+    "/.[^/]*\/[^/]*.test.[^/]*/u",
+    "/.[^/]*\/[^/]*.spec.[^/]*/u",
+    "/.[^/]*\/stories\/.[^/]*/u",
+    "/.[^/]*\/storybook\/.[^/]*/u",
+    "/.[^/]*\/[^/]*.stories.[^/]*/u"
+  ],
+  "fileExtensions": ["js", "jsx", "ts", "tsx"],
+  "tsConfig": "tsconfig.json",
+  "webpackConfig": "webpack.config.js",
+  "detectiveOptions": {
+    "es6": {
+      "skipTypeImports": true
+    },
+    "ts": {
+      "skipTypeImports": true,
+      "skipAsyncImports": true
+    },
+    "tsx": {
+      "skipTypeImports": true,
+      "skipAsyncImports": true
+    }
+  }
+}

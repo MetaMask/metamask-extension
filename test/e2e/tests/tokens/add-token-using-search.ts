@@ -47,7 +47,7 @@ describe('Add existing token using search', function () {
             [CHAIN_IDS.OPTIMISM]: true,
           })
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           chainId: parseInt(CHAIN_IDS.BSC, 16),
         },

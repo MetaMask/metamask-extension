@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        build-type: [main, beta, flask]
+        build-type: [main, beta, flask, mmi]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
