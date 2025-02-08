@@ -23,11 +23,28 @@ describe('createUnsupportedMethodMiddleware', () => {
 
   // @ts-expect-error This function is missing from the Mocha type definitions
   it.each(UNSUPPORTED_RPC_METHODS)(
-    'ends requests for methods that are in the list of unsupported methods: %s',
+    'ends requests for default unsupported rpc methods when no list is provided: %s',
     (method: string) => {
-      const middleware = createUnsupportedMethodMiddleware(
-        UNSUPPORTED_RPC_METHODS,
-      );
+      const middleware = createUnsupportedMethodMiddleware();
+      const nextMock = jest.fn();
+      const endMock = jest.fn();
+
+      const response = getMockResponse();
+      middleware(getMockRequest(method), response, nextMock, endMock);
+
+      expect('result' in response).toBe(false);
+      expect(nextMock).not.toHaveBeenCalled();
+      expect(endMock).toHaveBeenCalledTimes(1);
+    },
+  );
+
+  const unsupportedMethods = ['foo', 'bar'];
+
+  // @ts-expect-error This function is missing from the Mocha type definitions
+  it.each(unsupportedMethods)(
+    'ends requests for methods that are in the provided list of unsupported methods: %s',
+    (method: string) => {
+      const middleware = createUnsupportedMethodMiddleware(unsupportedMethods);
       const nextMock = jest.fn();
       const endMock = jest.fn();
 

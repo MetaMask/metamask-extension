@@ -42,9 +42,6 @@ async function main() {
   const doc = await parseOpenRPCDocument(
     MultiChainOpenRPCDocument as OpenrpcDocument,
   );
-  const providerAuthorize = doc.methods.find(
-    (m) => (m as MethodObject).name === 'wallet_createSession',
-  );
 
   const walletRpcMethods: string[] = [
     'wallet_registerOnboarding',
@@ -119,124 +116,6 @@ async function main() {
 
       // Open Dapp
       await openDapp(driver, undefined, DAPP_URL);
-
-      // fix the example for wallet_createSession
-      (providerAuthorize as MethodObject).examples = [
-        {
-          name: 'wallet_createSessionEthExample',
-          description:
-            'Example of a provider authorization request with eip155 scopes.',
-          params: [
-            {
-              name: 'requiredScopes',
-              value: {
-                eip155: {
-                  references: ['1337'],
-                  methods: ethereumMethods,
-                  notifications: ['eth_subscription'],
-                },
-                'wallet:eip155': {
-                  methods: walletEip155Methods,
-                  notifications: [],
-                },
-                wallet: {
-                  methods: walletRpcMethods,
-                  notifications: [],
-                },
-              },
-            },
-          ],
-          result: {
-            name: 'wallet_createSessionEthResultExample',
-            value: {
-              sessionScopes: {
-                [`eip155:${chainId}`]: {
-                  accounts: [`eip155:${chainId}:${ACCOUNT_1}`],
-                  methods: ethereumMethods,
-                  notifications: ['eth_subscription'],
-                },
-                'wallet:eip155': {
-                  accounts: [`wallet:eip155:${ACCOUNT_1}`],
-                  methods: walletEip155Methods,
-                  notifications: [],
-                },
-                wallet: {
-                  accounts: [`wallet:eip155:${ACCOUNT_1}`],
-                  methods: walletRpcMethods,
-                  notifications: [],
-                },
-              },
-            },
-          },
-        },
-        {
-          name: 'wallet_createSessionEthUnsupportedMethodsExample',
-          description:
-            'Example of a provider authorization request with unsupported eip155 methods.',
-          params: [
-            {
-              name: 'requiredScopes',
-              value: {
-                eip155: {
-                  references: ['1337'],
-                  methods: ['not_supported'],
-                  notifications: [],
-                },
-              },
-            },
-          ],
-          result: {
-            name: 'wallet_createSessionEthUnsupportedMethodsResultExample',
-            value: {
-              sessionScopes: {
-                [`eip155:${chainId}`]: {
-                  accounts: [`eip155:${chainId}:${ACCOUNT_1}`],
-                  methods: ethereumMethods,
-                  notifications: ['eth_subscription'],
-                },
-              },
-            },
-          },
-        },
-        {
-          name: 'wallet_createSessionUnsupportedScopesExample',
-          description:
-            'Example of a provider authorization request with unsupported scopes.',
-          params: [
-            {
-              name: 'requiredScopes',
-              value: {
-                'foo:bar': {
-                  methods: [],
-                  notifications: [],
-                },
-              },
-            },
-          ],
-          result: {
-            name: 'wallet_createSessionUnsupportedScopesResultExample',
-            value: {
-              sessionScopes: {
-                [`eip155:1`]: {
-                  accounts: [`eip155:1:${ACCOUNT_1}`],
-                  methods: ethereumMethods,
-                  notifications: ['eth_subscription'],
-                },
-                [`eip155:59144`]: {
-                  accounts: [`eip155:59144:${ACCOUNT_1}`],
-                  methods: ethereumMethods,
-                  notifications: ['eth_subscription'],
-                },
-                [`eip155:${chainId}`]: {
-                  accounts: [`eip155:${chainId}:${ACCOUNT_1}`],
-                  methods: ethereumMethods,
-                  notifications: ['eth_subscription'],
-                },
-              },
-            },
-          },
-        },
-      ];
 
       const server = mockServer(
         port,

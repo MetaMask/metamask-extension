@@ -176,7 +176,66 @@ describe('PermissionController selectors', () => {
       ).toStrictEqual(new Map());
     });
 
-    it('returns a new map of the removed authorizations if the new and previous values differ', () => {
+    it('returns a new map of the removed scopes in authorizations', () => {
+      const previousAuthorizations = new Map([
+        [
+          'foo.bar',
+          {
+            requiredScopes: {
+              'eip155:1': {
+                accounts: [],
+              },
+            },
+            optionalScopes: {
+              'eip155:5': {
+                accounts: [],
+              },
+              'eip155:10': {
+                accounts: [],
+              },
+            },
+          },
+        ],
+      ]);
+
+      const newAuthorizations = new Map([
+        [
+          'foo.bar',
+          {
+            requiredScopes: {
+              'eip155:1': {
+                accounts: [],
+              },
+            },
+            optionalScopes: {
+              'eip155:10': {
+                accounts: [],
+              },
+            },
+          },
+        ],
+      ]);
+
+      expect(
+        getRemovedAuthorizations(newAuthorizations, previousAuthorizations),
+      ).toStrictEqual(
+        new Map([
+          [
+            'foo.bar',
+            {
+              requiredScopes: {},
+              optionalScopes: {
+                'eip155:5': {
+                  accounts: [],
+                },
+              },
+            },
+          ],
+        ]),
+      );
+    });
+
+    it('returns a new map of the revoked authorizations', () => {
       const mockAuthorization = {
         requiredScopes: {
           'eip155:1': {
