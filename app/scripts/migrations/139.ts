@@ -321,7 +321,7 @@ function transformState(oldState: Record<string, unknown>) {
         new Error(
           `Migration ${version}: Invalid state.PermissionController.subjects[${origin}].permissions[${
             PermissionNames.eth_accounts
-          }: ${JSON.stringify(ethAccountsPermission)}`,
+          }]: ${JSON.stringify(ethAccountsPermission)}`,
         ),
       );
       return oldState;
