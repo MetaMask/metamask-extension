@@ -24,6 +24,7 @@ import {
   AllowedBridgeChainIds,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
 } from '../../../../shared/constants/bridge';
+import { calcGasTotal } from '../../../../shared/lib/transactions-controller-utils';
 
 type I18nFunction = (
   key: string,
@@ -70,6 +71,27 @@ const getBridgeActionText = (
 };
 
 const getBridgeActionStatus = (bridgeHistoryItem: BridgeHistoryItem) => {
+  // Add gas calculation for L2-to-L2 bridges
+  if (bridgeHistoryItem.quote.srcChainId && bridgeHistoryItem.quote.destChainId) {
+    const isL2ToL2Bridge = true; // For Arbitrum to Optimism bridges
+
+    // Calculate gas with L2 bridge options
+    const gasOptions = {
+      isL2ToL2Bridge,
+      srcChainId: bridgeHistoryItem.quote.srcChainId,
+      destChainId: bridgeHistoryItem.quote.destChainId,
+    };
+
+    // Update gas calculations in the transaction
+    if (bridgeHistoryItem.srcChainTx?.gasLimit && bridgeHistoryItem.srcChainTx?.gasPrice) {
+      bridgeHistoryItem.srcChainTx.gasTotal = calcGasTotal(
+        bridgeHistoryItem.srcChainTx.gasLimit,
+        bridgeHistoryItem.srcChainTx.gasPrice,
+        gasOptions
+      );
+    }
+  }
+
   return bridgeHistoryItem.status ? bridgeHistoryItem.status.status : null;
 };
 
