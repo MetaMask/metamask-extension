@@ -1671,7 +1671,7 @@ describe('MetaMaskController', () => {
         describe('unrecognized chain id requested', () => {
           beforeEach(() => {
             PermissionSpecifications.validateCaveatAccounts.mockImplementation(
-              () => ({}),
+              () => undefined,
             );
             PermissionSpecifications.validateCaveatNetworks.mockImplementation(
               () => {
