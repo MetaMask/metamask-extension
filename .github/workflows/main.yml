@@ -16,7 +16,7 @@ on:
 jobs:
   lint-workflows:
     name: Lint workflows
-    uses: metamask/github-tools/.github/workflows/lint-workflows.yml@c534f265e02af2f2422a3c686bb09a11bfbf4cc2
+    uses: metamask/github-tools/.github/workflows/lint-workflows.yml@latest
 
   test-lint-shellcheck:
     name: Test lint shellcheck
@@ -76,7 +76,7 @@ jobs:
 
   runway:
     name: Runway
-    # For a `pull_request` event, the branch is `github.head_ref``.
+    # For a `pull_request` event, the branch is `github.head_ref`.
     # For a `push` event, the branch is `github.ref_name`.
     if: ${{ startsWith(github.head_ref || github.ref_name, 'Version-v') }}
     needs:
@@ -158,7 +158,7 @@ jobs:
     if: ${{ github.event_name == 'merge_group' && failure() && !github.event.repository.fork }}
     needs:
       - all-jobs-pass
-    uses: metamask/github-tools/.github/workflows/log-merge-group-failure.yml@6bbad335a01fce1a9ec1eabd9515542c225d46c0
+    uses: metamask/github-tools/.github/workflows/log-merge-group-failure.yml@latest
     secrets:
       GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
       GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
