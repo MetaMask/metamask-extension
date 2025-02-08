@@ -63,6 +63,7 @@ buildTypes:
     # will not be removed
     features:
       - build-flask
+      - institutional-snap
       - keyring-snaps
       - solana
       - solana-swaps
@@ -141,6 +142,9 @@ features:
     assets:
       - ./{app,shared,ui}/**/solana/**
   solana-swaps:
+  institutional-snap:
+    assets:
+      - ./{app,shared,ui}/**/institutional-snap/**
 
 # Env variables that are required for all types of builds
 #

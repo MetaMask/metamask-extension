@@ -258,6 +258,7 @@
     "tslib@npm:^2.3.1": "~2.6.0",
     "tslib@npm:^2.4.0": "~2.6.0",
     "tslib@npm:^2.6.2": "~2.6.0",
+    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@45.0.0-preview-224dff25",
     "@metamask/providers@npm:^18.3.1": "patch:@metamask/providers@npm%3A19.0.0#~/.yarn/patches/@metamask-providers-npm-19.0.0-3d962c6f1a.patch"
   },
   "dependencies": {
@@ -312,6 +313,7 @@
     "@metamask/eth-trezor-keyring": "^6.0.0",
     "@metamask/etherscan-link": "^3.0.0",
     "@metamask/gas-fee-controller": "^22.0.1",
+    "@metamask/institutional-wallet-snap": "0.3.1",
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/json-rpc-engine": "^10.0.0",
     "@metamask/json-rpc-middleware-stream": "^8.0.4",

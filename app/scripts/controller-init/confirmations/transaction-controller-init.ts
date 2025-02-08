@@ -46,6 +46,12 @@ import {
 import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import { ControllerFlatState } from '../controller-list';
 
+import {
+  deferPublicationHookFactory,
+  InstitutionalSnapMessenger,
+  beforeCheckPendingTransactionHookFactory,
+} from '../../lib/transaction/institutional-snap/deferred-publication-hooks';
+
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
   TransactionControllerMessenger,
@@ -127,6 +133,16 @@ export const TransactionControllerInit: ControllerInitFunction<
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
     hooks: {
+      ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+      beforePublish: deferPublicationHookFactory(
+        () => controller,
+        controllerMessenger as InstitutionalSnapMessenger,
+      ),
+
+      beforeCheckPendingTransactions: beforeCheckPendingTransactionHookFactory(
+        controllerMessenger as InstitutionalSnapMessenger,
+      ),
+      ///: END:ONLY_INCLUDE_IF(institutional-snap)
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       afterSign: (txMeta, signedEthTx) =>
         afterTransactionSignMMI(
@@ -138,7 +154,7 @@ export const TransactionControllerInit: ControllerInitFunction<
         ),
       beforeCheckPendingTransaction:
         beforeCheckPendingTransactionMMI.bind(this),
-      beforePublish: beforeTransactionPublishMMI.bind(this),
+      // beforePublish: beforeTransactionPublishMMI.bind(this),
       getAdditionalSignArguments: getAdditionalSignArgumentsMMI.bind(this),
       ///: END:ONLY_INCLUDE_IF
       // @ts-expect-error Controller type does not support undefined return value

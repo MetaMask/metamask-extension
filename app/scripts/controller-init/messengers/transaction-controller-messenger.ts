@@ -1,4 +1,9 @@
-import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
+import {
+  // BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+  AccountsControllerGetAccountByAddressAction,
+  // END:ONLY_INCLUDE_IF(institutional-snap)
+  AccountsControllerGetSelectedAccountAction,
+} from '@metamask/accounts-controller';
 import { ApprovalControllerActions } from '@metamask/approval-controller';
 import { Messenger } from '@metamask/base-controller';
 import {
@@ -21,6 +26,9 @@ import {
   TransactionControllerUnapprovedTransactionAddedEvent,
 } from '@metamask/transaction-controller';
 import { SmartTransactionsControllerSmartTransactionEvent } from '@metamask/smart-transactions-controller';
+// BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+import { HandleSnapRequest } from '@metamask/snaps-controllers';
+// END:ONLY_INCLUDE_IF(institutional-snap)
 import {
   SwapsControllerSetApproveTxIdAction,
   SwapsControllerSetTradeTxIdAction,
@@ -33,7 +41,11 @@ type MessengerActions =
   | NetworkControllerGetEIP1559CompatibilityAction
   | NetworkControllerGetNetworkClientByIdAction
   | SwapsControllerSetApproveTxIdAction
-  | SwapsControllerSetTradeTxIdAction;
+  | SwapsControllerSetTradeTxIdAction
+  // BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+  | HandleSnapRequest
+  | AccountsControllerGetAccountByAddressAction;
+// END:ONLY_INCLUDE_IF(institutional-snap)
 
 type MessengerEvents =
   | TransactionControllerTransactionApprovedEvent
@@ -63,6 +75,10 @@ export function getTransactionControllerMessenger(
       `ApprovalController:addRequest`,
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
+      // BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+      'SnapController:handleRequest',
+      'AccountsController:getAccountByAddress',
+      // END:ONLY_INCLUDE_IF(institutional-snap)
     ],
     allowedEvents: [`NetworkController:stateChange`],
   });

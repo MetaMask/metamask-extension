@@ -2704,6 +2704,12 @@ export function getIsBitcoinTestnetSupportEnabled(state) {
   return state.metamask.bitcoinTestnetSupportEnabled;
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+export function getManageInstitutionalWallets(state) {
+  return state.metamask.manageInstitutionalWallets;
+}
+///: END:ONLY_INCLUDE_IF(institutional-snap)
+
 export function getIsCustomNetwork(state) {
   const chainId = getCurrentChainId(state);
 

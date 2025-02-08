@@ -14,6 +14,9 @@ import {
   setShowTestNetworks,
   setSmartTransactionsPreferenceEnabled,
   showModal,
+  ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+  setManageInstitutionalWallets,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
 import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/modules/selectors';
 import {
@@ -31,6 +34,9 @@ export const mapStateToProps = (state) => {
     featureFlags: { sendHexData } = {},
     dismissSeedBackUpReminder,
     overrideContentSecurityPolicyHeader,
+    ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+    manageInstitutionalWallets,
+    ///: END:ONLY_INCLUDE_IF
   } = metamask;
   const {
     showFiatInTestnets,
@@ -49,6 +55,9 @@ export const mapStateToProps = (state) => {
     autoLockTimeLimit,
     dismissSeedBackUpReminder,
     overrideContentSecurityPolicyHeader,
+    ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+    manageInstitutionalWallets,
+    ///: END:ONLY_INCLUDE_IF
   };
 };
 
@@ -83,6 +92,11 @@ export const mapDispatchToProps = (dispatch) => {
     setOverrideContentSecurityPolicyHeader: (value) => {
       return dispatch(setOverrideContentSecurityPolicyHeader(value));
     },
+    ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+    setManageInstitutionalWallets: (value) => {
+      return dispatch(setManageInstitutionalWallets(value));
+    },
+    ///: END:ONLY_INCLUDE_IF
   };
 };
 
