@@ -13,6 +13,12 @@ import { formatAmount } from '../../../../pages/confirmations/components/simulat
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import BigNumber from 'bignumber.js';
 import { formatWithThreshold } from '../util/formatWithThreshold';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
+import {
+  CURRENCY_SYMBOLS,
+  NON_EVM_CURRENCY_SYMBOLS,
+} from '../../../../../shared/constants/network';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 interface UseTokenDisplayInfoProps {
   token: TokenWithFiatAmount;
@@ -30,6 +36,7 @@ type TokenDisplayInfo = {
 const useTokenDisplayInfo = ({
   token,
 }: UseTokenDisplayInfoProps): TokenDisplayInfo => {
+  const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
   const tokenList = useSelector(getTokenList);
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
@@ -64,8 +71,6 @@ const useTokenDisplayInfo = ({
         isEqualCaseInsensitive(tokenToFind.symbol, token.symbol) &&
         isEqualCaseInsensitive(tokenToFind.address, token.address),
     );
-
-    console.log();
 
     const title =
       tokenData?.name ||

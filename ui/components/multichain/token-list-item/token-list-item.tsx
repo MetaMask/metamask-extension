@@ -25,9 +25,7 @@ import {
   ButtonIcon,
   ButtonIconSize,
   ButtonSecondary,
-  Icon,
   IconName,
-  IconSize,
   Modal,
   ModalBody,
   ModalContent,
@@ -39,13 +37,14 @@ import {
   Text,
 } from '../../component-library';
 import {
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
-  getDataCollectionForMarketing,
   getMarketData,
   getCurrencyRates,
+  getNativeCurrencyForChain,
 } from '../../../selectors';
-import { getMultichainIsEvm } from '../../../selectors/multichain';
+import {
+  getImageForChainId,
+  getMultichainIsEvm,
+} from '../../../selectors/multichain';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -61,53 +60,37 @@ import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { setEditedNetwork } from '../../../store/actions';
-import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import {
   SafeChain,
   useSafeChains,
 } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { TokenFiatDisplayInfo } from '../../app/assets/types';
 import { PercentageChange } from './price/percentage-change/percentage-change';
+import { StakeableLink } from './stakeable-link';
 
 type TokenListItemProps = {
   className?: string;
+  token: TokenFiatDisplayInfo;
   onClick?: (arg?: string) => void;
-  tokenSymbol?: string;
-  tokenImage: string;
-  primary?: string;
-  secondary?: string | null;
-  title: string;
+  showPercentage?: boolean;
+  // Figure out how to abstract the bottom from Asset.tsx
   tooltipText?: string;
-  isNativeCurrency?: boolean;
-  isStakeable?: boolean;
   isTitleNetworkName?: boolean;
   isTitleHidden?: boolean;
-  tokenChainImage?: string;
-  chainId: string;
-  address?: string | null;
-  showPercentage?: boolean;
   isPrimaryTokenSymbolHidden?: boolean;
   privacyMode?: boolean;
 };
 
 export const TokenListItem = ({
   className,
+  token,
   onClick,
-  tokenSymbol,
-  tokenImage,
-  primary,
-  secondary,
-  title,
   tooltipText,
-  tokenChainImage,
-  chainId,
   isPrimaryTokenSymbolHidden = false,
-  isNativeCurrency = false,
-  isStakeable = false,
   isTitleNetworkName = false,
   isTitleHidden = false,
-  address = null,
   showPercentage = false,
   privacyMode = false,
 }: TokenListItemProps) => {
@@ -116,14 +99,11 @@ export const TokenListItem = ({
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
   const trackEvent = useContext(MetaMetricsContext);
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
-  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const currencyRates = useSelector(getCurrencyRates);
   const multiChainMarketData = useSelector(getMarketData);
   const { safeChains } = useSafeChains();
 
-  const decimalChainId = isEvm && parseInt(hexToDecimal(chainId), 10);
+  const decimalChainId = isEvm && parseInt(hexToDecimal(token.chainId), 10);
 
   const safeChainDetails: SafeChain | undefined = safeChains?.find((chain) => {
     if (typeof decimalChainId === 'number') {
@@ -136,24 +116,31 @@ export const TokenListItem = ({
   // we only use this option for EVM here:
   const shouldShowPercentage = isEvm && showPercentage;
 
-  const isOriginalTokenSymbol = tokenSymbol && currencyRates[tokenSymbol];
+  const isOriginalTokenSymbol = token.symbol && currencyRates[token.symbol];
 
   // Scam warning
   const showScamWarning =
-    isNativeCurrency && !isOriginalTokenSymbol && shouldShowPercentage;
+    token.isNative && !isOriginalTokenSymbol && shouldShowPercentage;
 
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
 
-  const getTokenTitle = () => {
+  const tokenPercentageChange = token.address
+    ? multiChainMarketData?.[token.chainId]?.[token.address]
+        ?.pricePercentChange1d
+    : null;
+
+  // TODO Figure out how to handle this token title with title function in parent. We need some props from Asset.tsx
+  // Maybe these can be optionally passed into `useTokenDisplayInfo` hook
+  const tokenTitle = () => {
     if (isTitleNetworkName) {
       return NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-        chainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
+        token.chainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
       ];
     }
     if (isTitleHidden) {
       return undefined;
     }
-    switch (title) {
+    switch (token.title) {
       case CURRENCY_SYMBOLS.ETH:
         return t('networkNameEthereum');
       case NON_EVM_CURRENCY_SYMBOLS.BTC:
@@ -161,71 +148,33 @@ export const TokenListItem = ({
       case NON_EVM_CURRENCY_SYMBOLS.SOL:
         return t('networkNameSolana');
       default:
-        return title;
+        return token.title;
     }
   };
-
-  const tokenPercentageChange = address
-    ? multiChainMarketData?.[chainId]?.[address]?.pricePercentChange1d
-    : null;
-
-  const tokenTitle = getTokenTitle();
   const tokenMainTitleToDisplay =
-    shouldShowPercentage && !isTitleNetworkName ? tokenTitle : tokenSymbol;
+    shouldShowPercentage && !isTitleNetworkName ? tokenTitle() : token.symbol;
 
-  const stakeableTitle = (
-    <Box
-      as="button"
-      backgroundColor={BackgroundColor.transparent}
-      data-testid={`staking-entrypoint-${chainId}`}
-      gap={1}
-      paddingInline={0}
-      paddingInlineStart={1}
-      paddingInlineEnd={1}
-      tabIndex={0}
-      onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const url = getPortfolioUrl(
-          'stake',
-          'ext_stake_button',
-          metaMetricsId,
-          isMetaMetricsEnabled,
-          isMarketingEnabled,
-        );
-        global.platform.openTab({ url });
-        trackEvent({
-          event: MetaMetricsEventName.StakingEntryPointClicked,
-          category: MetaMetricsEventCategory.Tokens,
-          properties: {
-            location: 'Token List Item',
-            text: 'Stake',
-            // FIXME: This might not be a number for non-EVM accounts
-            chain_id: chainId,
-            token_symbol: tokenSymbol,
-          },
-        });
-      }}
-    >
-      <Text as="span">•</Text>
-      <Text
-        as="span"
-        color={TextColor.primaryDefault}
-        paddingInlineStart={1}
-        paddingInlineEnd={1}
-        fontWeight={FontWeight.Medium}
-      >
-        {t('stake')}
-      </Text>
-      <Icon
-        name={IconName.Stake}
-        size={IconSize.Sm}
-        color={IconColor.primaryDefault}
-      />
-    </Box>
-  );
   // Used for badge icon
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    e.preventDefault();
+
+    if (showScamWarningModal) {
+      return;
+    }
+
+    onClick?.();
+    trackEvent({
+      category: MetaMetricsEventCategory.Tokens,
+      event: MetaMetricsEventName.TokenDetailsOpened,
+      properties: {
+        location: 'Home',
+        chain_id: token.chainId, // FIXME: Ensure this is a number for EVM accounts
+        token_symbol: token.symbol,
+      },
+    });
+  };
 
   return (
     <Box
@@ -241,8 +190,10 @@ export const TokenListItem = ({
       <Box
         className={classnames('multichain-token-list-item__container-cell', {
           'multichain-token-list-item__container-cell--clickable':
-            onClick !== undefined,
+            Boolean(onClick),
         })}
+        as={onClick ? 'a' : 'div'}
+        onClick={onClick ? handleClick : undefined}
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         paddingTop={2}
@@ -252,36 +203,13 @@ export const TokenListItem = ({
         width={BlockSize.Full}
         style={{ height: 62 }}
         data-testid="multichain-token-list-button"
-        {...(onClick && {
-          as: 'a',
-          href: '#',
-          onClick: (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-            e.preventDefault();
-
-            if (showScamWarningModal) {
-              return;
-            }
-
-            onClick();
-            trackEvent({
-              category: MetaMetricsEventCategory.Tokens,
-              event: MetaMetricsEventName.TokenDetailsOpened,
-              properties: {
-                location: 'Home',
-                // FIXME: This might not be a number for non-EVM accounts
-                chain_id: chainId,
-                token_symbol: tokenSymbol,
-              },
-            });
-          },
-        })}
       >
         <BadgeWrapper
           badge={
             <AvatarNetwork
               size={AvatarNetworkSize.Xs}
-              name={allNetworks?.[chainId as Hex]?.name}
-              src={tokenChainImage || undefined}
+              name={allNetworks?.[token.chainId as Hex]?.name}
+              src={getImageForChainId(token.chainId) || undefined}
               backgroundColor={BackgroundColor.backgroundDefault}
               borderWidth={2}
               className="multichain-token-list-item__badge__avatar-network"
@@ -290,7 +218,14 @@ export const TokenListItem = ({
           marginRight={4}
           className="multichain-token-list-item__badge"
         >
-          <AvatarToken name={tokenSymbol} src={tokenImage} />
+          <AvatarToken
+            name={token.symbol}
+            src={
+              token.isNative
+                ? getNativeCurrencyForChain(token.chainId)
+                : token.tokenImage
+            }
+          />
         </BadgeWrapper>
         <Box
           className="multichain-token-list-item__container-cell--text-container"
@@ -305,10 +240,10 @@ export const TokenListItem = ({
             flexDirection={FlexDirection.Row}
             justifyContent={JustifyContent.spaceBetween}
           >
-            {title?.length > 12 ? (
+            {token.title?.length > 12 ? (
               <Tooltip
                 position="bottom"
-                html={title}
+                html={token.title}
                 tooltipInnerClassName="multichain-token-list-item__tooltip"
               >
                 <Text
@@ -319,7 +254,7 @@ export const TokenListItem = ({
                   ellipsis
                 >
                   {tokenMainTitleToDisplay}
-                  {isStakeable && stakeableTitle}
+                  {token.isStakeable && <StakeableLink token={token} />}
                 </Text>
               </Tooltip>
             ) : (
@@ -329,7 +264,6 @@ export const TokenListItem = ({
                 ellipsis
               >
                 {tokenMainTitleToDisplay}
-                {isStakeable && stakeableTitle}
               </Text>
             )}
 
@@ -355,11 +289,11 @@ export const TokenListItem = ({
                 variant={TextVariant.bodyMd}
                 textAlign={TextAlign.End}
                 data-testid="multichain-token-list-item-secondary-value"
-                ellipsis={isStakeable}
+                ellipsis={token.isStakeable}
                 isHidden={privacyMode}
                 length={SensitiveTextLength.Medium}
               >
-                {secondary}
+                {token.secondary}
               </SensitiveText>
             )}
           </Box>
@@ -372,16 +306,16 @@ export const TokenListItem = ({
             {shouldShowPercentage ? (
               <PercentageChange
                 value={
-                  isNativeCurrency
-                    ? multiChainMarketData?.[chainId]?.[
-                        getNativeTokenAddress(chainId as Hex)
+                  token.isNative
+                    ? multiChainMarketData?.[token.chainId]?.[
+                        getNativeTokenAddress(token.chainId as Hex)
                       ]?.pricePercentChange1d
                     : tokenPercentageChange
                 }
                 address={
-                  isNativeCurrency
-                    ? getNativeTokenAddress(chainId as Hex)
-                    : (address as `0x${string}`)
+                  token.isNative
+                    ? getNativeTokenAddress(token.chainId as Hex)
+                    : (token.address as `0x${string}`)
                 }
               />
             ) : (
@@ -404,7 +338,7 @@ export const TokenListItem = ({
                 isHidden={privacyMode}
                 length={SensitiveTextLength.Short}
               >
-                {primary} {isPrimaryTokenSymbolHidden ? '' : tokenSymbol}
+                {token.primary} {isPrimaryTokenSymbolHidden ? '' : token.symbol}
               </SensitiveText>
             ) : (
               <SensitiveText
@@ -415,7 +349,7 @@ export const TokenListItem = ({
                 isHidden={privacyMode}
                 length={SensitiveTextLength.Short}
               >
-                {primary} {isPrimaryTokenSymbolHidden ? '' : tokenSymbol}
+                {token.primary} {isPrimaryTokenSymbolHidden ? '' : token.symbol}
               </SensitiveText>
             )}
           </Box>
@@ -430,7 +364,7 @@ export const TokenListItem = ({
             </ModalHeader>
             <ModalBody marginTop={4} marginBottom={4}>
               {t('nativeTokenScamWarningDescription', [
-                tokenSymbol,
+                token.symbol,
                 safeChainDetails?.nativeCurrency?.symbol ||
                   t('nativeTokenScamWarningDescriptionExpectedTokenFallback'), // never render "undefined" string value
               ])}
@@ -438,7 +372,7 @@ export const TokenListItem = ({
             <ModalFooter>
               <ButtonSecondary
                 onClick={() => {
-                  dispatch(setEditedNetwork({ chainId }));
+                  dispatch(setEditedNetwork({ chainId: token.chainId }));
                   history.push(NETWORKS_ROUTE);
                 }}
                 block

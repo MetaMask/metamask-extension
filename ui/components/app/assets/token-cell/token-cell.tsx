@@ -1,5 +1,4 @@
 import React from 'react';
-import { getNativeCurrencyForChain } from '../../../../selectors';
 import { getImageForChainId } from '../../../../selectors/multichain';
 import { TokenListItem } from '../../../multichain';
 import { TokenWithFiatAmount } from '../types';
@@ -16,10 +15,9 @@ export default function TokenCell({
   privacyMode = false,
   onClick,
 }: TokenCellProps) {
-  const { title, tokenImage, primary, secondary, isStakeable } =
-    useTokenDisplayInfo({
-      token,
-    });
+  const tokenDisplayInfo = useTokenDisplayInfo({
+    token,
+  });
 
   function handleOnClick() {
     if (!onClick || !token.chainId) {
@@ -32,25 +30,12 @@ export default function TokenCell({
     return null;
   }
 
-  const tokenChainImage = getImageForChainId(token.chainId);
-
   return (
     <TokenListItem
+      token={{ ...token, ...tokenDisplayInfo }}
       onClick={handleOnClick}
-      tokenSymbol={token.symbol}
-      tokenImage={
-        token.isNative ? getNativeCurrencyForChain(token.chainId) : tokenImage
-      }
-      tokenChainImage={tokenChainImage || undefined}
-      primary={primary}
-      secondary={secondary}
-      title={title}
-      address={token.address}
-      isStakeable={isStakeable}
       showPercentage
       privacyMode={privacyMode}
-      isNativeCurrency={token.isNative}
-      chainId={token.chainId}
     />
   );
 }
