@@ -7,7 +7,6 @@ export default {
 
   argTypes: {
     warning: { control: 'text' },
-    useNonceField: { control: 'boolean' },
     sendHexData: { control: 'boolean' },
     showFiatInTestnets: { control: 'boolean' },
     useLedgerLive: { control: 'boolean' },
@@ -24,7 +23,6 @@ export default {
     setOverrideContentSecurityPolicyHeader: {
       action: 'setOverrideContentSecurityPolicyHeader',
     },
-    setUseNonceField: { action: 'setUseNonceField' },
     setHexDataFeatureFlag: { action: 'setHexDataFeatureFlag' },
     displayErrorInSettings: { action: 'displayErrorInSettings' },
     hideErrorInSettings: { action: 'hideErrorInSettings' },
@@ -38,7 +36,6 @@ export default {
 export const DefaultStory = (args) => {
   const [
     {
-      useNonceField,
       sendHexData,
       showFiatInTestnets,
       dismissSeedBackUpReminder,
@@ -46,12 +43,6 @@ export const DefaultStory = (args) => {
     },
     updateArgs,
   ] = useArgs();
-
-  const handleUseNonceField = () => {
-    updateArgs({
-      useNonceField: !useNonceField,
-    });
-  };
 
   const handleSendHexData = () => {
     updateArgs({
@@ -80,8 +71,6 @@ export const DefaultStory = (args) => {
     <div style={{ flex: 1, height: 500 }}>
       <AdvancedTab
         {...args}
-        useNonceField={useNonceField}
-        setUseNonceField={handleUseNonceField}
         sendHexData={sendHexData}
         setHexDataFeatureFlag={handleSendHexData}
         showFiatInTestnets={showFiatInTestnets}
@@ -103,7 +92,6 @@ export const DefaultStory = (args) => {
 DefaultStory.storyName = 'Default';
 DefaultStory.args = {
   warning: 'Warning Sample',
-  useNonceField: false,
   sendHexData: false,
   showFiatInTestnets: false,
   useLedgerLive: false,

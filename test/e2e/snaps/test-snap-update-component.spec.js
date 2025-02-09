@@ -16,7 +16,7 @@ describe('Test Snap update via snaps component', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
+        localNodeOptions: ganacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

@@ -88,12 +88,14 @@ async function addEthereumChainHandler(
     : undefined;
 
   // If there's something to add or update
-  if (
+
+  const shouldAddOrUpdateNetwork =
     !existingNetwork ||
     rpcIndex !== existingNetwork.defaultRpcEndpointIndex ||
     (firstValidBlockExplorerUrl &&
-      blockExplorerIndex !== existingNetwork.defaultBlockExplorerUrlIndex)
-  ) {
+      blockExplorerIndex !== existingNetwork.defaultBlockExplorerUrlIndex);
+
+  if (shouldAddOrUpdateNetwork) {
     try {
       await requestUserApproval({
         origin,
@@ -180,20 +182,14 @@ async function addEthereumChainHandler(
     }
   }
 
-  // If the added or updated network is not the current chain, prompt the user to switch
-  if (chainId !== currentChainIdForDomain) {
-    const { networkClientId } =
-      updatedNetwork.rpcEndpoints[updatedNetwork.defaultRpcEndpointIndex];
+  const { networkClientId } =
+    updatedNetwork.rpcEndpoints[updatedNetwork.defaultRpcEndpointIndex];
 
-    return switchChain(res, end, chainId, networkClientId, {
-      isAddFlow: true,
-      setActiveNetwork,
-      getCaveat,
-      requestPermittedChainsPermissionForOrigin,
-      requestPermittedChainsPermissionIncrementalForOrigin,
-    });
-  }
-
-  res.result = null;
-  return end();
+  return switchChain(res, end, chainId, networkClientId, {
+    autoApprove: shouldAddOrUpdateNetwork,
+    setActiveNetwork,
+    getCaveat,
+    requestPermittedChainsPermissionForOrigin,
+    requestPermittedChainsPermissionIncrementalForOrigin,
+  });
 }
