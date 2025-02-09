@@ -15,6 +15,7 @@ import { TRIGGER_TYPES } from '../../../pages/notifications/notification-compone
 import useSnapNavigation from '../../../hooks/snaps/useSnapNavigation';
 import { type Notification } from '../../../pages/notifications/notification-components/types/notifications/notifications';
 import SnapLinkWarning from '../../app/snaps/snap-link-warning';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 
 type NotificationDetailButtonProps = {
   notification: Notification;
@@ -70,7 +71,7 @@ export const NotificationDetailButton = ({
 
     if (isSnapNotification) {
       if (isMetaMaskUrl) {
-        navigate(href);
+        navigate(href, ENVIRONMENT_TYPE_POPUP, undefined);
       } else {
         setIsOpen(true);
       }

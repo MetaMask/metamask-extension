@@ -14,7 +14,7 @@ const useSnapNavigation = () => {
       path = linkData.path;
     }
     if (envType === ENVIRONMENT_TYPE_NOTIFICATION) {
-      onCancel();
+      onCancel?.();
       global.platform.openExtensionInBrowser(path);
     } else {
       history.push(path);
