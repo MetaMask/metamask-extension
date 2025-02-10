@@ -51,6 +51,7 @@ export class Anvil {
     try {
       const versionOutput = execSync('anvil --version', { encoding: 'utf-8' });
       console.log(`Anvil version: ${versionOutput}`);
+      console.log(`Anvil server started on port: ${options.port}`);
     } catch (error) {
       console.error('Failed to execute anvil:', error);
       throw new Error('Anvil binary is not accessible.');

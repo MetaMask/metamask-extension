@@ -63,7 +63,7 @@ async function withFixtures(options, testSuite) {
     dapp,
     fixtures,
     localNode = 'ganache',
-    localNodeOptions,
+    localNodeOptions = {},
     smartContract,
     driverOptions,
     dappOptions,
@@ -100,35 +100,52 @@ async function withFixtures(options, testSuite) {
   let driver;
   let failed = false;
 
+  // We allow to pass both a string, like 'anvil' and array ,like ['anvil']
+  const localNodes = Array.isArray(localNode) ? localNode : [localNode];
+  const localNodesOptions = Array.isArray(localNodeOptions)
+    ? localNodeOptions
+    : [localNodeOptions];
   let ganacheServer;
   let anvilServer;
+  const servers = [];
 
   try {
-    switch (localNode) {
-      case 'anvil':
-        anvilServer = new Anvil();
-        await anvilServer.start(localNodeOptions);
-        break;
+    // Start servers based on the localNodes array
+    for (let i = 0; i < localNodes.length; i++) {
+      const node = localNodes[i];
+      const opts = localNodesOptions[i] || {};
 
-      case 'ganache':
-        ganacheServer = new Ganache();
-        await ganacheServer.start(localNodeOptions);
-        break;
+      switch (node) {
+        case 'anvil':
+          anvilServer = new Anvil();
+          await anvilServer.start(opts);
+          servers.push(anvilServer);
+          break;
 
-      case 'none':
-        break;
+        case 'ganache':
+          ganacheServer = new Ganache();
+          await ganacheServer.start(opts);
+          servers.push(ganacheServer);
+          break;
 
-      default:
-        throw new Error(
-          `Unsupported localNode: '${localNode}'. Cannot start the server.`,
-        );
+        case 'none':
+          break;
+
+        default:
+          throw new Error(
+            `Unsupported localNode: '${node}'. Cannot start the server.`,
+          );
+      }
     }
 
     let contractRegistry;
     let seeder;
 
+    // We default the smart contract seeder to the first node client
+    // If there's a need to deploy multiple smart contracts in multiple clients
+    // this assumption is no longer correct and the below code needs to be modified accordingly
     if (smartContract) {
-      switch (localNode) {
+      switch (localNodes[0]) {
         case 'anvil':
           seeder = new AnvilSeeder(anvilServer.getProvider());
           break;
@@ -139,7 +156,7 @@ async function withFixtures(options, testSuite) {
 
         default:
           throw new Error(
-            `Unsupported localNode: '${localNode}'. Cannot deploy smart contracts.`,
+            `Unsupported localNode: '${localNodes[0]}'. Cannot deploy smart contracts.`,
           );
       }
       const contracts =
@@ -153,8 +170,8 @@ async function withFixtures(options, testSuite) {
     await fixtureServer.start();
     fixtureServer.loadJsonState(fixtures, contractRegistry);
 
-    if (localNodeOptions?.concurrent) {
-      localNodeOptions.concurrent.forEach(async (ganacheSettings) => {
+    if (localNodesOptions[0]?.concurrent) {
+      localNodesOptions[0].concurrent.forEach(async (ganacheSettings) => {
         const { port, chainId, ganacheOptions2 } = ganacheSettings;
         const server = new Ganache();
         secondaryGanacheServer.push(server);
@@ -208,7 +225,7 @@ async function withFixtures(options, testSuite) {
       mockServer,
       testSpecificMock,
       {
-        chainId: localNodeOptions?.chainId || 1337,
+        chainId: localNodeOptions[0]?.chainId || 1337,
         ethConversionInUsd,
       },
     );
@@ -339,17 +356,10 @@ async function withFixtures(options, testSuite) {
   } finally {
     if (!failed || process.env.E2E_LEAVE_RUNNING !== 'true') {
       await fixtureServer.stop();
-      if (ganacheServer) {
-        await ganacheServer.quit();
-      }
-      if (anvilServer) {
-        await anvilServer.quit();
-      }
-
-      if (localNodeOptions?.concurrent) {
-        secondaryGanacheServer.forEach(async (server) => {
+      for (const server of servers) {
+        if (server) {
           await server.quit();
-        });
+        }
       }
 
       if (useBundler) {

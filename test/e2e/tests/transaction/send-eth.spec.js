@@ -149,13 +149,12 @@ describe('Send ETH', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
+          localNode: 'anvil',
           localNodeOptions: {
-            ...defaultGanacheOptions,
             hardfork: 'london',
           },
           smartContract,
           title: this.test.fullTitle(),
-          localNode: 'anvil',
         },
         async ({ driver, contractRegistry, anvilServer }) => {
           const contractAddress = await contractRegistry.getContractAddress(
@@ -319,12 +318,11 @@ describe('Send ETH', function () {
             fixtures: new FixtureBuilder()
               .withPermissionControllerConnectedToTestDapp()
               .build(),
+            localNode: 'anvil',
             localNodeOptions: {
-              ...defaultGanacheOptions,
               hardfork: 'london',
             },
             title: this.test.fullTitle(),
-            localNode: 'anvil',
           },
           async ({ driver }) => {
             await unlockWallet(driver);

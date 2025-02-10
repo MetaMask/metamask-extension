@@ -1,7 +1,6 @@
 const { strict: assert } = require('assert');
 const {
   withFixtures,
-  defaultGanacheOptions,
   openDapp,
   DAPP_URL,
   DAPP_ONE_URL,
@@ -21,11 +20,18 @@ describe('Switch Ethereum Chain for two dapps', function () {
           .withNetworkControllerDoubleGanache()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-
-        localNodeOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [{ port: 8546, chainId: 1338 }],
-        },
+        localNode: ['anvil', 'anvil'],
+        localNodeOptions: [
+          {},
+          {
+            blockTime: 2,
+            vmErrorsOnRPCResponse: false,
+            mnemonic:
+              'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
+            port: 8546,
+            chainId: 1338,
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -86,10 +92,18 @@ describe('Switch Ethereum Chain for two dapps', function () {
           .withPreferencesControllerSmartTransactionsOptedOut()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        localNodeOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [{ port: 8546, chainId: 1338 }],
-        },
+        localNode: ['anvil', 'anvil'],
+        localNodeOptions: [
+          {},
+          {
+            blockTime: 2,
+            vmErrorsOnRPCResponse: false,
+            mnemonic:
+              'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
+            port: 8546,
+            chainId: 1338,
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -196,10 +210,18 @@ describe('Switch Ethereum Chain for two dapps', function () {
           .withNetworkControllerDoubleGanache()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        localNodeOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [{ port: 8546, chainId: 1338 }],
-        },
+        localNode: ['anvil', 'anvil'],
+        localNodeOptions: [
+          {},
+          {
+            blockTime: 2,
+            vmErrorsOnRPCResponse: false,
+            mnemonic:
+              'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
+            port: 8546,
+            chainId: 1338,
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -304,10 +326,18 @@ describe('Switch Ethereum Chain for two dapps', function () {
           .withNetworkControllerDoubleGanache()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        localNodeOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [{ port: 8546, chainId: 1338 }],
-        },
+        localNode: ['anvil', 'anvil'],
+        localNodeOptions: [
+          {},
+          {
+            blockTime: 2,
+            vmErrorsOnRPCResponse: false,
+            mnemonic:
+              'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
+            port: 8546,
+            chainId: 1338,
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
