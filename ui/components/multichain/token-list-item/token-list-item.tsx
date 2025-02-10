@@ -25,9 +25,7 @@ import {
   ButtonIcon,
   ButtonIconSize,
   ButtonSecondary,
-  Icon,
   IconName,
-  IconSize,
   Modal,
   ModalBody,
   ModalContent,
@@ -38,13 +36,7 @@ import {
   SensitiveTextLength,
   Text,
 } from '../../component-library';
-import {
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
-  getDataCollectionForMarketing,
-  getMarketData,
-  getCurrencyRates,
-} from '../../../selectors';
+import { getMarketData, getCurrencyRates } from '../../../selectors';
 import { getMultichainIsEvm } from '../../../selectors/multichain';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -58,10 +50,8 @@ import {
   NON_EVM_CURRENCY_SYMBOLS,
 } from '../../../../shared/constants/network';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
-
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { setEditedNetwork } from '../../../store/actions';
-import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import {
   SafeChain,
   useSafeChains,
@@ -115,9 +105,6 @@ export const TokenListItem = ({
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
   const trackEvent = useContext(MetaMetricsContext);
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
-  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const { safeChains } = useSafeChains();
   const currencyRates = useSelector(getCurrencyRates);
 
