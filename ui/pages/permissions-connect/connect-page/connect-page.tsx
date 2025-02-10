@@ -232,8 +232,12 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       >
         <Tabs
           onTabClick={() => null}
-          backgroundColor={BackgroundColor.backgroundAlternative}
+          backgroundColor={BackgroundColor.transparent}
           justifyContent={JustifyContent.center}
+          defaultActiveTabKey="accounts"
+          tabListProps={{
+            backgroundColor: BackgroundColor.transparent,
+          }}
         >
           <Tab name="Accounts" tabKey="accounts" width={BlockSize.Full}>
             <Box marginTop={4}>
