@@ -27,6 +27,7 @@ import {
 } from '../../component-library';
 import {
   getOriginOfCurrentTab,
+  getPermittedAccountsByOrigin,
   getSelectedInternalAccount,
   getSubjectMetadata,
 } from '../../../selectors';
@@ -45,22 +46,25 @@ export const ConnectedSiteMenu = ({
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const subjectMetadata = useSelector(getSubjectMetadata);
   const connectedOrigin = useSelector(getOriginOfCurrentTab);
+  const permittedAccountsByOrigin = useSelector(getPermittedAccountsByOrigin);
+  const currentTabHasNoAccounts =
+    !permittedAccountsByOrigin[connectedOrigin]?.length;
   const connectedSubjectsMetadata = subjectMetadata[connectedOrigin];
   const isConnectedtoOtherAccountOrSnap =
     status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT ||
     status === STATUS_CONNECTED_TO_SNAP;
 
-  const iconElement = connectedSubjectsMetadata?.iconUrl ? (
-    <AvatarFavicon
-      name={connectedSubjectsMetadata.name}
-      size={Size.SM}
-      src={connectedSubjectsMetadata.iconUrl}
-    />
-  ) : (
+  const iconElement = currentTabHasNoAccounts ? (
     <Icon
       name={IconName.Global}
       size={IconSize.Sm}
       color={IconColor.iconDefault}
+    />
+  ) : (
+    <AvatarFavicon
+      name={connectedSubjectsMetadata.name}
+      size={Size.SM}
+      src={connectedSubjectsMetadata.iconUrl}
     />
   );
   return (
