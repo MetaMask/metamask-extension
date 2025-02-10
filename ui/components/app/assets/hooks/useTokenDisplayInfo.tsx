@@ -1,4 +1,6 @@
 import { useSelector } from 'react-redux';
+import { BigNumber } from 'bignumber.js';
+import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import { getTokenList, selectERC20TokensByChain } from '../../../../selectors';
 import { TokenWithFiatAmount } from '../types';
 import {
@@ -6,23 +8,15 @@ import {
   getMultichainIsEvm,
   isChainIdMainnet,
 } from '../../../../selectors/multichain';
-import { isEqualCaseInsensitive } from '@metamask/controller-utils';
-import useShouldShowFiat from './useShouldShowFiat';
-import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
-import { formatAmount } from '../../../../pages/confirmations/components/simulation-details/formatAmount';
-import { getIntlLocale } from '../../../../ducks/locale/locale';
-import BigNumber from 'bignumber.js';
 import { formatWithThreshold } from '../util/formatWithThreshold';
-import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
-import {
-  CURRENCY_SYMBOLS,
-  NON_EVM_CURRENCY_SYMBOLS,
-} from '../../../../../shared/constants/network';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getIntlLocale } from '../../../../ducks/locale/locale';
+import { formatAmount } from '../../../../pages/confirmations/components/simulation-details/formatAmount';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+import useShouldShowFiat from './useShouldShowFiat';
 
-interface UseTokenDisplayInfoProps {
+type UseTokenDisplayInfoProps = {
   token: TokenWithFiatAmount;
-}
+};
 
 type TokenDisplayInfo = {
   title: string;
@@ -36,7 +30,6 @@ type TokenDisplayInfo = {
 const useTokenDisplayInfo = ({
   token,
 }: UseTokenDisplayInfoProps): TokenDisplayInfo => {
-  const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
   const tokenList = useSelector(getTokenList);
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
@@ -48,12 +41,13 @@ const useTokenDisplayInfo = ({
   const secondaryThreshold = 0.01;
 
   // Format for fiat balance with currency style
-  const secondary = shouldShowFiat
-    ? formatWithThreshold(token.tokenFiatAmount, secondaryThreshold, locale, {
-        style: 'currency',
-        currency: currentCurrency.toUpperCase(),
-      })
-    : undefined;
+  const secondary =
+    shouldShowFiat && token.tokenFiatAmount
+      ? formatWithThreshold(token.tokenFiatAmount, secondaryThreshold, locale, {
+          style: 'currency',
+          currency: currentCurrency.toUpperCase(),
+        })
+      : undefined;
 
   const primary = formatAmount(
     locale,
@@ -97,17 +91,16 @@ const useTokenDisplayInfo = ({
       isStakeable,
       tokenChainImage,
     };
-  } else {
-    // TODO non-evm assets
-    return {
-      title: '',
-      tokenImage: '',
-      primary,
-      secondary,
-      isStakeable,
-      tokenChainImage,
-    };
   }
+  // TODO non-evm assets
+  return {
+    title: '',
+    tokenImage: '',
+    primary,
+    secondary,
+    isStakeable,
+    tokenChainImage,
+  };
 };
 
 export default useTokenDisplayInfo;

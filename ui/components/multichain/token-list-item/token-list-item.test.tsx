@@ -13,6 +13,7 @@ import {
 } from '../../../selectors';
 import { getMultichainIsEvm } from '../../../selectors/multichain';
 import { TokenListItem } from '.';
+import { Hex } from '@metamask/utils';
 
 const state = {
   metamask: {
@@ -77,12 +78,35 @@ describe('TokenListItem', () => {
     openTabSpy = jest.spyOn(global.platform, 'openTab');
     (mockGetIntlLocale as unknown as jest.Mock).mockReturnValue('en-US');
   });
+  // const props = {
+  //   onClick: jest.fn(),
+  //   tokenImage: '',
+  //   title: '',
+  //   chainId: '0x1',
+  //   tokenChainImage: './eth-logo.png',
+  // };
+
   const props = {
+    token: {
+      address: '0xAnotherToken' as Hex,
+      symbol: 'TEST',
+      string: '5000000',
+      currentCurrency: 'usd',
+      image: '',
+      chainId: '0x1' as Hex,
+      tokenFiatAmount: 5000000,
+      decimals: 18,
+      // token display info
+      title: '',
+      tokenImage: '',
+      primary: '',
+      secondary: '',
+      isStakeable: false,
+      tokenChainImage: './eth-logo.png',
+    },
     onClick: jest.fn(),
-    tokenImage: '',
-    title: '',
-    chainId: '0x1',
-    tokenChainImage: './eth-logo.png',
+    showPercentage: true,
+    privacyMode: false,
   };
   it('should render correctly', () => {
     const store = configureMockStore()(state);
@@ -116,13 +140,36 @@ describe('TokenListItem', () => {
 
   it('should render crypto balance with warning scam', () => {
     const store = configureMockStore()(state);
+    // const propsToUse = {
+    //   primary: '11.9751 ETH',
+    //   isNativeCurrency: true,
+    //   isOriginalTokenSymbol: false,
+    //   tokenImage: '',
+    //   title: '',
+    //   chainId: '0x1',
+    // };
     const propsToUse = {
-      primary: '11.9751 ETH',
-      isNativeCurrency: true,
-      isOriginalTokenSymbol: false,
-      tokenImage: '',
-      title: '',
-      chainId: '0x1',
+      token: {
+        address: '0xAnotherToken' as Hex,
+        symbol: 'TEST',
+        string: '5000000',
+        currentCurrency: 'usd',
+        image: '',
+        chainId: '0x1' as Hex,
+        tokenFiatAmount: 5000000,
+        decimals: 18,
+        isNative: true,
+        // token display info
+        title: '',
+        tokenImage: '',
+        primary: '11.9751 ETH',
+        secondary: '',
+        isStakeable: false,
+        tokenChainImage: './eth-logo.png',
+      },
+      onClick: jest.fn(),
+      showPercentage: true,
+      privacyMode: false,
     };
     const { getByText, container } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
@@ -143,15 +190,38 @@ describe('TokenListItem', () => {
       }
       return undefined;
     });
+    // const propsToUse = {
+    //   primary: '11.9751 ETH',
+    //   isNativeCurrency: true,
+    //   isOriginalTokenSymbol: false,
+    //   showPercentage: true,
+    //   tokenImage: '',
+    //   title: '',
+    //   tokenSymbol: 'SCAM_TOKEN',
+    //   chainId: '0x1',
+    // };
     const propsToUse = {
-      primary: '11.9751 ETH',
-      isNativeCurrency: true,
-      isOriginalTokenSymbol: false,
+      token: {
+        address: '0xAnotherToken' as Hex,
+        symbol: 'TEST',
+        string: '5000000',
+        currentCurrency: 'usd',
+        image: '',
+        chainId: '0x1' as Hex,
+        tokenFiatAmount: 5000000,
+        decimals: 18,
+        isNative: true,
+        // token display info
+        title: '',
+        tokenImage: '',
+        primary: '11.9751 ETH',
+        secondary: '',
+        isStakeable: false,
+        tokenChainImage: './eth-logo.png',
+      },
+      onClick: jest.fn(),
       showPercentage: true,
-      tokenImage: '',
-      title: '',
-      tokenSymbol: 'SCAM_TOKEN',
-      chainId: '0x1',
+      privacyMode: false,
     };
     const { getByTestId, getByText, container } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
@@ -172,15 +242,38 @@ describe('TokenListItem', () => {
   it('should display warning scam modal fallback when safechains fails to resolve correctly', () => {
     (mockGetSafeChains as unknown as jest.Mock).mockReturnValue([]);
     const store = configureMockStore()(state);
+    // const propsToUse = {
+    //   primary: '11.9751 ETH',
+    //   isNativeCurrency: true,
+    //   isOriginalTokenSymbol: false,
+    //   showPercentage: true,
+    //   tokenImage: '',
+    //   title: '',
+    //   tokenSymbol: 'SCAM_TOKEN',
+    //   chainId: '0x1',
+    // };
     const propsToUse = {
-      primary: '11.9751 ETH',
-      isNativeCurrency: true,
-      isOriginalTokenSymbol: false,
+      token: {
+        address: '0xAnotherToken' as Hex,
+        symbol: 'TEST',
+        string: '5000000',
+        currentCurrency: 'usd',
+        image: '',
+        chainId: '0x1' as Hex,
+        tokenFiatAmount: 5000000,
+        decimals: 18,
+        isNative: true,
+        // token display info
+        title: '',
+        tokenImage: '',
+        primary: '11.9751 ETH',
+        secondary: '',
+        isStakeable: false,
+        tokenChainImage: './eth-logo.png',
+      },
+      onClick: jest.fn(),
       showPercentage: true,
-      tokenImage: '',
-      title: '',
-      tokenSymbol: 'SCAM_TOKEN',
-      chainId: '0x1',
+      privacyMode: false,
     };
     const { getByTestId, getByText, container } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
@@ -203,13 +296,36 @@ describe('TokenListItem', () => {
       ...state,
       preferences: {},
     });
+    // const propsToUse = {
+    //   primary: '11.9751 ETH',
+    //   isNativeCurrency: true,
+    //   isOriginalTokenSymbol: false,
+    //   tokenImage: '',
+    //   title: '',
+    //   chainId: '0x1',
+    // };
     const propsToUse = {
-      primary: '11.9751 ETH',
-      isNativeCurrency: true,
-      isOriginalTokenSymbol: false,
-      tokenImage: '',
-      title: '',
-      chainId: '0x1',
+      token: {
+        address: '0xAnotherToken' as Hex,
+        symbol: 'TEST',
+        string: '5000000',
+        currentCurrency: 'usd',
+        image: '',
+        chainId: '0x1' as Hex,
+        tokenFiatAmount: 5000000,
+        decimals: 18,
+        isNative: true,
+        // token display info
+        title: '',
+        tokenImage: '',
+        primary: '11.9751 ETH',
+        secondary: '',
+        isStakeable: false,
+        tokenChainImage: './eth-logo.png',
+      },
+      onClick: jest.fn(),
+      showPercentage: true,
+      privacyMode: false,
     };
 
     const { getByText, container } = renderWithProvider(
@@ -223,7 +339,7 @@ describe('TokenListItem', () => {
   it('handles click action and fires onClick', () => {
     const store = configureMockStore()(state);
     const { queryByTestId } = renderWithProvider(
-      <TokenListItem {...props} tokenImage="" title="" />,
+      <TokenListItem {...props} />,
       store,
     );
 
@@ -237,7 +353,7 @@ describe('TokenListItem', () => {
   it('handles clicking staking opens tab', async () => {
     const store = configureMockStore()(state);
     const { queryByTestId, container } = renderWithProvider(
-      <TokenListItem isStakeable {...props} />,
+      <TokenListItem {...props} />,
       store,
     );
 

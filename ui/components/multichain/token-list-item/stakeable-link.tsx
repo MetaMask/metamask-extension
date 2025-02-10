@@ -21,9 +21,9 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-interface StakeableLinkProps {
+type StakeableLinkProps = {
   token: TokenFiatDisplayInfo;
-}
+};
 
 export const StakeableLink = ({ token }: StakeableLinkProps) => {
   const t = useI18nContext();

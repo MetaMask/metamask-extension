@@ -1,5 +1,4 @@
 import React from 'react';
-import { getImageForChainId } from '../../../../selectors/multichain';
 import { TokenListItem } from '../../../multichain';
 import { TokenWithFiatAmount } from '../types';
 import useTokenDisplayInfo from '../hooks/useTokenDisplayInfo';

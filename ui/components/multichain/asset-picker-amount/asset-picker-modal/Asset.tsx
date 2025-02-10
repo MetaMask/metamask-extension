@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
+import { Hex } from '@metamask/utils';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import {
   getNetworkConfigurationIdByChainId,
@@ -71,18 +72,22 @@ export default function Asset({
   return (
     <TokenListItem
       key={`${chainId}-${symbol}-${address}`}
-      chainId={chainId}
-      tokenSymbol={symbol}
-      tokenImage={tokenImage}
-      secondary={isTokenChainIdInWallet ? formattedAmount : undefined}
-      primary={isTokenChainIdInWallet ? primaryAmountToUse : undefined}
-      title={title}
+      token={{
+        chainId,
+        symbol,
+        image,
+        address: address as Hex,
+        decimals: 18,
+        // token display info
+        primary: isTokenChainIdInWallet ? primaryAmountToUse : undefined,
+        secondary: isTokenChainIdInWallet ? formattedAmount : undefined,
+        title,
+        tokenChainImage:
+          CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+            chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+          ],
+      }}
       tooltipText={tooltipText}
-      tokenChainImage={
-        CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-          chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-        ]
-      }
       isPrimaryTokenSymbolHidden
       {...assetItemProps}
     />

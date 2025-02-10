@@ -30,6 +30,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import AssetComponent from './Asset';
 import { AssetWithDisplayData, ERC20Asset, NFT, NativeAsset } from './types';
+import { Hex } from '@metamask/utils';
 
 type AssetListProps = {
   handleAssetChange: (
@@ -150,18 +151,8 @@ export default function AssetList({
                 isSelectedNetworkActive ? (
                   // Only use this component for the native token of the active network
                   <TokenListItem
-                    chainId={token.chainId}
-                    title={token.symbol}
-                    primary={primaryCurrencyValue}
-                    tokenSymbol={token.symbol}
-                    secondary={secondaryCurrencyValue}
-                    tokenImage={token.image}
+                    token={{ ...token, address: token.address as Hex }}
                     isPrimaryTokenSymbolHidden
-                    tokenChainImage={
-                      CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                        token.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-                      ]
-                    }
                     {...assetItemProps}
                   />
                 ) : (

@@ -240,7 +240,7 @@ export const TokenListItem = ({
             flexDirection={FlexDirection.Row}
             justifyContent={JustifyContent.spaceBetween}
           >
-            {token.title?.length > 12 ? (
+            {token.title?.length && token.title?.length > 12 ? (
               <Tooltip
                 position="bottom"
                 html={token.title}

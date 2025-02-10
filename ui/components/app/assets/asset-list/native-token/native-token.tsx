@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
 import {
   getMultichainCurrentNetwork,
   getMultichainNativeCurrency,
@@ -31,15 +32,20 @@ const NativeToken = ({ onClickAsset }: AssetListProps) => {
 
   return (
     <TokenListItem
-      chainId={chainId}
+      token={{
+        address: '' as Hex,
+        chainId: chainId as Hex,
+        isNative: true,
+        decimals: 18,
+        symbol,
+        image: balanceIsLoading ? null : primaryTokenImage,
+        // token display info
+        title: nativeCurrency,
+        primary: string,
+        secondary,
+        isStakeable,
+      }}
       onClick={() => onClickAsset(chainId, nativeCurrency)}
-      title={nativeCurrency}
-      primary={string}
-      tokenSymbol={symbol}
-      secondary={secondary}
-      tokenImage={balanceIsLoading ? null : primaryTokenImage}
-      isNativeCurrency
-      isStakeable={isStakeable}
       showPercentage
       privacyMode={privacyMode}
     />

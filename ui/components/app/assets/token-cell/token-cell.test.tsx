@@ -18,7 +18,9 @@ import {
 
 import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
+import useTokenDisplayInfo from '../hooks/useTokenDisplayInfo';
 import TokenCell from '.';
+import { Hex } from '@metamask/utils';
 
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
@@ -59,6 +61,14 @@ describe('Token Cell', () => {
   };
 
   (useIsOriginalTokenSymbol as jest.Mock).mockReturnValue(true);
+  (useTokenDisplayInfo as jest.Mock).mockReturnValue({
+    title: '',
+    tokenImage: '',
+    primary: '',
+    secondary: '',
+    isStakeable: false,
+    tokenChainImage: false,
+  });
 
   // two tokens with the same symbol but different addresses
   const MOCK_GET_TOKEN_LIST = {
@@ -85,25 +95,45 @@ describe('Token Cell', () => {
   const mockStore = configureMockStore([thunk])(mockState);
 
   const props = {
-    address: '0xAnotherToken',
-    symbol: 'TEST',
-    string: '5.000',
-    currentCurrency: 'usd',
-    image: '',
-    chainId: '0x1',
-    tokenFiatAmount: 5,
+    token: {
+      address: '0xAnotherToken' as Hex,
+      symbol: 'TEST',
+      string: '5.000',
+      currentCurrency: 'usd',
+      image: '',
+      chainId: '0x1' as Hex,
+      tokenFiatAmount: 5,
+      decimals: 18,
+    },
     onClick: jest.fn(),
+    // token display info
+    title: '',
+    tokenImage: '',
+    primary: '',
+    secondary: '',
+    isStakeable: false,
+    tokenChainImage: false,
   };
 
   const propsLargeAmount = {
-    address: '0xAnotherToken',
-    symbol: 'TEST',
-    string: '5000000',
-    currentCurrency: 'usd',
-    image: '',
-    chainId: '0x1',
-    tokenFiatAmount: 5000000,
+    token: {
+      address: '0xAnotherToken' as Hex,
+      symbol: 'TEST',
+      string: '5000000',
+      currentCurrency: 'usd',
+      image: '',
+      chainId: '0x1' as Hex,
+      tokenFiatAmount: 5000000,
+      decimals: 18,
+    },
     onClick: jest.fn(),
+    // token display info
+    title: '',
+    tokenImage: '',
+    primary: '',
+    secondary: '',
+    isStakeable: false,
+    tokenChainImage: false,
   };
   const useSelectorMock = useSelector;
   (useSelectorMock as jest.Mock).mockImplementation((selector) => {
