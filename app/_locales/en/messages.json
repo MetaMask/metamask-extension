@@ -747,6 +747,9 @@
   "bridgeEnterAmount": {
     "message": "Select amount"
   },
+  "bridgeEnterAmountAndSelectAccount": {
+    "message": "Enter amount and select destinationaccount"
+  },
   "bridgeExplorerLinkViewOn": {
     "message": "View on $1"
   },
@@ -769,8 +772,14 @@
   "bridgeQuoteExpired": {
     "message": "Your quote timed out."
   },
+  "bridgeSelectDestinationAccount": {
+    "message": "Select destination account"
+  },
   "bridgeSelectNetwork": {
     "message": "Select network"
+  },
+  "bridgeSelectTokenAmountAndAccount": {
+    "message": "Select token, amount and destination account"
   },
   "bridgeSelectTokenAndAmount": {
     "message": "Select token and amount"
@@ -5556,9 +5565,6 @@
   },
   "swapSelectAToken": {
     "message": "Select token"
-  },
-  "swapSelectDestinationAccount": {
-    "message": "Select a destination account"
   },
   "swapSelectQuotePopoverDescription": {
     "message": "Below are all the quotes gathered from multiple liquidity sources."

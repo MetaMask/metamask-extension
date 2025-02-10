@@ -593,14 +593,6 @@ const PrepareBridgePage = () => {
               <MascotBackgroundAnimation height="64" width="64" />
             </>
           ) : null}
-          {shouldShowAccountPicker && !selectedBridgeAccount && (
-            <Text
-              textAlign={TextAlign.Center}
-              color={TextColor.textAlternativeSoft}
-            >
-              {t('swapSelectDestinationAccount')}
-            </Text>
-          )}
         </Column>
         <Row padding={6}>
           <Column
@@ -635,6 +627,9 @@ const PrepareBridgePage = () => {
                 onFetchNewQuotes={() => {
                   debouncedUpdateQuoteRequestInController(quoteParams);
                 }}
+                needsDestinationAddress={
+                  isToOrFromSolana && !selectedBridgeAccount
+                }
               />
               {activeQuote?.approval && fromAmount && fromToken ? (
                 <Row justifyContent={JustifyContent.center} gap={1}>

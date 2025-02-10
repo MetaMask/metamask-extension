@@ -40,8 +40,10 @@ import { isQuoteExpired as isQuoteExpiredUtil } from '../utils/quote';
 
 export const BridgeCTAButton = ({
   onFetchNewQuotes,
+  needsDestinationAddress = false,
 }: {
   onFetchNewQuotes: () => void;
+  needsDestinationAddress?: boolean;
 }) => {
   const t = useI18nContext();
 
@@ -97,7 +99,6 @@ export const BridgeCTAButton = ({
     isInsufficientGasBalance_(nativeAssetBalance);
   const isInsufficientGasForQuote =
     isInsufficientGasForQuote_(nativeAssetBalance);
-
   const label = useMemo(() => {
     if (wasTxDeclined) {
       return t('youDeclinedTheTransaction');
@@ -121,9 +122,17 @@ export const BridgeCTAButton = ({
 
     if (!fromAmount) {
       if (!toToken) {
-        return t('bridgeSelectTokenAndAmount');
+        return needsDestinationAddress
+          ? t('bridgeSelectTokenAmountAndAccount')
+          : t('bridgeSelectTokenAndAmount');
       }
-      return t('bridgeEnterAmount');
+      return needsDestinationAddress
+        ? t('bridgeEnterAmountAndSelectAccount')
+        : t('bridgeEnterAmount');
+    }
+
+    if (needsDestinationAddress) {
+      return t('bridgeSelectDestinationAccount');
     }
 
     if (isTxSubmittable) {
