@@ -630,7 +630,7 @@ const PrepareBridgePage = () => {
             )}
             {!wasTxDeclined && activeQuote && <BridgeQuoteCard />}
             <Footer padding={0} flexDirection={FlexDirection.Column} gap={2}>
-              // TODO: add prop here to disable if user needs to select account.
+              {/* // TODO: add prop here to disable if user needs to select account. */}
               <BridgeCTAButton
                 onFetchNewQuotes={() => {
                   debouncedUpdateQuoteRequestInController(quoteParams);

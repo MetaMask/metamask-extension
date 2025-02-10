@@ -65,6 +65,7 @@ export const DestinationAccountPicker = ({
         className="swap-to-account-picker"
         backgroundColor={BackgroundColor.backgroundDefault}
         style={{
+          height: '70px',
           borderRadius: '8px',
           marginLeft: 'auto',
           marginRight: 'auto',
