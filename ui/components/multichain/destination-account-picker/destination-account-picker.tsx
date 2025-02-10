@@ -10,7 +10,6 @@ import {
   ButtonSize,
   ButtonVariant,
 } from '../../component-library';
-import { AccountListItem } from '../account-list-item';
 import { getSelectedInternalAccount } from '../../../selectors';
 import {
   BlockSize,
@@ -21,6 +20,7 @@ import {
   JustifyContent,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
+import DestinationSelectedAccountListItem from './destination-selected-account-list-item';
 import DestinationAccountListItem from './destination-account-list-item';
 import { t } from '../../../../app/scripts/translate';
 import { getInternalAccounts } from '../../../selectors';
@@ -76,7 +76,7 @@ export const DestinationAccountPicker = ({
           className="destination-account-picker__selected"
           width={BlockSize.Full}
         >
-          <DestinationAccountListItem
+          <DestinationSelectedAccountListItem
             account={selectedSwapToAccount}
             // TODO: fix
             // @ts-expect-error-error: not working
@@ -177,7 +177,7 @@ export const DestinationAccountPicker = ({
         }}
       >
         {filteredAccounts.map((account) => (
-          <AccountListItem
+          <DestinationAccountListItem
             key={account.id}
             account={account}
             onClick={() => onAccountSelect(account)}
