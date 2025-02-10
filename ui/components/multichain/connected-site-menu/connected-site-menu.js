@@ -49,6 +49,20 @@ export const ConnectedSiteMenu = ({
   const isConnectedtoOtherAccountOrSnap =
     status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT ||
     status === STATUS_CONNECTED_TO_SNAP;
+
+  const iconElement = connectedSubjectsMetadata?.iconUrl ? (
+    <AvatarFavicon
+      name={connectedSubjectsMetadata.name}
+      size={Size.SM}
+      src={connectedSubjectsMetadata.iconUrl}
+    />
+  ) : (
+    <Icon
+      name={IconName.Global}
+      size={IconSize.Sm}
+      color={IconColor.iconDefault}
+    />
+  );
   return (
     <Box
       className={classNames(
@@ -63,52 +77,44 @@ export const ConnectedSiteMenu = ({
       justifyContent={JustifyContent.center}
       backgroundColor={BackgroundColor.backgroundDefault}
     >
-      <Tooltip
-        title={
-          status === STATUS_NOT_CONNECTED
-            ? t('statusNotConnectedAccount')
-            : `${selectedAccount?.metadata.name} ${text}`
-        }
-        data-testid="multichain-connected-site-menu__tooltip"
-        position="bottom"
-      >
-        <BadgeWrapper
-          positionObj={
-            isConnectedtoOtherAccountOrSnap
-              ? { bottom: -1, right: -2, zIndex: 1 }
-              : { bottom: -1, right: -4, zIndex: 1 }
+      {process.env.REMOVE_GNS ? (
+        iconElement
+      ) : (
+        <Tooltip
+          title={
+            status === STATUS_NOT_CONNECTED
+              ? t('statusNotConnectedAccount')
+              : `${selectedAccount?.metadata.name} ${text}`
           }
-          badge={
-            <Box
-              backgroundColor={globalMenuColor}
-              className={classNames('multichain-connected-site-menu__badge', {
-                'not-connected': isConnectedtoOtherAccountOrSnap,
-              })}
-              borderRadius={BorderRadius.full}
-              borderColor={
-                isConnectedtoOtherAccountOrSnap
-                  ? BorderColor.successDefault
-                  : BorderColor.backgroundDefault
-              }
-              borderWidth={2}
-            />
-          }
+          data-testid="multichain-connected-site-menu__tooltip"
+          position="bottom"
         >
-          {connectedSubjectsMetadata?.iconUrl ? (
-            <AvatarFavicon
-              name={connectedSubjectsMetadata.name}
-              size={Size.SM}
-              src={connectedSubjectsMetadata.iconUrl}
-            />
-          ) : (
-            <Icon
-              name={IconName.Global}
-              size={IconSize.Sm}
-              color={IconColor.iconDefault}
-            />
-          )}
-        </BadgeWrapper>
-      </Tooltip>
+          <BadgeWrapper
+            positionObj={
+              isConnectedtoOtherAccountOrSnap
+                ? { bottom: -1, right: -2, zIndex: 1 }
+                : { bottom: -1, right: -4, zIndex: 1 }
+            }
+            badge={
+              <Box
+                backgroundColor={globalMenuColor}
+                className={classNames('multichain-connected-site-menu__badge', {
+                  'not-connected': isConnectedtoOtherAccountOrSnap,
+                })}
+                borderRadius={BorderRadius.full}
+                borderColor={
+                  isConnectedtoOtherAccountOrSnap
+                    ? BorderColor.successDefault
+                    : BorderColor.backgroundDefault
+                }
+                borderWidth={2}
+              />
+            }
+          >
+            {iconElement}
+          </BadgeWrapper>
+        </Tooltip>
+      )}
     </Box>
   );
 };
