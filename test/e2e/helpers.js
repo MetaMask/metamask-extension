@@ -63,8 +63,7 @@ async function withFixtures(options, testSuite) {
     dapp,
     fixtures,
     localNode = 'ganache',
-    ganacheOptions,
-    anvilOptions,
+    localNodeOptions,
     smartContract,
     driverOptions,
     dappOptions,
@@ -108,12 +107,12 @@ async function withFixtures(options, testSuite) {
     switch (localNode) {
       case 'anvil':
         anvilServer = new Anvil();
-        await anvilServer.start(anvilOptions);
+        await anvilServer.start(localNodeOptions);
         break;
 
       case 'ganache':
         ganacheServer = new Ganache();
-        await ganacheServer.start(ganacheOptions);
+        await ganacheServer.start(localNodeOptions);
         break;
 
       case 'none':
@@ -154,8 +153,8 @@ async function withFixtures(options, testSuite) {
     await fixtureServer.start();
     fixtureServer.loadJsonState(fixtures, contractRegistry);
 
-    if (ganacheOptions?.concurrent) {
-      ganacheOptions.concurrent.forEach(async (ganacheSettings) => {
+    if (localNodeOptions?.concurrent) {
+      localNodeOptions.concurrent.forEach(async (ganacheSettings) => {
         const { port, chainId, ganacheOptions2 } = ganacheSettings;
         const server = new Ganache();
         secondaryGanacheServer.push(server);
@@ -164,6 +163,8 @@ async function withFixtures(options, testSuite) {
           chain: { chainId },
           port,
           vmErrorsOnRPCResponse: false,
+          mnemonic:
+            'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
           ...ganacheOptions2,
         });
       });
@@ -207,7 +208,7 @@ async function withFixtures(options, testSuite) {
       mockServer,
       testSpecificMock,
       {
-        chainId: ganacheOptions?.chainId || 1337,
+        chainId: localNodeOptions?.chainId || 1337,
         ethConversionInUsd,
       },
     );
@@ -345,7 +346,7 @@ async function withFixtures(options, testSuite) {
         await anvilServer.quit();
       }
 
-      if (ganacheOptions?.concurrent) {
+      if (localNodeOptions?.concurrent) {
         secondaryGanacheServer.forEach(async (server) => {
           await server.quit();
         });

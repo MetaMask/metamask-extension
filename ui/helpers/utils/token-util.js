@@ -197,17 +197,6 @@ export function getTokenIdParam(tokenData = {}) {
 }
 
 /**
- * Gets the '_approved' parameter of the given token transaction data
- * (i.e function call) per the Human Standard Token ABI, if present.
- *
- * @param {object} tokenData - ethers Interface token data.
- * @returns {boolean | undefined} A boolean indicating whether the function is being called to approve or revoke access.
- */
-export function getTokenApprovedParam(tokenData = {}) {
-  return tokenData?.args?._approved;
-}
-
-/**
  * Get the token balance converted to fiat and optionally formatted for display
  *
  * @param {number} [contractExchangeRate] - The exchange rate between the current token and the native currency

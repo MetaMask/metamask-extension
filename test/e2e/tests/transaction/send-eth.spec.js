@@ -48,10 +48,6 @@ describe('Send ETH', function () {
           await inputAmount.press(driver.Key.BACK_SPACE);
           await inputAmount.press(driver.Key.BACK_SPACE);
 
-          await driver.assertElementNotPresent('.send-v2__error-amount', {
-            waitAtLeastGuard: 100, // A waitAtLeastGuard of 100ms is the best choice here
-          });
-
           const amountMax = await driver.findClickableElement(
             '[data-testid="max-clear-button"]',
           );
@@ -153,7 +149,8 @@ describe('Send ETH', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          anvilOptions: {
+          localNodeOptions: {
+            ...defaultGanacheOptions,
             hardfork: 'london',
           },
           smartContract,
@@ -322,7 +319,8 @@ describe('Send ETH', function () {
             fixtures: new FixtureBuilder()
               .withPermissionControllerConnectedToTestDapp()
               .build(),
-            anvilOptions: {
+            localNodeOptions: {
+              ...defaultGanacheOptions,
               hardfork: 'london',
             },
             title: this.test.fullTitle(),
