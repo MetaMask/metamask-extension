@@ -41,7 +41,6 @@ export const DestinationAccountPicker = ({
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const accounts = useSelector(getInternalAccounts);
 
-  console.log('accounts', accounts);
   const filteredAccounts = accounts.filter((account) => {
     const matchesSearch = account.metadata.name
       .toLowerCase()

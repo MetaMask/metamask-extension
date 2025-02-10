@@ -89,8 +89,6 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
   selected,
   onClick,
 }) => {
-  console.log('Account data:', account);
-
   const snapMetadata = useSelector(getSnapsMetadata);
   const accountLabel = getAccountLabel(
     account.metadata.keyring.type,
@@ -131,7 +129,6 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
 
   const accountTotalFiatBalances =
     useMultichainAccountTotalFiatBalance(account);
-  console.log('Account total fiat balances:', accountTotalFiatBalances);
 
   const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
     account,
@@ -139,16 +136,11 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
     isTokenNetworkFilterEqualCurrentNetwork,
     allChainIDs,
   );
-  console.log(
-    'Formatted tokens per chain:',
-    formattedTokensWithBalancesPerChain,
-  );
 
   const { totalFiatBalance } = useAccountTotalCrossChainFiatBalance(
     account,
     formattedTokensWithBalancesPerChain,
   );
-  console.log('Total fiat balance:', totalFiatBalance);
 
   // TODO: not working - troubleshoot.
   // const chainAvatars = Object.values(formattedTokensWithBalancesPerChain).map(
@@ -166,7 +158,6 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
   } else {
     balanceToTranslate = accountTotalFiatBalances.totalBalance;
   }
-  console.log('Balance to translate:', balanceToTranslate);
 
   return (
     <Box
