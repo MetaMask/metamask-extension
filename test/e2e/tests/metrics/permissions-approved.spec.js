@@ -1,6 +1,5 @@
 const { strict: assert } = require('assert');
 const {
-  defaultGanacheOptions,
   withFixtures,
   connectToDapp,
   unlockWallet,
@@ -54,7 +53,6 @@ describe('Permissions Approved Event', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },

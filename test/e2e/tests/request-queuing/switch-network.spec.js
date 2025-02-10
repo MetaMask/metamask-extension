@@ -21,7 +21,7 @@ describe('Request Queuing Switch Network on Dapp Send Tx while on different netw
           .withNetworkControllerDoubleGanache()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {
