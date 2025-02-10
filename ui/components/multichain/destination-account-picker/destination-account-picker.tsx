@@ -19,6 +19,7 @@ import {
   AlignItems,
   TextAlign,
   JustifyContent,
+  BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import DestinationAccountListItem from './destination-account-list-item';
 import { t } from '../../../../app/scripts/translate';
@@ -30,6 +31,7 @@ type DestinationAccountPickerProps = {
   isDestinationSolana: boolean;
 };
 
+// TODO: move this and everything else in the bridge folder.
 export const DestinationAccountPicker = ({
   onAccountSelect,
   selectedSwapToAccount,
@@ -61,11 +63,13 @@ export const DestinationAccountPicker = ({
         justifyContent={JustifyContent.spaceBetween}
         width={BlockSize.Full}
         className="swap-to-account-picker"
+        backgroundColor={BackgroundColor.backgroundDefault}
         style={{
           borderRadius: '8px',
-          backgroundColor: 'var(--color-background-default)',
           marginLeft: 'auto',
           marginRight: 'auto',
+          boxShadow:
+            '0px 0px 2px 0px #E2E4E9, 0px 0px 16px 0px rgba(226, 228, 233, 0.16)',
         }}
       >
         <Box
@@ -81,10 +85,7 @@ export const DestinationAccountPicker = ({
             disableHover
           />
         </Box>
-        <Box
-          className="deselect-button-container"
-          style={{ paddingRight: '20px' }}
-        >
+        <Box className="deselect-button-container" paddingRight={5}>
           <Button
             onClick={() => onAccountSelect(null)}
             aria-label="Deselect account"
@@ -117,29 +118,32 @@ export const DestinationAccountPicker = ({
       flexDirection={FlexDirection.Column}
       width={BlockSize.Full}
       className="destination-account-picker"
+      backgroundColor={BackgroundColor.backgroundDefault}
       style={{
         borderRadius: '8px',
         position: 'relative',
-        backgroundColor: 'var(--color-background-default)',
         marginLeft: 'auto',
         marginRight: 'auto',
+        boxShadow:
+          '0px 0px 2px 0px #E2E4E9, 0px 0px 16px 0px rgba(226, 228, 233, 0.16)',
       }}
     >
       <Box
         className="search-container"
+        width={BlockSize.Full}
+        display={Display.Flex}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.center}
+        backgroundColor={BackgroundColor.backgroundDefault}
         style={{
-          width: '100%',
           height: '45px',
           borderBottomWidth: '1px',
           borderBottomStyle: 'solid',
           borderBottomColor: '#B7BBC866',
-          alignItems: 'center',
-          display: 'flex',
-          justifyContent: 'center',
           borderRadius: '8px 8px 0 0',
-          backgroundColor: 'var(--color-background-default)',
         }}
       >
+        {/* // TODO: the above box is redundant. */}
         <TextField
           // @ts-expect-error-error:
           placeholder={t('destinationAccountPickerSearchPlaceholder')}
@@ -155,9 +159,9 @@ export const DestinationAccountPicker = ({
           }}
         />
       </Box>
-
       <Box
         className="destination-account-picker__list"
+        backgroundColor={BackgroundColor.backgroundDefault}
         style={{
           position: 'absolute',
           top: '45px',
@@ -166,9 +170,10 @@ export const DestinationAccountPicker = ({
           minHeight: '79px',
           maxHeight: '240px',
           overflowY: 'auto',
-          backgroundColor: 'var(--color-background-default)',
           borderRadius: '0 0 8px 8px',
           zIndex: 1000,
+          boxShadow:
+            '0px 0px 2px 0px #E2E4E9, 0px 0px 16px 0px rgba(226, 228, 233, 0.16)',
         }}
       >
         {filteredAccounts.map((account) => (
@@ -185,12 +190,12 @@ export const DestinationAccountPicker = ({
           <Box
             display={Display.Flex}
             style={{
-              height: '100%',
-              width: '100%',
               minHeight: '79px',
-              justifyContent: 'center',
-              alignItems: 'center',
             }}
+            width={BlockSize.Full}
+            height={BlockSize.Full}
+            justifyContent={JustifyContent.center}
+            alignItems={AlignItems.center}
           >
             <Text textAlign={TextAlign.Center}>
               {searchQuery
