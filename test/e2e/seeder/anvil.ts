@@ -51,7 +51,9 @@ export class Anvil {
     try {
       const versionOutput = execSync('anvil --version', { encoding: 'utf-8' });
       console.log(`Anvil version: ${versionOutput}`);
-      console.log(`Anvil server started on port: ${options.port}`);
+      console.log(
+        `Anvil server started on port: ${options.port} with chainId: ${options.chainId}`,
+      );
     } catch (error) {
       console.error('Failed to execute anvil:', error);
       throw new Error('Anvil binary is not accessible.');
@@ -67,6 +69,8 @@ export class Anvil {
     }
     const { walletClient, publicClient, testClient } = createAnvilClients(
       this.#server,
+      this.#server.options.chainId ?? 1337,
+      this.#server.options.port ?? 8545,
     );
 
     return { walletClient, publicClient, testClient };
