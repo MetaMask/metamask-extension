@@ -8,9 +8,9 @@ import {
 } from '../../../helpers';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { TRANSACTION_DATA_UNISWAP } from '../../../../data/confirmations/transaction-decode';
-import { Ganache } from '../../../seeder/ganache';
+import { Ganache } from '../../../local-node-clients/ganache';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import ContractAddressRegistry from '../../../seeder/contract-address-registry';
+import ContractAddressRegistry from '../../../local-node-clients/contract-address-registry';
 import { TestSuiteArguments } from './shared';
 
 const { withFixtures } = require('../../../helpers');

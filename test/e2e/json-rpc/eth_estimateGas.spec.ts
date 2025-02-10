@@ -3,7 +3,7 @@ import { withFixtures } from '../helpers';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
 import { Driver } from '../webdriver/driver';
-import { Ganache } from '../seeder/ganache';
+import { Ganache } from '../local-node-clients/ganache';
 
 describe('eth_estimateGas', function () {
   it('executes a estimate gas json rpc call', async function () {

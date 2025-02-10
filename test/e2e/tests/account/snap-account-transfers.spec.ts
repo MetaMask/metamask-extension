@@ -7,7 +7,7 @@ import {
 } from '../../helpers';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { Driver } from '../../webdriver/driver';
-import { Ganache } from '../../seeder/ganache';
+import { Ganache } from '../../local-node-clients/ganache';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import FixtureBuilder from '../../fixture-builder';

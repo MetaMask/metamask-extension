@@ -1,5 +1,5 @@
 import { withFixtures, unlockWallet } from '../../helpers';
-import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
+import { SMART_CONTRACTS } from '../../local-node-clients/smart-contracts';
 import FixtureBuilder from '../../fixture-builder';
 
 import AssetListPage from '../../page-objects/pages/home/asset-list';

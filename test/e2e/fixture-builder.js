@@ -10,7 +10,7 @@ const {
 const { mockNetworkStateOld } = require('../stub/networks');
 
 const { CHAIN_IDS } = require('../../shared/constants/network');
-const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
+const { SMART_CONTRACTS } = require('./local-node-clients/smart-contracts');
 const {
   DAPP_URL,
   DAPP_URL_LOCALHOST,

@@ -7,16 +7,16 @@ const { difference } = require('lodash');
 const WebSocket = require('ws');
 const createStaticServer = require('../../development/create-static-server');
 const { setupMocking } = require('./mock-e2e');
-const { Anvil } = require('./seeder/anvil');
-const { Ganache } = require('./seeder/ganache');
+const { Anvil } = require('./local-node-clients/anvil');
+const { Ganache } = require('./local-node-clients/ganache');
 const FixtureServer = require('./fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
 const { PAGES } = require('./webdriver/driver');
-const AnvilSeeder = require('./seeder/anvil-seeder');
-const GanacheSeeder = require('./seeder/ganache-seeder');
+const AnvilSeeder = require('./local-node-clients/anvil-seeder');
+const GanacheSeeder = require('./local-node-clients/ganache-seeder');
 const { Bundler } = require('./bundler');
-const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
+const { SMART_CONTRACTS } = require('./local-node-clients/smart-contracts');
 const { setManifestFlags } = require('./set-manifest-flags');
 const {
   ERC_4337_ACCOUNT,

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockedEndpoint, MockttpServer } from 'mockttp';
 import { largeDelayMs, veryLargeDelayMs } from '../../../helpers';
-import { Ganache } from '../../../seeder/ganache';
-import ContractAddressRegistry from '../../../seeder/contract-address-registry';
+import { Ganache } from '../../../local-node-clients/ganache';
+import ContractAddressRegistry from '../../../local-node-clients/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 
 const {

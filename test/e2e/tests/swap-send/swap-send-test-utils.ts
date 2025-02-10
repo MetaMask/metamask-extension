@@ -3,7 +3,7 @@ import { Mockttp } from 'mockttp';
 import FixtureBuilder from '../../fixture-builder';
 import { SWAPS_API_V2_BASE_URL } from '../../../../shared/constants/swaps';
 import { generateGanacheOptions } from '../../helpers';
-import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
+import { SMART_CONTRACTS } from '../../local-node-clients/smart-contracts';
 import { SWAP_SEND_QUOTES_RESPONSE_ETH_TST } from './mocks/eth-data';
 
 export const NATIVE_TOKEN_SYMBOL = 'ETH';

@@ -3,14 +3,14 @@ import { strict as assert } from 'assert';
 import { MockedEndpoint, MockttpServer } from 'mockttp';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { getEventPayloads } from '../../../helpers';
-import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
+import { SMART_CONTRACTS } from '../../../local-node-clients/smart-contracts';
 import { Driver } from '../../../webdriver/driver';
 import {
   createDepositTransaction,
   openDAppWithContract,
   TestSuiteArguments,
 } from '../transactions/shared';
-import ContractAddressRegistry from '../../../seeder/contract-address-registry';
+import ContractAddressRegistry from '../../../local-node-clients/contract-address-registry';
 
 const FixtureBuilder = require('../../../fixture-builder');
 const {

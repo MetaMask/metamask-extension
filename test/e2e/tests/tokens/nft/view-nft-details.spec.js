@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const { withFixtures, unlockWallet } = require('../../../helpers');
-const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
+const { SMART_CONTRACTS } = require('../../../local-node-clients/smart-contracts');
 const FixtureBuilder = require('../../../fixture-builder');
 
 describe('View NFT details', function () {

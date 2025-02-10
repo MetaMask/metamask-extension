@@ -8,7 +8,7 @@ import {
   loginWithBalanceValidation,
   loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
-import { Ganache } from '../../seeder/ganache';
+import { Ganache } from '../../local-node-clients/ganache';
 
 describe('Privacy Mode', function () {
   it('should hide fiat balance and token balance when privacy mode is activated', async function () {

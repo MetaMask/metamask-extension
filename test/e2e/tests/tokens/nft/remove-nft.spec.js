@@ -4,7 +4,7 @@ const {
   unlockWallet,
   getEventPayloads,
 } = require('../../../helpers');
-const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
+const { SMART_CONTRACTS } = require('../../../local-node-clients/smart-contracts');
 const FixtureBuilder = require('../../../fixture-builder');
 const {
   MetaMetricsEventName,

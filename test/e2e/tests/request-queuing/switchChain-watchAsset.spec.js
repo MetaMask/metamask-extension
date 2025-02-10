@@ -7,7 +7,7 @@ const {
   withFixtures,
   switchToNotificationWindow,
 } = require('../../helpers');
-const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
+const { SMART_CONTRACTS } = require('../../local-node-clients/smart-contracts');
 const { DAPP_URL } = require('../../constants');
 
 describe('Request Queue SwitchChain -> WatchAsset', function () {
