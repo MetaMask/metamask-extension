@@ -1,6 +1,6 @@
 import { Driver } from '../../../webdriver/driver';
-import { Ganache } from '../../../local-node-clients/ganache';
-import { Anvil } from '../../../local-node-clients/anvil';
+import { Ganache } from '../../../seeder/ganache';
+import { Anvil } from '../../../seeder/anvil';
 import { getCleanAppState } from '../../../helpers';
 import HeaderNavbar from '../header-navbar';
 

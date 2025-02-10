@@ -1,6 +1,6 @@
 import { withFixtures } from '../../../helpers';
 import { ACCOUNT_TYPE } from '../../../constants';
-import { SMART_CONTRACTS } from '../../../local-node-clients/smart-contracts';
+import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import FixtureBuilder from '../../../fixture-builder';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';

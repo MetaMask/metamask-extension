@@ -3,7 +3,7 @@ const {
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
 } = require('../../helpers');
-const { SMART_CONTRACTS } = require('../../local-node-clients/smart-contracts');
+const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const FixtureBuilder = require('../../fixture-builder');
 
 const hexPrefixedAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';

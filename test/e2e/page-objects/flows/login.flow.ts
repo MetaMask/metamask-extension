@@ -1,8 +1,8 @@
 import LoginPage from '../pages/login-page';
 import HomePage from '../pages/home/homepage';
 import { Driver } from '../../webdriver/driver';
-import { Anvil } from '../../local-node-clients/anvil';
-import { Ganache } from '../../local-node-clients/ganache';
+import { Anvil } from '../../seeder/anvil';
+import { Ganache } from '../../seeder/ganache';
 
 /**
  * This method unlocks the wallet and lands the user on the homepage.

@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { SMART_CONTRACTS } = require('../../local-node-clients/smart-contracts');
+const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const {
   withFixtures,
   openDapp,

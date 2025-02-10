@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const { withFixtures, unlockWallet } = require('../../../helpers');
-const { SMART_CONTRACTS } = require('../../../local-node-clients/smart-contracts');
+const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const FixtureBuilder = require('../../../fixture-builder');
 
 async function mockIPFSRequest(mockServer) {

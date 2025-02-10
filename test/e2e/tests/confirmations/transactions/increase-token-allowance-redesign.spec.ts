@@ -5,8 +5,8 @@ import {
   withFixtures,
 } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
-import ContractAddressRegistry from '../../../local-node-clients/contract-address-registry';
-import { SMART_CONTRACTS } from '../../../local-node-clients/smart-contracts';
+import ContractAddressRegistry from '../../../seeder/contract-address-registry';
+import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import { Driver } from '../../../webdriver/driver';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import {

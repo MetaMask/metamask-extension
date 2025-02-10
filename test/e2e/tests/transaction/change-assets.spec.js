@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const { withFixtures, logInWithBalanceValidation } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
-const { SMART_CONTRACTS } = require('../../local-node-clients/smart-contracts');
+const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const { tEn } = require('../../../lib/i18n-helpers');
 
 describe('Change assets', function () {

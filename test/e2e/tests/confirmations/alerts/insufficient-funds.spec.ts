@@ -5,7 +5,7 @@ import {
   withFixtures,
   WINDOW_TITLES,
 } from '../../../helpers';
-import { SMART_CONTRACTS } from '../../../local-node-clients/smart-contracts';
+import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import {
   TestSuiteArguments,
   openDAppWithContract,

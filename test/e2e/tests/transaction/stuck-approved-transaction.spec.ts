@@ -2,7 +2,7 @@ import { Suite } from 'mocha';
 import { withFixtures, generateGanacheOptions } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
-import { Ganache } from '../../local-node-clients/ganache';
+import { Ganache } from '../../seeder/ganache';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import HomePage from '../../page-objects/pages/home/homepage';

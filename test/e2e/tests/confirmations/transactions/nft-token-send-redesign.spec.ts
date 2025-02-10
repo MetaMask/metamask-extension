@@ -15,7 +15,7 @@ import NFTListPage from '../../../page-objects/pages/home/nft-list';
 import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
 import SendTokenPage from '../../../page-objects/pages/send/send-token-page';
 import TestDapp from '../../../page-objects/pages/test-dapp';
-import ContractAddressRegistry from '../../../local-node-clients/contract-address-registry';
+import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { withTransactionEnvelopeTypeFixtures } from '../helpers';
 import { TestSuiteArguments } from './shared';

@@ -1,15 +1,15 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
-import { Ganache } from '../../local-node-clients/ganache';
-import ContractAddressRegistry from '../../local-node-clients/contract-address-registry';
+import { Ganache } from '../../seeder/ganache';
+import ContractAddressRegistry from '../../seeder/contract-address-registry';
 import {
   multipleGanacheOptionsForType2Transactions,
   PRIVATE_KEY_TWO,
   withFixtures,
   WINDOW_TITLES,
 } from '../../helpers';
-import { SMART_CONTRACTS } from '../../local-node-clients/smart-contracts';
+import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
