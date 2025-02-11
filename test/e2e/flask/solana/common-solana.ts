@@ -5,7 +5,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import FixtureBuilder from '../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../constants';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 
 const SOLANA_URL_REGEX =
   /^https:\/\/(solana-mainnet\.infura\.io|api\.devnet\.solana\.com)/u;
@@ -497,7 +497,7 @@ export async function withSolanaAccountSnap(
       ],
     },
     async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
-      await loginWithBalanceValidation(driver);
+      await loginWithoutBalanceValidation(driver);
       const headerComponen = new HeaderNavbar(driver);
       await headerComponen.openAccountMenu();
       const accountListPage = new AccountListPage(driver);
