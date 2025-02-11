@@ -179,7 +179,9 @@ export async function retrieveGithubProjectIssueFieldValuesRecursively(
   );
 
   const projectIssueFieldValuesResponseWithSameId: RawGithubProjectIssueFieldValues | undefined =
-    projectIssuesFieldValuesResponse.nodes.find((issue) => issue.content.id === issueId);
+    projectIssuesFieldValuesResponse.nodes.find(
+      (issue) => issue.content?.id === issueId
+    ); // 'issue.content' can be equal to null in edge case where the Github Project board includes private repo issues that can't be accessed by the access token we're using
 
   if (projectIssueFieldValuesResponseWithSameId) {
     const projectIssueFieldValues: GithubProjectIssueFieldValues = {
