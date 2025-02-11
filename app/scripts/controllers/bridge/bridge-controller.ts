@@ -54,6 +54,7 @@ type BridgePollingInput = {
 export default class BridgeController extends StaticIntervalPollingController<BridgePollingInput>()<
   typeof BRIDGE_CONTROLLER_NAME,
   BridgeControllerState,
+  // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
   BridgeControllerMessenger
 > {
   #abortController: AbortController | undefined;

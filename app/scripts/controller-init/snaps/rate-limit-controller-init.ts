@@ -35,6 +35,7 @@ export const RateLimitControllerInit: ControllerInitFunction<
 }) => {
   const controller = new RateLimitController({
     state: persistedState.RateLimitController,
+    // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
     messenger: controllerMessenger,
 
     implementations: {
