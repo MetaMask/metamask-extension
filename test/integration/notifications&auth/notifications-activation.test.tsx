@@ -80,7 +80,7 @@ describe('Notifications Activation', () => {
     });
   };
 
-  it('should successfully activate notification for the first time', async () => {
+  it('should successfully activate notification for the first tim and send correct metrivs', async () => {
     const mockedState = getMockedNotificationsState();
     await act(async () => {
       await integrationTestRender({
@@ -149,42 +149,6 @@ describe('Notifications Activation', () => {
       await act(async () => {
         fireEvent.click(
           await within(screen.getByRole('dialog')).findByRole('button', {
-            name: 'Close',
-          }),
-        );
-      });
-
-      await trackNotificationsActivatedMetaMetricsEvent('dismissed', false);
-    });
-  });
-
-  it('should successfully send correct metrics when notifications modal is dismissed', async () => {
-    const mockedState = getMockedNotificationsState();
-    await act(async () => {
-      await integrationTestRender({
-        preloadedState: {
-          ...mockedState,
-          isProfileSyncingEnabled: false,
-          isNotificationServicesEnabled: false,
-          isFeatureAnnouncementsEnabled: false,
-          isMetamaskNotificationsFeatureSeen: false,
-        },
-        backgroundConnection: backgroundConnectionMocked,
-      });
-
-      await clickElement('account-options-menu-button');
-      await waitForElement('notifications-menu-item');
-      await clickElement('notifications-menu-item');
-
-      await waitFor(() => {
-        expect(
-          within(screen.getByRole('dialog')).getByText('Turn on'),
-        ).toBeInTheDocument();
-      });
-
-      await act(async () => {
-        fireEvent.click(
-          within(screen.getByRole('dialog')).getByRole('button', {
             name: 'Close',
           }),
         );
