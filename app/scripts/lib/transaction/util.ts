@@ -64,13 +64,14 @@ export async function addDappTransaction(
   request: AddDappTransactionRequest,
 ): Promise<string> {
   const { dappRequest } = request;
-  const { id: actionId, method, origin } = dappRequest;
+  const { id: actionId, method } = dappRequest;
   const { securityAlertResponse, traceContext } = dappRequest;
 
   const transactionOptions: Partial<AddTransactionOptions> = {
     actionId,
     method,
-    origin,
+    // Development only. Do not commit.
+    origin: 'metamask',
     // This is the default behaviour but specified here for clarity
     requireApproval: true,
     securityAlertResponse,

@@ -1,0 +1,1699 @@
+diff --git a/dist/TransactionController.cjs b/dist/TransactionController.cjs
+index c96d2962d81c4c63c7b626bc1ca18b196b20a154..51fb40f22dc52904f1734035bff6c8587d527666 100644
+--- a/dist/TransactionController.cjs
++++ b/dist/TransactionController.cjs
+@@ -13,12 +13,9 @@ var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (
+ var __importDefault = (this && this.__importDefault) || function (mod) {
+     return (mod && mod.__esModule) ? mod : { "default": mod };
+ };
+-var _TransactionController_instances, _TransactionController_internalEvents, _TransactionController_methodDataHelper, _TransactionController_incomingTransactionChainIds, _TransactionController_incomingTransactionHelper, _TransactionController_incomingTransactionOptions, _TransactionController_pendingTransactionOptions, _TransactionController_trace, _TransactionController_transactionHistoryLimit, _TransactionController_isFirstTimeInteractionEnabled, _TransactionController_isSimulationEnabled, _TransactionController_testGasFeeFlows, _TransactionController_multichainTrackingHelper, _TransactionController_retryTransaction, _TransactionController_getChainId, _TransactionController_getNetworkClientId, _TransactionController_getEthQuery, _TransactionController_getProvider, _TransactionController_createNonceTracker, _TransactionController_createPendingTransactionTracker, _TransactionController_checkForPendingTransactionAndStartPolling, _TransactionController_stopAllTracking, _TransactionController_removeIncomingTransactionHelperListeners, _TransactionController_addIncomingTransactionHelperListeners, _TransactionController_removePendingTransactionTrackerListeners, _TransactionController_addPendingTransactionTrackerListeners, _TransactionController_getNonceTrackerPendingTransactions, _TransactionController_getGasFeeFlows, _TransactionController_getLayer1GasFeeFlows, _TransactionController_updateTransactionInternal, _TransactionController_updateFirstTimeInteraction, _TransactionController_updateSimulationData, _TransactionController_onGasFeePollerTransactionUpdate, _TransactionController_getSelectedAccount, _TransactionController_updateSubmitHistory;
++var _TransactionController_instances, _TransactionController_internalEvents, _TransactionController_methodDataHelper, _TransactionController_incomingTransactionChainIds, _TransactionController_incomingTransactionHelper, _TransactionController_incomingTransactionOptions, _TransactionController_pendingTransactionOptions, _TransactionController_trace, _TransactionController_transactionHistoryLimit, _TransactionController_isFirstTimeInteractionEnabled, _TransactionController_isSimulationEnabled, _TransactionController_testGasFeeFlows, _TransactionController_multichainTrackingHelper, _TransactionController_retryTransaction, _TransactionController_getChainId, _TransactionController_getNetworkClientId, _TransactionController_getEthQuery, _TransactionController_getProvider, _TransactionController_createNonceTracker, _TransactionController_createPendingTransactionTracker, _TransactionController_checkForPendingTransactionAndStartPolling, _TransactionController_stopAllTracking, _TransactionController_addIncomingTransactionHelperListeners, _TransactionController_removePendingTransactionTrackerListeners, _TransactionController_addPendingTransactionTrackerListeners, _TransactionController_getNonceTrackerPendingTransactions, _TransactionController_getGasFeeFlows, _TransactionController_getLayer1GasFeeFlows, _TransactionController_updateTransactionInternal, _TransactionController_updateFirstTimeInteraction, _TransactionController_updateSimulationData, _TransactionController_onGasFeePollerTransactionUpdate, _TransactionController_getSelectedAccount, _TransactionController_getInternalAccounts, _TransactionController_updateSubmitHistory;
+ Object.defineProperty(exports, "__esModule", { value: true });
+-exports.TransactionController = exports.ApprovalState = exports.SPEED_UP_RATE = exports.CANCEL_RATE = exports.HARDFORK = void 0;
+-const common_1 = require("@ethereumjs/common");
+-const tx_1 = require("@ethereumjs/tx");
+-const util_1 = require("@ethereumjs/util");
++exports.TransactionController = exports.ApprovalState = exports.SPEED_UP_RATE = exports.CANCEL_RATE = void 0;
+ const base_controller_1 = require("@metamask/base-controller");
+ const controller_utils_1 = require("@metamask/controller-utils");
+ const eth_query_1 = __importDefault(require("@metamask/eth-query"));
+@@ -46,6 +43,8 @@ const MultichainTrackingHelper_1 = require("./helpers/MultichainTrackingHelper.c
+ const PendingTransactionTracker_1 = require("./helpers/PendingTransactionTracker.cjs");
+ const logger_1 = require("./logger.cjs");
+ const types_1 = require("./types.cjs");
++const batch_1 = require("./utils/batch.cjs");
++const eip7702_1 = require("./utils/eip7702.cjs");
+ const external_transactions_1 = require("./utils/external-transactions.cjs");
+ const gas_1 = require("./utils/gas.cjs");
+ const gas_fees_1 = require("./utils/gas-fees.cjs");
+@@ -53,6 +52,7 @@ const gas_flow_1 = require("./utils/gas-flow.cjs");
+ const history_1 = require("./utils/history.cjs");
+ const layer1_gas_fee_flow_1 = require("./utils/layer1-gas-fee-flow.cjs");
+ const nonce_1 = require("./utils/nonce.cjs");
++const prepare_1 = require("./utils/prepare.cjs");
+ const resimulate_1 = require("./utils/resimulate.cjs");
+ const retry_1 = require("./utils/retry.cjs");
+ const simulation_1 = require("./utils/simulation.cjs");
+@@ -82,7 +82,6 @@ const metadata = {
+         anonymous: false,
+     },
+ };
+-exports.HARDFORK = common_1.Hardfork.London;
+ const SUBMIT_HISTORY_LIMIT = 100;
+ /**
+  * Multiplier used to determine a transaction's increased gas fee during cancellation
+@@ -323,6 +322,34 @@ class TransactionController extends base_controller_1.BaseController {
+     async handleMethodData(fourBytePrefix, networkClientId) {
+         return __classPrivateFieldGet(this, _TransactionController_methodDataHelper, "f").lookup(fourBytePrefix, networkClientId);
+     }
++    /**
++     * Add a batch of transactions to be submitted after approval.
++     *
++     * @param request - Request object containing the transactions to add.
++     * @returns Result object containing the generated batch ID.
++     */
++    async addTransactionBatch(request) {
++        return await (0, batch_1.addTransactionBatch)({
++            addTransaction: this.addTransaction.bind(this),
++            getChainId: __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_getChainId).bind(this),
++            getEthQuery: (networkClientId) => __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_getEthQuery).call(this, { networkClientId }),
++            messenger: this.messagingSystem,
++            request,
++        });
++    }
++    /**
++     * Determine which chains support atomic batch transactions with the given account address.
++     *
++     * @param address - The address of the account to check.
++     * @returns  The supported chain IDs.
++     */
++    async isAtomicBatchSupported(address) {
++        return (0, batch_1.isAtomicBatchSupported)({
++            address,
++            getEthQuery: (chainId) => __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_getEthQuery).call(this, { chainId }),
++            messenger: this.messagingSystem,
++        });
++    }
+     /**
+      * Add a new unapproved transaction to state. Parameters will be validated, a
+      * unique transaction id will be generated, and gas and gasPrice will be calculated
+@@ -333,6 +360,7 @@ class TransactionController extends base_controller_1.BaseController {
+      * @param options.actionId - Unique ID to prevent duplicate requests.
+      * @param options.deviceConfirmedOn - An enum to indicate what device confirmed the transaction.
+      * @param options.method - RPC method that requested the transaction.
++     * @param options.nestedTransactions - Params for any nested transactions encoded in the data.
+      * @param options.origin - The origin of the transaction request, such as a dApp hostname.
+      * @param options.requireApproval - Whether the transaction requires approval by the user, defaults to true unless explicitly disabled.
+      * @param options.securityAlertResponse - Response from security validator.
+@@ -347,16 +375,26 @@ class TransactionController extends base_controller_1.BaseController {
+      */
+     async addTransaction(txParams, options) {
+         (0, logger_1.projectLogger)('Adding transaction', txParams, options);
+-        const { actionId, deviceConfirmedOn, method, networkClientId, origin, requireApproval, securityAlertResponse, sendFlowHistory, swaps = {}, traceContext, type, } = options;
++        const { actionId, deviceConfirmedOn, method, nestedTransactions, networkClientId, origin, requireApproval, securityAlertResponse, sendFlowHistory, swaps = {}, traceContext, type, } = options;
+         txParams = (0, utils_2.normalizeTransactionParams)(txParams);
+         if (!__classPrivateFieldGet(this, _TransactionController_multichainTrackingHelper, "f").has(networkClientId)) {
+             throw new Error(`Network client not found - ${networkClientId}`);
+         }
++        const permittedAddresses = origin === undefined
++            ? undefined
++            : await this.getPermittedAccounts?.(origin);
++        const selectedAddress = __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_getSelectedAccount).call(this).address;
++        const internalAccounts = __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_getInternalAccounts).call(this);
++        await (0, validation_1.validateTransactionOrigin)({
++            from: txParams.from,
++            internalAccounts,
++            origin,
++            permittedAddresses,
++            selectedAddress,
++            txParams,
++        });
+         const isEIP1559Compatible = await this.getEIP1559Compatibility(networkClientId);
+         (0, validation_1.validateTxParams)(txParams, isEIP1559Compatible);
+-        if (origin && this.getPermittedAccounts) {
+-            await (0, validation_1.validateTransactionOrigin)(await this.getPermittedAccounts(origin), __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_getSelectedAccount).call(this).address, txParams.from, origin);
+-        }
+         const dappSuggestedGasFees = this.generateDappSuggestedGasFees(txParams, origin);
+         const chainId = __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_getChainId).call(this, networkClientId);
+         const ethQuery = __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_getEthQuery).call(this, {
+@@ -375,6 +413,7 @@ class TransactionController extends base_controller_1.BaseController {
+                 deviceConfirmedOn,
+                 id: (0, uuid_1.v1)(),
+                 isFirstTimeInteraction: undefined,
++                nestedTransactions,
+                 networkClientId,
+                 origin,
+                 securityAlertResponse,
+@@ -806,12 +845,9 @@ class TransactionController extends base_controller_1.BaseController {
+         }
+         const initialTx = listOfTxParams[0];
+         const { chainId } = initialTx;
+-        const common = this.getCommonConfiguration(chainId);
+         const networkClientId = __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_getNetworkClientId).call(this, { chainId });
+-        const initialTxAsEthTx = tx_1.TransactionFactory.fromTxData(initialTx, {
+-            common,
+-        });
+-        const initialTxAsSerializedHex = (0, util_1.bufferToHex)(initialTxAsEthTx.serialize());
++        const initialTxAsEthTx = (0, prepare_1.prepareTransaction)(chainId, initialTx);
++        const initialTxAsSerializedHex = (0, prepare_1.serializeTransaction)(initialTxAsEthTx);
+         if (this.approvingTransactionIds.has(initialTxAsSerializedHex)) {
+             return '';
+         }
+@@ -1025,10 +1061,9 @@ class TransactionController extends base_controller_1.BaseController {
+             chainId,
+         };
+         const { from } = updatedTransactionParams;
+-        const common = this.getCommonConfiguration(chainId);
+-        const unsignedTransaction = tx_1.TransactionFactory.fromTxData(updatedTransactionParams, { common });
++        const unsignedTransaction = (0, prepare_1.prepareTransaction)(chainId, updatedTransactionParams);
+         const signedTransaction = await this.sign(unsignedTransaction, from);
+-        const rawTransaction = (0, util_1.bufferToHex)(signedTransaction.serialize());
++        const rawTransaction = (0, prepare_1.serializeTransaction)(signedTransaction);
+         return rawTransaction;
+     }
+     /**
+@@ -1043,6 +1078,7 @@ class TransactionController extends base_controller_1.BaseController {
+     /**
+      * Stop the signing process for a specific transaction.
+      * Throws an error causing the transaction status to be set to failed.
++     *
+      * @param transactionId - The ID of the transaction to stop signing.
+      */
+     abortTransactionSigning(transactionId) {
+@@ -1209,20 +1245,18 @@ class TransactionController extends base_controller_1.BaseController {
+                 transactionId,
+                 note: 'TransactionController#approveTransaction - Transaction approved',
+             }, (draftTxMeta) => {
+-                const { txParams, chainId } = draftTxMeta;
++                const { chainId, txParams } = draftTxMeta;
++                const { gas, type } = txParams;
+                 draftTxMeta.status = types_1.TransactionStatus.approved;
+-                draftTxMeta.txParams = {
+-                    ...txParams,
+-                    nonce,
+-                    chainId,
+-                    gasLimit: txParams.gas,
+-                    ...((0, utils_2.isEIP1559Transaction)(txParams) && {
+-                        type: types_1.TransactionEnvelopeType.feeMarket,
+-                    }),
+-                };
++                draftTxMeta.txParams.chainId = chainId;
++                draftTxMeta.txParams.gasLimit = gas;
++                draftTxMeta.txParams.nonce = nonce;
++                if (!type && (0, utils_2.isEIP1559Transaction)(txParams)) {
++                    draftTxMeta.txParams.type = types_1.TransactionEnvelopeType.feeMarket;
++                }
+             });
+             this.onTransactionStatusChange(transactionMeta);
+-            const rawTx = await __classPrivateFieldGet(this, _TransactionController_trace, "f").call(this, { name: 'Sign', parentContext: traceContext }, () => this.signTransaction(transactionMeta, transactionMeta.txParams));
++            const rawTx = await __classPrivateFieldGet(this, _TransactionController_trace, "f").call(this, { name: 'Sign', parentContext: traceContext }, () => this.signTransaction(transactionMeta));
+             if (!this.beforePublish(transactionMeta)) {
+                 (0, logger_1.projectLogger)('Skipping publishing transaction based on hook');
+                 this.messagingSystem.publish(`${controllerName}:transactionPublishingSkipped`, transactionMeta);
+@@ -1313,10 +1347,7 @@ class TransactionController extends base_controller_1.BaseController {
+             status: types_1.TransactionStatus.rejected,
+         };
+         this.messagingSystem.publish(`${controllerName}:transactionFinished`, updatedTransactionMeta);
+-        __classPrivateFieldGet(this, _TransactionController_internalEvents, "f").emit(
+-        // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+-        `${transactionMeta.id}:finished`, updatedTransactionMeta);
++        __classPrivateFieldGet(this, _TransactionController_internalEvents, "f").emit(`${transactionMeta.id}:finished`, updatedTransactionMeta);
+         this.messagingSystem.publish(`${controllerName}:transactionRejected`, {
+             transactionMeta: updatedTransactionMeta,
+             actionId,
+@@ -1344,8 +1375,6 @@ class TransactionController extends base_controller_1.BaseController {
+             .filter((tx) => {
+             const { chainId, status, txParams, time } = tx;
+             if (txParams) {
+-                // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+-                // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+                 const key = `${String(txParams.nonce)}-${(0, controller_utils_1.convertHexToDecimal)(chainId)}-${new Date(time).toDateString()}`;
+                 if (nonceNetworkSet.has(key)) {
+                     return true;
+@@ -1426,29 +1455,6 @@ class TransactionController extends base_controller_1.BaseController {
+         const isCompleted = this.isLocalFinalState(transaction.status);
+         return { meta: transaction, isCompleted };
+     }
+-    prepareUnsignedEthTx(chainId, txParams) {
+-        return tx_1.TransactionFactory.fromTxData(txParams, {
+-            freeze: false,
+-            common: this.getCommonConfiguration(chainId),
+-        });
+-    }
+-    /**
+-     * `@ethereumjs/tx` uses `@ethereumjs/common` as a configuration tool for
+-     * specifying which chain, network, hardfork and EIPs to support for
+-     * a transaction. By referencing this configuration, and analyzing the fields
+-     * specified in txParams, @ethereumjs/tx is able to determine which EIP-2718
+-     * transaction type to use.
+-     *
+-     * @param chainId - The chainId to use for the configuration.
+-     * @returns common configuration object
+-     */
+-    getCommonConfiguration(chainId) {
+-        const customChainParams = {
+-            chainId: parseInt(chainId, 16),
+-            defaultHardfork: exports.HARDFORK,
+-        };
+-        return common_1.Common.custom(customChainParams);
+-    }
+     onIncomingTransactions(transactions) {
+         if (!transactions.length) {
+             return;
+@@ -1617,12 +1623,20 @@ class TransactionController extends base_controller_1.BaseController {
+         const currentAccountIsEIP1559Compatible = await this.getCurrentAccountEIP1559Compatibility();
+         return (currentNetworkIsEIP1559Compatible && currentAccountIsEIP1559Compatible);
+     }
+-    async signTransaction(transactionMeta, txParams) {
++    async signTransaction(transactionMeta) {
++        const { txParams } = transactionMeta;
+         (0, logger_1.projectLogger)('Signing transaction', txParams);
+-        const unsignedEthTx = this.prepareUnsignedEthTx(transactionMeta.chainId, txParams);
++        const { authorizationList, from } = txParams;
++        const finalTxParams = { ...txParams };
++        finalTxParams.authorizationList = await (0, eip7702_1.signAuthorizationList)({
++            authorizationList,
++            messenger: this.messagingSystem,
++            transactionMeta,
++        });
++        const unsignedEthTx = (0, prepare_1.prepareTransaction)(transactionMeta.chainId, finalTxParams);
+         this.approvingTransactionIds.add(transactionMeta.id);
+         const signedTx = await new Promise((resolve, reject) => {
+-            this.sign?.(unsignedEthTx, txParams.from, ...this.getAdditionalSignArguments(transactionMeta)).then(resolve, reject);
++            this.sign?.(unsignedEthTx, from, ...this.getAdditionalSignArguments(transactionMeta)).then(resolve, reject);
+             this.signAbortCallbacks.set(transactionMeta.id, () => reject(new Error('Signing aborted by user')));
+         });
+         this.signAbortCallbacks.delete(transactionMeta.id);
+@@ -1639,10 +1653,11 @@ class TransactionController extends base_controller_1.BaseController {
+         const transactionMetaWithRsv = {
+             ...this.updateTransactionMetaRSV(transactionMetaFromHook, signedTx),
+             status: types_1.TransactionStatus.signed,
++            txParams: finalTxParams,
+         };
+         this.updateTransaction(transactionMetaWithRsv, 'TransactionController#approveTransaction - Transaction signed');
+         this.onTransactionStatusChange(transactionMetaWithRsv);
+-        const rawTx = (0, util_1.bufferToHex)(signedTx.serialize());
++        const rawTx = (0, prepare_1.serializeTransaction)(signedTx);
+         const transactionMetaWithRawTx = (0, lodash_1.merge)({}, transactionMetaWithRsv, {
+             rawTx,
+         });
+@@ -1738,10 +1753,10 @@ _TransactionController_internalEvents = new WeakMap(), _TransactionController_me
+     }
+     const newTxParams = (0, retry_1.getTransactionParamsWithIncreasedGasFee)(transactionMeta.txParams, rate, gasValues);
+     prepareTransactionParams?.(newTxParams);
+-    const unsignedEthTx = this.prepareUnsignedEthTx(transactionMeta.chainId, newTxParams);
++    const unsignedEthTx = (0, prepare_1.prepareTransaction)(transactionMeta.chainId, newTxParams);
+     const signedTx = await this.sign(unsignedEthTx, transactionMeta.txParams.from);
+     const transactionMetaWithRsv = this.updateTransactionMetaRSV(transactionMeta, signedTx);
+-    const rawTx = (0, util_1.bufferToHex)(signedTx.serialize());
++    const rawTx = (0, prepare_1.serializeTransaction)(signedTx);
+     const newFee = newTxParams.maxFeePerGas ?? newTxParams.gasPrice;
+     const oldFee = newTxParams.maxFeePerGas
+         ? transactionMetaWithRsv.txParams.maxFeePerGas
+@@ -1832,9 +1847,6 @@ _TransactionController_internalEvents = new WeakMap(), _TransactionController_me
+     return pendingTransactionTracker;
+ }, _TransactionController_stopAllTracking = function _TransactionController_stopAllTracking() {
+     __classPrivateFieldGet(this, _TransactionController_multichainTrackingHelper, "f").stopAllTracking();
+-}, _TransactionController_removeIncomingTransactionHelperListeners = function _TransactionController_removeIncomingTransactionHelperListeners(incomingTransactionHelper) {
+-    incomingTransactionHelper.hub.removeAllListeners('transactions');
+-    incomingTransactionHelper.hub.removeAllListeners('updated-last-fetched-timestamp');
+ }, _TransactionController_addIncomingTransactionHelperListeners = function _TransactionController_addIncomingTransactionHelperListeners(incomingTransactionHelper) {
+     incomingTransactionHelper.hub.on('transactions', this.onIncomingTransactions.bind(this));
+ }, _TransactionController_removePendingTransactionTrackerListeners = function _TransactionController_removePendingTransactionTrackerListeners(pendingTransactionTracker) {
+@@ -1987,6 +1999,11 @@ _TransactionController_internalEvents = new WeakMap(), _TransactionController_me
+     });
+ }, _TransactionController_getSelectedAccount = function _TransactionController_getSelectedAccount() {
+     return this.messagingSystem.call('AccountsController:getSelectedAccount');
++}, _TransactionController_getInternalAccounts = function _TransactionController_getInternalAccounts() {
++    const state = this.messagingSystem.call('AccountsController:getState');
++    return Object.values(state.internalAccounts?.accounts ?? {})
++        .filter((account) => account.type === 'eip155:eoa')
++        .map((account) => account.address);
+ }, _TransactionController_updateSubmitHistory = function _TransactionController_updateSubmitHistory(transactionMeta, hash) {
+     const { chainId, networkClientId, origin, rawTx, txParams } = transactionMeta;
+     const { networkConfigurationsByChainId } = this.getNetworkState();
+diff --git a/dist/TransactionController.d.cts b/dist/TransactionController.d.cts
+index 7c969ff85b6bd4c4da9e9232143974ef4e626cdc..4ed460a58aae46f46f9f1208b68b0d4ed59702b3 100644
+--- a/dist/TransactionController.d.cts
++++ b/dist/TransactionController.d.cts
+@@ -1,6 +1,5 @@
+-import { Hardfork } from "@ethereumjs/common";
+ import type { TypedTransaction } from "@ethereumjs/tx";
+-import type { AccountsControllerGetSelectedAccountAction } from "@metamask/accounts-controller";
++import type { AccountsControllerGetSelectedAccountAction, AccountsControllerGetStateAction } from "@metamask/accounts-controller";
+ import type { AddApprovalRequest } from "@metamask/approval-controller";
+ import type { ControllerGetStateAction, ControllerStateChangeEvent, RestrictedMessenger } from "@metamask/base-controller";
+ import { BaseController } from "@metamask/base-controller";
+@@ -8,11 +7,12 @@ import type { TraceCallback } from "@metamask/controller-utils";
+ import type { FetchGasFeeEstimateOptions, GasFeeState } from "@metamask/gas-fee-controller";
+ import type { NetworkClientId, NetworkController, NetworkControllerStateChangeEvent, NetworkState, NetworkControllerFindNetworkClientIdByChainIdAction, NetworkControllerGetNetworkClientByIdAction } from "@metamask/network-controller";
+ import type { NonceLock, Transaction as NonceTrackerTransaction } from "@metamask/nonce-tracker";
++import type { RemoteFeatureFlagControllerGetStateAction } from "@metamask/remote-feature-flag-controller";
+ import type { Hex } from "@metamask/utils";
+ import type { IncomingTransactionOptions } from "./helpers/IncomingTransactionHelper.cjs";
+-import type { SavedGasFees, SecurityProviderRequest, SendFlowHistoryEntry, TransactionParams, TransactionMeta, TransactionReceipt, WalletDevice, SecurityAlertResponse, GasFeeFlowResponse, GasPriceValue, FeeMarketEIP1559Values, SubmitHistoryEntry } from "./types.cjs";
++import type { SavedGasFees, SecurityProviderRequest, SendFlowHistoryEntry, TransactionParams, TransactionMeta, TransactionReceipt, WalletDevice, SecurityAlertResponse, GasFeeFlowResponse, GasPriceValue, FeeMarketEIP1559Values, SubmitHistoryEntry, TransactionBatchRequest, TransactionBatchResult, BatchTransactionParams } from "./types.cjs";
+ import { TransactionType, TransactionStatus } from "./types.cjs";
+-export declare const HARDFORK = Hardfork.London;
++import type { KeyringControllerSignAuthorization } from "./utils/eip7702.cjs";
+ /**
+  * Object with new transaction's meta and a promise resolving to the
+  * transaction hash if successful.
+@@ -155,7 +155,7 @@ declare const controllerName = "TransactionController";
+ /**
+  * The external actions available to the {@link TransactionController}.
+  */
+-export type AllowedActions = AddApprovalRequest | NetworkControllerFindNetworkClientIdByChainIdAction | NetworkControllerGetNetworkClientByIdAction | AccountsControllerGetSelectedAccountAction;
++export type AllowedActions = AccountsControllerGetSelectedAccountAction | AccountsControllerGetStateAction | AddApprovalRequest | KeyringControllerSignAuthorization | NetworkControllerFindNetworkClientIdByChainIdAction | NetworkControllerGetNetworkClientByIdAction | RemoteFeatureFlagControllerGetStateAction;
+ /**
+  * The external events available to the {@link TransactionController}.
+  */
+@@ -402,6 +402,20 @@ export declare class TransactionController extends BaseController<typeof control
+      * @returns The method data object corresponding to the given signature prefix.
+      */
+     handleMethodData(fourBytePrefix: string, networkClientId: NetworkClientId): Promise<MethodData>;
++    /**
++     * Add a batch of transactions to be submitted after approval.
++     *
++     * @param request - Request object containing the transactions to add.
++     * @returns Result object containing the generated batch ID.
++     */
++    addTransactionBatch(request: TransactionBatchRequest): Promise<TransactionBatchResult>;
++    /**
++     * Determine which chains support atomic batch transactions with the given account address.
++     *
++     * @param address - The address of the account to check.
++     * @returns  The supported chain IDs.
++     */
++    isAtomicBatchSupported(address: Hex): Promise<Hex[]>;
+     /**
+      * Add a new unapproved transaction to state. Parameters will be validated, a
+      * unique transaction id will be generated, and gas and gasPrice will be calculated
+@@ -412,6 +426,7 @@ export declare class TransactionController extends BaseController<typeof control
+      * @param options.actionId - Unique ID to prevent duplicate requests.
+      * @param options.deviceConfirmedOn - An enum to indicate what device confirmed the transaction.
+      * @param options.method - RPC method that requested the transaction.
++     * @param options.nestedTransactions - Params for any nested transactions encoded in the data.
+      * @param options.origin - The origin of the transaction request, such as a dApp hostname.
+      * @param options.requireApproval - Whether the transaction requires approval by the user, defaults to true unless explicitly disabled.
+      * @param options.securityAlertResponse - Response from security validator.
+@@ -428,6 +443,7 @@ export declare class TransactionController extends BaseController<typeof control
+         actionId?: string;
+         deviceConfirmedOn?: WalletDevice;
+         method?: string;
++        nestedTransactions?: BatchTransactionParams[];
+         networkClientId: NetworkClientId;
+         origin?: string;
+         requireApproval?: boolean | undefined;
+@@ -683,6 +699,7 @@ export declare class TransactionController extends BaseController<typeof control
+     /**
+      * Stop the signing process for a specific transaction.
+      * Throws an error causing the transaction status to be set to failed.
++     *
+      * @param transactionId - The ID of the transaction to stop signing.
+      */
+     abortTransactionSigning(transactionId: string): void;
+@@ -744,18 +761,6 @@ export declare class TransactionController extends BaseController<typeof control
+     private getTransactionOrThrow;
+     private getApprovalId;
+     private isTransactionCompleted;
+-    private prepareUnsignedEthTx;
+-    /**
+-     * `@ethereumjs/tx` uses `@ethereumjs/common` as a configuration tool for
+-     * specifying which chain, network, hardfork and EIPs to support for
+-     * a transaction. By referencing this configuration, and analyzing the fields
+-     * specified in txParams, @ethereumjs/tx is able to determine which EIP-2718
+-     * transaction type to use.
+-     *
+-     * @param chainId - The chainId to use for the configuration.
+-     * @returns common configuration object
+-     */
+-    private getCommonConfiguration;
+     private onIncomingTransactions;
+     private generateDappSuggestedGasFees;
+     /**
+diff --git a/dist/abi/SimpleDelegateContract.cjs b/dist/abi/SimpleDelegateContract.cjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..d0c8d973a48f22ee071d420ad4d06401aa40a261
+--- /dev/null
++++ b/dist/abi/SimpleDelegateContract.cjs
+@@ -0,0 +1,50 @@
++"use strict";
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.ABI_SIMPLE_DELEGATE_CONTRACT = void 0;
++exports.ABI_SIMPLE_DELEGATE_CONTRACT = [
++    { type: 'receive', stateMutability: 'payable' },
++    {
++        type: 'function',
++        name: 'execute',
++        inputs: [
++            {
++                name: 'calls',
++                type: 'tuple[]',
++                internalType: 'struct SimpleDelegateContract.Call[]',
++                components: [
++                    { name: 'data', type: 'bytes', internalType: 'bytes' },
++                    { name: 'to', type: 'address', internalType: 'address' },
++                    { name: 'value', type: 'uint256', internalType: 'uint256' },
++                ],
++            },
++        ],
++        outputs: [],
++        stateMutability: 'payable',
++    },
++    {
++        type: 'event',
++        name: 'Executed',
++        inputs: [
++            {
++                name: 'to',
++                type: 'address',
++                indexed: true,
++                internalType: 'address',
++            },
++            {
++                name: 'value',
++                type: 'uint256',
++                indexed: false,
++                internalType: 'uint256',
++            },
++            {
++                name: 'data',
++                type: 'bytes',
++                indexed: false,
++                internalType: 'bytes',
++            },
++        ],
++        anonymous: false,
++    },
++];
++//# sourceMappingURL=SimpleDelegateContract.cjs.map
+\ No newline at end of file
+diff --git a/dist/abi/SimpleDelegateContract.d.cts b/dist/abi/SimpleDelegateContract.d.cts
+new file mode 100644
+index 0000000000000000000000000000000000000000..b79a5860d9b1fa44990862b539cb1a5a471da763
+--- /dev/null
++++ b/dist/abi/SimpleDelegateContract.d.cts
+@@ -0,0 +1,37 @@
++export declare const ABI_SIMPLE_DELEGATE_CONTRACT: ({
++    type: string;
++    stateMutability: string;
++    name?: undefined;
++    inputs?: undefined;
++    outputs?: undefined;
++    anonymous?: undefined;
++} | {
++    type: string;
++    name: string;
++    inputs: {
++        name: string;
++        type: string;
++        internalType: string;
++        components: {
++            name: string;
++            type: string;
++            internalType: string;
++        }[];
++    }[];
++    outputs: never[];
++    stateMutability: string;
++    anonymous?: undefined;
++} | {
++    type: string;
++    name: string;
++    inputs: {
++        name: string;
++        type: string;
++        indexed: boolean;
++        internalType: string;
++    }[];
++    anonymous: boolean;
++    stateMutability?: undefined;
++    outputs?: undefined;
++})[];
++//# sourceMappingURL=SimpleDelegateContract.d.cts.map
+\ No newline at end of file
+diff --git a/dist/gas-flows/OracleLayer1GasFeeFlow.cjs b/dist/gas-flows/OracleLayer1GasFeeFlow.cjs
+index be7a32e4eae565a0b9b7b2c6bb22b87bf3ee0eb0..db34b8aa661908216bb62b210c4281a25b0a78d2 100644
+--- a/dist/gas-flows/OracleLayer1GasFeeFlow.cjs
++++ b/dist/gas-flows/OracleLayer1GasFeeFlow.cjs
+@@ -10,16 +10,15 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+ };
+-var _OracleLayer1GasFeeFlow_instances, _OracleLayer1GasFeeFlow_oracleAddress, _OracleLayer1GasFeeFlow_signTransaction, _OracleLayer1GasFeeFlow_getOracleLayer1GasFee, _OracleLayer1GasFeeFlow_buildUnserializedTransaction, _OracleLayer1GasFeeFlow_buildTransactionParams, _OracleLayer1GasFeeFlow_buildTransactionCommon;
++var _OracleLayer1GasFeeFlow_instances, _OracleLayer1GasFeeFlow_oracleAddress, _OracleLayer1GasFeeFlow_signTransaction, _OracleLayer1GasFeeFlow_getOracleLayer1GasFee, _OracleLayer1GasFeeFlow_buildUnserializedTransaction, _OracleLayer1GasFeeFlow_buildTransactionParams;
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.OracleLayer1GasFeeFlow = void 0;
+-const common_1 = require("@ethereumjs/common");
+-const tx_1 = require("@ethereumjs/tx");
+ const contracts_1 = require("@ethersproject/contracts");
+ const providers_1 = require("@ethersproject/providers");
+ const utils_1 = require("@metamask/utils");
+ const lodash_1 = require("lodash");
+ const logger_1 = require("../logger.cjs");
++const prepare_1 = require("../utils/prepare.cjs");
+ const log = (0, utils_1.createModuleLogger)(logger_1.projectLogger, 'oracle-layer1-gas-fee-flow');
+ const DUMMY_KEY = 'abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789';
+ const GAS_PRICE_ORACLE_ABI = [
+@@ -68,10 +67,8 @@ _OracleLayer1GasFeeFlow_oracleAddress = new WeakMap(), _OracleLayer1GasFeeFlow_s
+     };
+ }, _OracleLayer1GasFeeFlow_buildUnserializedTransaction = function _OracleLayer1GasFeeFlow_buildUnserializedTransaction(transactionMeta, sign) {
+     const txParams = __classPrivateFieldGet(this, _OracleLayer1GasFeeFlow_instances, "m", _OracleLayer1GasFeeFlow_buildTransactionParams).call(this, transactionMeta);
+-    const common = __classPrivateFieldGet(this, _OracleLayer1GasFeeFlow_instances, "m", _OracleLayer1GasFeeFlow_buildTransactionCommon).call(this, transactionMeta);
+-    let unserializedTransaction = tx_1.TransactionFactory.fromTxData(txParams, {
+-        common,
+-    });
++    const { chainId } = transactionMeta;
++    let unserializedTransaction = (0, prepare_1.prepareTransaction)(chainId, txParams);
+     if (sign) {
+         const keyBuffer = Buffer.from(DUMMY_KEY, 'hex');
+         unserializedTransaction = unserializedTransaction.sign(keyBuffer);
+@@ -82,11 +79,5 @@ _OracleLayer1GasFeeFlow_oracleAddress = new WeakMap(), _OracleLayer1GasFeeFlow_s
+         ...(0, lodash_1.omit)(transactionMeta.txParams, 'gas'),
+         gasLimit: transactionMeta.txParams.gas,
+     };
+-}, _OracleLayer1GasFeeFlow_buildTransactionCommon = function _OracleLayer1GasFeeFlow_buildTransactionCommon(transactionMeta) {
+-    const chainId = Number(transactionMeta.chainId);
+-    return common_1.Common.custom({
+-        chainId,
+-        defaultHardfork: common_1.Hardfork.London,
+-    });
+ };
+ //# sourceMappingURL=OracleLayer1GasFeeFlow.cjs.map
+\ No newline at end of file
+diff --git a/dist/index.cjs b/dist/index.cjs
+index 2c51fb4e81aa3b9158490455a9d78960969b0a61..71c07f84b7f00e903857d58db588f5e999ab2386 100644
+--- a/dist/index.cjs
++++ b/dist/index.cjs
+@@ -1,8 +1,7 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+-exports.INCOMING_TRANSACTIONS_SUPPORTED_CHAIN_IDS = exports.CHAIN_IDS = exports.normalizeTransactionParams = exports.isEIP1559Transaction = exports.mergeGasFeeEstimates = exports.determineTransactionType = exports.MAX_TRANSACTION_HISTORY_LENGTH = exports.DISPLAYED_TRANSACTION_HISTORY_PATHS = exports.WalletDevice = exports.UserFeeLevel = exports.TransactionType = exports.TransactionStatus = exports.TransactionEnvelopeType = exports.SimulationTokenStandard = exports.SimulationErrorCode = exports.GasFeeEstimateType = exports.GasFeeEstimateLevel = exports.TransactionController = exports.SPEED_UP_RATE = exports.CANCEL_RATE = exports.HARDFORK = void 0;
++exports.HARDFORK = exports.INCOMING_TRANSACTIONS_SUPPORTED_CHAIN_IDS = exports.CHAIN_IDS = exports.normalizeTransactionParams = exports.isEIP1559Transaction = exports.mergeGasFeeEstimates = exports.determineTransactionType = exports.MAX_TRANSACTION_HISTORY_LENGTH = exports.DISPLAYED_TRANSACTION_HISTORY_PATHS = exports.WalletDevice = exports.UserFeeLevel = exports.TransactionType = exports.TransactionStatus = exports.TransactionEnvelopeType = exports.SimulationTokenStandard = exports.SimulationErrorCode = exports.GasFeeEstimateType = exports.GasFeeEstimateLevel = exports.TransactionController = exports.SPEED_UP_RATE = exports.CANCEL_RATE = void 0;
+ var TransactionController_1 = require("./TransactionController.cjs");
+-Object.defineProperty(exports, "HARDFORK", { enumerable: true, get: function () { return TransactionController_1.HARDFORK; } });
+ Object.defineProperty(exports, "CANCEL_RATE", { enumerable: true, get: function () { return TransactionController_1.CANCEL_RATE; } });
+ Object.defineProperty(exports, "SPEED_UP_RATE", { enumerable: true, get: function () { return TransactionController_1.SPEED_UP_RATE; } });
+ Object.defineProperty(exports, "TransactionController", { enumerable: true, get: function () { return TransactionController_1.TransactionController; } });
+@@ -30,4 +29,6 @@ var constants_1 = require("./constants.cjs");
+ Object.defineProperty(exports, "CHAIN_IDS", { enumerable: true, get: function () { return constants_1.CHAIN_IDS; } });
+ var AccountsApiRemoteTransactionSource_1 = require("./helpers/AccountsApiRemoteTransactionSource.cjs");
+ Object.defineProperty(exports, "INCOMING_TRANSACTIONS_SUPPORTED_CHAIN_IDS", { enumerable: true, get: function () { return AccountsApiRemoteTransactionSource_1.SUPPORTED_CHAIN_IDS; } });
++var prepare_1 = require("./utils/prepare.cjs");
++Object.defineProperty(exports, "HARDFORK", { enumerable: true, get: function () { return prepare_1.HARDFORK; } });
+ //# sourceMappingURL=index.cjs.map
+\ No newline at end of file
+diff --git a/dist/index.d.cts b/dist/index.d.cts
+index ee7161b8e69f9a89861aa65ffcea69d4da5ec2ef..5beefebdc6411eb362b478bb30d3c40796884069 100644
+--- a/dist/index.d.cts
++++ b/dist/index.d.cts
+@@ -1,6 +1,6 @@
+ export type { MethodData, Result, TransactionControllerActions, TransactionControllerEvents, TransactionControllerGetStateAction, TransactionControllerIncomingTransactionsReceivedEvent, TransactionControllerPostTransactionBalanceUpdatedEvent, TransactionControllerSpeedupTransactionAddedEvent, TransactionControllerState, TransactionControllerStateChangeEvent, TransactionControllerTransactionApprovedEvent, TransactionControllerTransactionConfirmedEvent, TransactionControllerTransactionDroppedEvent, TransactionControllerTransactionFailedEvent, TransactionControllerTransactionFinishedEvent, TransactionControllerTransactionNewSwapApprovalEvent, TransactionControllerTransactionNewSwapEvent, TransactionControllerTransactionPublishingSkipped, TransactionControllerTransactionRejectedEvent, TransactionControllerTransactionStatusUpdatedEvent, TransactionControllerTransactionSubmittedEvent, TransactionControllerUnapprovedTransactionAddedEvent, TransactionControllerMessenger, TransactionControllerOptions, } from "./TransactionController.cjs";
+-export { HARDFORK, CANCEL_RATE, SPEED_UP_RATE, TransactionController, } from "./TransactionController.cjs";
+-export type { DappSuggestedGasFees, DefaultGasEstimates, FeeMarketEIP1559Values, FeeMarketGasFeeEstimateForLevel, FeeMarketGasFeeEstimates, GasFeeEstimates, GasPriceGasFeeEstimates, GasPriceValue, InferTransactionTypeResult, LegacyGasFeeEstimates, Log, SavedGasFees, SecurityAlertResponse, SecurityProviderRequest, SendFlowHistoryEntry, SimulationBalanceChange, SimulationData, SimulationError, SimulationToken, SimulationTokenBalanceChange, TransactionError, TransactionHistory, TransactionHistoryEntry, TransactionMeta, TransactionParams, TransactionReceipt, } from "./types.cjs";
++export { CANCEL_RATE, SPEED_UP_RATE, TransactionController, } from "./TransactionController.cjs";
++export type { Authorization, AuthorizationList, BatchTransactionParams, DappSuggestedGasFees, DefaultGasEstimates, FeeMarketEIP1559Values, FeeMarketGasFeeEstimateForLevel, FeeMarketGasFeeEstimates, GasFeeEstimates, GasPriceGasFeeEstimates, GasPriceValue, InferTransactionTypeResult, LegacyGasFeeEstimates, Log, SavedGasFees, SecurityAlertResponse, SecurityProviderRequest, SendFlowHistoryEntry, SimulationBalanceChange, SimulationData, SimulationError, SimulationToken, SimulationTokenBalanceChange, TransactionBatchRequest, TransactionBatchResult, TransactionError, TransactionHistory, TransactionHistoryEntry, TransactionMeta, TransactionParams, TransactionReceipt, } from "./types.cjs";
+ export { GasFeeEstimateLevel, GasFeeEstimateType, SimulationErrorCode, SimulationTokenStandard, TransactionEnvelopeType, TransactionStatus, TransactionType, UserFeeLevel, WalletDevice, } from "./types.cjs";
+ export { DISPLAYED_TRANSACTION_HISTORY_PATHS, MAX_TRANSACTION_HISTORY_LENGTH, } from "./utils/history.cjs";
+ export { determineTransactionType } from "./utils/transaction-type.cjs";
+@@ -8,4 +8,5 @@ export { mergeGasFeeEstimates } from "./utils/gas-flow.cjs";
+ export { isEIP1559Transaction, normalizeTransactionParams, } from "./utils/utils.cjs";
+ export { CHAIN_IDS } from "./constants.cjs";
+ export { SUPPORTED_CHAIN_IDS as INCOMING_TRANSACTIONS_SUPPORTED_CHAIN_IDS } from "./helpers/AccountsApiRemoteTransactionSource.cjs";
++export { HARDFORK } from "./utils/prepare.cjs";
+ //# sourceMappingURL=index.d.cts.map
+\ No newline at end of file
+diff --git a/dist/types.cjs b/dist/types.cjs
+index 2c9201e166897cbc44dec1f57160b4484fa284f5..a2de29ed753846d6366750ceebde2f97395b74ce 100644
+--- a/dist/types.cjs
++++ b/dist/types.cjs
+@@ -15,62 +15,44 @@ var TransactionStatus;
+     /**
+      * The initial state of a transaction before user approval.
+      */
+-    // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+-    // eslint-disable-next-line @typescript-eslint/naming-convention
+     TransactionStatus["unapproved"] = "unapproved";
+     /**
+      * The transaction has been approved by the user but is not yet signed.
+      * This status is usually brief but may be longer for scenarios like hardware wallet usage.
+      */
+-    // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+-    // eslint-disable-next-line @typescript-eslint/naming-convention
+     TransactionStatus["approved"] = "approved";
+     /**
+      * The transaction is signed and in the process of being submitted to the network.
+      * This status is typically short-lived but can be longer for certain cases, such as smart transactions.
+      */
+-    // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+-    // eslint-disable-next-line @typescript-eslint/naming-convention
+     TransactionStatus["signed"] = "signed";
+     /**
+      * The transaction has been submitted to the network and is awaiting confirmation.
+      */
+-    // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+-    // eslint-disable-next-line @typescript-eslint/naming-convention
+     TransactionStatus["submitted"] = "submitted";
+     /**
+      * The transaction has been successfully executed and confirmed on the blockchain.
+      * This is a final state.
+      */
+-    // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+-    // eslint-disable-next-line @typescript-eslint/naming-convention
+     TransactionStatus["confirmed"] = "confirmed";
+     /**
+      * The transaction encountered an error during execution on the blockchain and failed.
+      * This is a final state.
+      */
+-    // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+-    // eslint-disable-next-line @typescript-eslint/naming-convention
+     TransactionStatus["failed"] = "failed";
+     /**
+      * The transaction was superseded by another transaction, resulting in its dismissal.
+      * This is a final state.
+      */
+-    // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+-    // eslint-disable-next-line @typescript-eslint/naming-convention
+     TransactionStatus["dropped"] = "dropped";
+     /**
+      * The transaction was rejected by the user and not processed further.
+      * This is a final state.
+      */
+-    // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+-    // eslint-disable-next-line @typescript-eslint/naming-convention
+     TransactionStatus["rejected"] = "rejected";
+     /**
+      * @deprecated This status is no longer used.
+      */
+-    // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+-    // eslint-disable-next-line @typescript-eslint/naming-convention
+     TransactionStatus["cancelled"] = "cancelled";
+ })(TransactionStatus || (exports.TransactionStatus = TransactionStatus = {}));
+ /**
+@@ -78,15 +60,10 @@ var TransactionStatus;
+  */
+ var WalletDevice;
+ (function (WalletDevice) {
+-    // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+-    // eslint-disable-next-line @typescript-eslint/naming-convention
+     WalletDevice["MM_MOBILE"] = "metamask_mobile";
+-    // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+-    // eslint-disable-next-line @typescript-eslint/naming-convention
+     WalletDevice["MM_EXTENSION"] = "metamask_extension";
+     WalletDevice["OTHER"] = "other_device";
+ })(WalletDevice || (exports.WalletDevice = WalletDevice = {}));
+-/* eslint-disable @typescript-eslint/naming-convention */
+ /**
+  * The type of the transaction.
+  */
+@@ -221,16 +198,12 @@ var TransactionEnvelopeType;
+     /**
+      * A legacy transaction, the very first type.
+      */
+-    // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+-    // eslint-disable-next-line @typescript-eslint/naming-convention
+     TransactionEnvelopeType["legacy"] = "0x0";
+     /**
+      * EIP-2930 defined the access list transaction type that allowed for
+      * specifying the state that a transaction would act upon in advance and
+      * theoretically save on gas fees.
+      */
+-    // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+-    // eslint-disable-next-line @typescript-eslint/naming-convention
+     TransactionEnvelopeType["accessList"] = "0x1";
+     /**
+      * The type introduced comes from EIP-1559, Fee Market describes the addition
+@@ -240,9 +213,13 @@ var TransactionEnvelopeType;
+      * the maxPriorityFeePerGas (maximum amount of gwei per gas from the
+      * transaction fee to distribute to miner).
+      */
+-    // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+-    // eslint-disable-next-line @typescript-eslint/naming-convention
+     TransactionEnvelopeType["feeMarket"] = "0x2";
++    /**
++     * Adds code to externally owned accounts according to the signed authorizations
++     * in the new `authorizationList` parameter.
++     * Introduced in EIP-7702.
++     */
++    TransactionEnvelopeType["setCode"] = "0x4";
+ })(TransactionEnvelopeType || (exports.TransactionEnvelopeType = TransactionEnvelopeType = {}));
+ /**
+  * The source of the gas fee parameters on a transaction.
+@@ -250,8 +227,6 @@ var TransactionEnvelopeType;
+ var UserFeeLevel;
+ (function (UserFeeLevel) {
+     UserFeeLevel["CUSTOM"] = "custom";
+-    // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+-    // eslint-disable-next-line @typescript-eslint/naming-convention
+     UserFeeLevel["DAPP_SUGGESTED"] = "dappSuggested";
+     UserFeeLevel["MEDIUM"] = "medium";
+ })(UserFeeLevel || (exports.UserFeeLevel = UserFeeLevel = {}));
+@@ -272,14 +247,8 @@ var GasFeeEstimateType;
+ /** Token standards supported by simulation. */
+ var SimulationTokenStandard;
+ (function (SimulationTokenStandard) {
+-    // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+-    // eslint-disable-next-line @typescript-eslint/naming-convention
+     SimulationTokenStandard["erc20"] = "erc20";
+-    // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+-    // eslint-disable-next-line @typescript-eslint/naming-convention
+     SimulationTokenStandard["erc721"] = "erc721";
+-    // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+-    // eslint-disable-next-line @typescript-eslint/naming-convention
+     SimulationTokenStandard["erc1155"] = "erc1155";
+ })(SimulationTokenStandard || (exports.SimulationTokenStandard = SimulationTokenStandard = {}));
+ var SimulationErrorCode;
+diff --git a/dist/types.d.cts b/dist/types.d.cts
+index ddb45c7545f53bd05a3fd266085af2ecfb128a33..9033c6f2506117616a50782be5c13bdb17e7bff3 100644
+--- a/dist/types.d.cts
++++ b/dist/types.d.cts
+@@ -171,6 +171,11 @@ type TransactionMetaBase = {
+      * Additional gas fees to cover the cost of persisting data on layer 1 for layer 2 networks.
+      */
+     layer1GasFee?: Hex;
++    /**
++     * Parameters for any nested transactions encoded in the data.
++     * For example, in an atomic batch transaction via EIP-7702.
++     */
++    nestedTransactions?: BatchTransactionParams[];
+     /**
+      * The ID of the network client used by the transaction.
+      */
+@@ -563,6 +568,12 @@ export type TransactionParams = {
+      * A list of addresses and storage keys that the transaction plans to access.
+      */
+     accessList?: AccessList;
++    /**
++     * Array of authorizations to set code on EOA accounts.
++     * Only supported in `setCode` transactions.
++     * Introduced in EIP-7702.
++     */
++    authorizationList?: AuthorizationList;
+     /**
+      * Network ID as per EIP-155.
+      */
+@@ -811,7 +822,13 @@ export declare enum TransactionEnvelopeType {
+      * the maxPriorityFeePerGas (maximum amount of gwei per gas from the
+      * transaction fee to distribute to miner).
+      */
+-    feeMarket = "0x2"
++    feeMarket = "0x2",
++    /**
++     * Adds code to externally owned accounts according to the signed authorizations
++     * in the new `authorizationList` parameter.
++     * Introduced in EIP-7702.
++     */
++    setCode = "0x4"
+ }
+ /**
+  * The source of the gas fee parameters on a transaction.
+@@ -938,12 +955,14 @@ export type GasFeeFlowResponse = {
+ export type GasFeeFlow = {
+     /**
+      * Determine if the gas fee flow supports the specified transaction.
++     *
+      * @param transactionMeta - The transaction metadata.
+      * @returns Whether the gas fee flow supports the transaction.
+      */
+     matchesTransaction(transactionMeta: TransactionMeta): boolean;
+     /**
+      * Get gas fee estimates for a specific transaction.
++     *
+      * @param request - The gas fee flow request.
+      * @returns The gas fee flow response containing the gas fee estimates.
+      */
+@@ -965,12 +984,14 @@ export type Layer1GasFeeFlowResponse = {
+ export type Layer1GasFeeFlow = {
+     /**
+      * Determine if the gas fee flow supports the specified transaction.
++     *
+      * @param transactionMeta - The transaction metadata.
+      * @returns Whether the layer1 gas fee flow supports the transaction.
+      */
+     matchesTransaction(transactionMeta: TransactionMeta): boolean;
+     /**
+      * Get layer 1 gas fee estimates for a specific transaction.
++     *
+      * @param request - The gas fee flow request.
+      * @returns The gas fee flow response containing the layer 1 gas fee estimate.
+      */
+@@ -1069,5 +1090,76 @@ export type SubmitHistoryEntry = {
+     transaction: TransactionParams;
+ };
+ export type InternalAccount = ReturnType<AccountsController['getSelectedAccount']>;
++/**
++ * An authorization to be included in a `setCode` transaction.
++ * Specifies code to be added to the authorization signer's EOA account.
++ * Introduced in EIP-7702.
++ */
++export type Authorization = {
++    /** Address of a smart contract that contains the code to be set. */
++    address: Hex;
++    /**
++     * Specific chain the authorization applies to.
++     * If not provided, defaults to the chain ID of the transaction.
++     */
++    chainId?: Hex;
++    /**
++     * Nonce at which the authorization will be valid.
++     * If not provided, defaults to the nonce following the transaction's nonce.
++     */
++    nonce?: Hex;
++    /** R component of the signature. */
++    r?: Hex;
++    /** S component of the signature. */
++    s?: Hex;
++    /** Y parity generated from the signature. */
++    yParity?: Hex;
++};
++/**
++ * An array of authorizations to be included in a `setCode` transaction.
++ * Introduced in EIP-7702.
++ */
++export type AuthorizationList = Authorization[];
++/**
++ * The parameters of a transaction within an atomic batch.
++ */
++export type BatchTransactionParams = {
++    /** Data used to invoke a function on the target smart contract or EOA. */
++    data?: Hex;
++    /** Address of the target contract or EOA. */
++    to?: Hex;
++    /** Native balance to transfer with the transaction. */
++    value?: Hex;
++};
++/**
++ * Specification for a single transaction within a batch request.
++ */
++export type TransactionBatchSingleRequest = {
++    /** Parameters of the single transaction. */
++    params: BatchTransactionParams;
++};
++/**
++ * Request to submit a batch of transactions.
++ * Currently only atomic batches are supported via EIP-7702.
++ */
++export type TransactionBatchRequest = {
++    /** Address of the account to submit the transaction batch. */
++    from: Hex;
++    /** ID of the network client to submit the transaction. */
++    networkClientId: NetworkClientId;
++    /** Origin of the request, such as a dApp hostname or `ORIGIN_METAMASK` if internal. */
++    origin?: string;
++    /** Whether an approval request should be created to require confirmation from the user. */
++    requireApproval?: boolean;
++    /** Transactions to be submitted as part of the batch. */
++    transactions: TransactionBatchSingleRequest[];
++};
++/**
++ * Result from submitting a transaction batch.
++ */
++export type TransactionBatchResult = {
++    /** ID of the batch to locate related transactions. */
++    batchId: string;
++};
+ export {};
+ //# sourceMappingURL=types.d.cts.map
+\ No newline at end of file
+diff --git a/dist/utils/batch.cjs b/dist/utils/batch.cjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..70c4bc81e6abd60985139a11114c73c6b7061d87
+--- /dev/null
++++ b/dist/utils/batch.cjs
+@@ -0,0 +1,83 @@
++"use strict";
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.isAtomicBatchSupported = exports.addTransactionBatch = void 0;
++const rpc_errors_1 = require("@metamask/rpc-errors");
++const utils_1 = require("@metamask/utils");
++const eip7702_1 = require("./eip7702.cjs");
++const feature_flags_1 = require("./feature-flags.cjs");
++const logger_1 = require("../logger.cjs");
++const types_1 = require("../types.cjs");
++const log = (0, utils_1.createModuleLogger)(logger_1.projectLogger, 'batch');
++/**
++ * Add a batch transaction.
++ *
++ * @param request - The request object including the user request and necessary callbacks.
++ * @returns The batch result object including the batch ID.
++ */
++async function addTransactionBatch(request) {
++    const { addTransaction, getChainId, messenger, request: userRequest, } = request;
++    const { from, networkClientId, requireApproval, transactions } = userRequest;
++    log('Adding', userRequest);
++    const chainId = getChainId(networkClientId);
++    const ethQuery = request.getEthQuery(networkClientId);
++    const isChainSupported = (0, eip7702_1.doesChainSupportEIP7702)(chainId, messenger);
++    if (!isChainSupported) {
++        log('Chain does not support EIP-7702', chainId);
++        throw rpc_errors_1.rpcErrors.internal('Chain does not support EIP-7702');
++    }
++    const { delegationAddress, isSupported } = await (0, eip7702_1.isAccountUpgradedToEIP7702)(from, chainId, messenger, ethQuery);
++    log('Account', { delegationAddress, isSupported });
++    if (!isSupported && delegationAddress) {
++        log('Account upgraded to unsupported contract', from, delegationAddress);
++        throw rpc_errors_1.rpcErrors.internal('Account upgraded to unsupported contract');
++    }
++    const nestedTransactions = transactions.map((tx) => tx.params);
++    const batchParams = (0, eip7702_1.generateEIP7702BatchTransaction)(from, nestedTransactions);
++    const txParams = {
++        from,
++        ...batchParams,
++    };
++    if (!isSupported) {
++        const upgradeContractAddress = (0, feature_flags_1.getEIP7702UpgradeContractAddress)(chainId, messenger);
++        if (!upgradeContractAddress) {
++            throw rpc_errors_1.rpcErrors.internal('Upgrade contract address not found');
++        }
++        txParams.type = types_1.TransactionEnvelopeType.setCode;
++        txParams.authorizationList = [{ address: upgradeContractAddress }];
++    }
++    log('Adding batch transaction', txParams, networkClientId);
++    const { transactionMeta, result } = await addTransaction(txParams, {
++        nestedTransactions,
++        networkClientId,
++        requireApproval,
++    });
++    const batchId = transactionMeta.id;
++    // Wait for the transaction to be published.
++    await result;
++    return {
++        batchId,
++    };
++}
++exports.addTransactionBatch = addTransactionBatch;
++/**
++ * Determine which chains support atomic batch transactions for the given account.
++ *
++ * @param request - The request object including the account address and necessary callbacks.
++ * @returns The chain IDs that support atomic batch transactions.
++ */
++async function isAtomicBatchSupported(request) {
++    const { address, getEthQuery, messenger } = request;
++    const chainIds7702 = (0, feature_flags_1.getEIP7702SupportedChains)(messenger);
++    const chainIds = [];
++    for (const chainId of chainIds7702) {
++        const ethQuery = getEthQuery(chainId);
++        const { isSupported, delegationAddress } = await (0, eip7702_1.isAccountUpgradedToEIP7702)(address, chainId, messenger, ethQuery);
++        if (!delegationAddress || isSupported) {
++            chainIds.push(chainId);
++        }
++    }
++    log('Atomic batch supported chains', chainIds);
++    return chainIds;
++}
++exports.isAtomicBatchSupported = isAtomicBatchSupported;
++//# sourceMappingURL=batch.cjs.map
+\ No newline at end of file
+diff --git a/dist/utils/batch.d.cts b/dist/utils/batch.d.cts
+new file mode 100644
+index 0000000000000000000000000000000000000000..3e5f0b4d81012f42ed4e79a7cc3e751422089b2a
+--- /dev/null
++++ b/dist/utils/batch.d.cts
+@@ -0,0 +1,32 @@
++import type EthQuery from "@metamask/eth-query";
++import type { Hex } from "@metamask/utils";
++import type { TransactionController, TransactionControllerMessenger } from "../index.cjs";
++import { type TransactionBatchRequest, type TransactionBatchResult } from "../types.cjs";
++type AddTransactionBatchRequest = {
++    addTransaction: TransactionController['addTransaction'];
++    getChainId: (networkClientId: string) => Hex;
++    getEthQuery: (networkClientId: string) => EthQuery;
++    messenger: TransactionControllerMessenger;
++    request: TransactionBatchRequest;
++};
++type IsAtomicBatchSupportedRequest = {
++    address: Hex;
++    getEthQuery: (chainId: Hex) => EthQuery;
++    messenger: TransactionControllerMessenger;
++};
++/**
++ * Add a batch transaction.
++ *
++ * @param request - The request object including the user request and necessary callbacks.
++ * @returns The batch result object including the batch ID.
++ */
++export declare function addTransactionBatch(request: AddTransactionBatchRequest): Promise<TransactionBatchResult>;
++/**
++ * Determine which chains support atomic batch transactions for the given account.
++ *
++ * @param request - The request object including the account address and necessary callbacks.
++ * @returns The chain IDs that support atomic batch transactions.
++ */
++export declare function isAtomicBatchSupported(request: IsAtomicBatchSupportedRequest): Promise<Hex[]>;
++export {};
++//# sourceMappingURL=batch.d.cts.map
+\ No newline at end of file
+diff --git a/dist/utils/eip7702.cjs b/dist/utils/eip7702.cjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..5982dc6f18d1e5c2ae1e3c956de2e92582bcb377
+--- /dev/null
++++ b/dist/utils/eip7702.cjs
+@@ -0,0 +1,157 @@
++"use strict";
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.signAuthorizationList = exports.generateEIP7702BatchTransaction = exports.isAccountUpgradedToEIP7702 = exports.doesChainSupportEIP7702 = exports.BATCH_FUNCTION_NAME = exports.DELEGATION_PREFIX = void 0;
++const contracts_1 = require("@ethersproject/contracts");
++const controller_utils_1 = require("@metamask/controller-utils");
++const utils_1 = require("@metamask/utils");
++const feature_flags_1 = require("./feature-flags.cjs");
++const SimpleDelegateContract_1 = require("../abi/SimpleDelegateContract.cjs");
++const logger_1 = require("../logger.cjs");
++exports.DELEGATION_PREFIX = '0xef0100';
++exports.BATCH_FUNCTION_NAME = 'execute';
++const log = (0, utils_1.createModuleLogger)(logger_1.projectLogger, 'eip-7702');
++/**
++ * Determine if a chain supports EIP-7702 using LaunchDarkly feature flag.
++ *
++ * @param chainId - Hexadecimal ID of the chain.
++ * @param messenger - Messenger instance.
++ * @returns True if the chain supports EIP-7702.
++ */
++function doesChainSupportEIP7702(chainId, messenger) {
++    const supportedChains = (0, feature_flags_1.getEIP7702SupportedChains)(messenger);
++    return supportedChains.some((supportedChainId) => supportedChainId.toLowerCase() === chainId.toLowerCase());
++}
++exports.doesChainSupportEIP7702 = doesChainSupportEIP7702;
++/**
++ * Determine if an account has been upgraded to a supported EIP-7702 contract.
++ *
++ * @param address - The EOA address to check.
++ * @param chainId - The chain ID.
++ * @param messenger - The messenger instance.
++ * @param ethQuery - The EthQuery instance to communicate with the blockchain.
++ * @returns An object with the results of the check.
++ */
++async function isAccountUpgradedToEIP7702(address, chainId, messenger, ethQuery) {
++    const contractAddresses = (0, feature_flags_1.getEIP7702ContractAddresses)(chainId, messenger);
++    const code = await (0, controller_utils_1.query)(ethQuery, 'eth_getCode', [address]);
++    const normalizedCode = (0, utils_1.add0x)(code?.toLowerCase?.() ?? '');
++    const hasDelegation = code?.length === 48 && normalizedCode.startsWith(exports.DELEGATION_PREFIX);
++    const delegationAddress = hasDelegation
++        ? (0, utils_1.add0x)(normalizedCode.slice(exports.DELEGATION_PREFIX.length))
++        : undefined;
++    const isSupported = Boolean(delegationAddress &&
++        contractAddresses.some((contract) => contract.toLowerCase() === delegationAddress.toLowerCase()));
++    return {
++        delegationAddress,
++        isSupported,
++    };
++}
++exports.isAccountUpgradedToEIP7702 = isAccountUpgradedToEIP7702;
++/**
++ * Generate an EIP-7702 batch transaction.
++ *
++ * @param from - The sender address.
++ * @param transactions - The transactions to batch.
++ * @returns The batch transaction.
++ */
++function generateEIP7702BatchTransaction(from, transactions) {
++    const delegationContract = contracts_1.Contract.getInterface(SimpleDelegateContract_1.ABI_SIMPLE_DELEGATE_CONTRACT);
++    const args = transactions.map((transaction) => {
++        const { data, to, value } = transaction;
++        return [
++            data ?? '0x',
++            to ?? '0x0000000000000000000000000000000000000000',
++            value ?? '0x0',
++        ];
++    });
++    log('Args', args);
++    const data = delegationContract.encodeFunctionData(exports.BATCH_FUNCTION_NAME, [
++        args,
++    ]);
++    log('Transaction data', data);
++    return {
++        data,
++        to: from,
++    };
++}
++exports.generateEIP7702BatchTransaction = generateEIP7702BatchTransaction;
++/**
++ * Sign an authorization list.
++ *
++ * @param options - Options bag.
++ * @param options.authorizationList - The authorization list to sign.
++ * @param options.messenger - The controller messenger.
++ * @param options.transactionMeta - The transaction metadata.
++ * @returns The signed authorization list.
++ */
++async function signAuthorizationList({ authorizationList, messenger, transactionMeta, }) {
++    if (!authorizationList) {
++        return undefined;
++    }
++    const signedAuthorizationList = [];
++    let index = 0;
++    for (const authorization of authorizationList) {
++        const signedAuthorization = await signAuthorization(authorization, transactionMeta, messenger, index);
++        signedAuthorizationList.push(signedAuthorization);
++        index += 1;
++    }
++    return signedAuthorizationList;
++}
++exports.signAuthorizationList = signAuthorizationList;
++/**
++ * Signs an authorization.
++ *
++ * @param authorization - The authorization to sign.
++ * @param transactionMeta - The associated transaction metadata.
++ * @param messenger - The messenger to use for signing.
++ * @param index - The index of the authorization in the list.
++ * @returns The signed authorization.
++ */
++async function signAuthorization(authorization, transactionMeta, messenger, index) {
++    const finalAuthorization = prepareAuthorization(authorization, transactionMeta, index);
++    const { address, chainId, nonce } = finalAuthorization;
++    const chainIdDecimal = parseInt(chainId, 16);
++    const nonceDecimal = parseInt(nonce, 16);
++    const signature = await messenger.call('KeyringController:signAuthorization', [chainIdDecimal, address, nonceDecimal]);
++    const r = signature.slice(0, 66);
++    const s = `0x${signature.slice(66, 130)}`;
++    const v = parseInt(signature.slice(130, 132), 16);
++    const yParity = v - 27 === 0 ? '0x' : '0x1';
++    const finalNonce = nonceDecimal === 0 ? '0x' : nonce;
++    const result = {
++        address,
++        chainId,
++        nonce: finalNonce,
++        r,
++        s,
++        yParity,
++    };
++    log('Signed authorization', result);
++    return result;
++}
++/**
++ * Prepares an authorization for signing by populating the chainId and nonce.
++ *
++ * @param authorization - The authorization to prepare.
++ * @param transactionMeta - The associated transaction metadata.
++ * @param index - The index of the authorization in the list.
++ * @returns The prepared authorization.
++ */
++function prepareAuthorization(authorization, transactionMeta, index) {
++    const { chainId: existingChainId, nonce: existingNonce } = authorization;
++    const { txParams, chainId: transactionChainId } = transactionMeta;
++    const { nonce: transactionNonce } = txParams;
++    const chainId = existingChainId ?? transactionChainId;
++    let nonce = existingNonce;
++    if (nonce === undefined) {
++        nonce = (0, controller_utils_1.toHex)(parseInt(transactionNonce, 16) + 1 + index);
++    }
++    const result = {
++        ...authorization,
++        chainId,
++        nonce,
++    };
++    log('Prepared authorization', result);
++    return result;
++}
++//# sourceMappingURL=eip7702.cjs.map
+\ No newline at end of file
+diff --git a/dist/utils/eip7702.d.cts b/dist/utils/eip7702.d.cts
+new file mode 100644
+index 0000000000000000000000000000000000000000..92ec2ef9ec0fa8e81a0ec2c8a32647230611b638
+--- /dev/null
++++ b/dist/utils/eip7702.d.cts
+@@ -0,0 +1,63 @@
++import type EthQuery from "@metamask/eth-query";
++import { type Hex } from "@metamask/utils";
++import type { TransactionControllerMessenger } from "../TransactionController.cjs";
++import type { BatchTransactionParams, AuthorizationList, TransactionMeta } from "../types.cjs";
++export type KeyringControllerAuthorization = [
++    chainId: number,
++    contractAddress: string,
++    nonce: number
++];
++export type KeyringControllerSignAuthorization = {
++    type: 'KeyringController:signAuthorization';
++    handler: (authorization: KeyringControllerAuthorization) => Promise<string>;
++};
++export declare const DELEGATION_PREFIX = "0xef0100";
++export declare const BATCH_FUNCTION_NAME = "execute";
++export type FeatureFlagsEIP7702 = {
++    contractAddresses?: Record<Hex, Hex[]>;
++    supportedChains?: Hex[];
++};
++/**
++ * Determine if a chain supports EIP-7702 using LaunchDarkly feature flag.
++ *
++ * @param chainId - Hexadecimal ID of the chain.
++ * @param messenger - Messenger instance.
++ * @returns True if the chain supports EIP-7702.
++ */
++export declare function doesChainSupportEIP7702(chainId: Hex, messenger: TransactionControllerMessenger): boolean;
++/**
++ * Determine if an account has been upgraded to a supported EIP-7702 contract.
++ *
++ * @param address - The EOA address to check.
++ * @param chainId - The chain ID.
++ * @param messenger - The messenger instance.
++ * @param ethQuery - The EthQuery instance to communicate with the blockchain.
++ * @returns An object with the results of the check.
++ */
++export declare function isAccountUpgradedToEIP7702(address: Hex, chainId: Hex, messenger: TransactionControllerMessenger, ethQuery: EthQuery): Promise<{
++    delegationAddress: `0x${string}` | undefined;
++    isSupported: boolean;
++}>;
++/**
++ * Generate an EIP-7702 batch transaction.
++ *
++ * @param from - The sender address.
++ * @param transactions - The transactions to batch.
++ * @returns The batch transaction.
++ */
++export declare function generateEIP7702BatchTransaction(from: Hex, transactions: BatchTransactionParams[]): BatchTransactionParams;
++/**
++ * Sign an authorization list.
++ *
++ * @param options - Options bag.
++ * @param options.authorizationList - The authorization list to sign.
++ * @param options.messenger - The controller messenger.
++ * @param options.transactionMeta - The transaction metadata.
++ * @returns The signed authorization list.
++ */
++export declare function signAuthorizationList({ authorizationList, messenger, transactionMeta, }: {
++    authorizationList?: AuthorizationList;
++    messenger: TransactionControllerMessenger;
++    transactionMeta: TransactionMeta;
++}): Promise<Required<AuthorizationList | undefined>>;
++//# sourceMappingURL=eip7702.d.cts.map
+\ No newline at end of file
+diff --git a/dist/utils/feature-flags.cjs b/dist/utils/feature-flags.cjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..98e47223f456bc73ea021e49229eb7c76a5c8178
+--- /dev/null
++++ b/dist/utils/feature-flags.cjs
+@@ -0,0 +1,53 @@
++"use strict";
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.getEIP7702UpgradeContractAddress = exports.getEIP7702ContractAddresses = exports.getEIP7702SupportedChains = exports.FEATURE_FLAG_EIP_7702 = void 0;
++const utils_1 = require("@metamask/utils");
++const logger_1 = require("../logger.cjs");
++exports.FEATURE_FLAG_EIP_7702 = 'confirmations-eip-7702';
++const log = (0, utils_1.createModuleLogger)(logger_1.projectLogger, 'feature-flags');
++/**
++ * Retrieves the supported EIP-7702 chains.
++ *
++ * @param messenger - The controller messenger instance.
++ * @returns The supported chains.
++ */
++function getEIP7702SupportedChains(messenger) {
++    const featureFlags = getFeatureFlags(messenger);
++    return featureFlags?.[exports.FEATURE_FLAG_EIP_7702]?.supportedChains ?? [];
++}
++exports.getEIP7702SupportedChains = getEIP7702SupportedChains;
++/**
++ * Retrieves the supported EIP-7702 contract addresses for a given chain ID.
++ *
++ * @param chainId - The chain ID.
++ * @param messenger - The controller messenger instance.
++ * @returns The supported contract addresses.
++ */
++function getEIP7702ContractAddresses(chainId, messenger) {
++    const featureFlags = getFeatureFlags(messenger);
++    return (featureFlags?.[exports.FEATURE_FLAG_EIP_7702]?.contractAddresses?.[chainId.toLowerCase()] ?? []);
++}
++exports.getEIP7702ContractAddresses = getEIP7702ContractAddresses;
++/**
++ * Retrieves the EIP-7702 upgrade contract address.
++ *
++ * @param chainId - The chain ID.
++ * @param messenger - The controller messenger instance.
++ * @returns The upgrade contract address.
++ */
++function getEIP7702UpgradeContractAddress(chainId, messenger) {
++    return getEIP7702ContractAddresses(chainId, messenger)?.[0];
++}
++exports.getEIP7702UpgradeContractAddress = getEIP7702UpgradeContractAddress;
++/**
++ * Retrieves the relevant feature flags from the remote feature flag controller.
++ *
++ * @param messenger - The messenger instance.
++ * @returns The feature flags.
++ */
++function getFeatureFlags(messenger) {
++    const featureFlags = messenger.call('RemoteFeatureFlagController:getState').remoteFeatureFlags;
++    log('Retrieved feature flags', featureFlags);
++    return featureFlags;
++}
++//# sourceMappingURL=feature-flags.cjs.map
+\ No newline at end of file
+diff --git a/dist/utils/feature-flags.d.cts b/dist/utils/feature-flags.d.cts
+new file mode 100644
+index 0000000000000000000000000000000000000000..968575d97ab5242c4ce3aff6de57b92d302e6166
+--- /dev/null
++++ b/dist/utils/feature-flags.d.cts
+@@ -0,0 +1,34 @@
++import { type Hex } from "@metamask/utils";
++import type { TransactionControllerMessenger } from "../TransactionController.cjs";
++export declare const FEATURE_FLAG_EIP_7702 = "confirmations-eip-7702";
++export type TransactionControllerFeatureFlags = {
++    [FEATURE_FLAG_EIP_7702]: {
++        contractAddresses: Record<Hex, Hex[]>;
++        supportedChains: Hex[];
++        upgradeContractAddress: Hex;
++    };
++};
++/**
++ * Retrieves the supported EIP-7702 chains.
++ *
++ * @param messenger - The controller messenger instance.
++ * @returns The supported chains.
++ */
++export declare function getEIP7702SupportedChains(messenger: TransactionControllerMessenger): Hex[];
++/**
++ * Retrieves the supported EIP-7702 contract addresses for a given chain ID.
++ *
++ * @param chainId - The chain ID.
++ * @param messenger - The controller messenger instance.
++ * @returns The supported contract addresses.
++ */
++export declare function getEIP7702ContractAddresses(chainId: Hex, messenger: TransactionControllerMessenger): Hex[];
++/**
++ * Retrieves the EIP-7702 upgrade contract address.
++ *
++ * @param chainId - The chain ID.
++ * @param messenger - The controller messenger instance.
++ * @returns The upgrade contract address.
++ */
++export declare function getEIP7702UpgradeContractAddress(chainId: Hex, messenger: TransactionControllerMessenger): Hex | undefined;
++//# sourceMappingURL=feature-flags.d.cts.map
+\ No newline at end of file
+diff --git a/dist/utils/prepare.cjs b/dist/utils/prepare.cjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..039bfc4766403f212a62ff835afb673011cedfe4
+--- /dev/null
++++ b/dist/utils/prepare.cjs
+@@ -0,0 +1,49 @@
++"use strict";
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.serializeTransaction = exports.prepareTransaction = exports.HARDFORK = void 0;
++const common_1 = require("@ethereumjs/common");
++const tx_1 = require("@ethereumjs/tx");
++const utils_1 = require("@metamask/utils");
++exports.HARDFORK = common_1.Hardfork.Prague;
++/**
++ * Creates an `etheruemjs/tx` transaction object from the raw transaction parameters.
++ *
++ * @param chainId - Chain ID of the transaction.
++ * @param txParams - Transaction parameters.
++ * @returns The transaction object.
++ */
++function prepareTransaction(chainId, txParams) {
++    // Does not allow `gasPrice` on type 4 transactions.
++    const data = txParams;
++    return tx_1.TransactionFactory.fromTxData(data, {
++        freeze: false,
++        common: getCommonConfiguration(chainId),
++    });
++}
++exports.prepareTransaction = prepareTransaction;
++/**
++ * Serializes a transaction object into a hex string.
++ *
++ * @param transaction - The transaction object.
++ * @returns The prefixed hex string.
++ */
++function serializeTransaction(transaction) {
++    return (0, utils_1.bytesToHex)(transaction.serialize());
++}
++exports.serializeTransaction = serializeTransaction;
++/**
++ * Generates the configuration used to prepare transactions.
++ *
++ * @param chainId - Chain ID.
++ * @returns The common configuration.
++ */
++function getCommonConfiguration(chainId) {
++    const customChainParams = {
++        chainId: parseInt(chainId, 16),
++        defaultHardfork: exports.HARDFORK,
++    };
++    return common_1.Common.custom(customChainParams, {
++        eips: [7702],
++    });
++}
++//# sourceMappingURL=prepare.cjs.map
+\ No newline at end of file
+diff --git a/dist/utils/prepare.d.cts b/dist/utils/prepare.d.cts
+new file mode 100644
+index 0000000000000000000000000000000000000000..69d61eb076729998e64e69399908c16d60958d1b
+--- /dev/null
++++ b/dist/utils/prepare.d.cts
+@@ -0,0 +1,21 @@
++import { Hardfork } from "@ethereumjs/common";
++import type { TypedTransaction } from "@ethereumjs/tx";
++import type { Hex } from "@metamask/utils";
++import type { TransactionParams } from "../types.cjs";
++export declare const HARDFORK = Hardfork.Prague;
++/**
++ * Creates an `etheruemjs/tx` transaction object from the raw transaction parameters.
++ *
++ * @param chainId - Chain ID of the transaction.
++ * @param txParams - Transaction parameters.
++ * @returns The transaction object.
++ */
++export declare function prepareTransaction(chainId: Hex, txParams: TransactionParams): TypedTransaction;
++/**
++ * Serializes a transaction object into a hex string.
++ *
++ * @param transaction - The transaction object.
++ * @returns The prefixed hex string.
++ */
++export declare function serializeTransaction(transaction: TypedTransaction): `0x${string}`;
++//# sourceMappingURL=prepare.d.cts.map
+\ No newline at end of file
+diff --git a/dist/utils/utils.cjs b/dist/utils/utils.cjs
+index 5e5ab90e0392a581e50ab7b3a2f07095419f6ce9..fdff8c79859a0c3206cc29c166c873280c6dffa3 100644
+--- a/dist/utils/utils.cjs
++++ b/dist/utils/utils.cjs
+@@ -11,6 +11,7 @@ exports.ESTIMATE_GAS_ERROR = 'eth_estimateGas rpc method error';
+ // TODO: Replace `any` with type
+ // eslint-disable-next-line @typescript-eslint/no-explicit-any
+ const NORMALIZERS = {
++    authorizationList: (authorizationList) => authorizationList,
+     data: (data) => (0, utils_1.add0x)(padHexToEvenLength(data)),
+     from: (from) => (0, utils_1.add0x)(from).toLowerCase(),
+     gas: (gas) => (0, utils_1.add0x)(gas),
+@@ -62,10 +63,7 @@ const validateGasValues = (gasValues) => {
+         // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         const value = gasValues[key];
+         if (typeof value !== 'string' || !(0, utils_1.isStrictHexString)(value)) {
+-            throw new TypeError(
+-            // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+-            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+-            `expected hex string for ${key} but received: ${value}`);
++            throw new TypeError(`expected hex string for ${key} but received: ${value}`);
+         }
+     });
+ };
+@@ -79,10 +77,7 @@ exports.validateGasValues = validateGasValues;
+  */
+ function validateIfTransactionUnapproved(transactionMeta, fnName) {
+     if (transactionMeta?.status !== types_1.TransactionStatus.unapproved) {
+-        throw new Error(
+-        // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+-        `TransactionsController: Can only call ${fnName} on an unapproved transaction.\n      Current tx status: ${transactionMeta?.status}`);
++        throw new Error(`TransactionsController: Can only call ${fnName} on an unapproved transaction.\n      Current tx status: ${transactionMeta?.status}`);
+     }
+ }
+ exports.validateIfTransactionUnapproved = validateIfTransactionUnapproved;
+diff --git a/dist/utils/validation.cjs b/dist/utils/validation.cjs
+index f529ec98d3b4029c0c674c076d9c3edc10af3ae4..304de66404f51c0f24a87470a6d6e1857625c9e9 100644
+--- a/dist/utils/validation.cjs
++++ b/dist/utils/validation.cjs
+@@ -6,36 +6,48 @@ const controller_utils_1 = require("@metamask/controller-utils");
+ const metamask_eth_abis_1 = require("@metamask/metamask-eth-abis");
+ const rpc_errors_1 = require("@metamask/rpc-errors");
+ const utils_1 = require("@metamask/utils");
+-const types_1 = require("../types.cjs");
+ const utils_2 = require("./utils.cjs");
++const types_1 = require("../types.cjs");
++const TRANSACTION_ENVELOPE_TYPES_FEE_MARKET = [
++    types_1.TransactionEnvelopeType.feeMarket,
++    types_1.TransactionEnvelopeType.setCode,
++];
+ /**
+  * Validates whether a transaction initiated by a specific 'from' address is permitted by the origin.
+  *
+- * @param permittedAddresses - The permitted accounts for the given origin.
+- * @param selectedAddress - The currently selected Ethereum address in the wallet.
+- * @param from - The address from which the transaction is initiated.
+- * @param origin - The origin or source of the transaction.
++ * @param options - Options bag.
++ * @param options.from - The address from which the transaction is initiated.
++ * @param options.internalAccounts - The internal accounts added to the wallet.
++ * @param options.origin - The origin or source of the transaction.
++ * @param options.permittedAddresses - The permitted accounts for the given origin.
++ * @param options.selectedAddress - The currently selected Ethereum address in the wallet.
++ * @param options.txParams - The transaction parameters.
+  * @throws Throws an error if the transaction is not permitted.
+  */
+-async function validateTransactionOrigin(permittedAddresses, selectedAddress, from, origin) {
+-    if (origin === controller_utils_1.ORIGIN_METAMASK) {
+-        // Ensure the 'from' address matches the currently selected address
+-        if (from !== selectedAddress) {
+-            throw rpc_errors_1.rpcErrors.internal({
+-                message: `Internally initiated transaction is using invalid account.`,
+-                data: {
+-                    origin,
+-                    fromAddress: from,
+-                    selectedAddress,
+-                },
+-            });
+-        }
+-        return;
++async function validateTransactionOrigin({ from, internalAccounts, origin, permittedAddresses, selectedAddress, txParams, }) {
++    const isInternal = origin === controller_utils_1.ORIGIN_METAMASK;
++    const isExternal = origin && origin !== controller_utils_1.ORIGIN_METAMASK;
++    const { authorizationList, to, type } = txParams;
++    if (isInternal && from !== selectedAddress) {
++        throw rpc_errors_1.rpcErrors.internal({
++            message: `Internally initiated transaction is using invalid account.`,
++            data: {
++                origin,
++                fromAddress: from,
++                selectedAddress,
++            },
++        });
+     }
+-    // Check if the origin has permissions to initiate transactions from the specified address
+-    if (!permittedAddresses.includes(from)) {
++    if (isExternal && permittedAddresses && !permittedAddresses.includes(from)) {
+         throw rpc_errors_1.providerErrors.unauthorized({ data: { origin } });
+     }
++    if (isExternal &&
++        (authorizationList || type === types_1.TransactionEnvelopeType.setCode)) {
++        throw rpc_errors_1.rpcErrors.invalidParams('External EIP-7702 transactions are not supported');
++    }
++    if (isExternal && internalAccounts?.includes(to)) {
++        throw rpc_errors_1.rpcErrors.invalidParams('External transactions to internal accounts are not supported');
++    }
+ }
+ exports.validateTransactionOrigin = validateTransactionOrigin;
+ /**
+@@ -54,6 +66,7 @@ function validateTxParams(txParams, isEIP1559Compatible = true) {
+     validateParamData(txParams.data);
+     validateParamChainId(txParams.chainId);
+     validateGasFeeParams(txParams);
++    validateAuthorizationList(txParams);
+ }
+ exports.validateTxParams = validateTxParams;
+ /**
+@@ -236,19 +249,25 @@ function validateGasFeeParams(txParams) {
+  * expectations for provided field.
+  */
+ function ensureProperTransactionEnvelopeTypeProvided(txParams, field) {
++    const type = txParams.type;
+     switch (field) {
++        case 'authorizationList':
++            if (type && type !== types_1.TransactionEnvelopeType.setCode) {
++                throw rpc_errors_1.rpcErrors.invalidParams(`Invalid transaction envelope type: specified type "${type}" but including authorizationList requires type: "${types_1.TransactionEnvelopeType.setCode}"`);
++            }
++            break;
+         case 'maxFeePerGas':
+         case 'maxPriorityFeePerGas':
+-            if (txParams.type &&
+-                txParams.type !== types_1.TransactionEnvelopeType.feeMarket) {
+-                throw rpc_errors_1.rpcErrors.invalidParams(`Invalid transaction envelope type: specified type "${txParams.type}" but including maxFeePerGas and maxPriorityFeePerGas requires type: "${types_1.TransactionEnvelopeType.feeMarket}"`);
++            if (type &&
++                !TRANSACTION_ENVELOPE_TYPES_FEE_MARKET.includes(type)) {
++                throw rpc_errors_1.rpcErrors.invalidParams(`Invalid transaction envelope type: specified type "${type}" but including maxFeePerGas and maxPriorityFeePerGas requires type: "${TRANSACTION_ENVELOPE_TYPES_FEE_MARKET.join(', ')}"`);
+             }
+             break;
+         case 'gasPrice':
+         default:
+-            if (txParams.type &&
+-                txParams.type === types_1.TransactionEnvelopeType.feeMarket) {
+-                throw rpc_errors_1.rpcErrors.invalidParams(`Invalid transaction envelope type: specified type "${txParams.type}" but included a gasPrice instead of maxFeePerGas and maxPriorityFeePerGas`);
++            if (type &&
++                TRANSACTION_ENVELOPE_TYPES_FEE_MARKET.includes(type)) {
++                throw rpc_errors_1.rpcErrors.invalidParams(`Invalid transaction envelope type: specified type "${type}" but included a gasPrice instead of maxFeePerGas and maxPriorityFeePerGas`);
+             }
+     }
+ }
+@@ -271,14 +290,63 @@ function ensureMutuallyExclusiveFieldsNotProvided(txParams, fieldBeingValidated,
+  * Ensures that the provided value for field is a valid hexadecimal.
+  * Throws an invalidParams error if field is not a valid hexadecimal.
+  *
+- * @param txParams - The transaction parameters object
++ * @param data - The object containing the field
+  * @param field - The current field being validated
+  * @throws {rpcErrors.invalidParams} Throws if field is not a valid hexadecimal
+  */
+-function ensureFieldIsValidHex(txParams, field) {
+-    const value = txParams[field];
++function ensureFieldIsValidHex(data, field) {
++    const value = data[field];
+     if (typeof value !== 'string' || !(0, utils_1.isStrictHexString)(value)) {
+-        throw rpc_errors_1.rpcErrors.invalidParams(`Invalid transaction params: ${field} is not a valid hexadecimal. got: (${String(value)})`);
++        throw rpc_errors_1.rpcErrors.invalidParams(`Invalid transaction params: ${String(field)} is not a valid hexadecimal string. got: (${String(value)})`);
++    }
++}
++/**
++ * Validate the authorization list property in the transaction parameters.
++ *
++ * @param txParams - The transaction parameters containing the authorization list to validate.
++ */
++function validateAuthorizationList(txParams) {
++    const { authorizationList } = txParams;
++    if (!authorizationList) {
++        return;
++    }
++    ensureProperTransactionEnvelopeTypeProvided(txParams, 'authorizationList');
++    if (!Array.isArray(authorizationList)) {
++        throw rpc_errors_1.rpcErrors.invalidParams(`Invalid transaction params: authorizationList must be an array`);
++    }
++    for (const authorization of authorizationList) {
++        validateAuthorization(authorization);
++    }
++}
++/**
++ * Validate an authorization object.
++ *
++ * @param authorization - The authorization object to validate.
++ */
++function validateAuthorization(authorization) {
++    ensureFieldIsValidHex(authorization, 'address');
++    validateHexLength(authorization.address, 20, 'address');
++    for (const field of ['chainId', 'nonce', 'r', 's']) {
++        if (authorization[field]) {
++            ensureFieldIsValidHex(authorization, field);
++        }
++    }
++    const { yParity } = authorization;
++    if (yParity && !['0x', '0x1'].includes(yParity)) {
++        throw rpc_errors_1.rpcErrors.invalidParams(`Invalid transaction params: yParity must be '0x' or '0x1'. got: ${yParity}`);
++    }
++}
++/**
++ * Validate the number of bytes in a hex string.
++ *
++ * @param value - The hex string to validate.
++ * @param lengthBytes  - The expected length in bytes.
++ * @param fieldName - The name of the field being validated.
++ */
++function validateHexLength(value, lengthBytes, fieldName) {
++    const actualLengthBytes = (0, utils_1.remove0x)(value).length / 2;
++    if (actualLengthBytes !== lengthBytes) {
++        throw rpc_errors_1.rpcErrors.invalidParams(`Invalid transaction params: ${fieldName} must be ${lengthBytes} bytes. got: ${actualLengthBytes} bytes`);
+     }
+ }
+ //# sourceMappingURL=validation.cjs.map
+\ No newline at end of file
+diff --git a/dist/utils/validation.d.cts b/dist/utils/validation.d.cts
+index 6ad890127947022bd190307b64f2100c4b5b9977..69c8a6017881be10eb8c78eee87b057940a64035 100644
+--- a/dist/utils/validation.d.cts
++++ b/dist/utils/validation.d.cts
+@@ -2,13 +2,23 @@ import { type TransactionParams } from "../types.cjs";
+ /**
+  * Validates whether a transaction initiated by a specific 'from' address is permitted by the origin.
+  *
+- * @param permittedAddresses - The permitted accounts for the given origin.
+- * @param selectedAddress - The currently selected Ethereum address in the wallet.
+- * @param from - The address from which the transaction is initiated.
+- * @param origin - The origin or source of the transaction.
++ * @param options - Options bag.
++ * @param options.from - The address from which the transaction is initiated.
++ * @param options.internalAccounts - The internal accounts added to the wallet.
++ * @param options.origin - The origin or source of the transaction.
++ * @param options.permittedAddresses - The permitted accounts for the given origin.
++ * @param options.selectedAddress - The currently selected Ethereum address in the wallet.
++ * @param options.txParams - The transaction parameters.
+  * @throws Throws an error if the transaction is not permitted.
+  */
+-export declare function validateTransactionOrigin(permittedAddresses: string[], selectedAddress: string, from: string, origin: string): Promise<void>;
++export declare function validateTransactionOrigin({ from, internalAccounts, origin, permittedAddresses, selectedAddress, txParams, }: {
++    from: string;
++    internalAccounts?: string[];
++    origin?: string;
++    permittedAddresses?: string[];
++    selectedAddress?: string;
++    txParams: TransactionParams;
++}): Promise<void>;
+ /**
+  * Validates the transaction params for required properties and throws in
+  * the event of any validation error.
