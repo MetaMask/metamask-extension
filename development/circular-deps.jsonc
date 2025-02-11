@@ -48,15 +48,6 @@
     "ui/components/app/name/name.tsx"
   ],
   [
-    "ui/components/component-library/avatar-account/avatar-account.tsx",
-    "ui/components/component-library/avatar-account/index.ts",
-    "ui/components/component-library/avatar-base/avatar-base.tsx",
-    "ui/components/component-library/avatar-base/index.ts",
-    "ui/components/component-library/index.ts",
-    "ui/components/component-library/text/index.ts",
-    "ui/components/component-library/text/text.tsx"
-  ],
-  [
     "ui/components/component-library/badge-wrapper/badge-wrapper.tsx",
     "ui/components/component-library/badge-wrapper/index.ts",
     "ui/components/component-library/index.ts"
