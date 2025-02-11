@@ -1,7 +1,6 @@
 const { strict: assert } = require('assert');
 
 const {
-  defaultGanacheOptions,
   switchToNotificationWindow,
   withFixtures,
   openDapp,
@@ -69,7 +68,6 @@ describe('Signature Approved Event', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -110,7 +108,6 @@ describe('Signature Approved Event', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -149,7 +146,6 @@ describe('Signature Approved Event', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -188,7 +184,6 @@ describe('Signature Approved Event', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
