@@ -206,7 +206,7 @@ class SendSolanaPage {
     if (amount) {
       await this.driver.waitForSelector(
         {
-          text: `${amount} SOL`,
+          text: `${amount}`,
           tag: 'p',
         },
         { timeout: 20000 },

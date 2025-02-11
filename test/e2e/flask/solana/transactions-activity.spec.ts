@@ -5,7 +5,6 @@ import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import { withSolanaAccountSnap } from './common-solana';
 
 describe('Transaction activity list', function (this: Suite) {
-  // skipped due tohttps://github.com/MetaMask/snaps/issues/3019
   it('user can see activity list', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
