@@ -95,7 +95,6 @@ const setupController = ({
     },
   };
   const accountsController = new AccountsController({
-    // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
     messenger: accountsControllerMessenger,
     state: mockAccountsControllerState,
   });

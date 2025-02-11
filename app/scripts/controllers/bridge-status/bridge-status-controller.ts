@@ -36,7 +36,6 @@ export type FetchBridgeTxStatusArgs = {
 export default class BridgeStatusController extends StaticIntervalPollingController<BridgeStatusPollingInput>()<
   typeof BRIDGE_STATUS_CONTROLLER_NAME,
   BridgeStatusControllerState,
-  // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
   BridgeStatusControllerMessenger
 > {
   #pollingTokensByTxMetaId: Record<SrcTxMetaId, string> = {};
