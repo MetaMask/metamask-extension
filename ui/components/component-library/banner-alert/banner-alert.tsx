@@ -1,19 +1,18 @@
 import React from 'react';
 import classnames from 'classnames';
 
-import { BannerBase, Icon, IconName, IconSize } from '..';
-
 import {
   BackgroundColor,
   IconColor,
 } from '../../../helpers/constants/design-system';
 import { PolymorphicRef } from '../box';
-import { BannerBaseProps } from '../banner-base';
+import { BannerBase, BannerBaseProps } from '../banner-base';
 import {
   BannerAlertComponent,
   BannerAlertProps,
   BannerAlertSeverity,
 } from './banner-alert.types';
+import { Icon, IconName, IconSize } from '../icon';
 
 export const BannerAlert: BannerAlertComponent = React.forwardRef(
   <C extends React.ElementType = 'div'>(

@@ -55,11 +55,6 @@
     "ui/components/component-library/index.ts"
   ],
   [
-    "ui/components/component-library/banner-alert/banner-alert.tsx",
-    "ui/components/component-library/banner-alert/index.ts",
-    "ui/components/component-library/index.ts"
-  ],
-  [
     "ui/components/component-library/banner-tip/banner-tip.tsx",
     "ui/components/component-library/banner-tip/index.ts",
     "ui/components/component-library/index.ts"
