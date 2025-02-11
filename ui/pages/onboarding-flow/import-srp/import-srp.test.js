@@ -25,6 +25,12 @@ describe('Import SRP', () => {
         accounts: {},
         selectedAccount: '',
       },
+      keyrings: [
+        {
+          type: 'HD Key Tree',
+          accounts: ['0x0000000000000000000000000000000000000000'],
+        },
+      ],
     },
   };
 

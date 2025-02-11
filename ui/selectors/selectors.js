@@ -530,11 +530,12 @@ export function getHDSrpIndex(state) {
   const selectedAddress = getSelectedAddress(state);
   const keyrings = getMetaMaskKeyrings(state);
   const hdKeyrings = keyrings.filter(
-    (keyring) => keyring.type === KeyringType.hd,
+    (keyring) => keyring.type === KeyringType.hdKeyTree,
   );
-  return hdKeyrings.findIndex((keyring) =>
+  const hdSrpIndex = hdKeyrings.findIndex((keyring) =>
     keyring.accounts.includes(selectedAddress),
   );
+  return hdSrpIndex === -1 ? undefined : hdSrpIndex;
 }
 
 /**

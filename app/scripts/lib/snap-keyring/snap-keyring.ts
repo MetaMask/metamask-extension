@@ -196,8 +196,6 @@ export const snapKeyringBuilder = (
               account_type: MetaMetricsEventAccountType.Snap,
               snap_id: snapId,
               snap_name: snapName,
-              // TODO: Add hd_srp_index to the event properties based on snapId (?)
-              // hd_srp_index: hdSrpIndex,
             },
           });
         };

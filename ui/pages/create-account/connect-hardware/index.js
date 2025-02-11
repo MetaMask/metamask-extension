@@ -280,16 +280,13 @@ class ConnectHardwareForm extends Component {
       });
   };
 
-  onUnlockAccounts = async (device, path) => {
+  onUnlockAccounts = async (deviceName, path) => {
     const {
       history,
       mostRecentOverviewPage,
       unlockHardwareWalletAccounts,
       hdSrpIndex,
     } = this.props;
-  onUnlockAccounts = async (deviceName, path) => {
-    const { history, mostRecentOverviewPage, unlockHardwareWalletAccounts } =
-      this.props;
     const { selectedAccounts } = this.state;
 
     if (selectedAccounts.length === 0) {

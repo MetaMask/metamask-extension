@@ -5977,10 +5977,6 @@ export default class MetamaskController extends EventEmitter {
         getAccountType: this.getAccountType.bind(this),
         getDeviceModel: this.getDeviceModel.bind(this),
         getHDSrpIndex: this.getHDSrpIndex.bind(this),
-        isConfirmationRedesignEnabled:
-          this.isConfirmationRedesignEnabled.bind(this),
-        isRedesignedConfirmationsDeveloperEnabled:
-          this.isConfirmationRedesignDeveloperEnabled.bind(this),
         getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
         snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
           name: 'SnapAndHardwareMessenger',
