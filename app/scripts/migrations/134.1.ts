@@ -1,3 +1,4 @@
+import { AccountsControllerState } from '@metamask/accounts-controller';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
@@ -7,7 +8,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 142.1;
+export const version = 134.1;
 
 /**
  * This migration attempts to reset `TokensController.tokens` to the list of tokens
@@ -43,7 +44,8 @@ function transformState(
     return state;
   }
 
-  const accountsControllerState = state.AccountsController;
+  const accountsControllerState =
+    state.AccountsController as unknown as AccountsControllerState;
   if (!isObject(accountsControllerState)) {
     global.sentry?.captureException?.(
       new Error(
@@ -77,7 +79,45 @@ function transformState(
     return state;
   }
 
-  const { selectedAccount } = internalAccounts;
+  // NEW: Extract the selected account's address from internalAccounts.accounts
+  if (
+    !hasProperty(internalAccounts, 'accounts') ||
+    !isObject(internalAccounts.accounts)
+  ) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: Missing or invalid internalAccounts.accounts.`,
+      ),
+    );
+    return state;
+  }
+  const { accounts } = internalAccounts;
+  const selectedAccountKey = internalAccounts.selectedAccount;
+  if (
+    !hasProperty(accounts, selectedAccountKey) ||
+    !isObject(accounts[selectedAccountKey])
+  ) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: Selected account entry not found in internalAccounts.accounts.`,
+      ),
+    );
+    return state;
+  }
+  const selectedAccountEntry = accounts[selectedAccountKey];
+  if (
+    !hasProperty(selectedAccountEntry, 'address') ||
+    typeof selectedAccountEntry.address !== 'string' ||
+    selectedAccountEntry.address === ''
+  ) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: Invalid or missing address in selected account entry.`,
+      ),
+    );
+    return state;
+  }
+  const selectedAccountAddress = selectedAccountEntry.address;
 
   if (!hasProperty(state, 'NetworkController')) {
     global.sentry?.captureException?.(
@@ -168,22 +208,32 @@ function transformState(
     return state;
   }
 
+  const { tokens } = tokensControllerState;
   const { allTokens } = tokensControllerState;
   const allTokensForChain = allTokens[currentChainId];
-  if (!isObject(allTokensForChain)) {
+
+  if (
+    Array.isArray(tokens) &&
+    tokens.length > 0 &&
+    !isObject(allTokensForChain)
+  ) {
     global.sentry?.captureException?.(
       new Error(
-        `Migration ${version}: allTokens["${currentChainId}"] is missing or not an object.`,
+        `Migration ${version}: tokens is not an empty array, but allTokensForChain is not an object.`,
       ),
     );
     return state;
   }
 
-  const accountTokens = allTokensForChain[selectedAccount];
+  if (!isObject(allTokensForChain)) {
+    return state;
+  }
+
+  const accountTokens = allTokensForChain[selectedAccountAddress];
   if (!Array.isArray(accountTokens)) {
     global.sentry?.captureException?.(
       new Error(
-        `Migration ${version}: allTokens["${currentChainId}"]["${selectedAccount}"] is not an array; skipping migration.`,
+        `Migration ${version}: allTokens["${currentChainId}"]["${selectedAccountAddress}"] is not an array; skipping migration.`,
       ),
     );
     return state;

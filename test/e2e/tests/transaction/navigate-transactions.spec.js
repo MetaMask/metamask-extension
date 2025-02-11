@@ -25,7 +25,7 @@ describe('Navigate transactions', function () {
           .withPreferencesControllerTxSimulationsDisabled()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
         dapp: true,
       },
@@ -65,7 +65,7 @@ describe('Navigate transactions', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesControllerTxSimulationsDisabled()
           .build(),
-        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -99,7 +99,7 @@ describe('Navigate transactions', function () {
           .withPreferencesControllerTxSimulationsDisabled()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
         dapp: true,
       },
@@ -124,7 +124,7 @@ describe('Navigate transactions', function () {
           .withPreferencesControllerTxSimulationsDisabled()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
         dapp: true,
       },
@@ -149,7 +149,7 @@ describe('Navigate transactions', function () {
           .withPreferencesControllerTxSimulationsDisabled()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
         dapp: true,
       },

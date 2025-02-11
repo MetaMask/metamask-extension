@@ -39,6 +39,7 @@
     "trezorModel": null,
     "onboardingDate": null,
     "lastViewedUserSurvey": null,
+    "isRampCardClosed": false,
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
@@ -140,6 +141,10 @@
   "MetaMetricsDataDeletionController": {
     "metaMetricsDataDeletionId": null,
     "metaMetricsDataDeletionTimestamp": 0
+  },
+  "MultichainAssetsController": {
+    "accountsAssets": "object",
+    "assetsMetadata": "object"
   },
   "MultichainBalancesController": { "balances": "object" },
   "MultichainRatesController": {

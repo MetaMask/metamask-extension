@@ -11,6 +11,18 @@ import SmartTransactionsController from '@metamask/smart-transactions-controller
 import { TransactionController } from '@metamask/transaction-controller';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import { AccountsController } from '@metamask/accounts-controller';
+import {
+  CronjobController,
+  ExecutionService,
+  JsonSnapsRegistry,
+  SnapController,
+  SnapInsightsController,
+  SnapInterfaceController,
+} from '@metamask/snaps-controllers';
+import {
+  RateLimitController,
+  RateLimitedApiMap,
+} from '@metamask/rate-limit-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -19,7 +31,10 @@ import SwapsController from '../controllers/swaps';
  * Union of all controllers supporting or required by modular initialization.
  */
 export type Controller =
+  | CronjobController
+  | ExecutionService
   | GasFeeController
+  | JsonSnapsRegistry
   | KeyringController
   | NetworkController
   | OnboardingController
@@ -29,7 +44,11 @@ export type Controller =
     >
   | PPOMController
   | PreferencesController
+  | RateLimitController<RateLimitedApiMap>
   | SmartTransactionsController
+  | SnapController
+  | SnapInterfaceController
+  | SnapInsightsController
   | TransactionController
   | (TransactionUpdateController & {
       name: 'TransactionUpdateController';
@@ -41,7 +60,9 @@ export type Controller =
  * e.g. `{ transactions: [] }`.
  */
 export type ControllerFlatState = AccountsController['state'] &
+  CronjobController['state'] &
   GasFeeController['state'] &
+  JsonSnapsRegistry['state'] &
   KeyringController['state'] &
   NetworkController['state'] &
   OnboardingController['state'] &
@@ -52,5 +73,8 @@ export type ControllerFlatState = AccountsController['state'] &
   PPOMController['state'] &
   PreferencesController['state'] &
   SmartTransactionsController['state'] &
+  SnapController['state'] &
+  SnapInsightsController['state'] &
+  SnapInterfaceController['state'] &
   TransactionController['state'] &
   SwapsController['state'];

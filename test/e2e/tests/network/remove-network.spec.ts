@@ -73,7 +73,7 @@ describe('Remove Network:', function (this: Suite) {
             selectedNetworkClientId: 'networkConfigurationId',
           })
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [{ port: 8546, chainId: 1338 }],
         },
@@ -158,7 +158,7 @@ describe('Remove Network:', function (this: Suite) {
             selectedNetworkClientId: 'networkConfigurationId',
           })
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [{ port: 8546, chainId: 1338 }],
         },
