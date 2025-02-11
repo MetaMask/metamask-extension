@@ -23,7 +23,12 @@ const NativeToken = ({ onClickAsset }: AssetListProps) => {
 
   return (
     <TokenCellListItem
-      token={{ ...token, ...tokenDisplayInfo, isStakeable }}
+      token={{
+        ...token,
+        ...tokenDisplayInfo,
+        secondary: token.secondary,
+        isStakeable,
+      }}
       onClick={() => onClickAsset(token.chainId, nativeCurrency)}
     />
   );

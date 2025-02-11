@@ -5,6 +5,7 @@ import {
   getMultichainCurrencyImage,
   getMultichainCurrentNetwork,
   getMultichainSelectedAccountCachedBalance,
+  getMultichainShouldShowFiat,
 } from '../../../../../selectors/multichain';
 import {
   getPreferences,
@@ -18,7 +19,7 @@ import { useCurrencyDisplay } from '../../../../../hooks/useCurrencyDisplay';
 import { TokenWithFiatAmount } from '../../types';
 
 export const useNativeTokenBalance = () => {
-  // const showFiat = useSelector(getMultichainShouldShowFiat);
+  const showFiat = useSelector(getMultichainShouldShowFiat);
   const account = useSelector(getSelectedInternalAccount);
   const primaryTokenImage = useSelector(getMultichainCurrencyImage);
   const { showNativeTokenAsMainBalance } = useSelector(getPreferences);
@@ -66,6 +67,9 @@ export const useNativeTokenBalance = () => {
     ? secondaryCurrencyDisplay
     : undefined;
 
+  const secondaryBalance =
+    showFiat && isOriginalNativeSymbol ? primaryCurrencyDisplay : undefined;
+
   const tokenSymbol = showNativeTokenAsMainBalance
     ? primaryCurrencyProperties.suffix
     : secondaryCurrencyProperties.suffix;
@@ -84,13 +88,14 @@ export const useNativeTokenBalance = () => {
     },
   );
 
-  const nativeTokenWithBalance: TokenWithFiatAmount = {
+  const nativeTokenWithBalance = {
     chainId: chainId as Hex,
     address: '' as Hex,
     symbol: tokenSymbol ?? '',
     string: primaryBalance as string,
     image: primaryTokenImage,
     tokenFiatAmount,
+    secondary: secondaryBalance,
     isNative: true,
     decimals: 18,
   };
