@@ -5,6 +5,7 @@ import { isEvmAccountType } from '@metamask/keyring-api';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { getEthAccounts, getPermittedEthChainIds } from '@metamask/multichain';
 import { Hex } from '@metamask/utils';
+import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getSelectedInternalAccount,
@@ -93,13 +94,23 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       network.chainId === currentlySelectedNetworkChainId,
   );
 
-  const selectedNetworksList = selectedTestNetwork
-    ? [...nonTestNetworks, selectedTestNetwork]
-    : nonTestNetworks;
+  const defaultSelectedNetworkList = selectedTestNetwork
+    ? [...nonTestNetworks, selectedTestNetwork].map(({ chainId }) => chainId)
+    : nonTestNetworks.map(({ chainId }) => chainId);
+
+  const allNetworksList = [...nonTestNetworks, ...testNetworks].map(
+    ({ chainId }) => chainId,
+  );
+
+  const supportedRequestedChainIds = requestedChainIds.filter((chainId) =>
+    allNetworksList.includes(chainId),
+  );
+
   const defaultSelectedChainIds =
-    requestedChainIds.length > 0
-      ? requestedChainIds
-      : selectedNetworksList.map(({ chainId }) => chainId);
+    supportedRequestedChainIds.length > 0
+      ? supportedRequestedChainIds
+      : defaultSelectedNetworkList;
+
   const [selectedChainIds, setSelectedChainIds] = useState(
     defaultSelectedChainIds,
   );
@@ -111,12 +122,18 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     );
   }, [accounts]);
 
+  const supportedRequestedAccounts = requestedAccounts.filter((account) =>
+    evmAccounts.find(({ address }) => isEqualCaseInsensitive(address, account)),
+  );
+
   const currentAccount = useSelector(getSelectedInternalAccount);
   const currentAccountAddress = isEvmAccountType(currentAccount.type)
     ? [currentAccount.address]
     : []; // We do not support non-EVM accounts connections
   const defaultAccountsAddresses =
-    requestedAccounts.length > 0 ? requestedAccounts : currentAccountAddress;
+    supportedRequestedAccounts.length > 0
+      ? supportedRequestedAccounts
+      : currentAccountAddress;
   const [selectedAccountAddresses, setSelectedAccountAddresses] = useState(
     defaultAccountsAddresses,
   );
