@@ -13,7 +13,7 @@ import TransactionConfirmation from '../../../page-objects/pages/confirmations/r
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { TestSuiteArguments } from './shared';
 
-const { defaultGanacheOptions, withFixtures } = require('../../../helpers');
+const { withFixtures } = require('../../../helpers');
 const FixtureBuilder = require('../../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
@@ -28,7 +28,6 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           testSpecificMock: mocked4BytesResponse,
           smartContract,
           title: this.test?.fullTitle(),
@@ -63,7 +62,6 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         testSpecificMock: mockedSourcifyResponse,
         smartContract,
         title: this.test?.fullTitle(),
@@ -96,7 +94,6 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test?.fullTitle(),
       },
@@ -129,7 +126,6 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         testSpecificMock: mockInfura,
         title: this.test?.fullTitle(),
       },

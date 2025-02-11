@@ -60,6 +60,7 @@ const useBridging = () => {
       location: string,
       token: SwapsTokenObject | SwapsEthToken,
       portfolioUrlSuffix?: string,
+      isSwap = false,
     ) => {
       if (!isBridgeChain || !providerConfig) {
         return;
@@ -89,9 +90,12 @@ const useBridging = () => {
             chain_id: providerConfig.chainId,
           },
         });
-        history.push(
-          `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}?token=${token.address?.toLowerCase()}`,
-        );
+        let url = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
+        url += `?token=${token.address?.toLowerCase()}`;
+        if (isSwap) {
+          url += '&swaps=true';
+        }
+        history.push(url);
       } else {
         const portfolioUrl = getPortfolioUrl(
           'bridge',

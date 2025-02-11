@@ -25,7 +25,7 @@ describe('Incremental Security', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions,
+        localNodeOptions: ganacheOptions,
         title: this.test.fullTitle(),
         dappPath: 'send-eth-with-private-key-test',
       },

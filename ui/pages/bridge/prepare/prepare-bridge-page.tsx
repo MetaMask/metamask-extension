@@ -91,8 +91,8 @@ import { getCurrentKeyring, getTokenList } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
 import { BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE } from '../../../../shared/constants/bridge';
-import { getMultichainIsSolana } from '../../../selectors/multichain';
 import { getIntlLocale } from '../../../ducks/locale/locale';
+import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 
@@ -363,12 +363,12 @@ const PrepareBridgePage = () => {
     }
   }, [fromChain, fromToken, fromTokens, search, isFromTokensLoading]);
 
-  const isSolana = useSelector(getMultichainIsSolana);
+  const isSwap = useIsMultichainSwap();
 
   return (
     <Column className="prepare-bridge-page" gap={8}>
       <BridgeInputGroup
-        header={t('bridgeFrom')}
+        header={isSwap ? t('swapSwapFrom') : t('bridgeFrom')}
         token={fromToken}
         onAmountChange={(e) => {
           dispatch(setFromTokenInputValue(e));
@@ -514,7 +514,7 @@ const PrepareBridgePage = () => {
               dispatch(setToChainId(networkConfig.chainId));
               dispatch(setToToken(null));
             },
-            header: isSolana ? t('swapSwapTo') : t('bridgeTo'),
+            header: isSwap ? t('swapSwapTo') : t('bridgeTo'),
             shouldDisableNetwork: ({ chainId }) =>
               chainId === fromChain?.chainId,
           }}
