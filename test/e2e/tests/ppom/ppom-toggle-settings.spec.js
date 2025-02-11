@@ -3,7 +3,6 @@ const {
   withFixtures,
   unlockWallet,
   openDapp,
-  defaultGanacheOptions,
   getWindowHandles,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
@@ -18,7 +17,6 @@ describe('PPOM Settings', function () {
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -57,7 +55,6 @@ describe('PPOM Settings', function () {
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
