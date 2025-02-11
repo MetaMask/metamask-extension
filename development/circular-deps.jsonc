@@ -8,14 +8,6 @@
 
 [
   [
-    "app/scripts/controllers/bridge-status/bridge-status-controller.ts",
-    "app/scripts/controllers/bridge-status/types.ts"
-  ],
-  [
-    "app/scripts/controllers/bridge-status/utils.ts",
-    "app/scripts/controllers/bridge-status/validators.ts"
-  ],
-  [
     "app/scripts/lib/transaction/metrics.ts",
     "shared/modules/metametrics.ts"
   ],
