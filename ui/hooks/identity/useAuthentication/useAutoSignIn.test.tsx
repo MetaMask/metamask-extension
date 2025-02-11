@@ -47,6 +47,7 @@ const authDependentFeaturesStateKeys = [
 const shouldAutoSignInTestCases: ArrangeMocksMetamaskStateOverrides[] = [];
 const shouldNotAutoSignInTestCases: ArrangeMocksMetamaskStateOverrides[] = [];
 
+// We generate all possible combinations of the prerequisites and auth-dependent features here
 const generateCombinations = (keys: string[]) => {
   const result: ArrangeMocksMetamaskStateOverrides[] = [];
   const total = 2 ** keys.length;
