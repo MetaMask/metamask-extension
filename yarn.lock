@@ -5551,18 +5551,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@npm:^14.0.0":
-  version: 14.0.0
-  resolution: "@metamask/keyring-api@npm:14.0.0"
-  dependencies:
-    "@metamask/keyring-utils": "npm:^1.2.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.0.1"
-    bech32: "npm:^2.0.0"
-  checksum: 10/6064fb584cdf02536f9aeec3789b8df53ec6b21f89c1e6aa301e614916b04fabc0f0ea7221440d8b7af6798c1354b89bb9022afc094a6cfd7c8b482d3ec5a3fe
-  languageName: node
-  linkType: hard
-
 "@metamask/keyring-api@npm:^16.1.0":
   version: 16.1.0
   resolution: "@metamask/keyring-api@npm:16.1.0"
@@ -5609,18 +5597,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-internal-api@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "@metamask/keyring-internal-api@npm:2.0.1"
-  dependencies:
-    "@metamask/keyring-api": "npm:^14.0.0"
-    "@metamask/keyring-utils": "npm:^1.2.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.0.1"
-  checksum: 10/f508fda22085455360423fa6c1ad690c7d19a79b9e42d2b27fe4098a7b5db211b1c74f4df8606c34ead4c0f202d624ddcafc66f5d93b6af2f8aa59deb04e1332
-  languageName: node
-  linkType: hard
-
 "@metamask/keyring-internal-api@npm:^4.0.1":
   version: 4.0.1
   resolution: "@metamask/keyring-internal-api@npm:4.0.1"
@@ -5658,17 +5634,6 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^18.3.1
   checksum: 10/f408b587380216b77ca0ff4d6f37c64d933392c6bac950c77a9df4a858dbc61c981a41b2cf3870b9041cb210566087e83398f3e7bbc82f39c0eb952eb990a3c8
-  languageName: node
-  linkType: hard
-
-"@metamask/keyring-utils@npm:^1.2.0":
-  version: 1.3.1
-  resolution: "@metamask/keyring-utils@npm:1.3.1"
-  dependencies:
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.1.0"
-    bitcoin-address-validation: "npm:^2.2.3"
-  checksum: 10/9072791320108218875bdbcc7823a4ab4d8c29675deab3163373d31a997ae6fc23995a74ffa085e06534d14b72c2edb5e7192d371cd1ef69ac7fae70fa50d8d0
   languageName: node
   linkType: hard
 
@@ -6379,7 +6344,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-utils@npm:^8.10.0, @metamask/snaps-utils@npm:^8.3.0, @metamask/snaps-utils@npm:^8.9.0":
+"@metamask/snaps-utils@npm:^8.10.0, @metamask/snaps-utils@npm:^8.9.0":
   version: 8.10.0
   resolution: "@metamask/snaps-utils@npm:8.10.0"
   dependencies:
