@@ -1355,8 +1355,6 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.userStorageController = new UserStorageController.Controller({
-      getMetaMetricsState: () =>
-        this.metaMetricsController.state.participateInMetaMetrics ?? false,
       state: initState.UserStorageController,
       config: {
         accountSyncing: {
@@ -1412,8 +1410,6 @@ export default class MetamaskController extends EventEmitter {
           'AuthenticationController:isSignedIn',
           'AuthenticationController:performSignOut',
           'AuthenticationController:performSignIn',
-          'NotificationServicesController:disableNotificationServices',
-          'NotificationServicesController:selectIsNotificationServicesEnabled',
           'AccountsController:listAccounts',
           'AccountsController:updateAccountMetadata',
           'NetworkController:getState',
@@ -1430,39 +1426,6 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
     });
-
-    this.controllerMessenger.subscribe(
-      'MetaMetricsController:stateChange',
-      previousValueComparator(async (prevState, currState) => {
-        const { participateInMetaMetrics: prevParticipateInMetaMetrics } =
-          prevState;
-        const { participateInMetaMetrics: currParticipateInMetaMetrics } =
-          currState;
-
-        const metaMetricsWasDisabled =
-          prevParticipateInMetaMetrics && !currParticipateInMetaMetrics;
-        const metaMetricsWasEnabled =
-          !prevParticipateInMetaMetrics && currParticipateInMetaMetrics;
-
-        if (!metaMetricsWasDisabled && !metaMetricsWasEnabled) {
-          return;
-        }
-
-        const shouldPerformSignIn =
-          metaMetricsWasEnabled &&
-          !this.authenticationController.state.isSignedIn;
-        const shouldPerformSignOut =
-          metaMetricsWasDisabled &&
-          this.authenticationController.state.isSignedIn &&
-          !this.userStorageController.state.isProfileSyncingEnabled;
-
-        if (shouldPerformSignIn) {
-          await this.authenticationController.performSignIn();
-        } else if (shouldPerformSignOut) {
-          await this.authenticationController.performSignOut();
-        }
-      }, this.metaMetricsController.state),
-    );
 
     const notificationServicesPushControllerMessenger =
       this.controllerMessenger.getRestricted({
@@ -1529,7 +1492,7 @@ export default class MetamaskController extends EventEmitter {
             'KeyringController:getState',
             'AuthenticationController:getBearerToken',
             'AuthenticationController:isSignedIn',
-            'UserStorageController:enableProfileSyncing',
+            'AuthenticationController:performSignIn',
             'UserStorageController:getStorageKey',
             'UserStorageController:performGetStorage',
             'UserStorageController:performSetStorage',
@@ -4071,10 +4034,6 @@ export default class MetamaskController extends EventEmitter {
       disableProfileSyncing: userStorageController.disableProfileSyncing.bind(
         userStorageController,
       ),
-      setIsProfileSyncingEnabled:
-        userStorageController.setIsProfileSyncingEnabled.bind(
-          userStorageController,
-        ),
       syncInternalAccountsWithUserStorage:
         userStorageController.syncInternalAccountsWithUserStorage.bind(
           userStorageController,
