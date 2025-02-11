@@ -40,6 +40,7 @@
       "recoveryPhraseReminderLastShown": "number",
       "showTestnetMessageInDropdown": true,
       "trezorModel": null,
+      "isRampCardClosed": false,
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
       "snapsInstallPrivacyWarningShown": true
@@ -119,7 +120,6 @@
       "theme": "light",
       "useBlockie": false,
       "useNftDetection": false,
-      "useNonceField": false,
       "usePhishDetect": true,
       "useTokenDetection": false,
       "useCurrencyRateCheck": true,
