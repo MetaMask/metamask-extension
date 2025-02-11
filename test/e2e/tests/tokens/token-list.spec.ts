@@ -29,7 +29,7 @@ describe('Token List', function () {
 
   const fixtures = {
     fixtures: new FixtureBuilder({ inputChainId: chainId }).build(),
-    ganacheOptions: {
+    localNodeOptions: {
       ...defaultGanacheOptions,
       chainId: parseInt(chainId, 16),
     },

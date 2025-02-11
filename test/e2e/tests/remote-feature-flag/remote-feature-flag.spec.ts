@@ -19,8 +19,8 @@ describe('Remote feature flag', function (this: Suite) {
           .build(),
         title: this.test?.fullTitle(),
       },
-      async ({ driver }: TestSuiteArguments) => {
-        await loginWithBalanceValidation(driver);
+      async ({ driver, ganacheServer }: TestSuiteArguments) => {
+        await loginWithBalanceValidation(driver, ganacheServer);
         const uiState = await getCleanAppState(driver);
         assert.deepStrictEqual(
           uiState.metamask.remoteFeatureFlags,
@@ -38,8 +38,8 @@ describe('Remote feature flag', function (this: Suite) {
           .build(),
         title: this.test?.fullTitle(),
       },
-      async ({ driver }: TestSuiteArguments) => {
-        await loginWithBalanceValidation(driver);
+      async ({ driver, ganacheServer }: TestSuiteArguments) => {
+        await loginWithBalanceValidation(driver, ganacheServer);
         const uiState = await getCleanAppState(driver);
         assert.deepStrictEqual(uiState.metamask.remoteFeatureFlags, {});
       },
