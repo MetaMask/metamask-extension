@@ -14,17 +14,7 @@ import AssetListControlBar from './asset-list-control-bar';
 import NativeToken from './native-token';
 import AssetListFundingModals from './asset-list-funding-modals';
 
-export type TokenWithBalance = {
-  address: string;
-  symbol: string;
-  string?: string;
-  image: string;
-  secondary?: string;
-  tokenFiatAmount?: string;
-  isNative?: boolean;
-};
-
-export type AssetListProps = {
+type AssetListProps = {
   onClickAsset: (chainId: string, address: string) => void;
   showTokensLinks?: boolean;
 };

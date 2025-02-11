@@ -2,12 +2,22 @@ import { Hex } from '@metamask/utils';
 
 export type Token = {
   address: Hex;
+  symbol: string;
+  isNative: boolean;
   aggregators?: string[];
   chainId: Hex;
   decimals: number;
-  isNative: boolean;
-  symbol: string;
   image: string;
+};
+
+export type TokenWithBalance = {
+  address: string;
+  symbol: string;
+  isNative?: boolean;
+  string?: string;
+  image: string;
+  secondary?: string;
+  tokenFiatAmount?: string;
 };
 
 export type TokenDisplayInfo = {
