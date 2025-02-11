@@ -45,6 +45,7 @@ import {
 } from '../types';
 import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import { ControllerFlatState } from '../controller-list';
+import { Numeric } from '@metamask/utils';
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
@@ -75,14 +76,43 @@ export const TransactionControllerInit: ControllerInitFunction<
 
   const controller: TransactionController = new TransactionController({
     getCurrentNetworkEIP1559Compatibility: () =>
-      // @ts-expect-error Controller type does not support undefined return value
       initMessenger.call('NetworkController:getEIP1559Compatibility'),
     getCurrentAccountEIP1559Compatibility: async () => true,
-    // @ts-expect-error Mismatched types
     getExternalPendingTransactions: (address) =>
       getExternalPendingTransactions(smartTransactionsController(), address),
-    getGasFeeEstimates: (...args) =>
-      gasFeeController().fetchGasFeeEstimates(...args),
+    getGasFeeEstimates: async (...args) => {
+      const estimates = await gasFeeController().fetchGasFeeEstimates(...args);
+
+      // Check if this is an L2-to-L2 bridge transaction
+      const state = getFlatState();
+      const isL2ToL2Bridge = state.bridgeTransaction?.isL2ToL2Bridge;
+
+      if (isL2ToL2Bridge) {
+        // Add 20% buffer for L2-to-L2 bridge transactions
+        const L2_BUFFER_MULTIPLIER = 1.2;
+        return {
+          ...estimates,
+          estimatedBaseFee: new Numeric(estimates.estimatedBaseFee).times(L2_BUFFER_MULTIPLIER).toString(),
+          high: {
+            ...estimates.high,
+            suggestedMaxFeePerGas: new Numeric(estimates.high.suggestedMaxFeePerGas).times(L2_BUFFER_MULTIPLIER).toString(),
+            suggestedMaxPriorityFeePerGas: new Numeric(estimates.high.suggestedMaxPriorityFeePerGas).times(L2_BUFFER_MULTIPLIER).toString(),
+          },
+          medium: {
+            ...estimates.medium,
+            suggestedMaxFeePerGas: new Numeric(estimates.medium.suggestedMaxFeePerGas).times(L2_BUFFER_MULTIPLIER).toString(),
+            suggestedMaxPriorityFeePerGas: new Numeric(estimates.medium.suggestedMaxPriorityFeePerGas).times(L2_BUFFER_MULTIPLIER).toString(),
+          },
+          low: {
+            ...estimates.low,
+            suggestedMaxFeePerGas: new Numeric(estimates.low.suggestedMaxFeePerGas).times(L2_BUFFER_MULTIPLIER).toString(),
+            suggestedMaxPriorityFeePerGas: new Numeric(estimates.low.suggestedMaxPriorityFeePerGas).times(L2_BUFFER_MULTIPLIER).toString(),
+          },
+        };
+      }
+
+      return estimates;
+    },
     getNetworkClientRegistry: (...args) =>
       networkController().getNetworkClientRegistry(...args),
     getNetworkState: () => networkController().state,

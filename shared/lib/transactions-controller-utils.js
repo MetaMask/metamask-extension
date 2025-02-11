@@ -15,7 +15,20 @@ export const TRANSFER_SINFLE_LOG_TOPIC_HASH =
 
 export const TEN_SECONDS_IN_MILLISECONDS = 10_000;
 
-export function calcGasTotal(gasLimit = '0', gasPrice = '0') {
+export function calcGasTotal(gasLimit = '0', gasPrice = '0', options = {}) {
+  const { isL2ToL2Bridge, srcChainId, destChainId } = options;
+
+  // For L2-to-L2 bridges (e.g. Arbitrum to Optimism), we need special fee handling
+  if (isL2ToL2Bridge && srcChainId && destChainId) {
+    // Convert hex strings to BigNumber for calculations
+    const baseGasTotal = new Numeric(gasLimit, 16).times(new Numeric(gasPrice, 16));
+
+    // Add buffer for cross-chain message passing and execution
+    const L2_BUFFER_MULTIPLIER = new Numeric('1.2', 10); // 20% buffer for L2 transactions
+    return baseGasTotal.times(L2_BUFFER_MULTIPLIER).toString();
+  }
+
+  // Default gas calculation for non-bridge transactions
   return new Numeric(gasLimit, 16).times(new Numeric(gasPrice, 16)).toString();
 }
 

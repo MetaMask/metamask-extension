@@ -136,22 +136,29 @@ export type RefuelStatusResponse = object & StatusResponse;
 
 export type RefuelData = object & Step;
 
-export type BridgeHistoryItem = {
-  txMetaId: string; // Need this to handle STX that might not have a txHash immediately
-  quote: Quote;
-  status: StatusResponse;
-  startTime?: number; // timestamp in ms
+export interface BridgeHistoryItem {
+  txMetaId: string;
+  status?: {
+    status: StatusTypes;
+  };
+  quote: {
+    srcChainId: string;
+    destChainId: string;
+  };
+  srcChainTx?: {
+    gasLimit: string;
+    gasPrice: string;
+    gasTotal?: string;
+  };
+  startTime?: number;
   estimatedProcessingTimeInSeconds: number;
   slippagePercentage: number;
-  completionTime?: number; // timestamp in ms
+  completionTime?: number;
   pricingData?: {
-    /**
-     * From QuoteMetadata.sentAmount.amount, the actual amount sent by user in non-atomic decimal form
-     */
     amountSent: string;
     amountSentInUsd?: string;
-    quotedGasInUsd?: string; // from QuoteMetadata.gasFee.usd
-    quotedReturnInUsd?: string; // from QuoteMetadata.toTokenAmount.usd
+    quotedGasInUsd?: string;
+    quotedReturnInUsd?: string;
     quotedRefuelSrcAmountInUsd?: string;
     quotedRefuelDestAmountInUsd?: string;
   };
@@ -159,7 +166,7 @@ export type BridgeHistoryItem = {
   targetContractAddress?: string;
   account: string;
   hasApprovalTx: boolean;
-};
+}
 
 export enum BridgeStatusAction {
   START_POLLING_FOR_BRIDGE_TX_STATUS = 'startPollingForBridgeTxStatus',
