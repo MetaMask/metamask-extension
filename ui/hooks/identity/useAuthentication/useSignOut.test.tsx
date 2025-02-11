@@ -2,7 +2,7 @@ import { act } from '@testing-library/react-hooks';
 import { renderHookWithProviderTyped } from '../../../../test/lib/render-helpers';
 import * as actions from '../../../store/actions';
 import { MetamaskIdentityProvider } from '../../../contexts/identity';
-import { useSignIn } from './useSignIn';
+import { useSignOut } from './useSignOut';
 
 type ArrangeMocksMetamaskStateOverrides = {
   isSignedIn: boolean;
@@ -19,69 +19,64 @@ const arrangeMockState = (
 };
 
 const arrangeMocks = () => {
-  const mockPerformSignInAction = jest.spyOn(actions, 'performSignIn');
+  const mockPerformSignOutAction = jest.spyOn(actions, 'performSignOut');
 
-  const mockDisableProfileSyncingAction = jest.spyOn(
-    actions,
-    'disableProfileSyncing',
-  );
   return {
-    mockPerformSignInAction,
-    mockDisableProfileSyncingAction,
+    mockPerformSignOutAction,
   };
 };
 
-describe('useSignIn', () => {
+describe('useSignOut', () => {
   it('should initialize correctly', () => {
-    const state = arrangeMockState({
-      isSignedIn: false,
-    });
-    arrangeMocks();
-    const hook = renderHookWithProviderTyped(
-      () => useSignIn(),
-      state,
-      undefined,
-      MetamaskIdentityProvider,
-    );
-
-    expect(hook.result.current.signIn).toBeDefined();
-  });
-
-  it('should call performSignIn if a user is not already signed in', async () => {
-    const state = arrangeMockState({
-      isSignedIn: false,
-    });
-    const { mockPerformSignInAction } = arrangeMocks();
-    const hook = renderHookWithProviderTyped(
-      () => useSignIn(),
-      state,
-      undefined,
-      MetamaskIdentityProvider,
-    );
-
-    await act(async () => {
-      await hook.result.current.signIn();
-    });
-
-    expect(mockPerformSignInAction).toHaveBeenCalled();
-  });
-
-  it('should not call performSignIn if a user is already signed in', async () => {
     const state = arrangeMockState({
       isSignedIn: true,
     });
-    const { mockPerformSignInAction } = arrangeMocks();
+    arrangeMocks();
     const hook = renderHookWithProviderTyped(
-      () => useSignIn(),
+      () => useSignOut(),
+      state,
+      undefined,
+      MetamaskIdentityProvider,
+    );
+
+    expect(hook.result.current.signOut).toBeDefined();
+  });
+
+  it('should call performSignOut if the user is signed in', async () => {
+    const state = arrangeMockState({
+      isSignedIn: true,
+    });
+    const { mockPerformSignOutAction } = arrangeMocks();
+    const hook = renderHookWithProviderTyped(
+      () => useSignOut(),
       state,
       undefined,
       MetamaskIdentityProvider,
     );
 
     await act(async () => {
-      await hook.result.current.signIn();
+      await hook.result.current.signOut();
     });
 
-    expect(mockPerformSignInAction).not.toHaveBeenCalled();
+    expect(mockPerformSignOutAction).toHaveBeenCalled();
+  });
+
+  it('should not call performSignOut if the user is already signed out', async () => {
+    const state = arrangeMockState({
+      isSignedIn: false,
+    });
+    const { mockPerformSignOutAction } = arrangeMocks();
+    const hook = renderHookWithProviderTyped(
+      () => useSignOut(),
+      state,
+      undefined,
+      MetamaskIdentityProvider,
+    );
+
+    await act(async () => {
+      await hook.result.current.signOut();
+    });
+
+    expect(mockPerformSignOutAction).not.toHaveBeenCalled();
   });
 });
