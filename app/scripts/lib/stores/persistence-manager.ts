@@ -1,5 +1,6 @@
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
+import browser from 'webextension-polyfill';
 import { isEmpty } from 'lodash';
 import { type MetaMaskStateType, MetaMaskStorageStructure } from './base-store';
 import ExtensionStore from './extension-store';
@@ -100,6 +101,15 @@ export class PersistenceManager {
 
   async get() {
     const result = await this.#localStore.get();
+    const sessionData = await browser.storage.session.get([
+      'isFirstTimeInstall',
+    ]);
+    const isFirstTimeInstall = sessionData?.isFirstTimeInstall;
+    const vaultIsEmpty = isEmpty(result?.data?.KeyringController?.vault)
+
+    if (!isFirstTimeInstall && vaultIsEmpty) {
+      throw new Error("State corruption detected: vault not retrieved from localStore");
+    }
 
     if (isEmpty(result)) {
       this.#mostRecentRetrievedState = null;
