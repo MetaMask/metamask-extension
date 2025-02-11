@@ -1415,16 +1415,6 @@
         "bitcoin-address-validation": true
       }
     },
-    "@metamask/profile-sync-controller>@metamask/keyring-api>@metamask/keyring-utils": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/profile-sync-controller>@metamask/keyring-api>@metamask/utils": true,
-        "bitcoin-address-validation": true
-      }
-    },
     "@metamask/logging-controller": {
       "packages": {
         "@metamask/base-controller": true,
