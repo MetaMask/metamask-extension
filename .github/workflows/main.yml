@@ -17,7 +17,7 @@ on:
 jobs:
   lint-workflows:
     name: Lint workflows
-    uses: metamask/github-tools/.github/workflows/lint-workflows.yml@benchmarks
+    uses: metamask/github-tools/.github/workflows/lint-workflows.yml@main
 
   test-lint-shellcheck:
     name: Test lint shellcheck
@@ -29,7 +29,16 @@ jobs:
 
   test-circular-deps:
     name: Test circular deps
-    uses: ./.github/workflows/test-circular-deps.yml
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
+      - name: Check circular dependencies
+        run: yarn circular-deps:check
 
   test-lint-changelog:
     name: Test lint changelog
@@ -67,6 +76,24 @@ jobs:
     name: Validate lavamoat policy webapp
     uses: ./.github/workflows/validate-lavamoat-policy-webapp.yml
 
+  prep-build-test-browserify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
+      - run: yarn build:test
+
+      - name: Upload artifact prep-build-test-webpack
+        uses: actions/upload-artifact@v4
+        with:
+          name: prep-build-test-browserify
+          path: ./dist/
+          retention-days: 1
+
   prep-build-test-webpack:
     runs-on: ubuntu-latest
     steps:
@@ -91,21 +118,9 @@ jobs:
     name: Run tests
     uses: ./.github/workflows/run-tests.yml
 
-  run-pageload-benchmark:
-    name: Run Benchmarks # So that the level 1 name will be "Run Benchmarks" in the GitHub Actions UI
-    needs: prep-build-test-webpack
-    uses: ./.github/workflows/benchmarks.yml
-    with:
-      name: run-pageload-benchmark # The level 2 name
-      command: 'yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json --retries 2'
-
-  run-user-actions-benchmark:
-    name: Run Benchmarks # So that the level 1 name will be "Run Benchmarks" in the GitHub Actions UI
-    needs: prep-build-test-webpack
-    uses: ./.github/workflows/benchmarks.yml
-    with:
-      name: run-user-actions-benchmark # The level 2 name
-      command: 'yarn user-actions-benchmark:chrome --out test-artifacts/chrome/benchmark/user_actions.json --retries 2'
+  run-benchmark-matrix:
+    uses: ./.github/workflows/benchmark-matrix.yml
+    needs: [prep-build-test-browserify, prep-build-test-webpack]
 
   wait-for-circleci-workflow-status:
     name: Wait for CircleCI workflow status
