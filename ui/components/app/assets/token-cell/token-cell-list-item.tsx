@@ -52,10 +52,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import {
-  CURRENCY_SYMBOLS,
-  NON_EVM_CURRENCY_SYMBOLS,
-} from '../../../../../shared/constants/network';
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
@@ -64,22 +60,17 @@ import {
   SafeChain,
   useSafeChains,
 } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
-import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import { TokenFiatDisplayInfo } from '../types';
 import { PercentageChange } from '../../../multichain/token-list-item/price/percentage-change';
 import { StakeableLink } from '../../../multichain/token-list-item/stakeable-link';
+import { networkTitleOverrides } from '../util/networkTitleOverrides';
 
-type TokenListItemProps = {
+type TokenCellListItemProps = {
   className?: string;
   token: TokenFiatDisplayInfo;
   onClick?: (arg?: string) => void;
   showPercentage?: boolean;
-  // Figure out how to abstract the bottom from Asset.tsx
-  tooltipText?: string;
-  isTitleNetworkName?: boolean;
-  isTitleHidden?: boolean;
-  isPrimaryTokenSymbolHidden?: boolean;
   privacyMode?: boolean;
 };
 
@@ -87,13 +78,9 @@ export const TokenCellListItem = ({
   className,
   token,
   onClick,
-  tooltipText,
-  isPrimaryTokenSymbolHidden = false,
-  isTitleNetworkName = false,
-  isTitleHidden = false,
   showPercentage = false,
   privacyMode = false,
-}: TokenListItemProps) => {
+}: TokenCellListItemProps) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const t = useI18nContext();
@@ -129,37 +116,13 @@ export const TokenCellListItem = ({
         ?.pricePercentChange1d
     : null;
 
-  // TODO Figure out how to handle this token title with title function in parent. We need some props from Asset.tsx
-  // Maybe these can be optionally passed into `useTokenDisplayInfo` hook
-  const tokenTitle = () => {
-    if (isTitleNetworkName) {
-      return NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-        token.chainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
-      ];
-    }
-    if (isTitleHidden) {
-      return undefined;
-    }
-    switch (token.title) {
-      case CURRENCY_SYMBOLS.ETH:
-        return t('networkNameEthereum');
-      case NON_EVM_CURRENCY_SYMBOLS.BTC:
-        return t('networkNameBitcoin');
-      case NON_EVM_CURRENCY_SYMBOLS.SOL:
-        return t('networkNameSolana');
-      default:
-        return token.title;
-    }
-  };
-  const tokenMainTitleToDisplay =
-    shouldShowPercentage && !isTitleNetworkName ? tokenTitle() : token.symbol;
-
   // Used for badge icon
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e.preventDefault();
 
+    // if scam modal is open don't track event
     if (showScamWarningModal) {
       return;
     }
@@ -185,7 +148,6 @@ export const TokenCellListItem = ({
       height={BlockSize.Full}
       gap={4}
       data-testid="multichain-token-list-item"
-      title={tooltipText ? t(tooltipText) : undefined}
     >
       <Box
         className={classnames('multichain-token-list-item__container-cell', {
@@ -240,6 +202,7 @@ export const TokenCellListItem = ({
             flexDirection={FlexDirection.Row}
             justifyContent={JustifyContent.spaceBetween}
           >
+            {/* token cell title */}
             {token.title?.length && token.title?.length > 12 ? (
               <Tooltip
                 position="bottom"
@@ -253,7 +216,7 @@ export const TokenCellListItem = ({
                   display={Display.Block}
                   ellipsis
                 >
-                  {tokenMainTitleToDisplay}
+                  {networkTitleOverrides(t, token)}
                   {token.isStakeable && (
                     <StakeableLink
                       chainId={token.chainId}
@@ -268,7 +231,7 @@ export const TokenCellListItem = ({
                 variant={TextVariant.bodyMd}
                 ellipsis
               >
-                {tokenMainTitleToDisplay}
+                {networkTitleOverrides(t, token)}
                 {token.isStakeable && (
                   <StakeableLink
                     chainId={token.chainId}
@@ -278,6 +241,7 @@ export const TokenCellListItem = ({
               </Text>
             )}
 
+            {/* token cell secondary */}
             {showScamWarning ? (
               <ButtonIcon
                 iconName={IconName.Danger}
@@ -314,6 +278,7 @@ export const TokenCellListItem = ({
             flexDirection={FlexDirection.Row}
             justifyContent={JustifyContent.spaceBetween}
           >
+            {/* token percent change */}
             {shouldShowPercentage ? (
               <PercentageChange
                 value={
@@ -336,10 +301,11 @@ export const TokenCellListItem = ({
                 data-testid="multichain-token-list-item-token-name"
                 ellipsis
               >
-                {tokenTitle}
+                {networkTitleOverrides(t, token)}
               </Text>
             )}
 
+            {/* token primary display */}
             {showScamWarning ? (
               <SensitiveText
                 data-testid="multichain-token-list-item-value"
@@ -349,7 +315,7 @@ export const TokenCellListItem = ({
                 isHidden={privacyMode}
                 length={SensitiveTextLength.Short}
               >
-                {token.primary} {isPrimaryTokenSymbolHidden ? '' : token.symbol}
+                {token.primary} {token.symbol}
               </SensitiveText>
             ) : (
               <SensitiveText
@@ -360,12 +326,13 @@ export const TokenCellListItem = ({
                 isHidden={privacyMode}
                 length={SensitiveTextLength.Short}
               >
-                {token.primary} {isPrimaryTokenSymbolHidden ? '' : token.symbol}
+                {token.primary} {token.symbol}
               </SensitiveText>
             )}
           </Box>
         </Box>
       </Box>
+      {/* scam warning modal */}
       {isEvm && showScamWarningModal ? (
         <Modal isOpen onClose={() => setShowScamWarningModal(false)}>
           <ModalOverlay />
