@@ -7108,21 +7108,19 @@ export default class MetamaskController extends EventEmitter {
   }
 
   _notifyAccountsChange(origin, newAccounts) {
-    if (this.isUnlocked()) {
-      this.notifyConnections(origin, {
-        method: NOTIFICATION_NAMES.accountsChanged,
-        // This should be the same as the return value of `eth_accounts`,
-        // namely an array of the current / most recently selected Ethereum
-        // account.
-        params:
-          newAccounts.length < 2
-            ? // If the length is 1 or 0, the accounts are sorted by definition.
-              newAccounts
-            : // If the length is 2 or greater, we have to execute
-              // `eth_accounts` vi this method.
-              this.getPermittedAccounts(origin),
-      });
-    }
+    this.notifyConnections(origin, {
+      method: NOTIFICATION_NAMES.accountsChanged,
+      // This should be the same as the return value of `eth_accounts`,
+      // namely an array of the current / most recently selected Ethereum
+      // account.
+      params:
+        newAccounts.length < 2
+          ? // If the length is 1 or 0, the accounts are sorted by definition.
+            newAccounts
+          : // If the length is 2 or greater, we have to execute
+            // `eth_accounts` vi this method.
+            this.getPermittedAccounts(origin),
+    });
 
     this.permissionLogController.updateAccountsHistory(origin, newAccounts);
   }
