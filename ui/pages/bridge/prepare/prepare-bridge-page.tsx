@@ -104,6 +104,7 @@ import {
 } from '../../../../shared/modules/bridge-utils/multichain';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
+import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
 
 const PrepareBridgePage = () => {
   const dispatch = useDispatch();
@@ -598,7 +599,7 @@ const PrepareBridgePage = () => {
                 backgroundColor={BackgroundColor.primaryMuted}
               />
             )}
-            {!wasTxDeclined && activeQuote && <BridgeQuoteCard />}
+            {!wasTxDeclined && activeQuote && <MultichainBridgeQuoteCard />}
             <Footer padding={0} flexDirection={FlexDirection.Column} gap={2}>
               <BridgeCTAButton
                 onFetchNewQuotes={() => {
