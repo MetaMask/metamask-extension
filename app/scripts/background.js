@@ -1,4 +1,4 @@
-/**
+  /**
  * @file The entry point for the web extension singleton process.
  */
 
@@ -141,6 +141,16 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
 // Event emitter for state persistence
 export const statePersistenceEvents = new EventEmitter();
+
+if (!isManifestV3) {
+  browser.runtime.onInstalled.addListener(function(details){
+    if(details.reason == "install"){
+        browser.storage.session.set({ isFirstTimeInstall: true });
+  }else if(details.reason == "update"){
+      browser.storage.session.set({ isFirstTimeInstall: false });
+    }
+  });
+}
 
 /**
  * This deferred Promise is used to track whether initialization has finished.
@@ -525,6 +535,8 @@ async function initialize() {
     }
     await sendReadyMessageToTabs();
     log.info('MetaMask initialization complete.');
+
+    chrome.storage.session.set({ isFirstTimeInstall: false });
 
     resolveInitialization();
   } catch (error) {
@@ -1298,12 +1310,14 @@ const addAppInstalledEvent = () => {
 
 // On first install, open a new tab with MetaMask
 async function onInstall() {
-  const storeAlreadyExisted = Boolean(await persistenceManager.get());
-  // If the store doesn't exist, then this is the first time running this script,
-  // and is therefore an install
+  const sessionData = await browser.storage.session.get([
+    'isFirstTimeInstall',
+  ]);
+  const isFirstTimeInstall = sessionData?.isFirstTimeInstall;
+
   if (process.env.IN_TEST) {
     addAppInstalledEvent();
-  } else if (!storeAlreadyExisted && !process.env.METAMASK_DEBUG) {
+  } else if (!isFirstTimeInstall && !process.env.METAMASK_DEBUG) {
     // If storeAlreadyExisted is true then this is a fresh installation
     // and an app installed event should be tracked.
     addAppInstalledEvent();
