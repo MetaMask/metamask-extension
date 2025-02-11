@@ -147,7 +147,6 @@ exports[`AssetPage should render a native asset 1`] = `
         <a
           class="mm-box multichain-token-list-item__container-cell multichain-token-list-item__container-cell--clickable mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--width-full"
           data-testid="multichain-token-list-button"
-          href="#"
           style="height: 62px;"
         >
           <div
@@ -156,7 +155,11 @@ exports[`AssetPage should render a native asset 1`] = `
             <div
               class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
             >
-              T
+              <img
+                alt="static-logo"
+                class="mm-avatar-token__token-image"
+                src="./images/eth_logo.svg"
+              />
             </div>
             <div
               class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
@@ -185,7 +188,7 @@ exports[`AssetPage should render a native asset 1`] = `
                 TEST
               </p>
               <p
-                class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
+                class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-end mm-box--color-text-default"
                 data-testid="multichain-token-list-item-secondary-value"
               />
             </div>
@@ -454,7 +457,6 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
         <a
           class="mm-box multichain-token-list-item__container-cell multichain-token-list-item__container-cell--clickable mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--width-full"
           data-testid="multichain-token-list-button"
-          href="#"
           style="height: 62px;"
         >
           <div
@@ -494,9 +496,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
               <p
                 class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
                 data-testid="multichain-token-list-item-secondary-value"
-              >
-                $0.00
-              </p>
+              />
             </div>
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
@@ -949,7 +949,6 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         <a
           class="mm-box multichain-token-list-item__container-cell multichain-token-list-item__container-cell--clickable mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--width-full"
           data-testid="multichain-token-list-button"
-          href="#"
           style="height: 62px;"
         >
           <div
@@ -989,9 +988,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
               <p
                 class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
                 data-testid="multichain-token-list-item-secondary-value"
-              >
-                $0.00
-              </p>
+              />
             </div>
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
