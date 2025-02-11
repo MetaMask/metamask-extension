@@ -43,10 +43,15 @@ const useTokenDisplayInfo = ({
   // Format for fiat balance with currency style
   const secondary =
     shouldShowFiat && token.tokenFiatAmount
-      ? formatWithThreshold(token.tokenFiatAmount, secondaryThreshold, locale, {
-          style: 'currency',
-          currency: currentCurrency.toUpperCase(),
-        })
+      ? formatWithThreshold(
+          Number(token.tokenFiatAmount),
+          secondaryThreshold,
+          locale,
+          {
+            style: 'currency',
+            currency: currentCurrency.toUpperCase(),
+          },
+        )
       : undefined;
 
   const primary = formatAmount(
