@@ -326,6 +326,8 @@ import {
   NOTIFICATION_NAMES,
   unrestrictedMethods,
   PermissionNames,
+  validateCaveatAccounts,
+  validateCaveatNetworks,
 } from './controllers/permissions';
 import { MetaMetricsDataDeletionController } from './controllers/metametrics-data-deletion/metametrics-data-deletion';
 import { DataDeletionService } from './services/data-deletion-service';
@@ -5466,6 +5468,32 @@ export default class MetamaskController extends EventEmitter {
       PermissionNames.permittedChains,
     ]);
 
+    const requestedAccounts =
+      permissions[RestrictedMethods.eth_accounts]?.caveats?.find(
+        (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
+      )?.value ?? [];
+
+    const requestedChains =
+      permissions[PermissionNames.permittedChains]?.caveats?.find(
+        (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
+      )?.value ?? [];
+
+    if (permissions[RestrictedMethods.eth_accounts]?.caveats) {
+      validateCaveatAccounts(
+        requestedAccounts,
+        this.accountsController.listAccounts.bind(this.accountsController),
+      );
+    }
+
+    if (permissions[PermissionNames.permittedChains]?.caveats) {
+      validateCaveatNetworks(
+        requestedChains,
+        this.networkController.findNetworkClientIdByChainId.bind(
+          this.networkController,
+        ),
+      );
+    }
+
     if (!permissions[RestrictedMethods.eth_accounts]) {
       permissions[RestrictedMethods.eth_accounts] = {};
     }
@@ -5477,16 +5505,6 @@ export default class MetamaskController extends EventEmitter {
     if (isSnapId(origin)) {
       delete permissions[PermissionNames.permittedChains];
     }
-
-    const requestedChains =
-      permissions[PermissionNames.permittedChains]?.caveats?.find(
-        (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
-      )?.value ?? [];
-
-    const requestedAccounts =
-      permissions[PermissionNames.eth_accounts]?.caveats?.find(
-        (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
-      )?.value ?? [];
 
     const newCaveatValue = {
       requiredScopes: {},
