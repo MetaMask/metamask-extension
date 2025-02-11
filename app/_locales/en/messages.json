@@ -2134,6 +2134,9 @@
   "hideAccount": {
     "message": "Hide account"
   },
+  "hideAdvancedDetails": {
+    "message": "Hide advanced details"
+  },
   "hideSeedPhrase": {
     "message": "Hide seed phrase"
   },
@@ -4591,6 +4594,9 @@
   },
   "showAccount": {
     "message": "Show account"
+  },
+  "showAdvancedDetails": {
+    "message": "Show advanced details"
   },
   "showExtensionInFullSizeView": {
     "message": "Show extension in full-size view"
