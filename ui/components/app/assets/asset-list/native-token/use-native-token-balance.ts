@@ -1,12 +1,10 @@
 import currencyFormatter from 'currency-formatter';
 import { useSelector } from 'react-redux';
-
 import { Hex } from '@metamask/utils';
 import {
   getMultichainCurrencyImage,
   getMultichainCurrentNetwork,
   getMultichainSelectedAccountCachedBalance,
-  getMultichainShouldShowFiat,
 } from '../../../../../selectors/multichain';
 import {
   getPreferences,
@@ -17,11 +15,10 @@ import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOrigin
 import { PRIMARY, SECONDARY } from '../../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../../../../hooks/useCurrencyDisplay';
-// import { TokenWithBalance } from '../asset-list';
 import { TokenWithFiatAmount } from '../../types';
 
 export const useNativeTokenBalance = () => {
-  const showFiat = useSelector(getMultichainShouldShowFiat);
+  // const showFiat = useSelector(getMultichainShouldShowFiat);
   const account = useSelector(getSelectedInternalAccount);
   const primaryTokenImage = useSelector(getMultichainCurrencyImage);
   const { showNativeTokenAsMainBalance } = useSelector(getPreferences);
@@ -69,9 +66,6 @@ export const useNativeTokenBalance = () => {
     ? secondaryCurrencyDisplay
     : undefined;
 
-  const secondaryBalance =
-    showFiat && isOriginalNativeSymbol ? primaryCurrencyDisplay : undefined;
-
   const tokenSymbol = showNativeTokenAsMainBalance
     ? primaryCurrencyProperties.suffix
     : secondaryCurrencyProperties.suffix;
@@ -95,7 +89,6 @@ export const useNativeTokenBalance = () => {
     symbol: tokenSymbol ?? '',
     string: primaryBalance as string,
     image: primaryTokenImage,
-    // secondary: secondaryBalance,
     tokenFiatAmount,
     isNative: true,
     decimals: 18,
