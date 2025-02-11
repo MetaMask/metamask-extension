@@ -120,6 +120,7 @@ describe('Permit Confirmation', () => {
             action: 'Confirm Screen',
             location: MetaMetricsEventLocation.SignatureConfirmation,
             signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+            hd_srp_index: 0,
           },
         }),
       ]),
