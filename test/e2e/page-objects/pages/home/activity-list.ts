@@ -196,6 +196,15 @@ class ActivityListPage {
       `Failed transactions found in activity list: ${errorMessages.join('\n')}`,
     );
   }
+  /**
+   * Opens the details view for the first activity item in the list.
+   *
+   * @returns A promise that resolves when the activity details view is opened
+   */
+
+  async openFirstActivityDetails() {
+    await this.driver.clickElement(this.activityListAction);
+  }
 }
 
 export default ActivityListPage;

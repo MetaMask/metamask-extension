@@ -12,7 +12,7 @@ const SOLANA_URL_REGEX =
 const SOLANA_PRICE_API =
   /^https:\/\/price\.(uat-api|api)\.cx\.metamask\.io\/v3\/spot-prices/u;
 const SOLANA_STATIC_TOKEN_IMAGE_REGEX =
-  /^https:\/\/static\.metamask\.io\/token-images\/solana\//u;
+  /^https:\/\/static\.cx\.metamask\.io\/api\/v2\/tokenIcons\//u;
 const SOLANA_BITCOIN_MIN_API =
   /^https:\/\/min-api\.cryptocompare\.com\/data\/pricemulti/u;
 export enum SendFlowPlaceHolders {
@@ -26,7 +26,7 @@ export const commonSolanaAddress =
 export const SIMPLEHASH_URL = 'https://api.simplehash.com';
 
 export const SOLANA_TOKEN_API =
-  'https://tokens.uat-api.cx.metamask.io/v3/assets';
+  /^https:\/\/tokens\.(uat-api|api)\.cx\.metamask\.io\/v3\/assets/u;
 
 export const METAMASK_PHISHING_DETECTION_API =
   /^https:\/\/phishing-detection\.api\.cx\.metamask\.io\/$/u;
@@ -624,7 +624,7 @@ export async function withSolanaAccountSnap(
         if (mockCalls) {
           mockList.push([
             await mockSolanaBalanceQuote(mockServer),
-            // await mockGetTransaction(mockServer),
+            await mockGetTransaction(mockServer),
             await mockGetTokenAccountsByOwner(mockServer),
             await mockGetSignaturesForAddress(mockServer),
             await mockMultiCoinPrice(mockServer),
