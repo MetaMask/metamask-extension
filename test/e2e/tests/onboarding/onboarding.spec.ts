@@ -80,7 +80,7 @@ describe('MetaMask onboarding', function () {
         });
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.check_expectedBalanceIsDisplayed('0');
       },
     );
   });
@@ -195,7 +195,7 @@ describe('MetaMask onboarding', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions: {
+        localNodeOptions: {
           concurrent: [{ port, chainId, ganacheOptions2 }],
         },
         title: this.test?.fullTitle(),
@@ -232,7 +232,7 @@ describe('MetaMask onboarding', function () {
 
         // Check the correct balance for the custom network is displayed
         if (secondaryGanacheServer && Array.isArray(secondaryGanacheServer)) {
-          await homePage.check_localBlockchainBalanceIsDisplayed(
+          await homePage.check_localNodeBalanceIsDisplayed(
             secondaryGanacheServer[0],
           );
         } else {

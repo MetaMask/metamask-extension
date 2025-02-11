@@ -280,7 +280,10 @@ describe(`Migration ${version}`, () => {
       meta: { version: 0 },
       data: {
         AccountsController: {
-          internalAccounts: { selectedAccount: '0x123' },
+          internalAccounts: {
+            selectedAccount: 'id1',
+            accounts: { id1: { address: '0x123' } },
+          },
         },
         NetworkController: {
           selectedNetworkClientId: 'mainnet',
@@ -319,7 +322,54 @@ describe(`Migration ${version}`, () => {
       meta: { version: 0 },
       data: {
         AccountsController: {
-          internalAccounts: { selectedAccount: '0x123' },
+          internalAccounts: {
+            selectedAccount: 'id1',
+            accounts: { id1: { address: '0x123' } },
+          },
+        },
+        NetworkController: {
+          selectedNetworkClientId: 'mainnet',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              rpcEndpoints: [{ networkClientId: 'mainnet' }],
+            },
+          },
+        },
+        TokensController: {
+          tokens: [{ address: '0xtokenA' }], // Non-empty tokens array
+          allTokens: {
+            '0x1': null, // allTokensForChain is not an object
+          },
+        },
+      },
+    };
+
+    const result = await migrate(originalState);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: expect.stringContaining(
+          `Migration ${version}: tokens is not an empty array, but allTokensForChain is not an object.`,
+        ),
+      }),
+    );
+
+    expect(result.data).toEqual(originalState.data);
+  });
+
+  it('returns original state and logs error if tokens is not empty but allTokensForChain is not an object', async () => {
+    const originalState = {
+      meta: { version: 0 },
+      data: {
+        AccountsController: {
+          internalAccounts: {
+            selectedAccount: 'id1',
+            accounts: {
+              id1: {
+                address: '0x123',
+              },
+            },
+          },
         },
         NetworkController: {
           selectedNetworkClientId: 'mainnet',
