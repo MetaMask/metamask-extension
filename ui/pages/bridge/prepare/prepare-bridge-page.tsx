@@ -583,6 +583,9 @@ const PrepareBridgePage = () => {
               paddingInline: 16,
               position: 'relative',
               overflow: 'hidden',
+              // TODO: this is feature flagged.
+              boxShadow:
+                '0px 0px 2px 0px #E2E4E9, 0px 0px 16px 0px rgba(226, 228, 233, 0.16)',
             }}
           >
             {activeQuote && isQuoteGoingToRefresh && (

@@ -168,22 +168,28 @@ export const MultichainBridgeQuoteCard = () => {
               </Row>
             </Row>
 
-            <Row
-              className="row-with-warning"
-              backgroundColor={
-                isEstimatedReturnLow ? BackgroundColor.warningMuted : undefined
-              }
-            >
-              <Icon
-                name={IconName.Gas}
-                size={IconSize.Sm}
-                color={
+            <Row gap={2} style={{ display: 'flex', justifyContent: 'start' }}>
+              <Row
+                className="row-with-warning"
+                backgroundColor={
                   isEstimatedReturnLow
-                    ? IconColor.warningDefault
-                    : IconColor.iconAlternative
+                    ? BackgroundColor.warningMuted
+                    : undefined
                 }
-              />
-              <Row gap={1}>
+                gap={1}
+                style={{
+                  width: 'auto',
+                }}
+              >
+                <Icon
+                  name={IconName.Gas}
+                  size={IconSize.Sm}
+                  color={
+                    isEstimatedReturnLow
+                      ? IconColor.warningDefault
+                      : IconColor.iconAlternative
+                  }
+                />
                 <Text
                   style={{
                     whiteSpace: 'nowrap',
@@ -249,22 +255,23 @@ export const MultichainBridgeQuoteCard = () => {
                   }
                 />
               </Row>
+
+              <Row gap={1}>
+                <Icon
+                  name={IconName.Clock}
+                  size={IconSize.Sm}
+                  color={IconColor.iconAlternative}
+                />
+                <Text>
+                  {t('bridgeTimingMinutes', [
+                    formatEtaInMinutes(
+                      activeQuote.estimatedProcessingTimeInSeconds,
+                    ),
+                  ])}
+                </Text>
+              </Row>
             </Row>
 
-            <Row>
-              <Icon
-                name={IconName.Clock}
-                size={IconSize.Sm}
-                color={IconColor.iconAlternative}
-              />
-              <Text>
-                {t('bridgeTimingMinutes', [
-                  formatEtaInMinutes(
-                    activeQuote.estimatedProcessingTimeInSeconds,
-                  ),
-                ])}
-              </Text>
-            </Row>
             <Row justifyContent={JustifyContent.flexStart} gap={2}>
               <Text
                 variant={TextVariant.bodyMd}
