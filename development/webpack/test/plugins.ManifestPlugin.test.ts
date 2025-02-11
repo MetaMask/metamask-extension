@@ -334,5 +334,28 @@ describe('ManifestPlugin', () => {
         'should throw when manifest override file is not found',
       );
     });
+
+    it('silently ignores non-ENOENT filesystem errors', () => {
+      const transform = transformManifest(
+        { lockdown: true, test: false },
+        true,
+        manifestOverridesPath,
+      );
+      assert(transform, 'transform should be truthy');
+
+      const originalError = new Error('Permission denied') as NodeJS.ErrnoException;
+      originalError.code = 'EACCES';
+
+      mock.method(fs, 'readFileSync', () => {
+        throw originalError;
+      });
+
+      const transformed = transform(testManifest, 'chrome');
+      assert.deepStrictEqual(
+        transformed._flags,
+        undefined,
+        'should not have flags when file read fails with non-ENOENT error'
+      );
+    });
   });
 });
