@@ -23,6 +23,7 @@ describe('NotificationsSettingsBox', () => {
           onToggle={() => {
             console.log('Toggled');
           }}
+          dataTestId="test-id"
         >
           <div>{testMessage}</div>
         </NotificationsSettingsBox>
@@ -36,7 +37,11 @@ describe('NotificationsSettingsBox', () => {
     const onToggleMock = jest.fn();
     render(
       <Provider store={store}>
-        <NotificationsSettingsBox value={false} onToggle={onToggleMock}>
+        <NotificationsSettingsBox
+          value={false}
+          onToggle={onToggleMock}
+          dataTestId="test-id"
+        >
           <div>Toggle Test</div>
         </NotificationsSettingsBox>
       </Provider>,
