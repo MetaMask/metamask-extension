@@ -5576,7 +5576,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:^19.0.4, @metamask/keyring-controller@npm:^19.0.6":
+"@metamask/keyring-controller@npm:^19.0.5, @metamask/keyring-controller@npm:^19.0.6":
   version: 19.0.6
   resolution: "@metamask/keyring-controller@npm:19.0.6"
   dependencies:
@@ -5651,17 +5651,6 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^19.0.0
   checksum: 10/c568ccaff799bd1a756e56c0b2aa1c7109bcda383726e2d55dd4e05817f3affc9be5a92484f90581fad506428fb9fb6999286f51f15e7f3b392bb851b53f0ab7
-  languageName: node
-  linkType: hard
-
-"@metamask/keyring-utils@npm:^1.2.0":
-  version: 1.3.1
-  resolution: "@metamask/keyring-utils@npm:1.3.1"
-  dependencies:
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.1.0"
-    bitcoin-address-validation: "npm:^2.2.3"
-  checksum: 10/9072791320108218875bdbcc7823a4ab4d8c29675deab3163373d31a997ae6fc23995a74ffa085e06534d14b72c2edb5e7192d371cd1ef69ac7fae70fa50d8d0
   languageName: node
   linkType: hard
 
@@ -6372,7 +6361,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-utils@npm:^8.10.0, @metamask/snaps-utils@npm:^8.9.0":
+"@metamask/snaps-utils@npm:^8.10.0":
   version: 8.10.0
   resolution: "@metamask/snaps-utils@npm:8.10.0"
   dependencies:
