@@ -1,17 +1,15 @@
-import { Caip2ChainId } from '@metamask/snaps-utils';
 import React, { FunctionComponent } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   CaipAccountId,
   CaipChainId,
-  CaipNamespace,
-  isCaipNamespace,
   KnownCaipNamespace,
   parseCaipChainId,
 } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 
 import { AccountSelectorValue, State } from '@metamask/snaps-sdk';
+import { EthScope } from '@metamask/keyring-api';
 import { SnapUISelector } from '../snap-ui-selector';
 import {
   getInternalAccounts,
@@ -46,25 +44,48 @@ import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-disp
 import { PRIMARY } from '../../../../helpers/constants/common';
 import { useMultichainAccountBalances } from '../../../../hooks/snaps/useMultichainTotalCrossChainFiatBalance';
 import { AvatarGroup } from '../../../multichain';
+import { setSelectedInternalAccount } from '../../../../store/actions';
+import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 
-function createAddressList(
+export function createAddressList(
   address: string,
-  scopes: (CaipChainId | CaipNamespace)[],
+  scopes: CaipChainId[],
 ): CaipAccountId[] {
   return scopes.map((scope) => {
-    // Waiting for https://github.com/MetaMask/utils/pull/227
-    if (isCaipNamespace(scope)) {
-      // We safely assume that is we only have a namespace, it is eip155
-      return `${scope}:1:${address}` as CaipAccountId;
+    return `${scope}:${address}` as CaipAccountId;
+  });
+}
+
+export function createChainIdList(
+  accountScopes: CaipChainId[],
+  requestedChainIds?: CaipChainId[],
+) {
+  return accountScopes.reduce((acc, scope) => {
+    if (scope === EthScope.Eoa && requestedChainIds) {
+      const targetChainIds = requestedChainIds.filter((chainId) => {
+        const { namespace } = parseCaipChainId(chainId);
+
+        return namespace === KnownCaipNamespace.Eip155;
+      });
+
+      return [...acc, ...targetChainIds];
     }
 
-    return `${scope as string}:${address}` as CaipAccountId;
-  });
+    if (requestedChainIds?.includes(scope)) {
+      return [...acc, scope];
+    }
+
+    if (!requestedChainIds) {
+      return [...acc, scope];
+    }
+
+    return acc;
+  }, [] as CaipChainId[]);
 }
 
 export type SnapUIAccountSelectorOptionProps = {
   account: InternalAccount;
-  chainIds?: Caip2ChainId[];
+  chainIds?: CaipChainId[];
 };
 
 export const SnapUIAccountSelectorOption: FunctionComponent<
@@ -173,7 +194,7 @@ export type SnapUIAccountSelectorProps = {
   label?: string;
   form?: string;
   hideExternalAccounts?: boolean;
-  chainIds?: Caip2ChainId[];
+  chainIds?: CaipChainId[];
   switchSelectedAccount?: boolean;
   error?: string;
   disabled?: boolean;
@@ -181,24 +202,52 @@ export type SnapUIAccountSelectorProps = {
 
 export const SnapUIAccountSelector: FunctionComponent<
   SnapUIAccountSelectorProps
-> = ({ chainIds, ...props }) => {
+> = ({ chainIds, switchSelectedAccount, hideExternalAccounts, ...props }) => {
+  const { snapId } = useSnapInterfaceContext();
+  const dispatch = useDispatch();
   const accounts = useSelector(getInternalAccounts);
 
-  const options = accounts.map((account) => ({
-    accountId: account.id,
-    addresses: createAddressList(account.address, account.scopes),
+  const ownedAccounts = accounts.filter(
+    (account) => account.metadata.snap?.id === snapId,
+  );
+
+  const filteredAccounts = (
+    hideExternalAccounts ? ownedAccounts : accounts
+  ).filter((account) => {
+    const filteredChainIds = createChainIdList(account.scopes, chainIds);
+
+    return filteredChainIds.length > 0;
+  });
+
+  const options = filteredAccounts.map((account) => ({
+    value: {
+      accountId: account.id,
+      addresses: createAddressList(
+        account.address,
+        createChainIdList(account.scopes, chainIds),
+      ),
+    },
+    disabled: false,
   }));
 
-  const optionComponents = accounts.map((account) => (
+  const optionComponents = filteredAccounts.map((account) => (
     <SnapUIAccountSelectorOption account={account} chainIds={chainIds} />
   ));
 
   const findSelectedOptionIndex = (selectedOptionValue: State | undefined) =>
     options.findIndex(
       (option) =>
-        option.accountId ===
+        option.value.accountId ===
         (selectedOptionValue as AccountSelectorValue).accountId,
     );
+
+  const handleSelect = (value: State) => {
+    if (switchSelectedAccount) {
+      dispatch(
+        setSelectedInternalAccount((value as AccountSelectorValue).accountId),
+      );
+    }
+  };
 
   return (
     <SnapUISelector
@@ -207,6 +256,7 @@ export const SnapUIAccountSelector: FunctionComponent<
       {...props}
       optionComponents={optionComponents}
       findSelectedOptionIndex={findSelectedOptionIndex}
+      onSelect={handleSelect}
     />
   );
 };
