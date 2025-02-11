@@ -11,15 +11,15 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 
-import { Box, ModalFocus, useModalContext } from '..';
-
-import { BoxProps } from '../box';
+import { Box, BoxProps } from '../box';
 import type { PolymorphicRef } from '../box';
 import {
   ModalContentProps,
   ModalContentSize,
   ModalContentComponent,
 } from './modal-content.types';
+import { useModalContext } from '../modal/modal.context';
+import { ModalFocus } from '../modal-focus';
 
 export const ModalContent: ModalContentComponent = React.forwardRef(
   <C extends React.ElementType = 'div'>(

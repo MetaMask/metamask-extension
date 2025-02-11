@@ -124,11 +124,6 @@
   ],
   [
     "ui/components/component-library/index.ts",
-    "ui/components/component-library/modal-content/index.ts",
-    "ui/components/component-library/modal-content/modal-content.tsx"
-  ],
-  [
-    "ui/components/component-library/index.ts",
     "ui/components/component-library/modal-footer/index.ts",
     "ui/components/component-library/modal-footer/modal-footer.tsx"
   ],
