@@ -20,7 +20,7 @@ export type TokenDisplayInfo = {
 };
 
 export type TokenWithFiatAmount = Token & {
-  tokenFiatAmount: number | string | null;
+  tokenFiatAmount: number | null;
   balance?: string;
   string: string; // needed for backwards compatability TODO: fix this
 };

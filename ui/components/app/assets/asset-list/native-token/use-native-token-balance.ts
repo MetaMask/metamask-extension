@@ -77,11 +77,12 @@ export const useNativeTokenBalance = () => {
   // useCurrencyDisplay passes along the symbol and formatting into the value here
   // for sorting we need the raw value, without the currency and it should be decimal
   // this is the easiest way to do this without extensive refactoring of useCurrencyDisplay
-  const tokenFiatAmount = currencyFormatter
-    .unformat(unformattedTokenFiatAmount, {
+  const tokenFiatAmount = currencyFormatter.unformat(
+    unformattedTokenFiatAmount,
+    {
       code: currentCurrency.toUpperCase(),
-    })
-    .toString();
+    },
+  );
 
   const nativeTokenWithBalance: TokenWithFiatAmount = {
     chainId: chainId as Hex,
