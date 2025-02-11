@@ -2,8 +2,6 @@ import React from 'react';
 import classnames from 'classnames';
 
 import { Display } from '../../../helpers/constants/design-system';
-import { Box } from '..';
-import type { BoxProps, PolymorphicRef } from '..';
 
 import {
   BadgeWrapperPosition,
@@ -11,6 +9,7 @@ import {
   BadgeWrapperProps,
   BadgeWrapperComponent,
 } from './badge-wrapper.types';
+import { Box, type BoxProps, type PolymorphicRef } from '../box';
 
 export const BadgeWrapper: BadgeWrapperComponent = React.forwardRef(
   <C extends React.ElementType = 'div'>(

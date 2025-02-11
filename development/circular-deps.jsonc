@@ -48,11 +48,6 @@
     "ui/components/app/name/name.tsx"
   ],
   [
-    "ui/components/component-library/badge-wrapper/badge-wrapper.tsx",
-    "ui/components/component-library/badge-wrapper/index.ts",
-    "ui/components/component-library/index.ts"
-  ],
-  [
     "ui/components/component-library/banner-alert/banner-alert.tsx",
     "ui/components/component-library/banner-alert/index.ts",
     "ui/components/component-library/banner-base/banner-base.tsx",
