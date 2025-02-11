@@ -9,7 +9,6 @@ exports[`Token Cell should match snapshot 1`] = `
     <a
       class="mm-box multichain-token-list-item__container-cell multichain-token-list-item__container-cell--clickable mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--width-full"
       data-testid="multichain-token-list-button"
-      href="#"
       style="height: 62px;"
     >
       <div
@@ -53,9 +52,7 @@ exports[`Token Cell should match snapshot 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
             data-testid="multichain-token-list-item-secondary-value"
-          >
-            $5.00
-          </p>
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
