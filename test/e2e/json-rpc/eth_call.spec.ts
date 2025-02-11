@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { keccak } from 'ethereumjs-util';
-import { defaultGanacheOptions, withFixtures } from '../helpers';
+import { withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import FixtureBuilder from '../fixture-builder';
 import { Ganache } from '../seeder/ganache';
@@ -17,7 +17,6 @@ describe('eth_call', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test?.fullTitle(),
       },

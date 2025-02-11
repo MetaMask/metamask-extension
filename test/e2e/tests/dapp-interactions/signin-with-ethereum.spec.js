@@ -1,6 +1,5 @@
 const { strict: assert } = require('assert');
 const {
-  defaultGanacheOptions,
   withFixtures,
   openDapp,
   unlockWallet,
@@ -22,7 +21,6 @@ describe('Sign in with ethereum', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

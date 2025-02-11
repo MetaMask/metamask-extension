@@ -23,7 +23,7 @@ describe('Snap Account Transfers', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: multipleGanacheOptions,
+        localNodeOptions: multipleGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({
@@ -70,7 +70,7 @@ describe('Snap Account Transfers', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: multipleGanacheOptions,
+        localNodeOptions: multipleGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({
@@ -118,7 +118,7 @@ describe('Snap Account Transfers', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: multipleGanacheOptions,
+        localNodeOptions: multipleGanacheOptions,
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: ['Request rejected by user or snap.'],
       },
