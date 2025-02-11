@@ -63,3 +63,5 @@ export const COMPONENT_MAPPING = {
   Banner: banner,
   Skeleton: skeleton,
 };
+
+export type COMPONENT_MAPPING = typeof COMPONENT_MAPPING;
