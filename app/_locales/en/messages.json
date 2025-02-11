@@ -6154,6 +6154,9 @@
   "viewContact": {
     "message": "View contact"
   },
+  "viewDetails": {
+    "message": "View details"
+  },
   "viewMore": {
     "message": "View more"
   },
