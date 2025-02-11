@@ -2,7 +2,7 @@ import { Hex } from '@metamask/utils';
 
 export type Token = {
   address: Hex;
-  aggregators: string[];
+  aggregators?: string[];
   chainId: Hex;
   decimals: number;
   isNative: boolean;
@@ -20,7 +20,7 @@ export type TokenDisplayInfo = {
 };
 
 export type TokenWithFiatAmount = Token & {
-  tokenFiatAmount: number | null;
+  tokenFiatAmount: number | string | null;
   balance?: string;
   string: string; // needed for backwards compatability TODO: fix this
 };

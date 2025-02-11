@@ -44,6 +44,7 @@ import {
 import {
   getImageForChainId,
   getMultichainIsEvm,
+  getMultichainIsMainnet,
 } from '../../../../selectors/multichain';
 import Tooltip from '../../../ui/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -269,6 +270,12 @@ export const TokenCellListItem = ({
                 ellipsis
               >
                 {tokenMainTitleToDisplay}
+                {token.isStakeable && (
+                  <StakeableLink
+                    chainId={token.chainId}
+                    symbol={token.symbol}
+                  />
+                )}
               </Text>
             )}
 

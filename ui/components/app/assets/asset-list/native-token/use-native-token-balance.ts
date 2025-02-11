@@ -1,6 +1,7 @@
 import currencyFormatter from 'currency-formatter';
 import { useSelector } from 'react-redux';
 
+import { Hex } from '@metamask/utils';
 import {
   getMultichainCurrencyImage,
   getMultichainCurrentNetwork,
@@ -16,7 +17,8 @@ import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOrigin
 import { PRIMARY, SECONDARY } from '../../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../../../../hooks/useCurrencyDisplay';
-import { TokenWithBalance } from '../asset-list';
+// import { TokenWithBalance } from '../asset-list';
+import { TokenWithFiatAmount } from '../../types';
 
 export const useNativeTokenBalance = () => {
   const showFiat = useSelector(getMultichainShouldShowFiat);
@@ -87,14 +89,16 @@ export const useNativeTokenBalance = () => {
     })
     .toString();
 
-  const nativeTokenWithBalance: TokenWithBalance = {
-    address: '',
+  const nativeTokenWithBalance: TokenWithFiatAmount = {
+    chainId: chainId as Hex,
+    address: '' as Hex,
     symbol: tokenSymbol ?? '',
-    string: primaryBalance,
+    string: primaryBalance as string,
     image: primaryTokenImage,
-    secondary: secondaryBalance,
+    // secondary: secondaryBalance,
     tokenFiatAmount,
     isNative: true,
+    decimals: 18,
   };
 
   return nativeTokenWithBalance;

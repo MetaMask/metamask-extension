@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
 import {
   getMultichainCurrentNetwork,
   getMultichainNativeCurrency,
@@ -9,8 +10,10 @@ import {
   getMultichainSelectedAccountCachedBalance,
 } from '../../../../../selectors/multichain';
 import { getPreferences } from '../../../../../selectors';
-import { TokenListItem } from '../../../../multichain';
+// import { TokenListItem } from '../../../../multichain';
 import { AssetListProps } from '../asset-list';
+import useTokenDisplayInfo from '../../hooks/useTokenDisplayInfo';
+import { TokenCellListItem } from '../../token-cell/token-cell-list-item';
 import { useNativeTokenBalance } from './use-native-token-balance';
 
 const NativeToken = ({ onClickAsset }: AssetListProps) => {
@@ -21,28 +24,17 @@ const NativeToken = ({ onClickAsset }: AssetListProps) => {
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
   const balanceIsLoading = !balance;
 
-  const { string, symbol, secondary } = useNativeTokenBalance();
+  const token = useNativeTokenBalance();
+  const tokenDisplayInfo = useTokenDisplayInfo({ token });
 
-  const primaryTokenImage = useSelector(getMultichainCurrencyImage);
+  // const primaryTokenImage = useSelector(getMultichainCurrencyImage);
 
   const isEvm = useSelector(getMultichainIsEvm);
 
   const isStakeable = isMainnet && isEvm;
 
   return (
-    <TokenListItem
-      chainId={chainId}
-      onClick={() => onClickAsset(chainId, nativeCurrency)}
-      title={nativeCurrency}
-      primary={string}
-      tokenSymbol={symbol}
-      secondary={secondary}
-      tokenImage={balanceIsLoading ? null : primaryTokenImage}
-      isNativeCurrency
-      isStakeable={isStakeable}
-      showPercentage
-      privacyMode={privacyMode}
-    />
+    <TokenCellListItem token={{ ...token, ...tokenDisplayInfo, isStakeable }} />
   );
 };
 
