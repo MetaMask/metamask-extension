@@ -61,6 +61,23 @@ const mockProps = {
 const mockState = {
   metamask: {
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+    internalAccounts: {
+      accounts: {
+        accountId: {
+          address: '0x0000000000000000000000000000000000000000',
+          metadata: {
+            keyring: 'HD Key Tree',
+          },
+        },
+      },
+      selectedAccount: 'accountId',
+    },
+    keyrings: [
+      {
+        type: 'HD Key Tree',
+        accounts: ['0x0000000000000000000000000000000000000000'],
+      },
+    ],
   },
   appState: {
     networkDropdownOpen: false,
