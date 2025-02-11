@@ -7,6 +7,9 @@ import {
   unlockWallet,
 } from '../../../helpers';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
+import { TransactionListPage } from '../../../page-objects/pages/transaction-list-page';
+import { TransactionDetailsPage } from '../../../page-objects/pages/transaction-details-page';
+import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import { TestSuiteArguments } from './shared';
 
@@ -42,30 +45,24 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           // Wait for confirmation dialog and confirm initial transaction
           await driver.waitUntilXWindowHandles(3);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-          // Switch to extension and go to activity tab
+          const confirmationPage = new Confirmation(driver);
+          await confirmationPage.clickFooterConfirmButton();
+
+          // Switch to extension and handle transaction
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
-          await driver.clickElement(
-            '[data-testid="account-overview__activity-tab"]',
-          );
 
-          // Wait for transaction to be pending
-          await driver.waitForSelector('.transaction-status-label--pending');
+          const transactionListPage = new TransactionListPage(driver);
+          await transactionListPage.goToActivityTab();
+          await transactionListPage.waitForPendingTransaction();
+          await transactionListPage.clickPendingTransaction();
 
-          // Click on the pending transaction
-          await driver.clickElement('.transaction-list-item');
+          const transactionDetailsPage = new TransactionDetailsPage(driver);
+          await transactionDetailsPage.speedUpTransaction();
 
-          // Click speed up button and confirm
-          await driver.clickElement('[data-testid="speedup-button"]');
-          await driver.clickElement({ text: 'Submit', tag: 'button' });
-
-          // Verify the sped-up transaction is confirmed
-          await driver.waitForSelector('.transaction-status-label--confirmed', {
-            timeout: 5 * 1000,
-          });
+          await transactionListPage.waitForTransactionStatus('confirmed');
         },
       );
     });
@@ -94,28 +91,21 @@ describe('Speed Up and Cancel Transaction Tests', function () {
             to: DEFAULT_FIXTURE_ACCOUNT,
           });
 
-          await driver.waitUntilXWindowHandles(3);
+          await driver.waitUntilXWindowHandles(2);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await driver.clickElement({ text: 'Confirm', tag: 'button' });
+
+          const confirmationPage = new Confirmation(driver);
+          await confirmationPage.clickFooterConfirmButton();
 
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
-          await driver.clickElement(
-            '[data-testid="account-overview__activity-tab"]',
-          );
 
-          // Wait for and pending transaction
-          await driver.waitForSelector('.transaction-status-label--pending');
-
-          // Cancel the transaction
-          await driver.clickElement({ text: 'Cancel', tag: 'button' });
-          await driver.clickElement({ text: 'Submit', tag: 'button' });
-
-          // Verify transaction is cancelled
-          await driver.waitForSelector('.transaction-status-label--cancelled', {
-            timeout: 5 * 1000,
-          });
+          const transactionListPage = new TransactionListPage(driver);
+          await transactionListPage.goToActivityTab();
+          await transactionListPage.waitForPendingTransaction();
+          await transactionListPage.cancelTransaction();
+          await transactionListPage.waitForTransactionStatus('cancelled');
         },
       );
     });
