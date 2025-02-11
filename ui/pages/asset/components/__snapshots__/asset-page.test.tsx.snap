@@ -141,13 +141,11 @@ exports[`AssetPage should render a native asset 1`] = `
         Your balance
       </h3>
       <div
-        class="mm-box multichain-token-list-item mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full mm-box--height-full"
-        data-testid="multichain-token-list-item"
+        class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full mm-box--height-full"
       >
         <a
-          class="mm-box multichain-token-list-item__container-cell multichain-token-list-item__container-cell--clickable mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--width-full"
-          data-testid="multichain-token-list-button"
-          style="height: 62px;"
+          class="mm-box mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--width-full"
+          style="height: 62px; cursor: auto;"
         >
           <div
             class="mm-box mm-badge-wrapper multichain-token-list-item__badge mm-box--margin-right-4 mm-box--display-inline-block"
@@ -176,7 +174,7 @@ exports[`AssetPage should render a native asset 1`] = `
             </div>
           </div>
           <div
-            class="mm-box multichain-token-list-item__container-cell--text-container mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--width-full"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--width-full"
             style="flex-grow: 1; overflow: hidden;"
           >
             <div
@@ -471,13 +469,11 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
         Your balance
       </h3>
       <div
-        class="mm-box multichain-token-list-item mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full mm-box--height-full"
-        data-testid="multichain-token-list-item"
+        class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full mm-box--height-full"
       >
         <a
-          class="mm-box multichain-token-list-item__container-cell multichain-token-list-item__container-cell--clickable mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--width-full"
-          data-testid="multichain-token-list-button"
-          style="height: 62px;"
+          class="mm-box mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--width-full"
+          style="height: 62px; cursor: auto;"
         >
           <div
             class="mm-box mm-badge-wrapper multichain-token-list-item__badge mm-box--margin-right-4 mm-box--display-inline-block"
@@ -502,7 +498,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
             </div>
           </div>
           <div
-            class="mm-box multichain-token-list-item__container-cell--text-container mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--width-full"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--width-full"
             style="flex-grow: 1; overflow: hidden;"
           >
             <div
@@ -963,13 +959,11 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         Your balance
       </h3>
       <div
-        class="mm-box multichain-token-list-item mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full mm-box--height-full"
-        data-testid="multichain-token-list-item"
+        class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full mm-box--height-full"
       >
         <a
-          class="mm-box multichain-token-list-item__container-cell multichain-token-list-item__container-cell--clickable mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--width-full"
-          data-testid="multichain-token-list-button"
-          style="height: 62px;"
+          class="mm-box mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--width-full"
+          style="height: 62px; cursor: auto;"
         >
           <div
             class="mm-box mm-badge-wrapper multichain-token-list-item__badge mm-box--margin-right-4 mm-box--display-inline-block"
@@ -994,7 +988,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
             </div>
           </div>
           <div
-            class="mm-box multichain-token-list-item__container-cell--text-container mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--width-full"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--width-full"
             style="flex-grow: 1; overflow: hidden;"
           >
             <div

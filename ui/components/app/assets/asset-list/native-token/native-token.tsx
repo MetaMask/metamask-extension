@@ -6,7 +6,7 @@ import {
   getMultichainIsMainnet,
 } from '../../../../../selectors/multichain';
 import useTokenDisplayInfo from '../../hooks/useTokenDisplayInfo';
-import { TokenCellGroup } from '../../token-cell/token-cell-group';
+import TokenCell from '../../token-cell';
 import { useNativeTokenBalance } from './use-native-token-balance';
 
 type NativeTokenProps = {
@@ -26,7 +26,7 @@ const NativeToken = ({ onClickAsset }: NativeTokenProps) => {
   const isStakeable = isMainnet && isEvm;
 
   return (
-    <TokenCellGroup
+    <TokenCell
       token={{
         ...token,
         ...tokenDisplayInfo,

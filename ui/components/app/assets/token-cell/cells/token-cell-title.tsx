@@ -1,11 +1,9 @@
 import React from 'react';
 import {
-  Display,
   FontWeight,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { Text } from '../../../../component-library';
-import Tooltip from '../../../../ui/tooltip';
 import { TokenFiatDisplayInfo } from '../../types';
 import { StakeableLink } from '../../../../multichain/token-list-item/stakeable-link';
 import {
@@ -20,30 +18,6 @@ type TokenCellTitleProps = {
 
 export const TokenCellTitle = ({ token }: TokenCellTitleProps) => {
   const t = useI18nContext();
-
-  // ellipsized title
-  if (token.title?.length && token.title?.length > 12) {
-    return (
-      <Tooltip
-        position="bottom"
-        html={token.title}
-        tooltipInnerClassName="multichain-token-list-item__tooltip"
-      >
-        <Text
-          as="span"
-          fontWeight={FontWeight.Medium}
-          variant={TextVariant.bodyMd}
-          display={Display.Block}
-          ellipsis
-        >
-          {networkTitleOverrides(t as TranslateFunction, token)}
-          {token.isStakeable && (
-            <StakeableLink chainId={token.chainId} symbol={token.symbol} />
-          )}
-        </Text>
-      </Tooltip>
-    );
-  }
 
   // non-ellipsized title
   return (
