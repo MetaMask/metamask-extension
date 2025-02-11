@@ -3,8 +3,7 @@ import { Driver } from '../webdriver/driver';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
 import { withFixtures, WINDOW_TITLES } from '../helpers';
-import NetworkSwitchModalConfirmation from '../page-objects/pages/dialog/network-switch-modal-confirmation';
-import PermissionConnection from '../page-objects/pages/dialog/permission-connection';
+import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import SnapInstallWarning from '../page-objects/pages/dialog/snap-install-warning';
 
 describe('Test Snap bip-32', function () {
@@ -18,10 +17,8 @@ describe('Test Snap bip-32', function () {
         await loginWithoutBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
-        const permissionConnection = new PermissionConnection(driver);
+        const snapInstall = new SnapInstall(driver);
         const snapInstallWarning = new SnapInstallWarning(driver);
-        const networkSwitchModalConfirmation =
-          new NetworkSwitchModalConfirmation(driver);
 
         // navigate to test snaps page and connect wait for page to load
         await testSnaps.openPage();
@@ -31,11 +28,11 @@ describe('Test Snap bip-32', function () {
 
         // switch to metamask extension and click connect
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await permissionConnection.check_pageIsLoaded();
-        await permissionConnection.clickNextButton();
+        await snapInstall.check_pageIsLoaded();
+        await snapInstall.clickNextButton();
 
         // click confirm
-        await permissionConnection.clickConfirmButton();
+        await snapInstall.clickConfirmButton();
 
         // wait for permissions popover, click checkboxes and confirm
         await snapInstallWarning.check_pageIsLoaded();
@@ -43,7 +40,7 @@ describe('Test Snap bip-32', function () {
         await snapInstallWarning.clickConfirmButton();
 
         // wait for and click OK and wait for window to close
-        await permissionConnection.clickNextButton();
+        await snapInstall.clickNextButton();
 
         // switch back to test-snaps window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
@@ -74,7 +71,7 @@ describe('Test Snap bip-32', function () {
 
         // hit 'approve' on the signature confirmation and wait for window to close
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await networkSwitchModalConfirmation.clickSnapApproveButton();
+        await snapInstall.clickApproveButton();
 
         // switch back to the test-snaps window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
@@ -94,7 +91,7 @@ describe('Test Snap bip-32', function () {
         // switch to dialog window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await networkSwitchModalConfirmation.clickSnapApproveButton();
+        await snapInstall.clickApproveButton();
 
         // switch back to test-snaps window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
@@ -111,7 +108,7 @@ describe('Test Snap bip-32', function () {
         // switch to dialog window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await networkSwitchModalConfirmation.clickSnapApproveButton();
+        await snapInstall.clickApproveButton();
 
         // switch back to test-snaps window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);

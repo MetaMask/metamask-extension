@@ -1,6 +1,6 @@
 import { Driver } from '../../../webdriver/driver';
 
-class PermissionConnection {
+class SnapInstall {
   private driver: Driver;
 
   private readonly nextPageButton =
@@ -11,6 +11,8 @@ class PermissionConnection {
   private readonly permissionConnect = '.permissions-connect';
 
   private readonly scrollSnapInstall = '[data-testid="snap-install-scroll"]';
+
+  private readonly approveButton = '[data-testid="confirmation-submit-button"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -24,12 +26,12 @@ class PermissionConnection {
       ]);
     } catch (e) {
       console.log(
-        'Timeout while waiting for permission dialog to be loaded',
+        'Timeout while waiting for Snap install dialog to be loaded',
         e,
       );
       throw e;
     }
-    console.log('Permission dialog is loaded');
+    console.log('Snap install dialog is loaded');
   }
 
   async clickNextButton() {
@@ -44,6 +46,12 @@ class PermissionConnection {
     await this.driver.clickElementSafe(this.scrollSnapInstall);
     await this.driver.clickElement(this.nextPageButton);
   }
+
+  async clickApproveButton() {
+    console.log('Wait for approve button and click');
+    await this.driver.waitForSelector(this.approveButton);
+    await this.driver.clickElement(this.approveButton);
+  }
 }
 
-export default PermissionConnection;
+export default SnapInstall;

@@ -34,12 +34,6 @@ class NetworkSwitchModalConfirmation {
     console.log('Click Approve Button');
     await this.driver.clickElementAndWaitToDisappear(this.submitButton);
   }
-
-  async clickSnapApproveButton() {
-    console.log('Wait for approve button and click');
-    await this.driver.waitForSelector(this.submitButton);
-    await this.driver.clickElement(this.submitButton);
-  }
 }
 
 export default NetworkSwitchModalConfirmation;
