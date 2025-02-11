@@ -286,34 +286,39 @@ describe('ManifestPlugin', () => {
     const testManifest = {} as chrome.runtime.Manifest;
     const mockFlags = { remoteFeatureFlags: { testFlag: true } };
     const manifestOverridesPath = 'testManifestOverridesPath.json';
+    const fs = require('node:fs');
+    const { mock } = require('node:test');
+    const { resolve } = require('node:path');
 
     it('adds manifest flags in development mode with path provided', () => {
+      mock.method(fs, 'readFileSync', (path: string, options: object) => {
+        if (path === resolve(__dirname, '../../../', manifestOverridesPath)) {
+          return JSON.stringify(mockFlags);
+        }
+        return fs.readFileSync.original(path, options);
+      });
       const transform = transformManifest(
         { lockdown: true, test: false },
         true,
-        manifestOverridesPath,
+        manifestOverridesPath
       );
       assert(transform, 'transform should be truthy');
 
-      // Mock fs.readFileSync
-      const fs = require('fs');
-      const originalReadFileSync = fs.readFileSync;
-      fs.readFileSync = () => JSON.stringify(mockFlags);
-
-      try {
-        const transformed = transform(testManifest, 'chrome');
-        assert.deepStrictEqual(
-          transformed._flags,
-          mockFlags,
-          'manifest should have flags in development mode',
-        );
-      } finally {
-        // Restore original readFileSync
-        fs.readFileSync = originalReadFileSync;
-      }
+      const transformed = transform(testManifest, 'chrome');
+      assert.deepStrictEqual(
+        transformed._flags,
+        mockFlags,
+        'manifest should have flags in development mode',
+      );
     });
 
     it('handles missing manifest flags file with path provided', () => {
+      mock.method(fs, 'readFileSync', () => {
+        const error = new Error('File not found') as NodeJS.ErrnoException;
+        error.code = 'ENOENT';
+        throw error;
+      });
+
       const transform = transformManifest(
         { lockdown: true, test: false },
         true,
@@ -321,27 +326,13 @@ describe('ManifestPlugin', () => {
       );
       assert(transform, 'transform should be truthy');
 
-      // Mock fs.readFileSync to throw ENOENT
-      const fs = require('node:fs');
-      const originalReadFileSync = fs.readFileSync;
-      fs.readFileSync = () => {
-        const error = new Error('File not found') as NodeJS.ErrnoException;
-        error.code = 'ENOENT';
-        throw error;
-      };
-
-      try {
-        assert.throws(
-          () => transform(testManifest, 'chrome'),
-          {
-            message: `Manifest override file not found: ${manifestOverridesPath}`,
-          },
-          'should throw when manifest override file is not found',
-        );
-      } finally {
-        // Restore original readFileSync
-        fs.readFileSync = originalReadFileSync;
-      }
+      assert.throws(
+        () => transform(testManifest, 'chrome'),
+        {
+          message: `Manifest override file not found: ${manifestOverridesPath}`,
+        },
+        'should throw when manifest override file is not found',
+      );
     });
   });
 });
