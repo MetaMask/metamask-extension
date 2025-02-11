@@ -220,7 +220,7 @@ export function useCurrencyDisplay(
   }
 
   return [
-    `${prefix || ''}${value || '0'}${suffix ? ` ${suffix}` : ''}`,
-    { prefix, value: value || '0', suffix },
+    `${prefix || ''}${value}${suffix ? ` ${suffix}` : ''}`,
+    { prefix, value, suffix },
   ];
 }
