@@ -69,7 +69,7 @@ describe('Send flow', function (this: Suite) {
     );
   });
 });
-describe.skip('Send full flow of USD', function (this: Suite) {
+describe('Send full flow of USD', function (this: Suite) {
   it('with a positive balance account', async function () {
     // skipped due tohttps://consensyssoftware.atlassian.net/browse/SOL-100
     this.timeout(120000);
@@ -82,7 +82,8 @@ describe.skip('Send full flow of USD', function (this: Suite) {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_pageIsLoaded();
+        await driver.delay(10000);
+        await homePage.check_pageIsLoaded('9,921');
         assert.equal(
           await homePage.check_ifSendButtonIsClickable(),
           true,
@@ -372,7 +373,7 @@ describe('Send flow', function (this: Suite) {
         await confirmSolanaPage.clickOnSend();
         const failedTxPage = new SolanaTxresultPage(driver);
         assert.equal(
-          await failedTxPage.check_TransactionStatusText('0.1', false, ''),
+          await failedTxPage.check_TransactionStatusText('0.1', false, 'SOL'),
           true,
           'Transaction amount is not correct',
         );
