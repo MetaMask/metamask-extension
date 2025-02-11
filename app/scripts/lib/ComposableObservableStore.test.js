@@ -93,7 +93,6 @@ describe('ComposableObservableStore', () => {
     exampleController.updateBar('state');
     expect(store.getState()).toStrictEqual({
       Example: { bar: 'state', baz: 'baz' },
-      OldExample: { baz: 'state' },
       Store: 'state',
     });
   });
@@ -117,7 +116,6 @@ describe('ComposableObservableStore', () => {
 
     expect(store.getState()).toStrictEqual({
       Example: { bar: 'state', baz: 'baz' },
-      OldExample: { baz: 'state' },
       Store: 'state',
     });
   });
@@ -159,7 +157,6 @@ describe('ComposableObservableStore', () => {
 
     expect(store.getState()).toStrictEqual({
       Example: { bar: 'state' },
-      OldExample: { baz: 'state' },
       Store: 'state',
     });
   });
