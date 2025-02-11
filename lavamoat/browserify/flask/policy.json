@@ -1370,17 +1370,6 @@
       "packages": {
         "@metamask/keyring-api>@metamask/keyring-utils": true,
         "@metamask/utils>@metamask/superstruct": true,
-<<<<<<< HEAD
-=======
-        "@metamask/assets-controllers>@metamask/utils": true,
-        "@metamask/keyring-api>bech32": true
-      }
-    },
-    "@metamask/multichain-transactions-controller>@metamask/keyring-api": {
-      "packages": {
-        "@metamask/keyring-api>@metamask/keyring-utils": true,
-        "@metamask/utils>@metamask/superstruct": true,
->>>>>>> main
         "@metamask/multichain-transactions-controller>@metamask/utils": true,
         "@metamask/keyring-api>bech32": true
       }
@@ -1503,8 +1492,6 @@
         "@metamask/base-controller": true,
         "@metamask/keyring-api": true,
         "@metamask/multichain-transactions-controller>@metamask/keyring-snap-client": true,
-        "@metamask/multichain-transactions-controller>@metamask/keyring-api": true,
-        "@metamask/keyring-snap-client": true,
         "@metamask/snaps-utils": true,
         "@metamask/multichain-transactions-controller>@metamask/utils": true
       }
