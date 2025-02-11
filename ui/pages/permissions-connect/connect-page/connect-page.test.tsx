@@ -1,4 +1,5 @@
 import React from 'react';
+import { fireEvent } from '@testing-library/react';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -14,6 +15,14 @@ import {
 import { ConnectPage, ConnectPageProps } from './connect-page';
 
 const mockTestDappUrl = 'https://test.dapp';
+
+const mockTargetSubjectMetadata = {
+  extensionId: null,
+  iconUrl: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
+  name: 'E2E Test Dapp',
+  origin: 'https://metamask.github.io',
+  subjectType: 'website',
+};
 
 const render = (
   options: {
@@ -31,6 +40,7 @@ const render = (
       rejectPermissionsRequest: jest.fn(),
       approveConnection: jest.fn(),
       activeTabOrigin: mockTestDappUrl,
+      targetSubjectMetadata: mockTargetSubjectMetadata,
     },
     state,
   } = options;
@@ -64,11 +74,19 @@ describe('ConnectPage', () => {
 
   it('should render title correctly', () => {
     const { getByText } = render();
-    expect(getByText('Connect with MetaMask')).toBeDefined();
+    expect(getByText('github.io')).toBeDefined();
+  });
+
+  it('should render subtitle correctly', () => {
+    const { getByText } = render();
+    expect(getByText('Connect this website with MetaMask')).toBeDefined();
   });
 
   it('should render account connectionListItem', () => {
     const { getByText } = render();
+    const permissionsTab = getByText('Permissions');
+    fireEvent.click(permissionsTab);
+
     expect(
       getByText('See your accounts and suggest transactions'),
     ).toBeDefined();
@@ -76,6 +94,9 @@ describe('ConnectPage', () => {
 
   it('should render network connectionListItem', () => {
     const { getByText } = render();
+    const permissionsTab = getByText('Permissions');
+    fireEvent.click(permissionsTab);
+
     expect(getByText('Use your enabled networks')).toBeDefined();
   });
 
@@ -118,6 +139,7 @@ describe('ConnectPage', () => {
         rejectPermissionsRequest: jest.fn(),
         approveConnection: jest.fn(),
         activeTabOrigin: mockTestDappUrl,
+        targetSubjectMetadata: mockTargetSubjectMetadata,
       },
     });
     expect(container).toMatchSnapshot();

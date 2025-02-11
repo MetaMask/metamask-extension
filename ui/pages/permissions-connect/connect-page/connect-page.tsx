@@ -72,7 +72,7 @@ export type ConnectPageProps = {
   approveConnection: (request: ConnectPageRequest) => void;
   activeTabOrigin: string;
   targetSubjectMetadata: {
-    extensionId: string;
+    extensionId: string | null;
     iconUrl: string;
     name: string;
     origin: string;
