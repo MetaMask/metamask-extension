@@ -80,6 +80,14 @@ const createMockedHandler = () => {
   };
 };
 
+// check passing ethaccount and enndowmentl, result should have these
+// check just ethaccount
+// check just permitted chains
+// check passing caiup25, returns error (I should mock requestPermissionsForOrigin result, this func should be called with no permissions, because caip25 was deleted prior)
+// check ethaccount and enndowmentl, and caip25, should just return ethaccount and enndowmentl
+// check other permissions by themselves
+// check other permissions with ethaccount and enndowmentl as well
+
 describe('requestPermissionsHandler', () => {
   afterEach(() => {
     jest.resetAllMocks();
