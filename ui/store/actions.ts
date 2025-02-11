@@ -5922,10 +5922,6 @@ export async function multichainUpdateBalance(
   ]);
 }
 
-export async function multichainUpdateBalances(): Promise<void> {
-  return await submitRequestToBackground<void>('multichainUpdateBalances', []);
-}
-
 export async function getLastInteractedConfirmationInfo(): Promise<
   LastInteractedConfirmationInfo | undefined
 > {
