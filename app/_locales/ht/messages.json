@@ -163,9 +163,6 @@
   "from": {
     "message": "Soti nan"
   },
-  "functionType": {
-    "message": "Kalite Fonksyon"
-  },
   "gasLimit": {
     "message": "Limit gaz"
   },
@@ -322,9 +319,6 @@
   "origin": {
     "message": "Orijin"
   },
-  "parameters": {
-    "message": "Paramèt"
-  },
   "password": {
     "message": "Modpas"
   },
@@ -442,9 +436,6 @@
   "showHexDataDescription": {
     "message": "Pran sa pouw ka montre chan entèfas hex data a"
   },
-  "sigRequest": {
-    "message": "Demann Siyati"
-  },
   "sign": {
     "message": "Siyen"
   },
@@ -520,9 +511,6 @@
   "unknown": {
     "message": "Enkoni"
   },
-  "unknownNetwork": {
-    "message": "Rezo Prive Enkoni"
-  },
   "unknownQrCode": {
     "message": "Erè: Nou pa t kapab idantifye QR kòd sa"
   },
@@ -546,9 +534,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Ou bezwen bay kamera aksè pou sèvi ak fonksyon sa."
-  },
-  "youSign": {
-    "message": "Ou ap siyen kounya"
   },
   "yourPrivateSeedPhrase": {
     "message": "Seed fraz prive ou a"

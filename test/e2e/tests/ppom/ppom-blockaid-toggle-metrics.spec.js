@@ -2,7 +2,6 @@ const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
 
 const {
-  defaultGanacheOptions,
   unlockWallet,
   withFixtures,
   getEventPayloads,
@@ -65,7 +64,6 @@ describe('PPOM Blockaid Alert - Metrics', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockServerCalls,
       },

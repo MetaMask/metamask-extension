@@ -83,6 +83,11 @@
         "TextEncoder": true
       }
     },
+    "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@ethereumjs/rlp": {
+      "globals": {
+        "TextEncoder": true
+      }
+    },
     "@ethereumjs/tx": {
       "packages": {
         "@ethereumjs/tx>@ethereumjs/common": true,
@@ -1015,7 +1020,6 @@
         "@metamask/name-controller>async-mutex": true,
         "bitcoin-address-validation": true,
         "bn.js": true,
-        "cockatiel": true,
         "lodash": true,
         "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": true,
         "single-call-balance-checker-abi": true,
@@ -1039,14 +1043,6 @@
       }
     },
     "@metamask/name-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/rate-limit-controller>@metamask/base-controller": {
       "globals": {
         "setTimeout": true
       },
@@ -1089,6 +1085,7 @@
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
         "bn.js": true,
         "browserify>buffer": true,
+        "cockatiel": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true
       }
@@ -1213,6 +1210,7 @@
     },
     "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util": {
       "packages": {
+        "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/eth-json-rpc-middleware>@metamask/utils": true,
@@ -1224,6 +1222,7 @@
     },
     "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util": {
       "packages": {
+        "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@ethereumjs/rlp": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@metamask/utils": true,
@@ -1235,6 +1234,7 @@
     },
     "@metamask/eth-snap-keyring>@metamask/eth-sig-util": {
       "packages": {
+        "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/eth-snap-keyring>@metamask/utils": true,
@@ -1246,6 +1246,7 @@
     },
     "@metamask/eth-trezor-keyring>@metamask/eth-sig-util": {
       "packages": {
+        "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>@metamask/utils": true,
@@ -1257,6 +1258,7 @@
     },
     "@metamask/keyring-controller>@metamask/eth-sig-util": {
       "packages": {
+        "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/keyring-controller>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/keyring-controller>@metamask/utils": true,
@@ -1268,6 +1270,7 @@
     },
     "@metamask/signature-controller>@metamask/eth-sig-util": {
       "packages": {
+        "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/signature-controller>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/signature-controller>@metamask/eth-sig-util>@metamask/utils": true,
@@ -1797,9 +1800,9 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/rate-limit-controller>@metamask/base-controller": true,
-        "@metamask/rate-limit-controller>@metamask/rpc-errors": true,
-        "@metamask/rate-limit-controller>@metamask/utils": true
+        "@metamask/base-controller": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/remote-feature-flag-controller": {
@@ -1812,12 +1815,6 @@
     "@metamask/rpc-errors": {
       "packages": {
         "@metamask/rpc-errors>@metamask/utils": true,
-        "@metamask/rpc-errors>fast-safe-stringify": true
-      }
-    },
-    "@metamask/rate-limit-controller>@metamask/rpc-errors": {
-      "packages": {
-        "@metamask/rate-limit-controller>@metamask/rpc-errors>@metamask/utils": true,
         "@metamask/rpc-errors>fast-safe-stringify": true
       }
     },
@@ -2532,37 +2529,7 @@
         "semver": true
       }
     },
-    "@metamask/rate-limit-controller>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "@metamask/utils>pony-cause": true,
-        "semver": true
-      }
-    },
     "@metamask/rpc-errors>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "@metamask/utils>pony-cause": true,
-        "semver": true
-      }
-    },
-    "@metamask/rate-limit-controller>@metamask/rpc-errors>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
@@ -5062,7 +5029,7 @@
         "react": true
       }
     },
-    "@storybook/addon-knobs>qs": {
+    "browserify>url>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
       }
@@ -5249,16 +5216,6 @@
       },
       "packages": {
         "prop-types": true,
-        "react": true
-      }
-    },
-    "react-inspector": {
-      "globals": {
-        "Node": true,
-        "chromeDark": true,
-        "chromeLight": true
-      },
-      "packages": {
         "react": true
       }
     },
@@ -5849,7 +5806,7 @@
     "browserify>url": {
       "packages": {
         "browserify>punycode": true,
-        "@storybook/addon-knobs>qs": true
+        "browserify>url>qs": true
       }
     },
     "react-focus-lock>use-callback-ref": {

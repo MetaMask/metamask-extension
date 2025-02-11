@@ -254,9 +254,6 @@
   "from": {
     "message": "ನಿಂದ"
   },
-  "functionType": {
-    "message": "ಕಾರ್ಯದ ಪ್ರಕಾರ"
-  },
   "gasLimit": {
     "message": "ಗ್ಯಾಸ್ ಮಿತಿ"
   },
@@ -467,9 +464,6 @@
   "origin": {
     "message": "ಮೂಲ"
   },
-  "parameters": {
-    "message": "ಪ್ಯಾರಾಮೀಟರ್‌ಗಳು"
-  },
   "participateInMetaMetrics": {
     "message": "MetaMetrics ನಲ್ಲಿ ಭಾಗವಹಿಸಿ"
   },
@@ -538,9 +532,6 @@
   "removeAccountDescription": {
     "message": "ಈ ಖಾತೆಯನ್ನು ನಿಮ್ಮ ವ್ಯಾಲೆಟ್‌ನಿಂದ ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ. ದಯವಿಟ್ಟು ಮುಂದುವರಿಯುವ ಮೊದಲು ಈ ಆಮದು ಖಾತೆಗಾಗಿ ನೀವು ಸೀಡ್ ಫ್ರೇಸ್ ಅಥವಾ ಖಾಸಗಿ ಕೀಯನ್ನು ಹೊಂದಿರುವಿರಾ ಎಂಬುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ. ಖಾತೆಯ ಡ್ರಾಪ್-ಡೌನ್‌ನಿಂದ ನೀವು ಮತ್ತೆ ಖಾತೆಗಳನ್ನು ಆಮದು ಮಾಡಿಕೊಳ್ಳಬಹುದು ಅಥವಾ ರಚಿಸಬಹುದು."
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "ಅಂಗೀಕರಿಸಲು ನಿರೀಕ್ಷಿಸುತ್ತಿರುವ ವಿನಂತಿಗಳು"
-  },
   "required": {
     "message": "ಅಗತ್ಯವಿದೆ"
   },
@@ -607,9 +598,6 @@
   },
   "showHexDataDescription": {
     "message": "ಕಳುಹಿಸುವ ಪರದೆಯಲ್ಲಿ ಹೆಕ್ಸ್ ಡೇಟಾ ಕ್ಷೇತ್ರವನ್ನು ತೋರಿಸಲು ಇದನ್ನು ಆಯ್ಕೆಮಾಡಿ"
-  },
-  "sigRequest": {
-    "message": "ಸಹಿಯ ವಿನಂತಿ"
   },
   "sign": {
     "message": "ಸಹಿ"
@@ -734,9 +722,6 @@
   "unknown": {
     "message": "ಅಪರಿಚಿತ"
   },
-  "unknownNetwork": {
-    "message": "ಅಪರಿಚಿತ ಖಾಸಗಿ ನೆಟ್‌ವರ್ಕ್"
-  },
   "unknownQrCode": {
     "message": "ದೋಷ: ನಮಗೆ ಆ QR ಕೋಡ್ ಅನ್ನು ಗುರುತಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
   },
@@ -766,9 +751,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "ಈ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಬಳಸಲು ನೀವು ಕ್ಯಾಮರಾ ಪ್ರವೇಶವನ್ನು ಅನುಮತಿಸಬೇಕಾಗುತ್ತದೆ."
-  },
-  "youSign": {
-    "message": "ನೀವು ಸಹಿ ಮಾಡುತ್ತಿರುವಿರಿ"
   },
   "yourPrivateSeedPhrase": {
     "message": "ನಿಮ್ಮ ಖಾಸಗಿ ಸೀಡ್ ಫ್ರೇಸ್"

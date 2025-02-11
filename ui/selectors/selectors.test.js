@@ -1179,12 +1179,6 @@ describe('Selectors', () => {
     expect(showOutdatedBrowserWarning).toStrictEqual(true);
   });
 
-  it('#getTotalUnapprovedSignatureRequestCount', () => {
-    const totalUnapprovedSignatureRequestCount =
-      selectors.getTotalUnapprovedSignatureRequestCount(mockState);
-    expect(totalUnapprovedSignatureRequestCount).toStrictEqual(0);
-  });
-
   describe('#getPetnamesEnabled', () => {
     function createMockStateWithPetnamesEnabled(petnamesEnabled) {
       return { metamask: { preferences: { petnamesEnabled } } };

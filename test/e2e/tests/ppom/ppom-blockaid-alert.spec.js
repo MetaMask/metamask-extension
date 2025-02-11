@@ -3,7 +3,6 @@ const FixtureBuilder = require('../../fixture-builder');
 
 const {
   WINDOW_TITLES,
-  defaultGanacheOptions,
   openDapp,
   unlockWallet,
   withFixtures,
@@ -179,7 +178,6 @@ describe('Confirmation Security Alert - Blockaid', function () {
             securityAlertsEnabled: true,
           })
           .build(),
-        defaultGanacheOptions,
         testSpecificMock: mockInfura,
         title: this.test.fullTitle(),
       },
@@ -242,7 +240,6 @@ describe('Confirmation Security Alert - Blockaid', function () {
             securityAlertsEnabled: true,
           })
           .build(),
-        defaultGanacheOptions,
         testSpecificMock: mockInfuraWithMaliciousResponses,
         title: this.test.fullTitle(),
       },
@@ -301,7 +298,6 @@ describe('Confirmation Security Alert - Blockaid', function () {
             securityAlertsEnabled: true,
           })
           .build(),
-        defaultGanacheOptions,
         testSpecificMock: mockInfuraWithFailedResponses,
         title: this.test.fullTitle(),
       },

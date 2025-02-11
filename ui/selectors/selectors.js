@@ -78,10 +78,7 @@ import {
   sortSelectedInternalAccounts,
 } from '../helpers/utils/util';
 
-import {
-  PRIORITY_APPROVAL_TEMPLATE_TYPES,
-  TEMPLATED_CONFIRMATION_APPROVAL_TYPES,
-} from '../pages/confirmations/confirmation/templates';
+import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmations/confirmation/templates';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
@@ -112,6 +109,8 @@ import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
+import { calculateTokenBalance } from '../components/app/assets/util/calculateTokenBalance';
+import { calculateTokenFiatAmount } from '../components/app/assets/util/calculateTokenFiatAmount';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
@@ -164,11 +163,6 @@ export function getShowWhatsNewPopup(state) {
 export function getShowPermittedNetworkToastOpen(state) {
   return state.appState.showPermittedNetworkToastOpen;
 }
-
-export const getMemoizedTxId = createDeepEqualSelector(
-  (state) => state.appState.txId,
-  (txId) => txId,
-);
 
 export function getNewNftAddedMessage(state) {
   return state.appState.newNftAddedMessage;
@@ -572,6 +566,7 @@ export function getCrossChainMetaMaskCachedBalances(state) {
     return acc;
   }, {});
 }
+
 /**
  * Based on the current account address, return the balance for the native token of all chain networks on that account
  *
@@ -1000,15 +995,6 @@ export const selectNftsByChainId = createSelector(
   },
 );
 
-export const selectNftContractsByChainId = createSelector(
-  getSelectedInternalAccount,
-  (state) => state.metamask.allNftContracts,
-  (_state, chainId) => chainId,
-  (selectedAccount, nftContracts, chainId) => {
-    return nftContracts?.[selectedAccount.address]?.[chainId] ?? [];
-  },
-);
-
 export const selectNetworkIdentifierByChainId = createSelector(
   selectNetworkConfigurationByChainId,
   selectDefaultRpcEndpointByChainId,
@@ -1079,29 +1065,6 @@ export function getSlides(state) {
   return state.metamask.slides || [];
 }
 
-export function getTotalUnapprovedMessagesCount(state) {
-  const {
-    unapprovedPersonalMsgCount = 0,
-    unapprovedDecryptMsgCount = 0,
-    unapprovedEncryptionPublicKeyMsgCount = 0,
-    unapprovedTypedMessagesCount = 0,
-  } = state.metamask;
-
-  return (
-    unapprovedPersonalMsgCount +
-    unapprovedDecryptMsgCount +
-    unapprovedEncryptionPublicKeyMsgCount +
-    unapprovedTypedMessagesCount
-  );
-}
-
-export function getTotalUnapprovedSignatureRequestCount(state) {
-  const { unapprovedPersonalMsgCount = 0, unapprovedTypedMessagesCount = 0 } =
-    state.metamask;
-
-  return unapprovedPersonalMsgCount + unapprovedTypedMessagesCount;
-}
-
 export function getUnapprovedTxCount(state) {
   const unapprovedTxs = getUnapprovedTransactions(state);
   return Object.keys(unapprovedTxs).length;
@@ -1118,14 +1081,6 @@ export function getUnapprovedTemplatedConfirmations(state) {
     TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(approval.type),
   );
 }
-
-export const getPrioritizedUnapprovedTemplatedConfirmations = createSelector(
-  getUnapprovedTemplatedConfirmations,
-  (unapprovedTemplatedConfirmations) =>
-    unapprovedTemplatedConfirmations.filter(({ type }) =>
-      PRIORITY_APPROVAL_TEMPLATE_TYPES.includes(type),
-    ),
-);
 
 export function getSuggestedTokens(state) {
   return (
@@ -1701,11 +1656,6 @@ export const getMemoizedMetaMaskInternalAccounts = createDeepEqualSelector(
   (internalAccounts) => internalAccounts,
 );
 
-export const getMemoizedAddressBook = createDeepEqualSelector(
-  getAddressBook,
-  (addressBook) => addressBook,
-);
-
 export const selectERC20TokensByChain = createDeepEqualSelector(
   (state) => state.metamask.tokensChainsCache,
   (erc20TokensByChain) => erc20TokensByChain,
@@ -1872,16 +1822,6 @@ export const getConnectedSnapsList = createDeepEqualSelector(
 export const getMemoizedCurrentChainId = createDeepEqualSelector(
   getCurrentChainId,
   (chainId) => chainId,
-);
-
-export const getMemoizedUnapprovedPersonalMessages = createDeepEqualSelector(
-  (state) => state.metamask.unapprovedPersonalMsgs,
-  (unapprovedPersonalMsgs) => unapprovedPersonalMsgs,
-);
-
-export const getMemoizedUnapprovedTypedMessages = createDeepEqualSelector(
-  (state) => state.metamask.unapprovedTypedMessages,
-  (unapprovedTypedMessages) => unapprovedTypedMessages,
 );
 
 export function getSnaps(state) {
@@ -3036,3 +2976,90 @@ export function getKeyringSnapAccounts(state) {
   return keyringAccounts;
 }
 ///: END:ONLY_INCLUDE_IF
+
+export const getTokenBalancesEvm = createDeepEqualSelector(
+  getSelectedAccountTokensAcrossChains,
+  getSelectedAccountNativeTokenCachedBalanceByChainId,
+  (state) => state.metamask.tokenBalances,
+  getMarketData,
+  getCurrencyRates,
+  getPreferences,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
+  getSelectedAccount,
+  getCurrentNetwork,
+  (
+    selectedAccountTokensChains,
+    nativeBalances,
+    tokenBalances,
+    marketData,
+    currencyRates,
+    preferences,
+    isOnCurrentNetwork,
+    selectedAccount,
+    currentNetwork,
+  ) => {
+    const { hideZeroBalanceTokens } = preferences;
+    const selectedAccountTokenBalancesAcrossChains =
+      tokenBalances[selectedAccount.address];
+
+    // we need to filter Testnets
+    const isTestNetwork = TEST_CHAINS.includes(currentNetwork.chainId);
+    const filteredAccountTokensChains = Object.fromEntries(
+      Object.entries(selectedAccountTokensChains).filter(([chainId]) =>
+        isTestNetwork
+          ? TEST_CHAINS.includes(chainId)
+          : !TEST_CHAINS.includes(chainId),
+      ),
+    );
+    const tokensWithBalance = [];
+    Object.entries(filteredAccountTokensChains).forEach(
+      ([stringChainKey, tokens]) => {
+        const chainId = stringChainKey;
+        tokens.forEach((token) => {
+          const { isNative, address, decimals } = token;
+          const balance =
+            calculateTokenBalance({
+              isNative,
+              chainId,
+              address,
+              decimals,
+              nativeBalances,
+              selectedAccountTokenBalancesAcrossChains,
+            }) || '0';
+
+          const tokenFiatAmount = calculateTokenFiatAmount({
+            token,
+            chainId,
+            balance,
+            marketData,
+            currencyRates,
+          });
+
+          // Respect the "hide zero balance" setting (when true):
+          // - Native tokens should always display with zero balance when on the current network filter.
+          // - Native tokens should not display with zero balance when on all networks filter
+          // - ERC20 tokens with zero balances should respect the setting on both the current and all networks.
+
+          // Respect the "hide zero balance" setting (when false):
+          // - Native tokens should always display with zero balance when on the current network filter.
+          // - Native tokens should always display with zero balance when on all networks filter
+          // - ERC20 tokens always display with zero balance on both the current and all networks filter.
+          if (
+            !hideZeroBalanceTokens ||
+            balance !== '0' ||
+            (token.isNative && isOnCurrentNetwork)
+          ) {
+            tokensWithBalance.push({
+              ...token,
+              balance,
+              tokenFiatAmount,
+              chainId,
+              string: String(balance),
+            });
+          }
+        });
+      },
+    );
+    return tokensWithBalance;
+  },
+);
