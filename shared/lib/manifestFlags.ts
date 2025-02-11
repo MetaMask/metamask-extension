@@ -1,3 +1,4 @@
+import { Json } from '@metamask/utils';
 import browser from 'webextension-polyfill';
 
 /**
@@ -64,13 +65,7 @@ export type ManifestFlags = {
    * Feature flags to control business logic behavior
    */
   remoteFeatureFlags?: {
-    /**
-     * A test remote featureflag for threshold
-     */
-    testFlagForThreshold: {
-      name: string;
-      value: string;
-    };
+    [key: string]: Json;
   };
 };
 
