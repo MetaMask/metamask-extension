@@ -407,7 +407,8 @@ export const TokenListItem = ({
               >
                 {primary}{' '}
                 {isPrimaryTokenSymbolHidden ||
-                primary?.includes(NON_EVM_CURRENCY_SYMBOLS.SOL)
+                primary?.includes(NON_EVM_CURRENCY_SYMBOLS.SOL) ||
+                primary?.includes(NON_EVM_CURRENCY_SYMBOLS.BTC)
                   ? ''
                   : tokenSymbol}
               </SensitiveText>
