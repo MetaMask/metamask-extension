@@ -41,7 +41,7 @@ export function withTransactionEnvelopeTypeFixtures(
           participateInMetaMetrics: true,
         })
         .build(),
-      ganacheOptions:
+      localNodeOptions:
         transactionEnvelopeType === TransactionEnvelopeType.legacy
           ? defaultGanacheOptions
           : defaultGanacheOptionsForType2Transactions,

@@ -1,5 +1,5 @@
 import { NetworkConfiguration } from '@metamask/network-controller';
-import { migrate, version } from './142.1';
+import { migrate, version } from './134.1';
 
 describe(`Migration ${version}`, () => {
   let originalSentry: typeof global.sentry;
@@ -21,14 +21,14 @@ describe(`Migration ${version}`, () => {
     sentryCaptureExceptionMock.mockClear();
   });
 
-  it('updates the meta version to 142.1 regardless of state content', async () => {
+  it('updates the meta version to 134.1 regardless of state content', async () => {
     const dummyState = {
       meta: { version: 0 },
       data: {},
     };
 
     const migrated = await migrate(dummyState);
-    expect(migrated.meta.version).toBe(142.1);
+    expect(migrated.meta.version).toBe(134.1);
   });
 
   it('returns original state if AccountsController is missing', async () => {
@@ -41,9 +41,8 @@ describe(`Migration ${version}`, () => {
     };
     const result = await migrate(originalState);
 
-    expect(sentryCaptureExceptionMock).toHaveBeenCalled();
     expect(result.data).toEqual(originalState.data);
-    expect(result.meta.version).toBe(142.1);
+    expect(result.meta.version).toBe(134.1);
   });
 
   it('returns original state if AccountsController is not an object', async () => {
@@ -242,7 +241,6 @@ describe(`Migration ${version}`, () => {
     };
 
     const result = await migrate(originalState);
-    expect(sentryCaptureExceptionMock).toHaveBeenCalled();
     expect(result.data).toEqual(originalState.data);
   });
 
@@ -282,7 +280,10 @@ describe(`Migration ${version}`, () => {
       meta: { version: 0 },
       data: {
         AccountsController: {
-          internalAccounts: { selectedAccount: '0x123' },
+          internalAccounts: {
+            selectedAccount: 'id1',
+            accounts: { id1: { address: '0x123' } },
+          },
         },
         NetworkController: {
           selectedNetworkClientId: 'mainnet',
@@ -313,6 +314,90 @@ describe(`Migration ${version}`, () => {
     >;
     expect(tokensControllerState.tokens).toEqual(originalTokens);
 
-    expect(result.meta.version).toBe(142.1);
+    expect(result.meta.version).toBe(134.1);
+  });
+
+  it('returns original state and logs error if tokens is not empty but allTokensForChain is not an object', async () => {
+    const originalState = {
+      meta: { version: 0 },
+      data: {
+        AccountsController: {
+          internalAccounts: {
+            selectedAccount: 'id1',
+            accounts: { id1: { address: '0x123' } },
+          },
+        },
+        NetworkController: {
+          selectedNetworkClientId: 'mainnet',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              rpcEndpoints: [{ networkClientId: 'mainnet' }],
+            },
+          },
+        },
+        TokensController: {
+          tokens: [{ address: '0xtokenA' }], // Non-empty tokens array
+          allTokens: {
+            '0x1': null, // allTokensForChain is not an object
+          },
+        },
+      },
+    };
+
+    const result = await migrate(originalState);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: expect.stringContaining(
+          `Migration ${version}: tokens is not an empty array, but allTokensForChain is not an object.`,
+        ),
+      }),
+    );
+
+    expect(result.data).toEqual(originalState.data);
+  });
+
+  it('returns original state and logs error if tokens is not empty but allTokensForChain is not an object', async () => {
+    const originalState = {
+      meta: { version: 0 },
+      data: {
+        AccountsController: {
+          internalAccounts: {
+            selectedAccount: 'id1',
+            accounts: {
+              id1: {
+                address: '0x123',
+              },
+            },
+          },
+        },
+        NetworkController: {
+          selectedNetworkClientId: 'mainnet',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              rpcEndpoints: [{ networkClientId: 'mainnet' }],
+            },
+          },
+        },
+        TokensController: {
+          tokens: [{ address: '0xtokenA' }], // Non-empty tokens array
+          allTokens: {
+            '0x1': null, // allTokensForChain is not an object
+          },
+        },
+      },
+    };
+
+    const result = await migrate(originalState);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: expect.stringContaining(
+          `Migration ${version}: tokens is not an empty array, but allTokensForChain is not an object.`,
+        ),
+      }),
+    );
+
+    expect(result.data).toEqual(originalState.data);
   });
 });

@@ -2,7 +2,6 @@ import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import FixtureBuilder from '../../fixture-builder';
 import {
-  defaultGanacheOptions,
   regularDelayMs,
   tinyDelayMs,
   unlockWallet,
@@ -57,7 +56,6 @@ describe('Update Network:', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
 
@@ -194,7 +192,6 @@ describe('Update Network:', function (this: Suite) {
             selectedNetworkClientId: 'networkConfigurationId',
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
       },
@@ -310,7 +307,6 @@ describe('Update Network:', function (this: Suite) {
             selectedNetworkClientId: 'networkConfigurationId',
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
       },

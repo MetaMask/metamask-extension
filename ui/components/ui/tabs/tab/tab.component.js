@@ -2,14 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import {
-  BLOCK_SIZES,
-  DISPLAY,
+  BlockSize,
+  Display,
   TextAlign,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import Box from '../../box';
-import { Text } from '../../../component-library';
+import { Text, Box } from '../../../component-library';
 
 const Tab = (props) => {
   const {
@@ -27,32 +26,37 @@ const Tab = (props) => {
     // happy when being used in .tsx)
     // eslint-disable-next-line no-unused-vars
     children,
+    textProps,
+    ...rest
   } = props;
 
   return (
     <Box
       as="li"
-      className={classnames('tab', className, {
-        'tab--single': isSingleTab,
-        'tab--active': isActive,
-        [activeClassName]: activeClassName && isActive,
-      })}
       data-testid={dataTestId}
       onClick={(event) => {
         event.preventDefault();
         onClick(tabIndex);
       }}
       key={tabKey}
+      {...rest}
+      className={classnames('tab', className, {
+        'tab--single': isSingleTab,
+        'tab--active': isActive,
+        [activeClassName]: activeClassName && isActive,
+        ...rest?.className,
+      })}
     >
       <Text
         as="button"
         padding={2}
         textAlign={TextAlign.Center}
-        display={DISPLAY.BLOCK}
-        width={BLOCK_SIZES.FULL}
-        className={buttonClassName}
+        display={Display.Block}
+        width={BlockSize.Full}
         variant={TextVariant.bodyMd}
         color={TextColor.inherit}
+        {...textProps}
+        className={classnames(buttonClassName, textProps?.className)}
       >
         {name}
       </Text>
@@ -71,7 +75,8 @@ Tab.propTypes = {
   tabKey: PropTypes.string.isRequired, // for Tabs selection purpose
   onClick: PropTypes.func,
   tabIndex: PropTypes.number, // required, but added using React.cloneElement
-  children: PropTypes.node, // required, but we are not rendering it explictly
+  children: PropTypes.node, // required, but we are not rendering it explicitly
+  textProps: PropTypes.object, // props to spread to the Text component
 };
 
 Tab.defaultProps = {

@@ -245,7 +245,7 @@ describe('Sentry errors', function () {
             // Intentionally corrupt state to trigger migration error during initialization
             meta: undefined,
           },
-          ganacheOptions,
+          localNodeOptions: ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryMigratorError,
           manifestFlags: {
@@ -276,7 +276,7 @@ describe('Sentry errors', function () {
               participateInMetaMetrics: false,
             })
             .build(),
-          ganacheOptions,
+          localNodeOptions: ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           manifestFlags: {
@@ -317,7 +317,7 @@ describe('Sentry errors', function () {
             // Intentionally corrupt state to trigger migration error during initialization
             meta: undefined,
           },
-          ganacheOptions,
+          localNodeOptions: ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryMigratorError,
           manifestFlags: {
@@ -363,7 +363,7 @@ describe('Sentry errors', function () {
             // Intentionally corrupt state to trigger migration error during initialization
             meta: undefined,
           },
-          ganacheOptions,
+          localNodeOptions: ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryMigratorError,
           manifestFlags: {
@@ -424,7 +424,7 @@ describe('Sentry errors', function () {
               .withBadPreferencesControllerState()
               .build(),
           },
-          ganacheOptions,
+          localNodeOptions: ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryInvariantMigrationError,
           manifestFlags: {
@@ -472,7 +472,7 @@ describe('Sentry errors', function () {
               participateInMetaMetrics: true,
             })
             .build(),
-          ganacheOptions,
+          localNodeOptions: ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           ignoredConsoleErrors: ['TestError'],
@@ -518,7 +518,7 @@ describe('Sentry errors', function () {
               participateInMetaMetrics: true,
             })
             .build(),
-          ganacheOptions,
+          localNodeOptions: ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           ignoredConsoleErrors: ['TestError'],
@@ -583,7 +583,7 @@ describe('Sentry errors', function () {
               participateInMetaMetrics: false,
             })
             .build(),
-          ganacheOptions,
+          localNodeOptions: ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           manifestFlags: {
@@ -618,7 +618,7 @@ describe('Sentry errors', function () {
               participateInMetaMetrics: false,
             })
             .build(),
-          ganacheOptions,
+          localNodeOptions: ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           ignoredConsoleErrors: ['TestError'],
@@ -654,7 +654,7 @@ describe('Sentry errors', function () {
               participateInMetaMetrics: true,
             })
             .build(),
-          ganacheOptions,
+          localNodeOptions: ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           manifestFlags: {
@@ -700,7 +700,7 @@ describe('Sentry errors', function () {
               participateInMetaMetrics: true,
             })
             .build(),
-          ganacheOptions,
+          localNodeOptions: ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           manifestFlags: {
@@ -763,7 +763,7 @@ describe('Sentry errors', function () {
               participateInMetaMetrics: true,
             })
             .build(),
-          ganacheOptions,
+          localNodeOptions: ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           ignoredConsoleErrors: ['TestError'],
@@ -807,7 +807,7 @@ describe('Sentry errors', function () {
               participateInMetaMetrics: true,
             })
             .build(),
-          ganacheOptions,
+          localNodeOptions: ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           ignoredConsoleErrors: ['TestError'],
@@ -921,7 +921,7 @@ describe('Sentry errors', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
+        localNodeOptions: ganacheOptions,
         title: this.test.fullTitle(),
         manifestFlags: {
           sentry: { forceEnable: false },
