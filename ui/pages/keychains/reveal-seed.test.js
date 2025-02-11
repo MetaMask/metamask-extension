@@ -169,6 +169,7 @@ describe('Reveal Seed Page', () => {
         event: MetaMetricsEventName.KeyExportRequested,
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,
+          hd_srp_index: undefined,
         },
       });
       expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
@@ -335,6 +336,7 @@ describe('Reveal Seed Page', () => {
         event: MetaMetricsEventName.KeyExportCanceled,
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,
+          hd_srp_index: undefined,
         },
       });
       expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
@@ -342,6 +344,7 @@ describe('Reveal Seed Page', () => {
         event: MetaMetricsEventName.SrpRevealCancelled,
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,
+          hd_srp_index: undefined,
         },
       });
     });
