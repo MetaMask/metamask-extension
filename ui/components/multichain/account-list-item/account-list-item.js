@@ -65,7 +65,6 @@ import {
 import { useMultichainAccountTotalFiatBalance } from '../../../hooks/useMultichainAccountTotalFiatBalance';
 import { ConnectedStatus } from '../connected-status';
 import { getHDSrpIndex } from '../../../selectors/selectors';
-///: END:ONLY_INCLUDE_IF
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
