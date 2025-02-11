@@ -1,0 +1,48 @@
+on:
+  workflow_call:
+
+env:
+  COMMANDS: |
+    [
+      'yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json --retries 2',
+      'yarn user-actions-benchmark:chrome --out test-artifacts/chrome/benchmark/user_actions.json --retries 2',
+    ]
+
+jobs:
+  benchmarks:
+    runs-on: ubuntu-latest
+    container:
+      image: cimg/node:22.13-browsers
+    strategy:
+      matrix:
+        buildType: [browserify, webpack]
+        testType: [pageload, userActions]
+    name: ${{ matrix.buildType }}-${{ matrix.testType }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
+      - name: Download artifact prep-build-test-webpack
+        uses: actions/download-artifact@v4
+        with:
+          path: ./dist/
+          pattern: prep-build-test-${{ matrix.buildType }}
+          merge-multiple: true
+
+      # Xvfb initializes a virtual "screen" where the browser opens
+      - name: Configure Xvfb
+        run: Xvfb -ac :99 -screen 0 1280x1024x16 &
+
+      - name: Run the benchmark
+        # Choose a benchmark command from env.COMMANDS
+        run: ${{ matrix.testType == 'pageload' && fromJson(env.COMMANDS)[0] || fromJson(env.COMMANDS)[1] }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-${{ matrix.buildType }}-${{ matrix.testType }}
+          path: test-artifacts/chrome/benchmark/
+          retention-days: 30
