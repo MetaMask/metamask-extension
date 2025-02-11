@@ -25,7 +25,7 @@ export const SelectRpcUrlModal = ({
   onNetworkChange,
 }: {
   networkConfiguration: NetworkConfiguration;
-  onNetworkChange: (network: NetworkConfiguration) => void;
+  onNetworkChange: (chainId: string) => void;
 }) => {
   const dispatch = useDispatch();
 
@@ -72,7 +72,7 @@ export const SelectRpcUrlModal = ({
             };
             dispatch(updateNetwork(network));
             dispatch(setEditedNetwork());
-            onNetworkChange(network);
+            onNetworkChange(network.chainId);
           }}
           className={classnames('select-rpc-url__item', {
             'select-rpc-url__item--selected':

@@ -2504,12 +2504,14 @@ export function updateNetwork(
 
 export function setActiveNetwork(
   networkConfigurationId: string,
+  chainId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
     log.debug(`background.setActiveNetwork: ${networkConfigurationId}`);
     try {
       await submitRequestToBackground('setActiveNetwork', [
         networkConfigurationId,
+        chainId,
       ]);
     } catch (error) {
       logErrorWithMessage(error);
@@ -3998,7 +4000,7 @@ export function removePermissionsFor(
  * @param chainIds - An array of hexadecimal chain IDs
  */
 export function updateNetworksList(
-  chainIds: Hex[],
+  chainIds: string[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     await submitRequestToBackground('updateNetworksList', [chainIds]);

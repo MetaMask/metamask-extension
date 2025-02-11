@@ -14,7 +14,7 @@ const controllerName = 'NetworkOrderController';
  * Information about an ordered network.
  */
 export type NetworksInfo = {
-  networkId: Hex; // The network's chain id
+  networkId: string; // The network's chain id
 };
 
 // State shape for NetworkOrderController
@@ -140,7 +140,7 @@ export class NetworkOrderController extends BaseController<
    * @param networkList - The list of networks to update in the state.
    */
 
-  updateNetworksList(chainIds: Hex[]) {
+  updateNetworksList(chainIds: string[]) {
     this.update((state) => {
       state.orderedNetworkList = chainIds.map((chainId) => ({
         networkId: chainId,

@@ -174,6 +174,11 @@ import {
 import { MultichainTransactionsController } from '@metamask/multichain-transactions-controller';
 ///: END:ONLY_INCLUDE_IF
 import {
+  MultichainNetworkController,
+  multichainNetworkConfigurations,
+  networksMetadata,
+} from '@metamask/multichain-network-controller';
+import {
   methodsRequiringNetworkSwitch,
   methodsThatCanSwitchNetworkWithoutApproval,
   methodsThatShouldBeEnqueued,
@@ -658,6 +663,36 @@ export default class MetamaskController extends EventEmitter {
         ...initState.PreferencesController,
       },
       messenger: preferencesMessenger,
+    });
+
+    const multichainNetworkControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'MultichainNetworkController',
+        allowedActions: [
+          'NetworkController:getNetworkConfigurationByNetworkClientId',
+          'AccountsController:setSelectedAccount',
+          'NetworkController:setActiveNetwork',
+          'NetworkController:getState',
+        ],
+        allowedEvents: ['NetworkController:stateChange'],
+      });
+
+    const initMncState = {
+      ...initState.MultichainNetworkController,
+      multichainNetworkConfigurationsByChainId: multichainNetworkConfigurations,
+      multichainNetworksMetadata: networksMetadata,
+    };
+
+    console.log(initMncState);
+
+    this.multichainNetworkController = new MultichainNetworkController({
+      messenger: multichainNetworkControllerMessenger,
+      state: {
+        ...initState.MultichainNetworkController,
+        multichainNetworkConfigurationsByChainId:
+          multichainNetworkConfigurations,
+        multichainNetworksMetadata: networksMetadata,
+      },
     });
 
     const tokenListMessenger = this.controllerMessenger.getRestricted({
@@ -2491,6 +2526,7 @@ export default class MetamaskController extends EventEmitter {
       AppStateController: this.appStateController,
       AppMetadataController: this.appMetadataController,
       MultichainBalancesController: this.multichainBalancesController,
+      MultichainNetworkController: this.multichainNetworkController,
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       MultichainTransactionsController: this.multichainTransactionsController,
       ///: END:ONLY_INCLUDE_IF
@@ -2549,6 +2585,7 @@ export default class MetamaskController extends EventEmitter {
         AppStateController: this.appStateController,
         AppMetadataController: this.appMetadataController,
         MultichainBalancesController: this.multichainBalancesController,
+        MultichainNetworkController: this.multichainNetworkController,
         ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
         MultichainTransactionsController: this.multichainTransactionsController,
         ///: END:ONLY_INCLUDE_IF
@@ -3597,8 +3634,19 @@ export default class MetamaskController extends EventEmitter {
       verifyPassword: this.verifyPassword.bind(this),
 
       // network management
-      setActiveNetwork: (networkConfigurationId) => {
+      setActiveNetwork: (networkConfigurationId, setActiveNetwork) => {
+        console.log({ networkConfigurationId, setActiveNetwork });
         return this.networkController.setActiveNetwork(networkConfigurationId);
+
+        // console.log('metamask-controller -> setActiveNetwork');
+        // console.log('metamask-controller:', {
+        //   networkConfigurationId,
+        //   chainId,
+        // });
+        // return this.multichainNetworkController.setActiveNetwork(
+        //   networkConfigurationId,
+        //   chainId,
+        // );
       },
       // Avoids returning the promise so that initial call to switch network
       // doesn't block on the network lookup step

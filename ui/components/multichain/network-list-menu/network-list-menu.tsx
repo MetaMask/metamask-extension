@@ -12,6 +12,7 @@ import {
   NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
+import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { Hex } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NetworkListItem } from '../network-list-item';
@@ -41,6 +42,7 @@ import {
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
 } from '../../../../shared/modules/selectors/networks';
+// import { getMultichainNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/multichainNetworks';
 import {
   getShowTestNetworks,
   getOnboardedInThisUISession,
@@ -91,6 +93,8 @@ import {
 } from '../../../ducks/metamask/metamask';
 import NetworksForm from '../../../pages/settings/networks-tab/networks-form';
 import { useNetworkFormState } from '../../../pages/settings/networks-tab/networks-form/networks-form-state';
+import { useMultichainNetworks } from '../../../hooks/networks/useMultichainNetworks';
+import { useRpcConfigs } from '../../../hooks/networks/useRpcConfigs';
 import PopularNetworkList from './popular-network-list/popular-network-list';
 import NetworkListSearch from './network-list-search/network-list-search';
 import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
@@ -109,6 +113,31 @@ export enum ACTION_MODES {
   // Displays the page for selecting an RPC URL
   SELECT_RPC,
 }
+
+const fromCaipToHexId = (caipChainId: string): Hex => {
+  const parts = caipChainId.split(':');
+
+  // Ensure the format is correct
+  if (parts.length !== 2 || parts[0] !== 'eip155') {
+    console.log('Invalid CAIP-2 chain ID format - ', parts[0]);
+    return caipChainId;
+  }
+
+  const decimalChainId = parseInt(parts[1], 10);
+  const hexChainId = `0x${decimalChainId.toString(16)}`;
+  console.log({ hexChainId });
+  return hexChainId as Hex;
+};
+
+const sortNetworks = (
+  networks: Record<string, MultichainNetworkConfiguration>,
+  sortedChainIds: { networkId: string }[],
+) =>
+  Object.values(networks).sort(
+    (a, b) =>
+      sortedChainIds.findIndex(({ networkId }) => networkId === a.chainId) -
+      sortedChainIds.findIndex(({ networkId }) => networkId === b.chainId),
+  );
 
 export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const t = useI18nContext();
@@ -139,23 +168,27 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     getPermittedAccountsForSelectedTab(state, selectedTabOrigin),
   );
 
+  const [multichainNetworks] = useMultichainNetworks();
+  const { getDefaultRpcEndpointByChainId } = useRpcConfigs();
+
   const currentlyOnTestNetwork = (TEST_CHAINS as Hex[]).includes(
     currentChainId,
   );
   const [nonTestNetworks, testNetworks] = useMemo(
     () =>
-      Object.entries(networkConfigurations).reduce(
+      Object.entries(multichainNetworks).reduce(
         ([nonTestNetworksList, testNetworksList], [chainId, network]) => {
-          const isTest = (TEST_CHAINS as string[]).includes(chainId);
+          const hexChainId = fromCaipToHexId(chainId);
+          const isTest = (TEST_CHAINS as string[]).includes(hexChainId);
           (isTest ? testNetworksList : nonTestNetworksList)[chainId] = network;
           return [nonTestNetworksList, testNetworksList];
         },
         [
-          {} as Record<string, NetworkConfiguration>,
-          {} as Record<string, NetworkConfiguration>,
+          {} as Record<string, MultichainNetworkConfiguration>,
+          {} as Record<string, MultichainNetworkConfiguration>,
         ],
       ),
-    [networkConfigurations],
+    [multichainNetworks],
   );
 
   // The network currently being edited, or undefined
@@ -164,7 +197,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     () =>
       !editingChainId || editCompleted
         ? undefined
-        : Object.entries(networkConfigurations).find(
+        : Object.entries(multichainNetworks).find(
             ([chainId]) => chainId === editingChainId,
           )?.[1],
     [editingChainId, editCompleted, networkConfigurations],
@@ -181,22 +214,12 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const { rpcUrls, setRpcUrls, blockExplorers, setBlockExplorers } =
     networkFormState;
 
-  const sortNetworks = (networks: Record<string, NetworkConfiguration>) =>
-    Object.values(networks).sort(
-      (a, b) =>
-        orderedNetworksList.findIndex(
-          ({ networkId }) => networkId === a.chainId,
-        ) -
-        orderedNetworksList.findIndex(
-          ({ networkId }) => networkId === b.chainId,
-        ),
-    );
-
   const [orderedNetworks, setOrderedNetworks] = useState(
-    sortNetworks(nonTestNetworks),
+    sortNetworks(nonTestNetworks, orderedNetworksList),
   );
   useEffect(
-    () => setOrderedNetworks(sortNetworks(nonTestNetworks)),
+    () =>
+      setOrderedNetworks(sortNetworks(nonTestNetworks, orderedNetworksList)),
     [nonTestNetworks, orderedNetworksList],
   );
 
@@ -246,22 +269,10 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     searchQuery,
   );
 
-  // If any network has multiple RPC endpoints, show multi-rpc selectors for all networks
-  const showMultiRpcSelectors = [
-    ...searchedEnabledNetworks,
-    ...searchedTestNetworks,
-  ].some((network) => network.rpcEndpoints.length > 1);
+  const handleEvmNetworkChange = (chainId: string) => {
+    const { networkClientId } = getDefaultRpcEndpointByChainId(chainId);
+    dispatch(setActiveNetwork(networkClientId, undefined));
 
-  const handleNetworkChange = (network: NetworkConfiguration) => {
-    const allOpts = Object.keys(allNetworks).reduce((acc, chainId) => {
-      acc[chainId] = true;
-      return acc;
-    }, {} as Record<string, boolean>);
-
-    const { networkClientId } =
-      network.rpcEndpoints[network.defaultRpcEndpointIndex];
-    dispatch(setActiveNetwork(networkClientId));
-    dispatch(toggleNetworkMenu());
     dispatch(updateCustomNonce(''));
     dispatch(setNextNonce(''));
     dispatch(detectNfts());
@@ -269,23 +280,43 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     // as a user, I don't want my network selection to force update my filter when I have "All Networks" toggled on
     // however, if I am already filtered on "Current Network", we'll want to filter by the selected network when the network changes
     if (Object.keys(tokenNetworkFilter || {}).length <= 1) {
-      dispatch(setTokenNetworkFilter({ [network.chainId]: true }));
+      dispatch(setTokenNetworkFilter({ [chainId]: true }));
     } else if (process.env.PORTFOLIO_VIEW) {
+      const allOpts = Object.keys(allNetworks).reduce((acc, id) => {
+        acc[id] = true;
+        return acc;
+      }, {} as Record<string, boolean>);
       dispatch(setTokenNetworkFilter(allOpts));
     }
 
-    if (permittedAccountAddresses.length > 0) {
-      dispatch(addPermittedChain(selectedTabOrigin, network.chainId));
-      if (!permittedChainIds.includes(network.chainId)) {
-        dispatch(showPermittedNetworkToast());
-      }
-    }
     // If presently on a dapp, communicate a change to
     // the dapp via silent switchEthereumChain that the
     // network has changed due to user action
     if (selectedTabOrigin && domains[selectedTabOrigin]) {
       setNetworkClientIdForDomain(selectedTabOrigin, networkClientId);
     }
+
+    if (permittedAccountAddresses.length > 0) {
+      dispatch(addPermittedChain(selectedTabOrigin, chainId));
+      if (!permittedChainIds.includes(fromCaipToHexId(chainId) as Hex)) {
+        dispatch(showPermittedNetworkToast());
+      }
+    }
+  };
+
+  const handleNonEvmNetworkChange = (chainId: string) => {
+    dispatch(setActiveNetwork(undefined, chainId));
+  };
+
+  const handleNetworkChange = (chainId: string) => {
+    const { isEvm } = multichainNetworks[chainId];
+    if (isEvm) {
+      handleEvmNetworkChange(chainId);
+    } else {
+      handleNonEvmNetworkChange(chainId);
+    }
+
+    dispatch(toggleNetworkMenu());
 
     trackEvent({
       event: MetaMetricsEventName.NavNetworkSwitched,
@@ -294,65 +325,81 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         location: 'Network Menu',
         chain_id: currentChainId,
         from_network: currentChainId,
-        to_network: network.chainId,
+        to_network: chainId,
       },
     });
   };
 
-  // Renders a network in the network list
-  const generateNetworkListItem = (network: NetworkConfiguration) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const generateMultichainNetworkListItem = (
+    network: MultichainNetworkConfiguration,
+  ) => {
     const isCurrentNetwork = network.chainId === currentChainId;
-    const canDeleteNetwork =
-      isUnlocked && !isCurrentNetwork && network.chainId !== CHAIN_IDS.MAINNET;
+    const EthereumMainnetcaipChainId = 'eip155:1';
+    const isNetworkDeletable =
+      network.isEvm &&
+      isUnlocked &&
+      !isCurrentNetwork &&
+      network.chainId !== EthereumMainnetcaipChainId;
+    const isNetworkEditable = network.isEvm;
+    console.log('generateMultichainNetworkListItem', { network });
+    const hasMultiRpcOptions =
+      network.isEvm &&
+      [...searchedEnabledNetworks, ...searchedTestNetworks].some(
+        (net) => net.rpcEndpoints?.length > 1,
+      );
+
+    const onDelete = () => {
+      dispatch(toggleNetworkMenu());
+      dispatch(
+        showModal({
+          name: 'CONFIRM_DELETE_NETWORK',
+          target: network.chainId,
+          onConfirm: () => undefined,
+        }),
+      );
+    };
+
+    const onEdit = () => {
+      dispatch(
+        setEditedNetwork({
+          chainId: network.chainId,
+          nickname: network.name,
+        }),
+      );
+      setActionMode(ACTION_MODES.ADD_EDIT);
+    };
+
+    const onRpcConfigEdit = () => {
+      setActionMode(ACTION_MODES.SELECT_RPC);
+      dispatch(setEditedNetwork({ chainId: network.chainId }));
+    };
 
     return (
       <NetworkListItem
+        key={network.chainId}
         name={network.name}
         iconSrc={
           CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-            network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+            fromCaipToHexId(
+              network.chainId,
+            ) as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
           ]
         }
         iconSize={AvatarNetworkSize.Sm}
-        rpcEndpoint={
-          showMultiRpcSelectors
-            ? network.rpcEndpoints[network.defaultRpcEndpointIndex]
-            : undefined
-        }
-        key={network.chainId}
-        chainId={network.chainId}
         selected={isCurrentNetwork && !focusSearch}
         focus={isCurrentNetwork && !focusSearch}
-        onClick={() => {
-          handleNetworkChange(network);
-        }}
-        onDeleteClick={
-          canDeleteNetwork
-            ? () => {
-                dispatch(toggleNetworkMenu());
-                dispatch(
-                  showModal({
-                    name: 'CONFIRM_DELETE_NETWORK',
-                    target: network.chainId,
-                    onConfirm: () => undefined,
-                  }),
-                );
-              }
+        rpcEndpoint={
+          hasMultiRpcOptions
+            ? getDefaultRpcEndpointByChainId(network.chainId)
             : undefined
         }
-        onEditClick={() => {
-          dispatch(
-            setEditedNetwork({
-              chainId: network.chainId,
-              nickname: network.name,
-            }),
-          );
-          setActionMode(ACTION_MODES.ADD_EDIT);
+        onClick={() => {
+          handleNetworkChange(network.chainId);
         }}
-        onRpcEndpointClick={() => {
-          setActionMode(ACTION_MODES.SELECT_RPC);
-          dispatch(setEditedNetwork({ chainId: network.chainId }));
-        }}
+        onDeleteClick={isNetworkDeletable ? () => onDelete() : undefined}
+        onEditClick={isNetworkEditable ? () => onEdit() : undefined}
+        onRpcEndpointClick={network.isEvm ? undefined : onRpcConfigEdit}
       />
     );
   };
@@ -442,7 +489,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
                                   {...providedDrag.draggableProps}
                                   {...providedDrag.dragHandleProps}
                                 >
-                                  {generateNetworkListItem(network)}
+                                  {generateMultichainNetworkListItem(network)}
                                 </Box>
                               )}
                             </Draggable>
@@ -489,7 +536,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
               {showTestNetworks || currentlyOnTestNetwork ? (
                 <Box className="multichain-network-list-menu">
                   {searchedTestNetworks.map((network) =>
-                    generateNetworkListItem(network),
+                    generateMultichainNetworkListItem(network),
                   )}
                 </Box>
               ) : null}

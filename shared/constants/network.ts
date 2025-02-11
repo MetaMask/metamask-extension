@@ -85,6 +85,9 @@ export const NETWORK_TYPES = {
   LINEA_GOERLI: 'linea-goerli',
   LINEA_SEPOLIA: 'linea-sepolia',
   LINEA_MAINNET: 'linea-mainnet',
+  // Non-EVM networks
+  BITCOIN_MAINNET: 'bitcoin-mainnet',
+  SOLANA_MAINNET: 'solana-mainnet',
 } as const;
 
 export type NetworkTypes = (typeof NETWORK_TYPES)[keyof typeof NETWORK_TYPES];
@@ -104,6 +107,7 @@ export const CHAIN_SPEC_URL = 'https://chainid.network/chains.json';
  * those that we have added custom code to support our feature set.
  */
 export const CHAIN_IDS = {
+  // Hex chain IDs
   MAINNET: '0x1',
   GOERLI: '0x5',
   LOCALHOST: '0x539',
@@ -175,6 +179,9 @@ export const CHAIN_IDS = {
   INK: '0xdef1',
   MODE_SEPOLIA: '0x397',
   MODE: '0x868b',
+  // CAIP-2 chain IDs
+  BITCOIN_MAINNET: 'bip122:000000000019d6689c085ae165831e93',
+  SOLANA_MAINNET: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -298,6 +305,9 @@ export const INK_DISPLAY_NAME = 'Ink Mainnet';
 export const SONEIUM_DISPLAY_NAME = 'Soneium Mainnet';
 export const MODE_SEPOLIA_DISPLAY_NAME = 'Mode Sepolia';
 export const MODE_DISPLAY_NAME = 'Mode Mainnet';
+// Non-EVM networks names
+export const BITCOIN_MAINNET_DISPLAY_NAME = 'Bitcoin Mainnet';
+export const SOLANA_MAINNET_DISPLAY_NAME = 'Solana Mainnet';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -516,6 +526,9 @@ export const SONIC_MAINNET_IMAGE_URL = './images/sonic.svg';
 export const SONEIUM_IMAGE_URL = './images/soneium.svg';
 export const MODE_SEPOLIA_IMAGE_URL = './images/mode-sepolia.svg';
 export const MODE_IMAGE_URL = './images/mode.svg';
+// Non-EVM network images
+export const BITCOIN_MAINNET_IMAGE_URL = './images/bitcoin-logo.svg';
+export const SOLANA_MAINNET_IMAGE_URL = './images/solana-logo.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -552,6 +565,10 @@ export const TEST_NETWORK_TICKER_MAP: {
   }`,
   [NETWORK_TYPES.LINEA_GOERLI]: `Linea${CURRENCY_SYMBOLS.ETH}`,
   [NETWORK_TYPES.LINEA_SEPOLIA]: `Linea${CURRENCY_SYMBOLS.ETH}`,
+
+  // Non-EVM networks
+  [NETWORK_TYPES.BITCOIN_MAINNET]: 'BTC',
+  [NETWORK_TYPES.SOLANA_MAINNET]: 'SOL',
 };
 
 /**
@@ -877,6 +894,9 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.SONEIUM_TESTNET]: SONEIUM_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.MODE_SEPOLIA]: MODE_SEPOLIA_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.MODE]: MODE_IMAGE_URL,
+  // Non-EVM networks
+  [CHAINLIST_CHAIN_IDS_MAP.BITCOIN_MAINNET]: BITCOIN_MAINNET_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.SOLANA_MAINNET]: SOLANA_MAINNET_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -921,6 +941,9 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.INK]: ETH_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.SONIC_MAINNET]: SONIC_MAINNET_IMAGE_URL,
   [CHAIN_IDS.MODE]: ETH_TOKEN_IMAGE_URL,
+  // Non-EVM networks
+  [CHAIN_IDS.BITCOIN_MAINNET]: BITCOIN_MAINNET_IMAGE_URL,
+  [CHAIN_IDS.SOLANA_MAINNET]: SOLANA_MAINNET_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
