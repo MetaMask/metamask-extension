@@ -520,23 +520,17 @@ describe('Contract Interaction Confirmation', () => {
 
     fireEvent.click(await screen.findByTestId('confirm-footer-cancel-button'));
 
-    let updateTransactionEventFragment;
-
-    await waitFor(() => {
-      updateTransactionEventFragment =
-        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) =>
-            call[0] === 'updateEventFragment' &&
-            JSON.stringify(call[1]).includes(
-              JSON.stringify({
-                properties: {
-                  external_link_clicked: 'security_alert_support_link',
-                },
-              }),
-            ),
-        );
-
-      expect(updateTransactionEventFragment).toBeDefined();
-    });
+    expect(
+      mockedBackgroundConnection.submitRequestToBackground,
+    ).toHaveBeenCalledWith(
+      'updateEventFragment',
+      expect.arrayContaining([
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            external_link_clicked: 'security_alert_support_link',
+          }),
+        }),
+      ]),
+    );
   });
 });
