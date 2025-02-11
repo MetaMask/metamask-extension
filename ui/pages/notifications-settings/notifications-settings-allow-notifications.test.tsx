@@ -32,7 +32,7 @@ describe('NotificationsSettingsAllowNotifications', () => {
       </Provider>,
     );
 
-    expect(getByTestId(`${testId}-box`)).toBeInTheDocument();
-    expect(getByTestId(`${testId}-input`)).toBeInTheDocument();
+    expect(getByTestId(`${testId}-toggle-box`)).toBeInTheDocument();
+    expect(getByTestId(`${testId}-toggle-input`)).toBeInTheDocument();
   });
 });
