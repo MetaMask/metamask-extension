@@ -1,7 +1,7 @@
 import React from 'react';
 import useTokenDisplayInfo from '../hooks/useTokenDisplayInfo';
 import { TokenWithFiatAmount } from '../types';
-import { TokenCellListItem } from './token-cell-list-item';
+import { TokenCellGroup } from './token-cell-group';
 
 type TokenCellProps = {
   token: TokenWithFiatAmount;
@@ -30,10 +30,9 @@ export default function TokenCell({
   }
 
   return (
-    <TokenCellListItem
+    <TokenCellGroup
       token={{ ...token, ...tokenDisplayInfo }}
       onClick={handleOnClick}
-      showPercentage
       privacyMode={privacyMode}
     />
   );
