@@ -42,6 +42,7 @@ type AssertSignatureMetricsOptions = {
   decodingChangeTypes?: string[];
   decodingResponse?: string;
   decodingDescription?: string | null;
+  hdSrpIndex?: number;
 };
 
 type SignatureEventProperty = {
@@ -59,6 +60,7 @@ type SignatureEventProperty = {
   decoding_description?: string | null;
   ui_customizations?: string[];
   location?: string;
+  hd_srp_index?: number;
 };
 
 const signatureAnonProperties = {
@@ -107,6 +109,7 @@ function getSignatureEventProperty(
     security_alert_reason: securityAlertReason,
     security_alert_response: securityAlertResponse,
     ui_customizations: uiCustomizations,
+    hd_srp_index: 0,
   };
 
   if (primaryType !== '') {
@@ -222,6 +225,7 @@ export async function assertSignatureRejectedMetrics({
   assertEventPropertiesMatch(events, 'Signature Rejected', {
     ...signatureEventProperty,
     location,
+    hd_srp_index: 0,
     ...expectedProps,
   });
 
