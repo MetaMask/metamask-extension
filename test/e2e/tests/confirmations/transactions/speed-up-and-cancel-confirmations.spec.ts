@@ -7,9 +7,9 @@ import {
   unlockWallet,
 } from '../../../helpers';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
-import { TransactionListPage } from '../../../page-objects/pages/transaction-list-page';
-import { TransactionDetailsPage } from '../../../page-objects/pages/transaction-details-page';
 import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
+import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import HomePage from '../../../page-objects/pages/home/homepage';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import { TestSuiteArguments } from './shared';
 
@@ -27,7 +27,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
+          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract: SMART_CONTRACTS.PIGGYBANK,
           title: this.test?.fullTitle(),
         },
@@ -54,15 +54,17 @@ describe('Speed Up and Cancel Transaction Tests', function () {
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
 
-          const transactionListPage = new TransactionListPage(driver);
-          await transactionListPage.goToActivityTab();
-          await transactionListPage.waitForPendingTransaction();
-          await transactionListPage.clickPendingTransaction();
+          const homePage = new HomePage(driver);
+          await homePage.goToActivityList();
 
-          const transactionDetailsPage = new TransactionDetailsPage(driver);
-          await transactionDetailsPage.speedUpTransaction();
+          const activityListPage = new ActivityListPage(driver);
+          await activityListPage.check_completedTxNumberDisplayedInActivity(1);
 
-          await transactionListPage.waitForTransactionStatus('confirmed');
+          await activityListPage.click_transactionListItem();
+          await activityListPage.click_speedUpTransaction();
+          await activityListPage.click_confirmTransactionReplacement();
+
+          await activityListPage.check_waitForTransactionStatus('confirmed');
         },
       );
     });
@@ -76,7 +78,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
+          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract: SMART_CONTRACTS.PIGGYBANK,
           title: this.test?.fullTitle(),
         },
@@ -91,7 +93,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
             to: DEFAULT_FIXTURE_ACCOUNT,
           });
 
-          await driver.waitUntilXWindowHandles(2);
+          await driver.waitUntilXWindowHandles(3);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
           const confirmationPage = new Confirmation(driver);
@@ -101,11 +103,16 @@ describe('Speed Up and Cancel Transaction Tests', function () {
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
 
-          const transactionListPage = new TransactionListPage(driver);
-          await transactionListPage.goToActivityTab();
-          await transactionListPage.waitForPendingTransaction();
-          await transactionListPage.cancelTransaction();
-          await transactionListPage.waitForTransactionStatus('cancelled');
+          const homePage = new HomePage(driver);
+          await homePage.goToActivityList();
+
+          const activityListPage = new ActivityListPage(driver);
+          await activityListPage.check_completedTxNumberDisplayedInActivity(1);
+
+          await activityListPage.click_cancelTransaction();
+          await activityListPage.click_confirmTransactionReplacement();
+
+          await activityListPage.check_waitForTransactionStatus('cancelled');
         },
       );
     });
