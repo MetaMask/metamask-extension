@@ -106,6 +106,7 @@ export type TransactionMetricsRequest = {
   ) => SmartTransaction;
   getMethodData: (data: string) => Promise<{ name: string }>;
   getIsConfirmationAdvancedDetailsOpen: () => boolean;
+  getHDSrpIndex: () => number;
 };
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
@@ -389,12 +390,17 @@ export const createTransactionEventFragmentWithTxId = async (
  * @param transactionMetricsRequest - Contains controller actions
  * @param transactionMetricsRequest.getParticipateInMetrics - Returns whether the user has opted into metrics
  * @param transactionMetricsRequest.trackEvent - MetaMetrics track event function
+ * @param transactionMetricsRequest.getHDSrpIndex - Returns the HD SRP index
  * @param transactionEventPayload - The event payload
  * @param transactionEventPayload.transactionMeta - The updated transaction meta
  * @param transactionEventPayload.approvalTransactionMeta - The updated approval transaction meta
  */
 export const handlePostTransactionBalanceUpdate = async (
-  { getParticipateInMetrics, trackEvent }: TransactionMetricsRequest,
+  {
+    getParticipateInMetrics,
+    trackEvent,
+    getHDSrpIndex,
+  }: TransactionMetricsRequest,
   {
     transactionMeta,
     approvalTransactionMeta,
@@ -406,9 +412,12 @@ export const handlePostTransactionBalanceUpdate = async (
   if (getParticipateInMetrics() && transactionMeta.swapMetaData) {
     if (transactionMeta.txReceipt?.status === '0x0') {
       trackEvent({
-        event: 'Swap Failed',
-        sensitiveProperties: { ...transactionMeta.swapMetaData },
+        event: MetaMetricsEventName.SwapFailed,
         category: MetaMetricsEventCategory.Swaps,
+        sensitiveProperties: { ...transactionMeta.swapMetaData },
+        properties: {
+          hd_srp_index: getHDSrpIndex(),
+        },
       });
     } else {
       const tokensReceived = getSwapsTokensReceivedFromTxMeta(
@@ -461,6 +470,9 @@ export const handlePostTransactionBalanceUpdate = async (
           // browsers.
           token_to_amount:
             transactionMeta.swapMetaData.token_to_amount.toString(10),
+        },
+        properties: {
+          hd_srp_index: getHDSrpIndex(),
         },
       });
     }
@@ -1042,6 +1054,12 @@ async function buildEventFragmentProperties({
   const swapAndSendMetricsProperties =
     getSwapAndSendMetricsProps(transactionMeta);
 
+  // Add SRP Properties
+  const hdSrpIndex = transactionMetricsRequest.getHDSrpIndex();
+  const srpProperties = {
+    hd_srp_index: hdSrpIndex === -1 ? undefined : hdSrpIndex,
+  };
+
   /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
   let properties = {
     chain_id: chainId,
@@ -1072,6 +1090,7 @@ async function buildEventFragmentProperties({
     transaction_contract_method: transactionContractMethod,
     ...smartTransactionMetricsProperties,
     ...swapAndSendMetricsProperties,
+    ...srpProperties,
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as Record<string, any>;

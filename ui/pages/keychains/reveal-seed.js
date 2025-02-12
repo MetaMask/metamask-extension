@@ -39,6 +39,7 @@ import {
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { requestRevealSeedWords } from '../../store/actions';
+import { getHDSrpIndex } from '../../selectors/selectors';
 
 const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN';
 const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN';
@@ -48,6 +49,7 @@ export default function RevealSeedPage() {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const hdSrpIndex = useSelector(getHDSrpIndex);
 
   const [screen, setScreen] = useState(PASSWORD_PROMPT_SCREEN);
   const [password, setPassword] = useState('');
@@ -83,6 +85,7 @@ export default function RevealSeedPage() {
           event: MetaMetricsEventName.KeyExportRevealed,
           properties: {
             key_type: MetaMetricsEventKeyType.Srp,
+            hd_srp_index: hdSrpIndex,
           },
         });
         setSeedWords(revealedSeedWords);
@@ -96,6 +99,7 @@ export default function RevealSeedPage() {
           properties: {
             key_type: MetaMetricsEventKeyType.Srp,
             reason: e.message, // 'incorrect_password',
+            hd_srp_index: hdSrpIndex,
           },
         });
         setError(getErrorMessage(e));
@@ -194,6 +198,7 @@ export default function RevealSeedPage() {
                   properties: {
                     key_type: MetaMetricsEventKeyType.Srp,
                     copy_method: 'clipboard',
+                    hd_srp_index: hdSrpIndex,
                   },
                 });
                 trackEvent({
@@ -202,6 +207,7 @@ export default function RevealSeedPage() {
                   properties: {
                     key_type: MetaMetricsEventKeyType.Srp,
                     copy_method: 'clipboard',
+                    hd_srp_index: hdSrpIndex,
                   },
                 });
               }}
@@ -245,6 +251,7 @@ export default function RevealSeedPage() {
               event: MetaMetricsEventName.KeyExportCanceled,
               properties: {
                 key_type: MetaMetricsEventKeyType.Srp,
+                hd_srp_index: hdSrpIndex,
               },
             });
             trackEvent({
@@ -252,6 +259,7 @@ export default function RevealSeedPage() {
               event: MetaMetricsEventName.SrpRevealCancelled,
               properties: {
                 key_type: MetaMetricsEventKeyType.Srp,
+                hd_srp_index: hdSrpIndex,
               },
             });
             history.push(mostRecentOverviewPage);
@@ -268,6 +276,7 @@ export default function RevealSeedPage() {
               event: MetaMetricsEventName.KeyExportRequested,
               properties: {
                 key_type: MetaMetricsEventKeyType.Srp,
+                hd_srp_index: hdSrpIndex,
               },
             });
             trackEvent({
