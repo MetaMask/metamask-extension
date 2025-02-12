@@ -182,8 +182,7 @@ jobs:
       - validate-lavamoat-policy-build
       - validate-lavamoat-policy-webapp
       - run-tests
-      # - run-pageload-benchmark # Will enable this as a required job in a later PR
-      # - run-user-actions-benchmark # Will enable this as a required job in a later PR
+      # - run-benchmark-matrix # Will enable this as a required job in a later PR
       - wait-for-circleci-workflow-status
       - build-storybook
       - build-beta
