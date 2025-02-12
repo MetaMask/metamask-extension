@@ -7,7 +7,7 @@ exports[`Token Cell should match snapshot 1`] = `
   >
     <a
       class="mm-box mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--width-full"
-      data-testid="token-cell-button"
+      data-testid="multichain-token-list-button"
       style="height: 62px; cursor: pointer;"
     >
       <div
