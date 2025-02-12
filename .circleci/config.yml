@@ -257,6 +257,13 @@ workflows:
               only: main
           requires:
             - prep-build-ts-migration-dashboard
+      - send-ci-break-notification:
+          filters:
+            branches:
+              only: dm-add-ci-break-notification
+          context: mm-extension-ci-bot
+          requires:
+            - all-tests-pass
 
   rerun-from-failed:
     when:
@@ -1189,10 +1196,18 @@ jobs:
       - run:
           name: test:mozilla-lint
           command: yarn mozilla-lint
-
   all-tests-pass:
     executor: node-browsers-small
     steps:
       - run:
           name: All Tests Passed
           command: echo 'whew - everything passed!'
+  send-ci-break-notification:
+    executor: node-browsers-small
+    steps:
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
+      - slack/notify:
+          event: pass
+          template: basic_success_1
