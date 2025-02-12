@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 
 import { useSelector } from 'react-redux';
-import { isEqual, uniqBy } from 'lodash';
+import { uniqBy } from 'lodash';
 import {
   Token,
   TokenListMap,
@@ -31,24 +31,12 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import { AssetType } from '../../../../../shared/constants/transaction';
 import {
-  getCurrentChainId,
-  getNetworkConfigurationsByChainId,
-} from '../../../../../shared/modules/selectors/networks';
-import {
   getAllTokens,
-  getNativeCurrencyImage,
-  getSelectedAccountCachedBalance,
   getSelectedInternalAccount,
   getShouldHideZeroBalanceTokens,
   getTokenExchangeRates,
-  getTokenList,
   getUseExternalServices,
 } from '../../../../selectors';
-import {
-  getConversionRate,
-  getCurrentCurrency,
-  getNativeCurrency,
-} from '../../../../ducks/metamask/metamask';
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import { getSwapsBlockedTokens } from '../../../../ducks/send';
@@ -59,7 +47,18 @@ import { AvatarType } from '../../avatar-group/avatar-group.types';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
 import { useAsyncResult } from '../../../../hooks/useAsyncResult';
 import { fetchTopAssetsList } from '../../../../pages/swaps/swaps.util';
-import { getImageForChainId } from '../../../../selectors/multichain';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import {
+  getMultichainConversionRate,
+  getMultichainCurrencyImage,
+  getImageForChainId,
+  getMultichainCurrentChainId,
+  getMultichainCurrentCurrency,
+  getMultichainNativeCurrency,
+  getMultichainNetworkConfigurationsByChainId,
+  getMultichainSelectedAccountCachedBalance,
+  getMultichainTokenList,
+} from '../../../../selectors/multichain';
 import {
   ERC20Asset,
   NativeAsset,
@@ -147,21 +146,26 @@ export function AssetPickerModal({
 
   const handleAssetChange = useCallback(onAssetChange, [onAssetChange]);
 
-  const currentChainId = useSelector(getCurrentChainId);
-  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const currentChainId = useMultichainSelector(getMultichainCurrentChainId);
+  const allNetworks = useMultichainSelector(
+    getMultichainNetworkConfigurationsByChainId,
+  );
   const selectedNetwork =
-    network ?? (currentChainId && allNetworks[currentChainId]);
+    network ??
+    (currentChainId && allNetworks[currentChainId as keyof typeof allNetworks]);
   const allNetworksToUse = networks ?? Object.values(allNetworks ?? {});
   // This indicates whether tokens in the wallet's active network are displayed
   const isSelectedNetworkActive = selectedNetwork.chainId === currentChainId;
 
-  const nativeCurrencyImage = useSelector(getNativeCurrencyImage);
-  const nativeCurrency = useSelector(getNativeCurrency);
-  const balanceValue = useSelector(getSelectedAccountCachedBalance);
+  const nativeCurrencyImage = useMultichainSelector(getMultichainCurrencyImage);
+  const nativeCurrency = useMultichainSelector(getMultichainNativeCurrency);
+  const balanceValue = useMultichainSelector(
+    getMultichainSelectedAccountCachedBalance,
+  );
 
-  const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
-  const conversionRate = useSelector(getConversionRate);
-  const currentCurrency = useSelector(getCurrentCurrency);
+  const tokenConversionRates = useMultichainSelector(getTokenExchangeRates);
+  const conversionRate = useMultichainSelector(getMultichainConversionRate);
+  const currentCurrency = useMultichainSelector(getMultichainCurrentCurrency);
 
   const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
   const shouldHideZeroBalanceTokens = useSelector(
@@ -183,7 +187,9 @@ export function AssetPickerModal({
   const { assetsWithBalance: multichainTokensWithBalance } =
     useMultichainBalances();
 
-  const tokenList = useSelector(getTokenList) as TokenListMap;
+  const tokenList = useMultichainSelector(
+    getMultichainTokenList,
+  ) as TokenListMap;
 
   const allowExternalServices = useSelector(getUseExternalServices);
   // Swaps top tokens
@@ -252,11 +258,10 @@ export function AssetPickerModal({
       const blockedTokens = [];
 
       // Yield multichain tokens with balances
-      if (isMultiselectEnabled) {
-        for (const token of multichainTokensWithBalance) {
-          if (shouldAddToken(token.symbol, token.address, token.chainId)) {
-            yield token;
-          }
+      // if (isMultiselectEnabled) {
+      for (const token of multichainTokensWithBalance) {
+        if (shouldAddToken(token.symbol, token.address, token.chainId)) {
+          yield token;
         }
       }
 
