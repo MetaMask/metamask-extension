@@ -6,16 +6,16 @@ import {
   getMultichainCurrentNetwork,
   getMultichainSelectedAccountCachedBalance,
   getMultichainShouldShowFiat,
-} from '../../../../../selectors/multichain';
+} from '../../../../selectors/multichain';
 import {
   getPreferences,
   getSelectedInternalAccount,
-} from '../../../../../selectors';
-import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
-import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOriginalNativeTokenSymbol';
-import { PRIMARY, SECONDARY } from '../../../../../helpers/constants/common';
-import { useUserPreferencedCurrency } from '../../../../../hooks/useUserPreferencedCurrency';
-import { useCurrencyDisplay } from '../../../../../hooks/useCurrencyDisplay';
+} from '../../../../selectors';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
+import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
+import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
+import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 
 export const useNativeTokenBalance = () => {
   const showFiat = useSelector(getMultichainShouldShowFiat);

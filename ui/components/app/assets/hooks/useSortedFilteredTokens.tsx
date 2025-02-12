@@ -11,9 +11,9 @@ import {
 } from '../../../../selectors';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { TokenWithFiatAmount } from '../types';
-import { useNativeTokenBalance } from '../asset-list/native-token/use-native-token-balance';
 import { getMultichainIsEvm } from '../../../../selectors/multichain';
 import { filterAssets } from '../util/filter';
+import { useNativeTokenBalance } from './useNativeTokenBalance';
 import useNetworkFilter from './useNetworkFilter';
 
 const useSortedFilteredTokens = () => {
