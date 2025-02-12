@@ -136,6 +136,24 @@ export function getMultichainNetworkProviders(
   return Object.values(MULTICHAIN_PROVIDER_CONFIGS);
 }
 
+export const getMultichainNetworkConfigurationsByChainId = (
+  state: MultichainState,
+) => {
+  return {
+    ...getNetworkConfigurationsByChainId(state),
+    [MultichainNetworks.SOLANA]: {
+      ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
+      blockExplorerUrls: [],
+      name:
+        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA].nickname ?? '',
+      nativeCurrency: '',
+      rpcEndpoints: [{ url: '', type: '', networkClientId: '' }],
+      defaultRpcEndpointIndex: 0,
+      chainId: MultichainNetworks.SOLANA as unknown as Hex,
+    },
+  };
+};
+
 export function getMultichainNetwork(
   state: MultichainState,
   account?: InternalAccount,
