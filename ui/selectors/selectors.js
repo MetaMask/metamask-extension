@@ -1144,7 +1144,6 @@ export function getPetnamesEnabled(state) {
  * @param {*} state
  * @returns {Record<Hex, boolean>}
  */
-// THIS KEPT RE-RENDERING
 export const getTokenNetworkFilter = createDeepEqualSelector(
   getCurrentChainId,
   getPreferences,

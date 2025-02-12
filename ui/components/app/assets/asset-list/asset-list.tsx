@@ -29,41 +29,42 @@ export type AssetListProps = {
   showTokensLinks?: boolean;
 };
 
-const TokenListContainer = ({
-  onClickAsset,
-}: Pick<AssetListProps, 'onClickAsset'>) => {
-  const trackEvent = useContext(MetaMetricsContext);
-  const { primaryCurrencyProperties } = usePrimaryCurrencyProperties();
-  const isEvm = useSelector(getMultichainIsEvm);
+const TokenListContainer = React.memo(
+  ({ onClickAsset }: Pick<AssetListProps, 'onClickAsset'>) => {
+    const trackEvent = useContext(MetaMetricsContext);
+    const { primaryCurrencyProperties } = usePrimaryCurrencyProperties();
+    const isEvm = useSelector(getMultichainIsEvm);
 
-  const onTokenClick = useCallback((chainId: string, tokenAddress: string) => {
-    onClickAsset(chainId, tokenAddress);
-    trackEvent({
-      event: MetaMetricsEventName.TokenScreenOpened,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        token_symbol: primaryCurrencyProperties.suffix,
-        location: 'Home',
+    const onTokenClick = useCallback(
+      (chainId: string, tokenAddress: string) => {
+        onClickAsset(chainId, tokenAddress);
+        trackEvent({
+          event: MetaMetricsEventName.TokenScreenOpened,
+          category: MetaMetricsEventCategory.Navigation,
+          properties: {
+            token_symbol: primaryCurrencyProperties.suffix,
+            location: 'Home',
+          },
+        });
       },
-    });
-  }, []);
+      [],
+    );
 
-  const nativeToken = useMemo(
-    () => !isEvm && <NativeToken onClickAsset={onClickAsset} />,
-    [isEvm, onClickAsset],
-  );
+    const nativeToken = useMemo(
+      () => !isEvm && <NativeToken onClickAsset={onClickAsset} />,
+      [isEvm, onClickAsset],
+    );
 
-  return (
-    <TokenList
-      // nativeToken is still needed to avoid breaking flask build's support for bitcoin
-      // TODO: refactor this to no longer be needed for non-evm chains
-      nativeToken={nativeToken}
-      onTokenClick={onTokenClick}
-    />
-  );
-};
-
-const TokenListContainerMemo = React.memo(TokenListContainer);
+    return (
+      <TokenList
+        // nativeToken is still needed to avoid breaking flask build's support for bitcoin
+        // TODO: refactor this to no longer be needed for non-evm chains
+        nativeToken={nativeToken}
+        onTokenClick={onTokenClick}
+      />
+    );
+  },
+);
 
 const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const { showDetectedTokens, setShowDetectedTokens } =
@@ -76,7 +77,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   return (
     <>
       <AssetListControlBar showTokensLinks={shouldShowTokensLinks} />
-      <TokenListContainerMemo onClickAsset={onClickAsset} />
+      <TokenListContainer onClickAsset={onClickAsset} />
       {showDetectedTokens && (
         <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />
       )}

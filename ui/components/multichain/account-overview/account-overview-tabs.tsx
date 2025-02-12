@@ -115,7 +115,7 @@ export const AccountOverviewTabs = ({
   const onClickAsset = useCallback(
     (chainId: string, asset: string) =>
       history.push(`${ASSET_ROUTE}/${chainId}/${asset}`),
-    [],
+    [history],
   );
 
   return (
