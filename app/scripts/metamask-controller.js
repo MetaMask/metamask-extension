@@ -163,8 +163,8 @@ import {
 } from '@metamask/multichain';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { MultichainTransactionsController } from '@metamask/multichain-transactions-controller';
-import { isProduction } from '../../shared/modules/environment';
 ///: END:ONLY_INCLUDE_IF
+import { isProduction } from '../../shared/modules/environment';
 import {
   methodsRequiringNetworkSwitch,
   methodsThatCanSwitchNetworkWithoutApproval,
