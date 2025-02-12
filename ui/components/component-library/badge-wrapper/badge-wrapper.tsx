@@ -3,13 +3,13 @@ import classnames from 'classnames';
 
 import { Display } from '../../../helpers/constants/design-system';
 
+import { Box, type BoxProps, type PolymorphicRef } from '../box';
 import {
   BadgeWrapperPosition,
   BadgeWrapperAnchorElementShape,
   BadgeWrapperProps,
   BadgeWrapperComponent,
 } from './badge-wrapper.types';
-import { Box, type BoxProps, type PolymorphicRef } from '../box';
 
 export const BadgeWrapper: BadgeWrapperComponent = React.forwardRef(
   <C extends React.ElementType = 'div'>(

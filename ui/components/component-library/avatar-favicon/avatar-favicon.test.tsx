@@ -2,9 +2,9 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 
+import { IconName } from '../icon';
 import { AvatarFaviconSize } from './avatar-favicon.types';
 import { AvatarFavicon } from './avatar-favicon';
-import { IconName } from '../icon';
 
 describe('AvatarFavicon', () => {
   const args = {

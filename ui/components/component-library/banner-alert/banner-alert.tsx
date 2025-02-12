@@ -7,12 +7,12 @@ import {
 } from '../../../helpers/constants/design-system';
 import { PolymorphicRef } from '../box';
 import { BannerBase, BannerBaseProps } from '../banner-base';
+import { Icon, IconName, IconSize } from '../icon';
 import {
   BannerAlertComponent,
   BannerAlertProps,
   BannerAlertSeverity,
 } from './banner-alert.types';
-import { Icon, IconName, IconSize } from '../icon';
 
 export const BannerAlert: BannerAlertComponent = React.forwardRef(
   <C extends React.ElementType = 'div'>(

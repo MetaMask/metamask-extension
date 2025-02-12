@@ -4,8 +4,8 @@ import React from 'react';
 
 import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
 
-import { BannerBase } from './banner-base';
 import { Icon, IconName } from '../icon';
+import { BannerBase } from './banner-base';
 
 describe('BannerBase', () => {
   it('should render BannerBase element correctly', () => {

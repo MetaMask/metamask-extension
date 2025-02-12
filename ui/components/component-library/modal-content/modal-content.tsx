@@ -13,13 +13,13 @@ import {
 
 import { Box, BoxProps } from '../box';
 import type { PolymorphicRef } from '../box';
+import { useModalContext } from '../modal/modal.context';
+import { ModalFocus } from '../modal-focus';
 import {
   ModalContentProps,
   ModalContentSize,
   ModalContentComponent,
 } from './modal-content.types';
-import { useModalContext } from '../modal/modal.context';
-import { ModalFocus } from '../modal-focus';
 
 export const ModalContent: ModalContentComponent = React.forwardRef(
   <C extends React.ElementType = 'div'>(
