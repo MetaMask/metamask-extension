@@ -28,11 +28,9 @@ export const TokenCellBadge = ({ token }: TokenCellBadgeProps) => {
           src={getImageForChainId(token.chainId) || undefined}
           backgroundColor={BackgroundColor.backgroundDefault}
           borderWidth={2}
-          className="multichain-token-list-item__badge__avatar-network"
         />
       }
       marginRight={4}
-      className="multichain-token-list-item__badge"
     >
       <AvatarToken
         name={token.symbol}

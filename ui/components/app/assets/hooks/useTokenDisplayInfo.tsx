@@ -8,7 +8,7 @@ import {
   getTokenList,
   selectERC20TokensByChain,
 } from '../../../../selectors';
-import { TokenWithFiatAmount } from '../types';
+import { TokenDisplayInfo, TokenWithFiatAmount } from '../types';
 import {
   getImageForChainId,
   getMultichainIsEvm,
@@ -23,15 +23,6 @@ import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 
 type UseTokenDisplayInfoProps = {
   token: TokenWithFiatAmount;
-};
-
-type TokenDisplayInfo = {
-  title: string;
-  tokenImage: string;
-  primary: string;
-  secondary: string | undefined;
-  isStakeable: boolean | undefined;
-  tokenChainImage: string;
 };
 
 export const useTokenDisplayInfo = ({

@@ -303,7 +303,6 @@ const AssetPage = ({
                 showFiat && tokenMarketPrice ? tokenFiatAmount : null,
               string: balance ? balance.toString() : '',
               decimals: asset.decimals,
-              //
               aggregators:
                 type === AssetType.token && asset.aggregators
                   ? asset.aggregators
