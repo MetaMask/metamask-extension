@@ -257,6 +257,11 @@ workflows:
               only: main
           requires:
             - prep-build-ts-migration-dashboard
+      - send-ci-break-notification:
+          filters:
+            branches:
+              only: dm-add-ci-break-notification
+          context: mm-extension-ci-bot
 
   rerun-from-failed:
     when:
@@ -1189,6 +1194,12 @@ jobs:
       - run:
           name: test:mozilla-lint
           command: yarn mozilla-lint
+    send-ci-break-notification:
+      steps:
+      - slack/notify:
+        event: fail
+        mentions: '@metamask-extension-platform'
+        template: basic_fail_1
 
   all-tests-pass:
     executor: node-browsers-small
