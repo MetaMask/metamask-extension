@@ -30,22 +30,13 @@ export const BLOCKABLE_METHODS: Set<string> = new Set([
   MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,
 ]);
 
-const testOrigins = [
-  'http://127.0.0.1:8080',
-  'http://127.0.0.1:8081',
-  'http://127.0.0.1:8082',
-  'http://localhost:8080',
-  'http://localhost:8081',
-  'http://localhost:8082',
-];
-
 export type ExtendedJSONRPCRequest = JsonRpcRequest & { origin: string };
 
 export const SPAM_FILTER_ACTIVATED_ERROR = providerErrors.unauthorized(
   'Request blocked due to spam filter.',
 );
 
-type createOriginThrottlingMiddlewareOptions = {
+type CreateOriginThrottlingMiddlewareOptions = {
   getThrottledOriginState: (origin: string) => ThrottledOrigin | undefined;
   updateThrottledOriginState: (
     origin: string,
@@ -73,7 +64,7 @@ const isOriginBlockedForConfirmations = (
 export default function createOriginThrottlingMiddleware({
   getThrottledOriginState,
   updateThrottledOriginState,
-}: createOriginThrottlingMiddlewareOptions) {
+}: CreateOriginThrottlingMiddlewareOptions) {
   return function originThrottlingMiddleware(
     req: ExtendedJSONRPCRequest,
     res: JsonRpcResponse<Json | JsonRpcError>,
@@ -84,7 +75,7 @@ export default function createOriginThrottlingMiddleware({
     const isBlockableRPCMethod = BLOCKABLE_METHODS.has(method);
 
     // We don't want to throttle requests in e2e tests
-    if (!isBlockableRPCMethod || testOrigins.includes(origin)) {
+    if (!isBlockableRPCMethod || process.env.IN_TEST === 'true') {
       next();
       return;
     }
