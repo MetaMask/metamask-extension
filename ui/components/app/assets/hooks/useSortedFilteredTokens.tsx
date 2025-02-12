@@ -38,7 +38,7 @@ const useSortedFilteredTokens = () => {
     const filteredAssets = filterAssets(balances, [
       {
         key: 'chainId',
-        opts: isEvm ? networkFilter : { chainId: nonEvmNativeToken.chainId },
+        opts: isEvm ? networkFilter : { [nonEvmNativeToken.chainId]: true },
         filterCallback: 'inclusive',
       },
     ]);
