@@ -246,6 +246,8 @@ module.exports = {
         'test/lib/render-helpers.js',
         'test/jest/rendering.js',
         'ui/**/*.js',
+        'ui/components/app/assets/token-cell/token-cell.tsx',
+        'ui/components/app/assets/token-list/token-list.tsx',
       ],
       extends: ['plugin:react/recommended', 'plugin:react-hooks/recommended'],
       parserOptions: {

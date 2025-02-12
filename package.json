@@ -92,7 +92,7 @@
     "mozilla-lint": "addons-linter dist/firefox",
     "devtools:react": "react-devtools",
     "devtools:redux": "remotedev --hostname=localhost --port=8000",
-    "start:dev": "concurrently -k -n build,react,redux yarn:start yarn:devtools:react yarn:devtools:redux",
+    "start:dev": "concurrently -k -n build,react,redux yarn:start yarn:devtools:react",
     "announce": "node development/announcer.js",
     "storybook": "storybook dev -p 6006 -c .storybook",
     "storybook:build": "storybook build -c .storybook -o storybook-build",

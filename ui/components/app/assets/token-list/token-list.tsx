@@ -7,16 +7,14 @@ import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { useTokenBalances as pollAndUpdateEvmBalances } from '../../../../hooks/useTokenBalances';
 import useSortedFilteredTokens from '../hooks/useSortedFilteredTokens';
 import useShouldShowFiat from '../hooks/useShouldShowFiat';
+import { useLogChangeEffect } from '../hooks/useLogger';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
   nativeToken?: ReactNode;
 };
 
-export default function TokenList({
-  onTokenClick,
-  nativeToken,
-}: TokenListProps) {
+function TokenList({ onTokenClick, nativeToken }: TokenListProps) {
   const { privacyMode } = useSelector(getPreferences);
   const chainIdsToPoll = useSelector(getChainIdsToPoll);
 
@@ -33,6 +31,12 @@ export default function TokenList({
       endTrace({ name: TraceName.AccountOverviewAssetListTab });
     }
   }, [sortedFilteredTokens]);
+
+  useLogChangeEffect('TokenList', 'sortedFilteredTokens', sortedFilteredTokens);
+  useLogChangeEffect('TokenList', 'nativeToken', nativeToken);
+  useLogChangeEffect('TokenList', 'shouldShowFiat', shouldShowFiat);
+  useLogChangeEffect('TokenList', 'privacyMode', privacyMode);
+  useLogChangeEffect('TokenList', 'chainIdsToPoll', chainIdsToPoll);
 
   // Displays nativeToken if provided
   if (nativeToken) {
@@ -58,3 +62,5 @@ export default function TokenList({
     </div>
   );
 }
+
+export default React.memo(TokenList);
