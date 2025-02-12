@@ -164,6 +164,7 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { MultichainTransactionsController } from '@metamask/multichain-transactions-controller';
 ///: END:ONLY_INCLUDE_IF
+import { isProduction } from '../../shared/modules/environment';
 import {
   methodsRequiringNetworkSwitch,
   methodsThatCanSwitchNetworkWithoutApproval,
@@ -316,6 +317,8 @@ import {
   NOTIFICATION_NAMES,
   unrestrictedMethods,
   PermissionNames,
+  validateCaveatAccounts,
+  validateCaveatNetworks,
 } from './controllers/permissions';
 import { MetaMetricsDataDeletionController } from './controllers/metametrics-data-deletion/metametrics-data-deletion';
 import { DataDeletionService } from './services/data-deletion-service';
@@ -349,6 +352,7 @@ import {
   onPushNotificationReceived,
 } from './controllers/push-notifications';
 import createTracingMiddleware from './lib/createTracingMiddleware';
+import createOriginThrottlingMiddleware from './lib/createOriginThrottlingMiddleware';
 import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
 import BridgeStatusController from './controllers/bridge-status/bridge-status-controller';
@@ -1397,7 +1401,7 @@ export default class MetamaskController extends EventEmitter {
         },
       },
       env: {
-        isAccountSyncingEnabled: isManifestV3,
+        isAccountSyncingEnabled: !isProduction() && isManifestV3,
       },
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
@@ -3995,6 +3999,9 @@ export default class MetamaskController extends EventEmitter {
       removePollingTokenFromAppState:
         appStateController.removePollingToken.bind(appStateController),
 
+      updateThrottledOriginState:
+        appStateController.updateThrottledOriginState.bind(appStateController),
+
       // Backup
       backupUserData: backup.backupUserData.bind(backup),
       restoreUserData: backup.restoreUserData.bind(backup),
@@ -5217,6 +5224,32 @@ export default class MetamaskController extends EventEmitter {
       PermissionNames.permittedChains,
     ]);
 
+    const requestedAccounts =
+      permissions[RestrictedMethods.eth_accounts]?.caveats?.find(
+        (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
+      )?.value ?? [];
+
+    const requestedChains =
+      permissions[PermissionNames.permittedChains]?.caveats?.find(
+        (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
+      )?.value ?? [];
+
+    if (permissions[RestrictedMethods.eth_accounts]?.caveats) {
+      validateCaveatAccounts(
+        requestedAccounts,
+        this.accountsController.listAccounts.bind(this.accountsController),
+      );
+    }
+
+    if (permissions[PermissionNames.permittedChains]?.caveats) {
+      validateCaveatNetworks(
+        requestedChains,
+        this.networkController.findNetworkClientIdByChainId.bind(
+          this.networkController,
+        ),
+      );
+    }
+
     if (!permissions[RestrictedMethods.eth_accounts]) {
       permissions[RestrictedMethods.eth_accounts] = {};
     }
@@ -5228,16 +5261,6 @@ export default class MetamaskController extends EventEmitter {
     if (isSnapId(origin)) {
       delete permissions[PermissionNames.permittedChains];
     }
-
-    const requestedChains =
-      permissions[PermissionNames.permittedChains]?.caveats?.find(
-        (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
-      )?.value ?? [];
-
-    const requestedAccounts =
-      permissions[PermissionNames.eth_accounts]?.caveats?.find(
-        (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
-      )?.value ?? [];
 
     const newCaveatValue = {
       requiredScopes: {},
@@ -5953,6 +5976,19 @@ export default class MetamaskController extends EventEmitter {
     }
 
     engine.push(createTracingMiddleware());
+
+    engine.push(
+      createOriginThrottlingMiddleware({
+        getThrottledOriginState:
+          this.appStateController.getThrottledOriginState.bind(
+            this.appStateController,
+          ),
+        updateThrottledOriginState:
+          this.appStateController.updateThrottledOriginState.bind(
+            this.appStateController,
+          ),
+      }),
+    );
 
     engine.push(
       createPPOMMiddleware(
