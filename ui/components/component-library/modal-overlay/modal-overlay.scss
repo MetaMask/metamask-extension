@@ -11,12 +11,12 @@
 
   // Don't animate for users who have reduced motion preferences
   @media (prefers-reduced-motion: no-preference) {
-    animation: mm-modal-fade-in 250ms linear forwards;
+    animation: modal-overlay-fade-in 250ms linear forwards;
   }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  @keyframes mm-modal-fade-in {
+  @keyframes modal-overlay-fade-in {
     from {
       opacity: 0;
     }

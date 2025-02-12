@@ -37,7 +37,7 @@
 
     // Animate for users who have no reduced motion preferences
     @media (prefers-reduced-motion: no-preference) {
-      animation: mm-modal-slide-up 400ms cubic-bezier(0.3, 0.8, 0.3, 1) forwards;
+      animation: modal-dialog-slide-up 400ms cubic-bezier(0.3, 0.8, 0.3, 1) forwards;
     }
 
     // Don't animate for users who have reduced motion preferences
@@ -67,7 +67,7 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  @keyframes mm-modal-slide-up {
+  @keyframes modal-dialog-slide-up {
     from {
       transform: translateY(24px);
       opacity: 0;
