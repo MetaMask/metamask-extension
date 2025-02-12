@@ -19,6 +19,7 @@ export const CronjobControllerInit: ControllerInitFunction<
     // with the expected type.
     // TODO: Look into the type mismatch.
     state: persistedState.CronjobController,
+    // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
     messenger: controllerMessenger,
   });
 
