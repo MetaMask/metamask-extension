@@ -1,0 +1,21 @@
+name: Trigger Publish Slack Release Testing Status
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  call-publish-slack-release-testing-status:
+    permissions:
+      contents: write
+      pull-requests: write
+    uses: MetaMask/github-tools/.github/workflows/publish-slack-release-testing-status.yml@slack-release-testing
+    with:
+      platform: 'extension'
+      google-document-id: '1tsoodlAlyvEUpkkcNcbZ4PM9HuC9cEM80RZeoVv5OCQ' # Release Testing Document
+      test-only: 'true'
+    secrets:
+      slack-api-key: ${{ secrets.SLACKBOT_RLS_TOKEN }}
+      github-token: ${{ secrets.PR_TOKEN }}
+      google-application-creds-base64: ${{ secrets.GCP_RLS_SHEET_ACCOUNT_BASE64 }}
