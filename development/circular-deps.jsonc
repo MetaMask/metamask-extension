@@ -66,11 +66,6 @@
     "ui/components/component-library/index.ts"
   ],
   [
-    "ui/components/component-library/banner-tip/banner-tip.tsx",
-    "ui/components/component-library/banner-tip/index.ts",
-    "ui/components/component-library/index.ts"
-  ],
-  [
     "ui/components/component-library/button-base/button-base.tsx",
     "ui/components/component-library/button-base/index.ts",
     "ui/components/component-library/index.ts"
