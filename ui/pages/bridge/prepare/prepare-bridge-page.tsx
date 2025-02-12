@@ -474,10 +474,10 @@ const PrepareBridgePage = () => {
             disabled={
               isSwitchingTemporarilyDisabled ||
               !isValidQuoteRequest(quoteRequest, false) ||
-              !isNetworkAdded(toChain)
+              (!isSwap && !isNetworkAdded(toChain))
             }
             onClick={() => {
-              if (!isNetworkAdded(toChain)) {
+              if (!isSwap && !isNetworkAdded(toChain)) {
                 return;
               }
               setRotateSwitchTokens(!rotateSwitchTokens);
@@ -486,15 +486,19 @@ const PrepareBridgePage = () => {
                   event: MetaMetricsEventName.InputSourceDestinationFlipped,
                   properties: flippedRequestProperties,
                 });
-              const toChainClientId =
-                toChain?.defaultRpcEndpointIndex !== undefined &&
-                toChain?.rpcEndpoints
-                  ? toChain.rpcEndpoints[toChain.defaultRpcEndpointIndex]
-                      .networkClientId
-                  : undefined;
-              toChainClientId && dispatch(setActiveNetwork(toChainClientId));
+              if (!isSwap) {
+                // Only flip networks if bridging
+                const toChainClientId =
+                  toChain?.defaultRpcEndpointIndex !== undefined &&
+                  toChain?.rpcEndpoints &&
+                  isNetworkAdded(toChain)
+                    ? toChain.rpcEndpoints[toChain.defaultRpcEndpointIndex]
+                        .networkClientId
+                    : undefined;
+                toChainClientId && dispatch(setActiveNetwork(toChainClientId));
+                fromChain?.chainId && dispatch(setToChainId(fromChain.chainId));
+              }
               dispatch(setFromToken(toToken));
-              fromChain?.chainId && dispatch(setToChainId(fromChain.chainId));
               dispatch(setToToken(fromToken));
             }}
           />
