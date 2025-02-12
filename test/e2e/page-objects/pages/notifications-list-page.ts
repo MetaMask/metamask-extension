@@ -22,7 +22,10 @@ class NotificationsListPage {
         this.notificationsSettingsButton,
       ]);
     } catch (e) {
-      console.log('Timeout while waiting for login page to be loaded', e);
+      console.log(
+        'Timeout while waiting for Notifications list page to be loaded',
+        e,
+      );
       throw e;
     }
     console.log('Notifications List page is loaded');
@@ -35,7 +38,7 @@ class NotificationsListPage {
    */
   async goToNotificationsSettings(): Promise<void> {
     console.log(
-      `On notifiations list page, navigating to notifications settings`,
+      `On notifications list page, navigating to notifications settings`,
     );
     await this.driver.clickElement(this.notificationsSettingsButton);
   }

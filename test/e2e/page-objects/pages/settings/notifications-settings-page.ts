@@ -18,12 +18,12 @@ class NotificationsSettingsPage {
 
   private readonly allowNotificationsAddressToggle = (
     address: string,
-    elemenType: 'input' | 'box',
+    elementType: 'input' | 'box',
   ) => {
     const checksumAddress = toChecksumHexAddress(address.toLowerCase());
     return `[data-testid="${shortenAddress(
       checksumAddress,
-    )}-notifications-settings-toggle-${elemenType}"]`;
+    )}-notifications-settings-toggle-${elementType}"]`;
   };
 
   private readonly allowProductAnnouncementToggle =
