@@ -324,6 +324,52 @@ async function main() {
         // },
       ];
 
+      const getProof = openrpcDocument.methods.find(
+        (m) => (m as MethodObject).name === 'eth_getProof',
+      );
+      (getProof as MethodObject).examples = [
+        {
+          name: 'getProofExample',
+          description: 'Example of a getProof request',
+          params: [
+            {
+              name: 'address',
+              value: ACCOUNT_1,
+            },
+            {
+              name: 'keys',
+              value: ['0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421'],
+            },
+            {
+              name: 'tag',
+              value: 'latest',
+            },
+          ],
+          result: {
+            name: 'getProofResult',
+            value: {
+                "address": ACCOUNT_1,
+                "balance": "0x15af1d78b58c40000",
+                "codeHash": "0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470",
+                "nonce": "0x0",
+                "storageHash": "0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421",
+                "accountProof": [
+                    "0xf9017180a0ab8cdb808c8303bb61fb48e276217be9770fa83ecf3f90f2234d558885f5abf18080a0de26cb1b4fd99c4d3ed75d4a67931e3c252605c7d68e0148d5327f341bfd5283a0de86ea5531307567132648d5c7956cb6082d6803f3dbc9e16b2dd20b320ca93aa0c2c799b60a0cd6acd42c1015512872e86c186bcf196e85061e76842f3b7cf86080a04fa8b5b81f5814f27b3a3e2b6273792dc150c94bea8f90c4b4d3fb4f52cd80dea0c326f61dd1e74e037d4db73aede5642260bf92869081753bbace550a73989aeda06301b39b2ea8a44df8b0356120db64b788e71f52e1d7a6309d0d2e5b86fee7cb80a029087b3ba8c5129e161e2cb956640f4d8e31a35f3f133c19a1044993def98b61a0a5ac64bb99d260ef6b13a4f2040ed48a4936664ec13d400238b5004841a4d888a0a9e6cc0d5192cb036c2454c7cf19ff53abf1861b50043a7b3713bc003a5a7d88a0144540d36e30b250d25bd5c34d819538742dc54c2017c4eb1fabb8e45f72759180",
+                    "0xf85180a0563305036bc8702a52ae6338bfbeca18e8f42fd5ee640e72e18f31455d3be5f880808080808080808080a02fb46956347985b9870156b5747712899d213b1636ad4fe553c63e33521d567a80808080",
+                    "0xf872a020bf0de4df4861e4184def33fbb5c7e634b9c33718934bf717ec7b695ea08cb5b84ff84d8089015af1d78b58c40000a056e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421a0c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470"
+                ],
+                "storageProof": [
+                    {
+                        "key": "0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421",
+                        "proof": [],
+                        "value": "0x0"
+                    }
+                ]
+            },
+          },
+        },
+      ]
+
       const server = mockServer(port, openrpcDocument);
       server.start();
 
@@ -373,10 +419,11 @@ async function main() {
         ],
         skip: [
           'eth_coinbase',
-          // these 2 methods below are not supported by MetaMask extension yet and
+          // these methods below are not supported by MetaMask extension yet and
           // don't get passed through. See here: https://github.com/MetaMask/metamask-extension/issues/24225
           'eth_getBlockReceipts',
           'eth_maxPriorityFeePerGas',
+          'wallet_swapAsset',
         ],
         rules: [
           new JsonSchemaFakerRule({
