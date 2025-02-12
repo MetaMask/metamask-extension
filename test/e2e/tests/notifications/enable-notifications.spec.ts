@@ -19,7 +19,7 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
   describe('from inside MetaMask', function () {
     /**
      * Test notification settings persistence across sessions.
-     * This specifically tests the scenario where accounts syncing is not on (i.e on Firefox or whenre user has not enabled this feature)
+     * This specifically tests the scenario where accounts syncing is not on (i.e on Firefox or when user has not enabled this feature)
      *
      * Part 1: Initial Configuration
      * - Complete onboarding

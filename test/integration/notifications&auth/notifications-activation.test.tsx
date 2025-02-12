@@ -80,7 +80,7 @@ describe('Notifications Activation', () => {
     });
   };
 
-  it('should successfully activate notification for the first tim and send correct metrivs', async () => {
+  it('should successfully activate notification for the first time and send correct metrics', async () => {
     const mockedState = getMockedNotificationsState();
     await act(async () => {
       await integrationTestRender({
