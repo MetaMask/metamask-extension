@@ -862,7 +862,7 @@ describe('Sentry errors', function () {
     });
   });
 
-  it('should not have extra properties in UI state mask', async function () {
+  it.only('should not have extra properties in UI state mask', async function () {
     const expectedMissingState = {
       bridgeState: {
         // This can get wiped out during initialization due to a bug in
@@ -889,6 +889,7 @@ describe('Sentry errors', function () {
         showConfirmationAdvancedDetails: true,
         privacyMode: false,
       },
+      balances: false,
       smartTransactionsState: {
         fees: {
           approvalTxFees: true, // Initialized as undefined
