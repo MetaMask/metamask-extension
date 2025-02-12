@@ -12,7 +12,7 @@ import { formatWithThreshold } from '../util/formatWithThreshold';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { formatAmount } from '../../../../pages/confirmations/components/simulation-details/formatAmount';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
-import useShouldShowFiat from './useShouldShowFiat';
+import { useShouldShowFiat } from '.';
 
 type UseTokenDisplayInfoProps = {
   token: TokenWithFiatAmount;
@@ -27,7 +27,7 @@ type TokenDisplayInfo = {
   tokenChainImage: string;
 };
 
-const useTokenDisplayInfo = ({
+export const useTokenDisplayInfo = ({
   token,
 }: UseTokenDisplayInfoProps): TokenDisplayInfo => {
   const isEvm = useSelector(getMultichainIsEvm);

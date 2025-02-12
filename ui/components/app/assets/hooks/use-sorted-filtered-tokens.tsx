@@ -13,10 +13,9 @@ import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { TokenWithFiatAmount } from '../types';
 import { getMultichainIsEvm } from '../../../../selectors/multichain';
 import { filterAssets } from '../util/filter';
-import { useNativeTokenBalance } from './useNativeTokenBalance';
-import useNetworkFilter from './useNetworkFilter';
+import { useNetworkFilter, useNativeTokenBalance } from '.';
 
-const useSortedFilteredTokens = () => {
+export const useSortedFilteredTokens = () => {
   const isEvm = useSelector(getMultichainIsEvm);
   const currentNetwork = useSelector(getCurrentNetwork);
   const { tokenSortConfig } = useSelector(getPreferences);
@@ -70,5 +69,3 @@ const useSortedFilteredTokens = () => {
     newTokensImported,
   ]);
 };
-
-export default useSortedFilteredTokens;

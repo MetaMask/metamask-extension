@@ -7,7 +7,7 @@ import {
 } from '../../../../selectors';
 import { getMultichainShouldShowFiat } from '../../../../selectors/multichain';
 
-const useShouldShowFiat = () => {
+export const useShouldShowFiat = () => {
   const isTestnet = useSelector(getIsTestnet);
   const selectedAccount = useSelector(getSelectedAccount);
   const shouldShowFiat = useMultichainSelector(
@@ -20,5 +20,3 @@ const useShouldShowFiat = () => {
 
   return shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
 };
-
-export default useShouldShowFiat;

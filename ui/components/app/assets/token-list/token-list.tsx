@@ -5,7 +5,7 @@ import TokenCell from '../token-cell';
 import { getChainIdsToPoll, getPreferences } from '../../../../selectors';
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { useTokenBalances as pollAndUpdateEvmBalances } from '../../../../hooks/useTokenBalances';
-import useSortedFilteredTokens from '../hooks/useSortedFilteredTokens';
+import { useSortedFilteredTokens } from '../hooks';
 import { TokenWithFiatAmount } from '../types';
 
 type TokenListProps = {

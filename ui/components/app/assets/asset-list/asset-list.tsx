@@ -8,8 +8,10 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import DetectedToken from '../../detected-token/detected-token';
-import useAssetListTokenDetection from '../hooks/useAssetListTokenDetection';
-import usePrimaryCurrencyProperties from '../hooks/usePrimaryCurrencyProperties';
+import {
+  useAssetListTokenDetection,
+  usePrimaryCurrencyProperties,
+} from '../hooks';
 import AssetListControlBar from './asset-list-control-bar';
 import AssetListFundingModals from './asset-list-funding-modals';
 

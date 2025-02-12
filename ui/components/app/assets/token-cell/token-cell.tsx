@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import useTokenDisplayInfo from '../hooks/useTokenDisplayInfo';
+import { useTokenDisplayInfo } from '../hooks';
 import {
   BlockSize,
   Display,
