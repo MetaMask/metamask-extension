@@ -1,9 +1,5 @@
-import type { Provider } from '@metamask/network-controller';
-import { FetchGasFeeEstimateOptions } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { isHexString } from 'ethereumjs-util';
-
-import { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
 import {
   TransactionMeta,
   TransactionType,
@@ -15,12 +11,9 @@ import {
 } from '../../../../shared/constants/gas';
 import {
   MetaMetricsEventCategory,
-  MetaMetricsEventFragment,
   MetaMetricsEventName,
   MetaMetricsEventUiCustomization,
   MetaMetricsEventTransactionEstimateType,
-  MetaMetricsPageObject,
-  MetaMetricsReferrerObject,
 } from '../../../../shared/constants/metametrics';
 import {
   TokenStandard,
@@ -48,78 +41,16 @@ import {
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../ui/helpers/utils/metrics';
+import type {
+  TransactionEventPayload,
+  TransactionMetaEventPayload,
+  TransactionMetricsRequest,
+} from '../../../../shared/types/metametrics';
 
-import {
-  getSnapAndHardwareInfoForMetrics,
-  type SnapAndHardwareMessenger,
-} from '../snap-keyring/metrics';
+import { getSnapAndHardwareInfoForMetrics } from '../snap-keyring/metrics';
 import { shouldUseRedesignForTransactions } from '../../../../shared/lib/confirmation.utils';
-import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
-
-export type TransactionMetricsRequest = {
-  createEventFragment: (
-    options: Omit<MetaMetricsEventFragment, 'id'>,
-  ) => MetaMetricsEventFragment;
-  finalizeEventFragment: (
-    fragmentId: string,
-    options?: {
-      abandoned?: boolean;
-      page?: MetaMetricsPageObject;
-      referrer?: MetaMetricsReferrerObject;
-    },
-  ) => void;
-  getEventFragmentById: (fragmentId: string) => MetaMetricsEventFragment;
-  updateEventFragment: (
-    fragmentId: string,
-    payload: Partial<MetaMetricsEventFragment>,
-  ) => void;
-  getAccountType: (
-    address: string,
-  ) => Promise<'hardware' | 'imported' | 'MetaMask'>;
-  getDeviceModel: (
-    address: string,
-  ) => Promise<'ledger' | 'lattice' | 'N/A' | string>;
-  getHardwareTypeForMetric: (address: string) => Promise<HardwareKeyringType>;
-  // According to the type GasFeeState returned from getEIP1559GasFeeEstimates
-  // doesn't include some properties used in buildEventFragmentProperties,
-  // hence returning any here to avoid type errors.
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getEIP1559GasFeeEstimates(options?: FetchGasFeeEstimateOptions): Promise<any>;
-  getParticipateInMetrics: () => boolean;
-  getSelectedAddress: () => string;
-  getTokenStandardAndDetails: () => Promise<{
-    decimals?: string;
-    balance?: string;
-    symbol?: string;
-    standard?: TokenStandard;
-  }>;
-  getTransaction: (transactionId: string) => TransactionMeta;
-  provider: Provider;
-  snapAndHardwareMessenger: SnapAndHardwareMessenger;
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  trackEvent: (payload: any) => void;
-  getIsSmartTransaction: () => boolean;
-  getSmartTransactionByMinedTxHash: (
-    txhash: string | undefined,
-  ) => SmartTransaction;
-  getMethodData: (data: string) => Promise<{ name: string }>;
-  getIsConfirmationAdvancedDetailsOpen: () => boolean;
-};
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
-
-export type TransactionEventPayload = {
-  transactionMeta: TransactionMeta;
-  actionId?: string;
-  error?: string;
-};
-
-export type TransactionMetaEventPayload = TransactionMeta & {
-  actionId?: string;
-  error?: string;
-};
 
 /**
  * This function is called when a transaction is added to the controller.

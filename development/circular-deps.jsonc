@@ -16,10 +16,6 @@
     "app/scripts/controllers/bridge-status/validators.ts"
   ],
   [
-    "app/scripts/lib/transaction/metrics.ts",
-    "shared/modules/metametrics.ts"
-  ],
-  [
     "ui/components/app/alert-system/confirm-alert-modal/confirm-alert-modal.tsx",
     "ui/components/app/alert-system/confirm-alert-modal/index.tsx",
     "ui/pages/confirmations/components/confirm/footer/footer.tsx"
@@ -27,87 +23,6 @@
   [
     "ui/components/app/name/name-details/name-details.tsx",
     "ui/components/app/name/name.tsx"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/banner.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/bold.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/box.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/button.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/card.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/container.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/field.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/selector.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/field.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/form.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/italic.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/link.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/row.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/skeleton.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/text.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/tooltip.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/value.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
   ],
   [
     "ui/components/component-library/avatar-account/avatar-account.tsx",
