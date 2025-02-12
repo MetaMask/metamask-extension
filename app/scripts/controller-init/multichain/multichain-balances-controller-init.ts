@@ -1,13 +1,13 @@
 import {
   MultichainBalancesController,
-  MultichainBalancesControllerMessenger,
+  MultichainBalancesControllerMessenger as ControllerMessenger,
 } from '@metamask/assets-controllers';
 import { ControllerInitFunction } from '../types';
 import { MultichainBalancesControllerInitMessenger } from '../messengers/multichain-balances-controller-messenger';
 
 export const MultichainBalancesControllerInit: ControllerInitFunction<
   MultichainBalancesController,
-  MultichainBalancesControllerMessenger,
+  ControllerMessenger,
   MultichainBalancesControllerInitMessenger
 > = (request) => {
   const { controllerMessenger, persistedState } = request;

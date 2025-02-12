@@ -1,6 +1,6 @@
 import {
   MultichainBalancesController,
-  MultichainBalancesControllerMessenger,
+  MultichainBalancesControllerMessenger as ControllerMessenger,
 } from '@metamask/assets-controllers';
 import { Messenger } from '@metamask/base-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
@@ -16,7 +16,7 @@ jest.mock('@metamask/assets-controllers');
 
 function buildInitRequestMock(): jest.Mocked<
   ControllerInitRequest<
-    MultichainBalancesControllerMessenger,
+    ControllerMessenger,
     MultichainBalancesControllerInitMessenger
   >
 > {

@@ -43,7 +43,7 @@ export function getMultichainBalancesControllerMessenger(
       'SnapController:handleRequest',
       'MultichainAssetsController:getState',
     ],
-  }) as MultichainBalancesControllerMessenger;
+  }) as unknown as MultichainBalancesControllerMessenger;
 }
 
 export function getMultichainBalancesControllerInitMessenger(
