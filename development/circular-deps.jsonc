@@ -48,29 +48,6 @@
     "ui/components/app/name/name.tsx"
   ],
   [
-    "ui/components/component-library/banner-alert/banner-alert.tsx",
-    "ui/components/component-library/banner-alert/index.ts",
-    "ui/components/component-library/banner-base/banner-base.tsx",
-    "ui/components/component-library/banner-base/index.ts",
-    "ui/components/component-library/button-icon/button-icon.tsx",
-    "ui/components/component-library/button-icon/index.ts",
-    "ui/components/component-library/index.ts"
-  ],
-  [
-    "ui/components/component-library/banner-alert/banner-alert.tsx",
-    "ui/components/component-library/banner-alert/index.ts",
-    "ui/components/component-library/banner-base/banner-base.tsx",
-    "ui/components/component-library/banner-base/index.ts",
-    "ui/components/component-library/button-link/button-link.tsx",
-    "ui/components/component-library/button-link/index.ts",
-    "ui/components/component-library/index.ts"
-  ],
-  [
-    "ui/components/component-library/button-base/button-base.tsx",
-    "ui/components/component-library/button-base/index.ts",
-    "ui/components/component-library/index.ts"
-  ],
-  [
     "ui/components/component-library/checkbox/checkbox.tsx",
     "ui/components/component-library/checkbox/index.ts",
     "ui/components/component-library/index.ts"
