@@ -51,7 +51,7 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
 
   const sortedFilteredTokens = useMemo(() => {
     const balances = isEvm ? evmBalances : [nonEvmNativeToken];
-    const filteredAssets = filterAssets(balances, [
+    const filteredAssets: TokenWithFiatAmount[] = filterAssets(balances, [
       {
         key: 'chainId',
         opts: isEvm ? networkFilter : { [nonEvmNativeToken.chainId]: true },
@@ -60,7 +60,7 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
     ]);
 
     // sort filtered tokens based on the tokenSortConfig in state
-    return sortAssets(filteredAssets, tokenSortConfig);
+    return sortAssets([...filteredAssets], tokenSortConfig);
   }, [
     tokenSortConfig,
     networkFilter,
