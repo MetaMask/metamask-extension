@@ -638,7 +638,7 @@ export default class MetamaskController extends EventEmitter {
     });
     this.networkController.initializeProvider();
 
-    if (process.env.BARAD_DUR) {
+    if (process.env.MULTICHAIN_API) {
       this.multichainSubscriptionManager = new MultichainSubscriptionManager({
         getNetworkClientById: this.networkController.getNetworkClientById.bind(
           this.networkController,
@@ -2841,7 +2841,7 @@ export default class MetamaskController extends EventEmitter {
 
     // This handles CAIP-25 authorization changes every time relevant permission state
     // changes, for any reason.
-    if (process.env.BARAD_DUR) {
+    if (process.env.MULTICHAIN_API) {
       this.controllerMessenger.subscribe(
         `${this.permissionController.name}:stateChange`,
         async (currentValue, previousValue) => {
@@ -3235,7 +3235,7 @@ export default class MetamaskController extends EventEmitter {
   async getProviderState(origin) {
     const providerNetworkState = await this.getProviderNetworkState(origin);
     const metadata = {};
-    if (process.env.BARAD_DUR && isManifestV3) {
+    if (process.env.MULTICHAIN_API && isManifestV3) {
       const { chrome } = globalThis;
       metadata.extensionId = chrome?.runtime?.id;
     }
@@ -5712,7 +5712,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} [options.subjectType] - The type of the sender, i.e. subject.
    */
   setupUntrustedCommunicationCaip({ connectionStream, sender, subjectType }) {
-    if (!process.env.BARAD_DUR) {
+    if (!process.env.MULTICHAIN_API) {
       return;
     }
 
@@ -6014,7 +6014,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {SubjectType} subjectType - The type of the sender, i.e. subject.
    */
   setupProviderConnectionCaip(outStream, sender, subjectType) {
-    if (!process.env.BARAD_DUR) {
+    if (!process.env.MULTICHAIN_API) {
       return;
     }
 
@@ -6538,7 +6538,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
    */
   setupProviderEngineCaip({ origin, sender, subjectType, tabId }) {
-    if (!process.env.BARAD_DUR) {
+    if (!process.env.MULTICHAIN_API) {
       return null;
     }
 
