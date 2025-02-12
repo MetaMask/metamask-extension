@@ -1,6 +1,7 @@
 import { Messenger } from '@metamask/base-controller';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { SnapId } from '@metamask/snaps-sdk';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -15,6 +16,7 @@ import {
   SnapKeyringBuilderAllowActions,
   SnapKeyringBuilderMessenger,
 } from './types';
+import { getSnapName, isSnapPreinstalled } from './snaps';
 
 const mockAddRequest = jest.fn();
 const mockStartFlow = jest.fn();
@@ -22,14 +24,17 @@ const mockEndFlow = jest.fn();
 const mockShowSuccess = jest.fn();
 const mockShowError = jest.fn();
 const mockGetAccounts = jest.fn();
-const mockSnapId = 'snapId';
+const mockSnapId = 'snapId' as SnapId;
 const mockSnapName = 'mock-snap';
-const mockPersisKeyringHelper = jest.fn();
+const mockPersistKeyringHelper = jest.fn();
 const mockSetSelectedAccount = jest.fn();
 const mockSetAccountName = jest.fn();
 const mockRemoveAccountHelper = jest.fn();
 const mockTrackEvent = jest.fn();
 const mockGetAccountByAddress = jest.fn();
+const mockLocale = 'en';
+const mockPreferencesControllerGetState = jest.fn();
+const mockSnapControllerGet = jest.fn();
 
 const mockFlowId = '123';
 const address = '0x2a4d4b667D5f12C3F9Bf8F14a7B9f8D8d9b8c8fA';
@@ -58,6 +63,12 @@ const mockInternalAccount = {
   },
 };
 
+jest.mock('./snaps', () => ({
+  ...jest.requireActual('./snaps'),
+  isSnapPreinstalled: jest.fn(),
+  getSnapName: jest.fn(),
+}));
+
 const createControllerMessenger = ({
   account = mockInternalAccount,
 }: {
@@ -80,6 +91,7 @@ const createControllerMessenger = ({
       'KeyringController:getAccounts',
       'AccountsController:setSelectedAccount',
       'AccountsController:getAccountByAddress',
+      'PreferencesController:getState',
     ],
     allowedEvents: [],
   });
@@ -117,6 +129,19 @@ const createControllerMessenger = ({
       case 'AccountsController:setAccountName':
         return mockSetAccountName.mockReturnValue(null)(params);
 
+      case 'PreferencesController:getState':
+        return mockPreferencesControllerGetState.mockReturnValue({
+          locale: mockLocale,
+        })(params);
+
+      case 'SnapController:get':
+        return mockSnapControllerGet.mockReturnValue({
+          id: mockSnapId,
+          manifest: {
+            proposedName: mockSnapName,
+          },
+        })(params);
+
       default:
         throw new Error(
           `MOCK_FAIL - unsupported messenger call: ${actionType}`,
@@ -129,19 +154,19 @@ const createControllerMessenger = ({
 
 const createSnapKeyringBuilder = ({
   snapName = mockSnapName,
-  isSnapPreinstalled = true,
+  snapPreinstalled = true,
 }: {
   snapName?: string;
-  isSnapPreinstalled?: boolean;
+  snapPreinstalled?: boolean;
 } = {}) => {
-  return snapKeyringBuilder(
-    createControllerMessenger(),
-    mockPersisKeyringHelper,
-    mockRemoveAccountHelper,
-    mockTrackEvent,
-    () => snapName,
-    () => isSnapPreinstalled,
-  );
+  jest.mocked(isSnapPreinstalled).mockReturnValue(snapPreinstalled);
+  jest.mocked(getSnapName).mockReturnValue(snapName);
+
+  return snapKeyringBuilder(createControllerMessenger(), {
+    persistKeyringHelper: mockPersistKeyringHelper,
+    removeAccountHelper: mockRemoveAccountHelper,
+    trackEvent: mockTrackEvent,
+  });
 };
 
 describe('Snap Keyring Methods', () => {
@@ -225,7 +250,7 @@ describe('Snap Keyring Methods', () => {
       ]);
       // First call is from addAccount after user confirmation
       // Second call is from within the SnapKeyring after ending the addAccount flow
-      expect(mockPersisKeyringHelper).toHaveBeenCalledTimes(2);
+      expect(mockPersistKeyringHelper).toHaveBeenCalledTimes(2);
       expect(mockAddRequest).toHaveBeenNthCalledWith(2, [
         {
           origin: mockSnapId,
@@ -289,7 +314,7 @@ describe('Snap Keyring Methods', () => {
       expect(mockAddRequest).toHaveBeenCalledTimes(1);
       // First call is from addAccount after user confirmation
       // Second call is from within the SnapKeyring after ending the addAccount flow
-      expect(mockPersisKeyringHelper).toHaveBeenCalledTimes(2);
+      expect(mockPersistKeyringHelper).toHaveBeenCalledTimes(2);
       expect(mockAddRequest).toHaveBeenNthCalledWith(1, [
         {
           origin: mockSnapId,
@@ -349,7 +374,7 @@ describe('Snap Keyring Methods', () => {
       ]);
       // First call is from addAccount after user confirmation
       // Second call is from within the SnapKeyring
-      expect(mockPersisKeyringHelper).toHaveBeenCalledTimes(2);
+      expect(mockPersistKeyringHelper).toHaveBeenCalledTimes(2);
       expect(mockAddRequest).toHaveBeenNthCalledWith(2, [
         {
           origin: mockSnapId,
@@ -421,7 +446,7 @@ describe('Snap Keyring Methods', () => {
       expect(mockAddRequest).toHaveBeenCalledTimes(1);
       // First call is from addAccount after user confirmation
       // Second call is from within the SnapKeyring after ending the addAccount flow
-      expect(mockPersisKeyringHelper).toHaveBeenCalledTimes(2);
+      expect(mockPersistKeyringHelper).toHaveBeenCalledTimes(2);
       expect(mockAddRequest).toHaveBeenNthCalledWith(1, [
         {
           origin: mockSnapId,
@@ -484,7 +509,7 @@ describe('Snap Keyring Methods', () => {
       ]);
       // First call is from addAccount after user confirmation
       // Second call is from within the SnapKeyring
-      expect(mockPersisKeyringHelper).toHaveBeenCalledTimes(2);
+      expect(mockPersistKeyringHelper).toHaveBeenCalledTimes(2);
       expect(mockAddRequest).toHaveBeenNthCalledWith(2, [
         {
           origin: mockSnapId,
@@ -539,7 +564,7 @@ describe('Snap Keyring Methods', () => {
 
     it('ends approval flow on error', async () => {
       const errorMessage = 'save error';
-      mockPersisKeyringHelper.mockRejectedValue(new Error(errorMessage));
+      mockPersistKeyringHelper.mockRejectedValue(new Error(errorMessage));
       const builder = createSnapKeyringBuilder();
       await expect(
         builder().handleKeyringSnapMessage(mockSnapId, {
