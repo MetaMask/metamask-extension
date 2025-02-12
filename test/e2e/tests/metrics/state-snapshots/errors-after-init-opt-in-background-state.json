@@ -147,7 +147,6 @@
     "accountsAssets": "object",
     "assetsMetadata": "object"
   },
-  "MultichainBalancesController": { "balances": "object" },
   "MultichainRatesController": {
     "fiatCurrency": "usd",
     "rates": {
