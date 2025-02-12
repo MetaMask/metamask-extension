@@ -107,7 +107,7 @@ class ActivityListPage {
   }
 
   /**
-   * This function checks if the specified number of failed transactions are displayed in the activity list on homepage.
+   * This function checks if the specified number of failed transactions is displayed in the activity list on homepage.
    * It waits up to 10 seconds for the expected number of failed transactions to be visible.
    *
    * @param expectedNumber - The number of failed transactions expected to be displayed in activity list. Defaults to 1.
