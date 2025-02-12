@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
-import { getSnapName, shortenAddress } from '../../../../helpers/utils/util';
+import { shortenAddress } from '../../../../helpers/utils/util';
 
 import {
   AvatarAccount,
@@ -25,23 +25,20 @@ import {
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
 
-import { KeyringType } from '../../../../../shared/constants/keyring';
 import {
   getUseBlockie,
-  getSnapsMetadata,
   getShouldHideZeroBalanceTokens,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getChainIdsToPoll,
+  getShowFiatInTestnets,
 } from '../../../../selectors';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
-import { getAccountLabel } from '../../../../helpers/utils/accounts';
 import { useMultichainAccountTotalFiatBalance } from '../../../../hooks/useMultichainAccountTotalFiatBalance';
 import { useGetFormattedTokensPerChain } from '../../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../../hooks/useAccountTotalCrossChainFiatBalance';
-import { AvatarGroup } from '../../../../components/multichain/avatar-group';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
-import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
+import { PRIMARY } from '../../../../helpers/constants/common';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import {
   getMultichainNetwork,
@@ -50,11 +47,10 @@ import {
   getMultichainNativeCurrency,
   getMultichainNativeCurrencyImage,
 } from '../../../../selectors/multichain';
-import { getShowFiatInTestnets } from '../../../../selectors';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 
-interface DestinationAccountListItemProps {
+type DestinationAccountListItemProps = {
   account: {
     type:
       | 'eip155:eoa'
@@ -76,28 +72,19 @@ interface DestinationAccountListItemProps {
         enabled?: boolean;
       };
     };
-    options: Record<string, any>;
+    options: Record<string, unknown>;
     methods: string[];
     scopes: string[];
   };
   selected: boolean;
   onClick?: () => void;
-}
+};
 
 const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
   account,
   selected,
   onClick,
 }) => {
-  const snapMetadata = useSelector(getSnapsMetadata);
-  const accountLabel = getAccountLabel(
-    account.metadata.keyring.type,
-    account,
-    account.metadata.keyring.type === KeyringType.snap
-      ? getSnapName(snapMetadata)(account.metadata?.snap?.id)
-      : null,
-  );
-
   const useBlockie = useSelector(getUseBlockie);
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
@@ -107,15 +94,14 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
   );
   const allChainIDs = useSelector(getChainIdsToPoll);
 
-  // TODO: fix expected account type errors. functionality works.
-  // @ts-expect-error
+  // @ts-expect-error Account type from props doesn't match expected type in selector but functionality works correctly
   const { isEvmNetwork } = useMultichainSelector(getMultichainNetwork, account);
-  // @ts-expect-error
+  // @ts-expect-error Account type from props doesn't match expected type in selector but functionality works correctly
   const isTestnet = useMultichainSelector(getMultichainIsTestnet, account);
   const isMainnet = !isTestnet;
   const shouldShowFiat = useMultichainSelector(
     getMultichainShouldShowFiat,
-    // @ts-expect-error
+    // @ts-expect-error Account type from props doesn't match expected type in selector but functionality works correctly
     account,
   );
   const showFiatInTestnets = useSelector(getShowFiatInTestnets);
@@ -124,17 +110,17 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
 
   const primaryTokenImage = useMultichainSelector(
     getMultichainNativeCurrencyImage,
-    // @ts-expect-error
+    // @ts-expect-error Account type from props doesn't match expected type in selector but functionality works correctly
     account,
   );
   const nativeCurrency = useMultichainSelector(
     getMultichainNativeCurrency,
-    // @ts-expect-error
+    // @ts-expect-error Account type from props doesn't match expected type in selector but functionality works correctly
     account,
   );
 
   const accountTotalFiatBalances =
-    // @ts-expect-error
+    // @ts-expect-error Account type from props doesn't match expected type in hook but functionality works correctly
     useMultichainAccountTotalFiatBalance(account);
 
   const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(

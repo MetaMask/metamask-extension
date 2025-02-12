@@ -10,7 +10,10 @@ import {
   ButtonSize,
   ButtonVariant,
 } from '../../../../components/component-library';
-import { getSelectedInternalAccount } from '../../../../selectors';
+import {
+  getSelectedInternalAccount,
+  getInternalAccounts,
+} from '../../../../selectors';
 import {
   BlockSize,
   Display,
@@ -20,10 +23,10 @@ import {
   JustifyContent,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
+// eslint-disable-next-line import/no-restricted-paths
+import { t } from '../../../../../app/scripts/translate';
 import DestinationSelectedAccountListItem from './destination-selected-account-list-item';
 import DestinationAccountListItem from './destination-account-list-item';
-import { t } from '../../../../../app/scripts/translate';
-import { getInternalAccounts } from '../../../../selectors';
 
 type DestinationAccountPickerProps = {
   onAccountSelect: (account: InternalAccount | null) => void;
@@ -31,7 +34,6 @@ type DestinationAccountPickerProps = {
   isDestinationSolana: boolean;
 };
 
-// TODO: move this and everything else in the bridge folder.
 export const DestinationAccountPicker = ({
   onAccountSelect,
   selectedSwapToAccount,
@@ -78,8 +80,7 @@ export const DestinationAccountPicker = ({
         >
           <DestinationSelectedAccountListItem
             account={selectedSwapToAccount}
-            // TODO: fix
-            // @ts-expect-error-error: not working
+            // @ts-expect-error: Type mismatch between InternalAccount and expected account type - functionality works but needs type alignment
             isSelected={selectedSwapToAccount.id === selectedAccount?.id}
             showOptions={false}
             disableHover
@@ -97,8 +98,7 @@ export const DestinationAccountPicker = ({
               padding: '5px',
               color: 'var(--color-icon-alternative)',
               textDecoration: 'none',
-              // TODO: fix
-              // @ts-expect-error-error: not working
+              // @ts-expect-error: Style prop type doesn't recognize pseudo-selectors but works in practice
               '&:hover': {
                 textDecoration: 'none',
                 color: 'var(--color-icon-default)',
@@ -143,9 +143,8 @@ export const DestinationAccountPicker = ({
           borderRadius: '8px 8px 0 0',
         }}
       >
-        {/* // TODO: the above box is redundant. */}
         <TextField
-          // @ts-expect-error-error:
+          // @ts-expect-error: TextField component expects different props than provided - works but needs type update
           placeholder={t('destinationAccountPickerSearchPlaceholder')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -179,12 +178,11 @@ export const DestinationAccountPicker = ({
         {filteredAccounts.map((account) => (
           <DestinationAccountListItem
             key={account.id}
-            // TODO: fix account and swapToAccount type errors. functionality works.
-            // @ts-expect-error
+            // @ts-expect-error: InternalAccount type doesn't match expected account prop type - functions correctly but needs type resolution
             account={account}
             onClick={() => onAccountSelect(account)}
-            // @ts-expect-error
-            isSelected={account.id === selectedSwapToAccount?.id} // Fixed check
+            // @ts-expect-error: Type mismatch in isSelected prop between InternalAccount and component expectations
+            isSelected={account.id === selectedSwapToAccount?.id}
             showOptions={false}
           />
         ))}

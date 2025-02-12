@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
-import { getSnapName, shortenAddress } from '../../../../helpers/utils/util';
+import { shortenAddress } from '../../../../helpers/utils/util';
 
 import {
   AvatarAccount,
@@ -20,13 +20,11 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 
-import { KeyringType } from '../../../../../shared/constants/keyring';
-import { getUseBlockie, getSnapsMetadata } from '../../../../selectors';
+import { getUseBlockie } from '../../../../selectors';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
-import { getAccountLabel } from '../../../../helpers/utils/accounts';
 
-interface DestinationSelectedAccountListItemProps {
+type DestinationSelectedAccountListItemProps = {
   account: {
     id: string;
     address: string;
@@ -44,20 +42,11 @@ interface DestinationSelectedAccountListItemProps {
   };
   selected: boolean;
   onClick?: () => void;
-}
+};
 
 const DestinationSelectedAccountListItem: React.FC<
   DestinationSelectedAccountListItemProps
 > = ({ account, selected, onClick }) => {
-  const snapMetadata = useSelector(getSnapsMetadata);
-  const accountLabel = getAccountLabel(
-    account.metadata.keyring.type,
-    account,
-    account.metadata.keyring.type === KeyringType.snap
-      ? getSnapName(snapMetadata)(account.metadata?.snap?.id)
-      : null,
-  );
-
   const useBlockie = useSelector(getUseBlockie);
 
   return (
