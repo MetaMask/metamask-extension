@@ -2,10 +2,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
-import {
-  getNetworkConfigurationIdByChainId,
-  getTokenList,
-} from '../../../../selectors';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { TokenListItem } from '../../token-list-item';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
@@ -13,6 +9,12 @@ import { formatAmount } from '../../../../pages/confirmations/components/simulat
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
+import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../../../shared/constants/multichain/networks';
+import {
+  getMultichainNetworkConfigurationsByChainId,
+  getMultichainTokenList,
+} from '../../../../selectors/multichain';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
 
 type AssetProps = AssetWithDisplayData<NativeAsset | ERC20Asset> & {
@@ -36,8 +38,10 @@ export default function Asset({
   const locale = useSelector(getIntlLocale);
 
   const currency = useSelector(getCurrentCurrency);
-  const tokenList = useSelector(getTokenList);
-  const allNetworks = useSelector(getNetworkConfigurationIdByChainId);
+  const tokenList = useMultichainSelector(getMultichainTokenList);
+  const allNetworks = useMultichainSelector(
+    getMultichainNetworkConfigurationsByChainId,
+  );
   const isTokenChainIdInWallet = Boolean(
     chainId ? allNetworks[chainId as keyof typeof allNetworks] : true,
   );
@@ -79,9 +83,10 @@ export default function Asset({
       title={title}
       tooltipText={tooltipText}
       tokenChainImage={
-        CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-          chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-        ]
+        {
+          ...CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+          ...MULTICHAIN_TOKEN_IMAGE_MAP,
+        }[chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP]
       }
       isPrimaryTokenSymbolHidden
       {...assetItemProps}
