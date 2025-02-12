@@ -8,14 +8,6 @@
 
 [
   [
-    "app/scripts/controllers/bridge-status/bridge-status-controller.ts",
-    "app/scripts/controllers/bridge-status/types.ts"
-  ],
-  [
-    "app/scripts/controllers/bridge-status/utils.ts",
-    "app/scripts/controllers/bridge-status/validators.ts"
-  ],
-  [
     "ui/components/app/alert-system/confirm-alert-modal/confirm-alert-modal.tsx",
     "ui/components/app/alert-system/confirm-alert-modal/index.tsx",
     "ui/pages/confirmations/components/confirm/footer/footer.tsx"
