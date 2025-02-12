@@ -55,6 +55,7 @@ exports[`ConnectPage should render correctly 1`] = `
           >
             <li
               class="mm-box tab tab--active mm-box--width-full"
+              data-testid="accounts-tab"
             >
               <button
                 class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-2 mm-box--display-block mm-box--width-full mm-box--color-inherit"
@@ -64,6 +65,7 @@ exports[`ConnectPage should render correctly 1`] = `
             </li>
             <li
               class="mm-box tab mm-box--width-full"
+              data-testid="permissions-tab"
             >
               <button
                 class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-2 mm-box--display-block mm-box--width-full mm-box--color-inherit"
@@ -395,6 +397,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
           >
             <li
               class="mm-box tab tab--active mm-box--width-full"
+              data-testid="accounts-tab"
             >
               <button
                 class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-2 mm-box--display-block mm-box--width-full mm-box--color-inherit"
@@ -404,6 +407,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
             </li>
             <li
               class="mm-box tab mm-box--width-full"
+              data-testid="permissions-tab"
             >
               <button
                 class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-2 mm-box--display-block mm-box--width-full mm-box--color-inherit"
