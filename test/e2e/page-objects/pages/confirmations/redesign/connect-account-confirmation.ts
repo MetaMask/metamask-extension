@@ -35,7 +35,9 @@ class ConnectAccountConfirmation {
 
   async confirmConnect(): Promise<void> {
     console.log('Confirm connection on Connect Account confirmation page');
-    await this.driver.clickElement(this.connectAccountConfirmationButton);
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.connectAccountConfirmationButton,
+    );
   }
 }
 
