@@ -6,7 +6,7 @@ import {
   BlockSize,
 } from '../../../helpers/constants/design-system';
 
-import { Box } from '..';
+import { Box } from '../box';
 import README from './README.mdx';
 import { PickerNetwork } from './picker-network';
 import {

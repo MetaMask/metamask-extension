@@ -48,28 +48,13 @@
     "ui/components/app/name/name.tsx"
   ],
   [
-    "ui/components/component-library/container/container.tsx",
-    "ui/components/component-library/container/index.ts",
-    "ui/components/component-library/index.ts"
-  ],
-  [
     "ui/components/component-library/form-text-field/form-text-field.tsx",
     "ui/components/component-library/form-text-field/index.ts",
     "ui/components/component-library/index.ts"
   ],
   [
-    "ui/components/component-library/header-base/header-base.tsx",
-    "ui/components/component-library/header-base/index.ts",
-    "ui/components/component-library/index.ts"
-  ],
-  [
     "ui/components/component-library/help-text/help-text.tsx",
     "ui/components/component-library/help-text/index.ts"
-  ],
-  [
-    "ui/components/component-library/index.ts",
-    "ui/components/component-library/modal-body/index.ts",
-    "ui/components/component-library/modal-body/modal-body.tsx"
   ],
   [
     "ui/components/component-library/index.ts",
@@ -107,11 +92,6 @@
   ],
   [
     "ui/components/component-library/index.ts",
-    "ui/components/component-library/popover/index.ts",
-    "ui/components/component-library/popover/popover.tsx"
-  ],
-  [
-    "ui/components/component-library/index.ts",
     "ui/components/component-library/select-button/index.ts",
     "ui/components/component-library/select-button/select-button.tsx"
   ],
@@ -121,11 +101,6 @@
     "ui/components/component-library/select-button/select-button.tsx",
     "ui/components/component-library/select-wrapper/index.ts",
     "ui/components/component-library/select-wrapper/select-wrapper.tsx"
-  ],
-  [
-    "ui/components/component-library/index.ts",
-    "ui/components/component-library/select-option/index.ts",
-    "ui/components/component-library/select-option/select-option.tsx"
   ],
   [
     "ui/components/component-library/index.ts",
