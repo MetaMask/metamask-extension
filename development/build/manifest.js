@@ -1,5 +1,4 @@
 const { promises: fs } = require('fs');
-const { readFileSync } = require('node:fs');
 const path = require('path');
 const childProcess = require('child_process');
 const { mergeWith, cloneDeep } = require('lodash');
@@ -191,7 +190,7 @@ function createManifestTasks({
 
 // helper for reading and deserializing json from fs
 async function readJson(file) {
-  return JSON.parse(await readFileSync(file, 'utf8'));
+  return JSON.parse(await fs.readFile(file, 'utf8'));
 }
 
 // helper for serializing and writing json to fs

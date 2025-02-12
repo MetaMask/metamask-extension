@@ -300,7 +300,7 @@ describe('ManifestPlugin', () => {
       const transform = transformManifest(
         { lockdown: true, test: false },
         true,
-        manifestOverridesPath
+        manifestOverridesPath,
       );
       assert(transform, 'transform should be truthy');
 
@@ -343,7 +343,9 @@ describe('ManifestPlugin', () => {
       );
       assert(transform, 'transform should be truthy');
 
-      const originalError = new Error('Permission denied') as NodeJS.ErrnoException;
+      const originalError = new Error(
+        'Permission denied',
+      ) as NodeJS.ErrnoException;
       originalError.code = 'EACCES';
 
       mock.method(fs, 'readFileSync', () => {
@@ -354,7 +356,7 @@ describe('ManifestPlugin', () => {
       assert.deepStrictEqual(
         transformed._flags,
         undefined,
-        'should not have flags when file read fails with non-ENOENT error'
+        'should not have flags when file read fails with non-ENOENT error',
       );
     });
   });

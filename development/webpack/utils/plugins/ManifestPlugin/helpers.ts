@@ -1,4 +1,5 @@
-import merge from 'lodash/merge';
+import mergeWith from 'lodash/mergeWith';
+import cloneDeep from 'lodash/cloneDeep';
 /**
  * Returns a function that will transform a manifest JSON object based on the
  * given build args.
@@ -41,8 +42,11 @@ export function transformManifest(
    * that are stored in the .manifest-flags.json file.
    *
    * @param browserManifest - The Chrome extension manifest object to modify
+   * @returns the modified manifest object
    */
-  function addManifestFlags(browserManifest: chrome.runtime.Manifest) {
+  function addManifestFlags(
+    browserManifest: chrome.runtime.Manifest,
+  ): chrome.runtime.Manifest {
     let manifestFlags;
 
     if (manifestOverridesPath) {
@@ -69,9 +73,8 @@ export function transformManifest(
     }
 
     if (manifestFlags) {
-      browserManifest = merge(browserManifest, manifestFlags);
+      return mergeWith(cloneDeep(browserManifest), manifestFlags);
     }
-
     return browserManifest;
   }
 
