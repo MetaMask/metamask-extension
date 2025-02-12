@@ -42,6 +42,7 @@ import {
 } from '../asset-picker-modal/types';
 import { TabName } from '../asset-picker-modal/asset-picker-modal-tabs';
 import { AssetPickerModalNetwork } from '../asset-picker-modal/asset-picker-modal-network';
+import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../../../shared/constants/multichain/networks';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   GOERLI_DISPLAY_NAME,
@@ -52,10 +53,7 @@ import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 const ELLIPSIFY_LENGTH = 13; // 6 (start) + 4 (end) + 3 (...)
 
 export type AssetPickerProps = {
-  children?: (
-    onClick: () => void,
-    networkImageSrc?: string,
-  ) => React.ReactElement; // Overrides default button
+  children?: (onClick: () => void) => React.ReactElement; // Overrides default button
   asset?:
     | ERC20Asset
     | NativeAsset
@@ -163,12 +161,6 @@ export function AssetPicker({
     return undefined;
   };
 
-  const networkImageSrc =
-    selectedNetwork?.chainId &&
-    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-      selectedNetwork.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-    ];
-
   const handleButtonClick = () => {
     if (networkProps && !networkProps.network) {
       setIsSelectingNetwork(true);
@@ -254,7 +246,7 @@ export function AssetPicker({
       />
 
       {/** If a child prop is passed in, use it as the trigger button instead of the default */}
-      {children?.(handleButtonClick, networkImageSrc) || (
+      {children?.(handleButtonClick) || (
         <ButtonBase
           data-testid="asset-picker-button"
           className="asset-picker"
@@ -283,7 +275,15 @@ export function AssetPicker({
                   <AvatarNetwork
                     size={AvatarNetworkSize.Xs}
                     name={selectedNetwork?.name ?? ''}
-                    src={networkImageSrc}
+                    src={
+                      selectedNetwork?.chainId &&
+                      {
+                        ...CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+                        ...MULTICHAIN_TOKEN_IMAGE_MAP,
+                      }[
+                        selectedNetwork.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+                      ]
+                    }
                     backgroundColor={
                       Object.entries({
                         [GOERLI_DISPLAY_NAME]: BackgroundColor.goerli,

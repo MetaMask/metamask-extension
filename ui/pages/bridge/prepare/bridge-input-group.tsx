@@ -165,7 +165,7 @@ export const BridgeInputGroup = ({
           isTokenListLoading={isTokenListLoading}
           isMultiselectEnabled={isMultiselectEnabled}
         >
-          {(onClickHandler, networkImageSrc) =>
+          {(onClickHandler) =>
             isAmountReadOnly && !token ? (
               <Button
                 onClick={onClickHandler}
@@ -180,7 +180,6 @@ export const BridgeInputGroup = ({
             ) : (
               <BridgeAssetPickerButton
                 onClick={onClickHandler}
-                networkImageSrc={networkImageSrc}
                 asset={(token as never) ?? undefined}
                 networkProps={networkProps}
               />
