@@ -36,8 +36,8 @@ class TestDapp {
   private readonly connectAccountButton = '#connectButton';
 
   private readonly connectMetaMaskMessage = {
-    text: 'Connect with MetaMask',
-    tag: 'h2',
+    text: 'Connect this website with MetaMask',
+    tag: 'p',
   };
 
   private readonly connectedAccount = '#accounts';
