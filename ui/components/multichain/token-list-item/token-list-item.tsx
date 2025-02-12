@@ -82,7 +82,7 @@ type TokenListItemProps = {
   privacyMode?: boolean;
 };
 
-export const TokenListItem = ({
+export const TokenListItemComponent = ({
   className,
   onClick,
   tokenSymbol,
@@ -394,3 +394,5 @@ export const TokenListItem = ({
     </Box>
   );
 };
+
+export const TokenListItem = React.memo(TokenListItemComponent);

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import TokenList from '../token-list';
 import { getMultichainIsEvm } from '../../../../selectors/multichain';
@@ -20,13 +20,33 @@ type AssetListProps = {
   showTokensLinks?: boolean;
 };
 
+const TokenListContainer = React.memo(
+  ({ onClickAsset }: Pick<AssetListProps, 'onClickAsset'>) => {
+    const trackEvent = useContext(MetaMetricsContext);
+    const { primaryCurrencyProperties } = usePrimaryCurrencyProperties();
+
+    const onTokenClick = useCallback(
+      (chainId: string, tokenAddress: string) => {
+        onClickAsset(chainId, tokenAddress);
+        trackEvent({
+          event: MetaMetricsEventName.TokenScreenOpened,
+          category: MetaMetricsEventCategory.Navigation,
+          properties: {
+            token_symbol: primaryCurrencyProperties.suffix,
+            location: 'Home',
+          },
+        });
+      },
+      [],
+    );
+
+    return <TokenList onTokenClick={onTokenClick} />;
+  },
+);
+
 const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const { showDetectedTokens, setShowDetectedTokens } =
     useAssetListTokenDetection();
-  const trackEvent = useContext(MetaMetricsContext);
-
-  const { primaryCurrencyProperties } = usePrimaryCurrencyProperties();
-
   const isEvm = useSelector(getMultichainIsEvm);
   // NOTE: Since we can parametrize it now, we keep the original behavior
   // for EVM assets
@@ -35,19 +55,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   return (
     <>
       <AssetListControlBar showTokensLinks={shouldShowTokensLinks} />
-      <TokenList
-        onTokenClick={(chainId: string, tokenAddress: string) => {
-          onClickAsset(chainId, tokenAddress);
-          trackEvent({
-            event: MetaMetricsEventName.TokenScreenOpened,
-            category: MetaMetricsEventCategory.Navigation,
-            properties: {
-              token_symbol: primaryCurrencyProperties.suffix,
-              location: 'Home',
-            },
-          });
-        }}
-      />
+      <TokenListContainer onClickAsset={onClickAsset} />
       {showDetectedTokens && (
         <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />
       )}

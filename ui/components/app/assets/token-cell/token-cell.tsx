@@ -1,7 +1,14 @@
-import React, { useContext, useState } from 'react';
+<<<<<<< HEAD
+import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useTokenDisplayInfo } from '../hooks';
+=======
+import React, { useCallback } from 'react';
+import { useSelector } from 'react-redux';
+import { BigNumber } from 'bignumber.js';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+>>>>>>> main
 import {
   BlockSize,
   Display,
@@ -73,7 +80,7 @@ export default function TokenCell({
     token,
   });
 
-  const handleClick = (e?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+  const handleClick = useCallback((e?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e?.preventDefault();
 
     // If the scam warning modal is open, do nothing
@@ -99,7 +106,7 @@ export default function TokenCell({
         token_symbol: token.symbol,
       },
     });
-  };
+  }, [onClick, token.chainId, token.address]);
 
   const handleScamWarningModal = (arg: boolean) => {
     setShowScamWarningModal(arg);

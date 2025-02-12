@@ -24,7 +24,7 @@ type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
 };
 
-export default function TokenList({ onTokenClick }: TokenListProps) {
+function TokenList({ onTokenClick }: TokenListProps) {
   const isEvm = useSelector(getMultichainIsEvm);
   const chainIdsToPoll = useSelector(getChainIdsToPoll);
   const newTokensImported = useSelector(getNewTokensImported);
@@ -90,3 +90,5 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
     </div>
   );
 }
+
+export default React.memo(TokenList);
