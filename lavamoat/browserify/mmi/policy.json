@@ -997,7 +997,6 @@
         "Headers": true,
         "URL": true,
         "URLSearchParams": true,
-        "_interopRequireWildcard": true,
         "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
