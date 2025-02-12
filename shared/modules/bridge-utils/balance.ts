@@ -1,10 +1,11 @@
 import { Web3Provider } from '@ethersproject/providers';
 import type { Provider } from '@metamask/network-controller';
-import { Hex } from '@metamask/utils';
+import { type Hex, isCaipChainId } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
 import { getAddress } from 'ethers/lib/utils';
 import { fetchTokenBalance } from '../../lib/token-util';
 import { Numeric } from '../Numeric';
+import { type AllowedBridgeChainIds } from '../../constants/bridge';
 
 export const calcLatestSrcBalance = async (
   provider: Provider,
@@ -37,8 +38,12 @@ export const hasSufficientBalance = async (
   selectedAddress: string,
   tokenAddress: string,
   fromTokenAmount: string,
-  chainId: Hex,
+  chainId: AllowedBridgeChainIds,
 ) => {
+  if (isCaipChainId(chainId)) {
+    // TODO check solana balance
+    return true;
+  }
   const srcTokenBalance = await calcLatestSrcBalance(
     provider,
     selectedAddress,

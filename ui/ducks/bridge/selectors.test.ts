@@ -1,11 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import { zeroAddress } from 'ethereumjs-util';
 import { createBridgeMockStore } from '../../../test/jest/mock-store';
-import {
-  BUILT_IN_NETWORKS,
-  CHAIN_IDS,
-  FEATURED_RPCS,
-} from '../../../shared/constants/network';
+import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { mockNetworkState } from '../../../test/stub/networks';
 import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20.json';
@@ -107,7 +103,7 @@ describe('Bridge selectors', () => {
       });
       const result = getAllBridgeableNetworks(state as never);
 
-      expect(result).toHaveLength(8);
+      expect(result).toHaveLength(9);
       expect(result[0]).toStrictEqual(
         expect.objectContaining({ chainId: FEATURED_RPCS[0].chainId }),
       );
@@ -150,12 +146,17 @@ describe('Bridge selectors', () => {
       };
       const result = getAllBridgeableNetworks(state as never);
 
-      expect(result).toHaveLength(2);
+      expect(result).toHaveLength(3);
       expect(result[0]).toStrictEqual(
         expect.objectContaining({ chainId: CHAIN_IDS.MAINNET }),
       );
       expect(result[1]).toStrictEqual(
         expect.objectContaining({ chainId: CHAIN_IDS.LINEA_MAINNET }),
+      );
+      expect(result[2]).toStrictEqual(
+        expect.objectContaining({
+          chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        }),
       );
       expect(
         result.find(({ chainId }) => chainId === CHAIN_IDS.MOONBEAM),
@@ -350,10 +351,9 @@ describe('Bridge selectors', () => {
         bridgeSliceOverrides: { toChainId: '0x38' },
         metamaskStateOverrides: {
           ...mockNetworkState(
-            ...Object.values(BUILT_IN_NETWORKS),
-            ...FEATURED_RPCS.filter(
-              (network) => network.chainId !== CHAIN_IDS.LINEA_MAINNET, // Linea mainnet is both a built in network, as well as featured RPC
-            ),
+            { chainId: CHAIN_IDS.MAINNET },
+            { chainId: CHAIN_IDS.LINEA_MAINNET },
+            { chainId: CHAIN_IDS.POLYGON },
           ),
           useExternalServices: true,
         },
@@ -368,6 +368,15 @@ describe('Bridge selectors', () => {
   describe('getFromToken', () => {
     it('returns fromToken', () => {
       const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          extensionConfig: {
+            support: true,
+            chains: {
+              '0x1': { isActiveSrc: true, isActiveDest: false },
+              '0x38': { isActiveSrc: false, isActiveDest: true },
+            },
+          },
+        },
         bridgeSliceOverrides: {
           fromToken: { address: '0x123', symbol: 'TEST' },
         },
@@ -379,6 +388,15 @@ describe('Bridge selectors', () => {
 
     it('returns defaultToken if fromToken has no address', () => {
       const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          extensionConfig: {
+            support: true,
+            chains: {
+              '0x1': { isActiveSrc: true, isActiveDest: false },
+              '0x38': { isActiveSrc: false, isActiveDest: true },
+            },
+          },
+        },
         bridgeSliceOverrides: {
           fromToken: { symbol: 'NATIVE' },
         },
@@ -401,6 +419,15 @@ describe('Bridge selectors', () => {
 
     it('returns defaultToken if fromToken is undefined', () => {
       const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          extensionConfig: {
+            support: true,
+            chains: {
+              '0x1': { isActiveSrc: true, isActiveDest: false },
+              '0x38': { isActiveSrc: false, isActiveDest: true },
+            },
+          },
+        },
         bridgeSliceOverrides: { fromToken: undefined },
       });
       const result = getFromToken(state as never);
@@ -505,10 +532,10 @@ describe('Bridge selectors', () => {
           },
           marketData: {},
           ...mockNetworkState(
+            { chainId: CHAIN_IDS.OPTIMISM },
             { chainId: CHAIN_IDS.MAINNET },
             { chainId: CHAIN_IDS.LINEA_MAINNET },
             { chainId: CHAIN_IDS.POLYGON },
-            { chainId: CHAIN_IDS.OPTIMISM },
           ),
         },
       });
@@ -615,10 +642,10 @@ describe('Bridge selectors', () => {
           },
           marketData: {},
           ...mockNetworkState(
+            { chainId: CHAIN_IDS.OPTIMISM },
             { chainId: CHAIN_IDS.MAINNET },
             { chainId: CHAIN_IDS.LINEA_MAINNET },
             { chainId: CHAIN_IDS.POLYGON },
-            { chainId: CHAIN_IDS.OPTIMISM },
           ),
         },
       });
@@ -739,10 +766,10 @@ describe('Bridge selectors', () => {
           },
           marketData: {},
           ...mockNetworkState(
+            { chainId: CHAIN_IDS.OPTIMISM },
             { chainId: CHAIN_IDS.MAINNET },
             { chainId: CHAIN_IDS.LINEA_MAINNET },
             { chainId: CHAIN_IDS.POLYGON },
-            { chainId: CHAIN_IDS.OPTIMISM },
           ),
         },
       });
@@ -952,16 +979,27 @@ describe('Bridge selectors', () => {
 
     it('should return isInsufficientBalance=true', () => {
       const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          extensionConfig: {
+            chains: {
+              '0x1': { isActiveSrc: true, isActiveDest: false },
+            },
+          },
+        },
         bridgeSliceOverrides: {
           toChainId: '0x1',
           fromToken: { decimals: 6, address: zeroAddress() },
-          fromChain: { chainId: CHAIN_IDS.MAINNET },
         },
         bridgeStateOverrides: {
-          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotesLastFetched: Date.now(),
           quoteRequest: { srcTokenAmount: '1000' },
+        },
+        metamaskStateOverrides: {
+          ...mockNetworkState(
+            { chainId: CHAIN_IDS.MAINNET },
+            { chainId: CHAIN_IDS.LINEA_MAINNET },
+            { chainId: CHAIN_IDS.POLYGON },
+          ),
         },
       });
       const result = getValidationErrors(state as never);
@@ -975,8 +1013,6 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: { toChainId: '0x1' },
         bridgeStateOverrides: {
-          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotesLastFetched: Date.now(),
         },
       });
@@ -991,8 +1027,6 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: { toChainId: '0x1' },
         bridgeStateOverrides: {
-          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotesLastFetched: Date.now(),
         },
       });
@@ -1003,14 +1037,18 @@ describe('Bridge selectors', () => {
 
     it('should return isInsufficientBalance=false when balance is 0', () => {
       const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          extensionConfig: {
+            chains: {
+              '0x1': { isActiveSrc: true, isActiveDest: false },
+            },
+          },
+        },
         bridgeSliceOverrides: {
           toChainId: '0x1',
           fromToken: { decimals: 6, address: zeroAddress() },
-          fromChain: { chainId: CHAIN_IDS.MAINNET },
         },
         bridgeStateOverrides: {
-          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotesLastFetched: Date.now(),
           quoteRequest: { srcTokenAmount: '1000' },
         },
@@ -1024,14 +1062,19 @@ describe('Bridge selectors', () => {
 
     it('should return isInsufficientGasBalance=true when balance is equal to srcAmount and fromToken is native', () => {
       const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          extensionConfig: {
+            chains: {
+              '0x1': { isActiveSrc: true, isActiveDest: false },
+            },
+          },
+        },
         bridgeSliceOverrides: {
           toChainId: '0x1',
           fromTokenInputValue: '0.001',
           fromToken: { address: zeroAddress(), decimals: 18 },
         },
         bridgeStateOverrides: {
-          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotesLastFetched: Date.now(),
           quoteRequest: { srcTokenAmount: '10000000000000000' },
         },
@@ -1045,7 +1088,13 @@ describe('Bridge selectors', () => {
 
     it('should return isInsufficientGasBalance=true when balance is 0 and fromToken is erc20', () => {
       const state = createBridgeMockStore({
-        featureFlagOverrides: { destNetworkAllowlist: ['0x89'] },
+        featureFlagOverrides: {
+          extensionConfig: {
+            chains: {
+              '0x1': { isActiveSrc: true, isActiveDest: false },
+            },
+          },
+        },
         bridgeSliceOverrides: {
           toChainId: '0x89',
           toToken: {
@@ -1060,8 +1109,6 @@ describe('Bridge selectors', () => {
           toTokenExchangeRate: 0.798781,
         },
         bridgeStateOverrides: {
-          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotesLastFetched: Date.now(),
           quoteRequest: { srcTokenAmount: '100000000' },
         },
@@ -1093,8 +1140,6 @@ describe('Bridge selectors', () => {
           fromTokenInputValue: '0.001',
         },
         bridgeStateOverrides: {
-          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotesLastFetched: Date.now(),
           quoteRequest: {},
         },
@@ -1113,8 +1158,6 @@ describe('Bridge selectors', () => {
           fromTokenInputValue: '0.001',
         },
         bridgeStateOverrides: {
-          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotesLastFetched: Date.now(),
           quotes: mockErc20Erc20Quotes,
         },
@@ -1128,14 +1171,19 @@ describe('Bridge selectors', () => {
 
     it('should return isInsufficientGasForQuote=true when balance is less than required network fees in quote', () => {
       const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          extensionConfig: {
+            chains: {
+              '0x1': { isActiveSrc: true, isActiveDest: false },
+            },
+          },
+        },
         bridgeSliceOverrides: {
           toChainId: '0x1',
           fromTokenInputValue: '0.001',
           fromToken: { address: zeroAddress(), decimals: 18 },
         },
         bridgeStateOverrides: {
-          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotesLastFetched: Date.now(),
           quotes: mockBridgeQuotesNativeErc20,
         },
@@ -1161,8 +1209,6 @@ describe('Bridge selectors', () => {
           fromToken: { address: zeroAddress(), decimals: 18 },
         },
         bridgeStateOverrides: {
-          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotesLastFetched: Date.now(),
           quotes: mockBridgeQuotesNativeErc20,
         },
@@ -1216,10 +1262,10 @@ describe('Bridge selectors', () => {
           },
           marketData: {},
           ...mockNetworkState(
+            { chainId: CHAIN_IDS.OPTIMISM },
             { chainId: CHAIN_IDS.MAINNET },
             { chainId: CHAIN_IDS.LINEA_MAINNET },
             { chainId: CHAIN_IDS.POLYGON },
-            { chainId: CHAIN_IDS.OPTIMISM },
           ),
         },
       });
@@ -1273,10 +1319,10 @@ describe('Bridge selectors', () => {
           },
           marketData: {},
           ...mockNetworkState(
+            { chainId: CHAIN_IDS.OPTIMISM },
             { chainId: CHAIN_IDS.MAINNET },
             { chainId: CHAIN_IDS.LINEA_MAINNET },
             { chainId: CHAIN_IDS.POLYGON },
-            { chainId: CHAIN_IDS.OPTIMISM },
           ),
         },
       });

@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { NetworkConfiguration } from '@metamask/network-controller';
-import { Hex } from '@metamask/utils';
 import {
   TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
+import { type CaipChainId, type Hex } from '@metamask/utils';
 import {
   BridgeHistoryItem,
   Step,
@@ -12,7 +12,6 @@ import {
   StatusTypes,
 } from '../../../../shared/types/bridge-status';
 import { Box, Text } from '../../../components/component-library';
-import { Numeric } from '../../../../shared/modules/Numeric';
 import {
   AlignItems,
   Display,
@@ -21,9 +20,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  AllowedBridgeChainIds,
+  type AllowedBridgeChainIds,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
 } from '../../../../shared/constants/bridge';
+import { formatChainIdFromDecimal } from '../../../../shared/modules/bridge-utils/multichain';
 
 type I18nFunction = (
   key: string,
@@ -44,10 +44,13 @@ const getBridgeActionText = (
   t: I18nFunction,
   stepStatus: StatusTypes | null,
   step: Step,
-  networkConfigurationsByChainId: Record<`0x${string}`, NetworkConfiguration>,
+  networkConfigurationsByChainId: Record<
+    Hex | CaipChainId,
+    NetworkConfiguration
+  >,
 ) => {
   const hexDestChainId = step.destChainId
-    ? (new Numeric(step.destChainId, 10).toPrefixedHexString() as Hex)
+    ? formatChainIdFromDecimal(step.destChainId)
     : undefined;
   const destNetworkConfiguration = hexDestChainId
     ? networkConfigurationsByChainId[hexDestChainId]

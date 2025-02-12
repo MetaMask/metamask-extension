@@ -48,6 +48,10 @@ describe('Bridge utils', () => {
               isActiveSrc: false,
               isActiveDest: true,
             },
+            '1151111081099710': {
+              isActiveSrc: true,
+              isActiveDest: true,
+            },
           },
         },
       };
@@ -95,6 +99,10 @@ describe('Bridge utils', () => {
             '0x2b67': {
               isActiveSrc: false,
               isActiveDest: true,
+            },
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+              isActiveDest: true,
+              isActiveSrc: true,
             },
           },
         },
@@ -248,7 +256,7 @@ describe('Bridge utils', () => {
       );
 
       expect(fetchWithCache).toHaveBeenCalledWith({
-        url: 'https://bridge.api.cx.metamask.io/getQuote?walletAddress=0x123&srcChainId=1&destChainId=10&srcTokenAddress=0x0000000000000000000000000000000000000000&destTokenAddress=0x0000000000000000000000000000000000000000&srcTokenAmount=20000&slippage=0.5&insufficientBal=false&resetApproval=false',
+        url: 'https://bridge.api.cx.metamask.io/getQuote?walletAddress=0x123&destWalletAddress=0x123&srcChainId=1&destChainId=10&srcTokenAddress=0x0000000000000000000000000000000000000000&destTokenAddress=0x0000000000000000000000000000000000000000&srcTokenAmount=20000&slippage=0.5&insufficientBal=false&resetApproval=false',
         fetchOptions: {
           method: 'GET',
           headers: { 'X-Client-Id': 'extension' },
@@ -283,7 +291,7 @@ describe('Bridge utils', () => {
       );
 
       expect(fetchWithCache).toHaveBeenCalledWith({
-        url: 'https://bridge.api.cx.metamask.io/getQuote?walletAddress=0x123&srcChainId=1&destChainId=10&srcTokenAddress=0x0000000000000000000000000000000000000000&destTokenAddress=0x0000000000000000000000000000000000000000&srcTokenAmount=20000&slippage=0.5&insufficientBal=false&resetApproval=false',
+        url: 'https://bridge.api.cx.metamask.io/getQuote?walletAddress=0x123&destWalletAddress=0x123&srcChainId=1&destChainId=10&srcTokenAddress=0x0000000000000000000000000000000000000000&destTokenAddress=0x0000000000000000000000000000000000000000&srcTokenAmount=20000&slippage=0.5&insufficientBal=false&resetApproval=false',
         fetchOptions: {
           method: 'GET',
           headers: { 'X-Client-Id': 'extension' },
@@ -337,7 +345,7 @@ describe('Bridge utils', () => {
       );
 
       expect(fetchWithCache).toHaveBeenCalledWith({
-        url: 'https://bridge.api.cx.metamask.io/getQuote?walletAddress=0x123&srcChainId=1&destChainId=10&srcTokenAddress=0x0000000000000000000000000000000000000000&destTokenAddress=0x0000000000000000000000000000000000000000&srcTokenAmount=20000&slippage=0.5&insufficientBal=false&resetApproval=false',
+        url: 'https://bridge.api.cx.metamask.io/getQuote?walletAddress=0x123&destWalletAddress=0x123&srcChainId=1&destChainId=10&srcTokenAddress=0x0000000000000000000000000000000000000000&destTokenAddress=0x0000000000000000000000000000000000000000&srcTokenAmount=20000&slippage=0.5&insufficientBal=false&resetApproval=false',
         fetchOptions: {
           method: 'GET',
           headers: { 'X-Client-Id': 'extension' },

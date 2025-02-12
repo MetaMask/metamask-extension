@@ -17,7 +17,7 @@ import {
 
 export type CrossChainSwapsEventProperties = {
   [MetaMetricsEventName.ActionOpened]: RequestParams & {
-    location: MetaMetricsSwapsEventSource;
+    location: MetaMetricsSwapsEventSource | 'Carousel';
   };
   [MetaMetricsEventName.ActionCompleted]: RequestParams &
     RequestMetadata &

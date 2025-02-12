@@ -71,7 +71,12 @@ const getBlockExplorerUrl = (
   networkConfiguration: NetworkConfiguration | undefined,
   txHash: string | undefined,
 ) => {
-  if (!networkConfiguration || !txHash) {
+  if (
+    !networkConfiguration ||
+    !txHash ||
+    !('defaultBlockExplorerUrlIndex' in networkConfiguration) ||
+    !('blockExplorerUrls' in networkConfiguration)
+  ) {
     return undefined;
   }
   const index = networkConfiguration.defaultBlockExplorerUrlIndex;
@@ -242,7 +247,7 @@ const CrossChainSwapTxDetails = () => {
 
   const srcNetworkIconName = (
     <Box display={Display.Flex} gap={1} alignItems={AlignItems.center}>
-      {srcNetwork && (
+      {srcNetwork && 'name' in srcNetwork && (
         <AvatarNetwork
           size={AvatarNetworkSize.Xs}
           src={srcChainIconUrl}
@@ -254,7 +259,7 @@ const CrossChainSwapTxDetails = () => {
   );
   const destNetworkIconName = (
     <Box display={Display.Flex} gap={1} alignItems={AlignItems.center}>
-      {destNetwork && (
+      {destNetwork && 'name' in destNetwork && (
         <AvatarNetwork
           size={AvatarNetworkSize.Xs}
           src={destChainIconUrl}

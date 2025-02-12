@@ -1,6 +1,5 @@
-import type { Hex } from '@metamask/utils';
+import { type CaipChainId, type Hex, isCaipChainId } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
-import { getAddress } from 'ethers/lib/utils';
 import type { ContractMarketData } from '@metamask/assets-controllers';
 import {
   AddNetworkFields,
@@ -11,6 +10,7 @@ import { Numeric } from '../../../shared/modules/Numeric';
 import type { TxData } from '../../../shared/types/bridge';
 import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util';
 import { fetchTokenExchangeRates as fetchTokenExchangeRatesUtil } from '../../helpers/utils/util';
+import { getAddress } from '../../../shared/modules/bridge-utils/multichain';
 
 type GasFeeEstimate = {
   suggestedMaxPriorityFeePerGas: string;
@@ -48,9 +48,9 @@ export const getTxGasEstimates = async ({
   networkAndAccountSupports1559: boolean;
   networkGasFeeEstimates: NetworkGasFeeEstimates;
   txParams: TxData;
-  hexChainId: Hex;
+  hexChainId: Hex | CaipChainId;
 }) => {
-  if (networkAndAccountSupports1559) {
+  if (networkAndAccountSupports1559 && !isCaipChainId(hexChainId)) {
     const { estimatedBaseFee = '0' } = networkGasFeeEstimates;
     const hexEstimatedBaseFee = decGWEIToHexWEI(estimatedBaseFee) as Hex;
     const txGasFeeEstimates = await getTransaction1559GasFeeEstimates(
@@ -84,7 +84,7 @@ const fetchTokenExchangeRates = async (
   );
   return Object.keys(exchangeRates).reduce(
     (acc: Record<string, number | undefined>, address) => {
-      acc[address.toLowerCase()] = exchangeRates[address];
+      acc[address] = exchangeRates[address];
       return acc;
     },
     {},
@@ -95,7 +95,7 @@ const fetchTokenExchangeRates = async (
 // rate is not available in the TokenRatesController, which happens when the selected token has not been
 // imported into the wallet
 export const getTokenExchangeRate = async (request: {
-  chainId: Hex;
+  chainId: Hex | CaipChainId;
   tokenAddress: string;
   currency: string;
 }) => {
@@ -106,8 +106,8 @@ export const getTokenExchangeRate = async (request: {
     tokenAddress,
   );
   const exchangeRate =
-    exchangeRates?.[tokenAddress.toLowerCase()] ??
-    exchangeRates?.[getAddress(tokenAddress)];
+    exchangeRates?.[getAddress(tokenAddress)] ??
+    exchangeRates?.[tokenAddress.toLowerCase()];
   return exchangeRate;
 };
 
@@ -119,8 +119,8 @@ export const exchangeRateFromMarketData = (
   marketData?: Record<string, ContractMarketData>,
 ) =>
   (
-    marketData?.[chainId]?.[tokenAddress.toLowerCase() as Hex] ??
-    marketData?.[chainId]?.[getAddress(tokenAddress) as Hex]
+    marketData?.[chainId]?.[getAddress(tokenAddress) as Hex] ??
+    marketData?.[chainId]?.[tokenAddress.toLowerCase() as Hex]
   )?.price;
 
 export const tokenAmountToCurrency = (

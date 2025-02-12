@@ -11,6 +11,13 @@ import { BridgeQuotesModal } from './bridge-quotes-modal';
 describe('BridgeQuotesModal', () => {
   it('should render the modal', () => {
     const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        extensionConfig: {
+          chains: {
+            '0x1': { isActiveSrc: true, isActiveDest: false },
+          },
+        },
+      },
       bridgeStateOverrides: {
         quotes: mockBridgeQuotesErc20Erc20,
         getQuotesLastFetched: Date.now(),

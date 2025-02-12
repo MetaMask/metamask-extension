@@ -1,5 +1,5 @@
-import type { Hex } from '@metamask/utils';
 import type { BigNumber } from 'bignumber.js';
+import type { CaipChainId, Hex } from '@metamask/utils';
 import type { AssetType } from '../constants/transaction';
 
 export type ChainConfiguration = {
@@ -40,7 +40,7 @@ export type BridgeToken = {
   symbol: string;
   image: string;
   decimals: number;
-  chainId: Hex;
+  chainId: Hex | CaipChainId;
   balance: string; // raw balance
   string: string | undefined; // normalized balance as a stringified number
   tokenFiatAmount?: number | null;
@@ -142,6 +142,7 @@ export enum ChainId {
   ARBITRUM = 42161,
   AVALANCHE = 43114,
   LINEA = 59144,
+  SOLANA = 1151111081099710,
 }
 
 export enum FeeType {
@@ -169,7 +170,7 @@ export type BridgeFeatureFlags = {
     refreshRate: number;
     maxRefreshCount: number;
     support: boolean;
-    chains: Record<Hex, ChainConfiguration>;
+    chains: Record<Hex | CaipChainId, ChainConfiguration>;
   };
 };
 export enum RequestStatus {
