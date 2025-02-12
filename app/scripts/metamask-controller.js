@@ -152,7 +152,6 @@ import {
   NotificationServicesPushController,
   NotificationServicesController,
 } from '@metamask/notification-services-controller';
-import { isProduction } from '../../shared/modules/environment';
 import {
   Caip25CaveatMutators,
   Caip25CaveatType,
@@ -164,6 +163,7 @@ import {
 } from '@metamask/multichain';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { MultichainTransactionsController } from '@metamask/multichain-transactions-controller';
+import { isProduction } from '../../shared/modules/environment';
 ///: END:ONLY_INCLUDE_IF
 import {
   methodsRequiringNetworkSwitch,

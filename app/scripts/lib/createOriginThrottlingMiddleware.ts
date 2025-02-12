@@ -1,5 +1,4 @@
 import { providerErrors, errorCodes } from '@metamask/rpc-errors';
-import { ApprovalType } from '@metamask/controller-utils';
 import type {
   Json,
   JsonRpcError,
