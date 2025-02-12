@@ -87,12 +87,17 @@ import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
-import { getCurrentKeyring, getTokenList } from '../../../selectors';
+import {
+  getCurrentKeyring,
+  getSelectedInternalAccount,
+  getTokenList,
+} from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
 import { BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE } from '../../../../shared/constants/bridge';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 
@@ -140,6 +145,15 @@ const PrepareBridgePage = () => {
   );
   const activeQuote =
     isQuoteExpired && !quoteRequest.insufficientBal ? undefined : activeQuote_;
+
+  const isEvm = useMultichainSelector(getMultichainIsEvm);
+  const selectedEvmAccount = useSelector(getSelectedEvmInternalAccount);
+  const selectedMultichainAccount = useMultichainSelector(
+    getSelectedInternalAccount,
+  );
+  const selectedAccount = isEvm
+    ? selectedEvmAccount
+    : selectedMultichainAccount;
 
   const keyring = useSelector(getCurrentKeyring);
   // @ts-expect-error keyring type is wrong maybe?
@@ -286,6 +300,7 @@ const PrepareBridgePage = () => {
       // balance is less than the tenderly balance
       insufficientBal: Boolean(providerConfig?.rpcUrl?.includes('tenderly')),
       slippage,
+      walletAddress: selectedAccount?.address,
     }),
     [
       isSwap,
@@ -296,6 +311,7 @@ const PrepareBridgePage = () => {
       fromAmount,
       providerConfig,
       slippage,
+      selectedAccount?.address,
     ],
   );
 
