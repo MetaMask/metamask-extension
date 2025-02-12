@@ -3159,14 +3159,35 @@ describe('MetaMaskController', () => {
     });
 
     describe('#setupUntrustedCommunicationCaip', () => {
+      let localMetamaskController;
       beforeEach(() => {
+        process.env.MULTICHAIN_API = true;
+        localMetamaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState: {
+            ...cloneDeep(firstTimeState),
+            PreferencesController: {
+              useExternalServices: false,
+            },
+          },
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+        });
         initializeMockMiddlewareLog();
         jest
-          .spyOn(metamaskController.onboardingController, 'state', 'get')
+          .spyOn(localMetamaskController.onboardingController, 'state', 'get')
           .mockReturnValue({ completedOnboarding: true });
       });
 
       afterAll(() => {
+        process.env.MULTICHAIN_API = false;
         tearDownMockMiddlewareLog();
       });
 
@@ -3183,7 +3204,7 @@ describe('MetaMaskController', () => {
           cb();
         });
 
-        metamaskController.setupUntrustedCommunicationCaip({
+        localMetamaskController.setupUntrustedCommunicationCaip({
           connectionStream: streamTest,
           sender: messageSender,
         });
@@ -3235,7 +3256,7 @@ describe('MetaMaskController', () => {
           cb();
         });
 
-        metamaskController.setupUntrustedCommunicationCaip({
+        localMetamaskController.setupUntrustedCommunicationCaip({
           connectionStream: streamTest,
           sender: messageSender,
         });
@@ -3287,7 +3308,7 @@ describe('MetaMaskController', () => {
           cb();
         });
 
-        metamaskController.setupUntrustedCommunicationCaip({
+        localMetamaskController.setupUntrustedCommunicationCaip({
           connectionStream: streamTest,
           sender: messageSender,
         });
