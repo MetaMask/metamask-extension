@@ -357,8 +357,10 @@ import {
   handleBridgeTransactionFailed,
   handleTransactionFailedTypeBridge,
 } from './lib/bridge-status/metrics';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { MultichainBalancesControllerInit } from './controller-init/multichain/multichain-balances-controller-init';
 import { MultichainTransactionsControllerInit } from './controller-init/multichain/multichain-transactions-controller-init';
+///: END:ONLY_INCLUDE_IF
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
 import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
 import { initControllers } from './controller-init/utils';
