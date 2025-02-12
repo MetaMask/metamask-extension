@@ -157,13 +157,13 @@ exports[`SendPage render and initialization should render correctly even when a 
             class="mm-box multichain-send-page__recipient"
           >
             <div
-              class="box tabs box--flex-direction-row"
+              class="mm-box tabs"
             >
               <ul
-                class="box tabs__list box--display-flex box--flex-direction-row box--justify-content-flex-start box--background-color-background-default"
+                class="mm-box tabs__list mm-box--display-flex mm-box--gap-0 mm-box--justify-content-flex-start mm-box--background-color-background-default"
               >
                 <li
-                  class="box tab tab--active box--flex-direction-row"
+                  class="mm-box tab tab--active"
                 >
                   <button
                     class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-2 mm-box--display-block mm-box--width-full mm-box--color-inherit"
@@ -172,7 +172,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                   </button>
                 </li>
                 <li
-                  class="box tab box--flex-direction-row"
+                  class="mm-box tab"
                   data-testid="send-contacts-tab"
                 >
                   <button
@@ -183,7 +183,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                 </li>
               </ul>
               <div
-                class="box tabs__content box--flex-direction-row"
+                class="mm-box tabs__content"
               >
                 <div
                   class="mm-box mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column"

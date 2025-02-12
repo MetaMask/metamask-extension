@@ -126,8 +126,7 @@ export const snapKeyringBuilder = (
   isSnapPreinstalled: (snapId: string) => boolean,
 ) => {
   const builder = (() => {
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
     return new SnapKeyring(controllerMessenger, {
       addressExists: async (address) => {
         const addresses = await controllerMessenger.call(

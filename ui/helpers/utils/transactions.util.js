@@ -1,5 +1,3 @@
-import { ERC1155, ERC721 } from '@metamask/controller-utils';
-
 import {
   TransactionEnvelopeType,
   TransactionStatus,
@@ -156,12 +154,3 @@ export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
     }
   }
 }
-
-/**
- * Method to check if asset standard passed is NFT
- *
- * @param {*} assetStandard - string
- * @returns boolean
- */
-export const isNFTAssetStandard = (assetStandard) =>
-  assetStandard === ERC1155 || assetStandard === ERC721;

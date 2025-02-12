@@ -44,65 +44,6 @@
   "QRHardwareWalletSteps2Description": {
     "message": "Ngrave Zero"
   },
-  "SIWEAddressInvalid": {
-    "message": "L’adresse figurant dans la demande de connexion ne correspond pas à l’adresse du compte que vous utilisez pour vous connecter."
-  },
-  "SIWEDomainInvalidText": {
-    "message": "Le nom de domaine du site Web auquel vous tentez de vous connecter ne correspond pas au nom de domaine indiqué dans la demande de connexion. Procédez avec prudence."
-  },
-  "SIWEDomainInvalidTitle": {
-    "message": "Demande de site trompeuse."
-  },
-  "SIWEDomainWarningBody": {
-    "message": "Le site Web ($1) vous demande de vous connecter au mauvais nom domaine. Il peut s’agir d’une tentative d’hameçonnage.",
-    "description": "$1 represents the website domain"
-  },
-  "SIWEDomainWarningLabel": {
-    "message": "Site non sécurisé"
-  },
-  "SIWELabelChainID": {
-    "message": "Identifiant de la chaîne :"
-  },
-  "SIWELabelExpirationTime": {
-    "message": "Expire à :"
-  },
-  "SIWELabelIssuedAt": {
-    "message": "Émis à :"
-  },
-  "SIWELabelMessage": {
-    "message": "Message :"
-  },
-  "SIWELabelNonce": {
-    "message": "Nonce :"
-  },
-  "SIWELabelNotBefore": {
-    "message": "Pas avant :"
-  },
-  "SIWELabelRequestID": {
-    "message": "Identifiant de la demande :"
-  },
-  "SIWELabelResources": {
-    "message": "Ressources : $1",
-    "description": "$1 represents the number of resources"
-  },
-  "SIWELabelURI": {
-    "message": "URI :"
-  },
-  "SIWELabelVersion": {
-    "message": "Version :"
-  },
-  "SIWESiteRequestSubtitle": {
-    "message": "Ce site vous demande de vous connecter avec"
-  },
-  "SIWESiteRequestTitle": {
-    "message": "Demande de connexion"
-  },
-  "SIWEWarningSubtitle": {
-    "message": "Veuillez confirmer que vous avez bien compris en cochant :"
-  },
-  "SIWEWarningTitle": {
-    "message": "En êtes-vous sûr(e) ?"
-  },
   "about": {
     "message": "À propos"
   },
@@ -651,9 +592,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Activer la fonctionnalité de base"
   },
-  "beCareful": {
-    "message": "Soyez prudent"
-  },
   "beta": {
     "message": "Bêta"
   },
@@ -736,9 +674,6 @@
   "blockaidDescriptionTransferFarming": {
     "message": "Si vous approuvez cette demande, un tiers connu pour ses activités frauduleuses pourrait s’emparer de tous vos actifs."
   },
-  "blockaidDescriptionWarning": {
-    "message": "Il pourrait s’agir d’une demande trompeuse. Ne continuez que si vous faites confiance à toutes les adresses concernées."
-  },
   "blockaidMessage": {
     "message": "Protection de la vie privée : aucune donnée n’est partagée avec des tiers. Disponible sur Arbitrum, Avalanche, BNB chain, Linea, Optimism, Polygon, Base, Sepolia et le réseau principal Ethereum."
   },
@@ -793,10 +728,6 @@
   "buyAndSell": {
     "message": "Acheter et vendre"
   },
-  "buyAsset": {
-    "message": "Acheter $1",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
   "buyMoreAsset": {
     "message": "Acheter plus de $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -815,9 +746,6 @@
   },
   "cancelPopoverTitle": {
     "message": "Annuler la transaction"
-  },
-  "cancelSpeedUp": {
-    "message": "annuler ou accélérer une transaction."
   },
   "cancelSpeedUpLabel": {
     "message": "Ces gas fees vont $1 les frais initiaux.",
@@ -1132,29 +1060,8 @@
   "contractDeployment": {
     "message": "Déploiement de contrat"
   },
-  "contractDescription": {
-    "message": "Pour vous protéger contre les escrocs, prenez le temps de vérifier les informations relatives aux tiers."
-  },
   "contractInteraction": {
     "message": "Interaction avec un contrat"
-  },
-  "contractNFT": {
-    "message": "Contrat NFT"
-  },
-  "contractRequestingAccess": {
-    "message": "Tiers demandant l'accès"
-  },
-  "contractRequestingSignature": {
-    "message": "Tiers nécessitant une signature"
-  },
-  "contractRequestingSpendingCap": {
-    "message": "Tiers prévoyant un plafond de dépenses"
-  },
-  "contractTitle": {
-    "message": "Détails du tiers"
-  },
-  "contractToken": {
-    "message": "Contrat de jetons"
   },
   "convertTokenToNFTDescription": {
     "message": "Nous avons détecté que cet actif est un NFT. MetaMask prend désormais nativement en charge les NFT. Voulez-vous le retirer de votre liste de jetons et l’ajouter en tant que NFT ?"
@@ -1176,9 +1083,6 @@
   },
   "copyPrivateKey": {
     "message": "Copier la clé privée"
-  },
-  "copyRawTransactionData": {
-    "message": "Copier les données brutes de la transaction"
   },
   "copyToClipboard": {
     "message": "Copier dans le presse-papier"
@@ -1263,9 +1167,6 @@
   "customSpendLimit": {
     "message": "Limite de dépenses personnalisée"
   },
-  "customSpendingCap": {
-    "message": "Plafond de dépenses personnalisé"
-  },
   "customToken": {
     "message": "Jeton personnalisé"
   },
@@ -1286,9 +1187,6 @@
   },
   "customizeYourNotificationsText": {
     "message": "Activez les types de notifications que vous souhaitez recevoir :"
-  },
-  "dappRequestedSpendingCap": {
-    "message": "Plafond de dépenses demandé par le site"
   },
   "dappSuggested": {
     "message": "Site suggéré"
@@ -1327,9 +1225,6 @@
   },
   "dataCollectionWarningPopoverDescription": {
     "message": "Vous avez désactivé la collecte de données à des fins de marketing. Cela ne s’applique qu’à cet appareil. Si vous utilisez MetaMask sur d’autres appareils, n’oubliez pas de désactiver cette fonctionnalité sur ces appareils aussi."
-  },
-  "dataHex": {
-    "message": "Hex"
   },
   "dataUnavailable": {
     "message": "données non disponibles"
@@ -1702,9 +1597,6 @@
   "enterANameToIdentifyTheUrl": {
     "message": "Saisissez un nom pour identifier l’URL"
   },
-  "enterANumber": {
-    "message": "Saisissez un nombre"
-  },
   "enterChainId": {
     "message": "Saisissez l’ID de chaîne"
   },
@@ -1926,9 +1818,6 @@
   },
   "function": {
     "message": "Fonction : $1"
-  },
-  "functionType": {
-    "message": "Type de fonction"
   },
   "fundingMethod": {
     "message": "Mode de financement"
@@ -2251,37 +2140,6 @@
   "initialTransactionConfirmed": {
     "message": "Votre transaction initiale a été confirmée par le réseau. Cliquez sur OK pour retourner à l’écran précédent."
   },
-  "inputLogicEmptyState": {
-    "message": "N'entrez qu'une somme que vous pouvez accepter que le tiers dépense aujourd'hui ou à l'avenir. Vous pourrez toujours augmenter le plafond de dépenses ultérieurement."
-  },
-  "inputLogicEqualOrSmallerNumber": {
-    "message": "Cela permet au tiers de dépenser $1 de votre solde actuel.",
-    "description": "$1 is the current token balance in the account and the name of the current token"
-  },
-  "inputLogicHigherNumber": {
-    "message": "Cela permet au tiers de dépenser tout votre solde de jetons jusqu'à ce qu'il atteigne le plafond ou que vous révoquiez le plafond de dépenses. Si ce n'est pas votre intention, envisagez de fixer un plafond de dépenses plus bas."
-  },
-  "insightWarning": {
-    "message": "avertissement"
-  },
-  "insightWarningCheckboxMessage": {
-    "message": "$1 la demande de $2",
-    "description": "$1 is the action i.e. sign, confirm. $2 is the origin making the request."
-  },
-  "insightWarningContentPlural": {
-    "message": "Vérifiez les $1 avant de $2. Vous ne pouvez retirer votre consentement, une fois la $3 validée.",
-    "description": "$1 the 'insightWarnings' message (2 warnings) representing warnings, $2 is the action (i.e. signing) and $3 is the result (i.e. signature, transaction)"
-  },
-  "insightWarningContentSingular": {
-    "message": "Vérifiez les $1 avant de $2. Vous ne pouvez retirer votre consentement, une fois la $3 validée.",
-    "description": "$1 is the 'insightWarning' message (1 warning), $2 is the action (i.e. signing) and $3 is the result (i.e. signature, transaction)"
-  },
-  "insightWarningHeader": {
-    "message": "Cette demande peut être dangereuse"
-  },
-  "insightWarnings": {
-    "message": "avertissements"
-  },
   "insightsFromSnap": {
     "message": "Aperçus $1",
     "description": "$1 represents the name of the snap"
@@ -2301,14 +2159,6 @@
   },
   "insufficientBalance": {
     "message": "Solde insuffisant."
-  },
-  "insufficientCurrencyBuyOrDeposit": {
-    "message": "Vous n’avez pas assez de $1 sur votre compte pour payer les frais de transaction sur le réseau de $2. $3 ou effectuez un dépôt depuis un autre compte.",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
-  },
-  "insufficientCurrencyDeposit": {
-    "message": "Vous n’avez pas assez de $1 sur votre compte pour payer les frais de transaction sur le réseau de $2. Effectuez un dépôt de $1 à partir d’un autre compte.",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network"
   },
   "insufficientFunds": {
     "message": "Fonds insuffisants."
@@ -2462,10 +2312,6 @@
   "layer2Fees": {
     "message": "Frais de couche 2"
   },
-  "learnCancelSpeeedup": {
-    "message": "Découvrir comment $1",
-    "description": "$1 is link to cancel or speed up transactions"
-  },
   "learnHow": {
     "message": "Découvrir comment"
   },
@@ -2604,9 +2450,6 @@
   },
   "lowLowercase": {
     "message": "bas"
-  },
-  "lowPriorityMessage": {
-    "message": "Les transactions ultérieures seront placées en file d’attente après celle-ci. Ce prix a été observé pour la dernière fois il y a un certain temps."
   },
   "mainnet": {
     "message": "Réseau principal Ethereum"
@@ -3477,9 +3320,6 @@
   "openInBlockExplorer": {
     "message": "Ouvrir dans l’explorateur de blocs"
   },
-  "openSeaNew": {
-    "message": "OpenSea"
-  },
   "optional": {
     "message": "Facultatif"
   },
@@ -3507,9 +3347,6 @@
   },
   "padlock": {
     "message": "Cadenas"
-  },
-  "parameters": {
-    "message": "Paramètres"
   },
   "participateInMetaMetrics": {
     "message": "Participer à MetaMetrics"
@@ -3543,22 +3380,8 @@
     "message": "Collez votre clé privée ici:",
     "description": "For importing an account from a private key"
   },
-  "paymasterInUse": {
-    "message": "Le gaz pour cette transaction sera payé par un payeur.",
-    "description": "Alert shown in transaction confirmation if paymaster in use."
-  },
   "pending": {
     "message": "En attente"
-  },
-  "pendingTransactionInfo": {
-    "message": "Cette transaction ne sera pas traitée tant que la précédente ne sera pas terminée."
-  },
-  "pendingTransactionMultiple": {
-    "message": "Vous avez ($1) transactions en attente."
-  },
-  "pendingTransactionSingle": {
-    "message": "Vous avez (1) transaction en attente.",
-    "description": "$1 is count of pending transactions"
   },
   "permissionDetails": {
     "message": "Informations sur les autorisations"
@@ -4122,12 +3945,6 @@
   "reportIssue": {
     "message": "Signaler un problème"
   },
-  "requestFlaggedAsMaliciousFallbackCopyReason": {
-    "message": "Le fournisseur de sécurité n’a pas partagé d’autres détails"
-  },
-  "requestFlaggedAsMaliciousFallbackCopyReasonTitle": {
-    "message": "Demande signalée comme malveillante"
-  },
   "requestFrom": {
     "message": "Demande de"
   },
@@ -4140,18 +3957,6 @@
   "requestFromTransactionDescription": {
     "message": "Il s’agit du site qui demande votre confirmation."
   },
-  "requestMayNotBeSafe": {
-    "message": "Cette demande peut présenter des risques"
-  },
-  "requestMayNotBeSafeError": {
-    "message": "Le fournisseur de sécurité n’a pas détecté d’activité malveillante connue, mais continuer peut présenter un risque."
-  },
-  "requestNotVerified": {
-    "message": "Demande non vérifiée"
-  },
-  "requestNotVerifiedError": {
-    "message": "Suite à une erreur, cette demande n’a pas été vérifiée par le fournisseur de sécurité. Veuillez agir avec prudence."
-  },
   "requestingFor": {
     "message": "Demande de"
   },
@@ -4162,9 +3967,6 @@
   "requestingForNetwork": {
     "message": "Demande pour $1",
     "description": "Name of Network"
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "demandes en attente d’un accusé de réception"
   },
   "required": {
     "message": "Obligatoire"
@@ -4268,9 +4070,6 @@
   },
   "revokeSimulationDetailsDesc": {
     "message": "Vous révoquez l’autorisation que vous avez accordée à quelqu’un d’autre de dépenser des jetons à partir de votre compte."
-  },
-  "revokeSpendingCapTooltipText": {
-    "message": "Ce tiers ne pourra plus dépenser vos jetons actuels ou futurs."
   },
   "rpcNameOptional": {
     "message": "Nom du RPC (facultatif)"
@@ -4484,9 +4283,6 @@
     "message": "Attention : vous êtes sur le point d’envoyer des jetons à l’adresse d’un contrat de jetons qui pourrait entraîner une perte de fonds. $1",
     "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
-  "sendingZeroAmount": {
-    "message": "Vous envoyez 0 $1."
-  },
   "sepolia": {
     "message": "Réseau de test Sepolia"
   },
@@ -4573,23 +4369,14 @@
   "showTestnetNetworksDescription": {
     "message": "Sélectionnez ceci pour afficher les réseaux de test dans la liste des réseaux"
   },
-  "sigRequest": {
-    "message": "Demande de signature"
-  },
   "sign": {
     "message": "Signer"
   },
   "signatureRequest": {
     "message": "Demande de Signature"
   },
-  "signatureRequestGuidance": {
-    "message": "Ne signez ce message que si vous comprenez parfaitement son contenu et si le site demandeur vous inspire confiance."
-  },
   "signed": {
     "message": "Signé"
-  },
-  "signin": {
-    "message": "Connexion"
   },
   "signing": {
     "message": "Signature"
@@ -4946,13 +4733,6 @@
   },
   "spendingCap": {
     "message": "Plafond de dépenses"
-  },
-  "spendingCapError": {
-    "message": "Erreur : saisissez uniquement des chiffres"
-  },
-  "spendingCapErrorDescription": {
-    "message": "Saisissez uniquement le nombre de jetons $1 que vous êtes prêt à utiliser maintenant ou à l’avenir. Vous pourrez toujours augmenter la limite de jetons plus tard.",
-    "description": "$1 is origin of the site requesting the token limit"
   },
   "spendingCapTooltipDesc": {
     "message": "Il s’agit du nombre de jetons auquel le dépenseur pourra accéder en votre nom."
@@ -5906,9 +5686,6 @@
   "unknownCollection": {
     "message": "Collection sans nom"
   },
-  "unknownNetwork": {
-    "message": "Réseau privé inconnu"
-  },
   "unknownNetworkForKeyEntropy": {
     "message": "Réseau inconnu",
     "description": "Displayed on places like Snap install warning when regular name is not available."
@@ -5935,9 +5712,6 @@
   "unsendableAsset": {
     "message": "L’envoi de jetons NFT (ERC-721) n’est pas pris en charge actuellement",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
-  },
-  "unverifiedContractAddressMessage": {
-    "message": "Nous ne pouvons pas vérifier ce contrat. Assurez-vous que vous faites confiance à cette adresse."
   },
   "upArrow": {
     "message": "flèche vers le haut"
@@ -6001,9 +5775,6 @@
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
   },
-  "useSiteSuggestion": {
-    "message": "Utiliser la suggestion du site"
-  },
   "useTokenDetectionPrivacyDesc": {
     "message": "L’affichage automatique des tokens envoyés sur votre compte implique une communication avec des serveurs externes afin de récupérer les images des tokens. Ces serveurs auront accès à votre adresse IP."
   },
@@ -6015,9 +5786,6 @@
   },
   "userOpContractDeployError": {
     "message": "Le déploiement de contrats à partir d’un compte de contrat intelligent n’est pas pris en charge"
-  },
-  "verifyContractDetails": {
-    "message": "Vérifier les informations relatives aux tiers"
   },
   "version": {
     "message": "Version"
@@ -6090,10 +5858,6 @@
     "message": "Avertissement provenant de $1",
     "description": "$1 represents the name of the snap"
   },
-  "warningTooltipText": {
-    "message": "$1 L’autre partie au contrat peut dépenser la totalité de votre solde de jetons sans préavis et sans demander votre consentement. Protégez-vous en abaissant le plafond des dépenses.",
-    "description": "$1 is a warning icon with text 'Be careful' in 'warning' colour"
-  },
   "watchEthereumAccountsDescription": {
     "message": "En activant cette option, vous pourrez surveiller des comptes Ethereum via une adresse publique ou un nom ENS. Pour nous faire part de vos commentaires sur cette fonctionnalité bêta, veuillez remplir ce $1.",
     "description": "$1 is the link to a product feedback form"
@@ -6165,9 +5929,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Vous devez autoriser l’accès à votre appareil pour utiliser cette fonctionnalité."
-  },
-  "youSign": {
-    "message": "Vous signez"
   },
   "yourAccounts": {
     "message": "Vos comptes"
