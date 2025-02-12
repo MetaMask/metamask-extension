@@ -8,10 +8,6 @@
 
 [
   [
-    "app/scripts/lib/transaction/metrics.ts",
-    "shared/modules/metametrics.ts"
-  ],
-  [
     "ui/components/app/alert-system/confirm-alert-modal/confirm-alert-modal.tsx",
     "ui/components/app/alert-system/confirm-alert-modal/index.tsx",
     "ui/pages/confirmations/components/confirm/footer/footer.tsx"
