@@ -7,7 +7,6 @@ on:
 
 
 
-
 jobs:
   call-publish-slack-release-testing-status:
     permissions:
