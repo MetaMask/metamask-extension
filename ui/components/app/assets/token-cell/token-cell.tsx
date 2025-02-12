@@ -1,14 +1,7 @@
-<<<<<<< HEAD
 import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useTokenDisplayInfo } from '../hooks';
-=======
-import React, { useCallback } from 'react';
-import { useSelector } from 'react-redux';
-import { BigNumber } from 'bignumber.js';
-import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
->>>>>>> main
 import {
   BlockSize,
   Display,
@@ -80,33 +73,36 @@ export default function TokenCell({
     token,
   });
 
-  const handleClick = useCallback((e?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    e?.preventDefault();
+  const handleClick = useCallback(
+    (e?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      e?.preventDefault();
 
-    // If the scam warning modal is open, do nothing
-    if (showScamWarningModal) {
-      return;
-    }
+      // If the scam warning modal is open, do nothing
+      if (showScamWarningModal) {
+        return;
+      }
 
-    // Ensure token has a valid chainId before proceeding
-    if (!onClick || !token.chainId) {
-      return;
-    }
+      // Ensure token has a valid chainId before proceeding
+      if (!onClick || !token.chainId) {
+        return;
+      }
 
-    // Call the onClick handler with chainId and address if needed
-    onClick(token.chainId, token.address);
+      // Call the onClick handler with chainId and address if needed
+      onClick(token.chainId, token.address);
 
-    // Track the event
-    trackEvent({
-      category: MetaMetricsEventCategory.Tokens,
-      event: MetaMetricsEventName.TokenDetailsOpened,
-      properties: {
-        location: 'Home',
-        chain_id: token.chainId, // FIXME: Ensure this is a number for EVM accounts
-        token_symbol: token.symbol,
-      },
-    });
-  }, [onClick, token.chainId, token.address]);
+      // Track the event
+      trackEvent({
+        category: MetaMetricsEventCategory.Tokens,
+        event: MetaMetricsEventName.TokenDetailsOpened,
+        properties: {
+          location: 'Home',
+          chain_id: token.chainId, // FIXME: Ensure this is a number for EVM accounts
+          token_symbol: token.symbol,
+        },
+      });
+    },
+    [onClick, token.chainId, token.address],
+  );
 
   const handleScamWarningModal = (arg: boolean) => {
     setShowScamWarningModal(arg);

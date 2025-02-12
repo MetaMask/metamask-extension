@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import TokenList from '../token-list';
 import { getMultichainIsEvm } from '../../../../selectors/multichain';
