@@ -24,6 +24,18 @@ class ActivityListPage {
 
   private readonly tooltip = '.tippy-tooltip-content';
 
+  private readonly cancelTransactionButton = {
+    text: 'Cancel',
+    tag: 'button',
+  };
+
+  private readonly speedupButton = '[data-testid="speedup-button"]';
+
+  private readonly confirmTransactionReplacementButton = {
+    text: 'Submit',
+    tag: 'button',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -195,6 +207,28 @@ class ActivityListPage {
     throw new Error(
       `Failed transactions found in activity list: ${errorMessages.join('\n')}`,
     );
+  }
+
+  async click_transactionListItem() {
+    await this.driver.clickElement(this.completedTransactions);
+  }
+
+  async click_cancelTransaction() {
+    await this.driver.clickElement(this.cancelTransactionButton);
+  }
+
+  async click_speedUpTransaction() {
+    await this.driver.clickElement(this.speedupButton);
+  }
+
+  async click_confirmTransactionReplacement() {
+    await this.driver.clickElement(this.confirmTransactionReplacementButton);
+  }
+
+  async check_waitForTransactionStatus(status: 'confirmed' | 'cancelled') {
+    await this.driver.waitForSelector(`.transaction-status-label--${status}`, {
+      timeout: 5000,
+    });
   }
 }
 

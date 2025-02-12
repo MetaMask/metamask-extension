@@ -23,7 +23,7 @@ describe('Request Queuing for Multiple Dapps and Txs on same networks', function
           .withNetworkControllerTripleGanache()
           .build(),
         dappOptions: { numberOfDapps: 3 },
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {
