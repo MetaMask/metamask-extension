@@ -5749,23 +5749,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "@metamask/multichain@npm:2.1.0"
+"@metamask/multichain@npm:@metamask-previews/multichain@2.1.0-preview-958adf52":
+  version: 2.1.0-preview-958adf52
+  resolution: "@metamask-previews/multichain@npm:2.1.0-preview-958adf52"
   dependencies:
     "@metamask/api-specs": "npm:^0.10.12"
-    "@metamask/controller-utils": "npm:^11.4.5"
+    "@metamask/controller-utils": "npm:^11.5.0"
     "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/safe-event-emitter": "npm:^3.0.0"
-    "@metamask/utils": "npm:^11.0.1"
+    "@metamask/utils": "npm:^11.1.0"
     "@open-rpc/schema-utils-js": "npm:^2.0.5"
     jsonschema: "npm:^1.4.1"
     lodash: "npm:^4.17.21"
   peerDependencies:
     "@metamask/network-controller": ^22.0.0
     "@metamask/permission-controller": ^11.0.0
-  checksum: 10/762231b95fa89e25e8a06ff50161301cecc1eaa8095b8eef4b1d938e43307c98549767600b4a37482bb846026f46c66791cd99e385991704b5e9624aa6032332
+  checksum: 10/93fc207b2badc1f5a09583dfa42ea9ff440a397d5ddc089dc75d3d45429950867f88eb498b38ee63c2fa84f1fd10fcc8fa3bd2670043e0dac0282533326f38f0
   languageName: node
   linkType: hard
 
@@ -6377,10 +6377,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "@metamask/solana-wallet-snap@npm:1.2.0"
-  checksum: 10/d2d38ca5701a3b9401c3a14c517c2cdb4f19b2a0e4f9e1a235b8602e52b656bed580315ec6b5ea1c4dd6ec51afaa1de0e88ee606cfc9068c18e9482adcde3eaf
+"@metamask/solana-wallet-snap@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "@metamask/solana-wallet-snap@npm:1.5.0"
+  checksum: 10/13e32aa157090302d7aa60645fd7d1907dec701782e5e4ce59b92d8ad55c319cb3e94245a5e031aca8ceb65ef28ff6d6d990defaa82a1b66d8a1191066166c65
   languageName: node
   linkType: hard
 
@@ -26671,7 +26671,7 @@ __metadata:
     "@metamask/message-manager": "npm:^12.0.0"
     "@metamask/message-signing-snap": "npm:^0.6.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain": "npm:^2.1.0"
+    "@metamask/multichain": "npm:@metamask-previews/multichain@2.1.0-preview-958adf52"
     "@metamask/multichain-transactions-controller": "npm:^0.0.1"
     "@metamask/name-controller": "npm:^8.0.0"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A22.1.1#~/.yarn/patches/@metamask-network-controller-npm-22.1.1-09b6510f1e.patch"
@@ -26703,7 +26703,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "npm:^11.11.0"
     "@metamask/snaps-sdk": "npm:^6.17.1"
     "@metamask/snaps-utils": "npm:^8.10.0"
-    "@metamask/solana-wallet-snap": "npm:^1.2.0"
+    "@metamask/solana-wallet-snap": "npm:^1.5.0"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.0.0"
     "@metamask/test-dapp-multichain": "npm:^0.6.0"

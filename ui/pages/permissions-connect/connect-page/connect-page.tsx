@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { NetworkConfiguration } from '@metamask/network-controller';
-import { getEthAccounts, getPermittedEthChainIds } from '@metamask/multichain';
+import {
+  getEthAccounts,
+  getPermittedEthChainIds,
+  Caip25CaveatValue,
+} from '@metamask/multichain';
 import { Hex } from '@metamask/utils';
 import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -56,6 +60,20 @@ export type ConnectPageProps = {
   activeTabOrigin: string;
 };
 
+// FIXME: The changes to this file are temporary for testing only.
+function getNonEvmAccountsForScopes(
+  scopes: Caip25CaveatValue['optionalScopes'],
+) {
+  return Object.values(scopes).flatMap((scope) => scope.addresses);
+}
+
+function getNonEvmAccounts(caipRequest: Caip25CaveatValue): string[] {
+  return [
+    ...getNonEvmAccountsForScopes(caipRequest.requiredScopes),
+    ...getNonEvmAccountsForScopes(caipRequest.optionalScopes),
+  ];
+}
+
 export const ConnectPage: React.FC<ConnectPageProps> = ({
   request,
   permissionsRequestId,
@@ -69,6 +87,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   );
   const requestedAccounts = getEthAccounts(requestedCaip25CaveatValue);
   const requestedChainIds = getPermittedEthChainIds(requestedCaip25CaveatValue);
+  const requestedNonEvmAccounts = getNonEvmAccounts(requestedCaip25CaveatValue);
 
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const [nonTestNetworks, testNetworks] = useMemo(
@@ -199,8 +218,9 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               size={ButtonSize.Lg}
               onClick={onConfirm}
               disabled={
-                selectedAccountAddresses.length === 0 ||
-                selectedChainIds.length === 0
+                requestedNonEvmAccounts.length === 0 &&
+                (selectedAccountAddresses.length === 0 ||
+                  selectedChainIds.length === 0)
               }
             >
               {t('connect')}
