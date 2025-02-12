@@ -70,8 +70,7 @@ export const DestinationAccountPicker = ({
           borderRadius: '8px',
           marginLeft: 'auto',
           marginRight: 'auto',
-          boxShadow:
-            '0px 0px 2px 0px #E2E4E9, 0px 0px 16px 0px rgba(226, 228, 233, 0.16)',
+          boxShadow: 'var(--shadow-bridge-picker)',
         }}
       >
         <Box
@@ -93,16 +92,10 @@ export const DestinationAccountPicker = ({
             variant={ButtonVariant.Link}
             size={ButtonSize.Sm}
             className="deselect-button"
-            iconName="close-outline"
             style={{
               padding: '5px',
               color: 'var(--color-icon-alternative)',
               textDecoration: 'none',
-              // @ts-expect-error: Style prop type doesn't recognize pseudo-selectors but works in practice
-              '&:hover': {
-                textDecoration: 'none',
-                color: 'var(--color-icon-default)',
-              },
             }}
           >
             ✕
@@ -124,8 +117,7 @@ export const DestinationAccountPicker = ({
         position: 'relative',
         marginLeft: 'auto',
         marginRight: 'auto',
-        boxShadow:
-          '0px 0px 2px 0px #E2E4E9, 0px 0px 16px 0px rgba(226, 228, 233, 0.16)',
+        boxShadow: 'var(--shadow-bridge-picker)',
       }}
     >
       <Box
@@ -171,8 +163,7 @@ export const DestinationAccountPicker = ({
           overflowY: 'auto',
           borderRadius: '0 0 8px 8px',
           zIndex: 1000,
-          boxShadow:
-            '0px 0px 2px 0px #E2E4E9, 0px 0px 16px 0px rgba(226, 228, 233, 0.16)',
+          boxShadow: 'var(--shadow-bridge-picker)',
         }}
       >
         {filteredAccounts.map((account) => (
