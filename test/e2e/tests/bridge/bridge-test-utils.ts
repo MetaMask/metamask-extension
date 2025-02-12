@@ -74,7 +74,6 @@ export class BridgePage {
 
   verifySwapPage = async (expectedHandleCount: number) => {
     await this.driver.waitUntilXWindowHandles(expectedHandleCount);
-    await this.driver.switchToWindowWithTitle('MetaMask Portfolio - Bridge');
     await this.driver.waitForUrlContaining({
       url: 'cross-chain/swaps',
       timeout: this.driver.timeout,
