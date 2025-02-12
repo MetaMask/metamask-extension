@@ -273,7 +273,11 @@ const PrepareBridgePage = () => {
 
   const quoteParams = useMemo(
     () => ({
-      srcTokenAddress: fromToken?.address,
+      srcTokenAddress:
+        fromToken?.address?.split('/')[-1] ??
+        SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
+          fromChain?.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
+        ]?.address,
       destTokenAddress: toToken?.address || undefined,
       srcTokenAmount:
         fromAmount && fromToken?.decimals
@@ -421,6 +425,9 @@ const PrepareBridgePage = () => {
                     dispatch(setToChainId(null));
                     dispatch(setToToken(null));
                   }
+                  // TODO call this for non-EVM
+                  // dispatch(setSelectedAccount(account.address));
+                  // if()
                   if (isNetworkAdded(networkConfig)) {
                     dispatch(
                       setActiveNetwork(
@@ -527,6 +534,7 @@ const PrepareBridgePage = () => {
                 input: 'token_destination',
                 value: token.address,
               });
+            dispatch(setToChainId(token.chainId));
             dispatch(setToToken(token));
           }}
           networkProps={
