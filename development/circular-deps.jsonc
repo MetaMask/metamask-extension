@@ -48,11 +48,6 @@
     "ui/components/app/name/name.tsx"
   ],
   [
-    "ui/components/component-library/checkbox/checkbox.tsx",
-    "ui/components/component-library/checkbox/index.ts",
-    "ui/components/component-library/index.ts"
-  ],
-  [
     "ui/components/component-library/container/container.tsx",
     "ui/components/component-library/container/index.ts",
     "ui/components/component-library/index.ts"
