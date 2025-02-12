@@ -1,4 +1,3 @@
-import { mock } from 'node:test';
 import { ApprovalType } from '@metamask/controller-utils';
 import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -12,7 +11,6 @@ import { createTestProviderTools } from '../../../stub/provider';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { createMockImplementation, mock4byte } from '../../helpers';
 import { ENVIRONMENT } from '../../../../development/build/constants';
-import smartTransactionStatusPage from '../../../../ui/pages/confirmations/confirmation/templates/smart-transaction-status-page';
 import { getUnapprovedApproveTransaction } from './transactionDataHelpers';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
