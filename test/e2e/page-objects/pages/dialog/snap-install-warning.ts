@@ -31,14 +31,12 @@ class SnapInstallWarning {
   }
 
   async clickCheckboxPermission() {
-    console.log('Wait and click checkbox permission');
-    await this.driver.waitForSelector(this.checkBoxPermission);
+    console.log('Click checkbox permission');
     await this.driver.clickElement(this.checkBoxPermission);
   }
 
   async clickConfirmButton() {
-    console.log('Wait and click confirm button');
-    await this.driver.waitForSelector(this.buttonConfirm);
+    console.log('Click confirm button');
     await this.driver.clickElement(this.buttonConfirm);
   }
 }
