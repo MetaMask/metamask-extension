@@ -227,27 +227,24 @@ const Footer = () => {
     dispatch(setNextNonce(''));
   }, [currentConfirmation, customNonceValue]);
 
-  const handleFooterCancel = useCallback(
-    (forceCancel = false) => {
-      if (shouldThrottleOrigin && !forceCancel) {
-        setShowOriginThrottleModal(true);
-        return;
-      }
-      onCancel({ location: MetaMetricsEventLocation.Confirmation });
-    },
-    [currentConfirmation, onCancel],
-  );
+  const handleFooterCancel = useCallback(() => {
+    if (shouldThrottleOrigin) {
+      setShowOriginThrottleModal(true);
+      return;
+    }
+    onCancel({ location: MetaMetricsEventLocation.Confirmation });
+  }, [currentConfirmation, onCancel]);
 
   return (
     <PageFooter className="confirm-footer_page-footer">
       <OriginThrottleModal
         isOpen={showOriginThrottleModal}
-        onConfirmationCancel={handleFooterCancel}
+        onConfirmationCancel={onCancel}
       />
       <Button
         block
         data-testid="confirm-footer-cancel-button"
-        onClick={() => handleFooterCancel(false)}
+        onClick={handleFooterCancel}
         size={ButtonSize.Lg}
         variant={ButtonVariant.Secondary}
       >

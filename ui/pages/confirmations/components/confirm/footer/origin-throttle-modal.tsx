@@ -26,12 +26,17 @@ import {
 import { I18nContext } from '../../../../../contexts/i18n';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import OriginPill from '../../../../../components/ui/origin-pill/origin-pill';
+import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 
 const MultipleRequestContent = ({
   onConfirmationCancel,
   setIsTemporaryBlock,
 }: {
-  onConfirmationCancel: (forceCancel?: boolean) => void;
+  onConfirmationCancel: ({
+    location,
+  }: {
+    location?: MetaMetricsEventLocation;
+  }) => void;
   setIsTemporaryBlock: (isTemporaryBlock: boolean) => void;
 }) => {
   const t = useContext(I18nContext);
@@ -69,7 +74,9 @@ const MultipleRequestContent = ({
         paddingTop={4}
         onSubmit={() => {
           // Order of operations is important here to ensure the origin is reset after the confirmation is cancelled
-          onConfirmationCancel(true);
+          onConfirmationCancel({
+            location: MetaMetricsEventLocation.OriginThrottleModal,
+          });
           resetOrigin();
         }}
         onCancel={() => {
@@ -95,7 +102,11 @@ const MultipleRequestContent = ({
 const OriginBlockedContent = ({
   onConfirmationCancel,
 }: {
-  onConfirmationCancel: (forceCancel?: boolean) => void;
+  onConfirmationCancel: ({
+    location,
+  }: {
+    location?: MetaMetricsEventLocation;
+  }) => void;
 }) => {
   const t = useContext(I18nContext);
 
@@ -126,9 +137,11 @@ const OriginBlockedContent = ({
       </ModalBody>
       <ModalFooter
         paddingTop={4}
-        onSubmit={() => {
-          onConfirmationCancel(true);
-        }}
+        onSubmit={() =>
+          onConfirmationCancel({
+            location: MetaMetricsEventLocation.OriginThrottleModal,
+          })
+        }
         submitButtonProps={{
           children: t('gotIt'),
           size: ButtonSize.Lg,
@@ -143,7 +156,11 @@ export default function OriginThrottleModal({
   onConfirmationCancel,
 }: {
   isOpen: boolean;
-  onConfirmationCancel: (forceCancel?: boolean) => void;
+  onConfirmationCancel: ({
+    location,
+  }: {
+    location?: MetaMetricsEventLocation;
+  }) => void;
 }) {
   const { hideModal } = useModalProps();
   const [isTemporaryBlock, setIsTemporaryBlock] = useState(false);
