@@ -11,16 +11,6 @@ describe('createOriginThrottlingMiddleware', () => {
   const mockGetThrottledOriginState = jest.fn();
   const mockUpdateThrottledOriginState = jest.fn();
 
-  const originalInTest = process.env.IN_TEST;
-
-  beforeAll(() => {
-    process.env.IN_TEST = 'false';
-  });
-
-  afterAll(() => {
-    process.env.IN_TEST = originalInTest;
-  });
-
   beforeEach(() => {
     jest.resetAllMocks();
     middleware = createOriginThrottlingMiddleware({
