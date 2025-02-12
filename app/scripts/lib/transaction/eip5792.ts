@@ -1,7 +1,6 @@
 import { SendCalls } from '@metamask/eth-json-rpc-middleware/dist/methods/wallet-send-calls';
 import { NetworkController } from '@metamask/network-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import { JsonRpcParams } from '@metamask/snaps-sdk';
 import { TransactionController } from '@metamask/transaction-controller';
 import { Hex, JsonRpcRequest } from '@metamask/utils';
 
@@ -9,7 +8,7 @@ export async function processSendCalls(
   transactionController: TransactionController,
   networkController: NetworkController,
   params: SendCalls,
-  req: JsonRpcRequest<JsonRpcParams> & { networkClientId: string },
+  req: JsonRpcRequest & { networkClientId: string },
 ) {
   const { calls, chainId: requestChainId, from } = params;
   const { networkClientId } = req;

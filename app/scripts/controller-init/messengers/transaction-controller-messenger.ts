@@ -31,22 +31,10 @@ import {
   SwapsControllerSetTradeTxIdAction,
 } from '../../controllers/swaps/swaps.types';
 
-export type KeyringControllerAuthorization = [
-  chainId: number,
-  contractAddress: string,
-  nonce: number,
-];
-
-export type KeyringControllerSignAuthorization = {
-  type: 'KeyringController:signAuthorization';
-  handler: (authorization: KeyringControllerAuthorization) => Promise<string>;
-};
-
 type MessengerActions =
   | ApprovalControllerActions
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerGetStateAction
-  | KeyringControllerSignAuthorization
   | KeyringControllerSignAuthorizationMessageAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetEIP1559CompatibilityAction
