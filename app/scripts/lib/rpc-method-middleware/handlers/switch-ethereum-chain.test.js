@@ -168,6 +168,7 @@ describe('switchEthereumChainHandler', () => {
       '0xdeadbeef',
       'mainnet',
       {
+        autoApprove: false,
         setActiveNetwork: mocks.setActiveNetwork,
         fromNetworkConfiguration: {
           chainId: '0xe708',
