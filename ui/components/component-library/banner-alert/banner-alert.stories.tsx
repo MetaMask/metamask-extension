@@ -9,7 +9,7 @@ import {
 import README from './README.mdx';
 
 import { BannerAlert } from './banner-alert';
-import type { BannerAlertSeverity } from './banner-alert.types';
+import { BannerAlertSeverity } from './banner-alert.types';
 import { Box } from '../box';
 import { ButtonLink, ButtonLinkSize } from '../button-link';
 import { IconName } from '../icon';
