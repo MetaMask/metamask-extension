@@ -7,7 +7,6 @@ import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { useTokenBalances as pollAndUpdateEvmBalances } from '../../../../hooks/useTokenBalances';
 import useSortedFilteredTokens from '../hooks/useSortedFilteredTokens';
 import useShouldShowFiat from '../hooks/useShouldShowFiat';
-import { useLogChangeEffect } from '../hooks/useLogger';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -31,12 +30,6 @@ function TokenList({ onTokenClick, nativeToken }: TokenListProps) {
       endTrace({ name: TraceName.AccountOverviewAssetListTab });
     }
   }, [sortedFilteredTokens]);
-
-  useLogChangeEffect('TokenList', 'sortedFilteredTokens', sortedFilteredTokens);
-  useLogChangeEffect('TokenList', 'nativeToken', nativeToken);
-  useLogChangeEffect('TokenList', 'shouldShowFiat', shouldShowFiat);
-  useLogChangeEffect('TokenList', 'privacyMode', privacyMode);
-  useLogChangeEffect('TokenList', 'chainIdsToPoll', chainIdsToPoll);
 
   // Displays nativeToken if provided
   if (nativeToken) {
