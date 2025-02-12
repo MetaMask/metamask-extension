@@ -128,7 +128,8 @@
     "attributions:check": "./development/attributions-check.sh",
     "attributions:generate": "./development/generate-attributions.sh",
     "ci-rerun-from-failed": "tsx .circleci/scripts/rerun-ci-workflow-from-failed.ts",
-    "git-diff-default-branch": "tsx .circleci/scripts/git-diff-default-branch.ts"
+    "git-diff-default-branch": "tsx .circleci/scripts/git-diff-default-branch.ts",
+    "validate-e2e-page-object-usage": "tsx .github/scripts/validate-e2e-page-object-usage.ts"
   },
   "resolutions": {
     "chokidar": "^3.6.0",
@@ -300,7 +301,7 @@
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^11.4.0",
-    "@metamask/design-tokens": "^4.2.0",
+    "@metamask/design-tokens": "^5.0.0",
     "@metamask/ens-controller": "^15.0.0",
     "@metamask/ens-resolver-snap": "^0.1.2",
     "@metamask/eth-json-rpc-filters": "^9.0.0",
