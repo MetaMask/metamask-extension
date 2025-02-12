@@ -36,7 +36,11 @@ type ControllerMessengerCallback = (
   BaseControllerMessenger: BaseControllerMessenger,
 ) => BaseRestrictedControllerMessenger;
 
-type ControllersToInitialize = 'PPOMController' | 'TransactionController';
+type ControllersToInitialize =
+  | 'PPOMController'
+  | 'TransactionController'
+  | 'MultichainBalancesController'
+  | 'MultichainTransactionsController';
 
 type InitFunction<Name extends ControllersToInitialize> =
   ControllerInitFunction<
@@ -136,8 +140,9 @@ export function initControllers({
     const memStateKey =
       memStateKeyRaw === null ? undefined : memStateKeyRaw ?? controllerName;
 
-    partialControllersByName[controllerName] = controller as Controller &
-      undefined;
+    (partialControllersByName as Record<ControllersToInitialize, Controller>)[
+      controllerName
+    ] = controller;
 
     controllerApi = {
       ...controllerApi,
