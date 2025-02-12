@@ -329,15 +329,22 @@ export function AlertModal({
     }
   }, [selectedAlert, trackAlertRender]);
 
+  const isConfirmed = selectedAlert
+    ? isAlertConfirmed(selectedAlert.key)
+    : false;
+  const isAlertDanger = selectedAlert
+    ? selectedAlert.severity === Severity.Danger
+    : false;
+
+  const handleCheckboxClick = useCallback(() => {
+    if (selectedAlert) {
+      setAlertConfirmed(selectedAlert.key, !isConfirmed);
+    }
+  }, [isConfirmed, selectedAlert, setAlertConfirmed]);
+
   if (!selectedAlert) {
     return null;
   }
-  const isConfirmed = isAlertConfirmed(selectedAlert.key);
-  const isAlertDanger = selectedAlert.severity === Severity.Danger;
-
-  const handleCheckboxClick = useCallback(() => {
-    return setAlertConfirmed(selectedAlert.key, !isConfirmed);
-  }, [isConfirmed, selectedAlert.key, setAlertConfirmed]);
 
   return (
     <Modal isOpen onClose={handleClose} data-testid="alert-modal">
@@ -355,7 +362,7 @@ export function AlertModal({
         />
         <AlertHeader selectedAlert={selectedAlert} customTitle={customTitle} />
         <ModalBody>
-          {selectedAlert?.provider === SecurityProvider.Blockaid ? (
+          {selectedAlert.provider === SecurityProvider.Blockaid ? (
             <BlockaidAlertDetails />
           ) : (
             <AlertDetails

@@ -11,7 +11,11 @@ import * as backgroundConnection from '../../../../ui/store/background-connectio
 import { integrationTestRender } from '../../../lib/render-helpers';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { createMockImplementation } from '../../helpers';
-import { getMetaMaskStateWithUnapprovedPermitSign } from './signature-helpers';
+import { tEn } from '../../../lib/i18n-helpers';
+import {
+  getMetamaskStateWithMaliciousPermit,
+  getMetaMaskStateWithUnapprovedPermitSign,
+} from './signature-helpers';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
@@ -249,5 +253,70 @@ describe('Permit Confirmation', () => {
 
     scope.done();
     expect(scope.isDone()).toBe(true);
+  });
+
+  it('displays the malicious banner', async () => {
+    const account =
+      mockMetaMaskState.internalAccounts.accounts[
+        mockMetaMaskState.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      ];
+
+    const mockedMetaMaskState = getMetamaskStateWithMaliciousPermit(
+      account.address,
+    );
+
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: mockedMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
+    });
+
+    const headingText = tEn('blockaidTitleDeceptive') as string;
+    const bodyText = tEn('blockaidDescriptionApproveFarming') as string;
+    expect(await screen.findByText(headingText)).toBeInTheDocument();
+    expect(await screen.findByText(bodyText)).toBeInTheDocument();
+  });
+
+  it('tracks external link clicked property in signature rejected event', async () => {
+    const account =
+      mockMetaMaskState.internalAccounts.accounts[
+        mockMetaMaskState.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      ];
+
+    const mockedMetaMaskState = getMetamaskStateWithMaliciousPermit(
+      account.address,
+    );
+
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: mockedMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
+    });
+
+    fireEvent.click(await screen.findByTestId('disclosure'));
+    expect(
+      await screen.findByTestId('alert-provider-report-link'),
+    ).toBeInTheDocument();
+
+    fireEvent.click(await screen.findByTestId('alert-provider-report-link'));
+
+    fireEvent.click(await screen.findByTestId('confirm-footer-cancel-button'));
+
+    expect(
+      mockedBackgroundConnection.submitRequestToBackground,
+    ).toHaveBeenCalledWith(
+      'updateEventFragment',
+      expect.arrayContaining([
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            external_link_clicked: 'security_alert_support_link',
+          }),
+        }),
+      ]),
+    );
   });
 });

@@ -321,12 +321,15 @@ jobs:
       - run:
           name: Save Yarn version
           command: yarn --version > /tmp/YARN_VERSION
+      - run:
+          name: Save Foundry version
+          command: node -e "process.stdout.write(require('./package.json').foundryup.version)" > /tmp/FOUNDRY_VERSION
       - restore_cache:
           keys:
             # First try to get the specific cache for the checksum of the yarn.lock file.
             # This cache key lookup will fail if the lock file is modified and a cache
             # has not yet been persisted for the new checksum.
-            - dependency-cache-{{ checksum "/tmp/YARN_VERSION" }}-{{ checksum "yarn.lock" }}
+            - dependency-cache-{{ checksum "/tmp/YARN_VERSION" }}-{{ checksum "yarn.lock" }}-{{ checksum "/tmp/FOUNDRY_VERSION" }}
             # To prevent having to do a full install of every node_module when
             # dependencies change, restore from the last known cache of any
             # branch/checksum with the same Yarn version, the install step will remove
@@ -338,12 +341,14 @@ jobs:
           name: Install dependencies
           command: yarn --immutable
       - save_cache:
-          key: dependency-cache-{{ checksum "/tmp/YARN_VERSION" }}-{{ checksum "yarn.lock" }}
+          key: dependency-cache-{{ checksum "/tmp/YARN_VERSION" }}-{{ checksum "yarn.lock" }}-{{ checksum "/tmp/FOUNDRY_VERSION" }}
           paths:
             - .yarn/cache
+            - .metamask/cache # should match yarn's relative location
       - persist_to_workspace:
           root: .
           paths:
+            - .metamask/cache # ensures anvil is installed
             - node_modules
             - build-artifacts
 
@@ -364,6 +369,9 @@ jobs:
           root: .
           paths:
             - changed-files
+      - store_artifacts:
+          path: changed-files
+          destination: changed-files
 
   validate-locales-only:
     executor: node-browsers-small

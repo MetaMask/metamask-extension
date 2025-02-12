@@ -6,7 +6,7 @@ import {
   BaseController,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedControllerMessenger,
+  RestrictedMessenger,
 } from '@metamask/base-controller';
 import {
   AcceptRequest,
@@ -63,6 +63,7 @@ export type AppStateControllerState = {
   currentPopupId?: number;
   onboardingDate: number | null;
   lastViewedUserSurvey: number | null;
+  isRampCardClosed: boolean;
   newPrivacyPolicyToastClickedOrClosed: boolean | null;
   newPrivacyPolicyToastShownDate: number | null;
   // This key is only used for checking if the user had set advancedGasFee
@@ -137,7 +138,7 @@ type AllowedEvents =
   | PreferencesControllerStateChangeEvent
   | KeyringControllerQRKeyringStateChangeEvent;
 
-export type AppStateControllerMessenger = RestrictedControllerMessenger<
+export type AppStateControllerMessenger = RestrictedMessenger<
   typeof controllerName,
   AppStateControllerActions | AllowedActions,
   AppStateControllerEvents | AllowedEvents,
@@ -190,6 +191,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   trezorModel: null,
   onboardingDate: null,
   lastViewedUserSurvey: null,
+  isRampCardClosed: false,
   newPrivacyPolicyToastClickedOrClosed: null,
   newPrivacyPolicyToastShownDate: null,
   hadAdvancedGasFeesSetPriorToMigration92_3: false,
@@ -288,6 +290,10 @@ const controllerMetadata = {
     anonymous: true,
   },
   lastViewedUserSurvey: {
+    persist: true,
+    anonymous: true,
+  },
+  isRampCardClosed: {
     persist: true,
     anonymous: true,
   },
@@ -535,6 +541,12 @@ export class AppStateController extends BaseController<
   setLastViewedUserSurvey(id: number) {
     this.update((state) => {
       state.lastViewedUserSurvey = id;
+    });
+  }
+
+  setRampCardClosed(): void {
+    this.update((state) => {
+      state.isRampCardClosed = true;
     });
   }
 
