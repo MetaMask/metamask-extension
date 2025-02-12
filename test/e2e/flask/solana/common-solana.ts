@@ -5,7 +5,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import FixtureBuilder from '../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../constants';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 
 const SOLANA_URL_REGEX =
   /^https:\/\/(solana-mainnet\.infura\.io|api\.devnet\.solana\.com)/u;
@@ -19,6 +19,8 @@ export enum SendFlowPlaceHolders {
   RECIPIENT = 'Enter receiving address',
   LOADING = 'Preparing transaction',
 }
+
+export const SIMPLEHASH_URL = 'https://api.simplehash.com';
 
 export const SOL_BALANCE = 50000000000;
 
@@ -67,6 +69,61 @@ export async function mockSolanaBalanceQuote(mockServer: Mockttp) {
       return response;
     });
 }
+
+export async function mockFungibleAssets(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(`${SIMPLEHASH_URL}/api/v0/fungibles/assets`)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          fungible_id: 'solana.2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
+          name: 'PUMPKIN',
+          symbol: 'PKIN',
+          decimals: 6,
+          chain: 'solana',
+          previews: {
+            image_small_url: '',
+            image_medium_url: '',
+            image_large_url: '',
+            image_opengraph_url: '',
+            blurhash: 'U=Io~ufQ9_jtJTfQsTfQ0*fQ$$fQ#nfQX7fQ',
+            predominant_color: '#fb9f18',
+          },
+          image_url: '',
+          image_properties: {
+            width: 1024,
+            height: 1024,
+            size: 338371,
+            mime_type: 'image/png',
+            exif_orientation: null,
+          },
+          created_date: '2025-01-28T17:40:25Z',
+          created_by: '85c4VNwMhWtj5ygDgRjs2scmYRGetFeSf7RYNjtPErq1',
+          supply: '1000011299680610',
+          holder_count: 21675,
+          extra_metadata: {
+            twitter: '',
+            telegram: '',
+            is_mutable: true,
+            creators: [
+              {
+                address: '85c4VNwMhWtj5ygDgRjs2scmYRGetFeSf7RYNjtPErq1',
+                verified: true,
+                share: 100,
+              },
+            ],
+            token_program: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+            extensions: [],
+            image_original_url: '',
+            animation_original_url: null,
+            metadata_original_url: '',
+          },
+        },
+      };
+    });
+}
+
 export async function simulateSolanaTransaction(mockServer: Mockttp) {
   const response = {
     statusCode: 200,
@@ -412,6 +469,10 @@ export async function withSolanaAccountSnap(
       dapp: true,
       testSpecificMock: async (mockServer: Mockttp) => {
         const mockList = [];
+
+        // Default Solana mocks
+        mockList.push(await mockFungibleAssets(mockServer));
+
         if (mockCalls) {
           mockList.push([
             await mockSolanaBalanceQuote(mockServer),
@@ -436,7 +497,7 @@ export async function withSolanaAccountSnap(
       ],
     },
     async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
-      await loginWithBalanceValidation(driver);
+      await loginWithoutBalanceValidation(driver);
       const headerComponen = new HeaderNavbar(driver);
       await headerComponen.openAccountMenu();
       const accountListPage = new AccountListPage(driver);

@@ -15,10 +15,7 @@ import {
   doesAddressRequireLedgerHidConnection,
   getCustomNonceValue,
 } from '../../../../../selectors';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { useMMIConfirmations } from '../../../../../hooks/useMMIConfirmations';
-import { getNoteToTraderMessage } from '../../../../../selectors/institutional/selectors';
-///: END:ONLY_INCLUDE_IF
+
 import useAlerts from '../../../../../hooks/useAlerts';
 import {
   rejectPendingApproval,
@@ -36,6 +33,8 @@ import { MetaMetricsEventLocation } from '../../../../../../shared/constants/met
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
+import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
+import OriginThrottleModal from './origin-throttle-modal';
 
 export type OnCancelHandler = ({
   location,
@@ -163,12 +162,8 @@ const Footer = () => {
   const { currentConfirmation, isScrollToBottomCompleted } =
     useConfirmContext();
   const { from } = getConfirmationSender(currentConfirmation);
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const noteToTraderMessage = useSelector(getNoteToTraderMessage);
-  const { mmiOnTransactionCallback, mmiOnSignCallback, mmiSubmitDisabled } =
-    useMMIConfirmations();
-  ///: END:ONLY_INCLUDE_IF
+  const { shouldThrottleOrigin } = useOriginThrottling();
+  const [showOriginThrottleModal, setShowOriginThrottleModal] = useState(false);
 
   const hardwareWalletRequiresConnection = useSelector((state) => {
     if (from) {
@@ -181,9 +176,6 @@ const Footer = () => {
 
   const isConfirmDisabled =
     (!isScrollToBottomCompleted && !isSignature) ||
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    mmiSubmitDisabled ||
-    ///: END:ONLY_INCLUDE_IF
     hardwareWalletRequiresConnection;
 
   const onCancel = useCallback(
@@ -225,41 +217,34 @@ const Footer = () => {
       const updatedTx = mergeTxDataWithNonce(
         currentConfirmation as TransactionMeta,
       );
-
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      mmiOnTransactionCallback(updatedTx, noteToTraderMessage);
-      ///: END:ONLY_INCLUDE_IF
-
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       dispatch(updateAndApproveTx(updatedTx, true, ''));
       ///: END:ONLY_INCLUDE_IF
     } else {
       dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
-
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      mmiOnSignCallback();
-      ///: END:ONLY_INCLUDE_IF
     }
     dispatch(updateCustomNonce(''));
     dispatch(setNextNonce(''));
-  }, [
-    currentConfirmation,
-    customNonceValue,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    noteToTraderMessage,
-    ///: END:ONLY_INCLUDE_IF
-  ]);
+  }, [currentConfirmation, customNonceValue]);
 
-  const onFooterCancel = useCallback(() => {
+  const handleFooterCancel = useCallback(() => {
+    if (shouldThrottleOrigin) {
+      setShowOriginThrottleModal(true);
+      return;
+    }
     onCancel({ location: MetaMetricsEventLocation.Confirmation });
   }, [currentConfirmation, onCancel]);
 
   return (
     <PageFooter className="confirm-footer_page-footer">
+      <OriginThrottleModal
+        isOpen={showOriginThrottleModal}
+        onConfirmationCancel={onCancel}
+      />
       <Button
         block
         data-testid="confirm-footer-cancel-button"
-        onClick={onFooterCancel}
+        onClick={handleFooterCancel}
         size={ButtonSize.Lg}
         variant={ButtonVariant.Secondary}
       >

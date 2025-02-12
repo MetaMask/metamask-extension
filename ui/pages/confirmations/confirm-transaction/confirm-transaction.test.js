@@ -12,10 +12,6 @@ import { setBackgroundConnection } from '../../../store/background-connection';
 
 import {
   CONFIRM_TRANSACTION_ROUTE,
-  CONFIRM_DEPLOY_CONTRACT_PATH,
-  CONFIRM_SEND_ETHER_PATH,
-  CONFIRM_TOKEN_METHOD_PATH,
-  SIGNATURE_REQUEST_PATH,
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
@@ -67,14 +63,6 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-jest.mock('../confirm-contract-interaction', () => {
-  return {
-    __esModule: true,
-    default: () => {
-      return <div className="mock-confirm-contract-interaction" />;
-    },
-  };
-});
 jest.mock('../../confirm-decrypt-message', () => {
   return {
     __esModule: true,
@@ -83,14 +71,7 @@ jest.mock('../../confirm-decrypt-message', () => {
     },
   };
 });
-jest.mock('../confirm-deploy-contract', () => {
-  return {
-    __esModule: true,
-    default: () => {
-      return <div className="mock-confirm-deploy-contract" />;
-    },
-  };
-});
+
 jest.mock('../../confirm-encryption-public-key', () => {
   return {
     __esModule: true,
@@ -99,22 +80,7 @@ jest.mock('../../confirm-encryption-public-key', () => {
     },
   };
 });
-jest.mock('../confirm-send-ether', () => {
-  return {
-    __esModule: true,
-    default: () => {
-      return <div className="mock-confirm-send-ether" />;
-    },
-  };
-});
-jest.mock('../confirm-signature-request', () => {
-  return {
-    __esModule: true,
-    default: () => {
-      return <div className="mock-confirm-signature-request" />;
-    },
-  };
-});
+
 jest.mock('./confirm-token-transaction-switch', () => {
   return {
     __esModule: true,
@@ -159,12 +125,8 @@ describe('Confirmation Transaction Page', () => {
   });
 
   [
-    [CONFIRM_DEPLOY_CONTRACT_PATH, '.mock-confirm-deploy-contract'],
-    [CONFIRM_SEND_ETHER_PATH, '.mock-confirm-send-ether'],
-    [CONFIRM_TOKEN_METHOD_PATH, '.mock-confirm-contract-interaction'],
     [DECRYPT_MESSAGE_REQUEST_PATH, '.mock-confirm-decrypt-message'],
     [ENCRYPTION_PUBLIC_KEY_REQUEST_PATH, '.mock-confirm-encryption-public-key'],
-    [SIGNATURE_REQUEST_PATH, '.mock-confirm-signature-request'],
   ].forEach(([componentPath, mockClassNameMatch]) => {
     it(`should render "${componentPath}" route`, () => {
       const mockStore = configureMockStore(middleware)(mockState);
@@ -176,31 +138,6 @@ describe('Confirmation Transaction Page', () => {
 
       expect(container.querySelector(mockClassNameMatch)).toBeInTheDocument();
     });
-  });
-
-  it(`should render ConfirmTokenTransactionSwitch component if it's a valid ERC20 token method`, () => {
-    const mockStore = configureMockStore(middleware)({
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        transactions: [
-          {
-            ...mockUnapprovedTx,
-            type: 'transfer',
-          },
-        ],
-      },
-    });
-    const { container } = renderWithProvider(
-      <ConfirmTransaction />,
-      mockStore,
-      // use valid matched route path to check against ConfirmTokenTransactionSwitch
-      `${CONFIRM_TRANSACTION_ROUTE}/${mockUnapprovedTx.id}${CONFIRM_DEPLOY_CONTRACT_PATH}`,
-    );
-
-    expect(
-      container.querySelector('.mock-confirm-token-transaction-switch'),
-    ).toBeInTheDocument();
   });
 
   it(`should render ConfirmTransactionSwitch component if the route path is unmatched and the transaction is valid`, () => {

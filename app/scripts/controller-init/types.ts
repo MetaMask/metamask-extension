@@ -1,12 +1,15 @@
 import { Provider } from '@metamask/network-controller';
 import {
   ActionConstraint,
-  ControllerMessenger,
+  Messenger,
   EventConstraint,
-  RestrictedControllerMessenger,
+  RestrictedMessenger,
 } from '@metamask/base-controller';
 import { Hex } from '@metamask/utils';
-import { TransactionMetricsRequest } from '../lib/transaction/metrics';
+import { Duplex } from 'readable-stream';
+import { SubjectType } from '@metamask/permission-controller';
+import type { TransactionMetricsRequest } from '../../../shared/types/metametrics';
+import { MessageSender } from '../../../types/global';
 import { Controller, ControllerFlatState } from './controller-list';
 
 /** The supported controller names. */
@@ -26,19 +29,25 @@ export type ControllerPersistedState = Partial<{
 }>;
 
 /** Generic controller messenger using base template types. */
-export type BaseControllerMessenger = ControllerMessenger<
+export type BaseControllerMessenger = Messenger<
   ActionConstraint,
   EventConstraint
 >;
 
 /** Generic restricted controller messenger using base template types. */
-export type BaseRestrictedControllerMessenger = RestrictedControllerMessenger<
+export type BaseRestrictedControllerMessenger = RestrictedMessenger<
   string,
   ActionConstraint,
   EventConstraint,
   string,
   string
 >;
+
+type SnapSender = {
+  snapId: string;
+};
+
+type Sender = MessageSender | SnapSender;
 
 /**
  * Request to initialize and return a controller instance.
@@ -105,11 +114,53 @@ export type ControllerInitRequest<
   getTransactionMetricsRequest(): TransactionMetricsRequest;
 
   /**
+   * A promise that resolves when the offscreen document is ready.
+   */
+  offscreenPromise: Promise<void>;
+
+  /**
    * The full persisted state for all controllers.
    * Includes controller name properties.
    * e.g. `{ TransactionController: { transactions: [] } }`.
    */
   persistedState: ControllerPersistedState;
+
+  /**
+   * Close all connections for the given origin, and removes the references
+   * to them. Ignores unknown origins.
+   *
+   * @param origin - The origin for which to remove all connections.
+   */
+  removeAllConnections(origin: string): void;
+
+  /**
+   * Create a multiplexed stream for connecting to an untrusted context like a
+   * like a website, Snap, or other extension.
+   *
+   * @param options - The options for creating the stream.
+   * @param options.connectionStream - The stream to connect to the untrusted
+   * context.
+   * @param options.sender - The sender of the stream.
+   * @param options.subjectType - The type of the subject of the stream.
+   */
+  setupUntrustedCommunicationEip1193(options: {
+    connectionStream: Duplex;
+    sender: Sender;
+    subjectType: SubjectType;
+  }): void;
+
+  /**
+   * Show a native notification.
+   *
+   * @param title - The title of the notification.
+   * @param message - The message of the notification.
+   * @param url - The URL to open when the notification is clicked.
+   */
+  showNotification: (
+    title: string,
+    message: string,
+    url?: string,
+  ) => Promise<void>;
 } & (InitMessengerType extends BaseRestrictedControllerMessenger
   ? {
       /**
