@@ -189,60 +189,69 @@ export const BridgeQuoteCard = () => {
                     : TextColor.textAlternativeSoft
                 }
               >
-                {t('networkFees')}
+                {t('networkFee')}
               </Text>
               <Row gap={1}>
-                <Text
-                  style={{
-                    whiteSpace: 'nowrap',
-                    overflow: 'visible',
-                  }}
-                  color={
-                    isEstimatedReturnLow ? TextColor.warningDefault : undefined
-                  }
-                >
-                  {shouldShowNetworkFeesInGasToken
-                    ? //  Network fee in gas token amounts
-                      `${
-                        activeQuote.totalNetworkFee?.valueInCurrency
-                          ? formatTokenAmount(
-                              locale,
-                              activeQuote.totalNetworkFee?.amount,
-                            )
+                <Tooltip
+                  position={PopoverPosition.TopStart}
+                  offset={[-16, 16]}
+                  iconName={IconName.Question}
+                  triggerElement={
+                    <Text
+                      style={{
+                        whiteSpace: 'nowrap',
+                        overflow: 'visible',
+                        textDecoration: 'underline',
+                        cursor: 'pointer',
+                      }}
+                      color={
+                        isEstimatedReturnLow
+                          ? TextColor.warningDefault
                           : undefined
-                      } - ${
-                        activeQuote.totalMaxNetworkFee?.valueInCurrency
-                          ? formatTokenAmount(
+                      }
+                    >
+                      {shouldShowNetworkFeesInGasToken
+                        ? //  Network fee in gas token amounts
+                          `${
+                            activeQuote?.totalNetworkFee?.valueInCurrency
+                              ? formatTokenAmount(
+                                  locale,
+                                  activeQuote?.totalNetworkFee?.amount,
+                                  ticker,
+                                )
+                              : undefined
+                          }`
+                        : // Network fee in display currency
+                          `${
+                            formatCurrencyAmount(
+                              activeQuote?.totalNetworkFee?.valueInCurrency,
+                              currency,
+                              2,
+                            ) ??
+                            formatTokenAmount(
                               locale,
-                              activeQuote.totalMaxNetworkFee?.amount,
+                              activeQuote?.totalNetworkFee?.amount,
                               ticker,
                             )
-                          : undefined
-                      }`
-                    : // Network fee in display currency
-                      `${
-                        formatCurrencyAmount(
-                          activeQuote.totalNetworkFee?.valueInCurrency,
-                          currency,
-                          2,
-                        ) ??
-                        formatTokenAmount(
+                          }`}
+                    </Text>
+                  }
+                >
+                  {t('howNetworkFeesWorkExplanation', [
+                    shouldShowNetworkFeesInGasToken
+                      ? formatTokenAmount(
                           locale,
-                          activeQuote.totalNetworkFee?.amount,
-                        )
-                      } - ${
-                        formatCurrencyAmount(
-                          activeQuote.totalMaxNetworkFee?.valueInCurrency,
-                          currency,
-                          2,
-                        ) ??
-                        formatTokenAmount(
-                          locale,
-                          activeQuote.totalMaxNetworkFee?.amount,
+                          activeQuote?.totalMaxNetworkFee.amount,
                           ticker,
                         )
-                      }`}
-                </Text>
+                      : formatCurrencyAmount(
+                          activeQuote?.totalMaxNetworkFee.valueInCurrency,
+                          currency,
+                          2,
+                        ),
+                  ])}
+                </Tooltip>
+
                 <Icon
                   style={{ cursor: 'pointer' }}
                   color={
