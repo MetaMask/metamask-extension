@@ -22,7 +22,6 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
   });
 
   const sortedFilteredTokens = useSortedFilteredTokens();
-  console.log('sortedFilteredTokens', sortedFilteredTokens);
 
   useEffect(() => {
     if (sortedFilteredTokens) {

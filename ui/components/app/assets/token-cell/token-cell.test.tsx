@@ -158,7 +158,7 @@ describe('Token Cell', () => {
       mockStore,
     );
 
-    const targetElem = queryByTestId('token-cell-button');
+    const targetElem = queryByTestId('multichain-token-list-button');
 
     targetElem && fireEvent.click(targetElem);
 

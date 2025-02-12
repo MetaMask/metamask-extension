@@ -129,7 +129,7 @@ export default function TokenCell({
         paddingRight={4}
         width={BlockSize.Full}
         style={{ height: 62, cursor: onClick ? 'pointer' : 'auto' }}
-        data-testid="token-cell-button"
+        data-testid="multichain-token-list-button"
       >
         <TokenCellBadge token={{ ...token, ...tokenDisplayInfo }} />
         <Box
