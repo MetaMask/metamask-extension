@@ -391,9 +391,9 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
   const port = args[0];
   const isDappConnecting = port.sender.tab?.id;
   if (!process.env.MULTICHAIN_API || !isDappConnecting) {
-    connectExternalCaip(...args);
-  } else {
     connectExternalExtension(...args);
+  } else {
+    connectExternalCaip(...args);
   }
 });
 
