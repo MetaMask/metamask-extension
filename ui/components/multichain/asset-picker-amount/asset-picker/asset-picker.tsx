@@ -24,10 +24,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
-import {
-  getCurrentChainId,
-  getNetworkConfigurationsByChainId,
-} from '../../../../../shared/modules/selectors/networks';
 import Tooltip from '../../../ui/tooltip';
 import { LARGE_SYMBOL_LENGTH } from '../constants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -42,20 +38,24 @@ import {
 } from '../asset-picker-modal/types';
 import { TabName } from '../asset-picker-modal/asset-picker-modal-tabs';
 import { AssetPickerModalNetwork } from '../asset-picker-modal/asset-picker-modal-network';
+import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../../../shared/constants/multichain/networks';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   GOERLI_DISPLAY_NAME,
   SEPOLIA_DISPLAY_NAME,
 } from '../../../../../shared/constants/network';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
+import {
+  getMultichainCurrentChainId,
+  getMultichainCurrentNetwork,
+  getMultichainNetworkConfigurationsByChainId,
+} from '../../../../selectors/multichain';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 
 const ELLIPSIFY_LENGTH = 13; // 6 (start) + 4 (end) + 3 (...)
 
 export type AssetPickerProps = {
-  children?: (
-    onClick: () => void,
-    networkImageSrc?: string,
-  ) => React.ReactElement; // Overrides default button
+  children?: (onClick: () => void) => React.ReactElement; // Overrides default button
   asset?:
     | ERC20Asset
     | NativeAsset
@@ -127,12 +127,12 @@ export function AssetPicker({
       : symbol;
 
   // Badge details
-  const currentChainId = useSelector(getCurrentChainId);
-  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const currentNetwork = allNetworks[currentChainId];
-  const selectedNetwork =
-    networkProps?.network ??
-    (currentNetwork?.chainId && allNetworks[currentNetwork.chainId]);
+  const currentChainId = useMultichainSelector(getMultichainCurrentChainId);
+  const allNetworks = useSelector(getMultichainNetworkConfigurationsByChainId);
+  const currentNetwork_ =
+    allNetworks[currentChainId as keyof typeof allNetworks];
+  const currentNetwork = useMultichainSelector(getMultichainCurrentNetwork);
+  const selectedNetwork = networkProps?.network ?? currentNetwork_;
 
   const allNetworksToUse = networkProps?.networks ?? Object.values(allNetworks);
   const { balanceByChainId } = useMultichainBalances();
@@ -162,12 +162,6 @@ export function AssetPicker({
 
     return undefined;
   };
-
-  const networkImageSrc =
-    selectedNetwork?.chainId &&
-    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-      selectedNetwork.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-    ];
 
   const handleButtonClick = () => {
     if (networkProps && !networkProps.network) {
@@ -254,7 +248,7 @@ export function AssetPicker({
       />
 
       {/** If a child prop is passed in, use it as the trigger button instead of the default */}
-      {children?.(handleButtonClick, networkImageSrc) || (
+      {children?.(handleButtonClick) || (
         <ButtonBase
           data-testid="asset-picker-button"
           className="asset-picker"
@@ -283,7 +277,15 @@ export function AssetPicker({
                   <AvatarNetwork
                     size={AvatarNetworkSize.Xs}
                     name={selectedNetwork?.name ?? ''}
-                    src={networkImageSrc}
+                    src={
+                      selectedNetwork?.chainId &&
+                      {
+                        ...CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+                        ...MULTICHAIN_TOKEN_IMAGE_MAP,
+                      }[
+                        selectedNetwork.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+                      ]
+                    }
                     backgroundColor={
                       Object.entries({
                         [GOERLI_DISPLAY_NAME]: BackgroundColor.goerli,

@@ -1,11 +1,18 @@
 import { useSelector } from 'react-redux';
 import { type CaipChainId, type Hex, isCaipChainId } from '@metamask/utils';
 import { Numeric } from '../../../shared/modules/Numeric';
-import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import { getSelectedInternalAccount } from '../../selectors';
 import { calcLatestSrcBalance } from '../../../shared/modules/bridge-utils/balance';
 import { useAsyncResult } from '../useAsyncResult';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
+import { useMultichainSelector } from '../useMultichainSelector';
+import {
+  getMultichainBalances,
+  getMultichainCurrentChainId,
+  getMultichainIsEvm,
+  getMultichainSelectedAccountCachedBalance,
+} from '../../selectors/multichain';
+import { isNativeAddress } from '../../pages/bridge/utils/quote';
 
 /**
  * Custom hook to fetch and format the latest balance of a given token or native asset.
@@ -22,9 +29,20 @@ const useLatestBalance = (
   } | null,
   chainId?: Hex | CaipChainId,
 ) => {
-  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
-  const currentChainId = useSelector(getCurrentChainId);
-
+  const { address: selectedAddress, id } = useMultichainSelector(
+    getSelectedInternalAccount,
+  );
+  const currentChainId = useMultichainSelector(getMultichainCurrentChainId);
+  const isEvm = useMultichainSelector(getMultichainIsEvm);
+  const multichainBalances = useSelector(getMultichainBalances);
+  const multichainNativeBalance = useMultichainSelector(
+    getMultichainSelectedAccountCachedBalance,
+  );
+  // console.log(
+  //   '=====multichainBalances',
+  //   multichainBalances,
+  //   multichainNativeBalance,
+  // );
   const { value: latestBalance } = useAsyncResult<
     Numeric | undefined
   >(async () => {
@@ -32,7 +50,8 @@ const useLatestBalance = (
       token?.address &&
       chainId &&
       currentChainId === chainId &&
-      !isCaipChainId(chainId)
+      !isCaipChainId(chainId) &&
+      isEvm
     ) {
       return await calcLatestSrcBalance(
         global.ethereumProvider,
@@ -41,6 +60,21 @@ const useLatestBalance = (
         chainId,
       );
     }
+
+    if (
+      token?.address &&
+      multichainBalances[id]?.[`${chainId}/${token?.address}`]?.amount
+    ) {
+      return Numeric.from(
+        multichainBalances[id][`${chainId}/${token?.address}`].amount,
+        10,
+      );
+    }
+
+    if (token && isNativeAddress(token.address)) {
+      return Numeric.from(multichainNativeBalance, 10);
+    }
+
     return undefined;
   }, [
     chainId,
@@ -48,6 +82,10 @@ const useLatestBalance = (
     token,
     selectedAddress,
     global.ethereumProvider,
+    isEvm,
+    multichainBalances,
+    multichainNativeBalance,
+    id,
   ]);
 
   if (token && !token.decimals) {

@@ -53,7 +53,11 @@ import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
   FEATURED_RPCS,
 } from '../../../shared/constants/network';
-import { getMultichainProviderConfig } from '../../selectors/multichain';
+import {
+  getMultichainCoinRates,
+  getMultichainNetworkConfigurationsByChainId,
+  getMultichainProviderConfig,
+} from '../../selectors/multichain';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   MULTICHAIN_PROVIDER_CONFIGS,
@@ -83,26 +87,9 @@ type BridgeAppState = {
 
 // includes all networks user has added
 export const getAllBridgeableNetworks = createDeepEqualSelector(
-  [getNetworkConfigurationsByChainId],
+  [getMultichainNetworkConfigurationsByChainId],
   (networkConfigurationsByChainId) => {
-    return uniqBy(
-      [
-        ...Object.values(networkConfigurationsByChainId),
-        ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
-        // TODO: get this from network controller, use placeholder values for now
-        {
-          ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
-          blockExplorerUrls: [],
-          name: '',
-          nativeCurrency: '',
-          rpcEndpoints: [{ url: '', type: '', networkClientId: '' }],
-          defaultRpcEndpointIndex: 0,
-          chainId: MultichainNetworks.SOLANA as unknown as Hex,
-        } as unknown as NetworkConfiguration,
-        ///: END:ONLY_INCLUDE_IF
-      ],
-      'chainId',
-    ).filter(({ chainId }) =>
+    return Object.values(networkConfigurationsByChainId).filter(({ chainId }) =>
       ALLOWED_BRIDGE_CHAIN_IDS.includes(
         chainId as (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number],
       ),
@@ -160,11 +147,16 @@ export const getFromToken = createSelector(
   getFromChain,
   (fromToken, fromChain): BridgeToken => {
     if (!fromChain?.chainId) {
+      console.log('====fromToken', null);
+
       return null;
     }
     if (fromToken?.address) {
+      console.log('====fromToken', fromToken);
       return fromToken;
     }
+    console.log('====fromToken', 'default');
+
     return {
       ...SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
         fromChain.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
@@ -232,6 +224,7 @@ export const getFromTokenConversionRate = createSelector(
   getUSDConversionRate,
   getConversionRate,
   (state) => state.bridge.fromTokenExchangeRate,
+  getMultichainCoinRates,
   (
     fromChain,
     marketData,
@@ -239,7 +232,9 @@ export const getFromTokenConversionRate = createSelector(
     nativeToUsdRate,
     nativeToCurrencyRate,
     fromTokenExchangeRate,
+    coinRates,
   ) => {
+    console.log('====coinRates', coinRates);
     if (fromChain?.chainId && fromToken && marketData) {
       const tokenToNativeAssetRate =
         exchangeRateFromMarketData(
@@ -255,6 +250,7 @@ export const getFromTokenConversionRate = createSelector(
         nativeToUsdRate,
       );
     }
+
     return exchangeRatesFromNativeAndCurrencyRates();
   },
 );

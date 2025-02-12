@@ -140,8 +140,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
 
     if (isValidQuoteRequest(updatedQuoteRequest)) {
       this.#quotesFirstFetched = Date.now();
-      const walletAddress =
-        paramsToUpdate.walletAddress ?? this.#getSelectedAccount().address;
+
       const srcChainIdInHex = formatChainIdFromDecimal(
         updatedQuoteRequest.srcChainId,
       );
@@ -155,7 +154,6 @@ export default class BridgeController extends StaticIntervalPollingController<Br
         networkClientId,
         updatedQuoteRequest: {
           ...updatedQuoteRequest,
-          walletAddress,
           insufficientBal,
         },
       });
@@ -211,9 +209,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
   }: BridgePollingInput) => {
     this.#abortController?.abort('New quote request');
     this.#abortController = new AbortController();
-    if (updatedQuoteRequest.srcChainId === updatedQuoteRequest.destChainId) {
-      return;
-    }
+
     const { bridgeState } = this.state;
     this.update((_state) => {
       _state.bridgeState = {
