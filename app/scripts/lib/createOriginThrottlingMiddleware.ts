@@ -47,20 +47,6 @@ type CreateOriginThrottlingMiddlewareOptions = {
 const isUserRejectedError = (error: JsonRpcError) =>
   error.code === errorCodes.provider.userRejectedRequest;
 
-const isOriginBlockedForConfirmations = (
-  throttledOriginState: ThrottledOrigin | undefined,
-) => {
-  if (!throttledOriginState) {
-    return false;
-  }
-  const currentTime = Date.now();
-  const { rejections, lastRejection } = throttledOriginState;
-  const isWithinOneMinute =
-    currentTime - lastRejection <= BLOCKING_THRESHOLD_IN_MS;
-
-  return rejections >= NUMBER_OF_REJECTIONS_THRESHOLD && isWithinOneMinute;
-};
-
 export default function createOriginThrottlingMiddleware({
   getThrottledOriginState,
   updateThrottledOriginState,
@@ -123,4 +109,18 @@ export default function createOriginThrottlingMiddleware({
       callback();
     });
   };
+}
+
+function isOriginBlockedForConfirmations(
+  throttledOriginState: ThrottledOrigin | undefined,
+) {
+  if (!throttledOriginState) {
+    return false;
+  }
+  const currentTime = Date.now();
+  const { rejections, lastRejection } = throttledOriginState;
+  const isWithinOneMinute =
+    currentTime - lastRejection <= BLOCKING_THRESHOLD_IN_MS;
+
+  return rejections >= NUMBER_OF_REJECTIONS_THRESHOLD && isWithinOneMinute;
 }
