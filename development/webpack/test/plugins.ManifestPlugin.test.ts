@@ -284,7 +284,7 @@ describe('ManifestPlugin', () => {
 
   describe('manifest flags in development mode', () => {
     const testManifest = {} as chrome.runtime.Manifest;
-    const mockFlags = { remoteFeatureFlags: { testFlag: true } };
+    const mockFlags = { _flags: { remoteFeatureFlags: { testFlag: true } } };
     const manifestOverridesPath = 'testManifestOverridesPath.json';
     const fs = require('node:fs');
     const { mock } = require('node:test');
@@ -306,7 +306,7 @@ describe('ManifestPlugin', () => {
 
       const transformed = transform(testManifest, 'chrome');
       assert.deepStrictEqual(
-        transformed._flags,
+        transformed,
         mockFlags,
         'manifest should have flags in development mode',
       );

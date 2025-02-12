@@ -1,3 +1,4 @@
+import merge from 'lodash/merge';
 /**
  * Returns a function that will transform a manifest JSON object based on the
  * given build args.
@@ -68,8 +69,10 @@ export function transformManifest(
     }
 
     if (manifestFlags) {
-      browserManifest._flags = manifestFlags;
+      browserManifest = merge(browserManifest, manifestFlags);
     }
+
+    return browserManifest;
   }
 
   if (isDevelopment) {

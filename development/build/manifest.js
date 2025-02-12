@@ -78,7 +78,7 @@ function createManifestTasks({
           await getBuildModifications(buildType, platform),
           customArrayMerge,
           // Only include _flags if manifestFlags has content
-          manifestFlags && { _flags: manifestFlags },
+          manifestFlags,
         );
         modifyNameAndDescForNonProd(result);
 
