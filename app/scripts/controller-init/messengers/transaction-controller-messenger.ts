@@ -76,27 +76,13 @@ export type TransactionControllerInitMessenger = ReturnType<
 export function getTransactionControllerMessenger(
   messenger: Messenger<MessengerActions, MessengerEvents>,
 ): TransactionControllerMessenger {
-  messenger.registerActionHandler(
-    'KeyringController:signAuthorization',
-    async (authorization) => {
-      return messenger.call(
-        'KeyringController:signEip7702AuthorizationMessage',
-        {
-          chainId: authorization[0],
-          contractAddress: authorization[1],
-          nonce: authorization[2],
-        },
-      );
-    },
-  );
-
   return messenger.getRestricted({
     name: 'TransactionController',
     allowedActions: [
       'AccountsController:getSelectedAccount',
       'AccountsController:getState',
       `ApprovalController:addRequest`,
-      'KeyringController:signAuthorization',
+      'KeyringController:signEip7702AuthorizationMessage',
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
       'RemoteFeatureFlagController:getState',

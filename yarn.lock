@@ -6529,9 +6529,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:@metamask-previews/transaction-controller@45.1.0-preview-862b5dac":
-  version: 45.1.0-preview-862b5dac
-  resolution: "@metamask-previews/transaction-controller@npm:45.1.0-preview-862b5dac"
+"@metamask/transaction-controller@npm:@metamask-previews/transaction-controller@45.1.0-preview-f51ef7f8":
+  version: 45.1.0-preview-f51ef7f8
+  resolution: "@metamask-previews/transaction-controller@npm:45.1.0-preview-f51ef7f8"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -6561,7 +6561,7 @@ __metadata:
     "@metamask/gas-fee-controller": ^22.0.0
     "@metamask/network-controller": ^22.0.0
     "@metamask/remote-feature-flag-controller": ^1.3.0
-  checksum: 10/d45e53d7e4c99380f216bfcbd6ccb63b901d6baefe9eb5434fd92e0fbab13324eec9d3242dc57305722a855fe04a0bf3622c71ef4799cde60088b6dfcadb536c
+  checksum: 10/b8fcda4913164810c63a7edd545bb9514ed04165f1a08c91c813cb89f596e3154f5878906d1fd2be03e329f00422eedc3225ce7c4e6485435072c993c349a7e7
   languageName: node
   linkType: hard
 
@@ -26749,7 +26749,7 @@ __metadata:
     "@metamask/solana-wallet-snap": "npm:^1.2.0"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.0.0"
-    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@45.1.0-preview-862b5dac"
+    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@45.1.0-preview-f51ef7f8"
     "@metamask/user-operation-controller": "npm:^22.0.0"
     "@metamask/utils": "npm:^10.0.1"
     "@ngraveio/bc-ur": "npm:^1.1.12"
