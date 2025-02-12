@@ -59,25 +59,8 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
       },
     ]);
 
-    const { nativeTokens, nonNativeTokens } = filteredAssets.reduce<{
-      nativeTokens: TokenWithFiatAmount[];
-      nonNativeTokens: TokenWithFiatAmount[];
-    }>(
-      (acc, token) => {
-        if (token.isNative) {
-          acc.nativeTokens.push(token);
-        } else {
-          acc.nonNativeTokens.push(token);
-        }
-        return acc;
-      },
-      { nativeTokens: [], nonNativeTokens: [] },
-    );
-
-    const assets = [...nativeTokens, ...nonNativeTokens];
-
     // sort filtered tokens based on the tokenSortConfig in state
-    return sortAssets(assets, tokenSortConfig);
+    return sortAssets(filteredAssets, tokenSortConfig);
   }, [
     tokenSortConfig,
     networkFilter,
