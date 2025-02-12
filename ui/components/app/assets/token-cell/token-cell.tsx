@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
@@ -100,12 +100,12 @@ export default function TokenCell({
 
   const isStakeable = isMainnet && isEvm && isNative;
 
-  function handleOnClick() {
+  const handleOnClick = useCallback(() => {
     if (!onClick || !chainId) {
       return;
     }
     onClick(chainId, address);
-  }
+  }, [onClick, chainId, address]);
 
   if (!chainId) {
     return null;
