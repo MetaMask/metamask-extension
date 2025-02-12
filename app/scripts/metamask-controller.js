@@ -2101,8 +2101,10 @@ export default class MetamaskController extends EventEmitter {
     this.ppomController = controllersByName.PPOMController;
     this.txController = controllersByName.TransactionController;
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-    this.multichainBalancesController = controllersByName.MultichainBalancesController;
-    this.multichainTransactionsController = controllersByName.MultichainTransactionsController;
+    this.multichainBalancesController =
+      controllersByName.MultichainBalancesController;
+    this.multichainTransactionsController =
+      controllersByName.MultichainTransactionsController;
     ///: END:ONLY_INCLUDE_IF
 
     this.controllerMessenger.subscribe(
