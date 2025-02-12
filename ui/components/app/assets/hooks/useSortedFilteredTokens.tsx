@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { sortAssets } from '../util/sort';
-import { filterAssets } from '../util/filter';
 import {
   getCurrentNetwork,
   getNewTokensImported,
@@ -14,6 +13,7 @@ import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { TokenWithFiatAmount } from '../types';
 import { useNativeTokenBalance } from '../asset-list/native-token/use-native-token-balance';
 import { getMultichainIsEvm } from '../../../../selectors/multichain';
+import { filterAssets } from '../util/filter';
 import useNetworkFilter from './useNetworkFilter';
 
 const useSortedFilteredTokens = () => {
@@ -35,15 +35,13 @@ const useSortedFilteredTokens = () => {
 
   return useMemo(() => {
     const balances = isEvm ? evmBalances : [nonEvmNativeToken];
-    console.log('BALANCES: ', balances);
-    // const filteredAssets = filterAssets(balances, [
-    //   {
-    //     key: 'chainId',
-    //     opts: networkFilter,
-    //     filterCallback: 'inclusive',
-    //   },
-    // ]);
-    const filteredAssets = balances;
+    const filteredAssets = filterAssets(balances, [
+      {
+        key: 'chainId',
+        opts: isEvm ? networkFilter : { chainId: nonEvmNativeToken.chainId },
+        filterCallback: 'inclusive',
+      },
+    ]);
 
     const { nativeTokens, nonNativeTokens } = filteredAssets.reduce<{
       nativeTokens: TokenWithFiatAmount[];
@@ -61,7 +59,6 @@ const useSortedFilteredTokens = () => {
     );
 
     const assets = [...nativeTokens, ...nonNativeTokens];
-    console.log('ASSETS: ', assets);
     return sortAssets(assets, tokenSortConfig);
   }, [
     tokenSortConfig,

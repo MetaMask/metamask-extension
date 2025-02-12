@@ -11,7 +11,6 @@ import DetectedToken from '../../detected-token/detected-token';
 import useAssetListTokenDetection from '../hooks/useAssetListTokenDetection';
 import usePrimaryCurrencyProperties from '../hooks/usePrimaryCurrencyProperties';
 import AssetListControlBar from './asset-list-control-bar';
-import NativeToken from './native-token';
 import AssetListFundingModals from './asset-list-funding-modals';
 
 type AssetListProps = {
@@ -35,9 +34,6 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
     <>
       <AssetListControlBar showTokensLinks={shouldShowTokensLinks} />
       <TokenList
-        // nativeToken is still needed to avoid breaking flask build's support for bitcoin
-        // TODO: refactor this to no longer be needed for non-evm chains
-        // nativeToken={!isEvm && <NativeToken onClickAsset={onClickAsset} />}
         onTokenClick={(chainId: string, tokenAddress: string) => {
           onClickAsset(chainId, tokenAddress);
           trackEvent({
