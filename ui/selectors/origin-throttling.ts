@@ -8,10 +8,5 @@ export type OriginThrottlingState = {
   metamask: ThrottledOriginsState;
 };
 
-const getThrottledOrigins = (state: OriginThrottlingState): ThrottledOrigins =>
+export const selectThrottledOrigins = (state: OriginThrottlingState) =>
   state.metamask.throttledOrigins;
-
-export const throttledOriginsSelector = createSelector(
-  getThrottledOrigins,
-  (throttledOrigins) => throttledOrigins,
-);

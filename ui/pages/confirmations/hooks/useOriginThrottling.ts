@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { ThrottledOrigin } from '../../../../shared/types/origin-throttling';
 import { updateThrottledOriginState } from '../../../store/actions';
 
-import { throttledOriginsSelector } from '../../../selectors';
+import { selectThrottledOrigins } from '../../../selectors';
 import useCurrentConfirmation from './useCurrentConfirmation';
 
 const NUMBER_OF_REJECTIONS_THRESHOLD = 3;
@@ -26,7 +26,7 @@ const willNextRejectionReachThreshold = (
 
 export function useOriginThrottling() {
   const dispatch = useDispatch();
-  const throttledOrigins = useSelector(throttledOriginsSelector);
+  const throttledOrigins = useSelector(selectThrottledOrigins);
   const { currentConfirmation } = useCurrentConfirmation();
   const origin =
     currentConfirmation?.origin || currentConfirmation?.messageParams?.origin;
