@@ -1169,7 +1169,7 @@ class Driver {
    *
    * @param {object} options - Parameters for the function.
    * @param {string} options.url - Substring to wait for in the URL.
-   * @param {number} options.timeout - optional timeout period, defaults to `this.timeout`.
+   * @param {number} [options.timeout]  - optional timeout period, defaults to `this.timeout`.
    * @returns {Promise<void>} Promise that resolves once the URL includes the substring.
    * @throws {Error} Throws an error if the URL does not include the substring within the timeout period.
    */

@@ -59,7 +59,6 @@ export class BridgePage {
     });
     await this.driver.waitForUrlContaining({
       url: 'asset',
-      timeout: this.driver.timeout,
     });
   };
 
@@ -67,14 +66,12 @@ export class BridgePage {
     await this.driver.switchToWindowWithTitle('MetaMask Portfolio - Bridge');
     await this.driver.waitForUrlContaining({
       url: 'portfolio.metamask.io/bridge',
-      timeout: this.driver.timeout,
     });
   };
 
   verifySwapPage = async () => {
     await this.driver.waitForUrlContaining({
       url: 'cross-chain/swaps',
-      timeout: this.driver.timeout,
     });
   };
 }
