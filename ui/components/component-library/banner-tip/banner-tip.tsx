@@ -10,7 +10,7 @@ import { BoxProps, PolymorphicRef } from '../box';
 import { BannerBaseProps } from '../banner-base';
 import {
   BannerTipComponent,
-  BannerTipLogoType,
+  // BannerTipLogoType,
   BannerTipProps,
 } from './banner-tip.types';
 
@@ -19,7 +19,9 @@ export const BannerTip: BannerTipComponent = React.forwardRef(
     {
       children,
       className = '',
-      logoType = BannerTipLogoType.Greeting,
+      // TODO: Get new assets for greeting and chat based off
+      // of the new branding
+      // logoType = BannerTipLogoType.Greeting,
       logoWrapperProps,
       logoProps,
       startAccessory,
@@ -38,8 +40,8 @@ export const BannerTip: BannerTipComponent = React.forwardRef(
           >
             <Box
               as="img"
-              src={`images/fox-${logoType}.png`}
-              alt={logoType}
+              src={`images/fox.png`}
+              alt="Fox"
               {...(logoProps as BoxProps<C>)}
               className={classnames(
                 'mm-banner-tip--logo',
