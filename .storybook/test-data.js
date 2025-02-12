@@ -1859,7 +1859,7 @@ export const networkList = [
   {
     blockExplorerUrl: 'https://etherscan.io',
     chainId: '0x1',
-    iconColor: 'var(--mainnet)',
+    iconColor: 'var(--color-primary-default)',
     isATestNetwork: false,
     labelKey: 'mainnet',
     providerType: 'mainnet',
