@@ -1174,7 +1174,7 @@ class Driver {
    * @throws {Error} Throws an error if the URL does not include the substring within the timeout period.
    */
   async waitForUrlContaining({ url, timeout = this.timeout }) {
-  await this.driver.wait(until.urlContains(url), timeout);
+    await this.driver.wait(until.urlContains(url), timeout);
   }
 
   /**
