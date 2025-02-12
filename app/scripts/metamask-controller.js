@@ -2100,6 +2100,10 @@ export default class MetamaskController extends EventEmitter {
     this.snapsRegistry = controllersByName.SnapsRegistry;
     this.ppomController = controllersByName.PPOMController;
     this.txController = controllersByName.TransactionController;
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    this.multichainBalancesController = controllersByName.MultichainBalancesController;
+    this.multichainTransactionsController = controllersByName.MultichainTransactionsController;
+    ///: END:ONLY_INCLUDE_IF
 
     this.controllerMessenger.subscribe(
       'TransactionController:transactionStatusUpdated',
@@ -2221,9 +2225,9 @@ export default class MetamaskController extends EventEmitter {
       AccountsController: this.accountsController,
       AppStateController: this.appStateController,
       AppMetadataController: this.appMetadataController,
-      MultichainBalancesController: this.multichainBalancesController,
       MultichainAssetsController: this.multichainAssetsController,
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      MultichainBalancesController: this.multichainBalancesController,
       MultichainTransactionsController: this.multichainTransactionsController,
       ///: END:ONLY_INCLUDE_IF
       KeyringController: this.keyringController,
@@ -2275,9 +2279,9 @@ export default class MetamaskController extends EventEmitter {
         AccountsController: this.accountsController,
         AppStateController: this.appStateController,
         AppMetadataController: this.appMetadataController,
-        MultichainBalancesController: this.multichainBalancesController,
         MultichainAssetsController: this.multichainAssetsController,
         ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+        MultichainBalancesController: this.multichainBalancesController,
         MultichainTransactionsController: this.multichainTransactionsController,
         ///: END:ONLY_INCLUDE_IF
         NetworkController: this.networkController,
@@ -4075,10 +4079,11 @@ export default class MetamaskController extends EventEmitter {
       ),
       setName: this.nameController.setName.bind(this.nameController),
 
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       // MultichainBalancesController
       multichainUpdateBalance: (accountId) =>
         this.multichainBalancesController.updateBalance(accountId),
-
+      ///: END:ONLY_INCLUDE_IF
       // Transaction Decode
       decodeTransactionData: (request) =>
         decodeTransactionData({
