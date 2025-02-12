@@ -42,7 +42,7 @@ jobs:
 
       - name: Setup environment
         if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+        uses: metamask/github-tools/.github/actions/setup-environment-secure@caching
 
       - name: Run beta build
         if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}

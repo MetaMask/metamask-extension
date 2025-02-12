@@ -10,11 +10,8 @@ jobs:
   check-template-and-add-labels:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+        uses: metamask/github-tools/.github/actions/setup-environment@caching
 
       - name: Check template and add labels
         id: check-template-and-add-labels

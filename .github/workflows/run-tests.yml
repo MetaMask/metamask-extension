@@ -18,11 +18,10 @@ jobs:
       matrix:
         shard: [1, 2, 3, 4, 5, 6]
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+        uses: metamask/github-tools/.github/actions/setup-environment@caching
+        with:
+          should-cache-restore: ${{ vars.USE_CACHING }}
 
       - name: test:unit:coverage
         run: yarn test:unit:coverage --shard=${{ matrix.shard }}/${{ strategy.job-total }}
@@ -39,11 +38,10 @@ jobs:
     name: Webpack tests
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+        uses: metamask/github-tools/.github/actions/setup-environment@caching
+        with:
+          should-cache-restore: ${{ vars.USE_CACHING }}
 
       - name: test:unit:webpack:coverage
         run: yarn test:unit:webpack:coverage
@@ -60,11 +58,10 @@ jobs:
     name: Integration tests
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+        uses: metamask/github-tools/.github/actions/setup-environment@caching
+        with:
+          should-cache-restore: ${{ vars.USE_CACHING }}
 
       - name: test:integration:coverage
         run: yarn test:integration:coverage
@@ -88,11 +85,10 @@ jobs:
       current-coverage: ${{ steps.get-current-coverage.outputs.CURRENT_COVERAGE }}
       stored-coverage: ${{ steps.get-stored-coverage.outputs.STORED_COVERAGE }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+        uses: metamask/github-tools/.github/actions/setup-environment@caching
+        with:
+          should-cache-restore: ${{ vars.USE_CACHING }}
 
       - name: Download artifacts
         uses: actions/download-artifact@v4

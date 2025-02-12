@@ -11,13 +11,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@caching
         with:
           fetch-depth: 0 # This is needed to checkout all branches
-
-      - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
 
       - name: Run fitness functions
         env:

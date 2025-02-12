@@ -12,11 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'Version-v')
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+        uses: metamask/github-tools/.github/actions/setup-environment@caching
 
       - name: Close release bug report issue
         env:
