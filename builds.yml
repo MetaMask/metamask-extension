@@ -321,8 +321,3 @@ env:
   # system that they are intentionally unset.
   ###
   - ETHERSCAN_KEY: null # Used by `gridplus-sdk/dist/util.js`
-
-  ###
-  # Development only to sign authorizations pending `KeyringController` updates.
-  ###
-  - PRIVATE_KEY: null

@@ -24,8 +24,8 @@ import {
   TransactionControllerUnapprovedTransactionAddedEvent,
 } from '@metamask/transaction-controller';
 import { SmartTransactionsControllerSmartTransactionEvent } from '@metamask/smart-transactions-controller';
-import { signEIP7702Authorization } from '@metamask/eth-sig-util';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import { KeyringControllerSignAuthorizationMessageAction } from '@metamask/keyring-controller';
 import {
   SwapsControllerSetApproveTxIdAction,
   SwapsControllerSetTradeTxIdAction,
@@ -47,6 +47,7 @@ type MessengerActions =
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerGetStateAction
   | KeyringControllerSignAuthorization
+  | KeyringControllerSignAuthorizationMessageAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetEIP1559CompatibilityAction
   | NetworkControllerGetNetworkClientByIdAction
@@ -78,11 +79,14 @@ export function getTransactionControllerMessenger(
   messenger.registerActionHandler(
     'KeyringController:signAuthorization',
     async (authorization) => {
-      return signEIP7702Authorization({
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        privateKey: process.env.PRIVATE_KEY as any,
-        authorization,
-      });
+      return messenger.call(
+        'KeyringController:signEip7702AuthorizationMessage',
+        {
+          chainId: authorization[0],
+          contractAddress: authorization[1],
+          nonce: authorization[2],
+        },
+      );
     },
   );
 

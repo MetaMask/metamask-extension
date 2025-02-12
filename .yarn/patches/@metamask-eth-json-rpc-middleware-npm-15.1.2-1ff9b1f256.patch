@@ -14,7 +14,7 @@ index 80efdcd052229a66e1a8997e0b1b9d4596f3aafb..09200814e73e46cf2598db8f74a2bac3
  export * from './wallet';
 diff --git a/dist/methods/wallet-get-calls-status.d.ts b/dist/methods/wallet-get-calls-status.d.ts
 new file mode 100644
-index 0000000000000000000000000000000000000000..bc6e1e777f552e6e54c6936f42546cfda6cb2c9f
+index 0000000000000000000000000000000000000000..5892ecf587fb1175140987c007b84e176ad3ec17
 --- /dev/null
 +++ b/dist/methods/wallet-get-calls-status.d.ts
 @@ -0,0 +1,47 @@
@@ -22,37 +22,37 @@ index 0000000000000000000000000000000000000000..bc6e1e777f552e6e54c6936f42546cfd
 +import type { Json, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 +declare const GetCallsStatusStruct: import("@metamask/superstruct").Struct<[string], null>;
 +declare const GetCallsStatusReceiptStruct: import("@metamask/superstruct").Struct<{
-+    status: `0x${string}`;
-+    blockHash: `0x${string}`;
-+    blockNumber: `0x${string}`;
-+    logs: {
-+        data: `0x${string}`;
-+        address: `0x${string}`;
-+        topics: `0x${string}`[];
-+    }[];
-+    gasUsed: `0x${string}`;
-+    transactionHash: `0x${string}`;
++    status?: `0x${string}` | undefined;
 +    chainId?: `0x${string}` | undefined;
++    blockHash?: `0x${string}` | undefined;
++    blockNumber?: `0x${string}` | undefined;
++    logs?: {
++        data?: `0x${string}` | undefined;
++        address?: `0x${string}` | undefined;
++        topics?: `0x${string}`[] | undefined;
++    }[] | undefined;
++    gasUsed?: `0x${string}` | undefined;
++    transactionHash?: `0x${string}` | undefined;
 +}, {
 +    logs: import("@metamask/superstruct").Struct<{
-+        data: `0x${string}`;
-+        address: `0x${string}`;
-+        topics: `0x${string}`[];
-+    }[], import("@metamask/superstruct").Struct<{
-+        data: `0x${string}`;
-+        address: `0x${string}`;
-+        topics: `0x${string}`[];
++        data?: `0x${string}` | undefined;
++        address?: `0x${string}` | undefined;
++        topics?: `0x${string}`[] | undefined;
++    }[] | undefined, import("@metamask/superstruct").Struct<{
++        data?: `0x${string}` | undefined;
++        address?: `0x${string}` | undefined;
++        topics?: `0x${string}`[] | undefined;
 +    }, {
-+        address: import("@metamask/superstruct").Struct<`0x${string}`, null>;
-+        data: import("@metamask/superstruct").Struct<`0x${string}`, null>;
-+        topics: import("@metamask/superstruct").Struct<`0x${string}`[], import("@metamask/superstruct").Struct<`0x${string}`, null>>;
++        address: import("@metamask/superstruct").Struct<`0x${string}` | undefined, null>;
++        data: import("@metamask/superstruct").Struct<`0x${string}` | undefined, null>;
++        topics: import("@metamask/superstruct").Struct<`0x${string}`[] | undefined, import("@metamask/superstruct").Struct<`0x${string}`, null>>;
 +    }>>;
-+    status: import("@metamask/superstruct").Struct<`0x${string}`, null>;
++    status: import("@metamask/superstruct").Struct<`0x${string}` | undefined, null>;
 +    chainId: import("@metamask/superstruct").Struct<`0x${string}` | undefined, null>;
-+    blockHash: import("@metamask/superstruct").Struct<`0x${string}`, null>;
-+    blockNumber: import("@metamask/superstruct").Struct<`0x${string}`, null>;
-+    gasUsed: import("@metamask/superstruct").Struct<`0x${string}`, null>;
-+    transactionHash: import("@metamask/superstruct").Struct<`0x${string}`, null>;
++    blockHash: import("@metamask/superstruct").Struct<`0x${string}` | undefined, null>;
++    blockNumber: import("@metamask/superstruct").Struct<`0x${string}` | undefined, null>;
++    gasUsed: import("@metamask/superstruct").Struct<`0x${string}` | undefined, null>;
++    transactionHash: import("@metamask/superstruct").Struct<`0x${string}` | undefined, null>;
 +}>;
 +export declare type GetCallsStatusParams = Infer<typeof GetCallsStatusStruct>;
 +export declare type GetCallsStatusReceipt = Infer<typeof GetCallsStatusReceiptStruct>;
@@ -67,10 +67,10 @@ index 0000000000000000000000000000000000000000..bc6e1e777f552e6e54c6936f42546cfd
 +export {};
 diff --git a/dist/methods/wallet-get-calls-status.js b/dist/methods/wallet-get-calls-status.js
 new file mode 100644
-index 0000000000000000000000000000000000000000..03107309eff34e843ea389020e07f01963a35a44
+index 0000000000000000000000000000000000000000..aa8d407ef799e572537adbb921db0b8318285ef2
 --- /dev/null
 +++ b/dist/methods/wallet-get-calls-status.js
-@@ -0,0 +1,43 @@
+@@ -0,0 +1,41 @@
 +"use strict";
 +Object.defineProperty(exports, "__esModule", { value: true });
 +exports.walletGetCallsStatus = void 0;
@@ -80,25 +80,23 @@ index 0000000000000000000000000000000000000000..03107309eff34e843ea389020e07f019
 +const validation_1 = require("../utils/validation");
 +const GetCallsStatusStruct = (0, superstruct_1.tuple)([(0, superstruct_1.nonempty)((0, superstruct_1.string)())]);
 +const GetCallsStatusReceiptStruct = (0, superstruct_1.object)({
-+    logs: (0, superstruct_1.array)((0, superstruct_1.object)({
-+        address: utils_1.HexChecksumAddressStruct,
-+        data: utils_1.StrictHexStruct,
-+        topics: (0, superstruct_1.array)(utils_1.StrictHexStruct),
-+    })),
-+    status: utils_1.StrictHexStruct,
++    logs: (0, superstruct_1.optional)((0, superstruct_1.array)((0, superstruct_1.object)({
++        address: (0, superstruct_1.optional)(utils_1.HexChecksumAddressStruct),
++        data: (0, superstruct_1.optional)(utils_1.StrictHexStruct),
++        topics: (0, superstruct_1.optional)((0, superstruct_1.array)(utils_1.StrictHexStruct)),
++    }))),
++    status: (0, superstruct_1.optional)(utils_1.StrictHexStruct),
 +    chainId: (0, superstruct_1.optional)(utils_1.StrictHexStruct),
-+    blockHash: utils_1.StrictHexStruct,
-+    blockNumber: utils_1.StrictHexStruct,
-+    gasUsed: utils_1.StrictHexStruct,
-+    transactionHash: utils_1.StrictHexStruct,
++    blockHash: (0, superstruct_1.optional)(utils_1.StrictHexStruct),
++    blockNumber: (0, superstruct_1.optional)(utils_1.StrictHexStruct),
++    gasUsed: (0, superstruct_1.optional)(utils_1.StrictHexStruct),
++    transactionHash: (0, superstruct_1.optional)(utils_1.StrictHexStruct),
 +});
 +async function walletGetCallsStatus(req, res, { getTransactionReceiptsByBatchId, }) {
 +    if (!getTransactionReceiptsByBatchId) {
 +        throw rpc_errors_1.rpcErrors.methodNotSupported();
 +    }
-+    if (!(0, validation_1.validateParams)(req.params, GetCallsStatusStruct)) {
-+        return;
-+    }
++    (0, validation_1.validateParams)(req.params, GetCallsStatusStruct);
 +    const batchId = req.params[0];
 +    const rawReceipts = await getTransactionReceiptsByBatchId(batchId, req);
 +    if (!rawReceipts.length) {
@@ -117,7 +115,7 @@ index 0000000000000000000000000000000000000000..03107309eff34e843ea389020e07f019
 \ No newline at end of file
 diff --git a/dist/methods/wallet-get-capabilities.d.ts b/dist/methods/wallet-get-capabilities.d.ts
 new file mode 100644
-index 0000000000000000000000000000000000000000..8852d903daa49f50583e3ae0bfa8a53e23d8fd62
+index 0000000000000000000000000000000000000000..e2bad570d2af6406d87c8ad5a51aa05cd9f5800c
 --- /dev/null
 +++ b/dist/methods/wallet-get-capabilities.d.ts
 @@ -0,0 +1,10 @@
@@ -125,7 +123,7 @@ index 0000000000000000000000000000000000000000..8852d903daa49f50583e3ae0bfa8a53e
 +import type { Hex, Json, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 +declare const GetCapabilitiesStruct: import("@metamask/superstruct").Struct<[`0x${string}`], null>;
 +export declare type GetCapabilitiesParams = Infer<typeof GetCapabilitiesStruct>;
-+export declare type GetCapabilitiesResult = Record<Hex, Record<string, any>>;
++export declare type GetCapabilitiesResult = Record<Hex, Record<string, Json>>;
 +export declare type GetCapabilitiesHook = (address: Hex, req: JsonRpcRequest) => Promise<GetCapabilitiesResult>;
 +export declare function walletGetCapabilities(req: JsonRpcRequest, res: PendingJsonRpcResponse<Json>, { getCapabilities, }: {
 +    getCapabilities?: GetCapabilitiesHook;
@@ -133,10 +131,10 @@ index 0000000000000000000000000000000000000000..8852d903daa49f50583e3ae0bfa8a53e
 +export {};
 diff --git a/dist/methods/wallet-get-capabilities.js b/dist/methods/wallet-get-capabilities.js
 new file mode 100644
-index 0000000000000000000000000000000000000000..a3ed5f7f7ecb7517569cf0575fc2adbbcf4c6136
+index 0000000000000000000000000000000000000000..b3eae7d1e54e2f0f5a9286a0aff3fae932d01054
 --- /dev/null
 +++ b/dist/methods/wallet-get-capabilities.js
-@@ -0,0 +1,21 @@
+@@ -0,0 +1,19 @@
 +"use strict";
 +Object.defineProperty(exports, "__esModule", { value: true });
 +exports.walletGetCapabilities = void 0;
@@ -149,9 +147,7 @@ index 0000000000000000000000000000000000000000..a3ed5f7f7ecb7517569cf0575fc2adbb
 +    if (!getCapabilities) {
 +        throw rpc_errors_1.rpcErrors.methodNotSupported();
 +    }
-+    if (!(0, validation_1.validateParams)(req.params, GetCapabilitiesStruct)) {
-+        return;
-+    }
++    (0, validation_1.validateParams)(req.params, GetCapabilitiesStruct);
 +    const address = req.params[0];
 +    const capabilities = await getCapabilities(address, req);
 +    res.result = capabilities;
@@ -161,7 +157,7 @@ index 0000000000000000000000000000000000000000..a3ed5f7f7ecb7517569cf0575fc2adbb
 \ No newline at end of file
 diff --git a/dist/methods/wallet-send-calls.d.ts b/dist/methods/wallet-send-calls.d.ts
 new file mode 100644
-index 0000000000000000000000000000000000000000..2393c5f064227fb5f363cab8ceacd14c93550fd3
+index 0000000000000000000000000000000000000000..3ec76000e361f4a616fa205ead266c1adb9cc66a
 --- /dev/null
 +++ b/dist/methods/wallet-send-calls.d.ts
 @@ -0,0 +1,21 @@
@@ -169,13 +165,13 @@ index 0000000000000000000000000000000000000000..2393c5f064227fb5f363cab8ceacd14c
 +import type { Json, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 +declare const SendCallsStruct: import("@metamask/superstruct").Struct<[{
 +    from: `0x${string}`;
++    version: string;
 +    calls: {
 +        data?: `0x${string}` | undefined;
 +        value?: `0x${string}` | undefined;
 +        to?: `0x${string}` | undefined;
 +    }[];
 +    chainId?: `0x${string}` | undefined;
-+    version?: string | undefined;
 +    capabilities?: {} | undefined;
 +}], null>;
 +export declare type SendCallsParams = Infer<typeof SendCallsStruct>;
@@ -188,10 +184,10 @@ index 0000000000000000000000000000000000000000..2393c5f064227fb5f363cab8ceacd14c
 +export {};
 diff --git a/dist/methods/wallet-send-calls.js b/dist/methods/wallet-send-calls.js
 new file mode 100644
-index 0000000000000000000000000000000000000000..8ec0adfb118e68fd31bc7de78c5070b208e169c7
+index 0000000000000000000000000000000000000000..1b074658d5d0663ddd11ee6bd65e61f5ee0087ff
 --- /dev/null
 +++ b/dist/methods/wallet-send-calls.js
-@@ -0,0 +1,37 @@
+@@ -0,0 +1,34 @@
 +"use strict";
 +Object.defineProperty(exports, "__esModule", { value: true });
 +exports.walletSendCalls = void 0;
@@ -201,7 +197,7 @@ index 0000000000000000000000000000000000000000..8ec0adfb118e68fd31bc7de78c5070b2
 +const validation_1 = require("../utils/validation");
 +const SendCallsStruct = (0, superstruct_1.tuple)([
 +    (0, superstruct_1.object)({
-+        version: (0, superstruct_1.optional)((0, superstruct_1.nonempty)((0, superstruct_1.string)())),
++        version: (0, superstruct_1.nonempty)((0, superstruct_1.string)()),
 +        from: utils_1.HexChecksumAddressStruct,
 +        chainId: (0, superstruct_1.optional)(utils_1.StrictHexStruct),
 +        calls: (0, superstruct_1.array)((0, superstruct_1.object)({
@@ -216,10 +212,7 @@ index 0000000000000000000000000000000000000000..8ec0adfb118e68fd31bc7de78c5070b2
 +    if (!processSendCalls) {
 +        throw rpc_errors_1.rpcErrors.methodNotSupported();
 +    }
-+    if (!(0, validation_1.validateParams)(req.params, SendCallsStruct)) {
-+        // Not possible as throws.
-+        return;
-+    }
++    (0, validation_1.validateParams)(req.params, SendCallsStruct);
 +    const params = req.params[0];
 +    const from = await (0, validation_1.validateAndNormalizeKeyholder)(params.from, req, {
 +        getAccounts,
@@ -232,7 +225,7 @@ index 0000000000000000000000000000000000000000..8ec0adfb118e68fd31bc7de78c5070b2
 \ No newline at end of file
 diff --git a/dist/utils/validation.d.ts b/dist/utils/validation.d.ts
 new file mode 100644
-index 0000000000000000000000000000000000000000..29c28c5dad6edb272d8bfe6ff7871b3c93ac1d2a
+index 0000000000000000000000000000000000000000..f988d4d0abf5360d43e47b179c930c2cf1745ee4
 --- /dev/null
 +++ b/dist/utils/validation.d.ts
 @@ -0,0 +1,7 @@
@@ -241,14 +234,14 @@ index 0000000000000000000000000000000000000000..29c28c5dad6edb272d8bfe6ff7871b3c
 +export declare function validateAndNormalizeKeyholder(address: Hex, req: JsonRpcRequest, { getAccounts }: {
 +    getAccounts: (req: JsonRpcRequest) => Promise<string[]>;
 +}): Promise<Hex>;
-+export declare function validateParams<ParamsType>(value: unknown | ParamsType, struct: Struct<ParamsType>): value is ParamsType;
++export declare function validateParams<ParamsType>(value: unknown | ParamsType, struct: Struct<ParamsType>): asserts value is ParamsType;
 +export declare function resemblesAddress(str: string): boolean;
 diff --git a/dist/utils/validation.js b/dist/utils/validation.js
 new file mode 100644
-index 0000000000000000000000000000000000000000..dd6440d12f76aa633ddecea3069e446e0dd20eed
+index 0000000000000000000000000000000000000000..656812c7c268640c9e639e2f61fe3fcb578f6b11
 --- /dev/null
 +++ b/dist/utils/validation.js
-@@ -0,0 +1,44 @@
+@@ -0,0 +1,43 @@
 +"use strict";
 +Object.defineProperty(exports, "__esModule", { value: true });
 +exports.resemblesAddress = exports.validateParams = exports.validateAndNormalizeKeyholder = void 0;
@@ -278,7 +271,6 @@ index 0000000000000000000000000000000000000000..dd6440d12f76aa633ddecea3069e446e
 +    if (error) {
 +        throw rpc_errors_1.rpcErrors.invalidInput(formatValidationError(error, `Invalid params`));
 +    }
-+    return true;
 +}
 +exports.validateParams = validateParams;
 +function resemblesAddress(str) {

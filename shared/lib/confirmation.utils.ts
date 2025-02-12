@@ -11,6 +11,7 @@ const REDESIGN_SIGNATURE_APPROVAL_TYPES = [
 
 /** List of transaction types that support the redesigned confirmation flow for users */
 const REDESIGN_USER_TRANSACTION_TYPES = [
+  TransactionType.batch,
   TransactionType.contractInteraction,
   TransactionType.deployContract,
   TransactionType.tokenMethodApprove,
