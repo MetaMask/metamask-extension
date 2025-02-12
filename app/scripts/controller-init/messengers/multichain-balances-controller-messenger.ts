@@ -9,6 +9,7 @@ import { HandleSnapRequest } from '@metamask/snaps-controllers';
 import {
   MultichainAssetsControllerGetStateAction,
   MultichainAssetsControllerStateChangeEvent,
+  MultichainBalancesControllerMessenger,
 } from '@metamask/assets-controllers';
 
 type MessengerEvents =
@@ -28,7 +29,7 @@ export type MultichainBalancesControllerInitMessenger = ReturnType<
 
 export function getMultichainBalancesControllerMessenger(
   messenger: Messenger<MessengerActions, MessengerEvents>,
-) {
+): MultichainBalancesControllerMessenger {
   return messenger.getRestricted({
     name: 'MultichainBalancesController',
     allowedEvents: [
@@ -42,7 +43,7 @@ export function getMultichainBalancesControllerMessenger(
       'SnapController:handleRequest',
       'MultichainAssetsController:getState',
     ],
-  });
+  }) as MultichainBalancesControllerMessenger;
 }
 
 export function getMultichainBalancesControllerInitMessenger(

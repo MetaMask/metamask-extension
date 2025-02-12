@@ -13,7 +13,6 @@ import {
   RatesController,
   fetchMultiExchangeRate,
   TokenBalancesController,
-  MultichainBalancesController,
   MultichainAssetsController,
 } from '@metamask/assets-controllers';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
@@ -161,9 +160,6 @@ import {
   setEthAccounts,
   addPermittedEthChainId,
 } from '@metamask/multichain';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import { MultichainTransactionsController } from '@metamask/multichain-transactions-controller';
-///: END:ONLY_INCLUDE_IF
 import {
   methodsRequiringNetworkSwitch,
   methodsThatCanSwitchNetworkWithoutApproval,
