@@ -120,7 +120,7 @@ export const MultichainBridgeQuoteCard = () => {
             </Column>
           </Row>
           <Column gap={1}>
-            <Row>
+            <Row justifyContent={JustifyContent.spaceBetween}>
               <Row gap={1}>
                 <AvatarNetwork
                   name={fromChain?.name ?? ''}
@@ -166,6 +166,13 @@ export const MultichainBridgeQuoteCard = () => {
                   }
                 </Text>
               </Row>
+              {/* // TODO: not working - find where dest addr is populated. */}
+              <Text
+                style={{ whiteSpace: 'nowrap' }}
+                color={TextColor.textAlternative}
+              >
+                {activeQuote.quote.destAddress}
+              </Text>
             </Row>
 
             <Row gap={2} style={{ display: 'flex', justifyContent: 'start' }}>
@@ -278,9 +285,6 @@ export const MultichainBridgeQuoteCard = () => {
                 color={TextColor.textAlternativeSoft}
               >
                 {t('rateIncludesMMFee', [BRIDGE_MM_FEE_RATE])}
-              </Text>
-              <Text color={TextColor.textAlternativeSoft}>
-                {t('bulletpoint')}
               </Text>
               <ButtonLink
                 variant={TextVariant.bodyMd}
