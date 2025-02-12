@@ -132,10 +132,7 @@ describe('Security Tab', () => {
 
   it('toggles metaMetrics', async () => {
     expect(
-      await toggleCheckbox(
-        'participate-in-meta-metrics-settings-toggle-button',
-        false,
-      ),
+      await toggleCheckbox('participate-in-meta-metrics-toggle', false),
     ).toBe(true);
   });
 

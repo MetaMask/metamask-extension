@@ -1424,7 +1424,7 @@ exports[`Security Tab should match snapshot 1`] = `
       >
         <div
           class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
-          data-testid="participate-in-meta-metrics-settings"
+          data-testid="participate-in-meta-metrics-container"
         >
           <div
             class="settings-page__content-item"
@@ -1440,7 +1440,7 @@ exports[`Security Tab should match snapshot 1`] = `
           </div>
           <div
             class="settings-page__content-item-col"
-            data-testid="participate-in-meta-metrics-settings-toggle-button"
+            data-testid="participate-in-meta-metrics-toggle"
           >
             <label
               class="toggle-button toggle-button--off toggle-button--disabled"
