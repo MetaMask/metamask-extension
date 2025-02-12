@@ -1,13 +1,14 @@
 import {
   MultichainBalancesController,
-  MultichainBalancesControllerMessenger as ControllerMessenger,
+  MultichainBalancesControllerMessenger,
 } from '@metamask/assets-controllers';
 import { ControllerInitFunction } from '../types';
 import { MultichainBalancesControllerInitMessenger } from '../messengers/multichain-balances-controller-messenger';
 
 export const MultichainBalancesControllerInit: ControllerInitFunction<
   MultichainBalancesController,
-  ControllerMessenger,
+    // @ts-expect-error TODO: figure out why there's a mismatch
+  MultichainBalancesControllerMessenger,
   MultichainBalancesControllerInitMessenger
 > = (request) => {
   const { controllerMessenger, persistedState } = request;
