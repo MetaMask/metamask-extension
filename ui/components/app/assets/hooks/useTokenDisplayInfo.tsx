@@ -1,18 +1,25 @@
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import { isEqualCaseInsensitive } from '@metamask/controller-utils';
-import { getTokenList, selectERC20TokensByChain } from '../../../../selectors';
+import {
+  getIsTestnet,
+  getSelectedAccount,
+  getShowFiatInTestnets,
+  getTokenList,
+  selectERC20TokensByChain,
+} from '../../../../selectors';
 import { TokenWithFiatAmount } from '../types';
 import {
   getImageForChainId,
   getMultichainIsEvm,
+  getMultichainShouldShowFiat,
   isChainIdMainnet,
 } from '../../../../selectors/multichain';
 import { formatWithThreshold } from '../util/formatWithThreshold';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { formatAmount } from '../../../../pages/confirmations/components/simulation-details/formatAmount';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
-import { useShouldShowFiat } from '.';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 
 type UseTokenDisplayInfoProps = {
   token: TokenWithFiatAmount;
@@ -33,10 +40,22 @@ export const useTokenDisplayInfo = ({
   const isEvm = useSelector(getMultichainIsEvm);
   const tokenList = useSelector(getTokenList);
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
-  const shouldShowFiat = useShouldShowFiat();
   const currentCurrency = useSelector(getCurrentCurrency);
   const locale = useSelector(getIntlLocale);
   const tokenChainImage = getImageForChainId(token?.chainId);
+  const selectedAccount = useSelector(getSelectedAccount);
+  const showFiat = useMultichainSelector(
+    getMultichainShouldShowFiat,
+    selectedAccount,
+  );
+
+  const isTestnet = useSelector(getIsTestnet);
+
+  const isMainnet = !isTestnet;
+  const showFiatInTestnets = useSelector(getShowFiatInTestnets);
+
+  const shouldShowFiat =
+    showFiat && (isMainnet || (isTestnet && showFiatInTestnets));
 
   const secondaryThreshold = 0.01;
 
