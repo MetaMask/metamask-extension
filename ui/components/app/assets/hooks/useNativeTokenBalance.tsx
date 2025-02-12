@@ -17,7 +17,7 @@ import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 
-export const useNativeTokenBalance = () => {
+const useNativeTokenBalance = () => {
   const showFiat = useSelector(getMultichainShouldShowFiat);
   const account = useSelector(getSelectedInternalAccount);
   const primaryTokenImage = useSelector(getMultichainCurrencyImage);
@@ -101,3 +101,5 @@ export const useNativeTokenBalance = () => {
 
   return nativeTokenWithBalance;
 };
+
+export default useNativeTokenBalance;

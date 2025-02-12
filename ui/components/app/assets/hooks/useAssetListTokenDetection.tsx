@@ -27,7 +27,7 @@ import {
 } from '../../../../../shared/constants/transaction';
 import { addImportedTokens } from '../../../../store/actions';
 
-export const useAssetListTokenDetection = () => {
+const useAssetListTokenDetection = () => {
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const detectedTokensMultichain: {
@@ -101,3 +101,5 @@ export const useAssetListTokenDetection = () => {
 
   return { showDetectedTokens, setShowDetectedTokens };
 };
+
+export default useAssetListTokenDetection;

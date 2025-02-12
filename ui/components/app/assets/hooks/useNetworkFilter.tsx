@@ -6,7 +6,7 @@ import {
   getTokenNetworkFilter,
 } from '../../../../selectors';
 
-export const useNetworkFilter = () => {
+const useNetworkFilter = () => {
   const dispatch = useDispatch();
 
   const allNetworks = useSelector(getNetworkConfigurationIdByChainId);
@@ -26,3 +26,5 @@ export const useNetworkFilter = () => {
 
   return { networkFilter };
 };
+
+export default useNetworkFilter;

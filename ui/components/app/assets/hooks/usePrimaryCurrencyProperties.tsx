@@ -3,7 +3,7 @@ import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferenced
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { getMultichainSelectedAccountCachedBalance } from '../../../../selectors/multichain';
 
-export const usePrimaryCurrencyProperties = () => {
+const usePrimaryCurrencyProperties = () => {
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
 
   const {
@@ -23,3 +23,5 @@ export const usePrimaryCurrencyProperties = () => {
     primaryCurrencyProperties,
   };
 };
+
+export default usePrimaryCurrencyProperties;
