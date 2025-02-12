@@ -42,8 +42,11 @@ import {
   getMaybeSelectedInternalAccount,
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
+  getSelectedAccountNativeTokenCachedBalanceByChainId,
+  getSelectedEvmInternalAccount,
   getShouldShowFiat,
   getShowFiatInTestnets,
+  getTokenList,
 } from './selectors';
 
 export type RatesState = {
@@ -391,8 +394,50 @@ export function getMultichainIsTestnet(
 export function getMultichainBalances(
   state: MultichainState,
 ): BalancesState['metamask']['balances'] {
+  const account = getSelectedInternalAccount(state);
+  return {
+    [account.id]: {
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+        amount: '2000000000',
+        unit: '',
+      },
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
+        {
+          amount: '2000000000',
+          unit: '',
+        },
+    },
+  };
   return state.metamask.balances;
 }
+
+export const getMultichainTokenList = (
+  state: MultichainState,
+  account?: InternalAccount,
+) => {
+  const selectedAccount = account ?? getSelectedInternalAccount(state);
+  const isEvm = getMultichainIsEvm(state, selectedAccount);
+  if (isEvm) {
+    return getTokenList;
+  }
+  const nativeToken = getMultichainNativeCurrency(state, account);
+  return Object.fromEntries(
+    Object.entries(state?.metamask?.assetsMetadata ?? {})
+      .map(([a, m]) => {
+        return [
+          a,
+          {
+            ...m,
+            ...m.units[0],
+            chainId: a.split('/')[0],
+            address: a.split('/')[1],
+            isNative: nativeToken === m.units[0].symbol,
+          },
+        ];
+      })
+      .filter(([, m]) => !m.isNative),
+  );
+};
 
 export function getMultichainTransactions(
   state: MultichainState,
@@ -486,3 +531,46 @@ export function getMultichainConversionRate(
     ? getConversionRate(state)
     : getMultichainCoinRates(state)?.[ticker.toLowerCase()]?.conversionRate;
 }
+
+const getMultichainSelectedAccountTokensAcrossChains = (state) => {
+  const { allTokens } = state.metamask;
+  const selectedAddress = getSelectedInternalAccount(state).address;
+  const selectedEvmAddress = getSelectedEvmInternalAccount(state).address;
+
+  const tokensByChain = {};
+
+  const nativeTokenBalancesByChainId =
+    getSelectedAccountNativeTokenCachedBalanceByChainId(state);
+
+  const chainIds = new Set([
+    ...Object.keys(allTokens || {}),
+    ...Object.keys(nativeTokenBalancesByChainId || {}),
+  ]);
+
+  chainIds.forEach((chainId) => {
+    if (!tokensByChain[chainId]) {
+      tokensByChain[chainId] = [];
+    }
+
+    if (allTokens[chainId]?.[selectedAddress]) {
+      allTokens[chainId][selectedAddress].forEach((token) => {
+        const tokenWithChain = { ...token, chainId, isNative: false };
+        tokensByChain[chainId].push(tokenWithChain);
+      });
+    }
+
+    const nativeBalance = nativeTokenBalancesByChainId[chainId];
+    if (nativeBalance) {
+      const nativeTokenInfo = getNativeTokenInfo(state, chainId);
+      tokensByChain[chainId].push({
+        ...nativeTokenInfo,
+        address: '',
+        balance: nativeBalance,
+        chainId,
+        isNative: true,
+      });
+    }
+  });
+
+  return tokensByChain;
+};
