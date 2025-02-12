@@ -45,7 +45,7 @@ describe('createOriginThrottlingMiddleware', () => {
 
   it('ends with SPAM_FILTER_ACTIVATED_ERROR if the origin is blocked', async () => {
     const req = {
-      method: 'transaction',
+      method: 'eth_sendTransaction',
       origin: 'testOrigin',
     } as unknown as ExtendedJSONRPCRequest;
     const next = jest.fn();
@@ -69,7 +69,7 @@ describe('createOriginThrottlingMiddleware', () => {
 
   it('resets throttling state if response has no error', async () => {
     const req = {
-      method: 'transaction',
+      method: 'eth_sendTransaction',
       origin: 'testOrigin',
     } as unknown as ExtendedJSONRPCRequest;
     const nextCallback = jest.fn();
@@ -99,7 +99,7 @@ describe('createOriginThrottlingMiddleware', () => {
 
   it('updates throttling state if response has userRejected error', async () => {
     const req = {
-      method: 'transaction',
+      method: 'eth_sendTransaction',
       origin: 'testOrigin',
     } as unknown as ExtendedJSONRPCRequest;
     const nextCallback = jest.fn();

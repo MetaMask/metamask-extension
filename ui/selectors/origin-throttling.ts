@@ -1,8 +1,4 @@
-import { createSelector } from 'reselect';
-import {
-  ThrottledOrigins,
-  ThrottledOriginsState,
-} from '../../shared/types/origin-throttling';
+import { ThrottledOriginsState } from '../../shared/types/origin-throttling';
 
 export type OriginThrottlingState = {
   metamask: ThrottledOriginsState;
