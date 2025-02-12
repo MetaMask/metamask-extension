@@ -1140,13 +1140,15 @@ export function getPetnamesEnabled(state) {
 /**
  * Returns an object indicating which networks
  * tokens should be shown on in the portfolio view.
- *
- * @param {*} state
- * @returns {Record<Hex, boolean>}
  */
 export const getTokenNetworkFilter = createDeepEqualSelector(
   getCurrentChainId,
   getPreferences,
+  /**
+   * @param {*} currentChainId - chainId
+   * @param {*} preferences - preferences state
+   * @returns {Record<Hex, boolean>}
+   */
   (currentChainId, { tokenNetworkFilter }) => {
     // Portfolio view not enabled outside popular networks
     if (
