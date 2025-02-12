@@ -905,7 +905,7 @@
         "Headers": true,
         "URL": true,
         "URLSearchParams": true,
-        "__import__": true,
+        "_interopRequireWildcard": true,
         "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
@@ -920,7 +920,7 @@
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
         "@metamask/abi-utils": true,
-        "@metamask/assets-controllers>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
@@ -934,6 +934,7 @@
         "@metamask/name-controller>async-mutex": true,
         "bn.js": true,
         "lodash": true,
+        "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": true,
         "single-call-balance-checker-abi": true,
         "uuid": true
       }
@@ -955,14 +956,6 @@
       }
     },
     "@metamask/approval-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/assets-controllers>@metamask/base-controller": {
       "globals": {
         "setTimeout": true
       },
@@ -1027,14 +1020,6 @@
       }
     },
     "@metamask/transaction-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/polling-controller>@metamask/base-controller": {
       "globals": {
         "setTimeout": true
       },
@@ -1661,7 +1646,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/polling-controller>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "uuid": true
       }
