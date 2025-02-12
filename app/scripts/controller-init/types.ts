@@ -8,7 +8,7 @@ import {
 import { Hex } from '@metamask/utils';
 import { Duplex } from 'readable-stream';
 import { SubjectType } from '@metamask/permission-controller';
-import { TransactionMetricsRequest } from '../lib/transaction/metrics';
+import type { TransactionMetricsRequest } from '../../../shared/types/metametrics';
 import { MessageSender } from '../../../types/global';
 import { Controller, ControllerFlatState } from './controller-list';
 
