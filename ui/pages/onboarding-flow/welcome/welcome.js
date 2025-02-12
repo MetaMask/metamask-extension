@@ -136,7 +136,7 @@ export default function OnboardingWelcome() {
               <Mascot
                 animationEventEmitter={eventEmitter}
                 width="250"
-                height="250"
+                height="300"
               />
             </div>
           </div>
