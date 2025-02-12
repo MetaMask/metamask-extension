@@ -1,5 +1,5 @@
 import { mockNetworkStateOld } from '../../../stub/networks';
-import { defaultGanacheOptions, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import FixtureBuilder from '../../fixture-builder';
@@ -69,7 +69,6 @@ describe('Block Explorer', function () {
           })
           .withTokensControllerERC20()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract: SMART_CONTRACTS.HST,
         title: this.test?.fullTitle(),
       },

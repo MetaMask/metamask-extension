@@ -2,7 +2,6 @@ const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   WINDOW_TITLES,
-  defaultGanacheOptions,
   openDapp,
   unlockWallet,
   withFixtures,
@@ -59,7 +58,6 @@ describe('PPOM Blockaid Alert - Multiple Networks Support', function () {
             securityAlertsEnabled: true,
           })
           .build(),
-        defaultGanacheOptions,
         testSpecificMock: mockInfuraWithMaliciousResponses,
         title: this.test.fullTitle(),
       },
