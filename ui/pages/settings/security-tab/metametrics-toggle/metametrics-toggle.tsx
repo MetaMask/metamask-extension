@@ -92,7 +92,7 @@ const MetametricsToggle = ({
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
         gap={4}
-        data-testid="participate-in-meta-metrics-settings"
+        data-testid="participate-in-meta-metrics-container"
       >
         <div className="settings-page__content-item">
           <span>{t('participateInMetaMetrics')}</span>
@@ -103,7 +103,7 @@ const MetametricsToggle = ({
 
         <div
           className="settings-page__content-item-col"
-          data-testid="participate-in-meta-metrics-settings-toggle-button"
+          data-testid="participate-in-meta-metrics-toggle"
         >
           <ToggleButton
             value={participateInMetaMetrics}

@@ -48,9 +48,9 @@ const arrangeMocks = (stateOverrides: StateOverrides = {}) => {
   });
 
   const PARTICIPATE_IN_METRICS_CONTAINER_TEST_ID =
-    'participate-in-meta-metrics-settings';
-  const PARTICIPATE_IN_METRICS_TOGGLE_BUTTON_TEST_ID =
-    'participate-in-meta-metrics-settings-toggle-button';
+    'participate-in-meta-metrics-container';
+  const PARTICIPATE_IN_METRICS_TOGGLE_TEST_ID =
+    'participate-in-meta-metrics-toggle';
 
   const { getByTestId } = render(
     <Provider store={store}>
@@ -66,7 +66,7 @@ const arrangeMocks = (stateOverrides: StateOverrides = {}) => {
     PARTICIPATE_IN_METRICS_CONTAINER_TEST_ID,
   );
   const metaMetricsToggleButton = getByTestId(
-    PARTICIPATE_IN_METRICS_TOGGLE_BUTTON_TEST_ID,
+    PARTICIPATE_IN_METRICS_TOGGLE_TEST_ID,
   ).querySelector('input') as HTMLInputElement;
 
   return {
