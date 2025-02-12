@@ -29,7 +29,7 @@ const mockAccounts = [
 ] as InternalAccount[];
 
 const Template: StoryFn<typeof DestinationAccountPicker> = (args) => (
-  <div style={{ width: '400px' }}>
+  <div style={{ width: '400px', height: '300px' }}>
     <DestinationAccountPicker {...args} />
   </div>
 );
