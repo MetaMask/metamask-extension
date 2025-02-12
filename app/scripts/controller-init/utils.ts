@@ -41,6 +41,7 @@ type ControllersToInitialize = 'PPOMController' | 'TransactionController';
 type InitFunction<Name extends ControllersToInitialize> =
   ControllerInitFunction<
     ControllerByName[Name],
+    // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
     ReturnType<(typeof CONTROLLER_MESSENGERS)[Name]['getMessenger']>,
     ReturnType<(typeof CONTROLLER_MESSENGERS)[Name]['getInitMessenger']>
   >;
@@ -100,6 +101,7 @@ export function initControllers({
     const messengerCallbacks = CONTROLLER_MESSENGERS[controllerName];
 
     const controllerMessengerCallback =
+      // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
       messengerCallbacks?.getMessenger as ControllerMessengerCallback;
 
     const initMessengerCallback =
@@ -118,7 +120,13 @@ export function initControllers({
       initMessenger,
     };
 
-    const result = initFunction(finalInitRequest);
+    // TODO: Remove @ts-expect-error once base-controller version mismatch is resolved
+    // Instead of suppressing all type errors, we'll be specific about the controllerMessenger mismatch
+    const result = initFunction({
+      ...finalInitRequest,
+      // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
+      controllerMessenger: finalInitRequest.controllerMessenger,
+    });
 
     const {
       controller,

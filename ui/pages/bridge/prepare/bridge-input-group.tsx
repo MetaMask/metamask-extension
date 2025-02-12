@@ -38,8 +38,8 @@ import { shortenString } from '../../../helpers/utils/util';
 import type { BridgeToken } from '../../../../shared/types/bridge';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
-import { getMultichainIsSolana } from '../../../selectors/multichain';
 import { getIntlLocale } from '../../../ducks/locale/locale';
+import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { BridgeAssetPickerButton } from './components/bridge-asset-picker-button';
 
 export const BridgeInputGroup = ({
@@ -100,7 +100,7 @@ export const BridgeInputGroup = ({
     }
   }, [amountFieldProps?.value, isAmountReadOnly, token]);
 
-  const isSolana = useSelector(getMultichainIsSolana);
+  const isSwap = useIsMultichainSwap();
 
   return (
     <Column paddingInline={6} gap={1}>
@@ -175,7 +175,7 @@ export const BridgeInputGroup = ({
                 fontWeight={FontWeight.Normal}
                 style={{ whiteSpace: 'nowrap' }}
               >
-                {isSolana ? t('swapSwapTo') : t('bridgeTo')}
+                {isSwap ? t('swapSwapTo') : t('bridgeTo')}
               </Button>
             ) : (
               <BridgeAssetPickerButton

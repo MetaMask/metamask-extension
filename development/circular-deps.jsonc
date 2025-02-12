@@ -16,23 +16,6 @@
     "app/scripts/controllers/bridge-status/validators.ts"
   ],
   [
-    "app/scripts/controllers/bridge/bridge-controller.ts",
-    "app/scripts/controllers/bridge/types.ts"
-  ],
-  [
-    "app/scripts/controllers/swaps/index.ts",
-    "app/scripts/controllers/swaps/swaps.constants.ts",
-    "app/scripts/controllers/swaps/swaps.types.ts"
-  ],
-  [
-    "app/scripts/controllers/swaps/swaps.constants.ts",
-    "app/scripts/controllers/swaps/swaps.types.ts"
-  ],
-  [
-    "app/scripts/lib/transaction/metrics.ts",
-    "shared/modules/metametrics.ts"
-  ],
-  [
     "ui/components/app/alert-system/confirm-alert-modal/confirm-alert-modal.tsx",
     "ui/components/app/alert-system/confirm-alert-modal/index.tsx",
     "ui/pages/confirmations/components/confirm/footer/footer.tsx"
@@ -57,145 +40,21 @@
     "ui/components/app/assets/asset-list/native-token/use-native-token-balance.ts"
   ],
   [
-    "ui/components/app/assets/token-list/token-list.tsx",
-    "ui/components/app/assets/util/calculateTokenBalance.ts"
-  ],
-  [
-    "ui/components/app/assets/token-list/token-list.tsx",
-    "ui/components/app/assets/util/calculateTokenFiatAmount.ts"
-  ],
-  [
     "ui/components/app/name/name-details/name-details.tsx",
     "ui/components/app/name/name.tsx"
   ],
   [
-    "ui/components/app/snaps/snap-ui-renderer/components/banner.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/bold.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/box.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/button.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/card.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/container.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/field.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/selector.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/field.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/form.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/italic.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/link.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/row.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/skeleton.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/text.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/tooltip.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
-    "ui/components/app/snaps/snap-ui-renderer/components/index.ts",
-    "ui/components/app/snaps/snap-ui-renderer/components/value.ts",
-    "ui/components/app/snaps/snap-ui-renderer/utils.ts"
-  ],
-  [
     "ui/components/component-library/avatar-account/avatar-account.tsx",
-    "ui/components/component-library/avatar-account/avatar-account.types.ts",
     "ui/components/component-library/avatar-account/index.ts",
-    "ui/components/component-library/avatar-base/avatar-base.types.ts",
+    "ui/components/component-library/avatar-base/avatar-base.tsx",
+    "ui/components/component-library/avatar-base/index.ts",
     "ui/components/component-library/index.ts",
     "ui/components/component-library/text/index.ts",
     "ui/components/component-library/text/text.tsx"
   ],
   [
     "ui/components/component-library/badge-wrapper/badge-wrapper.tsx",
-    "ui/components/component-library/badge-wrapper/badge-wrapper.types.ts",
     "ui/components/component-library/badge-wrapper/index.ts",
-    "ui/components/component-library/index.ts"
-  ],
-  [
-    "ui/components/component-library/badge-wrapper/badge-wrapper.tsx",
-    "ui/components/component-library/badge-wrapper/index.ts",
-    "ui/components/component-library/index.ts"
-  ],
-  [
-    "ui/components/component-library/banner-alert/banner-alert.tsx",
-    "ui/components/component-library/banner-alert/banner-alert.types.ts",
-    "ui/components/component-library/banner-alert/index.ts",
-    "ui/components/component-library/banner-base/banner-base.types.ts",
-    "ui/components/component-library/button-base/button-base.tsx",
-    "ui/components/component-library/button-base/index.ts",
-    "ui/components/component-library/button-link/button-link.tsx",
-    "ui/components/component-library/button-link/index.ts",
-    "ui/components/component-library/index.ts"
-  ],
-  [
-    "ui/components/component-library/banner-alert/banner-alert.tsx",
-    "ui/components/component-library/banner-alert/banner-alert.types.ts",
-    "ui/components/component-library/banner-alert/index.ts",
-    "ui/components/component-library/banner-base/banner-base.types.ts",
-    "ui/components/component-library/button-icon/button-icon.tsx",
-    "ui/components/component-library/button-icon/index.ts",
-    "ui/components/component-library/index.ts"
-  ],
-  [
-    "ui/components/component-library/banner-alert/banner-alert.tsx",
-    "ui/components/component-library/banner-alert/banner-alert.types.ts",
-    "ui/components/component-library/banner-alert/index.ts",
-    "ui/components/component-library/banner-base/banner-base.types.ts",
-    "ui/components/component-library/button-link/button-link.tsx",
-    "ui/components/component-library/button-link/index.ts",
     "ui/components/component-library/index.ts"
   ],
   [
@@ -213,6 +72,21 @@
   [
     "ui/components/component-library/banner-tip/banner-tip.tsx",
     "ui/components/component-library/banner-tip/index.ts",
+    "ui/components/component-library/index.ts"
+  ],
+  [
+    "ui/components/component-library/button-base/button-base.tsx",
+    "ui/components/component-library/button-base/index.ts",
+    "ui/components/component-library/index.ts"
+  ],
+  [
+    "ui/components/component-library/button-icon/button-icon.tsx",
+    "ui/components/component-library/button-icon/index.ts",
+    "ui/components/component-library/index.ts"
+  ],
+  [
+    "ui/components/component-library/button-link/button-link.tsx",
+    "ui/components/component-library/button-link/index.ts",
     "ui/components/component-library/index.ts"
   ],
   [

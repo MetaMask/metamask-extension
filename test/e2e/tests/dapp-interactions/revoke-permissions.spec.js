@@ -1,9 +1,4 @@
-const {
-  withFixtures,
-  openDapp,
-  unlockWallet,
-  defaultGanacheOptions,
-} = require('../../helpers');
+const { withFixtures, openDapp, unlockWallet } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Wallet Revoke Permissions', function () {
@@ -14,7 +9,6 @@ describe('Wallet Revoke Permissions', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -51,7 +45,6 @@ describe('Wallet Revoke Permissions', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

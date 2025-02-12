@@ -23,7 +23,7 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
           .withNetworkControllerDoubleGanache()
           .withSelectedNetworkControllerPerDomain()
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {
@@ -57,7 +57,7 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
         await switchToNetworkFlow(driver, 'Ethereum Mainnet');
-        await homePage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localNodeBalanceIsDisplayed(ganacheServer);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         const chainIdBeforeConnectAfterManualSwitch: string =
           await driver.executeScript(

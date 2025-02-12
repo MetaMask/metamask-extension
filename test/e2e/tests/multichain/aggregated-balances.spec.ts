@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
-import { withFixtures, defaultGanacheOptions } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Ganache } from '../../seeder/ganache';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -33,7 +33,6 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
           .withPermissionControllerConnectedToTestDapp()
           .withTokensControllerERC20()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract: SMART_CONTRACTS.HST,
         title: this.test?.fullTitle(),
       },
