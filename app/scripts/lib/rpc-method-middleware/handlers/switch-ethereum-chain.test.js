@@ -199,12 +199,8 @@ describe('switchEthereumChainHandler', () => {
     );
   });
 
-  it('calls `grantPermittedChainsPermissionIncremental` if the origin is a Snap', async () => {
-    const mocks = makeMocks({
-      overrides: {
-        grantPermittedChainsPermissionIncremental: jest.fn(),
-      },
-    });
+  it('calls `switchChain` with `autoApprove: true` if the origin is a Snap', async () => {
+    const { mocks } = createMockedHandler();
 
     const switchEthereumChainHandler = switchEthereumChain.implementation;
     await switchEthereumChainHandler(
@@ -218,41 +214,21 @@ describe('switchEthereumChainHandler', () => {
       mocks,
     );
 
-    expect(
-      mocks.grantPermittedChainsPermissionIncremental,
-    ).toHaveBeenCalledTimes(1);
-    expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
-    expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-      createMockMainnetConfiguration().rpcEndpoints[0].networkClientId,
-    );
-  });
-
-  it('does not call `grantPermittedChainsPermissionIncremental` if the origin is a Snap, but the permission is already set', async () => {
-    const mocks = makeMocks({
-      permissionedChainIds: [CHAIN_IDS.MAINNET],
-      overrides: {
-        grantPermittedChainsPermissionIncremental: jest.fn(),
-      },
-    });
-
-    const switchEthereumChainHandler = switchEthereumChain.implementation;
-    await switchEthereumChainHandler(
-      {
-        origin: 'npm:foo-snap',
-        params: [{ chainId: CHAIN_IDS.MAINNET }],
-      },
+    expect(EthChainUtils.switchChain).toHaveBeenCalledTimes(1);
+    expect(EthChainUtils.switchChain).toHaveBeenCalledWith(
       {},
-      jest.fn(),
-      jest.fn(),
-      mocks,
-    );
-
-    expect(
-      mocks.grantPermittedChainsPermissionIncremental,
-    ).not.toHaveBeenCalled();
-    expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
-    expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-      createMockMainnetConfiguration().rpcEndpoints[0].networkClientId,
+      expect.any(Function),
+      CHAIN_IDS.MAINNET,
+      NETWORK_TYPES.MAINNET,
+      {
+        autoApprove: true,
+        setActiveNetwork: mocks.setActiveNetwork,
+        getCaveat: mocks.getCaveat,
+        requestPermittedChainsPermissionForOrigin:
+          mocks.requestPermittedChainsPermissionForOrigin,
+        requestPermittedChainsPermissionIncrementalForOrigin:
+          mocks.requestPermittedChainsPermissionIncrementalForOrigin,
+      },
     );
   });
 });
