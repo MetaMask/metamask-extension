@@ -24,15 +24,6 @@ const NativeToken = ({ onClickAsset }: NativeTokenProps) => {
 
   const isStakeable = isMainnet && isEvm;
 
-  console.log('foo: ', token);
-
-  console.log('bar: ', {
-    ...token,
-    ...tokenDisplayInfo,
-    secondary: token.secondary,
-    isStakeable,
-  });
-
   return (
     <TokenCell
       token={{
