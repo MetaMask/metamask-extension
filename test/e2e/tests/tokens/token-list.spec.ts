@@ -1,6 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { Context } from 'mocha';
 import { zeroAddress } from 'ethereumjs-util';
+import { Browser } from 'selenium-webdriver';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import FixtureBuilder from '../../fixture-builder';
 import {
@@ -18,6 +19,8 @@ import {
   mockSpotPrices,
 } from './utils/mocks';
 
+const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
+
 describe('Token List', function () {
   const chainId = CHAIN_IDS.MAINNET;
   const lineaChainId = CHAIN_IDS.LINEA_MAINNET;
@@ -26,7 +29,7 @@ describe('Token List', function () {
 
   const fixtures = {
     fixtures: new FixtureBuilder({ inputChainId: chainId }).build(),
-    ganacheOptions: {
+    localNodeOptions: {
       ...defaultGanacheOptions,
       chainId: parseInt(chainId, 16),
     },
@@ -113,7 +116,14 @@ describe('Token List', function () {
           tokenAddress,
           '+0.05%',
         );
-        await assetListPage.check_tokenGeneralChangeValue('+$50.00');
+
+        // We made this due to a change on Firefox v125
+        // The 2 decimals are not displayed with values which are "rounded",
+        if (isFirefox) {
+          await assetListPage.check_tokenGeneralChangeValue('+$50');
+        } else {
+          await assetListPage.check_tokenGeneralChangeValue('+$50.00');
+        }
       },
     );
   });

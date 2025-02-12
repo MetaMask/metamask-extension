@@ -119,7 +119,11 @@ async function requestPermissionsImplementation(
     const caip25CaveatValue = caip25Endowment?.caveats?.find(
       ({ type }) => type === Caip25CaveatType,
     )?.value as Caip25CaveatValue | undefined;
-
+    console.log({
+      grantedPermissions,
+      requestedPermissions,
+      caip25CaveatValue,
+    });
     if (!caip25CaveatValue) {
       throw new Error(
         `could not find ${Caip25CaveatType} in granted ${Caip25EndowmentPermissionName} permission.`,
@@ -127,7 +131,6 @@ async function requestPermissionsImplementation(
     }
 
     delete grantedPermissions[Caip25EndowmentPermissionName];
-
     // We cannot derive correct eth_accounts value directly from the CAIP-25 permission
     // because the accounts will not be in order of lastSelected
     const ethAccounts = getAccounts();
@@ -144,6 +147,7 @@ async function requestPermissionsImplementation(
     };
 
     const ethChainIds = getPermittedEthChainIds(caip25CaveatValue);
+
     if (ethChainIds.length > 0) {
       grantedPermissions[PermissionNames.permittedChains] = {
         ...caip25Endowment,
