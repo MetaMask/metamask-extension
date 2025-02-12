@@ -10,10 +10,10 @@ import { UNSUPPORTED_RPC_METHODS } from '../../../../shared/constants/network';
  * @param methods - The list of unsupported RPC methods.
  */
 export function createUnsupportedMethodMiddleware(
-  methods: string[] = UNSUPPORTED_RPC_METHODS,
+  methods: Set<string> = UNSUPPORTED_RPC_METHODS,
 ): JsonRpcMiddleware<JsonRpcParams, null> {
   return async function unsupportedMethodMiddleware(req, _res, next, end) {
-    if (methods.includes(req.method)) {
+    if (methods.has(req.method)) {
       return end(rpcErrors.methodNotSupported());
     }
     return next();

@@ -6632,11 +6632,13 @@ export default class MetamaskController extends EventEmitter {
     engine.push(requestQueueMiddleware);
 
     engine.push(
-      createUnsupportedMethodMiddleware([
-        ...UNSUPPORTED_RPC_METHODS,
-        'eth_requestAccounts',
-        'eth_accounts',
-      ]),
+      createUnsupportedMethodMiddleware(
+        new Set([
+          ...UNSUPPORTED_RPC_METHODS,
+          'eth_requestAccounts',
+          'eth_accounts',
+        ]),
+      ),
     );
 
     if (subjectType === SubjectType.Website) {
