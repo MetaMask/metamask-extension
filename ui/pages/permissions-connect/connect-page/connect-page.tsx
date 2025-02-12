@@ -239,7 +239,12 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
             backgroundColor: BackgroundColor.transparent,
           }}
         >
-          <Tab name="Accounts" tabKey="accounts" width={BlockSize.Full}>
+          <Tab
+            name="Accounts"
+            tabKey="accounts"
+            width={BlockSize.Full}
+            data-testid="accounts-tab"
+          >
             <Box marginTop={4}>
               <Box
                 backgroundColor={BackgroundColor.backgroundDefault}
@@ -276,7 +281,12 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               )}
             </Box>
           </Tab>
-          <Tab name="Permissions" tabKey="permissions" width={BlockSize.Full}>
+          <Tab
+            name="Permissions"
+            tabKey="permissions"
+            width={BlockSize.Full}
+            data-testid="permissions-tab"
+          >
             <Box marginTop={4}>
               <SiteCell
                 nonTestNetworks={nonTestNetworks}
