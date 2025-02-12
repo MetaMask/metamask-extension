@@ -28,13 +28,7 @@ import {
 } from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
-import {
-  JsonRpcError,
-  providerErrors,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  rpcErrors,
-  ///: END:ONLY_INCLUDE_IF
-} from '@metamask/rpc-errors';
+import { JsonRpcError, providerErrors, rpcErrors } from '@metamask/rpc-errors';
 
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
@@ -166,14 +160,12 @@ import {
   setPermittedEthChainIds,
   setEthAccounts,
   addPermittedEthChainId,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   multichainMethodCallValidatorMiddleware,
   MultichainSubscriptionManager,
   MultichainMiddlewareManager,
   walletGetSession,
   walletRevokeSession,
   walletInvokeMethod,
-  ///: END:ONLY_INCLUDE_IF
 } from '@metamask/multichain';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { MultichainTransactionsController } from '@metamask/multichain-transactions-controller';
@@ -202,9 +194,7 @@ import {
   NETWORK_TYPES,
   NetworkStatus,
   MAINNET_DISPLAY_NAME,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   UNSUPPORTED_RPC_METHODS,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../shared/constants/network';
 import { getAllowedSmartTransactionsChainIds } from '../../shared/constants/smartTransactions';
 
@@ -225,9 +215,7 @@ import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   MESSAGE_TYPE,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -255,9 +243,7 @@ import {
   getIsSmartTransaction,
   getFeatureFlagsByChainId,
 } from '../../shared/modules/selectors';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { createCaipStream } from '../../shared/modules/caip-stream';
-///: END:ONLY_INCLUDE_IF
 import { BaseUrl } from '../../shared/constants/urls';
 import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
@@ -302,10 +288,8 @@ import {
   createEthAccountsMethodMiddleware,
   createEip1193MethodMiddleware,
   createUnsupportedMethodMiddleware,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   createMultichainMethodMiddleware,
   makeMethodMiddlewareMaker,
-  ///: END:ONLY_INCLUDE_IF
 } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
 import createMainFrameOriginMiddleware from './lib/createMainFrameOriginMiddleware';
@@ -344,11 +328,9 @@ import {
   NOTIFICATION_NAMES,
   unrestrictedMethods,
   PermissionNames,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   getRemovedAuthorizations,
   getChangedAuthorizations,
   getAuthorizedScopesByOrigin,
-  ///: END:ONLY_INCLUDE_IF
   validateCaveatAccounts,
   validateCaveatNetworks,
 } from './controllers/permissions';
@@ -388,9 +370,7 @@ import createTracingMiddleware from './lib/createTracingMiddleware';
 import createOriginThrottlingMiddleware from './lib/createOriginThrottlingMiddleware';
 import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { walletCreateSession } from './lib/rpc-method-middleware/handlers/wallet-createSession';
-///: END:ONLY_INCLUDE_IF
 import BridgeStatusController from './controllers/bridge-status/bridge-status-controller';
 import { BRIDGE_STATUS_CONTROLLER_NAME } from './controllers/bridge-status/constants';
 import { rejectAllApprovals } from './lib/approval/utils';
@@ -658,18 +638,18 @@ export default class MetamaskController extends EventEmitter {
     });
     this.networkController.initializeProvider();
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-    this.multichainSubscriptionManager = new MultichainSubscriptionManager({
-      getNetworkClientById: this.networkController.getNetworkClientById.bind(
-        this.networkController,
-      ),
-      findNetworkClientIdByChainId:
-        this.networkController.findNetworkClientIdByChainId.bind(
+    if (process.env.BARAD_DUR) {
+      this.multichainSubscriptionManager = new MultichainSubscriptionManager({
+        getNetworkClientById: this.networkController.getNetworkClientById.bind(
           this.networkController,
         ),
-    });
-    this.multichainMiddlewareManager = new MultichainMiddlewareManager();
-    ///: END:ONLY_INCLUDE_IF
+        findNetworkClientIdByChainId:
+          this.networkController.findNetworkClientIdByChainId.bind(
+            this.networkController,
+          ),
+      });
+      this.multichainMiddlewareManager = new MultichainMiddlewareManager();
+    }
     this.provider =
       this.networkController.getProviderAndBlockTracker().provider;
     this.blockTracker =
@@ -2861,71 +2841,77 @@ export default class MetamaskController extends EventEmitter {
 
     // This handles CAIP-25 authorization changes every time relevant permission state
     // changes, for any reason.
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-    this.controllerMessenger.subscribe(
-      `${this.permissionController.name}:stateChange`,
-      async (currentValue, previousValue) => {
-        const changedAuthorizations = getChangedAuthorizations(
-          currentValue,
-          previousValue,
-        );
+    if (process.env.BARAD_DUR) {
+      this.controllerMessenger.subscribe(
+        `${this.permissionController.name}:stateChange`,
+        async (currentValue, previousValue) => {
+          const changedAuthorizations = getChangedAuthorizations(
+            currentValue,
+            previousValue,
+          );
 
-        const removedAuthorizations = getRemovedAuthorizations(
-          currentValue,
-          previousValue,
-        );
+          const removedAuthorizations = getRemovedAuthorizations(
+            currentValue,
+            previousValue,
+          );
 
-        // remove any existing notification subscriptions for removed authorizations
-        for (const [origin, authorization] of removedAuthorizations.entries()) {
-          const sessionScopes = getSessionScopes(authorization);
-          // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
-          // then remove middleware and unsubscribe
-          Object.entries(sessionScopes).forEach(([scope, scopeObject]) => {
-            if (
-              scopeObject.notifications.includes('eth_subscription') &&
-              scopeObject.methods.includes('eth_subscribe')
-            ) {
-              this.removeMultichainApiEthSubscriptionMiddleware({
-                scope,
-                origin,
-              });
-            }
-          });
-        }
-
-        // add new notification subscriptions for added/changed authorizations
-        for (const [origin, authorization] of changedAuthorizations.entries()) {
-          const sessionScopes = getSessionScopes(authorization);
-
-          // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
-          // then get the subscriptionManager going for that scope
-          Object.entries(sessionScopes).forEach(([scope, scopeObject]) => {
-            if (
-              scopeObject.notifications.includes('eth_subscription') &&
-              scopeObject.methods.includes('eth_subscribe')
-            ) {
-              // for each tabId
-              Object.values(this.connections[origin]).forEach(({ tabId }) => {
-                this.addMultichainApiEthSubscriptionMiddleware({
+          // remove any existing notification subscriptions for removed authorizations
+          for (const [
+            origin,
+            authorization,
+          ] of removedAuthorizations.entries()) {
+            const sessionScopes = getSessionScopes(authorization);
+            // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
+            // then remove middleware and unsubscribe
+            Object.entries(sessionScopes).forEach(([scope, scopeObject]) => {
+              if (
+                scopeObject.notifications.includes('eth_subscription') &&
+                scopeObject.methods.includes('eth_subscribe')
+              ) {
+                this.removeMultichainApiEthSubscriptionMiddleware({
                   scope,
                   origin,
-                  tabId,
                 });
-              });
-            } else {
-              this.removeMultichainApiEthSubscriptionMiddleware({
-                scope,
-                origin,
-              });
-            }
-          });
+              }
+            });
+          }
 
-          this._notifyAuthorizationChange(origin, authorization);
-        }
-      },
-      getAuthorizedScopesByOrigin,
-    );
-    ///: END:ONLY_INCLUDE_IF
+          // add new notification subscriptions for added/changed authorizations
+          for (const [
+            origin,
+            authorization,
+          ] of changedAuthorizations.entries()) {
+            const sessionScopes = getSessionScopes(authorization);
+
+            // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
+            // then get the subscriptionManager going for that scope
+            Object.entries(sessionScopes).forEach(([scope, scopeObject]) => {
+              if (
+                scopeObject.notifications.includes('eth_subscription') &&
+                scopeObject.methods.includes('eth_subscribe')
+              ) {
+                // for each tabId
+                Object.values(this.connections[origin]).forEach(({ tabId }) => {
+                  this.addMultichainApiEthSubscriptionMiddleware({
+                    scope,
+                    origin,
+                    tabId,
+                  });
+                });
+              } else {
+                this.removeMultichainApiEthSubscriptionMiddleware({
+                  scope,
+                  origin,
+                });
+              }
+            });
+
+            this._notifyAuthorizationChange(origin, authorization);
+          }
+        },
+        getAuthorizedScopesByOrigin,
+      );
+    }
 
     this.controllerMessenger.subscribe(
       `${this.permissionController.name}:stateChange`,
@@ -3248,15 +3234,15 @@ export default class MetamaskController extends EventEmitter {
    */
   async getProviderState(origin) {
     const providerNetworkState = await this.getProviderNetworkState(origin);
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-    const { chrome } = globalThis;
-    ///: END:ONLY_INCLUDE_IF
+    const metadata = {};
+    if (process.env.BARAD_DUR && isManifestV3) {
+      const { chrome } = globalThis;
+      metadata.extensionId = chrome?.runtime?.id;
+    }
     return {
       isUnlocked: this.isUnlocked(),
       accounts: this.getPermittedAccounts(origin),
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-      ...(isManifestV3 ? { extensionId: chrome?.runtime?.id } : {}),
-      ///: END:ONLY_INCLUDE_IF
+      ...metadata,
       ...providerNetworkState,
     };
   }
@@ -5725,8 +5711,11 @@ export default class MetamaskController extends EventEmitter {
    * @param {MessageSender | SnapSender} options.sender - The sender of the messages on this stream.
    * @param {string} [options.subjectType] - The type of the sender, i.e. subject.
    */
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   setupUntrustedCommunicationCaip({ connectionStream, sender, subjectType }) {
+    if (!process.env.BARAD_DUR) {
+      return;
+    }
+
     let inputSubjectType;
     if (subjectType) {
       inputSubjectType = subjectType;
@@ -5741,7 +5730,6 @@ export default class MetamaskController extends EventEmitter {
     // messages between subject and background
     this.setupProviderConnectionCaip(caipStream, sender, inputSubjectType);
   }
-  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Used to create a multiplexed stream for connecting to a trusted context,
@@ -6025,8 +6013,11 @@ export default class MetamaskController extends EventEmitter {
    * @param {MessageSender | SnapSender} sender - The sender of the messages on this stream
    * @param {SubjectType} subjectType - The type of the sender, i.e. subject.
    */
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   setupProviderConnectionCaip(outStream, sender, subjectType) {
+    if (!process.env.BARAD_DUR) {
+      return;
+    }
+
     let origin;
     if (subjectType === SubjectType.Internal) {
       origin = ORIGIN_METAMASK;
@@ -6083,7 +6074,6 @@ export default class MetamaskController extends EventEmitter {
       },
     );
   }
-  ///: END:ONLY_INCLUDE_IF
 
   /**
    * A method for creating an ethereum provider that is safely restricted for the requesting subject.
@@ -6539,7 +6529,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * A method for creating a provider that is safely restricted for the requesting subject.
+   * A method for creating a CAIP Multichain provider that is safely restricted for the requesting subject.
    *
    * @param {object} options - Provider engine options
    * @param {string} options.origin - The origin of the sender
@@ -6547,8 +6537,11 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} options.subjectType - The type of the sender subject.
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
    */
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   setupProviderEngineCaip({ origin, sender, subjectType, tabId }) {
+    if (!process.env.BARAD_DUR) {
+      return null;
+    }
+
     const engine = new JsonRpcEngine();
 
     // Append origin to each request
@@ -6709,7 +6702,6 @@ export default class MetamaskController extends EventEmitter {
           this.networkController.getNetworkConfigurationByChainId.bind(
             this.networkController,
           ),
-        // TODO refactor `add-ethereum-chain` handler so that this hook can be removed from multichain middleware
         getCurrentChainIdForDomain: (domain) => {
           const networkClientId =
             this.selectedNetworkController.getNetworkClientIdForDomain(domain);
@@ -6744,7 +6736,6 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(this.metamaskMiddleware);
 
-    // TODO: Might be able to DRY this with the stateChange event
     try {
       const caip25Caveat = this.permissionController.getCaveat(
         origin,
@@ -6808,7 +6799,6 @@ export default class MetamaskController extends EventEmitter {
 
     return engine;
   }
-  ///: END:ONLY_INCLUDE_IF
 
   /**
    * TODO:LegacyProvider: Delete
