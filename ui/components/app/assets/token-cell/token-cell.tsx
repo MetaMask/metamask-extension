@@ -116,7 +116,6 @@ export default function TokenCell({
       width={BlockSize.Full}
       height={BlockSize.Full}
       gap={4}
-      // data-testid="multichain-token-list-item"
     >
       <Box
         as="a"
@@ -165,7 +164,7 @@ export default function TokenCell({
           </Box>
         </Box>
       </Box>
-      {/* scam warning modal */}
+      {/* scam warning modal, this should be higher up in the component tree */}
       {isEvm && showScamWarningModal ? (
         <Modal isOpen onClose={() => setShowScamWarningModal(false)}>
           <ModalOverlay />
