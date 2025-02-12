@@ -63,8 +63,7 @@ export class BridgePage {
     });
   };
 
-  verifyPortfolioTab = async (expectedHandleCount: number) => {
-    await this.driver.waitUntilXWindowHandles(expectedHandleCount);
+  verifyPortfolioTab = async () => {
     await this.driver.switchToWindowWithTitle('MetaMask Portfolio - Bridge');
     await this.driver.waitForUrlContaining({
       url: 'portfolio.metamask.io/bridge',
@@ -72,8 +71,7 @@ export class BridgePage {
     });
   };
 
-  verifySwapPage = async (expectedHandleCount: number) => {
-    await this.driver.waitUntilXWindowHandles(expectedHandleCount);
+  verifySwapPage = async () => {
     await this.driver.waitForUrlContaining({
       url: 'cross-chain/swaps',
       timeout: this.driver.timeout,
