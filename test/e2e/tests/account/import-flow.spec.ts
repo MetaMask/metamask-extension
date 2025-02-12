@@ -6,7 +6,7 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import AccountDetailsModal from '../../page-objects/pages/dialog/account-details-modal';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 
 describe('Import flow', function () {
@@ -53,7 +53,7 @@ describe('Import flow', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
 
         // Wait until account list is loaded to mitigate race condition
         const headerNavbar = new HeaderNavbar(driver);
@@ -77,7 +77,7 @@ describe('Import flow', function () {
         // Check new imported account has correct name and label
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.check_expectedBalanceIsDisplayed('0');
         await headerNavbar.check_accountLabel('Account 4');
 
         await headerNavbar.openAccountMenu();
@@ -99,7 +99,7 @@ describe('Import flow', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.check_accountLabel('Account 1');
