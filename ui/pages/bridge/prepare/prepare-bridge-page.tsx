@@ -178,6 +178,8 @@ const PrepareBridgePage = () => {
 
   const millisecondsUntilNextRefresh = useCountdownTimer();
 
+  const isSwap = useIsMultichainSwap();
+
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
 
   // Resets the banner visibility when the estimated return is low
@@ -275,9 +277,10 @@ const PrepareBridgePage = () => {
       srcChainId: fromChain?.chainId
         ? Number(hexToDecimal(fromChain.chainId))
         : undefined,
-      destChainId: toChain?.chainId
-        ? Number(hexToDecimal(toChain.chainId))
-        : undefined,
+      destChainId:
+        isSwap && fromChain?.chainId
+          ? Number(hexToDecimal(fromChain.chainId))
+          : toChain?.chainId && Number(hexToDecimal(toChain.chainId)),
       // This override allows quotes to be returned when the rpcUrl is a tenderly fork
       // Otherwise quotes get filtered out by the bridge-api when the wallet's real
       // balance is less than the tenderly balance
@@ -285,6 +288,7 @@ const PrepareBridgePage = () => {
       slippage,
     }),
     [
+      isSwap,
       fromToken,
       toToken,
       fromChain?.chainId,
@@ -366,8 +370,6 @@ const PrepareBridgePage = () => {
     }
   }, [fromChain, fromToken, fromTokens, search, isFromTokensLoading]);
 
-  const isSwap = useIsMultichainSwap();
-
   return (
     <Column className="prepare-bridge-page" gap={8}>
       <BridgeInputGroup
@@ -385,34 +387,38 @@ const PrepareBridgePage = () => {
               value: token.address,
             });
         }}
-        networkProps={{
-          network: fromChain,
-          networks: fromChains,
-          onNetworkChange: (networkConfig) => {
-            networkConfig.chainId !== fromChain?.chainId &&
-              trackInputEvent({
-                input: 'chain_source',
-                value: networkConfig.chainId,
-              });
-            if (networkConfig.chainId === toChain?.chainId) {
-              dispatch(setToChainId(null));
-              dispatch(setToToken(null));
-            }
-            if (isNetworkAdded(networkConfig)) {
-              dispatch(
-                setActiveNetwork(
-                  networkConfig.rpcEndpoints[
-                    networkConfig.defaultRpcEndpointIndex
-                  ].networkClientId,
-                ),
-              );
-            }
-            dispatch(setFromToken(null));
-            dispatch(setFromTokenInputValue(null));
-          },
-          header: t('yourNetworks'),
-        }}
-        isMultiselectEnabled
+        networkProps={
+          isSwap
+            ? undefined
+            : {
+                network: fromChain,
+                networks: fromChains,
+                onNetworkChange: (networkConfig) => {
+                  networkConfig.chainId !== fromChain?.chainId &&
+                    trackInputEvent({
+                      input: 'chain_source',
+                      value: networkConfig.chainId,
+                    });
+                  if (networkConfig.chainId === toChain?.chainId) {
+                    dispatch(setToChainId(null));
+                    dispatch(setToToken(null));
+                  }
+                  if (isNetworkAdded(networkConfig)) {
+                    dispatch(
+                      setActiveNetwork(
+                        networkConfig.rpcEndpoints[
+                          networkConfig.defaultRpcEndpointIndex
+                        ].networkClientId,
+                      ),
+                    );
+                  }
+                  dispatch(setFromToken(null));
+                  dispatch(setFromTokenInputValue(null));
+                },
+                header: t('yourNetworks'),
+              }
+        }
+        isMultiselectEnabled={!isSwap}
         onMaxButtonClick={(value: string) => {
           dispatch(setFromTokenInputValue(value));
         }}
@@ -505,23 +511,30 @@ const PrepareBridgePage = () => {
               });
             dispatch(setToToken(token));
           }}
-          networkProps={{
-            network: toChain,
-            networks: toChains,
-            onNetworkChange: (networkConfig) => {
-              networkConfig.chainId !== toChain?.chainId &&
-                trackInputEvent({
-                  input: 'chain_destination',
-                  value: networkConfig.chainId,
-                });
-              dispatch(setToChainId(networkConfig.chainId));
-              dispatch(setToToken(null));
-            },
-            header: isSwap ? t('swapSwapTo') : t('bridgeTo'),
-            shouldDisableNetwork: ({ chainId }) =>
-              chainId === fromChain?.chainId,
-          }}
-          customTokenListGenerator={toChain ? toTokenListGenerator : undefined}
+          networkProps={
+            isSwap
+              ? undefined
+              : {
+                  network: toChain,
+                  networks: toChains,
+                  onNetworkChange: (networkConfig) => {
+                    networkConfig.chainId !== toChain?.chainId &&
+                      trackInputEvent({
+                        input: 'chain_destination',
+                        value: networkConfig.chainId,
+                      });
+                    dispatch(setToChainId(networkConfig.chainId));
+                    dispatch(setToToken(null));
+                  },
+                  header: isSwap ? t('swapSwapTo') : t('bridgeTo'),
+                  shouldDisableNetwork: ({ chainId }) =>
+                    chainId === fromChain?.chainId,
+                }
+          }
+          customTokenListGenerator={
+            // TODO use custom generator when we have a way to get all tokens for an unimported chain
+            toChain && !isSwap ? toTokenListGenerator : undefined
+          }
           amountInFiat={
             activeQuote?.toTokenAmount?.valueInCurrency || undefined
           }
