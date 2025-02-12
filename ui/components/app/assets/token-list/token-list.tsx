@@ -69,6 +69,7 @@ function TokenList({ onTokenClick }: TokenListProps) {
     currentNetwork,
     selectedAccount,
     newTokensImported,
+    evmBalances,
   ]);
 
   useEffect(() => {
