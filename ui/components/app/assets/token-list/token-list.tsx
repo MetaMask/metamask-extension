@@ -7,18 +7,28 @@ import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { useTokenBalances as pollAndUpdateEvmBalances } from '../../../../hooks/useTokenBalances';
 import useSortedFilteredTokens from '../hooks/useSortedFilteredTokens';
 import { TokenWithFiatAmount } from '../types';
+// import { useNativeTokenBalance } from '../asset-list/native-token/use-native-token-balance';
+// import {
+//   getMultichainIsEvm,
+//   getMultichainSelectedAccountCachedBalance,
+// } from '../../../../selectors/multichain';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
-  nativeToken?: ReactNode;
+  // nativeToken?: ReactNode;
 };
 
 export default function TokenList({
   onTokenClick,
-  nativeToken,
-}: TokenListProps) {
+}: // nativeToken,
+TokenListProps) {
   const { privacyMode } = useSelector(getPreferences);
   const chainIdsToPoll = useSelector(getChainIdsToPoll);
+
+  // const isEvm = useSelector(getMultichainIsEvm);
+  // const balance = useSelector(getMultichainSelectedAccountCachedBalance);
+  // const balanceIsLoading = !balance;
+  // const nativeTokenData = useNativeTokenBalance(); // TODO: Validate this is still required with new MultichainControllers
 
   // EVM specific tokenBalance polling, updates state via polling loop per chainId
   pollAndUpdateEvmBalances({
@@ -26,6 +36,7 @@ export default function TokenList({
   });
 
   const sortedFilteredTokens = useSortedFilteredTokens();
+  console.log('sortedFilteredTokens', sortedFilteredTokens);
 
   useEffect(() => {
     if (sortedFilteredTokens) {
@@ -34,9 +45,19 @@ export default function TokenList({
   }, [sortedFilteredTokens]);
 
   // Displays nativeToken if provided
-  if (nativeToken) {
-    return React.cloneElement(nativeToken as React.ReactElement);
-  }
+  // if (!isEvm && !balanceIsLoading) {
+  //   return React.cloneElement(nativeToken as React.ReactElement);
+  //   // return (
+  //   //   <TokenCell
+  //   //     token={{
+  //   //       ...nativeToken,
+  //   //       // ...tokenDisplayInfo,
+  //   //       // secondary: token.secondary,
+  //   //       // isStakeable,
+  //   //     }}
+  //   //   />
+  //   // );
+  // }
 
   return (
     <div>

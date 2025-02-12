@@ -97,14 +97,14 @@ const useTokenDisplayInfo = ({
       tokenChainImage,
     };
   }
-  // TODO non-evm assets
+  // TODO non-evm assets. this is only the native token
   return {
-    title: '',
-    tokenImage: '',
-    primary,
-    secondary,
-    isStakeable,
-    tokenChainImage,
+    title: token.symbol,
+    tokenImage: token.image,
+    primary: '',
+    secondary: token.secondary,
+    isStakeable: false,
+    tokenChainImage: token.image,
   };
 };
 

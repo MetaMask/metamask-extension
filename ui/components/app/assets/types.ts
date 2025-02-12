@@ -23,8 +23,8 @@ export type TokenWithBalance = {
 export type TokenDisplayInfo = {
   title: string;
   tokenImage: string;
-  primary: string;
-  secondary: string | undefined;
+  primary?: string;
+  secondary?: string | undefined;
   isStakeable: boolean | undefined;
   tokenChainImage: string;
 };
@@ -33,6 +33,7 @@ export type TokenWithFiatAmount = Token & {
   tokenFiatAmount: number | null;
   balance?: string;
   secondary?: string;
+  primary?: string;
   string: string; // needed for backwards compatability TODO: fix this
   isStakeable?: boolean;
 };

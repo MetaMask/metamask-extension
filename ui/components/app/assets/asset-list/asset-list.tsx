@@ -37,7 +37,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
       <TokenList
         // nativeToken is still needed to avoid breaking flask build's support for bitcoin
         // TODO: refactor this to no longer be needed for non-evm chains
-        nativeToken={!isEvm && <NativeToken onClickAsset={onClickAsset} />}
+        // nativeToken={!isEvm && <NativeToken onClickAsset={onClickAsset} />}
         onTokenClick={(chainId: string, tokenAddress: string) => {
           onClickAsset(chainId, tokenAddress);
           trackEvent({

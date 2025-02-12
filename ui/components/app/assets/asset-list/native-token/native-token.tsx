@@ -17,7 +17,6 @@ type NativeTokenProps = {
 const NativeToken = ({ onClickAsset }: NativeTokenProps) => {
   const isMainnet = useSelector(getMultichainIsMainnet);
   const nativeCurrency = useSelector(getMultichainNativeCurrency);
-
   const token = useNativeTokenBalance();
   const tokenDisplayInfo = useTokenDisplayInfo({ token });
 
@@ -25,12 +24,22 @@ const NativeToken = ({ onClickAsset }: NativeTokenProps) => {
 
   const isStakeable = isMainnet && isEvm;
 
+  console.log('foo: ', token);
+
+  console.log('bar: ', {
+    ...token,
+    ...tokenDisplayInfo,
+    secondary: token.secondary,
+    isStakeable,
+  });
+
   return (
     <TokenCell
       token={{
         ...token,
         ...tokenDisplayInfo,
         secondary: token.secondary,
+        primary: token.secondary,
         isStakeable,
       }}
       onClick={() => onClickAsset(token.chainId, nativeCurrency)}

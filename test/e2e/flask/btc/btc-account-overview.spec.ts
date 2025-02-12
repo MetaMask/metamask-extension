@@ -41,7 +41,7 @@ describe('BTC Account - Overview', function (this: Suite) {
     );
   });
 
-  it('has balance', async function () {
+  it.only('has balance', async function () {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver) => {
