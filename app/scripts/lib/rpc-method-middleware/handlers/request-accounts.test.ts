@@ -132,7 +132,7 @@ describe('requestEthereumAccountsHandler', () => {
   });
 
   describe('eip155 account permissions do not exist', () => {
-    it('requests the CAIP-25 approval', async () => {
+    it('gets the CAIP-25 permission object to request approval for', async () => {
       const { handler, getCaip25PermissionFromLegacyPermissionsForOrigin } =
         createMockedHandler();
 
