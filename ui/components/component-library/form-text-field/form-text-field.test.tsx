@@ -5,7 +5,7 @@ import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 
 import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
-import { FormTextField, FormTextFieldSize } from '.';
+import { FormTextField, FormTextFieldSize } from './form-text-field';
 
 describe('FormTextField', () => {
   it('should render correctly', () => {
