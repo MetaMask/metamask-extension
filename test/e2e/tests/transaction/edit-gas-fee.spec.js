@@ -90,7 +90,13 @@ describe('Editing Confirm Transaction', function () {
   it('allows accessing advance gas fee popover from edit gas fee popover', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder()
+          .withPreferencesController({
+            preferences: {
+              showFiatInTestnets: true,
+            },
+          })
+          .build(),
         localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
       },
@@ -166,6 +172,11 @@ describe('Editing Confirm Transaction', function () {
       {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
+          .withPreferencesController({
+            preferences: {
+              showFiatInTestnets: true,
+            },
+          })
           .build(),
         localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),

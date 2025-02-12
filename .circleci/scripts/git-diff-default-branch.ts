@@ -91,13 +91,13 @@ async function fetchUntilMergeBaseFound() {
  * Performs a git diff command to get the list of files changed between the current branch and the origin.
  * It first ensures that the necessary commits are fetched until the merge base is found.
  *
- * @returns The output of the git diff command, listing the changed files.
+ * @returns The output of the git diff command, listing the file paths with status (A, M, D).
  * @throws If unable to get the diff after fetching the merge base or if an unexpected error occurs.
  */
 async function gitDiff(): Promise<string> {
   await fetchUntilMergeBaseFound();
   const { stdout: diffResult } = await exec(
-    `git diff --name-only "origin/HEAD...${SOURCE_BRANCH}"`,
+    `git diff --name-status "origin/HEAD...${SOURCE_BRANCH}"`,
   );
   if (!diffResult) {
     throw new Error('Unable to get diff after full checkout.');
