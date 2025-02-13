@@ -283,14 +283,17 @@ describe('ManifestPlugin', () => {
   });
 
   describe('manifest flags in development mode', () => {
-    const testManifest = {} as chrome.runtime.Manifest;
+    const emptyTestManifest = {} as chrome.runtime.Manifest;
+    const notEmptyTestManifest = {
+      _flags: { remoteFeatureFlags: { testFlag: false, testFlag2: 'value1' } },
+    } as unknown as chrome.runtime.Manifest;
     const mockFlags = { _flags: { remoteFeatureFlags: { testFlag: true } } };
     const manifestOverridesPath = 'testManifestOverridesPath.json';
     const fs = require('node:fs');
     const { mock } = require('node:test');
     const { resolve } = require('node:path');
 
-    it('adds manifest flags in development mode with path provided', () => {
+    it('adds manifest flags in development mode with path provided and empty manifest', () => {
       mock.method(fs, 'readFileSync', (path: string, options: object) => {
         if (path === resolve(__dirname, '../../../', manifestOverridesPath)) {
           return JSON.stringify(mockFlags);
@@ -304,12 +307,41 @@ describe('ManifestPlugin', () => {
       );
       assert(transform, 'transform should be truthy');
 
-      const transformed = transform(testManifest, 'chrome');
+      const transformed = transform(emptyTestManifest, 'chrome');
       console.log('Transformed:', transformed);
       assert.deepStrictEqual(
         transformed,
         mockFlags,
         'manifest should have flags in development mode',
+      );
+    });
+
+    it('overwrites existing manifest properties with override values but keeps original properties', () => {
+      mock.method(fs, 'readFileSync', (path: string, options: object) => {
+        if (path === resolve(__dirname, '../../../', manifestOverridesPath)) {
+          return JSON.stringify(mockFlags);
+        }
+        return fs.readFileSync.original(path, options);
+      });
+      const transform = transformManifest(
+        { lockdown: true, test: false },
+        true,
+        manifestOverridesPath,
+      );
+      assert(transform, 'transform should be truthy');
+
+      const transformed = transform(notEmptyTestManifest, 'chrome');
+      assert.deepStrictEqual(
+        transformed,
+        {
+          _flags: {
+            remoteFeatureFlags: {
+              testFlag2: 'value1',
+              testFlag: true,
+            },
+          },
+        },
+        'manifest should merge original properties with overrides, with overrides taking precedence',
       );
     });
 
@@ -328,7 +360,7 @@ describe('ManifestPlugin', () => {
       assert(transform, 'transform should be truthy');
 
       assert.throws(
-        () => transform(testManifest, 'chrome'),
+        () => transform(emptyTestManifest, 'chrome'),
         {
           message: `Manifest override file not found: ${manifestOverridesPath}`,
         },
@@ -353,7 +385,7 @@ describe('ManifestPlugin', () => {
         throw originalError;
       });
 
-      const transformed = transform(testManifest, 'chrome');
+      const transformed = transform(emptyTestManifest, 'chrome');
       assert.deepStrictEqual(
         transformed._flags,
         undefined,
