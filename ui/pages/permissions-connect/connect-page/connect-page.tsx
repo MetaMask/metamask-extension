@@ -200,12 +200,24 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
           marginBottom={2}
         >
           {targetSubjectMetadata.iconUrl ? (
-            <AvatarFavicon
-              backgroundColor={BackgroundColor.backgroundAlternative}
-              size={AvatarFaviconSize.Lg}
-              src={targetSubjectMetadata.iconUrl}
-              name={title}
-            />
+            <>
+              <Box style={{ filter: 'blur(16px)', position: 'absolute' }}>
+                <AvatarFavicon
+                  backgroundColor={BackgroundColor.backgroundAlternative}
+                  size={AvatarFaviconSize.Xl}
+                  src={targetSubjectMetadata.iconUrl}
+                  name={title}
+                  style={{ filter: 'brightness(1.2)' }}
+                />
+              </Box>
+              <AvatarFavicon
+                backgroundColor={BackgroundColor.backgroundAlternative}
+                size={AvatarFaviconSize.Lg}
+                src={targetSubjectMetadata.iconUrl}
+                name={title}
+                style={{ zIndex: 1, background: 'transparent' }}
+              />
+            </>
           ) : (
             <AvatarBase
               size={AvatarBaseSize.Lg}
@@ -240,7 +252,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
           }}
         >
           <Tab
-            name="Accounts"
+            name={t('accounts')}
             tabKey="accounts"
             width={BlockSize.Full}
             data-testid="accounts-tab"
@@ -249,7 +261,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               <Box
                 backgroundColor={BackgroundColor.backgroundDefault}
                 borderRadius={BorderRadius.XL}
-                style={{ overflow: 'auto', maxHeight: '240px' }}
+                style={{ overflow: 'auto', maxHeight: '290px' }}
               >
                 {selectedAccounts.map((account) => (
                   <AccountListItem
@@ -282,7 +294,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
             </Box>
           </Tab>
           <Tab
-            name="Permissions"
+            name={t('permissions')}
             tabKey="permissions"
             width={BlockSize.Full}
             data-testid="permissions-tab"
