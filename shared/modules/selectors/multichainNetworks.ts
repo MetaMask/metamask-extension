@@ -6,8 +6,9 @@ import {
 import {
   type NetworkConfiguration as InternalNetworkConfiguration,
 } from '@metamask/network-controller';
-import { getNetworkConfigurationsByChainId } from './networks';
+import { type CaipChainId } from '@metamask/keyring-api';
 
+import { getNetworkConfigurationsByChainId } from './networks';
 import { createDeepEqualSelector } from './util';
 
 // Selector types
@@ -42,13 +43,12 @@ export const getNonEvmMultichainNetworkConfigurationsByChainId = (state: Multich
 export const getMultichainNetworkConfigurationsByChainId = createDeepEqualSelector(
   getNonEvmMultichainNetworkConfigurationsByChainId,
   getNetworkConfigurationsByChainId,
-  (nonEvmNetworkConfigurationsByChainId, networkConfigurationsByChainId) => {
+  (nonEvmNetworkConfigurationsByChainId, networkConfigurationsByChainId): Record<CaipChainId, InternalMultichainNetworkConfiguration> => {
     const networks = {
       ...nonEvmNetworkConfigurationsByChainId,
       ...toMultichainNetworkConfigurationsByChainId(networkConfigurationsByChainId),
     };
 
-    console.log({ networks, nonEvmNetworkConfigurationsByChainId });
     return networks;
   }
 );

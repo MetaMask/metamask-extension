@@ -9,11 +9,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import Fuse from 'fuse.js';
 import * as URI from 'uri-js';
 import {
-  NetworkConfiguration,
-  RpcEndpointType,
+  type RpcEndpointType,
+  type UpdateNetworkFields,
 } from '@metamask/network-controller';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
-import { Hex } from '@metamask/utils';
+import { type CaipChainId, type Hex } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NetworkListItem } from '../network-list-item';
 import {
@@ -154,7 +154,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
   const showNetworkBanner = useSelector(getShowNetworkBanner);
-  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const evmNetworks = useSelector(getNetworkConfigurationsByChainId);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const { chainId: editingChainId, editCompleted } =
     useSelector(getEditedNetwork) ?? {};
@@ -193,11 +193,13 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
 
   // The network currently being edited, or undefined
   // if the user is not currently editing a network.
+  // This memoized value is EVM specific, therefore we
+  // provide the networkConfigurations object as a dependency.
   const editedNetwork = useMemo(
-    () =>
+    (): UpdateNetworkFields | undefined =>
       !editingChainId || editCompleted
         ? undefined
-        : Object.entries(multichainNetworks).find(
+        : Object.entries(evmNetworks).find(
             ([chainId]) => chainId === editingChainId,
           )?.[1],
     [editingChainId, editCompleted, networkConfigurations],
@@ -269,9 +271,9 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     searchQuery,
   );
 
-  const handleEvmNetworkChange = (chainId: string) => {
+  const handleEvmNetworkChange = (chainId: CaipChainId) => {
     const { networkClientId } = getDefaultRpcEndpointByChainId(chainId);
-    dispatch(setActiveNetwork(networkClientId, undefined));
+    dispatch(setActiveNetwork(networkClientId));
 
     dispatch(updateCustomNonce(''));
     dispatch(setNextNonce(''));
@@ -282,7 +284,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     if (Object.keys(tokenNetworkFilter || {}).length <= 1) {
       dispatch(setTokenNetworkFilter({ [chainId]: true }));
     } else if (process.env.PORTFOLIO_VIEW) {
-      const allOpts = Object.keys(allNetworks).reduce((acc, id) => {
+      const allOpts = Object.keys(evmNetworks).reduce((acc, id) => {
         acc[id] = true;
         return acc;
       }, {} as Record<string, boolean>);
@@ -304,11 +306,11 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     }
   };
 
-  const handleNonEvmNetworkChange = (chainId: string) => {
-    dispatch(setActiveNetwork(undefined, chainId));
+  const handleNonEvmNetworkChange = (chainId: CaipChainId) => {
+    dispatch(setActiveNetwork(chainId));
   };
 
-  const handleNetworkChange = (chainId: string) => {
+  const handleNetworkChange = (chainId: CaipChainId) => {
     const { isEvm } = multichainNetworks[chainId];
     if (isEvm) {
       handleEvmNetworkChange(chainId);
@@ -330,24 +332,25 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     });
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const generateMultichainNetworkListItem = (
     network: MultichainNetworkConfiguration,
   ) => {
     const isCurrentNetwork = network.chainId === currentChainId;
-    const EthereumMainnetcaipChainId = 'eip155:1';
+    const EthereumMainnetCaipChainId = 'eip155:1';
     const isNetworkDeletable =
       network.isEvm &&
       isUnlocked &&
       !isCurrentNetwork &&
-      network.chainId !== EthereumMainnetcaipChainId;
+      network.chainId !== EthereumMainnetCaipChainId;
     const isNetworkEditable = network.isEvm;
     console.log('generateMultichainNetworkListItem', { network });
     const hasMultiRpcOptions =
       network.isEvm &&
-      [...searchedEnabledNetworks, ...searchedTestNetworks].some(
-        (net) => net.rpcEndpoints?.length > 1,
-      );
+      [...searchedEnabledNetworks, ...searchedTestNetworks].some((net) => {
+        const hexChainId = fromCaipToHexId(net.chainId);
+        const evmNetwork = evmNetworks[hexChainId];
+        return evmNetwork?.rpcEndpoints.length > 1;
+      });
 
     const onDelete = () => {
       dispatch(toggleNetworkMenu());
@@ -610,7 +613,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       return (
         <SelectRpcUrlModal
           networkConfiguration={networkConfigurations[editedNetwork.chainId]}
-          onNetworkChange={handleNetworkChange}
+          onNetworkChange={handleEvmNetworkChange}
         />
       );
     }

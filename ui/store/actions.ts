@@ -34,6 +34,7 @@ import {
   TransactionParams,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { type SupportedCaipChainId } from '@metamask/multichain-network-controller';
 import {
   AddNetworkFields,
   NetworkClientId,
@@ -2503,16 +2504,13 @@ export function updateNetwork(
 }
 
 export function setActiveNetwork(
-  networkConfigurationId: string,
-  chainId: string,
+  id: SupportedCaipChainId | NetworkClientId,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
-    log.debug(`background.setActiveNetwork: ${networkConfigurationId}`);
+    log.debug(`background.setActiveNetwork: ${id}`);
+    console.log('action -> setActiveNetwork', { id });
     try {
-      await submitRequestToBackground('setActiveNetwork', [
-        networkConfigurationId,
-        chainId,
-      ]);
+      await submitRequestToBackground('setActiveNetwork', [id]);
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning('Had a problem changing networks!'));

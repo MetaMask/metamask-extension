@@ -3379,19 +3379,8 @@ export default class MetamaskController extends EventEmitter {
       verifyPassword: this.verifyPassword.bind(this),
 
       // network management
-      setActiveNetwork: (networkConfigurationId, setActiveNetwork) => {
-        console.log({ networkConfigurationId, setActiveNetwork });
-        return this.networkController.setActiveNetwork(networkConfigurationId);
-
-        // console.log('metamask-controller -> setActiveNetwork');
-        // console.log('metamask-controller:', {
-        //   networkConfigurationId,
-        //   chainId,
-        // });
-        // return this.multichainNetworkController.setActiveNetwork(
-        //   networkConfigurationId,
-        //   chainId,
-        // );
+      setActiveNetwork: (id) => {
+        return this.multichainNetworkController.setActiveNetwork(id);
       },
       // Avoids returning the promise so that initial call to switch network
       // doesn't block on the network lookup step
