@@ -28,7 +28,7 @@ import {
 } from '../../../components/component-library';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { TextColor } from '../../../helpers/constants/design-system';
-import { getHDSrpIndex } from '../../../selectors/selectors';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 import AccountList from './account-list';
 import SelectHardware from './select-hardware';
 
@@ -285,7 +285,7 @@ class ConnectHardwareForm extends Component {
       history,
       mostRecentOverviewPage,
       unlockHardwareWalletAccounts,
-      hdSrpIndex,
+      hdEntropyIndex,
     } = this.props;
     const { selectedAccounts } = this.state;
 
@@ -326,7 +326,7 @@ class ConnectHardwareForm extends Component {
             // See comment above about `account_hardware_type`.
             account_hardware_type: deviceName,
             error: e.message,
-            hd_srp_index: hdSrpIndex,
+            hd_entropy_index: hdEntropyIndex,
           },
         });
         this.setState({ error: e.message });
@@ -464,7 +464,7 @@ ConnectHardwareForm.propTypes = {
   defaultHdPaths: PropTypes.object,
   mostRecentOverviewPage: PropTypes.string.isRequired,
   ledgerTransportType: PropTypes.oneOf(Object.values(LedgerTransportTypes)),
-  hdSrpIndex: PropTypes.number,
+  hdEntropyIndex: PropTypes.number,
 };
 
 const mapStateToProps = (state) => ({
@@ -475,7 +475,7 @@ const mapStateToProps = (state) => ({
   defaultHdPaths: state.appState.defaultHdPaths,
   mostRecentOverviewPage: getMostRecentOverviewPage(state),
   ledgerTransportType: state.metamask.ledgerTransportType,
-  hdSrpIndex: getHDSrpIndex(state),
+  hdEntropyIndex: getHDEntropyIndex(state),
 });
 
 const mapDispatchToProps = (dispatch) => {

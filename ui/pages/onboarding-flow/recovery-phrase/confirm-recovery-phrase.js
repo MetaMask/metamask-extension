@@ -24,14 +24,14 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { getHDSrpIndex } from '../../../selectors/selectors';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
 export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   const history = useHistory();
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const hdSrpIndex = useSelector(getHDSrpIndex);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const splitSecretRecoveryPhrase = secretRecoveryPhrase.split(' ');
   const indicesToCheck = [2, 3, 7];
   const [matching, setMatching] = useState(false);
@@ -111,7 +111,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
               event:
                 MetaMetricsEventName.OnboardingWalletSecurityPhraseConfirmed,
               properties: {
-                hd_srp_index: hdSrpIndex,
+                hd_entropy_index: hdEntropyIndex,
               },
             });
             history.push(ONBOARDING_COMPLETION_ROUTE);

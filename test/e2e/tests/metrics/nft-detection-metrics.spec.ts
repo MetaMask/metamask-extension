@@ -88,7 +88,7 @@ describe('Nft detection event', function () {
           chain_id: '0x539',
           environment_type: 'fullscreen',
           is_profile_syncing_enabled: true,
-          hd_srp_index: 0,
+          hd_entropy_index: 0,
         });
       },
     );

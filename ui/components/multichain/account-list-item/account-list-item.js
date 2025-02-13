@@ -69,7 +69,7 @@ import {
 } from '../../../selectors/multichain';
 import { useMultichainAccountTotalFiatBalance } from '../../../hooks/useMultichainAccountTotalFiatBalance';
 import { ConnectedStatus } from '../connected-status';
-import { getHDSrpIndex } from '../../../selectors/selectors';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
@@ -109,7 +109,7 @@ const AccountListItem = ({
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   const locale = useSelector(getIntlLocale);
   ///: END:ONLY_INCLUDE_IF
-  const hdSrpIndex = useSelector(getHDSrpIndex);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
@@ -467,7 +467,7 @@ const AccountListItem = ({
                 category: MetaMetricsEventCategory.Navigation,
                 properties: {
                   location: 'Account Options',
-                  hd_srp_index: hdSrpIndex,
+                  hd_entropy_index: hdEntropyIndex,
                 },
               });
             }

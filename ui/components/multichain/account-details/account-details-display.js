@@ -30,7 +30,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-import { getHDSrpIndex } from '../../../selectors/selectors';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 
 export const AccountDetailsDisplay = ({
   accounts,
@@ -41,7 +41,7 @@ export const AccountDetailsDisplay = ({
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
-  const hdSrpIndex = useSelector(getHDSrpIndex);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const {
     metadata: { keyring },
   } = useSelector((state) => getInternalAccountByAddress(state, address));
@@ -85,7 +85,7 @@ export const AccountDetailsDisplay = ({
               properties: {
                 key_type: MetaMetricsEventKeyType.Pkey,
                 location: 'Account Details Modal',
-                hd_srp_index: hdSrpIndex,
+                hd_entropy_index: hdEntropyIndex,
               },
             });
             onExportClick();

@@ -32,7 +32,7 @@ import {
   getHdKeyringIndexByIdOrDefault,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
-import { getHDSrpIndex } from '../../../selectors/selectors';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
   MetaMetricsEventAccountType,
@@ -96,7 +96,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
 
       const history = useHistory();
       const trackEvent = useContext(MetaMetricsContext);
-      const hdSrpIndex = useSelector(getHDSrpIndex);
+      const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
       const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
 
@@ -147,7 +147,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
               properties: {
                 account_type: MetaMetricsEventAccountType.Default,
                 location: 'Home',
-                hd_srp_index: hdSrpIndex,
+                hd_entropy_index: hdEntropyIndex,
               },
             });
             history.push(mostRecentOverviewPage);
@@ -158,7 +158,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
               properties: {
                 account_type: MetaMetricsEventAccountType.Default,
                 error: (error as Error).message,
-                hd_srp_index: hdSrpIndex,
+                hd_entropy_index: hdEntropyIndex,
               },
             });
           }

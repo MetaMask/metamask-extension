@@ -33,7 +33,7 @@ import {
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { formatAccountType } from '../../../helpers/utils/metrics';
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '../menu-items';
-import { getHDSrpIndex } from '../../../selectors/selectors';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 
 const METRICS_LOCATION = 'Account Options';
 
@@ -49,7 +49,7 @@ export const AccountListItemMenu = ({
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
-  const hdSrpIndex = useSelector(getHDSrpIndex);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const dispatch = useDispatch();
 
   const chainId = useSelector(getCurrentChainId);
@@ -219,7 +219,7 @@ export const AccountListItemMenu = ({
                     account_hardware_type: deviceName,
                     chain_id: chainId,
                     account_type: accountType,
-                    hd_srp_index: hdSrpIndex,
+                    hd_entropy_index: hdEntropyIndex,
                   },
                 });
                 onClose();

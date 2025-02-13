@@ -21,7 +21,7 @@ import {
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import * as actions from '../../../store/actions';
-import { getHDSrpIndex } from '../../../selectors/selectors';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 
 // Subviews
 import JsonImportView from './json';
@@ -31,7 +31,7 @@ export const ImportAccount = ({ onActionComplete }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-  const hdSrpIndex = useSelector(getHDSrpIndex);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
   const menuItems = [t('privateKey'), t('jsonFile')];
 
@@ -78,7 +78,7 @@ export const ImportAccount = ({ onActionComplete }) => {
       properties: {
         account_type: MetaMetricsEventAccountType.Imported,
         account_import_type: accountImportType,
-        hd_srp_index: hdSrpIndex,
+        hd_entropy_index: hdEntropyIndex,
       },
     });
   }

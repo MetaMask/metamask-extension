@@ -26,7 +26,7 @@ import {
   getIsSecurityAlertsEnabled,
   getMetaMetricsDataDeletionId,
   getPetnamesEnabled,
-  getHDSrpIndex,
+  getHDEntropyIndex,
 } from '../../../selectors/selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
@@ -78,7 +78,7 @@ const mapStateToProps = (state) => {
     securityAlertsEnabled: getIsSecurityAlertsEnabled(state),
     useTransactionSimulations: metamask.useTransactionSimulations,
     metaMetricsDataDeletionId: getMetaMetricsDataDeletionId(state),
-    hdSrpIndex: getHDSrpIndex(state),
+    hdEntropyIndex: getHDEntropyIndex(state),
   };
 };
 

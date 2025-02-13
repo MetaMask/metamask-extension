@@ -149,7 +149,7 @@ import { getTokenFiatAmount } from '../../../helpers/utils/token-util';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { useAsyncResult } from '../../../hooks/useAsyncResult';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
-import { getHDSrpIndex } from '../../../selectors/selectors';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 import SlippageNotificationModal from './slippage-notification-modal';
 
@@ -191,7 +191,7 @@ export default function ReviewQuote({
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
-  const hdSrpIndex = useSelector(getHDSrpIndex);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
   const [submitClicked, setSubmitClicked] = useState(false);
   const [selectQuotePopoverShown, setSelectQuotePopoverShown] = useState(false);
@@ -748,7 +748,7 @@ export default function ReviewQuote({
         additional_balance_needed: additionalBalanceNeeded,
       },
       properties: {
-        hd_srp_index: hdSrpIndex,
+        hd_entropy_index: hdEntropyIndex,
       },
     });
   }, [
@@ -760,7 +760,7 @@ export default function ReviewQuote({
     prevEthBalanceNeededStx,
     ethBalanceNeeded,
     eventObjectBase,
-    hdSrpIndex,
+    hdEntropyIndex,
   ]);
 
   const metaMaskFee = usedQuote.fee;

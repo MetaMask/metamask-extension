@@ -41,7 +41,7 @@ import {
 import ExperimentalArea from '../../components/app/flask/experimental-area';
 ///: END:ONLY_INCLUDE_IF
 import { submitRequestToBackgroundAndCatch } from '../../components/app/toast-master/utils';
-import { getHDSrpIndex } from '../../selectors/selectors';
+import { getHDEntropyIndex } from '../../selectors/selectors';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -62,7 +62,7 @@ export default function OnboardingFlow() {
   const { pathname, search } = useLocation();
   const history = useHistory();
   const t = useI18nContext();
-  const hdSrpIndex = useSelector(getHDSrpIndex);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
   const isFromReminder = new URLSearchParams(search).get('isFromReminder');
@@ -229,7 +229,7 @@ export default function OnboardingFlow() {
                 text: t('followUsOnTwitter'),
                 location: MetaMetricsEventName.OnboardingWalletCreationComplete,
                 url: TWITTER_URL,
-                hd_srp_index: hdSrpIndex,
+                hd_entropy_index: hdEntropyIndex,
               },
             });
           }}

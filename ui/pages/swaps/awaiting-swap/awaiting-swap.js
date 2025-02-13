@@ -21,7 +21,7 @@ import {
   getHardwareWalletType,
   getFullTxData,
 } from '../../../selectors';
-import { getHDSrpIndex } from '../../../selectors/selectors';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,
@@ -82,7 +82,7 @@ export default function AwaitingSwap({
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
   const dispatch = useDispatch();
-  const hdSrpIndex = useSelector(getHDSrpIndex);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const animationEventEmitter = useRef(new EventEmitter());
   const { swapMetaData } =
     useSelector((state) => getFullTxData(state, txId)) || {};
@@ -213,7 +213,7 @@ export default function AwaitingSwap({
         category: MetaMetricsEventCategory.Swaps,
         sensitiveProperties,
         properties: {
-          hd_srp_index: hdSrpIndex,
+          hd_entropy_index: hdEntropyIndex,
         },
       });
     }

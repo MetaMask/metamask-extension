@@ -245,7 +245,7 @@ describe('Contract Interaction Confirmation', () => {
               action: 'Confirm Screen',
               location: MetaMetricsEventLocation.Transaction,
               transaction_type: TransactionType.contractInteraction,
-              hd_srp_index: 0,
+              hd_entropy_index: 0,
             },
           }),
         ]),
