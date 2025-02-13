@@ -13,7 +13,6 @@ import {
   RatesController,
   fetchMultiExchangeRate,
   TokenBalancesController,
-  MultichainAssetsController,
 } from '@metamask/assets-controllers';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
@@ -357,8 +356,11 @@ import {
   handleTransactionFailedTypeBridge,
 } from './lib/bridge-status/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import { MultichainBalancesControllerInit } from './controller-init/multichain/multichain-balances-controller-init';
-import { MultichainTransactionsControllerInit } from './controller-init/multichain/multichain-transactions-controller-init';
+import {
+  MultichainAssetsControllerInit,
+  MultichainTransactionsControllerInit,
+  MultichainBalancesControllerInit,
+} from './controller-init/multichain';
 ///: END:ONLY_INCLUDE_IF
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
 import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
@@ -785,27 +787,6 @@ export default class MetamaskController extends EventEmitter {
       getNftState: () => this.nftController.state,
       // added this to track previous value of useNftDetection, should be true on very first initializing of controller[]
       disabled: !this.preferencesController.state.useNftDetection,
-    });
-
-    const multichainAssetsControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'MultichainAssetsController',
-        allowedEvents: [
-          'AccountsController:accountAdded',
-          'AccountsController:accountRemoved',
-          'AccountsController:accountAssetListUpdated',
-        ],
-        allowedActions: [
-          'SnapController:handleRequest',
-          'SnapController:getAll',
-          'PermissionController:getPermissions',
-          'AccountsController:listMultichainAccounts',
-        ],
-      });
-
-    this.multichainAssetsController = new MultichainAssetsController({
-      state: initState.MultichainAssetsController,
-      messenger: multichainAssetsControllerMessenger,
     });
 
     const metaMetricsControllerMessenger =
@@ -2069,6 +2050,7 @@ export default class MetamaskController extends EventEmitter {
       PPOMController: PPOMControllerInit,
       TransactionController: TransactionControllerInit,
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      MultichainAssetsController: MultichainAssetsControllerInit,
       MultichainBalancesController: MultichainBalancesControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
       ///: END:ONLY_INCLUDE_IF
@@ -2100,6 +2082,8 @@ export default class MetamaskController extends EventEmitter {
     this.ppomController = controllersByName.PPOMController;
     this.txController = controllersByName.TransactionController;
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    this.multichainAssetsController =
+      controllersByName.MultichainAssetsController;
     this.multichainBalancesController =
       controllersByName.MultichainBalancesController;
     this.multichainTransactionsController =
@@ -2226,11 +2210,6 @@ export default class MetamaskController extends EventEmitter {
       AccountsController: this.accountsController,
       AppStateController: this.appStateController,
       AppMetadataController: this.appMetadataController,
-      MultichainAssetsController: this.multichainAssetsController,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-      MultichainBalancesController: this.multichainBalancesController,
-      MultichainTransactionsController: this.multichainTransactionsController,
-      ///: END:ONLY_INCLUDE_IF
       KeyringController: this.keyringController,
       PreferencesController: this.preferencesController,
       MetaMetricsController: this.metaMetricsController,
@@ -2280,8 +2259,8 @@ export default class MetamaskController extends EventEmitter {
         AccountsController: this.accountsController,
         AppStateController: this.appStateController,
         AppMetadataController: this.appMetadataController,
-        MultichainAssetsController: this.multichainAssetsController,
         ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+        MultichainAssetsController: this.multichainAssetsController,
         MultichainBalancesController: this.multichainBalancesController,
         MultichainTransactionsController: this.multichainTransactionsController,
         ///: END:ONLY_INCLUDE_IF

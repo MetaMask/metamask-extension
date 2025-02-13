@@ -5673,13 +5673,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/logo@npm:^3.1.2":
-  version: 3.1.2
-  resolution: "@metamask/logo@npm:3.1.2"
+"@metamask/logo@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@metamask/logo@npm:4.0.0"
   dependencies:
     gl-mat4: "npm:1.1.4"
     gl-vec3: "npm:1.0.3"
-  checksum: 10/4233cb45692b44a466a844a33c43b94c5a07baa38a2317fadfbc2aa356198d5e85306d8c17cd9911b9b97a15cbe6496080868b1f827357a13b68664105bbe1ab
+  checksum: 10/c06020954f3ddd068e945783392f823f049265e0d3658cc23577200cdd4eaf7ee6fa033a32d07000bf3d2edf430c71f4e2264b1260dc3a414814c97162f8a522
   languageName: node
   linkType: hard
 
@@ -26668,7 +26668,7 @@ __metadata:
     "@metamask/keyring-internal-api": "npm:^4.0.2"
     "@metamask/keyring-snap-client": "npm:^4.0.0"
     "@metamask/logging-controller": "npm:^6.0.4"
-    "@metamask/logo": "npm:^3.1.2"
+    "@metamask/logo": "npm:^4.0.0"
     "@metamask/message-manager": "npm:^12.0.1"
     "@metamask/message-signing-snap": "npm:^0.6.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
