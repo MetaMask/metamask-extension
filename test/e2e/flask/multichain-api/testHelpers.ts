@@ -25,7 +25,7 @@ export const DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS = {
       'build',
     ),
   ],
-  ganacheOptions: {
+  localNodeOptions: {
     ...multipleGanacheOptions,
     concurrent: [
       {
