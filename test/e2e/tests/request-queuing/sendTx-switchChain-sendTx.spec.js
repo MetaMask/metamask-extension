@@ -23,16 +23,18 @@ describe('Request Queuing Send Tx -> SwitchChain -> SendTx', function () {
           .withPermissionControllerConnectedToTestDapp()
 
           .build(),
-        localNodeOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         title: this.test.fullTitle(),
       },
 

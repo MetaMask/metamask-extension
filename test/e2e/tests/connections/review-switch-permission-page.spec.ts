@@ -1,10 +1,6 @@
 import { strict as assert } from 'assert';
 import FixtureBuilder from '../../fixture-builder';
-import {
-  withFixtures,
-  WINDOW_TITLES,
-  defaultGanacheOptions,
-} from '../../helpers';
+import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
@@ -23,16 +19,18 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
           .withNetworkControllerDoubleGanache()
           .withSelectedNetworkControllerPerDomain()
           .build(),
-        localNodeOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         title: this.test?.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {

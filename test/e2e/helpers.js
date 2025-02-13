@@ -92,7 +92,6 @@ function normalizeLocalNodeOptions(localNodeOptions) {
  * @property {import('./webdriver/driver').Driver} driver - The driver number.
  * @property {ContractAddressRegistry | undefined} contractRegistry - The contract registry.
  * @property {string | object | Array} localNodeOptions - The local node(s) and options chosen ('ganache', 'anvil'...).
- * @property {Ganache | undefined} secondaryGanacheServer - The secondary Ganache server.
  * @property {mockttp.MockedEndpoint[]} mockedEndpoint - The mocked endpoint.
  * @property {Bundler} bundlerServer - The bundler server.
  * @property {mockttp.Mockttp} mockServer - The mock server.
@@ -135,7 +134,6 @@ async function withFixtures(options, testSuite) {
   const bundlerServer = new Bundler();
   const https = await mockttp.generateCACertificate();
   const mockServer = mockttp.getLocal({ https, cors: true });
-  const secondaryGanacheServer = [];
   let numberOfDapps = dapp ? 1 : 0;
   const dappServer = [];
   const phishingPageServer = new PhishingWarningPageServer();
@@ -147,9 +145,11 @@ async function withFixtures(options, testSuite) {
   let webDriver;
   let driver;
   let failed = false;
+  // To be deleted once all specs are migrated to anvil
+  // and use localNode and localNodes solely
   let ganacheServer;
-  let anvilServer;
-  const servers = [];
+  let localNode;
+  const localNodes = [];
 
   try {
     // Start servers based on the localNodes array
@@ -159,15 +159,15 @@ async function withFixtures(options, testSuite) {
 
       switch (nodeType) {
         case 'anvil':
-          anvilServer = new Anvil();
-          await anvilServer.start(nodeOptions);
-          servers.push(anvilServer);
+          localNode = new Anvil();
+          await localNode.start(nodeOptions);
+          localNodes.push(localNode);
           break;
 
         case 'ganache':
           ganacheServer = new Ganache();
           await ganacheServer.start(nodeOptions);
-          servers.push(ganacheServer);
+          localNodes.push(ganacheServer);
           break;
 
         case 'none':
@@ -184,16 +184,16 @@ async function withFixtures(options, testSuite) {
     let seeder;
 
     // We default the smart contract seeder to the first node client
-    // If there's a need to deploy multiple smart contracts in multiple clients
+    // If there's a future need to deploy multiple smart contracts in multiple clients
     // this assumption is no longer correct and the below code needs to be modified accordingly
     if (smartContract) {
       switch (localNodeOptsNormalized[0].type) {
         case 'anvil':
-          seeder = new AnvilSeeder(anvilServer.getProvider());
+          seeder = new AnvilSeeder(localNodes[0].getProvider());
           break;
 
         case 'ganache':
-          seeder = new GanacheSeeder(ganacheServer.getProvider());
+          seeder = new GanacheSeeder(localNodes[0].getProvider());
           break;
 
         default:
@@ -211,23 +211,6 @@ async function withFixtures(options, testSuite) {
 
     await fixtureServer.start();
     fixtureServer.loadJsonState(fixtures, contractRegistry);
-
-    if (localNodeOptsNormalized[0]?.concurrent) {
-      localNodeOptsNormalized[0].concurrent.forEach(async (ganacheSettings) => {
-        const { port, chainId, ganacheOptions2 } = ganacheSettings;
-        const server = new Ganache();
-        secondaryGanacheServer.push(server);
-        await server.start({
-          blockTime: 2,
-          chain: { chainId },
-          port,
-          vmErrorsOnRPCResponse: false,
-          mnemonic:
-            'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
-          ...ganacheOptions2,
-        });
-      });
-    }
 
     if (ganacheServer && useBundler) {
       await initBundler(bundlerServer, ganacheServer, usePaymaster);
@@ -267,7 +250,7 @@ async function withFixtures(options, testSuite) {
       mockServer,
       testSpecificMock,
       {
-        chainId: localNodeOptsNormalized[0]?.chainId || 1337,
+        chainId: localNodeOptsNormalized[0]?.options.chainId || 1337,
         ethConversionInUsd,
       },
     );
@@ -315,10 +298,9 @@ async function withFixtures(options, testSuite) {
       contractRegistry,
       driver: driverProxy ?? driver,
       ganacheServer,
-      anvilServer,
+      localNodes,
       mockedEndpoint,
       mockServer,
-      secondaryGanacheServer,
     });
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
@@ -398,7 +380,7 @@ async function withFixtures(options, testSuite) {
   } finally {
     if (!failed || process.env.E2E_LEAVE_RUNNING !== 'true') {
       await fixtureServer.stop();
-      for (const server of servers) {
+      for (const server of localNodes) {
         if (server) {
           await server.quit();
         }
