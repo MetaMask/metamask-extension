@@ -47,7 +47,6 @@ import {
 import { formatDate } from '../../../helpers/utils/util';
 import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { selectedAddressTxListSelector } from '../../../selectors';
 import {
   MetaMetricsContextProp,
@@ -63,6 +62,7 @@ import {
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
   AllowedBridgeChainIds,
 } from '../../../../shared/constants/bridge';
+import { getImageForChainId } from '../../../selectors/multichain';
 import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
 import BridgeStepList from './bridge-step-list';
@@ -202,15 +202,11 @@ const CrossChainSwapTxDetails = () => {
     : StatusTypes.PENDING;
 
   const srcChainIconUrl = srcNetwork
-    ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-        srcNetwork.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-      ]
+    ? getImageForChainId(srcNetwork.chainId)
     : undefined;
 
   const destChainIconUrl = destNetwork
-    ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-        destNetwork.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-      ]
+    ? getImageForChainId(destNetwork.chainId)
     : undefined;
 
   const srcNetworkName =
