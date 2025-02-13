@@ -3,21 +3,18 @@ import { StoryFn, Meta } from '@storybook/react';
 
 import { Display, FlexWrap } from '../../../helpers/constants/design-system';
 
-import {
-  Box,
-  ButtonVariant,
-  Button,
-  Text,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from '..';
+import { Text } from '../text';
 
 import { ModalContent } from './modal-content';
 import { ModalContentSize } from './modal-content.types';
 
 import README from './README.mdx';
+import { Button, ButtonVariant } from '../button';
+import { Modal } from '../modal';
+import { ModalHeader } from '../modal-header';
+import { ModalBody } from '../modal-body';
+import { ModalFooter } from '../modal-footer';
+import { Box } from '../box';
 
 export default {
   title: 'Components/ComponentLibrary/ModalContent',

@@ -45,10 +45,10 @@ import {
   BRIDGE_MM_FEE_RATE,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
 } from '../../../../shared/constants/bridge';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import { TERMS_OF_USE_LINK } from '../../../../shared/constants/terms';
 import { getIntlLocale } from '../../../ducks/locale/locale';
+import { getImageForChainId } from '../../../selectors/multichain';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 export const BridgeQuoteCard = () => {
@@ -130,13 +130,9 @@ export const BridgeQuoteCard = () => {
               <Row gap={1}>
                 <AvatarNetwork
                   name={fromChain?.name ?? ''}
-                  src={
-                    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                      decimalToPrefixedHex(
-                        activeQuote.quote.srcChainId,
-                      ) as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-                    ]
-                  }
+                  src={getImageForChainId(
+                    decimalToPrefixedHex(activeQuote.quote.srcChainId),
+                  )}
                   size={AvatarNetworkSize.Xs}
                   backgroundColor={BackgroundColor.transparent}
                 />
@@ -152,13 +148,9 @@ export const BridgeQuoteCard = () => {
                 <Icon name={IconName.Arrow2Right} size={IconSize.Xs} />
                 <AvatarNetwork
                   name={toChain?.name ?? ''}
-                  src={
-                    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                      decimalToPrefixedHex(
-                        activeQuote.quote.destChainId,
-                      ) as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-                    ]
-                  }
+                  src={getImageForChainId(
+                    decimalToPrefixedHex(activeQuote.quote.destChainId),
+                  )}
                   size={AvatarNetworkSize.Xs}
                   backgroundColor={BackgroundColor.transparent}
                 />
