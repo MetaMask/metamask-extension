@@ -146,7 +146,7 @@ describe('Add Ethereum Chain', function () {
       );
     });
 
-    it.skip('prompts to switch to the chain when the rpc endpoint being added already exists', async function () {
+    it.only('prompts to switch to the chain when the rpc endpoint being added already exists', async function () {
       await withFixtures(
         {
           dapp: true,
@@ -189,7 +189,6 @@ describe('Add Ethereum Chain', function () {
           await driver.executeScript(
             `window.ethereum.request(${addEthereumChainRequest})`,
           );
-
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await driver.findElement({ text: 'Use your enabled networks' });
           await driver.findElement({ text: 'Localhost 8546' });
@@ -254,7 +253,7 @@ describe('Add Ethereum Chain', function () {
       );
     });
 
-    it.skip('prompts to switch to the chain when the rpc endpoint being added already exists', async function () {
+    it.only('prompts to switch to the chain when the rpc endpoint being added already exists', async function () {
       await withFixtures(
         {
           dapp: true,
