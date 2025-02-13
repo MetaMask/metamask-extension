@@ -49,6 +49,7 @@ import {
 } from '../../pages/bridge/utils/quote';
 import { AssetType } from '../../../shared/constants/transaction';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
+import { normalizeChainId } from '../../../shared/modules/bridge-utils/caip-formatters';
 import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
   FEATURED_RPCS,
@@ -57,6 +58,7 @@ import {
   exchangeRatesFromNativeAndCurrencyRates,
   exchangeRateFromMarketData,
   tokenPriceInNativeAsset,
+  formatChainIdToDec,
 } from './utils';
 import type { BridgeState } from './bridge';
 
@@ -132,7 +134,10 @@ export const getToChain = createDeepEqualSelector(
   getToChains,
   (state: BridgeAppState) => state.bridge.toChainId,
   (toChains, toChainId): NetworkConfiguration | AddNetworkFields | undefined =>
-    toChains.find(({ chainId }) => chainId === toChainId),
+    toChains.find(
+      ({ chainId }) =>
+        (chainId === toChainId || normalizeChainId(chainId)) === toChainId,
+    ),
 );
 
 export const getFromToken = createSelector(
@@ -149,7 +154,7 @@ export const getFromToken = createSelector(
       ...SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
         fromChain.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
       ],
-      chainId: fromChain.chainId,
+      chainId: normalizeChainId(fromChain.chainId),
       image:
         CHAIN_ID_TOKEN_IMAGE_MAP[
           fromChain.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP

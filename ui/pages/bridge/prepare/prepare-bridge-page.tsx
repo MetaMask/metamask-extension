@@ -11,7 +11,7 @@ import { debounce } from 'lodash';
 import { useHistory, useLocation } from 'react-router-dom';
 import { BigNumber } from 'bignumber.js';
 import { type TokenListMap } from '@metamask/assets-controllers';
-import { toChecksumAddress } from 'ethereumjs-util';
+import { toChecksumAddress, zeroAddress } from 'ethereumjs-util';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -61,10 +61,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/swaps';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
 import { setActiveNetwork } from '../../../store/actions';
-import {
-  hexToDecimal,
-  decimalToPrefixedHex,
-} from '../../../../shared/modules/conversion.utils';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import type { QuoteRequest } from '../../../../shared/types/bridge';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
@@ -223,25 +220,23 @@ const PrepareBridgePage = () => {
       // Get input data from active quote
       const { srcAsset, destAsset, destChainId, srcChainId } =
         activeQuote.quote;
-      const quoteDestChainId = decimalToPrefixedHex(destChainId);
-      const quoteSrcChainId = decimalToPrefixedHex(srcChainId);
 
-      if (srcAsset && destAsset && quoteDestChainId) {
+      if (srcAsset && destAsset && destChainId) {
         // Set inputs to values from active quote
-        dispatch(setToChainId(quoteDestChainId));
+        dispatch(setToChainId(destChainId));
         dispatch(
           setToToken({
             ...destAsset,
-            chainId: quoteDestChainId,
-            image: destAsset.icon,
+            chainId: destChainId,
+            image: destAsset.icon ?? '',
             address: destAsset.address,
           }),
         );
         dispatch(
           setFromToken({
             ...srcAsset,
-            chainId: quoteSrcChainId,
-            image: srcAsset.icon,
+            chainId: srcChainId,
+            image: srcAsset.icon ?? '',
             address: srcAsset.address,
           }),
         );
@@ -401,12 +396,16 @@ const PrepareBridgePage = () => {
           dispatch(setFromTokenInputValue(e));
         }}
         onAssetChange={(token) => {
-          dispatch(setFromToken(token));
+          const bridgeToken = {
+            ...token,
+            address: token.address ?? zeroAddress(),
+          };
+          dispatch(setFromToken(bridgeToken));
           dispatch(setFromTokenInputValue(null));
-          token?.address &&
+          bridgeToken.address &&
             trackInputEvent({
               input: 'token_source',
-              value: token.address,
+              value: bridgeToken.address,
             });
         }}
         networkProps={
@@ -530,12 +529,16 @@ const PrepareBridgePage = () => {
           header={t('swapSelectToken')}
           token={toToken}
           onAssetChange={(token) => {
-            token?.address &&
+            const bridgeToken = {
+              ...token,
+              address: token.address ?? zeroAddress(),
+            };
+            bridgeToken.address &&
               trackInputEvent({
                 input: 'token_destination',
-                value: token.address,
+                value: bridgeToken.address,
               });
-            dispatch(setToToken(token));
+            dispatch(setToToken(bridgeToken));
           }}
           networkProps={
             isSwap
