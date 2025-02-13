@@ -6,7 +6,6 @@ import { NetworkListItem } from '../..';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import { AvatarNetworkSize } from '../../../component-library';
 import { showModal, setEditedNetwork } from '../../../../store/actions';
-import { ACTION_MODES } from '../network-list-menu';
 
 type NetworkItemsProps = {
   network: NetworkConfiguration;
@@ -18,6 +17,19 @@ type NetworkItemsProps = {
   focusSearch: boolean;
   showMultiRpcSelectors: boolean;
 };
+
+export enum ACTION_MODES {
+  // Displays the search box and network list
+  LIST,
+  // Displays the form to add or edit a network
+  ADD_EDIT,
+  // Displays the page for adding an additional RPC URL
+  ADD_RPC,
+  // Displays the page for adding an additional explorer URL
+  ADD_EXPLORER_URL,
+  // Displays the page for selecting an RPC URL
+  SELECT_RPC,
+}
 
 export const NetworkItems: React.FC<NetworkItemsProps> = ({
   network,
