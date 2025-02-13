@@ -49,12 +49,12 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/
 import { decimalToHex } from '../../../../shared/modules/conversion.utils';
 import { TERMS_OF_USE_LINK } from '../../../../shared/constants/terms';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { BridgeQuotesModal } from './bridge-quotes-modal';
 import { shortenString } from '../../../helpers/utils/util';
+import { BridgeQuotesModal } from './bridge-quotes-modal';
 
-interface MultichainBridgeQuoteCardProps {
+type MultichainBridgeQuoteCardProps = {
   destinationAddress?: string;
-}
+};
 
 export const MultichainBridgeQuoteCard = ({
   destinationAddress,
