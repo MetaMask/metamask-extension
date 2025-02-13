@@ -966,18 +966,8 @@ describe('MetaMaskController', () => {
       });
     });
 
-    // TODO: update this blocks test descriptions
     describe('#getCaip25PermissionFromLegacyPermissions', () => {
       it('returns valid CAIP-25 permissions', async () => {
-        jest
-          .spyOn(
-            metamaskController.permissionController,
-            'requestPermissionsIncremental',
-          )
-          .mockResolvedValue({
-            permissions: {},
-          });
-
         const permissions =
           await metamaskController.getCaip25PermissionFromLegacyPermissions(
             'test.com',
@@ -1006,7 +996,7 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('requests approval from the ApprovalController for eth_accounts and permittedChains when only eth_accounts is specified in params and origin is not snapId', async () => {
+      it('returns approval from the PermissionsController for eth_accounts and permittedChains when only eth_accounts is specified in params and origin is not snapId', async () => {
         const permissions =
           await metamaskController.getCaip25PermissionFromLegacyPermissions(
             'test.com',
@@ -1044,23 +1034,7 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('requests approval from the ApprovalController for eth_accounts and permittedChains when only permittedChains is specified in params and origin is not snapId', async () => {
-        jest
-          .spyOn(
-            metamaskController.approvalController,
-            'addAndShowApprovalRequest',
-          )
-          .mockResolvedValue({
-            permissions: {},
-          });
-        jest
-          .spyOn(metamaskController.permissionController, 'grantPermissions')
-          .mockReturnValue({
-            [Caip25EndowmentPermissionName]: {
-              foo: 'bar',
-            },
-          });
-
+      it('returns approval from the PermissionsControllerr for eth_accounts and permittedChains when only permittedChains is specified in params and origin is not snapId', async () => {
         const permissions =
           await metamaskController.getCaip25PermissionFromLegacyPermissions(
             'test.com',
@@ -1101,7 +1075,7 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('requests approval from the ApprovalController for eth_accounts and permittedChains when both are specified in params and origin is not snapId', async () => {
+      it('returns approval from the PermissionsController for eth_accounts and permittedChains when both are specified in params and origin is not snapId', async () => {
         const permissions =
           await metamaskController.getCaip25PermissionFromLegacyPermissions(
             'test.com',
@@ -1150,7 +1124,7 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('requests approval from the ApprovalController for only eth_accounts when only eth_accounts is specified in params and origin is snapId', async () => {
+      it('returns approval from the PermissionsController for only eth_accounts when only eth_accounts is specified in params and origin is snapId', async () => {
         const permissions =
           await metamaskController.getCaip25PermissionFromLegacyPermissions(
             'npm:snap',
@@ -1188,7 +1162,7 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('requests approval from the ApprovalController for only eth_accounts when only permittedChains is specified in params and origin is snapId', async () => {
+      it('returns approval from the PermissionsController for only eth_accounts when only permittedChains is specified in params and origin is snapId', async () => {
         const permissions =
           await metamaskController.getCaip25PermissionFromLegacyPermissions(
             'npm:snap',
@@ -1226,7 +1200,7 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('requests approval from the ApprovalController for only eth_accounts when both eth_accounts and permittedChains are specified in params and origin is snapId', async () => {
+      it('returns approval from the PermissionsController for only eth_accounts when both eth_accounts and permittedChains are specified in params and origin is snapId', async () => {
         const permissions =
           await metamaskController.getCaip25PermissionFromLegacyPermissions(
             'npm:snap',
@@ -1272,29 +1246,7 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('requests CAIP-25 approval with accounts and chainIds specified from `eth_accounts` and `endowment:permittedChains` permissions caveats, and isMultichainOrigin: false if origin is not snapId', async () => {
-        jest
-          .spyOn(
-            metamaskController.approvalController,
-            'addAndShowApprovalRequest',
-          )
-          .mockResolvedValue({
-            permissions: {
-              [Caip25EndowmentPermissionName]: {
-                caveats: [
-                  {
-                    type: Caip25CaveatType,
-                    value: {
-                      requiredScopes: {},
-                      optionalScopes: {},
-                      isMultichainOrigin: false,
-                    },
-                  },
-                ],
-              },
-            },
-          });
-
+      it('returns CAIP-25 approval with accounts and chainIds specified from `eth_accounts` and `endowment:permittedChains` permissions caveats, and isMultichainOrigin: false if origin is not snapId', async () => {
         const permissions =
           await metamaskController.getCaip25PermissionFromLegacyPermissions(
             'test.com',
@@ -1346,7 +1298,7 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('requests CAIP-25 approval with approved accounts for the `wallet:eip155` scope (and no approved chainIds) with isMultichainOrigin: false if origin is snapId', async () => {
+      it('returns CAIP-25 approval with approved accounts for the `wallet:eip155` scope (and no approved chainIds) with isMultichainOrigin: false if origin is snapId', async () => {
         const origin = 'npm:snap';
 
         const permissions =
