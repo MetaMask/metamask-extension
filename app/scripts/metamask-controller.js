@@ -166,8 +166,7 @@ import { MultichainTransactionsController } from '@metamask/multichain-transacti
 ///: END:ONLY_INCLUDE_IF
 import {
   MultichainNetworkController,
-  AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-  NETWORKS_METADATA,
+  getDefaultMultichainNetworkControllerState,
 } from '@metamask/multichain-network-controller';
 import { isProduction } from '../../shared/modules/environment';
 import {
@@ -680,12 +679,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.multichainNetworkController = new MultichainNetworkController({
       messenger: multichainNetworkControllerMessenger,
-      state: {
-        ...initState.MultichainNetworkController,
-        multichainNetworkConfigurationsByChainId:
-          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-        multichainNetworksMetadata: NETWORKS_METADATA,
-      },
+      state: getDefaultMultichainNetworkControllerState(),
     });
 
     const tokenListMessenger = this.controllerMessenger.getRestricted({
