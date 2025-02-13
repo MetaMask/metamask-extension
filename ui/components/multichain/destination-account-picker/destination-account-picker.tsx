@@ -160,14 +160,13 @@ export const DestinationAccountPicker = ({
         justifyContent={JustifyContent.center}
         backgroundColor={BackgroundColor.backgroundDefault}
         style={{
-          height: '45px',
+          height: '50px',
           borderBottomWidth: '1px',
           borderBottomStyle: 'solid',
           borderBottomColor: '#B7BBC866',
           borderRadius: '8px 8px 0 0',
         }}
       >
-        {/* // TODO: the above box is redundant. */}
         <TextField
           // @ts-expect-error-error:
           placeholder={t('destinationAccountPickerSearchPlaceholder')}
