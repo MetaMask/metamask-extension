@@ -55,10 +55,11 @@ const mapStateToProps = (state, ownProps) => {
     (req) => req.metadata.id === permissionsRequestId,
   );
 
-  const { metadata = {} } = permissionsRequest || {};
-  const { origin, isRequestApprovalPermittedChains } = metadata;
+  const { metadata = {}, diff = {} } = permissionsRequest || {};
+  const { origin } = metadata;
   const nativeCurrency = getNativeCurrency(state);
 
+  const isRequestApprovalPermittedChains = Boolean(diff?.permissionDiffMap);
   const isRequestingAccounts = Boolean(
     permissionsRequest?.permissions?.[Caip25EndowmentPermissionName] &&
       !isRequestApprovalPermittedChains,

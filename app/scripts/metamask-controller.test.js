@@ -1433,7 +1433,6 @@ describe('MetaMaskController', () => {
           },
           expect.objectContaining({
             id: expect.any(String),
-            metadata: expect.any(Object),
           }),
         );
       });

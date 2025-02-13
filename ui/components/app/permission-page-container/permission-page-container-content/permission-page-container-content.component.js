@@ -107,9 +107,9 @@ export default class PermissionPageContainerContent extends PureComponent {
           borderRadius={BorderRadius.XL}
         >
           <PermissionsConnectPermissionList
-            isRequestApprovalPermittedChains={
-              request.metadata?.isRequestApprovalPermittedChains
-            }
+            isRequestApprovalPermittedChains={Boolean(
+              request.diff?.permissionDiffMap,
+            )}
             permissions={selectedPermissions}
             subjectName={subjectMetadata.origin}
             accounts={accounts}

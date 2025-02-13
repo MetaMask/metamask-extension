@@ -5089,7 +5089,7 @@ export default class MetamaskController extends EventEmitter {
           ],
         },
       },
-      { id: nanoid(), metadata: { isRequestApprovalPermittedChains: true } },
+      { id: nanoid() },
     );
   }
 
