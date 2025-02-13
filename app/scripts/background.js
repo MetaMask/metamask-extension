@@ -1,4 +1,4 @@
-  /**
+/**
  * @file The entry point for the web extension singleton process.
  */
 
@@ -143,10 +143,10 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 export const statePersistenceEvents = new EventEmitter();
 
 if (!isManifestV3) {
-  browser.runtime.onInstalled.addListener(function(details){
-    if(details.reason == "install"){
-        browser.storage.session.set({ isFirstTimeInstall: true });
-  }else if(details.reason == "update"){
+  browser.runtime.onInstalled.addListener(function (details) {
+    if (details.reason === 'install') {
+      browser.storage.session.set({ isFirstTimeInstall: true });
+    } else if (details.reason === 'update') {
       browser.storage.session.set({ isFirstTimeInstall: false });
     }
   });
@@ -536,7 +536,7 @@ async function initialize() {
     await sendReadyMessageToTabs();
     log.info('MetaMask initialization complete.');
 
-    chrome.storage.session.set({ isFirstTimeInstall: false });
+    browser.storage.session.set({ isFirstTimeInstall: false });
 
     resolveInitialization();
   } catch (error) {
@@ -1310,9 +1310,7 @@ const addAppInstalledEvent = () => {
 
 // On first install, open a new tab with MetaMask
 async function onInstall() {
-  const sessionData = await browser.storage.session.get([
-    'isFirstTimeInstall',
-  ]);
+  const sessionData = await browser.storage.session.get(['isFirstTimeInstall']);
   const isFirstTimeInstall = sessionData?.isFirstTimeInstall;
 
   if (process.env.IN_TEST) {
