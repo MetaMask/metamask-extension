@@ -164,17 +164,12 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { MultichainTransactionsController } from '@metamask/multichain-transactions-controller';
 ///: END:ONLY_INCLUDE_IF
-import { isProduction } from '../../shared/modules/environment';
-import {
-  MultichainNetworkController,
-  multichainNetworkConfigurations,
-  networksMetadata,
-} from '@metamask/multichain-network-controller';
 import {
   MultichainNetworkController,
   AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
   NETWORKS_METADATA,
 } from '@metamask/multichain-network-controller';
+import { isProduction } from '../../shared/modules/environment';
 import {
   methodsRequiringNetworkSwitch,
   methodsThatCanSwitchNetworkWithoutApproval,
@@ -2347,7 +2342,6 @@ export default class MetamaskController extends EventEmitter {
         AppStateController: this.appStateController,
         AppMetadataController: this.appMetadataController,
         MultichainBalancesController: this.multichainBalancesController,
-        MultichainNetworkController: this.multichainNetworkController,
         MultichainAssetsController: this.multichainAssetsController,
         MultichainNetworkController: this.multichainNetworkController,
         ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
