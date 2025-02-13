@@ -9,9 +9,6 @@ import {
   NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import { ACTION_MODES } from '../network-list-menu';
-import { showModal, setEditedNetwork } from '../../../../store/actions';
-import { CHAIN_IDS } from '@metamask/transaction-controller';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
