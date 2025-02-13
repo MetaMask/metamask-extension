@@ -123,8 +123,6 @@ export function initControllers({
       initMessenger,
     };
 
-    // TODO: Remove @ts-expect-error once base-controller version mismatch is resolved
-    // Instead of suppressing all type errors, we'll be specific about the controllerMessenger mismatch
     const result = initFunction({
       ...finalInitRequest,
       controllerMessenger: finalInitRequest.controllerMessenger,
