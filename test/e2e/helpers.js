@@ -145,7 +145,8 @@ async function withFixtures(options, testSuite) {
   let webDriver;
   let driver;
   let failed = false;
-  // To be deleted once all specs are migrated to anvil
+
+  // ganacheServer variable to be deleted once all specs are migrated to anvil
   // and use localNode and localNodes solely
   let ganacheServer;
   let localNode;
