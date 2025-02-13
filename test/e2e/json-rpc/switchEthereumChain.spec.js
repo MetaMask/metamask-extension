@@ -20,16 +20,20 @@ describe('Switch Ethereum Chain for two dapps', function () {
           .withNetworkControllerDoubleGanache()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        localNode: ['anvil', 'anvil'],
         localNodeOptions: [
-          {},
           {
-            blockTime: 2,
-            vmErrorsOnRPCResponse: false,
-            mnemonic:
-              'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
-            port: 8546,
-            chainId: 1338,
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
+              blockTime: 2,
+              vmErrorsOnRPCResponse: false,
+              mnemonic:
+                'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
+              port: 8546,
+              chainId: 1338,
+            },
           },
         ],
         title: this.test.fullTitle(),
@@ -92,16 +96,20 @@ describe('Switch Ethereum Chain for two dapps', function () {
           .withPreferencesControllerSmartTransactionsOptedOut()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        localNode: ['anvil', 'anvil'],
         localNodeOptions: [
-          {},
           {
-            blockTime: 2,
-            vmErrorsOnRPCResponse: false,
-            mnemonic:
-              'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
-            port: 8546,
-            chainId: 1338,
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
+              blockTime: 2,
+              vmErrorsOnRPCResponse: false,
+              mnemonic:
+                'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
+              port: 8546,
+              chainId: 1338,
+            },
           },
         ],
         title: this.test.fullTitle(),
@@ -210,16 +218,20 @@ describe('Switch Ethereum Chain for two dapps', function () {
           .withNetworkControllerDoubleGanache()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        localNode: ['anvil', 'anvil'],
         localNodeOptions: [
-          {},
           {
-            blockTime: 2,
-            vmErrorsOnRPCResponse: false,
-            mnemonic:
-              'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
-            port: 8546,
-            chainId: 1338,
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
+              blockTime: 2,
+              vmErrorsOnRPCResponse: false,
+              mnemonic:
+                'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
+              port: 8546,
+              chainId: 1338,
+            },
           },
         ],
         title: this.test.fullTitle(),
@@ -326,16 +338,20 @@ describe('Switch Ethereum Chain for two dapps', function () {
           .withNetworkControllerDoubleGanache()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        localNode: ['anvil', 'anvil'],
         localNodeOptions: [
-          {},
           {
-            blockTime: 2,
-            vmErrorsOnRPCResponse: false,
-            mnemonic:
-              'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
-            port: 8546,
-            chainId: 1338,
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
+              blockTime: 2,
+              vmErrorsOnRPCResponse: false,
+              mnemonic:
+                'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
+              port: 8546,
+              chainId: 1338,
+            },
           },
         ],
         title: this.test.fullTitle(),

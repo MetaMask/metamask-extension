@@ -42,10 +42,56 @@ const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
 /**
+ * Normalizes the localNodeOptions into a consistent format to handle different data structures.
+ * Case 1: A string: localNodeOptions = 'anvil'
+ * Case 2: Array of strings: localNodeOptions = ['anvil', 'bitcoin']
+ * Case 3: Array of objects: localNodeOptions =
+ * [
+ *  { type: 'anvil', options: {anvilOpts}},
+ *  { type: 'bitcoin',options: {bitcoinOpts}},
+ * ]
+ * Case 4: Options object without type: localNodeOptions = {options}
+ *
+ * @param {string | object | Array} localNodeOptions - The input local node options.
+ * @returns {Array} The normalized local node options.
+ */
+function normalizeLocalNodeOptions(localNodeOptions) {
+  if (typeof localNodeOptions === 'string') {
+    // Case 1: Passing a string
+    return [{ type: localNodeOptions, options: {} }];
+  } else if (Array.isArray(localNodeOptions)) {
+    return localNodeOptions.map((node) => {
+      if (typeof node === 'string') {
+        // Case 2: Array of strings
+        return { type: node, options: {} };
+      }
+      if (typeof node === 'object' && node !== null) {
+        // Case 3: Array of objects
+        return {
+          type: node.type || 'ganache',
+          options: node.options || {},
+        };
+      }
+      throw new Error(`Invalid localNodeOptions entry: ${node}`);
+    });
+  }
+  if (typeof localNodeOptions === 'object' && localNodeOptions !== null) {
+    // Case 4: Passing an options object without type
+    return [
+      {
+        type: 'ganache',
+        options: localNodeOptions,
+      },
+    ];
+  }
+  throw new Error(`Invalid localNodeOptions type: ${typeof localNodeOptions}`);
+}
+
+/**
  * @typedef {object} Fixtures
  * @property {import('./webdriver/driver').Driver} driver - The driver number.
  * @property {ContractAddressRegistry | undefined} contractRegistry - The contract registry.
- * @property {string} localNodeServer - The local node server chosen ('ganache', 'anvil'...).
+ * @property {string | object | Array} localNodeOptions - The local node(s) and options chosen ('ganache', 'anvil'...).
  * @property {Ganache | undefined} secondaryGanacheServer - The secondary Ganache server.
  * @property {mockttp.MockedEndpoint[]} mockedEndpoint - The mocked endpoint.
  * @property {Bundler} bundlerServer - The bundler server.
@@ -62,8 +108,7 @@ async function withFixtures(options, testSuite) {
   const {
     dapp,
     fixtures,
-    localNode = 'ganache',
-    localNodeOptions = {},
+    localNodeOptions = 'ganache',
     smartContract,
     driverOptions,
     dappOptions,
@@ -82,6 +127,9 @@ async function withFixtures(options, testSuite) {
     manifestFlags,
   } = options;
 
+  // Normalize localNodeOptions
+  const localNodeOptsNormalized = normalizeLocalNodeOptions(localNodeOptions);
+
   const fixtureServer = new FixtureServer();
 
   const bundlerServer = new Bundler();
@@ -99,32 +147,26 @@ async function withFixtures(options, testSuite) {
   let webDriver;
   let driver;
   let failed = false;
-
-  // We allow to pass both a string, like 'anvil' and array ,like ['anvil']
-  const localNodes = Array.isArray(localNode) ? localNode : [localNode];
-  const localNodesOptions = Array.isArray(localNodeOptions)
-    ? localNodeOptions
-    : [localNodeOptions];
   let ganacheServer;
   let anvilServer;
   const servers = [];
 
   try {
     // Start servers based on the localNodes array
-    for (let i = 0; i < localNodes.length; i++) {
-      const node = localNodes[i];
-      const opts = localNodesOptions[i] || {};
+    for (let i = 0; i < localNodeOptsNormalized.length; i++) {
+      const nodeType = localNodeOptsNormalized[i].type;
+      const nodeOptions = localNodeOptsNormalized[i].options || {};
 
-      switch (node) {
+      switch (nodeType) {
         case 'anvil':
           anvilServer = new Anvil();
-          await anvilServer.start(opts);
+          await anvilServer.start(nodeOptions);
           servers.push(anvilServer);
           break;
 
         case 'ganache':
           ganacheServer = new Ganache();
-          await ganacheServer.start(opts);
+          await ganacheServer.start(nodeOptions);
           servers.push(ganacheServer);
           break;
 
@@ -133,7 +175,7 @@ async function withFixtures(options, testSuite) {
 
         default:
           throw new Error(
-            `Unsupported localNode: '${node}'. Cannot start the server.`,
+            `Unsupported localNode: '${nodeType}'. Cannot start the server.`,
           );
       }
     }
@@ -145,7 +187,7 @@ async function withFixtures(options, testSuite) {
     // If there's a need to deploy multiple smart contracts in multiple clients
     // this assumption is no longer correct and the below code needs to be modified accordingly
     if (smartContract) {
-      switch (localNodes[0]) {
+      switch (localNodeOptsNormalized[0].type) {
         case 'anvil':
           seeder = new AnvilSeeder(anvilServer.getProvider());
           break;
@@ -156,7 +198,7 @@ async function withFixtures(options, testSuite) {
 
         default:
           throw new Error(
-            `Unsupported localNode: '${localNodes[0]}'. Cannot deploy smart contracts.`,
+            `Unsupported localNode: '${localNodeOptsNormalized[0].type}'. Cannot deploy smart contracts.`,
           );
       }
       const contracts =
@@ -170,8 +212,8 @@ async function withFixtures(options, testSuite) {
     await fixtureServer.start();
     fixtureServer.loadJsonState(fixtures, contractRegistry);
 
-    if (localNodesOptions[0]?.concurrent) {
-      localNodesOptions[0].concurrent.forEach(async (ganacheSettings) => {
+    if (localNodeOptsNormalized[0]?.concurrent) {
+      localNodeOptsNormalized[0].concurrent.forEach(async (ganacheSettings) => {
         const { port, chainId, ganacheOptions2 } = ganacheSettings;
         const server = new Ganache();
         secondaryGanacheServer.push(server);
@@ -225,7 +267,7 @@ async function withFixtures(options, testSuite) {
       mockServer,
       testSpecificMock,
       {
-        chainId: localNodeOptions[0]?.chainId || 1337,
+        chainId: localNodeOptsNormalized[0]?.chainId || 1337,
         ethConversionInUsd,
       },
     );
