@@ -7,21 +7,28 @@ import {
 } from '@metamask/accounts-controller';
 import { HandleSnapRequest } from '@metamask/snaps-controllers';
 
-type MessengerEvents =
+type Actions =
+  | AccountsControllerListMultichainAccountsAction
+  | HandleSnapRequest;
+
+type Events =
   | AccountsControllerAccountAddedEvent
   | AccountsControllerAccountRemovedEvent
   | AccountsControllerAccountTransactionsUpdatedEvent;
 
-type MessengerActions =
-  | AccountsControllerListMultichainAccountsAction
-  | HandleSnapRequest;
-
-export type MultichainTransactionsControllerInitMessenger = ReturnType<
-  typeof getMultichainTransactionsControllerInitMessenger
+export type MultichainTransactionsControllerMessenger = ReturnType<
+  typeof getMultichainTransactionsControllerMessenger
 >;
 
+/**
+ * Get a restricted messenger for the Multichain Transactions controller. This is scoped to the
+ * actions and events that the Multichain Transactions controller is allowed to handle.
+ *
+ * @param messenger - The controller messenger to restrict.
+ * @returns The restricted controller messenger.
+ */
 export function getMultichainTransactionsControllerMessenger(
-  messenger: Messenger<MessengerActions, MessengerEvents>,
+  messenger: Messenger<Actions, Events>,
 ) {
   return messenger.getRestricted({
     name: 'MultichainTransactionsController',
@@ -34,15 +41,5 @@ export function getMultichainTransactionsControllerMessenger(
       'AccountsController:listMultichainAccounts',
       'SnapController:handleRequest',
     ],
-  });
-}
-
-export function getMultichainTransactionsControllerInitMessenger(
-  messenger: Messenger<MessengerActions, MessengerEvents>,
-) {
-  return messenger.getRestricted({
-    name: 'MultichainTransactionsControllerInit',
-    allowedEvents: [],
-    allowedActions: [],
   });
 }

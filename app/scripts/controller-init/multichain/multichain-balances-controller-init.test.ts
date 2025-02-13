@@ -1,25 +1,17 @@
-import {
-  MultichainBalancesController,
-  MultichainBalancesControllerMessenger,
-} from '@metamask/assets-controllers';
+import { MultichainBalancesController } from '@metamask/assets-controllers';
 import { Messenger } from '@metamask/base-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import {
-  getMultichainBalancesControllerInitMessenger,
   getMultichainBalancesControllerMessenger,
-  MultichainBalancesControllerInitMessenger,
-} from '../messengers/multichain-balances-controller-messenger';
+  MultichainBalancesControllerMessenger,
+} from '../messengers/multichain';
 import { MultichainBalancesControllerInit } from './multichain-balances-controller-init';
 
 jest.mock('@metamask/assets-controllers');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
-    // @ts-expect-error TODO: figure out why there's a mismatch
-    MultichainBalancesControllerMessenger,
-    MultichainBalancesControllerInitMessenger
-  >
+  ControllerInitRequest<MultichainBalancesControllerMessenger>
 > {
   const baseControllerMessenger = new Messenger();
 
@@ -28,13 +20,10 @@ function buildInitRequestMock(): jest.Mocked<
     controllerMessenger: getMultichainBalancesControllerMessenger(
       baseControllerMessenger,
     ),
-    initMessenger: getMultichainBalancesControllerInitMessenger(
-      baseControllerMessenger,
-    ),
   };
 }
 
-describe('MultichainBalances Controller Init', () => {
+describe('MultichainBalancesControllerInit', () => {
   const multichainBalancesControllerClassMock = jest.mocked(
     MultichainBalancesController,
   );
