@@ -1,5 +1,4 @@
-import mergeWith from 'lodash/mergeWith';
-import cloneDeep from 'lodash/cloneDeep';
+import merge from 'lodash/merge';
 /**
  * Returns a function that will transform a manifest JSON object based on the
  * given build args.
@@ -22,7 +21,9 @@ export function transformManifest(
   isDevelopment: boolean,
   manifestOverridesPath?: string | undefined,
 ) {
-  const transforms: ((manifest: chrome.runtime.Manifest) => void)[] = [];
+  const transforms: ((
+    manifest: chrome.runtime.Manifest,
+  ) => chrome.runtime.Manifest | void)[] = [];
 
   function removeLockdown(browserManifest: chrome.runtime.Manifest) {
     const mainScripts = browserManifest.content_scripts?.[0];
@@ -73,8 +74,9 @@ export function transformManifest(
     }
 
     if (manifestFlags) {
-      return mergeWith(cloneDeep(browserManifest), manifestFlags);
+      return merge({}, browserManifest, manifestFlags);
     }
+
     return browserManifest;
   }
 
@@ -102,9 +104,14 @@ export function transformManifest(
 
   return transforms.length
     ? (browserManifest: chrome.runtime.Manifest, _browser: string) => {
-        const clone = structuredClone(browserManifest);
-        transforms.forEach((transform) => transform(clone));
-        return clone;
+        let result = structuredClone(browserManifest);
+        transforms.forEach((transform) => {
+          const transformed = transform(result);
+          if (transformed !== undefined) {
+            result = transformed;
+          }
+        });
+        return result;
       }
     : undefined;
 }

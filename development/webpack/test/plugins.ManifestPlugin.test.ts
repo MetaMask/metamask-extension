@@ -305,6 +305,7 @@ describe('ManifestPlugin', () => {
       assert(transform, 'transform should be truthy');
 
       const transformed = transform(testManifest, 'chrome');
+      console.log('Transformed:', transformed);
       assert.deepStrictEqual(
         transformed,
         mockFlags,
