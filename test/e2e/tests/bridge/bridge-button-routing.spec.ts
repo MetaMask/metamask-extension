@@ -16,7 +16,7 @@ describe('Click bridge button', function (this: Suite) {
         const bridgePage = new BridgePage(driver);
         await logInWithBalanceValidation(driver, ganacheServer);
         await bridgePage.navigateToBridgePage();
-        await bridgePage.verifySwapPage(1);
+        await bridgePage.verifySwapPage();
       },
     );
   });

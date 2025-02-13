@@ -1,9 +1,5 @@
 const { strict: assert } = require('assert');
-const {
-  withFixtures,
-  unlockWallet,
-  defaultGanacheOptions,
-} = require('../../helpers');
+const { withFixtures, unlockWallet } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Test Survey', function () {
@@ -18,7 +14,6 @@ describe('Test Survey', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

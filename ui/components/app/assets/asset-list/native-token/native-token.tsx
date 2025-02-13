@@ -38,6 +38,7 @@ const NativeToken = ({ onClickAsset }: AssetListProps) => {
       tokenSymbol={symbol}
       secondary={secondary}
       tokenImage={balanceIsLoading ? null : primaryTokenImage}
+      isPrimaryTokenSymbolHidden={true}
       isNativeCurrency
       isStakeable={isStakeable}
       showPercentage
