@@ -4,10 +4,10 @@ import { getMultichainAssetsControllerMessenger } from './multichain-assets-cont
 describe('getMultichainAssetsControllerMessenger', () => {
   it('returns a restricted messenger', () => {
     const messenger = new Messenger<never, never>();
-    const multichainBalancesControllerMessenger =
+    const multichainAssetsControllerMessenger =
       getMultichainAssetsControllerMessenger(messenger);
 
-    expect(multichainBalancesControllerMessenger).toBeInstanceOf(
+    expect(multichainAssetsControllerMessenger).toBeInstanceOf(
       RestrictedMessenger,
     );
   });

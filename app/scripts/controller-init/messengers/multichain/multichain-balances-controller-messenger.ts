@@ -11,16 +11,16 @@ import {
   MultichainAssetsControllerStateChangeEvent,
 } from '@metamask/assets-controllers';
 
-type MessengerEvents =
+type Actions =
+  | AccountsControllerListMultichainAccountsAction
+  | HandleSnapRequest
+  | MultichainAssetsControllerGetStateAction;
+
+type Events =
   | AccountsControllerAccountAddedEvent
   | AccountsControllerAccountRemovedEvent
   | AccountsControllerAccountBalancesUpdatesEvent
   | MultichainAssetsControllerStateChangeEvent;
-
-type MessengerActions =
-  | AccountsControllerListMultichainAccountsAction
-  | HandleSnapRequest
-  | MultichainAssetsControllerGetStateAction;
 
 export type MultichainBalancesControllerMessenger = ReturnType<
   typeof getMultichainBalancesControllerMessenger
@@ -34,7 +34,7 @@ export type MultichainBalancesControllerMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getMultichainBalancesControllerMessenger(
-  messenger: Messenger<MessengerActions, MessengerEvents>,
+  messenger: Messenger<Actions, Events>,
 ) {
   return messenger.getRestricted({
     name: 'MultichainBalancesController',
