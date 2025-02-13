@@ -145,6 +145,7 @@ export const SnapUIAccountSelectorOption: FunctionComponent<
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         width={BlockSize.Full}
+        marginRight={2}
       >
         <Text variant={TextVariant.bodyMdMedium} ellipsis>
           {account.metadata.name}
@@ -153,7 +154,11 @@ export const SnapUIAccountSelectorOption: FunctionComponent<
           {shortenAddress(normalizeSafeAddress(account.address))}
         </Text>
       </Box>
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        height={BlockSize.Full}
+      >
         <Box>
           <Text
             variant={TextVariant.bodySm}
