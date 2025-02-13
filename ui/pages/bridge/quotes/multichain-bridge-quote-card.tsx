@@ -50,6 +50,7 @@ import { decimalToHex } from '../../../../shared/modules/conversion.utils';
 import { TERMS_OF_USE_LINK } from '../../../../shared/constants/terms';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
+import { shortenString } from '../../../helpers/utils/util';
 
 interface MultichainBridgeQuoteCardProps {
   destinationAddress?: string;
@@ -126,7 +127,7 @@ export const MultichainBridgeQuoteCard = ({
             </Column>
           </Row>
           <Column gap={1}>
-            <Row justifyContent={JustifyContent.spaceBetween}>
+            <Row justifyContent={JustifyContent.flexStart} gap={1}>
               <Row gap={1}>
                 <AvatarNetwork
                   name={fromChain?.name ?? ''}
@@ -177,7 +178,7 @@ export const MultichainBridgeQuoteCard = ({
                   style={{ whiteSpace: 'nowrap' }}
                   color={TextColor.textAlternative}
                 >
-                  {destinationAddress}
+                  {shortenString(destinationAddress)}
                 </Text>
               )}
             </Row>
