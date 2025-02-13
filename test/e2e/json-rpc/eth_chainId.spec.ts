@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { defaultGanacheOptions, withFixtures } from '../helpers';
+import { withFixtures } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import { Driver } from '../webdriver/driver';
 import { Ganache } from '../seeder/ganache';
@@ -13,7 +13,6 @@ describe('eth_chainId', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({
