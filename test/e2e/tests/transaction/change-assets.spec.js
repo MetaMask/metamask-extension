@@ -1,9 +1,5 @@
 const { strict: assert } = require('assert');
-const {
-  defaultGanacheOptions,
-  withFixtures,
-  logInWithBalanceValidation,
-} = require('../../helpers');
+const { withFixtures, logInWithBalanceValidation } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const { tEn } = require('../../../lib/i18n-helpers');
@@ -15,7 +11,6 @@ describe('Change assets', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC721().build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
@@ -88,7 +83,6 @@ describe('Change assets', function () {
           .withTokensControllerERC20()
           .withNftControllerERC721()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract: [smartContract, tokenContract],
         title: this.test.fullTitle(),
       },
@@ -162,7 +156,6 @@ describe('Change assets', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC721().build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
@@ -250,7 +243,6 @@ describe('Change assets', function () {
             },
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },

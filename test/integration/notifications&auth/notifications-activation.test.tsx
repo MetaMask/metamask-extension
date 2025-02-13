@@ -109,12 +109,14 @@ describe('Notifications Activation', () => {
       });
 
       await waitFor(() => {
-        const createOnChainTriggersCall =
+        const enableMetamaskNotificationsCall =
           mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-            (call) => call[0] === 'createOnChainTriggers',
+            (call) => call[0] === 'enableMetamaskNotifications',
           );
 
-        expect(createOnChainTriggersCall?.[0]).toBe('createOnChainTriggers');
+        expect(enableMetamaskNotificationsCall?.[0]).toBe(
+          'enableMetamaskNotifications',
+        );
       });
 
       await trackNotificationsActivatedMetaMetricsEvent('started', false);

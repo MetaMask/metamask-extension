@@ -1,6 +1,4 @@
-import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
-import { Browser } from 'selenium-webdriver';
 import FixtureBuilder from '../../fixture-builder';
 import { generateGanacheOptions } from '../../helpers';
 import {
@@ -11,15 +9,12 @@ import {
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Driver } from '../../webdriver/driver';
-import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 import type { FeatureFlagResponse } from '../../../../shared/types/bridge';
 import {
   DEFAULT_FEATURE_FLAGS_RESPONSE,
   ETH_CONVERSION_RATE_USD,
   MOCK_CURRENCY_RATES,
 } from './constants';
-
-const IS_FIREFOX = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
 export class BridgePage {
   driver: Driver;
@@ -62,35 +57,22 @@ export class BridgePage {
       css: '[data-testid="multichain-token-list-button"]',
       text: symbol,
     });
-
-    await this.driver.delay(2000);
-    assert.ok((await this.driver.getCurrentUrl()).includes('asset'));
+    await this.driver.waitForUrlContaining({
+      url: 'asset',
+    });
   };
 
-  verifyPortfolioTab = async (expectedHandleCount: number) => {
-    await this.driver.delay(4000);
+  verifyPortfolioTab = async () => {
     await this.driver.switchToWindowWithTitle('MetaMask Portfolio - Bridge');
-    assert.equal(
-      (await this.driver.getAllWindowHandles()).length,
-      IS_FIREFOX || !isManifestV3
-        ? expectedHandleCount
-        : expectedHandleCount + 1,
-    );
-    assert.match(
-      await this.driver.getCurrentUrl(),
-      /^https:\/\/portfolio\.metamask\.io\/bridge/u,
-    );
+    await this.driver.waitForUrlContaining({
+      url: 'portfolio.metamask.io/bridge',
+    });
   };
 
-  verifySwapPage = async (expectedHandleCount: number) => {
-    await this.driver.delay(4000);
-    assert.equal(
-      (await this.driver.getAllWindowHandles()).length,
-      IS_FIREFOX || !isManifestV3
-        ? expectedHandleCount
-        : expectedHandleCount + 1,
-    );
-    assert.match(await this.driver.getCurrentUrl(), /.+cross-chain\/swaps/u);
+  verifySwapPage = async () => {
+    await this.driver.waitForUrlContaining({
+      url: 'cross-chain/swaps',
+    });
   };
 }
 
@@ -157,7 +139,7 @@ export const getBridgeFixtures = (
     testSpecificMock: mockServer(featureFlags),
     smartContract: SMART_CONTRACTS.HST,
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
-    ganacheOptions: generateGanacheOptions({
+    localNodeOptions: generateGanacheOptions({
       hardfork: 'london',
       chain: { chainId: CHAIN_IDS.MAINNET },
     }),

@@ -1,11 +1,6 @@
 const { strict: assert } = require('assert');
 const { errorCodes } = require('@metamask/rpc-errors');
-const {
-  defaultGanacheOptions,
-  withFixtures,
-  openDapp,
-  unlockWallet,
-} = require('../../helpers');
+const { withFixtures, openDapp, unlockWallet } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('MetaMask', function () {
@@ -16,7 +11,6 @@ describe('MetaMask', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

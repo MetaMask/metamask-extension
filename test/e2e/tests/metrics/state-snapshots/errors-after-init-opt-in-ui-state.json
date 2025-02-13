@@ -120,6 +120,7 @@
         "usdConversionRate": 1700
       }
     },
+    "throttledOrigins": "object",
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
     "browserEnvironment": { "os": "string", "browser": "string" },
@@ -138,6 +139,7 @@
     "trezorModel": null,
     "onboardingDate": null,
     "lastViewedUserSurvey": null,
+    "isRampCardClosed": false,
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
@@ -290,6 +292,8 @@
     "cacheTimestamp": "number",
     "accounts": "object",
     "accountsByChainId": "object",
+    "accountsAssets": "object",
+    "assetsMetadata": "object",
     "marketData": "object",
     "unapprovedDecryptMsgs": "object",
     "unapprovedDecryptMsgCount": 0,

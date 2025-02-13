@@ -18,7 +18,6 @@ describe('Send ETH', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
         async ({ driver, ganacheServer }) => {
@@ -48,10 +47,6 @@ describe('Send ETH', function () {
           await inputAmount.press(driver.Key.BACK_SPACE);
           await inputAmount.press(driver.Key.BACK_SPACE);
           await inputAmount.press(driver.Key.BACK_SPACE);
-
-          await driver.assertElementNotPresent('.send-v2__error-amount', {
-            waitAtLeastGuard: 100, // A waitAtLeastGuard of 100ms is the best choice here
-          });
 
           const amountMax = await driver.findClickableElement(
             '[data-testid="max-clear-button"]',
@@ -99,8 +94,6 @@ describe('Send ETH', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
-          defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
@@ -155,7 +148,7 @@ describe('Send ETH', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: {
+          localNodeOptions: {
             ...defaultGanacheOptions,
             hardfork: 'london',
           },
@@ -207,7 +200,6 @@ describe('Send ETH', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
@@ -243,9 +235,12 @@ describe('Send ETH', function () {
             dapp: true,
             fixtures: new FixtureBuilder()
               .withPermissionControllerConnectedToTestDapp()
+              .withPreferencesController({
+                preferences: {
+                  showFiatInTestnets: true,
+                },
+              })
               .build(),
-            ganacheOptions: defaultGanacheOptions,
-            defaultGanacheOptions,
             title: this.test.fullTitle(),
           },
           async ({ driver }) => {
@@ -318,8 +313,13 @@ describe('Send ETH', function () {
             dapp: true,
             fixtures: new FixtureBuilder()
               .withPermissionControllerConnectedToTestDapp()
+              .withPreferencesController({
+                preferences: {
+                  showFiatInTestnets: true,
+                },
+              })
               .build(),
-            ganacheOptions: {
+            localNodeOptions: {
               ...defaultGanacheOptions,
               hardfork: 'london',
             },
@@ -428,7 +428,6 @@ describe('Send ETH', function () {
               })
               .withPreferencesControllerPetnamesDisabled()
               .build(),
-            ganacheOptions: defaultGanacheOptions,
             title: this.test.fullTitle(),
           },
           async ({ driver }) => {

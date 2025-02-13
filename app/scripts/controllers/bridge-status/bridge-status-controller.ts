@@ -14,7 +14,7 @@ import {
   DEFAULT_BRIDGE_STATUS_STATE,
   REFRESH_INTERVAL_MS,
 } from './constants';
-import { BridgeStatusControllerMessenger } from './types';
+import type { BridgeStatusControllerMessenger } from './types';
 import { fetchBridgeTxStatus, getStatusRequestWithSrcTxHash } from './utils';
 
 const metadata: StateMetadata<BridgeStatusControllerState> = {

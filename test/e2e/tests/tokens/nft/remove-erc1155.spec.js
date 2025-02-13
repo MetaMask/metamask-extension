@@ -1,9 +1,5 @@
 const { strict: assert } = require('assert');
-const {
-  defaultGanacheOptions,
-  withFixtures,
-  unlockWallet,
-} = require('../../../helpers');
+const { withFixtures, unlockWallet } = require('../../../helpers');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const FixtureBuilder = require('../../../fixture-builder');
 
@@ -25,7 +21,6 @@ describe('Remove ERC1155 NFT', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC1155().build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
         testSpecificMock: mockIPFSRequest,
