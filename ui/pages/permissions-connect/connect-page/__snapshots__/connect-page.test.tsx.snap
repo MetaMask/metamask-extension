@@ -51,17 +51,21 @@ exports[`ConnectPage should render correctly 1`] = `
             >
               github.io
             </h2>
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            <div
+              class="mm-box mm-box--display-flex mm-box--justify-content-center"
             >
-              Connect this website with MetaMask.
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              >
+                Connect this website with MetaMask.
+              </p>
               <button
                 class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
                 target="_blank"
               >
                 Learn more
               </button>
-            </p>
+            </div>
           </p>
         </div>
       </div>
@@ -414,17 +418,21 @@ exports[`ConnectPage should render with defaults from the requested permissions 
             >
               github.io
             </h2>
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            <div
+              class="mm-box mm-box--display-flex mm-box--justify-content-center"
             >
-              Connect this website with MetaMask.
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              >
+                Connect this website with MetaMask.
+              </p>
               <button
                 class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
                 target="_blank"
               >
                 Learn more
               </button>
-            </p>
+            </div>
           </p>
         </div>
       </div>

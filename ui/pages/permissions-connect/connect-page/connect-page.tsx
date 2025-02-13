@@ -260,8 +260,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         <Text variant={TextVariant.headingLg} marginTop={2} marginBottom={2}>
           {title}
         </Text>
-        <Text>
-          {t('connectionDescription')}
+        <Box display={Display.Flex} justifyContent={JustifyContent.center}>
+          <Text>{t('connectionDescription')}</Text>
           <ButtonLink
             paddingLeft={1}
             key="permission-connect-footer-learn-more-link"
@@ -275,7 +275,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
           >
             {t('learnMoreUpperCase')}
           </ButtonLink>
-        </Text>
+        </Box>
       </Header>
       <Content
         paddingLeft={4}
