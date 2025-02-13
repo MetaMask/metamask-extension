@@ -1,14 +1,13 @@
 import { strict as assert } from 'assert';
-import { withFixtures } from '../../helpers';
+import { unlockWallet, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   getExpectedSessionScope,
-  getSessionScopes,
-  openMultichainDappAndConnectWalletWithExternallyConnectable,
   type FixtureCallbackArgs,
 } from './testHelpers';
+import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
 
 describe('Multichain API', function () {
   describe('Connect wallet to the multichain dapp via `externally_connectable`, call `wallet_getSession` when there is no existing session', function () {
@@ -20,11 +19,14 @@ describe('Multichain API', function () {
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
         async ({ driver, extensionId }: FixtureCallbackArgs) => {
-          await openMultichainDappAndConnectWalletWithExternallyConnectable(
-            driver,
+          await unlockWallet(driver);
+
+          const testDapp = new TestDappMultichain(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.connectExternallyConnectable(
             extensionId,
           );
-          const parsedResult = await getSessionScopes(driver);
+          const parsedResult = await testDapp.getSession();
 
           assert.deepStrictEqual(
             parsedResult.sessionScopes,
@@ -53,11 +55,14 @@ describe('Multichain API', function () {
            */
           const DEFAULT_SCOPE = 'eip155:1337';
 
-          await openMultichainDappAndConnectWalletWithExternallyConnectable(
-            driver,
+          await unlockWallet(driver);
+
+          const testDapp = new TestDappMultichain(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.connectExternallyConnectable(
             extensionId,
           );
-          const parsedResult = await getSessionScopes(driver);
+          const parsedResult = await testDapp.getSession();
 
           const sessionScope = parsedResult.sessionScopes[DEFAULT_SCOPE];
           const expectedSessionScope = getExpectedSessionScope(DEFAULT_SCOPE, [
