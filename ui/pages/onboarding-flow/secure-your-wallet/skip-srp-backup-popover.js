@@ -27,14 +27,14 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { getHDSrpIndex } from '../../../selectors/selectors';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 
 export default function SkipSRPBackup({ handleClose }) {
   const [checked, setChecked] = useState(false);
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
-  const hdSrpIndex = useSelector(getHDSrpIndex);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const trackEvent = useContext(MetaMetricsContext);
 
   return (
@@ -53,7 +53,7 @@ export default function SkipSRPBackup({ handleClose }) {
                 event:
                   MetaMetricsEventName.OnboardingWalletSecuritySkipCanceled,
                 properties: {
-                  hd_srp_index: hdSrpIndex,
+                  hd_entropy_index: hdEntropyIndex,
                 },
               });
               handleClose();
@@ -75,7 +75,7 @@ export default function SkipSRPBackup({ handleClose }) {
                 event:
                   MetaMetricsEventName.OnboardingWalletSecuritySkipConfirmed,
                 properties: {
-                  hd_srp_index: hdSrpIndex,
+                  hd_entropy_index: hdEntropyIndex,
                 },
               });
               history.push(ONBOARDING_COMPLETION_ROUTE);

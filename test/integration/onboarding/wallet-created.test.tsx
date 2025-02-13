@@ -96,7 +96,7 @@ describe('Wallet Created Events', () => {
           event: MetaMetricsEventName.OnboardingWalletCreationComplete,
           properties: {
             method: mockMetaMaskState.firstTimeFlowType,
-            hd_srp_index: 0,
+            hd_entropy_index: 0,
           },
         }),
       ]),

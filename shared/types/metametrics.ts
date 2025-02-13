@@ -63,7 +63,7 @@ export type TransactionMetricsRequest = {
   ) => SmartTransaction;
   getMethodData: (data: string) => Promise<{ name: string }>;
   getIsConfirmationAdvancedDetailsOpen: () => boolean;
-  getHDSrpIndex: () => number;
+  getHDEntropyIndex: () => number;
 };
 
 export type TransactionEventPayload = {

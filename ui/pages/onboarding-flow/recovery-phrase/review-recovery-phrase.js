@@ -28,14 +28,14 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { getHDSrpIndex } from '../../../selectors/selectors';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
 export default function RecoveryPhrase({ secretRecoveryPhrase }) {
   const history = useHistory();
   const t = useI18nContext();
   const { search } = useLocation();
-  const hdSrpIndex = useSelector(getHDSrpIndex);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const [copied, handleCopy] = useCopyToClipboard();
   const [phraseRevealed, setPhraseRevealed] = useState(false);
   const [hiddenPhrase, setHiddenPhrase] = useState(false);
@@ -145,7 +145,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
                   event:
                     MetaMetricsEventName.OnboardingWalletSecurityPhraseWrittenDown,
                   properties: {
-                    hd_srp_index: hdSrpIndex,
+                    hd_entropy_index: hdEntropyIndex,
                   },
                 });
                 history.push(
@@ -167,7 +167,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
                 event:
                   MetaMetricsEventName.OnboardingWalletSecurityPhraseRevealed,
                 properties: {
-                  hd_srp_index: hdSrpIndex,
+                  hd_entropy_index: hdEntropyIndex,
                 },
               });
               setPhraseRevealed(true);

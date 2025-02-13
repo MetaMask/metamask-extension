@@ -40,12 +40,12 @@ import { SignatureRequestType } from '../../../types/confirm';
 import { isSignatureTransactionType } from '../../../utils/confirm';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import Identicon from '../../../../../components/ui/identicon';
-import { getHDSrpIndex } from '../../../../../selectors/selectors';
+import { getHDEntropyIndex } from '../../../../../selectors/selectors';
 import { AdvancedDetailsButton } from './advanced-details-button';
 
 const HeaderInfo = () => {
   const trackEvent = useContext(MetaMetricsContext);
-  const hdSrpIndex = useSelector(getHDSrpIndex);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
   const [showAccountInfo, setShowAccountInfo] = React.useState(false);
 
@@ -65,12 +65,12 @@ const HeaderInfo = () => {
         location: MetaMetricsEventLocation.SignatureConfirmation,
         signature_type: (currentConfirmation as SignatureRequestType)?.msgParams
           ?.signatureMethod,
-        hd_srp_index: hdSrpIndex,
+        hd_entropy_index: hdEntropyIndex,
       }
     : {
         location: MetaMetricsEventLocation.Transaction,
         transaction_type: currentConfirmation?.type,
-        hd_srp_index: hdSrpIndex,
+        hd_entropy_index: hdEntropyIndex,
       };
 
   function trackAccountModalOpened() {

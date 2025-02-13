@@ -110,7 +110,7 @@ const createHandler = (opts) =>
     globalRateLimitMaxAmount: 0,
     appStateController,
     metaMetricsController,
-    getHDSrpIndex: jest.fn(),
+    getHDEntropyIndex: jest.fn(),
     ...opts,
   });
 
@@ -314,7 +314,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureRequested,
         properties: {
-          hd_srp_index: undefined,
+          hd_entropy_index: undefined,
           signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
           security_alert_response: BlockaidResultType.Malicious,
           security_alert_reason: BlockaidReason.maliciousDomain,

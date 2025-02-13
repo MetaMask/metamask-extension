@@ -217,7 +217,7 @@ export default function createRPCMethodTrackingMiddleware({
   snapAndHardwareMessenger,
   appStateController,
   metaMetricsController,
-  getHDSrpIndex,
+  getHDEntropyIndex,
 }) {
   return async function rpcMethodTrackingMiddleware(
     /** @type {any} */ req,
@@ -285,7 +285,7 @@ export default function createRPCMethodTrackingMiddleware({
 
       if (event === MetaMetricsEventName.SignatureRequested) {
         eventProperties.signature_type = method;
-        eventProperties.hd_srp_index = getHDSrpIndex();
+        eventProperties.hd_entropy_index = getHDEntropyIndex();
 
         // In personal messages the first param is data while in typed messages second param is data
         // if condition below is added to ensure that the right params are captured as data and address.
@@ -467,7 +467,7 @@ export default function createRPCMethodTrackingMiddleware({
         const fragmentPayload = {
           properties: {
             ...properties,
-            hd_srp_index: getHDSrpIndex(),
+            hd_entropy_index: getHDEntropyIndex(),
           },
           sensitiveProperties: sensitiveEventProperties,
         };

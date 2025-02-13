@@ -24,13 +24,13 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { getHDSrpIndex } from '../../../selectors/selectors';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 
 export default function ImportSRP({ submitSecretRecoveryPhrase }) {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const history = useHistory();
   const t = useI18nContext();
-  const hdSrpIndex = useSelector(getHDSrpIndex);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const currentKeyring = useSelector(getCurrentKeyring);
 
   useEffect(() => {
@@ -87,7 +87,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
                 event:
                   MetaMetricsEventName.OnboardingWalletSecurityPhraseConfirmed,
                 properties: {
-                  hd_srp_index: hdSrpIndex,
+                  hd_entropy_index: hdEntropyIndex,
                 },
               });
               history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);

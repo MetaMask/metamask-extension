@@ -69,7 +69,7 @@ import {
   getSelectedInternalAccount,
   getSelectedNetwork,
 } from '../../selectors';
-import { getHDSrpIndex } from '../../selectors/selectors';
+import { getHDEntropyIndex } from '../../selectors/selectors';
 import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,
@@ -633,7 +633,7 @@ export const fetchQuotesAndSetQuoteState = (
 ) => {
   return async (dispatch, getState) => {
     const state = getState();
-    const hdSrpIndex = getHDSrpIndex(state);
+    const hdEntropyIndex = getHDEntropyIndex(state);
     const selectedNetwork = getSelectedNetwork(state);
     let swapsLivenessForNetwork = {
       swapsFeatureIsLive: false,
@@ -773,7 +773,7 @@ export const fetchQuotesAndSetQuoteState = (
         anonymizedData: true,
       },
       properties: {
-        hd_srp_index: hdSrpIndex,
+        hd_entropy_index: hdEntropyIndex,
       },
     });
 
@@ -870,7 +870,7 @@ export const fetchQuotesAndSetQuoteState = (
             anonymizedData: true,
           },
           properties: {
-            hd_srp_index: hdSrpIndex,
+            hd_entropy_index: hdEntropyIndex,
           },
         });
 
@@ -901,7 +901,7 @@ export const signAndSendSwapsSmartTransaction = ({
   return async (dispatch, getState) => {
     dispatch(setSwapsSTXSubmitLoading(true));
     const state = getState();
-    const hdSrpIndex = getHDSrpIndex(state);
+    const hdEntropyIndex = getHDEntropyIndex(state);
     const fetchParams = getFetchParams(state);
     const hardwareWalletUsed = isHardwareWallet(state);
     const hardwareWalletType = getHardwareWalletType(state);
@@ -959,7 +959,7 @@ export const signAndSendSwapsSmartTransaction = ({
       category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: swapMetaData,
       properties: {
-        hd_srp_index: hdSrpIndex,
+        hd_entropy_index: hdEntropyIndex,
       },
     });
 
@@ -1080,7 +1080,7 @@ export const signAndSendTransactions = (
 ) => {
   return async (dispatch, getState) => {
     const state = getState();
-    const hdSrpIndex = getHDSrpIndex(state);
+    const hdEntropyIndex = getHDEntropyIndex(state);
     const chainId = getCurrentChainId(state);
     const hardwareWalletUsed = isHardwareWallet(state);
     const networkAndAccountSupports1559 =
@@ -1250,7 +1250,7 @@ export const signAndSendTransactions = (
       category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: swapMetaData,
       properties: {
-        hd_srp_index: hdSrpIndex,
+        hd_entropy_index: hdEntropyIndex,
       },
     });
 

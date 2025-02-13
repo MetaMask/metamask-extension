@@ -31,7 +31,7 @@ import { ModalContent } from '../../../component-library/modal-content/deprecate
 import { ModalHeader } from '../../../component-library/modal-header/deprecated';
 import QuizContent from '../QuizContent';
 import { JSXDict, QuizStage } from '../types';
-import { getHDSrpIndex } from '../../../../selectors/selectors';
+import { getHDEntropyIndex } from '../../../../selectors/selectors';
 
 const wrongAnswerIcon = (
   <Icon
@@ -67,7 +67,7 @@ export default function SRPQuiz(props: any) {
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
   const t = useI18nContext();
-  const hdSrpIndex = useSelector(getHDSrpIndex);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
   // This should not be a state variable, because it's derivable from the state variable `stage`
   // (Making it a state variable forces the component to render twice)
@@ -270,7 +270,7 @@ export default function SRPQuiz(props: any) {
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,
           location,
-          hd_srp_index: hdSrpIndex,
+          hd_entropy_index: hdEntropyIndex,
         },
       },
       {},

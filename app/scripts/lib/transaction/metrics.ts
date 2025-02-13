@@ -320,7 +320,7 @@ export const createTransactionEventFragmentWithTxId = async (
  * @param transactionMetricsRequest - Contains controller actions
  * @param transactionMetricsRequest.getParticipateInMetrics - Returns whether the user has opted into metrics
  * @param transactionMetricsRequest.trackEvent - MetaMetrics track event function
- * @param transactionMetricsRequest.getHDSrpIndex - Returns the HD SRP index
+ * @param transactionMetricsRequest.getHDEntropyIndex - Returns Index of the currently selected HD Keyring
  * @param transactionEventPayload - The event payload
  * @param transactionEventPayload.transactionMeta - The updated transaction meta
  * @param transactionEventPayload.approvalTransactionMeta - The updated approval transaction meta
@@ -329,7 +329,7 @@ export const handlePostTransactionBalanceUpdate = async (
   {
     getParticipateInMetrics,
     trackEvent,
-    getHDSrpIndex,
+    getHDEntropyIndex,
   }: TransactionMetricsRequest,
   {
     transactionMeta,
@@ -346,7 +346,7 @@ export const handlePostTransactionBalanceUpdate = async (
         category: MetaMetricsEventCategory.Swaps,
         sensitiveProperties: { ...transactionMeta.swapMetaData },
         properties: {
-          hd_srp_index: getHDSrpIndex(),
+          hd_entropy_index: getHDEntropyIndex(),
         },
       });
     } else {
@@ -402,7 +402,7 @@ export const handlePostTransactionBalanceUpdate = async (
             transactionMeta.swapMetaData.token_to_amount.toString(10),
         },
         properties: {
-          hd_srp_index: getHDSrpIndex(),
+          hd_entropy_index: getHDEntropyIndex(),
         },
       });
     }
@@ -984,10 +984,10 @@ async function buildEventFragmentProperties({
   const swapAndSendMetricsProperties =
     getSwapAndSendMetricsProps(transactionMeta);
 
-  // Add SRP Properties
-  const hdSrpIndex = transactionMetricsRequest.getHDSrpIndex();
-  const srpProperties = {
-    hd_srp_index: hdSrpIndex === -1 ? undefined : hdSrpIndex,
+  // Add Entropy Properties
+  const hdEntropyIndex = transactionMetricsRequest.getHDEntropyIndex();
+  const hdEntropyProperties = {
+    hd_entropy_index: hdEntropyIndex === -1 ? undefined : hdEntropyIndex,
   };
 
   /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
@@ -1020,7 +1020,7 @@ async function buildEventFragmentProperties({
     transaction_contract_method: transactionContractMethod,
     ...smartTransactionMetricsProperties,
     ...swapAndSendMetricsProperties,
-    ...srpProperties,
+    ...hdEntropyProperties,
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as Record<string, any>;

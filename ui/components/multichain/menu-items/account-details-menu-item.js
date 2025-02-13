@@ -12,7 +12,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { IconName, Text } from '../../component-library';
-import { getHDSrpIndex } from '../../../selectors/selectors';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 
 export const AccountDetailsMenuItem = ({
   metricsLocation,
@@ -23,7 +23,7 @@ export const AccountDetailsMenuItem = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-  const hdSrpIndex = useSelector(getHDSrpIndex);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
   const LABEL = t('accountDetails');
 
@@ -36,7 +36,7 @@ export const AccountDetailsMenuItem = ({
           category: MetaMetricsEventCategory.Navigation,
           properties: {
             location: metricsLocation,
-            hd_srp_index: hdSrpIndex,
+            hd_entropy_index: hdEntropyIndex,
           },
         });
         closeMenu?.();

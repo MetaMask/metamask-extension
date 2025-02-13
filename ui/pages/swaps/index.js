@@ -23,7 +23,7 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
   getTokenList,
-  getHDSrpIndex,
+  getHDEntropyIndex,
 } from '../../selectors/selectors';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import {
@@ -105,7 +105,7 @@ export default function Swap() {
   const history = useHistory();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-  const hdSrpIndex = useSelector(getHDSrpIndex);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
   const { pathname } = useLocation();
   const isAwaitingSwapRoute = pathname === AWAITING_SWAP_ROUTE;
@@ -243,7 +243,7 @@ export default function Swap() {
         stx_user_opt_in: smartTransactionsOptInStatus,
       },
       properties: {
-        hd_srp_index: hdSrpIndex,
+        hd_entropy_index: hdEntropyIndex,
       },
     });
   };

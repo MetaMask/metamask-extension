@@ -525,16 +525,16 @@ export function getMetaMaskKeyrings(state) {
   return state.metamask.keyrings;
 }
 
-export function getHDSrpIndex(state) {
+export function getHDEntropyIndex(state) {
   const selectedAddress = getSelectedAddress(state);
   const keyrings = getMetaMaskKeyrings(state);
   const hdKeyrings = keyrings.filter(
     (keyring) => keyring.type === KeyringType.hdKeyTree,
   );
-  const hdSrpIndex = hdKeyrings.findIndex((keyring) =>
+  const hdEntropyIndex = hdKeyrings.findIndex((keyring) =>
     keyring.accounts.includes(selectedAddress),
   );
-  return hdSrpIndex === -1 ? undefined : hdSrpIndex;
+  return hdEntropyIndex === -1 ? undefined : hdEntropyIndex;
 }
 
 /**
