@@ -52,6 +52,7 @@ import {
 } from '../../../components/multichain';
 import {
   getAvatarFallbackLetter,
+  isIpAddress,
   transformOriginToTitle,
 } from '../../../helpers/utils/util';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
@@ -250,9 +251,9 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               justifyContent={JustifyContent.center}
               color={TextColor.textAlternative}
               style={{ borderWidth: '0px' }}
-              backgroundColor={BackgroundColor.backgroundAlternative}
+              backgroundColor={BackgroundColor.backgroundAlternativeSoft}
             >
-              {getAvatarFallbackLetter(title)}
+              {isIpAddress(title) ? '?' : getAvatarFallbackLetter(title)}
             </AvatarBase>
           )}
         </Box>
