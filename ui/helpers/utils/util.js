@@ -799,15 +799,41 @@ export const getAvatarFallbackLetter = (subjectName) => {
 };
 
 /**
- * Transforms full raw URLs to something that can be used as title.
- * Basically, it removes protocol prefixes like http:// or similar.
+ * Check whether raw origin URL is an IP address.
  *
- * @param {string} rawOrigin - Name of a subject.
+ * Note: IPv6 addresses are expected to be wrapped in brackets (e.g. [fe80::1])
+ * because of how URL formatting works.
+ *
+ * @param {string} rawOriginUrl - Raw origin (URL) with protocol that is potentially an IP address
+ * @returns Boolean, true if the origin is an IP address, false otherwise.
+ */
+export const isIpAddress = (rawOriginUrl) => {
+  if (typeof rawOriginUrl === 'string') {
+    return Boolean(
+      rawOriginUrl.match(/^(\d{1,3}\.){3}\d{1,3}$|^\[[0-9a-f:]+\]$/iu),
+    );
+  }
+
+  return false;
+};
+
+/**
+ * Transforms full raw URLs to something that can be used as title.
+ * Basically, it removes subdomain and protocol prefixes.
+ *
+ * Note: For IP address origins, full IP address without protocol will be returned.
+ *
+ * @param {string} rawOrigin - Raw origin (URL) with protocol.
  * @returns User friendly title extracted from raw URL.
  */
 export const transformOriginToTitle = (rawOrigin) => {
   try {
     const url = new URL(rawOrigin);
+
+    if (isIpAddress(url.hostname)) {
+      return url.hostname;
+    }
+
     const parts = url.hostname.split('.');
     return parts.slice(-2).join('.');
   } catch (e) {
