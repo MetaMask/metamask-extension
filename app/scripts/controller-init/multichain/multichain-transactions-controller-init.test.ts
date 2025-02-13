@@ -3,23 +3,15 @@ import { Messenger } from '@metamask/base-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import {
-  getMultichainTransactionsControllerInitMessenger,
   getMultichainTransactionsControllerMessenger,
-  MultichainTransactionsControllerInitMessenger,
-} from '../messengers/multichain-transactions-controller-messenger';
+  MultichainTransactionsControllerMessenger,
+} from '../messengers/multichain';
 import { MultichainTransactionsControllerInit } from './multichain-transactions-controller-init';
-
-type MultichainTransactionsControllerMessenger = ConstructorParameters<
-  typeof MultichainTransactionsController
->[0]['messenger'];
 
 jest.mock('@metamask/multichain-transactions-controller');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
-    MultichainTransactionsControllerMessenger,
-    MultichainTransactionsControllerInitMessenger
-  >
+  ControllerInitRequest<MultichainTransactionsControllerMessenger>
 > {
   const baseControllerMessenger = new Messenger();
 
@@ -28,13 +20,10 @@ function buildInitRequestMock(): jest.Mocked<
     controllerMessenger: getMultichainTransactionsControllerMessenger(
       baseControllerMessenger,
     ),
-    initMessenger: getMultichainTransactionsControllerInitMessenger(
-      baseControllerMessenger,
-    ),
   };
 }
 
-describe('MultichainTransactions Controller Init', () => {
+describe('MultichainTransactionsControllerInit', () => {
   const multichainTransactionsControllerClassMock = jest.mocked(
     MultichainTransactionsController,
   );
