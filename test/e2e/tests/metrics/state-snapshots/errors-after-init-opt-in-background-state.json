@@ -143,10 +143,6 @@
     "metaMetricsDataDeletionId": null,
     "metaMetricsDataDeletionTimestamp": 0
   },
-  "MultichainAssetsController": {
-    "accountsAssets": "object",
-    "assetsMetadata": "object"
-  },
   "MultichainRatesController": {
     "fiatCurrency": "usd",
     "rates": {
