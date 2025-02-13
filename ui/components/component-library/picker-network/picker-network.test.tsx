@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 
-import { IconName } from '..';
+import { IconName } from '../icon';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore from '../../../store/store';
 import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';

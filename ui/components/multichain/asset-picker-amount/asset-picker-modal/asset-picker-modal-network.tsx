@@ -26,7 +26,6 @@ import {
   Text,
   AvatarNetworkSize,
 } from '../../../component-library';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 ///: END:ONLY_INCLUDE_IF
@@ -36,6 +35,7 @@ import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
+import { getImageForChainId } from '../../../../selectors/multichain';
 
 /**
  * AssetPickerModalNetwork component displays a modal for selecting a network in the asset picker.
@@ -244,11 +244,7 @@ export const AssetPickerModalNetwork = ({
                     onNetworkChange(networkConfig);
                     onBack();
                   }}
-                  iconSrc={
-                    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                      chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-                    ]
-                  }
+                  iconSrc={getImageForChainId(chainId)}
                   iconSize={AvatarNetworkSize.Sm}
                   focus={false}
                   disabled={shouldDisableNetwork?.(networkConfig)}
