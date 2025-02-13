@@ -20,8 +20,8 @@ describe('Send ETH', function () {
           title: this.test.fullTitle(),
           localNodeOptions: 'anvil',
         },
-        async ({ driver, anvilServer }) => {
-          await logInWithBalanceValidation(driver, anvilServer);
+        async ({ driver, localNodes }) => {
+          await logInWithBalanceValidation(driver, localNodes[0]);
 
           await openActionMenuAndStartSendFlow(driver);
 
@@ -160,11 +160,11 @@ describe('Send ETH', function () {
           smartContract,
           title: this.test.fullTitle(),
         },
-        async ({ driver, contractRegistry, anvilServer }) => {
+        async ({ driver, contractRegistry, localNodes }) => {
           const contractAddress = await contractRegistry.getContractAddress(
             smartContract,
           );
-          await logInWithBalanceValidation(driver, anvilServer);
+          await logInWithBalanceValidation(driver, localNodes[0]);
 
           // Wait for balance to load
           await driver.delay(500);

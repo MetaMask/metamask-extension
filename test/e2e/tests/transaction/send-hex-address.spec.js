@@ -19,8 +19,8 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         title: this.test.fullTitle(),
         localNodeOptions: 'anvil',
       },
-      async ({ driver, anvilServer }) => {
-        await logInWithBalanceValidation(driver, anvilServer);
+      async ({ driver, localNodes }) => {
+        await logInWithBalanceValidation(driver, localNodes[0]);
 
         // Send ETH
         await openActionMenuAndStartSendFlow(driver);
@@ -65,8 +65,8 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         title: this.test.fullTitle(),
         localNodeOptions: 'anvil',
       },
-      async ({ driver, anvilServer }) => {
-        await logInWithBalanceValidation(driver, anvilServer);
+      async ({ driver, localNodes }) => {
+        await logInWithBalanceValidation(driver, localNodes[0]);
 
         // Send ETH
         await openActionMenuAndStartSendFlow(driver);
@@ -117,8 +117,8 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         title: this.test.fullTitle(),
         localNodeOptions: 'anvil',
       },
-      async ({ driver, anvilServer }) => {
-        await logInWithBalanceValidation(driver, anvilServer);
+      async ({ driver, localNodes }) => {
+        await logInWithBalanceValidation(driver, localNodes[0]);
 
         // Send TST
         await driver.clickElement(
@@ -181,8 +181,8 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         title: this.test.fullTitle(),
         localNodeOptions: 'anvil',
       },
-      async ({ driver, anvilServer }) => {
-        await logInWithBalanceValidation(driver, anvilServer);
+      async ({ driver, localNodes }) => {
+        await logInWithBalanceValidation(driver, localNodes[0]);
 
         // Send TST
         await driver.clickElement(
