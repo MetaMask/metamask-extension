@@ -1,4 +1,5 @@
 import EventEmitter from '@metamask/safe-event-emitter';
+import browser from 'webextension-polyfill';
 import ExtensionPlatform from '../platforms/extension';
 import {
   NOTIFICATION_HEIGHT,
@@ -40,50 +41,64 @@ export default class NotificationManager extends EventEmitter {
     this._popupId = currentPopupId;
     this._setCurrentPopupId = setCurrentPopupId;
     const popup = await this._getPopup(currentPopupId);
+
     // Bring focus to chrome popup
     if (popup) {
       // bring focus to existing chrome popup
       await this.platform.focusWindow(popup.id);
     } else {
-      // create new notification popup
-      let left = 0;
-      let top = 0;
       try {
-        const lastFocused = await this.platform.getLastFocusedWindow();
-        // Position window in top right corner of lastFocused window.
-        top = lastFocused.top;
-        // - this is to make sure no error is triggered from polyfill
-        // error eg: Invalid value for bounds. Bounds must be at least 50% within visible screen space.
-        left = Math.max(
-          lastFocused.left + (lastFocused.width - NOTIFICATION_WIDTH),
-          0,
-        );
-      } catch (_) {
-        // The following properties are more than likely 0, due to being
-        // opened from the background chrome process for the extension that
-        // has no physical dimensions
-        const { screenX, screenY, outerWidth } = window;
-        top = Math.max(screenY, 0);
-        left = Math.max(screenX + (outerWidth - NOTIFICATION_WIDTH), 0);
-      }
+        // Try to use the modern API first (Manifest V3)
+        if (browser.action) {
+          await browser.action.openPopup();
+          return;
+        }
+        // Fall back to browserAction for Manifest V2
+        if (browser.browserAction) {
+          await browser.browserAction.openPopup();
+          return;
+        }
+      } catch (error) {
+        // If popup fails, fall back to opening a new window
+        let left = 0;
+        let top = 0;
+        try {
+          const lastFocused = await this.platform.getLastFocusedWindow();
+          // Position window in top right corner of lastFocused window.
+          top = lastFocused.top;
+          // - this is to make sure no error is triggered from polyfill
+          // error eg: Invalid value for bounds. Bounds must be at least 50% within visible screen space.
+          left = Math.max(
+            lastFocused.left + (lastFocused.width - NOTIFICATION_WIDTH),
+            0,
+          );
+        } catch (_) {
+          // The following properties are more than likely 0, due to being
+          // opened from the background chrome process for the extension that
+          // has no physical dimensions
+          const { screenX, screenY, outerWidth } = window;
+          top = Math.max(screenY, 0);
+          left = Math.max(screenX + (outerWidth - NOTIFICATION_WIDTH), 0);
+        }
 
-      const popupWindow = await this.platform.openWindow({
-        url: 'notification.html',
-        type: 'popup',
-        width: NOTIFICATION_WIDTH,
-        height: NOTIFICATION_HEIGHT,
-        left,
-        top,
-      });
+        const popupWindow = await this.platform.openWindow({
+          url: 'notification.html',
+          type: 'popup',
+          width: NOTIFICATION_WIDTH,
+          height: NOTIFICATION_HEIGHT,
+          left,
+          top,
+        });
 
-      // Firefox currently ignores left/top for create, but it works for update
-      if (popupWindow.left !== left && popupWindow.state !== 'fullscreen') {
-        await this.platform.updateWindowPosition(popupWindow.id, left, top);
+        // Firefox currently ignores left/top for create, but it works for update
+        if (popupWindow.left !== left && popupWindow.state !== 'fullscreen') {
+          await this.platform.updateWindowPosition(popupWindow.id, left, top);
+        }
+        // pass new created popup window id to appController setter
+        // and store the id to private variable this._popupId for future access
+        this._setCurrentPopupId(popupWindow.id);
+        this._popupId = popupWindow.id;
       }
-      // pass new created popup window id to appController setter
-      // and store the id to private variable this._popupId for future access
-      this._setCurrentPopupId(popupWindow.id);
-      this._popupId = popupWindow.id;
     }
   }
 
