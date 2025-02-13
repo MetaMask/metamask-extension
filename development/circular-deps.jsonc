@@ -68,10 +68,6 @@
     "ui/components/multichain/pages/send/components/your-accounts.tsx"
   ],
   [
-    "ui/pages/asset/components/asset-page.tsx",
-    "ui/pages/asset/components/token-buttons.tsx"
-  ],
-  [
     "ui/pages/notifications/notifications-list.tsx",
     "ui/pages/notifications/notifications.tsx"
   ],
