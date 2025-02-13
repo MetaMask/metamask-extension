@@ -5,7 +5,6 @@ const {
   DAPP_ONE_URL,
   unlockWallet,
   WINDOW_TITLES,
-  generateGanacheOptions,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -15,9 +14,18 @@ describe('Dapp interactions', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
-        localNodeOptions: generateGanacheOptions({
-          concurrent: [{ port: 8546, chainId: 1338 }],
-        }),
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
+              port: 8546,
+              chainId: 1338,
+            },
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

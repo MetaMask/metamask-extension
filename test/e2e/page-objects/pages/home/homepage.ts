@@ -1,5 +1,6 @@
 import { Driver } from '../../../webdriver/driver';
 import { Ganache } from '../../../seeder/ganache';
+import { Anvil } from '../../../seeder/anvil';
 import { getCleanAppState } from '../../../helpers';
 import HeaderNavbar from '../header-navbar';
 
@@ -249,7 +250,7 @@ class HomePage {
   }
 
   async check_localNodeBalanceIsDisplayed(
-    localNode?: Ganache,
+    localNode?: Ganache | Anvil,
     address = null,
   ): Promise<void> {
     let expectedBalance: string;

@@ -6,7 +6,6 @@ import {
 } from '@metamask/permission-controller';
 import FixtureBuilder from '../../fixture-builder';
 import {
-  defaultGanacheOptions,
   openDapp,
   regularDelayMs,
   unlockWallet,
@@ -73,10 +72,18 @@ describe('Remove Network:', function (this: Suite) {
             selectedNetworkClientId: 'networkConfigurationId',
           })
           .build(),
-        localNodeOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [{ port: 8546, chainId: 1338 }],
-        },
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
+              port: 8546,
+              chainId: 1338,
+            },
+          },
+        ],
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -158,10 +165,18 @@ describe('Remove Network:', function (this: Suite) {
             selectedNetworkClientId: 'networkConfigurationId',
           })
           .build(),
-        localNodeOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [{ port: 8546, chainId: 1338 }],
-        },
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
+              port: 8546,
+              chainId: 1338,
+            },
+          },
+        ],
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

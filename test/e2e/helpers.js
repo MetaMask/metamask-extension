@@ -7,11 +7,13 @@ const { difference } = require('lodash');
 const WebSocket = require('ws');
 const createStaticServer = require('../../development/create-static-server');
 const { setupMocking } = require('./mock-e2e');
+const { Anvil } = require('./seeder/anvil');
 const { Ganache } = require('./seeder/ganache');
 const FixtureServer = require('./fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
 const { PAGES } = require('./webdriver/driver');
+const AnvilSeeder = require('./seeder/anvil-seeder');
 const GanacheSeeder = require('./seeder/ganache-seeder');
 const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
@@ -40,11 +42,56 @@ const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
 /**
+ * Normalizes the localNodeOptions into a consistent format to handle different data structures.
+ * Case 1: A string: localNodeOptions = 'anvil'
+ * Case 2: Array of strings: localNodeOptions = ['anvil', 'bitcoin']
+ * Case 3: Array of objects: localNodeOptions =
+ * [
+ *  { type: 'anvil', options: {anvilOpts}},
+ *  { type: 'bitcoin',options: {bitcoinOpts}},
+ * ]
+ * Case 4: Options object without type: localNodeOptions = {options}
+ *
+ * @param {string | object | Array} localNodeOptions - The input local node options.
+ * @returns {Array} The normalized local node options.
+ */
+function normalizeLocalNodeOptions(localNodeOptions) {
+  if (typeof localNodeOptions === 'string') {
+    // Case 1: Passing a string
+    return [{ type: localNodeOptions, options: {} }];
+  } else if (Array.isArray(localNodeOptions)) {
+    return localNodeOptions.map((node) => {
+      if (typeof node === 'string') {
+        // Case 2: Array of strings
+        return { type: node, options: {} };
+      }
+      if (typeof node === 'object' && node !== null) {
+        // Case 3: Array of objects
+        return {
+          type: node.type || 'ganache',
+          options: node.options || {},
+        };
+      }
+      throw new Error(`Invalid localNodeOptions entry: ${node}`);
+    });
+  }
+  if (typeof localNodeOptions === 'object' && localNodeOptions !== null) {
+    // Case 4: Passing an options object without type
+    return [
+      {
+        type: 'ganache',
+        options: localNodeOptions,
+      },
+    ];
+  }
+  throw new Error(`Invalid localNodeOptions type: ${typeof localNodeOptions}`);
+}
+
+/**
  * @typedef {object} Fixtures
  * @property {import('./webdriver/driver').Driver} driver - The driver number.
  * @property {ContractAddressRegistry | undefined} contractRegistry - The contract registry.
- * @property {Ganache | undefined} ganacheServer - The Ganache server.
- * @property {Ganache | undefined} secondaryGanacheServer - The secondary Ganache server.
+ * @property {string | object | Array} localNodeOptions - The local node(s) and options chosen ('ganache', 'anvil'...).
  * @property {mockttp.MockedEndpoint[]} mockedEndpoint - The mocked endpoint.
  * @property {Bundler} bundlerServer - The bundler server.
  * @property {mockttp.Mockttp} mockServer - The mock server.
@@ -60,7 +107,7 @@ async function withFixtures(options, testSuite) {
   const {
     dapp,
     fixtures,
-    localNodeOptions,
+    localNodeOptions = 'ganache',
     smartContract,
     driverOptions,
     dappOptions,
@@ -68,7 +115,6 @@ async function withFixtures(options, testSuite) {
     title,
     ignoredConsoleErrors = [],
     dappPath = undefined,
-    disableGanache,
     disableServerMochaToBackground = false,
     dappPaths,
     testSpecificMock = function () {
@@ -80,15 +126,14 @@ async function withFixtures(options, testSuite) {
     manifestFlags,
   } = options;
 
+  // Normalize localNodeOptions
+  const localNodeOptsNormalized = normalizeLocalNodeOptions(localNodeOptions);
+
   const fixtureServer = new FixtureServer();
-  let ganacheServer;
-  if (!disableGanache) {
-    ganacheServer = new Ganache();
-  }
+
   const bundlerServer = new Bundler();
   const https = await mockttp.generateCACertificate();
   const mockServer = mockttp.getLocal({ https, cors: true });
-  const secondaryGanacheServer = [];
   let numberOfDapps = dapp ? 1 : 0;
   const dappServer = [];
   const phishingPageServer = new PhishingWarningPageServer();
@@ -100,45 +145,75 @@ async function withFixtures(options, testSuite) {
   let webDriver;
   let driver;
   let failed = false;
-  try {
-    if (!disableGanache) {
-      await ganacheServer.start(localNodeOptions);
-    }
-    let contractRegistry;
 
-    if (smartContract && !disableGanache) {
-      const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
+  // ganacheServer variable to be deleted once all specs are migrated to anvil
+  // and use localNode and localNodes solely
+  let ganacheServer;
+  let localNode;
+  const localNodes = [];
+
+  try {
+    // Start servers based on the localNodes array
+    for (let i = 0; i < localNodeOptsNormalized.length; i++) {
+      const nodeType = localNodeOptsNormalized[i].type;
+      const nodeOptions = localNodeOptsNormalized[i].options || {};
+
+      switch (nodeType) {
+        case 'anvil':
+          localNode = new Anvil();
+          await localNode.start(nodeOptions);
+          localNodes.push(localNode);
+          break;
+
+        case 'ganache':
+          ganacheServer = new Ganache();
+          await ganacheServer.start(nodeOptions);
+          localNodes.push(ganacheServer);
+          break;
+
+        case 'none':
+          break;
+
+        default:
+          throw new Error(
+            `Unsupported localNode: '${nodeType}'. Cannot start the server.`,
+          );
+      }
+    }
+
+    let contractRegistry;
+    let seeder;
+
+    // We default the smart contract seeder to the first node client
+    // If there's a future need to deploy multiple smart contracts in multiple clients
+    // this assumption is no longer correct and the below code needs to be modified accordingly
+    if (smartContract) {
+      switch (localNodeOptsNormalized[0].type) {
+        case 'anvil':
+          seeder = new AnvilSeeder(localNodes[0].getProvider());
+          break;
+
+        case 'ganache':
+          seeder = new GanacheSeeder(localNodes[0].getProvider());
+          break;
+
+        default:
+          throw new Error(
+            `Unsupported localNode: '${localNodeOptsNormalized[0].type}'. Cannot deploy smart contracts.`,
+          );
+      }
       const contracts =
         smartContract instanceof Array ? smartContract : [smartContract];
       await Promise.all(
-        contracts.map((contract) =>
-          ganacheSeeder.deploySmartContract(contract),
-        ),
+        contracts.map((contract) => seeder.deploySmartContract(contract)),
       );
-      contractRegistry = ganacheSeeder.getContractRegistry();
+      contractRegistry = seeder.getContractRegistry();
     }
 
     await fixtureServer.start();
     fixtureServer.loadJsonState(fixtures, contractRegistry);
 
-    if (localNodeOptions?.concurrent) {
-      localNodeOptions.concurrent.forEach(async (ganacheSettings) => {
-        const { port, chainId, ganacheOptions2 } = ganacheSettings;
-        const server = new Ganache();
-        secondaryGanacheServer.push(server);
-        await server.start({
-          blockTime: 2,
-          chain: { chainId },
-          port,
-          vmErrorsOnRPCResponse: false,
-          mnemonic:
-            'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
-          ...ganacheOptions2,
-        });
-      });
-    }
-
-    if (!disableGanache && useBundler) {
+    if (ganacheServer && useBundler) {
       await initBundler(bundlerServer, ganacheServer, usePaymaster);
     }
 
@@ -176,7 +251,7 @@ async function withFixtures(options, testSuite) {
       mockServer,
       testSpecificMock,
       {
-        chainId: localNodeOptions?.chainId || 1337,
+        chainId: localNodeOptsNormalized[0]?.options.chainId || 1337,
         ethConversionInUsd,
       },
     );
@@ -220,12 +295,12 @@ async function withFixtures(options, testSuite) {
     console.log(`\nExecuting testcase: '${title}'\n`);
 
     await testSuite({
-      driver: driverProxy ?? driver,
-      contractRegistry,
-      ganacheServer,
-      secondaryGanacheServer,
-      mockedEndpoint,
       bundlerServer,
+      contractRegistry,
+      driver: driverProxy ?? driver,
+      ganacheServer,
+      localNodes,
+      mockedEndpoint,
       mockServer,
     });
 
@@ -306,14 +381,10 @@ async function withFixtures(options, testSuite) {
   } finally {
     if (!failed || process.env.E2E_LEAVE_RUNNING !== 'true') {
       await fixtureServer.stop();
-      if (ganacheServer) {
-        await ganacheServer.quit();
-      }
-
-      if (localNodeOptions?.concurrent) {
-        secondaryGanacheServer.forEach(async (server) => {
+      for (const server of localNodes) {
+        if (server) {
           await server.quit();
-        });
+        }
       }
 
       if (useBundler) {
@@ -595,17 +666,13 @@ const TEST_SEED_PHRASE_TWO =
  * or after a transaction is made.
  *
  * @param {WebDriver} driver - The WebDriver instance.
- * @param {Ganache} [ganacheServer] - The Ganache server instance (optional).
+ * @param {Ganache | Anvil} [localNode] - The local server instance (optional).
  * @param {string} [address] - The address to check the balance for (optional).
  */
-const locateAccountBalanceDOM = async (
-  driver,
-  ganacheServer,
-  address = null,
-) => {
+const locateAccountBalanceDOM = async (driver, localNode, address = null) => {
   const balanceSelector = '[data-testid="eth-overview__primary-currency"]';
-  if (ganacheServer) {
-    const balance = await ganacheServer.getBalance(address);
+  if (localNode) {
+    const balance = await localNode.getBalance(address);
     await driver.waitForSelector({
       css: balanceSelector,
       text: `${balance} ETH`,
@@ -680,10 +747,10 @@ async function createWebSocketConnection(driver, hostname) {
   }
 }
 
-const logInWithBalanceValidation = async (driver, ganacheServer) => {
+const logInWithBalanceValidation = async (driver, localNode) => {
   await unlockWallet(driver);
   // Wait for balance to load
-  await locateAccountBalanceDOM(driver, ganacheServer);
+  await locateAccountBalanceDOM(driver, localNode);
 };
 
 function roundToXDecimalPlaces(number, decimalPlaces) {
@@ -825,9 +892,9 @@ async function getCleanAppState(driver) {
   );
 }
 
-async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
+async function initBundler(bundlerServer, localNodeServer, usePaymaster) {
   try {
-    const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
+    const ganacheSeeder = new GanacheSeeder(localNodeServer.getProvider());
 
     await ganacheSeeder.deploySmartContract(SMART_CONTRACTS.ENTRYPOINT);
 

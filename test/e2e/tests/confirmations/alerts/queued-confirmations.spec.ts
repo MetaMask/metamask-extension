@@ -21,7 +21,6 @@ const {
   DAPP_ONE_URL,
   regularDelayMs,
   WINDOW_TITLES,
-  defaultGanacheOptions,
 } = require('../../../helpers');
 
 const PORT = 8546;
@@ -40,21 +39,25 @@ describe('Queued Confirmations', function () {
             .withSelectedNetworkControllerPerDomain()
             .build(),
           dappOptions: { numberOfDapps: 2 },
-          localNodeOptions: {
-            ...defaultGanacheOptions,
-            concurrent: [
-              {
+          localNodeOptions: [
+            {
+              type: 'anvil',
+            },
+            {
+              type: 'anvil',
+              options: {
                 port: PORT,
                 chainId: CHAIN_ID,
-                ganacheOptions2: defaultGanacheOptions,
               },
-              {
+            },
+            {
+              type: 'anvil',
+              options: {
                 port: PORT_ONE,
                 chainId: CHAIN_ID_ONE,
-                ganacheOptions2: defaultGanacheOptions,
               },
-            ],
-          },
+            },
+          ],
           title: this.test?.fullTitle(),
         },
         async ({ driver }: TestSuiteArguments) => {
@@ -85,21 +88,25 @@ describe('Queued Confirmations', function () {
             .withSelectedNetworkControllerPerDomain()
             .build(),
           dappOptions: { numberOfDapps: 2 },
-          localNodeOptions: {
-            ...defaultGanacheOptions,
-            concurrent: [
-              {
+          localNodeOptions: [
+            {
+              type: 'anvil',
+            },
+            {
+              type: 'anvil',
+              options: {
                 port: PORT,
                 chainId: CHAIN_ID,
-                ganacheOptions2: defaultGanacheOptions,
               },
-              {
+            },
+            {
+              type: 'anvil',
+              options: {
                 port: PORT_ONE,
                 chainId: CHAIN_ID_ONE,
-                ganacheOptions2: defaultGanacheOptions,
               },
-            ],
-          },
+            },
+          ],
           title: this.test?.fullTitle(),
         },
         async ({ driver }: TestSuiteArguments) => {
@@ -137,21 +144,25 @@ describe('Queued Confirmations', function () {
             .withSelectedNetworkControllerPerDomain()
             .build(),
           dappOptions: { numberOfDapps: 2 },
-          localNodeOptions: {
-            ...defaultGanacheOptions,
-            concurrent: [
-              {
+          localNodeOptions: [
+            {
+              type: 'anvil',
+            },
+            {
+              type: 'anvil',
+              options: {
                 port: PORT,
                 chainId: CHAIN_ID,
-                ganacheOptions2: defaultGanacheOptions,
               },
-              {
+            },
+            {
+              type: 'anvil',
+              options: {
                 port: PORT_ONE,
                 chainId: CHAIN_ID_ONE,
-                ganacheOptions2: defaultGanacheOptions,
               },
-            ],
-          },
+            },
+          ],
           smartContract,
           title: this.test?.fullTitle(),
         },
@@ -192,21 +203,25 @@ describe('Queued Confirmations', function () {
             })
             .build(),
           dappOptions: { numberOfDapps: 2 },
-          localNodeOptions: {
-            ...defaultGanacheOptions,
-            concurrent: [
-              {
+          localNodeOptions: [
+            {
+              type: 'anvil',
+            },
+            {
+              type: 'anvil',
+              options: {
                 port: PORT,
                 chainId: CHAIN_ID,
-                ganacheOptions2: defaultGanacheOptions,
               },
-              {
+            },
+            {
+              type: 'anvil',
+              options: {
                 port: PORT_ONE,
                 chainId: CHAIN_ID_ONE,
-                ganacheOptions2: defaultGanacheOptions,
               },
-            ],
-          },
+            },
+          ],
           title: this.test?.fullTitle(),
           testSpecificMock: queueControllerMocks,
         },
@@ -277,21 +292,25 @@ describe('Queued Confirmations', function () {
             })
             .build(),
           dappOptions: { numberOfDapps: 2 },
-          localNodeOptions: {
-            ...defaultGanacheOptions,
-            concurrent: [
-              {
+          localNodeOptions: [
+            {
+              type: 'anvil',
+            },
+            {
+              type: 'anvil',
+              options: {
                 port: PORT,
                 chainId: CHAIN_ID,
-                ganacheOptions2: defaultGanacheOptions,
               },
-              {
+            },
+            {
+              type: 'anvil',
+              options: {
                 port: PORT_ONE,
                 chainId: CHAIN_ID_ONE,
-                ganacheOptions2: defaultGanacheOptions,
               },
-            ],
-          },
+            },
+          ],
           smartContract,
           title: this.test?.fullTitle(),
           testSpecificMock: queueControllerMocks,
