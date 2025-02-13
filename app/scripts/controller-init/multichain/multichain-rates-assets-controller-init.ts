@@ -1,4 +1,4 @@
-import { MultichainAssetsRatesController } from '@metamask/assets-controllers';
+import { MultiChainAssetsRatesController } from '@metamask/assets-controllers';
 import { ControllerInitFunction } from '../types';
 import { MultichainAssetsRatesControllerMessenger } from '../messengers/multichain';
 
@@ -10,14 +10,13 @@ import { MultichainAssetsRatesControllerMessenger } from '../messengers/multicha
  * @param request.persistedState - The persisted state of the extension.
  * @returns The initialized controller.
  */
-export const MultichainAssetsRatesControllerInit: ControllerInitFunction<
-  MultichainAssetsRatesController,
+export const MultiChainAssetsRatesControllerInit: ControllerInitFunction<
+  MultiChainAssetsRatesController,
   MultichainAssetsRatesControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
-  const controller = new MultichainAssetsRatesController({
-    // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
+  const controller = new MultiChainAssetsRatesController({
     messenger: controllerMessenger,
-    state: persistedState.MultichainAssetsRatesController,
+    state: persistedState.MultiChainAssetsRatesController,
   });
 
   return {

@@ -37,6 +37,9 @@ export const CONTROLLER_MESSENGERS = {
   MultichainBalancesController: {
     getMessenger: getMultichainBalancesControllerMessenger,
   },
+  MultichainAssetsRatesController: {
+    getMessenger: getMultichainAssetsRatesControllerMessenger,
+  },
   MultichainTransactionsController: {
     getMessenger: getMultichainTransactionsControllerMessenger,
   },
@@ -64,8 +67,5 @@ export const CONTROLLER_MESSENGERS = {
   TransactionController: {
     getMessenger: getTransactionControllerMessenger,
     getInitMessenger: getTransactionControllerInitMessenger,
-  },
-  MultichainAssetsRatesController: {
-    getMessenger: getMultichainAssetsRatesControllerMessenger,
   },
 } as const;

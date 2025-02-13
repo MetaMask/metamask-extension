@@ -363,6 +363,7 @@ import {
   MultichainAssetsControllerInit,
   MultichainTransactionsControllerInit,
   MultichainBalancesControllerInit,
+  MultiChainAssetsRatesControllerInit,
 } from './controller-init/multichain';
 ///: END:ONLY_INCLUDE_IF
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
@@ -2056,6 +2057,7 @@ export default class MetamaskController extends EventEmitter {
       MultichainAssetsController: MultichainAssetsControllerInit,
       MultichainBalancesController: MultichainBalancesControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
+      MultiChainAssetsRatesController: MultiChainAssetsRatesControllerInit,
       ///: END:ONLY_INCLUDE_IF
     };
 
