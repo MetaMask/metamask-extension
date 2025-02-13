@@ -4,16 +4,15 @@ import {
   ACCOUNT_1,
   ACCOUNT_2,
   largeDelayMs,
+  unlockWallet,
   WINDOW_TITLES,
   withFixtures,
 } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
+import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
 import {
-  initCreateSessionScopes,
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
-  openMultichainDappAndConnectWalletWithExternallyConnectable,
   addAccountInWalletAndAuthorize,
-  getSessionScopes,
   type FixtureCallbackArgs,
 } from './testHelpers';
 
@@ -30,11 +29,12 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
         ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
       },
       async ({ driver, extensionId }: FixtureCallbackArgs) => {
-        await openMultichainDappAndConnectWalletWithExternallyConnectable(
-          driver,
-          extensionId,
-        );
-        await initCreateSessionScopes(driver, GANACHE_SCOPES, ACCOUNTS);
+        await unlockWallet(driver);
+
+        const testDapp = new TestDappMultichain(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.connectExternallyConnectable(extensionId);
+        await testDapp.initCreateSessionScopes(GANACHE_SCOPES, ACCOUNTS);
         await addAccountInWalletAndAuthorize(driver);
         await driver.clickElement({ text: 'Connect', tag: 'button' });
         await driver.delay(largeDelayMs);
@@ -43,7 +43,7 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
         /**
          * We verify that scopes are not empty before calling `wallet_revokeSession`
          */
-        const { sessionScopes } = await getSessionScopes(driver);
+        const { sessionScopes } = await testDapp.getSession();
         assert.ok(
           Object.keys(sessionScopes).length > 0,
           'Should have non-empty session scopes value before calling `wallet_revokeSession`',
@@ -54,7 +54,7 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
           tag: 'span',
         });
 
-        const parsedResult = await getSessionScopes(driver);
+        const parsedResult = await testDapp.getSession();
         const resultSessionScopes = parsedResult.sessionScopes;
         assert.deepStrictEqual(
           resultSessionScopes,
@@ -75,17 +75,19 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
         ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
       },
       async ({ driver, extensionId }: FixtureCallbackArgs) => {
-        await openMultichainDappAndConnectWalletWithExternallyConnectable(
-          driver,
-          extensionId,
-        );
         const expectedError = {
           code: 4100,
           message:
             'The requested account and/or method has not been authorized by the user.',
         };
 
-        await initCreateSessionScopes(driver, GANACHE_SCOPES, ACCOUNTS);
+        await unlockWallet(driver);
+
+        const testDapp = new TestDappMultichain(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.connectExternallyConnectable(extensionId);
+
+        await testDapp.initCreateSessionScopes(GANACHE_SCOPES, ACCOUNTS);
         await addAccountInWalletAndAuthorize(driver);
         await driver.clickElement({ text: 'Connect', tag: 'button' });
         await driver.delay(largeDelayMs);

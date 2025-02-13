@@ -2,12 +2,12 @@ import { strict as assert } from 'assert';
 import { unlockWallet, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
+import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   getExpectedSessionScope,
   type FixtureCallbackArgs,
 } from './testHelpers';
-import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
 
 describe('Multichain API', function () {
   describe('Connect wallet to the multichain dapp via `externally_connectable`, call `wallet_getSession` when there is no existing session', function () {
@@ -23,9 +23,7 @@ describe('Multichain API', function () {
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
-          await testDapp.connectExternallyConnectable(
-            extensionId,
-          );
+          await testDapp.connectExternallyConnectable(extensionId);
           const parsedResult = await testDapp.getSession();
 
           assert.deepStrictEqual(
@@ -59,9 +57,7 @@ describe('Multichain API', function () {
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
-          await testDapp.connectExternallyConnectable(
-            extensionId,
-          );
+          await testDapp.connectExternallyConnectable(extensionId);
           const parsedResult = await testDapp.getSession();
 
           const sessionScope = parsedResult.sessionScopes[DEFAULT_SCOPE];

@@ -1,17 +1,9 @@
 import * as path from 'path';
 import { By } from 'selenium-webdriver';
+import { KnownRpcMethods, KnownNotifications } from '@metamask/multichain';
 import {
-  KnownRpcMethods,
-  KnownNotifications,
-  NormalizedScopeObject,
-} from '@metamask/multichain';
-import {
-  DAPP_URL,
-  largeDelayMs,
   multipleGanacheOptions,
-  openDapp,
   regularDelayMs,
-  unlockWallet,
   WINDOW_TITLES,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
@@ -49,7 +41,6 @@ export const DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS = {
     ],
   },
 };
-
 
 /**
  * Retrieves the expected session scope for a given set of addresses.

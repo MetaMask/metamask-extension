@@ -1,7 +1,6 @@
-import { strict as assert } from 'assert';
+import { NormalizedScopeObject } from '@metamask/multichain';
 import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { NormalizedScopeObject, NormalizedScopesObject } from '@metamask/multichain';
 
 const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
 const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
@@ -9,15 +8,24 @@ const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 class TestDappMultichain {
   private readonly driver: Driver;
 
-  private readonly connectExternallyConnectableButton = { text: 'Connect', tag: 'button' };
+  private readonly connectExternallyConnectableButton = {
+    text: 'Connect',
+    tag: 'button',
+  };
 
   private readonly extensionIdInput = '[placeholder="Enter extension ID"]';
 
   private readonly firstSessionMethodResult = '#session-method-result-0';
 
-  private readonly walletCreateSessionButton = { text: 'wallet_createSession', tag: 'span' };
+  private readonly walletCreateSessionButton = {
+    text: 'wallet_createSession',
+    tag: 'span',
+  };
 
-  private readonly walletGetSessionButton = { text: 'wallet_getSession', tag: 'span' };
+  private readonly walletGetSessionButton = {
+    text: 'wallet_getSession',
+    tag: 'span',
+  };
 
   private readonly resultSummary = '.result-summary';
 
@@ -26,19 +34,19 @@ class TestDappMultichain {
   }
 
   addCustomAccountAddressInput(i: number) {
-    return `#add-custom-address-button-${i}`
+    return `#add-custom-address-button-${i}`;
   }
 
   addCustomScopeButton(i: number) {
-    return `#add-custom-scope-button-${i}`
+    return `#add-custom-scope-button-${i}`;
   }
 
   customAccountAddressInput(i: number) {
-    return `#custom-Address-input-${i}`
+    return `#custom-Address-input-${i}`;
   }
 
   customScopeInput(i: number) {
-    return `#custom-Scope-input-${i}`
+    return `#custom-Scope-input-${i}`;
   }
 
   async clickConnectExternallyConnectableButton() {
@@ -52,11 +60,11 @@ class TestDappMultichain {
   }
 
   async clickWalletCreateSessionButton() {
-    await this.driver.clickElement(this.walletCreateSessionButton)
+    await this.driver.clickElement(this.walletCreateSessionButton);
   }
 
   async clickWalletGetSessionButton() {
-    await this.driver.clickElement(this.walletGetSessionButton)
+    await this.driver.clickElement(this.walletGetSessionButton);
   }
 
   async fillExtensionIdInput(extensionId: string) {
@@ -83,9 +91,7 @@ class TestDappMultichain {
    *
    * @param extensionId - Extension identifier for web dapp to interact with wallet extension.
    */
-  async connectExternallyConnectable(
-    extensionId: string
-  ) {
+  async connectExternallyConnectable(extensionId: string) {
     console.log('Connect multichain test dapp to Multichain API');
     await this.fillExtensionIdInput(extensionId);
     await this.clickConnectExternallyConnectableButton();
@@ -102,11 +108,11 @@ class TestDappMultichain {
     scopes: string[],
     accounts: string[] = [],
   ): Promise<void> {
-    await this.driver.switchToWindowWithTitle(
-      WINDOW_TITLES.MultichainTestDApp,
-    );
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
     for (const [i, scope] of scopes.entries()) {
-      const scopeInput = await this.driver.waitForSelector(this.customScopeInput(i));
+      const scopeInput = await this.driver.waitForSelector(
+        this.customScopeInput(i),
+      );
 
       // @ts-expect-error Driver.findNestedElement injects `fill` method onto returned element, but typescript compiler will not let us access this method without a complaint, so we override it.
       scopeInput.fill(scope);
@@ -114,14 +120,16 @@ class TestDappMultichain {
     }
 
     for (const [i, account] of accounts.entries()) {
-      const accountInput = await this.driver.waitForSelector(this.customAccountAddressInput(i));
+      const accountInput = await this.driver.waitForSelector(
+        this.customAccountAddressInput(i),
+      );
 
       // @ts-expect-error Driver.findNestedElement injects `fill` method onto returned element, but typescript compiler will not let us access this method without a complaint, so we override it.
       accountInput.fill(account);
       await this.driver.clickElement(this.addCustomAccountAddressInput(i));
     }
 
-    await this.clickWalletCreateSessionButton()
+    await this.clickWalletCreateSessionButton();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await this.driver.delay(largeDelayMs);
   }
@@ -129,17 +137,18 @@ class TestDappMultichain {
   /**
    * Retrieves permitted session object.
    *
-   * @param driver - E2E test driver {@link Driver}, wrapping the Selenium WebDriver.
-   * @returns the session result.
+   * @returns the session object.
    */
-  async getSession(): Promise<{ sessionScopes: Record<string, NormalizedScopeObject> }> {
-    await this.driver.switchToWindowWithTitle(
-      WINDOW_TITLES.MultichainTestDApp,
-    );
+  async getSession(): Promise<{
+    sessionScopes: Record<string, NormalizedScopeObject>;
+  }> {
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
     await this.clickWalletGetSessionButton();
     await this.clickFirstResultSummary();
 
-    const getSessionRawResult = await this.driver.findElement(this.firstSessionMethodResult);
+    const getSessionRawResult = await this.driver.findElement(
+      this.firstSessionMethodResult,
+    );
     return JSON.parse(await getSessionRawResult.getText());
   }
 }

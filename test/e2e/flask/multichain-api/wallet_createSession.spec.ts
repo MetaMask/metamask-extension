@@ -10,6 +10,7 @@ import {
   unlockWallet,
 } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
+import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   getExpectedSessionScope,
@@ -17,7 +18,6 @@ import {
   updateNetworkCheckboxes,
   type FixtureCallbackArgs,
 } from './testHelpers';
-import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
 
 describe('Multichain API', function () {
   describe('Connect wallet to the multichain dapp via `externally_connectable`, call `wallet_createSession` with requested EVM scope that does NOT match one of the user’s enabled networks', function () {
@@ -37,9 +37,7 @@ describe('Multichain API', function () {
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
-          await testDapp.connectExternallyConnectable(
-            extensionId,
-          );
+          await testDapp.connectExternallyConnectable(extensionId);
           await testDapp.initCreateSessionScopes([
             'eip155:1337',
             ...scopesToIgnore,
@@ -85,9 +83,7 @@ describe('Multichain API', function () {
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
-          await testDapp.connectExternallyConnectable(
-            extensionId,
-          );
+          await testDapp.connectExternallyConnectable(extensionId);
           await testDapp.initCreateSessionScopes(
             [REQUEST_SCOPE],
             [SECOND_ACCOUNT_IN_WALLET, ACCOUNT_NOT_IN_WALLET],
@@ -102,8 +98,7 @@ describe('Multichain API', function () {
           const expectedSessionScope = getExpectedSessionScope(REQUEST_SCOPE, [
             SECOND_ACCOUNT_IN_WALLET,
           ]);
-          const result =
-            getSessionResult.sessionScopes[REQUEST_SCOPE].accounts;
+          const result = getSessionResult.sessionScopes[REQUEST_SCOPE].accounts;
 
           assert.deepEqual(
             expectedSessionScope.accounts,
@@ -135,9 +130,7 @@ describe('Multichain API', function () {
 
         const testDapp = new TestDappMultichain(driver);
         await testDapp.openTestDappPage();
-        await testDapp.connectExternallyConnectable(
-          extensionId,
-        );
+        await testDapp.connectExternallyConnectable(extensionId);
         await testDapp.initCreateSessionScopes(requestScopes);
 
         // navigate to network selection screen
@@ -191,9 +184,7 @@ describe('Multichain API', function () {
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
-            await testDapp.connectExternallyConnectable(
-              extensionId,
-            );
+            await testDapp.connectExternallyConnectable(extensionId);
             await testDapp.initCreateSessionScopes(
               ['eip155:1337', 'eip155:1338'],
               [ACCOUNT_1],
@@ -238,9 +229,7 @@ describe('Multichain API', function () {
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
-          await testDapp.connectExternallyConnectable(
-            extensionId,
-          );
+          await testDapp.connectExternallyConnectable(extensionId);
           await testDapp.initCreateSessionScopes(['eip155:1337']);
 
           const editButtons = await driver.findElements('[data-testid="edit"]');
@@ -279,9 +268,7 @@ describe('Multichain API', function () {
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
-            await testDapp.connectExternallyConnectable(
-              extensionId,
-            );
+            await testDapp.connectExternallyConnectable(extensionId);
             await testDapp.initCreateSessionScopes(['eip155:1']);
 
             await addAccountInWalletAndAuthorize(driver);
@@ -317,9 +304,7 @@ describe('Multichain API', function () {
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
-            await testDapp.connectExternallyConnectable(
-              extensionId,
-            );
+            await testDapp.connectExternallyConnectable(extensionId);
             await testDapp.initCreateSessionScopes(['eip155:1337']);
 
             const editButtons = await driver.findElements(
@@ -345,7 +330,7 @@ describe('Multichain API', function () {
               false,
               'should not able to approve the create session request without at least one account should be selected',
             );
-        },
+          },
         );
       });
     });
@@ -376,9 +361,7 @@ describe('Multichain API', function () {
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
-          await testDapp.connectExternallyConnectable(
-            extensionId,
-          );
+          await testDapp.connectExternallyConnectable(extensionId);
 
           /**
            * We first make sure sessions exist

@@ -3,17 +3,17 @@ import {
   ACCOUNT_1,
   ACCOUNT_2,
   largeDelayMs,
+  unlockWallet,
   WINDOW_TITLES,
   withFixtures,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
+import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
 import {
   addAccountInWalletAndAuthorize,
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   getExpectedSessionScope,
-  initCreateSessionScopes,
-  openMultichainDappAndConnectWalletWithExternallyConnectable,
   updateNetworkCheckboxes,
 } from './testHelpers';
 
@@ -40,11 +40,12 @@ describe('Call `wallet_createSession`, then update the accounts and/or scopes in
         driver: Driver;
         extensionId: string;
       }) => {
-        await openMultichainDappAndConnectWalletWithExternallyConnectable(
-          driver,
-          extensionId,
-        );
-        await initCreateSessionScopes(driver, INITIAL_SCOPES, ACCOUNTS);
+        await unlockWallet(driver);
+
+        const testDapp = new TestDappMultichain(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.connectExternallyConnectable(extensionId);
+        await testDapp.initCreateSessionScopes(INITIAL_SCOPES, ACCOUNTS);
         await addAccountInWalletAndAuthorize(driver);
         await driver.clickElement({ text: 'Connect', tag: 'button' });
         await driver.delay(largeDelayMs);
