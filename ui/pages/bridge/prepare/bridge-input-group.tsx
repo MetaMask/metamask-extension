@@ -28,7 +28,6 @@ import {
   TextVariant,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { AssetType } from '../../../../shared/constants/transaction';
 import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import {
   getBridgeQuotes,
@@ -246,16 +245,16 @@ export const BridgeInputGroup = ({
           as={isAmountReadOnly ? 'a' : 'p'}
         >
           {isAmountReadOnly &&
-          token &&
-          selectedChainId &&
-          token.type === AssetType.token
-            ? shortenString(token.address, {
-                truncatedCharLimit: 11,
-                truncatedStartChars: 4,
-                truncatedEndChars: 4,
-                skipCharacterInEnd: false,
-              })
-            : undefined}
+            token &&
+            selectedChainId &&
+            (isNativeAddress(token.address)
+              ? undefined
+              : shortenString(token.address, {
+                  truncatedCharLimit: 11,
+                  truncatedStartChars: 4,
+                  truncatedEndChars: 4,
+                  skipCharacterInEnd: false,
+                }))}
           {!isAmountReadOnly && balanceAmount
             ? formatTokenAmount(locale, balanceAmount, token?.symbol)
             : undefined}

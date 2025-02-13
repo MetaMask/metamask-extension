@@ -47,7 +47,6 @@ import {
   calcEstimatedAndMaxTotalGasFee,
   isNativeAddress,
 } from '../../pages/bridge/utils/quote';
-import { AssetType } from '../../../shared/constants/transaction';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { normalizeChainId } from '../../../shared/modules/bridge-utils/caip-formatters';
 import {
@@ -161,7 +160,6 @@ export const getFromToken = createSelector(
         ],
       balance: '0',
       string: '0',
-      type: AssetType.native,
     };
   },
 );
