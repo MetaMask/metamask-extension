@@ -247,6 +247,11 @@ describe('Send ETH', function () {
             dapp: true,
             fixtures: new FixtureBuilder()
               .withPermissionControllerConnectedToTestDapp()
+              .withPreferencesController({
+                preferences: {
+                  showFiatInTestnets: true,
+                },
+              })
               .build(),
             title: this.test.fullTitle(),
             localNodeOptions: 'anvil',
@@ -321,6 +326,11 @@ describe('Send ETH', function () {
             dapp: true,
             fixtures: new FixtureBuilder()
               .withPermissionControllerConnectedToTestDapp()
+              .withPreferencesController({
+                preferences: {
+                  showFiatInTestnets: true,
+                },
+              })
               .build(),
             localNodeOptions: [
               {
