@@ -21,8 +21,6 @@ export const TokenCellBadge = React.memo(
   ({ token }: TokenCellBadgeProps) => {
     const allNetworks = useSelector(getNetworkConfigurationsByChainId);
 
-    console.log('render TokenCellBadge');
-
     return (
       <BadgeWrapper
         badge={

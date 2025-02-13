@@ -30,5 +30,7 @@ export const TokenCellPrimaryDisplay = React.memo(
       </SensitiveText>
     );
   },
-  (prevProps, nextProps) => prevProps.token.primary === nextProps.token.primary,
+  (prevProps, nextProps) =>
+    prevProps.token.primary === nextProps.token.primary &&
+    prevProps.privacyMode === nextProps.privacyMode,
 );

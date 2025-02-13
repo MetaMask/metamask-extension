@@ -33,7 +33,7 @@ export const useTokenDisplayInfo = ({
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
   const currentCurrency = useSelector(getCurrentCurrency);
   const locale = useSelector(getIntlLocale);
-  const tokenChainImage = getImageForChainId(token?.chainId);
+  const tokenChainImage: string = getImageForChainId(token.chainId);
   const selectedAccount = useSelector(getSelectedAccount);
   const showFiat = useMultichainSelector(
     getMultichainShouldShowFiat,
@@ -104,7 +104,7 @@ export const useTokenDisplayInfo = ({
       primary,
       secondary,
       isStakeable,
-      tokenChainImage,
+      tokenChainImage: tokenChainImage as string,
     };
   }
   // TODO non-evm assets. this is only the native token
@@ -114,7 +114,7 @@ export const useTokenDisplayInfo = ({
     primary: '',
     secondary: token.secondary,
     isStakeable: false,
-    tokenChainImage: token.image,
+    tokenChainImage: token.image as string,
   };
 };
 
