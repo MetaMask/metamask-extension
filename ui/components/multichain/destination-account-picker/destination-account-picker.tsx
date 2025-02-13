@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   TextField,
   Box,
@@ -40,18 +40,39 @@ export const DestinationAccountPicker = ({
   const [searchQuery, setSearchQuery] = useState('');
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const accounts = useSelector(getInternalAccounts);
+  const hasAutoSelectedRef = useRef(false);
 
-  const filteredAccounts = accounts.filter((account) => {
-    const matchesSearch = account.metadata.name
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
+  const filteredAccounts = accounts
+    .filter((account) => {
+      const matchesSearch = account.metadata.name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
 
-    const matchesChain = isDestinationSolana
-      ? account.type === 'solana:data-account'
-      : account.type !== 'solana:data-account';
+      const matchesChain = isDestinationSolana
+        ? account.type === 'solana:data-account'
+        : account.type !== 'solana:data-account';
 
-    return matchesSearch && matchesChain;
-  });
+      return matchesSearch && matchesChain;
+    })
+    .sort((a, b) => {
+      // Sort by lastSelected timestamp, most recent first
+      const aLastSelected = a.metadata.lastSelected || 0;
+      const bLastSelected = b.metadata.lastSelected || 0;
+      return bLastSelected - aLastSelected;
+    });
+
+  // Auto-select most recently used account only once on initial load
+  useEffect(() => {
+    if (
+      filteredAccounts.length > 0 &&
+      !selectedSwapToAccount &&
+      !hasAutoSelectedRef.current
+    ) {
+      const mostRecentAccount = filteredAccounts[0];
+      onAccountSelect(mostRecentAccount);
+      hasAutoSelectedRef.current = true;
+    }
+  }, [filteredAccounts, selectedSwapToAccount, onAccountSelect]);
 
   if (selectedSwapToAccount) {
     return (
@@ -87,7 +108,10 @@ export const DestinationAccountPicker = ({
         </Box>
         <Box className="deselect-button-container" paddingRight={5}>
           <Button
-            onClick={() => onAccountSelect(null)}
+            onClick={() => {
+              onAccountSelect(null);
+              hasAutoSelectedRef.current = true;
+            }}
             aria-label="Deselect account"
             variant={ButtonVariant.Link}
             size={ButtonSize.Sm}
