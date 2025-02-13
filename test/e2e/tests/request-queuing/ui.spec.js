@@ -187,7 +187,7 @@ async function validateBalanceAndActivity(
 }
 
 describe('Request-queue UI changes', function () {
-  it('should show network specific to domain @no-mmi', async function () {
+  it('should show network specific to domain', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
     await withFixtures(
@@ -196,7 +196,7 @@ describe('Request-queue UI changes', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {
@@ -248,7 +248,7 @@ describe('Request-queue UI changes', function () {
     );
   });
 
-  it('handles three confirmations on three confirmations concurrently @no-mmi', async function () {
+  it('handles three confirmations on three confirmations concurrently', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
     await withFixtures(
@@ -258,7 +258,7 @@ describe('Request-queue UI changes', function () {
           .withNetworkControllerTripleGanache()
 
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             // Ganache for network 1
@@ -369,7 +369,7 @@ describe('Request-queue UI changes', function () {
     );
   });
 
-  it('should gracefully handle deleted network @no-mmi', async function () {
+  it('should gracefully handle deleted network', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -382,7 +382,7 @@ describe('Request-queue UI changes', function () {
           })
 
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {
@@ -445,12 +445,11 @@ describe('Request-queue UI changes', function () {
     );
   });
 
-  it('should signal from UI to dapp the network change @no-mmi', async function () {
+  it('should signal from UI to dapp the network change', async function () {
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         driverOptions: { constrainWindowSize: true },
       },
@@ -495,7 +494,7 @@ describe('Request-queue UI changes', function () {
           .withNetworkControllerDoubleGanache()
 
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {
@@ -547,7 +546,7 @@ describe('Request-queue UI changes', function () {
           .withNetworkControllerDoubleGanache()
 
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {
@@ -606,7 +605,7 @@ describe('Request-queue UI changes', function () {
     );
   });
 
-  it('should gracefully handle network connectivity failure for signatures @no-mmi', async function () {
+  it('should gracefully handle network connectivity failure for signatures', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -616,7 +615,7 @@ describe('Request-queue UI changes', function () {
           .withNetworkControllerDoubleGanache()
 
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {
@@ -670,7 +669,7 @@ describe('Request-queue UI changes', function () {
     );
   });
 
-  it('should gracefully handle network connectivity failure for confirmations @no-mmi', async function () {
+  it('should gracefully handle network connectivity failure for confirmations', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -682,7 +681,7 @@ describe('Request-queue UI changes', function () {
           .withNetworkControllerDoubleGanache()
 
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {

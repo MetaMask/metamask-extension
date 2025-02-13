@@ -1,5 +1,5 @@
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { RestrictedControllerMessenger } from '@metamask/base-controller';
+import { RestrictedMessenger } from '@metamask/base-controller';
 import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import { JsonRpcMiddleware } from '@metamask/json-rpc-engine';
 import type { Json, JsonRpcParams } from '@metamask/utils';
@@ -8,14 +8,13 @@ import { unrestrictedEthSigningMethods } from '../controllers/permissions';
 
 type AllowedActions = AccountsControllerGetSelectedAccountAction;
 
-export type EvmMethodsToNonEvmAccountFilterMessenger =
-  RestrictedControllerMessenger<
-    'EvmMethodsToNonEvmAccountFilterMessenger',
-    AllowedActions,
-    never,
-    AllowedActions['type'],
-    never
-  >;
+export type EvmMethodsToNonEvmAccountFilterMessenger = RestrictedMessenger<
+  'EvmMethodsToNonEvmAccountFilterMessenger',
+  AllowedActions,
+  never,
+  AllowedActions['type'],
+  never
+>;
 
 const METHODS_TO_CHECK = [
   ...Object.values(RestrictedEthMethods),

@@ -60,7 +60,7 @@ async function withFixtures(options, testSuite) {
   const {
     dapp,
     fixtures,
-    ganacheOptions,
+    localNodeOptions,
     smartContract,
     driverOptions,
     dappOptions,
@@ -102,7 +102,7 @@ async function withFixtures(options, testSuite) {
   let failed = false;
   try {
     if (!disableGanache) {
-      await ganacheServer.start(ganacheOptions);
+      await ganacheServer.start(localNodeOptions);
     }
     let contractRegistry;
 
@@ -121,8 +121,8 @@ async function withFixtures(options, testSuite) {
     await fixtureServer.start();
     fixtureServer.loadJsonState(fixtures, contractRegistry);
 
-    if (ganacheOptions?.concurrent) {
-      ganacheOptions.concurrent.forEach(async (ganacheSettings) => {
+    if (localNodeOptions?.concurrent) {
+      localNodeOptions.concurrent.forEach(async (ganacheSettings) => {
         const { port, chainId, ganacheOptions2 } = ganacheSettings;
         const server = new Ganache();
         secondaryGanacheServer.push(server);
@@ -131,6 +131,8 @@ async function withFixtures(options, testSuite) {
           chain: { chainId },
           port,
           vmErrorsOnRPCResponse: false,
+          mnemonic:
+            'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
           ...ganacheOptions2,
         });
       });
@@ -174,7 +176,7 @@ async function withFixtures(options, testSuite) {
       mockServer,
       testSpecificMock,
       {
-        chainId: ganacheOptions?.chainId || 1337,
+        chainId: localNodeOptions?.chainId || 1337,
         ethConversionInUsd,
       },
     );
@@ -308,7 +310,7 @@ async function withFixtures(options, testSuite) {
         await ganacheServer.quit();
       }
 
-      if (ganacheOptions?.concurrent) {
+      if (localNodeOptions?.concurrent) {
         secondaryGanacheServer.forEach(async (server) => {
           await server.quit();
         });
@@ -715,30 +717,6 @@ function genRandInitBal(minETHBal = 10, maxETHBal = 100, decimalPlaces = 4) {
  * @param {WebDriver} options.driver - The WebDriver instance controlling the browser.
  * @param {boolean} [options.snapSigInsights] - Whether to wait for the insights snap to be ready before clicking the sign button.
  */
-async function clickSignOnSignatureConfirmation({
-  driver,
-  snapSigInsights = false,
-}) {
-  if (snapSigInsights) {
-    // there is no condition we can wait for to know the snap is ready,
-    // so we have to add a small delay as the last alternative to avoid flakiness.
-    await driver.delay(largeDelayMs);
-  }
-  await driver.waitForSelector(
-    { text: 'Sign', tag: 'button' },
-    { state: 'enabled' },
-  );
-  await driver.clickElement({ text: 'Sign', tag: 'button' });
-}
-
-/**
- * This method handles clicking the sign button on signature confirmation
- * screen.
- *
- * @param {object} options - Options for the function.
- * @param {WebDriver} options.driver - The WebDriver instance controlling the browser.
- * @param {boolean} [options.snapSigInsights] - Whether to wait for the insights snap to be ready before clicking the sign button.
- */
 async function clickSignOnRedesignedSignatureConfirmation({
   driver,
   snapSigInsights = false,
@@ -748,29 +726,10 @@ async function clickSignOnRedesignedSignatureConfirmation({
   if (snapSigInsights) {
     // there is no condition we can wait for to know the snap is ready,
     // so we have to add a small delay as the last alternative to avoid flakiness.
-    await driver.delay(regularDelayMs);
+    await driver.delay(largeDelayMs);
   }
 
   await driver.clickElement({ text: 'Confirm', tag: 'button' });
-}
-
-/**
- * Some signing methods have extra security that requires the user to click a
- * button to validate that they have verified the details. This method handles
- * performing the necessary steps to click that button.
- *
- * @param {WebDriver} driver
- */
-async function validateContractDetails(driver) {
-  const verifyDetailsBtnSelector =
-    '.signature-request-content__verify-contract-details';
-
-  await driver.clickElement(verifyDetailsBtnSelector);
-  await driver.clickElement({ text: 'Got it', tag: 'button' });
-
-  await driver.clickElementSafe(
-    '[data-testid="signature-request-scroll-button"]',
-  );
 }
 
 /**
@@ -894,54 +853,13 @@ async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
 }
 
 /**
- * Rather than using the FixtureBuilder#withPreferencesController to set the setting
- * we need to manually set the setting because the migration #122 overrides this.
- * We should be able to remove this when we delete the redesignedConfirmationsEnabled setting.
- *
- * @param driver
- */
-async function tempToggleSettingRedesignedConfirmations(driver) {
-  // Ensure we are on the extension window
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-
-  // Open settings menu button
-  await driver.clickElement('[data-testid="account-options-menu-button"]');
-
-  // fix race condition with mmi build
-  if (process.env.MMI) {
-    await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
-  }
-
-  // Click settings from dropdown menu
-  await driver.clickElement('[data-testid="global-menu-settings"]');
-
-  // Click Experimental tab
-  const experimentalTabRawLocator = {
-    text: 'Experimental',
-    tag: 'div',
-  };
-  await driver.clickElement(experimentalTabRawLocator);
-
-  // Click redesignedConfirmationsEnabled toggle
-  await driver.clickElement(
-    '[data-testid="toggle-redesigned-confirmations-container"]',
-  );
-}
-
-/**
- * Opens the account options menu safely, handling potential race conditions
- * with the MMI build.
+ * Opens the account options menu safely
  *
  * @param {WebDriver} driver - The WebDriver instance used to interact with the browser.
  * @returns {Promise<void>} A promise that resolves when the menu is opened and any necessary waits are complete.
  */
 async function openMenuSafe(driver) {
   await driver.clickElement('[data-testid="account-options-menu-button"]');
-
-  // fix race condition with mmi build
-  if (process.env.MMI) {
-    await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
-  }
 }
 
 const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
@@ -985,9 +903,7 @@ module.exports = {
   convertETHToHexGwei,
   roundToXDecimalPlaces,
   generateRandNumBetween,
-  clickSignOnSignatureConfirmation,
   clickSignOnRedesignedSignatureConfirmation,
-  validateContractDetails,
   switchToNotificationWindow,
   getEventPayloads,
   assertInAnyOrder,
@@ -996,7 +912,6 @@ module.exports = {
   getCleanAppState,
   editGasFeeForm,
   clickNestedButton,
-  tempToggleSettingRedesignedConfirmations,
   openMenuSafe,
   sentryRegEx,
   createWebSocketConnection,

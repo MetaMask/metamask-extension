@@ -1,0 +1,89 @@
+// This is a machine-generated file that tracks circular dependencies in the codebase.
+// To understand changes in this file:
+// - Each array represents a cycle of imports where the last file imports the first
+// - The cycles are sorted alphabetically for consistent diffs
+// - To update this file, run: yarn circular-deps:update
+// - To prevent new circular dependencies, ensure your changes don't add new cycles
+// - For more information contact the Extension Platform team.
+
+[
+  [
+    "ui/components/app/alert-system/confirm-alert-modal/confirm-alert-modal.tsx",
+    "ui/components/app/alert-system/confirm-alert-modal/index.tsx",
+    "ui/pages/confirmations/components/confirm/footer/footer.tsx"
+  ],
+  [
+    "ui/components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar.tsx",
+    "ui/components/app/assets/asset-list/asset-list-control-bar/index.ts",
+    "ui/components/app/assets/asset-list/asset-list.tsx",
+    "ui/components/app/assets/asset-list/network-filter/index.ts",
+    "ui/components/app/assets/asset-list/network-filter/network-filter.tsx",
+    "ui/hooks/useAccountTotalCrossChainFiatBalance.ts"
+  ],
+  [
+    "ui/components/app/assets/asset-list/asset-list.tsx",
+    "ui/components/app/assets/asset-list/native-token/index.ts",
+    "ui/components/app/assets/asset-list/native-token/native-token.tsx"
+  ],
+  [
+    "ui/components/app/assets/asset-list/asset-list.tsx",
+    "ui/components/app/assets/asset-list/native-token/index.ts",
+    "ui/components/app/assets/asset-list/native-token/native-token.tsx",
+    "ui/components/app/assets/asset-list/native-token/use-native-token-balance.ts"
+  ],
+  [
+    "ui/components/app/name/name-details/name-details.tsx",
+    "ui/components/app/name/name.tsx"
+  ],
+  [
+    "ui/components/multichain/pages/send/components/account-picker.tsx",
+    "ui/components/multichain/pages/send/components/index.ts"
+  ],
+  [
+    "ui/components/multichain/pages/send/components/address-book.tsx",
+    "ui/components/multichain/pages/send/components/index.ts"
+  ],
+  [
+    "ui/components/multichain/pages/send/components/hex.tsx",
+    "ui/components/multichain/pages/send/components/index.ts"
+  ],
+  [
+    "ui/components/multichain/pages/send/components/index.ts",
+    "ui/components/multichain/pages/send/components/network-picker.tsx"
+  ],
+  [
+    "ui/components/multichain/pages/send/components/index.ts",
+    "ui/components/multichain/pages/send/components/recipient-content.tsx"
+  ],
+  [
+    "ui/components/multichain/pages/send/components/index.ts",
+    "ui/components/multichain/pages/send/components/recipient-input.tsx"
+  ],
+  [
+    "ui/components/multichain/pages/send/components/index.ts",
+    "ui/components/multichain/pages/send/components/recipient.tsx"
+  ],
+  [
+    "ui/components/multichain/pages/send/components/index.ts",
+    "ui/components/multichain/pages/send/components/your-accounts.tsx"
+  ],
+  [
+    "ui/pages/asset/components/asset-page.tsx",
+    "ui/pages/asset/components/token-buttons.tsx"
+  ],
+  [
+    "ui/pages/notifications/notifications-list.tsx",
+    "ui/pages/notifications/notifications.tsx"
+  ],
+  [
+    "ui/pages/snap-account-redirect/components/index.ts",
+    "ui/pages/snap-account-redirect/components/snap-account-redirect-context.tsx",
+    "ui/pages/snap-account-redirect/components/snap-account-redirect-message.tsx",
+    "ui/pages/snap-account-redirect/components/url-display-box.tsx",
+    "ui/pages/snap-account-redirect/snap-account-redirect.tsx"
+  ],
+  [
+    "ui/pages/swaps/swaps.util.ts",
+    "ui/store/actions.ts"
+  ]
+]

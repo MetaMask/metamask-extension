@@ -27,10 +27,7 @@ const NativeToken = ({ onClickAsset }: AssetListProps) => {
 
   const isEvm = useSelector(getMultichainIsEvm);
 
-  let isStakeable = isMainnet && isEvm;
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  isStakeable = false;
-  ///: END:ONLY_INCLUDE_IF
+  const isStakeable = isMainnet && isEvm;
 
   return (
     <TokenListItem
@@ -41,6 +38,7 @@ const NativeToken = ({ onClickAsset }: AssetListProps) => {
       tokenSymbol={symbol}
       secondary={secondary}
       tokenImage={balanceIsLoading ? null : primaryTokenImage}
+      isPrimaryTokenSymbolHidden={true}
       isNativeCurrency
       isStakeable={isStakeable}
       showPercentage

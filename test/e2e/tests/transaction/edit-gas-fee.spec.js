@@ -13,11 +13,11 @@ const {
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Editing Confirm Transaction', function () {
-  it('allows selecting high, medium, low gas estimates on edit gas fee popover @no-mmi', async function () {
+  it('allows selecting high, medium, low gas estimates on edit gas fee popover', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -90,8 +90,14 @@ describe('Editing Confirm Transaction', function () {
   it('allows accessing advance gas fee popover from edit gas fee popover', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        fixtures: new FixtureBuilder()
+          .withPreferencesController({
+            preferences: {
+              showFiatInTestnets: true,
+            },
+          })
+          .build(),
+        localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -131,12 +137,12 @@ describe('Editing Confirm Transaction', function () {
         // has correct updated value on the confirm screen the transaction
         await driver.waitForSelector({
           css: '[data-testid="first-gas-field"]',
-          text: '0.0008 ETH',
+          text: '0.0002 ETH',
         });
 
         await driver.waitForSelector({
           css: '[data-testid="native-currency"]',
-          text: '$1.44',
+          text: '$0.30',
         });
 
         // confirms the transaction
@@ -161,13 +167,18 @@ describe('Editing Confirm Transaction', function () {
     );
   });
 
-  it('should use dapp suggested estimates for transaction coming from dapp @no-mmi', async function () {
+  it('should use dapp suggested estimates for transaction coming from dapp', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
+          .withPreferencesController({
+            preferences: {
+              showFiatInTestnets: true,
+            },
+          })
           .build(),
-        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
         dapp: true,
       },

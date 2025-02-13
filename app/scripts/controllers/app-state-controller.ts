@@ -6,7 +6,7 @@ import {
   BaseController,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedControllerMessenger,
+  RestrictedMessenger,
 } from '@metamask/base-controller';
 import {
   AcceptRequest,
@@ -32,6 +32,10 @@ import {
   AccountOverviewTabKey,
   CarouselSlide,
 } from '../../../shared/constants/app-state';
+import type {
+  ThrottledOrigins,
+  ThrottledOrigin,
+} from '../../../shared/types/origin-throttling';
 import type {
   Preferences,
   PreferencesControllerGetStateAction,
@@ -59,6 +63,7 @@ export type AppStateControllerState = {
   currentPopupId?: number;
   onboardingDate: number | null;
   lastViewedUserSurvey: number | null;
+  isRampCardClosed: boolean;
   newPrivacyPolicyToastClickedOrClosed: boolean | null;
   newPrivacyPolicyToastShownDate: number | null;
   // This key is only used for checking if the user had set advancedGasFee
@@ -80,6 +85,7 @@ export type AppStateControllerState = {
   noteToTraderMessage?: string;
   custodianDeepLink?: { fromAddress: string; custodyId: string };
   slides: CarouselSlide[];
+  throttledOrigins: ThrottledOrigins;
 };
 
 const controllerName = 'AppStateController';
@@ -132,7 +138,7 @@ type AllowedEvents =
   | PreferencesControllerStateChangeEvent
   | KeyringControllerQRKeyringStateChangeEvent;
 
-export type AppStateControllerMessenger = RestrictedControllerMessenger<
+export type AppStateControllerMessenger = RestrictedMessenger<
   typeof controllerName,
   AppStateControllerActions | AllowedActions,
   AppStateControllerEvents | AllowedEvents,
@@ -185,12 +191,14 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   trezorModel: null,
   onboardingDate: null,
   lastViewedUserSurvey: null,
+  isRampCardClosed: false,
   newPrivacyPolicyToastClickedOrClosed: null,
   newPrivacyPolicyToastShownDate: null,
   hadAdvancedGasFeesSetPriorToMigration92_3: false,
   surveyLinkLastClickedOrClosed: null,
   switchedNetworkNeverShowMessage: false,
   slides: [],
+  throttledOrigins: {},
   ...getInitialStateOverrides(),
 });
 
@@ -285,6 +293,10 @@ const controllerMetadata = {
     persist: true,
     anonymous: true,
   },
+  isRampCardClosed: {
+    persist: true,
+    anonymous: true,
+  },
   newPrivacyPolicyToastClickedOrClosed: {
     persist: true,
     anonymous: true,
@@ -351,6 +363,10 @@ const controllerMetadata = {
   },
   slides: {
     persist: true,
+    anonymous: true,
+  },
+  throttledOrigins: {
+    persist: false,
     anonymous: true,
   },
 };
@@ -525,6 +541,12 @@ export class AppStateController extends BaseController<
   setLastViewedUserSurvey(id: number) {
     this.update((state) => {
       state.lastViewedUserSurvey = id;
+    });
+  }
+
+  setRampCardClosed(): void {
+    this.update((state) => {
+      state.isRampCardClosed = true;
     });
   }
 
@@ -1074,5 +1096,18 @@ export class AppStateController extends BaseController<
     }
 
     this.#approvalRequestId = null;
+  }
+
+  getThrottledOriginState(origin: string): ThrottledOrigin {
+    return this.state.throttledOrigins[origin];
+  }
+
+  updateThrottledOriginState(
+    origin: string,
+    throttledOriginState: ThrottledOrigin,
+  ): void {
+    this.update((state) => {
+      state.throttledOrigins[origin] = throttledOriginState;
+    });
   }
 }

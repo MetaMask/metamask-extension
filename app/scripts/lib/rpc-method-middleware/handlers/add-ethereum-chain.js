@@ -18,12 +18,10 @@ const addEthereumChain = {
     getNetworkConfigurationByChainId: true,
     setActiveNetwork: true,
     requestUserApproval: true,
-    startApprovalFlow: true,
-    endApprovalFlow: true,
     getCurrentChainIdForDomain: true,
     getCaveat: true,
-    requestPermittedChainsPermission: true,
-    grantPermittedChainsPermissionIncremental: true,
+    requestPermittedChainsPermissionForOrigin: true,
+    requestPermittedChainsPermissionIncrementalForOrigin: true,
   },
 };
 
@@ -40,12 +38,10 @@ async function addEthereumChainHandler(
     getNetworkConfigurationByChainId,
     setActiveNetwork,
     requestUserApproval,
-    startApprovalFlow,
-    endApprovalFlow,
     getCurrentChainIdForDomain,
     getCaveat,
-    requestPermittedChainsPermission,
-    grantPermittedChainsPermissionIncremental,
+    requestPermittedChainsPermissionForOrigin,
+    requestPermittedChainsPermissionIncrementalForOrigin,
   },
 ) {
   let validParams;
@@ -79,7 +75,6 @@ async function addEthereumChainHandler(
     );
   }
 
-  let approvalFlowId;
   let updatedNetwork = existingNetwork;
 
   let rpcIndex = existingNetwork?.rpcEndpoints.findIndex(({ url }) =>
@@ -93,14 +88,14 @@ async function addEthereumChainHandler(
     : undefined;
 
   // If there's something to add or update
-  if (
+
+  const shouldAddOrUpdateNetwork =
     !existingNetwork ||
     rpcIndex !== existingNetwork.defaultRpcEndpointIndex ||
     (firstValidBlockExplorerUrl &&
-      blockExplorerIndex !== existingNetwork.defaultBlockExplorerUrlIndex)
-  ) {
-    ({ id: approvalFlowId } = await startApprovalFlow());
+      blockExplorerIndex !== existingNetwork.defaultBlockExplorerUrlIndex);
 
+  if (shouldAddOrUpdateNetwork) {
     try {
       await requestUserApproval({
         origin,
@@ -183,28 +178,18 @@ async function addEthereumChainHandler(
         });
       }
     } catch (error) {
-      endApprovalFlow({ id: approvalFlowId });
       return end(error);
     }
   }
 
-  // If the added or updated network is not the current chain, prompt the user to switch
-  if (chainId !== currentChainIdForDomain) {
-    const { networkClientId } =
-      updatedNetwork.rpcEndpoints[updatedNetwork.defaultRpcEndpointIndex];
+  const { networkClientId } =
+    updatedNetwork.rpcEndpoints[updatedNetwork.defaultRpcEndpointIndex];
 
-    return switchChain(res, end, chainId, networkClientId, approvalFlowId, {
-      isAddFlow: true,
-      setActiveNetwork,
-      endApprovalFlow,
-      getCaveat,
-      requestPermittedChainsPermission,
-      grantPermittedChainsPermissionIncremental,
-    });
-  } else if (approvalFlowId) {
-    endApprovalFlow({ id: approvalFlowId });
-  }
-
-  res.result = null;
-  return end();
+  return switchChain(res, end, chainId, networkClientId, {
+    autoApprove: shouldAddOrUpdateNetwork,
+    setActiveNetwork,
+    getCaveat,
+    requestPermittedChainsPermissionForOrigin,
+    requestPermittedChainsPermissionIncrementalForOrigin,
+  });
 }

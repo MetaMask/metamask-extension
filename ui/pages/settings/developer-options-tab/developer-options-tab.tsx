@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import {
@@ -30,13 +30,11 @@ import {
   resetOnboarding,
   resetViewedNotifications,
   setServiceWorkerKeepAlivePreference,
-  setRedesignedConfirmationsDeveloperEnabled,
 } from '../../../store/actions';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { getIsRedesignedConfirmationsDeveloperEnabled } from '../../confirmations/selectors/confirm';
 import ToggleRow from './developer-options-toggle-row-component';
 import SentryTest from './sentry-test';
 import { ProfileSyncDevSettings } from './profile-sync';
@@ -55,18 +53,10 @@ const DeveloperOptionsTab = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const redesignConfirmationsFeatureToggle = useSelector(
-    getIsRedesignedConfirmationsDeveloperEnabled,
-  );
-
   const [hasResetAnnouncements, setHasResetAnnouncements] = useState(false);
   const [hasResetOnboarding, setHasResetOnboarding] = useState(false);
   const [isServiceWorkerKeptAlive, setIsServiceWorkerKeptAlive] =
     useState(true);
-  const [
-    isRedesignedConfirmationsFeatureEnabled,
-    setIsRedesignedConfirmationsFeatureEnabled,
-  ] = useState(redesignConfirmationsFeatureToggle);
 
   const settingsRefs = Array(
     getNumberOfSettingRoutesInTab(t, t('developerOptions')),
@@ -107,13 +97,6 @@ const DeveloperOptionsTab = () => {
   ): Promise<void> => {
     await dispatch(setServiceWorkerKeepAlivePreference(value));
     setIsServiceWorkerKeptAlive(value);
-  };
-
-  const setEnableConfirmationsRedesignEnabled = async (
-    value: boolean,
-  ): Promise<void> => {
-    await dispatch(setRedesignedConfirmationsDeveloperEnabled(value));
-    await setIsRedesignedConfirmationsFeatureEnabled(value);
   };
 
   const renderAnnouncementReset = () => {
@@ -226,21 +209,6 @@ const DeveloperOptionsTab = () => {
     );
   };
 
-  const renderEnableConfirmationsRedesignToggle = () => {
-    return (
-      <ToggleRow
-        title="Confirmations Redesign"
-        description="Enables or disables the confirmations redesign feature currently in development"
-        isEnabled={isRedesignedConfirmationsFeatureEnabled}
-        onToggle={(value: boolean) =>
-          setEnableConfirmationsRedesignEnabled(!value)
-        }
-        dataTestId="developer-options-enable-confirmations-redesign-toggle"
-        settingsRef={settingsRefs[5] as React.RefObject<HTMLDivElement>}
-      />
-    );
-  };
-
   return (
     <div className="settings-page__body">
       <Text className="settings-page__security-tab-sub-header__bold">
@@ -259,7 +227,6 @@ const DeveloperOptionsTab = () => {
         {renderAnnouncementReset()}
         {renderOnboardingReset()}
         {renderServiceWorkerKeepAliveToggle()}
-        {renderEnableConfirmationsRedesignToggle()}
       </div>
 
       <ProfileSyncDevSettings />

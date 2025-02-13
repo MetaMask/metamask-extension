@@ -54,42 +54,6 @@ exports[`AssetPage should render a native asset 1`] = `
           </p>
         </button>
         <button
-          class="icon-button coin-overview__button"
-        >
-          <div
-            class="icon-button__circle"
-            data-theme="light"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
-              style="mask-image: url('./images/icons/stake.svg');"
-            />
-          </div>
-          <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
-          >
-            Stake
-          </p>
-        </button>
-        <button
-          class="icon-button coin-overview__button"
-        >
-          <div
-            class="icon-button__circle"
-            data-theme="light"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
-              style="mask-image: url('./images/icons/diagram.svg');"
-            />
-          </div>
-          <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
-          >
-            Portfolio
-          </p>
-        </button>
-        <button
           class="icon-button coin-overview__button icon-button--disabled"
           data-testid="token-overview-button-swap"
           disabled=""
@@ -316,11 +280,25 @@ exports[`AssetPage should render a native asset 1`] = `
           <div
             class="mm-box ramps-card ramps-card-activity mm-box--margin-2 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--rounded-lg"
           >
-            <h4
-              class="mm-box mm-text ramps-card__title mm-text--heading-sm mm-box--color-text-default"
+            <div
+              class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
             >
-              Tips for using a wallet
-            </h4>
+              <h4
+                class="mm-box mm-text ramps-card__title mm-text--heading-sm mm-box--color-text-default"
+              >
+                Tips for using a wallet
+              </h4>
+              <button
+                aria-label="Close"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-info-inverse mm-box--background-color-transparent mm-box--rounded-lg"
+                data-testid="ramp-card-close-btn"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/close.svg');"
+                />
+              </button>
+            </div>
             <p
               class="mm-box mm-text ramps-card__body mm-text--body-md mm-box--color-text-default"
             >
@@ -401,44 +379,6 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
             class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
           >
             Buy & Sell
-          </p>
-        </button>
-        <button
-          class="icon-button eth-overview__button"
-          data-testid="token-overview-mmi-stake"
-        >
-          <div
-            class="icon-button__circle"
-            data-theme="light"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
-              style="mask-image: url('./images/icons/stake.svg');"
-            />
-          </div>
-          <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
-          >
-            Stake
-          </p>
-        </button>
-        <button
-          class="icon-button eth-overview__button"
-          data-testid="token-overview-mmi-portfolio"
-        >
-          <div
-            class="icon-button__circle"
-            data-theme="light"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
-              style="mask-image: url('./images/icons/diagram.svg');"
-            />
-          </div>
-          <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
-          >
-            Portfolio
           </p>
         </button>
         <button
@@ -709,11 +649,25 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
           <div
             class="mm-box ramps-card ramps-card-activity mm-box--margin-2 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--rounded-lg"
           >
-            <h4
-              class="mm-box mm-text ramps-card__title mm-text--heading-sm mm-box--color-text-default"
+            <div
+              class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
             >
-              Tips for using a wallet
-            </h4>
+              <h4
+                class="mm-box mm-text ramps-card__title mm-text--heading-sm mm-box--color-text-default"
+              >
+                Tips for using a wallet
+              </h4>
+              <button
+                aria-label="Close"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-info-inverse mm-box--background-color-transparent mm-box--rounded-lg"
+                data-testid="ramp-card-close-btn"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/close.svg');"
+                />
+              </button>
+            </div>
             <p
               class="mm-box mm-text ramps-card__body mm-text--body-md mm-box--color-text-default"
             >
@@ -920,44 +874,6 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
             class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
           >
             Buy & Sell
-          </p>
-        </button>
-        <button
-          class="icon-button eth-overview__button"
-          data-testid="token-overview-mmi-stake"
-        >
-          <div
-            class="icon-button__circle"
-            data-theme="light"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
-              style="mask-image: url('./images/icons/stake.svg');"
-            />
-          </div>
-          <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
-          >
-            Stake
-          </p>
-        </button>
-        <button
-          class="icon-button eth-overview__button"
-          data-testid="token-overview-mmi-portfolio"
-        >
-          <div
-            class="icon-button__circle"
-            data-theme="light"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
-              style="mask-image: url('./images/icons/diagram.svg');"
-            />
-          </div>
-          <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
-          >
-            Portfolio
           </p>
         </button>
         <button
@@ -1256,11 +1172,25 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
           <div
             class="mm-box ramps-card ramps-card-activity mm-box--margin-2 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--rounded-lg"
           >
-            <h4
-              class="mm-box mm-text ramps-card__title mm-text--heading-sm mm-box--color-text-default"
+            <div
+              class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
             >
-              Tips for using a wallet
-            </h4>
+              <h4
+                class="mm-box mm-text ramps-card__title mm-text--heading-sm mm-box--color-text-default"
+              >
+                Tips for using a wallet
+              </h4>
+              <button
+                aria-label="Close"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-info-inverse mm-box--background-color-transparent mm-box--rounded-lg"
+                data-testid="ramp-card-close-btn"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/close.svg');"
+                />
+              </button>
+            </div>
             <p
               class="mm-box mm-text ramps-card__body mm-text--body-md mm-box--color-text-default"
             >

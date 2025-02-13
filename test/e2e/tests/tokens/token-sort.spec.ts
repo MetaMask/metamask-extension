@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { Context } from 'mocha';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import FixtureBuilder from '../../fixture-builder';
@@ -19,7 +18,7 @@ describe('Token List Sorting', function () {
 
   const testFixtures = {
     fixtures: new FixtureBuilder({ inputChainId: mainnetChainId }).build(),
-    ganacheOptions: {
+    localNodeOptions: {
       ...defaultGanacheOptions,
       chainId: parseInt(mainnetChainId, 16),
     },
@@ -43,8 +42,7 @@ describe('Token List Sorting', function () {
           customTokenSymbol,
         );
 
-        const initialTokenList = await assetListPage.getTokenListNames();
-        assert.ok(initialTokenList[0].includes('Ethereum'));
+        await assetListPage.check_tokenExistsInList('Ethereum');
         await assetListPage.sortTokenList('alphabetically');
 
         await driver.waitUntil(

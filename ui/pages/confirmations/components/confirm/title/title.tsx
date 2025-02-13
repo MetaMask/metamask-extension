@@ -16,21 +16,35 @@ import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { TypedSignSignaturePrimaryTypes } from '../../../constants';
 import { useConfirmContext } from '../../../context/confirm';
+import { useTypedSignSignatureInfo } from '../../../hooks/useTypedSignSignatureInfo';
 import { Confirmation, SignatureRequestType } from '../../../types/confirm';
 import { isSIWESignatureRequest } from '../../../utils';
-import { useTypedSignSignatureInfo } from '../../../hooks/useTypedSignSignatureInfo';
 import { useIsNFT } from '../info/approve/hooks/use-is-nft';
-import { getIsRevokeSetApprovalForAll } from '../info/utils';
 import { useTokenTransactionData } from '../info/hooks/useTokenTransactionData';
+import { getIsRevokeSetApprovalForAll } from '../info/utils';
+import { getIsRevokeDAIPermit } from '../utils';
+import { useSignatureEventFragment } from '../../../hooks/useSignatureEventFragment';
+import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 import { useCurrentSpendingCap } from './hooks/useCurrentSpendingCap';
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
   const { generalAlerts } = useAlerts(ownerId);
+  const { updateSignatureEventFragment } = useSignatureEventFragment();
+  const { updateTransactionEventFragment } = useTransactionEventFragment();
 
   if (generalAlerts.length === 0) {
     return null;
   }
 
+  const onClickSupportLink = () => {
+    const properties = {
+      properties: {
+        external_link_clicked: 'security_alert_support_link',
+      },
+    };
+    updateSignatureEventFragment(properties);
+    updateTransactionEventFragment(properties, ownerId);
+  };
   return (
     <Box marginTop={3}>
       {generalAlerts.map((alert) => (
@@ -44,6 +58,7 @@ function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
             details={alert.alertDetails}
             reportUrl={alert.reportUrl}
             children={alert.content}
+            onClickSupportLink={onClickSupportLink}
           />
         </Box>
       ))}
@@ -84,6 +99,14 @@ const getTitle = (
         if (tokenStandard === TokenStandard.ERC721) {
           return t('setApprovalForAllRedesignedTitle');
         }
+
+        const isRevokeDAIPermit = getIsRevokeDAIPermit(
+          confirmation as SignatureRequestType,
+        );
+        if (isRevokeDAIPermit) {
+          return t('confirmTitleRevokeApproveTransaction');
+        }
+
         return t('confirmTitlePermitTokens');
       }
       return t('confirmTitleSignature');
@@ -136,6 +159,14 @@ const getDescription = (
         if (tokenStandard === TokenStandard.ERC721) {
           return t('confirmTitleDescApproveTransaction');
         }
+
+        const isRevokeDAIPermit = getIsRevokeDAIPermit(
+          confirmation as SignatureRequestType,
+        );
+        if (isRevokeDAIPermit) {
+          return '';
+        }
+
         return t('confirmTitleDescPermitSignature');
       }
       return t('confirmTitleDescSign');

@@ -1,9 +1,4 @@
-const {
-  defaultGanacheOptions,
-  withFixtures,
-  unlockWallet,
-  WINDOW_TITLES,
-} = require('../helpers');
+const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -12,7 +7,6 @@ describe('Test Snap ethereum_provider', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -143,7 +137,6 @@ describe('Test Snap ethereum_provider', function () {
         await driver.clickElement('#signTypedDataButton');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
         await driver.clickElementAndWaitForWindowToClose({
           text: 'Confirm',
           tag: 'button',
