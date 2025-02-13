@@ -95,7 +95,7 @@ describe('Send ETH', function () {
         {
           fixtures: new FixtureBuilder().build(),
           title: this.test.fullTitle(),
-          localNode: 'anvil',
+          localNodeOptions: 'anvil',
         },
         async ({ driver }) => {
           await unlockWallet(driver);
