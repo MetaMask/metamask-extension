@@ -7,10 +7,12 @@ import {
   CurrencyRateStateChange,
   GetCurrencyRateState,
   MultichainAssetsControllerStateChangeEvent,
+  MultichainAssetsControllerGetStateAction,
 } from '@metamask/assets-controllers';
-import { MultichainAssetsControllerGetStateAction } from '@metamask/assets-controllers';
-import { KeyringControllerLockEvent } from '@metamask/keyring-controller';
-import { KeyringControllerUnlockEvent } from '@metamask/keyring-controller';
+import {
+  KeyringControllerLockEvent,
+  KeyringControllerUnlockEvent,
+} from '@metamask/keyring-controller';
 import { HandleSnapRequest } from '@metamask/snaps-controllers';
 
 type Actions =
