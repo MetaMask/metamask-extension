@@ -377,6 +377,11 @@ import {
   SnapInterfaceControllerInit,
   SnapsRegistryInit,
 } from './controller-init/snaps';
+import {
+  getCapabilities,
+  getTransactionReceiptsByBatchId,
+  processSendCalls,
+} from './lib/transaction/eip5792';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -2016,7 +2021,7 @@ export default class MetamaskController extends EventEmitter {
         allowedActions: [],
         allowedEvents: [],
       }),
-      fetchInterval: 15 * 60 * 1000, // 15 minutes in milliseconds
+      fetchInterval: 0,
       disabled: !this.preferencesController.state.useExternalServices,
       getMetaMetricsId: () => this.metaMetricsController.getMetaMetricsId(),
       clientConfigApiService: new ClientConfigApiService({
@@ -2187,6 +2192,18 @@ export default class MetamaskController extends EventEmitter {
           (meta) =>
             meta.hash === hash && meta.status === TransactionStatus.submitted,
         ),
+
+      // EIP-5792
+      processSendCalls: processSendCalls.bind(
+        null,
+        this.txController,
+        this.networkController,
+      ),
+      getTransactionReceiptsByBatchId: getTransactionReceiptsByBatchId.bind(
+        null,
+        this.txController,
+      ),
+      getCapabilities: getCapabilities.bind(null, this.txController),
     });
 
     // ensure isClientOpenAndUnlocked is updated when memState updates

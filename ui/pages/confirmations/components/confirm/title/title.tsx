@@ -86,6 +86,7 @@ const getTitle = (
 
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
+    case TransactionType.batch:
       return t('confirmTitleTransaction');
     case TransactionType.deployContract:
       return t('confirmTitleDeployContract');
@@ -146,6 +147,7 @@ const getDescription = (
 
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
+    case TransactionType.batch:
       return '';
     case TransactionType.deployContract:
       return t('confirmTitleDescDeployContract');
