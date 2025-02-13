@@ -683,7 +683,7 @@ export default class MetamaskController extends EventEmitter {
       messenger: multichainNetworkControllerMessenger,
       // Update the value of state with getDefaultMultichainNetworkControllerState()
       // to add Solana and Bitcoin networks
-      state: initState.PreferencesController,
+      state: initState.MultichainNetworkController,
     });
 
     const tokenListMessenger = this.controllerMessenger.getRestricted({
