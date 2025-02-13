@@ -1,14 +1,12 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
-import { Provider } from 'react-redux';
-
-import { NetworkItems } from './NetworkItems';
 import {
   NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
+import { NetworkItems } from './NetworkItems';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -73,7 +71,7 @@ describe('NetworkItems', () => {
   it('renders NetworkListItem with correct name and default props', () => {
     renderComponent();
 
-    expect(screen.getByText(/Test Network/i)).toBeInTheDocument();
+    expect(screen.getByText('Test Network')).toBeInTheDocument();
   });
 
   it('calls handleNetworkChange when the NetworkListItem is clicked', () => {
@@ -88,14 +86,14 @@ describe('NetworkItems', () => {
   it('does NOT render Delete button if the network is MAINNET, or user is locked, or it is current network', () => {
     renderComponent();
 
-    const deleteButton = screen.queryByLabelText(/delete/i);
+    const deleteButton = screen.queryByLabelText('delete');
     expect(deleteButton).not.toBeInTheDocument();
   });
 
   it('does not render the RPC endpoint button if showMultiRpcSelectors is false', () => {
     renderComponent();
 
-    const rpcButton = screen.queryByLabelText(/select rpc/i);
+    const rpcButton = screen.queryByLabelText('select rpc');
     expect(rpcButton).not.toBeInTheDocument();
   });
 });
