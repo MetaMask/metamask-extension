@@ -16,7 +16,6 @@ jest.mock('@metamask/assets-controllers');
 
 function buildInitRequestMock(): jest.Mocked<
   ControllerInitRequest<
-    // @ts-expect-error TODO: figure out why there's a mismatch
     MultichainBalancesControllerMessenger,
     MultichainBalancesControllerInitMessenger
   >

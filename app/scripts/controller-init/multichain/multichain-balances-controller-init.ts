@@ -7,7 +7,6 @@ import { MultichainBalancesControllerInitMessenger } from '../messengers/multich
 
 export const MultichainBalancesControllerInit: ControllerInitFunction<
   MultichainBalancesController,
-  // @ts-expect-error TODO: figure out why there's a mismatch
   MultichainBalancesControllerMessenger,
   MultichainBalancesControllerInitMessenger
 > = (request) => {
