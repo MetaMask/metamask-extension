@@ -33,7 +33,7 @@ export const useTokenDisplayInfo = ({
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
   const currentCurrency = useSelector(getCurrentCurrency);
   const locale = useSelector(getIntlLocale);
-  const tokenChainImage: string = getImageForChainId(token.chainId);
+  const tokenChainImage = getImageForChainId(token.chainId);
   const selectedAccount = useSelector(getSelectedAccount);
   const showFiat = useMultichainSelector(
     getMultichainShouldShowFiat,
