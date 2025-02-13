@@ -6,16 +6,9 @@ import {
   Display,
   FlexWrap,
 } from '../../../helpers/constants/design-system';
-import type { PolymorphicRef, BoxProps } from '../box';
-import type { ButtonProps } from '../button';
-import {
-  Box,
-  Button,
-  ButtonSize,
-  ButtonVariant,
-  Container,
-  ContainerMaxWidth,
-} from '..';
+import { type PolymorphicRef, type BoxProps, Box } from '../box';
+import { Button, ButtonSize, ButtonVariant, type ButtonProps } from '../button';
+import { Container, ContainerMaxWidth } from '../container';
 import { ModalFooterProps, ModalFooterComponent } from './modal-footer.types';
 
 export const ModalFooter: ModalFooterComponent = React.forwardRef(

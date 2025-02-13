@@ -321,7 +321,7 @@
     "@metamask/keyring-internal-api": "^4.0.2",
     "@metamask/keyring-snap-client": "^4.0.0",
     "@metamask/logging-controller": "^6.0.4",
-    "@metamask/logo": "^3.1.2",
+    "@metamask/logo": "^4.0.0",
     "@metamask/message-manager": "^12.0.1",
     "@metamask/message-signing-snap": "^0.6.0",
     "@metamask/metamask-eth-abis": "^3.1.1",
