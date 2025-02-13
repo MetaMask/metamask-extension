@@ -235,6 +235,12 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.clickElement('#connectButton');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        const permissionsTab = await driver.findElement(
+          '[data-testid="permissions-tab"]',
+        );
+        await permissionsTab.click();
+
         const editButtons = await driver.findElements('[data-testid="edit"]');
 
         // Click the edit button for networks
@@ -342,6 +348,11 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.clickElement('#connectButton');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        const permissionsTab = await driver.findElement(
+          '[data-testid="permissions-tab"]',
+        );
+        await permissionsTab.click();
 
         const editButtons = await driver.findElements('[data-testid="edit"]');
 
