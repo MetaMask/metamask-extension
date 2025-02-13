@@ -339,7 +339,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     const onRpcEndpointClickCallback = useCallback(() => {
       setActionMode(ACTION_MODES.SELECT_RPC);
       dispatch(setEditedNetwork({ chainId: network.chainId }));
-    }, [dispatch, network, setActionMode, ACTION_MODES]);
+    }, [dispatch, network, setActionMode, ACTION_MODES, setEditedNetwork]);
 
     return (
       <NetworkListItem
@@ -495,14 +495,14 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
                   />
                 </Box>
               ) : null}
-
-              {showTestNetworks || currentlyOnTestNetwork ? (
-                <Box className="multichain-network-list-menu">
-                  {searchedTestNetworks.map((network) =>
-                    generateNetworkListItem(network),
-                  )}
-                </Box>
-              ) : null}
+              <Box
+                className="multichain-network-list-menu"
+                hidden={!(showTestNetworks || currentlyOnTestNetwork)}
+              >
+                {searchedTestNetworks.map((network) =>
+                  generateNetworkListItem(network),
+                )}
+              </Box>
             </Box>
           </Box>
 
