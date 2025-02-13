@@ -1,6 +1,10 @@
 @use "design-system";
 
 .connect-page {
+  .multichain-page-content {
+    overflow: hidden;
+  }
+
   .multichain-account-list-item {
     &:hover,
     &:focus-within {
