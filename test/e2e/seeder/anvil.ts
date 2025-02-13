@@ -125,15 +125,17 @@ export class Anvil {
     const provider = this.getProvider();
     const { testClient } = provider;
 
-    if (!provider) {
-      throw new Error('No provider found');
-    }
-
     const balanceInWei = BigInt(balance);
     await testClient.setBalance({
       address,
       value: balanceInWei,
     });
+  }
+
+  async mineBlock(): Promise<void> {
+    const provider = this.getProvider();
+    const { testClient } = provider;
+    await testClient.mine({ blocks: 1 });
   }
 
   async quit(): Promise<void> {
