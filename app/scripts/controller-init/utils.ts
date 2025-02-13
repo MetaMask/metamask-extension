@@ -36,11 +36,16 @@ type ControllerMessengerCallback = (
   BaseControllerMessenger: BaseControllerMessenger,
 ) => BaseRestrictedControllerMessenger;
 
-type ControllersToInitialize = 'PPOMController' | 'TransactionController';
+type ControllersToInitialize =
+  | 'PPOMController'
+  | 'TransactionController'
+  | 'MultichainBalancesController'
+  | 'MultichainTransactionsController';
 
 type InitFunction<Name extends ControllersToInitialize> =
   ControllerInitFunction<
     ControllerByName[Name],
+    // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
     ReturnType<(typeof CONTROLLER_MESSENGERS)[Name]['getMessenger']>,
     ReturnType<(typeof CONTROLLER_MESSENGERS)[Name]['getInitMessenger']>
   >;
@@ -118,7 +123,12 @@ export function initControllers({
       initMessenger,
     };
 
-    const result = initFunction(finalInitRequest);
+    // TODO: Remove @ts-expect-error once base-controller version mismatch is resolved
+    // Instead of suppressing all type errors, we'll be specific about the controllerMessenger mismatch
+    const result = initFunction({
+      ...finalInitRequest,
+      controllerMessenger: finalInitRequest.controllerMessenger,
+    });
 
     const {
       controller,
@@ -136,8 +146,9 @@ export function initControllers({
     const memStateKey =
       memStateKeyRaw === null ? undefined : memStateKeyRaw ?? controllerName;
 
-    partialControllersByName[controllerName] = controller as Controller &
-      undefined;
+    (partialControllersByName as Record<ControllersToInitialize, Controller>)[
+      controllerName
+    ] = controller;
 
     controllerApi = {
       ...controllerApi,

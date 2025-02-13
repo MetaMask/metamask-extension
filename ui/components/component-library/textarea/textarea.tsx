@@ -7,8 +7,7 @@ import {
   BorderColor,
 } from '../../../helpers/constants/design-system';
 
-import { Text } from '..';
-import { TextProps } from '../text';
+import { Text, TextProps } from '../text';
 
 import { PolymorphicRef } from '../box';
 import {
