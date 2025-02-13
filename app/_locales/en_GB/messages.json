@@ -44,65 +44,6 @@
   "QRHardwareWalletSteps2Description": {
     "message": "Ngrave Zero"
   },
-  "SIWEAddressInvalid": {
-    "message": "The address in the sign-in request does not match the address of the account you are using to sign in."
-  },
-  "SIWEDomainInvalidText": {
-    "message": "The site you're attempting to sign into doesn't match the domain in the request. Proceed with caution."
-  },
-  "SIWEDomainInvalidTitle": {
-    "message": "Deceptive site request."
-  },
-  "SIWEDomainWarningBody": {
-    "message": "The website ($1) is asking you to sign in to the wrong domain. This may be a phishing attack.",
-    "description": "$1 represents the website domain"
-  },
-  "SIWEDomainWarningLabel": {
-    "message": "Unsafe"
-  },
-  "SIWELabelChainID": {
-    "message": "Chain ID:"
-  },
-  "SIWELabelExpirationTime": {
-    "message": "Expires At:"
-  },
-  "SIWELabelIssuedAt": {
-    "message": "Issued At:"
-  },
-  "SIWELabelMessage": {
-    "message": "Message:"
-  },
-  "SIWELabelNonce": {
-    "message": "Nonce:"
-  },
-  "SIWELabelNotBefore": {
-    "message": "Not Before:"
-  },
-  "SIWELabelRequestID": {
-    "message": "Request ID:"
-  },
-  "SIWELabelResources": {
-    "message": "Resources: $1",
-    "description": "$1 represents the number of resources"
-  },
-  "SIWELabelURI": {
-    "message": "URI:"
-  },
-  "SIWELabelVersion": {
-    "message": "Version:"
-  },
-  "SIWESiteRequestSubtitle": {
-    "message": "This site is requesting to sign in with"
-  },
-  "SIWESiteRequestTitle": {
-    "message": "Sign-in request"
-  },
-  "SIWEWarningSubtitle": {
-    "message": "To confirm you understand, check:"
-  },
-  "SIWEWarningTitle": {
-    "message": "Are you sure?"
-  },
   "about": {
     "message": "About"
   },
@@ -678,9 +619,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Turn on basic functionality"
   },
-  "beCareful": {
-    "message": "Be careful"
-  },
   "bestPrice": {
     "message": "Best price"
   },
@@ -764,9 +702,6 @@
   },
   "blockaidDescriptionTransferFarming": {
     "message": "If you approve this request, a third party known for scams will take all your assets."
-  },
-  "blockaidDescriptionWarning": {
-    "message": "This could be a deceptive request. Only continue if you trust every address involved."
   },
   "blockaidMessage": {
     "message": "Privacy preserving - no data is shared with third parties. Available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base and Sepolia."
@@ -934,10 +869,6 @@
   "buyAndSell": {
     "message": "Buy & Sell"
   },
-  "buyAsset": {
-    "message": "Buy $1",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
   "buyMoreAsset": {
     "message": "Buy more $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -956,9 +887,6 @@
   },
   "cancelPopoverTitle": {
     "message": "Cancel transaction"
-  },
-  "cancelSpeedUp": {
-    "message": "cancel or speed up a transaction."
   },
   "cancelSpeedUpLabel": {
     "message": "This gas fee will $1 the original.",
@@ -1279,29 +1207,8 @@
   "contractDeployment": {
     "message": "Contract deployment"
   },
-  "contractDescription": {
-    "message": "To protect yourself against scammers, take a moment to verify third-party details."
-  },
   "contractInteraction": {
     "message": "Contract interaction"
-  },
-  "contractNFT": {
-    "message": "NFT contract"
-  },
-  "contractRequestingAccess": {
-    "message": "Third party requesting access"
-  },
-  "contractRequestingSignature": {
-    "message": "Third party requesting signature"
-  },
-  "contractRequestingSpendingCap": {
-    "message": "Third party requesting spending cap"
-  },
-  "contractTitle": {
-    "message": "Third-party details"
-  },
-  "contractToken": {
-    "message": "Token contract"
   },
   "convertTokenToNFTDescription": {
     "message": "We've detected that this asset is an NFT. MetaMask now has full native support for NFTs. Would you like to remove it from your token list and add it as an NFT?"
@@ -1323,9 +1230,6 @@
   },
   "copyPrivateKey": {
     "message": "Copy private key"
-  },
-  "copyRawTransactionData": {
-    "message": "Copy raw transaction data"
   },
   "copyToClipboard": {
     "message": "Copy to clipboard"
@@ -1424,9 +1328,6 @@
   "customSpendLimit": {
     "message": "Custom spend limit"
   },
-  "customSpendingCap": {
-    "message": "Custom spending cap"
-  },
   "customToken": {
     "message": "Custom token"
   },
@@ -1447,9 +1348,6 @@
   },
   "customizeYourNotificationsText": {
     "message": "Turn on the types of notifications you want to receive:"
-  },
-  "dappRequestedSpendingCap": {
-    "message": "Site requested spending cap"
   },
   "dappSuggested": {
     "message": "Site suggested"
@@ -1488,9 +1386,6 @@
   },
   "dataCollectionWarningPopoverDescription": {
     "message": "You turned off data collection for our marketing purposes. This only applies to this device. If you use MetaMask on other devices, make sure to opt out there as well."
-  },
-  "dataHex": {
-    "message": "Hex"
   },
   "dataUnavailable": {
     "message": "data unavailable"
@@ -1872,9 +1767,6 @@
   "enterANameToIdentifyTheUrl": {
     "message": "Enter a name to identify the URL"
   },
-  "enterANumber": {
-    "message": "Enter a number"
-  },
   "enterChainId": {
     "message": "Enter Chain ID"
   },
@@ -2097,9 +1989,6 @@
   "function": {
     "message": "Function: $1"
   },
-  "functionType": {
-    "message": "Function type"
-  },
   "fundingMethod": {
     "message": "Funding method"
   },
@@ -2245,6 +2134,9 @@
   "hideAccount": {
     "message": "Hide account"
   },
+  "hideAdvancedDetails": {
+    "message": "Hide advanced details"
+  },
   "hideSeedPhrase": {
     "message": "Hide seed phrase"
   },
@@ -2325,6 +2217,9 @@
   },
   "holdToRevealUnlockedLabel": {
     "message": "hold to reveal circle unlocked"
+  },
+  "howNetworkFeesWorkExplanation": {
+    "message": "Estimated fee required to process the transaction. The max fee is $1."
   },
   "howQuotesWork": {
     "message": "How quotes work"
@@ -2430,37 +2325,6 @@
   "initialTransactionConfirmed": {
     "message": "Your initial transaction was confirmed by the network. Click OK to go back."
   },
-  "inputLogicEmptyState": {
-    "message": "Only enter a number that you're comfortable with the third party spending now or in the future. You can always increase the spending cap later."
-  },
-  "inputLogicEqualOrSmallerNumber": {
-    "message": "This allows the third party to spend $1 from your current balance.",
-    "description": "$1 is the current token balance in the account and the name of the current token"
-  },
-  "inputLogicHigherNumber": {
-    "message": "This allows the third party to spend all your token balance until it reaches the cap or you revoke the spending cap. If this is not intended, consider setting a lower spending cap."
-  },
-  "insightWarning": {
-    "message": "warning"
-  },
-  "insightWarningCheckboxMessage": {
-    "message": "$1 the request by $2",
-    "description": "$1 is the action i.e. sign, confirm. $2 is the origin making the request."
-  },
-  "insightWarningContentPlural": {
-    "message": "Review $1 before $2. Once made, the $3 is irreversible.",
-    "description": "$1 the 'insightWarnings' message (2 warnings) representing warnings, $2 is the action (i.e. signing) and $3 is the result (i.e. signature, transaction)"
-  },
-  "insightWarningContentSingular": {
-    "message": "Review $1 before $2. Once made, the $3 is irreversible.",
-    "description": "$1 is the 'insightWarning' message (1 warning), $2 is the action (i.e. signing) and $3 is the result (i.e. signature, transaction)"
-  },
-  "insightWarningHeader": {
-    "message": "This request may be risky"
-  },
-  "insightWarnings": {
-    "message": "warnings"
-  },
   "insightsFromSnap": {
     "message": "Insights from $1",
     "description": "$1 represents the name of the snap"
@@ -2480,14 +2344,6 @@
   },
   "insufficientBalance": {
     "message": "Insufficient balance."
-  },
-  "insufficientCurrencyBuyOrDeposit": {
-    "message": "You do not have enough $1 in your account to pay for transaction fees on $2 network. $3 or deposit from another account.",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
-  },
-  "insufficientCurrencyDeposit": {
-    "message": "You do not have enough $1 in your account to pay for transaction fees on $2 network. Deposit $1 from another account.",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network"
   },
   "insufficientFunds": {
     "message": "Insufficient funds."
@@ -2641,10 +2497,6 @@
   "layer2Fees": {
     "message": "Layer 2 fees"
   },
-  "learnCancelSpeeedup": {
-    "message": "Learn how to $1",
-    "description": "$1 is link to cancel or speed up transactions"
-  },
   "learnHow": {
     "message": "Learn how"
   },
@@ -2792,9 +2644,6 @@
   },
   "lowLowercase": {
     "message": "low"
-  },
-  "lowPriorityMessage": {
-    "message": "Future transactions will queue after this one."
   },
   "mainnet": {
     "message": "Ethereum Mainnet"
@@ -3050,9 +2899,6 @@
   "networkFee": {
     "message": "Network fee"
   },
-  "networkFees": {
-    "message": "Network fees"
-  },
   "networkIsBusy": {
     "message": "Network is busy. Gas prices are high and estimates are less accurate."
   },
@@ -3300,6 +3146,12 @@
   },
   "noWebcamFoundTitle": {
     "message": "Webcam not found"
+  },
+  "nonContractAddressAlertDesc": {
+    "message": "You're sending call data to an address that isn't a contract. This could cause you to lose funds. Make sure you're using the correct address and network before continuing."
+  },
+  "nonContractAddressAlertTitle": {
+    "message": "Potential mistake"
   },
   "nonce": {
     "message": "Nonce"
@@ -3683,9 +3535,6 @@
   "openInBlockExplorer": {
     "message": "Open in block explorer"
   },
-  "openSeaNew": {
-    "message": "OpenSea"
-  },
   "optional": {
     "message": "Optional"
   },
@@ -3713,9 +3562,6 @@
   },
   "padlock": {
     "message": "Padlock"
-  },
-  "parameters": {
-    "message": "Parameters"
   },
   "participateInMetaMetrics": {
     "message": "Participate in MetaMetrics"
@@ -3749,10 +3595,6 @@
     "message": "Enter your private key string here:",
     "description": "For importing an account from a private key"
   },
-  "paymasterInUse": {
-    "message": "The gas for this transaction will be paid by a paymaster.",
-    "description": "Alert shown in transaction confirmation if paymaster in use."
-  },
   "pending": {
     "message": "Pending"
   },
@@ -3763,16 +3605,6 @@
   "pendingTransactionAlertMessageHyperlink": {
     "message": "Learn how to cancel or speed up a transaction.",
     "description": "The text for the hyperlink in the pending transaction alert message"
-  },
-  "pendingTransactionInfo": {
-    "message": "This transaction will not process until that one is complete."
-  },
-  "pendingTransactionMultiple": {
-    "message": "You have ($1) pending transactions."
-  },
-  "pendingTransactionSingle": {
-    "message": "You have (1) pending transaction.",
-    "description": "$1 is count of pending transactions"
   },
   "permissionDetails": {
     "message": "Permission details"
@@ -3819,7 +3651,7 @@
   },
   "permission_assets": {
     "message": "Display account assets in MetaMask.",
-    "description": "The description for the `endowment:name-assets` permission."
+    "description": "The description for the `endowment:assets` permission."
   },
   "permission_assetsDescription": {
     "message": "Allow $1 to provide asset information to the MetaMask client. The assets can be onchain or offchain.",
@@ -3944,6 +3776,14 @@
   "permission_notificationsDescription": {
     "message": "Allow $1 to display notifications within MetaMask. A short notification text can be triggered by a snap for actionable or time-sensitive information.",
     "description": "An extended description for the `snap_notify` permission. $1 is the snap name."
+  },
+  "permission_protocol": {
+    "message": "Provide protocol data for one or more chains.",
+    "description": "The description for the `endowment:protocol` permission."
+  },
+  "permission_protocolDescription": {
+    "message": "Allow $1 to provide MetaMask with protocol data such as gas estimates or token information.",
+    "description": "An extended description for the `endowment:protocol` permission. $1 is the name of the Snap."
   },
   "permission_rpc": {
     "message": "Allow $1 to communicate directly with $2.",
@@ -4377,12 +4217,6 @@
   "reportIssue": {
     "message": "Report an issue"
   },
-  "requestFlaggedAsMaliciousFallbackCopyReason": {
-    "message": "The security provider has not shared additional details"
-  },
-  "requestFlaggedAsMaliciousFallbackCopyReasonTitle": {
-    "message": "Request flagged as malicious"
-  },
   "requestFrom": {
     "message": "Request from"
   },
@@ -4395,18 +4229,6 @@
   "requestFromTransactionDescription": {
     "message": "This is the site asking for your confirmation."
   },
-  "requestMayNotBeSafe": {
-    "message": "Request may not be safe"
-  },
-  "requestMayNotBeSafeError": {
-    "message": "The security provider didn't detect any known malicious activity, but it still may not be safe to continue."
-  },
-  "requestNotVerified": {
-    "message": "Request not verified"
-  },
-  "requestNotVerifiedError": {
-    "message": "Because of an error, this request was not verified by the security provider. Proceed with caution."
-  },
   "requestingFor": {
     "message": "Requesting for"
   },
@@ -4417,9 +4239,6 @@
   "requestingForNetwork": {
     "message": "Requesting for $1",
     "description": "Name of Network"
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "requests waiting to be acknowledged"
   },
   "required": {
     "message": "Required"
@@ -4523,9 +4342,6 @@
   },
   "revokeSimulationDetailsDesc": {
     "message": "You're removing someone's permission to spend tokens from your account."
-  },
-  "revokeSpendingCapTooltipText": {
-    "message": "This third party will be unable to spend any more of your current or future tokens."
   },
   "rpcNameOptional": {
     "message": "RPC Name (Optional)"
@@ -4745,9 +4561,6 @@
     "message": "Warning: you are about to send to a token contract which could result in a loss of funds. $1",
     "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
-  "sendingZeroAmount": {
-    "message": "You are sending 0 $1."
-  },
   "sepolia": {
     "message": "Sepolia test network"
   },
@@ -4781,6 +4594,9 @@
   },
   "showAccount": {
     "message": "Show account"
+  },
+  "showAdvancedDetails": {
+    "message": "Show advanced details"
   },
   "showExtensionInFullSizeView": {
     "message": "Show extension in full-size view"
@@ -4834,17 +4650,11 @@
   "showTestnetNetworksDescription": {
     "message": "Select this to show test networks in network list"
   },
-  "sigRequest": {
-    "message": "Signature request"
-  },
   "sign": {
     "message": "Sign"
   },
   "signatureRequest": {
     "message": "Signature request"
-  },
-  "signatureRequestGuidance": {
-    "message": "Only sign this message if you fully understand the content and trust the requesting site."
   },
   "signature_decoding_bid_nft_tooltip": {
     "message": "The NFT will be reflected in your wallet, when the bid is accepted."
@@ -4854,9 +4664,6 @@
   },
   "signed": {
     "message": "Signed"
-  },
-  "signin": {
-    "message": "Sign-In"
   },
   "signing": {
     "message": "Signing"
@@ -5210,6 +5017,21 @@
   "source": {
     "message": "Source"
   },
+  "spamModalBlockedDescription": {
+    "message": "This site will be blocked for 1 minute."
+  },
+  "spamModalBlockedTitle": {
+    "message": "You've temporarily blocked this site"
+  },
+  "spamModalDescription": {
+    "message": "If you're being spammed with multiple requests, you can temporarily block the site."
+  },
+  "spamModalTemporaryBlockButton": {
+    "message": "Temporarily block this site"
+  },
+  "spamModalTitle": {
+    "message": "We've noticed multiple requests"
+  },
   "speed": {
     "message": "Speed"
   },
@@ -5258,13 +5080,6 @@
   },
   "spendingCap": {
     "message": "Spending cap"
-  },
-  "spendingCapError": {
-    "message": "Error: Enter numbers only"
-  },
-  "spendingCapErrorDescription": {
-    "message": "Only enter a number that you're comfortable with $1 accessing now or in the future. You can always increase the token limit later.",
-    "description": "$1 is origin of the site requesting the token limit"
   },
   "spendingCapTooltipDesc": {
     "message": "This is the amount of tokens the spender will be able to access on your behalf."
@@ -6238,9 +6053,6 @@
   "unknownCollection": {
     "message": "Unnamed collection"
   },
-  "unknownNetwork": {
-    "message": "Unknown private network"
-  },
   "unknownNetworkForKeyEntropy": {
     "message": "Unknown network",
     "description": "Displayed on places like Snap install warning when regular name is not available."
@@ -6267,9 +6079,6 @@
   "unsendableAsset": {
     "message": "Sending NFT (ERC-721) tokens is not currently supported",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
-  },
-  "unverifiedContractAddressMessage": {
-    "message": "We cannot verify this contract. Make sure you trust this address."
   },
   "upArrow": {
     "message": "up arrow"
@@ -6333,9 +6142,6 @@
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
   },
-  "useSiteSuggestion": {
-    "message": "Use site suggestion"
-  },
   "useTokenDetectionPrivacyDesc": {
     "message": "Automatically displaying tokens sent to your account involves communication with third party servers to fetch token’s images. Those serves will have access to your IP address."
   },
@@ -6347,9 +6153,6 @@
   },
   "userOpContractDeployError": {
     "message": "Contract deployment from a smart contract account is not supported"
-  },
-  "verifyContractDetails": {
-    "message": "Verify third-party details"
   },
   "version": {
     "message": "Version"
@@ -6365,6 +6168,9 @@
   },
   "viewContact": {
     "message": "View contact"
+  },
+  "viewDetails": {
+    "message": "View details"
   },
   "viewMore": {
     "message": "View more"
@@ -6421,10 +6227,6 @@
   "warningFromSnap": {
     "message": "Warning from $1",
     "description": "$1 represents the name of the snap"
-  },
-  "warningTooltipText": {
-    "message": "$1 The third party could spend your entire token balance without further notice or consent. Protect yourself by customizing a lower spending cap.",
-    "description": "$1 is a warning icon with text 'Be careful' in 'warning' colour"
   },
   "watchEthereumAccountsDescription": {
     "message": "Turning this option on will give you the ability to watch Ethereum accounts via a public address or ENS name. For feedback on this Beta feature please complete this $1.",
@@ -6506,9 +6308,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "You need to allow camera access to use this feature."
-  },
-  "youSign": {
-    "message": "You are signing"
   },
   "yourAccounts": {
     "message": "Your accounts"
