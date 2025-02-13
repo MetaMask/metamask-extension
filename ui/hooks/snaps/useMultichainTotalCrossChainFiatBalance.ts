@@ -12,10 +12,9 @@ import {
   TokensControllerState,
 } from '@metamask/assets-controllers';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { Caip2ChainId } from '@metamask/snaps-utils';
 import {
+  getAllChainsToPoll,
   getAllTokens,
-  getChainIdsToPoll,
   getCrossChainMetaMaskCachedBalances,
   getCrossChainTokenExchangeRates,
   getCurrencyRates,
@@ -40,7 +39,7 @@ export type AssetWithBalance = {
   iconUrl: string;
   symbol: string;
   fiat?: string;
-  chainId: Caip2ChainId;
+  chainId: CaipChainId;
   balance: number;
   string: string;
 };
@@ -52,7 +51,7 @@ export const useMultichainAccountBalances = (
   const importedTokens: TokensControllerState['allTokens'] =
     useSelector(getAllTokens);
 
-  const allChainIDs = useSelector(getChainIdsToPoll);
+  const allChainIDs = useSelector(getAllChainsToPoll);
   const allNetworkConfigurations = useSelector(
     getNetworkConfigurationsByChainId,
   );
@@ -103,31 +102,33 @@ export const useMultichainAccountBalances = (
 
         const decimalBalance = parseInt(hexBalance, 16);
 
-        const { nativeCurrency } = allNetworkConfigurations[chainId];
-        const { conversionRate } = currencyRates[nativeCurrency];
+        if (decimalBalance > 0) {
+          const { nativeCurrency } = allNetworkConfigurations[chainId];
+          const { conversionRate } = currencyRates[nativeCurrency];
 
-        const tokenExchangeRate =
-          crossChainContractRates[chainId]?.[account.address];
+          const tokenExchangeRate =
+            crossChainContractRates[chainId]?.[account.address];
 
-        // Get the fiat value of the token
-        const fiatValue = getTokenFiatAmount(
-          tokenExchangeRate,
-          conversionRate ?? 0,
-          currentCurrency,
-          decimalBalance.toString(),
-          token.symbol,
-          false,
-          false,
-        );
+          // Get the fiat value of the token
+          const fiatValue = getTokenFiatAmount(
+            tokenExchangeRate,
+            conversionRate ?? 0,
+            currentCurrency,
+            decimalBalance.toString(),
+            token.symbol,
+            false,
+            false,
+          );
 
-        networkBalances.push({
-          iconUrl: token.image ?? '',
-          symbol: token.symbol,
-          balance: decimalBalance,
-          chainId: `eip155:${hexToBigInt(chainId).toString(10)}`,
-          string: decimalBalance.toString(),
-          fiat: fiatValue,
-        });
+          networkBalances.push({
+            iconUrl: token.image ?? '',
+            symbol: token.symbol,
+            balance: decimalBalance,
+            chainId: `eip155:${hexToBigInt(chainId).toString(10)}`,
+            string: decimalBalance.toString(),
+            fiat: fiatValue,
+          });
+        }
 
         return networkBalances;
       }, [] as AssetWithBalance[]);
@@ -135,32 +136,45 @@ export const useMultichainAccountBalances = (
       return [...allBalances, ...tokensWithBalances];
     }, [] as AssetWithBalance[]);
 
-    const nativeBalances: AssetWithBalance[] = emvChainIds.map((chainId) => {
-      const { nativeCurrency } = allNetworkConfigurations[chainId];
-      const { conversionRate } = currencyRates[nativeCurrency];
+    const nativeBalances: AssetWithBalance[] = emvChainIds.reduce(
+      (acc, chainId) => {
+        const { nativeCurrency } = allNetworkConfigurations[chainId];
+        const { conversionRate } = currencyRates[nativeCurrency];
 
-      const balance = crossChainCachedBalances[chainId]?.[account.address] ?? 0;
-      const fiatValue = getValueFromWeiHex({
-        value: balance,
-        toCurrency: currentCurrency,
-        conversionRate: conversionRate ?? undefined,
-        numberOfDecimals: 2,
-      });
-      return {
-        iconUrl:
-          CHAIN_ID_TOKEN_IMAGE_MAP[
-            chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-          ] ?? '',
-        symbol:
-          CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
-            chainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
-          ],
-        balance,
-        chainId: `eip155:${hexToBigInt(chainId).toString(10)}`,
-        fiat: fiatValue,
-        string: balance.toString(),
-      };
-    });
+        const balance = crossChainCachedBalances[chainId]?.[account.address];
+        console.log('balance', balance);
+        if (balance) {
+          const fiatValue = getValueFromWeiHex({
+            value: balance,
+            toCurrency: currentCurrency,
+            conversionRate: conversionRate ?? undefined,
+            numberOfDecimals: 2,
+          });
+
+          const nativeAsset = {
+            iconUrl:
+              CHAIN_ID_TOKEN_IMAGE_MAP[
+                chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
+              ] ?? '',
+            symbol:
+              CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
+                chainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
+              ],
+            balance,
+            chainId: `eip155:${hexToBigInt(chainId).toString(
+              10,
+            )}` as CaipChainId,
+            fiat: fiatValue,
+            string: balance.toString(),
+          };
+
+          return [...acc, nativeAsset];
+        }
+
+        return acc;
+      },
+      [] as AssetWithBalance[],
+    );
 
     const assetsWithBalance = [...tokenBalances, ...nativeBalances];
 
@@ -189,7 +203,6 @@ export const useMultichainAccountBalances = (
     ? compatibleNetworks.filter((network) => chainIds.includes(network.chainId))
     : compatibleNetworks;
 
-  console.log('filteredCompatibleNetworks', filteredCompatibleNetworks);
   const accountBalances = filteredCompatibleNetworks.reduce((acc, network) => {
     const { ticker } = network;
     const conversionRate =
