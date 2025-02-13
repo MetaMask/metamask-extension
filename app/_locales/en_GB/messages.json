@@ -1170,7 +1170,7 @@
     "message": "Connecting to Sepolia test network"
   },
   "connectionDescription": {
-    "message": "This site wants to"
+    "message": "Connect this website with MetaMask."
   },
   "connectionFailed": {
     "message": "Connection failed"
