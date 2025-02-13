@@ -1424,18 +1424,16 @@ exports[`Security Tab should match snapshot 1`] = `
       >
         <div
           class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
-          data-testid="profileSyncToggle"
+          data-testid="participate-in-meta-metrics-container"
         >
           <div
             class="settings-page__content-item"
-            id="profileSyncLabel"
           >
             <span>
               Participate in MetaMetrics
             </span>
             <div
               class="settings-page__content-description"
-              data-testid="profileSyncDescription"
             >
               Participate in MetaMetrics to help us make MetaMask better
             </div>
@@ -1445,7 +1443,7 @@ exports[`Security Tab should match snapshot 1`] = `
             data-testid="participate-in-meta-metrics-toggle"
           >
             <label
-              class="toggle-button toggle-button--off"
+              class="toggle-button toggle-button--off toggle-button--disabled"
               tabindex="0"
             >
               <div
@@ -1469,7 +1467,6 @@ exports[`Security Tab should match snapshot 1`] = `
                   />
                 </div>
                 <input
-                  data-testid="participate-in-meta-metrics-toggle-button"
                   style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
                   type="checkbox"
                   value="false"
@@ -1515,7 +1512,7 @@ exports[`Security Tab should match snapshot 1`] = `
           data-testid="data-collection-for-marketing-toggle"
         >
           <label
-            class="toggle-button toggle-button--off"
+            class="toggle-button toggle-button--off toggle-button--disabled"
             tabindex="0"
           >
             <div
