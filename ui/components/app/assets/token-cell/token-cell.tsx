@@ -47,159 +47,155 @@ type TokenCellProps = {
   onClick?: (chainId: string, address: string) => void;
 };
 
-const TokenCell = React.memo(
-  ({ token, privacyMode = false, onClick }: TokenCellProps) => {
-    const dispatch = useDispatch();
-    const history = useHistory();
-    const t = useI18nContext();
-    const isEvm = useSelector(getMultichainIsEvm);
-    const trackEvent = useContext(MetaMetricsContext);
-    const { safeChains } = useSafeChains();
-    const [showScamWarningModal, setShowScamWarningModal] = useState(false);
+export default function TokenCell({
+  token,
+  privacyMode = false,
+  onClick,
+}: TokenCellProps) {
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const t = useI18nContext();
+  const isEvm = useSelector(getMultichainIsEvm);
+  const trackEvent = useContext(MetaMetricsContext);
+  const { safeChains } = useSafeChains();
+  const [showScamWarningModal, setShowScamWarningModal] = useState(false);
 
-    const decimalChainId = isEvm && parseInt(hexToDecimal(token.chainId), 10);
+  const decimalChainId = isEvm && parseInt(hexToDecimal(token.chainId), 10);
 
-    const safeChainDetails: SafeChain | undefined = safeChains?.find(
-      (chain) => {
-        if (typeof decimalChainId === 'number') {
-          return chain.chainId === decimalChainId.toString();
-        }
-        return undefined;
-      },
-    );
-
-    const tokenDisplayInfo = useTokenDisplayInfo({
-      token,
-    });
-
-    const handleClick = useCallback(
-      (e?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        e?.preventDefault();
-
-        if (showScamWarningModal) {
-          return;
-        }
-
-        if (!onClick || !token.chainId) {
-          return;
-        }
-
-        onClick(token.chainId, token.address);
-
-        trackEvent({
-          category: MetaMetricsEventCategory.Tokens,
-          event: MetaMetricsEventName.TokenDetailsOpened,
-          properties: {
-            location: 'Home',
-            chain_id: token.chainId,
-            token_symbol: token.symbol,
-          },
-        });
-      },
-      [onClick, token.chainId, token.address],
-    );
-
-    const handleScamWarningModal = (arg: boolean) => {
-      setShowScamWarningModal(arg);
-    };
-
-    if (!token.chainId) {
-      return null;
+  const safeChainDetails: SafeChain | undefined = safeChains?.find((chain) => {
+    if (typeof decimalChainId === 'number') {
+      return chain.chainId === decimalChainId.toString();
     }
+    return undefined;
+  });
 
-    return (
+  const tokenDisplayInfo = useTokenDisplayInfo({
+    token,
+  });
+
+  const handleClick = useCallback(
+    (e?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      e?.preventDefault();
+
+      // If the scam warning modal is open, do nothing
+      if (showScamWarningModal) {
+        return;
+      }
+
+      // Ensure token has a valid chainId before proceeding
+      if (!onClick || !token.chainId) {
+        return;
+      }
+
+      // Call the onClick handler with chainId and address if needed
+      onClick(token.chainId, token.address);
+
+      // Track the event
+      trackEvent({
+        category: MetaMetricsEventCategory.Tokens,
+        event: MetaMetricsEventName.TokenDetailsOpened,
+        properties: {
+          location: 'Home',
+          chain_id: token.chainId, // FIXME: Ensure this is a number for EVM accounts
+          token_symbol: token.symbol,
+        },
+      });
+    },
+    [onClick, token.chainId, token.address],
+  );
+
+  const handleScamWarningModal = (arg: boolean) => {
+    setShowScamWarningModal(arg);
+  };
+
+  if (!token.chainId) {
+    return null;
+  }
+
+  return (
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      width={BlockSize.Full}
+      height={BlockSize.Full}
+      gap={4}
+    >
       <Box
+        as="a"
+        onClick={handleClick}
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
+        paddingTop={2}
+        paddingBottom={2}
+        paddingLeft={4}
+        paddingRight={4}
         width={BlockSize.Full}
-        height={BlockSize.Full}
-        gap={4}
+        style={{ height: 62, cursor: onClick ? 'pointer' : 'auto' }}
+        data-testid="multichain-token-list-button"
       >
+        <TokenCellBadge token={{ ...token, ...tokenDisplayInfo }} />
         <Box
-          as="a"
-          onClick={handleClick}
           display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          paddingTop={2}
-          paddingBottom={2}
-          paddingLeft={4}
-          paddingRight={4}
+          flexDirection={FlexDirection.Column}
           width={BlockSize.Full}
-          style={{ height: 62, cursor: onClick ? 'pointer' : 'auto' }}
-          data-testid="multichain-token-list-button"
+          style={{ flexGrow: 1, overflow: 'hidden' }}
+          justifyContent={JustifyContent.center}
         >
-          <TokenCellBadge token={{ ...token, ...tokenDisplayInfo }} />
           <Box
             display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            width={BlockSize.Full}
-            style={{ flexGrow: 1, overflow: 'hidden' }}
-            justifyContent={JustifyContent.center}
+            flexDirection={FlexDirection.Row}
+            justifyContent={JustifyContent.spaceBetween}
           >
-            <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Row}
-              justifyContent={JustifyContent.spaceBetween}
-            >
-              <TokenCellTitle token={{ ...token, ...tokenDisplayInfo }} />
-              <TokenCellSecondaryDisplay
-                token={{ ...token, ...tokenDisplayInfo }}
-                handleScamWarningModal={handleScamWarningModal}
-                privacyMode={privacyMode}
-              />
-            </Box>
+            <TokenCellTitle token={{ ...token, ...tokenDisplayInfo }} />
+            <TokenCellSecondaryDisplay
+              token={{ ...token, ...tokenDisplayInfo }}
+              handleScamWarningModal={handleScamWarningModal}
+              privacyMode={privacyMode}
+            />
+          </Box>
 
-            <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Row}
-              justifyContent={JustifyContent.spaceBetween}
-            >
-              <TokenCellPercentChange
-                token={{ ...token, ...tokenDisplayInfo }}
-              />
-              <TokenCellPrimaryDisplay
-                token={{ ...token, ...tokenDisplayInfo }}
-                privacyMode={privacyMode}
-              />
-            </Box>
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            justifyContent={JustifyContent.spaceBetween}
+          >
+            <TokenCellPercentChange token={{ ...token, ...tokenDisplayInfo }} />
+            <TokenCellPrimaryDisplay
+              token={{ ...token, ...tokenDisplayInfo }}
+              privacyMode={privacyMode}
+            />
           </Box>
         </Box>
-
-        {/* scam warning modal */}
-        {isEvm && showScamWarningModal ? (
-          <Modal isOpen onClose={() => setShowScamWarningModal(false)}>
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader onClose={() => setShowScamWarningModal(false)}>
-                {t('nativeTokenScamWarningTitle')}
-              </ModalHeader>
-              <ModalBody marginTop={4} marginBottom={4}>
-                {t('nativeTokenScamWarningDescription', [
-                  token.symbol,
-                  safeChainDetails?.nativeCurrency?.symbol ||
-                    t('nativeTokenScamWarningDescriptionExpectedTokenFallback'),
-                ])}
-              </ModalBody>
-              <ModalFooter>
-                <ButtonSecondary
-                  onClick={() => {
-                    dispatch(setEditedNetwork({ chainId: token.chainId }));
-                    history.push(NETWORKS_ROUTE);
-                  }}
-                  block
-                >
-                  {t('nativeTokenScamWarningConversion')}
-                </ButtonSecondary>
-              </ModalFooter>
-            </ModalContent>
-          </Modal>
-        ) : null}
       </Box>
-    );
-  },
-  (prevProps, nextProps) =>
-    prevProps.token.balance === nextProps.token.balance &&
-    prevProps.privacyMode === nextProps.privacyMode,
-);
-
-export default TokenCell;
+      {/* scam warning modal, this should be higher up in the component tree */}
+      {isEvm && showScamWarningModal ? (
+        <Modal isOpen onClose={() => setShowScamWarningModal(false)}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader onClose={() => setShowScamWarningModal(false)}>
+              {t('nativeTokenScamWarningTitle')}
+            </ModalHeader>
+            <ModalBody marginTop={4} marginBottom={4}>
+              {t('nativeTokenScamWarningDescription', [
+                token.symbol,
+                safeChainDetails?.nativeCurrency?.symbol ||
+                  t('nativeTokenScamWarningDescriptionExpectedTokenFallback'), // never render "undefined" string value
+              ])}
+            </ModalBody>
+            <ModalFooter>
+              <ButtonSecondary
+                onClick={() => {
+                  dispatch(setEditedNetwork({ chainId: token.chainId }));
+                  history.push(NETWORKS_ROUTE);
+                }}
+                block
+              >
+                {t('nativeTokenScamWarningConversion')}
+              </ButtonSecondary>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      ) : null}
+    </Box>
+  );
+}
