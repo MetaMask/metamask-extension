@@ -1,7 +1,5 @@
 import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
-import {
-  getMultichainBalancesControllerMessenger,
-} from './multichain-balances-controller-messenger';
+import { getMultichainBalancesControllerMessenger } from './multichain-balances-controller-messenger';
 
 describe('getMultichainBalancesControllerMessenger', () => {
   it('returns a restricted messenger', () => {

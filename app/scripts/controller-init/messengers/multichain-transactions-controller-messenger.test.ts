@@ -1,7 +1,5 @@
 import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
-import {
-  getMultichainTransactionsControllerMessenger,
-} from './multichain-transactions-controller-messenger';
+import { getMultichainTransactionsControllerMessenger } from './multichain-transactions-controller-messenger';
 
 describe('getMultichainTransactionsControllerMessenger', () => {
   it('returns a restricted messenger', () => {
