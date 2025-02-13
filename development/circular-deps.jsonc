@@ -49,10 +49,6 @@
   ],
   [
     "ui/components/multichain/pages/send/components/index.ts",
-    "ui/components/multichain/pages/send/components/network-picker.tsx"
-  ],
-  [
-    "ui/components/multichain/pages/send/components/index.ts",
     "ui/components/multichain/pages/send/components/recipient-content.tsx"
   ],
   [
