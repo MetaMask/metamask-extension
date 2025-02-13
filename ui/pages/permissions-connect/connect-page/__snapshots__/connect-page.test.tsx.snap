@@ -22,7 +22,22 @@ exports[`ConnectPage should render correctly 1`] = `
               class="mm-box mm-box--margin-bottom-2 mm-box--display-flex mm-box--justify-content-center"
             >
               <div
+                class="mm-box"
+                style="filter: blur(20px) brightness(1.2); position: absolute;"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-favicon mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                >
+                  <img
+                    alt="github.io logo"
+                    class="mm-avatar-favicon__image"
+                    src="https://metamask.github.io/test-dapp/metamask-fox.svg"
+                  />
+                </div>
+              </div>
+              <div
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-lg mm-avatar-favicon mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                style="z-index: 1; background: transparent;"
               >
                 <img
                   alt="github.io logo"
@@ -32,14 +47,20 @@ exports[`ConnectPage should render correctly 1`] = `
               </div>
             </div>
             <h2
-              class="mm-box mm-text mm-text--heading-lg mm-box--margin-top-2 mm-box--color-text-default"
+              class="mm-box mm-text mm-text--heading-lg mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
             >
               github.io
             </h2>
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
             >
-              Connect this website with MetaMask
+              Connect this website with MetaMask.
+              <button
+                class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                target="_blank"
+              >
+                Learn more
+              </button>
             </p>
           </p>
         </div>
@@ -82,7 +103,7 @@ exports[`ConnectPage should render correctly 1`] = `
             >
               <div
                 class="mm-box mm-box--background-color-background-default mm-box--rounded-xl"
-                style="overflow: auto; max-height: 240px;"
+                style="overflow: auto; max-height: 268px;"
               >
                 <div
                   class="mm-box multichain-account-list-item mm-box--padding-4 mm-box--display-flex mm-box--background-color-transparent"
@@ -364,7 +385,22 @@ exports[`ConnectPage should render with defaults from the requested permissions 
               class="mm-box mm-box--margin-bottom-2 mm-box--display-flex mm-box--justify-content-center"
             >
               <div
+                class="mm-box"
+                style="filter: blur(20px) brightness(1.2); position: absolute;"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-favicon mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                >
+                  <img
+                    alt="github.io logo"
+                    class="mm-avatar-favicon__image"
+                    src="https://metamask.github.io/test-dapp/metamask-fox.svg"
+                  />
+                </div>
+              </div>
+              <div
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-lg mm-avatar-favicon mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                style="z-index: 1; background: transparent;"
               >
                 <img
                   alt="github.io logo"
@@ -374,14 +410,20 @@ exports[`ConnectPage should render with defaults from the requested permissions 
               </div>
             </div>
             <h2
-              class="mm-box mm-text mm-text--heading-lg mm-box--margin-top-2 mm-box--color-text-default"
+              class="mm-box mm-text mm-text--heading-lg mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
             >
               github.io
             </h2>
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
             >
-              Connect this website with MetaMask
+              Connect this website with MetaMask.
+              <button
+                class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                target="_blank"
+              >
+                Learn more
+              </button>
             </p>
           </p>
         </div>
@@ -424,7 +466,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
             >
               <div
                 class="mm-box mm-box--background-color-background-default mm-box--rounded-xl"
-                style="overflow: auto; max-height: 240px;"
+                style="overflow: auto; max-height: 268px;"
               >
                 <div
                   class="mm-box multichain-account-list-item mm-box--padding-4 mm-box--display-flex mm-box--background-color-transparent"
