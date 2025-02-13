@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { shallowEqual, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import TokenCell from '../token-cell';
 import {
@@ -9,14 +9,12 @@ import {
   getPreferences,
   getSelectedAccount,
   getTokenBalancesEvm,
-  getTokenExchangeRates,
 } from '../../../../selectors';
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { useTokenBalances as pollAndUpdateEvmBalances } from '../../../../hooks/useTokenBalances';
 import { useNativeTokenBalance, useNetworkFilter } from '../hooks';
 import { TokenWithFiatAmount } from '../types';
 import { getMultichainIsEvm } from '../../../../selectors/multichain';
-import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { filterAssets } from '../util/filter';
 import { sortAssets } from '../util/sort';
 
@@ -32,11 +30,6 @@ function TokenList({ onTokenClick }: TokenListProps) {
   const currentNetwork = useSelector(getCurrentNetwork);
   const { tokenSortConfig, privacyMode } = useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedAccount);
-  const conversionRate = useSelector(getConversionRate);
-  const contractExchangeRates = useSelector(
-    getTokenExchangeRates,
-    shallowEqual,
-  );
 
   // EVM specific tokenBalance polling, updates state via polling loop per chainId
   pollAndUpdateEvmBalances({
@@ -64,8 +57,6 @@ function TokenList({ onTokenClick }: TokenListProps) {
   }, [
     tokenSortConfig,
     networkFilter,
-    conversionRate,
-    contractExchangeRates,
     currentNetwork,
     selectedAccount,
     newTokensImported,
@@ -79,7 +70,7 @@ function TokenList({ onTokenClick }: TokenListProps) {
   }, [sortedFilteredTokens]);
 
   return (
-    <div>
+    <>
       {sortedFilteredTokens.map((token: TokenWithFiatAmount) => (
         <TokenCell
           key={`${token.chainId}-${token.symbol}-${token.address}`}
@@ -88,7 +79,7 @@ function TokenList({ onTokenClick }: TokenListProps) {
           onClick={onTokenClick}
         />
       ))}
-    </div>
+    </>
   );
 }
 

@@ -21,47 +21,48 @@ type TokenCellPercentChangeProps = {
   token: TokenFiatDisplayInfo;
 };
 
-export const TokenCellPercentChange = ({
-  token,
-}: TokenCellPercentChangeProps) => {
-  const isEvm = useSelector(getMultichainIsEvm);
-  const t = useI18nContext();
-  const multiChainMarketData = useSelector(getMarketData);
+export const TokenCellPercentChange = React.memo(
+  ({ token }: TokenCellPercentChangeProps) => {
+    const isEvm = useSelector(getMultichainIsEvm);
+    const t = useI18nContext();
+    const multiChainMarketData = useSelector(getMarketData);
 
-  // We do not want to display any percentage with non-EVM since we don't have the data for this yet.
-  if (isEvm) {
-    const tokenPercentageChange = token.address
-      ? multiChainMarketData?.[token.chainId]?.[token.address]
-          ?.pricePercentChange1d
-      : null;
+    // We do not want to display any percentage with non-EVM since we don't have the data for this yet.
+    if (isEvm) {
+      const tokenPercentageChange = token.address
+        ? multiChainMarketData?.[token.chainId]?.[token.address]
+            ?.pricePercentChange1d
+        : null;
 
+      return (
+        <PercentageChange
+          value={
+            token.isNative
+              ? multiChainMarketData?.[token.chainId]?.[
+                  getNativeTokenAddress(token.chainId as Hex)
+                ]?.pricePercentChange1d
+              : tokenPercentageChange
+          }
+          address={
+            token.isNative
+              ? getNativeTokenAddress(token.chainId as Hex)
+              : (token.address as `0x${string}`)
+          }
+        />
+      );
+    }
+
+    // fallback value (is this valid?)
     return (
-      <PercentageChange
-        value={
-          token.isNative
-            ? multiChainMarketData?.[token.chainId]?.[
-                getNativeTokenAddress(token.chainId as Hex)
-              ]?.pricePercentChange1d
-            : tokenPercentageChange
-        }
-        address={
-          token.isNative
-            ? getNativeTokenAddress(token.chainId as Hex)
-            : (token.address as `0x${string}`)
-        }
-      />
+      <Text
+        variant={TextVariant.bodySmMedium}
+        color={TextColor.textAlternative}
+        data-testid="multichain-token-list-item-token-name"
+        ellipsis
+      >
+        {networkTitleOverrides(t as TranslateFunction, token)}
+      </Text>
     );
-  }
-
-  // fallback value (is this valid?)
-  return (
-    <Text
-      variant={TextVariant.bodySmMedium}
-      color={TextColor.textAlternative}
-      data-testid="multichain-token-list-item-token-name"
-      ellipsis
-    >
-      {networkTitleOverrides(t as TranslateFunction, token)}
-    </Text>
-  );
-};
+  },
+  (prevProps, nextProps) => prevProps.token.address === nextProps.token.address,
+);

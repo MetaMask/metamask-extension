@@ -17,29 +17,35 @@ type TokenCellBadgeProps = {
   token: TokenFiatDisplayInfo;
 };
 
-export const TokenCellBadge = ({ token }: TokenCellBadgeProps) => {
-  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  return (
-    <BadgeWrapper
-      badge={
-        <AvatarNetwork
-          size={AvatarNetworkSize.Xs}
-          name={allNetworks?.[token.chainId as Hex]?.name}
-          src={getImageForChainId(token.chainId) || undefined}
-          backgroundColor={BackgroundColor.backgroundDefault}
-          borderWidth={2}
-        />
-      }
-      marginRight={4}
-    >
-      <AvatarToken
-        name={token.symbol}
-        src={
-          token.isNative
-            ? getNativeCurrencyForChain(token.chainId)
-            : token.tokenImage
+export const TokenCellBadge = React.memo(
+  ({ token }: TokenCellBadgeProps) => {
+    const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+
+    console.log('render TokenCellBadge');
+
+    return (
+      <BadgeWrapper
+        badge={
+          <AvatarNetwork
+            size={AvatarNetworkSize.Xs}
+            name={allNetworks?.[token.chainId as Hex]?.name}
+            src={getImageForChainId(token.chainId) || undefined}
+            backgroundColor={BackgroundColor.backgroundDefault}
+            borderWidth={2}
+          />
         }
-      />
-    </BadgeWrapper>
-  );
-};
+        marginRight={4}
+      >
+        <AvatarToken
+          name={token.symbol}
+          src={
+            token.isNative
+              ? getNativeCurrencyForChain(token.chainId)
+              : token.tokenImage
+          }
+        />
+      </BadgeWrapper>
+    );
+  },
+  (prevProps, nextProps) => prevProps.token.chainId === nextProps.token.chainId,
+);

@@ -15,21 +15,20 @@ type TokenCellPrimaryDisplayProps = {
   privacyMode: boolean;
 };
 
-export const TokenCellPrimaryDisplay = ({
-  token,
-  privacyMode,
-}: TokenCellPrimaryDisplayProps) => {
-  // primary display text
-  return (
-    <SensitiveText
-      data-testid="multichain-token-list-item-value"
-      color={TextColor.textAlternative}
-      variant={TextVariant.bodySmMedium}
-      textAlign={TextAlign.End}
-      isHidden={privacyMode}
-      length={SensitiveTextLength.Short}
-    >
-      {token.primary} {token.symbol}
-    </SensitiveText>
-  );
-};
+export const TokenCellPrimaryDisplay = React.memo(
+  ({ token, privacyMode }: TokenCellPrimaryDisplayProps) => {
+    return (
+      <SensitiveText
+        data-testid="multichain-token-list-item-value"
+        color={TextColor.textAlternative}
+        variant={TextVariant.bodySmMedium}
+        textAlign={TextAlign.End}
+        isHidden={privacyMode}
+        length={SensitiveTextLength.Short}
+      >
+        {token.primary} {token.symbol}
+      </SensitiveText>
+    );
+  },
+  (prevProps, nextProps) => prevProps.token.primary === nextProps.token.primary,
+);

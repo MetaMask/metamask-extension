@@ -18,39 +18,46 @@ type TokenCellTitleProps = {
   token: TokenFiatDisplayInfo;
 };
 
-export const TokenCellTitle = ({ token }: TokenCellTitleProps) => {
-  const t = useI18nContext();
+export const TokenCellTitle = React.memo(
+  ({ token }: TokenCellTitleProps) => {
+    const t = useI18nContext();
 
-  if (token.title.length > 12) {
-    return (
-      <Tooltip
-        position="bottom"
-        html={token.title}
-        tooltipInnerClassName="multichain-token-list-item__tooltip"
-      >
-        <Text
-          as="span"
-          fontWeight={FontWeight.Medium}
-          variant={TextVariant.bodyMd}
-          display={Display.Block}
-          ellipsis
+    if (token.title.length > 12) {
+      return (
+        <Tooltip
+          position="bottom"
+          html={token.title}
+          tooltipInnerClassName="multichain-token-list-item__tooltip"
         >
-          {networkTitleOverrides(t as TranslateFunction, token)}
-          {token.isStakeable && (
-            <StakeableLink chainId={token.chainId} symbol={token.symbol} />
-          )}
-        </Text>
-      </Tooltip>
-    );
-  }
+          <Text
+            as="span"
+            fontWeight={FontWeight.Medium}
+            variant={TextVariant.bodyMd}
+            display={Display.Block}
+            ellipsis
+          >
+            {networkTitleOverrides(t as TranslateFunction, token)}
+            {token.isStakeable && (
+              <StakeableLink chainId={token.chainId} symbol={token.symbol} />
+            )}
+          </Text>
+        </Tooltip>
+      );
+    }
 
-  // non-ellipsized title
-  return (
-    <Text fontWeight={FontWeight.Medium} variant={TextVariant.bodyMd} ellipsis>
-      {networkTitleOverrides(t as TranslateFunction, token)}
-      {token.isStakeable && (
-        <StakeableLink chainId={token.chainId} symbol={token.symbol} />
-      )}
-    </Text>
-  );
-};
+    // non-ellipsized title
+    return (
+      <Text
+        fontWeight={FontWeight.Medium}
+        variant={TextVariant.bodyMd}
+        ellipsis
+      >
+        {networkTitleOverrides(t as TranslateFunction, token)}
+        {token.isStakeable && (
+          <StakeableLink chainId={token.chainId} symbol={token.symbol} />
+        )}
+      </Text>
+    );
+  },
+  (prevProps, nextProps) => prevProps.token.title === nextProps.token.title, // Only rerender if the title changes
+);
