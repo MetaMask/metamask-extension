@@ -42,7 +42,7 @@ import {
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
 } from '../../../../shared/modules/selectors/networks';
-// import { getMultichainNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/multichainNetworks';
+import { getMultichainNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/multichainNetworks';
 import {
   getShowTestNetworks,
   getOnboardedInThisUISession,
@@ -93,7 +93,6 @@ import {
 } from '../../../ducks/metamask/metamask';
 import NetworksForm from '../../../pages/settings/networks-tab/networks-form';
 import { useNetworkFormState } from '../../../pages/settings/networks-tab/networks-form/networks-form-state';
-import { useMultichainNetworks } from '../../../hooks/networks/useMultichainNetworks';
 import { useRpcConfigs } from '../../../hooks/networks/useRpcConfigs';
 import PopularNetworkList from './popular-network-list/popular-network-list';
 import NetworkListSearch from './network-list-search/network-list-search';
@@ -125,7 +124,6 @@ const fromCaipToHexId = (caipChainId: string): Hex => {
 
   const decimalChainId = parseInt(parts[1], 10);
   const hexChainId = `0x${decimalChainId.toString(16)}`;
-  console.log({ hexChainId });
   return hexChainId as Hex;
 };
 
@@ -168,7 +166,9 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     getPermittedAccountsForSelectedTab(state, selectedTabOrigin),
   );
 
-  const [multichainNetworks] = useMultichainNetworks();
+  const multichainNetworks = useSelector(
+    getMultichainNetworkConfigurationsByChainId,
+  );
   const { getDefaultRpcEndpointByChainId } = useRpcConfigs();
 
   const currentlyOnTestNetwork = (TEST_CHAINS as Hex[]).includes(

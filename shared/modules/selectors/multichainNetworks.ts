@@ -1,17 +1,14 @@
 import {
   type MultichainNetworkControllerState as InternalMultichainNetworkState,
   type MultichainNetworkConfiguration as InternalMultichainNetworkConfiguration,
+  toMultichainNetworkConfigurationsByChainId,
 } from '@metamask/multichain-network-controller';
 import {
-  NetworkStatus,
-  type NetworkState as InternalNetworkState,
   type NetworkConfiguration as InternalNetworkConfiguration,
 } from '@metamask/network-controller';
-import type { NetworkConfigurationsByChainIdState } from './networks';
+import { getNetworkConfigurationsByChainId } from './networks';
 
 import { createDeepEqualSelector } from './util';
-import { hexToDecimal } from '../conversion.utils';
-
 
 // Selector types
 
@@ -36,40 +33,32 @@ export type MultichainNetworkConfigurationsByChainIdState = {
   };
 };
 
-export type NetworksMetadataState = {
-  metamask: {
-    multichainNetworksMetadata: Pick<InternalMultichainNetworkState, 'multichainNetworksMetadata'>,
-    networksMetadata: Pick<InternalNetworkState, 'networksMetadata'>
-  };
-};
-
-export type ProviderConfigState = MultichainNetworkConfigurationsByChainIdState & SelectedNetworkChainIdState;
+export type MultichainNetworkConfigState = MultichainNetworkConfigurationsByChainIdState & SelectedNetworkChainIdState;
 
 // Selectors
 
-export function getMultichainNetworkConfigurationsByChainId (state: MultichainNetworkConfigurationsByChainIdState) {
-  return state.metamask.multichainNetworkConfigurationsByChainId
-}
+export const getNonEvmMultichainNetworkConfigurationsByChainId = (state: MultichainNetworkConfigurationsByChainIdState) => state.metamask.multichainNetworkConfigurationsByChainId;
 
-export function getSelectedMultichainNetworkChainId(
-  state: SelectedNetworkChainIdState,
-) {
-  return state.metamask.selectedMultichainNetworkChainId;
-}
+export const getMultichainNetworkConfigurationsByChainId = createDeepEqualSelector(
+  getNonEvmMultichainNetworkConfigurationsByChainId,
+  getNetworkConfigurationsByChainId,
+  (nonEvmNetworkConfigurationsByChainId, networkConfigurationsByChainId) => {
+    const networks = {
+      ...nonEvmNetworkConfigurationsByChainId,
+      ...toMultichainNetworkConfigurationsByChainId(networkConfigurationsByChainId),
+    };
 
-export function getMultichainProviderConfig(
-  state: ProviderConfigState,
-) {
+    console.log({ networks, nonEvmNetworkConfigurationsByChainId });
+    return networks;
+  }
+);
+
+export const getSelectedMultichainNetworkChainId = (state: SelectedNetworkChainIdState) => state.metamask.selectedMultichainNetworkChainId;
+
+export const getSelectedMultichainNetworkConfiguration = (
+  state: MultichainNetworkConfigState,
+) => {
   const chainId = getSelectedMultichainNetworkChainId(state);
   const networkConfigurationsByChainId = getMultichainNetworkConfigurationsByChainId(state);
   return networkConfigurationsByChainId[chainId];
-}
-
-export function isNetworkLoading(state: MultichainNetworkControllerState) {
-  const selectedNetworkChainId = getSelectedMultichainNetworkChainId(state);
-  return (
-    selectedNetworkChainId &&
-    state.metamask.multichainNetworksMetadata[selectedNetworkChainId].status !==
-      NetworkStatus.Available
-  );
 }
