@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Fuse from 'fuse.js';
 import * as URI from 'uri-js';
 import {
-  type RpcEndpointType,
+  RpcEndpointType,
   type UpdateNetworkFields,
 } from '@metamask/network-controller';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
@@ -118,7 +118,6 @@ const fromCaipToHexId = (caipChainId: string): Hex => {
 
   // Ensure the format is correct
   if (parts.length !== 2 || parts[0] !== 'eip155') {
-    console.log('Invalid CAIP-2 chain ID format - ', parts[0]);
     return caipChainId;
   }
 
@@ -200,7 +199,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       !editingChainId || editCompleted
         ? undefined
         : Object.entries(evmNetworks).find(
-            ([chainId]) => chainId === editingChainId,
+            ([chainId]) => chainId === fromCaipToHexId(editingChainId),
           )?.[1],
     [editingChainId, editCompleted, networkConfigurations],
   );
@@ -343,12 +342,12 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       !isCurrentNetwork &&
       network.chainId !== EthereumMainnetCaipChainId;
     const isNetworkEditable = network.isEvm;
-    console.log('generateMultichainNetworkListItem', { network });
     const hasMultiRpcOptions =
       network.isEvm &&
       [...searchedEnabledNetworks, ...searchedTestNetworks].some((net) => {
         const hexChainId = fromCaipToHexId(net.chainId);
         const evmNetwork = evmNetworks[hexChainId];
+        console.log({ evmNetwork });
         return evmNetwork?.rpcEndpoints.length > 1;
       });
 

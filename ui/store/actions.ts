@@ -2508,7 +2508,6 @@ export function setActiveNetwork(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
     log.debug(`background.setActiveNetwork: ${id}`);
-    console.log('action -> setActiveNetwork', { id });
     try {
       await submitRequestToBackground('setActiveNetwork', [id]);
     } catch (error) {
