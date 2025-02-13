@@ -273,7 +273,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               </Box>
               {showEditAccountsModal && (
                 <EditAccountsModal
-                  accounts={accounts}
+                  accounts={evmAccounts}
                   defaultSelectedAccountAddresses={selectedAccountAddresses}
                   onClose={() => setShowEditAccountsModal(false)}
                   onSubmit={setSelectedAccountAddresses}
