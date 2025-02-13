@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { isEvmAccountType } from '@metamask/keyring-api';
@@ -20,6 +20,7 @@ import {
   Box,
   Button,
   ButtonLink,
+  ButtonLinkSize,
   ButtonSize,
   ButtonVariant,
   Text,
@@ -53,6 +54,12 @@ import {
   getAvatarFallbackLetter,
   transformOriginToTitle,
 } from '../../../helpers/utils/util';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   getCaip25PermissionsResponse,
   getRequestedSessionScopes,
@@ -88,6 +95,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   targetSubjectMetadata,
 }) => {
   const t = useI18nContext();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const requestedSessionsScopes = getRequestedSessionScopes(
     request.permissions,
@@ -187,6 +195,18 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
 
   const title = transformOriginToTitle(targetSubjectMetadata.origin);
 
+  const handleOpenAccountsModal = () => {
+    setShowEditAccountsModal(true);
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.ViewPermissionedAccounts,
+      properties: {
+        location:
+          'Connect view (accounts tab), Permissions toast, Permissions (dapp)',
+      },
+    });
+  };
+
   return (
     <Page
       data-testid="connect-page"
@@ -201,13 +221,17 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         >
           {targetSubjectMetadata.iconUrl ? (
             <>
-              <Box style={{ filter: 'blur(16px)', position: 'absolute' }}>
+              <Box
+                style={{
+                  filter: 'blur(20px) brightness(1.2)',
+                  position: 'absolute',
+                }}
+              >
                 <AvatarFavicon
                   backgroundColor={BackgroundColor.backgroundAlternative}
                   size={AvatarFaviconSize.Xl}
                   src={targetSubjectMetadata.iconUrl}
                   name={title}
-                  style={{ filter: 'brightness(1.2)' }}
                 />
               </Box>
               <AvatarFavicon
@@ -232,10 +256,25 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
             </AvatarBase>
           )}
         </Box>
-        <Text variant={TextVariant.headingLg} marginTop={2}>
+        <Text variant={TextVariant.headingLg} marginTop={2} marginBottom={2}>
           {title}
         </Text>
-        <Text>{t('connectionDescription')}</Text>
+        <Text>
+          {t('connectionDescription')}
+          <ButtonLink
+            paddingLeft={1}
+            key="permission-connect-footer-learn-more-link"
+            size={ButtonLinkSize.Inherit}
+            target="_blank"
+            onClick={() => {
+              global.platform.openTab({
+                url: ZENDESK_URLS.USER_GUIDE_DAPPS,
+              });
+            }}
+          >
+            {t('learnMoreUpperCase')}
+          </ButtonLink>
+        </Text>
       </Header>
       <Content
         paddingLeft={4}
@@ -261,7 +300,11 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               <Box
                 backgroundColor={BackgroundColor.backgroundDefault}
                 borderRadius={BorderRadius.XL}
-                style={{ overflow: 'auto', maxHeight: '290px' }}
+                style={{
+                  overflow: 'auto',
+                  maxHeight: '268px',
+                  scrollbarColor: 'var(--color-icon-muted) transparent',
+                }}
               >
                 {selectedAccounts.map((account) => (
                   <AccountListItem
@@ -277,7 +320,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
                 justifyContent={JustifyContent.center}
               >
                 <ButtonLink
-                  onClick={() => setShowEditAccountsModal(true)}
+                  onClick={() => handleOpenAccountsModal()}
                   data-testid="edit"
                 >
                   {t('editAccounts')}
