@@ -2237,4 +2237,140 @@ describe('#getConnectedSitesList', () => {
       );
     });
   });
+
+  describe('getTokenNetworkFilter', () => {
+    beforeEach(() => {
+      process.env.PORTFOLIO_VIEW = 'true';
+    });
+
+    afterEach(() => {
+      process.env.PORTFOLIO_VIEW = undefined;
+    });
+
+    it('always returns an object containing the network if portfolio view is disabled', () => {
+      process.env.PORTFOLIO_VIEW = undefined;
+
+      const state = {
+        metamask: {
+          preferences: {
+            tokenNetworkFilter: {
+              [CHAIN_IDS.MAINNET]: true,
+            },
+          },
+          selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [
+                { networkClientId: 'mainnetNetworkConfigurationId' },
+              ],
+            },
+          },
+        },
+      };
+
+      expect(selectors.getTokenNetworkFilter(state)).toStrictEqual({
+        [CHAIN_IDS.MAINNET]: true,
+      });
+    });
+
+    it('always returns an object containing the network if it is not included in popular networks', () => {
+      const state = {
+        metamask: {
+          preferences: {
+            tokenNetworkFilter: {
+              '0xNotPopularNetwork': true,
+            },
+          },
+          selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0xNotPopularNetwork': {
+              chainId: '0xNotPopularNetwork',
+              rpcEndpoints: [
+                { networkClientId: 'mainnetNetworkConfigurationId' },
+              ],
+            },
+          },
+        },
+      };
+
+      expect(selectors.getTokenNetworkFilter(state)).toStrictEqual({
+        '0xNotPopularNetwork': true,
+      });
+    });
+
+    it('returns an object containing all the popular networks for portfolio view', () => {
+      const state = {
+        metamask: {
+          preferences: {
+            tokenNetworkFilter: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+              [CHAIN_IDS.ARBITRUM]: true,
+              [CHAIN_IDS.AVALANCHE]: true,
+              [CHAIN_IDS.BSC]: true,
+              [CHAIN_IDS.OPTIMISM]: true,
+              [CHAIN_IDS.POLYGON]: true,
+              [CHAIN_IDS.ZKSYNC_ERA]: true,
+              [CHAIN_IDS.BASE]: true,
+            },
+          },
+          selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [
+                { networkClientId: 'mainnetNetworkConfigurationId' },
+              ],
+            },
+          },
+        },
+      };
+
+      expect(selectors.getTokenNetworkFilter(state)).toStrictEqual({
+        [CHAIN_IDS.MAINNET]: true,
+        [CHAIN_IDS.LINEA_MAINNET]: true,
+        [CHAIN_IDS.ARBITRUM]: true,
+        [CHAIN_IDS.AVALANCHE]: true,
+        [CHAIN_IDS.BSC]: true,
+        [CHAIN_IDS.OPTIMISM]: true,
+        [CHAIN_IDS.POLYGON]: true,
+        [CHAIN_IDS.ZKSYNC_ERA]: true,
+        [CHAIN_IDS.BASE]: true,
+      });
+    });
+
+    it('always returns the same object (memoized) if the same state is given', () => {
+      const state = {
+        metamask: {
+          preferences: {
+            tokenNetworkFilter: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+              [CHAIN_IDS.ARBITRUM]: true,
+              [CHAIN_IDS.AVALANCHE]: true,
+              [CHAIN_IDS.BSC]: true,
+              [CHAIN_IDS.OPTIMISM]: true,
+              [CHAIN_IDS.POLYGON]: true,
+              [CHAIN_IDS.ZKSYNC_ERA]: true,
+              [CHAIN_IDS.BASE]: true,
+            },
+          },
+          selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [
+                { networkClientId: 'mainnetNetworkConfigurationId' },
+              ],
+            },
+          },
+        },
+      };
+
+      const result1 = selectors.getTokenNetworkFilter(state);
+      const result2 = selectors.getTokenNetworkFilter(state);
+      expect(result1 === result2).toBe(true);
+    });
+  });
 });

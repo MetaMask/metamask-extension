@@ -164,6 +164,7 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { MultichainTransactionsController } from '@metamask/multichain-transactions-controller';
 ///: END:ONLY_INCLUDE_IF
+import { isProduction } from '../../shared/modules/environment';
 import {
   methodsRequiringNetworkSwitch,
   methodsThatCanSwitchNetworkWithoutApproval,
@@ -316,6 +317,8 @@ import {
   NOTIFICATION_NAMES,
   unrestrictedMethods,
   PermissionNames,
+  validateCaveatAccounts,
+  validateCaveatNetworks,
 } from './controllers/permissions';
 import { MetaMetricsDataDeletionController } from './controllers/metametrics-data-deletion/metametrics-data-deletion';
 import { DataDeletionService } from './services/data-deletion-service';
@@ -349,6 +352,7 @@ import {
   onPushNotificationReceived,
 } from './controllers/push-notifications';
 import createTracingMiddleware from './lib/createTracingMiddleware';
+import createOriginThrottlingMiddleware from './lib/createOriginThrottlingMiddleware';
 import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
 import BridgeStatusController from './controllers/bridge-status/bridge-status-controller';
@@ -983,6 +987,7 @@ export default class MetamaskController extends EventEmitter {
         allowedEvents: [
           'AccountsController:accountAdded',
           'AccountsController:accountRemoved',
+          'AccountsController:accountTransactionsUpdated',
         ],
         allowedActions: [
           'AccountsController:listMultichainAccounts',
@@ -1354,8 +1359,6 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.userStorageController = new UserStorageController.Controller({
-      getMetaMetricsState: () =>
-        this.metaMetricsController.state.participateInMetaMetrics ?? false,
       state: initState.UserStorageController,
       config: {
         accountSyncing: {
@@ -1398,7 +1401,7 @@ export default class MetamaskController extends EventEmitter {
         },
       },
       env: {
-        isAccountSyncingEnabled: isManifestV3,
+        isAccountSyncingEnabled: !isProduction() && isManifestV3,
       },
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
@@ -1411,8 +1414,6 @@ export default class MetamaskController extends EventEmitter {
           'AuthenticationController:isSignedIn',
           'AuthenticationController:performSignOut',
           'AuthenticationController:performSignIn',
-          'NotificationServicesController:disableNotificationServices',
-          'NotificationServicesController:selectIsNotificationServicesEnabled',
           'AccountsController:listAccounts',
           'AccountsController:updateAccountMetadata',
           'NetworkController:getState',
@@ -1429,39 +1430,6 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
     });
-
-    this.controllerMessenger.subscribe(
-      'MetaMetricsController:stateChange',
-      previousValueComparator(async (prevState, currState) => {
-        const { participateInMetaMetrics: prevParticipateInMetaMetrics } =
-          prevState;
-        const { participateInMetaMetrics: currParticipateInMetaMetrics } =
-          currState;
-
-        const metaMetricsWasDisabled =
-          prevParticipateInMetaMetrics && !currParticipateInMetaMetrics;
-        const metaMetricsWasEnabled =
-          !prevParticipateInMetaMetrics && currParticipateInMetaMetrics;
-
-        if (!metaMetricsWasDisabled && !metaMetricsWasEnabled) {
-          return;
-        }
-
-        const shouldPerformSignIn =
-          metaMetricsWasEnabled &&
-          !this.authenticationController.state.isSignedIn;
-        const shouldPerformSignOut =
-          metaMetricsWasDisabled &&
-          this.authenticationController.state.isSignedIn &&
-          !this.userStorageController.state.isProfileSyncingEnabled;
-
-        if (shouldPerformSignIn) {
-          await this.authenticationController.performSignIn();
-        } else if (shouldPerformSignOut) {
-          await this.authenticationController.performSignOut();
-        }
-      }, this.metaMetricsController.state),
-    );
 
     const notificationServicesPushControllerMessenger =
       this.controllerMessenger.getRestricted({
@@ -1528,7 +1496,7 @@ export default class MetamaskController extends EventEmitter {
             'KeyringController:getState',
             'AuthenticationController:getBearerToken',
             'AuthenticationController:isSignedIn',
-            'UserStorageController:enableProfileSyncing',
+            'AuthenticationController:performSignIn',
             'UserStorageController:getStorageKey',
             'UserStorageController:performGetStorage',
             'UserStorageController:performSetStorage',
@@ -3053,11 +3021,6 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-    this.multichainTransactionsController.start();
-    this.multichainTransactionsController.updateTransactions();
-    ///: END:ONLY_INCLUDE_IF
-
     this.controllerMessenger.subscribe(
       'CurrencyRateController:stateChange',
       ({ currentCurrency }) => {
@@ -4036,6 +3999,9 @@ export default class MetamaskController extends EventEmitter {
       removePollingTokenFromAppState:
         appStateController.removePollingToken.bind(appStateController),
 
+      updateThrottledOriginState:
+        appStateController.updateThrottledOriginState.bind(appStateController),
+
       // Backup
       backupUserData: backup.backupUserData.bind(backup),
       restoreUserData: backup.restoreUserData.bind(backup),
@@ -4075,10 +4041,6 @@ export default class MetamaskController extends EventEmitter {
       disableProfileSyncing: userStorageController.disableProfileSyncing.bind(
         userStorageController,
       ),
-      setIsProfileSyncingEnabled:
-        userStorageController.setIsProfileSyncingEnabled.bind(
-          userStorageController,
-        ),
       syncInternalAccountsWithUserStorage:
         userStorageController.syncInternalAccountsWithUserStorage.bind(
           userStorageController,
@@ -4159,14 +4121,6 @@ export default class MetamaskController extends EventEmitter {
       multichainUpdateBalance: (accountId) =>
         this.multichainBalancesController.updateBalance(accountId),
 
-      multichainUpdateBalances: () =>
-        this.multichainBalancesController.updateBalances(),
-
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-      // MultichainTransactionsController
-      multichainUpdateTransactions: () =>
-        this.multichainTransactionsController.updateTransactions(),
-      ///: END:ONLY_INCLUDE_IF
       // Transaction Decode
       decodeTransactionData: (request) =>
         decodeTransactionData({
@@ -5270,6 +5224,32 @@ export default class MetamaskController extends EventEmitter {
       PermissionNames.permittedChains,
     ]);
 
+    const requestedAccounts =
+      permissions[RestrictedMethods.eth_accounts]?.caveats?.find(
+        (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
+      )?.value ?? [];
+
+    const requestedChains =
+      permissions[PermissionNames.permittedChains]?.caveats?.find(
+        (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
+      )?.value ?? [];
+
+    if (permissions[RestrictedMethods.eth_accounts]?.caveats) {
+      validateCaveatAccounts(
+        requestedAccounts,
+        this.accountsController.listAccounts.bind(this.accountsController),
+      );
+    }
+
+    if (permissions[PermissionNames.permittedChains]?.caveats) {
+      validateCaveatNetworks(
+        requestedChains,
+        this.networkController.findNetworkClientIdByChainId.bind(
+          this.networkController,
+        ),
+      );
+    }
+
     if (!permissions[RestrictedMethods.eth_accounts]) {
       permissions[RestrictedMethods.eth_accounts] = {};
     }
@@ -5281,16 +5261,6 @@ export default class MetamaskController extends EventEmitter {
     if (isSnapId(origin)) {
       delete permissions[PermissionNames.permittedChains];
     }
-
-    const requestedChains =
-      permissions[PermissionNames.permittedChains]?.caveats?.find(
-        (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
-      )?.value ?? [];
-
-    const requestedAccounts =
-      permissions[PermissionNames.eth_accounts]?.caveats?.find(
-        (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
-      )?.value ?? [];
 
     const newCaveatValue = {
       requiredScopes: {},
@@ -6006,6 +5976,19 @@ export default class MetamaskController extends EventEmitter {
     }
 
     engine.push(createTracingMiddleware());
+
+    engine.push(
+      createOriginThrottlingMiddleware({
+        getThrottledOriginState:
+          this.appStateController.getThrottledOriginState.bind(
+            this.appStateController,
+          ),
+        updateThrottledOriginState:
+          this.appStateController.updateThrottledOriginState.bind(
+            this.appStateController,
+          ),
+      }),
+    );
 
     engine.push(
       createPPOMMiddleware(

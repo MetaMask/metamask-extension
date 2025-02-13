@@ -1,8 +1,9 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render } from '@testing-library/react';
 import React from 'react';
-import { IconName } from '..';
-import { ButtonPrimary, ButtonPrimarySize } from '.';
+import { IconName } from '../icon';
+import { ButtonPrimary } from './button-primary';
+import { ButtonPrimarySize } from './button-primary.types';
 
 describe('ButtonPrimary', () => {
   it('should render button element correctly', () => {
