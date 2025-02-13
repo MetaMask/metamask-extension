@@ -23,5 +23,8 @@
       "skipTypeImports": true,
       "skipAsyncImports": true
     }
-  }
+  },
+  "allowedCircularGlob": [
+    "ui/**"
+  ]
 }

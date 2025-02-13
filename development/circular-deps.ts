@@ -3,6 +3,7 @@
 import fs, { readFileSync } from 'fs';
 import madge from 'madge';
 import fg from 'fast-glob';
+import micromatch from 'micromatch';
 
 const TARGET_FILE = 'development/circular-deps.jsonc';
 
@@ -76,7 +77,9 @@ function normalizeJson(cycles: CircularDeps): CircularDeps {
 }
 
 // Common madge configuration
-const MADGE_CONFIG = JSON.parse(readFileSync('.madgerc', 'utf-8'));
+const { allowedCircularGlob, ...MADGE_CONFIG } = JSON.parse(
+  readFileSync('.madgerc', 'utf-8'),
+) as { allowedCircularGlob: string[] } & madge.MadgeConfig;
 
 async function getMadgeCircularDeps(): Promise<CircularDeps> {
   console.log('Running madge to detect circular dependencies...');
@@ -157,9 +160,50 @@ async function check(): Promise<void> {
       process.exit(1);
     }
 
+    failIfDisallowedCircularDepsFound(allowedCircularGlob, actualDeps);
+
     console.log('Circular dependencies check passed.');
   } catch (error) {
     console.error('Error while checking circular dependencies:', error);
+    process.exit(1);
+  }
+}
+
+/**
+ * Exits with a non-zero exit code if the provided `actualDeps` contain any
+ * circular dependencies that are not allowed by the `allowedCircularGlob`.
+ *
+ * @param allowedCircularGlob Glob patterns for allowed circular dependencies
+ * @param actualDeps All circular dependencies found in the codebase
+ */
+function failIfDisallowedCircularDepsFound(
+  allowedCircularGlob: string[],
+  actualDeps: CircularDeps,
+): void {
+  const failedPaths = allowedCircularGlob
+    .map((pattern) => {
+      // Collect all cycles containing a dep that does NOT match this pattern
+      const disallowedCycles = actualDeps.filter((cycle) =>
+        cycle.some((dep) => !micromatch.isMatch(dep, pattern)),
+      );
+      return { pattern, disallowedCycles };
+    })
+    .filter(({ disallowedCycles }) => disallowedCycles.length > 0);
+
+  if (failedPaths.length > 0) {
+    const errorDetails = failedPaths
+      .map(({ pattern, disallowedCycles }, idx) => {
+        const cycleList = disallowedCycles
+          .map((cycle, i) => `${i + 1}) ${cycle.join(' > ')}`)
+          .join('\n');
+        return `${idx + 1}. Pattern: ${pattern}\n${cycleList}`;
+      })
+      .join('\n\n');
+
+    console.error(
+      `Error: Circular dependencies found for these patterns:\n\n${errorDetails}`,
+    );
+    console.log('You must remove these circular dependencies.');
     process.exit(1);
   }
 }
