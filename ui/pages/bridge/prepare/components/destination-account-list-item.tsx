@@ -1,6 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { shortenAddress } from '../../../../helpers/utils/util';
 
 import {
@@ -51,31 +52,7 @@ import {
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 
 type DestinationAccountListItemProps = {
-  account: {
-    type:
-      | 'eip155:eoa'
-      | 'eip155:erc4337'
-      | 'bip122:p2wpkh'
-      | 'solana:data-account';
-    id: string;
-    address: string;
-    balance: string;
-    metadata: {
-      name: string;
-      importTime: number;
-      keyring: {
-        type: string;
-      };
-      snap?: {
-        id: string;
-        name?: string;
-        enabled?: boolean;
-      };
-    };
-    options: Record<string, unknown>;
-    methods: string[];
-    scopes: string[];
-  };
+  account: InternalAccount;
   selected: boolean;
   onClick?: () => void;
 };
@@ -94,14 +71,11 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
   );
   const allChainIDs = useSelector(getChainIdsToPoll);
 
-  // @ts-expect-error Account type from props doesn't match expected type in selector but functionality works correctly
   const { isEvmNetwork } = useMultichainSelector(getMultichainNetwork, account);
-  // @ts-expect-error Account type from props doesn't match expected type in selector but functionality works correctly
   const isTestnet = useMultichainSelector(getMultichainIsTestnet, account);
   const isMainnet = !isTestnet;
   const shouldShowFiat = useMultichainSelector(
     getMultichainShouldShowFiat,
-    // @ts-expect-error Account type from props doesn't match expected type in selector but functionality works correctly
     account,
   );
   const showFiatInTestnets = useSelector(getShowFiatInTestnets);
@@ -110,17 +84,14 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
 
   const primaryTokenImage = useMultichainSelector(
     getMultichainNativeCurrencyImage,
-    // @ts-expect-error Account type from props doesn't match expected type in selector but functionality works correctly
     account,
   );
   const nativeCurrency = useMultichainSelector(
     getMultichainNativeCurrency,
-    // @ts-expect-error Account type from props doesn't match expected type in selector but functionality works correctly
     account,
   );
 
   const accountTotalFiatBalances =
-    // @ts-expect-error Account type from props doesn't match expected type in hook but functionality works correctly
     useMultichainAccountTotalFiatBalance(account);
 
   const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
@@ -146,7 +117,8 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
   if (isEvmNetwork) {
     balanceToTranslate =
       !shouldShowFiat || isTestnet || !process.env.PORTFOLIO_VIEW
-        ? account.balance
+        ? // @ts-expect-error: balance is not typed.
+          account.balance
         : totalFiatBalance;
   } else {
     balanceToTranslate = accountTotalFiatBalances.totalBalance;

@@ -169,7 +169,6 @@ export const DestinationAccountPicker = ({
         {filteredAccounts.map((account) => (
           <DestinationAccountListItem
             key={account.id}
-            // @ts-expect-error: InternalAccount type doesn't match expected account prop type - functions correctly but needs type resolution
             account={account}
             onClick={() => onAccountSelect(account)}
             // @ts-expect-error: Type mismatch in isSelected prop between InternalAccount and component expectations

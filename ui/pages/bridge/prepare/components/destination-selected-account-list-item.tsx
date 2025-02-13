@@ -1,6 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { shortenAddress } from '../../../../helpers/utils/util';
 
 import {
@@ -25,21 +26,7 @@ import { getUseBlockie } from '../../../../selectors';
 import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
 
 type DestinationSelectedAccountListItemProps = {
-  account: {
-    id: string;
-    address: string;
-    metadata: {
-      name: string;
-      snap?: {
-        id: string;
-        name?: string;
-        enabled?: boolean;
-      };
-      keyring: {
-        type: string;
-      };
-    };
-  };
+  account: InternalAccount;
   selected: boolean;
   onClick?: () => void;
 };

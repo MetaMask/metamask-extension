@@ -747,6 +747,9 @@
   "bridgeEnterAmount": {
     "message": "Select amount"
   },
+  "bridgeEnterAmountAndSelectAccount": {
+    "message": "Enter amount and select destination account"
+  },
   "bridgeExplorerLinkViewOn": {
     "message": "View on $1"
   },
@@ -769,8 +772,14 @@
   "bridgeQuoteExpired": {
     "message": "Your quote timed out."
   },
+  "bridgeSelectDestinationAccount": {
+    "message": "Select destination account"
+  },
   "bridgeSelectNetwork": {
     "message": "Select network"
+  },
+  "bridgeSelectTokenAmountAndAccount": {
+    "message": "Select token, amount and destination account"
   },
   "bridgeSelectTokenAndAmount": {
     "message": "Select token and amount"
@@ -1491,6 +1500,15 @@
   "descriptionFromSnap": {
     "message": "Description from $1",
     "description": "$1 represents the name of the snap"
+  },
+  "destinationAccountPickerNoEligible": {
+    "message": "No eligible accounts found"
+  },
+  "destinationAccountPickerNoMatching": {
+    "message": "No matching accounts found"
+  },
+  "destinationAccountPickerSearchPlaceholder": {
+    "message": "Receiving address or SNS"
   },
   "details": {
     "message": "Details"
