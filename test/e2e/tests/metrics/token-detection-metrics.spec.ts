@@ -85,6 +85,7 @@ describe('Token detection event', function () {
           chain_id: '0x539',
           environment_type: 'fullscreen',
           is_profile_syncing_enabled: true,
+          hd_srp_index: 0,
         });
         assert.deepStrictEqual(events[2].properties, {
           token_detection_enabled: true,

@@ -320,7 +320,7 @@ export const createTransactionEventFragmentWithTxId = async (
  * @param transactionMetricsRequest - Contains controller actions
  * @param transactionMetricsRequest.getParticipateInMetrics - Returns whether the user has opted into metrics
  * @param transactionMetricsRequest.trackEvent - MetaMetrics track event function
- * @param transactionMetricsRequest.getHDSrpIndex - Returns the HD SRP index
+ * @param transactionMetricsRequest.getHDSrpIndex - Returns Index of the currently selected HD Keyring
  * @param transactionEventPayload - The event payload
  * @param transactionEventPayload.transactionMeta - The updated transaction meta
  * @param transactionEventPayload.approvalTransactionMeta - The updated approval transaction meta
