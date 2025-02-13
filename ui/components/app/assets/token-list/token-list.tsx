@@ -13,10 +13,7 @@ type TokenListProps = {
   nativeToken?: ReactNode;
 };
 
-export default function TokenList({
-  onTokenClick,
-  nativeToken,
-}: TokenListProps) {
+function TokenList({ onTokenClick, nativeToken }: TokenListProps) {
   const { privacyMode } = useSelector(getPreferences);
   const chainIdsToPoll = useSelector(getChainIdsToPoll);
 
@@ -58,3 +55,5 @@ export default function TokenList({
     </div>
   );
 }
+
+export default React.memo(TokenList);
