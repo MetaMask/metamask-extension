@@ -5,3 +5,4 @@ export { getMultichainTransactionsControllerMessenger } from './multichain-trans
 export type { MultichainAssetsControllerMessenger } from './multichain-assets-controller-messenger';
 export type { MultichainBalancesControllerMessenger } from './multichain-balances-controller-messenger';
 export type { MultichainTransactionsControllerMessenger } from './multichain-transactions-controller-messenger';
+export type { MultichainAssetsRatesControllerMessenger } from './multichain-assets-rates-controller-messenger';
