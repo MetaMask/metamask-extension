@@ -143,6 +143,10 @@ import { isEvmAccountType } from '@metamask/keyring-api';
 import { hexToBigInt, toCaipChainId } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 import {
+  MultichainNetworkController,
+  // getDefaultMultichainNetworkControllerState,
+} from '@metamask/multichain-network-controller';
+import {
   AuthenticationController,
   UserStorageController,
 } from '@metamask/profile-sync-controller';
@@ -663,6 +667,23 @@ export default class MetamaskController extends EventEmitter {
         ...initState.PreferencesController,
       },
       messenger: preferencesMessenger,
+    });
+
+    const multichainNetworkControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'MultichainNetworkController',
+        allowedActions: [
+          'NetworkController:setActiveNetwork',
+          'NetworkController:getState',
+        ],
+        allowedEvents: ['AccountsController:selectedAccountChange'],
+      });
+
+    this.multichainNetworkController = new MultichainNetworkController({
+      messenger: multichainNetworkControllerMessenger,
+      // Update the value of state with getDefaultMultichainNetworkControllerState()
+      // to add Solana and Bitcoin networks
+      state: initState.PreferencesController,
     });
 
     const tokenListMessenger = this.controllerMessenger.getRestricted({
@@ -2219,6 +2240,7 @@ export default class MetamaskController extends EventEmitter {
       MetaMetricsDataDeletionController: this.metaMetricsDataDeletionController,
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyRateController,
+      MultichainNetworkController: this.multichainNetworkController,
       NetworkController: this.networkController,
       AlertController: this.alertController,
       OnboardingController: this.onboardingController,
@@ -2267,6 +2289,7 @@ export default class MetamaskController extends EventEmitter {
         MultichainBalancesController: this.multichainBalancesController,
         MultichainTransactionsController: this.multichainTransactionsController,
         ///: END:ONLY_INCLUDE_IF
+        MultichainNetworkController: this.multichainNetworkController,
         NetworkController: this.networkController,
         KeyringController: this.keyringController,
         PreferencesController: this.preferencesController,
@@ -3305,8 +3328,10 @@ export default class MetamaskController extends EventEmitter {
       verifyPassword: this.verifyPassword.bind(this),
 
       // network management
-      setActiveNetwork: (networkConfigurationId) => {
-        return this.networkController.setActiveNetwork(networkConfigurationId);
+      setActiveNetwork: (id) => {
+        // The multichain network controller will proxy the call to the network controller
+        // in the case that the ID is an EVM network client ID.
+        return this.multichainNetworkController.setActiveNetwork(id);
       },
       // Avoids returning the promise so that initial call to switch network
       // doesn't block on the network lookup step

@@ -259,7 +259,8 @@
     "tslib@npm:^2.3.1": "~2.6.0",
     "tslib@npm:^2.4.0": "~2.6.0",
     "tslib@npm:^2.6.2": "~2.6.0",
-    "@metamask/providers@npm:^18.3.1": "patch:@metamask/providers@npm%3A19.0.0#~/.yarn/patches/@metamask-providers-npm-19.0.0-3d962c6f1a.patch"
+    "@metamask/providers@npm:^18.3.1": "patch:@metamask/providers@npm%3A19.0.0#~/.yarn/patches/@metamask-providers-npm-19.0.0-3d962c6f1a.patch",
+    "@metamask/multichain-network-controller@^0.0.0": "file:../core/packages/multichain-network-controller"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -326,6 +327,7 @@
     "@metamask/message-signing-snap": "^0.6.0",
     "@metamask/metamask-eth-abis": "^3.1.1",
     "@metamask/multichain": "^2.1.0",
+    "@metamask/multichain-network-controller": "^0.0.0",
     "@metamask/multichain-transactions-controller": "^0.3.0",
     "@metamask/name-controller": "^8.0.3",
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A22.1.1#~/.yarn/patches/@metamask-network-controller-npm-22.1.1-09b6510f1e.patch",
