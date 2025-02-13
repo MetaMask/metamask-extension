@@ -3,7 +3,7 @@ import {
   NetworkControllerStateChangeEvent,
   NetworkState,
 } from '@metamask/network-controller';
-import { Hex } from '@metamask/utils';
+import { CaipChainId, Hex } from '@metamask/utils';
 import type { Patch } from 'immer';
 import { TEST_CHAINS } from '../../../shared/constants/network';
 
@@ -14,7 +14,7 @@ const controllerName = 'NetworkOrderController';
  * Information about an ordered network.
  */
 export type NetworksInfo = {
-  networkId: string; // The network's chain id
+  networkId: Hex | CaipChainId; // The network's chain id
 };
 
 // State shape for NetworkOrderController
@@ -115,7 +115,7 @@ export class NetworkOrderController extends BaseController<
       const chainIds = Object.keys(networkConfigurationsByChainId).filter(
         (chainId) =>
           !TEST_CHAINS.includes(chainId as (typeof TEST_CHAINS)[number]),
-      ) as Hex[];
+      ) as (Hex | CaipChainId)[];
 
       const newNetworks = chainIds
         .filter(
@@ -140,7 +140,7 @@ export class NetworkOrderController extends BaseController<
    * @param networkList - The list of networks to update in the state.
    */
 
-  updateNetworksList(chainIds: string[]) {
+  updateNetworksList(chainIds: (Hex | CaipChainId)[]) {
     this.update((state) => {
       state.orderedNetworkList = chainIds.map((chainId) => ({
         networkId: chainId,
