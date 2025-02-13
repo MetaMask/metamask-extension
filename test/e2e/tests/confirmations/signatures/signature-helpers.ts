@@ -42,7 +42,6 @@ type AssertSignatureMetricsOptions = {
   decodingChangeTypes?: string[];
   decodingResponse?: string;
   decodingDescription?: string | null;
-  hdSrpIndex?: number;
 };
 
 type SignatureEventProperty = {
@@ -252,6 +251,7 @@ export async function assertAccountDetailsMetrics(
     locale: 'en',
     chain_id: '0x539',
     environment_type: 'notification',
+    hd_srp_index: 0,
   });
 }
 
