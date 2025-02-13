@@ -63,6 +63,7 @@ const useSortedFilteredTokens = () => {
     currentNetwork,
     selectedAccount,
     newTokensImported,
+    evmBalances,
   ]);
 };
 
