@@ -11,6 +11,8 @@ import SmartTransactionsController from '@metamask/smart-transactions-controller
 import { TransactionController } from '@metamask/transaction-controller';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import { AccountsController } from '@metamask/accounts-controller';
+import { MultichainBalancesController } from '@metamask/assets-controllers';
+import { MultichainTransactionsController } from '@metamask/multichain-transactions-controller';
 import {
   CronjobController,
   ExecutionService,
@@ -44,6 +46,8 @@ export type Controller =
     >
   | PPOMController
   | PreferencesController
+  | MultichainBalancesController
+  | MultichainTransactionsController
   | RateLimitController<RateLimitedApiMap>
   | SmartTransactionsController
   | SnapController
@@ -72,6 +76,8 @@ export type ControllerFlatState = AccountsController['state'] &
   >['state'] &
   PPOMController['state'] &
   PreferencesController['state'] &
+  MultichainBalancesController['state'] &
+  MultichainTransactionsController['state'] &
   SmartTransactionsController['state'] &
   SnapController['state'] &
   SnapInsightsController['state'] &
