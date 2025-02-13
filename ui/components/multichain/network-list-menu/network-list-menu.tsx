@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import {
   DragDropContext,
   Droppable,
@@ -305,6 +311,36 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     const canDeleteNetwork =
       isUnlocked && !isCurrentNetwork && network.chainId !== CHAIN_IDS.MAINNET;
 
+    const onClickCallback = useCallback(() => {
+      handleNetworkChange(network);
+    }, [handleNetworkChange, network]);
+
+    const onDeleteClickCallback = useCallback(() => {
+      dispatch(toggleNetworkMenu());
+      dispatch(
+        showModal({
+          name: 'CONFIRM_DELETE_NETWORK',
+          target: network.chainId,
+          onConfirm: () => undefined,
+        }),
+      );
+    }, [canDeleteNetwork, dispatch, toggleNetworkMenu, showModal, network]);
+
+    const onEditClickCallback = useCallback(() => {
+      dispatch(
+        setEditedNetwork({
+          chainId: network.chainId,
+          nickname: network.name,
+        }),
+      );
+      setActionMode(ACTION_MODES.ADD_EDIT);
+    }, [dispatch, network, setEditedNetwork, setActionMode, ACTION_MODES]);
+
+    const onRpcEndpointClickCallback = useCallback(() => {
+      setActionMode(ACTION_MODES.SELECT_RPC);
+      dispatch(setEditedNetwork({ chainId: network.chainId }));
+    }, [dispatch, network, setActionMode, ACTION_MODES]);
+
     return (
       <NetworkListItem
         name={network.name}
@@ -323,36 +359,10 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         chainId={network.chainId}
         selected={isCurrentNetwork && !focusSearch}
         focus={isCurrentNetwork && !focusSearch}
-        onClick={() => {
-          handleNetworkChange(network);
-        }}
-        onDeleteClick={
-          canDeleteNetwork
-            ? () => {
-                dispatch(toggleNetworkMenu());
-                dispatch(
-                  showModal({
-                    name: 'CONFIRM_DELETE_NETWORK',
-                    target: network.chainId,
-                    onConfirm: () => undefined,
-                  }),
-                );
-              }
-            : undefined
-        }
-        onEditClick={() => {
-          dispatch(
-            setEditedNetwork({
-              chainId: network.chainId,
-              nickname: network.name,
-            }),
-          );
-          setActionMode(ACTION_MODES.ADD_EDIT);
-        }}
-        onRpcEndpointClick={() => {
-          setActionMode(ACTION_MODES.SELECT_RPC);
-          dispatch(setEditedNetwork({ chainId: network.chainId }));
-        }}
+        onClick={onClickCallback}
+        onDeleteClick={canDeleteNetwork ? onDeleteClickCallback : undefined}
+        onEditClick={onEditClickCallback}
+        onRpcEndpointClick={onRpcEndpointClickCallback}
       />
     );
   };
