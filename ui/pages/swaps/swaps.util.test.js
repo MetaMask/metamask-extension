@@ -18,14 +18,8 @@ import {
   LINEA,
   BASE,
 } from '../../../shared/constants/swaps';
-import { estimateGasFee } from '../../store/actions';
 import {
-  TOKENS,
-  EXPECTED_TOKENS_RESULT,
-  AGGREGATOR_METADATA,
-  TOP_ASSETS,
-} from './swaps-util-test-constants';
-import {
+  estimateGasFee,
   fetchTokens,
   fetchAggregatorMetadata,
   fetchTopAssets,
@@ -39,6 +33,12 @@ import {
   fetchTopAssetsList,
   getSwap1559GasFeeEstimates,
 } from './swaps.util';
+import {
+  TOKENS,
+  EXPECTED_TOKENS_RESULT,
+  AGGREGATOR_METADATA,
+  TOP_ASSETS,
+} from './swaps-util-test-constants';
 
 jest.mock('../../../shared/lib/storage-helpers', () => ({
   getStorageItem: jest.fn(),

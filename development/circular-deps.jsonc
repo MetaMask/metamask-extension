@@ -81,9 +81,5 @@
     "ui/pages/snap-account-redirect/components/snap-account-redirect-message.tsx",
     "ui/pages/snap-account-redirect/components/url-display-box.tsx",
     "ui/pages/snap-account-redirect/snap-account-redirect.tsx"
-  ],
-  [
-    "ui/pages/swaps/swaps.util.ts",
-    "ui/store/actions.ts"
   ]
 ]
