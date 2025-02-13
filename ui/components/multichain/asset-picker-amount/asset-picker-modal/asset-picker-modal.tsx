@@ -53,15 +53,13 @@ import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import { getSwapsBlockedTokens } from '../../../../ducks/send';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  NETWORK_TO_NAME_MAP,
-} from '../../../../../shared/constants/network';
+import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import { AvatarType } from '../../avatar-group/avatar-group.types';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
 import { useAsyncResult } from '../../../../hooks/useAsyncResult';
 import { fetchTopAssetsList } from '../../../../pages/swaps/swaps.util';
+import { getImageForChainId } from '../../../../selectors/multichain';
 import {
   ERC20Asset,
   NativeAsset,
@@ -412,11 +410,6 @@ export function AssetPickerModal({
     selectedNetwork,
   ]);
 
-  const getNetworkImageUrl = (networkChainId: string) =>
-    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-      networkChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-    ];
-
   const getNetworkPickerLabel = () => {
     if (!isMultiselectEnabled) {
       return (
@@ -477,7 +470,7 @@ export function AssetPickerModal({
               label={getNetworkPickerLabel()}
               src={
                 selectedNetwork?.chainId
-                  ? getNetworkImageUrl(selectedNetwork.chainId)
+                  ? getImageForChainId(selectedNetwork.chainId)
                   : undefined
               }
               avatarGroupProps={
@@ -485,7 +478,7 @@ export function AssetPickerModal({
                   ? {
                       limit: 2,
                       members: selectedChainIds.map((c) => ({
-                        avatarValue: getNetworkImageUrl(c),
+                        avatarValue: getImageForChainId(c) ?? '',
                         symbol:
                           NETWORK_TO_SHORT_NETWORK_NAME_MAP[
                             c as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP

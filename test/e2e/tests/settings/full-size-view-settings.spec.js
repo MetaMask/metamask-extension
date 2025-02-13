@@ -2,7 +2,6 @@ const {
   withFixtures,
   unlockWallet,
   openDapp,
-  defaultGanacheOptions,
   WINDOW_TITLES,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
@@ -16,7 +15,7 @@ const toggleFullSizeViewSetting = async (driver) => {
   );
 };
 
-describe('Full-size View Setting @no-mmi', function () {
+describe('Full-size View Setting', function () {
   it('opens the extension in popup view when opened from a dapp after enabling it in Advanced Settings', async function () {
     await withFixtures(
       {
@@ -25,7 +24,6 @@ describe('Full-size View Setting @no-mmi', function () {
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

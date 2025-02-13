@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
-import { defaultGanacheOptions, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { METAMASK_STALELIST_URL } from '../phishing-controller/helpers';
 import FixtureBuilder from '../../fixture-builder';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -42,12 +42,11 @@ async function mockApis(mockServer: Mockttp) {
   ];
 }
 
-describe('MetaMask onboarding @no-mmi', function () {
+describe('MetaMask onboarding', function () {
   it('should prevent network requests to basic functionality endpoints when the basic functionality toggle is off', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockApis,
       },
@@ -91,7 +90,6 @@ describe('MetaMask onboarding @no-mmi', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockApis,
       },

@@ -9,7 +9,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
   setPetnamesEnabled,
   setFeatureNotificationsEnabled,
-  setRedesignedConfirmationsEnabled,
   setWatchEthereumAccountEnabled,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   setSolanaSupportEnabled,
@@ -26,7 +25,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getPetnamesEnabled,
   getFeatureNotificationsEnabled,
-  getRedesignedConfirmationsEnabled,
   getIsWatchEthereumAccountEnabled,
 } from '../../../selectors';
 import type {
@@ -50,7 +48,6 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
     ///: END:ONLY_INCLUDE_IF
     petnamesEnabled,
     featureNotificationsEnabled,
-    redesignedConfirmationsEnabled: getRedesignedConfirmationsEnabled(state),
   };
 };
 
@@ -75,8 +72,6 @@ const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
     setFeatureNotificationsEnabled: (value: boolean) => {
       return dispatch(setFeatureNotificationsEnabled(value));
     },
-    setRedesignedConfirmationsEnabled: (value: boolean) =>
-      dispatch(setRedesignedConfirmationsEnabled(value)),
   };
 };
 

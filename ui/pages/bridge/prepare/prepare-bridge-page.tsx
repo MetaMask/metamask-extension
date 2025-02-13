@@ -15,7 +15,6 @@ import {
   setFromToken,
   setFromTokenInputValue,
   setSelectedQuote,
-  setToChain,
   setToChainId,
   setToToken,
   updateQuoteRequestParams,
@@ -32,7 +31,6 @@ import {
   getToChain,
   getToChains,
   getToToken,
-  getToTokens,
   getWasTxDeclined,
   getFromAmountInCurrency,
   getValidationErrors,
@@ -89,10 +87,12 @@ import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
-import { getCurrentKeyring, getLocale, getTokenList } from '../../../selectors';
+import { getCurrentKeyring, getTokenList } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
 import { BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE } from '../../../../shared/constants/bridge';
+import { getIntlLocale } from '../../../ducks/locale/locale';
+import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 
@@ -109,11 +109,6 @@ const PrepareBridgePage = () => {
   );
 
   const toToken = useSelector(getToToken);
-  const {
-    toTokens,
-    toTopAssets,
-    isLoading: isToTokensLoading,
-  } = useSelector(getToTokens);
 
   const fromChains = useSelector(getFromChains);
   const toChains = useSelector(getToChains);
@@ -121,7 +116,7 @@ const PrepareBridgePage = () => {
   const toChain = useSelector(getToChain);
 
   const fromAmount = useSelector(getFromAmount);
-  const fromAmountInFiat = useSelector(getFromAmountInCurrency);
+  const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
 
   const providerConfig = useSelector(getProviderConfig);
   const slippage = useSelector(getSlippage);
@@ -149,7 +144,7 @@ const PrepareBridgePage = () => {
   const keyring = useSelector(getCurrentKeyring);
   // @ts-expect-error keyring type is wrong maybe?
   const isUsingHardwareWallet = isHardwareKeyring(keyring.type);
-  const locale = useSelector(getLocale);
+  const locale = useSelector(getIntlLocale);
 
   const ticker = useSelector(getNativeCurrency);
   const {
@@ -173,11 +168,10 @@ const PrepareBridgePage = () => {
     fromChain?.chainId,
   );
 
-  const toTokenListGenerator = useTokensWithFiltering(
-    toTokens,
-    toTopAssets,
-    toChain?.chainId,
-  );
+  const {
+    filteredTokenListGenerator: toTokenListGenerator,
+    isLoading: isToTokensLoading,
+  } = useTokensWithFiltering(toChain?.chainId);
 
   const { flippedRequestProperties } = useRequestProperties();
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
@@ -369,10 +363,12 @@ const PrepareBridgePage = () => {
     }
   }, [fromChain, fromToken, fromTokens, search, isFromTokensLoading]);
 
+  const isSwap = useIsMultichainSwap();
+
   return (
     <Column className="prepare-bridge-page" gap={8}>
       <BridgeInputGroup
-        header={t('bridgeFrom')}
+        header={isSwap ? t('swapSwapFrom') : t('bridgeFrom')}
         token={fromToken}
         onAmountChange={(e) => {
           dispatch(setFromTokenInputValue(e));
@@ -417,7 +413,7 @@ const PrepareBridgePage = () => {
         onMaxButtonClick={(value: string) => {
           dispatch(setFromTokenInputValue(value));
         }}
-        amountInFiat={fromAmountInFiat}
+        amountInFiat={fromAmountInCurrency.valueInCurrency}
         amountFieldProps={{
           testId: 'from-amount',
           autoFocus: true,
@@ -489,7 +485,6 @@ const PrepareBridgePage = () => {
                   : undefined;
               toChainClientId && dispatch(setActiveNetwork(toChainClientId));
               dispatch(setFromToken(toToken));
-              fromChain?.chainId && dispatch(setToChain(fromChain.chainId));
               fromChain?.chainId && dispatch(setToChainId(fromChain.chainId));
               dispatch(setToToken(fromToken));
             }}
@@ -517,18 +512,13 @@ const PrepareBridgePage = () => {
                   value: networkConfig.chainId,
                 });
               dispatch(setToChainId(networkConfig.chainId));
-              dispatch(setToChain(networkConfig.chainId));
               dispatch(setToToken(null));
             },
-            header: t('bridgeTo'),
+            header: isSwap ? t('swapSwapTo') : t('bridgeTo'),
             shouldDisableNetwork: ({ chainId }) =>
               chainId === fromChain?.chainId,
           }}
-          customTokenListGenerator={
-            toChain && toTokens && toTopAssets
-              ? toTokenListGenerator
-              : undefined
-          }
+          customTokenListGenerator={toChain ? toTokenListGenerator : undefined}
           amountInFiat={
             activeQuote?.toTokenAmount?.valueInCurrency || undefined
           }

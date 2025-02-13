@@ -11,7 +11,6 @@ import {
 } from './shared';
 
 const {
-  defaultGanacheOptions,
   defaultGanacheOptionsForType2Transactions,
   withFixtures,
 } = require('../../../helpers');
@@ -21,21 +20,14 @@ const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 describe('Confirmation Redesign ERC20 Approve Component', function () {
   const smartContract = SMART_CONTRACTS.HST;
 
-  describe('Submit an Approve transaction @no-mmi', function () {
+  describe('Submit an Approve transaction', function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
       await withFixtures(
         {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: {
-                redesignedConfirmationsEnabled: true,
-                isRedesignedConfirmationsDeveloperEnabled: true,
-              },
-            })
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           smartContract,
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
@@ -60,14 +52,8 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: {
-                redesignedConfirmationsEnabled: true,
-                isRedesignedConfirmationsDeveloperEnabled: true,
-              },
-            })
             .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
+          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),

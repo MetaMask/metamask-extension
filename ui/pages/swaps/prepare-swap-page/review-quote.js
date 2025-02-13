@@ -44,6 +44,7 @@ import {
   fetchSwapsSmartTransactionFees,
   getSmartTransactionFees,
   getCurrentSmartTransactionsEnabled,
+  getIsEstimatedReturnLow,
 } from '../../../ducks/swaps/swaps';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
@@ -181,7 +182,10 @@ ViewAllQuotesLink.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default function ReviewQuote({ setReceiveToAmount }) {
+export default function ReviewQuote({
+  setReceiveToAmount,
+  setIsEstimatedReturnLow,
+}) {
   const history = useHistory();
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
@@ -421,7 +425,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     sourceTokenValue,
   } = renderableDataForUsedQuote;
 
-  let { feeInFiat, feeInEth, rawEthFee, feeInUsd } =
+  let { feeInFiat, feeInEth, rawEthFee, feeInUsd, rawNetworkFees } =
     getRenderableNetworkFeesForQuote({
       tradeGas: usedGasLimit,
       approveGas,
@@ -472,14 +476,15 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       smartTransactionFees?.tradeTxFees.maxFeeEstimate +
       (smartTransactionFees?.approvalTxFees?.maxFeeEstimate || 0);
 
-    ({ feeInFiat, feeInEth, rawEthFee, feeInUsd } = getFeeForSmartTransaction({
-      chainId,
-      currentCurrency,
-      conversionRate,
-      USDConversionRate,
-      nativeCurrencySymbol,
-      feeInWeiDec: stxEstimatedFeeInWeiDec,
-    }));
+    ({ feeInFiat, feeInEth, rawEthFee, feeInUsd, rawNetworkFees } =
+      getFeeForSmartTransaction({
+        chainId,
+        currentCurrency,
+        conversionRate,
+        USDConversionRate,
+        nativeCurrencySymbol,
+        feeInWeiDec: stxEstimatedFeeInWeiDec,
+      }));
     additionalTrackingParams.stx_fee_in_usd = Number(feeInUsd);
     additionalTrackingParams.stx_fee_in_eth = Number(rawEthFee);
     additionalTrackingParams.estimated_gas =
@@ -1122,6 +1127,12 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     currentCurrency,
   ]);
 
+  const isEstimatedReturnLow = getIsEstimatedReturnLow({
+    usedQuote,
+    rawNetworkFees,
+  });
+  setIsEstimatedReturnLow(isEstimatedReturnLow);
+
   return (
     <div className="review-quote">
       <div className="review-quote__content">
@@ -1489,4 +1500,5 @@ export default function ReviewQuote({ setReceiveToAmount }) {
 
 ReviewQuote.propTypes = {
   setReceiveToAmount: PropTypes.func.isRequired,
+  setIsEstimatedReturnLow: PropTypes.func.isRequired,
 };

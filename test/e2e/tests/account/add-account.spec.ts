@@ -1,11 +1,7 @@
 import { E2E_SRP } from '../../default-fixture';
 import FixtureBuilder from '../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../constants';
-import {
-  WALLET_PASSWORD,
-  defaultGanacheOptions,
-  withFixtures,
-} from '../../helpers';
+import { WALLET_PASSWORD, withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { sendRedesignedTransactionToAccount } from '../../page-objects/flows/send-transaction.flow';
@@ -17,11 +13,10 @@ import LoginPage from '../../page-objects/pages/login-page';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 
 describe('Add account', function () {
-  it('should not affect public address when using secret recovery phrase to recover account with non-zero balance @no-mmi', async function () {
+  it('should not affect public address when using secret recovery phrase to recover account with non-zero balance', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
@@ -29,7 +24,7 @@ describe('Add account', function () {
 
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localNodeBalanceIsDisplayed(ganacheServer);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
@@ -41,7 +36,7 @@ describe('Add account', function () {
           accountType: ACCOUNT_TYPE.Ethereum,
         });
         await headerNavbar.check_accountLabel(newAccountName);
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.check_expectedBalanceIsDisplayed('0');
 
         // Switch back to the first account and transfer some balance to 2nd account so they will not be removed after recovering SRP
         await headerNavbar.openAccountMenu();
@@ -49,7 +44,7 @@ describe('Add account', function () {
         await accountListPage.check_accountDisplayedInAccountList('Account 1');
         await accountListPage.switchToAccount('Account 1');
         await headerNavbar.check_accountLabel('Account 1');
-        await homePage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localNodeBalanceIsDisplayed(ganacheServer);
 
         await sendRedesignedTransactionToAccount({
           driver,
@@ -71,7 +66,7 @@ describe('Add account', function () {
 
         // Check wallet balance for both accounts
         await homePage.check_pageIsLoaded();
-        await homePage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localNodeBalanceIsDisplayed(ganacheServer);
         await headerNavbar.openAccountMenu();
         await accountListPage.check_pageIsLoaded();
         await accountListPage.check_accountDisplayedInAccountList(
@@ -84,7 +79,7 @@ describe('Add account', function () {
     );
   });
 
-  it('should be possible to remove an account imported with a private key, but should not be possible to remove an account generated from the SRP imported in onboarding @no-mmi', async function () {
+  it('should be possible to remove an account imported with a private key, but should not be possible to remove an account generated from the SRP imported in onboarding', async function () {
     const testPrivateKey: string =
       '14abe6f4aab7f9f626fe981c864d0adeb5685f289ac9270c27b8fd790b4235d6';
 
@@ -106,7 +101,7 @@ describe('Add account', function () {
           accountType: ACCOUNT_TYPE.Ethereum,
         });
         await headerNavbar.check_accountLabel('Account 2');
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.check_expectedBalanceIsDisplayed('0');
 
         // Check user cannot delete 2nd account generated from the SRP imported in onboarding
         await headerNavbar.openAccountMenu();
@@ -117,13 +112,13 @@ describe('Add account', function () {
         // Create 3rd account with private key
         await accountListPage.addNewImportedAccount(testPrivateKey);
         await headerNavbar.check_accountLabel('Account 3');
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.check_expectedBalanceIsDisplayed('0');
 
         // Remove the 3rd account imported with a private key
         await headerNavbar.openAccountMenu();
         await accountListPage.removeAccount('Account 3');
         await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.check_expectedBalanceIsDisplayed('0');
         await headerNavbar.openAccountMenu();
         await accountListPage.check_accountIsNotDisplayedInAccountList(
           'Account 3',

@@ -40,6 +40,7 @@
       "recoveryPhraseReminderLastShown": "number",
       "showTestnetMessageInDropdown": true,
       "trezorModel": null,
+      "isRampCardClosed": false,
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
       "snapsInstallPrivacyWarningShown": true
@@ -109,7 +110,6 @@
         "smartTransactionsOptInStatus": true,
         "showNativeTokenAsMainBalance": true,
         "petnamesEnabled": true,
-        "isRedesignedConfirmationsDeveloperEnabled": "boolean",
         "showConfirmationAdvancedDetails": false,
         "tokenSortConfig": "object",
         "tokenNetworkFilter": {},
@@ -120,7 +120,6 @@
       "theme": "light",
       "useBlockie": false,
       "useNftDetection": false,
-      "useNonceField": false,
       "usePhishDetect": true,
       "useTokenDetection": false,
       "useCurrencyRateCheck": true,
@@ -150,9 +149,7 @@
               "0xe708": "object"
             }
           }
-        },
-        "destTokens": {},
-        "destTopAssets": {}
+        }
       }
     },
     "SubjectMetadataController": { "subjectMetadata": "object" },

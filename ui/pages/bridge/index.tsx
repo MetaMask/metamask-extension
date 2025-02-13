@@ -36,6 +36,7 @@ import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
 import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
+import { useIsMultichainSwap } from './hooks/useIsMultichainSwap';
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
@@ -70,6 +71,8 @@ const CrossChainSwap = () => {
   useBridgeExchangeRates();
   // Emits events related to quote-fetching
   useQuoteFetchEvents();
+
+  const isSwap = useIsMultichainSwap();
 
   const redirectToDefaultRoute = async () => {
     history.push({
@@ -106,7 +109,7 @@ const CrossChainSwap = () => {
           />
         }
       >
-        {t('bridge')}
+        {isSwap ? t('swap') : t('bridge')}
       </Header>
       <Content padding={0}>
         <Switch>

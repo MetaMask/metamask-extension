@@ -659,6 +659,7 @@ export enum MetaMetricsEventName {
   DecryptionRequested = 'Decryption Requested',
   DisablingNotifications = 'Notifications Disabled',
   EmptyBuyBannerDisplayed = 'Empty Buy Banner Displayed',
+  EmptyBuyBannerClosed = 'Empty Buy Banner Closed',
   EmptyBuyBannerClicked = 'Empty Buy Banner Clicked',
   EmptyReceiveBannerDisplayed = 'Empty Receive Banner Displayed',
   EmptyReceiveBannerClicked = 'Empty Receive Banner Clicked',
@@ -998,6 +999,7 @@ export enum MetaMetricsTransactionEventSource {
 export enum MetaMetricsEventLocation {
   AlertFrictionModal = 'alert_friction_modal',
   Confirmation = 'confirmation',
+  OriginThrottleModal = 'origin_throttle_modal',
   SignatureConfirmation = 'signature_confirmation',
   TokenDetails = 'token_details',
   TokenDetection = 'token_detection',

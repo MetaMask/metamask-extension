@@ -13,28 +13,21 @@ import TransactionConfirmation from '../../../page-objects/pages/confirmations/r
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { TestSuiteArguments } from './shared';
 
-const { defaultGanacheOptions, withFixtures } = require('../../../helpers');
+const { withFixtures } = require('../../../helpers');
 const FixtureBuilder = require('../../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
 describe('Confirmation Redesign Contract Interaction Transaction Decoding', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
 
-  describe('Create a mint nft transaction @no-mmi', function () {
+  describe('Create a mint nft transaction', function () {
     it(`decodes 4 bytes transaction data`, async function () {
       await withFixtures(
         {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: {
-                redesignedConfirmationsEnabled: true,
-                isRedesignedConfirmationsDeveloperEnabled: true,
-              },
-            })
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           testSpecificMock: mocked4BytesResponse,
           smartContract,
           title: this.test?.fullTitle(),
@@ -68,14 +61,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            preferences: {
-              redesignedConfirmationsEnabled: true,
-              isRedesignedConfirmationsDeveloperEnabled: true,
-            },
-          })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         testSpecificMock: mockedSourcifyResponse,
         smartContract,
         title: this.test?.fullTitle(),
@@ -107,14 +93,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            preferences: {
-              redesignedConfirmationsEnabled: true,
-              isRedesignedConfirmationsDeveloperEnabled: true,
-            },
-          })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test?.fullTitle(),
       },
@@ -146,14 +125,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            preferences: {
-              redesignedConfirmationsEnabled: true,
-              isRedesignedConfirmationsDeveloperEnabled: true,
-            },
-          })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         testSpecificMock: mockInfura,
         title: this.test?.fullTitle(),
       },
