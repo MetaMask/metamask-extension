@@ -1,4 +1,12 @@
-import { isStrictHexString, type Hex } from '@metamask/utils';
+import {
+  KnownCaipNamespace,
+  type CaipChainId,
+  isCaipChainId,
+  isStrictHexString,
+  type Hex,
+  hexToBigInt,
+  toCaipChainId,
+} from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import type { ContractMarketData } from '@metamask/assets-controllers';
 import {

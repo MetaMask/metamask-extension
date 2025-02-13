@@ -1,6 +1,5 @@
-import type { Hex } from '@metamask/utils';
+import type { CaipChainId, Hex } from '@metamask/utils';
 import type { BigNumber } from 'bignumber.js';
-import type { AssetType } from '../constants/transaction';
 
 export type ChainConfiguration = {
   isActiveSrc: boolean;
@@ -35,12 +34,11 @@ export enum SortOrder {
 }
 
 export type BridgeToken = {
-  type: AssetType.native | AssetType.token;
   address: string;
   symbol: string;
   image: string;
   decimals: number;
-  chainId: Hex;
+  chainId: CaipChainId;
   balance: string; // raw balance
   string: string | undefined; // normalized balance as a stringified number
   tokenFiatAmount?: number | null;

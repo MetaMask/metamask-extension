@@ -1,17 +1,18 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { type Hex, isStrictHexString } from '@metamask/utils';
-import { toChecksumAddress } from 'ethereumjs-util';
+import { type Hex, type CaipChainId } from '@metamask/utils';
 import {
   type BridgeToken,
+  ChainId,
   type QuoteMetadata,
   type QuoteResponse,
   SortOrder,
 } from '../../../shared/types/bridge';
 import { BRIDGE_DEFAULT_SLIPPAGE } from '../../../shared/constants/bridge';
+import { normalizeChainId } from '../../../shared/modules/bridge-utils/caip-formatters';
 import { getTokenExchangeRate } from './utils';
 
 export type BridgeState = {
-  toChainId: Hex | null;
+  toChainId: CaipChainId | null;
   fromToken: BridgeToken;
   toToken: BridgeToken;
   fromTokenInputValue: string | null;
@@ -22,6 +23,20 @@ export type BridgeState = {
   selectedQuote: (QuoteResponse & QuoteMetadata) | null; // Alternate quote selected by user. When quotes refresh, the best match will be activated.
   wasTxDeclined: boolean; // Whether the user declined the transaction. Relevant for hardware wallets.
   slippage: number;
+};
+
+type ChainIdPayload = { payload: number | Hex | CaipChainId | null };
+type TokenPayload = {
+  payload: {
+    address: string;
+    symbol: string;
+    image: string;
+    decimals: number;
+    chainId: number | Hex | ChainId | CaipChainId;
+    balance?: string;
+    string?: string | undefined;
+    tokenFiatAmount?: number | null;
+  } | null;
 };
 
 const initialState: BridgeState = {
@@ -57,29 +72,31 @@ const bridgeSlice = createSlice({
   name: 'bridge',
   initialState: { ...initialState },
   reducers: {
-    setToChainId: (state, action) => {
-      state.toChainId = action.payload;
+    setToChainId: (state, { payload }: ChainIdPayload) => {
+      state.toChainId = payload ? normalizeChainId(payload) : null;
     },
-    setFromToken: (state, action) => {
-      state.fromToken = action.payload;
-      if (action.payload) {
+    setFromToken: (state, { payload }: TokenPayload) => {
+      if (payload) {
         state.fromToken = {
-          ...action.payload,
-          address: isStrictHexString(action.payload.address)
-            ? toChecksumAddress(action.payload.address)
-            : action.payload.address,
+          ...payload,
+          balance: payload.balance ?? '0',
+          string: payload.string ?? '0',
+          chainId: normalizeChainId(payload.chainId),
         };
+      } else {
+        state.fromToken = payload;
       }
     },
-    setToToken: (state, action) => {
-      state.toToken = action.payload;
-      if (action.payload) {
+    setToToken: (state, { payload }: TokenPayload) => {
+      if (payload) {
         state.toToken = {
-          ...action.payload,
-          address: isStrictHexString(action.payload.address)
-            ? toChecksumAddress(action.payload.address)
-            : action.payload.address,
+          ...payload,
+          balance: payload.balance ?? '0',
+          string: payload.string ?? '0',
+          chainId: normalizeChainId(payload.chainId),
         };
+      } else {
+        state.toToken = payload;
       }
     },
     setFromTokenInputValue: (state, action) => {
