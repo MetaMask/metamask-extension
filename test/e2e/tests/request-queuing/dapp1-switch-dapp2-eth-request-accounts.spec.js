@@ -8,7 +8,6 @@ const {
   DAPP_ONE_URL,
   regularDelayMs,
   WINDOW_TITLES,
-  defaultGanacheOptions,
 } = require('../../helpers');
 
 describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', function () {

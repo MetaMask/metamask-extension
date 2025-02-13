@@ -4,7 +4,6 @@ const {
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
-  defaultGanacheOptions,
 } = require('../../helpers');
 
 describe('Request Queuing SwitchChain -> SendTx', function () {

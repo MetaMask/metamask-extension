@@ -6,7 +6,6 @@ const {
   DAPP_URL,
   WINDOW_TITLES,
   switchToNotificationWindow,
-  defaultGanacheOptions,
 } = require('../../helpers');
 
 describe('Request Queuing Send Tx -> SwitchChain -> SendTx', function () {

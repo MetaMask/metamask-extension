@@ -6,7 +6,6 @@ const {
   DAPP_URL,
   DAPP_ONE_URL,
   WINDOW_TITLES,
-  defaultGanacheOptions,
 } = require('../../helpers');
 
 describe('Request Queuing for Multiple Dapps and Txs on different networks revokePermissions', function () {

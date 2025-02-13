@@ -2,7 +2,6 @@ const FixtureBuilder = require('../../fixture-builder');
 const {
   DAPP_ONE_URL,
   DAPP_URL,
-  defaultGanacheOptions,
   openDapp,
   unlockWallet,
   WINDOW_TITLES,

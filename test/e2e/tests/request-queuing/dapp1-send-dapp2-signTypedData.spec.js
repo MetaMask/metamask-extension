@@ -6,7 +6,6 @@ const {
   DAPP_URL,
   DAPP_ONE_URL,
   regularDelayMs,
-  defaultGanacheOptions,
   WINDOW_TITLES,
   largeDelayMs,
 } = require('../../helpers');
