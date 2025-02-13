@@ -111,6 +111,13 @@ function writePrBodyToFile(prBody: string) {
   console.log(`PR body saved to ${prBodyPath}`);
 }
 
+async function handleGitDiffWithFlag(flag: string) {
+  const diffOutput = await gitDiff();
+  const outputPath = path.resolve(CHANGED_FILES_DIR, 'changed-files.txt');
+  fs.writeFileSync(outputPath, `${flag}\n${diffOutput.trim()}`);
+  console.log(`Git diff results saved to ${outputPath}`);
+}
+
 /**
  * Main run function, stores the output of git diff and the body of the matching PR to a file.
  *
@@ -136,13 +143,15 @@ async function storeGitDiffOutputAndPrBody() {
       console.log('Not a PR, skipping git diff');
       return;
     } else if (baseRef !== GITHUB_DEFAULT_BRANCH) {
-      console.log(`This is for a PR targeting '${baseRef}', skipping git diff`);
+      console.log(`This is for a PR targeting '${baseRef}', so we add the skip-e2e-quality-gate flag`);
       writePrBodyToFile(prInfo.body);
+      await handleGitDiffWithFlag('skip-e2e-quality-gate');
       return;
     } else if (
       prInfo.labels.some((label) => label.name === 'skip-e2e-quality-gate')
     ) {
-      console.log('PR has the skip-e2e-quality-gate label, skipping git diff');
+      console.log('PR has the skip-e2e-quality-gate label, so we add the skip-e2e-quality-gate flag');
+      await handleGitDiffWithFlag('skip-e2e-quality-gate');
       return;
     }
 

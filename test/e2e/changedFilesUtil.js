@@ -36,6 +36,14 @@ function readChangedAndNewFilesWithStatus() {
  * @returns {string[]} An array of filtered E2E test file paths.
  */
 function filterE2eChangedFiles(changedFilesPaths) {
+  // We'll skip re-running any e2e spec if its flagged
+  if (
+    changedFilesPaths.length > 0 &&
+    changedFilesPaths[0] === 'skip-e2e-quality-gate'
+  ) {
+    return [];
+  }
+
   const e2eChangedFiles = changedFilesPaths
     .filter(
       (file) =>
