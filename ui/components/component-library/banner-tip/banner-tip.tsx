@@ -5,9 +5,8 @@ import {
   BorderColor,
   Display,
 } from '../../../helpers/constants/design-system';
-import { BannerBase, Box } from '..';
-import { BoxProps, PolymorphicRef } from '../box';
-import { BannerBaseProps } from '../banner-base';
+import { Box, BoxProps, PolymorphicRef } from '../box';
+import { BannerBase, BannerBaseProps } from '../banner-base';
 import {
   BannerTipComponent,
   BannerTipLogoType,

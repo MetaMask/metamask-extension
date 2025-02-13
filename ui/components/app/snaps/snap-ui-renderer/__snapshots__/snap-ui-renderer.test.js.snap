@@ -1,0 +1,685 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SnapUIRenderer prefills interactive inputs with existing state 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    style="overflow-y: auto; margin-bottom: 0px;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <div
+          class="mm-box mm-form-text-field snap-ui-renderer__input mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+          >
+            <input
+              autocomplete="off"
+              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+              focused="false"
+              id="input"
+              type="text"
+              value="bar"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <span
+      data-renders="1"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;
+
+exports[`SnapUIRenderer re-focuses input after re-render 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    style="overflow-y: auto; margin-bottom: 0px;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <div
+          class="mm-box mm-form-text-field snap-ui-renderer__input mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+          >
+            <input
+              autocomplete="off"
+              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+              focused="true"
+              id="input"
+              type="text"
+              value=""
+            />
+          </div>
+        </div>
+        <div
+          class="mm-box mm-form-text-field snap-ui-renderer__input mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+          >
+            <input
+              autocomplete="off"
+              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+              focused="false"
+              id="input2"
+              type="text"
+              value=""
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <span
+      data-renders="2"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;
+
+exports[`SnapUIRenderer re-renders when the interface changes 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    style="overflow-y: auto; margin-bottom: 0px;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <div
+          class="mm-box mm-form-text-field snap-ui-renderer__input mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+          >
+            <input
+              autocomplete="off"
+              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+              focused="false"
+              id="input"
+              type="text"
+              value=""
+            />
+          </div>
+        </div>
+        <div
+          class="mm-box mm-form-text-field snap-ui-renderer__input mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+          >
+            <input
+              autocomplete="off"
+              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+              focused="false"
+              id="input2"
+              type="text"
+              value=""
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <span
+      data-renders="2"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;
+
+exports[`SnapUIRenderer re-syncs state when the interface changes 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    style="overflow-y: auto; margin-bottom: 0px;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <div
+          class="mm-box mm-form-text-field snap-ui-renderer__input mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+          >
+            <input
+              autocomplete="off"
+              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+              focused="false"
+              id="input"
+              type="text"
+              value="bar"
+            />
+          </div>
+        </div>
+        <div
+          class="mm-box mm-form-text-field snap-ui-renderer__input mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+          >
+            <input
+              autocomplete="off"
+              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+              focused="false"
+              id="input2"
+              type="text"
+              value="foo"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <span
+      data-renders="2"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;
+
+exports[`SnapUIRenderer renders basic UI 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    style="overflow-y: auto; margin-bottom: 0px;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Hello world!
+        </p>
+      </div>
+    </div>
+    <span
+      data-renders="1"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;
+
+exports[`SnapUIRenderer renders footers 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    style="overflow-y: auto; margin-bottom: 80px;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Hello world!
+        </p>
+      </div>
+      <div
+        class="box snap-ui-renderer__footer box--padding-4 box--display-flex box--gap-4 box--flex-direction-row box--width-full box--background-color-background-default"
+        style="box-shadow: var(--shadow-size-md) var(--color-shadow-default); height: 80px; position: fixed; bottom: 0px;"
+      >
+        <button
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block snap-ui-renderer__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+          textvariant="body-md"
+        >
+          <span
+            class="mm-box mm-text mm-text--inherit mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center mm-box--color-primary-inverse"
+          >
+            <div
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-right-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
+              style="border-width: 0px;"
+            >
+              B
+            </div>
+            Foo
+          </span>
+        </button>
+      </div>
+    </div>
+    <span
+      data-renders="1"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;
+
+exports[`SnapUIRenderer renders loading state 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--height-full"
+  >
+    <div
+      class="pulse-loader"
+      data-testid="pulse-loader"
+    >
+      <div
+        class="pulse-loader__loading-dot-one"
+      />
+      <div
+        class="pulse-loader__loading-dot-two"
+      />
+      <div
+        class="pulse-loader__loading-dot-three"
+      />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`SnapUIRenderer supports container backgrounds 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-default"
+    style="overflow-y: auto; margin-bottom: 80px;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Hello world!
+        </p>
+      </div>
+      <div
+        class="box snap-ui-renderer__footer box--padding-4 box--display-flex box--gap-4 box--flex-direction-row box--width-full box--background-color-background-default"
+        style="box-shadow: var(--shadow-size-md) var(--color-shadow-default); height: 80px; position: fixed; bottom: 0px;"
+      >
+        <button
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block snap-ui-renderer__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+          textvariant="body-md"
+        >
+          <span
+            class="mm-box mm-text mm-text--inherit mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center mm-box--color-primary-inverse"
+          >
+            <div
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-right-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
+              style="border-width: 0px;"
+            >
+              B
+            </div>
+            Foo
+          </span>
+        </button>
+      </div>
+    </div>
+    <span
+      data-renders="1"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;
+
+exports[`SnapUIRenderer supports file inputs 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    style="overflow-y: auto; margin-bottom: 0px;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <form
+          class="mm-box snap-ui-renderer__form mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
+          id="form"
+        >
+          <div
+            class="mm-box snap-ui-renderer__file-input snap-ui-renderer__field mm-box--display-flex mm-box--flex-direction-column"
+          >
+            <label
+              class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+              for="input"
+            >
+              My Input
+            </label>
+            <input
+              hidden=""
+              id="input"
+              name="input"
+              type="file"
+            />
+            <div
+              class="mm-box snap-ui-renderer__file-input__drop-zone mm-box--padding-top-5 mm-box--padding-bottom-5 mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center mm-box--text-align-center mm-box--rounded-md mm-box--border-style-solid mm-box--border-color-border-muted mm-box--border-width-1"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
+                style="mask-image: url('./images/icons/upload.svg');"
+              />
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-icon-alternative"
+              >
+                Drop your file here
+              </p>
+            </div>
+          </div>
+          <button
+            class="mm-box mm-text snap-ui-renderer__button mm-text--body-md mm-text--font-weight-medium mm-box--color-info-default"
+            id="submit"
+            type="submit"
+          >
+            Submit
+          </button>
+        </form>
+      </div>
+    </div>
+    <span
+      data-renders="1"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;
+
+exports[`SnapUIRenderer supports forms 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    style="overflow-y: auto; margin-bottom: 0px;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <form
+          class="mm-box snap-ui-renderer__form mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
+          id="form"
+        >
+          <div
+            class="mm-box mm-form-text-field snap-ui-renderer__input mm-box--display-flex mm-box--flex-direction-column"
+          >
+            <div
+              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+            >
+              <input
+                autocomplete="off"
+                class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                focused="false"
+                id="input"
+                type="text"
+                value="abc"
+              />
+            </div>
+          </div>
+          <button
+            class="mm-box mm-text snap-ui-renderer__button mm-text--body-md mm-text--font-weight-medium mm-box--color-info-default"
+            id="submit"
+            type="submit"
+          >
+            Submit
+          </button>
+        </form>
+      </div>
+    </div>
+    <span
+      data-renders="1"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;
+
+exports[`SnapUIRenderer supports forms with fields 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    style="overflow-y: auto; margin-bottom: 0px;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <form
+          class="mm-box snap-ui-renderer__form mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
+          id="form"
+        >
+          <div
+            class="mm-box mm-form-text-field snap-ui-renderer__input snap-ui-renderer__field mm-box--display-flex mm-box--flex-direction-column"
+          >
+            <label
+              class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+              for="input"
+            >
+              My Input
+            </label>
+            <div
+              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+            >
+              <input
+                autocomplete="off"
+                class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                focused="false"
+                id="input"
+                type="text"
+                value="abc"
+              />
+            </div>
+          </div>
+          <div
+            class="mm-box snap-ui-renderer__checkbox mm-box--display-flex mm-box--flex-direction-column"
+          >
+            <label
+              class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+              for="checkbox"
+            >
+              Checkbox
+            </label>
+            <label
+              class="mm-box mm-text mm-checkbox mm-text--body-md mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+            >
+              <span
+                class="mm-checkbox__input-wrapper"
+              >
+                <input
+                  class="mm-box mm-checkbox__input mm-checkbox__input--checked mm-box--margin-0 mm-box--margin-right-0 mm-box--display-flex mm-box--background-color-primary-default mm-box--rounded-sm mm-box--border-color-border-muted mm-box--border-width-2 box--border-style-solid"
+                  type="checkbox"
+                />
+                <span
+                  class="mm-box mm-checkbox__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+                  style="mask-image: url('./images/icons/check-bold.svg');"
+                />
+              </span>
+            </label>
+          </div>
+          <button
+            class="mm-box mm-text snap-ui-renderer__button mm-text--body-md mm-text--font-weight-medium mm-box--color-info-default"
+            id="submit"
+            type="submit"
+          >
+            Submit
+          </button>
+        </form>
+      </div>
+    </div>
+    <span
+      data-renders="1"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;
+
+exports[`SnapUIRenderer supports interactive inputs 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    style="overflow-y: auto; margin-bottom: 0px;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <div
+          class="mm-box mm-form-text-field snap-ui-renderer__input mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+          >
+            <input
+              autocomplete="off"
+              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+              focused="false"
+              id="input"
+              type="text"
+              value="a"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <span
+      data-renders="1"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;
+
+exports[`SnapUIRenderer supports the contentBackgroundColor prop 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-default"
+    style="overflow-y: auto; margin-bottom: 80px;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Hello world!
+        </p>
+      </div>
+      <div
+        class="box snap-ui-renderer__footer box--padding-4 box--display-flex box--gap-4 box--flex-direction-row box--width-full box--background-color-background-default"
+        style="box-shadow: var(--shadow-size-md) var(--color-shadow-default); height: 80px; position: fixed; bottom: 0px;"
+      >
+        <button
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block snap-ui-renderer__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+          textvariant="body-md"
+        >
+          <span
+            class="mm-box mm-text mm-text--inherit mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center mm-box--color-primary-inverse"
+          >
+            <div
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-right-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
+              style="border-width: 0px;"
+            >
+              B
+            </div>
+            Foo
+          </span>
+        </button>
+      </div>
+    </div>
+    <span
+      data-renders="1"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;
+
+exports[`SnapUIRenderer supports the onCancel prop 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    style="overflow-y: auto; margin-bottom: 80px;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Hello world!
+        </p>
+      </div>
+      <div
+        class="box snap-ui-renderer__footer box--padding-4 box--display-flex box--gap-4 box--flex-direction-row box--width-full box--background-color-background-default"
+        style="box-shadow: var(--shadow-size-md) var(--color-shadow-default); height: 80px; position: fixed; bottom: 0px;"
+      >
+        <button
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block snap-ui-renderer__footer-button mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+        >
+          <span
+            class="mm-box mm-text mm-text--inherit mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center mm-box--color-primary-default"
+          >
+            Cancel
+          </span>
+        </button>
+        <button
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block snap-ui-renderer__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+          textvariant="body-md"
+        >
+          <span
+            class="mm-box mm-text mm-text--inherit mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center mm-box--color-primary-inverse"
+          >
+            <div
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-right-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
+              style="border-width: 0px;"
+            >
+              B
+            </div>
+            Foo
+          </span>
+        </button>
+      </div>
+    </div>
+    <span
+      data-renders="1"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;

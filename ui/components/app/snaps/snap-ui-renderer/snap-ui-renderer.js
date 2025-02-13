@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { memo, useCallback, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Container } from '@metamask/snaps-sdk/jsx';
@@ -21,6 +21,16 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
 import { useScrollHandling } from '../../../../hooks/useScrollHandling';
 import { mapToExtensionCompatibleColor, mapToTemplate } from './utils';
+import { COMPONENT_MAPPING } from './components';
+
+// Component for tracking the number of re-renders
+// DO NOT USE IN PRODUCTION
+const PerformanceTracker = () => {
+  const rendersRef = useRef(0);
+  rendersRef.current += 1;
+
+  return <span data-testid="performance" data-renders={rendersRef.current} />;
+};
 
 const LoadingSpinner = memo(function LoadingSpinner() {
   return (
@@ -49,6 +59,7 @@ const SnapUIRendererComponent = ({
   useFooter = false,
   onCancel,
   contentBackgroundColor,
+  PERF_DEBUG,
 }) => {
   const t = useI18nContext();
 
@@ -115,6 +126,7 @@ const SnapUIRendererComponent = ({
         promptLegacyProps,
         t,
         contentBackgroundColor: backgroundColor,
+        componentMap: COMPONENT_MAPPING,
       }),
     [onCancel, useFooter, promptLegacyProps, t, backgroundColor, content],
   );
@@ -152,6 +164,7 @@ const SnapUIRendererComponent = ({
         }}
       >
         <MetaMaskTemplateRenderer sections={sections} />
+        {PERF_DEBUG && <PerformanceTracker />}
       </Box>
     </SnapInterfaceContextProvider>
   );
@@ -174,4 +187,5 @@ SnapUIRendererComponent.propTypes = {
   useFooter: PropTypes.bool,
   onCancel: PropTypes.func,
   contentBackgroundColor: PropTypes.string,
+  PERF_DEBUG: PropTypes.bool, // DO NOT USE THIS IN PRODUCTION
 };
