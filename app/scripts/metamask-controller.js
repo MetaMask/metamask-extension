@@ -171,6 +171,11 @@ import {
   networksMetadata,
 } from '@metamask/multichain-network-controller';
 import {
+  MultichainNetworkController,
+  AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+  NETWORKS_METADATA,
+} from '@metamask/multichain-network-controller';
+import {
   methodsRequiringNetworkSwitch,
   methodsThatCanSwitchNetworkWithoutApproval,
   methodsThatShouldBeEnqueued,
@@ -672,29 +677,19 @@ export default class MetamaskController extends EventEmitter {
       this.controllerMessenger.getRestricted({
         name: 'MultichainNetworkController',
         allowedActions: [
-          'NetworkController:getNetworkConfigurationByNetworkClientId',
-          'AccountsController:setSelectedAccount',
           'NetworkController:setActiveNetwork',
           'NetworkController:getState',
         ],
-        allowedEvents: ['NetworkController:stateChange'],
+        allowedEvents: ['AccountsController:selectedAccountChange'],
       });
-
-    const initMncState = {
-      ...initState.MultichainNetworkController,
-      multichainNetworkConfigurationsByChainId: multichainNetworkConfigurations,
-      multichainNetworksMetadata: networksMetadata,
-    };
-
-    console.log(initMncState);
 
     this.multichainNetworkController = new MultichainNetworkController({
       messenger: multichainNetworkControllerMessenger,
       state: {
         ...initState.MultichainNetworkController,
         multichainNetworkConfigurationsByChainId:
-          multichainNetworkConfigurations,
-        multichainNetworksMetadata: networksMetadata,
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+        multichainNetworksMetadata: NETWORKS_METADATA,
       },
     });
 
@@ -2298,6 +2293,7 @@ export default class MetamaskController extends EventEmitter {
       MultichainBalancesController: this.multichainBalancesController,
       MultichainNetworkController: this.multichainNetworkController,
       MultichainAssetsController: this.multichainAssetsController,
+      MultichainNetworkController: this.multichainNetworkController,
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       MultichainTransactionsController: this.multichainTransactionsController,
       ///: END:ONLY_INCLUDE_IF
@@ -2353,6 +2349,7 @@ export default class MetamaskController extends EventEmitter {
         MultichainBalancesController: this.multichainBalancesController,
         MultichainNetworkController: this.multichainNetworkController,
         MultichainAssetsController: this.multichainAssetsController,
+        MultichainNetworkController: this.multichainNetworkController,
         ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
         MultichainTransactionsController: this.multichainTransactionsController,
         ///: END:ONLY_INCLUDE_IF
