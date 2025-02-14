@@ -1492,6 +1492,15 @@
     "message": "Description from $1",
     "description": "$1 represents the name of the snap"
   },
+  "destinationAccountPickerNoEligible": {
+    "message": "No eligible accounts found"
+  },
+  "destinationAccountPickerNoMatching": {
+    "message": "No matching accounts found"
+  },
+  "destinationAccountPickerSearchPlaceholder": {
+    "message": "Receiving address or SNS"
+  },
   "details": {
     "message": "Details"
   },
