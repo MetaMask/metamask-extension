@@ -314,19 +314,37 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
                     selected={false}
                   />
                 ))}
+                {selectedAccounts.length === 0 && (
+                  <Box
+                    className="connect-page__accounts-empty"
+                    display={Display.Flex}
+                    justifyContent={JustifyContent.center}
+                    alignItems={AlignItems.center}
+                    borderRadius={BorderRadius.XL}
+                  >
+                    <ButtonLink
+                      onClick={() => handleOpenAccountsModal()}
+                      data-testid="edit"
+                    >
+                      {t('selectAccountToConnect')}
+                    </ButtonLink>
+                  </Box>
+                )}
               </Box>
-              <Box
-                marginTop={4}
-                display={Display.Flex}
-                justifyContent={JustifyContent.center}
-              >
-                <ButtonLink
-                  onClick={() => handleOpenAccountsModal()}
-                  data-testid="edit"
+              {selectedAccounts.length > 0 && (
+                <Box
+                  marginTop={4}
+                  display={Display.Flex}
+                  justifyContent={JustifyContent.center}
                 >
-                  {t('editAccounts')}
-                </ButtonLink>
-              </Box>
+                  <ButtonLink
+                    onClick={() => handleOpenAccountsModal()}
+                    data-testid="edit"
+                  >
+                    {t('editAccounts')}
+                  </ButtonLink>
+                </Box>
+              )}
               {showEditAccountsModal && (
                 <EditAccountsModal
                   accounts={evmAccounts}
