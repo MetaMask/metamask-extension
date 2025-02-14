@@ -40,6 +40,19 @@ async function getPrInfo(): Promise<PRInfo | null> {
   ).json();
 }
 
+
+export async function skipQualityGate(): Promise<boolean> {
+  const prInfo = await getPrInfo();
+  const baseRef = prInfo?.base.ref;
+  if (baseRef !== GITHUB_DEFAULT_BRANCH ||
+    prInfo?.labels.some((label) => label.name === 'skip-e2e-quality-gate')
+   ) {
+    return true} else {
+    console.log('Skip e2e quality gate', false);
+     return false;
+  }
+}
+
 /**
  * Fetches the git repository with a specified depth.
  *
@@ -111,14 +124,6 @@ function writePrBodyToFile(prBody: string) {
   console.log(`PR body saved to ${prBodyPath}`);
 }
 
-async function setSystemEnvar(envar: string) {
-  if (process.env.BASH_ENV) {
-    fs.appendFileSync(process.env.BASH_ENV, `export ${envar}=true\n`);
-  } else {
-    console.error('BASH_ENV is not defined. Cannot set the system flag.');
-  }
-}
-
 /**
  * Main run function, stores the output of git diff and the body of the matching PR to a file.
  *
@@ -146,12 +151,10 @@ async function storeGitDiffOutputAndPrBody() {
     } else if (baseRef !== GITHUB_DEFAULT_BRANCH) {
       console.log(`This is for a PR targeting '${baseRef}', so we set the skip-e2e-quality-gate envar`);
       writePrBodyToFile(prInfo.body);
-      await setSystemEnvar('SKIP_E2E_QUALITY_GATE');
     } else if (
       prInfo.labels.some((label) => label.name === 'skip-e2e-quality-gate')
     ) {
       console.log('PR has the skip-e2e-quality-gate label, so we set the skip-e2e-quality-gate envar');
-      await setSystemEnvar('SKIP_E2E_QUALITY_GATE');
     }
 
     console.log('Attempting to get git diff...');

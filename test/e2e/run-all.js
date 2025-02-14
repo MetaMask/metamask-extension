@@ -7,6 +7,9 @@ const { runInShell } = require('../../development/lib/run-command');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 const { loadBuildTypesConfig } = require('../../development/lib/build-type');
 const {
+  skipQualityGate,
+} = require('../../.circleci/scripts/git-diff-default-branch');
+const {
   filterE2eChangedFiles,
   getChangedAndNewFiles,
   readChangedAndNewFilesWithStatus,
@@ -67,10 +70,7 @@ function applyQualityGate(fullTestList, changedOrNewTests) {
 }
 
 // For running E2Es in parallel in CI
-function runningOnCircleCI(testPaths) {
-  const skipE2EQualityGate = process.env.SKIP_E2E_QUALITY_GATE === 'true';
-  console.log('Skip e2e quality gate:', skipE2EQualityGate);
-
+async function runningOnCircleCI(testPaths) {
   const changedandNewFilesPathsWithStatus = readChangedAndNewFilesWithStatus();
   const changedandNewFilesPaths = getChangedAndNewFiles(
     changedandNewFilesPathsWithStatus,
@@ -78,7 +78,7 @@ function runningOnCircleCI(testPaths) {
   const changedOrNewTests = filterE2eChangedFiles(changedandNewFilesPaths);
   console.log('Changed or new test list:', changedOrNewTests);
 
-  const fullTestList = skipE2EQualityGate
+  const fullTestList = (await skipQualityGate())
     ? testPaths
     : applyQualityGate(testPaths.join('\n'), changedOrNewTests);
 
