@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { getErrorMessage } from '../../../../shared/modules/error';
@@ -34,6 +34,12 @@ export const ImportAccount = ({ onActionComplete }) => {
   const menuItems = [t('privateKey'), t('jsonFile')];
 
   const [type, setType] = useState(menuItems[0]);
+
+  useEffect(()=>{
+    return ()=> {
+      dispatch(actions.hideWarning());
+    };
+  },[])
 
   async function importAccount(strategy, importArgs) {
     const loadingMessage = getLoadingMessage(strategy);
