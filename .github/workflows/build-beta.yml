@@ -21,7 +21,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Needs beta build
-        # For a `pull_request` event, the branch is `github.head_ref``.
+        # For a `pull_request` event, the branch is `github.head_ref`.
         # For a `push` event, the branch is `github.ref_name`.
         if: ${{ (github.head_ref || github.ref_name) != 'master' }}
         id: needs-beta-build
