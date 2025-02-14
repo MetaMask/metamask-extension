@@ -19,7 +19,6 @@ import {
   BASE,
 } from '../../../shared/constants/swaps';
 import {
-  estimateGasFee,
   fetchTokens,
   fetchAggregatorMetadata,
   fetchTopAssets,
@@ -33,6 +32,7 @@ import {
   fetchTopAssetsList,
   getSwap1559GasFeeEstimates,
 } from './swaps.util';
+import { estimateGasFee } from './swaps.util.gas';
 import {
   TOKENS,
   EXPECTED_TOKENS_RESULT,
@@ -45,7 +45,7 @@ jest.mock('../../../shared/lib/storage-helpers', () => ({
   setStorageItem: jest.fn(),
 }));
 
-jest.mock('../../store/actions', () => ({
+jest.mock('./swaps.util.gas', () => ({
   estimateGasFee: jest.fn(),
 }));
 

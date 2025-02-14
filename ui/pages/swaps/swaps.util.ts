@@ -3,10 +3,8 @@ import { Hex, Json } from '@metamask/utils';
 import { IndividualTxFees } from '@metamask/smart-transactions-controller/dist/types';
 import {
   FeeMarketGasFeeEstimates,
-  GasFeeEstimates,
   TransactionParams,
 } from '@metamask/transaction-controller';
-import { NetworkClientId } from '@metamask/network-controller';
 import {
   ALLOWED_CONTRACT_ADDRESSES,
   ARBITRUM,
@@ -52,7 +50,7 @@ import {
   sumHexes,
 } from '../../../shared/modules/conversion.utils';
 import { EtherDenomination } from '../../../shared/constants/common';
-import { submitRequestToBackground } from '../../store/background-connection';
+import { estimateGasFee } from './swaps.util.gas';
 
 const CACHE_REFRESH_FIVE_MINUTES = 300000;
 const USD_CURRENCY_CODE = 'usd';
@@ -852,11 +850,4 @@ export async function getTransaction1559GasFeeEstimates(
     maxFeePerGas,
     maxPriorityFeePerGas,
   };
-}
-export function estimateGasFee(request: {
-  transactionParams: TransactionParams;
-  chainId?: Hex;
-  networkClientId?: NetworkClientId;
-}): Promise<{ estimates: GasFeeEstimates }> {
-  return submitRequestToBackground('estimateGasFee', [request]);
 }
