@@ -4822,9 +4822,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/accounts-controller@npm:^23.0.1":
-  version: 23.0.1
-  resolution: "@metamask/accounts-controller@npm:23.0.1"
+"@metamask/accounts-controller@npm:^23.1.0":
+  version: 23.1.0
+  resolution: "@metamask/accounts-controller@npm:23.1.0"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
@@ -4843,7 +4843,7 @@ __metadata:
     "@metamask/providers": ^18.1.0
     "@metamask/snaps-controllers": ^9.19.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/65ae8e09fe90de224ed7705dd23ef232ef2308cf5e8e7c1d3e4d13f9692c610e78553ca5d5095352f069a0038d587756bcbedcf14147ad5fd446bf855db69915
+  checksum: 10/f96be18434d1568ad8e8c9455c8d35a8924ffe8a59610833aec96db39d7df7e609ec1231533be973bbf63f23244bbfbc6a41c8b637aa0c3d36c391b43f6aba98
   languageName: node
   linkType: hard
 
@@ -5365,18 +5365,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-trezor-keyring@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@metamask/eth-trezor-keyring@npm:6.0.0"
+"@metamask/eth-trezor-keyring@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "@metamask/eth-trezor-keyring@npm:6.1.0"
   dependencies:
     "@ethereumjs/tx": "npm:^4.2.0"
     "@ethereumjs/util": "npm:^8.1.0"
-    "@metamask/eth-sig-util": "npm:^8.0.0"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
     "@trezor/connect-plugin-ethereum": "npm:^9.0.3"
     "@trezor/connect-web": "npm:^9.1.11"
     hdkey: "npm:^2.1.0"
     tslib: "npm:^2.6.2"
-  checksum: 10/d5d799c60eeab963ef3e5533de472044b08b6f72652ecefbf26cec99784829bbcd706df57f6450ddb019c7dff7c41b0e0dad244aad62b7d03b51fc97755e2c4c
+  checksum: 10/993da25843c14b0db6b1760ad178c5a48d4f765faff4bff539fb43c518f54b74402c9edb7d4042f2699c05b9668b928770f0264cbd04046f6003c2640a83e73c
   languageName: node
   linkType: hard
 
@@ -5573,9 +5573,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:^19.0.7":
-  version: 19.0.7
-  resolution: "@metamask/keyring-controller@npm:19.0.7"
+"@metamask/keyring-controller@npm:^19.0.7, @metamask/keyring-controller@npm:^19.1.0":
+  version: 19.1.0
+  resolution: "@metamask/keyring-controller@npm:19.1.0"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.14.1"
@@ -5591,7 +5591,7 @@ __metadata:
     async-mutex: "npm:^0.5.0"
     ethereumjs-wallet: "npm:^1.0.1"
     immer: "npm:^9.0.6"
-  checksum: 10/9b385b2e4f17126ed992ff4b4ef2cfa86c7404fbda464b482f57ed2aa1254b0ea98b59f9182ee73a4a6dfc6eea93646950eced9370536be2837987556c3b16c3
+  checksum: 10/2121c8935f019edc92c1fef9901d9b67c1555905b96ac90640b3a991896c33261a6ca59fc23aeb995ca9f39d6c3b33a7b04d95ef48ec440f9683c3dd309bfd7b
   languageName: node
   linkType: hard
 
@@ -26627,7 +26627,7 @@ __metadata:
     "@metamask-institutional/types": "npm:^1.2.0"
     "@metamask/abi-utils": "npm:^2.0.2"
     "@metamask/account-watcher": "npm:^4.1.2"
-    "@metamask/accounts-controller": "npm:^23.0.1"
+    "@metamask/accounts-controller": "npm:^23.1.0"
     "@metamask/address-book-controller": "npm:^6.0.3"
     "@metamask/announcement-controller": "npm:^7.0.3"
     "@metamask/api-specs": "npm:^0.9.3"
@@ -26656,7 +26656,7 @@ __metadata:
     "@metamask/eth-sig-util": "npm:^7.0.1"
     "@metamask/eth-snap-keyring": "npm:^10.0.0"
     "@metamask/eth-token-tracker": "npm:^10.0.2"
-    "@metamask/eth-trezor-keyring": "npm:^6.0.0"
+    "@metamask/eth-trezor-keyring": "npm:^6.1.0"
     "@metamask/etherscan-link": "npm:^3.0.0"
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/gas-fee-controller": "npm:^22.0.3"
@@ -26664,7 +26664,7 @@ __metadata:
     "@metamask/json-rpc-engine": "npm:^10.0.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.4"
     "@metamask/keyring-api": "npm:^17.0.0"
-    "@metamask/keyring-controller": "npm:^19.0.7"
+    "@metamask/keyring-controller": "npm:^19.1.0"
     "@metamask/keyring-internal-api": "npm:^4.0.2"
     "@metamask/keyring-snap-client": "npm:^4.0.0"
     "@metamask/logging-controller": "npm:^6.0.4"
