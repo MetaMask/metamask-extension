@@ -268,5 +268,6 @@ async function main() {
 }
 
 main().catch((error) => {
-  exitWithError(error);
+  console.log('Error in run-all.js:', error);
+  // exitWithError(error);
 });

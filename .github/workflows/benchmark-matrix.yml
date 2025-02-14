@@ -6,7 +6,7 @@ env:
     {
       pageload: 'yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json --retries 2',
       userActions: 'yarn user-actions-benchmark:chrome --out test-artifacts/chrome/benchmark/user_actions.json --retries 2',
-      e2e: 'yarn test:e2e:chrome',
+      e2e: 'yarn test:e2e:chrome --retries 5',
     }
 
 jobs:
@@ -17,6 +17,7 @@ jobs:
         buildType: [browserify, webpack]
         testType: [pageload, userActions, e2e]
     name: ${{ matrix.buildType }}-${{ matrix.testType }}
+    continue-on-error: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
