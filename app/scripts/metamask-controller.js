@@ -144,7 +144,7 @@ import { hexToBigInt, toCaipChainId } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 import {
   MultichainNetworkController,
-  // getDefaultMultichainNetworkControllerState,
+  getDefaultMultichainNetworkControllerState,
 } from '@metamask/multichain-network-controller';
 import {
   AuthenticationController,
@@ -683,7 +683,7 @@ export default class MetamaskController extends EventEmitter {
       messenger: multichainNetworkControllerMessenger,
       // Update the value of state with getDefaultMultichainNetworkControllerState()
       // to add Solana and Bitcoin networks
-      state: initState.MultichainNetworkController,
+      state: getDefaultMultichainNetworkControllerState(),
     });
 
     const tokenListMessenger = this.controllerMessenger.getRestricted({
