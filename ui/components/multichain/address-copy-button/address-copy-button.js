@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { ButtonBase, IconName, Box } from '../../component-library';
@@ -20,12 +20,7 @@ import { MINUTE } from '../../../../shared/constants/time';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 
-export const AddressCopyButton = ({
-  address,
-  shorten = false,
-  wrap = false,
-  onClick,
-}) => {
+function AddressCopyButton({ address, shorten = false, wrap = false }) {
   const checksummedAddress = normalizeSafeAddress(address);
   const displayAddress = shorten
     ? shortenAddress(checksummedAddress)
@@ -36,14 +31,15 @@ export const AddressCopyButton = ({
   const tooltipText = copied ? t('copiedExclamation') : t('copyToClipboard');
   const tooltipTitle = tooltipText;
 
+  const onClickCallback = useCallback(() => {
+    handleCopy(checksummedAddress);
+  }, [handleCopy, checksummedAddress]);
+
   return (
     <Tooltip position="bottom" title={tooltipTitle}>
       <ButtonBase
         backgroundColor={BackgroundColor.primaryMuted}
-        onClick={() => {
-          handleCopy(checksummedAddress);
-          onClick?.();
-        }}
+        onClick={onClickCallback}
         paddingRight={4}
         paddingLeft={4}
         size={Size.SM}
@@ -61,7 +57,7 @@ export const AddressCopyButton = ({
       </ButtonBase>
     </Tooltip>
   );
-};
+}
 
 AddressCopyButton.propTypes = {
   /**
@@ -76,8 +72,6 @@ AddressCopyButton.propTypes = {
    * Represents if the element should wrap to multiple lines
    */
   wrap: PropTypes.bool,
-  /**
-   * Fires when the button is clicked
-   */
-  onClick: PropTypes.func,
 };
+
+export default React.memo(AddressCopyButton);
