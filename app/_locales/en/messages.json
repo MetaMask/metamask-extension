@@ -747,9 +747,6 @@
   "bridgeEnterAmount": {
     "message": "Select amount"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "Enter amount and select destination account"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "View on $1"
   },
@@ -772,14 +769,8 @@
   "bridgeQuoteExpired": {
     "message": "Your quote timed out."
   },
-  "bridgeSelectDestinationAccount": {
-    "message": "Select destination account"
-  },
   "bridgeSelectNetwork": {
     "message": "Select network"
-  },
-  "bridgeSelectTokenAmountAndAccount": {
-    "message": "Select token, amount and destination account"
   },
   "bridgeSelectTokenAndAmount": {
     "message": "Select token and amount"
