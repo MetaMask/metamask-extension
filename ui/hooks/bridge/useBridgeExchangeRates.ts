@@ -28,12 +28,12 @@ export const useBridgeExchangeRates = () => {
   const currency = useSelector(getCurrentCurrency);
 
   // Use values from activeQuote if available, otherwise use validated input field values
-  const fromTokenAddress = (
-    activeQuote ? activeQuote.quote.srcAsset.address : srcTokenAddress
-  )?.toLowerCase();
-  const toTokenAddress = (
-    activeQuote ? activeQuote.quote.destAsset.address : destTokenAddress
-  )?.toLowerCase();
+  const fromTokenAddress = activeQuote
+    ? activeQuote.quote.srcAsset.address
+    : srcTokenAddress;
+  const toTokenAddress = activeQuote
+    ? activeQuote.quote.destAsset.address
+    : destTokenAddress;
   const fromChainId = activeQuote
     ? decimalToPrefixedHex(activeQuote.quote.srcChainId)
     : chainId;

@@ -1,4 +1,4 @@
-import { add0x, Hex } from '@metamask/utils';
+import { add0x, type Hex } from '@metamask/utils';
 import { StaticIntervalPollingController } from '@metamask/polling-controller';
 import { NetworkClientId } from '@metamask/network-controller';
 import { StateMetadata } from '@metamask/base-controller';
@@ -113,7 +113,9 @@ export default class BridgeController extends StaticIntervalPollingController<Br
   };
 
   updateBridgeQuoteRequestParams = async (
-    paramsToUpdate: Partial<QuoteRequest>,
+    paramsToUpdate: Partial<
+      BridgeControllerState['bridgeState']['quoteRequest']
+    >,
   ) => {
     this.stopAllPolling();
     this.#abortController?.abort('Quote request updated');
@@ -139,21 +141,19 @@ export default class BridgeController extends StaticIntervalPollingController<Br
 
     if (isValidQuoteRequest(updatedQuoteRequest)) {
       this.#quotesFirstFetched = Date.now();
-      const walletAddress = this.#getSelectedAccount().address;
-      const srcChainIdInHex = add0x(
-        decimalToHex(updatedQuoteRequest.srcChainId),
-      );
+      const srcChainIdInHex = updatedQuoteRequest.srcChainId.toString(); // add0x(
+      //   decimalToHex(updatedQuoteRequest.srcChainId),
+      // );
 
-      const insufficientBal =
-        paramsToUpdate.insufficientBal ||
-        !(await this.#hasSufficientBalance(updatedQuoteRequest));
+      const { insufficientBal } = paramsToUpdate;
+      // ||
+      // !(await this.#hasSufficientBalance(updatedQuoteRequest));
 
-      const networkClientId = this.#getSelectedNetworkClientId(srcChainIdInHex);
+      const networkClientId = srcChainIdInHex; // this.#getSelectedNetworkClientId(srcChainIdInHex);
       this.startPolling({
         networkClientId,
         updatedQuoteRequest: {
           ...updatedQuoteRequest,
-          walletAddress,
           insufficientBal,
         },
       });
@@ -208,7 +208,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
     this.#abortController?.abort('New quote request');
     this.#abortController = new AbortController();
     if (updatedQuoteRequest.srcChainId === updatedQuoteRequest.destChainId) {
-      return;
+      // return;
     }
     const { bridgeState } = this.state;
     this.update((_state) => {

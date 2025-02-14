@@ -182,9 +182,7 @@ export const useTokensWithFiltering = (chainId?: ChainId | Hex) => {
 
         // Yield topTokens from selected chain
         for (const token_ of topTokens) {
-          const matchedToken =
-            tokenList?.[token_.address] ??
-            tokenList?.[token_.address.toLowerCase()];
+          const matchedToken = tokenList?.[token_.address];
           if (
             matchedToken &&
             shouldAddToken(

@@ -11,6 +11,7 @@ import { debounce } from 'lodash';
 import { useHistory, useLocation } from 'react-router-dom';
 import { BigNumber } from 'bignumber.js';
 import { type TokenListMap } from '@metamask/assets-controllers';
+import { toChecksumAddress, zeroAddress } from 'ethereumjs-util';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -60,10 +61,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/swaps';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
 import { setActiveNetwork } from '../../../store/actions';
-import {
-  hexToDecimal,
-  decimalToPrefixedHex,
-} from '../../../../shared/modules/conversion.utils';
 import type { QuoteRequest } from '../../../../shared/types/bridge';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
@@ -87,12 +84,19 @@ import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
-import { getCurrentKeyring, getTokenList } from '../../../selectors';
+import {
+  getCurrentKeyring,
+  getSelectedEvmInternalAccount,
+  getSelectedInternalAccount,
+  getTokenList,
+} from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
 import { BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE } from '../../../../shared/constants/bridge';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { getMultichainIsEvm } from '../../../selectors/multichain';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 
@@ -140,6 +144,15 @@ const PrepareBridgePage = () => {
   );
   const activeQuote =
     isQuoteExpired && !quoteRequest.insufficientBal ? undefined : activeQuote_;
+
+  const isEvm = useMultichainSelector(getMultichainIsEvm);
+  const selectedEvmAccount = useSelector(getSelectedEvmInternalAccount);
+  const selectedMultichainAccount = useMultichainSelector(
+    getSelectedInternalAccount,
+  );
+  const selectedAccount = isEvm
+    ? selectedEvmAccount
+    : selectedMultichainAccount;
 
   const keyring = useSelector(getCurrentKeyring);
   // @ts-expect-error keyring type is wrong maybe?
@@ -206,26 +219,24 @@ const PrepareBridgePage = () => {
       // Get input data from active quote
       const { srcAsset, destAsset, destChainId, srcChainId } =
         activeQuote.quote;
-      const quoteDestChainId = decimalToPrefixedHex(destChainId);
-      const quoteSrcChainId = decimalToPrefixedHex(srcChainId);
 
-      if (srcAsset && destAsset && quoteDestChainId) {
+      if (srcAsset && destAsset && destChainId) {
         // Set inputs to values from active quote
-        dispatch(setToChainId(quoteDestChainId));
+        dispatch(setToChainId(destChainId));
         dispatch(
           setToToken({
             ...destAsset,
-            chainId: quoteDestChainId,
-            image: destAsset.icon,
-            address: destAsset.address.toLowerCase(),
+            chainId: destChainId,
+            image: destAsset.icon ?? '',
+            address: destAsset.address,
           }),
         );
         dispatch(
           setFromToken({
             ...srcAsset,
-            chainId: quoteSrcChainId,
-            image: srcAsset.icon,
-            address: srcAsset.address.toLowerCase(),
+            chainId: srcChainId,
+            image: srcAsset.icon ?? '',
+            address: srcAsset.address,
           }),
         );
       }
@@ -260,7 +271,7 @@ const PrepareBridgePage = () => {
   const quoteParams = useMemo(
     () => ({
       srcTokenAddress: fromToken?.address,
-      destTokenAddress: toToken?.address || undefined,
+      destTokenAddress: toToken?.address,
       srcTokenAmount:
         fromAmount && fromToken?.decimals
           ? calcTokenValue(
@@ -269,17 +280,14 @@ const PrepareBridgePage = () => {
               fromToken.decimals,
             ).toFixed()
           : undefined,
-      srcChainId: fromChain?.chainId
-        ? Number(hexToDecimal(fromChain.chainId))
-        : undefined,
-      destChainId: toChain?.chainId
-        ? Number(hexToDecimal(toChain.chainId))
-        : undefined,
+      srcChainId: fromChain?.chainId,
+      destChainId: toChain?.chainId,
       // This override allows quotes to be returned when the rpcUrl is a tenderly fork
       // Otherwise quotes get filtered out by the bridge-api when the wallet's real
       // balance is less than the tenderly balance
       insufficientBal: Boolean(providerConfig?.rpcUrl?.includes('tenderly')),
       slippage,
+      walletAddress: selectedAccount?.address,
     }),
     [
       fromToken,
@@ -289,6 +297,7 @@ const PrepareBridgePage = () => {
       fromAmount,
       providerConfig,
       slippage,
+      selectedAccount?.address,
     ],
   );
 
@@ -338,14 +347,19 @@ const PrepareBridgePage = () => {
       });
     };
 
+    // fromTokens is for EVM chains so it's ok to lowercase the token address
+    const matchedToken = fromTokens[tokenAddressFromUrl.toLowerCase()];
+
     switch (tokenAddressFromUrl) {
-      case fromToken?.address?.toLowerCase():
+      case fromToken?.address:
         // If the token is already set, remove the query param
         removeTokenFromUrl();
         break;
-      case fromTokens[tokenAddressFromUrl]?.address?.toLowerCase(): {
+      case matchedToken?.address:
+      case matchedToken?.address
+        ? toChecksumAddress(matchedToken.address)
+        : undefined: {
         // If there is a match, set it as the fromToken
-        const matchedToken = fromTokens[tokenAddressFromUrl];
         dispatch(
           setFromToken({
             ...matchedToken,
@@ -374,12 +388,16 @@ const PrepareBridgePage = () => {
           dispatch(setFromTokenInputValue(e));
         }}
         onAssetChange={(token) => {
-          dispatch(setFromToken(token));
+          const bridgeToken = {
+            ...token,
+            address: token.address ?? zeroAddress(),
+          };
+          dispatch(setFromToken(bridgeToken));
           dispatch(setFromTokenInputValue(null));
-          token?.address &&
+          bridgeToken.address &&
             trackInputEvent({
               input: 'token_source',
-              value: token.address,
+              value: bridgeToken.address,
             });
         }}
         networkProps={{
@@ -495,12 +513,16 @@ const PrepareBridgePage = () => {
           header={t('swapSelectToken')}
           token={toToken}
           onAssetChange={(token) => {
-            token?.address &&
+            const bridgeToken = {
+              ...token,
+              address: token.address ?? zeroAddress(),
+            };
+            bridgeToken.address &&
               trackInputEvent({
                 input: 'token_destination',
-                value: token.address,
+                value: bridgeToken.address,
               });
-            dispatch(setToToken(token));
+            dispatch(setToToken(bridgeToken));
           }}
           networkProps={{
             network: toChain,
