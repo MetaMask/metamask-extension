@@ -1,4 +1,4 @@
-import { createProjectLogger, hasProperty } from '@metamask/utils';
+import { createProjectLogger } from '@metamask/utils';
 import {
   BaseControllerMessenger,
   BaseRestrictedControllerMessenger,
@@ -29,7 +29,7 @@ export type InitControllersResult = {
 
 type BaseControllerInitRequest = ControllerInitRequest<
   BaseRestrictedControllerMessenger,
-  BaseRestrictedControllerMessenger
+  BaseRestrictedControllerMessenger | void
 >;
 
 type ControllerMessengerCallback = (
@@ -115,18 +115,13 @@ export function initControllers({
     const controllerMessengerCallback =
       messengerCallbacks?.getMessenger as ControllerMessengerCallback;
 
-    const initMessengerCallback = hasProperty(
-      messengerCallbacks,
-      'getInitMessenger',
-    )
-      ? (messengerCallbacks?.getInitMessenger as ControllerMessengerCallback)
-      : undefined;
+    const initMessengerCallback = messengerCallbacks?.getInitMessenger;
 
     const controllerMessenger = controllerMessengerCallback?.(
       baseControllerMessenger,
     );
 
-    const initMessenger = initMessengerCallback?.(baseControllerMessenger);
+    const initMessenger = initMessengerCallback(baseControllerMessenger);
 
     const finalInitRequest: BaseControllerInitRequest = {
       ...initRequest,
