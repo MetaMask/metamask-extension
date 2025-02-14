@@ -10,7 +10,7 @@ const {
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('MetaMask Responsive UI', function () {
-  it('Creating a new wallet @no-mmi', async function () {
+  it('Creating a new wallet', async function () {
     const driverOptions = { constrainWindowSize: true };
 
     await withFixtures(

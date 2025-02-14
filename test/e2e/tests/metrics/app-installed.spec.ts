@@ -30,7 +30,7 @@ async function mockSegment(mockServer: Mockttp) {
   ];
 }
 
-describe('App Installed Events @no-mmi', function () {
+describe('App Installed Events', function () {
   it('are sent immediately when user installs app and chooses to opt in metrics', async function () {
     await withFixtures(
       {

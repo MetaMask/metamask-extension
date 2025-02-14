@@ -30,7 +30,7 @@ import {
   SignatureType,
 } from './signature-helpers';
 
-describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
+describe('Confirmation Signature - Permit', function (this: Suite) {
   it('initiates and confirms and emits the correct events', async function () {
     await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),

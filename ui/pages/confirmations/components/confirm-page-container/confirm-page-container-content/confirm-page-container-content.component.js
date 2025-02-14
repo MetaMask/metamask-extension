@@ -24,9 +24,6 @@ import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 export default class ConfirmPageContainerContent extends Component {
   static contextTypes = {
     t: PropTypes.func.isRequired,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    trackEvent: PropTypes.func,
-    ///: END:ONLY_INCLUDE_IF
   };
 
   static propTypes = {
@@ -63,9 +60,6 @@ export default class ConfirmPageContainerContent extends Component {
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     openBuyCryptoInPdapp: PropTypes.func,
     ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    noteComponent: PropTypes.node,
-    ///: END:ONLY_INCLUDE_IF
     txData: PropTypes.object,
   };
 
@@ -76,14 +70,6 @@ export default class ConfirmPageContainerContent extends Component {
       return this.renderTabs();
     }
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    const { noteComponent } = this.props;
-
-    if (noteComponent) {
-      return this.renderTabs();
-    }
-    ///: END:ONLY_INCLUDE_IF
-
     if (detailsComponent && dataHexComponent) {
       return this.renderTabs();
     }
@@ -93,14 +79,7 @@ export default class ConfirmPageContainerContent extends Component {
 
   renderTabs() {
     const { t } = this.context;
-    const {
-      detailsComponent,
-      dataHexComponent,
-      insightComponent,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      noteComponent,
-      ///: END:ONLY_INCLUDE_IF
-    } = this.props;
+    const { detailsComponent, dataHexComponent, insightComponent } = this.props;
 
     return (
       <Tabs defaultActiveTabKey="details">
@@ -111,26 +90,6 @@ export default class ConfirmPageContainerContent extends Component {
         >
           {detailsComponent}
         </Tab>
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          noteComponent && (
-            <Tab
-              data-testid="note-tab"
-              className="confirm-page-container-content__tab"
-              name={t('note')}
-              tabKey="note"
-              onClick={() => {
-                this.context.trackEvent({
-                  category: 'Note to trader',
-                  event: 'Clicked on Notes tab on a transaction window',
-                });
-              }}
-            >
-              {noteComponent}
-            </Tab>
-          )
-          ///: END:ONLY_INCLUDE_IF
-        }
         {dataHexComponent && (
           <Tab
             className="confirm-page-container-content__tab"

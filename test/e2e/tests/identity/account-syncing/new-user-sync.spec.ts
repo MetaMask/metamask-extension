@@ -17,7 +17,7 @@ import PrivacySettings from '../../../page-objects/pages/settings/privacy-settin
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 
-describe('Account syncing - New User @no-mmi', function () {
+describe('Account syncing - New User', function () {
   if (!IS_ACCOUNT_SYNCING_ENABLED) {
     return;
   }

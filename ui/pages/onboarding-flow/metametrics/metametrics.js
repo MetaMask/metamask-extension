@@ -196,6 +196,7 @@ export default function OnboardingMetametrics() {
       </ul>
       <Checkbox
         id="metametrics-opt-in"
+        data-testid="metametrics-data-collection-checkbox"
         isChecked={dataCollectionForMarketing}
         onClick={() =>
           dispatch(setDataCollectionForMarketing(!dataCollectionForMarketing))

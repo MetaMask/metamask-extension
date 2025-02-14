@@ -47,7 +47,7 @@ const NFTSendHeading = () => {
     );
   const imageOriginal = (nft as Nft | undefined)?.imageOriginal;
   const image = (nft as Nft | undefined)?.image;
-  const nftImageAlt = nft && getNftImageAlt(nft);
+  const nftImageAlt = nft ? getNftImageAlt(nft) : '';
   const nftSrcUrl = imageOriginal ?? (image || '');
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
   const currentChain = networkConfigurations[chainId];
@@ -56,7 +56,7 @@ const NFTSendHeading = () => {
     <Box style={{ width: '48px' }}>
       <NftItem
         src={tokenImage}
-        alt={image && nftImageAlt ? nftImageAlt : ''}
+        alt={nftImageAlt}
         name={assetName}
         tokenId={assetTokenId || ''}
         networkName={currentChain.name ?? ''}

@@ -54,6 +54,7 @@ import {
   type SnapAndHardwareMessenger,
 } from '../snap-keyring/metrics';
 import { shouldUseRedesignForTransactions } from '../../../../shared/lib/confirmation.utils';
+import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
 
 export type TransactionMetricsRequest = {
   createEventFragment: (
@@ -78,6 +79,7 @@ export type TransactionMetricsRequest = {
   getDeviceModel: (
     address: string,
   ) => Promise<'ledger' | 'lattice' | 'N/A' | string>;
+  getHardwareTypeForMetric: (address: string) => Promise<HardwareKeyringType>;
   // According to the type GasFeeState returned from getEIP1559GasFeeEstimates
   // doesn't include some properties used in buildEventFragmentProperties,
   // hence returning any here to avoid type errors.
@@ -103,7 +105,6 @@ export type TransactionMetricsRequest = {
     txhash: string | undefined,
   ) => SmartTransaction;
   getMethodData: (data: string) => Promise<{ name: string }>;
-  getIsRedesignedConfirmationsDeveloperEnabled: () => boolean;
   getIsConfirmationAdvancedDetailsOpen: () => boolean;
 };
 
@@ -1023,8 +1024,6 @@ async function buildEventFragmentProperties({
 
   const isRedesignedForTransaction = shouldUseRedesignForTransactions({
     transactionMetadataType: transactionMeta.type as TransactionType,
-    isRedesignedConfirmationsDeveloperEnabled:
-      transactionMetricsRequest.getIsRedesignedConfirmationsDeveloperEnabled(),
   });
   if (isRedesignedForTransaction) {
     uiCustomizations.push(
@@ -1080,6 +1079,7 @@ async function buildEventFragmentProperties({
   const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
     transactionMetricsRequest.getAccountType,
     transactionMetricsRequest.getDeviceModel,
+    transactionMetricsRequest.getHardwareTypeForMetric,
     transactionMetricsRequest.snapAndHardwareMessenger,
   );
   Object.assign(properties, snapAndHardwareInfo);

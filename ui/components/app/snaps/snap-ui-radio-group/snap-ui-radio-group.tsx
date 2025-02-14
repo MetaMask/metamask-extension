@@ -60,12 +60,13 @@ export const SnapUIRadioGroup: FunctionComponent<SnapUIRadioGroupProps> = ({
             value={option.value}
             checked={value === option.value}
             onChange={() => handleChange(option.value)}
+            style={{ margin: '0' }} // radio buttons have default margins that need to be stripped to ensure proper centering
           />
           <Text
             as="label"
             htmlFor={option.name}
             variant={TextVariant.bodyMd}
-            marginLeft={1}
+            marginLeft={2}
           >
             {option.name}
           </Text>

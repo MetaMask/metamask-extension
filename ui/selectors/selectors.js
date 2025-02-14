@@ -363,12 +363,6 @@ export function getAccountTypeForKeyring(keyring) {
 
   const { type } = keyring;
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  if (type.startsWith('Custody')) {
-    return 'custody';
-  }
-  ///: END:ONLY_INCLUDE_IF
-
   switch (type) {
     case KeyringType.trezor:
     case KeyringType.ledger:
@@ -598,6 +592,23 @@ export function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
   return balancesByChainId;
 }
 
+export const getSelectedAccountNativeTokenCachedBalanceByChainIdDeepEq =
+  createDeepEqualSelector(
+    (state) => state.metamask.accountsByChainId,
+    getSelectedInternalAccount,
+    (accountsByChainId, { address: selectedAddress }) => {
+      const balancesByChainId = {};
+      for (const [chainId, accounts] of Object.entries(
+        accountsByChainId || {},
+      )) {
+        if (accounts[selectedAddress]) {
+          balancesByChainId[chainId] = accounts[selectedAddress].balance;
+        }
+      }
+      return balancesByChainId;
+    },
+  );
+
 /**
  * Based on the current account address, query for all tokens across all chain networks on that account,
  * including the native tokens, without hardcoding any native token information.
@@ -646,6 +657,12 @@ export function getSelectedAccountTokensAcrossChains(state) {
 
   return tokensByChain;
 }
+
+export const getSelectedAccountTokensAcrossChainsDeepEq =
+  createDeepEqualSelector(
+    getSelectedAccountTokensAcrossChains,
+    (result) => result,
+  );
 
 /**
  * Retrieves native token information (symbol, decimals, name) for a given chainId from the state,
@@ -1039,11 +1056,9 @@ export function getRequestingNetworkInfo(state, chainIds) {
   // Ensure chainIds is flattened if it contains nested arrays
   const flattenedChainIds = processedChainIds.flat();
 
-  // Filter the non-test networks to include only those with chainId in flattenedChainIds
+  // Filter the networks to include only those with chainId in flattenedChainIds
   return Object.values(getNetworkConfigurationsByChainId(state)).filter(
-    (network) =>
-      !TEST_CHAINS.includes(network.chainId) &&
-      flattenedChainIds.includes(network.chainId),
+    (network) => flattenedChainIds.includes(network.chainId),
   );
 }
 
@@ -1191,6 +1206,39 @@ export function getPetnamesEnabled(state) {
   return petnamesEnabled;
 }
 
+/**
+ * Returns an object indicating which networks
+ * tokens should be shown on in the portfolio view.
+ */
+export const getTokenNetworkFilter = createDeepEqualSelector(
+  getCurrentChainId,
+  getPreferences,
+  /**
+   * @param {*} currentChainId - chainId
+   * @param {*} preferences - preferences state
+   * @returns {Record<Hex, boolean>}
+   */
+  (currentChainId, { tokenNetworkFilter }) => {
+    // Portfolio view not enabled outside popular networks
+    if (
+      !process.env.PORTFOLIO_VIEW ||
+      !FEATURED_NETWORK_CHAIN_IDS.includes(currentChainId)
+    ) {
+      return { [currentChainId]: true };
+    }
+    // Portfolio view only enabled on featured networks
+    return Object.entries(tokenNetworkFilter || {}).reduce(
+      (acc, [chainId, value]) => {
+        if (FEATURED_NETWORK_CHAIN_IDS.includes(chainId)) {
+          acc[chainId] = value;
+        }
+        return acc;
+      },
+      {},
+    );
+  },
+);
+
 export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
   const chainId = getCurrentChainId(state);
   const tokenNetworkFilter = getTokenNetworkFilter(state);
@@ -1203,44 +1251,8 @@ export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
   return false;
 }
 
-/**
- * Returns an object indicating which networks
- * tokens should be shown on in the portfolio view.
- *
- * @param {*} state
- * @returns {Record<Hex, boolean>}
- */
-export function getTokenNetworkFilter(state) {
-  const currentChainId = getCurrentChainId(state);
-  const { tokenNetworkFilter } = getPreferences(state);
-
-  // Portfolio view not enabled outside popular networks
-  if (
-    !process.env.PORTFOLIO_VIEW ||
-    !FEATURED_NETWORK_CHAIN_IDS.includes(currentChainId)
-  ) {
-    return { [currentChainId]: true };
-  }
-
-  // Portfolio view only enabled on featured networks
-  return Object.entries(tokenNetworkFilter || {}).reduce(
-    (acc, [chainId, value]) => {
-      if (FEATURED_NETWORK_CHAIN_IDS.includes(chainId)) {
-        acc[chainId] = value;
-      }
-      return acc;
-    },
-    {},
-  );
-}
-
 export function getUseTransactionSimulations(state) {
   return Boolean(state.metamask.useTransactionSimulations);
-}
-
-export function getRedesignedConfirmationsEnabled(state) {
-  const { redesignedConfirmationsEnabled } = getPreferences(state);
-  return redesignedConfirmationsEnabled;
 }
 
 export function getFeatureNotificationsEnabled(state) {
@@ -1670,12 +1682,12 @@ export function getSwapsDefaultToken(state, overrideChainId = null) {
 export function getIsSwapsChain(state, overrideChainId) {
   const currentChainId = getCurrentChainId(state);
   const chainId = overrideChainId ?? currentChainId;
-  const isNotDevelopment =
-    process.env.METAMASK_ENVIRONMENT !== 'development' &&
-    process.env.METAMASK_ENVIRONMENT !== 'testing';
-  return isNotDevelopment
-    ? ALLOWED_PROD_SWAPS_CHAIN_IDS.includes(chainId)
-    : ALLOWED_DEV_SWAPS_CHAIN_IDS.includes(chainId);
+  const isDevelopment =
+    process.env.METAMASK_ENVIRONMENT === 'development' ||
+    process.env.METAMASK_ENVIRONMENT === 'testing';
+  return isDevelopment
+    ? ALLOWED_DEV_SWAPS_CHAIN_IDS.includes(chainId)
+    : ALLOWED_PROD_SWAPS_CHAIN_IDS.includes(chainId);
 }
 
 export function getIsBridgeChain(state, overrideChainId) {

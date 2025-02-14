@@ -398,6 +398,11 @@ export const createSwapsMockStore = () => {
               extensionReturnTxHashAsap: false,
             },
           },
+          bsc: {
+            extensionActive: true,
+            mobileActive: false,
+            smartTransactions: {},
+          },
           smartTransactions: {
             mobileActive: true,
             extensionActive: true,

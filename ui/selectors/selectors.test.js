@@ -1381,15 +1381,25 @@ describe('Selectors', () => {
         subjects: {
           'https://test.dapp': {
             permissions: {
-              eth_accounts: {
+              'endowment:caip25': {
                 caveats: [
                   {
-                    type: 'restrictReturnedAccounts',
-                    value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                    type: 'authorizedScopes',
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        'eip155:1': {
+                          accounts: [
+                            'eip155:1:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                          ],
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
                   },
                 ],
                 invoker: 'https://test.dapp',
-                parentCapability: 'eth_accounts',
+                parentCapability: 'endowment:caip25',
               },
             },
           },
@@ -1423,6 +1433,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
+        scopes: ['eip155'],
         pinned: true,
         hidden: false,
         active: false,
@@ -1448,6 +1459,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
+        scopes: ['eip155'],
         pinned: true,
         hidden: false,
         active: false,
@@ -1472,6 +1484,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
+        scopes: ['eip155'],
         balance: '0x0',
         pinned: false,
         hidden: false,
@@ -1498,6 +1511,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
+        scopes: ['eip155'],
         balance: '0x0',
         pinned: false,
         hidden: false,
@@ -1531,6 +1545,7 @@ describe('Selectors', () => {
         pinned: false,
         active: false,
         type: 'eip155:eoa',
+        scopes: ['eip155'],
       },
       {
         id: '694225f4-d30b-4e77-a900-c8bbce735b42',
@@ -1550,6 +1565,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
+        scopes: ['eip155'],
         address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
         balance: '0x0',
         pinned: false,
@@ -2225,6 +2241,142 @@ describe('#getConnectedSitesList', () => {
       expect(selectors.getIsTokenNetworkFilterEqualCurrentNetwork(state)).toBe(
         false,
       );
+    });
+  });
+
+  describe('getTokenNetworkFilter', () => {
+    beforeEach(() => {
+      process.env.PORTFOLIO_VIEW = 'true';
+    });
+
+    afterEach(() => {
+      process.env.PORTFOLIO_VIEW = undefined;
+    });
+
+    it('always returns an object containing the network if portfolio view is disabled', () => {
+      process.env.PORTFOLIO_VIEW = undefined;
+
+      const state = {
+        metamask: {
+          preferences: {
+            tokenNetworkFilter: {
+              [CHAIN_IDS.MAINNET]: true,
+            },
+          },
+          selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [
+                { networkClientId: 'mainnetNetworkConfigurationId' },
+              ],
+            },
+          },
+        },
+      };
+
+      expect(selectors.getTokenNetworkFilter(state)).toStrictEqual({
+        [CHAIN_IDS.MAINNET]: true,
+      });
+    });
+
+    it('always returns an object containing the network if it is not included in popular networks', () => {
+      const state = {
+        metamask: {
+          preferences: {
+            tokenNetworkFilter: {
+              '0xNotPopularNetwork': true,
+            },
+          },
+          selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0xNotPopularNetwork': {
+              chainId: '0xNotPopularNetwork',
+              rpcEndpoints: [
+                { networkClientId: 'mainnetNetworkConfigurationId' },
+              ],
+            },
+          },
+        },
+      };
+
+      expect(selectors.getTokenNetworkFilter(state)).toStrictEqual({
+        '0xNotPopularNetwork': true,
+      });
+    });
+
+    it('returns an object containing all the popular networks for portfolio view', () => {
+      const state = {
+        metamask: {
+          preferences: {
+            tokenNetworkFilter: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+              [CHAIN_IDS.ARBITRUM]: true,
+              [CHAIN_IDS.AVALANCHE]: true,
+              [CHAIN_IDS.BSC]: true,
+              [CHAIN_IDS.OPTIMISM]: true,
+              [CHAIN_IDS.POLYGON]: true,
+              [CHAIN_IDS.ZKSYNC_ERA]: true,
+              [CHAIN_IDS.BASE]: true,
+            },
+          },
+          selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [
+                { networkClientId: 'mainnetNetworkConfigurationId' },
+              ],
+            },
+          },
+        },
+      };
+
+      expect(selectors.getTokenNetworkFilter(state)).toStrictEqual({
+        [CHAIN_IDS.MAINNET]: true,
+        [CHAIN_IDS.LINEA_MAINNET]: true,
+        [CHAIN_IDS.ARBITRUM]: true,
+        [CHAIN_IDS.AVALANCHE]: true,
+        [CHAIN_IDS.BSC]: true,
+        [CHAIN_IDS.OPTIMISM]: true,
+        [CHAIN_IDS.POLYGON]: true,
+        [CHAIN_IDS.ZKSYNC_ERA]: true,
+        [CHAIN_IDS.BASE]: true,
+      });
+    });
+
+    it('always returns the same object (memoized) if the same state is given', () => {
+      const state = {
+        metamask: {
+          preferences: {
+            tokenNetworkFilter: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+              [CHAIN_IDS.ARBITRUM]: true,
+              [CHAIN_IDS.AVALANCHE]: true,
+              [CHAIN_IDS.BSC]: true,
+              [CHAIN_IDS.OPTIMISM]: true,
+              [CHAIN_IDS.POLYGON]: true,
+              [CHAIN_IDS.ZKSYNC_ERA]: true,
+              [CHAIN_IDS.BASE]: true,
+            },
+          },
+          selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              chainId: CHAIN_IDS.MAINNET,
+              rpcEndpoints: [
+                { networkClientId: 'mainnetNetworkConfigurationId' },
+              ],
+            },
+          },
+        },
+      };
+
+      const result1 = selectors.getTokenNetworkFilter(state);
+      const result2 = selectors.getTokenNetworkFilter(state);
+      expect(result1 === result2).toBe(true);
     });
   });
 });

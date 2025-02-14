@@ -19,6 +19,8 @@ class SendSolanaPage {
     tag: 'button',
   };
 
+  private readonly clearToAddressField = '#send-clear-button';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -53,13 +55,41 @@ class SendSolanaPage {
   async setAmount(amount: string): Promise<void> {
     await this.driver.waitForControllersLoaded();
     await this.driver.waitForSelector(this.sendAmountInput, { timeout: 10000 });
-    await this.driver.pasteIntoField(this.sendAmountInput, amount);
+    await this.driver.fill(this.sendAmountInput, amount);
+  }
+
+  async clearToAddress(): Promise<void> {
+    const input = await this.driver.waitForSelector(this.clearToAddressField, {
+      timeout: 10000,
+    });
+    await input.click();
   }
 
   async setToAddress(toAddress: string): Promise<void> {
-    await this.driver.waitForControllersLoaded();
-    await this.driver.waitForSelector(this.toAddressInput, { timeout: 10000 });
-    await this.driver.pasteIntoField(this.toAddressInput, toAddress);
+    let failed = true;
+    for (let i = 0; i < 5 && failed; i++) {
+      try {
+        await this.driver.waitForControllersLoaded();
+        await this.driver.waitForSelector(this.toAddressInput, {
+          timeout: 5000,
+        });
+        await this.driver.fill(this.toAddressInput, toAddress);
+        failed = false;
+      } catch (err: unknown) {
+        console.log('To address input not displayed', err);
+        if (
+          err &&
+          typeof err === 'object' &&
+          'name' in err &&
+          err.name === 'StaleElementReferenceError'
+        ) {
+          console.log('StaleElementReferenceError encountered, retrying...');
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        } else {
+          throw err;
+        }
+      }
+    }
   }
 
   async clickOnContinue(): Promise<void> {
@@ -92,6 +122,24 @@ class SendSolanaPage {
       console.log('Continue button not enabled', e);
       return false;
     }
+  }
+
+  async isAmountInputDisplayed(): Promise<boolean> {
+    try {
+      const input = await this.driver.waitForSelector(this.sendAmountInput, {
+        timeout: 1000,
+      });
+      return await input.isDisplayed();
+    } catch (e) {
+      console.log('Send amount input not displayed', e);
+      return false;
+    }
+  }
+
+  async check_pageIsLoaded() {
+    await this.driver.waitForControllersLoaded();
+    await this.driver.waitForSelector(this.toAddressInput, { timeout: 2000 });
+    await this.driver.delay(1000); // Added because of https://consensyssoftware.atlassian.net/browse/SOL-116
   }
 }
 

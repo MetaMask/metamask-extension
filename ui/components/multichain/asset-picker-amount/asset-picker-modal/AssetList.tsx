@@ -64,7 +64,6 @@ export default function AssetList({
   assetItemProps = {},
 }: AssetListProps) {
   const t = useI18nContext();
-  const selectedTokenAddress = asset?.address;
 
   const currentNetwork = useSelector(getCurrentNetwork);
   // If a network is provided, display tokens in that network
@@ -101,11 +100,9 @@ export default function AssetList({
 
         const isMatchingChainId = token.chainId === networkToUse?.chainId;
         const isMatchingAddress =
-          // the native asset can have an undefined, null, '', or zero address
-          (token.type === AssetType.native &&
-            !token.address &&
-            !selectedTokenAddress) ||
-          tokenAddress === selectedTokenAddress?.toLowerCase();
+          // the native asset can have an undefined, null, '', or zero address so compare symbols
+          (token.type === AssetType.native && token.symbol === asset?.symbol) ||
+          tokenAddress === asset?.address?.toLowerCase();
         const isSelected = isMatchingChainId && isMatchingAddress;
 
         const isDisabled = isTokenDisabled?.(token) ?? false;

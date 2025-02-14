@@ -17,17 +17,20 @@ import { E2E_SRP } from '../../default-fixture';
  * @param [options.password] - The password to create. Defaults to WALLET_PASSWORD.
  * @param [options.participateInMetaMetrics] - Whether to participate in MetaMetrics. Defaults to false.
  * @param [options.needNavigateToNewPage] - Indicates whether to navigate to a new page before starting the onboarding flow. Defaults to true.
+ * @param [options.dataCollectionForMarketing] - Whether to opt in to data collection for marketing. Defaults to false.
  */
 export const createNewWalletOnboardingFlow = async ({
   driver,
   password = WALLET_PASSWORD,
   participateInMetaMetrics = false,
   needNavigateToNewPage = true,
+  dataCollectionForMarketing = false,
 }: {
   driver: Driver;
   password?: string;
   participateInMetaMetrics?: boolean;
   needNavigateToNewPage?: boolean;
+  dataCollectionForMarketing?: boolean;
 }): Promise<void> => {
   console.log('Starting the creation of a new wallet onboarding flow');
   if (needNavigateToNewPage) {
@@ -40,6 +43,9 @@ export const createNewWalletOnboardingFlow = async ({
 
   const onboardingMetricsPage = new OnboardingMetricsPage(driver);
   await onboardingMetricsPage.check_pageIsLoaded();
+  if (dataCollectionForMarketing) {
+    await onboardingMetricsPage.clickDataCollectionForMarketingCheckbox();
+  }
   if (participateInMetaMetrics) {
     await onboardingMetricsPage.clickIAgreeButton();
   } else {
@@ -109,17 +115,20 @@ export const importSRPOnboardingFlow = async ({
  * @param [options.password] - The password to use. Defaults to WALLET_PASSWORD.
  * @param [options.participateInMetaMetrics] - Whether to participate in MetaMetrics. Defaults to false.
  * @param [options.needNavigateToNewPage] - Indicates whether to navigate to a new page before starting the onboarding flow. Defaults to true.
+ * @param [options.dataCollectionForMarketing] - Whether to opt in to data collection for marketing. Defaults to false.
  */
 export const completeCreateNewWalletOnboardingFlow = async ({
   driver,
   password = WALLET_PASSWORD,
   participateInMetaMetrics = false,
   needNavigateToNewPage = true,
+  dataCollectionForMarketing = false,
 }: {
   driver: Driver;
   password?: string;
   participateInMetaMetrics?: boolean;
   needNavigateToNewPage?: boolean;
+  dataCollectionForMarketing?: boolean;
 }): Promise<void> => {
   console.log('start to complete create new wallet onboarding flow ');
   await createNewWalletOnboardingFlow({
@@ -127,6 +136,7 @@ export const completeCreateNewWalletOnboardingFlow = async ({
     password,
     participateInMetaMetrics,
     needNavigateToNewPage,
+    dataCollectionForMarketing,
   });
   const onboardingCompletePage = new OnboardingCompletePage(driver);
   await onboardingCompletePage.check_pageIsLoaded();

@@ -15,13 +15,13 @@ import NftsTab from '../../app/assets/nfts/nfts-tab';
 import AssetList from '../../app/assets/asset-list';
 import TransactionList from '../../app/transaction-list';
 import { Tabs, Tab } from '../../ui/tabs';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi)
+///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import {
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   Display,
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 ///: END:ONLY_INCLUDE_IF
@@ -33,9 +33,7 @@ import {
   IconName,
   ///: END:ONLY_INCLUDE_IF
 } from '../../component-library';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import InstitutionalHomeFooter from '../../../pages/home/institutional/institutional-home-footer';
-///: END:ONLY_INCLUDE_IF
+
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP,
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
@@ -97,24 +95,6 @@ export const AccountOverviewTabs = ({
     [onTabClick],
   );
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  // The style in activity screen for support is different
-  const activitySupportDisplayStyle =
-    defaultHomeActiveTabName === 'activity'
-      ? {
-          justifyContent: JustifyContent.center,
-          paddingLeft: 0,
-          marginTop: 4,
-          marginBottom: 4,
-        }
-      : {
-          justifyContent: JustifyContent.flexStart,
-          paddingLeft: 4,
-          marginTop: 0,
-          marginBottom: 4,
-        };
-  ///: END:ONLY_INCLUDE_IF
-
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   const NeedHelpButtonLink = React.memo((props: Record<string, unknown>) => (
     <ButtonLink
@@ -131,6 +111,12 @@ export const AccountOverviewTabs = ({
     </ButtonLink>
   ));
   ///: END:ONLY_INCLUDE_IF
+
+  const onClickAsset = useCallback(
+    (chainId: string, asset: string) =>
+      history.push(`${ASSET_ROUTE}/${chainId}/${asset}`),
+    [history],
+  );
 
   return (
     <Box style={{ flexGrow: '1' }}>
@@ -149,9 +135,7 @@ export const AccountOverviewTabs = ({
             <Box marginTop={2}>
               <AssetList
                 showTokensLinks={showTokensLinks ?? true}
-                onClickAsset={(chainId: string, asset: string) =>
-                  history.push(`${ASSET_ROUTE}/${chainId}/${asset}`)
-                }
+                onClickAsset={onClickAsset}
               />
               {
                 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
@@ -206,13 +190,6 @@ export const AccountOverviewTabs = ({
           </Tab>
         )}
       </Tabs>
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        <InstitutionalHomeFooter
-          activitySupportDisplayStyle={activitySupportDisplayStyle}
-        />
-        ///: END:ONLY_INCLUDE_IF
-      }
     </Box>
   );
 };

@@ -1,6 +1,6 @@
 import { act } from '@testing-library/react-hooks';
 import { renderHookWithProviderTyped } from '../../../../test/lib/render-helpers';
-import { MetamaskNotificationsProvider } from '../../../contexts/metamask-notifications';
+import { MetamaskIdentityProvider } from '../../../contexts/identity';
 import * as actions from '../../../store/actions';
 import {
   useDisableProfileSyncing,
@@ -37,7 +37,7 @@ describe('useDisableProfileSyncing()', () => {
       () => useDisableProfileSyncing(),
       {},
       undefined,
-      MetamaskNotificationsProvider,
+      MetamaskIdentityProvider,
     );
 
     await act(async () => {
@@ -59,7 +59,7 @@ describe('useDisableProfileSyncing()', () => {
         },
       },
       undefined,
-      MetamaskNotificationsProvider,
+      MetamaskIdentityProvider,
     );
 
     await act(async () => {

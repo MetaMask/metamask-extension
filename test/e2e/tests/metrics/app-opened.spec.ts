@@ -31,7 +31,7 @@ async function mockSegment(mockServer: Mockttp) {
   ];
 }
 
-describe('App Opened metric @no-mmi', function () {
+describe('App Opened metric', function () {
   it('should send AppOpened metric when app is opened and metrics are enabled', async function () {
     await withFixtures(
       {

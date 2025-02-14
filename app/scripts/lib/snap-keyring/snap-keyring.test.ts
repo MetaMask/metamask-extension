@@ -40,6 +40,7 @@ const mockAccount = {
   id: '3afa663e-0600-4d93-868a-61c2e553013b',
   address,
   methods: [],
+  scopes: ['eip155'],
   options: {},
 };
 const mockInternalAccount = {

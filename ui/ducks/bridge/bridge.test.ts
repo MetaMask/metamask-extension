@@ -15,9 +15,7 @@ import {
   setBridgeFeatureFlags,
   setFromToken,
   setFromTokenInputValue,
-  setToChain,
   setToToken,
-  setFromChain,
   resetInputFields,
   setToChainId,
   updateQuoteRequestParams,
@@ -67,26 +65,6 @@ describe('Ducks - Bridge', () => {
     });
   });
 
-  describe('setToChain', () => {
-    it('calls the selectDestNetwork background action', () => {
-      const actionPayload = CHAIN_IDS.OPTIMISM;
-
-      const mockSelectDestNetwork = jest.fn().mockReturnValue({});
-      setBackgroundConnection({
-        [BridgeUserAction.SELECT_DEST_NETWORK]: mockSelectDestNetwork,
-      } as never);
-
-      store.dispatch(setToChain(actionPayload as never) as never);
-
-      // Check background state
-      expect(mockSelectDestNetwork).toHaveBeenCalledTimes(1);
-      expect(mockSelectDestNetwork).toHaveBeenCalledWith(
-        '0xa',
-        expect.anything(),
-      );
-    });
-  });
-
   describe('setFromToken', () => {
     it('calls the "bridge/setFromToken" action', () => {
       const state = store.getState().bridge;
@@ -133,23 +111,6 @@ describe('Ducks - Bridge', () => {
       } as never);
       store.dispatch(setBridgeFeatureFlags() as never);
       expect(mockSetBridgeFeatureFlags).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('setFromChain', () => {
-    it('calls the selectSrcNetwork background action', async () => {
-      const mockSelectSrcNetwork = jest.fn().mockReturnValue({});
-      setBackgroundConnection({
-        [BridgeUserAction.SELECT_SRC_NETWORK]: mockSelectSrcNetwork,
-      } as never);
-
-      await store.dispatch(setFromChain(CHAIN_IDS.MAINNET) as never);
-
-      expect(mockSelectSrcNetwork).toHaveBeenCalledTimes(1);
-      expect(mockSelectSrcNetwork).toHaveBeenCalledWith(
-        '0x1',
-        expect.anything(),
-      );
     });
   });
 

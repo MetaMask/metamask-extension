@@ -1,10 +1,6 @@
 import { ReactNodeLike } from 'prop-types';
 import React, { ReactNode } from 'react';
 
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { MMISignatureMismatchBanner } from '../../../components/institutional/signature-mismatch-banner';
-import NoteToTrader from '../../../components/institutional/note-to-trader';
-///: END:ONLY_INCLUDE_IF
 import { Page } from '../../../components/multichain/pages/page';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
@@ -56,21 +52,11 @@ const Confirm = () => (
             <Header />
             <SmartTransactionsBannerAlert marginType="noTop" />
             <ScrollToBottom>
-              {
-                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-                <MMISignatureMismatchBanner />
-                ///: END:ONLY_INCLUDE_IF
-              }
               <BlockaidLoadingIndicator />
               <LedgerInfo />
               <Title />
               <Info />
               <PluggableSection />
-              {
-                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-                <NoteToTrader />
-                ///: END:ONLY_INCLUDE_IF
-              }
             </ScrollToBottom>
             <Footer />
             <NetworkChangeToast />

@@ -37,6 +37,7 @@ import { shortenString } from '../../../helpers/utils/util';
 import type { BridgeToken } from '../../../../shared/types/bridge';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
+import { getMultichainIsSolana } from '../../../selectors/multichain';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { BridgeAssetPickerButton } from './components/bridge-asset-picker-button';
@@ -98,6 +99,8 @@ export const BridgeInputGroup = ({
       inputRef.current.focus();
     }
   }, [amountFieldProps?.value, isAmountReadOnly, token]);
+
+  const isSolana = useSelector(getMultichainIsSolana);
 
   return (
     <Column paddingInline={6} gap={1}>
@@ -172,7 +175,7 @@ export const BridgeInputGroup = ({
                 fontWeight={FontWeight.Normal}
                 style={{ whiteSpace: 'nowrap' }}
               >
-                {t('bridgeTo')}
+                {isSolana ? t('swapSwapTo') : t('bridgeTo')}
               </Button>
             ) : (
               <BridgeAssetPickerButton

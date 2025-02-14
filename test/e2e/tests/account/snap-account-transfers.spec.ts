@@ -18,7 +18,7 @@ import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-k
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { sendRedesignedTransactionWithSnapAccount } from '../../page-objects/flows/send-transaction.flow';
 
-describe('Snap Account Transfers @no-mmi', function (this: Suite) {
+describe('Snap Account Transfers', function (this: Suite) {
   it('can import a private key and transfer 1 ETH (sync flow)', async function () {
     await withFixtures(
       {

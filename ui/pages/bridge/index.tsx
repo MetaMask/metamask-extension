@@ -17,11 +17,8 @@ import {
   ButtonIconSize,
   IconName,
 } from '../../components/component-library';
-import {
-  getCurrentChainId,
-  getSelectedNetworkClientId,
-} from '../../../shared/modules/selectors/networks';
-import { getIsBridgeChain, getIsBridgeEnabled } from '../../selectors';
+import { getSelectedNetworkClientId } from '../../../shared/modules/selectors/networks';
+import { getIsBridgeEnabled } from '../../selectors';
 import useBridging from '../../hooks/bridge/useBridging';
 import {
   Content,
@@ -30,11 +27,12 @@ import {
   Page,
 } from '../../components/multichain/pages/page';
 import { useSwapsFeatureFlags } from '../swaps/hooks/useSwapsFeatureFlags';
-import { resetBridgeState, setFromChain } from '../../ducks/bridge/actions';
+import { resetBridgeState } from '../../ducks/bridge/actions';
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRates';
 import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import { TextVariant } from '../../helpers/constants/design-system';
+import { getMultichainIsSolana } from '../../selectors/multichain';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
@@ -51,15 +49,7 @@ const CrossChainSwap = () => {
   const dispatch = useDispatch();
 
   const isBridgeEnabled = useSelector(getIsBridgeEnabled);
-  const isBridgeChain = useSelector(getIsBridgeChain);
   const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
-  const chainId = useSelector(getCurrentChainId);
-
-  useEffect(() => {
-    if (isBridgeChain && isBridgeEnabled && chainId) {
-      dispatch(setFromChain(chainId));
-    }
-  }, [isBridgeChain, isBridgeEnabled, chainId]);
 
   const resetControllerAndInputStates = async () => {
     await dispatch(resetBridgeState());
@@ -94,6 +84,8 @@ const CrossChainSwap = () => {
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
 
+  const isSolana = useSelector(getMultichainIsSolana);
+
   return (
     <Page className="bridge__container">
       <Header
@@ -117,7 +109,7 @@ const CrossChainSwap = () => {
           />
         }
       >
-        {t('bridge')}
+        {isSolana ? t('swap') : t('bridge')}
       </Header>
       <Content padding={0}>
         <Switch>

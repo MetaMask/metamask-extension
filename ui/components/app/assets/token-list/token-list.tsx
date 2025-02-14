@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useMemo } from 'react';
+import React, { ReactNode, useEffect, useMemo, useCallback } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import TokenCell from '../token-cell';
@@ -15,8 +15,8 @@ import {
   getNewTokensImported,
   getPreferences,
   getSelectedAccount,
-  getSelectedAccountNativeTokenCachedBalanceByChainId,
-  getSelectedAccountTokensAcrossChains,
+  getSelectedAccountNativeTokenCachedBalanceByChainIdDeepEq,
+  getSelectedAccountTokensAcrossChainsDeepEq,
   getShowFiatInTestnets,
   getTokenExchangeRates,
   getTokenNetworkFilter,
@@ -61,10 +61,10 @@ export type ChainAddressMarketData = Record<
 const useFilteredAccountTokens = (currentNetwork: { chainId: string }) => {
   const isTestNetwork = useMemo(() => {
     return (TEST_CHAINS as string[]).includes(currentNetwork.chainId);
-  }, [currentNetwork.chainId, TEST_CHAINS]);
+  }, [currentNetwork.chainId]);
 
   const selectedAccountTokensChains: Record<string, Token[]> = useSelector(
-    getSelectedAccountTokensAcrossChains,
+    getSelectedAccountTokensAcrossChainsDeepEq,
   ) as Record<string, Token[]>;
 
   const filteredAccountTokensChains = useMemo(() => {
@@ -75,15 +75,12 @@ const useFilteredAccountTokens = (currentNetwork: { chainId: string }) => {
           : !(TEST_CHAINS as string[]).includes(chainId),
       ),
     );
-  }, [selectedAccountTokensChains, isTestNetwork, TEST_CHAINS]);
+  }, [selectedAccountTokensChains, isTestNetwork]);
 
   return filteredAccountTokensChains;
 };
 
-export default function TokenList({
-  onTokenClick,
-  nativeToken,
-}: TokenListProps) {
+function TokenList({ onTokenClick, nativeToken }: TokenListProps) {
   const dispatch = useDispatch();
   const currentNetwork = useSelector(getCurrentNetwork);
   const allNetworks = useSelector(getNetworkConfigurationIdByChainId);
@@ -115,7 +112,7 @@ export default function TokenList({
 
   const currencyRates = useSelector(getCurrencyRates);
   const nativeBalances: Record<Hex, Hex> = useSelector(
-    getSelectedAccountNativeTokenCachedBalanceByChainId,
+    getSelectedAccountNativeTokenCachedBalanceByChainIdDeepEq,
   ) as Record<Hex, Hex>;
   const isTestnet = useSelector(getIsTestnet);
   // Ensure newly added networks are included in the tokenNetworkFilter
@@ -130,7 +127,7 @@ export default function TokenList({
     }
   }, [Object.keys(allNetworks).length]);
 
-  const consolidatedBalances = () => {
+  const consolidatedBalances = useCallback(() => {
     const tokensWithBalance: TokenWithFiatAmount[] = [];
     Object.entries(selectedAccountTokensChains).forEach(
       ([stringChainKey, tokens]) => {
@@ -182,7 +179,15 @@ export default function TokenList({
     );
 
     return tokensWithBalance;
-  };
+  }, [
+    currencyRates,
+    hideZeroBalanceTokens,
+    isOnCurrentNetwork,
+    marketData,
+    nativeBalances,
+    selectedAccountTokenBalancesAcrossChains,
+    selectedAccountTokensChains,
+  ]);
 
   const sortedFilteredTokens = useMemo(() => {
     const consolidatedTokensWithBalances = consolidatedBalances();
@@ -213,11 +218,9 @@ export default function TokenList({
   }, [
     tokenSortConfig,
     tokenNetworkFilter,
+    consolidatedBalances,
     conversionRate,
     contractExchangeRates,
-    currentNetwork,
-    selectedAccount,
-    selectedAccountTokensChains,
     newTokensImported,
   ]);
 
@@ -226,11 +229,6 @@ export default function TokenList({
       endTrace({ name: TraceName.AccountOverviewAssetListTab });
     }
   }, [sortedFilteredTokens]);
-
-  // Displays nativeToken if provided
-  if (nativeToken) {
-    return React.cloneElement(nativeToken as React.ReactElement);
-  }
 
   const shouldShowFiat = useMultichainSelector(
     getMultichainShouldShowFiat,
@@ -241,6 +239,11 @@ export default function TokenList({
   const showFiatInTestnets = useSelector(getShowFiatInTestnets);
   const showFiat =
     shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
+
+  // Displays nativeToken if provided
+  if (nativeToken) {
+    return React.cloneElement(nativeToken as React.ReactElement);
+  }
 
   return (
     <div>
@@ -261,3 +264,5 @@ export default function TokenList({
     </div>
   );
 }
+
+export default React.memo(TokenList);

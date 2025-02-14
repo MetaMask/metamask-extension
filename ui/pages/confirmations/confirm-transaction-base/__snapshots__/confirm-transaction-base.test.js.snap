@@ -276,7 +276,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
         class="box tabs box--flex-direction-row"
       >
         <ul
-          class="box tabs__list box--display-flex box--gap-1 box--flex-direction-row box--justify-content-flex-start box--background-color-background-default"
+          class="box tabs__list box--display-flex box--flex-direction-row box--justify-content-flex-start box--background-color-background-default"
         >
           <li
             class="box tab confirm-page-container-content__tab tab--active box--flex-direction-row"

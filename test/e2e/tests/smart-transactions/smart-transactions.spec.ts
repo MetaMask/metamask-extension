@@ -5,9 +5,13 @@ import {
   checkActivityTransaction,
 } from '../swaps/shared';
 import FixtureBuilder from '../../fixture-builder';
-import { unlockWallet, withFixtures } from '../../helpers';
+import { unlockWallet, WINDOW_TITLES, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { mockSwapRequests } from './mock-requests-for-swap-test';
+import { createDappTransaction } from '../../page-objects/flows/transaction';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import HomePage from '../../page-objects/pages/home/homepage';
+import { mockSmartTransactionRequests } from './mocks';
 
 export async function withFixturesForSmartTransactions(
   {
@@ -63,22 +67,24 @@ export const waitForTransactionToComplete = async (
   await driver.waitForSelector('[data-testid="account-overview__asset-tab"]');
 };
 
-describe('smart transactions @no-mmi', function () {
-  it.skip('Completes a Swap', async function () {
+describe('Smart Transactions', function () {
+  it('Swap', async function () {
     await withFixturesForSmartTransactions(
       {
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSwapRequests,
+        testSpecificMock: mockSmartTransactionRequests,
       },
       async ({ driver }) => {
         await buildQuote(driver, {
           amount: 2,
           swapTo: 'DAI',
         });
+
         await reviewQuote(driver, {
           amount: 2,
           swapFrom: 'ETH',
           swapTo: 'DAI',
+          skipCounter: true,
         });
 
         await driver.clickElement({ text: 'Swap', tag: 'button' });
@@ -89,6 +95,33 @@ describe('smart transactions @no-mmi', function () {
           swapFrom: 'ETH',
           swapTo: 'DAI',
         });
+      },
+    );
+  });
+
+  it('dApp Transaction', async function () {
+    await withFixturesForSmartTransactions(
+      {
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockSmartTransactionRequests,
+      },
+      async ({ driver }) => {
+        await createDappTransaction(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        const confirmation = new TransactionConfirmation(driver);
+        await confirmation.clickFooterConfirmButton();
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+
+        const homepage = new HomePage(driver);
+        await homepage.goToActivityList();
+
+        const activityList = new ActivityListPage(driver);
+        await activityList.check_completedTxNumberDisplayedInActivity();
+        await activityList.check_noFailedTransactions();
+        await activityList.check_confirmedTxNumberDisplayedInActivity();
       },
     );
   });

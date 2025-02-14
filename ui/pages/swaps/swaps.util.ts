@@ -352,6 +352,7 @@ export const getFeeForSmartTransaction = ({
   const chainCurrencySymbolToUse =
     nativeCurrencySymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId]?.symbol;
   return {
+    rawNetworkFees,
     feeInUsd,
     feeInFiat: formattedNetworkFee,
     feeInEth: `${ethFee} ${chainCurrencySymbolToUse}`,

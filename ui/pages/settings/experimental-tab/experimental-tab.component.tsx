@@ -52,8 +52,6 @@ type ExperimentalTabProps = {
   setPetnamesEnabled: (value: boolean) => void;
   featureNotificationsEnabled: boolean;
   setFeatureNotificationsEnabled: (value: boolean) => void;
-  redesignedConfirmationsEnabled: boolean;
-  setRedesignedConfirmationsEnabled: (value: boolean) => void;
 };
 
 export default class ExperimentalTab extends PureComponent<ExperimentalTabProps> {
@@ -140,25 +138,6 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
       toggleValue: petnamesEnabled,
       toggleCallback: (value) => setPetnamesEnabled(!value),
       toggleDataTestId: 'toggle-petnames',
-      toggleOffLabel: t('off'),
-      toggleOnLabel: t('on'),
-    });
-  }
-
-  renderToggleRedesignedSignatures() {
-    const { t } = this.context;
-    const {
-      redesignedConfirmationsEnabled,
-      setRedesignedConfirmationsEnabled,
-    } = this.props;
-
-    return this.renderToggleSection({
-      title: t('redesignedConfirmationsEnabledToggle'),
-      description: t('redesignedConfirmationsToggleDescription'),
-      toggleValue: redesignedConfirmationsEnabled,
-      toggleCallback: (value) => setRedesignedConfirmationsEnabled(!value),
-      toggleContainerDataTestId: 'toggle-redesigned-confirmations-container',
-      toggleDataTestId: 'toggle-redesigned-confirmations',
       toggleOffLabel: t('off'),
       toggleOnLabel: t('on'),
     });
@@ -384,7 +363,6 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
     return (
       <div className="settings-page__body">
         {this.renderTogglePetnames()}
-        {this.renderToggleRedesignedSignatures()}
         {process.env.NOTIFICATIONS ? this.renderNotificationsToggle() : null}
         {/* Section: Account Management Snaps */}
         {

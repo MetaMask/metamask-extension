@@ -22,19 +22,13 @@ const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 describe('Confirmation Redesign ERC20 Revoke Allowance', function () {
   const smartContract = SMART_CONTRACTS.HST;
 
-  describe('Submit an revoke transaction @no-mmi', function () {
+  describe('Submit an revoke transaction', function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
       await withFixtures(
         {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: {
-                redesignedConfirmationsEnabled: true,
-                isRedesignedConfirmationsDeveloperEnabled: true,
-              },
-            })
             .build(),
           ganacheOptions: defaultGanacheOptions,
           smartContract,
@@ -67,12 +61,6 @@ describe('Confirmation Redesign ERC20 Revoke Allowance', function () {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: {
-                redesignedConfirmationsEnabled: true,
-                isRedesignedConfirmationsDeveloperEnabled: true,
-              },
-            })
             .build(),
           ganacheOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,

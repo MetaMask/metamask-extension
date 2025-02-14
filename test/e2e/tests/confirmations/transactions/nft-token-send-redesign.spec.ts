@@ -24,7 +24,7 @@ const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
 const TOKEN_RECIPIENT_ADDRESS = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 
-describe('Confirmation Redesign Token Send @no-mmi', function () {
+describe('Confirmation Redesign Token Send', function () {
   describe('ERC721', function () {
     describe('Wallet initiated', async function () {
       it('Sends a type 0 transaction (Legacy)', async function () {

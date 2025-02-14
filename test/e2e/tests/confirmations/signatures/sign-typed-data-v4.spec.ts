@@ -27,7 +27,7 @@ import {
   SignatureType,
 } from './signature-helpers';
 
-describe('Confirmation Signature - Sign Typed Data V4 @no-mmi', function (this: Suite) {
+describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
   it('initiates and confirms', async function () {
     await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),

@@ -48,12 +48,14 @@ const Tabs = ({
 
     return React.Children.map(_getValidChildren(), (child, index) => {
       const tabKey = child?.props.tabKey;
+      const isSingleTab = numberOfTabs === 1;
       return (
         child &&
         React.cloneElement(child, {
           onClick: (idx) => handleTabClick(idx, tabKey),
           tabIndex: index,
           isActive: numberOfTabs > 1 && index === activeTabIndex,
+          isSingleTab,
         })
       );
     });
@@ -81,7 +83,7 @@ const Tabs = ({
         justifyContent={JustifyContent.flexStart}
         backgroundColor={BackgroundColor.backgroundDefault}
         className={classnames('tabs__list', tabsClassName)}
-        gap={1}
+        gap={0}
       >
         {renderTabs()}
       </Box>
