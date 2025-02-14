@@ -49,12 +49,12 @@ function transformState(state: Record<string, unknown>) {
     return;
   }
 
-  const currentCurrency = currencyController.currentCurrency;
+  const { currentCurrency } = currencyController;
 
   if (!currentCurrency) {
     global.sentry?.captureException?.(
       new Error(
-        `Migration ${version}: Missing currentCurrency in CurrencyController`,
+        `Migration ${version}: Missing currentCurrency in CurrencyController, defaulting to ${DEFAULT_CURRENCY}`,
       ),
     );
     currencyController.currentCurrency = DEFAULT_CURRENCY;
