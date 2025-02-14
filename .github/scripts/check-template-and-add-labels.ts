@@ -13,6 +13,8 @@ import {
 } from './shared/labelable';
 import {
   Label,
+  RegressionStage,
+  craftRegressionLabel,
   externalContributorLabel,
   flakyTestsLabel,
   invalidIssueTemplateLabel,
@@ -20,14 +22,6 @@ import {
 } from './shared/label';
 import { TemplateType, templates } from './shared/template';
 import { retrievePullRequest } from './shared/pull-request';
-
-enum RegressionStage {
-  DevelopmentFeature,
-  DevelopmentMain,
-  Testing,
-  Beta,
-  Production,
-}
 
 const knownBots = [
   'metamaskbot',
@@ -344,60 +338,4 @@ async function userBelongsToMetaMaskOrg(
   } = await octokit.graphql(userBelongsToMetaMaskOrgQuery, { login: username });
 
   return Boolean(userBelongsToMetaMaskOrgResult?.user?.organization?.id);
-}
-
-// This function crafts appropriate label, corresponding to regression stage and release version.
-function craftRegressionLabel(
-  regressionStage: RegressionStage | undefined,
-  releaseVersion: string | undefined,
-): Label {
-  switch (regressionStage) {
-    case RegressionStage.DevelopmentFeature:
-      return {
-        name: `feature-branch-bug`,
-        color: '5319E7', // violet
-        description: `bug that was found on a feature branch, but not yet merged in main branch`,
-      };
-
-    case RegressionStage.DevelopmentMain:
-      return {
-        name: `regression-main`,
-        color: '5319E7', // violet
-        description: `Regression bug that was found on main branch, but not yet present in production`,
-      };
-
-    case RegressionStage.Testing:
-      return {
-        name: `regression-RC-${releaseVersion || '*'}`,
-        color: '744C11', // orange
-        description: releaseVersion
-          ? `Regression bug that was found in release candidate (RC) for release ${releaseVersion}`
-          : `TODO: Unknown release version. Please replace with correct 'regression-RC-x.y.z' label, where 'x.y.z' is the number of the release where bug was found.`,
-      };
-
-    case RegressionStage.Beta:
-      return {
-        name: `regression-beta-${releaseVersion || '*'}`,
-        color: 'D94A83', // pink
-        description: releaseVersion
-          ? `Regression bug that was found in beta in release ${releaseVersion}`
-          : `TODO: Unknown release version. Please replace with correct 'regression-beta-x.y.z' label, where 'x.y.z' is the number of the release where bug was found.`,
-      };
-
-    case RegressionStage.Production:
-      return {
-        name: `regression-prod-${releaseVersion || '*'}`,
-        color: '5319E7', // violet
-        description: releaseVersion
-          ? `Regression bug that was found in production in release ${releaseVersion}`
-          : `TODO: Unknown release version. Please replace with correct 'regression-prod-x.y.z' label, where 'x.y.z' is the number of the release where bug was found.`,
-      };
-
-    default:
-      return {
-        name: `regression-*`,
-        color: 'EDEDED', // grey
-        description: `TODO: Unknown regression stage. Please replace with correct regression label: 'regression-main', 'regression-RC-x.y.z', or 'regression-prod-x.y.z' label, where 'x.y.z' is the number of the release where bug was found.`,
-      };
-  }
 }
