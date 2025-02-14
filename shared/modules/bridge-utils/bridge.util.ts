@@ -144,6 +144,7 @@ export async function fetchBridgeQuotes(
 ): Promise<QuoteResponse[]> {
   const normalizedRequest: QuoteRequest = {
     walletAddress: formatAddressToString(request.walletAddress),
+    destWalletAddress: formatAddressToString(request.destWalletAddress),
     srcChainId: formatChainIdToDec(request.srcChainId),
     destChainId: formatChainIdToDec(request.destChainId),
     srcTokenAddress: formatAddressToString(request.srcTokenAddress),

@@ -293,7 +293,13 @@ const PrepareBridgePage = () => {
       // balance is less than the tenderly balance
       insufficientBal: Boolean(providerConfig?.rpcUrl?.includes('tenderly')),
       slippage,
-      walletAddress: selectedAccount?.address,
+      walletAddress: selectedAccount?.address ?? '',
+      // TODO verify this, probably wrong
+      // TODO override with account selector's value
+      destWalletAddress:
+        !isSwap && isEvm
+          ? selectedMultichainAccount?.address
+          : selectedEvmAccount?.address,
     }),
     [
       isSwap,
