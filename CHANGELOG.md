@@ -60,6 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed issue where permissions were not updating correctly when all network clients for a chain ID were removed ([#29855](https://github.com/MetaMask/metamask-extension/pull/29855))
 - Fixed issue where testnets were not displaying correctly in the incremental permission view ([#29864](https://github.com/MetaMask/metamask-extension/pull/29864))
 - Fixed issue where checkboxes in Edit Accounts and Edit Network modals would reset to default on rerender ([#29755](https://github.com/MetaMask/metamask-extension/pull/29755))
+
 ## [12.11.0]
 ### Added
 - Added Lisk network logos for mainnet and testnet, visible in the network selector ([#29762](https://github.com/MetaMask/metamask-extension/pull/29762))
@@ -5710,8 +5711,7 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.12.0...HEAD
-[12.12.0]: https://github.com/MetaMask/metamask-extension/compare/v12.10.1...v12.12.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.11.0...HEAD
+[12.12.0]: https://github.com/MetaMask/metamask-extension/compare/v12.11.0...v12.12.0
 [12.11.0]: https://github.com/MetaMask/metamask-extension/compare/v12.10.4...v12.11.0
 [12.10.4]: https://github.com/MetaMask/metamask-extension/compare/v12.10.3...v12.10.4
 [12.10.3]: https://github.com/MetaMask/metamask-extension/compare/v12.10.2...v12.10.3
