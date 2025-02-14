@@ -1,11 +1,7 @@
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 
-import {
-  defaultGanacheOptions,
-  withFixtures,
-  unlockWallet,
-} from '../../helpers';
+import { withFixtures, unlockWallet } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Mockttp } from '../../mock-e2e';
 
@@ -62,7 +58,6 @@ describe('Import flow', function () {
             ],
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockPriceFetch,
       },
