@@ -70,7 +70,7 @@ const useMultiChainAssets = () => {
       primary: balance.amount,
       secondary: '', // secondary balance (usually in fiat)
       string: '',
-      tokenFiatAmount: '',
+      tokenFiatAmount: balance.amount, // for now we are keeping this is to satisfy sort, this should be fiat amount
       isStakeable: false,
     };
   });
