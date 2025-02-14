@@ -80,12 +80,12 @@
 
     [data-theme='light'],
     .light {
-      box-shadow: 0 0 2px 0 var(--color-border-muted), 0 0 16px 0 rgba(226, 228, 233, 0.16);
+      box-shadow: 0 0 2px 0 #e2e4e9, 0 0 16px 0 rgba(226, 228, 233, 0.16);
     }
 
     [data-theme='dark'],
     .dark {
-      box-shadow: 0 0 2px 0 var(--color-border-default), 0 0 16px 0 var(--color-border-default);
+      box-shadow: 0 0 2px 0 #18191b, 0 0 16px 0 #18191b;
     }
   }
 }
