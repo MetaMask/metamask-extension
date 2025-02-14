@@ -9,7 +9,7 @@ class ConnectAccountConfirmation {
   };
 
   private readonly connectAccountConfirmationTitle = {
-    text: 'Connect with MetaMask',
+    text: 'Connect this website with MetaMask.',
     tag: 'h2',
   };
 
