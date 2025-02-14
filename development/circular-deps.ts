@@ -173,37 +173,48 @@ async function check(): Promise<void> {
  * Exits with a non-zero exit code if the provided `actualDeps` contain any
  * circular dependencies that are not allowed by the `allowedCircularGlob`.
  *
- * @param allowedCircularGlob Glob patterns for allowed circular dependencies
- * @param actualDeps All circular dependencies found in the codebase
+ * @param allowedCircularGlob - Glob patterns for allowed circular dependencies.
+ * @param actualDeps - All circular dependencies found in the codebase.
  */
 function failIfDisallowedCircularDepsFound(
   allowedCircularGlob: string[],
   actualDeps: CircularDeps,
 ): void {
-  const failedPaths = allowedCircularGlob
-    .map((pattern) => {
-      // Collect all cycles containing a dep that does NOT match this pattern
-      const disallowedCycles = actualDeps.filter((cycle) =>
-        cycle.some((dep) => !micromatch.isMatch(dep, pattern)),
-      );
-      return { pattern, disallowedCycles };
-    })
-    .filter(({ disallowedCycles }) => disallowedCycles.length > 0);
+  // 1) Find all cycles containing any dep that does NOT match the allowed patterns.
+  const disallowedCycles = actualDeps.filter((cycle) =>
+    cycle.some((dep) => !micromatch.some(dep, allowedCircularGlob)),
+  );
 
-  if (failedPaths.length > 0) {
-    const errorDetails = failedPaths
-      .map(({ pattern, disallowedCycles }, idx) => {
-        const cycleList = disallowedCycles
-          .map((cycle, i) => `${i + 1}) ${cycle.join(' > ')}`)
-          .join('\n');
-        return `${idx + 1}. Pattern: ${pattern}\n${cycleList}`;
-      })
-      .join('\n\n');
+  if (disallowedCycles.length > 0) {
+    const errorDetails = disallowedCycles
+      .map((cycle) => cycle.join(' -> '))
+      .join('\n');
 
     console.error(
-      `Error: Circular dependencies found for these patterns:\n\n${errorDetails}`,
+      `Error: New circular dependencies found in disallowed folders:\n\n${errorDetails}`,
     );
     console.log('You must remove these circular dependencies.');
+    process.exit(1);
+  }
+
+  // 2) Ensure that each pattern in `allowedCircularGlob` actually matches at least one dep in `actualDeps`.
+  //    If a pattern is unused, we want the developer to remove or update it.
+  const unusedAllowedPatterns = allowedCircularGlob.filter(
+    (pattern) =>
+      !actualDeps.some((cycle) =>
+        cycle.some((dep) => micromatch.isMatch(dep, pattern)),
+      ),
+  );
+
+  if (unusedAllowedPatterns.length > 0) {
+    console.error(
+      `Error: The following allowed circular dependency patterns do not match any files:\n\n${unusedAllowedPatterns.join(
+        '\n',
+      )}`,
+    );
+    console.log(
+      'You must remove or update these unused patterns in your `.madgerc` file.',
+    );
     process.exit(1);
   }
 }
