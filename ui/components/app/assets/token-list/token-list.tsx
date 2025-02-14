@@ -12,19 +12,12 @@ import {
 } from '../../../../selectors';
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { useTokenBalances as pollAndUpdateEvmBalances } from '../../../../hooks/useTokenBalances';
-import { useNativeTokenBalance, useNetworkFilter } from '../hooks';
+import { useNetworkFilter } from '../hooks';
 import { TokenWithFiatAmount } from '../types';
-import {
-  getMultichainBalances,
-  getMultichainIsEvm,
-} from '../../../../selectors/multichain';
 import { filterAssets } from '../util/filter';
 import { sortAssets } from '../util/sort';
-import {
-  getAccountAssets,
-  getAssetsMetadata,
-} from '../../../../selectors/assets';
 import useMultiChainAssets from '../hooks/useMultichainAssets';
+import { getMultichainIsEvm } from '../../../../selectors/multichain';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -39,14 +32,6 @@ function TokenList({ onTokenClick }: TokenListProps) {
   const { tokenSortConfig, privacyMode } = useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedAccount);
 
-  // multichain balances TODO: migrate evm balances into this selector
-  const multichainBalances = useSelector(getMultichainBalances);
-  const accountAssets = useSelector(getAccountAssets);
-  const assetsMetadata = useSelector(getAssetsMetadata);
-  console.log('multichainBalances', multichainBalances);
-  console.log('accountAssets', accountAssets);
-  console.log('assetsMetadata', assetsMetadata);
-
   // EVM specific tokenBalance polling, updates state via polling loop per chainId
   pollAndUpdateEvmBalances({
     chainIds: chainIdsToPoll as Hex[],
@@ -54,7 +39,6 @@ function TokenList({ onTokenClick }: TokenListProps) {
 
   // const nonEvmNativeToken = useNativeTokenBalance();
   const multichainAssets = useMultiChainAssets();
-  console.log('multichainAssets', multichainAssets);
 
   // network filter to determine which tokens to show in list
   // on EVM we want to filter based on network filter controls, on non-evm we only want tokens from that chain identifier
