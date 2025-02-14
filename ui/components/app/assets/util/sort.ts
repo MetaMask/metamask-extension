@@ -20,11 +20,10 @@ export type SortingCallbacksT = {
 // All sortingCallbacks should be asc order, sortAssets function handles asc/dsc
 const sortingCallbacks: SortingCallbacksT = {
   numeric: (a: number, b: number) => a - b,
-  stringNumeric: (a: string, b: string) => {
-    return (
-      parseFloat(parseFloat(a).toFixed(5)) -
-      parseFloat(parseFloat(b).toFixed(5))
-    );
+  stringNumeric: (a: string | null, b: string | null) => {
+    const numA = a ? parseFloat(parseFloat(a).toFixed(5)) : 0;
+    const numB = b ? parseFloat(parseFloat(b).toFixed(5)) : 0;
+    return numA - numB;
   },
   alphaNumeric: (a: string, b: string) => a.localeCompare(b),
   date: (a: Date, b: Date) => a.getTime() - b.getTime(),

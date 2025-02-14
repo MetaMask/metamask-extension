@@ -212,7 +212,7 @@ class HomePage {
     await this.driver.wait(async () => {
       const uiState = await getCleanAppState(this.driver);
       return uiState.metamask.hasAccountSyncingSyncedAtLeastOnce === true;
-    }, 10000);
+    }, 30000); // Syncing can take some time so adding a longer timeout to reduce flakes
   }
 
   async check_ifBridgeButtonIsClickable(): Promise<boolean> {

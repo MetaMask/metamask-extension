@@ -13,7 +13,7 @@ import {
   sumDecimals,
 } from '../../shared/modules/conversion.utils';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
-import { TokenWithBalance } from '../components/app/assets/asset-list/asset-list';
+import { TokenWithBalance } from '../components/app/assets/types';
 import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
 
 type AddressBalances = {

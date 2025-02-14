@@ -919,7 +919,7 @@
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
         "@metamask/abi-utils": true,
-        "@metamask/assets-controllers>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
@@ -931,7 +931,6 @@
         "@metamask/snaps-utils": true,
         "@metamask/assets-controllers>@metamask/utils": true,
         "@metamask/name-controller>async-mutex": true,
-        "bitcoin-address-validation": true,
         "bn.js": true,
         "lodash": true,
         "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": true,
@@ -956,14 +955,6 @@
       }
     },
     "@metamask/approval-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/assets-controllers>@metamask/base-controller": {
       "globals": {
         "setTimeout": true
       },
@@ -1530,7 +1521,7 @@
         "console.error": true
       },
       "packages": {
-        "@metamask/multichain>@metamask/api-specs": true,
+        "@metamask/api-specs": true,
         "@metamask/controller-utils": true,
         "@metamask/eth-json-rpc-filters": true,
         "@metamask/json-rpc-engine": true,

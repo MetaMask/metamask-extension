@@ -17,6 +17,11 @@ import {
   getTransactionControllerMessenger,
   getTransactionControllerInitMessenger,
 } from './transaction-controller-messenger';
+import {
+  getMultichainBalancesControllerMessenger,
+  getMultichainTransactionsControllerMessenger,
+  getMultichainAssetsControllerMessenger,
+} from './multichain';
 
 export const CONTROLLER_MESSENGERS = {
   CronjobController: {
@@ -24,6 +29,15 @@ export const CONTROLLER_MESSENGERS = {
   },
   ExecutionService: {
     getMessenger: getExecutionServiceMessenger,
+  },
+  MultichainAssetsController: {
+    getMessenger: getMultichainAssetsControllerMessenger,
+  },
+  MultichainBalancesController: {
+    getMessenger: getMultichainBalancesControllerMessenger,
+  },
+  MultichainTransactionsController: {
+    getMessenger: getMultichainTransactionsControllerMessenger,
   },
   RateLimitController: {
     getMessenger: getRateLimitControllerMessenger,

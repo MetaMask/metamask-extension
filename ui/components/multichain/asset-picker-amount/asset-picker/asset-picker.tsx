@@ -43,11 +43,11 @@ import {
 import { TabName } from '../asset-picker-modal/asset-picker-modal-tabs';
 import { AssetPickerModalNetwork } from '../asset-picker-modal/asset-picker-modal-network';
 import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   GOERLI_DISPLAY_NAME,
   SEPOLIA_DISPLAY_NAME,
 } from '../../../../../shared/constants/network';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
+import { getImageForChainId } from '../../../../selectors/multichain';
 
 const ELLIPSIFY_LENGTH = 13; // 6 (start) + 4 (end) + 3 (...)
 
@@ -163,11 +163,9 @@ export function AssetPicker({
     return undefined;
   };
 
-  const networkImageSrc =
-    selectedNetwork?.chainId &&
-    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-      selectedNetwork.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-    ];
+  const networkImageSrc = selectedNetwork?.chainId
+    ? getImageForChainId(selectedNetwork.chainId)
+    : undefined;
 
   const handleButtonClick = () => {
     if (networkProps && !networkProps.network) {
