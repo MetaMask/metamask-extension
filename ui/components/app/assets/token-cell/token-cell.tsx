@@ -1,133 +1,201 @@
-import React, { useCallback } from 'react';
-import { useSelector } from 'react-redux';
-import { BigNumber } from 'bignumber.js';
-import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+import React, { useCallback, useContext, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { useTokenDisplayInfo } from '../hooks';
 import {
-  getTokenList,
-  selectERC20TokensByChain,
-  getNativeCurrencyForChain,
-} from '../../../../selectors';
+  BlockSize,
+  Display,
+  FlexDirection,
+  JustifyContent,
+} from '../../../../helpers/constants/design-system';
 import {
-  isChainIdMainnet,
-  getImageForChainId,
-  getMultichainIsEvm,
-} from '../../../../selectors/multichain';
-import { TokenListItem } from '../../../multichain';
-import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import { getIntlLocale } from '../../../../ducks/locale/locale';
-import { formatAmount } from '../../../../pages/confirmations/components/simulation-details/formatAmount';
+  Box,
+  ButtonSecondary,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+} from '../../../component-library';
+import { getMultichainIsEvm } from '../../../../selectors/multichain';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
+import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
+import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
+import { setEditedNetwork } from '../../../../store/actions';
+import {
+  SafeChain,
+  useSafeChains,
+} from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import { TokenWithFiatAmount } from '../types';
+import {
+  TokenCellBadge,
+  TokenCellTitle,
+  TokenCellPercentChange,
+  TokenCellPrimaryDisplay,
+  TokenCellSecondaryDisplay,
+} from './cells';
 
 type TokenCellProps = {
-  address: string;
-  symbol: string;
-  string?: string;
-  chainId: string;
-  tokenFiatAmount: number | null;
-  image: string;
-  isNative?: boolean;
+  token: TokenWithFiatAmount;
   privacyMode?: boolean;
   onClick?: (chainId: string, address: string) => void;
 };
 
-export const formatWithThreshold = (
-  amount: number | null,
-  threshold: number,
-  locale: string,
-  options: Intl.NumberFormatOptions,
-): string => {
-  if (amount === null) {
-    return '';
-  }
-  if (amount === 0) {
-    return new Intl.NumberFormat(locale, options).format(0);
-  }
-  return amount < threshold
-    ? `<${new Intl.NumberFormat(locale, options).format(threshold)}`
-    : new Intl.NumberFormat(locale, options).format(amount);
-};
-
 export default function TokenCell({
-  address,
-  image,
-  symbol,
-  chainId,
-  string,
-  tokenFiatAmount,
-  isNative,
+  token,
   privacyMode = false,
   onClick,
 }: TokenCellProps) {
-  const locale = useSelector(getIntlLocale);
-  const currentCurrency = useSelector(getCurrentCurrency);
-  const tokenList = useSelector(getTokenList);
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
-  const erc20TokensByChain = useSelector(selectERC20TokensByChain);
-  const isMainnet = chainId ? isChainIdMainnet(chainId) : false;
-  const tokenData = Object.values(tokenList).find(
-    (token) =>
-      isEqualCaseInsensitive(token.symbol, symbol) &&
-      isEqualCaseInsensitive(token.address, address),
-  );
+  const trackEvent = useContext(MetaMetricsContext);
+  const { safeChains } = useSafeChains();
+  const [showScamWarningModal, setShowScamWarningModal] = useState(false);
 
-  const title =
-    tokenData?.name ||
-    (chainId === '0x1' && symbol === 'ETH'
-      ? 'Ethereum'
-      : chainId &&
-        erc20TokensByChain?.[chainId]?.data?.[address.toLowerCase()]?.name) ||
-    symbol;
+  const decimalChainId = isEvm && parseInt(hexToDecimal(token.chainId), 10);
 
-  const tokenImage =
-    tokenData?.iconUrl ||
-    (chainId &&
-      erc20TokensByChain?.[chainId]?.data?.[address.toLowerCase()]?.iconUrl) ||
-    image;
-
-  const secondaryThreshold = 0.01;
-  // Format for fiat balance with currency style
-  const secondary =
-    tokenFiatAmount === null
-      ? undefined
-      : formatWithThreshold(tokenFiatAmount, secondaryThreshold, locale, {
-          style: 'currency',
-          currency: currentCurrency.toUpperCase(),
-        });
-
-  const primary = formatAmount(
-    locale,
-    new BigNumber(Number(string) || '0', 10),
-  );
-
-  const isStakeable = isMainnet && isEvm && isNative;
-
-  const handleOnClick = useCallback(() => {
-    if (!onClick || !chainId) {
-      return;
+  const safeChainDetails: SafeChain | undefined = safeChains?.find((chain) => {
+    if (typeof decimalChainId === 'number') {
+      return chain.chainId === decimalChainId.toString();
     }
-    onClick(chainId, address);
-  }, [onClick, chainId, address]);
+    return undefined;
+  });
 
-  if (!chainId) {
+  const tokenDisplayInfo = useTokenDisplayInfo({
+    token,
+  });
+
+  const handleClick = useCallback(
+    (e?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      e?.preventDefault();
+
+      // If the scam warning modal is open, do nothing
+      if (showScamWarningModal) {
+        return;
+      }
+
+      // Ensure token has a valid chainId before proceeding
+      if (!onClick || !token.chainId) {
+        return;
+      }
+
+      // Call the onClick handler with chainId and address if needed
+      onClick(token.chainId, token.address);
+
+      // Track the event
+      trackEvent({
+        category: MetaMetricsEventCategory.Tokens,
+        event: MetaMetricsEventName.TokenDetailsOpened,
+        properties: {
+          location: 'Home',
+          chain_id: token.chainId, // FIXME: Ensure this is a number for EVM accounts
+          token_symbol: token.symbol,
+        },
+      });
+    },
+    [onClick, token.chainId, token.address],
+  );
+
+  const handleScamWarningModal = (arg: boolean) => {
+    setShowScamWarningModal(arg);
+  };
+
+  if (!token.chainId) {
     return null;
   }
 
-  const tokenChainImage = getImageForChainId(chainId);
-
   return (
-    <TokenListItem
-      onClick={handleOnClick}
-      tokenSymbol={symbol}
-      tokenImage={isNative ? getNativeCurrencyForChain(chainId) : tokenImage}
-      tokenChainImage={tokenChainImage || undefined}
-      primary={primary}
-      secondary={secondary}
-      title={title}
-      address={address}
-      isStakeable={isStakeable}
-      showPercentage
-      privacyMode={privacyMode}
-      isNativeCurrency={isNative}
-      chainId={chainId}
-    />
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      width={BlockSize.Full}
+      height={BlockSize.Full}
+      gap={4}
+    >
+      <Box
+        as="a"
+        onClick={handleClick}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        paddingTop={2}
+        paddingBottom={2}
+        paddingLeft={4}
+        paddingRight={4}
+        width={BlockSize.Full}
+        style={{ height: 62, cursor: onClick ? 'pointer' : 'auto' }}
+        data-testid="multichain-token-list-button"
+      >
+        <TokenCellBadge token={{ ...token, ...tokenDisplayInfo }} />
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          width={BlockSize.Full}
+          style={{ flexGrow: 1, overflow: 'hidden' }}
+          justifyContent={JustifyContent.center}
+        >
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            justifyContent={JustifyContent.spaceBetween}
+          >
+            <TokenCellTitle token={{ ...token, ...tokenDisplayInfo }} />
+            <TokenCellSecondaryDisplay
+              token={{ ...token, ...tokenDisplayInfo }}
+              handleScamWarningModal={handleScamWarningModal}
+              privacyMode={privacyMode}
+            />
+          </Box>
+
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            justifyContent={JustifyContent.spaceBetween}
+          >
+            <TokenCellPercentChange token={{ ...token, ...tokenDisplayInfo }} />
+            <TokenCellPrimaryDisplay
+              token={{ ...token, ...tokenDisplayInfo }}
+              privacyMode={privacyMode}
+            />
+          </Box>
+        </Box>
+      </Box>
+      {/* scam warning modal, this should be higher up in the component tree */}
+      {isEvm && showScamWarningModal ? (
+        <Modal isOpen onClose={() => setShowScamWarningModal(false)}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader onClose={() => setShowScamWarningModal(false)}>
+              {t('nativeTokenScamWarningTitle')}
+            </ModalHeader>
+            <ModalBody marginTop={4} marginBottom={4}>
+              {t('nativeTokenScamWarningDescription', [
+                token.symbol,
+                safeChainDetails?.nativeCurrency?.symbol ||
+                  t('nativeTokenScamWarningDescriptionExpectedTokenFallback'), // never render "undefined" string value
+              ])}
+            </ModalBody>
+            <ModalFooter>
+              <ButtonSecondary
+                onClick={() => {
+                  dispatch(setEditedNetwork({ chainId: token.chainId }));
+                  history.push(NETWORKS_ROUTE);
+                }}
+                block
+              >
+                {t('nativeTokenScamWarningConversion')}
+              </ButtonSecondary>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      ) : null}
+    </Box>
   );
 }

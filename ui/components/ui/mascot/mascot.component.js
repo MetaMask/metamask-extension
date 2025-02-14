@@ -46,7 +46,7 @@ export default class Mascot extends Component {
       width,
       height,
       meshJson: getBuildSpecificAsset('foxMeshJson'),
-      verticalFieldOfView: Math.PI / 50.0,
+      verticalFieldOfView: Math.PI / 37.5,
       near: 100,
       far: 340,
     });
