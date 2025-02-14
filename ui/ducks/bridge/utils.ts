@@ -1,4 +1,4 @@
-import { isStrictHexString, type Hex } from '@metamask/utils';
+import { type CaipChainId, isStrictHexString, type Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import type { ContractMarketData } from '@metamask/assets-controllers';
 import {
@@ -8,9 +8,11 @@ import {
 import { toChecksumAddress } from 'ethereumjs-util';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../shared/modules/Numeric';
-import { type TxData } from '../../../shared/types/bridge';
+import { ChainId, type TxData } from '../../../shared/types/bridge';
 import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util';
 import { fetchTokenExchangeRates as fetchTokenExchangeRatesUtil } from '../../helpers/utils/util';
+import { formatChainIdToHex } from '../../../shared/modules/bridge-utils/caip-formatters';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 
 type GasFeeEstimate = {
   suggestedMaxPriorityFeePerGas: string;
@@ -73,14 +75,19 @@ export const getTxGasEstimates = async ({
 };
 
 const fetchTokenExchangeRates = async (
-  chainId: string,
+  chainId: Hex | CaipChainId | ChainId,
   currency: string,
   ...tokenAddresses: string[]
 ) => {
+  // TODO fetch exchange rates for solana
+  if (chainId === MultichainNetworks.SOLANA) {
+    return {};
+  }
+
   const exchangeRates = await fetchTokenExchangeRatesUtil(
     currency,
     tokenAddresses,
-    chainId,
+    formatChainIdToHex(chainId),
   );
   return Object.keys(exchangeRates).reduce(
     (acc: Record<string, number | undefined>, address) => {
@@ -95,7 +102,7 @@ const fetchTokenExchangeRates = async (
 // rate is not available in the TokenRatesController, which happens when the selected token has not been
 // imported into the wallet
 export const getTokenExchangeRate = async (request: {
-  chainId: Hex;
+  chainId: Hex | CaipChainId | ChainId;
   tokenAddress: string;
   currency: string;
 }) => {
@@ -115,11 +122,12 @@ export const getTokenExchangeRate = async (request: {
 // This extracts a token's exchange rate from the marketData state object
 // These exchange rates are against the native asset of the chain
 export const exchangeRateFromMarketData = (
-  chainId: string,
+  chainId: Hex | ChainId,
   tokenAddress: string,
   marketData?: Record<string, ContractMarketData>,
+  // TODO get market data for solana
 ) =>
-  isStrictHexString(tokenAddress)
+  isStrictHexString(tokenAddress) && isStrictHexString(chainId)
     ? marketData?.[chainId]?.[tokenAddress]?.price
     : undefined;
 

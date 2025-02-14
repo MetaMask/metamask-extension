@@ -7,7 +7,6 @@ import {
 } from '../../ducks/bridge/selectors';
 import { getMarketData, getParticipateInMetaMetrics } from '../../selectors';
 import { getCurrentCurrency } from '../../ducks/metamask/metamask';
-import { decimalToPrefixedHex } from '../../../shared/modules/conversion.utils';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import {
   setDestTokenExchangeRates,
@@ -34,11 +33,9 @@ export const useBridgeExchangeRates = () => {
   const toTokenAddress = activeQuote
     ? activeQuote.quote.destAsset.address
     : destTokenAddress;
-  const fromChainId = activeQuote
-    ? decimalToPrefixedHex(activeQuote.quote.srcChainId)
-    : chainId;
+  const fromChainId = activeQuote ? activeQuote.quote.srcChainId : chainId;
   const toChainId = activeQuote
-    ? decimalToPrefixedHex(activeQuote.quote.destChainId)
+    ? activeQuote.quote.destChainId
     : toChain?.chainId;
 
   const marketData = useSelector(getMarketData);
