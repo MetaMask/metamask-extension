@@ -3,7 +3,8 @@ import {
   NetworkControllerStateChangeEvent,
   NetworkState,
 } from '@metamask/network-controller';
-import { Hex } from '@metamask/utils';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import type { CaipChainId, Hex } from '@metamask/utils';
 import type { Patch } from 'immer';
 import { TEST_CHAINS } from '../../../shared/constants/network';
 
@@ -14,7 +15,7 @@ const controllerName = 'NetworkOrderController';
  * Information about an ordered network.
  */
 export type NetworksInfo = {
-  networkId: Hex; // The network's chain id
+  networkId: CaipChainId; // The network's chain id
 };
 
 // State shape for NetworkOrderController
@@ -112,10 +113,11 @@ export class NetworkOrderController extends BaseController<
   }: NetworkState) {
     this.update((state) => {
       // Filter out testnets, which are in the state but not orderable
-      const chainIds = Object.keys(networkConfigurationsByChainId).filter(
+      const hexChainIds = Object.keys(networkConfigurationsByChainId).filter(
         (chainId) =>
           !TEST_CHAINS.includes(chainId as (typeof TEST_CHAINS)[number]),
       ) as Hex[];
+      const chainIds: CaipChainId[] = hexChainIds.map(toEvmCaipChainId);
 
       const newNetworks = chainIds
         .filter(
@@ -140,7 +142,7 @@ export class NetworkOrderController extends BaseController<
    * @param networkList - The list of networks to update in the state.
    */
 
-  updateNetworksList(chainIds: Hex[]) {
+  updateNetworksList(chainIds: CaipChainId[]) {
     this.update((state) => {
       state.orderedNetworkList = chainIds.map((chainId) => ({
         networkId: chainId,
