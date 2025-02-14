@@ -255,7 +255,7 @@ export const UseCaseDemos = (args) => (
           variant={TextVariant.headingSm}
           textAlign={TextAlign.Center}
           backgroundColor={BackgroundColor.primaryAlternative}
-          ellipsis={true}
+          ellipsis
         >
           Title is sentence case no period
         </Text>

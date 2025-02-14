@@ -228,7 +228,7 @@ describe('NameDetails', () => {
     const { baseElement } = renderWithProvider(
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
-        value={''}
+        value=""
         variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,

@@ -95,7 +95,7 @@ export const Carousel = React.forwardRef(
             autoPlay={false}
             swipeScrollTolerance={5}
             centerSlidePercentage={getCenterSlidePercentage(3)}
-            axis={'horizontal'}
+            axis="horizontal"
             preventMovementUntilSwipeScrollTolerance
             emulateTouch
             centerMode

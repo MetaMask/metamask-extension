@@ -289,7 +289,7 @@ export const TokenListItemComponent = ({
                 size={ButtonIconSize.Md}
                 backgroundColor={BackgroundColor.transparent}
                 data-testid="scam-warning"
-                ariaLabel={''}
+                ariaLabel=""
               />
             ) : (
               <SensitiveText

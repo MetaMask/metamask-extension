@@ -120,7 +120,7 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
             endIconName={false}
             // Even if the link is not external, it will open in a new tab
             // to avoid breaking the popup
-            isExternal={true}
+            isExternal
           />
         ) : null,
       ExternalLink: ({ notification }) =>
@@ -132,7 +132,7 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
             href={`${notification.data.externalLink.externalLinkUrl}`}
             id={notification.id}
             endIconName={false}
-            isExternal={true}
+            isExternal
           />
         ) : null,
     },

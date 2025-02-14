@@ -43,7 +43,7 @@ describe('Checkbox', () => {
   it('should render isChecked', () => {
     const { getByRole, getByTestId } = render(
       <Checkbox
-        isChecked={true}
+        isChecked
         iconProps={{ 'data-testid': 'check-bold', name: IconName.CheckBold }}
       />,
     );
@@ -56,7 +56,7 @@ describe('Checkbox', () => {
   it('should render isIndeterminate', () => {
     const { getByRole, getByTestId } = render(
       <Checkbox
-        isIndeterminate={true}
+        isIndeterminate
         iconProps={{ 'data-testid': 'minus-bold', name: IconName.MinusBold }}
       />,
     );
@@ -89,7 +89,7 @@ describe('Checkbox', () => {
         label="Option 1"
         id="option-1"
         data-testid="option-disabled"
-        isDisabled={true}
+        isDisabled
       />,
     );
 
@@ -101,7 +101,7 @@ describe('Checkbox', () => {
 
   test('Checkbox component is readOnly when isReadOnly is true', () => {
     const { getByLabelText } = render(
-      <Checkbox label="Option 1" id="option-1" isReadOnly={true} />,
+      <Checkbox label="Option 1" id="option-1" isReadOnly />,
     );
 
     const checkbox = getByLabelText('Option 1');
@@ -140,7 +140,7 @@ describe('Checkbox', () => {
 
   test('Checkbox component is required when isRequired is true', () => {
     const { getByLabelText } = render(
-      <Checkbox label="Option 1" id="option-1" isRequired={true} />,
+      <Checkbox label="Option 1" id="option-1" isRequired />,
     );
 
     const checkbox = getByLabelText('Option 1');

@@ -128,7 +128,7 @@ export const SnapUIFileInput: FunctionComponent<SnapUIFileInputProps> = ({
         name={name}
         onChange={handleChange}
         accept={accept?.join(',')}
-        hidden={true}
+        hidden
         disabled={disabled}
       />
     </>

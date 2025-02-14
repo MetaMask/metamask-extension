@@ -5,7 +5,7 @@ import { ConfirmInfoRowUrl } from './url';
 describe('ConfirmInfoRowUrl', () => {
   it('should match snapshot', () => {
     const { container } = render(
-      <ConfirmInfoRowUrl url={'https://example.com'} />,
+      <ConfirmInfoRowUrl url="https://example.com" />,
     );
     expect(container).toMatchSnapshot();
   });

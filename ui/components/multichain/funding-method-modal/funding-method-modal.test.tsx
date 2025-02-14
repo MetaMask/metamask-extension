@@ -31,7 +31,7 @@ describe('FundingMethodModal', () => {
   it('should render the modal when isOpen is true', () => {
     const { getByTestId, getByText } = renderWithProvider(
       <FundingMethodModal
-        isOpen={true}
+        isOpen
         onClose={jest.fn()}
         title="Test Modal"
         onClickReceive={jest.fn()}
@@ -60,7 +60,7 @@ describe('FundingMethodModal', () => {
   it('should call openBuyCryptoInPdapp when the Token Marketplace item is clicked', () => {
     const { getByText } = renderWithProvider(
       <FundingMethodModal
-        isOpen={true}
+        isOpen
         onClose={jest.fn()}
         title="Test Modal"
         onClickReceive={jest.fn()}
@@ -76,7 +76,7 @@ describe('FundingMethodModal', () => {
     const onClickReceive = jest.fn();
     const { getByText } = renderWithProvider(
       <FundingMethodModal
-        isOpen={true}
+        isOpen
         onClose={jest.fn()}
         title="Test Modal"
         onClickReceive={onClickReceive}
@@ -93,7 +93,7 @@ describe('FundingMethodModal', () => {
 
     const { getByText } = renderWithProvider(
       <FundingMethodModal
-        isOpen={true}
+        isOpen
         onClose={jest.fn()}
         title="Test Modal"
         onClickReceive={jest.fn()}

@@ -88,7 +88,7 @@ export const TemplateStory: StoryFn<typeof ConfirmAlertModal> = (args) => {
           onSubmit={handleOnClose}
         />
       )}
-      <Button onClick={handleOnClick} danger={true}>
+      <Button onClick={handleOnClick} danger>
         Open confirm alert modal
       </Button>
     </Box>

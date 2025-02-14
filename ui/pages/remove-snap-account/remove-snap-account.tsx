@@ -78,7 +78,7 @@ const RemoveSnapAccount = ({
             <Text textAlign={TextAlign.Center} variant={TextVariant.headingLg}>
               {t('removeSnapAccountTitle')}
             </Text>
-            <SnapAccountCard address={publicAddress} remove={true} />
+            <SnapAccountCard address={publicAddress} remove />
             <Text
               variant={TextVariant.bodyMd}
               textAlign={TextAlign.Center}

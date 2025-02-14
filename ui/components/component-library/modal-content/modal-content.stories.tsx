@@ -151,7 +151,7 @@ export const Size: StoryFn<typeof ModalContent> = (args) => {
         ))}
       </Box>
       {currentSize && (
-        <Modal isOpen={true} onClose={() => setCurrentSize(null)}>
+        <Modal isOpen onClose={() => setCurrentSize(null)}>
           <ModalContent
             {...args}
             size={getSize(currentSize)}
