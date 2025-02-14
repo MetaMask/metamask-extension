@@ -152,7 +152,7 @@ export default class PermissionPageContainer extends Component {
     );
 
     const requestedSessionsScopes = getRequestedSessionScopes(
-      _request.permission,
+      _request.permissions,
     );
     const approvedChainIds = getPermittedEthChainIds(requestedSessionsScopes);
 
