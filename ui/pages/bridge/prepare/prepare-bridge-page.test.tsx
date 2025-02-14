@@ -2,6 +2,7 @@ import React from 'react';
 import { act } from '@testing-library/react';
 import * as reactRouterUtils from 'react-router-dom-v5-compat';
 import { zeroAddress } from 'ethereumjs-util';
+import userEvent from '@testing-library/user-event';
 import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/jest/mock-store';
@@ -207,5 +208,66 @@ describe('PrepareBridgePage', () => {
     expect(() =>
       renderWithProvider(<PrepareBridgePage />, configureStore(mockStore)),
     ).toThrow();
+  });
+
+  it('should validate src amount on change', async () => {
+    jest
+      .spyOn(reactRouterUtils, 'useSearchParams')
+      .mockReturnValue([{ get: () => null }] as never);
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        extensionConfig: {
+          chains: {
+            [CHAIN_IDS.MAINNET]: {
+              isActiveSrc: true,
+              isActiveDest: false,
+            },
+          },
+        },
+      },
+    });
+    const { getByTestId } = renderWithProvider(
+      <PrepareBridgePage />,
+      configureStore(mockStore),
+    );
+
+    expect(getByTestId('from-amount').closest('input')).not.toBeDisabled();
+
+    act(() => {
+      fireEvent.change(getByTestId('from-amount'), {
+        target: { value: '2abc.123456123456123456' },
+      });
+    });
+    expect(getByTestId('from-amount').closest('input')).toHaveValue(
+      '2.123456123456123456',
+    );
+
+    act(() => {
+      fireEvent.change(getByTestId('from-amount'), {
+        target: { value: '2abc,131.1212' },
+      });
+    });
+    expect(getByTestId('from-amount').closest('input')).toHaveValue(
+      '2131.1212',
+    );
+
+    act(() => {
+      fireEvent.change(getByTestId('from-amount'), {
+        target: { value: '2abc,131.123456123456123456123456' },
+      });
+    });
+    expect(getByTestId('from-amount').closest('input')).toHaveValue(
+      '2131.123456123456123456123456',
+    );
+
+    act(() => {
+      fireEvent.change(getByTestId('from-amount'), {
+        target: { value: '2abc.131.123456123456123456123456' },
+      });
+    });
+    expect(getByTestId('from-amount').closest('input')).toHaveValue('2.131');
+
+    userEvent.paste('2abc.131.123456123456123456123456');
+    expect(getByTestId('from-amount').closest('input')).toHaveValue('2.131');
   });
 });
