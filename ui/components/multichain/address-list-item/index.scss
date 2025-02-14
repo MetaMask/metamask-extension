@@ -1,9 +1,4 @@
 .address-list-item {
-  /* Set explicitly to match the font-size of AccountListItem */
-  &__label {
-    font-size: 14px !important;
-  }
-
   &__duplicate-contact-warning-icon {
     margin-left: auto;
     align-self: center;

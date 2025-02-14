@@ -1810,6 +1810,7 @@
         "chokidar>anymatch": true,
         "chokidar>braces": true,
         "chokidar>fsevents": true,
+        "tsx>fsevents": true,
         "eslint>glob-parent": true,
         "chokidar>is-binary-path": true,
         "del>is-glob": true,
@@ -3380,6 +3381,13 @@
         "gulp-watch>chokidar>fsevents>node-pre-gyp": true
       }
     },
+    "tsx>fsevents": {
+      "globals": {
+        "console.assert": true,
+        "process.platform": true
+      },
+      "native": true
+    },
     "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge": {
       "builtin": {
         "util.format": true
@@ -3978,6 +3986,14 @@
       }
     },
     "depcheck>is-core-module": {
+      "globals": {
+        "process.versions": true
+      },
+      "packages": {
+        "depcheck>is-core-module>hasown": true
+      }
+    },
+    "depcheck>resolve>is-core-module": {
       "globals": {
         "process.versions": true
       },
@@ -7304,7 +7320,7 @@
         "process.versions.pnp": true
       },
       "packages": {
-        "depcheck>is-core-module": true,
+        "depcheck>resolve>is-core-module": true,
         "depcheck>resolve>path-parse": true
       }
     },
