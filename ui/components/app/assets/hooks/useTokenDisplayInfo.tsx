@@ -109,7 +109,7 @@ export const useTokenDisplayInfo = ({
   }
   // TODO non-evm assets. this is only the native token
   return {
-    title: token.symbol,
+    title: token.title,
     tokenImage: token.image,
     primary: '',
     secondary: token.secondary,
