@@ -48,6 +48,7 @@ export const ModalFooter: ModalFooterComponent = React.forwardRef(
         >
           {onCancel && (
             <Button
+              data-testid="mm-modal-cancel"
               onClick={onCancel}
               children={t('cancel')}
               variant={ButtonVariant.Secondary}
@@ -61,6 +62,7 @@ export const ModalFooter: ModalFooterComponent = React.forwardRef(
           )}
           {onSubmit && (
             <Button
+              data-testid="mm-modal-confirm"
               size={ButtonSize.Lg}
               onClick={onSubmit}
               children={t('confirm')}
