@@ -77,7 +77,7 @@ function runningOnCircleCI(testPaths) {
   console.log('Changed or new test list:', changedOrNewTests);
 
   const fullTestList = shouldE2eQualityGateBeSkipped()
-    ? testPaths
+    ? testPaths.join('\n')
     : applyQualityGate(testPaths.join('\n'), changedOrNewTests);
 
   console.log('Full test list:', fullTestList);
