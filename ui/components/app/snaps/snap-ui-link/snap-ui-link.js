@@ -13,8 +13,10 @@ import SnapLinkWarning from '../snap-link-warning';
 import useSnapNavigation from '../../../../hooks/snaps/useSnapNavigation';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import { getHideSnapBranding } from '../../../../selectors';
+// eslint-disable-next-line import/no-restricted-paths
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 
-export const SnapUILink = ({ href, children }) => {
+export const SnapUILink = ({ href, children, onCancel }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const isMetaMaskUrl = href.startsWith('metamask:');
@@ -26,7 +28,8 @@ export const SnapUILink = ({ href, children }) => {
   );
 
   const handleMetaMaskLinkClick = () => {
-    navigate(href);
+    const envType = getEnvironmentType();
+    navigate(href, envType, onCancel);
   };
 
   const handleLinkClick = () => {
@@ -102,4 +105,5 @@ export const SnapUILink = ({ href, children }) => {
 SnapUILink.propTypes = {
   children: PropTypes.string,
   href: PropTypes.string,
+  onCancel: PropTypes.func,
 };
