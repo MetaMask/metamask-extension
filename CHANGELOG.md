@@ -61,6 +61,104 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed issue where testnets were not displaying correctly in the incremental permission view ([#29864](https://github.com/MetaMask/metamask-extension/pull/29864))
 - Fixed issue where checkboxes in Edit Accounts and Edit Network modals would reset to default on rerender ([#29755](https://github.com/MetaMask/metamask-extension/pull/29755))
 
+## [12.11.0]
+### Added
+- Added Lisk network logos for mainnet and testnet, visible in the network selector ([#29762](https://github.com/MetaMask/metamask-extension/pull/29762))
+- Added Soneium Mainnet and Testnet logos for network integration ([#29713](https://github.com/MetaMask/metamask-extension/pull/29713))
+- Added logos for Ink network and Ink Sepolia ([#29493](https://github.com/MetaMask/metamask-extension/pull/29493))
+- Added ETH native token icon for the Zora network ([#29257](https://github.com/MetaMask/metamask-extension/pull/29257))
+- Added quote timeout handling and refresh functionality to bridge interface ([#29172](https://github.com/MetaMask/metamask-extension/pull/29172))
+- Made nonce always editable in the advanced details view, independent of settings toggle ([#29627](https://github.com/MetaMask/metamask-extension/pull/29627))
+- Added clickable cursor on hover for the petname component in confirmation screens ([#29477](https://github.com/MetaMask/metamask-extension/pull/29477))
+- Added validation to prevent invalid primary types in types sign requests ([#29379](https://github.com/MetaMask/metamask-extension/pull/29379))
+- Introduced a feature to display "Unlimited" for very large spending caps on permits ([#29102](https://github.com/MetaMask/metamask-extension/pull/29102)).
+- Enabled Smart Transactions (STX) by default for users without prior STX activity, with a migration alert to inform users of the change ([#28854](https://github.com/MetaMask/metamask-extension/pull/28854))
+- Enhanced error messaging for failed transactions in the activity details view ([#29338](https://github.com/MetaMask/metamask-extension/pull/29338))
+- Added an auto sign-in feature for existing users ([#29654](https://github.com/MetaMask/metamask-extension/pull/29654))
+- Updated Solana Snap to version 1.0.4 ([#29350](https://github.com/MetaMask/metamask-extension/pull/29350))
+- Enhanced xchain swaps slippage settings to allow decimal inputs and added warnings for low slippage settings ([#29617](https://github.com/MetaMask/metamask-extension/pull/29617))
+- Implemented persistence of bridge state through ToS click ([#29366](https://github.com/MetaMask/metamask-extension/pull/29366))
+- Added network name to the asset details page ([#29211](https://github.com/MetaMask/metamask-extension/pull/29211))
+- Centered the backup warning toast for improved visual alignment ([#29200](https://github.com/MetaMask/metamask-extension/pull/29200))
+- Added conditional disabling of nonce editing when smart transactions are enabled ([#29897](https://github.com/MetaMask/metamask-extension/pull/29897))
+- Upgraded Ledger keyring to resolve EIP-712 signing issues ([#29874](https://github.com/MetaMask/metamask-extension/pull/29874))
+
+### Changed
+- Refactored NFT display into a grid view for a cleaner and more organized layout, with privacy mode support and collection-based sorting ([#29445](https://github.com/MetaMask/metamask-extension/pull/29445))
+- Improved UX by automatically importing detected tokens for users with token autodetection enabled ([#29357](https://github.com/MetaMask/metamask-extension/pull/29357))
+- Updated Klaytn network details to reflect rebranding as Kaia ([#29494](https://github.com/MetaMask/metamask-extension/pull/29494))
+- Simplified Activity empty state by removing placeholder text ([#29318](https://github.com/MetaMask/metamask-extension/pull/29318))
+- Enhanced bridge interface low return warning ([#29171](https://github.com/MetaMask/metamask-extension/pull/29171))
+- Removed legacy transaction requests toggle as new design is now default ([#29695](https://github.com/MetaMask/metamask-extension/pull/29695))
+- Improved display of ENS domains in the UI by converting them to their readable form ([#29231](https://github.com/MetaMask/metamask-extension/pull/29231))
+- Added an "Origin Pill" to the Add Ethereum Chain confirmation screen ([#29317](https://github.com/MetaMask/metamask-extension/pull/29317))
+- Increased the gas limit validation threshold to 30 million to accommodate larger transactions ([#29264](https://github.com/MetaMask/metamask-extension/pull/29264))
+- Improved accessibility by adding a visible focus indicator to the swaps input field, aiding users with vision impairments and keyboard navigation ([#29252](https://github.com/MetaMask/metamask-extension/pull/29252))
+- Design tweaks for network badge: updated border color and width based on design quality feedback ([#29324](https://github.com/MetaMask/metamask-extension/pull/29324))
+- Improved helper text for sending NFTs to accurately reflect balance ([#29296](https://github.com/MetaMask/metamask-extension/pull/29296))
+- Enabled Ledger clear signing feature in MetaMask extension ([#28909](https://github.com/MetaMask/metamask-extension/pull/28909))
+- Adjusted Snaps custom UI to ensure adjacent form elements take up to 50% width ([#29436](https://github.com/MetaMask/metamask-extension/pull/29436))
+- Increased the minimum height of the Snaps UI selector component ([#29496](https://github.com/MetaMask/metamask-extension/pull/29496))
+- Improved text wrapping in Snaps UI ([#29387](https://github.com/MetaMask/metamask-extension/pull/29387))
+- Adjusted Snaps UI Container to use margin instead of padding ([#29385](https://github.com/MetaMask/metamask-extension/pull/29385))
+- Removed the "details" option for permissions without descriptions ([#29313](https://github.com/MetaMask/metamask-extension/pull/29313))
+- Updated xchain transaction details to use short network names for improved spacing ([#29413](https://github.com/MetaMask/metamask-extension/pull/29413))
+- Removed the second inner scrollbar from Bridge transaction details ([#29412](https://github.com/MetaMask/metamask-extension/pull/29412))
+- Removed the "Select networks for each site" toggle from the experimental settings page ([#29301](https://github.com/MetaMask/metamask-extension/pull/29301))
+- Updated margins for the import token banner to improve layout consistency ([#29283](https://github.com/MetaMask/metamask-extension/pull/29283))
+
+### Fixed
+- Fixed snap tags to display localized snap names ([#29049](https://github.com/MetaMask/metamask-extension/pull/29049))
+- Fixed ERC20 token balances incorrectly showing as 0 ([#29361](https://github.com/MetaMask/metamask-extension/pull/29361))
+- Fixed token details to omit fiat values for tokens without market data ([#29299](https://github.com/MetaMask/metamask-extension/pull/29299))
+- Fixed an issue where the asset picker search field would repeatedly auto-focus and scroll to the top of the modal in the Bridge interface ([#29676](https://github.com/MetaMask/metamask-extension/pull/29676))
+- Fixed an issue where closing the notification window didn't properly reject pending signature approvals ([#29673](https://github.com/MetaMask/metamask-extension/pull/29673))
+- Fixed an issue where multiple pending connection requests would incorrectly display duplicate content ([#29653](https://github.com/MetaMask/metamask-extension/pull/29653))
+- Updated alert modal copy to improve clarity of warning messages ([#29475](https://github.com/MetaMask/metamask-extension/pull/29475))
+- Fixed NFT listing display issues: corrected state change order, updated label to "Listing price," and added gray background for received value ([#29046](https://github.com/MetaMask/metamask-extension/pull/29046))
+- Fixed issue where first-time interaction alert was incorrectly shown for token transfers to internal accounts ([#29389](https://github.com/MetaMask/metamask-extension/pull/29389))
+- Fixed navigation issue by ignoring additional watch token and NFT approvals in confirmation screens ([#29279](https://github.com/MetaMask/metamask-extension/pull/29279))
+- Removed reliance on advanced transaction decoding in confirmations when the "Decode smart contracts" toggle is disabled ([#29341](https://github.com/MetaMask/metamask-extension/pull/29341))
+- Fixed issue where the UI did not display the correct gas limit set by dapp, defaulting to 21000 ([#29352](https://github.com/MetaMask/metamask-extension/pull/29352))
+- Corrected the icon display for ETH on Layer 2 networks during transfer confirmations ([#29353](https://github.com/MetaMask/metamask-extension/pull/29353))
+- Fixed display issue where petnames were unnecessarily truncated with ellipses ([#29282](https://github.com/MetaMask/metamask-extension/pull/29282))
+- Improved personal sign message handling ([#29232](https://github.com/MetaMask/metamask-extension/pull/29232))
+- Fixed flickering issue in spending cap display during token approval ([#29206](https://github.com/MetaMask/metamask-extension/pull/29206))
+- Improved the alignment of icons in the message section of signature pages ([#29284](https://github.com/MetaMask/metamask-extension/pull/29284))
+- Fixed an issue where an undefined label appeared in the speed-up modal ([#29277](https://github.com/MetaMask/metamask-extension/pull/29277))
+- Fixed an error that occurred when sending non-ERC721 NFTs ([#29386](https://github.com/MetaMask/metamask-extension/pull/29386))
+- Fixed an issue where account syncing was not working after upgrading from a previous version ([#29701](https://github.com/MetaMask/metamask-extension/pull/29701))
+- Fixed scroll behavior on Snaps home pages to prevent footer overlap ([#29660](https://github.com/MetaMask/metamask-extension/pull/29660))
+- Fixed an issue where the scrollbar in Snap dialogs was partially hidden behind the footer ([#29435](https://github.com/MetaMask/metamask-extension/pull/29435))
+- Fixed an issue with the Snap UI Avatar component where the size property was not applied correctly ([#29466](https://github.com/MetaMask/metamask-extension/pull/29466))
+- Fixed a crash issue in Firefox that occurred after submitting a bridge transaction ([#29631](https://github.com/MetaMask/metamask-extension/pull/29631))
+- Fixed an issue where the "You Received" row in bridge transactions was displayed prematurely ([#29411](https://github.com/MetaMask/metamask-extension/pull/29411))
+- Fixed xchain Linea bugs by adding a loading spinner to the Bridge button and optimizing transaction submission timing ([#29409](https://github.com/MetaMask/metamask-extension/pull/29409))
+- Fixed truncation issue for long help text in the send flow by limiting decimal values to 4 digits ([#29269](https://github.com/MetaMask/metamask-extension/pull/29269))
+- Fixed an issue where network/accounts toasts persisted after navigating to the Edit page in the Permissions modal ([#29239](https://github.com/MetaMask/metamask-extension/pull/29239))
+- Updated the onboarding screen message to include proper punctuation ([#29286](https://github.com/MetaMask/metamask-extension/pull/29286))
+- Fixed NFT list wrapping within the send modal ([#30039](https://github.com/MetaMask/metamask-extension/pull/30039))
+- Fixed explicit data addition to gas estimation parameters ([#30014](https://github.com/MetaMask/metamask-extension/pull/30014))
+- Fixed handling of null STX status containing pre-enabled state ([#30010](https://github.com/MetaMask/metamask-extension/pull/30010))
+- Fixed incorrect native token display in insufficient funds error messages ([#30009](https://github.com/MetaMask/metamask-extension/pull/30009))
+- Fixed transaction flow component issues for ERC-1155 tokens ([#29975](https://github.com/MetaMask/metamask-extension/pull/29975))
+- Updated STX banner alert to include chain support check ([#29947](https://github.com/MetaMask/metamask-extension/pull/29947))
+- Reapplied fix for premature display of "You Received" in bridge transactions ([#29950](https://github.com/MetaMask/metamask-extension/pull/29950))
+- Fixed ERC-1155 token send flow in transaction component ([#29973](https://github.com/MetaMask/metamask-extension/pull/29973))
+- Updated undici dependency to address security audit (5.28.4 → 5.28.5) ([#29976](https://github.com/MetaMask/metamask-extension/pull/29976))
+
+## [12.10.4]
+
+## [12.10.3]
+### Fixed
+- Ensure recipient address is shown on when sending erc 1155 tokens ([#29775](https://github.com/MetaMask/metamask-extension/pull/29775))
+
+## [12.10.2]
+### Fixed
+- Updated permissions header to be consistent (#29880) ([#29880](https://github.com/MetaMask/metamask-extension/pull/29880))
+- Fixed Route to bridge page from swaps ([#29883](https://github.com/MetaMask/metamask-extension/pull/29883))
+- Re-added missing smart transaction status confirmation (#29860) ([#29860](https://github.com/MetaMask/metamask-extension/pull/29860))
+
 ## [12.10.1]
 ### Changed
 - Stop publishing MMI builds to the release page ([#29732](https://github.com/MetaMask/metamask-extension/pull/29732))
@@ -5613,7 +5711,11 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.12.0...HEAD
-[12.12.0]: https://github.com/MetaMask/metamask-extension/compare/v12.10.1...v12.12.0
+[12.12.0]: https://github.com/MetaMask/metamask-extension/compare/v12.11.0...v12.12.0
+[12.11.0]: https://github.com/MetaMask/metamask-extension/compare/v12.10.4...v12.11.0
+[12.10.4]: https://github.com/MetaMask/metamask-extension/compare/v12.10.3...v12.10.4
+[12.10.3]: https://github.com/MetaMask/metamask-extension/compare/v12.10.2...v12.10.3
+[12.10.2]: https://github.com/MetaMask/metamask-extension/compare/v12.10.1...v12.10.2
 [12.10.1]: https://github.com/MetaMask/metamask-extension/compare/v12.10.0...v12.10.1
 [12.10.0]: https://github.com/MetaMask/metamask-extension/compare/v12.9.3...v12.10.0
 [12.9.3]: https://github.com/MetaMask/metamask-extension/compare/v12.9.2...v12.9.3

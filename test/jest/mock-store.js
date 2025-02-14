@@ -736,6 +736,7 @@ export const createBridgeMockStore = (
       sortOrder: 'cost_ascending',
       ...bridgeSliceOverrides,
     },
+    localeMessages: { currentLocale: 'es_419' },
     metamask: {
       ...swapsStore.metamask,
       ...mockNetworkState(
