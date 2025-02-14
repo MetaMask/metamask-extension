@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.13.0]
-### Uncategorized
+### Fixed
 - fix: update fox positioning ([#30310](https://github.com/MetaMask/metamask-extension/pull/30310))
 - refactor: `token-cell` ([#30238](https://github.com/MetaMask/metamask-extension/pull/30238))
 - build: add linting TS React files ([#30280](https://github.com/MetaMask/metamask-extension/pull/30280))
