@@ -10,7 +10,7 @@ import {
 } from '../../constants/bridge';
 import { MINUTE } from '../../constants/time';
 import fetchWithCache from '../../lib/fetch-with-cache';
-import { decimalToHex, hexToDecimal } from '../conversion.utils';
+import { hexToDecimal } from '../conversion.utils';
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   SwapsTokenObject,
@@ -33,6 +33,7 @@ import {
   BridgeFeatureFlagsKey,
   BridgeFeatureFlags,
 } from '../../types/bridge';
+import { formatChainIdToDec, normalizeChainId } from './caip-formatters';
 import {
   FEATURE_FLAG_VALIDATORS,
   QUOTE_VALIDATORS,
@@ -70,7 +71,7 @@ export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
         ).reduce(
           (acc, [chainId, value]) => ({
             ...acc,
-            [add0x(decimalToHex(chainId))]: value,
+            [normalizeChainId(chainId)]: value,
           }),
           {},
         ),

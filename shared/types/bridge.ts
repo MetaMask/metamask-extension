@@ -1,4 +1,4 @@
-import type { CaipChainId, Hex } from '@metamask/utils';
+import type { CaipAccountId, CaipChainId, Hex } from '@metamask/utils';
 import type { BigNumber } from 'bignumber.js';
 
 export type ChainConfiguration = {
@@ -140,6 +140,7 @@ export enum ChainId {
   ARBITRUM = 42161,
   AVALANCHE = 43114,
   LINEA = 59144,
+  SOLANA = 1151111081099710,
 }
 
 export enum FeeType {
@@ -167,7 +168,7 @@ export type BridgeFeatureFlags = {
     refreshRate: number;
     maxRefreshCount: number;
     support: boolean;
-    chains: Record<Hex, ChainConfiguration>;
+    chains: Record<CaipChainId, ChainConfiguration>;
   };
 };
 export enum RequestStatus {
