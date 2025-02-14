@@ -32,11 +32,11 @@ import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRates';
 import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import { TextVariant } from '../../helpers/constants/design-system';
-import { getMultichainIsSolana } from '../../selectors/multichain';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
 import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
+import { useIsMultichainSwap } from './hooks/useIsMultichainSwap';
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
@@ -72,6 +72,8 @@ const CrossChainSwap = () => {
   // Emits events related to quote-fetching
   useQuoteFetchEvents();
 
+  const isSwap = useIsMultichainSwap();
+
   const redirectToDefaultRoute = async () => {
     history.push({
       pathname: DEFAULT_ROUTE,
@@ -83,8 +85,6 @@ const CrossChainSwap = () => {
   };
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-
-  const isSolana = useSelector(getMultichainIsSolana);
 
   return (
     <Page className="bridge__container">
@@ -109,7 +109,7 @@ const CrossChainSwap = () => {
           />
         }
       >
-        {isSolana ? t('swap') : t('bridge')}
+        {isSwap ? t('swap') : t('bridge')}
       </Header>
       <Content padding={0}>
         <Switch>

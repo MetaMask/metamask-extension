@@ -15,6 +15,7 @@ import {
   MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
   MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET,
+  MULTICHAIN_TOKEN_IMAGE_MAP,
 } from '../../shared/constants/multichain/networks';
 import {
   getCompletedOnboarding,
@@ -433,10 +434,10 @@ function getNonEvmCachedBalance(
 }
 
 export function getImageForChainId(chainId: string) {
-  const evmChainIdKey =
-    chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP;
-
-  return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[evmChainIdKey];
+  return {
+    ...CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+    ...MULTICHAIN_TOKEN_IMAGE_MAP,
+  }[chainId];
 }
 
 // This selector is not compatible with `useMultichainSelector` since it uses the selected
