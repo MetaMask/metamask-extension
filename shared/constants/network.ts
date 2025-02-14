@@ -1025,14 +1025,6 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
     domain: 'gnosisscan.io',
     subdomain: `${defaultEtherscanSubdomainPrefix}-gnosis`,
   },
-  [CHAIN_IDS.ASSET_HUB_WESTEND]: {
-    domain: 'polkadot.io',
-    subdomain: `${defaultEtherscanSubdomainPrefix}-asset-hub-westend`,
-  },
-  [CHAIN_IDS.ASSET_HUB]: {
-    domain: 'polkadot.io',
-    subdomain: `${defaultEtherscanSubdomainPrefix}-asset-hub`,
-  },
 };
 
 export const CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP = {
