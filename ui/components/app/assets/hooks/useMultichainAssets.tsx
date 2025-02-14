@@ -12,13 +12,20 @@ import {
   networkTitleOverrides,
 } from '../util/networkTitleOverrides';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getAssetsRates } from '../../../../selectors/multichain-assets-rates';
+import { formatWithThreshold } from '../util/formatWithThreshold';
+import { getIntlLocale } from '../../../../ducks/locale/locale';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 
 const useMultiChainAssets = () => {
   const t = useI18nContext();
+  const locale = useSelector(getIntlLocale);
+  const currentCurrency = useSelector(getCurrentCurrency);
   const account = useSelector(getSelectedInternalAccount);
   const multichainBalances = useSelector(getMultichainBalances);
   const accountAssets = useSelector(getAccountAssets);
   const assetsMetadata = useSelector(getAssetsMetadata);
+  const assetRates = useSelector(getAssetsRates);
 
   const assetIds = accountAssets[account.id] || [];
   const balances = multichainBalances[account.id];
@@ -28,6 +35,14 @@ const useMultiChainAssets = () => {
     const isToken = assetDetails.split(':')[0] === 'token';
 
     const balance = balances[assetId] || { amount: '0', unit: '' };
+    const rate = assetRates[assetId]?.rate || '0';
+    const fiatBalance = parseFloat(rate) * parseFloat(balance.amount);
+
+    const fiatAmount = formatWithThreshold(fiatBalance, 0.01, locale, {
+      style: 'currency',
+      currency: currentCurrency.toUpperCase(),
+    });
+
     const metadata = assetsMetadata[assetId] || {
       name: balance.unit,
       symbol: balance.unit || '',
@@ -61,9 +76,9 @@ const useMultiChainAssets = () => {
       chainId,
       isNative: false,
       primary: balance.amount,
-      secondary: '', // secondary balance (usually in fiat)
+      secondary: fiatAmount, // secondary balance (usually in fiat)
       string: '',
-      tokenFiatAmount: balance.amount, // for now we are keeping this is to satisfy sort, this should be fiat amount
+      tokenFiatAmount: fiatBalance, // for now we are keeping this is to satisfy sort, this should be fiat amount
       isStakeable: false,
     };
   });
