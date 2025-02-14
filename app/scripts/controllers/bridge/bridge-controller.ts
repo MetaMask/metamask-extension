@@ -207,9 +207,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
   }: BridgePollingInput) => {
     this.#abortController?.abort('New quote request');
     this.#abortController = new AbortController();
-    if (updatedQuoteRequest.srcChainId === updatedQuoteRequest.destChainId) {
-      return;
-    }
+
     const { bridgeState } = this.state;
     this.update((_state) => {
       _state.bridgeState = {
