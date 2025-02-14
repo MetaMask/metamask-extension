@@ -1,12 +1,4 @@
-import {
-  KnownCaipNamespace,
-  type CaipChainId,
-  isCaipChainId,
-  isStrictHexString,
-  type Hex,
-  hexToBigInt,
-  toCaipChainId,
-} from '@metamask/utils';
+import { isStrictHexString, type Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import type { ContractMarketData } from '@metamask/assets-controllers';
 import {
@@ -16,7 +8,7 @@ import {
 import { toChecksumAddress } from 'ethereumjs-util';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../shared/modules/Numeric';
-import type { TxData } from '../../../shared/types/bridge';
+import { type TxData } from '../../../shared/types/bridge';
 import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util';
 import { fetchTokenExchangeRates as fetchTokenExchangeRatesUtil } from '../../helpers/utils/util';
 

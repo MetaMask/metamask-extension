@@ -1,5 +1,10 @@
 import { Contract } from '@ethersproject/contracts';
-import { Hex, add0x } from '@metamask/utils';
+import {
+  type CaipAccountId,
+  type CaipAssetId,
+  type CaipChainId,
+  type Hex,
+} from '@metamask/utils';
 import { abiERC20 } from '@metamask/metamask-eth-abis';
 import {
   BRIDGE_API_BASE_URL,
@@ -33,7 +38,11 @@ import {
   BridgeFeatureFlagsKey,
   BridgeFeatureFlags,
 } from '../../types/bridge';
-import { formatChainIdToDec, normalizeChainId } from './caip-formatters';
+import {
+  formatAddressToString,
+  formatChainIdToDec,
+  normalizeChainId,
+} from './caip-formatters';
 import {
   FEATURE_FLAG_VALIDATORS,
   QUOTE_VALIDATORS,
@@ -130,20 +139,21 @@ export async function fetchBridgeTokens(
 
 // Returns a list of bridge tx quotes
 export async function fetchBridgeQuotes(
-  request: QuoteRequest,
+  request: QuoteRequest<CaipChainId, CaipAssetId, CaipAccountId>,
   signal: AbortSignal,
 ): Promise<QuoteResponse[]> {
-  const queryParams = new URLSearchParams({
-    walletAddress: request.walletAddress,
-    srcChainId: request.srcChainId.toString(),
-    destChainId: request.destChainId.toString(),
-    srcTokenAddress: request.srcTokenAddress,
-    destTokenAddress: request.destTokenAddress,
+  const normalizedRequest: QuoteRequest = {
+    walletAddress: formatAddressToString(request.walletAddress),
+    srcChainId: formatChainIdToDec(request.srcChainId),
+    destChainId: formatChainIdToDec(request.destChainId),
+    srcTokenAddress: formatAddressToString(request.srcTokenAddress),
+    destTokenAddress: formatAddressToString(request.destTokenAddress),
     srcTokenAmount: request.srcTokenAmount,
-    slippage: request.slippage.toString(),
+    slippage: request.slippage,
     insufficientBal: request.insufficientBal ? 'true' : 'false',
     resetApproval: request.resetApproval ? 'true' : 'false',
-  });
+  };
+  const queryParams = new URLSearchParams(normalizedRequest);
   const url = `${BRIDGE_API_BASE_URL}/getQuote?${queryParams}`;
   const quotes = await fetchWithCache({
     url,
