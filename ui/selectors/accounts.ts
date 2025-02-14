@@ -8,7 +8,7 @@ import { AccountsControllerState } from '@metamask/accounts-controller';
 import {
   isBtcMainnetAddress,
   isBtcTestnetAddress,
-} from '../../shared/lib/multichain';
+} from '../../shared/lib/multichain/accounts';
 
 export type AccountsState = {
   metamask: AccountsControllerState;
