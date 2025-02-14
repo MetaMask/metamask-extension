@@ -1165,6 +1165,19 @@ class Driver {
   }
 
   /**
+   * Waits until the current URL includes the specified substring.
+   *
+   * @param {object} options - Parameters for the function.
+   * @param {string} options.url - Substring to wait for in the URL.
+   * @param {number} [options.timeout]  - optional timeout period, defaults to `this.timeout`.
+   * @returns {Promise<void>} Promise that resolves once the URL includes the substring.
+   * @throws {Error} Throws an error if the URL does not include the substring within the timeout period.
+   */
+  async waitForUrlContaining({ url, timeout = this.timeout }) {
+    await this.driver.wait(until.urlContains(url), timeout);
+  }
+
+  /**
    * Closes the current window tab in the browser session
    *
    *  @returns {Promise<void>} promise resolving after closing the current window
