@@ -167,7 +167,7 @@ export type ControllerInitRequest<
        * Required initialization messenger instance.
        * Generated using the callback specified in `getInitMessengerCallback`.
        */
-      initMessenger: InitMessengerType;
+      initMessenger?: InitMessengerType;
     }
   : unknown);
 

@@ -1,4 +1,4 @@
-import { createProjectLogger } from '@metamask/utils';
+import { createProjectLogger, hasProperty } from '@metamask/utils';
 import {
   BaseControllerMessenger,
   BaseRestrictedControllerMessenger,
@@ -53,7 +53,9 @@ export type ControllersToInitialize =
 type InitFunction<Name extends ControllersToInitialize> =
   ControllerInitFunction<
     ControllerByName[Name],
+    // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
     ReturnType<(typeof CONTROLLER_MESSENGERS)[Name]['getMessenger']>,
+    // @ts-expect-error TODO: Allow for undefined getInitMessenger
     ReturnType<(typeof CONTROLLER_MESSENGERS)[Name]['getInitMessenger']>
   >;
 
@@ -114,8 +116,12 @@ export function initControllers({
     const controllerMessengerCallback =
       messengerCallbacks?.getMessenger as ControllerMessengerCallback;
 
-    const initMessengerCallback =
-      messengerCallbacks?.getInitMessenger as ControllerMessengerCallback;
+    const initMessengerCallback = hasProperty(
+      messengerCallbacks,
+      'getInitMessenger',
+    )
+      ? (messengerCallbacks?.getInitMessenger as ControllerMessengerCallback)
+      : undefined;
 
     const controllerMessenger = controllerMessengerCallback?.(
       baseControllerMessenger,
