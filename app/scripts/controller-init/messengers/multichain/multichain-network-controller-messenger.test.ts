@@ -5,7 +5,7 @@ describe('getMultichainNetworkControllerMessenger', () => {
   it('returns a restricted messenger', () => {
     const messenger = new Messenger<never, never>();
     const multichainNetworkControllerMessenger =
-    getMultichainNetworkControllerMessenger(messenger);
+      getMultichainNetworkControllerMessenger(messenger);
 
     expect(multichainNetworkControllerMessenger).toBeInstanceOf(
       RestrictedMessenger,

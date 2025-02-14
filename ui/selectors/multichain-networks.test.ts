@@ -1,6 +1,7 @@
 import { SolScope } from '@metamask/keyring-api';
 import { RpcEndpointType, NetworkStatus } from '@metamask/network-controller';
 
+import { type NetworkState } from '../../shared/modules/selectors/networks';
 import {
   type MultichainNetworkControllerState,
   getNonEvmMultichainNetworkConfigurationsByChainId,
@@ -8,7 +9,6 @@ import {
   getSelectedMultichainNetworkChainId,
   getSelectedMultichainNetworkConfiguration,
 } from './multichain-networks';
-import { type NetworkState } from '../../shared/modules/selectors/networks';
 
 type TestState = MultichainNetworkControllerState & NetworkState;
 
@@ -34,20 +34,16 @@ const mockEvmState: TestState = {
           {
             networkClientId: 'mainnet',
             type: RpcEndpointType.Infura,
-            url: 'https://mainnet.infura.io/v3/{infuraProjectId}'
+            url: 'https://mainnet.infura.io/v3/{infuraProjectId}',
           },
         ],
         defaultRpcEndpointIndex: 1,
-        blockExplorerUrls: [
-          'https://etherscan.io'
-        ],
+        blockExplorerUrls: ['https://etherscan.io'],
         defaultBlockExplorerUrlIndex: 0,
-        lastUpdatedAt: 1739466375574
+        lastUpdatedAt: 1739466375574,
       },
       '0xaa36a7': {
-        blockExplorerUrls: [
-          'https://sepolia.etherscan.io'
-        ],
+        blockExplorerUrls: ['https://sepolia.etherscan.io'],
         chainId: '0xaa36a7',
         defaultBlockExplorerUrlIndex: 0,
         defaultRpcEndpointIndex: 0,
@@ -57,9 +53,9 @@ const mockEvmState: TestState = {
           {
             networkClientId: 'sepolia',
             type: RpcEndpointType.Infura,
-            url: 'https://sepolia.infura.io/v3/{infuraProjectId}'
-          }
-        ]
+            url: 'https://sepolia.infura.io/v3/{infuraProjectId}',
+          },
+        ],
       },
     },
     networksMetadata: {
@@ -73,12 +69,14 @@ const mockEvmState: TestState = {
       },
     },
   },
-}
+};
 
 describe('Multichain network selectors', () => {
   describe('getNonEvmMultichainNetworkConfigurationsByChainId', () => {
     it('returns the non-EVM multichain network configurations by chain ID', () => {
-      expect(getNonEvmMultichainNetworkConfigurationsByChainId(mockEvmState)).toStrictEqual({
+      expect(
+        getNonEvmMultichainNetworkConfigurationsByChainId(mockEvmState),
+      ).toStrictEqual({
         [SolScope.Mainnet]: {
           chainId: SolScope.Mainnet,
           name: 'Solana Mainnet',
@@ -91,7 +89,9 @@ describe('Multichain network selectors', () => {
 
   describe('getMultichainNetworkConfigurationsByChainId', () => {
     it('returns the multichain network configurations by chain ID', () => {
-      expect(getMultichainNetworkConfigurationsByChainId(mockEvmState)).toStrictEqual({
+      expect(
+        getMultichainNetworkConfigurationsByChainId(mockEvmState),
+      ).toStrictEqual({
         [SolScope.Mainnet]: {
           chainId: SolScope.Mainnet,
           name: 'Solana Mainnet',
@@ -120,18 +120,22 @@ describe('Multichain network selectors', () => {
 
   describe('getSelectedMultichainNetworkChainId', () => {
     it('returns the selected multichain network chain ID', () => {
-      expect(getSelectedMultichainNetworkChainId(mockEvmState)).toStrictEqual(SolScope.Mainnet);
+      expect(getSelectedMultichainNetworkChainId(mockEvmState)).toStrictEqual(
+        SolScope.Mainnet,
+      );
     });
-  })
+  });
 
   describe('getSelectedMultichainNetworkConfiguration', () => {
     it('returns the selected multichain network configuration', () => {
-      expect(getSelectedMultichainNetworkConfiguration(mockEvmState)).toStrictEqual({
+      expect(
+        getSelectedMultichainNetworkConfiguration(mockEvmState),
+      ).toStrictEqual({
         chainId: SolScope.Mainnet,
         name: 'Solana Mainnet',
         nativeCurrency: `${SolScope.Mainnet}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`,
         isEvm: false,
       });
     });
-  })
+  });
 });

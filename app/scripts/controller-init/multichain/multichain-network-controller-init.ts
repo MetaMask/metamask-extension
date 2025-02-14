@@ -13,7 +13,7 @@ import { MultichainNetworkControllerMessenger } from '../messengers/multichain';
 export const MultichainNetworkControllerInit: ControllerInitFunction<
   MultichainNetworkController,
   MultichainNetworkControllerMessenger
-> = ({ controllerMessenger, persistedState}) => {
+> = ({ controllerMessenger, persistedState }) => {
   const controller = new MultichainNetworkController({
     messenger: controllerMessenger,
     state: persistedState.MultichainNetworkController,
@@ -21,9 +21,5 @@ export const MultichainNetworkControllerInit: ControllerInitFunction<
 
   return {
     controller,
-  }
-}
-
-
-
-
+  };
+};

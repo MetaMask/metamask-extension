@@ -21,7 +21,7 @@ const buildInitRequestMock = (): jest.Mocked<
       baseControllerMessenger,
     ),
   };
-}
+};
 
 describe('MultichainNetworkControllerInit', () => {
   const multichainNetworkControllerClassMock = jest.mocked(

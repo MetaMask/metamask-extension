@@ -1,7 +1,5 @@
 import { Messenger } from '@metamask/base-controller';
-import {
-  AccountsControllerSelectedAccountChangeEvent,
-} from '@metamask/accounts-controller';
+import { AccountsControllerSelectedAccountChangeEvent } from '@metamask/accounts-controller';
 import {
   type NetworkControllerSetActiveNetworkAction,
   type NetworkControllerGetStateAction,
@@ -11,8 +9,7 @@ type Actions =
   | NetworkControllerSetActiveNetworkAction
   | NetworkControllerGetStateAction;
 
-type Events =
-  | AccountsControllerSelectedAccountChangeEvent
+type Events = AccountsControllerSelectedAccountChangeEvent;
 
 export type MultichainNetworkControllerMessenger = ReturnType<
   typeof getMultichainNetworkControllerMessenger
