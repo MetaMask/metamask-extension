@@ -35,7 +35,10 @@ jest.mock('react-redux', () => {
 
 const useGasEstimatesHook = (props) =>
   useGasEstimates({
-    transaction: { txParams: { type: '0x2', value: '100' } },
+    transaction: {
+      gasLimitNoBuffer: '0x5208',
+      txParams: { type: '0x2', value: '100' },
+    },
     gasLimit: '21000',
     gasPrice: '10',
     maxPriorityFeePerGas: '10',
@@ -68,7 +71,7 @@ describe('useGasEstimates', () => {
       );
       const minimumHexValue = getMinimumGasTotalInHexWei({
         baseFeePerGas: decGWEIToHexWEI(estimatedBaseFee),
-        gasLimit: decimalToHex(gasLimit),
+        gasLimitNoBuffer: decimalToHex(gasLimit),
         maxFeePerGas: decGWEIToHexWEI(maxFeePerGas),
         maxPriorityFeePerGas: decGWEIToHexWEI(maxPriorityFeePerGas),
       });
@@ -107,7 +110,7 @@ describe('useGasEstimates', () => {
         }),
       );
       const minimumHexValue = getMinimumGasTotalInHexWei({
-        gasLimit: decimalToHex(gasLimit),
+        gasLimitNoBuffer: decimalToHex(gasLimit),
         gasPrice: decGWEIToHexWEI(gasPrice),
       });
 

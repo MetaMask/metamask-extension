@@ -3,9 +3,15 @@ import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
-import { getTokenList, getPreferences } from '../../../../selectors';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+import {
+  getTokenList,
+  getPreferences,
+  getCurrencyRates,
+} from '../../../../selectors';
 import {
   getMultichainCurrentChainId,
   getMultichainIsEvm,
@@ -80,20 +86,34 @@ describe('Token Cell', () => {
   const mockStore = configureMockStore([thunk])(mockState);
 
   const props = {
-    address: '0xAnotherToken',
-    symbol: 'TEST',
-    string: '5.000',
-    currentCurrency: 'usd',
-    image: '',
+    token: {
+      address: '0xAnotherToken' as Hex,
+      symbol: 'TEST',
+      string: '5.000',
+      currentCurrency: 'usd',
+      image: '',
+      chainId: '0x1' as Hex,
+      tokenFiatAmount: 5,
+      aggregators: [],
+      decimals: 18,
+      isNative: false,
+    },
     onClick: jest.fn(),
   };
 
   const propsLargeAmount = {
-    address: '0xAnotherToken',
-    symbol: 'TEST',
-    string: '5000000',
-    currentCurrency: 'usd',
-    image: '',
+    token: {
+      address: '0xAnotherToken' as Hex,
+      symbol: 'TEST',
+      string: '5000000',
+      currentCurrency: 'usd',
+      image: '',
+      chainId: '0x1' as Hex,
+      tokenFiatAmount: 5000000,
+      aggregators: [],
+      decimals: 18,
+      isNative: false,
+    },
     onClick: jest.fn(),
   };
   const useSelectorMock = useSelector;
@@ -112,6 +132,12 @@ describe('Token Cell', () => {
     }
     if (selector === getIntlLocale) {
       return 'en-US';
+    }
+    if (selector === getCurrentCurrency) {
+      return 'usd';
+    }
+    if (selector === getCurrencyRates) {
+      return { POL: '' };
     }
     return undefined;
   });

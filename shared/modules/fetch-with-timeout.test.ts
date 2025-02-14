@@ -45,6 +45,23 @@ describe('getFetchWithTimeout', () => {
     }).rejects.toThrow('The user aborted a request.');
   });
 
+  it('should abort the request when a custom signal aborts', async () => {
+    nock('https://api.infura.io')
+      .get('/moon')
+      .delay(SECOND * 2)
+      .reply(200, '{"moon": "2012-12-21T11:11:11Z"}');
+    const abortSignal = new window.AbortController();
+
+    const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
+
+    setTimeout(() => abortSignal.abort('Request aborted'), SECOND * 2);
+    await expect(async () => {
+      await fetchWithTimeout('https://api.infura.io/moon', {
+        signal: abortSignal.signal,
+      }).then((r) => r.json());
+    }).rejects.toThrow('The user aborted a request.');
+  });
+
   it('throws on invalid timeout', async () => {
     await expect(() => getFetchWithTimeout(-1)).toThrow(
       'Must specify positive integer timeout.',

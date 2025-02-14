@@ -6,7 +6,7 @@ import {
   BaseController,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedControllerMessenger,
+  RestrictedMessenger,
 } from '@metamask/base-controller';
 import {
   TOGGLEABLE_ALERT_TYPES,
@@ -51,7 +51,7 @@ export type AllowedActions = AccountsControllerGetSelectedAccountAction;
  */
 export type AllowedEvents = AccountsControllerSelectedAccountChangeEvent;
 
-export type AlertControllerMessenger = RestrictedControllerMessenger<
+export type AlertControllerMessenger = RestrictedMessenger<
   typeof controllerName,
   AlertControllerActions | AllowedActions,
   AlertControllerEvents | AllowedEvents,
@@ -78,7 +78,7 @@ export type AlertControllerState = {
  * The alert controller options
  *
  * @property state - The initial controller state
- * @property controllerMessenger - The controller messenger
+ * @property messenger - The controller messenger
  */
 export type AlertControllerOptions = {
   state?: Partial<AlertControllerState>;

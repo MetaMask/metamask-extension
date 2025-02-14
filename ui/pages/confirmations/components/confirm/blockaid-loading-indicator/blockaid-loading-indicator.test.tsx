@@ -45,7 +45,6 @@ const render = (
           expectsResult: false,
         },
       },
-      preferences: { redesignedConfirmationsEnabled: true },
       signatureSecurityAlertResponses: {
         'test-id-mock': securityAlertResponse,
       },

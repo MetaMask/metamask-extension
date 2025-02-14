@@ -1,6 +1,5 @@
 import React, { useContext, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { TransactionType } from '@metamask/transaction-controller';
 import {
   Box,
   ButtonIcon,
@@ -21,7 +20,7 @@ import { usePrevious } from '../../../../../hooks/usePrevious';
 import { useScrollRequired } from '../../../../../hooks/useScrollRequired';
 import { useConfirmContext } from '../../../context/confirm';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/preferences';
-import { REDESIGN_DEV_TRANSACTION_TYPES } from '../../../utils';
+import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 
 type ContentProps = {
   /**
@@ -51,8 +50,8 @@ const ScrollToBottom = ({ children }: ContentProps) => {
     offsetPxFromBottom: 0,
   });
 
-  const isTransactionRedesign = REDESIGN_DEV_TRANSACTION_TYPES.includes(
-    currentConfirmation?.type as TransactionType,
+  const isTransactionRedesign = isCorrectDeveloperTransactionType(
+    currentConfirmation?.type,
   );
 
   const showScrollToBottom =

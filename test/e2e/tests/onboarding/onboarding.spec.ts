@@ -7,7 +7,7 @@ import {
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import HomePage from '../../page-objects/pages/homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingMetricsPage from '../../page-objects/pages/onboarding/onboarding-metrics-page';
 import OnboardingPasswordPage from '../../page-objects/pages/onboarding/onboarding-password-page';
@@ -23,7 +23,7 @@ import {
 } from '../../page-objects/flows/onboarding.flow';
 import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
 
-describe('MetaMask onboarding @no-mmi', function () {
+describe('MetaMask onboarding', function () {
   const ganacheOptions2 = {
     accounts: [
       {
@@ -41,10 +41,12 @@ describe('MetaMask onboarding @no-mmi', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await completeCreateNewWalletOnboardingFlow(driver);
+        await completeCreateNewWalletOnboardingFlow({
+          driver,
+        });
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.check_expectedBalanceIsDisplayed('0');
       },
     );
   });
@@ -159,7 +161,7 @@ describe('MetaMask onboarding @no-mmi', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions: {
+        localNodeOptions: {
           concurrent: [{ port, chainId, ganacheOptions2 }],
         },
         title: this.test?.fullTitle(),
@@ -196,7 +198,7 @@ describe('MetaMask onboarding @no-mmi', function () {
 
         // Check the correct balance for the custom network is displayed
         if (secondaryGanacheServer && Array.isArray(secondaryGanacheServer)) {
-          await homePage.check_ganacheBalanceIsDisplayed(
+          await homePage.check_localNodeBalanceIsDisplayed(
             secondaryGanacheServer[0],
           );
         } else {

@@ -14,9 +14,8 @@ import { useSigningOrSubmittingAlerts } from './useSigningOrSubmittingAlerts';
 const EXPECTED_ALERT = {
   isBlocking: true,
   key: 'signingOrSubmitting',
-  message:
-    'This transaction will only go through once your previous transaction is complete.',
-  severity: Severity.Warning,
+  message: 'A previous transaction is still being signed or submitted',
+  severity: Severity.Danger,
 };
 const ACCOUNT_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 const TRANSACTION_ID_MOCK = '123-456';
@@ -28,6 +27,7 @@ const CONFIRMATION_MOCK = genUnapprovedContractInteractionConfirmation({
 const TRANSACTION_META_MOCK = {
   id: TRANSACTION_ID_MOCK,
   chainId: '0x5',
+  networkClientId: 'testNetworkClientId',
   status: TransactionStatus.submitted,
   type: TransactionType.contractInteraction,
   txParams: {

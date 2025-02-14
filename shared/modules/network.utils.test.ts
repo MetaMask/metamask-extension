@@ -3,6 +3,7 @@ import {
   isSafeChainId,
   isPrefixedFormattedHexString,
   isTokenDetectionEnabledForNetwork,
+  convertNetworkId,
 } from './network.utils';
 
 describe('network utils', () => {
@@ -81,6 +82,54 @@ describe('network utils', () => {
 
     it('returns false given undefined', () => {
       expect(isTokenDetectionEnabledForNetwork(undefined)).toBe(false);
+    });
+  });
+
+  describe('convertNetworkId', () => {
+    it('returns decimal strings for postive integer number values', () => {
+      expect(convertNetworkId(0)).toStrictEqual('0');
+      expect(convertNetworkId(123)).toStrictEqual('123');
+      expect(convertNetworkId(1337)).toStrictEqual('1337');
+    });
+
+    it('returns null for negative numbers', () => {
+      expect(convertNetworkId(-1)).toStrictEqual(null);
+    });
+
+    it('returns null for non integer numbers', () => {
+      expect(convertNetworkId(0.1)).toStrictEqual(null);
+      expect(convertNetworkId(1.1)).toStrictEqual(null);
+    });
+
+    it('returns null for NaN', () => {
+      expect(convertNetworkId(Number.NaN)).toStrictEqual(null);
+    });
+
+    it('returns decimal strings for strict valid hex values', () => {
+      expect(convertNetworkId('0x0')).toStrictEqual('0');
+      expect(convertNetworkId('0x1')).toStrictEqual('1');
+      expect(convertNetworkId('0x539')).toStrictEqual('1337');
+    });
+
+    it('returns null for invalid hex values', () => {
+      expect(convertNetworkId('0xG')).toStrictEqual(null);
+      expect(convertNetworkId('0x@')).toStrictEqual(null);
+      expect(convertNetworkId('0xx1')).toStrictEqual(null);
+    });
+
+    it('returns the value as is if already a postive decimal string', () => {
+      expect(convertNetworkId('0')).toStrictEqual('0');
+      expect(convertNetworkId('1')).toStrictEqual('1');
+      expect(convertNetworkId('1337')).toStrictEqual('1337');
+    });
+
+    it('returns null for negative number strings', () => {
+      expect(convertNetworkId('-1')).toStrictEqual(null);
+    });
+
+    it('returns null for non integer number strings', () => {
+      expect(convertNetworkId('0.1')).toStrictEqual(null);
+      expect(convertNetworkId('1.1')).toStrictEqual(null);
     });
   });
 });

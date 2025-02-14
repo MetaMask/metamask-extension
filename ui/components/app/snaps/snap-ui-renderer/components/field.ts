@@ -40,6 +40,7 @@ export const field: UIComponentFactory<FieldElement> = ({
           form,
           error: element.props.error !== undefined,
           helpText: element.props.error,
+          disabled: child.props.disabled,
         },
       };
     }
@@ -85,6 +86,7 @@ export const field: UIComponentFactory<FieldElement> = ({
           form,
           error: element.props.error !== undefined,
           helpText: element.props.error,
+          disabled: child.props.disabled,
         },
         propComponents: {
           startAccessory: leftAccessoryMapped && {
@@ -119,6 +121,7 @@ export const field: UIComponentFactory<FieldElement> = ({
           name: dropdown.props.name,
           form,
           error: element.props.error,
+          disabled: child.props.disabled,
         },
       };
     }
@@ -137,6 +140,7 @@ export const field: UIComponentFactory<FieldElement> = ({
           name: radioGroup.props.name,
           form,
           error: element.props.error,
+          disabled: child.props.disabled,
         },
       };
     }
@@ -153,6 +157,7 @@ export const field: UIComponentFactory<FieldElement> = ({
           fieldLabel: element.props.label,
           form,
           error: element.props.error,
+          disabled: child.props.disabled,
         },
       };
     }
@@ -171,6 +176,7 @@ export const field: UIComponentFactory<FieldElement> = ({
           label: element.props.label,
           form,
           error: element.props.error,
+          disabled: child.props.disabled,
         },
       };
     }

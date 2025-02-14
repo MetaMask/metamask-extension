@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { WebElement } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 
 class SendTokenPage {
@@ -11,10 +12,17 @@ class SendTokenPage {
     tag: 'button',
   };
 
+  private readonly cancelButton = {
+    text: 'Cancel',
+    tag: 'button',
+  };
+
   private readonly ensAddressAsRecipient = '[data-testid="ens-input-selected"]';
 
   private readonly ensResolvedName =
     '[data-testid="multichain-send-page__recipient__item__title"]';
+
+  private readonly assetValue = '[data-testid="account-value-and-suffix"]';
 
   private readonly inputAmount = '[data-testid="currency-input"]';
 
@@ -30,8 +38,18 @@ class SendTokenPage {
   private readonly tokenListButton =
     '[data-testid="multichain-token-list-button"]';
 
+  private readonly toastText = '.toast-text';
+
+  private readonly warning =
+    '[data-testid="send-warning"] .mm-box--min-width-0 span';
+
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async getAssetPickerItems(): Promise<WebElement[]> {
+    console.log('Retrieving asset picker items');
+    return this.driver.findElements(this.tokenListButton);
   }
 
   async check_pageIsLoaded(): Promise<void> {
@@ -59,6 +77,26 @@ class SendTokenPage {
     await elements[1].click();
   }
 
+  async checkAccountValueAndSuffix(value: string): Promise<void> {
+    console.log(`Checking if account value and suffix is ${value}`);
+    const element = await this.driver.waitForSelector(this.assetValue);
+    const text = await element.getText();
+    assert.equal(
+      text,
+      value,
+      `Expected account value and suffix to be ${value}, got ${text}`,
+    );
+    console.log(`Account value and suffix is ${value}`);
+  }
+
+  async clickCancelButton(): Promise<void> {
+    await this.driver.clickElement(this.cancelButton);
+  }
+
+  async clickContinueButton(): Promise<void> {
+    await this.driver.clickElement(this.continueButton);
+  }
+
   async fillAmount(amount: string): Promise<void> {
     console.log(`Fill amount input with ${amount} on send token screen`);
     const inputAmount = await this.driver.waitForSelector(this.inputAmount);
@@ -71,6 +109,16 @@ class SendTokenPage {
       inputValue,
       amount,
       `Error when filling amount field on send token screen: the value entered is ${inputValue} instead of expected ${amount}.`,
+    );
+  }
+
+  async check_networkChange(networkName: string): Promise<void> {
+    const toastTextElement = await this.driver.findElement(this.toastText);
+    const toastText = await toastTextElement.getText();
+    assert.equal(
+      toastText,
+      `You're now using ${networkName}`,
+      'Toast text is correct',
     );
   }
 
@@ -154,6 +202,22 @@ class SendTokenPage {
     await this.driver.waitForSelector({
       text: address,
     });
+  }
+
+  /**
+   * Verifies that a specific warning message is displayed on the send token screen.
+   *
+   * @param warningText - The expected warning text to validate against.
+   * @returns A promise that resolves if the warning message matches the expected text.
+   * @throws Assertion error if the warning message does not match the expected text.
+   */
+  async check_warningMessage(warningText: string): Promise<void> {
+    console.log(`Checking if warning message "${warningText}" is displayed`);
+    await this.driver.waitForSelector({
+      css: this.warning,
+      text: warningText,
+    });
+    console.log('Warning message validation successful');
   }
 }
 

@@ -21,13 +21,14 @@ import { AlertProvider } from '../alert-provider';
 import { AlertSeverity } from '../../../../ducks/confirm-alerts/confirm-alerts';
 
 export type GeneralAlertProps = {
-  description: string;
+  description?: string;
   details?: React.ReactNode | string[];
   onClickSupportLink?: () => void;
   provider?: SecurityProvider;
   reportUrl?: string;
   severity: AlertSeverity;
   title?: string;
+  children?: React.ReactNode;
 };
 
 function ReportLink({
@@ -44,6 +45,7 @@ function ReportLink({
     <Text marginTop={1} display={Display.Flex}>
       {t('somethingDoesntLookRight', [
         <ButtonLink
+          data-testid="alert-provider-report-link"
           key={`security-provider-button-supporturl-${provider}`}
           size={ButtonLinkSize.Inherit}
           href={reportUrl ?? ZENDESK_URLS.SUPPORT_URL}
@@ -119,6 +121,7 @@ function GeneralAlert({
       description={description}
       {...props}
     >
+      {props.children}
       <AlertDetails
         details={details}
         reportUrl={reportUrl}

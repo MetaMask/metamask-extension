@@ -1,15 +1,12 @@
 const { strict: assert } = require('assert');
 
 const {
-  defaultGanacheOptions,
   switchToNotificationWindow,
   withFixtures,
   openDapp,
   unlockWallet,
   getEventPayloads,
-  clickSignOnSignatureConfirmation,
-  tempToggleSettingRedesignedConfirmations,
-  validateContractDetails,
+  clickSignOnRedesignedSignatureConfirmation,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -56,9 +53,10 @@ const expectedEventPropertiesBase = {
   environment_type: 'background',
   security_alert_reason: 'CheckingChain',
   security_alert_response: 'loading',
+  ui_customizations: ['redesigned_confirmation'],
 };
 
-describe('Signature Approved Event @no-mmi', function () {
+describe('Signature Approved Event', function () {
   it('Successfully tracked for signTypedData_v4', async function () {
     await withFixtures(
       {
@@ -70,20 +68,17 @@ describe('Signature Approved Event @no-mmi', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await unlockWallet(driver);
-        await tempToggleSettingRedesignedConfirmations(driver);
         await openDapp(driver);
 
         // creates a sign typed data signature request
         await driver.clickElement('#signTypedDataV4');
         await switchToNotificationWindow(driver);
-        await validateContractDetails(driver);
-        await clickSignOnSignatureConfirmation({ driver });
+        await clickSignOnRedesignedSignatureConfirmation({ driver });
         const events = await getEventPayloads(driver, mockedEndpoints);
 
         assert.deepStrictEqual(events[0].properties, {
@@ -113,20 +108,17 @@ describe('Signature Approved Event @no-mmi', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await unlockWallet(driver);
-        await tempToggleSettingRedesignedConfirmations(driver);
         await openDapp(driver);
 
         // creates a sign typed data signature request
         await driver.clickElement('#signTypedDataV3');
         await switchToNotificationWindow(driver);
-        await validateContractDetails(driver);
-        await clickSignOnSignatureConfirmation({ driver });
+        await clickSignOnRedesignedSignatureConfirmation({ driver });
         const events = await getEventPayloads(driver, mockedEndpoints);
 
         assert.deepStrictEqual(events[0].properties, {
@@ -154,19 +146,17 @@ describe('Signature Approved Event @no-mmi', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await unlockWallet(driver);
-        await tempToggleSettingRedesignedConfirmations(driver);
         await openDapp(driver);
 
         // creates a sign typed data signature request
         await driver.clickElement('#signTypedData');
         await switchToNotificationWindow(driver);
-        await clickSignOnSignatureConfirmation({ driver });
+        await clickSignOnRedesignedSignatureConfirmation({ driver });
         const events = await getEventPayloads(driver, mockedEndpoints);
 
         assert.deepStrictEqual(events[0].properties, {
@@ -194,19 +184,17 @@ describe('Signature Approved Event @no-mmi', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await unlockWallet(driver);
-        await tempToggleSettingRedesignedConfirmations(driver);
         await openDapp(driver);
 
         // creates a sign typed data signature request
         await driver.clickElement('#personalSign');
         await switchToNotificationWindow(driver);
-        await clickSignOnSignatureConfirmation({ driver });
+        await clickSignOnRedesignedSignatureConfirmation({ driver });
         const events = await getEventPayloads(driver, mockedEndpoints);
 
         assert.deepStrictEqual(events[0].properties, {

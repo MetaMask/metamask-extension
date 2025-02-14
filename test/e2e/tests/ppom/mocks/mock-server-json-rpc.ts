@@ -14,6 +14,10 @@ type RequestConfig = [
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     result?: any;
+    /** optional result value returned in JSON response */
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    error?: any;
   },
 ];
 
@@ -48,14 +52,21 @@ export async function mockServerJsonRpc(
   listOfRequestConfigs: RequestConfig[],
 ) {
   for (const [method, options] of listOfRequestConfigs) {
-    const { methodResultVariant, params, result: _result } = options || {};
+    const {
+      methodResultVariant,
+      params,
+      result: _result,
+      error: _error,
+    } = options || {};
 
     const result =
       _result ||
+      _error ||
       mockJsonRpcResult[method][methodResultVariant || DEFAULT_VARIANT];
 
     await mockServer
-      .forPost()
+      .forPost(/infura/u)
+      .always()
       .withJsonBodyIncluding(params ? { method, params } : { method })
       // TODO: Replace `any` with type
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
