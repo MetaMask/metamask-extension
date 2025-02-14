@@ -81,7 +81,7 @@ export type ConnectPageProps = {
   activeTabOrigin: string;
   targetSubjectMetadata: {
     extensionId: string | null;
-    iconUrl: string;
+    iconUrl: string | null;
     name: string;
     origin: string;
     subjectType: string;
