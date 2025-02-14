@@ -23,10 +23,7 @@ import {
 import type { BridgeControllerState } from '../../../shared/types/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
-import {
-  getProviderConfig,
-  getNetworkConfigurationsByChainId,
-} from '../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
 import { getConversionRate, getGasFeeEstimates } from '../metamask/metamask';
 import {
   type L1GasFees,
@@ -54,10 +51,13 @@ import {
   FEATURED_RPCS,
 } from '../../../shared/constants/network';
 import {
+  getMultichainNetworkConfigurationsByChainId,
+  getMultichainProviderConfig,
+} from '../../selectors/multichain';
+import {
   exchangeRatesFromNativeAndCurrencyRates,
   exchangeRateFromMarketData,
   tokenPriceInNativeAsset,
-  formatChainIdToDec,
 } from './utils';
 import type { BridgeState } from './bridge';
 
@@ -77,41 +77,42 @@ type BridgeAppState = {
 
 // only includes networks user has added
 export const getAllBridgeableNetworks = createDeepEqualSelector(
-  getNetworkConfigurationsByChainId,
+  getMultichainNetworkConfigurationsByChainId,
   (networkConfigurationsByChainId) => {
     return uniqBy(
-      Object.values(networkConfigurationsByChainId),
-      'chainId',
-    ).filter(({ chainId }) =>
-      ALLOWED_BRIDGE_CHAIN_IDS.includes(
-        chainId as (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number],
-      ),
-    );
+      Object.entries(networkConfigurationsByChainId),
+      ([chainId]) => chainId,
+    )
+      .filter(([chainId]) =>
+        ALLOWED_BRIDGE_CHAIN_IDS.includes(
+          chainId as (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number],
+        ),
+      )
+      .flatMap((x) => x[1]);
   },
 );
 
 export const getFromChains = createDeepEqualSelector(
   getAllBridgeableNetworks,
   (state: BridgeAppState) => state.metamask.bridgeState?.bridgeFeatureFlags,
-  (allBridgeableNetworks, bridgeFeatureFlags) =>
-    allBridgeableNetworks.filter(
+  (allBridgeableNetworks, bridgeFeatureFlags) => {
+    return allBridgeableNetworks.filter(
       ({ chainId }) =>
         bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].chains[
-          chainId
+          normalizeChainId(chainId)
         ]?.isActiveSrc,
-    ),
+    );
+  },
 );
 
 export const getFromChain = createDeepEqualSelector(
-  getNetworkConfigurationsByChainId,
-  getProviderConfig,
-  (
-    networkConfigurationsByChainId,
-    providerConfig,
-  ): NetworkConfiguration | undefined =>
-    providerConfig?.chainId
-      ? networkConfigurationsByChainId[providerConfig.chainId]
-      : undefined,
+  getMultichainProviderConfig,
+  getFromChains,
+  (providerConfig, fromChains): NetworkConfiguration | undefined => {
+    return providerConfig?.chainId
+      ? fromChains.find(({ chainId }) => chainId === providerConfig.chainId)
+      : undefined;
+  },
 );
 
 export const getToChains = createDeepEqualSelector(
@@ -124,7 +125,7 @@ export const getToChains = createDeepEqualSelector(
     uniqBy([...allBridgeableNetworks, ...FEATURED_RPCS], 'chainId').filter(
       ({ chainId }) =>
         bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].chains[
-          chainId
+          normalizeChainId(chainId)
         ]?.isActiveDest,
     ),
 );
