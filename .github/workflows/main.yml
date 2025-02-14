@@ -7,6 +7,7 @@ on:
       - master
       - Version-v*
       - trigger-ci*
+      - self-hosted*
   pull_request:
     types:
       - opened
