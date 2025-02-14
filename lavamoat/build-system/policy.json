@@ -3993,14 +3993,6 @@
         "depcheck>is-core-module>hasown": true
       }
     },
-    "depcheck>resolve>is-core-module": {
-      "globals": {
-        "process.versions": true
-      },
-      "packages": {
-        "depcheck>is-core-module>hasown": true
-      }
-    },
     "gulp>glob-watcher>anymatch>micromatch>extglob>expand-brackets>define-property>is-descriptor>is-data-descriptor": {
       "packages": {
         "gulp>glob-watcher>anymatch>micromatch>extglob>expand-brackets>define-property>is-descriptor>is-data-descriptor>kind-of": true
@@ -7320,7 +7312,7 @@
         "process.versions.pnp": true
       },
       "packages": {
-        "depcheck>resolve>is-core-module": true,
+        "depcheck>is-core-module": true,
         "depcheck>resolve>path-parse": true
       }
     },
