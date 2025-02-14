@@ -234,7 +234,8 @@ describe('NetworkListMenu', () => {
     const networkItems = document.querySelectorAll(
       '.multichain-network-list-item',
     );
-    expect(networkItems).toHaveLength(4);
+    // expect 6 network items because of hidden test networks now
+    expect(networkItems).toHaveLength(6);
 
     const selectedNodes = document.querySelectorAll(
       '.multichain-network-list-item--selected',

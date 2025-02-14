@@ -14,15 +14,12 @@ import {
 } from '@metamask/network-controller';
 import { Hex } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { NetworkListItem } from '../network-list-item';
 import {
   hideNetworkBanner,
   setActiveNetwork,
   setShowTestNetworks,
-  showModal,
   toggleNetworkMenu,
   updateNetworksList,
-  setNetworkClientIdForDomain,
   setEditedNetwork,
   showPermittedNetworkToast,
   updateCustomNonce,
@@ -30,10 +27,9 @@ import {
   addPermittedChain,
   setTokenNetworkFilter,
   detectNfts,
+  setNetworkClientIdForDomain,
 } from '../../../store/actions';
 import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  CHAIN_IDS,
   FEATURED_RPCS,
   TEST_CHAINS,
 } from '../../../../shared/constants/network';
@@ -78,7 +74,6 @@ import {
   IconName,
   ModalContent,
   ModalHeader,
-  AvatarNetworkSize,
 } from '../../component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -96,6 +91,7 @@ import NetworkListSearch from './network-list-search/network-list-search';
 import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
 import { SelectRpcUrlModal } from './select-rpc-url-modal/select-rpc-url-modal';
 import AddBlockExplorerModal from './add-block-explorer-modal/add-block-explorer-modal';
+import { NetworkItems } from './NetworkItems/NetworkItems';
 
 export enum ACTION_MODES {
   // Displays the search box and network list
@@ -284,7 +280,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     // the dapp via silent switchEthereumChain that the
     // network has changed due to user action
     if (selectedTabOrigin && domains[selectedTabOrigin]) {
-      setNetworkClientIdForDomain(selectedTabOrigin, networkClientId);
+      dispatch(setNetworkClientIdForDomain(selectedTabOrigin, networkClientId));
     }
 
     trackEvent({
@@ -297,64 +293,6 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         to_network: network.chainId,
       },
     });
-  };
-
-  // Renders a network in the network list
-  const generateNetworkListItem = (network: NetworkConfiguration) => {
-    const isCurrentNetwork = network.chainId === currentChainId;
-    const canDeleteNetwork =
-      isUnlocked && !isCurrentNetwork && network.chainId !== CHAIN_IDS.MAINNET;
-
-    return (
-      <NetworkListItem
-        name={network.name}
-        iconSrc={
-          CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-            network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-          ]
-        }
-        iconSize={AvatarNetworkSize.Sm}
-        rpcEndpoint={
-          showMultiRpcSelectors
-            ? network.rpcEndpoints[network.defaultRpcEndpointIndex]
-            : undefined
-        }
-        key={network.chainId}
-        chainId={network.chainId}
-        selected={isCurrentNetwork && !focusSearch}
-        focus={isCurrentNetwork && !focusSearch}
-        onClick={() => {
-          handleNetworkChange(network);
-        }}
-        onDeleteClick={
-          canDeleteNetwork
-            ? () => {
-                dispatch(toggleNetworkMenu());
-                dispatch(
-                  showModal({
-                    name: 'CONFIRM_DELETE_NETWORK',
-                    target: network.chainId,
-                    onConfirm: () => undefined,
-                  }),
-                );
-              }
-            : undefined
-        }
-        onEditClick={() => {
-          dispatch(
-            setEditedNetwork({
-              chainId: network.chainId,
-              nickname: network.name,
-            }),
-          );
-          setActionMode(ACTION_MODES.ADD_EDIT);
-        }}
-        onRpcEndpointClick={() => {
-          setActionMode(ACTION_MODES.SELECT_RPC);
-          dispatch(setEditedNetwork({ chainId: network.chainId }));
-        }}
-      />
-    );
   };
 
   const render = () => {
@@ -442,7 +380,18 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
                                   {...providedDrag.draggableProps}
                                   {...providedDrag.dragHandleProps}
                                 >
-                                  {generateNetworkListItem(network)}
+                                  <NetworkItems
+                                    network={network}
+                                    isUnlocked={isUnlocked}
+                                    currentChainId={currentChainId}
+                                    handleNetworkChange={handleNetworkChange}
+                                    toggleNetworkMenu={toggleNetworkMenu}
+                                    setActionMode={setActionMode}
+                                    focusSearch={focusSearch}
+                                    showMultiRpcSelectors={
+                                      showMultiRpcSelectors
+                                    }
+                                  />
                                 </Box>
                               )}
                             </Draggable>
@@ -485,14 +434,24 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
                   />
                 </Box>
               ) : null}
-
-              {showTestNetworks || currentlyOnTestNetwork ? (
-                <Box className="multichain-network-list-menu">
-                  {searchedTestNetworks.map((network) =>
-                    generateNetworkListItem(network),
-                  )}
-                </Box>
-              ) : null}
+              <Box
+                className="multichain-network-list-menu"
+                hidden={!(showTestNetworks || currentlyOnTestNetwork)}
+              >
+                {searchedTestNetworks.map((network) => (
+                  <NetworkItems
+                    key={network.chainId}
+                    network={network}
+                    isUnlocked={isUnlocked}
+                    currentChainId={currentChainId}
+                    handleNetworkChange={handleNetworkChange}
+                    toggleNetworkMenu={toggleNetworkMenu}
+                    setActionMode={setActionMode}
+                    focusSearch={focusSearch}
+                    showMultiRpcSelectors={showMultiRpcSelectors}
+                  />
+                ))}
+              </Box>
             </Box>
           </Box>
 
