@@ -11,4 +11,8 @@
       background: var(--color-background-default);
     }
   }
+
+  &__accounts-empty {
+    min-height: 200px;
+  }
 }
