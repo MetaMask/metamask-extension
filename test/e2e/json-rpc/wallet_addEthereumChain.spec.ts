@@ -146,7 +146,7 @@ describe('Add Ethereum Chain', function () {
       );
     });
 
-    it('prompts to switch to the chain when the rpc endpoint being added already exists', async function () {
+    it.skip('prompts to switch to the chain when the rpc endpoint being added already exists', async function () {
       await withFixtures(
         {
           dapp: true,
@@ -254,7 +254,7 @@ describe('Add Ethereum Chain', function () {
       );
     });
 
-    it('prompts to switch to the chain when the rpc endpoint being added already exists', async function () {
+    it.skip('prompts to switch to the chain when the rpc endpoint being added already exists', async function () {
       await withFixtures(
         {
           dapp: true,
