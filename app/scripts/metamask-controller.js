@@ -2093,7 +2093,7 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.MultichainBalancesController;
     this.multichainTransactionsController =
       controllersByName.MultichainTransactionsController;
-    this.multichainAssetsRatesController =
+    this.multiChainAssetsRatesController =
       controllersByName.MultiChainAssetsRatesController;
     ///: END:ONLY_INCLUDE_IF
 
@@ -2270,7 +2270,7 @@ export default class MetamaskController extends EventEmitter {
         MultichainAssetsController: this.multichainAssetsController,
         MultichainBalancesController: this.multichainBalancesController,
         MultichainTransactionsController: this.multichainTransactionsController,
-        MultichainAssetsRatesController: this.multichainAssetsRatesController,
+        MultiChainAssetsRatesController: this.multiChainAssetsRatesController,
         ///: END:ONLY_INCLUDE_IF
         NetworkController: this.networkController,
         KeyringController: this.keyringController,

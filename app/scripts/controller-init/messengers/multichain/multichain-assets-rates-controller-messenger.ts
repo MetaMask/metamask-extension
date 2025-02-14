@@ -28,8 +28,8 @@ type Events =
   | CurrencyRateStateChange
   | MultichainAssetsControllerStateChangeEvent;
 
-export type MultichainAssetsRatesControllerMessenger = ReturnType<
-  typeof getMultichainAssetsRatesControllerMessenger
+export type MultiChainAssetsRatesControllerMessenger = ReturnType<
+  typeof getMultiChainAssetsRatesControllerMessenger
 >;
 
 /**
@@ -39,7 +39,7 @@ export type MultichainAssetsRatesControllerMessenger = ReturnType<
  * @param messenger - The controller messenger to restrict.
  * @returns The restricted controller messenger.
  */
-export function getMultichainAssetsRatesControllerMessenger(
+export function getMultiChainAssetsRatesControllerMessenger(
   messenger: Messenger<Actions, Events>,
 ) {
   return messenger.getRestricted({

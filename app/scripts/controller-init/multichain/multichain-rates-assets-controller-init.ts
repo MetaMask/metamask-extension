@@ -1,6 +1,6 @@
 import { MultiChainAssetsRatesController } from '@metamask/assets-controllers';
 import { ControllerInitFunction } from '../types';
-import { MultichainAssetsRatesControllerMessenger } from '../messengers/multichain';
+import { MultiChainAssetsRatesControllerMessenger } from '../messengers/multichain';
 
 /**
  * Initialize the Multichain Assets Rate controller.
@@ -12,9 +12,10 @@ import { MultichainAssetsRatesControllerMessenger } from '../messengers/multicha
  */
 export const MultiChainAssetsRatesControllerInit: ControllerInitFunction<
   MultiChainAssetsRatesController,
-  MultichainAssetsRatesControllerMessenger
+  MultiChainAssetsRatesControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
   const controller = new MultiChainAssetsRatesController({
+    // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
     messenger: controllerMessenger,
     state: persistedState.MultiChainAssetsRatesController,
   });

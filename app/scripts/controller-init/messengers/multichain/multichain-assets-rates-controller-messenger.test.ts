@@ -1,11 +1,11 @@
 import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
-import { getMultichainAssetsRatesControllerMessenger } from './multichain-assets-rates-controller-messenger';
+import { getMultiChainAssetsRatesControllerMessenger } from './multichain-assets-rates-controller-messenger';
 
-describe('getMultichainAssetsRatesControllerMessenger', () => {
+describe('getMultiChainAssetsRatesControllerMessenger', () => {
   it('returns a restricted messenger', () => {
     const messenger = new Messenger<never, never>();
     const multichainAssetsRatesControllerMessenger =
-      getMultichainAssetsRatesControllerMessenger(messenger);
+      getMultiChainAssetsRatesControllerMessenger(messenger);
 
     expect(multichainAssetsRatesControllerMessenger).toBeInstanceOf(
       RestrictedMessenger,
