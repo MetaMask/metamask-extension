@@ -1,5 +1,6 @@
 import { memoize } from 'lodash';
 import { SECOND } from '../constants/time';
+import { fetchWithSentryInstrumentation } from '../lib/trace';
 
 /**
  * Returns a function that can be used to make an HTTP request but timing out
@@ -32,7 +33,7 @@ const getFetchWithTimeout = memoize((timeout = SECOND * 30) => {
     const abortHandler = () => combinedAbortController.abort();
     abortSignals.forEach((sig) => sig.addEventListener('abort', abortHandler));
 
-    const f = window.fetch(url, {
+    const f = fetchWithSentryInstrumentation(url, {
       ...opts,
       signal: combinedAbortController.signal,
     });
