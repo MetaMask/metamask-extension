@@ -1,6 +1,6 @@
 import { hasProperty } from '@metamask/utils';
 import { cloneDeep, isObject } from 'lodash';
-import availableCurrencies from '../../../ui/helpers/constants/available-conversions.json';
+import { PRICE_API_CURRENCIES } from '../../../shared/constants/price-api-currencies';
 
 type VersionedData = {
   meta: { version: number };
@@ -61,8 +61,8 @@ function transformState(state: Record<string, unknown>) {
     return;
   }
 
-  const isValidCurrency = availableCurrencies.some(
-    (currency) => currency.code === currentCurrency,
+  const isValidCurrency = PRICE_API_CURRENCIES.some(
+    (currency) => currency === currentCurrency,
   );
 
   if (!isValidCurrency) {
