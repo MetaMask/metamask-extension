@@ -110,6 +110,7 @@ class ChromeDriver {
     return {
       driver,
       extensionUrl: `chrome-extension://${extensionId}`,
+      extensionId,
     };
   }
 

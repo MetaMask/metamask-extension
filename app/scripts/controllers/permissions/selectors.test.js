@@ -4,50 +4,11 @@ import {
   Caip25EndowmentPermissionName,
 } from '@metamask/multichain';
 import {
-  diffMap,
   getPermittedAccountsByOrigin,
   getPermittedChainsByOrigin,
 } from './selectors';
 
 describe('PermissionController selectors', () => {
-  describe('diffMap', () => {
-    it('returns the new value if the previous value is undefined', () => {
-      const newAccounts = new Map([['foo.bar', ['0x1']]]);
-      expect(diffMap(newAccounts)).toBe(newAccounts);
-    });
-
-    it('returns an empty map if the new and previous values are the same', () => {
-      const newAccounts = new Map([['foo.bar', ['0x1']]]);
-      expect(diffMap(newAccounts, newAccounts)).toStrictEqual(new Map());
-    });
-
-    it('returns a new map of the changed key/value pairs if the new and previous maps differ', () => {
-      // We set this on the new and previous value under the key 'foo.bar' to
-      // check that identical values are excluded.
-      const identicalValue = ['0x1'];
-
-      const previousAccounts = new Map([
-        ['bar.baz', ['0x1']], // included: different accounts
-        ['fizz.buzz', ['0x1']], // included: removed in new value
-      ]);
-      previousAccounts.set('foo.bar', identicalValue);
-
-      const newAccounts = new Map([
-        ['bar.baz', ['0x1', '0x2']], // included: different accounts
-        ['baz.fizz', ['0x3']], // included: brand new
-      ]);
-      newAccounts.set('foo.bar', identicalValue);
-
-      expect(diffMap(newAccounts, previousAccounts)).toStrictEqual(
-        new Map([
-          ['bar.baz', ['0x1', '0x2']],
-          ['fizz.buzz', []],
-          ['baz.fizz', ['0x3']],
-        ]),
-      );
-    });
-  });
-
   describe('getPermittedAccountsByOrigin', () => {
     it('memoizes and gets permitted accounts by origin', () => {
       const state1 = {

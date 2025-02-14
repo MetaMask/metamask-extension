@@ -612,7 +612,7 @@
         "process": true
       }
     },
-    "@metamask/multichain>@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": {
+    "@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": {
       "packages": {
         "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": true,
         "@open-rpc/schema-utils-js>@json-schema-tools/dereferencer>@json-schema-tools/traverse": true,
@@ -1513,7 +1513,7 @@
         "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
         "@metamask/multichain>@metamask/utils": true,
-        "@metamask/multichain>@open-rpc/schema-utils-js": true,
+        "@open-rpc/schema-utils-js": true,
         "@metamask/multichain>jsonschema": true,
         "lodash": true
       }
@@ -2706,10 +2706,10 @@
         "crypto": true
       }
     },
-    "@metamask/multichain>@open-rpc/schema-utils-js": {
+    "@open-rpc/schema-utils-js": {
       "packages": {
-        "@metamask/multichain>@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": true,
-        "@metamask/multichain>@open-rpc/schema-utils-js>@json-schema-tools/meta-schema": true,
+        "@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": true,
+        "@open-rpc/schema-utils-js>@json-schema-tools/meta-schema": true,
         "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": true,
         "@open-rpc/meta-schema": true,
         "eslint>ajv": true,
