@@ -15,6 +15,7 @@ import {
   MultichainAssetsController,
   MultichainBalancesController,
 } from '@metamask/assets-controllers';
+import { MultichainNetworkController } from '@metamask/multichain-network-controller';
 import { MultichainTransactionsController } from '@metamask/multichain-transactions-controller';
 import {
   CronjobController,
@@ -44,6 +45,7 @@ export type Controller =
   | MultichainAssetsController
   | MultichainBalancesController
   | MultichainTransactionsController
+  | MultichainNetworkController
   | NetworkController
   | OnboardingController
   | PermissionController<
@@ -75,6 +77,7 @@ export type ControllerFlatState = AccountsController['state'] &
   MultichainAssetsController['state'] &
   MultichainBalancesController['state'] &
   MultichainTransactionsController['state'] &
+  MultichainNetworkController['state'] &
   NetworkController['state'] &
   OnboardingController['state'] &
   PermissionController<

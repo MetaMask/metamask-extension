@@ -143,10 +143,6 @@ import { isEvmAccountType } from '@metamask/keyring-api';
 import { hexToBigInt, toCaipChainId } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 import {
-  MultichainNetworkController,
-  getDefaultMultichainNetworkControllerState,
-} from '@metamask/multichain-network-controller';
-import {
   AuthenticationController,
   UserStorageController,
 } from '@metamask/profile-sync-controller';
@@ -362,13 +358,14 @@ import {
   handleBridgeTransactionFailed,
   handleTransactionFailedTypeBridge,
 } from './lib/bridge-status/metrics';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   MultichainAssetsControllerInit,
   MultichainTransactionsControllerInit,
   MultichainBalancesControllerInit,
+  ///: END:ONLY_INCLUDE_IF
+  MultichainNetworkControllerInit,
 } from './controller-init/multichain';
-///: END:ONLY_INCLUDE_IF
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
 import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
 import { initControllers } from './controller-init/utils';
@@ -667,23 +664,6 @@ export default class MetamaskController extends EventEmitter {
         ...initState.PreferencesController,
       },
       messenger: preferencesMessenger,
-    });
-
-    const multichainNetworkControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'MultichainNetworkController',
-        allowedActions: [
-          'NetworkController:setActiveNetwork',
-          'NetworkController:getState',
-        ],
-        allowedEvents: ['AccountsController:selectedAccountChange'],
-      });
-
-    this.multichainNetworkController = new MultichainNetworkController({
-      messenger: multichainNetworkControllerMessenger,
-      // Update the value of state with getDefaultMultichainNetworkControllerState()
-      // to add Solana and Bitcoin networks
-      state: getDefaultMultichainNetworkControllerState(),
     });
 
     const tokenListMessenger = this.controllerMessenger.getRestricted({
@@ -2078,6 +2058,7 @@ export default class MetamaskController extends EventEmitter {
       MultichainBalancesController: MultichainBalancesControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
       ///: END:ONLY_INCLUDE_IF
+      MultichainNetworkController: MultichainNetworkControllerInit,
     };
 
     const {
@@ -2113,6 +2094,8 @@ export default class MetamaskController extends EventEmitter {
     this.multichainTransactionsController =
       controllersByName.MultichainTransactionsController;
     ///: END:ONLY_INCLUDE_IF
+    this.multichainNetworkController =
+      controllersByName.MultichainNetworkController;
 
     this.controllerMessenger.subscribe(
       'TransactionController:transactionStatusUpdated',
@@ -6145,6 +6128,15 @@ export default class MetamaskController extends EventEmitter {
           this.networkController.getNetworkConfigurationByChainId.bind(
             this.networkController,
           ),
+        setTokenNetworkFilter: (chainId) => {
+          const { tokenNetworkFilter } =
+            this.preferencesController.getPreferences();
+          if (chainId && Object.keys(tokenNetworkFilter).length === 1) {
+            this.preferencesController.setPreference('tokenNetworkFilter', {
+              [chainId]: true,
+            });
+          }
+        },
         getCurrentChainIdForDomain: (domain) => {
           const networkClientId =
             this.selectedNetworkController.getNetworkClientIdForDomain(domain);
