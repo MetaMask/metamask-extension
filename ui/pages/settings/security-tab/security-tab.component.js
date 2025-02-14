@@ -46,7 +46,10 @@ import {
   IconColor,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
+import {
+  ADD_POPULAR_CUSTOM_NETWORK,
+  REVEAL_SRP_LIST_ROUTE,
+} from '../../../helpers/constants/routes';
 import {
   getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
@@ -105,6 +108,7 @@ export default class SecurityTab extends PureComponent {
     toggleExternalServices: PropTypes.func.isRequired,
     setSecurityAlertsEnabled: PropTypes.func,
     metaMetricsDataDeletionId: PropTypes.string,
+    hasMultipleHDKeyrings: PropTypes.bool,
   };
 
   state = {
@@ -165,6 +169,7 @@ export default class SecurityTab extends PureComponent {
 
   renderSeedWords() {
     const { t } = this.context;
+    const { history, hasMultipleHDKeyrings } = this.props;
 
     return (
       <>
@@ -197,6 +202,12 @@ export default class SecurityTab extends PureComponent {
                   location: 'Settings',
                 },
               });
+              if (hasMultipleHDKeyrings) {
+                history.push({
+                  pathname: REVEAL_SRP_LIST_ROUTE,
+                });
+                return;
+              }
               this.setState({ srpQuizModalVisible: true });
             }}
           >

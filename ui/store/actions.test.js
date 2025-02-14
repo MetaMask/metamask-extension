@@ -39,6 +39,16 @@ const defaultState = {
         balance: '0x0',
       },
     },
+    keyrings: [
+      {
+        type: 'HD Key Tree',
+        accounts: [
+          {
+            address: '0xFirstAddress',
+          },
+        ],
+      },
+    ],
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     internalAccounts: {
       accounts: {
@@ -210,7 +220,7 @@ describe('Actions', () => {
       const verifyPassword = background.verifyPassword.callsFake((_, cb) =>
         cb(),
       );
-      const getSeedPhrase = background.getSeedPhrase.callsFake((_, cb) =>
+      const getSeedPhrase = background.getSeedPhrase.callsFake((_, _2, cb) =>
         cb(null, Array.from(Buffer.from('test').values())),
       );
 
@@ -225,7 +235,7 @@ describe('Actions', () => {
       const store = mockStore();
 
       background.verifyPassword.callsFake((_, cb) => cb());
-      background.getSeedPhrase.callsFake((_, cb) => {
+      background.getSeedPhrase.callsFake((_, _2, cb) => {
         cb(new Error('error'));
       });
 
@@ -397,7 +407,7 @@ describe('Actions', () => {
         metamask: { ...defaultState.metamask },
       });
 
-      const addNewAccount = background.addNewAccount.callsFake((_, cb) =>
+      const addNewAccount = background.addNewAccount.callsFake((_, _2, cb) =>
         cb(null, {
           addedAccountAddress: '0x123',
         }),
@@ -412,7 +422,7 @@ describe('Actions', () => {
     it('displays warning error message when addNewAccount in background callback errors', async () => {
       const store = mockStore();
 
-      background.addNewAccount.callsFake((_, cb) => {
+      background.addNewAccount.callsFake((_, _2, cb) => {
         cb(new Error('error'));
       });
 
@@ -2670,6 +2680,29 @@ describe('Actions', () => {
       await store.dispatch(actions.setSmartTransactionsRefreshInterval(null));
 
       expect(background.setStatusRefreshInterval.called).toBe(false);
+    });
+  });
+
+  describe('generateNewHdKeyring', () => {
+    it('calls generateNewMnemonicAndAddToVault in the background', async () => {
+      const store = mockStore();
+
+      background.getApi.returns({
+        generateNewMnemonicAndAddToVault: sinon
+          .stub()
+          .callsFake((cb) => cb(null, {})),
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      await store.dispatch(actions.generateNewHdKeyring());
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 });

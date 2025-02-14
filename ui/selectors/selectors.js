@@ -523,7 +523,10 @@ export function getNumberOfTokens(state) {
 }
 
 export function getMetaMaskKeyrings(state) {
-  return state.metamask.keyrings;
+  return state.metamask.keyrings.map((keyring, index) => ({
+    ...keyring,
+    metadata: state.metamask.keyringsMetadata?.[index] || {},
+  }));
 }
 
 /**
@@ -2757,15 +2760,24 @@ export function getAllAccountsOnNetworkAreEmpty(state) {
 }
 
 export function getShouldShowSeedPhraseReminder(state) {
-  const { tokens, seedPhraseBackedUp, dismissSeedBackUpReminder } =
+  const { tokens, seedPhraseBackedUp, dismissSeedBackUpReminder, isUnlocked } =
     state.metamask;
 
+  if (!isUnlocked) {
+    return false;
+  }
+
+  const selectedAccount = getSelectedInternalAccount(state);
   // if there is no account, we don't need to show the seed phrase reminder
-  const accountBalance = getSelectedInternalAccount(state)
-    ? getCurrentEthBalance(state)
-    : 0;
+  const accountBalance = selectedAccount ? getCurrentEthBalance(state) : 0;
+
+  const primaryKeyring = getMetaMaskKeyrings(state)[0];
+  const isAccountFromPrimarySrp = primaryKeyring.accounts.includes(
+    selectedAccount.address.toLowerCase(),
+  );
 
   return (
+    isAccountFromPrimarySrp &&
     seedPhraseBackedUp === false &&
     (parseInt(accountBalance, 16) > 0 || tokens.length > 0) &&
     dismissSeedBackUpReminder === false

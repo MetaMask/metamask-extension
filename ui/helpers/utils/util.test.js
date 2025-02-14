@@ -1298,4 +1298,101 @@ describe('util', () => {
       expect(sortedAccount).toStrictEqual([]);
     });
   });
+
+  describe('isAbleToRevealSrp', () => {
+    const mockHDKeyring = {
+      id: 'hd-keyring-id',
+      type: 'HD Key Tree',
+      metadata: {
+        id: '01JKDQSHNJH3EP2N4MPR0S5RQS',
+        name: '',
+      },
+    };
+
+    const mockSnapKeyring = {
+      id: 'snap-keyring-id',
+      type: 'Snap Keyring',
+      metadata: {
+        id: '01JKDQSPB36DENHN7HWF8XED78',
+        name: '',
+      },
+    };
+
+    const mockLedgerKeyring = {
+      id: 'ledger-keyring-id',
+      type: 'Ledger Hardware',
+      metadata: {
+        id: '01JKDQSWKN9AHG8DKX29QE3PGA',
+        name: '',
+      },
+    };
+
+    it('should return true for HD Key Tree accounts', () => {
+      const hdAccount = createMockInternalAccount();
+
+      expect(util.isAbleToRevealSrp(hdAccount, [mockHDKeyring])).toBe(true);
+    });
+
+    it.skip('should return true for Snap accounts derived from HD keyring', () => {
+      const snapAccount = {
+        type: 'Snap',
+        address: '0x123',
+        metadata: {
+          keyring: {
+            id: 'hd-keyring-id',
+          },
+        },
+      };
+
+      expect(
+        util.isAbleToRevealSrp(snapAccount, [mockHDKeyring, mockSnapKeyring]),
+      ).toBe(true);
+    });
+
+    it('should return false for Snap accounts not derived from HD keyring', () => {
+      const snapAccount = {
+        type: 'Snap',
+        address: '0x123',
+        metadata: {
+          keyring: {
+            id: 'some-other-id',
+          },
+        },
+      };
+
+      expect(
+        util.isAbleToRevealSrp(snapAccount, [mockHDKeyring, mockSnapKeyring]),
+      ).toBe(false);
+    });
+
+    it('should return false for hardware wallet accounts', () => {
+      const ledgerAccount = {
+        type: 'Ledger Hardware',
+        address: '0x123',
+        metadata: {
+          keyring: {
+            id: 'ledger-keyring-id',
+          },
+        },
+      };
+
+      expect(util.isAbleToRevealSrp(ledgerAccount, [mockLedgerKeyring])).toBe(
+        false,
+      );
+    });
+
+    it('should return false for any other account type', () => {
+      const otherAccount = {
+        type: 'Simple Key Pair',
+        address: '0x123',
+        metadata: {
+          keyring: {
+            id: 'simple-keyring-id',
+          },
+        },
+      };
+
+      expect(util.isAbleToRevealSrp(otherAccount, [mockHDKeyring])).toBe(false);
+    });
+  });
 });

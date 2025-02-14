@@ -280,9 +280,8 @@ export default class Routes extends Component {
             exact
           />
           <Authenticated
-            path={REVEAL_SEED_ROUTE}
+            path={`${REVEAL_SEED_ROUTE}/:keyringId`}
             component={RevealSeedConfirmation}
-            exact
           />
           <Authenticated path={SETTINGS_ROUTE} component={Settings} />
           <Authenticated

@@ -5566,6 +5566,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/keyring-controller@npm:@metamask-previews/keyring-controller@19.1.0-preview-cb58d7d1":
+  version: 19.1.0-preview-cb58d7d1
+  resolution: "@metamask-previews/keyring-controller@npm:19.1.0-preview-cb58d7d1"
+  dependencies:
+    "@ethereumjs/util": "npm:^8.1.0"
+    "@keystonehq/metamask-airgapped-keyring": "npm:^0.14.1"
+    "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/browser-passworder": "npm:^4.3.0"
+    "@metamask/eth-hd-keyring": "npm:^7.0.4"
+    "@metamask/eth-sig-util": "npm:^8.0.0"
+    "@metamask/eth-simple-keyring": "npm:^6.0.5"
+    "@metamask/keyring-api": "npm:^17.0.0"
+    "@metamask/keyring-internal-api": "npm:^4.0.1"
+    "@metamask/message-manager": "npm:^12.0.1"
+    "@metamask/utils": "npm:^11.1.0"
+    async-mutex: "npm:^0.5.0"
+    ethereumjs-wallet: "npm:^1.0.1"
+    immer: "npm:^9.0.6"
+    ulid: "npm:^2.3.0"
+  checksum: 10/bd67f7360b44c39f968cbd9a8cc8110694b34df93b163871e57b6a394ae7c2d5616b177ada8c07b1bdbe100b028d8524ee06f4efe44fd474434916e9aa3c21fc
+  languageName: node
+  linkType: hard
+
 "@metamask/keyring-controller@npm:^19.0.7":
   version: 19.0.7
   resolution: "@metamask/keyring-controller@npm:19.0.7"
@@ -26703,7 +26726,7 @@ __metadata:
     "@metamask/json-rpc-engine": "npm:^10.0.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.4"
     "@metamask/keyring-api": "npm:^17.0.0"
-    "@metamask/keyring-controller": "npm:^19.0.7"
+    "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@19.1.0-preview-cb58d7d1"
     "@metamask/keyring-internal-api": "npm:^4.0.2"
     "@metamask/keyring-snap-client": "npm:^4.0.0"
     "@metamask/logging-controller": "npm:^6.0.4"
@@ -36160,6 +36183,15 @@ __metadata:
   dependencies:
     multiformats: "npm:^9.4.2"
   checksum: 10/536e70273c040484aa7d522031a9dbca1fe8c06eb58a3ace1064ba68825b4e2764d4a0b604a1c451e7b8be0986dc94f23a419cfe9334bd116716074a2d29b33d
+  languageName: node
+  linkType: hard
+
+"ulid@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "ulid@npm:2.3.0"
+  bin:
+    ulid: ./bin/cli.js
+  checksum: 10/11d7dd35072b863effb1249f66fb03070142a625610f00e5afd99af7e909b5de9cc7ebca6ede621a6bb1b7479b2489d6f064db6742b55c14bff6496ac60f290f
   languageName: node
   linkType: hard
 
