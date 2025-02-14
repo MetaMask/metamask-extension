@@ -152,8 +152,48 @@ describe('Security Tab', () => {
     expect(await toggleCheckbox('participateInMetaMetrics', false)).toBe(true);
   });
 
-  it('toggles SRP Quiz', async () => {
+  it('toggles SRP Quiz if there is only one srp', async () => {
     renderWithProviders(<SecurityTab />, mockStore);
+
+    expect(
+      screen.queryByTestId(`srp_stage_introduction`),
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('reveal-seed-words'));
+
+    expect(screen.getByTestId(`srp_stage_introduction`)).toBeInTheDocument();
+
+    const container = screen.getByTestId('srp-quiz-header');
+    const checkbox = queryByRole(container, 'button');
+    fireEvent.click(checkbox);
+
+    expect(
+      screen.queryByTestId(`srp_stage_introduction`),
+    ).not.toBeInTheDocument();
+  });
+
+  it('redirects to srp list if there are multiple srps', async () => {
+    const mockStoreWithMultipleSRPs = configureMockStore([thunk])({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        keyrings: [
+          ...mockState.metamask.keyrings,
+          {
+            type: 'HD Key Tree',
+            accounts: ['0x'],
+          },
+        ],
+        keyringsMetadata: [
+          ...mockState.metamask.keyringsMetadata,
+          {
+            id: '01JM1XSBQ78YXY1NNT003HT74V',
+            name: '',
+          },
+        ],
+      },
+    });
+    renderWithProviders(<SecurityTab />, mockStoreWithMultipleSRPs);
 
     expect(
       screen.queryByTestId(`srp_stage_introduction`),

@@ -23,6 +23,7 @@ import {
   SECURITY_ALERTS_LEARN_MORE_LINK,
   TRANSACTION_SIMULATIONS_LEARN_MORE_LINK,
 } from '../../../../shared/lib/ui-utils';
+import SRPQuiz from '../../../components/app/srp-quiz-modal/SRPQuiz';
 import {
   Button,
   ButtonSize,
@@ -107,11 +108,13 @@ export default class SecurityTab extends PureComponent {
     toggleExternalServices: PropTypes.func.isRequired,
     setSecurityAlertsEnabled: PropTypes.func,
     metaMetricsDataDeletionId: PropTypes.string,
+    hasMultipleHDKeyrings: PropTypes.bool,
   };
 
   state = {
     ipfsGateway: this.props.ipfsGateway || IPFS_DEFAULT_GATEWAY_URL,
     ipfsGatewayError: '',
+    srpQuizModalVisible: false,
     showDataCollectionDisclaimer: false,
     ipfsToggle: this.props.ipfsGateway.length > 0,
   };
@@ -162,9 +165,11 @@ export default class SecurityTab extends PureComponent {
     toggleMethod(!value);
   }
 
+  hideSrpQuizModal = () => this.setState({ srpQuizModalVisible: false });
+
   renderSeedWords() {
     const { t } = this.context;
-    const { history } = this.props;
+    const { history, hasMultipleHDKeyrings } = this.props;
 
     return (
       <>
@@ -197,13 +202,23 @@ export default class SecurityTab extends PureComponent {
                   location: 'Settings',
                 },
               });
-              history.push({
-                pathname: REVEAL_SRP_LIST_ROUTE,
-              });
+              if (hasMultipleHDKeyrings) {
+                history.push({
+                  pathname: REVEAL_SRP_LIST_ROUTE,
+                });
+                return;
+              }
+              this.setState({ srpQuizModalVisible: true });
             }}
           >
             {t('revealSeedWords')}
           </Button>
+          {this.state.srpQuizModalVisible && (
+            <SRPQuiz
+              isOpen={this.state.srpQuizModalVisible}
+              onClose={this.hideSrpQuizModal}
+            />
+          )}
         </div>
       </>
     );

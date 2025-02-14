@@ -29,7 +29,10 @@ import {
 } from '../../../selectors/selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
-import { getSelectedInternalAccount } from '../../../selectors';
+import {
+  getMetaMaskKeyrings,
+  getSelectedInternalAccount,
+} from '../../../selectors';
 import SecurityTab from './security-tab.component';
 
 const mapStateToProps = (state) => {
@@ -57,6 +60,11 @@ const mapStateToProps = (state) => {
 
   const networkConfigurations = getNetworkConfigurationsByChainId(state);
 
+  const hasMultipleHDKeyrings =
+    getMetaMaskKeyrings(state).filter(
+      (keyring) => keyring.type === 'HD Key Tree',
+    ).length > 1;
+
   return {
     incomingTransactionsPreferences,
     networkConfigurations,
@@ -79,6 +87,7 @@ const mapStateToProps = (state) => {
     useTransactionSimulations: metamask.useTransactionSimulations,
     metaMetricsDataDeletionId: getMetaMetricsDataDeletionId(state),
     selectedAccount: getSelectedInternalAccount(state),
+    hasMultipleHDKeyrings,
   };
 };
 
