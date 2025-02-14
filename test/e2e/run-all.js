@@ -68,6 +68,9 @@ function applyQualityGate(fullTestList, changedOrNewTests) {
 
 // For running E2Es in parallel in CI
 function runningOnCircleCI(testPaths) {
+  const skipE2EQualityGate = process.env.SKIP_E2E_QUALITY_GATE === 'true';
+  console.log('Skip e2e quality gate:', skipE2EQualityGate);
+
   const changedandNewFilesPathsWithStatus = readChangedAndNewFilesWithStatus();
   const changedandNewFilesPaths = getChangedAndNewFiles(
     changedandNewFilesPathsWithStatus,
@@ -75,10 +78,9 @@ function runningOnCircleCI(testPaths) {
   const changedOrNewTests = filterE2eChangedFiles(changedandNewFilesPaths);
   console.log('Changed or new test list:', changedOrNewTests);
 
-  const fullTestList = applyQualityGate(
-    testPaths.join('\n'),
-    changedOrNewTests,
-  );
+  const fullTestList = skipE2EQualityGate
+    ? testPaths
+    : applyQualityGate(testPaths.join('\n'), changedOrNewTests);
 
   console.log('Full test list:', fullTestList);
   fs.writeFileSync('test/test-results/fullTestList.txt', fullTestList);
