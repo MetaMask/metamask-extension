@@ -87,7 +87,6 @@ import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import {
   getCurrentKeyring,
   getSelectedEvmInternalAccount,
-  getSelectedInternalAccount,
   getTokenList,
 } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
@@ -96,7 +95,10 @@ import { BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE } from '../../../../share
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getMultichainIsEvm } from '../../../selectors/multichain';
+import {
+  getLastSelectedNonEvmAccount,
+  getMultichainIsEvm,
+} from '../../../selectors/multichain';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { formatChainIdToCaip } from '../../../../shared/modules/bridge-utils/caip-formatters';
 import { BridgeInputGroup } from './bridge-input-group';
@@ -151,12 +153,12 @@ const PrepareBridgePage = () => {
 
   const isEvm = useMultichainSelector(getMultichainIsEvm);
   const selectedEvmAccount = useSelector(getSelectedEvmInternalAccount);
-  const selectedMultichainAccount = useMultichainSelector(
-    getSelectedInternalAccount,
-  );
+
+  const lastSelectedNonEvmAccount = useSelector(getLastSelectedNonEvmAccount);
+
   const selectedAccount = isEvm
     ? selectedEvmAccount
-    : selectedMultichainAccount;
+    : lastSelectedNonEvmAccount;
 
   const keyring = useSelector(getCurrentKeyring);
   // @ts-expect-error keyring type is wrong maybe?
@@ -300,7 +302,7 @@ const PrepareBridgePage = () => {
         (toChain?.chainId &&
           formatChainIdToCaip(toChain.chainId) === MultichainNetworks.SOLANA) ||
         isSwap
-          ? selectedMultichainAccount?.address
+          ? lastSelectedNonEvmAccount?.address
           : selectedEvmAccount?.address,
     }),
     [
@@ -309,13 +311,13 @@ const PrepareBridgePage = () => {
       toToken?.address,
       fromAmount,
       fromChain?.chainId,
+      isSwap,
       toChain?.chainId,
       providerConfig?.rpcUrl,
       slippage,
       selectedAccount?.address,
-      isSwap,
-      selectedMultichainAccount?.address,
       selectedEvmAccount?.address,
+      lastSelectedNonEvmAccount?.address,
     ],
   );
 
