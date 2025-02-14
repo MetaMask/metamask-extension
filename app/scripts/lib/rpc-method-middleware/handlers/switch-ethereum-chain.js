@@ -15,6 +15,7 @@ const switchEthereumChain = {
     getCurrentChainIdForDomain: true,
     requestPermittedChainsPermissionForOrigin: true,
     requestPermittedChainsPermissionIncrementalForOrigin: true,
+    setTokenNetworkFilter: true,
   },
 };
 
@@ -32,6 +33,7 @@ async function switchEthereumChainHandler(
     getCurrentChainIdForDomain,
     requestPermittedChainsPermissionForOrigin,
     requestPermittedChainsPermissionIncrementalForOrigin,
+    setTokenNetworkFilter,
   },
 ) {
   let chainId;
@@ -69,5 +71,6 @@ async function switchEthereumChainHandler(
     getCaveat,
     requestPermittedChainsPermissionForOrigin,
     requestPermittedChainsPermissionIncrementalForOrigin,
+    setTokenNetworkFilter,
   });
 }
