@@ -186,7 +186,7 @@ async function validateBalanceAndActivity(
   }
 }
 
-describe('Request-queue UI changes - TEST', function () {
+describe('Request-queue UI changes', function () {
   it('should show network specific to domain', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
