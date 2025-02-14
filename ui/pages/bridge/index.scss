@@ -15,16 +15,16 @@
 
 [data-theme='light'],
 .light {
-  --color-background-alternative-soft: #f9fafb;
-  --color-text-alternative-soft: #6a737d;
-  --color-icon-alternative-soft: #6a737d;
+  --color-background-alternative-soft: var(--color-background-alternative);
+  --color-text-alternative-soft: var(--color-text-alternative);
+  --color-icon-alternative-soft: var(--color-icon-alternative);
 }
 
 [data-theme='dark'],
 .dark {
-  --color-background-alternative-soft: #1f2124;
-  --color-text-alternative-soft: #848c96;
-  --color-icon-alternative-soft: #848c96;
+  --color-background-alternative-soft: var(--color-background-alternative);
+  --color-text-alternative-soft: var(--color-text-alternative);
+  --color-icon-alternative-soft: var(--color-icon-alternative);
 }
 
 .mm-box--color-text-alternative-soft {
