@@ -44,7 +44,10 @@ const useMultiChainAssets = () => {
     if (parsedCaip.assetNamespace === 'token') {
       tokenImage = metadata.iconUrl || '';
     } else {
-      tokenImage = CHAIN_ID_TOKEN_IMAGE_MAP['solana'] || '';
+      tokenImage =
+        CHAIN_ID_TOKEN_IMAGE_MAP[
+          parsedCaip.namespace as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
+        ] || '';
     }
 
     return {
@@ -53,7 +56,7 @@ const useMultiChainAssets = () => {
       symbol: metadata.symbol,
       image: tokenImage,
       decimals,
-      chainId: 'solana',
+      chainId: parsedCaip.namespace,
       isNative: false,
       primary: balance.amount,
       secondary: balance.amount,
