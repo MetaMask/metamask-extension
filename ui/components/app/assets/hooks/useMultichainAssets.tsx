@@ -8,14 +8,20 @@ import {
 import { ParsedAssetId, parseAssetId } from '../util/parseAssetId';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../shared/constants/network';
 import { getSelectedInternalAccount } from '../../../../selectors';
+import {
+  TranslateFunction,
+  networkTitleOverrides,
+} from '../util/networkTitleOverrides';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 const useMultiChainAssets = () => {
+  const t = useI18nContext();
   const account = useSelector(getSelectedInternalAccount);
   const multichainBalances = useSelector(getMultichainBalances);
   const accountAssets = useSelector(getAccountAssets);
   const assetsMetadata = useSelector(getAssetsMetadata);
 
-  const assetIds = accountAssets[account.id];
+  const assetIds = accountAssets[account.id] || [];
 
   const parsedAssetIds: Record<string, ParsedAssetId> = {};
   for (let assetId of assetIds) {
@@ -25,38 +31,41 @@ const useMultiChainAssets = () => {
 
   const balances = multichainBalances[account.id];
   return assetIds.map((assetId) => {
+    const [chainId, assetDetails] = assetId.split('/');
+    const isToken = assetDetails.split(':')[0] === 'token';
+
     const balance = balances[assetId] || { amount: '0', unit: '' };
     const metadata = assetsMetadata[assetId] || {
       name: balance.unit,
-      symbol: balance.unit || 'Unknown',
+      symbol: balance.unit || '',
       fungible: true,
-      units: [
-        { name: assetId, symbol: balance.unit || 'Unknown', decimals: 0 },
-      ],
+      units: [{ name: assetId, symbol: balance.unit || '', decimals: 0 }],
     };
-
-    const decimals = metadata.units[0]?.decimals || 0;
-
-    const parsedCaip = parsedAssetIds[assetId];
 
     let tokenImage = '';
 
-    if (parsedCaip.assetNamespace === 'token') {
+    if (isToken) {
       tokenImage = metadata.iconUrl || '';
     } else {
       tokenImage =
         CHAIN_ID_TOKEN_IMAGE_MAP[
-          parsedCaip.namespace as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
+          chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
         ] || '';
     }
 
+    const decimals = metadata.units[0]?.decimals || 0;
+
     return {
-      title: metadata.name,
+      title: isToken
+        ? metadata.name
+        : networkTitleOverrides(t as TranslateFunction, {
+            title: balance.unit,
+          }),
       address: assetId as Hex,
       symbol: metadata.symbol,
       image: tokenImage,
       decimals,
-      chainId: parsedCaip.namespace,
+      chainId,
       isNative: false,
       primary: balance.amount,
       secondary: balance.amount,

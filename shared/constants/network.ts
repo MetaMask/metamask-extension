@@ -3,6 +3,7 @@ import {
   RpcEndpointType,
 } from '@metamask/network-controller';
 import { capitalize, pick } from 'lodash';
+import { MultichainNetworks } from './multichain/networks';
 /**
  * A type representing built-in network types, used as an identifier.
  */
@@ -176,7 +177,7 @@ export const CHAIN_IDS = {
   INK: '0xdef1',
   MODE_SEPOLIA: '0x397',
   MODE: '0x868b',
-  SOLANA: 'solana',
+  SOLANA: MultichainNetworks.SOLANA,
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {

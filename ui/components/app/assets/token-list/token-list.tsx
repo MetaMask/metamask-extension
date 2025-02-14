@@ -18,6 +18,7 @@ import { filterAssets } from '../util/filter';
 import { sortAssets } from '../util/sort';
 import useMultiChainAssets from '../hooks/useMultichainAssets';
 import { getMultichainIsEvm } from '../../../../selectors/multichain';
+import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -48,7 +49,7 @@ function TokenList({ onTokenClick }: TokenListProps) {
     const filteredAssets: TokenWithFiatAmount[] = filterAssets(balances, [
       {
         key: 'chainId',
-        opts: isEvm ? networkFilter : { solana: true },
+        opts: isEvm ? networkFilter : { [MultichainNetworks.SOLANA]: true },
         filterCallback: 'inclusive',
       },
     ]);
