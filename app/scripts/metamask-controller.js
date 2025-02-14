@@ -144,7 +144,6 @@ import { hexToBigInt, toCaipChainId } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 import {
   MultichainNetworkController,
-  // getDefaultMultichainNetworkControllerState,
 } from '@metamask/multichain-network-controller';
 import {
   AuthenticationController,
@@ -362,13 +361,14 @@ import {
   handleBridgeTransactionFailed,
   handleTransactionFailedTypeBridge,
 } from './lib/bridge-status/metrics';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   MultichainAssetsControllerInit,
   MultichainTransactionsControllerInit,
   MultichainBalancesControllerInit,
+  ///: END:ONLY_INCLUDE_IF
+  MultichainNetworkControllerInit,
 } from './controller-init/multichain';
-///: END:ONLY_INCLUDE_IF
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
 import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
 import { initControllers } from './controller-init/utils';
@@ -667,23 +667,6 @@ export default class MetamaskController extends EventEmitter {
         ...initState.PreferencesController,
       },
       messenger: preferencesMessenger,
-    });
-
-    const multichainNetworkControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'MultichainNetworkController',
-        allowedActions: [
-          'NetworkController:setActiveNetwork',
-          'NetworkController:getState',
-        ],
-        allowedEvents: ['AccountsController:selectedAccountChange'],
-      });
-
-    this.multichainNetworkController = new MultichainNetworkController({
-      messenger: multichainNetworkControllerMessenger,
-      // Update the value of state with getDefaultMultichainNetworkControllerState()
-      // to add Solana and Bitcoin networks
-      state: initState.MultichainNetworkController,
     });
 
     const tokenListMessenger = this.controllerMessenger.getRestricted({
@@ -2078,6 +2061,7 @@ export default class MetamaskController extends EventEmitter {
       MultichainBalancesController: MultichainBalancesControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
       ///: END:ONLY_INCLUDE_IF
+      MultichainNetworkController: MultichainNetworkControllerInit,
     };
 
     const {
@@ -2113,6 +2097,8 @@ export default class MetamaskController extends EventEmitter {
     this.multichainTransactionsController =
       controllersByName.MultichainTransactionsController;
     ///: END:ONLY_INCLUDE_IF
+    this.multichainNetworkController =
+      controllersByName.MultichainNetworkController;
 
     this.controllerMessenger.subscribe(
       'TransactionController:transactionStatusUpdated',
