@@ -2760,8 +2760,12 @@ export function getAllAccountsOnNetworkAreEmpty(state) {
 }
 
 export function getShouldShowSeedPhraseReminder(state) {
-  const { tokens, seedPhraseBackedUp, dismissSeedBackUpReminder } =
+  const { tokens, seedPhraseBackedUp, dismissSeedBackUpReminder, isUnlocked } =
     state.metamask;
+
+  if (!isUnlocked) {
+    return false;
+  }
 
   const selectedAccount = getSelectedInternalAccount(state);
   // if there is no account, we don't need to show the seed phrase reminder
