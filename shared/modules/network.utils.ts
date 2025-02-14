@@ -112,7 +112,7 @@ export function convertCaipToHexChainId(id: CaipChainId): Hex {
   }
 
   throw new Error(
-    `Unsupported CAIP chain ID namespace: ${namespace}. Only EIP-155 is supported.`,
+    `Unsupported CAIP chain ID namespace: ${namespace}. Only eip155 is supported.`,
   );
 }
 
@@ -126,7 +126,7 @@ export function convertCaipToHexChainId(id: CaipChainId): Hex {
 export const sortNetworks = (
   networks: Record<string, MultichainNetworkConfiguration>,
   sortedChainIds: { networkId: string }[],
-) =>
+): MultichainNetworkConfiguration[] =>
   Object.values(networks).sort(
     (a, b) =>
       sortedChainIds.findIndex(({ networkId }) => networkId === a.chainId) -
