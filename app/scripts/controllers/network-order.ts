@@ -1,9 +1,11 @@
 import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
+import { SolScope } from '@metamask/keyring-api';
 import {
   NetworkControllerStateChangeEvent,
   NetworkState,
 } from '@metamask/network-controller';
-import { Hex } from '@metamask/utils';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import type { CaipChainId, Hex } from '@metamask/utils';
 import type { Patch } from 'immer';
 import { TEST_CHAINS } from '../../../shared/constants/network';
 
@@ -14,7 +16,7 @@ const controllerName = 'NetworkOrderController';
  * Information about an ordered network.
  */
 export type NetworksInfo = {
-  networkId: Hex; // The network's chain id
+  networkId: CaipChainId; // The network's chain id
 };
 
 // State shape for NetworkOrderController
@@ -49,7 +51,12 @@ export type NetworkOrderControllerMessenger = RestrictedMessenger<
 
 // Default state for the controller
 const defaultState: NetworkOrderControllerState = {
-  orderedNetworkList: [],
+  // This is not ideal but acceptable to have Solana as the hardcoded value
+  // since the networks should be provided by the controller
+  // the network-controller provides the EVM network configurations and we must
+  // do the same for non-EVM via the multichain-network-controller once it
+  // supports network addition.
+  orderedNetworkList: [{ networkId: SolScope.Mainnet }],
 };
 
 // Metadata for the controller state
@@ -112,10 +119,11 @@ export class NetworkOrderController extends BaseController<
   }: NetworkState) {
     this.update((state) => {
       // Filter out testnets, which are in the state but not orderable
-      const chainIds = Object.keys(networkConfigurationsByChainId).filter(
+      const hexChainIds = Object.keys(networkConfigurationsByChainId).filter(
         (chainId) =>
           !TEST_CHAINS.includes(chainId as (typeof TEST_CHAINS)[number]),
       ) as Hex[];
+      const chainIds: CaipChainId[] = hexChainIds.map(toEvmCaipChainId);
 
       const newNetworks = chainIds
         .filter(
@@ -140,7 +148,7 @@ export class NetworkOrderController extends BaseController<
    * @param networkList - The list of networks to update in the state.
    */
 
-  updateNetworksList(chainIds: Hex[]) {
+  updateNetworksList(chainIds: CaipChainId[]) {
     this.update((state) => {
       state.orderedNetworkList = chainIds.map((chainId) => ({
         networkId: chainId,
