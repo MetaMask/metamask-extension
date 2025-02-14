@@ -115,7 +115,8 @@ export function initControllers({
     const controllerMessengerCallback =
       messengerCallbacks?.getMessenger as ControllerMessengerCallback;
 
-    const initMessengerCallback = messengerCallbacks?.getInitMessenger;
+    const initMessengerCallback =
+      messengerCallbacks?.getInitMessenger as ControllerMessengerCallback;
 
     const controllerMessenger = controllerMessengerCallback?.(
       baseControllerMessenger,
