@@ -156,7 +156,6 @@ import {
   getEthAccounts,
   setPermittedEthChainIds,
   setEthAccounts,
-  addPermittedEthChainId,
 } from '@metamask/multichain';
 import { isProduction } from '../../shared/modules/environment';
 import {
@@ -5042,7 +5041,7 @@ export default class MetamaskController extends EventEmitter {
             },
           ],
         },
-      }
+      },
     );
   }
 
@@ -5080,7 +5079,7 @@ export default class MetamaskController extends EventEmitter {
     );
 
     if (!autoApprove) {
-      return  await this.permissionController.requestPermissionsIncremental(
+      await this.permissionController.requestPermissionsIncremental(
         { origin },
         {
           [Caip25EndowmentPermissionName]: {
@@ -5091,11 +5090,12 @@ export default class MetamaskController extends EventEmitter {
               },
             ],
           },
-        }
+        },
       );
+      return;
     }
 
-    this.permissionController.grantPermissionsIncremental({
+    await this.permissionController.grantPermissionsIncremental({
       subject: { origin },
       approvedPermissions: {
         [Caip25EndowmentPermissionName]: {
