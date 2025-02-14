@@ -9,6 +9,10 @@ import { CaipChainId, Hex, KnownCaipNamespace } from '@metamask/utils';
 import { createSelector } from 'reselect';
 import { NetworkType } from '@metamask/controller-utils';
 import { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
+import {
+  NetworkConfiguration,
+  RpcEndpointType,
+} from '@metamask/network-controller';
 import { Numeric } from '../../shared/modules/Numeric';
 import {
   MultichainProviderConfig,
@@ -45,6 +49,7 @@ import {
   getSelectedAccountCachedBalance,
   getShouldShowFiat,
   getShowFiatInTestnets,
+  getTokenList,
 } from './selectors';
 
 export type RatesState = {
@@ -469,3 +474,52 @@ export function getMultichainConversionRate(
     ? getConversionRate(state)
     : getMultichainCoinRates(state)?.[ticker.toLowerCase()]?.conversionRate;
 }
+
+// TODO get this from the multichain network controller
+export const getMultichainNetworkConfigurationsByChainId = (
+  state: MultichainState,
+): Record<Hex | CaipChainId, NetworkConfiguration> => {
+  return {
+    ...getNetworkConfigurationsByChainId(state),
+    [MultichainNetworks.SOLANA]: {
+      ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
+      blockExplorerUrls: [],
+      name:
+        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA].nickname ?? '',
+      nativeCurrency: '',
+      rpcEndpoints: [
+        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
+      ],
+      defaultRpcEndpointIndex: 0,
+      chainId: MultichainNetworks.SOLANA as unknown as Hex,
+    },
+  };
+};
+
+export const getMultichainTokenList = (
+  state: MultichainState,
+  account?: InternalAccount,
+) => {
+  const selectedAccount = account ?? getSelectedInternalAccount(state);
+  const isEvm = getMultichainIsEvm(state, selectedAccount);
+  if (isEvm) {
+    return getTokenList;
+  }
+  const nativeToken = getMultichainNativeCurrency(state, account);
+  return Object.fromEntries(
+    Object.entries(state?.metamask?.assetsMetadata ?? {})
+      .map(([a, m]) => {
+        return [
+          a,
+          {
+            ...m,
+            ...m.units[0],
+            chainId: a.split('/')[0],
+            address: a.split('/')[1],
+            isNative: nativeToken === m.units[0].symbol,
+          },
+        ];
+      })
+      .filter(([, m]) => !m.isNative),
+  );
+};

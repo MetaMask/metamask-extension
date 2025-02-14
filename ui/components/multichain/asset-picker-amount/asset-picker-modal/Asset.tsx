@@ -2,17 +2,18 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
-import {
-  getNetworkConfigurationIdByChainId,
-  getTokenList,
-} from '../../../../selectors';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { TokenListItem } from '../../token-list-item';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { formatAmount } from '../../../../pages/confirmations/components/simulation-details/formatAmount';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
-import { getImageForChainId } from '../../../../selectors/multichain';
+import {
+  getMultichainNetworkConfigurationsByChainId,
+  getMultichainTokenList,
+  getImageForChainId,
+} from '../../../../selectors/multichain';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
 
 type AssetProps = AssetWithDisplayData<NativeAsset | ERC20Asset> & {
@@ -36,8 +37,10 @@ export default function Asset({
   const locale = useSelector(getIntlLocale);
 
   const currency = useSelector(getCurrentCurrency);
-  const tokenList = useSelector(getTokenList);
-  const allNetworks = useSelector(getNetworkConfigurationIdByChainId);
+  const tokenList = useMultichainSelector(getMultichainTokenList);
+  const allNetworks = useMultichainSelector(
+    getMultichainNetworkConfigurationsByChainId,
+  );
   const isTokenChainIdInWallet = Boolean(
     chainId ? allNetworks[chainId as keyof typeof allNetworks] : true,
   );
