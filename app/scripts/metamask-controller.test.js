@@ -4234,6 +4234,16 @@ describe('MetaMaskController', () => {
         expect(currentKeyrings).toHaveLength(previousKeyrings.length + 1);
         expect(newSRP).toStrictEqual(TEST_SEED_ALT);
       });
+
+      it('throws an error if a duplicate srp is added', async () => {
+        const password = 'what-what-what';
+        jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
+
+        await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+        await expect(() =>
+          metamaskController.addNewMnemonicToVault(TEST_SEED),
+        ).rejects.toThrow('This mnemonic has already been imported.');
+      });
     });
   });
 
