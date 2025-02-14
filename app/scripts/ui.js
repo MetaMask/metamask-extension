@@ -27,9 +27,9 @@ import {
   PLATFORM_FIREFOX,
 } from '../../shared/constants/app';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
-import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
+import { checkForLastErrorAndLog, checkForLastError } from '../../shared/modules/browser-runtime.utils';
 import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
-import { getErrorHtml } from '../../shared/lib/error-utils';
+import { getErrorHtml, getStateCorruptionErrorHtml } from '../../shared/lib/error-utils';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
@@ -99,6 +99,11 @@ async function start() {
     const method = message?.data?.method;
 
     if (method !== METHOD_START_UI_SYNC) {
+      const error = JSON.parse(message.error ?? '');
+      if (error.message === 'Corruption: block checksum mismatch') {
+        displayStateCorruptionError(error, JSON.parse(message.metamaskState ?? ''));
+      }
+
       return;
     }
 
@@ -148,6 +153,13 @@ async function start() {
   });
 
   extensionPort.onMessage.addListener(messageListener);
+
+  // setInterval(() => {
+  //   if (performance.now() > startTime + 3000) {
+  //     const err = checkForLastError() || new Error();
+  //     displayCriticalError('troubleStarting', new Error());
+  //   }
+  // }, 1000);
 }
 
 /**
@@ -332,6 +344,20 @@ async function displayCriticalError(errorKey, err, metamaskState) {
     browser.runtime.reload();
   });
 
+  log.error(err.stack);
+  throw err;
+}
+
+async function displayStateCorruptionError(err, metamaskState) {
+  const html = await getStateCorruptionErrorHtml(SUPPORT_LINK, metamaskState);
+  container.innerHTML = html;
+
+  const button = document.getElementById('critical-error-button');
+
+  button?.addEventListener('click', (_) => {
+    browser.storage.local.clear();
+    browser.runtime.reload();
+  });
   log.error(err.stack);
   throw err;
 }
