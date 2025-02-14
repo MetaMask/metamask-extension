@@ -1,4 +1,4 @@
-import { get, noop } from 'lodash';
+import { noop } from 'lodash';
 import {
   getPPOMControllerMessenger,
   getPPOMControllerInitMessenger,
