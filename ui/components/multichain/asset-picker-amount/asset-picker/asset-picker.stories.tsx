@@ -161,7 +161,7 @@ const networkProps = {
 export const NetworksStory = () => {
   return (
     <AssetPicker
-      header={'Bridge from'}
+      header="Bridge from"
       onAssetChange={() => ({})}
       {...props}
       asset={{
@@ -185,7 +185,7 @@ NetworksStory.storyName = 'With Network Picker';
 export const MultichainNetworksStory = () => {
   return (
     <AssetPicker
-      header={'Bridge from'}
+      header="Bridge from"
       onAssetChange={() => ({})}
       {...props}
       asset={{
@@ -194,7 +194,7 @@ export const MultichainNetworksStory = () => {
         type: AssetType.native,
         chainId: '0x1',
       }}
-      isMultiselectEnabled={true}
+      isMultiselectEnabled
       networkProps={networkProps as never}
       visibleTabs={[TabName.TOKENS]}
     />

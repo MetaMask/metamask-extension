@@ -51,7 +51,7 @@ describe('<SnapAccountRedirect />', () => {
         snapId={mockSnapId}
         url={mockUrl}
         snapName={mockSnapName}
-        isBlockedUrl={true}
+        isBlockedUrl
         message={mockMessage}
       />,
       store,

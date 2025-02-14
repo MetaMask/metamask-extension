@@ -24,7 +24,7 @@ const Story = {
 export default Story;
 
 export const DefaultStory = () => (
-  <OriginThrottleModal isOpen={true} onConfirmationCancel={() => {}} />
+  <OriginThrottleModal isOpen onConfirmationCancel={() => {}} />
 );
 
 DefaultStory.storyName = 'Default';

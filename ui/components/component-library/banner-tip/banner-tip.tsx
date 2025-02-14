@@ -40,7 +40,7 @@ export const BannerTip: BannerTipComponent = React.forwardRef(
           >
             <Box
               as="img"
-              src={`images/fox.png`}
+              src="images/fox.png"
               alt="Fox"
               {...(logoProps as BoxProps<C>)}
               className={classnames(

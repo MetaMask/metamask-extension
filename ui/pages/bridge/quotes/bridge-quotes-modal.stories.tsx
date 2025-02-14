@@ -12,7 +12,7 @@ const storybook = {
 };
 
 export const NoTokenPricesAvailableStory = () => {
-  return <BridgeQuotesModal onClose={() => {}} isOpen={true} />;
+  return <BridgeQuotesModal onClose={() => {}} isOpen />;
 };
 NoTokenPricesAvailableStory.storyName = 'Token Prices Not Available';
 NoTokenPricesAvailableStory.decorators = [
@@ -30,7 +30,7 @@ NoTokenPricesAvailableStory.decorators = [
 ];
 
 export const DefaultStory = () => {
-  return <BridgeQuotesModal onClose={() => {}} isOpen={true} />;
+  return <BridgeQuotesModal onClose={() => {}} isOpen />;
 };
 DefaultStory.storyName = 'Default';
 DefaultStory.decorators = [
@@ -68,7 +68,7 @@ DefaultStory.decorators = [
 ];
 
 export const PositiveArbitrage = () => {
-  return <BridgeQuotesModal onClose={() => {}} isOpen={true} />;
+  return <BridgeQuotesModal onClose={() => {}} isOpen />;
 };
 PositiveArbitrage.decorators = [
   (story) => (

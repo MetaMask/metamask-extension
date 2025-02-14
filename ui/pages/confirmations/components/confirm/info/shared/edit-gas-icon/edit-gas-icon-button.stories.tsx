@@ -33,7 +33,7 @@ export default Story;
 
 export const DefaultStory = () => (
   <EditGasIconButton
-    supportsEIP1559={true}
+    supportsEIP1559
     setShowCustomizeGasPopover={() => {}}
   />
 );

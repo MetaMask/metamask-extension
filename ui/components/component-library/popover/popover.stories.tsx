@@ -120,7 +120,7 @@ export const ReferenceElement: StoryFn<typeof Popover> = (args) => {
       <Popover
         position={PopoverPosition.Bottom}
         referenceElement={referenceElement}
-        isOpen={true}
+        isOpen
         hasArrow
         {...args}
       >
@@ -146,7 +146,7 @@ export const Children: StoryFn<typeof Popover> = (args) => {
       />
       <Popover
         referenceElement={referenceElement}
-        isOpen={true}
+        isOpen
         hasArrow
         {...args}
       >
@@ -200,7 +200,7 @@ export const Position: StoryFn<typeof Popover> = (args) => {
         <Popover
           position={PopoverPosition.TopStart}
           referenceElement={referenceElement}
-          isOpen={true}
+          isOpen
           hasArrow
           {...args}
         >
@@ -209,7 +209,7 @@ export const Position: StoryFn<typeof Popover> = (args) => {
         <Popover
           position={PopoverPosition.Top}
           referenceElement={referenceElement}
-          isOpen={true}
+          isOpen
           hasArrow
           {...args}
         >
@@ -218,7 +218,7 @@ export const Position: StoryFn<typeof Popover> = (args) => {
         <Popover
           position={PopoverPosition.TopEnd}
           referenceElement={referenceElement}
-          isOpen={true}
+          isOpen
           hasArrow
           {...args}
         >
@@ -227,7 +227,7 @@ export const Position: StoryFn<typeof Popover> = (args) => {
         <Popover
           position={PopoverPosition.RightStart}
           referenceElement={referenceElement}
-          isOpen={true}
+          isOpen
           hasArrow
           {...args}
         >
@@ -236,7 +236,7 @@ export const Position: StoryFn<typeof Popover> = (args) => {
         <Popover
           position={PopoverPosition.Right}
           referenceElement={referenceElement}
-          isOpen={true}
+          isOpen
           hasArrow
           {...args}
         >
@@ -245,7 +245,7 @@ export const Position: StoryFn<typeof Popover> = (args) => {
         <Popover
           position={PopoverPosition.RightEnd}
           referenceElement={referenceElement}
-          isOpen={true}
+          isOpen
           hasArrow
           {...args}
         >
@@ -254,7 +254,7 @@ export const Position: StoryFn<typeof Popover> = (args) => {
         <Popover
           position={PopoverPosition.BottomStart}
           referenceElement={referenceElement}
-          isOpen={true}
+          isOpen
           hasArrow
           {...args}
         >
@@ -263,7 +263,7 @@ export const Position: StoryFn<typeof Popover> = (args) => {
         <Popover
           position={PopoverPosition.Bottom}
           referenceElement={referenceElement}
-          isOpen={true}
+          isOpen
           hasArrow
           {...args}
         >
@@ -272,7 +272,7 @@ export const Position: StoryFn<typeof Popover> = (args) => {
         <Popover
           position={PopoverPosition.BottomEnd}
           referenceElement={referenceElement}
-          isOpen={true}
+          isOpen
           hasArrow
           {...args}
         >
@@ -281,7 +281,7 @@ export const Position: StoryFn<typeof Popover> = (args) => {
         <Popover
           position={PopoverPosition.LeftStart}
           referenceElement={referenceElement}
-          isOpen={true}
+          isOpen
           hasArrow
           {...args}
         >
@@ -290,7 +290,7 @@ export const Position: StoryFn<typeof Popover> = (args) => {
         <Popover
           position={PopoverPosition.Left}
           referenceElement={referenceElement}
-          isOpen={true}
+          isOpen
           hasArrow
           {...args}
         >
@@ -299,7 +299,7 @@ export const Position: StoryFn<typeof Popover> = (args) => {
         <Popover
           position={PopoverPosition.LeftEnd}
           referenceElement={referenceElement}
-          isOpen={true}
+          isOpen
           hasArrow
           {...args}
         >
@@ -339,7 +339,7 @@ export const Position: StoryFn<typeof Popover> = (args) => {
           <Popover
             position={PopoverPosition.Auto}
             referenceElement={referenceAutoElement}
-            isOpen={true}
+            isOpen
             hasArrow
             {...args}
           >
@@ -368,8 +368,8 @@ export const IsPortal: StoryFn<typeof Popover> = (args) => {
       <Popover
         referenceElement={referenceElement}
         position={PopoverPosition.RightEnd}
-        isOpen={true}
-        isPortal={true}
+        isOpen
+        isPortal
         hasArrow
         {...args}
       >
@@ -378,7 +378,7 @@ export const IsPortal: StoryFn<typeof Popover> = (args) => {
       <Popover
         referenceElement={referenceElement}
         position={PopoverPosition.RightStart}
-        isOpen={true}
+        isOpen
         isPortal={false}
         hasArrow
         {...args}
@@ -406,7 +406,7 @@ export const HasArrow: StoryFn<typeof Popover> = (args) => {
       <Popover
         position={PopoverPosition.RightStart}
         referenceElement={referenceElement}
-        isOpen={true}
+        isOpen
         hasArrow
         {...args}
       >
@@ -415,7 +415,7 @@ export const HasArrow: StoryFn<typeof Popover> = (args) => {
       <Popover
         position={PopoverPosition.RightEnd}
         referenceElement={referenceElement}
-        isOpen={true}
+        isOpen
         {...args}
       >
         <Text>Popover with no arrow</Text>
@@ -453,7 +453,7 @@ export const IsOpen: StoryFn<typeof Popover> = (args) => {
       <Popover
         position={PopoverPosition.RightStart}
         referenceElement={referenceElement}
-        isOpen={true}
+        isOpen
         hasArrow
         {...args}
       >
@@ -500,7 +500,7 @@ export const Flip: StoryFn<typeof Popover> = (args) => {
       <Popover
         position={PopoverPosition.TopStart}
         referenceElement={referenceElement}
-        isOpen={true}
+        isOpen
         hasArrow
         {...args}
       >
@@ -511,7 +511,7 @@ export const Flip: StoryFn<typeof Popover> = (args) => {
         referenceElement={referenceElement}
         hasArrow
         flip
-        isOpen={true}
+        isOpen
         {...args}
       >
         true
@@ -548,7 +548,7 @@ export const PreventOverflow: StoryFn<typeof Popover> = (args) => {
       <Popover
         position={PopoverPosition.Left}
         referenceElement={referenceElement}
-        isOpen={true}
+        isOpen
         hasArrow
         {...args}
       >
@@ -559,7 +559,7 @@ export const PreventOverflow: StoryFn<typeof Popover> = (args) => {
         referenceElement={referenceElement}
         hasArrow
         preventOverflow
-        isOpen={true}
+        isOpen
         {...args}
       >
         true
@@ -595,7 +595,7 @@ export const ReferenceHidden: StoryFn<typeof Popover> = (args) => {
       <Popover
         position={PopoverPosition.BottomStart}
         referenceElement={referenceElement}
-        isOpen={true}
+        isOpen
         referenceHidden={false}
         hasArrow
         {...args}
@@ -606,7 +606,7 @@ export const ReferenceHidden: StoryFn<typeof Popover> = (args) => {
         position={PopoverPosition.BottomEnd}
         referenceElement={referenceElement}
         hasArrow
-        isOpen={true}
+        isOpen
         {...args}
       >
         <Text>true</Text>
@@ -632,7 +632,7 @@ export const MatchWidth: StoryFn<typeof Popover> = (args) => {
       <Popover
         position={PopoverPosition.Bottom}
         referenceElement={referenceElement}
-        isOpen={true}
+        isOpen
         matchWidth
         {...args}
       >
@@ -673,7 +673,7 @@ export const Role: StoryFn<typeof Popover> = (args) => {
         position={PopoverPosition.Left}
         role={PopoverRole.Dialog}
         referenceElement={referenceElement}
-        isOpen={true}
+        isOpen
         {...args}
       >
         <Text>{PopoverRole.Dialog}</Text>
@@ -682,7 +682,7 @@ export const Role: StoryFn<typeof Popover> = (args) => {
         position={PopoverPosition.Right}
         role={PopoverRole.Tooltip}
         referenceElement={referenceElement}
-        isOpen={true}
+        isOpen
         {...args}
       >
         <Text>{PopoverRole.Tooltip}</Text>
@@ -718,7 +718,7 @@ export const Offset: StoryFn<typeof Popover> = (args) => {
       <Popover
         position={PopoverPosition.Left}
         referenceElement={referenceElement}
-        isOpen={true}
+        isOpen
         {...args}
       >
         <Text>offset default</Text>
@@ -726,7 +726,7 @@ export const Offset: StoryFn<typeof Popover> = (args) => {
       <Popover
         position={PopoverPosition.Right}
         referenceElement={referenceElement}
-        isOpen={true}
+        isOpen
         offset={[0, 32]}
         {...args}
       >

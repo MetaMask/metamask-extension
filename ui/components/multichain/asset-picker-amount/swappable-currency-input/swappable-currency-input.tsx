@@ -129,7 +129,7 @@ export function SwappableCurrencyInput({
   }
 
   return (
-    <Box marginLeft={'auto'}>
+    <Box marginLeft="auto">
       <Text variant={TextVariant.bodySm}>{t('tokenId')}</Text>
       <Text
         variant={TextVariant.bodySm}

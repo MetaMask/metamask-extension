@@ -85,12 +85,12 @@ export const TemplateStory: StoryFn<typeof MultipleAlertModal> = (args) => {
       {isOpen && (
         <MultipleAlertModal
           {...args}
-          alertKey={'From'}
+          alertKey="From"
           onClose={handleOnClose}
           onFinalAcknowledgeClick={handleOnClose}
         />
       )}
-      <Button onClick={handleOnClick} danger={true}>
+      <Button onClick={handleOnClick} danger>
         Open multiple alert modal
       </Button>
     </Box>

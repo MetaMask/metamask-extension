@@ -41,7 +41,7 @@ describe('BridgeQuotesModal', () => {
 
     const { baseElement } = renderWithProvider(
       <BridgeQuotesModal
-        isOpen={true}
+        isOpen
         onClose={() => {
           console.log('close');
         }}

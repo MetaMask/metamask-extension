@@ -137,9 +137,7 @@ const HeaderInfo = () => {
                   variant={TextVariant.bodyMd}
                   color={TextColor.textDefault}
                   marginTop={2}
-                  data-testid={
-                    'confirmation-account-details-modal__account-name'
-                  }
+                  data-testid="confirmation-account-details-modal__account-name"
                 >
                   {fromName}
                 </Text>
@@ -158,7 +156,7 @@ const HeaderInfo = () => {
           </ModalHeader>
           <ModalBody>
             <ConfirmInfoRow label="Account address">
-              <AddressCopyButton address={fromAddress} shorten={true} />
+              <AddressCopyButton address={fromAddress} shorten />
             </ConfirmInfoRow>
             <ConfirmInfoRow label="Balance">
               <ConfirmInfoRowCurrency

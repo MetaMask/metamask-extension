@@ -77,7 +77,7 @@ export default function SRPQuiz(props: any) {
     title = t('srpSecurityQuizTitle');
     return (
       <QuizContent
-        image={'images/reveal-srp.png'}
+        image="images/reveal-srp.png"
         content={t('srpSecurityQuizIntroduction')}
         buttons={[
           {

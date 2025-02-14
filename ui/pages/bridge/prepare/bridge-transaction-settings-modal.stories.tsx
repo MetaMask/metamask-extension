@@ -10,7 +10,7 @@ const storybook = {
 };
 
 export const DefaultStory = () => {
-  return <BridgeTransactionSettingsModal isOpen={true} onClose={() => {}} />;
+  return <BridgeTransactionSettingsModal isOpen onClose={() => {}} />;
 };
 
 DefaultStory.storyName = 'Default';

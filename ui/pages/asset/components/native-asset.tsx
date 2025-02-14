@@ -44,7 +44,7 @@ const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
       }}
       optionsButton={
         <AssetOptions
-          isNativeAsset={true}
+          isNativeAsset
           onClickBlockExplorer={() => {
             trackEvent({
               event: 'Clicked Block Explorer Link',

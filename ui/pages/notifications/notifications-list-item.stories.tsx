@@ -90,7 +90,7 @@ const Template = () => {
   };
 
   return (
-    <Box marginLeft={'auto'} marginRight={'auto'}>
+    <Box marginLeft="auto" marginRight="auto">
       {notificationList.map((notification) => (
         <NotificationItemWrapper
           key={notification.id}

@@ -18,7 +18,7 @@ describe('GeneralAlert', () => {
   });
 
   it('renders the details when provided', () => {
-    const details = <Text>{'Additional details'}</Text>;
+    const details = <Text>Additional details</Text>;
     const onClickSupportLink = jest.fn();
     const reportUrl = 'https://example.com/report';
     const { getByText } = renderWithProvider(

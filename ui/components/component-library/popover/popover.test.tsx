@@ -7,7 +7,7 @@ import { PopoverPosition } from './popover.types';
 describe('Popover', () => {
   it('should render popover element correctly', () => {
     const { getByTestId, getByText, container } = render(
-      <Popover data-testid="popover" isOpen={true} isPortal={false}>
+      <Popover data-testid="popover" isOpen isPortal={false}>
         Popover
       </Popover>,
     );
@@ -28,7 +28,7 @@ describe('Popover', () => {
 
   it('should render popover children', () => {
     const { getByText } = render(
-      <Popover isOpen={true}>Popover content goes here</Popover>,
+      <Popover isOpen>Popover content goes here</Popover>,
     );
     expect(getByText('Popover content goes here')).toBeDefined();
   });
@@ -37,7 +37,7 @@ describe('Popover', () => {
     const { getByTestId } = render(
       <>
         <Popover
-          isOpen={true}
+          isOpen
           isPortal={false}
           data-testid={PopoverPosition.Auto}
           position={PopoverPosition.Auto}
@@ -46,7 +46,7 @@ describe('Popover', () => {
         </Popover>
 
         <Popover
-          isOpen={true}
+          isOpen
           isPortal={false}
           data-testid="top"
           position={PopoverPosition.Top}
@@ -55,7 +55,7 @@ describe('Popover', () => {
         </Popover>
 
         <Popover
-          isOpen={true}
+          isOpen
           isPortal={false}
           data-testid={PopoverPosition.TopStart}
           position={PopoverPosition.TopStart}
@@ -64,7 +64,7 @@ describe('Popover', () => {
         </Popover>
 
         <Popover
-          isOpen={true}
+          isOpen
           isPortal={false}
           data-testid={PopoverPosition.TopEnd}
           position={PopoverPosition.TopEnd}
@@ -73,7 +73,7 @@ describe('Popover', () => {
         </Popover>
 
         <Popover
-          isOpen={true}
+          isOpen
           isPortal={false}
           data-testid={PopoverPosition.Right}
           position={PopoverPosition.Right}
@@ -82,7 +82,7 @@ describe('Popover', () => {
         </Popover>
 
         <Popover
-          isOpen={true}
+          isOpen
           isPortal={false}
           data-testid={PopoverPosition.RightStart}
           position={PopoverPosition.RightStart}
@@ -91,7 +91,7 @@ describe('Popover', () => {
         </Popover>
 
         <Popover
-          isOpen={true}
+          isOpen
           isPortal={false}
           data-testid={PopoverPosition.RightEnd}
           position={PopoverPosition.RightEnd}
@@ -100,7 +100,7 @@ describe('Popover', () => {
         </Popover>
 
         <Popover
-          isOpen={true}
+          isOpen
           isPortal={false}
           data-testid={PopoverPosition.Bottom}
           position={PopoverPosition.Bottom}
@@ -109,7 +109,7 @@ describe('Popover', () => {
         </Popover>
 
         <Popover
-          isOpen={true}
+          isOpen
           isPortal={false}
           data-testid={PopoverPosition.BottomStart}
           position={PopoverPosition.BottomStart}
@@ -118,7 +118,7 @@ describe('Popover', () => {
         </Popover>
 
         <Popover
-          isOpen={true}
+          isOpen
           isPortal={false}
           data-testid={PopoverPosition.BottomEnd}
           position={PopoverPosition.BottomEnd}
@@ -127,7 +127,7 @@ describe('Popover', () => {
         </Popover>
 
         <Popover
-          isOpen={true}
+          isOpen
           isPortal={false}
           data-testid={PopoverPosition.Left}
           position={PopoverPosition.Left}
@@ -136,7 +136,7 @@ describe('Popover', () => {
         </Popover>
 
         <Popover
-          isOpen={true}
+          isOpen
           isPortal={false}
           data-testid={PopoverPosition.LeftStart}
           position={PopoverPosition.LeftStart}
@@ -145,7 +145,7 @@ describe('Popover', () => {
         </Popover>
 
         <Popover
-          isOpen={true}
+          isOpen
           isPortal={false}
           data-testid={PopoverPosition.LeftEnd}
           position={PopoverPosition.LeftEnd}
@@ -172,7 +172,7 @@ describe('Popover', () => {
 
   it('should render an arrow on popover', () => {
     const { getByTestId } = render(
-      <Popover data-testid="popover" isOpen={true} hasArrow>
+      <Popover data-testid="popover" isOpen hasArrow>
         Popover
       </Popover>,
     );
@@ -187,7 +187,7 @@ describe('Popover', () => {
       <div>
         <Popover
           data-testid="popover"
-          isOpen={true}
+          isOpen
           position={PopoverPosition.Bottom}
           isPortal={false}
         >
@@ -202,7 +202,7 @@ describe('Popover', () => {
   test('should render Popover with isPortal set to true', () => {
     const { getByTestId } = render(
       <div>
-        <Popover data-testid="popover" isOpen={true} isPortal={true}>
+        <Popover data-testid="popover" isOpen isPortal>
           <p>Popover content</p>
         </Popover>
       </div>,
@@ -214,7 +214,7 @@ describe('Popover', () => {
   test('should add reference-hidden classname when referenceHidden prop is true', () => {
     const { getByTestId } = render(
       <div>
-        <Popover data-testid="popover" isOpen={true} referenceHidden={true}>
+        <Popover data-testid="popover" isOpen referenceHidden>
           <p>Popover content</p>
         </Popover>
       </div>,

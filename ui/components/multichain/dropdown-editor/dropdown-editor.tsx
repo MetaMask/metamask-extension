@@ -236,7 +236,7 @@ export const DropdownEditor = <Item,>({
           paddingTop={items && items.length > 0 ? 2 : 0}
           paddingBottom={items && items.length > 0 ? 2 : 0}
           paddingLeft={0}
-          matchWidth={true}
+          matchWidth
           paddingRight={0}
           className="dropdown-editor__item-popover"
           referenceElement={dropdown.current}

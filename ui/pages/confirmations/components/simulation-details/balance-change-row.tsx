@@ -44,7 +44,7 @@ export const BalanceChangeRow: React.FC<{
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         gap={1}
-        marginLeft={'auto'}
+        marginLeft="auto"
         style={{ minWidth: 0 }}
       >
         <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={1}>

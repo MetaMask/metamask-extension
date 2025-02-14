@@ -175,7 +175,7 @@ describe('MultipleAlertModal', () => {
       <MultipleAlertModal
         {...defaultProps}
         alertKey={DATA_ALERT_KEY_MOCK}
-        skipAlertNavigation={true}
+        skipAlertNavigation
       />,
       mockStoreAcknowledgeAlerts,
     );

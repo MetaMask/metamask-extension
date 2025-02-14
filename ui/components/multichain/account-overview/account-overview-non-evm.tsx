@@ -10,10 +10,10 @@ export const AccountOverviewNonEvm = ({
 }: AccountOverviewNonEvmProps) => {
   return (
     <AccountOverviewLayout
-      showTokens={true}
+      showTokens
       showTokensLinks={false}
       showNfts={false}
-      showActivity={true}
+      showActivity
       {...props}
     >
       {

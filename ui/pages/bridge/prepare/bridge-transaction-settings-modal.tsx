@@ -185,7 +185,7 @@ export const BridgeTransactionSettingsModal = ({
                     setCustomSlippage(value);
                   }
                 }}
-                autoFocus={true}
+                autoFocus
                 onBlur={() => {
                   setShowCustomButton(true);
                 }}

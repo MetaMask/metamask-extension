@@ -62,7 +62,7 @@ describe('AssetPicker', () => {
     const { asFragment } = render(
       <Provider store={store()}>
         <AssetPicker
-          header={'testHeader'}
+          header="testHeader"
           asset={asset}
           onAssetChange={() => mockAssetChange()}
         />
@@ -82,7 +82,7 @@ describe('AssetPicker', () => {
     const { getByTestId } = render(
       <Provider store={store('NATIVE')}>
         <AssetPicker
-          header={'testHeader'}
+          header="testHeader"
           asset={asset}
           onAssetChange={() => mockAssetChange()}
           onClick={mockOnClick}
@@ -104,7 +104,7 @@ describe('AssetPicker', () => {
     const { getByText, getByAltText } = render(
       <Provider store={store('NATIVE')}>
         <AssetPicker
-          header={'testHeader'}
+          header="testHeader"
           asset={asset}
           onAssetChange={() => mockAssetChange()}
         />
@@ -131,7 +131,7 @@ describe('AssetPicker', () => {
     const { getByText, getByAltText } = render(
       <Provider store={store(NATIVE_TICKER)}>
         <AssetPicker
-          header={'testHeader'}
+          header="testHeader"
           asset={asset}
           onAssetChange={() => mockAssetChange()}
         />
@@ -159,7 +159,7 @@ describe('AssetPicker', () => {
     const { getByText, getByAltText } = render(
       <Provider store={store("SHOULDN'T MATTER")}>
         <AssetPicker
-          header={'testHeader'}
+          header="testHeader"
           asset={asset}
           onAssetChange={() => mockAssetChange()}
         />
@@ -187,7 +187,7 @@ describe('AssetPicker', () => {
     const { getByText, getByAltText } = render(
       <Provider store={store("SHOULDN'T MATTER")}>
         <AssetPicker
-          header={'testHeader'}
+          header="testHeader"
           asset={asset}
           onAssetChange={() => mockAssetChange()}
         />
@@ -220,7 +220,7 @@ describe('AssetPicker', () => {
         )}
       >
         <AssetPicker
-          header={'testHeader'}
+          header="testHeader"
           asset={asset}
           onAssetChange={() => mockAssetChange()}
         />
@@ -241,7 +241,7 @@ describe('AssetPicker', () => {
     const { getByText } = render(
       <Provider store={store()}>
         <AssetPicker
-          header={'testHeader'}
+          header="testHeader"
           asset={asset}
           onAssetChange={() => mockAssetChange()}
         />
@@ -261,7 +261,7 @@ describe('AssetPicker', () => {
     const { getByText } = render(
       <Provider store={store()}>
         <AssetPicker
-          header={'testHeader'}
+          header="testHeader"
           asset={asset}
           onAssetChange={() => mockAssetChange()}
         />
@@ -287,7 +287,7 @@ describe('AssetPicker', () => {
         )}
       >
         <AssetPicker
-          header={'testHeader'}
+          header="testHeader"
           asset={asset}
           onAssetChange={() => mockAssetChange()}
           isDisabled
@@ -310,7 +310,7 @@ describe('AssetPicker', () => {
     const { asFragment } = render(
       <Provider store={store(NATIVE_TICKER)}>
         <AssetPicker
-          header={'testHeader'}
+          header="testHeader"
           asset={asset}
           onAssetChange={() => mockAssetChange()}
           isDisabled

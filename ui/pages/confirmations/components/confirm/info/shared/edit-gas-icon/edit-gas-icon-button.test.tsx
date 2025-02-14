@@ -13,7 +13,7 @@ describe('<EditGasIconButton />', () => {
     const mockStore = configureMockStore(middleware)(state);
     const { container } = renderWithProvider(
       <EditGasIconButton
-        supportsEIP1559={true}
+        supportsEIP1559
         setShowCustomizeGasPopover={() => console.log('open popover')}
       />,
       mockStore,

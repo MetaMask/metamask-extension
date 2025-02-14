@@ -152,7 +152,7 @@ export const ControlledValue: StoryFn<typeof SelectWrapper> = (args) => {
       </Text>
       <SelectWrapper
         {...args}
-        defaultValue={'DefaultValue'}
+        defaultValue="DefaultValue"
         value={controlledValue}
         onValueChange={(value) => setControlledValue(value)}
         triggerComponent={<SelectButton>Controlled </SelectButton>}

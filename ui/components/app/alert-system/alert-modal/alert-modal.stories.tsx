@@ -88,12 +88,12 @@ export const DefaultStory: StoryFn<typeof AlertModal> = (args) => {
       {isOpen && (
         <AlertModal
           {...args}
-          alertKey={'From'}
+          alertKey="From"
           onClose={handleOnClose}
           onAcknowledgeClick={handleOnClose}
         />
       )}
-      <Button onClick={handleOnClick} danger={true}>Open alert modal</Button>
+      <Button onClick={handleOnClick} danger>Open alert modal</Button>
     </Box>
   );
 };

@@ -65,7 +65,7 @@ export const NotificationDetailBlockExplorerButton = ({
       text={blockExplorerButtonText}
       href={`${blockExplorerUrl}/tx/${txHash}`}
       id={id}
-      isExternal={true}
+      isExternal
     />
   );
 };

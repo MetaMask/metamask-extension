@@ -12,7 +12,7 @@ export const SnapUITooltip: FunctionComponent<SnapUITooltipProps> = ({
   return (
     <Tooltip
       html={content}
-      position={'bottom'}
+      position="bottom"
       // Avoid tooltip from taking up the full width of the container
       style={{ display: 'inline-flex' }}
     >

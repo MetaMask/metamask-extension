@@ -78,7 +78,7 @@ const Template = ({ notification }: { notification: Notification }) => {
   const ncs = NotificationComponents[notification.type];
 
   return (
-    <Box marginLeft={'auto'} marginRight={'auto'}>
+    <Box marginLeft="auto" marginRight="auto">
       <NotificationsPage>
         <NotificationDetailsHeader
           onClickBack={() => console.log('click back')}

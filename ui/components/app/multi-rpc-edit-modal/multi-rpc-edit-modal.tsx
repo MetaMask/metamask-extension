@@ -36,7 +36,7 @@ function MultiRpcEditModal() {
 
   return (
     <Modal
-      isOpen={true}
+      isOpen
       onClose={() => dispatch(setShowMultiRpcModal(false))}
       isClosedOnOutsideClick={false}
       isClosedOnEscapeKey={false}
