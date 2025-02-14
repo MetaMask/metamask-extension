@@ -6,7 +6,7 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 
-describe('Account list - pin/unpin functionality', function (this: Suite) {
+describe('Account list - pin/unpin functionality TEST', function (this: Suite) {
   it('pin and unpin account by clicking the pin/unpin button', async function () {
     await withFixtures(
       {

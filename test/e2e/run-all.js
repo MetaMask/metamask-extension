@@ -7,12 +7,10 @@ const { runInShell } = require('../../development/lib/run-command');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 const { loadBuildTypesConfig } = require('../../development/lib/build-type');
 const {
-  skipQualityGate,
-} = require('../../.circleci/scripts/git-diff-default-branch');
-const {
   filterE2eChangedFiles,
   getChangedAndNewFiles,
   readChangedAndNewFilesWithStatus,
+  shouldE2eQualityGateBeSkipped,
 } = require('./changedFilesUtil');
 
 // These tests should only be run on Flask for now.
@@ -70,7 +68,7 @@ function applyQualityGate(fullTestList, changedOrNewTests) {
 }
 
 // For running E2Es in parallel in CI
-async function runningOnCircleCI(testPaths) {
+function runningOnCircleCI(testPaths) {
   const changedandNewFilesPathsWithStatus = readChangedAndNewFilesWithStatus();
   const changedandNewFilesPaths = getChangedAndNewFiles(
     changedandNewFilesPathsWithStatus,
@@ -78,7 +76,7 @@ async function runningOnCircleCI(testPaths) {
   const changedOrNewTests = filterE2eChangedFiles(changedandNewFilesPaths);
   console.log('Changed or new test list:', changedOrNewTests);
 
-  const fullTestList = (await skipQualityGate())
+  const fullTestList = shouldE2eQualityGateBeSkipped()
     ? testPaths
     : applyQualityGate(testPaths.join('\n'), changedOrNewTests);
 

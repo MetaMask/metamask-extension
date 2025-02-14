@@ -7,6 +7,7 @@ const CHANGED_FILES_PATH = path.join(
   'changed-files',
   'changed-files.txt',
 );
+const PR_INFO_PATH = path.join(BASE_PATH, 'changed-files', 'pr-body.txt');
 
 /**
  * Reads the list of changed files from the git diff file with status (A, M, D).
@@ -80,10 +81,46 @@ function getChangedAndNewFiles(changedFiles) {
   return changedFiles.map((file) => file.filePath);
 }
 
+/**
+ * Checks if the E2E quality gate should be skipped based on the PR info.
+ *
+ * @returns {boolean} True if the quality gate should be skipped, otherwise false.
+ */
+function shouldE2eQualityGateBeSkipped() {
+  try {
+    const data = fs.readFileSync(PR_INFO_PATH, 'utf8');
+    const lines = data.split('\n');
+    const labelsLine = lines.find((line) => line.startsWith('PR labels:'));
+    const baseLine = lines.find((line) => line.startsWith('PR base:'));
+
+    const labels = labelsLine
+      ? labelsLine
+          .replace('PR labels: {', '')
+          .replace('}', '')
+          .split(',')
+          .map((label) => label.trim())
+      : [];
+    const base = baseLine
+      ? baseLine.replace('PR base: {', '').replace('}', '').trim()
+      : '';
+    console.log('PR labels', labels);
+    console.log('PR base', base);
+
+    const skipGate =
+      labels.includes('skip-e2e-quality-gate') || base !== 'main';
+    console.log('Should we skip the e2e quality gate:', skipGate);
+    return skipGate;
+  } catch (error) {
+    console.error('Error reading PR body file:', error);
+    return false;
+  }
+}
+
 module.exports = {
   filterE2eChangedFiles,
   getChangedAndNewFiles,
   getChangedFilesOnly,
   getNewFilesOnly,
   readChangedAndNewFilesWithStatus,
+  shouldE2eQualityGateBeSkipped,
 };
