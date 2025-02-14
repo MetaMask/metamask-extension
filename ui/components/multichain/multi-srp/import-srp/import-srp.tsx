@@ -230,7 +230,10 @@ export const ImportSRP = ({
               onActionComplete(true);
               dispatch(setShowNewSRPAddedToast(true));
             } catch (e) {
-              console.error('error', e);
+              setSrpError(
+                e instanceof Error ? e.message : 'An unknown error occurred',
+              );
+              setLoading(false);
             }
           }}
         >
