@@ -37,7 +37,6 @@ function TokenList({ onTokenClick }: TokenListProps) {
     chainIds: chainIdsToPoll as Hex[],
   });
 
-  // const nonEvmNativeToken = useNativeTokenBalance();
   const multichainAssets = useMultiChainAssets();
 
   // network filter to determine which tokens to show in list
@@ -46,7 +45,6 @@ function TokenList({ onTokenClick }: TokenListProps) {
 
   const sortedFilteredTokens = useMemo(() => {
     const balances = isEvm ? evmBalances : multichainAssets;
-    // console.log('balances: ', balances);
     const filteredAssets: TokenWithFiatAmount[] = filterAssets(balances, [
       {
         key: 'chainId',
