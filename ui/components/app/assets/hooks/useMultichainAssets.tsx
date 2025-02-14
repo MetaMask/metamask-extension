@@ -7,15 +7,15 @@ import {
 } from '../../../../selectors/assets';
 import { ParsedAssetId, parseAssetId } from '../util/parseAssetId';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../shared/constants/network';
-
-const accountId = 'e0bcfad0-2d3f-48cd-b50f-8a2f1d4f7dea';
+import { getSelectedInternalAccount } from '../../../../selectors';
 
 const useMultiChainAssets = () => {
+  const account = useSelector(getSelectedInternalAccount);
   const multichainBalances = useSelector(getMultichainBalances);
   const accountAssets = useSelector(getAccountAssets);
   const assetsMetadata = useSelector(getAssetsMetadata);
 
-  const assetIds = accountAssets[accountId] || [];
+  const assetIds = accountAssets[account.id];
 
   const parsedAssetIds: Record<string, ParsedAssetId> = {};
   for (let assetId of assetIds) {
@@ -23,7 +23,7 @@ const useMultiChainAssets = () => {
     parsedAssetIds[assetId] = parsedAssetId;
   }
 
-  const balances = multichainBalances[accountId];
+  const balances = multichainBalances[account.id];
   return assetIds.map((assetId) => {
     const balance = balances[assetId] || { amount: '0', unit: '' };
     const metadata = assetsMetadata[assetId] || {
