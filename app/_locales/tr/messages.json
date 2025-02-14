@@ -4895,9 +4895,6 @@
     "message": "Ani piyasa değişiklikleri başarısızlıklara neden olabilir. Sorun devam ederse lütfen $1 ile iletişime geç.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxOptInDescription": {
-    "message": "Daha güvenilir ve güvenli işlemler için Ethereum Ana Ağı üzerinde Akıllı İşlemleri açın. $1"
-  },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Swap işlemin özel olarak gönderiliyor..."
   },
