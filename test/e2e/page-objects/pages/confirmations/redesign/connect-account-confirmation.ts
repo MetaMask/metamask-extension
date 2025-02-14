@@ -10,7 +10,7 @@ class ConnectAccountConfirmation {
 
   private readonly connectAccountConfirmationTitle = {
     text: 'Connect this website with MetaMask.',
-    tag: 'h2',
+    tag: 'p',
   };
 
   constructor(driver: Driver) {
