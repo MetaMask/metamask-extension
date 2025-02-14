@@ -1610,9 +1610,6 @@
   "editAccounts": {
     "message": "Edit accounts"
   },
-  "selectAccountToConnect": {
-    "message": "Select an account to connect"
-  },
   "editAddressNickname": {
     "message": "Edit address nickname"
   },
@@ -4486,6 +4483,9 @@
   },
   "select": {
     "message": "Select"
+  },
+  "selectAccountToConnect": {
+    "message": "Select an account to connect"
   },
   "selectAccounts": {
     "message": "Select the account(s) to use on this site"
