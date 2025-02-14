@@ -68,9 +68,9 @@ const useMultiChainAssets = () => {
       chainId,
       isNative: false,
       primary: balance.amount,
-      secondary: balance.amount,
-      string: balance.amount,
-      tokenFiatAmount: balance.amount,
+      secondary: '', // secondary balance (usually in fiat)
+      string: '',
+      tokenFiatAmount: '',
       isStakeable: false,
     };
   });

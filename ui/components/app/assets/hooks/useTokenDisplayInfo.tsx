@@ -111,7 +111,7 @@ export const useTokenDisplayInfo = ({
   return {
     title: token.title,
     tokenImage: token.image,
-    primary: '',
+    primary: token.primary,
     secondary: token.secondary,
     isStakeable: false,
     tokenChainImage: token.image as string,

@@ -17,6 +17,7 @@ type TokenCellPrimaryDisplayProps = {
 
 export const TokenCellPrimaryDisplay = React.memo(
   ({ token, privacyMode }: TokenCellPrimaryDisplayProps) => {
+    console.log(token);
     return (
       <SensitiveText
         data-testid="multichain-token-list-item-value"
