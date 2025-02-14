@@ -6,12 +6,15 @@ import {
   toCaipChainId,
   KnownCaipNamespace,
   hexToBigInt,
+  parseCaipChainId,
+  isCaipReference,
 } from '@metamask/utils';
 import { zeroAddress, toChecksumAddress } from 'ethereumjs-util';
 import { MultichainNetworks } from '../../constants/multichain/networks';
 import { ChainId } from '../../types/bridge';
-import { hexToDecimal } from '../conversion.utils';
+import { decimalToPrefixedHex, hexToDecimal } from '../conversion.utils';
 import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../constants/multichain/assets';
+import { isValidNumber } from './validators';
 
 // Converts a chainId to a CaipChainId
 export const normalizeChainId = (
@@ -31,6 +34,7 @@ export const normalizeChainId = (
   }
   return toCaipChainId(KnownCaipNamespace.Eip155, chainIdString);
 };
+
 export const formatChainIdToDec = (chainId: number | Hex | CaipChainId) => {
   if (isStrictHexString(chainId)) {
     return Number(hexToDecimal(chainId));
@@ -43,6 +47,19 @@ export const formatChainIdToDec = (chainId: number | Hex | CaipChainId) => {
   }
 
   return chainId;
+};
+
+export const formatChainIdToHex = (chainId: number | Hex | CaipChainId) => {
+  if (isStrictHexString(chainId)) {
+    return chainId;
+  }
+  if (isCaipChainId(chainId)) {
+    const { reference } = parseCaipChainId(chainId);
+    if (isCaipReference(reference) && isValidNumber(reference)) {
+      return decimalToPrefixedHex(reference);
+    }
+  }
+  return undefined;
 };
 
 export const formatAddressToString = (address?: string) => {
