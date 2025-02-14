@@ -143,9 +143,6 @@ import { isEvmAccountType } from '@metamask/keyring-api';
 import { hexToBigInt, toCaipChainId } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 import {
-  MultichainNetworkController,
-} from '@metamask/multichain-network-controller';
-import {
   AuthenticationController,
   UserStorageController,
 } from '@metamask/profile-sync-controller';
