@@ -1,12 +1,16 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import TokenTracker from '@metamask/eth-token-tracker';
 import { shallowEqual, useSelector } from 'react-redux';
 import { getSelectedInternalAccount } from '../selectors';
 import { getProviderConfig } from '../../shared/modules/selectors/networks';
 import { SECOND } from '../../shared/constants/time';
-import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { useEqualityCheck } from './useEqualityCheck';
 
+/**
+ * @deprecated use `useTokenBalances()` or similar hooks.
+ * @param {*} props
+ * @returns tokens with balances + some loading/error states
+ */
 export function useTokenTracker({
   tokens,
   address,
@@ -26,6 +30,13 @@ export function useTokenTracker({
   const [error, setError] = useState(null);
   const tokenTracker = useRef(null);
   const memoizedTokens = useEqualityCheck(tokens);
+  const memoTokenMap = useMemo(() => {
+    if (!memoizedTokens) {
+      return undefined;
+    }
+
+    return new Map(memoizedTokens.map((t) => [t.address?.toLowerCase(), t]));
+  }, [memoizedTokens]);
 
   const updateBalances = useCallback(
     (tokenWithBalances) => {
@@ -35,8 +46,8 @@ export function useTokenTracker({
       // TODO: improve this pattern for adding this field when we improve support for
       // EIP721 tokens.
       const matchingTokensWithIsERC721Flag = matchingTokens.map((token) => {
-        const additionalTokenData = memoizedTokens.find((t) =>
-          isEqualCaseInsensitive(t.address, token.address),
+        const additionalTokenData = memoTokenMap.get(
+          token.address.toLowerCase(),
         );
         return {
           ...token,
@@ -48,7 +59,7 @@ export function useTokenTracker({
       setLoading(false);
       setError(null);
     },
-    [hideZeroBalanceTokens, memoizedTokens],
+    [hideZeroBalanceTokens, memoTokenMap],
   );
 
   const showError = useCallback((err) => {
