@@ -1601,6 +1601,9 @@
   "editAccounts": {
     "message": "Edit accounts"
   },
+  "selectAccountToConnect": {
+    "message": "Select an account to connect"
+  },
   "editAddressNickname": {
     "message": "Edit address nickname"
   },
