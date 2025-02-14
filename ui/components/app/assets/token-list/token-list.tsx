@@ -14,9 +14,17 @@ import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { useTokenBalances as pollAndUpdateEvmBalances } from '../../../../hooks/useTokenBalances';
 import { useNativeTokenBalance, useNetworkFilter } from '../hooks';
 import { TokenWithFiatAmount } from '../types';
-import { getMultichainIsEvm } from '../../../../selectors/multichain';
+import {
+  getMultichainBalances,
+  getMultichainIsEvm,
+} from '../../../../selectors/multichain';
 import { filterAssets } from '../util/filter';
 import { sortAssets } from '../util/sort';
+import {
+  getAccountAssets,
+  getAssetsMetadata,
+} from '../../../../selectors/assets';
+import useMultiChainAssets from '../hooks/useMultichainAssets';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -31,23 +39,34 @@ function TokenList({ onTokenClick }: TokenListProps) {
   const { tokenSortConfig, privacyMode } = useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedAccount);
 
+  // multichain balances TODO: migrate evm balances into this selector
+  const multichainBalances = useSelector(getMultichainBalances);
+  const accountAssets = useSelector(getAccountAssets);
+  const assetsMetadata = useSelector(getAssetsMetadata);
+  console.log('multichainBalances', multichainBalances);
+  console.log('accountAssets', accountAssets);
+  console.log('assetsMetadata', assetsMetadata);
+
   // EVM specific tokenBalance polling, updates state via polling loop per chainId
   pollAndUpdateEvmBalances({
     chainIds: chainIdsToPoll as Hex[],
   });
 
-  const nonEvmNativeToken = useNativeTokenBalance();
+  // const nonEvmNativeToken = useNativeTokenBalance();
+  const multichainAssets = useMultiChainAssets();
+  console.log('multichainAssets', multichainAssets);
 
   // network filter to determine which tokens to show in list
   // on EVM we want to filter based on network filter controls, on non-evm we only want tokens from that chain identifier
   const { networkFilter } = useNetworkFilter();
 
   const sortedFilteredTokens = useMemo(() => {
-    const balances = isEvm ? evmBalances : [nonEvmNativeToken];
+    const balances = isEvm ? evmBalances : multichainAssets;
+    // console.log('balances: ', balances);
     const filteredAssets: TokenWithFiatAmount[] = filterAssets(balances, [
       {
         key: 'chainId',
-        opts: isEvm ? networkFilter : { [nonEvmNativeToken.chainId]: true },
+        opts: isEvm ? networkFilter : { solana: true },
         filterCallback: 'inclusive',
       },
     ]);
@@ -61,6 +80,7 @@ function TokenList({ onTokenClick }: TokenListProps) {
     selectedAccount,
     newTokensImported,
     evmBalances,
+    multichainAssets,
   ]);
 
   useEffect(() => {
