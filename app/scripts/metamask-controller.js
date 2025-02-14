@@ -1348,6 +1348,7 @@ export default class MetamaskController extends EventEmitter {
         allowedActions: [
           'KeyringController:getState',
           'KeyringController:addNewAccount',
+          'KeyringController:addNewAccounts',
           'SnapController:handleRequest',
           'AuthenticationController:getBearerToken',
           'AuthenticationController:getSessionProfile',
