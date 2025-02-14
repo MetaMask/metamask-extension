@@ -55,7 +55,6 @@ type InitFunction<Name extends ControllersToInitialize> =
     ControllerByName[Name],
     // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
     ReturnType<(typeof CONTROLLER_MESSENGERS)[Name]['getMessenger']>,
-    // @ts-expect-error TODO: Allow for undefined getInitMessenger
     ReturnType<(typeof CONTROLLER_MESSENGERS)[Name]['getInitMessenger']>
   >;
 
