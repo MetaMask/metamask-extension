@@ -2763,12 +2763,17 @@ export function getShouldShowSeedPhraseReminder(state) {
   const { tokens, seedPhraseBackedUp, dismissSeedBackUpReminder } =
     state.metamask;
 
+  const selectedAccount = getSelectedInternalAccount(state);
   // if there is no account, we don't need to show the seed phrase reminder
-  const accountBalance = getSelectedInternalAccount(state)
-    ? getCurrentEthBalance(state)
-    : 0;
+  const accountBalance = selectedAccount ? getCurrentEthBalance(state) : 0;
+
+  const primaryKeyring = getMetaMaskKeyrings(state)[0];
+  const isAccountFromPrimarySrp = primaryKeyring.accounts.includes(
+    selectedAccount.address.toLowerCase(),
+  );
 
   return (
+    isAccountFromPrimarySrp &&
     seedPhraseBackedUp === false &&
     (parseInt(accountBalance, 16) > 0 || tokens.length > 0) &&
     dismissSeedBackUpReminder === false
