@@ -1,14 +1,22 @@
-import type { QuoteRequest } from '../../types/bridge';
+import type { BridgeControllerState } from '../../types/bridge';
 
-export const isValidQuoteRequest = (
-  partialRequest: Partial<QuoteRequest>,
+export const isValidQuoteRequest = <
+  T = BridgeControllerState['bridgeState']['quoteRequest'],
+>(
+  partialRequest: Partial<T>,
   requireAmount = true,
-): partialRequest is QuoteRequest => {
-  const STRING_FIELDS = ['srcTokenAddress', 'destTokenAddress'];
+): partialRequest is T => {
+  const STRING_FIELDS = [
+    'srcTokenAddress',
+    'destTokenAddress',
+    'srcChainId',
+    'destChainId',
+    'walletAddress',
+  ];
   if (requireAmount) {
     STRING_FIELDS.push('srcTokenAmount');
   }
-  const NUMBER_FIELDS = ['srcChainId', 'destChainId', 'slippage'];
+  const NUMBER_FIELDS = ['slippage'];
 
   return (
     STRING_FIELDS.every(

@@ -12,6 +12,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { BigNumber } from 'bignumber.js';
 import { type TokenListMap } from '@metamask/assets-controllers';
 import { toChecksumAddress, zeroAddress } from 'ethereumjs-util';
+import type { Hex, CaipChainId } from '@metamask/utils';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -61,7 +62,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/swaps';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
 import { setActiveNetwork } from '../../../store/actions';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import type { QuoteRequest } from '../../../../shared/types/bridge';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
@@ -87,6 +87,7 @@ import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import {
   getCurrentKeyring,
+  getSelectedEvmInternalAccount,
   getSelectedInternalAccount,
   getTokenList,
 } from '../../../selectors';
@@ -96,6 +97,7 @@ import { BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE } from '../../../../share
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { getMultichainIsEvm } from '../../../selectors/multichain';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 
@@ -272,7 +274,7 @@ const PrepareBridgePage = () => {
   const quoteParams = useMemo(
     () => ({
       srcTokenAddress: fromToken?.address,
-      destTokenAddress: toToken?.address || undefined,
+      destTokenAddress: toToken?.address,
       srcTokenAmount:
         fromAmount && fromToken?.decimals
           ? calcTokenValue(
@@ -284,13 +286,8 @@ const PrepareBridgePage = () => {
               // Length of decimal part cannot exceed token.decimals
               .split('.')[0]
           : undefined,
-      srcChainId: fromChain?.chainId
-        ? Number(hexToDecimal(fromChain.chainId))
-        : undefined,
-      destChainId:
-        isSwap && fromChain?.chainId
-          ? Number(hexToDecimal(fromChain.chainId))
-          : toChain?.chainId && Number(hexToDecimal(toChain.chainId)),
+      srcChainId: fromChain?.chainId,
+      destChainId: isSwap ? fromChain?.chainId : toChain?.chainId,
       // This override allows quotes to be returned when the rpcUrl is a tenderly fork
       // Otherwise quotes get filtered out by the bridge-api when the wallet's real
       // balance is less than the tenderly balance
@@ -312,7 +309,7 @@ const PrepareBridgePage = () => {
   );
 
   const debouncedUpdateQuoteRequestInController = useCallback(
-    debounce((p: Partial<QuoteRequest>) => {
+    debounce((p: Partial<QuoteRequest<Hex | CaipChainId>>) => {
       dispatch(updateQuoteRequestParams(p));
       dispatch(setSelectedQuote(null));
     }, 300),

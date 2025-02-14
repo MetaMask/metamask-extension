@@ -1,4 +1,4 @@
-import type { Hex } from '@metamask/utils';
+import type { CaipChainId, Hex } from '@metamask/utils';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
@@ -68,7 +68,9 @@ export const resetBridgeState = () => {
 };
 
 // User actions
-export const updateQuoteRequestParams = (params: Partial<QuoteRequest>) => {
+export const updateQuoteRequestParams = (
+  params: Partial<QuoteRequest<Hex | CaipChainId>>,
+) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await dispatch(
       callBridgeControllerMethod(BridgeUserAction.UPDATE_QUOTE_PARAMS, params),

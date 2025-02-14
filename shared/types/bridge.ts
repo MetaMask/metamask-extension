@@ -1,4 +1,9 @@
-import type { CaipAccountId, CaipChainId, Hex } from '@metamask/utils';
+import type {
+  CaipAccountId,
+  CaipAssetId,
+  CaipChainId,
+  Hex,
+} from '@metamask/utils';
 import type { BigNumber } from 'bignumber.js';
 
 export type ChainConfiguration = {
@@ -69,13 +74,19 @@ export type BridgeAsset = {
   icon?: string;
 };
 
-export type QuoteRequest = {
-  walletAddress: string;
-  destWalletAddress?: string;
-  srcChainId: ChainId;
-  destChainId: ChainId;
-  srcTokenAddress: string;
-  destTokenAddress: string;
+// Generic types for the quote request
+// Only the controller and reducer should be overriding these types to prepare the fetch request
+export type QuoteRequest<
+  ChainIdType = ChainId,
+  TokenAddressType = string,
+  WalletAddressType = string,
+> = {
+  walletAddress: WalletAddressType;
+  destWalletAddress?: WalletAddressType;
+  srcChainId: ChainIdType;
+  destChainId: ChainIdType;
+  srcTokenAddress: TokenAddressType;
+  destTokenAddress: TokenAddressType;
   srcTokenAmount: string; // This is the amount sent
   slippage: number;
   aggIds?: string[];
@@ -84,6 +95,7 @@ export type QuoteRequest = {
   resetApproval?: boolean;
   refuel?: boolean;
 };
+
 type Protocol = {
   name: string;
   displayName?: string;
@@ -187,7 +199,11 @@ export enum BridgeBackgroundAction {
 }
 export type BridgeState = {
   bridgeFeatureFlags: BridgeFeatureFlags;
-  quoteRequest: Partial<QuoteRequest>;
+  // These are types that components pass in
+  // TODO should this jkust be a generic string to catch everything?
+  quoteRequest: Partial<
+    QuoteRequest<Hex | CaipChainId, Hex | CaipAssetId, Hex | CaipAccountId>
+  >;
   quotes: (QuoteResponse & L1GasFees)[];
   quotesInitialLoadTime?: number;
   quotesLastFetched?: number;
