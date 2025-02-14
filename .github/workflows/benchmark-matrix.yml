@@ -10,9 +10,7 @@ env:
 
 jobs:
   benchmarks:
-    runs-on: ubuntu-latest
-    container:
-      image: cimg/node:22.13-browsers
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         buildType: [browserify, webpack]
@@ -31,10 +29,6 @@ jobs:
           path: ./dist/
           pattern: prep-build-test-${{ matrix.buildType }}
           merge-multiple: true
-
-      # Xvfb initializes a virtual "screen" where the browser opens
-      - name: Configure Xvfb
-        run: Xvfb -ac :99 -screen 0 1280x1024x16 &
 
       - name: Run the benchmark
         # Choose a benchmark command from env.COMMANDS
