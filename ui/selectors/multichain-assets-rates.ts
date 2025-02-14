@@ -5,11 +5,11 @@ export type AssetsState = {
 };
 
 /**
- * Gets non-EVM accounts assets.
+ * Gets non-EVM accounts assets rates.
  *
  * @param state - Redux state object.
  * @returns An object containing non-EVM assets per accounts.
  */
 export function getAssetsRates(state: AssetsState) {
-  return state.metamask.assetsRates;
+  return state.metamask.conversionRates;
 }

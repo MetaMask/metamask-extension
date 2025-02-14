@@ -3,7 +3,7 @@ import { getAssetsRates, AssetsState } from './multichain-assets-rates';
 // Mock state for testing
 const mockState = {
   metamask: {
-    assetsRates: {
+    conversionRates: {
       'token-1': { rate: 1.5, currency: 'USD' },
       'token-2': { rate: 0.8, currency: 'EUR' },
     },
@@ -12,13 +12,13 @@ const mockState = {
 describe('getAssetsRates', () => {
   it('should return the assetsRates from the state', () => {
     const result = getAssetsRates(mockState);
-    expect(result).toEqual(mockState.metamask.assetsRates);
+    expect(result).toEqual(mockState.metamask.conversionRates);
   });
 
   it('should return an empty object if assetsRates is empty', () => {
     const emptyState: AssetsState = {
       metamask: {
-        assetsRates: {},
+        conversionRates: {},
       },
     };
     const result = getAssetsRates(emptyState);

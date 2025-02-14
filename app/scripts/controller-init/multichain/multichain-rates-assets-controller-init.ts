@@ -3,7 +3,7 @@ import { ControllerInitFunction } from '../types';
 import { MultichainAssetsRatesControllerMessenger } from '../messengers/multichain';
 
 /**
- * Initialize the Multichain Assets controller.
+ * Initialize the Multichain Assets Rate controller.
  *
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the controller.
