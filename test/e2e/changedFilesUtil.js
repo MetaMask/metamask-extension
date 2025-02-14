@@ -95,13 +95,13 @@ function shouldE2eQualityGateBeSkipped() {
 
     const labels = labelsLine
       ? labelsLine
-          .replace('PR labels: {', '')
-          .replace('}', '')
+          .replace(/PR labels: \{/, '')
+          .replace(/\}/g, '')
           .split(',')
           .map((label) => label.trim())
       : [];
     const base = baseLine
-      ? baseLine.replace('PR base: {', '').replace('}', '').trim()
+      ? baseLine.replace(/PR base: \{/, '').replace(/\}/g, '').trim()
       : '';
     console.log('PR labels', labels);
     console.log('PR base', base);
