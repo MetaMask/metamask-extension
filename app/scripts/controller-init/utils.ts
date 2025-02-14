@@ -122,7 +122,7 @@ export function initControllers({
       baseControllerMessenger,
     );
 
-    const initMessenger = initMessengerCallback(baseControllerMessenger);
+    const initMessenger = initMessengerCallback?.(baseControllerMessenger);
 
     const finalInitRequest: BaseControllerInitRequest = {
       ...initRequest,
