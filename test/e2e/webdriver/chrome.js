@@ -61,12 +61,7 @@ class ChromeDriver {
       args.push('--disable-gpu');
     }
 
-    // It will crash if you don't do this, but there might be another way around it
-    if (process.env.GITHUB_ACTION) {
-      args.push('--no-sandbox');
-    }
-
-    if (isHeadless('SELENIUM')) {
+    if (process.env.GITHUB_ACTION || isHeadless('SELENIUM')) {
       // TODO: Remove notice and consider non-experimental when results are consistent
       console.warn(
         '*** Running e2e tests in headless mode is experimental and some tests are known to fail for unknown reasons',
