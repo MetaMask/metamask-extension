@@ -3059,11 +3059,11 @@ export default class MetamaskController extends EventEmitter {
           if (chains.length > 0 && !chains.includes(currentChainIdForOrigin)) {
             const networkClientId =
               this.networkController.findNetworkClientIdByChainId(chains[0]);
+            this.networkController.setActiveNetwork(networkClientId);
             this.selectedNetworkController.setNetworkClientIdForDomain(
               origin,
               networkClientId,
             );
-            this.networkController.setActiveNetwork(networkClientId);
           }
         }
       },
@@ -3282,12 +3282,13 @@ export default class MetamaskController extends EventEmitter {
     const publicConfigStore = new ObservableStore();
 
     const selectPublicState = async ({ isUnlocked }) => {
-      const { chainId, networkVersion } = await this.getProviderNetworkState();
+      const { chainId, networkVersion, isConnected } =
+        await this.getProviderNetworkState();
 
       return {
         isUnlocked,
         chainId,
-        networkVersion: networkVersion ?? 'loading',
+        networkVersion: isConnected ? networkVersion : 'loading',
       };
     };
 
@@ -3358,9 +3359,13 @@ export default class MetamaskController extends EventEmitter {
       this.deprecatedNetworkVersions[networkClientId] = networkVersion;
     }
 
+    const metadata =
+      this.networkController.state.networksMetadata[networkClientId];
+
     return {
       chainId,
       networkVersion: networkVersion ?? 'loading',
+      isConnected: metadata?.status === NetworkStatus.Available,
     };
   }
 
