@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
+import { SolAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { useState } from 'react';
 import {
@@ -49,8 +50,8 @@ export const DestinationAccountPicker = ({
       .includes(searchQuery.toLowerCase());
 
     const matchesChain = isDestinationSolana
-      ? account.type === 'solana:data-account'
-      : account.type !== 'solana:data-account';
+      ? account.type === SolAccountType.DataAccount
+      : account.type !== SolAccountType.DataAccount;
 
     return matchesSearch && matchesChain;
   });
