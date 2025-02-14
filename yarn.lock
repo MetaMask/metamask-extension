@@ -5705,18 +5705,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-network-controller@file:../core/packages/multichain-network-controller::locator=metamask-crx%40workspace%3A.":
-  version: 0.0.0
-  resolution: "@metamask/multichain-network-controller@file:../core/packages/multichain-network-controller#../core/packages/multichain-network-controller::hash=ecae70&locator=metamask-crx%40workspace%3A."
+"@metamask/multichain-network-controller@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@metamask/multichain-network-controller@npm:0.1.0"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/keyring-api": "npm:^17.0.0"
     "@metamask/utils": "npm:^11.1.0"
     "@solana/addresses": "npm:^2.0.0"
   peerDependencies:
-    "@metamask/accounts-controller": ^23.0.0
-    "@metamask/network-controller": ^22.1.1
-  checksum: 10/c4d3b4b605d2dda7bf74ba3e5abffc31e7eb9fe235d9bbe4e2df9f883f3790b5a4e38cca2c7f59823fce64cb147c408f49d9587f76b1044c0709cf3789b1aa70
+    "@metamask/accounts-controller": ^24.0.0
+    "@metamask/network-controller": ^22.0.0
+  checksum: 10/aad7c0a2753c6f763ca44e2576e999dbec7dd9b6e849c36d8ebd825720beea4bebbb9824ae25b83efca7f9dbddf0a0705d6cecdc2df5a889059d41d8a596aecc
   languageName: node
   linkType: hard
 
@@ -26757,7 +26757,7 @@ __metadata:
     "@metamask/message-signing-snap": "npm:^0.6.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/multichain": "npm:^2.1.0"
-    "@metamask/multichain-network-controller": "npm:^0.0.0"
+    "@metamask/multichain-network-controller": "npm:^0.1.0"
     "@metamask/multichain-transactions-controller": "npm:^0.3.0"
     "@metamask/name-controller": "npm:^8.0.3"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A22.1.1#~/.yarn/patches/@metamask-network-controller-npm-22.1.1-09b6510f1e.patch"
