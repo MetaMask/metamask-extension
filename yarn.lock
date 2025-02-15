@@ -5573,9 +5573,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:@metamask-previews/keyring-controller@19.1.0-preview-74b4a89":
-  version: 19.1.0-preview-74b4a89
-  resolution: "@metamask-previews/keyring-controller@npm:19.1.0-preview-74b4a89"
+"@metamask/keyring-controller@npm:@metamask-previews/keyring-controller@19.1.0-preview-ea165590":
+  version: 19.1.0-preview-ea165590
+  resolution: "@metamask-previews/keyring-controller@npm:19.1.0-preview-ea165590"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.14.1"
@@ -5591,7 +5591,7 @@ __metadata:
     async-mutex: "npm:^0.5.0"
     ethereumjs-wallet: "npm:^1.0.1"
     immer: "npm:^9.0.6"
-  checksum: 10/005991040077dbd39c5e6df038e5a4546c3513c607b97b9880841d467673709020b61ceec0e01982ac5ffe171cb8d4c44aa83c08beb6d7acae234da3ea3f13d1
+  checksum: 10/6e5a3077a4efaeb4e96ff969b1ca8d60a6b6c3f29710d1b53cae4fd8e896e96c755c9ffd844b76646b4105d39f1993fd66f8f790e54712990f7460c60185cd85
   languageName: node
   linkType: hard
 
@@ -6063,9 +6063,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:@metamask-previews/profile-sync-controller@7.0.1-preview-74b4a89":
-  version: 7.0.1-preview-74b4a89
-  resolution: "@metamask-previews/profile-sync-controller@npm:7.0.1-preview-74b4a89"
+"@metamask/profile-sync-controller@npm:@metamask-previews/profile-sync-controller@8.0.0-preview-ea165590":
+  version: 8.0.0-preview-ea165590
+  resolution: "@metamask-previews/profile-sync-controller@npm:8.0.0-preview-ea165590"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/keyring-api": "npm:^17.0.0"
@@ -6079,13 +6079,13 @@ __metadata:
     loglevel: "npm:^1.8.1"
     siwe: "npm:^2.3.2"
   peerDependencies:
-    "@metamask/accounts-controller": ^23.0.0
+    "@metamask/accounts-controller": ^24.0.0
     "@metamask/keyring-controller": ^19.0.0
     "@metamask/network-controller": ^22.0.0
     "@metamask/providers": ^18.1.0
     "@metamask/snaps-controllers": ^9.19.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/b1bb367a2d4a7b9172bfeb1b2b3cf65495e4676e57c683488f4b43667de2df3abdec4ab16a41cf405152291ef6b8484fdd3311e815af2107a7a872d5373f8346
+  checksum: 10/9b4a35ab9b0b1ef82b666e5ef2d4b462973be1e24f4de54b682dcadd40fa71b9c01d07917cd80b3ea4b87e7d9d5a23567b553dfde94dd9109f408f4e25c8099f
   languageName: node
   linkType: hard
 
@@ -26686,7 +26686,7 @@ __metadata:
     "@metamask/json-rpc-engine": "npm:^10.0.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.4"
     "@metamask/keyring-api": "npm:^17.0.0"
-    "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@19.1.0-preview-74b4a89"
+    "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@19.1.0-preview-ea165590"
     "@metamask/keyring-internal-api": "npm:^4.0.2"
     "@metamask/keyring-snap-client": "npm:^4.0.0"
     "@metamask/logging-controller": "npm:^6.0.4"
@@ -26710,7 +26710,7 @@ __metadata:
     "@metamask/ppom-validator": "npm:0.36.0"
     "@metamask/preferences-controller": "npm:^15.0.2"
     "@metamask/preinstalled-example-snap": "npm:^0.3.0"
-    "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@7.0.1-preview-74b4a89"
+    "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@8.0.0-preview-ea165590"
     "@metamask/providers": "patch:@metamask/providers@npm%3A19.0.0#~/.yarn/patches/@metamask-providers-npm-19.0.0-3d962c6f1a.patch"
     "@metamask/queued-request-controller": "npm:^7.0.1"
     "@metamask/rate-limit-controller": "npm:^6.0.3"
