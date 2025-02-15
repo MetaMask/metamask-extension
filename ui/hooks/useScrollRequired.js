@@ -52,9 +52,10 @@ export const useScrollRequired = (
     if (!hasMeasured) {
       setHasMeasured(true);
       // Let's us batch state updates and avoid an unnecessary render
+      // We can pass more variables to the onMeasure callback if needed
       onMeasure?.({
-        canScroll: isScrollable,
-        hasMeasured: true,
+        isScrollable,
+        hasMeasured: true, // Explicitly pass as true since hasMeasured is false at this point
       });
     }
 
