@@ -219,6 +219,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
 async function runInitialActions(store) {
   const state = store.getState();
 
+  /*
   // This block autoswitches chains based on the last chain used
   // for a given dapp, when there are no pending confimrations
   // This allows the user to be connected on one chain
@@ -239,6 +240,7 @@ async function runInitialActions(store) {
     // if the user didn't just change the dapp network
     await store.dispatch(actions.clearSwitchedNetworkDetails());
   }
+    */
 
   // Register this window as the current popup
   // and set in background state
