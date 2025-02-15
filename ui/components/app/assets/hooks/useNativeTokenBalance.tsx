@@ -1,24 +1,24 @@
 import currencyFormatter from 'currency-formatter';
 import { useSelector } from 'react-redux';
-
+import { Hex } from '@metamask/utils';
 import {
   getMultichainCurrencyImage,
   getMultichainCurrentNetwork,
   getMultichainSelectedAccountCachedBalance,
   getMultichainShouldShowFiat,
-} from '../../../../../selectors/multichain';
+} from '../../../../selectors/multichain';
 import {
   getPreferences,
   getSelectedInternalAccount,
-} from '../../../../../selectors';
-import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
-import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOriginalNativeTokenSymbol';
-import { PRIMARY, SECONDARY } from '../../../../../helpers/constants/common';
-import { useUserPreferencedCurrency } from '../../../../../hooks/useUserPreferencedCurrency';
-import { useCurrencyDisplay } from '../../../../../hooks/useCurrencyDisplay';
-import { TokenWithBalance } from '../asset-list';
+} from '../../../../selectors';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
+import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
+import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
+import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
+import { TokenWithFiatAmount } from '../types';
 
-export const useNativeTokenBalance = () => {
+const useNativeTokenBalance = () => {
   const showFiat = useSelector(getMultichainShouldShowFiat);
   const account = useSelector(getSelectedInternalAccount);
   const primaryTokenImage = useSelector(getMultichainCurrencyImage);
@@ -81,21 +81,26 @@ export const useNativeTokenBalance = () => {
   // useCurrencyDisplay passes along the symbol and formatting into the value here
   // for sorting we need the raw value, without the currency and it should be decimal
   // this is the easiest way to do this without extensive refactoring of useCurrencyDisplay
-  const tokenFiatAmount = currencyFormatter
-    .unformat(unformattedTokenFiatAmount, {
+  const tokenFiatAmount = currencyFormatter.unformat(
+    unformattedTokenFiatAmount,
+    {
       code: currentCurrency.toUpperCase(),
-    })
-    .toString();
+    },
+  );
 
-  const nativeTokenWithBalance: TokenWithBalance = {
-    address: '',
+  const nativeTokenWithBalance: TokenWithFiatAmount = {
+    chainId: chainId as Hex,
+    address: '' as Hex,
     symbol: tokenSymbol ?? '',
     string: primaryBalance,
     image: primaryTokenImage,
     secondary: secondaryBalance,
     tokenFiatAmount,
     isNative: true,
+    decimals: 18,
   };
 
   return nativeTokenWithBalance;
 };
+
+export default useNativeTokenBalance;

@@ -1,20 +1,53 @@
 import { Hex } from '@metamask/utils';
 
-export type Token = {
-  address: Hex;
-  aggregators: string[];
-  chainId: Hex;
-  decimals: number;
-  isNative: boolean;
-  symbol: string;
-  image: string;
+// Common mixin for primary and secondary display values
+export type TokenDisplayValues = {
+  primary?: string;
+  secondary?: string;
+  string?: string;
 };
 
-export type TokenWithFiatAmount = Token & {
-  tokenFiatAmount: number | null;
+export type TokenBalanceValues = {
+  tokenFiatAmount?: number | null;
   balance?: string;
-  string: string; // needed for backwards compatability TODO: fix this
 };
+
+// Base token type with common fields
+export type BaseToken = {
+  address: Hex;
+  symbol: string;
+  image: string;
+  decimals: number;
+  chainId: Hex;
+  isNative?: boolean;
+};
+
+// Token type with optional aggregators
+export type Token = BaseToken & {
+  aggregators?: string[];
+};
+
+// Token with balance and optional display values
+export type TokenWithBalance = Omit<BaseToken, 'chainId' | 'decimals'> &
+  TokenDisplayValues &
+  Omit<TokenBalanceValues, 'balance'>;
+
+// Token display information (UI-related properties)
+export type TokenDisplayInfo = TokenDisplayValues & {
+  title: string;
+  tokenImage: string;
+  isStakeable?: boolean;
+  tokenChainImage: string;
+};
+
+// Token type that includes fiat amount, balance, and display values
+export type TokenWithFiatAmount = Token &
+  TokenDisplayValues &
+  TokenBalanceValues & {
+    isStakeable?: boolean;
+  };
+
+export type TokenFiatDisplayInfo = TokenWithFiatAmount & TokenDisplayInfo;
 
 export type AddressBalanceMapping = Record<Hex, Record<Hex, Hex>>;
 export type ChainAddressMarketData = Record<
