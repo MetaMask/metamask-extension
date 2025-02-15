@@ -12,19 +12,20 @@ import { usePrevious } from './usePrevious';
  * @param opt
  * @param {number} opt.offsetPxFromBottom
  * @param {boolean} opt.enabled
+ * @param {Function} opt.onMeasure - A function to call when the scrollable content is measured. Useful for batching state updates.
  * @returns Flags for isScrollable and isScrollToBottom, a ref to use for the scrolling content, a scrollToBottom function and a onScroll handler.
  */
 export const useScrollRequired = (
   dependencies = [],
-  { offsetPxFromBottom = 16, enabled = true } = {},
+  { offsetPxFromBottom = 16, enabled = true, onMeasure } = {},
 ) => {
   const ref = useRef(null);
   const prevOffsetHeight = usePrevious(ref.current?.offsetHeight);
 
-  const [hasScrolledToBottomState, setHasScrolledToBottom] = useState(false);
+  const [hasScrolledToBottomState, setHasScrolledToBottom] = useState(!enabled);
   const [isScrollableState, setIsScrollable] = useState(false);
-  const [isScrolledToBottomState, setIsScrolledToBottom] = useState(false);
-  const [hasMeasured, setHasMeasured] = useState(false);
+  const [isScrolledToBottomState, setIsScrolledToBottom] = useState(!enabled);
+  const [hasMeasured, setHasMeasured] = useState(!enabled);
 
   const update = () => {
     if (!ref.current || !enabled) {
@@ -50,6 +51,11 @@ export const useScrollRequired = (
 
     if (!hasMeasured) {
       setHasMeasured(true);
+      // Let's us batch state updates and avoid an unnecessary render
+      onMeasure?.({
+        canScroll: isScrollable,
+        hasMeasured: true,
+      });
     }
 
     setIsScrolledToBottom(!isScrollable || isScrolledToBottom);
@@ -67,12 +73,21 @@ export const useScrollRequired = (
   }, [ref, enabled, ...dependencies]);
 
   useEffect(() => {
-    if (prevOffsetHeight !== ref.current?.offsetHeight) {
+    if (!enabled) {
+      return;
+    }
+
+    if (
+      prevOffsetHeight !== ref.current?.offsetHeight &&
+      ref.current?.offsetHeight > 0
+    ) {
       update();
     }
   }, [ref.current?.offsetHeight]);
 
   const scrollToBottom = () => {
+    // These variables aren't reliable during programmatic scrolls, since the action is async and the state is updated syncronously
+    // we can get flickering states in the UI that depends on this hook.
     setIsScrolledToBottom(true);
     setHasScrolledToBottom(true);
 
@@ -88,10 +103,9 @@ export const useScrollRequired = (
     isScrollable: isScrollableState,
     isScrolledToBottom: isScrolledToBottomState,
     hasScrolledToBottom: hasScrolledToBottomState,
-    hasMeasured,
     scrollToBottom,
     setHasScrolledToBottom,
-    ref,
-    onScroll: debounce(update, 25),
+    ref: enabled ? ref : null, // No need to track the ref if the hook is disabled
+    onScroll: enabled ? debounce(update, 25) : null,
   };
 };

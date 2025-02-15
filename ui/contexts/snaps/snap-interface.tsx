@@ -288,6 +288,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
       {requireScroll && showArrow && (
         <AvatarIcon
           iconName={IconName.Arrow2Down}
+          data-testid="snap-ui-renderer__scroll-button"
           backgroundColor={BackgroundColor.infoDefault}
           color={IconColor.primaryInverse}
           className="snap-ui-renderer__scroll-button"
