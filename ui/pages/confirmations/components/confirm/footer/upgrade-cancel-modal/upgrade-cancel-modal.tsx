@@ -22,7 +22,7 @@ import {
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useDispatch } from 'react-redux';
-import { providerErrors, serializeError } from '@metamask/rpc-errors';
+import { providerErrors, rpcErrors, serializeError } from '@metamask/rpc-errors';
 import {
   disableAccountUpgradeForChain,
   rejectPendingApproval,
@@ -46,7 +46,7 @@ export function UpgradeCancelModal({
   const chainId = currentConfirmation.chainId as string;
 
   const handleRejectUpgrade = useCallback(async () => {
-    const error = providerErrors.unsupportedMethod(
+    const error = rpcErrors.methodNotSupported(
       'User rejected account upgrade',
     );
 
@@ -93,10 +93,11 @@ export function UpgradeCancelModal({
             <Button
               onClick={handleRejectUpgrade}
               variant={ButtonVariant.Secondary}
+              data-testid="upgrade-cancel-reject-upgrade"
             >
               {t('confirmUpgradeCancelModalButtonCancelUpgrade')}
             </Button>
-            <Button onClick={onReject}>
+            <Button onClick={onReject} data-testid="upgrade-cancel-reject">
               {t('confirmUpgradeCancelModalButtonCancelTransaction')}
             </Button>
           </Box>
