@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+        uses: metamask/github-tools/.github/actions/setup-environment@04f91563e5e048d4e34527dc3007f633759e2899
 
       - name: test:unit:coverage
         run: yarn test:unit:coverage --shard=${{ matrix.shard }}/${{ strategy.job-total }}
@@ -43,7 +43,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+        uses: metamask/github-tools/.github/actions/setup-environment@04f91563e5e048d4e34527dc3007f633759e2899
 
       - name: test:unit:webpack:coverage
         run: yarn test:unit:webpack:coverage
@@ -64,7 +64,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+        uses: metamask/github-tools/.github/actions/setup-environment@04f91563e5e048d4e34527dc3007f633759e2899
 
       - name: test:integration:coverage
         run: yarn test:integration:coverage
@@ -92,7 +92,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+        uses: metamask/github-tools/.github/actions/setup-environment@04f91563e5e048d4e34527dc3007f633759e2899
 
       - name: Download artifacts
         uses: actions/download-artifact@v4
