@@ -33,7 +33,7 @@ import log from 'loglevel';
 import {
   TrezorConnectBridge,
   TrezorKeyring,
-} from '@metamask/eth-trezor-keyring';
+} from '@metamask-previews/eth-trezor-keyring';
 import {
   LedgerKeyring,
   LedgerIframeBridge,
