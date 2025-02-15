@@ -774,7 +774,7 @@ describe('SnapUIRenderer', () => {
       act(() => {
         const onMeasureCallback =
           mockUseScrollRequired.mock.calls[0][1].onMeasure;
-        onMeasureCallback({ canScroll: false, hasMeasured: true });
+        onMeasureCallback({ isScrollable: false, hasMeasured: true });
       });
 
       const submitButton = getByRole('button');
@@ -794,7 +794,7 @@ describe('SnapUIRenderer', () => {
       act(() => {
         const onMeasureCallback =
           mockUseScrollRequired.mock.calls[0][1].onMeasure;
-        onMeasureCallback({ canScroll: true, hasMeasured: true });
+        onMeasureCallback({ isScrollable: true, hasMeasured: true });
       });
 
       const submitButton = getByRole('button');
@@ -816,7 +816,7 @@ describe('SnapUIRenderer', () => {
       act(() => {
         const onMeasureCallback =
           mockUseScrollRequired.mock.calls[0][1].onMeasure;
-        onMeasureCallback({ canScroll: true, hasMeasured: true });
+        onMeasureCallback({ isScrollable: true, hasMeasured: true });
       });
 
       const submitButton = getByRole('button');
