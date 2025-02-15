@@ -164,6 +164,7 @@ export type PreferencesControllerState = Omit<
   enableMV3TimestampSave: boolean;
   useExternalServices: boolean;
   textDirection?: string;
+  accountUpgradeDisabledChains?: string[];
 };
 
 /**
@@ -452,6 +453,7 @@ const controllerMetadata = {
   },
   isMultiAccountBalancesEnabled: { persist: true, anonymous: true },
   showIncomingTransactions: { persist: true, anonymous: true },
+  accountUpgradeDisabledChains: { persist: true, anonymous: false },
 };
 
 export class PreferencesController extends BaseController<
@@ -1013,6 +1015,21 @@ export class PreferencesController extends BaseController<
   setServiceWorkerKeepAlivePreference(value: boolean): void {
     this.update((state) => {
       state.enableMV3TimestampSave = value;
+    });
+  }
+
+  getDisabledAccountUpgradeChains(): string[] {
+    return this.state.accountUpgradeDisabledChains ?? [];
+  }
+
+  disableAccountUpgradeForChain(chainId: string): void {
+    this.update((state) => {
+      const { accountUpgradeDisabledChains: existingDisabledChains } = state;
+
+      state.accountUpgradeDisabledChains = [
+        ...(existingDisabledChains ?? []),
+        chainId,
+      ];
     });
   }
 

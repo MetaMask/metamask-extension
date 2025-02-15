@@ -5995,3 +5995,9 @@ export async function sendMultichainTransaction(
     },
   });
 }
+
+export async function disableAccountUpgradeForChain(chainId: string) {
+  return await submitRequestToBackground('disableAccountUpgradeForChain', [
+    chainId,
+  ]);
+}
