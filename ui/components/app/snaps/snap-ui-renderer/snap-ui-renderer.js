@@ -117,7 +117,7 @@ const SnapUIRendererComponent = ({
       // Only enable the hook if we need to handle scroll events
       enabled: requireScroll,
       // This lets us batch state updates and avoid an unnecessary render
-      onMeasure: ({ canScroll, hasMeasured }) => {
+      onMeasure: ({ isScrollable: canScroll, hasMeasured }) => {
         if (!requireScroll || !hasMeasured) {
           return;
         }
