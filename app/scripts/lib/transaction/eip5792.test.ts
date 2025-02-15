@@ -2,19 +2,21 @@ import {
   TransactionController,
   TransactionMeta,
 } from '@metamask/transaction-controller';
+import { NetworkController } from '@metamask/network-controller';
+import { SendCalls, SendCallsParams } from '@metamask/eth-json-rpc-middleware';
+import { JsonRpcRequest } from '@metamask/utils';
+import { PreferencesController } from '../../controllers/preferences-controller';
 import {
   getCapabilities,
   getTransactionReceiptsByBatchId,
   processSendCalls,
 } from './eip5792';
-import { NetworkController } from '@metamask/network-controller';
-import { SendCalls, SendCallsParams } from '@metamask/eth-json-rpc-middleware';
-import { JsonRpcRequest } from '@metamask/utils';
 
 const CHAIN_ID_MOCK = '0x123';
 const CHAIN_ID_2_MOCK = '0xabc';
 const BATCH_ID_MOCK = '123-456';
 const NETWORK_CLIENT_ID_MOCK = 'test-client';
+const FROM_MOCK = '0xabc123';
 
 const RECEIPT_MOCK = {
   status: '0x1',
@@ -30,7 +32,7 @@ const SEND_CALLS_MOCK: SendCalls = {
   version: '1.0',
   calls: [{ to: '0x123' }],
   chainId: CHAIN_ID_MOCK,
-  from: '0x123',
+  from: FROM_MOCK,
 };
 
 const REQUEST_MOCK = {
@@ -46,7 +48,7 @@ function buildTransactionControllerMock() {
     addTransactionBatch: jest
       .fn()
       .mockResolvedValueOnce({ batchId: BATCH_ID_MOCK }),
-    isAtomicBatchSupported: jest.fn(),
+    isAtomicBatchSupported: jest.fn().mockResolvedValue([CHAIN_ID_MOCK]),
     state: {},
   } as unknown as jest.Mocked<TransactionController>;
 }
@@ -61,16 +63,23 @@ function buildNetworkControllerMock() {
   } as unknown as jest.Mocked<NetworkController>;
 }
 
+function buildPreferencesControllerMock() {
+  return {
+    getDisabledAccountUpgradeChains: jest.fn().mockReturnValue([]),
+    state: {},
+  } as unknown as jest.Mocked<PreferencesController>;
+}
+
 describe('EIP-5792', () => {
   let transactionControllerMock: jest.Mocked<TransactionController>;
   let networkControllerMock: jest.Mocked<NetworkController>;
-  let request: JsonRpcRequest<SendCallsParams> & { networkClientId: string };
+  let preferencesControllerMock: jest.Mocked<PreferencesController>;
 
   beforeEach(() => {
     jest.resetAllMocks();
     transactionControllerMock = buildTransactionControllerMock();
     networkControllerMock = buildNetworkControllerMock();
-    request = { ...REQUEST_MOCK };
+    preferencesControllerMock = buildPreferencesControllerMock();
   });
 
   describe('processSendCalls', () => {
@@ -78,12 +87,15 @@ describe('EIP-5792', () => {
       await processSendCalls(
         transactionControllerMock,
         networkControllerMock,
+        preferencesControllerMock,
         SEND_CALLS_MOCK,
         REQUEST_MOCK,
       );
 
-      expect(transactionControllerMock.addTransactionBatch).toHaveBeenCalledWith({
-        from: SEND_CALLS_MOCK.from,
+      expect(
+        transactionControllerMock.addTransactionBatch,
+      ).toHaveBeenCalledWith({
+        from: FROM_MOCK,
         networkClientId: NETWORK_CLIENT_ID_MOCK,
         transactions: [{ params: SEND_CALLS_MOCK.calls[0] }],
       });
@@ -94,6 +106,7 @@ describe('EIP-5792', () => {
         await processSendCalls(
           transactionControllerMock,
           networkControllerMock,
+          preferencesControllerMock,
           SEND_CALLS_MOCK,
           REQUEST_MOCK,
         ),
@@ -101,16 +114,35 @@ describe('EIP-5792', () => {
     });
 
     it('throws if chain ID does not match network client', async () => {
-      request.params![0].chainId = CHAIN_ID_2_MOCK;
+      await expect(
+        processSendCalls(
+          transactionControllerMock,
+          networkControllerMock,
+          preferencesControllerMock,
+          { ...SEND_CALLS_MOCK, chainId: CHAIN_ID_2_MOCK },
+          REQUEST_MOCK,
+        ),
+      ).rejects.toThrow(
+        `Chain ID must match the dApp selected network: Got ${CHAIN_ID_2_MOCK}, expected ${CHAIN_ID_MOCK}`,
+      );
+    });
+
+    it('throws if disabled preference for chain', async () => {
+      preferencesControllerMock.getDisabledAccountUpgradeChains.mockReturnValue(
+        [CHAIN_ID_MOCK],
+      );
 
       await expect(
         processSendCalls(
           transactionControllerMock,
           networkControllerMock,
+          preferencesControllerMock,
           SEND_CALLS_MOCK,
           REQUEST_MOCK,
         ),
-      ).rejects.toThrow(`Chain ID must match the dApp selected network: Got ${CHAIN_ID_2_MOCK}, expected ${CHAIN_ID_MOCK}`);
+      ).rejects.toThrow(
+        `EIP-5792 is not supported for this chain and account - Chain ID: ${CHAIN_ID_MOCK}, Account: ${SEND_CALLS_MOCK.from}`,
+      );
     });
   });
 
@@ -139,13 +171,42 @@ describe('EIP-5792', () => {
       ]);
 
       expect(
-        await getCapabilities(transactionControllerMock, '0x123'),
+        await getCapabilities(
+          transactionControllerMock,
+          preferencesControllerMock,
+          SEND_CALLS_MOCK.from,
+        ),
       ).toStrictEqual({
         [CHAIN_ID_MOCK]: {
           atomicBatch: {
             supported: true,
           },
         },
+        [CHAIN_ID_2_MOCK]: {
+          atomicBatch: {
+            supported: true,
+          },
+        },
+      });
+    });
+
+    it('does not include chain if disabled in preferences', async () => {
+      preferencesControllerMock.getDisabledAccountUpgradeChains.mockReturnValue(
+        [CHAIN_ID_MOCK],
+      );
+
+      transactionControllerMock.isAtomicBatchSupported.mockResolvedValueOnce([
+        CHAIN_ID_MOCK,
+        CHAIN_ID_2_MOCK,
+      ]);
+
+      expect(
+        await getCapabilities(
+          transactionControllerMock,
+          preferencesControllerMock,
+          FROM_MOCK,
+        ),
+      ).toStrictEqual({
         [CHAIN_ID_2_MOCK]: {
           atomicBatch: {
             supported: true,

@@ -2245,6 +2245,7 @@ export default class MetamaskController extends EventEmitter {
         null,
         this.txController,
         this.networkController,
+        this.preferencesController,
       ),
       getTransactionReceiptsByBatchId: getTransactionReceiptsByBatchId.bind(
         null,

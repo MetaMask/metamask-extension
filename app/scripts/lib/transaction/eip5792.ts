@@ -8,6 +8,7 @@ import { PreferencesController } from '../../controllers/preferences-controller'
 export async function processSendCalls(
   transactionController: TransactionController,
   networkController: NetworkController,
+  preferencesController: PreferencesController,
   params: SendCalls,
   req: JsonRpcRequest & { networkClientId: string },
 ) {
@@ -25,6 +26,21 @@ export async function processSendCalls(
   ) {
     throw rpcErrors.invalidInput(
       `Chain ID must match the dApp selected network: Got ${requestChainId}, expected ${dappChainId}`,
+    );
+  }
+
+  const capabilities = await getCapabilities(
+    transactionController,
+    preferencesController,
+    from,
+  );
+
+  const isAtomicBatchSupported =
+    capabilities[dappChainId]?.atomicBatch?.supported;
+
+  if (!isAtomicBatchSupported) {
+    throw rpcErrors.methodNotSupported(
+      `EIP-5792 is not supported for this chain and account - Chain ID: ${dappChainId}, Account: ${from}`,
     );
   }
 
@@ -50,7 +66,7 @@ export async function getCapabilities(
   transactionController: TransactionController,
   preferencesController: PreferencesController,
   address: Hex,
-) {
+): Promise<Record<Hex, { atomicBatch: { supported: boolean } }>> {
   const atomicBatchChains = await transactionController.isAtomicBatchSupported(
     address,
   );
