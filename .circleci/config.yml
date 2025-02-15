@@ -257,6 +257,9 @@ workflows:
               only: main
           requires:
             - prep-build-ts-migration-dashboard
+      - fetch-release-dates: # Pe052
+          requires:
+            - prep-deps
 
   rerun-from-failed:
     when:
@@ -1196,3 +1199,14 @@ jobs:
       - run:
           name: All Tests Passed
           command: echo 'whew - everything passed!'
+
+  fetch-release-dates: # Pe052
+    executor: node-browsers-medium
+    steps:
+      - checkout
+      - run: sudo corepack enable
+      - attach_workspace:
+          at: .
+      - run:
+          name: Fetch release dates from Runway
+          command: node .circleci/scripts/fetch-release-dates.js

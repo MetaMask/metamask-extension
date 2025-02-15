@@ -69,3 +69,7 @@ jobs:
         with:
           name: metamask-flask-firefox-${{ steps.get-build-version.outputs.BUILD_VERSION }}-flask.0
           path: metamask-flask-firefox-${{ steps.get-build-version.outputs.BUILD_VERSION }}-flask.0.zip
+
+      - name: Fetch release dates from Runway
+        run: node .circleci/scripts/fetch-release-dates.js
+

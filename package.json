@@ -129,7 +129,8 @@
     "attributions:generate": "./development/generate-attributions.sh",
     "ci-rerun-from-failed": "tsx .circleci/scripts/rerun-ci-workflow-from-failed.ts",
     "git-diff-default-branch": "tsx .circleci/scripts/git-diff-default-branch.ts",
-    "validate-e2e-page-object-usage": "tsx .github/scripts/validate-e2e-page-object-usage.ts"
+    "validate-e2e-page-object-usage": "tsx .github/scripts/validate-e2e-page-object-usage.ts",
+    "fetch-release-dates": "node .circleci/scripts/fetch-release-dates.js" // Pa17f
   },
   "resolutions": {
     "chokidar": "^3.6.0",
@@ -443,7 +444,9 @@
     "unicode-confusables": "^0.1.1",
     "uri-js": "^4.4.1",
     "uuid": "^8.3.2",
-    "zxcvbn": "^4.4.2"
+    "zxcvbn": "^4.4.2",
+    "@notionhq/client": "^2.0.0", // Pe952
+    "@octokit/rest": "^18.0.0" // Pe952
   },
   "devDependencies": {
     "@actions/core": "^1.10.0",
