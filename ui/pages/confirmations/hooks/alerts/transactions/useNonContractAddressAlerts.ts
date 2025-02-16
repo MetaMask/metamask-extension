@@ -17,7 +17,9 @@ export function useNonContractAddressAlerts(): Alert[] {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
 
-  const isSendingHexData = currentConfirmation?.txParams?.data !== undefined;
+  const isSendingHexData =
+    currentConfirmation?.txParams?.data !== undefined &&
+    currentConfirmation?.txParams?.data !== '0x';
 
   const { value, pending } = useAsyncResult(async () => {
     return await readAddressAsContract(

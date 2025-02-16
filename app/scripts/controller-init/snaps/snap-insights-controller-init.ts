@@ -19,6 +19,7 @@ export const SnapInsightsControllerInit: ControllerInitFunction<
     // compatible with the expected type.
     // TODO: Look into the type mismatch.
     state: persistedState.SnapInsightsController,
+    // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
     messenger: controllerMessenger,
   });
 

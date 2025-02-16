@@ -40,7 +40,7 @@ describe('Queued Confirmations', function () {
             .withSelectedNetworkControllerPerDomain()
             .build(),
           dappOptions: { numberOfDapps: 2 },
-          ganacheOptions: {
+          localNodeOptions: {
             ...defaultGanacheOptions,
             concurrent: [
               {
@@ -85,7 +85,7 @@ describe('Queued Confirmations', function () {
             .withSelectedNetworkControllerPerDomain()
             .build(),
           dappOptions: { numberOfDapps: 2 },
-          ganacheOptions: {
+          localNodeOptions: {
             ...defaultGanacheOptions,
             concurrent: [
               {
@@ -137,7 +137,7 @@ describe('Queued Confirmations', function () {
             .withSelectedNetworkControllerPerDomain()
             .build(),
           dappOptions: { numberOfDapps: 2 },
-          ganacheOptions: {
+          localNodeOptions: {
             ...defaultGanacheOptions,
             concurrent: [
               {
@@ -192,7 +192,7 @@ describe('Queued Confirmations', function () {
             })
             .build(),
           dappOptions: { numberOfDapps: 2 },
-          ganacheOptions: {
+          localNodeOptions: {
             ...defaultGanacheOptions,
             concurrent: [
               {
@@ -277,7 +277,7 @@ describe('Queued Confirmations', function () {
             })
             .build(),
           dappOptions: { numberOfDapps: 2 },
-          ganacheOptions: {
+          localNodeOptions: {
             ...defaultGanacheOptions,
             concurrent: [
               {
