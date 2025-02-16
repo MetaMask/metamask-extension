@@ -46,6 +46,7 @@
     "surveyLinkLastClickedOrClosed": "object",
     "switchedNetworkNeverShowMessage": "boolean",
     "slides": "object",
+    "throttledOrigins": "object",
     "qrHardware": {},
     "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",
@@ -142,11 +143,6 @@
     "metaMetricsDataDeletionId": null,
     "metaMetricsDataDeletionTimestamp": 0
   },
-  "MultichainAssetsController": {
-    "accountsAssets": "object",
-    "assetsMetadata": "object"
-  },
-  "MultichainBalancesController": { "balances": "object" },
   "MultichainRatesController": {
     "fiatCurrency": "usd",
     "rates": {

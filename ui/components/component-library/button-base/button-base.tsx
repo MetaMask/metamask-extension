@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import { IconName, Icon, IconSize, Text } from '..';
+import { Text } from '../text';
 import {
   AlignItems,
   Display,
@@ -13,6 +13,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import type { PolymorphicRef } from '../box';
 import type { TextProps } from '../text';
+import { Icon, IconName, IconSize } from '../icon';
 import {
   ButtonBaseProps,
   ButtonBaseSize,
