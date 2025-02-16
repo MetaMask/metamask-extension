@@ -1,12 +1,18 @@
 import {
   type MultichainNetworkControllerState as InternalMultichainNetworkState,
   type MultichainNetworkConfiguration as InternalMultichainNetworkConfiguration,
+  toEvmCaipChainId,
   toMultichainNetworkConfigurationsByChainId,
 } from '@metamask/multichain-network-controller';
 import { type NetworkConfiguration as InternalNetworkConfiguration } from '@metamask/network-controller';
 import { type CaipChainId } from '@metamask/keyring-api';
 
-import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
+import {
+  type ProviderConfigState,
+  type SelectedNetworkClientIdState,
+  getProviderConfig,
+  getNetworkConfigurationsByChainId,
+} from '../../shared/modules/selectors/networks';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 
 // Selector types
@@ -31,6 +37,10 @@ export type SelectedNetworkChainIdState = {
   >;
 };
 
+export type IsEvmSelected = {
+  metamask: Pick<InternalMultichainNetworkState, 'isEvmSelected'>;
+};
+
 export type MultichainNetworkConfigurationsByChainIdState = {
   metamask: {
     multichainNetworkConfigurationsByChainId: Record<
@@ -44,8 +54,17 @@ export type MultichainNetworkConfigurationsByChainIdState = {
   };
 };
 
+/**
+ * This type takes into account the state
+ * of the multichain-network-controller and
+ * the network-controller.
+ */
 export type MultichainNetworkConfigState =
-  MultichainNetworkConfigurationsByChainIdState & SelectedNetworkChainIdState;
+  MultichainNetworkConfigurationsByChainIdState &
+    SelectedNetworkChainIdState &
+    IsEvmSelected &
+    SelectedNetworkClientIdState &
+    ProviderConfigState;
 
 // Selectors
 
@@ -72,6 +91,9 @@ export const getMultichainNetworkConfigurationsByChainId =
     },
   );
 
+export const getIsEvmSelected = (state: IsEvmSelected) =>
+  state.metamask.isEvmSelected;
+
 export const getSelectedMultichainNetworkChainId = (
   state: SelectedNetworkChainIdState,
 ) => state.metamask.selectedMultichainNetworkChainId;
@@ -79,7 +101,15 @@ export const getSelectedMultichainNetworkChainId = (
 export const getSelectedMultichainNetworkConfiguration = (
   state: MultichainNetworkConfigState,
 ) => {
-  const chainId = getSelectedMultichainNetworkChainId(state);
+  let chainId: CaipChainId;
+  const isEvmSelected = getIsEvmSelected(state);
+  if (isEvmSelected) {
+    const evmNetworkConfig = getProviderConfig(state);
+    chainId = toEvmCaipChainId(evmNetworkConfig.chainId);
+  } else {
+    chainId = getSelectedMultichainNetworkChainId(state);
+  }
+
   const networkConfigurationsByChainId =
     getMultichainNetworkConfigurationsByChainId(state);
   return networkConfigurationsByChainId[chainId];

@@ -8,11 +8,12 @@ import {
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
   getSelectedMultichainNetworkConfiguration,
+  getIsEvmSelected,
 } from './multichain-networks';
 
 type TestState = MultichainNetworkControllerState & NetworkState;
 
-const mockEvmState: TestState = {
+const mockMultichainNetworkState: TestState = {
   metamask: {
     multichainNetworkConfigurationsByChainId: {
       [SolScope.Mainnet]: {
@@ -23,7 +24,7 @@ const mockEvmState: TestState = {
       },
     },
     selectedMultichainNetworkChainId: SolScope.Mainnet,
-    isEvmSelected: true,
+    isEvmSelected: false,
     selectedNetworkClientId: 'mainnet',
     networkConfigurationsByChainId: {
       '0x1': {
@@ -75,7 +76,9 @@ describe('Multichain network selectors', () => {
   describe('getNonEvmMultichainNetworkConfigurationsByChainId', () => {
     it('returns the non-EVM multichain network configurations by chain ID', () => {
       expect(
-        getNonEvmMultichainNetworkConfigurationsByChainId(mockEvmState),
+        getNonEvmMultichainNetworkConfigurationsByChainId(
+          mockMultichainNetworkState,
+        ),
       ).toStrictEqual({
         [SolScope.Mainnet]: {
           chainId: SolScope.Mainnet,
@@ -90,7 +93,7 @@ describe('Multichain network selectors', () => {
   describe('getMultichainNetworkConfigurationsByChainId', () => {
     it('returns the multichain network configurations by chain ID', () => {
       expect(
-        getMultichainNetworkConfigurationsByChainId(mockEvmState),
+        getMultichainNetworkConfigurationsByChainId(mockMultichainNetworkState),
       ).toStrictEqual({
         [SolScope.Mainnet]: {
           chainId: SolScope.Mainnet,
@@ -120,21 +123,49 @@ describe('Multichain network selectors', () => {
 
   describe('getSelectedMultichainNetworkChainId', () => {
     it('returns the selected multichain network chain ID', () => {
-      expect(getSelectedMultichainNetworkChainId(mockEvmState)).toStrictEqual(
-        SolScope.Mainnet,
-      );
+      expect(
+        getSelectedMultichainNetworkChainId(mockMultichainNetworkState),
+      ).toStrictEqual(SolScope.Mainnet);
+    });
+  });
+
+  describe('getIsEvmSelected', () => {
+    it('returns whether the EVM network is selected', () => {
+      expect(getIsEvmSelected(mockMultichainNetworkState)).toStrictEqual(false);
     });
   });
 
   describe('getSelectedMultichainNetworkConfiguration', () => {
-    it('returns the selected multichain network configuration', () => {
+    it('returns the selected non EVM multichain network configuration if isEvmSelected is true', () => {
       expect(
-        getSelectedMultichainNetworkConfiguration(mockEvmState),
+        getSelectedMultichainNetworkConfiguration(mockMultichainNetworkState),
       ).toStrictEqual({
         chainId: SolScope.Mainnet,
         name: 'Solana Mainnet',
         nativeCurrency: `${SolScope.Mainnet}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`,
         isEvm: false,
+      });
+    });
+    it('returns the selected EVM multichain network configuration if isEvmSelected is false', () => {
+      const mockMultichainNetworkStateWithEvmSelected = {
+        ...mockMultichainNetworkState,
+        metamask: {
+          ...mockMultichainNetworkState.metamask,
+          isEvmSelected: true,
+        },
+      };
+
+      expect(
+        getSelectedMultichainNetworkConfiguration(
+          mockMultichainNetworkStateWithEvmSelected,
+        ),
+      ).toStrictEqual({
+        chainId: 'eip155:1',
+        name: 'Ethereum Mainnet',
+        nativeCurrency: 'ETH',
+        blockExplorerUrls: ['https://etherscan.io'],
+        defaultBlockExplorerUrlIndex: 0,
+        isEvm: true,
       });
     });
   });
