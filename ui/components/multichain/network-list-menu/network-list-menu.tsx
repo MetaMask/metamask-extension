@@ -181,7 +181,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
               chainId ===
               convertCaipToHexChainId(editingChainId as CaipChainId),
           )?.[1],
-    [editingChainId, editCompleted, networkConfigurations],
+    [editingChainId, editCompleted, evmNetworks],
   );
 
   // Tracks which page the user is on
