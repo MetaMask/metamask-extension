@@ -89,7 +89,7 @@ export default function NotificationsSettings() {
         <NotificationsSettingsAllowNotifications
           loading={loadingAllowNotifications}
           setLoading={setLoadingAllowNotifications}
-          data-testid="notifications-settings-allow-notifications"
+          dataTestId="notifications-settings-allow"
           disabled={updatingAccounts}
         />
         <Box

@@ -11,7 +11,7 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 
-import { Box } from '..';
+import { Box } from '../box';
 import type { BoxProps, PolymorphicRef } from '../box';
 
 import {

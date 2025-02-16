@@ -9,17 +9,11 @@ import {
   IconColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  AvatarFavicon,
-  ButtonLink,
-  Box,
-  IconName,
-  Icon,
-  IconSize,
-  Text,
-  ButtonLinkSize,
-} from '..';
-import { BoxProps, PolymorphicRef } from '../box';
+import { Text } from '../text';
+import { Box, BoxProps, PolymorphicRef } from '../box';
+import { ButtonLink, ButtonLinkSize } from '../button-link';
+import { AvatarFavicon } from '../avatar-favicon';
+import { Icon, IconName, IconSize } from '../icon';
 import { TagUrlComponent, TagUrlProps } from './tag-url.types';
 
 export const TagUrl: TagUrlComponent = React.forwardRef(
