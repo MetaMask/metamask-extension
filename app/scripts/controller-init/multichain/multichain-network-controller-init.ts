@@ -22,7 +22,7 @@ export const MultichainNetworkControllerInit: ControllerInitFunction<
     state: {
       ...persistedState.MultichainNetworkController,
       ...getDefaultMultichainNetworkControllerState(),
-    }
+    },
   });
 
   return {

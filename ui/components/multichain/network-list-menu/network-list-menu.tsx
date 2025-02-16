@@ -15,6 +15,7 @@ import {
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { type CaipChainId, type Hex } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useAccountCreationOnNetworkChange } from '../../../hooks/accounts/useAccountCreationOnNetworkChange';
 import { NetworkListItem } from '../network-list-item';
 import {
   hideNetworkBanner,
@@ -120,6 +121,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
+  const { createAccount, isAccountInNetwork } =
+    useAccountCreationOnNetworkChange();
 
   const { tokenNetworkFilter } = useSelector(getPreferences);
   const showTestNetworks = useSelector(getShowTestNetworks);
@@ -133,9 +136,15 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
   const showNetworkBanner = useSelector(getShowNetworkBanner);
+  // This selector provides all network configurations including EVM and non-EVM
+  // with the data type MultichainNetworkConfiguration from @metamask/multichain-network-controller
   const multichainNetworks = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
+  // This selector provides all EVM network configurations with the
+  // data type NetworkConfiguration from @metamask/network-controller.
+  // It includes necessary data like the RPC endpoints that are not
+  // part of @metamask/multichain-network-controller.
   const evmNetworks = useSelector(getNetworkConfigurationsByChainId);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const { chainId: editingChainId, editCompleted } =
@@ -276,6 +285,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     dispatch(setNextNonce(''));
     dispatch(detectNfts());
 
+    dispatch(toggleNetworkMenu());
+
     // as a user, I don't want my network selection to force update my filter
     // when I have "All Networks" toggled on however, if I am already filtered
     // on "Current Network", we'll want to filter by the selected network when
@@ -305,19 +316,24 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     }
   };
 
-  const handleNonEvmNetworkChange = (chainId: CaipChainId) => {
-    dispatch(setActiveNetwork(chainId));
+  const handleNonEvmNetworkChange = async (chainId: CaipChainId) => {
+    if (isAccountInNetwork(chainId)) {
+      dispatch(toggleNetworkMenu());
+      dispatch(setActiveNetwork(chainId));
+      return;
+    }
+
+    dispatch(toggleNetworkMenu());
+    await createAccount(chainId);
   };
 
-  const handleNetworkChange = (chainId: CaipChainId) => {
+  const handleNetworkChange = async (chainId: CaipChainId) => {
     const { isEvm } = multichainNetworks[chainId];
     if (isEvm) {
       handleEvmNetworkChange(chainId);
     } else {
-      handleNonEvmNetworkChange(chainId);
+      await handleNonEvmNetworkChange(chainId);
     }
-
-    dispatch(toggleNetworkMenu());
 
     trackEvent({
       event: MetaMetricsEventName.NavNetworkSwitched,
@@ -405,8 +421,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
             ? getDefaultRpcEndpointByChainId(network.chainId)
             : undefined
         }
-        onClick={() => {
-          handleNetworkChange(network.chainId);
+        onClick={async () => {
+          await handleNetworkChange(network.chainId);
         }}
         onDeleteClick={isDeletable ? () => onDelete() : undefined}
         onEditClick={isEditable ? () => onEdit() : undefined}

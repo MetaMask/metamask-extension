@@ -52,8 +52,8 @@ export type NetworkOrderControllerMessenger = RestrictedMessenger<
 // Default state for the controller
 const defaultState: NetworkOrderControllerState = {
   // This is not ideal but acceptable to have Solana as the hardcoded value
-  // since the networks should be provided by the controller
-  // the network-controller provides the EVM network configurations and we must
+  // since the networks should be provided by the controller.
+  // The network-controller provides the EVM network configurations and we must
   // do the same for non-EVM via the multichain-network-controller once it
   // supports network addition.
   orderedNetworkList: [{ networkId: SolScope.Mainnet }],
