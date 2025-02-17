@@ -35,7 +35,7 @@ async function main() {
     {
       dapp: true,
       fixtures: new FixtureBuilder().build(),
-      disableGanache: true,
+      localNodeOptions: 'none',
       title: 'api-specs coverage',
     },
     async ({ driver }: { driver: Driver }) => {
