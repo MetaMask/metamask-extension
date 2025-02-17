@@ -12,17 +12,25 @@ import { useConfirmContext } from '../../../../context/confirm';
 import { hasTransactionData } from '../../../../../../../shared/modules/transaction.utils';
 import { use4ByteResolutionSelector } from '../../../../../../selectors';
 
-export function useDecodedTransactionData(
-  transactionTypeFilter?: string,
-): AsyncResult<DecodedTransactionDataResponse | undefined> {
+export function useDecodedTransactionData({
+  data,
+  to,
+  transactionTypeFilter,
+}: {
+  data?: Hex;
+  to?: Hex;
+  transactionTypeFilter?: string;
+} = {}): AsyncResult<DecodedTransactionDataResponse | undefined> {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const isDecodeEnabled = useSelector(use4ByteResolutionSelector);
 
   const currentTransactionType = currentConfirmation?.type;
   const chainId = currentConfirmation?.chainId as Hex;
   const contractAddress = currentConfirmation?.txParams?.to as Hex;
-  const transactionData = currentConfirmation?.txParams?.data as Hex;
-  const transactionTo = currentConfirmation?.txParams?.to as Hex;
+  const currentTransactionData = currentConfirmation?.txParams?.data as Hex;
+  const currentTransactionTo = currentConfirmation?.txParams?.to as Hex;
+  const transactionData = data ?? currentTransactionData;
+  const transactionTo = to ?? currentTransactionTo;
 
   return useAsyncResult(async () => {
     if (
