@@ -11,7 +11,10 @@ import {
   getIsEvmSelected,
 } from './multichain-networks';
 
-type TestState = MultichainNetworkControllerState & NetworkState & { metamask: { solanaSupportEnabled: boolean, bitcoinSupportEnabled: boolean } };
+type TestState = MultichainNetworkControllerState &
+  NetworkState & {
+    metamask: { solanaSupportEnabled: boolean; bitcoinSupportEnabled: boolean };
+  };
 
 const mockMultichainNetworkState: TestState = {
   metamask: {
@@ -150,7 +153,9 @@ describe('Multichain network selectors', () => {
       };
 
       expect(
-        getMultichainNetworkConfigurationsByChainId(mockMultichainNetworkStateWithSolanaSupportDisabled),
+        getMultichainNetworkConfigurationsByChainId(
+          mockMultichainNetworkStateWithSolanaSupportDisabled,
+        ),
       ).toStrictEqual({
         [BtcScope.Mainnet]: {
           chainId: BtcScope.Mainnet,
@@ -189,7 +194,9 @@ describe('Multichain network selectors', () => {
       console.log({ mockMultichainNetworkStateWithBitcoinSupportDisabled });
 
       expect(
-        getMultichainNetworkConfigurationsByChainId(mockMultichainNetworkStateWithBitcoinSupportDisabled),
+        getMultichainNetworkConfigurationsByChainId(
+          mockMultichainNetworkStateWithBitcoinSupportDisabled,
+        ),
       ).toStrictEqual({
         [SolScope.Mainnet]: {
           chainId: SolScope.Mainnet,
@@ -227,7 +234,9 @@ describe('Multichain network selectors', () => {
       };
 
       expect(
-        getMultichainNetworkConfigurationsByChainId(mockMultichainNetworkStateWithBitcoinSupportDisabled),
+        getMultichainNetworkConfigurationsByChainId(
+          mockMultichainNetworkStateWithBitcoinSupportDisabled,
+        ),
       ).toStrictEqual({
         'eip155:1': {
           chainId: 'eip155:1',
