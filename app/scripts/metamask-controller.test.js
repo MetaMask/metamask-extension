@@ -1383,17 +1383,14 @@ describe('MetaMaskController', () => {
               ],
             },
           },
-          expect.objectContaining({
-            id: expect.any(String),
-          }),
         );
       });
 
       it('throws if the approval is rejected', async () => {
         jest
           .spyOn(
-            metamaskController.approvalController,
-            'addAndShowApprovalRequest',
+            metamaskController.permissionController,
+            'requestPermissionsIncremental',
           )
           .mockRejectedValue(new Error('approval rejected'));
 
@@ -1403,129 +1400,6 @@ describe('MetaMaskController', () => {
             '0x1',
           ),
         ).rejects.toThrow(new Error('approval rejected'));
-      });
-    });
-
-    describe('requestPermittedChainsPermission', () => {
-      it('throws if the origin is snapId', async () => {
-        await expect(() =>
-          metamaskController.requestPermittedChainsPermissionIncremental({
-            origin: 'npm:snap',
-            chainId: '0x1',
-          }),
-        ).rejects.toThrow(
-          new Error(
-            'Cannot request permittedChains permission for Snaps with origin "npm:snap"',
-          ),
-        );
-      });
-
-      it('requests approval for permittedChains permissions from the ApprovalController if autoApprove: false', async () => {
-        jest
-          .spyOn(metamaskController, 'requestApprovalPermittedChainsPermission')
-          .mockResolvedValue();
-        jest
-          .spyOn(metamaskController.permissionController, 'grantPermissions')
-          .mockReturnValue();
-
-        await metamaskController.requestPermittedChainsPermissionIncremental({
-          origin: 'test.com',
-          chainId: '0x1',
-          autoApprove: false,
-        });
-
-        expect(
-          metamaskController.requestApprovalPermittedChainsPermission,
-        ).toHaveBeenCalledWith('test.com', '0x1');
-      });
-
-      it('throws if permittedChains approval is rejected', async () => {
-        jest
-          .spyOn(metamaskController, 'requestApprovalPermittedChainsPermission')
-          .mockRejectedValue(new Error('approval rejected'));
-
-        await expect(() =>
-          metamaskController.requestPermittedChainsPermissionIncremental({
-            origin: 'test.com',
-            chainId: '0x1',
-            autoApprove: false,
-          }),
-        ).rejects.toThrow(new Error('approval rejected'));
-      });
-
-      it('does not request approval for permittedChains permissions from the ApprovalController if autoApprove: true', async () => {
-        jest
-          .spyOn(metamaskController, 'requestApprovalPermittedChainsPermission')
-          .mockResolvedValue();
-        jest
-          .spyOn(metamaskController.permissionController, 'grantPermissions')
-          .mockReturnValue();
-
-        await metamaskController.requestPermittedChainsPermissionIncremental({
-          origin: 'test.com',
-          chainId: '0x1',
-          autoApprove: true,
-        });
-
-        expect(
-          metamaskController.requestApprovalPermittedChainsPermission,
-        ).not.toHaveBeenCalled();
-      });
-
-      it('grants the CAIP-25 permission', async () => {
-        jest
-          .spyOn(metamaskController, 'requestApprovalPermittedChainsPermission')
-          .mockResolvedValue();
-        jest
-          .spyOn(metamaskController.permissionController, 'grantPermissions')
-          .mockReturnValue();
-
-        await metamaskController.requestPermittedChainsPermissionIncremental({
-          origin: 'test.com',
-          chainId: '0x1',
-        });
-
-        expect(
-          metamaskController.permissionController.grantPermissions,
-        ).toHaveBeenCalledWith({
-          subject: { origin: 'test.com' },
-          approvedPermissions: {
-            [Caip25EndowmentPermissionName]: {
-              caveats: [
-                {
-                  type: Caip25CaveatType,
-                  value: {
-                    requiredScopes: {},
-                    optionalScopes: {
-                      'eip155:1': {
-                        accounts: [],
-                      },
-                    },
-                    isMultichainOrigin: false,
-                  },
-                },
-              ],
-            },
-          },
-        });
-      });
-
-      it('throws if CAIP-25 permission grant fails', async () => {
-        jest
-          .spyOn(metamaskController, 'requestApprovalPermittedChainsPermission')
-          .mockResolvedValue();
-        jest
-          .spyOn(metamaskController.permissionController, 'grantPermissions')
-          .mockImplementation(() => {
-            throw new Error('grant failed');
-          });
-
-        await expect(() =>
-          metamaskController.requestPermittedChainsPermissionIncremental({
-            origin: 'test.com',
-            chainId: '0x1',
-          }),
-        ).rejects.toThrow(new Error('grant failed'));
       });
     });
 
@@ -1543,78 +1417,28 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('gets the CAIP-25 caveat', async () => {
-        jest
-          .spyOn(metamaskController.permissionController, 'getCaveat')
-          .mockReturnValue({
-            value: {
-              requiredScopes: {},
-              optionalScopes: {},
-              isMultichainOrigin: false,
-            },
-          });
-        jest
-          .spyOn(metamaskController, 'requestApprovalPermittedChainsPermission')
-          .mockResolvedValue();
-        jest
-          .spyOn(metamaskController.permissionController, 'updateCaveat')
-          .mockReturnValue();
-
-        await metamaskController.requestPermittedChainsPermissionIncremental({
-          origin: 'test.com',
-          chainId: '0x1',
-        });
-
-        expect(
-          metamaskController.permissionController.getCaveat,
-        ).toHaveBeenCalledWith(
-          'test.com',
-          Caip25EndowmentPermissionName,
-          Caip25CaveatType,
-        );
-      });
-
-      it('throws if getting the caveat fails', async () => {
-        jest
-          .spyOn(metamaskController.permissionController, 'getCaveat')
-          .mockReturnValue({
-            value: {
-              requiredScopes: {},
-              optionalScopes: {},
-              isMultichainOrigin: false,
-            },
-          });
-        jest
-          .spyOn(metamaskController, 'requestApprovalPermittedChainsPermission')
-          .mockImplementation(() => {
-            throw new Error('no caveat found');
-          });
-
-        await expect(() =>
-          metamaskController.requestPermittedChainsPermissionIncremental({
-            origin: 'test.com',
-            chainId: '0x1',
-            autoApprove: false,
-          }),
-        ).rejects.toThrow(new Error('no caveat found'));
-      });
-
       it('requests permittedChains approval if autoApprove: false', async () => {
+        const expectedCaip25Permission = {
+          [Caip25EndowmentPermissionName]: {
+            caveats: [
+              {
+                type: Caip25CaveatType,
+                value: {
+                  requiredScopes: {},
+                  optionalScopes: { 'eip155:1': { accounts: [] } },
+                  isMultichainOrigin: false,
+                },
+              },
+            ],
+          },
+        };
+
         jest
-          .spyOn(metamaskController.permissionController, 'getCaveat')
-          .mockReturnValue({
-            value: {
-              requiredScopes: {},
-              optionalScopes: {},
-              isMultichainOrigin: false,
-            },
-          });
-        jest
-          .spyOn(metamaskController, 'requestApprovalPermittedChainsPermission')
-          .mockResolvedValue();
-        jest
-          .spyOn(metamaskController.permissionController, 'updateCaveat')
-          .mockReturnValue();
+          .spyOn(
+            metamaskController.permissionController,
+            'requestPermissionsIncremental',
+          )
+          .mockResolvedValue(expectedCaip25Permission);
 
         await metamaskController.requestPermittedChainsPermissionIncremental({
           origin: 'test.com',
@@ -1623,22 +1447,19 @@ describe('MetaMaskController', () => {
         });
 
         expect(
-          metamaskController.requestApprovalPermittedChainsPermission,
-        ).toHaveBeenCalledWith('test.com', '0x1');
+          metamaskController.permissionController.requestPermissionsIncremental,
+        ).toHaveBeenCalledWith(
+          { origin: 'test.com' },
+          expectedCaip25Permission,
+        );
       });
 
       it('throws if permittedChains approval is rejected', async () => {
         jest
-          .spyOn(metamaskController.permissionController, 'getCaveat')
-          .mockReturnValue({
-            value: {
-              requiredScopes: {},
-              optionalScopes: {},
-              isMultichainOrigin: false,
-            },
-          });
-        jest
-          .spyOn(metamaskController, 'requestApprovalPermittedChainsPermission')
+          .spyOn(
+            metamaskController.permissionController,
+            'requestPermissionsIncremental',
+          )
           .mockRejectedValue(new Error('approval rejected'));
 
         await expect(() =>
@@ -1650,22 +1471,28 @@ describe('MetaMaskController', () => {
         ).rejects.toThrow(new Error('approval rejected'));
       });
 
-      it('does not request permittedChains approval if autoApprove: true', async () => {
+      it('grants permittedChains approval if autoApprove: true', async () => {
+        const expectedCaip25Permission = {
+          [Caip25EndowmentPermissionName]: {
+            caveats: [
+              {
+                type: Caip25CaveatType,
+                value: {
+                  requiredScopes: {},
+                  optionalScopes: { 'eip155:1': { accounts: [] } },
+                  isMultichainOrigin: false,
+                },
+              },
+            ],
+          },
+        };
+
         jest
-          .spyOn(metamaskController.permissionController, 'getCaveat')
-          .mockReturnValue({
-            value: {
-              requiredScopes: {},
-              optionalScopes: {},
-              isMultichainOrigin: false,
-            },
-          });
-        jest
-          .spyOn(metamaskController, 'requestApprovalPermittedChainsPermission')
-          .mockResolvedValue();
-        jest
-          .spyOn(metamaskController.permissionController, 'updateCaveat')
-          .mockReturnValue();
+          .spyOn(
+            metamaskController.permissionController,
+            'grantPermissionsIncremental',
+          )
+          .mockResolvedValue(expectedCaip25Permission);
 
         await metamaskController.requestPermittedChainsPermissionIncremental({
           origin: 'test.com',
@@ -1674,62 +1501,18 @@ describe('MetaMaskController', () => {
         });
 
         expect(
-          metamaskController.requestApprovalPermittedChainsPermission,
-        ).not.toHaveBeenCalled();
-      });
-
-      it('updates the CAIP-25 permission', async () => {
-        jest
-          .spyOn(metamaskController.permissionController, 'getCaveat')
-          .mockReturnValue({
-            value: {
-              requiredScopes: {},
-              optionalScopes: {
-                'eip155:5': {
-                  accounts: ['eip155:5:0xdeadbeef'],
-                },
-              },
-              isMultichainOrigin: false,
-            },
-          });
-        jest
-          .spyOn(metamaskController, 'requestApprovalPermittedChainsPermission')
-          .mockResolvedValue();
-        jest
-          .spyOn(metamaskController.permissionController, 'updateCaveat')
-          .mockReturnValue();
-
-        await metamaskController.requestPermittedChainsPermissionIncremental({
-          origin: 'test.com',
-          chainId: '0x1',
+          metamaskController.permissionController.grantPermissionsIncremental,
+        ).toHaveBeenCalledWith({
+          subject: { origin: 'test.com' },
+          approvedPermissions: expectedCaip25Permission,
         });
-
-        expect(
-          metamaskController.permissionController.updateCaveat,
-        ).toHaveBeenCalledWith(
-          'test.com',
-          Caip25EndowmentPermissionName,
-          Caip25CaveatType,
-          {
-            requiredScopes: {},
-            optionalScopes: {
-              'eip155:5': {
-                accounts: ['eip155:5:0xdeadbeef'],
-              },
-              'eip155:1': {
-                accounts: ['eip155:1:0xdeadbeef'],
-              },
-            },
-            isMultichainOrigin: false,
-          },
-        );
       });
 
-      it('throws if CAIP-25 permission update fails', async () => {
+      it('throws if autoApprove: true and granting permittedChains throws', async () => {
         jest
           .spyOn(
             metamaskController.permissionController,
-            'requestPermissionsIncremental',
+            'grantPermissionsIncremental',
           )
           .mockImplementation(() => {
             throw new Error(
@@ -1741,6 +1524,7 @@ describe('MetaMaskController', () => {
           metamaskController.requestPermittedChainsPermissionIncremental({
             origin: 'test.com',
             chainId: '0x1',
+            autoApprove: true,
           }),
         ).rejects.toThrow(
           new Error('Invalid merged permissions for subject "test.com"'),
