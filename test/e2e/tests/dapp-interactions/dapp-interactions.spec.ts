@@ -1,7 +1,4 @@
-import {
-  withFixtures,
-  WINDOW_TITLES,
-} from '../../helpers';
+import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import {
   DAPP_ONE_ADDRESS,
   DAPP_ONE_URL,
