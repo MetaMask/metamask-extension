@@ -161,15 +161,13 @@ export type ControllerInitRequest<
     message: string,
     url?: string,
   ) => Promise<void>;
-} & (InitMessengerType extends BaseRestrictedControllerMessenger
-  ? {
-      /**
-       * Required initialization messenger instance.
-       * Generated using the callback specified in `getInitMessengerCallback`.
-       */
-      initMessenger: InitMessengerType;
-    }
-  : unknown);
+
+  /**
+   * Required initialization messenger instance.
+   * Generated using the callback specified in `getInitMessengerCallback`.
+   */
+  initMessenger: InitMessengerType;
+};
 
 /**
  * A single background API method available to the UI.

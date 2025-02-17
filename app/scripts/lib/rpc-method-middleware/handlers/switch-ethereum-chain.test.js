@@ -10,6 +10,7 @@ jest.mock('./ethereum-chain-utils', () => ({
   ...jest.requireActual('./ethereum-chain-utils'),
   validateSwitchEthereumChainParams: jest.fn(),
   switchChain: jest.fn(),
+  setTokenNetworkFilter: jest.fn(),
 }));
 
 const NON_INFURA_CHAIN_ID = '0x123456789';
@@ -45,6 +46,7 @@ const createMockedHandler = () => {
     getCaveat: jest.fn(),
     getCurrentChainIdForDomain: jest.fn().mockReturnValue(NON_INFURA_CHAIN_ID),
     requestPermittedChainsPermissionIncrementalForOrigin: jest.fn(),
+    setTokenNetworkFilter: jest.fn(),
   };
   const response = {};
   const handler = (request) =>
@@ -168,6 +170,7 @@ describe('switchEthereumChainHandler', () => {
         getCaveat: mocks.getCaveat,
         requestPermittedChainsPermissionIncrementalForOrigin:
           mocks.requestPermittedChainsPermissionIncrementalForOrigin,
+        setTokenNetworkFilter: mocks.setTokenNetworkFilter,
       },
     );
   });
