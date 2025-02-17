@@ -56,7 +56,7 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
+import { UseBridgeTxHistoryDataProps } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import TransactionActivityLog from '../../../components/app/transaction-activity-log';
 import {
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
@@ -174,10 +174,10 @@ const CrossChainSwapTxDetails = () => {
     getNetworkConfigurationsByChainId,
   );
 
-  const { transactionGroup, isEarliestNonce } = location.state as {
-    transactionGroup: TransactionGroup;
-    isEarliestNonce: boolean;
-  };
+  const { transactionGroup, isEarliestNonce } = location.state
+    ? (location.state as UseBridgeTxHistoryDataProps)
+    : {};
+
   const srcChainTxMeta = selectedAddressTxList.find(
     (tx) => tx.id === srcTxMetaId,
   );
@@ -457,12 +457,13 @@ const CrossChainSwapTxDetails = () => {
                   : undefined
               }
             />
-
-            <TransactionActivityLog
-              transactionGroup={transactionGroup}
-              className="transaction-list-item-details__transaction-activity-log"
-              isEarliestNonce={isEarliestNonce}
-            />
+            {transactionGroup && typeof isEarliestNonce !== 'undefined' && (
+              <TransactionActivityLog
+                transactionGroup={transactionGroup}
+                className="transaction-list-item-details__transaction-activity-log"
+                isEarliestNonce={isEarliestNonce}
+              />
+            )}
           </Box>
         </Box>
       </Content>
