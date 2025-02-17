@@ -120,7 +120,7 @@ import {
 import {
   getPermissionSubjects,
   getConnectedSubjectsForAllAddresses,
-  getOrderedConnectedAccountsForActiveTab,
+  createGetOrderedConnectedAccountsForActiveTabMemo,
   getOrderedConnectedAccountsForConnectedDapp,
   getSubjectMetadata,
 } from './permissions';
@@ -685,7 +685,7 @@ function getNativeTokenInfo(state, chainId) {
  *
  * @returns {InternalAccountWithBalance} An array of internal accounts with balance
  */
-export const getMetaMaskAccountsOrdered = createSelector(
+export const getMetaMaskAccountsOrdered = createDeepEqualSelector(
   getInternalAccountsSortedByKeyring,
   getMetaMaskAccounts,
   (internalAccounts, accounts) => {
@@ -2786,11 +2786,14 @@ export function getUnconnectedAccounts(state, activeTab) {
   return unConnectedAccounts;
 }
 
+const getOrderedConnectedAccountsForActiveTabMemo =
+  createGetOrderedConnectedAccountsForActiveTabMemo();
+
 export const getUpdatedAndSortedAccounts = createDeepEqualSelector(
   getMetaMaskAccountsOrdered,
   getPinnedAccountsList,
   getHiddenAccountsList,
-  getOrderedConnectedAccountsForActiveTab,
+  getOrderedConnectedAccountsForActiveTabMemo,
   (accounts, pinnedAddresses, hiddenAddresses, connectedAccounts) => {
     connectedAccounts.forEach((connection) => {
       // Find if the connection exists in accounts
