@@ -27,7 +27,6 @@ jobs:
 
       - name: Create bug report issue on planning repo
         if: steps.extract_version.outputs.version
-        id: create-bug-report-issue
         env:
           BUG_REPORT_TOKEN: ${{ secrets.BUG_REPORT_TOKEN }}
           RELEASES_GITHUB_PROJECT_BOARD_NUMBER: ${{ vars.RELEASES_GITHUB_PROJECT_BOARD_NUMBER }}
