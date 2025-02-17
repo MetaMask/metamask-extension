@@ -5,7 +5,7 @@
   left: 0;
   top: 0;
   z-index: design-system.$modal-z-index;
-  overflow: auto;
+  overflow: hidden;
   overscroll-behavior-y: none;
 
   // Maximize dialog visibility on small screen heights
@@ -71,11 +71,13 @@
     from {
       transform: translateY(24px);
       opacity: 0;
+      overflow: hidden;
     }
 
     to {
       transform: translateY(0);
       opacity: 1;
+      overflow: hidden;
     }
   }
 }
