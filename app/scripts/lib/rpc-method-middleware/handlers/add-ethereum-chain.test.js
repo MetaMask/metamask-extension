@@ -68,7 +68,6 @@ const createMockedHandler = () => {
     getNetworkConfigurationByChainId: jest.fn(),
     setActiveNetwork: jest.fn(),
     requestUserApproval: jest.fn().mockResolvedValue(123),
-    getCaveat: jest.fn(),
     addNetwork: jest.fn().mockResolvedValue({
       defaultRpcEndpointIndex: 0,
       rpcEndpoints: [{ networkClientId: 123 }],
@@ -77,7 +76,6 @@ const createMockedHandler = () => {
       defaultRpcEndpointIndex: 0,
       rpcEndpoints: [{ networkClientId: 123 }],
     }),
-    requestPermittedChainsPermissionForOrigin: jest.fn(),
     requestPermittedChainsPermissionIncrementalForOrigin: jest.fn(),
   };
   const response = {};
@@ -185,10 +183,7 @@ describe('addEthereumChainHandler', () => {
       123,
       {
         autoApprove: true,
-        getCaveat: mocks.getCaveat,
         setActiveNetwork: mocks.setActiveNetwork,
-        requestPermittedChainsPermissionForOrigin:
-          mocks.requestPermittedChainsPermissionForOrigin,
         requestPermittedChainsPermissionIncrementalForOrigin:
           mocks.requestPermittedChainsPermissionIncrementalForOrigin,
       },
@@ -252,10 +247,7 @@ describe('addEthereumChainHandler', () => {
           123,
           {
             autoApprove: true,
-            getCaveat: mocks.getCaveat,
             setActiveNetwork: mocks.setActiveNetwork,
-            requestPermittedChainsPermissionForOrigin:
-              mocks.requestPermittedChainsPermissionForOrigin,
             requestPermittedChainsPermissionIncrementalForOrigin:
               mocks.requestPermittedChainsPermissionIncrementalForOrigin,
           },
@@ -299,10 +291,7 @@ describe('addEthereumChainHandler', () => {
           createMockOptimismConfiguration().rpcEndpoints[0].networkClientId,
           {
             autoApprove: false,
-            getCaveat: mocks.getCaveat,
             setActiveNetwork: mocks.setActiveNetwork,
-            requestPermittedChainsPermissionForOrigin:
-              mocks.requestPermittedChainsPermissionForOrigin,
             requestPermittedChainsPermissionIncrementalForOrigin:
               mocks.requestPermittedChainsPermissionIncrementalForOrigin,
           },

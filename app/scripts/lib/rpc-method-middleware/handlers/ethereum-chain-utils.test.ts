@@ -1,8 +1,4 @@
 import { errorCodes, rpcErrors } from '@metamask/rpc-errors';
-import {
-  Caip25CaveatType,
-  Caip25EndowmentPermissionName,
-} from '@metamask/multichain';
 import { Hex } from '@metamask/utils';
 import * as EthChainUtils from './ethereum-chain-utils';
 
@@ -12,8 +8,6 @@ describe('Ethereum Chain Utils', () => {
     const mocks = {
       autoApprove: false,
       setActiveNetwork: jest.fn(),
-      getCaveat: jest.fn(),
-      requestPermittedChainsPermissionForOrigin: jest.fn(),
       requestPermittedChainsPermissionIncrementalForOrigin: jest.fn(),
     };
     const response: { result?: true } = {};
@@ -29,16 +23,6 @@ describe('Ethereum Chain Utils', () => {
   };
 
   describe('switchChain', () => {
-    it('gets the CAIP-25 caveat', async () => {
-      const { mocks, switchChain } = createMockedSwitchChain();
-      await switchChain('0x1', 'mainnet');
-
-      expect(mocks.getCaveat).toHaveBeenCalledWith({
-        target: Caip25EndowmentPermissionName,
-        caveatType: Caip25CaveatType,
-      });
-    });
-
     describe('with no existing CAIP-25 permission', () => {
       it('requests a switch chain approval without autoApprove if autoApprove: false', async () => {
         const { mocks, switchChain } = createMockedSwitchChain();
@@ -46,7 +30,7 @@ describe('Ethereum Chain Utils', () => {
         await switchChain('0x1', 'mainnet');
 
         expect(
-          mocks.requestPermittedChainsPermissionForOrigin,
+          mocks.requestPermittedChainsPermissionIncrementalForOrigin,
         ).toHaveBeenCalledWith({ chainId: '0x1', autoApprove: false });
       });
 
@@ -59,14 +43,16 @@ describe('Ethereum Chain Utils', () => {
 
       it('should throw an error if the switch chain approval is rejected', async () => {
         const { mocks, end, switchChain } = createMockedSwitchChain();
-        mocks.requestPermittedChainsPermissionForOrigin.mockRejectedValueOnce({
-          code: errorCodes.provider.userRejectedRequest,
-        });
+        mocks.requestPermittedChainsPermissionIncrementalForOrigin.mockRejectedValueOnce(
+          {
+            code: errorCodes.provider.userRejectedRequest,
+          },
+        );
 
         await switchChain('0x1', 'mainnet');
 
         expect(
-          mocks.requestPermittedChainsPermissionForOrigin,
+          mocks.requestPermittedChainsPermissionIncrementalForOrigin,
         ).toHaveBeenCalled();
         expect(mocks.setActiveNetwork).not.toHaveBeenCalled();
         expect(end).toHaveBeenCalledWith({
@@ -79,13 +65,6 @@ describe('Ethereum Chain Utils', () => {
       it('requests a switch chain approval with autoApprove and switches to it if autoApprove: true', async () => {
         const { mocks, switchChain } = createMockedSwitchChain();
         mocks.autoApprove = true;
-        mocks.getCaveat.mockReturnValue({
-          value: {
-            requiredScopes: {},
-            optionalScopes: {},
-            isMultichainOrigin: false,
-          },
-        });
         await switchChain('0x1', 'mainnet');
 
         expect(
@@ -97,13 +76,6 @@ describe('Ethereum Chain Utils', () => {
       it('requests permittedChains approval without autoApprove then switches to it if autoApprove: false', async () => {
         const { mocks, switchChain } = createMockedSwitchChain();
         mocks.autoApprove = false;
-        mocks.getCaveat.mockReturnValue({
-          value: {
-            requiredScopes: {},
-            optionalScopes: {},
-            isMultichainOrigin: false,
-          },
-        });
         await switchChain('0x1', 'mainnet');
 
         expect(
@@ -117,13 +89,6 @@ describe('Ethereum Chain Utils', () => {
         mocks.requestPermittedChainsPermissionIncrementalForOrigin.mockRejectedValueOnce(
           new Error('failed to auto grant permittedChains'),
         );
-        mocks.getCaveat.mockReturnValue({
-          value: {
-            requiredScopes: {},
-            optionalScopes: {},
-            isMultichainOrigin: false,
-          },
-        });
         await switchChain('0x1', 'mainnet');
 
         expect(
@@ -144,13 +109,6 @@ describe('Ethereum Chain Utils', () => {
             "Cannot switch to or add permissions for chainId '0x1' because permissions were granted over the Multichain API.",
           ),
         );
-        mocks.getCaveat.mockReturnValue({
-          value: {
-            requiredScopes: {},
-            optionalScopes: {},
-            isMultichainOrigin: true,
-          },
-        });
         await switchChain('0x1', 'mainnet');
 
         expect(
@@ -160,13 +118,6 @@ describe('Ethereum Chain Utils', () => {
 
       it('does not switch the active network', async () => {
         const { mocks, switchChain } = createMockedSwitchChain();
-        mocks.getCaveat.mockReturnValue({
-          value: {
-            requiredScopes: {},
-            optionalScopes: {},
-            isMultichainOrigin: true,
-          },
-        });
         mocks.requestPermittedChainsPermissionIncrementalForOrigin.mockRejectedValue(
           new Error(
             "Cannot switch to or add permissions for chainId '0x1' because permissions were granted over the Multichain API.",
@@ -180,13 +131,6 @@ describe('Ethereum Chain Utils', () => {
 
       it('return error about not being able to switch chain', async () => {
         const { mocks, end, switchChain } = createMockedSwitchChain();
-        mocks.getCaveat.mockReturnValue({
-          value: {
-            requiredScopes: {},
-            optionalScopes: {},
-            isMultichainOrigin: true,
-          },
-        });
         mocks.requestPermittedChainsPermissionIncrementalForOrigin.mockRejectedValue(
           new Error(
             "Cannot switch to or add permissions for chainId '0x1' because permissions were granted over the Multichain API.",
@@ -204,45 +148,20 @@ describe('Ethereum Chain Utils', () => {
     });
 
     // @ts-expect-error This function is missing from the Mocha type definitions
-    describe.each([
-      ['legacy', false],
-      ['multichain', true],
-    ])(
-      'with an existing CAIP-25 permission granted from the %s flow (isMultichainOrigin: %s) and the chainId is already permissioned',
-      (_type: string, isMultichainOrigin: boolean) => {
-        it('does not request permittedChains approval', async () => {
+    describe.each([['legacy'], ['multichain']])(
+      'with an existing CAIP-25 permission granted from the %s flow and the chainId is already permissioned',
+      (_type: string) => {
+        it('requests permittedChains approval', async () => {
           const { mocks, switchChain } = createMockedSwitchChain();
-          mocks.getCaveat.mockReturnValue({
-            value: {
-              requiredScopes: {
-                'eip155:1': {
-                  accounts: [],
-                },
-              },
-              optionalScopes: {},
-              isMultichainOrigin,
-            },
-          });
           await switchChain('0x1', 'mainnet');
 
           expect(
             mocks.requestPermittedChainsPermissionIncrementalForOrigin,
-          ).not.toHaveBeenCalled();
+          ).toHaveBeenCalledWith({ chainId: '0x1', autoApprove: false });
         });
 
         it('switches the active network', async () => {
           const { mocks, switchChain } = createMockedSwitchChain();
-          mocks.getCaveat.mockReturnValue({
-            value: {
-              requiredScopes: {
-                'eip155:1': {
-                  accounts: [],
-                },
-              },
-              optionalScopes: {},
-              isMultichainOrigin,
-            },
-          });
           await switchChain('0x1', 'mainnet');
 
           expect(mocks.setActiveNetwork).toHaveBeenCalledWith('mainnet');

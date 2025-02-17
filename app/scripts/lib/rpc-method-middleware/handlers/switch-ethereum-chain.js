@@ -11,9 +11,7 @@ const switchEthereumChain = {
   hookNames: {
     getNetworkConfigurationByChainId: true,
     setActiveNetwork: true,
-    getCaveat: true,
     getCurrentChainIdForDomain: true,
-    requestPermittedChainsPermissionForOrigin: true,
     requestPermittedChainsPermissionIncrementalForOrigin: true,
   },
 };
@@ -28,9 +26,7 @@ async function switchEthereumChainHandler(
   {
     getNetworkConfigurationByChainId,
     setActiveNetwork,
-    getCaveat,
     getCurrentChainIdForDomain,
-    requestPermittedChainsPermissionForOrigin,
     requestPermittedChainsPermissionIncrementalForOrigin,
   },
 ) {
@@ -66,8 +62,6 @@ async function switchEthereumChainHandler(
 
   return switchChain(res, end, chainId, networkClientIdToSwitchTo, {
     setActiveNetwork,
-    getCaveat,
-    requestPermittedChainsPermissionForOrigin,
     requestPermittedChainsPermissionIncrementalForOrigin,
   });
 }

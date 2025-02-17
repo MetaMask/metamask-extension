@@ -42,9 +42,7 @@ const createMockedHandler = () => {
       .fn()
       .mockReturnValue(createMockMainnetConfiguration()),
     setActiveNetwork: jest.fn(),
-    getCaveat: jest.fn(),
     getCurrentChainIdForDomain: jest.fn().mockReturnValue(NON_INFURA_CHAIN_ID),
-    requestPermittedChainsPermissionForOrigin: jest.fn(),
     requestPermittedChainsPermissionIncrementalForOrigin: jest.fn(),
   };
   const response = {};
@@ -166,9 +164,6 @@ describe('switchEthereumChainHandler', () => {
       'mainnet',
       {
         setActiveNetwork: mocks.setActiveNetwork,
-        getCaveat: mocks.getCaveat,
-        requestPermittedChainsPermissionForOrigin:
-          mocks.requestPermittedChainsPermissionForOrigin,
         requestPermittedChainsPermissionIncrementalForOrigin:
           mocks.requestPermittedChainsPermissionIncrementalForOrigin,
       },
