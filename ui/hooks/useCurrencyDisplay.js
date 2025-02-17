@@ -79,7 +79,7 @@ function formatNonEvmAssetCurrencyDisplay({
     // noting that if `inputValue` is not properly defined, the amount will be set to '0', see
     // `Numeric` constructor for that)
     return new Numeric(inputValue, 10).toString();
-  } else if (isUserPreferredCurrency && conversionRate) {
+  } else if (isUserPreferredCurrency && conversionRate !== undefined) {
     const amount =
       getTokenFiatAmount(
         1, // coin to native conversion rate is 1:1
