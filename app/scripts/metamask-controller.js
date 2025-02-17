@@ -358,13 +358,14 @@ import {
   handleBridgeTransactionFailed,
   handleTransactionFailedTypeBridge,
 } from './lib/bridge-status/metrics';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   MultichainAssetsControllerInit,
   MultichainTransactionsControllerInit,
   MultichainBalancesControllerInit,
+  ///: END:ONLY_INCLUDE_IF
+  MultichainNetworkControllerInit,
 } from './controller-init/multichain';
-///: END:ONLY_INCLUDE_IF
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
 import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
 import { initControllers } from './controller-init/utils';
@@ -632,6 +633,7 @@ export default class MetamaskController extends EventEmitter {
         'SnapKeyring:accountAssetListUpdated',
         'SnapKeyring:accountBalancesUpdated',
         'SnapKeyring:accountTransactionsUpdated',
+        'MultichainNetworkController:networkDidChange',
       ],
       allowedActions: [
         'KeyringController:getAccounts',
@@ -2057,6 +2059,7 @@ export default class MetamaskController extends EventEmitter {
       MultichainBalancesController: MultichainBalancesControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
       ///: END:ONLY_INCLUDE_IF
+      MultichainNetworkController: MultichainNetworkControllerInit,
     };
 
     const {
@@ -2092,6 +2095,8 @@ export default class MetamaskController extends EventEmitter {
     this.multichainTransactionsController =
       controllersByName.MultichainTransactionsController;
     ///: END:ONLY_INCLUDE_IF
+    this.multichainNetworkController =
+      controllersByName.MultichainNetworkController;
 
     this.controllerMessenger.subscribe(
       'TransactionController:transactionStatusUpdated',
@@ -2219,6 +2224,7 @@ export default class MetamaskController extends EventEmitter {
       MetaMetricsDataDeletionController: this.metaMetricsDataDeletionController,
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyRateController,
+      MultichainNetworkController: this.multichainNetworkController,
       NetworkController: this.networkController,
       AlertController: this.alertController,
       OnboardingController: this.onboardingController,
@@ -2267,6 +2273,7 @@ export default class MetamaskController extends EventEmitter {
         MultichainBalancesController: this.multichainBalancesController,
         MultichainTransactionsController: this.multichainTransactionsController,
         ///: END:ONLY_INCLUDE_IF
+        MultichainNetworkController: this.multichainNetworkController,
         NetworkController: this.networkController,
         KeyringController: this.keyringController,
         PreferencesController: this.preferencesController,
@@ -3305,8 +3312,10 @@ export default class MetamaskController extends EventEmitter {
       verifyPassword: this.verifyPassword.bind(this),
 
       // network management
-      setActiveNetwork: (networkConfigurationId) => {
-        return this.networkController.setActiveNetwork(networkConfigurationId);
+      setActiveNetwork: (id) => {
+        // The multichain network controller will proxy the call to the network controller
+        // in the case that the ID is an EVM network client ID.
+        return this.multichainNetworkController.setActiveNetwork(id);
       },
       // Avoids returning the promise so that initial call to switch network
       // doesn't block on the network lookup step
