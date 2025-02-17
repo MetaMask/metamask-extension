@@ -20,9 +20,11 @@ import useAlerts from '../../../../../hooks/useAlerts';
 import {
   rejectPendingApproval,
   resolvePendingApproval,
+  setNextNonce,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   updateAndApproveTx,
   ///: END:ONLY_INCLUDE_IF
+  updateCustomNonce,
 } from '../../../../../store/actions';
 import { isSignatureTransactionType } from '../../../utils';
 import { useConfirmContext } from '../../../context/confirm';
@@ -188,6 +190,8 @@ const Footer = () => {
       dispatch(
         rejectPendingApproval(currentConfirmation.id, serializeError(error)),
       );
+      dispatch(updateCustomNonce(''));
+      dispatch(setNextNonce(''));
     },
     [currentConfirmation],
   );
@@ -219,6 +223,8 @@ const Footer = () => {
     } else {
       dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
     }
+    dispatch(updateCustomNonce(''));
+    dispatch(setNextNonce(''));
   }, [currentConfirmation, customNonceValue]);
 
   const handleFooterCancel = useCallback(() => {
