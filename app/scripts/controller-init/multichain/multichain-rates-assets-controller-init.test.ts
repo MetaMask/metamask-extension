@@ -20,6 +20,7 @@ function buildInitRequestMock(): jest.Mocked<
     controllerMessenger: getMultiChainAssetsRatesControllerMessenger(
       baseControllerMessenger,
     ),
+    initMessenger: undefined,
   };
 }
 
