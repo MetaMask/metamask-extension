@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useMemo, useRef } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import type { Dispatch } from 'redux';
 import { useDispatch, useSelector } from 'react-redux';
 import { EthAccountType, KeyringAccountType } from '@metamask/keyring-api';
@@ -95,18 +101,46 @@ export const SendPageYourAccounts = ({
   }, [accounts, allowedAccountTypes]);
   const selectedAccount = useSelector(getSelectedInternalAccount);
 
-  const rootRef = useRef(
-    document.getElementsByClassName('app').item(0) as HTMLDivElement,
-  );
+  const listRef = useRef<HTMLDivElement | null>(null);
+  const scrollParentRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    function getScrollParent(node: HTMLElement | null): HTMLElement | null {
+      if (node === null) {
+        return null;
+      }
+
+      if (node.scrollHeight > node.clientHeight) {
+        return node;
+      }
+      return getScrollParent(node.parentElement);
+    }
+
+    if (listRef.current) {
+      const scrollParent = getScrollParent(listRef.current);
+      (scrollParentRef as React.MutableRefObject<HTMLElement | null>).current =
+        scrollParent;
+      console.log('Scroll Parent:', scrollParent);
+    }
+  }, []);
   const virtualizer = useVirtualizer({
     count: filteredAccounts.length,
+    overscan: 5,
     estimateSize: () => 80,
-    getScrollElement: () => rootRef.current,
+    getScrollElement: () => scrollParentRef.current,
+    scrollMargin: listRef.current?.offsetTop ?? 0,
   });
+
+  useEffect(() => {
+    if (scrollParentRef.current) {
+      virtualizer.measure();
+    }
+  }, [virtualizer, scrollParentRef.current]);
+
   const items = virtualizer.getVirtualItems();
 
   return (
-    <SendPageRow ref={rootRef}>
+    <SendPageRow ref={listRef}>
       <Box
         style={{
           height: `${virtualizer.getTotalSize()}px`,
@@ -123,6 +157,7 @@ export const SendPageYourAccounts = ({
           return (
             <Box
               key={account.address}
+              data-index={virtualItem.index}
               style={{
                 position: 'absolute',
                 top: 0,

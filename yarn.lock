@@ -9670,6 +9670,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/react-virtual@npm:^3.13.0":
+  version: 3.13.0
+  resolution: "@tanstack/react-virtual@npm:3.13.0"
+  dependencies:
+    "@tanstack/virtual-core": "npm:3.13.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10/0cc6fcc63d68af698d79b455fa6a44115ee3abfb41bd2a52fc96094cb4760743989e593871b3b872021f966c7ecc90eb45e85ccfc70446fff44ce8e6296cc76f
+  languageName: node
+  linkType: hard
+
+"@tanstack/virtual-core@npm:3.13.0":
+  version: 3.13.0
+  resolution: "@tanstack/virtual-core@npm:3.13.0"
+  checksum: 10/048e609d4ea75ae4edb1821a2984de1596b44373c9ee566c621b06b2bed8b40bd32cb1f17d9c9af5325a2d157b74d82ea36fe6ea274c8032f13a5472c11e0928
+  languageName: node
+  linkType: hard
+
 "@testing-library/dom@npm:^7.17.1, @testing-library/dom@npm:^7.31.2":
   version: 7.31.2
   resolution: "@testing-library/dom@npm:7.31.2"
@@ -26768,6 +26787,7 @@ __metadata:
     "@storybook/theming": "npm:^7.6.20"
     "@swc/core": "npm:1.4.11"
     "@swc/helpers": "npm:^0.5.7"
+    "@tanstack/react-virtual": "npm:^3.13.0"
     "@testing-library/dom": "npm:^7.31.2"
     "@testing-library/jest-dom": "npm:^5.11.10"
     "@testing-library/react": "npm:^10.4.8"

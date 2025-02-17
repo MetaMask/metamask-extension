@@ -71,14 +71,43 @@ function TokenList({ onTokenClick }: TokenListProps) {
     }
   }, [sortedFilteredTokens]);
 
-  const rootRef = useRef(
-    document.getElementsByClassName('app').item(0) as HTMLDivElement,
-  );
+  const listRef = useRef<HTMLDivElement | null>(null);
+  const scrollParentRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    function getScrollParent(node: HTMLElement | null): HTMLElement | null {
+      if (node === null) {
+        return null;
+      }
+
+      if (node.scrollHeight > node.clientHeight) {
+        return node;
+      }
+      return getScrollParent(node.parentElement);
+    }
+
+    if (listRef.current) {
+      const scrollParent = getScrollParent(listRef.current);
+      (scrollParentRef as React.MutableRefObject<HTMLElement | null>).current =
+        scrollParent;
+      console.log('Scroll Parent:', scrollParent);
+    }
+  }, []);
+
   const virtualizer = useVirtualizer({
     count: sortedFilteredTokens.length,
+    overscan: 5,
     estimateSize: () => 62,
-    getScrollElement: () => rootRef.current,
+    getScrollElement: () => scrollParentRef.current,
+    scrollMargin: listRef.current?.offsetTop ?? 0,
   });
+
+  useEffect(() => {
+    if (scrollParentRef.current) {
+      virtualizer.measure();
+    }
+  }, [virtualizer, scrollParentRef.current]);
+
   const virtualTokens = virtualizer.getVirtualItems();
 
   return (
@@ -86,7 +115,7 @@ function TokenList({ onTokenClick }: TokenListProps) {
       style={{
         minHeight: '80px',
       }}
-      ref={rootRef}
+      ref={listRef}
     >
       <Box
         style={{
@@ -104,13 +133,16 @@ function TokenList({ onTokenClick }: TokenListProps) {
           return (
             <Box
               key={`${token.chainId}-${token.symbol}-${token.address}`}
+              data-index={virtualItem.index}
               style={{
                 position: 'absolute',
                 top: 0,
                 left: 0,
                 width: '100%',
-                minHeight: `${virtualItem.size}px`,
-                transform: `translateY(${virtualItem.start}px)`,
+                height: `${virtualItem.size}px`,
+                transform: `translateY(${
+                  virtualItem.start - virtualizer.options.scrollMargin
+                }px)`,
               }}
             >
               <TokenCell
