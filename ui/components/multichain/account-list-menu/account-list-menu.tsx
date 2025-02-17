@@ -4,6 +4,7 @@ import React, {
   useMemo,
   useCallback,
   useEffect,
+  useRef,
 } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -14,6 +15,7 @@ import {
 } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import {
   BtcAccountType,
   EthAccountType,
@@ -180,6 +182,54 @@ export const getActionTitle = (
   }
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type TempAccount = any;
+const AccountListItemContainer = React.memo(
+  (props: {
+    account: TempAccount;
+    onAccountListItemItemClicked: (account: TempAccount) => () => void;
+    onClose: () => void;
+    selected: boolean;
+    connectedAvatar: string | undefined | null;
+    currentTabOrigin: string | undefined | null;
+    privacyMode: boolean;
+    accountListItemProps?: object;
+  }) => {
+    const {
+      account,
+      onAccountListItemItemClicked,
+      onClose,
+      selected,
+      connectedAvatar,
+      currentTabOrigin,
+      privacyMode,
+      accountListItemProps,
+    } = props;
+    const onClick = useMemo(
+      () => onAccountListItemItemClicked(account),
+      [account, onAccountListItemItemClicked],
+    );
+
+    return (
+      <AccountListItem
+        onClick={onClick}
+        account={account}
+        selected={selected}
+        closeMenu={onClose}
+        connectedAvatar={connectedAvatar}
+        menuType={AccountListItemMenuTypes.Account}
+        isPinned={Boolean(account.pinned)}
+        isHidden={Boolean(account.hidden)}
+        currentTabOrigin={currentTabOrigin}
+        isActive={Boolean(account.active)}
+        privacyMode={privacyMode}
+        shouldScrollToWhenSelected={false}
+        {...accountListItemProps}
+      />
+    );
+  },
+);
+
 type AccountListMenuProps = {
   onClose: () => void;
   privacyMode?: boolean;
@@ -297,19 +347,43 @@ export const AccountListMenu = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
 
-  let searchResults: MergedInternalAccount[] = filteredUpdatedAccountList;
-  if (searchQuery) {
-    const fuse = new Fuse(filteredAccounts, {
-      threshold: 0.2,
-      location: 0,
-      distance: 100,
-      maxPatternLength: 32,
-      minMatchCharLength: 1,
-      keys: ['metadata.name', 'address'],
-    });
-    fuse.setCollection(filteredAccounts);
-    searchResults = fuse.search(searchQuery);
-  }
+  const searchResults: MergedInternalAccount[] = useMemo(() => {
+    let _searchResults: MergedInternalAccount[] = filteredUpdatedAccountList;
+    if (searchQuery) {
+      const fuse = new Fuse(filteredAccounts, {
+        threshold: 0.2,
+        location: 0,
+        distance: 100,
+        maxPatternLength: 32,
+        minMatchCharLength: 1,
+        keys: ['metadata.name', 'address'],
+      });
+      fuse.setCollection(filteredAccounts);
+      _searchResults = fuse.search(searchQuery);
+    }
+
+    return _searchResults;
+  }, [filteredAccounts, filteredUpdatedAccountList, searchQuery]);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const virtualizer = useVirtualizer({
+    count: searchResults.length,
+    estimateSize: () => 80,
+    getScrollElement: () => scrollRef.current,
+    getItemKey: (idx) => searchResults[idx]?.address,
+  });
+  const virtualSearchResults = virtualizer.getVirtualItems();
+
+  // Scroll to the selected item when the component mounts
+  useEffect(() => {
+    const idx = filteredAccounts.findIndex(
+      (account) => selectedAccount.address === account.address,
+    );
+    if (idx !== -1) {
+      virtualizer.scrollToIndex(idx);
+    }
+    // Intentionally left deps empty to only scroll when menu is opened and list is initialized
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const title = useMemo(
     () => getActionTitle(t as (text: string) => string, actionMode),
@@ -350,7 +424,7 @@ export const AccountListMenu = ({
         dispatch(setSelectedAccount(account.address));
       };
     },
-    [dispatch, onClose, trackEvent],
+    [defaultHomeActiveTabName, dispatch, onClose, trackEvent],
   );
 
   return (
@@ -632,7 +706,13 @@ export const AccountListMenu = ({
               </Box>
             ) : null}
             {/* Account list block */}
-            <Box className="multichain-account-menu-popover__list">
+            <Box
+              className="multichain-account-menu-popover__list"
+              style={{
+                minHeight: '80px',
+              }}
+              ref={scrollRef}
+            >
               {searchResults.length === 0 && searchQuery !== '' ? (
                 <Text
                   paddingLeft={4}
@@ -643,44 +723,66 @@ export const AccountListMenu = ({
                   {t('noAccountsFound')}
                 </Text>
               ) : null}
-              {searchResults.map((account) => {
-                const connectedSite = connectedSites[account.address]?.find(
-                  ({ origin }) => origin === currentTabOrigin,
-                );
+              <Box
+                style={{
+                  height: `${virtualizer.getTotalSize()}px`,
+                  width: '100%',
+                  position: 'relative',
+                }}
+              >
+                {virtualSearchResults.map((virtualItem) => {
+                  // const account = virtualItem;
+                  const account: MergedInternalAccount | undefined =
+                    searchResults[virtualItem.index] ?? undefined;
+                  if (!account) {
+                    return null;
+                  }
 
-                const hideAccountListItem =
-                  searchQuery.length === 0 && account.hidden;
+                  const connectedSite = connectedSites[account.address]?.find?.(
+                    ({ origin }) => origin === currentTabOrigin,
+                  );
 
-                /* NOTE: Hidden account will be displayed only in the search list */
+                  const hideAccountListItem =
+                    searchQuery.length === 0 && account.hidden;
 
-                return (
-                  <Box
-                    className={
-                      account.hidden
-                        ? 'multichain-account-menu-popover__list--menu-item-hidden'
-                        : 'multichain-account-menu-popover__list--menu-item'
-                    }
-                    display={hideAccountListItem ? Display.None : Display.Block}
-                    key={account.address}
-                  >
-                    <AccountListItem
-                      onClick={onAccountListItemItemClicked(account)}
-                      account={account}
+                  /* NOTE: Hidden account will be displayed only in the search list */
+
+                  return (
+                    <Box
+                      className={
+                        account.hidden
+                          ? 'multichain-account-menu-popover__list--menu-item-hidden'
+                          : 'multichain-account-menu-popover__list--menu-item'
+                      }
+                      display={
+                        hideAccountListItem ? Display.None : Display.Block
+                      }
                       key={account.address}
-                      selected={selectedAccount.address === account.address}
-                      closeMenu={onClose}
-                      connectedAvatar={connectedSite?.iconUrl}
-                      menuType={AccountListItemMenuTypes.Account}
-                      isPinned={Boolean(account.pinned)}
-                      isHidden={Boolean(account.hidden)}
-                      currentTabOrigin={currentTabOrigin}
-                      isActive={Boolean(account.active)}
-                      privacyMode={privacyMode}
-                      {...accountListItemProps}
-                    />
-                  </Box>
-                );
-              })}
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        minHeight: `${virtualItem.size}px`,
+                        transform: `translateY(${virtualItem.start}px)`,
+                      }}
+                    >
+                      <AccountListItemContainer
+                        account={account}
+                        onAccountListItemItemClicked={
+                          onAccountListItemItemClicked
+                        }
+                        selected={selectedAccount.address === account.address}
+                        onClose={onClose}
+                        connectedAvatar={connectedSite?.iconUrl}
+                        currentTabOrigin={currentTabOrigin}
+                        privacyMode={privacyMode}
+                        accountListItemProps={accountListItemProps}
+                      />
+                    </Box>
+                  );
+                })}
+              </Box>
             </Box>
             {/* Hidden Accounts, this component shows hidden accounts in account list Item*/}
             {hiddenAddresses.length > 0 ? (
