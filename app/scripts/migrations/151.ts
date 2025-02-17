@@ -64,7 +64,7 @@ export async function migrate(originalVersionedData: {
 
 /**
  * Transform the MetaMask extension state to add the
- * `endowment:permitted-chains` permission to all Snaps that have the
+ * `endowment:caip25` permission to all Snaps that have the
  * `endowment:ethereum-provider` permission.
  *
  * If the `PermissionController` or `SelectedNetworkController` state is not
