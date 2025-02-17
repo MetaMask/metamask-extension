@@ -36,6 +36,10 @@ export class TestSnaps {
 
   private readonly connectBip44 = '#connectbip44';
 
+  private readonly connectClientStatusButton = '#connectclient-status';
+
+  private readonly submitClientStatusButton = '#sendClientStatusTest';
+
   private readonly reconnectButton = {
     css: '#connectbip32',
     text: 'Reconnect to BIP-32 Snap',
@@ -74,6 +78,8 @@ export class TestSnaps {
 
   private readonly buttonSignEd25519Bip32Message = '#sendBip32-ed25519Bip32';
 
+  private readonly statusResultSpan = '#clientStatusResult';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -81,6 +87,29 @@ export class TestSnaps {
   async openPage() {
     await this.driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
     await this.driver.waitForSelector(this.installedSnapsHeader);
+  }
+
+  async check_pageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([this.installedSnapsHeader,
+        this.connectBip32]);
+    } catch (e) {
+      console.log('Timeout while waiting for Test Snap Dapp page to be loaded', e);
+      throw e;
+    }
+    console.log('Test Snap Dapp page is loaded');
+  }
+
+  async check_clientStatus(
+    expectedStatus: string,
+  ): Promise<void> {
+    console.log(
+      `Check that client status should ${expectedStatus}`,
+    );
+    await this.driver.waitForSelector({
+      css: this.statusResultSpan,
+      text: expectedStatus,
+    });
   }
 
   async clickConnectDialogsSnapButton() {
@@ -113,6 +142,11 @@ export class TestSnaps {
     await this.driver.delay(largeDelayMs);
     await this.driver.waitForSelector(this.connectBip44);
     await this.driver.clickElement(this.connectBip44);
+  }
+
+  async clickConnectClientStatus() {
+    console.log('Click connect client status button');
+    await this.driver.clickElement(this.connectClientStatusButton);
   }
 
   async clickGetPublicKeyButton() {
@@ -166,6 +200,11 @@ export class TestSnaps {
     await this.driver.clickElement(this.connectHomePage);
   }
 
+  async clickSubmitClientStatus() {
+    console.log('Click send client status button');
+    await this.driver.clickElement(this.submitClientStatusButton);
+  }
+
   async fillMessageSecp256k1(message: string) {
     console.log('Wait and fill message in secp256k1');
     await this.driver.fill(this.inputMessageSecp256k1, message);
@@ -201,6 +240,12 @@ export class TestSnaps {
     console.log('Scroll to send ed25519');
     const sendEd25519 = await this.driver.findElement(this.inputMessageEd25519);
     await this.driver.scrollToElement(sendEd25519);
+  }
+
+  async scrollToConnectClientStatus() {
+    console.log('Scroll to Connect Client Status');
+    const connectClientStatus = await this.driver.findElement(this.connectClientStatusButton);
+    await this.driver.scrollToElement(connectClientStatus);
   }
 
   async waitForReconnectButton() {
