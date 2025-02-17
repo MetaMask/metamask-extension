@@ -1,6 +1,7 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import TokenCell from '../token-cell';
 import {
   getChainIdsToPoll,
@@ -17,6 +18,7 @@ import { TokenWithFiatAmount } from '../types';
 import { getMultichainIsEvm } from '../../../../selectors/multichain';
 import { filterAssets } from '../util/filter';
 import { sortAssets } from '../util/sort';
+import { Box } from '../../../component-library';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -69,17 +71,58 @@ function TokenList({ onTokenClick }: TokenListProps) {
     }
   }, [sortedFilteredTokens]);
 
+  const rootRef = useRef(
+    document.getElementsByClassName('app').item(0) as HTMLDivElement,
+  );
+  const virtualizer = useVirtualizer({
+    count: sortedFilteredTokens.length,
+    estimateSize: () => 62,
+    getScrollElement: () => rootRef.current,
+  });
+  const virtualTokens = virtualizer.getVirtualItems();
+
   return (
-    <>
-      {sortedFilteredTokens.map((token: TokenWithFiatAmount) => (
-        <TokenCell
-          key={`${token.chainId}-${token.symbol}-${token.address}`}
-          token={token}
-          privacyMode={privacyMode}
-          onClick={onTokenClick}
-        />
-      ))}
-    </>
+    <Box
+      style={{
+        minHeight: '80px',
+      }}
+      ref={rootRef}
+    >
+      <Box
+        style={{
+          height: `${virtualizer.getTotalSize()}px`,
+          width: '100%',
+          position: 'relative',
+        }}
+      >
+        {virtualTokens.map((virtualItem) => {
+          const token = sortedFilteredTokens[virtualItem.index] ?? undefined;
+          if (!token) {
+            return null;
+          }
+
+          return (
+            <Box
+              key={`${token.chainId}-${token.symbol}-${token.address}`}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                minHeight: `${virtualItem.size}px`,
+                transform: `translateY(${virtualItem.start}px)`,
+              }}
+            >
+              <TokenCell
+                token={token}
+                privacyMode={privacyMode}
+                onClick={onTokenClick}
+              />
+            </Box>
+          );
+        })}
+      </Box>
+    </Box>
   );
 }
 
