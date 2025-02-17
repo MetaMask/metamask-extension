@@ -12,8 +12,8 @@ interface UseAccountCreationOnNetworkChangeReturn {
 }
 
 export const useAccountCreationOnNetworkChange = (): UseAccountCreationOnNetworkChangeReturn => {
-  const bitcoinWalletSnapClient = useMemo(() => useMultichainWalletSnapClient(WalletClientType.Bitcoin), []);
-  const solanaWalletSnapClient = useMemo(() => useMultichainWalletSnapClient(WalletClientType.Solana), []);
+  const bitcoinWalletSnapClient = useMultichainWalletSnapClient(WalletClientType.Bitcoin);
+  const solanaWalletSnapClient = useMultichainWalletSnapClient(WalletClientType.Solana);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
 
   const createAccount = async (chainId: CaipChainId) => {
