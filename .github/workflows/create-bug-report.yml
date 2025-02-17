@@ -32,4 +32,4 @@ jobs:
           RELEASES_GITHUB_PROJECT_BOARD_NUMBER: ${{ vars.RELEASES_GITHUB_PROJECT_BOARD_NUMBER }}
           RELEASES_GITHUB_PROJECT_BOARD_VIEW_NUMBER: ${{ vars.RELEASES_GITHUB_PROJECT_BOARD_VIEW_NUMBER }}
           RELEASE_VERSION: ${{ steps.extract_version.outputs.version }}
-        run: npm run create-bug-report-issue
+        run: yarn create-bug-report-issue
