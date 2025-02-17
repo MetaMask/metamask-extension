@@ -1303,6 +1303,7 @@ export default class MetamaskController extends EventEmitter {
       state: initState.UserStorageController,
       config: {
         accountSyncing: {
+          maxNumberOfAccountsToAdd: isProduction() ? undefined : 100,
           onAccountAdded: (profileId) => {
             this.metaMetricsController.trackEvent({
               category: MetaMetricsEventCategory.ProfileSyncing,
@@ -1348,7 +1349,7 @@ export default class MetamaskController extends EventEmitter {
         name: 'UserStorageController',
         allowedActions: [
           'KeyringController:getState',
-          'KeyringController:addNewAccount',
+          'KeyringController:withKeyring',
           'SnapController:handleRequest',
           'AuthenticationController:getBearerToken',
           'AuthenticationController:getSessionProfile',
