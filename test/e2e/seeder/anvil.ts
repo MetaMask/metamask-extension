@@ -100,10 +100,10 @@ export class Anvil {
       return 0;
     }
 
-    const balanceInt = await publicClient.getBalance({
+    const balance = await publicClient.getBalance({
       address: accountToUse as `0x${string}`,
     });
-    const balanceFormatted = Number(balanceInt) / 10 ** 18;
+    const balanceFormatted = Number(balance) / 10 ** 18;
 
     // Round to four decimal places, so we return the same value as ganache does
     const balanceRounded = parseFloat(balanceFormatted.toFixed(4));
