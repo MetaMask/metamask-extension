@@ -4,23 +4,20 @@ import { StoryFn, Meta } from '@storybook/react';
 
 import { BlockSize, Display } from '../../../helpers/constants/design-system';
 
-import {
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Text,
-  Button,
-  ButtonLink,
-  ButtonLinkSize,
-  TextFieldSearch,
-  IconName,
-  Box,
-} from '..';
+import { Text } from '../text';
 import { Modal } from './modal';
 
 import README from './README.mdx';
+import { ButtonLink, ButtonLinkSize } from '../button-link';
+import { Box } from '../box';
+import { Button } from '../button';
+import { IconName } from '../icon';
+import { ModalOverlay } from '../modal-overlay';
+import { ModalContent } from '../modal-content';
+import { ModalHeader } from '../modal-header';
+import { ModalBody } from '../modal-body';
+import { ModalFooter } from '../modal-footer';
+import { TextFieldSearch } from '../text-field-search';
 
 export default {
   title: 'Components/ComponentLibrary/Modal',

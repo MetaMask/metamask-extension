@@ -15,7 +15,7 @@ describe('Switch ethereum chain', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: generateGanacheOptions({
+        localNodeOptions: generateGanacheOptions({
           concurrent: [
             {
               port: 8546,

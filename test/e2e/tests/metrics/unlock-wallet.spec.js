@@ -2,7 +2,6 @@ const { strict: assert } = require('assert');
 const {
   withFixtures,
   logInWithBalanceValidation,
-  defaultGanacheOptions,
   getEventPayloads,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
@@ -31,7 +30,6 @@ describe('Unlock wallet', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },

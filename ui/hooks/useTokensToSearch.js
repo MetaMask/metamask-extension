@@ -6,13 +6,14 @@ import { formatIconUrlWithProxy } from '@metamask/assets-controllers';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import {
   getTokenExchangeRates,
-  getCurrentCurrency,
   getSwapsDefaultToken,
-  getCurrentChainId,
   getTokenList,
 } from '../selectors';
-import { getConversionRate } from '../ducks/metamask/metamask';
-
+import { getCurrentChainId } from '../../shared/modules/selectors/networks';
+import {
+  getConversionRate,
+  getCurrentCurrency,
+} from '../ducks/metamask/metamask';
 import { getSwapsTokens } from '../ducks/swaps/swaps';
 import { isSwapsDefaultTokenSymbol } from '../../shared/modules/swaps.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
@@ -92,6 +93,7 @@ export function getRenderableTokenData(
     decimals,
     name: name || tokenList[address?.toLowerCase()]?.name,
     rawFiat,
+    image: token.image || token.iconUrl,
   };
 }
 

@@ -1,6 +1,5 @@
 const { strict: assert } = require('assert');
 const {
-  defaultGanacheOptions,
   withFixtures,
   connectToDapp,
   unlockWallet,
@@ -44,7 +43,7 @@ async function mockSegment(mockServer) {
 }
 
 describe('Permissions Approved Event', function () {
-  it('Successfully tracked when connecting to dapp @no-mmi', async function () {
+  it('Successfully tracked when connecting to dapp', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -54,7 +53,6 @@ describe('Permissions Approved Event', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },

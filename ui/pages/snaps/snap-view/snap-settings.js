@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import semver from 'semver';
+import { isSnapId } from '@metamask/snaps-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   BackgroundColor,
@@ -51,7 +52,6 @@ import { DelineatorType } from '../../../helpers/constants/snaps';
 import SnapUpdateAlert from '../../../components/app/snaps/snap-update-alert';
 import { CONNECT_ROUTE } from '../../../helpers/constants/routes';
 import { ShowMore } from '../../../components/app/snaps/show-more';
-import { isSnapId } from '../../../helpers/utils/snaps';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { KeyringSnapRemovalResultStatus } from './constants';
 ///: END:ONLY_INCLUDE_IF

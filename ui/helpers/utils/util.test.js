@@ -1,5 +1,6 @@
 import Bowser from 'bowser';
-import { BN, toChecksumAddress } from 'ethereumjs-util';
+import BN from 'bn.js';
+import { toChecksumAddress } from 'ethereumjs-util';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { addHexPrefixToObjectValues } from '../../../shared/lib/swaps-utils';
 import { toPrecisionWithoutTrailingZeros } from '../../../shared/lib/transactions-controller-utils';
@@ -926,17 +927,6 @@ describe('util', () => {
 
     it('should return false if the provided chainId is a not default MetaMask chain', () => {
       expect(util.isDefaultMetaMaskChain(CHAIN_IDS.CELO)).toBeFalsy();
-    });
-  });
-
-  describe('getNetworkNameFromProviderType()', () => {
-    it('should return providerConfig.type if the type is not rpc', () => {
-      expect(util.getNetworkNameFromProviderType('mainnet')).toStrictEqual(
-        'mainnet',
-      );
-    });
-    it('should return empty string if teh providerConfig.type is rpc', () => {
-      expect(util.getNetworkNameFromProviderType('rpc')).toStrictEqual('');
     });
   });
 

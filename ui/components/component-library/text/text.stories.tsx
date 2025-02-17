@@ -16,7 +16,7 @@ import {
   Color,
 } from '../../../helpers/constants/design-system';
 
-import { Box } from '..';
+import { Box } from '../box';
 
 import README from './README.mdx';
 import { Text } from './text';

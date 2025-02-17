@@ -12,28 +12,20 @@ import {
   TextColor,
   Size,
 } from '../../../helpers/constants/design-system';
+import { AvatarToken, AvatarTokenSize } from '../avatar-token';
 
-import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarToken,
-  Button,
-  ButtonIcon,
-  Box,
-  Text,
-  IconName,
-  Icon,
-  IconSize,
-  AvatarTokenSize,
-  Input,
-} from '..';
+import { Text } from '../text';
 
-import { PolymorphicRef } from '../box';
-import { InputProps, InputComponent } from '../input';
+import { Box, PolymorphicRef } from '../box';
+import { InputProps, InputComponent, Input } from '../input';
 import { TextFieldSize, TextFieldType } from './text-field.types';
 import { TextField } from './text-field';
+import { ButtonIcon } from '../button-icon';
 
 import README from './README.mdx';
+import { Icon, IconName, IconSize } from '../icon';
+import { AvatarAccount, AvatarAccountSize } from '../avatar-account';
+import { Button } from '../button';
 
 export default {
   title: 'Components/ComponentLibrary/TextField',

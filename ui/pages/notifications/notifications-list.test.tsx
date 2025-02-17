@@ -9,7 +9,7 @@ import { NotificationsList } from './notifications-list';
 import { TAB_KEYS } from './notifications';
 
 jest.mock('../../store/actions', () => ({
-  deleteExpiredNotifications: jest.fn(() => () => Promise.resolve()),
+  deleteExpiredSnapNotifications: jest.fn(() => () => Promise.resolve()),
   fetchAndUpdateMetamaskNotifications: jest.fn(() => () => Promise.resolve()),
 }));
 
@@ -21,7 +21,6 @@ const store = mockStore({
     isFeatureAnnouncementsEnabled: true,
     isProfileSyncingEnabled: true,
     metamaskNotifications: [],
-    notifications: [],
     internalAccounts: {
       accounts: [
         {

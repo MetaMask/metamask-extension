@@ -1,10 +1,5 @@
 const { strict: assert } = require('assert');
-const {
-  defaultGanacheOptions,
-  openMenuSafe,
-  unlockWallet,
-  withFixtures,
-} = require('../../helpers');
+const { openMenuSafe, unlockWallet, withFixtures } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 
@@ -15,7 +10,6 @@ describe('Settings', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC1155().build(),
-        defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },

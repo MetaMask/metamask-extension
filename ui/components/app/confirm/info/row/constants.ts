@@ -6,6 +6,7 @@ export enum RowAlertKey {
   RequestFrom = 'requestFrom',
   Resimulation = 'resimulation',
   Speed = 'speed',
+  To = 'to',
 }
 
 export enum AlertActionKey {

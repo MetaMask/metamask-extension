@@ -5,7 +5,7 @@ import {
   Display,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
-import { Text } from '..';
+import { Text } from '../text';
 import README from './README.mdx';
 import { ModalBody } from './modal-body';
 
