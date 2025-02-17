@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { BN } from 'bn.js';
 import { Token } from '@metamask/assets-controllers';
@@ -34,42 +35,51 @@ export const useGetFormattedTokensPerChain = (
 
   // We will calculate aggregated balance only after the user imports the tokens to the wallet
   // we need to format the balances we get from useTokenBalances and match them with symbol and decimals we get from getAllTokens
-  const networksToFormat = shouldGetTokensPerCurrentChain
-    ? [currentChainId]
-    : allChainIDs;
-  const formattedTokensWithBalancesPerChain = networksToFormat.map(
-    (singleChain) => {
-      const tokens = importedTokens?.[singleChain]?.[account?.address] ?? [];
+  const networksToFormat = useMemo(
+    () => (shouldGetTokensPerCurrentChain ? [currentChainId] : allChainIDs),
+    [allChainIDs, currentChainId, shouldGetTokensPerCurrentChain],
+  );
+  const formattedTokensWithBalancesPerChain = useMemo(
+    () =>
+      networksToFormat.map((singleChain) => {
+        const tokens = importedTokens?.[singleChain]?.[account?.address] ?? [];
 
-      const tokensWithBalances = tokens.reduce(
-        (acc: TokenWithBalance[], token: Token) => {
-          const hexBalance =
-            currentTokenBalances.tokenBalances[account.address]?.[
-              singleChain
-            ]?.[token.address] ?? '0x0';
-          if (hexBalance !== '0x0' || !shouldHideZeroBalanceTokens) {
-            const decimalBalance = hexToDecimal(hexBalance);
-            acc.push({
-              address: token.address,
-              symbol: token.symbol,
-              decimals: token.decimals,
-              balance: decimalBalance,
-              string: stringifyBalance(
-                new BN(decimalBalance),
-                new BN(token.decimals),
-              ),
-            });
-          }
-          return acc;
-        },
-        [],
-      );
+        const tokensWithBalances = tokens.reduce(
+          (acc: TokenWithBalance[], token: Token) => {
+            const hexBalance =
+              currentTokenBalances.tokenBalances[account.address]?.[
+                singleChain
+              ]?.[token.address] ?? '0x0';
+            if (hexBalance !== '0x0' || !shouldHideZeroBalanceTokens) {
+              const decimalBalance = hexToDecimal(hexBalance);
+              acc.push({
+                address: token.address,
+                symbol: token.symbol,
+                decimals: token.decimals,
+                balance: decimalBalance,
+                string: stringifyBalance(
+                  new BN(decimalBalance),
+                  new BN(token.decimals),
+                ),
+              });
+            }
+            return acc;
+          },
+          [],
+        );
 
-      return {
-        chainId: singleChain,
-        tokensWithBalances,
-      };
-    },
+        return {
+          chainId: singleChain,
+          tokensWithBalances,
+        };
+      }),
+    [
+      account.address,
+      currentTokenBalances.tokenBalances,
+      importedTokens,
+      networksToFormat,
+      shouldHideZeroBalanceTokens,
+    ],
   );
 
   return {
