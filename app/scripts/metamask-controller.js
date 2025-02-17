@@ -2055,6 +2055,7 @@ export default class MetamaskController extends EventEmitter {
       TransactionController: TransactionControllerInit,
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       MultichainAssetsController: MultichainAssetsControllerInit,
+      MultiChainAssetsRatesController: MultiChainAssetsRatesControllerInit,
       MultichainBalancesController: MultichainBalancesControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
       MultiChainAssetsRatesController: MultiChainAssetsRatesControllerInit,
