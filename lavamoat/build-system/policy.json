@@ -1309,7 +1309,7 @@
     "chokidar>anymatch": {
       "packages": {
         "chokidar>anymatch>normalize-path": true,
-        "chokidar>anymatch>picomatch": true
+        "micromatch>picomatch": true
       }
     },
     "gulp>glob-watcher>anymatch": {
@@ -4590,7 +4590,16 @@
       },
       "packages": {
         "chokidar>braces": true,
-        "chokidar>anymatch>picomatch": true
+        "micromatch>picomatch": true
+      }
+    },
+    "stylelint>micromatch": {
+      "builtin": {
+        "util.inspect": true
+      },
+      "packages": {
+        "chokidar>braces": true,
+        "micromatch>picomatch": true
       }
     },
     "eslint>minimatch": {
@@ -5092,7 +5101,7 @@
         "process.platform": true
       }
     },
-    "chokidar>anymatch>picomatch": {
+    "micromatch>picomatch": {
       "builtin": {
         "path.basename": true,
         "path.sep": true
@@ -7035,7 +7044,7 @@
         "process.versions.node.split": true
       },
       "packages": {
-        "chokidar>anymatch>picomatch": true
+        "micromatch>picomatch": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-dotall-regex>@babel/helper-create-regexp-features-plugin>regexpu-core>regenerate": {
@@ -8182,7 +8191,7 @@
         "lodash": true,
         "mocha>log-symbols": true,
         "stylelint>mathml-tag-names": true,
-        "fast-glob>micromatch": true,
+        "stylelint>micromatch": true,
         "stylelint>normalize-selector": true,
         "stylelint>postcss-html": true,
         "stylelint>postcss-less": true,
