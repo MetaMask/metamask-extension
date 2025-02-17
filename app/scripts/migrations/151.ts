@@ -32,17 +32,17 @@ const BUILT_IN_NETWORKS: ReadonlyMap<string, Hex> = new Map([
 ]);
 
 /**
- * This migration adds the `endowment:caip25` permission to all Snaps
- * that have the `endowment:ethereum-provider` permission, and sets the selected
- * chain ID for each Snap to the current selected network chain ID.
+ * This migration adds or modifies the `endowment:caip25` permission for all
+ * Snaps that have the `endowment:ethereum-provider` permission, and sets the
+ * selected chain ID for each Snap to the current selected network chain ID.
  *
  * This is necessary following the Amon Hen v2 changes to the network controller
- * and other related controllers, as the `endowment:permitted-chains` permission
- * is now required to use the Ethereum provider and switch networks.
+ * and other related controllers, as the `endowment:caip25` permission is now
+ * required to use the Ethereum provider and switch networks.
  *
- * To simplify the use for Snaps, we automatically add the
- * `endowment:permitted-chains` permission with the current selected network
- * chain ID to all Snaps that have the `endowment:ethereum-provider` permission.
+ * To simplify the use for Snaps, we automatically add or modify the
+ * `endowment:caip25` permission with the current selected network chain ID to
+ * all Snaps that have the `endowment:ethereum-provider` permission.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly
  * what we persist to dist.
@@ -63,12 +63,13 @@ export async function migrate(originalVersionedData: {
 }
 
 /**
- * Transform the MetaMask extension state to add the
- * `endowment:caip25` permission to all Snaps that have the
+ * Transform the MetaMask extension state to add or modify the
+ * `endowment:caip25` permission for all Snaps that have the
  * `endowment:ethereum-provider` permission.
  *
- * If the `PermissionController` or `SelectedNetworkController` state is not
- * found or is not an object, the state is returned as-is.
+ * If the `NetworkController`, `PermissionController`, or
+ * `SelectedNetworkController` state is not found or is not an object, the state
+ * is returned as-is.
  *
  * @param state - The MetaMask extension state.
  * @returns The updated MetaMask extension state.
