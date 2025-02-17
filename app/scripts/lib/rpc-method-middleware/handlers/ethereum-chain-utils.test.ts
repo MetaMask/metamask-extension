@@ -13,7 +13,6 @@ describe('Ethereum Chain Utils', () => {
       autoApprove: false,
       setActiveNetwork: jest.fn(),
       getCaveat: jest.fn(),
-      requestPermittedChainsPermissionForOrigin: jest.fn(),
       requestPermittedChainsPermissionIncrementalForOrigin: jest.fn(),
     };
     const response: { result?: true } = {};
@@ -46,7 +45,7 @@ describe('Ethereum Chain Utils', () => {
         await switchChain('0x1', 'mainnet');
 
         expect(
-          mocks.requestPermittedChainsPermissionForOrigin,
+          mocks.requestPermittedChainsPermissionIncrementalForOrigin,
         ).toHaveBeenCalledWith({ chainId: '0x1', autoApprove: false });
       });
 
@@ -59,14 +58,16 @@ describe('Ethereum Chain Utils', () => {
 
       it('should throw an error if the switch chain approval is rejected', async () => {
         const { mocks, end, switchChain } = createMockedSwitchChain();
-        mocks.requestPermittedChainsPermissionForOrigin.mockRejectedValueOnce({
-          code: errorCodes.provider.userRejectedRequest,
-        });
+        mocks.requestPermittedChainsPermissionIncrementalForOrigin.mockRejectedValueOnce(
+          {
+            code: errorCodes.provider.userRejectedRequest,
+          },
+        );
 
         await switchChain('0x1', 'mainnet');
 
         expect(
-          mocks.requestPermittedChainsPermissionForOrigin,
+          mocks.requestPermittedChainsPermissionIncrementalForOrigin,
         ).toHaveBeenCalled();
         expect(mocks.setActiveNetwork).not.toHaveBeenCalled();
         expect(end).toHaveBeenCalledWith({
