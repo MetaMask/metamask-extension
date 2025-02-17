@@ -87,18 +87,14 @@ describe('SelectButton', () => {
 
   it('renders as disabled', () => {
     const { getByTestId } = render(
-      <SelectButton
-        label="Test Button"
-        data-testid="button"
-        isDisabled={true}
-      />,
+      <SelectButton label="Test Button" data-testid="button" isDisabled />,
     );
     expect(getByTestId('button')).toBeDisabled();
   });
 
   it('renders as danger', () => {
     const { getByTestId } = render(
-      <SelectButton label="Test Button" isDanger={true} data-testid="button" />,
+      <SelectButton label="Test Button" isDanger data-testid="button" />,
     );
     expect(getByTestId('button')).toHaveClass('mm-select-button--type-danger');
   });

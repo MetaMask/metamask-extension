@@ -72,7 +72,7 @@ export const SmartTransactionStatusAnimation = ({
       <LottieAnimation
         path={animation.path}
         loop={animation.loop}
-        autoplay={true}
+        autoplay
         onComplete={handleAnimationComplete}
       />
     </Box>

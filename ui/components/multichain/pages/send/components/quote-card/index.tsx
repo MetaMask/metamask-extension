@@ -193,13 +193,13 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
             <Text
               className="quote-card__text"
               color={TextColor.textAlternative}
-              marginRight={'auto'}
+              marginRight="auto"
               variant={TextVariant.bodySm}
             >
               {t('quoteRate')}
             </Text>
             <Text
-              marginLeft={'auto'}
+              marginLeft="auto"
               variant={TextVariant.bodySm}
               data-testid="quote-card__conversion-rate"
             >
@@ -209,7 +209,7 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
           <Box display={Display.Flex} alignItems={AlignItems.center}>
             <Box
               display={Display.Flex}
-              marginRight={'auto'}
+              marginRight="auto"
               gap={1}
               alignItems={AlignItems.center}
             >
@@ -255,7 +255,7 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
                 <InfoTooltipIcon fillColor="var(--color-icon-alternative)" />
               </Tooltip>
             </Box>
-            <Box display={Display.Flex} marginLeft={'auto'}>
+            <Box display={Display.Flex} marginLeft="auto">
               <Text
                 variant={TextVariant.bodySm}
                 data-testid="quote-card__gas-fee"

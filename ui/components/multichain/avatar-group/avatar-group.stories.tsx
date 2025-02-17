@@ -78,6 +78,6 @@ export const NetworksWithOverlayTag: StoryFn<typeof AvatarGroup> = () => (
       { avatarValue: './images/arbitrum.svg', symbol: 'Arbitrum' },
       { avatarValue: './images/bnb.svg', symbol: 'Binance' },
     ]}
-    isTagOverlay={true}
+    isTagOverlay
   />
 );

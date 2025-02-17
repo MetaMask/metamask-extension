@@ -44,7 +44,7 @@ const KeyringSnapRemovalResult = ({
             gap: 4,
           }}
         >
-          <ModalHeader onClose={onClose}>{''}</ModalHeader>
+          <ModalHeader onClose={onClose}></ModalHeader>
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Column}

@@ -61,7 +61,7 @@ const NonEvmOverview = ({ className }: NonEvmOverviewProps) => {
       balanceIsCached={false}
       className={className}
       chainId={chainId}
-      isSigningEnabled={true}
+      isSigningEnabled
       isSwapsChain={isSwapsChain}
       defaultSwapsToken={defaultSwapsToken}
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)

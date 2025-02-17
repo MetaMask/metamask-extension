@@ -16,7 +16,7 @@ const BlockaidLoadingIndicator = () => {
   }
 
   return (
-    <Box marginInline={'auto'} marginTop={4}>
+    <Box marginInline="auto" marginTop={4}>
       <Preloader size={18} />
     </Box>
   );

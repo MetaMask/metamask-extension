@@ -47,7 +47,7 @@ describe('Name', () => {
     const { container } = renderWithProvider(
       <Name
         type={NameType.ETHEREUM_ADDRESS}
-        value={''}
+        value=""
         variation={VARIATION_MOCK}
       />,
       store,

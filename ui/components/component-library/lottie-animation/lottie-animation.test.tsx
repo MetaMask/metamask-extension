@@ -65,7 +65,7 @@ describe('LottieAnimation', () => {
   });
 
   it('calls lottie.loadAnimation with correct config when using path', () => {
-    render(<LottieAnimation path={mockPath} loop={true} autoplay={true} />);
+    render(<LottieAnimation path={mockPath} loop autoplay />);
 
     expect(lottie.loadAnimation).toHaveBeenCalledWith(
       expect.objectContaining({

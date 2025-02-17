@@ -47,7 +47,7 @@ export const PickerNetwork: PickerNetworkComponent = React.forwardRef(
         {...(props as BoxProps<C>)}
       >
         {avatarGroupProps ? (
-          <AvatarGroup {...avatarGroupProps} isTagOverlay={true} />
+          <AvatarGroup {...avatarGroupProps} isTagOverlay />
         ) : (
           <AvatarNetwork
             className="mm-picker-network__avatar-network"

@@ -9,10 +9,7 @@ import { useSelectContext } from './select-wrapper.context';
 describe('SelectWrapper', () => {
   it('should render the SelectWrapper without crashing', () => {
     const { container } = render(
-      <SelectWrapper
-        isOpen={true}
-        triggerComponent={<button>Test Button</button>}
-      >
+      <SelectWrapper isOpen triggerComponent={<button>Test Button</button>}>
         <div>Test</div>
       </SelectWrapper>,
     );
@@ -21,10 +18,7 @@ describe('SelectWrapper', () => {
 
   it('should render the SelectWrapper children', () => {
     const { getByText } = render(
-      <SelectWrapper
-        isOpen={true}
-        triggerComponent={<button>Test Button</button>}
-      >
+      <SelectWrapper isOpen triggerComponent={<button>Test Button</button>}>
         <div>Test</div>
       </SelectWrapper>,
     );
@@ -35,7 +29,7 @@ describe('SelectWrapper', () => {
   it('should render the SelectWrapper value', () => {
     const { getByText } = render(
       <SelectWrapper
-        isOpen={true}
+        isOpen
         value="Test Value"
         triggerComponent={<SelectButton>Test Button</SelectButton>}
       >
@@ -48,7 +42,7 @@ describe('SelectWrapper', () => {
   it('should render the SelectWrapper defaultValue', () => {
     const { getByText } = render(
       <SelectWrapper
-        isOpen={true}
+        isOpen
         defaultValue="Test Default Value"
         triggerComponent={<SelectButton>Test Button</SelectButton>}
       >
@@ -61,7 +55,7 @@ describe('SelectWrapper', () => {
   it('should render the SelectWrapper placeholder', () => {
     const { getByText } = render(
       <SelectWrapper
-        isOpen={true}
+        isOpen
         placeholder="Test Placeholder"
         triggerComponent={<SelectButton>Test Button</SelectButton>}
       >
@@ -75,7 +69,7 @@ describe('SelectWrapper', () => {
     const { getByTestId } = render(
       <SelectWrapper
         defaultValue="Test Default Value"
-        isDisabled={true}
+        isDisabled
         triggerComponent={
           <SelectButton data-testid="trigger">Test Button</SelectButton>
         }
@@ -90,7 +84,7 @@ describe('SelectWrapper', () => {
     const { getByTestId } = render(
       <SelectWrapper
         defaultValue="Test Default Value"
-        isDanger={true}
+        isDanger
         triggerComponent={
           <SelectButton data-testid="trigger">Test Button</SelectButton>
         }
@@ -108,7 +102,7 @@ describe('SelectWrapper', () => {
       <SelectWrapper
         isOpen={isOpen}
         onOpenChange={() => setIsOpen(!isOpen)}
-        defaultValue={'Default Value'}
+        defaultValue="Default Value"
         triggerComponent={
           <SelectButton
             data-testid="trigger"
@@ -152,7 +146,7 @@ describe('SelectWrapper', () => {
           className: 'mm-select-wrapper__popover mm-test',
         }}
         triggerComponent={<SelectButton>Test</SelectButton>}
-        isOpen={true}
+        isOpen
       >
         <div>Test</div>
       </SelectWrapper>,
@@ -267,7 +261,7 @@ describe('SelectWrapper', () => {
     return (
       <>
         <SelectWrapper
-          value={'TestingValue'}
+          value="TestingValue"
           triggerComponent={
             <SelectButton data-testid="trigger">
               Uncontrolled Example

@@ -18,7 +18,7 @@ describe('ToggleFeatureRow Component', () => {
       <ToggleRow
         title={mockTitle}
         description={mockDescription}
-        isEnabled={true}
+        isEnabled
         onToggle={() => {
           //* eslint-disable-next-line @typescript-eslint/no-empty-function
         }}

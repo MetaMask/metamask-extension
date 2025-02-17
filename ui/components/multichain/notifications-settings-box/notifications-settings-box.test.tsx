@@ -19,7 +19,7 @@ describe('NotificationsSettingsBox', () => {
     render(
       <Provider store={store}>
         <NotificationsSettingsBox
-          value={true}
+          value
           onToggle={() => {
             console.log('Toggled');
           }}

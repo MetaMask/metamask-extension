@@ -498,41 +498,39 @@ const CoinButtons = ({
           generateTooltip('sendButton', contents)
         }
       />
-      {
-        <>
-          {showReceiveModal && (
-            <ReceiveModal
-              address={selectedAddress}
-              onClose={() => setShowReceiveModal(false)}
-            />
-          )}
-          <IconButton
-            className={`${classPrefix}-overview__button`}
-            iconButtonClassName={iconButtonClassName}
-            data-testid={`${classPrefix}-overview-receive`}
-            Icon={
-              <Icon
-                name={IconName.ScanBarcode}
-                color={IconColor.primaryInverse}
-                size={IconSize.Sm}
-              />
-            }
-            label={t('receive')}
-            onClick={() => {
-              trackEvent({
-                event: MetaMetricsEventName.NavReceiveButtonClicked,
-                category: MetaMetricsEventCategory.Navigation,
-                properties: {
-                  text: 'Receive',
-                  location: trackingLocation,
-                  chain_id: chainId,
-                },
-              });
-              setShowReceiveModal(true);
-            }}
+      <>
+        {showReceiveModal && (
+          <ReceiveModal
+            address={selectedAddress}
+            onClose={() => setShowReceiveModal(false)}
           />
-        </>
-      }
+        )}
+        <IconButton
+          className={`${classPrefix}-overview__button`}
+          iconButtonClassName={iconButtonClassName}
+          data-testid={`${classPrefix}-overview-receive`}
+          Icon={
+            <Icon
+              name={IconName.ScanBarcode}
+              color={IconColor.primaryInverse}
+              size={IconSize.Sm}
+            />
+          }
+          label={t('receive')}
+          onClick={() => {
+            trackEvent({
+              event: MetaMetricsEventName.NavReceiveButtonClicked,
+              category: MetaMetricsEventCategory.Navigation,
+              properties: {
+                text: 'Receive',
+                location: trackingLocation,
+                chain_id: chainId,
+              },
+            });
+            setShowReceiveModal(true);
+          }}
+        />
+      </>
     </Box>
   );
 };

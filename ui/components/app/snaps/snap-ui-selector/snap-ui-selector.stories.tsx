@@ -23,8 +23,8 @@ export default {
     (story) => (
       <Provider store={store}>
         <SnapInterfaceContextProvider
-          snapId={'npm:fooSnap'}
-          interfaceId={'foo'}
+          snapId="npm:fooSnap"
+          interfaceId="foo"
           initialState={{ 'selector': 'foo' }}
           context={{}}
         >

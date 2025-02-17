@@ -19,7 +19,7 @@ describe('ConfigureSnapPopup', () => {
     const { getByText } = renderWithProvider(
       <ConfigureSnapPopup
         onClose={mockOnClose}
-        link={'mockLink'}
+        link="mockLink"
         isOpen
         type={ConfigureSnapPopupType.CONFIGURE}
       />,
@@ -37,7 +37,7 @@ describe('ConfigureSnapPopup', () => {
     const { getByText } = renderWithProvider(
       <ConfigureSnapPopup
         onClose={mockOnClose}
-        link={'mockLink'}
+        link="mockLink"
         isOpen
         type={ConfigureSnapPopupType.INSTALL}
       />,
@@ -55,7 +55,7 @@ describe('ConfigureSnapPopup', () => {
     const { getByText } = renderWithProvider(
       <ConfigureSnapPopup
         onClose={mockOnClose}
-        link={'mockLink'}
+        link="mockLink"
         isOpen
         type={ConfigureSnapPopupType.CONFIGURE}
       />,

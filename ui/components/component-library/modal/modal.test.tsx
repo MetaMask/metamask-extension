@@ -23,7 +23,7 @@ describe('Modal', () => {
 
   it('should match snapshot', () => {
     const { getByTestId } = render(
-      <Modal onClose={onClose} isOpen={true} data-testid="test">
+      <Modal onClose={onClose} isOpen data-testid="test">
         <div>modal content</div>
       </Modal>,
     );
@@ -46,7 +46,7 @@ describe('Modal', () => {
 
   it('should render the modal when isOpen is true', () => {
     const { getByText } = render(
-      <Modal isOpen={true} onClose={onClose}>
+      <Modal isOpen onClose={onClose}>
         <div>modal content</div>
       </Modal>,
     );
@@ -68,7 +68,7 @@ describe('Modal', () => {
 
   it('should call the onClose callback when clicking the close button', () => {
     const { getByText } = render(
-      <Modal isOpen={true} onClose={onClose}>
+      <Modal isOpen onClose={onClose}>
         <div>modal content</div>
         <button onClick={() => onClose()}>Close</button>
       </Modal>,

@@ -80,7 +80,7 @@ describe('ModalContent', () => {
   });
   it('should close when escape key is pressed', () => {
     const { getByRole } = render(
-      <Modal isOpen={true} onClose={onClose}>
+      <Modal isOpen onClose={onClose}>
         <ModalContent>modal dialog</ModalContent>
       </Modal>,
     );
@@ -90,7 +90,7 @@ describe('ModalContent', () => {
 
   it('should not close when isClosedOnEscapeKey is false and escape key is pressed', () => {
     const { getByRole } = render(
-      <Modal isOpen={true} onClose={onClose} isClosedOnEscapeKey={false}>
+      <Modal isOpen onClose={onClose} isClosedOnEscapeKey={false}>
         <ModalContent>modal dialog</ModalContent>
       </Modal>,
     );
@@ -100,7 +100,7 @@ describe('ModalContent', () => {
 
   it('should close when clicked outside', () => {
     const { getByRole } = render(
-      <Modal isOpen={true} onClose={onClose}>
+      <Modal isOpen onClose={onClose}>
         <ModalContent data-testid="modal-dialog">modal dialog</ModalContent>
       </Modal>,
     );
@@ -115,7 +115,7 @@ describe('ModalContent', () => {
   it('should not close when isClosedOnOutsideClick is false and clicked outside', () => {
     const ref: React.RefObject<HTMLDivElement> = React.createRef();
     const { getByTestId } = render(
-      <Modal isOpen={true} onClose={onClose} isClosedOnOutsideClick={false}>
+      <Modal isOpen onClose={onClose} isClosedOnOutsideClick={false}>
         <ModalContent data-testid="modal-dialog" ref={ref}>
           modal dialog
         </ModalContent>
@@ -132,7 +132,7 @@ describe('ModalContent', () => {
   it('should focus initial focus ref when autoFocus is false', () => {
     const initialRef: React.RefObject<HTMLInputElement> = React.createRef();
     const { getByTestId } = render(
-      <Modal isOpen={true} onClose={onClose} initialFocusRef={initialRef}>
+      <Modal isOpen onClose={onClose} initialFocusRef={initialRef}>
         <ModalContent>
           <button>modal dialog</button>
           <input data-testid="input" ref={initialRef} />
@@ -147,7 +147,7 @@ describe('ModalContent', () => {
     const { rerender } = render(
       <>
         <button ref={finalRef}>button</button>
-        <Modal isOpen={true} onClose={onClose} finalFocusRef={finalRef}>
+        <Modal isOpen onClose={onClose} finalFocusRef={finalRef}>
           <ModalContent data-testid="modal-dialog">modal dialog</ModalContent>
         </Modal>
       </>,

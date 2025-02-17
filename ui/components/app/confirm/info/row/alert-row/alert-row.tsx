@@ -93,7 +93,7 @@ export const ConfirmInfoAlertRow = ({
           onFinalAcknowledgeClick={handleModalClose}
           onClose={handleModalClose}
           showCloseIcon={false}
-          skipAlertNavigation={true}
+          skipAlertNavigation
         />
       )}
       <ConfirmInfoRow {...confirmInfoRowProps} labelChildren={inlineAlert} />

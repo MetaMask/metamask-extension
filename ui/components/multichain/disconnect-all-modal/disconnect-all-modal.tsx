@@ -35,7 +35,7 @@ export const DisconnectAllModal = ({
       <ModalContent>
         <ModalHeader onClose={onClose}>{t('disconnect')}</ModalHeader>
         <ModalBody>
-          {<Text>{t('disconnectAllDescriptionText')}</Text>}
+          <Text>{t('disconnectAllDescriptionText')}</Text>
         </ModalBody>
         <ModalFooter>
           <Button

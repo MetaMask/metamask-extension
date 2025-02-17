@@ -50,7 +50,7 @@ export const SnapInsight: React.FunctionComponent<SnapInsightProps> = ({
   if (hasNoInsight) {
     return (
       <Tooltip position="top" title={t('snapsNoInsight')}>
-        <Delineator headerComponent={headerComponent} isDisabled={true} />
+        <Delineator headerComponent={headerComponent} isDisabled />
       </Tooltip>
     );
   }

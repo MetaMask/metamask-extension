@@ -97,7 +97,7 @@ export const BridgeQuoteCard = () => {
             </Row>
             <Column height={BlockSize.Full} alignItems={AlignItems.flexEnd}>
               <Text
-                as={'a'}
+                as="a"
                 variant={TextVariant.bodyMd}
                 color={TextColor.primaryDefault}
                 onClick={() => {

@@ -7,12 +7,7 @@ export type AccountOverviewEthProps = AccountOverviewCommonProps;
 
 export const AccountOverviewEth = (props: AccountOverviewEthProps) => {
   return (
-    <AccountOverviewLayout
-      showTokens={true}
-      showNfts={true}
-      showActivity={true}
-      {...props}
-    >
+    <AccountOverviewLayout showTokens showNfts showActivity {...props}>
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         <EthOverview />

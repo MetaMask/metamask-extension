@@ -38,9 +38,9 @@ const SnapAccountErrorMessage = ({
       </Text>
       {Boolean(error) && (
         <ActionableMessage
-          type={'danger'}
+          type="danger"
           message={error}
-          dataTestId={'snap-account-error-message-error'}
+          dataTestId="snap-account-error-message-error"
         ></ActionableMessage>
       )}
     </>

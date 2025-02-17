@@ -67,7 +67,7 @@ const SnapAccountRedirectContent = ({
                         url: learnMoreAboutBlockedUrls,
                       })
                     }
-                    key={`snap-url-is-blocked-learn-more-button`}
+                    key="snap-url-is-blocked-learn-more-button"
                   >
                     {t('learnMore')}
                   </Button>,

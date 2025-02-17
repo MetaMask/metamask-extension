@@ -103,8 +103,8 @@ export function MultichainTransactionDetailsModal({
       onClose={onClose}
       data-testid="multichain-transaction-details-modal"
       isOpen
-      isClosedOnOutsideClick={true}
-      isClosedOnEscapeKey={true}
+      isClosedOnOutsideClick
+      isClosedOnEscapeKey
     >
       <ModalOverlay />
       <ModalContent
