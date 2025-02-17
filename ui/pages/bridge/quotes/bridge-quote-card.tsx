@@ -45,10 +45,10 @@ import {
   BRIDGE_MM_FEE_RATE,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
 } from '../../../../shared/constants/bridge';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import { TERMS_OF_USE_LINK } from '../../../../shared/constants/terms';
-import { getLocale } from '../../../selectors';
+import { getIntlLocale } from '../../../ducks/locale/locale';
+import { getImageForChainId } from '../../../selectors/multichain';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 export const BridgeQuoteCard = () => {
@@ -65,7 +65,7 @@ export const BridgeQuoteCard = () => {
 
   const fromChain = useSelector(getFromChain);
   const toChain = useSelector(getToChain);
-  const locale = useSelector(getLocale);
+  const locale = useSelector(getIntlLocale);
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
   const [shouldShowNetworkFeesInGasToken, setShouldShowNetworkFeesInGasToken] =
@@ -130,13 +130,9 @@ export const BridgeQuoteCard = () => {
               <Row gap={1}>
                 <AvatarNetwork
                   name={fromChain?.name ?? ''}
-                  src={
-                    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                      decimalToPrefixedHex(
-                        activeQuote.quote.srcChainId,
-                      ) as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-                    ]
-                  }
+                  src={getImageForChainId(
+                    decimalToPrefixedHex(activeQuote.quote.srcChainId),
+                  )}
                   size={AvatarNetworkSize.Xs}
                   backgroundColor={BackgroundColor.transparent}
                 />
@@ -152,13 +148,9 @@ export const BridgeQuoteCard = () => {
                 <Icon name={IconName.Arrow2Right} size={IconSize.Xs} />
                 <AvatarNetwork
                   name={toChain?.name ?? ''}
-                  src={
-                    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                      decimalToPrefixedHex(
-                        activeQuote.quote.destChainId,
-                      ) as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-                    ]
-                  }
+                  src={getImageForChainId(
+                    decimalToPrefixedHex(activeQuote.quote.destChainId),
+                  )}
                   size={AvatarNetworkSize.Xs}
                   backgroundColor={BackgroundColor.transparent}
                 />
@@ -189,60 +181,69 @@ export const BridgeQuoteCard = () => {
                     : TextColor.textAlternativeSoft
                 }
               >
-                {t('networkFees')}
+                {t('networkFee')}
               </Text>
               <Row gap={1}>
-                <Text
-                  style={{
-                    whiteSpace: 'nowrap',
-                    overflow: 'visible',
-                  }}
-                  color={
-                    isEstimatedReturnLow ? TextColor.warningDefault : undefined
-                  }
-                >
-                  {shouldShowNetworkFeesInGasToken
-                    ? //  Network fee in gas token amounts
-                      `${
-                        activeQuote.totalNetworkFee?.valueInCurrency
-                          ? formatTokenAmount(
-                              locale,
-                              activeQuote.totalNetworkFee?.amount,
-                            )
+                <Tooltip
+                  position={PopoverPosition.TopStart}
+                  offset={[-16, 16]}
+                  iconName={IconName.Question}
+                  triggerElement={
+                    <Text
+                      style={{
+                        whiteSpace: 'nowrap',
+                        overflow: 'visible',
+                        textDecoration: 'underline',
+                        cursor: 'pointer',
+                      }}
+                      color={
+                        isEstimatedReturnLow
+                          ? TextColor.warningDefault
                           : undefined
-                      } - ${
-                        activeQuote.totalMaxNetworkFee?.valueInCurrency
-                          ? formatTokenAmount(
+                      }
+                    >
+                      {shouldShowNetworkFeesInGasToken
+                        ? //  Network fee in gas token amounts
+                          `${
+                            activeQuote?.totalNetworkFee?.valueInCurrency
+                              ? formatTokenAmount(
+                                  locale,
+                                  activeQuote?.totalNetworkFee?.amount,
+                                  ticker,
+                                )
+                              : undefined
+                          }`
+                        : // Network fee in display currency
+                          `${
+                            formatCurrencyAmount(
+                              activeQuote?.totalNetworkFee?.valueInCurrency,
+                              currency,
+                              2,
+                            ) ??
+                            formatTokenAmount(
                               locale,
-                              activeQuote.totalMaxNetworkFee?.amount,
+                              activeQuote?.totalNetworkFee?.amount,
                               ticker,
                             )
-                          : undefined
-                      }`
-                    : // Network fee in display currency
-                      `${
-                        formatCurrencyAmount(
-                          activeQuote.totalNetworkFee?.valueInCurrency,
-                          currency,
-                          2,
-                        ) ??
-                        formatTokenAmount(
+                          }`}
+                    </Text>
+                  }
+                >
+                  {t('howNetworkFeesWorkExplanation', [
+                    shouldShowNetworkFeesInGasToken
+                      ? formatTokenAmount(
                           locale,
-                          activeQuote.totalNetworkFee?.amount,
-                        )
-                      } - ${
-                        formatCurrencyAmount(
-                          activeQuote.totalMaxNetworkFee?.valueInCurrency,
-                          currency,
-                          2,
-                        ) ??
-                        formatTokenAmount(
-                          locale,
-                          activeQuote.totalMaxNetworkFee?.amount,
+                          activeQuote?.totalMaxNetworkFee.amount,
                           ticker,
                         )
-                      }`}
-                </Text>
+                      : formatCurrencyAmount(
+                          activeQuote?.totalMaxNetworkFee.valueInCurrency,
+                          currency,
+                          2,
+                        ),
+                  ])}
+                </Tooltip>
+
                 <Icon
                   style={{ cursor: 'pointer' }}
                   color={

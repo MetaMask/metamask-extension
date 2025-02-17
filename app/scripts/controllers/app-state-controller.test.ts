@@ -1,4 +1,4 @@
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import type {
   AcceptRequest,
   AddApprovalRequest,
@@ -17,6 +17,7 @@ import type {
   AppStateControllerActions,
   AppStateControllerEvents,
   AppStateControllerOptions,
+  AppStateControllerState,
 } from './app-state-controller';
 import type {
   PreferencesControllerState,
@@ -478,6 +479,16 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('setRampCardClosed', () => {
+    it('set isRampCardClosed to true', async () => {
+      await withController(({ controller }) => {
+        controller.setRampCardClosed();
+
+        expect(controller.state.isRampCardClosed).toStrictEqual(true);
+      });
+    });
+  });
+
   describe('setNewPrivacyPolicyToastClickedOrClosed', () => {
     it('set the newPrivacyPolicyToastClickedOrClosed to true', async () => {
       await withController(({ controller }) => {
@@ -553,11 +564,42 @@ describe('AppStateController', () => {
       });
     });
   });
+
+  describe('throttledOrigins', () => {
+    describe('updateThrottledOriginState', () => {
+      it('should update the throttledOriginState for a given origin', async () => {
+        await withController(({ controller }) => {
+          controller.updateThrottledOriginState('example.com', {
+            rejections: 1,
+            lastRejection: Date.now(),
+          });
+          expect(
+            controller.state.throttledOrigins['example.com'],
+          ).toStrictEqual({ rejections: 1, lastRejection: expect.any(Number) });
+        });
+      });
+    });
+
+    describe('getThrottledOriginState', () => {
+      it('should return the throttledOriginState for a given origin', async () => {
+        await withController(({ controller }) => {
+          controller.updateThrottledOriginState('example.com', {
+            rejections: 1,
+            lastRejection: Date.now(),
+          });
+          expect(
+            controller.getThrottledOriginState('example.com'),
+          ).toStrictEqual({ rejections: 1, lastRejection: expect.any(Number) });
+        });
+      });
+    });
+  });
 });
 
 type WithControllerOptions = {
   options?: Partial<AppStateControllerOptions>;
   addRequestMock?: jest.Mock;
+  state?: Partial<AppStateControllerState>;
 };
 
 type WithControllerCallback<ReturnValue> = ({
@@ -565,7 +607,7 @@ type WithControllerCallback<ReturnValue> = ({
   controllerMessenger,
 }: {
   controller: AppStateController;
-  controllerMessenger: ControllerMessenger<
+  controllerMessenger: Messenger<
     | AppStateControllerActions
     | AddApprovalRequest
     | AcceptRequest
@@ -584,9 +626,9 @@ async function withController<ReturnValue>(
   ...args: WithControllerArgs<ReturnValue>
 ): Promise<ReturnValue> {
   const [{ ...rest }, fn] = args.length === 2 ? args : [{}, args[0]];
-  const { addRequestMock, options = {} } = rest;
+  const { addRequestMock, state, options = {} } = rest;
 
-  const controllerMessenger = new ControllerMessenger<
+  const controllerMessenger = new Messenger<
     | AppStateControllerActions
     | AddApprovalRequest
     | AcceptRequest
@@ -627,6 +669,7 @@ async function withController<ReturnValue>(
       onInactiveTimeout: jest.fn(),
       messenger: appStateMessenger,
       extension: extensionMock,
+      state,
       ...options,
     }),
     controllerMessenger,
