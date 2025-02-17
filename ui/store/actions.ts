@@ -5995,3 +5995,15 @@ export async function sendMultichainTransaction(
     },
   });
 }
+
+export function clearSnapRoute(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('clearSnapRoute');
+    await forceUpdateMetamaskState(dispatch);
+  };
+}

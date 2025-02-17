@@ -1,5 +1,6 @@
 import { useHistory } from 'react-router-dom';
 import { parseMetaMaskUrl } from '@metamask/snaps-utils';
+import browser from 'webextension-polyfill';
 import { getSnapRoute } from '../../helpers/utils/util';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 
@@ -14,8 +15,11 @@ const useSnapNavigation = () => {
       path = linkData.path;
     }
     if (envType === ENVIRONMENT_TYPE_NOTIFICATION) {
+      browser.runtime.sendMessage({
+        type: 'MM_OPEN_EXTENSION_POPUP',
+        path,
+      });
       onCancel?.();
-      global.platform?.openExtensionInBrowser?.(path);
     } else {
       history.push(path);
     }

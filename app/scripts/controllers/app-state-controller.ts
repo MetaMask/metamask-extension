@@ -86,6 +86,7 @@ export type AppStateControllerState = {
   custodianDeepLink?: { fromAddress: string; custodyId: string };
   slides: CarouselSlide[];
   throttledOrigins: ThrottledOrigins;
+  snapRoute?: string;
 };
 
 const controllerName = 'AppStateController';
@@ -369,6 +370,10 @@ const controllerMetadata = {
     persist: false,
     anonymous: true,
   },
+  snapRoute: {
+    persist: true,
+    anonymous: true,
+  },
 };
 
 export class AppStateController extends BaseController<
@@ -642,6 +647,26 @@ export class AppStateController extends BaseController<
   setSnapsInstallPrivacyWarningShownStatus(shown: boolean): void {
     this.update((state) => {
       state.snapsInstallPrivacyWarningShown = shown;
+    });
+  }
+
+  /**
+   * Sets the snap route
+   *
+   * @param route - The snap route
+   */
+  setSnapRoute(route: string): void {
+    this.update((state) => {
+      state.snapRoute = route;
+    });
+  }
+
+  /**
+   * Clears the snap route
+   */
+  clearSnapRoute(): void {
+    this.update((state) => {
+      state.snapRoute = undefined;
     });
   }
 

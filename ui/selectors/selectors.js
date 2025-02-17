@@ -2958,6 +2958,16 @@ export function getSnapsInstallPrivacyWarningShown(state) {
   return snapsInstallPrivacyWarningShown;
 }
 
+/**
+ * To get the snap route
+ *
+ * @param state - Redux state object.
+ * @returns The snap route.
+ */
+export function getSnapRoute(state) {
+  return state.metamask.snapRoute;
+}
+
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export function getsnapsAddSnapAccountModalDismissed(state) {
   const { snapsAddSnapAccountModalDismissed } = state.metamask;

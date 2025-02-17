@@ -395,6 +395,19 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
     connectExternalExtension(...args);
   }
 });
+browser.runtime.onMessage.addListener(async (message) => {
+  if (message.type === 'MM_OPEN_EXTENSION_POPUP') {
+    // Waiting for the dialog window to be closed otherwise it will try to render the route in the same window
+    setTimeout(async () => {
+      await controller.appStateController.setSnapRoute(message.path);
+      await controller.notificationManager.showPopup(
+        undefined,
+        undefined,
+        true,
+      );
+    }, 100);
+  }
+});
 
 function saveTimestamp() {
   const timestamp = new Date().toISOString();

@@ -1,4 +1,5 @@
 import EventEmitter from '@metamask/safe-event-emitter';
+import browser from 'webextension-polyfill';
 import ExtensionPlatform from '../platforms/extension';
 import {
   NOTIFICATION_HEIGHT,
@@ -35,8 +36,13 @@ export default class NotificationManager extends EventEmitter {
    *
    * @param {Function} setCurrentPopupId - setter of current popup id from appStateController
    * @param {number} currentPopupId - id of current opened metamask popup window
+   * @param {boolean} showExtensionPopup - whether to show the extension popup
    */
-  async showPopup(setCurrentPopupId, currentPopupId) {
+  async showPopup(
+    setCurrentPopupId,
+    currentPopupId,
+    showExtensionPopup = false,
+  ) {
     this._popupId = currentPopupId;
     this._setCurrentPopupId = setCurrentPopupId;
     const popup = await this._getPopup(currentPopupId);
@@ -44,6 +50,15 @@ export default class NotificationManager extends EventEmitter {
     if (popup) {
       // bring focus to existing chrome popup
       await this.platform.focusWindow(popup.id);
+    } else if (showExtensionPopup) {
+      // Try to use the modern API first (Manifest V3)
+      if (browser.action) {
+        await browser.action.openPopup();
+      }
+      // Fall back to browserAction for Manifest V2
+      if (browser.browserAction) {
+        await browser.browserAction.openPopup();
+      }
     } else {
       // create new notification popup
       let left = 0;
