@@ -10,6 +10,7 @@ import { RecipientRow } from '../../shared/transaction-details/transaction-detai
 import { useConfirmContext } from '../../../../../context/confirm';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionData } from '../../shared/transaction-data/transaction-data';
+import { useFourByte } from '../../hooks/useFourByte';
 
 export type NestedTransactionProps = {
   index: number;
@@ -18,13 +19,15 @@ export type NestedTransactionProps = {
 export function NestedTransaction(props: NestedTransactionProps) {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { nestedTransactions } = currentConfirmation ?? {};
+  const { data, to } = nestedTransactions?.[props.index] ?? {};
+  const methodData = useFourByte({ data, to });
 
   if (!nestedTransactions) {
     return null;
   }
 
-  const { data, to } = nestedTransactions[props.index];
-  const label = `Transaction ${props.index + 1}`;
+  const functionName = methodData?.name;
+  const label = functionName ?? `Transaction ${props.index + 1}`;
 
   return (
     <ConfirmInfoSection>
