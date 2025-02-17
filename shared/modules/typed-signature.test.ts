@@ -3,7 +3,7 @@ import { sanitizeMessageRecursively } from './typed-signature';
 
 describe('typed-signature utils', () => {
   describe('sanitizeMessageRecursively', () => {
-    const types: MessageTypes = {
+    const MESSAGE_TYPES: MessageTypes = {
       EIP712Domain: [
         { name: 'name', type: 'string' },
         { name: 'version', type: 'string' },
@@ -17,9 +17,9 @@ describe('typed-signature utils', () => {
       NestedType: [{ name: 'field', type: 'string' }],
     };
 
-    const primaryType = 'Root';
+    const PRIMARY_TYPE = 'Root';
 
-    const nestedObjectMock = {
+    const NESTED_OBJECT_MOCK = {
       a: {
         a: {
           a: {
@@ -45,25 +45,26 @@ describe('typed-signature utils', () => {
       },
     };
 
-    const messageWithExtraField = {
+    const MESSAGE_WITH_EXTRA_FIELD = {
       root: '0xbb50db86866daf83b8142fb53a50e4173c67f57330f24654ab7b110c484c8918',
       extraField: 'should be removed',
-      nestedObjectMock,
+      nestedObjectMock: NESTED_OBJECT_MOCK,
     };
 
-    const nestedMessageWithExtraField = {
+    const NESTED_MESSAGE_WITH_EXTRA_FIELD = {
       root: '0xbb50db86866daf83b8142fb53a50e4173c67f57330f24654ab7b110c484c8918',
       nested: {
         field: 'value',
         extraField: 'should be removed',
       },
-      nestedObjectMock,
+      nestedObjectMock: NESTED_OBJECT_MOCK,
     };
+
     it('removes extra fields from the message object', () => {
       const sanitizedMessage = sanitizeMessageRecursively(
-        messageWithExtraField,
-        types,
-        primaryType,
+        MESSAGE_WITH_EXTRA_FIELD,
+        MESSAGE_TYPES,
+        PRIMARY_TYPE,
       );
 
       expect(sanitizedMessage).toStrictEqual({
@@ -76,7 +77,7 @@ describe('typed-signature utils', () => {
       const message = {
         root: '0xbb50db86866daf83b8142fb53a50e4173c67f57330f24654ab7b110c484c8918',
       };
-      const typesWithoutRoot: MessageTypes = {
+      const TYPES_WITHOUT_ROOT: MessageTypes = {
         EIP712Domain: [
           { name: 'name', type: 'string' },
           { name: 'version', type: 'string' },
@@ -87,8 +88,8 @@ describe('typed-signature utils', () => {
 
       const sanitizedMessage = sanitizeMessageRecursively(
         message,
-        typesWithoutRoot,
-        primaryType,
+        TYPES_WITHOUT_ROOT,
+        PRIMARY_TYPE,
       );
 
       expect(sanitizedMessage).toStrictEqual(message);
@@ -96,9 +97,9 @@ describe('typed-signature utils', () => {
 
     it('removes extra fields from nested objects', () => {
       const sanitizedMessage = sanitizeMessageRecursively(
-        nestedMessageWithExtraField,
-        types,
-        primaryType,
+        NESTED_MESSAGE_WITH_EXTRA_FIELD,
+        MESSAGE_TYPES,
+        PRIMARY_TYPE,
       );
 
       expect(sanitizedMessage).toStrictEqual({

@@ -60,49 +60,8 @@ const TRANSACTION_PARAMS_MOCK_1: TransactionParams = {
 };
 
 const SIGN_TYPED_DATA_PARAMS_MOCK_1 = '0x123';
-const SIGN_TYPED_DATA_PARAMS_MOCK_2 = {
-  primaryType: 'Root',
-  domain: {},
-  types: {
-    Root: [
-      {
-        name: 'root',
-        type: 'bytes32',
-      },
-    ],
-  },
-  message: {
-    root: '0xbb50db86866daf83b8142fb53a50e4173c67f57330f24654ab7b110c484c8918',
-    nested: {
-      field: 'value',
-      extraField: 'should be removed',
-      test: { field: 'value' },
-    },
-    a: {
-      a: {
-        a: {
-          a: {
-            a: {
-              a: {
-                a: {
-                  a: {
-                    a: {
-                      a: {
-                        a: {
-                          a: {},
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  },
-};
+const SIGN_TYPED_DATA_PARAMS_MOCK_2 =
+  '{"primaryType":"Permit","domain":{},"types":{}}';
 
 const TRANSACTION_PARAMS_MOCK_2: TransactionParams = {
   ...TRANSACTION_PARAMS_MOCK_1,
@@ -323,7 +282,7 @@ describe('PPOM Utils', () => {
 
         const firstTwoParams = [
           SIGN_TYPED_DATA_PARAMS_MOCK_1,
-          JSON.stringify(SIGN_TYPED_DATA_PARAMS_MOCK_2),
+          SIGN_TYPED_DATA_PARAMS_MOCK_2,
         ];
 
         const unwantedParams = [{}, undefined, 1, null];
@@ -345,15 +304,7 @@ describe('PPOM Utils', () => {
         expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
         expect(ppom.validateJsonRpc).toHaveBeenCalledWith({
           ...request,
-          params: [
-            SIGN_TYPED_DATA_PARAMS_MOCK_1,
-            JSON.stringify({
-              ...SIGN_TYPED_DATA_PARAMS_MOCK_2,
-              message: {
-                root: '0xbb50db86866daf83b8142fb53a50e4173c67f57330f24654ab7b110c484c8918',
-              },
-            }),
-          ],
+          params: firstTwoParams,
         });
       },
     );
