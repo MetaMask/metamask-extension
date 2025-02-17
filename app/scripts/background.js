@@ -640,11 +640,19 @@ export async function loadStateFromPersistence() {
     firstTimeState = { ...firstTimeState, ...stateOverrides };
   }
 
+  const vaultHasNotYetBeenCreated = await browser.storage.local.get('vaultHasNotYetBeenCreated');
+
   // read from disk
   // first from preferred, async API:
-  const preMigrationVersionedData =
-    (await persistenceManager.get()) ||
-    migrator.generateInitialState(firstTimeState);
+  let preMigrationVersionedData = (await persistenceManager.get());
+
+  const vaultDataNotPresent = Boolean(preMigrationVersionedData?.data?.KeyringController?.vault);
+
+  if (vaultHasNotYetBeenCreated !== false && vaultDataNotPresent) {
+    throw new Error('Data error: storage.local does not contain vault data');
+  }
+
+  migrator.generateInitialState(firstTimeState);
 
   // report migration errors to sentry
   migrator.on('error', (err) => {
