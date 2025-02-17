@@ -1137,6 +1137,39 @@ export function getPetnamesEnabled(state) {
   return petnamesEnabled;
 }
 
+/**
+ * Returns an object indicating which networks
+ * tokens should be shown on in the portfolio view.
+ */
+export const getTokenNetworkFilter = createDeepEqualSelector(
+  getCurrentChainId,
+  getPreferences,
+  /**
+   * @param {*} currentChainId - chainId
+   * @param {*} preferences - preferences state
+   * @returns {Record<Hex, boolean>}
+   */
+  (currentChainId, { tokenNetworkFilter }) => {
+    // Portfolio view not enabled outside popular networks
+    if (
+      !process.env.PORTFOLIO_VIEW ||
+      !FEATURED_NETWORK_CHAIN_IDS.includes(currentChainId)
+    ) {
+      return { [currentChainId]: true };
+    }
+    // Portfolio view only enabled on featured networks
+    return Object.entries(tokenNetworkFilter || {}).reduce(
+      (acc, [chainId, value]) => {
+        if (FEATURED_NETWORK_CHAIN_IDS.includes(chainId)) {
+          acc[chainId] = value;
+        }
+        return acc;
+      },
+      {},
+    );
+  },
+);
+
 export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
   const chainId = getCurrentChainId(state);
   const tokenNetworkFilter = getTokenNetworkFilter(state);
@@ -1147,37 +1180,6 @@ export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
     return true;
   }
   return false;
-}
-
-/**
- * Returns an object indicating which networks
- * tokens should be shown on in the portfolio view.
- *
- * @param {*} state
- * @returns {Record<Hex, boolean>}
- */
-export function getTokenNetworkFilter(state) {
-  const currentChainId = getCurrentChainId(state);
-  const { tokenNetworkFilter } = getPreferences(state);
-
-  // Portfolio view not enabled outside popular networks
-  if (
-    !process.env.PORTFOLIO_VIEW ||
-    !FEATURED_NETWORK_CHAIN_IDS.includes(currentChainId)
-  ) {
-    return { [currentChainId]: true };
-  }
-
-  // Portfolio view only enabled on featured networks
-  return Object.entries(tokenNetworkFilter || {}).reduce(
-    (acc, [chainId, value]) => {
-      if (FEATURED_NETWORK_CHAIN_IDS.includes(chainId)) {
-        acc[chainId] = value;
-      }
-      return acc;
-    },
-    {},
-  );
 }
 
 export function getUseTransactionSimulations(state) {
