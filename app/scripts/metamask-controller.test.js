@@ -2426,7 +2426,7 @@ describe('MetaMaskController', () => {
       });
 
       describe('getHardwareTypeForMetric', () => {
-        it.each(['ledger', 'lattice', 'trezor', 'qr'])(
+        it.each(['ledger', 'lattice', 'trezor', 'oneKey', 'qr'])(
           'should return the correct type for %s',
           async (type) => {
             jest
@@ -2440,24 +2440,6 @@ describe('MetaMaskController', () => {
             expect(result).toBe(HardwareKeyringType[type]);
           },
         );
-
-        it('should handle special case for oneKey', async () => {
-          jest
-            .spyOn(metamaskController.keyringController, 'withKeyring')
-            .mockImplementation((_, fn) => {
-              const keyring = {
-                type: 'trezor',
-                bridge: { minorVersion: ONE_KEY_VIA_TREZOR_MINOR_VERSION },
-              };
-              return fn(keyring);
-            });
-
-          const result = await metamaskController.getHardwareTypeForMetric(
-            '0x123',
-          );
-
-          expect(result).toBe('OneKey Hardware');
-        });
       });
 
       describe('forgetDevice', () => {
