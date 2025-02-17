@@ -1,8 +1,12 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render } from '@testing-library/react';
 import React from 'react';
-import { AvatarAccount, AvatarAccountSize, AvatarAccountVariant } from '.';
 import 'jest-canvas-mock';
+import { AvatarAccount } from './avatar-account';
+import {
+  AvatarAccountSize,
+  AvatarAccountVariant,
+} from './avatar-account.types';
 
 describe('AvatarAccount', () => {
   it('should render correctly', () => {

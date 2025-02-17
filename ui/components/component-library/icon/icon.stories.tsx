@@ -17,22 +17,17 @@ import {
   BorderRadius,
 } from '../../../helpers/constants/design-system';
 
-import {
-  ButtonIcon,
-  ButtonLink,
-  ButtonLinkSize,
-  Label,
-  Text,
-  TextField,
-  TextFieldSize,
-  TextFieldSearch,
-  ButtonIconSize,
-  Box,
-} from '..';
+import { Text } from '../text';
 import { Icon } from './icon';
 import { IconName, IconSize } from './icon.types';
 
 import README from './README.mdx';
+import { Box } from '../box';
+import { Label } from '../label';
+import { TextFieldSearch } from '../text-field-search';
+import { TextField, TextFieldSize } from '../text-field';
+import { ButtonIcon, ButtonIconSize } from '../button-icon';
+import { ButtonLink, ButtonLinkSize } from '../button-link';
 
 export default {
   title: 'Components/ComponentLibrary/Icon',

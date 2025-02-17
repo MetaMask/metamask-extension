@@ -8,7 +8,7 @@ import {
 import { Hex } from '@metamask/utils';
 import { Duplex } from 'readable-stream';
 import { SubjectType } from '@metamask/permission-controller';
-import { TransactionMetricsRequest } from '../lib/transaction/metrics';
+import type { TransactionMetricsRequest } from '../../../shared/types/metametrics';
 import { MessageSender } from '../../../types/global';
 import { Controller, ControllerFlatState } from './controller-list';
 
@@ -161,15 +161,13 @@ export type ControllerInitRequest<
     message: string,
     url?: string,
   ) => Promise<void>;
-} & (InitMessengerType extends BaseRestrictedControllerMessenger
-  ? {
-      /**
-       * Required initialization messenger instance.
-       * Generated using the callback specified in `getInitMessengerCallback`.
-       */
-      initMessenger: InitMessengerType;
-    }
-  : unknown);
+
+  /**
+   * Required initialization messenger instance.
+   * Generated using the callback specified in `getInitMessengerCallback`.
+   */
+  initMessenger: InitMessengerType;
+};
 
 /**
  * A single background API method available to the UI.

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import TokenList from '../token-list';
 import { getMultichainIsEvm } from '../../../../selectors/multichain';
@@ -8,34 +8,45 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import DetectedToken from '../../detected-token/detected-token';
-import useAssetListTokenDetection from '../hooks/useAssetListTokenDetection';
-import usePrimaryCurrencyProperties from '../hooks/usePrimaryCurrencyProperties';
+import {
+  useAssetListTokenDetection,
+  usePrimaryCurrencyProperties,
+} from '../hooks';
 import AssetListControlBar from './asset-list-control-bar';
-import NativeToken from './native-token';
 import AssetListFundingModals from './asset-list-funding-modals';
 
-export type TokenWithBalance = {
-  address: string;
-  symbol: string;
-  string?: string;
-  image: string;
-  secondary?: string;
-  tokenFiatAmount?: string;
-  isNative?: boolean;
-};
-
-export type AssetListProps = {
+type AssetListProps = {
   onClickAsset: (chainId: string, address: string) => void;
   showTokensLinks?: boolean;
 };
 
+const TokenListContainer = React.memo(
+  ({ onClickAsset }: Pick<AssetListProps, 'onClickAsset'>) => {
+    const trackEvent = useContext(MetaMetricsContext);
+    const { primaryCurrencyProperties } = usePrimaryCurrencyProperties();
+
+    const onTokenClick = useCallback(
+      (chainId: string, tokenAddress: string) => {
+        onClickAsset(chainId, tokenAddress);
+        trackEvent({
+          event: MetaMetricsEventName.TokenScreenOpened,
+          category: MetaMetricsEventCategory.Navigation,
+          properties: {
+            token_symbol: primaryCurrencyProperties.suffix,
+            location: 'Home',
+          },
+        });
+      },
+      [],
+    );
+
+    return <TokenList onTokenClick={onTokenClick} />;
+  },
+);
+
 const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const { showDetectedTokens, setShowDetectedTokens } =
     useAssetListTokenDetection();
-  const trackEvent = useContext(MetaMetricsContext);
-
-  const { primaryCurrencyProperties } = usePrimaryCurrencyProperties();
-
   const isEvm = useSelector(getMultichainIsEvm);
   // NOTE: Since we can parametrize it now, we keep the original behavior
   // for EVM assets
@@ -44,22 +55,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   return (
     <>
       <AssetListControlBar showTokensLinks={shouldShowTokensLinks} />
-      <TokenList
-        // nativeToken is still needed to avoid breaking flask build's support for bitcoin
-        // TODO: refactor this to no longer be needed for non-evm chains
-        nativeToken={!isEvm && <NativeToken onClickAsset={onClickAsset} />}
-        onTokenClick={(chainId: string, tokenAddress: string) => {
-          onClickAsset(chainId, tokenAddress);
-          trackEvent({
-            event: MetaMetricsEventName.TokenScreenOpened,
-            category: MetaMetricsEventCategory.Navigation,
-            properties: {
-              token_symbol: primaryCurrencyProperties.suffix,
-              location: 'Home',
-            },
-          });
-        }}
-      />
+      <TokenListContainer onClickAsset={onClickAsset} />
       {showDetectedTokens && (
         <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />
       )}
