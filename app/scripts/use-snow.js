@@ -11,111 +11,149 @@ Changing this code must be done cautiously to avoid breaking the app!
     // return;
     function generateTamedWindow(win) {
       return new Proxy(win, {
-        get: (a,b,c) => {
+        get: (a, b, c) => {
           if (b === 'document') {
             return proxy;
           }
-          if (![
-            "nodeName",
-            "Element",
-            "HTMLElement",
-            "getComputedStyle",
-            "visualViewport",
-            "addEventListener",
-            "removeEventListener",
-            "toString",
-            "pageXOffset",
-            "pageYOffset",
-          ].includes(b)) {
-            throw 'NOT ALLOWED(window): ' + b;
+          if (
+            ![
+              'nodeName',
+              'Element',
+              'HTMLElement',
+              'getComputedStyle',
+              'visualViewport',
+              'addEventListener',
+              'removeEventListener',
+              'toString',
+              'pageXOffset',
+              'pageYOffset',
+            ].includes(b)
+          ) {
+            throw `NOT ALLOWED(window): ${b}`;
           }
-          let ret = Reflect.get(a,b);
+          let ret = Reflect.get(a, b);
           if (typeof ret === 'function') {
             ret = ret.bind(win);
           }
           return ret;
-        }
+        },
       });
     }
     function generateTamedDocument(doc, winp) {
       return new Proxy(doc, {
-        get: (a,b,c) => {
+        get: (a, b, c) => {
           if (b === 'defaultView') {
             // return window;
             return winp;
           }
-          if (![
-              "body",
-              "host",
-              "shadowRoot",
-              "scrollingElement",
-              "nodeType",
-              "documentElement",
-              "activeElement",
-              "parentNode",
-              "addEventListener",
-              "createElement",
-              "createElementNS",
-              "parentWindow",
-              "compatMode",
-              "elementFromPoint",
-              "elementsFromPoint",
-              "createEvent",
-              "createTextNode"
+          if (
+            ![
+              'body',
+              'host',
+              'shadowRoot',
+              'scrollingElement',
+              'nodeType',
+              'documentElement',
+              'activeElement',
+              'parentNode',
+              'addEventListener',
+              'createElement',
+              'createElementNS',
+              'parentWindow',
+              'compatMode',
+              'elementFromPoint',
+              'elementsFromPoint',
+              'createEvent',
+              'createTextNode',
             ].includes(b) &&
             !b.startsWith('__reactInternalInstance') &&
             !b.startsWith('__reactContainer')
           ) {
-            throw 'NOT ALLOWED(document): ' + b;
+            throw `NOT ALLOWED(document): ${b}`;
           }
-          let ret = Reflect.get(a,b);
+          let ret = Reflect.get(a, b);
           if (typeof ret === 'function') {
             ret = ret.bind(doc);
           }
           return ret;
-        }
+        },
       });
     }
-    try {win.Node} catch {return;}
-    const {document, Object, Document, Node, MouseEvent} = win;
+    try {
+      win.Node;
+    } catch {
+      return;
+    }
+    const { document, Object, Document, Node, MouseEvent } = win;
     const winp = generateTamedWindow(win);
     const proxy = generateTamedDocument(document, winp);
-    Object.defineProperty(Document.prototype, 'defaultView', {get: function() {
+    Object.defineProperty(Document.prototype, 'defaultView', {
+      get() {
         return winp;
-      }}
-    );
-    Object.defineProperty(Node.prototype, 'ownerDocument', {get: function() {
+      },
+    });
+    Object.defineProperty(Node.prototype, 'ownerDocument', {
+      get() {
         return proxy;
-      }}
-    );
-    const getRootNode = Object.getOwnPropertyDescriptor(Node.prototype, 'getRootNode').value;
-    Object.defineProperty(Node.prototype, 'getRootNode', {value: function() {
+      },
+    });
+    const getRootNode = Object.getOwnPropertyDescriptor(
+      Node.prototype,
+      'getRootNode',
+    ).value;
+    Object.defineProperty(Node.prototype, 'getRootNode', {
+      value() {
         const that = this === proxy ? document : this;
         const ret = getRootNode.call(that);
         if (ret === document) {
           return proxy;
         }
         return ret;
-      }}
-    );
-    const parentNode = Object.getOwnPropertyDescriptor(Node.prototype, 'parentNode').get;
-    Object.defineProperty(Node.prototype, 'parentNode', {get: function() {
+      },
+    });
+    const parentNode = Object.getOwnPropertyDescriptor(
+      Node.prototype,
+      'parentNode',
+    ).get;
+    Object.defineProperty(Node.prototype, 'parentNode', {
+      get() {
         const that = this === proxy ? document : this;
         const ret = parentNode.call(that);
         if (ret === document) {
           return proxy;
         }
         return ret;
-      }}
-    );
-    const initMouseEvent = Object.getOwnPropertyDescriptor(MouseEvent.prototype, 'initMouseEvent').value;
-    Object.defineProperty(MouseEvent.prototype, 'initMouseEvent', {value: function (a,b,c,w,e,f,g,h,i,j,k,l,m,n,o) {
+      },
+    });
+    const initMouseEvent = Object.getOwnPropertyDescriptor(
+      MouseEvent.prototype,
+      'initMouseEvent',
+    ).value;
+    Object.defineProperty(MouseEvent.prototype, 'initMouseEvent', {
+      value(a, b, c, w, e, f, g, h, i, j, k, l, m, n, o) {
         if (winp === w) {
           w = win;
         }
-        return initMouseEvent.call(this, a,b,c,w,e,f,g,h,i,j,k,l,m,n,o);
-      }}
-    );
+        return initMouseEvent.call(
+          this,
+          a,
+          b,
+          c,
+          w,
+          e,
+          f,
+          g,
+          h,
+          i,
+          j,
+          k,
+          l,
+          m,
+          n,
+          o,
+        );
+      },
+    });
   }
   const log = console.log.bind(console);
   // eslint-disable-next-line no-undef
