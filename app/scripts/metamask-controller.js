@@ -5957,6 +5957,12 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController,
           origin,
         ),
+        // DRY THIS
+        requestPermittedChainsPermissionForOrigin: (options) =>
+          this.requestPermittedChainsPermissionIncremental({
+            ...options,
+            origin,
+          }),
         requestPermittedChainsPermissionIncrementalForOrigin: (options) =>
           this.requestPermittedChainsPermissionIncremental({
             ...options,
