@@ -4069,6 +4069,12 @@ export default class MetamaskController extends EventEmitter {
       // MultichainBalancesController
       multichainUpdateBalance: (accountId) =>
         this.multichainBalancesController.updateBalance(accountId),
+
+      // MultichainTransactionsController
+      multichainUpdateTransactions: (accountId) =>
+        this.multichainTransactionsController.updateTransactionsForAccount(
+          accountId,
+        ),
       ///: END:ONLY_INCLUDE_IF
       // Transaction Decode
       decodeTransactionData: (request) =>
