@@ -15,24 +15,27 @@ jobs:
             echo "version=$version" >> "$GITHUB_OUTPUT"
           else
             echo "Not a release branch, skip next steps"
-            exit 1
           fi
 
       - name: Checkout repository
+        if: steps.extract_version.outputs.version
         uses: actions/checkout@v3
         with:
           fetch-depth: 1 # This retrieves only the latest commit.
 
       - name: Set up Node.js
+        if: steps.extract_version.outputs.version
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
           cache: yarn
 
       - name: Install dependencies
+        if: steps.extract_version.outputs.version
         run: yarn --immutable
 
       - name: Create bug report issue on planning repo
+        if: steps.extract_version.outputs.version
         id: create-bug-report-issue
         env:
           BUG_REPORT_TOKEN: ${{ secrets.BUG_REPORT_TOKEN }}
