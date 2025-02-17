@@ -225,6 +225,7 @@ describe('Contract Deployment Confirmation', () => {
             action: 'Confirm Screen',
             location: MetaMetricsEventLocation.Transaction,
             transaction_type: TransactionType.deployContract,
+            hd_srp_index: 0,
           },
         }),
       ]),
