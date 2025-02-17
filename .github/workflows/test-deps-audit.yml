@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+        uses: metamask/github-tools/.github/actions/setup-environment@04f91563e5e048d4e34527dc3007f633759e2899
 
       - name: Run audit
         run: yarn audit
