@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import classnames from 'classnames';
-import type { PolymorphicRef, BoxProps } from '../box';
-import { Box, Popover, PopoverPosition } from '..';
+import { Box, type PolymorphicRef, BoxProps } from '../box';
+import { Popover, PopoverPosition } from '../popover';
 import {
   SelectWrapperComponent,
   SelectWrapperProps,

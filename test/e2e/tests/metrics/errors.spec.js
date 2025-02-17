@@ -889,6 +889,10 @@ describe('Sentry errors', function () {
         showConfirmationAdvancedDetails: true,
         privacyMode: false,
       },
+      balances: false,
+      accountsAssets: false,
+      assetsMetadata: false,
+      assetsRates: false,
       smartTransactionsState: {
         fees: {
           approvalTxFees: true, // Initialized as undefined
