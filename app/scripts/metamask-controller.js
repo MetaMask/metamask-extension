@@ -365,6 +365,7 @@ import {
   MultichainBalancesControllerInit,
   ///: END:ONLY_INCLUDE_IF
   MultichainNetworkControllerInit,
+  MultiChainAssetsRatesControllerInit,
 } from './controller-init/multichain';
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
 import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
@@ -2055,6 +2056,7 @@ export default class MetamaskController extends EventEmitter {
       TransactionController: TransactionControllerInit,
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       MultichainAssetsController: MultichainAssetsControllerInit,
+      MultiChainAssetsRatesController: MultiChainAssetsRatesControllerInit,
       MultichainBalancesController: MultichainBalancesControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
       ///: END:ONLY_INCLUDE_IF
@@ -2093,6 +2095,8 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.MultichainBalancesController;
     this.multichainTransactionsController =
       controllersByName.MultichainTransactionsController;
+    this.multiChainAssetsRatesController =
+      controllersByName.MultiChainAssetsRatesController;
     ///: END:ONLY_INCLUDE_IF
     this.multichainNetworkController =
       controllersByName.MultichainNetworkController;
@@ -2271,6 +2275,7 @@ export default class MetamaskController extends EventEmitter {
         MultichainAssetsController: this.multichainAssetsController,
         MultichainBalancesController: this.multichainBalancesController,
         MultichainTransactionsController: this.multichainTransactionsController,
+        MultiChainAssetsRatesController: this.multiChainAssetsRatesController,
         ///: END:ONLY_INCLUDE_IF
         MultichainNetworkController: this.multichainNetworkController,
         NetworkController: this.networkController,
