@@ -38,16 +38,16 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getMultichainAssetsControllerMessenger,
     getInitMessenger: noop,
   },
+  MultiChainAssetsRatesController: {
+    getMessenger: getMultiChainAssetsRatesControllerMessenger,
+    getInitMessenger: noop,
+  },
   MultichainBalancesController: {
     getMessenger: getMultichainBalancesControllerMessenger,
     getInitMessenger: noop,
   },
   MultichainTransactionsController: {
     getMessenger: getMultichainTransactionsControllerMessenger,
-    getInitMessenger: noop,
-  },
-  MultiChainAssetsRatesController: {
-    getMessenger: getMultiChainAssetsRatesControllerMessenger,
     getInitMessenger: noop,
   },
   RateLimitController: {

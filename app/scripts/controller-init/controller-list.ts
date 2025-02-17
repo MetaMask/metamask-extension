@@ -43,9 +43,9 @@ export type Controller =
   | JsonSnapsRegistry
   | KeyringController
   | MultichainAssetsController
+  | MultiChainAssetsRatesController
   | MultichainBalancesController
   | MultichainTransactionsController
-  | MultiChainAssetsRatesController
   | NetworkController
   | OnboardingController
   | PermissionController<
@@ -75,9 +75,9 @@ export type ControllerFlatState = AccountsController['state'] &
   JsonSnapsRegistry['state'] &
   KeyringController['state'] &
   MultichainAssetsController['state'] &
+  MultiChainAssetsRatesController['state'] &
   MultichainBalancesController['state'] &
   MultichainTransactionsController['state'] &
-  MultiChainAssetsRatesController['state'] &
   NetworkController['state'] &
   OnboardingController['state'] &
   PermissionController<
