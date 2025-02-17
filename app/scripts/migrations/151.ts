@@ -32,7 +32,7 @@ const BUILT_IN_NETWORKS: ReadonlyMap<string, Hex> = new Map([
 ]);
 
 /**
- * This migration adds the `endowment:permitted-chains` permission to all Snaps
+ * This migration adds the `endowment:caip25` permission to all Snaps
  * that have the `endowment:ethereum-provider` permission, and sets the selected
  * chain ID for each Snap to the current selected network chain ID.
  *
