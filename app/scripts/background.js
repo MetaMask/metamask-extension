@@ -387,12 +387,13 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
   // This is set in `setupController`, which is called as part of initialization
-  const port = args[0];
 
-  if (port.sender.tab?.id && process.env.BARAD_DUR) {
-    connectExternalCaip(...args);
-  } else {
+  const port = args[0];
+  const isDappConnecting = port.sender.tab?.id;
+  if (!process.env.MULTICHAIN_API || !isDappConnecting) {
     connectExternalExtension(...args);
+  } else {
+    connectExternalCaip(...args);
   }
 });
 
@@ -1012,6 +1013,10 @@ export function setupController(
   };
 
   connectExternalCaip = async (remotePort) => {
+    if (!process.env.MULTICHAIN_API) {
+      return;
+    }
+
     if (metamaskBlockedPorts.includes(remotePort.name)) {
       return;
     }
