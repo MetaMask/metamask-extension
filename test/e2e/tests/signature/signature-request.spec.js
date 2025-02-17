@@ -4,7 +4,6 @@ const {
   withFixtures,
   regularDelayMs,
   openDapp,
-  defaultGanacheOptions,
   unlockWallet,
   WINDOW_TITLES,
 } = require('../../helpers');
@@ -70,7 +69,6 @@ describe('Sign Typed Data Signature Request', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
         async ({ driver, ganacheServer }) => {
@@ -145,7 +143,6 @@ describe('Sign Typed Data Signature Request', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
@@ -197,7 +194,6 @@ describe('Sign Typed Data Signature Request', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
