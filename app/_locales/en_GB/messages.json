@@ -4621,6 +4621,12 @@
   "skipAccountSecurityDetails": {
     "message": "I understand that until I back up my Secret Recovery Phrase, I may lose my accounts and all of their assets."
   },
+  "slideDebitCardDescription": {
+    "message": "Available in select regions"
+  },
+  "slideFundWalletDescription": {
+    "message": "Add or transfer tokens to get started"
+  },
   "smartContracts": {
     "message": "Smart contracts"
   },
