@@ -1,3 +1,4 @@
+import { By } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 
 class SendSolanaPage {
@@ -6,6 +7,11 @@ class SendSolanaPage {
   private readonly sendAmountInput = '#send-amount-input';
 
   private readonly toAddressInput = '#send-to';
+
+  private readonly amountCurrencyLabel = (tokenName: string) =>
+    By.xpath(
+      `//label[@for="send-amount-input"]/..//p[contains(text(), "${tokenName}")]`,
+    );
 
   private readonly continueButton = {
     text: 'Continue',
@@ -34,6 +40,48 @@ class SendSolanaPage {
     await swapCurrencyButton.click();
   }
 
+  async check_tokenByNameIsDisplayed(tokenName: string): Promise<void> {
+    await this.driver.waitForControllersLoaded();
+    await this.driver.waitForSelector(
+      {
+        text: tokenName,
+        tag: 'p',
+      },
+      { timeout: 2000 },
+    );
+  }
+
+  async selectTokenFromTokenList(tokenName: string): Promise<void> {
+    await this.driver.waitForControllersLoaded();
+    await this.driver.clickElement({
+      text: tokenName,
+      tag: 'p',
+    });
+  }
+
+  async check_tokenBalanceIsDisplayed(
+    amount: string,
+    tokenName: string,
+  ): Promise<void> {
+    await this.driver.waitForControllersLoaded();
+    await this.driver.clickElement({
+      text: `Balance: ${amount} ${tokenName}`,
+      tag: 'p',
+    });
+  }
+
+  async check_amountCurrencyIsDisplayed(currency: string): Promise<void> {
+    await this.driver.waitForControllersLoaded();
+    await this.driver.waitForSelector(this.amountCurrencyLabel(currency));
+  }
+
+  async openTokenList(): Promise<void> {
+    await this.driver.waitForControllersLoaded();
+    await this.driver.clickElement(
+      By.xpath('//label[@for="send-asset-selector"]/../button'),
+    );
+  }
+
   async check_validationErrorAppears(
     validationErrorText: string,
   ): Promise<boolean> {
@@ -52,6 +100,18 @@ class SendSolanaPage {
     }
   }
 
+  async check_TxSimulationFailed(): Promise<void> {
+    await this.driver.waitForControllersLoaded();
+    await this.driver.waitForSelector(
+      { text: 'Transaction simulation failed', tag: 'p' },
+      { timeout: 5000 },
+    );
+    await this.driver.waitForSelector(
+      { text: 'This transaction was reverted during simulation.', tag: 'p' },
+      { timeout: 5000 },
+    );
+  }
+
   async setAmount(amount: string): Promise<void> {
     await this.driver.waitForControllersLoaded();
     await this.driver.waitForSelector(this.sendAmountInput, { timeout: 10000 });
@@ -65,7 +125,7 @@ class SendSolanaPage {
     await input.click();
   }
 
-  async setToAddress(toAddress: string): Promise<void> {
+  async setToAddress(toAddress: string = ''): Promise<void> {
     let failed = true;
     for (let i = 0; i < 5 && failed; i++) {
       try {
@@ -73,7 +133,11 @@ class SendSolanaPage {
         await this.driver.waitForSelector(this.toAddressInput, {
           timeout: 5000,
         });
-        await this.driver.fill(this.toAddressInput, toAddress);
+        if (toAddress) {
+          await this.driver.fill(this.toAddressInput, toAddress);
+        } else {
+          await this.driver.pasteFromClipboardIntoField(this.toAddressInput);
+        }
         failed = false;
       } catch (err: unknown) {
         console.log('To address input not displayed', err);
@@ -136,9 +200,18 @@ class SendSolanaPage {
     }
   }
 
-  async check_pageIsLoaded() {
+  async check_pageIsLoaded(amount: string = '') {
     await this.driver.waitForControllersLoaded();
     await this.driver.waitForSelector(this.toAddressInput, { timeout: 2000 });
+    if (amount) {
+      await this.driver.waitForSelector(
+        {
+          text: `${amount}`,
+          tag: 'p',
+        },
+        { timeout: 20000 },
+      );
+    }
     await this.driver.delay(1000); // Added because of https://consensyssoftware.atlassian.net/browse/SOL-116
   }
 }

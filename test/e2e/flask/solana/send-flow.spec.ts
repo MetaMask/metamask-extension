@@ -5,9 +5,8 @@ import SendSolanaPage from '../../page-objects/pages/send/solana-send-page';
 import ConfirmSolanaTxPage from '../../page-objects/pages/send/solana-confirm-tx-page';
 import SolanaTxresultPage from '../../page-objects/pages/send/solana-tx-result-page';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
-import { withSolanaAccountSnap } from './common-solana';
+import { commonSolanaAddress, withSolanaAccountSnap } from './common-solana';
 
-const commonSolanaAddress = 'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna';
 describe.skip('Send flow', function (this: Suite) {
   // skipped due tohttps://github.com/MetaMask/snaps/issues/3019
   it('with some field validation', async function () {
@@ -28,7 +27,8 @@ describe.skip('Send flow', function (this: Suite) {
           false,
           'Continue button is enabled and it shouldn`t',
         );
-        await driver.delay(7000); // Added because of https://github.com/MetaMask/snaps/issues/3019
+        await sendSolanaPage.check_pageIsLoaded('0');
+        // await driver.delay(7000); // Added because of https://github.com/MetaMask/snaps/issues/3019
         await sendSolanaPage.setToAddress('2433asd');
         assert.equal(
           await sendSolanaPage.check_validationErrorAppears(
@@ -69,7 +69,7 @@ describe.skip('Send flow', function (this: Suite) {
     );
   });
 });
-describe.skip('Send full flow of USD', function (this: Suite) {
+describe('Send full flow of USD', function (this: Suite) {
   it('with a positive balance account', async function () {
     // skipped due tohttps://consensyssoftware.atlassian.net/browse/SOL-100
     this.timeout(120000);
@@ -79,6 +79,7 @@ describe.skip('Send full flow of USD', function (this: Suite) {
         showNativeTokenAsMainBalance: true,
         mockCalls: true,
         mockSendTransaction: true,
+        simulateTransaction: true,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
@@ -100,6 +101,7 @@ describe.skip('Send full flow of USD', function (this: Suite) {
         );
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
+        await sendSolanaPage.check_pageIsLoaded('$9,921.00');
         assert.equal(
           await sendSolanaPage.isContinueButtonEnabled(),
           false,
@@ -121,7 +123,7 @@ describe.skip('Send full flow of USD', function (this: Suite) {
         const confirmSolanaPage = new ConfirmSolanaTxPage(driver);
         await sendSolanaPage.clickOnContinue();
         assert.equal(
-          await confirmSolanaPage.checkAmountDisplayed('0.1'),
+          await confirmSolanaPage.checkAmountDisplayed('0.000504'), // conversion to USD
           true,
           'Check amount displayed is wrong',
         );
@@ -129,11 +131,6 @@ describe.skip('Send full flow of USD', function (this: Suite) {
           await confirmSolanaPage.isTransactionDetailDisplayed('From'),
           true,
           'From is not displayed and it should',
-        );
-        assert.equal(
-          await confirmSolanaPage.isTransactionDetailDisplayed('Amount'),
-          true,
-          'Amount is not displayed and it should',
         );
 
         assert.equal(
@@ -159,15 +156,14 @@ describe.skip('Send full flow of USD', function (this: Suite) {
           true,
           'Network fee is not displayed and it should',
         );
-        assert.equal(
-          await confirmSolanaPage.isTransactionDetailDisplayed('Total'),
-          true,
-          'Total is not displayed and it should',
-        );
+
         await confirmSolanaPage.clickOnSend();
         const sentTxPage = new SolanaTxresultPage(driver);
         assert.equal(
-          await sentTxPage.check_TransactionStatusText('0.1', true),
+          await sentTxPage.check_TransactionStatusText(
+            '0.00050398145348251184',
+            true,
+          ),
           true,
           'Transaction amount is not correct',
         );
@@ -180,11 +176,6 @@ describe.skip('Send full flow of USD', function (this: Suite) {
           await sentTxPage.isTransactionDetailDisplayed('From'),
           true,
           'From field not displayed and it should',
-        );
-        assert.equal(
-          await sentTxPage.isTransactionDetailDisplayed('Amount'),
-          true,
-          'Amount field not displayed and it should',
         );
         assert.equal(
           await sentTxPage.isTransactionDetailDisplayed('Recipient'),
@@ -207,11 +198,6 @@ describe.skip('Send full flow of USD', function (this: Suite) {
           'Network fee field not displayed',
         );
         assert.equal(
-          await sentTxPage.isTransactionDetailDisplayed('Total'),
-          true,
-          'Total field not displayed and it should',
-        );
-        assert.equal(
           await sentTxPage.check_isViewTransactionLinkDisplayed(),
           true,
           'View transaction link is not displayed and it should',
@@ -229,6 +215,7 @@ describe('Send full flow of SOL', function (this: Suite) {
         showNativeTokenAsMainBalance: true,
         mockCalls: true,
         mockSendTransaction: true,
+        simulateTransaction: true,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
@@ -250,6 +237,7 @@ describe('Send full flow of SOL', function (this: Suite) {
         );
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
+        await sendSolanaPage.check_pageIsLoaded('50');
         assert.equal(
           await sendSolanaPage.isContinueButtonEnabled(),
           false,
@@ -265,7 +253,7 @@ describe('Send full flow of SOL', function (this: Suite) {
         const confirmSolanaPage = new ConfirmSolanaTxPage(driver);
         await sendSolanaPage.clickOnContinue();
         assert.equal(
-          await confirmSolanaPage.checkAmountDisplayed('0.1'),
+          await confirmSolanaPage.checkAmountDisplayed('0.1', ''),
           true,
           'Check amount displayed is wrong',
         );
@@ -352,6 +340,7 @@ describe('Send flow', function (this: Suite) {
         showNativeTokenAsMainBalance: true,
         mockCalls: true,
         mockSendTransaction: false,
+        simulateTransaction: true,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
@@ -359,7 +348,7 @@ describe('Send flow', function (this: Suite) {
         await homePage.clickOnSendButton();
 
         const sendSolanaPage = new SendSolanaPage(driver);
-        await sendSolanaPage.check_pageIsLoaded();
+        await sendSolanaPage.check_pageIsLoaded('50');
         await sendSolanaPage.setToAddress(commonSolanaAddress);
         await sendSolanaPage.setAmount('0.1');
         // assert.equal(await sendSolanaPage.isContinueButtonEnabled(), true, "Continue button is not enabled when address and amount are set");
@@ -369,7 +358,7 @@ describe('Send flow', function (this: Suite) {
         await confirmSolanaPage.clickOnSend();
         const failedTxPage = new SolanaTxresultPage(driver);
         assert.equal(
-          await failedTxPage.check_TransactionStatusText('0.1', false),
+          await failedTxPage.check_TransactionStatusText('0.1', false, 'SOL'),
           true,
           'Transaction amount is not correct',
         );

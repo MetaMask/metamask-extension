@@ -9,9 +9,10 @@ import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.fl
 
 const SOLANA_URL_REGEX =
   /^https:\/\/(solana-mainnet\.infura\.io|api\.devnet\.solana\.com)/u;
-// const SOLANA_RPC_PROVIDER = 'https://api.devnet.solana.com/';
-const SOLANA_PRICE_REGEX =
-  /^https:\/\/price-api\.metamask-institutional\.io\/v2\/chains\/solana:/u;
+const SOLANA_PRICE_API =
+  /^https:\/\/price\.(uat-api|api)\.cx\.metamask\.io\/v3\/spot-prices/u;
+const SOLANA_STATIC_TOKEN_IMAGE_REGEX =
+  /^https:\/\/static\.cx\.metamask\.io\/api\/v2\/tokenIcons\//u;
 const SOLANA_BITCOIN_MIN_API =
   /^https:\/\/min-api\.cryptocompare\.com\/data\/pricemulti/u;
 export enum SendFlowPlaceHolders {
@@ -19,8 +20,19 @@ export enum SendFlowPlaceHolders {
   RECIPIENT = 'Enter receiving address',
   LOADING = 'Preparing transaction',
 }
+export const commonSolanaAddress =
+  '3xTPAZxmpwd8GrNEKApaTw6VH4jqJ31WFXUvQzgwhR7c';
 
 export const SIMPLEHASH_URL = 'https://api.simplehash.com';
+
+export const SOLANA_TOKEN_API =
+  /^https:\/\/tokens\.(uat-api|api)\.cx\.metamask\.io\/v3\/assets/u;
+
+export const METAMASK_PHISHING_DETECTION_API =
+  /^https:\/\/phishing-detection\.api\.cx\.metamask\.io\/$/u;
+
+export const METAMASK_CLIENT_SIDE_DETECTION_REGEX =
+  /^https:\/\/client-side-detection\.api\.cx\.metamask\.io\/$/u;
 
 export const SOL_BALANCE = 50000000000;
 
@@ -29,6 +41,73 @@ export const SOL_TO_USD_RATE = 225.88;
 export const USD_BALANCE = SOL_BALANCE * SOL_TO_USD_RATE;
 
 export const LAMPORTS_PER_SOL = 1_000_000_000;
+
+export async function mockClientSideDetectionApi(mockServer: Mockttp) {
+  return await mockServer
+    .forPost(METAMASK_CLIENT_SIDE_DETECTION_REGEX)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          recentlyAdded: [],
+          recentlyRemoved: [],
+          lastFetchedAt: '2025-02-03T11:08:02Z',
+        },
+      };
+    });
+}
+
+export async function mockPhishingDetectionApi(mockServer: Mockttp) {
+  return await mockServer
+    .forPost(METAMASK_PHISHING_DETECTION_API)
+    .thenCallback(() => {
+      return { statusCode: 200 };
+    });
+}
+
+export async function mockPriceApi(mockServer: Mockttp) {
+  const response = {
+    statusCode: 200,
+    json: {
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+        usd: 198.42,
+      },
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:2zMMhcVQEXDtdE6vsFS7S7D5oUodfJHE8vd1gnBouauv':
+        {
+          usd: 0.01157283,
+        },
+    },
+  };
+  return await mockServer.forGet(SOLANA_PRICE_API).thenCallback(() => {
+    return response;
+  });
+}
+
+export async function mockStaticMetamaskTokenIcon(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(SOLANA_STATIC_TOKEN_IMAGE_REGEX)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+      };
+    });
+}
+
+export async function mockTokenApi(mockServer: Mockttp) {
+  const response = {
+    statusCode: 200,
+    json: {
+      decimals: 6,
+      assetId:
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
+      name: 'PUMPKIN',
+      symbol: 'PKIN',
+    },
+  };
+  return await mockServer.forGet(SOLANA_TOKEN_API).thenCallback(() => {
+    return response;
+  });
+}
 
 export async function mockMultiCoinPrice(mockServer: Mockttp) {
   return await mockServer.forGet(SOLANA_BITCOIN_MIN_API).thenCallback(() => {
@@ -124,34 +203,68 @@ export async function mockFungibleAssets(mockServer: Mockttp) {
     });
 }
 
-export async function simulateSolanaTransaction(mockServer: Mockttp) {
-  const response = {
-    statusCode: 200,
-    json: {
-      result: {
-        context: {
-          slot: 218,
-        },
-        value: {
-          // eslint-disable-next-line id-denylist
-          err: null,
-          accounts: null,
-          logs: [
-            'Program 83astBRguLMdt2h5U1Tpdq5tjFoJ6noeGwaY3mDLVcri invoke [1]',
-            'Program 83astBRguLMdt2h5U1Tpdq5tjFoJ6noeGwaY3mDLVcri consumed 2366 of 1400000 compute units',
-            'Program return: 83astBRguLMdt2h5U1Tpdq5tjFoJ6noeGwaY3mDLVcri KgAAAAAAAAA=',
-            'Program 83astBRguLMdt2h5U1Tpdq5tjFoJ6noeGwaY3mDLVcri success',
-          ],
-          returnData: {
-            data: ['Kg==', 'base64'],
-            programId: '83astBRguLMdt2h5U1Tpdq5tjFoJ6noeGwaY3mDLVcri',
+export async function simulateSolanaTransaction(
+  mockServer: Mockttp,
+  isNative: boolean = true,
+) {
+  const response = isNative
+    ? {
+        statusCode: 200,
+        json: {
+          result: {
+            context: {
+              apiVersion: '2.0.21',
+              slot: 318191894,
+            },
+            value: {
+              accounts: null,
+              err: null,
+              innerInstructions: null,
+              logs: [
+                'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [1]',
+                'Program log: Instruction: Transfer',
+                'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 4644 of 1400000 compute units',
+                'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA success',
+                'Program ComputeBudget111111111111111111111111111111 invoke [1]',
+                'Program ComputeBudget111111111111111111111111111111 success',
+              ],
+              replacementBlockhash: {
+                blockhash: '2xWVC3snr4U29m8Rhio9HMmPaYNAQPrRn1bXjB1BJFuM',
+                lastValidBlockHeight: 296475563,
+              },
+              returnData: null,
+              unitsConsumed: 4794,
+            },
+            id: 1337,
           },
-          unitsConsumed: 2366,
         },
-        id: 1337,
-      },
-    },
-  };
+      }
+    : {
+        statusCode: 200,
+        json: {
+          result: {
+            value: {
+              accounts: null,
+              err: null,
+              innerInstructions: null,
+              logs: [
+                'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [1]',
+                'Program log: Instruction: Transfer',
+                'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 4644 of 1400000 compute units',
+                'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA success',
+                'Program ComputeBudget111111111111111111111111111111 invoke [1]',
+                'Program ComputeBudget111111111111111111111111111111 success',
+              ],
+              replacementBlockhash: {
+                blockhash: '8geweh6EzwMCZBSwPuPjY7mUSC9YePtvRJ42dcsrGyRj',
+                lastValidBlockHeight: 295648133,
+              },
+              returnData: null,
+              unitsConsumed: 4794,
+            },
+          },
+        },
+      };
   return await mockServer
     .forPost(SOLANA_URL_REGEX)
     .withJsonBodyIncluding({
@@ -170,7 +283,7 @@ export async function mockGetTransaction(mockServer: Mockttp) {
         slot: 98123569,
         meta: {
           err: null,
-          fee: 5000,
+          fee: 500000,
           preBalances: [1000000, 5000],
           postBalances: [995000, 0],
           innerInstructions: [],
@@ -209,7 +322,7 @@ export async function mockGetTransaction(mockServer: Mockttp) {
   };
   return await mockServer
     .forPost(SOLANA_URL_REGEX)
-    .withQuery({ method: 'getTransaction' })
+    .withJsonBodyIncluding({ method: 'getTransaction' })
     .thenCallback(() => {
       return response;
     });
@@ -222,11 +335,11 @@ export async function mockGetLatestBlockhash(mockServer: Mockttp) {
       result: {
         context: {
           apiVersion: '2.0.18',
-          slot: 308460925,
+          slot: 318191893,
         },
         value: {
-          blockhash: '6E9FiVcuvavWyKTfYC7N9ezJWkNgJVQsroDTHvqApncg',
-          lastValidBlockHeight: 341034515,
+          blockhash: 'AwD5mVCuELZgzi6Y3peDKxYmHupoRXkmV9HHK1zdv79z',
+          lastValidBlockHeight: 296475562,
         },
       },
       id: 1337,
@@ -251,67 +364,22 @@ export async function mockGetSignaturesForAddress(mockServer: Mockttp) {
         json: {
           result: [
             {
-              blockTime: 1734620122,
+              blockTime: 1738841960,
               confirmationStatus: 'finalized',
               err: null,
               memo: null,
               signature:
-                '5THAXC3pHCRwwwrMHR6PJiSqFfgSkZrBhn59C7YEbTMVbiAnjZhqpPvJYs4v5aRcqUiokunfbdTgo9HLfv6bogNR',
-              slot: 348093552,
+                '3i5QVExb3xL9vsz8YXRMeECviYAggH9hN4rhiiDeBZKu3ePMpmRWeaGdAMs3sVSmC9iRBvzx6k4B2Rg8iPAsD12m',
+              slot: 318846647,
             },
             {
-              blockTime: 1734619950,
+              blockTime: 1738841958,
               confirmationStatus: 'finalized',
               err: null,
               memo: null,
               signature:
-                '5KHuDsTMjre6rWU5Qkf8ugG31PjWoZ8NbV21ThY8RwcHpn3dKbTafdizUkEj4sU2AfrRzVxgyGkX8MLxK5nWHJ6J',
-              slot: 348093088,
-            },
-            {
-              blockTime: 1734619916,
-              confirmationStatus: 'finalized',
-              err: null,
-              memo: null,
-              signature:
-                '2RcW9iJCGnYuGVbDbaDi93t2f2347a6gzjoQf9idDdfFTjHsC7yMYcUvGqNzouKgA8T8tdYqjNUtDf4vR4e9iUoF',
-              slot: 348092996,
-            },
-            {
-              blockTime: 1734619899,
-              confirmationStatus: 'finalized',
-              err: null,
-              memo: null,
-              signature:
-                '2kCcoXZxe14384c8JTvq1g63pSjmmyuDnye9y3ReBMEiaZeGWspsmooEdC4RoyzP6uTfaDyFpCupBAKXnZwXCKMg',
-              slot: 348092952,
-            },
-            {
-              blockTime: 1734619885,
-              confirmationStatus: 'finalized',
-              err: null,
-              memo: null,
-              signature:
-                '4fzwGY4Tw5C4nYMaVAY7e3ZMwz691CbT7By4F4YFdukzBxd7yspmZEHhBtuPhFrqLj1yBn6zpc4kh1GLzgcovEbx',
-              slot: 348092914,
-            },
-            {
-              blockTime: 1734619758,
-              confirmationStatus: 'finalized',
-              err: null,
-              memo: null,
-              signature:
-                '2vgL59tfVa2VJkf7kmsGhbdBFjHdspLa1wfL72zZqHfJuzhmKfqS4YoLofpMTnZzzZfiA6712pwURheMUh5S2RXd',
-              slot: 348092568,
-            },
-            {
-              blockTime: 1734619697,
-              confirmationStatus: 'finalized',
-              err: null,
-              memo: null,
-              signature:
-                '32fqeHudeNBuDmyCrmRemFppVPpWmXwT4cbfai5D7G2Vzah1BvVguLqkNuk9Pdu4xVyBD32dhnSV8AN9k4qnffSB',
-              slot: 348092404,
+                '62bBiuagDNgJEh492fDM4CRq1JLujfsZB5Wccgr3naDFm9WWAKU92PYDvBWBFGmkwcYPgNTYSyxk8k1oao1bUzfC',
+              slot: 318846642,
             },
           ],
         },
@@ -338,36 +406,6 @@ export async function mockSendSolanaTransaction(mockServer: Mockttp) {
     });
 }
 
-export async function mockSolanaRatesCall(mockServer: Mockttp) {
-  return await mockServer.forGet(SOLANA_PRICE_REGEX).thenCallback(() => {
-    const priceResponse = {
-      id: 'wrapped-solana',
-      price: 210.57,
-      marketCap: 0,
-      allTimeHigh: 263.68,
-      allTimeLow: 8.11,
-      totalVolume: 3141761864,
-      high1d: 218.26,
-      low1d: 200.85,
-      circulatingSupply: 0,
-      dilutedMarketCap: 124394527657,
-      marketCapPercentChange1d: 0,
-      priceChange1d: -7.68288033909846,
-      pricePercentChange1h: 0.5794201955743261,
-      pricePercentChange1d: -3.520101943578202,
-      pricePercentChange7d: -8.192700158252544,
-      pricePercentChange14d: -12.477367449577399,
-      pricePercentChange30d: -14.588630064677465,
-      pricePercentChange200d: 28.111509321033513,
-      pricePercentChange1y: 181.48381055890258,
-    };
-    return {
-      statusCode: 200,
-      json: priceResponse,
-    };
-  });
-}
-
 export async function mockGetTokenAccountsByOwner(mockServer: Mockttp) {
   return await mockServer
     .forPost(SOLANA_URL_REGEX)
@@ -389,14 +427,14 @@ export async function mockGetTokenAccountsByOwner(mockServer: Mockttp) {
                     parsed: {
                       info: {
                         isNative: false,
-                        mint: '2FPyTwcZLUg1MDrwsyoP4D6s1tM7hAkHYRjkNb5w6Pxk',
-                        owner: 'J27ma1MPBRvmPJxLqBqQGNECMXDm9L6abFa4duKiPosa',
+                        mint: '2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
+                        owner: '14BLn1WLBf3coaPj1fZ5ZqJKQArEjJHvw7rvSktGv2b5',
                         state: 'initialized',
                         tokenAmount: {
-                          amount: '821',
+                          amount: '6000000',
                           decimals: 6,
-                          uiAmount: 8.21e-4,
-                          uiAmountString: '0.000821',
+                          uiAmount: 6,
+                          uiAmountString: '6',
                         },
                       },
                       type: 'account',
@@ -407,9 +445,10 @@ export async function mockGetTokenAccountsByOwner(mockServer: Mockttp) {
                   executable: false,
                   lamports: 2039280,
                   owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-                  rentEpoch: 318,
+                  rentEpoch: 18446744073709552000,
+                  space: 165,
                 },
-                pubkey: 'Exo9AH6fNchE43GaJB85FT7ToYiuKnKzYDyW5mFeTXRR',
+                pubkey: 'EzG33TbDzHVaWBqgQgHhtQSY6tcAVsWub6hBRepcsDt4',
               },
             ],
           },
@@ -417,12 +456,115 @@ export async function mockGetTokenAccountsByOwner(mockServer: Mockttp) {
       };
     });
 }
+export async function mockGetAccountInfo(mockServer: Mockttp) {
+  const response = {
+    statusCode: 200,
+    json: {
+      result: {
+        context: {
+          apiVersion: '2.0.21',
+          slot: 317161313,
+        },
+        value: {
+          data: {
+            parsed: {
+              info: {
+                decimals: 6,
+                freezeAuthority: null,
+                isInitialized: true,
+                mintAuthority: null,
+                supply: '999943585864185',
+              },
+              type: 'mint',
+            },
+            program: 'spl-token',
+            space: 82,
+          },
+          executable: false,
+          lamports: 37002092583,
+          owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+          rentEpoch: 18446744073709552000,
+          space: 82,
+        },
+      },
+    },
+  };
+  return await mockServer
+    .forPost(SOLANA_URL_REGEX)
+    .withJsonBodyIncluding({
+      method: 'getAccountInfo',
+    })
+    .withBody('2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin')
+    .thenCallback(() => {
+      return response;
+    });
+}
+
+export async function mockGetTokenAccountInfo(mockServer: Mockttp) {
+  const response = {
+    statusCode: 200,
+    json: {
+      result: {
+        context: {
+          apiVersion: '2.0.21',
+          slot: 317161313,
+        },
+        value: {
+          data: {
+            parsed: {
+              info: {
+                isNative: false,
+                mint: '2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
+                owner: '3xTPAZxmpwd8GrNEKApaTw6VH4jqJ31WFXUvQzgwhR7c',
+                state: 'initialized',
+                tokenAmount: {
+                  amount: '3610951',
+                  decimals: 6,
+                  uiAmount: 3.610951,
+                  uiAmountString: '3.610951',
+                },
+              },
+              type: 'account',
+            },
+            program: 'spl-token',
+            space: 165,
+          },
+          executable: false,
+          lamports: 2039280,
+          owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+          rentEpoch: 18446744073709552000,
+          space: 165,
+        },
+      },
+    },
+  };
+  return await mockServer
+    .forPost(SOLANA_URL_REGEX)
+    .withJsonBodyIncluding({
+      method: 'getAccountInfo',
+    })
+    .withJsonBodyIncluding({
+      params: [
+        '4Dt7hvLAzSXGvxvpqFU7cRdQXXhU3orACV6ujY4KPv9D',
+        {
+          encoding: 'jsonParsed',
+          commitment: 'confirmed',
+        },
+      ],
+    })
+    .thenCallback(() => {
+      return response;
+    });
+}
 
 export async function mockGetFeeForMessage(mockServer: Mockttp) {
   const response = {
     statusCode: 200,
     json: {
-      result: { context: { slot: 5068 }, value: 5000 },
+      result: {
+        context: { apiVersion: '2.0.18', slot: 317144874 },
+        value: 10,
+      },
       id: 1337,
     },
   };
@@ -444,6 +586,8 @@ export async function withSolanaAccountSnap(
     mockCalls,
     mockSendTransaction,
     importAccount,
+    isNative,
+    simulateTransaction,
   }: {
     title?: string;
     solanaSupportEnabled?: boolean;
@@ -451,6 +595,8 @@ export async function withSolanaAccountSnap(
     mockCalls?: boolean;
     mockSendTransaction?: boolean;
     importAccount?: boolean;
+    isNative?: boolean;
+    simulateTransaction?: boolean;
   },
   test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
 ) {
@@ -471,23 +617,29 @@ export async function withSolanaAccountSnap(
         const mockList = [];
 
         // Default Solana mocks
-        mockList.push(await mockFungibleAssets(mockServer));
+        mockList.push(await mockTokenApi(mockServer));
+        mockList.push(await mockStaticMetamaskTokenIcon(mockServer));
+        mockList.push(await mockPriceApi(mockServer));
 
         if (mockCalls) {
           mockList.push([
             await mockSolanaBalanceQuote(mockServer),
-            await mockSolanaRatesCall(mockServer),
             await mockGetTransaction(mockServer),
-            await simulateSolanaTransaction(mockServer),
             await mockGetTokenAccountsByOwner(mockServer),
             await mockGetSignaturesForAddress(mockServer),
             await mockMultiCoinPrice(mockServer),
             await mockGetLatestBlockhash(mockServer),
             await mockGetFeeForMessage(mockServer),
+            await mockGetTokenAccountInfo(mockServer),
+            await mockGetAccountInfo(mockServer),
           ]);
         }
         if (mockSendTransaction) {
           mockList.push(await mockSendSolanaTransaction(mockServer));
+          // mockList.push(await mockGetAccountInfo(mockServer));
+        }
+        if (simulateTransaction) {
+          mockList.push(await simulateSolanaTransaction(mockServer, isNative));
         }
         return mockList;
       },
