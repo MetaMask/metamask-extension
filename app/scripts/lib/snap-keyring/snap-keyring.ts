@@ -195,7 +195,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
   ) {
     assertSnapIdIsValid(snapId);
 
-    const snapName = getSnapName(snapId as SnapId, this.#messenger);
+    const snapName = getSnapName(snapId, this.#messenger);
     const { id: addAccountFlowId } = this.#messenger.call(
       'ApprovalController:startFlow',
     );
@@ -218,7 +218,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
 
       // If snap is preinstalled and does not request confirmation, skip the confirmation dialog
       const skipConfirmation =
-        isSnapPreinstalled(snapId as SnapId) && !displayConfirmation;
+        isSnapPreinstalled(snapId) && !displayConfirmation;
       // If confirmation dialog are skipped, we consider the account creation to be confirmed until the account name dialog is closed
       const accountCreationConfirmationResult =
         skipConfirmation ||
@@ -338,7 +338,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
   ) {
     assertSnapIdIsValid(snapId);
 
-    const snapName = getSnapName(snapId as SnapId, this.#messenger);
+    const snapName = getSnapName(snapId, this.#messenger);
     const { id: removeAccountApprovalId } = this.#messenger.call(
       'ApprovalController:startFlow',
     );

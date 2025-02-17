@@ -12,11 +12,10 @@ import { SnapKeyringBuilderMessenger } from './types';
  * @param snapId - Snap ID to assert.
  * @throws An error if the Snap ID is invalid.
  */
-export function assertSnapIdIsValid(snapId: string): snapId is SnapId {
+export function assertSnapIdIsValid(snapId: string): asserts snapId is SnapId {
   if (!snapId) {
     throw new Error(`Invalid Snap ID: ${snapId}`);
   }
-  return true;
 }
 
 /**
