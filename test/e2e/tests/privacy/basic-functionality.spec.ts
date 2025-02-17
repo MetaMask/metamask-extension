@@ -42,7 +42,7 @@ async function mockApis(mockServer: Mockttp) {
   ];
 }
 
-describe('MetaMask onboarding @no-mmi', function () {
+describe('MetaMask onboarding', function () {
   it('should prevent network requests to basic functionality endpoints when the basic functionality toggle is off', async function () {
     await withFixtures(
       {

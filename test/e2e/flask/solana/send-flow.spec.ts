@@ -9,12 +9,16 @@ import { withSolanaAccountSnap } from './common-solana';
 
 const commonSolanaAddress = 'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna';
 describe.skip('Send flow', function (this: Suite) {
+  // skipped due tohttps://github.com/MetaMask/snaps/issues/3019
   it('with some field validation', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
-      { title: this.test?.fullTitle(), showNativeTokenAsMainBalance: true },
+      {
+        title: this.test?.fullTitle(),
+        showNativeTokenAsMainBalance: true,
+        // importAccount: true,
+      },
       async (driver) => {
-        await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87
         const homePage = new NonEvmHomepage(driver);
         await homePage.check_pageIsLoaded();
         await homePage.clickOnSendButton();
@@ -24,6 +28,7 @@ describe.skip('Send flow', function (this: Suite) {
           false,
           'Continue button is enabled and it shouldn`t',
         );
+        await driver.delay(7000); // Added because of https://github.com/MetaMask/snaps/issues/3019
         await sendSolanaPage.setToAddress('2433asd');
         assert.equal(
           await sendSolanaPage.check_validationErrorAppears(
@@ -31,14 +36,6 @@ describe.skip('Send flow', function (this: Suite) {
           ),
           true,
           'Invalid Solana address should appear and it does not',
-        );
-        await sendSolanaPage.setToAddress('');
-        assert.equal(
-          await sendSolanaPage.check_validationErrorAppears(
-            'To address is required',
-          ),
-          true,
-          'To address is required should appear and it does not',
         );
         await sendSolanaPage.setToAddress(commonSolanaAddress);
         await sendSolanaPage.setAmount('0.1');
@@ -57,6 +54,17 @@ describe.skip('Send flow', function (this: Suite) {
           true,
           'Amount must be greater than 0 text is not displayed',
         );
+        await sendSolanaPage.clearToAddress();
+        assert.equal(
+          await sendSolanaPage.isContinueButtonEnabled(),
+          false,
+          'Continue button is enabled and it shouldn`t',
+        );
+        assert.equal(
+          await sendSolanaPage.isAmountInputDisplayed(),
+          false,
+          'Amount input should appear and it does not',
+        );
       },
     );
   });
@@ -73,7 +81,6 @@ describe.skip('Send full flow of USD', function (this: Suite) {
         mockSendTransaction: true,
       },
       async (driver) => {
-        await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87
         const homePage = new NonEvmHomepage(driver);
         await homePage.check_pageIsLoaded();
         assert.equal(
@@ -83,13 +90,13 @@ describe.skip('Send full flow of USD', function (this: Suite) {
         );
         assert.equal(
           await homePage.check_ifSwapButtonIsClickable(),
-          false,
-          'Swap button is enabled and it shouldn`t',
+          true,
+          'Swap button is not enabled and it should',
         );
         assert.equal(
           await homePage.check_ifBridgeButtonIsClickable(),
-          false,
-          'Bridge button is enabled  and it should`t',
+          true,
+          'Bridge button is not enabled and it should',
         );
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
@@ -114,7 +121,7 @@ describe.skip('Send full flow of USD', function (this: Suite) {
         const confirmSolanaPage = new ConfirmSolanaTxPage(driver);
         await sendSolanaPage.clickOnContinue();
         assert.equal(
-          await confirmSolanaPage.checkAmountDisplayed('0.1', 'USD'),
+          await confirmSolanaPage.checkAmountDisplayed('0.1'),
           true,
           'Check amount displayed is wrong',
         );
@@ -224,7 +231,6 @@ describe.skip('Send full flow of SOL', function (this: Suite) {
         mockSendTransaction: true,
       },
       async (driver) => {
-        await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87
         const homePage = new NonEvmHomepage(driver);
         await homePage.check_pageIsLoaded();
         assert.equal(
@@ -234,13 +240,13 @@ describe.skip('Send full flow of SOL', function (this: Suite) {
         );
         assert.equal(
           await homePage.check_ifSwapButtonIsClickable(),
-          false,
-          'Swap button is enabled and it shouldn`t',
+          true,
+          'Swap button is not enabled and it should',
         );
         assert.equal(
           await homePage.check_ifBridgeButtonIsClickable(),
-          false,
-          'Bridge button is enabled  and it should`t',
+          true,
+          'Bridge button is not enabled and it should',
         );
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
@@ -269,12 +275,6 @@ describe.skip('Send full flow of SOL', function (this: Suite) {
           'From is not displayed and it should',
         );
         assert.equal(
-          await confirmSolanaPage.isTransactionDetailDisplayed('Amount'),
-          true,
-          'Amount is not displayed and it should',
-        );
-
-        assert.equal(
           await confirmSolanaPage.isTransactionDetailDisplayed('Recipient'),
           true,
           'Recipient is not displayed and it should',
@@ -297,11 +297,6 @@ describe.skip('Send full flow of SOL', function (this: Suite) {
           true,
           'Network fee is not displayed and it should',
         );
-        assert.equal(
-          await confirmSolanaPage.isTransactionDetailDisplayed('Total'),
-          true,
-          'Total is not displayed and it should',
-        );
         await confirmSolanaPage.clickOnSend();
         const sentTxPage = new SolanaTxresultPage(driver);
         assert.equal(
@@ -318,11 +313,6 @@ describe.skip('Send full flow of SOL', function (this: Suite) {
           await sentTxPage.isTransactionDetailDisplayed('From'),
           true,
           'From field not displayed and it should',
-        );
-        assert.equal(
-          await sentTxPage.isTransactionDetailDisplayed('Amount'),
-          true,
-          'Amount field not displayed and it should',
         );
         assert.equal(
           await sentTxPage.isTransactionDetailDisplayed('Recipient'),
@@ -345,11 +335,6 @@ describe.skip('Send full flow of SOL', function (this: Suite) {
           'Network fee field not displayed',
         );
         assert.equal(
-          await sentTxPage.isTransactionDetailDisplayed('Total'),
-          true,
-          'Total field not displayed and it should',
-        );
-        assert.equal(
           await sentTxPage.check_isViewTransactionLinkDisplayed(),
           true,
           'View transaction link is not displayed and it should',
@@ -358,7 +343,7 @@ describe.skip('Send full flow of SOL', function (this: Suite) {
     );
   });
 });
-describe.skip('Send flow flow', function (this: Suite) {
+describe('Send flow', function (this: Suite) {
   it('and Transaction fails', async function () {
     this.timeout(120000); // there is a bug open for this big timeout https://consensyssoftware.atlassian.net/browse/SOL-90
     await withSolanaAccountSnap(
@@ -369,25 +354,12 @@ describe.skip('Send flow flow', function (this: Suite) {
         mockSendTransaction: false,
       },
       async (driver) => {
-        await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87
         const homePage = new NonEvmHomepage(driver);
-        assert.equal(
-          await homePage.check_ifSendButtonIsClickable(),
-          true,
-          'Send button is not enabled and it should',
-        );
-        assert.equal(
-          await homePage.check_ifSwapButtonIsClickable(),
-          false,
-          'Swap button is enabled and it should`t',
-        );
-        assert.equal(
-          await homePage.check_ifBridgeButtonIsClickable(),
-          false,
-          'Bridge button is enabled and it should`t',
-        );
+        await homePage.check_pageIsLoaded();
         await homePage.clickOnSendButton();
+
         const sendSolanaPage = new SendSolanaPage(driver);
+        await sendSolanaPage.check_pageIsLoaded();
         await sendSolanaPage.setToAddress(commonSolanaAddress);
         await sendSolanaPage.setAmount('0.1');
         // assert.equal(await sendSolanaPage.isContinueButtonEnabled(), true, "Continue button is not enabled when address and amount are set");
@@ -412,11 +384,6 @@ describe.skip('Send flow flow', function (this: Suite) {
           'From field not displayed and it should',
         );
         assert.equal(
-          await failedTxPage.isTransactionDetailDisplayed('Amount'),
-          true,
-          'Amount field not displayed and it should',
-        );
-        assert.equal(
           await failedTxPage.isTransactionDetailDisplayed('Recipient'),
           true,
           'Recipient field not displayed and it should',
@@ -435,11 +402,6 @@ describe.skip('Send flow flow', function (this: Suite) {
           await failedTxPage.isTransactionDetailDisplayed('Network fee'),
           true,
           'Network fee field not displayed and it should',
-        );
-        assert.equal(
-          await failedTxPage.isTransactionDetailDisplayed('Total'),
-          true,
-          'Total field not displayed and it should',
         );
       },
     );

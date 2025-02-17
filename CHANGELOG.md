@@ -6,6 +6,61 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.12.0]
+### Added
+- [FLASK] Added scopes field to Keyring Account for improved account permissions management ([#29195](https://github.com/MetaMask/metamask-extension/pull/29195))
+- [FLASK] Added SOL/BTC transaction history in the activity tab ([#29129](https://github.com/MetaMask/metamask-extension/pull/29129))
+- [FLASK] Enabled Swap and Bridge buttons for Solana and other non-EVM networks ([#29705](https://github.com/MetaMask/metamask-extension/pull/29705))
+- [FLASK] Added 'Portfolio' button for BTC accounts to improve navigation ([#28184](https://github.com/MetaMask/metamask-extension/pull/28184))
+- Added Mode network and Mode Testnet logos ([#29870](https://github.com/MetaMask/metamask-extension/pull/29870))
+- Added OneKey to the hardware wallet selection screen and updated account labels to 'OneKey via Trezor' ([#29610](https://github.com/MetaMask/metamask-extension/pull/29610))
+- Added fiat value display for the swap 'to' token ([#29788](https://github.com/MetaMask/metamask-extension/pull/29788))
+- Updated RPC URL check to ensure Smart Transactions work correctly on the BNB chain ([#29922](https://github.com/MetaMask/metamask-extension/pull/29922))
+- Enabled Smart Transactions on BSC and reduced status check time for faster updates ([#29747](https://github.com/MetaMask/metamask-extension/pull/29747))
+- Upgraded account and network permissions to support the CAIP-25 standard, improving future multi-chain compatibility ([#27847](https://github.com/MetaMask/metamask-extension/pull/27847))
+
+### Changed
+- [FLASK] Replaced non-EVM Balances Controller with Multichain Balances Controller for improved multi-chain balance tracking ([#28875](https://github.com/MetaMask/metamask-extension/pull/28875))
+- Retained source input amount after switching tokens on the Bridge page ([#29709](https://github.com/MetaMask/metamask-extension/pull/29709))
+- Reduced stored data by reusing asset controller token lists ([#29492](https://github.com/MetaMask/metamask-extension/pull/29492))
+- Disabled nonce editing for Smart Transactions where it's not needed, while keeping it available for unsupported chains ([#29891](https://github.com/MetaMask/metamask-extension/pull/29891))
+- Removed 'Confirmation Redesign' developer settings toggle ([#29873](https://github.com/MetaMask/metamask-extension/pull/29873))
+- Removed 'Improved Signature Requests' settings toggle ([#29819](https://github.com/MetaMask/metamask-extension/pull/29819))
+- Updated segmented tab styling for a more consistent look across the app ([#29652](https://github.com/MetaMask/metamask-extension/pull/29652))
+- Improved focus outline styling in the menu item component ([#29753](https://github.com/MetaMask/metamask-extension/pull/29753))
+- Improved alt text for NFT images ([#29744](https://github.com/MetaMask/metamask-extension/pull/29744))
+- Improved notification handling by decoupling it from profile syncing ([#30004](https://github.com/MetaMask/metamask-extension/pull/30004))
+- Unified low return warning logic for swaps and bridges ([#29918](https://github.com/MetaMask/metamask-extension/pull/29918))
+- Refactored connection flow UI to use CAIP25 permission format, enabling better multi-chain API support ([#29824](https://github.com/MetaMask/metamask-extension/pull/29824))
+- Updated permissions header to consistently display the Dapp title across all connection steps ([#29880](https://github.com/MetaMask/metamask-extension/pull/29880))
+
+### Fixed
+- Fixed issue where the token list did not update after editing a popular network name ([#29898](https://github.com/MetaMask/metamask-extension/pull/29898))
+- Patched Mantle price feed to ensure correct fiat balance display ([#29790](https://github.com/MetaMask/metamask-extension/pull/29790))
+- Fixed handling of undefined token addresses and improved fallback behavior for swaps ([#29832](https://github.com/MetaMask/metamask-extension/pull/29832))
+- Fixed 'Send Max' value issue in redesigned confirmations ([#29960](https://github.com/MetaMask/metamask-extension/pull/29960))
+- Fixed transaction flow issue for ERC-1155 NFT sends ([#29973](https://github.com/MetaMask/metamask-extension/pull/29973))
+- Fixed Smart Transactions by adding missing messenger actions to ensure proper processing ([#29913](https://github.com/MetaMask/metamask-extension/pull/29913))
+- Fixed ERC-1155 transaction flow issue ([#29775](https://github.com/MetaMask/metamask-extension/pull/29775))
+- Fixed missing Smart Transaction status confirmation for internal transfer transactions ([#29860](https://github.com/MetaMask/metamask-extension/pull/29860))
+- Fixed missing 'Unlimited' display for DAI permit approvals and improved boolean value handling in signature messages ([#29597](https://github.com/MetaMask/metamask-extension/pull/29597))
+- Improved Ledger support by fixing EIP-712 content handling through a keyring update ([#29820](https://github.com/MetaMask/metamask-extension/pull/29820))
+- Fixed network switching from the RPC selector to ensure consistent actions and token list updates ([#29943](https://github.com/MetaMask/metamask-extension/pull/29943))
+- Fixed 'Insufficient funds' alert to correctly display the native token of the selected network instead of always showing ETH ([#29828](https://github.com/MetaMask/metamask-extension/pull/29828))
+- Fixed 'Insufficient funds' alert to correctly display the native token of the selected network instead of always showing ETH ([#29828](https://github.com/MetaMask/metamask-extension/pull/29828))
+- Removed scroll-to-bottom requirement for signatures and improved click behavior ([#29784](https://github.com/MetaMask/metamask-extension/pull/29784))
+- Fixed formatting issue for mailto links in Snaps link warning ([#30000](https://github.com/MetaMask/metamask-extension/pull/30000))
+- Fixed border-radius issue for SnapUICard images to ensure proper styling ([#29941](https://github.com/MetaMask/metamask-extension/pull/29941))
+- Fixed alignment issue for Snap radio buttons to ensure proper centering with labels ([#29850](https://github.com/MetaMask/metamask-extension/pull/29850))
+- Fixed text overflow issue in Snap Card component for title and description ([#29838](https://github.com/MetaMask/metamask-extension/pull/29838))
+- Fixed transaction issues on zkSync and Sepolia zkSync by ensuring gas estimates handle empty data correctly ([#29946](https://github.com/MetaMask/metamask-extension/pull/29946))
+- Fixed 'You Received' row in Bridge transactions to only appear after the transaction is fully completed ([#29933](https://github.com/MetaMask/metamask-extension/pull/29933))
+- Fixed issue where users were not routed back to the Activity tab after submitting a Bridge transaction ([#29809](https://github.com/MetaMask/metamask-extension/pull/29809))
+- Fixed issue where requested accounts or chain IDs did not match the wallet state ([#29988](https://github.com/MetaMask/metamask-extension/pull/29988))
+- Fixed issue where permissions were not updating correctly when all network clients for a chain ID were removed ([#29855](https://github.com/MetaMask/metamask-extension/pull/29855))
+- Fixed issue where testnets were not displaying correctly in the incremental permission view ([#29864](https://github.com/MetaMask/metamask-extension/pull/29864))
+- Fixed issue where checkboxes in Edit Accounts and Edit Network modals would reset to default on rerender ([#29755](https://github.com/MetaMask/metamask-extension/pull/29755))
+
 ## [12.11.0]
 ### Added
 - Added Lisk network logos for mainnet and testnet, visible in the network selector ([#29762](https://github.com/MetaMask/metamask-extension/pull/29762))
@@ -5655,7 +5710,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.11.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.12.0...HEAD
+[12.12.0]: https://github.com/MetaMask/metamask-extension/compare/v12.11.0...v12.12.0
 [12.11.0]: https://github.com/MetaMask/metamask-extension/compare/v12.10.4...v12.11.0
 [12.10.4]: https://github.com/MetaMask/metamask-extension/compare/v12.10.3...v12.10.4
 [12.10.3]: https://github.com/MetaMask/metamask-extension/compare/v12.10.2...v12.10.3

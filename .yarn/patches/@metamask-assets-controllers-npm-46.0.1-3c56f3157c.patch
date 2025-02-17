@@ -1,0 +1,68 @@
+diff --git a/dist/assetsUtil.cjs b/dist/assetsUtil.cjs
+index 017fb94055b64f99c75f8d54b763a501bdd03e97..34396ba143e3ebcb04fa2c80f7a35d1abd06710e 100644
+--- a/dist/assetsUtil.cjs
++++ b/dist/assetsUtil.cjs
+@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
+     return (mod && mod.__esModule) ? mod : { "default": mod };
+ };
+ Object.defineProperty(exports, "__esModule", { value: true });
++function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { newObj[key] = obj[key]; } } } newObj.default = obj; return newObj; } }
+ exports.getKeyByValue = exports.fetchTokenContractExchangeRates = exports.reduceInBatchesSerially = exports.divideIntoBatches = exports.ethersBigNumberToBN = exports.addUrlProtocolPrefix = exports.getFormattedIpfsUrl = exports.getIpfsCIDv1AndPath = exports.removeIpfsProtocolPrefix = exports.isTokenListSupportedForNetwork = exports.isTokenDetectionSupportedForNetwork = exports.SupportedStakedBalanceNetworks = exports.SupportedTokenDetectionNetworks = exports.formatIconUrlWithProxy = exports.formatAggregatorNames = exports.hasNewCollectionFields = exports.compareNftMetadata = exports.TOKEN_PRICES_BATCH_SIZE = void 0;
+ const controller_utils_1 = require("@metamask/controller-utils");
+ const utils_1 = require("@metamask/utils");
+@@ -233,7 +234,7 @@ async function getIpfsCIDv1AndPath(ipfsUrl) {
+     const index = url.indexOf('/');
+     const cid = index !== -1 ? url.substring(0, index) : url;
+     const path = index !== -1 ? url.substring(index) : undefined;
+-    const { CID } = await import("multiformats");
++    const { CID } = _interopRequireWildcard(require("multiformats"));
+     // We want to ensure that the CID is v1 (https://docs.ipfs.io/concepts/content-addressing/#identifier-formats)
+     // because most cid v0s appear to be incompatible with IPFS subdomains
+     return {
+diff --git a/dist/TokensController.cjs b/dist/TokensController.cjs
+index de7efda960aaa0bb7c06e0b76680d4057cf7ac6c..062950cad55f263b248579b4a23a1881723ccbfc 100644
+--- a/dist/TokensController.cjs
++++ b/dist/TokensController.cjs
+@@ -77,7 +77,7 @@ class TokensController extends base_controller_1.BaseController {
+      * @param options.chainId - The chain ID of the current network.
+      * @param options.provider - Network provider.
+      * @param options.state - Initial state to set on this controller.
+-     * @param options.messenger - The controller messenger.
++     * @param options.messenger - The messenger.
+      */
+     constructor({ chainId: initialChainId, provider, state, messenger, }) {
+         super({
+@@ -210,13 +210,14 @@ class TokensController extends base_controller_1.BaseController {
+         const releaseLock = await __classPrivateFieldGet(this, _TokensController_mutex, "f").acquire();
+         const { allTokens, ignoredTokens, allDetectedTokens } = this.state;
+         const importedTokensMap = {};
+-        let interactingChainId;
++        let interactingChainId = __classPrivateFieldGet(this, _TokensController_chainId, "f");
+         if (networkClientId) {
+             interactingChainId = this.messagingSystem.call('NetworkController:getNetworkClientById', networkClientId).configuration.chainId;
+         }
+         // Used later to dedupe imported tokens
+         const newTokensMap = [
+-            ...(allTokens[interactingChainId ?? __classPrivateFieldGet(this, _TokensController_chainId, "f")]?.[__classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAccount).call(this).address] || []),
++            ...(allTokens[interactingChainId]?.[__classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAccount).call(this).address] ||
++                []),
+             ...tokensToImport,
+         ].reduce((output, token) => {
+             output[token.address] = token;
+@@ -251,11 +252,13 @@ class TokensController extends base_controller_1.BaseController {
+                 interactingChainId,
+             });
+             this.update((state) => {
+-                state.tokens = newTokens;
++                if (interactingChainId === __classPrivateFieldGet(this, _TokensController_chainId, "f")) {
++                    state.tokens = newTokens;
++                    state.detectedTokens = newDetectedTokens;
++                    state.ignoredTokens = newIgnoredTokens;
++                }
+                 state.allTokens = newAllTokens;
+-                state.detectedTokens = newDetectedTokens;
+                 state.allDetectedTokens = newAllDetectedTokens;
+-                state.ignoredTokens = newIgnoredTokens;
+                 state.allIgnoredTokens = newAllIgnoredTokens;
+             });
+         }

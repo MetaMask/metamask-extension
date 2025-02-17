@@ -1239,7 +1239,7 @@ export default class MetaMetricsController extends BaseController<
       ),
     };
 
-    if (!previousUserTraits) {
+    if (!previousUserTraits && metamaskState.participateInMetaMetrics) {
       this.update((state) => {
         state.previousUserTraits = currentTraits;
       });
@@ -1252,9 +1252,13 @@ export default class MetaMetricsController extends BaseController<
         const previous = previousUserTraits[k];
         return !isEqual(previous, v);
       });
-      this.update((state) => {
-        state.previousUserTraits = currentTraits;
-      });
+
+      if (metamaskState.participateInMetaMetrics) {
+        this.update((state) => {
+          state.previousUserTraits = currentTraits;
+        });
+      }
+
       return updates;
     }
 
