@@ -2062,9 +2062,6 @@
     "message": "导入",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "导入账户"
-  },
   "importAccountError": {
     "message": "导入账户时出错。"
   },

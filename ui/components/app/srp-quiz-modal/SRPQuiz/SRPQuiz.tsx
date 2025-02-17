@@ -57,9 +57,14 @@ const openSupportArticle = (): void => {
   });
 };
 
-// TODO: Replace `any` with type
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function SRPQuiz(props: any) {
+export type SRPQuizProps = {
+  keyringId: string;
+  isOpen: boolean;
+  onClose: () => void;
+  closeAfterCompleting?: boolean;
+};
+
+export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
   const [stage, setStage] = useState<QuizStage>(QuizStage.introduction);
 
   const trackEvent = useContext(MetaMetricsContext);
@@ -218,7 +223,12 @@ export default function SRPQuiz(props: any) {
         buttons={[
           {
             label: t('continue'),
-            onClick: () => history.push(REVEAL_SEED_ROUTE),
+            onClick: () => {
+              history.push(`${REVEAL_SEED_ROUTE}/${props.keyringId}`);
+              if (props.closeAfterCompleting) {
+                props.onClose();
+              }
+            },
             variant: ButtonVariant.Primary,
             size: ButtonSize.Lg,
             'data-testid': 'srp-quiz-continue',

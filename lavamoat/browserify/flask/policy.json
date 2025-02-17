@@ -1452,7 +1452,9 @@
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
         "@metamask/keyring-controller>@metamask/utils": true,
         "@metamask/name-controller>async-mutex": true,
-        "@metamask/keyring-controller>ethereumjs-wallet": true
+        "@metamask/keyring-controller>ethereumjs-wallet": true,
+        "ulid": true,
+        "@metamask/keyring-controller>ulid": true
       }
     },
     "@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client": {
@@ -5836,6 +5838,13 @@
       },
       "packages": {
         "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": true
+      }
+    },
+    "@metamask/keyring-controller>ulid": {
+      "globals": {
+        "console.error": true,
+        "crypto": true,
+        "define": true
       }
     },
     "react-markdown>unified": {

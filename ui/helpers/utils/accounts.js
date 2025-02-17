@@ -72,37 +72,71 @@ export function getAvatarNetworkColor(name) {
   }
 }
 
-export function getAccountLabel(
+export function getAccountLabels(
   type,
   account,
+  keyrings,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   snapName,
   ///: END:ONLY_INCLUDE_IF
 ) {
   if (!account) {
-    return null;
+    return [];
   }
+
+  const labels = [];
+
+  const hdKeyrings = keyrings.filter(
+    (keyring) => keyring.type === KeyringType.hdKeyTree,
+  );
+
   switch (type) {
-    case KeyringType.hdKeyTree:
-      return null;
-    case KeyringType.imported:
-      return t('imported');
-    case KeyringType.qr:
-      return HardwareKeyringNames.qr;
-    case KeyringType.trezor:
-      return HardwareKeyringNames.trezor;
-    case KeyringType.ledger:
-      return HardwareKeyringNames.ledger;
-    case KeyringType.lattice:
-      return HardwareKeyringNames.lattice;
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-    case KeyringType.snap:
-      if (snapName) {
-        return `${snapName} (${t('beta')})`;
+    case KeyringType.hdKeyTree: {
+      if (hdKeyrings.length > 1) {
+        const hdKeyringIndex = hdKeyrings.findIndex((kr) =>
+          kr.accounts.includes(account.address),
+        );
+        const hdKeyringLabel = `SRP #${hdKeyringIndex + 1}`;
+        labels.push(hdKeyringLabel);
       }
-      return `${t('snaps')} (${t('beta')})`;
+      break;
+    }
+    case KeyringType.imported:
+      labels.push(t('imported'));
+      break;
+    case KeyringType.qr:
+      labels.push(HardwareKeyringNames.qr);
+      break;
+    case KeyringType.trezor:
+      labels.push(HardwareKeyringNames.trezor);
+      break;
+    case KeyringType.ledger:
+      labels.push(HardwareKeyringNames.ledger);
+      break;
+    case KeyringType.lattice:
+      labels.push(HardwareKeyringNames.lattice);
+      break;
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+    case KeyringType.snap: {
+      const snapEntroypyId = account.options.entropyId;
+      if (snapEntroypyId) {
+        const hdKeyringIndex = hdKeyrings.findIndex(
+          (kr) => kr.metadata.id === snapEntroypyId,
+        );
+        const hdKeyringLabel = `SRP #${hdKeyringIndex + 1}`;
+        labels.push(hdKeyringLabel);
+      }
+      if (snapName) {
+        labels.push(`${snapName} (${t('beta')})`);
+        break;
+      }
+      labels.push(`${t('snaps')} (${t('beta')})`);
+      break;
+    }
     ///: END:ONLY_INCLUDE_IF
-    default:
-      return null;
+    default: {
+      break;
+    }
   }
+  return labels;
 }
