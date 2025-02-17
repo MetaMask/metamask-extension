@@ -374,6 +374,47 @@ export function getOrderedConnectedAccountsForActiveTab(state) {
     );
 }
 
+export function createGetOrderedConnectedAccountsForActiveTabMemo() {
+  return createDeepEqualSelector(
+    (state) => state.activeTab,
+    (state) => state.metamask.permissionHistory,
+    getMetaMaskAccountsOrdered,
+    getPermittedAccountsForCurrentTab,
+    (activeTab, permissionHistory, orderedAccounts, connectedAccounts) => {
+      const permissionHistoryByAccount =
+        // eslint-disable-next-line camelcase
+        permissionHistory[activeTab.origin]?.eth_accounts?.accounts;
+
+      return orderedAccounts
+        .filter((account) => connectedAccounts.includes(account.address))
+        .filter((account) => isEvmAccountType(account.type))
+        .map((account) => ({
+          ...account,
+          metadata: {
+            ...account.metadata,
+            lastActive: permissionHistoryByAccount?.[account.address],
+          },
+        }))
+        .sort(
+          (
+            { lastSelected: lastSelectedA },
+            { lastSelected: lastSelectedB },
+          ) => {
+            if (lastSelectedA === lastSelectedB) {
+              return 0;
+            } else if (lastSelectedA === undefined) {
+              return 1;
+            } else if (lastSelectedB === undefined) {
+              return -1;
+            }
+
+            return lastSelectedB - lastSelectedA;
+          },
+        );
+    },
+  );
+}
+
 export function getOrderedConnectedAccountsForConnectedDapp(state, activeTab) {
   const {
     metamask: { permissionHistory },
