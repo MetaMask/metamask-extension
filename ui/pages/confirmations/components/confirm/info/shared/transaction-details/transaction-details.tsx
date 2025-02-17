@@ -73,7 +73,10 @@ export const RecipientRow = ({ recipient }: { recipient?: Hex } = {}) => {
 export const MethodDataRow = () => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const methodData = useFourByte(currentConfirmation);
+  const { txParams } = currentConfirmation ?? {};
+  const to = txParams?.to as Hex | undefined;
+  const data = txParams?.data as Hex | undefined;
+  const methodData = useFourByte({ to, data });
 
   if (!methodData?.name) {
     return null;

@@ -75,7 +75,7 @@ export const TransactionData = ({
   const { chainId } = currentConfirmation;
 
   return (
-    <Container transactionData={transactionData}>
+    <Container transactionData={transactionData} noPadding={noPadding}>
       <>
         {decodeData.map((method, index) => (
           <React.Fragment key={index}>
