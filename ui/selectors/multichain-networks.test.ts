@@ -1,4 +1,4 @@
-import { SolScope } from '@metamask/keyring-api';
+import { BtcScope, SolScope } from '@metamask/keyring-api';
 import { RpcEndpointType, NetworkStatus } from '@metamask/network-controller';
 
 import { type NetworkState } from '../../shared/modules/selectors/networks';
@@ -11,15 +11,23 @@ import {
   getIsEvmSelected,
 } from './multichain-networks';
 
-type TestState = MultichainNetworkControllerState & NetworkState;
+type TestState = MultichainNetworkControllerState & NetworkState & { metamask: { solanaSupportEnabled: boolean, bitcoinSupportEnabled: boolean } };
 
 const mockMultichainNetworkState: TestState = {
   metamask: {
+    solanaSupportEnabled: true,
+    bitcoinSupportEnabled: true,
     multichainNetworkConfigurationsByChainId: {
       [SolScope.Mainnet]: {
         chainId: SolScope.Mainnet,
         name: 'Solana Mainnet',
         nativeCurrency: `${SolScope.Mainnet}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`,
+        isEvm: false,
+      },
+      [BtcScope.Mainnet]: {
+        chainId: BtcScope.Mainnet,
+        name: 'Bitcoin Mainnet',
+        nativeCurrency: `${BtcScope.Mainnet}/slip44:0`,
         isEvm: false,
       },
     },
@@ -86,12 +94,18 @@ describe('Multichain network selectors', () => {
           nativeCurrency: `${SolScope.Mainnet}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`,
           isEvm: false,
         },
+        [BtcScope.Mainnet]: {
+          chainId: BtcScope.Mainnet,
+          name: 'Bitcoin Mainnet',
+          nativeCurrency: `${BtcScope.Mainnet}/slip44:0`,
+          isEvm: false,
+        },
       });
     });
   });
 
   describe('getMultichainNetworkConfigurationsByChainId', () => {
-    it('returns the multichain network configurations by chain ID', () => {
+    it('returns all multichain network configurations by chain ID when Solana and Bitcoin are enabled', () => {
       expect(
         getMultichainNetworkConfigurationsByChainId(mockMultichainNetworkState),
       ).toStrictEqual({
@@ -101,6 +115,120 @@ describe('Multichain network selectors', () => {
           nativeCurrency: `${SolScope.Mainnet}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`,
           isEvm: false,
         },
+        [BtcScope.Mainnet]: {
+          chainId: BtcScope.Mainnet,
+          name: 'Bitcoin Mainnet',
+          nativeCurrency: `${BtcScope.Mainnet}/slip44:0`,
+          isEvm: false,
+        },
+        'eip155:1': {
+          chainId: 'eip155:1',
+          name: 'Ethereum Mainnet',
+          nativeCurrency: 'ETH',
+          blockExplorerUrls: ['https://etherscan.io'],
+          defaultBlockExplorerUrlIndex: 0,
+          isEvm: true,
+        },
+        'eip155:11155111': {
+          chainId: 'eip155:11155111',
+          name: 'Sepolia',
+          nativeCurrency: 'SepoliaETH',
+          blockExplorerUrls: ['https://sepolia.etherscan.io'],
+          defaultBlockExplorerUrlIndex: 0,
+          isEvm: true,
+        },
+      });
+    });
+
+    it('returns all multichain network configurations by chain ID excluding Solana when support is disabled', () => {
+      const mockMultichainNetworkStateWithSolanaSupportDisabled = {
+        ...mockMultichainNetworkState,
+        metamask: {
+          ...mockMultichainNetworkState.metamask,
+          solanaSupportEnabled: false,
+        },
+      };
+
+      expect(
+        getMultichainNetworkConfigurationsByChainId(mockMultichainNetworkStateWithSolanaSupportDisabled),
+      ).toStrictEqual({
+        [BtcScope.Mainnet]: {
+          chainId: BtcScope.Mainnet,
+          name: 'Bitcoin Mainnet',
+          nativeCurrency: `${BtcScope.Mainnet}/slip44:0`,
+          isEvm: false,
+        },
+        'eip155:1': {
+          chainId: 'eip155:1',
+          name: 'Ethereum Mainnet',
+          nativeCurrency: 'ETH',
+          blockExplorerUrls: ['https://etherscan.io'],
+          defaultBlockExplorerUrlIndex: 0,
+          isEvm: true,
+        },
+        'eip155:11155111': {
+          chainId: 'eip155:11155111',
+          name: 'Sepolia',
+          nativeCurrency: 'SepoliaETH',
+          blockExplorerUrls: ['https://sepolia.etherscan.io'],
+          defaultBlockExplorerUrlIndex: 0,
+          isEvm: true,
+        },
+      });
+    });
+
+    it('returns all multichain network configurations by chain ID excluding Bitcoin when support is disabled', () => {
+      const mockMultichainNetworkStateWithBitcoinSupportDisabled = {
+        ...mockMultichainNetworkState,
+        metamask: {
+          ...mockMultichainNetworkState.metamask,
+          bitcoinSupportEnabled: false,
+        },
+      };
+
+      console.log({ mockMultichainNetworkStateWithBitcoinSupportDisabled });
+
+      expect(
+        getMultichainNetworkConfigurationsByChainId(mockMultichainNetworkStateWithBitcoinSupportDisabled),
+      ).toStrictEqual({
+        [SolScope.Mainnet]: {
+          chainId: SolScope.Mainnet,
+          name: 'Solana Mainnet',
+          nativeCurrency: `${SolScope.Mainnet}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`,
+          isEvm: false,
+        },
+        'eip155:1': {
+          chainId: 'eip155:1',
+          name: 'Ethereum Mainnet',
+          nativeCurrency: 'ETH',
+          blockExplorerUrls: ['https://etherscan.io'],
+          defaultBlockExplorerUrlIndex: 0,
+          isEvm: true,
+        },
+        'eip155:11155111': {
+          chainId: 'eip155:11155111',
+          name: 'Sepolia',
+          nativeCurrency: 'SepoliaETH',
+          blockExplorerUrls: ['https://sepolia.etherscan.io'],
+          defaultBlockExplorerUrlIndex: 0,
+          isEvm: true,
+        },
+      });
+    });
+
+    it('returns all multichain network configurations by chain ID excluding Bitcoin and Solana when support is disabled', () => {
+      const mockMultichainNetworkStateWithBitcoinSupportDisabled = {
+        ...mockMultichainNetworkState,
+        metamask: {
+          ...mockMultichainNetworkState.metamask,
+          solanaSupportEnabled: false,
+          bitcoinSupportEnabled: false,
+        },
+      };
+
+      expect(
+        getMultichainNetworkConfigurationsByChainId(mockMultichainNetworkStateWithBitcoinSupportDisabled),
+      ).toStrictEqual({
         'eip155:1': {
           chainId: 'eip155:1',
           name: 'Ethereum Mainnet',
