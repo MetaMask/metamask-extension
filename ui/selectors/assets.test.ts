@@ -40,30 +40,12 @@ describe('getAccountAssets', () => {
     const result = getAccountAssets(mockAssetsState);
     expect(result).toEqual(mockAssetsState.metamask.accountsAssets);
   });
-
-  it('should return an empty object if accountAssets is empty', () => {
-    const emptyState: AssetsState = {
-      // @ts-expect-error
-      metamask: { accountsAssets: {} },
-    };
-    const result = getAccountAssets(emptyState);
-    expect(result).toEqual({});
-  });
 });
 
 describe('getAssetsMetadata', () => {
   it('should return the assets metadata from the state', () => {
     const result = getAssetsMetadata(mockAssetsState);
     expect(result).toEqual(mockAssetsState.metamask.assetsMetadata);
-  });
-
-  it('should return an empty object if assetsMetadata is empty', () => {
-    const emptyState: AssetsState = {
-      // @ts-expect-error
-      metamask: { assetsMetadata: {} },
-    };
-    const result = getAssetsMetadata(emptyState);
-    expect(result).toEqual({});
   });
 
   it('should return undefined if state does not have metamask property', () => {

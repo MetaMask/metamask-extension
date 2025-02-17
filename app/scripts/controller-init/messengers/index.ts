@@ -24,7 +24,6 @@ import {
   getMultichainAssetsControllerMessenger,
   getMultiChainAssetsRatesControllerMessenger,
 } from './multichain';
-import { noop } from 'lodash';
 
 export const CONTROLLER_MESSENGERS = {
   CronjobController: {
