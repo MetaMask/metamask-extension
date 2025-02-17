@@ -42,6 +42,7 @@ export type ControllersToInitialize =
   | 'MultichainAssetsController'
   | 'MultichainBalancesController'
   | 'MultichainTransactionsController'
+  | 'MultiChainAssetsRatesController'
   | 'RateLimitController'
   | 'SnapsRegistry'
   | 'SnapController'
