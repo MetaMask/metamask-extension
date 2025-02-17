@@ -5,8 +5,7 @@ import {
   toMultichainNetworkConfigurationsByChainId,
 } from '@metamask/multichain-network-controller';
 import { type NetworkConfiguration as InternalNetworkConfiguration } from '@metamask/network-controller';
-import { type CaipChainId } from '@metamask/keyring-api';
-import { BtcScope, SolScope } from '@metamask/keyring-api';
+import { type CaipChainId, BtcScope, SolScope } from '@metamask/keyring-api';
 
 import {
   type ProviderConfigState,
@@ -14,11 +13,11 @@ import {
   getProviderConfig,
   getNetworkConfigurationsByChainId,
 } from '../../shared/modules/selectors/networks';
+import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import {
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
 } from './selectors';
-import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 
 // Selector types
 
@@ -89,15 +88,19 @@ export const getMultichainNetworkConfigurationsByChainId =
       isBitcoinSupportEnabled,
       isSolanaSupportEnabled,
     ): Record<CaipChainId, InternalMultichainNetworkConfiguration> => {
-
-      const filteredNonEvmNetworkConfigurationsByChainId: Record<CaipChainId, InternalMultichainNetworkConfiguration> = {};
+      const filteredNonEvmNetworkConfigurationsByChainId: Record<
+        CaipChainId,
+        InternalMultichainNetworkConfiguration
+      > = {};
 
       if (isBitcoinSupportEnabled) {
-        filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Mainnet] = nonEvmNetworkConfigurationsByChainId[BtcScope.Mainnet];
+        filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Mainnet] =
+          nonEvmNetworkConfigurationsByChainId[BtcScope.Mainnet];
       }
 
       if (isSolanaSupportEnabled) {
-        filteredNonEvmNetworkConfigurationsByChainId[SolScope.Mainnet] = nonEvmNetworkConfigurationsByChainId[SolScope.Mainnet];
+        filteredNonEvmNetworkConfigurationsByChainId[SolScope.Mainnet] =
+          nonEvmNetworkConfigurationsByChainId[SolScope.Mainnet];
       }
 
       console.log({ nonEvmNetworkConfigurationsByChainId });
