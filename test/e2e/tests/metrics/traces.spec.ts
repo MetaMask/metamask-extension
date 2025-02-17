@@ -20,11 +20,11 @@ async function mockSentryCustomTrace(mockServer: MockttpServer) {
   ];
 }
 
-async function mockSentryAutomatedTrace(mockServer: MockttpServer) {
+async function mockSentryHTTPRequestTrace(mockServer: MockttpServer) {
   return [
     await mockServer
       .forPost(/sentry/u)
-      .withBodyIncluding('"transaction":"/home.html"')
+      .withBodyIncluding('"op":"http.client"')
       .thenCallback(() => {
         return {
           statusCode: 200,
@@ -77,7 +77,7 @@ describe('Traces', function () {
     );
   });
 
-  it('sends automated trace when opening UI if metrics enabled', async function () {
+  it('sends custom HTTP request trace when opening UI if metrics enabled', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -86,7 +86,7 @@ describe('Traces', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSentryAutomatedTrace,
+        testSpecificMock: mockSentryHTTPRequestTrace,
         manifestFlags: {
           sentry: { forceEnable: false },
         },
@@ -98,7 +98,7 @@ describe('Traces', function () {
     );
   });
 
-  it('does not send automated trace when opening UI if metrics disabled', async function () {
+  it('does not send custom HTTP request trace when opening UI if metrics disabled', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -107,7 +107,7 @@ describe('Traces', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSentryAutomatedTrace,
+        testSpecificMock: mockSentryHTTPRequestTrace,
         manifestFlags: {
           sentry: { forceEnable: false },
         },
