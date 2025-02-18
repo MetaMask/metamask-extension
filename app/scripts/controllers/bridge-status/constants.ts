@@ -10,4 +10,4 @@ export const DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE: BridgeStatusControllerState
     solanaTxHistory: {},
   };
 
-export const SOLANA_ENABLED = process.env.SOLANA_ENABLED === 'true';
+export const SOLANA_ENABLED = true; // TODO: replace with actual feature flag.
