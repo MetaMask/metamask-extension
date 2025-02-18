@@ -53,6 +53,7 @@ const setupController = ({
     | SnapKeyringAccountAssetListUpdatedEvent
     | SnapKeyringAccountBalancesUpdatedEvent
     | SnapKeyringAccountTransactionsUpdatedEvent
+    | MultichainNetworkControllerNetworkDidChangeEvent
   >();
   const preferencesControllerMessenger: PreferencesControllerMessenger =
     messenger.getRestricted({
