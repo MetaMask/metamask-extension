@@ -12,12 +12,12 @@ import {
   type SelectedNetworkClientIdState,
   getProviderConfig,
   getNetworkConfigurationsByChainId,
-} from '../../shared/modules/selectors/networks';
-import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+} from '../../../shared/modules/selectors/networks';
+import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import {
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
-} from './selectors';
+} from '../selectors';
 
 // Selector types
 
@@ -41,7 +41,7 @@ export type SelectedNetworkChainIdState = {
   >;
 };
 
-export type IsEvmSelected = {
+export type IsEvmSelectedState = {
   metamask: Pick<InternalMultichainNetworkState, 'isEvmSelected'>;
 };
 
@@ -66,7 +66,7 @@ export type MultichainNetworkConfigurationsByChainIdState = {
 export type MultichainNetworkConfigState =
   MultichainNetworkConfigurationsByChainIdState &
     SelectedNetworkChainIdState &
-    IsEvmSelected &
+    IsEvmSelectedState &
     SelectedNetworkClientIdState &
     ProviderConfigState;
 
@@ -93,6 +93,8 @@ export const getMultichainNetworkConfigurationsByChainId =
         InternalMultichainNetworkConfiguration
       > = {};
 
+      // This is not ideal but since there are only two non EVM networks
+      // we can just filter them out based on the support enabled
       if (isBitcoinSupportEnabled) {
         filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Mainnet] =
           nonEvmNetworkConfigurationsByChainId[BtcScope.Mainnet];
@@ -102,8 +104,6 @@ export const getMultichainNetworkConfigurationsByChainId =
         filteredNonEvmNetworkConfigurationsByChainId[SolScope.Mainnet] =
           nonEvmNetworkConfigurationsByChainId[SolScope.Mainnet];
       }
-
-      console.log({ nonEvmNetworkConfigurationsByChainId });
 
       const networks = {
         ...filteredNonEvmNetworkConfigurationsByChainId,
@@ -116,26 +116,27 @@ export const getMultichainNetworkConfigurationsByChainId =
     },
   );
 
-export const getIsEvmSelected = (state: IsEvmSelected) =>
+export const getIsEvmSelected = (state: IsEvmSelectedState) =>
   state.metamask.isEvmSelected;
 
 export const getSelectedMultichainNetworkChainId = (
-  state: SelectedNetworkChainIdState,
-) => state.metamask.selectedMultichainNetworkChainId;
+  state: MultichainNetworkConfigState,
+) => {
+  const isEvmSelected = getIsEvmSelected(state);
+
+  if (isEvmSelected) {
+    const evmNetworkConfig = getProviderConfig(state);
+    return toEvmCaipChainId(evmNetworkConfig.chainId);
+  }
+  return state.metamask.selectedMultichainNetworkChainId;
+};
 
 export const getSelectedMultichainNetworkConfiguration = (
   state: MultichainNetworkConfigState,
 ) => {
-  let chainId: CaipChainId;
-  const isEvmSelected = getIsEvmSelected(state);
-  if (isEvmSelected) {
-    const evmNetworkConfig = getProviderConfig(state);
-    chainId = toEvmCaipChainId(evmNetworkConfig.chainId);
-  } else {
-    chainId = getSelectedMultichainNetworkChainId(state);
-  }
-
+  const chainId =
+    getSelectedMultichainNetworkChainId(state);
   const networkConfigurationsByChainId =
     getMultichainNetworkConfigurationsByChainId(state);
   return networkConfigurationsByChainId[chainId];
-};
+}

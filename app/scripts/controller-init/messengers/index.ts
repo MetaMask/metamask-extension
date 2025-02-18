@@ -1,3 +1,4 @@
+import { noop } from 'lodash';
 import {
   getPPOMControllerMessenger,
   getPPOMControllerInitMessenger,
@@ -22,23 +23,33 @@ import {
   getMultichainTransactionsControllerMessenger,
   getMultichainAssetsControllerMessenger,
   getMultichainNetworkControllerMessenger,
+  getMultiChainAssetsRatesControllerMessenger,
 } from './multichain';
 
 export const CONTROLLER_MESSENGERS = {
   CronjobController: {
     getMessenger: getCronjobControllerMessenger,
+    getInitMessenger: noop,
   },
   ExecutionService: {
     getMessenger: getExecutionServiceMessenger,
+    getInitMessenger: noop,
   },
   MultichainAssetsController: {
     getMessenger: getMultichainAssetsControllerMessenger,
+    getInitMessenger: noop,
+  },
+  MultiChainAssetsRatesController: {
+    getMessenger: getMultiChainAssetsRatesControllerMessenger,
+    getInitMessenger: noop,
   },
   MultichainBalancesController: {
     getMessenger: getMultichainBalancesControllerMessenger,
+    getInitMessenger: noop,
   },
   MultichainTransactionsController: {
     getMessenger: getMultichainTransactionsControllerMessenger,
+    getInitMessenger: noop,
   },
   MultichainNetworkController: {
     getMessenger: getMultichainNetworkControllerMessenger,
@@ -49,6 +60,7 @@ export const CONTROLLER_MESSENGERS = {
   },
   SnapsRegistry: {
     getMessenger: getSnapsRegistryMessenger,
+    getInitMessenger: noop,
   },
   SnapController: {
     getMessenger: getSnapControllerMessenger,
@@ -56,9 +68,11 @@ export const CONTROLLER_MESSENGERS = {
   },
   SnapInsightsController: {
     getMessenger: getSnapInsightsControllerMessenger,
+    getInitMessenger: noop,
   },
   SnapInterfaceController: {
     getMessenger: getSnapInterfaceControllerMessenger,
+    getInitMessenger: noop,
   },
   PPOMController: {
     getMessenger: getPPOMControllerMessenger,

@@ -363,6 +363,7 @@ import {
   MultichainAssetsControllerInit,
   MultichainTransactionsControllerInit,
   MultichainBalancesControllerInit,
+  MultiChainAssetsRatesControllerInit,
   ///: END:ONLY_INCLUDE_IF
   MultichainNetworkControllerInit,
 } from './controller-init/multichain';
@@ -2056,6 +2057,7 @@ export default class MetamaskController extends EventEmitter {
       TransactionController: TransactionControllerInit,
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       MultichainAssetsController: MultichainAssetsControllerInit,
+      MultiChainAssetsRatesController: MultiChainAssetsRatesControllerInit,
       MultichainBalancesController: MultichainBalancesControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
       ///: END:ONLY_INCLUDE_IF
@@ -2094,6 +2096,8 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.MultichainBalancesController;
     this.multichainTransactionsController =
       controllersByName.MultichainTransactionsController;
+    this.multiChainAssetsRatesController =
+      controllersByName.MultiChainAssetsRatesController;
     ///: END:ONLY_INCLUDE_IF
     this.multichainNetworkController =
       controllersByName.MultichainNetworkController;
@@ -2272,6 +2276,7 @@ export default class MetamaskController extends EventEmitter {
         MultichainAssetsController: this.multichainAssetsController,
         MultichainBalancesController: this.multichainBalancesController,
         MultichainTransactionsController: this.multichainTransactionsController,
+        MultiChainAssetsRatesController: this.multiChainAssetsRatesController,
         ///: END:ONLY_INCLUDE_IF
         MultichainNetworkController: this.multichainNetworkController,
         NetworkController: this.networkController,
@@ -3312,10 +3317,8 @@ export default class MetamaskController extends EventEmitter {
       verifyPassword: this.verifyPassword.bind(this),
 
       // network management
-      setActiveNetwork: (id) => {
-        // The multichain network controller will proxy the call to the network controller
-        // in the case that the ID is an EVM network client ID.
-        return this.multichainNetworkController.setActiveNetwork(id);
+      setActiveNetwork: (networkConfigurationId) => {
+        return this.networkController.setActiveNetwork(networkConfigurationId);
       },
       // Avoids returning the promise so that initial call to switch network
       // doesn't block on the network lookup step
@@ -4078,6 +4081,12 @@ export default class MetamaskController extends EventEmitter {
       // MultichainBalancesController
       multichainUpdateBalance: (accountId) =>
         this.multichainBalancesController.updateBalance(accountId),
+
+      // MultichainTransactionsController
+      multichainUpdateTransactions: (accountId) =>
+        this.multichainTransactionsController.updateTransactionsForAccount(
+          accountId,
+        ),
       ///: END:ONLY_INCLUDE_IF
       // Transaction Decode
       decodeTransactionData: (request) =>

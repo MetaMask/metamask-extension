@@ -33,7 +33,7 @@ import { SEND_STAGES, getSendStage } from '../../../ducks/send';
 import {
   getSelectedMultichainNetworkConfiguration,
   getIsEvmSelected,
-} from '../../../selectors/multichain-networks';
+} from '../../../selectors/multichain/networks';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../../shared/constants/multichain/networks';
 import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
