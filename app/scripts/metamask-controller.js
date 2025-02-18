@@ -363,9 +363,9 @@ import {
   MultichainAssetsControllerInit,
   MultichainTransactionsControllerInit,
   MultichainBalancesControllerInit,
+  MultiChainAssetsRatesControllerInit,
   ///: END:ONLY_INCLUDE_IF
   MultichainNetworkControllerInit,
-  MultiChainAssetsRatesControllerInit,
 } from './controller-init/multichain';
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
 import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
