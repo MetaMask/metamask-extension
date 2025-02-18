@@ -2546,7 +2546,7 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Gets a subset of preferences from the PreferencesController to pass to a snap.
    *
-   * @returns {Object} A subset of preferences.
+   * @returns {object} A subset of preferences.
    */
   getPreferences() {
     const {
