@@ -1,5 +1,9 @@
 import { BtcScope, SolScope } from '@metamask/keyring-api';
-import { type NetworkConfiguration, RpcEndpointType, NetworkStatus } from '@metamask/network-controller';
+import {
+  type NetworkConfiguration,
+  RpcEndpointType,
+  NetworkStatus,
+} from '@metamask/network-controller';
 import type { Hex, CaipChainId } from '@metamask/utils';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 
@@ -31,9 +35,12 @@ const nonEvmNetworks: Record<CaipChainId, MultichainNetworkConfiguration> = {
     nativeCurrency: `${BtcScope.Mainnet}/slip44:0`,
     isEvm: false,
   },
-}
+};
 
-const evmNetworksWithNewConfig: Record<CaipChainId, MultichainNetworkConfiguration> = {
+const evmNetworksWithNewConfig: Record<
+  CaipChainId,
+  MultichainNetworkConfiguration
+> = {
   'eip155:1': {
     chainId: 'eip155:1',
     name: 'Ethereum Mainnet',
@@ -84,7 +91,7 @@ const evmNetworksWithOldConfig: Record<Hex, NetworkConfiguration> = {
       },
     ],
   },
-}
+};
 
 const mockMultichainNetworkState: TestState = {
   metamask: {
