@@ -13,10 +13,6 @@
     "ui/pages/confirmations/components/confirm/footer/footer.tsx"
   ],
   [
-    "ui/components/app/name/name-details/name-details.tsx",
-    "ui/components/app/name/name.tsx"
-  ],
-  [
     "ui/components/multichain/pages/send/components/account-picker.tsx",
     "ui/components/multichain/pages/send/components/index.ts"
   ],
