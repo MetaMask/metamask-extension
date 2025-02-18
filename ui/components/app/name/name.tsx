@@ -39,6 +39,7 @@ export type NameProps = {
 
 const Name = memo(
   ({ value, type, preferContractSymbol = false, variation }: NameProps) => {
+    const [modalOpen, setModalOpen] = useState(false);
     const trackEvent = useContext(MetaMetricsContext);
 
     const { name } = useDisplayName({
@@ -59,8 +60,6 @@ const Name = memo(
       });
       // using `[]` as we only want to call `trackEvent` on the initial render
     }, []);
-
-    const [modalOpen, setModalOpen] = useState(false);
 
     const handleClick = useCallback(() => {
       setModalOpen(true);
