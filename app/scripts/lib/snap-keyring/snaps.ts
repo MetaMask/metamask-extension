@@ -29,7 +29,7 @@ export function isSnapPreinstalled(snapId: SnapId) {
 }
 
 /**
- * Gets the localized Snap name or some falllback name otherwise.
+ * Get the localized Snap name or some fallback name otherwise.
  *
  * @param snapId - Snap ID.
  * @param messenger - Snap keyring messenger.
@@ -55,6 +55,5 @@ export function getSnapName(
     return localizedManifest.proposedName;
   }
 
-  console.log(snap);
   return snap.manifest.proposedName;
 }
