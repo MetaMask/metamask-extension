@@ -9,6 +9,11 @@ import {
   FontWeight,
   BorderColor,
 } from '../../../helpers/constants/design-system';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
+import { useMetricEvent } from '../../../hooks/useMetricEvent';
 import type { CarouselProps } from './carousel.types';
 import { BANNER_STYLES, MAX_SLIDES } from './constants';
 import {
@@ -31,6 +36,11 @@ export const Carousel = React.forwardRef(
   ) => {
     const [selectedIndex, setSelectedIndex] = useState(0);
     const t = useI18nContext();
+    const trackBannerNavigation = useMetricEvent({
+      event: MetaMetricsEventName.BannerNavigated,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: { type: 'Carousel' },
+    });
 
     const visibleSlides = slides
       .filter((slide) => !slide.dismissed || slide.undismissable)
@@ -82,6 +92,19 @@ export const Carousel = React.forwardRef(
     };
 
     const handleChange = (index: number) => {
+      const previousSlide = visibleSlides[selectedIndex];
+      const nextSlide = visibleSlides[index];
+
+      // Only track navigation when there's an actual change
+      if (selectedIndex !== index) {
+        trackBannerNavigation({
+          properties: {
+            from_banner: previousSlide.id,
+            to_banner: nextSlide.id,
+          },
+        });
+      }
+
       setSelectedIndex(index);
     };
 
