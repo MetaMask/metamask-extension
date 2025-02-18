@@ -129,13 +129,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  getLocalizedSnapManifest,
-  stripSnapPrefix,
-  ///: END:ONLY_INCLUDE_IF
-  isSnapId,
-} from '@metamask/snaps-utils';
+import { isSnapId } from '@metamask/snaps-utils';
 
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
@@ -330,7 +324,6 @@ import { addDappTransaction, addTransaction } from './lib/transaction/util';
 import { addTypedMessage, addPersonalMessage } from './lib/signature/util';
 ///: END:ONLY_INCLUDE_IF
 import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscreen-keyring';
-import PREINSTALLED_SNAPS from './snaps/preinstalled-snaps';
 import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 
@@ -1131,6 +1124,7 @@ export default class MetamaskController extends EventEmitter {
         'AccountsController:setAccountName',
         'SnapController:handleRequest',
         'SnapController:get',
+        'PreferencesController:getState',
       ],
     });
 
@@ -1140,44 +1134,12 @@ export default class MetamaskController extends EventEmitter {
       await this.accountsController.updateAccounts();
     };
 
-    const getSnapName = (id) => {
-      if (!id) {
-        return null;
-      }
-
-      const currentLocale = this.getLocale();
-      const { snaps } = this.snapController.state;
-      const snap = snaps[id];
-
-      if (!snap) {
-        return stripSnapPrefix(id);
-      }
-
-      if (snap.localizationFiles) {
-        const localizedManifest = getLocalizedSnapManifest(
-          snap.manifest,
-          currentLocale,
-          snap.localizationFiles,
-        );
-        return localizedManifest.proposedName;
-      }
-
-      return snap.manifest.proposedName;
-    };
-
-    const isSnapPreinstalled = (id) => {
-      return PREINSTALLED_SNAPS.some((snap) => snap.snapId === id);
-    };
-
     additionalKeyrings.push(
-      snapKeyringBuilder(
-        snapKeyringBuildMessenger,
-        persistAndUpdateAccounts,
-        (address) => this.removeAccount(address),
-        this.metaMetricsController.trackEvent.bind(this.metaMetricsController),
-        getSnapName,
-        isSnapPreinstalled,
-      ),
+      snapKeyringBuilder(snapKeyringBuildMessenger, {
+        persistKeyringHelper: () => persistAndUpdateAccounts(),
+        removeAccountHelper: (address) => this.removeAccount(address),
+        trackEvent: (...args) => this.metaMetricsController.trackEvent(...args),
+      }),
     );
 
     ///: END:ONLY_INCLUDE_IF
