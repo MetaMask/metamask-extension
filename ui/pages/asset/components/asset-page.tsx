@@ -299,6 +299,7 @@ const AssetPage = ({
               chainId,
               symbol,
               image,
+              title: name ?? symbol,
               tokenFiatAmount:
                 showFiat && tokenMarketPrice ? tokenFiatAmount : null,
               string: balance ? balance.toString() : '',

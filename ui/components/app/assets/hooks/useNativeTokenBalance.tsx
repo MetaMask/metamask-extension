@@ -88,7 +88,7 @@ const useNativeTokenBalance = () => {
     },
   );
 
-  const nativeTokenWithBalance: TokenWithFiatAmount = {
+  const nativeTokenWithBalance: Partial<TokenWithFiatAmount> = {
     chainId: chainId as Hex,
     address: '' as Hex,
     symbol: tokenSymbol ?? '',
