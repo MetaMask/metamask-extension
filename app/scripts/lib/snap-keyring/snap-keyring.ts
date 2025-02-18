@@ -263,7 +263,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     address: string;
     snapId: SnapId;
     skipConfirmation: boolean;
-    onceSaved: Promise<AccountId>;
+    onceSaved: Promise<string>;
     accountName?: string;
   }) {
     const learnMoreLink =
@@ -366,7 +366,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     address: string,
     snapId: string,
     handleUserInput: (accepted: boolean) => Promise<void>,
-    onceSaved: Promise<AccountId>,
+    onceSaved: Promise<string>,
     accountNameSuggestion: string = '',
     displayConfirmation: boolean = false,
   ) {
