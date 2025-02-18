@@ -17,7 +17,7 @@ on:
 jobs:
   lint-workflows:
     name: Lint workflows
-    uses: metamask/github-tools/.github/workflows/lint-workflows.yml@04f91563e5e048d4e34527dc3007f633759e2899
+    uses: metamask/github-tools/.github/workflows/lint-workflows.yml@1d657e262aea7e3f216754febb624831527d2565
 
   test-lint-shellcheck:
     name: Test lint shellcheck
@@ -35,7 +35,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@04f91563e5e048d4e34527dc3007f633759e2899
+        uses: metamask/github-tools/.github/actions/setup-environment@1d657e262aea7e3f216754febb624831527d2565
 
       - name: Check circular dependencies
         run: yarn circular-deps:check
@@ -83,7 +83,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@04f91563e5e048d4e34527dc3007f633759e2899
+        uses: metamask/github-tools/.github/actions/setup-environment@1d657e262aea7e3f216754febb624831527d2565
 
       - run: yarn build:test
 
@@ -101,7 +101,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@04f91563e5e048d4e34527dc3007f633759e2899
+        uses: metamask/github-tools/.github/actions/setup-environment@1d657e262aea7e3f216754febb624831527d2565
 
       - run: yarn webpack --test --no-lavamoat --no-cache --browser=chrome --lockdown --sentry --snow --env production
         env:
@@ -120,7 +120,9 @@ jobs:
 
   run-benchmark-matrix:
     uses: ./.github/workflows/benchmark-matrix.yml
-    needs: [prep-build-test-browserify, prep-build-test-webpack]
+    needs:
+      - prep-build-test-browserify
+      - prep-build-test-webpack
 
   wait-for-circleci-workflow-status:
     name: Wait for CircleCI workflow status
@@ -182,7 +184,6 @@ jobs:
       - validate-lavamoat-policy-build
       - validate-lavamoat-policy-webapp
       - run-tests
-      # - run-benchmark-matrix # Will enable this as a required job in a later PR
       - wait-for-circleci-workflow-status
       - build-storybook
       - build-beta

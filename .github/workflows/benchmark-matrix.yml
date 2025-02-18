@@ -3,10 +3,10 @@ on:
 
 env:
   COMMANDS: |
-    [
-      'yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json --retries 2',
-      'yarn user-actions-benchmark:chrome --out test-artifacts/chrome/benchmark/user_actions.json --retries 2',
-    ]
+    {
+      pageload: 'yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json --retries 2',
+      userActions: 'yarn user-actions-benchmark:chrome --out test-artifacts/chrome/benchmark/user_actions.json --retries 2',
+    }
 
 jobs:
   benchmarks:
@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@04f91563e5e048d4e34527dc3007f633759e2899
+        uses: metamask/github-tools/.github/actions/setup-environment@1d657e262aea7e3f216754febb624831527d2565
 
       - name: Download artifact prep-build-test-webpack
         uses: actions/download-artifact@v4
@@ -32,7 +32,7 @@ jobs:
 
       - name: Run the benchmark
         # Choose a benchmark command from env.COMMANDS
-        run: ${{ matrix.testType == 'pageload' && fromJson(env.COMMANDS)[0] || fromJson(env.COMMANDS)[1] }}
+        run: ${{ fromJson(env.COMMANDS)[matrix.testType] }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4

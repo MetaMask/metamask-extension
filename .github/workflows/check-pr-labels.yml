@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@04f91563e5e048d4e34527dc3007f633759e2899
+        uses: metamask/github-tools/.github/actions/setup-environment@1d657e262aea7e3f216754febb624831527d2565
 
       - name: Check PR has required labels
         env:
