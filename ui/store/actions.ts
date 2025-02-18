@@ -67,7 +67,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getInternalAccountByAddress,
   getSelectedInternalAccount,
-  getInternalAccounts,
 } from '../selectors';
 import {
   getSelectedNetworkClientId,
@@ -451,17 +450,13 @@ export function addNewAccount(): ThunkAction<
   AnyAction
 > {
   log.debug(`background.addNewAccount`);
-  return async (dispatch, getState) => {
-    const oldAccounts = getInternalAccounts(getState()).filter(
-      (internalAccount) =>
-        internalAccount.metadata.keyring.type === KeyringTypes.hd,
-    );
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
 
     let addedAccountAddress;
     try {
       addedAccountAddress = await submitRequestToBackground('addNewAccount', [
-        Object.keys(oldAccounts).length,
+        1,
       ]);
     } catch (error) {
       dispatch(displayWarning(error));

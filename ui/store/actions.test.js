@@ -39,6 +39,16 @@ const defaultState = {
         balance: '0x0',
       },
     },
+    keyrings: [
+      {
+        type: 'HD Key Tree',
+        accounts: [
+          {
+            address: '0xFirstAddress',
+          },
+        ],
+      },
+    ],
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     internalAccounts: {
       accounts: {
