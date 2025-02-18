@@ -59,6 +59,7 @@ import {
   getMultichainNativeCurrency,
   getMultichainNetworkConfigurationsByChainId,
   getMultichainSelectedAccountCachedBalance,
+  getMultichainIsEvm,
 } from '../../../../selectors/multichain';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import { getAssetsMetadata } from '../../../../selectors/assets';
@@ -159,6 +160,7 @@ export function AssetPickerModal({
   const allNetworksToUse = networks ?? Object.values(allNetworks ?? {});
   // This indicates whether tokens in the wallet's active network are displayed
   const isSelectedNetworkActive = selectedNetwork.chainId === currentChainId;
+  const isEvm = useMultichainSelector(getMultichainIsEvm);
 
   const nativeCurrencyImage = useMultichainSelector(getMultichainCurrencyImage);
   const nativeCurrency = useMultichainSelector(getMultichainNativeCurrency);
@@ -289,6 +291,7 @@ export function AssetPickerModal({
       };
 
       if (
+        isEvm &&
         shouldAddToken(
           nativeToken.symbol,
           nativeToken.address,
@@ -304,16 +307,18 @@ export function AssetPickerModal({
         }
       }
 
-      // Return early when SOLANA is selected since blcoked and top tokens are not available
+      // Return early when SOLANA is selected since blocked and top tokens are not available
       if (selectedNetwork?.chainId === MultichainNetworks.SOLANA) {
         for (const [address, token] of Object.entries(
           nonEvmTokenMetadataByAddress,
         )) {
-          if (shouldAddToken(token.symbol, address, currentChainId)) {
+          const [caipChainId, assetId] = address.split('/');
+
+          if (shouldAddToken(token.symbol, assetId, caipChainId)) {
             yield {
               ...token,
-              address,
-              chainId: currentChainId,
+              address: assetId,
+              chainId: caipChainId,
               decimals: token.units[0].decimals,
             };
           }
