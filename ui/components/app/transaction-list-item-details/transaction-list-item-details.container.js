@@ -13,6 +13,7 @@ import {
   getMetadataContractName,
   getInternalAccounts,
 } from '../../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import TransactionListItemDetails from './transaction-list-item-details.component';
 
@@ -39,10 +40,12 @@ const mapStateToProps = (state, ownProps) => {
   };
   const rpcPrefs = getRpcPrefsForCurrentProvider(state);
 
+  const networkConfiguration = getNetworkConfigurationsByChainId(state);
   const isCustomNetwork = getIsCustomNetwork(state);
 
   return {
     rpcPrefs,
+    networkConfiguration,
     recipientEns,
     senderNickname: getNickName(senderAddress),
     recipientNickname: recipientAddress ? getNickName(recipientAddress) : null,

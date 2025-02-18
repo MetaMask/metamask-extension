@@ -3,7 +3,8 @@ import React, {
   useState,
   useCallback,
   Fragment,
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  useRef,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   useContext,
   ///: END:ONLY_INCLUDE_IF
   useEffect,
@@ -17,10 +18,13 @@ import { isEvmAccountType } from '@metamask/keyring-api';
 ///: END:ONLY_INCLUDE_IF
 import {
   nonceSortedCompletedTransactionsSelector,
+  nonceSortedCompletedTransactionsSelectorAllChains,
   nonceSortedPendingTransactionsSelector,
+  nonceSortedPendingTransactionsSelectorAllChains,
 } from '../../../selectors/transactions';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
+  getPreferences,
   getSelectedAccount,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getShouldHideZeroBalanceTokens,
@@ -35,8 +39,12 @@ import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils'
 import {
   Box,
   Button,
+  ButtonBase,
+  ButtonBaseSize,
   Text,
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  Popover,
+  PopoverPosition,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   ButtonSize,
   ButtonVariant,
   IconName,
@@ -52,7 +60,11 @@ import { formatTimestamp } from '../multichain-transaction-details-modal/helpers
 ///: END:ONLY_INCLUDE_IF
 
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  BackgroundColor,
+  BorderColor,
+  BorderStyle,
+  JustifyContent,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   Display,
   ///: END:ONLY_INCLUDE_IF
   TextColor,
@@ -85,6 +97,13 @@ import {
   BITCOIN_TOKEN_IMAGE_URL,
 } from '../../../../shared/constants/multichain/networks';
 ///: END:ONLY_INCLUDE_IF
+// eslint-disable-next-line import/no-restricted-paths
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+} from '../../../../shared/constants/app';
+import NetworkFilter from '../assets/asset-list/network-filter/network-filter';
 
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 
@@ -105,6 +124,18 @@ const getTransactionGroupRecipientAddressFilter = (
     return (
       isEqualCaseInsensitive(txParams?.to, recipientAddress) ||
       (txParams?.to === SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId] &&
+        txParams.data.match(recipientAddress.slice(2)))
+    );
+  };
+};
+
+const getTransactionGroupRecipientAddressFilterAllChain = (
+  recipientAddress,
+) => {
+  return ({ initialTransaction: { txParams } }) => {
+    return (
+      isEqualCaseInsensitive(txParams?.to, recipientAddress) ||
+      (txParams?.to === SWAPS_CHAINID_CONTRACT_ADDRESS_MAP &&
         txParams.data.match(recipientAddress.slice(2)))
     );
   };
@@ -134,6 +165,21 @@ const getFilteredTransactionGroups = (
   } else if (tokenAddress) {
     return transactionGroups.filter(
       getTransactionGroupRecipientAddressFilter(tokenAddress, chainId),
+    );
+  }
+  return transactionGroups;
+};
+
+const getFilteredTransactionGroupsAllChains = (
+  transactionGroups,
+  hideTokenTransactions,
+  tokenAddress,
+) => {
+  if (hideTokenTransactions) {
+    return transactionGroups.filter(tokenTransactionFilter);
+  } else if (tokenAddress) {
+    return transactionGroups.filter(
+      getTransactionGroupRecipientAddressFilterAllChain(tokenAddress),
     );
   }
   return transactionGroups;
@@ -193,6 +239,8 @@ export default function TransactionList({
 }) {
   const [limit, setLimit] = useState(PAGE_INCREMENT);
   const t = useI18nContext();
+  const { tokenNetworkFilter } = useSelector(getPreferences);
+  const allNetworksFilterShown = Object.keys(tokenNetworkFilter ?? {}).length;
 
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const [selectedTransaction, setSelectedTransaction] = useState(null);
@@ -204,12 +252,41 @@ export default function TransactionList({
   const isSolanaAccount = useSelector(isSelectedInternalAccountSolana);
   ///: END:ONLY_INCLUDE_IF
 
-  const unfilteredPendingTransactions = useSelector(
+  const unfilteredPendingTransactionsCurrentChain = useSelector(
     nonceSortedPendingTransactionsSelector,
   );
-  const unfilteredCompletedTransactions = useSelector(
+
+  const unfilteredPendingTransactionsAllChains = useSelector(
+    nonceSortedPendingTransactionsSelectorAllChains,
+  );
+
+  const unfilteredPendingTransactions = useMemo(() => {
+    return allNetworksFilterShown
+      ? unfilteredPendingTransactionsCurrentChain
+      : unfilteredPendingTransactionsAllChains;
+  }, [
+    allNetworksFilterShown,
+    unfilteredPendingTransactionsAllChains,
+    unfilteredPendingTransactionsCurrentChain,
+  ]);
+
+  const unfilteredCompletedTransactionsCurrentChain = useSelector(
     nonceSortedCompletedTransactionsSelector,
   );
+
+  const unfilteredCompletedTransactionsAllChains = useSelector(
+    nonceSortedCompletedTransactionsSelectorAllChains,
+  );
+
+  const unfilteredCompletedTransactions = useMemo(() => {
+    return allNetworksFilterShown
+      ? unfilteredCompletedTransactionsCurrentChain
+      : unfilteredCompletedTransactionsAllChains;
+  }, [
+    allNetworksFilterShown,
+    unfilteredCompletedTransactionsAllChains,
+    unfilteredCompletedTransactionsCurrentChain,
+  ]);
 
   const chainId = useSelector(getCurrentChainId);
   const selectedAccount = useSelector(getSelectedAccount);
@@ -227,13 +304,23 @@ export default function TransactionList({
   const showRampsCard = isBuyableChain && balanceIsZero;
   ///: END:ONLY_INCLUDE_IF
 
+  const popoverRef = useRef(null);
+  const currentNetwork = useSelector(getCurrentChainId);
+  const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
+    useState(false);
+
+  const windowType = getEnvironmentType();
+  const isFullScreen =
+    windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
+    windowType !== ENVIRONMENT_TYPE_POPUP;
+
   const renderDateStamp = (index, dateGroup) => {
     return index === 0 ? (
       <Text
         paddingTop={4}
         paddingInline={4}
         variant={TextVariant.bodyMd}
-        color={TextColor.textDefault}
+        color={TextColor.textAlternative}
         key={dateGroup.dateMillis}
       >
         {dateGroup.date}
@@ -262,25 +349,27 @@ export default function TransactionList({
   const completedTransactions = useMemo(
     () =>
       groupEvmTransactionsByDate(
-        getFilteredTransactionGroups(
+        getFilteredTransactionGroupsAllChains(
           unfilteredCompletedTransactions,
           hideTokenTransactions,
           tokenAddress,
-          chainId,
         ),
       ),
-    [
-      hideTokenTransactions,
-      tokenAddress,
-      unfilteredCompletedTransactions,
-      chainId,
-    ],
+    [hideTokenTransactions, tokenAddress, unfilteredCompletedTransactions],
   );
 
   const viewMore = useCallback(
     () => setLimit((prev) => prev + PAGE_INCREMENT),
     [],
   );
+
+  const toggleNetworkFilterPopover = () => {
+    setIsNetworkFilterPopoverOpen(!isNetworkFilterPopoverOpen);
+  };
+
+  const closePopover = () => {
+    setIsNetworkFilterPopoverOpen(false);
+  };
 
   // Remove transactions within each date group that are incoming transactions
   // to a user that not the current one.
@@ -301,6 +390,58 @@ export default function TransactionList({
     );
 
     return dateGroup;
+  };
+
+  const renderFilterButton = () => {
+    return (
+      <Box
+        marginLeft={4}
+        marginRight={4}
+        justifyContent={
+          isFullScreen ? JustifyContent.flexStart : JustifyContent.spaceBetween
+        }
+        ref={popoverRef}
+      >
+        <ButtonBase
+          data-testid="sort-by-popover-toggle"
+          className="activity-list-control-bar__button"
+          onClick={toggleNetworkFilterPopover}
+          size={ButtonBaseSize.Sm}
+          endIconName={IconName.ArrowDown}
+          backgroundColor={
+            isNetworkFilterPopoverOpen
+              ? BackgroundColor.backgroundPressed
+              : BackgroundColor.backgroundDefault
+          }
+          borderColor={BorderColor.borderMuted}
+          borderStyle={BorderStyle.solid}
+          color={TextColor.textDefault}
+          marginRight={isFullScreen ? 2 : null}
+          ellipsis
+        >
+          {allNetworksFilterShown
+            ? currentNetwork?.nickname ?? t('currentNetwork')
+            : t('allNetworks')}
+        </ButtonBase>
+
+        <Popover
+          onClickOutside={closePopover}
+          isOpen={isNetworkFilterPopoverOpen}
+          position={PopoverPosition.BottomStart}
+          referenceElement={popoverRef.current}
+          matchWidth={!isFullScreen}
+          style={{
+            zIndex: 10,
+            display: 'flex',
+            flexDirection: 'column',
+            padding: 0,
+            minWidth: isFullScreen ? '325px' : '',
+          }}
+        >
+          <NetworkFilter handleClose={closePopover} />
+        </Popover>
+      </Box>
+    );
   };
 
   // Remove transaction groups with no transactions
@@ -351,6 +492,7 @@ export default function TransactionList({
         )}
 
         <Box className="transaction-list" {...boxProps}>
+          {renderFilterButton()}
           {/* TODO: Non-EVM transactions are not paginated for now. */}
           <Box className="transaction-list__transactions">
             {nonEvmTransactions?.transactions.length > 0 ? (
@@ -500,6 +642,9 @@ export default function TransactionList({
                               transactionGroup.initialTransaction
                             }
                             transactionGroup={transactionGroup}
+                            chainId={
+                              transactionGroup.initialTransaction.chainId
+                            }
                           />
                         </Fragment>
                       );
@@ -510,6 +655,7 @@ export default function TransactionList({
                         <TransactionListItem
                           isEarliestNonce={index === 0}
                           transactionGroup={transactionGroup}
+                          chainId={transactionGroup.initialTransaction.chainId}
                         />
                       </Fragment>
                     );
