@@ -120,22 +120,23 @@ export const getIsEvmSelected = (state: IsEvmSelectedState) =>
   state.metamask.isEvmSelected;
 
 export const getSelectedMultichainNetworkChainId = (
-  state: SelectedNetworkChainIdState,
-) => state.metamask.selectedMultichainNetworkChainId;
+  state: MultichainNetworkConfigState,
+) => {
+  const isEvmSelected = getIsEvmSelected(state);
+
+  if (isEvmSelected) {
+    const evmNetworkConfig = getProviderConfig(state);
+    return toEvmCaipChainId(evmNetworkConfig.chainId);
+  }
+  return state.metamask.selectedMultichainNetworkChainId;
+};
 
 export const getSelectedMultichainNetworkConfiguration = (
   state: MultichainNetworkConfigState,
 ) => {
-  let chainId: CaipChainId;
-  const isEvmSelected = getIsEvmSelected(state);
-  if (isEvmSelected) {
-    const evmNetworkConfig = getProviderConfig(state);
-    chainId = toEvmCaipChainId(evmNetworkConfig.chainId);
-  } else {
-    chainId = getSelectedMultichainNetworkChainId(state);
-  }
-
+  const chainId =
+    getSelectedMultichainNetworkChainId(state);
   const networkConfigurationsByChainId =
     getMultichainNetworkConfigurationsByChainId(state);
   return networkConfigurationsByChainId[chainId];
-};
+}
