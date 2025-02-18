@@ -355,7 +355,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
 
         // FIXME: Should we still throw here? This part of the flow is not awaited, so that
         // cannot be caught...
-        throw new Error(`Error occurred while creating snap account: ${error}`);
+        // throw new Error(`Error occurred while creating snap account: ${error}`);
       }
     });
   }
