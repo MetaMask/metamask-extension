@@ -14,7 +14,7 @@ import {
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
   getSelectedMultichainNetworkConfiguration,
-  getIsEvmSelected,
+  getIsEvmMultichainNetworkSelected,
 } from './networks';
 
 type TestState = MultichainNetworkControllerState &
@@ -206,9 +206,9 @@ describe('Multichain network selectors', () => {
     });
   });
 
-  describe('getIsEvmSelected', () => {
+  describe('getIsEvmMultichainNetworkSelected', () => {
     it('returns whether the EVM network is selected', () => {
-      expect(getIsEvmSelected(mockMultichainNetworkState)).toStrictEqual(false);
+      expect(getIsEvmMultichainNetworkSelected(mockMultichainNetworkState)).toStrictEqual(false);
     });
   });
 

@@ -116,13 +116,13 @@ export const getMultichainNetworkConfigurationsByChainId =
     },
   );
 
-export const getIsEvmSelected = (state: IsEvmSelectedState) =>
+export const getIsEvmMultichainNetworkSelected = (state: IsEvmSelectedState) =>
   state.metamask.isEvmSelected;
 
 export const getSelectedMultichainNetworkChainId = (
   state: MultichainNetworkConfigState,
 ) => {
-  const isEvmSelected = getIsEvmSelected(state);
+  const isEvmSelected = getIsEvmMultichainNetworkSelected(state);
 
   if (isEvmSelected) {
     const evmNetworkConfig = getProviderConfig(state);
