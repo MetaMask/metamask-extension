@@ -2,13 +2,14 @@ import React, { useState, useCallback, useMemo } from 'react';
 
 import { useSelector } from 'react-redux';
 import { uniqBy } from 'lodash';
-import {
+import type {
   Token,
   TokenListMap,
   TokenListToken,
 } from '@metamask/assets-controllers';
-import { Hex } from '@metamask/utils';
+import { isStrictHexString, type Hex } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
+import { isCaipChainId } from '@metamask/snaps-utils';
 import {
   Modal,
   ModalContent,
@@ -35,6 +36,7 @@ import {
   getSelectedEvmInternalAccount,
   getShouldHideZeroBalanceTokens,
   getTokenExchangeRates,
+  getTokenList,
   getUseExternalServices,
 } from '../../../../selectors';
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
@@ -57,8 +59,9 @@ import {
   getMultichainNativeCurrency,
   getMultichainNetworkConfigurationsByChainId,
   getMultichainSelectedAccountCachedBalance,
-  getMultichainTokenList,
 } from '../../../../selectors/multichain';
+import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
+import { getAssetsMetadata } from '../../../../selectors/assets';
 import {
   ERC20Asset,
   NativeAsset,
@@ -197,6 +200,7 @@ export function AssetPickerModal({
     useMultichainBalances();
 
   const evmTokenMetadataByAddress = useSelector(getTokenList) as TokenListMap;
+  const nonEvmTokenMetadataByAddress = useSelector(getAssetsMetadata);
 
   const allowExternalServices = useSelector(getUseExternalServices);
   // Swaps top tokens
@@ -300,6 +304,24 @@ export function AssetPickerModal({
         }
       }
 
+      // Return early when SOLANA is selected since blcoked and top tokens are not available
+      if (selectedNetwork?.chainId === MultichainNetworks.SOLANA) {
+        for (const [address, token] of Object.entries(
+          nonEvmTokenMetadataByAddress,
+        )) {
+          if (shouldAddToken(token.symbol, address, currentChainId)) {
+            yield {
+              ...token,
+              address,
+              chainId: currentChainId,
+              decimals: token.units[0].decimals,
+            };
+          }
+        }
+        return;
+      }
+
+      // For EVM tokens only
       // topTokens are sorted by popularity
       for (const topToken of topTokens) {
         const token: TokenListToken =
