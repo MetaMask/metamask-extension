@@ -243,7 +243,7 @@ export default class AdvancedTab extends PureComponent {
         <div className="settings-page__content-item">
           <span>{t('smartTransactions')}</span>
           <div className="settings-page__content-description">
-            {t('stxOptInDescription', [learMoreLink])}
+            {t('stxOptInEthereumBnbDescription', [learMoreLink])}
           </div>
         </div>
 
