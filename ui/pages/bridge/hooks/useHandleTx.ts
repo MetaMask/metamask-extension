@@ -24,12 +24,8 @@ import type { ChainId } from '../../../../shared/types/bridge';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { getMultichainCurrentChainId } from '../../../selectors/multichain';
-import {
-  useMultichainWalletSnapClient,
-  useMultichainWalletSnapSender,
-} from '../../../hooks/accounts/useMultichainWalletSnapClient';
+import { useMultichainWalletSnapSender } from '../../../hooks/accounts/useMultichainWalletSnapClient';
 import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/solana-wallet-snap';
 
 export default function useHandleTx() {
@@ -106,15 +102,16 @@ export default function useHandleTx() {
 
   const snapSender = useMultichainWalletSnapSender(SOLANA_WALLET_SNAP_ID);
   const handleSolanaTx = async ({
-    txType,
+    _txType,
     trade,
-    fieldsToAddToTxMeta,
+    _fieldsToAddToTxMeta,
   }: {
-    txType: TransactionType.bridge;
+    _txType: TransactionType.bridge;
     trade: string;
-    fieldsToAddToTxMeta: Omit<Partial<TransactionMeta>, 'status'>; // We don't add status, so omit it to fix the type error
+    _fieldsToAddToTxMeta?: Omit<Partial<TransactionMeta>, 'status'>;
   }) => {
-    await snapSender.send({
+    // First submit via snap
+    const response = await snapSender.send({
       id: crypto.randomUUID(),
       jsonrpc: '2.0',
       method: KeyringRpcMethod.SubmitRequest,
@@ -129,18 +126,26 @@ export default function useHandleTx() {
       },
     });
 
-    // const res = await bridgeMultichainTransaction(
-    //   selectedAccount.metadata.snap.id,
-    //   {
-    //     account: selectedAccount.id,
-    //     scope: currentChainId,
-    //     base64EncodedTransactionMessage: trade,
-    //   },
-    // );
-    // await dispatch(setDefaultHomeActiveTabName('activity'));
+    const txSignature =
+      response && typeof response === 'object' && 'result' in response
+        ? (response.result as { signature: string })?.signature
+        : undefined;
+
+    // Then use bridgeMultichainTransaction as before
+    if (selectedAccount.metadata?.snap?.id) {
+      await bridgeMultichainTransaction(selectedAccount.metadata.snap.id, {
+        account: selectedAccount.id,
+        scope: currentChainId,
+        base64EncodedTransactionMessage: trade,
+      });
+    }
+
     await forceUpdateMetamaskState(dispatch);
 
-    return {};
+    return {
+      ...{},
+      txSignature,
+    };
   };
   return { handleTx, handleSolanaTx };
 }
