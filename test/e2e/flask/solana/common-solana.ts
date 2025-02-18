@@ -458,6 +458,7 @@ export async function mockGetTokenAccountsByOwner(mockServer: Mockttp) {
     });
 }
 export async function mockGetAccountInfo(mockServer: Mockttp) {
+  console.log('AQUI ENTRA EN GET ACCOUNT INFO');
   const response = {
     statusCode: 200,
     json: {
@@ -487,6 +488,7 @@ export async function mockGetAccountInfo(mockServer: Mockttp) {
           rentEpoch: 18446744073709552000,
           space: 82,
         },
+        value: null,
       },
     },
   };
