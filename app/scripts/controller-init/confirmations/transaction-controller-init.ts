@@ -177,8 +177,6 @@ function getControllers(
     preferencesController: () => request.getController('PreferencesController'),
     smartTransactionsController: () =>
       request.getController('SmartTransactionsController'),
-    transactionUpdateController: () =>
-      request.getController('TransactionUpdateController'),
   };
 }
 
