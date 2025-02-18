@@ -116,8 +116,8 @@ jobs:
     name: Run tests
     uses: ./.github/workflows/run-tests.yml
 
-  run-benchmark-matrix:
-    uses: ./.github/workflows/benchmark-matrix.yml
+  run-benchmarks:
+    uses: ./.github/workflows/run-benchmarks.yml
     needs:
       - prep-build-test-browserify
       - prep-build-test-webpack
