@@ -4,6 +4,7 @@ import { getMultichainBalances } from '../../../../selectors/multichain';
 import {
   getAccountAssets,
   getAssetsMetadata,
+  getAssetsRates,
 } from '../../../../selectors/assets';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../shared/constants/network';
 import { getSelectedInternalAccount } from '../../../../selectors';
@@ -12,7 +13,6 @@ import {
   networkTitleOverrides,
 } from '../util/networkTitleOverrides';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getAssetsRates } from '../../../../selectors/multichain-assets-rates';
 import { formatWithThreshold } from '../util/formatWithThreshold';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
