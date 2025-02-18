@@ -2,6 +2,7 @@ const { strict: assert } = require('assert');
 const {
   createInternalTransaction,
   createDappTransaction,
+  createInternalTransactionWithMaxAmount,
 } = require('../../page-objects/flows/transaction');
 
 const {
@@ -163,6 +164,90 @@ describe('Editing Confirm Transaction', function () {
         );
         assert.equal(txValues.length, 1);
         assert.ok(/-1\s*ETH/u.test(await txValues[0].getText()));
+      },
+    );
+  });
+
+  it.only('adjusts max send amount based on gas fluctuations', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withPreferencesController({
+            preferences: {
+              showFiatInTestnets: true,
+            },
+          })
+          .build(),
+        localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        await createInternalTransactionWithMaxAmount(driver);
+
+        // verify initial max amount
+        await driver.waitForSelector({
+          text: '$42,499.25',
+          tag: 'p',
+        });
+
+        // update estimates to high
+        await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
+        await driver.waitForSelector({
+          text: 'sec',
+          tag: 'span',
+        });
+        await driver.clickElement('[data-testid="edit-gas-fee-item-custom"]');
+
+        // enter max fee
+        await driver.fill('[data-testid="base-fee-input"]', '30');
+
+        // enter priority fee
+        await driver.fill('[data-testid="priority-fee-input"]', '8.5');
+
+        // edit gas limit
+        await driver.clickElement('[data-testid="advanced-gas-fee-edit"]');
+        await driver.fill('[data-testid="gas-limit-input"]', '100000');
+
+        // Submit gas fee changes
+        await driver.clickElement({ text: 'Save', tag: 'button' });
+
+        // has correct updated value on the confirm screen the transaction
+        await driver.waitForSelector({
+          css: '[data-testid="first-gas-field"]',
+          text: '0.0006 ETH',
+        });
+
+        await driver.waitForSelector({
+          css: '[data-testid="native-currency"]',
+          text: '$1.00',
+        });
+
+        // verify max amount after gas fee changes
+        await driver.waitForSelector({
+          text: '$42,499.00',
+          tag: 'p',
+        });
+
+        // confirms the transaction
+        await driver.clickElement({ text: 'Confirm', tag: 'button' });
+
+        await driver.clickElement(
+          '[data-testid="account-overview__activity-tab"]',
+        );
+        await driver.wait(async () => {
+          const confirmedTxes = await driver.findElements(
+            '.transaction-list__completed-transactions .activity-list-item',
+          );
+          return confirmedTxes.length === 1;
+        }, 10000);
+
+        const txValues = await driver.findElements(
+          '[data-testid="transaction-list-item-primary-currency"]',
+        );
+        assert.equal(txValues.length, 1);
+        assert.ok(/-24.99941317\s*ETH/u.test(await txValues[0].getText()));
       },
     );
   });
