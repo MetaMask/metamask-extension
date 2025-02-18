@@ -203,6 +203,7 @@ workflows:
             - prep-deps
             - prep-build-flask-mv2
       - all-tests-pass:
+          context: mm-extension-ci-bot
           requires:
             - validate-source-maps
             - validate-source-maps-flask
