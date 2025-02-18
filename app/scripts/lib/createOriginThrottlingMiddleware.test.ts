@@ -1,6 +1,7 @@
 import { errorCodes } from '@metamask/rpc-errors';
 import { JsonRpcResponse } from '@metamask/utils';
 import type { Json } from '@metamask/utils';
+import { providerErrors } from '@metamask/rpc-errors';
 import createOriginThrottlingMiddleware, {
   SPAM_FILTER_ACTIVATED_ERROR,
   ExtendedJSONRPCRequest,
@@ -116,6 +117,37 @@ describe('createOriginThrottlingMiddleware', () => {
       rejections: 1,
       lastRejection: expect.any(Number),
     });
+    expect(nextCallback).toHaveBeenCalled();
+  });
+
+  it('does not update throttling state if response has userRejected error and rejectAllApprovals is in the error data', async () => {
+    const req = {
+      method: 'eth_sendTransaction',
+      origin: 'testOrigin',
+    } as unknown as ExtendedJSONRPCRequest;
+    const nextCallback = jest.fn();
+    const next = jest
+      .fn()
+      .mockImplementation((callback) => callback(nextCallback));
+    const end = jest.fn();
+    const responseWithUserRejectedError = {
+      error: providerErrors.userRejectedRequest({
+        data: {
+          cause: 'rejectAllApprovals',
+        },
+      }),
+      id: 1,
+      jsonrpc: '2.0',
+    } as unknown as JsonRpcResponse<Json>;
+
+    mockGetThrottledOriginState.mockReturnValueOnce({
+      rejections: 0,
+      lastRejection: 0,
+    });
+
+    await middleware(req, responseWithUserRejectedError, next, end);
+
+    expect(mockUpdateThrottledOriginState).not.toHaveBeenCalled();
     expect(nextCallback).toHaveBeenCalled();
   });
 });

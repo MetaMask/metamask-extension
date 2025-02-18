@@ -261,7 +261,8 @@
     "tslib@npm:^2.6.2": "~2.6.0",
     "@metamask/providers@npm:^18.3.1": "patch:@metamask/providers@npm%3A19.0.0#~/.yarn/patches/@metamask-providers-npm-19.0.0-3d962c6f1a.patch",
     "@ethersproject/signing-key/elliptic": "^6.6.1",
-    "gridplus-sdk/elliptic": "^6.6.1"
+    "gridplus-sdk/elliptic": "^6.6.1",
+    "@metamask/transaction-controller@npm:^45.0.0": "npm:@metamask-previews/transaction-controller@46.0.0-preview-7a21cbc"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
