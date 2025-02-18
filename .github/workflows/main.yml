@@ -87,7 +87,7 @@ jobs:
 
       - run: yarn build:test
 
-      - name: Upload artifact prep-build-test-webpack
+      - name: Upload artifact prep-build-test-browserify
         uses: actions/upload-artifact@v4
         with:
           name: prep-build-test-browserify

@@ -23,7 +23,7 @@ jobs:
       - name: Setup environment
         uses: metamask/github-tools/.github/actions/setup-environment@1d657e262aea7e3f216754febb624831527d2565
 
-      - name: Download artifact prep-build-test-webpack
+      - name: Download artifact prep-build-test-${{ matrix.buildType }}
         uses: actions/download-artifact@v4
         with:
           path: ./dist/
