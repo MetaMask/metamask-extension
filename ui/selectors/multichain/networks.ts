@@ -134,9 +134,8 @@ export const getSelectedMultichainNetworkChainId = (
 export const getSelectedMultichainNetworkConfiguration = (
   state: MultichainNetworkConfigState,
 ) => {
-  const chainId =
-    getSelectedMultichainNetworkChainId(state);
+  const chainId = getSelectedMultichainNetworkChainId(state);
   const networkConfigurationsByChainId =
     getMultichainNetworkConfigurationsByChainId(state);
   return networkConfigurationsByChainId[chainId];
-}
+};

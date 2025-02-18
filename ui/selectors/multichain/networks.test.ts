@@ -208,7 +208,9 @@ describe('Multichain network selectors', () => {
 
   describe('getIsEvmMultichainNetworkSelected', () => {
     it('returns whether the EVM network is selected', () => {
-      expect(getIsEvmMultichainNetworkSelected(mockMultichainNetworkState)).toStrictEqual(false);
+      expect(
+        getIsEvmMultichainNetworkSelected(mockMultichainNetworkState),
+      ).toStrictEqual(false);
     });
   });
 
