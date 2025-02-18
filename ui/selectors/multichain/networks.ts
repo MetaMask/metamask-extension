@@ -22,6 +22,10 @@ import { getInternalAccounts } from '../accounts';
 
 // Selector types
 
+export type MultichainNetworkControllerState = {
+  metamask: InternalMultichainNetworkState;
+};
+
 export type SelectedNetworkChainIdState = {
   metamask: Pick<
     InternalMultichainNetworkState,
