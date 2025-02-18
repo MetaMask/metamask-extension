@@ -12,12 +12,12 @@ import {
   type SelectedNetworkClientIdState,
   getProviderConfig,
   getNetworkConfigurationsByChainId,
-} from '../../shared/modules/selectors/networks';
-import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+} from '../../../shared/modules/selectors/networks';
+import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import {
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
-} from './selectors';
+} from '../selectors';
 
 // Selector types
 

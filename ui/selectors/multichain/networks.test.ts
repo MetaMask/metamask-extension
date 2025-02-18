@@ -7,7 +7,7 @@ import {
 import type { Hex, CaipChainId } from '@metamask/utils';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 
-import { type NetworkState } from '../../shared/modules/selectors/networks';
+import { type NetworkState } from '../../../shared/modules/selectors/networks';
 import {
   type MultichainNetworkControllerState,
   getNonEvmMultichainNetworkConfigurationsByChainId,
@@ -15,7 +15,7 @@ import {
   getSelectedMultichainNetworkChainId,
   getSelectedMultichainNetworkConfiguration,
   getIsEvmSelected,
-} from './multichain-networks';
+} from './networks';
 
 type TestState = MultichainNetworkControllerState &
   NetworkState & {
