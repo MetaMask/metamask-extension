@@ -655,6 +655,7 @@ export default class MetamaskController extends EventEmitter {
         'AccountsController:getAccountByAddress',
         'AccountsController:setAccountName',
         'NetworkController:getState',
+        'MultichainNetworkController:networkDidChange',
       ],
       allowedEvents: ['AccountsController:stateChange'],
     });
