@@ -1,5 +1,4 @@
 import { Driver } from '../webdriver/driver';
-import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
 import FixtureBuilder from '../fixture-builder';
@@ -17,7 +16,6 @@ describe('Test Snap Client Status', function () {
         await loginWithoutBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
-        const snapInstall = new SnapInstall(driver);
         const headerNavbar = new HeaderNavbar(driver);
 
         // navigate to test snaps page and connect to client status snap
@@ -26,23 +24,7 @@ describe('Test Snap Client Status', function () {
         // scroll to and click connect to client-status snap
         await testSnaps.scrollToConnectClientStatus();
         await testSnaps.clickConnectClientStatus();
-
-        // switch to metamask extension
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        // click connect
-        await snapInstall.check_pageIsLoaded();
-        await snapInstall.clickNextButton();
-
-        // click confirm
-        await snapInstall.clickNextButton();
-
-        // click ok
-        await snapInstall.clickNextButton();
-
-        // click send inputs on test snap page
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
-        await testSnaps.check_pageIsLoaded();
+        await testSnaps.completeSnapInstallConfirmation();
 
         // click on submit
         await testSnaps.clickSubmitClientStatus();
@@ -54,12 +36,9 @@ describe('Test Snap Client Status', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-
-        // click on the three dot menu in header bar
         await headerNavbar.check_pageIsLoaded();
-        await headerNavbar.openThreeDotMenu();
 
-        // click on the lock MetaMask
+        // click on the three dot menu in header bar and lock MetaMask
         await headerNavbar.lockMetaMask();
 
         // click send inputs on test snap page

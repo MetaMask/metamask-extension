@@ -38,6 +38,13 @@ export class TestSnaps {
 
   private readonly connectClientStatusButton = '#connectclient-status';
 
+  private readonly connectTransactionInsightButton =
+    '#connecttransaction-insights';
+
+  private readonly getAccountButton = '#getAccounts';
+
+  private readonly sendInsightButton = '#sendInsights';
+
   private readonly submitClientStatusButton = '#sendClientStatusTest';
 
   private readonly reconnectButton = {
@@ -150,6 +157,16 @@ export class TestSnaps {
     await this.driver.clickElement(this.connectClientStatusButton);
   }
 
+  async clickGetAccountButton() {
+    console.log('Click get account button');
+    await this.driver.clickElement(this.getAccountButton);
+  }
+
+  async clickSendInsightButton() {
+    console.log('Click send insight button');
+    await this.driver.clickElement(this.sendInsightButton);
+  }
+
   async clickGetPublicKeyButton() {
     console.log('Wait and click get public key button');
     await this.driver.waitForSelector(this.getPublicKeyButton);
@@ -201,6 +218,11 @@ export class TestSnaps {
     await this.driver.clickElement(this.connectHomePage);
   }
 
+  async clickTransactionInsight() {
+    console.log('Click connect transaction insight button');
+    await this.driver.clickElement(this.connectTransactionInsightButton);
+  }
+
   async clickSubmitClientStatus() {
     console.log('Click send client status button');
     await this.driver.clickElement(this.submitClientStatusButton);
@@ -249,6 +271,14 @@ export class TestSnaps {
       this.connectClientStatusButton,
     );
     await this.driver.scrollToElement(connectClientStatus);
+  }
+
+  async scrollToTransactionInsight() {
+    console.log('Scroll to transaction insight');
+    const connectTransactionInsight = await this.driver.findElement(
+      this.connectTransactionInsightButton,
+    );
+    await this.driver.scrollToElement(connectTransactionInsight);
   }
 
   async waitForReconnectButton() {

@@ -14,6 +14,18 @@ class SnapInstall {
 
   private readonly approveButton = '[data-testid="confirmation-submit-button"]';
 
+  private readonly connectButton = '[data-testid="confirm-btn"]';
+
+  private readonly insightTitle = {
+    text: 'Insights Example Snap',
+    tag: 'span',
+  };
+
+  private readonly transactionType = {
+    css: 'p',
+    text: 'ERC-20',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -48,6 +60,21 @@ class SnapInstall {
   async clickApproveButton() {
     console.log('Click approve button');
     await this.driver.clickElement(this.approveButton);
+  }
+
+  async clickConnectButton() {
+    console.log('Click Connect button');
+    await this.driver.clickElement(this.connectButton);
+  }
+
+  async validateTransactionInsightsTitle() {
+    console.log('Check transaction insights title');
+    await this.driver.waitForSelector(this.insightTitle);
+  }
+
+  async validateTransactionInsightsType() {
+    console.log('Check transaction insights title');
+    await this.driver.waitForSelector(this.transactionType);
   }
 }
 
