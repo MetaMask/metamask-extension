@@ -5642,7 +5642,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-utils@npm:2.1.1, @metamask/keyring-utils@npm:^2.1.1":
+"@metamask/keyring-utils@npm:2.1.1, @metamask/keyring-utils@npm:^2.0.0, @metamask/keyring-utils@npm:^2.1.1":
   version: 2.1.1
   resolution: "@metamask/keyring-utils@npm:2.1.1"
   dependencies:
@@ -5651,17 +5651,6 @@ __metadata:
     "@metamask/utils": "npm:^11.1.0"
     bitcoin-address-validation: "npm:^2.2.3"
   checksum: 10/eaa14376c1c6308316b5b1585b6885081307e8b93973b1e44b9743f30b412afdd570b46a69dbd795ab99a6f27d525f035d576fb4711dd4dc0df3a9fe9ab7591d
-  languageName: node
-  linkType: hard
-
-"@metamask/keyring-utils@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/keyring-utils@npm:2.0.0"
-  dependencies:
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.1.0"
-    bitcoin-address-validation: "npm:^2.2.3"
-  checksum: 10/f7514821fb3bd5f5be575e0d74d5cf8becbdeac35a3e13dcd9e8bf789ba34aa2072783bdc3d0ddac479b97c986bcb54d77cdccedf5945d1c33ef310790e90efb
   languageName: node
   linkType: hard
 
