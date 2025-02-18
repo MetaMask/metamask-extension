@@ -1455,9 +1455,6 @@ describe('MetaMetricsController', function () {
           currentCurrency: 'usd',
           dataCollectionForMarketing: false,
           preferences: { privacyMode: true, tokenNetworkFilter: [] },
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          custodyAccountDetails: {},
-          ///: END:ONLY_INCLUDE_IF
         });
 
         expect(traits).toStrictEqual({
@@ -1485,11 +1482,6 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.HasMarketingConsent]: false,
           [MetaMetricsUserTrait.SecurityProviders]: ['blockaid'],
           [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          [MetaMetricsUserTrait.MmiExtensionId]: 'testid',
-          [MetaMetricsUserTrait.MmiAccountAddress]: null,
-          [MetaMetricsUserTrait.MmiIsCustodian]: false,
-          ///: END:ONLY_INCLUDE_IF
           ///: BEGIN:ONLY_INCLUDE_IF(petnames)
           [MetaMetricsUserTrait.PetnameAddressCount]: 3,
           ///: END:ONLY_INCLUDE_IF
@@ -1552,9 +1544,6 @@ describe('MetaMetricsController', function () {
           },
           security_providers: ['blockaid'],
           currentCurrency: 'usd',
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          custodyAccountDetails: {},
-          ///: END:ONLY_INCLUDE_IF
         });
 
         const updatedTraits = controller._buildUserTraitsObject({
@@ -1611,9 +1600,6 @@ describe('MetaMetricsController', function () {
           dataCollectionForMarketing: false,
           preferences: { privacyMode: true, tokenNetworkFilter: [] },
           securityAlertsEnabled: true,
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          custodyAccountDetails: {},
-          ///: END:ONLY_INCLUDE_IF
         });
 
         expect(updatedTraits).toStrictEqual({
@@ -1678,9 +1664,6 @@ describe('MetaMetricsController', function () {
           securityAlertsEnabled: true,
           security_providers: ['blockaid'],
           currentCurrency: 'usd',
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          custodyAccountDetails: {},
-          ///: END:ONLY_INCLUDE_IF
         });
 
         const updatedTraits = controller._buildUserTraitsObject({
@@ -1727,9 +1710,6 @@ describe('MetaMetricsController', function () {
           securityAlertsEnabled: true,
           security_providers: ['blockaid'],
           currentCurrency: 'usd',
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          custodyAccountDetails: {},
-          ///: END:ONLY_INCLUDE_IF
         });
         expect(updatedTraits).toStrictEqual(null);
       });
