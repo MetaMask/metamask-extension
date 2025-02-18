@@ -1,6 +1,7 @@
 import { SnapKeyring, SnapKeyringCallbacks } from '@metamask/eth-snap-keyring';
 import browser from 'webextension-polyfill';
 import { SnapId } from '@metamask/snaps-sdk';
+import { assertIsValidSnapId } from '@metamask/snaps-utils';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
@@ -16,7 +17,7 @@ import MetaMetricsController from '../../controllers/metametrics-controller';
 import { isBlockedUrl } from './utils/isBlockedUrl';
 import { showError, showSuccess } from './utils/showResult';
 import { SnapKeyringBuilderMessenger } from './types';
-import { assetIsSnapId, getSnapName, isSnapPreinstalled } from './snaps';
+import { getSnapName, isSnapPreinstalled } from './snaps';
 
 /**
  * Builder type for the Snap keyring.
@@ -193,7 +194,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     accountNameSuggestion: string = '',
     displayConfirmation: boolean = false,
   ) {
-    assetIsSnapId(snapId);
+    assertIsValidSnapId(snapId);
 
     const snapName = getSnapName(snapId, this.#messenger);
     const { id: addAccountFlowId } = this.#messenger.call(
@@ -336,7 +337,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     snapId: string,
     handleUserInput: (accepted: boolean) => Promise<void>,
   ) {
-    assetIsSnapId(snapId);
+    assertIsValidSnapId(snapId);
 
     const snapName = getSnapName(snapId, this.#messenger);
     const { id: removeAccountApprovalId } = this.#messenger.call(
