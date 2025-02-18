@@ -27,8 +27,8 @@ const useMultiChainAssets = () => {
   const assetsMetadata = useSelector(getAssetsMetadata);
   const assetRates = useSelector(getAssetsRates);
 
-  const assetIds = accountAssets[account.id] || [];
-  const balances = multichainBalances[account.id];
+  const assetIds = accountAssets?.[account.id] || [];
+  const balances = multichainBalances?.[account.id];
 
   return assetIds.map((assetId) => {
     const [chainId, assetDetails] = assetId.split('/');
