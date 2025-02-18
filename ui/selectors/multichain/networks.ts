@@ -76,17 +76,43 @@ export const getNonEvmMultichainNetworkConfigurationsByChainId = (
   state: MultichainNetworkConfigurationsByChainIdState,
 ) => state.metamask.multichainNetworkConfigurationsByChainId;
 
+export const getIsNonEvmNetworksEnabled = createDeepEqualSelector(
+  getIsBitcoinSupportEnabled,
+  getIsSolanaSupportEnabled,
+  getInternalAccounts,
+  (isBitcoinEnabled, isSolanaEnabled, internalAccounts) => {
+    if (isBitcoinEnabled && isSolanaEnabled) {
+      return { bitcoinEnabled: true, solanaEnabled: true };
+    }
+
+    let bitcoinEnabled = isBitcoinEnabled;
+    let solanaEnabled = isSolanaEnabled;
+
+    for (const { scopes } of internalAccounts) {
+      if (scopes.includes(BtcScope.Mainnet)) {
+        bitcoinEnabled = true;
+      }
+      if (scopes.includes(SolScope.Mainnet)) {
+        solanaEnabled = true;
+      }
+      if (bitcoinEnabled && solanaEnabled) {
+        break;
+      }
+    }
+
+    return { bitcoinEnabled, solanaEnabled };
+  },
+);
+
 export const getMultichainNetworkConfigurationsByChainId =
   createDeepEqualSelector(
     getNonEvmMultichainNetworkConfigurationsByChainId,
     getNetworkConfigurationsByChainId,
-    getIsBitcoinSupportEnabled,
-    getIsSolanaSupportEnabled,
+    getIsNonEvmNetworksEnabled,
     (
       nonEvmNetworkConfigurationsByChainId,
       networkConfigurationsByChainId,
-      isBitcoinSupportEnabled,
-      isSolanaSupportEnabled,
+      isNonEvmNetworksEnabled,
     ): Record<CaipChainId, InternalMultichainNetworkConfiguration> => {
       const filteredNonEvmNetworkConfigurationsByChainId: Record<
         CaipChainId,
@@ -95,12 +121,13 @@ export const getMultichainNetworkConfigurationsByChainId =
 
       // This is not ideal but since there are only two non EVM networks
       // we can just filter them out based on the support enabled
-      if (isBitcoinSupportEnabled) {
+      const { bitcoinEnabled, solanaEnabled } = isNonEvmNetworksEnabled;
+      if (bitcoinEnabled) {
         filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Mainnet] =
           nonEvmNetworkConfigurationsByChainId[BtcScope.Mainnet];
       }
 
-      if (isSolanaSupportEnabled) {
+      if (solanaEnabled) {
         filteredNonEvmNetworkConfigurationsByChainId[SolScope.Mainnet] =
           nonEvmNetworkConfigurationsByChainId[SolScope.Mainnet];
       }
