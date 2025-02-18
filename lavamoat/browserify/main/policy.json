@@ -978,23 +978,7 @@
         "immer": true
       }
     },
-    "@metamask/queued-request-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
     "@metamask/remote-feature-flag-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/selected-network-controller>@metamask/base-controller": {
       "globals": {
         "setTimeout": true
       },
@@ -1746,7 +1730,7 @@
     },
     "@metamask/queued-request-controller": {
       "packages": {
-        "@metamask/queued-request-controller>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
         "@metamask/selected-network-controller": true,
@@ -1795,7 +1779,7 @@
     },
     "@metamask/selected-network-controller": {
       "packages": {
-        "@metamask/selected-network-controller>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true
       }
     },
