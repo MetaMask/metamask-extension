@@ -1,10 +1,10 @@
 import React from 'react';
+import { AuthorizationList } from '@metamask/transaction-controller';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
-import { AccountDetails } from './account-details';
 import configureStore from '../../../../../../../store/store';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import { AuthorizationList } from '@metamask/transaction-controller';
+import { AccountDetails } from './account-details';
 
 const FROM_MOCK = '0x1234567890123456789012345678901234567890';
 const DELEGATION_MOCK = '0xabcdefabcdefabcdefabcdefabcdefabcdefabcdef';

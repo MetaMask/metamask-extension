@@ -4,7 +4,7 @@ import configureStore from '../../../../../../store/store';
 import { ConfirmContextProvider } from '../../../../context/confirm';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
-import { UpgradeCancelModal } from './upgrade-cancel-modal';
+import { Acknowledge } from './acknowledge';
 
 const DELEGATION_MOCK = '0x1234567890abcdef1234567890abcdef12345678';
 
@@ -17,8 +17,8 @@ const STATE_MOCK = getMockConfirmStateForTransaction(TRANSACTION_MOCK);
 const store = configureStore(STATE_MOCK);
 
 const Story = {
-  title: 'Confirmations/Components/Confirm/UpgradeCancelModal',
-  component: UpgradeCancelModal,
+  title: 'Confirmations/Components/Confirm/Acknowledge',
+  component: Acknowledge,
   decorators: [
     (story) => {
       return (
@@ -33,7 +33,7 @@ const Story = {
 export default Story;
 
 export const DefaultStory = () => (
-  <UpgradeCancelModal isOpen={true} onClose={() => {}} onReject={() => {}} />
+  <Acknowledge isAcknowledged={true} onAcknowledgeToggle={() => {}} />
 );
 
 DefaultStory.storyName = 'Default';

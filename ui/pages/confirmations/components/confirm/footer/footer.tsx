@@ -8,7 +8,6 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
-  Checkbox,
   IconName,
 } from '../../../../../components/component-library';
 import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
@@ -34,15 +33,16 @@ import { getConfirmationSender } from '../utils';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import {
-  AlignItems,
   Display,
   FlexDirection,
   Severity,
 } from '../../../../../helpers/constants/design-system';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
+import { useIsUpgradeTransaction } from '../info/hooks/useIsUpgradeTransaction';
 import { UpgradeCancelModal } from './upgrade-cancel-modal';
 import OriginThrottleModal from './origin-throttle-modal';
+import { Acknowledge } from './acknowledge';
 
 export type OnCancelHandler = ({
   location,
@@ -176,10 +176,6 @@ const Footer = () => {
   const [showOriginThrottleModal, setShowOriginThrottleModal] = useState(false);
   const { id: currentConfirmationId } = currentConfirmation || {};
 
-  const isUpgrade = Boolean(
-    currentConfirmation?.txParams?.authorizationList?.length,
-  );
-
   const hardwareWalletRequiresConnection = useSelector((state) => {
     if (from) {
       return doesAddressRequireLedgerHidConnection(state, from);
@@ -188,12 +184,14 @@ const Footer = () => {
   });
 
   const isSignature = isSignatureTransactionType(currentConfirmation);
-  const [isUpgradeAcknowledged, setIsUpgradeAcknowledged] = useState(false);
+  const isUpgradeTransaction = useIsUpgradeTransaction();
+  const [isAcknowledged, setIsAcknowledged] = useState(false);
+  const isAcknowledgeRequired = isUpgradeTransaction;
 
   const isConfirmDisabled =
     (!isScrollToBottomCompleted && !isSignature) ||
     hardwareWalletRequiresConnection ||
-    (isUpgrade && !isUpgradeAcknowledged);
+    (isAcknowledgeRequired && !isAcknowledged);
 
   const rejectApproval = useCallback(
     ({ location }: { location?: MetaMetricsEventLocation } = {}) => {
@@ -216,7 +214,7 @@ const Footer = () => {
         return;
       }
 
-      if (isUpgrade) {
+      if (isUpgradeTransaction) {
         setUpgradeCancelModalOpen(true);
         return;
       }
@@ -225,7 +223,7 @@ const Footer = () => {
       dispatch(updateCustomNonce(''));
       dispatch(setNextNonce(''));
     },
-    [currentConfirmation, isUpgrade],
+    [currentConfirmation, isUpgradeTransaction],
   );
 
   const onSubmit = useCallback(() => {
@@ -281,14 +279,10 @@ const Footer = () => {
         onClose={() => setUpgradeCancelModalOpen(false)}
         onReject={rejectApproval}
       />
-      {isUpgrade && (
-        <Checkbox
-          label={t('confirmUpgradeAcknowledge')}
-          isChecked={isUpgradeAcknowledged}
-          onChange={() => setIsUpgradeAcknowledged(!isUpgradeAcknowledged)}
-          alignItems={AlignItems.flexStart}
-        />
-      )}
+      <Acknowledge
+        isAcknowledged={isAcknowledged}
+        onAcknowledgeToggle={setIsAcknowledged}
+      />
       <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={4}>
         <Button
           block
@@ -296,7 +290,7 @@ const Footer = () => {
           onClick={handleFooterCancel}
           size={ButtonSize.Lg}
           variant={ButtonVariant.Secondary}
-          endIconName={isUpgrade ? IconName.ArrowDown : undefined}
+          endIconName={isUpgradeTransaction ? IconName.ArrowDown : undefined}
         >
           {t('cancel')}
         </Button>
