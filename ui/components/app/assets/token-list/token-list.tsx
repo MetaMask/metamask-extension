@@ -1,7 +1,6 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
-import { useVirtualizer } from '@tanstack/react-virtual';
 import TokenCell from '../token-cell';
 import {
   getChainIdsToPoll,
@@ -18,7 +17,7 @@ import { TokenWithFiatAmount } from '../types';
 import { getMultichainIsEvm } from '../../../../selectors/multichain';
 import { filterAssets } from '../util/filter';
 import { sortAssets } from '../util/sort';
-import { Box } from '../../../component-library';
+import { useVirtualList } from '../../../../hooks/useVirtualList';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -71,90 +70,22 @@ function TokenList({ onTokenClick }: TokenListProps) {
     }
   }, [sortedFilteredTokens]);
 
-  const listRef = useRef<HTMLDivElement | null>(null);
-  const scrollParentRef = useRef<HTMLElement | null>(null);
-
-  useEffect(() => {
-    function getScrollParent(node: HTMLElement | null): HTMLElement | null {
-      if (node === null) {
-        return null;
-      }
-
-      if (node.scrollHeight > node.clientHeight) {
-        return node;
-      }
-      return getScrollParent(node.parentElement);
-    }
-
-    if (listRef.current) {
-      const scrollParent = getScrollParent(listRef.current);
-      (scrollParentRef as React.MutableRefObject<HTMLElement | null>).current =
-        scrollParent;
-      console.log('Scroll Parent:', scrollParent);
-    }
-  }, []);
-
-  const virtualizer = useVirtualizer({
-    count: sortedFilteredTokens.length,
-    overscan: 5,
-    estimateSize: () => 62,
-    getScrollElement: () => scrollParentRef.current,
-    scrollMargin: listRef.current?.offsetTop ?? 0,
+  const { VirtualList } = useVirtualList({
+    items: sortedFilteredTokens,
+    estimatedSize: 62, // 62px
+    getKey: (token) => `${token.chainId}-${token.symbol}-${token.address}`,
   });
 
-  useEffect(() => {
-    if (scrollParentRef.current) {
-      virtualizer.measure();
-    }
-  }, [virtualizer, scrollParentRef.current]);
-
-  const virtualTokens = virtualizer.getVirtualItems();
-
   return (
-    <Box
-      style={{
-        minHeight: '80px',
-      }}
-      ref={listRef}
-    >
-      <Box
-        style={{
-          height: `${virtualizer.getTotalSize()}px`,
-          width: '100%',
-          position: 'relative',
-        }}
-      >
-        {virtualTokens.map((virtualItem) => {
-          const token = sortedFilteredTokens[virtualItem.index] ?? undefined;
-          if (!token) {
-            return null;
-          }
-
-          return (
-            <Box
-              key={`${token.chainId}-${token.symbol}-${token.address}`}
-              data-index={virtualItem.index}
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: `${virtualItem.size}px`,
-                transform: `translateY(${
-                  virtualItem.start - virtualizer.options.scrollMargin
-                }px)`,
-              }}
-            >
-              <TokenCell
-                token={token}
-                privacyMode={privacyMode}
-                onClick={onTokenClick}
-              />
-            </Box>
-          );
-        })}
-      </Box>
-    </Box>
+    <VirtualList>
+      {(token) => (
+        <TokenCell
+          token={token}
+          privacyMode={privacyMode}
+          onClick={onTokenClick}
+        />
+      )}
+    </VirtualList>
   );
 }
 

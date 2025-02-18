@@ -1,15 +1,8 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-} from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 import type { Dispatch } from 'redux';
 import { useDispatch, useSelector } from 'react-redux';
 import { EthAccountType, KeyringAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { useVirtualizer } from '@tanstack/react-virtual';
 import {
   getUpdatedAndSortedAccounts,
   getSelectedInternalAccount,
@@ -28,7 +21,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
-import { Box } from '../../../../component-library';
+import { useVirtualList } from '../../../../../hooks/useVirtualList';
 import { SendPageRow } from '.';
 
 type SendPageYourAccountsProps = {
@@ -39,19 +32,20 @@ const defaultAllowedAccountTypes = [EthAccountType.Eoa, EthAccountType.Erc4337];
 
 const AccountListItemContainer = React.memo(
   (props: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    account: any;
+    account: InternalAccount;
     selectedAccount: InternalAccount;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     dispatch: Dispatch<any>;
     trackEvent: UITrackEventMethod;
   }) => {
     const { account, selectedAccount, dispatch, trackEvent } = props;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const looseTypedAccount = account as any;
 
     const onClick = useCallback(() => {
       dispatch(
         addHistoryEntry(
-          `sendFlow - User clicked recipient from my accounts. address: ${account.address}, nickname ${account.name}`,
+          `sendFlow - User clicked recipient from my accounts. address: ${account.address}, nickname ${looseTypedAccount.name}`,
         ),
       );
       trackEvent(
@@ -68,17 +62,17 @@ const AccountListItemContainer = React.memo(
       dispatch(
         updateRecipient({
           address: account.address,
-          nickname: account.name,
+          nickname: looseTypedAccount.name,
         }),
       );
       dispatch(updateRecipientUserInput(account.address));
-    }, [account.address, account.name, dispatch, trackEvent]);
+    }, [dispatch, account.address, trackEvent, looseTypedAccount.name]);
 
     return (
       <AccountListItem
-        account={account}
+        account={looseTypedAccount}
         selected={selectedAccount.address === account.address}
-        isPinned={Boolean(account.pinned)}
+        isPinned={Boolean(looseTypedAccount.pinned)}
         shouldScrollToWhenSelected={false}
         onClick={onClick}
       />
@@ -94,91 +88,31 @@ export const SendPageYourAccounts = ({
 
   // Your Accounts
   const accounts = useSelector(getUpdatedAndSortedAccounts);
-  const filteredAccounts = useMemo(() => {
+  const filteredAccounts: InternalAccount[] = useMemo(() => {
     return accounts.filter((account: InternalAccount) =>
       allowedAccountTypes.includes(account.type),
     );
   }, [accounts, allowedAccountTypes]);
   const selectedAccount = useSelector(getSelectedInternalAccount);
 
-  const listRef = useRef<HTMLDivElement | null>(null);
-  const scrollParentRef = useRef<HTMLElement | null>(null);
-
-  useEffect(() => {
-    function getScrollParent(node: HTMLElement | null): HTMLElement | null {
-      if (node === null) {
-        return null;
-      }
-
-      if (node.scrollHeight > node.clientHeight) {
-        return node;
-      }
-      return getScrollParent(node.parentElement);
-    }
-
-    if (listRef.current) {
-      const scrollParent = getScrollParent(listRef.current);
-      (scrollParentRef as React.MutableRefObject<HTMLElement | null>).current =
-        scrollParent;
-      console.log('Scroll Parent:', scrollParent);
-    }
-  }, []);
-  const virtualizer = useVirtualizer({
-    count: filteredAccounts.length,
-    overscan: 5,
-    estimateSize: () => 80,
-    getScrollElement: () => scrollParentRef.current,
-    scrollMargin: listRef.current?.offsetTop ?? 0,
+  const { VirtualList } = useVirtualList({
+    items: filteredAccounts,
+    estimatedSize: 80, // 80px
+    getKey: (account) => account.address,
   });
 
-  useEffect(() => {
-    if (scrollParentRef.current) {
-      virtualizer.measure();
-    }
-  }, [virtualizer, scrollParentRef.current]);
-
-  const items = virtualizer.getVirtualItems();
-
   return (
-    <SendPageRow ref={listRef}>
-      <Box
-        style={{
-          height: `${virtualizer.getTotalSize()}px`,
-          width: '100%',
-          position: 'relative',
-        }}
-      >
-        {items.map((virtualItem) => {
-          const account = filteredAccounts[virtualItem.index] ?? undefined;
-          if (!account) {
-            return null;
-          }
-
-          return (
-            <Box
-              key={account.address}
-              data-index={virtualItem.index}
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: `${virtualItem.size}px`,
-                transform: `translateY(${
-                  virtualItem.start - virtualizer.options.scrollMargin
-                }px)`,
-              }}
-            >
-              <AccountListItemContainer
-                account={account}
-                selectedAccount={selectedAccount}
-                dispatch={dispatch}
-                trackEvent={trackEvent}
-              />
-            </Box>
-          );
-        })}
-      </Box>
+    <SendPageRow>
+      <VirtualList>
+        {(account) => (
+          <AccountListItemContainer
+            account={account}
+            selectedAccount={selectedAccount}
+            dispatch={dispatch}
+            trackEvent={trackEvent}
+          />
+        )}
+      </VirtualList>
     </SendPageRow>
   );
 };

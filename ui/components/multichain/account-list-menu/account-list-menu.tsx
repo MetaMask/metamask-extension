@@ -15,7 +15,6 @@ import {
 } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
-import { useVirtualizer } from '@tanstack/react-virtual';
 import {
   BtcAccountType,
   EthAccountType,
@@ -132,6 +131,7 @@ import {
   SOLANA_WALLET_SNAP_ID,
 } from '../../../../shared/lib/accounts/solana-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
+import { useVirtualList } from '../../../hooks/useVirtualList';
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -182,12 +182,12 @@ export const getActionTitle = (
   }
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type TempAccount = any;
 const AccountListItemContainer = React.memo(
   (props: {
-    account: TempAccount;
-    onAccountListItemItemClicked: (account: TempAccount) => () => void;
+    account: MergedInternalAccount;
+    onAccountListItemItemClicked: (
+      account: MergedInternalAccount,
+    ) => () => void;
     onClose: () => void;
     selected: boolean;
     connectedAvatar: string | undefined | null;
@@ -364,26 +364,6 @@ export const AccountListMenu = ({
 
     return _searchResults;
   }, [filteredAccounts, filteredUpdatedAccountList, searchQuery]);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const virtualizer = useVirtualizer({
-    count: searchResults.length,
-    estimateSize: () => 80,
-    getScrollElement: () => scrollRef.current,
-    getItemKey: (idx) => searchResults[idx]?.address,
-  });
-  const virtualSearchResults = virtualizer.getVirtualItems();
-
-  // Scroll to the selected item when the component mounts
-  useEffect(() => {
-    const idx = filteredAccounts.findIndex(
-      (account) => selectedAccount.address === account.address,
-    );
-    if (idx !== -1) {
-      virtualizer.scrollToIndex(idx);
-    }
-    // Intentionally left deps empty to only scroll when menu is opened and list is initialized
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const title = useMemo(
     () => getActionTitle(t as (text: string) => string, actionMode),
@@ -401,7 +381,7 @@ export const AccountListMenu = ({
   }
 
   const onAccountListItemItemClicked = useCallback(
-    (account) => {
+    (account: MergedInternalAccount) => {
       return () => {
         onClose();
         trackEvent({
@@ -426,6 +406,16 @@ export const AccountListMenu = ({
     },
     [defaultHomeActiveTabName, dispatch, onClose, trackEvent],
   );
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const { VirtualList } = useVirtualList({
+    items: searchResults,
+    estimatedSize: 80, // 80px
+    getKey: (account) => account.address,
+    startingIndex: filteredAccounts.findIndex(
+      (account) => selectedAccount.address === account.address,
+    ),
+  });
 
   return (
     <Modal isOpen onClose={onClose}>
@@ -708,9 +698,6 @@ export const AccountListMenu = ({
             {/* Account list block */}
             <Box
               className="multichain-account-menu-popover__list"
-              style={{
-                minHeight: '80px',
-              }}
               ref={scrollRef}
             >
               {searchResults.length === 0 && searchQuery !== '' ? (
@@ -723,21 +710,10 @@ export const AccountListMenu = ({
                   {t('noAccountsFound')}
                 </Text>
               ) : null}
-              <Box
-                style={{
-                  height: `${virtualizer.getTotalSize()}px`,
-                  width: '100%',
-                  position: 'relative',
-                }}
-              >
-                {virtualSearchResults.map((virtualItem) => {
-                  // const account = virtualItem;
-                  const account: MergedInternalAccount | undefined =
-                    searchResults[virtualItem.index] ?? undefined;
-                  if (!account) {
-                    return null;
-                  }
 
+              {/* LIST HERE */}
+              <VirtualList>
+                {(account) => {
                   const connectedSite = connectedSites[account.address]?.find?.(
                     ({ origin }) => origin === currentTabOrigin,
                   );
@@ -746,7 +722,6 @@ export const AccountListMenu = ({
                     searchQuery.length === 0 && account.hidden;
 
                   /* NOTE: Hidden account will be displayed only in the search list */
-
                   return (
                     <Box
                       className={
@@ -757,15 +732,6 @@ export const AccountListMenu = ({
                       display={
                         hideAccountListItem ? Display.None : Display.Block
                       }
-                      key={account.address}
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        minHeight: `${virtualItem.size}px`,
-                        transform: `translateY(${virtualItem.start}px)`,
-                      }}
                     >
                       <AccountListItemContainer
                         account={account}
@@ -781,8 +747,8 @@ export const AccountListMenu = ({
                       />
                     </Box>
                   );
-                })}
-              </Box>
+                }}
+              </VirtualList>
             </Box>
             {/* Hidden Accounts, this component shows hidden accounts in account list Item*/}
             {hiddenAddresses.length > 0 ? (
