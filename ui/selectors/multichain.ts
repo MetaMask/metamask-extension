@@ -41,7 +41,11 @@ import {
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
 } from '../../shared/modules/selectors/networks';
-import { AccountsState, getSelectedInternalAccount } from './accounts';
+import {
+  AccountsState,
+  getInternalAccounts,
+  getSelectedInternalAccount,
+} from './accounts';
 import {
   getIsMainnet,
   getMaybeSelectedInternalAccount,
@@ -49,7 +53,6 @@ import {
   getSelectedAccountCachedBalance,
   getShouldShowFiat,
   getShowFiatInTestnets,
-  getTokenList,
 } from './selectors';
 
 export type RatesState = {
@@ -496,30 +499,15 @@ export const getMultichainNetworkConfigurationsByChainId = (
   };
 };
 
-export const getMultichainTokenList = (
-  state: MultichainState,
-  account?: InternalAccount,
-) => {
-  const selectedAccount = account ?? getSelectedInternalAccount(state);
-  const isEvm = getMultichainIsEvm(state, selectedAccount);
-  if (isEvm) {
-    return getTokenList;
-  }
-  const nativeToken = getMultichainNativeCurrency(state, account);
-  return Object.fromEntries(
-    Object.entries(state?.metamask?.assetsMetadata ?? {})
-      .map(([a, m]) => {
-        return [
-          a,
-          {
-            ...m,
-            ...m.units[0],
-            chainId: a.split('/')[0],
-            address: a.split('/')[1],
-            isNative: nativeToken === m.units[0].symbol,
-          },
-        ];
-      })
-      .filter(([, m]) => !m.isNative),
-  );
-};
+export function getLastSelectedNonEvmAccount(state: MultichainState) {
+  const nonEvmAccounts = getInternalAccounts(state);
+  return nonEvmAccounts
+    .filter((account) => !isEvmAccountType(account.type))
+    .sort(
+      (a, b) => (b.metadata.lastSelected ?? 0) - (a.metadata.lastSelected ?? 0),
+    )[0];
+}
+
+export function getAssetsRates(state: any) {
+  return state.metamask.conversionRates;
+}
