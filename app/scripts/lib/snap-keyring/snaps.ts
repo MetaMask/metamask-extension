@@ -1,6 +1,7 @@
 import { SnapId } from '@metamask/snaps-sdk';
 import {
   getLocalizedSnapManifest,
+  isSnapId,
   stripSnapPrefix,
 } from '@metamask/snaps-utils';
 import PREINSTALLED_SNAPS from '../../snaps/preinstalled-snaps';
@@ -12,8 +13,8 @@ import { SnapKeyringBuilderMessenger } from './types';
  * @param snapId - Snap ID to assert.
  * @throws An error if the Snap ID is invalid.
  */
-export function assertSnapIdIsValid(snapId: string): asserts snapId is SnapId {
-  if (!snapId) {
+export function assetIsSnapId(snapId: string): asserts snapId is SnapId {
+  if (!isSnapId(snapId)) {
     throw new Error(`Invalid Snap ID: ${snapId}`);
   }
 }
