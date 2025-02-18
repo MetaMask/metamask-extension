@@ -626,6 +626,7 @@ export default class MetamaskController extends EventEmitter {
         'SnapKeyring:accountAssetListUpdated',
         'SnapKeyring:accountBalancesUpdated',
         'SnapKeyring:accountTransactionsUpdated',
+        'MultichainNetworkController:networkDidChange',
       ],
       allowedActions: [
         'KeyringController:getAccounts',
