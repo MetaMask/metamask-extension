@@ -4886,9 +4886,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:49.0.0":
-  version: 49.0.0
-  resolution: "@metamask/assets-controllers@npm:49.0.0"
+"@metamask/assets-controllers@npm:50.0.0":
+  version: 50.0.0
+  resolution: "@metamask/assets-controllers@npm:50.0.0"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -4918,7 +4918,7 @@ __metadata:
     single-call-balance-checker-abi: "npm:^1.0.0"
     uuid: "npm:^8.3.2"
   peerDependencies:
-    "@metamask/accounts-controller": ^23.0.1
+    "@metamask/accounts-controller": ^24.0.0
     "@metamask/approval-controller": ^7.0.0
     "@metamask/keyring-controller": ^19.0.0
     "@metamask/network-controller": ^22.0.0
@@ -4927,13 +4927,13 @@ __metadata:
     "@metamask/providers": ^18.1.0
     "@metamask/snaps-controllers": ^9.19.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/c94089dcae780527396a4ff5126dab40efe13c9fda6c7fa8967aa39919eb63ae53e9bd1eb5a1da39dc5b4bda952975958ab8cdb73a71c3cce205e281ee5a1bc6
+  checksum: 10/52e0ba067869f995a11d0bbc8ae4f8e223d34f2922a5719c120b3063440a6f277fbd3e8364bed5f9cbeb5b3da6227f2ce8ff752ee8a96bf45a9735ad7f17b57e
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A49.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-49.0.0-e9c0266958.patch":
-  version: 49.0.0
-  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A49.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-49.0.0-e9c0266958.patch::version=49.0.0&hash=7473ef"
+"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A50.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-50.0.0-565ca22067.patch":
+  version: 50.0.0
+  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A50.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-50.0.0-565ca22067.patch::version=50.0.0&hash=7473ef"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -4963,7 +4963,7 @@ __metadata:
     single-call-balance-checker-abi: "npm:^1.0.0"
     uuid: "npm:^8.3.2"
   peerDependencies:
-    "@metamask/accounts-controller": ^23.0.1
+    "@metamask/accounts-controller": ^24.0.0
     "@metamask/approval-controller": ^7.0.0
     "@metamask/keyring-controller": ^19.0.0
     "@metamask/network-controller": ^22.0.0
@@ -4972,7 +4972,7 @@ __metadata:
     "@metamask/providers": ^18.1.0
     "@metamask/snaps-controllers": ^9.19.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/86a21131cc5b5fe66717274188d1b52aa3e37e01c8d154edaa65456308b013417cc06aab676f0509f013a24df82abbcefd6b29521f851eef4ab5a9b47df71778
+  checksum: 10/7362a478f3eeac97b925bfa6c1d8bb2b10aa1c13d1fb8bb169084731afe8ea219a519096d471ddfb2cc12365d3fceb696b516ec4a371b4a4372de4b42af93e11
   languageName: node
   linkType: hard
 
@@ -26656,7 +26656,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^7.0.3"
     "@metamask/api-specs": "npm:^0.10.15"
     "@metamask/approval-controller": "npm:^7.0.0"
-    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A49.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-49.0.0-e9c0266958.patch"
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A50.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-50.0.0-565ca22067.patch"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^0.9.0"
