@@ -830,6 +830,12 @@
         "@metamask/abi-utils>@metamask/utils": true
       }
     },
+    "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util>@metamask/abi-utils": {
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/utils": true
+      }
+    },
     "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@metamask/abi-utils": {
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
@@ -840,6 +846,12 @@
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@metamask/utils": true
+      }
+    },
+    "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/eth-sig-util>@metamask/abi-utils": {
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/utils": true
       }
     },
     "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@metamask/abi-utils": {
@@ -1093,7 +1105,8 @@
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/eth-sig-util": true,
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util": true,
+        "@metamask/snaps-sdk>@metamask/key-tree": true,
         "@metamask/scure-bip39": true,
         "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/utils": true,
         "browserify>buffer": true,
@@ -1184,6 +1197,18 @@
         "@metamask/eth-sig-util>tweetnacl": true
       }
     },
+    "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util": {
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/rlp": true,
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/utils": true,
+        "@metamask/utils>@scure/base": true,
+        "browserify>buffer": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "@metamask/eth-sig-util>tweetnacl": true
+      }
+    },
     "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util": {
       "packages": {
         "@ethereumjs/tx>@ethereumjs/rlp": true,
@@ -1202,6 +1227,18 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@metamask/utils": true,
+        "@metamask/utils>@scure/base": true,
+        "browserify>buffer": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "@metamask/eth-sig-util>tweetnacl": true
+      }
+    },
+    "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/eth-sig-util": {
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/rlp": true,
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
+        "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/utils": true,
         "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
@@ -1258,8 +1295,9 @@
     },
     "@metamask/keyring-controller>@metamask/eth-simple-keyring": {
       "packages": {
+        "@ethereumjs/tx": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/eth-sig-util": true,
+        "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/utils": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
@@ -1435,6 +1473,9 @@
       }
     },
     "@metamask/keyring-controller": {
+      "globals": {
+        "console.log": true
+      },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/base-controller": true,
@@ -1444,7 +1485,8 @@
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
         "@metamask/keyring-controller>@metamask/utils": true,
         "@metamask/name-controller>async-mutex": true,
-        "@metamask/keyring-controller>ethereumjs-wallet": true
+        "@metamask/keyring-controller>ethereumjs-wallet": true,
+        "@metamask/keyring-controller>ulid": true
       }
     },
     "@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client": {
@@ -5771,6 +5813,12 @@
       },
       "packages": {
         "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": true
+      }
+    },
+    "@metamask/keyring-controller>ulid": {
+      "globals": {
+        "console.error": true,
+        "define": true
       }
     },
     "react-markdown>unified": {
