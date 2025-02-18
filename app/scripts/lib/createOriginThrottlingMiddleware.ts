@@ -84,7 +84,7 @@ export default function createOriginThrottlingMiddleware({
     next((callback: () => void) => {
       if ('error' in res && res.error && isUserRejectedError(res.error)) {
         const extraData = res.error?.data as { cause?: string };
-        // Currently any rejection caused by rejectAll is not considered a spam
+        // Any rejection caused by rejectAllApprovals is not evaluated as user rejection for now
         if (extraData?.cause === 'rejectAllApprovals') {
           return callback();
         }
