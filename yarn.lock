@@ -26728,7 +26728,11 @@ __metadata:
     "@metamask/snaps-rpc-methods": "npm:^11.11.0"
     "@metamask/snaps-sdk": "npm:^6.17.1"
     "@metamask/snaps-utils": "npm:^8.10.0"
+<<<<<<< HEAD
     "@metamask/solana-wallet-snap": "npm:^1.6.0"
+=======
+    "@metamask/solana-wallet-snap": "npm:^1.3.0"
+>>>>>>> 2289c0c92e (feat: yarn updated)
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.0.0"
     "@metamask/transaction-controller": "npm:^45.0.0"
