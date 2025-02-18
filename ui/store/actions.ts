@@ -2503,12 +2503,14 @@ export function updateNetwork(
 }
 
 export function setActiveNetwork(
-  id: SupportedCaipChainId | NetworkClientId,
+  networkConfigurationId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
-    log.debug(`background.setActiveNetwork: ${id}`);
+    log.debug(`background.setActiveNetwork: ${networkConfigurationId}`);
     try {
-      await submitRequestToBackground('setActiveNetwork', [id]);
+      await submitRequestToBackground('setActiveNetwork', [
+        networkConfigurationId,
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning('Had a problem changing networks!'));
