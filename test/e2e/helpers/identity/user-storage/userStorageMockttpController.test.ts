@@ -22,7 +22,7 @@ describe('UserStorageMockttpController', () => {
         },
       );
 
-      expect(request.json).toEqual([]);
+      expect(request.json).toEqual(null);
     });
 
     it('handles GET requests that have a pre-defined response', async () => {
