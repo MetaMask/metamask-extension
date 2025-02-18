@@ -575,7 +575,7 @@ export function getCrossChainMetaMaskCachedBalances(state) {
  */
 export function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
   const { accountsByChainId } = state.metamask;
-  const { address: selectedAddress } = getSelectedInternalAccount(state);
+  const { address: selectedAddress } = getSelectedEvmInternalAccount(state);
 
   const balancesByChainId = {};
   for (const [chainId, accounts] of Object.entries(accountsByChainId || {})) {
