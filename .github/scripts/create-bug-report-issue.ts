@@ -88,7 +88,7 @@ async function main(): Promise<void> {
   const regressionLabelProduction: Label = craftRegressionLabel(RegressionStage.Production, releaseVersion);
   const teamLabel: Label = craftTeamLabel(`${platformName}-platform`);
 
-  // Create of retrieve the different labels
+  // Create or retrieve the different labels
   await createOrRetrieveLabel(octokit, repoOwner, codeRepoName, regressionLabelProduction);
   await createOrRetrieveLabel(octokit, repoOwner, codeRepoName, regressionLabelTesting);
   await createOrRetrieveLabel(octokit, repoOwner, planningRepoName, regressionLabelProduction);
