@@ -18,21 +18,9 @@ import {
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
 } from '../selectors';
+import { getInternalAccounts } from '../accounts';
 
 // Selector types
-
-export type MultichainNetworkControllerState = {
-  metamask: InternalMultichainNetworkState;
-};
-
-export type NetworkConfigurationsState = {
-  metamask: {
-    networkConfigurations: Record<
-      string,
-      InternalMultichainNetworkConfiguration
-    >;
-  };
-};
 
 export type SelectedNetworkChainIdState = {
   metamask: Pick<
