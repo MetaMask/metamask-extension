@@ -228,14 +228,25 @@ export type StartPollingForBridgeTxStatusArgsSerialized = Omit<
 
 export type SourceChainTxMetaId = string;
 
+export type SolanaTransactionType = 'bridge' | 'swap';
+
+export type SolanaBridgeHistoryItem = Omit<BridgeHistoryItem, 'txMetaId'> & {
+  txMetaId: string;
+  txSignature: string;
+  transactionType: SolanaTransactionType;
+};
+
 export type BridgeStatusControllerState = {
   txHistory: Record<SourceChainTxMetaId, BridgeHistoryItem>;
+  solanaTxHistory: Record<string, SolanaBridgeHistoryItem>;
 };
+
 export type BridgeStatusAppState = ProviderConfigState & {
   metamask: {
     bridgeStatusState: BridgeStatusControllerState;
   };
 };
+
 export type MetricsBackgroundState = BridgeStatusAppState['metamask'] &
   SmartTransactionsMetaMaskState['metamask'] &
   NetworkState['metamask'] &

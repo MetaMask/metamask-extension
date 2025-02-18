@@ -7,4 +7,7 @@ export const BRIDGE_STATUS_CONTROLLER_NAME = 'BridgeStatusController';
 export const DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE: BridgeStatusControllerState =
   {
     txHistory: {},
+    solanaTxHistory: {},
   };
+
+export const SOLANA_ENABLED = process.env.SOLANA_ENABLED === 'true';
