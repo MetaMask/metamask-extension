@@ -13,8 +13,6 @@ import {
   RatesController,
   fetchMultiExchangeRate,
   TokenBalancesController,
-  MultichainBalancesController,
-  MultichainAssetsController,
 } from '@metamask/assets-controllers';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
@@ -161,9 +159,7 @@ import {
   setEthAccounts,
   addPermittedEthChainId,
 } from '@metamask/multichain';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import { MultichainTransactionsController } from '@metamask/multichain-transactions-controller';
-///: END:ONLY_INCLUDE_IF
+import { isProduction } from '../../shared/modules/environment';
 import {
   methodsRequiringNetworkSwitch,
   methodsThatCanSwitchNetworkWithoutApproval,
@@ -316,6 +312,8 @@ import {
   NOTIFICATION_NAMES,
   unrestrictedMethods,
   PermissionNames,
+  validateCaveatAccounts,
+  validateCaveatNetworks,
 } from './controllers/permissions';
 import { MetaMetricsDataDeletionController } from './controllers/metametrics-data-deletion/metametrics-data-deletion';
 import { DataDeletionService } from './services/data-deletion-service';
@@ -349,6 +347,7 @@ import {
   onPushNotificationReceived,
 } from './controllers/push-notifications';
 import createTracingMiddleware from './lib/createTracingMiddleware';
+import createOriginThrottlingMiddleware from './lib/createOriginThrottlingMiddleware';
 import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
 import BridgeStatusController from './controllers/bridge-status/bridge-status-controller';
@@ -359,6 +358,14 @@ import {
   handleBridgeTransactionFailed,
   handleTransactionFailedTypeBridge,
 } from './lib/bridge-status/metrics';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import {
+  MultichainAssetsControllerInit,
+  MultichainTransactionsControllerInit,
+  MultichainBalancesControllerInit,
+  MultiChainAssetsRatesControllerInit,
+} from './controller-init/multichain';
+///: END:ONLY_INCLUDE_IF
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
 import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
 import { initControllers } from './controller-init/utils';
@@ -786,27 +793,6 @@ export default class MetamaskController extends EventEmitter {
       disabled: !this.preferencesController.state.useNftDetection,
     });
 
-    const multichainAssetsControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'MultichainAssetsController',
-        allowedEvents: [
-          'AccountsController:accountAdded',
-          'AccountsController:accountRemoved',
-          'AccountsController:accountAssetListUpdated',
-        ],
-        allowedActions: [
-          'SnapController:handleRequest',
-          'SnapController:getAll',
-          'PermissionController:getPermissions',
-          'AccountsController:listMultichainAccounts',
-        ],
-      });
-
-    this.multichainAssetsController = new MultichainAssetsController({
-      state: initState.MultichainAssetsController,
-      messenger: multichainAssetsControllerMessenger,
-    });
-
     const metaMetricsControllerMessenger =
       this.controllerMessenger.getRestricted({
         name: 'MetaMetricsController',
@@ -976,28 +962,6 @@ export default class MetamaskController extends EventEmitter {
       state: initState.AnnouncementController,
     });
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-    const multichainTransactionsControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'MultichainTransactionsController',
-        allowedEvents: [
-          'AccountsController:accountAdded',
-          'AccountsController:accountRemoved',
-          'AccountsController:accountTransactionsUpdated',
-        ],
-        allowedActions: [
-          'AccountsController:listMultichainAccounts',
-          'SnapController:handleRequest',
-        ],
-      });
-
-    this.multichainTransactionsController =
-      new MultichainTransactionsController({
-        messenger: multichainTransactionsControllerMessenger,
-        state: initState.MultichainTransactionsController,
-      });
-    ///: END:ONLY_INCLUDE_IF
-
     const networkOrderMessenger = this.controllerMessenger.getRestricted({
       name: 'NetworkOrderController',
       allowedEvents: ['NetworkController:stateChange'],
@@ -1013,25 +977,6 @@ export default class MetamaskController extends EventEmitter {
     this.accountOrderController = new AccountOrderController({
       messenger: accountOrderMessenger,
       state: initState.AccountOrderController,
-    });
-
-    const multichainBalancesControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'MultichainBalancesController',
-        allowedEvents: [
-          'AccountsController:accountAdded',
-          'AccountsController:accountRemoved',
-          'AccountsController:accountBalancesUpdated',
-        ],
-        allowedActions: [
-          'AccountsController:listMultichainAccounts',
-          'SnapController:handleRequest',
-        ],
-      });
-
-    this.multichainBalancesController = new MultichainBalancesController({
-      messenger: multichainBalancesControllerMessenger,
-      state: initState.MultichainBalancesController,
     });
 
     const multichainRatesControllerMessenger =
@@ -1355,8 +1300,6 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.userStorageController = new UserStorageController.Controller({
-      getMetaMetricsState: () =>
-        this.metaMetricsController.state.participateInMetaMetrics ?? false,
       state: initState.UserStorageController,
       config: {
         accountSyncing: {
@@ -1399,7 +1342,7 @@ export default class MetamaskController extends EventEmitter {
         },
       },
       env: {
-        isAccountSyncingEnabled: isManifestV3,
+        isAccountSyncingEnabled: !isProduction() && isManifestV3,
       },
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
@@ -1412,8 +1355,6 @@ export default class MetamaskController extends EventEmitter {
           'AuthenticationController:isSignedIn',
           'AuthenticationController:performSignOut',
           'AuthenticationController:performSignIn',
-          'NotificationServicesController:disableNotificationServices',
-          'NotificationServicesController:selectIsNotificationServicesEnabled',
           'AccountsController:listAccounts',
           'AccountsController:updateAccountMetadata',
           'NetworkController:getState',
@@ -1430,39 +1371,6 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
     });
-
-    this.controllerMessenger.subscribe(
-      'MetaMetricsController:stateChange',
-      previousValueComparator(async (prevState, currState) => {
-        const { participateInMetaMetrics: prevParticipateInMetaMetrics } =
-          prevState;
-        const { participateInMetaMetrics: currParticipateInMetaMetrics } =
-          currState;
-
-        const metaMetricsWasDisabled =
-          prevParticipateInMetaMetrics && !currParticipateInMetaMetrics;
-        const metaMetricsWasEnabled =
-          !prevParticipateInMetaMetrics && currParticipateInMetaMetrics;
-
-        if (!metaMetricsWasDisabled && !metaMetricsWasEnabled) {
-          return;
-        }
-
-        const shouldPerformSignIn =
-          metaMetricsWasEnabled &&
-          !this.authenticationController.state.isSignedIn;
-        const shouldPerformSignOut =
-          metaMetricsWasDisabled &&
-          this.authenticationController.state.isSignedIn &&
-          !this.userStorageController.state.isProfileSyncingEnabled;
-
-        if (shouldPerformSignIn) {
-          await this.authenticationController.performSignIn();
-        } else if (shouldPerformSignOut) {
-          await this.authenticationController.performSignOut();
-        }
-      }, this.metaMetricsController.state),
-    );
 
     const notificationServicesPushControllerMessenger =
       this.controllerMessenger.getRestricted({
@@ -1529,7 +1437,7 @@ export default class MetamaskController extends EventEmitter {
             'KeyringController:getState',
             'AuthenticationController:getBearerToken',
             'AuthenticationController:isSignedIn',
-            'UserStorageController:enableProfileSyncing',
+            'AuthenticationController:performSignIn',
             'UserStorageController:getStorageKey',
             'UserStorageController:performGetStorage',
             'UserStorageController:performSetStorage',
@@ -2145,6 +2053,12 @@ export default class MetamaskController extends EventEmitter {
       CronjobController: CronjobControllerInit,
       PPOMController: PPOMControllerInit,
       TransactionController: TransactionControllerInit,
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      MultichainAssetsController: MultichainAssetsControllerInit,
+      MultiChainAssetsRatesController: MultiChainAssetsRatesControllerInit,
+      MultichainBalancesController: MultichainBalancesControllerInit,
+      MultichainTransactionsController: MultichainTransactionsControllerInit,
+      ///: END:ONLY_INCLUDE_IF
     };
 
     const {
@@ -2172,6 +2086,16 @@ export default class MetamaskController extends EventEmitter {
     this.snapsRegistry = controllersByName.SnapsRegistry;
     this.ppomController = controllersByName.PPOMController;
     this.txController = controllersByName.TransactionController;
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    this.multichainAssetsController =
+      controllersByName.MultichainAssetsController;
+    this.multichainBalancesController =
+      controllersByName.MultichainBalancesController;
+    this.multichainTransactionsController =
+      controllersByName.MultichainTransactionsController;
+    this.multiChainAssetsRatesController =
+      controllersByName.MultiChainAssetsRatesController;
+    ///: END:ONLY_INCLUDE_IF
 
     this.controllerMessenger.subscribe(
       'TransactionController:transactionStatusUpdated',
@@ -2293,11 +2217,6 @@ export default class MetamaskController extends EventEmitter {
       AccountsController: this.accountsController,
       AppStateController: this.appStateController,
       AppMetadataController: this.appMetadataController,
-      MultichainBalancesController: this.multichainBalancesController,
-      MultichainAssetsController: this.multichainAssetsController,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-      MultichainTransactionsController: this.multichainTransactionsController,
-      ///: END:ONLY_INCLUDE_IF
       KeyringController: this.keyringController,
       PreferencesController: this.preferencesController,
       MetaMetricsController: this.metaMetricsController,
@@ -2347,10 +2266,11 @@ export default class MetamaskController extends EventEmitter {
         AccountsController: this.accountsController,
         AppStateController: this.appStateController,
         AppMetadataController: this.appMetadataController,
-        MultichainBalancesController: this.multichainBalancesController,
-        MultichainAssetsController: this.multichainAssetsController,
         ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+        MultichainAssetsController: this.multichainAssetsController,
+        MultichainBalancesController: this.multichainBalancesController,
         MultichainTransactionsController: this.multichainTransactionsController,
+        MultiChainAssetsRatesController: this.multiChainAssetsRatesController,
         ///: END:ONLY_INCLUDE_IF
         NetworkController: this.networkController,
         KeyringController: this.keyringController,
@@ -4032,6 +3952,9 @@ export default class MetamaskController extends EventEmitter {
       removePollingTokenFromAppState:
         appStateController.removePollingToken.bind(appStateController),
 
+      updateThrottledOriginState:
+        appStateController.updateThrottledOriginState.bind(appStateController),
+
       // Backup
       backupUserData: backup.backupUserData.bind(backup),
       restoreUserData: backup.restoreUserData.bind(backup),
@@ -4071,10 +3994,6 @@ export default class MetamaskController extends EventEmitter {
       disableProfileSyncing: userStorageController.disableProfileSyncing.bind(
         userStorageController,
       ),
-      setIsProfileSyncingEnabled:
-        userStorageController.setIsProfileSyncingEnabled.bind(
-          userStorageController,
-        ),
       syncInternalAccountsWithUserStorage:
         userStorageController.syncInternalAccountsWithUserStorage.bind(
           userStorageController,
@@ -4151,10 +4070,11 @@ export default class MetamaskController extends EventEmitter {
       ),
       setName: this.nameController.setName.bind(this.nameController),
 
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       // MultichainBalancesController
       multichainUpdateBalance: (accountId) =>
         this.multichainBalancesController.updateBalance(accountId),
-
+      ///: END:ONLY_INCLUDE_IF
       // Transaction Decode
       decodeTransactionData: (request) =>
         decodeTransactionData({
@@ -5258,6 +5178,32 @@ export default class MetamaskController extends EventEmitter {
       PermissionNames.permittedChains,
     ]);
 
+    const requestedAccounts =
+      permissions[RestrictedMethods.eth_accounts]?.caveats?.find(
+        (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
+      )?.value ?? [];
+
+    const requestedChains =
+      permissions[PermissionNames.permittedChains]?.caveats?.find(
+        (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
+      )?.value ?? [];
+
+    if (permissions[RestrictedMethods.eth_accounts]?.caveats) {
+      validateCaveatAccounts(
+        requestedAccounts,
+        this.accountsController.listAccounts.bind(this.accountsController),
+      );
+    }
+
+    if (permissions[PermissionNames.permittedChains]?.caveats) {
+      validateCaveatNetworks(
+        requestedChains,
+        this.networkController.findNetworkClientIdByChainId.bind(
+          this.networkController,
+        ),
+      );
+    }
+
     if (!permissions[RestrictedMethods.eth_accounts]) {
       permissions[RestrictedMethods.eth_accounts] = {};
     }
@@ -5269,16 +5215,6 @@ export default class MetamaskController extends EventEmitter {
     if (isSnapId(origin)) {
       delete permissions[PermissionNames.permittedChains];
     }
-
-    const requestedChains =
-      permissions[PermissionNames.permittedChains]?.caveats?.find(
-        (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
-      )?.value ?? [];
-
-    const requestedAccounts =
-      permissions[PermissionNames.eth_accounts]?.caveats?.find(
-        (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
-      )?.value ?? [];
 
     const newCaveatValue = {
       requiredScopes: {},
@@ -5996,6 +5932,19 @@ export default class MetamaskController extends EventEmitter {
     engine.push(createTracingMiddleware());
 
     engine.push(
+      createOriginThrottlingMiddleware({
+        getThrottledOriginState:
+          this.appStateController.getThrottledOriginState.bind(
+            this.appStateController,
+          ),
+        updateThrottledOriginState:
+          this.appStateController.updateThrottledOriginState.bind(
+            this.appStateController,
+          ),
+      }),
+    );
+
+    engine.push(
       createPPOMMiddleware(
         this.ppomController,
         this.preferencesController,
@@ -6176,6 +6125,15 @@ export default class MetamaskController extends EventEmitter {
           this.networkController.getNetworkConfigurationByChainId.bind(
             this.networkController,
           ),
+        setTokenNetworkFilter: (chainId) => {
+          const { tokenNetworkFilter } =
+            this.preferencesController.getPreferences();
+          if (chainId && Object.keys(tokenNetworkFilter).length === 1) {
+            this.preferencesController.setPreference('tokenNetworkFilter', {
+              [chainId]: true,
+            });
+          }
+        },
         getCurrentChainIdForDomain: (domain) => {
           const networkClientId =
             this.selectedNetworkController.getNetworkClientIdForDomain(domain);

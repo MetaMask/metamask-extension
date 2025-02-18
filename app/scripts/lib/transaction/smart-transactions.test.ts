@@ -102,6 +102,7 @@ function withRequest<ReturnValue>(
   });
 
   const smartTransactionsController = new SmartTransactionsController({
+    // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
     messenger: smartTransactionsControllerMessenger,
     getNonceLock: jest.fn(),
     confirmExternalTransaction: jest.fn(),
@@ -175,6 +176,7 @@ function withRequest<ReturnValue>(
 
   return fn({
     request,
+    // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
     messenger: smartTransactionsControllerMessenger,
     startFlowSpy,
     addRequestSpy,
