@@ -31,11 +31,18 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { BalanceChangeList } from './balance-change-list';
 import { useBalanceChanges } from './useBalanceChanges';
 import { useSimulationMetrics } from './useSimulationMetrics';
+import { BalanceChange } from './types';
+
+export type StaticRow = {
+  label: string;
+  balanceChanges: BalanceChange[];
+};
 
 export type SimulationDetailsProps = {
   enableMetrics?: boolean;
   isTransactionsRedesign?: boolean;
   metricsOnly?: boolean;
+  staticRows?: StaticRow[];
   transaction: TransactionMeta;
 };
 
@@ -252,12 +259,14 @@ const SimulationDetailsLayout: React.FC<{
  * @param props.isTransactionsRedesign - Whether or not the component is being
  * used inside the transaction redesign flow.
  * @param props.metricsOnly - Whether to only track metrics and not render the UI.
+ * @param props.staticRows - Optional static rows to display.
  */
 export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   transaction,
   enableMetrics = false,
   isTransactionsRedesign = false,
   metricsOnly = false,
+  staticRows = [],
 }: SimulationDetailsProps) => {
   const t = useI18nContext();
   const { chainId, id: transactionId, simulationData } = transaction;
@@ -329,6 +338,7 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
 
   const outgoing = balanceChanges.filter((bc) => bc.amount.isNegative());
   const incoming = balanceChanges.filter((bc) => !bc.amount.isNegative());
+
   return (
     <SimulationDetailsLayout
       isTransactionsRedesign={isTransactionsRedesign}
@@ -345,6 +355,12 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
           balanceChanges={incoming}
           testId="simulation-rows-incoming"
         />
+        {staticRows.map((staticRow) => (
+          <BalanceChangeList
+            heading={staticRow.label}
+            balanceChanges={staticRow.balanceChanges}
+          />
+        ))}
       </Box>
     </SimulationDetailsLayout>
   );
