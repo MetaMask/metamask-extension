@@ -13,25 +13,6 @@
     "ui/pages/confirmations/components/confirm/footer/footer.tsx"
   ],
   [
-    "ui/components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar.tsx",
-    "ui/components/app/assets/asset-list/asset-list-control-bar/index.ts",
-    "ui/components/app/assets/asset-list/asset-list.tsx",
-    "ui/components/app/assets/asset-list/network-filter/index.ts",
-    "ui/components/app/assets/asset-list/network-filter/network-filter.tsx",
-    "ui/hooks/useAccountTotalCrossChainFiatBalance.ts"
-  ],
-  [
-    "ui/components/app/assets/asset-list/asset-list.tsx",
-    "ui/components/app/assets/asset-list/native-token/index.ts",
-    "ui/components/app/assets/asset-list/native-token/native-token.tsx"
-  ],
-  [
-    "ui/components/app/assets/asset-list/asset-list.tsx",
-    "ui/components/app/assets/asset-list/native-token/index.ts",
-    "ui/components/app/assets/asset-list/native-token/native-token.tsx",
-    "ui/components/app/assets/asset-list/native-token/use-native-token-balance.ts"
-  ],
-  [
     "ui/components/app/name/name-details/name-details.tsx",
     "ui/components/app/name/name.tsx"
   ],
