@@ -4892,9 +4892,6 @@
     "message": "Внезапные изменения на рынке могут привести к отказам. Если проблема не устранена, обратитесь по адресу $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxOptInDescription": {
-    "message": "Включите умные транзакции для более надежных и безопасных транзакций в Мейн-нете Ethereum. $1"
-  },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Приватная отправка вашего свопа..."
   },

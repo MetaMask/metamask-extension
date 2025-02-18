@@ -4892,9 +4892,6 @@
     "message": "Perubahan pasar yang terjadi secara tiba-tiba dapat menyebabkan kegagalan. Jika masalah berlanjut, hubungi $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxOptInDescription": {
-    "message": "Aktifkan Transaksi Pintar untuk transaksi yang lebih andal dan aman di Mainnet Ethereum. $1"
-  },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Kirimkan Swap Anda secara pribadi..."
   },

@@ -4892,9 +4892,6 @@
     "message": "Thị trường thay đổi đột ngột có thể gây thất bại. Nếu sự cố vẫn tiếp diễn, vui lòng liên hệ $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxOptInDescription": {
-    "message": "Bật Giao dịch thông minh để có các giao dịch đáng tin cậy và an toàn hơn trên Ethereum Mainnet. $1"
-  },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Đang bí mật gửi yêu cầu Hoán đổi của bạn..."
   },

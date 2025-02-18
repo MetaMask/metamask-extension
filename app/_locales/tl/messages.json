@@ -4892,9 +4892,6 @@
     "message": "Ang biglaang pagbabago sa merkado ay maaaring maging sanhi ng pagkabigo. Kung magpatuloy ang problema, makipag-ugnyan sa $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxOptInDescription": {
-    "message": "I-on ang mga Smart Transaction para sa mas maaasahan at ligtas na mga transaksyon sa Ethereum Mainnet. $1"
-  },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Pribadong isinusumite ang iyong Swap..."
   },

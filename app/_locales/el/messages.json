@@ -4892,9 +4892,6 @@
     "message": "Οι ξαφνικές αλλαγές στην αγορά μπορεί να προκαλέσουν αποτυχίες. Εάν το πρόβλημα επιμένει, παρακαλούμε επικοινωνήστε με το $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxOptInDescription": {
-    "message": "Ενεργοποιήστε τις Έξυπνες Συναλλαγές για πιο αξιόπιστες και ασφαλείς συναλλαγές στο Ethereum Mainnet. $1"
-  },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Ιδιωτική υποβολή της Ανταλλαγής σας..."
   },

@@ -4892,9 +4892,6 @@
     "message": "Plötzliche Marktveränderungen können zu Ausfällen führen. Wenn das Problem weiterhin besteht, wenden Sie sich bitte an $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxOptInDescription": {
-    "message": "Schalten Sie Smart Transactions für zuverlässigere und sicherere Transaktionen im Ethereum Mainnet ein. $1"
-  },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Ihr Swap wird privat abgesendet ..."
   },
