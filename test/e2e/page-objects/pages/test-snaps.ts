@@ -91,21 +91,22 @@ export class TestSnaps {
 
   async check_pageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForMultipleSelectors([this.installedSnapsHeader,
-        this.connectBip32]);
+      await this.driver.waitForMultipleSelectors([
+        this.installedSnapsHeader,
+        this.connectBip32,
+      ]);
     } catch (e) {
-      console.log('Timeout while waiting for Test Snap Dapp page to be loaded', e);
+      console.log(
+        'Timeout while waiting for Test Snap Dapp page to be loaded',
+        e,
+      );
       throw e;
     }
     console.log('Test Snap Dapp page is loaded');
   }
 
-  async check_clientStatus(
-    expectedStatus: string,
-  ): Promise<void> {
-    console.log(
-      `Check that client status should ${expectedStatus}`,
-    );
+  async check_clientStatus(expectedStatus: string): Promise<void> {
+    console.log(`Check that client status should ${expectedStatus}`);
     await this.driver.waitForSelector({
       css: this.statusResultSpan,
       text: expectedStatus,
@@ -244,7 +245,9 @@ export class TestSnaps {
 
   async scrollToConnectClientStatus() {
     console.log('Scroll to Connect Client Status');
-    const connectClientStatus = await this.driver.findElement(this.connectClientStatusButton);
+    const connectClientStatus = await this.driver.findElement(
+      this.connectClientStatusButton,
+    );
     await this.driver.scrollToElement(connectClientStatus);
   }
 
