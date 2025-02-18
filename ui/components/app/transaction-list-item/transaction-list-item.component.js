@@ -262,6 +262,8 @@ function TransactionListItemInner({
   const showCancelButton =
     !hasCancelled && isPending && !isUnapproved && !isSubmitting && !isBridgeTx;
 
+  console.log('CHAIN_ID ............', chainId);
+
   return (
     <>
       <ActivityListItem

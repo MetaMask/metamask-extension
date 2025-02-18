@@ -24,7 +24,8 @@ import {
 } from '../../../selectors/transactions';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
-  getPreferences,
+  getCurrentNetwork,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
   getSelectedAccount,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getShouldHideZeroBalanceTokens,
@@ -44,10 +45,10 @@ import {
   Text,
   Popover,
   PopoverPosition,
+  IconName,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   ButtonSize,
   ButtonVariant,
-  IconName,
   BadgeWrapper,
   AvatarNetwork,
   ///: END:ONLY_INCLUDE_IF
@@ -106,6 +107,10 @@ import {
 import NetworkFilter from '../assets/asset-list/network-filter/network-filter';
 
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import {
+  FEATURED_NETWORK_CHAIN_IDS,
+  TEST_CHAINS,
+} from '../../../../shared/constants/network';
 
 const PAGE_INCREMENT = 10;
 
@@ -239,8 +244,11 @@ export default function TransactionList({
 }) {
   const [limit, setLimit] = useState(PAGE_INCREMENT);
   const t = useI18nContext();
-  const { tokenNetworkFilter } = useSelector(getPreferences);
-  const allNetworksFilterShown = Object.keys(tokenNetworkFilter ?? {}).length;
+  const currentNetwork = useSelector(getCurrentChainId);
+  const currentNetworkConfig = useSelector(getCurrentNetwork);
+  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
+    getIsTokenNetworkFilterEqualCurrentNetwork,
+  );
 
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const [selectedTransaction, setSelectedTransaction] = useState(null);
@@ -261,14 +269,18 @@ export default function TransactionList({
   );
 
   const unfilteredPendingTransactions = useMemo(() => {
-    return allNetworksFilterShown
+    return isTokenNetworkFilterEqualCurrentNetwork
       ? unfilteredPendingTransactionsCurrentChain
       : unfilteredPendingTransactionsAllChains;
   }, [
-    allNetworksFilterShown,
+    isTokenNetworkFilterEqualCurrentNetwork,
     unfilteredPendingTransactionsAllChains,
     unfilteredPendingTransactionsCurrentChain,
   ]);
+
+  const isTestNetwork = useMemo(() => {
+    return TEST_CHAINS.includes(currentNetworkConfig.chainId);
+  }, [currentNetworkConfig.chainId, TEST_CHAINS]);
 
   const unfilteredCompletedTransactionsCurrentChain = useSelector(
     nonceSortedCompletedTransactionsSelector,
@@ -279,11 +291,11 @@ export default function TransactionList({
   );
 
   const unfilteredCompletedTransactions = useMemo(() => {
-    return allNetworksFilterShown
+    return isTokenNetworkFilterEqualCurrentNetwork
       ? unfilteredCompletedTransactionsCurrentChain
       : unfilteredCompletedTransactionsAllChains;
   }, [
-    allNetworksFilterShown,
+    isTokenNetworkFilterEqualCurrentNetwork,
     unfilteredCompletedTransactionsAllChains,
     unfilteredCompletedTransactionsCurrentChain,
   ]);
@@ -305,7 +317,6 @@ export default function TransactionList({
   ///: END:ONLY_INCLUDE_IF
 
   const popoverRef = useRef(null);
-  const currentNetwork = useSelector(getCurrentChainId);
   const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
     useState(false);
 
@@ -346,6 +357,8 @@ export default function TransactionList({
     ],
   );
 
+  console.log('pendingTransactions .............', pendingTransactions);
+
   const completedTransactions = useMemo(
     () =>
       groupEvmTransactionsByDate(
@@ -357,6 +370,8 @@ export default function TransactionList({
       ),
     [hideTokenTransactions, tokenAddress, unfilteredCompletedTransactions],
   );
+
+  console.log('completedTransactions .............', completedTransactions);
 
   const viewMore = useCallback(
     () => setLimit((prev) => prev + PAGE_INCREMENT),
@@ -407,6 +422,10 @@ export default function TransactionList({
           className="activity-list-control-bar__button"
           onClick={toggleNetworkFilterPopover}
           size={ButtonBaseSize.Sm}
+          disabled={
+            isTestNetwork ||
+            !FEATURED_NETWORK_CHAIN_IDS.includes(currentNetworkConfig.chainId)
+          }
           endIconName={IconName.ArrowDown}
           backgroundColor={
             isNetworkFilterPopoverOpen
@@ -419,9 +438,9 @@ export default function TransactionList({
           marginRight={isFullScreen ? 2 : null}
           ellipsis
         >
-          {allNetworksFilterShown
-            ? currentNetwork?.nickname ?? t('currentNetwork')
-            : t('allNetworks')}
+          {isTokenNetworkFilterEqualCurrentNetwork
+            ? currentNetworkConfig?.nickname ?? t('currentNetwork')
+            : t('popularNetworks')}
         </ButtonBase>
 
         <Popover
@@ -492,7 +511,6 @@ export default function TransactionList({
         )}
 
         <Box className="transaction-list" {...boxProps}>
-          {renderFilterButton()}
           {/* TODO: Non-EVM transactions are not paginated for now. */}
           <Box className="transaction-list__transactions">
             {nonEvmTransactions?.transactions.length > 0 ? (
@@ -572,7 +590,7 @@ export default function TransactionList({
                             <TransactionStatusLabel
                               date={formatTimestamp(transaction.timestamp)}
                               error={{}}
-                              status={transaction.status}
+                              status={transaction.status + 'salim'}
                               statusOnly
                             />
                           }
@@ -624,6 +642,7 @@ export default function TransactionList({
         ///: END:ONLY_INCLUDE_IF
       }
       <Box className="transaction-list" {...boxProps}>
+        {renderFilterButton()}
         <Box className="transaction-list__transactions">
           {pendingTransactions.length > 0 && (
             <Box className="transaction-list__pending-transactions">
@@ -649,6 +668,10 @@ export default function TransactionList({
                         </Fragment>
                       );
                     }
+                    console.log(
+                      'transactionGroup.initialTransaction.chainId',
+                      transactionGroup.initialTransaction,
+                    );
                     return (
                       <Fragment key={`${transactionGroup.nonce}:${index}`}>
                         {renderDateStamp(index, dateGroup)}
@@ -694,6 +717,9 @@ export default function TransactionList({
                             ) : (
                               <TransactionListItem
                                 transactionGroup={transactionGroup}
+                                chainId={
+                                  transactionGroup.initialTransaction.chainId
+                                }
                               />
                             )}
                           </Fragment>

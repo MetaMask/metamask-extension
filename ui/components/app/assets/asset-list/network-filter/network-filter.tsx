@@ -84,6 +84,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
     );
 
   const handleFilter = (chainFilters: Record<string, boolean>) => {
+    console.log('chainFilters .............', chainFilters);
     dispatch(setTokenNetworkFilter(chainFilters));
 
     // TODO Add metrics
