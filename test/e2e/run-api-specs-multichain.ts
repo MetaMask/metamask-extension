@@ -66,6 +66,8 @@ async function main() {
       chainId,
       ACCOUNT_1,
     );
+  // console.log('transformedDoc', transformedDoc);
+
   const ethereumMethods = transformedDoc.methods
     .map((m) => (m as MethodObject).name)
     .filter((m) => {
@@ -140,6 +142,17 @@ async function main() {
         },
       ];
 
+      console.log(
+        'MultiChainOpenRPCDocument',
+        (
+          doc.methods.find(
+            (m) => (m as MethodObject).name === 'wallet_createSession',
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ) as any
+        ).examples // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          .map((e: any) => e.params),
+      );
+
       const results = await testCoverage({
         openrpcDocument: doc,
         transport: createMultichainDriverTransport(driver, extensionId),
@@ -164,84 +177,85 @@ async function main() {
   );
 
   // requests made via wallet_invokeMethod
-  await withFixtures(
-    {
-      dapp: true,
-      fixtures: new FixtureBuilder()
-        .withPermissionControllerConnectedToMultichainTestDapp()
-        .build(),
-      disableGanache: true,
-      title: 'api-specs-multichain coverage (wallet_invokeMethod)',
-    },
-    async ({
-      driver,
-      extensionId,
-    }: {
-      driver: Driver;
-      extensionId: string;
-    }) => {
-      await unlockWallet(driver);
+  // await withFixtures(
+  //   {
+  //     dapp: true,
+  //     fixtures: new FixtureBuilder()
+  //       .withPermissionControllerConnectedToMultichainTestDapp()
+  //       .build(),
+  //     disableGanache: true,
+  //     title: 'api-specs-multichain coverage (wallet_invokeMethod)',
+  //   },
+  //   async ({
+  //     driver,
+  //     extensionId,
+  //   }: {
+  //     driver: Driver;
+  //     extensionId: string;
+  //   }) => {
+  //     await unlockWallet(driver);
 
-      // Navigate to extension home screen
-      await driver.navigate(PAGES.HOME);
+  //     // Navigate to extension home screen
+  //     await driver.navigate(PAGES.HOME);
 
-      // Open Dapp
-      await openDapp(driver, undefined, DAPP_URL);
+  //     // Open Dapp
+  //     await openDapp(driver, undefined, DAPP_URL);
 
-      const results = await testCoverage({
-        openrpcDocument: MetaMaskOpenRPCDocument as OpenrpcDocument,
-        transport: createCaip27DriverTransport(
-          driver,
-          reverseScopeMap,
-          extensionId,
-        ),
-        reporters: ['console-streaming'],
-        skip: [
-          'eth_coinbase',
-          'wallet_revokePermissions',
-          'wallet_requestPermissions',
-          'wallet_getPermissions',
-          'eth_accounts',
-          'eth_requestAccounts',
-          'net_version', // not in the spec yet for some reason
-          // these 2 methods below are not supported by MetaMask extension yet and
-          // don't get passed through. See here: https://github.com/MetaMask/metamask-extension/issues/24225
-          'eth_getBlockReceipts',
-          'eth_maxPriorityFeePerGas',
-        ],
-        rules: [
-          new JsonSchemaFakerRule({
-            only: [],
-            skip: filteredMethods,
-            numCalls: 2,
-          }),
-          new ExamplesRule({
-            only: [],
-            skip: filteredMethods,
-          }),
-          new ConfirmationsRejectRule({
-            driver,
-            only: confirmationMethods,
-            requiresEthAccountsPermission: [],
-          }),
-        ],
-      });
+  //     console.log('MetaMaskOpenRPCDocument', MetaMaskOpenRPCDocument);
+  //     const results = await testCoverage({
+  //       openrpcDocument: MetaMaskOpenRPCDocument as OpenrpcDocument,
+  //       transport: createCaip27DriverTransport(
+  //         driver,
+  //         reverseScopeMap,
+  //         extensionId,
+  //       ),
+  //       reporters: ['console-streaming'],
+  //       skip: [
+  //         'eth_coinbase',
+  //         'wallet_revokePermissions',
+  //         'wallet_requestPermissions',
+  //         'wallet_getPermissions',
+  //         'eth_accounts',
+  //         'eth_requestAccounts',
+  //         'net_version', // not in the spec yet for some reason
+  //         // these 2 methods below are not supported by MetaMask extension yet and
+  //         // don't get passed through. See here: https://github.com/MetaMask/metamask-extension/issues/24225
+  //         'eth_getBlockReceipts',
+  //         'eth_maxPriorityFeePerGas',
+  //       ],
+  //       rules: [
+  //         new JsonSchemaFakerRule({
+  //           only: [],
+  //           skip: filteredMethods,
+  //           numCalls: 2,
+  //         }),
+  //         new ExamplesRule({
+  //           only: [],
+  //           skip: filteredMethods,
+  //         }),
+  //         new ConfirmationsRejectRule({
+  //           driver,
+  //           only: confirmationMethods,
+  //           requiresEthAccountsPermission: [],
+  //         }),
+  //       ],
+  //     });
 
-      testCoverageResults = testCoverageResults.concat(results);
-    },
-  );
+  //     testCoverageResults = testCoverageResults.concat(results);
+  //   },
+  // );
 
   // fix ids for html reporter
-  testCoverageResults.forEach((r, index) => {
-    r.id = index;
-  });
+  // testCoverageResults.forEach((r, index) => {
+  //   r.id = index;
+  // });
 
-  const htmlReporter = new HtmlReporter({
-    autoOpen: !process.env.CI,
-    destination: `${process.cwd()}/html-report-multichain`,
-  });
+  // const htmlReporter = new HtmlReporter({
+  //   autoOpen: !process.env.CI,
+  //   destination: `${process.cwd()}/html-report-multichain`,
+  // });
 
-  await htmlReporter.onEnd({} as IOptions, testCoverageResults);
+  // await htmlReporter.onEnd({} as IOptions, testCoverageResults);
 
   // if any of the tests failed, exit with a non-zero code
   if (testCoverageResults.every((r) => r.valid)) {

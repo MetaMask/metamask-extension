@@ -4867,10 +4867,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/api-specs@npm:^0.10.12, @metamask/api-specs@npm:^0.10.15":
+"@metamask/api-specs@file:../api-specs::locator=metamask-crx%40workspace%3A.":
   version: 0.10.15
-  resolution: "@metamask/api-specs@npm:0.10.15"
-  checksum: 10/1d68914e43dd14a8bafa77d93965e08cb3ee4b036dc161501dd1d565a21c703d03abefd9e91f23019065c316f74719103b44c871409219f6d4d2cd5503224ac2
+  resolution: "@metamask/api-specs@file:../api-specs#../api-specs::hash=1328a2&locator=metamask-crx%40workspace%3A."
+  checksum: 10/dc69dd2ecdcc0fbe9be8e5a027040fdce0759e2e47280dcd678446577da46a35127f6e260c0bbcc8a910c8684cfbb02958f20f56e42ada68dbb71338ce3f369a
   languageName: node
   linkType: hard
 

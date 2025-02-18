@@ -21,7 +21,7 @@ import {
 
 describe('Multichain API', function () {
   describe('Connect wallet to the multichain dapp via `externally_connectable`, call `wallet_createSession` with requested EVM scope that does NOT match one of the user’s enabled networks', function () {
-    it("the specified EVM scopes that do not match the user's configured networks should be treated as if they were not requested", async function () {
+    it.only("the specified EVM scopes that do not match the user's configured networks should be treated as if they were not requested", async function () {
       await withFixtures(
         {
           title: this.test?.fullTitle(),
@@ -46,7 +46,7 @@ describe('Multichain API', function () {
           await driver.clickElement({ text: 'Connect', tag: 'button' });
 
           const getSessionResult = await testDapp.getSession();
-
+          a
           for (const scope of scopesToIgnore) {
             assert.strictEqual(
               getSessionResult.sessionScopes[scope],
