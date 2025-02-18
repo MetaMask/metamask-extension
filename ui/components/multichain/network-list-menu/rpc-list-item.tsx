@@ -11,6 +11,7 @@ import {
   TextVariant,
   BackgroundColor,
   BlockSize,
+  FontStyle,
 } from '../../../helpers/constants/design-system';
 
 export const stripKeyFromInfuraUrl = (endpoint: string) => {
@@ -30,6 +31,13 @@ export const stripProtocol = (endpoint: string) => {
   return `${url.host}${url.pathname === '/' ? '' : url.pathname}`;
 };
 
+export const onlyKeepRootDomain = (endpoint: string) => {
+  const url = new URL(endpoint);
+  //const parts = url.host.split('.');
+  //return parts.slice(1).join('.');
+  return url.host;
+};
+
 // This components represents an RPC endpoint in a list,
 // currently when selecting or editing endpoints for a network.
 const RpcListItem = ({
@@ -38,14 +46,18 @@ const RpcListItem = ({
   rpcEndpoint: {
     name?: string;
     url: string;
+    failoverUrls: string[];
     type: RpcEndpointType;
   };
 }) => {
-  const { url, type } = rpcEndpoint;
+  const { url, failoverUrls, type } = rpcEndpoint;
   const name = type === RpcEndpointType.Infura ? 'Infura' : rpcEndpoint.name;
 
   const displayEndpoint = (endpoint?: string) =>
     endpoint ? stripProtocol(stripKeyFromInfuraUrl(endpoint)) : '\u00A0';
+
+  const displayFailoverEndpoint = (endpoint?: string) =>
+    endpoint ? stripProtocol(endpoint) : '\u00A0';
 
   const padding = name ? 2 : 4;
 
@@ -83,6 +95,18 @@ const RpcListItem = ({
             ellipsis
           >
             {displayEndpoint(url)}
+          </Text>
+        </Box>
+      )}
+      {failoverUrls.length > 0 && (
+        <Box>
+          <Text
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodyXs}
+            fontStyle={FontStyle.Italic}
+            ellipsis
+          >
+            ({displayFailoverEndpoint(failoverUrls[0])})
           </Text>
         </Box>
       )}

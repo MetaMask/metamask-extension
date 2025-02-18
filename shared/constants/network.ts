@@ -1080,6 +1080,9 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://linea-mainnet.infura.io/v3/${infuraProjectId}`,
+        failoverUrls: [process.env.QUICKNODE_LINEA_MAINNET_URL ?? ''].filter(
+          Boolean,
+        ),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1094,6 +1097,9 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://arbitrum-mainnet.infura.io/v3/${infuraProjectId}`,
+        failoverUrls: [process.env.QUICKNODE_ARBITRUM_URL ?? ''].filter(
+          Boolean,
+        ),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1108,6 +1114,9 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://avalanche-mainnet.infura.io/v3/${infuraProjectId}`,
+        failoverUrls: [process.env.QUICKNODE_AVALANCHE_URL ?? ''].filter(
+          Boolean,
+        ),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1122,6 +1131,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: 'https://bsc-dataseed.binance.org/',
+        failoverUrls: [],
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1136,6 +1146,9 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://optimism-mainnet.infura.io/v3/${infuraProjectId}`,
+        failoverUrls: [process.env.QUICKNODE_OPTIMISM_URL ?? ''].filter(
+          Boolean,
+        ),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1150,6 +1163,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://polygon-mainnet.infura.io/v3/${infuraProjectId}`,
+        failoverUrls: [process.env.QUICKNODE_POLYGON_URL ?? ''].filter(Boolean),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1164,6 +1178,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://mainnet.era.zksync.io`,
+        failoverUrls: [],
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1178,6 +1193,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://base-mainnet.infura.io/v3/${infuraProjectId}`,
+        failoverUrls: [process.env.QUICKNODE_BASE_URL ?? ''].filter(Boolean),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1207,6 +1223,7 @@ export const DEFAULT_CUSTOM_TESTNET_MAP: Record<Hex, NetworkConfiguration> = {
       {
         networkClientId: 'megaeth-testnet',
         url: 'https://carrot.megaeth.com/rpc',
+        failoverUrls: [],
         type: RpcEndpointType.Custom,
       },
     ],

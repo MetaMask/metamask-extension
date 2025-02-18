@@ -55,6 +55,7 @@ import {
   BorderRadius,
   Display,
   FlexDirection,
+  FontStyle,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -410,14 +411,25 @@ export const NetworksForm = ({
             isList || item?.name || item?.type === RpcEndpointType.Infura ? (
               <RpcListItem rpcEndpoint={item} />
             ) : (
-              <Text
-                ellipsis
-                variant={TextVariant.bodyMd}
+              <Box
                 paddingTop={3}
                 paddingBottom={3}
+                style={{ overflow: 'auto' }}
               >
-                {stripProtocol(stripKeyFromInfuraUrl(item.url))}
-              </Text>
+                <Text ellipsis variant={TextVariant.bodyMd}>
+                  {stripProtocol(stripKeyFromInfuraUrl(item.url))}
+                </Text>
+                {item.failoverUrls.length > 0 && (
+                  <Text
+                    color={TextColor.textAlternative}
+                    variant={TextVariant.bodyXs}
+                    fontStyle={FontStyle.Italic}
+                    ellipsis
+                  >
+                    ({stripProtocol(item.failoverUrls[0])})
+                  </Text>
+                )}
+              </Box>
             )
           }
           renderTooltip={(item, isList) => {

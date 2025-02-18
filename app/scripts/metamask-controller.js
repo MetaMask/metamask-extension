@@ -611,6 +611,14 @@ export default class MetamaskController extends EventEmitter {
         DEFAULT_CUSTOM_TESTNET_MAP[CHAIN_IDS.MEGAETH_TESTNET],
       );
 
+      // Add failovers for default Infura RPC endpoints
+      networks[CHAIN_IDS.MAINNET].rpcEndpoints[0].failoverUrls = [
+        process.env.QUICKNODE_MAINNET_URL,
+      ];
+      networks[CHAIN_IDS.LINEA_MAINNET].rpcEndpoints[0].failoverUrls = [
+        process.env.QUICKNODE_LINEA_MAINNET_URL,
+      ];
+
       Object.values(networks).forEach((network) => {
         const id = network.rpcEndpoints[0].networkClientId;
         // Process only if the default network has a corresponding networkClientId in BlockExplorerUrl.
@@ -655,6 +663,10 @@ export default class MetamaskController extends EventEmitter {
       messenger: networkControllerMessenger,
       state: initialNetworkControllerState,
       infuraProjectId: opts.infuraProjectId,
+      getRpcServiceOptions: () => ({
+        fetch: globalThis.fetch.bind(globalThis),
+        btoa: globalThis.btoa.bind(globalThis),
+      }),
     });
     this.networkController.initializeProvider();
 
@@ -872,6 +884,33 @@ export default class MetamaskController extends EventEmitter {
     this.on('update', (update) => {
       this.metaMetricsController.handleMetaMaskStateUpdate(update);
     });
+
+    networkControllerMessenger.subscribe(
+      'NetworkController:rpcEndpointUnavailable',
+      async ({ chainId, rpcEndpointUrl, failoverRpcEndpointUrl }) => {
+        this.metaMetricsController.trackEvent({
+          event: 'RPC Endpoint Unavailable',
+          category: 'Network',
+          properties: {
+            chain_id: chainId,
+            rpc_endpoint_url: rpcEndpointUrl,
+            failover_endpoint_url: failoverRpcEndpointUrl,
+          },
+        });
+      },
+    );
+    networkControllerMessenger.subscribe(
+      'NetworkController:rpcEndpointDegraded',
+      async ({ rpcEndpointUrl }) => {
+        this.metaMetricsController.trackEvent({
+          event: 'RPC Endpoint Degraded',
+          category: 'Network',
+          properties: {
+            endpoint_url: rpcEndpointUrl,
+          },
+        });
+      },
+    );
 
     const dataDeletionService = new DataDeletionService();
     const metaMetricsDataDeletionMessenger =
