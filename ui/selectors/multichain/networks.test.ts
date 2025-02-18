@@ -12,7 +12,7 @@ import type { AccountsState } from '../accounts';
 import {
   MOCK_ACCOUNT_EOA,
   MOCK_ACCOUNT_BIP122_P2WPKH,
-  MOCK_ACCOUNT_SOLANA_MAINNET,
+  MOCK_ACCOUNT_SOLANA,
 } from '../../../test/data/mock-accounts';
 import {
   type MultichainNetworkControllerState,
@@ -220,7 +220,7 @@ describe('Multichain network selectors', () => {
             ...mockState.metamask.internalAccounts,
             accounts: {
               ...mockState.metamask.internalAccounts.accounts,
-              [MOCK_ACCOUNT_SOLANA_MAINNET.id]: MOCK_ACCOUNT_SOLANA_MAINNET,
+              [MOCK_ACCOUNT_SOLANA.id]: MOCK_ACCOUNT_SOLANA,
             },
           },
         },
@@ -275,7 +275,7 @@ describe('Multichain network selectors', () => {
             accounts: {
               ...mockState.metamask.internalAccounts.accounts,
               [MOCK_ACCOUNT_BIP122_P2WPKH.id]: MOCK_ACCOUNT_BIP122_P2WPKH,
-              [MOCK_ACCOUNT_SOLANA_MAINNET.id]: MOCK_ACCOUNT_SOLANA_MAINNET,
+              [MOCK_ACCOUNT_SOLANA.id]: MOCK_ACCOUNT_SOLANA,
             },
           },
         },
