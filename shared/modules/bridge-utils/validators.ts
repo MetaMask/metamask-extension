@@ -62,7 +62,7 @@ export const TOKEN_AGGREGATOR_VALIDATORS = [
 
 export const TOKEN_VALIDATORS = [
   { property: 'decimals', type: 'number' },
-  { property: 'address', type: 'string', validator: isValidHexAddress },
+  { property: 'address', type: 'string', validator: isValidString },
   {
     property: 'symbol',
     type: 'string',
@@ -78,7 +78,11 @@ export const QUOTE_RESPONSE_VALIDATORS = [
     type: 'object|undefined',
     validator: (v: unknown) => v === undefined || isValidObject(v),
   },
-  { property: 'trade', type: 'object', validator: isValidObject },
+  {
+    property: 'trade',
+    type: 'string|object',
+    validator: (v) => isValidObject(v) || isValidString(v),
+  },
 ];
 
 export const QUOTE_VALIDATORS = [

@@ -165,15 +165,16 @@ export async function fetchBridgeQuotes(
   const filteredQuotes = quotes.filter((quoteResponse: QuoteResponse) => {
     const { quote, approval, trade } = quoteResponse;
     return (
-      validateResponse<QuoteResponse>(
+      ((validateResponse<QuoteResponse>(
         QUOTE_RESPONSE_VALIDATORS,
         quoteResponse,
         url,
       ) &&
-      validateResponse<Quote>(QUOTE_VALIDATORS, quote, url) &&
-      validateResponse<BridgeAsset>(TOKEN_VALIDATORS, quote.srcAsset, url) &&
-      validateResponse<BridgeAsset>(TOKEN_VALIDATORS, quote.destAsset, url) &&
-      validateResponse<TxData>(TX_DATA_VALIDATORS, trade, url) &&
+        validateResponse<Quote>(QUOTE_VALIDATORS, quote, url) &&
+        validateResponse<BridgeAsset>(TOKEN_VALIDATORS, quote.srcAsset, url) &&
+        validateResponse<BridgeAsset>(TOKEN_VALIDATORS, quote.destAsset, url) &&
+        typeof trade === 'string') ||
+        validateResponse<TxData>(TX_DATA_VALIDATORS, trade, url)) &&
       validateResponse<FeeData>(
         FEE_DATA_VALIDATORS,
         quote.feeData[FeeType.METABRIDGE],
