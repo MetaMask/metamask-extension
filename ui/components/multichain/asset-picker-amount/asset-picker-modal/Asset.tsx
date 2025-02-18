@@ -4,13 +4,11 @@ import { BigNumber } from 'bignumber.js';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { TokenListItem } from '../../token-list-item';
-import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { formatAmount } from '../../../../pages/confirmations/components/simulation-details/formatAmount';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
 import {
   getMultichainNetworkConfigurationsByChainId,
-  getMultichainTokenList,
   getImageForChainId,
 } from '../../../../selectors/multichain';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
@@ -37,23 +35,13 @@ export default function Asset({
   const locale = useSelector(getIntlLocale);
 
   const currency = useSelector(getCurrentCurrency);
-  const tokenList = useMultichainSelector(getMultichainTokenList);
   const allNetworks = useMultichainSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
   const isTokenChainIdInWallet = Boolean(
     chainId ? allNetworks[chainId as keyof typeof allNetworks] : true,
   );
-  const tokenData = address
-    ? Object.values(tokenList).find(
-        (token) =>
-          isEqualCaseInsensitive(token.symbol, symbol) &&
-          isEqualCaseInsensitive(token.address, address),
-      )
-    : undefined;
 
-  const title = tokenData?.name || symbol;
-  const tokenImage = tokenData?.iconUrl || image;
   const formattedFiat = useTokenFiatAmount(
     address ?? undefined,
     decimalTokenAmount,
@@ -76,10 +64,10 @@ export default function Asset({
       key={`${chainId}-${symbol}-${address}`}
       chainId={chainId}
       tokenSymbol={symbol}
-      tokenImage={tokenImage}
+      tokenImage={image}
       secondary={isTokenChainIdInWallet ? formattedAmount : undefined}
       primary={isTokenChainIdInWallet ? primaryAmountToUse : undefined}
-      title={title}
+      title={symbol}
       tooltipText={tooltipText}
       tokenChainImage={getImageForChainId(chainId)}
       isPrimaryTokenSymbolHidden
