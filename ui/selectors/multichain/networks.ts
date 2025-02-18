@@ -41,7 +41,7 @@ export type SelectedNetworkChainIdState = {
   >;
 };
 
-export type IsEvmSelected = {
+export type IsEvmSelectedState = {
   metamask: Pick<InternalMultichainNetworkState, 'isEvmSelected'>;
 };
 
@@ -66,7 +66,7 @@ export type MultichainNetworkConfigurationsByChainIdState = {
 export type MultichainNetworkConfigState =
   MultichainNetworkConfigurationsByChainIdState &
     SelectedNetworkChainIdState &
-    IsEvmSelected &
+    IsEvmSelectedState &
     SelectedNetworkClientIdState &
     ProviderConfigState;
 
@@ -116,7 +116,7 @@ export const getMultichainNetworkConfigurationsByChainId =
     },
   );
 
-export const getIsEvmSelected = (state: IsEvmSelected) =>
+export const getIsEvmSelected = (state: IsEvmSelectedState) =>
   state.metamask.isEvmSelected;
 
 export const getSelectedMultichainNetworkChainId = (
