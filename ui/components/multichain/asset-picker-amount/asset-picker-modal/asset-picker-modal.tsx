@@ -32,7 +32,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import {
   getAllTokens,
-  getSelectedInternalAccount,
+  getSelectedEvmInternalAccount,
   getShouldHideZeroBalanceTokens,
   getTokenExchangeRates,
   getUseExternalServices,
@@ -167,7 +167,10 @@ export function AssetPickerModal({
   const conversionRate = useMultichainSelector(getMultichainConversionRate);
   const currentCurrency = useMultichainSelector(getMultichainCurrentCurrency);
 
-  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
+  const { address: selectedEvmAddress } = useMultichainSelector(
+    getSelectedEvmInternalAccount,
+  );
+
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
@@ -175,26 +178,30 @@ export function AssetPickerModal({
   const detectedTokens: Record<Hex, Record<string, Token[]>> = useSelector(
     getAllTokens,
   );
-  const tokens = detectedTokens?.[currentChainId]?.[selectedAddress] ?? [];
+  const tokens = useMemo(
+    () =>
+      (isCaipChainId(currentChainId)
+        ? []
+        : detectedTokens?.[currentChainId]?.[selectedEvmAddress]) ?? [],
+    [detectedTokens, currentChainId, selectedEvmAddress],
+  );
 
   const { tokensWithBalances }: { tokensWithBalances: TokenWithBalance[] } =
     useTokenTracker({
       tokens,
-      address: selectedAddress,
+      address: selectedEvmAddress,
       hideZeroBalanceTokens: Boolean(shouldHideZeroBalanceTokens),
     });
 
   const { assetsWithBalance: multichainTokensWithBalance } =
     useMultichainBalances();
 
-  const tokenList = useMultichainSelector(
-    getMultichainTokenList,
-  ) as TokenListMap;
+  const evmTokenMetadataByAddress = useSelector(getTokenList) as TokenListMap;
 
   const allowExternalServices = useSelector(getUseExternalServices);
   // Swaps top tokens
   const { value: topTokensResponse } = useAsyncResult<
-    { address: string }[] | undefined
+    { address: Hex }[] | undefined
   >(async () => {
     if (allowExternalServices && selectedNetwork?.chainId) {
       return await fetchTopAssetsList(selectedNetwork.chainId);
@@ -295,7 +302,8 @@ export function AssetPickerModal({
 
       // topTokens are sorted by popularity
       for (const topToken of topTokens) {
-        const token = tokenList?.[topToken.address];
+        const token: TokenListToken =
+          evmTokenMetadataByAddress?.[topToken.address];
         if (
           token &&
           shouldAddToken(token.symbol, token.address, currentChainId)
@@ -309,7 +317,7 @@ export function AssetPickerModal({
         }
       }
 
-      for (const token of Object.values(tokenList)) {
+      for (const token of Object.values(evmTokenMetadataByAddress)) {
         if (shouldAddToken(token.symbol, token.address, currentChainId)) {
           yield { ...token, chainId: currentChainId };
         }
@@ -325,7 +333,7 @@ export function AssetPickerModal({
       balanceValue,
       memoizedUsersTokens,
       topTokens,
-      tokenList,
+      evmTokenMetadataByAddress,
       getIsDisabled,
       isMultiselectEnabled,
       multichainTokensWithBalance,
@@ -377,24 +385,28 @@ export function AssetPickerModal({
       }
 
       filteredTokensAddresses.add(getTokenKey(token.address, token.chainId));
-      filteredTokens.push(
-        customTokenListGenerator
-          ? token
-          : getRenderableTokenData(
-              token.address
-                ? ({
-                    ...token,
-                    ...tokenList[token.address.toLowerCase()],
-                    type: AssetType.token,
-                  } as AssetWithDisplayData<ERC20Asset>)
-                : token,
-              tokenConversionRates,
-              conversionRate,
-              currentCurrency,
-              token.chainId,
-              tokenList,
-            ),
-      );
+      if (customTokenListGenerator) {
+        filteredTokens.push(token);
+      } else if (isStrictHexString(token.address)) {
+        filteredTokens.push(
+          getRenderableTokenData(
+            token.address
+              ? ({
+                  ...token,
+                  ...evmTokenMetadataByAddress[token.address.toLowerCase()],
+                  type: AssetType.token,
+                } as AssetWithDisplayData<ERC20Asset>)
+              : token,
+            tokenConversionRates,
+            conversionRate,
+            currentCurrency,
+            token.chainId,
+            evmTokenMetadataByAddress,
+          ),
+        );
+      } else {
+        filteredTokens.push(token);
+      }
 
       if (filteredTokens.length > MAX_UNOWNED_TOKENS_RENDERED) {
         break;
