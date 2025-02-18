@@ -4,7 +4,6 @@ import { Hex } from '@metamask/utils';
 import TokenCell from '../token-cell';
 import {
   getChainIdsToPoll,
-  getCurrentNetwork,
   getNewTokensImported,
   getPreferences,
   getSelectedAccount,
@@ -17,8 +16,10 @@ import { TokenWithFiatAmount } from '../types';
 import { filterAssets } from '../util/filter';
 import { sortAssets } from '../util/sort';
 import useMultiChainAssets from '../hooks/useMultichainAssets';
-import { getMultichainIsEvm } from '../../../../selectors/multichain';
-import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
+import {
+  getMultichainIsEvm,
+  getMultichainNetwork,
+} from '../../../../selectors/multichain';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -29,7 +30,7 @@ function TokenList({ onTokenClick }: TokenListProps) {
   const chainIdsToPoll = useSelector(getChainIdsToPoll);
   const newTokensImported = useSelector(getNewTokensImported);
   const evmBalances = useSelector(getTokenBalancesEvm); // TODO: This is where we need to select non evm-assets from state, when isEvm is false
-  const currentNetwork = useSelector(getCurrentNetwork);
+  const currentNetwork = useSelector(getMultichainNetwork);
   const { tokenSortConfig, privacyMode } = useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedAccount);
 
@@ -49,7 +50,7 @@ function TokenList({ onTokenClick }: TokenListProps) {
     const filteredAssets: TokenWithFiatAmount[] = filterAssets(balances, [
       {
         key: 'chainId',
-        opts: isEvm ? networkFilter : { [MultichainNetworks.SOLANA]: true },
+        opts: isEvm ? networkFilter : { [currentNetwork.chainId]: true },
         filterCallback: 'inclusive',
       },
     ]);
