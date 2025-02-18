@@ -5872,9 +5872,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/notification-services-controller@npm:^0.20.1":
-  version: 0.20.1
-  resolution: "@metamask/notification-services-controller@npm:0.20.1"
+"@metamask/notification-services-controller@npm:^0.21.0":
+  version: 0.21.0
+  resolution: "@metamask/notification-services-controller@npm:0.21.0"
   dependencies:
     "@contentful/rich-text-html-renderer": "npm:^16.5.2"
     "@metamask/base-controller": "npm:^8.0.0"
@@ -5886,8 +5886,8 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/keyring-controller": ^19.0.0
-    "@metamask/profile-sync-controller": ^7.0.0
-  checksum: 10/8f92f25723af263a79fcd2b7c76ff3838aea3790acc3150c9e324bf14af4f921e6651ff86d84101bc37842afbf76c4accc0c361417efaa4af293e0385725a5c1
+    "@metamask/profile-sync-controller": ^8.0.0
+  checksum: 10/8014019e3d2aa174433f8e1f7b6ab895fe0047ba8dfaa93f2a3bb356ea34b066b6193fd0f7c38e8f71b9ed22c89ae2663491e886d598c21db0e03e501a46c6c1
   languageName: node
   linkType: hard
 
@@ -17645,22 +17645,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"elliptic@npm:6.5.4":
-  version: 6.5.4
-  resolution: "elliptic@npm:6.5.4"
-  dependencies:
-    bn.js: "npm:^4.11.9"
-    brorand: "npm:^1.1.0"
-    hash.js: "npm:^1.0.0"
-    hmac-drbg: "npm:^1.0.1"
-    inherits: "npm:^2.0.4"
-    minimalistic-assert: "npm:^1.0.1"
-    minimalistic-crypto-utils: "npm:^1.0.1"
-  checksum: 10/2cd7ff4b69720dbb2ca1ca650b2cf889d1df60c96d4a99d331931e4fe21e45a7f3b8074e86618ca7e56366c4b6258007f234f9d61d9b0c87bbbc8ea990b99e94
-  languageName: node
-  linkType: hard
-
-"elliptic@npm:^6.0.0, elliptic@npm:^6.4.0, elliptic@npm:^6.5.4, elliptic@npm:^6.5.7":
+"elliptic@npm:^6.0.0, elliptic@npm:^6.4.0, elliptic@npm:^6.5.4, elliptic@npm:^6.5.7, elliptic@npm:^6.6.1":
   version: 6.6.1
   resolution: "elliptic@npm:6.6.1"
   dependencies:
@@ -26737,7 +26722,7 @@ __metadata:
     "@metamask/multichain-transactions-controller": "npm:^0.3.0"
     "@metamask/name-controller": "npm:^8.0.3"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A22.1.1#~/.yarn/patches/@metamask-network-controller-npm-22.1.1-09b6510f1e.patch"
-    "@metamask/notification-services-controller": "npm:^0.20.1"
+    "@metamask/notification-services-controller": "npm:^0.21.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^11.0.6"
