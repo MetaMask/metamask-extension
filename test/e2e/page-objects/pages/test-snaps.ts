@@ -42,6 +42,8 @@ export class TestSnaps {
 
   private readonly connectClientStatusButton = '#connectclient-status';
 
+  private readonly connectImagesButton = '#connectimages';
+
   private readonly connectTransactionInsightButton =
     '#connecttransaction-insights';
 
@@ -213,17 +215,10 @@ export class TestSnaps {
   }
 
   async clickConnectHomePage() {
-    // find and scroll to the homepage snap
     const connectHomePageButton = await this.driver.findElement(
       this.connectHomePage,
     );
     await this.driver.scrollToElement(connectHomePageButton);
-
-    // added delay for firefox
-    await this.driver.delayFirefox(1000);
-
-    // wait for and click connect
-    await this.driver.waitForSelector(this.connectHomePage);
     await this.driver.clickElement(this.connectHomePage);
   }
 
@@ -233,6 +228,13 @@ export class TestSnaps {
     await this.driver.scrollToElement(errorButton);
 
     await this.driver.clickElement(this.connectErrorsButton);
+  }
+
+  async clickConnectImages() {
+    console.log('Click connect images button');
+    const imageButton = await this.driver.findElement('#connectimages');
+    await this.driver.scrollToElement(imageButton);
+    await this.driver.clickElement(this.connectImagesButton);
   }
 
   async clickTransactionInsight() {
@@ -246,33 +248,30 @@ export class TestSnaps {
   }
 
   async fillMessageSecp256k1(message: string) {
-    console.log('Wait and fill message in secp256k1');
+    console.log('Fill message in secp256k1');
     await this.driver.fill(this.inputMessageSecp256k1, message);
     await this.driver.clickElement(this.buttonMessageSecp256k1);
   }
 
   async fillMessageEd25519(message: string) {
-    console.log('Wait and fill message in ed25519');
-    await this.driver.waitForSelector(this.inputMessageEd25519);
+    console.log('Fill message in ed25519');
     await this.driver.fill(this.inputMessageEd25519, message);
     await this.driver.clickElement(this.buttonSignEd25519Message);
   }
 
   async fillMessageEd25519Bip32(message: string) {
-    console.log('Wait and fill message in ed25519 bip32');
-    await this.driver.waitForSelector(this.inputMessageEd25519Bip32);
+    console.log('Fill message in ed25519 bip32');
     await this.driver.fill(this.inputMessageEd25519Bip32, message);
     await this.driver.clickElement(this.buttonSignEd25519Bip32Message);
   }
 
   async fillBip44MessageAndSign(message: string) {
-    console.log('Wait and enter bip44 message ');
+    console.log('Fill bip44 message ');
     await this.driver.pasteIntoField(this.inputMessageBip44, message);
     const buttonSignBip44 = await this.driver.findElement(
       this.buttonSignBip44Message,
     );
     await this.driver.scrollToElement(buttonSignBip44);
-    await this.driver.waitForSelector(this.buttonSignBip44Message);
     await this.driver.clickElement(this.buttonSignBip44Message);
   }
 

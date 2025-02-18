@@ -72,17 +72,17 @@ class SnapInstall {
     await this.driver.clickElement(this.connectButton);
   }
 
-  async validateTransactionInsightsTitle() {
+  async check_transactionInsightsTitle() {
     console.log('Check transaction insights title');
     await this.driver.waitForSelector(this.insightTitle);
   }
 
-  async validateTransactionInsightsType() {
+  async check_transactionInsightsType() {
     console.log('Check transaction insights title');
     await this.driver.waitForSelector(this.transactionType);
   }
 
-  async validateInstalledSnapsResult() {
+  async check_installedSnapsResult() {
     console.log('Check installed snaps result');
     await this.driver.waitForSelector(this.snapResult);
   }

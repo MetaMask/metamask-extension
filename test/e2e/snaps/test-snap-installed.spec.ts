@@ -106,7 +106,7 @@ describe('Test Snap Metrics', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // Validate the install snaps result
-        await snapInstall.validateInstalledSnapsResult();
+        await snapInstall.check_installedSnapsResult();
       },
     );
   });

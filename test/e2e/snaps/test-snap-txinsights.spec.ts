@@ -49,10 +49,10 @@ describe('Test Snap TxInsights', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // validate the transaction insights title
-        await snapInstall.validateTransactionInsightsTitle();
+        await snapInstall.check_transactionInsightsTitle();
 
         // validate the transaction insights type
-        await snapInstall.validateTransactionInsightsType();
+        await snapInstall.check_transactionInsightsType();
       },
     );
   });
