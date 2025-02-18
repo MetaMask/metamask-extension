@@ -356,6 +356,7 @@ import {
   MultichainAssetsControllerInit,
   MultichainTransactionsControllerInit,
   MultichainBalancesControllerInit,
+  MultiChainAssetsRatesControllerInit,
 } from './controller-init/multichain';
 ///: END:ONLY_INCLUDE_IF
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
@@ -2016,6 +2017,7 @@ export default class MetamaskController extends EventEmitter {
       TransactionController: TransactionControllerInit,
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       MultichainAssetsController: MultichainAssetsControllerInit,
+      MultiChainAssetsRatesController: MultiChainAssetsRatesControllerInit,
       MultichainBalancesController: MultichainBalancesControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
       ///: END:ONLY_INCLUDE_IF
@@ -2053,6 +2055,8 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.MultichainBalancesController;
     this.multichainTransactionsController =
       controllersByName.MultichainTransactionsController;
+    this.multiChainAssetsRatesController =
+      controllersByName.MultiChainAssetsRatesController;
     ///: END:ONLY_INCLUDE_IF
 
     this.controllerMessenger.subscribe(
@@ -2228,6 +2232,7 @@ export default class MetamaskController extends EventEmitter {
         MultichainAssetsController: this.multichainAssetsController,
         MultichainBalancesController: this.multichainBalancesController,
         MultichainTransactionsController: this.multichainTransactionsController,
+        MultiChainAssetsRatesController: this.multiChainAssetsRatesController,
         ///: END:ONLY_INCLUDE_IF
         NetworkController: this.networkController,
         KeyringController: this.keyringController,
