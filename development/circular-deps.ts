@@ -160,7 +160,7 @@ async function check(): Promise<void> {
       process.exit(1);
     }
 
-    failIfDisallowedCircularDepsFound(allowedCircularGlob, actualDeps);
+    failIfDisallowedCircularDepsFound(actualDeps);
 
     console.log('Circular dependencies check passed.');
   } catch (error) {
@@ -173,13 +173,9 @@ async function check(): Promise<void> {
  * Exits with a non-zero exit code if the provided `actualDeps` contain any
  * circular dependencies that are not allowed by the `allowedCircularGlob`.
  *
- * @param allowedCircularGlob - Glob patterns for allowed circular dependencies.
  * @param actualDeps - All circular dependencies found in the codebase.
  */
-function failIfDisallowedCircularDepsFound(
-  allowedCircularGlob: string[],
-  actualDeps: CircularDeps,
-): void {
+function failIfDisallowedCircularDepsFound(actualDeps: CircularDeps): void {
   // 1) Find all cycles containing any dep that does NOT match the allowed patterns.
   const disallowedCycles = actualDeps.filter((cycle) =>
     cycle.some((dep) => !micromatch.some(dep, allowedCircularGlob)),
