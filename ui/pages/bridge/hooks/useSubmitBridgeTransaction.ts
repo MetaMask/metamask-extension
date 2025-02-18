@@ -1,7 +1,11 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { zeroAddress } from 'ethereumjs-util';
 import { useHistory } from 'react-router-dom';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { createProjectLogger, Hex } from '@metamask/utils';
 import type {
   QuoteMetadata,
@@ -122,8 +126,65 @@ export default function useSubmitBridgeTransaction() {
   ) => {
     if (isSolana) {
       console.log('=======submitting this trade', quoteResponse.trade);
-      await handleBridgeTx({ quoteResponse, approvalTxId: undefined });
-      // TODO fetch the tx status afterwards and mabe show the tx in the activity tab
+      const bridgeTxResult = await handleBridgeTx({
+        quoteResponse,
+        approvalTxId: undefined,
+      });
+
+      const txSignature =
+        'txSignature' in bridgeTxResult
+          ? bridgeTxResult.txSignature
+          : undefined;
+
+      if (txSignature) {
+        // Create a status request for Solana
+        const statusRequestCommon = {
+          bridgeId: quoteResponse.quote.bridgeId,
+          bridge: quoteResponse.quote.bridges[0],
+          srcChainId: quoteResponse.quote.srcChainId,
+          destChainId: quoteResponse.quote.destChainId,
+          quote: quoteResponse.quote,
+          refuel: Boolean(quoteResponse.quote.refuel),
+          srcTxHash: txSignature,
+        };
+
+        // Create a minimal transaction meta for Solana
+        const bridgeTxMeta: TransactionMeta = {
+          id: txSignature,
+          hash: txSignature,
+          time: Date.now(),
+          status: TransactionStatus.submitted,
+          chainId: `0x${quoteResponse.quote.srcChainId.toString(16)}` as Hex,
+          networkClientId: srcChainId,
+          txParams: {
+            from: selectedAccount.id,
+            to: '', // Solana doesn't use 'to' address in the same way
+            value: '0x0',
+            data: '', // We don't store the actual trade data as it's base64
+            gas: '0x0',
+          },
+          origin: 'metamask',
+          type: TransactionType.bridge,
+        };
+
+        // Start polling for bridge tx status
+        dispatch(
+          startPollingForBridgeTxStatus({
+            bridgeTxMeta,
+            statusRequest: statusRequestCommon,
+            quoteResponse: serializeQuoteMetadata(quoteResponse),
+            slippagePercentage: slippage ?? 0,
+            startTime: bridgeTxMeta.time,
+          }),
+        );
+
+        // Route user to activity tab
+        await dispatch(setDefaultHomeActiveTabName('activity'));
+        history.push({
+          pathname: DEFAULT_ROUTE,
+          state: { stayOnHomePage: true },
+        });
+      }
       return;
     }
     if (hardwareWalletUsed) {

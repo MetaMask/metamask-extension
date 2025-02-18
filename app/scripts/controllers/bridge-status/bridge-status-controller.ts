@@ -6,12 +6,14 @@ import {
   StatusTypes,
   BridgeStatusControllerState,
   StartPollingForBridgeTxStatusArgsSerialized,
+  SolanaBridgeHistoryItem,
 } from '../../../../shared/types/bridge-status';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import {
   BRIDGE_STATUS_CONTROLLER_NAME,
   DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
   REFRESH_INTERVAL_MS,
+  SOLANA_ENABLED,
 } from './constants';
 import { BridgeStatusControllerMessenger } from './types';
 import { fetchBridgeTxStatus, getStatusRequestWithSrcTxHash } from './utils';
@@ -87,6 +89,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     this.update((_state) => {
       _state.bridgeStatusState = {
         ...DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
+        solanaTxHistory: {},
       };
     });
   };
@@ -116,6 +119,21 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       const selectedChainId = selectedNetworkClient.configuration.chainId;
 
       this.#wipeBridgeStatusByChainId(address, selectedChainId);
+    }
+
+    if (SOLANA_ENABLED) {
+      this.update((_state) => {
+        const solanaTxHistory = { ..._state.bridgeStatusState.solanaTxHistory };
+        Object.keys(solanaTxHistory).forEach((txMetaId) => {
+          if (
+            solanaTxHistory[txMetaId].account.toLowerCase() ===
+            address.toLowerCase()
+          ) {
+            delete solanaTxHistory[txMetaId];
+          }
+        });
+        _state.bridgeStatusState.solanaTxHistory = solanaTxHistory;
+      });
     }
   };
 
@@ -375,5 +393,39 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
         _state.bridgeStatusState.txHistory,
       );
     });
+  };
+
+  addSolanaBridgeTransaction = (
+    txMetaId: string,
+    txSignature: string,
+    transactionType: 'bridge' | 'swap',
+    bridgeHistoryItem: Omit<
+      SolanaBridgeHistoryItem,
+      'txMetaId' | 'txSignature' | 'transactionType'
+    >,
+  ) => {
+    if (!SOLANA_ENABLED) {
+      return;
+    }
+
+    this.update((_state) => {
+      const solanaTxHistory = _state.bridgeStatusState.solanaTxHistory || {};
+      solanaTxHistory[txMetaId] = {
+        ...bridgeHistoryItem,
+        txMetaId,
+        txSignature,
+        transactionType,
+      };
+      _state.bridgeStatusState.solanaTxHistory = solanaTxHistory;
+    });
+  };
+
+  getSolanaBridgeTransaction = (
+    txMetaId: string,
+  ): SolanaBridgeHistoryItem | undefined => {
+    if (!SOLANA_ENABLED) {
+      return undefined;
+    }
+    return this.state.bridgeStatusState.solanaTxHistory?.[txMetaId];
   };
 }
