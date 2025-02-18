@@ -4,14 +4,20 @@ import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
   ConfirmInfoRowText,
-} from '../../../../../../components/app/confirm/info/row';
-import { useConfirmContext } from '../../../../context/confirm';
-import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
+} from '../../../../../../../components/app/confirm/info/row';
+import { useConfirmContext } from '../../../../../context/confirm';
+import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
+import { useIsUpgradeTransaction } from '../../hooks/useIsUpgradeTransaction';
 
 export function AccountDetails() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const isUpgrade = useIsUpgradeTransaction();
   const { chainId, txParams } = currentConfirmation;
   const { from } = txParams;
+
+  if (!isUpgrade) {
+    return null;
+  }
 
   return (
     <ConfirmInfoSection>

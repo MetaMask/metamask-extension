@@ -5,7 +5,7 @@ import { SimulationDetails } from '../../../simulation-details';
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
 import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
 import { TransactionDetails } from '../shared/transaction-details/transaction-details';
-import { AccountDetails } from '../batch/account-details';
+import { AccountDetails } from '../batch/account-details/account-details';
 
 const BaseTransactionInfo = () => {
   const { currentConfirmation: transactionMeta } =
@@ -15,11 +15,9 @@ const BaseTransactionInfo = () => {
     return null;
   }
 
-  const isUpgrade = Boolean(transactionMeta.txParams.authorizationList?.length);
-
   return (
     <>
-      {isUpgrade && <AccountDetails />}
+      <AccountDetails />
       <SimulationDetails
         transaction={transactionMeta}
         isTransactionsRedesign

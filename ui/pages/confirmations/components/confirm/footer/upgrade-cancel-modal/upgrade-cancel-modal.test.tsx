@@ -1,5 +1,6 @@
 import React from 'react';
-import { UpgradeCancelModal } from './upgrade-cancel-modal';
+import { act } from '@testing-library/react';
+import { rpcErrors } from '@metamask/rpc-errors';
 import configureStore from '../../../../../../store/store';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
@@ -11,8 +12,7 @@ import {
   disableAccountUpgradeForChain,
   rejectPendingApproval,
 } from '../../../../../../store/actions';
-import { act } from '@testing-library/react';
-import { rpcErrors } from '@metamask/rpc-errors';
+import { UpgradeCancelModal } from './upgrade-cancel-modal';
 
 jest.mock('../../../../../../store/actions', () => ({
   ...jest.requireActual('../../../../../../store/actions'),
