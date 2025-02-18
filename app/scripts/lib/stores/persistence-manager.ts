@@ -1,4 +1,5 @@
 import log from 'loglevel';
+import browser from 'webextension-polyfill';
 import { captureException } from '@sentry/browser';
 import { isEmpty } from 'lodash';
 import { type MetaMaskStateType, MetaMaskStorageStructure } from './base-store';
@@ -63,12 +64,15 @@ export class PersistenceManager {
 
   #localStore: ExtensionStore | ReadOnlyNetworkStore;
 
+  #vaultReference: string | null;
+
   constructor({
     localStore,
   }: {
     localStore: ExtensionStore | ReadOnlyNetworkStore;
   }) {
     this.#localStore = localStore;
+    this.#vaultReference = null;
   }
 
   setMetadata(metadata: { version: number }) {
@@ -84,6 +88,13 @@ export class PersistenceManager {
     }
     try {
       await this.#localStore.set({ data: state, meta: this.#metadata });
+      const newVaultReference = state.KeyringController?.vault ?? null;
+      if (newVaultReference !== this.#vaultReference) {
+        if (newVaultReference && this.#vaultReference === null) {
+          browser.storage.local.remove('vaultHasNotYetBeenCreated');
+        }
+        this.#vaultReference = newVaultReference;
+      }
       if (this.#dataPersistenceFailing) {
         this.#dataPersistenceFailing = false;
       }
@@ -113,6 +124,10 @@ export class PersistenceManager {
 
   get mostRecentRetrievedState() {
     return this.#mostRecentRetrievedState;
+  }
+
+  restoreVaultFromBackup() {
+    console.log('restoring vault from backup')
   }
 
   cleanUpMostRecentRetrievedState() {

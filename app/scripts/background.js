@@ -390,6 +390,14 @@ function overrideContentSecurityPolicyHeader() {
   );
 }
 
+function stringifyError(error) {
+    return JSON.stringify({
+        message: error.message,
+        name: error.name,
+        stack: error.stack
+    });
+}
+
 // These are set after initialization
 let connectRemote;
 let connectExternalExtension;
@@ -397,10 +405,28 @@ let connectExternalCaip;
 
 browser.runtime.onConnect.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
-  await isInitialized;
+  try {
+    await isInitialized;
+    connectRemote(...args);
+  } catch (error) {
+    const port = args[0];
+
+    const _state = await localStore.get();
+
+    port.postMessage({
+      target: 'ui',
+      error: stringifyError(error),
+      metamaskState: JSON.stringify(_state),
+    });
+    port.onMessage.addListener((msg) => {
+      const { data, target } = msg;
+      if (data?.name === "RESTORE_VAULT_FROM_BACKUP" && target === "Background") {
+        persistenceManager.restoreVaultFromBackup();
+      }
+    });
+  }
 
   // This is set in `setupController`, which is called as part of initialization
-  connectRemote(...args);
 });
 browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
@@ -640,19 +666,22 @@ export async function loadStateFromPersistence() {
     firstTimeState = { ...firstTimeState, ...stateOverrides };
   }
 
-  const vaultHasNotYetBeenCreated = await browser.storage.local.get('vaultHasNotYetBeenCreated');
+  const { vaultHasNotYetBeenCreated } = await browser.storage.local.get('vaultHasNotYetBeenCreated');
 
   // read from disk
   // first from preferred, async API:
   let preMigrationVersionedData = (await persistenceManager.get());
 
-  const vaultDataNotPresent = Boolean(preMigrationVersionedData?.data?.KeyringController?.vault);
+  const vaultDataPresent = Boolean(preMigrationVersionedData?.data?.KeyringController?.vault);
 
-  if (vaultHasNotYetBeenCreated !== false && vaultDataNotPresent) {
+  if (vaultHasNotYetBeenCreated === undefined && !vaultDataPresent) {
     throw new Error('Data error: storage.local does not contain vault data');
   }
 
-  migrator.generateInitialState(firstTimeState);
+  if (!preMigrationVersionedData.data && !preMigrationVersionedData.meta) {
+    const initialState = migrator.generateInitialState(firstTimeState);
+    preMigrationVersionedData = { ...preMigrationVersionedData, ...initialState };
+  }
 
   // report migration errors to sentry
   migrator.on('error', (err) => {
@@ -1375,9 +1404,31 @@ function setupSentryGetStateGlobal(store) {
   };
 }
 
-async function initBackground() {
-  await onInstall();
+function retrySendUntilReceivingEndExists (errorToSend, count = 0) {
   try {
+    chrome.runtime.sendMessage({
+      target: 'ui',
+      errorToSend,
+    }, (response) => {
+      console.log(response);
+      if (response) {
+        count = 30;
+      }
+    });
+  } catch (error) {
+    log.error(error);
+  } finally {
+    setTimeout(() => {
+      if (count < 30) {
+        retrySendUntilReceivingEndExists(errorToSend, count + 1);
+      }
+    }, 1000);
+  }
+}
+
+async function initBackground() {
+  try {
+    await onInstall();
     await initialize();
     if (process.env.IN_TEST) {
       // Send message to offscreen document
@@ -1393,6 +1444,8 @@ async function initBackground() {
     persistenceManager.cleanUpMostRecentRetrievedState();
   } catch (error) {
     log.error(error);
+    rejectInitialization(error);
+    // retrySendUntilReceivingEndExists(error);
   }
 }
 if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {
