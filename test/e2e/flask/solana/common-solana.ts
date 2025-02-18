@@ -1,4 +1,5 @@
 import { Mockttp } from 'mockttp';
+import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
