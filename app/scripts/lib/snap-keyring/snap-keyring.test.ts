@@ -237,9 +237,11 @@ describe('Snap Keyring Methods', () => {
         },
       });
 
-      expect(mockStartFlow).toHaveBeenCalledTimes(1);
-      // First request for show account creation dialog
-      // Second request for account name suggestion dialog
+      // 1. Account creation confirmation dialogs (creation + account name suggestion)
+      // 2. Account creation summary dialog
+      expect(mockStartFlow).toHaveBeenCalledTimes(2);
+      // 1. Account creation confirmation dialog
+      // 2. Account account name suggestion dialog
       expect(mockAddRequest).toHaveBeenCalledTimes(2);
       expect(mockAddRequest).toHaveBeenNthCalledWith(1, [
         {
@@ -260,10 +262,6 @@ describe('Snap Keyring Methods', () => {
           },
         },
         true,
-      ]);
-      expect(mockGetAccountByAddress).toHaveBeenCalledTimes(1);
-      expect(mockGetAccountByAddress).toHaveBeenCalledWith([
-        mockAccount.address.toLowerCase(),
       ]);
       expect(mockTrackEvent).toHaveBeenCalledTimes(3);
       expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
@@ -295,8 +293,9 @@ describe('Snap Keyring Methods', () => {
       });
       expect(mockShowSuccess).toHaveBeenCalledTimes(1);
       expect(mockSetAccountName).not.toHaveBeenCalled();
-      expect(mockEndFlow).toHaveBeenCalledTimes(1);
-      expect(mockEndFlow).toHaveBeenCalledWith([{ id: mockFlowId }]);
+      expect(mockEndFlow).toHaveBeenCalledTimes(2);
+      expect(mockEndFlow).toHaveBeenNthCalledWith(1, [{ id: mockFlowId }]);
+      expect(mockEndFlow).toHaveBeenNthCalledWith(2, [{ id: mockFlowId }]);
     });
 
     it('handles account creation with skipping confirmation and without user defined name', async () => {
@@ -310,7 +309,7 @@ describe('Snap Keyring Methods', () => {
         },
       });
 
-      expect(mockStartFlow).toHaveBeenCalledTimes(1);
+      expect(mockStartFlow).toHaveBeenCalledTimes(2);
       expect(mockAddRequest).toHaveBeenCalledTimes(1);
       // First call is from addAccount after user confirmation
       // Second call is from within the SnapKeyring after ending the addAccount flow
@@ -326,10 +325,6 @@ describe('Snap Keyring Methods', () => {
         },
         true,
       ]);
-      expect(mockGetAccountByAddress).toHaveBeenCalledTimes(1);
-      expect(mockGetAccountByAddress).toHaveBeenCalledWith([
-        mockAccount.address.toLowerCase(),
-      ]);
       expect(mockTrackEvent).toHaveBeenCalledTimes(1);
       expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
         category: MetaMetricsEventCategory.Accounts,
@@ -341,8 +336,9 @@ describe('Snap Keyring Methods', () => {
         },
       });
       expect(mockSetAccountName).not.toHaveBeenCalled();
-      expect(mockEndFlow).toHaveBeenCalledTimes(1);
-      expect(mockEndFlow).toHaveBeenCalledWith([{ id: mockFlowId }]);
+      expect(mockEndFlow).toHaveBeenCalledTimes(2);
+      expect(mockEndFlow).toHaveBeenNthCalledWith(1, [{ id: mockFlowId }]);
+      expect(mockEndFlow).toHaveBeenNthCalledWith(2, [{ id: mockFlowId }]);
     });
 
     it('handles account creation with confirmations and with a user defined name', async () => {
@@ -361,7 +357,7 @@ describe('Snap Keyring Methods', () => {
         },
       });
 
-      expect(mockStartFlow).toHaveBeenCalledTimes(1);
+      expect(mockStartFlow).toHaveBeenCalledTimes(2);
       // First request for show account creation dialog
       // Second request for account name suggestion second
       expect(mockAddRequest).toHaveBeenCalledTimes(2);
@@ -384,10 +380,6 @@ describe('Snap Keyring Methods', () => {
           },
         },
         true,
-      ]);
-      expect(mockGetAccountByAddress).toHaveBeenCalledTimes(1);
-      expect(mockGetAccountByAddress).toHaveBeenCalledWith([
-        mockAccount.address.toLowerCase(),
       ]);
       expect(mockTrackEvent).toHaveBeenCalledTimes(3);
       expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
@@ -422,8 +414,9 @@ describe('Snap Keyring Methods', () => {
         mockNameSuggestion,
       ]);
       expect(mockShowSuccess).toHaveBeenCalledTimes(1);
-      expect(mockEndFlow).toHaveBeenCalledTimes(1);
-      expect(mockEndFlow).toHaveBeenCalledWith([{ id: mockFlowId }]);
+      expect(mockEndFlow).toHaveBeenCalledTimes(2);
+      expect(mockEndFlow).toHaveBeenNthCalledWith(1, [{ id: mockFlowId }]);
+      expect(mockEndFlow).toHaveBeenNthCalledWith(2, [{ id: mockFlowId }]);
     });
 
     it('handles account creation with skipping confirmation and with user defined name', async () => {
@@ -442,7 +435,7 @@ describe('Snap Keyring Methods', () => {
         },
       });
 
-      expect(mockStartFlow).toHaveBeenCalledTimes(1);
+      expect(mockStartFlow).toHaveBeenCalledTimes(2);
       expect(mockAddRequest).toHaveBeenCalledTimes(1);
       // First call is from addAccount after user confirmation
       // Second call is from within the SnapKeyring after ending the addAccount flow
@@ -456,10 +449,6 @@ describe('Snap Keyring Methods', () => {
           },
         },
         true,
-      ]);
-      expect(mockGetAccountByAddress).toHaveBeenCalledTimes(1);
-      expect(mockGetAccountByAddress).toHaveBeenCalledWith([
-        mockAccount.address.toLowerCase(),
       ]);
       expect(mockTrackEvent).toHaveBeenCalledTimes(1);
       expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
@@ -476,8 +465,9 @@ describe('Snap Keyring Methods', () => {
         mockAccount.id,
         mockNameSuggestion,
       ]);
-      expect(mockEndFlow).toHaveBeenCalledTimes(1);
-      expect(mockEndFlow).toHaveBeenCalledWith([{ id: mockFlowId }]);
+      expect(mockEndFlow).toHaveBeenCalledTimes(2);
+      expect(mockEndFlow).toHaveBeenNthCalledWith(1, [{ id: mockFlowId }]);
+      expect(mockEndFlow).toHaveBeenNthCalledWith(2, [{ id: mockFlowId }]);
     });
 
     it('handles account creation with confirmations and with a user defined name', async () => {
@@ -496,7 +486,7 @@ describe('Snap Keyring Methods', () => {
         },
       });
 
-      expect(mockStartFlow).toHaveBeenCalledTimes(1);
+      expect(mockStartFlow).toHaveBeenCalledTimes(2);
       // First request for show account creation dialog
       // Second request for account name suggestion second
       expect(mockAddRequest).toHaveBeenCalledTimes(2);
@@ -519,10 +509,6 @@ describe('Snap Keyring Methods', () => {
           },
         },
         true,
-      ]);
-      expect(mockGetAccountByAddress).toHaveBeenCalledTimes(1);
-      expect(mockGetAccountByAddress).toHaveBeenCalledWith([
-        mockAccount.address.toLowerCase(),
       ]);
       expect(mockTrackEvent).toHaveBeenCalledTimes(3);
       expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
@@ -558,8 +544,9 @@ describe('Snap Keyring Methods', () => {
         mockNameSuggestion,
       ]);
       expect(mockShowSuccess).toHaveBeenCalledTimes(1);
-      expect(mockEndFlow).toHaveBeenCalledTimes(1);
-      expect(mockEndFlow).toHaveBeenCalledWith([{ id: mockFlowId }]);
+      expect(mockEndFlow).toHaveBeenCalledTimes(2);
+      expect(mockEndFlow).toHaveBeenNthCalledWith(1, [{ id: mockFlowId }]);
+      expect(mockEndFlow).toHaveBeenNthCalledWith(2, [{ id: mockFlowId }]);
     });
 
     it('ends approval flow on error', async () => {
@@ -578,8 +565,9 @@ describe('Snap Keyring Methods', () => {
         `Error occurred while creating snap account: ${errorMessage}`,
       );
       expect(mockStartFlow).toHaveBeenCalledTimes(1);
-      expect(mockEndFlow).toHaveBeenCalledTimes(1);
-      expect(mockEndFlow).toHaveBeenCalledWith([{ id: mockFlowId }]);
+      expect(mockEndFlow).toHaveBeenCalledTimes(2);
+      expect(mockEndFlow).toHaveBeenNthCalledWith(1, [{ id: mockFlowId }]);
+      expect(mockEndFlow).toHaveBeenNthCalledWith(2, [{ id: mockFlowId }]);
     });
   });
 });
