@@ -623,6 +623,50 @@ export async function mockGetTokenAccountInfo(mockServer: Mockttp) {
           data: {
             parsed: {
               info: {
+                decimals: 6,
+                freezeAuthority: null,
+                isInitialized: true,
+                mintAuthority: null,
+                supply: '999943585864185',
+              },
+              type: 'mint',
+            },
+            program: 'spl-token',
+            space: 82,
+          },
+          executable: false,
+          lamports: 37002092583,
+          owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+          rentEpoch: 18446744073709552000,
+          space: 82,
+        },
+      },
+    },
+  };
+  return await mockServer
+    .forPost(SOLANA_URL_REGEX)
+    .withJsonBodyIncluding({
+      method: 'getAccountInfo',
+    })
+    .withBody('2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin')
+    .thenCallback(() => {
+      return response;
+    });
+}
+
+export async function mockGetTokenAccountInfo(mockServer: Mockttp) {
+  const response = {
+    statusCode: 200,
+    json: {
+      result: {
+        context: {
+          apiVersion: '2.0.21',
+          slot: 317161313,
+        },
+        value: {
+          data: {
+            parsed: {
+              info: {
                 isNative: false,
                 mint: '2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
                 owner: '3xTPAZxmpwd8GrNEKApaTw6VH4jqJ31WFXUvQzgwhR7c',
@@ -734,7 +778,7 @@ export async function withSolanaAccountSnap(
         if (mockCalls) {
           mockList.push([
             await mockSolanaBalanceQuote(mockServer),
-            await mockGetTransaction(mockServer),
+            // await mockGetTransaction(mockServer),
             await mockGetTokenAccountsByOwner(mockServer),
             await mockGetSignaturesForAddress(mockServer),
             await mockMultiCoinPrice(mockServer),
