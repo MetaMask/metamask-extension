@@ -92,7 +92,6 @@ jobs:
         with:
           name: prep-build-test-browserify
           path: ./dist/
-          retention-days: 1
 
   prep-build-test-webpack:
     runs-on: ubuntu-latest
@@ -112,7 +111,6 @@ jobs:
         with:
           name: prep-build-test-webpack
           path: ./dist/
-          retention-days: 1
 
   run-tests:
     name: Run tests

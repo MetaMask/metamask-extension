@@ -39,4 +39,3 @@ jobs:
         with:
           name: benchmark-${{ matrix.buildType }}-${{ matrix.testType }}
           path: test-artifacts/chrome/benchmark/
-          retention-days: 30
