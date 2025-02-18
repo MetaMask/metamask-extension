@@ -2058,6 +2058,7 @@ export default class MetamaskController extends EventEmitter {
       MultiChainAssetsRatesController: MultiChainAssetsRatesControllerInit,
       MultichainBalancesController: MultichainBalancesControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
+      MultiChainAssetsRatesController: MultiChainAssetsRatesControllerInit,
       ///: END:ONLY_INCLUDE_IF
     };
 
