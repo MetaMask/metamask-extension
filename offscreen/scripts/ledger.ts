@@ -1,3 +1,4 @@
+import { browser } from 'webextension-polyfill';
 import {
   LedgerAction,
   OffscreenCommunicationEvents,
@@ -16,11 +17,14 @@ const LEDGER_KEYRING_IFRAME_CONNECTED_EVENT = 'ledger-connection-event';
 
 const callbackProcessor = new CallbackProcessor();
 
-function setupMessageListeners(iframe: HTMLIFrameElement) {
+function setupMessageListeners(browserTab: Window) {
   // This listener receives action responses from the live ledger iframe
   // Then forwards the response to the offscreen bridge
-  window.addEventListener('message', ({ origin, data, source }) => {
-    if (origin !== KnownOrigins.ledger || source !== iframe.contentWindow) {
+  window.addEventListener('message', (msg) => {
+    const { origin, data, source } = msg;
+    console.log('msg', msg);
+    console.log('message', origin, data, source);
+    if (source !== browserTab) {
       return;
     }
 
@@ -60,8 +64,8 @@ function setupMessageListeners(iframe: HTMLIFrameElement) {
         return;
       }
 
-      if (!iframe.contentWindow) {
-        const error = new Error('Ledger iframe not present');
+      if (!browserTab) {
+        const error = new Error('Ledger tab not present');
         sendResponse({
           success: false,
           payload: {
@@ -83,7 +87,7 @@ function setupMessageListeners(iframe: HTMLIFrameElement) {
         messageId,
       };
 
-      iframe.contentWindow.postMessage(iframeMsg, KnownOrigins.ledger);
+      browserTab.postMessage(iframeMsg, KnownOrigins.ledger);
 
       // This keeps sendResponse function valid after return
       // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onMessage
@@ -95,13 +99,27 @@ function setupMessageListeners(iframe: HTMLIFrameElement) {
 
 export default async function init() {
   return new Promise<void>((resolve) => {
-    const iframe = document.createElement('iframe');
-    iframe.src = 'https://metamask.github.io/ledger-iframe-bridge/8.0.3/';
-    iframe.allow = 'hid';
-    iframe.onload = () => {
-      setupMessageListeners(iframe);
+    // const iframe = document.createElement('iframe');
+    // iframe.src = 'https://metamask.github.io/ledger-iframe-bridge/8.0.3/';
+    // iframe.allow = 'hid';
+    // iframe.onload = () => {
+    //   setupMessageListeners(iframe);
+    //   resolve();
+    // };
+    // document.body.appendChild(iframe);
+
+    openConnectorTab('http://localhost:5173/').then((browserTab) => {
+      setupMessageListeners(browserTab);
       resolve();
-    };
-    document.body.appendChild(iframe);
+    });
   });
+}
+
+async function openConnectorTab(url: string) {
+  const browserTab = window.open(url);
+  if (!browserTab) {
+    throw new Error('Failed to open Lattice connector.');
+  }
+
+  return browserTab;
 }

@@ -55,5 +55,5 @@ export enum LedgerAction {
  */
 export enum KnownOrigins {
   lattice = 'https://lattice.gridplus.io',
-  ledger = 'https://metamask.github.io',
+  ledger = 'http://localhost:5173',
 }

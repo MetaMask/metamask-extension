@@ -4635,9 +4635,9 @@ export default class MetamaskController extends EventEmitter {
     return this.#withKeyringForDevice(
       { name: deviceName, hdPath },
       async (keyring) => {
-        if (deviceName === HardwareDeviceNames.ledger) {
-          await this.setLedgerTransportPreference(keyring);
-        }
+        // if (deviceName === HardwareDeviceNames.ledger) {
+        //   await this.setLedgerTransportPreference(keyring);
+        // }
 
         let accounts = [];
         switch (page) {
