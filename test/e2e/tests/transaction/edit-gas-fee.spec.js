@@ -168,7 +168,7 @@ describe('Editing Confirm Transaction', function () {
     );
   });
 
-  it.only('adjusts max send amount based on gas fluctuations', async function () {
+  it('adjusts max send amount based on gas fluctuations', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -201,14 +201,14 @@ describe('Editing Confirm Transaction', function () {
         await driver.clickElement('[data-testid="edit-gas-fee-item-custom"]');
 
         // enter max fee
-        await driver.fill('[data-testid="base-fee-input"]', '30');
+        await driver.fill('[data-testid="base-fee-input"]', '50000');
 
         // enter priority fee
-        await driver.fill('[data-testid="priority-fee-input"]', '8.5');
+        await driver.fill('[data-testid="priority-fee-input"]', '3000');
 
         // edit gas limit
         await driver.clickElement('[data-testid="advanced-gas-fee-edit"]');
-        await driver.fill('[data-testid="gas-limit-input"]', '100000');
+        await driver.fill('[data-testid="gas-limit-input"]', '500000');
 
         // Submit gas fee changes
         await driver.clickElement({ text: 'Save', tag: 'button' });
@@ -216,17 +216,17 @@ describe('Editing Confirm Transaction', function () {
         // has correct updated value on the confirm screen the transaction
         await driver.waitForSelector({
           css: '[data-testid="first-gas-field"]',
-          text: '0.0006 ETH',
+          text: '0.0634 ETH',
         });
 
         await driver.waitForSelector({
           css: '[data-testid="native-currency"]',
-          text: '$1.00',
+          text: '$107.79',
         });
 
         // verify max amount after gas fee changes
         await driver.waitForSelector({
-          text: '$42,499.00',
+          text: '$42,392.21',
           tag: 'p',
         });
 
@@ -246,8 +246,25 @@ describe('Editing Confirm Transaction', function () {
         const txValues = await driver.findElements(
           '[data-testid="transaction-list-item-primary-currency"]',
         );
+        const txValuesCurrency = await driver.findElements(
+          '[data-testid="transaction-list-item-secondary-currency"]',
+        );
+
         assert.equal(txValues.length, 1);
-        assert.ok(/-24.99941317\s*ETH/u.test(await txValues[0].getText()));
+        const ethValueText = await txValues[0].getText();
+        const usdValueText = await txValuesCurrency[0].getText();
+
+        assert.strictEqual(
+          ethValueText.trim(),
+          '-24.93659167 ETH',
+          `ETH value mismatch: Expected "-24.93659167 ETH", but got "${ethValueText}"`,
+        );
+
+        assert.strictEqual(
+          usdValueText.trim(),
+          '-$42,392.21 USD',
+          `USD value mismatch: Expected "-$42,392.21 USD", but got "${usdValueText}"`,
+        );
       },
     );
   });
