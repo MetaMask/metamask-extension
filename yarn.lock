@@ -4867,10 +4867,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/api-specs@npm:^0.10.12, @metamask/api-specs@npm:^0.10.15":
+"@metamask/api-specs@npm:^0.10.12":
   version: 0.10.15
   resolution: "@metamask/api-specs@npm:0.10.15"
   checksum: 10/1d68914e43dd14a8bafa77d93965e08cb3ee4b036dc161501dd1d565a21c703d03abefd9e91f23019065c316f74719103b44c871409219f6d4d2cd5503224ac2
+  languageName: node
+  linkType: hard
+
+"@metamask/api-specs@npm:^0.10.16":
+  version: 0.10.16
+  resolution: "@metamask/api-specs@npm:0.10.16"
+  checksum: 10/14577b826064c3d95e5c0c9e8b4eb28dfc0c4e330e56b50632a488073c9d2ddf17e669ff72bb3e0fec1284c18b38cef3ccdf8835fcfedfa249334b901afe4f0e
   languageName: node
   linkType: hard
 
@@ -26624,7 +26631,7 @@ __metadata:
     "@metamask/accounts-controller": "npm:^23.0.1"
     "@metamask/address-book-controller": "npm:^6.0.3"
     "@metamask/announcement-controller": "npm:^7.0.3"
-    "@metamask/api-specs": "npm:^0.10.15"
+    "@metamask/api-specs": "npm:^0.10.16"
     "@metamask/approval-controller": "npm:^7.0.0"
     "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A49.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-49.0.0-e9c0266958.patch"
     "@metamask/auto-changelog": "npm:^2.1.0"
