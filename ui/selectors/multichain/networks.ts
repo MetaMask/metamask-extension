@@ -73,22 +73,23 @@ export const getIsNonEvmNetworksEnabled = createDeepEqualSelector(
   getIsSolanaSupportEnabled,
   getInternalAccounts,
   (isBitcoinEnabled, isSolanaEnabled, internalAccounts) => {
-    if (isBitcoinEnabled && isSolanaEnabled) {
-      return { bitcoinEnabled: true, solanaEnabled: true };
-    }
-
     let bitcoinEnabled = isBitcoinEnabled;
     let solanaEnabled = isSolanaEnabled;
 
+    // We still check if any non-EVM accounts exists for those networks, in
+    // case any of the `is*Enabled` is wrongly disabled while we still have
+    // valid accounts.
     for (const { scopes } of internalAccounts) {
+      // No need to iterate further if both are enabled.
+      if (bitcoinEnabled && solanaEnabled) {
+        break;
+      }
+      
       if (scopes.includes(BtcScope.Mainnet)) {
         bitcoinEnabled = true;
       }
       if (scopes.includes(SolScope.Mainnet)) {
         solanaEnabled = true;
-      }
-      if (bitcoinEnabled && solanaEnabled) {
-        break;
       }
     }
 
