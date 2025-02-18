@@ -244,8 +244,6 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
           throw new Error('User denied account creation');
         }
 
-        // Persist the account so we can rename it afterward.
-        await this.#persistKeyringHelper();
         await handleUserInput(success);
 
         return { accountName };
