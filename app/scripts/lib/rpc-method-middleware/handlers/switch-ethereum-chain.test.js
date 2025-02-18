@@ -167,6 +167,41 @@ describe('switchEthereumChainHandler', () => {
       '0xdeadbeef',
       'mainnet',
       {
+        autoApprove: false,
+        setActiveNetwork: mocks.setActiveNetwork,
+        getCaveat: mocks.getCaveat,
+        requestPermittedChainsPermissionForOrigin:
+          mocks.requestPermittedChainsPermissionForOrigin,
+        requestPermittedChainsPermissionIncrementalForOrigin:
+          mocks.requestPermittedChainsPermissionIncrementalForOrigin,
+        setTokenNetworkFilter: mocks.setTokenNetworkFilter,
+      },
+    );
+  });
+
+  it('calls `switchChain` with `autoApprove: true` if the origin is a Snap', async () => {
+    const { mocks } = createMockedHandler();
+
+    const switchEthereumChainHandler = switchEthereumChain.implementation;
+    await switchEthereumChainHandler(
+      {
+        origin: 'npm:foo-snap',
+        params: [{ chainId: CHAIN_IDS.MAINNET }],
+      },
+      {},
+      jest.fn(),
+      jest.fn(),
+      mocks,
+    );
+
+    expect(EthChainUtils.switchChain).toHaveBeenCalledTimes(1);
+    expect(EthChainUtils.switchChain).toHaveBeenCalledWith(
+      {},
+      expect.any(Function),
+      CHAIN_IDS.MAINNET,
+      NETWORK_TYPES.MAINNET,
+      {
+        autoApprove: true,
         setActiveNetwork: mocks.setActiveNetwork,
         getCaveat: mocks.getCaveat,
         requestPermittedChainsPermissionForOrigin:
