@@ -1,11 +1,10 @@
 import React, { useCallback } from 'react';
+import { useDispatch } from 'react-redux';
+import { rpcErrors, serializeError } from '@metamask/rpc-errors';
 import {
   Box,
   Button,
   ButtonVariant,
-  Icon,
-  IconName,
-  IconSize,
   Modal,
   ModalBody,
   ModalContent,
@@ -21,8 +20,6 @@ import {
   FlexDirection,
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { useDispatch } from 'react-redux';
-import { providerErrors, rpcErrors, serializeError } from '@metamask/rpc-errors';
 import {
   disableAccountUpgradeForChain,
   rejectPendingApproval,
@@ -46,10 +43,7 @@ export function UpgradeCancelModal({
   const chainId = currentConfirmation.chainId as string;
 
   const handleRejectUpgrade = useCallback(async () => {
-    const error = rpcErrors.methodNotSupported(
-      'User rejected account upgrade',
-    );
-
+    const error = rpcErrors.methodNotSupported('User rejected account upgrade');
     const serializedError = serializeError(error);
 
     await disableAccountUpgradeForChain(chainId);

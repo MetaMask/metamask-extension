@@ -41,7 +41,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
-import { UpgradeCancelModal } from './upgrade-cancel-modal/upgrade-cancel-modal';
+import { UpgradeCancelModal } from './upgrade-cancel-modal';
 import OriginThrottleModal from './origin-throttle-modal';
 
 export type OnCancelHandler = ({
