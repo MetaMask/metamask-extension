@@ -1,7 +1,14 @@
-import { MultichainAssetsControllerState } from '@metamask/assets-controllers';
+import {
+  MultichainAssetsControllerState,
+  MultichainAssetsRatesControllerState,
+} from '@metamask/assets-controllers';
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
+};
+
+export type AssetsRatesState = {
+  metamask: MultichainAssetsRatesControllerState;
 };
 
 /**
@@ -22,4 +29,14 @@ export function getAccountAssets(state: AssetsState) {
  */
 export function getAssetsMetadata(state: AssetsState) {
   return state.metamask.assetsMetadata;
+}
+
+/**
+ * Gets non-EVM accounts assets rates.
+ *
+ * @param state - Redux state object.
+ * @returns An object containing non-EVM assets per accounts.
+ */
+export function getAssetsRates(state: AssetsRatesState) {
+  return state.metamask.conversionRates;
 }
