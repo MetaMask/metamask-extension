@@ -40,35 +40,27 @@ const NameDisplay = memo(
       <div
         className={classnames({
           name: true,
+          name__clickable: Boolean(handleClick),
           name__saved: hasPetname,
           name__recognized_unsaved: !hasPetname && hasDisplayName,
           name__missing: !hasDisplayName,
         })}
         onClick={handleClick}
       >
-        <div
-          className={classnames({
-            name: true,
-            name__saved: hasPetname,
-            name__recognized_unsaved: !hasPetname && hasDisplayName,
-            name__missing: !hasDisplayName,
-          })}
-        >
-          {hasDisplayName ? (
-            <Identicon address={value} diameter={16} image={image} />
-          ) : (
-            <Icon
-              name={IconName.Question}
-              className="name__icon"
-              size={IconSize.Md}
-            />
-          )}
-          {hasDisplayName ? (
-            <ShortenedName name={name} />
-          ) : (
-            <FormattedName value={value} type={type} />
-          )}
-        </div>
+        {hasDisplayName ? (
+          <Identicon address={value} diameter={16} image={image} />
+        ) : (
+          <Icon
+            name={IconName.Question}
+            className="name__icon"
+            size={IconSize.Md}
+          />
+        )}
+        {hasDisplayName ? (
+          <ShortenedName name={name} />
+        ) : (
+          <FormattedName value={value} type={type} />
+        )}
       </div>
     );
   },
