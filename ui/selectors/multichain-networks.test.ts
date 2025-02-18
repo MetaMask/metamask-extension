@@ -163,8 +163,6 @@ describe('Multichain network selectors', () => {
         },
       };
 
-      console.log({ mockMultichainNetworkStateWithBitcoinSupportDisabled });
-
       expect(
         getMultichainNetworkConfigurationsByChainId(
           mockMultichainNetworkStateWithBitcoinSupportDisabled,
@@ -208,12 +206,12 @@ describe('Multichain network selectors', () => {
   });
 
   describe('getSelectedMultichainNetworkConfiguration', () => {
-    it('returns the selected non EVM multichain network configuration if isEvmSelected is true', () => {
+    it('returns the selected non EVM multichain network configuration if isEvmSelected is false', () => {
       expect(
         getSelectedMultichainNetworkConfiguration(mockMultichainNetworkState),
       ).toStrictEqual(nonEvmNetworks[SolScope.Mainnet]);
     });
-    it('returns the selected EVM multichain network configuration if isEvmSelected is false', () => {
+    it('returns the selected EVM multichain network configuration if isEvmSelected is true', () => {
       const mockMultichainNetworkStateWithEvmSelected = {
         ...mockMultichainNetworkState,
         metamask: {
