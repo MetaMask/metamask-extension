@@ -163,6 +163,7 @@
     },
     "@metamask/transaction-controller>@ethereumjs/common>@ethereumjs/util": {
       "globals": {
+        "console.log": true,
         "console.warn": true,
         "fetch": true
       },
@@ -198,6 +199,7 @@
     },
     "@metamask/smart-transactions-controller>@ethereumjs/util": {
       "globals": {
+        "console.log": true,
         "console.warn": true,
         "fetch": true
       },
@@ -1483,6 +1485,9 @@
       }
     },
     "@metamask/keyring-controller": {
+      "globals": {
+        "console.log": true
+      },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/base-controller": true,
