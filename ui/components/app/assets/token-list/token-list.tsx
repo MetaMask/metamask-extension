@@ -29,11 +29,12 @@ function TokenList({ onTokenClick }: TokenListProps) {
   const isEvm = useSelector(getMultichainIsEvm);
   const chainIdsToPoll = useSelector(getChainIdsToPoll);
   const newTokensImported = useSelector(getNewTokensImported);
-  const evmBalances = useSelector(getTokenBalancesEvm); // TODO: This is where we need to select non evm-assets from state, when isEvm is false
   const currentNetwork = useSelector(getMultichainNetwork);
   const { tokenSortConfig, privacyMode } = useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedAccount);
-
+  const evmBalances = useSelector((state) =>
+    getTokenBalancesEvm(state, selectedAccount.address),
+  );
   // EVM specific tokenBalance polling, updates state via polling loop per chainId
   pollAndUpdateEvmBalances({
     chainIds: chainIdsToPoll as Hex[],

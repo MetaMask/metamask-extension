@@ -90,6 +90,7 @@ import {
   isAddressLedger,
   getIsUnlocked,
   getCompletedOnboarding,
+  getTokenBalances,
 } from '../ducks/metamask/metamask';
 import {
   getLedgerWebHidConnectedStatus,
@@ -2986,27 +2987,27 @@ export function getKeyringSnapAccounts(state) {
 export const getTokenBalancesEvm = createDeepEqualSelector(
   getSelectedAccountTokensAcrossChains,
   getSelectedAccountNativeTokenCachedBalanceByChainId,
-  (state) => state.metamask.tokenBalances,
+  getTokenBalances,
+  (_state, accountAddress) => accountAddress,
   getMarketData,
   getCurrencyRates,
   getPreferences,
   getIsTokenNetworkFilterEqualCurrentNetwork,
-  getSelectedAccount,
   getCurrentNetwork,
   (
     selectedAccountTokensChains,
     nativeBalances,
     tokenBalances,
+    selectedAccountAddress,
     marketData,
     currencyRates,
     preferences,
     isOnCurrentNetwork,
-    selectedAccount,
     currentNetwork,
   ) => {
     const { hideZeroBalanceTokens } = preferences;
     const selectedAccountTokenBalancesAcrossChains =
-      tokenBalances[selectedAccount.address];
+      tokenBalances[selectedAccountAddress];
 
     // we need to filter Testnets
     const isTestNetwork = TEST_CHAINS.includes(currentNetwork.chainId);
