@@ -32,6 +32,10 @@ export class TestSnaps {
 
   private readonly connectHomePage = '#connecthomepage';
 
+  public readonly connectDialogsButton = '#connectdialogs';
+
+  private readonly connectErrorsButton = '#connecterrors';
+
   private readonly connectBip32 = '#connectbip32';
 
   private readonly connectBip44 = '#connectbip44';
@@ -167,6 +171,11 @@ export class TestSnaps {
     await this.driver.clickElement(this.sendInsightButton);
   }
 
+  async clickConnectDialogsButton() {
+    console.log('Click connect dialogs button');
+    await this.driver.clickElement(this.connectDialogsButton);
+  }
+
   async clickGetPublicKeyButton() {
     console.log('Wait and click get public key button');
     await this.driver.waitForSelector(this.getPublicKeyButton);
@@ -216,6 +225,14 @@ export class TestSnaps {
     // wait for and click connect
     await this.driver.waitForSelector(this.connectHomePage);
     await this.driver.clickElement(this.connectHomePage);
+  }
+
+  async clickConnectErrors() {
+    console.log('Click connect errors button');
+    const errorButton = await this.driver.findElement(this.connectErrorsButton);
+    await this.driver.scrollToElement(errorButton);
+
+    await this.driver.clickElement(this.connectErrorsButton);
   }
 
   async clickTransactionInsight() {
@@ -289,5 +306,13 @@ export class TestSnaps {
   async waitForReconnectBip44Button() {
     console.log('Wait for reconnect button');
     await this.driver.waitForSelector(this.reconnectBip44Button);
+  }
+
+  async check_installationComplete(selector: string, expectedMessage: string) {
+    console.log('Check Installation Complete');
+    await this.driver.waitForSelector({
+      css: selector,
+      text: expectedMessage,
+    });
   }
 }

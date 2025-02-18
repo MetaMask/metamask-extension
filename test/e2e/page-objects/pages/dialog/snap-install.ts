@@ -26,6 +26,11 @@ class SnapInstall {
     text: 'ERC-20',
   };
 
+  private readonly snapResult = {
+    css: '#installedSnapsResult',
+    text: 'npm:@metamask/dialog-example-snap, npm:@metamask/error-example-snap',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -75,6 +80,11 @@ class SnapInstall {
   async validateTransactionInsightsType() {
     console.log('Check transaction insights title');
     await this.driver.waitForSelector(this.transactionType);
+  }
+
+  async validateInstalledSnapsResult() {
+    console.log('Check installed snaps result');
+    await this.driver.waitForSelector(this.snapResult);
   }
 }
 
