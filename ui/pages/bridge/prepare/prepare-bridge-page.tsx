@@ -97,7 +97,15 @@ import { BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE } from '../../../../share
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getMultichainIsEvm } from '../../../selectors/multichain';
+import {
+  getMultichainIsEvm,
+  getMultichainTransactions,
+} from '../../../selectors/multichain';
+import {
+  selectBridgeHistoryForAccount,
+  selectBridgeStatusState,
+} from '../../../ducks/bridge-status/selectors';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 
@@ -248,6 +256,17 @@ const PrepareBridgePage = () => {
       dispatch(resetBridgeState());
     }
   }, []);
+
+  const tx = useSelector(getMultichainTransactions);
+  const accountHistory = useSelector(selectBridgeHistoryForAccount);
+  const bridgeStatusState = useSelector(selectBridgeStatusState);
+
+  useEffect(() => {
+    console.log('=====multichaintransactions', {
+      accountHistory,
+      bridgeStatusState,
+    });
+  }, [tx, accountHistory, bridgeStatusState]);
 
   // Scroll to bottom of the page when banners are shown
   const insufficientBalanceBannerRef = useRef<HTMLDivElement>(null);
