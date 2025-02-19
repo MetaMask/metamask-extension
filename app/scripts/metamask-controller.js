@@ -3281,7 +3281,7 @@ export default class MetamaskController extends EventEmitter {
 
     const updatePublicConfigStore = async (memState) => {
       const networkStatus =
-        memState.networksMetadata[memState.selectedNetworkClientId]?.status;
+        memState.networksMetadata?.[memState.selectedNetworkClientId]?.status;
       if (networkStatus === NetworkStatus.Available) {
         publicConfigStore.putState(await selectPublicState(memState));
       }
