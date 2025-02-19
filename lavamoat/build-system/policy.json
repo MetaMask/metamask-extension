@@ -1559,6 +1559,9 @@
       }
     },
     "chokidar>braces": {
+      "globals": {
+        "console.log": true
+      },
       "packages": {
         "chokidar>braces>fill-range": true
       }
@@ -3082,7 +3085,7 @@
         "eslint>@nodelib/fs.walk": true,
         "eslint>glob-parent": true,
         "globby>merge2": true,
-        "fast-glob>micromatch": true
+        "micromatch": true
       }
     },
     "eslint>@nodelib/fs.walk>fastq": {
@@ -4555,6 +4558,15 @@
         "process.nextTick": true
       }
     },
+    "micromatch": {
+      "builtin": {
+        "util.inspect": true
+      },
+      "packages": {
+        "chokidar>braces": true,
+        "micromatch>picomatch": true
+      }
+    },
     "gulp>glob-watcher>anymatch>micromatch": {
       "builtin": {
         "path.basename": true,
@@ -4601,24 +4613,6 @@
         "gulp-watch>anymatch>micromatch>object.omit": true,
         "gulp-watch>anymatch>micromatch>parse-glob": true,
         "gulp-watch>anymatch>micromatch>regex-cache": true
-      }
-    },
-    "fast-glob>micromatch": {
-      "builtin": {
-        "util.inspect": true
-      },
-      "packages": {
-        "chokidar>braces": true,
-        "micromatch>picomatch": true
-      }
-    },
-    "stylelint>micromatch": {
-      "builtin": {
-        "util.inspect": true
-      },
-      "packages": {
-        "chokidar>braces": true,
-        "micromatch>picomatch": true
       }
     },
     "eslint>minimatch": {
@@ -8235,7 +8229,7 @@
         "lodash": true,
         "mocha>log-symbols": true,
         "stylelint>mathml-tag-names": true,
-        "stylelint>micromatch": true,
+        "micromatch": true,
         "stylelint>normalize-selector": true,
         "stylelint>postcss-html": true,
         "stylelint>postcss-less": true,
