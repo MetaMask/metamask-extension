@@ -638,6 +638,7 @@ describe('MetaMaskController', () => {
 
     describe('setLocked', () => {
       it('should lock KeyringController', async () => {
+        await metamaskController.createNewVaultAndKeychain('password');
         jest.spyOn(metamaskController.keyringController, 'setLocked');
 
         await metamaskController.setLocked();
