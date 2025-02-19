@@ -38,9 +38,5 @@
   [
     "ui/components/multichain/pages/send/components/index.ts",
     "ui/components/multichain/pages/send/components/your-accounts.tsx"
-  ],
-  [
-    "ui/pages/notifications/notifications-list.tsx",
-    "ui/pages/notifications/notifications.tsx"
   ]
 ]
