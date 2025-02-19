@@ -1,9 +1,9 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import { withMultiSRP } from './common-multi-srp';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import { ACCOUNT_TYPE } from '../../constants';
+import { withMultiSRP } from './common-multi-srp';
 
 describe('Multi SRP - Add accounts', function (this: Suite) {
   it('adds a new account for the default srp', async function () {

@@ -308,6 +308,12 @@ const firstTimeState = {
   },
 };
 
+const createNewVaultAndUnlock = async (metamaskInstance) => {
+  const password = 'a-fake-password';
+  await metamaskInstance.createNewVaultAndKeychain(password);
+  await metamaskInstance.submitPassword(password);
+};
+
 const noop = () => undefined;
 
 describe('MetaMaskController', () => {
@@ -663,6 +669,7 @@ describe('MetaMaskController', () => {
 
     describe('setLocked', () => {
       it('should lock KeyringController', async () => {
+        await createNewVaultAndUnlock(metamaskController);
         jest.spyOn(metamaskController.keyringController, 'setLocked');
 
         await metamaskController.setLocked();
@@ -2675,19 +2682,18 @@ describe('MetaMaskController', () => {
     });
 
     describe('#addNewAccount', () => {
-      it('errors when an primary keyring is does not exist', async () => {
+      it('throws an error if the keyring controller is locked', async () => {
         const addNewAccount = metamaskController.addNewAccount();
-
         await expect(addNewAccount).rejects.toThrow(
-          'KeyringController - Keyring not found.',
+          'KeyringController - The operation cannot be completed while the controller is locked.',
         );
       });
     });
 
     describe('#getSeedPhrase', () => {
-      it('errors when no password is provided', async () => {
+      it('throws error if keyring controller is locked', async () => {
         await expect(metamaskController.getSeedPhrase()).rejects.toThrow(
-          'KeyringController - Cannot unlock without a previous vault.',
+          'KeyringController - The operation cannot be completed while the controller is locked.',
         );
       });
 

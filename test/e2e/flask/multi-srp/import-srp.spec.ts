@@ -1,9 +1,9 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import { SECOND_TEST_E2E_SRP, withMultiSRP } from './common-multi-srp';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import { SECOND_TEST_E2E_SRP, withMultiSRP } from './common-multi-srp';
 
 describe('Multi SRP - Import SRP', function (this: Suite) {
   const testPassword = 'correct horse battery staple';
