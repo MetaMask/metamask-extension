@@ -203,6 +203,7 @@ workflows:
             - prep-deps
             - prep-build-flask-mv2
       - all-tests-pass:
+          context: mm-extension-ci-bot
           requires:
             - validate-source-maps
             - validate-source-maps-flask
@@ -1197,7 +1198,7 @@ jobs:
       - run:
           name: All Tests Passed
           command: echo 'whew - everything passed!'
-      post-steps:
-            - slack/notify:
-                event: fail
-                template: basic_fail_1
+    post-steps:
+      - slack/notify:
+        event: fail
+        template: basic_fail_1
