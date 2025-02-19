@@ -412,7 +412,7 @@
         "@ethersproject/bytes": true,
         "ethers>@ethersproject/logger": true,
         "ethers>@ethersproject/properties": true,
-        "ethers>@ethersproject/signing-key>elliptic": true
+        "@metamask/ppom-validator>elliptic": true
       }
     },
     "ethers>@ethersproject/solidity": {
@@ -894,7 +894,7 @@
         "console.info": true
       },
       "packages": {
-        "@metamask/approval-controller>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/rpc-errors": true,
         "nanoid": true
       }
@@ -919,7 +919,7 @@
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
         "@metamask/abi-utils": true,
-        "@metamask/assets-controllers>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
@@ -928,10 +928,9 @@
         "@metamask/metamask-eth-abis": true,
         "@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
-        "@metamask/snaps-utils": true,
+        "@metamask/assets-controllers>@metamask/snaps-utils": true,
         "@metamask/assets-controllers>@metamask/utils": true,
         "@metamask/name-controller>async-mutex": true,
-        "bitcoin-address-validation": true,
         "bn.js": true,
         "lodash": true,
         "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": true,
@@ -948,22 +947,6 @@
       }
     },
     "@metamask/announcement-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/approval-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/assets-controllers>@metamask/base-controller": {
       "globals": {
         "setTimeout": true
       },
@@ -1012,14 +995,6 @@
       }
     },
     "@metamask/signature-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/snaps-controllers>@metamask/base-controller": {
       "globals": {
         "setTimeout": true
       },
@@ -1530,7 +1505,7 @@
         "console.error": true
       },
       "packages": {
-        "@metamask/multichain>@metamask/api-specs": true,
+        "@metamask/api-specs": true,
         "@metamask/controller-utils": true,
         "@metamask/eth-json-rpc-filters": true,
         "@metamask/json-rpc-engine": true,
@@ -1543,6 +1518,15 @@
         "lodash": true
       }
     },
+    "@metamask/multichain-network-controller": {
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/keyring-api": true,
+        "@metamask/network-controller": true,
+        "@metamask/multichain-network-controller>@metamask/utils": true,
+        "@metamask/multichain-network-controller>@solana/addresses": true
+      }
+    },
     "@metamask/multichain-transactions-controller": {
       "globals": {
         "console.error": true
@@ -1551,7 +1535,7 @@
         "@metamask/base-controller": true,
         "@metamask/keyring-api": true,
         "@metamask/multichain-transactions-controller>@metamask/keyring-snap-client": true,
-        "@metamask/snaps-utils": true,
+        "@metamask/multichain-transactions-controller>@metamask/snaps-utils": true,
         "@metamask/multichain-transactions-controller>@metamask/utils": true
       }
     },
@@ -1886,7 +1870,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/snaps-controllers>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/json-rpc-engine": true,
         "@metamask/json-rpc-middleware-stream": true,
         "@metamask/object-multiplex": true,
@@ -1979,6 +1963,76 @@
         "@metamask/snaps-sdk": true,
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/snaps-utils>@metamask/utils": true,
+        "@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "chalk": true,
+        "@metamask/snaps-utils>cron-parser": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "@metamask/snaps-utils>fast-xml-parser": true,
+        "@metamask/snaps-utils>marked": true,
+        "@metamask/snaps-utils>rfdc": true,
+        "semver": true,
+        "@metamask/snaps-utils>validate-npm-package-name": true
+      }
+    },
+    "@metamask/assets-controllers>@metamask/snaps-utils": {
+      "globals": {
+        "File": true,
+        "FileReader": true,
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "URL": true,
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true,
+        "crypto": true,
+        "document.body.appendChild": true,
+        "document.createElement": true,
+        "fetch": true
+      },
+      "packages": {
+        "@metamask/snaps-sdk>@metamask/key-tree": true,
+        "@metamask/permission-controller": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/snaps-utils>@metamask/slip44": true,
+        "@metamask/snaps-sdk": true,
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/assets-controllers>@metamask/utils": true,
+        "@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "chalk": true,
+        "@metamask/snaps-utils>cron-parser": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "@metamask/snaps-utils>fast-xml-parser": true,
+        "@metamask/snaps-utils>marked": true,
+        "@metamask/snaps-utils>rfdc": true,
+        "semver": true,
+        "@metamask/snaps-utils>validate-npm-package-name": true
+      }
+    },
+    "@metamask/multichain-transactions-controller>@metamask/snaps-utils": {
+      "globals": {
+        "File": true,
+        "FileReader": true,
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "URL": true,
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true,
+        "crypto": true,
+        "document.body.appendChild": true,
+        "document.createElement": true,
+        "fetch": true
+      },
+      "packages": {
+        "@metamask/snaps-sdk>@metamask/key-tree": true,
+        "@metamask/permission-controller": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/snaps-utils>@metamask/slip44": true,
+        "@metamask/snaps-sdk": true,
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/multichain-transactions-controller>@metamask/utils": true,
         "@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
         "chalk": true,
@@ -2420,6 +2474,21 @@
       }
     },
     "@metamask/multichain>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "@metamask/utils>pony-cause": true,
+        "semver": true
+      }
+    },
+    "@metamask/multichain-network-controller>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
@@ -3034,6 +3103,20 @@
         "@solana/addresses>@solana/errors": true
       }
     },
+    "@metamask/multichain-network-controller>@solana/addresses": {
+      "globals": {
+        "Intl.Collator": true,
+        "TextEncoder": true,
+        "crypto.subtle.digest": true,
+        "crypto.subtle.exportKey": true
+      },
+      "packages": {
+        "@metamask/multichain-network-controller>@solana/addresses>@solana/assertions": true,
+        "@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-core": true,
+        "@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-strings": true,
+        "@metamask/multichain-network-controller>@solana/addresses>@solana/errors": true
+      }
+    },
     "@solana/addresses>@solana/assertions": {
       "globals": {
         "crypto": true,
@@ -3043,9 +3126,23 @@
         "@solana/addresses>@solana/errors": true
       }
     },
+    "@metamask/multichain-network-controller>@solana/addresses>@solana/assertions": {
+      "globals": {
+        "crypto": true,
+        "isSecureContext": true
+      },
+      "packages": {
+        "@metamask/multichain-network-controller>@solana/addresses>@solana/errors": true
+      }
+    },
     "@solana/addresses>@solana/codecs-core": {
       "packages": {
         "@solana/addresses>@solana/errors": true
+      }
+    },
+    "@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-core": {
+      "packages": {
+        "@metamask/multichain-network-controller>@solana/addresses>@solana/errors": true
       }
     },
     "@solana/addresses>@solana/codecs-strings": {
@@ -3060,7 +3157,24 @@
         "@solana/addresses>@solana/errors": true
       }
     },
+    "@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-strings": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "atob": true,
+        "btoa": true
+      },
+      "packages": {
+        "@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-core": true,
+        "@metamask/multichain-network-controller>@solana/addresses>@solana/errors": true
+      }
+    },
     "@solana/addresses>@solana/errors": {
+      "globals": {
+        "btoa": true
+      }
+    },
+    "@metamask/multichain-network-controller>@solana/addresses>@solana/errors": {
       "globals": {
         "btoa": true
       }
@@ -3627,6 +3741,12 @@
         "semver": true
       }
     },
+    "string.prototype.matchall>get-intrinsic>call-bind-apply-helpers": {
+      "packages": {
+        "string.prototype.matchall>call-bind>es-errors": true,
+        "browserify>has>function-bind": true
+      }
+    },
     "string.prototype.matchall>call-bind": {
       "packages": {
         "string.prototype.matchall>call-bind>es-define-property": true,
@@ -3634,6 +3754,12 @@
         "browserify>has>function-bind": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>call-bind>set-function-length": true
+      }
+    },
+    "string.prototype.matchall>side-channel>side-channel-map>call-bound": {
+      "packages": {
+        "string.prototype.matchall>get-intrinsic>call-bind-apply-helpers": true,
+        "string.prototype.matchall>get-intrinsic": true
       }
     },
     "@ngraveio/bc-ur>cbor-sync": {
@@ -3945,20 +4071,15 @@
         "@babel/runtime": true
       }
     },
+    "string.prototype.matchall>get-intrinsic>get-proto>dunder-proto": {
+      "packages": {
+        "string.prototype.matchall>get-intrinsic>call-bind-apply-helpers": true,
+        "string.prototype.matchall>es-abstract>gopd": true
+      }
+    },
     "debounce-stream>duplexer": {
       "packages": {
         "stream-browserify": true
-      }
-    },
-    "ethers>@ethersproject/signing-key>elliptic": {
-      "packages": {
-        "bn.js": true,
-        "@metamask/ppom-validator>elliptic>brorand": true,
-        "ethers>@ethersproject/sha2>hash.js": true,
-        "@metamask/ppom-validator>elliptic>hmac-drbg": true,
-        "pumpify>inherits": true,
-        "@metamask/ppom-validator>elliptic>minimalistic-assert": true,
-        "@metamask/ppom-validator>elliptic>minimalistic-crypto-utils": true
       }
     },
     "@metamask/ppom-validator>elliptic": {
@@ -3970,22 +4091,6 @@
         "pumpify>inherits": true,
         "@metamask/ppom-validator>elliptic>minimalistic-assert": true,
         "@metamask/ppom-validator>elliptic>minimalistic-crypto-utils": true
-      }
-    },
-    "eth-lattice-keyring>gridplus-sdk>elliptic": {
-      "packages": {
-        "bn.js": true,
-        "@metamask/ppom-validator>elliptic>brorand": true,
-        "ethers>@ethersproject/sha2>hash.js": true,
-        "@metamask/ppom-validator>elliptic>hmac-drbg": true,
-        "pumpify>inherits": true,
-        "@metamask/ppom-validator>elliptic>minimalistic-assert": true,
-        "@metamask/ppom-validator>elliptic>minimalistic-crypto-utils": true
-      }
-    },
-    "string.prototype.matchall>call-bind>es-define-property": {
-      "packages": {
-        "string.prototype.matchall>get-intrinsic": true
       }
     },
     "@metamask/eth-token-tracker>deep-equal>es-get-iterator": {
@@ -4260,16 +4365,22 @@
         "WeakRef": true
       },
       "packages": {
+        "string.prototype.matchall>get-intrinsic>call-bind-apply-helpers": true,
+        "string.prototype.matchall>call-bind>es-define-property": true,
         "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-object-atoms": true,
         "browserify>has>function-bind": true,
-        "string.prototype.matchall>es-abstract>has-proto": true,
+        "string.prototype.matchall>get-intrinsic>get-proto": true,
+        "string.prototype.matchall>es-abstract>gopd": true,
         "string.prototype.matchall>has-symbols": true,
-        "depcheck>is-core-module>hasown": true
+        "depcheck>is-core-module>hasown": true,
+        "string.prototype.matchall>get-intrinsic>math-intrinsics": true
       }
     },
-    "string.prototype.matchall>es-abstract>gopd": {
+    "string.prototype.matchall>get-intrinsic>get-proto": {
       "packages": {
-        "string.prototype.matchall>get-intrinsic": true
+        "string.prototype.matchall>get-intrinsic>get-proto>dunder-proto": true,
+        "string.prototype.matchall>es-abstract>es-object-atoms": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk": {
@@ -4299,7 +4410,7 @@
         "ethereumjs-util>ethereum-cryptography>bs58check": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>@ethereumjs/common>crc-32": true,
-        "eth-lattice-keyring>gridplus-sdk>elliptic": true,
+        "@metamask/ppom-validator>elliptic": true,
         "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser": true,
         "ethers>@ethersproject/sha2>hash.js": true,
         "eth-ens-namehash>js-sha3": true,
@@ -5054,7 +5165,7 @@
         "react": true
       }
     },
-    "browserify>url>qs": {
+    "mockttp>express>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
       }
@@ -5647,11 +5758,36 @@
         "koa>content-disposition>safe-buffer": true
       }
     },
-    "string.prototype.matchall>side-channel": {
+    "string.prototype.matchall>side-channel>side-channel-list": {
       "packages": {
-        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>object-inspect": true
+      }
+    },
+    "string.prototype.matchall>side-channel>side-channel-map": {
+      "packages": {
+        "string.prototype.matchall>side-channel>side-channel-map>call-bound": true,
+        "string.prototype.matchall>call-bind>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>es-abstract>object-inspect": true
+      }
+    },
+    "string.prototype.matchall>side-channel>side-channel-weakmap": {
+      "packages": {
+        "string.prototype.matchall>side-channel>side-channel-map>call-bound": true,
+        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>get-intrinsic": true,
+        "string.prototype.matchall>es-abstract>object-inspect": true,
+        "string.prototype.matchall>side-channel>side-channel-map": true
+      }
+    },
+    "string.prototype.matchall>side-channel": {
+      "packages": {
+        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>object-inspect": true,
+        "string.prototype.matchall>side-channel>side-channel-list": true,
+        "string.prototype.matchall>side-channel>side-channel-map": true,
+        "string.prototype.matchall>side-channel>side-channel-weakmap": true
       }
     },
     "@metamask/profile-sync-controller>siwe": {
@@ -5831,7 +5967,7 @@
     "browserify>url": {
       "packages": {
         "browserify>punycode": true,
-        "browserify>url>qs": true
+        "mockttp>express>qs": true
       }
     },
     "react-focus-lock>use-callback-ref": {

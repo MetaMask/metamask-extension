@@ -157,7 +157,9 @@
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
     "currentMigrationVersion": "number",
-    "balances": "object",
+    "multichainNetworkConfigurationsByChainId": "object",
+    "selectedMultichainNetworkChainId": "string",
+    "isEvmSelected": "boolean",
     "selectedNetworkClientId": "string",
     "networksMetadata": {
       "networkConfigurationId": {
@@ -250,9 +252,6 @@
     "ignoredNfts": "object",
     "domains": "object",
     "logs": "object",
-    "methodData": "object",
-    "lastFetchedBlockNumbers": "object",
-    "submitHistory": "object",
     "fiatCurrency": "usd",
     "rates": {
       "btc": { "conversionDate": 0, "conversionRate": 0 },
@@ -292,8 +291,6 @@
     "cacheTimestamp": "number",
     "accounts": "object",
     "accountsByChainId": "object",
-    "accountsAssets": "object",
-    "assetsMetadata": "object",
     "marketData": "object",
     "unapprovedDecryptMsgs": "object",
     "unapprovedDecryptMsgCount": 0,
@@ -355,6 +352,9 @@
     "pendingApprovalCount": "number",
     "approvalFlows": "object",
     "storageMetadata": {},
+    "methodData": "object",
+    "lastFetchedBlockNumbers": "object",
+    "submitHistory": "object",
     "encryptionKey": "string",
     "encryptionSalt": "string"
   },

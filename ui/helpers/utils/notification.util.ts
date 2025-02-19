@@ -102,7 +102,7 @@ export function formatMenuItemDate(date: Date) {
     );
   }
 
-  // E.g. 21 Oct
+  // E.g. Oct 21
   if (isSameYear(currentDate, date)) {
     return new Intl.DateTimeFormat('en', {
       month: 'short',
@@ -110,7 +110,7 @@ export function formatMenuItemDate(date: Date) {
     }).format(date);
   }
 
-  // E.g. 21 Oct 2022
+  // E.g. Oct 21, 2022
   return new Intl.DateTimeFormat('en', {
     year: 'numeric',
     month: 'short',
