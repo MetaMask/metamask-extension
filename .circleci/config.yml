@@ -203,7 +203,6 @@ workflows:
             - prep-deps
             - prep-build-flask-mv2
       - all-tests-pass:
-          context: mm-extension-ci-bot
           requires:
             - validate-source-maps
             - validate-source-maps-flask
@@ -260,7 +259,17 @@ workflows:
             - prep-build-ts-migration-dashboard
       - send-ci-break-notification:
           requires:
-            - all-tests-pass
+            - validate-source-maps
+            - validate-source-maps-flask
+            - test-mozilla-lint-mv2
+            - test-mozilla-lint-flask-mv2
+            - test-e2e-chrome
+            - test-e2e-chrome-multiple-providers
+            - test-e2e-firefox
+            - test-e2e-chrome-flask
+            - test-e2e-firefox-flask
+            - test-e2e-chrome-vault-decryption
+            - test-e2e-chrome-webpack
           context: mm-extension-ci-bot
 
   rerun-from-failed:
