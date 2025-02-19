@@ -17,11 +17,10 @@ jobs:
         testType: [pageload, userActions]
     name: ${{ matrix.buildType }}-${{ matrix.testType }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@1d657e262aea7e3f216754febb624831527d2565
+        uses: metamask/github-tools/.github/actions/setup-environment@caching
+        with:
+          should-cache-restore: ${{ vars.USE_CACHING }}
 
       - name: Download artifact prep-build-test-${{ matrix.buildType }}
         uses: actions/download-artifact@v4
