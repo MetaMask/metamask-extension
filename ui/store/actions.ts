@@ -29,7 +29,6 @@ import {
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
 import {
-  GasFeeEstimates,
   TransactionMeta,
   TransactionParams,
   TransactionType,
@@ -4511,14 +4510,6 @@ export function estimateGas(params: TransactionParams): Promise<Hex> {
   return submitRequestToBackground('estimateGas', [params]);
 }
 
-export function estimateGasFee(request: {
-  transactionParams: TransactionParams;
-  chainId?: Hex;
-  networkClientId?: NetworkClientId;
-}): Promise<{ estimates: GasFeeEstimates }> {
-  return submitRequestToBackground('estimateGasFee', [request]);
-}
-
 export async function updateTokenType(
   tokenAddress: string,
 ): Promise<Token | undefined> {
@@ -5909,6 +5900,14 @@ export async function multichainUpdateBalance(
   accountId: string,
 ): Promise<void> {
   return await submitRequestToBackground<void>('multichainUpdateBalance', [
+    accountId,
+  ]);
+}
+
+export async function multichainUpdateTransactions(
+  accountId: string,
+): Promise<void> {
+  return await submitRequestToBackground<void>('multichainUpdateTransactions', [
     accountId,
   ]);
 }

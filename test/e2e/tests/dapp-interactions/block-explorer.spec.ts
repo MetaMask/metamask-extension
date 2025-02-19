@@ -1,8 +1,16 @@
-const { mockNetworkStateOld } = require('../../../stub/networks');
-
-const { withFixtures, unlockWallet } = require('../../helpers');
-const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
-const FixtureBuilder = require('../../fixture-builder');
+import { mockNetworkStateOld } from '../../../stub/networks';
+import { withFixtures } from '../../helpers';
+import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
+import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
+import FixtureBuilder from '../../fixture-builder';
+import AccountListPage from '../../page-objects/pages/account-list-page';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HomePage from '../../page-objects/pages/home/homepage';
+import MockedPage from '../../page-objects/pages/mocked-page';
+import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Block Explorer', function () {
   it('links to the users account on the explorer, ', async function () {
@@ -19,30 +27,28 @@ describe('Block Explorer', function () {
             }),
           )
           .build(),
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openAccountMenu();
 
         // View account on explorer
-        await driver.clickElement('[data-testid="account-menu-icon"]');
-        await driver.clickElement(
-          '[data-testid="account-list-item-menu-button"]',
-        );
-        await driver.clickElement({ text: 'View on explorer', tag: 'p' });
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.check_pageIsLoaded();
+        await accountListPage.viewAccountOnExplorer('Account 1');
 
         // Switch to block explorer
         await driver.switchToWindowWithTitle('E2E Test Page');
 
         // Verify block explorer
         await driver.waitForUrl({
-          url: 'https://etherscan.io/address/0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+          url: `https://etherscan.io/address/${DEFAULT_FIXTURE_ACCOUNT}`,
         });
-
-        await driver.waitForSelector({
-          text: 'Empty page by MetaMask',
-          tag: 'body',
-        });
+        await new MockedPage(driver).check_displayedMessage(
+          'Empty page by MetaMask',
+        );
       },
     );
   });
@@ -64,39 +70,30 @@ describe('Block Explorer', function () {
           .withTokensControllerERC20()
           .build(),
         smartContract: SMART_CONTRACTS.HST,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
+      async ({ driver, ganacheServer }) => {
+        await loginWithBalanceValidation(driver, ganacheServer);
 
         // View TST token in block explorer
-        await driver.clickElement(
-          '[data-testid="account-overview__asset-tab"]',
-        );
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.check_tokenItemNumber(2);
+        await assetListPage.clickOnAsset('TST');
 
-        await driver.clickElement({
-          text: 'TST',
-          tag: 'p',
-        });
-
-        await driver.clickElement('[data-testid="asset-options__button"]');
-        await driver.clickElement({
-          text: 'View Asset in explorer',
-          tag: 'div',
-        });
+        const tokenOverviewPage = new TokenOverviewPage(driver);
+        await tokenOverviewPage.check_pageIsLoaded();
+        await tokenOverviewPage.viewAssetInExplorer();
 
         // Switch to block explorer
         await driver.switchToWindowWithTitle('E2E Test Page');
 
         // Verify block explorer
         await driver.waitForUrl({
-          url: 'https://etherscan.io/token/0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+          url: `https://etherscan.io/token/0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947`,
         });
-
-        await driver.waitForSelector({
-          text: 'Empty page by MetaMask',
-          tag: 'body',
-        });
+        await new MockedPage(driver).check_displayedMessage(
+          'Empty page by MetaMask',
+        );
       },
     );
   });
@@ -117,20 +114,16 @@ describe('Block Explorer', function () {
           })
           .withTransactionControllerCompletedTransaction()
           .build(),
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // View transaction on block explorer
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-        await driver.clickElement('[data-testid="activity-list-item-action"]');
-        await driver.clickElement({
-          text: 'View on block explorer',
-          tag: 'a',
-        });
+        await new HomePage(driver).goToActivityList();
+        const activityListPage = new ActivityListPage(driver);
+        await activityListPage.check_completedTxNumberDisplayedInActivity(1);
+        await activityListPage.viewTransactionOnExplorer(1);
 
         // Switch to block explorer
         await driver.switchToWindowWithTitle('E2E Test Page');
@@ -139,11 +132,9 @@ describe('Block Explorer', function () {
         await driver.waitForUrl({
           url: 'https://etherscan.io/tx/0xe5e7b95690f584b8f66b33e31acc6184fea553fa6722d42486a59990d13d5fa2',
         });
-
-        await driver.waitForSelector({
-          text: 'Empty page by MetaMask',
-          tag: 'body',
-        });
+        await new MockedPage(driver).check_displayedMessage(
+          'Empty page by MetaMask',
+        );
       },
     );
   });

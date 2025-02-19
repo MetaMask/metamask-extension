@@ -4895,9 +4895,6 @@
     "message": "मार्केट के आकस्मिक बदलावों के कारण विफलताएं हो सकती हैं। अगर समस्या जारी रहती है, तो कृपया $1 से कॉन्टेक्ट करें।",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxOptInDescription": {
-    "message": "Ethereum Mainnet पर अधिक विश्वसनीय और सुरक्षित ट्रांसेक्शन के लिए स्मार्ट ट्रांसेक्शन चालू करें। $1"
-  },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "आपका स्वैप निजी रूप से सबमिट किया जा रहा है..."
   },

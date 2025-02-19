@@ -42,6 +42,17 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { BridgeAssetPickerButton } from './components/bridge-asset-picker-button';
 
+const sanitizeAmountInput = (textToSanitize: string) => {
+  // Remove characters that are not numbers or decimal points if rendering a controlled or pasted value
+  return (
+    textToSanitize
+      .replace(/[^\d.]+/gu, '')
+      // Only allow one decimal point, ignore digits after second decimal point
+      .split('.', 2)
+      .join('.')
+  );
+};
+
 export const BridgeInputGroup = ({
   header,
   token,
@@ -138,20 +149,30 @@ export const BridgeInputGroup = ({
           className="amount-input"
           placeholder={'0'}
           onKeyPress={(e?: React.KeyboardEvent<HTMLDivElement>) => {
-            // Only allow numbers and at most one decimal point
-            if (
-              e &&
-              !/^[0-9]*\.{0,1}[0-9]*$/u.test(
-                `${amountFieldProps.value ?? ''}${e.key}`,
-              )
-            ) {
-              e.preventDefault();
+            if (e) {
+              // Only allow numbers and at most one decimal point
+              if (
+                e.key === '.' &&
+                amountFieldProps.value?.toString().includes('.')
+              ) {
+                e.preventDefault();
+              } else if (!/^[\d.]{1}$/u.test(e.key)) {
+                e.preventDefault();
+              }
             }
           }}
+          onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
+            e.preventDefault();
+            const cleanedValue = sanitizeAmountInput(
+              e.clipboardData.getData('text'),
+            );
+            onAmountChange?.(cleanedValue ?? '');
+          }}
           onChange={(e) => {
-            // Remove characters that are not numbers or decimal points if rendering a controlled or pasted value
-            const cleanedValue = e.target.value.replace(/[^0-9.]+/gu, '');
-            onAmountChange?.(cleanedValue);
+            e.preventDefault();
+            e.stopPropagation();
+            const cleanedValue = sanitizeAmountInput(e.target.value);
+            onAmountChange?.(cleanedValue ?? '');
           }}
           {...amountFieldProps}
         />

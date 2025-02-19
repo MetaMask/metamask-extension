@@ -10,6 +10,7 @@ const {
   filterE2eChangedFiles,
   getChangedAndNewFiles,
   readChangedAndNewFilesWithStatus,
+  shouldE2eQualityGateBeSkipped,
 } = require('./changedFilesUtil');
 
 // These tests should only be run on Flask for now.
@@ -75,10 +76,9 @@ function runningOnCircleCI(testPaths) {
   const changedOrNewTests = filterE2eChangedFiles(changedandNewFilesPaths);
   console.log('Changed or new test list:', changedOrNewTests);
 
-  const fullTestList = applyQualityGate(
-    testPaths.join('\n'),
-    changedOrNewTests,
-  );
+  const fullTestList = shouldE2eQualityGateBeSkipped()
+    ? testPaths.join('\n')
+    : applyQualityGate(testPaths.join('\n'), changedOrNewTests);
 
   console.log('Full test list:', fullTestList);
   fs.writeFileSync('test/test-results/fullTestList.txt', fullTestList);

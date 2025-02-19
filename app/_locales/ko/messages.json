@@ -4895,9 +4895,6 @@
     "message": "시장 상황이 갑자기 변하면 실패할 수 있습니다. 문제가 지속되면 $1(으)로 문의하세요.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxOptInDescription": {
-    "message": "이더리움 메인넷에서 더욱 안정적이고 안전하게 트랜잭션을 진행하려면 스마트 트랜잭션을 활성화하세요. $1"
-  },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "스왑을 비공개로 제출하는 중..."
   },

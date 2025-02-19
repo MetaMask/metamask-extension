@@ -291,17 +291,26 @@ const AssetPage = ({
         <Text variant={TextVariant.headingMd} paddingBottom={2} paddingLeft={4}>
           {t('yourBalance')}
         </Text>
-        <TokenCell
-          key={`${symbol}-${address}`}
-          address={address}
-          chainId={chainId}
-          symbol={symbol}
-          image={image}
-          tokenFiatAmount={
-            showFiat && tokenMarketPrice ? tokenFiatAmount : null
-          }
-          string={balance?.toString()}
-        />
+        {[AssetType.token, AssetType.native].includes(type) && (
+          <TokenCell
+            key={`${symbol}-${address}`}
+            token={{
+              address: address as Hex,
+              chainId,
+              symbol,
+              image,
+              tokenFiatAmount:
+                showFiat && tokenMarketPrice ? tokenFiatAmount : null,
+              string: balance ? balance.toString() : '',
+              decimals: asset.decimals,
+              aggregators:
+                type === AssetType.token && asset.aggregators
+                  ? asset.aggregators
+                  : [],
+              isNative: type === AssetType.native,
+            }}
+          />
+        )}
         <Box
           marginTop={2}
           display={Display.Flex}
