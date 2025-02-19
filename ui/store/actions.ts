@@ -5913,6 +5913,14 @@ export async function multichainUpdateBalance(
   ]);
 }
 
+export async function multichainUpdateTransactions(
+  accountId: string,
+): Promise<void> {
+  return await submitRequestToBackground<void>('multichainUpdateTransactions', [
+    accountId,
+  ]);
+}
+
 export async function getLastInteractedConfirmationInfo(): Promise<
   LastInteractedConfirmationInfo | undefined
 > {
