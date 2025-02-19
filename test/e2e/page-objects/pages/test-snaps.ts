@@ -21,6 +21,10 @@ export class TestSnaps {
 
   private readonly connectBip44Button = '#connectbip44';
 
+  public readonly connectUpdateButton = '#connectUpdate';
+
+  public readonly connectUpdateNewButton = '#connectUpdateNew';
+
   private readonly connectClientStatusButton = '#connectclient-status';
 
   private readonly connectImagesButton = '#connectimages';
@@ -96,6 +100,8 @@ export class TestSnaps {
 
   public readonly wasmResultSpan = '#wasmResult';
 
+  public readonly updateVersionSpan = '#updateSnapVersion';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -133,6 +139,16 @@ export class TestSnaps {
   async clickConnectDialogsSnapButton() {
     console.log('Find, scroll and click dialog snap button');
     await this.driver.findScrollToElementClick(this.connectDialogsSnapButton);
+  }
+
+  async clickConnectUpdateButton() {
+    console.log('Find, scroll and click connect update button');
+    await this.driver.findScrollToElementClick(this.connectUpdateButton);
+  }
+
+  async clickConnectUpdateNewButton() {
+    console.log('Find, scroll and click connect update button');
+    await this.driver.findScrollToElementClick(this.connectUpdateNewButton);
   }
 
   async clickConnectWasmButton() {
