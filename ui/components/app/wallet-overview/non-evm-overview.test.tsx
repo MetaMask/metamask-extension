@@ -188,7 +188,7 @@ describe('NonEvmOverview', () => {
     expect(primaryBalance).toHaveTextContent(`$${mockNonEvmBalanceUsd}USD`);
   });
 
-  it('shows a not spinner if balance is not available', async () => {
+  it('shows a spinner if balance is not available', async () => {
     const { container } = renderWithProvider(
       <NonEvmOverview />,
       getStore({
