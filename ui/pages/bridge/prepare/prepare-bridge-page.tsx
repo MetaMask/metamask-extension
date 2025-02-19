@@ -574,7 +574,9 @@ const PrepareBridgePage = () => {
           }
           customTokenListGenerator={
             // TODO use custom generator when we have a way to get all tokens for an unimported chain
-            toChain && !isSwap ? toTokenListGenerator : undefined
+            toChain && toChain.chainId !== MultichainNetworks.SOLANA
+              ? toTokenListGenerator
+              : undefined
           }
           amountInFiat={
             activeQuote?.toTokenAmount?.valueInCurrency || undefined
