@@ -463,7 +463,6 @@ export type FlattenedBackgroundStateProxy = {
   useExternalNameSources: PreferencesControllerState['useExternalNameSources'];
   useMultiAccountBalanceChecker: PreferencesControllerState['useMultiAccountBalanceChecker'];
   useNftDetection: PreferencesControllerState['useNftDetection'];
-  useNonceField: PreferencesControllerState['useNonceField'];
   usePhishDetect: PreferencesControllerState['usePhishDetect'];
   useTokenDetection: PreferencesControllerState['useTokenDetection'];
   // useRequestQueue: PreferencesControllerState['useRequestQueue'];
