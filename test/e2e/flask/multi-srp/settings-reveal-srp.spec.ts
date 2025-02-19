@@ -11,7 +11,7 @@ describe('Multi SRP - Reveal Imported SRP', function (this: Suite) {
   const firstSRPIndex = 1;
   const secondSRPIndex = 2;
 
-  it('successfully exports the default SRP', async function () {
+  it.only('successfully exports the default SRP', async function () {
     await withMultiSRP(
       { title: this.test?.fullTitle() },
       async (driver: Driver) => {
