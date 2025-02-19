@@ -102,6 +102,7 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainIsEvm } from '../../../selectors/multichain';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 
@@ -109,6 +110,8 @@ const PrepareBridgePage = () => {
   const dispatch = useDispatch();
 
   const t = useI18nContext();
+
+  const isSwap = useIsMultichainSwap();
 
   const fromToken = useSelector(getFromToken);
   const fromTokens = useSelector(getTokenList) as TokenListMap;
@@ -297,7 +300,12 @@ const PrepareBridgePage = () => {
       // balance is less than the tenderly balance
       insufficientBal: Boolean(providerConfig?.rpcUrl?.includes('tenderly')),
       slippage,
-      walletAddress: selectedAccount?.address,
+      walletAddress: selectedAccount?.address ?? '',
+      // TODO override with account selector's value
+      destWalletAddress:
+        toChain?.chainId === MultichainNetworks.SOLANA || isSwap
+          ? selectedMultichainAccount?.address
+          : selectedEvmAccount?.address,
     }),
     [
       isSwap,
