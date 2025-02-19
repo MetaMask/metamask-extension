@@ -1217,8 +1217,13 @@ jobs:
           command: echo 'Sending Slack notification if necessary'
       - slack/notify:
           event: fail
-          custom:
-            attachments:
-              - text: 'Job failed! Check CircleCI for details.'
-                color: danger
+          custom: |
+            {
+              "attachments": [
+                {
+                  "text": "Job failed! Check CircleCI for details.",
+                  "color": "danger"
+                }
+              ]
+            }
 
