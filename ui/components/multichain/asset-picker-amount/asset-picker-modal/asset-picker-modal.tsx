@@ -271,10 +271,11 @@ export function AssetPickerModal({
       const blockedTokens = [];
 
       // Yield multichain tokens with balances
-      // if (isMultiselectEnabled) {
-      for (const token of multichainTokensWithBalance) {
-        if (shouldAddToken(token.symbol, token.address, token.chainId)) {
-          yield token;
+      if (isMultiselectEnabled) {
+        for (const token of multichainTokensWithBalance) {
+          if (shouldAddToken(token.symbol, token.address, token.chainId)) {
+            yield token;
+          }
         }
       }
 
@@ -355,15 +356,19 @@ export function AssetPickerModal({
       }
     },
     [
+      isMultiselectEnabled,
       nativeCurrency,
       nativeCurrencyImage,
       balanceValue,
+      currentChainId,
+      isEvm,
+      selectedNetwork?.chainId,
+      multichainTokensWithBalance,
       memoizedUsersTokens,
+      nonEvmTokenMetadataByAddress,
       topTokens,
       evmTokenMetadataByAddress,
       getIsDisabled,
-      isMultiselectEnabled,
-      multichainTokensWithBalance,
     ],
   );
 
@@ -412,9 +417,7 @@ export function AssetPickerModal({
       }
 
       filteredTokensAddresses.add(getTokenKey(token.address, token.chainId));
-      if (customTokenListGenerator) {
-        filteredTokens.push(token);
-      } else if (isStrictHexString(token.address)) {
+      if (!customTokenListGenerator && isStrictHexString(token.address)) {
         filteredTokens.push(
           getRenderableTokenData(
             token.address
@@ -432,7 +435,9 @@ export function AssetPickerModal({
           ),
         );
       } else {
-        filteredTokens.push(token);
+        filteredTokens.push(
+          token as unknown as AssetWithDisplayData<ERC20Asset>,
+        );
       }
 
       if (filteredTokens.length > MAX_UNOWNED_TOKENS_RENDERED) {
@@ -452,6 +457,7 @@ export function AssetPickerModal({
     isMultiselectEnabled,
     selectedChainIds,
     selectedNetwork,
+    evmTokenMetadataByAddress,
   ]);
 
   const getNetworkPickerLabel = () => {
