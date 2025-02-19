@@ -5708,8 +5708,8 @@ __metadata:
   linkType: hard
 
 "@metamask/multichain-network-controller@npm:^0.1.0":
-  version: 0.1.1
-  resolution: "@metamask/multichain-network-controller@npm:0.1.1"
+  version: 0.1.0
+  resolution: "@metamask/multichain-network-controller@npm:0.1.0"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/keyring-api": "npm:^17.0.0"
@@ -5718,7 +5718,7 @@ __metadata:
   peerDependencies:
     "@metamask/accounts-controller": ^24.0.0
     "@metamask/network-controller": ^22.0.0
-  checksum: 10/0753831d802d84d154dbdfacac8ad8f7277d25957a3ec369a5fa588bee219656c4b6b0992699191eafa965ef2b43d1d4c827c0c7e417b82d94bf244040ca8451
+  checksum: 10/aad7c0a2753c6f763ca44e2576e999dbec7dd9b6e849c36d8ebd825720beea4bebbb9824ae25b83efca7f9dbddf0a0705d6cecdc2df5a889059d41d8a596aecc
   languageName: node
   linkType: hard
 
@@ -6440,7 +6440,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^45.0.0":
+"@metamask/transaction-controller@npm:45.0.0":
   version: 45.0.0
   resolution: "@metamask/transaction-controller@npm:45.0.0"
   dependencies:
@@ -26825,7 +26825,7 @@ __metadata:
     "@metamask/solana-wallet-snap": "npm:^1.2.0"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.0.0"
-    "@metamask/transaction-controller": "npm:^45.0.0"
+    "@metamask/transaction-controller": "npm:45.0.0"
     "@metamask/user-operation-controller": "npm:^24.0.1"
     "@metamask/utils": "npm:^10.0.1"
     "@ngraveio/bc-ur": "npm:^1.1.12"
