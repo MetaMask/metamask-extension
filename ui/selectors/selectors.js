@@ -3097,7 +3097,6 @@ export const getMultiChainAssets = createDeepEqualSelector(
       const rate = assetRates[assetId]?.rate || '0';
 
       const balanceInFiat = new BigNumber(balance.amount).times(rate);
-      console.log('balanceInFiat', balanceInFiat.toNumber());
 
       const metadata = assetsMetadata[assetId] || {
         name: balance.unit,

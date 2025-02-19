@@ -102,6 +102,8 @@ export const useTokenDisplayInfo = ({
       title,
       tokenImage,
       primary,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       secondary,
       isStakeable,
       tokenChainImage: tokenChainImage as string,

@@ -309,6 +309,8 @@ const AssetPage = ({
                   ? asset.aggregators
                   : [],
               isNative: type === AssetType.native,
+              primary: balance ? balance.toString() : '',
+              secondary: balance ? Number(balance) : 0,
             }}
           />
         )}
