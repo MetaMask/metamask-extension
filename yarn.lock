@@ -6423,7 +6423,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:45.1.0":
+"@metamask/transaction-controller@npm:^45.0.0":
   version: 45.1.0
   resolution: "@metamask/transaction-controller@npm:45.1.0"
   dependencies:
@@ -6454,40 +6454,6 @@ __metadata:
     "@metamask/gas-fee-controller": ^22.0.0
     "@metamask/network-controller": ^22.0.0
   checksum: 10/4be40e2315e512db873c436f87cfb43f63623491c98cbb22c28c24091cf666c2428e9916f2ba1706743504ba8af505dc2c3fa5549c1ed99f50868284eb5fe07f
-  languageName: node
-  linkType: hard
-
-"@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A45.1.0#~/.yarn/patches/@metamask-transaction-controller-npm-45.1.0-e30a921ab9.patch":
-  version: 45.1.0
-  resolution: "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A45.1.0#~/.yarn/patches/@metamask-transaction-controller-npm-45.1.0-e30a921ab9.patch::version=45.1.0&hash=bf78ee"
-  dependencies:
-    "@ethereumjs/common": "npm:^4.4.0"
-    "@ethereumjs/tx": "npm:^5.4.0"
-    "@ethereumjs/util": "npm:^8.1.0"
-    "@ethersproject/abi": "npm:^5.7.0"
-    "@ethersproject/contracts": "npm:^5.7.0"
-    "@ethersproject/providers": "npm:^5.7.0"
-    "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/controller-utils": "npm:^11.5.0"
-    "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/nonce-tracker": "npm:^6.0.0"
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/utils": "npm:^11.1.0"
-    async-mutex: "npm:^0.5.0"
-    bn.js: "npm:^5.2.1"
-    eth-method-registry: "npm:^4.0.0"
-    fast-json-patch: "npm:^3.1.1"
-    lodash: "npm:^4.17.21"
-    uuid: "npm:^8.3.2"
-  peerDependencies:
-    "@babel/runtime": ^7.0.0
-    "@metamask/accounts-controller": ^23.0.0
-    "@metamask/approval-controller": ^7.0.0
-    "@metamask/eth-block-tracker": ">=9"
-    "@metamask/gas-fee-controller": ^22.0.0
-    "@metamask/network-controller": ^22.0.0
-  checksum: 10/105e786019728bc36184b91ed8e789f3268c9f99e5f02c7a86175ebd37cb8db1c21a1969425cf448e63b9e5cccd0961e4214cb8c4e6a013a495402b244572f07
   languageName: node
   linkType: hard
 
@@ -26765,7 +26731,7 @@ __metadata:
     "@metamask/solana-wallet-snap": "npm:^1.2.0"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.0.0"
-    "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm%3A45.1.0#~/.yarn/patches/@metamask-transaction-controller-npm-45.1.0-e30a921ab9.patch"
+    "@metamask/transaction-controller": "npm:^45.0.0"
     "@metamask/user-operation-controller": "npm:^24.0.1"
     "@metamask/utils": "npm:^10.0.1"
     "@ngraveio/bc-ur": "npm:^1.1.12"
