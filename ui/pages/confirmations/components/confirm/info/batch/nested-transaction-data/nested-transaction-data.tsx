@@ -1,7 +1,7 @@
 import React from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useConfirmContext } from '../../../../../context/confirm';
-import { NestedTransaction } from '../nested-transaction/nested-transaction';
+import { NestedTransaction } from '../nested-transaction';
 import { Box } from '../../../../../../../components/component-library';
 
 export function NestedTransactionData() {

@@ -1,4 +1,5 @@
 import {
+  BatchTransactionParams,
   CHAIN_IDS,
   SimulationData,
   TransactionMeta,
@@ -25,11 +26,13 @@ export const genUnapprovedContractInteractionConfirmation = ({
   address = CONTRACT_INTERACTION_SENDER_ADDRESS,
   txData = DEPOSIT_METHOD_DATA,
   chainId = CHAIN_ID,
+  nestedTransactions = [],
   simulationData,
 }: {
   address?: Hex;
   txData?: Hex;
   chainId?: string;
+  nestedTransactions?: BatchTransactionParams[];
   simulationData?: SimulationData;
 } = {}): Confirmation => {
   const confirmation: Confirmation = {
@@ -134,6 +137,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
       ],
     ],
     id: '1d7c08c0-fe54-11ee-9243-91b1e533746a',
+    nestedTransactions,
     origin: 'https://metamask.github.io',
     securityAlertResponse: {
       features: [],

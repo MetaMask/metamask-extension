@@ -1,11 +1,7 @@
 import React from 'react';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowText,
-} from '../../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRowText } from '../../../../../../../components/app/confirm/info/row';
 import { ConfirmInfoExpandableRow } from '../../../../../../../components/app/confirm/info/row/expandable-row';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
-import { Box } from '../../../../../../../components/component-library';
 import { RecipientRow } from '../../shared/transaction-details/transaction-details';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { TransactionMeta } from '@metamask/transaction-controller';
