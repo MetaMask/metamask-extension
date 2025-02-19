@@ -9,7 +9,6 @@ import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import { TestSuiteArguments } from './shared';
 
 const { WINDOW_TITLES, withFixtures } = require('../../../helpers');
@@ -27,10 +26,9 @@ describe('Speed Up and Cancel Transaction Tests', function () {
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           localNodeOptions: defaultGanacheOptionsForType2Transactions,
-          smartContract: SMART_CONTRACTS.PIGGYBANK,
           title: this.test?.fullTitle(),
         },
-        async ({ driver }: TestSuiteArguments) => {
+        async ({ driver, ganacheServer }: TestSuiteArguments) => {
           await unlockWallet(driver);
 
           // Create initial stuck transaction
@@ -41,7 +39,6 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           });
 
           // Wait for confirmation dialog and confirm initial transaction
-          await driver.waitUntilXWindowHandles(3);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
           const confirmationPage = new Confirmation(driver);
@@ -51,6 +48,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
+          await ganacheServer?.mineBlock();
 
           const homePage = new HomePage(driver);
           await homePage.goToActivityList();
@@ -61,6 +59,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           await activityListPage.click_transactionListItem();
           await activityListPage.click_speedUpTransaction();
           await activityListPage.click_confirmTransactionReplacement();
+          await ganacheServer?.mineBlock();
 
           await activityListPage.check_waitForTransactionStatus('confirmed');
         },
@@ -77,10 +76,9 @@ describe('Speed Up and Cancel Transaction Tests', function () {
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           localNodeOptions: defaultGanacheOptionsForType2Transactions,
-          smartContract: SMART_CONTRACTS.PIGGYBANK,
           title: this.test?.fullTitle(),
         },
-        async ({ driver }: TestSuiteArguments) => {
+        async ({ driver, ganacheServer }: TestSuiteArguments) => {
           await unlockWallet(driver);
 
           // Create initial stuck transaction
@@ -90,11 +88,11 @@ describe('Speed Up and Cancel Transaction Tests', function () {
             maxPriorityFeePerGas: decimalToPrefixedHex(0),
           });
 
-          await driver.waitUntilXWindowHandles(3);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
           const confirmationPage = new Confirmation(driver);
           await confirmationPage.clickFooterConfirmButton();
+          await ganacheServer?.mineBlock();
 
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
@@ -108,6 +106,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
 
           await activityListPage.click_cancelTransaction();
           await activityListPage.click_confirmTransactionReplacement();
+          await ganacheServer?.mineBlock();
 
           await activityListPage.check_waitForTransactionStatus('cancelled');
         },
