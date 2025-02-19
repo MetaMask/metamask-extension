@@ -4,6 +4,7 @@ import {
   AddNetworkFields,
   NetworkConfiguration,
 } from '@metamask/network-controller';
+import type { CaipChainId } from '@metamask/utils';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { Box } from '../../../component-library';
@@ -44,7 +45,10 @@ type AssetListProps = {
   isTokenDisabled?: (
     token: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
   ) => boolean;
-  network?: NetworkConfiguration | AddNetworkFields;
+  network?:
+    | NetworkConfiguration
+    | AddNetworkFields
+    | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId });
   isTokenListLoading?: boolean;
   assetItemProps?: Pick<
     React.ComponentProps<typeof TokenListItem>,

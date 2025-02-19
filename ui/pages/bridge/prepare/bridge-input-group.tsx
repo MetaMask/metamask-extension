@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import { getAddress } from 'ethers/lib/utils';
+import type { Hex } from '@metamask/utils';
 import {
   Text,
   TextField,
@@ -92,7 +93,7 @@ export const BridgeInputGroup = ({
   const locale = useSelector(getIntlLocale);
 
   const selectedChainId = networkProps?.network?.chainId;
-  const { balanceAmount } = useLatestBalance(token, selectedChainId);
+  const { balanceAmount } = useLatestBalance(token, selectedChainId as Hex);
 
   const [, handleCopy] = useCopyToClipboard(MINUTE) as [
     boolean,
@@ -147,7 +148,7 @@ export const BridgeInputGroup = ({
           inputRef={inputRef}
           type={TextFieldType.Text}
           className="amount-input"
-          placeholder={'0'}
+          placeholder="0"
           onKeyPress={(e?: React.KeyboardEvent<HTMLDivElement>) => {
             if (e) {
               // Only allow numbers and at most one decimal point

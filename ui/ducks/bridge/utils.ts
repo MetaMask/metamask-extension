@@ -1,4 +1,4 @@
-import type { Hex } from '@metamask/utils';
+import type { CaipChainId, Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { getAddress } from 'ethers/lib/utils';
 import type { ContractMarketData } from '@metamask/assets-controllers';
@@ -159,7 +159,11 @@ export const exchangeRatesFromNativeAndCurrencyRates = (
 };
 
 export const isNetworkAdded = (
-  v: NetworkConfiguration | AddNetworkFields | undefined,
+  v:
+    | NetworkConfiguration
+    | AddNetworkFields
+    | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId })
+    | undefined,
 ): v is NetworkConfiguration =>
   v !== undefined &&
   'networkClientId' in v.rpcEndpoints[v.defaultRpcEndpointIndex];
