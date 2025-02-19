@@ -24,7 +24,7 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function () {
           .withPermissionControllerConnectedToTestDapp()
 
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {

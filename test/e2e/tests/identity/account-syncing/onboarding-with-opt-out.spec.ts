@@ -76,7 +76,7 @@ describe('Account syncing - Opt-out Profile Sync', async function () {
 
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed();
+          await homePage.check_expectedBalanceIsDisplayed('0');
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
@@ -133,7 +133,7 @@ describe('Account syncing - Opt-out Profile Sync', async function () {
 
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed();
+          await homePage.check_expectedBalanceIsDisplayed('0');
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
