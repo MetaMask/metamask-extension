@@ -1214,11 +1214,11 @@ jobs:
     steps:
       - run:
           name: Send CI break notification
-          command: echo "Sending Slack notification if necessary"
+          command: echo 'Sending Slack notification if necessary'
       - slack/notify:
           event: fail
           custom:
             attachments:
-              - text: "Job failed! Check CircleCI for details."
+              - text: 'Job failed! Check CircleCI for details.'
                 color: danger
 
