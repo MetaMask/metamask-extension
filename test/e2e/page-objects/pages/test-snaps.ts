@@ -30,6 +30,8 @@ export class TestSnaps {
   private readonly connectTransactionInsightButton =
     '#connecttransaction-insights';
 
+  public readonly connectWasmButton = '#connectwasm';
+
   private readonly getAccountButton = '#getAccounts';
 
   private readonly sendInsightButton = '#sendInsights';
@@ -50,11 +52,15 @@ export class TestSnaps {
 
   private readonly publicKeyBip44Button = '#sendBip44Test';
 
+  private readonly inputWasm = '#wasmInput';
+
   private readonly inputMessageEd25519 = '#bip32Message-ed25519';
 
   private readonly inputMessageEd25519Bip32 = '#bip32Message-ed25519Bip32';
 
   private readonly inputMessageSecp256k1 = '#bip32Message-secp256k1';
+
+  private readonly buttonSendWasmMessage = '#sendWasmMessage';
 
   private readonly buttonMessageSecp256k1 = '#sendBip32-secp256k1';
 
@@ -87,6 +93,8 @@ export class TestSnaps {
   public readonly errorResultSpan = '#errorResult';
 
   public readonly installedSnapResultSpan = '#installedSnapsResult';
+
+  public readonly wasmResultSpan = '#wasmResult';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -125,6 +133,11 @@ export class TestSnaps {
   async clickConnectDialogsSnapButton() {
     console.log('Find, scroll and click dialog snap button');
     await this.driver.findScrollToElementClick(this.connectDialogsSnapButton);
+  }
+
+  async clickConnectWasmButton() {
+    console.log('Find, scroll and click connect wasm button');
+    await this.driver.findScrollToElementClick(this.connectWasmButton);
   }
 
   async clickSendErrorButton() {
@@ -216,6 +229,12 @@ export class TestSnaps {
   async clickSubmitClientStatusButton() {
     console.log('Find, scroll and click submit client status button');
     await this.driver.findScrollToElementClick(this.submitClientStatusButton);
+  }
+
+  async fillWasmMessageAndSign(message: string) {
+    console.log('Fill message in wasm');
+    await this.driver.fill(this.inputWasm, message);
+    await this.driver.clickElement(this.buttonSendWasmMessage);
   }
 
   async fillMessageAndSignSecp256k1(message: string) {
