@@ -3,13 +3,11 @@ import {
   type CaipChainId,
   isCaipChainId,
   isStrictHexString,
-  toCaipChainId,
-  KnownCaipNamespace,
-  hexToBigInt,
   parseCaipChainId,
   isCaipReference,
 } from '@metamask/utils';
 import { zeroAddress, toChecksumAddress } from 'ethereumjs-util';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { MultichainNetworks } from '../../constants/multichain/networks';
 import { ChainId } from '../../types/bridge';
 import { decimalToPrefixedHex, hexToDecimal } from '../conversion.utils';
@@ -17,22 +15,19 @@ import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../constants/multichain
 import { isValidNumber } from './validators';
 
 // Converts a chainId to a CaipChainId
-export const normalizeChainId = (
+export const formatChainIdToCaip = (
   chainId: Hex | number | CaipChainId | string,
 ): CaipChainId => {
   if (isCaipChainId(chainId)) {
     return chainId;
   } else if (isStrictHexString(chainId)) {
-    return toCaipChainId(
-      KnownCaipNamespace.Eip155,
-      hexToBigInt(chainId).toString(10),
-    );
+    return toEvmCaipChainId(chainId);
   }
   const chainIdString = chainId.toString();
   if (chainIdString === '1151111081099710') {
     return MultichainNetworks.SOLANA;
   }
-  return toCaipChainId(KnownCaipNamespace.Eip155, chainIdString);
+  return toEvmCaipChainId(decimalToPrefixedHex(chainIdString));
 };
 
 export const formatChainIdToDec = (chainId: number | Hex | CaipChainId) => {

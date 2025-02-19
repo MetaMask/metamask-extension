@@ -46,7 +46,7 @@ import {
   isNativeAddress,
 } from '../../pages/bridge/utils/quote';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
-import { normalizeChainId } from '../../../shared/modules/bridge-utils/caip-formatters';
+import { formatChainIdToCaip } from '../../../shared/modules/bridge-utils/caip-formatters';
 import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
   FEATURED_RPCS,
@@ -113,7 +113,7 @@ export const getFromChains = createDeepEqualSelector(
     return allBridgeableNetworks.filter(
       ({ chainId }) =>
         bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].chains[
-          normalizeChainId(chainId)
+          formatChainIdToCaip(chainId)
         ]?.isActiveSrc,
     );
   },
@@ -139,7 +139,7 @@ export const getToChains = createDeepEqualSelector(
     uniqBy([...allBridgeableNetworks, ...FEATURED_RPCS], 'chainId').filter(
       ({ chainId }) =>
         bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].chains[
-          normalizeChainId(chainId)
+          formatChainIdToCaip(chainId)
         ]?.isActiveDest,
     ),
 );
@@ -150,7 +150,7 @@ export const getToChain = createSelector(
   (toChains, toChainId): NetworkConfiguration | AddNetworkFields | undefined =>
     toChains.find(
       ({ chainId }) =>
-        chainId === toChainId || normalizeChainId(chainId) === toChainId,
+        chainId === toChainId || formatChainIdToCaip(chainId) === toChainId,
     ),
 );
 
@@ -168,7 +168,7 @@ export const getFromToken = createSelector(
       ...SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
         fromChain.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
       ],
-      chainId: normalizeChainId(fromChain.chainId),
+      chainId: formatChainIdToCaip(fromChain.chainId),
       image:
         CHAIN_ID_TOKEN_IMAGE_MAP[
           fromChain.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP

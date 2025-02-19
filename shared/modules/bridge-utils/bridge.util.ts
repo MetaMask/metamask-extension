@@ -41,7 +41,7 @@ import {
 import {
   formatAddressToString,
   formatChainIdToDec,
-  normalizeChainId,
+  formatChainIdToCaip,
 } from './caip-formatters';
 import {
   FEATURE_FLAG_VALIDATORS,
@@ -80,7 +80,7 @@ export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
         ).reduce(
           (acc, [chainId, value]) => ({
             ...acc,
-            [normalizeChainId(chainId)]: value,
+            [formatChainIdToCaip(chainId)]: value,
           }),
           {},
         ),

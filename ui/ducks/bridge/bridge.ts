@@ -8,7 +8,7 @@ import {
   SortOrder,
 } from '../../../shared/types/bridge';
 import { BRIDGE_DEFAULT_SLIPPAGE } from '../../../shared/constants/bridge';
-import { normalizeChainId } from '../../../shared/modules/bridge-utils/caip-formatters';
+import { formatChainIdToCaip } from '../../../shared/modules/bridge-utils/caip-formatters';
 import { getTokenExchangeRate } from './utils';
 
 export type BridgeState = {
@@ -73,7 +73,7 @@ const bridgeSlice = createSlice({
   initialState: { ...initialState },
   reducers: {
     setToChainId: (state, { payload }: ChainIdPayload) => {
-      state.toChainId = payload ? normalizeChainId(payload) : null;
+      state.toChainId = payload ? formatChainIdToCaip(payload) : null;
     },
     setFromToken: (state, { payload }: TokenPayload) => {
       if (payload) {
@@ -81,7 +81,7 @@ const bridgeSlice = createSlice({
           ...payload,
           balance: payload.balance ?? '0',
           string: payload.string ?? '0',
-          chainId: normalizeChainId(payload.chainId),
+          chainId: formatChainIdToCaip(payload.chainId),
         };
       } else {
         state.fromToken = payload;
@@ -93,7 +93,7 @@ const bridgeSlice = createSlice({
           ...payload,
           balance: payload.balance ?? '0',
           string: payload.string ?? '0',
-          chainId: normalizeChainId(payload.chainId),
+          chainId: formatChainIdToCaip(payload.chainId),
         };
       } else {
         state.toToken = payload;
