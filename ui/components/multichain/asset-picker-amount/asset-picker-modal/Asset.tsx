@@ -11,8 +11,8 @@ import { TokenListItem } from '../../token-list-item';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { formatAmount } from '../../../../pages/confirmations/components/simulation-details/formatAmount';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
+import { getImageForChainId } from '../../../../selectors/multichain';
 import { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
 
 type AssetProps = AssetWithDisplayData<NativeAsset | ERC20Asset> & {
@@ -78,11 +78,7 @@ export default function Asset({
       primary={isTokenChainIdInWallet ? primaryAmountToUse : undefined}
       title={title}
       tooltipText={tooltipText}
-      tokenChainImage={
-        CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-          chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-        ]
-      }
+      tokenChainImage={getImageForChainId(chainId)}
       isPrimaryTokenSymbolHidden
       {...assetItemProps}
     />

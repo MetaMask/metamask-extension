@@ -13,6 +13,8 @@ class TestDapp {
     tag: 'button',
   };
 
+  private readonly addNetworkButton = '#addEthereumChain';
+
   private readonly approveTokensButton = '#approveTokens';
 
   private readonly approveTokensButtonWithoutGas = '#approveTokensWithoutGas';
@@ -501,6 +503,14 @@ class TestDapp {
     await this.driver.clickElement(this.addTokensToWalletButton);
   }
 
+  async clickAddNetworkButton() {
+    await this.driver.clickElement(this.addNetworkButton);
+  }
+
+  async clickConnectAccountButton() {
+    await this.driver.clickElement(this.connectAccountButton);
+  }
+
   async clickApproveTokens() {
     await this.driver.clickElement(this.approveTokensButton);
   }
@@ -612,16 +622,19 @@ class TestDapp {
    * @param options - Options for connecting account to test dapp.
    * @param [options.connectAccountButtonEnabled] - Indicates if the connect account button should be enabled.
    * @param options.publicAddress - The public address to connect to test dapp.
+   * @param [options.chainId] - The chain id to connect to, defaults to 0x539.
    */
   async connectAccount({
     connectAccountButtonEnabled = true,
     publicAddress,
+    chainId = '0x539',
   }: {
     connectAccountButtonEnabled?: boolean;
     publicAddress?: string;
+    chainId?: string;
   }) {
     console.log('Connect account to test dapp');
-    await this.driver.clickElement(this.connectAccountButton);
+    await this.clickConnectAccountButton();
     if (connectAccountButtonEnabled) {
       await this.confirmConnectAccountModal();
     } else {
@@ -634,7 +647,10 @@ class TestDapp {
     }
     if (publicAddress) {
       await this.check_connectedAccounts(publicAddress);
-      await this.driver.waitForSelector(this.localhostNetworkMessage);
+      await this.driver.waitForSelector({
+        css: '#chainId',
+        text: chainId,
+      });
     }
   }
 

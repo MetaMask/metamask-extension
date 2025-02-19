@@ -19,7 +19,7 @@ describe('Request Queueing', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {

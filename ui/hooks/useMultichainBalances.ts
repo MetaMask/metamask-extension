@@ -9,10 +9,7 @@ import {
   getSelectedAccountTokensAcrossChains,
   selectERC20TokensByChain,
 } from '../selectors';
-import {
-  ChainAddressMarketData,
-  Token,
-} from '../components/app/assets/token-list/token-list';
+import { ChainAddressMarketData, Token } from '../components/app/assets/types';
 import { calculateTokenFiatAmount } from '../components/app/assets/util/calculateTokenFiatAmount';
 import { calculateTokenBalance } from '../components/app/assets/util/calculateTokenBalance';
 import {

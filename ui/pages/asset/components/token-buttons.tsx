@@ -56,7 +56,7 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
-import { Asset } from './asset-page';
+import type { Asset } from './asset-page';
 
 const TokenButtons = ({
   token,
