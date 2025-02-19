@@ -395,9 +395,6 @@ export const METAMASK_CONTROLLER_EVENTS = {
 // stream channels
 const PHISHING_SAFELIST = 'metamask-phishing-safelist';
 
-// OneKey devices can connect to Metamask using Trezor USB transport. They use a specific device minor version (99) to differentiate between genuine Trezor and OneKey devices.
-export const ONE_KEY_VIA_TREZOR_MINOR_VERSION = 99;
-
 const environmentMappingForRemoteFeatureFlag = {
   [ENVIRONMENT.DEVELOPMENT]: EnvironmentType.Development,
   [ENVIRONMENT.RELEASE_CANDIDATE]: EnvironmentType.ReleaseCandidate,

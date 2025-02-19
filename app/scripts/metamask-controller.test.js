@@ -59,9 +59,7 @@ import {
 } from '../../shared/constants/permissions';
 import { deferredPromise } from './lib/util';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
-import MetaMaskController, {
-  ONE_KEY_VIA_TREZOR_MINOR_VERSION,
-} from './metamask-controller';
+import MetaMaskController from './metamask-controller';
 import { PermissionNames } from './controllers/permissions';
 import * as PermissionSpecifications from './controllers/permissions/specifications';
 
