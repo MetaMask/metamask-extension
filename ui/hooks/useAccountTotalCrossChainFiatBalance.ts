@@ -1,13 +1,13 @@
 import { useMemo } from 'react';
-import { shallowEqual, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { toChecksumAddress } from 'ethereumjs-util';
 import {
   getCurrentCurrency,
   getCurrencyRates,
 } from '../ducks/metamask/metamask';
 import {
-  getCrossChainTokenExchangeRates,
-  getCrossChainMetaMaskCachedBalances,
+  getCrossChainTokenExchangeRatesDeepEq,
+  getCrossChainMetaMaskCachedBalancesDeepEq,
 } from '../selectors';
 import {
   getValueFromWeiHex,
@@ -39,11 +39,10 @@ export const useAccountTotalCrossChainFiatBalance = (
   const currentCurrency = useSelector(getCurrentCurrency);
 
   const crossChainContractRates = useSelector(
-    getCrossChainTokenExchangeRates,
-    shallowEqual,
+    getCrossChainTokenExchangeRatesDeepEq,
   );
   const crossChainCachedBalances: Balances = useSelector(
-    getCrossChainMetaMaskCachedBalances,
+    getCrossChainMetaMaskCachedBalancesDeepEq,
   );
   const mergedCrossChainRates: Balances = useMemo(
     () => ({

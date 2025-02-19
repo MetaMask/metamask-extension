@@ -567,6 +567,24 @@ export function getCrossChainMetaMaskCachedBalances(state) {
   }, {});
 }
 
+export const getCrossChainMetaMaskCachedBalancesDeepEq =
+  createDeepEqualSelector(
+    (state) => state.metamask.accountsByChainId,
+    (allAccountsByChainId) => {
+      return Object.keys(allAccountsByChainId).reduce((acc, topLevelKey) => {
+        acc[topLevelKey] = Object.keys(
+          allAccountsByChainId[topLevelKey],
+        ).reduce((innerAcc, innerKey) => {
+          innerAcc[innerKey] =
+            allAccountsByChainId[topLevelKey][innerKey].balance;
+          return innerAcc;
+        }, {});
+
+        return acc;
+      }, {});
+    },
+  );
+
 /**
  * Based on the current account address, return the balance for the native token of all chain networks on that account
  *
@@ -815,6 +833,23 @@ export const getCrossChainTokenExchangeRates = (state) => {
     return acc;
   }, {});
 };
+
+export const getCrossChainTokenExchangeRatesDeepEq = createDeepEqualSelector(
+  (state) => state.metamask.marketData,
+  (contractMarketData) => {
+    return Object.keys(contractMarketData).reduce((acc, topLevelKey) => {
+      acc[topLevelKey] = Object.keys(contractMarketData[topLevelKey]).reduce(
+        (innerAcc, innerKey) => {
+          innerAcc[innerKey] = contractMarketData[topLevelKey][innerKey]?.price;
+          return innerAcc;
+        },
+        {},
+      );
+
+      return acc;
+    }, {});
+  },
+);
 
 /**
  * Get market data for tokens on the current chain
