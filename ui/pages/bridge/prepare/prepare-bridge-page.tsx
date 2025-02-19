@@ -294,10 +294,9 @@ const PrepareBridgePage = () => {
       insufficientBal: Boolean(providerConfig?.rpcUrl?.includes('tenderly')),
       slippage,
       walletAddress: selectedAccount?.address ?? '',
-      // TODO verify this, probably wrong
       // TODO override with account selector's value
       destWalletAddress:
-        !isSwap && isEvm
+        toChain?.chainId === MultichainNetworks.SOLANA || isSwap
           ? selectedMultichainAccount?.address
           : selectedEvmAccount?.address,
     }),
