@@ -6,8 +6,9 @@ import {
 } from '@metamask/transaction-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { KeyringRpcMethod } from '@metamask/keyring-api';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Hex } from '@metamask/utils';
+import { useHistory } from 'react-router-dom';
 import {
   forceUpdateMetamaskState,
   addTransaction,
@@ -31,8 +32,14 @@ import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/solana-wa
 import { useMultichainWalletSnapSender } from '../../../hooks/accounts/useMultichainWalletSnapClient';
 import {
   checkNetworkAndAccountSupports1559,
+  getMemoizedUnapprovedTemplatedConfirmations,
+  getMemoizedUnapprovedConfirmations,
   getSelectedInternalAccount,
 } from '../../../selectors';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  CONFIRMATION_V_NEXT_ROUTE,
+} from '../../../helpers/constants/routes';
 
 export default function useHandleTx() {
   const dispatch = useDispatch();
@@ -107,6 +114,30 @@ export default function useHandleTx() {
   const currentChainId = useSelector(getMultichainCurrentChainId);
 
   const snapSender = useMultichainWalletSnapSender(SOLANA_WALLET_SNAP_ID);
+  const history = useHistory();
+
+  const unapprovedTemplatedConfirmations = useSelector(
+    getMemoizedUnapprovedTemplatedConfirmations,
+  );
+  const unapprovedConfirmations = useSelector(
+    getMemoizedUnapprovedConfirmations,
+  );
+  // Snaps are allowed to redirect to their own pending confirmations (templated or not)
+  const templatedSnapApproval = unapprovedTemplatedConfirmations.find(
+    (approval) => approval.origin === SOLANA_WALLET_SNAP_ID,
+  );
+  const snapApproval = unapprovedConfirmations.find(
+    (approval) => approval.origin === SOLANA_WALLET_SNAP_ID,
+  );
+
+  useEffect(() => {
+    if (templatedSnapApproval) {
+      history.push(`${CONFIRMATION_V_NEXT_ROUTE}/${templatedSnapApproval.id}`);
+    } else if (snapApproval) {
+      history.push(`${CONFIRM_TRANSACTION_ROUTE}/${snapApproval.id}`);
+    }
+  }, [unapprovedTemplatedConfirmations, unapprovedConfirmations, history]);
+
   const handleSolanaTx = async ({
     txType,
     txParams,
@@ -116,7 +147,7 @@ export default function useHandleTx() {
     txParams: string;
     fieldsToAddToTxMeta: Omit<Partial<TransactionMeta>, 'status'>;
   }): Promise<TransactionMeta> => {
-    const { result } = (await snapSender.send({
+    (await snapSender.send({
       id: crypto.randomUUID(),
       jsonrpc: '2.0',
       method: KeyringRpcMethod.SubmitRequest,
@@ -129,13 +160,11 @@ export default function useHandleTx() {
         account: selectedAccount.id,
         scope: currentChainId,
       },
-    })) as { result: { signature: string } };
-    await forceUpdateMetamaskState(dispatch);
+    })) as string;
 
     return {
       ...fieldsToAddToTxMeta,
-      // TODO return the tx id
-      id: result.signature,
+      id: crypto.randomUUID(),
       chainId: currentChainId as Hex,
       networkClientId: selectedAccount.id,
       time: Date.now(),
