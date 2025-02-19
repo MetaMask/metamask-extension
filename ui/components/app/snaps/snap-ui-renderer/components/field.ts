@@ -29,6 +29,14 @@ export const field: UIComponentFactory<FieldElement> = ({
   const child = children[primaryChildIndex] as JSXElement;
 
   switch (child.type) {
+    case 'AddressInput': {
+      return {
+        element: 'SnapUIAddressInput',
+        props: {
+          name: child.props.name,
+        },
+      };
+    }
     case 'FileInput': {
       return {
         element: 'SnapUIFileInput',
