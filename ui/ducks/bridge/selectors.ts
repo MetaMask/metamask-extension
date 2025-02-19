@@ -130,13 +130,13 @@ export const getToChains = createDeepEqualSelector(
     ),
 );
 
-export const getToChain = createDeepEqualSelector(
+export const getToChain = createSelector(
   getToChains,
   (state: BridgeAppState) => state.bridge.toChainId,
   (toChains, toChainId): NetworkConfiguration | AddNetworkFields | undefined =>
     toChains.find(
       ({ chainId }) =>
-        (chainId === toChainId || normalizeChainId(chainId)) === toChainId,
+        chainId === toChainId || normalizeChainId(chainId) === toChainId,
     ),
 );
 
