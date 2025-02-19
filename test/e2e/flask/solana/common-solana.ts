@@ -592,73 +592,120 @@ export async function simulateSolanaTransaction(
       return response;
     });
 }
-export async function mockGetTransactionFailed(mockServer: Mockttp) {
+export async function mockGetFailedTransaction(mockServer: Mockttp) {
+  console.log('mockGetFailedTransaction');
   const response = {
     statusCode: 200,
     json: {
       result: {
-        blockTime: 1739973344,
+        blockTime: 1739988764,
         meta: {
-          computeUnitsConsumed: 153606,
+          computeUnitsConsumed: 227081,
           err: {
-            InstructionError: [
-              2,
-              {
-                Custom: 1,
-              },
-            ],
+            InstructionError: [6, 'ProgramFailedToComplete'],
           },
-          fee: 6884,
+          fee: 5003,
           innerInstructions: [
             {
-              index: 2,
+              index: 6,
               instructions: [
                 {
                   accounts: [
-                    6, 21, 7, 8, 16, 2, 1, 17, 9, 21, 0, 19, 19, 15, 21, 10, 11,
-                    12,
+                    24, 32, 25, 26, 1, 2, 30, 28, 27, 32, 0, 29, 29, 33, 32, 4,
+                    5, 6,
                   ],
-                  data: 'PgQWtn8ozixF162XmibMdYyE4nSMLz1Cj',
-                  programIdIndex: 21,
+                  data: 'PgQWtn8oziwv4wjywURrfSUpN2afyjR5h',
+                  programIdIndex: 32,
                   stackHeight: 2,
                 },
                 {
-                  accounts: [16, 17, 8, 0],
-                  data: 'ibiXFHZ3k4yWp',
-                  programIdIndex: 19,
+                  accounts: [1, 28, 26, 0],
+                  data: 'geX9xF4vG8SRn',
+                  programIdIndex: 29,
                   stackHeight: 3,
                 },
                 {
-                  accounts: [7, 1, 2, 6],
-                  data: 'gcB7hKX7WjSJ9',
-                  programIdIndex: 19,
+                  accounts: [25, 30, 2, 24],
+                  data: 'iQbm5aGXcxE2q',
+                  programIdIndex: 29,
                   stackHeight: 3,
                 },
                 {
-                  accounts: [15],
-                  data: 'yCGxBopjnVNQkNP5usq1PoJkoD4rwiqArbxcfahuLJdRMHovUBeVqo4uFDofrS3ZpGQTS7eknmGcnBqddiU15QdogM3uoTncf4CLNffD1VJnjAVQJAWF8d53T4BKrXbBjmuB3MYtsuvGDGzeubLW521FX4UhpGUy3hzh28p26pivoqNXTpcZB6LGmu7D15CcDaPLAB',
-                  programIdIndex: 21,
+                  accounts: [33],
+                  data: 'yCGxBopjnVNQkNP5usq1Poz4fRguySgsQmFH4UH3WnybnnKLMv4E31ZgcviiVVBcdfGH9CKN1QJU2sGMDjSL2BMngeWNEuZYV2pntb9tQCA4bAj2h9auc55vN4spYstjhyVHhbVVEdMguD2c8hS718SW5Cs3cL7wcVJgN4R6B7f172DL8guGbHgggrWHtkb31aqgVV',
+                  programIdIndex: 32,
                   stackHeight: 3,
+                },
+                {
+                  accounts: [14],
+                  data: 'QMqFu4fYGGeUEysFnenhAvBobXTzswhLdvQq6s8axxcbKUPRksm2543pJNNNHVd1VJ58FCg7NVh9cMuPYiMKNyfUpUXSDci9arMkqVwgC1zp8zDJwW7pyDP9b5cYa5qw53EeE5G8kdfjFeQwWaSmPrybVSiwipxHWP5ipHGTNnrUbod',
+                  programIdIndex: 13,
+                  stackHeight: 2,
                 },
                 {
                   accounts: [
-                    19, 3, 20, 3, 4, 5, 3, 3, 3, 3, 3, 3, 3, 3, 2, 16, 0,
+                    15, 32, 16, 17, 2, 3, 31, 30, 18, 32, 0, 29, 29, 33, 32, 19,
                   ],
-                  data: '5zPzCmGQ3Br6S1KCTYN5bJF',
-                  programIdIndex: 18,
+                  data: 'PgQWtn8ozixD9F2rzgmrRy83iHAQSKhno',
+                  programIdIndex: 32,
                   stackHeight: 2,
                 },
                 {
-                  accounts: [2, 5, 0],
-                  data: '3L5d33ArKvM5',
-                  programIdIndex: 19,
+                  accounts: [2, 30, 17, 0],
+                  data: 'iQbm5aGXcxE2q',
+                  programIdIndex: 29,
                   stackHeight: 3,
                 },
                 {
-                  accounts: [4, 16, 20],
-                  data: '3UApoXKnEWnb',
-                  programIdIndex: 19,
+                  accounts: [16, 31, 3, 15],
+                  data: 'jEX4PcL3MYVoN',
+                  programIdIndex: 29,
                   stackHeight: 3,
+                },
+                {
+                  accounts: [33],
+                  data: 'yCGxBopjnVNQkNP5usq1PnieAT94qLJpXa7U5hQkqcasRRm8PypkFAXYpuQGWQAoTxcq1bAZrnBrU784NtdfP6EpvkxuNJ6oaWAnRT6a87P3VcuyXHTeeYtN78WZ5Y2YgyezMPkdTThHhms9dCo3rFchirvKRkbTvZhaXbMvMrzz7gRZP5DStrrEAbjHtp8cdKyWFZ',
+                  programIdIndex: 32,
+                  stackHeight: 3,
+                },
+                {
+                  accounts: [14],
+                  data: 'QMqFu4fYGGeUEysFnenhAvBobXTzswhLdvQq6s8axxcbKUPRksm2543pJNNNHVd1VJwXfcUWQEHusMZ55Vd8C9CLFM5Wg9RwxshnjoSxBQonfjBTF9DYwGyEnAnKT6FoERcF8QDWA2psNoVS9PWDLncAJNG4bgXBc2NQoBSm5mxV2xP',
+                  programIdIndex: 13,
+                  stackHeight: 2,
+                },
+                {
+                  accounts: [
+                    20, 32, 21, 22, 3, 1, 31, 28, 23, 32, 0, 29, 29, 33, 32, 7,
+                    8, 9,
+                  ],
+                  data: 'PgQWtn8ozixMA7i75HkXhsJ6xryM1VG3H',
+                  programIdIndex: 32,
+                  stackHeight: 2,
+                },
+                {
+                  accounts: [3, 31, 21, 0],
+                  data: 'jEX4PcL3MYVoN',
+                  programIdIndex: 29,
+                  stackHeight: 3,
+                },
+                {
+                  accounts: [22, 28, 1, 20],
+                  data: 'gzSGobBbETi3r',
+                  programIdIndex: 29,
+                  stackHeight: 3,
+                },
+                {
+                  accounts: [33],
+                  data: 'yCGxBopjnVNQkNP5usq1Pov6GJuCoryx81NaK44ZYA3PaVLCYuN6xV4Ew7eNzQ39FF8zgnQFCeARbJ7AVTLD5XgiEbMqMQnBmYA3JfmpmA83yXNWT2Jk71eyjkv2HnM9s2kgNbHGjkx8DrNaQBjKrx89Rnze2qCpDZjRvnn2mmHR8fAV826kLzY7ifBRLNXnQVfQij',
+                  programIdIndex: 32,
+                  stackHeight: 3,
+                },
+                {
+                  accounts: [14],
+                  data: 'QMqFu4fYGGeUEysFnenhAvBobXTzswhLdvQq6s8axxcbKUPRksm2543pJNNNHVd1VKMQxCUWZtjhztwssiahZW5QRwrQ9AZP1GpjxfNbrheNNgSZSoWNdzCeXo4HbeAxfB9UkFNT26YXZmkQbpve8ATHJynLE2hp2zzz9fhqgqevi9M',
+                  programIdIndex: 13,
+                  stackHeight: 2,
                 },
               ],
             },
@@ -666,60 +713,132 @@ export async function mockGetTransactionFailed(mockServer: Mockttp) {
           loadedAddresses: {
             readonly: [
               'So11111111111111111111111111111111111111112',
-              '675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8',
               'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-              '5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1',
+              '6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN',
+              '9McvH6w97oewLmPxqQEoHUAv3u5iYMyQ9AeZZhguYf1T',
               'LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo',
+              'D1ZN9Wj1fRSUQfCjhvnu1hqDMT7hzjzBBpi12nVniYD6',
             ],
-            writable: ['6vPjNiPknqyvCgLEBBQvomKZa2RP4LaY7d7urhRUoVhK'],
+            writable: [
+              '29reKMpP4V3czq4nCyHcT1xtaLbajXoMdULge8spA4jF',
+              'EDY2fMWABHRNkaWy9LkfoQumJLN1y3RJY4UYnupt1FE4',
+              'B3PDScDob59VGqQ5uk7V3ykRwermmAms6kaEJh6TQXFM',
+              'Ff7oak29LVz2AFt93TSxU5npcBYS4T35CEsBH2XtgPM1',
+              '45AwfA9GQ1Vt5bFowhJPX9sSGHqVELpEEhPZ1cWh2eC2',
+              'CW65UBkNMFDYGy2jZBenxihs9Gqh6y6opTDzS8txxyAK',
+              '6UabcCKafVh29VZknaMQduf8SXiamaXxDUiZty2gfw5B',
+              'G2LeRmQbTUFrLXhWJPPUpSx28eVkd7iHg1GyGC6MNAFJ',
+              'FicnHXkPCPjuctuxLZH23BjzcN4Zsa5CNHtpXf64CdZS',
+              'D6RL6sWrs6khn7AfEyS6dsqqiiqAh4hXC83JtcmEUf6D',
+              '3MNsvVWUNVM67aGMKMzBgcMKhvc9HsNdwz2RaKHwwEv4',
+              '2x3UPXgacTTQp45bvx7UbXuHjrwa4J9jfAE8HB2YdjgU',
+              'B44GzRdUq48vBUbppeWxV51PtC7P25U6YA3GDuMqpGdW',
+            ],
           },
           logMessages: [
             'Program ComputeBudget111111111111111111111111111111 invoke [1]',
             'Program ComputeBudget111111111111111111111111111111 success',
             'Program ComputeBudget111111111111111111111111111111 invoke [1]',
             'Program ComputeBudget111111111111111111111111111111 success',
-            'Program HzwtjANeVzJPpnXTYt9MYMjVmkhTMfUyS8pJWqSRWLNr invoke [1]',
+            'Program ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL invoke [1]',
+            'Program log: CreateIdempotent',
+            'Program ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL consumed 4339 of 226781 compute units',
+            'Program ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL success',
+            'Program ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL invoke [1]',
+            'Program log: CreateIdempotent',
+            'Program ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL consumed 4338 of 222442 compute units',
+            'Program ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL success',
+            'Program ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL invoke [1]',
+            'Program log: CreateIdempotent',
+            'Program ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL consumed 4338 of 218104 compute units',
+            'Program ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL success',
+            'Program ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL invoke [1]',
+            'Program log: CreateIdempotent',
+            'Program ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL consumed 4339 of 213766 compute units',
+            'Program ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL success',
+            'Program JUPSjgjMFjU4453KMgxhqVmzep6W352bQpE4RsNqXAx invoke [1]',
             'Program LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo invoke [2]',
             'Program log: Instruction: Swap',
             'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [3]',
             'Program log: Instruction: TransferChecked',
-            'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 6238 of 84720 compute units',
+            'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 6238 of 160377 compute units',
             'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA success',
             'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [3]',
             'Program log: Instruction: TransferChecked',
-            'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 6147 of 75048 compute units',
+            'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 6147 of 150705 compute units',
             'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA success',
             'Program LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo invoke [3]',
-            'Program LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo consumed 2134 of 65467 compute units',
+            'Program LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo consumed 2134 of 141124 compute units',
             'Program LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo success',
-            'Program LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo consumed 68341 of 130106 compute units',
+            'Program LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo consumed 63909 of 201331 compute units',
             'Program LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo success',
-            'Program 675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8 invoke [2]',
-            'Program log: ray_log: AyeWsCt6AAAAAAAAAAAAAAABAAAAAAAAACeWsCt6AAAAAeLMxvQAAABXZtbEwzsAAFf0LO8BAAAA',
+            'Program JUPSjgjMFjU4453KMgxhqVmzep6W352bQpE4RsNqXAx invoke [2]',
+            'Program JUPSjgjMFjU4453KMgxhqVmzep6W352bQpE4RsNqXAx consumed 182 of 135690 compute units',
+            'Program JUPSjgjMFjU4453KMgxhqVmzep6W352bQpE4RsNqXAx success',
+            'Program LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo invoke [2]',
+            'Program log: Instruction: Swap',
             'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [3]',
-            'Program log: Instruction: Transfer',
-            'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 4645 of 35687 compute units',
+            'Program log: Instruction: TransferChecked',
+            'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 6147 of 90588 compute units',
             'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA success',
             'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [3]',
-            'Program log: Instruction: Transfer',
-            'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 4736 of 28061 compute units',
+            'Program log: Instruction: TransferChecked',
+            'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 6173 of 81007 compute units',
             'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA success',
-            'Program 675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8 consumed 30541 of 53012 compute units',
-            'Program 675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8 success',
-            'Program HzwtjANeVzJPpnXTYt9MYMjVmkhTMfUyS8pJWqSRWLNr consumed 153306 of 174506 compute units',
-            'Program HzwtjANeVzJPpnXTYt9MYMjVmkhTMfUyS8pJWqSRWLNr failed: custom program error: 0x1',
+            'Program LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo invoke [3]',
+            'Program LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo consumed 2134 of 71400 compute units',
+            'Program LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo success',
+            'Program LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo consumed 62873 of 130639 compute units',
+            'Program LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo success',
+            'Program JUPSjgjMFjU4453KMgxhqVmzep6W352bQpE4RsNqXAx invoke [2]',
+            'Program JUPSjgjMFjU4453KMgxhqVmzep6W352bQpE4RsNqXAx consumed 182 of 66034 compute units',
+            'Program JUPSjgjMFjU4453KMgxhqVmzep6W352bQpE4RsNqXAx success',
+            'Program LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo invoke [2]',
+            'Program log: Instruction: Swap',
+            'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [3]',
+            'Program log: Instruction: TransferChecked',
+            'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 6173 of 24780 compute units',
+            'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA success',
+            'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [3]',
+            'Program log: Instruction: TransferChecked',
+            'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 6238 of 15174 compute units',
+            'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA success',
+            'Program LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo invoke [3]',
+            'Program LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo consumed 2134 of 5505 compute units',
+            'Program LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo success',
+            'Program LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo consumed 58872 of 60675 compute units',
+            'Program LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo success',
+            'Program JUPSjgjMFjU4453KMgxhqVmzep6W352bQpE4RsNqXAx invoke [2]',
+            'Program JUPSjgjMFjU4453KMgxhqVmzep6W352bQpE4RsNqXAx consumed 71 of 71 compute units',
+            'Program JUPSjgjMFjU4453KMgxhqVmzep6W352bQpE4RsNqXAx failed: exceeded CUs meter at BPF instruction',
+            'Program JUPSjgjMFjU4453KMgxhqVmzep6W352bQpE4RsNqXAx consumed 209427 of 209427 compute units',
+            'Program JUPSjgjMFjU4453KMgxhqVmzep6W352bQpE4RsNqXAx failed: Program failed to complete',
           ],
           postBalances: [
-            18966260601, 6097693297, 2039280, 97227920, 1051309375473, 2039280,
-            7182720, 2039280, 139515178118, 23385600, 71437440, 71437440,
-            71437440, 1, 1398960, 4000000, 66905120369, 959143176713, 1141440,
-            934087680, 16024596044, 1141440,
+            2214757471, 24524198861, 2039280, 2039280, 71437440, 71437440,
+            71437440, 71437440, 71437440, 71437440, 1, 731913600, 1, 1141440, 0,
+            7182720, 2039280, 2039280, 23385600, 71437440, 7282720, 2039280,
+            296172641647, 23385600, 7182721, 2039280, 45847462984, 23385600,
+            959143176713, 934087680, 1335629455120, 27971524604, 1141440,
+            4000000,
           ],
           postTokenBalances: [
             {
+              accountIndex: 1,
+              mint: 'So11111111111111111111111111111111111111112',
+              owner: 's3zTLVvDbrBzbQ36sr2Z4xrzpRHFv3noWChbNi6vcjr',
+              programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+              uiTokenAmount: {
+                amount: '24522159581',
+                decimals: 9,
+                uiAmount: 24.522159581,
+                uiAmountString: '24.522159581',
+              },
+            },
+            {
               accountIndex: 2,
-              mint: '4h26eponcR8jc3N3EuQZ72ZCpurpGoszvFgGiekTpump',
-              owner: 'AEK3Z5CGNgmRQHxK9sRHbbn6MJ5oCg5M96qsXjQJE123',
+              mint: '6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN',
+              owner: 's3zTLVvDbrBzbQ36sr2Z4xrzpRHFv3noWChbNi6vcjr',
               programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
               uiTokenAmount: {
                 amount: '0',
@@ -729,77 +848,115 @@ export async function mockGetTransactionFailed(mockServer: Mockttp) {
               },
             },
             {
-              accountIndex: 4,
-              mint: 'So11111111111111111111111111111111111111112',
-              owner: '5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1',
+              accountIndex: 3,
+              mint: '9McvH6w97oewLmPxqQEoHUAv3u5iYMyQ9AeZZhguYf1T',
+              owner: 's3zTLVvDbrBzbQ36sr2Z4xrzpRHFv3noWChbNi6vcjr',
               programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
               uiTokenAmount: {
-                amount: '1051307336193',
+                amount: '0',
                 decimals: 9,
-                uiAmount: 1051.307336193,
-                uiAmountString: '1051.307336193',
-              },
-            },
-            {
-              accountIndex: 5,
-              mint: '4h26eponcR8jc3N3EuQZ72ZCpurpGoszvFgGiekTpump',
-              owner: '5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1',
-              programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-              uiTokenAmount: {
-                amount: '65712007046743',
-                decimals: 6,
-                uiAmount: 65712007.046743,
-                uiAmountString: '65712007.046743',
-              },
-            },
-            {
-              accountIndex: 7,
-              mint: '4h26eponcR8jc3N3EuQZ72ZCpurpGoszvFgGiekTpump',
-              owner: '7EhGRZYoi5qz5KEtbQo7x4AUD4LQX5m1MoE6AKxSZoeS',
-              programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-              uiTokenAmount: {
-                amount: '13499588966110',
-                decimals: 6,
-                uiAmount: 13499588.96611,
-                uiAmountString: '13499588.96611',
-              },
-            },
-            {
-              accountIndex: 8,
-              mint: 'So11111111111111111111111111111111111111112',
-              owner: '7EhGRZYoi5qz5KEtbQo7x4AUD4LQX5m1MoE6AKxSZoeS',
-              programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-              uiTokenAmount: {
-                amount: '139513138838',
-                decimals: 9,
-                uiAmount: 139.513138838,
-                uiAmountString: '139.513138838',
+                uiAmount: null,
+                uiAmountString: '0',
               },
             },
             {
               accountIndex: 16,
-              mint: 'So11111111111111111111111111111111111111112',
-              owner: 'AEK3Z5CGNgmRQHxK9sRHbbn6MJ5oCg5M96qsXjQJE123',
+              mint: '9McvH6w97oewLmPxqQEoHUAv3u5iYMyQ9AeZZhguYf1T',
+              owner: '29reKMpP4V3czq4nCyHcT1xtaLbajXoMdULge8spA4jF',
               programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
               uiTokenAmount: {
-                amount: '66903071089',
+                amount: '2636762152',
                 decimals: 9,
-                uiAmount: 66.903071089,
-                uiAmountString: '66.903071089',
+                uiAmount: 2.636762152,
+                uiAmountString: '2.636762152',
+              },
+            },
+            {
+              accountIndex: 17,
+              mint: '6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN',
+              owner: '29reKMpP4V3czq4nCyHcT1xtaLbajXoMdULge8spA4jF',
+              programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+              uiTokenAmount: {
+                amount: '7264154',
+                decimals: 6,
+                uiAmount: 7.264154,
+                uiAmountString: '7.264154',
+              },
+            },
+            {
+              accountIndex: 21,
+              mint: '9McvH6w97oewLmPxqQEoHUAv3u5iYMyQ9AeZZhguYf1T',
+              owner: 'CW65UBkNMFDYGy2jZBenxihs9Gqh6y6opTDzS8txxyAK',
+              programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+              uiTokenAmount: {
+                amount: '8191355381419',
+                decimals: 9,
+                uiAmount: 8191.355381419,
+                uiAmountString: '8191.355381419',
+              },
+            },
+            {
+              accountIndex: 22,
+              mint: 'So11111111111111111111111111111111111111112',
+              owner: 'CW65UBkNMFDYGy2jZBenxihs9Gqh6y6opTDzS8txxyAK',
+              programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+              uiTokenAmount: {
+                amount: '296170602367',
+                decimals: 9,
+                uiAmount: 296.170602367,
+                uiAmountString: '296.170602367',
+              },
+            },
+            {
+              accountIndex: 25,
+              mint: '6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN',
+              owner: 'D6RL6sWrs6khn7AfEyS6dsqqiiqAh4hXC83JtcmEUf6D',
+              programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+              uiTokenAmount: {
+                amount: '884477775',
+                decimals: 6,
+                uiAmount: 884.477775,
+                uiAmountString: '884.477775',
+              },
+            },
+            {
+              accountIndex: 26,
+              mint: 'So11111111111111111111111111111111111111112',
+              owner: 'D6RL6sWrs6khn7AfEyS6dsqqiiqAh4hXC83JtcmEUf6D',
+              programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+              uiTokenAmount: {
+                amount: '45845423703',
+                decimals: 9,
+                uiAmount: 45.845423703,
+                uiAmountString: '45.845423703',
               },
             },
           ],
           preBalances: [
-            18966267485, 6097693297, 2039280, 97227920, 1051309375473, 2039280,
-            7182720, 2039280, 139515178118, 23385600, 71437440, 71437440,
-            71437440, 1, 1398960, 4000000, 66905120369, 959143176713, 1141440,
-            934087680, 16024596044, 1141440,
+            2214762474, 24524198861, 2039280, 2039280, 71437440, 71437440,
+            71437440, 71437440, 71437440, 71437440, 1, 731913600, 1, 1141440, 0,
+            7182720, 2039280, 2039280, 23385600, 71437440, 7282720, 2039280,
+            296172641647, 23385600, 7182721, 2039280, 45847462984, 23385600,
+            959143176713, 934087680, 1335629455120, 27971524604, 1141440,
+            4000000,
           ],
           preTokenBalances: [
             {
+              accountIndex: 1,
+              mint: 'So11111111111111111111111111111111111111112',
+              owner: 's3zTLVvDbrBzbQ36sr2Z4xrzpRHFv3noWChbNi6vcjr',
+              programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+              uiTokenAmount: {
+                amount: '24522159581',
+                decimals: 9,
+                uiAmount: 24.522159581,
+                uiAmountString: '24.522159581',
+              },
+            },
+            {
               accountIndex: 2,
-              mint: '4h26eponcR8jc3N3EuQZ72ZCpurpGoszvFgGiekTpump',
-              owner: 'AEK3Z5CGNgmRQHxK9sRHbbn6MJ5oCg5M96qsXjQJE123',
+              mint: '6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN',
+              owner: 's3zTLVvDbrBzbQ36sr2Z4xrzpRHFv3noWChbNi6vcjr',
               programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
               uiTokenAmount: {
                 amount: '0',
@@ -809,138 +966,193 @@ export async function mockGetTransactionFailed(mockServer: Mockttp) {
               },
             },
             {
-              accountIndex: 4,
-              mint: 'So11111111111111111111111111111111111111112',
-              owner: '5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1',
+              accountIndex: 3,
+              mint: '9McvH6w97oewLmPxqQEoHUAv3u5iYMyQ9AeZZhguYf1T',
+              owner: 's3zTLVvDbrBzbQ36sr2Z4xrzpRHFv3noWChbNi6vcjr',
               programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
               uiTokenAmount: {
-                amount: '1051307336193',
+                amount: '0',
                 decimals: 9,
-                uiAmount: 1051.307336193,
-                uiAmountString: '1051.307336193',
-              },
-            },
-            {
-              accountIndex: 5,
-              mint: '4h26eponcR8jc3N3EuQZ72ZCpurpGoszvFgGiekTpump',
-              owner: '5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1',
-              programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-              uiTokenAmount: {
-                amount: '65712007046743',
-                decimals: 6,
-                uiAmount: 65712007.046743,
-                uiAmountString: '65712007.046743',
-              },
-            },
-            {
-              accountIndex: 7,
-              mint: '4h26eponcR8jc3N3EuQZ72ZCpurpGoszvFgGiekTpump',
-              owner: '7EhGRZYoi5qz5KEtbQo7x4AUD4LQX5m1MoE6AKxSZoeS',
-              programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-              uiTokenAmount: {
-                amount: '13499588966110',
-                decimals: 6,
-                uiAmount: 13499588.96611,
-                uiAmountString: '13499588.96611',
-              },
-            },
-            {
-              accountIndex: 8,
-              mint: 'So11111111111111111111111111111111111111112',
-              owner: '7EhGRZYoi5qz5KEtbQo7x4AUD4LQX5m1MoE6AKxSZoeS',
-              programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-              uiTokenAmount: {
-                amount: '139513138838',
-                decimals: 9,
-                uiAmount: 139.513138838,
-                uiAmountString: '139.513138838',
+                uiAmount: null,
+                uiAmountString: '0',
               },
             },
             {
               accountIndex: 16,
-              mint: 'So11111111111111111111111111111111111111112',
-              owner: 'AEK3Z5CGNgmRQHxK9sRHbbn6MJ5oCg5M96qsXjQJE123',
+              mint: '9McvH6w97oewLmPxqQEoHUAv3u5iYMyQ9AeZZhguYf1T',
+              owner: '29reKMpP4V3czq4nCyHcT1xtaLbajXoMdULge8spA4jF',
               programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
               uiTokenAmount: {
-                amount: '66903071089',
+                amount: '2636762152',
                 decimals: 9,
-                uiAmount: 66.903071089,
-                uiAmountString: '66.903071089',
+                uiAmount: 2.636762152,
+                uiAmountString: '2.636762152',
+              },
+            },
+            {
+              accountIndex: 17,
+              mint: '6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN',
+              owner: '29reKMpP4V3czq4nCyHcT1xtaLbajXoMdULge8spA4jF',
+              programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+              uiTokenAmount: {
+                amount: '7264154',
+                decimals: 6,
+                uiAmount: 7.264154,
+                uiAmountString: '7.264154',
+              },
+            },
+            {
+              accountIndex: 21,
+              mint: '9McvH6w97oewLmPxqQEoHUAv3u5iYMyQ9AeZZhguYf1T',
+              owner: 'CW65UBkNMFDYGy2jZBenxihs9Gqh6y6opTDzS8txxyAK',
+              programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+              uiTokenAmount: {
+                amount: '8191355381419',
+                decimals: 9,
+                uiAmount: 8191.355381419,
+                uiAmountString: '8191.355381419',
+              },
+            },
+            {
+              accountIndex: 22,
+              mint: 'So11111111111111111111111111111111111111112',
+              owner: 'CW65UBkNMFDYGy2jZBenxihs9Gqh6y6opTDzS8txxyAK',
+              programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+              uiTokenAmount: {
+                amount: '296170602367',
+                decimals: 9,
+                uiAmount: 296.170602367,
+                uiAmountString: '296.170602367',
+              },
+            },
+            {
+              accountIndex: 25,
+              mint: '6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN',
+              owner: 'D6RL6sWrs6khn7AfEyS6dsqqiiqAh4hXC83JtcmEUf6D',
+              programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+              uiTokenAmount: {
+                amount: '884477775',
+                decimals: 6,
+                uiAmount: 884.477775,
+                uiAmountString: '884.477775',
+              },
+            },
+            {
+              accountIndex: 26,
+              mint: 'So11111111111111111111111111111111111111112',
+              owner: 'D6RL6sWrs6khn7AfEyS6dsqqiiqAh4hXC83JtcmEUf6D',
+              programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+              uiTokenAmount: {
+                amount: '45845423703',
+                decimals: 9,
+                uiAmount: 45.845423703,
+                uiAmountString: '45.845423703',
               },
             },
           ],
           rewards: [],
           status: {
             Err: {
-              InstructionError: [
-                2,
-                {
-                  Custom: 1,
-                },
-              ],
+              InstructionError: [6, 'ProgramFailedToComplete'],
             },
           },
         },
-        slot: 321700829,
+        slot: 321739724,
         transaction: {
           message: {
             accountKeys: [
-              'AEK3Z5CGNgmRQHxK9sRHbbn6MJ5oCg5M96qsXjQJE123',
-              '4h26eponcR8jc3N3EuQZ72ZCpurpGoszvFgGiekTpump',
-              '2ipv52UjzejkcXfkxwuDuQyfvruihP5pBjRcTuRszzLW',
-              '7SYjFQd8K62JhPFqL3AxvXyWLVaQhQAokFBazJ9UcCP8',
-              '2zXhx1ShZd2ftDGdhZkqSujwTN8w4kux7QZTkf9n9ac8',
-              '8UEvHKLBZK82FaFwa4HMcQ9rPwegv2r9GpSXm1ZZ27sw',
-              '7EhGRZYoi5qz5KEtbQo7x4AUD4LQX5m1MoE6AKxSZoeS',
-              'DFvPKZMo3rC5bRVxybLaWWgofsZLVvqaMuYZKiMH77F4',
-              '2rQJbawXssuxcAMWsBLKnaKe8RjaCgbDSFMGvc5p8zwT',
-              'F4PKU1mRYDhVLtQEwNP5zDrjAF7BBavtb3fySE1kWeM2',
-              'F4cswGfpGg4ajn49qwTcH8TvhZ8HMXPt64xDTKjYqpuA',
-              '9DgozBsEVezMPntmNAnidhS44WxMHotntaPnMC2a94kt',
-              '3q1jLbSyBZVjA2G9FnKypfuVJWve8FwvxLRpGyqxTbh8',
+              's3zTLVvDbrBzbQ36sr2Z4xrzpRHFv3noWChbNi6vcjr',
+              '6sBssU2T4xhaw95q1i48pjSDTwDC45u3eTZAkK5CKNYQ',
+              'AskK3y8NKwhczpG72ZKAwuPAqUQWr51frfabf8gXv4YV',
+              'C2m8gz92gHGS32o38LXrMa9NheNb1pxsWadjEqY6jdpn',
+              '42ECGwTnCe22gmzVQw5AD4vmEJp42u2HiFBP6XnC7SSi',
+              '5nBajSNFtR62AFLYqaU4TYwnDWBduPTUAvFY3tqJ3MCd',
+              '2TvN137JoQgwjWtuaAp6fwLyhVDNt9PHoaHRgEXgcDw8',
+              'GwTbrnsugAQrLa3xbZrknyGiTUD9vjfoZW78oFAnQVVg',
+              'DC2ZjAA1z85HfDGcurc1tppH5nETCUGMgvG1Nr9QKduz',
+              '7no6QTSVJoHm286jnESCP26a7UR4QuZ8rQdZhQQEFVN4',
               'ComputeBudget111111111111111111111111111111',
-              'HzwtjANeVzJPpnXTYt9MYMjVmkhTMfUyS8pJWqSRWLNr',
-              'D1ZN9Wj1fRSUQfCjhvnu1hqDMT7hzjzBBpi12nVniYD6',
+              'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+              '11111111111111111111111111111111',
+              'JUPSjgjMFjU4453KMgxhqVmzep6W352bQpE4RsNqXAx',
+              '8J2QTzGjsgb49at66wyA48o7s2zZeRtxfASsBDe2TnEd',
             ],
             addressTableLookups: [
               {
-                accountKey: 'bczTb9qkUQDWU1oKMNb7KuFPcSajdWAHwGwMLrQ4aTW',
-                readonlyIndexes: [7, 5, 4, 6, 3],
-                writableIndexes: [2],
+                accountKey: '4ynUVUKW68eEy7WKP7TmwbnR7tmnws8Cqk91u7VU7kfr',
+                readonlyIndexes: [30, 8, 224, 223, 4, 9],
+                writableIndexes: [226, 220, 221, 217, 216],
+              },
+              {
+                accountKey: 'APBx2HjiMVeVoMxVuihdhUzHMY9VjxezgbWSX6VBtENA',
+                readonlyIndexes: [],
+                writableIndexes: [207, 208, 122, 125],
+              },
+              {
+                accountKey: '9YbkrJysYz7rPQKCWTbZwUsqjZ8epZWLPLskP7BxNgsk',
+                readonlyIndexes: [],
+                writableIndexes: [64, 60, 66, 61],
               },
             ],
             header: {
               numReadonlySignedAccounts: 0,
-              numReadonlyUnsignedAccounts: 3,
+              numReadonlyUnsignedAccounts: 5,
               numRequiredSignatures: 1,
             },
             instructions: [
               {
                 accounts: [],
-                data: 'KaK7cT',
-                programIdIndex: 13,
+                data: 'EL6XMh',
+                programIdIndex: 10,
                 stackHeight: null,
               },
               {
                 accounts: [],
-                data: '3GqBN9eQNeGF',
-                programIdIndex: 13,
+                data: '3FTyfrdhjHgT',
+                programIdIndex: 10,
+                stackHeight: null,
+              },
+              {
+                accounts: [0, 1, 0, 28, 12, 29],
+                data: '2',
+                programIdIndex: 11,
+                stackHeight: null,
+              },
+              {
+                accounts: [0, 2, 0, 30, 12, 29],
+                data: '2',
+                programIdIndex: 11,
+                stackHeight: null,
+              },
+              {
+                accounts: [0, 3, 0, 31, 12, 29],
+                data: '2',
+                programIdIndex: 11,
+                stackHeight: null,
+              },
+              {
+                accounts: [0, 1, 0, 28, 12, 29],
+                data: '2',
+                programIdIndex: 11,
                 stackHeight: null,
               },
               {
                 accounts: [
-                  0, 17, 16, 18, 19, 20, 21, 15, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-                  11, 12,
+                  29, 0, 1, 3, 13, 31, 13, 14, 13, 32, 24, 32, 25, 26, 1, 2, 30,
+                  28, 27, 32, 0, 29, 29, 33, 32, 4, 5, 6, 13, 32, 15, 32, 16,
+                  17, 2, 3, 31, 30, 18, 32, 0, 29, 29, 33, 32, 19, 13, 32, 20,
+                  32, 21, 22, 3, 1, 31, 28, 23, 32, 0, 29, 29, 33, 32, 7, 8, 9,
+                  13,
                 ],
-                data: '11111111ZoM6rghFpt7',
-                programIdIndex: 14,
+                data: 'HsoVKDsbqEUoMD4o3nR6TWLiK5ryockP5BuBzCGoAjojtKJB5bq5Zt3BjGb',
+                programIdIndex: 13,
                 stackHeight: null,
               },
             ],
-            recentBlockhash: 'HpjiRrvVxWREDhhXrLTD16xMkmYJs84g2f81c1NwzqrM',
+            recentBlockhash: '4xhayLciiYjWXSzM41tzwUcjufCdxbgouLuCJqXiySAW',
           },
           signatures: [
-            '5DewYfr36dYHN1bRiBckv4LL18RoPRnY6dMKQ9gy4qTo5UwcR9mM2DXFxwwA8EYsbFiRWqL9PzKXxTZxJgWtPuMs',
+            '3AcYfpsSaFYogY4Y4YN77MkhDgVBEgUe1vuEeqKnCMm5udTrFCyw9w17mNM8DUnHnQD2VHRFeipMUb27Q3iqMQJr',
           ],
         },
         version: 0,
@@ -948,13 +1160,13 @@ export async function mockGetTransactionFailed(mockServer: Mockttp) {
     },
   };
   return await mockServer
-  .forPost(SOLANA_URL_REGEX)
-  .withBodyIncluding('getTransaction')
-  .thenCallback(() => {
-    return response;
-  });
+    .forPost(SOLANA_URL_REGEX)
+    .withBodyIncluding('getTransaction')
+    .thenCallback(() => {
+      return response;
+    });
 }
-export async function mockGetTransactionSuccess(mockServer: Mockttp) {
+export async function mockGetSuccessTransaction(mockServer: Mockttp) {
   const response = {
     statusCode: 200,
     json: {
@@ -1049,7 +1261,32 @@ export async function mockGetLatestBlockhash(mockServer: Mockttp) {
       return response;
     });
 }
-export async function mockGetSignaturesForAddress(mockServer: Mockttp) {
+export async function mockGetFailedSignaturesForAddress(mockServer: Mockttp) {
+  return await mockServer
+    .forPost(SOLANA_URL_REGEX)
+    .withBodyIncluding('getSignaturesForAddress')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          result: [
+            {
+              blockTime: 1739973211,
+              confirmationStatus: 'finalized',
+              err: {
+                InstructionError: [0, 'CustomError'],
+              },
+              memo: null,
+              signature:
+                '3AcYfpsSaFYogY4Y4YN77MkhDgVBEgUe1vuEeqKnCMm5udTrFCyw9w17mNM8DUnHnQD2VHRFeipMUb27Q3iqMQJr',
+              slot: 321700491,
+            },
+          ],
+        },
+      };
+    });
+}
+export async function mockGetSuccessSignaturesForAddress(mockServer: Mockttp) {
   return await mockServer
     .forPost(SOLANA_URL_REGEX)
     .withBodyIncluding('getSignaturesForAddress')
@@ -1324,6 +1561,8 @@ export async function withSolanaAccountSnap(
     importAccount,
     simulateTransaction,
     isNative,
+    mockGetTransactionSuccess,
+    mockGetTransactionFailed,
   }: {
     title?: string;
     solanaSupportEnabled?: boolean;
@@ -1333,6 +1572,8 @@ export async function withSolanaAccountSnap(
     importAccount?: boolean;
     simulateTransaction?: boolean;
     isNative?: boolean;
+    mockGetTransactionSuccess?: boolean;
+    mockGetTransactionFailed?: boolean;
   },
   test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
 ) {
@@ -1355,13 +1596,25 @@ export async function withSolanaAccountSnap(
         // Default Solana mocks
         mockList.push(await mockFungibleAssets(mockServer));
 
+        if (mockGetTransactionSuccess && !mockGetTransactionFailed) {
+          mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
+          mockList.push(await mockGetSuccessTransaction(mockServer));
+        }
+        if (mockGetTransactionFailed && !mockGetTransactionSuccess) {
+          mockList.push(await mockGetFailedSignaturesForAddress(mockServer));
+          mockList.push(await mockGetFailedTransaction(mockServer));
+        }
+        if (!mockGetTransactionSuccess && !mockGetTransactionFailed) {
+          // success tx by default
+          mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
+          mockList.push(await mockGetSuccessTransaction(mockServer));
+        }
         if (mockCalls) {
           mockList.push([
             await mockSolanaBalanceQuote(mockServer),
             // await mockGetTransaction(mockServer),
-            await mockGetTransactionSuccess(mockServer),
             await mockGetTokenAccountsByOwner(mockServer),
-            await mockGetSignaturesForAddress(mockServer),
+            // await mockGetSuccessSignaturesForAddress(mockServer),
             await mockMultiCoinPrice(mockServer),
             await mockGetLatestBlockhash(mockServer),
             await mockGetFeeForMessage(mockServer),
