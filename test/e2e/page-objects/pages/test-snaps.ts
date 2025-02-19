@@ -44,6 +44,8 @@ export class TestSnaps {
 
   private readonly connectImagesButton = '#connectimages';
 
+  public readonly connectLifeCycleButton = '#connectlifecycle-hooks';
+
   private readonly connectTransactionInsightButton =
     '#connecttransaction-insights';
 
@@ -52,6 +54,11 @@ export class TestSnaps {
   private readonly sendInsightButton = '#sendInsights';
 
   private readonly submitClientStatusButton = '#sendClientStatusTest';
+
+  private readonly messageLifeCycleHook = {
+    css: '.snap-ui-renderer__panel',
+    text: 'The snap was installed successfully, and the "onInstall" handler was called.',
+  };
 
   private readonly reconnectButton = {
     css: '#connectbip32',
@@ -232,9 +239,18 @@ export class TestSnaps {
 
   async clickConnectImages() {
     console.log('Click connect images button');
-    const imageButton = await this.driver.findElement('#connectimages');
+    const imageButton = await this.driver.findElement(this.connectImagesButton);
     await this.driver.scrollToElement(imageButton);
     await this.driver.clickElement(this.connectImagesButton);
+  }
+
+  async clickLifeCycleHooks() {
+    console.log('Click connect images button');
+    const lifeCycleButton = await this.driver.findElement(
+      this.connectLifeCycleButton,
+    );
+    await this.driver.scrollToElement(lifeCycleButton);
+    await this.driver.clickElement(this.connectLifeCycleButton);
   }
 
   async clickTransactionInsight() {
@@ -313,5 +329,10 @@ export class TestSnaps {
       css: selector,
       text: expectedMessage,
     });
+  }
+
+  async check_messageLifeCycleHook() {
+    console.log('Check message');
+    await this.driver.waitForSelector(this.messageLifeCycleHook);
   }
 }
