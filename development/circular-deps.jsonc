@@ -17,10 +17,6 @@
     "ui/components/app/name/name.tsx"
   ],
   [
-    "ui/components/multichain/pages/send/components/account-picker.tsx",
-    "ui/components/multichain/pages/send/components/index.ts"
-  ],
-  [
     "ui/components/multichain/pages/send/components/address-book.tsx",
     "ui/components/multichain/pages/send/components/index.ts"
   ],
