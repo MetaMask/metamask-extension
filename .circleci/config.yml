@@ -1200,3 +1200,6 @@ jobs:
           event: fail
           template: basic_fail_1
           when: always
+      - run:
+          name: Debug Step - After Notification
+          command: echo "Slack notification step completed"
