@@ -236,12 +236,10 @@ describe('MetaMaskController', function () {
 
   describe('#setLocked', function () {
     it('should lock the wallet', async function () {
-      // Create a new vault and unlock it.
-      const password = 'a-fake-password';
-      await metamaskController.createNewVaultAndKeychain(password);
-      await metamaskController.submitPassword(password);
+      await metamaskController.createNewVaultAndKeychain('test@123');
 
       await metamaskController.setLocked();
+
       expect(
         metamaskController.keyringController.state.isUnlocked,
       ).toStrictEqual(false);
