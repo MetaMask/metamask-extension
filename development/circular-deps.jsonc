@@ -6,37 +6,4 @@
 // - To prevent new circular dependencies, ensure your changes don't add new cycles
 // - For more information contact the Extension Platform team.
 
-[
-  [
-    "ui/components/app/name/name-details/name-details.tsx",
-    "ui/components/app/name/name.tsx"
-  ],
-  [
-    "ui/components/multichain/pages/send/components/address-book.tsx",
-    "ui/components/multichain/pages/send/components/index.ts"
-  ],
-  [
-    "ui/components/multichain/pages/send/components/hex.tsx",
-    "ui/components/multichain/pages/send/components/index.ts"
-  ],
-  [
-    "ui/components/multichain/pages/send/components/index.ts",
-    "ui/components/multichain/pages/send/components/network-picker.tsx"
-  ],
-  [
-    "ui/components/multichain/pages/send/components/index.ts",
-    "ui/components/multichain/pages/send/components/recipient-content.tsx"
-  ],
-  [
-    "ui/components/multichain/pages/send/components/index.ts",
-    "ui/components/multichain/pages/send/components/recipient-input.tsx"
-  ],
-  [
-    "ui/components/multichain/pages/send/components/index.ts",
-    "ui/components/multichain/pages/send/components/recipient.tsx"
-  ],
-  [
-    "ui/components/multichain/pages/send/components/index.ts",
-    "ui/components/multichain/pages/send/components/your-accounts.tsx"
-  ]
-]
+[]
