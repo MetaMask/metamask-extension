@@ -1,6 +1,5 @@
 import { Driver } from '../../webdriver/driver';
 import { TEST_SNAPS_WEBSITE_URL } from '../../snaps/enums';
-import { WINDOW_TITLES } from '../../helpers';
 
 export class TestSnaps {
   driver: Driver;
@@ -11,24 +10,6 @@ export class TestSnaps {
     '[data-testid="dialogs"] [data-testid="connect-button"]';
 
   private readonly dialogsSnapConfirmationButton = '#sendConfirmationButton';
-
-  private readonly dialogConnectButton = {
-    text: 'Connect',
-    tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
-  };
-
-  private readonly dialogConfirmButton = {
-    text: 'Confirm',
-    tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
-  };
-
-  private readonly dialogOkButton = {
-    text: 'OK',
-    tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
-  };
 
   private readonly connectHomePage = '#connecthomepage';
 
@@ -199,24 +180,6 @@ export class TestSnaps {
   async clickGetCompressedPublicKeyBip32Button() {
     console.log('Click get compressed public key button');
     await this.driver.clickElement(this.getCompressedKeyButton);
-  }
-
-  async completeSnapInstallConfirmation() {
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-    await this.driver.waitForSelector(this.dialogConnectButton);
-
-    await this.driver.clickElement(this.dialogConnectButton);
-
-    await this.driver.waitForSelector(this.dialogConfirmButton);
-
-    await this.driver.clickElement(this.dialogConfirmButton);
-
-    await this.driver.waitForSelector(this.dialogOkButton);
-
-    await this.driver.clickElement(this.dialogOkButton);
-
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
   }
 
   async clickConnectHomePage() {

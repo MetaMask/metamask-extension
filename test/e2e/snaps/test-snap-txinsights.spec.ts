@@ -3,6 +3,7 @@ import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import FixtureBuilder from '../fixture-builder';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
+import { completeSnapInstallConfirmation } from '../page-objects/flows/snap-permission.flow';
 import { withFixtures, WINDOW_TITLES } from '../helpers';
 
 describe('Test Snap TxInsights', function () {
@@ -21,7 +22,7 @@ describe('Test Snap TxInsights', function () {
         // Navigate to test snaps page and click to the transaction-insights test snap
         await testSnaps.openPage();
         await testSnaps.clickTransactionInsightButton();
-        await testSnaps.completeSnapInstallConfirmation();
+        await completeSnapInstallConfirmation(driver);
 
         // Click get accounts and connect to the snap
         await testSnaps.clickGetAccountButton();

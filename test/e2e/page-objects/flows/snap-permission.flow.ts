@@ -32,3 +32,17 @@ export async function switchToDialogAndClickApproveButton(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await snapInstall.clickApproveButton();
 }
+
+/**
+ * Complete snap install confirmation
+ *
+ * @param driver - WebDriver instance used to interact with the browser.
+ */
+export async function completeSnapInstallConfirmation(driver: Driver) {
+  const snapInstall = new SnapInstall(driver);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await snapInstall.clickNextButton();
+  await snapInstall.clickNextButton();
+  await snapInstall.clickNextButton();
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+}

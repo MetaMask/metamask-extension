@@ -3,6 +3,7 @@ import { TestSnaps } from '../page-objects/pages/test-snaps';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import FixtureBuilder from '../fixture-builder';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
+import { completeSnapInstallConfirmation } from '../page-objects/flows/snap-permission.flow';
 import { withFixtures, WINDOW_TITLES } from '../helpers';
 
 describe('Test Snap Lifecycle Hooks', function () {
@@ -21,7 +22,7 @@ describe('Test Snap Lifecycle Hooks', function () {
         // Open a new tab and navigate to test snaps page and click life cycle hooks
         await testSnaps.openPage();
         await testSnaps.clickLifeCycleHooksButton();
-        await testSnaps.completeSnapInstallConfirmation();
+        await completeSnapInstallConfirmation(driver);
         // Check installation success
         await testSnaps.check_installationComplete(
           testSnaps.connectLifeCycleButton,
