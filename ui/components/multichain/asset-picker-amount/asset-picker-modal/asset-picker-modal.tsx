@@ -7,9 +7,8 @@ import type {
   TokenListMap,
   TokenListToken,
 } from '@metamask/assets-controllers';
-import { isStrictHexString, type Hex } from '@metamask/utils';
+import { isCaipChainId, isStrictHexString, type Hex } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
-import { isCaipChainId } from '@metamask/snaps-utils';
 import {
   Modal,
   ModalContent,
