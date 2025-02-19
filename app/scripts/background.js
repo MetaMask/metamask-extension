@@ -418,7 +418,9 @@ function getPopupPreparationLogic(action, params) {
 }
 
 browser.runtime.onMessage.addListener(async (message) => {
-  if (message.type === 'MM_OPEN_EXTENSION_POPUP_FROM_NOTIFICATION') {
+  if (
+    message.type === EXTENSION_MESSAGES.OPEN_EXTENSION_POPUP_FROM_NOTIFICATION
+  ) {
     // Waiting for the notification window to be closed otherwise it will try to render the route in the same window
     setTimeout(async () => {
       await getPopupPreparationLogic(message.action, message.params);

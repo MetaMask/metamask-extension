@@ -5,6 +5,7 @@ import { getSnapRoute } from '../../helpers/utils/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   EXTENSION_MESSAGES,
+  POPUP_PREPARATION_LOGIC_TYPES,
 } from '../../../shared/constants/app';
 
 const useSnapNavigation = () => {
@@ -20,7 +21,7 @@ const useSnapNavigation = () => {
     if (envType === ENVIRONMENT_TYPE_NOTIFICATION) {
       browser.runtime.sendMessage({
         type: EXTENSION_MESSAGES.OPEN_EXTENSION_POPUP_FROM_NOTIFICATION,
-        action: 'SNAP_NAVIGATION',
+        action: POPUP_PREPARATION_LOGIC_TYPES.SNAP_NAVIGATION,
         params: { path },
       });
       onCancel?.();
