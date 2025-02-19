@@ -223,12 +223,10 @@ const DeveloperOptionsTab = () => {
         <div className="settings-page__content-item">
           <span>Remote feature flags</span>
           <div className="settings-page__content-description">
-            The remote feature flags here by <b>getRemoteFeatureFlags()</b> is
-            retrieved from one of the following sources:
-            <br />
-            1) manifest-flags.json file 2) RemoteFeatureFlagsController
-            <br />
-            Modify the manifest-flags.json file will change the state locally.
+            Remote feature flag values come from the LaunchDarkly by default. If
+            you need to update feature flag values locally for development
+            purposes, you can change feature flag values in manifest-flags.json,
+            which will override values coming from LaunchDarkly.
           </div>
         </div>
         <div
