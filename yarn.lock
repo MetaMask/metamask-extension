@@ -2263,6 +2263,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ethereumjs/util@npm:9.1.0, @ethereumjs/util@npm:^9.0.2, @ethereumjs/util@npm:^9.1.0":
+  version: 9.1.0
+  resolution: "@ethereumjs/util@npm:9.1.0"
+  dependencies:
+    "@ethereumjs/rlp": "npm:^5.0.2"
+    ethereum-cryptography: "npm:^2.2.1"
+  checksum: 10/4e22c4081c63eebb808eccd54f7f91cd3407f4cac192da5f30a0d6983fe07d51f25e6a9d08624f1376e604bb7dce574aafcf0fbf0becf42f62687c11e710ac41
+  languageName: node
+  linkType: hard
+
 "@ethereumjs/util@npm:^8.0.0, @ethereumjs/util@npm:^8.0.5, @ethereumjs/util@npm:^8.1.0":
   version: 8.1.0
   resolution: "@ethereumjs/util@npm:8.1.0"
@@ -2271,16 +2281,6 @@ __metadata:
     ethereum-cryptography: "npm:^2.0.0"
     micro-ftch: "npm:^0.3.1"
   checksum: 10/cc35338932e49b15e54ca6e548b32a1f48eed7d7e1d34ee743e4d3600dd616668bd50f70139e86c5c35f55aac35fba3b6cc4e6f679cf650aeba66bf93016200c
-  languageName: node
-  linkType: hard
-
-"@ethereumjs/util@npm:^9.0.2, @ethereumjs/util@npm:^9.1.0":
-  version: 9.1.0
-  resolution: "@ethereumjs/util@npm:9.1.0"
-  dependencies:
-    "@ethereumjs/rlp": "npm:^5.0.2"
-    ethereum-cryptography: "npm:^2.2.1"
-  checksum: 10/4e22c4081c63eebb808eccd54f7f91cd3407f4cac192da5f30a0d6983fe07d51f25e6a9d08624f1376e604bb7dce574aafcf0fbf0becf42f62687c11e710ac41
   languageName: node
   linkType: hard
 
@@ -5321,7 +5321,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-trezor-keyring@npm:^6.0.0":
+"@metamask/eth-trezor-keyring@npm:6.0.0":
   version: 6.0.0
   resolution: "@metamask/eth-trezor-keyring@npm:6.0.0"
   dependencies:
@@ -5333,6 +5333,21 @@ __metadata:
     hdkey: "npm:^2.1.0"
     tslib: "npm:^2.6.2"
   checksum: 10/d5d799c60eeab963ef3e5533de472044b08b6f72652ecefbf26cec99784829bbcd706df57f6450ddb019c7dff7c41b0e0dad244aad62b7d03b51fc97755e2c4c
+  languageName: node
+  linkType: hard
+
+"@metamask/eth-trezor-keyring@patch:@metamask/eth-trezor-keyring@npm%3A6.0.0#~/.yarn/patches/@metamask-eth-trezor-keyring-npm-6.0.0-7e50bd16a6.patch":
+  version: 6.0.0
+  resolution: "@metamask/eth-trezor-keyring@patch:@metamask/eth-trezor-keyring@npm%3A6.0.0#~/.yarn/patches/@metamask-eth-trezor-keyring-npm-6.0.0-7e50bd16a6.patch::version=6.0.0&hash=aa7e24"
+  dependencies:
+    "@ethereumjs/tx": "npm:^4.2.0"
+    "@ethereumjs/util": "npm:^8.1.0"
+    "@metamask/eth-sig-util": "npm:^8.0.0"
+    "@trezor/connect-plugin-ethereum": "npm:^9.0.3"
+    "@trezor/connect-web": "npm:^9.1.11"
+    hdkey: "npm:^2.1.0"
+    tslib: "npm:^2.6.2"
+  checksum: 10/c68f48d84025665df8e0ae247c37f4ef33c6b27a756e6c62114fa17fb38e8f699a450821fc24c019d5189bc7fca5b8109c813e71ef4e00e93188c432bf4a11a9
   languageName: node
   linkType: hard
 
@@ -26544,7 +26559,7 @@ __metadata:
     "@metamask/eth-sig-util": "npm:^7.0.1"
     "@metamask/eth-snap-keyring": "npm:^10.0.0"
     "@metamask/eth-token-tracker": "npm:^10.0.2"
-    "@metamask/eth-trezor-keyring": "npm:^6.0.0"
+    "@metamask/eth-trezor-keyring": "patch:@metamask/eth-trezor-keyring@npm%3A6.0.0#~/.yarn/patches/@metamask-eth-trezor-keyring-npm-6.0.0-7e50bd16a6.patch"
     "@metamask/etherscan-link": "npm:^3.0.0"
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/gas-fee-controller": "npm:^22.0.3"

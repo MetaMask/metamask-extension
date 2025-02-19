@@ -81,6 +81,17 @@
         "webpack>events": true
       }
     },
+    "@metamask/eth-trezor-keyring>@ethereumjs/util": {
+      "globals": {
+        "console.warn": true,
+        "fetch": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/rlp": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "webpack>events": true
+      }
+    },
     "@metamask/smart-transactions-controller>@ethereumjs/util": {
       "globals": {
         "console.warn": true,
@@ -1229,7 +1240,7 @@
       },
       "packages": {
         "@ethereumjs/tx": true,
-        "eth-lattice-keyring>@ethereumjs/util": true,
+        "@metamask/eth-trezor-keyring>@ethereumjs/util": true,
         "@metamask/eth-sig-util": true,
         "@metamask/eth-trezor-keyring>@trezor/connect-plugin-ethereum": true,
         "@trezor/connect-web": true,

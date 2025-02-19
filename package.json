@@ -275,7 +275,8 @@
     "@metamask/keyring-api": "^17.1.0",
     "@metamask/keyring-internal-api": "^4.0.2",
     "@metamask/utils": "^11.2.0",
-    "@metamask/eth-simple-keyring": "patch:@metamask/eth-simple-keyring@npm%3A8.1.0#~/.yarn/patches/@metamask-eth-simple-keyring-npm-8.1.0-ed2f13699c.patch"
+    "@metamask/eth-simple-keyring": "patch:@metamask/eth-simple-keyring@npm%3A8.1.0#~/.yarn/patches/@metamask-eth-simple-keyring-npm-8.1.0-ed2f13699c.patch",
+    "@metamask/eth-trezor-keyring/@ethereumjs/util": "9.1.0"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -326,7 +327,7 @@
     "@metamask/eth-sig-util": "^7.0.1",
     "@metamask/eth-snap-keyring": "^10.0.0",
     "@metamask/eth-token-tracker": "^10.0.2",
-    "@metamask/eth-trezor-keyring": "^6.0.0",
+    "@metamask/eth-trezor-keyring": "patch:@metamask/eth-trezor-keyring@npm%3A6.0.0#~/.yarn/patches/@metamask-eth-trezor-keyring-npm-6.0.0-7e50bd16a6.patch",
     "@metamask/etherscan-link": "^3.0.0",
     "@metamask/gas-fee-controller": "^22.0.3",
     "@metamask/jazzicon": "^2.0.0",
