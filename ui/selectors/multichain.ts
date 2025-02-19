@@ -430,7 +430,7 @@ function getNonEvmCachedBalance(
     console.warn('Could not find balance for asset:', asset);
   }
 
-  return balanceOfAsset?.amount;
+  return balanceOfAsset?.amount ?? null;
 }
 
 export function getImageForChainId(chainId: string) {
