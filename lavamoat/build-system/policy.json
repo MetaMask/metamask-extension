@@ -1009,10 +1009,10 @@
     },
     "@metamask/build-utils": {
       "packages": {
-        "@metamask/build-utils>@metamask/utils": true
+        "@metamask/utils": true
       }
     },
-    "@metamask/build-utils>@metamask/utils": {
+    "@metamask/utils": {
       "globals": {
         "Buffer": true,
         "TextDecoder": true,
