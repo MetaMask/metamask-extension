@@ -44,7 +44,7 @@ export const ConnectedSiteMenu = ({
   disabled,
 }) => {
   const t = useI18nContext();
-    const [showPopover, setShowPopover] = useState(false);
+  const [showPopover, setShowPopover] = useState(false);
   const handleMouseEnter = () => {
     setShowPopover(true);
   };
@@ -55,11 +55,9 @@ export const ConnectedSiteMenu = ({
 
   const [referenceElement, setReferenceElement] = useState();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const setBoxRef = (ref: any) => {
+  const setBoxRef = (ref) => {
     setReferenceElement(ref);
   };
-
 
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const subjectMetadata = useSelector(getSubjectMetadata);
@@ -145,7 +143,10 @@ export const ConnectedSiteMenu = ({
         )}
       </Box>
       {showPopover && (
-        <ConnectedSitePopover referenceElement={referenceElement} isOpen={showPopover} />
+        <ConnectedSitePopover
+          referenceElement={referenceElement}
+          isOpen={showPopover}
+        />
       )}
     </>
   );

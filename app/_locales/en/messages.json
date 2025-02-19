@@ -1902,6 +1902,9 @@
   "experimental": {
     "message": "Experimental"
   },
+  "exploreweb3": {
+    "message": "Explore web3"
+  },
   "exportYourData": {
     "message": "Export your data"
   },
@@ -2669,6 +2672,9 @@
   },
   "manageDefaultSettings": {
     "message": "Manage default privacy settings"
+  },
+  "managePermissions": {
+    "message": "Manage permissions"
   },
   "marketCap": {
     "message": "Market cap"

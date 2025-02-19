@@ -1,12 +1,25 @@
-import React, { useState } from 'react';
-import { Box, Popover, PopoverPosition, Text } from '../../component-library';
+import React, { useContext, useState } from 'react';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  Box,
+  Button,
+  ButtonLink,
+  ButtonSecondary,
+  IconName,
+  Popover,
+  PopoverPosition,
+  Text,
+} from '../../component-library';
 import {
   BackgroundColor,
   Display,
+  FlexDirection,
   JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { I18nContext } from '../../../contexts/i18n';
 
 type ConnectedSitePopoverProp = {
   title: string;
@@ -14,7 +27,7 @@ type ConnectedSitePopoverProp = {
   value?: string | null;
   icon?: React.ReactNode;
   buttonAddressValue?: React.ButtonHTMLAttributes<HTMLButtonElement> | null;
-  withPopover?: boolean;
+  isConnected?: boolean;
   fullValue?: string;
 };
 
@@ -28,7 +41,11 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProp> = ({
   fullValue,
   referenceElement,
   isOpen,
+  networkImageUrl,
+  networkName,
+  isConnected,
 }) => {
+  const t = useContext(I18nContext);
   return (
     <Box
       display={Display.Flex}
@@ -40,14 +57,55 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProp> = ({
         referenceElement={referenceElement}
         isOpen={isOpen}
         position={PopoverPosition.BottomStart}
-        hasArrow
         flip
         backgroundColor={BackgroundColor.overlayAlternative}
-        className="tokenId-popover"
-        paddingLeft={4}
-        paddingRight={4}
+        paddingLeft={0}
+        paddingRight={0}
+        style={{
+          width: '256px',
+        }}
       >
-        <Box>Nidhi K Jha</Box>
+        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+          <Box
+            style={{
+              borderBottomWidth: '1px',
+              borderBottomStyle: 'solid',
+              borderBottomColor: '#858B9A33',
+            }}
+            paddingLeft={4}
+            paddingRight={4}
+            paddingBottom={2}
+          >
+            <Text variant={TextVariant.bodyMd}>sitename.domain.url</Text>
+            {isConnected ? (
+              <Box display={Display.Flex} flexDirection={FlexDirection.Row}>
+                <ButtonLink>{networkName}</ButtonLink>{' '}
+                <AvatarNetwork
+                  size={AvatarNetworkSize.Xs}
+                  name={networkImageUrl}
+                  src={networkImageUrl ?? undefined}
+                />
+              </Box>
+            ) : (
+              <Text variant={TextVariant.bodySm}>Not connected</Text>
+            )}
+          </Box>
+          <Box paddingLeft={4} paddingRight={4} paddingTop={2}>
+            <Box>
+              <Text variant={TextVariant.bodyMd}>
+                To connect to a site, select the "connect" button. MetaMask can
+                only connect to web3 sites.
+              </Text>
+              <ButtonLink>Learn more</ButtonLink>
+            </Box>
+          </Box>
+          <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
+
+            <ButtonSecondary endIconName={IconName.Export} block>
+              {isConnected ? t('managePermissions'): t('exploreweb3')}
+            </ButtonSecondary>
+          </Box>
+        </Box>
       </Popover>
     </Box>
   );
