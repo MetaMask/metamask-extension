@@ -30,8 +30,12 @@ import {
   ButtonLink,
   ButtonLinkSize,
 } from '../../component-library';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsEventLinkType,
+} from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
 import { ConfirmInfoRowDivider as Divider } from '../confirm/info/row';
 import { getURLHostName, shortenAddress } from '../../../helpers/utils/util';
 import {
@@ -40,20 +44,15 @@ import {
   getAddressUrl,
   shortenTransactionId,
 } from './helpers';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { MetaMetricsEventLinkType } from '../../../../shared/constants/metametrics';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 
 export type MultichainTransactionDetailsModalProps = {
   transaction: Transaction;
   onClose: () => void;
-  addressLink: string;
 };
 
 export function MultichainTransactionDetailsModal({
   transaction,
   onClose,
-  addressLink,
 }: MultichainTransactionDetailsModalProps) {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -339,7 +338,7 @@ export function MultichainTransactionDetailsModal({
             onClick={() => {
               global.platform.openTab({
                 url: getTransactionUrl(txId, chain),
-              })
+              });
 
               trackEvent({
                 event: MetaMetricsEventName.ExternalLinkClicked,

@@ -23,7 +23,9 @@ import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain
  */
 export const getTransactionUrl = (txId: string, chainId: string): string => {
   const explorerUrls =
-    MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[chainId as MultichainNetworks];
+    MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+      chainId as MultichainNetworks
+    ];
   if (!explorerUrls) {
     return '';
   }
@@ -62,7 +64,9 @@ export const getTransactionUrl = (txId: string, chainId: string): string => {
  */
 export const getAddressUrl = (address: string, chainId: string): string => {
   const explorerUrls =
-    MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[chainId as MultichainNetworks];
+    MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+      chainId as MultichainNetworks
+    ];
   if (!explorerUrls) {
     return '';
   }

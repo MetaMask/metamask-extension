@@ -59,7 +59,6 @@ const mockTransaction = {
 const mockProps = {
   transaction: mockTransaction,
   onClose: jest.fn(),
-  addressLink: 'https://explorer.bitcoin.com/btc/tx/3302...90c1',
   multichainNetwork: {
     nickname: 'Bitcoin',
     isEvmNetwork: false,
