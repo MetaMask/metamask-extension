@@ -1,8 +1,13 @@
 import {
   TransactionMeta,
+  TransactionParams,
+  TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
 import { useDispatch, useSelector } from 'react-redux';
+import { KeyringRpcMethod } from '@metamask/keyring-api';
+import { useMemo } from 'react';
+import { Hex } from '@metamask/utils';
 import {
   forceUpdateMetamaskState,
   addTransaction,
@@ -14,10 +19,20 @@ import {
   getTxGasEstimates,
 } from '../../../ducks/bridge/utils';
 import { getGasFeeEstimates } from '../../../ducks/metamask/metamask';
-import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import type { ChainId } from '../../../../shared/types/bridge';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
+import {
+  getMultichainCurrentChainId,
+  getMultichainIsSolana,
+} from '../../../selectors/multichain';
+import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/solana-wallet-snap';
+import { useMultichainWalletSnapSender } from '../../../hooks/accounts/useMultichainWalletSnapClient';
+import {
+  checkNetworkAndAccountSupports1559,
+  getSelectedInternalAccount,
+} from '../../../selectors';
 
 export default function useHandleTx() {
   const dispatch = useDispatch();
@@ -27,7 +42,7 @@ export default function useHandleTx() {
   const networkGasFeeEstimates = useSelector(getGasFeeEstimates);
   const shouldUseSmartTransaction = useSelector(getIsSmartTransaction);
 
-  const handleTx = async ({
+  const handleEvmTx = async ({
     txType,
     txParams,
     fieldsToAddToTxMeta,
@@ -87,6 +102,54 @@ export default function useHandleTx() {
 
     return txMeta;
   };
+
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const currentChainId = useSelector(getMultichainCurrentChainId);
+
+  const snapSender = useMultichainWalletSnapSender(SOLANA_WALLET_SNAP_ID);
+  const handleSolanaTx = async ({
+    txType,
+    txParams,
+    fieldsToAddToTxMeta,
+  }: {
+    txType: TransactionType.bridge;
+    txParams: string;
+    fieldsToAddToTxMeta: Omit<Partial<TransactionMeta>, 'status'>;
+  }): Promise<TransactionMeta> => {
+    const { result } = (await snapSender.send({
+      id: crypto.randomUUID(),
+      jsonrpc: '2.0',
+      method: KeyringRpcMethod.SubmitRequest,
+      params: {
+        request: {
+          params: { base64EncodedTransactionMessage: txParams },
+          method: 'sendAndConfirmTransaction',
+        },
+        id: crypto.randomUUID(),
+        account: selectedAccount.id,
+        scope: currentChainId,
+      },
+    })) as { result: { signature: string } };
+    await forceUpdateMetamaskState(dispatch);
+
+    return {
+      ...fieldsToAddToTxMeta,
+      // TODO return the tx id
+      id: result.signature,
+      chainId: currentChainId as Hex,
+      networkClientId: selectedAccount.id,
+      time: Date.now(),
+      txParams: { data: txParams } as TransactionParams,
+      type: txType,
+      status: TransactionStatus.submitted,
+    };
+  };
+
+  const isSolana = useMultichainSelector(getMultichainIsSolana);
+  const handleTx = useMemo(
+    () => (isSolana ? handleSolanaTx : handleEvmTx),
+    [isSolana],
+  );
 
   return { handleTx };
 }
