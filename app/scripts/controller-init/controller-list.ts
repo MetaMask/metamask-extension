@@ -9,7 +9,6 @@ import {
 import { PPOMController } from '@metamask/ppom-validator';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 import { TransactionController } from '@metamask/transaction-controller';
-import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import { AccountsController } from '@metamask/accounts-controller';
 import {
   MultichainAssetsController,
@@ -59,11 +58,7 @@ export type Controller =
   | SnapController
   | SnapInterfaceController
   | SnapInsightsController
-  | TransactionController
-  | (TransactionUpdateController & {
-      name: 'TransactionUpdateController';
-      state: Record<string, unknown>;
-    });
+  | TransactionController;
 
 /**
  * Flat state object for all controllers supporting or required by modular initialization.
