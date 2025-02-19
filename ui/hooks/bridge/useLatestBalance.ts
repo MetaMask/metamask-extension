@@ -1,11 +1,16 @@
-import { useSelector } from 'react-redux';
 import { type Hex, type CaipChainId, isCaipChainId } from '@metamask/utils';
+import type { BigNumber } from 'bignumber.js';
 import { Numeric } from '../../../shared/modules/Numeric';
-import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import { getSelectedInternalAccount } from '../../selectors';
 import { calcLatestSrcBalance } from '../../../shared/modules/bridge-utils/balance';
 import { useAsyncResult } from '../useAsyncResult';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
+import { useMultichainSelector } from '../useMultichainSelector';
+import {
+  getMultichainBalances,
+  getMultichainCurrentChainId,
+} from '../../selectors/multichain';
+import { calcTokenValue } from '../../../shared/lib/swaps-utils';
 
 /**
  * Custom hook to fetch and format the latest balance of a given token or native asset.
@@ -19,14 +24,22 @@ const useLatestBalance = (
     address: string;
     decimals: number;
     symbol: string;
+    string?: string;
   } | null,
   chainId?: Hex | CaipChainId,
 ) => {
-  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
-  const currentChainId = useSelector(getCurrentChainId);
+  const { address: selectedAddress, id } = useMultichainSelector(
+    getSelectedInternalAccount,
+  );
+  const currentChainId = useMultichainSelector(getMultichainCurrentChainId);
+
+  const nonEvmBalancesByAccountId = useMultichainSelector(
+    getMultichainBalances,
+  );
+  const nonEvmBalances = nonEvmBalancesByAccountId[id];
 
   const { value: latestBalance } = useAsyncResult<
-    Numeric | undefined
+    Numeric | BigNumber | undefined
   >(async () => {
     if (
       token?.address &&
@@ -42,8 +55,23 @@ const useLatestBalance = (
         chainId,
       );
     }
+
+    if (isCaipChainId(chainId) && token?.decimals && token?.string) {
+      return calcTokenValue(
+        nonEvmBalances?.[`${chainId}/${token.address}`]?.amount ?? token.string,
+        token.decimals,
+      );
+    }
+
     return undefined;
-  }, [currentChainId, token?.address, selectedAddress]);
+  }, [
+    chainId,
+    currentChainId,
+    token,
+    selectedAddress,
+    global.ethereumProvider,
+    nonEvmBalances,
+  ]);
 
   if (token && !token.decimals) {
     throw new Error(
