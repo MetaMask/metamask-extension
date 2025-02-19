@@ -8,6 +8,7 @@ import { createSelector } from 'reselect';
 import type { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
+import type { Hex } from '@metamask/utils';
 import {
   getIsBridgeEnabled,
   getMarketData,
@@ -50,10 +51,11 @@ import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
   FEATURED_RPCS,
 } from '../../../shared/constants/network';
+import { getMultichainProviderConfig } from '../../selectors/multichain';
 import {
-  getMultichainNetworkConfigurationsByChainId,
-  getMultichainProviderConfig,
-} from '../../selectors/multichain';
+  MultichainNetworks,
+  MULTICHAIN_PROVIDER_CONFIGS,
+} from '../../../shared/constants/multichain/networks';
 import {
   exchangeRatesFromNativeAndCurrencyRates,
   exchangeRateFromMarketData,
@@ -77,18 +79,30 @@ type BridgeAppState = {
 
 // only includes networks user has added
 export const getAllBridgeableNetworks = createDeepEqualSelector(
-  getMultichainNetworkConfigurationsByChainId,
+  getNetworkConfigurationsByChainId,
   (networkConfigurationsByChainId) => {
     return uniqBy(
-      Object.entries(networkConfigurationsByChainId),
-      ([chainId]) => chainId,
-    )
-      .filter(([chainId]) =>
-        ALLOWED_BRIDGE_CHAIN_IDS.includes(
-          chainId as (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number],
-        ),
-      )
-      .flatMap((x) => x[1]);
+      [
+        ...Object.values(networkConfigurationsByChainId),
+        ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+        // TODO: get this from network controller, use placeholder values for now
+        {
+          ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
+          blockExplorerUrls: [],
+          name: '',
+          nativeCurrency: '',
+          rpcEndpoints: [{ url: '', type: '', networkClientId: '' }],
+          defaultRpcEndpointIndex: 0,
+          chainId: MultichainNetworks.SOLANA as unknown as Hex,
+        } as unknown as NetworkConfiguration,
+        ///: END:ONLY_INCLUDE_IF
+      ],
+      'chainId',
+    ).filter(({ chainId }) =>
+      ALLOWED_BRIDGE_CHAIN_IDS.includes(
+        chainId as (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number],
+      ),
+    );
   },
 );
 
