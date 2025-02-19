@@ -4775,13 +4775,13 @@
     "message": "Cash out with MetaMask"
   },
   "slideDebitCardDescription": {
-    "message": "Available in selected regions"
+    "message": "Available in select regions"
   },
   "slideDebitCardTitle": {
     "message": "MetaMask debit card"
   },
   "slideFundWalletDescription": {
-    "message": "Get started by adding funds"
+    "message": "Add or transfer tokens to get started"
   },
   "slideFundWalletTitle": {
     "message": "Fund your wallet"
