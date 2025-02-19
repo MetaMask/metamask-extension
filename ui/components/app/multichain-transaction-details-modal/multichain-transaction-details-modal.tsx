@@ -33,13 +33,16 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
 import { ConfirmInfoRowDivider as Divider } from '../confirm/info/row';
-import { shortenAddress } from '../../../helpers/utils/util';
+import { getURLHostName, shortenAddress } from '../../../helpers/utils/util';
 import {
   formatTimestamp,
   getTransactionUrl,
   getAddressUrl,
   shortenTransactionId,
 } from './helpers';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventLinkType } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 
 export type MultichainTransactionDetailsModalProps = {
   transaction: Transaction;
@@ -337,6 +340,16 @@ export function MultichainTransactionDetailsModal({
               global.platform.openTab({
                 url: getTransactionUrl(txId, chain),
               })
+
+              trackEvent({
+                event: MetaMetricsEventName.ExternalLinkClicked,
+                category: MetaMetricsEventCategory.Navigation,
+                properties: {
+                  link_type: MetaMetricsEventLinkType.AccountTracker,
+                  location: 'Transaction Details',
+                  url_domain: getURLHostName(getTransactionUrl(txId, chain)),
+                },
+              });
             }}
             endIconName={IconName.Export}
           >
