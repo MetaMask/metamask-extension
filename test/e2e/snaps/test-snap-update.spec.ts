@@ -36,7 +36,7 @@ describe('Test Snap update', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({ text: 'Update request' });
         await snapInstall.check_pageIsLoaded();
-        await snapInstall.clickNextButton();
+        await snapInstall.clickConfirmButton();
         await snapInstall.waitForNextButton();
         await snapInstall.clickNextButton();
 
