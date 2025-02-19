@@ -3079,6 +3079,76 @@ export const getMultiChainAssets = createDeepEqualSelector(
   getAccountAssets,
   getAssetsMetadata,
   getAssetsRates,
+  getMultichainCoinRates,
+  getMultichainProviderConfig,
+  (
+    selectedAccountAddress,
+    multichainBalances,
+    accountAssets,
+    assetsMetadata,
+    assetRates,
+    multichainCoinRates,
+    multichainProviderConfig,
+  ) => {
+    const { ticker } = multichainProviderConfig;
+    const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
+    const balances = multichainBalances?.[selectedAccountAddress.id];
+    return assetIds.map((assetId) => {
+      const [chainId, assetDetails] = assetId.split('/');
+      const isToken = assetDetails.split(':')[0] === 'token';
+
+      const balance = balances?.[assetId] || { amount: '0', unit: '' };
+      const rate = assetRates?.[assetId]?.rate || '0';
+      const nativeRate =
+        multichainCoinRates?.[ticker.toLowerCase()]?.conversionRate || '0';
+
+      const balanceInFiat = new BigNumber(balance.amount).times(rate);
+      const nativeBalanceInFiat = new BigNumber(balance.amount).times(
+        nativeRate,
+      );
+      const metadata = assetsMetadata[assetId] || {
+        name: balance.unit,
+        symbol: balance.unit || '',
+        fungible: true,
+        units: [{ name: assetId, symbol: balance.unit || '', decimals: 0 }],
+      };
+
+      // not super happy with this override here
+      let tokenImage = '';
+      let secondary;
+
+      if (isToken) {
+        tokenImage = metadata.iconUrl || '';
+        secondary = balanceInFiat.toNumber();
+      } else {
+        tokenImage = CHAIN_ID_TOKEN_IMAGE_MAP[chainId] || '';
+        secondary = nativeBalanceInFiat.toNumber();
+      }
+
+      const decimals = metadata.units[0]?.decimals || 0;
+
+      return {
+        title: isToken ? metadata.name : balance.unit,
+        address: assetId,
+        symbol: metadata.symbol,
+        image: tokenImage,
+        decimals,
+        chainId,
+        isNative: false,
+        primary: balance.amount,
+        secondary,
+        string: '',
+        tokenFiatAmount: balanceInFiat, // for now we are keeping this is to satisfy sort, this should be fiat amount
+        isStakeable: false,
+      };
+    });
+  },
+);
+  (_state, selectedAccount) => selectedAccount,
+  getMultichainBalances,
+  getAccountAssets,
+  getAssetsMetadata,
+  getAssetsRates,
   (
     selectedAccountAddress,
     multichainBalances,
