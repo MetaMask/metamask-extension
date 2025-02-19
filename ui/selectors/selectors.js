@@ -3132,4 +3132,3 @@ export const getMultiChainAssets = createDeepEqualSelector(
     });
   },
 );
-
