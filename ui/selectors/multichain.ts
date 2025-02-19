@@ -507,7 +507,3 @@ export function getLastSelectedNonEvmAccount(state: MultichainState) {
       (a, b) => (b.metadata.lastSelected ?? 0) - (a.metadata.lastSelected ?? 0),
     )[0];
 }
-
-export function getAssetsRates(state: any) {
-  return state.metamask.conversionRates;
-}

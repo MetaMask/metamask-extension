@@ -16,9 +16,12 @@ import type {
   ChainAddressMarketData,
   TokenWithBalance,
 } from '../components/app/assets/types';
-import { getAccountAssets, getAssetsMetadata } from '../selectors/assets';
 import {
+  getAccountAssets,
+  getAssetsMetadata,
   getAssetsRates,
+} from '../selectors/assets';
+import {
   getLastSelectedNonEvmAccount,
   getMultichainBalances,
   getMultichainCoinRates,
