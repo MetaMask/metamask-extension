@@ -2256,9 +2256,6 @@
     "message": "Import",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Import account"
-  },
   "importAccountError": {
     "message": "Error importing account."
   },
@@ -2333,6 +2330,12 @@
   },
   "importTokensError": {
     "message": "We could not import the tokens. Please try again later."
+  },
+  "importWallet": {
+    "message": "Import wallet"
+  },
+  "importWalletSuccess": {
+    "message": "Wallet successfully imported"
   },
   "importWithCount": {
     "message": "Import $1",
@@ -4676,6 +4679,9 @@
   },
   "showPrivateKey": {
     "message": "Show private key"
+  },
+  "showSRP": {
+    "message": "Show secret recovery phrase"
   },
   "showTestnetNetworks": {
     "message": "Show test networks"
