@@ -1458,6 +1458,7 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
+          keyrings: [],
         });
 
         expect(traits).toStrictEqual({
@@ -1476,6 +1477,7 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.NumberOfNftCollections]: 3,
           [MetaMetricsUserTrait.NumberOfNfts]: 4,
           [MetaMetricsUserTrait.NumberOfTokens]: 5,
+          [MetaMetricsUserTrait.NumberOfHDEntropies]: 0,
           [MetaMetricsUserTrait.OpenSeaApiEnabled]: true,
           [MetaMetricsUserTrait.ThreeBoxEnabled]: false,
           [MetaMetricsUserTrait.Theme]: 'default',
@@ -1555,6 +1557,7 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
+          keyrings: [],
         });
 
         const updatedTraits = controller._buildUserTraitsObject({
@@ -1614,6 +1617,7 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
+          keyrings: [],
         });
 
         expect(updatedTraits).toStrictEqual({
@@ -1681,6 +1685,7 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
+          keyrings: [],
         });
 
         const updatedTraits = controller._buildUserTraitsObject({
@@ -1730,6 +1735,7 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
+          keyrings: [],
         });
         expect(updatedTraits).toStrictEqual(null);
       });
