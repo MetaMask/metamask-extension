@@ -308,12 +308,6 @@ const firstTimeState = {
   },
 };
 
-const createNewVaultAndUnlock = async (metamaskInstance) => {
-  const password = 'a-fake-password';
-  await metamaskInstance.createNewVaultAndKeychain(password);
-  await metamaskInstance.submitPassword(password);
-};
-
 const noop = () => undefined;
 
 describe('MetaMaskController', () => {
@@ -669,7 +663,7 @@ describe('MetaMaskController', () => {
 
     describe('setLocked', () => {
       it('should lock KeyringController', async () => {
-        await createNewVaultAndUnlock(metamaskController);
+        await metamaskController.createNewVaultAndKeychain('password');
         jest.spyOn(metamaskController.keyringController, 'setLocked');
 
         await metamaskController.setLocked();
