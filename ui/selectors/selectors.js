@@ -129,7 +129,9 @@ import {
 import { getSelectedInternalAccount, getInternalAccounts } from './accounts';
 import {
   getMultichainBalances,
+  getMultichainCoinRates,
   getMultichainNetworkProviders,
+  getMultichainProviderConfig,
 } from './multichain';
 import { getAccountAssets, getAssetsMetadata, getAssetsRates } from './assets';
 
@@ -3096,12 +3098,10 @@ export const getMultiChainAssets = createDeepEqualSelector(
     return assetIds.map((assetId) => {
       const [chainId, assetDetails] = assetId.split('/');
       const isToken = assetDetails.split(':')[0] === 'token';
-
       const balance = balances?.[assetId] || { amount: '0', unit: '' };
       const rate = assetRates?.[assetId]?.rate || '0';
       const nativeRate =
         multichainCoinRates?.[ticker.toLowerCase()]?.conversionRate || '0';
-
       const balanceInFiat = new BigNumber(balance.amount).times(rate);
       const nativeBalanceInFiat = new BigNumber(balance.amount).times(
         nativeRate,
@@ -3112,11 +3112,9 @@ export const getMultiChainAssets = createDeepEqualSelector(
         fungible: true,
         units: [{ name: assetId, symbol: balance.unit || '', decimals: 0 }],
       };
-
       // not super happy with this override here
       let tokenImage = '';
       let secondary;
-
       if (isToken) {
         tokenImage = metadata.iconUrl || '';
         secondary = balanceInFiat.toNumber();
@@ -3124,9 +3122,7 @@ export const getMultiChainAssets = createDeepEqualSelector(
         tokenImage = CHAIN_ID_TOKEN_IMAGE_MAP[chainId] || '';
         secondary = nativeBalanceInFiat.toNumber();
       }
-
       const decimals = metadata.units[0]?.decimals || 0;
-
       return {
         title: isToken ? metadata.name : balance.unit,
         address: assetId,
@@ -3137,64 +3133,6 @@ export const getMultiChainAssets = createDeepEqualSelector(
         isNative: false,
         primary: balance.amount,
         secondary,
-        string: '',
-        tokenFiatAmount: balanceInFiat, // for now we are keeping this is to satisfy sort, this should be fiat amount
-        isStakeable: false,
-      };
-    });
-  },
-);
-  (_state, selectedAccount) => selectedAccount,
-  getMultichainBalances,
-  getAccountAssets,
-  getAssetsMetadata,
-  getAssetsRates,
-  (
-    selectedAccountAddress,
-    multichainBalances,
-    accountAssets,
-    assetsMetadata,
-    assetRates,
-  ) => {
-    const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
-    const balances = multichainBalances?.[selectedAccountAddress.id];
-    return assetIds.map((assetId) => {
-      const [chainId, assetDetails] = assetId.split('/');
-      const isToken = assetDetails.split(':')[0] === 'token';
-
-      const balance = balances?.[assetId] || { amount: '0', unit: '' };
-      const rate = assetRates?.[assetId]?.rate || '0';
-
-      const balanceInFiat = new BigNumber(balance.amount).times(rate);
-
-      const metadata = assetsMetadata[assetId] || {
-        name: balance.unit,
-        symbol: balance.unit || '',
-        fungible: true,
-        units: [{ name: assetId, symbol: balance.unit || '', decimals: 0 }],
-      };
-
-      // not super happy with this override here
-      let tokenImage = '';
-
-      if (isToken) {
-        tokenImage = metadata.iconUrl || '';
-      } else {
-        tokenImage = CHAIN_ID_TOKEN_IMAGE_MAP[chainId] || '';
-      }
-
-      const decimals = metadata.units[0]?.decimals || 0;
-
-      return {
-        title: isToken ? metadata.name : balance.unit,
-        address: assetId,
-        symbol: metadata.symbol,
-        image: tokenImage,
-        decimals,
-        chainId,
-        isNative: false,
-        primary: balance.amount,
-        secondary: balanceInFiat.toNumber(),
         string: '',
         tokenFiatAmount: balanceInFiat, // for now we are keeping this is to satisfy sort, this should be fiat amount
         isStakeable: false,
