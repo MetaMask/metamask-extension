@@ -158,7 +158,10 @@ describe('Send full flow of USD', function (this: Suite) {
         await confirmSolanaPage.clickOnSend();
         const sentTxPage = new SolanaTxresultPage(driver);
         assert.equal(
-          await sentTxPage.check_TransactionStatusText('0.05039814534825118436', true),
+          await sentTxPage.check_TransactionStatusText(
+            '0.05039814534825118436',
+            true,
+          ),
           true,
           'Transaction amount is not correct',
         );

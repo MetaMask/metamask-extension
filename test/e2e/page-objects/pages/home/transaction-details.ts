@@ -1,5 +1,5 @@
-import { By } from "selenium-webdriver";
-import { Driver } from "../../../webdriver/driver";
+import { By } from 'selenium-webdriver';
+import { Driver } from '../../../webdriver/driver';
 
 class TransactionDetailsPage {
   private readonly driver: Driver;
@@ -49,11 +49,15 @@ class TransactionDetailsPage {
   }
 
   async check_transactionFromToLink(fromToAddress: string): Promise<void> {
-    await this.driver.waitForSelector(By.css(`a[href='https://explorer.solana.com/account/${fromToAddress}']`));
+    await this.driver.waitForSelector(
+      By.css(`a[href='https://explorer.solana.com/account/${fromToAddress}']`),
+    );
   }
 
   async check_transactionHashLink(txHash: string): Promise<void> {
-    await this.driver.waitForSelector(By.css(`a[href='https://explorer.solana.com/tx/${txHash}']`));
+    await this.driver.waitForSelector(
+      By.css(`a[href='https://explorer.solana.com/tx/${txHash}']`),
+    );
   }
 
   async check_amountTransaction(amount: string): Promise<void> {
@@ -72,7 +76,7 @@ class TransactionDetailsPage {
 
   async check_transactionViewDetailsLink(): Promise<void> {
     await this.driver.waitForSelector({
-      text: "View details",
+      text: 'View details',
       tag: 'button',
     });
   }
