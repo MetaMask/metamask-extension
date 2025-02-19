@@ -19,7 +19,10 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { formatWithThreshold } from '../util/formatWithThreshold';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
-import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
+import {
+  MULTICHAIN_PROVIDER_CONFIGS,
+  MultichainNetworks,
+} from '../../../../../shared/constants/multichain/networks';
 
 const useMultiChainAssets = () => {
   const t = useI18nContext();
@@ -43,15 +46,15 @@ const useMultiChainAssets = () => {
       {
         chainId: MultichainNetworks.SOLANA,
         address: '' as Hex,
-        symbol: 'SOL',
+        symbol: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA].ticker,
         string: `${cachedBalance} ${currentCurrency}`,
         primary: cachedBalance,
         image: '',
         secondary: cachedBalance,
-        tokenFiatAmount: 0,
+        tokenFiatAmount: cachedBalance,
         isNative: true,
-        decimals: 18,
-        title: 'Solana',
+        decimals: 9, // hard coded decimal value
+        title: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA].nickname,
         isStakeable: false,
       },
     ];
