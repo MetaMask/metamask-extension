@@ -129,9 +129,7 @@ import {
 import { getSelectedInternalAccount, getInternalAccounts } from './accounts';
 import {
   getMultichainBalances,
-  getMultichainCoinRates,
   getMultichainNetworkProviders,
-  getMultichainProviderConfig,
 } from './multichain';
 import { getAccountAssets, getAssetsMetadata, getAssetsRates } from './assets';
 
@@ -3082,7 +3080,6 @@ export const getMultiChainAssets = createDeepEqualSelector(
   getAssetsMetadata,
   getAssetsRates,
   (_state) => _state.metamask.conversionRates,
-  getMultichainProviderConfig,
   (
     selectedAccountAddress,
     multichainBalances,
@@ -3090,9 +3087,7 @@ export const getMultiChainAssets = createDeepEqualSelector(
     assetsMetadata,
     assetRates,
     multichainCoinRates,
-    multichainProviderConfig,
   ) => {
-    const { ticker } = multichainProviderConfig;
     const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
     const balances = multichainBalances?.[selectedAccountAddress.id];
     return assetIds.map((assetId) => {
@@ -3100,8 +3095,7 @@ export const getMultiChainAssets = createDeepEqualSelector(
       const isToken = assetDetails.split(':')[0] === 'token';
       const balance = balances?.[assetId] || { amount: '0', unit: '' };
       const rate = assetRates?.[assetId]?.rate || '0';
-      const nativeRate =
-        multichainCoinRates?.[ticker.toLowerCase()]?.conversionRate || '0';
+      const nativeRate = multichainCoinRates?.[assetId]?.rate || '0';
       const balanceInFiat = new BigNumber(balance.amount).times(rate);
       const nativeBalanceInFiat = new BigNumber(balance.amount).times(
         nativeRate,
