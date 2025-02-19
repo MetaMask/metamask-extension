@@ -3081,7 +3081,7 @@ export const getMultiChainAssets = createDeepEqualSelector(
   getAccountAssets,
   getAssetsMetadata,
   getAssetsRates,
-  getMultichainCoinRates,
+  (_state) => _state.metamask.conversionRates,
   getMultichainProviderConfig,
   (
     selectedAccountAddress,
