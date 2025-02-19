@@ -20,6 +20,7 @@ const buildInitRequestMock = (): jest.Mocked<
     controllerMessenger: getMultichainNetworkControllerMessenger(
       baseControllerMessenger,
     ),
+    initMessenger: undefined,
   };
 };
 
