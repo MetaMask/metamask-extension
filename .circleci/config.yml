@@ -257,6 +257,10 @@ workflows:
               only: main
           requires:
             - prep-build-ts-migration-dashboard
+      - send-ci-break-notification:
+          requires:
+            - test-e2e-chrome
+          context: mm-extension-ci-bot
 
   rerun-from-failed:
     when:
@@ -1189,7 +1193,15 @@ jobs:
       - run:
           name: test:mozilla-lint
           command: yarn mozilla-lint
-
+  send-ci-break-notification:
+    executor: node-browsers-small
+    steps:
+      - run:
+          name: Send CI break notification
+          command: echo 'Sending Slack notification if necessary'
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
   all-tests-pass:
     executor: node-browsers-small
     steps:
