@@ -258,18 +258,11 @@ workflows:
           requires:
             - prep-build-ts-migration-dashboard
       - send-ci-break-notification:
+          filters:
+            branches:
+              only: dm-add-ci-break-notification
           requires:
-            - validate-source-maps
-            - validate-source-maps-flask
-            - test-mozilla-lint-mv2
-            - test-mozilla-lint-flask-mv2
             - test-e2e-chrome
-            - test-e2e-chrome-multiple-providers
-            - test-e2e-firefox
-            - test-e2e-chrome-flask
-            - test-e2e-firefox-flask
-            - test-e2e-chrome-vault-decryption
-            - test-e2e-chrome-webpack
           context: mm-extension-ci-bot
 
   rerun-from-failed:
@@ -1203,12 +1196,6 @@ jobs:
       - run:
           name: test:mozilla-lint
           command: yarn mozilla-lint
-  all-tests-pass:
-    executor: node-browsers-small
-    steps:
-      - run:
-          name: All Tests Passed
-          command: echo 'whew - everything passed!'
   send-ci-break-notification:
     executor: node-browsers-small
     steps:
@@ -1226,4 +1213,11 @@ jobs:
                 }
               ]
             }
+  all-tests-pass:
+    executor: node-browsers-small
+    steps:
+      - run:
+          name: All Tests Passed
+          command: echo 'whew - everything passed!'
+
 
