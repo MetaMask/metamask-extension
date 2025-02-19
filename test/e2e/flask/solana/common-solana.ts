@@ -1,5 +1,4 @@
 import { Mockttp } from 'mockttp';
-import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -10,12 +9,14 @@ import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.fl
 
 const SOLANA_URL_REGEX =
   /^https:\/\/(solana-mainnet\.infura\.io|api\.devnet\.solana\.com)/u;
-const SOLANA_PRICE_API =
-  /^https:\/\/price\.(uat-api|api)\.cx\.metamask\.io\/v3\/spot-prices/u;
+const SOLANA_SPOT_PRICE_API =
+  /^https:\/\/price\.(uat-api|api)\.cx\.metamask\.io\/v[1-9]\/spot-prices/u;
+const SOLANA_EXCHANGE_RATES_PRICE_API =
+  /^https:\/\/price\.(uat-api|api)\.cx\.metamask\.io\/v[1-9]\/exchange-rates\/fiat/u;
 const SOLANA_STATIC_TOKEN_IMAGE_REGEX =
   /^https:\/\/static\.cx\.metamask\.io\/api\/v2\/tokenIcons\//u;
 const SOLANA_BITCOIN_MIN_API =
-  /^https:\/\/min-api\.cryptocompare\.com\/data\/pricemulti/u;
+  /^https:\/\/min-api\.cryptocompare\.com\/data\/pricemulti\?fsyms=btc/u;
 export enum SendFlowPlaceHolders {
   AMOUNT = 'Enter amount to send',
   RECIPIENT = 'Enter receiving address',
@@ -50,23 +51,31 @@ export async function mockClientSideDetectionApi(mockServer: Mockttp) {
       return {
         statusCode: 200,
         json: {
-          recentlyAdded: [],
+          recentlyAdded: [
+            '4479785186623bfab0f5cb3ab40c5ea69722ff7a3a37e82f48a8b7704bc1e5c9',
+            '102979a759f49e65e27d610f8daf54f1f17e78d8cc7f32526ba04b36c372af0b',
+          ],
           recentlyRemoved: [],
-          lastFetchedAt: '2025-02-03T11:08:02Z',
+          lastFetchedAt: '2025-02-18T11:08:02Z',
         },
       };
     });
 }
 
 export async function mockPhishingDetectionApi(mockServer: Mockttp) {
+  console.log('mockPhishingDetectionApi');
   return await mockServer
     .forPost(METAMASK_PHISHING_DETECTION_API)
     .thenCallback(() => {
-      return { statusCode: 200 };
+      return {
+        statusCode: 200,
+        json: [],
+      };
     });
 }
 
-export async function mockPriceApi(mockServer: Mockttp) {
+export async function mockPriceApiSpotPrice(mockServer: Mockttp) {
+  console.log('mockPriceApiSpotPrice');
   const response = {
     statusCode: 200,
     json: {
@@ -79,12 +88,309 @@ export async function mockPriceApi(mockServer: Mockttp) {
         },
     },
   };
-  return await mockServer.forGet(SOLANA_PRICE_API).thenCallback(() => {
+  return await mockServer.forGet(SOLANA_SPOT_PRICE_API).thenCallback(() => {
     return response;
   });
 }
 
+export async function mockPriceApiExchangeRates(mockServer: Mockttp) {
+  console.log('mockPriceApiExchangeRates');
+  const response = {
+    statusCode: 200,
+    json: {
+      usd: {
+        name: 'US Dollar',
+        ticker: 'usd',
+        value: 1,
+        currencyType: 'fiat',
+      },
+      aed: {
+        name: 'United Arab Emirates Dirham',
+        ticker: 'aed',
+        value: 3.6730000002306573,
+        currencyType: 'fiat',
+      },
+      ars: {
+        name: 'Argentine Peso',
+        ticker: 'ars',
+        value: 1058.4054021781933,
+        currencyType: 'fiat',
+      },
+      aud: {
+        name: 'Australian Dollar',
+        ticker: 'aud',
+        value: 1.573687992967399,
+        currencyType: 'fiat',
+      },
+      bdt: {
+        name: 'Bangladeshi Taka',
+        ticker: 'bdt',
+        value: 121.5906632459838,
+        currencyType: 'fiat',
+      },
+      bhd: {
+        name: 'Bahraini Dinar',
+        ticker: 'bhd',
+        value: 0.37682599749175366,
+        currencyType: 'fiat',
+      },
+      bmd: {
+        name: 'Bermudian Dollar',
+        ticker: 'bmd',
+        value: 1,
+        currencyType: 'fiat',
+      },
+      brl: {
+        name: 'Brazil Real',
+        ticker: 'brl',
+        value: 5.681400008593015,
+        currencyType: 'fiat',
+      },
+      cad: {
+        name: 'Canadian Dollar',
+        ticker: 'cad',
+        value: 1.4190170021979291,
+        currencyType: 'fiat',
+      },
+      chf: {
+        name: 'Swiss Franc',
+        ticker: 'chf',
+        value: 0.9018210001016359,
+        currencyType: 'fiat',
+      },
+      clp: {
+        name: 'Chilean Peso',
+        ticker: 'clp',
+        value: 950.9800019576477,
+        currencyType: 'fiat',
+      },
+      cny: {
+        name: 'Chinese Yuan',
+        ticker: 'cny',
+        value: 7.28000000964565,
+        currencyType: 'fiat',
+      },
+      czk: {
+        name: 'Czech Koruna',
+        ticker: 'czk',
+        value: 23.98077804452193,
+        currencyType: 'fiat',
+      },
+      dkk: {
+        name: 'Danish Krone',
+        ticker: 'dkk',
+        value: 7.132778008120085,
+        currencyType: 'fiat',
+      },
+      eur: {
+        name: 'Euro',
+        ticker: 'eur',
+        value: 0.9563709966805755,
+        currencyType: 'fiat',
+      },
+      gbp: {
+        name: 'British Pound Sterling',
+        ticker: 'gbp',
+        value: 0.7925789957213786,
+        currencyType: 'fiat',
+      },
+      gel: {
+        name: 'Georgian Lari',
+        ticker: 'gel',
+        value: 2.8250000057664213,
+        currencyType: 'fiat',
+      },
+      hkd: {
+        name: 'Hong Kong Dollar',
+        ticker: 'hkd',
+        value: 7.7757990146885,
+        currencyType: 'fiat',
+      },
+      huf: {
+        name: 'Hungarian Forint',
+        ticker: 'huf',
+        value: 383.5511237884304,
+        currencyType: 'fiat',
+      },
+      idr: {
+        name: 'Indonesian Rupiah',
+        ticker: 'idr',
+        value: 16309.621295575147,
+        currencyType: 'fiat',
+      },
+      ils: {
+        name: 'Israeli New Shekel',
+        ticker: 'ils',
+        value: 3.5515449992726973,
+        currencyType: 'fiat',
+      },
+      inr: {
+        name: 'Indian Rupee',
+        ticker: 'inr',
+        value: 86.90204417107836,
+        currencyType: 'fiat',
+      },
+      jpy: {
+        name: 'Japanese Yen',
+        ticker: 'jpy',
+        value: 151.59810030397847,
+        currencyType: 'fiat',
+      },
+      krw: {
+        name: 'South Korean Won',
+        ticker: 'krw',
+        value: 1441.0473569630362,
+        currencyType: 'fiat',
+      },
+      kwd: {
+        name: 'Kuwaiti Dinar',
+        ticker: 'kwd',
+        value: 0.30863599337494846,
+        currencyType: 'fiat',
+      },
+      lkr: {
+        name: 'Sri Lankan Rupee',
+        ticker: 'lkr',
+        value: 296.3533776014134,
+        currencyType: 'fiat',
+      },
+      mmk: {
+        name: 'Burmese Kyat',
+        ticker: 'mmk',
+        value: 2098.0000043195737,
+        currencyType: 'fiat',
+      },
+      mxn: {
+        name: 'Mexican Peso',
+        ticker: 'mxn',
+        value: 20.280359037500883,
+        currencyType: 'fiat',
+      },
+      myr: {
+        name: 'Malaysian Ringgit',
+        ticker: 'myr',
+        value: 4.445500003533244,
+        currencyType: 'fiat',
+      },
+      ngn: {
+        name: 'Nigerian Naira',
+        ticker: 'ngn',
+        value: 1505.6100030985604,
+        currencyType: 'fiat',
+      },
+      nok: {
+        name: 'Norwegian Krone',
+        ticker: 'nok',
+        value: 11.145146016578398,
+        currencyType: 'fiat',
+      },
+      nzd: {
+        name: 'New Zealand Dollar',
+        ticker: 'nzd',
+        value: 1.7526639973799063,
+        currencyType: 'fiat',
+      },
+      php: {
+        name: 'Philippine Peso',
+        ticker: 'php',
+        value: 58.170502112470665,
+        currencyType: 'fiat',
+      },
+      pkr: {
+        name: 'Pakistani Rupee',
+        ticker: 'pkr',
+        value: 279.5921655664021,
+        currencyType: 'fiat',
+      },
+      pln: {
+        name: 'Polish Zloty',
+        ticker: 'pln',
+        value: 3.976559005909282,
+        currencyType: 'fiat',
+      },
+      rub: {
+        name: 'Russian Ruble',
+        ticker: 'rub',
+        value: 91.94870918456455,
+        currencyType: 'fiat',
+      },
+      sar: {
+        name: 'Saudi Riyal',
+        ticker: 'sar',
+        value: 3.7503770033621175,
+        currencyType: 'fiat',
+      },
+      sek: {
+        name: 'Swedish Krona',
+        ticker: 'sek',
+        value: 10.7121080141656,
+        currencyType: 'fiat',
+      },
+      sgd: {
+        name: 'Singapore Dollar',
+        ticker: 'sgd',
+        value: 1.3419719981338605,
+        currencyType: 'fiat',
+      },
+      thb: {
+        name: 'Thai Baht',
+        ticker: 'thb',
+        value: 33.65200006844218,
+        currencyType: 'fiat',
+      },
+      try: {
+        name: 'Turkish Lira',
+        ticker: 'try',
+        value: 36.27049707366716,
+        currencyType: 'fiat',
+      },
+      twd: {
+        name: 'New Taiwan Dollar',
+        ticker: 'twd',
+        value: 32.737001066452386,
+        currencyType: 'fiat',
+      },
+      uah: {
+        name: 'Ukrainian hryvnia',
+        ticker: 'uah',
+        value: 41.63396008248541,
+        currencyType: 'fiat',
+      },
+      vef: {
+        name: 'Venezuelan bolívar fuerte',
+        ticker: 'vef',
+        value: 0.10012998980727426,
+        currencyType: 'fiat',
+      },
+      vnd: {
+        name: 'Vietnamese đồng',
+        ticker: 'vnd',
+        value: 25519.98978853863,
+        currencyType: 'fiat',
+      },
+      zar: {
+        name: 'South African Rand',
+        ticker: 'zar',
+        value: 18.43090003368219,
+        currencyType: 'fiat',
+      },
+      xdr: {
+        name: 'IMF Special Drawing Rights',
+        ticker: 'xdr',
+        value: 0.7636459993734942,
+        currencyType: 'fiat',
+      },
+    },
+  };
+  return await mockServer
+    .forGet(SOLANA_EXCHANGE_RATES_PRICE_API)
+    .thenCallback(() => {
+      return response;
+    });
+}
+
 export async function mockStaticMetamaskTokenIcon(mockServer: Mockttp) {
+  console.log('mockStaticMetamaskTokenIcon');
   return await mockServer
     .forGet(SOLANA_STATIC_TOKEN_IMAGE_REGEX)
     .thenCallback(() => {
@@ -95,6 +401,7 @@ export async function mockStaticMetamaskTokenIcon(mockServer: Mockttp) {
 }
 
 export async function mockTokenApi(mockServer: Mockttp) {
+  console.log('mockTokenApi');
   const response = {
     statusCode: 200,
     json: {
@@ -111,6 +418,7 @@ export async function mockTokenApi(mockServer: Mockttp) {
 }
 
 export async function mockMultiCoinPrice(mockServer: Mockttp) {
+  console.log('mockMultiCoinPrice');
   return await mockServer.forGet(SOLANA_BITCOIN_MIN_API).thenCallback(() => {
     return {
       statusCode: 200,
@@ -126,7 +434,11 @@ export async function mockMultiCoinPrice(mockServer: Mockttp) {
   });
 }
 
-export async function mockSolanaBalanceQuote(mockServer: Mockttp) {
+export async function mockSolanaBalanceQuote(
+  mockServer: Mockttp,
+  amount: number = SOL_BALANCE,
+) {
+  console.log('mockSolanaBalanceQuote');
   const response = {
     statusCode: 200,
     json: {
@@ -135,7 +447,7 @@ export async function mockSolanaBalanceQuote(mockServer: Mockttp) {
           apiVersion: '2.0.18',
           slot: 308460925,
         },
-        value: SOL_BALANCE,
+        value: amount,
       },
       id: 1337,
     },
@@ -151,6 +463,7 @@ export async function mockSolanaBalanceQuote(mockServer: Mockttp) {
 }
 
 export async function mockFungibleAssets(mockServer: Mockttp) {
+  console.log('mockFungibleAssets');
   return await mockServer
     .forGet(`${SIMPLEHASH_URL}/api/v0/fungibles/assets`)
     .thenCallback(() => {
@@ -208,6 +521,7 @@ export async function simulateSolanaTransaction(
   mockServer: Mockttp,
   isNative: boolean = true,
 ) {
+  console.log('simulateSolanaTransaction');
   const response = isNative
     ? {
         statusCode: 200,
@@ -277,6 +591,7 @@ export async function simulateSolanaTransaction(
 }
 
 export async function mockGetTransaction(mockServer: Mockttp) {
+  console.log('mockGetTransaction');
   const response = {
     statusCode: 200,
     json: {
@@ -330,6 +645,7 @@ export async function mockGetTransaction(mockServer: Mockttp) {
 }
 
 export async function mockGetLatestBlockhash(mockServer: Mockttp) {
+  console.log('mockGetLatestBlockhash');
   const response = {
     statusCode: 200,
     json: {
@@ -356,6 +672,7 @@ export async function mockGetLatestBlockhash(mockServer: Mockttp) {
     });
 }
 export async function mockGetSignaturesForAddress(mockServer: Mockttp) {
+  console.log('mockGetSignaturesForAddress');
   return await mockServer
     .forPost(SOLANA_URL_REGEX)
     .withBodyIncluding('getSignaturesForAddress')
@@ -497,6 +814,7 @@ export async function mockGetSignaturesForAddress(mockServer: Mockttp) {
 }
 
 export async function mockSendSolanaTransaction(mockServer: Mockttp) {
+  console.log('mockSendSolanaTransaction');
   const response = {
     statusCode: 200,
     json: {
@@ -566,7 +884,7 @@ export async function mockGetTokenAccountsByOwner(mockServer: Mockttp) {
     });
 }
 export async function mockGetAccountInfo(mockServer: Mockttp) {
-  console.log('AQUI ENTRA EN GET ACCOUNT INFO');
+  console.log('mockGetAccountInfo');
   const response = {
     statusCode: 200,
     json: {
@@ -611,50 +929,7 @@ export async function mockGetAccountInfo(mockServer: Mockttp) {
 }
 
 export async function mockGetTokenAccountInfo(mockServer: Mockttp) {
-  const response = {
-    statusCode: 200,
-    json: {
-      result: {
-        context: {
-          apiVersion: '2.0.21',
-          slot: 317161313,
-        },
-        value: {
-          data: {
-            parsed: {
-              info: {
-                decimals: 6,
-                freezeAuthority: null,
-                isInitialized: true,
-                mintAuthority: null,
-                supply: '999943585864185',
-              },
-              type: 'mint',
-            },
-            program: 'spl-token',
-            space: 82,
-          },
-          executable: false,
-          lamports: 37002092583,
-          owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-          rentEpoch: 18446744073709552000,
-          space: 82,
-        },
-      },
-    },
-  };
-  return await mockServer
-    .forPost(SOLANA_URL_REGEX)
-    .withJsonBodyIncluding({
-      method: 'getAccountInfo',
-    })
-    .withBody('2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin')
-    .thenCallback(() => {
-      return response;
-    });
-}
-
-export async function mockGetTokenAccountInfo(mockServer: Mockttp) {
+  console.log('mockGetTokenAccountInfo');
   const response = {
     statusCode: 200,
     json: {
@@ -712,6 +987,7 @@ export async function mockGetTokenAccountInfo(mockServer: Mockttp) {
 }
 
 export async function mockGetFeeForMessage(mockServer: Mockttp) {
+  console.log('mockGetFeeForMessage');
   const response = {
     statusCode: 200,
     json: {
@@ -742,6 +1018,8 @@ export async function withSolanaAccountSnap(
     importAccount,
     isNative,
     simulateTransaction,
+    mockGetZeroBalanceAccount,
+    mockGetNonZeroBalanceAccount,
   }: {
     title?: string;
     solanaSupportEnabled?: boolean;
@@ -751,6 +1029,8 @@ export async function withSolanaAccountSnap(
     importAccount?: boolean;
     isNative?: boolean;
     simulateTransaction?: boolean;
+    mockGetZeroBalanceAccount?: boolean;
+    mockGetNonZeroBalanceAccount?: boolean;
   },
   test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
 ) {
@@ -773,11 +1053,11 @@ export async function withSolanaAccountSnap(
         // Default Solana mocks
         mockList.push(await mockTokenApi(mockServer));
         mockList.push(await mockStaticMetamaskTokenIcon(mockServer));
-        mockList.push(await mockPriceApi(mockServer));
+        mockList.push(await mockPriceApiExchangeRates(mockServer));
+        mockList.push(await mockPriceApiSpotPrice(mockServer));
 
         if (mockCalls) {
           mockList.push([
-            await mockSolanaBalanceQuote(mockServer),
             await mockGetTransaction(mockServer),
             await mockGetTokenAccountsByOwner(mockServer),
             await mockGetSignaturesForAddress(mockServer),
@@ -787,6 +1067,12 @@ export async function withSolanaAccountSnap(
             await mockGetTokenAccountInfo(mockServer),
             await mockGetAccountInfo(mockServer),
           ]);
+        }
+        if (mockGetZeroBalanceAccount) {
+          mockList.push(await mockSolanaBalanceQuote(mockServer, 0));
+        }
+        if (mockGetNonZeroBalanceAccount) {
+          mockList.push(await mockSolanaBalanceQuote(mockServer));
         }
         if (mockSendTransaction) {
           mockList.push(await mockSendSolanaTransaction(mockServer));

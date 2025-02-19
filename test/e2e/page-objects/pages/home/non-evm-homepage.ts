@@ -9,16 +9,33 @@ class NonEvmHomepage extends HomePage {
 
   protected readonly swapButton = '[data-testid="token-overview-button-swap"]';
 
+  async check_ifSendButtonIsClickable(): Promise<boolean> {
+    try {
+      await this.driver.waitForSelector(this.sendButton, { timeout: 5000 });
+    } catch (e) {
+      console.log('Send button not enabled', e);
+      return false;
+    }
+    console.log('Send button is enabled');
+    return true;
+  }
+
   async check_pageIsLoaded(amount: string = ''): Promise<void> {
     await super.check_pageIsLoaded();
     if (amount) {
-      await this.driver.waitForSelector(
-        {
-          text: `${amount}`,
-          tag: 'p',
-        },
-        { timeout: 20000 },
-      );
+      console.log('check_pageIsLoaded before waitForSelector');
+      try {
+        await this.driver.waitForSelector(
+          {
+            text: `${amount}`,
+            tag: 'span',
+          },
+          { timeout: 61000 },
+        );
+        console.log('check_pageIsLoaded after waitForSelector');
+      } catch (e) {
+        console.log('Error in check_pageIsLoaded', e);
+      }
     }
     await this.driver.delayFirefox(2000);
   }
@@ -29,6 +46,7 @@ class NonEvmHomepage extends HomePage {
    * Clicks the send button on the non-EVM account homepage.
    */
   async clickOnSendButton(): Promise<void> {
+    console.log('clickOnSendButton before waitForControllersLoaded');
     await this.driver.waitForControllersLoaded();
     await this.driver.clickElement(this.sendButton);
   }

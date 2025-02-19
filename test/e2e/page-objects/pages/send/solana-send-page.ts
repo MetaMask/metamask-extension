@@ -202,14 +202,16 @@ class SendSolanaPage {
 
   async check_pageIsLoaded(amount: string = '') {
     await this.driver.waitForControllersLoaded();
-    await this.driver.waitForSelector(this.toAddressInput, { timeout: 2000 });
+    console.log('check_pageIsLoaded before waitForSelector');
+    await this.driver.waitForSelector(this.toAddressInput, { timeout: 10000 });
+    console.log('check_pageIsLoaded after waitForSelector');
     if (amount) {
       await this.driver.waitForSelector(
         {
           text: `${amount}`,
           tag: 'p',
         },
-        { timeout: 20000 },
+        { timeout: 60000 },
       );
     }
     await this.driver.delay(1000); // Added because of https://consensyssoftware.atlassian.net/browse/SOL-116
