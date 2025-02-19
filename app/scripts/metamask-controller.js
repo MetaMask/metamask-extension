@@ -2557,7 +2557,7 @@ export default class MetamaskController extends EventEmitter {
    */
   getPreferences() {
     const {
-      privacyMode,
+      preferences,
       securityAlertsEnabled,
       useCurrencyRateCheck,
       useTransactionSimulations,
@@ -2568,7 +2568,7 @@ export default class MetamaskController extends EventEmitter {
     } = this.preferencesController.state;
 
     return {
-      privacyMode,
+      privacyMode: preferences.privacyMode,
       securityAlertsEnabled,
       useCurrencyRateCheck,
       useTransactionSimulations,
