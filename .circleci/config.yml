@@ -1212,7 +1212,13 @@ jobs:
   send-ci-break-notification:
     executor: node-browsers-small
     steps:
+      - run:
+          name: Send CI break notification
+          command: echo "Sending Slack notification if necessary"
       - slack/notify:
           event: fail
-          template: basic_fail_1
+          custom:
+            attachments:
+              - text: "Job failed! Check CircleCI for details."
+                color: danger
 
