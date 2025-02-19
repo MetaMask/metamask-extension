@@ -4934,7 +4934,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^7.0.1, @metamask/base-controller@npm:^7.0.2, @metamask/base-controller@npm:^7.0.3, @metamask/base-controller@npm:^7.1.0, @metamask/base-controller@npm:^7.1.1":
+"@metamask/base-controller@npm:^7.0.1, @metamask/base-controller@npm:^7.0.2, @metamask/base-controller@npm:^7.0.3, @metamask/base-controller@npm:^7.1.1":
   version: 7.1.1
   resolution: "@metamask/base-controller@npm:7.1.1"
   dependencies:
@@ -5617,18 +5617,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-utils@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/keyring-utils@npm:2.0.0"
-  dependencies:
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.1.0"
-    bitcoin-address-validation: "npm:^2.2.3"
-  checksum: 10/f7514821fb3bd5f5be575e0d74d5cf8becbdeac35a3e13dcd9e8bf789ba34aa2072783bdc3d0ddac479b97c986bcb54d77cdccedf5945d1c33ef310790e90efb
-  languageName: node
-  linkType: hard
-
-"@metamask/keyring-utils@npm:^2.1.1":
+"@metamask/keyring-utils@npm:^2.0.0, @metamask/keyring-utils@npm:^2.1.1":
   version: 2.1.1
   resolution: "@metamask/keyring-utils@npm:2.1.1"
   dependencies:
@@ -6115,19 +6104,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/remote-feature-flag-controller@npm:^1.3.0":
-  version: 1.3.0
-  resolution: "@metamask/remote-feature-flag-controller@npm:1.3.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^7.1.0"
-    "@metamask/utils": "npm:^11.0.1"
-    cockatiel: "npm:^3.1.2"
-    uuid: "npm:^8.3.2"
-  checksum: 10/929c055b499588d8969d86b9d399967dcbcbdc8362d534f8bef7a0a55c2f137e18773d0a4cdf719889934a8e0092850550c8b55abf90a82013bffd81b72488d2
-  languageName: node
-  linkType: hard
-
-"@metamask/remote-feature-flag-controller@npm:^1.4.0":
+"@metamask/remote-feature-flag-controller@npm:^1.3.0, @metamask/remote-feature-flag-controller@npm:^1.4.0":
   version: 1.4.0
   resolution: "@metamask/remote-feature-flag-controller@npm:1.4.0"
   dependencies:
