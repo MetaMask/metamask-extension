@@ -94,6 +94,7 @@ export const SENTRY_BACKGROUND_STATE = {
     surveyLinkLastClickedOrClosed: true,
     snapsInstallPrivacyWarningShown: true,
     termsOfUseLastAgreed: true,
+    throttledOrigins: false,
     timeoutMinutes: true,
     trezorModel: true,
   },
@@ -103,6 +104,9 @@ export const SENTRY_BACKGROUND_STATE = {
   MultichainAssetsController: {
     accountsAssets: false,
     assetsMetadata: false,
+  },
+  MultiChainAssetsRatesController: {
+    assetsRates: false,
   },
   BridgeController: {
     bridgeState: {

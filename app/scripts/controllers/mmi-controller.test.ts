@@ -117,6 +117,7 @@ describe('MMIController', function () {
           'SnapKeyring:accountAssetListUpdated',
           'SnapKeyring:accountBalancesUpdated',
           'SnapKeyring:accountTransactionsUpdated',
+          'MultichainNetworkController:networkDidChange',
         ],
         allowedActions: [
           'AccountsController:setCurrentAccount',
@@ -773,6 +774,9 @@ describe('MMIController', function () {
 
   describe('handleMmiDashboardData', () => {
     it('should return internalAccounts as identities', async () => {
+      jest
+        .spyOn(mmiController.keyringController, 'getAccounts')
+        .mockReturnValue([mockAccount.address, mockAccount2.address]);
       const controllerMessengerSpy = jest.spyOn(mmiControllerMessenger, 'call');
       await mmiController.handleMmiDashboardData();
 
