@@ -6,6 +6,7 @@ import {
   getLocalizedSnapManifest,
   SnapStatus,
 } from '@metamask/snaps-utils';
+import { BigNumber } from 'bignumber.js';
 import { memoize } from 'lodash';
 import semver from 'semver';
 import { createSelector } from 'reselect';
@@ -130,6 +131,7 @@ import {
   getMultichainBalances,
   getMultichainNetworkProviders,
 } from './multichain';
+import { getAccountAssets, getAssetsMetadata, getAssetsRates } from './assets';
 
 /** `appState` slice selectors */
 
@@ -3068,5 +3070,68 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
       },
     );
     return tokensWithBalance;
+  },
+);
+
+export const getMultiChainAssets = createDeepEqualSelector(
+  (_state, selectedAccount) => selectedAccount,
+  getMultichainBalances,
+  getAccountAssets,
+  getAssetsMetadata,
+  getAssetsRates,
+  (
+    selectedAccountAddress,
+    multichainBalances,
+    accountAssets,
+    assetsMetadata,
+    assetRates,
+  ) => {
+    const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
+    const balances = multichainBalances?.[selectedAccountAddress.id];
+
+    const foobar = assetIds.map((assetId) => {
+      const [chainId, assetDetails] = assetId.split('/');
+      const isToken = assetDetails.split(':')[0] === 'token';
+
+      const balance = balances[assetId] || { amount: '0', unit: '' };
+      const rate = assetRates[assetId]?.rate || '0';
+
+      const balanceInFiat = new BigNumber(balance.amount).times(rate);
+      console.log('balanceInFiat', balanceInFiat.toNumber());
+
+      const metadata = assetsMetadata[assetId] || {
+        name: balance.unit,
+        symbol: balance.unit || '',
+        fungible: true,
+        units: [{ name: assetId, symbol: balance.unit || '', decimals: 0 }],
+      };
+
+      // not super happy with this override here
+      let tokenImage = '';
+
+      if (isToken) {
+        tokenImage = metadata.iconUrl || '';
+      } else {
+        tokenImage = CHAIN_ID_TOKEN_IMAGE_MAP[chainId] || '';
+      }
+
+      const decimals = metadata.units[0]?.decimals || 0;
+
+      return {
+        title: isToken ? metadata.name : balance.unit,
+        address: assetId,
+        symbol: metadata.symbol,
+        image: tokenImage,
+        decimals,
+        chainId,
+        isNative: false,
+        primary: balance.amount,
+        secondary: balanceInFiat.toNumber(),
+        string: '',
+        tokenFiatAmount: balanceInFiat, // for now we are keeping this is to satisfy sort, this should be fiat amount
+        isStakeable: false,
+      };
+    });
+    return foobar;
   },
 );

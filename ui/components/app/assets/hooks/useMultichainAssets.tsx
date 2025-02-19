@@ -1,16 +1,10 @@
 import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
+import { CaipAssetId, Hex } from '@metamask/utils';
+import { getMultichainSelectedAccountCachedBalance } from '../../../../selectors/multichain';
 import {
-  getMultichainBalances,
-  getMultichainSelectedAccountCachedBalance,
-} from '../../../../selectors/multichain';
-import {
-  getAccountAssets,
-  getAssetsMetadata,
-  getAssetsRates,
-} from '../../../../selectors/assets';
-import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../shared/constants/network';
-import { getSelectedInternalAccount } from '../../../../selectors';
+  getMultiChainAssets,
+  getSelectedInternalAccount,
+} from '../../../../selectors';
 import {
   TranslateFunction,
   networkTitleOverrides,
@@ -23,19 +17,17 @@ import {
   MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
 } from '../../../../../shared/constants/multichain/networks';
+import { TokenWithFiatAmount } from '../types';
 
 const useMultiChainAssets = () => {
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
   const currentCurrency = useSelector(getCurrentCurrency);
-  const account = useSelector(getSelectedInternalAccount);
-  const multichainBalances = useSelector(getMultichainBalances);
-  const accountAssets = useSelector(getAccountAssets);
-  const assetsMetadata = useSelector(getAssetsMetadata);
-  const assetRates = useSelector(getAssetsRates);
 
-  const assetIds = accountAssets?.[account.id] || [];
-  const balances = multichainBalances?.[account.id];
+  const multichainAssets = useSelector((state) =>
+    getMultiChainAssets(state, selectedAccount),
+  );
 
   // the following condition is needed to satisfy e2e check-balance.spec.ts
   // this is because the new multichain data is not being mocked within the withSolanaAccountSnap test fixture
@@ -60,56 +52,24 @@ const useMultiChainAssets = () => {
     ];
   }
 
-  return assetIds.map((assetId) => {
-    const [chainId, assetDetails] = assetId.split('/');
+  return multichainAssets.map((asset: TokenWithFiatAmount) => {
+    const assetId = asset.address as CaipAssetId;
+    const assetDetails = assetId.split('/')[1];
     const isToken = assetDetails.split(':')[0] === 'token';
 
-    const balance = balances[assetId] || { amount: '0', unit: '' };
-    const rate = assetRates[assetId]?.rate || '0';
-    const fiatBalance = parseFloat(rate) * parseFloat(balance.amount);
-
-    const fiatAmount = formatWithThreshold(fiatBalance, 0.01, locale, {
+    const fiatAmount = formatWithThreshold(asset.secondary, 0.01, locale, {
       style: 'currency',
       currency: currentCurrency.toUpperCase(),
     });
 
-    const metadata = assetsMetadata[assetId] || {
-      name: balance.unit,
-      symbol: balance.unit || '',
-      fungible: true,
-      units: [{ name: assetId, symbol: balance.unit || '', decimals: 0 }],
-    };
-
-    let tokenImage = '';
-
-    if (isToken) {
-      tokenImage = metadata.iconUrl || '';
-    } else {
-      tokenImage =
-        CHAIN_ID_TOKEN_IMAGE_MAP[
-          chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-        ] || '';
-    }
-
-    const decimals = metadata.units[0]?.decimals || 0;
-
     return {
+      ...asset,
       title: isToken
-        ? metadata.name
+        ? asset.title
         : networkTitleOverrides(t as TranslateFunction, {
-            title: balance.unit,
+            title: asset.title,
           }),
-      address: assetId as Hex,
-      symbol: metadata.symbol,
-      image: tokenImage,
-      decimals,
-      chainId,
-      isNative: false,
-      primary: balance.amount,
       secondary: fiatAmount, // secondary balance (usually in fiat)
-      string: '',
-      tokenFiatAmount: fiatBalance, // for now we are keeping this is to satisfy sort, this should be fiat amount
-      isStakeable: false,
     };
   });
 };

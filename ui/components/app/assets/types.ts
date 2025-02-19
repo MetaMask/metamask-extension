@@ -2,8 +2,8 @@ import { Hex } from '@metamask/utils';
 
 // Common mixin for primary and secondary display values
 export type TokenDisplayValues = {
-  primary?: string;
-  secondary?: string;
+  primary: string;
+  secondary: number;
   string?: string;
 };
 
