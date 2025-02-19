@@ -45,9 +45,7 @@ export function transformManifest(
    * @param browserManifest - The Chrome extension manifest object to modify
    * @returns the modified manifest object
    */
-  function addManifestFlags(
-    browserManifest: chrome.runtime.Manifest,
-  ): chrome.runtime.Manifest {
+  function addManifestFlags(browserManifest: chrome.runtime.Manifest): void {
     let manifestFlags;
 
     if (manifestOverridesPath) {
@@ -74,10 +72,8 @@ export function transformManifest(
     }
 
     if (manifestFlags) {
-      return merge({}, browserManifest, manifestFlags);
+      merge(browserManifest, manifestFlags);
     }
-
-    return browserManifest;
   }
 
   if (isDevelopment) {
@@ -86,17 +82,18 @@ export function transformManifest(
   }
 
   function addTabsPermission(browserManifest: chrome.runtime.Manifest) {
+    if (browserManifest.permissions?.includes('tabs')) {
+      throw new Error(
+        "manifest contains 'tabs' already; this transform should be removed.",
+      );
+    }
     if (browserManifest.permissions) {
-      if (browserManifest.permissions.includes('tabs')) {
-        throw new Error(
-          "manifest contains 'tabs' already; this transform should be removed.",
-        );
-      }
       browserManifest.permissions.push('tabs');
     } else {
       browserManifest.permissions = ['tabs'];
     }
   }
+
   if (args.test) {
     // test builds need "tabs" permission for switchToWindowWithTitle
     transforms.push(addTabsPermission);
@@ -104,14 +101,10 @@ export function transformManifest(
 
   return transforms.length
     ? (browserManifest: chrome.runtime.Manifest, _browser: string) => {
-        let result = structuredClone(browserManifest);
-        transforms.forEach((transform) => {
-          const transformed = transform(result);
-          if (transformed !== undefined) {
-            result = transformed;
-          }
-        });
-        return result;
+        // Create a deep copy of the manifest to avoid modifying the original
+        const manifestCopy = JSON.parse(JSON.stringify(browserManifest));
+        transforms.forEach((transform) => transform(manifestCopy));
+        return manifestCopy;
       }
     : undefined;
 }
