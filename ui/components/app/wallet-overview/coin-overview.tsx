@@ -298,8 +298,6 @@ export const CoinOverview = ({
               ref={setBoxRef}
             >
               {balanceToDisplay ? (
-                <Spinner className="loading-overlay__spinner" />
-              ) : (
                 <>
                   <UserPreferencedCurrencyDisplay
                     style={{ display: 'contents' }}
@@ -335,6 +333,8 @@ export const CoinOverview = ({
                     data-testid="sensitive-toggle"
                   />
                 </>
+              ) : (
+                <Spinner className="loading-overlay__spinner" />
               )}
               {balanceIsCached && (
                 <span className={`${classPrefix}-overview__cached-star`}>
