@@ -35,6 +35,8 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { getMultichainCurrentChainId } from '../../../selectors/multichain';
 import { BridgeAssetPickerButton } from './components/bridge-asset-picker-button';
 
 const sanitizeAmountInput = (textToSanitize: string) => {
@@ -86,11 +88,9 @@ export const BridgeInputGroup = ({
   const currency = useSelector(getCurrentCurrency);
   const locale = useSelector(getIntlLocale);
 
-  const selectedChainId = networkProps?.network?.chainId;
-  const { balanceAmount } = useLatestBalance(token, selectedChainId);
-  // const currentChainId = useMultichainSelector(getMultichainCurrentChainId);
-  // const selectedChainId = networkProps?.network?.chainId ?? currentChainId;
-  // const { balanceAmount } = useLatestBalance(token, selectedChainId);
+  const currentChainId = useMultichainSelector(getMultichainCurrentChainId);
+  const selectedChainId = networkProps?.network?.chainId ?? currentChainId;
+  const balanceAmount = useLatestBalance(token, selectedChainId);
 
   const [, handleCopy] = useCopyToClipboard(MINUTE) as [
     boolean,
