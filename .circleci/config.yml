@@ -258,6 +258,10 @@ workflows:
               only: main
           requires:
             - prep-build-ts-migration-dashboard
+      - send-ci-break-notification:
+          requires:
+            - all-tests-pass
+          context: mm-extension-ci-bot
 
   rerun-from-failed:
     when:
@@ -1196,10 +1200,10 @@ jobs:
       - run:
           name: All Tests Passed
           command: echo 'whew - everything passed!'
+  send-ci-break-notification:
+    executor: node-browsers-small
+    steps:
       - slack/notify:
           event: fail
           template: basic_fail_1
-          when: always
-      - run:
-          name: Debug Step - After Notification
-          command: echo "Slack notification step completed"
+
