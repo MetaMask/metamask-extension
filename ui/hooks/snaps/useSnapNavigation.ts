@@ -6,7 +6,7 @@ import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 
 const useSnapNavigation = () => {
   const history = useHistory();
-  const navigate = (url: string, envType: string, onCancel: () => void) => {
+  const navigate = (url: string, envType: string, onCancel?: () => void) => {
     let path;
     const linkData = parseMetaMaskUrl(url);
     if (linkData.snapId) {

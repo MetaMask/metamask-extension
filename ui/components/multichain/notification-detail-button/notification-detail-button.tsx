@@ -71,7 +71,7 @@ export const NotificationDetailButton = ({
 
     if (isSnapNotification) {
       if (isMetaMaskUrl) {
-        navigate(href, ENVIRONMENT_TYPE_POPUP, undefined);
+        navigate(href, ENVIRONMENT_TYPE_POPUP);
       } else {
         setIsOpen(true);
       }
