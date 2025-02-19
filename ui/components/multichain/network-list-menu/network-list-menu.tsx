@@ -305,6 +305,10 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     // the dapp via silent switchEthereumChain that the
     // network has changed due to user action
     if (selectedTabOrigin && domains[selectedTabOrigin]) {
+      // setActiveNetwork should be called before setNetworkClientIdForDomain
+      // to ensure that the isConnected value can be accurately inferred from
+      // NetworkController.state.networksMetadata in return value of
+      // `metamask_getProviderState` requests and `metamask_chainChanged` events.
       setNetworkClientIdForDomain(selectedTabOrigin, networkClientId);
     }
 
