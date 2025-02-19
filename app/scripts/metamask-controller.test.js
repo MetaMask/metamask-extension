@@ -638,6 +638,7 @@ describe('MetaMaskController', () => {
 
     describe('setLocked', () => {
       it('should lock KeyringController', async () => {
+        await metamaskController.createNewVaultAndKeychain('password');
         jest.spyOn(metamaskController.keyringController, 'setLocked');
 
         await metamaskController.setLocked();
@@ -2650,17 +2651,18 @@ describe('MetaMaskController', () => {
     });
 
     describe('#addNewAccount', () => {
-      it('errors when an primary keyring is does not exist', async () => {
+      it('throws an error if the keyring controller is locked', async () => {
         const addNewAccount = metamaskController.addNewAccount();
-
-        await expect(addNewAccount).rejects.toThrow('No HD keyring found');
+        await expect(addNewAccount).rejects.toThrow(
+          'KeyringController - The operation cannot be completed while the controller is locked.',
+        );
       });
     });
 
     describe('#getSeedPhrase', () => {
-      it('errors when no password is provided', async () => {
+      it('throws error if keyring controller is locked', async () => {
         await expect(metamaskController.getSeedPhrase()).rejects.toThrow(
-          'KeyringController - Cannot unlock without a previous vault.',
+          'KeyringController - The operation cannot be completed while the controller is locked.',
         );
       });
 
