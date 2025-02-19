@@ -902,14 +902,6 @@
         "immer": true
       }
     },
-    "@metamask/remote-feature-flag-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
     "@metamask/selected-network-controller>@metamask/base-controller": {
       "globals": {
         "setTimeout": true
@@ -1097,7 +1089,6 @@
     },
     "@metamask/keyring-controller>@metamask/eth-simple-keyring": {
       "packages": {
-        "@ethereumjs/tx": true,
         "eth-lattice-keyring>@ethereumjs/util": true,
         "@metamask/eth-sig-util": true,
         "@metamask/utils": true,
@@ -1117,7 +1108,7 @@
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-api": true,
         "@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client": true,
-        "@metamask/eth-snap-keyring>@metamask/keyring-utils": true,
+        "@metamask/keyring-api>@metamask/keyring-utils": true,
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils": true,
         "webpack>events": true,
@@ -1295,7 +1286,7 @@
     "@metamask/keyring-snap-client": {
       "packages": {
         "@metamask/keyring-api": true,
-        "@metamask/eth-snap-keyring>@metamask/keyring-utils": true,
+        "@metamask/keyring-api>@metamask/keyring-utils": true,
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/keyring-snap-client>uuid": true
       }
@@ -1303,19 +1294,9 @@
     "@metamask/multichain-transactions-controller>@metamask/keyring-snap-client": {
       "packages": {
         "@metamask/keyring-api": true,
-        "@metamask/eth-snap-keyring>@metamask/keyring-utils": true,
+        "@metamask/keyring-api>@metamask/keyring-utils": true,
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/multichain-transactions-controller>@metamask/keyring-snap-client>uuid": true
-      }
-    },
-    "@metamask/eth-snap-keyring>@metamask/keyring-utils": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "bitcoin-address-validation": true
       }
     },
     "@metamask/keyring-api>@metamask/keyring-utils": {
@@ -1635,8 +1616,8 @@
     },
     "@metamask/remote-feature-flag-controller": {
       "packages": {
-        "@metamask/remote-feature-flag-controller>@metamask/base-controller": true,
-        "cockatiel": true,
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
         "uuid": true
       }
     },
