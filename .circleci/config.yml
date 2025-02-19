@@ -216,6 +216,10 @@ workflows:
             - test-e2e-firefox-flask
             - test-e2e-chrome-vault-decryption
             - test-e2e-chrome-webpack
+          post-steps:
+            - slack/notify:
+              event: fail
+              template: basic_fail_1
       - benchmark:
           requires:
             - prep-build-test
@@ -1198,7 +1202,4 @@ jobs:
       - run:
           name: All Tests Passed
           command: echo 'whew - everything passed!'
-    post-steps:
-      - slack/notify:
-        event: fail
-        template: basic_fail_1
+
