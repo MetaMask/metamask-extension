@@ -26,23 +26,24 @@ import { formatAmount, formatAmountMaxPrecision } from './formatAmount';
  * @param props
  * @param props.asset
  * @param props.amount
+ * @param props.isApproval
  */
 export const AmountPill: React.FC<{
   asset: AssetIdentifier;
   amount: BigNumber;
-}> = ({ asset, amount }) => {
+  isApproval?: boolean;
+}> = ({ asset, amount, isApproval }) => {
   const locale = useSelector(getIntlLocale);
 
-  const backgroundColor = amount.isNegative()
-    ? BackgroundColor.errorMuted
-    : BackgroundColor.successMuted;
+  const backgroundColor = getBackgroundColour({ amount, isApproval });
+  const color = getColor({ amount, isApproval });
 
-  const color = amount.isNegative()
-    ? TextColor.errorAlternative
-    : TextColor.successDefault;
-
-  const amountParts: string[] = [amount.isNegative() ? '-' : '+'];
+  const amountParts: string[] = [];
   const tooltipParts: string[] = [];
+
+  if (!isApproval) {
+    amountParts.push(amount.isNegative() ? '-' : '+');
+  }
 
   // ERC721 amounts are always 1 and are not displayed.
   if (asset.standard !== TokenStandard.ERC721) {
@@ -98,3 +99,35 @@ export const AmountPill: React.FC<{
     </Box>
   );
 };
+
+function getBackgroundColour({
+  amount,
+  isApproval,
+}: {
+  amount: BigNumber;
+  isApproval?: boolean;
+}) {
+  if (isApproval) {
+    return BackgroundColor.backgroundMuted;
+  }
+
+  return amount.isNegative()
+    ? BackgroundColor.errorMuted
+    : BackgroundColor.successMuted;
+}
+
+function getColor({
+  amount,
+  isApproval,
+}: {
+  amount: BigNumber;
+  isApproval?: boolean;
+}) {
+  if (isApproval) {
+    return TextColor.textDefault;
+  }
+
+  return amount.isNegative()
+    ? TextColor.errorAlternative
+    : TextColor.successDefault;
+}

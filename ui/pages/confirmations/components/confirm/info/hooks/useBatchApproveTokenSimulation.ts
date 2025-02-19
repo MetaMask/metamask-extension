@@ -6,11 +6,16 @@ import { useConfirmContext } from '../../../../context/confirm';
 import { decodeApproveTokenData } from '../approve/hooks/use-approve-token-simulation';
 import { getIntlLocale } from '../../../../../../ducks/locale/locale';
 import { useSelector } from 'react-redux';
-import { BalanceChange } from '../../../simulation-details/types';
+import {
+  BalanceChange,
+  TokenAssetIdentifier,
+} from '../../../simulation-details/types';
 import { useAsyncResult } from '../../../../../../hooks/useAsyncResult';
 import { getTokenStandardAndDetails } from '../../../../../../store/actions';
-import { Hex } from '@metamask/utils';
+import { Hex, add0x } from '@metamask/utils';
 import { fetchErc20Decimals } from '../../../../utils/token';
+import { TokenStandard } from '../../../../../../../shared/constants/transaction';
+import { toHex } from '@metamask/controller-utils';
 
 export function useBatchApproveBalanceChanges() {
   const locale = useSelector(getIntlLocale);
@@ -52,23 +57,40 @@ async function buildBalanceChanges({
       continue;
     }
 
-    const decimals = await fetchErc20Decimals(to);
-    const approveValue = await decodeApproveTokenData({ data, decimals, locale, to });
+    const tokenData = await getTokenStandardAndDetails(to);
+    const tokenStandard = tokenData?.standard as TokenStandard;
+    let decimals = undefined;
 
-    if (approveValue == undefined) {
+    if (tokenStandard === TokenStandard.ERC20) {
+      decimals = await fetchErc20Decimals(to);
+    }
+
+    const approveAmountOrId = await decodeApproveTokenData({
+      data,
+      decimals,
+      locale,
+      to,
+    });
+
+    if (approveAmountOrId == undefined) {
       continue;
     }
 
-    const { standard: tokenStandard } = await getTokenStandardAndDetails(to);
+    const tokenId =
+      tokenStandard === TokenStandard.ERC721
+        ? add0x(approveAmountOrId.toString(16))
+        : undefined;
 
     const balanceChange: BalanceChange = {
       asset: {
-        address: transaction.to,
+        address: to,
         chainId,
-        standard: tokenStandard as any,
+        standard: tokenStandard as TokenAssetIdentifier['standard'],
+        tokenId,
       },
-      amount: approveValue,
+      amount: approveAmountOrId,
       fiatAmount: null,
+      isApproval: true,
     };
 
     balanceChanges.push(balanceChange);
