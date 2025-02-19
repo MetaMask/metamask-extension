@@ -84,7 +84,7 @@ export const getIsNonEvmNetworksEnabled = createDeepEqualSelector(
       if (bitcoinEnabled && solanaEnabled) {
         break;
       }
-      
+
       if (scopes.includes(BtcScope.Mainnet)) {
         bitcoinEnabled = true;
       }
