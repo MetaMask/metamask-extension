@@ -2307,7 +2307,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethereumjs/tx@npm:^5.2.1, @ethereumjs/tx@npm:^5.3.0":
+"@ethereumjs/tx@npm:^5.2.1, @ethereumjs/tx@npm:^5.3.0, @ethereumjs/tx@npm:^5.4.0":
   version: 5.4.0
   resolution: "@ethereumjs/tx@npm:5.4.0"
   dependencies:
@@ -6492,16 +6492,16 @@ __metadata:
   linkType: hard
 
 "@metamask/transaction-controller@npm:^45.0.0":
-  version: 45.0.0
-  resolution: "@metamask/transaction-controller@npm:45.0.0"
+  version: 45.1.0
+  resolution: "@metamask/transaction-controller@npm:45.1.0"
   dependencies:
-    "@ethereumjs/common": "npm:^3.2.0"
-    "@ethereumjs/tx": "npm:^4.2.0"
+    "@ethereumjs/common": "npm:^4.4.0"
+    "@ethereumjs/tx": "npm:^5.4.0"
     "@ethereumjs/util": "npm:^8.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
-    "@metamask/base-controller": "npm:^7.1.1"
+    "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/controller-utils": "npm:^11.5.0"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
@@ -6521,7 +6521,7 @@ __metadata:
     "@metamask/eth-block-tracker": ">=9"
     "@metamask/gas-fee-controller": ^22.0.0
     "@metamask/network-controller": ^22.0.0
-  checksum: 10/42fc91e4ebb0ad83f8230c2060c392d0ba5fd555a2d3f407862c4574f195f1cb2b57ea025ea332e55a1196605602209219a828c565bd6a13d3135557d7427e24
+  checksum: 10/4be40e2315e512db873c436f87cfb43f63623491c98cbb22c28c24091cf666c2428e9916f2ba1706743504ba8af505dc2c3fa5549c1ed99f50868284eb5fe07f
   languageName: node
   linkType: hard
 
