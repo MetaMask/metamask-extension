@@ -36,6 +36,7 @@ const useEvmAssetsWithBalances = (): (
       decimals: number;
       string: string;
       tokenFiatAmount: number;
+      balance: string;
     }
 )[] => {
   const { address: evmAccountAddress } = useMultichainSelector(
@@ -43,23 +44,21 @@ const useEvmAssetsWithBalances = (): (
   );
 
   // all ERC20 tokens for imported chainIds, addresses in lowercase hex
-  const evmTokenMetadataByAddressByDataByChain = useSelector(
-    selectERC20TokensByChain,
-  );
+  const tokenMetadataByAddressByChain = useSelector(selectERC20TokensByChain);
 
   // balances by chainId
-  const evmTokenBalancesByChain: Record<
+  const tokenBalancesByChain: Record<
     Hex,
     Record<Hex, string>
   > = useTokenBalances().tokenBalances[evmAccountAddress];
-  const evmNativeBalancesByChain = useSelector(
+  const nativeBalancesByChain = useSelector(
     getSelectedAccountNativeTokenCachedBalanceByChainId,
   ) as Record<string, Hex>;
 
   // conversion rates by chainId and hex token address
-  const evmTokenRates = useSelector(getMarketData) as ChainAddressMarketData;
+  const tokenRates = useSelector(getMarketData) as ChainAddressMarketData;
   // conversion rates by native token ticker
-  const evmNativeRates = useSelector(
+  const nativeRates = useSelector(
     getCurrencyRates,
   ) as CurrencyRateState['currencyRates'];
 
@@ -67,14 +66,14 @@ const useEvmAssetsWithBalances = (): (
     useSelector(getNetworkConfigurationsByChainId);
 
   const evmTokensWithFiatBalances = useMemo(() => {
-    return Object.entries(evmTokenBalancesByChain).flatMap(
+    return Object.entries(tokenBalancesByChain).flatMap(
       ([chainId, tokenBalances]) => {
         const nativeBalance = calcTokenAmount(
-          new BigNumber(evmNativeBalancesByChain[chainId] ?? '0', 16),
+          new BigNumber(nativeBalancesByChain[chainId] ?? '0', 16),
           18,
         ).toString();
         const nativeExchangeRate =
-          evmNativeRates[
+          nativeRates[
             networkConfigByChainId[chainId]?.nativeCurrency ?? 'ETH'
           ]?.conversionRate?.toString() ?? '0';
         const nativeBalanceInFiat = new BigNumber(nativeBalance).times(
@@ -82,9 +81,10 @@ const useEvmAssetsWithBalances = (): (
         );
 
         const tokensWithBalances = Object.entries(tokenBalances)
+          // build TokenWithFiat for each token balance detected
           .map(([tokenAddress, tokenBalance]) => {
             const tokenMetadata =
-              evmTokenMetadataByAddressByDataByChain[chainId]?.data?.[
+              tokenMetadataByAddressByChain[chainId]?.data?.[
                 tokenAddress.toLowerCase()
               ];
             if (!tokenMetadata) {
@@ -95,7 +95,7 @@ const useEvmAssetsWithBalances = (): (
               tokenMetadata?.decimals ?? 18,
             );
             const tokenPrice =
-              evmTokenRates[chainId as Hex]?.[
+              tokenRates[chainId as Hex]?.[
                 tokenAddress as Hex
               ].price.toString();
             const fiatBalance = tokenAmount
@@ -104,6 +104,7 @@ const useEvmAssetsWithBalances = (): (
             // Data for ERC20 tokens
             return {
               string: tokenAmount.toString(),
+              balance: tokenAmount.toString(),
               tokenFiatAmount: fiatBalance.toNumber(),
               chainId: chainId as Hex,
               decimals: tokenMetadata?.decimals ?? 18,
@@ -117,6 +118,7 @@ const useEvmAssetsWithBalances = (): (
         // Data for native token
         tokensWithBalances.push({
           string: nativeBalance,
+          balance: nativeBalance,
           tokenFiatAmount: nativeBalanceInFiat.toNumber(),
           chainId: chainId as Hex,
           decimals: 18,
@@ -132,11 +134,11 @@ const useEvmAssetsWithBalances = (): (
       },
     );
   }, [
-    evmNativeBalancesByChain,
-    evmNativeRates,
-    evmTokenBalancesByChain,
-    evmTokenMetadataByAddressByDataByChain,
-    evmTokenRates,
+    nativeBalancesByChain,
+    nativeRates,
+    tokenBalancesByChain,
+    tokenMetadataByAddressByChain,
+    tokenRates,
     networkConfigByChainId,
   ]);
 
@@ -151,62 +153,56 @@ const useNonEvmAssetsWithBalances = (): (Omit<
   decimals: number;
   address: `${string}:${string}`;
   string: string;
+  balance: string;
   tokenFiatAmount: number;
   symbol: string;
 })[] => {
   const nonEvmAccount = useSelector(getLastSelectedNonEvmAccount);
 
   // non-evm tokens owned by non-evm account, includes native and non-native assets
-  const nonEvmAssetsByAccountId = useSelector(getAccountAssets);
-  const nonEvmAssets = nonEvmAssetsByAccountId[nonEvmAccount.id];
-  const nonEvmAssetMetadataByAssetAddress = useSelector(getAssetsMetadata);
+  const assetsByAccountId = useSelector(getAccountAssets);
+  const assetIds = assetsByAccountId[nonEvmAccount.id];
+  const assetMetadataById = useSelector(getAssetsMetadata);
 
   // includes native and asset balances for non-evm account
   const nonEvmBalancesByAccountId = useMultichainSelector(
     getMultichainBalances,
   );
-  const nonEvmBalances = nonEvmBalancesByAccountId[nonEvmAccount.id];
+  const balancesByAssetId = nonEvmBalancesByAccountId[nonEvmAccount.id];
 
   // native exchange rates
-  const nonEvmNativeRates = useSelector(getMultichainCoinRates);
+  const nativeRates = useSelector(getMultichainCoinRates);
   // asset exchange rates
-  const nonEvmAssetRates = useSelector(getAssetsRates);
+  const assetRates = useSelector(getAssetsRates);
 
   const nonEvmTokensWithFiatBalances = useMemo(() => {
-    return nonEvmAssets.map((caipAssetId) => {
+    // build TokenWithFiat for each asset
+    return assetIds.map((caipAssetId) => {
       const [caipChainId, address] = caipAssetId.split('/');
       const [type] = address.split(':');
       return {
         chainId: caipChainId as `${string}:${string}`,
-        symbol: nonEvmAssetMetadataByAssetAddress[caipAssetId]?.symbol ?? '',
+        symbol: assetMetadataById[caipAssetId]?.symbol ?? '',
         address: address as `${string}:${string}`,
-        string: nonEvmBalances[caipAssetId]?.amount ?? '0',
-        decimals:
-          nonEvmAssetMetadataByAssetAddress[caipAssetId]?.units[0]?.decimals,
-        image: nonEvmAssetMetadataByAssetAddress[caipAssetId]?.iconUrl ?? '',
+        string: balancesByAssetId[caipAssetId]?.amount ?? '0',
+        balance: balancesByAssetId[caipAssetId]?.amount ?? '0',
+        decimals: assetMetadataById[caipAssetId]?.units[0]?.decimals,
+        image: assetMetadataById[caipAssetId]?.iconUrl ?? '',
         type: type === 'token' ? AssetType.token : AssetType.native,
         tokenFiatAmount: new BigNumber(
-          nonEvmBalances[caipAssetId]?.amount ?? '1',
+          balancesByAssetId[caipAssetId]?.amount ?? '1',
         )
           .times(
-            nonEvmAssetRates?.[caipAssetId]?.rate ??
-              nonEvmNativeRates?.[
-                nonEvmAssetMetadataByAssetAddress[
-                  caipAssetId
-                ]?.units[0]?.symbol.toLowerCase()
+            assetRates?.[caipAssetId]?.rate ??
+              nativeRates?.[
+                assetMetadataById[caipAssetId]?.units[0]?.symbol.toLowerCase()
               ]?.conversionRate ??
               '1',
           )
           .toNumber(),
       };
     });
-  }, [
-    nonEvmAssetMetadataByAssetAddress,
-    nonEvmAssetRates,
-    nonEvmAssets,
-    nonEvmBalances,
-    nonEvmNativeRates,
-  ]);
+  }, [assetMetadataById, assetRates, assetIds, balancesByAssetId, nativeRates]);
 
   return nonEvmTokensWithFiatBalances;
 };
