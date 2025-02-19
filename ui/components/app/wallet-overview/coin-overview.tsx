@@ -12,7 +12,6 @@ import type { Hex } from '@metamask/utils';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import { isNil } from 'lodash';
 import {
   Box,
   ButtonIcon,
@@ -82,6 +81,7 @@ import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 import { AggregatedPercentageOverview } from './aggregated-percentage-overview';
 import { AggregatedPercentageOverviewCrossChains } from './aggregated-percentage-overview-cross-chains';
+import { isNil } from 'lodash';
 
 export type CoinOverviewProps = {
   account: InternalAccount;
@@ -297,7 +297,7 @@ export const CoinOverview = ({
               onMouseEnter={handleMouseEnter}
               ref={setBoxRef}
             >
-              {isNil(balanceToDisplay) ? (
+              {balanceToDisplay ? (
                 <Spinner className="loading-overlay__spinner" />
               ) : (
                 <>
