@@ -4780,6 +4780,9 @@
   "slideCashOutTitle": {
     "message": "Cash out with MetaMask"
   },
+  "connectionPopoverDescription": {
+    "message": "To connect to a site, select the connect button. MetaMask can only connect to web3 sites."
+  },
   "slideDebitCardDescription": {
     "message": "Available in selected regions"
   },

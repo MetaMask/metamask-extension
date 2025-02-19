@@ -37,7 +37,6 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProp> = ({
   value,
   icon,
   buttonAddressValue,
-  withPopover,
   fullValue,
   referenceElement,
   isOpen,
@@ -87,22 +86,23 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProp> = ({
                 />
               </Box>
             ) : (
-              <Text variant={TextVariant.bodySm}>Not connected</Text>
+              <Text variant={TextVariant.bodySm}>
+                {t('statusNotConnected')}
+              </Text>
             )}
           </Box>
-          <Box paddingLeft={4} paddingRight={4} paddingTop={2}>
-            <Box>
-              <Text variant={TextVariant.bodyMd}>
-                To connect to a site, select the "connect" button. MetaMask can
-                only connect to web3 sites.
-              </Text>
-              <ButtonLink>Learn more</ButtonLink>
-            </Box>
-          </Box>
+          {isConnected ? null :
+            <Box paddingLeft={4} paddingRight={4} paddingTop={2}>
+              <Box>
+                <Text variant={TextVariant.bodyMd}>
+                  {t('connectionPopoverDescription')}
+                </Text>
+                <ButtonLink>Learn more</ButtonLink>
+              </Box>
+            </Box>}
           <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
-
             <ButtonSecondary endIconName={IconName.Export} block>
-              {isConnected ? t('managePermissions'): t('exploreweb3')}
+              {isConnected ? t('managePermissions') : t('exploreweb3')}
             </ButtonSecondary>
           </Box>
         </Box>
