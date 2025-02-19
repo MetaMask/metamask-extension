@@ -5256,7 +5256,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-simple-keyring@npm:^8.1.0":
+"@metamask/eth-simple-keyring@npm:8.1.0":
   version: 8.1.0
   resolution: "@metamask/eth-simple-keyring@npm:8.1.0"
   dependencies:
@@ -5266,6 +5266,19 @@ __metadata:
     ethereum-cryptography: "npm:^2.1.2"
     randombytes: "npm:^2.1.0"
   checksum: 10/bbcbf7eb95e664be6362744ed6c6c977ecc14a8169b04cafa06a0afe3f5ffc872ca5f7ff327eb06d758c2b2cc1ab17bd4a9c533f58e12e4ee04163eb58100053
+  languageName: node
+  linkType: hard
+
+"@metamask/eth-simple-keyring@patch:@metamask/eth-simple-keyring@npm%3A8.1.0#~/.yarn/patches/@metamask-eth-simple-keyring-npm-8.1.0-ed2f13699c.patch":
+  version: 8.1.0
+  resolution: "@metamask/eth-simple-keyring@patch:@metamask/eth-simple-keyring@npm%3A8.1.0#~/.yarn/patches/@metamask-eth-simple-keyring-npm-8.1.0-ed2f13699c.patch::version=8.1.0&hash=292be4"
+  dependencies:
+    "@ethereumjs/util": "npm:^8.1.0"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
+    "@metamask/utils": "npm:^11.1.0"
+    ethereum-cryptography: "npm:^2.1.2"
+    randombytes: "npm:^2.1.0"
+  checksum: 10/55f163e5475a22c90c8324f616648c01a3c6fe5c93be89a271d0753e68bd0ebf5b50bd05c023d5a8f6d44fbf9a480cf29e4bc55548130b32dfc23f0ec8130f81
   languageName: node
   linkType: hard
 

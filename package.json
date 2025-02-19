@@ -272,10 +272,10 @@
     "@metamask/keyring-controller@npm:^19.0.7": "patch:@metamask/keyring-controller@npm%3A19.0.7#~/.yarn/patches/@metamask-keyring-controller-npm-19.0.7-038c96f10e.patch",
     "@metamask/eth-hd-keyring": "^10.0.0",
     "@metamask/eth-sig-util": "^8.2.0",
-    "@metamask/eth-simple-keyring": "^8.1.0",
     "@metamask/keyring-api": "^17.1.0",
     "@metamask/keyring-internal-api": "^4.0.2",
-    "@metamask/utils": "^11.2.0"
+    "@metamask/utils": "^11.2.0",
+    "@metamask/eth-simple-keyring": "patch:@metamask/eth-simple-keyring@npm%3A8.1.0#~/.yarn/patches/@metamask-eth-simple-keyring-npm-8.1.0-ed2f13699c.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
