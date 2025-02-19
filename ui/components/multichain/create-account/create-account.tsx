@@ -187,7 +187,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
           />
           {
             ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-            hdKeyrings.length > 1 && onSelectSRP ? (
+            hdKeyrings.length > 1 && onSelectSRP && selectedKeyring ? (
               <Box marginBottom={3}>
                 <SelectSRP
                   onClick={onSelectSRP}

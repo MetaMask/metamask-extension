@@ -192,15 +192,17 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
         }}
         holdToRevealType="PrivateKey"
       />
-      <SRPQuiz
-        keyringId={keyringId}
-        isOpen={srpQuizModalVisible}
-        onClose={() => {
-          setSrpQuizModalVisible(false);
-          onClose();
-        }}
-        closeAfterCompleting
-      />
+      {keyringId && (
+        <SRPQuiz
+          keyringId={keyringId}
+          isOpen={srpQuizModalVisible}
+          onClose={() => {
+            setSrpQuizModalVisible(false);
+            onClose();
+          }}
+          closeAfterCompleting
+        />
+      )}
     </>
   );
 };
