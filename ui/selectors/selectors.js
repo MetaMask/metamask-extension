@@ -3130,7 +3130,7 @@ export const getMultiChainAssets = createDeepEqualSelector(
         image: tokenImage,
         decimals,
         chainId,
-        isNative: false,
+        isNative: !isToken,
         primary: balance.amount,
         secondary,
         string: '',
