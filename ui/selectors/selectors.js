@@ -3092,7 +3092,7 @@ export const getMultiChainAssets = createDeepEqualSelector(
     const balances = multichainBalances?.[selectedAccountAddress.id];
     return assetIds.map((assetId) => {
       const [chainId, assetDetails] = assetId.split('/');
-      const isToken = assetDetails.split(':')[0] === 'token';
+      const isNative = assetDetails.split(':')[0] === 'slip44';
       const balance = balances?.[assetId] || { amount: '0', unit: '' };
       const rate = assetRates?.[assetId]?.rate || '0';
       const nativeRate = multichainCoinRates?.[assetId]?.rate || '0';
@@ -3109,22 +3109,22 @@ export const getMultiChainAssets = createDeepEqualSelector(
       // not super happy with this override here
       let tokenImage = '';
       let secondary;
-      if (isToken) {
-        tokenImage = metadata.iconUrl || '';
-        secondary = balanceInFiat.toNumber();
-      } else {
+      if (isNative) {
         tokenImage = CHAIN_ID_TOKEN_IMAGE_MAP[chainId] || '';
         secondary = nativeBalanceInFiat.toNumber();
+      } else {
+        tokenImage = metadata.iconUrl || '';
+        secondary = balanceInFiat.toNumber();
       }
       const decimals = metadata.units[0]?.decimals || 0;
       return {
-        title: isToken ? metadata.name : balance.unit,
+        title: isNative ? balance.unit : metadata.name,
         address: assetId,
         symbol: metadata.symbol,
         image: tokenImage,
         decimals,
         chainId,
-        isNative: !isToken,
+        isNative,
         primary: balance.amount,
         secondary,
         string: '',
