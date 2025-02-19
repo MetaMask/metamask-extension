@@ -9,3 +9,4 @@ export * from './transactions';
 export * from './approvals';
 export * from './accounts';
 export * from './origin-throttling';
+export * from './multichain/networks';

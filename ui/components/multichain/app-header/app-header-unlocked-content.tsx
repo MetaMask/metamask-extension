@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import browser from 'webextension-polyfill';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
@@ -56,12 +57,12 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
 import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
-import { MultichainNetwork } from '../../../selectors/multichain';
 
 type AppHeaderUnlockedContentProps = {
   popupStatus: boolean;
   isEvmNetwork: boolean;
-  currentNetwork: MultichainNetwork;
+  currentNetwork: MultichainNetworkConfiguration;
+  networkIconSrc: string;
   networkOpenCallback: () => void;
   disableNetworkPicker: boolean;
   disableAccountPicker: boolean;
@@ -73,6 +74,7 @@ export const AppHeaderUnlockedContent = ({
   popupStatus,
   isEvmNetwork,
   currentNetwork,
+  networkIconSrc,
   networkOpenCallback,
   disableNetworkPicker,
   disableAccountPicker,
@@ -126,19 +128,19 @@ export const AppHeaderUnlockedContent = ({
     <>
       {popupStatus ? (
         <Box className="multichain-app-header__contents__container">
-          <Tooltip title={currentNetwork?.nickname} position="right">
+          <Tooltip title={currentNetwork.name} position="right">
             <PickerNetwork
               avatarNetworkProps={{
                 backgroundColor: testNetworkBackgroundColor,
                 role: 'img',
-                name: currentNetwork?.nickname ?? '',
+                name: currentNetwork.name ?? '',
               }}
               className="multichain-app-header__contents--avatar-network"
               ref={menuRef}
               as="button"
-              src={currentNetwork?.network?.rpcPrefs?.imageUrl ?? ''}
-              label={currentNetwork?.nickname ?? ''}
-              aria-label={`${t('networkMenu')} ${currentNetwork?.nickname}`}
+              src={networkIconSrc}
+              label={currentNetwork.name}
+              aria-label={`${t('networkMenu')} ${currentNetwork.name}`}
               labelProps={{
                 display: Display.None,
               }}
@@ -158,12 +160,12 @@ export const AppHeaderUnlockedContent = ({
             avatarNetworkProps={{
               backgroundColor: testNetworkBackgroundColor,
               role: 'img',
-              name: currentNetwork?.nickname ?? '',
+              name: currentNetwork.name,
             }}
             margin={2}
-            aria-label={`${t('networkMenu')} ${currentNetwork?.nickname}`}
-            label={currentNetwork?.nickname ?? ''}
-            src={currentNetwork?.network?.rpcPrefs?.imageUrl}
+            aria-label={`${t('networkMenu')} ${currentNetwork.name}`}
+            label={currentNetwork.name}
+            src={networkIconSrc}
             onClick={(e: React.MouseEvent<HTMLElement>) => {
               e.stopPropagation();
               e.preventDefault();

@@ -1,5 +1,12 @@
-import { isStrictHexString } from '@metamask/utils';
+import {
+  type Hex,
+  type CaipChainId,
+  KnownCaipNamespace,
+  isStrictHexString,
+  parseCaipChainId,
+} from '@metamask/utils';
 import { convertHexToDecimal } from '@metamask/controller-utils';
+import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { CHAIN_IDS, MAX_SAFE_CHAIN_ID } from '../constants/network';
 
 /**
@@ -91,3 +98,37 @@ export function convertNetworkId(value: unknown): string | null {
   }
   return null;
 }
+
+/**
+ * Convert an eip155 CAIP chain ID to a hex chain ID.
+ *
+ * @param id - The CAIP chain ID to convert.
+ * @returns The hex chain ID.
+ */
+export function convertCaipToHexChainId(id: CaipChainId): Hex {
+  const { namespace, reference } = parseCaipChainId(id);
+  if (namespace === KnownCaipNamespace.Eip155) {
+    return `0x${parseInt(reference, 10).toString(16)}`;
+  }
+
+  throw new Error(
+    `Unsupported CAIP chain ID namespace: ${namespace}. Only eip155 is supported.`,
+  );
+}
+
+/**
+ * Sorts a list of networks based on the order of their chain IDs.
+ *
+ * @param networks - The networks to sort.
+ * @param sortedChainIds - The chain IDs to sort by.
+ * @returns The sorted list of networks.
+ */
+export const sortNetworks = (
+  networks: Record<string, MultichainNetworkConfiguration>,
+  sortedChainIds: { networkId: string }[],
+): MultichainNetworkConfiguration[] =>
+  Object.values(networks).sort(
+    (a, b) =>
+      sortedChainIds.findIndex(({ networkId }) => networkId === a.chainId) -
+      sortedChainIds.findIndex(({ networkId }) => networkId === b.chainId),
+  );

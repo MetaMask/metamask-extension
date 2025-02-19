@@ -54,7 +54,7 @@ export const MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP = {
     'https://explorer.solana.com/?cluster=testnet',
 } as const;
 
-export const MULTICHAIN_TOKEN_IMAGE_MAP = {
+export const MULTICHAIN_TOKEN_IMAGE_MAP: Record<CaipChainId, string> = {
   [MultichainNetworks.BITCOIN]: BITCOIN_TOKEN_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_TOKEN_IMAGE_URL,
 } as const;
