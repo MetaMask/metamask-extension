@@ -86,7 +86,8 @@ export default function createOriginThrottlingMiddleware({
         const extraData = res.error?.data as { cause?: string };
         // Any rejection caused by rejectAllApprovals is not evaluated as user rejection for now
         if (extraData?.cause === 'rejectAllApprovals') {
-          return callback();
+          callback();
+          return;
         }
 
         // User rejected the request

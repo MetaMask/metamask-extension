@@ -6459,7 +6459,7 @@ __metadata:
 
 "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A45.1.0#~/.yarn/patches/@metamask-transaction-controller-npm-45.1.0-e30a921ab9.patch":
   version: 45.1.0
-  resolution: "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A45.1.0#~/.yarn/patches/@metamask-transaction-controller-npm-45.1.0-e30a921ab9.patch::version=45.1.0&hash=7dc804"
+  resolution: "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A45.1.0#~/.yarn/patches/@metamask-transaction-controller-npm-45.1.0-e30a921ab9.patch::version=45.1.0&hash=27a67c"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -6487,7 +6487,7 @@ __metadata:
     "@metamask/eth-block-tracker": ">=9"
     "@metamask/gas-fee-controller": ^22.0.0
     "@metamask/network-controller": ^22.0.0
-  checksum: 10/d0935156daca4f84458a2e6481cdfaf86dc30b459ddc495cf82a339f4a1e5f1f4952fcf4dac048b44a0bbf41459a2f1b26d034cf7caba5a7570fd220aa2bca33
+  checksum: 10/98e5482a96186d664c8d7a454d8ca83cd3c5ef5890aa45f5c0e80ff64aa44fb8a0b29bd0d303df4a3185a7b14a4bd72e1331de6efa85459f0780bb044079331d
   languageName: node
   linkType: hard
 

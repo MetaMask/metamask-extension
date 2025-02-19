@@ -1,7 +1,6 @@
-import { errorCodes } from '@metamask/rpc-errors';
+import { errorCodes, providerErrors } from '@metamask/rpc-errors';
 import { JsonRpcResponse } from '@metamask/utils';
 import type { Json } from '@metamask/utils';
-import { providerErrors } from '@metamask/rpc-errors';
 import createOriginThrottlingMiddleware, {
   SPAM_FILTER_ACTIVATED_ERROR,
   ExtendedJSONRPCRequest,
