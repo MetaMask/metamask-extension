@@ -27000,7 +27000,7 @@ __metadata:
     "@zxing/library": "npm:0.20.0"
     addons-linter: "npm:^6.28.0"
     autoprefixer: "npm:^10.4.19"
-    await-semaphore: "npm:^0.1.1"
+    await-semaphore: "npm:^0.1.3"
     axios: "npm:^1.1.3"
     babelify: "npm:^10.0.0"
     base32-encode: "npm:^1.2.0"
