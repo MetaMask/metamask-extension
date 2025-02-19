@@ -334,7 +334,9 @@ export function MultichainTransactionDetailsModal({
             size={ButtonSize.Md}
             variant={ButtonVariant.Link}
             onClick={() => {
-              openBlockExplorer(addressLink, 'Transaction Details', trackEvent);
+              global.platform.openTab({
+                url: getTransactionUrl(txId, chain),
+              })
             }}
             endIconName={IconName.Export}
           >
