@@ -5568,9 +5568,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:^19.0.7":
-  version: 19.0.7
-  resolution: "@metamask/keyring-controller@npm:19.0.7"
+"@metamask/keyring-controller@npm:^19.0.7, @metamask/keyring-controller@npm:^19.1.0":
+  version: 19.1.0
+  resolution: "@metamask/keyring-controller@npm:19.1.0"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.14.1"
@@ -5586,7 +5586,7 @@ __metadata:
     async-mutex: "npm:^0.5.0"
     ethereumjs-wallet: "npm:^1.0.1"
     immer: "npm:^9.0.6"
-  checksum: 10/9b385b2e4f17126ed992ff4b4ef2cfa86c7404fbda464b482f57ed2aa1254b0ea98b59f9182ee73a4a6dfc6eea93646950eced9370536be2837987556c3b16c3
+  checksum: 10/2121c8935f019edc92c1fef9901d9b67c1555905b96ac90640b3a991896c33261a6ca59fc23aeb995ca9f39d6c3b33a7b04d95ef48ec440f9683c3dd309bfd7b
   languageName: node
   linkType: hard
 
@@ -26781,7 +26781,7 @@ __metadata:
     "@metamask/json-rpc-engine": "npm:^10.0.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.4"
     "@metamask/keyring-api": "npm:^17.0.0"
-    "@metamask/keyring-controller": "npm:^19.0.7"
+    "@metamask/keyring-controller": "npm:^19.1.0"
     "@metamask/keyring-internal-api": "npm:^4.0.2"
     "@metamask/keyring-snap-client": "npm:^4.0.0"
     "@metamask/logging-controller": "npm:^6.0.4"
