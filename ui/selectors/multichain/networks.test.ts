@@ -209,7 +209,7 @@ describe('Multichain network selectors', () => {
       ).toStrictEqual({ ...mockEvmNetworksWithNewConfig });
     });
 
-    it('returns Solana as part of the multichain network configurations if there is a Solana account', () => {
+    it('returns Solana as part of the multichain network configurations if there is a Solana account and the support for Solana is off', () => {
       const mockMultichainNetworkStateWithBitcoinSupportDisabled = {
         ...mockState,
         metamask: {
@@ -236,7 +236,7 @@ describe('Multichain network selectors', () => {
       });
     });
 
-    it('returns Bitcoin as part of the multichain network configurations if there is a Bitcoin account', () => {
+    it('returns Bitcoin as part of the multichain network configurations if there is a Bitcoin account and the support for Bitcoin is off', () => {
       const mockMultichainNetworkStateWithBitcoinSupportDisabled = {
         ...mockState,
         metamask: {
@@ -263,7 +263,7 @@ describe('Multichain network selectors', () => {
       });
     });
 
-    it('returns Bitcoin and Solana as part of the multichain network configurations if there is Bitcoin and Solana accounts', () => {
+    it('returns Bitcoin and Solana as part of the multichain network configurations if there is Bitcoin and Solana accounts and the support for Solana and Bitcoin is off', () => {
       const mockMultichainNetworkStateWithBitcoinSupportDisabled = {
         ...mockState,
         metamask: {
