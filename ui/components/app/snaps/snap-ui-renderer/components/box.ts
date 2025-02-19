@@ -41,6 +41,8 @@ function generateAlignItems(
 
   switch (crossAlignment) {
     default:
+      // align-items defaults to stretch but it's not available in the JustifyContent enum
+      return undefined;
     case 'start':
       return AlignItems.flexStart;
 
