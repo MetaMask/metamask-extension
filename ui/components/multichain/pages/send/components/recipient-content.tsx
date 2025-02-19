@@ -52,7 +52,7 @@ import type { Quote } from '../../../../../ducks/send/swap-and-send-utils';
 import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
 import { AssetPicker } from '../../../asset-picker-amount/asset-picker';
 import { TabName } from '../../../asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
-import { SendHexData, SendPageRow, QuoteCard } from '.';
+import { SendHexData, SendPageRow, QuoteCard } from './send-page-row';
 
 export const SendPageRecipientContent = ({
   requireContractAddressAcknowledgement,
