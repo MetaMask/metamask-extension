@@ -168,13 +168,6 @@ export type MetaMaskState = {
     privacyMode: PreferencesControllerState['preferences']['privacyMode'];
     tokenNetworkFilter: string[];
   };
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  custodyAccountDetails: {
-    [address: string]: {
-      custodianName: string;
-    };
-  };
-  ///: END:ONLY_INCLUDE_IF
 };
 
 /**
@@ -358,10 +351,6 @@ export default class MetaMetricsController extends BaseController<
 
   #environment: MetaMetricsControllerOptions['environment'];
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  #selectedAddress: PreferencesControllerState['selectedAddress'];
-  ///: END:ONLY_INCLUDE_IF
-
   #segment: MetaMetricsControllerOptions['segment'];
 
   /**
@@ -411,10 +400,6 @@ export default class MetaMetricsController extends BaseController<
       environment === 'production' ? version : `${version}-${environment}`;
     this.#extension = extension;
     this.#environment = environment;
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    this.#selectedAddress = preferencesControllerState.selectedAddress;
-    ///: END:ONLY_INCLUDE_IF
 
     const abandonedFragments = omitBy(state.fragments, 'persist');
 
@@ -1067,23 +1052,10 @@ export default class MetaMetricsController extends BaseController<
     referrer: MetaMetricsContext['referrer'],
     page: MetaMetricsContext['page'] = METAMETRICS_BACKGROUND_PAGE_OBJECT,
   ): MetaMetricsContext {
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    const mmiProps: {
-      extensionId?: string;
-    } = {};
-
-    if (this.#extension?.runtime?.id) {
-      mmiProps.extensionId = this.#extension.runtime.id;
-    }
-    ///: END:ONLY_INCLUDE_IF
-
     return {
       app: {
         name: 'MetaMask Extension',
         version: this.version,
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        ...mmiProps,
-        ///: END:ONLY_INCLUDE_IF
       },
       userAgent: window.navigator.userAgent,
       page,
@@ -1115,21 +1087,6 @@ export default class MetaMetricsController extends BaseController<
       environmentType = ENVIRONMENT_TYPE_BACKGROUND,
     } = rawPayload;
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    const mmiProps: {
-      extensionId?: string;
-      accountAddress?: string;
-    } = {};
-
-    if (this.#extension?.runtime?.id) {
-      mmiProps.extensionId = this.#extension.runtime.id;
-    }
-
-    if (this.#selectedAddress) {
-      mmiProps.accountAddress = this.#selectedAddress;
-    }
-    ///: END:ONLY_INCLUDE_IF
-
     return {
       event,
       messageId: buildUniqueMessageId(rawPayload),
@@ -1153,9 +1110,6 @@ export default class MetaMetricsController extends BaseController<
             ? properties.chain_id
             : this.chainId,
         environment_type: environmentType,
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        ...mmiProps,
-        ///: END:ONLY_INCLUDE_IF
       },
       context: this.#buildContext(referrer, page),
     };
