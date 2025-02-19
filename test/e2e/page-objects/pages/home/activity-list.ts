@@ -252,9 +252,7 @@ class ActivityListPage {
   }
 
   async click_confirmTransactionReplacement() {
-    await this.driver.clickElementAndWaitToDisappear(
-      this.confirmTransactionReplacementButton,
-    );
+    await this.driver.clickElement(this.confirmTransactionReplacementButton);
   }
 
   async check_waitForTransactionStatus(status: 'confirmed' | 'cancelled') {
