@@ -74,6 +74,7 @@ import {
 } from '@metamask/selected-network-controller';
 import { LoggingController, LogType } from '@metamask/logging-controller';
 import { PermissionLogController } from '@metamask/permission-log-controller';
+import HdKeyring from '@metamask-previews/eth-hd-keyring';
 
 import {
   createSnapsMethodMiddleware,
@@ -1143,6 +1144,8 @@ export default class MetamaskController extends EventEmitter {
     );
 
     ///: END:ONLY_INCLUDE_IF
+
+    additionalKeyrings.push(keyringBuilderFactory(HdKeyring));
 
     const keyringControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'KeyringController',
