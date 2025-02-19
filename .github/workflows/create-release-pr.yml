@@ -14,15 +14,20 @@ on:
         required: true
 jobs:
   create-release-pr:
-    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@4f594ca7d90378da66b7efce987eff379934524b
+    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@slack-release-testing
     with:
       platform: extension
       base-branch: ${{ inputs.base-branch }}
       semver-version: ${{ inputs.semver-version }}
       previous-version-tag: ${{ inputs.previous-version-tag }}
+      test-only: 'true'
+      # Testing Documents
+      release-sheet-google-document-id: '1_aJ-cqS5ngrXzAIly3HOyl7CY_lqIoV2T7_OU83AD50' # Release Testing Document
+      extension-template-sheet-id: '599904091'
     secrets:
       # This token needs write permissions to metamask-extension & read permissions to metamask-planning
       github-token: ${{ secrets.PR_TOKEN }}
+      google-application-creds-base64: ${{ secrets.GCP_RLS_SHEET_ACCOUNT_BASE64 }}
     permissions:
       contents: write
       pull-requests: write
