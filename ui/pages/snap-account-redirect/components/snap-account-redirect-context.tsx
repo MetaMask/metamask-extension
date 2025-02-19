@@ -8,7 +8,7 @@ import {
   ButtonVariant,
   Text,
 } from '../../../components/component-library';
-import { type SnapAccountRedirectProps } from '../snap-account-redirect';
+import type { SnapAccountRedirectProps } from '../snap-account-redirect';
 import {
   AlignItems,
   Display,
