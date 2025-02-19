@@ -58,7 +58,7 @@ const openSupportArticle = (): void => {
 };
 
 export type SRPQuizProps = {
-  keyringId: string;
+  keyringId?: string;
   isOpen: boolean;
   onClose: () => void;
   closeAfterCompleting?: boolean;
@@ -224,7 +224,12 @@ export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
           {
             label: t('continue'),
             onClick: () => {
-              history.push(`${REVEAL_SEED_ROUTE}/${props.keyringId}`);
+              // We need to check for the keyringId incase it is undefined.
+              // The route param is used as an input to reveal srp, and an undefined becomes a string 'undefined'
+              const route = props.keyringId
+                ? `${REVEAL_SEED_ROUTE}/${props.keyringId}`
+                : REVEAL_SEED_ROUTE;
+              history.push(route);
               if (props.closeAfterCompleting) {
                 props.onClose();
               }

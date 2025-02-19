@@ -187,14 +187,16 @@ class PrivacySettings {
     console.log('Open reveal SRP quiz on privacy settings page');
 
     await this.driver.clickElement(this.revealSrpButton);
-    // We only pass in the srpIndex when there are multiple SRPs
+
     if (srpIndex) {
+      // We only pass in the srpIndex when there are multiple SRPs
       const srpSelector = {
         text: `Secret Phrase ${srpIndex.toString()}`,
         tag: 'p',
       };
       await this.driver.clickElement(srpSelector);
     }
+
     await this.driver.waitForSelector(this.revealSrpQuizModalTitle);
   }
 
