@@ -3088,13 +3088,12 @@ export const getMultiChainAssets = createDeepEqualSelector(
   ) => {
     const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
     const balances = multichainBalances?.[selectedAccountAddress.id];
-
     const foobar = assetIds.map((assetId) => {
       const [chainId, assetDetails] = assetId.split('/');
       const isToken = assetDetails.split(':')[0] === 'token';
 
-      const balance = balances[assetId] || { amount: '0', unit: '' };
-      const rate = assetRates[assetId]?.rate || '0';
+      const balance = balances?.[assetId] || { amount: '0', unit: '' };
+      const rate = assetRates?.[assetId]?.rate || '0';
 
       const balanceInFiat = new BigNumber(balance.amount).times(rate);
 
@@ -3134,3 +3133,4 @@ export const getMultiChainAssets = createDeepEqualSelector(
     return foobar;
   },
 );
+
