@@ -188,7 +188,7 @@ describe('NonEvmOverview', () => {
     expect(primaryBalance).toHaveTextContent(`$${mockNonEvmBalanceUsd}USD`);
   });
 
-  it('shows a spinner if balance is not available', async () => {
+  it('does not show a spinner if balance is not available as we fallback to 0', async () => {
     const { container } = renderWithProvider(
       <NonEvmOverview />,
       getStore({
@@ -203,7 +203,7 @@ describe('NonEvmOverview', () => {
     const spinner = container.querySelector(
       '.coin-overview__balance .coin-overview__primary-container .spinner',
     );
-    expect(spinner).toBeInTheDocument();
+    expect(spinner).not.toBeInTheDocument();
   });
 
   it('buttons Swap/Bridge are disabled', () => {
