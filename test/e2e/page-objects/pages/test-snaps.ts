@@ -53,6 +53,8 @@ export class TestSnaps {
 
   private readonly sendInsightButton = '#sendInsights';
 
+  private readonly nameLookUpButton = '#connectname-lookup';
+
   private readonly submitClientStatusButton = '#sendClientStatusTest';
 
   private readonly messageLifeCycleHook = {
@@ -222,35 +224,48 @@ export class TestSnaps {
   }
 
   async clickConnectHomePage() {
-    const connectHomePageButton = await this.driver.findElement(
+    const homePageButtonElement = await this.driver.findElement(
       this.connectHomePage,
     );
-    await this.driver.scrollToElement(connectHomePageButton);
+    await this.driver.scrollToElement(homePageButtonElement);
     await this.driver.clickElement(this.connectHomePage);
   }
 
   async clickConnectErrors() {
     console.log('Click connect errors button');
-    const errorButton = await this.driver.findElement(this.connectErrorsButton);
-    await this.driver.scrollToElement(errorButton);
+    const errorsElement = await this.driver.findElement(
+      this.connectErrorsButton,
+    );
+    await this.driver.scrollToElement(errorsElement);
 
     await this.driver.clickElement(this.connectErrorsButton);
   }
 
   async clickConnectImages() {
     console.log('Click connect images button');
-    const imageButton = await this.driver.findElement(this.connectImagesButton);
-    await this.driver.scrollToElement(imageButton);
+    const imageElement = await this.driver.findElement(
+      this.connectImagesButton,
+    );
+    await this.driver.scrollToElement(imageElement);
     await this.driver.clickElement(this.connectImagesButton);
   }
 
   async clickLifeCycleHooks() {
     console.log('Click connect images button');
-    const lifeCycleButton = await this.driver.findElement(
+    const lifeCycleElement = await this.driver.findElement(
       this.connectLifeCycleButton,
     );
-    await this.driver.scrollToElement(lifeCycleButton);
+    await this.driver.scrollToElement(lifeCycleElement);
     await this.driver.clickElement(this.connectLifeCycleButton);
+  }
+
+  async clickNameLookupButton() {
+    console.log('Click connect name lookup button');
+    const nameLookupElement = await this.driver.findElement(
+      this.nameLookUpButton,
+    );
+    await this.driver.scrollToElement(nameLookupElement);
+    await this.driver.clickElement(this.nameLookUpButton);
   }
 
   async clickTransactionInsight() {
