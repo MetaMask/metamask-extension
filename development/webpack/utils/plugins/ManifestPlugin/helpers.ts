@@ -43,7 +43,6 @@ export function transformManifest(
    * that are stored in the .manifest-flags.json file.
    *
    * @param browserManifest - The Chrome extension manifest object to modify
-   * @returns the modified manifest object
    */
   function addManifestFlags(browserManifest: chrome.runtime.Manifest): void {
     let manifestFlags;
