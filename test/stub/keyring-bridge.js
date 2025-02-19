@@ -1,4 +1,4 @@
-import { Transaction } from '@ethereumjs/tx';
+import { TransactionFactory } from '@ethereumjs/tx';
 import { signTypedData, SignTypedDataVersion } from '@metamask/eth-sig-util';
 import { bufferToHex } from 'ethereumjs-util';
 import { addHexPrefix, Common } from './keyring-utils';
@@ -92,7 +92,7 @@ export class FakeTrezorBridge extends FakeKeyringBridge {
       hardfork: 'istanbul',
     });
 
-    const signedTransaction = Transaction.fromTxData(transaction, {
+    const signedTransaction = TransactionFactory.fromTxData(transaction, {
       common,
     }).sign(Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'));
 

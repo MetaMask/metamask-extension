@@ -2,14 +2,14 @@ import {
   TransactionController,
   TransactionMeta,
 } from '@metamask/transaction-controller';
+import { NetworkController } from '@metamask/network-controller';
+import { SendCalls, SendCallsParams } from '@metamask/eth-json-rpc-middleware';
+import { JsonRpcRequest } from '@metamask/utils';
 import {
   getCapabilities,
   getTransactionReceiptsByBatchId,
   processSendCalls,
 } from './eip5792';
-import { NetworkController } from '@metamask/network-controller';
-import { SendCalls, SendCallsParams } from '@metamask/eth-json-rpc-middleware';
-import { JsonRpcRequest } from '@metamask/utils';
 
 const CHAIN_ID_MOCK = '0x123';
 const CHAIN_ID_2_MOCK = '0xabc';
@@ -64,13 +64,11 @@ function buildNetworkControllerMock() {
 describe('EIP-5792', () => {
   let transactionControllerMock: jest.Mocked<TransactionController>;
   let networkControllerMock: jest.Mocked<NetworkController>;
-  let request: JsonRpcRequest<SendCallsParams> & { networkClientId: string };
 
   beforeEach(() => {
     jest.resetAllMocks();
     transactionControllerMock = buildTransactionControllerMock();
     networkControllerMock = buildNetworkControllerMock();
-    request = { ...REQUEST_MOCK };
   });
 
   describe('processSendCalls', () => {
@@ -82,7 +80,9 @@ describe('EIP-5792', () => {
         REQUEST_MOCK,
       );
 
-      expect(transactionControllerMock.addTransactionBatch).toHaveBeenCalledWith({
+      expect(
+        transactionControllerMock.addTransactionBatch,
+      ).toHaveBeenCalledWith({
         from: SEND_CALLS_MOCK.from,
         networkClientId: NETWORK_CLIENT_ID_MOCK,
         transactions: [{ params: SEND_CALLS_MOCK.calls[0] }],
@@ -101,16 +101,16 @@ describe('EIP-5792', () => {
     });
 
     it('throws if chain ID does not match network client', async () => {
-      request.params![0].chainId = CHAIN_ID_2_MOCK;
-
       await expect(
         processSendCalls(
           transactionControllerMock,
           networkControllerMock,
-          SEND_CALLS_MOCK,
+          { ...SEND_CALLS_MOCK, chainId: CHAIN_ID_2_MOCK },
           REQUEST_MOCK,
         ),
-      ).rejects.toThrow(`Chain ID must match the dApp selected network: Got ${CHAIN_ID_2_MOCK}, expected ${CHAIN_ID_MOCK}`);
+      ).rejects.toThrow(
+        `Chain ID must match the dApp selected network: Got ${CHAIN_ID_2_MOCK}, expected ${CHAIN_ID_MOCK}`,
+      );
     });
   });
 

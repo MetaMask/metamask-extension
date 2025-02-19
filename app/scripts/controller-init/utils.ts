@@ -101,7 +101,6 @@ export function initControllers({
     const messengerCallbacks = CONTROLLER_MESSENGERS[controllerName];
 
     const controllerMessengerCallback =
-      // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
       messengerCallbacks?.getMessenger as ControllerMessengerCallback;
 
     const initMessengerCallback =
@@ -124,7 +123,6 @@ export function initControllers({
     // Instead of suppressing all type errors, we'll be specific about the controllerMessenger mismatch
     const result = initFunction({
       ...finalInitRequest,
-      // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
       controllerMessenger: finalInitRequest.controllerMessenger,
     });
 
