@@ -90,7 +90,7 @@ export const BridgeInputGroup = ({
 
   const currentChainId = useMultichainSelector(getMultichainCurrentChainId);
   const selectedChainId = networkProps?.network?.chainId ?? currentChainId;
-  const { balanceAmount } = useLatestBalance(token, selectedChainId);
+  const balanceAmount = useLatestBalance(token, selectedChainId);
 
   const [, handleCopy] = useCopyToClipboard(MINUTE) as [
     boolean,

@@ -1,8 +1,10 @@
 import { type Hex, type CaipChainId, isCaipChainId } from '@metamask/utils';
-import { BigNumber } from 'bignumber.js';
+import { useMemo } from 'react';
 import { getSelectedInternalAccount } from '../../selectors';
 import { calcLatestSrcBalance } from '../../../shared/modules/bridge-utils/balance';
 import { useAsyncResult } from '../useAsyncResult';
+import { Numeric } from '../../../shared/modules/Numeric';
+import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import { useMultichainSelector } from '../useMultichainSelector';
 import {
   getMultichainBalances,
@@ -36,9 +38,7 @@ const useLatestBalance = (
   );
   const nonEvmBalances = nonEvmBalancesByAccountId[id];
 
-  const { value: balanceAmount } = useAsyncResult<
-    string | undefined
-  >(async () => {
+  const value = useAsyncResult<Numeric | undefined>(async () => {
     if (
       token?.address &&
       // TODO check whether chainId is EVM when MultichainNetworkController is integrated
@@ -46,13 +46,12 @@ const useLatestBalance = (
       chainId &&
       currentChainId === chainId
     ) {
-      const balanceValue = await calcLatestSrcBalance(
+      return await calcLatestSrcBalance(
         global.ethereumProvider,
         selectedAddress,
         token.address,
         chainId,
       );
-      return balanceValue?.shiftedBy(token.decimals).toString();
     }
 
     // No need to fetch the balance for non-EVM tokens, use the balance provided by the
@@ -62,7 +61,10 @@ const useLatestBalance = (
       chainId === MultichainNetworks.SOLANA &&
       token?.decimals
     ) {
-      return nonEvmBalances?.[token.address]?.amount ?? token?.string;
+      return Numeric.from(
+        nonEvmBalances?.[token.address]?.amount ?? token?.string,
+        10,
+      ).shiftedBy(-1 * token.decimals);
     }
 
     return undefined;
@@ -81,9 +83,13 @@ const useLatestBalance = (
     );
   }
 
-  return {
-    balanceAmount: balanceAmount ? new BigNumber(balanceAmount) : undefined,
-  };
+  return useMemo(
+    () =>
+      value?.value
+        ? calcTokenAmount(value.value.toString(), token?.decimals)
+        : undefined,
+    [value.value, token?.decimals],
+  );
 };
 
 export default useLatestBalance;
