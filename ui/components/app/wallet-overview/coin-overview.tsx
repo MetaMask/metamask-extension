@@ -81,6 +81,7 @@ import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 import { AggregatedPercentageOverview } from './aggregated-percentage-overview';
 import { AggregatedPercentageOverviewCrossChains } from './aggregated-percentage-overview-cross-chains';
+import { isNil } from 'lodash';
 
 export type CoinOverviewProps = {
   account: InternalAccount;
@@ -296,7 +297,9 @@ export const CoinOverview = ({
               onMouseEnter={handleMouseEnter}
               ref={setBoxRef}
             >
-              {balanceToDisplay ? (
+              {isNil(balanceToDisplay) ? (
+                <Spinner className="loading-overlay__spinner" />
+              ) : (
                 <>
                   <UserPreferencedCurrencyDisplay
                     style={{ display: 'contents' }}
@@ -332,8 +335,6 @@ export const CoinOverview = ({
                     data-testid="sensitive-toggle"
                   />
                 </>
-              ) : (
-                <Spinner className="loading-overlay__spinner" />
               )}
               {balanceIsCached && (
                 <span className={`${classPrefix}-overview__cached-star`}>
