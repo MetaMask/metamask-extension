@@ -26,7 +26,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
   address = CONTRACT_INTERACTION_SENDER_ADDRESS,
   txData = DEPOSIT_METHOD_DATA,
   chainId = CHAIN_ID,
-  nestedTransactions = [],
+  nestedTransactions,
   simulationData,
 }: {
   address?: Hex;

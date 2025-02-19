@@ -4,9 +4,9 @@ import { renderWithConfirmContextProvider } from '../../../../../../../../test/l
 import configureStore from '../../../../../../../store/store';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import { NestedTransaction } from './nested-transaction';
 import { useFourByte } from '../../hooks/useFourByte';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
+import { NestedTransactionData } from './nested-transaction-data';
 
 jest.mock('../../hooks/useFourByte', () => ({
   useFourByte: jest.fn(),
@@ -25,10 +25,8 @@ const BATCH_TRANSACTION_PARAMS_MOCK: BatchTransactionParams = {
 };
 
 function render({
-  index = 0,
   nestedTransactions,
 }: {
-  index?: number;
   nestedTransactions?: BatchTransactionParams[];
 }) {
   const store = configureStore(
@@ -39,10 +37,7 @@ function render({
     ),
   );
 
-  return renderWithConfirmContextProvider(
-    <NestedTransaction index={index} />,
-    store,
-  );
+  return renderWithConfirmContextProvider(<NestedTransactionData />, store);
 }
 
 describe('NestedTransaction', () => {
@@ -93,5 +88,22 @@ describe('NestedTransaction', () => {
     expect(
       getByText(BATCH_TRANSACTION_PARAMS_MOCK.data as string),
     ).toBeInTheDocument();
+  });
+
+  it('renders multiple nested transactions', () => {
+    const { getByText } = render({
+      nestedTransactions: [
+        BATCH_TRANSACTION_PARAMS_MOCK,
+        BATCH_TRANSACTION_PARAMS_MOCK,
+      ],
+    });
+
+    expect(getByText('Transaction 1')).toBeInTheDocument();
+    expect(getByText('Transaction 2')).toBeInTheDocument();
+  });
+
+  it('does not render if no nested transactions', () => {
+    const { container } = render({});
+    expect(container).toBeEmptyDOMElement();
   });
 });

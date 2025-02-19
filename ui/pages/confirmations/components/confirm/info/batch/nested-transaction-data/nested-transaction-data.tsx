@@ -1,22 +1,64 @@
 import React from 'react';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  BatchTransactionParams,
+  TransactionMeta,
+} from '@metamask/transaction-controller';
 import { useConfirmContext } from '../../../../../context/confirm';
-import { NestedTransaction } from '../nested-transaction';
 import { Box } from '../../../../../../../components/component-library';
+import { useFourByte } from '../../hooks/useFourByte';
+import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
+import { ConfirmInfoExpandableRow } from '../../../../../../../components/app/confirm/info/row/expandable-row';
+import { RecipientRow } from '../../shared/transaction-details/transaction-details';
+import { TransactionData } from '../../shared/transaction-data/transaction-data';
+import { ConfirmInfoRowText } from '../../../../../../../components/app/confirm/info/row';
 
 export function NestedTransactionData() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { nestedTransactions } = currentConfirmation ?? {};
 
-  if (!nestedTransactions) {
+  if (!nestedTransactions?.length) {
     return null;
   }
 
   return (
     <Box>
       {nestedTransactions.map((nestedTransaction, index) => (
-        <NestedTransaction key={index} index={index} />
+        <NestedTransaction
+          key={index}
+          index={index}
+          nestedTransaction={nestedTransaction}
+        />
       ))}
     </Box>
+  );
+}
+
+function NestedTransaction({
+  index,
+  nestedTransaction,
+}: {
+  index: number;
+  nestedTransaction: BatchTransactionParams;
+}) {
+  const { data, to } = nestedTransaction;
+  const methodData = useFourByte({ data, to });
+
+  const functionName = methodData?.name;
+  const label = functionName ?? `Transaction ${index + 1}`;
+
+  return (
+    <ConfirmInfoSection>
+      <ConfirmInfoExpandableRow
+        label={label}
+        content={
+          <>
+            {to && <RecipientRow recipient={to} />}
+            {data && to && <TransactionData data={data} to={to} noPadding />}
+          </>
+        }
+      >
+        <ConfirmInfoRowText text="" />
+      </ConfirmInfoExpandableRow>
+    </ConfirmInfoSection>
   );
 }
