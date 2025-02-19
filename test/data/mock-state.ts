@@ -216,16 +216,14 @@ const NATIVE_TOKEN = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CHAIN_IDS.MAINNET];
 
 const MOCK_SNAP: Snap = {
   id: 'local:mock-snap' as SnapId,
-  origin: 'local:mock-snap' as SnapId,
-  version: '1.3.7' as SemVerVersion,
+  version: '1.3.7' as Snap['version'],
   status: SnapStatus.Installing,
-  iconUrl: null,
   initialPermissions: {},
   sourceCode: 'sourceCode',
   enabled: true,
   blocked: false,
   manifest: {
-    version: '1.3.7' as SemVerVersion,
+    version: '1.3.7' as Snap['manifest']['version'],
     initialPermissions: {},
     manifestVersion: '0.1',
     description: 'mock-description',
@@ -246,7 +244,7 @@ const MOCK_SNAP: Snap = {
     {
       date: 1680686075921,
       origin: 'https://metamask.github.io',
-      version: '1.3.7' as SemVerVersion,
+      version: '1.3.7',
     },
   ],
 };
