@@ -564,6 +564,8 @@ describe('Snap Keyring Methods', () => {
     });
 
     it('ends approval flow on error', async () => {
+      const consoleSpy = jest.spyOn(console, 'error');
+
       const errorMessage = 'save error';
       mockPersistKeyringHelper.mockRejectedValue(new Error(errorMessage));
       mockSnapControllerHandleRequest.mockImplementation((params) => {
@@ -595,9 +597,13 @@ describe('Snap Keyring Methods', () => {
         },
       });
 
-      // ! This no longer throw an error with: `Error occurred while creating snap account: ${errorMessage}`,
-      // ! But this part of the flow is not awaited, so we await for it explicitly here:
+      // ! This no longer throw an error, but instead, we log it. Since this part
+      // ! of the flow is not awaited, so we await for it explicitly here:
       await waitForAllPromises();
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Error occurred while creating snap account:',
+        errorMessage,
+      );
 
       expect(mockStartFlow).toHaveBeenCalledTimes(2);
       expect(mockEndFlow).toHaveBeenCalledTimes(2);
