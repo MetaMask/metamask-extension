@@ -6,7 +6,7 @@ import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow'
 import { withFixtures, WINDOW_TITLES } from '../helpers';
 
 describe('Test Snap TxInsights', function () {
-  it('tests tx insights functionality', async function () {
+  it(' validate the insights section appears', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -18,40 +18,24 @@ describe('Test Snap TxInsights', function () {
         const testSnaps = new TestSnaps(driver);
         const snapInstall = new SnapInstall(driver);
 
-        // navigate to test snaps page and connect
+        // Navigate to test snaps page and click to the transaction-insights test snap
         await testSnaps.openPage();
-
-        // scroll and click to the transaction-insights test snap
-        await testSnaps.scrollToTransactionInsight();
-        await testSnaps.clickTransactionInsight();
-
+        await testSnaps.clickTransactionInsightButton();
         await testSnaps.completeSnapInstallConfirmation();
 
-        // click get accounts
+        // Click get accounts and connect to the snap
         await testSnaps.clickGetAccountButton();
-
-        // switch back to MetaMask window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        // click Connect
         await snapInstall.clickConnectButton();
 
-        // switch to test-snaps page
+        // Switch to test snaps page and click send transaction
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
-
-        // click send tx
         await testSnaps.clickSendInsightButton();
+        await driver.delay(2000); // Delay needed to wait for the transaction to be sent
 
-        // delay needed to wait for the transaction to be sent
-        await driver.delay(2000);
-
-        // switch back to MetaMask window
+        // Switch back to MetaMask dialog and validate the transaction insights title and type
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        // validate the transaction insights title
         await snapInstall.check_transactionInsightsTitle();
-
-        // validate the transaction insights type
         await snapInstall.check_transactionInsightsType();
       },
     );

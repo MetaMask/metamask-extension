@@ -3,11 +3,10 @@ import { MockedEndpoint, Mockttp } from 'mockttp';
 import FixtureBuilder from '../fixture-builder';
 import { Driver } from '../webdriver/driver';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
-import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 
 const { strict: assert } = require('assert');
-const { withFixtures, getEventPayloads, WINDOW_TITLES } = require('../helpers');
+const { withFixtures, getEventPayloads } = require('../helpers');
 
 export type TestSuiteArguments = {
   driver: Driver;
@@ -37,8 +36,8 @@ async function mockedSnapInstall(mockServer: Mockttp) {
     });
 }
 
-describe('Test Snap Metrics', function () {
-  it('tests snap install metric', async function () {
+describe('Test Snap installed', function () {
+  it('metrics are sent correctly and error snap validation', async function () {
     async function mockSegment(mockServer: Mockttp) {
       return [await mockedSnapInstall(mockServer)];
     }
@@ -61,20 +60,13 @@ describe('Test Snap Metrics', function () {
       }: TestSuiteArguments) => {
         await loginWithoutBalanceValidation(driver);
 
-        // Open a new tab and navigate to test snaps page and connect
+        // Open a new tab and navigate to test snaps page and click dialog snap
         const testSnaps = new TestSnaps(driver);
-        const snapInstall = new SnapInstall(driver);
         await testSnaps.openPage();
-
-        // Find and scroll to the dialog snap
         await testSnaps.clickConnectDialogsSnapButton();
-
-        // Switch to MetaMask extension
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
         await testSnaps.completeSnapInstallConfirmation();
 
-        // Wait for npm installation success
+        // Check installation success
         await testSnaps.check_installationComplete(
           testSnaps.connectDialogsButton,
           'Reconnect to Dialogs Snap',
@@ -93,20 +85,19 @@ describe('Test Snap Metrics', function () {
           environment_type: 'background',
         });
 
-        // Click send inputs on test snap page
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
-
-        // Click to connect to errors snap
-        await testSnaps.clickConnectErrors();
-
-        // Switch to MetaMask extension
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        // Click to connect to errors snap and validate the install snaps result
+        await testSnaps.clickConnectErrorsButton();
         await testSnaps.completeSnapInstallConfirmation();
+        await testSnaps.check_installedSnapsResult(
+          'npm:@metamask/dialog-example-snap, npm:@metamask/error-example-snap',
+        );
 
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
-
-        // Validate the install snaps result
-        await snapInstall.check_installedSnapsResult();
+        // Click Send error button and validate the message result
+        await testSnaps.clickSendErrorButton();
+        await testSnaps.check_messageResultSpan(
+          testSnaps.errorResultSpan,
+          '"Hello, world!"',
+        );
       },
     );
   });

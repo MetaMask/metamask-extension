@@ -16,6 +16,8 @@ class SnapInstall {
 
   private readonly connectButton = '[data-testid="confirm-btn"]';
 
+  public readonly messageLifeCycleHookSpan = '.snap-ui-renderer__panel';
+
   private readonly insightTitle = {
     text: 'Insights Example Snap',
     tag: 'span',
@@ -24,11 +26,6 @@ class SnapInstall {
   private readonly transactionType = {
     css: 'p',
     text: 'ERC-20',
-  };
-
-  private readonly snapResult = {
-    css: '#installedSnapsResult',
-    text: 'npm:@metamask/dialog-example-snap, npm:@metamask/error-example-snap',
   };
 
   constructor(driver: Driver) {
@@ -49,6 +46,11 @@ class SnapInstall {
       throw e;
     }
     console.log('Snap install dialog is loaded');
+  }
+
+  async clickCheckboxPermission() {
+    console.log('Click permission checkbox');
+    await this.driver.clickElement(this.permissionConnect);
   }
 
   async clickNextButton() {
@@ -78,13 +80,19 @@ class SnapInstall {
   }
 
   async check_transactionInsightsType() {
-    console.log('Check transaction insights title');
+    console.log('Check transaction insights type');
     await this.driver.waitForSelector(this.transactionType);
   }
 
-  async check_installedSnapsResult() {
-    console.log('Check installed snaps result');
-    await this.driver.waitForSelector(this.snapResult);
+  async check_messageResultSpan(
+    spanSelectorId: string,
+    expectedMessage: string,
+  ) {
+    console.log('Check message result that is received');
+    await this.driver.waitForSelector({
+      css: spanSelectorId,
+      text: expectedMessage,
+    });
   }
 }
 

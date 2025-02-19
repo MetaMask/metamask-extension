@@ -1,6 +1,6 @@
 import { Driver } from '../../webdriver/driver';
 import { TEST_SNAPS_WEBSITE_URL } from '../../snaps/enums';
-import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
+import { WINDOW_TITLES } from '../../helpers';
 
 export class TestSnaps {
   driver: Driver;
@@ -36,9 +36,9 @@ export class TestSnaps {
 
   private readonly connectErrorsButton = '#connecterrors';
 
-  private readonly connectBip32 = '#connectbip32';
+  private readonly connectBip32Button = '#connectbip32';
 
-  private readonly connectBip44 = '#connectbip44';
+  private readonly connectBip44Button = '#connectbip44';
 
   private readonly connectClientStatusButton = '#connectclient-status';
 
@@ -57,30 +57,15 @@ export class TestSnaps {
 
   private readonly submitClientStatusButton = '#sendClientStatusTest';
 
-  private readonly messageLifeCycleHook = {
-    css: '.snap-ui-renderer__panel',
-    text: 'The snap was installed successfully, and the "onInstall" handler was called.',
-  };
+  private readonly sendErrorButton = '#sendError';
 
-  private readonly reconnectButton = {
-    css: '#connectbip32',
-    text: 'Reconnect to BIP-32 Snap',
-  };
+  public readonly reconnectBip32Button = '#connectbip32';
 
-  private readonly reconnectBip44Button = {
-    css: '#connectbip44',
-    text: 'Reconnect to BIP-44 Snap',
-  };
+  public readonly reconnectBip44Button = '#connectbip44';
 
-  private readonly getPublicKeyButton = {
-    css: '#bip32GetPublic',
-    text: 'Get Public Key',
-  };
+  private readonly getPublicKeyButton = '#bip32GetPublic';
 
-  private readonly getCompressedKeyButton = {
-    css: '#bip32GetCompressedPublic',
-    text: 'Get Compressed Public Key',
-  };
+  private readonly getCompressedKeyButton = '#bip32GetCompressedPublic';
 
   private readonly publicKeyBip44Button = '#sendBip44Test';
 
@@ -102,11 +87,32 @@ export class TestSnaps {
 
   private readonly statusResultSpan = '#clientStatusResult';
 
+  public readonly bip32ResultSpan = '#bip32Result';
+
+  public readonly bip32PublicKeyResultSpan = '#bip32PublicKeyResult';
+
+  public readonly bip32MessageResultSecp256k1Span =
+    '#bip32MessageResult-secp256k1';
+
+  public readonly bip32MessageResultEd25519Span = '#bip32MessageResult-ed25519';
+
+  public readonly messageResultEd25519SBip32Span =
+    '#bip32MessageResult-ed25519Bip32';
+
+  public readonly bip44ResultSpan = '#bip44Result';
+
+  public readonly bip44SignResultSpan = '#bip44SignResult';
+
+  public readonly errorResultSpan = '#errorResult';
+
+  public readonly installedSnapResultSpan = '#installedSnapsResult';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
   async openPage() {
+    console.log('Open Test Snap Dapp page');
     await this.driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
     await this.driver.waitForSelector(this.installedSnapsHeader);
   }
@@ -115,7 +121,7 @@ export class TestSnaps {
     try {
       await this.driver.waitForMultipleSelectors([
         this.installedSnapsHeader,
-        this.connectBip32,
+        this.connectBip32Button,
       ]);
     } catch (e) {
       console.log(
@@ -136,40 +142,33 @@ export class TestSnaps {
   }
 
   async clickConnectDialogsSnapButton() {
-    await this.driver.scrollToElement(
-      this.driver.findClickableElement(this.connectDialogsSnapButton),
-    );
-    await this.driver.delay(largeDelayMs);
-    await this.driver.clickElement(this.connectDialogsSnapButton);
+    console.log('Find, scroll and click dialog snap button');
+    await this.driver.findScrollToElementClick(this.connectDialogsSnapButton);
+  }
+
+  async clickSendErrorButton() {
+    console.log('Find, scroll and click send error button');
+    await this.driver.findScrollToElementClick(this.sendErrorButton);
   }
 
   async clickDialogsSnapConfirmationButton() {
+    console.log('Click dialogs snap confirmation button');
     await this.driver.clickElement(this.dialogsSnapConfirmationButton);
   }
 
-  async clickConnectBip32() {
-    console.log('Wait, scroll and click connect button');
-    await this.driver.scrollToElement(
-      this.driver.findClickableElement(this.connectBip32),
-    );
-    await this.driver.delay(largeDelayMs);
-    await this.driver.waitForSelector(this.connectBip32);
-    await this.driver.clickElement(this.connectBip32);
+  async clickConnectBip32Button() {
+    console.log('Find, scroll and click connect bip32 button');
+    await this.driver.findScrollToElementClick(this.connectBip32Button);
   }
 
-  async clickConnectBip44() {
-    console.log('Wait, scroll and click connect button');
-    await this.driver.scrollToElement(
-      this.driver.findClickableElement(this.connectBip44),
-    );
-    await this.driver.delay(largeDelayMs);
-    await this.driver.waitForSelector(this.connectBip44);
-    await this.driver.clickElement(this.connectBip44);
+  async clickConnectBip44Button() {
+    console.log('Find, scroll and click connect bip44 button');
+    await this.driver.findScrollToElementClick(this.connectBip44Button);
   }
 
-  async clickConnectClientStatus() {
-    console.log('Click connect client status button');
-    await this.driver.clickElement(this.connectClientStatusButton);
+  async clickConnectClientStatusButton() {
+    console.log('Find, scroll and click connect client status button');
+    await this.driver.findScrollToElementClick(this.connectClientStatusButton);
   }
 
   async clickGetAccountButton() {
@@ -187,21 +186,18 @@ export class TestSnaps {
     await this.driver.clickElement(this.connectDialogsButton);
   }
 
-  async clickGetPublicKeyButton() {
-    console.log('Wait and click get public key button');
-    await this.driver.waitForSelector(this.getPublicKeyButton);
+  async clickGetPublicKeyBip32Button() {
+    console.log('Click get public key button');
     await this.driver.clickElement(this.getPublicKeyButton);
   }
 
   async clickPublicKeyBip44Button() {
-    console.log('Wait and click get public key button');
-    await this.driver.waitForSelector(this.publicKeyBip44Button);
+    console.log('Click get public key button');
     await this.driver.clickElement(this.publicKeyBip44Button);
   }
 
-  async clickGetCompressedPublicKeyButton() {
-    console.log('Wait and click get compressed public key button');
-    await this.driver.waitForSelector(this.getCompressedKeyButton);
+  async clickGetCompressedPublicKeyBip32Button() {
+    console.log('Click get compressed public key button');
     await this.driver.clickElement(this.getCompressedKeyButton);
   }
 
@@ -224,73 +220,54 @@ export class TestSnaps {
   }
 
   async clickConnectHomePage() {
-    const homePageButtonElement = await this.driver.findElement(
-      this.connectHomePage,
-    );
-    await this.driver.scrollToElement(homePageButtonElement);
-    await this.driver.clickElement(this.connectHomePage);
+    await this.driver.findScrollToElementClick(this.connectHomePage);
   }
 
-  async clickConnectErrors() {
+  async clickConnectErrorsButton() {
     console.log('Click connect errors button');
-    const errorsElement = await this.driver.findElement(
-      this.connectErrorsButton,
-    );
-    await this.driver.scrollToElement(errorsElement);
-
-    await this.driver.clickElement(this.connectErrorsButton);
+    await this.driver.findScrollToElementClick(this.connectErrorsButton);
   }
 
-  async clickConnectImages() {
-    console.log('Click connect images button');
-    const imageElement = await this.driver.findElement(
-      this.connectImagesButton,
-    );
-    await this.driver.scrollToElement(imageElement);
-    await this.driver.clickElement(this.connectImagesButton);
+  async clickConnectImagesButton() {
+    console.log('Find, scroll and click connect images button');
+    await this.driver.findScrollToElementClick(this.connectImagesButton);
   }
 
-  async clickLifeCycleHooks() {
-    console.log('Click connect images button');
-    const lifeCycleElement = await this.driver.findElement(
-      this.connectLifeCycleButton,
-    );
-    await this.driver.scrollToElement(lifeCycleElement);
-    await this.driver.clickElement(this.connectLifeCycleButton);
+  async clickLifeCycleHooksButton() {
+    console.log('Find, scroll and click connect life cycle hooks button');
+    await this.driver.findScrollToElementClick(this.connectLifeCycleButton);
   }
 
   async clickNameLookupButton() {
-    console.log('Click connect name lookup button');
-    const nameLookupElement = await this.driver.findElement(
-      this.nameLookUpButton,
+    console.log('Find, scroll and click connect name lookup button');
+    await this.driver.findScrollToElementClick(this.nameLookUpButton);
+  }
+
+  async clickTransactionInsightButton() {
+    console.log('Find, scroll and click connect transaction insight button');
+    await this.driver.findScrollToElementClick(
+      this.connectTransactionInsightButton,
     );
-    await this.driver.scrollToElement(nameLookupElement);
-    await this.driver.clickElement(this.nameLookUpButton);
   }
 
-  async clickTransactionInsight() {
-    console.log('Click connect transaction insight button');
-    await this.driver.clickElement(this.connectTransactionInsightButton);
+  async clickSubmitClientStatusButton() {
+    console.log('Find, scroll and click submit client status button');
+    await this.driver.findScrollToElementClick(this.submitClientStatusButton);
   }
 
-  async clickSubmitClientStatus() {
-    console.log('Click send client status button');
-    await this.driver.clickElement(this.submitClientStatusButton);
-  }
-
-  async fillMessageSecp256k1(message: string) {
+  async fillMessageAndSignSecp256k1(message: string) {
     console.log('Fill message in secp256k1');
     await this.driver.fill(this.inputMessageSecp256k1, message);
     await this.driver.clickElement(this.buttonMessageSecp256k1);
   }
 
-  async fillMessageEd25519(message: string) {
+  async fillMessageAndSignEd25519(message: string) {
     console.log('Fill message in ed25519');
     await this.driver.fill(this.inputMessageEd25519, message);
     await this.driver.clickElement(this.buttonSignEd25519Message);
   }
 
-  async fillMessageEd25519Bip32(message: string) {
+  async fillMessageAndSignEd25519Bip32(message: string) {
     console.log('Fill message in ed25519 bip32');
     await this.driver.fill(this.inputMessageEd25519Bip32, message);
     await this.driver.clickElement(this.buttonSignEd25519Bip32Message);
@@ -299,43 +276,13 @@ export class TestSnaps {
   async fillBip44MessageAndSign(message: string) {
     console.log('Fill bip44 message ');
     await this.driver.pasteIntoField(this.inputMessageBip44, message);
-    const buttonSignBip44 = await this.driver.findElement(
-      this.buttonSignBip44Message,
-    );
-    await this.driver.scrollToElement(buttonSignBip44);
-    await this.driver.clickElement(this.buttonSignBip44Message);
+    await this.driver.findScrollToElementClick(this.buttonSignBip44Message);
   }
 
   async scrollToSendEd25519() {
     console.log('Scroll to send ed25519');
     const sendEd25519 = await this.driver.findElement(this.inputMessageEd25519);
     await this.driver.scrollToElement(sendEd25519);
-  }
-
-  async scrollToConnectClientStatus() {
-    console.log('Scroll to Connect Client Status');
-    const connectClientStatus = await this.driver.findElement(
-      this.connectClientStatusButton,
-    );
-    await this.driver.scrollToElement(connectClientStatus);
-  }
-
-  async scrollToTransactionInsight() {
-    console.log('Scroll to transaction insight');
-    const connectTransactionInsight = await this.driver.findElement(
-      this.connectTransactionInsightButton,
-    );
-    await this.driver.scrollToElement(connectTransactionInsight);
-  }
-
-  async waitForReconnectButton() {
-    console.log('Wait for reconnect button');
-    await this.driver.waitForSelector(this.reconnectButton);
-  }
-
-  async waitForReconnectBip44Button() {
-    console.log('Wait for reconnect button');
-    await this.driver.waitForSelector(this.reconnectBip44Button);
   }
 
   async check_installationComplete(selector: string, expectedMessage: string) {
@@ -346,8 +293,22 @@ export class TestSnaps {
     });
   }
 
-  async check_messageLifeCycleHook() {
-    console.log('Check message');
-    await this.driver.waitForSelector(this.messageLifeCycleHook);
+  async check_installedSnapsResult(expectedMessage: string) {
+    console.log('Check installed snaps result section on the top right');
+    await this.driver.waitForSelector({
+      css: this.installedSnapResultSpan,
+      text: expectedMessage,
+    });
+  }
+
+  async check_messageResultSpan(
+    spanSelectorId: string,
+    expectedMessage: string,
+  ) {
+    console.log('Check message result that is received');
+    await this.driver.waitForSelector({
+      css: spanSelectorId,
+      text: expectedMessage,
+    });
   }
 }

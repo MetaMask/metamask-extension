@@ -19,19 +19,24 @@ describe('Name lookup', function () {
 
         const testSnaps = new TestSnaps(driver);
         const homePage = new HomePage(driver);
-        const sendToPage = new SendTokenPage(driver);
+        const sendTokenPage = new SendTokenPage(driver);
 
+        // Open a new tab and navigate to test snaps page and click name lookup
         await testSnaps.openPage();
         await testSnaps.clickNameLookupButton();
         await testSnaps.completeSnapInstallConfirmation();
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
+        // Navigate to the extension home page and validate the recipient address in the send flow
         await switchToNetworkFlow(driver, 'Ethereum Mainnet');
         await homePage.startSendFlow();
-        await sendToPage.check_pageIsLoaded();
-        await sendToPage.fillRecipient('metamask.domain');
-        await sendToPage.check_ensAddressResolution('metamask.domain','0xc0ff...4979');
+        await sendTokenPage.check_pageIsLoaded();
+        await sendTokenPage.fillRecipient('metamask.domain');
+        await sendTokenPage.check_ensAddressResolution(
+          'metamask.domain',
+          '0xc0ff...4979',
+        );
       },
     );
   });

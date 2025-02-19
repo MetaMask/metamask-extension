@@ -797,6 +797,26 @@ class Driver {
   }
 
   /**
+   * Finds the element, scrolls the page until the element is in view, and clicks it.
+   *
+   * @param {string | object} rawLocator - Element locator
+   * @returns {Promise<void>} Promise resolving after scrolling and clicking
+   */
+  async findScrollToElementClick(rawLocator) {
+    try {
+      const element = await this.findElement(rawLocator);
+      await this.scrollToElement(element);
+      await this.clickElement(rawLocator);
+    } catch (error) {
+      console.error(
+        `Error finding, scrolling to, or clicking element with selector: ${rawLocator}`,
+        error,
+      );
+      throw error;
+    }
+  }
+
+  /**
    * Waits for a condition to be met within a given timeout period.
    *
    * @param {Function} condition - The condition to wait for. This function should return a boolean indicating whether the condition is met.

@@ -18,37 +18,28 @@ describe('Test Snap Client Status', function () {
         const testSnaps = new TestSnaps(driver);
         const headerNavbar = new HeaderNavbar(driver);
 
-        // navigate to test snaps page and connect to client status snap
+        // Navigate to test snaps page and connect to client status snap and submit client status
         await testSnaps.openPage();
-
-        // scroll to and click connect to client-status snap
-        await testSnaps.scrollToConnectClientStatus();
-        await testSnaps.clickConnectClientStatus();
+        await testSnaps.clickConnectClientStatusButton();
         await testSnaps.completeSnapInstallConfirmation();
+        await testSnaps.clickSubmitClientStatusButton();
 
-        // click on submit
-        await testSnaps.clickSubmitClientStatus();
-
-        // validate the client status is false when the wallet is unlocked
+        // Validate the client status is false when the wallet is unlocked
         await testSnaps.check_clientStatus('false');
 
-        // switch to the original MM tab
+        // Switch to the extension MetaMask and lock it
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         await headerNavbar.check_pageIsLoaded();
-
-        // click on the three dot menu in header bar and lock MetaMask
         await headerNavbar.lockMetaMask();
 
-        // click send inputs on test snap page
+        // Click submit client status on test snap page
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await testSnaps.check_pageIsLoaded();
+        await testSnaps.clickSubmitClientStatusButton();
 
-        // click on submit
-        await testSnaps.clickSubmitClientStatus();
-
-        // validate the client status is true when the wallet is locked
+        // Validate the client status is true when the wallet is locked
         await testSnaps.check_clientStatus('true');
       },
     );
