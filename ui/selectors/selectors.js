@@ -3088,7 +3088,7 @@ export const getMultiChainAssets = createDeepEqualSelector(
   ) => {
     const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
     const balances = multichainBalances?.[selectedAccountAddress.id];
-    const foobar = assetIds.map((assetId) => {
+    return assetIds.map((assetId) => {
       const [chainId, assetDetails] = assetId.split('/');
       const isToken = assetDetails.split(':')[0] === 'token';
 
@@ -3130,7 +3130,6 @@ export const getMultiChainAssets = createDeepEqualSelector(
         isStakeable: false,
       };
     });
-    return foobar;
   },
 );
 
