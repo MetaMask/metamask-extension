@@ -58,6 +58,11 @@ class SnapInstall {
     await this.driver.clickElement(this.nextPageButton);
   }
 
+  async waitForNextButton() {
+    console.log('Click Confirm/Ok button');
+    await this.driver.waitForSelector(this.nextPageButton);
+  }
+
   async clickConfirmButton() {
     console.log('Scroll and click confirm button');
     await this.driver.clickElementSafe(this.scrollSnapInstall);

@@ -27,7 +27,17 @@ export class TestSnaps {
 
   private readonly connectClientStatusButton = '#connectclient-status';
 
+  private readonly sendGetFileTextButton = '#sendGetFileTextButton';
+
+  private readonly sendGetFileBase64Button = '#sendGetFileBase64Button';
+
+  private readonly sendGetFileHexButton = '#sendGetFileHexButton';
+
   private readonly connectImagesButton = '#connectimages';
+
+  public readonly connectGetFile = '#connectgetfile';
+
+  public readonly fileResultSpan = '#getFileResult';
 
   public readonly connectLifeCycleButton = '#connectlifecycle-hooks';
 
@@ -139,6 +149,26 @@ export class TestSnaps {
   async clickConnectDialogsSnapButton() {
     console.log('Find, scroll and click dialog snap button');
     await this.driver.findScrollToElementClick(this.connectDialogsSnapButton);
+  }
+
+  async clickGetFileTextButton() {
+    console.log('Find, scroll and click get file button');
+    await this.driver.findScrollToElementClick(this.sendGetFileTextButton);
+  }
+
+  async clickGetFileBase64Button() {
+    console.log('Find, scroll and click get file button');
+    await this.driver.clickElement(this.sendGetFileBase64Button);
+  }
+
+  async clickGetFileTextHexButton() {
+    console.log('Find, scroll and click get file button');
+    await this.driver.clickElement(this.sendGetFileHexButton);
+  }
+
+  async connectGetFileButton() {
+    console.log('Find, scroll and click get file button');
+    await this.driver.findScrollToElementClick(this.connectGetFile);
   }
 
   async clickConnectUpdateButton() {
