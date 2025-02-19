@@ -5308,15 +5308,15 @@ __metadata:
   linkType: hard
 
 "@metamask/eth-simple-keyring@npm:^8.1.0":
-  version: 8.1.0
-  resolution: "@metamask/eth-simple-keyring@npm:8.1.0"
+  version: 8.1.1
+  resolution: "@metamask/eth-simple-keyring@npm:8.1.1"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/utils": "npm:^11.1.0"
     ethereum-cryptography: "npm:^2.1.2"
     randombytes: "npm:^2.1.0"
-  checksum: 10/bbcbf7eb95e664be6362744ed6c6c977ecc14a8169b04cafa06a0afe3f5ffc872ca5f7ff327eb06d758c2b2cc1ab17bd4a9c533f58e12e4ee04163eb58100053
+  checksum: 10/8fa7193625bedb58dffefac5120a72cd5864c18f94fae76fbe13f999f2d7bf063e95818702615942d8c9c56ecd460353fb34102a149503bdf7fdeaabcaca7d68
   languageName: node
   linkType: hard
 
