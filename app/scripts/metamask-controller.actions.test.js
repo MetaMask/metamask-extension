@@ -159,7 +159,7 @@ describe('MetaMaskController', function () {
     });
   });
 
-  describe.skip('#addNewAccount', function () {
+  describe('#addNewAccount', function () {
     it('two parallel calls with same accountCount give same result', async function () {
       await metamaskController.createNewVaultAndKeychain('test@123');
       const [addNewAccountResult1, addNewAccountResult2] = await Promise.all([
