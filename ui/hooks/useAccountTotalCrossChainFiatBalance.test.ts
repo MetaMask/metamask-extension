@@ -8,6 +8,7 @@ import {
 import {
   getCurrentCurrency,
   getCurrencyRates,
+  getTokenBalances,
 } from '../ducks/metamask/metamask';
 import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
 import {
@@ -26,6 +27,7 @@ jest.mock('../selectors', () => ({
 jest.mock('../ducks/metamask/metamask', () => ({
   getCurrentCurrency: jest.fn(),
   getCurrencyRates: jest.fn(),
+  getTokenBalances: jest.fn(),
 }));
 jest.mock('../../shared/modules/selectors/networks', () => ({
   getSelectedNetworkClientId: jest.fn(),
@@ -34,6 +36,7 @@ jest.mock('../../shared/modules/selectors/networks', () => ({
 }));
 
 const mockGetCurrencyRates = getCurrencyRates as jest.Mock;
+const mockGetTokenBalances = getTokenBalances as jest.Mock;
 const mockGetCurrentCurrency = getCurrentCurrency as jest.Mock;
 const mockGetNetworkConfigurationsByChainId =
   getNetworkConfigurationsByChainId as unknown as jest.Mock;
@@ -129,6 +132,7 @@ const mockCachedBalances = {
 describe('useAccountTotalCrossChainFiatBalance', () => {
   beforeEach(() => {
     mockGetCurrencyRates.mockReturnValue(mockCurrencyRates);
+    mockGetTokenBalances.mockReturnValue({});
     mockGetCurrentCurrency.mockReturnValue('usd');
     mockGetNetworkConfigurationsByChainId.mockReturnValue(mockNetworkConfigs);
     mockGetCrossChainTokenExchangeRates.mockReturnValue(
