@@ -92,7 +92,6 @@ export const useTokensWithFiltering = (
       return {
         ...sharedFields,
         type: AssetType.native,
-        address: zeroAddress(),
         image:
           CHAIN_ID_TOKEN_IMAGE_MAP[
             chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
@@ -190,26 +189,6 @@ export const useTokensWithFiltering = (
           const tokenWithData = buildTokenData(nativeToken);
           if (tokenWithData) {
             yield tokenWithData;
-          }
-        }
-
-        // Yield all detected tokens for all supported chains
-        for (const token of Object.values(allDetectedTokens).flat()) {
-          if (
-            shouldAddToken(
-              token.symbol,
-              token.address ?? undefined,
-              token.chainId,
-            )
-          ) {
-            yield {
-              ...token,
-              type: AssetType.token,
-              // Balance is not 0 but is not in the data so hardcode 0
-              // If a detected token is selected useLatestBalance grabs the on-chain balance
-              balance: '',
-              string: undefined,
-            };
           }
         }
 
