@@ -1,7 +1,5 @@
 import React, { useState, useCallback, useMemo } from 'react';
-
 import { useSelector } from 'react-redux';
-import { uniqBy } from 'lodash';
 import type {
   Token,
   TokenListMap,
@@ -33,12 +31,10 @@ import { AssetType } from '../../../../../shared/constants/transaction';
 import {
   getAllTokens,
   getSelectedEvmInternalAccount,
-  getShouldHideZeroBalanceTokens,
   getTokenExchangeRates,
   getTokenList,
   getUseExternalServices,
 } from '../../../../selectors';
-import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import { getSwapsBlockedTokens } from '../../../../ducks/send';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
@@ -65,12 +61,11 @@ import {
 } from '../../../../selectors/multichain';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import { getAssetsMetadata } from '../../../../selectors/assets';
-import {
+import type {
   ERC20Asset,
   NativeAsset,
   NFT,
   AssetWithDisplayData,
-  TokenWithBalance,
 } from './types';
 import { AssetPickerModalTabs, TabName } from './asset-picker-modal-tabs';
 import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
@@ -178,27 +173,16 @@ export function AssetPickerModal({
     getSelectedEvmInternalAccount,
   );
 
-  const shouldHideZeroBalanceTokens = useSelector(
-    getShouldHideZeroBalanceTokens,
-  );
-
   const detectedTokens: Record<Hex, Record<string, Token[]>> = useSelector(
     getAllTokens,
   );
-  const tokens = useMemo(
+  const allDetectedTokens = useMemo(
     () =>
       (isCaipChainId(currentChainId)
         ? []
         : detectedTokens?.[currentChainId]?.[selectedEvmAddress]) ?? [],
     [detectedTokens, currentChainId, selectedEvmAddress],
   );
-
-  const { tokensWithBalances }: { tokensWithBalances: TokenWithBalance[] } =
-    useTokenTracker({
-      tokens,
-      address: selectedEvmAddress,
-      hideZeroBalanceTokens: Boolean(shouldHideZeroBalanceTokens),
-    });
 
   const { assetsWithBalance: multichainTokensWithBalance } =
     useMultichainBalances();
@@ -208,7 +192,7 @@ export function AssetPickerModal({
 
   const allowExternalServices = useSelector(getUseExternalServices);
   // Swaps top tokens
-  const { value: topTokensResponse } = useAsyncResult<
+  const { value: topTokens } = useAsyncResult<
     { address: Hex }[] | undefined
   >(async () => {
     if (allowExternalServices && selectedNetwork?.chainId) {
@@ -216,7 +200,6 @@ export function AssetPickerModal({
     }
     return undefined;
   }, [selectedNetwork?.chainId, allowExternalServices]);
-  const topTokens = topTokensResponse ?? [];
 
   const getIsDisabled = useCallback(
     ({
@@ -235,13 +218,6 @@ export function AssetPickerModal({
     },
     [sendingAsset?.symbol, memoizedSwapsBlockedTokens],
   );
-
-  const memoizedUsersTokens: TokenWithBalance[] = useMemo(() => {
-    return uniqBy<TokenWithBalance>(
-      [...tokensWithBalances, ...tokens],
-      'address',
-    );
-  }, [tokensWithBalances, tokens]);
 
   /**
    * Generates a list of tokens sorted in this order
@@ -273,20 +249,19 @@ export function AssetPickerModal({
       const blockedTokens = [];
 
       // Yield multichain tokens with balances
-      if (isMultiselectEnabled) {
-        for (const token of multichainTokensWithBalance) {
-          if (shouldAddToken(token.symbol, token.address, token.chainId)) {
-            yield token.isNative
-              ? {
-                  ...token,
-                  image:
-                    CHAIN_ID_TOKEN_IMAGE_MAP[
-                      token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-                    ],
-                  type: AssetType.native,
-                }
-              : token;
-          }
+      for (const token of multichainTokensWithBalance) {
+        if (shouldAddToken(token.symbol, token.address, token.chainId)) {
+          yield token.isNative
+            ? {
+                ...token,
+                image:
+                  CHAIN_ID_TOKEN_IMAGE_MAP[
+                    token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
+                  ],
+                address: null,
+                type: AssetType.native,
+              }
+            : token;
         }
       }
 
@@ -313,7 +288,7 @@ export function AssetPickerModal({
         yield nativeToken;
       }
 
-      for (const token of memoizedUsersTokens) {
+      for (const token of allDetectedTokens) {
         if (shouldAddToken(token.symbol, token.address, currentChainId)) {
           yield { ...token, chainId: currentChainId };
         }
@@ -340,7 +315,7 @@ export function AssetPickerModal({
 
       // For EVM tokens only
       // topTokens are sorted by popularity
-      for (const topToken of topTokens) {
+      for (const topToken of topTokens ?? []) {
         const token: TokenListToken =
           evmTokenMetadataByAddress?.[topToken.address];
         if (
@@ -367,7 +342,6 @@ export function AssetPickerModal({
       }
     },
     [
-      isMultiselectEnabled,
       nativeCurrency,
       nativeCurrencyImage,
       balanceValue,
@@ -375,7 +349,7 @@ export function AssetPickerModal({
       isEvm,
       selectedNetwork?.chainId,
       multichainTokensWithBalance,
-      memoizedUsersTokens,
+      allDetectedTokens,
       nonEvmTokenMetadataByAddress,
       topTokens,
       evmTokenMetadataByAddress,
@@ -458,17 +432,18 @@ export function AssetPickerModal({
 
     return filteredTokens;
   }, [
+    currentChainId,
     searchQuery,
+    isMultiselectEnabled,
+    selectedChainIds,
+    selectedNetwork?.chainId,
+    customTokenListGenerator,
+    tokenListGenerator,
+    action,
+    evmTokenMetadataByAddress,
     tokenConversionRates,
     conversionRate,
     currentCurrency,
-    currentChainId,
-    tokenListGenerator,
-    customTokenListGenerator,
-    isMultiselectEnabled,
-    selectedChainIds,
-    selectedNetwork,
-    evmTokenMetadataByAddress,
   ]);
 
   const getNetworkPickerLabel = () => {
