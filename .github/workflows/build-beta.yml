@@ -40,8 +40,7 @@ jobs:
               echo "NEEDS_BETA_BUILD=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Setup environment
-        if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}
+      - if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}
         uses: metamask/github-tools/.github/actions/checkout-and-setup-secure@caching
 
       - name: Run beta build
