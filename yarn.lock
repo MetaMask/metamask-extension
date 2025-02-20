@@ -6551,7 +6551,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^10.0.0, @metamask/utils@npm:^10.0.1":
+"@metamask/utils@npm:^10.0.0":
   version: 10.0.1
   resolution: "@metamask/utils@npm:10.0.1"
   dependencies:
@@ -26878,7 +26878,7 @@ __metadata:
     "@metamask/test-dapp": "npm:9.0.0"
     "@metamask/transaction-controller": "npm:^45.0.0"
     "@metamask/user-operation-controller": "npm:^24.0.1"
-    "@metamask/utils": "npm:^10.0.1"
+    "@metamask/utils": "npm:^11.1.0"
     "@ngraveio/bc-ur": "npm:^1.1.12"
     "@noble/hashes": "npm:^1.3.3"
     "@octokit/core": "npm:^3.6.0"
@@ -26966,7 +26966,7 @@ __metadata:
     "@zxing/library": "npm:0.20.0"
     addons-linter: "npm:^6.28.0"
     autoprefixer: "npm:^10.4.19"
-    await-semaphore: "npm:^0.1.1"
+    await-semaphore: "npm:^0.1.3"
     axios: "npm:^1.1.3"
     babelify: "npm:^10.0.0"
     base32-encode: "npm:^1.2.0"
