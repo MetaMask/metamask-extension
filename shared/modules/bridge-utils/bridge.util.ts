@@ -1,5 +1,5 @@
 import { Contract } from '@ethersproject/contracts';
-import { type Hex } from '@metamask/utils';
+import { CaipChainId, type Hex } from '@metamask/utils';
 import { abiERC20 } from '@metamask/metamask-eth-abis';
 import {
   BRIDGE_API_BASE_URL,
@@ -32,6 +32,7 @@ import {
   BridgeFeatureFlagsKey,
   type BridgeFeatureFlags,
   type GenericQuoteRequest,
+  type TokenV3Asset,
 } from '../../types/bridge';
 import {
   formatAddressToString,
@@ -46,6 +47,7 @@ import {
   validateResponse,
   QUOTE_RESPONSE_VALIDATORS,
   FEE_DATA_VALIDATORS,
+  ASSET_VALIDATORS,
 } from './validators';
 
 const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };
@@ -91,6 +93,27 @@ export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
       chains: {},
     },
   };
+}
+
+// Returns a list of non-EVM assets
+export async function fetchNonEvmTokens(
+  chainId: CaipChainId,
+): Promise<Record<string, TokenV3Asset>> {
+  const url = `https://tokens.api.cx.metamask.io/v3/chains/${chainId}/assets?first=15000`;
+  const { data: tokens } = await fetchWithCache({
+    url,
+    fetchOptions: { method: 'GET', headers: CLIENT_ID_HEADER },
+    cacheOptions: { cacheRefreshTime: 60000 },
+    functionName: 'fetchNonEvmTokens',
+  });
+
+  const transformedTokens: Record<string, TokenV3Asset> = {};
+  tokens.forEach((token: unknown) => {
+    if (validateResponse<TokenV3Asset>(ASSET_VALIDATORS, token, url, false)) {
+      transformedTokens[token.assetId] = token;
+    }
+  });
+  return transformedTokens;
 }
 
 // Returns a list of enabled (unblocked) tokens
