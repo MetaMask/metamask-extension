@@ -2681,10 +2681,12 @@ export function getIsWatchEthereumAccountEnabled(state) {
  * @returns The state of the `bitcoinSupportEnabled` flag.
  */
 export function getIsBitcoinSupportEnabled(state) {
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  return state.metamask.bitcoinSupportEnabled;
-  ///: END:ONLY_INCLUDE_IF
-  return false;
+  // NOTE: We use this trick to avoid using code fence.
+  // If this flag is not in `state.metamask` it will be set
+  // as `undefined`, and the `Boolean(...)` will be evaluated
+  // to `false`.
+  const { bitcoinSupportEnabled } = state.metamask;
+  return Boolean(bitcoinSupportEnabled);
 }
 
 /**
@@ -2694,10 +2696,9 @@ export function getIsBitcoinSupportEnabled(state) {
  * @returns The state of the `bitcoinTestnetSupportEnabled` flag.
  */
 export function getIsBitcoinTestnetSupportEnabled(state) {
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  return state.metamask.bitcoinTestnetSupportEnabled;
-  ///: END:ONLY_INCLUDE_IF
-  return false;
+  // See `getIsBitcoinSupportEnabled` for details.
+  const { bitcoinTestnetSupportEnabled } = state.metamask;
+  return Boolean(bitcoinTestnetSupportEnabled);
 }
 
 /**
@@ -2707,10 +2708,9 @@ export function getIsBitcoinTestnetSupportEnabled(state) {
  * @returns The state of the `solanaSupportEnabled` flag.
  */
 export function getIsSolanaSupportEnabled(state) {
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  return state.metamask.solanaSupportEnabled;
-  ///: END:ONLY_INCLUDE_IF
-  return false;
+  // See `getIsBitcoinSupportEnabled` for details.
+  const { solanaSupportEnabled } = state.metamask;
+  return Boolean(solanaSupportEnabled);
 }
 
 export function getIsCustomNetwork(state) {
