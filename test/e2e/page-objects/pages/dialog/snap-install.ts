@@ -52,7 +52,7 @@ class SnapInstall {
   }
 
   async clickCheckboxPermission() {
-    console.log('Click permission checkbox');
+    console.log('Clicking permission checkbox');
     await this.driver.clickElement(this.permissionConnect);
   }
 
