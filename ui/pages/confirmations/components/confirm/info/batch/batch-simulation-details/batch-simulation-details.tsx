@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  SimulationTokenStandard,
-  TransactionMeta,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   SimulationDetails,
   StaticRow,
