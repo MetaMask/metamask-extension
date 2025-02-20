@@ -13,6 +13,7 @@ import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util'
 import { fetchTokenExchangeRates as fetchTokenExchangeRatesUtil } from '../../helpers/utils/util';
 import { formatChainIdToHex } from '../../../shared/modules/bridge-utils/caip-formatters';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
+import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 
 type GasFeeEstimate = {
   suggestedMaxPriorityFeePerGas: string;
@@ -79,9 +80,24 @@ const fetchTokenExchangeRates = async (
   currency: string,
   ...tokenAddresses: string[]
 ) => {
-  // TODO fetch exchange rates for solana
   if (chainId === MultichainNetworks.SOLANA) {
-    return {};
+    const queryParams = new URLSearchParams({
+      assetIds: tokenAddresses,
+      includeMarketData: true,
+      vsCurrency: currency,
+    });
+    const url = `https://price.api.cx.metamask.io/v3/spot-prices?${queryParams}`;
+    const exchangeRates = await fetchWithCache({
+      url,
+      fetchOptions: {
+        method: 'GET',
+        headers: 'metamask',
+      },
+      cacheOptions: { cacheRefreshTime: 0 },
+      functionName: 'fetchTokenExchangeRates',
+    });
+
+    return exchangeRates;
   }
 
   const exchangeRates = await fetchTokenExchangeRatesUtil(
@@ -112,6 +128,9 @@ export const getTokenExchangeRate = async (request: {
     currency,
     tokenAddress,
   );
+  if (chainId === MultichainNetworks.SOLANA) {
+    return exchangeRates?.[tokenAddress];
+  }
   // The exchange rate can be checksummed or not, so we need to check both
   const exchangeRate =
     exchangeRates?.[toChecksumAddress(tokenAddress)] ??
