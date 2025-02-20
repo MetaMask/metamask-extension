@@ -62,7 +62,7 @@ class SnapInstall {
   }
 
   async waitForNextButton() {
-    console.log('Click Confirm/Ok button');
+    console.log('Clicking Confirm/Ok button');
     await this.driver.waitForSelector(this.nextPageButton);
   }
 
