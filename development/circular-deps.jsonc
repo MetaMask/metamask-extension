@@ -6,10 +6,4 @@
 // - To prevent new circular dependencies, ensure your changes don't add new cycles
 // - For more information contact the Extension Platform team.
 
-[
-  [
-    "ui/components/app/alert-system/confirm-alert-modal/confirm-alert-modal.tsx",
-    "ui/components/app/alert-system/confirm-alert-modal/index.tsx",
-    "ui/pages/confirmations/components/confirm/footer/footer.tsx"
-  ]
-]
+[]
