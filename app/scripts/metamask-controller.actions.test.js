@@ -135,6 +135,7 @@ describe('MetaMaskController', function () {
     });
     initializeMockMiddlewareLog();
 
+    // Re-create the ULID generator to start over again the `mockULIDs` list.
     mockUlidGenerator = ulidGenerator();
   });
 
