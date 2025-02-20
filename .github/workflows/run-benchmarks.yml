@@ -18,7 +18,7 @@ jobs:
     name: ${{ matrix.buildType }}-${{ matrix.testType }}
     steps:
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@caching
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@caching
         with:
           should-cache-restore: ${{ vars.USE_CACHING }}
 

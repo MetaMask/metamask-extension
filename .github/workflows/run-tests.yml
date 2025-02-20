@@ -19,7 +19,7 @@ jobs:
         shard: [1, 2, 3, 4, 5, 6]
     steps:
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@caching
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@caching
         with:
           should-cache-restore: ${{ vars.USE_CACHING }}
 
@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@caching
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@caching
         with:
           should-cache-restore: ${{ vars.USE_CACHING }}
 
@@ -59,7 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@caching
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@caching
         with:
           should-cache-restore: ${{ vars.USE_CACHING }}
 
@@ -86,7 +86,7 @@ jobs:
       stored-coverage: ${{ steps.get-stored-coverage.outputs.STORED_COVERAGE }}
     steps:
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@caching
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@caching
         with:
           should-cache-restore: ${{ vars.USE_CACHING }}
 

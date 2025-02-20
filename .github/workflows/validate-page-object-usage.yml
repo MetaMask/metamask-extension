@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@caching
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@caching
 
       - name: Run E2E Page Object Usage Validation
         env:
