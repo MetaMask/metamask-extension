@@ -117,7 +117,7 @@ export class TestSnaps {
   }
 
   async openPage() {
-    console.log('Open Test Snap Dapp page');
+    console.log('Opening Test Snap Dapp page');
     await this.driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
     await this.driver.waitForSelector(this.installedSnapsHeader);
   }
