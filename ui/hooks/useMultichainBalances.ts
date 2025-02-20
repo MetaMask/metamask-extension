@@ -10,6 +10,7 @@ import {
   getMarketData,
   getSelectedAccountNativeTokenCachedBalanceByChainId,
   getSelectedEvmInternalAccount,
+  getTokenBalancesEvm,
   selectERC20TokensByChain,
 } from '../selectors';
 import type {
@@ -42,108 +43,109 @@ const useEvmAssetsWithBalances = (): (
       balance: string;
     }
 )[] => {
-  const { address: evmAccountAddress } = useMultichainSelector(
-    getSelectedEvmInternalAccount,
-  );
+  // const { address: evmAccountAddress } = useMultichainSelector(
+  //   getSelectedEvmInternalAccount,
+  // );
 
-  // all ERC20 tokens for imported chainIds, addresses in lowercase hex
-  const tokenMetadataByAddressByChain = useSelector(selectERC20TokensByChain);
+  // // all ERC20 tokens for imported chainIds, addresses in lowercase hex
+  // const tokenMetadataByAddressByChain = useSelector(selectERC20TokensByChain);
 
-  // balances by chainId
-  const tokenBalancesByChain: Record<
-    Hex,
-    Record<Hex, string>
-  > = useTokenBalances().tokenBalances[evmAccountAddress];
-  const nativeBalancesByChain = useSelector(
-    getSelectedAccountNativeTokenCachedBalanceByChainId,
-  ) as Record<string, Hex>;
+  // // balances by chainId
+  // const tokenBalancesByChain: Record<
+  //   Hex,
+  //   Record<Hex, string>
+  // > = useTokenBalances().tokenBalances[evmAccountAddress];
+  // const nativeBalancesByChain = useSelector(
+  //   getSelectedAccountNativeTokenCachedBalanceByChainId,
+  // ) as Record<string, Hex>;
 
-  // conversion rates by chainId and hex token address
-  const tokenRates = useSelector(getMarketData) as ChainAddressMarketData;
-  // conversion rates by native token ticker
-  const nativeRates = useSelector(
-    getCurrencyRates,
-  ) as CurrencyRateState['currencyRates'];
+  // // conversion rates by chainId and hex token address
+  // const tokenRates = useSelector(getMarketData) as ChainAddressMarketData;
+  // // conversion rates by native token ticker
+  // const nativeRates = useSelector(
+  //   getCurrencyRates,
+  // ) as CurrencyRateState['currencyRates'];
 
-  const networkConfigByChainId: Record<string, NetworkConfiguration> =
-    useSelector(getNetworkConfigurationsByChainId);
+  // const networkConfigByChainId: Record<string, NetworkConfiguration> =
+  //   useSelector(getNetworkConfigurationsByChainId);
 
-  const evmTokensWithFiatBalances = useMemo(() => {
-    return Object.entries(tokenBalancesByChain).flatMap(
-      ([chainId, tokenBalances]) => {
-        const nativeBalance = calcTokenAmount(
-          new BigNumber(nativeBalancesByChain[chainId] ?? '0', 16),
-          18,
-        ).toString();
-        const nativeExchangeRate =
-          nativeRates[
-            networkConfigByChainId[chainId]?.nativeCurrency ?? 'ETH'
-          ]?.conversionRate?.toString() ?? '0';
-        const nativeBalanceInFiat = new BigNumber(nativeBalance).times(
-          nativeExchangeRate,
-        );
+  const evmTokensWithFiatBalances = useSelector(getTokenBalancesEvm);
+  // const evmTokensWithFiatBalances_ = useMemo(() => {
+  //   return Object.entries(tokenBalancesByChain).flatMap(
+  //     ([chainId, tokenBalances]) => {
+  //       const nativeBalance = calcTokenAmount(
+  //         new BigNumber(nativeBalancesByChain[chainId] ?? '0', 16),
+  //         18,
+  //       ).toString();
+  //       const nativeExchangeRate =
+  //         nativeRates[
+  //           networkConfigByChainId[chainId]?.nativeCurrency ?? 'ETH'
+  //         ]?.conversionRate?.toString() ?? '0';
+  //       const nativeBalanceInFiat = new BigNumber(nativeBalance).times(
+  //         nativeExchangeRate,
+  //       );
 
-        const tokensWithBalances = Object.entries(tokenBalances)
-          // build TokenWithFiat for each token balance detected
-          .map(([tokenAddress, tokenBalance]) => {
-            const tokenMetadata =
-              tokenMetadataByAddressByChain[chainId]?.data?.[
-                tokenAddress.toLowerCase()
-              ];
-            if (!tokenMetadata) {
-              return null;
-            }
-            const tokenAmount = calcTokenAmount(
-              tokenBalance,
-              tokenMetadata?.decimals ?? 18,
-            );
-            const tokenPrice =
-              tokenRates[chainId as Hex]?.[
-                tokenAddress as Hex
-              ].price.toString();
-            const fiatBalance = tokenAmount
-              .times(tokenPrice ?? '0')
-              .times(nativeExchangeRate);
-            // Data for ERC20 tokens
-            return {
-              string: tokenAmount.toString(),
-              balance: tokenAmount.toString(),
-              tokenFiatAmount: fiatBalance.toNumber(),
-              chainId: chainId as Hex,
-              decimals: tokenMetadata?.decimals ?? 18,
-              address: tokenAddress as Hex,
-              symbol: tokenMetadata?.symbol ?? '',
-              image: tokenMetadata?.iconUrl ?? '',
-            };
-          })
-          .filter((token) => token !== null);
+  //       const tokensWithBalances = Object.entries(tokenBalances)
+  //         // build TokenWithFiat for each token balance detected
+  //         .map(([tokenAddress, tokenBalance]) => {
+  //           const tokenMetadata =
+  //             tokenMetadataByAddressByChain[chainId]?.data?.[
+  //               tokenAddress.toLowerCase()
+  //             ];
+  //           if (!tokenMetadata) {
+  //             return null;
+  //           }
+  //           const tokenAmount = calcTokenAmount(
+  //             tokenBalance,
+  //             tokenMetadata?.decimals ?? 18,
+  //           );
+  //           const tokenPrice =
+  //             tokenRates[chainId as Hex]?.[
+  //               tokenAddress as Hex
+  //             ]?.price.toString();
+  //           const fiatBalance = tokenAmount
+  //             .times(tokenPrice ?? '0')
+  //             .times(nativeExchangeRate);
+  //           // Data for ERC20 tokens
+  //           return {
+  //             string: tokenAmount.toString(),
+  //             balance: tokenAmount.toString(),
+  //             tokenFiatAmount: fiatBalance.toNumber(),
+  //             chainId: chainId as Hex,
+  //             decimals: tokenMetadata?.decimals ?? 18,
+  //             address: tokenAddress as Hex,
+  //             symbol: tokenMetadata?.symbol ?? '',
+  //             image: tokenMetadata?.iconUrl ?? '',
+  //           };
+  //         })
+  //         .filter((token) => token !== null);
 
-        // Data for native token
-        tokensWithBalances.push({
-          string: nativeBalance,
-          balance: nativeBalance,
-          tokenFiatAmount: nativeBalanceInFiat.toNumber(),
-          chainId: chainId as Hex,
-          decimals: 18,
-          address: zeroAddress() as Hex,
-          symbol: networkConfigByChainId[chainId]?.nativeCurrency ?? '',
-          image:
-            CHAIN_ID_TOKEN_IMAGE_MAP[
-              chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-            ],
-        });
+  //       // Data for native token
+  //       tokensWithBalances.push({
+  //         string: nativeBalance,
+  //         balance: nativeBalance,
+  //         tokenFiatAmount: nativeBalanceInFiat.toNumber(),
+  //         chainId: chainId as Hex,
+  //         decimals: 18,
+  //         address: zeroAddress() as Hex,
+  //         symbol: networkConfigByChainId[chainId]?.nativeCurrency ?? '',
+  //         image:
+  //           CHAIN_ID_TOKEN_IMAGE_MAP[
+  //             chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
+  //           ],
+  //       });
 
-        return tokensWithBalances;
-      },
-    );
-  }, [
-    nativeBalancesByChain,
-    nativeRates,
-    tokenBalancesByChain,
-    tokenMetadataByAddressByChain,
-    tokenRates,
-    networkConfigByChainId,
-  ]);
+  //       return tokensWithBalances;
+  //     },
+  //   );
+  // }, [
+  //   nativeBalancesByChain,
+  //   nativeRates,
+  //   tokenBalancesByChain,
+  //   tokenMetadataByAddressByChain,
+  //   tokenRates,
+  //   networkConfigByChainId,
+  // ]);
 
   return evmTokensWithFiatBalances;
 };

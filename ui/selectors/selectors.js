@@ -2991,7 +2991,7 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
   getCurrencyRates,
   getPreferences,
   getIsTokenNetworkFilterEqualCurrentNetwork,
-  getSelectedAccount,
+  getSelectedEvmInternalAccount,
   getCurrentNetwork,
   (
     selectedAccountTokensChains,
