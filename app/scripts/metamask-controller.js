@@ -4871,7 +4871,24 @@ export default class MetamaskController extends EventEmitter {
     const addedAccountAddress = await this.keyringController.withKeyring(
       keyringSelector,
       async (keyring) => {
-        const [newAddress] = await keyring.addAccounts(accountCount);
+        const accountsInKeyring = await keyring.getAccounts();
+
+        // Only add an account if the accountCount matches the accounts in the keyring.
+        if (accountCount && accountCount !== accountsInKeyring.length) {
+          if (accountCount > oldAccounts.length) {
+            throw new Error('Account out of sequence');
+          }
+
+          const existingAccount = oldAccounts[accountCount];
+
+          if (!existingAccount) {
+            throw new Error(`Can't find account at index ${accountCount}`);
+          }
+
+          return existingAccount;
+        }
+
+        const [newAddress] = await keyring.addAccounts(1);
         return newAddress;
       },
     );
