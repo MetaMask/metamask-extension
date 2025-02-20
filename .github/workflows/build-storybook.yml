@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment-secure@caching
+        uses: metamask/github-tools/.github/actions/checkout-and-setup-secure@caching
 
       - name: Build storybook
         run: yarn storybook:build
