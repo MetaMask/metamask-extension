@@ -22,6 +22,7 @@ describe('multichain - networks', () => {
     const urls: MultichainBlockExplorerFormatUrls = {
       url: 'https://foo.bar',
       address: 'https://foo.bar/address/{address}?detail=true',
+      transaction: 'https://foo.bar/tx/{txId}?detail=true',
     };
 
     expect(formatBlockExplorerAddressUrl(urls, address)).toBe(
