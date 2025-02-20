@@ -1,4 +1,5 @@
 import { Driver } from '../../../webdriver/driver';
+import { veryLargeDelayMs } from '../../../helpers';
 
 class SnapInstall {
   private driver: Driver;
@@ -64,8 +65,18 @@ class SnapInstall {
   }
 
   async clickConfirmButton() {
-    console.log('Scroll and click confirm button');
+    console.log('Click on the scroll icon and then click confirm button');
     await this.driver.clickElementSafe(this.scrollSnapInstall);
+    await this.driver.waitUntil(
+      async () => {
+        await this.driver.clickElementSafe(this.scrollSnapInstall);
+        const isEnabled = await this.driver.findClickableElement(
+          this.nextPageButton,
+        );
+        return isEnabled;
+      },
+      { timeout: veryLargeDelayMs, interval: 100 },
+    );
     await this.driver.clickElement(this.nextPageButton);
   }
 
