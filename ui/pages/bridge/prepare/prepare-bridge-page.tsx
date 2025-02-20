@@ -88,7 +88,6 @@ import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import {
   getCurrentKeyring,
   getSelectedEvmInternalAccount,
-  getSelectedInternalAccount,
   getTokenList,
 } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
@@ -98,6 +97,7 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
+  getLastSelectedNonEvmAccount,
   getMultichainIsEvm,
   getMultichainTransactions,
 } from '../../../selectors/multichain';
@@ -156,12 +156,12 @@ const PrepareBridgePage = () => {
 
   const isEvm = useMultichainSelector(getMultichainIsEvm);
   const selectedEvmAccount = useSelector(getSelectedEvmInternalAccount);
-  const selectedMultichainAccount = useMultichainSelector(
-    getSelectedInternalAccount,
-  );
+
+  const lastSelectedNonEvmAccount = useSelector(getLastSelectedNonEvmAccount);
+
   const selectedAccount = isEvm
     ? selectedEvmAccount
-    : selectedMultichainAccount;
+    : lastSelectedNonEvmAccount;
 
   const keyring = useSelector(getCurrentKeyring);
   // @ts-expect-error keyring type is wrong maybe?
@@ -316,19 +316,22 @@ const PrepareBridgePage = () => {
       // TODO override with account selector's value
       destWalletAddress:
         toChain?.chainId === MultichainNetworks.SOLANA || isSwap
-          ? selectedMultichainAccount?.address
+          ? lastSelectedNonEvmAccount?.address
           : selectedEvmAccount?.address,
     }),
     [
-      isSwap,
-      fromToken,
-      toToken,
-      fromChain?.chainId,
-      toChain?.chainId,
+      fromToken?.address,
+      fromToken?.decimals,
+      toToken?.address,
       fromAmount,
-      providerConfig,
+      fromChain?.chainId,
+      isSwap,
+      toChain?.chainId,
+      providerConfig?.rpcUrl,
       slippage,
       selectedAccount?.address,
+      selectedEvmAccount?.address,
+      lastSelectedNonEvmAccount?.address,
     ],
   );
 
