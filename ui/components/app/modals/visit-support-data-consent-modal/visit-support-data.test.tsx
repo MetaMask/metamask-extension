@@ -119,11 +119,28 @@ describe('VisitSupportDataConsentModal', () => {
     expect(openWindow).toHaveBeenCalledWith(SUPPORT_LINK);
   });
 
-  it('does not render when isOpen is false', () => {
-    const { queryByTestId } = renderModal({ isOpen: false });
+  it('handles clicking the accept button with undefined parameters', () => {
+    useSelectorMock.mockImplementation(() => undefined);
+    const { getByTestId } = renderModal();
 
-    expect(
-      queryByTestId('visit-support-data-consent-modal'),
-    ).not.toBeInTheDocument();
+    fireEvent.click(
+      getByTestId('visit-support-data-consent-modal-accept-button'),
+    );
+
+    const expectedUrl = `${SUPPORT_LINK}?metamask_version=MOCK_VERSION`;
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.SupportLinkClicked,
+        properties: {
+          url: expectedUrl,
+        },
+      }),
+      {
+        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
+      },
+    );
+    expect(openWindow).toHaveBeenCalledWith(expectedUrl);
   });
 });

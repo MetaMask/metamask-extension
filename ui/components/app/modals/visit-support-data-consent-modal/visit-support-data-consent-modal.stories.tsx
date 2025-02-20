@@ -7,7 +7,6 @@ export default {
 
 export const DefaultStory = () => (
   <VisitSupportDataConsentModal
-    version="1.0.0"
     isOpen
     onClose={() => {}}
   />

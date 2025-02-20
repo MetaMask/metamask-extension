@@ -46,23 +46,44 @@ const VisitSupportDataConsentModal: React.FC<
   const profileId = sessionData?.profile?.profileId;
   const metaMetricsId = useSelector(getMetaMetricsId);
 
-  const handleClickContactSupportButton = useCallback(() => {
-    onClose();
-    const supportLinkWithUserId = `${SUPPORT_LINK}?metamask_version=${version}&metamask_profile_id=${profileId}&metamask_metametrics_id=${metaMetricsId}`;
-    trackEvent(
-      {
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.SupportLinkClicked,
-        properties: {
-          url: supportLinkWithUserId,
+  const handleClickContactSupportButton = useCallback(
+    (params: {
+      version: string;
+      profileId?: string;
+      metaMetricsId?: string;
+    }) => {
+      onClose();
+      let supportLinkWithUserId = SUPPORT_LINK;
+      const queryParams = new URLSearchParams();
+      queryParams.append('metamask_version', params.version);
+      if (params.profileId) {
+        queryParams.append('metamask_profile_id', params.profileId);
+      }
+      if (params.metaMetricsId) {
+        queryParams.append('metamask_metametrics_id', params.metaMetricsId);
+      }
+
+      const queryString = queryParams.toString();
+      if (queryString) {
+        supportLinkWithUserId += `?${queryString}`;
+      }
+
+      trackEvent(
+        {
+          category: MetaMetricsEventCategory.Settings,
+          event: MetaMetricsEventName.SupportLinkClicked,
+          properties: {
+            url: supportLinkWithUserId,
+          },
         },
-      },
-      {
-        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
-      },
-    );
-    openWindow(supportLinkWithUserId);
-  }, [version, profileId, metaMetricsId, trackEvent, onClose]);
+        {
+          contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
+        },
+      );
+      openWindow(supportLinkWithUserId);
+    },
+    [onClose, trackEvent],
+  );
 
   const handleClickNoShare = useCallback(() => {
     onClose();
@@ -114,7 +135,13 @@ const VisitSupportDataConsentModal: React.FC<
             <ButtonPrimary
               size={ButtonPrimarySize.Lg}
               width={BlockSize.Half}
-              onClick={handleClickContactSupportButton}
+              onClick={() =>
+                handleClickContactSupportButton({
+                  version,
+                  profileId,
+                  metaMetricsId,
+                })
+              }
               data-testid="visit-support-data-consent-modal-accept-button"
             >
               {t('visitSupportDataConsentModalAccept')}
