@@ -1,21 +1,9 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { CaipChainId, Hex } from '@metamask/utils';
-import type { CurrencyRateState } from '@metamask/assets-controllers';
 import { BigNumber } from 'bignumber.js';
-import { NetworkConfiguration } from '@metamask/network-controller';
-import { zeroAddress } from 'ethereumjs-util';
-import {
-  getCurrencyRates,
-  getMarketData,
-  getSelectedAccountNativeTokenCachedBalanceByChainId,
-  getSelectedEvmInternalAccount,
-  selectERC20TokensByChain,
-} from '../selectors';
-import type {
-  ChainAddressMarketData,
-  TokenWithBalance,
-} from '../components/app/assets/types';
+import { getTokenBalancesEvm } from '../selectors';
+import type { TokenWithBalance } from '../components/app/assets/types';
 import {
   getAccountAssets,
   getAssetsMetadata,
@@ -26,129 +14,10 @@ import {
   getMultichainBalances,
   getMultichainCoinRates,
 } from '../selectors/multichain';
-import { calcTokenAmount } from '../../shared/lib/transactions-controller-utils';
-import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
-import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../shared/constants/network';
 import { AssetType } from '../../shared/constants/transaction';
-import { useTokenBalances } from './useTokenBalances';
 import { useMultichainSelector } from './useMultichainSelector';
 
-const useEvmAssetsWithBalances = (): (
-  | TokenWithBalance & {
-      chainId: Hex;
-      decimals: number;
-      string: string;
-      tokenFiatAmount: number;
-      balance: string;
-    }
-)[] => {
-  const { address: evmAccountAddress } = useMultichainSelector(
-    getSelectedEvmInternalAccount,
-  );
-
-  // all ERC20 tokens for imported chainIds, addresses in lowercase hex
-  const tokenMetadataByAddressByChain = useSelector(selectERC20TokensByChain);
-
-  // balances by chainId
-  const tokenBalancesByChain: Record<
-    Hex,
-    Record<Hex, string>
-  > = useTokenBalances().tokenBalances[evmAccountAddress];
-  const nativeBalancesByChain = useSelector(
-    getSelectedAccountNativeTokenCachedBalanceByChainId,
-  ) as Record<string, Hex>;
-
-  // conversion rates by chainId and hex token address
-  const tokenRates = useSelector(getMarketData) as ChainAddressMarketData;
-  // conversion rates by native token ticker
-  const nativeRates = useSelector(
-    getCurrencyRates,
-  ) as CurrencyRateState['currencyRates'];
-
-  const networkConfigByChainId: Record<string, NetworkConfiguration> =
-    useSelector(getNetworkConfigurationsByChainId);
-
-  // TODO: use getTokenBalancesEvm
-  const evmTokensWithFiatBalances = useMemo(() => {
-    return Object.entries(tokenBalancesByChain).flatMap(
-      ([chainId, tokenBalances]) => {
-        const nativeBalance = calcTokenAmount(
-          new BigNumber(nativeBalancesByChain[chainId] ?? '0', 16),
-          18,
-        ).toString();
-        const nativeExchangeRate =
-          nativeRates[
-            networkConfigByChainId[chainId]?.nativeCurrency ?? 'ETH'
-          ]?.conversionRate?.toString() ?? '0';
-        const nativeBalanceInFiat = new BigNumber(nativeBalance).times(
-          nativeExchangeRate,
-        );
-
-        const tokensWithBalances = Object.entries(tokenBalances)
-          // build TokenWithFiat for each token balance detected
-          .map(([tokenAddress, tokenBalance]) => {
-            const tokenMetadata =
-              tokenMetadataByAddressByChain[chainId]?.data?.[
-                tokenAddress.toLowerCase()
-              ];
-            if (!tokenMetadata) {
-              return null;
-            }
-            const tokenAmount = calcTokenAmount(
-              tokenBalance,
-              tokenMetadata?.decimals ?? 18,
-            );
-            const tokenPrice =
-              tokenRates[chainId as Hex]?.[
-                tokenAddress as Hex
-              ].price.toString();
-            const fiatBalance = tokenAmount
-              .times(tokenPrice ?? '0')
-              .times(nativeExchangeRate);
-            // Data for ERC20 tokens
-            return {
-              string: tokenAmount.toString(),
-              balance: tokenAmount.toString(),
-              tokenFiatAmount: fiatBalance.toNumber(),
-              chainId: chainId as Hex,
-              decimals: tokenMetadata?.decimals ?? 18,
-              address: tokenAddress as Hex,
-              symbol: tokenMetadata?.symbol ?? '',
-              image: tokenMetadata?.iconUrl ?? '',
-            };
-          })
-          .filter((token) => token !== null);
-
-        // Data for native token
-        tokensWithBalances.push({
-          string: nativeBalance,
-          balance: nativeBalance,
-          tokenFiatAmount: nativeBalanceInFiat.toNumber(),
-          chainId: chainId as Hex,
-          decimals: 18,
-          address: zeroAddress() as Hex,
-          symbol: networkConfigByChainId[chainId]?.nativeCurrency ?? '',
-          image:
-            CHAIN_ID_TOKEN_IMAGE_MAP[
-              chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-            ],
-        });
-
-        return tokensWithBalances;
-      },
-    );
-  }, [
-    nativeBalancesByChain,
-    nativeRates,
-    tokenBalancesByChain,
-    tokenMetadataByAddressByChain,
-    tokenRates,
-    networkConfigByChainId,
-  ]);
-
-  return evmTokensWithFiatBalances;
-};
-
+// TODO replace this with getMultichainAssets
 const useNonEvmAssetsWithBalances = (): (Omit<
   TokenWithBalance,
   'address' | 'chainId'
@@ -211,12 +80,17 @@ const useNonEvmAssetsWithBalances = (): (Omit<
   return nonEvmTokensWithFiatBalances;
 };
 
-// TODO replace this with getMultichainAssets
 // This hook is used to get the balances of all tokens and native tokens across all chains
 // This also returns the total fiat balances by chainId/caipChainId
 export const useMultichainBalances = () => {
   // EVM data
-  const evmBalancesWithFiatByChainId = useEvmAssetsWithBalances();
+  const evmBalancesWithFiatByChainId: (TokenWithBalance & {
+    chainId: Hex;
+    decimals: number;
+    string: string;
+    tokenFiatAmount: number;
+    balance: string;
+  })[] = useSelector(getTokenBalancesEvm);
   // Non-EVM data
   const nonEvmBalancesWithFiatByChainId = useNonEvmAssetsWithBalances();
 

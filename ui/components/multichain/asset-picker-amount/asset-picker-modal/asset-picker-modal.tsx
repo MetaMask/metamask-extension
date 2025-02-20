@@ -42,7 +42,10 @@ import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import { getSwapsBlockedTokens } from '../../../../ducks/send';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
+import {
+  CHAIN_ID_TOKEN_IMAGE_MAP,
+  NETWORK_TO_NAME_MAP,
+} from '../../../../../shared/constants/network';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import { AvatarType } from '../../avatar-group/avatar-group.types';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
@@ -273,7 +276,16 @@ export function AssetPickerModal({
       if (isMultiselectEnabled) {
         for (const token of multichainTokensWithBalance) {
           if (shouldAddToken(token.symbol, token.address, token.chainId)) {
-            yield token;
+            yield token.isNative
+              ? {
+                  ...token,
+                  image:
+                    CHAIN_ID_TOKEN_IMAGE_MAP[
+                      token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
+                    ],
+                  type: AssetType.native,
+                }
+              : token;
           }
         }
       }
