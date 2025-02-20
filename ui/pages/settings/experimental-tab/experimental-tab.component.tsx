@@ -29,7 +29,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/design-system';
 
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 import { SurveyUrl } from '../../../../shared/constants/urls';
 ///: END:ONLY_INCLUDE_IF
 
