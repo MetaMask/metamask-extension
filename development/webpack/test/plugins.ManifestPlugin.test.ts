@@ -1,4 +1,4 @@
-import { describe, it } from 'node:test';
+import { describe, it, afterEach } from 'node:test';
 import assert from 'node:assert';
 import { join } from 'node:path';
 import { type Compilation } from 'webpack';
@@ -292,6 +292,8 @@ describe('ManifestPlugin', () => {
     const fs = require('node:fs');
     const { mock } = require('node:test');
     const { resolve } = require('node:path');
+
+    afterEach(() => mock.restoreAll());
 
     it('adds manifest flags in development mode with path provided and empty manifest', () => {
       mock.method(fs, 'readFileSync', (path: string, options: object) => {
