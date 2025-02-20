@@ -16,12 +16,27 @@ on:
   merge_group:
 
 jobs:
-  test-weird-case:
+  prep-deps:
     runs-on: ubuntu-latest
     steps:
       - name: Setup environment
         uses: metamask/github-tools/.github/actions/checkout-and-setup@caching2
         with:
-          should-cache-restore: 'true'
+          should-save-node-modules: 'true'
+
+  cache-yes:
+    runs-on: ubuntu-latest
+    needs: prep-deps
+    steps:
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@caching2
+
+      - run: ls
+
+  cache-no:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@caching2
 
       - run: ls
