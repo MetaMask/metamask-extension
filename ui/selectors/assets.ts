@@ -11,6 +11,7 @@ import { TEST_CHAINS } from '../../shared/constants/network';
 import { Token, TokenWithFiatAmount } from '../components/app/assets/types';
 import { calculateTokenBalance } from '../components/app/assets/util/calculateTokenBalance';
 import { calculateTokenFiatAmount } from '../components/app/assets/util/calculateTokenFiatAmount';
+import { useMultichainSelector } from '../hooks/useMultichainSelector';
 import {
   getCurrencyRates,
   getCurrentNetwork,
@@ -20,7 +21,11 @@ import {
   getPreferences,
   getTokensAcrossChainsByAccountAddressSelector,
 } from './selectors';
-import { getMultichainBalances } from './multichain';
+import {
+  getMultichainBalances,
+  getMultichainConversionRate,
+  getMultichainConversionRateSelector,
+} from './multichain';
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
@@ -157,7 +162,7 @@ export const getMultiChainAssets = createDeepEqualSelector(
   getAccountAssets,
   getAssetsMetadata,
   getAssetsRates,
-  (_state) => _state.metamask.conversionRates,
+  getMultichainConversionRateSelector,
   (
     selectedAccountAddress,
     multichainBalances,
@@ -173,10 +178,9 @@ export const getMultiChainAssets = createDeepEqualSelector(
       const isNative = assetDetails.split(':')[0] === 'slip44';
       const balance = balances?.[assetId] || { amount: '0', unit: '' };
       const rate = assetRates?.[assetId]?.rate || '0';
-      const nativeRate = multichainCoinRates?.[assetId]?.rate || '0';
       const balanceInFiat = new BigNumber(balance.amount).times(rate);
       const nativeBalanceInFiat = new BigNumber(balance.amount).times(
-        nativeRate,
+        multichainCoinRates,
       );
 
       const assetMetadataFallback = {
