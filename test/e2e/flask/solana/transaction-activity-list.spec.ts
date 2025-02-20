@@ -60,7 +60,7 @@ describe('Transaction activity list', function (this: Suite) {
 });
 
 describe.skip('Transaction activity list', function (this: Suite) {
-  // failed txs not supported yet
+  // failed txs not supported yet, https://consensyssoftware.atlassian.net/browse/SOL-174
   it('user can see activity list and a failed transaction details', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(

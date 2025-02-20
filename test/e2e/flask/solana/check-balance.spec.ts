@@ -34,6 +34,7 @@ describe('Check balance', function (this: Suite) {
     );
   });
   it.skip('For a non 0 balance account - USD balance', async function () {
+    // skipped due to https://consensyssoftware.atlassian.net/browse/SOL-173
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
