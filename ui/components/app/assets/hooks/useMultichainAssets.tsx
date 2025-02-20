@@ -1,10 +1,7 @@
 import { useSelector } from 'react-redux';
 import { CaipAssetId, Hex } from '@metamask/utils';
 import { getMultichainSelectedAccountCachedBalance } from '../../../../selectors/multichain';
-import {
-  getMultiChainAssets,
-  getSelectedInternalAccount,
-} from '../../../../selectors';
+import { getSelectedInternalAccount } from '../../../../selectors';
 import {
   TranslateFunction,
   networkTitleOverrides,
@@ -18,6 +15,7 @@ import {
   MultichainNetworks,
 } from '../../../../../shared/constants/multichain/networks';
 import { TokenWithFiatAmount } from '../types';
+import { getMultiChainAssets } from '../../../../selectors/assets';
 
 const useMultiChainAssets = () => {
   const t = useI18nContext();

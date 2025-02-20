@@ -7,7 +7,6 @@ import {
   getNewTokensImported,
   getPreferences,
   getSelectedAccount,
-  getTokenBalancesEvm,
 } from '../../../../selectors';
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { useTokenBalances as pollAndUpdateEvmBalances } from '../../../../hooks/useTokenBalances';
@@ -20,6 +19,7 @@ import {
   getMultichainIsEvm,
   getMultichainNetwork,
 } from '../../../../selectors/multichain';
+import { getTokenBalancesEvm } from '../../../../selectors/assets';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
