@@ -5126,6 +5126,7 @@ export async function setBitcoinTestnetSupportEnabled(value: boolean) {
   }
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(solana)
 export async function setSolanaSupportEnabled(value: boolean) {
   try {
     await submitRequestToBackground('setSolanaSupportEnabled', [value]);
@@ -5133,6 +5134,7 @@ export async function setSolanaSupportEnabled(value: boolean) {
     logErrorWithMessage(error);
   }
 }
+///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export async function setAddSnapAccountEnabled(value: boolean): Promise<void> {
