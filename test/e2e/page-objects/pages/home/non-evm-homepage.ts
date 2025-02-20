@@ -1,3 +1,5 @@
+import { strict as assert } from 'assert';
+import { By } from 'selenium-webdriver';
 import HomePage from './homepage';
 
 class NonEvmHomepage extends HomePage {
@@ -9,8 +11,26 @@ class NonEvmHomepage extends HomePage {
 
   protected readonly swapButton = '[data-testid="token-overview-button-swap"]';
 
-  async check_pageIsLoaded(): Promise<void> {
+  protected readonly balanceDiv =
+    '[data-testid="coin-overview__primary-currency"]';
+
+  async check_pageIsLoaded(amount: string = ''): Promise<void> {
     await super.check_pageIsLoaded();
+    if (amount) {
+      console.log('check_pageIsLoaded before waitForSelector');
+      try {
+        await this.driver.waitForSelector(
+          {
+            text: `${amount}`,
+            tag: 'span',
+          },
+          { timeout: 61000 }, // added this timeout because of this bug https://consensyssoftware.atlassian.net/browse/SOL-173
+        );
+        console.log('check_pageIsLoaded after waitForSelector');
+      } catch (e) {
+        console.log('Error in check_pageIsLoaded', e);
+      }
+    }
     await this.driver.delayFirefox(2000);
   }
 
@@ -30,14 +50,17 @@ class NonEvmHomepage extends HomePage {
    * @param balance
    */
   async check_getBalance(balance: string): Promise<void> {
-    console.log(`Getting Non-evm account balance`);
-    await this.driver.waitForSelector(
-      {
-        css: 'div',
-        text: balance,
-      },
-      { timeout: 5000 },
-    );
+    const div = await this.driver.findElement(By.css(this.balanceDiv), 61000); // There is a bug on the chrome job that runs on the snap and it gets updated after a minute
+    const spans = await div.findElements(By.css('span'));
+    // Extract and concatenate the inner text of the span elements
+    let innerText = '';
+    for (const span of spans) {
+      if (innerText) {
+        innerText += ' ';
+      }
+      innerText += await span.getText();
+    }
+    assert.equal(innerText, balance);
   }
 
   /**
