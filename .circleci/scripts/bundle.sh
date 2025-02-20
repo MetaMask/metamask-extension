@@ -38,7 +38,8 @@ export ENABLE_MV3=""
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 
 # 2. Activate nvm in lieu of restarting the shell
-\. "$HOME/.nvm/nvm.sh"
+# shellcheck disable=SC1091
+\. "${HOME}/.nvm/nvm.sh"
 
 # 3. Download and install Node.js 20.14.0
 nvm install 20.14.0
