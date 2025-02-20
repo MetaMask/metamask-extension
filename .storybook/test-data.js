@@ -10,7 +10,7 @@ import { copyable, divider, heading, panel, text } from '@metamask/snaps-sdk';
 import { getJsxElementFromComponent } from '@metamask/snaps-utils';
 import { FirstTimeFlowType } from '../shared/constants/onboarding';
 import { ETH_EOA_METHODS } from '../shared/constants/eth-methods';
-import { mockNetworkState } from '../test/stub/networks';
+import { mockNetworkState, mockMultichainNetworkState } from '../test/stub/networks';
 
 const state = {
   invalidCustomNetwork: {
@@ -325,6 +325,7 @@ const state = {
           options: {},
           methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
+          scopes: ['eip155:0'],
         },
         '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
           address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
@@ -351,6 +352,7 @@ const state = {
           options: {},
           methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
+          scopes: ['eip155:0'],
         },
         '784225f4-d30b-4e77-a900-c8bbce735b88': {
           address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
@@ -364,6 +366,7 @@ const state = {
           options: {},
           methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
+          scopes: ['eip155:0'],
         },
         'b990b846-b384-4508-93d9-587461f1123e': {
           address: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
@@ -377,6 +380,7 @@ const state = {
           options: {},
           methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
+          scopes: ['eip155:0'],
         },
       },
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
@@ -1283,6 +1287,7 @@ const state = {
         nickname: 'Localhost 8545',
       },
     ),
+    ...mockMultichainNetworkState(),
     accountTokens: {
       '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
         '0x1': [
