@@ -81,12 +81,12 @@ export function transformManifest(
   }
 
   function addTabsPermission(browserManifest: chrome.runtime.Manifest) {
-    if (browserManifest.permissions?.includes('tabs')) {
-      throw new Error(
-        "manifest contains 'tabs' already; this transform should be removed.",
-      );
-    }
     if (browserManifest.permissions) {
+      if (browserManifest.permissions.includes('tabs')) {
+        throw new Error(
+          "manifest contains 'tabs' already; this transform should be removed.",
+        );
+      }
       browserManifest.permissions.push('tabs');
     } else {
       browserManifest.permissions = ['tabs'];
