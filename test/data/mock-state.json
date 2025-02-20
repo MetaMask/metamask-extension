@@ -656,6 +656,22 @@
         "status": "available"
       }
     },
+    "multichainNetworkConfigurationsByChainId": {
+      "bip122:000000000019d6689c085ae165831e93": {
+        "chainId": "bip122:000000000019d6689c085ae165831e93",
+        "name": "Bitcoin Mainnet",
+        "nativeCurrency": "bip122:000000000019d6689c085ae165831e93/slip44:0",
+        "isEvm": false
+      },
+      "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": {
+        "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+        "name": "Solana Mainnet",
+        "nativeCurrency": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+        "isEvm": false
+      }
+    },
+    "selectedMultichainNetworkChainId": "bip122:000000000019d6689c085ae165831e93",
+    "isEvmSelected": true,
     "frequentRpcListDetail": [],
     "subjectMetadata": {
       "npm:@metamask/test-snap-bip44": {
