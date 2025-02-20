@@ -1,10 +1,10 @@
 import React from 'react';
 import { CaipChainId } from '@metamask/utils';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { useAccountCreationOnNetworkChange } from '../../../../hooks/accounts/useAccountCreationOnNetworkChange';
 import { toggleNetworkMenu } from '../../../../store/actions';
-import { getMultichainNetworkConfigurationsByChainId } from '../../../../selectors';
+import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../../shared/constants/multichain/networks';
 import {
   Box,
   Text,
@@ -26,9 +26,6 @@ const AddNonEvmAccountModal = ({ chainId }: { chainId: CaipChainId }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { createAccount } = useAccountCreationOnNetworkChange();
-  const multichainNetworks = useSelector(
-    getMultichainNetworkConfigurationsByChainId,
-  );
 
   return (
     <Box
@@ -41,7 +38,7 @@ const AddNonEvmAccountModal = ({ chainId }: { chainId: CaipChainId }) => {
       <Box paddingLeft={4} paddingRight={4}>
         <Text textAlign={TextAlign.Left} variant={TextVariant.bodyMd}>
           {t('addNonEvmAccountFromNetworkPicker', [
-            multichainNetworks[chainId].name,
+            MULTICHAIN_NETWORK_TO_NICKNAME[chainId],
           ])}
         </Text>
       </Box>

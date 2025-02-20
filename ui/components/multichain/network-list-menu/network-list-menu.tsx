@@ -38,7 +38,10 @@ import {
   FEATURED_RPCS,
   TEST_CHAINS,
 } from '../../../../shared/constants/network';
-import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../../shared/constants/multichain/networks';
+import {
+  MULTICHAIN_TOKEN_IMAGE_MAP,
+  MULTICHAIN_NETWORK_TO_NICKNAME,
+} from '../../../../shared/constants/multichain/networks';
 import {
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
@@ -669,11 +672,12 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     title = t('addBlockExplorerUrl');
   } else if (actionMode === ACTION_MODE.SELECT_RPC) {
     title = t('selectRpcUrl');
-  } else if (actionMode === ACTION_MODE.ADD_NON_EVM_ACCOUNT) {
+  } else if (
+    actionMode === ACTION_MODE.ADD_NON_EVM_ACCOUNT &&
+    selectedNonEvmNetwork
+  ) {
     title = t('addNonEvmAccount', [
-      selectedNonEvmNetwork
-        ? multichainNetworks[selectedNonEvmNetwork].name
-        : '',
+      MULTICHAIN_NETWORK_TO_NICKNAME[selectedNonEvmNetwork],
     ]);
   } else {
     title = editedNetwork?.name ?? '';
