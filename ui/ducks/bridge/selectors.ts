@@ -8,6 +8,7 @@ import { createSelector } from 'reselect';
 import type { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
+import type { Hex } from '@metamask/utils';
 import {
   getIsBridgeEnabled,
   getMarketData,
@@ -54,6 +55,10 @@ import {
   FEATURED_RPCS,
 } from '../../../shared/constants/network';
 import {
+  MultichainNetworks,
+  MULTICHAIN_PROVIDER_CONFIGS,
+} from '../../../shared/constants/multichain/networks';
+import {
   exchangeRatesFromNativeAndCurrencyRates,
   exchangeRateFromMarketData,
   tokenPriceInNativeAsset,
@@ -79,7 +84,21 @@ export const getAllBridgeableNetworks = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
   (networkConfigurationsByChainId) => {
     return uniqBy(
-      Object.values(networkConfigurationsByChainId),
+      [
+        ...Object.values(networkConfigurationsByChainId),
+        ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+        // TODO: get this from network controller, use placeholder values for now
+        {
+          ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
+          blockExplorerUrls: [],
+          name: '',
+          nativeCurrency: 'sol',
+          rpcEndpoints: [{ url: '', type: '', networkClientId: '' }],
+          defaultRpcEndpointIndex: 0,
+          chainId: MultichainNetworks.SOLANA as unknown as Hex,
+        } as unknown as NetworkConfiguration,
+        ///: END:ONLY_INCLUDE_IF
+      ],
       'chainId',
     ).filter(({ chainId }) =>
       ALLOWED_BRIDGE_CHAIN_IDS.includes(
@@ -93,12 +112,17 @@ export const getFromChains = createDeepEqualSelector(
   getAllBridgeableNetworks,
   (state: BridgeAppState) => state.metamask.bridgeState?.bridgeFeatureFlags,
   (allBridgeableNetworks, bridgeFeatureFlags) =>
-    allBridgeableNetworks.filter(
-      ({ chainId }) =>
+    allBridgeableNetworks.filter(({ chainId }) => {
+      let isEnabled;
+      isEnabled =
         bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].chains[
           chainId
-        ]?.isActiveSrc,
-    ),
+        ]?.isActiveSrc;
+      ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+      isEnabled = isEnabled || chainId.toString() === MultichainNetworks.SOLANA;
+      ///: END:ONLY_INCLUDE_IF
+      return isEnabled;
+    }),
 );
 
 export const getFromChain = createDeepEqualSelector(
@@ -121,10 +145,18 @@ export const getToChains = createDeepEqualSelector(
     bridgeFeatureFlags,
   ): (AddNetworkFields | NetworkConfiguration)[] =>
     uniqBy([...allBridgeableNetworks, ...FEATURED_RPCS], 'chainId').filter(
-      ({ chainId }) =>
-        bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].chains[
-          chainId
-        ]?.isActiveDest,
+      ({ chainId }) => {
+        let isEnabled;
+        isEnabled =
+          bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].chains[
+            chainId
+          ]?.isActiveDest;
+        ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+        isEnabled =
+          isEnabled || chainId.toString() === MultichainNetworks.SOLANA;
+        ///: END:ONLY_INCLUDE_IF
+        return isEnabled;
+      },
     ),
 );
 
