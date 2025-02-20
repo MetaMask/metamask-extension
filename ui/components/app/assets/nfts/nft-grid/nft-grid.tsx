@@ -1,7 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
-import { Display } from '../../../../../helpers/constants/design-system';
+import {
+  AlignItems,
+  Display,
+  JustifyContent,
+} from '../../../../../helpers/constants/design-system';
 import { Box } from '../../../../component-library';
 import Spinner from '../../../../ui/spinner';
 import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
@@ -99,15 +103,21 @@ export default function NftGrid({
             </Box>
           );
         })}
-        {nftsStillFetchingIndication ? (
-          <Box className="nfts-tab__fetching">
-            <Spinner
-              color="var(--color-warning-default)"
-              className="loading-overlay__spinner"
-            />
-          </Box>
-        ) : null}
       </Box>
+      {nftsStillFetchingIndication ? (
+        <Box
+          className="nfts-tab__fetching"
+          justifyContent={JustifyContent.center}
+          alignItems={AlignItems.center}
+          display={Display.Flex}
+          marginTop={4}
+        >
+          <Spinner
+            color="var(--color-warning-default)"
+            className="loading-overlay__spinner"
+          />
+        </Box>
+      ) : null}
     </Box>
   );
 }
