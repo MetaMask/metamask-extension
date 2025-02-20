@@ -1,7 +1,12 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { ChainId } from '@metamask/controller-utils';
-import { isStrictHexString, type CaipChainId, type Hex } from '@metamask/utils';
+import {
+  type CaipChainId,
+  isStrictHexString,
+  type Hex,
+  isCaipChainId,
+} from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
 import {
   getAllDetectedTokensForSelectedAddress,
@@ -23,8 +28,12 @@ import { Token } from '../../components/app/assets/types';
 import { useMultichainBalances } from '../useMultichainBalances';
 import { useAsyncResult } from '../useAsyncResult';
 import { fetchTopAssetsList } from '../../pages/swaps/swaps.util';
-import { fetchBridgeTokens } from '../../../shared/modules/bridge-utils/bridge.util';
+import {
+  fetchBridgeTokens,
+  fetchNonEvmTokens,
+} from '../../../shared/modules/bridge-utils/bridge.util';
 import { MINUTE } from '../../../shared/constants/time';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 
 type FilterPredicate = (
   symbol: string,
@@ -64,6 +73,9 @@ export const useTokensWithFiltering = (
         return cachedTokens[chainId]?.data;
       }
       // Otherwise fetch new token data
+      if (isCaipChainId(chainId)) {
+        return await fetchNonEvmTokens(chainId);
+      }
       return await fetchBridgeTokens(chainId);
     }
     return {};
@@ -73,6 +85,38 @@ export const useTokensWithFiltering = (
     { address: string }[]
   >(async () => {
     if (chainId) {
+      if (isCaipChainId(chainId)) {
+        return {
+          [MultichainNetworks.SOLANA]: [
+            {
+              address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+            },
+            {
+              address: '6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN',
+            },
+            {
+              address: 'JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN',
+            },
+            {
+              address:
+                '7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxsDx8F8k8k3uYw1PDC',
+            },
+            {
+              address: '3iQL8BFS2vE7mww4ehAqQHAsbmRNCrPxizWAT2Zfyr9y',
+            },
+            {
+              address: '9zNQRsGLjNKwCUU5Gq5LR8beUCPzQMVMqKAi3SSZh54u',
+            },
+            {
+              address: 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263',
+            },
+            {
+              address: 'rndrizKT3MK1iimdxRdWabcF7Zg7AR5T4nud4EkHBof',
+            },
+            { address: '21AErpiB8uSb94oQKRcwuHqyHF93njAxBSbdUrpupump' },
+          ],
+        }[chainId];
+      }
       return await fetchTopAssetsList(chainId);
     }
     return [];
@@ -193,24 +237,54 @@ export const useTokensWithFiltering = (
           }
         }
 
-        // Yield all detected tokens for all supported chains
-        for (const token of Object.values(allDetectedTokens).flat()) {
-          if (
-            shouldAddToken(
-              token.symbol,
-              token.address ?? undefined,
-              token.chainId,
-            )
-          ) {
-            yield {
-              ...token,
-              type: AssetType.token,
-              // Balance is not 0 but is not in the data so hardcode 0
-              // If a detected token is selected useLatestBalance grabs the on-chain balance
-              balance: '',
-              string: undefined,
-            };
+        if (chainId === MultichainNetworks.SOLANA) {
+          // Yield topTokens from selected chain
+          for (const token_ of topTokens) {
+            const assetId = `${chainId}/token:${token_.address}`;
+            const matchedToken = tokenList?.[assetId];
+            if (
+              matchedToken &&
+              shouldAddToken(matchedToken.symbol, matchedToken.assetId, chainId)
+            ) {
+              yield {
+                ...matchedToken,
+                type: AssetType.token,
+                image: `https://static.cx.metamask.io/api/v2/tokenIcons/assets/${assetId.replaceAll(
+                  ':',
+                  '/',
+                )}.png`,
+                // Only tokens with 0 balance are processed here so hardcode empty string
+                balance: '',
+                string: undefined,
+                address: assetId,
+                chainId,
+              };
+            }
           }
+
+          // Yield other tokens from selected chain
+          for (const token_ of Object.values(tokenList)) {
+            if (
+              token_ &&
+              !token_.symbol.includes('$') &&
+              shouldAddToken(token_.symbol, token_.assetId, chainId)
+            ) {
+              yield {
+                ...token_,
+                type: AssetType.token,
+                image: `https://static.cx.metamask.io/api/v2/tokenIcons/assets/${token_.assetId?.replaceAll(
+                  ':',
+                  '/',
+                )}.png`,
+                // Only tokens with 0 balance are processed here so hardcode empty string
+                balance: '',
+                string: undefined,
+                address: token_.assetId,
+                chainId,
+              };
+            }
+          }
+          return;
         }
 
         // Yield topTokens from selected chain
