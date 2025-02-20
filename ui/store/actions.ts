@@ -444,7 +444,7 @@ export function importNewAccount(
 }
 
 export function addNewAccount(
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   keyringId?: string,
   ///: END:ONLY_INCLUDE_IF
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
