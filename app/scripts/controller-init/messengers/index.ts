@@ -25,6 +25,14 @@ import {
   getMultichainNetworkControllerMessenger,
   getMultiChainAssetsRatesControllerMessenger,
 } from './multichain';
+import {
+  getSampleGasPricesControllerMessenger,
+  getSampleGasPricesControllerInitMessenger,
+} from './sample-gasprices-controller-messenger';
+import {
+  getSamplePetnamesControllerMessenger,
+  getSamplePetnamesControllerInitMessenger,
+} from './sample-petnames-controller-messenger';
 
 export const CONTROLLER_MESSENGERS = {
   CronjobController: {
@@ -34,6 +42,14 @@ export const CONTROLLER_MESSENGERS = {
   ExecutionService: {
     getMessenger: getExecutionServiceMessenger,
     getInitMessenger: noop,
+  },
+  SampleGasPricesController: {
+    getMessenger: getSampleGasPricesControllerMessenger,
+    getInitMessenger: getSampleGasPricesControllerInitMessenger,
+  },
+  SamplePetnamesController: {
+    getMessenger: getSamplePetnamesControllerMessenger,
+    getInitMessenger: getSamplePetnamesControllerInitMessenger,
   },
   MultichainAssetsController: {
     getMessenger: getMultichainAssetsControllerMessenger,
