@@ -139,7 +139,7 @@ export class TestSnaps {
   }
 
   async check_clientStatus(expectedStatus: string): Promise<void> {
-    console.log(`Check that client status should ${expectedStatus}`);
+    console.log(`Checking that the client status should be ${expectedStatus}`);
     await this.driver.waitForSelector({
       css: this.statusResultSpan,
       text: expectedStatus,
