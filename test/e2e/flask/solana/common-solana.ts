@@ -45,6 +45,7 @@ export const commonSolanaAddress =
   '3xTPAZxmpwd8GrNEKApaTw6VH4jqJ31WFXUvQzgwhR7c';
 
 export const commonSolanaTxConfirmedDetailsFixture = {
+<<<<<<< HEAD
   status: 'Confirmed',
   amount: '0.00707856 SOL',
   networkFee: '0.000005 SOL',
@@ -53,6 +54,15 @@ export const commonSolanaTxConfirmedDetailsFixture = {
   txHash:
     '3AcYfpsSaFYogY4Y4YN77MkhDgVBEgUe1vuEeqKnCMm5udTrFCyw9w17mNM8DUnHnQD2VHRFeipMUb27Q3iqMQJr',
 };
+=======
+    status: 'Confirmed',
+    amount: '0.00707856 SOL',
+    networkFee: '0.000005 SOL',
+    fromAddress: 'HH9ZzgQvSVmznKcRfwHuEphuxk7zU5f92CkXFDQfVJcq',
+    toAddress: 'AL9Z5JgZdeCKnaYg6jduy9PQGzo3moo7vZYVSTJwnSEq',
+    txHash: '3AcYfpsSaFYogY4Y4YN77MkhDgVBEgUe1vuEeqKnCMm5udTrFCyw9w17mNM8DUnHnQD2VHRFeipMUb27Q3iqMQJr',
+}
+>>>>>>> 556513c8a6 (feat: fix conflicts)
 
 export async function mockClientSideDetectionApi(mockServer: Mockttp) {
   return await mockServer
@@ -1159,6 +1169,7 @@ export async function mockGetFailedTransaction(mockServer: Mockttp) {
       },
     },
   };
+
   return await mockServer
     .forPost(SOLANA_URL_REGEX)
     .withBodyIncluding('getTransaction')
@@ -1564,6 +1575,7 @@ export async function withSolanaAccountSnap(
     mockGetTransactionSuccess,
     mockGetTransactionFailed,
   }: {
+
     title?: string;
     solanaSupportEnabled?: boolean;
     showNativeTokenAsMainBalance?: boolean;
