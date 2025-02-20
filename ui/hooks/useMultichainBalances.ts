@@ -192,7 +192,7 @@ const useNonEvmAssetsWithBalances = (): (Omit<
         return {
           chainId: caipChainId as `${string}:${string}`,
           symbol: assetMetadataById[caipAssetId]?.symbol ?? '',
-          address: address as `${string}:${string}`,
+          address: caipAssetId,
           string: balancesByAssetId[caipAssetId]?.amount ?? '0',
           balance: balancesByAssetId[caipAssetId]?.amount ?? '0',
           decimals: assetMetadataById[caipAssetId]?.units[0]?.decimals,
