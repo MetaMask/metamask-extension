@@ -63,7 +63,7 @@ exports[`NetworkListMenu renders properly 1`] = `
               class="mm-box mm-box--padding-top-0 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4"
             >
               <div
-                class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--truncate mm-text-field-search mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default mm-box--rounded-md mm-box--border-width-1 box--border-style-solid"
+                class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--focused mm-text-field--truncate mm-text-field-search mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default mm-box--rounded-md mm-box--border-width-1 box--border-style-solid"
                 data-testid="search-list"
               >
                 <span
@@ -74,7 +74,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                   autocomplete="off"
                   class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--margin-right-6 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
                   data-testid="network-redesign-modal-search-input"
-                  focused="false"
+                  focused="true"
                   placeholder="Search"
                   type="search"
                   value=""
@@ -102,19 +102,16 @@ exports[`NetworkListMenu renders properly 1`] = `
                   aria-describedby="rbd-hidden-text-0-hidden-text-0"
                   class="mm-box"
                   data-rbd-drag-handle-context-id="0"
-                  data-rbd-drag-handle-draggable-id="0x1"
+                  data-rbd-drag-handle-draggable-id="eip155:1"
                   data-rbd-draggable-context-id="0"
-                  data-rbd-draggable-id="0x1"
+                  data-rbd-draggable-id="eip155:1"
                   draggable="false"
                   role="button"
                   tabindex="0"
                 >
                   <div
-                    class="mm-box multichain-network-list-item multichain-network-list-item--selected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-primary-muted"
+                    class="mm-box multichain-network-list-item mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
                   >
-                    <div
-                      class="mm-box multichain-network-list-item__selected-indicator mm-box--background-color-primary-default mm-box--rounded-pill"
-                    />
                     <div
                       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                     >
@@ -154,7 +151,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                     <button
                       aria-label="Network options"
                       class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-                      data-testid="network-list-item-options-button-0x1"
+                      data-testid="network-list-item-options-button-undefined"
                     >
                       <span
                         class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -167,9 +164,9 @@ exports[`NetworkListMenu renders properly 1`] = `
                   aria-describedby="rbd-hidden-text-0-hidden-text-0"
                   class="mm-box"
                   data-rbd-drag-handle-context-id="0"
-                  data-rbd-drag-handle-draggable-id="0xe708"
+                  data-rbd-drag-handle-draggable-id="eip155:59144"
                   data-rbd-draggable-context-id="0"
-                  data-rbd-draggable-id="0xe708"
+                  data-rbd-draggable-id="eip155:59144"
                   draggable="false"
                   role="button"
                   tabindex="0"
@@ -216,7 +213,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                     <button
                       aria-label="Network options"
                       class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-                      data-testid="network-list-item-options-button-0xe708"
+                      data-testid="network-list-item-options-button-undefined"
                     >
                       <span
                         class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -229,9 +226,9 @@ exports[`NetworkListMenu renders properly 1`] = `
                   aria-describedby="rbd-hidden-text-0-hidden-text-0"
                   class="mm-box"
                   data-rbd-drag-handle-context-id="0"
-                  data-rbd-drag-handle-draggable-id="0x38"
+                  data-rbd-drag-handle-draggable-id="eip155:56"
                   data-rbd-draggable-context-id="0"
-                  data-rbd-draggable-id="0x38"
+                  data-rbd-draggable-id="eip155:56"
                   draggable="false"
                   role="button"
                   tabindex="0"
@@ -278,7 +275,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                     <button
                       aria-label="Network options"
                       class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-                      data-testid="network-list-item-options-button-0x38"
+                      data-testid="network-list-item-options-button-undefined"
                     >
                       <span
                         class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -291,9 +288,9 @@ exports[`NetworkListMenu renders properly 1`] = `
                   aria-describedby="rbd-hidden-text-0-hidden-text-0"
                   class="mm-box"
                   data-rbd-drag-handle-context-id="0"
-                  data-rbd-drag-handle-draggable-id="0x5"
+                  data-rbd-drag-handle-draggable-id="eip155:5"
                   data-rbd-draggable-context-id="0"
-                  data-rbd-draggable-id="0x5"
+                  data-rbd-draggable-id="eip155:5"
                   draggable="false"
                   role="button"
                   tabindex="0"
@@ -336,7 +333,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                     <button
                       aria-label="Network options"
                       class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-                      data-testid="network-list-item-options-button-0x5"
+                      data-testid="network-list-item-options-button-undefined"
                     >
                       <span
                         class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
