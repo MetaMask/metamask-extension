@@ -441,7 +441,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         }}
         onDeleteClick={isDeletable ? () => onDelete() : undefined}
         onEditClick={isEditable ? () => onEdit() : undefined}
-        onRpcEndpointClick={network.isEvm ? undefined : onRpcConfigEdit}
+        onRpcEndpointClick={network.isEvm ? onRpcConfigEdit : undefined}
         disabled={!isUnlocked && !network.isEvm}
       />
     );
