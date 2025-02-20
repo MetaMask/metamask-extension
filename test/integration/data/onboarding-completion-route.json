@@ -165,6 +165,14 @@
       "accounts": ["0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189"]
     }
   ],
+  "knownMethodData": {},
+  "lastFetchedBlockNumbers": {},
+  "lastUpdated": null,
+  "ledgerTransportType": "u2f",
+  "logs": {},
+  "lostIdentities": {},
+  "metaMetricsId": "0x4d6d78a255217af6411a5bbd39e31b5e46e0e920bdf7e979470f316cbe8c00eb",
+  "methodData": {},
   "multichainNetworkConfigurationsByChainId": {
     "bip122:000000000019d6689c085ae165831e93": {
       "chainId": "bip122:000000000019d6689c085ae165831e93",
@@ -179,14 +187,6 @@
       "isEvm": false
     }
   },
-  "knownMethodData": {},
-  "lastFetchedBlockNumbers": {},
-  "lastUpdated": null,
-  "ledgerTransportType": "u2f",
-  "logs": {},
-  "lostIdentities": {},
-  "metaMetricsId": "0x4d6d78a255217af6411a5bbd39e31b5e46e0e920bdf7e979470f316cbe8c00eb",
-  "methodData": {},
   "nameSources": {},
   "names": {
     "ethereumAddress": {
