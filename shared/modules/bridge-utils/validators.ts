@@ -60,6 +60,16 @@ export const TOKEN_AGGREGATOR_VALIDATORS = [
   },
 ];
 
+export const ASSET_VALIDATORS = [
+  { property: 'decimals', type: 'number' },
+  { property: 'assetId', type: 'string', validator: isValidString },
+  {
+    property: 'symbol',
+    type: 'string',
+    validator: (v: unknown) => isValidString(v) && v.length <= 12,
+  },
+];
+
 export const TOKEN_VALIDATORS = [
   { property: 'decimals', type: 'number' },
   { property: 'address', type: 'string', validator: isValidString },

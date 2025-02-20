@@ -193,7 +193,7 @@ const PrepareBridgePage = () => {
   const {
     filteredTokenListGenerator: toTokenListGenerator,
     isLoading: isToTokensLoading,
-  } = useTokensWithFiltering(toChain?.chainId);
+  } = useTokensWithFiltering(toChain?.chainId ?? fromChain?.chainId);
 
   const { flippedRequestProperties } = useRequestProperties();
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
@@ -582,10 +582,7 @@ const PrepareBridgePage = () => {
                 }
           }
           customTokenListGenerator={
-            // TODO use custom generator when we have a way to get all tokens for an unimported chain
-            toChain && toChain.chainId !== MultichainNetworks.SOLANA
-              ? toTokenListGenerator
-              : undefined
+            toChain || isSwap ? toTokenListGenerator : undefined
           }
           amountInFiat={
             activeQuote?.toTokenAmount?.valueInCurrency || undefined
