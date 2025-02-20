@@ -4,8 +4,10 @@ import {
   NetworkStatus,
   RpcEndpointType,
 } from '@metamask/network-controller';
+import { type MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 import { v4 as uuidv4 } from 'uuid';
 import { Hex } from '@metamask/utils';
+import { BtcScope } from '@metamask/keyring-api';
 import {
   NETWORK_TO_NAME_MAP,
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
@@ -71,6 +73,22 @@ export const mockNetworkStateOld = (
     networksMetadata,
   };
 };
+
+export const mockMultichainNetworkState =
+  (): MultichainNetworkControllerState => {
+    return {
+      multichainNetworkConfigurationsByChainId: {
+        [BtcScope.Mainnet]: {
+          chainId: BtcScope.Mainnet,
+          name: 'Bitcoin Mainnet',
+          nativeCurrency: `${BtcScope.Mainnet}/slip44:0`,
+          isEvm: false,
+        },
+      },
+      selectedMultichainNetworkChainId: BtcScope.Mainnet,
+      isEvmSelected: true,
+    };
+  };
 
 export const mockNetworkState = (
   ...networks: {

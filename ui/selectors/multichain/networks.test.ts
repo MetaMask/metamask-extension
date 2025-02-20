@@ -34,7 +34,7 @@ const mockNonEvmNetworks: Record<CaipChainId, MultichainNetworkConfiguration> =
     [SolScope.Mainnet]: {
       chainId: SolScope.Mainnet,
       name: 'Solana Mainnet',
-      nativeCurrency: `${SolScope.Mainnet}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`,
+      nativeCurrency: `${SolScope.Mainnet}/slip44:501`,
       isEvm: false,
     },
     [BtcScope.Mainnet]: {

@@ -2,7 +2,7 @@ import {
   type MultichainNetworkControllerState as InternalMultichainNetworkState,
   type MultichainNetworkConfiguration as InternalMultichainNetworkConfiguration,
   toEvmCaipChainId,
-  toMultichainNetworkConfigurationsByChainId,
+  toMultichainNetworkConfiguration,
 } from '@metamask/multichain-network-controller';
 import { type NetworkConfiguration as InternalNetworkConfiguration } from '@metamask/network-controller';
 import { type CaipChainId, BtcScope, SolScope } from '@metamask/keyring-api';
@@ -124,11 +124,25 @@ export const getMultichainNetworkConfigurationsByChainId =
           nonEvmNetworkConfigurationsByChainId[SolScope.Mainnet];
       }
 
+      // There's a fallback for EVM network names/nicknames, in case the network
+      // does not have a name/nickname the fallback is the first rpc endpoint url.
+      // To do: Update toMultichainNetworkConfigurationsByChainId to handle this case.
+      const evmNetworks = Object.entries(networkConfigurationsByChainId).reduce(
+        (acc, [, network]) => ({
+          ...acc,
+          [toEvmCaipChainId(network.chainId)]: {
+            ...toMultichainNetworkConfiguration(network),
+            name:
+              network.name ||
+              network.rpcEndpoints[network.defaultRpcEndpointIndex].url,
+          },
+        }),
+        {},
+      );
+
       const networks = {
         ...filteredNonEvmNetworkConfigurationsByChainId,
-        ...toMultichainNetworkConfigurationsByChainId(
-          networkConfigurationsByChainId,
-        ),
+        ...evmNetworks,
       };
 
       return networks;
