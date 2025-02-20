@@ -44,7 +44,7 @@ export const formatChainIdToDec = (chainId: number | Hex | CaipChainId) => {
   return chainId;
 };
 
-export const formatChainIdToHex = (chainId: number | Hex | CaipChainId) => {
+export const formatChainIdToHex = (chainId?: number | Hex | CaipChainId) => {
   if (isStrictHexString(chainId)) {
     return chainId;
   }

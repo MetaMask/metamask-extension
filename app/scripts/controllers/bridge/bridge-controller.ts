@@ -18,7 +18,6 @@ import {
 } from '../../../../shared/modules/conversion.utils';
 import {
   type L1GasFees,
-  type QuoteRequest,
   type QuoteResponse,
   type TxData,
   type BridgeControllerState,
@@ -29,6 +28,11 @@ import { isValidQuoteRequest } from '../../../../shared/modules/bridge-utils/quo
 import { hasSufficientBalance } from '../../../../shared/modules/bridge-utils/balance';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { REFRESH_INTERVAL_MS } from '../../../../shared/constants/bridge';
+import {
+  formatAddressToString,
+  formatChainIdToHex,
+} from '../../../../shared/modules/bridge-utils/caip-formatters';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
   BRIDGE_CONTROLLER_NAME,
   DEFAULT_BRIDGE_STATE,
@@ -141,15 +145,19 @@ export default class BridgeController extends StaticIntervalPollingController<Br
 
     if (isValidQuoteRequest(updatedQuoteRequest)) {
       this.#quotesFirstFetched = Date.now();
-      const srcChainIdInHex = updatedQuoteRequest.srcChainId.toString(); // add0x(
-      //   decimalToHex(updatedQuoteRequest.srcChainId),
-      // );
+      const srcChainIdString = updatedQuoteRequest.srcChainId.toString();
 
-      const { insufficientBal } = paramsToUpdate;
-      // ||
-      // !(await this.#hasSufficientBalance(updatedQuoteRequest));
+      // Query the balance of the source token if the source chain is an EVM chain
+      let insufficientBal: boolean | undefined;
+      if (srcChainIdString === MultichainNetworks.SOLANA) {
+        insufficientBal = paramsToUpdate.insufficientBal;
+      } else {
+        insufficientBal =
+          paramsToUpdate.insufficientBal ||
+          !(await this.#hasSufficientBalance(updatedQuoteRequest));
+      }
 
-      const networkClientId = srcChainIdInHex; // this.#getSelectedNetworkClientId(srcChainIdInHex);
+      const networkClientId = srcChainIdString;
       this.startPolling({
         networkClientId,
         updatedQuoteRequest: {
@@ -160,17 +168,25 @@ export default class BridgeController extends StaticIntervalPollingController<Br
     }
   };
 
-  #hasSufficientBalance = async (quoteRequest: QuoteRequest) => {
+  #hasSufficientBalance = async (
+    quoteRequest: BridgeControllerState['bridgeState']['quoteRequest'],
+  ) => {
     const walletAddress = this.#getSelectedAccount().address;
-    const srcChainIdInHex = add0x(decimalToHex(quoteRequest.srcChainId));
+    const srcChainIdInHex = formatChainIdToHex(quoteRequest.srcChainId);
     const provider = this.#getSelectedNetworkClient()?.provider;
+    const srcTokenAddressWithoutPrefix = formatAddressToString(
+      quoteRequest.srcTokenAddress,
+    );
 
     return (
       provider &&
+      srcTokenAddressWithoutPrefix &&
+      quoteRequest.srcTokenAmount &&
+      srcChainIdInHex &&
       (await hasSufficientBalance(
         provider,
         walletAddress,
-        quoteRequest.srcTokenAddress,
+        srcTokenAddressWithoutPrefix,
         quoteRequest.srcTokenAmount,
         srcChainIdInHex,
       ))
