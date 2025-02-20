@@ -170,7 +170,9 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     () =>
       Object.entries(multichainNetworks).reduce(
         ([nonTestNetworksList, testNetworksList], [id, network]) => {
-          const chainId = network.isEvm ? convertCaipToHexChainId(id) : id;
+          const chainId = network.isEvm
+            ? convertCaipToHexChainId(id as CaipChainId)
+            : id;
           const isTest = (TEST_CHAINS as string[]).includes(chainId);
           (isTest ? testNetworksList : nonTestNetworksList)[chainId] = network;
           return [nonTestNetworksList, testNetworksList];
