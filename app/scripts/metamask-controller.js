@@ -153,7 +153,6 @@ import {
   setEthAccounts,
   addPermittedEthChainId,
 } from '@metamask/multichain';
-import { isProduction } from '../../shared/modules/environment';
 import {
   methodsRequiringNetworkSwitch,
   methodsThatCanSwitchNetworkWithoutApproval,
