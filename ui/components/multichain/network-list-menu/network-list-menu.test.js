@@ -4,7 +4,6 @@ import { RpcEndpointType } from '@metamask/network-controller';
 import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-import { mockMultichainNetworkState } from '../../../../test/stub/networks';
 import {
   CHAIN_IDS,
   MAINNET_DISPLAY_NAME,
