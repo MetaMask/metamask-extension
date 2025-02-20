@@ -4,7 +4,7 @@ import {
 } from '@metamask/assets-controllers';
 import { BigNumber } from 'bignumber.js';
 import { CaipAssetId } from '@metamask/keyring-api';
-import { Hex } from '@metamask/utils';
+import { Hex, parseCaipAssetType } from '@metamask/utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { getTokenBalances } from '../ducks/metamask/metamask';
 import { TEST_CHAINS } from '../../shared/constants/network';
@@ -62,6 +62,8 @@ export function getAssetsMetadata(state: AssetsState) {
 export function getAssetsRates(state: AssetsRatesState) {
   return state.metamask.conversionRates;
 }
+
+const NON_EVM_TOKEN_NAMESPACE = 'token';
 
 export const getTokenBalancesEvm = createDeepEqualSelector(
   getTokensAcrossChainsByAccountAddressSelector,
@@ -172,8 +174,8 @@ export const getMultiChainAssets = createDeepEqualSelector(
     const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
     const balances = multichainBalances?.[selectedAccountAddress.id];
     return assetIds.map((assetId: CaipAssetId) => {
-      const [chainId, assetDetails] = assetId.split('/');
-      const isNative = assetDetails.split(':')[0] === 'slip44';
+      const { chainId, assetNamespace } = parseCaipAssetType(assetId);
+      const isNative = assetNamespace !== NON_EVM_TOKEN_NAMESPACE;
       const balance = balances?.[assetId] || { amount: '0', unit: '' };
       const rate = assetRates?.[assetId]?.rate || '0';
       const balanceInFiat = new BigNumber(balance.amount).times(rate);

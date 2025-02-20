@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { CaipAssetId, Hex } from '@metamask/utils';
+import { Hex } from '@metamask/utils';
 import { getMultichainSelectedAccountCachedBalance } from '../../../../selectors/multichain';
 import { getSelectedInternalAccount } from '../../../../selectors';
 import {
@@ -51,10 +51,6 @@ const useMultiChainAssets = () => {
   }
 
   return multichainAssets.map((asset: TokenWithFiatAmount) => {
-    const assetId = asset.address as CaipAssetId;
-    const assetDetails = assetId.split('/')[1];
-    const isToken = assetDetails.split(':')[0] === 'token';
-
     const fiatAmount = formatWithThreshold(asset.secondary, 0.01, locale, {
       style: 'currency',
       currency: currentCurrency.toUpperCase(),
@@ -62,11 +58,12 @@ const useMultiChainAssets = () => {
 
     return {
       ...asset,
-      title: isToken
-        ? asset.title
-        : networkTitleOverrides(t as TranslateFunction, {
+      title: asset.isNative
+        ? networkTitleOverrides(t as TranslateFunction, {
             title: asset.title,
-          }),
+          })
+        : asset.title,
+
       secondary: fiatAmount, // secondary balance (usually in fiat)
     };
   });
