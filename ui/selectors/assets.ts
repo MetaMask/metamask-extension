@@ -16,9 +16,9 @@ import {
   getCurrentNetwork,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getMarketData,
+  getNativeTokenCachedBalanceByChainIdSelector,
   getPreferences,
-  getSelectedAccountNativeTokenCachedBalanceByChainId,
-  getSelectedAccountTokensAcrossChains,
+  getTokensAcrossChainsByAccountAddressSelector,
 } from './selectors';
 import { getMultichainBalances } from './multichain';
 
@@ -61,8 +61,8 @@ export function getAssetsRates(state: AssetsRatesState) {
 }
 
 export const getTokenBalancesEvm = createDeepEqualSelector(
-  getSelectedAccountTokensAcrossChains,
-  getSelectedAccountNativeTokenCachedBalanceByChainId,
+  getTokensAcrossChainsByAccountAddressSelector,
+  getNativeTokenCachedBalanceByChainIdSelector,
   getTokenBalances,
   (_state, accountAddress) => accountAddress,
   getMarketData,

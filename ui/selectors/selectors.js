@@ -634,6 +634,104 @@ export function getSelectedAccountTokensAcrossChains(state) {
 }
 
 /**
+ * Get the native token balance for a given account address and chainId
+ *
+ * @param {object} state - Redux state
+ * @param {string} accountAddress - The address of the account
+ * @param {string} chainId - The chainId of the account
+ */
+export const getNativeTokenCachedBalanceByChainIdSelector = createSelector(
+  (state) => state,
+  (_state, accountAddress) => accountAddress,
+  (state, accountAddress) =>
+    getNativeTokenCachedBalanceByChainIdByAccountAddress(state, accountAddress),
+);
+
+/**
+ * Get the tokens across chains for a given account address
+ *
+ * @param {object} state - Redux state
+ * @param {string} accountAddress - The address of the account
+ */
+export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
+  (state) => state,
+  (_state, accountAddress) => accountAddress,
+  (state, accountAddress) =>
+    getTokensAcrossChainsByAccountAddress(state, accountAddress),
+);
+
+/**
+ * Get the native token balance for a given account address and chainId
+ *
+ * @param {object} state - Redux state
+ * @param {string} selectedAddress - The address of the selected account
+ */
+export function getNativeTokenCachedBalanceByChainIdByAccountAddress(
+  state,
+  selectedAddress,
+) {
+  const { accountsByChainId } = state.metamask;
+
+  const balancesByChainId = {};
+  for (const [chainId, accounts] of Object.entries(accountsByChainId || {})) {
+    if (accounts[selectedAddress]) {
+      balancesByChainId[chainId] = accounts[selectedAddress].balance;
+    }
+  }
+  return balancesByChainId;
+}
+
+/**
+ * Get the tokens across chains for a given account address
+ *
+ * @param {object} state - Redux state
+ * @param {string} selectedAddress - The address of the selected account
+ */
+export function getTokensAcrossChainsByAccountAddress(state, selectedAddress) {
+  const { allTokens } = state.metamask;
+
+  const tokensByChain = {};
+
+  const nativeTokenBalancesByChainId =
+    getNativeTokenCachedBalanceByChainIdByAccountAddress(
+      state,
+      selectedAddress,
+    );
+
+  const chainIds = new Set([
+    ...Object.keys(allTokens || {}),
+    ...Object.keys(nativeTokenBalancesByChainId || {}),
+  ]);
+
+  chainIds.forEach((chainId) => {
+    if (!tokensByChain[chainId]) {
+      tokensByChain[chainId] = [];
+    }
+
+    if (allTokens[chainId]?.[selectedAddress]) {
+      allTokens[chainId][selectedAddress].forEach((token) => {
+        const tokenWithChain = { ...token, chainId, isNative: false };
+        tokensByChain[chainId].push(tokenWithChain);
+      });
+    }
+
+    const nativeBalance = nativeTokenBalancesByChainId[chainId];
+    if (nativeBalance) {
+      const nativeTokenInfo = getNativeTokenInfo(state, chainId);
+      tokensByChain[chainId].push({
+        ...nativeTokenInfo,
+        address: '',
+        balance: nativeBalance,
+        chainId,
+        isNative: true,
+      });
+    }
+  });
+
+  return tokensByChain;
+}
+
+/**
  * Retrieves native token information (symbol, decimals, name) for a given chainId from the state,
  * without hardcoding any values.
  *
