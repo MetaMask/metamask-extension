@@ -50,7 +50,7 @@ class NonEvmHomepage extends HomePage {
    * @param balance
    */
   async check_getBalance(balance: string): Promise<void> {
-    const div = await this.driver.findElement(By.css(this.balanceDiv), 61000); // There is a bug on the chrome job that runs on the snap and it gets updated after a minute
+    const div = await this.driver.findElement(By.css(this.balanceDiv), 62000); // There is a bug on the chrome job that runs on the snap and it gets updated after a minute
     const spans = await div.findElements(By.css('span'));
     // Extract and concatenate the inner text of the span elements
     let innerText = '';
