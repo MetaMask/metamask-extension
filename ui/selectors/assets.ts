@@ -7,10 +7,7 @@ import { CaipAssetId } from '@metamask/keyring-api';
 import { Hex } from '@metamask/utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { getTokenBalances } from '../ducks/metamask/metamask';
-import {
-  CHAIN_ID_TOKEN_IMAGE_MAP,
-  TEST_CHAINS,
-} from '../../shared/constants/network';
+import { TEST_CHAINS } from '../../shared/constants/network';
 import { Token, TokenWithFiatAmount } from '../components/app/assets/types';
 import { calculateTokenBalance } from '../components/app/assets/util/calculateTokenBalance';
 import { calculateTokenFiatAmount } from '../components/app/assets/util/calculateTokenFiatAmount';
@@ -181,36 +178,33 @@ export const getMultiChainAssets = createDeepEqualSelector(
       const nativeBalanceInFiat = new BigNumber(balance.amount).times(
         nativeRate,
       );
-      const metadata = assetsMetadata[assetId] || {
+
+      const assetMetadataFallback = {
         name: balance.unit,
         symbol: balance.unit || '',
         fungible: true,
         units: [{ name: assetId, symbol: balance.unit || '', decimals: 0 }],
       };
-      // not super happy with this override here
-      let tokenImage = '';
-      let secondary;
-      if (isNative) {
-        tokenImage =
-          CHAIN_ID_TOKEN_IMAGE_MAP[
-            chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-          ] || '';
-        secondary = nativeBalanceInFiat.toNumber();
-      } else {
-        tokenImage = metadata.iconUrl || '';
-        secondary = balanceInFiat.toNumber();
-      }
+
+      const metadata = assetsMetadata[assetId] || assetMetadataFallback;
       const decimals = metadata.units[0]?.decimals || 0;
+
+      console.log(
+        assetsMetadata['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501'],
+      );
+
       return {
-        title: isNative ? balance.unit : metadata.name,
+        title: metadata.name,
         address: assetId,
         symbol: metadata.symbol,
-        image: tokenImage,
+        image: metadata.iconUrl,
         decimals,
         chainId,
         isNative,
         primary: balance.amount,
-        secondary,
+        secondary: isNative
+          ? nativeBalanceInFiat.toNumber()
+          : balanceInFiat.toNumber(),
         string: '',
         tokenFiatAmount: balanceInFiat, // for now we are keeping this is to satisfy sort, this should be fiat amount
         isStakeable: false,

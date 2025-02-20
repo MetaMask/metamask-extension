@@ -3,7 +3,6 @@ import {
   RpcEndpointType,
 } from '@metamask/network-controller';
 import { capitalize, pick } from 'lodash';
-import { MultichainNetworks } from './multichain/networks';
 /**
  * A type representing built-in network types, used as an identifier.
  */
@@ -177,7 +176,6 @@ export const CHAIN_IDS = {
   INK: '0xdef1',
   MODE_SEPOLIA: '0x397',
   MODE: '0x868b',
-  SOLANA: MultichainNetworks.SOLANA,
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -523,7 +521,6 @@ export const SONEIUM_IMAGE_URL = './images/soneium.svg';
 export const MODE_SEPOLIA_IMAGE_URL = './images/mode-sepolia.svg';
 export const MODE_IMAGE_URL = './images/mode.svg';
 export const UNICHAIN_IMAGE_URL = './images/unichain.svg';
-export const SOLANA_IMAGE_URL = './images/solana-logo.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -890,7 +887,6 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.MODE]: MODE_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN]: UNICHAIN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN_SEPOLIA]: UNICHAIN_IMAGE_URL,
-  [CHAIN_IDS.SOLANA]: SOLANA_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -938,7 +934,6 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.FUNKICHAIN]: ETH_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN]: ETH_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN_SEPOLIA]: ETH_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.SOLANA]: SOLANA_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
