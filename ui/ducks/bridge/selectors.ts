@@ -81,15 +81,27 @@ export const getAllBridgeableNetworks = createDeepEqualSelector(
   getMultichainNetworkConfigurationsByChainId,
   (networkConfigurationsByChainId) => {
     return uniqBy(
-      Object.entries(networkConfigurationsByChainId),
-      ([chainId]) => chainId,
-    )
-      .filter(([chainId]) =>
-        ALLOWED_BRIDGE_CHAIN_IDS.includes(
-          chainId as (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number],
-        ),
-      )
-      .flatMap((x) => x[1]);
+      [
+        ...Object.values(networkConfigurationsByChainId),
+        ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+        // TODO: get this from network controller, use placeholder values for now
+        {
+          ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
+          blockExplorerUrls: [],
+          name: '',
+          nativeCurrency: 'sol',
+          rpcEndpoints: [{ url: '', type: '', networkClientId: '' }],
+          defaultRpcEndpointIndex: 0,
+          chainId: MultichainNetworks.SOLANA as unknown as Hex,
+        } as unknown as NetworkConfiguration,
+        ///: END:ONLY_INCLUDE_IF
+      ],
+      'chainId',
+    ).filter(({ chainId }) =>
+      ALLOWED_BRIDGE_CHAIN_IDS.includes(
+        chainId as (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number],
+      ),
+    );
   },
 );
 
