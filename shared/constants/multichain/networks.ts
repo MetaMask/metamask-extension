@@ -56,23 +56,28 @@ export const MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP: Record<
   [MultichainNetworks.BITCOIN]: {
     url: 'https://blockstream.info',
     address: 'https://blockstream.info/address/{address}',
+    transaction: 'https://blockstream.info/tx/{txId}',
   },
   [MultichainNetworks.BITCOIN_TESTNET]: {
     url: 'https://blockstream.info',
     address: 'https://blockstream.info/testnet/address/{address}',
+    transaction: 'https://blockstream.info/testnet/tx/{txId}',
   },
 
   [MultichainNetworks.SOLANA]: {
     url: 'https://explorer.solana.com',
     address: 'https://explorer.solana.com/address/{address}',
+    transaction: 'https://explorer.solana.com/tx/{txId}',
   },
   [MultichainNetworks.SOLANA_DEVNET]: {
     url: 'https://explorer.solana.com',
     address: 'https://explorer.solana.com/address/{address}?cluster=devnet',
+    transaction: 'https://explorer.solana.com/tx/{txId}?cluster=devnet',
   },
   [MultichainNetworks.SOLANA_TESTNET]: {
     url: 'https://explorer.solana.com',
     address: 'https://explorer.solana.com/address/{address}?cluster=testnet',
+    transaction: 'https://explorer.solana.com/tx/{txId}?cluster=testnet',
   },
 } as const;
 

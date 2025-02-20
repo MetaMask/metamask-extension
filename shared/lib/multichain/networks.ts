@@ -25,6 +25,11 @@ export type MultichainBlockExplorerFormatUrls = {
    * Format URL of the block explorer for addresses.
    */
   address: MultichainBlockExplorerFormatUrl<'address'>;
+
+  /**
+   * Format URL of the block explorer for transactions.
+   */
+  transaction: MultichainBlockExplorerFormatUrl<'txId'>;
 };
 
 /**
@@ -55,4 +60,18 @@ export function formatBlockExplorerAddressUrl(
   address: string,
 ) {
   return formatBlockExplorerUrl(urls.address, '{address}', address);
+}
+
+/**
+ * Format a URL for transactions.
+ *
+ * @param urls - The group of format URLs for a given block explorer.
+ * @param txId - The transaction ID to create the URL for.
+ * @returns The formatted URL for the given transaction.
+ */
+export function formatBlockExplorerTransactionUrl(
+  explorerUrls: MultichainBlockExplorerFormatUrls,
+  txId: string,
+): string {
+  return explorerUrls.transaction.replace('{txId}', txId);
 }

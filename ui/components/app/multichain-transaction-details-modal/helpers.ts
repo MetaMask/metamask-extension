@@ -7,7 +7,10 @@ import {
   formatDateWithYearContext,
   shortenAddress,
 } from '../../../helpers/utils/util';
-import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
+import {
+  formatBlockExplorerAddressUrl,
+  formatBlockExplorerTransactionUrl,
+} from '../../../../shared/lib/multichain/networks';
 
 /**
  * Creates a transaction URL for block explorer based on network type
@@ -30,24 +33,7 @@ export const getTransactionUrl = (txId: string, chainId: string): string => {
     return '';
   }
 
-  // Change address URL to transaction URL for Bitcoin
-  if (chainId.startsWith('bip122:')) {
-    const baseUrl = explorerUrls.url;
-    // Adds the parameter /testnet for Bitcoin testnet
-    if (chainId === MultichainNetworks.BITCOIN_TESTNET) {
-      return `${baseUrl}/testnet/tx/${txId}`;
-    }
-    return `${baseUrl}/tx/${txId}`;
-  }
-
-  if (chainId === MultichainNetworks.SOLANA) {
-    return `${explorerUrls.url}/tx/${txId}`;
-  }
-  if (chainId === MultichainNetworks.SOLANA_DEVNET) {
-    return `${explorerUrls.url}/tx/${txId}?cluster=devnet`;
-  }
-
-  return '';
+  return formatBlockExplorerTransactionUrl(explorerUrls, txId);
 };
 
 /**
