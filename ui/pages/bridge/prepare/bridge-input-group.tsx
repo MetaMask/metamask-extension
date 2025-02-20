@@ -93,7 +93,7 @@ export const BridgeInputGroup = ({
   const locale = useSelector(getIntlLocale);
   const currentChainId = useMultichainSelector(getMultichainCurrentChainId);
   const selectedChainId = networkProps?.network?.chainId ?? currentChainId;
-  const { balanceAmount } = useLatestBalance(token, selectedChainId as Hex);
+  const balanceAmount = useLatestBalance(token, selectedChainId);
 
   const [, handleCopy] = useCopyToClipboard(MINUTE) as [
     boolean,

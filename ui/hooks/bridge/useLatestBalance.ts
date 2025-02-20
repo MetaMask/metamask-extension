@@ -4,7 +4,7 @@ import {
   isCaipChainId,
   isStrictHexString,
 } from '@metamask/utils';
-import type { BigNumber } from 'bignumber.js';
+import { useMemo } from 'react';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { getSelectedInternalAccount } from '../../selectors';
 import { calcLatestSrcBalance } from '../../../shared/modules/bridge-utils/balance';
@@ -15,7 +15,6 @@ import {
   getMultichainBalances,
   getMultichainCurrentChainId,
 } from '../../selectors/multichain';
-import { calcTokenValue } from '../../../shared/lib/swaps-utils';
 
 /**
  * Custom hook to fetch and format the latest balance of a given token or native asset.
@@ -43,9 +42,7 @@ const useLatestBalance = (
   );
   const nonEvmBalances = nonEvmBalancesByAccountId[id];
 
-  const { value: latestBalance } = useAsyncResult<
-    Numeric | BigNumber | undefined
-  >(async () => {
+  const value = useAsyncResult<Numeric | undefined>(async () => {
     if (
       token?.address &&
       chainId &&
@@ -60,11 +57,10 @@ const useLatestBalance = (
       );
     }
 
-    if (isCaipChainId(chainId) && token?.decimals && token?.string) {
-      return calcTokenValue(
-        nonEvmBalances?.[`${token.address}`]?.amount ?? token.string,
-        token.decimals,
-      );
+    if (isCaipChainId(chainId) && token?.decimals) {
+      return Numeric.from(
+        nonEvmBalances?.[token.address]?.amount ?? token?.string,
+      ).shiftedBy(-1 * token.decimals);
     }
 
     return undefined;
@@ -83,14 +79,13 @@ const useLatestBalance = (
     );
   }
 
-  const tokenDecimals = token?.decimals ? Number(token.decimals) : 1;
-
-  return {
-    balanceAmount:
-      token && latestBalance
-        ? calcTokenAmount(latestBalance.toString(), tokenDecimals)
+  return useMemo(
+    () =>
+      value?.value
+        ? calcTokenAmount(value.value.toString(), token?.decimals)
         : undefined,
-  };
+    [value, token?.decimals],
+  );
 };
 
 export default useLatestBalance;
