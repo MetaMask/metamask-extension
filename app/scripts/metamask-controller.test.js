@@ -106,10 +106,7 @@ function* ulidGenerator(ulids = mockULIDs) {
   for (const id of ulids) {
     yield id;
   }
-
-  while (true) {
-    yield 'should not be called after exhausting provided IDs';
-  }
+  throw new Error('should not be called after exhausting provided IDs');
 }
 
 let mockUlidGenerator = ulidGenerator();
@@ -353,6 +350,7 @@ describe('MetaMaskController', () => {
       withIsolationScope: jest.fn(),
     };
 
+    // Re-create the ULID generator to start over again the `mockULIDs` list.
     mockUlidGenerator = ulidGenerator();
   });
 
@@ -4191,7 +4189,7 @@ describe('MetaMaskController', () => {
         const previousKeyrings =
           metamaskController.keyringController.state.keyrings;
 
-        await metamaskController.addNewMnemonicToVault(TEST_SEED_ALT);
+        await metamaskController.generateNewMnemonicAndAddToVault();
 
         const currentKeyrings =
           metamaskController.keyringController.state.keyrings;
