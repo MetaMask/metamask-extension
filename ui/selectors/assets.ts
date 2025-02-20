@@ -63,8 +63,6 @@ export function getAssetsRates(state: AssetsRatesState) {
   return state.metamask.conversionRates;
 }
 
-const NON_EVM_TOKEN_NAMESPACE = 'token';
-
 export const getTokenBalancesEvm = createDeepEqualSelector(
   getTokensAcrossChainsByAccountAddressSelector,
   getNativeTokenCachedBalanceByChainIdSelector,
@@ -175,7 +173,7 @@ export const getMultiChainAssets = createDeepEqualSelector(
     const balances = multichainBalances?.[selectedAccountAddress.id];
     return assetIds.map((assetId: CaipAssetId) => {
       const { chainId, assetNamespace } = parseCaipAssetType(assetId);
-      const isNative = assetNamespace !== NON_EVM_TOKEN_NAMESPACE;
+      const isNative = assetNamespace === 'slip44';
       const balance = balances?.[assetId] || { amount: '0', unit: '' };
       const rate = assetRates?.[assetId]?.rate || '0';
       const balanceInFiat = new BigNumber(balance.amount).times(rate);
