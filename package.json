@@ -261,8 +261,7 @@
     "tslib@npm:^2.6.2": "~2.6.0",
     "@metamask/providers@npm:^18.3.1": "patch:@metamask/providers@npm%3A19.0.0#~/.yarn/patches/@metamask-providers-npm-19.0.0-3d962c6f1a.patch",
     "@ethersproject/signing-key/elliptic": "^6.6.1",
-    "gridplus-sdk/elliptic": "^6.6.1",
-    "@metamask/eth-snap-keyring@^10.0.0": "npm:@metamask-previews/eth-snap-keyring@10.0.0-d52459b"
+    "gridplus-sdk/elliptic": "^6.6.1"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -311,7 +310,7 @@
     "@metamask/eth-json-rpc-middleware": "^15.1.2",
     "@metamask/eth-ledger-bridge-keyring": "^8.0.3",
     "@metamask/eth-sig-util": "^7.0.1",
-    "@metamask/eth-snap-keyring": "^10.0.0",
+    "@metamask/eth-snap-keyring": "^11.0.0",
     "@metamask/eth-token-tracker": "^10.0.2",
     "@metamask/eth-trezor-keyring": "^6.0.0",
     "@metamask/etherscan-link": "^3.0.0",
