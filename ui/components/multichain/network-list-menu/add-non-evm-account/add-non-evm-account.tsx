@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useAccountCreationOnNetworkChange } from '../../../../hooks/accounts/useAccountCreationOnNetworkChange';
 import { toggleNetworkMenu } from '../../../../store/actions';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../../selectors';
-import { getIsUnlocked } from '../../../../ducks/metamask/metamask';
 import {
   Box,
   Text,
@@ -15,7 +14,6 @@ import {
 import {
   BackgroundColor,
   BlockSize,
-  BorderRadius,
   Display,
   FlexDirection,
   JustifyContent,
@@ -24,19 +22,13 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-
-const AddNonEvmAccountModal = ({
-  chainId,
-}: {
-  chainId: CaipChainId;
-}) => {
+const AddNonEvmAccountModal = ({ chainId }: { chainId: CaipChainId }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { createAccount } = useAccountCreationOnNetworkChange();
   const multichainNetworks = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
-  const isUnlocked = useSelector(getIsUnlocked);
 
   return (
     <Box
@@ -48,7 +40,9 @@ const AddNonEvmAccountModal = ({
     >
       <Box paddingLeft={4} paddingRight={4}>
         <Text textAlign={TextAlign.Left} variant={TextVariant.bodyMd}>
-          {t('addNonEvmAccountFromNetworkPicker', [multichainNetworks[chainId].name])}
+          {t('addNonEvmAccountFromNetworkPicker', [
+            multichainNetworks[chainId].name,
+          ])}
         </Text>
       </Box>
       <Box
