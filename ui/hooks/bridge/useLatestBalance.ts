@@ -62,7 +62,7 @@ const useLatestBalance = (
 
     if (isCaipChainId(chainId) && token?.decimals && token?.string) {
       return calcTokenValue(
-        nonEvmBalances?.[`${chainId}/${token.address}`]?.amount ?? token.string,
+        nonEvmBalances?.[`${token.address}`]?.amount ?? token.string,
         token.decimals,
       );
     }
