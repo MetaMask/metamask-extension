@@ -233,6 +233,14 @@
   "addNfts": {
     "message": "Add NFTs"
   },
+  "addNonEvmAccount": {
+    "message": "Add $1 account",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
+  },
+  "addNonEvmAccountFromNetworkPicker": {
+    "message": "To enable the $1 network, you need to create a $1 account.",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
+  },
   "addRpcUrl": {
     "message": "Add RPC URL"
   },
@@ -257,14 +265,6 @@
   },
   "addUrl": {
     "message": "Add URL"
-  },
-  "addNonEvmAccount": {
-    "message": "Add $1 account",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "To enable the $1 network, you need to create a $1 account.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
   },
   "addingAccount": {
     "message": "Adding account"
