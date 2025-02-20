@@ -114,7 +114,7 @@ const DeveloperOptionsTab = () => {
           <span>Announcements</span>
           <div className="settings-page__content-description">
             Resets isShown boolean to false for all announcements. Announcements
-            are the notifications shown in the What's New popup modal.
+            are the notifications shown in the What&apos;s New popup modal.
           </div>
         </div>
 
@@ -210,8 +210,9 @@ const DeveloperOptionsTab = () => {
     );
   };
 
+  const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
+
   const renderRemoteFeatureFlags = () => {
-    const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
     return (
       <Box
         className="settings-page__content-row"
@@ -223,11 +224,10 @@ const DeveloperOptionsTab = () => {
         <div className="settings-page__content-item">
           <span>Remote feature flags</span>
           <div className="settings-page__content-description">
-            Remote feature flag values come from the LaunchDarkly by default. If
-            you need to update feature flag values locally for development
-            purposes, you can change feature flag values in
-            .manifest-overrides.json, which will override values coming from
-            LaunchDarkly.
+            Remote feature flag values come from LaunchDarkly by default. If you
+            need to update feature flag values locally for development purposes,
+            you can change feature flag values in .manifest-overrides.json,
+            which will override values coming from LaunchDarkly.
           </div>
         </div>
         <div
