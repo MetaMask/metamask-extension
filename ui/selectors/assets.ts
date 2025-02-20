@@ -189,10 +189,6 @@ export const getMultiChainAssets = createDeepEqualSelector(
       const metadata = assetsMetadata[assetId] || assetMetadataFallback;
       const decimals = metadata.units[0]?.decimals || 0;
 
-      console.log(
-        assetsMetadata['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501'],
-      );
-
       return {
         title: metadata.name,
         address: assetId,
