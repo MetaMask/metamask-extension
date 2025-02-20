@@ -68,6 +68,7 @@ const useEvmAssetsWithBalances = (): (
   const networkConfigByChainId: Record<string, NetworkConfiguration> =
     useSelector(getNetworkConfigurationsByChainId);
 
+  // TODO: use getTokenBalancesEvm
   const evmTokensWithFiatBalances = useMemo(() => {
     return Object.entries(tokenBalancesByChain).flatMap(
       ([chainId, tokenBalances]) => {
@@ -210,6 +211,7 @@ const useNonEvmAssetsWithBalances = (): (Omit<
   return nonEvmTokensWithFiatBalances;
 };
 
+// TODO replace this with getMultichainAssets
 // This hook is used to get the balances of all tokens and native tokens across all chains
 // This also returns the total fiat balances by chainId/caipChainId
 export const useMultichainBalances = () => {
