@@ -151,7 +151,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                     <button
                       aria-label="Network options"
                       class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-                      data-testid="network-list-item-options-button-undefined"
+                      data-testid="network-list-item-options-button-eip155:1"
                     >
                       <span
                         class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -213,7 +213,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                     <button
                       aria-label="Network options"
                       class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-                      data-testid="network-list-item-options-button-undefined"
+                      data-testid="network-list-item-options-button-eip155:59144"
                     >
                       <span
                         class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -275,7 +275,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                     <button
                       aria-label="Network options"
                       class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-                      data-testid="network-list-item-options-button-undefined"
+                      data-testid="network-list-item-options-button-eip155:56"
                     >
                       <span
                         class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -333,7 +333,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                     <button
                       aria-label="Network options"
                       class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-                      data-testid="network-list-item-options-button-undefined"
+                      data-testid="network-list-item-options-button-eip155:5"
                     >
                       <span
                         class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
