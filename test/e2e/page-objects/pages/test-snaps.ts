@@ -157,7 +157,7 @@ export class TestSnaps {
   }
 
   async clickGetFileBase64Button() {
-    console.log('Find, scroll and click get file button');
+    console.log('Finding, scrolling to and clicking the get file base64 button');
     await this.driver.clickElement(this.sendGetFileBase64Button);
   }
 
