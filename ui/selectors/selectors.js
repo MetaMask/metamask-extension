@@ -724,10 +724,10 @@ export function getTokensAcrossChainsByAccountAddress(state, selectedAddress) {
         balance: nativeBalance,
         chainId,
         isNative: true,
+        image: getNativeCurrencyForChain(chainId),
       });
     }
   });
-
   return tokensByChain;
 }
 
