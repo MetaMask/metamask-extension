@@ -51,7 +51,10 @@ import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
   FEATURED_RPCS,
 } from '../../../shared/constants/network';
-import { getMultichainProviderConfig } from '../../selectors/multichain';
+import {
+  getMultichainProviderConfig,
+  getImageForChainId,
+} from '../../selectors/multichain';
 import {
   MultichainNetworks,
   MULTICHAIN_PROVIDER_CONFIGS,
@@ -172,7 +175,7 @@ export const getFromToken = createSelector(
       image:
         CHAIN_ID_TOKEN_IMAGE_MAP[
           fromChain.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-        ],
+        ] ?? getImageForChainId(fromChain.chainId),
       balance: '0',
       string: '0',
     };

@@ -134,7 +134,7 @@ export const BASE_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
 const SOLANA_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
   symbol: 'SOL',
   name: 'Solana',
-  address: MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.SOL.split('/')[1],
+  address: MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.SOL,
   decimals: 9,
   iconUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.SOLANA],
 };
