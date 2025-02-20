@@ -107,7 +107,7 @@ class SnapInstall {
   }
 
   async check_transactionInsightsTitle() {
-    console.log('Check transaction insights title');
+    console.log('Checking transaction insights title');
     await this.driver.waitForSelector(this.insightTitle);
   }
 
