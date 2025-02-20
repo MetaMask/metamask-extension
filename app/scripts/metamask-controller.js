@@ -2441,11 +2441,20 @@ export default class MetamaskController extends EventEmitter {
   }
 
   triggerNetworkrequests() {
+    // @ts-ignore-next-line
+    console.log(
+      'this.#getGlobalChainId() 11 .......',
+      this.#getGlobalChainId(),
+      this.#getAllAddedNetworks(),
+    );
+
     this.txController.stopIncomingTransactionPolling();
 
-    this.txController.startIncomingTransactionPolling([
-      this.#getGlobalChainId(),
-    ]);
+    this.txController.stopIncomingTransactionPolling();
+
+    this.txController.startIncomingTransactionPolling(
+      this.#getAllAddedNetworks(),
+    );
 
     this.tokenDetectionController.enable();
     this.getInfuraFeatureFlags();
@@ -2751,9 +2760,15 @@ export default class MetamaskController extends EventEmitter {
         if (currState.incomingTransactionsPreferences?.[chainId]) {
           this.txController.stopIncomingTransactionPolling();
 
-          this.txController.startIncomingTransactionPolling([
+          // @ts-ignore-next-line
+          console.log(
+            'this.#getGlobalChainId() 22 .......',
             this.#getGlobalChainId(),
-          ]);
+          );
+
+          this.txController.startIncomingTransactionPolling(
+            this.#getAllAddedNetworks(),
+          );
         } else {
           this.txController.stopIncomingTransactionPolling();
         }
@@ -2839,6 +2854,12 @@ export default class MetamaskController extends EventEmitter {
         await this.txController.updateIncomingTransactions([
           this.#getGlobalChainId(),
         ]);
+
+        // @ts-ignore-next-line
+        console.log(
+          'this.#getGlobalChainId() 33 .......',
+          this.#getGlobalChainId(),
+        );
 
         await this.txController.startIncomingTransactionPolling([
           this.#getGlobalChainId(),
@@ -7685,6 +7706,16 @@ export default class MetamaskController extends EventEmitter {
     );
 
     return globalNetworkClient.configuration.chainId;
+  }
+
+  #getAllAddedNetworks() {
+    const networksConfig =
+      this.networkController.state.networkConfigurationsByChainId;
+    const chainIds = Object.keys(networksConfig);
+
+    console.log('chainIds .......', chainIds);
+
+    return chainIds;
   }
 
   /**

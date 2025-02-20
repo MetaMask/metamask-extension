@@ -244,7 +244,6 @@ export default function TransactionList({
 }) {
   const [limit, setLimit] = useState(PAGE_INCREMENT);
   const t = useI18nContext();
-  const currentNetwork = useSelector(getCurrentChainId);
   const currentNetworkConfig = useSelector(getCurrentNetwork);
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
@@ -264,8 +263,18 @@ export default function TransactionList({
     nonceSortedPendingTransactionsSelector,
   );
 
+  console.log(
+    'unfilteredPendingTransactionsCurrentChain ++++++++++',
+    unfilteredPendingTransactionsCurrentChain,
+  );
+
   const unfilteredPendingTransactionsAllChains = useSelector(
     nonceSortedPendingTransactionsSelectorAllChains,
+  );
+
+  console.log(
+    'unfilteredPendingTransactionsAllChains ++++++++++',
+    unfilteredPendingTransactionsAllChains,
   );
 
   const unfilteredPendingTransactions = useMemo(() => {
@@ -286,8 +295,18 @@ export default function TransactionList({
     nonceSortedCompletedTransactionsSelector,
   );
 
+  console.log(
+    'unfilteredCompletedTransactionsCurrentChain ++++++++++',
+    unfilteredCompletedTransactionsCurrentChain,
+  );
+
   const unfilteredCompletedTransactionsAllChains = useSelector(
     nonceSortedCompletedTransactionsSelectorAllChains,
+  );
+
+  console.log(
+    'unfilteredCompletedTransactionsAllChains ++++++++++',
+    unfilteredCompletedTransactionsAllChains,
   );
 
   const unfilteredCompletedTransactions = useMemo(() => {
@@ -357,8 +376,6 @@ export default function TransactionList({
     ],
   );
 
-  console.log('pendingTransactions .............', pendingTransactions);
-
   const completedTransactions = useMemo(
     () =>
       groupEvmTransactionsByDate(
@@ -370,8 +387,6 @@ export default function TransactionList({
       ),
     [hideTokenTransactions, tokenAddress, unfilteredCompletedTransactions],
   );
-
-  console.log('completedTransactions .............', completedTransactions);
 
   const viewMore = useCallback(
     () => setLimit((prev) => prev + PAGE_INCREMENT),
@@ -590,7 +605,7 @@ export default function TransactionList({
                             <TransactionStatusLabel
                               date={formatTimestamp(transaction.timestamp)}
                               error={{}}
-                              status={transaction.status + 'salim'}
+                              status={transaction.status}
                               statusOnly
                             />
                           }
@@ -668,10 +683,6 @@ export default function TransactionList({
                         </Fragment>
                       );
                     }
-                    console.log(
-                      'transactionGroup.initialTransaction.chainId',
-                      transactionGroup.initialTransaction,
-                    );
                     return (
                       <Fragment key={`${transactionGroup.nonce}:${index}`}>
                         {renderDateStamp(index, dateGroup)}
