@@ -284,6 +284,10 @@ function setupStateHooks(store) {
     ) {
       await actions.throwTestBackgroundError(msg);
     };
+
+    window.stateHooks.wipeBackgroundStorage = async function () {
+      await actions.wipeBackgroundStorage();
+    };
   }
 
   window.stateHooks.getCleanAppState = async function () {

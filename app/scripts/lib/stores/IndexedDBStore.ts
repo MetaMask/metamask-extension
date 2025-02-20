@@ -1,6 +1,6 @@
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
-import { BaseStore, MetaMaskStorageStructure } from './BaseStore';
+import { BaseStore, MetaMaskStorageStructure } from './base-store';
 
 const STATE_KEY = 'metamaskState';
 
@@ -13,7 +13,7 @@ enum DatabaseError {
   INVALID_STATE_ERROR = 'InvalidStateError', // happens when changing the database schema (e.g., delete an object store) and then try to access the deleted store in an existing connection,
 }
 
-export class IndexedDBStore extends BaseStore {
+export default class IndexedDBStore extends BaseStore {
   storeName: string;
 
   dbVersion: number;
@@ -72,6 +72,8 @@ export class IndexedDBStore extends BaseStore {
    */
   async get(): Promise<MetaMaskStorageStructure | null> {
     try {
+      console.log('STATE_KEY', STATE_KEY)
+      console.trace()
       // Attempt to get state from IndexedDB
       const result = await this._readFromDB(STATE_KEY);
 
@@ -90,8 +92,12 @@ export class IndexedDBStore extends BaseStore {
     return new Promise<void>((resolve, reject) => {
       this._getObjectStore(TransactionMode.READ_WRITE)
         .then((objectStore) => {
+          console.log('data', data)
           const request = objectStore.put(data);
-          request.onsuccess = () => resolve();
+          request.onsuccess = () => {
+            console.log('request success', request)
+            return resolve()
+          };
           request.onerror = () => reject(request.error);
         })
         .catch((err) => {
@@ -105,6 +111,7 @@ export class IndexedDBStore extends BaseStore {
   ): Promise<IDBObjectStore> {
     try {
       const db = await this.dbReady; // Wait for the DB to be ready
+      console.log('this.storeName', this.storeName)
       const transaction = db.transaction([this.storeName], mode);
       return transaction.objectStore(this.storeName);
     } catch (error) {
@@ -139,9 +146,11 @@ export class IndexedDBStore extends BaseStore {
     return new Promise<MetaMaskStorageStructure>((resolve, reject) => {
       this._getObjectStore(TransactionMode.READ_ONLY)
         .then((objectStore) => {
+          console.log('id', id)
           const request = objectStore.get(id);
           request.onsuccess = () => {
-            return resolve(request.result);
+            console.log('request', request)
+            return resolve(request.result.state);
           };
           request.onerror = () => reject(request.error);
         })

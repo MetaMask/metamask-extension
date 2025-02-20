@@ -102,11 +102,16 @@ async function start() {
    */
   const messageListener = async (message) => {
     const method = message?.data?.method;
+    const name = message?.name;
 
     if (method !== METHOD_START_UI_SYNC) {
-      const error = JSON.parse(message.error ?? '');
+      const error = JSON.parse(message.error ?? '{}');
       if (STATE_CORRUPTION_ERRORS.includes(error.message)) {
         displayStateCorruptionError(error, JSON.parse(message.metamaskState ?? ''));
+      }
+
+      if (name === 'RESTORE_VAULT_FROM_BACKUP') {
+        window.location.reload();
       }
 
       return;

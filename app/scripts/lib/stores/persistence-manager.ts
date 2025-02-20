@@ -2,9 +2,17 @@ import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { captureException } from '@sentry/browser';
 import { isEmpty } from 'lodash';
+import {
+  KeyringControllerState,
+} from '@metamask/keyring-controller';
+import { AppStateControllerState } from '../../controllers/app-state-controller';
 import { type MetaMaskStateType, MetaMaskStorageStructure } from './base-store';
 import ExtensionStore from './extension-store';
+import IndexDBStore from './IndexedDBStore';
+import LocalStorageWithOffScreenStore from './LocalStorageWithOffScreenStore';
 import ReadOnlyNetworkStore from './read-only-network-store';
+import OnboardingController from '../../controllers/onboarding';
+import { PreferencesController } from '@metamask/preferences-controller';
 
 /**
  * The PersistenceManager class serves as a high-level manager for handling
@@ -66,13 +74,18 @@ export class PersistenceManager {
 
   #vaultReference: string | null;
 
+  #backupStores: Array<IndexDBStore | LocalStorageWithOffScreenStore>;
+
   constructor({
     localStore,
+    backupStores = [],
   }: {
     localStore: ExtensionStore | ReadOnlyNetworkStore;
+    backupStores: Array<IndexDBStore | LocalStorageWithOffScreenStore>;
   }) {
     this.#localStore = localStore;
     this.#vaultReference = null;
+    this.#backupStores = backupStores;
   }
 
   setMetadata(metadata: { version: number }) {
@@ -88,11 +101,13 @@ export class PersistenceManager {
     }
     try {
       await this.#localStore.set({ data: state, meta: this.#metadata });
-      const newVaultReference = state.KeyringController?.vault ?? null;
+      const keyringController = state.KeyringController as KeyringControllerState;
+      const newVaultReference = keyringController?.vault ?? null;
       if (newVaultReference !== this.#vaultReference) {
         if (newVaultReference && this.#vaultReference === null) {
           browser.storage.local.remove('vaultHasNotYetBeenCreated');
         }
+        this.backupVault(state);
         this.#vaultReference = newVaultReference;
       }
       if (this.#dataPersistenceFailing) {
@@ -126,8 +141,38 @@ export class PersistenceManager {
     return this.#mostRecentRetrievedState;
   }
 
-  restoreVaultFromBackup() {
-    console.log('restoring vault from backup')
+  backupVault(state: MetaMaskStateType) {
+    for(let store of this.#backupStores) {
+      store.set({ data: {
+        KeyringController: state.KeyringController,
+        OnboardingController: state.OnboardingController,
+        PreferencesController: state.PreferencesController,
+        AppStateController: state.AppStateController,
+      }});
+    }
+  }
+
+  async restoreVaultFromBackup() {
+    if (!this.#metadata) {
+      throw new Error('MetaMask - metadata must be set restoring vault');
+    }
+    let backedUpVault;
+
+    for(let store of this.#backupStores) {
+      const backedUpState = await store.get();
+      if (backedUpState?.data) {
+        const appStateControllerState = backedUpState.data.AppStateController as AppStateControllerState;
+        const newAppStateControllerState = {
+          ...appStateControllerState,
+          stateWasJustRestoredFromBackup: true,
+        }
+        backedUpState.data.AppStateController = newAppStateControllerState
+        return await this.#localStore.set({
+          data: backedUpState.data,
+          meta: this.#metadata,
+        });
+      }
+    }
   }
 
   cleanUpMostRecentRetrievedState() {

@@ -4058,6 +4058,19 @@ export default class MetamaskController extends EventEmitter {
 
       // E2E testing
       throwTestError: this.throwTestError.bind(this),
+      wipeBackgroundStorage: async () => {
+        console.log(123123)
+        if (
+          process.env.METAMASK_DEBUG ||
+          process.env.IN_TEST 
+        ) {
+          await chrome.storage.local.set({ data: { test: 123 } });
+          chrome.storage.local.get().then((...args) => console.log(JSON.stringify(args)));
+          console.log('st!')
+          chrome.runtime.reload();
+          return;
+        }
+      },
 
       // NameController
       updateProposedNames: this.nameController.updateProposedNames.bind(

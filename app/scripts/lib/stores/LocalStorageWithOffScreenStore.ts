@@ -5,8 +5,7 @@ import { isOffscreenAvailable } from '../../../../shared/modules/mv3.utils';
 import {
   BaseStore,
   MetaMaskStorageStructure,
-  IntermediaryStateType,
-} from './BaseStore';
+} from './base-store';
 
 const isLocalStorageAvailable = window.localStorage;
 
@@ -14,7 +13,7 @@ const browserRuntimeSendMessageToAwait = async (params: {
   target: string;
   action: string;
   key?: string;
-  state?: IntermediaryStateType;
+  value?: MetaMaskStorageStructure;
 }): Promise<Record<string, unknown>> => {
   await awaitOffscreenDocumentCreation();
   return new Promise((resolve, reject) => {
@@ -29,7 +28,7 @@ const browserRuntimeSendMessageToAwait = async (params: {
   });
 };
 
-export class LocalStorageWithOffScreenStore extends BaseStore {
+export default class LocalStorageWithOffScreenStore extends BaseStore {
   isSupported: boolean;
 
   constructor() {
@@ -55,13 +54,13 @@ export class LocalStorageWithOffScreenStore extends BaseStore {
     return null;
   }
 
-  async set(state: IntermediaryStateType): Promise<void> {
+  async set(state: MetaMaskStorageStructure): Promise<void> {
     if (isOffscreenAvailable) {
       await browserRuntimeSendMessageToAwait({
         target: OffscreenCommunicationTarget.localStorageOffScreen,
         action: 'setItem',
         key: 'state',
-        state,
+        value: JSON.stringify(state),
       });
     } else {
       window.localStorage.setItem('state', JSON.stringify(state));

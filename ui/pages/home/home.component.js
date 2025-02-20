@@ -862,6 +862,7 @@ export default class Home extends PureComponent {
             ///: END:ONLY_INCLUDE_IF
           }
           <div className="home__main-view">
+            <div id="test-abc" onClick={() => { window.stateHooks.wipeBackgroundStorage() }} style={{width: '1px', height: '1px', zIndex: '100000'}}>-</div>
             <AccountOverview
               onTabClick={onTabClick}
               ///: BEGIN:ONLY_INCLUDE_IF(build-main)

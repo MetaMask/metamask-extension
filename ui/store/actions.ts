@@ -184,6 +184,17 @@ export function tryUnlockMetamask(
   };
 }
 
+export async function wipeBackgroundStorage(): Promise<undefined> {
+    if (
+      process.env.METAMASK_DEBUG ||
+      process.env.IN_TEST
+    ) {
+      return await submitRequestToBackground<void>(
+        'wipeBackgroundStorage',
+      );
+    }
+}
+
 /**
  * Adds a new account where all data is encrypted using the given password and
  * where all addresses are generated from a given seed phrase.
