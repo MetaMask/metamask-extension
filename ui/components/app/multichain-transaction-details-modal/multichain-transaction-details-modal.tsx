@@ -221,7 +221,7 @@ export function MultichainTransactionDetailsModal({
                   }}
                   as="a"
                   externalLink
-                  href={getTransactionUrl(txId, chain)}
+                  href={getAddressUrl(fromAddress, chain)}
                 >
                   {shortenAddress(fromAddress)}
                   <Icon
@@ -260,7 +260,7 @@ export function MultichainTransactionDetailsModal({
                   }}
                   as="a"
                   externalLink
-                  href={getTransactionUrl(txId, chain)}
+                  href={getAddressUrl(toAddress, chain)}
                 >
                   {shortenAddress(toAddress)}
                   <Icon
