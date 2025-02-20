@@ -4,12 +4,10 @@ import { createSelector } from 'reselect';
 import type { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
-///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
 import {
   MultichainNetworks,
   MULTICHAIN_PROVIDER_CONFIGS,
 } from '../../../shared/constants/multichain/networks';
-///: END:ONLY_INCLUDE_IF
 import {
   getIsBridgeEnabled,
   getMarketData,
@@ -55,18 +53,17 @@ import {
   FEATURED_RPCS,
 } from '../../../shared/constants/network';
 import {
+  getMultichainCoinRates,
   getMultichainProviderConfig,
   getImageForChainId,
 } from '../../selectors/multichain';
+import { getAssetsRates } from '../../selectors/assets';
+import type { BridgeState } from './bridge';
 import {
-  exchangeRatesFromNativeAndCurrencyRates,
   exchangeRateFromMarketData,
+  exchangeRatesFromNativeAndCurrencyRates,
   tokenPriceInNativeAsset,
 } from './utils';
-import type { BridgeState } from './bridge';
-import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
-import { MULTICHAIN_PROVIDER_CONFIGS } from '../../../shared/constants/multichain/networks';
-import type { Hex } from '@metamask/utils';
 
 type BridgeAppState = {
   metamask: BridgeControllerState &
@@ -225,32 +222,52 @@ export const getBridgeSortOrder = (state: BridgeAppState) =>
 export const getFromTokenConversionRate = createSelector(
   getFromChain,
   getMarketData,
+  getAssetsRates,
   getFromToken,
   getUSDConversionRate,
+  getMultichainCoinRates,
   getConversionRate,
   (state) => state.bridge.fromTokenExchangeRate,
   (
     fromChain,
     marketData,
+    assetsRates,
     fromToken,
     nativeToUsdRate,
+    nonEvmNativeToUsdRate,
     nativeToCurrencyRate,
     fromTokenExchangeRate,
   ) => {
-    if (fromChain?.chainId && fromToken && marketData) {
-      const tokenToNativeAssetRate =
+    let tokenToNativeAssetRate;
+
+    if (fromChain?.chainId && fromToken) {
+      tokenToNativeAssetRate =
         exchangeRateFromMarketData(
           fromChain.chainId,
           fromToken.address,
           marketData,
         ) ??
-        tokenPriceInNativeAsset(fromTokenExchangeRate, nativeToCurrencyRate);
+        (fromChain?.chainId === MultichainNetworks.SOLANA
+          ? tokenPriceInNativeAsset(
+              assetsRates[fromToken.address]?.rate,
+              nonEvmNativeToUsdRate.sol.conversionRate,
+            )
+          : tokenPriceInNativeAsset(
+              fromTokenExchangeRate,
+              nativeToCurrencyRate,
+            ));
 
-      return exchangeRatesFromNativeAndCurrencyRates(
-        tokenToNativeAssetRate,
-        nativeToCurrencyRate,
-        nativeToUsdRate,
-      );
+      return fromChain?.chainId === MultichainNetworks.SOLANA
+        ? exchangeRatesFromNativeAndCurrencyRates(
+            tokenToNativeAssetRate,
+            nonEvmNativeToUsdRate.sol.conversionRate,
+            nonEvmNativeToUsdRate.sol.usdConversionRate,
+          )
+        : exchangeRatesFromNativeAndCurrencyRates(
+            tokenToNativeAssetRate,
+            nativeToCurrencyRate,
+            nativeToUsdRate,
+          );
     }
     return exchangeRatesFromNativeAndCurrencyRates();
   },
