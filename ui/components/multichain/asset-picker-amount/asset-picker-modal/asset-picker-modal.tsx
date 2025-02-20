@@ -299,12 +299,12 @@ export function AssetPickerModal({
         for (const [address, token] of Object.entries(
           nonEvmTokenMetadataByAddress,
         )) {
-          const [caipChainId, assetId] = address.split('/');
+          const [caipChainId] = address.split('/');
 
-          if (shouldAddToken(token.symbol, assetId, caipChainId)) {
+          if (shouldAddToken(token.symbol, address, caipChainId)) {
             yield {
               ...token,
-              address: assetId,
+              address,
               chainId: caipChainId,
               decimals: token.units[0].decimals,
             };
