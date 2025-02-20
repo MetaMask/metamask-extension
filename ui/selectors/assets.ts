@@ -11,7 +11,6 @@ import { TEST_CHAINS } from '../../shared/constants/network';
 import { Token, TokenWithFiatAmount } from '../components/app/assets/types';
 import { calculateTokenBalance } from '../components/app/assets/util/calculateTokenBalance';
 import { calculateTokenFiatAmount } from '../components/app/assets/util/calculateTokenFiatAmount';
-import { useMultichainSelector } from '../hooks/useMultichainSelector';
 import {
   getCurrencyRates,
   getCurrentNetwork,
@@ -23,7 +22,6 @@ import {
 } from './selectors';
 import {
   getMultichainBalances,
-  getMultichainConversionRate,
   getMultichainConversionRateSelector,
 } from './multichain';
 
