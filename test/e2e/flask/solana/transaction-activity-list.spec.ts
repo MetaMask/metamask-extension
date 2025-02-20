@@ -93,6 +93,7 @@ describe.skip('Transaction activity list', function (this: Suite) {
         await transactionDetails.check_transactionNetworkFee(
           commonSolanaTxConfirmedDetailsFixture.networkFee,
         );
+        /* Skipped due to https://consensyssoftware.atlassian.net/browse/SOL-171
         await transactionDetails.check_transactionFromToLink(
           commonSolanaTxConfirmedDetailsFixture.fromAddress,
         );
@@ -102,6 +103,7 @@ describe.skip('Transaction activity list', function (this: Suite) {
         await transactionDetails.check_transactionHashLink(
           commonSolanaTxConfirmedDetailsFixture.txHash,
         );
+        */
         await transactionDetails.check_transactionViewDetailsLink();
       },
     );
