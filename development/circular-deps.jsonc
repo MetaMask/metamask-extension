@@ -13,10 +13,6 @@
     "ui/pages/confirmations/components/confirm/footer/footer.tsx"
   ],
   [
-    "ui/components/app/name/name-details/name-details.tsx",
-    "ui/components/app/name/name.tsx"
-  ],
-  [
     "ui/components/multichain/pages/send/components/account-picker.tsx",
     "ui/components/multichain/pages/send/components/index.ts"
   ],
@@ -47,24 +43,5 @@
   [
     "ui/components/multichain/pages/send/components/index.ts",
     "ui/components/multichain/pages/send/components/your-accounts.tsx"
-  ],
-  [
-    "ui/pages/asset/components/asset-page.tsx",
-    "ui/pages/asset/components/token-buttons.tsx"
-  ],
-  [
-    "ui/pages/notifications/notifications-list.tsx",
-    "ui/pages/notifications/notifications.tsx"
-  ],
-  [
-    "ui/pages/snap-account-redirect/components/index.ts",
-    "ui/pages/snap-account-redirect/components/snap-account-redirect-context.tsx",
-    "ui/pages/snap-account-redirect/components/snap-account-redirect-message.tsx",
-    "ui/pages/snap-account-redirect/components/url-display-box.tsx",
-    "ui/pages/snap-account-redirect/snap-account-redirect.tsx"
-  ],
-  [
-    "ui/pages/swaps/swaps.util.ts",
-    "ui/store/actions.ts"
   ]
 ]
