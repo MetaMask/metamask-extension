@@ -40,7 +40,7 @@ export function transformManifest(
 
   /**
    * This function sets predefined flags in the manifest's _flags property
-   * that are stored in the .manifest-flags.json file.
+   * that are stored in the file specified by the `MANIFEST_OVERRIDES` build variable
    *
    * @param browserManifest - The Chrome extension manifest object to modify
    */
