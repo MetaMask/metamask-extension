@@ -31,7 +31,7 @@ describe('Test Snap Lifecycle Hooks', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         // Validate the message result in the dialog
         await testSnaps.check_messageResultSpan(
-          snapInstall.messageLifeCycleHookSpan,
+          snapInstall.lifeCycleHookMessageElement,
           'The snap was installed successfully, and the "onInstall" handler was called.',
         );
       },

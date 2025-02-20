@@ -19,7 +19,7 @@ class SnapInstall {
 
   private readonly connectButton = '[data-testid="confirm-btn"]';
 
-  public readonly messageLifeCycleHookSpan = '.snap-ui-renderer__panel';
+  public readonly lifeCycleHookMessageElement = '.snap-ui-renderer__panel';
 
   private readonly insightTitle = {
     text: 'Insights Example Snap',
@@ -57,12 +57,12 @@ class SnapInstall {
   }
 
   async clickNextButton() {
-    console.log('Click Confirm/Ok button');
+    console.log('Clicking Confirm/Ok button');
     await this.driver.clickElement(this.nextPageButton);
   }
 
   async waitForNextButton() {
-    console.log('Clicking Confirm/Ok button');
+    console.log('Waiting for Confirm/Ok button to load');
     await this.driver.waitForSelector(this.nextPageButton);
   }
 
@@ -82,7 +82,7 @@ class SnapInstall {
   }
 
   async updateScrollAndClickConfirmButton() {
-    console.log('Click on the scroll and then click confirm button');
+    console.log('Clicking on the scroll and then click confirm button');
     await this.driver.waitUntil(
       async () => {
         await this.driver.clickElementSafe(this.scrollSnapUpdate);
@@ -97,7 +97,7 @@ class SnapInstall {
   }
 
   async clickApproveButton() {
-    console.log('Click approve button');
+    console.log('Clicking approve button');
     await this.driver.clickElement(this.approveButton);
   }
 
