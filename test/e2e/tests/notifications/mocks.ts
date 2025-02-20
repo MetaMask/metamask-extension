@@ -4,10 +4,12 @@ import {
   NotificationServicesPushController,
 } from '@metamask/notification-services-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
+import { AuthenticationController } from '@metamask/profile-sync-controller';
 import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
 
 const NotificationMocks = NotificationServicesController.Mocks;
 const PushMocks = NotificationServicesPushController.Mocks;
+const AuthMocks = AuthenticationController.Mocks;
 
 type MockResponse = {
   url: string | RegExp;
@@ -36,6 +38,11 @@ export async function mockNotificationServices(
       server,
     );
   }
+
+  // Auth
+  mockAPICall(server, AuthMocks.getMockAuthNonceResponse());
+  mockAPICall(server, AuthMocks.getMockAuthLoginResponse());
+  mockAPICall(server, AuthMocks.getMockAuthAccessTokenResponse());
 
   // Notifications
   mockAPICall(server, NotificationMocks.getMockFeatureAnnouncementResponse());

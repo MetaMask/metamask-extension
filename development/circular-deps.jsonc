@@ -1,0 +1,55 @@
+// This is a machine-generated file that tracks circular dependencies in the codebase.
+// To understand changes in this file:
+// - Each array represents a cycle of imports where the last file imports the first
+// - The cycles are sorted alphabetically for consistent diffs
+// - To update this file, run: yarn circular-deps:update
+// - To prevent new circular dependencies, ensure your changes don't add new cycles
+// - For more information contact the Extension Platform team.
+
+[
+  [
+    "ui/components/app/alert-system/confirm-alert-modal/confirm-alert-modal.tsx",
+    "ui/components/app/alert-system/confirm-alert-modal/index.tsx",
+    "ui/pages/confirmations/components/confirm/footer/footer.tsx"
+  ],
+  [
+    "ui/components/app/name/name-details/name-details.tsx",
+    "ui/components/app/name/name.tsx"
+  ],
+  [
+    "ui/components/multichain/pages/send/components/account-picker.tsx",
+    "ui/components/multichain/pages/send/components/index.ts"
+  ],
+  [
+    "ui/components/multichain/pages/send/components/address-book.tsx",
+    "ui/components/multichain/pages/send/components/index.ts"
+  ],
+  [
+    "ui/components/multichain/pages/send/components/hex.tsx",
+    "ui/components/multichain/pages/send/components/index.ts"
+  ],
+  [
+    "ui/components/multichain/pages/send/components/index.ts",
+    "ui/components/multichain/pages/send/components/network-picker.tsx"
+  ],
+  [
+    "ui/components/multichain/pages/send/components/index.ts",
+    "ui/components/multichain/pages/send/components/recipient-content.tsx"
+  ],
+  [
+    "ui/components/multichain/pages/send/components/index.ts",
+    "ui/components/multichain/pages/send/components/recipient-input.tsx"
+  ],
+  [
+    "ui/components/multichain/pages/send/components/index.ts",
+    "ui/components/multichain/pages/send/components/recipient.tsx"
+  ],
+  [
+    "ui/components/multichain/pages/send/components/index.ts",
+    "ui/components/multichain/pages/send/components/your-accounts.tsx"
+  ],
+  [
+    "ui/pages/notifications/notifications-list.tsx",
+    "ui/pages/notifications/notifications.tsx"
+  ]
+]

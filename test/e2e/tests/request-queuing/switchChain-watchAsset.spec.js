@@ -22,7 +22,7 @@ describe('Request Queue SwitchChain -> WatchAsset', function () {
           .withNetworkControllerDoubleGanache()
 
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {

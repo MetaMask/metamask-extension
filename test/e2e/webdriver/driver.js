@@ -704,7 +704,7 @@ class Driver {
    * @param rawLocator - Element locator
    * @param timeout - The maximum time in ms to wait for the element
    */
-  async clickElementSafe(rawLocator, timeout = 1000) {
+  async clickElementSafe(rawLocator, timeout = 2000) {
     try {
       const locator = this.buildLocator(rawLocator);
       const elements = await this.driver.wait(
@@ -1162,6 +1162,19 @@ class Driver {
    */
   async waitForUrl({ url, timeout = this.timeout }) {
     return await this.driver.wait(until.urlIs(url), timeout);
+  }
+
+  /**
+   * Waits until the current URL includes the specified substring.
+   *
+   * @param {object} options - Parameters for the function.
+   * @param {string} options.url - Substring to wait for in the URL.
+   * @param {number} [options.timeout]  - optional timeout period, defaults to `this.timeout`.
+   * @returns {Promise<void>} Promise that resolves once the URL includes the substring.
+   * @throws {Error} Throws an error if the URL does not include the substring within the timeout period.
+   */
+  async waitForUrlContaining({ url, timeout = this.timeout }) {
+    await this.driver.wait(until.urlContains(url), timeout);
   }
 
   /**

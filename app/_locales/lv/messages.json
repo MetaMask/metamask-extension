@@ -254,9 +254,6 @@
   "from": {
     "message": "No"
   },
-  "functionType": {
-    "message": "Funkcijas veids"
-  },
   "gasLimit": {
     "message": "Gas robežvērtība"
   },
@@ -467,9 +464,6 @@
   "origin": {
     "message": "Avots"
   },
-  "parameters": {
-    "message": "Parametri"
-  },
   "participateInMetaMetrics": {
     "message": "Piedalieties MetaMetrics"
   },
@@ -538,9 +532,6 @@
   "removeAccountDescription": {
     "message": "Šis darījums tiks dzēsts no jūsu maka. Pirms turpiniet, lūdzu, pārliecinieties, ka jums ir šī importētā konta oriģinālā sēklas frāze vai privātā atslēga. Jūs varat importēt vai izveidot kontus vēlreiz, izmantojot konta nolaižamo izvēlni."
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "pieprasījumi, kas gaida apstiprinājumu"
-  },
   "required": {
     "message": "Nepieciešams"
   },
@@ -607,9 +598,6 @@
   },
   "showHexDataDescription": {
     "message": "Atlasiet šo, lai atvērtu hex datus sūtīšanas ekrānā"
-  },
-  "sigRequest": {
-    "message": "Paraksta pieprasījums"
   },
   "sign": {
     "message": "Parakstīt"
@@ -734,9 +722,6 @@
   "unknown": {
     "message": "Nezināma"
   },
-  "unknownNetwork": {
-    "message": "Nezināms privātais tīkls"
-  },
   "unknownQrCode": {
     "message": "Kļūda: šo QR kodu neizdevās identificēt"
   },
@@ -766,9 +751,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Lai lietotu šo funkciju, jādod piekļuve kamerai."
-  },
-  "youSign": {
-    "message": "Jūs parakstāt"
   },
   "yourPrivateSeedPhrase": {
     "message": "Jūsu privātā atkopšanas frāze"

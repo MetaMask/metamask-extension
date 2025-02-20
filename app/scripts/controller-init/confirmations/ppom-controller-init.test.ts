@@ -2,7 +2,7 @@ import {
   PPOMController,
   PPOMControllerMessenger,
 } from '@metamask/ppom-validator';
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import { PreferencesController } from '../../controllers/preferences-controller';
 import { buildControllerInitRequestMock, CHAIN_ID_MOCK } from '../test/utils';
 import { ControllerInitRequest } from '../types';
@@ -39,9 +39,10 @@ function buildControllerMock(
 }
 
 function buildInitRequestMock(): jest.Mocked<
+  // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
   ControllerInitRequest<PPOMControllerMessenger, PPOMControllerInitMessenger>
 > {
-  const baseControllerMessenger = new ControllerMessenger();
+  const baseControllerMessenger = new Messenger();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),

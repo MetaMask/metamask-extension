@@ -31,7 +31,7 @@ import {
   BaseController,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedControllerMessenger,
+  RestrictedMessenger,
 } from '@metamask/base-controller';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
@@ -262,7 +262,7 @@ export type AllowedEvents =
 /**
  * Messenger type for the {@link MetaMetricsController}.
  */
-export type MetaMetricsControllerMessenger = RestrictedControllerMessenger<
+export type MetaMetricsControllerMessenger = RestrictedMessenger<
   typeof controllerName,
   MetaMetricsControllerActions | AllowedActions,
   MetaMetricsControllerEvents | AllowedEvents,
@@ -1161,7 +1161,7 @@ export default class MetaMetricsController extends BaseController<
       ),
     };
 
-    if (!previousUserTraits) {
+    if (!previousUserTraits && metamaskState.participateInMetaMetrics) {
       this.update((state) => {
         state.previousUserTraits = currentTraits;
       });
@@ -1174,9 +1174,13 @@ export default class MetaMetricsController extends BaseController<
         const previous = previousUserTraits[k];
         return !isEqual(previous, v);
       });
-      this.update((state) => {
-        state.previousUserTraits = currentTraits;
-      });
+
+      if (metamaskState.participateInMetaMetrics) {
+        this.update((state) => {
+          state.previousUserTraits = currentTraits;
+        });
+      }
+
       return updates;
     }
 

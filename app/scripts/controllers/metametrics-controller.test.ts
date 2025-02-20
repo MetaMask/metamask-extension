@@ -12,7 +12,7 @@ import {
 } from '@metamask/assets-controllers';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { Browser } from 'webextension-polyfill';
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import { merge } from 'lodash';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { createSegmentMock } from '../lib/segment';
@@ -1938,19 +1938,16 @@ async function withController<ReturnValue>(
         },
       },
     } = rest;
-    const controllerMessenger = new ControllerMessenger<
-      AllowedActions,
-      AllowedEvents
-    >();
+    const messenger = new Messenger<AllowedActions, AllowedEvents>();
 
-    controllerMessenger.registerActionHandler(
+    messenger.registerActionHandler(
       'PreferencesController:getState',
       jest.fn().mockReturnValue({
         currentLocale,
       }),
     );
 
-    controllerMessenger.registerActionHandler(
+    messenger.registerActionHandler(
       'NetworkController:getState',
       jest.fn().mockReturnValue({
         selectedNetworkClientId: Object.keys(
@@ -1959,7 +1956,7 @@ async function withController<ReturnValue>(
       }),
     );
 
-    controllerMessenger.registerActionHandler(
+    messenger.registerActionHandler(
       'NetworkController:getNetworkClientById',
       jest.fn().mockReturnValue({
         configuration: Object.values(
@@ -1971,7 +1968,7 @@ async function withController<ReturnValue>(
     return fn({
       controller: new MetaMetricsController({
         segment: segmentMock,
-        messenger: controllerMessenger.getRestricted({
+        messenger: messenger.getRestricted({
           name: 'MetaMetricsController',
           allowedActions: [
             'PreferencesController:getState',
@@ -1999,16 +1996,9 @@ async function withController<ReturnValue>(
         },
       }),
       triggerPreferencesControllerStateChange: (state) =>
-        controllerMessenger.publish(
-          'PreferencesController:stateChange',
-          state,
-          [],
-        ),
+        messenger.publish('PreferencesController:stateChange', state, []),
       triggerNetworkDidChange: (state) =>
-        controllerMessenger.publish(
-          'NetworkController:networkDidChange',
-          state,
-        ),
+        messenger.publish('NetworkController:networkDidChange', state),
     });
   } finally {
     // flush the queues manually after each test

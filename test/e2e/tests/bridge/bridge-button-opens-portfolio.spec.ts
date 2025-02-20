@@ -10,7 +10,7 @@ describe('Click bridge button', function (this: Suite) {
         const bridgePage = new BridgePage(driver);
         await logInWithBalanceValidation(driver, ganacheServer);
         await bridgePage.navigateToBridgePage();
-        await bridgePage.verifyPortfolioTab(2);
+        await bridgePage.verifyPortfolioTab();
       },
     );
   });
@@ -25,14 +25,14 @@ describe('Click bridge button', function (this: Suite) {
         // ETH
         await bridgePage.navigateToAssetPage('ETH');
         await bridgePage.navigateToBridgePage('coin-overview');
-        await bridgePage.verifyPortfolioTab(2);
+        await bridgePage.verifyPortfolioTab();
 
         await bridgePage.reloadHome();
 
         // TST
         await bridgePage.navigateToAssetPage('TST');
         await bridgePage.navigateToBridgePage('token-overview');
-        await bridgePage.verifyPortfolioTab(3);
+        await bridgePage.verifyPortfolioTab();
       },
     );
   });
