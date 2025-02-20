@@ -64,6 +64,9 @@ import {
   tokenPriceInNativeAsset,
 } from './utils';
 import type { BridgeState } from './bridge';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
+import { MULTICHAIN_PROVIDER_CONFIGS } from '../../../shared/constants/multichain/networks';
+import type { Hex } from '@metamask/utils';
 
 type BridgeAppState = {
   metamask: BridgeControllerState &
