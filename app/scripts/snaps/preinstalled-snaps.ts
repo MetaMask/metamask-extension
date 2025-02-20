@@ -16,8 +16,10 @@ const PREINSTALLED_SNAPS = Object.freeze<PreinstalledSnap[]>([
   EnsResolverSnap as PreinstalledSnap,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   AccountWatcherSnap as PreinstalledSnap,
-  BitcoinWalletSnap as unknown as PreinstalledSnap,
   PreinstalledExampleSnap as unknown as PreinstalledSnap,
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+  BitcoinWalletSnap as unknown as PreinstalledSnap,
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SolanaWalletSnap as unknown as PreinstalledSnap,

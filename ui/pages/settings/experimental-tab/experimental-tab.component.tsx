@@ -40,10 +40,12 @@ type ExperimentalTabProps = {
   solanaSupportEnabled: boolean;
   setSolanaSupportEnabled: (value: boolean) => void;
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   bitcoinSupportEnabled: boolean;
   setBitcoinSupportEnabled: (value: boolean) => void;
   bitcoinTestnetSupportEnabled: boolean;
   setBitcoinTestnetSupportEnabled: (value: boolean) => void;
+  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   addSnapAccountEnabled: boolean;
   setAddSnapAccountEnabled: (value: boolean) => void;
@@ -245,9 +247,11 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
       toggleOnLabel: t('on'),
     });
   }
+  ///: END:ONLY_INCLUDE_IF
 
   // We're only setting the code fences here since
   // we should remove it for the feature release
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   renderBitcoinSupport() {
     const { t, trackEvent } = this.context;
     const {
@@ -376,7 +380,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
           ///: END:ONLY_INCLUDE_IF
         }
         {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+          ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
           // We're only setting the code fences here since
           // we should remove it for the feature release
           /* Section: Bitcoin Accounts */

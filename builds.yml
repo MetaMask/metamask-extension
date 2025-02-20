@@ -64,6 +64,7 @@ buildTypes:
     features:
       - build-flask
       - keyring-snaps
+      # - bitcoin
       - solana
       - solana-swaps
     env:
@@ -137,6 +138,7 @@ features:
   keyring-snaps:
     assets:
       - ./{app,shared,ui}/**/keyring-snaps/**
+  bitcoin:
   solana:
     assets:
       - ./{app,shared,ui}/**/solana/**
