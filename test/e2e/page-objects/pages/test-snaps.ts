@@ -152,7 +152,7 @@ export class TestSnaps {
   }
 
   async clickGetFileTextButton() {
-    console.log('Find, scroll and click get file button');
+    console.log('Finding, scrolling to and clicking the get file text button');
     await this.driver.findScrollToElementClick(this.sendGetFileTextButton);
   }
 
