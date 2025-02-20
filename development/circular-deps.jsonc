@@ -11,13 +11,5 @@
     "ui/components/app/alert-system/confirm-alert-modal/confirm-alert-modal.tsx",
     "ui/components/app/alert-system/confirm-alert-modal/index.tsx",
     "ui/pages/confirmations/components/confirm/footer/footer.tsx"
-  ],
-  [
-    "ui/components/app/name/name-details/name-details.tsx",
-    "ui/components/app/name/name.tsx"
-  ],
-  [
-    "ui/pages/notifications/notifications-list.tsx",
-    "ui/pages/notifications/notifications.tsx"
   ]
 ]
