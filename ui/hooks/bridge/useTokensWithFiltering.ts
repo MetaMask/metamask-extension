@@ -90,7 +90,6 @@ export const useTokensWithFiltering = (chainId?: ChainId | Hex) => {
       return {
         ...sharedFields,
         type: AssetType.native,
-        address: zeroAddress(),
         image:
           CHAIN_ID_TOKEN_IMAGE_MAP[
             chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
@@ -129,15 +128,18 @@ export const useTokensWithFiltering = (chainId?: ChainId | Hex) => {
 
         // Yield multichain tokens with balances and are not blocked
         for (const token of multichainTokensWithBalance) {
-          if (
-            shouldAddToken(
-              token.symbol,
-              token.address ?? undefined,
-              token.chainId,
-            )
-          ) {
-            // If there's no address, set it to the native address in swaps/bridge
-            yield { ...token, address: token.address || zeroAddress() };
+          if (shouldAddToken(token.symbol, token.address, token.chainId)) {
+            yield token.isNative
+              ? {
+                  ...token,
+                  image:
+                    CHAIN_ID_TOKEN_IMAGE_MAP[
+                      token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
+                    ],
+                  address: null,
+                  type: AssetType.native,
+                }
+              : token;
           }
         }
 
@@ -157,26 +159,6 @@ export const useTokensWithFiltering = (chainId?: ChainId | Hex) => {
           const tokenWithData = buildTokenData(nativeToken);
           if (tokenWithData) {
             yield tokenWithData;
-          }
-        }
-
-        // Yield all detected tokens for all supported chains
-        for (const token of Object.values(allDetectedTokens).flat()) {
-          if (
-            shouldAddToken(
-              token.symbol,
-              token.address ?? undefined,
-              token.chainId,
-            )
-          ) {
-            yield {
-              ...token,
-              type: AssetType.token,
-              // Balance is not 0 but is not in the data so hardcode 0
-              // If a detected token is selected useLatestBalance grabs the on-chain balance
-              balance: '',
-              string: undefined,
-            };
           }
         }
 
