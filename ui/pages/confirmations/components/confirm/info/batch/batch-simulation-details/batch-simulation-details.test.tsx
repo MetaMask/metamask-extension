@@ -133,6 +133,18 @@ describe('BatchSimulationDetails', () => {
     expect(getByText(ADDRESS_SHORT_MOCK)).toBeInTheDocument();
   });
 
+  it('renders multiple approve rows', () => {
+    useBatchApproveBalanceChangesMock.mockReturnValue({
+      pending: false,
+      value: [BALANCE_CHANGE_ERC20_MOCK, BALANCE_CHANGE_ERC721_MOCK],
+    });
+
+    const { getByText } = render();
+    expect(getByText('You approve')).toBeInTheDocument();
+    expect(getByText('123.6')).toBeInTheDocument();
+    expect(getByText('#321')).toBeInTheDocument();
+  });
+
   it('does not render approve row if no approve balance changes', () => {
     const { queryByText } = render();
     expect(queryByText('You approve')).toBeNull();
