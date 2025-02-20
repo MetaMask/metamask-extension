@@ -7,7 +7,11 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { MultichainTransactionDetailsModal } from './multichain-transaction-details-modal';
-import { getTransactionUrl, shortenTransactionId } from './helpers';
+import {
+  getAddressUrl,
+  getTransactionUrl,
+  shortenTransactionId,
+} from './helpers';
 
 jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(),
@@ -194,6 +198,42 @@ describe('MultichainTransactionDetailsModal', () => {
 
     expect(getTransactionUrl(txId, chainId)).toBe(
       `https://explorer.solana.com/tx/${txId}?cluster=devnet`,
+    );
+  });
+
+  it('returns correct Solana mainnet address URL', () => {
+    const address = 'FKrZTPRmX6WpJL1YUCJmVH1AcmqLfjUt2rzovhLqLJQZ';
+    const chainId = MultichainNetworks.SOLANA;
+
+    expect(getAddressUrl(address, chainId)).toBe(
+      `https://explorer.solana.com/address/${address}`,
+    );
+  });
+
+  it('returns correct Solana devnet address URL', () => {
+    const address = 'FKrZTPRmX6WpJL1YUCJmVH1AcmqLfjUt2rzovhLqLJQZ';
+    const chainId = MultichainNetworks.SOLANA_DEVNET;
+
+    expect(getAddressUrl(address, chainId)).toBe(
+      `https://explorer.solana.com/address/${address}?cluster=devnet`,
+    );
+  });
+
+  it('returns correct Bitcoin mainnet address URL', () => {
+    const address = 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq';
+    const chainId = MultichainNetworks.BITCOIN;
+
+    expect(getAddressUrl(address, chainId)).toBe(
+      `https://blockstream.info/address/${address}`,
+    );
+  });
+
+  it('returns correct Bitcoin testnet address URL', () => {
+    const address = 'tb1qw508d6qejxtdg4y5r3zarvary0c5xw7kxpjzsx';
+    const chainId = MultichainNetworks.BITCOIN_TESTNET;
+
+    expect(getAddressUrl(address, chainId)).toBe(
+      `https://blockstream.info/testnet/address/${address}`,
     );
   });
 });

@@ -64,15 +64,15 @@ export const MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP: Record<
 
   [MultichainNetworks.SOLANA]: {
     url: 'https://explorer.solana.com',
-    address: 'https://explorer.solana.com/{address}',
+    address: 'https://explorer.solana.com/address/{address}',
   },
   [MultichainNetworks.SOLANA_DEVNET]: {
     url: 'https://explorer.solana.com',
-    address: 'https://explorer.solana.com/{address}?cluster=devnet',
+    address: 'https://explorer.solana.com/address/{address}?cluster=devnet',
   },
   [MultichainNetworks.SOLANA_TESTNET]: {
     url: 'https://explorer.solana.com',
-    address: 'https://explorer.solana.com/{address}?cluster=testnet',
+    address: 'https://explorer.solana.com/address/{address}?cluster=testnet',
   },
 } as const;
 
