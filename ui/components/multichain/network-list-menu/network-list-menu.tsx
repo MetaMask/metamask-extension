@@ -426,6 +426,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     return (
       <NetworkListItem
         key={network.chainId}
+        chainId={network.chainId}
         name={network.name}
         iconSrc={iconSrc}
         iconSize={AvatarNetworkSize.Sm}
