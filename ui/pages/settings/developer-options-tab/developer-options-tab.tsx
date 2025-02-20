@@ -225,8 +225,9 @@ const DeveloperOptionsTab = () => {
           <div className="settings-page__content-description">
             Remote feature flag values come from the LaunchDarkly by default. If
             you need to update feature flag values locally for development
-            purposes, you can change feature flag values in .manifest-overrides.json,
-            which will override values coming from LaunchDarkly.
+            purposes, you can change feature flag values in
+            .manifest-overrides.json, which will override values coming from
+            LaunchDarkly.
           </div>
         </div>
         <div
