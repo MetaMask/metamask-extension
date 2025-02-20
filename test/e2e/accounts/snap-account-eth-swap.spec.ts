@@ -56,7 +56,7 @@ describe('Snap Account - Swap', function () {
           swapFrom: TEST_ETH,
           swapTo: DAI,
         });
-        await driver.clickElement({ text: 'Swap', tag: 'button' });
+        await driver.clickElement({ text: 'Swap2', tag: 'button' });
         await waitForTransactionToComplete(driver, { tokenName: 'DAI' });
         await checkActivityTransaction(driver, {
           index: 0,
