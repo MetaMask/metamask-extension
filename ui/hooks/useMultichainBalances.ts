@@ -50,31 +50,36 @@ const useNonEvmAssetsWithBalances = (): (Omit<
 
   const nonEvmTokensWithFiatBalances = useMemo(() => {
     // build TokenWithFiat for each asset
-    return assetIds.map((caipAssetId) => {
-      const [caipChainId, address] = caipAssetId.split('/');
-      const [type] = address.split(':');
-      return {
-        chainId: caipChainId as `${string}:${string}`,
-        symbol: assetMetadataById[caipAssetId]?.symbol ?? '',
-        address: address as `${string}:${string}`,
-        string: balancesByAssetId[caipAssetId]?.amount ?? '0',
-        balance: balancesByAssetId[caipAssetId]?.amount ?? '0',
-        decimals: assetMetadataById[caipAssetId]?.units[0]?.decimals,
-        image: assetMetadataById[caipAssetId]?.iconUrl ?? '',
-        type: type === 'token' ? AssetType.token : AssetType.native,
-        tokenFiatAmount: new BigNumber(
-          balancesByAssetId[caipAssetId]?.amount ?? '1',
-        )
-          .times(
-            assetRates?.[caipAssetId]?.rate ??
-              nativeRates?.[
-                assetMetadataById[caipAssetId]?.units[0]?.symbol.toLowerCase()
-              ]?.conversionRate ??
-              '1',
+    return assetIds
+      .map((caipAssetId) => {
+        const [caipChainId, address] = caipAssetId.split('/');
+        if (!assetMetadataById[caipAssetId]) {
+          return null;
+        }
+        const [type] = address.split(':');
+        return {
+          chainId: caipChainId as `${string}:${string}`,
+          symbol: assetMetadataById[caipAssetId]?.symbol ?? '',
+          address: address as `${string}:${string}`,
+          string: balancesByAssetId[caipAssetId]?.amount ?? '0',
+          balance: balancesByAssetId[caipAssetId]?.amount ?? '0',
+          decimals: assetMetadataById[caipAssetId]?.units[0]?.decimals,
+          image: assetMetadataById[caipAssetId]?.iconUrl ?? '',
+          type: type === 'token' ? AssetType.token : AssetType.native,
+          tokenFiatAmount: new BigNumber(
+            balancesByAssetId[caipAssetId]?.amount ?? '1',
           )
-          .toNumber(),
-      };
-    });
+            .times(
+              assetRates?.[caipAssetId]?.rate ??
+                nativeRates?.[
+                  assetMetadataById[caipAssetId]?.units[0]?.symbol.toLowerCase()
+                ]?.conversionRate ??
+                '1',
+            )
+            .toNumber(),
+        };
+      })
+      .filter((token) => token !== null);
   }, [assetMetadataById, assetRates, assetIds, balancesByAssetId, nativeRates]);
 
   return nonEvmTokensWithFiatBalances;
