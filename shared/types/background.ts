@@ -17,6 +17,10 @@ import {
   TokenRatesControllerState,
   MultichainBalancesController,
   MultichainBalancesControllerState,
+  MultichainAssetsController,
+  MultiChainAssetsRatesController,
+  MultichainAssetsControllerState,
+  MultichainAssetsRatesControllerState,
 } from '@metamask/assets-controllers';
 import {
   KeyringController,
@@ -111,6 +115,17 @@ import {
 import SmartTransactionsController, {
   SmartTransactionsControllerState,
 } from '@metamask/smart-transactions-controller';
+import {
+  MultichainTransactionsController,
+  MultichainTransactionsControllerState,
+} from '@metamask/multichain-transactions-controller';
+import {
+  MultichainNetworkController,
+  MultichainNetworkControllerState,
+} from '@metamask/multichain-network-controller';
+import { MmiConfigurationController } from '@metamask-institutional/custody-keyring';
+import { InstitutionalFeaturesController } from '@metamask-institutional/institutional-features';
+import { CustodyController } from '@metamask-institutional/custody-controller';
 
 import AccountTrackerController, {
   AccountTrackerControllerState,
@@ -159,14 +174,13 @@ import AppMetadataController, {
 } from '../../app/scripts/controllers/app-metadata';
 import { SwapsControllerState } from '../../app/scripts/controllers/swaps/swaps.types';
 
+import { BridgeControllerState } from './bridge';
+import { BridgeStatusControllerState } from './bridge-status';
 import {
-  BridgeControllerState,
-  BridgeControllerState as BridgeState,
-} from './bridge';
-import {
-  BridgeStatusControllerState,
-  BridgeStatusControllerState as BridgeStatusState,
-} from './bridge-status';
+  CustodyControllerState,
+  InstitutionalFeaturesControllerState,
+  MmiConfigurationControllerState,
+} from './institutional';
 
 export type ResetOnRestartStores = {
   AccountTracker: AccountTrackerController;
@@ -188,8 +202,8 @@ export type ResetOnRestartStoresComposedState = {
   EncryptionPublicKeyController: EncryptionPublicKeyControllerState;
   SignatureController: SignatureControllerState;
   SwapsController: SwapsControllerState;
-  BridgeController: { bridgeState: BridgeState };
-  BridgeStatusController: { bridgeStatus: BridgeStatusState };
+  BridgeController: BridgeControllerState;
+  BridgeStatusController: BridgeStatusControllerState;
   EnsController: EnsControllerState;
   ApprovalController: ApprovalControllerState;
 };
@@ -207,14 +221,13 @@ export type StoreControllers = ResetOnRestartStores &
     AccountsController: AccountsController;
     AppStateController: AppStateController;
     AppMetadataController: AppMetadataController;
-    MultichainBalancesController: MultichainBalancesController;
-    TransactionController: TransactionController;
     KeyringController: KeyringController;
     PreferencesController: PreferencesController;
     MetaMetricsController: MetaMetricsController;
     MetaMetricsDataDeletionController: MetaMetricsDataDeletionController;
     AddressBookController: AddressBookController;
     CurrencyController: CurrencyRateController;
+    MultichainNetworkController: MultichainNetworkController;
     NetworkController: NetworkController;
     AlertController: AlertController;
     OnboardingController: OnboardingController;
@@ -237,11 +250,11 @@ export type StoreControllers = ResetOnRestartStores &
     SelectedNetworkController: SelectedNetworkController;
     LoggingController: LoggingController;
     MultichainRatesController: RatesController;
-    SnapController: SnapController;
-    CronjobController: CronjobController;
-    SnapsRegistry: JsonSnapsRegistry;
-    SnapInterfaceController: SnapInterfaceController;
-    SnapInsightsController: SnapInsightsController;
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    CustodyController: CustodyController;
+    InstitutionalFeaturesController: InstitutionalFeaturesController;
+    MmiConfigurationController: MmiConfigurationController;
+    ///: END:ONLY_INCLUDE_IF
     NameController: NameController;
     UserOperationController: UserOperationController;
     // Notification Controllers
@@ -257,13 +270,13 @@ export type StoreControllersComposedState = ResetOnRestartStoresComposedState &
     AccountsController: AccountsControllerState;
     AppStateController: AppStateControllerState;
     AppMetadataController: AppMetadataControllerState;
-    MultichainBalancesController: MultichainBalancesControllerState;
     KeyringController: KeyringControllerState;
     PreferencesController: PreferencesControllerState;
     MetaMetricsController: MetaMetricsControllerState;
     MetaMetricsDataDeletionController: MetaMetricsDataDeletionState;
     AddressBookController: AddressBookControllerState;
     CurrencyController: CurrencyRateState;
+    MultichainNetworkController: MultichainNetworkControllerState;
     NetworkController: NetworkState;
     AlertController: AlertControllerState;
     OnboardingController: OnboardingControllerState;
@@ -283,19 +296,19 @@ export type StoreControllersComposedState = ResetOnRestartStoresComposedState &
     SelectedNetworkController: SelectedNetworkControllerState;
     LoggingController: LoggingControllerState;
     MultichainRatesController: RatesControllerState;
-    SnapController: SnapControllerState;
-    CronjobController: CronjobControllerState;
-    SnapsRegistry: SnapsRegistryState;
-    SnapInterfaceController: SnapInterfaceControllerState;
-    SnapInsightsController: SnapInsightsControllerState;
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    CustodyController: CustodyControllerState;
+    InstitutionalFeaturesController: InstitutionalFeaturesControllerState;
+    MmiConfigurationController: MmiConfigurationControllerState;
+    ///: END:ONLY_INCLUDE_IF
     NameController: NameControllerState;
     UserOperationController: UserOperationControllerState;
-    RemoteFeatureFlagController: RemoteFeatureFlagControllerState;
     // Notification Controllers
     AuthenticationController: AuthenticationController.AuthenticationControllerState;
     UserStorageController: UserStorageController.UserStorageControllerState;
     NotificationServicesController: NotificationServicesController.NotificationServicesControllerState;
     NotificationServicesPushController: NotificationServicesPushController.NotificationServicesPushControllerState;
+    RemoteFeatureFlagController: RemoteFeatureFlagControllerState;
   };
 
 export type MemControllers = {
@@ -306,16 +319,51 @@ export type ControllerMemState = {
   TransactionController: TransactionControllerState;
 };
 
-export type MemStoreControllers = Omit<StoreControllers, 'PhishingController'> &
+export type MemStoreControllers = Omit<
+  StoreControllers,
+  | 'PhishingController'
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  | 'CustodyController'
+  | 'InstitutionalFeaturesController'
+  | 'MmiConfigurationController'
+  ///: END:ONLY_INCLUDE_IF
+> &
   MemControllers & {
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    MultichainAssetsController: MultichainAssetsController;
+    MultichainBalancesController: MultichainBalancesController;
+    MultichainTransactionsController: MultichainTransactionsController;
+    MultiChainAssetsRatesController: MultiChainAssetsRatesController;
+    ///: END:ONLY_INCLUDE_IF
+    SnapController: SnapController;
+    CronjobController: CronjobController;
+    SnapsRegistry: JsonSnapsRegistry;
+    SnapInterfaceController: SnapInterfaceController;
+    SnapInsightsController: SnapInsightsController;
     QueuedRequestController: QueuedRequestController;
   };
 
 export type MemStoreControllersComposedState = Omit<
   StoreControllersComposedState,
-  'PhishingController'
+  | 'PhishingController'
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  | 'CustodyController'
+  | 'InstitutionalFeaturesController'
+  | 'MmiConfigurationController'
+  ///: END:ONLY_INCLUDE_IF
 > &
   ControllerMemState & {
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    MultichainAssetsController: MultichainAssetsControllerState;
+    MultichainBalancesController: MultichainBalancesControllerState;
+    MultichainTransactionsController: MultichainTransactionsControllerState;
+    MultiChainAssetsRatesController: MultichainAssetsRatesControllerState;
+    ///: END:ONLY_INCLUDE_IF
+    SnapController: SnapControllerState;
+    CronjobController: CronjobControllerState;
+    SnapsRegistry: SnapsRegistryState;
+    SnapInterfaceController: SnapInterfaceControllerState;
+    SnapInsightsController: SnapInsightsControllerState;
     QueuedRequestController: QueuedRequestControllerState;
   };
 
