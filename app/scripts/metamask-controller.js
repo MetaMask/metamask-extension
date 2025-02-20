@@ -4289,11 +4289,12 @@ export default class MetamaskController extends EventEmitter {
           numberOfAccounts: 1,
         },
       );
-      const newAccountAddress = (await newKeyring.getAccounts())[0];
+      const [newAccountAddress] = await newKeyring.getAccounts();
       const account =
         this.accountsController.getAccountByAddress(newAccountAddress);
       this.accountsController.setSelectedAccount(account.id);
 
+      // TODO: Find a way to encapsulate this logic in the KeyringController itself.
       const keyringId =
         this.keyringController.state.keyringsMetadata[
           this.keyringController.state.keyrings.length - 1
@@ -4309,6 +4310,7 @@ export default class MetamaskController extends EventEmitter {
   async generateNewMnemonicAndAddToVault() {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
+      // addNewKeyring auto creates 1 account.
       const newHdkeyring = await this.keyringController.addNewKeyring(
         KeyringTypes.hd,
       );
