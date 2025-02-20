@@ -597,6 +597,7 @@
   },
   "ipfsGateway": "dweb.link",
   "isAccountMenuOpen": false,
+  "isEvmSelected": false,
   "isInitialized": true,
   "isIpfsGatewayEnabled": true,
   "isNetworkMenuOpen": false,
@@ -627,6 +628,20 @@
       "accounts": ["0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281"]
     }
   ],
+  "multichainNetworkConfigurationsByChainId": {
+    "bip122:000000000019d6689c085ae165831e93": {
+      "chainId": "bip122:000000000019d6689c085ae165831e93",
+      "name": "Bitcoin Mainnet",
+      "nativeCurrency": "bip122:000000000019d6689c085ae165831e93/slip44:0",
+      "isEvm": false
+    },
+    "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": {
+      "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "name": "Solana Mainnet",
+      "nativeCurrency": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+      "isEvm": false
+    }
+  },
   "nameSources": {
     "ens": {
       "label": "Ethereum Name Service (ENS)"
@@ -731,22 +746,6 @@
       "status": "available"
     }
   },
-  "multichainNetworkConfigurationsByChainId": {
-    "bip122:000000000019d6689c085ae165831e93": {
-      "chainId": "bip122:000000000019d6689c085ae165831e93",
-      "name": "Bitcoin Mainnet",
-      "nativeCurrency": "bip122:000000000019d6689c085ae165831e93/slip44:0",
-      "isEvm": false
-    },
-    "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": {
-      "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
-      "name": "Solana Mainnet",
-      "nativeCurrency": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
-      "isEvm": false
-    }
-  },
-  "selectedMultichainNetworkChainId": "bip122:000000000019d6689c085ae165831e93",
-  "isEvmSelected": false,
   "nftsDropdownState": {
     "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
       "0xaa36a7": {
@@ -822,6 +821,7 @@
   "securityAlertsEnabled": true,
   "seedPhraseBackedUp": true,
   "selectedAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+  "selectedMultichainNetworkChainId": "bip122:000000000019d6689c085ae165831e93",
   "selectedNetworkClientId": "sepolia",
   "showAccountBanner": false,
   "showBetaHeader": false,
