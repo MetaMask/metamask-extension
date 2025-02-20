@@ -1075,6 +1075,9 @@ jobs:
       - run:
           name: Create GitHub release
           command: .circleci/scripts/release-create-gh-release.sh
+      - run:
+          name: Push Firefox bundle script
+          command: .circleci/scripts/push-firefox-bundle-script.sh
 
   job-publish-ts-migration-dashboard:
     executor: node-browsers-small
