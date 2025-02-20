@@ -67,7 +67,7 @@ class SnapInstall {
   }
 
   async clickConfirmButton() {
-    console.log('Click on the scroll and then click confirm button');
+    console.log('Clicking on the scroll and then clicking confirm button');
     await this.driver.waitUntil(
       async () => {
         await this.driver.clickElementSafe(this.scrollSnapInstall);
