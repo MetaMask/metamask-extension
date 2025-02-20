@@ -2,7 +2,7 @@ import { ObservableStore } from '@metamask/obs-store';
 import {
   ActionConstraint,
   BaseControllerInstance,
-  ControllerMessenger,
+  Messenger,
   EventConstraint,
   getPersistentState,
   isBaseController,
@@ -41,7 +41,7 @@ export default class ComposableObservableStore<
    */
   config: Partial<Config> = {};
 
-  controllerMessenger: ControllerMessenger<ActionConstraint, EventConstraint>;
+  controllerMessenger: Messenger<ActionConstraint, EventConstraint>;
 
   persist: boolean;
 
@@ -50,7 +50,9 @@ export default class ComposableObservableStore<
    *
    * @param options
    * @param [options.config] - Map of internal state keys to child stores and controllers
-   * @param options.controllerMessenger - The controller messenger, used for subscribing to events from BaseControllerV2-based controllers.
+   * @param [options.controllerMessenger] - The controller
+   * messenger, used for subscribing to events from BaseControllerV2-based
+   * controllers.
    * @param [options.state] - The composed state of the child stores and controllers
    * @param [options.persist] - Whether or not to apply the persistence for v2 controllers
    */
@@ -61,7 +63,7 @@ export default class ComposableObservableStore<
     persist = false,
   }: {
     config?: Config;
-    controllerMessenger: ControllerMessenger<ActionConstraint, EventConstraint>;
+    controllerMessenger: Messenger<ActionConstraint, EventConstraint>;
     state?: Partial<ComposedState>;
     persist?: boolean;
   }) {
