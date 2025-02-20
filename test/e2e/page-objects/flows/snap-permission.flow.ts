@@ -28,7 +28,7 @@ export async function approvePermissionAndConfirm(driver: Driver) {
  */
 export async function switchToDialogAndClickApproveButton(driver: Driver) {
   const snapInstall = new SnapInstall(driver);
-  console.log('Switch to dialog and click approve button');
+  console.log('Switching to dialog and clicking approve button');
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await snapInstall.clickApproveButton();
 }
