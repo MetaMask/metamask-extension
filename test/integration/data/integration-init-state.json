@@ -597,7 +597,7 @@
   },
   "ipfsGateway": "dweb.link",
   "isAccountMenuOpen": false,
-  "isEvmSelected": false,
+  "isEvmSelected": true,
   "isInitialized": true,
   "isIpfsGatewayEnabled": true,
   "isNetworkMenuOpen": false,
