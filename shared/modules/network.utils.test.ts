@@ -1,4 +1,6 @@
 import { SolScope, BtcScope } from '@metamask/keyring-api';
+import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
+import { CaipChainId } from '@metamask/utils';
 import { MAX_SAFE_CHAIN_ID } from '../constants/network';
 import {
   isSafeChainId,
@@ -160,7 +162,7 @@ describe('network utils', () => {
 
   describe('sortNetworks', () => {
     it('sorts a list of networks based on the order of their chain IDs', () => {
-      const networks = {
+      const networks: Record<CaipChainId, MultichainNetworkConfiguration> = {
         [SolScope.Mainnet]: {
           chainId: SolScope.Mainnet,
           name: 'Solana Mainnet',
@@ -186,7 +188,7 @@ describe('network utils', () => {
         [BtcScope.Mainnet]: {
           chainId: BtcScope.Mainnet,
           name: 'Bitcoin Mainnet',
-          nativeCurreny: `${BtcScope.Mainnet}/slip44:0`,
+          nativeCurrency: `${BtcScope.Mainnet}/slip44:0`,
           isEvm: false,
         },
       };
