@@ -69,6 +69,7 @@ import {
   TextAlign,
   TextColor,
   TextVariant,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
 import {
   Box,
@@ -103,8 +104,9 @@ import NetworkListSearch from './network-list-search/network-list-search';
 import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
 import { SelectRpcUrlModal } from './select-rpc-url-modal/select-rpc-url-modal';
 import AddBlockExplorerModal from './add-block-explorer-modal/add-block-explorer-modal';
+import AddNonEvmAccountModal from './add-non-evm-account/add-non-evm-account';
 
-export enum ACTION_MODES {
+export enum ACTION_MODE {
   // Displays the search box and network list
   LIST,
   // Displays the form to add or edit a network
@@ -115,14 +117,15 @@ export enum ACTION_MODES {
   ADD_EXPLORER_URL,
   // Displays the page for selecting an RPC URL
   SELECT_RPC,
+  // Add account for non EVM networks
+  ADD_NON_EVM_ACCOUNT,
 }
 
 export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-  const { createAccount, isAccountInNetwork } =
-    useAccountCreationOnNetworkChange();
+  const { isAccountInNetwork } = useAccountCreationOnNetworkChange();
 
   const { tokenNetworkFilter } = useSelector(getPreferences);
   const showTestNetworks = useSelector(getShowTestNetworks);
@@ -196,8 +199,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   // Tracks which page the user is on
   const [actionMode, setActionMode] = useState(
     isAddingNewNetwork || editedNetwork
-      ? ACTION_MODES.ADD_EDIT
-      : ACTION_MODES.LIST,
+      ? ACTION_MODE.ADD_EDIT
+      : ACTION_MODE.LIST,
   );
 
   const networkFormState = useNetworkFormState(editedNetwork);
@@ -231,6 +234,9 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       ).sort((a, b) => a.name.localeCompare(b.name)),
     [networkConfigurations],
   );
+
+  const [selectedNonEvmNetwork, setSelectedNonEvmNetwork] =
+    useState<CaipChainId>();
 
   // Searches networks by user input
   const [searchQuery, setSearchQuery] = useState('');
@@ -327,8 +333,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       return;
     }
 
-    dispatch(toggleNetworkMenu());
-    await createAccount(chainId);
+    setSelectedNonEvmNetwork(chainId);
+    setActionMode(ACTION_MODE.ADD_NON_EVM_ACCOUNT);
   };
 
   const handleNetworkChange = async (chainId: CaipChainId) => {
@@ -396,11 +402,11 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           nickname: network.name,
         }),
       );
-      setActionMode(ACTION_MODES.ADD_EDIT);
+      setActionMode(ACTION_MODE.ADD_EDIT);
     };
 
     const onRpcConfigEdit = () => {
-      setActionMode(ACTION_MODES.SELECT_RPC);
+      setActionMode(ACTION_MODE.SELECT_RPC);
       dispatch(setEditedNetwork({ chainId: network.chainId }));
     };
 
@@ -431,12 +437,13 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         onDeleteClick={isDeletable ? () => onDelete() : undefined}
         onEditClick={isEditable ? () => onEdit() : undefined}
         onRpcEndpointClick={network.isEvm ? undefined : onRpcConfigEdit}
+        disabled={!isUnlocked && !network.isEvm}
       />
     );
   };
 
   const render = () => {
-    if (actionMode === ACTION_MODES.LIST) {
+    if (actionMode === ACTION_MODE.LIST) {
       return (
         <>
           <Box className="multichain-network-list-menu">
@@ -585,7 +592,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
                   event: MetaMetricsEventName.AddNetworkButtonClick,
                   category: MetaMetricsEventCategory.Network,
                 });
-                setActionMode(ACTION_MODES.ADD_EDIT);
+                setActionMode(ACTION_MODE.ADD_EDIT);
               }}
             >
               {t('addACustomNetwork')}
@@ -593,18 +600,16 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           </Box>
         </>
       );
-    } else if (actionMode === ACTION_MODES.ADD_EDIT) {
+    } else if (actionMode === ACTION_MODE.ADD_EDIT) {
       return (
         <NetworksForm
           networkFormState={networkFormState}
           existingNetwork={editedNetwork}
-          onRpcAdd={() => setActionMode(ACTION_MODES.ADD_RPC)}
-          onBlockExplorerAdd={() =>
-            setActionMode(ACTION_MODES.ADD_EXPLORER_URL)
-          }
+          onRpcAdd={() => setActionMode(ACTION_MODE.ADD_RPC)}
+          onBlockExplorerAdd={() => setActionMode(ACTION_MODE.ADD_EXPLORER_URL)}
         />
       );
-    } else if (actionMode === ACTION_MODES.ADD_RPC) {
+    } else if (actionMode === ACTION_MODE.ADD_RPC) {
       return (
         <AddRpcUrlModal
           onAdded={(url, name) => {
@@ -618,11 +623,11 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
                 defaultRpcEndpointIndex: rpcUrls.rpcEndpoints.length,
               });
             }
-            setActionMode(ACTION_MODES.ADD_EDIT);
+            setActionMode(ACTION_MODE.ADD_EDIT);
           }}
         />
       );
-    } else if (actionMode === ACTION_MODES.ADD_EXPLORER_URL) {
+    } else if (actionMode === ACTION_MODE.ADD_EXPLORER_URL) {
       return (
         <AddBlockExplorerModal
           onAdded={(url) => {
@@ -633,48 +638,61 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
                   blockExplorers.blockExplorerUrls.length,
               });
             }
-            setActionMode(ACTION_MODES.ADD_EDIT);
+            setActionMode(ACTION_MODE.ADD_EDIT);
           }}
         />
       );
-    } else if (actionMode === ACTION_MODES.SELECT_RPC && editedNetwork) {
+    } else if (actionMode === ACTION_MODE.SELECT_RPC && editedNetwork) {
       return (
         <SelectRpcUrlModal
           networkConfiguration={networkConfigurations[editedNetwork.chainId]}
           onNetworkChange={handleEvmNetworkChange}
         />
       );
+    } else if (
+      actionMode === ACTION_MODE.ADD_NON_EVM_ACCOUNT &&
+      selectedNonEvmNetwork
+    ) {
+      return <AddNonEvmAccountModal chainId={selectedNonEvmNetwork} />;
     }
     return null; // Should not be reachable
   };
 
   let title;
-  if (actionMode === ACTION_MODES.LIST) {
+  if (actionMode === ACTION_MODE.LIST) {
     title = t('networkMenuHeading');
-  } else if (actionMode === ACTION_MODES.ADD_EDIT && !editedNetwork) {
+  } else if (actionMode === ACTION_MODE.ADD_EDIT && !editedNetwork) {
     title = t('addACustomNetwork');
-  } else if (actionMode === ACTION_MODES.ADD_RPC) {
+  } else if (actionMode === ACTION_MODE.ADD_RPC) {
     title = t('addRpcUrl');
-  } else if (actionMode === ACTION_MODES.ADD_EXPLORER_URL) {
+  } else if (actionMode === ACTION_MODE.ADD_EXPLORER_URL) {
     title = t('addBlockExplorerUrl');
-  } else if (actionMode === ACTION_MODES.SELECT_RPC) {
+  } else if (actionMode === ACTION_MODE.SELECT_RPC) {
     title = t('selectRpcUrl');
+  } else if (actionMode === ACTION_MODE.ADD_NON_EVM_ACCOUNT) {
+    title = t('addNonEvmAccount', [
+      selectedNonEvmNetwork
+        ? multichainNetworks[selectedNonEvmNetwork].name
+        : '',
+    ]);
   } else {
     title = editedNetwork?.name ?? '';
   }
 
   let onBack;
-  if (actionMode === ACTION_MODES.ADD_EDIT) {
+  if (actionMode === ACTION_MODE.ADD_EDIT) {
     onBack = () => {
       editedNetwork ? dispatch(setEditedNetwork()) : networkFormState.clear();
 
-      setActionMode(ACTION_MODES.LIST);
+      setActionMode(ACTION_MODE.LIST);
     };
   } else if (
-    actionMode === ACTION_MODES.ADD_RPC ||
-    actionMode === ACTION_MODES.ADD_EXPLORER_URL
+    actionMode === ACTION_MODE.ADD_RPC ||
+    actionMode === ACTION_MODE.ADD_EXPLORER_URL
   ) {
-    onBack = () => setActionMode(ACTION_MODES.ADD_EDIT);
+    onBack = () => setActionMode(ACTION_MODE.ADD_EDIT);
+  } else if (actionMode === ACTION_MODE.ADD_NON_EVM_ACCOUNT) {
+    onBack = () => setActionMode(ACTION_MODE.LIST);
   }
 
   if (isMultiRpcOnboarding) {
@@ -694,11 +712,16 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           paddingTop: 0,
           paddingBottom: 0,
         }}
+        height={
+          actionMode === ACTION_MODE.ADD_NON_EVM_ACCOUNT
+            ? BlockSize.TwoFifths
+            : BlockSize.Screen
+        }
       >
         <ModalHeader
           paddingTop={4}
           paddingRight={4}
-          paddingBottom={actionMode === ACTION_MODES.SELECT_RPC ? 0 : 4}
+          paddingBottom={actionMode === ACTION_MODE.SELECT_RPC ? 0 : 4}
           onClose={onClose}
           onBack={onBack}
         >
