@@ -70,8 +70,8 @@ export function formatBlockExplorerAddressUrl(
  * @returns The formatted URL for the given transaction.
  */
 export function formatBlockExplorerTransactionUrl(
-  explorerUrls: MultichainBlockExplorerFormatUrls,
+  urls: MultichainBlockExplorerFormatUrls,
   txId: string,
 ): string {
-  return explorerUrls.transaction.replace('{txId}', txId);
+  return urls.transaction.replace('{txId}', txId);
 }
