@@ -81,6 +81,17 @@
         "webpack>events": true
       }
     },
+    "@metamask/eth-ledger-bridge-keyring>@ethereumjs/util": {
+      "globals": {
+        "console.warn": true,
+        "fetch": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/rlp": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "webpack>events": true
+      }
+    },
     "@metamask/eth-trezor-keyring>@ethereumjs/util": {
       "globals": {
         "console.warn": true,
@@ -1056,9 +1067,10 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethereumjs/tx": true,
-        "eth-lattice-keyring>@ethereumjs/util": true,
+        "@metamask/eth-ledger-bridge-keyring>@ethereumjs/util": true,
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth": true,
         "@metamask/eth-sig-util": true,
+        "@metamask/utils": true,
         "browserify>buffer": true,
         "webpack>events": true,
         "@metamask/eth-trezor-keyring>hdkey": true
