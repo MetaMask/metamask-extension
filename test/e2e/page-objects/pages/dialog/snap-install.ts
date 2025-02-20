@@ -112,7 +112,7 @@ class SnapInstall {
   }
 
   async check_transactionInsightsType() {
-    console.log('Check transaction insights type');
+    console.log('Checking transaction insights type');
     await this.driver.waitForSelector(this.transactionType);
   }
 
