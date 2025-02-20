@@ -325,7 +325,7 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   }
 
   const balanceChanges = balanceChangesResult.value;
-  const empty = balanceChanges.length === 0;
+  const empty = balanceChanges.length === 0 && staticRows.length === 0;
   if (empty) {
     return (
       <SimulationDetailsLayout

@@ -4,7 +4,7 @@ import {
   SimulationDetails,
   StaticRow,
 } from '../../../../simulation-details/simulation-details';
-import { useBatchApproveBalanceChanges } from '../../hooks/useBatchApproveTokenSimulation';
+import { useBatchApproveBalanceChanges } from '../../hooks/useBatchApproveBalanceChanges';
 import { useConfirmContext } from '../../../../../context/confirm';
 
 export function BatchSimulationDetails() {

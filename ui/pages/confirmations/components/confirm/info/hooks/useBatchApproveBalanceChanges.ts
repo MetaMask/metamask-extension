@@ -15,7 +15,6 @@ import { getTokenStandardAndDetails } from '../../../../../../store/actions';
 import { Hex, add0x } from '@metamask/utils';
 import { fetchErc20Decimals } from '../../../../utils/token';
 import { TokenStandard } from '../../../../../../../shared/constants/transaction';
-import { toHex } from '@metamask/controller-utils';
 
 export function useBatchApproveBalanceChanges() {
   const locale = useSelector(getIntlLocale);
