@@ -177,7 +177,7 @@ describe('MMIController', function () {
       state: {
         keyrings: [],
         isUnlocked: true,
-        keyringTypes: [],
+        keyringsMetadata: [],
       },
       encryptor: {
         encrypt(_, object) {
