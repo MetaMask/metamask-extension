@@ -74,10 +74,7 @@ function* ulidGenerator(ulids = mockULIDs) {
     yield id;
   }
 
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    throw new Error('should not be called after exhausting provided IDs');
-  }
+  throw new Error('should not be called after exhausting provided IDs');
 }
 
 let mockUlidGenerator = ulidGenerator();
