@@ -100,10 +100,9 @@ export function transformManifest(
 
   return transforms.length
     ? (browserManifest: chrome.runtime.Manifest, _browser: string) => {
-        // Create a deep copy of the manifest to avoid modifying the original
-        const manifestCopy = JSON.parse(JSON.stringify(browserManifest));
-        transforms.forEach((transform) => transform(manifestCopy));
-        return manifestCopy;
+        const manifestClone = structuredClone(browserManifest);
+        transforms.forEach((transform) => transform(manifestClone));
+        return manifestClone;
       }
     : undefined;
 }
