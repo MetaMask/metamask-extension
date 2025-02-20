@@ -17,6 +17,7 @@ import { TokenWithFiatAmount } from '../types';
 import { getMultichainIsEvm } from '../../../../selectors/multichain';
 import { filterAssets } from '../util/filter';
 import { sortAssets } from '../util/sort';
+import { useVirtualList } from '../../../../hooks/useVirtualList';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -69,17 +70,22 @@ function TokenList({ onTokenClick }: TokenListProps) {
     }
   }, [sortedFilteredTokens]);
 
+  const { VirtualList } = useVirtualList({
+    items: sortedFilteredTokens,
+    estimatedSize: 62, // 62px
+    getKey: (token) => `${token.chainId}-${token.symbol}-${token.address}`,
+  });
+
   return (
-    <>
-      {sortedFilteredTokens.map((token: TokenWithFiatAmount) => (
+    <VirtualList>
+      {(token) => (
         <TokenCell
-          key={`${token.chainId}-${token.symbol}-${token.address}`}
           token={token}
           privacyMode={privacyMode}
           onClick={onTokenClick}
         />
-      ))}
-    </>
+      )}
+    </VirtualList>
   );
 }
 

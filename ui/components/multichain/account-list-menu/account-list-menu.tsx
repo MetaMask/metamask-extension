@@ -4,6 +4,7 @@ import React, {
   useMemo,
   useCallback,
   useEffect,
+  useRef,
 } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -130,6 +131,7 @@ import {
   SOLANA_WALLET_SNAP_ID,
 } from '../../../../shared/lib/accounts/solana-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
+import { useVirtualList } from '../../../hooks/useVirtualList';
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -179,6 +181,54 @@ export const getActionTitle = (
       return t('selectAnAccount');
   }
 };
+
+const AccountListItemContainer = React.memo(
+  (props: {
+    account: MergedInternalAccount;
+    onAccountListItemItemClicked: (
+      account: MergedInternalAccount,
+    ) => () => void;
+    onClose: () => void;
+    selected: boolean;
+    connectedAvatar: string | undefined | null;
+    currentTabOrigin: string | undefined | null;
+    privacyMode: boolean;
+    accountListItemProps?: object;
+  }) => {
+    const {
+      account,
+      onAccountListItemItemClicked,
+      onClose,
+      selected,
+      connectedAvatar,
+      currentTabOrigin,
+      privacyMode,
+      accountListItemProps,
+    } = props;
+    const onClick = useMemo(
+      () => onAccountListItemItemClicked(account),
+      [account, onAccountListItemItemClicked],
+    );
+
+    return (
+      <AccountListItem
+        onClick={onClick}
+        account={account}
+        selected={selected}
+        closeMenu={onClose}
+        connectedAvatar={connectedAvatar}
+        menuType={AccountListItemMenuTypes.Account}
+        isPinned={Boolean(account.pinned)}
+        isHidden={Boolean(account.hidden)}
+        currentTabOrigin={currentTabOrigin}
+        isActive={Boolean(account.active)}
+        privacyMode={privacyMode}
+        shouldScrollToWhenSelected={false}
+        {...accountListItemProps}
+      />
+    );
+  },
+);
 
 type AccountListMenuProps = {
   onClose: () => void;
@@ -297,19 +347,23 @@ export const AccountListMenu = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
 
-  let searchResults: MergedInternalAccount[] = filteredUpdatedAccountList;
-  if (searchQuery) {
-    const fuse = new Fuse(filteredAccounts, {
-      threshold: 0.2,
-      location: 0,
-      distance: 100,
-      maxPatternLength: 32,
-      minMatchCharLength: 1,
-      keys: ['metadata.name', 'address'],
-    });
-    fuse.setCollection(filteredAccounts);
-    searchResults = fuse.search(searchQuery);
-  }
+  const searchResults: MergedInternalAccount[] = useMemo(() => {
+    let _searchResults: MergedInternalAccount[] = filteredUpdatedAccountList;
+    if (searchQuery) {
+      const fuse = new Fuse(filteredAccounts, {
+        threshold: 0.2,
+        location: 0,
+        distance: 100,
+        maxPatternLength: 32,
+        minMatchCharLength: 1,
+        keys: ['metadata.name', 'address'],
+      });
+      fuse.setCollection(filteredAccounts);
+      _searchResults = fuse.search(searchQuery);
+    }
+
+    return _searchResults;
+  }, [filteredAccounts, filteredUpdatedAccountList, searchQuery]);
 
   const title = useMemo(
     () => getActionTitle(t as (text: string) => string, actionMode),
@@ -327,7 +381,7 @@ export const AccountListMenu = ({
   }
 
   const onAccountListItemItemClicked = useCallback(
-    (account) => {
+    (account: MergedInternalAccount) => {
       return () => {
         onClose();
         trackEvent({
@@ -350,8 +404,18 @@ export const AccountListMenu = ({
         dispatch(setSelectedAccount(account.address));
       };
     },
-    [dispatch, onClose, trackEvent],
+    [defaultHomeActiveTabName, dispatch, onClose, trackEvent],
   );
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const { VirtualList } = useVirtualList({
+    items: searchResults,
+    estimatedSize: 80, // 80px
+    getKey: (account) => account.address,
+    startingIndex: filteredAccounts.findIndex(
+      (account) => selectedAccount.address === account.address,
+    ),
+  });
 
   return (
     <Modal isOpen onClose={onClose}>
@@ -632,7 +696,10 @@ export const AccountListMenu = ({
               </Box>
             ) : null}
             {/* Account list block */}
-            <Box className="multichain-account-menu-popover__list">
+            <Box
+              className="multichain-account-menu-popover__list"
+              ref={scrollRef}
+            >
               {searchResults.length === 0 && searchQuery !== '' ? (
                 <Text
                   paddingLeft={4}
@@ -643,44 +710,45 @@ export const AccountListMenu = ({
                   {t('noAccountsFound')}
                 </Text>
               ) : null}
-              {searchResults.map((account) => {
-                const connectedSite = connectedSites[account.address]?.find(
-                  ({ origin }) => origin === currentTabOrigin,
-                );
 
-                const hideAccountListItem =
-                  searchQuery.length === 0 && account.hidden;
+              {/* LIST HERE */}
+              <VirtualList>
+                {(account) => {
+                  const connectedSite = connectedSites[account.address]?.find?.(
+                    ({ origin }) => origin === currentTabOrigin,
+                  );
 
-                /* NOTE: Hidden account will be displayed only in the search list */
+                  const hideAccountListItem =
+                    searchQuery.length === 0 && account.hidden;
 
-                return (
-                  <Box
-                    className={
-                      account.hidden
-                        ? 'multichain-account-menu-popover__list--menu-item-hidden'
-                        : 'multichain-account-menu-popover__list--menu-item'
-                    }
-                    display={hideAccountListItem ? Display.None : Display.Block}
-                    key={account.address}
-                  >
-                    <AccountListItem
-                      onClick={onAccountListItemItemClicked(account)}
-                      account={account}
-                      key={account.address}
-                      selected={selectedAccount.address === account.address}
-                      closeMenu={onClose}
-                      connectedAvatar={connectedSite?.iconUrl}
-                      menuType={AccountListItemMenuTypes.Account}
-                      isPinned={Boolean(account.pinned)}
-                      isHidden={Boolean(account.hidden)}
-                      currentTabOrigin={currentTabOrigin}
-                      isActive={Boolean(account.active)}
-                      privacyMode={privacyMode}
-                      {...accountListItemProps}
-                    />
-                  </Box>
-                );
-              })}
+                  /* NOTE: Hidden account will be displayed only in the search list */
+                  return (
+                    <Box
+                      className={
+                        account.hidden
+                          ? 'multichain-account-menu-popover__list--menu-item-hidden'
+                          : 'multichain-account-menu-popover__list--menu-item'
+                      }
+                      display={
+                        hideAccountListItem ? Display.None : Display.Block
+                      }
+                    >
+                      <AccountListItemContainer
+                        account={account}
+                        onAccountListItemItemClicked={
+                          onAccountListItemItemClicked
+                        }
+                        selected={selectedAccount.address === account.address}
+                        onClose={onClose}
+                        connectedAvatar={connectedSite?.iconUrl}
+                        currentTabOrigin={currentTabOrigin}
+                        privacyMode={privacyMode}
+                        accountListItemProps={accountListItemProps}
+                      />
+                    </Box>
+                  );
+                }}
+              </VirtualList>
             </Box>
             {/* Hidden Accounts, this component shows hidden accounts in account list Item*/}
             {hiddenAddresses.length > 0 ? (

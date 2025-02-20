@@ -120,7 +120,7 @@ import {
 import {
   getPermissionSubjects,
   getConnectedSubjectsForAllAddresses,
-  getOrderedConnectedAccountsForActiveTab,
+  createGetOrderedConnectedAccountsForActiveTabMemo,
   getOrderedConnectedAccountsForConnectedDapp,
   getSubjectMetadata,
 } from './permissions';
@@ -567,6 +567,24 @@ export function getCrossChainMetaMaskCachedBalances(state) {
   }, {});
 }
 
+export const getCrossChainMetaMaskCachedBalancesDeepEq =
+  createDeepEqualSelector(
+    (state) => state.metamask.accountsByChainId,
+    (allAccountsByChainId) => {
+      return Object.keys(allAccountsByChainId).reduce((acc, topLevelKey) => {
+        acc[topLevelKey] = Object.keys(
+          allAccountsByChainId[topLevelKey],
+        ).reduce((innerAcc, innerKey) => {
+          innerAcc[innerKey] =
+            allAccountsByChainId[topLevelKey][innerKey].balance;
+          return innerAcc;
+        }, {});
+
+        return acc;
+      }, {});
+    },
+  );
+
 /**
  * Based on the current account address, return the balance for the native token of all chain networks on that account
  *
@@ -685,7 +703,7 @@ function getNativeTokenInfo(state, chainId) {
  *
  * @returns {InternalAccountWithBalance} An array of internal accounts with balance
  */
-export const getMetaMaskAccountsOrdered = createSelector(
+export const getMetaMaskAccountsOrdered = createDeepEqualSelector(
   getInternalAccountsSortedByKeyring,
   getMetaMaskAccounts,
   (internalAccounts, accounts) => {
@@ -815,6 +833,23 @@ export const getCrossChainTokenExchangeRates = (state) => {
     return acc;
   }, {});
 };
+
+export const getCrossChainTokenExchangeRatesDeepEq = createDeepEqualSelector(
+  (state) => state.metamask.marketData,
+  (contractMarketData) => {
+    return Object.keys(contractMarketData).reduce((acc, topLevelKey) => {
+      acc[topLevelKey] = Object.keys(contractMarketData[topLevelKey]).reduce(
+        (innerAcc, innerKey) => {
+          innerAcc[innerKey] = contractMarketData[topLevelKey][innerKey]?.price;
+          return innerAcc;
+        },
+        {},
+      );
+
+      return acc;
+    }, {});
+  },
+);
 
 /**
  * Get market data for tokens on the current chain
@@ -2786,11 +2821,14 @@ export function getUnconnectedAccounts(state, activeTab) {
   return unConnectedAccounts;
 }
 
+const getOrderedConnectedAccountsForActiveTabMemo =
+  createGetOrderedConnectedAccountsForActiveTabMemo();
+
 export const getUpdatedAndSortedAccounts = createDeepEqualSelector(
   getMetaMaskAccountsOrdered,
   getPinnedAccountsList,
   getHiddenAccountsList,
-  getOrderedConnectedAccountsForActiveTab,
+  getOrderedConnectedAccountsForActiveTabMemo,
   (accounts, pinnedAddresses, hiddenAddresses, connectedAccounts) => {
     connectedAccounts.forEach((connection) => {
       // Find if the connection exists in accounts
