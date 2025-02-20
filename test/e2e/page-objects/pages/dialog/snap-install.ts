@@ -102,7 +102,7 @@ class SnapInstall {
   }
 
   async clickConnectButton() {
-    console.log('Click Connect button');
+    console.log('Clicking Connect button');
     await this.driver.clickElement(this.connectButton);
   }
 
