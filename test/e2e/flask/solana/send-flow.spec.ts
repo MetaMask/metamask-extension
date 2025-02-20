@@ -8,7 +8,7 @@ import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import { withSolanaAccountSnap } from './common-solana';
 
 const commonSolanaAddress = 'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna';
-describe('Send flow', function (this: Suite) {
+describe.skip('Send flow', function (this: Suite) {
   // skipped due tohttps://github.com/MetaMask/snaps/issues/3019
   it('with some field validation', async function () {
     this.timeout(120000);
