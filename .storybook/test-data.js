@@ -339,6 +339,7 @@ const state = {
           options: {},
           methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
+          scopes: [EthScope.Eoa],
         },
         '15e69915-2a1a-4019-93b3-916e11fd432f': {
           address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
