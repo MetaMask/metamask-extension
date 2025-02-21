@@ -4290,7 +4290,7 @@ export default class MetamaskController extends EventEmitter {
         const keyringIndex = keyrings.findIndex((keyring) => {
           return (
             keyring.accounts.includes(address) &&
-            keyring.type === KeyringType.hdKeyTree
+            keyring.type === KeyringTypes.hd
           );
         });
         if (keyringIndex === -1) {
@@ -4343,6 +4343,8 @@ export default class MetamaskController extends EventEmitter {
       const newAccount = (await newHdkeyring.getAccounts())[0];
       const account = this.accountsController.getAccountByAddress(newAccount);
       this.accountsController.setSelectedAccount(account.id);
+
+// NOTE: No need to update balances here since we're generating a fresh seed.
 
       return newAccount;
     } finally {
