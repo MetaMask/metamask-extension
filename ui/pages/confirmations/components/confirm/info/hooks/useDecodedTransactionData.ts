@@ -26,7 +26,6 @@ export function useDecodedTransactionData({
 
   const currentTransactionType = currentConfirmation?.type;
   const chainId = currentConfirmation?.chainId as Hex;
-  const contractAddress = currentConfirmation?.txParams?.to as Hex;
   const currentTransactionData = currentConfirmation?.txParams?.data as Hex;
   const currentTransactionTo = currentConfirmation?.txParams?.to as Hex;
   const transactionData = data ?? currentTransactionData;
@@ -46,13 +45,7 @@ export function useDecodedTransactionData({
     return await decodeTransactionData({
       transactionData,
       chainId,
-      contractAddress,
+      contractAddress: transactionTo,
     });
-  }, [
-    isDecodeEnabled,
-    transactionData,
-    transactionTo,
-    chainId,
-    contractAddress,
-  ]);
+  }, [isDecodeEnabled, transactionData, transactionTo, chainId]);
 }
