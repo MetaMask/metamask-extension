@@ -82,7 +82,7 @@ export default function NftFullImage() {
               <NftItem
                 src={isImageHosted ? image : nftImageURL}
                 alt={nftImageAlt}
-                name={name ?? undefined}
+                name={name}
                 tokenId={tokenId}
                 networkName={currentChain.nickname ?? ''}
                 networkSrc={currentChain.rpcPrefs?.imageUrl}
