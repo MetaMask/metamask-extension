@@ -16,7 +16,7 @@ function runHook(authorizationList?: AuthorizationList) {
     state,
   );
 
-  return result.current as Boolean;
+  return result.current as boolean;
 }
 
 describe('useIsUpgradeTransaction', () => {

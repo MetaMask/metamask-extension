@@ -1,18 +1,20 @@
 import { AuthorizationList } from '@metamask/transaction-controller';
 import React from 'react';
+import { act } from '@testing-library/react';
 import configureStore from '../../../../../../store/store';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import { Acknowledge } from './acknowledge';
-import { act } from '@testing-library/react';
 
 const DELEGATION_MOCK = '0xabcdefabcdefabcdefabcdefabcdefabcdefabcdef';
 
 function render({
   authorizationList,
   isAcknowledged = true,
-  onAcknowledgeToggle = () => {},
+  onAcknowledgeToggle = () => {
+    // Intentionally empty
+  },
 }: {
   authorizationList?: AuthorizationList;
   isAcknowledged?: boolean;

@@ -43,8 +43,12 @@ describe('UpgradeCancelModal', () => {
     const { getByTestId } = renderWithConfirmContextProvider(
       <UpgradeCancelModal
         isOpen={true}
-        onClose={() => {}}
-        onReject={() => {}}
+        onClose={() => {
+          // Intentionally empty
+        }}
+        onReject={() => {
+          // Intentionally empty
+        }}
       />,
       STORE_MOCK,
     );
@@ -59,7 +63,9 @@ describe('UpgradeCancelModal', () => {
     const { getByTestId } = renderWithConfirmContextProvider(
       <UpgradeCancelModal
         isOpen={true}
-        onClose={() => {}}
+        onClose={() => {
+          // Intentionally empty
+        }}
         onReject={onReject}
       />,
       STORE_MOCK,
@@ -76,7 +82,9 @@ describe('UpgradeCancelModal', () => {
     const { getByTestId } = renderWithConfirmContextProvider(
       <UpgradeCancelModal
         isOpen={true}
-        onClose={() => {}}
+        onClose={() => {
+          // Intentionally empty
+        }}
         onReject={onReject}
       />,
       STORE_MOCK,
@@ -99,7 +107,9 @@ describe('UpgradeCancelModal', () => {
     const { getByTestId } = renderWithConfirmContextProvider(
       <UpgradeCancelModal
         isOpen={true}
-        onClose={() => {}}
+        onClose={() => {
+          // Intentionally empty
+        }}
         onReject={onReject}
       />,
       STORE_MOCK,
