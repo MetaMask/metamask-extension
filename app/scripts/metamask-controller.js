@@ -4344,7 +4344,7 @@ export default class MetamaskController extends EventEmitter {
       const account = this.accountsController.getAccountByAddress(newAccount);
       this.accountsController.setSelectedAccount(account.id);
 
-// NOTE: No need to update balances here since we're generating a fresh seed.
+      // NOTE: No need to update balances here since we're generating a fresh seed.
 
       return newAccount;
     } finally {
