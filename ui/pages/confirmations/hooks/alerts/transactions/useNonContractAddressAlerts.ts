@@ -35,7 +35,7 @@ export function useNonContractAddressAlerts(): Alert[] {
     !pending && value?.isContractAddress === false;
 
   const isContractDeploymentTx =
-    currentConfirmation.type === TransactionType.deployContract;
+    currentConfirmation?.type === TransactionType.deployContract;
 
   const isSendingHexDataWhileInteractingWithNonContractAddress =
     isSendingHexData &&
