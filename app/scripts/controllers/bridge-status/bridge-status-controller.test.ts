@@ -20,7 +20,7 @@ const getMessengerMock = ({
 } = {}) =>
   ({
     call: jest.fn((method: string) => {
-      if (method === 'AccountsController:getSelectedAccount') {
+      if (method === 'AccountsController:getSelectedMultichainAccount') {
         return { address: account };
       } else if (method === 'NetworkController:findNetworkClientIdByChainId') {
         return 'networkClientId';
