@@ -980,6 +980,12 @@
   "confirm": {
     "message": "Confirm"
   },
+  "confirmAccountType": {
+    "message": "Type"
+  },
+  "confirmAccountTypeSmartContract": {
+    "message": "Smart contract account"
+  },
   "confirmAlertModalAcknowledgeMultiple": {
     "message": "I have acknowledged the alerts and still want to proceed"
   },

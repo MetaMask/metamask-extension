@@ -1,5 +1,8 @@
 import React from 'react';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
@@ -8,8 +11,10 @@ import {
 import { useConfirmContext } from '../../../../../context/confirm';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import { useIsUpgradeTransaction } from '../../hooks/useIsUpgradeTransaction';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 
-export function AccountDetails() {
+export function TransactionAccountDetails() {
+  const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const isUpgrade = useIsUpgradeTransaction();
   const { chainId, txParams } = currentConfirmation;
@@ -21,11 +26,11 @@ export function AccountDetails() {
 
   return (
     <ConfirmInfoSection>
-      <ConfirmInfoRow label="Account">
+      <ConfirmInfoRow label={t('account')}>
         <ConfirmInfoRowAddress chainId={chainId} address={from} />
       </ConfirmInfoRow>
-      <ConfirmInfoRow label="Type">
-        <ConfirmInfoRowText text="Smart account" />
+      <ConfirmInfoRow label={t('confirmAccountType')}>
+        <ConfirmInfoRowText text={t('confirmAccountTypeSmartContract')} />
       </ConfirmInfoRow>
     </ConfirmInfoSection>
   );
