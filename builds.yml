@@ -46,6 +46,7 @@ buildTypes:
       - INFURA_ENV_KEY_REF: INFURA_BETA_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_BETA_WRITE_KEY
       - SUPPORT_LINK: https://intercom.help/internal-beta-testing/
+      - SUPPORT_REQUEST_LINK: https://intercom.help/internal-beta-testing/
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
