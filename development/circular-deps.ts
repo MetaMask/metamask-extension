@@ -1,9 +1,9 @@
 #!/usr/bin/env -S node --require "./node_modules/tsx/dist/preflight.cjs" --import "./node_modules/tsx/dist/loader.mjs"
 
-import chalk from 'chalk';
-import madge, { type MadgeConfig, type MadgeInstance } from 'madge';
 import { writeFileSync, readFileSync, existsSync } from 'node:fs';
 import { stderr } from 'node:process';
+import chalk from 'chalk';
+import madge, { type MadgeConfig, type MadgeInstance } from 'madge';
 import micromatch from 'micromatch';
 
 const TARGET_FILE = 'development/circular-deps.jsonc';
@@ -184,7 +184,7 @@ function maybeLogCircular(circular: CircularDeps): boolean {
     );
 
     circular.forEach((path, index) => {
-      stderr.write(chalk.dim(index + 1 + ') '));
+      stderr.write(chalk.dim(`${index + 1}) `));
       path.forEach((module, number) => {
         if (number !== 0) {
           stderr.write(chalk.dim(' > '));
@@ -205,7 +205,8 @@ function maybeLogCircular(circular: CircularDeps): boolean {
 /**
  * Logs errors if any are found.
  *
- * @param tree
+ * @param circular
+ * @param skipped
  * @returns boolean
  */
 function maybeLogErrors(circular: CircularDeps, skipped: string[]): boolean {
@@ -219,6 +220,7 @@ function maybeLogErrors(circular: CircularDeps, skipped: string[]): boolean {
  * Exits with a non-zero exit code if the provided `actualDeps` contain any
  * circular dependencies that are not allowed by the `allowedCircularGlob`.
  *
+ * @param tree
  */
 function failIfDisallowedCircularDepsFound(tree: MadgeInstance): void {
   const actualDeps = tree.circular();
