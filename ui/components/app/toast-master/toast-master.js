@@ -1,6 +1,11 @@
 /* eslint-disable react/prop-types -- TODO: upgrade to TypeScript */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, {
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  useEffect,
+  ///: END:ONLY_INCLUDE_IF
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
