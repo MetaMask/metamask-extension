@@ -14,6 +14,7 @@ const {
   TOKEN_API_BASE_URL,
 } = require('../../shared/constants/swaps');
 const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
+const { MOCK_META_METRICS_ID } = require('./constants');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
 const {
   DEFAULT_FEATURE_FLAGS_RESPONSE: BRIDGE_DEFAULT_FEATURE_FLAGS_RESPONSE,
@@ -390,8 +391,8 @@ async function setupMocking(
 
   let surveyCallCount = 0;
   [
-    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/fake-metrics-id-power-user/surveys`,
-    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/fake-metrics-id-power-user/surveys`,
+    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/${MOCK_META_METRICS_ID}/surveys`,
+    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/${MOCK_META_METRICS_ID}/surveys`,
   ].forEach(
     async (url) =>
       await server.forGet(url).thenCallback(() => {

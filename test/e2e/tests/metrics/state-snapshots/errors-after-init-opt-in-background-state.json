@@ -135,7 +135,7 @@
   "LoggingController": { "logs": "object" },
   "MetaMetricsController": {
     "participateInMetaMetrics": true,
-    "metaMetricsId": "fake-metrics-id",
+    "metaMetricsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
     "dataCollectionForMarketing": "boolean",
     "marketingCampaignCookieId": null,
     "eventsBeforeMetricsOptIn": "object",
@@ -261,7 +261,11 @@
   },
   "QueuedRequestController": { "queuedRequestCount": 0 },
   "RemoteFeatureFlagController": {
-    "remoteFeatureFlags": {},
+    "remoteFeatureFlags": {
+      "feature1": true,
+      "feature2": false,
+      "feature3": { "name": "groupC", "value": "valueC" }
+    },
     "cacheTimestamp": "number"
   },
   "SelectedNetworkController": { "domains": "object" },

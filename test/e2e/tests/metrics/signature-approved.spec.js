@@ -9,6 +9,7 @@ const {
   clickSignOnRedesignedSignatureConfirmation,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+const { MOCK_META_METRICS_ID } = require('../../constants');
 
 /**
  * mocks the segment api multiple times for specific payloads that we expect to
@@ -64,7 +65,7 @@ describe('Signature Approved Event', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
@@ -105,7 +106,7 @@ describe('Signature Approved Event', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
@@ -144,7 +145,7 @@ describe('Signature Approved Event', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
@@ -183,7 +184,7 @@ describe('Signature Approved Event', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
