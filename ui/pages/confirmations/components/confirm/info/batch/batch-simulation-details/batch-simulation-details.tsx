@@ -14,8 +14,11 @@ import {
 import { useConfirmContext } from '../../../../../context/confirm';
 import { EditSpendingCapModal } from '../../approve/edit-spending-cap-modal/edit-spending-cap-modal';
 import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 
 export function BatchSimulationDetails() {
+  const t = useI18nContext();
+
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
@@ -42,7 +45,7 @@ export function BatchSimulationDetails() {
   }));
 
   const approveRow: StaticRow = {
-    label: 'You approve',
+    label: t('confirmSimulationApprove'),
     balanceChanges: finalBalanceChanges ?? [],
   };
 
