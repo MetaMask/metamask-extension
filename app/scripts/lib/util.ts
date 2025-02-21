@@ -7,6 +7,8 @@ import {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import type { Provider } from '@metamask/network-controller';
+import { CaipAssetType, parseCaipAssetType } from '@metamask/utils';
+import { MultichainAssetsRatesControllerState } from '@metamask/assets-controllers';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
   ENVIRONMENT_TYPE_FULLSCREEN,
@@ -21,8 +23,6 @@ import {
 import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 import { getMethodDataAsync } from '../../../shared/lib/four-byte';
-import { AssetsRatesState } from '../../../ui/selectors/assets';
-import { CaipAssetType, parseCaipAssetType } from '@metamask/utils';
 
 /**
  * @see {@link getEnvironmentType}
@@ -435,6 +435,11 @@ export const getMethodDataName = async (
 export function getBooleanFlag(value: string | boolean | undefined): boolean {
   return value === true || value === 'true';
 }
+
+type AssetsRatesState = {
+  metamask: MultichainAssetsRatesControllerState;
+};
+
 export function getConversionRatesForNativeAsset({
   conversionRates,
   chainId,

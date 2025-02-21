@@ -4,6 +4,8 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import type {
   MultichainBalancesControllerState,
   RatesControllerState,
+  MultichainAssetsControllerState,
+  MultichainAssetsRatesControllerState,
 } from '@metamask/assets-controllers';
 import { CaipChainId, Hex, KnownCaipNamespace } from '@metamask/utils';
 import { createSelector } from 'reselect';
@@ -37,6 +39,8 @@ import {
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
 } from '../../shared/modules/selectors/networks';
+// eslint-disable-next-line import/no-restricted-paths
+import { getConversionRatesForNativeAsset } from '../../app/scripts/lib/util';
 import { AccountsState, getSelectedInternalAccount } from './accounts';
 import {
   getIsMainnet,
@@ -46,8 +50,14 @@ import {
   getShouldShowFiat,
   getShowFiatInTestnets,
 } from './selectors';
-import { AssetsRatesState, AssetsState } from './assets';
-import { getConversionRatesForNativeAsset } from '../../app/scripts/lib/util';
+
+export type AssetsState = {
+  metamask: MultichainAssetsControllerState;
+};
+
+export type AssetsRatesState = {
+  metamask: MultichainAssetsRatesControllerState;
+};
 
 export type RatesState = {
   metamask: RatesControllerState;
