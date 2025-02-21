@@ -27,6 +27,12 @@ export const externalContributorLabel: Label = {
   description: 'Issue or PR created by user outside org',
 };
 
+export const needsTriageLabel: Label = {
+  name: 'needs-triage',
+  color: '#FA8072',
+  description: 'Issue needs to be triaged',
+};
+
 export const flakyTestsLabel: Label = {
   name: 'flaky tests',
   color: 'BE564E',
