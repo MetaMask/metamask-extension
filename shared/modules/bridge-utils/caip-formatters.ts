@@ -57,10 +57,7 @@ export const formatChainIdToHex = (chainId?: number | Hex | CaipChainId) => {
   return undefined;
 };
 
-export const formatAddressToString = (address?: string) => {
-  if (!address) {
-    return undefined;
-  }
+export const formatAddressToString = (address: string) => {
   if (isStrictHexString(address)) {
     return toChecksumAddress(address);
   }
@@ -71,5 +68,5 @@ export const formatAddressToString = (address?: string) => {
   ) {
     return zeroAddress();
   }
-  return address.split(':').at(-1);
+  return address.split(':').at(-1) ?? zeroAddress();
 };

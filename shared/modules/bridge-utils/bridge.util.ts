@@ -142,14 +142,14 @@ export async function fetchBridgeQuotes(
   request: QuoteRequest<CaipChainId, CaipAssetId, CaipAccountId>,
   signal: AbortSignal,
 ): Promise<QuoteResponse[]> {
-  const normalizedRequest: QuoteRequest = {
+  const normalizedRequest = {
     walletAddress: formatAddressToString(request.walletAddress),
-    srcChainId: formatChainIdToDec(request.srcChainId),
-    destChainId: formatChainIdToDec(request.destChainId),
+    srcChainId: formatChainIdToDec(request.srcChainId).toString(),
+    destChainId: formatChainIdToDec(request.destChainId).toString(),
     srcTokenAddress: formatAddressToString(request.srcTokenAddress),
     destTokenAddress: formatAddressToString(request.destTokenAddress),
     srcTokenAmount: request.srcTokenAmount,
-    slippage: request.slippage,
+    slippage: request.slippage.toString(),
     insufficientBal: request.insufficientBal ? 'true' : 'false',
     resetApproval: request.resetApproval ? 'true' : 'false',
   };
