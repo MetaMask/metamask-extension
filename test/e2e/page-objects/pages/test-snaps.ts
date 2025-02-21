@@ -149,7 +149,7 @@ export class TestSnaps {
   async clickButton(buttonElement: string, scrollTo: boolean = true) {
     if (scrollTo) {
       console.log(`Finding, scrolling to, and clicking ${buttonElement}`);
-      await this.driver.findScrollToElementClick(buttonElement);
+      await this.driver.findScrollToAndClickElement(buttonElement);
     } else {
       console.log(`Clicking the button ${buttonElement}`);
       await this.driver.clickElement(buttonElement);
@@ -290,7 +290,7 @@ export class TestSnaps {
     await this.clickButton(this.buttonSignBip44Message);
   }
 
-  async scrollToSendEd25519() {
+  async scrollToSignWithEd25519Button() {
     console.log('Scrolling to sign with ed25519 button');
     const sendEd25519 = await this.driver.findElement(this.inputMessageEd25519);
     await this.driver.scrollToElement(sendEd25519);
@@ -317,7 +317,7 @@ export class TestSnaps {
     expectedMessage: string,
   ) {
     console.log(
-      `Checking message result that is received - ${expectedMessage}`,
+      `Checking the received result against the following expected result: ${expectedMessage}`,
     );
     await this.driver.waitForSelector({
       css: spanSelectorId,

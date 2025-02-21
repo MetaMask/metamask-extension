@@ -11,9 +11,10 @@ class SnapInstall {
 
   private readonly permissionConnect = '.permissions-connect';
 
-  private readonly scrollSnapInstall = '[data-testid="snap-install-scroll"]';
+  private readonly snapInstallScrollArea =
+    '[data-testid="snap-install-scroll"]';
 
-  private readonly scrollSnapUpdate = '[data-testid="snap-update-scroll"]';
+  private readonly snapUpdateScrollArea = '[data-testid="snap-update-scroll"]';
 
   private readonly approveButton = '[data-testid="confirmation-submit-button"]';
 
@@ -67,10 +68,12 @@ class SnapInstall {
   }
 
   async clickConfirmButton() {
-    console.log('Clicking on the scroll button and then clicking the confirm button');
+    console.log(
+      'Clicking on the scroll button and then clicking the confirm button',
+    );
     await this.driver.waitUntil(
       async () => {
-        await this.driver.clickElementSafe(this.scrollSnapInstall);
+        await this.driver.clickElementSafe(this.snapInstallScrollArea);
         const isEnabled = await this.driver.findClickableElement(
           this.nextPageButton,
         );
@@ -85,7 +88,7 @@ class SnapInstall {
     console.log('Clicking on the scroll and then click confirm button');
     await this.driver.waitUntil(
       async () => {
-        await this.driver.clickElementSafe(this.scrollSnapUpdate);
+        await this.driver.clickElementSafe(this.snapUpdateScrollArea);
         const isEnabled = await this.driver.findClickableElement(
           this.nextPageButton,
         );

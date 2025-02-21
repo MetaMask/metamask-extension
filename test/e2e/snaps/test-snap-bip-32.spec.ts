@@ -67,7 +67,7 @@ describe('Test Snap bip-32', function () {
         );
 
         // Enter ed25519 signature message, click sign button, approve and validate the result
-        await testSnaps.scrollToSendEd25519();
+        await testSnaps.scrollToSignWithEd25519Button();
         await testSnaps.fillMessageAndSignEd25519('foo bar');
         await switchToDialogAndClickApproveButton(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);

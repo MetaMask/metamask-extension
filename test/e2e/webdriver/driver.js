@@ -802,7 +802,7 @@ class Driver {
    * @param {string | object} rawLocator - Element locator
    * @returns {Promise<void>} Promise resolving after scrolling and clicking
    */
-  async findScrollToElementClick(rawLocator) {
+  async findScrollToAndClickElement(rawLocator) {
     try {
       const element = await this.findElement(rawLocator);
       await this.scrollToElement(element);
