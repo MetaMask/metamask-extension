@@ -52,7 +52,7 @@ export const AmountPill: React.FC<{
   }
 
   // ERC721 amounts are always 1 and are not displayed.
-  if (asset.standard !== TokenStandard.ERC721) {
+  if (asset.standard !== TokenStandard.ERC721 && !isAllApproval) {
     const formattedAmount = isUnlimitedApproval
       ? t('unlimited')
       : formatAmount(locale, amount.abs());
@@ -77,7 +77,9 @@ export const AmountPill: React.FC<{
 
     amountParts.push(shortenedTokenIdPart);
     tooltipParts.push(tooltipIdPart);
-  } else if (isAllApproval) {
+  }
+
+  if (isAllApproval) {
     amountParts.push(t('all'));
     tooltipParts.push(t('all'));
   }

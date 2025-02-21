@@ -1,15 +1,15 @@
 import React from 'react';
+import { BigNumber } from 'bignumber.js';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import configureStore from '../../../../../../../store/store';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import { BatchSimulationDetails } from './batch-simulation-details';
 import { useBatchApproveBalanceChanges } from '../../hooks/useBatchApproveBalanceChanges';
 import { AlertMetricsProvider } from '../../../../../../../components/app/alert-system/contexts/alertMetricsContext';
 import { useBalanceChanges } from '../../../../simulation-details/useBalanceChanges';
-import BigNumber from 'bignumber.js';
 import { BalanceChange } from '../../../../simulation-details/types';
 import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
+import { BatchSimulationDetails } from './batch-simulation-details';
 
 jest.mock('../../../../simulation-details/useBalanceChanges', () => ({
   useBalanceChanges: jest.fn(),

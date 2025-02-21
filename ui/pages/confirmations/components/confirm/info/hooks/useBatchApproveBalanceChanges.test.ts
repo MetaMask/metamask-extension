@@ -1,10 +1,9 @@
 import { act } from '@testing-library/react';
-import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
-import { useBatchApproveBalanceChanges } from './useBatchApproveBalanceChanges';
 import {
   BatchTransactionParams,
   SimulationTokenStandard,
 } from '@metamask/transaction-controller';
+import { BigNumber } from 'bignumber.js';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
 import {
   CHAIN_ID,
@@ -13,9 +12,10 @@ import {
 import { useBalanceChanges } from '../../../simulation-details/useBalanceChanges';
 import { getTokenStandardAndDetails } from '../../../../../../store/actions';
 import { TokenStandard } from '../../../../../../../shared/constants/transaction';
-import BigNumber from 'bignumber.js';
+import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import { BalanceChange } from '../../../simulation-details/types';
 import { buildApproveTransactionData } from '../../../../../../../test/data/confirmations/token-approve';
+import { useBatchApproveBalanceChanges } from './useBatchApproveBalanceChanges';
 
 jest.mock('../../../simulation-details/useBalanceChanges', () => ({
   useBalanceChanges: jest.fn(),
