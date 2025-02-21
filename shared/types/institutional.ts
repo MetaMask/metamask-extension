@@ -1,3 +1,4 @@
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { CustodyAccountDetails } from '@metamask-institutional/custody-controller';
 import {
   ConnectionRequest,
@@ -74,3 +75,4 @@ export type Custodian = {
   production: boolean;
   version: number;
 };
+///: END:ONLY_INCLUDE_IF
