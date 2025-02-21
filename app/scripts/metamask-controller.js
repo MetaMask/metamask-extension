@@ -351,7 +351,7 @@ import {
   handleTransactionFailedTypeBridge,
 } from './lib/bridge-status/metrics';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   MultichainAssetsControllerInit,
   MultichainTransactionsControllerInit,
   MultichainBalancesControllerInit,
@@ -2016,7 +2016,7 @@ export default class MetamaskController extends EventEmitter {
       CronjobController: CronjobControllerInit,
       PPOMController: PPOMControllerInit,
       TransactionController: TransactionControllerInit,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       MultichainAssetsController: MultichainAssetsControllerInit,
       MultiChainAssetsRatesController: MultiChainAssetsRatesControllerInit,
       MultichainBalancesController: MultichainBalancesControllerInit,
@@ -2050,7 +2050,7 @@ export default class MetamaskController extends EventEmitter {
     this.snapsRegistry = controllersByName.SnapsRegistry;
     this.ppomController = controllersByName.PPOMController;
     this.txController = controllersByName.TransactionController;
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     this.multichainAssetsController =
       controllersByName.MultichainAssetsController;
     this.multichainBalancesController =
@@ -2233,7 +2233,7 @@ export default class MetamaskController extends EventEmitter {
         AccountsController: this.accountsController,
         AppStateController: this.appStateController,
         AppMetadataController: this.appMetadataController,
-        ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+        ///: BEGIN:ONLY_INCLUDE_IF(multichain)
         MultichainAssetsController: this.multichainAssetsController,
         MultichainBalancesController: this.multichainBalancesController,
         MultichainTransactionsController: this.multichainTransactionsController,
@@ -4084,7 +4084,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       setName: this.nameController.setName.bind(this.nameController),
 
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       // MultichainBalancesController
       multichainUpdateBalance: (accountId) =>
         this.multichainBalancesController.updateBalance(accountId),

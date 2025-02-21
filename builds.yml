@@ -66,6 +66,7 @@ buildTypes:
       - keyring-snaps
       - solana
       - solana-swaps
+      - multichain
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
@@ -138,9 +139,8 @@ features:
     assets:
       - ./{app,shared,ui}/**/keyring-snaps/**
   solana:
-    assets:
-      - ./{app,shared,ui}/**/solana/**
   solana-swaps:
+  multichain:
 
 # Env variables that are required for all types of builds
 #

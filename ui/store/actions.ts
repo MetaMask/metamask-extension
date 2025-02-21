@@ -5895,7 +5895,7 @@ export async function decodeTransactionData({
     },
   ]);
 }
-
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 export async function multichainUpdateBalance(
   accountId: string,
 ): Promise<void> {
@@ -5911,6 +5911,7 @@ export async function multichainUpdateTransactions(
     accountId,
   ]);
 }
+///: END:ONLY_INCLUDE_IF
 
 export async function getLastInteractedConfirmationInfo(): Promise<
   LastInteractedConfirmationInfo | undefined
@@ -5971,6 +5972,7 @@ function applyPatches(
   return newState;
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 export async function sendMultichainTransaction(
   snapId: string,
   {
@@ -5994,3 +5996,4 @@ export async function sendMultichainTransaction(
     },
   });
 }
+///: END:ONLY_INCLUDE_IF
