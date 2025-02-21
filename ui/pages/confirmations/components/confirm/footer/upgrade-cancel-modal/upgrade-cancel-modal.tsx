@@ -39,8 +39,8 @@ export function UpgradeCancelModal({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext();
-  const { id: confirmationId } = currentConfirmation;
-  const chainId = currentConfirmation.chainId as string;
+  const { id: confirmationId } = currentConfirmation ?? {};
+  const chainId = currentConfirmation?.chainId as string;
 
   const handleRejectUpgrade = useCallback(async () => {
     const error = rpcErrors.methodNotSupported('User rejected account upgrade');
@@ -50,6 +50,10 @@ export function UpgradeCancelModal({
 
     dispatch(rejectPendingApproval(confirmationId, serializedError));
   }, [dispatch, confirmationId, chainId]);
+
+  if (!currentConfirmation) {
+    return null;
+  }
 
   return (
     <Modal
