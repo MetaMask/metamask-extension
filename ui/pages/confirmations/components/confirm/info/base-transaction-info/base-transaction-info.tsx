@@ -5,7 +5,6 @@ import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
 import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
 import { TransactionDetails } from '../shared/transaction-details/transaction-details';
 import { BatchSimulationDetails } from '../batch/batch-simulation-details/batch-simulation-details';
-import { BatchSpendingCap } from '../batch/batch-spending-cap/batch-spending-cap';
 
 const BaseTransactionInfo = () => {
   const { currentConfirmation: transactionMeta } =
@@ -18,7 +17,6 @@ const BaseTransactionInfo = () => {
   return (
     <>
       <BatchSimulationDetails />
-      <BatchSpendingCap />
       <TransactionDetails />
       <GasFeesSection />
       <AdvancedDetails />

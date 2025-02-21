@@ -273,6 +273,10 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   const balanceChangesResult = useBalanceChanges({ chainId, simulationData });
   const loading = !simulationData || balanceChangesResult.pending;
 
+  const hasStaticData =
+    staticRows?.length > 0 &&
+    staticRows.some((row) => row.balanceChanges?.length > 0);
+
   useSimulationMetrics({
     enableMetrics,
     balanceChanges: balanceChangesResult.value,
@@ -301,12 +305,13 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
     [
       SimulationErrorCode.ChainNotSupported,
       SimulationErrorCode.Disabled,
-    ].includes(error?.code as SimulationErrorCode)
+    ].includes(error?.code as SimulationErrorCode) &&
+    !hasStaticData
   ) {
     return null;
   }
 
-  if (error) {
+  if (error && !hasStaticData) {
     const inHeaderProp = error.code !== SimulationErrorCode.Reverted && {
       inHeader: <ErrorContent error={error} />,
     };
@@ -325,7 +330,7 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   }
 
   const balanceChanges = balanceChangesResult.value;
-  const empty = balanceChanges.length === 0 && staticRows.length === 0;
+  const empty = balanceChanges.length === 0 && !hasStaticData;
   if (empty) {
     return (
       <SimulationDetailsLayout
@@ -355,8 +360,9 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
           balanceChanges={incoming}
           testId="simulation-rows-incoming"
         />
-        {staticRows.map((staticRow) => (
+        {staticRows.map((staticRow, index) => (
           <BalanceChangeList
+            key={index}
             heading={staticRow.label}
             balanceChanges={staticRow.balanceChanges}
           />

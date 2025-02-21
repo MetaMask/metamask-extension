@@ -1,53 +1,67 @@
 import {
   BatchTransactionParams,
+  SimulationTokenBalanceChange,
+  SimulationTokenStandard,
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import { useConfirmContext } from '../../../../context/confirm';
-import { decodeApproveTokenData } from '../approve/hooks/use-approve-token-simulation';
-import { getIntlLocale } from '../../../../../../ducks/locale/locale';
-import { useSelector } from 'react-redux';
-import {
-  BalanceChange,
-  TokenAssetIdentifier,
-} from '../../../simulation-details/types';
 import { useAsyncResult } from '../../../../../../hooks/useAsyncResult';
 import { getTokenStandardAndDetails } from '../../../../../../store/actions';
-import { Hex, add0x } from '@metamask/utils';
-import { fetchErc20Decimals } from '../../../../utils/token';
-import { TokenStandard } from '../../../../../../../shared/constants/transaction';
+import { Hex } from '@metamask/utils';
+import { parseApprovalTransactionData } from '../../../../../../../shared/modules/transaction.utils';
+import { useBalanceChanges } from '../../../simulation-details/useBalanceChanges';
+import { BalanceChange } from '../../../simulation-details/types';
 
 export function useBatchApproveBalanceChanges() {
-  const locale = useSelector(getIntlLocale);
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { chainId, nestedTransactions } = currentConfirmation ?? {};
 
-  if (!nestedTransactions?.length) {
-    return undefined;
-  }
+  const { value: simulationBalanceChanges, pending: pendingSimulationChanges } =
+    useBatchApproveSimulationBalanceChanges({
+      nestedTransactions,
+    });
 
-  const { pending, value } = useAsyncResult(
-    async () =>
-      await buildBalanceChanges({
-        chainId: chainId as Hex,
-        locale,
-        nestedTransactions,
-      }),
-    [chainId, locale, nestedTransactions],
+  const { value: balanceChanges, pending: pendingBalanceChanges } =
+    useBalanceChanges({
+      chainId,
+      simulationData: {
+        tokenBalanceChanges: simulationBalanceChanges ?? [],
+      },
+    });
+
+  const finalBalanceChanges = (balanceChanges ?? []).map<BalanceChange>(
+    (change) => ({
+      ...change,
+      isApproval: true,
+    }),
   );
 
-  return { pending, value };
+  const pending = pendingSimulationChanges || pendingBalanceChanges;
+
+  return { pending, value: finalBalanceChanges };
 }
 
-async function buildBalanceChanges({
-  chainId,
-  locale,
+function useBatchApproveSimulationBalanceChanges({
   nestedTransactions,
 }: {
-  chainId: Hex;
-  locale: string;
-  nestedTransactions: BatchTransactionParams[];
-}): Promise<BalanceChange[]> {
-  const balanceChanges: BalanceChange[] = [];
+  nestedTransactions?: BatchTransactionParams[];
+}) {
+  return useAsyncResult(
+    async () => buildSimulationTokenBalanceChanges({ nestedTransactions }),
+    [nestedTransactions],
+  );
+}
+
+async function buildSimulationTokenBalanceChanges({
+  nestedTransactions,
+}: {
+  nestedTransactions?: BatchTransactionParams[];
+}): Promise<SimulationTokenBalanceChange[]> {
+  const balanceChanges: SimulationTokenBalanceChange[] = [];
+
+  if (!nestedTransactions) {
+    return balanceChanges;
+  }
 
   for (const transaction of nestedTransactions) {
     const { data, to } = transaction;
@@ -57,39 +71,37 @@ async function buildBalanceChanges({
     }
 
     const tokenData = await getTokenStandardAndDetails(to);
-    const tokenStandard = tokenData?.standard as TokenStandard;
-    let decimals = undefined;
 
-    if (tokenStandard === TokenStandard.ERC20) {
-      decimals = await fetchErc20Decimals(to);
-    }
-
-    const approveAmountOrId = await decodeApproveTokenData({
-      data,
-      decimals,
-      locale,
-      to,
-    });
-
-    if (approveAmountOrId == undefined) {
+    if (!tokenData?.standard) {
       continue;
     }
 
-    const tokenId =
-      tokenStandard === TokenStandard.ERC721
-        ? add0x(approveAmountOrId.toString(16))
-        : undefined;
+    const standard =
+      tokenData?.standard?.toLowerCase() as SimulationTokenStandard;
+    const isNFT = standard !== SimulationTokenStandard.erc20;
 
-    const balanceChange: BalanceChange = {
-      asset: {
-        address: to,
-        chainId,
-        standard: tokenStandard as TokenAssetIdentifier['standard'],
-        tokenId,
-      },
-      amount: approveAmountOrId,
-      fiatAmount: null,
-      isApproval: true,
+    const parseResult = parseApprovalTransactionData(data);
+
+    if (!parseResult) {
+      continue;
+    }
+
+    const { amountOrTokenId, isApproveAll, isRevokeAll } = parseResult;
+    const amountOrTokenIdHex = amountOrTokenId?.toHexString() as Hex;
+
+    const difference =
+      isNFT || amountOrTokenId === undefined ? '0x1' : amountOrTokenIdHex;
+
+    const tokenId = isNFT && amountOrTokenId ? amountOrTokenIdHex : undefined;
+
+    const balanceChange: SimulationTokenBalanceChange = {
+      address: to,
+      difference,
+      id: tokenId,
+      isDecrease: true,
+      newBalance: '0x0',
+      previousBalance: '0x0',
+      standard,
     };
 
     balanceChanges.push(balanceChange);
