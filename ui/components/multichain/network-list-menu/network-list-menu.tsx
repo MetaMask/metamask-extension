@@ -13,7 +13,12 @@ import {
   type UpdateNetworkFields,
 } from '@metamask/network-controller';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
-import { type CaipChainId, type Hex } from '@metamask/utils';
+import {
+  type CaipChainId,
+  type Hex,
+  parseCaipChainId,
+  KnownCaipNamespace,
+} from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAccountCreationOnNetworkChange } from '../../../hooks/accounts/useAccountCreationOnNetworkChange';
 import { NetworkListItem } from '../network-list-item';
@@ -160,9 +165,16 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     getPermittedAccountsForSelectedTab(state, selectedTabOrigin),
   );
 
-  const currentlyOnTestNetwork = (TEST_CHAINS as Hex[]).includes(
-    convertCaipToHexChainId(currentChainId),
-  );
+  const currentlyOnTestNetwork = useMemo(() => {
+    const { namespace } = parseCaipChainId(currentChainId);
+    if (namespace === KnownCaipNamespace.Eip155) {
+      return (TEST_CHAINS as Hex[]).includes(
+        convertCaipToHexChainId(currentChainId),
+      );
+    }
+    return false;
+  }, [currentChainId]);
+
   const [nonTestNetworks, testNetworks] = useMemo(
     () =>
       Object.entries(multichainNetworks).reduce(
@@ -347,14 +359,19 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       await handleNonEvmNetworkChange(chainId);
     }
 
+    const chainIdToTrack = isEvm ? convertCaipToHexChainId(chainId) : chainId;
+    const currentChainIdToTrack = isEvm
+      ? convertCaipToHexChainId(currentChainId)
+      : currentChainId;
+
     trackEvent({
       event: MetaMetricsEventName.NavNetworkSwitched,
       category: MetaMetricsEventCategory.Network,
       properties: {
         location: 'Network Menu',
-        chain_id: convertCaipToHexChainId(currentChainId),
-        from_network: convertCaipToHexChainId(currentChainId),
-        to_network: convertCaipToHexChainId(chainId),
+        chain_id: currentChainIdToTrack,
+        from_network: currentChainIdToTrack,
+        to_network: chainIdToTrack,
       },
     });
   };
