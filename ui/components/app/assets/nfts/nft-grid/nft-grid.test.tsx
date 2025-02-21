@@ -3,8 +3,11 @@ import { render, screen } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 
-import NftGrid from './nft-grid';
 import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
+import NftGrid from './nft-grid';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type MockVar = any;
 
 jest.mock('../../../../../selectors', () => ({
   getCurrentNetwork: jest
@@ -40,7 +43,7 @@ describe('NftGrid', () => {
     const { asFragment } = render(
       <Provider store={store}>
         <NftGrid
-          nfts={mockNfts as any}
+          nfts={mockNfts as MockVar}
           handleNftClick={jest.fn()}
           privacyMode={false}
         />
