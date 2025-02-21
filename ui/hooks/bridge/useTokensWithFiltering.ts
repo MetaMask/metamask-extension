@@ -137,7 +137,11 @@ export const useTokensWithFiltering = (chainId?: ChainId | Hex) => {
             )
           ) {
             // If there's no address, set it to the native address in swaps/bridge
-            yield { ...token, address: token.address || zeroAddress() };
+            yield {
+              ...token,
+              address: token.address || zeroAddress(),
+              type: AssetType.token,
+            };
           }
         }
 

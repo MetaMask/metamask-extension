@@ -18,37 +18,39 @@ import { AssetType } from '../../shared/constants/transaction';
 import { useMultichainSelector } from './useMultichainSelector';
 
 // TODO replace this with getMultichainAssets
-const useNonEvmAssetsWithBalances = (): (Omit<
-  TokenWithBalance,
-  'address' | 'chainId'
-> & {
-  chainId: `${string}:${string}`;
-  decimals: number;
-  address: `${string}:${string}`;
-  string: string;
-  balance: string;
-  tokenFiatAmount: number;
-  symbol: string;
-})[] => {
+const useNonEvmAssetsWithBalances = (): (
+  | Omit<TokenWithBalance, 'address' | 'chainId'> & {
+      chainId: `${string}:${string}`;
+      decimals: number;
+      address: `${string}:${string}`;
+      string: string;
+      balance: string;
+      tokenFiatAmount: number;
+      symbol: string;
+    }
+)[] => {
   const nonEvmAccount = useSelector(getLastSelectedNonEvmAccount);
-
   // non-evm tokens owned by non-evm account, includes native and non-native assets
   const assetsByAccountId = useSelector(getAccountAssets);
-  const assetIds = assetsByAccountId[nonEvmAccount.id];
   const assetMetadataById = useSelector(getAssetsMetadata);
 
   // includes native and asset balances for non-evm account
   const nonEvmBalancesByAccountId = useMultichainSelector(
     getMultichainBalances,
   );
-  const balancesByAssetId = nonEvmBalancesByAccountId[nonEvmAccount.id];
-
   // native exchange rates
   const nativeRates = useSelector(getMultichainCoinRates);
   // asset exchange rates
   const assetRates = useSelector(getAssetsRates);
 
   const nonEvmTokensWithFiatBalances = useMemo(() => {
+    if (!nonEvmAccount?.id) {
+      return [];
+    }
+
+    const assetIds = assetsByAccountId[nonEvmAccount.id];
+    const balancesByAssetId = nonEvmBalancesByAccountId[nonEvmAccount.id];
+
     // build TokenWithFiat for each asset
     return assetIds
       .map((caipAssetId) => {
@@ -80,7 +82,14 @@ const useNonEvmAssetsWithBalances = (): (Omit<
         };
       })
       .filter((token) => token !== null);
-  }, [assetMetadataById, assetRates, assetIds, balancesByAssetId, nativeRates]);
+  }, [
+    assetMetadataById,
+    assetRates,
+    assetsByAccountId,
+    nativeRates,
+    nonEvmAccount?.id,
+    nonEvmBalancesByAccountId,
+  ]);
 
   return nonEvmTokensWithFiatBalances;
 };

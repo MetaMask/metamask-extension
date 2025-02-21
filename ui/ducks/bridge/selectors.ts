@@ -8,7 +8,13 @@ import { createSelector } from 'reselect';
 import type { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
+///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
 import type { Hex } from '@metamask/utils';
+import {
+  MultichainNetworks,
+  MULTICHAIN_PROVIDER_CONFIGS,
+} from '../../../shared/constants/multichain/networks';
+///: END:ONLY_INCLUDE_IF
 import {
   getIsBridgeEnabled,
   getMarketData,
