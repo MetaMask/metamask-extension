@@ -109,7 +109,6 @@ export const useTokenDisplayInfo = ({
       tokenChainImage: tokenChainImage as string,
     };
   }
-  // TODO non-evm assets. this is only the native token
   return {
     title: token.title,
     tokenImage: token.image,
