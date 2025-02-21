@@ -5576,7 +5576,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:^19.0.7, @metamask/keyring-controller@npm:^19.2.1":
+"@metamask/keyring-controller@npm:^19.0.7, @metamask/keyring-controller@npm:^19.1.0":
   version: 19.2.1
   resolution: "@metamask/keyring-controller@npm:19.2.1"
   dependencies:
@@ -26991,7 +26991,7 @@ __metadata:
     "@metamask/json-rpc-engine": "npm:^10.0.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.4"
     "@metamask/keyring-api": "npm:^17.2.0"
-    "@metamask/keyring-controller": "npm:^19.2.1"
+    "@metamask/keyring-controller": "npm:^19.1.0"
     "@metamask/keyring-internal-api": "npm:^4.0.3"
     "@metamask/keyring-snap-client": "npm:^4.0.1"
     "@metamask/logging-controller": "npm:^6.0.4"
