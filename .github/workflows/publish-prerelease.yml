@@ -59,6 +59,10 @@ jobs:
           pattern: benchmark-*
           merge-multiple: true
 
+      - run: |
+          echo "Benchmark artifacts:"
+          ls -l ./test-artifacts/chrome/benchmark/
+
       - name: Publish prerelease
         env:
           PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}

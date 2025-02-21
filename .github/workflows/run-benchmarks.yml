@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        buildType: [webpack]
+        buildType: [browserify, webpack]
         testType: [pageload, userActions]
     name: ${{ matrix.buildType }}-${{ matrix.testType }}
     steps:

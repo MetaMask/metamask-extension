@@ -114,7 +114,7 @@ jobs:
   run-benchmarks:
     uses: ./.github/workflows/run-benchmarks.yml
     needs:
-      # - prep-build-test-browserify
+      - prep-build-test-browserify
       - prep-build-test-webpack
 
   wait-for-circleci-workflow-status:
