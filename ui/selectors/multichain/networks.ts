@@ -14,10 +14,7 @@ import {
   getNetworkConfigurationsByChainId,
 } from '../../../shared/modules/selectors/networks';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
-import {
-  getIsBitcoinSupportEnabled,
-  getIsSolanaSupportEnabled,
-} from '../selectors';
+import { getIsBitcoinSupportEnabled } from '../selectors';
 import { getInternalAccounts } from '../accounts';
 
 // Selector types
@@ -70,15 +67,13 @@ export const getNonEvmMultichainNetworkConfigurationsByChainId = (
 
 export const getIsNonEvmNetworksEnabled = createDeepEqualSelector(
   getIsBitcoinSupportEnabled,
-  getIsSolanaSupportEnabled,
   getInternalAccounts,
-  (isBitcoinEnabled, isSolanaEnabled, internalAccounts) => {
-    if (isBitcoinEnabled && isSolanaEnabled) {
-      return { bitcoinEnabled: true, solanaEnabled: true };
-    }
-
+  (isBitcoinEnabled, internalAccounts) => {
     let bitcoinEnabled = isBitcoinEnabled;
-    let solanaEnabled = isSolanaEnabled;
+    let solanaEnabled = false;
+    ///: BEGIN:ONLY_INCLUDE_IF(solana)
+    solanaEnabled = true;
+    ///: END:ONLY_INCLUDE_IF
 
     for (const { scopes } of internalAccounts) {
       if (scopes.includes(BtcScope.Mainnet)) {
@@ -113,16 +108,16 @@ export const getMultichainNetworkConfigurationsByChainId =
 
       // This is not ideal but since there are only two non EVM networks
       // we can just filter them out based on the support enabled
-      const { bitcoinEnabled, solanaEnabled } = isNonEvmNetworksEnabled;
+      const { bitcoinEnabled } = isNonEvmNetworksEnabled;
       if (bitcoinEnabled) {
         filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Mainnet] =
           nonEvmNetworkConfigurationsByChainId[BtcScope.Mainnet];
       }
 
-      if (solanaEnabled) {
-        filteredNonEvmNetworkConfigurationsByChainId[SolScope.Mainnet] =
-          nonEvmNetworkConfigurationsByChainId[SolScope.Mainnet];
-      }
+      ///: BEGIN:ONLY_INCLUDE_IF(solana)
+      filteredNonEvmNetworkConfigurationsByChainId[SolScope.Mainnet] =
+        nonEvmNetworkConfigurationsByChainId[SolScope.Mainnet];
+      ///: END:ONLY_INCLUDE_IF
 
       const networks = {
         ...filteredNonEvmNetworkConfigurationsByChainId,
