@@ -89,7 +89,7 @@ describe('MultiRpc:', function (this: Suite) {
         await selectNetworkDialog.check_pageIsLoaded();
 
         // check rpc number
-        await selectNetworkDialog.openNetworkRPC('0xa4b1');
+        await selectNetworkDialog.openNetworkRPC('eip155:42161');
         await selectNetworkDialog.check_networkRPCNumber(2);
       },
     );

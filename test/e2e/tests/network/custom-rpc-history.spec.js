@@ -311,7 +311,7 @@ describe('Custom RPC history', function () {
 
         // click on menu button
         await driver.clickElement(
-          '[data-testid="network-list-item-options-button-0x540"]',
+          '[data-testid="network-list-item-options-button-eip155:1344"]',
         );
 
         // click on delere button
