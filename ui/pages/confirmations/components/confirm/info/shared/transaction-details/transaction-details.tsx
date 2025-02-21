@@ -2,6 +2,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { isValidAddress } from 'ethereumjs-util';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
@@ -22,7 +23,6 @@ import { useUserPreferencedCurrency } from '../../../../../../../hooks/useUserPr
 import { HEX_ZERO } from '../constants';
 import { hasValueAndNativeBalanceMismatch as checkValueAndNativeBalanceMismatch } from '../../utils';
 import { SigningInWithRow } from '../sign-in-with-row/sign-in-with-row';
-import { Hex } from '@metamask/utils';
 
 export const OriginRow = () => {
   const t = useI18nContext();
