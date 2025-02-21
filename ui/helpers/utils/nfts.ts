@@ -38,9 +38,8 @@ export const getNftImageAlt = ({
   return nftTruncateAltText(altText, NFT_ALT_TEXT_MAX_LENGTH);
 };
 
-type NFTImage = undefined | string | string[];
-type SimpleNFTImage = Exclude<NFTImage, string[]>;
-export const getNftImage = (image: NFTImage): SimpleNFTImage => {
+type NFTImage = string | string[] | undefined | null;
+export const getNftImage = (image: NFTImage): string | undefined => {
   if (typeof image === 'string') {
     return image;
   }

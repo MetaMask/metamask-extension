@@ -18,7 +18,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../../../helpers/utils/util';
-import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
+import { getNftImage, getNftImageAlt } from '../../../../../helpers/utils/nfts';
 import { getCurrentChainId } from '../../../../../../shared/modules/selectors/networks';
 import { getCurrentNetwork, getIpfsGateway } from '../../../../../selectors';
 import {
@@ -79,7 +79,7 @@ const MAX_TOKEN_ID_LENGTH = 15;
 
 export default function NftDetails({ nft }: { nft: Nft }) {
   const {
-    image,
+    image: _image,
     imageOriginal,
     name,
     description,
@@ -107,6 +107,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
   const [addressCopied, handleAddressCopy] = useCopyToClipboard();
 
   const nftImageAlt = getNftImageAlt(nft);
+  const image = getNftImage(_image);
   const nftSrcUrl = imageOriginal ?? image;
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
   const isImageHosted =
@@ -247,7 +248,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
         details: {
           ...nft,
           tokenId: Number(nft.tokenId),
-          image: nft.image ?? undefined,
+          image: image ?? undefined,
         },
       }),
     );
