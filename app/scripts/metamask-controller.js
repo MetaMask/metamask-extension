@@ -3541,7 +3541,7 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
       generateNewMnemonicAndAddToVault:
         this.generateNewMnemonicAndAddToVault.bind(this),
-      addNewMnemonicToVault: this.addNewMnemonicToVault.bind(this),
+      importMnemonicToVault: this.importMnemonicToVault.bind(this),
       ///: END:ONLY_INCLUDE_IF
       exportAccount: this.exportAccount.bind(this),
 
