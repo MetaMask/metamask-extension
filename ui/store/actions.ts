@@ -29,7 +29,6 @@ import {
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
 import {
-  GasFeeEstimates,
   TransactionMeta,
   TransactionParams,
   TransactionType,
@@ -4509,14 +4508,6 @@ export function captureSingleException(
 
 export function estimateGas(params: TransactionParams): Promise<Hex> {
   return submitRequestToBackground('estimateGas', [params]);
-}
-
-export function estimateGasFee(request: {
-  transactionParams: TransactionParams;
-  chainId?: Hex;
-  networkClientId?: NetworkClientId;
-}): Promise<{ estimates: GasFeeEstimates }> {
-  return submitRequestToBackground('estimateGasFee', [request]);
 }
 
 export async function updateTokenType(

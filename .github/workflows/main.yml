@@ -6,6 +6,7 @@ on:
       - main
       - master
       - Version-v*
+      - trigger-ci*
   pull_request:
     types:
       - opened
@@ -16,7 +17,7 @@ on:
 jobs:
   lint-workflows:
     name: Lint workflows
-    uses: metamask/github-tools/.github/workflows/lint-workflows.yml@c534f265e02af2f2422a3c686bb09a11bfbf4cc2
+    uses: metamask/github-tools/.github/workflows/lint-workflows.yml@1d657e262aea7e3f216754febb624831527d2565
 
   test-lint-shellcheck:
     name: Test lint shellcheck
@@ -28,7 +29,16 @@ jobs:
 
   test-circular-deps:
     name: Test circular deps
-    uses: ./.github/workflows/test-circular-deps.yml
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@1d657e262aea7e3f216754febb624831527d2565
+
+      - name: Check circular dependencies
+        run: yarn circular-deps:check
 
   test-lint-changelog:
     name: Test lint changelog
@@ -66,9 +76,51 @@ jobs:
     name: Validate lavamoat policy webapp
     uses: ./.github/workflows/validate-lavamoat-policy-webapp.yml
 
+  prep-build-test-browserify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@1d657e262aea7e3f216754febb624831527d2565
+
+      - run: yarn build:test
+
+      - name: Upload artifact prep-build-test-browserify
+        uses: actions/upload-artifact@v4
+        with:
+          name: prep-build-test-browserify
+          path: ./dist/
+
+  prep-build-test-webpack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@1d657e262aea7e3f216754febb624831527d2565
+
+      - run: yarn webpack --test --no-lavamoat --no-cache --browser=chrome --lockdown --sentry --snow --env production
+        env:
+          SEGMENT_PROD_WRITE_KEY: '-' # A fake key just to make the build succeed
+
+      - name: Upload artifact prep-build-test-webpack
+        uses: actions/upload-artifact@v4
+        with:
+          name: prep-build-test-webpack
+          path: ./dist/
+
   run-tests:
     name: Run tests
     uses: ./.github/workflows/run-tests.yml
+
+  run-benchmarks:
+    uses: ./.github/workflows/run-benchmarks.yml
+    needs:
+      - prep-build-test-browserify
+      - prep-build-test-webpack
 
   wait-for-circleci-workflow-status:
     name: Wait for CircleCI workflow status
@@ -112,6 +164,8 @@ jobs:
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
 
+  # Explanation for all-jobs-completed and all-jobs-pass being separate:
+  # https://github.com/MetaMask/metamask-module-template/pull/151
   all-jobs-completed:
     name: All jobs completed
     runs-on: ubuntu-latest
