@@ -35,7 +35,7 @@ jobs:
         run: ${{ fromJson(env.COMMANDS)[matrix.testType] }}
 
       - name: Rename test artifacts
-      - run: mv test-artifacts/chrome/benchmark/${{ matrix.testType }}.json test-artifacts/chrome/benchmark/benchmark-${{ matrix.buildType }}-${{ matrix.testType }}.json
+        run: mv test-artifacts/chrome/benchmark/${{ matrix.testType }}.json test-artifacts/chrome/benchmark/benchmark-${{ matrix.buildType }}-${{ matrix.testType }}.json
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
