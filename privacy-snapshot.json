@@ -80,6 +80,7 @@
   "tokens.api.cx.metamask.io",
   "transaction.api.cx.metamask.io",
   "trigger.api.cx.metamask.io",
+  "tx-sentinel-bsc-mainnet.api.cx.metamask.io",
   "tx-sentinel-ethereum-mainnet.api.cx.metamask.io",
   "unresponsive-rpc.test",
   "unresponsive-rpc.url",
