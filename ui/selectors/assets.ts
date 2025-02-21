@@ -23,6 +23,7 @@ import {
 import {
   getMultichainBalances,
   getMultichainConversionRateSelector,
+  getMultichainNetwork,
 } from './multichain';
 
 export type AssetsState = {
@@ -160,14 +161,12 @@ export const getMultiChainAssets = createDeepEqualSelector(
   getAccountAssets,
   getAssetsMetadata,
   getAssetsRates,
-  getMultichainConversionRateSelector,
   (
     selectedAccountAddress,
     multichainBalances,
     accountAssets,
     assetsMetadata,
     assetRates,
-    multichainCoinRates,
   ) => {
     const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
     const balances = multichainBalances?.[selectedAccountAddress.id];
@@ -177,9 +176,6 @@ export const getMultiChainAssets = createDeepEqualSelector(
       const balance = balances?.[assetId] || { amount: '0', unit: '' };
       const rate = assetRates?.[assetId]?.rate || '0';
       const balanceInFiat = new BigNumber(balance.amount).times(rate);
-      const nativeBalanceInFiat = new BigNumber(balance.amount).times(
-        multichainCoinRates,
-      );
 
       const assetMetadataFallback = {
         name: balance.unit,
@@ -200,13 +196,44 @@ export const getMultiChainAssets = createDeepEqualSelector(
         chainId,
         isNative,
         primary: balance.amount,
-        secondary: isNative
-          ? nativeBalanceInFiat.toNumber()
-          : balanceInFiat.toNumber(),
+        secondary: balanceInFiat.toNumber(),
         string: '',
         tokenFiatAmount: balanceInFiat, // for now we are keeping this is to satisfy sort, this should be fiat amount
         isStakeable: false,
       };
     });
+  },
+);
+
+export const getMultichainAggregatedBalance = createDeepEqualSelector(
+  (_state, selectedAccount) => selectedAccount,
+  getMultichainNetwork,
+  getMultichainBalances,
+  getAccountAssets,
+  getAssetsRates,
+  (
+    selectedAccountAddress,
+    currentNetwork,
+    multichainBalances,
+    accountAssets,
+    assetRates,
+  ) => {
+    const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
+    const balances = multichainBalances?.[selectedAccountAddress.id];
+
+    let aggregatedBalance = new BigNumber(0);
+
+    assetIds.forEach((assetId: CaipAssetId) => {
+      const { chainId } = parseCaipAssetType(assetId);
+      if (chainId === currentNetwork.chainId) {
+        const balance = balances?.[assetId] || { amount: '0', unit: '' };
+        const rate = assetRates?.[assetId]?.rate || '0';
+        const balanceInFiat = new BigNumber(balance.amount).times(rate);
+
+        aggregatedBalance = aggregatedBalance.plus(balanceInFiat);
+      }
+    });
+
+    return aggregatedBalance.toNumber();
   },
 );
