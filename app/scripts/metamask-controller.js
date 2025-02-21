@@ -4340,7 +4340,7 @@ export default class MetamaskController extends EventEmitter {
       const newHdkeyring = await this.keyringController.addNewKeyring(
         KeyringTypes.hd,
       );
-      const newAccount = (await newHdkeyring.getAccounts())[0];
+      const [newAccount] = await newHdkeyring.getAccounts();
       const account = this.accountsController.getAccountByAddress(newAccount);
       this.accountsController.setSelectedAccount(account.id);
 
@@ -4453,7 +4453,8 @@ export default class MetamaskController extends EventEmitter {
         address = await this.keyringController.withKeyring(
           keyringSelector,
           async (keyring) => {
-            return (await keyring.addAccounts(1))[0];
+            const [newAddress] = await keyring.addAccounts(1);
+            return newAddress;
           },
         );
       }
