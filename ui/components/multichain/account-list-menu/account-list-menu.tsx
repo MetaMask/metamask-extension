@@ -312,7 +312,7 @@ export const AccountListMenu = ({
 
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  const primaryKeyringId = useSelector(getMetaMaskKeyrings)[0]?.fingerprint;
+  const primaryKeyringId = useSelector(getMetaMaskKeyrings)[0]?.id;
   const [selectedKeyringId, setSelectedKeyringId] = useState(primaryKeyringId);
   ///: END:ONLY_INCLUDE_IF
 
