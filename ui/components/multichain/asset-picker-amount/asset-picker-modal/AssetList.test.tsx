@@ -12,8 +12,17 @@ import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../shared/constants/network';
 import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import {
+  getMultichainCurrentChainId,
+  getMultichainCurrentNetwork,
+} from '../../../../selectors/multichain';
 import AssetList from './AssetList';
 import { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
+
+jest.mock('../../../../hooks/useMultichainSelector', () => ({
+  useMultichainSelector: jest.fn(),
+}));
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
@@ -115,6 +124,14 @@ describe('AssetList', () => {
   });
 
   it('should render the token list', () => {
+    (useMultichainSelector as jest.Mock).mockImplementation((selector) => {
+      if (selector === getMultichainCurrentNetwork) {
+        return { chainId: '0x1' };
+      } else if (selector === getMultichainCurrentChainId) {
+        return '0x1';
+      }
+      return undefined;
+    });
     (useSelector as jest.Mock).mockImplementation((selector) => {
       if (selector === getCurrentChainId) {
         return '0x1';
@@ -142,6 +159,12 @@ describe('AssetList', () => {
   });
 
   it('should call handleAssetChange when a token is clicked', () => {
+    (useMultichainSelector as jest.Mock).mockImplementation((selector) => {
+      if (selector === getMultichainCurrentNetwork) {
+        return { chainId: '0x1' };
+      }
+      return undefined;
+    });
     render(
       <AssetList
         handleAssetChange={handleAssetChangeMock}
@@ -160,6 +183,12 @@ describe('AssetList', () => {
   });
 
   it('should disable the token if it is in the blocked tokens list', () => {
+    (useMultichainSelector as jest.Mock).mockImplementation((selector) => {
+      if (selector === getMultichainCurrentNetwork) {
+        return { chainId: '0x1' };
+      }
+      return undefined;
+    });
     (useSelector as jest.Mock)
       .mockImplementationOnce(() => ['0xToken1'])
       .mockImplementation((selector) => {
