@@ -305,7 +305,7 @@ export class TestSnaps {
   }
 
   async check_installedSnapsResult(expectedMessage: string) {
-    console.log('Checking installed snaps, result section on the top right');
+    console.log('Checking installed snaps, result section on the top left');
     await this.driver.waitForSelector({
       css: this.installedSnapResultSpan,
       text: expectedMessage,
