@@ -4,6 +4,7 @@ import {
   SimulationTokenStandard,
 } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
+import { toHex } from '@metamask/controller-utils';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
 import {
   CHAIN_ID,
@@ -15,7 +16,9 @@ import { TokenStandard } from '../../../../../../../shared/constants/transaction
 import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import { BalanceChange } from '../../../simulation-details/types';
 import { buildApproveTransactionData } from '../../../../../../../test/data/confirmations/token-approve';
+import { TOKEN_VALUE_UNLIMITED_THRESHOLD } from '../shared/constants';
 import { useBatchApproveBalanceChanges } from './useBatchApproveBalanceChanges';
+import { buildSetApproveForAllTransactionData } from '../../../../../../../test/data/confirmations/set-approval-for-all';
 
 jest.mock('../../../simulation-details/useBalanceChanges', () => ({
   useBalanceChanges: jest.fn(),
@@ -88,7 +91,14 @@ describe('useBatchApproveBalanceChanges', () => {
 
     expect(result).toStrictEqual({
       pending: false,
-      value: [{ ...BALANCE_CHANGE_MOCK, isApproval: true }],
+      value: [
+        {
+          ...BALANCE_CHANGE_MOCK,
+          isApproval: true,
+          isAllApproval: false,
+          isUnlimitedApproval: false,
+        },
+      ],
     });
   });
 
@@ -110,6 +120,41 @@ describe('useBatchApproveBalanceChanges', () => {
             address: TO_MOCK,
             difference: AMOUNT_HEX_MOCK,
             id: undefined,
+            isAll: false,
+            isDecrease: true,
+            isUnlimited: false,
+            newBalance: '0x0',
+            previousBalance: '0x0',
+            standard: SimulationTokenStandard.erc20,
+          },
+        ],
+      },
+    });
+  });
+
+  it('generates unlimited ERC-20 token balance changes', async () => {
+    await runHook({
+      nestedTransactions: [
+        {
+          data: buildApproveTransactionData(
+            TO_MOCK,
+            TOKEN_VALUE_UNLIMITED_THRESHOLD,
+          ),
+          to: TO_MOCK,
+        },
+      ],
+    });
+
+    expect(useBalanceChangesMock).toHaveBeenLastCalledWith({
+      chainId: CHAIN_ID,
+      simulationData: {
+        tokenBalanceChanges: [
+          {
+            address: TO_MOCK,
+            difference: toHex(TOKEN_VALUE_UNLIMITED_THRESHOLD),
+            id: undefined,
+            isAll: false,
+            isUnlimited: true,
             isDecrease: true,
             newBalance: '0x0',
             previousBalance: '0x0',
@@ -142,10 +187,80 @@ describe('useBatchApproveBalanceChanges', () => {
             address: TO_MOCK,
             difference: '0x1',
             id: AMOUNT_HEX_MOCK,
+            isAll: false,
             isDecrease: true,
+            isUnlimited: false,
             newBalance: '0x0',
             previousBalance: '0x0',
             standard: SimulationTokenStandard.erc721,
+          },
+        ],
+      },
+    });
+  });
+
+  it('generates all ERC-721 token balance changes', async () => {
+    getTokenStandardAndDetailsMock.mockResolvedValue({
+      standard: TokenStandard.ERC721,
+    });
+
+    await runHook({
+      nestedTransactions: [
+        {
+          data: buildSetApproveForAllTransactionData(TO_MOCK, true),
+          to: TO_MOCK,
+        },
+      ],
+    });
+
+    expect(useBalanceChangesMock).toHaveBeenLastCalledWith({
+      chainId: CHAIN_ID,
+      simulationData: {
+        tokenBalanceChanges: [
+          {
+            address: TO_MOCK,
+            difference: '0x1',
+            id: undefined,
+            isAll: true,
+            isDecrease: true,
+            isUnlimited: false,
+            newBalance: '0x0',
+            previousBalance: '0x0',
+            standard: SimulationTokenStandard.erc721,
+          },
+        ],
+      },
+    });
+  });
+
+  it('generates all ERC-1155 token balance changes', async () => {
+    getTokenStandardAndDetailsMock.mockResolvedValue({
+      standard: TokenStandard.ERC1155,
+    });
+
+    await runHook({
+      nestedTransactions: [
+        {
+          data: buildSetApproveForAllTransactionData(TO_MOCK, true),
+          to: TO_MOCK,
+        },
+      ],
+    });
+
+    expect(useBalanceChangesMock).toHaveBeenLastCalledWith({
+      chainId: CHAIN_ID,
+      simulationData: {
+        tokenBalanceChanges: [
+          {
+            address: TO_MOCK,
+            difference: '0x1',
+            id: undefined,
+            isAll: true,
+            isDecrease: true,
+            isUnlimited: false,
+            newBalance: '0x0',
+            previousBalance: '0x0',
+            standard: SimulationTokenStandard.erc1155,
           },
         ],
       },
