@@ -597,7 +597,7 @@ describe('Snap Keyring Methods', () => {
         },
       });
 
-      // ! This no longer throw an error, but instead, we log it. Since this part
+      // ! This no longer throws an error, but instead, we log it. Since this part
       // ! of the flow is not awaited, so we await for it explicitly here:
       await waitForAllPromises();
       expect(consoleSpy).toHaveBeenCalledWith(
