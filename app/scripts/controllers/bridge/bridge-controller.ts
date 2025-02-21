@@ -156,9 +156,8 @@ export default class BridgeController extends StaticIntervalPollingController<Br
           !(await this.#hasSufficientBalance(updatedQuoteRequest));
       }
 
-      const networkClientId = srcChainIdString;
       this.startPolling({
-        networkClientId,
+        networkClientId: srcChainIdString,
         updatedQuoteRequest: {
           ...updatedQuoteRequest,
           insufficientBal,
