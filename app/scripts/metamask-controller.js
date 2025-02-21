@@ -4282,6 +4282,16 @@ export default class MetamaskController extends EventEmitter {
   async addNewMnemonicToVault(mnemonic) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
+      // TODO: remove and use this logic in the keyring controller.
+      const findMostRecentIndex = (arr, targetType) => {
+        return arr.reduceRight((acc, item, index) => {
+          if (acc === -1 && item.type === targetType) {
+            return index;
+          }
+          return acc;
+        }, -1);
+      };
+
       const newKeyring = await this.keyringController.addNewKeyring(
         KeyringTypes.hd,
         {
@@ -4295,10 +4305,14 @@ export default class MetamaskController extends EventEmitter {
       this.accountsController.setSelectedAccount(account.id);
 
       // TODO: Find a way to encapsulate this logic in the KeyringController itself.
+      const mostRecentHDKeyringIndex = findMostRecentIndex(
+        this.keyringController.state.keyrings,
+        KeyringTypes.hd,
+      );
       const keyringId =
-        this.keyringController.state.keyringsMetadata[
-          this.keyringController.state.keyrings.length - 1
-        ].id;
+        this.keyringController.state.keyringsMetadata[mostRecentHDKeyringIndex]
+          .id;
+
       await this._addAccountsWithBalance(keyringId);
 
       return newAccountAddress;
