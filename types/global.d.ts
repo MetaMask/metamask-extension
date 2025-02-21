@@ -20,7 +20,7 @@ import {
 import {
   OffscreenCommunicationTarget,
   TrezorAction,
-} from 'shared/constants/offscreen-communication';
+} from '../shared/constants/offscreen-communication';
 import type { Provider } from '@metamask/network-controller';
 import type { Preferences } from '../app/scripts/controllers/preferences-controller';
 

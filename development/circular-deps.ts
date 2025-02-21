@@ -1,8 +1,9 @@
-#!/usr/bin/env tsx
+#!/usr/bin/env -S node --require "./node_modules/tsx/dist/preflight.cjs" --import "./node_modules/tsx/dist/loader.mjs"
 
-import fs, { readFileSync } from 'fs';
-import madge from 'madge';
-import fg from 'fast-glob';
+import chalk from 'chalk';
+import madge, { type MadgeConfig, type MadgeInstance } from 'madge';
+import { writeFileSync, readFileSync, existsSync } from 'node:fs';
+import { stderr } from 'node:process';
 import micromatch from 'micromatch';
 
 const TARGET_FILE = 'development/circular-deps.jsonc';
@@ -22,35 +23,6 @@ const FILE_HEADER = `// This is a machine-generated file that tracks circular de
  */
 const RESOLUTION_STEPS =
   'To resolve this issue, run `yarn circular-deps:update` locally and commit the changes.';
-
-/**
- * Patterns for files and directories to ignore when checking for circular dependencies:
- * - test files and directories
- * - storybook files and directories
- * - any file with .test., .spec., or .stories. in its name
- */
-const IGNORE_PATTERNS = [
-  // Test files and directories
-  '**/test/**',
-  '**/tests/**',
-  '**/*.test.*',
-  '**/*.spec.*',
-
-  // Storybook files and directories
-  '**/stories/**',
-  '**/storybook/**',
-  '**/*.stories.*',
-];
-
-/**
- * Source code directories to check for circular dependencies.
- * These are the main app directories containing production code.
- */
-const ENTRYPOINT_PATTERNS = [
-  'app/**/*', // Main application code
-  'shared/**/*', // Shared utilities and components
-  'ui/**/*', // UI components and styles
-];
 
 /**
  * Circular dependencies are represented as an array of arrays, where each
@@ -76,39 +48,42 @@ function normalizeJson(cycles: CircularDeps): CircularDeps {
   return cycles.map((cycle) => [...cycle].sort()).sort();
 }
 
+/**
+ * Source code directories to check for circular dependencies.
+ * These are the main app directories containing production/development code.
+ */
+const ENTRYPOINTS = [
+  'app/', // Main application code
+  // 'development/', // Development scripts and utilities
+  'offscreen/', // Offscreen page for MV3
+  'shared/', // Shared utilities and components
+  // 'test/', // Tests
+  'ui/', // UI components and styles
+];
+
 // Common madge configuration
 const { allowedCircularGlob, ...MADGE_CONFIG } = JSON.parse(
   readFileSync('.madgerc', 'utf-8'),
 ) as { allowedCircularGlob: string[] } & madge.MadgeConfig;
 
-async function getMadgeCircularDeps(): Promise<CircularDeps> {
+async function getTree(
+  entrypoints: string[],
+  config: MadgeConfig,
+): Promise<MadgeInstance> {
   console.log('Running madge to detect circular dependencies...');
-  try {
-    const entrypoints = (
-      await Promise.all(
-        ENTRYPOINT_PATTERNS.map((pattern) =>
-          fg(pattern, { ignore: IGNORE_PATTERNS }),
-        ),
-      )
-    ).flat();
-    console.log(
-      `Analyzing ${entrypoints.length} entry points for circular dependencies...`,
-    );
-    const result = await madge(entrypoints, MADGE_CONFIG);
-    const circularDeps = result.circular();
-    console.log(`Found ${circularDeps.length} circular dependencies`);
-    return normalizeJson(circularDeps);
-  } catch (error) {
-    console.error('Error while running madge:', error);
-    throw error;
-  }
+  console.log(
+    `Analyzing ${entrypoints.length} entry points for circular dependencies...`,
+  );
+
+  return await madge(entrypoints, config);
 }
 
 async function update(): Promise<void> {
   try {
     console.log('Generating circular dependencies...');
-    const circularDeps = await getMadgeCircularDeps();
-    fs.writeFileSync(
+    const tree = await getTree(ENTRYPOINTS, MADGE_CONFIG);
+    const circularDeps = normalizeJson(tree.circular());
+    writeFileSync(
       TARGET_FILE,
       `${FILE_HEADER + JSON.stringify(circularDeps, null, 2)}\n`,
     );
@@ -135,17 +110,18 @@ function stripJsonComments(jsonc: string): string {
 async function check(): Promise<void> {
   try {
     // Check if target file exists
-    if (!fs.existsSync(TARGET_FILE)) {
+    if (!existsSync(TARGET_FILE)) {
       console.error(`Error: ${TARGET_FILE} does not exist.`);
       console.log(RESOLUTION_STEPS);
       process.exit(1);
     }
 
     // Determine actual circular dependencies in the codebase
-    const actualDeps = await getMadgeCircularDeps();
+    const tree = await getTree(ENTRYPOINTS, MADGE_CONFIG);
+    const actualDeps = normalizeJson(tree.circular());
 
     // Read existing file and strip comments
-    const fileContents = fs.readFileSync(TARGET_FILE, 'utf-8');
+    const fileContents = readFileSync(TARGET_FILE, 'utf-8');
     const baselineDeps = JSON.parse(stripJsonComments(fileContents));
 
     // Compare dependencies
@@ -160,7 +136,7 @@ async function check(): Promise<void> {
       process.exit(1);
     }
 
-    failIfDisallowedCircularDepsFound(actualDeps);
+    failIfDisallowedCircularDepsFound(tree);
 
     console.log('Circular dependencies check passed.');
   } catch (error) {
@@ -170,24 +146,92 @@ async function check(): Promise<void> {
 }
 
 /**
+ * Logs skipped files and returns `true` if any are found, otherwise `false`.
+ *
+ * @param skipped
+ * @returns
+ */
+function maybeLogSkipped(skipped: string[]): boolean {
+  if (skipped.length) {
+    const file = `file${skipped.length === 1 ? '' : 's'}`;
+    console.error(chalk.yellow.bold(`✖ Skipped ${file} found:`));
+    skipped.forEach((module) => {
+      console.error(chalk.yellow(module));
+    });
+    console.error('\n');
+
+    console.error(
+      chalk.yellow.bold(
+        "This likely means there is a problem generating a dependency tree (like importing a file from a path that doesn't exist), or there is an invalid build configuration.\n",
+      ),
+    );
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Logs circular dependencies and returns `true` if any are found, otherwise `false`.
+ *
+ * @param circular
+ * @returns
+ */
+function maybeLogCircular(circular: CircularDeps): boolean {
+  if (circular.length) {
+    const dependency = `dependenc${circular.length === 1 ? 'y' : 'ies'}`;
+    stderr.write(
+      chalk.red.bold(`Found ${circular.length} circular ${dependency}\n`),
+    );
+
+    circular.forEach((path, index) => {
+      stderr.write(chalk.dim(index + 1 + ') '));
+      path.forEach((module, number) => {
+        if (number !== 0) {
+          stderr.write(chalk.dim(' > '));
+        }
+        stderr.write(chalk.cyan.bold(module));
+      });
+      stderr.write('\n');
+    });
+
+    stderr.write(
+      chalk.red.bold('You must remove these circular dependencies.\n'),
+    );
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Logs errors if any are found.
+ *
+ * @param tree
+ * @returns boolean
+ */
+function maybeLogErrors(circular: CircularDeps, skipped: string[]): boolean {
+  const logSkipped = maybeLogSkipped(skipped);
+  const logCircular = maybeLogCircular(circular);
+
+  return !(logSkipped || logCircular);
+}
+
+/**
  * Exits with a non-zero exit code if the provided `actualDeps` contain any
  * circular dependencies that are not allowed by the `allowedCircularGlob`.
  *
- * @param actualDeps - All circular dependencies found in the codebase.
  */
-function failIfDisallowedCircularDepsFound(actualDeps: CircularDeps): void {
+function failIfDisallowedCircularDepsFound(tree: MadgeInstance): void {
+  const actualDeps = tree.circular();
+
   // 1) Find all cycles containing any dep that does NOT match the allowed patterns.
   const disallowedCycles = actualDeps.filter((cycle) =>
     cycle.some((dep) => !micromatch.some(dep, allowedCircularGlob)),
   );
 
-  if (disallowedCycles.length > 0) {
-    const errorDetails = disallowedCycles
-      .map((cycle) => cycle.join(' -> '))
-      .join('\n');
-
+  const { skipped } = tree.warnings();
+  if (maybeLogErrors(disallowedCycles, skipped)) {
     console.error(
-      `Error: New circular dependencies found in disallowed folders:\n\n${errorDetails}`,
+      `Error: New circular dependencies found in disallowed folders`,
     );
     console.log('You must remove these circular dependencies.');
     process.exit(1);
