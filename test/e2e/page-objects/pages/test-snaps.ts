@@ -291,7 +291,7 @@ export class TestSnaps {
   }
 
   async scrollToSendEd25519() {
-    console.log('Scrolling to send ed25519');
+    console.log('Scrolling to sign with ed25519 button');
     const sendEd25519 = await this.driver.findElement(this.inputMessageEd25519);
     await this.driver.scrollToElement(sendEd25519);
   }
