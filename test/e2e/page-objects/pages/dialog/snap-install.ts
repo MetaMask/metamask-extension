@@ -120,7 +120,7 @@ class SnapInstall {
     spanSelectorId: string,
     expectedMessage: string,
   ) {
-    console.log('Checking message result that is received');
+    console.log('Checking message result');
     await this.driver.waitForSelector({
       css: spanSelectorId,
       text: expectedMessage,
