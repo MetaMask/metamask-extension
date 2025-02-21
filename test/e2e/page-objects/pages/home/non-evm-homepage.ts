@@ -17,7 +17,6 @@ class NonEvmHomepage extends HomePage {
   async check_pageIsLoaded(amount: string = ''): Promise<void> {
     await super.check_pageIsLoaded();
     if (amount) {
-      console.log('check_pageIsLoaded before waitForSelector');
       try {
         await this.driver.waitForSelector(
           {
@@ -26,7 +25,6 @@ class NonEvmHomepage extends HomePage {
           },
           { timeout: 61000 }, // added this timeout because of this bug https://consensyssoftware.atlassian.net/browse/SOL-173
         );
-        console.log('check_pageIsLoaded after waitForSelector');
       } catch (e) {
         console.log('Error in check_pageIsLoaded', e);
       }

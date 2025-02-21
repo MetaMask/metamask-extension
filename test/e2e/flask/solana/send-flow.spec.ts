@@ -9,7 +9,6 @@ import { withSolanaAccountSnap } from './common-solana';
 
 const commonSolanaAddress = 'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna';
 describe('Send flow', function (this: Suite) {
-  // skipped due tohttps://github.com/MetaMask/snaps/issues/3019
   it('with some field validation', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
@@ -395,7 +394,7 @@ describe('Send flow', function (this: Suite) {
   });
 });
 describe('Send flow', function (this: Suite) {
-  it('and Transaction Simulationfails', async function () {
+  it('and Transaction Simulation fails', async function () {
     this.timeout(120000); // there is a bug open for this big timeout https://consensyssoftware.atlassian.net/browse/SOL-90
     await withSolanaAccountSnap(
       {

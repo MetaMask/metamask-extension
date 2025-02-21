@@ -8,7 +8,7 @@ import { commonSolanaAddress, withSolanaAccountSnap } from './common-solana';
 
 const splTokenName = 'PKIN';
 describe.skip('Send flow', function (this: Suite) {
-  // sskipped due to https://consensyssoftware.atlassian.net/browse/SOL-172
+  // skipped due to https://consensyssoftware.atlassian.net/browse/SOL-172
   it('user with more than 1 token in the token list', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
