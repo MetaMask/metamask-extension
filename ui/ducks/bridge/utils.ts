@@ -125,7 +125,6 @@ export const exchangeRateFromMarketData = (
   chainId: Hex | ChainId,
   tokenAddress: string,
   marketData?: Record<string, ContractMarketData>,
-  // TODO get market data for solana
 ) =>
   isStrictHexString(tokenAddress) && isStrictHexString(chainId)
     ? marketData?.[chainId]?.[tokenAddress]?.price

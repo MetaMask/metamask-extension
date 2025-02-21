@@ -30,6 +30,7 @@ const useLatestBalance = (
   >(async () => {
     if (
       token?.address &&
+      // TODO check whether chainId is EVM when MultichainNetworkController is integrated
       !isCaipChainId(chainId) &&
       chainId &&
       currentChainId === chainId
