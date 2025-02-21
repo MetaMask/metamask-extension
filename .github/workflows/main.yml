@@ -2,11 +2,6 @@ name: Main
 
 on:
   push:
-    branches:
-      - main
-      - master
-      - Version-v*
-      - trigger-ci*
   pull_request:
     types:
       - opened
@@ -119,7 +114,7 @@ jobs:
   run-benchmarks:
     uses: ./.github/workflows/run-benchmarks.yml
     needs:
-      - prep-build-test-browserify
+      # - prep-build-test-browserify
       - prep-build-test-webpack
 
   wait-for-circleci-workflow-status:
@@ -160,6 +155,7 @@ jobs:
       - wait-for-circleci-workflow-status
       - build-storybook
       - build-beta
+      - run-benchmarks
     uses: ./.github/workflows/publish-prerelease.yml
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
