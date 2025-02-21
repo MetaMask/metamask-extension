@@ -5,6 +5,7 @@ import {
   getFromToken,
   getToToken,
 } from '../../../ducks/bridge/selectors';
+import { formatChainIdToCaip } from '../../../../shared/modules/bridge-utils/caip-formatters';
 
 export const useRequestProperties = () => {
   const { srcChainId, destChainId, srcTokenAddress, destTokenAddress } =
@@ -27,16 +28,16 @@ export const useRequestProperties = () => {
   ) {
     return {
       quoteRequestProperties: {
-        chain_id_source: srcChainId,
-        chain_id_destination: destChainId,
+        chain_id_source: formatChainIdToCaip(srcChainId),
+        chain_id_destination: formatChainIdToCaip(destChainId),
         token_symbol_source,
         token_symbol_destination,
         token_address_source,
         token_address_destination,
       },
       flippedRequestProperties: {
-        chain_id_source: destChainId,
-        chain_id_destination: srcChainId,
+        chain_id_source: formatChainIdToCaip(destChainId),
+        chain_id_destination: formatChainIdToCaip(srcChainId),
         token_symbol_source: token_symbol_destination,
         token_symbol_destination: token_symbol_source,
         token_address_source: token_address_destination,

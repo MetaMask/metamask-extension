@@ -44,9 +44,14 @@ export const formatChainIdToDec = (chainId: number | Hex | CaipChainId) => {
   return chainId;
 };
 
-export const formatChainIdToHex = (chainId?: number | Hex | CaipChainId) => {
+export const formatChainIdToHex = (
+  chainId: Hex | CaipChainId | string | number,
+) => {
   if (isStrictHexString(chainId)) {
     return chainId;
+  }
+  if (typeof chainId === 'number' || parseInt(chainId, 10)) {
+    return decimalToPrefixedHex(chainId.toString());
   }
   if (isCaipChainId(chainId)) {
     const { reference } = parseCaipChainId(chainId);
@@ -54,7 +59,8 @@ export const formatChainIdToHex = (chainId?: number | Hex | CaipChainId) => {
       return decimalToPrefixedHex(reference);
     }
   }
-  return undefined;
+  // TODO handle non-evm chainIds
+  throw new Error('Invalid cross-chain swaps chainId');
 };
 
 export const formatAddressToString = (address: string) => {
