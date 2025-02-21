@@ -17,7 +17,7 @@ import {
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { AssetType } from '../../../shared/constants/transaction';
-import { isNativeAddress } from '../../pages/bridge/utils/quote';
+import { isNativeAddress } from '../../../shared/modules/bridge-utils/caip-formatters';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { Token } from '../../components/app/assets/types';
 import { useMultichainBalances } from '../useMultichainBalances';
