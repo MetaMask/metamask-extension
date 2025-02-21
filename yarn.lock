@@ -5043,7 +5043,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.3.0, @metamask/controller-utils@npm:^11.4.0, @metamask/controller-utils@npm:^11.4.2, @metamask/controller-utils@npm:^11.4.4, @metamask/controller-utils@npm:^11.4.5, @metamask/controller-utils@npm:^11.5.0":
+"@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.3.0, @metamask/controller-utils@npm:^11.4.0, @metamask/controller-utils@npm:^11.4.2, @metamask/controller-utils@npm:^11.4.4, @metamask/controller-utils@npm:^11.5.0":
   version: 11.5.0
   resolution: "@metamask/controller-utils@npm:11.5.0"
   dependencies:
@@ -5728,23 +5728,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "@metamask/multichain@npm:2.1.0"
+"@metamask/multichain@npm:@metamask-previews/multichain@2.1.1-preview-dbdf1da":
+  version: 2.1.1-preview-dbdf1da
+  resolution: "@metamask-previews/multichain@npm:2.1.1-preview-dbdf1da"
   dependencies:
     "@metamask/api-specs": "npm:^0.10.12"
-    "@metamask/controller-utils": "npm:^11.4.5"
+    "@metamask/controller-utils": "npm:^11.5.0"
     "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/safe-event-emitter": "npm:^3.0.0"
-    "@metamask/utils": "npm:^11.0.1"
+    "@metamask/utils": "npm:^11.2.0"
     "@open-rpc/schema-utils-js": "npm:^2.0.5"
     jsonschema: "npm:^1.4.1"
     lodash: "npm:^4.17.21"
   peerDependencies:
     "@metamask/network-controller": ^22.0.0
     "@metamask/permission-controller": ^11.0.0
-  checksum: 10/762231b95fa89e25e8a06ff50161301cecc1eaa8095b8eef4b1d938e43307c98549767600b4a37482bb846026f46c66791cd99e385991704b5e9624aa6032332
+  checksum: 10/f4fb124f29035cba6bd5a3c3f647d4d82555e4fae124be54423e7b70d0d7940667ebc2ef812ef55b4feced51ec08ebbada7ad03b7fdb72dab29abcf1311bb6ef
   languageName: node
   linkType: hard
 
@@ -6521,6 +6521,23 @@ __metadata:
     semver: "npm:^7.5.4"
     uuid: "npm:^9.0.1"
   checksum: 10/756f13987881fe26adaa0a54354bc5af20cedee4dd228a736d481697dc634adb9e6e54d8f1dcc1d487b2376ab4ba8c576ecbb24beab2fb63aff721d0d5c0f5fe
+  languageName: node
+  linkType: hard
+
+"@metamask/utils@npm:^11.2.0":
+  version: 11.2.0
+  resolution: "@metamask/utils@npm:11.2.0"
+  dependencies:
+    "@ethereumjs/tx": "npm:^4.2.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@noble/hashes": "npm:^1.3.1"
+    "@scure/base": "npm:^1.1.3"
+    "@types/debug": "npm:^4.1.7"
+    debug: "npm:^4.3.4"
+    pony-cause: "npm:^2.1.10"
+    semver: "npm:^7.5.4"
+    uuid: "npm:^9.0.1"
+  checksum: 10/9cc2cb6af4627085e72a310ba9b8921c69757d94e2992d4664627e5a0d99b1f2f7f8069c6f22262515135e1172bd66b82d00512d90ea2ec6da4e768f3d7d4ae2
   languageName: node
   linkType: hard
 
@@ -26697,7 +26714,7 @@ __metadata:
     "@metamask/message-manager": "npm:^12.0.1"
     "@metamask/message-signing-snap": "npm:^0.6.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain": "npm:^2.1.0"
+    "@metamask/multichain": "npm:@metamask-previews/multichain@2.1.1-preview-dbdf1da"
     "@metamask/multichain-transactions-controller": "npm:^0.3.0"
     "@metamask/name-controller": "npm:^8.0.3"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A22.1.1#~/.yarn/patches/@metamask-network-controller-npm-22.1.1-09b6510f1e.patch"
