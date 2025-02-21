@@ -4273,13 +4273,13 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Adds a new mnemonic to the vault.
+   * Imports a new mnemonic to the vault.
    *
    * @param {string} mnemonic
    * @returns {object} new account address
    */
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  async addNewMnemonicToVault(mnemonic) {
+  async importMnemonicToVault(mnemonic) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
       // TODO: This kind of logic should be inside the `KeyringController` (using `KeyringSelector` query, or make `addNewKeyring` returns it keyring ID alongside
