@@ -61,10 +61,6 @@ import {
   FEATURED_RPCS,
 } from '../../../shared/constants/network';
 import {
-  MultichainNetworks,
-  MULTICHAIN_PROVIDER_CONFIGS,
-} from '../../../shared/constants/multichain/networks';
-import {
   exchangeRatesFromNativeAndCurrencyRates,
   exchangeRateFromMarketData,
   tokenPriceInNativeAsset,

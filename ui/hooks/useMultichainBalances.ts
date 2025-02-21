@@ -53,11 +53,9 @@ const useNonEvmAssetsWithBalances = (): (
 
     // build TokenWithFiat for each asset
     return assetIds
+      .filter((caipAssetId) => assetMetadataById[caipAssetId])
       .map((caipAssetId) => {
         const [caipChainId, address] = caipAssetId.split('/');
-        if (!assetMetadataById[caipAssetId]) {
-          return null;
-        }
         const [type] = address.split(':');
         return {
           chainId: caipChainId as `${string}:${string}`,
