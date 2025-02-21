@@ -6,24 +6,48 @@ import { NestedTransactionData } from './nested-transaction-data';
 import { ConfirmContextProvider } from '../../../../../context/confirm';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
-import { BatchTransactionParams } from '@metamask/transaction-controller';
+
+import {
+  CONTRACT_ADDRESS_FOUR_BYTE,
+  CONTRACT_ADDRESS_SOURCIFY,
+  TRANSACTION_DATA_FOUR_BYTE,
+} from '../../../../../../../../test/data/confirmations/transaction-decode';
+
+const FOUR_BYTE_DATA = '0xabcdefab';
+const SOURCIFY_DATA = '0x98765432';
 
 const TRANSACTION_MOCK = genUnapprovedContractInteractionConfirmation({
   nestedTransactions: [
     {
-      data: '0x123456',
+      data: '0x12345678',
       to: '0x1234567890123456789012345678901234567890',
       value: '0x123',
     },
     {
-      data: '0xabcdef',
-      to: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
+      data: FOUR_BYTE_DATA,
+      to: CONTRACT_ADDRESS_FOUR_BYTE,
+      value: '0xabc',
+    },
+    {
+      data: SOURCIFY_DATA,
+      to: CONTRACT_ADDRESS_SOURCIFY,
       value: '0xabc',
     },
   ],
 });
 
-const STATE_MOCK = getMockConfirmStateForTransaction(TRANSACTION_MOCK);
+const STATE_MOCK = getMockConfirmStateForTransaction(TRANSACTION_MOCK, {
+  metamask: {
+    knownMethodData: {
+      [FOUR_BYTE_DATA]: {
+        name: 'Some Function',
+      },
+      [SOURCIFY_DATA]: {
+        name: 'Cancel Authorization',
+      },
+    },
+  },
+});
 
 const store = configureStore(STATE_MOCK);
 
