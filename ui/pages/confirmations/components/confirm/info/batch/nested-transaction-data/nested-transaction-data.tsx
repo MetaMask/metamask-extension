@@ -11,6 +11,7 @@ import { ConfirmInfoExpandableRow } from '../../../../../../../components/app/co
 import { RecipientRow } from '../../shared/transaction-details/transaction-details';
 import { TransactionData } from '../../shared/transaction-data/transaction-data';
 import { ConfirmInfoRowText } from '../../../../../../../components/app/confirm/info/row';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 
 export function NestedTransactionData() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -40,11 +41,14 @@ function NestedTransaction({
   index: number;
   nestedTransaction: BatchTransactionParams;
 }) {
+  const t = useI18nContext();
   const { data, to } = nestedTransaction;
   const methodData = useFourByte({ data, to });
 
   const functionName = methodData?.name;
-  const label = functionName ?? `Transaction ${index + 1}`;
+
+  const label =
+    functionName ?? t('confirmNestedTransactionTitle', [String(index + 1)]);
 
   return (
     <ConfirmInfoSection>
