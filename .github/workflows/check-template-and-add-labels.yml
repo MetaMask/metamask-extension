@@ -7,8 +7,25 @@ on:
     types: [opened, edited]
 
 jobs:
-  check-template-and-add-labels:
+  is-fork-pull-request:
+    name: Determine whether this PR is from a fork
     runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request }}
+    outputs:
+      IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Determine whether this PR is from a fork
+        id: is-fork
+        run: echo "IS_FORK=$(gh pr view --json isCrossRepository --jq '.isCrossRepository' "${{ github.event.pull_request.number }}" )" >> "$GITHUB_OUTPUT"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  check-template-and-add-labels:
+    name: Check template and add labels
+    runs-on: ubuntu-latest
+    needs: is-fork-pull-request
+    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
