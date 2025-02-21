@@ -1,0 +1,351 @@
+diff --git a/dist/index.cjs b/dist/index.cjs
+index ba25bbf7c38bca9b56d7f8a3fb028acf6ed719e5..e0b2de7a80f12c64c07be42c0beabaad3b8a73fc 100644
+--- a/dist/index.cjs
++++ b/dist/index.cjs
+@@ -15,5 +15,6 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
+ };
+ Object.defineProperty(exports, "__esModule", { value: true });
+ __exportStar(require("./trezor-keyring.cjs"), exports);
++__exportStar(require("./onekey-keyring.cjs"), exports);
+ __exportStar(require("./trezor-connect-bridge.cjs"), exports);
+ //# sourceMappingURL=index.cjs.map
+\ No newline at end of file
+diff --git a/dist/index.d.cts b/dist/index.d.cts
+index 369b27f32bc77b39a3fabc36411cffce7422630c..2e4fbe2239cd436581898bb831e9309514e40c7f 100644
+--- a/dist/index.d.cts
++++ b/dist/index.d.cts
+@@ -1,4 +1,5 @@
+ export * from "./trezor-keyring.cjs";
++export * from "./onekey-keyring.cjs";
+ export type * from "./trezor-bridge.cjs";
+ export * from "./trezor-connect-bridge.cjs";
+ //# sourceMappingURL=index.d.cts.map
+\ No newline at end of file
+diff --git a/dist/index.d.mts b/dist/index.d.mts
+index 7bec24798ffed586b5eee21e3a2ae8c580d49fc6..2494b47b3764ceb8882a85985b0432be9e9bdc0e 100644
+--- a/dist/index.d.mts
++++ b/dist/index.d.mts
+@@ -1,4 +1,5 @@
+ export * from "./trezor-keyring.mjs";
++export * from "./onekey-keyring.mjs";
+ export type * from "./trezor-bridge.mjs";
+ export * from "./trezor-connect-bridge.mjs";
+ //# sourceMappingURL=index.d.mts.map
+\ No newline at end of file
+diff --git a/dist/index.mjs b/dist/index.mjs
+index f4279b6df265b43581495eb8fbbe5e77a31929e8..43e130a300127be37030b944e961f3fc8cedd8a2 100644
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -1,3 +1,4 @@
+ export * from "./trezor-keyring.mjs";
++export * from "./onekey-keyring.mjs";
+ export * from "./trezor-connect-bridge.mjs";
+ //# sourceMappingURL=index.mjs.map
+\ No newline at end of file
+diff --git a/dist/onekey-keyring.cjs b/dist/onekey-keyring.cjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..acd13b6af670c615c97ee5016de732f9de007bbb
+--- /dev/null
++++ b/dist/onekey-keyring.cjs
+@@ -0,0 +1,14 @@
++"use strict";
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.OneKeyKeyring = void 0;
++const trezor_keyring_1 = require("./trezor-keyring.cjs");
++const oneKeyKeyringType = 'OneKey Hardware';
++class OneKeyKeyring extends trezor_keyring_1.TrezorKeyring {
++    constructor() {
++        super(...arguments);
++        this.type = oneKeyKeyringType;
++    }
++}
++exports.OneKeyKeyring = OneKeyKeyring;
++OneKeyKeyring.type = oneKeyKeyringType;
++//# sourceMappingURL=onekey-keyring.cjs.map
+\ No newline at end of file
+diff --git a/dist/onekey-keyring.d.cts b/dist/onekey-keyring.d.cts
+new file mode 100644
+index 0000000000000000000000000000000000000000..3622dd35772c3c131601195c13adeb6c92a273d4
+--- /dev/null
++++ b/dist/onekey-keyring.d.cts
+@@ -0,0 +1,6 @@
++import { TrezorKeyring } from "./trezor-keyring.cjs";
++export declare class OneKeyKeyring extends TrezorKeyring {
++    static type: string;
++    readonly type: string;
++}
++//# sourceMappingURL=onekey-keyring.d.cts.map
+\ No newline at end of file
+diff --git a/dist/onekey-keyring.d.mts b/dist/onekey-keyring.d.mts
+new file mode 100644
+index 0000000000000000000000000000000000000000..7bb6d8cc4116fe457877e8aa3974f3d2340aebb2
+--- /dev/null
++++ b/dist/onekey-keyring.d.mts
+@@ -0,0 +1,6 @@
++import { TrezorKeyring } from "./trezor-keyring.mjs";
++export declare class OneKeyKeyring extends TrezorKeyring {
++    static type: string;
++    readonly type: string;
++}
++//# sourceMappingURL=onekey-keyring.d.mts.map
+\ No newline at end of file
+diff --git a/dist/onekey-keyring.mjs b/dist/onekey-keyring.mjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..542d46d2bd2cee563b42d45835560e92eb7cfba5
+--- /dev/null
++++ b/dist/onekey-keyring.mjs
+@@ -0,0 +1,10 @@
++import { TrezorKeyring } from "./trezor-keyring.mjs";
++const oneKeyKeyringType = 'OneKey Hardware';
++export class OneKeyKeyring extends TrezorKeyring {
++    constructor() {
++        super(...arguments);
++        this.type = oneKeyKeyringType;
++    }
++}
++OneKeyKeyring.type = oneKeyKeyringType;
++//# sourceMappingURL=onekey-keyring.mjs.map
+\ No newline at end of file
+diff --git a/dist/trezor-bridge.d.cts b/dist/trezor-bridge.d.cts
+index c2189609813a1225413d90f342fa948d0c3e9e89..a20c794f46a31b3f2a362c07897526c3ef463a61 100644
+--- a/dist/trezor-bridge.d.cts
++++ b/dist/trezor-bridge.d.cts
+@@ -1,4 +1,8 @@
+ import type { ConnectSettings, EthereumSignedTx, Manifest, PROTO, Response, Params, EthereumSignMessage, EthereumSignTransaction, EthereumSignTypedDataTypes, EthereumSignTypedHash } from "@trezor/connect-web";
++export type ExtendedPublicKey = {
++    publicKey: string;
++    chainCode: string;
++};
+ export interface TrezorBridge {
+     model?: string;
+     init(settings: {
+@@ -8,10 +12,7 @@ export interface TrezorBridge {
+     getPublicKey(params: {
+         path: string;
+         coin: string;
+-    }): Response<{
+-        publicKey: string;
+-        chainCode: string;
+-    }>;
++    }): Response<ExtendedPublicKey>;
+     ethereumSignTransaction(params: Params<EthereumSignTransaction>): Response<EthereumSignedTx>;
+     ethereumSignMessage(params: Params<EthereumSignMessage>): Response<PROTO.MessageSignature>;
+     ethereumSignTypedData<T extends EthereumSignTypedDataTypes>(params: Params<EthereumSignTypedHash<T>>): Response<PROTO.EthereumTypedDataSignature>;
+diff --git a/dist/trezor-bridge.d.mts b/dist/trezor-bridge.d.mts
+index 84bb9a6055bd90b16efcce14fa23993c520bbe64..26082a51a675ff4a1fabdac6bffe4d2335808ae8 100644
+--- a/dist/trezor-bridge.d.mts
++++ b/dist/trezor-bridge.d.mts
+@@ -1,4 +1,8 @@
+ import type { ConnectSettings, EthereumSignedTx, Manifest, PROTO, Response, Params, EthereumSignMessage, EthereumSignTransaction, EthereumSignTypedDataTypes, EthereumSignTypedHash } from "@trezor/connect-web";
++export type ExtendedPublicKey = {
++    publicKey: string;
++    chainCode: string;
++};
+ export interface TrezorBridge {
+     model?: string;
+     init(settings: {
+@@ -8,10 +12,7 @@ export interface TrezorBridge {
+     getPublicKey(params: {
+         path: string;
+         coin: string;
+-    }): Response<{
+-        publicKey: string;
+-        chainCode: string;
+-    }>;
++    }): Response<ExtendedPublicKey>;
+     ethereumSignTransaction(params: Params<EthereumSignTransaction>): Response<EthereumSignedTx>;
+     ethereumSignMessage(params: Params<EthereumSignMessage>): Response<PROTO.MessageSignature>;
+     ethereumSignTypedData<T extends EthereumSignTypedDataTypes>(params: Params<EthereumSignTypedHash<T>>): Response<PROTO.EthereumTypedDataSignature>;
+diff --git a/dist/trezor-connect-bridge.d.cts b/dist/trezor-connect-bridge.d.cts
+index e67841ce6787a5f4d4f41f6fb826306b2f126dd1..26b684fdcc361a12d2d4fa503d2136f45db9d4b8 100644
+--- a/dist/trezor-connect-bridge.d.cts
++++ b/dist/trezor-connect-bridge.d.cts
+@@ -1,6 +1,5 @@
+-import type { HDNodeResponse } from "@trezor/connect/lib/types/api/getPublicKey.js";
+ import type { EthereumSignedTx, PROTO, Response, Manifest, ConnectSettings, EthereumSignTransaction, Params, EthereumSignMessage, EthereumSignTypedDataTypes, EthereumSignTypedHash } from "@trezor/connect-web";
+-import type { TrezorBridge } from "./trezor-bridge.cjs";
++import type { TrezorBridge, ExtendedPublicKey } from "./trezor-bridge.cjs";
+ export declare class TrezorConnectBridge implements TrezorBridge {
+     model?: string;
+     trezorConnectInitiated: boolean;
+@@ -11,7 +10,7 @@ export declare class TrezorConnectBridge implements TrezorBridge {
+     getPublicKey(params: {
+         path: string;
+         coin: string;
+-    }): Response<HDNodeResponse>;
++    }): Response<ExtendedPublicKey>;
+     ethereumSignTransaction(params: Params<EthereumSignTransaction>): Response<EthereumSignedTx>;
+     ethereumSignMessage(params: Params<EthereumSignMessage>): Response<PROTO.MessageSignature>;
+     ethereumSignTypedData<T extends EthereumSignTypedDataTypes>(params: Params<EthereumSignTypedHash<T>>): Response<PROTO.EthereumTypedDataSignature>;
+diff --git a/dist/trezor-connect-bridge.d.mts b/dist/trezor-connect-bridge.d.mts
+index e7b3eabef19e723c2766a6770d3c63ed633111e7..666730cd54998c1230c861be0a47a905f065ab8b 100644
+--- a/dist/trezor-connect-bridge.d.mts
++++ b/dist/trezor-connect-bridge.d.mts
+@@ -1,6 +1,5 @@
+-import type { HDNodeResponse } from "@trezor/connect/lib/types/api/getPublicKey.js";
+ import type { EthereumSignedTx, PROTO, Response, Manifest, ConnectSettings, EthereumSignTransaction, Params, EthereumSignMessage, EthereumSignTypedDataTypes, EthereumSignTypedHash } from "@trezor/connect-web";
+-import type { TrezorBridge } from "./trezor-bridge.mjs";
++import type { TrezorBridge, ExtendedPublicKey } from "./trezor-bridge.mjs";
+ export declare class TrezorConnectBridge implements TrezorBridge {
+     model?: string;
+     trezorConnectInitiated: boolean;
+@@ -11,7 +10,7 @@ export declare class TrezorConnectBridge implements TrezorBridge {
+     getPublicKey(params: {
+         path: string;
+         coin: string;
+-    }): Response<HDNodeResponse>;
++    }): Response<ExtendedPublicKey>;
+     ethereumSignTransaction(params: Params<EthereumSignTransaction>): Response<EthereumSignedTx>;
+     ethereumSignMessage(params: Params<EthereumSignMessage>): Response<PROTO.MessageSignature>;
+     ethereumSignTypedData<T extends EthereumSignTypedDataTypes>(params: Params<EthereumSignTypedHash<T>>): Response<PROTO.EthereumTypedDataSignature>;
+diff --git a/dist/trezor-keyring.cjs b/dist/trezor-keyring.cjs
+index a7ad8f67434b8dbed8b74638c3103595dcacd6fa..c66194d0db7b38172d0938592b24abe220e4a0b6 100644
+--- a/dist/trezor-keyring.cjs
++++ b/dist/trezor-keyring.cjs
+@@ -403,7 +403,7 @@ _TrezorKeyring_instances = new WeakSet(), _TrezorKeyring_getPage = async functio
+  * ethereumjs transaction.
+  */
+ async function _TrezorKeyring_signTransaction(address, chainId, tx, handleSigning) {
+-    var _a, _b;
++    var _a, _b, _c, _d;
+     let transaction;
+     if (isOldStyleEthereumjsTx(tx)) {
+         // legacy transaction from ethereumjs-tx package has no .toJSON() function,
+@@ -421,7 +421,7 @@ async function _TrezorKeyring_signTransaction(address, chainId, tx, handleSignin
+     else {
+         // new-style transaction from @ethereumjs/tx package
+         // we can just copy tx.toJSON() for everything except chainId, which must be a number
+-        transaction = Object.assign(Object.assign({}, tx.toJSON()), { chainId, to: __classPrivateFieldGet(this, _TrezorKeyring_instances, "m", _TrezorKeyring_normalize).call(this, ethUtil.toBuffer(tx.to)) });
++        transaction = Object.assign(Object.assign({}, tx.toJSON()), { chainId, to: __classPrivateFieldGet(this, _TrezorKeyring_instances, "m", _TrezorKeyring_normalize).call(this, Buffer.from((_b = (_a = tx.to) === null || _a === void 0 ? void 0 : _a.bytes) !== null && _b !== void 0 ? _b : [])) });
+     }
+     try {
+         const status = await this.unlock();
+@@ -439,19 +439,17 @@ async function _TrezorKeyring_signTransaction(address, chainId, tx, handleSignin
+             }
+             return newOrMutatedTx;
+         }
+-        throw new Error(((_a = response.payload) === null || _a === void 0 ? void 0 : _a.error) || 'Unknown error');
++        throw new Error(((_c = response.payload) === null || _c === void 0 ? void 0 : _c.error) || 'Unknown error');
+     }
+     catch (e) {
+-        throw new Error((_b = e === null || e === void 0 ? void 0 : e.toString()) !== null && _b !== void 0 ? _b : 'Unknown error');
++        throw new Error((_d = e === null || e === void 0 ? void 0 : e.toString()) !== null && _d !== void 0 ? _d : 'Unknown error');
+     }
+ }, _TrezorKeyring_normalize = function _TrezorKeyring_normalize(buf) {
+-    return ethUtil.bufferToHex(buf).toString();
++    return `0x${buf.toString('hex')}`;
+ }, _TrezorKeyring_addressFromIndex = function _TrezorKeyring_addressFromIndex(basePath, i) {
+     const dkey = this.hdk.derive(`${basePath}/${i}`);
+-    const address = ethUtil
+-        .publicToAddress(dkey.publicKey, true)
+-        .toString('hex');
+-    return ethUtil.toChecksumAddress(`0x${address}`);
++    const address = ethUtil.bytesToHex(ethUtil.publicToAddress(dkey.publicKey, true));
++    return ethUtil.toChecksumAddress(address);
+ }, _TrezorKeyring_pathFromAddress = function _TrezorKeyring_pathFromAddress(address) {
+     const checksummedAddress = ethUtil.toChecksumAddress(address);
+     let index = this.paths[checksummedAddress];
+diff --git a/dist/trezor-keyring.mjs b/dist/trezor-keyring.mjs
+index 23b064c593be5feae7d7e3a37d81a0ee8931a742..20d16ec99d1b680ddb5df959f30f2c5d61504b21 100644
+--- a/dist/trezor-keyring.mjs
++++ b/dist/trezor-keyring.mjs
+@@ -12,8 +12,9 @@ function $importDefault(module) {
+ }
+ import { TransactionFactory } from "@ethereumjs/tx";
+ import * as ethUtil from "@ethereumjs/util";
++import { SignTypedDataVersion } from "@metamask/eth-sig-util";
+ import $metamaskethsigutil from "@metamask/eth-sig-util";
+-const { TypedMessage, SignTypedDataVersion, MessageTypes } = $metamaskethsigutil;
++const { TypedMessage, MessageTypes } = $metamaskethsigutil;
+ import { transformTypedData } from "@trezor/connect-plugin-ethereum";
+ import { EventEmitter } from "events";
+ import $HDKey from "hdkey";
+@@ -381,7 +382,7 @@ _TrezorKeyring_instances = new WeakSet(), _TrezorKeyring_getPage = async functio
+  * ethereumjs transaction.
+  */
+ async function _TrezorKeyring_signTransaction(address, chainId, tx, handleSigning) {
+-    var _a, _b;
++    var _a, _b, _c, _d;
+     let transaction;
+     if (isOldStyleEthereumjsTx(tx)) {
+         // legacy transaction from ethereumjs-tx package has no .toJSON() function,
+@@ -399,7 +400,7 @@ async function _TrezorKeyring_signTransaction(address, chainId, tx, handleSignin
+     else {
+         // new-style transaction from @ethereumjs/tx package
+         // we can just copy tx.toJSON() for everything except chainId, which must be a number
+-        transaction = Object.assign(Object.assign({}, tx.toJSON()), { chainId, to: __classPrivateFieldGet(this, _TrezorKeyring_instances, "m", _TrezorKeyring_normalize).call(this, ethUtil.toBuffer(tx.to)) });
++        transaction = Object.assign(Object.assign({}, tx.toJSON()), { chainId, to: __classPrivateFieldGet(this, _TrezorKeyring_instances, "m", _TrezorKeyring_normalize).call(this, Buffer.from((_b = (_a = tx.to) === null || _a === void 0 ? void 0 : _a.bytes) !== null && _b !== void 0 ? _b : [])) });
+     }
+     try {
+         const status = await this.unlock();
+@@ -417,19 +418,17 @@ async function _TrezorKeyring_signTransaction(address, chainId, tx, handleSignin
+             }
+             return newOrMutatedTx;
+         }
+-        throw new Error(((_a = response.payload) === null || _a === void 0 ? void 0 : _a.error) || 'Unknown error');
++        throw new Error(((_c = response.payload) === null || _c === void 0 ? void 0 : _c.error) || 'Unknown error');
+     }
+     catch (e) {
+-        throw new Error((_b = e === null || e === void 0 ? void 0 : e.toString()) !== null && _b !== void 0 ? _b : 'Unknown error');
++        throw new Error((_d = e === null || e === void 0 ? void 0 : e.toString()) !== null && _d !== void 0 ? _d : 'Unknown error');
+     }
+ }, _TrezorKeyring_normalize = function _TrezorKeyring_normalize(buf) {
+-    return ethUtil.bufferToHex(buf).toString();
++    return `0x${buf.toString('hex')}`;
+ }, _TrezorKeyring_addressFromIndex = function _TrezorKeyring_addressFromIndex(basePath, i) {
+     const dkey = this.hdk.derive(`${basePath}/${i}`);
+-    const address = ethUtil
+-        .publicToAddress(dkey.publicKey, true)
+-        .toString('hex');
+-    return ethUtil.toChecksumAddress(`0x${address}`);
++    const address = ethUtil.bytesToHex(ethUtil.publicToAddress(dkey.publicKey, true));
++    return ethUtil.toChecksumAddress(address);
+ }, _TrezorKeyring_pathFromAddress = function _TrezorKeyring_pathFromAddress(address) {
+     const checksummedAddress = ethUtil.toChecksumAddress(address);
+     let index = this.paths[checksummedAddress];
+diff --git a/package.json b/package.json
+index 1948063dc4f03f1cc09fac88fa659f6a3c233f5c..84e95cafdca0ab499a7fe42870d531325f730132 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@metamask/eth-trezor-keyring",
+-  "version": "6.0.0",
++  "version": "6.1.0",
+   "description": "A MetaMask compatible keyring, for trezor hardware wallets",
+   "keywords": [
+     "ethereum",
+@@ -17,7 +17,6 @@
+     "url": "https://github.com/MetaMask/eth-trezor-keyring.git"
+   },
+   "license": "ISC",
+-  "author": "Bruno Barbieri",
+   "exports": {
+     ".": {
+       "import": {
+@@ -47,20 +46,20 @@
+     "test:watch": "jest --watch"
+   },
+   "dependencies": {
+-    "@ethereumjs/tx": "^4.2.0",
+-    "@ethereumjs/util": "^8.1.0",
+-    "@metamask/eth-sig-util": "^8.0.0",
++    "@ethereumjs/tx": "^5.4.0",
++    "@ethereumjs/util": "^9.1.0",
++    "@metamask/eth-sig-util": "^8.2.0",
+     "@trezor/connect-plugin-ethereum": "^9.0.3",
+     "@trezor/connect-web": "^9.1.11",
+     "hdkey": "^2.1.0",
+     "tslib": "^2.6.2"
+   },
+   "devDependencies": {
+-    "@ethereumjs/common": "^3.2.0",
++    "@ethereumjs/common": "^4.4.0",
+     "@lavamoat/allow-scripts": "^3.2.1",
+     "@lavamoat/preinstall-always-fail": "^2.1.0",
+     "@metamask/auto-changelog": "^3.4.4",
+-    "@ts-bridge/cli": "^0.6.0",
++    "@ts-bridge/cli": "^0.6.1",
+     "@types/ethereumjs-tx": "^1.0.1",
+     "@types/hdkey": "^2.0.1",
+     "@types/jest": "^29.5.12",
