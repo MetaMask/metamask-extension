@@ -13,7 +13,7 @@ describe('InfoTab', () => {
     let getByTestId: (testId: string) => HTMLElement;
 
     beforeEach(() => {
-      const renderResult = renderWithProvider(<InfoTab />);
+      const renderResult = renderWithProvider(<InfoTab />, mockStore);
       getByText = renderResult.getByText;
       getByTestId = renderResult.getByTestId;
     });
