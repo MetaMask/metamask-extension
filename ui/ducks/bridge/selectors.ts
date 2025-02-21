@@ -1,5 +1,7 @@
 import type {
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   NetworkConfiguration,
+  ///: END:ONLY_INCLUDE_IF
   NetworkState,
 } from '@metamask/network-controller';
 import { orderBy, uniqBy } from 'lodash';
@@ -47,10 +49,12 @@ import {
   calcSwapRate,
   calcToAmount,
   calcEstimatedAndMaxTotalGasFee,
-  isNativeAddress,
 } from '../../pages/bridge/utils/quote';
+import {
+  isNativeAddress,
+  formatChainIdToCaip,
+} from '../../../shared/modules/bridge-utils/caip-formatters';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
-import { formatChainIdToCaip } from '../../../shared/modules/bridge-utils/caip-formatters';
 import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
   FEATURED_RPCS,
