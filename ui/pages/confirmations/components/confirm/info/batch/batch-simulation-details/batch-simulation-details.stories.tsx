@@ -15,6 +15,9 @@ import {
 } from '@metamask/transaction-controller';
 import { NameType } from '@metamask/name-controller';
 import { Hex } from '@metamask/utils';
+import { buildApproveTransactionData } from '../../../../../../../../test/data/confirmations/token-approve';
+import { TOKEN_VALUE_UNLIMITED_THRESHOLD } from '../../shared/constants';
+import { buildSetApproveForAllTransactionData } from '../../../../../../../../test/data/confirmations/set-approval-for-all';
 
 const ERC20_TOKEN_1_MOCK = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'; // WBTC
 const ERC20_TOKEN_2_MOCK = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'; // USDC
@@ -34,6 +37,14 @@ const TRANSACTION_MOCK = genUnapprovedContractInteractionConfirmation({
     },
     {
       data: '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000000721',
+      to: ERC721_TOKEN_MOCK,
+    },
+    {
+      data: buildApproveTransactionData(ERC20_TOKEN_2_MOCK, TOKEN_VALUE_UNLIMITED_THRESHOLD),
+      to: ERC20_TOKEN_2_MOCK,
+    },
+    {
+      data: buildSetApproveForAllTransactionData(ERC721_TOKEN_MOCK, true),
       to: ERC721_TOKEN_MOCK,
     }
   ],

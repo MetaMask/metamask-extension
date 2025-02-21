@@ -7,10 +7,16 @@ import {
 import { useConfirmContext } from '../../../../context/confirm';
 import { useAsyncResult } from '../../../../../../hooks/useAsyncResult';
 import { getTokenStandardAndDetails } from '../../../../../../store/actions';
-import { Hex, add0x } from '@metamask/utils';
+import { add0x } from '@metamask/utils';
 import { parseApprovalTransactionData } from '../../../../../../../shared/modules/transaction.utils';
 import { useBalanceChanges } from '../../../simulation-details/useBalanceChanges';
 import { BalanceChange } from '../../../simulation-details/types';
+import { isSpendingCapUnlimited } from '../approve/hooks/use-approve-token-simulation';
+
+type ApprovalBalanceChange = SimulationTokenBalanceChange & {
+  isAll: boolean;
+  isUnlimited: boolean;
+};
 
 export function useBatchApproveBalanceChanges() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -30,10 +36,16 @@ export function useBatchApproveBalanceChanges() {
     });
 
   const finalBalanceChanges = (balanceChanges ?? []).map<BalanceChange>(
-    (change) => ({
-      ...change,
-      isApproval: true,
-    }),
+    (change, index) => {
+      const simulation = simulationBalanceChanges?.[index];
+
+      return {
+        ...change,
+        isApproval: true,
+        isAllApproval: simulation?.isAll ?? false,
+        isUnlimitedApproval: simulation?.isUnlimited ?? false,
+      };
+    },
   );
 
   const pending = pendingSimulationChanges || pendingBalanceChanges;
@@ -56,8 +68,8 @@ async function buildSimulationTokenBalanceChanges({
   nestedTransactions,
 }: {
   nestedTransactions?: BatchTransactionParams[];
-}): Promise<SimulationTokenBalanceChange[]> {
-  const balanceChanges: SimulationTokenBalanceChange[] = [];
+}): Promise<ApprovalBalanceChange[]> {
+  const balanceChanges: ApprovalBalanceChange[] = [];
 
   if (!nestedTransactions) {
     return balanceChanges;
@@ -87,7 +99,7 @@ async function buildSimulationTokenBalanceChanges({
       continue;
     }
 
-    const { amountOrTokenId, isApproveAll, isRevokeAll } = parseResult;
+    const { amountOrTokenId, isApproveAll: isAll } = parseResult;
     const amountOrTokenIdHex = add0x(amountOrTokenId?.toString(16) ?? '0x0');
 
     const difference =
@@ -95,11 +107,16 @@ async function buildSimulationTokenBalanceChanges({
 
     const tokenId = isNFT && amountOrTokenId ? amountOrTokenIdHex : undefined;
 
-    const balanceChange: SimulationTokenBalanceChange = {
+    const isUnlimited =
+      !isNFT && isSpendingCapUnlimited(amountOrTokenId?.toNumber() ?? 0);
+
+    const balanceChange: ApprovalBalanceChange = {
       address: to,
       difference,
       id: tokenId,
+      isAll: isAll ?? false,
       isDecrease: true,
+      isUnlimited,
       newBalance: '0x0',
       previousBalance: '0x0',
       standard,

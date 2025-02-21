@@ -16,6 +16,7 @@ import { TokenStandard } from '../../../../../shared/constants/transaction';
 import Tooltip from '../../../../components/ui/tooltip';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { shortenString as shortenAssetId } from '../../../../helpers/utils/util';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { AssetIdentifier } from './types';
 import { formatAmount, formatAmountMaxPrecision } from './formatAmount';
 
@@ -27,12 +28,17 @@ import { formatAmount, formatAmountMaxPrecision } from './formatAmount';
  * @param props.asset
  * @param props.amount
  * @param props.isApproval
+ * @param props.isAllApproval
+ * @param props.isUnlimitedApproval
  */
 export const AmountPill: React.FC<{
   asset: AssetIdentifier;
   amount: BigNumber;
   isApproval?: boolean;
-}> = ({ asset, amount, isApproval }) => {
+  isAllApproval?: boolean;
+  isUnlimitedApproval?: boolean;
+}> = ({ asset, amount, isApproval, isAllApproval, isUnlimitedApproval }) => {
+  const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
 
   const backgroundColor = getBackgroundColour({ amount, isApproval });
@@ -47,7 +53,10 @@ export const AmountPill: React.FC<{
 
   // ERC721 amounts are always 1 and are not displayed.
   if (asset.standard !== TokenStandard.ERC721) {
-    const formattedAmount = formatAmount(locale, amount.abs());
+    const formattedAmount = isUnlimitedApproval
+      ? t('unlimited')
+      : formatAmount(locale, amount.abs());
+
     const fullPrecisionAmount = formatAmountMaxPrecision(locale, amount.abs());
 
     amountParts.push(formattedAmount);
@@ -68,6 +77,9 @@ export const AmountPill: React.FC<{
 
     amountParts.push(shortenedTokenIdPart);
     tooltipParts.push(tooltipIdPart);
+  } else if (isAllApproval) {
+    amountParts.push(t('all'));
+    tooltipParts.push(t('all'));
   }
 
   return (

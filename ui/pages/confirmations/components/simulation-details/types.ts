@@ -61,4 +61,10 @@ export type BalanceChange = Readonly<{
 
   /** Whether the balance change is a token approval. */
   isApproval?: boolean;
+
+  /** Whether the balance change is an approval for all tokens. */
+  isAllApproval?: boolean;
+
+  /** Whether the balance change is an unlimited token approval. */
+  isUnlimitedApproval?: boolean;
 }>;
