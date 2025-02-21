@@ -36,10 +36,7 @@ describe('useApproveTokenSimulation', () => {
         "isUnlimitedSpendingCap": false,
         "pending": undefined,
         "spendingCap": "#7",
-        "value": {
-          "hex": "0x011170",
-          "type": "BigNumber",
-        },
+        "value": "70000",
       }
     `);
   });
@@ -65,10 +62,7 @@ describe('useApproveTokenSimulation', () => {
         "isUnlimitedSpendingCap": true,
         "pending": undefined,
         "spendingCap": "1000000000000000",
-        "value": {
-          "hex": "0x038d7ea4c68000",
-          "type": "BigNumber",
-        },
+        "value": "1000000000000000",
       }
     `);
   });
@@ -92,10 +86,7 @@ describe('useApproveTokenSimulation', () => {
         "isUnlimitedSpendingCap": false,
         "pending": undefined,
         "spendingCap": "0.000000000000000001",
-        "value": {
-          "hex": "0x01",
-          "type": "BigNumber",
-        },
+        "value": "1",
       }
     `);
   });

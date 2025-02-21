@@ -1,6 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
-import { Hex } from '@metamask/utils';
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import {
   ConfirmInfoRow,
@@ -19,14 +18,15 @@ const SpendingCapGroup = ({
   tokenSymbol,
   decimals,
   setIsOpenEditSpendingCapModal,
-  transactionMeta,
 }: {
   tokenSymbol: string;
   decimals: string;
   setIsOpenEditSpendingCapModal: (newValue: boolean) => void;
-  transactionMeta: TransactionMeta;
 }) => {
   const t = useI18nContext();
+
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
 
   const { spendingCap, isUnlimitedSpendingCap, formattedSpendingCap, value } =
     useApproveTokenSimulation(transactionMeta, decimals);
@@ -69,26 +69,19 @@ const SpendingCapGroup = ({
 };
 
 export const SpendingCap = ({
-  data,
   setIsOpenEditSpendingCapModal,
-  to,
 }: {
-  data?: Hex;
   setIsOpenEditSpendingCapModal: (newValue: boolean) => void;
-  to?: Hex;
 }) => {
   const t = useI18nContext();
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const transactionTo = to ?? transactionMeta.txParams.to;
-  const transactionData = data ?? transactionMeta.txParams.data;
-
   const { userBalance, tokenSymbol, decimals } = useAssetDetails(
-    transactionTo,
+    transactionMeta.txParams.to,
     transactionMeta.txParams.from,
-    transactionData,
+    transactionMeta.txParams.data,
     transactionMeta.chainId,
   );
 
@@ -97,16 +90,7 @@ export const SpendingCap = ({
     Number(decimals ?? '0'),
   ).toFixed();
 
-  const finalTransactionMeta = {
-    ...transactionMeta,
-    txParams: {
-      ...transactionMeta.txParams,
-      to: transactionTo,
-      data: transactionData,
-    },
-  };
-
-  const { pending } = useApproveTokenSimulation(finalTransactionMeta, decimals);
+  const { pending } = useApproveTokenSimulation(transactionMeta, decimals);
 
   if (pending) {
     return <Container isLoading />;
@@ -122,7 +106,6 @@ export const SpendingCap = ({
         tokenSymbol={tokenSymbol || ''}
         decimals={decimals || '0'}
         setIsOpenEditSpendingCapModal={setIsOpenEditSpendingCapModal}
-        transactionMeta={finalTransactionMeta}
       />
     </ConfirmInfoSection>
   );
