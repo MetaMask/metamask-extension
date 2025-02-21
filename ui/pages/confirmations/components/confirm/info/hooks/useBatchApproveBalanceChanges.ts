@@ -87,7 +87,7 @@ async function buildSimulationTokenBalanceChanges({
     }
 
     const { amountOrTokenId, isApproveAll, isRevokeAll } = parseResult;
-    const amountOrTokenIdHex = amountOrTokenId?.toHexString() as Hex;
+    const amountOrTokenIdHex = amountOrTokenId?.toString(16) as Hex;
 
     const difference =
       isNFT || amountOrTokenId === undefined ? '0x1' : amountOrTokenIdHex;

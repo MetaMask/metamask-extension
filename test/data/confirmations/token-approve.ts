@@ -16,6 +16,15 @@ export function buildApproveTransactionData(
   ]).encodeFunctionData('approve', [address, amountOrTokenId]) as Hex;
 }
 
+export function buildIncreaseAllowanceTransactionData(
+  address: string,
+  amount: number,
+): Hex {
+  return new Interface([
+    'function increaseAllowance(address spender, uint256 addedValue)',
+  ]).encodeFunctionData('increaseAllowance', [address, amount]) as Hex;
+}
+
 export const genUnapprovedApproveConfirmation = ({
   address = CONTRACT_INTERACTION_SENDER_ADDRESS,
   chainId = CHAIN_ID,

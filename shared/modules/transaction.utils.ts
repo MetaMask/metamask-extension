@@ -15,7 +15,7 @@ import type { TransactionParams } from '@metamask/transaction-controller';
 import type { Provider } from '@metamask/network-controller';
 
 import { Hex } from '@metamask/utils';
-import { BigNumber } from 'ethers';
+import { BigNumber } from 'bignumber.js';
 import { AssetType, TokenStandard } from '../constants/transaction';
 import { readAddressAsContract } from './contract-utils';
 import { isEqualCaseInsensitive } from './string-utils';
@@ -344,9 +344,13 @@ export function parseApprovalTransactionData(data: Hex):
     return undefined;
   }
 
-  const amountOrTokenId =
+  const rawAmountOrTokenId =
     args?._value ?? // ERC-20 - approve
     args?.increment; // Fiat Token V2 - increaseAllowance
+
+  const amountOrTokenId = rawAmountOrTokenId
+    ? new BigNumber(rawAmountOrTokenId?.toString())
+    : undefined;
 
   const isApproveAll = name === 'setApprovalForAll' && args?._approved === true;
   const isRevokeAll = name === 'setApprovalForAll' && args?._approved === false;
