@@ -69,6 +69,7 @@ export const BalanceChangeRow: React.FC<{
         <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={1}>
           {onEdit && (
             <ButtonIcon
+              data-testid="balance-change-edit"
               color={IconColor.primaryDefault}
               ariaLabel={t('edit')}
               iconName={IconName.Edit}

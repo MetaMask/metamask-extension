@@ -1,14 +1,18 @@
 import React from 'react';
 import { BigNumber } from 'bignumber.js';
+import { BatchTransactionParams } from '@metamask/transaction-controller';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import configureStore from '../../../../../../../store/store';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import { useBatchApproveBalanceChanges } from '../../hooks/useBatchApproveBalanceChanges';
+import {
+  ApprovalBalanceChange,
+  useBatchApproveBalanceChanges,
+} from '../../hooks/useBatchApproveBalanceChanges';
 import { AlertMetricsProvider } from '../../../../../../../components/app/alert-system/contexts/alertMetricsContext';
 import { useBalanceChanges } from '../../../../simulation-details/useBalanceChanges';
-import { BalanceChange } from '../../../../simulation-details/types';
 import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
+import { buildApproveTransactionData } from '../../../../../../../../test/data/confirmations/token-approve';
 import { BatchSimulationDetails } from './batch-simulation-details';
 
 jest.mock('../../../../simulation-details/useBalanceChanges', () => ({
@@ -22,7 +26,12 @@ jest.mock('../../hooks/useBatchApproveBalanceChanges', () => ({
 const ADDRESS_MOCK = '0x1234567891234567891234567891234567891234';
 const ADDRESS_SHORT_MOCK = '0x12345...91234';
 
-const BALANCE_CHANGE_ERC20_MOCK: BalanceChange = {
+const NESTED_TRANSACTION_MOCK: BatchTransactionParams = {
+  data: buildApproveTransactionData(ADDRESS_MOCK, 123),
+  to: ADDRESS_MOCK,
+};
+
+const BALANCE_CHANGE_ERC20_MOCK: ApprovalBalanceChange = {
   asset: {
     address: ADDRESS_MOCK,
     chainId: '0x123',
@@ -31,9 +40,12 @@ const BALANCE_CHANGE_ERC20_MOCK: BalanceChange = {
   amount: new BigNumber(123.56),
   fiatAmount: null,
   isApproval: true,
+  isAllApproval: false,
+  isUnlimitedApproval: false,
+  nestedTransaction: NESTED_TRANSACTION_MOCK,
 };
 
-const BALANCE_CHANGE_ERC721_MOCK: BalanceChange = {
+const BALANCE_CHANGE_ERC721_MOCK: ApprovalBalanceChange = {
   asset: {
     address: ADDRESS_MOCK,
     chainId: '0x123',
@@ -43,9 +55,12 @@ const BALANCE_CHANGE_ERC721_MOCK: BalanceChange = {
   amount: new BigNumber(1),
   fiatAmount: null,
   isApproval: true,
+  isAllApproval: false,
+  isUnlimitedApproval: false,
+  nestedTransaction: NESTED_TRANSACTION_MOCK,
 };
 
-const BALANCE_CHANGE_ERC1155_MOCK: BalanceChange = {
+const BALANCE_CHANGE_ERC1155_MOCK: ApprovalBalanceChange = {
   asset: {
     address: ADDRESS_MOCK,
     chainId: '0x123',
@@ -55,6 +70,9 @@ const BALANCE_CHANGE_ERC1155_MOCK: BalanceChange = {
   amount: new BigNumber(123),
   fiatAmount: null,
   isApproval: true,
+  isAllApproval: false,
+  isUnlimitedApproval: false,
+  nestedTransaction: NESTED_TRANSACTION_MOCK,
 };
 
 function render() {
@@ -109,6 +127,18 @@ describe('BatchSimulationDetails', () => {
     expect(getByText(ADDRESS_SHORT_MOCK)).toBeInTheDocument();
   });
 
+  it('renders unlimited ERC-20 approve row', () => {
+    useBatchApproveBalanceChangesMock.mockReturnValue({
+      pending: false,
+      value: [{ ...BALANCE_CHANGE_ERC20_MOCK, isUnlimitedApproval: true }],
+    });
+
+    const { getByText } = render();
+    expect(getByText('You approve')).toBeInTheDocument();
+    expect(getByText('Unlimited')).toBeInTheDocument();
+    expect(getByText(ADDRESS_SHORT_MOCK)).toBeInTheDocument();
+  });
+
   it('renders ERC-721 approve row', () => {
     useBatchApproveBalanceChangesMock.mockReturnValue({
       pending: false,
@@ -121,6 +151,27 @@ describe('BatchSimulationDetails', () => {
     expect(getByText(ADDRESS_SHORT_MOCK)).toBeInTheDocument();
   });
 
+  it('renders all ERC-721 approve row', () => {
+    useBatchApproveBalanceChangesMock.mockReturnValue({
+      pending: false,
+      value: [
+        {
+          ...BALANCE_CHANGE_ERC721_MOCK,
+          asset: {
+            ...BALANCE_CHANGE_ERC721_MOCK.asset,
+            tokenId: undefined,
+          },
+          isAllApproval: true,
+        },
+      ],
+    });
+
+    const { getByText } = render();
+    expect(getByText('You approve')).toBeInTheDocument();
+    expect(getByText('All')).toBeInTheDocument();
+    expect(getByText(ADDRESS_SHORT_MOCK)).toBeInTheDocument();
+  });
+
   it('renders ERC-1155 approve row', () => {
     useBatchApproveBalanceChangesMock.mockReturnValue({
       pending: false,
@@ -130,6 +181,27 @@ describe('BatchSimulationDetails', () => {
     const { getByText } = render();
     expect(getByText('You approve')).toBeInTheDocument();
     expect(getByText('123 #321')).toBeInTheDocument();
+    expect(getByText(ADDRESS_SHORT_MOCK)).toBeInTheDocument();
+  });
+
+  it('renders all ERC-1155 approve row', () => {
+    useBatchApproveBalanceChangesMock.mockReturnValue({
+      pending: false,
+      value: [
+        {
+          ...BALANCE_CHANGE_ERC1155_MOCK,
+          asset: {
+            ...BALANCE_CHANGE_ERC1155_MOCK.asset,
+            tokenId: undefined,
+          },
+          isAllApproval: true,
+        },
+      ],
+    });
+
+    const { getByText } = render();
+    expect(getByText('You approve')).toBeInTheDocument();
+    expect(getByText('All')).toBeInTheDocument();
     expect(getByText(ADDRESS_SHORT_MOCK)).toBeInTheDocument();
   });
 
@@ -148,5 +220,18 @@ describe('BatchSimulationDetails', () => {
   it('does not render approve row if no approve balance changes', () => {
     const { queryByText } = render();
     expect(queryByText('You approve')).toBeNull();
+  });
+
+  it('shows edit modal on edit click', () => {
+    useBatchApproveBalanceChangesMock.mockReturnValue({
+      pending: false,
+      value: [BALANCE_CHANGE_ERC20_MOCK],
+    });
+
+    const { getByTestId, getByText } = render();
+
+    getByTestId('balance-change-edit').click();
+
+    expect(getByText('Edit spending cap')).toBeInTheDocument();
   });
 });

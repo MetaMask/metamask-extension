@@ -48,12 +48,14 @@ export function BatchSimulationDetails() {
 
   return (
     <>
-      <EditSpendingCapModal
-        data={nestedTransactionToEdit?.data}
-        isOpenEditSpendingCapModal={isEditApproveModalOpen}
-        setIsOpenEditSpendingCapModal={setIsEditApproveModalOpen}
-        to={nestedTransactionToEdit?.to}
-      />
+      {isEditApproveModalOpen && (
+        <EditSpendingCapModal
+          data={nestedTransactionToEdit?.data}
+          isOpenEditSpendingCapModal={isEditApproveModalOpen}
+          setIsOpenEditSpendingCapModal={setIsEditApproveModalOpen}
+          to={nestedTransactionToEdit?.to}
+        />
+      )}
       <SimulationDetails
         transaction={transactionMeta}
         staticRows={[approveRow]}

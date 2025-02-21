@@ -17,8 +17,8 @@ import { renderHookWithConfirmContextProvider } from '../../../../../../../test/
 import { BalanceChange } from '../../../simulation-details/types';
 import { buildApproveTransactionData } from '../../../../../../../test/data/confirmations/token-approve';
 import { TOKEN_VALUE_UNLIMITED_THRESHOLD } from '../shared/constants';
-import { useBatchApproveBalanceChanges } from './useBatchApproveBalanceChanges';
 import { buildSetApproveForAllTransactionData } from '../../../../../../../test/data/confirmations/set-approval-for-all';
+import { useBatchApproveBalanceChanges } from './useBatchApproveBalanceChanges';
 
 jest.mock('../../../simulation-details/useBalanceChanges', () => ({
   useBalanceChanges: jest.fn(),
@@ -97,6 +97,7 @@ describe('useBatchApproveBalanceChanges', () => {
           isApproval: true,
           isAllApproval: false,
           isUnlimitedApproval: false,
+          nestedTransaction: {},
         },
       ],
     });
@@ -123,6 +124,10 @@ describe('useBatchApproveBalanceChanges', () => {
             isAll: false,
             isDecrease: true,
             isUnlimited: false,
+            nestedTransaction: {
+              data: DATA_MOCK,
+              to: TO_MOCK,
+            },
             newBalance: '0x0',
             previousBalance: '0x0',
             standard: SimulationTokenStandard.erc20,
@@ -133,16 +138,16 @@ describe('useBatchApproveBalanceChanges', () => {
   });
 
   it('generates unlimited ERC-20 token balance changes', async () => {
+    const nestedTransaction: BatchTransactionParams = {
+      data: buildApproveTransactionData(
+        TO_MOCK,
+        TOKEN_VALUE_UNLIMITED_THRESHOLD,
+      ),
+      to: TO_MOCK,
+    };
+
     await runHook({
-      nestedTransactions: [
-        {
-          data: buildApproveTransactionData(
-            TO_MOCK,
-            TOKEN_VALUE_UNLIMITED_THRESHOLD,
-          ),
-          to: TO_MOCK,
-        },
-      ],
+      nestedTransactions: [nestedTransaction],
     });
 
     expect(useBalanceChangesMock).toHaveBeenLastCalledWith({
@@ -156,6 +161,7 @@ describe('useBatchApproveBalanceChanges', () => {
             isAll: false,
             isUnlimited: true,
             isDecrease: true,
+            nestedTransaction,
             newBalance: '0x0',
             previousBalance: '0x0',
             standard: SimulationTokenStandard.erc20,
@@ -190,6 +196,10 @@ describe('useBatchApproveBalanceChanges', () => {
             isAll: false,
             isDecrease: true,
             isUnlimited: false,
+            nestedTransaction: {
+              data: DATA_MOCK,
+              to: TO_MOCK,
+            },
             newBalance: '0x0',
             previousBalance: '0x0',
             standard: SimulationTokenStandard.erc721,
@@ -204,13 +214,13 @@ describe('useBatchApproveBalanceChanges', () => {
       standard: TokenStandard.ERC721,
     });
 
+    const nestedTransaction: BatchTransactionParams = {
+      data: buildSetApproveForAllTransactionData(TO_MOCK, true),
+      to: TO_MOCK,
+    };
+
     await runHook({
-      nestedTransactions: [
-        {
-          data: buildSetApproveForAllTransactionData(TO_MOCK, true),
-          to: TO_MOCK,
-        },
-      ],
+      nestedTransactions: [nestedTransaction],
     });
 
     expect(useBalanceChangesMock).toHaveBeenLastCalledWith({
@@ -224,6 +234,7 @@ describe('useBatchApproveBalanceChanges', () => {
             isAll: true,
             isDecrease: true,
             isUnlimited: false,
+            nestedTransaction,
             newBalance: '0x0',
             previousBalance: '0x0',
             standard: SimulationTokenStandard.erc721,
@@ -238,13 +249,13 @@ describe('useBatchApproveBalanceChanges', () => {
       standard: TokenStandard.ERC1155,
     });
 
+    const nestedTransaction: BatchTransactionParams = {
+      data: buildSetApproveForAllTransactionData(TO_MOCK, true),
+      to: TO_MOCK,
+    };
+
     await runHook({
-      nestedTransactions: [
-        {
-          data: buildSetApproveForAllTransactionData(TO_MOCK, true),
-          to: TO_MOCK,
-        },
-      ],
+      nestedTransactions: [nestedTransaction],
     });
 
     expect(useBalanceChangesMock).toHaveBeenLastCalledWith({
@@ -258,6 +269,7 @@ describe('useBatchApproveBalanceChanges', () => {
             isAll: true,
             isDecrease: true,
             isUnlimited: false,
+            nestedTransaction,
             newBalance: '0x0',
             previousBalance: '0x0',
             standard: SimulationTokenStandard.erc1155,
