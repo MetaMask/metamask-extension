@@ -4201,7 +4201,7 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('addNewMnemonicToVault', () => {
+    describe('importMnemonicToVault', () => {
       it('generates a new hd keyring instance with a mnemonic', async () => {
         const password = 'what-what-what';
         jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
@@ -4211,7 +4211,7 @@ describe('MetaMaskController', () => {
         const previousKeyrings =
           metamaskController.keyringController.state.keyrings;
 
-        await metamaskController.addNewMnemonicToVault(TEST_SEED_ALT);
+        await metamaskController.importMnemonicToVault(TEST_SEED_ALT);
 
         const currentKeyrings =
           metamaskController.keyringController.state.keyrings;
