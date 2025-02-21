@@ -1325,7 +1325,7 @@ async function onInstall() {
   const sessionData =
     isManifestV3 || isFirefox
       ? await browser.storage.session.get(['isFirstTimeInstall'])
-      : await global.localStorage.getItem('isFirstTimeInstall');
+      : await global.sessionStorage.getItem('isFirstTimeInstall');
 
   const isFirstTimeInstall = sessionData?.isFirstTimeInstall;
 
