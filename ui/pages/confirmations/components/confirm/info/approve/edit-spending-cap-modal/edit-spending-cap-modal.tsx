@@ -1,6 +1,7 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { Hex } from '@metamask/utils';
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { hexToDecimal } from '../../../../../../../../shared/modules/conversion.utils';
 import {
@@ -37,11 +38,15 @@ export function countDecimalDigits(numberString: string) {
 }
 
 export const EditSpendingCapModal = ({
+  data,
   isOpenEditSpendingCapModal,
   setIsOpenEditSpendingCapModal,
+  to,
 }: {
+  data?: Hex;
   isOpenEditSpendingCapModal: boolean;
   setIsOpenEditSpendingCapModal: (newValue: boolean) => void;
+  to?: Hex;
 }) => {
   const t = useI18nContext();
 
@@ -50,10 +55,17 @@ export const EditSpendingCapModal = ({
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
+  const currentTo = transactionMeta.txParams.to;
+  const currentFrom = transactionMeta.txParams.from;
+  const currentData = transactionMeta.txParams.data;
+
+  const transactionTo = to ?? currentTo;
+  const transactionData = data ?? currentData;
+
   const { userBalance, tokenSymbol, decimals } = useAssetDetails(
-    transactionMeta.txParams.to,
-    transactionMeta.txParams.from,
-    transactionMeta.txParams.data,
+    transactionTo,
+    currentFrom,
+    transactionData,
     transactionMeta.chainId,
   );
 
@@ -62,8 +74,18 @@ export const EditSpendingCapModal = ({
     Number(decimals ?? '0'),
   ).toFixed();
 
+  const finalTransactionMeta = {
+    ...transactionMeta,
+    txParams: {
+      ...transactionMeta.txParams,
+      to: transactionTo,
+      from: currentFrom,
+      data: transactionData,
+    },
+  };
+
   const { formattedSpendingCap, spendingCap } = useApproveTokenSimulation(
-    transactionMeta,
+    finalTransactionMeta,
     decimals,
   );
 
@@ -88,6 +110,11 @@ export const EditSpendingCapModal = ({
   const [isModalSaving, setIsModalSaving] = useState(false);
 
   const handleSubmit = useCallback(async () => {
+    // Pending future ticket to update data of specific nested transaction within batch transaction.
+    if (data) {
+      return;
+    }
+
     setIsModalSaving(true);
 
     const customTxParamsData = getCustomTxParamsData(

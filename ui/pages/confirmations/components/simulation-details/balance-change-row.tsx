@@ -1,12 +1,20 @@
 import React from 'react';
+import { IconName } from '@metamask/snaps-sdk/jsx';
 import {
   AlignItems,
   Display,
   FlexDirection,
   FlexWrap,
+  IconColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { Box, Text } from '../../../../components/component-library';
+import {
+  Box,
+  ButtonIcon,
+  ButtonIconSize,
+  Text,
+} from '../../../../components/component-library';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { AssetPill } from './asset-pill';
 import { AmountPill } from './amount-pill';
 import { BalanceChange } from './types';
@@ -25,6 +33,8 @@ export const BalanceChangeRow: React.FC<{
   showFiat?: boolean;
   balanceChange: BalanceChange;
 }> = ({ label, showFiat, balanceChange }) => {
+  const t = useI18nContext();
+
   const {
     asset,
     amount,
@@ -32,6 +42,7 @@ export const BalanceChangeRow: React.FC<{
     isApproval,
     isAllApproval,
     isUnlimitedApproval,
+    onEdit,
   } = balanceChange;
 
   return (
@@ -56,6 +67,17 @@ export const BalanceChangeRow: React.FC<{
         style={{ minWidth: 0 }}
       >
         <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={1}>
+          {onEdit && (
+            <ButtonIcon
+              color={IconColor.primaryDefault}
+              ariaLabel={t('edit')}
+              iconName={IconName.Edit}
+              onClick={onEdit}
+              size={ButtonIconSize.Sm}
+              // to reset the button padding
+              style={{ marginRight: '-4px' }}
+            />
+          )}
           <AmountPill
             asset={asset}
             amount={amount}

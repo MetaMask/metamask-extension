@@ -13,9 +13,14 @@ import { useBalanceChanges } from '../../../simulation-details/useBalanceChanges
 import { BalanceChange } from '../../../simulation-details/types';
 import { isSpendingCapUnlimited } from '../approve/hooks/use-approve-token-simulation';
 
-type ApprovalBalanceChange = SimulationTokenBalanceChange & {
+type ApprovalSimulationBalanceChange = SimulationTokenBalanceChange & {
   isAll: boolean;
   isUnlimited: boolean;
+  nestedTransaction: BatchTransactionParams;
+};
+
+export type ApprovalBalanceChange = BalanceChange & {
+  nestedTransaction: BatchTransactionParams;
 };
 
 export function useBatchApproveBalanceChanges() {
@@ -35,7 +40,7 @@ export function useBatchApproveBalanceChanges() {
       },
     });
 
-  const finalBalanceChanges = (balanceChanges ?? []).map<BalanceChange>(
+  const finalBalanceChanges = (balanceChanges ?? []).map<ApprovalBalanceChange>(
     (change, index) => {
       const simulation = simulationBalanceChanges?.[index];
 
@@ -44,6 +49,7 @@ export function useBatchApproveBalanceChanges() {
         isApproval: true,
         isAllApproval: simulation?.isAll ?? false,
         isUnlimitedApproval: simulation?.isUnlimited ?? false,
+        nestedTransaction: simulation?.nestedTransaction ?? {},
       };
     },
   );
@@ -68,8 +74,8 @@ async function buildSimulationTokenBalanceChanges({
   nestedTransactions,
 }: {
   nestedTransactions?: BatchTransactionParams[];
-}): Promise<ApprovalBalanceChange[]> {
-  const balanceChanges: ApprovalBalanceChange[] = [];
+}): Promise<ApprovalSimulationBalanceChange[]> {
+  const balanceChanges: ApprovalSimulationBalanceChange[] = [];
 
   if (!nestedTransactions) {
     return balanceChanges;
@@ -110,7 +116,7 @@ async function buildSimulationTokenBalanceChanges({
     const isUnlimited =
       !isNFT && isSpendingCapUnlimited(amountOrTokenId?.toNumber() ?? 0);
 
-    const balanceChange: ApprovalBalanceChange = {
+    const balanceChange: ApprovalSimulationBalanceChange = {
       address: to,
       difference,
       id: tokenId,
@@ -118,6 +124,7 @@ async function buildSimulationTokenBalanceChanges({
       isDecrease: true,
       isUnlimited,
       newBalance: '0x0',
+      nestedTransaction: transaction,
       previousBalance: '0x0',
       standard,
     };

@@ -67,4 +67,7 @@ export type BalanceChange = Readonly<{
 
   /** Whether the balance change is an unlimited token approval. */
   isUnlimitedApproval?: boolean;
+
+  /** Callback to support editing the value. */
+  onEdit?: () => void;
 }>;
