@@ -154,8 +154,6 @@ const render = ({
     },
   };
 
-  console.log('state', state);
-
   const store = configureStore(state);
   return renderWithProvider(<NetworkListMenu onClose={jest.fn()} />, store);
 };
@@ -224,8 +222,7 @@ describe('NetworkListMenu', () => {
     expect(mockDetectNfts).toHaveBeenCalled();
   });
 
-  // eslint-disable-next-line jest/no-disabled-tests
-  it.skip('shows the correct selected network when networks share the same chain ID', () => {
+  it('shows the correct selected network when networks share the same chain ID', () => {
     // Mainnet and Custom Mainnet RPC both use chain ID 0x1
     const { queryByText } = render({
       showTestNetworks: false,
