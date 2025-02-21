@@ -159,14 +159,13 @@ describe('MetaMaskController', function () {
   });
 
   describe('#addNewAccount', function () {
-    it('two parallel calls with same accountCount will throw error because of lock', async function () {
+    it('two parallel calls with same accountCount give same result', async function () {
       await metamaskController.createNewVaultAndKeychain('test@123');
-      await expect(
-        Promise.all([
-          metamaskController.addNewAccount(1),
-          metamaskController.addNewAccount(1),
-        ]),
-      ).rejects.toThrow('');
+      const [addNewAccountResult1, addNewAccountResult2] = await Promise.all([
+        metamaskController.addNewAccount(1),
+        metamaskController.addNewAccount(1),
+      ]);
+      expect(addNewAccountResult1).toStrictEqual(addNewAccountResult2);
     });
 
     it('two successive calls with same accountCount give same result', async function () {
