@@ -342,6 +342,7 @@ function NewSRPAddedToast() {
   const dispatch = useDispatch();
 
   const showNewSRPAddedToast = useSelector(selectNewSRPAdded);
+  const autoHideDelay = 5 * SECOND;
 
   return (
     showNewSRPAddedToast && (
@@ -352,6 +353,10 @@ function NewSRPAddedToast() {
           <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
         }
         onClose={() => dispatch(setShowNewSRPAddedToast(false))}
+        autoHideTime={autoHideDelay}
+        onAutoHideToast={() =>
+          dispatch(setShowNftDetectionEnablementToast(false))
+        }
       />
     )
   );
