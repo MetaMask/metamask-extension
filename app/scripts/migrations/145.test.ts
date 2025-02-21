@@ -43,7 +43,7 @@ describe(`migration #${version}`, () => {
               { networkId: '0x5' },
               { networkId: '0x38' },
               { networkId: '0x2105' },
-            ]
+            ],
           },
         },
       };
