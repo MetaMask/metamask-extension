@@ -42,10 +42,7 @@ import {
   MULTICHAIN_TOKEN_IMAGE_MAP,
   MULTICHAIN_NETWORK_TO_NICKNAME,
 } from '../../../../shared/constants/multichain/networks';
-import {
-  getNetworkConfigurationsByChainId,
-  getCurrentChainId,
-} from '../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import {
   getShowTestNetworks,
   getOnboardedInThisUISession,
@@ -60,6 +57,7 @@ import {
   getPermittedAccountsForSelectedTab,
   getPreferences,
   getMultichainNetworkConfigurationsByChainId,
+  getSelectedMultichainNetworkChainId,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -132,7 +130,6 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
 
   const { tokenNetworkFilter } = useSelector(getPreferences);
   const showTestNetworks = useSelector(getShowTestNetworks);
-  const currentChainId = useSelector(getCurrentChainId);
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const isUnlocked = useSelector(getIsUnlocked);
   const domains = useSelector(getAllDomains);
@@ -147,12 +144,12 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const multichainNetworks = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
+  const currentChainId = useSelector(getSelectedMultichainNetworkChainId);
   // This selector provides all EVM network configurations with the
   // data type NetworkConfiguration from @metamask/network-controller.
   // It includes necessary data like the RPC endpoints that are not
   // part of @metamask/multichain-network-controller.
   const evmNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const { chainId: editingChainId, editCompleted } =
     useSelector(getEditedNetwork) ?? {};
   const permittedChainIds = useSelector((state) =>
@@ -164,7 +161,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   );
 
   const currentlyOnTestNetwork = (TEST_CHAINS as Hex[]).includes(
-    currentChainId,
+    convertCaipToHexChainId(currentChainId),
   );
   const [nonTestNetworks, testNetworks] = useMemo(
     () =>
@@ -234,10 +231,10 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
 
   const featuredNetworksNotYetEnabled = useMemo(
     () =>
-      FEATURED_RPCS.filter(
-        ({ chainId }) => !networkConfigurations[chainId],
-      ).sort((a, b) => a.name.localeCompare(b.name)),
-    [networkConfigurations],
+      FEATURED_RPCS.filter(({ chainId }) => !evmNetworks[chainId]).sort(
+        (a, b) => a.name.localeCompare(b.name),
+      ),
+    [evmNetworks],
   );
 
   const [selectedNonEvmNetwork, setSelectedNonEvmNetwork] =
@@ -355,9 +352,9 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       category: MetaMetricsEventCategory.Network,
       properties: {
         location: 'Network Menu',
-        chain_id: currentChainId,
-        from_network: currentChainId,
-        to_network: chainId,
+        chain_id: convertCaipToHexChainId(currentChainId),
+        from_network: convertCaipToHexChainId(currentChainId),
+        to_network: convertCaipToHexChainId(chainId),
       },
     });
   };
@@ -394,7 +391,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       dispatch(
         showModal({
           name: 'CONFIRM_DELETE_NETWORK',
-          target: network.chainId,
+          target: convertCaipToHexChainId(network.chainId),
           onConfirm: () => undefined,
         }),
       );
@@ -651,7 +648,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     } else if (actionMode === ACTION_MODE.SELECT_RPC && editedNetwork) {
       return (
         <SelectRpcUrlModal
-          networkConfiguration={networkConfigurations[editedNetwork.chainId]}
+          networkConfiguration={evmNetworks[editedNetwork.chainId]}
           onNetworkChange={handleEvmNetworkChange}
         />
       );
