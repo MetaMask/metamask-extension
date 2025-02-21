@@ -2168,12 +2168,17 @@ export default class MetamaskController extends EventEmitter {
         null,
         this.txController,
         this.networkController,
+        this.preferencesController,
       ),
       getTransactionReceiptsByBatchId: getTransactionReceiptsByBatchId.bind(
         null,
         this.txController,
       ),
-      getCapabilities: getCapabilities.bind(null, this.txController),
+      getCapabilities: getCapabilities.bind(
+        null,
+        this.txController,
+        this.preferencesController,
+      ),
     });
 
     // ensure isClientOpenAndUnlocked is updated when memState updates
@@ -3408,6 +3413,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController,
       ),
       setTheme: preferencesController.setTheme.bind(preferencesController),
+      disableAccountUpgradeForChain:
+        preferencesController.disableAccountUpgradeForChain.bind(
+          preferencesController,
+        ),
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       setSnapsAddSnapAccountModalDismissed:
         preferencesController.setSnapsAddSnapAccountModalDismissed.bind(
