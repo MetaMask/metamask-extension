@@ -4883,7 +4883,8 @@ export default class MetamaskController extends EventEmitter {
   //
 
   /**
-   * Adds a new account to the default (first) HD seed phrase Keyring.
+   * Adds a new account to the keyring corresponding to the given `keyringId`,
+   * or to the default (first) HD keyring if no `keyringId` is provided.
    *
    * @param {number} accountCount - The number of accounts to create
    * @param {string} _keyringId - The keyring identifier.
@@ -4898,6 +4899,9 @@ export default class MetamaskController extends EventEmitter {
     const addedAccountAddress = await this.keyringController.withKeyring(
       keyringSelector,
       async (keyring) => {
+        if (keyring.type !== KeyringTypes.hd) {
+          throw new Error('Cannot add account to non-HD keyring');
+        }
         const accountsInKeyring = await keyring.getAccounts();
 
         // Only add an account if the accountCount matches the accounts in the keyring.
