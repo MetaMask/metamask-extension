@@ -1,0 +1,70 @@
+import React, { useCallback, useState } from 'react';
+import {
+  BatchTransactionParams,
+  TransactionMeta,
+} from '@metamask/transaction-controller';
+import {
+  SimulationDetails,
+  StaticRow,
+} from '../../../../simulation-details/simulation-details';
+import {
+  ApprovalBalanceChange,
+  useBatchApproveBalanceChanges,
+} from '../../hooks/useBatchApproveBalanceChanges';
+import { useConfirmContext } from '../../../../../context/confirm';
+import { EditSpendingCapModal } from '../../approve/edit-spending-cap-modal/edit-spending-cap-modal';
+import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+
+export function BatchSimulationDetails() {
+  const t = useI18nContext();
+
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
+
+  const { value: approveBalanceChanges } =
+    useBatchApproveBalanceChanges() ?? {};
+
+  const [isEditApproveModalOpen, setIsEditApproveModalOpen] = useState(false);
+
+  const [nestedTransactionToEdit, setNestedTransactionToEdit] = useState<
+    BatchTransactionParams | undefined
+  >();
+
+  const handleEdit = useCallback((balanceChange: ApprovalBalanceChange) => {
+    setNestedTransactionToEdit(balanceChange.nestedTransaction);
+    setIsEditApproveModalOpen(true);
+  }, []);
+
+  const finalBalanceChanges = approveBalanceChanges?.map((change) => ({
+    ...change,
+    onEdit:
+      change.asset.standard === TokenStandard.ERC20
+        ? () => handleEdit(change)
+        : undefined,
+  }));
+
+  const approveRow: StaticRow = {
+    label: t('confirmSimulationApprove'),
+    balanceChanges: finalBalanceChanges ?? [],
+  };
+
+  return (
+    <>
+      {isEditApproveModalOpen && (
+        <EditSpendingCapModal
+          data={nestedTransactionToEdit?.data}
+          isOpenEditSpendingCapModal={isEditApproveModalOpen}
+          setIsOpenEditSpendingCapModal={setIsEditApproveModalOpen}
+          to={nestedTransactionToEdit?.to}
+        />
+      )}
+      <SimulationDetails
+        transaction={transactionMeta}
+        staticRows={[approveRow]}
+        isTransactionsRedesign
+        enableMetrics
+      />
+    </>
+  );
+}
