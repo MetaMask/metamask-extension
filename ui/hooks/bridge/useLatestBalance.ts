@@ -1,16 +1,14 @@
 import { type Hex, type CaipChainId, isCaipChainId } from '@metamask/utils';
-import type { BigNumber } from 'bignumber.js';
-import { Numeric } from '../../../shared/modules/Numeric';
+import { BigNumber } from 'bignumber.js';
 import { getSelectedInternalAccount } from '../../selectors';
 import { calcLatestSrcBalance } from '../../../shared/modules/bridge-utils/balance';
 import { useAsyncResult } from '../useAsyncResult';
-import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import { useMultichainSelector } from '../useMultichainSelector';
 import {
   getMultichainBalances,
   getMultichainCurrentChainId,
 } from '../../selectors/multichain';
-import { calcTokenValue } from '../../../shared/lib/swaps-utils';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 
 /**
  * Custom hook to fetch and format the latest balance of a given token or native asset.
@@ -38,8 +36,8 @@ const useLatestBalance = (
   );
   const nonEvmBalances = nonEvmBalancesByAccountId[id];
 
-  const { value: latestBalance } = useAsyncResult<
-    Numeric | BigNumber | undefined
+  const { value: balanceAmount } = useAsyncResult<
+    string | undefined
   >(async () => {
     if (
       token?.address &&
@@ -48,19 +46,23 @@ const useLatestBalance = (
       chainId &&
       currentChainId === chainId
     ) {
-      return await calcLatestSrcBalance(
+      const balanceValue = await calcLatestSrcBalance(
         global.ethereumProvider,
         selectedAddress,
         token.address,
         chainId,
       );
+      return balanceValue?.shiftedBy(token.decimals).toString();
     }
 
-    if (isCaipChainId(chainId) && token?.decimals && token?.string) {
-      return calcTokenValue(
-        nonEvmBalances?.[`${chainId}/${token.address}`]?.amount ?? token.string,
-        token.decimals,
-      );
+    // No need to fetch the balance for non-EVM tokens, use the balance provided by the
+    // multichain balances controller
+    if (
+      isCaipChainId(chainId) &&
+      chainId === MultichainNetworks.SOLANA &&
+      token?.decimals
+    ) {
+      return nonEvmBalances?.[token.address]?.amount ?? token?.string;
     }
 
     return undefined;
@@ -79,13 +81,8 @@ const useLatestBalance = (
     );
   }
 
-  const tokenDecimals = token?.decimals ? Number(token.decimals) : 1;
-
   return {
-    balanceAmount:
-      token && latestBalance
-        ? calcTokenAmount(latestBalance.toString(), tokenDecimals)
-        : undefined,
+    balanceAmount: balanceAmount ? new BigNumber(balanceAmount) : undefined,
   };
 };
 

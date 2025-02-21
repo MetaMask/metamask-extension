@@ -213,6 +213,8 @@ export default function useSubmitBridgeTransaction() {
         startTime: bridgeTxMeta.time,
       }),
     );
+    // Only add tokens if the source chain is an EVM chain bc non-evm tokens
+    // are detected by the multichain asset controllers
     if (isEvm) {
       // Add tokens if not the native gas token
       if (quoteResponse.quote.srcAsset.address !== zeroAddress()) {

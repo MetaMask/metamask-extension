@@ -1,6 +1,6 @@
 import {
-  TransactionMeta,
-  TransactionParams,
+  type TransactionMeta,
+  type TransactionParams,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -112,31 +112,30 @@ export default function useHandleTx() {
 
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const currentChainId = useSelector(getMultichainCurrentChainId);
-
   const snapSender = useMultichainWalletSnapSender(SOLANA_WALLET_SNAP_ID);
   const history = useHistory();
 
+  // Find unapproved confirmations which the snap has initiated
   const unapprovedTemplatedConfirmations = useSelector(
     getMemoizedUnapprovedTemplatedConfirmations,
   );
   const unapprovedConfirmations = useSelector(
     getMemoizedUnapprovedConfirmations,
   );
-  // Snaps are allowed to redirect to their own pending confirmations (templated or not)
-  const templatedSnapApproval = unapprovedTemplatedConfirmations.find(
-    (approval) => approval.origin === SOLANA_WALLET_SNAP_ID,
-  );
-  const snapApproval = unapprovedConfirmations.find(
-    (approval) => approval.origin === SOLANA_WALLET_SNAP_ID,
-  );
-
+  // Redirect to the confirmation page if an unapproved confirmation exists
   useEffect(() => {
+    const templatedSnapApproval = unapprovedTemplatedConfirmations.find(
+      (approval) => approval.origin === SOLANA_WALLET_SNAP_ID,
+    );
+    const snapApproval = unapprovedConfirmations.find(
+      (approval) => approval.origin === SOLANA_WALLET_SNAP_ID,
+    );
     if (templatedSnapApproval) {
       history.push(`${CONFIRMATION_V_NEXT_ROUTE}/${templatedSnapApproval.id}`);
     } else if (snapApproval) {
       history.push(`${CONFIRM_TRANSACTION_ROUTE}/${snapApproval.id}`);
     }
-  }, [unapprovedTemplatedConfirmations, unapprovedConfirmations, history]);
+  }, [history, unapprovedTemplatedConfirmations, unapprovedConfirmations]);
 
   const handleSolanaTx = async ({
     txType,
@@ -147,6 +146,7 @@ export default function useHandleTx() {
     txParams: string;
     fieldsToAddToTxMeta: Omit<Partial<TransactionMeta>, 'status'>;
   }): Promise<TransactionMeta> => {
+    // Submit a signing request to the snap
     (await snapSender.send({
       id: crypto.randomUUID(),
       jsonrpc: '2.0',
