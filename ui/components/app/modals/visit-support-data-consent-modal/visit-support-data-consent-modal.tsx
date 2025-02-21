@@ -53,7 +53,7 @@ const VisitSupportDataConsentModal: React.FC<
       metaMetricsId?: string;
     }) => {
       onClose();
-      let supportLinkWithUserId = SUPPORT_LINK;
+      let supportLinkWithUserId = SUPPORT_LINK as string;
       const queryParams = new URLSearchParams();
       queryParams.append('metamask_version', params.version);
       if (params.profileId) {
