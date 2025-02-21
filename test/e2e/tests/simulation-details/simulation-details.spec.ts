@@ -62,7 +62,7 @@ async function withFixturesForSimulationDetails(
         .withPermissionControllerConnectedToTestDapp()
         .build(),
       title,
-      mockRequests,
+      testSpecificMock: mockRequests,
       dapp: true,
       localNodeOptions: {
         hardfork: 'london',
