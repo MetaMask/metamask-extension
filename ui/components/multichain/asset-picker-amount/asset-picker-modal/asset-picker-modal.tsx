@@ -258,7 +258,6 @@ export function AssetPickerModal({
                   CHAIN_ID_TOKEN_IMAGE_MAP[
                     token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
                   ],
-                address: null,
                 type: AssetType.native,
               }
             : token;
@@ -267,13 +266,13 @@ export function AssetPickerModal({
 
       // Yield the native token for the selected chain
       const nativeToken: AssetWithDisplayData<NativeAsset> = {
-        address: null,
+        address: '',
         symbol: nativeCurrency,
         decimals: 18,
         image: nativeCurrencyImage,
         balance: balanceValue,
         string: undefined,
-        chainId: currentChainId,
+        chainId: selectedNetwork.chainId,
         type: AssetType.native,
       };
 
