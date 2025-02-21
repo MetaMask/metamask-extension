@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
