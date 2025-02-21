@@ -4906,11 +4906,11 @@ export default class MetamaskController extends EventEmitter {
 
         // Only add an account if the accountCount matches the accounts in the keyring.
         if (accountCount && accountCount !== accountsInKeyring.length) {
-          if (accountCount > oldAccounts.length) {
+          if (accountCount > accountsInKeyring.length) {
             throw new Error('Account out of sequence');
           }
 
-          const existingAccount = oldAccounts[accountCount];
+          const existingAccount = accountsInKeyring[accountCount];
 
           if (!existingAccount) {
             throw new Error(`Can't find account at index ${accountCount}`);

@@ -2680,6 +2680,43 @@ describe('MetaMaskController', () => {
           'KeyringController - The operation cannot be completed while the controller is locked.',
         );
       });
+
+      it('returns an existing account if the accountCount is less than the number of accounts in the keyring', async () => {
+        await metamaskController.createNewVaultAndKeychain('password');
+        const secondAccount = await metamaskController.addNewAccount(1);
+        await metamaskController.addNewAccount(2);
+        await metamaskController.addNewAccount(3);
+
+        const numberOfAccount =
+          metamaskController.keyringController.state.keyrings[0].accounts
+            .length;
+        expect(numberOfAccount).toStrictEqual(4);
+
+        const result = await metamaskController.addNewAccount(1);
+        expect(result).toStrictEqual(secondAccount);
+      });
+
+      it('only checks for accounts in the keyring when comparing accountCount', async () => {
+        await metamaskController.createNewVaultAndKeychain('password');
+        // add a new hd keyring vault to simulate having multiple accounts from different keyrings
+        await metamaskController.generateNewMnemonicAndAddToVault();
+
+        const numberOfAccounts = (
+          await metamaskController.keyringController.getAccounts()
+        ).length;
+        expect(numberOfAccounts).toStrictEqual(2);
+
+        await metamaskController.addNewAccount(1);
+
+        const numberOfAccountsForPrimaryKeyring =
+          metamaskController.keyringController.state.keyrings[0].accounts
+            .length;
+        const updatedNumberOfAccounts = (
+          await metamaskController.keyringController.getAccounts()
+        ).length;
+        expect(numberOfAccountsForPrimaryKeyring).toStrictEqual(2);
+        expect(updatedNumberOfAccounts).toStrictEqual(3);
+      });
     });
 
     describe('#getSeedPhrase', () => {
