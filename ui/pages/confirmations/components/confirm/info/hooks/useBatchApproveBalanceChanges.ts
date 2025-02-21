@@ -7,7 +7,7 @@ import {
 import { useConfirmContext } from '../../../../context/confirm';
 import { useAsyncResult } from '../../../../../../hooks/useAsyncResult';
 import { getTokenStandardAndDetails } from '../../../../../../store/actions';
-import { Hex } from '@metamask/utils';
+import { Hex, add0x } from '@metamask/utils';
 import { parseApprovalTransactionData } from '../../../../../../../shared/modules/transaction.utils';
 import { useBalanceChanges } from '../../../simulation-details/useBalanceChanges';
 import { BalanceChange } from '../../../simulation-details/types';
@@ -78,6 +78,7 @@ async function buildSimulationTokenBalanceChanges({
 
     const standard =
       tokenData?.standard?.toLowerCase() as SimulationTokenStandard;
+
     const isNFT = standard !== SimulationTokenStandard.erc20;
 
     const parseResult = parseApprovalTransactionData(data);
@@ -87,7 +88,7 @@ async function buildSimulationTokenBalanceChanges({
     }
 
     const { amountOrTokenId, isApproveAll, isRevokeAll } = parseResult;
-    const amountOrTokenIdHex = amountOrTokenId?.toString(16) as Hex;
+    const amountOrTokenIdHex = add0x(amountOrTokenId?.toString(16) ?? '0x0');
 
     const difference =
       isNFT || amountOrTokenId === undefined ? '0x1' : amountOrTokenIdHex;

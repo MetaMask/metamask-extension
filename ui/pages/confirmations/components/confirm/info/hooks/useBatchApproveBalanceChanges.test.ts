@@ -1,0 +1,244 @@
+import { act } from '@testing-library/react';
+import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
+import { useBatchApproveBalanceChanges } from './useBatchApproveBalanceChanges';
+import {
+  BatchTransactionParams,
+  SimulationTokenStandard,
+} from '@metamask/transaction-controller';
+import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
+import {
+  CHAIN_ID,
+  genUnapprovedContractInteractionConfirmation,
+} from '../../../../../../../test/data/confirmations/contract-interaction';
+import { useBalanceChanges } from '../../../simulation-details/useBalanceChanges';
+import { getTokenStandardAndDetails } from '../../../../../../store/actions';
+import { TokenStandard } from '../../../../../../../shared/constants/transaction';
+import BigNumber from 'bignumber.js';
+import { BalanceChange } from '../../../simulation-details/types';
+import { buildApproveTransactionData } from '../../../../../../../test/data/confirmations/token-approve';
+
+jest.mock('../../../simulation-details/useBalanceChanges', () => ({
+  useBalanceChanges: jest.fn(),
+}));
+
+jest.mock('../../../../../../store/actions', () => ({
+  ...jest.requireActual('../../../../../../store/actions'),
+  getTokenStandardAndDetails: jest.fn(),
+}));
+
+const TO_MOCK = '0x1234567891234567891234567891234567891234';
+const AMOUNT_MOCK = 123;
+const AMOUNT_HEX_MOCK = '0x7b';
+const DATA_MOCK = buildApproveTransactionData(TO_MOCK, AMOUNT_MOCK);
+
+const BALANCE_CHANGE_MOCK: BalanceChange = {
+  asset: {
+    address: '0x1234567891234567891234567891234567891234',
+    chainId: '0x123',
+    standard: TokenStandard.ERC20,
+  },
+  amount: new BigNumber('123.56'),
+  fiatAmount: 12.34,
+  isApproval: false,
+};
+
+async function runHook({
+  nestedTransactions,
+}: {
+  nestedTransactions?: BatchTransactionParams[];
+}) {
+  const response = renderHookWithConfirmContextProvider(
+    useBatchApproveBalanceChanges,
+    getMockConfirmStateForTransaction(
+      genUnapprovedContractInteractionConfirmation({
+        nestedTransactions,
+      }),
+    ),
+  );
+
+  await act(async () => {
+    // Ignore
+  });
+
+  return response.result.current;
+}
+
+describe('useBatchApproveBalanceChanges', () => {
+  const useBalanceChangesMock = jest.mocked(useBalanceChanges);
+  const getTokenStandardAndDetailsMock = jest.mocked(
+    getTokenStandardAndDetails,
+  );
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+
+    useBalanceChangesMock.mockReturnValue({ value: [], pending: false });
+    getTokenStandardAndDetailsMock.mockResolvedValue({
+      standard: TokenStandard.ERC20,
+    });
+  });
+
+  it('returns balance changes with isApproval set to true', async () => {
+    useBalanceChangesMock.mockReturnValue({
+      value: [BALANCE_CHANGE_MOCK],
+      pending: false,
+    });
+
+    const result = await runHook({});
+
+    expect(result).toStrictEqual({
+      pending: false,
+      value: [{ ...BALANCE_CHANGE_MOCK, isApproval: true }],
+    });
+  });
+
+  it('generates ERC-20 token balance changes', async () => {
+    await runHook({
+      nestedTransactions: [
+        {
+          data: DATA_MOCK,
+          to: TO_MOCK,
+        },
+      ],
+    });
+
+    expect(useBalanceChangesMock).toHaveBeenLastCalledWith({
+      chainId: CHAIN_ID,
+      simulationData: {
+        tokenBalanceChanges: [
+          {
+            address: TO_MOCK,
+            difference: AMOUNT_HEX_MOCK,
+            id: undefined,
+            isDecrease: true,
+            newBalance: '0x0',
+            previousBalance: '0x0',
+            standard: SimulationTokenStandard.erc20,
+          },
+        ],
+      },
+    });
+  });
+
+  it('generates ERC-721 token balance changes', async () => {
+    getTokenStandardAndDetailsMock.mockResolvedValue({
+      standard: TokenStandard.ERC721,
+    });
+
+    await runHook({
+      nestedTransactions: [
+        {
+          data: DATA_MOCK,
+          to: TO_MOCK,
+        },
+      ],
+    });
+
+    expect(useBalanceChangesMock).toHaveBeenLastCalledWith({
+      chainId: CHAIN_ID,
+      simulationData: {
+        tokenBalanceChanges: [
+          {
+            address: TO_MOCK,
+            difference: '0x1',
+            id: AMOUNT_HEX_MOCK,
+            isDecrease: true,
+            newBalance: '0x0',
+            previousBalance: '0x0',
+            standard: SimulationTokenStandard.erc721,
+          },
+        ],
+      },
+    });
+  });
+
+  it('generates no token balance changes if no nested transactions', async () => {
+    await runHook({});
+
+    expect(useBalanceChangesMock).toHaveBeenLastCalledWith({
+      chainId: CHAIN_ID,
+      simulationData: {
+        tokenBalanceChanges: [],
+      },
+    });
+  });
+
+  it('generates no token balance changes if no standard', async () => {
+    getTokenStandardAndDetailsMock.mockResolvedValue({
+      standard: undefined as never,
+    });
+
+    await runHook({
+      nestedTransactions: [
+        {
+          data: DATA_MOCK,
+          to: TO_MOCK,
+        },
+      ],
+    });
+
+    expect(useBalanceChangesMock).toHaveBeenLastCalledWith({
+      chainId: CHAIN_ID,
+      simulationData: {
+        tokenBalanceChanges: [],
+      },
+    });
+  });
+
+  it('generates no token balance changes if cannot be parsed', async () => {
+    await runHook({
+      nestedTransactions: [
+        {
+          data: '0x12345678',
+          to: TO_MOCK,
+        },
+      ],
+    });
+
+    expect(useBalanceChangesMock).toHaveBeenLastCalledWith({
+      chainId: CHAIN_ID,
+      simulationData: {
+        tokenBalanceChanges: [],
+      },
+    });
+  });
+
+  it('generates no token balance changes if no to in nested transaction', async () => {
+    await runHook({
+      nestedTransactions: [
+        {
+          data: DATA_MOCK,
+        },
+      ],
+    });
+
+    expect(useBalanceChangesMock).toHaveBeenLastCalledWith({
+      chainId: CHAIN_ID,
+      simulationData: {
+        tokenBalanceChanges: [],
+      },
+    });
+  });
+
+  it('generates no token balance changes if no data in nested transaction', async () => {
+    await runHook({
+      nestedTransactions: [
+        {
+          to: TO_MOCK,
+        },
+      ],
+    });
+
+    expect(useBalanceChangesMock).toHaveBeenLastCalledWith({
+      chainId: CHAIN_ID,
+      simulationData: {
+        tokenBalanceChanges: [],
+      },
+    });
+  });
+
+  it('returns undefined if no balance changes transactions', async () => {
+    const result = await runHook({});
+    expect(result).toStrictEqual({ pending: false, value: [] });
+  });
+});
