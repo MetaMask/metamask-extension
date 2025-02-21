@@ -1,5 +1,4 @@
 import type {
-  AddNetworkFields,
   NetworkConfiguration,
   NetworkState,
 } from '@metamask/network-controller';
@@ -9,7 +8,6 @@ import type { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
 ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
-import type { Hex } from '@metamask/utils';
 import {
   MultichainNetworks,
   MULTICHAIN_PROVIDER_CONFIGS,
@@ -98,7 +96,7 @@ export const getAllBridgeableNetworks = createDeepEqualSelector(
           nativeCurrency: '',
           rpcEndpoints: [{ url: '', type: '', networkClientId: '' }],
           defaultRpcEndpointIndex: 0,
-          chainId: MultichainNetworks.SOLANA as unknown as Hex,
+          chainId: MultichainNetworks.SOLANA,
         } as unknown as NetworkConfiguration,
         ///: END:ONLY_INCLUDE_IF
       ],
@@ -127,7 +125,7 @@ export const getFromChains = createDeepEqualSelector(
 export const getFromChain = createDeepEqualSelector(
   getMultichainProviderConfig,
   getFromChains,
-  (providerConfig, fromChains): NetworkConfiguration | undefined => {
+  (providerConfig, fromChains) => {
     return providerConfig?.chainId
       ? fromChains.find(({ chainId }) => chainId === providerConfig.chainId)
       : undefined;
@@ -137,10 +135,7 @@ export const getFromChain = createDeepEqualSelector(
 export const getToChains = createDeepEqualSelector(
   getAllBridgeableNetworks,
   (state: BridgeAppState) => state.metamask.bridgeState?.bridgeFeatureFlags,
-  (
-    allBridgeableNetworks,
-    bridgeFeatureFlags,
-  ): (AddNetworkFields | NetworkConfiguration)[] =>
+  (allBridgeableNetworks, bridgeFeatureFlags) =>
     uniqBy([...allBridgeableNetworks, ...FEATURED_RPCS], 'chainId').filter(
       ({ chainId }) =>
         bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].chains[
@@ -152,7 +147,7 @@ export const getToChains = createDeepEqualSelector(
 export const getToChain = createSelector(
   getToChains,
   (state: BridgeAppState) => state.bridge.toChainId,
-  (toChains, toChainId): NetworkConfiguration | AddNetworkFields | undefined =>
+  (toChains, toChainId) =>
     toChains.find(
       ({ chainId }) =>
         chainId === toChainId || formatChainIdToCaip(chainId) === toChainId,

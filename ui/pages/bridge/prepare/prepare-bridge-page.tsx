@@ -12,11 +12,6 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { BigNumber } from 'bignumber.js';
 import { type TokenListMap } from '@metamask/assets-controllers';
 import { toChecksumAddress, zeroAddress } from 'ethereumjs-util';
-import type { Hex, CaipChainId } from '@metamask/utils';
-import type {
-  AddNetworkFields,
-  NetworkConfiguration,
-} from '@metamask/network-controller';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -66,7 +61,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/swaps';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
 import { setActiveNetwork } from '../../../store/actions';
-import type { QuoteRequest } from '../../../../shared/types/bridge';
+import type { GenericQuoteRequest } from '../../../../shared/types/bridge';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
 import {
@@ -103,6 +98,7 @@ import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainIsEvm } from '../../../selectors/multichain';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { formatChainIdToCaip } from '../../../../shared/modules/bridge-utils/caip-formatters';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 
@@ -198,8 +194,6 @@ const PrepareBridgePage = () => {
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
 
   const millisecondsUntilNextRefresh = useCountdownTimer();
-
-  const isSwap = useIsMultichainSwap();
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
 
@@ -303,25 +297,30 @@ const PrepareBridgePage = () => {
       walletAddress: selectedAccount?.address ?? '',
       // TODO override with account selector's value
       destWalletAddress:
-        toChain?.chainId === MultichainNetworks.SOLANA || isSwap
+        (toChain?.chainId &&
+          formatChainIdToCaip(toChain.chainId) === MultichainNetworks.SOLANA) ||
+        isSwap
           ? selectedMultichainAccount?.address
           : selectedEvmAccount?.address,
     }),
     [
-      isSwap,
-      fromToken,
-      toToken,
+      fromToken?.address,
+      fromToken?.decimals,
+      toToken?.address,
+      fromAmount,
       fromChain?.chainId,
       toChain?.chainId,
-      fromAmount,
-      providerConfig,
+      providerConfig?.rpcUrl,
       slippage,
       selectedAccount?.address,
+      isSwap,
+      selectedMultichainAccount?.address,
+      selectedEvmAccount?.address,
     ],
   );
 
   const debouncedUpdateQuoteRequestInController = useCallback(
-    debounce((p: Partial<QuoteRequest<Hex | CaipChainId>>) => {
+    debounce((p: Partial<GenericQuoteRequest>) => {
       dispatch(updateQuoteRequestParams(p));
       dispatch(setSelectedQuote(null));
     }, 300),
@@ -423,9 +422,7 @@ const PrepareBridgePage = () => {
             : {
                 network: fromChain,
                 networks: fromChains,
-                onNetworkChange: (
-                  networkConfig?: NetworkConfiguration | AddNetworkFields,
-                ) => {
+                onNetworkChange: (networkConfig) => {
                   networkConfig?.chainId &&
                     networkConfig.chainId !== fromChain?.chainId &&
                     trackInputEvent({
