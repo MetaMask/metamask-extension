@@ -19,7 +19,6 @@ describe('SettingsPage', () => {
     isSnapViewPage: false,
     mostRecentOverviewPage: '/',
     pathnameI18nKey: '',
-    remoteFeatureFlags: {},
   };
 
   const mockStore = configureMockStore()(mockState);

@@ -1437,7 +1437,7 @@
       "packages": {
         "@metamask/scure-bip39": true,
         "@metamask/utils": true,
-        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
+        "viem>@scure/bip32>@noble/curves": true,
         "@noble/hashes": true,
         "@metamask/utils>@scure/base": true
       }
@@ -1947,7 +1947,7 @@
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
+        "viem>@scure/bip32>@noble/curves": true,
         "@noble/hashes": true
       }
     },
@@ -2302,12 +2302,12 @@
         "crypto": true
       }
     },
-    "@ethereumjs/tx>ethereum-cryptography>@noble/curves": {
+    "viem>@scure/bip32>@noble/curves": {
       "globals": {
         "TextEncoder": true
       },
       "packages": {
-        "@ethereumjs/tx>ethereum-cryptography>@noble/curves>@noble/hashes": true
+        "viem>@scure/bip32>@noble/curves>@noble/hashes": true
       }
     },
     "@noble/hashes": {
@@ -2322,13 +2322,13 @@
         "crypto": true
       }
     },
-    "@ethereumjs/tx>ethereum-cryptography>@noble/curves>@noble/hashes": {
+    "viem>@scure/bip32>@noble/curves>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
       }
     },
-    "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@noble/hashes": {
+    "viem>@scure/bip32>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -2426,10 +2426,10 @@
         "TextEncoder": true
       }
     },
-    "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": {
+    "viem>@scure/bip32": {
       "packages": {
-        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
-        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@noble/hashes": true,
+        "viem>@scure/bip32>@noble/curves": true,
+        "viem>@scure/bip32>@noble/hashes": true,
         "@metamask/utils>@scure/base": true
       }
     },
@@ -3684,9 +3684,9 @@
         "crypto": true
       },
       "packages": {
-        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
+        "viem>@scure/bip32>@noble/curves": true,
         "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true,
-        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": true
+        "viem>@scure/bip32": true
       }
     },
     "eth-lattice-keyring>@ethereumjs/tx>ethereum-cryptography": {
@@ -4690,7 +4690,7 @@
         "react": true
       }
     },
-    "mockttp>express>qs": {
+    "mockttp>body-parser>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
       }
@@ -5499,7 +5499,7 @@
     "browserify>url": {
       "packages": {
         "browserify>punycode": true,
-        "mockttp>express>qs": true
+        "mockttp>body-parser>qs": true
       }
     },
     "react-focus-lock>use-callback-ref": {

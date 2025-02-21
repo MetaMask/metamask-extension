@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import {
   getAddressBookEntryOrAccountName,
-  getRemoteFeatureFlags,
   getSettingsPageSnapsIds,
   getSnapsMetadata,
   getUseExternalServices,
@@ -66,8 +65,6 @@ const mapStateToProps = (state, ownProps) => {
   const {
     metamask: { currencyRates },
   } = state;
-  const remoteFeatureFlags = getRemoteFeatureFlags(state);
-
   const settingsPageSnapsIds = getSettingsPageSnapsIds(state);
   const snapsMetadata = getSnapsMetadata(state);
   const conversionDate = currencyRates[ticker]?.conversionDate;
@@ -133,7 +130,6 @@ const mapStateToProps = (state, ownProps) => {
     isPopup,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     pathnameI18nKey,
-    remoteFeatureFlags,
     settingsPageSnaps,
     snapSettingsTitle,
     useExternalServices,
