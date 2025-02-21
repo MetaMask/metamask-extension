@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types -- TODO: upgrade to TypeScript */
 
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
@@ -343,6 +343,23 @@ function NewSRPAddedToast() {
 
   const showNewSRPAddedToast = useSelector(selectNewSRPAdded);
   const autoHideDelay = 5 * SECOND;
+
+  // This will close the toast if the user clists the account menu.
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      const dismissElement = document.querySelector(
+        '[data-testid="account-menu-icon"]',
+      );
+      if (dismissElement && dismissElement.contains(event.target)) {
+        dispatch(setShowNewSRPAddedToast(false));
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [dispatch]);
 
   return (
     showNewSRPAddedToast && (
