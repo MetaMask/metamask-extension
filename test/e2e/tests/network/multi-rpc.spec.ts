@@ -182,7 +182,7 @@ describe('MultiRpc:', function (this: Suite) {
         await headerNavbar.clickSwitchNetworkDropDown();
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.check_pageIsLoaded();
-        await selectNetworkDialog.openNetworkRPC('0xa4b1');
+        await selectNetworkDialog.openNetworkRPC('eip155:42161');
         await selectNetworkDialog.check_networkRPCNumber(2);
 
         // select second rpc for Arbitrum network in the network dialog
@@ -266,7 +266,7 @@ describe('MultiRpc:', function (this: Suite) {
         await selectNetworkDialog.check_pageIsLoaded();
 
         // go to Edit Menu for Arbitrum network and select the second rpc
-        await selectNetworkDialog.openNetworkListOptions('0xa4b1');
+        await selectNetworkDialog.openNetworkListOptions('eip155:42161');
         await selectNetworkDialog.openEditNetworkModal();
 
         const editNetworkModal = new EditNetworkModal(driver);
