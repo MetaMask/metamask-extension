@@ -202,7 +202,10 @@ describe('MetaMaskController', function () {
 
   describe('#setLocked', function () {
     it('should lock the wallet', async function () {
+      await metamaskController.createNewVaultAndKeychain('test@123');
+
       await metamaskController.setLocked();
+
       expect(
         metamaskController.keyringController.state.isUnlocked,
       ).toStrictEqual(false);

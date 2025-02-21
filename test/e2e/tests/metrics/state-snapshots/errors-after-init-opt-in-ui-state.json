@@ -157,6 +157,9 @@
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
     "currentMigrationVersion": "number",
+    "multichainNetworkConfigurationsByChainId": "object",
+    "selectedMultichainNetworkChainId": "string",
+    "isEvmSelected": "boolean",
     "selectedNetworkClientId": "string",
     "networksMetadata": {
       "networkConfigurationId": {

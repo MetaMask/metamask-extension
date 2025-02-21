@@ -68,9 +68,9 @@ export const BridgeAssetPickerButton = ({
           <BadgeWrapper
             marginRight={2}
             badge={
-              asset && networkProps?.network?.name ? (
+              asset ? (
                 <AvatarNetwork
-                  name={networkProps.network.name}
+                  name={networkProps?.network?.name ?? ''}
                   src={networkImageSrc}
                   size={AvatarNetworkSize.Xs}
                 />

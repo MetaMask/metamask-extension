@@ -22,6 +22,7 @@ import {
   getMultichainBalancesControllerMessenger,
   getMultichainTransactionsControllerMessenger,
   getMultichainAssetsControllerMessenger,
+  getMultichainNetworkControllerMessenger,
   getMultiChainAssetsRatesControllerMessenger,
 } from './multichain';
 
@@ -49,6 +50,9 @@ export const CONTROLLER_MESSENGERS = {
   MultichainTransactionsController: {
     getMessenger: getMultichainTransactionsControllerMessenger,
     getInitMessenger: noop,
+  },
+  MultichainNetworkController: {
+    getMessenger: getMultichainNetworkControllerMessenger,
   },
   RateLimitController: {
     getMessenger: getRateLimitControllerMessenger,
