@@ -21,6 +21,8 @@ import {
 import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 import { getMethodDataAsync } from '../../../shared/lib/four-byte';
+import { AssetsRatesState } from '../../../ui/selectors/assets';
+import { CaipAssetType, parseCaipAssetType } from '@metamask/utils';
 
 /**
  * @see {@link getEnvironmentType}
@@ -432,4 +434,34 @@ export const getMethodDataName = async (
  */
 export function getBooleanFlag(value: string | boolean | undefined): boolean {
   return value === true || value === 'true';
+}
+export function getConversionRatesForNativeAsset({
+  conversionRates,
+  chainId,
+}: {
+  conversionRates: AssetsRatesState['metamask']['conversionRates'];
+  chainId: string;
+}): { rate: number } | null {
+  // Return early if conversionRates is falsy
+  if (!conversionRates) {
+    return null;
+  }
+
+  let conversionRateResult = null;
+
+  Object.entries(conversionRates).forEach(
+    ([caip19Identifier, conversionRate]) => {
+      const parsedCaip19Identifier = parseCaipAssetType(
+        caip19Identifier as CaipAssetType,
+      );
+      if (
+        parsedCaip19Identifier.assetNamespace === 'slip44' &&
+        parsedCaip19Identifier.chainId === chainId
+      ) {
+        conversionRateResult = conversionRate;
+      }
+    },
+  );
+
+  return conversionRateResult;
 }

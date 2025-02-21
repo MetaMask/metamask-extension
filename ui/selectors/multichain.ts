@@ -46,6 +46,8 @@ import {
   getShouldShowFiat,
   getShowFiatInTestnets,
 } from './selectors';
+import { AssetsRatesState, AssetsState } from './assets';
+import { getConversionRatesForNativeAsset } from '../../app/scripts/lib/util';
 
 export type RatesState = {
   metamask: RatesControllerState;
@@ -63,7 +65,9 @@ export type MultichainState = AccountsState &
   RatesState &
   BalancesState &
   TransactionsState &
-  NetworkState;
+  NetworkState &
+  AssetsRatesState &
+  AssetsState;
 
 // TODO: Remove after updating to @metamask/network-controller 20.0.0
 export type ProviderConfigWithImageUrlAndExplorerUrl = {
@@ -463,11 +467,17 @@ export function getMultichainConversionRate(
   state: MultichainState,
   account?: InternalAccount,
 ) {
-  const { ticker } = getMultichainProviderConfig(state, account);
+  const { conversionRates } = state.metamask;
+  const { chainId } = getMultichainNetwork(state, account);
+
+  const conversionRate = getConversionRatesForNativeAsset({
+    conversionRates,
+    chainId,
+  })?.rate;
 
   return getMultichainIsEvm(state, account)
     ? getConversionRate(state)
-    : getMultichainCoinRates(state)?.[ticker.toLowerCase()]?.conversionRate;
+    : conversionRate;
 }
 
 export const getMultichainConversionRateSelector = createSelector(
