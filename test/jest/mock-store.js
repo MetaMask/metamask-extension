@@ -7,6 +7,7 @@ import { DEFAULT_BRIDGE_STATE } from '../../app/scripts/controllers/bridge/const
 import { DEFAULT_BRIDGE_STATUS_STATE } from '../../app/scripts/controllers/bridge-status/constants';
 import { BRIDGE_PREFERRED_GAS_ESTIMATE } from '../../shared/constants/bridge';
 import { mockTokenData } from '../data/bridge/mock-token-data';
+import { formatChainIdToCaip } from '../../shared/modules/bridge-utils/caip-formatters';
 
 export const createGetSmartTransactionFeesApiResponse = () => {
   return {
@@ -770,8 +771,21 @@ export const createBridgeMockStore = (
           ...featureFlagOverrides,
           extensionConfig: {
             support: false,
-            chains: {},
-            ...featureFlagOverrides.extensionConfig,
+            ...featureFlagOverrides?.extensionConfig,
+            chains: {
+              [formatChainIdToCaip('0x1')]: {
+                isActiveSrc: true,
+                isActiveDest: false,
+              },
+              ...Object.fromEntries(
+                Object.entries(
+                  featureFlagOverrides?.extensionConfig?.chains ?? {},
+                ).map(([chainId, config]) => [
+                  formatChainIdToCaip(chainId),
+                  config,
+                ]),
+              ),
+            },
           },
         },
         ...bridgeStateOverrides,
