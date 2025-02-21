@@ -13,7 +13,6 @@ describe('Check balance', function (this: Suite) {
         mockCalls: true,
       },
       async (driver) => {
-        await driver.refresh();
         const homePage = new NonEvmHomepage(driver);
         await homePage.check_getBalance('50 SOL');
       },
@@ -27,7 +26,6 @@ describe('Check balance', function (this: Suite) {
         showNativeTokenAsMainBalance: false,
       },
       async (driver) => {
-        await driver.refresh();
         const homePage = new NonEvmHomepage(driver);
         await homePage.check_getBalance(`USD`);
       },
@@ -43,7 +41,6 @@ describe('Check balance', function (this: Suite) {
         mockCalls: true,
       },
       async (driver) => {
-        await driver.refresh();
         const homePage = new NonEvmHomepage(driver);
         await homePage.check_getBalance('$8,736.00 USD');
       },
