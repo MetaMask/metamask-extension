@@ -51,7 +51,9 @@ const useNonEvmAssetsWithBalances = (): (
 
     const assetIds = assetsByAccountId[nonEvmAccount.id];
     const balancesByAssetId = nonEvmBalancesByAccountId[nonEvmAccount.id];
-
+    if (!balancesByAssetId || !assetIds) {
+      return [];
+    }
     // build TokenWithFiat for each asset
     return assetIds
       .filter((caipAssetId) => assetMetadataById[caipAssetId])
