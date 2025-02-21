@@ -30,7 +30,9 @@ export const formatChainIdToCaip = (
   return toEvmCaipChainId(decimalToPrefixedHex(chainIdString));
 };
 
-export const formatChainIdToDec = (chainId: number | Hex | CaipChainId) => {
+export const formatChainIdToDec = (
+  chainId: number | Hex | CaipChainId | string,
+) => {
   if (isStrictHexString(chainId)) {
     return Number(hexToDecimal(chainId));
   }
@@ -40,7 +42,9 @@ export const formatChainIdToDec = (chainId: number | Hex | CaipChainId) => {
   if (isCaipChainId(chainId)) {
     return Number(chainId.split(':').at(-1));
   }
-
+  if (typeof chainId === 'string') {
+    return parseInt(chainId, 10);
+  }
   return chainId;
 };
 

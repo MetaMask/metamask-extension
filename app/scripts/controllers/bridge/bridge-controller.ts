@@ -23,6 +23,7 @@ import {
   type BridgeControllerState,
   BridgeFeatureFlagsKey,
   RequestStatus,
+  type GenericQuoteRequest,
 } from '../../../../shared/types/bridge';
 import { isValidQuoteRequest } from '../../../../shared/modules/bridge-utils/quote';
 import { hasSufficientBalance } from '../../../../shared/modules/bridge-utils/balance';
@@ -52,7 +53,7 @@ const RESET_STATE_ABORT_MESSAGE = 'Reset controller state';
 /** The input to start polling for the {@link BridgeController} */
 type BridgePollingInput = {
   networkClientId: NetworkClientId;
-  updatedQuoteRequest: BridgeControllerState['bridgeState']['quoteRequest'];
+  updatedQuoteRequest: GenericQuoteRequest;
 };
 
 export default class BridgeController extends StaticIntervalPollingController<BridgePollingInput>()<
@@ -117,9 +118,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
   };
 
   updateBridgeQuoteRequestParams = async (
-    paramsToUpdate: Partial<
-      BridgeControllerState['bridgeState']['quoteRequest']
-    >,
+    paramsToUpdate: Partial<GenericQuoteRequest>,
   ) => {
     this.stopAllPolling();
     this.#abortController?.abort('Quote request updated');
@@ -168,9 +167,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
     }
   };
 
-  #hasSufficientBalance = async (
-    quoteRequest: BridgeControllerState['bridgeState']['quoteRequest'],
-  ) => {
+  #hasSufficientBalance = async (quoteRequest: GenericQuoteRequest) => {
     const walletAddress = this.#getSelectedAccount().address;
     const srcChainIdInHex = formatChainIdToHex(quoteRequest.srcChainId);
     const provider = this.#getSelectedNetworkClient()?.provider;

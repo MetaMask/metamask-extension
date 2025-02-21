@@ -1,8 +1,8 @@
-import type { CaipChainId, Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
-  QuoteRequest,
+  type GenericQuoteRequest,
 } from '../../../shared/types/bridge';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
@@ -69,7 +69,7 @@ export const resetBridgeState = () => {
 
 // User actions
 export const updateQuoteRequestParams = (
-  params: Partial<QuoteRequest<Hex | CaipChainId>>,
+  params: Partial<GenericQuoteRequest>,
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await dispatch(
