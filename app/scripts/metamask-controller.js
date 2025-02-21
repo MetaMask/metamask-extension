@@ -4282,14 +4282,23 @@ export default class MetamaskController extends EventEmitter {
   async addNewMnemonicToVault(mnemonic) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
-      // TODO: remove and use this logic in the keyring controller.
-      const findMostRecentIndex = (arr, targetType) => {
-        return arr.reduceRight((acc, item, index) => {
-          if (acc === -1 && item.type === targetType) {
-            return index;
-          }
-          return acc;
-        }, -1);
+      // TODO: This kind of logic should be inside the `KeyringController` (using `KeyringSelector` query, or make `addNewKeyring` returns it keyring ID alongside
+      // its keyring.
+      const findKeyringIdByAddress = (address) => {
+        const { keyrings, keyringsMetadata } = this.keyringController.state;
+
+        const keyringIndex = keyrings.findIndex((keyring) => {
+          return (
+            keyring.accounts.includes(address) &&
+            keyring.type === KeyringType.hdKeyTree
+          );
+        });
+        if (keyringIndex === -1) {
+          throw new Error(
+            'Could not find keyring ID, THIS SHOULD NEVER HAPPEN',
+          );
+        }
+        return keyringsMetadata[keyringIndex].id;
       };
 
       const newKeyring = await this.keyringController.addNewKeyring(
@@ -4305,13 +4314,7 @@ export default class MetamaskController extends EventEmitter {
       this.accountsController.setSelectedAccount(account.id);
 
       // TODO: Find a way to encapsulate this logic in the KeyringController itself.
-      const mostRecentHDKeyringIndex = findMostRecentIndex(
-        this.keyringController.state.keyrings,
-        KeyringTypes.hd,
-      );
-      const keyringId =
-        this.keyringController.state.keyringsMetadata[mostRecentHDKeyringIndex]
-          .id;
+      const keyringId = findKeyringIdByAddress(newAccountAddress);
 
       await this._addAccountsWithBalance(keyringId);
 
@@ -4321,6 +4324,15 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
+  /**
+   * Generates a new mnemonic phrase and adds it to the vault, creating a new HD keyring.
+   * This method automatically creates one account associated with the new keyring.
+   * The method is protected by a mutex to prevent concurrent vault modifications.
+   *
+   * @async
+   * @returns {Promise<string>} The address of the newly created account
+   * @throws Will throw an error if keyring creation fails
+   */
   async generateNewMnemonicAndAddToVault() {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
