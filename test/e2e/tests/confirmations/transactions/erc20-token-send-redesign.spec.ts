@@ -20,6 +20,7 @@ import { TestSuiteArguments } from './shared';
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
 describe('Confirmation Redesign ERC20 Token Send', function () {
+  this.timeout(200000); // This test is very long, so we need an unusually high timeout
   describe('Wallet initiated', async function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
       await withTransactionEnvelopeTypeFixtures(
