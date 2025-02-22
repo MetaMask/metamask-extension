@@ -1,4 +1,4 @@
-/**
+  /**
  * @file The entry point for the web extension singleton process.
  */
 
@@ -141,6 +141,16 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
 // Event emitter for state persistence
 export const statePersistenceEvents = new EventEmitter();
+
+if (!isManifestV3) {
+  browser.runtime.onInstalled.addListener(function(details){
+    if(details.reason == "install"){
+        browser.storage.session.set({ isFirstTimeInstall: true });
+  }else if(details.reason == "update"){
+      browser.storage.session.set({ isFirstTimeInstall: false });
+    }
+  });
+}
 
 /**
  * This deferred Promise is used to track whether initialization has finished.
@@ -371,6 +381,14 @@ function overrideContentSecurityPolicyHeader() {
   );
 }
 
+function stringifyError(error) {
+    return JSON.stringify({
+        message: error.message,
+        name: error.name,
+        stack: error.stack
+    });
+}
+
 // These are set after initialization
 let connectRemote;
 let connectExternalExtension;
@@ -378,10 +396,22 @@ let connectExternalCaip;
 
 browser.runtime.onConnect.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
-  await isInitialized;
+  try {
+    await isInitialized;
+    connectRemote(...args);
+  } catch (error) {
+    const port = args[0];
+
+    const _state = await localStore.get();
+
+    port.postMessage({
+      target: 'ui',
+      error: stringifyError(error),
+      metamaskState: JSON.stringify(_state),
+    });
+  }
 
   // This is set in `setupController`, which is called as part of initialization
-  connectRemote(...args);
 });
 browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
@@ -525,6 +555,8 @@ async function initialize() {
     }
     await sendReadyMessageToTabs();
     log.info('MetaMask initialization complete.');
+
+    chrome.storage.session.set({ isFirstTimeInstall: false });
 
     resolveInitialization();
   } catch (error) {
@@ -1298,12 +1330,14 @@ const addAppInstalledEvent = () => {
 
 // On first install, open a new tab with MetaMask
 async function onInstall() {
-  const storeAlreadyExisted = Boolean(await persistenceManager.get());
-  // If the store doesn't exist, then this is the first time running this script,
-  // and is therefore an install
+  const sessionData = await browser.storage.session.get([
+    'isFirstTimeInstall',
+  ]);
+  const isFirstTimeInstall = sessionData?.isFirstTimeInstall;
+
   if (process.env.IN_TEST) {
     addAppInstalledEvent();
-  } else if (!storeAlreadyExisted && !process.env.METAMASK_DEBUG) {
+  } else if (!isFirstTimeInstall && !process.env.METAMASK_DEBUG) {
     // If storeAlreadyExisted is true then this is a fresh installation
     // and an app installed event should be tracked.
     addAppInstalledEvent();
@@ -1339,9 +1373,31 @@ function setupSentryGetStateGlobal(store) {
   };
 }
 
-async function initBackground() {
-  await onInstall();
+function retrySendUntilReceivingEndExists (errorToSend, count = 0) {
   try {
+    chrome.runtime.sendMessage({
+      target: 'ui',
+      errorToSend,
+    }, (response) => {
+      console.log(response);
+      if (response) {
+        count = 30;
+      }
+    });
+  } catch (error) {
+    log.error(error);
+  } finally {
+    setTimeout(() => {
+      if (count < 30) {
+        retrySendUntilReceivingEndExists(errorToSend, count + 1);
+      }
+    }, 1000);
+  }
+}
+
+async function initBackground() {
+  try {
+    await onInstall();
     await initialize();
     if (process.env.IN_TEST) {
       // Send message to offscreen document
@@ -1357,6 +1413,8 @@ async function initBackground() {
     persistenceManager.cleanUpMostRecentRetrievedState();
   } catch (error) {
     log.error(error);
+    rejectInitialization(error);
+    // retrySendUntilReceivingEndExists(error);
   }
 }
 if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {

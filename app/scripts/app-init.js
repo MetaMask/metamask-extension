@@ -184,4 +184,12 @@ const registerInPageContentScript = async () => {
   }
 };
 
+chrome.runtime.onInstalled.addListener(function(details){
+  if(details.reason == "install"){
+      chrome.storage.session.set({ isFirstTimeInstall: true });
+  }else if(details.reason == "update"){
+    chrome.storage.session.set({ isFirstTimeInstall: false });
+  }
+});
+
 registerInPageContentScript();
