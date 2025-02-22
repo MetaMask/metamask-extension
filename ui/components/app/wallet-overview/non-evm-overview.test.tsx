@@ -168,7 +168,7 @@ describe('NonEvmOverview', () => {
     expect(primaryBalance).toHaveTextContent(`${mockNonEvmBalance}BTC`);
   });
 
-  it.skip('shows the primary balance as fiat when showNativeTokenAsMainBalance if false', async () => {
+  it('shows the primary balance as fiat when showNativeTokenAsMainBalance if false', async () => {
     const { queryByTestId } = renderWithProvider(
       <NonEvmOverview />,
       getStore({
@@ -178,6 +178,11 @@ describe('NonEvmOverview', () => {
           preferences: {
             showNativeTokenAsMainBalance: false,
             tokenNetworkFilter: {},
+          },
+          conversionRates: {
+            [MultichainNativeAssets.BITCOIN]: {
+              rate: '1',
+            },
           },
         },
       }),
