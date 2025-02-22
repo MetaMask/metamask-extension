@@ -5110,6 +5110,7 @@ export async function setWatchEthereumAccountEnabled(value: boolean) {
   }
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 export async function setBitcoinSupportEnabled(value: boolean) {
   try {
     await submitRequestToBackground('setBitcoinSupportEnabled', [value]);
@@ -5125,6 +5126,7 @@ export async function setBitcoinTestnetSupportEnabled(value: boolean) {
     logErrorWithMessage(error);
   }
 }
+///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
 export async function setSolanaSupportEnabled(value: boolean) {

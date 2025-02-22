@@ -143,8 +143,11 @@ export type PreferencesControllerState = Omit<
   watchEthereumAccountEnabled: boolean;
   ///: END:ONLY_INCLUDE_IF
   solanaSupportEnabled: boolean;
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   bitcoinSupportEnabled: boolean;
   bitcoinTestnetSupportEnabled: boolean;
+  ///: END:ONLY_INCLUDE_IF
   addSnapAccountEnabled?: boolean;
   advancedGasFee: Record<string, Record<string, string>>;
   incomingTransactionsPreferences: Record<number, boolean>;
@@ -671,6 +674,7 @@ export class PreferencesController extends BaseController<
     });
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   /**
    * Setter for the `bitcoinSupportEnabled` property.
    *
@@ -694,6 +698,7 @@ export class PreferencesController extends BaseController<
       state.bitcoinTestnetSupportEnabled = bitcoinTestnetSupportEnabled;
     });
   }
+  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Setter for the `useExternalNameSources` property
