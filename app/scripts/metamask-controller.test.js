@@ -29,7 +29,7 @@ import {
   TokenListController,
 } from '@metamask/assets-controllers';
 import ObjectMultiplex from '@metamask/object-multiplex';
-import { TrezorKeyring } from '@metamask/eth-trezor-keyring';
+import { TrezorKeyring } from '@metamask-previews/eth-trezor-keyring';
 import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
 import {
   Caip25CaveatType,
@@ -181,8 +181,8 @@ const buildMockKeyringBridge = (publicKeyPayload) =>
     getPublicKey: jest.fn(async () => publicKeyPayload),
   }));
 
-jest.mock('@metamask/eth-trezor-keyring', () => ({
-  ...jest.requireActual('@metamask/eth-trezor-keyring'),
+jest.mock('@metamask-previews/eth-trezor-keyring', () => ({
+  ...jest.requireActual('@metamask-previews/eth-trezor-keyring'),
   TrezorConnectBridge: buildMockKeyringBridge({
     success: true,
     payload: {
