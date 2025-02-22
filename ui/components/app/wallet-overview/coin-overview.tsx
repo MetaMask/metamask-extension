@@ -77,11 +77,11 @@ import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountT
 
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { AggregatedBalance } from '../../ui/aggregated-balance/aggregated-balance';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 import { AggregatedPercentageOverview } from './aggregated-percentage-overview';
 import { AggregatedPercentageOverviewCrossChains } from './aggregated-percentage-overview-cross-chains';
-import { AggregatedBalance } from '../../ui/aggregated-balance/aggregated-balance';
 
 export type CoinOverviewProps = {
   account: InternalAccount;
