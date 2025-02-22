@@ -23,6 +23,7 @@ import {
 import {
   getMultichainBalances,
   getMultichainConversionRateSelector,
+  getMultichainNetwork,
 } from './multichain';
 
 export type AssetsState = {
@@ -208,5 +209,67 @@ export const getMultiChainAssets = createDeepEqualSelector(
         isStakeable: false,
       };
     });
+  },
+);
+
+export const getMultichainAggregatedBalance = createDeepEqualSelector(
+  (_state, selectedAccount) => selectedAccount,
+  getMultichainNetwork,
+  getMultichainBalances,
+  getAccountAssets,
+  getAssetsRates,
+  (
+    selectedAccountAddress,
+    currentNetwork,
+    multichainBalances,
+    accountAssets,
+    assetRates,
+  ) => {
+    const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
+    const balances = multichainBalances?.[selectedAccountAddress.id];
+
+    let aggregatedBalance = new BigNumber(0);
+
+    assetIds.forEach((assetId: CaipAssetId) => {
+      const { chainId } = parseCaipAssetType(assetId);
+      if (chainId === currentNetwork.chainId) {
+        const balance = balances?.[assetId] || { amount: '0', unit: '' };
+        const rate = assetRates?.[assetId]?.rate || '0';
+        const balanceInFiat = new BigNumber(balance.amount).times(rate);
+
+        aggregatedBalance = aggregatedBalance.plus(balanceInFiat);
+      }
+    });
+
+    return aggregatedBalance.toNumber();
+  },
+);
+
+export const getMultichainNativeTokenBalance = createDeepEqualSelector(
+  (_state, selectedAccount) => selectedAccount,
+  getMultichainNetwork,
+  getMultichainBalances,
+  getAccountAssets,
+  (
+    selectedAccountAddress,
+    currentNetwork,
+    multichainBalances,
+    accountAssets,
+  ) => {
+    const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
+    const balances = multichainBalances?.[selectedAccountAddress.id];
+
+    let nativeTokenBalance = { amount: 0, unit: '' };
+
+    assetIds.forEach((assetId: CaipAssetId) => {
+      const { chainId, assetNamespace } = parseCaipAssetType(assetId);
+      if (chainId === currentNetwork.chainId && assetNamespace === 'slip44') {
+        const balance = balances?.[assetId] || { amount: 0, unit: '' };
+
+        nativeTokenBalance = balance;
+      }
+    });
+
+    return nativeTokenBalance;
   },
 );
