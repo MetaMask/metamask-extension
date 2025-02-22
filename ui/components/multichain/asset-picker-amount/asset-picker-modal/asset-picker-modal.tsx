@@ -147,10 +147,8 @@ export function AssetPickerModal({
 
   const handleAssetChange = useCallback(onAssetChange, [onAssetChange]);
 
-  const currentChainId = useMultichainSelector(getMultichainCurrentChainId);
-  const allNetworks = useMultichainSelector(
-    getMultichainNetworkConfigurationsByChainId,
-  );
+  const currentChainId = useSelector(getMultichainCurrentChainId);
+  const allNetworks = useSelector(getMultichainNetworkConfigurationsByChainId);
   const selectedNetwork =
     network ??
     (currentChainId && allNetworks[currentChainId as keyof typeof allNetworks]);
@@ -167,9 +165,9 @@ export function AssetPickerModal({
 
   const tokenConversionRates = useMultichainSelector(getTokenExchangeRates);
   const conversionRate = useMultichainSelector(getMultichainConversionRate);
-  const currentCurrency = useMultichainSelector(getMultichainCurrentCurrency);
+  const currentCurrency = useSelector(getMultichainCurrentCurrency);
 
-  const { address: selectedEvmAddress } = useMultichainSelector(
+  const { address: selectedEvmAddress } = useSelector(
     getSelectedEvmInternalAccount,
   );
 
