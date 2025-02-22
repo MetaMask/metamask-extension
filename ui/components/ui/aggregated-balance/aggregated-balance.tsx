@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import classnames from 'classnames';
 import {
   AlignItems,
   Display,
@@ -23,7 +24,6 @@ import {
 import { getPreferences, getSelectedInternalAccount } from '../../../selectors';
 import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import classnames from 'classnames';
 
 export const AggregatedBalance = ({
   classPrefix,
