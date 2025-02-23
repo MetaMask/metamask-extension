@@ -154,7 +154,6 @@ import {
   setEthAccounts,
   addPermittedEthChainId,
 } from '@metamask/multichain';
-import { isProduction } from '../../shared/modules/environment';
 import {
   methodsRequiringNetworkSwitch,
   methodsThatCanSwitchNetworkWithoutApproval,
@@ -1307,7 +1306,7 @@ export default class MetamaskController extends EventEmitter {
         },
       },
       env: {
-        isAccountSyncingEnabled: !isProduction() && isManifestV3,
+        isAccountSyncingEnabled: isManifestV3,
       },
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
@@ -2552,14 +2551,32 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Gets whether the privacy mode is enabled from the PreferencesController.
+   * Gets a subset of preferences from the PreferencesController to pass to a snap.
    *
-   * @returns {boolean} Whether the privacy mode is enabled.
+   * @returns {object} A subset of preferences.
    */
-  getPrivacyMode() {
-    const { privacyMode } = this.preferencesController.state;
+  getPreferences() {
+    const {
+      preferences,
+      securityAlertsEnabled,
+      useCurrencyRateCheck,
+      useTransactionSimulations,
+      useTokenDetection,
+      useMultiAccountBalanceChecker,
+      openSeaEnabled,
+      useNftDetection,
+    } = this.preferencesController.state;
 
-    return privacyMode;
+    return {
+      privacyMode: preferences.privacyMode,
+      securityAlertsEnabled,
+      useCurrencyRateCheck,
+      useTransactionSimulations,
+      useTokenDetection,
+      useMultiAccountBalanceChecker,
+      openSeaEnabled,
+      useNftDetection,
+    };
   }
 
   /**
@@ -2574,8 +2591,28 @@ export default class MetamaskController extends EventEmitter {
           getPreferences: () => {
             const locale = this.getLocale();
             const currency = this.currencyRateController.state.currentCurrency;
-            const hideBalances = this.getPrivacyMode();
-            return { locale, currency, hideBalances };
+            const {
+              privacyMode,
+              securityAlertsEnabled,
+              useCurrencyRateCheck,
+              useTransactionSimulations,
+              useTokenDetection,
+              useMultiAccountBalanceChecker,
+              openSeaEnabled,
+              useNftDetection,
+            } = this.getPreferences();
+            return {
+              locale,
+              currency,
+              hideBalances: privacyMode,
+              useSecurityAlerts: securityAlertsEnabled,
+              useExternalPricingData: useCurrencyRateCheck,
+              simulateOnChainActions: useTransactionSimulations,
+              useTokenDetection,
+              batchCheckBalances: useMultiAccountBalanceChecker,
+              displayNftMedia: openSeaEnabled,
+              useNftDetection,
+            };
           },
           clearSnapState: this.controllerMessenger.call.bind(
             this.controllerMessenger,
@@ -3194,6 +3231,7 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IF
+      ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
       setBitcoinSupportEnabled:
         preferencesController.setBitcoinSupportEnabled.bind(
           preferencesController,
@@ -3202,6 +3240,7 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setBitcoinTestnetSupportEnabled.bind(
           preferencesController,
         ),
+      ///: END:ONLY_INCLUDE_IF
       setUseExternalNameSources:
         preferencesController.setUseExternalNameSources.bind(
           preferencesController,
@@ -3504,7 +3543,7 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
       generateNewMnemonicAndAddToVault:
         this.generateNewMnemonicAndAddToVault.bind(this),
-      addNewMnemonicToVault: this.addNewMnemonicToVault.bind(this),
+      importMnemonicToVault: this.importMnemonicToVault.bind(this),
       ///: END:ONLY_INCLUDE_IF
       exportAccount: this.exportAccount.bind(this),
 
@@ -4236,13 +4275,13 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Adds a new mnemonic to the vault.
+   * Imports a new mnemonic to the vault.
    *
    * @param {string} mnemonic
    * @returns {object} new account address
    */
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  async addNewMnemonicToVault(mnemonic) {
+  async importMnemonicToVault(mnemonic) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
       const alreadyImportedSRP = await this.keyringController
@@ -4259,6 +4298,25 @@ export default class MetamaskController extends EventEmitter {
         throw new Error('This mnemonic has already been imported.');
       }
 
+      // TODO: This kind of logic should be inside the `KeyringController` (using `KeyringSelector` query, or make `addNewKeyring` returns it keyring ID alongside
+      // its keyring.
+      const findKeyringIdByAddress = (address) => {
+        const { keyrings, keyringsMetadata } = this.keyringController.state;
+
+        const keyringIndex = keyrings.findIndex((keyring) => {
+          return (
+            keyring.accounts.includes(address) &&
+            keyring.type === KeyringTypes.hd
+          );
+        });
+        if (keyringIndex === -1) {
+          throw new Error(
+            'Could not find keyring ID, THIS SHOULD NEVER HAPPEN',
+          );
+        }
+        return keyringsMetadata[keyringIndex].id;
+      };
+
       const newKeyring = await this.keyringController.addNewKeyring(
         KeyringTypes.hd,
         {
@@ -4266,15 +4324,14 @@ export default class MetamaskController extends EventEmitter {
           numberOfAccounts: 1,
         },
       );
-      const newAccountAddress = (await newKeyring.getAccounts())[0];
+      const [newAccountAddress] = await newKeyring.getAccounts();
       const account =
         this.accountsController.getAccountByAddress(newAccountAddress);
       this.accountsController.setSelectedAccount(account.id);
 
-      const keyringId =
-        this.keyringController.state.keyringsMetadata[
-          this.keyringController.state.keyrings.length - 1
-        ].id;
+      // TODO: Find a way to encapsulate this logic in the KeyringController itself.
+      const keyringId = findKeyringIdByAddress(newAccountAddress);
+
       await this._addAccountsWithBalance(keyringId);
 
       return newAccountAddress;
@@ -4283,15 +4340,27 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
+  /**
+   * Generates a new mnemonic phrase and adds it to the vault, creating a new HD keyring.
+   * This method automatically creates one account associated with the new keyring.
+   * The method is protected by a mutex to prevent concurrent vault modifications.
+   *
+   * @async
+   * @returns {Promise<string>} The address of the newly created account
+   * @throws Will throw an error if keyring creation fails
+   */
   async generateNewMnemonicAndAddToVault() {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
+      // addNewKeyring auto creates 1 account.
       const newHdkeyring = await this.keyringController.addNewKeyring(
         KeyringTypes.hd,
       );
-      const newAccount = (await newHdkeyring.getAccounts())[0];
+      const [newAccount] = await newHdkeyring.getAccounts();
       const account = this.accountsController.getAccountByAddress(newAccount);
       this.accountsController.setSelectedAccount(account.id);
+
+      // NOTE: No need to update balances here since we're generating a fresh seed.
 
       return newAccount;
     } finally {
@@ -4400,7 +4469,8 @@ export default class MetamaskController extends EventEmitter {
         address = await this.keyringController.withKeyring(
           keyringSelector,
           async (keyring) => {
-            return (await keyring.addAccounts(1))[0];
+            const [newAddress] = await keyring.addAccounts(1);
+            return newAddress;
           },
         );
       }
@@ -4832,7 +4902,8 @@ export default class MetamaskController extends EventEmitter {
   //
 
   /**
-   * Adds a new account to the default (first) HD seed phrase Keyring.
+   * Adds a new account to the keyring corresponding to the given `keyringId`,
+   * or to the default (first) HD keyring if no `keyringId` is provided.
    *
    * @param {number} accountCount - The number of accounts to create
    * @param {string} _keyringId - The keyring identifier.
@@ -4847,7 +4918,27 @@ export default class MetamaskController extends EventEmitter {
     const addedAccountAddress = await this.keyringController.withKeyring(
       keyringSelector,
       async (keyring) => {
-        const [newAddress] = await keyring.addAccounts(accountCount);
+        if (keyring.type !== KeyringTypes.hd) {
+          throw new Error('Cannot add account to non-HD keyring');
+        }
+        const accountsInKeyring = await keyring.getAccounts();
+
+        // Only add an account if the accountCount matches the accounts in the keyring.
+        if (accountCount && accountCount !== accountsInKeyring.length) {
+          if (accountCount > accountsInKeyring.length) {
+            throw new Error('Account out of sequence');
+          }
+
+          const existingAccount = accountsInKeyring[accountCount];
+
+          if (!existingAccount) {
+            throw new Error(`Can't find account at index ${accountCount}`);
+          }
+
+          return existingAccount;
+        }
+
+        const [newAddress] = await keyring.addAccounts(1);
         return newAddress;
       },
     );

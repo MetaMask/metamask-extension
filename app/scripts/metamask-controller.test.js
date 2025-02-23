@@ -106,10 +106,7 @@ function* ulidGenerator(ulids = mockULIDs) {
   for (const id of ulids) {
     yield id;
   }
-
-  while (true) {
-    yield 'should not be called after exhausting provided IDs';
-  }
+  throw new Error('should not be called after exhausting provided IDs');
 }
 
 let mockUlidGenerator = ulidGenerator();
@@ -353,6 +350,7 @@ describe('MetaMaskController', () => {
       withIsolationScope: jest.fn(),
     };
 
+    // Re-create the ULID generator to start over again the `mockULIDs` list.
     mockUlidGenerator = ulidGenerator();
   });
 
@@ -2682,6 +2680,43 @@ describe('MetaMaskController', () => {
           'KeyringController - The operation cannot be completed while the controller is locked.',
         );
       });
+
+      it('returns an existing account if the accountCount is less than the number of accounts in the keyring', async () => {
+        await metamaskController.createNewVaultAndKeychain('password');
+        const secondAccount = await metamaskController.addNewAccount(1);
+        await metamaskController.addNewAccount(2);
+        await metamaskController.addNewAccount(3);
+
+        const numberOfAccount =
+          metamaskController.keyringController.state.keyrings[0].accounts
+            .length;
+        expect(numberOfAccount).toStrictEqual(4);
+
+        const result = await metamaskController.addNewAccount(1);
+        expect(result).toStrictEqual(secondAccount);
+      });
+
+      it('only checks for accounts in the keyring when comparing accountCount', async () => {
+        await metamaskController.createNewVaultAndKeychain('password');
+        // add a new hd keyring vault to simulate having multiple accounts from different keyrings
+        await metamaskController.generateNewMnemonicAndAddToVault();
+
+        const numberOfAccounts = (
+          await metamaskController.keyringController.getAccounts()
+        ).length;
+        expect(numberOfAccounts).toStrictEqual(2);
+
+        await metamaskController.addNewAccount(1);
+
+        const numberOfAccountsForPrimaryKeyring =
+          metamaskController.keyringController.state.keyrings[0].accounts
+            .length;
+        const updatedNumberOfAccounts = (
+          await metamaskController.keyringController.getAccounts()
+        ).length;
+        expect(numberOfAccountsForPrimaryKeyring).toStrictEqual(2);
+        expect(updatedNumberOfAccounts).toStrictEqual(3);
+      });
     });
 
     describe('#getSeedPhrase', () => {
@@ -4191,7 +4226,7 @@ describe('MetaMaskController', () => {
         const previousKeyrings =
           metamaskController.keyringController.state.keyrings;
 
-        await metamaskController.addNewMnemonicToVault(TEST_SEED_ALT);
+        await metamaskController.generateNewMnemonicAndAddToVault();
 
         const currentKeyrings =
           metamaskController.keyringController.state.keyrings;
@@ -4203,7 +4238,7 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('addNewMnemonicToVault', () => {
+    describe('importMnemonicToVault', () => {
       it('generates a new hd keyring instance with a mnemonic', async () => {
         const password = 'what-what-what';
         jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
@@ -4213,7 +4248,7 @@ describe('MetaMaskController', () => {
         const previousKeyrings =
           metamaskController.keyringController.state.keyrings;
 
-        await metamaskController.addNewMnemonicToVault(TEST_SEED_ALT);
+        await metamaskController.importMnemonicToVault(TEST_SEED_ALT);
 
         const currentKeyrings =
           metamaskController.keyringController.state.keyrings;
@@ -4241,7 +4276,7 @@ describe('MetaMaskController', () => {
 
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
         await expect(() =>
-          metamaskController.addNewMnemonicToVault(TEST_SEED),
+          metamaskController.importMnemonicToVault(TEST_SEED),
         ).rejects.toThrow('This mnemonic has already been imported.');
       });
     });

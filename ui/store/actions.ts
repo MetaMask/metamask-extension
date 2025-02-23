@@ -29,7 +29,6 @@ import {
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
 import {
-  GasFeeEstimates,
   TransactionMeta,
   TransactionParams,
   TransactionType,
@@ -67,6 +66,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getInternalAccountByAddress,
   getSelectedInternalAccount,
+  getMetaMaskKeyrings,
 } from '../selectors';
 import {
   getSelectedNetworkClientId,
@@ -508,13 +508,27 @@ export function addNewAccount(
   ///: END:ONLY_INCLUDE_IF(multi-srp)
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.addNewAccount`);
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
+    const keyrings = getMetaMaskKeyrings(getState());
+    const oldAccounts = keyringId
+      ? keyrings.find(
+          (keyring) =>
+            keyring.type === KeyringTypes.hd &&
+            keyring.metadata.id === keyringId,
+        )?.accounts.length
+      : keyrings[0].accounts.length;
+
+    if (!oldAccounts) {
+      console.log('Should never reach this. There is always a keyring');
+      throw new Error('Keyring not found');
+    }
+
     dispatch(showLoadingIndication());
 
     let addedAccountAddress;
     try {
       addedAccountAddress = await submitRequestToBackground('addNewAccount', [
-        1,
+        Object.keys(oldAccounts).length,
         ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
         keyringId,
         ///: END:ONLY_INCLUDE_IF
@@ -4567,14 +4581,6 @@ export function estimateGas(params: TransactionParams): Promise<Hex> {
   return submitRequestToBackground('estimateGas', [params]);
 }
 
-export function estimateGasFee(request: {
-  transactionParams: TransactionParams;
-  chainId?: Hex;
-  networkClientId?: NetworkClientId;
-}): Promise<{ estimates: GasFeeEstimates }> {
-  return submitRequestToBackground('estimateGasFee', [request]);
-}
-
 export async function updateTokenType(
   tokenAddress: string,
 ): Promise<Token | undefined> {
@@ -5177,6 +5183,7 @@ export async function setWatchEthereumAccountEnabled(value: boolean) {
   }
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 export async function setBitcoinSupportEnabled(value: boolean) {
   try {
     await submitRequestToBackground('setBitcoinSupportEnabled', [value]);
@@ -5192,6 +5199,7 @@ export async function setBitcoinTestnetSupportEnabled(value: boolean) {
     logErrorWithMessage(error);
   }
 }
+///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
 export async function setSolanaSupportEnabled(value: boolean) {

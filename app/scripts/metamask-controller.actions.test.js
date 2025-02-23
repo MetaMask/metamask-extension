@@ -74,9 +74,7 @@ function* ulidGenerator(ulids = mockULIDs) {
     yield id;
   }
 
-  while (true) {
-    yield 'should not be called after exhausting provided IDs';
-  }
+  throw new Error('should not be called after exhausting provided IDs');
 }
 
 let mockUlidGenerator = ulidGenerator();
@@ -134,6 +132,7 @@ describe('MetaMaskController', function () {
     });
     initializeMockMiddlewareLog();
 
+    // Re-create the ULID generator to start over again the `mockULIDs` list.
     mockUlidGenerator = ulidGenerator();
   });
 
@@ -166,19 +165,6 @@ describe('MetaMaskController', function () {
       const addNewAccountResult2 = await metamaskController.addNewAccount(2);
       expect(addNewAccountResult1).not.toStrictEqual(addNewAccountResult2);
     });
-
-    it('creates a total of two accounts', async function () {
-      await metamaskController.createNewVaultAndKeychain('test@123');
-      const existingNumberOfAccounts =
-        await metamaskController.keyringController.getAccounts();
-      await metamaskController.addNewAccount(1);
-      await metamaskController.addNewAccount(1);
-      const newNumberOfAccounts =
-        await metamaskController.keyringController.getAccounts();
-      expect(newNumberOfAccounts).toHaveLength(
-        existingNumberOfAccounts.length + 2,
-      );
-    });
   });
 
   describe('#importAccountWithStrategy', function () {
@@ -208,7 +194,8 @@ describe('MetaMaskController', function () {
       await metamaskController.createNewVaultAndRestore('test@123', TEST_SEED);
       const result2 = metamaskController.keyringController.state;
 
-      // on restore, a new keyring metadata is generated
+      // On restore, a new keyring metadata is generated.
+      expect(result1.keyringsMetadata[0].id).toBe(mockULIDs[0]);
       expect(result2).toStrictEqual(
         expect.objectContaining({
           ...result1,

@@ -2,7 +2,6 @@ const { strict: assert } = require('assert');
 const { mockNetworkStateOld } = require('../../../stub/networks');
 
 const {
-  generateGanacheOptions,
   withFixtures,
   regularDelayMs,
   unlockWallet,
@@ -19,9 +18,18 @@ describe('Custom RPC history', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        localNodeOptions: generateGanacheOptions({
-          concurrent: [{ port, chainId }],
-        }),
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
+              port,
+              chainId,
+            },
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

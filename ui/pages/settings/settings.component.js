@@ -75,7 +75,6 @@ class SettingsPage extends PureComponent {
     isPopup: PropTypes.bool,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     pathnameI18nKey: PropTypes.string,
-    remoteFeatureFlags: PropTypes.object.isRequired,
     settingsPageSnaps: PropTypes.array,
     snapSettingsTitle: PropTypes.string,
     toggleNetworkMenu: PropTypes.func.isRequired,
@@ -412,13 +411,7 @@ class SettingsPage extends PureComponent {
             />
           )}
         />
-        <Route
-          exact
-          path={ABOUT_US_ROUTE}
-          render={() => (
-            <InfoTab remoteFeatureFlags={this.props.remoteFeatureFlags} />
-          )}
-        />
+        <Route exact path={ABOUT_US_ROUTE} render={() => <InfoTab />} />
         <Route
           path={`${SNAP_SETTINGS_ROUTE}/:snapId`}
           component={SnapSettingsRenderer}

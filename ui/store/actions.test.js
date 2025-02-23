@@ -24,6 +24,8 @@ import { setBackgroundConnection } from './background-connection';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
+const mockUlid = '01JMPHQSH1A4DQAAS6ES7NDJ38';
+
 const middleware = [thunk];
 const defaultState = {
   metamask: {
@@ -47,6 +49,12 @@ const defaultState = {
             address: '0xFirstAddress',
           },
         ],
+      },
+    ],
+    keyringsMetadata: [
+      {
+        id: mockUlid,
+        name: '',
       },
     ],
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
@@ -407,22 +415,23 @@ describe('Actions', () => {
         metamask: { ...defaultState.metamask },
       });
 
-      const addNewAccount = background.addNewAccount.callsFake((_, _2, cb) =>
-        cb(null, {
-          addedAccountAddress: '0x123',
-        }),
+      const addNewAccount = background.addNewAccount.callsFake(
+        (_, _secondUnusedVar, cb) =>
+          cb(null, {
+            addedAccountAddress: '0x123',
+          }),
       );
 
       setBackgroundConnection(background);
 
-      await store.dispatch(actions.addNewAccount(1));
+      await store.dispatch(actions.addNewAccount());
       expect(addNewAccount.callCount).toStrictEqual(1);
     });
 
     it('displays warning error message when addNewAccount in background callback errors', async () => {
       const store = mockStore();
 
-      background.addNewAccount.callsFake((_, _2, cb) => {
+      background.addNewAccount.callsFake((_, _secondUnusedVar, cb) => {
         cb(new Error('error'));
       });
 
@@ -434,11 +443,49 @@ describe('Actions', () => {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      await expect(store.dispatch(actions.addNewAccount(1))).rejects.toThrow(
+      await expect(store.dispatch(actions.addNewAccount())).rejects.toThrow(
         'error',
       );
 
       expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+
+    it('adds an account to a specific keyring by id', async () => {
+      const store = mockStore({
+        metamask: { ...defaultState.metamask },
+      });
+
+      const addNewAccount = background.addNewAccount.callsFake(
+        (_, _secondUnusedVar, cb) =>
+          cb(null, {
+            addedAccountAddress: '0x123',
+          }),
+      );
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.addNewAccount(mockUlid));
+      expect(addNewAccount.callCount).toStrictEqual(1);
+    });
+
+    it('throws if an invalid keyring id is provided', async () => {
+      const store = mockStore({
+        metamask: { ...defaultState.metamask },
+      });
+
+      const addNewAccount = background.addNewAccount.callsFake(
+        (_, _secondUnusedVar, cb) =>
+          cb(null, {
+            addedAccountAddress: '0x123',
+          }),
+      );
+
+      setBackgroundConnection(background);
+
+      await expect(
+        store.dispatch(actions.addNewAccount('invalidKeyringId')),
+      ).rejects.toThrow('Keyring not found');
+      expect(addNewAccount.callCount).toStrictEqual(0);
     });
   });
 
