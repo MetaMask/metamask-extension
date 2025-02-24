@@ -505,7 +505,7 @@ export function importNewAccount(
 export function addNewAccount(
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   keyringId?: string,
-  ///: END:ONLY_INCLUDE_IF(multi-srp)
+  ///: END:ONLY_INCLUDE_IF
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.addNewAccount`);
   return async (dispatch, getState) => {
