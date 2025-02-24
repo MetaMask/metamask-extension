@@ -2990,7 +2990,7 @@
     "description": "$1 represents the network name"
   },
   "networkSwitchMessage": {
-    "message": "Network switched to $1",
+    "message": "Network Switched: $1",
     "description": "$1 represents the network name"
   },
   "networkURL": {
@@ -3552,6 +3552,10 @@
   },
   "origin": {
     "message": "Origin"
+  },
+  "originSwitchMessage": {
+    "message": "Site Switched: $1",
+    "description": "$1 represents the dApp origin"
   },
   "osTheme": {
     "message": "System"

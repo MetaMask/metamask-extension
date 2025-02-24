@@ -27,7 +27,7 @@ export const Toast = ({
   className,
 }: {
   startAdornment: React.ReactNode | React.ReactNode[];
-  text: string;
+  text: string | string[];
   actionText?: string;
   onActionClick?: () => void;
   onClose: () => void;
@@ -62,6 +62,8 @@ export const Toast = ({
     return null;
   }
 
+  const displayText = typeof text === 'string' ? [text] : text;
+
   return (
     <BannerBase
       data-theme={theme === ThemeType.light ? ThemeType.dark : ThemeType.light}
@@ -73,9 +75,11 @@ export const Toast = ({
       <Box display={Display.Flex} gap={4} data-testid={dataTestId}>
         {startAdornment}
         <Box>
-          <Text className="toast-text" variant={textVariant}>
-            {text}
-          </Text>
+          {displayText.map((txt) => (
+            <Text key={txt} className="toast-text" variant={textVariant}>
+              {txt}
+            </Text>
+          ))}
           {actionText && onActionClick ? (
             <ButtonLink onClick={onActionClick}>{actionText}</ButtonLink>
           ) : null}

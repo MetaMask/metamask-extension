@@ -16,10 +16,10 @@ const TOAST_TIMEOUT_MILLISECONDS = 5 * 1000; // 5 Seconds
 const NetworkChangeToastLegacy = ({
   confirmation,
 }: {
-  confirmation: { id: string; chainId: string };
+  confirmation: { id: string; chainId: string; origin: string };
 }) => {
-  const newChainId = confirmation?.chainId;
-  const [toastVisible, setToastVisible] = useState(false);
+  const { chainId: newChainId, origin: newOrigin } = confirmation ?? {};
+  const [toastMessage, setToastMessage] = useState<string[]>([]);
   const t = useI18nContext();
 
   const network = useSelector((state) =>
@@ -27,62 +27,86 @@ const NetworkChangeToastLegacy = ({
   );
 
   const hideToast = useCallback(() => {
-    setToastVisible(false);
-  }, [setToastVisible]);
+    setToastMessage([]);
+  }, [setToastMessage]);
 
   useEffect(() => {
     let isMounted = true;
 
-    if (!confirmation) {
+    if (!confirmation?.id) {
       return undefined;
     }
 
     (async () => {
       const lastInteractedConfirmationInfo =
         await getLastInteractedConfirmationInfo();
-      const currentTimestamp = new Date().getTime();
-      if (
-        lastInteractedConfirmationInfo &&
-        lastInteractedConfirmationInfo.chainId !== newChainId &&
-        currentTimestamp - lastInteractedConfirmationInfo.timestamp <=
-          CHAIN_CHANGE_THRESHOLD_MILLISECONDS &&
-        isMounted
-      ) {
-        setToastVisible(true);
-        setTimeout(() => {
-          if (isMounted) {
-            hideToast();
+
+      if (lastInteractedConfirmationInfo) {
+        const currentTimestamp = new Date().getTime();
+
+        const timeSinceLastConfirmation =
+          currentTimestamp - lastInteractedConfirmationInfo.timestamp;
+
+        const recentlyViewedOtherConfirmation =
+          timeSinceLastConfirmation <= CHAIN_CHANGE_THRESHOLD_MILLISECONDS;
+
+        if (recentlyViewedOtherConfirmation && isMounted) {
+          const { chainId, origin } = lastInteractedConfirmationInfo;
+
+          const messages: string[] = [];
+          if (chainId !== newChainId) {
+            messages.push(t('networkSwitchMessage', [network.name ?? '']));
           }
-        }, TOAST_TIMEOUT_MILLISECONDS);
+
+          if (origin !== newOrigin) {
+            messages.push(t('originSwitchMessage', [new URL(newOrigin).host]));
+          }
+
+          if (messages.length) {
+            setToastMessage(messages);
+            setTimeout(() => {
+              if (isMounted) {
+                // hideToast();
+              }
+            }, TOAST_TIMEOUT_MILLISECONDS);
+          }
+        }
       }
-      if (
-        (!lastInteractedConfirmationInfo ||
-          lastInteractedConfirmationInfo?.id !== confirmation.id) &&
-        isMounted
-      ) {
+
+      const isNewId =
+        !lastInteractedConfirmationInfo ||
+        lastInteractedConfirmationInfo?.id !== confirmation.id;
+
+      if (isNewId && isMounted) {
         setLastInteractedConfirmationInfo({
           id: confirmation.id,
           chainId: newChainId,
+          origin: newOrigin,
           timestamp: new Date().getTime(),
         });
       }
     })();
+
     return () => {
       isMounted = false;
     };
-  }, [confirmation?.id]);
+  }, [
+    confirmation?.id,
+    hideToast,
+    network.name,
+    newChainId,
+    newOrigin,
+    setToastMessage,
+    t,
+  ]);
 
-  if (!toastVisible) {
+  if (!toastMessage?.length) {
     return null;
   }
 
   return (
     <Box className="toast_wrapper">
-      <Toast
-        onClose={hideToast}
-        text={t('networkSwitchMessage', [network.name ?? ''])}
-        startAdornment={null}
-      />
+      <Toast onClose={hideToast} text={toastMessage} startAdornment={null} />
     </Box>
   );
 };
