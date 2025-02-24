@@ -45,7 +45,7 @@ import {
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import { AvatarType } from '../../avatar-group/avatar-group.types';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
-import { useAsyncResult } from '../../../../hooks/useAsyncResult';
+import { useAsyncResult } from '../../../../hooks/useAsync';
 import { fetchTopAssetsList } from '../../../../pages/swaps/swaps.util';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import {

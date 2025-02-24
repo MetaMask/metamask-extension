@@ -21,7 +21,7 @@ import { isNativeAddress } from '../../../shared/modules/bridge-utils/caip-forma
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { Token } from '../../components/app/assets/types';
 import { useMultichainBalances } from '../useMultichainBalances';
-import { useAsyncResult } from '../useAsyncResult';
+import { useAsyncResult } from '../useAsync';
 import { fetchTopAssetsList } from '../../pages/swaps/swaps.util';
 import { fetchBridgeTokens } from '../../../shared/modules/bridge-utils/bridge.util';
 import { MINUTE } from '../../../shared/constants/time';
