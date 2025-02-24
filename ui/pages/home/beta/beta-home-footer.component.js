@@ -16,10 +16,6 @@ const BetaHomeFooter = () => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
-  // TODO: Bring back once internal beta is over
-  // const SUPPORT_LINK =
-  //   'https://docs.google.com/forms/d/e/1FAIpQLSfpkpeVMvfFw_1CWzrs5M3TEqE9VPMSspLPJgk1u4ZyUkQRbg/viewform?usp=sharing';
-
   return (
     <>
       <a
