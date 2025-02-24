@@ -212,6 +212,8 @@ export const getMultiChainAssets = createDeepEqualSelector(
   },
 );
 
+const zeroBalanceAssetFallback = { amount: 0, unit: '' };
+
 export const getMultichainAggregatedBalance = createDeepEqualSelector(
   (_state, selectedAccount) => selectedAccount,
   getMultichainNetwork,
@@ -233,7 +235,7 @@ export const getMultichainAggregatedBalance = createDeepEqualSelector(
     assetIds.forEach((assetId: CaipAssetId) => {
       const { chainId } = parseCaipAssetType(assetId);
       if (chainId === currentNetwork.chainId) {
-        const balance = balances?.[assetId] || { amount: '0', unit: '' };
+        const balance = balances?.[assetId] || zeroBalanceAssetFallback;
         const rate = assetRates?.[assetId]?.rate || '0';
         const balanceInFiat = new BigNumber(balance.amount).times(rate);
 
@@ -259,12 +261,12 @@ export const getMultichainNativeTokenBalance = createDeepEqualSelector(
     const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
     const balances = multichainBalances?.[selectedAccountAddress.id];
 
-    let nativeTokenBalance = { amount: 0, unit: '' };
+    let nativeTokenBalance = zeroBalanceAssetFallback;
 
     assetIds.forEach((assetId: CaipAssetId) => {
       const { chainId, assetNamespace } = parseCaipAssetType(assetId);
       if (chainId === currentNetwork.chainId && assetNamespace === 'slip44') {
-        const balance = balances?.[assetId] || { amount: 0, unit: '' };
+        const balance = balances?.[assetId] || zeroBalanceAssetFallback;
 
         nativeTokenBalance = balance;
       }
