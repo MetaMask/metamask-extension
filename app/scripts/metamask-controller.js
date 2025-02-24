@@ -355,7 +355,7 @@ import {
   MultichainAssetsControllerInit,
   MultichainTransactionsControllerInit,
   MultichainBalancesControllerInit,
-  MultiChainAssetsRatesControllerInit,
+  MultichainAssetsRatesControllerInit,
   ///: END:ONLY_INCLUDE_IF
   MultichainNetworkControllerInit,
 } from './controller-init/multichain';
@@ -2018,7 +2018,7 @@ export default class MetamaskController extends EventEmitter {
       TransactionController: TransactionControllerInit,
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       MultichainAssetsController: MultichainAssetsControllerInit,
-      MultiChainAssetsRatesController: MultiChainAssetsRatesControllerInit,
+      MultichainAssetsRatesController: MultichainAssetsRatesControllerInit,
       MultichainBalancesController: MultichainBalancesControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
       ///: END:ONLY_INCLUDE_IF
@@ -2057,8 +2057,8 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.MultichainBalancesController;
     this.multichainTransactionsController =
       controllersByName.MultichainTransactionsController;
-    this.multiChainAssetsRatesController =
-      controllersByName.MultiChainAssetsRatesController;
+    this.multichainAssetsRatesController =
+      controllersByName.MultichainAssetsRatesController;
     ///: END:ONLY_INCLUDE_IF
     this.multichainNetworkController =
       controllersByName.MultichainNetworkController;
@@ -2237,7 +2237,7 @@ export default class MetamaskController extends EventEmitter {
         MultichainAssetsController: this.multichainAssetsController,
         MultichainBalancesController: this.multichainBalancesController,
         MultichainTransactionsController: this.multichainTransactionsController,
-        MultiChainAssetsRatesController: this.multiChainAssetsRatesController,
+        MultichainAssetsRatesController: this.multichainAssetsRatesController,
         ///: END:ONLY_INCLUDE_IF
         MultichainNetworkController: this.multichainNetworkController,
         NetworkController: this.networkController,

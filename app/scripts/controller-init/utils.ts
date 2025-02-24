@@ -40,7 +40,7 @@ export type ControllersToInitialize =
   | 'CronjobController'
   | 'ExecutionService'
   | 'MultichainAssetsController'
-  | 'MultiChainAssetsRatesController'
+  | 'MultichainAssetsRatesController'
   | 'MultichainBalancesController'
   | 'MultichainTransactionsController'
   | 'RateLimitController'
@@ -51,7 +51,7 @@ export type ControllersToInitialize =
   | 'PPOMController'
   | 'TransactionController';
 
-type InitFunction<Name extends ControllersToInitialize> =
+  type InitFunction<Name extends ControllersToInitialize & keyof ControllerByName> =
   ControllerInitFunction<
     ControllerByName[Name],
     // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
