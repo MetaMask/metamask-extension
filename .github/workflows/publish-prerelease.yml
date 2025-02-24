@@ -63,6 +63,13 @@ jobs:
           echo "Benchmark artifacts:"
           ls -l ./test-artifacts/chrome/benchmark/
 
+      - name: Get CircleCI job artifacts
+        env:
+          CIRCLE_WORKFLOW_JOB_ID: ${{ steps.get-circleci-job-details.outputs.CIRCLE_WORKFLOW_JOB_ID }}
+        run: |
+          mkdir -p test-artifacts/chrome
+          curl --silent --location "https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0/test-artifacts/chrome/bundle_size.json" > "test-artifacts/chrome/bundle_size.json"
+
       - name: Publish prerelease
         env:
           PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
