@@ -109,8 +109,6 @@ import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
-import { calculateTokenBalance } from '../components/app/assets/util/calculateTokenBalance';
-import { calculateTokenFiatAmount } from '../components/app/assets/util/calculateTokenFiatAmount';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
@@ -632,6 +630,104 @@ export function getSelectedAccountTokensAcrossChains(state) {
     }
   });
 
+  return tokensByChain;
+}
+
+/**
+ * Get the native token balance for a given account address and chainId
+ *
+ * @param {object} state - Redux state
+ * @param {string} accountAddress - The address of the account
+ * @param {string} chainId - The chainId of the account
+ */
+export const getNativeTokenCachedBalanceByChainIdSelector = createSelector(
+  (state) => state,
+  (_state, accountAddress) => accountAddress,
+  (state, accountAddress) =>
+    getNativeTokenCachedBalanceByChainIdByAccountAddress(state, accountAddress),
+);
+
+/**
+ * Get the tokens across chains for a given account address
+ *
+ * @param {object} state - Redux state
+ * @param {string} accountAddress - The address of the account
+ */
+export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
+  (state) => state,
+  (_state, accountAddress) => accountAddress,
+  (state, accountAddress) =>
+    getTokensAcrossChainsByAccountAddress(state, accountAddress),
+);
+
+/**
+ * Get the native token balance for a given account address and chainId
+ *
+ * @param {object} state - Redux state
+ * @param {string} selectedAddress - The address of the selected account
+ */
+export function getNativeTokenCachedBalanceByChainIdByAccountAddress(
+  state,
+  selectedAddress,
+) {
+  const { accountsByChainId } = state.metamask;
+
+  const balancesByChainId = {};
+  for (const [chainId, accounts] of Object.entries(accountsByChainId || {})) {
+    if (accounts[selectedAddress]) {
+      balancesByChainId[chainId] = accounts[selectedAddress].balance;
+    }
+  }
+  return balancesByChainId;
+}
+
+/**
+ * Get the tokens across chains for a given account address
+ *
+ * @param {object} state - Redux state
+ * @param {string} selectedAddress - The address of the selected account
+ */
+export function getTokensAcrossChainsByAccountAddress(state, selectedAddress) {
+  const { allTokens } = state.metamask;
+
+  const tokensByChain = {};
+
+  const nativeTokenBalancesByChainId =
+    getNativeTokenCachedBalanceByChainIdByAccountAddress(
+      state,
+      selectedAddress,
+    );
+
+  const chainIds = new Set([
+    ...Object.keys(allTokens || {}),
+    ...Object.keys(nativeTokenBalancesByChainId || {}),
+  ]);
+
+  chainIds.forEach((chainId) => {
+    if (!tokensByChain[chainId]) {
+      tokensByChain[chainId] = [];
+    }
+
+    if (allTokens[chainId]?.[selectedAddress]) {
+      allTokens[chainId][selectedAddress].forEach((token) => {
+        const tokenWithChain = { ...token, chainId, isNative: false };
+        tokensByChain[chainId].push(tokenWithChain);
+      });
+    }
+
+    const nativeBalance = nativeTokenBalancesByChainId[chainId];
+    if (nativeBalance) {
+      const nativeTokenInfo = getNativeTokenInfo(state, chainId);
+      tokensByChain[chainId].push({
+        ...nativeTokenInfo,
+        address: '',
+        balance: nativeBalance,
+        chainId,
+        isNative: true,
+        image: getNativeCurrencyForChain(chainId),
+      });
+    }
+  });
   return tokensByChain;
 }
 
@@ -2985,90 +3081,3 @@ export function getKeyringSnapAccounts(state) {
   return keyringAccounts;
 }
 ///: END:ONLY_INCLUDE_IF
-
-export const getTokenBalancesEvm = createDeepEqualSelector(
-  getSelectedAccountTokensAcrossChains,
-  getSelectedAccountNativeTokenCachedBalanceByChainId,
-  (state) => state.metamask.tokenBalances,
-  getMarketData,
-  getCurrencyRates,
-  getPreferences,
-  getIsTokenNetworkFilterEqualCurrentNetwork,
-  getSelectedAccount,
-  getCurrentNetwork,
-  (
-    selectedAccountTokensChains,
-    nativeBalances,
-    tokenBalances,
-    marketData,
-    currencyRates,
-    preferences,
-    isOnCurrentNetwork,
-    selectedAccount,
-    currentNetwork,
-  ) => {
-    const { hideZeroBalanceTokens } = preferences;
-    const selectedAccountTokenBalancesAcrossChains =
-      tokenBalances[selectedAccount.address];
-
-    // we need to filter Testnets
-    const isTestNetwork = TEST_CHAINS.includes(currentNetwork.chainId);
-    const filteredAccountTokensChains = Object.fromEntries(
-      Object.entries(selectedAccountTokensChains).filter(([chainId]) =>
-        isTestNetwork
-          ? TEST_CHAINS.includes(chainId)
-          : !TEST_CHAINS.includes(chainId),
-      ),
-    );
-    const tokensWithBalance = [];
-    Object.entries(filteredAccountTokensChains).forEach(
-      ([stringChainKey, tokens]) => {
-        const chainId = stringChainKey;
-        tokens.forEach((token) => {
-          const { isNative, address, decimals } = token;
-          const balance =
-            calculateTokenBalance({
-              isNative,
-              chainId,
-              address,
-              decimals,
-              nativeBalances,
-              selectedAccountTokenBalancesAcrossChains,
-            }) || '0';
-
-          const tokenFiatAmount = calculateTokenFiatAmount({
-            token,
-            chainId,
-            balance,
-            marketData,
-            currencyRates,
-          });
-
-          // Respect the "hide zero balance" setting (when true):
-          // - Native tokens should always display with zero balance when on the current network filter.
-          // - Native tokens should not display with zero balance when on all networks filter
-          // - ERC20 tokens with zero balances should respect the setting on both the current and all networks.
-
-          // Respect the "hide zero balance" setting (when false):
-          // - Native tokens should always display with zero balance when on the current network filter.
-          // - Native tokens should always display with zero balance when on all networks filter
-          // - ERC20 tokens always display with zero balance on both the current and all networks filter.
-          if (
-            !hideZeroBalanceTokens ||
-            balance !== '0' ||
-            (token.isNative && isOnCurrentNetwork)
-          ) {
-            tokensWithBalance.push({
-              ...token,
-              balance,
-              tokenFiatAmount,
-              chainId,
-              string: String(balance),
-            });
-          }
-        });
-      },
-    );
-    return tokensWithBalance;
-  },
-);
