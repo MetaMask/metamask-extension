@@ -1082,16 +1082,16 @@ jobs:
           name: Push Firefox bundle script
           command: .circleci/scripts/push-firefox-bundle-script.sh
 
-    job-push-firefox-bundle-script:
-      executor: node-browsers-small
-      steps:
-        - run: *shallow-git-clone-and-enable-vnc
-        - run: sudo corepack enable
-        - attach_workspace:
-            at: .
-        - run:
-            name: Push Firefox bundle script
-            command: .circleci/scripts/push-firefox-bundle-script.sh
+  job-push-firefox-bundle-script:
+    executor: node-browsers-small
+    steps:
+      - run: *shallow-git-clone-and-enable-vnc
+      - run: sudo corepack enable
+      - attach_workspace:
+          at: .
+      - run:
+          name: Push Firefox bundle script
+          command: .circleci/scripts/push-firefox-bundle-script.sh
 
   job-publish-ts-migration-dashboard:
     executor: node-browsers-small
