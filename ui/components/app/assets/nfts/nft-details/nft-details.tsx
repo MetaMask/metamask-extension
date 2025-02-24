@@ -88,7 +88,13 @@ import NftDetailDescription from './nft-detail-description';
 
 const MAX_TOKEN_ID_LENGTH = 15;
 
-export default function NftDetails({ nft }: { nft: Nft }) {
+export function NftDetailsComponent({
+  nft,
+  nftChainId,
+}: {
+  nft: Nft;
+  nftChainId: string;
+}) {
   const {
     image,
     imageOriginal,
@@ -104,8 +110,6 @@ export default function NftDetails({ nft }: { nft: Nft }) {
     topBid,
     attributes,
   } = nft;
-
-  const { chainId: nftChainId } = useParams();
 
   const t = useI18nContext();
   const history = useHistory();
@@ -893,3 +897,11 @@ export default function NftDetails({ nft }: { nft: Nft }) {
     </Page>
   );
 }
+
+function NftDetails({ nft }: { nft: Nft }) {
+  const { chainId } = useParams();
+
+  return <NftDetailsComponent nft={nft} nftChainId={chainId ?? ''} />;
+}
+
+export default NftDetails;

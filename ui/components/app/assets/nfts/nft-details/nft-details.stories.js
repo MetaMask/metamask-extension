@@ -1,6 +1,5 @@
 import React from 'react';
-import { MemoryRouter, Route, Switch } from 'react-router-dom';
-import NftDetails from './nft-details';
+import { NftDetailsComponent } from './nft-details';
 
 const nft = {
   name: 'Catnip Spicywright',
@@ -19,6 +18,8 @@ const nft = {
   },
 };
 
+const nftChainId = '0x1';
+
 export default {
   title: 'Components/App/NftsDetail',
 
@@ -29,35 +30,18 @@ export default {
   },
   args: {
     nft,
+    nftChainId,
   },
 };
 
 export const DefaultStory = (args) => {
-  return (
-    <MemoryRouter initialEntries={['/nft/0x1']}>
-      <Switch>
-        <Route
-          path="/nft/:chainId"
-          component={() => <NftDetails {...args} />}
-        />
-      </Switch>
-    </MemoryRouter>
-  );
+  return <NftDetailsComponent {...args} />;
 };
 
 DefaultStory.storyName = 'Default';
 
 export const NoImage = (args) => {
-  return (
-    <MemoryRouter initialEntries={['/nft/0x1']}>
-      <Switch>
-        <Route
-          path="/nft/:chainId"
-          component={() => <NftDetails {...args} />}
-        />
-      </Switch>
-    </MemoryRouter>
-  );
+  return <NftDetailsComponent {...args} />;
 };
 
 NoImage.args = {
