@@ -16,7 +16,7 @@ const VALID_SECRET_RECOVERY_PHRASE =
   'input turtle oil scorpion exile useless dry foster vessel knee area label';
 
 jest.mock('../../../../store/actions', () => ({
-  addNewMnemonicToVault: jest
+  importMnemonicToVault: jest
     .fn()
     .mockReturnValue(jest.fn().mockResolvedValue(null)),
   showAlert: jest.fn().mockReturnValue({ type: 'ALERT_OPEN' }),
@@ -86,7 +86,7 @@ describe('ImportSRP', () => {
     fireEvent.click(getByText('Import wallet'));
 
     await waitFor(() => {
-      expect(actions.addNewMnemonicToVault).toHaveBeenCalledWith(
+      expect(actions.importMnemonicToVault).toHaveBeenCalledWith(
         VALID_SECRET_RECOVERY_PHRASE,
       );
       const dispatchedActions = store.getActions();
@@ -99,7 +99,7 @@ describe('ImportSRP', () => {
   });
 
   it('should log an error and not call onActionComplete on import failure', async () => {
-    (actions.addNewMnemonicToVault as jest.Mock).mockImplementation(() =>
+    (actions.importMnemonicToVault as jest.Mock).mockImplementation(() =>
       jest.fn().mockRejectedValue(new Error('error')),
     );
 
@@ -116,7 +116,7 @@ describe('ImportSRP', () => {
     fireEvent.click(getByText('Import wallet'));
 
     await waitFor(() => {
-      expect(actions.addNewMnemonicToVault).toHaveBeenCalledWith(
+      expect(actions.importMnemonicToVault).toHaveBeenCalledWith(
         VALID_SECRET_RECOVERY_PHRASE,
       );
       expect(onActionComplete).not.toHaveBeenCalled();
