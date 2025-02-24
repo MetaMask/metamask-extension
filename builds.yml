@@ -64,7 +64,9 @@ buildTypes:
     features:
       - build-flask
       - keyring-snaps
+      # - bitcoin
       - solana
+      - multi-srp
       - solana-swaps
     env:
       - INFURA_FLASK_PROJECT_ID
@@ -137,9 +139,14 @@ features:
   keyring-snaps:
     assets:
       - ./{app,shared,ui}/**/keyring-snaps/**
+  bitcoin:
   solana:
     assets:
       - ./{app,shared,ui}/**/solana/**
+  multi-srp:
+    assets:
+      # srp-list is a special case and is used in the srp recovery flow now.
+      - ./{app,shared,ui}/**/multi-srp/(?!.*srp-list)/**
   solana-swaps:
 
 # Env variables that are required for all types of builds
@@ -303,6 +310,8 @@ env:
 
   # Uses yaml anchors to DRY - https://juju.is/docs/sdk/yaml-anchors-and-aliases
   - METAMASK_BUILD_TYPE_DEFAULT: *default
+  # Path to a JSON file that will be used to override the default manifest values.
+  - MANIFEST_OVERRIDES: null
 
   ###
   # Account Abstraction (EIP-4337)
