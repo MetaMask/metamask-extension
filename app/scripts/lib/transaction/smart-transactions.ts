@@ -368,7 +368,6 @@ class SmartTransactionHook {
 export const submitSmartTransactionHook = (
   request: SubmitSmartTransactionRequest,
 ) => {
-  console.log('submitSmartTransactionHook .................', request);
   const smartTransactionHook = new SmartTransactionHook(request);
   return smartTransactionHook.submit();
 };

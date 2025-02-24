@@ -2441,13 +2441,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   triggerNetworkrequests() {
-    // @ts-ignore-next-line
-    console.log(
-      'this.#getGlobalChainId() 11 .......',
-      this.#getGlobalChainId(),
-      this.#getAllAddedNetworks(),
-    );
-
     this.txController.stopIncomingTransactionPolling();
 
     this.txController.stopIncomingTransactionPolling();
@@ -2760,12 +2753,6 @@ export default class MetamaskController extends EventEmitter {
         if (currState.incomingTransactionsPreferences?.[chainId]) {
           this.txController.stopIncomingTransactionPolling();
 
-          // @ts-ignore-next-line
-          console.log(
-            'this.#getGlobalChainId() 22 .......',
-            this.#getGlobalChainId(),
-          );
-
           this.txController.startIncomingTransactionPolling(
             this.#getAllAddedNetworks(),
           );
@@ -2854,12 +2841,6 @@ export default class MetamaskController extends EventEmitter {
         await this.txController.updateIncomingTransactions([
           this.#getGlobalChainId(),
         ]);
-
-        // @ts-ignore-next-line
-        console.log(
-          'this.#getGlobalChainId() 33 .......',
-          this.#getGlobalChainId(),
-        );
 
         await this.txController.startIncomingTransactionPolling([
           this.#getGlobalChainId(),
@@ -7712,8 +7693,6 @@ export default class MetamaskController extends EventEmitter {
     const networksConfig =
       this.networkController.state.networkConfigurationsByChainId;
     const chainIds = Object.keys(networksConfig);
-
-    console.log('chainIds .......', chainIds);
 
     return chainIds;
   }

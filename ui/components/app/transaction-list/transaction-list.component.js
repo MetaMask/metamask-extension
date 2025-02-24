@@ -263,18 +263,8 @@ export default function TransactionList({
     nonceSortedPendingTransactionsSelector,
   );
 
-  console.log(
-    'unfilteredPendingTransactionsCurrentChain ++++++++++',
-    unfilteredPendingTransactionsCurrentChain,
-  );
-
   const unfilteredPendingTransactionsAllChains = useSelector(
     nonceSortedPendingTransactionsSelectorAllChains,
-  );
-
-  console.log(
-    'unfilteredPendingTransactionsAllChains ++++++++++',
-    unfilteredPendingTransactionsAllChains,
   );
 
   const unfilteredPendingTransactions = useMemo(() => {
@@ -295,18 +285,8 @@ export default function TransactionList({
     nonceSortedCompletedTransactionsSelector,
   );
 
-  console.log(
-    'unfilteredCompletedTransactionsCurrentChain ++++++++++',
-    unfilteredCompletedTransactionsCurrentChain,
-  );
-
   const unfilteredCompletedTransactionsAllChains = useSelector(
     nonceSortedCompletedTransactionsSelectorAllChains,
-  );
-
-  console.log(
-    'unfilteredCompletedTransactionsAllChains ++++++++++',
-    unfilteredCompletedTransactionsAllChains,
   );
 
   const unfilteredCompletedTransactions = useMemo(() => {
