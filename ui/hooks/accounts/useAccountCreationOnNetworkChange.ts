@@ -9,7 +9,7 @@ import {
 
 type UseAccountCreationOnNetworkChangeReturn = {
   createAccount: (chainId: CaipChainId) => Promise<void>;
-  isAccountInNetwork: (chainId: CaipChainId) => boolean;
+  hasAnyAccountsInNetwork: (chainId: CaipChainId) => boolean;
 };
 
 export const useAccountCreationOnNetworkChange =
@@ -37,11 +37,11 @@ export const useAccountCreationOnNetworkChange =
       }
     };
 
-    const isAccountInNetwork = (chainId: CaipChainId) => {
+    const hasAnyAccountsInNetwork = (chainId: CaipChainId) => {
       return accounts.some(({ scopes }: { scopes: CaipChainId[] }) =>
         scopes.includes(chainId),
       );
     };
 
-    return { createAccount, isAccountInNetwork };
+    return { createAccount, hasAnyAccountsInNetwork };
   };

@@ -178,8 +178,8 @@ describe('network utils', () => {
           defaultBlockExplorerUrlIndex: 0,
           isEvm: true,
         },
-        'eip155:11155111': {
-          chainId: 'eip155:11155111',
+        [EthScope.Testnet]: {
+          chainId: EthScope.Testnet,
           name: 'Sepolia',
           nativeCurrency: 'SepoliaETH',
           blockExplorerUrls: ['https://sepolia.etherscan.io'],
@@ -197,7 +197,7 @@ describe('network utils', () => {
         { networkId: SolScope.Mainnet },
         { networkId: BtcScope.Mainnet },
         { networkId: EthScope.Mainnet },
-        { networkId: 'eip155:11155111' },
+        { networkId: EthScope.Testnet },
       ];
       expect(sortNetworks(networks, sortedChainIds)).toStrictEqual([
         {
@@ -221,7 +221,7 @@ describe('network utils', () => {
           isEvm: true,
         },
         {
-          chainId: 'eip155:11155111',
+          chainId: EthScope.Testnet,
           name: 'Sepolia',
           nativeCurrency: 'SepoliaETH',
           blockExplorerUrls: ['https://sepolia.etherscan.io'],

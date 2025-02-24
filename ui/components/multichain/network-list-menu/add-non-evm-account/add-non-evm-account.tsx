@@ -52,6 +52,10 @@ const AddNonEvmAccountModal = ({ chainId }: { chainId: CaipChainId }) => {
           width={BlockSize.Full}
           size={ButtonPrimarySize.Lg}
           onClick={async () => {
+            // This modal is being part of the `NetworkListMenu`. So
+            // we need to explicitly close it before triggering
+            // the account creation.
+            // See: `NetworkMenuList.ACTION_MODE.ADD_NON_EVM_ACCOUNT`.
             dispatch(toggleNetworkMenu());
             await createAccount(chainId);
           }}

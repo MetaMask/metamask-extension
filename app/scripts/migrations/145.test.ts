@@ -60,5 +60,18 @@ describe(`migration #${version}`, () => {
       const newStorage = await migrate(oldStorage);
       expect(newStorage.data).toStrictEqual(expectedData);
     });
+
+    it('does nothing if NetworkOrderController.orderedNetworkList is not an array', async () => {
+      const oldStorage = {
+        meta: { version: oldVersion },
+        data: {
+          NetworkOrderController: {
+            orderedNetworkList: 'not an array',
+          },
+        },
+      };
+      const newStorage = await migrate(oldStorage);
+      expect(newStorage.data).toStrictEqual(oldStorage.data);
+    });
   });
 });

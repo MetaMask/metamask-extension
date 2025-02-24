@@ -129,7 +129,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-  const { isAccountInNetwork } = useAccountCreationOnNetworkChange();
+  const { hasAnyAccountsInNetwork } = useAccountCreationOnNetworkChange();
 
   const { tokenNetworkFilter } = useSelector(getPreferences);
   const showTestnets = useSelector(getShowTestNetworks);
@@ -325,7 +325,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   };
 
   const handleNonEvmNetworkChange = async (chainId: CaipChainId) => {
-    if (isAccountInNetwork(chainId)) {
+    if (hasAnyAccountsInNetwork(chainId)) {
       dispatch(toggleNetworkMenu());
       dispatch(setActiveNetwork(chainId));
       return;
@@ -343,10 +343,12 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       await handleNonEvmNetworkChange(chainId);
     }
 
-    const chainIdToTrack = isEvm ? convertCaipToHexChainId(chainId) : chainId;
-    const currentChainIdToTrack = isEvm
-      ? convertCaipToHexChainId(currentChainId)
-      : currentChainId;
+    const [chainIdToTrack, currentChainIdToTrack] = isEvm
+      ? [
+          convertCaipToHexChainId(chainId),
+          convertCaipToHexChainId(currentChainId),
+        ]
+      : [chainId, currentChainId];
 
     trackEvent({
       event: MetaMetricsEventName.NavNetworkSwitched,
@@ -365,7 +367,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   ): Record<string, boolean> => {
     if (!network.isEvm) {
       return {
-        isEnabled: isAccountInNetwork(network.chainId) || isUnlocked,
+        isEnabled: hasAnyAccountsInNetwork(network.chainId) || isUnlocked,
         isDeletable: false,
         isEditable: false,
         hasMultiRpcOptions: false,
