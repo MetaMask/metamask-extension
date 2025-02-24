@@ -232,15 +232,15 @@ export function createNewVaultAndRestore(
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-export function addNewMnemonicToVault(
+export function importMnemonicToVault(
   mnemonic: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
-    log.debug(`background.addNewMnemonicToVault`);
+    log.debug(`background.importMnemonicToVault`);
 
     return new Promise<void>((resolve, reject) => {
-      callBackgroundMethod('addNewMnemonicToVault', [mnemonic], (err) => {
+      callBackgroundMethod('importMnemonicToVault', [mnemonic], (err) => {
         if (err) {
           reject(err);
           return;

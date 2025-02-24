@@ -2733,11 +2733,11 @@ describe('Actions', () => {
   describe('generateNewHdKeyring', () => {
     it('calls generateNewMnemonicAndAddToVault in the background', async () => {
       const store = mockStore();
-
+      const generateNewMnemonicAndAddToVaultStub = sinon
+        .stub()
+        .callsFake((cb) => cb(null, {}));
       background.getApi.returns({
-        generateNewMnemonicAndAddToVault: sinon
-          .stub()
-          .callsFake((cb) => cb(null, {})),
+        generateNewMnemonicAndAddToVault: generateNewMnemonicAndAddToVaultStub,
       });
 
       setBackgroundConnection(background.getApi());
@@ -2750,6 +2750,34 @@ describe('Actions', () => {
       await store.dispatch(actions.generateNewHdKeyring());
 
       expect(store.getActions()).toStrictEqual(expectedActions);
+      expect(generateNewMnemonicAndAddToVaultStub.calledOnceWith()).toBe(true);
+    });
+  });
+
+  describe('importMnemonicToVault', () => {
+    it('calls importMnemonicToVault in the background', async () => {
+      const store = mockStore();
+      const importMnemonicToVaultStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb(null, {}));
+      background.getApi.returns({
+        importMnemonicToVault: importMnemonicToVaultStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      const mnemonic = 'mock seed';
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      await store.dispatch(actions.importMnemonicToVault(mnemonic));
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
+      expect(importMnemonicToVaultStub.calledOnceWith(mnemonic)).toStrictEqual(
+        true,
+      );
     });
   });
 });
