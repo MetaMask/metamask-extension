@@ -238,6 +238,7 @@ import {
   BridgeUserAction,
   BridgeBackgroundAction,
 } from '../../shared/types/bridge';
+import { isProduction } from '../../shared/modules/environment';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -1267,6 +1268,7 @@ export default class MetamaskController extends EventEmitter {
       state: initState.UserStorageController,
       config: {
         accountSyncing: {
+          maxNumberOfAccountsToAdd: isProduction() ? undefined : 100,
           onAccountAdded: (profileId) => {
             this.metaMetricsController.trackEvent({
               category: MetaMetricsEventCategory.ProfileSyncing,
@@ -1312,7 +1314,7 @@ export default class MetamaskController extends EventEmitter {
         name: 'UserStorageController',
         allowedActions: [
           'KeyringController:getState',
-          'KeyringController:addNewAccount',
+          'KeyringController:withKeyring',
           'SnapController:handleRequest',
           'AuthenticationController:getBearerToken',
           'AuthenticationController:getSessionProfile',
