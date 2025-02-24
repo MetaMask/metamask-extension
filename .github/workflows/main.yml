@@ -46,3 +46,18 @@ jobs:
 
       - run: cat package.json
         shell: bash
+
+  test4:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - run: echo ${{ hashFiles('README.md') == '' }}
+        shell: bash
+
+      - run: echo ${{ hashFiles('.git') == '' }}
+        shell: bash
+
+      - run: echo ${{ hashFiles('.git') }}
+        shell: bash
