@@ -427,7 +427,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       );
     };
 
-    const iconSrc = getNetworkIcon(network.chainId, network.isEvm);
+    const iconSrc = getNetworkIcon(network);
 
     return (
       <NetworkListItem

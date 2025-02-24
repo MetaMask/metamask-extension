@@ -4,6 +4,7 @@ import {
   KnownCaipNamespace,
   isStrictHexString,
   parseCaipChainId,
+  add0x,
 } from '@metamask/utils';
 import { convertHexToDecimal } from '@metamask/controller-utils';
 import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
@@ -149,14 +150,17 @@ export const sortNetworks = (
 /**
  * Get the network icon for the given chain ID.
  *
- * @param chainId - The chain ID to get the icon for in Caip-19 format.
- * @param isEvm - Whether the chain ID is for an EVM network.
+ * @param networkConfiguration - The network configuration to get the icon for.
  * @returns The URL of the network icon.
  */
-export const getNetworkIcon = (chainId: CaipChainId, isEvm: boolean) => {
-  return isEvm
-    ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[convertCaipToHexChainId(chainId)]
-    : MULTICHAIN_TOKEN_IMAGE_MAP[chainId];
+export const getNetworkIcon = (
+  networkConfiguration: MultichainNetworkConfiguration,
+) => {
+  return networkConfiguration.isEvm
+    ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+        convertCaipToHexChainId(networkConfiguration.chainId)
+      ]
+    : MULTICHAIN_TOKEN_IMAGE_MAP[networkConfiguration.chainId];
 };
 
 /**

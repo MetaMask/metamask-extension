@@ -7,22 +7,22 @@ import MetafoxLogo from '../../ui/metafox-logo';
 import { PickerNetwork } from '../../component-library';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getTestNetworkBackgroundColor } from '../../../selectors';
+import { getNetworkIcon } from '../../../../shared/modules/network.utils';
 
 type AppHeaderLockedContentProps = {
   currentNetwork: MultichainNetworkConfiguration;
-  networkIconSrc: string;
   networkOpenCallback: () => void;
 };
 
 export const AppHeaderLockedContent = ({
   currentNetwork,
   networkOpenCallback,
-  networkIconSrc,
 }: AppHeaderLockedContentProps) => {
   const t = useI18nContext();
   const history = useHistory();
 
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
+  const networkIconSrc = getNetworkIcon(currentNetwork);
 
   return (
     <>

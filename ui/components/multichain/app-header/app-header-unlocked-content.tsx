@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react';
 import browser from 'webextension-polyfill';
 
-import { InternalAccount } from '@metamask/keyring-internal-api';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -57,24 +56,22 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
 import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
+import { getNetworkIcon } from '../../../../shared/modules/network.utils';
 
 type AppHeaderUnlockedContentProps = {
   popupStatus: boolean;
   isEvmNetwork: boolean;
   currentNetwork: MultichainNetworkConfiguration;
-  networkIconSrc: string;
   networkOpenCallback: () => void;
   disableNetworkPicker: boolean;
   disableAccountPicker: boolean;
   menuRef: React.RefObject<HTMLButtonElement>;
-  internalAccount: InternalAccount;
 };
 
 export const AppHeaderUnlockedContent = ({
   popupStatus,
   isEvmNetwork,
   currentNetwork,
-  networkIconSrc,
   networkOpenCallback,
   disableNetworkPicker,
   disableAccountPicker,
@@ -87,6 +84,7 @@ export const AppHeaderUnlockedContent = ({
   const origin = useSelector(getOriginOfCurrentTab);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
+  const networkIconSrc = getNetworkIcon(currentNetwork);
 
   // Used for account picker
   const internalAccount = useSelector(getSelectedInternalAccount);
