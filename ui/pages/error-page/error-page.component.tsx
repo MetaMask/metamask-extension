@@ -110,16 +110,27 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
             size={IconSize.Xl}
             color={IconColor.warningDefault}
           />
-          <Text variant={TextVariant.headingMd} marginBottom={4}>
+          <Text
+            color={TextColor.inherit}
+            variant={TextVariant.headingMd}
+            marginBottom={4}
+          >
             {t('errorPageTitle')}
           </Text>
         </Box>
 
         <div className="error-page__banner-wrapper">
-          <BannerAlert marginBottom={4}>{t('errorPageInfo')}</BannerAlert>
+          <BannerAlert
+            childrenWrapperProps={{ color: TextColor.inherit }}
+            marginBottom={4}
+          >
+            {t('errorPageInfo')}
+          </BannerAlert>
         </div>
 
-        <Text variant={TextVariant.bodyMd}>{t('errorPageMessageTitle')}</Text>
+        <Text color={TextColor.inherit} variant={TextVariant.bodyMd}>
+          {t('errorPageMessageTitle')}
+        </Text>
 
         <Box
           borderRadius={BorderRadius.LG}
@@ -136,6 +147,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
               variant={TextVariant.bodyXs}
               marginBottom={2}
               data-testid="error-page-error-message"
+              color={TextColor.inherit}
             >
               {t('errorMessage', [error.message])}
             </Text>
@@ -145,6 +157,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
               variant={TextVariant.bodyXs}
               marginBottom={2}
               data-testid="error-page-error-code"
+              color={TextColor.inherit}
             >
               {t('errorCode', [error.code])}
             </Text>
@@ -154,13 +167,18 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
               variant={TextVariant.bodyXs}
               marginBottom={2}
               data-testid="error-page-error-name"
+              color={TextColor.inherit}
             >
               {t('errorName', [error.name])}
             </Text>
           ) : null}
           {error.stack ? (
             <>
-              <Text variant={TextVariant.bodyXs} marginBottom={2}>
+              <Text
+                color={TextColor.inherit}
+                variant={TextVariant.bodyXs}
+                marginBottom={2}
+              >
                 {t('errorStack')}
               </Text>
               <pre
