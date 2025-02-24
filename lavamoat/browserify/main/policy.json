@@ -900,7 +900,6 @@
         "Headers": true,
         "URL": true,
         "URLSearchParams": true,
-        "__import__": true,
         "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
@@ -929,6 +928,7 @@
         "@metamask/name-controller>async-mutex": true,
         "bn.js": true,
         "lodash": true,
+        "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": true,
         "single-call-balance-checker-abi": true,
         "uuid": true
       }
