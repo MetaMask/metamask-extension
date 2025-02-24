@@ -9,7 +9,7 @@ import { getTransactionRequest, withBtcAccountSnap } from './common-btc';
 
 // Skipping btc test for now because btc snap is outdated and does not yet allow for new assets fetching logic.
 describe.skip('BTC Account - Send', function (this: Suite) {
-  it('can complete the send flow', async function () {
+  it.skip('can complete the send flow', async function () {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver, mockServer) => {
@@ -53,7 +53,7 @@ describe.skip('BTC Account - Send', function (this: Suite) {
     );
   });
 
-  it('can send the max amount', async function () {
+  it.skip('can send the max amount', async function () {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver, mockServer) => {

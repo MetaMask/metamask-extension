@@ -19,7 +19,10 @@ import {
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
 } from '../../helpers/constants/routes';
-import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
+import {
+  getCompletedOnboarding,
+  getIsUnlocked,
+} from '../../ducks/metamask/metamask';
 import {
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
@@ -62,6 +65,7 @@ export default function OnboardingFlow() {
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
   const isFromReminder = new URLSearchParams(search).get('isFromReminder');
   const trackEvent = useContext(MetaMetricsContext);
+  const isUnlocked = useSelector(getIsUnlocked);
 
   useEffect(() => {
     setOnboardingDate();
@@ -72,6 +76,25 @@ export default function OnboardingFlow() {
       history.push(DEFAULT_ROUTE);
     }
   }, [history, completedOnboarding, isFromReminder]);
+
+  useEffect(() => {
+    if (isUnlocked && !completedOnboarding && !secretRecoveryPhrase) {
+      const needsSRP = [
+        ONBOARDING_REVIEW_SRP_ROUTE,
+        ONBOARDING_CONFIRM_SRP_ROUTE,
+      ].some((route) => pathname.startsWith(route));
+
+      if (needsSRP) {
+        history.push(ONBOARDING_UNLOCK_ROUTE);
+      }
+    }
+  }, [
+    isUnlocked,
+    completedOnboarding,
+    secretRecoveryPhrase,
+    pathname,
+    history,
+  ]);
 
   const handleCreateNewAccount = async (password) => {
     const newSecretRecoveryPhrase = await dispatch(
