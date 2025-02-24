@@ -1,6 +1,9 @@
 import React, { useContext } from 'react';
 
-import { SUPPORT_LINK } from '../../../helpers/constants/common';
+import {
+  SUPPORT_LINK,
+  SUPPORT_REQUEST_LINK,
+} from '../../../helpers/constants/common';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   MetaMetricsContextProp,
@@ -29,7 +32,7 @@ const BetaHomeFooter = () => {
               category: MetaMetricsEventCategory.Footer,
               event: MetaMetricsEventName.SupportLinkClicked,
               properties: {
-                url: SUPPORT_LINK,
+                url: SUPPORT_REQUEST_LINK,
               },
             },
             {
