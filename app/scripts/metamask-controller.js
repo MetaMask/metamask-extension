@@ -5723,16 +5723,18 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Returns the index of the HD keyring containing the selected account.
    *
-   * @returns {number} The index of the HD keyring containing the selected account.
+   * @returns {number | undefined} The index of the HD keyring containing the selected account.
    */
   getHDEntropyIndex() {
     const selectedAccount = this.accountsController.getSelectedAccount();
     const hdKeyrings = this.keyringController.state.keyrings.filter(
       (keyring) => keyring.type === KeyringTypes.hd,
     );
-    return hdKeyrings.findIndex((keyring) =>
+    const index = hdKeyrings.findIndex((keyring) =>
       keyring.accounts.includes(selectedAccount.address),
     );
+
+    return index === -1 ? undefined : index;
   }
 
   //=============================================================================

@@ -68,8 +68,8 @@ import {
   checkNetworkAndAccountSupports1559,
   getSelectedInternalAccount,
   getSelectedNetwork,
+  getHDEntropyIndex,
 } from '../../selectors';
-import { getHDEntropyIndex } from '../../selectors/selectors';
 import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,

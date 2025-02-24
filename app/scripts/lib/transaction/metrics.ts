@@ -985,9 +985,8 @@ async function buildEventFragmentProperties({
     getSwapAndSendMetricsProps(transactionMeta);
 
   // Add Entropy Properties
-  const hdEntropyIndex = transactionMetricsRequest.getHDEntropyIndex();
   const hdEntropyProperties = {
-    hd_entropy_index: hdEntropyIndex === -1 ? undefined : hdEntropyIndex,
+    hd_entropy_index: transactionMetricsRequest.getHDEntropyIndex(),
   };
 
   /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
