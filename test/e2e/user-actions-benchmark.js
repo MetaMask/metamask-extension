@@ -67,8 +67,8 @@ async function confirmTx() {
       localNodeOptions: ganacheOptions,
       disableServerMochaToBackground: true,
     },
-    async ({ driver, ganacheServer }) => {
-      await logInWithBalanceValidation(driver, ganacheServer);
+    async ({ driver }) => {
+      await logInWithBalanceValidation(driver);
 
       await openActionMenuAndStartSendFlow(driver);
 
