@@ -20,11 +20,7 @@ import {
   getPreferences,
   getTokensAcrossChainsByAccountAddressSelector,
 } from './selectors';
-import {
-  getMultichainBalances,
-  getMultichainConversionRateSelector,
-  getMultichainNetwork,
-} from './multichain';
+import { getMultichainBalances } from './multichain';
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
@@ -155,32 +151,29 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
   },
 );
 
+const zeroBalanceAssetFallback = { amount: 0, unit: '' };
+
 export const getMultiChainAssets = createDeepEqualSelector(
   (_state, selectedAccount) => selectedAccount,
   getMultichainBalances,
   getAccountAssets,
   getAssetsMetadata,
   getAssetsRates,
-  getMultichainConversionRateSelector,
   (
     selectedAccountAddress,
     multichainBalances,
     accountAssets,
     assetsMetadata,
     assetRates,
-    multichainCoinRates,
   ) => {
     const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
     const balances = multichainBalances?.[selectedAccountAddress.id];
     return assetIds.map((assetId: CaipAssetId) => {
       const { chainId, assetNamespace } = parseCaipAssetType(assetId);
       const isNative = assetNamespace === 'slip44';
-      const balance = balances?.[assetId] || { amount: '0', unit: '' };
+      const balance = balances?.[assetId] || zeroBalanceAssetFallback;
       const rate = assetRates?.[assetId]?.rate || '0';
       const balanceInFiat = new BigNumber(balance.amount).times(rate);
-      const nativeBalanceInFiat = new BigNumber(balance.amount).times(
-        multichainCoinRates,
-      );
 
       const assetMetadataFallback = {
         name: balance.unit,
@@ -201,77 +194,11 @@ export const getMultiChainAssets = createDeepEqualSelector(
         chainId,
         isNative,
         primary: balance.amount,
-        secondary: isNative
-          ? nativeBalanceInFiat.toNumber()
-          : balanceInFiat.toNumber(),
+        secondary: balanceInFiat.toNumber(),
         string: '',
         tokenFiatAmount: balanceInFiat, // for now we are keeping this is to satisfy sort, this should be fiat amount
         isStakeable: false,
       };
     });
-  },
-);
-
-const zeroBalanceAssetFallback = { amount: 0, unit: '' };
-
-export const getMultichainAggregatedBalance = createDeepEqualSelector(
-  (_state, selectedAccount) => selectedAccount,
-  getMultichainNetwork,
-  getMultichainBalances,
-  getAccountAssets,
-  getAssetsRates,
-  (
-    selectedAccountAddress,
-    currentNetwork,
-    multichainBalances,
-    accountAssets,
-    assetRates,
-  ) => {
-    const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
-    const balances = multichainBalances?.[selectedAccountAddress.id];
-
-    let aggregatedBalance = new BigNumber(0);
-
-    assetIds.forEach((assetId: CaipAssetId) => {
-      const { chainId } = parseCaipAssetType(assetId);
-      if (chainId === currentNetwork.chainId) {
-        const balance = balances?.[assetId] || zeroBalanceAssetFallback;
-        const rate = assetRates?.[assetId]?.rate || '0';
-        const balanceInFiat = new BigNumber(balance.amount).times(rate);
-
-        aggregatedBalance = aggregatedBalance.plus(balanceInFiat);
-      }
-    });
-
-    return aggregatedBalance.toNumber();
-  },
-);
-
-export const getMultichainNativeTokenBalance = createDeepEqualSelector(
-  (_state, selectedAccount) => selectedAccount,
-  getMultichainNetwork,
-  getMultichainBalances,
-  getAccountAssets,
-  (
-    selectedAccountAddress,
-    currentNetwork,
-    multichainBalances,
-    accountAssets,
-  ) => {
-    const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
-    const balances = multichainBalances?.[selectedAccountAddress.id];
-
-    let nativeTokenBalance = zeroBalanceAssetFallback;
-
-    assetIds.forEach((assetId: CaipAssetId) => {
-      const { chainId, assetNamespace } = parseCaipAssetType(assetId);
-      if (chainId === currentNetwork.chainId && assetNamespace === 'slip44') {
-        const balance = balances?.[assetId] || zeroBalanceAssetFallback;
-
-        nativeTokenBalance = balance;
-      }
-    });
-
-    return nativeTokenBalance;
   },
 );
