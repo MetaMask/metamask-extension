@@ -323,6 +323,12 @@
     "message": "I agree to MetaMask's $1",
     "description": "$1 is the `terms` link"
   },
+  "airDropPatternDescription": {
+    "message": "The token's on-chain history reveals prior instances of suspicious airdrop activities."
+  },
+  "airDropPatternTitle": {
+    "message": "Airdrop Pattern"
+  },
   "airgapVault": {
     "message": "AirGap Vault"
   },
@@ -2227,6 +2233,12 @@
   "holdToRevealUnlockedLabel": {
     "message": "hold to reveal circle unlocked"
   },
+  "honeypotDescription": {
+    "message": "This token might pose a honeypot risk. It is advised to conduct due diligence before interacting to prevent any potential financial loss."
+  },
+  "honeypotTitle": {
+    "message": "Honey Pot"
+  },
   "howNetworkFeesWorkExplanation": {
     "message": "Estimated fee required to process the transaction. The max fee is $1."
   },
@@ -2359,6 +2371,12 @@
   },
   "insufficientFundsForGas": {
     "message": "Insufficient funds for gas"
+  },
+  "insufficientLockedLiquidityDescription": {
+    "message": "The lack of adequately locked or burned liquidity leaves the token vulnerable to sudden liquidity withdrawals, potentially causing market instability."
+  },
+  "insufficientLockedLiquidityTitle": {
+    "message": "Insufficient Locked Liquidity"
   },
   "insufficientTokens": {
     "message": "Insufficient tokens."
@@ -6088,6 +6106,12 @@
   "unsendableAsset": {
     "message": "Sending NFT (ERC-721) tokens is not currently supported",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
+  },
+  "unstableTokenPriceDescription": {
+    "message": "The price of this token in USD is highly volatile, indicating a high risk of losing significant value by interacting with it."
+  },
+  "unstableTokenPriceTitle": {
+    "message": "Unstable Token Price"
   },
   "upArrow": {
     "message": "up arrow"
