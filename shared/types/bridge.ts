@@ -1,6 +1,10 @@
-import type { Hex } from '@metamask/utils';
+import type {
+  CaipAccountId,
+  CaipAssetId,
+  CaipChainId,
+  Hex,
+} from '@metamask/utils';
 import type { BigNumber } from 'bignumber.js';
-import type { AssetType } from '../constants/transaction';
 
 export type ChainConfiguration = {
   isActiveSrc: boolean;
@@ -35,12 +39,11 @@ export enum SortOrder {
 }
 
 export type BridgeToken = {
-  type: AssetType.native | AssetType.token;
   address: string;
   symbol: string;
   image: string;
   decimals: number;
-  chainId: Hex;
+  chainId: CaipChainId;
   balance: string; // raw balance
   string: string | undefined; // normalized balance as a stringified number
   tokenFiatAmount?: number | null;
@@ -71,13 +74,19 @@ export type BridgeAsset = {
   icon?: string;
 };
 
-export type QuoteRequest = {
-  walletAddress: string;
-  destWalletAddress?: string;
-  srcChainId: ChainId;
-  destChainId: ChainId;
-  srcTokenAddress: string;
-  destTokenAddress: string;
+// Generic types for the quote request
+// Only the controller and reducer should be overriding these types to prepare the fetch request
+export type QuoteRequest<
+  ChainIdType = ChainId | number,
+  TokenAddressType = string,
+  WalletAddressType = string,
+> = {
+  walletAddress: WalletAddressType;
+  destWalletAddress?: WalletAddressType;
+  srcChainId: ChainIdType;
+  destChainId: ChainIdType;
+  srcTokenAddress: TokenAddressType;
+  destTokenAddress: TokenAddressType;
   srcTokenAmount: string; // This is the amount sent
   slippage: number;
   aggIds?: string[];
@@ -86,6 +95,7 @@ export type QuoteRequest = {
   resetApproval?: boolean;
   refuel?: boolean;
 };
+
 type Protocol = {
   name: string;
   displayName?: string;
@@ -142,6 +152,7 @@ export enum ChainId {
   ARBITRUM = 42161,
   AVALANCHE = 43114,
   LINEA = 59144,
+  SOLANA = 1151111081099710,
 }
 
 export enum FeeType {
@@ -169,7 +180,7 @@ export type BridgeFeatureFlags = {
     refreshRate: number;
     maxRefreshCount: number;
     support: boolean;
-    chains: Record<Hex, ChainConfiguration>;
+    chains: Record<CaipChainId, ChainConfiguration>;
   };
 };
 export enum RequestStatus {
@@ -186,9 +197,18 @@ export enum BridgeBackgroundAction {
   RESET_STATE = 'resetState',
   GET_BRIDGE_ERC20_ALLOWANCE = 'getBridgeERC20Allowance',
 }
+
+// These are types that components pass in. Since data is a mix of types when coming from the redux store, we need to use a generic type that can cover all the types.
+// This is formatted by fetchBridgeQuotes right before fetching quotes to whatever type the bridge-api is expecting.
+export type GenericQuoteRequest = QuoteRequest<
+  Hex | CaipChainId | string | number, // chainIds
+  Hex | CaipAssetId | string, // assetIds/addresses
+  Hex | CaipAccountId | string // accountIds/addresses
+>;
+
 export type BridgeState = {
   bridgeFeatureFlags: BridgeFeatureFlags;
-  quoteRequest: Partial<QuoteRequest>;
+  quoteRequest: Partial<GenericQuoteRequest>;
   quotes: (QuoteResponse & L1GasFees)[];
   quotesInitialLoadTime?: number;
   quotesLastFetched?: number;

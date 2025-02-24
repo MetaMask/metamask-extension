@@ -1,4 +1,3 @@
-import { zeroAddress } from 'ethereumjs-util';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import {
@@ -16,6 +15,7 @@ import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
+import { isNativeAddress } from '../../../../shared/modules/bridge-utils/caip-formatters';
 
 export const isQuoteExpired = (
   isQuoteGoingToRefresh: boolean,
@@ -27,9 +27,6 @@ export const isQuoteExpired = (
       quotesLastFetchedMs &&
       Date.now() - quotesLastFetchedMs > refreshRate,
   );
-
-export const isNativeAddress = (address?: string | null) =>
-  address === zeroAddress() || address === '' || !address;
 
 export const calcToAmount = (
   { destTokenAmount, destAsset }: Quote,
