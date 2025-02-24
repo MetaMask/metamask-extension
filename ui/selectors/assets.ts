@@ -20,10 +20,7 @@ import {
   getPreferences,
   getTokensAcrossChainsByAccountAddressSelector,
 } from './selectors';
-import {
-  getMultichainBalances,
-  getMultichainConversionRateSelector,
-} from './multichain';
+import { getMultichainBalances } from './multichain';
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
@@ -160,14 +157,12 @@ export const getMultiChainAssets = createDeepEqualSelector(
   getAccountAssets,
   getAssetsMetadata,
   getAssetsRates,
-  getMultichainConversionRateSelector,
   (
     selectedAccountAddress,
     multichainBalances,
     accountAssets,
     assetsMetadata,
     assetRates,
-    multichainCoinRates,
   ) => {
     const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
     const balances = multichainBalances?.[selectedAccountAddress.id];
@@ -177,9 +172,6 @@ export const getMultiChainAssets = createDeepEqualSelector(
       const balance = balances?.[assetId] || { amount: '0', unit: '' };
       const rate = assetRates?.[assetId]?.rate || '0';
       const balanceInFiat = new BigNumber(balance.amount).times(rate);
-      const nativeBalanceInFiat = new BigNumber(balance.amount).times(
-        multichainCoinRates,
-      );
 
       const assetMetadataFallback = {
         name: balance.unit,
