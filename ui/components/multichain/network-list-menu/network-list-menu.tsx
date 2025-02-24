@@ -111,6 +111,7 @@ import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
 import { SelectRpcUrlModal } from './select-rpc-url-modal/select-rpc-url-modal';
 import AddBlockExplorerModal from './add-block-explorer-modal/add-block-explorer-modal';
 import AddNonEvmAccountModal from './add-non-evm-account/add-non-evm-account';
+import { getRpcDataByChainId } from './helpers';
 
 export enum ACTION_MODE {
   // Displays the search box and network list
@@ -203,9 +204,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       !editingChainId || editCompleted
         ? undefined
         : Object.entries(evmNetworks).find(
-            ([chainId]) =>
-              chainId ===
-              convertCaipToHexChainId(editingChainId as CaipChainId),
+            ([chainId]) => chainId === editingChainId,
           )?.[1],
     [editingChainId, editCompleted, evmNetworks],
   );
@@ -279,27 +278,10 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     searchQuery,
   );
 
-  const getRpcEndpointsByChainId = (chainId: CaipChainId) => {
-    const hexChainId = convertCaipToHexChainId(chainId);
-    const evmNetworkConfig = evmNetworks[hexChainId];
-    return evmNetworkConfig.rpcEndpoints;
-  };
-
-  const getDefaultRpcEndpointByChainId = (chainId: CaipChainId) => {
-    const hexChainId = convertCaipToHexChainId(chainId);
-    const evmNetworkConfig = evmNetworks[hexChainId];
-    const { rpcEndpoints, defaultRpcEndpointIndex } = evmNetworkConfig;
-    return rpcEndpoints[defaultRpcEndpointIndex];
-  };
-
-  const getClientIdByChainId = (chainId: CaipChainId) => {
-    const defaultRpcEndpoint = getDefaultRpcEndpointByChainId(chainId);
-    return defaultRpcEndpoint.networkClientId;
-  };
-
   const handleEvmNetworkChange = (chainId: CaipChainId) => {
     const hexChainId = convertCaipToHexChainId(chainId);
-    const networkClientId = getClientIdByChainId(chainId);
+    const { defaultRpcEndpoint } = getRpcDataByChainId(chainId, evmNetworks);
+    const { networkClientId } = defaultRpcEndpoint;
     dispatch(setActiveNetwork(networkClientId));
     dispatch(updateCustomNonce(''));
     dispatch(setNextNonce(''));
@@ -385,13 +367,14 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       };
     }
 
+    const { rpcEndpoints } = getRpcDataByChainId(network.chainId, evmNetworks);
     return {
       isDeletable:
         isUnlocked &&
         network.chainId !== currentChainId &&
         network.chainId !== 'eip155:1',
       isEditable: true,
-      hasMultiRpcOptions: getRpcEndpointsByChainId(network.chainId).length > 1,
+      hasMultiRpcOptions: rpcEndpoints.length > 1,
     };
   };
 
@@ -417,7 +400,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     const onEdit = () => {
       dispatch(
         setEditedNetwork({
-          chainId: network.chainId,
+          chainId: convertCaipToHexChainId(network.chainId),
           nickname: network.name,
         }),
       );
@@ -426,7 +409,9 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
 
     const onRpcConfigEdit = () => {
       setActionMode(ACTION_MODE.SELECT_RPC);
-      dispatch(setEditedNetwork({ chainId: network.chainId }));
+      dispatch(
+        setEditedNetwork({ chainId: convertCaipToHexChainId(network.chainId) }),
+      );
     };
 
     const iconSrc = network.isEvm
@@ -436,6 +421,10 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           ) as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
         ]
       : MULTICHAIN_TOKEN_IMAGE_MAP[network.chainId];
+    const { defaultRpcEndpoint } = getRpcDataByChainId(
+      network.chainId,
+      evmNetworks,
+    );
 
     return (
       <NetworkListItem
@@ -446,11 +435,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         iconSize={AvatarNetworkSize.Sm}
         selected={isCurrentNetwork && !focusSearch}
         focus={isCurrentNetwork && !focusSearch}
-        rpcEndpoint={
-          hasMultiRpcOptions
-            ? getDefaultRpcEndpointByChainId(network.chainId)
-            : undefined
-        }
+        rpcEndpoint={hasMultiRpcOptions ? defaultRpcEndpoint : undefined}
         onClick={async () => {
           await handleNetworkChange(network.chainId);
         }}
