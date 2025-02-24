@@ -4,7 +4,7 @@ const { promisify } = require('util');
 const { promises: fs } = require('fs');
 const execFile = promisify(require('child_process').execFile);
 const path = require('path');
-const capitalize = require('lodash/capitalize');
+const startCase = require('lodash/startCase');
 const VERSION = require('../package.json').version;
 
 start().catch(console.error);
@@ -276,9 +276,9 @@ async function start() {
               }
               metricRows.push(metricData);
             }
-            metricRows[0] = `<td rowspan="${allMetrics.size}">${capitalize(
+            metricRows[0] = `<td rowspan="${allMetrics.size}">${startCase(
               buildType,
-            )}</td><td rowspan="${allMetrics.size}">${capitalize(page)}</td>${
+            )}</td><td rowspan="${allMetrics.size}">${startCase(page)}</td>${
               metricRows[0]
             }`;
             pageRows.push(...metricRows);
@@ -286,7 +286,7 @@ async function start() {
         }
         pageRows[0] = `<td rowspan="${
           allPages.size * allBuildTypes.size * allMetrics.size
-        }">${capitalize(platform)}</td>${pageRows[0]}`;
+        }">${startCase(platform)}</td>${pageRows[0]}`;
         for (const row of pageRows) {
           tableRows.push(`<tr>${row}</tr>`);
         }
@@ -294,7 +294,7 @@ async function start() {
 
       const benchmarkTableHeaders = ['Platform', 'BuildType', 'Page', 'Metric'];
       for (const measure of allMeasures) {
-        benchmarkTableHeaders.push(`${capitalize(measure)} (ms)`);
+        benchmarkTableHeaders.push(`${startCase(measure)} (ms)`);
       }
       const benchmarkTableHeader = `<thead><tr>${benchmarkTableHeaders
         .map((header) => `<th>${header}</th>`)
