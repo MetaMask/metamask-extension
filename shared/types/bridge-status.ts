@@ -161,6 +161,24 @@ export type BridgeHistoryItem = {
   hasApprovalTx: boolean;
 };
 
+export type SwapHistoryItem = {
+  txMetaId: string;
+  quote: Quote;
+  status: StatusResponse;
+  startTime?: number;
+  estimatedProcessingTimeInSeconds: number;
+  slippagePercentage: number;
+  completionTime?: number;
+  pricingData?: {
+    amountSent: string;
+    amountSentInUsd?: string;
+    quotedGasInUsd?: string;
+    quotedReturnInUsd?: string;
+  };
+  account: string;
+  hasApprovalTx: boolean;
+};
+
 export enum BridgeStatusAction {
   START_POLLING_FOR_BRIDGE_TX_STATUS = 'startPollingForBridgeTxStatus',
   WIPE_BRIDGE_STATUS = 'wipeBridgeStatus',
@@ -230,6 +248,7 @@ export type SourceChainTxMetaId = string;
 
 export type BridgeStatusState = {
   txHistory: Record<SourceChainTxMetaId, BridgeHistoryItem>;
+  swapHistory: Record<SourceChainTxMetaId, SwapHistoryItem>;
 };
 
 export type BridgeStatusControllerState = {

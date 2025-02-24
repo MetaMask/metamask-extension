@@ -14,6 +14,7 @@ import {
   BridgeHistoryItem,
   BridgeStatusAction,
   BridgeStatusControllerState,
+  SwapHistoryItem,
 } from '../../../../shared/types/bridge-status';
 import { BRIDGE_STATUS_CONTROLLER_NAME } from './constants';
 import BridgeStatusController from './bridge-status-controller';
@@ -51,10 +52,22 @@ export type BridgeStatusControllerBridgeTransactionFailedEvent = {
   payload: [{ bridgeHistoryItem: BridgeHistoryItem }];
 };
 
-type BridgeStatusControllerEvents =
+export type BridgeStatusControllerSwapTransactionCompleteEvent = {
+  type: `${typeof BRIDGE_STATUS_CONTROLLER_NAME}:swapTransactionComplete`;
+  payload: [{ swapHistoryItem: SwapHistoryItem }];
+};
+
+export type BridgeStatusControllerSwapTransactionFailedEvent = {
+  type: `${typeof BRIDGE_STATUS_CONTROLLER_NAME}:swapTransactionFailed`;
+  payload: [{ swapHistoryItem: SwapHistoryItem }];
+};
+
+export type BridgeStatusControllerEvents =
   | BridgeStatusControllerStateChangeEvent
   | BridgeStatusControllerBridgeTransactionCompleteEvent
-  | BridgeStatusControllerBridgeTransactionFailedEvent;
+  | BridgeStatusControllerBridgeTransactionFailedEvent
+  | BridgeStatusControllerSwapTransactionCompleteEvent
+  | BridgeStatusControllerSwapTransactionFailedEvent;
 
 /**
  * The external actions available to the BridgeStatusController.

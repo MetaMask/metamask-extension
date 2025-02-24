@@ -204,16 +204,81 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     });
   };
 
-  // This will be called after you call this.startPolling()
-  // The args passed in are the args you passed in to startPolling()
-  _executePoll = async (pollingInput: BridgeStatusPollingInput) => {
-    await this.#fetchBridgeTxStatus(pollingInput);
+  startPollingForSwapTxStatus = (
+    startPollingForSwapTxStatusArgs: StartPollingForBridgeTxStatusArgsSerialized,
+  ) => {
+    const {
+      bridgeTxMeta,
+      statusRequest,
+      quoteResponse,
+      startTime,
+      slippagePercentage,
+    } = startPollingForSwapTxStatusArgs;
+    const { bridgeStatusState } = this.state;
+    const { address: account } = this.#getSelectedAccount();
+
+    // Create swap history item
+    const swapHistoryItem = {
+      txMetaId: bridgeTxMeta.id,
+      quote: quoteResponse.quote,
+      startTime,
+      estimatedProcessingTimeInSeconds:
+        quoteResponse.estimatedProcessingTimeInSeconds,
+      slippagePercentage,
+      pricingData: {
+        amountSent: quoteResponse.sentAmount.amount,
+        amountSentInUsd: quoteResponse.sentAmount.usd ?? undefined,
+        quotedGasInUsd: quoteResponse.gasFee.usd ?? undefined,
+        quotedReturnInUsd: quoteResponse.toTokenAmount.usd ?? undefined,
+      },
+      account,
+      status: {
+        status: StatusTypes.PENDING,
+        srcChain: {
+          chainId: statusRequest.srcChainId,
+          txHash: statusRequest.srcTxHash,
+        },
+      },
+      hasApprovalTx: Boolean(quoteResponse.approval),
+    };
+
+    // Add to state
+    this.update((_state) => {
+      _state.bridgeStatusState = {
+        ...bridgeStatusState,
+        swapHistory: {
+          ...bridgeStatusState.swapHistory,
+          [bridgeTxMeta.id]: swapHistoryItem,
+        },
+      };
+    });
+
+    // Start polling
+    this.#pollingTokensByTxMetaId[bridgeTxMeta.id] = this.startPolling({
+      bridgeTxMetaId: bridgeTxMeta.id,
+    });
+  };
+
+  #executePoll = async (pollingInput: BridgeStatusPollingInput) => {
+    const { bridgeTxMetaId } = pollingInput;
+    const { bridgeStatusState } = this.state;
+
+    // Check if this is a bridge or swap transaction
+    if (bridgeTxMetaId in bridgeStatusState.txHistory) {
+      await this.#fetchBridgeTxStatus(pollingInput);
+    } else if (bridgeTxMetaId in bridgeStatusState.swapHistory) {
+      await this.#fetchSwapTxStatus(pollingInput);
+    }
   };
 
   #getSelectedAccount() {
-    return this.messagingSystem.call(
+    const account = this.messagingSystem.call(
       'AccountsController:getSelectedMultichainAccount',
     );
+    if (!account) {
+      throw new Error('No selected account found');
+    }
+    return { address: account.id };
   }
 
   #fetchBridgeTxStatus = async ({
@@ -289,12 +354,82 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     }
   };
 
+  #fetchSwapTxStatus = async ({
+    bridgeTxMetaId,
+  }: FetchBridgeTxStatusArgs) => {
+    const { bridgeStatusState } = this.state;
+
+    try {
+      const historyItem = bridgeStatusState.swapHistory[bridgeTxMetaId];
+      const srcTxHash = this.#getSrcTxHash(bridgeTxMetaId);
+      if (!srcTxHash) {
+        return;
+      }
+
+      this.#updateSrcTxHash(bridgeTxMetaId, srcTxHash);
+
+      const statusRequest = getStatusRequestWithSrcTxHash(
+        historyItem.quote,
+        srcTxHash,
+      );
+      const status = await fetchBridgeTxStatus(statusRequest);
+      const newSwapHistoryItem = {
+        ...historyItem,
+        status,
+        completionTime:
+          status.status === StatusTypes.COMPLETE ||
+          status.status === StatusTypes.FAILED
+            ? Date.now()
+            : undefined,
+      };
+
+      this.update((_state) => {
+        _state.bridgeStatusState = {
+          ...bridgeStatusState,
+          swapHistory: {
+            ...bridgeStatusState.swapHistory,
+            [bridgeTxMetaId]: newSwapHistoryItem,
+          },
+        };
+      });
+
+      const pollingToken = this.#pollingTokensByTxMetaId[bridgeTxMetaId];
+
+      if (
+        (status.status === StatusTypes.COMPLETE ||
+          status.status === StatusTypes.FAILED) &&
+        pollingToken
+      ) {
+        this.stopPollingByPollingToken(pollingToken);
+
+        if (status.status === StatusTypes.COMPLETE) {
+          this.messagingSystem.publish(
+            `${BRIDGE_STATUS_CONTROLLER_NAME}:swapTransactionComplete`,
+            { swapHistoryItem: newSwapHistoryItem },
+          );
+        }
+        if (status.status === StatusTypes.FAILED) {
+          this.messagingSystem.publish(
+            `${BRIDGE_STATUS_CONTROLLER_NAME}:swapTransactionFailed`,
+            { swapHistoryItem: newSwapHistoryItem },
+          );
+        }
+      }
+    } catch (e) {
+      console.log('Failed to fetch swap tx status', e);
+    }
+  };
+
   #getSrcTxHash = (bridgeTxMetaId: string): string | undefined => {
     const { bridgeStatusState } = this.state;
-    // Prefer the srcTxHash from bridgeStatusState so we don't have to l ook up in TransactionController
-    // But it is possible to have bridgeHistoryItem in state without the srcTxHash yet when it is an STX
-    const srcTxHash =
-      bridgeStatusState.txHistory[bridgeTxMetaId].status.srcChain.txHash;
+
+    // Check both histories for the transaction
+    const bridgeHistoryItem = bridgeStatusState.txHistory[bridgeTxMetaId];
+    const swapHistoryItem = bridgeStatusState.swapHistory[bridgeTxMetaId];
+
+    // Get hash from whichever history has the transaction
+    const srcTxHash = bridgeHistoryItem?.status.srcChain.txHash ||
+                     swapHistoryItem?.status.srcChain.txHash;
 
     if (srcTxHash) {
       return srcTxHash;
@@ -312,28 +447,51 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
 
   #updateSrcTxHash = (bridgeTxMetaId: string, srcTxHash: string) => {
     const { bridgeStatusState } = this.state;
-    if (bridgeStatusState.txHistory[bridgeTxMetaId].status.srcChain.txHash) {
-      return;
-    }
 
-    this.update((_state) => {
-      _state.bridgeStatusState = {
-        ...bridgeStatusState,
-        txHistory: {
-          ...bridgeStatusState.txHistory,
-          [bridgeTxMetaId]: {
-            ...bridgeStatusState.txHistory[bridgeTxMetaId],
-            status: {
-              ...bridgeStatusState.txHistory[bridgeTxMetaId].status,
-              srcChain: {
-                ...bridgeStatusState.txHistory[bridgeTxMetaId].status.srcChain,
-                txHash: srcTxHash,
+    // Check which history has the transaction
+    const isBridgeTx = bridgeTxMetaId in bridgeStatusState.txHistory;
+    const isSwapTx = bridgeTxMetaId in bridgeStatusState.swapHistory;
+
+    // Only update if hash not already set
+    if (isBridgeTx && !bridgeStatusState.txHistory[bridgeTxMetaId].status.srcChain.txHash) {
+      this.update((_state) => {
+        _state.bridgeStatusState = {
+          ...bridgeStatusState,
+          txHistory: {
+            ...bridgeStatusState.txHistory,
+            [bridgeTxMetaId]: {
+              ...bridgeStatusState.txHistory[bridgeTxMetaId],
+              status: {
+                ...bridgeStatusState.txHistory[bridgeTxMetaId].status,
+                srcChain: {
+                  ...bridgeStatusState.txHistory[bridgeTxMetaId].status.srcChain,
+                  txHash: srcTxHash,
+                },
               },
             },
           },
-        },
-      };
-    });
+        };
+      });
+    } else if (isSwapTx && !bridgeStatusState.swapHistory[bridgeTxMetaId].status.srcChain.txHash) {
+      this.update((_state) => {
+        _state.bridgeStatusState = {
+          ...bridgeStatusState,
+          swapHistory: {
+            ...bridgeStatusState.swapHistory,
+            [bridgeTxMetaId]: {
+              ...bridgeStatusState.swapHistory[bridgeTxMetaId],
+              status: {
+                ...bridgeStatusState.swapHistory[bridgeTxMetaId].status,
+                srcChain: {
+                  ...bridgeStatusState.swapHistory[bridgeTxMetaId].status.srcChain,
+                  txHash: srcTxHash,
+                },
+              },
+            },
+          },
+        };
+      });
+    }
   };
 
   // Wipes the bridge status for the given address and chainId

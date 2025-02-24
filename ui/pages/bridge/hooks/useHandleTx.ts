@@ -6,7 +6,7 @@ import {
 } from '@metamask/transaction-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { KeyringRpcMethod } from '@metamask/keyring-api';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Hex } from '@metamask/utils';
 import { useHistory } from 'react-router-dom';
 import {
@@ -14,6 +14,7 @@ import {
   addTransaction,
   updateTransaction,
   addTransactionAndWaitForPublish,
+  startPollingForBridgeTxStatus,
 } from '../../../store/actions';
 import {
   getHexMaxGasLimit,
@@ -40,6 +41,18 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
 } from '../../../helpers/constants/routes';
+import { serializeQuoteMetadata } from '../../../../shared/lib/bridge-status/utils';
+import type { QuoteResponse, QuoteMetadata } from '../../../../shared/lib/bridge-status/types';
+
+type BridgeTransactionFields = {
+  bridgeId: string;
+  bridge: string;
+  sourceChainId: string;
+  destinationChainId: string;
+  quote: unknown;
+  quoteResponse: QuoteResponse & QuoteMetadata;
+  slippagePercentage?: number;
+}
 
 export default function useHandleTx() {
   const dispatch = useDispatch();
@@ -122,6 +135,13 @@ export default function useHandleTx() {
   const unapprovedConfirmations = useSelector(
     getMemoizedUnapprovedConfirmations,
   );
+
+  // General confirmation logs
+  console.log('====SOLANA: Current confirmations:', {
+    templated: unapprovedTemplatedConfirmations,
+    regular: unapprovedConfirmations,
+  });
+
   // Snaps are allowed to redirect to their own pending confirmations (templated or not)
   const templatedSnapApproval = unapprovedTemplatedConfirmations.find(
     (approval) => approval.origin === SOLANA_WALLET_SNAP_ID,
@@ -130,13 +150,35 @@ export default function useHandleTx() {
     (approval) => approval.origin === SOLANA_WALLET_SNAP_ID,
   );
 
+  console.log('====SOLANA: Found snap approvals:', {
+    templatedSnapApproval,
+    snapApproval,
+  });
+
+  const [isHandlingTransaction, setIsHandlingTransaction] = useState(false);
+
   useEffect(() => {
+    console.log('====SOLANA: useEffect triggered for approvals');
+    // Don't redirect if we're in the middle of handling a transaction
+    if (isHandlingTransaction) {
+      console.log('====SOLANA: Skipping redirect while handling transaction');
+      return;
+    }
+
     if (templatedSnapApproval) {
+      console.log(
+        '====SOLANA: Redirecting to templated confirmation:',
+        templatedSnapApproval.id,
+      );
       history.push(`${CONFIRMATION_V_NEXT_ROUTE}/${templatedSnapApproval.id}`);
     } else if (snapApproval) {
+      console.log(
+        '====SOLANA: Redirecting to regular confirmation:',
+        snapApproval.id,
+      );
       history.push(`${CONFIRM_TRANSACTION_ROUTE}/${snapApproval.id}`);
     }
-  }, [unapprovedTemplatedConfirmations, unapprovedConfirmations, history]);
+  }, [unapprovedTemplatedConfirmations, unapprovedConfirmations, history, isHandlingTransaction]);
 
   const handleSolanaTx = async ({
     txType,
@@ -145,33 +187,124 @@ export default function useHandleTx() {
   }: {
     txType: TransactionType.bridge;
     txParams: string;
-    fieldsToAddToTxMeta: Omit<Partial<TransactionMeta>, 'status'>;
+    fieldsToAddToTxMeta: Omit<Partial<TransactionMeta>, 'status'> & BridgeTransactionFields;
   }): Promise<TransactionMeta> => {
-    (await snapSender.send({
-      id: crypto.randomUUID(),
-      jsonrpc: '2.0',
-      method: KeyringRpcMethod.SubmitRequest,
-      params: {
-        request: {
-          params: { base64EncodedTransactionMessage: txParams },
-          method: 'sendAndConfirmTransaction',
-        },
-        id: crypto.randomUUID(),
+    setIsHandlingTransaction(true);
+    try {
+      console.log('====SOLANA: Starting transaction flow:', {
+        txType,
         account: selectedAccount.id,
-        scope: currentChainId,
-      },
-    })) as string;
+        chainId: currentChainId,
+        currentConfirmations: {
+          templated: unapprovedTemplatedConfirmations.length,
+          regular: unapprovedConfirmations.length,
+        },
+      });
 
-    return {
-      ...fieldsToAddToTxMeta,
-      id: crypto.randomUUID(),
-      chainId: currentChainId as Hex,
-      networkClientId: selectedAccount.id,
-      time: Date.now(),
-      txParams: { data: txParams } as TransactionParams,
-      type: txType,
-      status: TransactionStatus.submitted,
-    };
+      const snapRequest = {
+        id: crypto.randomUUID(),
+        jsonrpc: '2.0' as const,
+        method: KeyringRpcMethod.SubmitRequest,
+        params: {
+          request: {
+            params: { base64EncodedTransactionMessage: txParams },
+            method: 'sendAndConfirmTransaction',
+          },
+          id: crypto.randomUUID(),
+          account: selectedAccount.id,
+          scope: currentChainId,
+        },
+      };
+
+      console.log(
+        '====SOLANA: Sending request to snap - this should trigger an approval:',
+        snapRequest,
+      );
+
+      const rawResponse = await snapSender.send(snapRequest);
+      console.log('====SOLANA: Raw response from snap:', {
+        response: rawResponse,
+        type: typeof rawResponse,
+        keys: rawResponse && typeof rawResponse === 'object' ? Object.keys(rawResponse) : [],
+        isString: typeof rawResponse === 'string',
+      });
+
+      // Extract signature from response
+      let signature: string | undefined;
+      if (typeof rawResponse === 'string') {
+        signature = rawResponse;
+      } else if (rawResponse && typeof rawResponse === 'object') {
+        // Log all possible paths we might find a signature
+        console.log('====SOLANA: Examining response object:', {
+          hasResult: 'result' in rawResponse,
+          resultType: rawResponse.result !== null ? typeof rawResponse.result : 'null',
+          hasPending: 'pending' in rawResponse,
+          pendingValue: 'pending' in rawResponse ? rawResponse.pending : undefined,
+        });
+
+        if ('result' in rawResponse && typeof rawResponse.result === 'string') {
+          signature = rawResponse.result;
+        }
+      }
+
+      if (!signature) {
+        console.error('====SOLANA ERROR: No signature in response:', rawResponse);
+        throw new Error('Failed to get transaction signature from Solana snap');
+      }
+
+      console.log('====SOLANA: Using signature:', signature);
+
+      // Only create and add transaction to state after successful submission
+      const txMeta = await addTransaction(
+        { data: txParams } as TransactionParams,
+        {
+          type: txType,
+          requireApproval: false,
+        },
+      );
+
+      // Add all necessary fields
+      const finalTxMeta = {
+        ...txMeta,
+        ...fieldsToAddToTxMeta,
+        chainId: currentChainId as Hex,
+        networkClientId: selectedAccount.id,
+        status: TransactionStatus.submitted,
+        hash: signature,
+      };
+
+      // Update state with complete transaction
+      dispatch(updateTransaction(finalTxMeta, true));
+      await forceUpdateMetamaskState(dispatch);
+
+      // Start polling for bridge status
+      const statusRequest = {
+        bridgeId: fieldsToAddToTxMeta.bridgeId,
+        srcTxHash: signature,
+        bridge: fieldsToAddToTxMeta.bridge,
+        srcChainId: fieldsToAddToTxMeta.sourceChainId,
+        destChainId: fieldsToAddToTxMeta.destinationChainId,
+        quote: fieldsToAddToTxMeta.quote,
+      };
+
+      dispatch(
+        startPollingForBridgeTxStatus({
+          bridgeTxMeta: finalTxMeta,
+          statusRequest,
+          quoteResponse: serializeQuoteMetadata(fieldsToAddToTxMeta.quoteResponse),
+          slippagePercentage: fieldsToAddToTxMeta.slippagePercentage ?? 0,
+          startTime: finalTxMeta.time,
+        }),
+      );
+
+      console.log('====SOLANA: Added submitted transaction to state:', finalTxMeta);
+      return finalTxMeta;
+    } catch (error) {
+      console.error('====SOLANA ERROR: Transaction flow failed:', error);
+      throw error;
+    } finally {
+      setIsHandlingTransaction(false);
+    }
   };
 
   const isSolana = useMultichainSelector(getMultichainIsSolana);
