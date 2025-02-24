@@ -35,14 +35,8 @@ describe('Snap Account - Swap', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: mockSwapsTransactionQuote,
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer?: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
         await installSnapSimpleKeyring(driver);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,

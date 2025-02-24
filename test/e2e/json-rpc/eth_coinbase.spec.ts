@@ -15,14 +15,8 @@ describe('eth_coinbase', function () {
           .build(),
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer?: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
 
         // eth_coinbase
         await driver.openNewPage(`http://127.0.0.1:8080`);

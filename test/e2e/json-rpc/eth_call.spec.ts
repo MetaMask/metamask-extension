@@ -22,15 +22,13 @@ describe('eth_call', function () {
       },
       async ({
         driver,
-        ganacheServer,
         contractRegistry,
       }: {
         driver: Driver;
-        ganacheServer?: Ganache;
         contractRegistry: ContractAddressRegistry;
       }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver);
 
         // eth_call
         await driver.openNewPage(`http://127.0.0.1:8080`);
