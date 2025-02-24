@@ -8,6 +8,11 @@
 
 [
   [
+    "app/scripts/lib/snap-keyring/index.ts",
+    "app/scripts/lib/snap-keyring/snap-keyring.ts",
+    "app/scripts/metamask-controller.js"
+  ],
+  [
     "shared/modules/selectors/account.ts",
     "shared/modules/selectors/index.ts",
     "ui/pages/confirmations/confirmation/ResultTemplate.ts",
@@ -15,11 +20,6 @@
     "ui/pages/confirmations/confirmation/templates/index.js",
     "ui/selectors/selectors.js",
     "ui/store/actions.ts"
-  ],
-  [
-    "app/scripts/lib/snap-keyring/index.ts",
-    "app/scripts/lib/snap-keyring/snap-keyring.ts",
-    "app/scripts/metamask-controller.js"
   ],
   [
     "shared/modules/selectors/index.ts",
@@ -353,7 +353,10 @@
     "ui/pages/notifications/notification-components/index.ts",
     "ui/pages/notifications/notification-components/swap-completed/swap-completed.tsx"
   ],
-  ["ui/ducks/alerts/unconnected-account.js", "ui/store/actions.ts"],
+  [
+    "ui/ducks/alerts/unconnected-account.js",
+    "ui/store/actions.ts"
+  ],
   [
     "ui/ducks/confirm-transaction/confirm-transaction.duck.js",
     "ui/ducks/index.js",
@@ -472,5 +475,8 @@
     "ui/selectors/selectors.js",
     "ui/store/actions.ts"
   ],
-  ["ui/ducks/metamask/metamask.js", "ui/selectors/selectors.js"]
+  [
+    "ui/ducks/metamask/metamask.js",
+    "ui/selectors/selectors.js"
+  ]
 ]
