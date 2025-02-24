@@ -13,17 +13,11 @@ describe('Lock and unlock', function (this: Suite) {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer?: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
         const homePage = new HomePage(driver);
         await homePage.headerNavbar.lockMetaMask();
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver);
       },
     );
   });

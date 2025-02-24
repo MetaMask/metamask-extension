@@ -36,15 +36,9 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         smartContract: SMART_CONTRACTS.HST,
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer?: Ganache;
-      }) => {
+      async ({ driver }: { driver: Driver }) => {
         // Step 1: Log in and set up page objects
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver);
 
         const homepage = new HomePage(driver);
         const headerNavbar = new HeaderNavbar(driver);

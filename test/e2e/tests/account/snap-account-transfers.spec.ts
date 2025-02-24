@@ -26,14 +26,8 @@ describe('Snap Account Transfers', function (this: Suite) {
         localNodeOptions: multipleGanacheOptions,
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer?: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
 
         await installSnapSimpleKeyring(driver);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
@@ -73,14 +67,8 @@ describe('Snap Account Transfers', function (this: Suite) {
         localNodeOptions: multipleGanacheOptions,
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer?: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
 
         await installSnapSimpleKeyring(driver, false);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
@@ -122,14 +110,8 @@ describe('Snap Account Transfers', function (this: Suite) {
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: ['Request rejected by user or snap.'],
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer?: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
 
         await installSnapSimpleKeyring(driver, false);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);

@@ -6,9 +6,9 @@ describe('Click bridge button', function (this: Suite) {
   it('loads portfolio tab from wallet overview when flag is turned off', async function () {
     await withFixtures(
       getBridgeFixtures(this.test?.fullTitle()),
-      async ({ driver, ganacheServer }) => {
+      async ({ driver }) => {
         const bridgePage = new BridgePage(driver);
-        await logInWithBalanceValidation(driver, ganacheServer);
+        await logInWithBalanceValidation(driver);
         await bridgePage.navigateToBridgePage();
         await bridgePage.verifyPortfolioTab();
       },
@@ -18,9 +18,9 @@ describe('Click bridge button', function (this: Suite) {
   it('loads portfolio tab from asset overview when flag is turned off', async function () {
     await withFixtures(
       getBridgeFixtures(this.test?.fullTitle(), undefined, true),
-      async ({ driver, ganacheServer }) => {
+      async ({ driver }) => {
         const bridgePage = new BridgePage(driver);
-        await logInWithBalanceValidation(driver, ganacheServer);
+        await logInWithBalanceValidation(driver);
 
         // ETH
         await bridgePage.navigateToAssetPage('ETH');

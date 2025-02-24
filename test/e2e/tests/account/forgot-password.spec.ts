@@ -17,14 +17,8 @@ describe('Forgot password', function () {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer?: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
 
         // Lock Wallet
         const homePage = new HomePage(driver);
@@ -41,7 +35,7 @@ describe('Forgot password', function () {
         await homePage.headerNavbar.lockMetaMask();
 
         // Check user can log in with new password
-        await loginWithBalanceValidation(driver, ganacheServer, newPassword);
+        await loginWithBalanceValidation(driver, newPassword);
       },
     );
   });

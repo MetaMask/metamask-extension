@@ -34,13 +34,11 @@ describe('Snap Account Contract interaction', function (this: Suite) {
       async ({
         driver,
         contractRegistry,
-        ganacheServer,
       }: {
         driver: Driver;
         contractRegistry: ContractAddressRegistry;
-        ganacheServer?: Ganache;
       }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver);
         await installSnapSimpleKeyring(driver);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
 
