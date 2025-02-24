@@ -1,4 +1,4 @@
-import { SolScope, BtcScope } from '@metamask/keyring-api';
+import { SolScope, BtcScope, EthScope } from '@metamask/keyring-api';
 import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import {
   type NetworkConfiguration,
@@ -145,21 +145,17 @@ describe('network utils', () => {
 
   describe('convertCaipToHexChainId', () => {
     it('converts a CAIP chain ID to a hex chain ID', () => {
-      expect(convertCaipToHexChainId('eip155:1')).toBe('0x1');
+      expect(convertCaipToHexChainId(EthScope.Mainnet)).toBe('0x1');
       expect(convertCaipToHexChainId('eip155:56')).toBe('0x38');
       expect(convertCaipToHexChainId('eip155:80094')).toBe('0x138de');
       expect(convertCaipToHexChainId('eip155:8453')).toBe('0x2105');
     });
 
     it('throws an error given a CAIP chain ID with an unsupported namespace', () => {
-      expect(() =>
-        convertCaipToHexChainId('bip122:000000000019d6689c085ae165831e93'),
-      ).toThrow(
+      expect(() => convertCaipToHexChainId(BtcScope.Mainnet)).toThrow(
         'Unsupported CAIP chain ID namespace: bip122. Only eip155 is supported.',
       );
-      expect(() =>
-        convertCaipToHexChainId('solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'),
-      ).toThrow(
+      expect(() => convertCaipToHexChainId(SolScope.Mainnet)).toThrow(
         'Unsupported CAIP chain ID namespace: solana. Only eip155 is supported.',
       );
     });
@@ -171,11 +167,11 @@ describe('network utils', () => {
         [SolScope.Mainnet]: {
           chainId: SolScope.Mainnet,
           name: 'Solana Mainnet',
-          nativeCurrency: `${SolScope.Mainnet}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`,
+          nativeCurrency: `${SolScope.Mainnet}/slip44:501`,
           isEvm: false,
         },
-        'eip155:1': {
-          chainId: 'eip155:1',
+        [EthScope.Mainnet]: {
+          chainId: EthScope.Mainnet,
           name: 'Ethereum Mainnet',
           nativeCurrency: 'ETH',
           blockExplorerUrls: ['https://etherscan.io'],
@@ -200,14 +196,14 @@ describe('network utils', () => {
       const sortedChainIds = [
         { networkId: SolScope.Mainnet },
         { networkId: BtcScope.Mainnet },
-        { networkId: 'eip155:1' },
+        { networkId: EthScope.Mainnet },
         { networkId: 'eip155:11155111' },
       ];
       expect(sortNetworks(networks, sortedChainIds)).toStrictEqual([
         {
           chainId: SolScope.Mainnet,
           name: 'Solana Mainnet',
-          nativeCurrency: `${SolScope.Mainnet}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`,
+          nativeCurrency: `${SolScope.Mainnet}/slip44:501`,
           isEvm: false,
         },
         {
@@ -217,7 +213,7 @@ describe('network utils', () => {
           isEvm: false,
         },
         {
-          chainId: 'eip155:1',
+          chainId: EthScope.Mainnet,
           name: 'Ethereum Mainnet',
           nativeCurrency: 'ETH',
           blockExplorerUrls: ['https://etherscan.io'],
@@ -301,7 +297,7 @@ describe('network utils', () => {
     };
 
     it('gets the RPC data for the given chain ID', () => {
-      expect(getRpcDataByChainId('eip155:1', evmNetworks)).toStrictEqual({
+      expect(getRpcDataByChainId(EthScope.Mainnet, evmNetworks)).toStrictEqual({
         rpcEndpoints: [
           {
             url: 'https://mainnet.infura.io/v3/1234567890abcdef',
