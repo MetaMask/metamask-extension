@@ -148,7 +148,7 @@ describe('Routes Component', () => {
   });
 
   describe('render during send flow', () => {
-    it('renders when send transaction is not active', async () => {
+    it('should render when send transaction is not active', async () => {
       const state = {
         ...mockSendState,
         metamask: {
