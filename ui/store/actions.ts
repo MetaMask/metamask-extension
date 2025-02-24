@@ -510,13 +510,20 @@ export function addNewAccount(
   log.debug(`background.addNewAccount`);
   return async (dispatch, getState) => {
     const keyrings = getMetaMaskKeyrings(getState());
-    const oldAccounts = keyringId
+    const [defaultPrimaryKeyring] = keyrings;
+    let oldAccounts = defaultPrimaryKeyring.accounts;
+
+    ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+    const hdKeyring = keyringId
       ? keyrings.find(
           (keyring) =>
             keyring.type === KeyringTypes.hd &&
             keyring.metadata.id === keyringId,
-        )?.accounts.length
-      : keyrings[0].accounts.length;
+        )
+      : keyrings[0];
+
+    oldAccounts = hdKeyring.accounts;
+    ///: END:ONLY_INCLUDE_IF
 
     if (!oldAccounts) {
       console.log('Should never reach this. There is always a keyring');
@@ -528,7 +535,7 @@ export function addNewAccount(
     let addedAccountAddress;
     try {
       addedAccountAddress = await submitRequestToBackground('addNewAccount', [
-        Object.keys(oldAccounts).length,
+        oldAccounts.length,
         ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
         keyringId,
         ///: END:ONLY_INCLUDE_IF
