@@ -7,12 +7,20 @@ import {
 } from '@metamask/utils';
 import { convertHexToDecimal } from '@metamask/controller-utils';
 import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
+import type { NetworkConfiguration } from '@metamask/network-controller';
+
 import {
   CHAIN_IDS,
   MAX_SAFE_CHAIN_ID,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
 } from '../constants/network';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../constants/multichain/networks';
+
+type RpcEndpoint = {
+  name?: string;
+  url: string;
+  networkClientId: string;
+};
 
 /**
  * Checks whether the given number primitive chain ID is safe.
@@ -149,4 +157,28 @@ export const getNetworkIcon = (chainId: CaipChainId, isEvm: boolean) => {
   return isEvm
     ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[convertCaipToHexChainId(chainId)]
     : MULTICHAIN_TOKEN_IMAGE_MAP[chainId];
+};
+
+/**
+ * Get the RPC data for the given chain ID.
+ *
+ * @param chainId - The chain ID to get the RPC data for.
+ * @param evmNetworks - The network configurations for EVM networks.
+ * @returns The RPC data for the chain ID.
+ */
+export const getRpcDataByChainId = (
+  chainId: CaipChainId,
+  evmNetworks: Record<Hex, NetworkConfiguration>,
+): {
+  rpcEndpoints: RpcEndpoint[];
+  defaultRpcEndpoint: RpcEndpoint;
+} => {
+  const hexChainId = convertCaipToHexChainId(chainId);
+  const evmNetworkConfig = evmNetworks[hexChainId];
+  const { rpcEndpoints, defaultRpcEndpointIndex } = evmNetworkConfig;
+  const defaultRpcEndpoint = rpcEndpoints[defaultRpcEndpointIndex];
+  return {
+    rpcEndpoints,
+    defaultRpcEndpoint,
+  };
 };

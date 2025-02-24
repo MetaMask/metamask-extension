@@ -95,6 +95,7 @@ import {
   convertCaipToHexChainId,
   sortNetworks,
   getNetworkIcon,
+  getRpcDataByChainId,
 } from '../../../../shared/modules/network.utils';
 import {
   getCompletedOnboarding,
@@ -108,7 +109,6 @@ import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
 import { SelectRpcUrlModal } from './select-rpc-url-modal/select-rpc-url-modal';
 import AddBlockExplorerModal from './add-block-explorer-modal/add-block-explorer-modal';
 import AddNonEvmAccountModal from './add-non-evm-account/add-non-evm-account';
-import { getRpcDataByChainId } from './helpers';
 
 export enum ACTION_MODE {
   // Displays the search box and network list
@@ -372,7 +372,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       };
     }
 
-    const { rpcEndpoints } = getRpcDataByChainId(network.chainId, evmNetworks);
+    const rpcEndpoints =
+      getRpcDataByChainId(network.chainId, evmNetworks)?.rpcEndpoints || [];
     return {
       isEnabled: true,
       isDeletable:

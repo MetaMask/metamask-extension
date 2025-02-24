@@ -1,5 +1,9 @@
 import { SolScope, BtcScope } from '@metamask/keyring-api';
 import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
+import {
+  type NetworkConfiguration,
+  RpcEndpointType,
+} from '@metamask/network-controller';
 import { CaipChainId } from '@metamask/utils';
 import { MAX_SAFE_CHAIN_ID } from '../constants/network';
 import {
@@ -9,6 +13,7 @@ import {
   convertNetworkId,
   convertCaipToHexChainId,
   sortNetworks,
+  getRpcDataByChainId,
 } from './network.utils';
 
 describe('network utils', () => {
@@ -228,6 +233,90 @@ describe('network utils', () => {
           isEvm: true,
         },
       ]);
+    });
+  });
+
+  describe('getRpcDataByChainId', () => {
+    const evmNetworks: Record<string, NetworkConfiguration> = {
+      '0x1': {
+        chainId: '0x1',
+        name: 'Ethereum Mainnet',
+        nativeCurrency: 'ETH',
+        rpcEndpoints: [
+          {
+            url: 'https://mainnet.infura.io/v3/1234567890abcdef',
+            networkClientId: '1',
+            name: 'infura',
+            type: RpcEndpointType.Custom,
+          },
+        ],
+        defaultRpcEndpointIndex: 0,
+        blockExplorerUrls: [],
+      },
+      '0x38': {
+        chainId: '0x38',
+        name: 'Binance Smart Chain Mainnet',
+        nativeCurrency: 'BNB',
+        rpcEndpoints: [
+          {
+            url: 'https://bsc-dataseed.binance.org',
+            networkClientId: '56',
+            name: 'binance',
+            type: RpcEndpointType.Custom,
+          },
+        ],
+        defaultRpcEndpointIndex: 0,
+        blockExplorerUrls: [],
+      },
+      '0x89': {
+        chainId: '0x89',
+        name: 'Polygon Mainnet',
+        nativeCurrency: 'MATIC',
+        rpcEndpoints: [
+          {
+            url: 'https://rpc-mainnet.maticvigil.com',
+            networkClientId: '137',
+            name: 'maticvigil',
+            type: RpcEndpointType.Custom,
+          },
+        ],
+        defaultRpcEndpointIndex: 0,
+        blockExplorerUrls: [],
+      },
+      '0xa86a': {
+        chainId: '0xa86a',
+        name: 'Avalanche Mainnet',
+        nativeCurrency: 'AVAX',
+        rpcEndpoints: [
+          {
+            url: 'https://api.avax.network/ext/bc/C/rpc',
+            networkClientId: '43114',
+            name: 'avalanche',
+            type: RpcEndpointType.Custom,
+          },
+        ],
+        defaultRpcEndpointIndex: 0,
+        blockExplorerUrls: [],
+      },
+    };
+
+    it('gets the RPC data for the given chain ID', () => {
+      expect(getRpcDataByChainId('eip155:1', evmNetworks)).toStrictEqual({
+        rpcEndpoints: [
+          {
+            url: 'https://mainnet.infura.io/v3/1234567890abcdef',
+            networkClientId: '1',
+            name: 'infura',
+            type: RpcEndpointType.Custom,
+          },
+        ],
+        defaultRpcEndpoint: {
+          url: 'https://mainnet.infura.io/v3/1234567890abcdef',
+          networkClientId: '1',
+          name: 'infura',
+          type: RpcEndpointType.Custom,
+        },
+      });
     });
   });
 });
