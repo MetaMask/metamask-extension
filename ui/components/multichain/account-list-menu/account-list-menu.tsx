@@ -72,7 +72,7 @@ import {
   getUpdatedAndSortedAccounts,
   getDefaultHomeActiveTabName,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  getRemoteFeatureFlags,
+  getIsSolanaSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
@@ -287,7 +287,7 @@ export const AccountListMenu = ({
   ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  const { addSolanaAccount } = useSelector(getRemoteFeatureFlags);
+  const solanaSupportEnabled = useSelector(getIsSolanaSupportEnabled);
   const solanaWalletSnapClient = useMultichainWalletSnapClient(
     WalletClientType.Solana,
   );
@@ -475,7 +475,7 @@ export const AccountListMenu = ({
             }
             {
               ///: BEGIN:ONLY_INCLUDE_IF(solana)
-              addSolanaAccount && (
+              solanaSupportEnabled && (
                 <Box marginTop={4}>
                   <ButtonLink
                     size={ButtonLinkSize.Sm}

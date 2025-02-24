@@ -129,6 +129,7 @@ import {
   getMultichainBalances,
   getMultichainNetworkProviders,
 } from './multichain';
+import { getRemoteFeatureFlags } from './remote-feature-flags';
 
 /** `appState` slice selectors */
 
@@ -2699,6 +2700,17 @@ export function getIsBitcoinTestnetSupportEnabled(state) {
   // See `getIsBitcoinSupportEnabled` for details.
   const { bitcoinTestnetSupportEnabled } = state.metamask;
   return Boolean(bitcoinTestnetSupportEnabled);
+}
+
+/**
+ * Get the state of the `solanaSupportEnabled` remote feature flag.
+ *
+ * @param {*} state
+ * @returns The state of the `solanaSupportEnabled` remote feature flag.
+ */
+export function getIsSolanaSupportEnabled(state) {
+  const { addSolanaAccount } = getRemoteFeatureFlags(state);
+  return Boolean(addSolanaAccount);
 }
 
 export function getIsCustomNetwork(state) {

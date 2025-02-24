@@ -14,7 +14,10 @@ import {
   getNetworkConfigurationsByChainId,
 } from '../../../shared/modules/selectors/networks';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
-import { getIsBitcoinSupportEnabled } from '../selectors';
+import {
+  getIsBitcoinSupportEnabled,
+  getIsSolanaSupportEnabled,
+} from '../selectors';
 import { getInternalAccounts } from '../accounts';
 
 // Selector types
@@ -67,13 +70,15 @@ export const getNonEvmMultichainNetworkConfigurationsByChainId = (
 
 export const getIsNonEvmNetworksEnabled = createDeepEqualSelector(
   getIsBitcoinSupportEnabled,
+  getIsSolanaSupportEnabled,
   getInternalAccounts,
-  (isBitcoinEnabled, internalAccounts) => {
+  (isBitcoinEnabled, isSolanaEnabled, internalAccounts) => {
+    if (isBitcoinEnabled && isSolanaEnabled) {
+      return { bitcoinEnabled: true, solanaEnabled: true };
+    }
+
     let bitcoinEnabled = isBitcoinEnabled;
-    let solanaEnabled = false;
-    ///: BEGIN:ONLY_INCLUDE_IF(solana)
-    solanaEnabled = true;
-    ///: END:ONLY_INCLUDE_IF
+    let solanaEnabled = isSolanaEnabled;
 
     for (const { scopes } of internalAccounts) {
       if (scopes.includes(BtcScope.Mainnet)) {

@@ -14,6 +14,7 @@ import {
   MOCK_ACCOUNT_BIP122_P2WPKH,
   MOCK_ACCOUNT_SOLANA_MAINNET,
 } from '../../../test/data/mock-accounts';
+import { RemoteFeatureFlagsState } from '../remote-feature-flags';
 import {
   type MultichainNetworkControllerState,
   getNonEvmMultichainNetworkConfigurationsByChainId,
@@ -25,7 +26,8 @@ import {
 
 type TestState = AccountsState &
   MultichainNetworkControllerState &
-  NetworkState & {
+  NetworkState &
+  RemoteFeatureFlagsState & {
     metamask: { bitcoinSupportEnabled: boolean };
   };
 
@@ -103,6 +105,9 @@ const mockEvmNetworksWithOldConfig: Record<Hex, NetworkConfiguration> = {
 
 const mockState: TestState = {
   metamask: {
+    remoteFeatureFlags: {
+      addSolanaAccount: true,
+    },
     bitcoinSupportEnabled: true,
     multichainNetworkConfigurationsByChainId: {
       ...mockNonEvmNetworks,
@@ -149,6 +154,28 @@ describe('Multichain network selectors', () => {
         getMultichainNetworkConfigurationsByChainId(mockState),
       ).toStrictEqual({
         ...mockNonEvmNetworks,
+        ...mockEvmNetworksWithNewConfig,
+      });
+    });
+
+    it('returns all multichain network configurations by chain ID excluding Solana when support is disabled and there is no Solana account', () => {
+      const mockMultichainNetworkStateWithSolanaSupportDisabled = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          remoteFeatureFlags: {
+            ...mockState.metamask.remoteFeatureFlags,
+            addSolanaAccount: false,
+          },
+        },
+      };
+
+      expect(
+        getMultichainNetworkConfigurationsByChainId(
+          mockMultichainNetworkStateWithSolanaSupportDisabled,
+        ),
+      ).toStrictEqual({
+        [BtcScope.Mainnet]: mockNonEvmNetworks[BtcScope.Mainnet],
         ...mockEvmNetworksWithNewConfig,
       });
     });
