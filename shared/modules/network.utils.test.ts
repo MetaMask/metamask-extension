@@ -314,5 +314,11 @@ describe('network utils', () => {
         },
       });
     });
+
+    it('throws an error if the network configuration is not found for the chain ID', () => {
+      expect(() => getRpcDataByChainId('eip155:2', evmNetworks)).toThrow(
+        'Network configuration not found for chain ID: eip155:2 (0x2)',
+      );
+    });
   });
 });

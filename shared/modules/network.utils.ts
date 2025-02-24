@@ -178,6 +178,13 @@ export const getRpcDataByChainId = (
   defaultRpcEndpoint: RpcEndpoint;
 } => {
   const hexChainId = convertCaipToHexChainId(chainId);
+
+  if (!evmNetworks[hexChainId]) {
+    throw new Error(
+      `Network configuration not found for chain ID: ${chainId} (${hexChainId})`,
+    );
+  }
+
   const evmNetworkConfig = evmNetworks[hexChainId];
   const { rpcEndpoints, defaultRpcEndpointIndex } = evmNetworkConfig;
   const defaultRpcEndpoint = rpcEndpoints[defaultRpcEndpointIndex];
