@@ -236,36 +236,7 @@ export const CoinOverview = ({
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
 
-  const shouldHideZeroBalanceTokens = useSelector(
-    getShouldHideZeroBalanceTokens,
-  );
-  const allChainIDs = useSelector(getChainIdsToPoll);
-  const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
-    account,
-    shouldHideZeroBalanceTokens,
-    isTokenNetworkFilterEqualCurrentNetwork,
-    allChainIDs,
-  );
-  const { totalFiatBalance } = useAccountTotalCrossChainFiatBalance(
-    account,
-    formattedTokensWithBalancesPerChain,
-  );
-
-  const shouldShowFiat = useMultichainSelector(
-    getMultichainShouldShowFiat,
-    account,
-  );
-
   const isEvm = useSelector(getMultichainIsEvm);
-  const isNotAggregatedFiatBalance =
-    !shouldShowFiat || showNativeTokenAsMainBalance || isTestnet || !isEvm;
-
-  let balanceToDisplay;
-  if (isNotAggregatedFiatBalance) {
-    balanceToDisplay = balance;
-  } else {
-    balanceToDisplay = totalFiatBalance;
-  }
 
   const tokensMarketData = useSelector(getTokensMarketData);
   const [isOpen, setIsOpen] = useState(true);
