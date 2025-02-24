@@ -358,6 +358,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const getNetworkFlags = (network: MultichainNetworkConfiguration) => {
     if (!network.isEvm) {
       return {
+        isEnabled: isAccountInNetwork(network.chainId) || isUnlocked,
         isDeletable: false,
         isEditable: false,
         hasMultiRpcOptions: false,
@@ -366,6 +367,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
 
     const { rpcEndpoints } = getRpcDataByChainId(network.chainId, evmNetworks);
     return {
+      isEnabled: true,
       isDeletable:
         isUnlocked &&
         network.chainId !== currentChainId &&
@@ -380,7 +382,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     network: MultichainNetworkConfiguration,
   ) => {
     const isCurrentNetwork = network.chainId === currentChainId;
-    const { isDeletable, isEditable, hasMultiRpcOptions } =
+    const { isEnabled, isDeletable, isEditable, hasMultiRpcOptions } =
       getNetworkFlags(network);
 
     const onDelete = () => {
@@ -413,11 +415,6 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       );
     };
 
-    const { defaultRpcEndpoint } = getRpcDataByChainId(
-      network.chainId,
-      evmNetworks,
-    );
-
     const iconSrc = getNetworkIcon(network.chainId, network.isEvm);
 
     return (
@@ -429,14 +426,19 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         iconSize={AvatarNetworkSize.Sm}
         selected={isCurrentNetwork && !focusSearch}
         focus={isCurrentNetwork && !focusSearch}
-        rpcEndpoint={hasMultiRpcOptions ? defaultRpcEndpoint : undefined}
+        rpcEndpoint={
+          hasMultiRpcOptions
+            ? getRpcDataByChainId(network.chainId, evmNetworks)
+                .defaultRpcEndpoint
+            : undefined
+        }
         onClick={async () => {
           await handleNetworkChange(network.chainId);
         }}
         onDeleteClick={isDeletable ? () => onDelete() : undefined}
         onEditClick={isEditable ? () => onEdit() : undefined}
-        onRpcEndpointClick={network.isEvm ? onRpcConfigEdit : undefined}
-        disabled={!isUnlocked && !network.isEvm}
+        onRpcEndpointClick={network.isEvm ? () => onRpcConfigEdit() : undefined}
+        disabled={!isEnabled}
       />
     );
   };
