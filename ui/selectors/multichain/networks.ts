@@ -108,16 +108,16 @@ export const getMultichainNetworkConfigurationsByChainId =
 
       // This is not ideal but since there are only two non EVM networks
       // we can just filter them out based on the support enabled
-      const { bitcoinEnabled } = isNonEvmNetworksEnabled;
+      const { bitcoinEnabled, solanaEnabled } = isNonEvmNetworksEnabled;
       if (bitcoinEnabled) {
         filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Mainnet] =
           nonEvmNetworkConfigurationsByChainId[BtcScope.Mainnet];
       }
 
-      ///: BEGIN:ONLY_INCLUDE_IF(solana)
-      filteredNonEvmNetworkConfigurationsByChainId[SolScope.Mainnet] =
-        nonEvmNetworkConfigurationsByChainId[SolScope.Mainnet];
-      ///: END:ONLY_INCLUDE_IF
+      if (solanaEnabled) {
+        filteredNonEvmNetworkConfigurationsByChainId[SolScope.Mainnet] =
+          nonEvmNetworkConfigurationsByChainId[SolScope.Mainnet];
+      }
 
       const networks = {
         ...filteredNonEvmNetworkConfigurationsByChainId,

@@ -2701,18 +2701,6 @@ export function getIsBitcoinTestnetSupportEnabled(state) {
   return Boolean(bitcoinTestnetSupportEnabled);
 }
 
-/**
- * Get the state of the `solanaSupportEnabled` flag.
- *
- * @param {*} state
- * @returns The state of the `solanaSupportEnabled` flag.
- */
-export function getIsSolanaSupportEnabled(state) {
-  // See `getIsBitcoinSupportEnabled` for details.
-  const { solanaSupportEnabled } = state.metamask;
-  return Boolean(solanaSupportEnabled);
-}
-
 export function getIsCustomNetwork(state) {
   const chainId = getCurrentChainId(state);
 

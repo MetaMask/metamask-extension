@@ -65,7 +65,6 @@ const mockEvmNetworksWithNewConfig: Record<
     defaultBlockExplorerUrlIndex: 0,
     isEvm: true,
   },
-  [SolScope.Mainnet]: mockNonEvmNetworks[SolScope.Mainnet],
 };
 
 const mockEvmNetworksWithOldConfig: Record<Hex, NetworkConfiguration> = {
@@ -169,6 +168,7 @@ describe('Multichain network selectors', () => {
         ),
       ).toStrictEqual({
         ...mockEvmNetworksWithNewConfig,
+        [SolScope.Mainnet]: mockNonEvmNetworks[SolScope.Mainnet],
       });
     });
 
@@ -185,7 +185,10 @@ describe('Multichain network selectors', () => {
         getMultichainNetworkConfigurationsByChainId(
           mockMultichainNetworkStateWithBitcoinSupportDisabled,
         ),
-      ).toStrictEqual({ ...mockEvmNetworksWithNewConfig });
+      ).toStrictEqual({
+        ...mockEvmNetworksWithNewConfig,
+        [SolScope.Mainnet]: mockNonEvmNetworks[SolScope.Mainnet],
+      });
     });
 
     it('returns Solana as part of the multichain network configurations if there is a Solana account', () => {
@@ -236,6 +239,7 @@ describe('Multichain network selectors', () => {
         ),
       ).toStrictEqual({
         ...mockEvmNetworksWithNewConfig,
+        [SolScope.Mainnet]: mockNonEvmNetworks[SolScope.Mainnet],
         [BtcScope.Mainnet]: mockNonEvmNetworks[BtcScope.Mainnet],
       });
     });
