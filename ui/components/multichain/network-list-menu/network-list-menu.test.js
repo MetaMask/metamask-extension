@@ -234,7 +234,6 @@ describe('NetworkListMenu', () => {
     const networkItems = document.querySelectorAll(
       '.multichain-network-list-item',
     );
-
     expect(networkItems).toHaveLength(4);
 
     const selectedNodes = document.querySelectorAll(
