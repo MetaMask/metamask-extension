@@ -1,5 +1,6 @@
 import {
   TransactionController,
+  TransactionEnvelopeType,
   TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
@@ -61,6 +62,7 @@ export type InstitutionalSnapResponse = {
     nonce: string;
     to: string;
     transactionHash: string;
+    type: string;
   };
   result: {
     v: string;
@@ -170,6 +172,7 @@ export class DeferredPublicationController extends BaseController<
         gasLimit: snapResponse.transaction.gasLimit,
         maxFeePerGas: snapResponse.transaction.maxFeePerGas,
         maxPriorityFeePerGas: snapResponse.transaction.maxPriorityFeePerGas,
+        type: snapResponse.transaction.type as TransactionEnvelopeType,
       });
       return false;
     }

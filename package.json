@@ -259,7 +259,7 @@
     "tslib@npm:^2.3.1": "~2.6.0",
     "tslib@npm:^2.4.0": "~2.6.0",
     "tslib@npm:^2.6.2": "~2.6.0",
-    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@45.0.0-preview-224dff25",
+    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@46.0.0-preview-1cc9329c",
     "@ethersproject/signing-key/elliptic": "^6.6.1",
     "gridplus-sdk/elliptic": "^6.6.1"
   },
