@@ -456,13 +456,10 @@ export function getConversionRatesForNativeAsset({
 
   Object.entries(conversionRates).forEach(
     ([caip19Identifier, conversionRate]) => {
-      const parsedCaip19Identifier = parseCaipAssetType(
+      const { assetNamespace, chainId: caipChainId } = parseCaipAssetType(
         caip19Identifier as CaipAssetType,
       );
-      if (
-        parsedCaip19Identifier.assetNamespace === 'slip44' &&
-        parsedCaip19Identifier.chainId === chainId
-      ) {
+      if (assetNamespace === 'slip44' && caipChainId === chainId) {
         conversionRateResult = conversionRate;
       }
     },
