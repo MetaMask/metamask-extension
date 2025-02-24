@@ -15,23 +15,26 @@
   [
     "shared/modules/selectors/account.ts",
     "shared/modules/selectors/index.ts",
-    "ui/components/app/assets/util/calculateTokenBalance.ts",
-    "ui/hooks/useTokenBalances.ts",
+    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
+    "ui/pages/confirmations/confirmation/templates/error.js",
+    "ui/pages/confirmations/confirmation/templates/index.js",
     "ui/selectors/selectors.js",
     "ui/store/actions.ts"
   ],
   [
     "shared/modules/selectors/index.ts",
     "shared/modules/selectors/smart-transactions.ts",
-    "ui/components/app/assets/util/calculateTokenBalance.ts",
-    "ui/hooks/useTokenBalances.ts",
+    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
+    "ui/pages/confirmations/confirmation/templates/error.js",
+    "ui/pages/confirmations/confirmation/templates/index.js",
     "ui/selectors/selectors.js",
     "ui/store/actions.ts"
   ],
   [
     "shared/modules/selectors/index.ts",
-    "ui/components/app/assets/util/calculateTokenBalance.ts",
-    "ui/hooks/useTokenBalances.ts",
+    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
+    "ui/pages/confirmations/confirmation/templates/error.js",
+    "ui/pages/confirmations/confirmation/templates/index.js",
     "ui/selectors/selectors.js",
     "ui/store/actions.ts"
   ],
@@ -46,172 +49,6 @@
     "ui/components/multichain/account-overview/account-overview.tsx",
     "ui/components/multichain/account-overview/index.js",
     "ui/components/multichain/index.js"
-  ],
-  [
-    "ui/components/app/assets/util/calculateTokenBalance.ts",
-    "ui/ducks/alerts/unconnected-account.js",
-    "ui/ducks/confirm-transaction/confirm-transaction.duck.js",
-    "ui/ducks/metamask/metamask.js",
-    "ui/ducks/send/index.js",
-    "ui/ducks/send/send.js",
-    "ui/hooks/useTokenBalances.ts",
-    "ui/selectors/confirm-transaction.js",
-    "ui/selectors/custom-gas.js",
-    "ui/selectors/index.js",
-    "ui/selectors/selectors.js",
-    "ui/store/actions.ts"
-  ],
-  [
-    "ui/components/app/assets/util/calculateTokenBalance.ts",
-    "ui/ducks/alerts/unconnected-account.js",
-    "ui/ducks/metamask/metamask.js",
-    "ui/hooks/useTokenBalances.ts",
-    "ui/selectors/confirm-transaction.js",
-    "ui/selectors/custom-gas.js",
-    "ui/selectors/index.js",
-    "ui/selectors/selectors.js",
-    "ui/store/actions.ts"
-  ],
-  [
-    "ui/components/app/assets/util/calculateTokenBalance.ts",
-    "ui/ducks/alerts/unconnected-account.js",
-    "ui/ducks/metamask/metamask.js",
-    "ui/hooks/useTokenBalances.ts",
-    "ui/selectors/confirm-transaction.js",
-    "ui/selectors/index.js",
-    "ui/selectors/selectors.js",
-    "ui/store/actions.ts"
-  ],
-  [
-    "ui/components/app/assets/util/calculateTokenBalance.ts",
-    "ui/ducks/alerts/unconnected-account.js",
-    "ui/hooks/useTokenBalances.ts",
-    "ui/selectors/confirm-transaction.js",
-    "ui/selectors/custom-gas.js",
-    "ui/selectors/index.js",
-    "ui/selectors/selectors.js",
-    "ui/store/actions.ts"
-  ],
-  [
-    "ui/components/app/assets/util/calculateTokenBalance.ts",
-    "ui/ducks/alerts/unconnected-account.js",
-    "ui/hooks/useTokenBalances.ts",
-    "ui/selectors/confirm-transaction.js",
-    "ui/selectors/index.js",
-    "ui/selectors/selectors.js",
-    "ui/store/actions.ts"
-  ],
-  [
-    "ui/components/app/assets/util/calculateTokenBalance.ts",
-    "ui/ducks/alerts/unconnected-account.js",
-    "ui/hooks/useTokenBalances.ts",
-    "ui/selectors/index.js",
-    "ui/selectors/permissions.js",
-    "ui/selectors/selectors.js",
-    "ui/store/actions.ts"
-  ],
-  [
-    "ui/components/app/assets/util/calculateTokenBalance.ts",
-    "ui/ducks/alerts/unconnected-account.js",
-    "ui/hooks/useTokenBalances.ts",
-    "ui/selectors/index.js",
-    "ui/selectors/selectors.js",
-    "ui/store/actions.ts"
-  ],
-  [
-    "ui/components/app/assets/util/calculateTokenBalance.ts",
-    "ui/ducks/confirm-transaction/confirm-transaction.duck.js",
-    "ui/ducks/index.js",
-    "ui/ducks/metamask/metamask.js",
-    "ui/ducks/send/send.js",
-    "ui/hooks/useTokenBalances.ts",
-    "ui/selectors/selectors.js",
-    "ui/store/actions.ts",
-    "ui/store/store.ts"
-  ],
-  [
-    "ui/components/app/assets/util/calculateTokenBalance.ts",
-    "ui/ducks/confirm-transaction/confirm-transaction.duck.js",
-    "ui/ducks/index.js",
-    "ui/ducks/metamask/metamask.js",
-    "ui/hooks/useTokenBalances.ts",
-    "ui/selectors/selectors.js",
-    "ui/store/actions.ts",
-    "ui/store/store.ts"
-  ],
-  [
-    "ui/components/app/assets/util/calculateTokenBalance.ts",
-    "ui/ducks/confirm-transaction/confirm-transaction.duck.js",
-    "ui/ducks/metamask/metamask.js",
-    "ui/ducks/send/index.js",
-    "ui/ducks/send/send.js",
-    "ui/hooks/useTokenBalances.ts",
-    "ui/selectors/selectors.js",
-    "ui/store/actions.ts"
-  ],
-  [
-    "ui/components/app/assets/util/calculateTokenBalance.ts",
-    "ui/ducks/index.js",
-    "ui/ducks/metamask/metamask.js",
-    "ui/ducks/ramps/ramps.ts",
-    "ui/hooks/useTokenBalances.ts",
-    "ui/selectors/multichain.ts",
-    "ui/selectors/selectors.js",
-    "ui/store/actions.ts",
-    "ui/store/store.ts"
-  ],
-  [
-    "ui/components/app/assets/util/calculateTokenBalance.ts",
-    "ui/ducks/index.js",
-    "ui/ducks/metamask/metamask.js",
-    "ui/ducks/swaps/swaps.js",
-    "ui/hooks/useTokenBalances.ts",
-    "ui/hooks/useTokenFiatAmount.js",
-    "ui/selectors/selectors.js",
-    "ui/store/actions.ts",
-    "ui/store/store.ts"
-  ],
-  [
-    "ui/components/app/assets/util/calculateTokenBalance.ts",
-    "ui/ducks/index.js",
-    "ui/ducks/metamask/metamask.js",
-    "ui/ducks/swaps/swaps.js",
-    "ui/hooks/useTokenBalances.ts",
-    "ui/selectors/selectors.js",
-    "ui/store/actions.ts",
-    "ui/store/store.ts"
-  ],
-  [
-    "ui/components/app/assets/util/calculateTokenBalance.ts",
-    "ui/ducks/index.js",
-    "ui/ducks/metamask/metamask.js",
-    "ui/hooks/useTokenBalances.ts",
-    "ui/selectors/selectors.js",
-    "ui/store/actions.ts",
-    "ui/store/store.ts"
-  ],
-  [
-    "ui/components/app/assets/util/calculateTokenBalance.ts",
-    "ui/ducks/index.js",
-    "ui/ducks/ramps/ramps.ts",
-    "ui/hooks/useTokenBalances.ts",
-    "ui/selectors/multichain.ts",
-    "ui/selectors/selectors.js",
-    "ui/store/actions.ts",
-    "ui/store/store.ts"
-  ],
-  [
-    "ui/components/app/assets/util/calculateTokenBalance.ts",
-    "ui/ducks/metamask/metamask.js",
-    "ui/hooks/useTokenBalances.ts",
-    "ui/selectors/selectors.js"
-  ],
-  [
-    "ui/components/app/assets/util/calculateTokenBalance.ts",
-    "ui/ducks/metamask/metamask.js",
-    "ui/hooks/useTokenBalances.ts",
-    "ui/selectors/selectors.js",
-    "ui/store/actions.ts"
   ],
   [
     "ui/components/app/connected-status-indicator/connected-status-indicator.js",
@@ -293,6 +130,105 @@
     "ui/components/multichain/account-overview/account-overview.tsx",
     "ui/components/multichain/account-overview/index.js",
     "ui/components/multichain/index.js"
+  ],
+  [
+    "ui/components/component-library/index.ts",
+    "ui/components/component-library/picker-network/index.ts",
+    "ui/components/component-library/picker-network/picker-network.tsx",
+    "ui/components/multichain/avatar-group/avatar-group.tsx",
+    "ui/components/multichain/avatar-group/index.ts",
+    "ui/ducks/confirm-transaction/confirm-transaction.duck.js",
+    "ui/ducks/metamask/metamask.js",
+    "ui/ducks/send/index.js",
+    "ui/ducks/send/send.js",
+    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
+    "ui/pages/confirmations/confirmation/templates/error.js",
+    "ui/pages/confirmations/confirmation/templates/index.js",
+    "ui/selectors/confirm-transaction.js",
+    "ui/selectors/custom-gas.js",
+    "ui/selectors/index.js",
+    "ui/selectors/selectors.js"
+  ],
+  [
+    "ui/components/component-library/index.ts",
+    "ui/components/component-library/picker-network/index.ts",
+    "ui/components/component-library/picker-network/picker-network.tsx",
+    "ui/components/multichain/avatar-group/avatar-group.tsx",
+    "ui/components/multichain/avatar-group/index.ts",
+    "ui/ducks/metamask/metamask.js",
+    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
+    "ui/pages/confirmations/confirmation/templates/error.js",
+    "ui/pages/confirmations/confirmation/templates/index.js",
+    "ui/selectors/confirm-transaction.js",
+    "ui/selectors/custom-gas.js",
+    "ui/selectors/index.js",
+    "ui/selectors/selectors.js"
+  ],
+  [
+    "ui/components/component-library/index.ts",
+    "ui/components/component-library/picker-network/index.ts",
+    "ui/components/component-library/picker-network/picker-network.tsx",
+    "ui/components/multichain/avatar-group/avatar-group.tsx",
+    "ui/components/multichain/avatar-group/index.ts",
+    "ui/ducks/metamask/metamask.js",
+    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
+    "ui/pages/confirmations/confirmation/templates/error.js",
+    "ui/pages/confirmations/confirmation/templates/index.js",
+    "ui/selectors/confirm-transaction.js",
+    "ui/selectors/index.js",
+    "ui/selectors/selectors.js"
+  ],
+  [
+    "ui/components/component-library/index.ts",
+    "ui/components/component-library/picker-network/index.ts",
+    "ui/components/component-library/picker-network/picker-network.tsx",
+    "ui/components/multichain/avatar-group/avatar-group.tsx",
+    "ui/components/multichain/avatar-group/index.ts",
+    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
+    "ui/pages/confirmations/confirmation/templates/error.js",
+    "ui/pages/confirmations/confirmation/templates/index.js",
+    "ui/selectors/confirm-transaction.js",
+    "ui/selectors/custom-gas.js",
+    "ui/selectors/index.js",
+    "ui/selectors/selectors.js"
+  ],
+  [
+    "ui/components/component-library/index.ts",
+    "ui/components/component-library/picker-network/index.ts",
+    "ui/components/component-library/picker-network/picker-network.tsx",
+    "ui/components/multichain/avatar-group/avatar-group.tsx",
+    "ui/components/multichain/avatar-group/index.ts",
+    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
+    "ui/pages/confirmations/confirmation/templates/error.js",
+    "ui/pages/confirmations/confirmation/templates/index.js",
+    "ui/selectors/confirm-transaction.js",
+    "ui/selectors/index.js",
+    "ui/selectors/selectors.js"
+  ],
+  [
+    "ui/components/component-library/index.ts",
+    "ui/components/component-library/picker-network/index.ts",
+    "ui/components/component-library/picker-network/picker-network.tsx",
+    "ui/components/multichain/avatar-group/avatar-group.tsx",
+    "ui/components/multichain/avatar-group/index.ts",
+    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
+    "ui/pages/confirmations/confirmation/templates/error.js",
+    "ui/pages/confirmations/confirmation/templates/index.js",
+    "ui/selectors/index.js",
+    "ui/selectors/permissions.js",
+    "ui/selectors/selectors.js"
+  ],
+  [
+    "ui/components/component-library/index.ts",
+    "ui/components/component-library/picker-network/index.ts",
+    "ui/components/component-library/picker-network/picker-network.tsx",
+    "ui/components/multichain/avatar-group/avatar-group.tsx",
+    "ui/components/multichain/avatar-group/index.ts",
+    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
+    "ui/pages/confirmations/confirmation/templates/error.js",
+    "ui/pages/confirmations/confirmation/templates/index.js",
+    "ui/selectors/index.js",
+    "ui/selectors/selectors.js"
   ],
   [
     "ui/components/multichain/account-overview/account-overview-eth.tsx",
@@ -422,8 +358,98 @@
     "ui/store/actions.ts"
   ],
   [
+    "ui/ducks/confirm-transaction/confirm-transaction.duck.js",
+    "ui/ducks/index.js",
+    "ui/ducks/metamask/metamask.js",
+    "ui/ducks/send/send.js",
+    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
+    "ui/pages/confirmations/confirmation/templates/error.js",
+    "ui/pages/confirmations/confirmation/templates/index.js",
+    "ui/selectors/selectors.js",
+    "ui/store/actions.ts",
+    "ui/store/store.ts"
+  ],
+  [
+    "ui/ducks/confirm-transaction/confirm-transaction.duck.js",
+    "ui/ducks/index.js",
+    "ui/ducks/metamask/metamask.js",
+    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
+    "ui/pages/confirmations/confirmation/templates/error.js",
+    "ui/pages/confirmations/confirmation/templates/index.js",
+    "ui/selectors/selectors.js",
+    "ui/store/actions.ts",
+    "ui/store/store.ts"
+  ],
+  [
+    "ui/ducks/confirm-transaction/confirm-transaction.duck.js",
+    "ui/ducks/metamask/metamask.js",
+    "ui/ducks/send/index.js",
+    "ui/ducks/send/send.js",
+    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
+    "ui/pages/confirmations/confirmation/templates/error.js",
+    "ui/pages/confirmations/confirmation/templates/index.js",
+    "ui/selectors/selectors.js",
+    "ui/store/actions.ts"
+  ],
+  [
     "ui/ducks/domains.js",
     "ui/ducks/index.js",
+    "ui/store/actions.ts",
+    "ui/store/store.ts"
+  ],
+  [
+    "ui/ducks/index.js",
+    "ui/ducks/metamask/metamask.js",
+    "ui/ducks/ramps/ramps.ts",
+    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
+    "ui/pages/confirmations/confirmation/templates/error.js",
+    "ui/pages/confirmations/confirmation/templates/index.js",
+    "ui/selectors/multichain.ts",
+    "ui/selectors/selectors.js",
+    "ui/store/actions.ts",
+    "ui/store/store.ts"
+  ],
+  [
+    "ui/ducks/index.js",
+    "ui/ducks/metamask/metamask.js",
+    "ui/ducks/swaps/swaps.js",
+    "ui/hooks/useTokenFiatAmount.js",
+    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
+    "ui/pages/confirmations/confirmation/templates/error.js",
+    "ui/pages/confirmations/confirmation/templates/index.js",
+    "ui/selectors/selectors.js",
+    "ui/store/actions.ts",
+    "ui/store/store.ts"
+  ],
+  [
+    "ui/ducks/index.js",
+    "ui/ducks/metamask/metamask.js",
+    "ui/ducks/swaps/swaps.js",
+    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
+    "ui/pages/confirmations/confirmation/templates/error.js",
+    "ui/pages/confirmations/confirmation/templates/index.js",
+    "ui/selectors/selectors.js",
+    "ui/store/actions.ts",
+    "ui/store/store.ts"
+  ],
+  [
+    "ui/ducks/index.js",
+    "ui/ducks/metamask/metamask.js",
+    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
+    "ui/pages/confirmations/confirmation/templates/error.js",
+    "ui/pages/confirmations/confirmation/templates/index.js",
+    "ui/selectors/selectors.js",
+    "ui/store/actions.ts",
+    "ui/store/store.ts"
+  ],
+  [
+    "ui/ducks/index.js",
+    "ui/ducks/ramps/ramps.ts",
+    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
+    "ui/pages/confirmations/confirmation/templates/error.js",
+    "ui/pages/confirmations/confirmation/templates/index.js",
+    "ui/selectors/multichain.ts",
+    "ui/selectors/selectors.js",
     "ui/store/actions.ts",
     "ui/store/store.ts"
   ],
@@ -440,6 +466,14 @@
     "ui/ducks/swaps/swaps.js",
     "ui/store/actions.ts",
     "ui/store/store.ts"
+  ],
+  [
+    "ui/ducks/metamask/metamask.js",
+    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
+    "ui/pages/confirmations/confirmation/templates/error.js",
+    "ui/pages/confirmations/confirmation/templates/index.js",
+    "ui/selectors/selectors.js",
+    "ui/store/actions.ts"
   ],
   [
     "ui/ducks/metamask/metamask.js",

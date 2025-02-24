@@ -124,7 +124,7 @@ async function check(): Promise<void> {
     if (actualStr !== baselineStr) {
       console.error(
         chalk.red(
-          `Error: Codebase circular dependencies are out of sync with %${TARGET_FILE}`,
+          `Error: Codebase circular dependencies are out of sync with ${TARGET_FILE}`,
         ),
       );
       console.error(RESOLUTION_STEPS);
