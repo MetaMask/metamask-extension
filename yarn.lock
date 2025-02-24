@@ -5329,7 +5329,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-snap-keyring@npm:^11.0.0, @metamask/eth-snap-keyring@npm:^11.1.0":
+"@metamask/eth-snap-keyring@npm:^11.1.0":
   version: 11.1.0
   resolution: "@metamask/eth-snap-keyring@npm:11.1.0"
   dependencies:
@@ -26953,7 +26953,7 @@ __metadata:
     "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
     "@metamask/eth-ledger-bridge-keyring": "npm:^8.0.3"
     "@metamask/eth-sig-util": "npm:^7.0.1"
-    "@metamask/eth-snap-keyring": "npm:^11.0.0"
+    "@metamask/eth-snap-keyring": "npm:^11.1.0"
     "@metamask/eth-token-tracker": "npm:^10.0.2"
     "@metamask/eth-trezor-keyring": "npm:^6.0.0"
     "@metamask/etherscan-link": "npm:^3.0.0"

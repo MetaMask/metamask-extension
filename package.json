@@ -273,7 +273,7 @@
     "@metamask/eth-json-rpc-middleware": "^15.1.2",
     "@metamask/eth-ledger-bridge-keyring": "^8.0.3",
     "@metamask/eth-sig-util": "^7.0.1",
-    "@metamask/eth-snap-keyring": "^11.0.0",
+    "@metamask/eth-snap-keyring": "^11.1.0",
     "@metamask/eth-token-tracker": "^10.0.2",
     "@metamask/eth-trezor-keyring": "^6.0.0",
     "@metamask/etherscan-link": "^3.0.0",
