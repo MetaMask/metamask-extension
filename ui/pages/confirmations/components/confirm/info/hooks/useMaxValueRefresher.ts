@@ -69,10 +69,6 @@ export const useMaxValueRefresher = () => {
   }, [supportsEIP1559, maxFeePerGas, gasLimit, gasPrice]);
 
   useEffect(() => {
-    if (!isMaxAmountMode) {
-      return;
-    }
-
     updateTransactionEventFragment(
       {
         properties: {
