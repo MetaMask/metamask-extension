@@ -15,16 +15,14 @@ import {
   getMultichainCoinRates,
 } from '../selectors/multichain';
 import { AssetType } from '../../shared/constants/transaction';
-import {
-  getSelectedEvmInternalAccount,
-} from '../selectors/selectors';
+import { getSelectedEvmInternalAccount } from '../selectors/selectors';
 import { useMultichainSelector } from './useMultichainSelector';
 
 // TODO replace this with getMultichainAssets
 const useNonEvmAssetsWithBalances = (): (
-    | Omit<TokenWithBalance, 'address' | 'chainId' |> & {
-        chainId: `${string}:${string}`;
-        decimals: number;
+  | Omit<TokenWithBalance, 'address' | 'chainId' | 'primary' | 'secondary'> & {
+      chainId: `${string}:${string}`;
+      decimals: number;
       address: `${string}:${string}`;
       string: string;
       balance: string;
