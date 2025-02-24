@@ -44,8 +44,6 @@ export const getNftImage = (image: NFTImage): string | undefined => {
     return image;
   }
 
-  // TEMP - UI/UX change to support multiple NFT images
-  // or we would need to highly specific logic to better determine which NFT image to view
   if (Array.isArray(image)) {
     return image[0];
   }
