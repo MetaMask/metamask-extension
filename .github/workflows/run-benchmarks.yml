@@ -4,8 +4,8 @@ on:
 env:
   COMMANDS: |
     {
-      pageload: 'yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json --retries 2',
-      userActions: 'yarn user-actions-benchmark:chrome --out test-artifacts/chrome/benchmark/userActions.json --retries 2',
+      pageload: 'yarn benchmark:{0} --out test-artifacts/{0}/benchmark/pageload.json --retries 2',
+      userActions: 'SELENIUM_BROWSER={0} tsx test/e2e/user-actions-benchmark.js --out test-artifacts/{0}/benchmark/userActions.json --retries 2',
     }
 
 jobs:
@@ -13,8 +13,15 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
+        browser: [chrome, firefox]
         buildType: [browserify, webpack]
         testType: [pageload, userActions]
+        exclude:
+          # webpack can build for Firefox, but it would require more custom code here,
+          # and it's probably not useful to test this right now anyway
+          - browser: firefox
+            buildType: webpack
+
     name: ${{ matrix.buildType }}-${{ matrix.testType }}
     steps:
       - name: Checkout repository
@@ -32,13 +39,14 @@ jobs:
 
       - name: Run the benchmark
         # Choose a benchmark command from env.COMMANDS
-        run: ${{ fromJson(env.COMMANDS)[matrix.testType] }}
+        # Then replace the {0} placeholder with the browser
+        run: ${{ format(fromJson(env.COMMANDS)[matrix.testType], matrix.browser) }}
 
       - name: Rename test artifacts
-        run: mv test-artifacts/chrome/benchmark/${{ matrix.testType }}.json test-artifacts/chrome/benchmark/benchmark-${{ matrix.buildType }}-${{ matrix.testType }}.json
+        run: mv test-artifacts/${{ matrix.browser }}/benchmark/${{ matrix.testType }}.json test-artifacts/${{ matrix.browser }}/benchmark/benchmark-${{ matrix.buildType }}-${{ matrix.testType }}.json
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: benchmark-${{ matrix.buildType }}-${{ matrix.testType }}
-          path: test-artifacts/chrome/benchmark/
+          path: test-artifacts/${{ matrix.browser }}/benchmark/
