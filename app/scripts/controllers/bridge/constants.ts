@@ -22,7 +22,7 @@ export const DEFAULT_BRIDGE_STATE: BridgeState = {
   },
   quoteRequest: {
     walletAddress: undefined,
-    srcTokenAddress: zeroAddress(),
+    srcTokenAddress: zeroAddress() as `0x${string}`,
     slippage: BRIDGE_DEFAULT_SLIPPAGE,
   },
   quotesInitialLoadTime: undefined,

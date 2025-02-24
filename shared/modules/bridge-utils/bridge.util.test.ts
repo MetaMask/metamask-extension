@@ -1,8 +1,8 @@
 import { zeroAddress } from 'ethereumjs-util';
 import fetchWithCache from '../../lib/fetch-with-cache';
-import { CHAIN_IDS } from '../../constants/network';
 import mockBridgeQuotesErc20Erc20 from '../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20.json';
+import { ChainId } from '../../types/bridge';
 import {
   fetchBridgeFeatureFlags,
   fetchBridgeQuotes,
@@ -48,6 +48,10 @@ describe('Bridge utils', () => {
               isActiveSrc: false,
               isActiveDest: true,
             },
+            [ChainId.SOLANA]: {
+              isActiveSrc: false,
+              isActiveDest: true,
+            },
           },
         },
       };
@@ -72,27 +76,31 @@ describe('Bridge utils', () => {
           refreshRate: 3,
           support: true,
           chains: {
-            [CHAIN_IDS.MAINNET]: {
+            'eip155:1': {
               isActiveSrc: true,
               isActiveDest: true,
             },
-            [CHAIN_IDS.OPTIMISM]: {
+            'eip155:10': {
               isActiveSrc: true,
               isActiveDest: false,
             },
-            [CHAIN_IDS.LINEA_MAINNET]: {
+            'eip155:59144': {
               isActiveSrc: true,
               isActiveDest: true,
             },
-            '0x78': {
+            'eip155:120': {
               isActiveSrc: true,
               isActiveDest: false,
             },
-            [CHAIN_IDS.POLYGON]: {
+            'eip155:11111': {
               isActiveSrc: false,
               isActiveDest: true,
             },
-            '0x2b67': {
+            'eip155:137': {
+              isActiveSrc: false,
+              isActiveDest: true,
+            },
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
               isActiveSrc: false,
               isActiveDest: true,
             },
