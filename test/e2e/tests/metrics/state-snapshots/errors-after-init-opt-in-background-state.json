@@ -184,7 +184,11 @@
     "isUpdatingMetamaskNotificationsAccount": "object",
     "isCheckingAccountsPresence": "boolean"
   },
-  "NotificationServicesPushController": { "fcmToken": "string" },
+  "NotificationServicesPushController": {
+    "fcmToken": "string",
+    "isPushEnabled": "boolean",
+    "isUpdatingFCMToken": "boolean"
+  },
   "OnboardingController": {
     "seedPhraseBackedUp": true,
     "firstTimeFlowType": "import",
