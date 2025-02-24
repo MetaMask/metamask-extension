@@ -2,6 +2,11 @@ name: Main
 
 on:
   push:
+    branches:
+      - main
+      - master
+      - Version-v*
+      - trigger-ci*
   pull_request:
     types:
       - opened
