@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 
-import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
+import { SUPPORT_LINK } from '../../../helpers/constants/common';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   MetaMetricsContextProp,
@@ -22,14 +22,14 @@ const BetaHomeFooter = () => {
       <a
         target="_blank"
         rel="noopener noreferrer"
-        href={SUPPORT_REQUEST_LINK}
+        href={SUPPORT_LINK}
         onClick={() => {
           trackEvent(
             {
               category: MetaMetricsEventCategory.Footer,
               event: MetaMetricsEventName.SupportLinkClicked,
               properties: {
-                url: SUPPORT_REQUEST_LINK,
+                url: SUPPORT_LINK,
               },
             },
             {
