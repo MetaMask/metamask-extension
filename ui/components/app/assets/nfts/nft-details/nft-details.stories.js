@@ -34,7 +34,7 @@ export default {
 
 export const DefaultStory = (args) => {
   return (
-    <MemoryRouter initialEntries={['/nft/1124157']}>
+    <MemoryRouter initialEntries={['/nft/0x1']}>
       <Switch>
         <Route
           path="/nft/:chainId"
@@ -49,7 +49,7 @@ DefaultStory.storyName = 'Default';
 
 export const NoImage = (args) => {
   return (
-    <MemoryRouter initialEntries={['/nft/1124157']}>
+    <MemoryRouter initialEntries={['/nft/0x1']}>
       <Switch>
         <Route
           path="/nft/:chainId"
