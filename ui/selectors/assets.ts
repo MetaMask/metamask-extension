@@ -192,9 +192,7 @@ export const getMultiChainAssets = createDeepEqualSelector(
         chainId,
         isNative,
         primary: balance.amount,
-        secondary: isNative
-          ? nativeBalanceInFiat.toNumber()
-          : balanceInFiat.toNumber(),
+        secondary: balanceInFiat.toNumber(),
         string: '',
         tokenFiatAmount: balanceInFiat, // for now we are keeping this is to satisfy sort, this should be fiat amount
         isStakeable: false,
