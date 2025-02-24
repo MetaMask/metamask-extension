@@ -80,9 +80,9 @@ export const getIsNonEvmNetworksEnabled = createDeepEqualSelector(
     let bitcoinEnabled = isBitcoinEnabled;
     let solanaEnabled = isSolanaEnabled;
 
-    // The scopes have been set to optional because the first
-    // they're used we can't guarantee that the scopes will be
-    // set during the keyring migration execution.
+    // The scopes have been set to optional because the first time
+    // they're used we can't guarantee that the scopes will be set
+    // during the keyring migration execution.
     for (const { scopes } of internalAccounts) {
       if (scopes?.includes(BtcScope.Mainnet)) {
         bitcoinEnabled = true;
