@@ -1,4 +1,5 @@
 import React from 'react';
+import { MemoryRouter, Route, Switch } from 'react-router-dom';
 import NftDetails from './nft-details';
 
 const nft = {
@@ -32,13 +33,31 @@ export default {
 };
 
 export const DefaultStory = (args) => {
-  return <NftDetails {...args} />;
+  return (
+    <MemoryRouter initialEntries={['/nft/1124157']}>
+      <Switch>
+        <Route
+          path="/nft/:chainId"
+          component={() => <NftDetails {...args} />}
+        />
+      </Switch>
+    </MemoryRouter>
+  );
 };
 
 DefaultStory.storyName = 'Default';
 
 export const NoImage = (args) => {
-  return <NftDetails {...args} />;
+  return (
+    <MemoryRouter initialEntries={['/nft/1124157']}>
+      <Switch>
+        <Route
+          path="/nft/:chainId"
+          component={() => <NftDetails {...args} />}
+        />
+      </Switch>
+    </MemoryRouter>
+  );
 };
 
 NoImage.args = {

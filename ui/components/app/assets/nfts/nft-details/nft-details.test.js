@@ -41,9 +41,6 @@ jest.mock('react-router-dom', () => ({
     push: mockHistoryPush,
   }),
   useParams: jest.fn(),
-  // useParams: () => ({
-  //   chainId: '0x99',
-  // }),
 }));
 
 jest.mock('../../../../../ducks/send/index.js', () => ({
