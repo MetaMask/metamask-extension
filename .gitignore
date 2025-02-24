@@ -52,6 +52,9 @@ notes.txt
 .metamaskrc
 .metamaskprodrc
 
+# Customized manifest configuration
+.manifest-overrides*.json
+
 # Test results
 test-results/
 
