@@ -19,13 +19,16 @@
     }
   },
   "allowedCircularGlob": [
-    "ui/pages/asset/**",
     "ui/pages/notifications/**",
-    "ui/pages/snap-account-redirect/**",
-    "ui/pages/swaps/**",
-    "ui/pages/confirmations/**",
-    "ui/store/actions.ts",
-    "ui/components/multichain/pages/**",
-    "ui/components/app/**"
+    "ui/ducks/**",
+    "ui/selectors/**",
+    "ui/hooks/**",
+    "ui/store/**",
+    "ui/helpers/utils/token-util.js",
+    "ui/components/multichain/**",
+    "ui/components/app/**",
+    "shared/modules/selectors/**",
+    "app/scripts/metamask-controller.js",
+    "app/scripts/lib/snap-keyring/**"
   ]
 }
