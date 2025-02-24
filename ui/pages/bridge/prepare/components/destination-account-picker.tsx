@@ -114,7 +114,6 @@ export const DestinationAccountPicker = ({
       style={{
         borderRadius: '8px',
         position: 'relative',
-        boxShadow: 'var(--shadow-size-sm) var(--color-shadow-default)',
       }}
     >
       <Box
@@ -130,6 +129,7 @@ export const DestinationAccountPicker = ({
           borderBottomStyle: 'solid',
           borderBottomColor: '#B7BBC866',
           borderRadius: '8px 8px 0 0',
+          boxShadow: 'var(--shadow-size-sm) var(--color-shadow-default)',
         }}
       >
         <TextField
@@ -152,7 +152,7 @@ export const DestinationAccountPicker = ({
         backgroundColor={BackgroundColor.backgroundDefault}
         style={{
           position: 'absolute',
-          top: '45px',
+          top: '50px',
           left: 0,
           right: 0,
           minHeight: '79px',
