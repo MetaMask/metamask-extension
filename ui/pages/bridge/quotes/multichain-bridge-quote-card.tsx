@@ -46,11 +46,16 @@ import {
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
 } from '../../../../shared/constants/bridge';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
+import {
+  MULTICHAIN_TOKEN_IMAGE_MAP,
+  MultichainNetworks,
+} from '../../../../shared/constants/multichain/networks';
 import { decimalToHex } from '../../../../shared/modules/conversion.utils';
 import { TERMS_OF_USE_LINK } from '../../../../shared/constants/terms';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { shortenString } from '../../../helpers/utils/util';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
+import type { ChainId } from '../../../../shared/types/bridge';
 
 type MultichainBridgeQuoteCardProps = {
   destinationAddress?: string;
@@ -77,6 +82,28 @@ export const MultichainBridgeQuoteCard = ({
   const [showAllQuotes, setShowAllQuotes] = useState(false);
   const [shouldShowNetworkFeesInGasToken, setShouldShowNetworkFeesInGasToken] =
     useState(false);
+
+  const getNetworkImage = (chainId: ChainId) => {
+    if (chainId === 1151111081099710) {
+      return MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.SOLANA];
+    }
+    return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+      `0x${decimalToHex(
+        chainId,
+      )}` as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+    ];
+  };
+
+  const getNetworkName = (chainId: ChainId) => {
+    if (chainId === 1151111081099710) {
+      return 'Solana';
+    }
+    return NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+      `0x${decimalToHex(
+        chainId,
+      )}` as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
+    ];
+  };
 
   return (
     <>
@@ -131,46 +158,22 @@ export const MultichainBridgeQuoteCard = ({
               <Row gap={1}>
                 <AvatarNetwork
                   name={fromChain?.name ?? ''}
-                  src={
-                    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                      `0x${decimalToHex(
-                        activeQuote.quote.srcChainId,
-                      )}` as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-                    ]
-                  }
+                  src={getNetworkImage(activeQuote.quote.srcChainId)}
                   size={AvatarNetworkSize.Xs}
                   backgroundColor={BackgroundColor.transparent}
                 />
                 <Text style={{ whiteSpace: 'nowrap' }}>
-                  {
-                    NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-                      `0x${decimalToHex(
-                        activeQuote.quote.srcChainId,
-                      )}` as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
-                    ]
-                  }
+                  {getNetworkName(activeQuote.quote.srcChainId)}
                 </Text>
                 <Icon name={IconName.Arrow2Right} size={IconSize.Xs} />
                 <AvatarNetwork
                   name={toChain?.name ?? ''}
-                  src={
-                    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                      `0x${decimalToHex(
-                        activeQuote.quote.destChainId,
-                      )}` as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-                    ]
-                  }
+                  src={getNetworkImage(activeQuote.quote.destChainId)}
                   size={AvatarNetworkSize.Xs}
                   backgroundColor={BackgroundColor.transparent}
                 />
                 <Text style={{ whiteSpace: 'nowrap' }}>
-                  {
-                    NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-                      `0x${decimalToHex(
-                        activeQuote.quote.destChainId,
-                      )}` as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
-                    ]
-                  }
+                  {getNetworkName(activeQuote.quote.destChainId)}
                 </Text>
               </Row>
               {destinationAddress && (
