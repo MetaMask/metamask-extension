@@ -46,7 +46,7 @@ describe('Import NFT', function () {
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, ganacheServer, contractRegistry }) => {
+      async ({ driver, contractRegistry }) => {
         const contractAddress =
           contractRegistry.getContractAddress(smartContract);
         await loginWithBalanceValidation(driver);
@@ -76,7 +76,7 @@ describe('Import NFT', function () {
         await accountListPage.check_accountDisplayedInAccountList('Account 1');
         await accountListPage.switchToAccount('Account 1');
         await headerNavbar.check_accountLabel('Account 1');
-        await homepage.check_localNodeBalanceIsDisplayed(ganacheServer);
+        await homepage.check_localNodeBalanceIsDisplayed();
         await nftList.check_nftImageIsDisplayed();
       },
     );
@@ -92,10 +92,10 @@ describe('Import NFT', function () {
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, ganacheServer, contractRegistry }) => {
+      async ({ driver, contractRegistry }) => {
         const contractAddress =
           contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver);
 
         await new Homepage(driver).goToNftTab();
         await new NftListPage(driver).importNft(
