@@ -121,7 +121,7 @@ export function convertNetworkId(value: unknown): string | null {
 export function convertCaipToHexChainId(id: CaipChainId): Hex {
   const { namespace, reference } = parseCaipChainId(id);
   if (namespace === KnownCaipNamespace.Eip155) {
-    return `0x${parseInt(reference, 10).toString(16)}`;
+    return add0x(parseInt(reference, 10).toString(16));
   }
 
   throw new Error(
