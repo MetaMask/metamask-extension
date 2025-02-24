@@ -39,7 +39,7 @@ type VisitSupportDataConsentModalProps = {
 const VisitSupportDataConsentModal: React.FC<
   VisitSupportDataConsentModalProps
 > = ({ isOpen, onClose }) => {
-  const version = process.env.METAMASK_VERSION;
+  const version = process.env.METAMASK_VERSION as string;
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const sessionData = useSelector(selectSessionData);
