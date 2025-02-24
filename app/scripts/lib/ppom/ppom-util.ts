@@ -12,8 +12,6 @@ import {
   BlockaidReason,
   BlockaidResultType,
   LOADING_SECURITY_ALERT_RESPONSE,
-  SECURITY_ALERT_RESPONSE_CHAIN_NOT_SUPPORTED,
-  SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS_FALLBACK_LIST,
   SecurityAlertSource,
 } from '../../../../shared/constants/security-provider';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
@@ -22,7 +20,6 @@ import { sanitizeMessageRecursively } from '../../../../shared/modules/typed-sig
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { SecurityAlertResponse, UpdateSecurityAlertResponse } from './types';
 import {
-  getSecurityAlertsAPISupportedChainIds,
   isSecurityAlertsAPIEnabled,
   SecurityAlertsAPIRequest,
   validateWithSecurityAlertsAPI,
@@ -58,15 +55,6 @@ export async function validateRequestWithPPOM({
   updateSecurityAlertResponse: UpdateSecurityAlertResponse;
 }) {
   try {
-    if (!(await isChainSupported(chainId))) {
-      await updateSecurityResponse(
-        request.method,
-        securityAlertId,
-        SECURITY_ALERT_RESPONSE_CHAIN_NOT_SUPPORTED,
-      );
-      return;
-    }
-
     await updateSecurityResponse(
       request.method,
       securityAlertId,
@@ -151,22 +139,6 @@ export function handlePPOMError(
     description,
     source,
   };
-}
-
-export async function isChainSupported(chainId: Hex): Promise<boolean> {
-  let supportedChainIds = SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS_FALLBACK_LIST;
-
-  try {
-    if (isSecurityAlertsAPIEnabled()) {
-      supportedChainIds = await getSecurityAlertsAPISupportedChainIds();
-    }
-  } catch (error: unknown) {
-    handlePPOMError(
-      error,
-      `Error fetching supported chains from security alerts API`,
-    );
-  }
-  return supportedChainIds.includes(chainId as Hex);
 }
 
 function normalizePPOMRequest(
