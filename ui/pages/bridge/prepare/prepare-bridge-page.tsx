@@ -673,7 +673,7 @@ const PrepareBridgePage = () => {
         />
 
         {isSolanaEnabled && isToOrFromSolana && (
-          <Box padding={6} paddingBottom={3}>
+          <Box padding={6} paddingBottom={3} paddingTop={3}>
             <DestinationAccountPicker
               onAccountSelect={setSelectedDestinationAccount}
               selectedSwapToAccount={selectedDestinationAccount}
