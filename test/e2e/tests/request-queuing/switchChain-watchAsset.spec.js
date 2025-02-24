@@ -1,6 +1,5 @@
 const FixtureBuilder = require('../../fixture-builder');
 const {
-  defaultGanacheOptions,
   logInWithBalanceValidation,
   openDapp,
   WINDOW_TITLES,
@@ -22,16 +21,18 @@ describe('Request Queue SwitchChain -> WatchAsset', function () {
           .withNetworkControllerDoubleGanache()
 
           .build(),
-        localNodeOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         smartContract,
         title: this.test.fullTitle(),
       },

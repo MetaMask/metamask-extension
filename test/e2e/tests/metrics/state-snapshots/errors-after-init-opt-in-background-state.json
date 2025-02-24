@@ -123,6 +123,7 @@
   "KeyringController": {
     "isUnlocked": true,
     "keyrings": "object",
+    "keyringsMetadata": "object",
     "vault": "string",
     "encryptionKey": "string",
     "encryptionSalt": "string"
@@ -143,6 +144,7 @@
     "metaMetricsDataDeletionId": null,
     "metaMetricsDataDeletionTimestamp": 0
   },
+  "MultichainNetworkController": "object",
   "MultichainRatesController": {
     "fiatCurrency": "usd",
     "rates": {
