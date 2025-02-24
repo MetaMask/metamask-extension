@@ -522,13 +522,13 @@ export function addNewAccount(
         )
       : keyrings[0];
 
-    oldAccounts = hdKeyring.accounts;
-    ///: END:ONLY_INCLUDE_IF
-
-    if (!oldAccounts) {
+    if (!hdKeyring) {
       console.log('Should never reach this. There is always a keyring');
       throw new Error('Keyring not found');
     }
+
+    oldAccounts = hdKeyring.accounts;
+    ///: END:ONLY_INCLUDE_IF
 
     dispatch(showLoadingIndication());
 
