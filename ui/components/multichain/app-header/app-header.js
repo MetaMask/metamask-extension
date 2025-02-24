@@ -34,9 +34,7 @@ import {
   getSelectedMultichainNetworkConfiguration,
   getIsEvmMultichainNetworkSelected,
 } from '../../../selectors/multichain/networks';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
-import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../../shared/constants/multichain/networks';
-import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
+import { getNetworkIcon } from '../../../../shared/modules/network.utils';
 import { MultichainMetaFoxLogo } from './multichain-meta-fox-logo';
 import { AppHeaderContainer } from './app-header-container';
 import { AppHeaderUnlockedContent } from './app-header-unlocked-content';
@@ -52,10 +50,8 @@ export const AppHeader = ({ location }) => {
   );
   const isEvmNetwork = useSelector(getIsEvmMultichainNetworkSelected);
 
-  const { chainId } = multichainNetwork;
-  const networkIconSrc = multichainNetwork.isEvm
-    ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[convertCaipToHexChainId(chainId)]
-    : MULTICHAIN_TOKEN_IMAGE_MAP[chainId];
+  const { chainId, isEvm } = multichainNetwork;
+  const networkIconSrc = getNetworkIcon(chainId, isEvm);
 
   const dispatch = useDispatch();
 

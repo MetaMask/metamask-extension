@@ -133,7 +133,7 @@ export const AppHeaderUnlockedContent = ({
               avatarNetworkProps={{
                 backgroundColor: testNetworkBackgroundColor,
                 role: 'img',
-                name: currentNetwork.name ?? '',
+                name: currentNetwork.name,
               }}
               className="multichain-app-header__contents--avatar-network"
               ref={menuRef}

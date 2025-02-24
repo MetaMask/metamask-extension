@@ -119,6 +119,10 @@ export class NetworkOrderController extends BaseController<
           !TEST_CHAINS.includes(chainId as (typeof TEST_CHAINS)[number]),
       ) as Hex[];
       const chainIds: CaipChainId[] = hexChainIds.map(toEvmCaipChainId);
+      const nonEvmChainIds: CaipChainId[] = [
+        BtcScope.Mainnet,
+        SolScope.Mainnet,
+      ];
 
       const newNetworks = chainIds
         .filter(
@@ -136,9 +140,8 @@ export class NetworkOrderController extends BaseController<
             chainIds.includes(networkId) ||
             // Since Bitcoin and Solana are not part of the @metamask/network-controller, we have
             // to add a second check to make sure it is not filtered out.
-            // TO DO: Update this logic to @metamask/multichain-network-controller once all networks are migrated.
-            // @ts-expect-error - BtcScope.Mainnet and SolScope.Mainnet are of type '`${string}:${string}`'
-            [BtcScope.Mainnet, SolScope.Mainnet].includes(networkId),
+            // TODO: Update this logic to @metamask/multichain-network-controller once all networks are migrated.
+            nonEvmChainIds.includes(networkId),
         )
         // Append new networks to the end
         .concat(newNetworks);

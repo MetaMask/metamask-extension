@@ -39,14 +39,10 @@ import {
   detectNfts,
 } from '../../../store/actions';
 import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_RPCS,
   TEST_CHAINS,
 } from '../../../../shared/constants/network';
-import {
-  MULTICHAIN_TOKEN_IMAGE_MAP,
-  MULTICHAIN_NETWORK_TO_NICKNAME,
-} from '../../../../shared/constants/multichain/networks';
+import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import {
   getShowTestNetworks,
@@ -98,6 +94,7 @@ import {
 import {
   convertCaipToHexChainId,
   sortNetworks,
+  getNetworkIcon,
 } from '../../../../shared/modules/network.utils';
 import {
   getCompletedOnboarding,
@@ -391,6 +388,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       dispatch(
         showModal({
           name: 'CONFIRM_DELETE_NETWORK',
+          // Non-EVM network cannot be deleted, so it's safe to call
+          // this conversion function here.
           target: convertCaipToHexChainId(network.chainId),
           onConfirm: () => undefined,
         }),
@@ -414,17 +413,12 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       );
     };
 
-    const iconSrc = network.isEvm
-      ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-          convertCaipToHexChainId(
-            network.chainId,
-          ) as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-        ]
-      : MULTICHAIN_TOKEN_IMAGE_MAP[network.chainId];
     const { defaultRpcEndpoint } = getRpcDataByChainId(
       network.chainId,
       evmNetworks,
     );
+
+    const iconSrc = getNetworkIcon(network.chainId, network.isEvm);
 
     return (
       <NetworkListItem
