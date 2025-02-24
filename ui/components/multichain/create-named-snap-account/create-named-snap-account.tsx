@@ -8,7 +8,7 @@ import { Box, ModalHeader } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { getNextAvailableAccountName } from '../../../store/actions';
-import { getUniqueAccountName } from '../../../../shared/lib/accounts/accounts';
+import { getUniqueAccountName } from '../../../../shared/lib/accounts';
 
 export type CreateNamedSnapAccountProps = {
   /**
