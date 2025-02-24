@@ -51,7 +51,7 @@ export type ControllersToInitialize =
   | 'PPOMController'
   | 'TransactionController';
 
-  type InitFunction<Name extends ControllersToInitialize & keyof ControllerByName> =
+type InitFunction<Name extends ControllersToInitialize> =
   ControllerInitFunction<
     ControllerByName[Name],
     // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
