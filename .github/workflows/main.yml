@@ -22,7 +22,7 @@ jobs:
       - name: Setup environment
         uses: metamask/github-tools/.github/actions/checkout-and-setup@caching2
         with:
-          ref: '10.33'
+          ref: 'renaming-node'
 
       - run: cat package.json
         shell: bash
@@ -32,6 +32,17 @@ jobs:
     steps:
       - name: Setup environment
         uses: metamask/github-tools/.github/actions/checkout-and-setup@caching2
+
+      - run: cat package.json
+        shell: bash
+
+  test3:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@caching2
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - run: cat package.json
         shell: bash
