@@ -33,7 +33,6 @@ describe('useFeeCalculations', () => {
         "maxFeeFiat": "< $0.01",
         "maxFeeFiatWith18SignificantDigits": "0",
         "maxFeeNative": "0 ETH",
-        "preciseNativeMaxFeeInHex": "0x0",
       }
     `);
   });
@@ -62,7 +61,6 @@ describe('useFeeCalculations', () => {
         "maxFeeFiat": "$0.07",
         "maxFeeFiatWith18SignificantDigits": null,
         "maxFeeNative": "0.0001 ETH",
-        "preciseNativeMaxFeeInHex": "0x720087dcfc95",
       }
     `);
   });
@@ -94,7 +92,6 @@ describe('useFeeCalculations', () => {
         "maxFeeFiat": "$0.07",
         "maxFeeFiatWith18SignificantDigits": null,
         "maxFeeNative": "0.0001 ETH",
-        "preciseNativeMaxFeeInHex": "0x720087dcfc95",
       }
     `);
   });
@@ -125,7 +122,6 @@ describe('useFeeCalculations', () => {
         "maxFeeFiat": "$0.07",
         "maxFeeFiatWith18SignificantDigits": null,
         "maxFeeNative": "0.0001 ETH",
-        "preciseNativeMaxFeeInHex": "0x720087dcfc95",
       }
     `);
   });
