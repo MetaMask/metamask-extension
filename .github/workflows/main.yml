@@ -16,27 +16,22 @@ on:
   merge_group:
 
 jobs:
-  prep-deps:
+  test1:
     runs-on: ubuntu-latest
     steps:
       - name: Setup environment
         uses: metamask/github-tools/.github/actions/checkout-and-setup@caching2
         with:
-          should-save-node-modules: 'true'
+          ref: '10.33'
 
-  cache-yes:
-    runs-on: ubuntu-latest
-    needs: prep-deps
-    steps:
-      - name: Setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@caching2
+      - run: cat package.json
+        shell: bash
 
-      - run: ls
-
-  cache-no:
+  test2:
     runs-on: ubuntu-latest
     steps:
       - name: Setup environment
         uses: metamask/github-tools/.github/actions/checkout-and-setup@caching2
 
-      - run: ls
+      - run: cat package.json
+        shell: bash
