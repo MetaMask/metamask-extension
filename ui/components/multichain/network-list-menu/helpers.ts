@@ -6,14 +6,14 @@ type RpcEndpoint = {
   name?: string;
   url: string;
   networkClientId: string;
-}
+};
 
 export const getRpcDataByChainId = (
   chainId: CaipChainId,
-  evmNetworks: Record<Hex, NetworkConfiguration>
+  evmNetworks: Record<Hex, NetworkConfiguration>,
 ): {
-  rpcEndpoints: RpcEndpoint[],
-  defaultRpcEndpoint: RpcEndpoint,
+  rpcEndpoints: RpcEndpoint[];
+  defaultRpcEndpoint: RpcEndpoint;
 } => {
   const hexChainId = convertCaipToHexChainId(chainId);
   const evmNetworkConfig = evmNetworks[hexChainId];
@@ -23,4 +23,4 @@ export const getRpcDataByChainId = (
     rpcEndpoints,
     defaultRpcEndpoint,
   };
-}
+};
