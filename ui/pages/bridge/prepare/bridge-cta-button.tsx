@@ -40,8 +40,10 @@ import { isQuoteExpired as isQuoteExpiredUtil } from '../utils/quote';
 
 export const BridgeCTAButton = ({
   onFetchNewQuotes,
+  needsDestinationAddress = false,
 }: {
   onFetchNewQuotes: () => void;
+  needsDestinationAddress?: boolean;
 }) => {
   const t = useI18nContext();
 
@@ -121,9 +123,17 @@ export const BridgeCTAButton = ({
 
     if (!fromAmount) {
       if (!toToken) {
-        return t('bridgeSelectTokenAndAmount');
+        return needsDestinationAddress
+          ? t('bridgeSelectTokenAmountAndAccount')
+          : t('bridgeSelectTokenAndAmount');
       }
-      return t('bridgeEnterAmount');
+      return needsDestinationAddress
+        ? t('bridgeEnterAmountAndSelectAccount')
+        : t('bridgeEnterAmount');
+    }
+
+    if (needsDestinationAddress) {
+      return t('bridgeSelectDestinationAccount');
     }
 
     if (isTxSubmittable) {
@@ -144,6 +154,7 @@ export const BridgeCTAButton = ({
     isInsufficientGasForQuote,
     wasTxDeclined,
     isQuoteExpired,
+    needsDestinationAddress,
   ]);
 
   // Label for the secondary button that re-starts quote fetching
@@ -186,7 +197,12 @@ export const BridgeCTAButton = ({
         }
       }}
       loading={isSubmitting}
-      disabled={!isTxSubmittable || isQuoteExpired || isSubmitting}
+      disabled={
+        !isTxSubmittable ||
+        isQuoteExpired ||
+        isSubmitting ||
+        needsDestinationAddress
+      }
     >
       {label}
     </ButtonPrimary>
