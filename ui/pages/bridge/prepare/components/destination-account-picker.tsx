@@ -69,9 +69,7 @@ export const DestinationAccountPicker = ({
         style={{
           height: '70px',
           borderRadius: '8px',
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          boxShadow: 'var(--shadow-bridge-picker)',
+          boxShadow: 'var(--shadow-size-sm) var(--color-shadow-default)',
         }}
       >
         <Box
@@ -116,9 +114,7 @@ export const DestinationAccountPicker = ({
       style={{
         borderRadius: '8px',
         position: 'relative',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        boxShadow: 'var(--shadow-bridge-picker)',
+        boxShadow: 'var(--shadow-size-sm) var(--color-shadow-default)',
       }}
     >
       <Box
@@ -164,7 +160,7 @@ export const DestinationAccountPicker = ({
           overflowY: 'auto',
           borderRadius: '0 0 8px 8px',
           zIndex: 1000,
-          boxShadow: 'var(--shadow-bridge-picker)',
+          boxShadow: 'var(--shadow-size-sm) var(--color-shadow-default)',
         }}
       >
         {filteredAccounts.map((account) => (
