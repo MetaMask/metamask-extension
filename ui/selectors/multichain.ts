@@ -433,17 +433,11 @@ function getNonEvmCachedBalance(
   return balanceOfAsset?.amount ?? 0;
 }
 
-export function getImageForChainId(chainId: string): string {
-  const url = {
+export function getImageForChainId(chainId: string): string | undefined {
+  return {
     ...CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
     ...MULTICHAIN_TOKEN_IMAGE_MAP,
   }[chainId];
-
-  if (!url) {
-    throw new Error(`Could not find image for chainId: ${chainId}`);
-  }
-
-  return url;
 }
 
 // This selector is not compatible with `useMultichainSelector` since it uses the selected
