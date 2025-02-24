@@ -4,8 +4,8 @@ on:
 env:
   COMMANDS: |
     {
-      pageload: 'yarn benchmark:{0} --out test-artifacts/{0}/benchmark/pageload.json --retries 2',
-      userActions: 'SELENIUM_BROWSER={0} tsx test/e2e/user-actions-benchmark.js --out test-artifacts/{0}/benchmark/userActions.json --retries 2',
+      pageload: 'yarn benchmark:{0} --out test-artifacts/{0}/benchmark/{1}-pageload.json --retries 2',
+      userActions: 'SELENIUM_BROWSER={0} yarn tsx test/e2e/user-actions-benchmark.js --out test-artifacts/{0}/benchmark/{1}-userActions.json --retries 2',
     }
 
 jobs:
@@ -22,7 +22,7 @@ jobs:
           - browser: firefox
             buildType: webpack
 
-    name: ${{ matrix.buildType }}-${{ matrix.testType }}
+    name: ${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.testType }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -39,11 +39,11 @@ jobs:
 
       - name: Run the benchmark
         # Choose a benchmark command from env.COMMANDS
-        # Then replace the {0} placeholder with the browser
-        run: ${{ format(fromJson(env.COMMANDS)[matrix.testType], matrix.browser) }}
+        # Then replace the {0} placeholder with the browser, and the {1} placeholder with the buildType
+        run: ${{ format(fromJson(env.COMMANDS)[matrix.testType], matrix.browser, matrix.buildType) }}
 
-      - name: Rename test artifacts
-        run: mv test-artifacts/${{ matrix.browser }}/benchmark/${{ matrix.testType }}.json test-artifacts/${{ matrix.browser }}/benchmark/benchmark-${{ matrix.buildType }}-${{ matrix.testType }}.json
+      # - name: Rename test artifacts
+      #   run: mv test-artifacts/${{ matrix.browser }}/benchmark/${{ matrix.testType }}.json test-artifacts/${{ matrix.browser }}/benchmark/benchmark-${{ matrix.buildType }}-${{ matrix.testType }}.json
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4

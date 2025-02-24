@@ -179,7 +179,7 @@ async function start() {
   const exposedContent = `Builds ready [${SHORT_SHA1}]`;
   const artifactsBody = `<details><summary>${exposedContent}</summary>${hiddenContent}</details>\n\n`;
 
-  const benchmarkPlatforms = ['chrome'];
+  const benchmarkPlatforms = ['chrome', 'firefox'];
   const buildTypes = ['browserify', 'webpack'];
 
   const benchmarkResults = {};
@@ -189,7 +189,7 @@ async function start() {
     for (const buildType of buildTypes) {
       const benchmarkPath = path.resolve(
         __dirname,
-        `../test-artifacts/chrome/benchmark/benchmark-${buildType}-pageload.json`,
+        `../test-artifacts/${benchmarkPlatforms}/benchmark/${buildType}-pageload.json`,
       );
       console.log(`benchmarkPath`, benchmarkPath);
       try {

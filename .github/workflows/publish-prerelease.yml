@@ -55,13 +55,15 @@ jobs:
       - name: Get benchmark job artifacts
         uses: actions/download-artifact@v4
         with:
-          path: ./test-artifacts/chrome/benchmark/
+          path: ./test-artifacts/
           pattern: benchmark-*
           merge-multiple: true
 
       - run: |
           echo "Benchmark artifacts:"
+          ls -l ./test-artifacts/
           ls -l ./test-artifacts/chrome/benchmark/
+          ls -l ./test-artifacts/firefox/benchmark/
 
       - name: Get CircleCI job artifacts
         env:
