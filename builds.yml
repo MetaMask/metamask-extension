@@ -66,6 +66,7 @@ buildTypes:
       - keyring-snaps
       # - bitcoin
       - solana
+      - multi-srp
       - solana-swaps
       - multichain
     env:
@@ -141,6 +142,10 @@ features:
       - ./{app,shared,ui}/**/keyring-snaps/**
   bitcoin:
   solana:
+  multi-srp:
+    assets:
+      # srp-list is a special case and is used in the srp recovery flow now.
+      - ./{app,shared,ui}/**/multi-srp/(?!.*srp-list)/**
   solana-swaps:
   multichain:
 
