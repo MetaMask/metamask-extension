@@ -312,7 +312,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     // on "Current Network", we'll want to filter by the selected network when
     // the network changes.
     if (Object.keys(tokenNetworkFilter || {}).length <= 1) {
-      dispatch(setTokenNetworkFilter({ [chainId]: true }));
+      dispatch(setTokenNetworkFilter({ [hexChainId]: true }));
     } else if (process.env.PORTFOLIO_VIEW) {
       const allOpts = Object.keys(evmNetworks).reduce((acc, id) => {
         acc[id] = true;
