@@ -3,7 +3,8 @@ import {
   RpcEndpointType,
 } from '@metamask/network-controller';
 import { capitalize, pick } from 'lodash';
-import { Hex } from 'viem';
+import { Hex } from '@metamask/utils';
+
 /**
  * A type representing built-in network types, used as an identifier.
  */
