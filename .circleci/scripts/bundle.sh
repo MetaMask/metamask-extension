@@ -32,7 +32,7 @@ export SENTRY_MMI_DSN=""
 export SENTRY_DSN_DEV=""
 export TZ=""
 export VAPID_KEY=""
-export ENABLE_MV3=""
+export ENABLE_MV3="false"
 
 # 1. Download and install nvm:
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
