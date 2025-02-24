@@ -1,4 +1,4 @@
-import { MultiChainAssetsRatesController } from '@metamask/assets-controllers';
+import { MultichainAssetsRatesController } from '@metamask/assets-controllers';
 import { Messenger } from '@metamask/base-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
@@ -26,7 +26,7 @@ function buildInitRequestMock(): jest.Mocked<
 
 describe('MultiChainAssetsRatesControllerInit', () => {
   const multiChainAssetsRatesControllerClassMock = jest.mocked(
-    MultiChainAssetsRatesController,
+    MultichainAssetsRatesController,
   );
 
   beforeEach(() => {
@@ -37,7 +37,7 @@ describe('MultiChainAssetsRatesControllerInit', () => {
     const requestMock = buildInitRequestMock();
     expect(
       MultiChainAssetsRatesControllerInit(requestMock).controller,
-    ).toBeInstanceOf(MultiChainAssetsRatesController);
+    ).toBeInstanceOf(MultichainAssetsRatesController);
   });
 
   it('initializes with correct messenger and state', () => {
@@ -46,7 +46,7 @@ describe('MultiChainAssetsRatesControllerInit', () => {
 
     expect(multiChainAssetsRatesControllerClassMock).toHaveBeenCalledWith({
       messenger: requestMock.controllerMessenger,
-      state: requestMock.persistedState.MultiChainAssetsRatesController,
+      state: requestMock.persistedState.MultichainAssetsRatesController,
     });
   });
 });
