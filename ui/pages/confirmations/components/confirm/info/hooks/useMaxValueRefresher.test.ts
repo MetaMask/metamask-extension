@@ -40,7 +40,7 @@ describe('useMaxValueRefresher', () => {
 
   it('updates transaction value in max amount mode for simpleSend', () => {
     const balance = '0x111';
-    const preciseNativeFeeInHex = '0x001';
+    const preciseNativeMaxFeeInHex = '0x001';
     const newValue = '0x110';
 
     (useSelector as jest.Mock)
@@ -48,7 +48,7 @@ describe('useMaxValueRefresher', () => {
       .mockReturnValueOnce(true);
 
     (useFeeCalculations as jest.Mock).mockReturnValue({
-      preciseNativeFeeInHex,
+      preciseNativeMaxFeeInHex,
     });
 
     renderHook(() => useMaxValueRefresher());

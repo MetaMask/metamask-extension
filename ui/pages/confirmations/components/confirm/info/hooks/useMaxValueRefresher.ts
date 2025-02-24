@@ -22,7 +22,7 @@ export const useMaxValueRefresher = () => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
   const dispatch = useDispatch();
-  const { preciseNativeFeeInHex } = useFeeCalculations(transactionMeta);
+  const { preciseNativeMaxFeeInHex } = useFeeCalculations(transactionMeta);
   const balance = useSelector(getSelectedAccountCachedBalance);
   const isMaxAmountMode = useSelector((state) =>
     selectMaxValueModeForTransaction(state, transactionMeta?.id),
@@ -36,11 +36,11 @@ export const useMaxValueRefresher = () => {
       return;
     }
 
-    const newValue = subtractHexes(balance, preciseNativeFeeInHex);
+    const newValue = subtractHexes(balance, preciseNativeMaxFeeInHex);
     const newValueInHex = add0x(newValue);
 
     dispatch(
       updateEditableParams(transactionMeta.id, { value: newValueInHex }),
     );
-  }, [isMaxAmountMode, balance, preciseNativeFeeInHex]);
+  }, [isMaxAmountMode, balance, preciseNativeMaxFeeInHex]);
 };
