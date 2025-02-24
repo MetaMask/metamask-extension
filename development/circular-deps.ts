@@ -12,7 +12,7 @@ import micromatch from 'micromatch';
  */
 type CircularDeps = string[][];
 
-type MadgeRC = { allowedCircularGlob: string[] } & madge.MadgeConfig;
+type MadgeRC = { allowedCircularGlob: string[] } & MadgeConfig;
 
 const TARGET_FILE = 'development/circular-deps.jsonc';
 
@@ -225,6 +225,7 @@ function maybeLogErrors(circular: CircularDeps, skipped: string[]): boolean {
  *
  * If a pattern in `allowedCircularGlob` is unused, the developer must remove or
  * update it (this is a good thing!).
+ *
  * @param tree
  */
 function failIfDisallowedCircularDepsFound(tree: MadgeInstance): void {
