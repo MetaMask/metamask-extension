@@ -224,6 +224,10 @@ describe('Multichain network selectors', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
+          remoteFeatureFlags: {
+            ...mockState.metamask.remoteFeatureFlags,
+            addSolanaAccount: false,
+          },
           bitcoinSupportEnabled: false,
           internalAccounts: {
             ...mockState.metamask.internalAccounts,
