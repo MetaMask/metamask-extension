@@ -8,6 +8,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import Fuse from 'fuse.js';
 import * as URI from 'uri-js';
+import { EthScope } from '@metamask/keyring-api';
 import {
   RpcEndpointType,
   type UpdateNetworkFields,
@@ -15,7 +16,6 @@ import {
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import {
   type CaipChainId,
-  type Hex,
   parseCaipChainId,
   KnownCaipNamespace,
 } from '@metamask/utils';
@@ -132,7 +132,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const { isAccountInNetwork } = useAccountCreationOnNetworkChange();
 
   const { tokenNetworkFilter } = useSelector(getPreferences);
-  const showTestNetworks = useSelector(getShowTestNetworks);
+  const showTestnets = useSelector(getShowTestNetworks);
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const isUnlocked = useSelector(getIsUnlocked);
   const domains = useSelector(getAllDomains);
@@ -163,12 +163,10 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     getPermittedAccountsForSelectedTab(state, selectedTabOrigin),
   );
 
-  const currentlyOnTestNetwork = useMemo(() => {
+  const currentlyOnTestnet = useMemo(() => {
     const { namespace } = parseCaipChainId(currentChainId);
     if (namespace === KnownCaipNamespace.Eip155) {
-      return (TEST_CHAINS as Hex[]).includes(
-        convertCaipToHexChainId(currentChainId),
-      );
+      return TEST_CHAINS.includes(convertCaipToHexChainId(currentChainId));
     }
     return false;
   }, [currentChainId]);
@@ -176,13 +174,15 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const [nonTestNetworks, testNetworks] = useMemo(
     () =>
       Object.entries(multichainNetworks).reduce(
-        ([nonTestNetworksList, testNetworksList], [id, network]) => {
+        ([nonTestnetsList, testnetsList], [id, network]) => {
           const chainId = network.isEvm
             ? convertCaipToHexChainId(id as CaipChainId)
             : id;
+          // This is type casted to string since chainId could be
+          // Hex or CaipChainId.
           const isTest = (TEST_CHAINS as string[]).includes(chainId);
-          (isTest ? testNetworksList : nonTestNetworksList)[chainId] = network;
-          return [nonTestNetworksList, testNetworksList];
+          (isTest ? testnetsList : nonTestnetsList)[chainId] = network;
+          return [nonTestnetsList, testnetsList];
         },
         [
           {} as Record<string, MultichainNetworkConfiguration>,
@@ -194,8 +194,9 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
 
   // The network currently being edited, or undefined
   // if the user is not currently editing a network.
-  // This memoized value is EVM specific, therefore we
-  // provide the networkConfigurations object as a dependency.
+  //
+  // The memoized value is EVM specific, therefore we
+  // provide the evmNetworks object as a dependency.
   const editedNetwork = useMemo(
     (): UpdateNetworkFields | undefined =>
       !editingChainId || editCompleted
@@ -220,6 +221,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const [orderedNetworks, setOrderedNetworks] = useState(
     sortNetworks(nonTestNetworks, orderedNetworksList),
   );
+
   useEffect(
     () =>
       setOrderedNetworks(sortNetworks(nonTestNetworks, orderedNetworksList)),
@@ -245,6 +247,9 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     [evmNetworks],
   );
 
+  // This value needs to be tracked in case the user changes to a Non EVM
+  // network and there is no account created for that network. This will
+  // allow the user to add an account for that network.
   const [selectedNonEvmNetwork, setSelectedNonEvmNetwork] =
     useState<CaipChainId>();
 
@@ -355,7 +360,9 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     });
   };
 
-  const getNetworkFlags = (network: MultichainNetworkConfiguration) => {
+  const getNetworkFlags = (
+    network: MultichainNetworkConfiguration,
+  ): Record<string, boolean> => {
     if (!network.isEvm) {
       return {
         isEnabled: isAccountInNetwork(network.chainId) || isUnlocked,
@@ -371,7 +378,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       isDeletable:
         isUnlocked &&
         network.chainId !== currentChainId &&
-        network.chainId !== 'eip155:1',
+        network.chainId !== EthScope.Mainnet,
       isEditable: true,
       hasMultiRpcOptions: rpcEndpoints.length > 1,
     };
@@ -390,7 +397,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       dispatch(
         showModal({
           name: 'CONFIRM_DELETE_NETWORK',
-          // Non-EVM network cannot be deleted, so it's safe to call
+          // Non-EVM networks cannot be deleted, so it's safe to call
           // this conversion function here.
           target: convertCaipToHexChainId(network.chainId),
           onConfirm: () => undefined,
@@ -401,6 +408,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     const onEdit = () => {
       dispatch(
         setEditedNetwork({
+          // Non-EVM networks cannot be edited, so it's safe to call
+          // this conversion function here.
           chainId: convertCaipToHexChainId(network.chainId),
           nickname: network.name,
         }),
@@ -411,6 +420,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     const onRpcConfigEdit = () => {
       setActionMode(ACTION_MODE.SELECT_RPC);
       dispatch(
+        // Non-EVM networks cannot be edited, so it's safe to call
+        // this conversion function here.
         setEditedNetwork({ chainId: convertCaipToHexChainId(network.chainId) }),
       );
     };
@@ -435,9 +446,9 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         onClick={async () => {
           await handleNetworkChange(network.chainId);
         }}
-        onDeleteClick={isDeletable ? () => onDelete() : undefined}
-        onEditClick={isEditable ? () => onEdit() : undefined}
-        onRpcEndpointClick={network.isEvm ? () => onRpcConfigEdit() : undefined}
+        onDeleteClick={isDeletable ? onDelete : undefined}
+        onEditClick={isEditable ? onEdit : undefined}
+        onRpcEndpointClick={network.isEvm ? onRpcConfigEdit : undefined}
         disabled={!isEnabled}
       />
     );
@@ -557,8 +568,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
                     {t('showTestnetNetworks')}
                   </Text>
                   <ToggleButton
-                    value={showTestNetworks || currentlyOnTestNetwork}
-                    disabled={currentlyOnTestNetwork}
+                    value={showTestnets || currentlyOnTestnet}
+                    disabled={currentlyOnTestnet}
                     onToggle={(value: boolean) => {
                       dispatch(setShowTestNetworks(!value));
                       if (!value) {
@@ -572,7 +583,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
                 </Box>
               ) : null}
 
-              {showTestNetworks || currentlyOnTestNetwork ? (
+              {showTestnets || currentlyOnTestnet ? (
                 <Box className="multichain-network-list-menu">
                   {searchedTestNetworks.map((network) =>
                     generateMultichainNetworkListItem(network),
