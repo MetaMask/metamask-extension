@@ -194,8 +194,8 @@ describe('Multichain network selectors', () => {
           mockMultichainNetworkStateWithBitcoinSupportDisabled,
         ),
       ).toStrictEqual({
-        ...mockEvmNetworksWithNewConfig,
         [SolScope.Mainnet]: mockNonEvmNetworks[SolScope.Mainnet],
+        ...mockEvmNetworksWithNewConfig,
       });
     });
 
@@ -204,6 +204,10 @@ describe('Multichain network selectors', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
+          remoteFeatureFlags: {
+            ...mockState.metamask.remoteFeatureFlags,
+            addSolanaAccount: false,
+          },
           bitcoinSupportEnabled: false,
         },
       };
@@ -212,10 +216,7 @@ describe('Multichain network selectors', () => {
         getMultichainNetworkConfigurationsByChainId(
           mockMultichainNetworkStateWithBitcoinSupportDisabled,
         ),
-      ).toStrictEqual({
-        ...mockEvmNetworksWithNewConfig,
-        [SolScope.Mainnet]: mockNonEvmNetworks[SolScope.Mainnet],
-      });
+      ).toStrictEqual({ ...mockEvmNetworksWithNewConfig });
     });
 
     it('returns Solana as part of the multichain network configurations if there is a Solana account', () => {
@@ -249,6 +250,10 @@ describe('Multichain network selectors', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
+          remoteFeatureFlags: {
+            ...mockState.metamask.remoteFeatureFlags,
+            addSolanaAccount: false,
+          },
           bitcoinSupportEnabled: false,
           internalAccounts: {
             ...mockState.metamask.internalAccounts,
@@ -266,7 +271,6 @@ describe('Multichain network selectors', () => {
         ),
       ).toStrictEqual({
         ...mockEvmNetworksWithNewConfig,
-        [SolScope.Mainnet]: mockNonEvmNetworks[SolScope.Mainnet],
         [BtcScope.Mainnet]: mockNonEvmNetworks[BtcScope.Mainnet],
       });
     });
@@ -276,6 +280,10 @@ describe('Multichain network selectors', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
+          remoteFeatureFlags: {
+            ...mockState.metamask.remoteFeatureFlags,
+            addSolanaAccount: false,
+          },
           bitcoinSupportEnabled: false,
           internalAccounts: {
             ...mockState.metamask.internalAccounts,
