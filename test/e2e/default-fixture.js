@@ -125,15 +125,15 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             extensionConfig: {
               support: false,
               chains: {
-                '0x1': {
+                'eip155:1': {
                   isActiveSrc: true,
                   isActiveDest: true,
                 },
-                '0xa': {
+                'eip155:10': {
                   isActiveSrc: true,
                   isActiveDest: true,
                 },
-                '0xe708': {
+                'eip155:59144': {
                   isActiveSrc: true,
                   isActiveDest: true,
                 },
