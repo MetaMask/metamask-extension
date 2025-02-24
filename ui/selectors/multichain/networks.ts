@@ -129,7 +129,7 @@ export const getMultichainNetworkConfigurationsByChainId =
 
       // There's a fallback for EVM network names/nicknames, in case the network
       // does not have a name/nickname the fallback is the first rpc endpoint url.
-      // To do: Update toMultichainNetworkConfigurationsByChainId to handle this case.
+      // TODO: Update toMultichainNetworkConfigurationsByChainId to handle this case.
       const evmNetworks = Object.entries(networkConfigurationsByChainId).reduce(
         (acc, [, network]) => ({
           ...acc,
