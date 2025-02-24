@@ -6269,7 +6269,7 @@
         "gulp>vinyl-fs>pumpify>pump": true
       }
     },
-    "mockttp>express>qs": {
+    "mockttp>body-parser>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
       }
@@ -8626,7 +8626,7 @@
         "gulp-livereload>tiny-lr>debug": true,
         "gulp-livereload>tiny-lr>faye-websocket": true,
         "react>object-assign": true,
-        "mockttp>express>qs": true
+        "mockttp>body-parser>qs": true
       }
     },
     "gulp>vinyl-fs>glob-stream>to-absolute-glob": {

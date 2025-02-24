@@ -4783,7 +4783,7 @@
         "react": true
       }
     },
-    "mockttp>express>qs": {
+    "mockttp>body-parser>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
       }
@@ -5592,7 +5592,7 @@
     "browserify>url": {
       "packages": {
         "browserify>punycode": true,
-        "mockttp>express>qs": true
+        "mockttp>body-parser>qs": true
       }
     },
     "react-focus-lock>use-callback-ref": {
