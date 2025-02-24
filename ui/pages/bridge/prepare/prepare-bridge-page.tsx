@@ -663,7 +663,7 @@ const PrepareBridgePage = () => {
         />
 
         {isSolanaEnabled && isToOrFromSolana && (
-          <Box padding={4}>
+          <Box padding={6} paddingBottom={3}>
             <DestinationAccountPicker
               onAccountSelect={setSelectedDestinationAccount}
               selectedSwapToAccount={selectedDestinationAccount}
@@ -686,7 +686,7 @@ const PrepareBridgePage = () => {
           ) : null}
         </Column>
 
-        <Row padding={6}>
+        <Row padding={6} paddingTop={activeQuote ? 0 : 6}>
           <Column
             gap={3}
             className={activeQuote ? 'highlight' : ''}
@@ -696,6 +696,14 @@ const PrepareBridgePage = () => {
               paddingInline: 16,
               position: 'relative',
               overflow: 'hidden',
+              ...(activeQuote && !wasTxDeclined && isSolanaEnabled
+                ? {
+                    boxShadow:
+                      'var(--shadow-size-sm) var(--color-shadow-default)',
+                    backgroundColor: 'var(--color-background-default)',
+                    borderRadius: 8,
+                  }
+                : {}),
             }}
           >
             {activeQuote && isQuoteGoingToRefresh && (
