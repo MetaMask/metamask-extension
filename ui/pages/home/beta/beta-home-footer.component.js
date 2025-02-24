@@ -41,12 +41,6 @@ const BetaHomeFooter = () => {
       >
         {t('needHelpSubmitTicket')}
       </a>
-      {/* TODO: Bring back once internal beta is over */}
-      {/* {' '}
-      |{' '}
-      <a href={SUPPORT_LINK} target="_blank" rel="noopener noreferrer">
-        {t('needHelpFeedback')}
-      </a> */}
     </>
   );
 };
