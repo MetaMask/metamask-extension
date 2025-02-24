@@ -1,7 +1,6 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
-import { Ganache } from '../../seeder/ganache';
 import ContractAddressRegistry from '../../seeder/contract-address-registry';
 import {
   multipleGanacheOptionsForType2Transactions,

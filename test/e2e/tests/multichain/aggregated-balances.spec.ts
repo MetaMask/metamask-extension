@@ -3,7 +3,6 @@ import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { Ganache } from '../../seeder/ganache';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';

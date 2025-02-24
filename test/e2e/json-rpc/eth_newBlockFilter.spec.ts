@@ -3,7 +3,6 @@ import { defaultGanacheOptions, withFixtures } from '../helpers';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
 import { Driver } from '../webdriver/driver';
-import { Ganache } from '../seeder/ganache';
 
 describe('eth_newBlockFilter', function () {
   const ganacheOptions: typeof defaultGanacheOptions & { blockTime: number } = {

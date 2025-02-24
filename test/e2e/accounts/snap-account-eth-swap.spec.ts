@@ -11,7 +11,6 @@ import { TRADES_API_MOCK_RESULT } from '../../data/mock-data';
 import { installSnapSimpleKeyring } from '../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import { Mockttp } from '../mock-e2e';
-import { Ganache } from '../seeder/ganache';
 
 const DAI = 'DAI';
 const TEST_ETH = 'TESTETH';
