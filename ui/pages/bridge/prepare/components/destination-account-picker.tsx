@@ -147,6 +147,8 @@ export const DestinationAccountPicker = ({
           }}
         />
       </Box>
+      {/* Invisible buffer to match selected account height */}
+      <Box style={{ height: '20px' }} />
       <Box
         className="destination-account-picker__list"
         backgroundColor={BackgroundColor.backgroundDefault}
@@ -155,7 +157,6 @@ export const DestinationAccountPicker = ({
           top: '50px',
           left: 0,
           right: 0,
-          minHeight: '79px',
           maxHeight: '240px',
           overflowY: 'auto',
           borderRadius: '0 0 8px 8px',
