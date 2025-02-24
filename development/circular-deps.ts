@@ -253,13 +253,19 @@ function failIfDisallowedCircularDepsFound(tree: MadgeInstance): void {
 
   if (unusedAllowedPatterns.length > 0) {
     console.error(
-      `The following allowed circular dependency patterns do not match any files:\n\n${unusedAllowedPatterns.join(
-        '\n',
-      )}`,
+      chalk.yellow(
+        `The following allowed circular dependency patterns do not match any files:\n`,
+      ),
     );
-    console.error(chalk.yellow.bold('✨This is a good thing!✨'));
+    unusedAllowedPatterns.forEach((pattern, index) => {
+      console.error(chalk.dim(`${index + 1}) `) + chalk.cyan(pattern));
+    });
+
+    console.error(chalk.magenta.bold('\n✨ This is a good thing! ✨\n'));
     console.error(
-      'You must remove or update unused patterns in the `.madgerc` file then commit the changes.',
+      chalk.italic(
+        'You must remove or update unused patterns in the .madgerc file then commit the changes.\n',
+      ),
     );
     process.exit(1);
   }
