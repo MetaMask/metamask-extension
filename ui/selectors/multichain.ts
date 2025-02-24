@@ -4,6 +4,8 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import type {
   MultichainBalancesControllerState,
   RatesControllerState,
+  MultichainAssetsControllerState,
+  MultichainAssetsRatesControllerState,
 } from '@metamask/assets-controllers';
 import { CaipChainId, Hex, KnownCaipNamespace } from '@metamask/utils';
 import { createSelector } from 'reselect';
@@ -41,6 +43,8 @@ import {
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
 } from '../../shared/modules/selectors/networks';
+// eslint-disable-next-line import/no-restricted-paths
+import { getConversionRatesForNativeAsset } from '../../app/scripts/lib/util';
 import {
   AccountsState,
   getInternalAccounts,
@@ -54,6 +58,14 @@ import {
   getShouldShowFiat,
   getShowFiatInTestnets,
 } from './selectors';
+
+export type AssetsState = {
+  metamask: MultichainAssetsControllerState;
+};
+
+export type AssetsRatesState = {
+  metamask: MultichainAssetsRatesControllerState;
+};
 
 export type RatesState = {
   metamask: RatesControllerState;
@@ -71,7 +83,9 @@ export type MultichainState = AccountsState &
   RatesState &
   BalancesState &
   TransactionsState &
-  NetworkState;
+  NetworkState &
+  AssetsRatesState &
+  AssetsState;
 
 // TODO: Remove after updating to @metamask/network-controller 20.0.0
 export type ProviderConfigWithImageUrlAndExplorerUrl = {
@@ -471,11 +485,17 @@ export function getMultichainConversionRate(
   state: MultichainState,
   account?: InternalAccount,
 ) {
-  const { ticker } = getMultichainProviderConfig(state, account);
+  const { conversionRates } = state.metamask;
+  const { chainId } = getMultichainNetwork(state, account);
+
+  const conversionRate = getConversionRatesForNativeAsset({
+    conversionRates,
+    chainId,
+  })?.rate;
 
   return getMultichainIsEvm(state, account)
     ? getConversionRate(state)
-    : getMultichainCoinRates(state)?.[ticker.toLowerCase()]?.conversionRate;
+    : conversionRate;
 }
 
 // TODO get this from the multichain network controller

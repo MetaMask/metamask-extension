@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { ChainId } from '@metamask/controller-utils';
-import { Hex } from '@metamask/utils';
+import { isStrictHexString, type CaipChainId, type Hex } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
 import {
   getAllDetectedTokensForSelectedAddress,
@@ -17,7 +17,7 @@ import {
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { AssetType } from '../../../shared/constants/transaction';
-import { isNativeAddress } from '../../pages/bridge/utils/quote';
+import { isNativeAddress } from '../../../shared/modules/bridge-utils/caip-formatters';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { Token } from '../../components/app/assets/types';
 import { useMultichainBalances } from '../useMultichainBalances';
@@ -42,7 +42,9 @@ type FilterPredicate = (
  *
  * @param chainId - the selected src/dest chainId
  */
-export const useTokensWithFiltering = (chainId?: ChainId | Hex) => {
+export const useTokensWithFiltering = (
+  chainId?: ChainId | Hex | CaipChainId,
+) => {
   const allDetectedTokens: Record<string, Token[]> = useSelector(
     getAllDetectedTokensForSelectedAddress,
   );
@@ -55,7 +57,7 @@ export const useTokensWithFiltering = (chainId?: ChainId | Hex) => {
   const { value: tokenList, pending: isTokenListLoading } = useAsyncResult<
     Record<string, SwapsTokenObject>
   >(async () => {
-    if (chainId) {
+    if (chainId && isStrictHexString(chainId)) {
       const timestamp = cachedTokens[chainId]?.timestamp;
       // Use cached token data if updated in the last 10 minutes
       if (timestamp && Date.now() - timestamp <= 10 * MINUTE) {
@@ -80,7 +82,7 @@ export const useTokensWithFiltering = (chainId?: ChainId | Hex) => {
   const buildTokenData = (
     token?: SwapsTokenObject,
   ): AssetWithDisplayData<NativeAsset | ERC20Asset> | undefined => {
-    if (!chainId || !token) {
+    if (!chainId || !token || !isStrictHexString(chainId)) {
       return undefined;
     }
     // Only tokens on the active chain are processed here here
@@ -186,9 +188,7 @@ export const useTokensWithFiltering = (chainId?: ChainId | Hex) => {
 
         // Yield topTokens from selected chain
         for (const token_ of topTokens) {
-          const matchedToken =
-            tokenList?.[token_.address] ??
-            tokenList?.[token_.address.toLowerCase()];
+          const matchedToken = tokenList?.[token_.address];
           if (
             matchedToken &&
             shouldAddToken(
