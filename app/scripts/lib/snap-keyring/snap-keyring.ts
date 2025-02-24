@@ -14,7 +14,7 @@ import MetamaskController from '../../metamask-controller';
 // eslint-disable-next-line import/no-restricted-paths
 import { IconName } from '../../../../ui/components/component-library/icon';
 import MetaMetricsController from '../../controllers/metametrics-controller';
-import { getUniqueAccountName } from '../../../../shared/lib/accounts/accounts';
+import { getUniqueAccountName } from '../../../../shared/lib/accounts';
 import { isBlockedUrl } from './utils/isBlockedUrl';
 import { showError, showSuccess } from './utils/showResult';
 import { SnapKeyringBuilderMessenger } from './types';
