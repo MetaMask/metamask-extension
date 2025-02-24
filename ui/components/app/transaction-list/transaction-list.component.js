@@ -347,7 +347,6 @@ export default function TransactionList({
           <MultichainTransactionDetailsModal
             transaction={selectedTransaction}
             onClose={() => toggleShowDetails(null)}
-            addressLink={addressLink}
           />
         )}
 
