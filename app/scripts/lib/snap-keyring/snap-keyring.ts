@@ -205,9 +205,9 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
   /**
    * Get the account name from the user through a dialog.
    *
-   * @param snapId - ID of the Snap that created the account
-   * @param accountNameSuggestion - Suggested name for the account
-   * @returns The name that should be used for the account
+   * @param snapId - ID of the Snap that created the account.
+   * @param accountNameSuggestion - Suggested name for the account.
+   * @returns The name that should be used for the account.
    */
   async #getAccountNameFromDialog(
     snapId: SnapId,
