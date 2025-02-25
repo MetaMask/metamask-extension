@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  useCallback,
+} from 'react';
 import {
   DragDropContext,
   Droppable,
@@ -362,73 +368,77 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     });
   };
 
-  const getNetworkFlags = (
-    network: MultichainNetworkConfiguration,
-  ): Record<string, boolean> => {
-    if (!network.isEvm) {
-      return {
-        isEnabled: hasAnyAccountsInNetwork(network.chainId) || isUnlocked,
-        isDeletable: false,
-        isEditable: false,
-        hasMultiRpcOptions: false,
-      };
-    }
+  const hasMultiRpcOptions = useCallback(
+    (network: MultichainNetworkConfiguration): boolean =>
+      getRpcDataByChainId(network.chainId, evmNetworks).rpcEndpoints.length > 1,
+    [evmNetworks],
+  );
 
-    const rpcEndpoints =
-      getRpcDataByChainId(network.chainId, evmNetworks)?.rpcEndpoints || [];
-    return {
-      isEnabled: true,
-      isDeletable:
+  const getItemCallbacks = useCallback(
+    (
+      network: MultichainNetworkConfiguration,
+    ): Record<string, (() => void) | undefined> => {
+      const { chainId, isEvm } = network;
+
+      if (!isEvm) {
+        return {};
+      }
+
+      const hexChainId = convertCaipToHexChainId(chainId);
+      const isDeletable =
         isUnlocked &&
         network.chainId !== currentChainId &&
-        network.chainId !== EthScope.Mainnet,
-      isEditable: true,
-      hasMultiRpcOptions: rpcEndpoints.length > 1,
-    };
-  };
+        network.chainId !== EthScope.Mainnet;
+
+      return {
+        onDelete: isDeletable
+          ? () => {
+              dispatch(toggleNetworkMenu());
+              dispatch(
+                showModal({
+                  name: 'CONFIRM_DELETE_NETWORK',
+                  // Non-EVM networks cannot be deleted, so it's safe to call
+                  // this conversion function here.
+                  target: hexChainId,
+                  onConfirm: () => undefined,
+                }),
+              );
+            }
+          : undefined,
+        onEdit: () => {
+          dispatch(
+            setEditedNetwork({
+              // Non-EVM networks cannot be edited, so it's safe to call
+              // this conversion function here.
+              chainId: hexChainId,
+              nickname: network.name,
+            }),
+          );
+          setActionMode(ACTION_MODE.ADD_EDIT);
+        },
+        onRpcConfigEdit: hasMultiRpcOptions(network)
+          ? () => {
+              setActionMode(ACTION_MODE.SELECT_RPC);
+              dispatch(
+                // Non-EVM networks cannot be edited, so it's safe to call
+                // this conversion function here.
+                setEditedNetwork({
+                  chainId: hexChainId,
+                }),
+              );
+            }
+          : undefined,
+      };
+    },
+    [currentChainId, dispatch, hasMultiRpcOptions, isUnlocked],
+  );
 
   // Renders a network in the network list
   const generateMultichainNetworkListItem = (
     network: MultichainNetworkConfiguration,
   ) => {
     const isCurrentNetwork = network.chainId === currentChainId;
-    const { isEnabled, isDeletable, isEditable, hasMultiRpcOptions } =
-      getNetworkFlags(network);
-
-    const onDelete = () => {
-      dispatch(toggleNetworkMenu());
-      dispatch(
-        showModal({
-          name: 'CONFIRM_DELETE_NETWORK',
-          // Non-EVM networks cannot be deleted, so it's safe to call
-          // this conversion function here.
-          target: convertCaipToHexChainId(network.chainId),
-          onConfirm: () => undefined,
-        }),
-      );
-    };
-
-    const onEdit = () => {
-      dispatch(
-        setEditedNetwork({
-          // Non-EVM networks cannot be edited, so it's safe to call
-          // this conversion function here.
-          chainId: convertCaipToHexChainId(network.chainId),
-          nickname: network.name,
-        }),
-      );
-      setActionMode(ACTION_MODE.ADD_EDIT);
-    };
-
-    const onRpcConfigEdit = () => {
-      setActionMode(ACTION_MODE.SELECT_RPC);
-      dispatch(
-        // Non-EVM networks cannot be edited, so it's safe to call
-        // this conversion function here.
-        setEditedNetwork({ chainId: convertCaipToHexChainId(network.chainId) }),
-      );
-    };
-
+    const { onDelete, onEdit, onRpcConfigEdit } = getItemCallbacks(network);
     const iconSrc = getNetworkIcon(network);
 
     return (
@@ -441,7 +451,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         selected={isCurrentNetwork && !focusSearch}
         focus={isCurrentNetwork && !focusSearch}
         rpcEndpoint={
-          hasMultiRpcOptions
+          hasMultiRpcOptions(network)
             ? getRpcDataByChainId(network.chainId, evmNetworks)
                 .defaultRpcEndpoint
             : undefined
@@ -449,10 +459,10 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         onClick={async () => {
           await handleNetworkChange(network.chainId);
         }}
-        onDeleteClick={isDeletable ? onDelete : undefined}
-        onEditClick={isEditable ? onEdit : undefined}
-        onRpcEndpointClick={network.isEvm ? onRpcConfigEdit : undefined}
-        disabled={!isEnabled}
+        onDeleteClick={onDelete}
+        onEditClick={onEdit}
+        onRpcEndpointClick={onRpcConfigEdit}
+        disabled={!(hasAnyAccountsInNetwork(network.chainId) || isUnlocked)}
       />
     );
   };
