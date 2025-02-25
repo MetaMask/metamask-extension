@@ -6,32 +6,60 @@
     <title>MetaMask Transaction App</title>
   </head>
   <body>
-    <ul>
-      <ol>
-        Run `yarn ganache -d -f -v` to fork mainnet
-      </ol>
-      <ol>
-        add http://localhost:8545 to your MetaMask networks, switch to this
-        network
-      </ol>
-      <ol>
-        add the account with private key
-        `0x6cbed15c793ce57650b9877cf6fa156fbef513c4e6134f022a85b1ffdd59b2a1` to
-        your MetaMask accounts and switch to it. You should be rich.
-      </ol>
-      <ol>
-        Click Connect to connect to MetaMask.
-      </ol>
-      <ol>
-        Click Deploy and Allow to deploy the contract and allow the contract to
-        spend your tokens.
-      </ol>
-      <ol>
-        Click Airdrop to send tokens to the recipients. Wait for confirmation,
-        then click it again. Repeat until MetaMask crashes.
-      </ol>
-    </ul>
     <h1>MetaMask Transaction App</h1>
+    <p>
+      <strong
+        >warning: following the instructions will make your metamask slow until
+        you remove it from the extension.</strong
+      >
+    </p>
+    <p>
+      <strong
+        >warning: following the instructions will make your metamask slow until
+        you remove it from the extension.</strong
+      >
+    </p>
+    <p>
+      <strong
+        >warning: following the instructions will make your metamask slow until
+        you remove it from the extension.</strong
+      >
+    </p>
+    <p>
+      <strong
+        >warning: following the instructions will make your metamask slow until
+        you remove it from the extension.</strong
+      >
+    </p>
+    <p>
+      <strong
+        >warning: following the instructions will make your metamask slow until
+        you remove it from the extension.</strong
+      >
+    </p>
+    <ol>
+      <li>Run `yarn ganache -d -f -v -a 1` to fork mainnet</li>
+      <li>
+        add http://localhost:8545 with a chain of `1337` (Currency symbol `ETH`)
+        to your MetaMask networks, switch to this network
+      </li>
+      <li>
+        add the account with private key
+        `0x4f3edf983ac636a65a842ce7c78d9aa706d3b113bce9c46f30d7d21715b23b1d` to
+        your MetaMask accounts and switch to it.
+      </li>
+      <li>Click "Connect" to connect to MetaMask.</li>
+      <li>
+        Click "Deploy and Allow" to deploy the contract and allow the contract
+        to spend your tokens.
+      </li>
+      <li>
+        Click "Airdrop" to send tokens to the recipients. Wait for confirmation,
+        then click it again. Repeat until MetaMask crashes.
+      </li>
+    </ol>
+    <p>Status: <span id="status">Not connected</span></p>
+    <hr />
     <button id="connectButton">Connect to MetaMask</button>
     <hr />
     <button id="sendTxButton1" disabled>Deploy and Allow</button>
@@ -49,18 +77,27 @@
     <script>
       let contractAddress;
 
+      const status = document.getElementById('status');
+      function updateStatus(msg) {
+        status.textContent = msg;
+      }
+
       document
         .getElementById('connectButton')
         .addEventListener('click', async () => {
           if (typeof window.ethereum !== 'undefined') {
+            updateStatus('Connecting...');
             try {
               await window.ethereum.request({ method: 'eth_requestAccounts' });
               document.getElementById('sendTxButton1').disabled = false;
+              updateStatus('Connected');
               alert('Connected to MetaMask');
             } catch (error) {
+              updateStatus('Not connected (user rejected the request)');
               console.error('User rejected the request.');
             }
           } else {
+            updateStatus('Not connected (metamask not installed?)');
             alert('MetaMask is not installed.');
           }
         });
@@ -70,63 +107,73 @@
       document
         .getElementById('sendTxButton1')
         .addEventListener('click', async () => {
-          const transactionParameters = {
-            from: window.ethereum.selectedAddress,
-            data: '0x60806040526040516107f83803806107f88339810160408190526100229161073b565b60ff84111561003057600080fd5b843360601b600f1755846000523360007fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef60206000a382518151602081111561007857600080fd5b60409050508060208501208351602085012060208304600101602084061561009e576001015b602081029350506040517f8b73c3c69bb8fe3d512ecc4cf759cc79239f7b179b0ffacaa9a75d522b39400f815282602082015281604082015246606082015230608082015260a081207f5952596000205b60005260206000f35b60043560601b600d17545952596000f361053683015265595246595230610516830152826105108301526259527f6104f0830152836104ed8301526000805160206107d88339815191526104cd8301526a30141661053c577f8b73c36104ad830152306104a28301526246147361048e8301524661048b830152607f61046b8301528061046a830152675952596000f35b7f61044a83015288610442830152675939596000f35b606104418301528461055601610439830152716105565939596000f35b6020595261004061610437830152846104258301526b5952596000f35b6020595261610423830152896104178301527f6011565b60243560821b607e1c60043560821b600e1717545952596000f35b7f6103f78301527f200ac8c7c3b92560206000a360006000f35b631ab7da6b6011565b638baa579f6103d78301527f1755826000527f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b6103b78301527f81151790841415176103f1576001019055828260821b607e1c8260821b600e176103978301527f604260002060005260606084602037602060006080600060015afa15600051906103778301527f601c80604252826062528360825290600d1780548060a25260c06022206022526103578301527f64845d6126c960225260c25260443560243560601b60601c60043560601b80606103378301527e526002527f6e71edae12b1b97f4d1f60370fef10105fa2faae0126114a169c610317830152735952465952305952596000205b61190160f01b606102f7830152826102e38301526259527f6102c3830152836102c08301526000805160206107d88339815191526102a08301526b30141661030f57507f8b73c361028083015230610274830152624614736102608301524661025d830152607f61023d8301528061023c830152507bc8c7c3b9255984a3600181525990f35b5b6064358042116103e8577f61021c8201527f599259527f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200a6102008201527f565b60243560043560601b60601c33828260821b607e1c8260821b600e1717556101e08201527fc4a11628f55a4df523b3ef596000a36001600052596000f35b633f726eac60116101c08201527f805483019055905952837fddf252ad1be2c89b69c2b068fc378daa952ba7f1636101a08201527f0186565b50505b821061011657808203835560243560601b8060601c90600f1761018082015271eb9efe7ca87f7cee9efe27a87d6ffc6faa9e1961016082015260016cfc390ac10436c01c2e2f00a90160971b036101408201527f60043560601b8060601c90600f17805460443580338514610186573360821b606101208201527f1628f55a4df523b3ef596000a36001600052596000f35b63f4d678b86011565b6101008201527f83019055905952837fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a160e08201527f5460243580821061011657808203835560043560601b8060601c90600f17805460c08201527f45575959fd5b60043560601b600f17545952596000f35b338060601b600f178060a08201527f578063313ce5671461045f5780633644e515146104685780637ecebe0014610560808201527f806318160ddd1461041557806306fdde031461043d57806395d89b411461044e60608201527f63095ea7b3146101e1578063d505accf14610230578063dd62ed3e146103fa5760408201527f806370a082311460a5578063a9059cbb1460b657806323b872dd1461011f578060208201527f59351559341117600d57601a565b5959fd5b6000526004601cfd5b593560e01c8152600092505b8383101561065e5782870151836105568301015260208301925061063f565b8451818501610556810191909152602086015161057690910152610596840181f35b634e487b7160e01b600052604160045260246000fd5b600082601f8301126106a757600080fd5b81516001600160401b03808211156106c1576106c1610680565b604051601f8301601f19908116603f011681019082821181831017156106e9576106e9610680565b8160405283815260209250868385880101111561070557600080fd5b600091505b83821015610727578582018301518183018401529082019061070a565b600093810190920192909252949350505050565b600080600080600060a0868803121561075357600080fd5b85516020870151604088015191965094506001600160401b038082111561077957600080fd5b61078589838a01610696565b9450606088015191508082111561079b57600080fd5b6107a789838a01610696565b935060808801519150808211156107bd57600080fd5b506107ca88828901610696565b915050929550929590935056fec69bb8fe3d512ecc4cf759cc79239f7b179b0ffacaa9a75d522b39400f59527f00000003b58e88c75313ec9d329eaaa18fb92f75215b170ff21f494c589c0000000000000000000000000000000000000000000000000000000000000000001200000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000000000000000000454455354000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001310000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000034553540000000000000000000000000000000000000000000000000000000000',
-          };
+          try {
+            updateStatus('Deploying contract...');
+            const transactionParameters = {
+              from: window.ethereum.selectedAddress,
+              data: '0x60806040526040516107f83803806107f88339810160408190526100229161073b565b60ff84111561003057600080fd5b843360601b600f1755846000523360007fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef60206000a382518151602081111561007857600080fd5b60409050508060208501208351602085012060208304600101602084061561009e576001015b602081029350506040517f8b73c3c69bb8fe3d512ecc4cf759cc79239f7b179b0ffacaa9a75d522b39400f815282602082015281604082015246606082015230608082015260a081207f5952596000205b60005260206000f35b60043560601b600d17545952596000f361053683015265595246595230610516830152826105108301526259527f6104f0830152836104ed8301526000805160206107d88339815191526104cd8301526a30141661053c577f8b73c36104ad830152306104a28301526246147361048e8301524661048b830152607f61046b8301528061046a830152675952596000f35b7f61044a83015288610442830152675939596000f35b606104418301528461055601610439830152716105565939596000f35b6020595261004061610437830152846104258301526b5952596000f35b6020595261610423830152896104178301527f6011565b60243560821b607e1c60043560821b600e1717545952596000f35b7f6103f78301527f200ac8c7c3b92560206000a360006000f35b631ab7da6b6011565b638baa579f6103d78301527f1755826000527f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b6103b78301527f81151790841415176103f1576001019055828260821b607e1c8260821b600e176103978301527f604260002060005260606084602037602060006080600060015afa15600051906103778301527f601c80604252826062528360825290600d1780548060a25260c06022206022526103578301527f64845d6126c960225260c25260443560243560601b60601c60043560601b80606103378301527e526002527f6e71edae12b1b97f4d1f60370fef10105fa2faae0126114a169c610317830152735952465952305952596000205b61190160f01b606102f7830152826102e38301526259527f6102c3830152836102c08301526000805160206107d88339815191526102a08301526b30141661030f57507f8b73c361028083015230610274830152624614736102608301524661025d830152607f61023d8301528061023c830152507bc8c7c3b9255984a3600181525990f35b5b6064358042116103e8577f61021c8201527f599259527f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200a6102008201527f565b60243560043560601b60601c33828260821b607e1c8260821b600e1717556101e08201527fc4a11628f55a4df523b3ef596000a36001600052596000f35b633f726eac60116101c08201527f805483019055905952837fddf252ad1be2c89b69c2b068fc378daa952ba7f1636101a08201527f0186565b50505b821061011657808203835560243560601b8060601c90600f1761018082015271eb9efe7ca87f7cee9efe27a87d6ffc6faa9e1961016082015260016cfc390ac10436c01c2e2f00a90160971b036101408201527f60043560601b8060601c90600f17805460443580338514610186573360821b606101208201527f1628f55a4df523b3ef596000a36001600052596000f35b63f4d678b86011565b6101008201527f83019055905952837fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a160e08201527f5460243580821061011657808203835560043560601b8060601c90600f17805460c08201527f45575959fd5b60043560601b600f17545952596000f35b338060601b600f178060a08201527f578063313ce5671461045f5780633644e515146104685780637ecebe0014610560808201527f806318160ddd1461041557806306fdde031461043d57806395d89b411461044e60608201527f63095ea7b3146101e1578063d505accf14610230578063dd62ed3e146103fa5760408201527f806370a082311460a5578063a9059cbb1460b657806323b872dd1461011f578060208201527f59351559341117600d57601a565b5959fd5b6000526004601cfd5b593560e01c8152600092505b8383101561065e5782870151836105568301015260208301925061063f565b8451818501610556810191909152602086015161057690910152610596840181f35b634e487b7160e01b600052604160045260246000fd5b600082601f8301126106a757600080fd5b81516001600160401b03808211156106c1576106c1610680565b604051601f8301601f19908116603f011681019082821181831017156106e9576106e9610680565b8160405283815260209250868385880101111561070557600080fd5b600091505b83821015610727578582018301518183018401529082019061070a565b600093810190920192909252949350505050565b600080600080600060a0868803121561075357600080fd5b85516020870151604088015191965094506001600160401b038082111561077957600080fd5b61078589838a01610696565b9450606088015191508082111561079b57600080fd5b6107a789838a01610696565b935060808801519150808211156107bd57600080fd5b506107ca88828901610696565b915050929550929590935056fec69bb8fe3d512ecc4cf759cc79239f7b179b0ffacaa9a75d522b39400f59527f00000003b58e88c75313ec9d329eaaa18fb92f75215b170ff21f494c589c0000000000000000000000000000000000000000000000000000000000000000001200000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000000000000000000454455354000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001310000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000034553540000000000000000000000000000000000000000000000000000000000',
+            };
 
-          const txHash = await window.ethereum.request({
-            method: 'eth_sendTransaction',
-            params: [transactionParameters],
-          });
-          console.log('Transaction 1 sent:', txHash);
+            const txHash = await window.ethereum.request({
+              method: 'eth_sendTransaction',
+              params: [transactionParameters],
+            });
+            console.log('Transaction 1 sent:', txHash);
 
-          // Poll for the transaction receipt to get the contract address
-          const receipt = await pollForReceipt(txHash);
-          contractAddress = receipt.contractAddress;
+            // Poll for the transaction receipt to get the contract address
+            updateStatus('Waiting for contract creation...');
+            const receipt = await pollForReceipt(txHash);
+            contractAddress = receipt.contractAddress;
 
-          // write contractAddress to the UI
-          document.getElementById('contractAddress').textContent =
-            contractAddress;
+            // write contractAddress to the UI
+            document.getElementById('contractAddress').textContent =
+              contractAddress;
 
-          console.log('Contract created at:', contractAddress);
+            console.log('Contract created at:', contractAddress);
+            updateStatus('Contract created at ' + contractAddress);
 
-          // we arne't done with the set up. now send an approve transaction.
-          const txB = {
-            from: window.ethereum.selectedAddress,
-            to: contractAddress,
-            //0x095ea7b3000000000000000000000000d152f549545093347a162dce210e7293f145215000000003b58e88c75313ec9d329eaaa18fb92f75215b170ff21f494c589c0000
-            data: `0x095ea7b3000000000000000000000000${dispurse}00000003b58e88c75313ec9d329eaaa18fb92f75215b170ff21f494c589c0000`,
-          };
+            // we arne't done with the set up. now send an approve transaction.
+            const txB = {
+              from: window.ethereum.selectedAddress,
+              to: contractAddress,
+              //0x095ea7b3000000000000000000000000d152f549545093347a162dce210e7293f145215000000003b58e88c75313ec9d329eaaa18fb92f75215b170ff21f494c589c0000
+              data: `0x095ea7b3000000000000000000000000${dispurse}00000003b58e88c75313ec9d329eaaa18fb92f75215b170ff21f494c589c0000`,
+            };
 
-          // send txB and wait
-          const txHashB = await window.ethereum.request({
-            method: 'eth_sendTransaction',
-            params: [txB],
-          });
-          console.log('Transaction 2 sent:', txHashB);
-          // Poll for the transaction receipt
-          const receiptB = await pollForReceipt(txHashB);
-          console.log('Transaction 1 receipt:', receiptB);
-          // throw if it reverted
-          if (receiptB.status === '0x0') {
-            throw new Error('Transaction 2 failed');
+            // send txB and wait
+            updateStatus('Sending approval transaction...');
+            const txHashB = await window.ethereum.request({
+              method: 'eth_sendTransaction',
+              params: [txB],
+            });
+            console.log('Transaction 2 sent:', txHashB);
+            // Poll for the transaction receipt
+            updateStatus('Waiting for approval transaction confirmation...');
+            const receiptB = await pollForReceipt(txHashB);
+            console.log('Transaction receipt:', receiptB);
+            // throw if it reverted
+            if (receiptB.status === '0x0') {
+              updateStatus('Approval transaction failed. I dunno why. Sorry.');
+              throw new Error('Transaction 2 failed');
+            }
+            updateStatus('Approval transaction confirmed');
+
+            document.getElementById('sendTxButton2').disabled = false;
+          } catch (e) {
+            console.error('Transactions failed:', e);
+            updateStatus('Transactions failed. ' + e.message);
           }
-
-          document.getElementById('sendTxButton2').disabled = false;
         });
 
       document
         .getElementById('sendTxButton2')
         .addEventListener('click', async () => {
+          const length = document.getElementById('recipients').value;
+          updateStatus(`Sending airdrop to ${length} recipients...`);
           const listOfRecipients = [];
           const listOfAmounts = [];
           // for each recipient, add to the list of recipients and amounts
-          for (
-            let i = 0;
-            i < document.getElementById('recipients').value;
-            i++
-          ) {
+          for (let i = 0; i < length; i++) {
             // random Ethereum address padded to 20 bytes
             const address = Math.floor(Math.random() * 1000000000000000000)
               .toString(16)
@@ -148,15 +195,24 @@
             data: data,
           };
           try {
+            document.getElementById('sendTxButton2').disabled = true;
+            updateStatus('Sending airdrop transaction...');
             const txHash = await window.ethereum.request({
               method: 'eth_sendTransaction',
               params: [transactionParameters],
             });
             console.log('Transaction airdrop sent:', txHash);
+            updateStatus('Waiting for airdrop transaction confirmation...');
             const receipt = await pollForReceipt(txHash);
             console.log('Transaction airdrop receipt:', receipt);
+            updateStatus(
+              'Airdrop transaction confirmed. Press the Airdrop button again until MetaMask crashes! Its fun!',
+            );
           } catch (error) {
+            updateStatus('Airdrop transaction failed. ' + error.message);
             console.error('Transaction airdrop failed:', error);
+          } finally {
+            document.getElementById('sendTxButton2').disabled = false;
           }
         });
 
