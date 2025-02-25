@@ -55,11 +55,13 @@ function normalizeJson(cycles: CircularDeps): CircularDeps {
  * These are the main app directories containing production/development code.
  */
 const ENTRYPOINTS = [
-  'app/', // Main application code
+  // TODO: eventually include development and test directories. We can't right
+  // now because madge skips files, and we no longer allow skipped imports.
   // 'development/', // Development scripts and utilities
+  // 'test/', // Tests
+  'app/', // Main application code
   'offscreen/', // Offscreen page for MV3
   'shared/', // Shared utilities and components
-  // 'test/', // Tests
   'ui/', // UI components and styles
 ];
 
