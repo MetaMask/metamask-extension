@@ -24,10 +24,11 @@ describe('Check balance', function (this: Suite) {
         title: this.test?.fullTitle(),
         solanaSupportEnabled: true,
         showNativeTokenAsMainBalance: false,
+        mockZeroBalance: true,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_getBalance(`USD`);
+        await homePage.check_getBalance(`$0.00 USD`);
       },
     );
   });

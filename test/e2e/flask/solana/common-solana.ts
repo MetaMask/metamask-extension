@@ -443,7 +443,10 @@ export async function mockMultiCoinPrice(mockServer: Mockttp) {
   });
 }
 
-export async function mockSolanaBalanceQuote(mockServer: Mockttp) {
+export async function mockSolanaBalanceQuote(
+  mockServer: Mockttp,
+  mockZeroBalance: boolean = false,
+) {
   const response = {
     statusCode: 200,
     json: {
@@ -452,7 +455,7 @@ export async function mockSolanaBalanceQuote(mockServer: Mockttp) {
           apiVersion: '2.0.18',
           slot: 308460925,
         },
-        value: SOL_BALANCE,
+        value: mockZeroBalance ? 0 : SOL_BALANCE,
       },
       id: 1337,
     },
@@ -1564,6 +1567,7 @@ export async function withSolanaAccountSnap(
     isNative,
     mockGetTransactionSuccess,
     mockGetTransactionFailed,
+    mockZeroBalance,
   }: {
     title?: string;
     solanaSupportEnabled?: boolean;
@@ -1575,6 +1579,7 @@ export async function withSolanaAccountSnap(
     isNative?: boolean;
     mockGetTransactionSuccess?: boolean;
     mockGetTransactionFailed?: boolean;
+    mockZeroBalance?: boolean;
   },
   test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
 ) {
@@ -1609,6 +1614,9 @@ export async function withSolanaAccountSnap(
           // success tx by default
           mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
           mockList.push(await mockGetSuccessTransaction(mockServer));
+        }
+        if (mockZeroBalance) {
+          mockList.push(await mockSolanaBalanceQuote(mockServer, true));
         }
         if (mockCalls) {
           mockList.push([
