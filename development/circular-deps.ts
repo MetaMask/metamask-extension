@@ -153,7 +153,7 @@ async function check(): Promise<void> {
 function maybeLogSkipped(skipped: string[]): boolean {
   if (skipped.length) {
     const file = `file${skipped.length === 1 ? '' : 's'}`;
-    console.error(chalk.yellow.bold(`✖ Skipped ${file} found:`, file));
+    console.error(chalk.yellow.bold(`✖ Skipped ${file} found:`));
     skipped.forEach((module) => {
       console.error(chalk.yellow(module));
     });
