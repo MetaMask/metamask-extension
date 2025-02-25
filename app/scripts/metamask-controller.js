@@ -239,6 +239,7 @@ import {
   BridgeBackgroundAction,
 } from '../../shared/types/bridge';
 import { isProduction } from '../../shared/modules/environment';
+import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../shared/constants/app';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -373,7 +374,6 @@ import {
   SnapInterfaceControllerInit,
   SnapsRegistryInit,
 } from './controller-init/snaps';
-import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../shared/constants/app';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 export const METAMASK_CONTROLLER_EVENTS = {
