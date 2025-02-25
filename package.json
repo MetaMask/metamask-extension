@@ -224,7 +224,8 @@
     "tslib@npm:^2.4.0": "~2.6.0",
     "tslib@npm:^2.6.2": "~2.6.0",
     "@ethersproject/signing-key/elliptic": "^6.6.1",
-    "gridplus-sdk/elliptic": "^6.6.1"
+    "gridplus-sdk/elliptic": "^6.6.1",
+    "@metamask/accounts-controller@npm:^24.0.1": "npm:@metamask-previews/accounts-controller@24.0.1-preview-5dad659d"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",

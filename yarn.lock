@@ -4829,15 +4829,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/accounts-controller@npm:^24.0.1":
-  version: 24.0.1
-  resolution: "@metamask/accounts-controller@npm:24.0.1"
+"@metamask/accounts-controller@npm:@metamask-previews/accounts-controller@24.0.1-preview-5dad659d":
+  version: 24.0.1-preview-5dad659d
+  resolution: "@metamask-previews/accounts-controller@npm:24.0.1-preview-5dad659d"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/eth-snap-keyring": "npm:^11.1.0"
     "@metamask/keyring-api": "npm:^17.2.0"
     "@metamask/keyring-internal-api": "npm:^4.0.3"
+    "@metamask/keyring-utils": "npm:^2.3.1"
     "@metamask/network-controller": "npm:^22.2.1"
     "@metamask/snaps-sdk": "npm:^6.17.1"
     "@metamask/snaps-utils": "npm:^8.10.0"
@@ -4852,7 +4853,7 @@ __metadata:
     "@metamask/providers": ^18.1.0
     "@metamask/snaps-controllers": ^9.19.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/38d9e667dd6a4d0f735cbc1dc0fab44853390f420f27efc2d4c063de5adacf7ac508cbe5a348b3033c7c0a05b410d74f338398684895aa06518749839518d7b2
+  checksum: 10/405f199b3218f793c9453c96406c4849f8d010d3f98ef9f3425df19c44c8d73c7bdc27ed77e7bf3098eb623393a55723884331148dcaa6b5c7e4cfd59631ed29
   languageName: node
   linkType: hard
 
@@ -5635,6 +5636,18 @@ __metadata:
     "@metamask/utils": "npm:^11.1.0"
     bitcoin-address-validation: "npm:^2.2.3"
   checksum: 10/208881b054f3e346563d07e9f172515b0f5fb014d9ef718111915fdb69494052bdbe729fa56a983019fc3ca78cc24f9f286783720453c4cb31a9b1f7e96ea1b5
+  languageName: node
+  linkType: hard
+
+"@metamask/keyring-utils@npm:^2.3.1":
+  version: 2.3.1
+  resolution: "@metamask/keyring-utils@npm:2.3.1"
+  dependencies:
+    "@ethereumjs/tx": "npm:^4.2.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.1.0"
+    bitcoin-address-validation: "npm:^2.2.3"
+  checksum: 10/4a11b780621d82ab2d3fe39fbaed0ea87c01139c925c4c26cb25e2361bd855eae1c7c8cf01a84d2030de3bbef65590caecfe538f37490f75cad8a0a65b318c95
   languageName: node
   linkType: hard
 
