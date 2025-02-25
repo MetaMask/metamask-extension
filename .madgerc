@@ -1,7 +1,6 @@
 {
   "excludeRegExp": [
-    "/.[^/]*\/test\/.[^/]*/u",
-    "/\\.\\.\/config\/assets\/index\\.css/u"
+    "/.[^/]*\/test\/.[^/]*/u"
   ],
   "fileExtensions": ["js", "jsx", "ts", "tsx"],
   "tsConfig": "tsconfig.json",
