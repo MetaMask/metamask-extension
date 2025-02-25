@@ -422,7 +422,7 @@ describe('Sending with max amount', function () {
           text: '$0.75',
         });
 
-        //navigate back to edit
+        // navigate back to edit
         await driver.clickElement(
           '[data-testid="wallet-initiated-header-back-button"]',
         );
