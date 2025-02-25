@@ -178,6 +178,12 @@ const Footer = () => {
     (!isScrollToBottomCompleted && !isSignature) ||
     hardwareWalletRequiresConnection;
 
+  const resetTransactionState = () => {
+    dispatch(updateCustomNonce(''));
+    dispatch(setNextNonce(''));
+    dispatch(clearConfirmTransaction());
+  };
+
   const onCancel = useCallback(
     ({ location }: { location?: MetaMetricsEventLocation }) => {
       if (!currentConfirmation) {
@@ -190,9 +196,7 @@ const Footer = () => {
       dispatch(
         rejectPendingApproval(currentConfirmation.id, serializeError(error)),
       );
-      dispatch(updateCustomNonce(''));
-      dispatch(setNextNonce(''));
-      dispatch(clearConfirmTransaction());
+      resetTransactionState();
     },
     [currentConfirmation],
   );
@@ -224,9 +228,7 @@ const Footer = () => {
     } else {
       dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
     }
-    dispatch(updateCustomNonce(''));
-    dispatch(setNextNonce(''));
-    dispatch(clearConfirmTransaction());
+    resetTransactionState();
   }, [currentConfirmation, customNonceValue]);
 
   const handleFooterCancel = useCallback(() => {
