@@ -54,6 +54,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
                 'eth_signTypedData_v4',
               ],
               type: 'eip155:eoa',
+              scopes: ['eip155:0'],
             },
           },
         },
@@ -124,15 +125,15 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             extensionConfig: {
               support: false,
               chains: {
-                '0x1': {
+                'eip155:1': {
                   isActiveSrc: true,
                   isActiveDest: true,
                 },
-                '0xa': {
+                'eip155:10': {
                   isActiveSrc: true,
                   isActiveDest: true,
                 },
-                '0xe708': {
+                'eip155:59144': {
                   isActiveSrc: true,
                   isActiveDest: true,
                 },

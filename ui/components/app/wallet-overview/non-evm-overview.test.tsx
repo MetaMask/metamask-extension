@@ -179,6 +179,11 @@ describe('NonEvmOverview', () => {
             showNativeTokenAsMainBalance: false,
             tokenNetworkFilter: {},
           },
+          conversionRates: {
+            [MultichainNativeAssets.BITCOIN]: {
+              rate: '1',
+            },
+          },
         },
       }),
     );
