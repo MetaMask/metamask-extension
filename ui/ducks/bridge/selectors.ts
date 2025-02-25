@@ -1,9 +1,4 @@
-import type {
-  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
-  NetworkConfiguration,
-  ///: END:ONLY_INCLUDE_IF
-  NetworkState,
-} from '@metamask/network-controller';
+import type { NetworkState } from '@metamask/network-controller';
 import { orderBy, uniqBy } from 'lodash';
 import { createSelector } from 'reselect';
 import type { GasFeeEstimates } from '@metamask/gas-fee-controller';
@@ -96,12 +91,12 @@ export const getAllBridgeableNetworks = createDeepEqualSelector(
         {
           ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
           blockExplorerUrls: [],
-          name: '',
-          nativeCurrency: '',
+          name: 'Solana',
+          nativeCurrency: 'sol',
           rpcEndpoints: [{ url: '', type: '', networkClientId: '' }],
           defaultRpcEndpointIndex: 0,
           chainId: MultichainNetworks.SOLANA,
-        } as unknown as NetworkConfiguration,
+        },
         ///: END:ONLY_INCLUDE_IF
       ],
       'chainId',
