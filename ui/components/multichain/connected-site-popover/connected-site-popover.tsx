@@ -1,4 +1,5 @@
 import React, { forwardRef, useContext, RefObject } from 'react';
+import { useSelector } from 'react-redux';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -18,7 +19,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
-import { useSelector } from 'react-redux';
 import { getAllDomains, getOriginOfCurrentTab } from '../../../selectors';
 import { getURLHost } from '../../../helpers/utils/util';
 import {
@@ -26,12 +26,12 @@ import {
   getMultichainCurrentNetwork,
 } from '../../../selectors/multichain';
 
-interface ConnectedSitePopoverProps {
+type ConnectedSitePopoverProps = {
   isOpen: boolean;
   isConnected: boolean;
   onClick: () => void;
   referenceElement?: RefObject<HTMLElement>;
-}
+};
 
 export const ConnectedSitePopover = forwardRef<
   HTMLDivElement,
@@ -120,4 +120,3 @@ export const ConnectedSitePopover = forwardRef<
     </Box>
   );
 });
-
