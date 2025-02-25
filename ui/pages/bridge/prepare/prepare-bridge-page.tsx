@@ -551,28 +551,25 @@ const PrepareBridgePage = () => {
               });
             dispatch(setToToken(bridgeToken));
           }}
-          networkProps={
-            isSwap
-              ? undefined
-              : {
-                  network: toChain,
-                  networks: toChains,
-                  onNetworkChange: (networkConfig) => {
-                    networkConfig.chainId !== toChain?.chainId &&
-                      trackInputEvent({
-                        input: 'chain_destination',
-                        value: networkConfig.chainId,
-                      });
-                    dispatch(setToChainId(networkConfig.chainId));
-                    dispatch(setToToken(null));
-                  },
-                  header: isSwap ? t('swapSwapTo') : t('bridgeTo'),
-                  shouldDisableNetwork: ({ chainId }) =>
-                    chainId === fromChain?.chainId,
-                }
-          }
+          networkProps={{
+            network: isSwap ? fromChain : toChain,
+            networks: isSwap ? [] : toChains,
+            onNetworkChange: (networkConfig) => {
+              networkConfig.chainId !== toChain?.chainId &&
+                trackInputEvent({
+                  input: 'chain_destination',
+                  value: networkConfig.chainId,
+                });
+              dispatch(setToChainId(networkConfig.chainId));
+              dispatch(setToToken(null));
+            },
+            header: isSwap ? t('swapSwapTo') : t('bridgeTo'),
+            shouldDisableNetwork: ({ chainId }) =>
+              chainId === fromChain?.chainId,
+          }}
           customTokenListGenerator={
-            toChain || isSwap ? toTokenListGenerator : undefined
+            // toChain || isSwap ? toTokenListGenerator : undefined
+            toChain ? toTokenListGenerator : undefined
           }
           amountInFiat={
             activeQuote?.toTokenAmount?.valueInCurrency || undefined
