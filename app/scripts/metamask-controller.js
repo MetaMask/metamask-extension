@@ -196,6 +196,7 @@ import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
+  SMART_TRANSACTION_CONFIRMATION_TYPES,
 } from '../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -239,7 +240,6 @@ import {
   BridgeBackgroundAction,
 } from '../../shared/types/bridge';
 import { isProduction } from '../../shared/modules/environment';
-import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../shared/constants/app';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
