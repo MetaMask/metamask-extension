@@ -73,7 +73,7 @@ export const AggregatedBalance = ({
     },
   ).replace(/(\.0+|(?<=\.\d+)0+)$/u, ''); // strip trailing zeros
 
-  if (!balances || !assets[selectedAccount.id].length) {
+  if (!balances || !assets[selectedAccount.id]?.length) {
     return <Spinner className="loading-overlay__spinner" />;
   }
 
