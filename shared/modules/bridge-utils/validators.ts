@@ -81,7 +81,7 @@ export const QUOTE_RESPONSE_VALIDATORS = [
   {
     property: 'trade',
     type: 'string|object',
-    validator: (v) => isValidObject(v) || isValidString(v),
+    validator: (v: unknown) => isValidObject(v) || isValidString(v),
   },
 ];
 
