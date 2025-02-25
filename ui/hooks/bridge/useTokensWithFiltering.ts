@@ -105,8 +105,12 @@ export const useTokensWithFiltering = (
 
     return {
       ...sharedFields,
+      ...(tokenList?.[token.address.toLowerCase()] ?? {}),
       type: AssetType.token,
-      image: token.iconUrl,
+      image:
+        token.iconUrl ??
+        tokenList?.[token.address.toLowerCase()]?.iconUrl ??
+        '',
       // Only tokens with 0 balance are processed here so hardcode empty string
       balance: '',
       string: undefined,
@@ -139,13 +143,34 @@ export const useTokensWithFiltering = (
             )
           ) {
             // If there's no address, set it to the native address in swaps/bridge
-            yield {
-              ...token,
-              address: token.address || zeroAddress(),
-              type: AssetType.token,
-              balance: '0',
-              string: undefined,
-            };
+            if (isNativeAddress(token.address)) {
+              yield {
+                symbol: token.symbol,
+                chainId: token.chainId,
+                tokenFiatAmount: token.tokenFiatAmount,
+                decimals: token.decimals,
+                address: zeroAddress(),
+                type: AssetType.native,
+                balance: token.balance ?? '0',
+                string: token.string ?? undefined,
+                image:
+                  CHAIN_ID_TOKEN_IMAGE_MAP[
+                    token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
+                  ],
+              };
+            } else {
+              yield {
+                symbol: token.symbol,
+                chainId: token.chainId,
+                tokenFiatAmount: token.tokenFiatAmount,
+                decimals: token.decimals,
+                address: token.address,
+                type: AssetType.token,
+                balance: token.balance ?? '',
+                string: token.string ?? undefined,
+                image: tokenList?.[token.address.toLowerCase()]?.iconUrl,
+              };
+            }
           }
         }
 
