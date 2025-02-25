@@ -839,6 +839,10 @@ export function getAddressBook(state) {
   return Object.values(state.metamask.addressBook[chainId]);
 }
 
+export function getEthereumMainnetAddressBook(state) {
+  return Object.values(state.metamask.addressBook['0x1']);
+}
+
 export function getEnsResolutionByAddress(state, address) {
   if (state.metamask.ensResolutionsByAddress[address]) {
     const ensResolution = state.metamask.ensResolutionsByAddress[address];
@@ -1656,6 +1660,22 @@ export function getNativeCurrencyForChain(chainId) {
 export const getMemoizedMetaMaskInternalAccounts = createDeepEqualSelector(
   getInternalAccounts,
   (internalAccounts) => internalAccounts,
+);
+
+export const getAccountInfoByCaipChainId = createDeepEqualSelector(
+  getInternalAccounts,
+  (_, caipChainId) => caipChainId,
+  (internalAccounts, caipChainId) => {
+    return Object.values(internalAccounts.accounts).reduce(
+      (accountInfo, account) => {
+        if (account.scopes.includes(caipChainId)) {
+          accountInfo[account.address] = account.metadata.name;
+        }
+        return accountInfo;
+      },
+      {},
+    );
+  },
 );
 
 export const selectERC20TokensByChain = createDeepEqualSelector(
