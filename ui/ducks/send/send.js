@@ -2891,6 +2891,7 @@ export function signTransaction(history) {
 
     // you can only edit a basic send transaction
     if (stage === SEND_STAGES.EDIT && !isSwapAndSend) {
+      console.log("edit flow will be called")
       // When dealing with the edit flow there is already a transaction in
       // state that we must update, this branch is responsible for that logic.
       // We first must grab the previous transaction object from state and then
@@ -2938,6 +2939,7 @@ export function signTransaction(history) {
 
       history.push(CONFIRM_TRANSACTION_ROUTE);
     } else {
+      console.log("new flow will be called")
       let transactionType =
         draftTransaction.recipient.type === RECIPIENT_TYPES.SMART_CONTRACT
           ? TransactionType.contractInteraction
@@ -3071,14 +3073,14 @@ export function signTransaction(history) {
         transactionId = basicSendTxId;
         history.push(CONFIRM_TRANSACTION_ROUTE);
       }
-      await dispatch(
-        setMaxValueMode(
-          transactionId,
-          amountMode === AMOUNT_MODES.MAX &&
-            draftTransaction.sendAsset.type === AssetType.native,
-        ),
-      );
     }
+    await dispatch(
+      setMaxValueMode(
+        transactionId,
+        amountMode === AMOUNT_MODES.MAX &&
+          draftTransaction.sendAsset.type === AssetType.native,
+      ),
+    );
     await dispatch(actions.setPrevSwapAndSend(prevSwapAndSendData));
   };
 }

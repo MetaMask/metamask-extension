@@ -386,4 +386,72 @@ describe('Sending with max amount', function () {
       },
     );
   });
+
+  it('does update transaction value when navigating back to edit, updating the value and navigating confirmation again', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withPreferencesController({
+            preferences: {
+              showFiatInTestnets: true,
+            },
+          })
+          .build(),
+        localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        await createInternalTransactionWithMaxAmount(driver);
+
+        // verify initial max amount
+        await driver.waitForSelector({
+          text: '$42,499.08',
+          tag: 'p',
+        });
+
+        // has correct updated value on the confirm screen the transaction
+        await driver.waitForSelector({
+          css: '[data-testid="first-gas-field"]',
+          text: '0.0004 ETH',
+        });
+
+        await driver.waitForSelector({
+          css: '[data-testid="native-currency"]',
+          text: '$0.75',
+        });
+
+        //navigate back to edit
+        await driver.clickElement(
+          '[data-testid="wallet-initiated-header-back-button"]',
+        );
+
+        // update the value
+        await driver.fill('[data-testid="currency-input"]', '10');
+
+        // navigate forward
+        await driver.clickElement({ text: 'Continue', css: 'button' });
+
+        // confirms the transaction
+        await driver.clickElement({ text: 'Confirm', tag: 'button' });
+
+        await driver.clickElement(
+          '[data-testid="wallet-initiated-header-back-button"]',
+        );
+        await driver.wait(async () => {
+          const confirmedTxs = await driver.findElements(
+            '.transaction-list__completed-transactions .activity-list-item',
+          );
+          return confirmedTxs.length === 1;
+        }, 10000);
+
+        const txValues = await driver.findElements(
+          '[data-testid="transaction-list-item-primary-currency"]',
+        );
+        assert.equal(txValues.length, 1);
+        assert.ok(/-10\s*ETH/u.test(await txValues[0].getText()));
+      },
+    );
+  });
 });
