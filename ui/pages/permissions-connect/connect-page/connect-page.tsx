@@ -63,7 +63,6 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   getCaip25PermissionsResponse,
-  getRequestedSessionScopes,
   PermissionsRequest,
   getRequestedCaip25CaveatValue,
 } from './utils';
