@@ -370,8 +370,15 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
 
   const hasMultiRpcOptions = useCallback(
     (network: MultichainNetworkConfiguration): boolean =>
+      network.isEvm &&
       getRpcDataByChainId(network.chainId, evmNetworks).rpcEndpoints.length > 1,
     [evmNetworks],
+  );
+
+  const isNetworkEnabled = useCallback(
+    (network: MultichainNetworkConfiguration): boolean =>
+      network.isEvm || isUnlocked || hasAnyAccountsInNetwork(network.chainId),
+    [hasAnyAccountsInNetwork, isUnlocked],
   );
 
   const getItemCallbacks = useCallback(
@@ -437,7 +444,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const generateMultichainNetworkListItem = (
     network: MultichainNetworkConfiguration,
   ) => {
-    const isCurrentNetwork = network.chainId === currentChainId;
+    const { chainId } = network;
+    const isCurrentNetwork = chainId === currentChainId;
     const { onDelete, onEdit, onRpcConfigEdit } = getItemCallbacks(network);
     const iconSrc = getNetworkIcon(network);
 
@@ -452,17 +460,16 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         focus={isCurrentNetwork && !focusSearch}
         rpcEndpoint={
           hasMultiRpcOptions(network)
-            ? getRpcDataByChainId(network.chainId, evmNetworks)
-                .defaultRpcEndpoint
+            ? getRpcDataByChainId(chainId, evmNetworks).defaultRpcEndpoint
             : undefined
         }
         onClick={async () => {
-          await handleNetworkChange(network.chainId);
+          await handleNetworkChange(chainId);
         }}
         onDeleteClick={onDelete}
         onEditClick={onEdit}
         onRpcEndpointClick={onRpcConfigEdit}
-        disabled={!(hasAnyAccountsInNetwork(network.chainId) || isUnlocked)}
+        disabled={!isNetworkEnabled(network)}
       />
     );
   };
