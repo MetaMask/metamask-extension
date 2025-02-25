@@ -8,7 +8,7 @@ import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_ID_TOKEN_IMAGE_MAP,
 } from '../../../../../shared/constants/network';
-import { TokenWithFiatAmount } from '../../../app/assets/token-list/token-list';
+import { TokenWithFiatAmount } from '../../../app/assets/types';
 
 export type NFT = {
   address: string;

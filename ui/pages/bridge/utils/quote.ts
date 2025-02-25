@@ -1,10 +1,10 @@
-import { zeroAddress } from 'ethereumjs-util';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
-import type {
+import {
   QuoteResponse,
   Quote,
   L1GasFees,
+  TokenAmountValues,
 } from '../../../../shared/types/bridge';
 import {
   hexToDecimal,
@@ -15,6 +15,7 @@ import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
+import { isNativeAddress } from '../../../../shared/modules/bridge-utils/caip-formatters';
 
 export const isQuoteExpired = (
   isQuoteGoingToRefresh: boolean,
@@ -27,12 +28,10 @@ export const isQuoteExpired = (
       Date.now() - quotesLastFetchedMs > refreshRate,
   );
 
-export const isNativeAddress = (address?: string | null) =>
-  address === zeroAddress() || address === '' || !address;
-
 export const calcToAmount = (
   { destTokenAmount, destAsset }: Quote,
   exchangeRate: number | null,
+  usdExchangeRate: number | null,
 ) => {
   const normalizedDestAmount = calcTokenAmount(
     destTokenAmount,
@@ -43,12 +42,16 @@ export const calcToAmount = (
     valueInCurrency: exchangeRate
       ? normalizedDestAmount.mul(exchangeRate.toString())
       : null,
+    usd: usdExchangeRate
+      ? normalizedDestAmount.mul(usdExchangeRate.toString())
+      : null,
   };
 };
 
 export const calcSentAmount = (
   { srcTokenAmount, srcAsset, feeData }: Quote,
   exchangeRate: number | null,
+  usdExchangeRate: number | null,
 ) => {
   const normalizedSentAmount = calcTokenAmount(
     new BigNumber(srcTokenAmount).plus(feeData.metabridge.amount),
@@ -59,12 +62,16 @@ export const calcSentAmount = (
     valueInCurrency: exchangeRate
       ? normalizedSentAmount.mul(exchangeRate.toString())
       : null,
+    usd: usdExchangeRate
+      ? normalizedSentAmount.mul(usdExchangeRate.toString())
+      : null,
   };
 };
 
 export const calcRelayerFee = (
   bridgeQuote: QuoteResponse,
-  nativeExchangeRate?: number,
+  nativeToDisplayCurrencyExchangeRate?: number,
+  nativeToUsdExchangeRate?: number,
 ) => {
   const {
     quote: { srcAsset, srcTokenAmount, feeData },
@@ -80,8 +87,11 @@ export const calcRelayerFee = (
   );
   return {
     amount: relayerFeeInNative,
-    valueInCurrency: nativeExchangeRate
-      ? relayerFeeInNative.mul(nativeExchangeRate.toString())
+    valueInCurrency: nativeToDisplayCurrencyExchangeRate
+      ? relayerFeeInNative.mul(nativeToDisplayCurrencyExchangeRate.toString())
+      : null,
+    usd: nativeToUsdExchangeRate
+      ? relayerFeeInNative.mul(nativeToUsdExchangeRate.toString())
       : null,
   };
 };
@@ -90,12 +100,14 @@ const calcTotalGasFee = ({
   bridgeQuote,
   feePerGasInDecGwei,
   priorityFeePerGasInDecGwei,
-  nativeExchangeRate,
+  nativeToDisplayCurrencyExchangeRate,
+  nativeToUsdExchangeRate,
 }: {
   bridgeQuote: QuoteResponse & L1GasFees;
   feePerGasInDecGwei: string;
   priorityFeePerGasInDecGwei: string;
-  nativeExchangeRate?: number;
+  nativeToDisplayCurrencyExchangeRate?: number;
+  nativeToUsdExchangeRate?: number;
 }) => {
   const { approval, trade, l1GasFeesInHexWei } = bridgeQuote;
 
@@ -118,13 +130,18 @@ const calcTotalGasFee = ({
   const gasFeesInDecEth = new BigNumber(
     gasFeesInDecGwei.shiftedBy(9).toString(),
   );
-  const gasFeesInUSD = nativeExchangeRate
-    ? gasFeesInDecEth.times(nativeExchangeRate.toString())
+
+  const gasFeesInDisplayCurrency = nativeToDisplayCurrencyExchangeRate
+    ? gasFeesInDecEth.times(nativeToDisplayCurrencyExchangeRate.toString())
+    : null;
+  const gasFeesInUSD = nativeToUsdExchangeRate
+    ? gasFeesInDecEth.times(nativeToUsdExchangeRate.toString())
     : null;
 
   return {
     amount: gasFeesInDecEth,
-    valueInCurrency: gasFeesInUSD,
+    valueInCurrency: gasFeesInDisplayCurrency,
+    usd: gasFeesInUSD,
   };
 };
 
@@ -133,42 +150,57 @@ export const calcEstimatedAndMaxTotalGasFee = ({
   estimatedBaseFeeInDecGwei,
   maxFeePerGasInDecGwei,
   maxPriorityFeePerGasInDecGwei,
-  nativeExchangeRate,
+  nativeToDisplayCurrencyExchangeRate,
+  nativeToUsdExchangeRate,
 }: {
   bridgeQuote: QuoteResponse & L1GasFees;
   estimatedBaseFeeInDecGwei: string;
   maxFeePerGasInDecGwei: string;
   maxPriorityFeePerGasInDecGwei: string;
-  nativeExchangeRate?: number;
+  nativeToDisplayCurrencyExchangeRate?: number;
+  nativeToUsdExchangeRate?: number;
 }) => {
-  const { amount, valueInCurrency } = calcTotalGasFee({
+  const { amount, valueInCurrency, usd } = calcTotalGasFee({
     bridgeQuote,
     feePerGasInDecGwei: estimatedBaseFeeInDecGwei,
     priorityFeePerGasInDecGwei: maxPriorityFeePerGasInDecGwei,
-    nativeExchangeRate,
+    nativeToDisplayCurrencyExchangeRate,
+    nativeToUsdExchangeRate,
   });
-  const { amount: amountMax, valueInCurrency: valueInCurrencyMax } =
-    calcTotalGasFee({
-      bridgeQuote,
-      feePerGasInDecGwei: maxFeePerGasInDecGwei,
-      priorityFeePerGasInDecGwei: maxPriorityFeePerGasInDecGwei,
-      nativeExchangeRate,
-    });
+  const {
+    amount: amountMax,
+    valueInCurrency: valueInCurrencyMax,
+    usd: usdMax,
+  } = calcTotalGasFee({
+    bridgeQuote,
+    feePerGasInDecGwei: maxFeePerGasInDecGwei,
+    priorityFeePerGasInDecGwei: maxPriorityFeePerGasInDecGwei,
+    nativeToDisplayCurrencyExchangeRate,
+    nativeToUsdExchangeRate,
+  });
   return {
     amount,
     amountMax,
     valueInCurrency,
     valueInCurrencyMax,
+    usd,
+    usdMax,
   };
 };
 
 export const calcAdjustedReturn = (
-  destTokenAmountInCurrency: BigNumber | null,
-  totalNetworkFeeInCurrency: BigNumber | null,
+  toTokenAmount: TokenAmountValues,
+  totalEstimatedNetworkFee: TokenAmountValues,
 ) => ({
   valueInCurrency:
-    destTokenAmountInCurrency && totalNetworkFeeInCurrency
-      ? destTokenAmountInCurrency.minus(totalNetworkFeeInCurrency)
+    toTokenAmount.valueInCurrency && totalEstimatedNetworkFee.valueInCurrency
+      ? toTokenAmount.valueInCurrency.minus(
+          totalEstimatedNetworkFee.valueInCurrency,
+        )
+      : null,
+  usd:
+    toTokenAmount.usd && totalEstimatedNetworkFee.usd
+      ? toTokenAmount.usd.minus(totalEstimatedNetworkFee.usd)
       : null,
 });
 
@@ -178,12 +210,16 @@ export const calcSwapRate = (
 ) => destTokenAmount.div(sentAmount);
 
 export const calcCost = (
-  adjustedReturnInCurrency: BigNumber | null,
-  sentAmountInCurrency: BigNumber | null,
+  adjustedReturn: Omit<TokenAmountValues, 'amount'>,
+  sentAmount: Omit<TokenAmountValues, 'amount'>,
 ) => ({
   valueInCurrency:
-    adjustedReturnInCurrency && sentAmountInCurrency
-      ? sentAmountInCurrency.minus(adjustedReturnInCurrency)
+    adjustedReturn.valueInCurrency && sentAmount.valueInCurrency
+      ? sentAmount.valueInCurrency.minus(adjustedReturn.valueInCurrency)
+      : null,
+  usd:
+    adjustedReturn.usd && sentAmount.usd
+      ? sentAmount.usd.minus(adjustedReturn.usd)
       : null,
 });
 
@@ -225,7 +261,7 @@ export const formatCurrencyAmount = (
   return formatCurrency(amount.toString(), currency, precision);
 };
 
-export const formatProviderLabel = (
-  quote?: QuoteResponse,
-): `${string}_${string}` =>
-  `${quote?.quote.bridgeId}_${quote?.quote.bridges[0]}`;
+export const formatProviderLabel = (args?: {
+  bridgeId: QuoteResponse['quote']['bridgeId'];
+  bridges: QuoteResponse['quote']['bridges'];
+}): `${string}_${string}` => `${args?.bridgeId}_${args?.bridges[0]}`;

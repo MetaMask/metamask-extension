@@ -56,6 +56,18 @@ If you are not a MetaMask Internal Developer, or are otherwise developing on a f
   - If debugging MetaMetrics, you'll need to add a value for `SEGMENT_WRITE_KEY` [Segment write key](https://segment.com/docs/connections/find-writekey/), see [Developing on MetaMask - Segment](./development/README.md#segment).
   - If debugging unhandled exceptions, you'll need to add a value for `SENTRY_DSN` [Sentry Dsn](https://docs.sentry.io/product/sentry-basics/dsn-explainer/), see [Developing on MetaMask - Sentry](./development/README.md#sentry).
   - Optionally, replace the `PASSWORD` value with your development wallet password to avoid entering it each time you open the app.
+  - If developing with remote feature flags, and you want to override the flags in the build process, you can add a `.manifest-overrides.json` file to the root of the project and set `MANIFEST_OVERRIDES=.manifest-overrides.json` in `.metamaskrc` to the path of the file.
+  This file is used to add flags to `manifest.json` build files for the extension. You can also modify the `_flags.remoteFeatureFlags` in the built version of `manifest.json` in the `dist/browser` folder to tweak the flags after the build process (these changes will get overwritten when you build again).
+  An example of this remote feature flag overwrite could be:
+
+  ```json
+  {
+    "_flags": {
+      "remoteFeatureFlags": { "testBooleanFlag": false }
+    }
+  }
+  ```
+
 - Run `yarn install` to install the dependencies.
 - Build the project to the `./dist/` folder with `yarn dist` (for Chromium-based browsers) or `yarn dist:mv2` (for Firefox)
 
@@ -133,8 +145,8 @@ Before running e2e tests, ensure you've run `yarn install` to download dependenc
 2. Create a custom test build: for testing against different build types, use `yarn build:test`. This command allows you to generate test builds for various types, including:
    - `yarn build:test` for main build
    - `yarn build:test:flask` for flask build
-   - `yarn build:test:mmi` for mmi build
    - `yarn build:test:mv2` for mv2 build
+   - `yarn build:test:mmi` for mmi build
 3. Start a test build with live changes: `yarn start:test` is particularly useful for development. It starts a test build that automatically recompiles application code upon changes. This option is ideal for iterative testing and development. This command also allows you to generate test builds for various types, including:
    - `yarn start:test` for main build
    - `yarn start:test:flask` for flask build
@@ -192,17 +204,9 @@ This approach ensures that your e2e tests accurately reflect the user experience
 Different build types have different e2e tests sets. In order to run them look in the `package.json` file. You will find:
 
 ```console
-    "test:e2e:chrome:mmi": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --mmi",
     "test:e2e:chrome:snaps": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --snaps",
     "test:e2e:firefox": "SELENIUM_BROWSER=firefox node test/e2e/run-all.js",
 ```
-
-#### Note: Running MMI e2e tests
-
-When running e2e on an MMI build you need to know that there are 2 separated set of tests:
-
-- MMI runs a subset of MetaMask's e2e tests. To facilitate this, we have appended the `@no-mmi` tags to the names of those tests that are not applicable to this build type.
-- MMI runs another specific set of e2e legacy tests which are better documented [here](test/e2e/mmi/README.md)
 
 ### Changing dependencies
 

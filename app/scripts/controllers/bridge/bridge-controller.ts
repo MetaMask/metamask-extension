@@ -1,4 +1,4 @@
-import { add0x, Hex } from '@metamask/utils';
+import { add0x, type Hex } from '@metamask/utils';
 import { StaticIntervalPollingController } from '@metamask/polling-controller';
 import { NetworkClientId } from '@metamask/network-controller';
 import { StateMetadata } from '@metamask/base-controller';
@@ -11,36 +11,37 @@ import type { ChainId } from '@metamask/controller-utils';
 import {
   fetchBridgeFeatureFlags,
   fetchBridgeQuotes,
-  fetchBridgeTokens,
 } from '../../../../shared/modules/bridge-utils/bridge.util';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { fetchTopAssetsList } from '../../../../ui/pages/swaps/swaps.util';
 import {
   decimalToHex,
   sumHexes,
 } from '../../../../shared/modules/conversion.utils';
 import {
   type L1GasFees,
-  type QuoteRequest,
   type QuoteResponse,
   type TxData,
   type BridgeControllerState,
   BridgeFeatureFlagsKey,
   RequestStatus,
+  type GenericQuoteRequest,
 } from '../../../../shared/types/bridge';
 import { isValidQuoteRequest } from '../../../../shared/modules/bridge-utils/quote';
 import { hasSufficientBalance } from '../../../../shared/modules/bridge-utils/balance';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { REFRESH_INTERVAL_MS } from '../../../../shared/constants/bridge';
 import {
+  formatAddressToString,
+  formatChainIdToHex,
+} from '../../../../shared/modules/bridge-utils/caip-formatters';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import {
   BRIDGE_CONTROLLER_NAME,
-  DEFAULT_BRIDGE_CONTROLLER_STATE,
+  DEFAULT_BRIDGE_STATE,
   METABRIDGE_CHAIN_TO_ADDRESS_MAP,
 } from './constants';
 import type { BridgeControllerMessenger } from './types';
 
-const metadata: StateMetadata<{ bridgeState: BridgeControllerState }> = {
+const metadata: StateMetadata<BridgeControllerState> = {
   bridgeState: {
     persist: false,
     anonymous: false,
@@ -52,12 +53,12 @@ const RESET_STATE_ABORT_MESSAGE = 'Reset controller state';
 /** The input to start polling for the {@link BridgeController} */
 type BridgePollingInput = {
   networkClientId: NetworkClientId;
-  updatedQuoteRequest: QuoteRequest;
+  updatedQuoteRequest: GenericQuoteRequest;
 };
 
 export default class BridgeController extends StaticIntervalPollingController<BridgePollingInput>()<
   typeof BRIDGE_CONTROLLER_NAME,
-  { bridgeState: BridgeControllerState },
+  BridgeControllerState,
   BridgeControllerMessenger
 > {
   #abortController: AbortController | undefined;
@@ -84,7 +85,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
       metadata,
       messenger,
       state: {
-        bridgeState: DEFAULT_BRIDGE_CONTROLLER_STATE,
+        bridgeState: { ...DEFAULT_BRIDGE_STATE },
       },
     });
 
@@ -95,14 +96,6 @@ export default class BridgeController extends StaticIntervalPollingController<Br
     this.messagingSystem.registerActionHandler(
       `${BRIDGE_CONTROLLER_NAME}:setBridgeFeatureFlags`,
       this.setBridgeFeatureFlags.bind(this),
-    );
-    this.messagingSystem.registerActionHandler(
-      `${BRIDGE_CONTROLLER_NAME}:selectSrcNetwork`,
-      this.selectSrcNetwork.bind(this),
-    );
-    this.messagingSystem.registerActionHandler(
-      `${BRIDGE_CONTROLLER_NAME}:selectDestNetwork`,
-      this.selectDestNetwork.bind(this),
     );
     this.messagingSystem.registerActionHandler(
       `${BRIDGE_CONTROLLER_NAME}:updateBridgeQuoteRequestParams`,
@@ -125,14 +118,14 @@ export default class BridgeController extends StaticIntervalPollingController<Br
   };
 
   updateBridgeQuoteRequestParams = async (
-    paramsToUpdate: Partial<QuoteRequest>,
+    paramsToUpdate: Partial<GenericQuoteRequest>,
   ) => {
     this.stopAllPolling();
     this.#abortController?.abort('Quote request updated');
 
     const { bridgeState } = this.state;
     const updatedQuoteRequest = {
-      ...DEFAULT_BRIDGE_CONTROLLER_STATE.quoteRequest,
+      ...DEFAULT_BRIDGE_STATE.quoteRequest,
       ...paramsToUpdate,
     };
 
@@ -140,51 +133,56 @@ export default class BridgeController extends StaticIntervalPollingController<Br
       _state.bridgeState = {
         ...bridgeState,
         quoteRequest: updatedQuoteRequest,
-        quotes: DEFAULT_BRIDGE_CONTROLLER_STATE.quotes,
-        quotesLastFetched: DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLastFetched,
-        quotesLoadingStatus:
-          DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLoadingStatus,
-        quoteFetchError: DEFAULT_BRIDGE_CONTROLLER_STATE.quoteFetchError,
-        quotesRefreshCount: DEFAULT_BRIDGE_CONTROLLER_STATE.quotesRefreshCount,
-        quotesInitialLoadTime:
-          DEFAULT_BRIDGE_CONTROLLER_STATE.quotesInitialLoadTime,
+        quotes: DEFAULT_BRIDGE_STATE.quotes,
+        quotesLastFetched: DEFAULT_BRIDGE_STATE.quotesLastFetched,
+        quotesLoadingStatus: DEFAULT_BRIDGE_STATE.quotesLoadingStatus,
+        quoteFetchError: DEFAULT_BRIDGE_STATE.quoteFetchError,
+        quotesRefreshCount: DEFAULT_BRIDGE_STATE.quotesRefreshCount,
+        quotesInitialLoadTime: DEFAULT_BRIDGE_STATE.quotesInitialLoadTime,
       };
     });
 
     if (isValidQuoteRequest(updatedQuoteRequest)) {
       this.#quotesFirstFetched = Date.now();
-      const walletAddress = this.#getSelectedAccount().address;
-      const srcChainIdInHex = add0x(
-        decimalToHex(updatedQuoteRequest.srcChainId),
-      );
+      const srcChainIdString = updatedQuoteRequest.srcChainId.toString();
 
-      const insufficientBal =
-        paramsToUpdate.insufficientBal ||
-        !(await this.#hasSufficientBalance(updatedQuoteRequest));
+      // Query the balance of the source token if the source chain is an EVM chain
+      let insufficientBal: boolean | undefined;
+      if (srcChainIdString === MultichainNetworks.SOLANA) {
+        insufficientBal = paramsToUpdate.insufficientBal;
+      } else {
+        insufficientBal =
+          paramsToUpdate.insufficientBal ||
+          !(await this.#hasSufficientBalance(updatedQuoteRequest));
+      }
 
-      const networkClientId = this.#getSelectedNetworkClientId(srcChainIdInHex);
       this.startPolling({
-        networkClientId,
+        networkClientId: srcChainIdString,
         updatedQuoteRequest: {
           ...updatedQuoteRequest,
-          walletAddress,
           insufficientBal,
         },
       });
     }
   };
 
-  #hasSufficientBalance = async (quoteRequest: QuoteRequest) => {
+  #hasSufficientBalance = async (quoteRequest: GenericQuoteRequest) => {
     const walletAddress = this.#getSelectedAccount().address;
-    const srcChainIdInHex = add0x(decimalToHex(quoteRequest.srcChainId));
+    const srcChainIdInHex = formatChainIdToHex(quoteRequest.srcChainId);
     const provider = this.#getSelectedNetworkClient()?.provider;
+    const srcTokenAddressWithoutPrefix = formatAddressToString(
+      quoteRequest.srcTokenAddress,
+    );
 
     return (
       provider &&
+      srcTokenAddressWithoutPrefix &&
+      quoteRequest.srcTokenAmount &&
+      srcChainIdInHex &&
       (await hasSufficientBalance(
         provider,
         walletAddress,
-        quoteRequest.srcTokenAddress,
+        srcTokenAddressWithoutPrefix,
         quoteRequest.srcTokenAmount,
         srcChainIdInHex,
       ))
@@ -197,7 +195,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
 
     this.update((_state) => {
       _state.bridgeState = {
-        ...DEFAULT_BRIDGE_CONTROLLER_STATE,
+        ...DEFAULT_BRIDGE_STATE,
         quotes: [],
         bridgeFeatureFlags: _state.bridgeState.bridgeFeatureFlags,
       };
@@ -215,54 +213,19 @@ export default class BridgeController extends StaticIntervalPollingController<Br
     );
   };
 
-  selectSrcNetwork = async (chainId: Hex) => {
-    this.update((state) => {
-      state.bridgeState.srcTokensLoadingStatus = RequestStatus.LOADING;
-      return state;
-    });
-    try {
-      await this.#setTopAssets(chainId, 'srcTopAssets');
-      await this.#setTokens(chainId, 'srcTokens');
-    } finally {
-      this.update((state) => {
-        state.bridgeState.srcTokensLoadingStatus = RequestStatus.FETCHED;
-        return state;
-      });
-    }
-  };
-
-  selectDestNetwork = async (chainId: Hex) => {
-    this.update((state) => {
-      state.bridgeState.destTokensLoadingStatus = RequestStatus.LOADING;
-      return state;
-    });
-    try {
-      await this.#setTopAssets(chainId, 'destTopAssets');
-      await this.#setTokens(chainId, 'destTokens');
-    } finally {
-      this.update((state) => {
-        state.bridgeState.destTokensLoadingStatus = RequestStatus.FETCHED;
-        return state;
-      });
-    }
-  };
-
   #fetchBridgeQuotes = async ({
     networkClientId: _networkClientId,
     updatedQuoteRequest,
   }: BridgePollingInput) => {
     this.#abortController?.abort('New quote request');
     this.#abortController = new AbortController();
-    if (updatedQuoteRequest.srcChainId === updatedQuoteRequest.destChainId) {
-      return;
-    }
     const { bridgeState } = this.state;
     this.update((_state) => {
       _state.bridgeState = {
         ...bridgeState,
         quotesLoadingStatus: RequestStatus.LOADING,
         quoteRequest: updatedQuoteRequest,
-        quoteFetchError: DEFAULT_BRIDGE_CONTROLLER_STATE.quoteFetchError,
+        quoteFetchError: DEFAULT_BRIDGE_STATE.quoteFetchError,
       };
     });
 
@@ -364,25 +327,6 @@ export default class BridgeController extends StaticIntervalPollingController<Br
         return quoteResponse;
       }),
     );
-  };
-
-  #setTopAssets = async (
-    chainId: Hex,
-    stateKey: 'srcTopAssets' | 'destTopAssets',
-  ) => {
-    const { bridgeState } = this.state;
-    const topAssets = await fetchTopAssetsList(chainId);
-    this.update((_state) => {
-      _state.bridgeState = { ...bridgeState, [stateKey]: topAssets };
-    });
-  };
-
-  #setTokens = async (chainId: Hex, stateKey: 'srcTokens' | 'destTokens') => {
-    const { bridgeState } = this.state;
-    const tokens = await fetchBridgeTokens(chainId);
-    this.update((_state) => {
-      _state.bridgeState = { ...bridgeState, [stateKey]: tokens };
-    });
   };
 
   #getSelectedAccount() {

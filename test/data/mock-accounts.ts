@@ -4,6 +4,11 @@ import {
   EthAccountType,
   BtcMethod,
   BtcAccountType,
+  SolAccountType,
+  EthScope,
+  BtcScope,
+  SolMethod,
+  SolScope,
 } from '@metamask/keyring-api';
 import {
   ETH_EOA_METHODS,
@@ -15,6 +20,7 @@ export const MOCK_ACCOUNT_EOA: InternalAccount = {
   address: '0x123',
   options: {},
   methods: ETH_EOA_METHODS,
+  scopes: [EthScope.Eoa],
   type: EthAccountType.Eoa,
   metadata: {
     name: 'Account 1',
@@ -29,6 +35,8 @@ export const MOCK_ACCOUNT_ERC4337: InternalAccount = {
   address: '0x123',
   options: {},
   methods: ETH_EOA_METHODS.concat(ETH_4337_METHODS),
+  // Smart accounts might not be available on every EVM chains, but that's ok for mock purposes.
+  scopes: [EthScope.Testnet],
   type: EthAccountType.Erc4337,
   metadata: {
     name: 'Account 2',
@@ -43,6 +51,7 @@ export const MOCK_ACCOUNT_BIP122_P2WPKH: InternalAccount = {
   address: 'bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k',
   options: {},
   methods: [BtcMethod.SendBitcoin],
+  scopes: [BtcScope.Mainnet],
   type: BtcAccountType.P2wpkh,
   metadata: {
     name: 'Bitcoin Account',
@@ -57,12 +66,28 @@ export const MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET: InternalAccount = {
   address: 'tb1q6rmsq3vlfdhjdhtkxlqtuhhlr6pmj09y6w43g8',
   options: {},
   methods: [BtcMethod.SendBitcoin],
+  scopes: [BtcScope.Testnet],
   type: BtcAccountType.P2wpkh,
   metadata: {
     name: 'Bitcoin Testnet Account',
     keyring: { type: KeyringTypes.snap },
     importTime: 1691565967600,
     lastSelected: 1955565967656,
+  },
+};
+
+export const MOCK_ACCOUNT_SOLANA_MAINNET: InternalAccount = {
+  id: 'a3f9c2d4-6b8e-4d3a-9b2e-7f4b8e1a9c3d',
+  address: '3yZe7d5m8V9x2Q1w4u6t8b9n7k5j3h2g1f4d6s8a9p7q2r5t8v',
+  options: {},
+  methods: [SolMethod.SendAndConfirmTransaction],
+  scopes: [SolScope.Mainnet],
+  type: SolAccountType.DataAccount,
+  metadata: {
+    name: 'Solana Account',
+    keyring: { type: KeyringTypes.snap },
+    importTime: 1691592567600,
+    lastSelected: 1955565999999,
   },
 };
 

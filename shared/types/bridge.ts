@@ -1,7 +1,10 @@
-import type { Hex } from '@metamask/utils';
+import type {
+  CaipAccountId,
+  CaipAssetId,
+  CaipChainId,
+  Hex,
+} from '@metamask/utils';
 import type { BigNumber } from 'bignumber.js';
-import type { AssetType } from '../constants/transaction';
-import type { SwapsTokenObject } from '../constants/swaps';
 
 export type ChainConfiguration = {
   isActiveSrc: boolean;
@@ -13,16 +16,20 @@ export type L1GasFees = {
 };
 // Values derived from the quote response
 // valueInCurrency values are calculated based on the user's selected currency
-
+export type TokenAmountValues = {
+  amount: BigNumber;
+  valueInCurrency: BigNumber | null;
+  usd: BigNumber | null;
+};
 export type QuoteMetadata = {
-  gasFee: { amount: BigNumber; valueInCurrency: BigNumber | null };
-  totalNetworkFee: { amount: BigNumber; valueInCurrency: BigNumber | null }; // estimatedGasFees + relayerFees
-  totalMaxNetworkFee: { amount: BigNumber; valueInCurrency: BigNumber | null }; // maxGasFees + relayerFees
-  toTokenAmount: { amount: BigNumber; valueInCurrency: BigNumber | null };
-  adjustedReturn: { valueInCurrency: BigNumber | null }; // destTokenAmount - totalNetworkFee
-  sentAmount: { amount: BigNumber; valueInCurrency: BigNumber | null }; // srcTokenAmount + metabridgeFee
+  gasFee: TokenAmountValues;
+  totalNetworkFee: TokenAmountValues; // estimatedGasFees + relayerFees
+  totalMaxNetworkFee: TokenAmountValues; // maxGasFees + relayerFees
+  toTokenAmount: TokenAmountValues; // destTokenAmount
+  adjustedReturn: Omit<TokenAmountValues, 'amount'>; // destTokenAmount - totalNetworkFee
+  sentAmount: TokenAmountValues; // srcTokenAmount + metabridgeFee
   swapRate: BigNumber; // destTokenAmount / sentAmount
-  cost: { valueInCurrency: BigNumber | null }; // sentAmount - adjustedReturn
+  cost: Omit<TokenAmountValues, 'amount'>; // sentAmount - adjustedReturn
 };
 // Sort order set by the user
 
@@ -32,12 +39,11 @@ export enum SortOrder {
 }
 
 export type BridgeToken = {
-  type: AssetType.native | AssetType.token;
   address: string;
   symbol: string;
   image: string;
   decimals: number;
-  chainId: Hex;
+  chainId: CaipChainId;
   balance: string; // raw balance
   string: string | undefined; // normalized balance as a stringified number
   tokenFiatAmount?: number | null;
@@ -68,13 +74,19 @@ export type BridgeAsset = {
   icon?: string;
 };
 
-export type QuoteRequest = {
-  walletAddress: string;
-  destWalletAddress?: string;
-  srcChainId: ChainId;
-  destChainId: ChainId;
-  srcTokenAddress: string;
-  destTokenAddress: string;
+// Generic types for the quote request
+// Only the controller and reducer should be overriding these types to prepare the fetch request
+export type QuoteRequest<
+  ChainIdType = ChainId | number,
+  TokenAddressType = string,
+  WalletAddressType = string,
+> = {
+  walletAddress: WalletAddressType;
+  destWalletAddress?: WalletAddressType;
+  srcChainId: ChainIdType;
+  destChainId: ChainIdType;
+  srcTokenAddress: TokenAddressType;
+  destTokenAddress: TokenAddressType;
   srcTokenAmount: string; // This is the amount sent
   slippage: number;
   aggIds?: string[];
@@ -83,6 +95,7 @@ export type QuoteRequest = {
   resetApproval?: boolean;
   refuel?: boolean;
 };
+
 type Protocol = {
   name: string;
   displayName?: string;
@@ -139,6 +152,7 @@ export enum ChainId {
   ARBITRUM = 42161,
   AVALANCHE = 43114,
   LINEA = 59144,
+  SOLANA = 1151111081099710,
 }
 
 export enum FeeType {
@@ -166,7 +180,7 @@ export type BridgeFeatureFlags = {
     refreshRate: number;
     maxRefreshCount: number;
     support: boolean;
-    chains: Record<Hex, ChainConfiguration>;
+    chains: Record<CaipChainId, ChainConfiguration>;
   };
 };
 export enum RequestStatus {
@@ -175,7 +189,6 @@ export enum RequestStatus {
   ERROR,
 }
 export enum BridgeUserAction {
-  SELECT_SRC_NETWORK = 'selectSrcNetwork',
   SELECT_DEST_NETWORK = 'selectDestNetwork',
   UPDATE_QUOTE_PARAMS = 'updateBridgeQuoteRequestParams',
 }
@@ -184,19 +197,26 @@ export enum BridgeBackgroundAction {
   RESET_STATE = 'resetState',
   GET_BRIDGE_ERC20_ALLOWANCE = 'getBridgeERC20Allowance',
 }
-export type BridgeControllerState = {
+
+// These are types that components pass in. Since data is a mix of types when coming from the redux store, we need to use a generic type that can cover all the types.
+// This is formatted by fetchBridgeQuotes right before fetching quotes to whatever type the bridge-api is expecting.
+export type GenericQuoteRequest = QuoteRequest<
+  Hex | CaipChainId | string | number, // chainIds
+  Hex | CaipAssetId | string, // assetIds/addresses
+  Hex | CaipAccountId | string // accountIds/addresses
+>;
+
+export type BridgeState = {
   bridgeFeatureFlags: BridgeFeatureFlags;
-  srcTokens: Record<string, SwapsTokenObject>;
-  srcTopAssets: { address: string }[];
-  srcTokensLoadingStatus?: RequestStatus;
-  destTokensLoadingStatus?: RequestStatus;
-  destTokens: Record<string, SwapsTokenObject>;
-  destTopAssets: { address: string }[];
-  quoteRequest: Partial<QuoteRequest>;
+  quoteRequest: Partial<GenericQuoteRequest>;
   quotes: (QuoteResponse & L1GasFees)[];
   quotesInitialLoadTime?: number;
   quotesLastFetched?: number;
   quotesLoadingStatus?: RequestStatus;
   quoteFetchError?: string;
   quotesRefreshCount: number;
+};
+
+export type BridgeControllerState = {
+  bridgeState: BridgeState;
 };

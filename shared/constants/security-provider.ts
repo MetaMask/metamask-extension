@@ -1,9 +1,7 @@
-import { Hex } from '@metamask/utils';
 import {
   SecurityAlertResponse,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { CHAIN_IDS } from './network';
 
 export enum SecurityProvider {
   Blockaid = 'blockaid',
@@ -57,8 +55,6 @@ export enum BlockaidReason {
   errored = 'Error',
   notApplicable = 'NotApplicable',
   inProgress = 'validation_in_progress',
-  checkingChain = 'CheckingChain',
-  chainNotSupported = 'ChainNotSupported',
 }
 
 export enum BlockaidResultType {
@@ -72,41 +68,10 @@ export enum BlockaidResultType {
   Loading = 'loading',
 }
 
-/**
- * @typedef {object} SecurityProviderMessageSeverity
- * @property {0} NOT_MALICIOUS - Indicates message is not malicious
- * @property {1} MALICIOUS - Indicates message is malicious
- * @property {2} NOT_SAFE - Indicates message is not safe
- */
-
-/** @type {SecurityProviderMessageSeverity} */
-export const SECURITY_PROVIDER_MESSAGE_SEVERITY = {
-  NOT_MALICIOUS: 0,
-  MALICIOUS: 1,
-  NOT_SAFE: 2,
-};
-
 export const FALSE_POSITIVE_REPORT_BASE_URL =
   'https://blockaid-false-positive-portal.metamask.io';
 
 export const SECURITY_PROVIDER_UTM_SOURCE = 'metamask-ppom';
-
-export const SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS_FALLBACK_LIST: Hex[] = [
-  CHAIN_IDS.ARBITRUM,
-  CHAIN_IDS.AVALANCHE,
-  CHAIN_IDS.BASE,
-  CHAIN_IDS.BSC,
-  CHAIN_IDS.LINEA_MAINNET,
-  CHAIN_IDS.MAINNET,
-  CHAIN_IDS.OPBNB,
-  CHAIN_IDS.OPTIMISM,
-  CHAIN_IDS.POLYGON,
-  CHAIN_IDS.SEPOLIA,
-  CHAIN_IDS.ZKSYNC_ERA,
-  CHAIN_IDS.SCROLL,
-  CHAIN_IDS.BERACHAIN,
-  CHAIN_IDS.METACHAIN_ONE,
-];
 
 export const SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES = [
   TransactionType.swap,
@@ -120,17 +85,6 @@ export const LOADING_SECURITY_ALERT_RESPONSE: SecurityAlertResponse = {
   result_type: BlockaidResultType.Loading,
   reason: BlockaidReason.inProgress,
 };
-
-export const SECURITY_ALERT_RESPONSE_CHECKING_CHAIN: SecurityAlertResponse = {
-  result_type: BlockaidResultType.Loading,
-  reason: BlockaidReason.checkingChain,
-};
-
-export const SECURITY_ALERT_RESPONSE_CHAIN_NOT_SUPPORTED: SecurityAlertResponse =
-  {
-    result_type: BlockaidResultType.Benign,
-    reason: BlockaidReason.chainNotSupported,
-  };
 
 export enum SecurityAlertSource {
   /** Validation performed remotely using the Security Alerts API. */

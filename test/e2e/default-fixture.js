@@ -113,6 +113,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
         showTestnetMessageInDropdown: true,
         trezorModel: null,
+        isRampCardClosed: false,
         newPrivacyPolicyToastClickedOrClosed: true,
         newPrivacyPolicyToastShownDate: Date.now(),
         snapsInstallPrivacyWarningShown: true,
@@ -123,25 +124,21 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             extensionConfig: {
               support: false,
               chains: {
-                '0x1': {
+                'eip155:1': {
                   isActiveSrc: true,
                   isActiveDest: true,
                 },
-                '0xa': {
+                'eip155:10': {
                   isActiveSrc: true,
                   isActiveDest: true,
                 },
-                '0xe708': {
+                'eip155:59144': {
                   isActiveSrc: true,
                   isActiveDest: true,
                 },
               },
             },
           },
-          destTokens: {},
-          destTopAssets: [],
-          srcTokens: {},
-          srcTopAssets: [],
         },
       },
       CurrencyController: {
@@ -225,7 +222,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           showNativeTokenAsMainBalance: true,
           petnamesEnabled: true,
           showMultiRpcModal: false,
-          isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
           tokenSortConfig: {
             key: 'tokenFiatAmount',
@@ -239,7 +235,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         theme: 'light',
         useBlockie: false,
         useNftDetection: false,
-        useNonceField: false,
         usePhishDetect: true,
         useTokenDetection: false,
         useCurrencyRateCheck: true,

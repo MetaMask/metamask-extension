@@ -8,7 +8,6 @@ const {
   DAPP_ONE_URL,
   regularDelayMs,
   WINDOW_TITLES,
-  defaultGanacheOptions,
   largeDelayMs,
 } = require('../../helpers');
 
@@ -23,21 +22,25 @@ describe('Request Queuing for Multiple Dapps and Txs on same networks', function
           .withNetworkControllerTripleGanache()
           .build(),
         dappOptions: { numberOfDapps: 3 },
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-            {
+          },
+          {
+            type: 'anvil',
+            options: {
               port: 7777,
               chainId: 1000,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         title: this.test.fullTitle(),
       },
 

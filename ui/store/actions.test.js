@@ -18,10 +18,6 @@ import { MetaMetricsNetworkEventSource } from '../../shared/constants/metametric
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
-import {
-  CaveatTypes,
-  EndowmentTypes,
-} from '../../shared/constants/permissions';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
@@ -43,6 +39,16 @@ const defaultState = {
         balance: '0x0',
       },
     },
+    keyrings: [
+      {
+        type: 'HD Key Tree',
+        accounts: [
+          {
+            address: '0xFirstAddress',
+          },
+        ],
+      },
+    ],
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     internalAccounts: {
       accounts: {
@@ -401,10 +407,11 @@ describe('Actions', () => {
         metamask: { ...defaultState.metamask },
       });
 
-      const addNewAccount = background.addNewAccount.callsFake((_, cb) =>
-        cb(null, {
-          addedAccountAddress: '0x123',
-        }),
+      const addNewAccount = background.addNewAccount.callsFake(
+        (_, _secondUnusedVar, cb) =>
+          cb(null, {
+            addedAccountAddress: '0x123',
+          }),
       );
 
       setBackgroundConnection(background);
@@ -416,7 +423,7 @@ describe('Actions', () => {
     it('displays warning error message when addNewAccount in background callback errors', async () => {
       const store = mockStore();
 
-      background.addNewAccount.callsFake((_, cb) => {
+      background.addNewAccount.callsFake((_, _secondUnusedVar, cb) => {
         cb(new Error('error'));
       });
 
@@ -478,50 +485,6 @@ describe('Actions', () => {
 
       await expect(
         store.dispatch(actions.checkHardwareStatus()),
-      ).rejects.toThrow('error');
-
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
-  describe('#getDeviceNameForMetric', () => {
-    const deviceName = 'ledger';
-    const hdPath = "m/44'/60'/0'/0/0";
-
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls getDeviceNameForMetric in background', async () => {
-      const store = mockStore();
-
-      const mockGetDeviceName = background.getDeviceNameForMetric.callsFake(
-        (_, __, cb) => cb(),
-      );
-
-      setBackgroundConnection(background);
-
-      await store.dispatch(actions.getDeviceNameForMetric(deviceName, hdPath));
-      expect(mockGetDeviceName.callCount).toStrictEqual(1);
-    });
-
-    it('shows loading indicator and displays error', async () => {
-      const store = mockStore();
-
-      background.getDeviceNameForMetric.callsFake((_, __, cb) =>
-        cb(new Error('error')),
-      );
-
-      setBackgroundConnection(background);
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
-      await expect(
-        store.dispatch(actions.getDeviceNameForMetric(deviceName, hdPath)),
       ).rejects.toThrow('error');
 
       expect(store.getActions()).toStrictEqual(expectedActions);
@@ -2662,75 +2625,6 @@ describe('Actions', () => {
           sinon.match.func,
         ),
       ).toBe(true);
-      expect(store.getActions()).toStrictEqual([]);
-    });
-  });
-
-  describe('grantPermittedChain', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls grantPermissionsIncremental in the background', async () => {
-      const store = mockStore();
-
-      background.grantPermissionsIncremental.callsFake((_, cb) => cb());
-      setBackgroundConnection(background);
-
-      await actions.grantPermittedChain('test.com', '0x1');
-      expect(
-        background.grantPermissionsIncremental.calledWith(
-          {
-            subject: { origin: 'test.com' },
-            approvedPermissions: {
-              [EndowmentTypes.permittedChains]: {
-                caveats: [
-                  {
-                    type: CaveatTypes.restrictNetworkSwitching,
-                    value: ['0x1'],
-                  },
-                ],
-              },
-            },
-          },
-          sinon.match.func,
-        ),
-      ).toBe(true);
-      expect(store.getActions()).toStrictEqual([]);
-    });
-  });
-
-  describe('grantPermittedChains', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls grantPermissions in the background', async () => {
-      const store = mockStore();
-
-      background.grantPermissions.callsFake((_, cb) => cb());
-      setBackgroundConnection(background);
-
-      await actions.grantPermittedChains('test.com', ['0x1', '0x2']);
-      expect(
-        background.grantPermissions.calledWith(
-          {
-            subject: { origin: 'test.com' },
-            approvedPermissions: {
-              [EndowmentTypes.permittedChains]: {
-                caveats: [
-                  {
-                    type: CaveatTypes.restrictNetworkSwitching,
-                    value: ['0x1', '0x2'],
-                  },
-                ],
-              },
-            },
-          },
-          sinon.match.func,
-        ),
-      ).toBe(true);
-
       expect(store.getActions()).toStrictEqual([]);
     });
   });

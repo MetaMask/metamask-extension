@@ -6,13 +6,12 @@ const {
   DAPP_URL,
   DAPP_ONE_URL,
   regularDelayMs,
-  defaultGanacheOptions,
   WINDOW_TITLES,
   largeDelayMs,
 } = require('../../helpers');
 
 describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
-  it('should queue signTypedData tx after eth_sendTransaction confirmation and signTypedData confirmation should target the correct network after eth_sendTransaction is confirmed @no-mmi', async function () {
+  it('should queue signTypedData tx after eth_sendTransaction confirmation and signTypedData confirmation should target the correct network after eth_sendTransaction is confirmed', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -23,21 +22,25 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           .withSelectedNetworkControllerPerDomain()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-            {
+          },
+          {
+            type: 'anvil',
+            options: {
               port: 7777,
               chainId: 1000,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

@@ -92,11 +92,9 @@
       "showNativeTokenAsMainBalance": true,
       "petnamesEnabled": true,
       "showMultiRpcModal": "boolean",
-      "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "tokenSortConfig": "object",
       "shouldShowAggregatedBalancePopover": "boolean",
       "tokenNetworkFilter": { "0x539": "boolean" },
-      "redesignedConfirmationsEnabled": true,
       "smartTransactionsMigrationApplied": "boolean"
     },
     "firstTimeFlowType": "import",
@@ -122,6 +120,7 @@
         "usdConversionRate": 1700
       }
     },
+    "throttledOrigins": "object",
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
     "browserEnvironment": { "os": "string", "browser": "string" },
@@ -140,6 +139,7 @@
     "trezorModel": null,
     "onboardingDate": null,
     "lastViewedUserSurvey": null,
+    "isRampCardClosed": false,
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
@@ -157,7 +157,9 @@
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
     "currentMigrationVersion": "number",
-    "balances": "object",
+    "multichainNetworkConfigurationsByChainId": "object",
+    "selectedMultichainNetworkChainId": "string",
+    "isEvmSelected": "boolean",
     "selectedNetworkClientId": "string",
     "networksMetadata": {
       "networkConfigurationId": {
@@ -167,8 +169,8 @@
     },
     "networkConfigurationsByChainId": "object",
     "keyrings": "object",
+    "keyringsMetadata": "object",
     "selectedAddress": "string",
-    "useNonceField": false,
     "usePhishDetect": true,
     "dismissSeedBackUpReminder": true,
     "overrideContentSecurityPolicyHeader": true,
@@ -251,9 +253,6 @@
     "ignoredNfts": "object",
     "domains": "object",
     "logs": "object",
-    "methodData": "object",
-    "lastFetchedBlockNumbers": "object",
-    "submitHistory": "object",
     "fiatCurrency": "usd",
     "rates": {
       "btc": { "conversionDate": 0, "conversionRate": 0 },
@@ -337,13 +336,13 @@
           "refreshRate": "number",
           "maxRefreshCount": "number",
           "support": "boolean",
-          "chains": { "0x1": "object", "0xa4b1": "object", "0xe708": "object" }
+          "chains": {
+            "eip155:1": "object",
+            "eip155:42161": "object",
+            "eip155:59144": "object"
+          }
         }
       },
-      "srcTokens": {},
-      "srcTopAssets": {},
-      "destTokens": {},
-      "destTopAssets": {},
       "quoteRequest": {
         "srcTokenAddress": "0x0000000000000000000000000000000000000000",
         "slippage": 0.5
@@ -358,6 +357,9 @@
     "pendingApprovalCount": "number",
     "approvalFlows": "object",
     "storageMetadata": {},
+    "methodData": "object",
+    "lastFetchedBlockNumbers": "object",
+    "submitHistory": "object",
     "encryptionKey": "string",
     "encryptionSalt": "string"
   },

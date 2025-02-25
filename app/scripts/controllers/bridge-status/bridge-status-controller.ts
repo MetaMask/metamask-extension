@@ -6,19 +6,18 @@ import {
   StatusTypes,
   BridgeStatusControllerState,
   StartPollingForBridgeTxStatusArgsSerialized,
+  BridgeStatusState,
 } from '../../../../shared/types/bridge-status';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import {
   BRIDGE_STATUS_CONTROLLER_NAME,
-  DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
+  DEFAULT_BRIDGE_STATUS_STATE,
   REFRESH_INTERVAL_MS,
 } from './constants';
-import { BridgeStatusControllerMessenger } from './types';
+import type { BridgeStatusControllerMessenger } from './types';
 import { fetchBridgeTxStatus, getStatusRequestWithSrcTxHash } from './utils';
 
-const metadata: StateMetadata<{
-  bridgeStatusState: BridgeStatusControllerState;
-}> = {
+const metadata: StateMetadata<BridgeStatusControllerState> = {
   // We want to persist the bridge status state so that we can show the proper data for the Activity list
   // basically match the behavior of TransactionController
   bridgeStatusState: {
@@ -36,7 +35,7 @@ export type FetchBridgeTxStatusArgs = {
 };
 export default class BridgeStatusController extends StaticIntervalPollingController<BridgeStatusPollingInput>()<
   typeof BRIDGE_STATUS_CONTROLLER_NAME,
-  { bridgeStatusState: BridgeStatusControllerState },
+  BridgeStatusControllerState,
   BridgeStatusControllerMessenger
 > {
   #pollingTokensByTxMetaId: Record<SrcTxMetaId, string> = {};
@@ -46,9 +45,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     state,
   }: {
     messenger: BridgeStatusControllerMessenger;
-    state?: Partial<{
-      bridgeStatusState: BridgeStatusControllerState;
-    }>;
+    state?: { bridgeStatusState?: Partial<BridgeStatusState> };
   }) {
     super({
       name: BRIDGE_STATUS_CONTROLLER_NAME,
@@ -58,7 +55,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       state: {
         ...state,
         bridgeStatusState: {
-          ...DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
+          ...DEFAULT_BRIDGE_STATUS_STATE,
           ...state?.bridgeStatusState,
         },
       },
@@ -86,7 +83,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
   resetState = () => {
     this.update((_state) => {
       _state.bridgeStatusState = {
-        ...DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
+        ...DEFAULT_BRIDGE_STATUS_STATE,
       };
     });
   };
@@ -102,7 +99,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     if (ignoreNetwork) {
       this.update((_state) => {
         _state.bridgeStatusState = {
-          ...DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
+          ...DEFAULT_BRIDGE_STATUS_STATE,
         };
       });
     } else {
@@ -173,6 +170,9 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       slippagePercentage,
       pricingData: {
         amountSent: quoteResponse.sentAmount.amount,
+        amountSentInUsd: quoteResponse.sentAmount.usd ?? undefined,
+        quotedGasInUsd: quoteResponse.gasFee.usd ?? undefined,
+        quotedReturnInUsd: quoteResponse.toTokenAmount.usd ?? undefined,
       },
       initialDestAssetBalance,
       targetContractAddress,
@@ -186,6 +186,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
           txHash: statusRequest.srcTxHash,
         },
       },
+      hasApprovalTx: Boolean(quoteResponse.approval),
     };
     this.update((_state) => {
       _state.bridgeStatusState = {
@@ -235,30 +236,51 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
         srcTxHash,
       );
       const status = await fetchBridgeTxStatus(statusRequest);
+      const newBridgeHistoryItem = {
+        ...historyItem,
+        status,
+        completionTime:
+          status.status === StatusTypes.COMPLETE ||
+          status.status === StatusTypes.FAILED
+            ? Date.now()
+            : undefined, // TODO make this more accurate by looking up dest txHash block time
+      };
 
       // No need to purge these on network change or account change, TransactionController does not purge either.
       // TODO In theory we can skip checking status if it's not the current account/network
       // we need to keep track of the account that this is associated with as well so that we don't show it in Activity list for other accounts
       // First stab at this will not stop polling when you are on a different account
       this.update((_state) => {
-        const bridgeHistoryItem =
-          _state.bridgeStatusState.txHistory[bridgeTxMetaId];
-
         _state.bridgeStatusState = {
           ...bridgeStatusState,
           txHistory: {
             ...bridgeStatusState.txHistory,
-            [bridgeTxMetaId]: {
-              ...bridgeHistoryItem,
-              status,
-            },
+            [bridgeTxMetaId]: newBridgeHistoryItem,
           },
         };
       });
 
       const pollingToken = this.#pollingTokensByTxMetaId[bridgeTxMetaId];
-      if (status.status === StatusTypes.COMPLETE && pollingToken) {
+
+      if (
+        (status.status === StatusTypes.COMPLETE ||
+          status.status === StatusTypes.FAILED) &&
+        pollingToken
+      ) {
         this.stopPollingByPollingToken(pollingToken);
+
+        if (status.status === StatusTypes.COMPLETE) {
+          this.messagingSystem.publish(
+            `${BRIDGE_STATUS_CONTROLLER_NAME}:bridgeTransactionComplete`,
+            { bridgeHistoryItem: newBridgeHistoryItem },
+          );
+        }
+        if (status.status === StatusTypes.FAILED) {
+          this.messagingSystem.publish(
+            `${BRIDGE_STATUS_CONTROLLER_NAME}:bridgeTransactionFailed`,
+            { bridgeHistoryItem: newBridgeHistoryItem },
+          );
+        }
       }
     } catch (e) {
       console.log('Failed to fetch bridge tx status', e);

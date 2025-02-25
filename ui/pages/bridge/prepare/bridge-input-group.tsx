@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
-import { getAddress } from 'ethers/lib/utils';
 import {
   Text,
   TextField,
@@ -13,13 +12,9 @@ import {
 import { AssetPicker } from '../../../components/multichain/asset-picker-amount/asset-picker';
 import { TabName } from '../../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getLocale } from '../../../selectors';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
-import {
-  formatCurrencyAmount,
-  formatTokenAmount,
-  isNativeAddress,
-} from '../utils/quote';
+import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
+import { isNativeAddress } from '../../../../shared/modules/bridge-utils/caip-formatters';
 import { Column, Row } from '../layout';
 import {
   Display,
@@ -29,7 +24,6 @@ import {
   TextVariant,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { AssetType } from '../../../../shared/constants/transaction';
 import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import {
   getBridgeQuotes,
@@ -39,7 +33,22 @@ import { shortenString } from '../../../helpers/utils/util';
 import type { BridgeToken } from '../../../../shared/types/bridge';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
+import { getIntlLocale } from '../../../ducks/locale/locale';
+import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { getMultichainCurrentChainId } from '../../../selectors/multichain';
 import { BridgeAssetPickerButton } from './components/bridge-asset-picker-button';
+
+const sanitizeAmountInput = (textToSanitize: string) => {
+  // Remove characters that are not numbers or decimal points if rendering a controlled or pasted value
+  return (
+    textToSanitize
+      .replace(/[^\d.]+/gu, '')
+      // Only allow one decimal point, ignore digits after second decimal point
+      .split('.', 2)
+      .join('.')
+  );
+};
 
 export const BridgeInputGroup = ({
   header,
@@ -77,9 +86,10 @@ export const BridgeInputGroup = ({
   const { isInsufficientBalance, isEstimatedReturnLow } =
     useSelector(getValidationErrors);
   const currency = useSelector(getCurrentCurrency);
-  const locale = useSelector(getLocale);
+  const locale = useSelector(getIntlLocale);
 
-  const selectedChainId = networkProps?.network?.chainId;
+  const currentChainId = useMultichainSelector(getMultichainCurrentChainId);
+  const selectedChainId = networkProps?.network?.chainId ?? currentChainId;
   const { balanceAmount } = useLatestBalance(token, selectedChainId);
 
   const [, handleCopy] = useCopyToClipboard(MINUTE) as [
@@ -98,6 +108,8 @@ export const BridgeInputGroup = ({
       inputRef.current.focus();
     }
   }, [amountFieldProps?.value, isAmountReadOnly, token]);
+
+  const isSwap = useIsMultichainSwap();
 
   return (
     <Column paddingInline={6} gap={1}>
@@ -135,20 +147,30 @@ export const BridgeInputGroup = ({
           className="amount-input"
           placeholder={'0'}
           onKeyPress={(e?: React.KeyboardEvent<HTMLDivElement>) => {
-            // Only allow numbers and at most one decimal point
-            if (
-              e &&
-              !/^[0-9]*\.{0,1}[0-9]*$/u.test(
-                `${amountFieldProps.value ?? ''}${e.key}`,
-              )
-            ) {
-              e.preventDefault();
+            if (e) {
+              // Only allow numbers and at most one decimal point
+              if (
+                e.key === '.' &&
+                amountFieldProps.value?.toString().includes('.')
+              ) {
+                e.preventDefault();
+              } else if (!/^[\d.]{1}$/u.test(e.key)) {
+                e.preventDefault();
+              }
             }
           }}
+          onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
+            e.preventDefault();
+            const cleanedValue = sanitizeAmountInput(
+              e.clipboardData.getData('text'),
+            );
+            onAmountChange?.(cleanedValue ?? '');
+          }}
           onChange={(e) => {
-            // Remove characters that are not numbers or decimal points if rendering a controlled or pasted value
-            const cleanedValue = e.target.value.replace(/[^0-9.]+/gu, '');
-            onAmountChange?.(cleanedValue);
+            e.preventDefault();
+            e.stopPropagation();
+            const cleanedValue = sanitizeAmountInput(e.target.value);
+            onAmountChange?.(cleanedValue ?? '');
           }}
           {...amountFieldProps}
         />
@@ -172,7 +194,7 @@ export const BridgeInputGroup = ({
                 fontWeight={FontWeight.Normal}
                 style={{ whiteSpace: 'nowrap' }}
               >
-                {t('bridgeTo')}
+                {isSwap ? t('swapSwapTo') : t('bridgeTo')}
               </Button>
             ) : (
               <BridgeAssetPickerButton
@@ -216,22 +238,22 @@ export const BridgeInputGroup = ({
           }
           onClick={() => {
             if (isAmountReadOnly && token && selectedChainId) {
-              handleCopy(getAddress(token.address));
+              handleCopy(token.address);
             }
           }}
           as={isAmountReadOnly ? 'a' : 'p'}
         >
           {isAmountReadOnly &&
-          token &&
-          selectedChainId &&
-          token.type === AssetType.token
-            ? shortenString(token.address, {
-                truncatedCharLimit: 11,
-                truncatedStartChars: 4,
-                truncatedEndChars: 4,
-                skipCharacterInEnd: false,
-              })
-            : undefined}
+            token &&
+            selectedChainId &&
+            (isNativeAddress(token.address)
+              ? undefined
+              : shortenString(token.address, {
+                  truncatedCharLimit: 11,
+                  truncatedStartChars: 4,
+                  truncatedEndChars: 4,
+                  skipCharacterInEnd: false,
+                }))}
           {!isAmountReadOnly && balanceAmount
             ? formatTokenAmount(locale, balanceAmount, token?.symbol)
             : undefined}

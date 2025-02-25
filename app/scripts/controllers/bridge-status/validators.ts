@@ -7,7 +7,7 @@ import {
   Asset,
   StatusTypes,
 } from '../../../../shared/types/bridge-status';
-import { BRIDGE_STATUS_BASE_URL } from './utils';
+import { BRIDGE_STATUS_BASE_URL } from './constants';
 
 type Validator<ExpectedResponse, DataToValidate> = {
   property: keyof ExpectedResponse | string;
@@ -87,7 +87,9 @@ const srcChainStatusValidators = [
     property: 'token',
     type: 'object|undefined',
     validator: (v: unknown): v is object | undefined =>
-      v === undefined || assetValidator(v),
+      v === undefined ||
+      (v && typeof v === 'object' && Object.keys(v).length === 0) ||
+      assetValidator(v),
   },
 ];
 

@@ -41,7 +41,7 @@ export function withTransactionEnvelopeTypeFixtures(
           participateInMetaMetrics: true,
         })
         .build(),
-      ganacheOptions:
+      localNodeOptions:
         transactionEnvelopeType === TransactionEnvelopeType.legacy
           ? defaultGanacheOptions
           : defaultGanacheOptionsForType2Transactions,
@@ -150,4 +150,28 @@ export async function mockSignatureRejectedWithDecoding(
 
 export async function mockPermitDecoding(mockServer: Mockttp) {
   return [await createMockSignatureDecodingEvent(mockServer)];
+}
+
+export async function mockedSourcifyTokenSend(mockServer: Mockttp) {
+  return await mockServer
+    .forGet('https://www.4byte.directory/api/v1/signatures/')
+    .withQuery({ hex_signature: '0xa9059cbb' })
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        count: 1,
+        next: null,
+        previous: null,
+        results: [
+          {
+            bytes_signature: '©\u0005»',
+            created_at: '2016-07-09T03:58:28.234977Z',
+            hex_signature: '0xa9059cbb',
+            id: 145,
+            text_signature: 'transfer(address,uint256)',
+          },
+        ],
+      },
+    }));
 }

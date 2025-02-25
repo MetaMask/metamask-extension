@@ -87,9 +87,6 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   SETTINGS_ROUTE,
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  CUSTODY_ACCOUNT_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -108,7 +105,7 @@ import {
 } from '../../../selectors/accounts';
 ///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IF(build-flask,solana)
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
   WalletClientType,
@@ -294,7 +291,6 @@ export const AccountListMenu = ({
   const solanaWalletSnapClient = useMultichainWalletSnapClient(
     WalletClientType.Solana,
   );
-
   ///: END:ONLY_INCLUDE_IF
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -584,33 +580,6 @@ export const AccountListMenu = ({
                   </ButtonLink>
                 </Box>
               ) : null
-              ///: END:ONLY_INCLUDE_IF
-            }
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-              <Box marginTop={4}>
-                <ButtonLink
-                  size={ButtonLinkSize.Sm}
-                  startIconName={IconName.Custody}
-                  onClick={() => {
-                    onClose();
-                    trackEvent({
-                      category: MetaMetricsEventCategory.Navigation,
-                      event:
-                        MetaMetricsEventName.ConnectCustodialAccountClicked,
-                    });
-                    if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-                      global.platform.openExtensionInBrowser?.(
-                        CUSTODY_ACCOUNT_ROUTE,
-                      );
-                    } else {
-                      history.push(CUSTODY_ACCOUNT_ROUTE);
-                    }
-                  }}
-                >
-                  {t('connectCustodialAccountMenu')}
-                </ButtonLink>
-              </Box>
               ///: END:ONLY_INCLUDE_IF
             }
             {

@@ -2,7 +2,6 @@ import nock from 'nock';
 import { BigNumber } from 'bignumber.js';
 import { add0x } from '@metamask/utils';
 import { BRIDGE_API_BASE_URL } from '../../../../shared/constants/bridge';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { SWAPS_API_V2_BASE_URL } from '../../../../shared/constants/swaps';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
 import * as bridgeUtil from '../../../../shared/modules/bridge-utils/bridge.util';
@@ -10,17 +9,15 @@ import * as balanceUtils from '../../../../shared/modules/bridge-utils/balance';
 import mockBridgeQuotesErc20Native from '../../../../test/data/bridge/mock-quotes-erc20-native.json';
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
 import mockBridgeQuotesNativeErc20Eth from '../../../../test/data/bridge/mock-quotes-native-erc20-eth.json';
-import {
-  type QuoteResponse,
-  RequestStatus,
-} from '../../../../shared/types/bridge';
+import { type QuoteResponse } from '../../../../shared/types/bridge';
 import { decimalToHex } from '../../../../shared/modules/conversion.utils';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import BridgeController from './bridge-controller';
 import { BridgeControllerMessenger } from './types';
-import { DEFAULT_BRIDGE_CONTROLLER_STATE } from './constants';
+import { DEFAULT_BRIDGE_STATE } from './constants';
 
 const EMPTY_INIT_STATE = {
-  bridgeState: DEFAULT_BRIDGE_CONTROLLER_STATE,
+  bridgeState: { ...DEFAULT_BRIDGE_STATE },
 };
 
 const messengerMock = {
@@ -135,10 +132,10 @@ describe('BridgeController', function () {
         refreshRate: 3,
         support: true,
         chains: {
-          [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: false },
-          [CHAIN_IDS.SCROLL]: { isActiveSrc: true, isActiveDest: false },
-          [CHAIN_IDS.POLYGON]: { isActiveSrc: false, isActiveDest: true },
-          [CHAIN_IDS.ARBITRUM]: { isActiveSrc: false, isActiveDest: true },
+          'eip155:10': { isActiveSrc: true, isActiveDest: false },
+          'eip155:534352': { isActiveSrc: true, isActiveDest: false },
+          'eip155:137': { isActiveSrc: false, isActiveDest: true },
+          'eip155:42161': { isActiveSrc: false, isActiveDest: true },
         },
       },
     };
@@ -160,75 +157,11 @@ describe('BridgeController', function () {
     expect(bridgeController.state.bridgeState).toStrictEqual(
       expect.objectContaining({
         bridgeFeatureFlags: expectedFeatureFlagsResponse,
-        quotes: DEFAULT_BRIDGE_CONTROLLER_STATE.quotes,
-        quotesLastFetched: DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLastFetched,
-        quotesLoadingStatus:
-          DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLoadingStatus,
+        quotes: DEFAULT_BRIDGE_STATE.quotes,
+        quotesLastFetched: DEFAULT_BRIDGE_STATE.quotesLastFetched,
+        quotesLoadingStatus: DEFAULT_BRIDGE_STATE.quotesLoadingStatus,
       }),
     );
-  });
-
-  it('selectDestNetwork should set the bridge dest tokens and top assets', async function () {
-    await bridgeController.selectDestNetwork('0xa');
-    expect(bridgeController.state.bridgeState.destTokens).toStrictEqual({
-      '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
-        address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-        symbol: 'ABC',
-        decimals: 16,
-        aggregators: ['lifl', 'socket'],
-      },
-      '0x0000000000000000000000000000000000000000': {
-        address: '0x0000000000000000000000000000000000000000',
-        decimals: 18,
-        iconUrl: './images/eth_logo.svg',
-        name: 'Ether',
-        symbol: 'ETH',
-      },
-    });
-    expect(
-      bridgeController.state.bridgeState.destTokensLoadingStatus,
-    ).toStrictEqual(RequestStatus.FETCHED);
-    expect(bridgeController.state.bridgeState.destTopAssets).toStrictEqual([
-      { address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984', symbol: 'ABC' },
-    ]);
-    expect(bridgeController.state.bridgeState.quoteRequest).toStrictEqual({
-      slippage: 0.5,
-      srcTokenAddress: '0x0000000000000000000000000000000000000000',
-      walletAddress: undefined,
-    });
-  });
-
-  it('selectSrcNetwork should set the bridge src tokens and top assets', async function () {
-    await bridgeController.selectSrcNetwork('0xa');
-    expect(bridgeController.state.bridgeState.srcTokens).toStrictEqual({
-      '0x0000000000000000000000000000000000000000': {
-        address: '0x0000000000000000000000000000000000000000',
-        decimals: 18,
-        iconUrl: './images/eth_logo.svg',
-        name: 'Ether',
-        symbol: 'ETH',
-      },
-      '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
-        address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-        symbol: 'ABC',
-        decimals: 16,
-        aggregators: ['lifl', 'socket'],
-      },
-    });
-    expect(
-      bridgeController.state.bridgeState.srcTokensLoadingStatus,
-    ).toStrictEqual(RequestStatus.FETCHED);
-    expect(bridgeController.state.bridgeState.srcTopAssets).toStrictEqual([
-      {
-        address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-        symbol: 'ABC',
-      },
-    ]);
-    expect(bridgeController.state.bridgeState.quoteRequest).toStrictEqual({
-      slippage: 0.5,
-      srcTokenAddress: '0x0000000000000000000000000000000000000000',
-      walletAddress: undefined,
-    });
   });
 
   it('updateBridgeQuoteRequestParams should update the quoteRequest state', function () {
@@ -339,22 +272,22 @@ describe('BridgeController', function () {
     });
 
     const quoteParams = {
-      srcChainId: 1,
-      destChainId: 10,
+      srcChainId: '0x1',
+      destChainId: MultichainNetworks.SOLANA,
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
       destTokenAddress: '0x123',
       srcTokenAmount: '1000000000000000000',
+      walletAddress: '0x123',
     };
     const quoteRequest = {
       ...quoteParams,
       slippage: 0.5,
-      walletAddress: '0x123',
     };
     await bridgeController.updateBridgeQuoteRequestParams(quoteParams);
 
     expect(stopAllPollingSpy).toHaveBeenCalledTimes(1);
-    expect(startPollingSpy).toHaveBeenCalledTimes(1);
     expect(hasSufficientBalanceSpy).toHaveBeenCalledTimes(1);
+    expect(startPollingSpy).toHaveBeenCalledTimes(1);
     expect(startPollingSpy).toHaveBeenCalledWith({
       networkClientId: expect.anything(),
       updatedQuoteRequest: {
@@ -365,11 +298,10 @@ describe('BridgeController', function () {
 
     expect(bridgeController.state.bridgeState).toStrictEqual(
       expect.objectContaining({
-        quoteRequest: { ...quoteRequest, walletAddress: undefined },
-        quotes: DEFAULT_BRIDGE_CONTROLLER_STATE.quotes,
-        quotesLastFetched: DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLastFetched,
-        quotesLoadingStatus:
-          DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLoadingStatus,
+        quoteRequest,
+        quotes: DEFAULT_BRIDGE_STATE.quotes,
+        quotesLastFetched: DEFAULT_BRIDGE_STATE.quotesLastFetched,
+        quotesLoadingStatus: DEFAULT_BRIDGE_STATE.quotesLoadingStatus,
       }),
     );
 
@@ -489,16 +421,16 @@ describe('BridgeController', function () {
     });
 
     const quoteParams = {
-      srcChainId: 1,
-      destChainId: 10,
+      srcChainId: '0x1',
+      destChainId: '0x10',
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
       destTokenAddress: '0x123',
       srcTokenAmount: '1000000000000000000',
+      walletAddress: '0x123',
     };
     const quoteRequest = {
       ...quoteParams,
       slippage: 0.5,
-      walletAddress: '0x123',
     };
     await bridgeController.updateBridgeQuoteRequestParams(quoteParams);
 
@@ -515,12 +447,11 @@ describe('BridgeController', function () {
 
     expect(bridgeController.state.bridgeState).toStrictEqual(
       expect.objectContaining({
-        quoteRequest: { ...quoteRequest, walletAddress: undefined },
-        quotes: DEFAULT_BRIDGE_CONTROLLER_STATE.quotes,
-        quotesLastFetched: DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLastFetched,
+        quoteRequest,
+        quotes: DEFAULT_BRIDGE_STATE.quotes,
+        quotesLastFetched: DEFAULT_BRIDGE_STATE.quotesLastFetched,
         quotesInitialLoadTime: undefined,
-        quotesLoadingStatus:
-          DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLoadingStatus,
+        quotesLoadingStatus: DEFAULT_BRIDGE_STATE.quotesLoadingStatus,
       }),
     );
 
@@ -610,10 +541,9 @@ describe('BridgeController', function () {
           destChainId: 10,
           destTokenAddress: '0x123',
         },
-        quotes: DEFAULT_BRIDGE_CONTROLLER_STATE.quotes,
-        quotesLastFetched: DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLastFetched,
-        quotesLoadingStatus:
-          DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLoadingStatus,
+        quotes: DEFAULT_BRIDGE_STATE.quotes,
+        quotesLastFetched: DEFAULT_BRIDGE_STATE.quotesLastFetched,
+        quotesLoadingStatus: DEFAULT_BRIDGE_STATE.quotesLoadingStatus,
       }),
     );
   });
@@ -684,16 +614,16 @@ describe('BridgeController', function () {
         });
 
       const quoteParams = {
-        srcChainId: 10,
-        destChainId: 1,
+        srcChainId: '0x10',
+        destChainId: '0x1',
         srcTokenAddress: '0x4200000000000000000000000000000000000006',
         destTokenAddress: '0x0000000000000000000000000000000000000000',
         srcTokenAmount: '991250000000000000',
+        walletAddress: 'eip:id/id:id/0x123',
       };
       const quoteRequest = {
         ...quoteParams,
         slippage: 0.5,
-        walletAddress: '0x123',
       };
       await bridgeController.updateBridgeQuoteRequestParams(quoteParams);
 
@@ -710,11 +640,10 @@ describe('BridgeController', function () {
 
       expect(bridgeController.state.bridgeState).toStrictEqual(
         expect.objectContaining({
-          quoteRequest: { ...quoteRequest, walletAddress: undefined },
-          quotes: DEFAULT_BRIDGE_CONTROLLER_STATE.quotes,
-          quotesLastFetched: DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLastFetched,
-          quotesLoadingStatus:
-            DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLoadingStatus,
+          quoteRequest,
+          quotes: DEFAULT_BRIDGE_STATE.quotes,
+          quotesLastFetched: DEFAULT_BRIDGE_STATE.quotesLastFetched,
+          quotesLoadingStatus: DEFAULT_BRIDGE_STATE.quotesLoadingStatus,
         }),
       );
 

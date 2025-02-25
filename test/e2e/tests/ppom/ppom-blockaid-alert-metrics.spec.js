@@ -2,7 +2,6 @@ const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   WINDOW_TITLES,
-  defaultGanacheOptions,
   openDapp,
   unlockWallet,
   withFixtures,
@@ -252,7 +251,7 @@ async function mockInfuraWithMaliciousResponses(mockServer) {
   ];
 }
 
-describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
+describe('Confirmation Security Alert - Blockaid', function () {
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should capture metrics when security alerts is shown', async function () {
     await withFixtures(
@@ -269,7 +268,6 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockInfuraWithMaliciousResponses,
       },

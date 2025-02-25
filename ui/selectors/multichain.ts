@@ -1,16 +1,23 @@
 import PropTypes from 'prop-types';
-import { isEvmAccountType } from '@metamask/keyring-api';
+import { isEvmAccountType, Transaction } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import type { RatesControllerState } from '@metamask/assets-controllers';
+import type {
+  MultichainBalancesControllerState,
+  RatesControllerState,
+  MultichainAssetsControllerState,
+  MultichainAssetsRatesControllerState,
+} from '@metamask/assets-controllers';
 import { CaipChainId, Hex, KnownCaipNamespace } from '@metamask/utils';
 import { createSelector } from 'reselect';
 import { NetworkType } from '@metamask/controller-utils';
+import { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import { Numeric } from '../../shared/modules/Numeric';
 import {
   MultichainProviderConfig,
   MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
   MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET,
+  MULTICHAIN_TOKEN_IMAGE_MAP,
 } from '../../shared/constants/multichain/networks';
 import {
   getCompletedOnboarding,
@@ -20,7 +27,6 @@ import {
 } from '../ducks/metamask/metamask';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { BalancesControllerState } from '../../app/scripts/lib/accounts/BalancesController';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -33,6 +39,8 @@ import {
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
 } from '../../shared/modules/selectors/networks';
+// eslint-disable-next-line import/no-restricted-paths
+import { getConversionRatesForNativeAsset } from '../../app/scripts/lib/util';
 import { AccountsState, getSelectedInternalAccount } from './accounts';
 import {
   getIsMainnet,
@@ -43,18 +51,33 @@ import {
   getShowFiatInTestnets,
 } from './selectors';
 
+export type AssetsState = {
+  metamask: MultichainAssetsControllerState;
+};
+
+export type AssetsRatesState = {
+  metamask: MultichainAssetsRatesControllerState;
+};
+
 export type RatesState = {
   metamask: RatesControllerState;
 };
 
 export type BalancesState = {
-  metamask: BalancesControllerState;
+  metamask: MultichainBalancesControllerState;
+};
+
+export type TransactionsState = {
+  metamask: MultichainTransactionsControllerState;
 };
 
 export type MultichainState = AccountsState &
   RatesState &
   BalancesState &
-  NetworkState;
+  TransactionsState &
+  NetworkState &
+  AssetsRatesState &
+  AssetsState;
 
 // TODO: Remove after updating to @metamask/network-controller 20.0.0
 export type ProviderConfigWithImageUrlAndExplorerUrl = {
@@ -221,6 +244,16 @@ export function getMultichainIsBitcoin(
   return !isEvm && symbol === 'BTC';
 }
 
+export function getMultichainIsSolana(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
+  const isEvm = getMultichainIsEvm(state, account);
+  const { symbol } = getMultichainDefaultToken(state, account);
+
+  return !isEvm && symbol === 'SOL';
+}
+
 /**
  * Retrieves the provider configuration for a multichain network.
  *
@@ -358,6 +391,26 @@ export function getMultichainBalances(
   return state.metamask.balances;
 }
 
+export function getMultichainTransactions(
+  state: MultichainState,
+): TransactionsState['metamask']['nonEvmTransactions'] {
+  return state.metamask.nonEvmTransactions;
+}
+
+export function getSelectedAccountMultichainTransactions(
+  state: MultichainState,
+):
+  | { transactions: Transaction[]; next: string | null; lastUpdated: number }
+  | undefined {
+  const selectedAccount = getSelectedInternalAccount(state);
+
+  if (isEvmAccountType(selectedAccount.type)) {
+    return undefined;
+  }
+
+  return state.metamask.nonEvmTransactions[selectedAccount.id];
+}
+
 export const getMultichainCoinRates = (state: MultichainState) => {
   return state.metamask.rates;
 };
@@ -395,10 +448,10 @@ function getNonEvmCachedBalance(
 }
 
 export function getImageForChainId(chainId: string) {
-  const evmChainIdKey =
-    chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP;
-
-  return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[evmChainIdKey];
+  return {
+    ...CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+    ...MULTICHAIN_TOKEN_IMAGE_MAP,
+  }[chainId];
 }
 
 // This selector is not compatible with `useMultichainSelector` since it uses the selected
@@ -424,9 +477,15 @@ export function getMultichainConversionRate(
   state: MultichainState,
   account?: InternalAccount,
 ) {
-  const { ticker } = getMultichainProviderConfig(state, account);
+  const { conversionRates } = state.metamask;
+  const { chainId } = getMultichainNetwork(state, account);
+
+  const conversionRate = getConversionRatesForNativeAsset({
+    conversionRates,
+    chainId,
+  })?.rate;
 
   return getMultichainIsEvm(state, account)
     ? getConversionRate(state)
-    : getMultichainCoinRates(state)?.[ticker.toLowerCase()]?.conversionRate;
+    : conversionRate;
 }

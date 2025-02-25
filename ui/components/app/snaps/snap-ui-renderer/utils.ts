@@ -5,9 +5,12 @@ import { sha256 } from '@noble/hashes/sha256';
 import { NonEmptyArray, bytesToHex, remove0x } from '@metamask/utils';
 import { unescape as unescapeEntities } from 'he';
 import { ChangeEvent as ReactChangeEvent } from 'react';
-import { BackgroundColor } from '../../../../helpers/constants/design-system';
-import { COMPONENT_MAPPING } from './components';
-import { UIComponent } from './components/types';
+import {
+  BackgroundColor,
+  BorderRadius,
+} from '../../../../helpers/constants/design-system';
+import type { UIComponent } from './components/types';
+import type { COMPONENT_MAPPING } from './components';
 
 export type MapToTemplateParams = {
   map: Record<string, number>;
@@ -22,6 +25,7 @@ export type MapToTemplateParams = {
   };
   t?: (key: string) => string;
   contentBackgroundColor?: string | undefined;
+  componentMap: COMPONENT_MAPPING;
 };
 
 /**
@@ -99,7 +103,7 @@ function generateKey(
 export const mapToTemplate = (params: MapToTemplateParams): UIComponent => {
   const { type, key } = params.element;
   const elementKey = key ?? generateKey(params.map, params.element);
-  const mapped = COMPONENT_MAPPING[
+  const mapped = params.componentMap[
     type as Exclude<JSXElement['type'], 'Option' | 'Radio' | 'SelectorOption'>
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -109,7 +113,7 @@ export const mapToTemplate = (params: MapToTemplateParams): UIComponent => {
 
 export const mapTextToTemplate = (
   elements: NonEmptyArray<JSXElement | string>,
-  params: Pick<MapToTemplateParams, 'map'>,
+  params: Pick<MapToTemplateParams, 'map' | 'componentMap'>,
 ): NonEmptyArray<UIComponent | string> =>
   elements.map((element) => {
     // With the introduction of JSX elements here can be strings.
@@ -155,4 +159,24 @@ export const mapToExtensionCompatibleColor = (color: string) => {
     alternative: BackgroundColor.backgroundDefault,
   };
   return color ? backgroundColorMapping[color] : undefined;
+};
+
+/**
+ * Map Snap custom size for border radius to extension compatible size.
+ *
+ * @param snapBorderRadius - Snap custom color.
+ * @returns String, representing border radius size from design system.
+ */
+export const mapSnapBorderRadiusToExtensionBorderRadius = (
+  snapBorderRadius: string | undefined,
+): BorderRadius => {
+  switch (snapBorderRadius) {
+    case 'none':
+    default:
+      return BorderRadius.none;
+    case 'medium':
+      return BorderRadius.MD;
+    case 'full':
+      return BorderRadius.full;
+  }
 };

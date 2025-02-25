@@ -25,9 +25,6 @@ import {
 import {
   setFirstTimeFlowType,
   setTermsOfUseLastAgreed,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  setParticipateInMetaMetrics,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -35,10 +32,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  ONBOARDING_CREATE_PASSWORD_ROUTE,
-  ONBOARDING_IMPORT_WITH_SRP_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
 import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
@@ -90,11 +83,6 @@ export default function OnboardingWelcome() {
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     history.push(ONBOARDING_METAMETRICS);
     ///: END:ONLY_INCLUDE_IF
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    await dispatch(setParticipateInMetaMetrics(false));
-    history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
-    ///: END:ONLY_INCLUDE_IF
   };
   const toggleTermsCheck = () => {
     setTermsChecked((currentTermsChecked) => !currentTermsChecked);
@@ -125,11 +113,6 @@ export default function OnboardingWelcome() {
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     history.push(ONBOARDING_METAMETRICS);
     ///: END:ONLY_INCLUDE_IF
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    await dispatch(setParticipateInMetaMetrics(false));
-    history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
-    ///: END:ONLY_INCLUDE_IF
   };
 
   return (
@@ -153,7 +136,7 @@ export default function OnboardingWelcome() {
               <Mascot
                 animationEventEmitter={eventEmitter}
                 width="250"
-                height="250"
+                height="300"
               />
             </div>
           </div>
@@ -171,10 +154,13 @@ export default function OnboardingWelcome() {
             </Text>
             <div className="onboarding-welcome__image">
               <img
-                src="/images/onboarding-welcome-say-hello.svg"
-                width="169"
-                height="237"
-                alt=""
+                src="/images/onboarding-welcome-say-hello.png"
+                width="200"
+                height="275"
+                style={{
+                  objectFit: 'contain',
+                }}
+                alt="onboarding-welcome-say-hello"
               />
             </div>
           </div>
@@ -192,43 +178,17 @@ export default function OnboardingWelcome() {
             </Text>
             <div className="onboarding-welcome__image">
               <img
-                src="/images/onboarding-welcome-decentralised-apps.svg"
-                width="327"
-                height="256"
-                alt=""
+                src="/images/onboarding-welcome-decentralised-apps.png"
+                width="200"
+                height="275"
+                alt="onboarding-welcome-decentralised-apps"
+                style={{
+                  objectFit: 'contain',
+                }}
               />
             </div>
           </div>
         </Carousel>
-        ///: END:ONLY_INCLUDE_IF
-      }
-
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        <div>
-          <Text
-            variant={TextVariant.headingLg}
-            textAlign={TextAlign.Center}
-            fontWeight={FontWeight.Bold}
-          >
-            {t('installExtension')}
-          </Text>
-          <Text
-            textAlign={TextAlign.Center}
-            marginTop={2}
-            marginLeft={6}
-            marginRight={6}
-          >
-            {t('installExtensionDescription')}
-          </Text>
-          <div className="onboarding-welcome__mascot">
-            <Mascot
-              animationEventEmitter={eventEmitter}
-              width="250"
-              height="250"
-            />
-          </div>
-        </div>
         ///: END:ONLY_INCLUDE_IF
       }
 
@@ -266,11 +226,6 @@ export default function OnboardingWelcome() {
             {
               ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
               t('onboardingCreateWallet')
-              ///: END:ONLY_INCLUDE_IF
-            }
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-              t('continue')
               ///: END:ONLY_INCLUDE_IF
             }
           </Button>

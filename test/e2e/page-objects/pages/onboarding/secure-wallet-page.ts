@@ -102,6 +102,32 @@ class SecureWalletPage {
       this.confirmRecoveryPhraseButton,
     );
   }
+
+  async revealAndDoNotConfirmSRP(): Promise<void> {
+    console.log('Do not confirm SRP on secure wallet page during onboarding');
+    // click secure my wallet button to reveal SRP
+    await this.driver.clickElement(this.secureWalletButton);
+    await this.driver.waitForMultipleSelectors([
+      this.writeDownSecretRecoveryPhraseMessage,
+      this.revealSecretRecoveryPhraseButton,
+    ]);
+
+    // click reveal button to reveal SRP
+    await this.driver.clickElement(this.revealSecretRecoveryPhraseButton);
+    await this.driver.waitForSelector(this.recoveryPhraseChips);
+
+    let finalWords: string[] = [];
+    await this.driver.wait(async () => {
+      const recoveryPhraseChips = await this.driver.findElement(
+        this.recoveryPhraseChips,
+      );
+      const recoveryPhrase = await recoveryPhraseChips.getText();
+      const words = recoveryPhrase.split(/\s*(?:[0-9)]+|\n|\.|^$|$)\s*/u);
+      finalWords = words.filter((str) => str !== '');
+      return finalWords.length === 12;
+    }, this.driver.timeout);
+    await this.driver.clickElement(this.recoveryPhraseNextButton);
+  }
 }
 
 export default SecureWalletPage;

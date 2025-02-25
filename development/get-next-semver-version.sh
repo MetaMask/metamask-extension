@@ -21,7 +21,7 @@ VERSION_PACKAGE=$(node -p "require('./package.json').version")
 # Compare versions and keep the highest one
 HIGHEST_VERSION=$(printf "%s\n%s\n%s" "$VERSION_BRANCHES" "$VERSION_TAGS" "$VERSION_PACKAGE" | sort --version-sort | tail -n 1)
 
-# Increment the minor version of the highest version found
-NEXT_VERSION=$(echo "$HIGHEST_VERSION" | awk -F. -v OFS=. '{$2++; print}')
+# Increment the minor version of the highest version found and reset the patch version to 0
+NEXT_VERSION=$(echo "$HIGHEST_VERSION" | awk -F. -v OFS=. '{$2++; $3=0; print}')
 
 echo "NEXT_SEMVER_VERSION=${NEXT_VERSION}" >> "$GITHUB_ENV"

@@ -29,7 +29,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/design-system';
 
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 import { SurveyUrl } from '../../../../shared/constants/urls';
 ///: END:ONLY_INCLUDE_IF
 
@@ -40,10 +40,12 @@ type ExperimentalTabProps = {
   solanaSupportEnabled: boolean;
   setSolanaSupportEnabled: (value: boolean) => void;
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   bitcoinSupportEnabled: boolean;
   setBitcoinSupportEnabled: (value: boolean) => void;
   bitcoinTestnetSupportEnabled: boolean;
   setBitcoinTestnetSupportEnabled: (value: boolean) => void;
+  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   addSnapAccountEnabled: boolean;
   setAddSnapAccountEnabled: (value: boolean) => void;
@@ -52,8 +54,6 @@ type ExperimentalTabProps = {
   setPetnamesEnabled: (value: boolean) => void;
   featureNotificationsEnabled: boolean;
   setFeatureNotificationsEnabled: (value: boolean) => void;
-  redesignedConfirmationsEnabled: boolean;
-  setRedesignedConfirmationsEnabled: (value: boolean) => void;
 };
 
 export default class ExperimentalTab extends PureComponent<ExperimentalTabProps> {
@@ -140,25 +140,6 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
       toggleValue: petnamesEnabled,
       toggleCallback: (value) => setPetnamesEnabled(!value),
       toggleDataTestId: 'toggle-petnames',
-      toggleOffLabel: t('off'),
-      toggleOnLabel: t('on'),
-    });
-  }
-
-  renderToggleRedesignedSignatures() {
-    const { t } = this.context;
-    const {
-      redesignedConfirmationsEnabled,
-      setRedesignedConfirmationsEnabled,
-    } = this.props;
-
-    return this.renderToggleSection({
-      title: t('redesignedConfirmationsEnabledToggle'),
-      description: t('redesignedConfirmationsToggleDescription'),
-      toggleValue: redesignedConfirmationsEnabled,
-      toggleCallback: (value) => setRedesignedConfirmationsEnabled(!value),
-      toggleContainerDataTestId: 'toggle-redesigned-confirmations-container',
-      toggleDataTestId: 'toggle-redesigned-confirmations',
       toggleOffLabel: t('off'),
       toggleOnLabel: t('on'),
     });
@@ -266,9 +247,11 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
       toggleOnLabel: t('on'),
     });
   }
+  ///: END:ONLY_INCLUDE_IF
 
   // We're only setting the code fences here since
   // we should remove it for the feature release
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   renderBitcoinSupport() {
     const { t, trackEvent } = this.context;
     const {
@@ -384,7 +367,6 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
     return (
       <div className="settings-page__body">
         {this.renderTogglePetnames()}
-        {this.renderToggleRedesignedSignatures()}
         {process.env.NOTIFICATIONS ? this.renderNotificationsToggle() : null}
         {/* Section: Account Management Snaps */}
         {
@@ -398,7 +380,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
           ///: END:ONLY_INCLUDE_IF
         }
         {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+          ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
           // We're only setting the code fences here since
           // we should remove it for the feature release
           /* Section: Bitcoin Accounts */

@@ -25,7 +25,9 @@ import {
 } from '../../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import { DomainInputResolutionCell } from './domain-input-resolution-cell';
-import { SendPageAddressBook, SendPageRow, SendPageYourAccounts } from '.';
+import { SendPageAddressBook } from './address-book';
+import { SendPageRow } from './send-page-row';
+import { SendPageYourAccounts } from './your-accounts';
 
 const CONTACTS_TAB_KEY = 'contacts';
 const ACCOUNTS_TAB_KEY = 'accounts';
@@ -121,6 +123,7 @@ export const SendPageRecipient = () => {
         defaultActiveTabKey={
           userInput.length > 0 ? CONTACTS_TAB_KEY : ACCOUNTS_TAB_KEY
         }
+        onTabClick={() => null}
       >
         {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment

@@ -4,7 +4,6 @@ const {
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
-  defaultGanacheOptions,
 } = require('../../helpers');
 
 describe('Request Queuing SwitchChain -> SendTx', function () {
@@ -16,18 +15,19 @@ describe('Request Queuing SwitchChain -> SendTx', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
-
           .build(),
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         title: this.test.fullTitle(),
       },
 

@@ -50,7 +50,7 @@ import {
   sumHexes,
 } from '../../../shared/modules/conversion.utils';
 import { EtherDenomination } from '../../../shared/constants/common';
-import { estimateGasFee } from '../../store/actions';
+import { estimateGasFee } from './swaps.util.gas';
 
 const CACHE_REFRESH_FIVE_MINUTES = 300000;
 const USD_CURRENCY_CODE = 'usd';
@@ -352,6 +352,7 @@ export const getFeeForSmartTransaction = ({
   const chainCurrencySymbolToUse =
     nativeCurrencySymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId]?.symbol;
   return {
+    rawNetworkFees,
     feeInUsd,
     feeInFiat: formattedNetworkFee,
     feeInEth: `${ethFee} ${chainCurrencySymbolToUse}`,

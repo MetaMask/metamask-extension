@@ -17,14 +17,15 @@ jobs:
           fetch-depth: 0 # This is needed to get merge base to calculate bundle size diff
 
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+        uses: metamask/github-tools/.github/actions/setup-environment@1d657e262aea7e3f216754febb624831527d2565
 
       - name: Get merge base commit hash
         id: get-merge-base
         env:
-          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          merge_base="$(git merge-base "origin/${BASE_REF}" HEAD)"
+          merge_base="$(git merge-base "${BASE_SHA}" "${HEAD_SHA}")"
           echo "MERGE_BASE=${merge_base}" >> "$GITHUB_OUTPUT"
           echo "Merge base is '${merge_base}'"
 
@@ -61,9 +62,6 @@ jobs:
           mkdir -p test-artifacts/chrome
           curl --silent --location "https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0/test-artifacts/chrome/bundle_size.json" > "test-artifacts/chrome/bundle_size.json"
 
-          mkdir storybook-build
-          curl --silent --location "https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0/storybook/stories.json" > "storybook-build/stories.json"
-
       - name: Publish prerelease
         env:
           PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
@@ -72,4 +70,5 @@ jobs:
           MERGE_BASE_COMMIT_HASH: ${{ steps.get-merge-base.outputs.MERGE_BASE }}
           CIRCLE_BUILD_NUM: ${{ steps.get-circleci-job-details.outputs.CIRCLE_BUILD_NUM }}
           CIRCLE_WORKFLOW_JOB_ID: ${{ steps.get-circleci-job-details.outputs.CIRCLE_WORKFLOW_JOB_ID }}
+          HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
         run: ./development/metamaskbot-build-announce.js

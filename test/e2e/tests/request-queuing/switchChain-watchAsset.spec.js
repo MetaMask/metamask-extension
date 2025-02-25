@@ -1,6 +1,5 @@
 const FixtureBuilder = require('../../fixture-builder');
 const {
-  defaultGanacheOptions,
   logInWithBalanceValidation,
   openDapp,
   WINDOW_TITLES,
@@ -22,16 +21,18 @@ describe('Request Queue SwitchChain -> WatchAsset', function () {
           .withNetworkControllerDoubleGanache()
 
           .build(),
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         smartContract,
         title: this.test.fullTitle(),
       },
@@ -48,6 +49,12 @@ describe('Request Queue SwitchChain -> WatchAsset', function () {
         await driver.clickElement('#connectButton');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        const permissionsTab = await driver.findElement(
+          '[data-testid="permissions-tab"]',
+        );
+        await permissionsTab.click();
+
         const editButtons = await driver.findElements('[data-testid="edit"]');
 
         await editButtons[1].click();

@@ -6,7 +6,6 @@ const {
   DAPP_URL,
   regularDelayMs,
   WINDOW_TITLES,
-  defaultGanacheOptions,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 
@@ -21,16 +20,18 @@ describe('Request Queuing Switch Network on Dapp Send Tx while on different netw
           .withNetworkControllerDoubleGanache()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

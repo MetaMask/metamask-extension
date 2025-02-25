@@ -20,7 +20,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { getParticipateInMetaMetrics } from '../../../../selectors';
+import {
+  getParticipateInMetaMetrics,
+  getUseExternalServices,
+} from '../../../../selectors';
 
 const MetametricsToggle = ({
   dataCollectionForMarketing,
@@ -40,8 +43,10 @@ const MetametricsToggle = ({
 
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+  const useExternalServices = useSelector(getUseExternalServices);
 
   const handleUseParticipateInMetaMetrics = async () => {
+    console.log('handleUseParticipateInMetaMetrics', participateInMetaMetrics);
     if (participateInMetaMetrics) {
       await disableMetametrics();
       trackEvent({
@@ -87,28 +92,25 @@ const MetametricsToggle = ({
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
         gap={4}
-        data-testid="profileSyncToggle"
+        data-testid="participate-in-meta-metrics-container"
       >
-        <div className="settings-page__content-item" id="profileSyncLabel">
+        <div className="settings-page__content-item">
           <span>{t('participateInMetaMetrics')}</span>
-          <div
-            className="settings-page__content-description"
-            data-testid="profileSyncDescription"
-          >
+          <div className="settings-page__content-description">
             {t('participateInMetaMetricsDescription')}
           </div>
         </div>
 
         <div
           className="settings-page__content-item-col"
-          data-testid="participateInMetaMetrics"
+          data-testid="participate-in-meta-metrics-toggle"
         >
           <ToggleButton
             value={participateInMetaMetrics}
+            disabled={!useExternalServices}
             onToggle={handleUseParticipateInMetaMetrics}
             offLabel={t('off')}
             onLabel={t('on')}
-            dataTestId="toggleButton"
           />
         </div>
       </Box>

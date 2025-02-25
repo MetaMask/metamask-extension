@@ -29,7 +29,6 @@ import {
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
 import {
-  GasFeeEstimates,
   TransactionMeta,
   TransactionParams,
   TransactionType,
@@ -44,7 +43,9 @@ import { KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { Patch } from 'immer';
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
+///: END:ONLY_INCLUDE_IF
 import switchDirection from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -123,15 +124,9 @@ import { DecodedTransactionDataResponse } from '../../shared/types/transaction-d
 import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
 import { EndTraceRequest } from '../../shared/lib/trace';
 import { SortCriteria } from '../components/app/assets/util/sort';
-import {
-  CaveatTypes,
-  EndowmentTypes,
-} from '../../shared/constants/permissions';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import * as actionConstants from './actionConstants';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { updateCustodyState } from './institutional/institution-actions';
-///: END:ONLY_INCLUDE_IF
+
 import {
   generateActionId,
   callBackgroundMethod,
@@ -450,12 +445,11 @@ export function importNewAccount(
   };
 }
 
-export function addNewAccount(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+export function addNewAccount(
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  keyringId?: string,
+  ///: END:ONLY_INCLUDE_IF
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.addNewAccount`);
   return async (dispatch, getState) => {
     const oldAccounts = getInternalAccounts(getState()).filter(
@@ -468,6 +462,9 @@ export function addNewAccount(): ThunkAction<
     try {
       addedAccountAddress = await submitRequestToBackground('addNewAccount', [
         Object.keys(oldAccounts).length,
+        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+        keyringId,
+        ///: END:ONLY_INCLUDE_IF
       ]);
     } catch (error) {
       dispatch(displayWarning(error));
@@ -505,33 +502,6 @@ export function checkHardwareStatus(
 
     await forceUpdateMetamaskState(dispatch);
     return unlocked;
-  };
-}
-
-export function getDeviceNameForMetric(
-  deviceName: HardwareDeviceNames,
-  hdPath: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  log.debug(`background.getDeviceNameForMetric`, deviceName, hdPath);
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-
-    let result: string;
-    try {
-      result = await submitRequestToBackground<string>(
-        'getDeviceNameForMetric',
-        [deviceName, hdPath],
-      );
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning(error));
-      throw error;
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-
-    await forceUpdateMetamaskState(dispatch);
-    return result;
   };
 }
 
@@ -1702,10 +1672,6 @@ export function updateMetamaskState(
 
       dispatch(initializeSendState({ chainHasChanged: true }));
     }
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    updateCustodyState(dispatch, newState, getState());
-    ///: END:ONLY_INCLUDE_IF
 
     return newState;
   };
@@ -3166,10 +3132,6 @@ export function setPetnamesEnabled(value: boolean) {
   return setPreference('petnamesEnabled', value);
 }
 
-export function setRedesignedConfirmationsEnabled(value: boolean) {
-  return setPreference('redesignedConfirmationsEnabled', value);
-}
-
 export function setPrivacyMode(value: boolean) {
   return setPreference('privacyMode', value, false);
 }
@@ -3180,10 +3142,6 @@ export function setFeatureNotificationsEnabled(value: boolean) {
 
 export function setShowExtensionInFullSizeView(value: boolean) {
   return setPreference('showExtensionInFullSizeView', value);
-}
-
-export function setRedesignedConfirmationsDeveloperEnabled(value: boolean) {
-  return setPreference('isRedesignedConfirmationsDeveloperEnabled', value);
 }
 
 export function setTokenSortConfig(value: SortCriteria) {
@@ -3409,21 +3367,6 @@ export function setUseBlockie(
         dispatch(displayWarning(err));
       }
     });
-  };
-}
-
-export function setUseNonceField(
-  val: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`background.setUseNonceField`);
-    try {
-      await submitRequestToBackground('setUseNonceField', [val]);
-    } catch (error) {
-      dispatch(displayWarning(error));
-    }
-    dispatch(hideLoadingIndication());
   };
 }
 
@@ -3982,19 +3925,6 @@ export function setInitialGasEstimate(
 
 // Permissions
 
-export function requestAccountsPermissionWithId(
-  origin: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    const id = await submitRequestToBackground(
-      'requestAccountsPermissionWithId',
-      [origin],
-    );
-    await forceUpdateMetamaskState(dispatch);
-    return id;
-  };
-}
-
 export function requestAccountsAndChainPermissionsWithId(
   origin: string,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
@@ -4124,12 +4054,10 @@ export function resolvePendingApproval(
     // Before closing the current window, check if any additional confirmations
     // are added as a result of this confirmation being accepted
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask,build-mmi)
     const { pendingApprovals } = await forceUpdateMetamaskState(_dispatch);
     if (Object.values(pendingApprovals).length === 0) {
       _dispatch(closeCurrentNotificationWindow());
     }
-    ///: END:ONLY_INCLUDE_IF
   };
 }
 
@@ -4181,6 +4109,16 @@ export function rejectAllMessages(
       dispatch(closeCurrentNotificationWindow());
     }
   };
+}
+
+export async function updateThrottledOriginState(
+  origin: string,
+  throttledOriginState: ThrottledOrigin,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  await submitRequestToBackground('updateThrottledOriginState', [
+    origin,
+    throttledOriginState,
+  ]);
 }
 
 export function setFirstTimeFlowType(
@@ -4574,14 +4512,6 @@ export function captureSingleException(
 
 export function estimateGas(params: TransactionParams): Promise<Hex> {
   return submitRequestToBackground('estimateGas', [params]);
-}
-
-export function estimateGasFee(request: {
-  transactionParams: TransactionParams;
-  chainId?: Hex;
-  networkClientId?: NetworkClientId;
-}): Promise<{ estimates: GasFeeEstimates }> {
-  return submitRequestToBackground('estimateGasFee', [request]);
 }
 
 export async function updateTokenType(
@@ -5186,6 +5116,7 @@ export async function setWatchEthereumAccountEnabled(value: boolean) {
   }
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 export async function setBitcoinSupportEnabled(value: boolean) {
   try {
     await submitRequestToBackground('setBitcoinSupportEnabled', [value]);
@@ -5201,6 +5132,7 @@ export async function setBitcoinTestnetSupportEnabled(value: boolean) {
     logErrorWithMessage(error);
   }
 }
+///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
 export async function setSolanaSupportEnabled(value: boolean) {
@@ -5939,25 +5871,6 @@ export function disableMetamaskNotifications(): ThunkAction<
   };
 }
 
-export function setIsProfileSyncingEnabled(
-  isProfileSyncingEnabled: boolean,
-): ThunkAction<void, unknown, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    try {
-      dispatch(showLoadingIndication());
-      await submitRequestToBackground('setIsProfileSyncingEnabled', [
-        isProfileSyncingEnabled,
-      ]);
-      dispatch(hideLoadingIndication());
-    } catch (error) {
-      logErrorWithMessage(error);
-      throw error;
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-  };
-}
-
 export function setConfirmationAdvancedDetailsOpen(value: boolean) {
   return setPreference('showConfirmationAdvancedDetails', value);
 }
@@ -5969,48 +5882,6 @@ export async function getNextAvailableAccountName(
     'getNextAvailableAccountName',
     [keyring],
   );
-}
-
-export async function grantPermittedChain(
-  selectedTabOrigin: string,
-  chainId?: string,
-): Promise<string> {
-  return await submitRequestToBackground<void>('grantPermissionsIncremental', [
-    {
-      subject: { origin: selectedTabOrigin },
-      approvedPermissions: {
-        [EndowmentTypes.permittedChains]: {
-          caveats: [
-            {
-              type: CaveatTypes.restrictNetworkSwitching,
-              value: [chainId],
-            },
-          ],
-        },
-      },
-    },
-  ]);
-}
-
-export async function grantPermittedChains(
-  selectedTabOrigin: string,
-  chainIds: string[],
-): Promise<string> {
-  return await submitRequestToBackground<void>('grantPermissions', [
-    {
-      subject: { origin: selectedTabOrigin },
-      approvedPermissions: {
-        [EndowmentTypes.permittedChains]: {
-          caveats: [
-            {
-              type: CaveatTypes.restrictNetworkSwitching,
-              value: chainIds,
-            },
-          ],
-        },
-      },
-    },
-  ]);
 }
 
 export async function decodeTransactionData({
@@ -6030,7 +5901,7 @@ export async function decodeTransactionData({
     },
   ]);
 }
-
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 export async function multichainUpdateBalance(
   accountId: string,
 ): Promise<void> {
@@ -6039,9 +5910,14 @@ export async function multichainUpdateBalance(
   ]);
 }
 
-export async function multichainUpdateBalances(): Promise<void> {
-  return await submitRequestToBackground<void>('multichainUpdateBalances', []);
+export async function multichainUpdateTransactions(
+  accountId: string,
+): Promise<void> {
+  return await submitRequestToBackground<void>('multichainUpdateTransactions', [
+    accountId,
+  ]);
 }
+///: END:ONLY_INCLUDE_IF
 
 export async function getLastInteractedConfirmationInfo(): Promise<
   LastInteractedConfirmationInfo | undefined
@@ -6102,6 +5978,7 @@ function applyPatches(
   return newState;
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 export async function sendMultichainTransaction(
   snapId: string,
   {
@@ -6125,3 +6002,4 @@ export async function sendMultichainTransaction(
     },
   });
 }
+///: END:ONLY_INCLUDE_IF

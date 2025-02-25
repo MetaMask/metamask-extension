@@ -1,12 +1,20 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { HandlerType } from '@metamask/snaps-utils';
-import { BtcAccountType, BtcMethod } from '@metamask/keyring-api';
+import {
+  BtcAccountType,
+  BtcMethod,
+  BtcScope,
+  SolAccountType,
+  SolMethod,
+  SolScope,
+} from '@metamask/keyring-api';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { BITCOIN_WALLET_SNAP_ID } from '../../../shared/lib/accounts/bitcoin-wallet-snap';
 import { SOLANA_WALLET_SNAP_ID } from '../../../shared/lib/accounts/solana-wallet-snap';
 import {
   handleSnapRequest,
   multichainUpdateBalance,
+  multichainUpdateTransactions,
 } from '../../store/actions';
 import {
   useMultichainWalletSnapClient,
@@ -16,10 +24,13 @@ import {
 jest.mock('../../store/actions', () => ({
   handleSnapRequest: jest.fn(),
   multichainUpdateBalance: jest.fn(),
+  multichainUpdateTransactions: jest.fn(),
 }));
 
 const mockHandleSnapRequest = handleSnapRequest as jest.Mock;
 const mockMultichainUpdateBalance = multichainUpdateBalance as jest.Mock;
+const mockMultichainUpdateTransactions =
+  multichainUpdateTransactions as jest.Mock;
 
 describe('useMultichainWalletSnapClient', () => {
   beforeEach(() => {
@@ -36,6 +47,7 @@ describe('useMultichainWalletSnapClient', () => {
         id: '11a33c6b-0d46-43f4-a401-01587d575fd0',
         options: {},
         methods: [BtcMethod.SendBitcoin],
+        scopes: [BtcScope.Testnet],
         type: BtcAccountType.P2wpkh,
       },
     },
@@ -47,9 +59,9 @@ describe('useMultichainWalletSnapClient', () => {
         address: '4mip4tgbhxf8dpqvtb3zhzzapwfvznanhssqzgjyp7ha',
         id: '22b44d7c-1e57-4b5b-8502-02698e686fd1',
         options: {},
-        methods: ['someMethod'],
-        // TODO: Update when keyring-api is published with Solana types
-        type: BtcAccountType.P2wpkh,
+        methods: [SolMethod.SendAndConfirmTransaction],
+        scopes: [SolScope.Mainnet, SolScope.Testnet, SolScope.Devnet],
+        type: SolAccountType.DataAccount,
       },
     },
   ];
@@ -82,6 +94,20 @@ describe('useMultichainWalletSnapClient', () => {
 
       await multichainWalletSnapClient.createAccount(network);
       expect(mockMultichainUpdateBalance).toHaveBeenCalledWith(mockAccount.id);
+    });
+
+    it(`force fetches the transactions after creating a ${clientType} account`, async () => {
+      const { result } = renderHook(() =>
+        useMultichainWalletSnapClient(clientType),
+      );
+      const multichainWalletSnapClient = result.current;
+
+      mockHandleSnapRequest.mockResolvedValue(mockAccount);
+
+      await multichainWalletSnapClient.createAccount(network);
+      expect(mockMultichainUpdateTransactions).toHaveBeenCalledWith(
+        mockAccount.id,
+      );
     });
   });
 });

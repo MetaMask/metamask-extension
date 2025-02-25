@@ -22,11 +22,11 @@ import { fireEvent } from '../../../../../../test/jest';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import * as MMIConfirmations from '../../../../../hooks/useMMIConfirmations';
 import * as Actions from '../../../../../store/actions';
 import configureStore from '../../../../../store/store';
 import * as confirmContext from '../../../context/confirm';
 import { SignatureRequestType } from '../../../types/confirm';
+import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import Footer from './footer';
 
 jest.mock('react-redux', () => ({
@@ -45,6 +45,8 @@ jest.mock(
   }),
 );
 
+jest.mock('../../../hooks/useOriginThrottling');
+
 const render = (args?: Record<string, unknown>) => {
   const store = configureStore(args ?? getMockPersonalSignConfirmState());
 
@@ -52,6 +54,14 @@ const render = (args?: Record<string, unknown>) => {
 };
 
 describe('ConfirmFooter', () => {
+  const mockUseOriginThrottling = useOriginThrottling as jest.Mock;
+
+  beforeEach(() => {
+    mockUseOriginThrottling.mockReturnValue({
+      shouldThrottleOrigin: false,
+    });
+  });
+
   it('should match snapshot with signature confirmation', () => {
     const { container } = render(getMockPersonalSignConfirmState());
     expect(container).toMatchSnapshot();
@@ -112,20 +122,6 @@ describe('ConfirmFooter', () => {
       });
       const mockStateTypedSign = getMockContractInteractionConfirmState();
       const { getByText } = render(mockStateTypedSign);
-
-      const confirmButton = getByText('Confirm');
-      expect(confirmButton).toBeDisabled();
-    });
-
-    it('when the confirmation is a Permit with the transaction simulation setting disabled', () => {
-      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
-        currentConfirmation: permitSignatureMsg,
-        isScrollToBottomCompleted: false,
-        setIsScrollToBottomCompleted: () => undefined,
-      });
-      const mockStatePermit =
-        getMockTypedSignConfirmStateForRequest(permitSignatureMsg);
-      const { getByText } = render(mockStatePermit);
 
       const confirmButton = getByText('Confirm');
       expect(confirmButton).toBeDisabled();
@@ -212,6 +208,20 @@ describe('ConfirmFooter', () => {
     expect(submitButton).toHaveClass('mm-button-primary--type-danger');
   });
 
+  it('no action is taken when the origin is on threshold and cancel button is clicked', () => {
+    mockUseOriginThrottling.mockReturnValue({
+      shouldThrottleOrigin: true,
+    });
+    const rejectSpy = jest.spyOn(Actions, 'rejectPendingApproval');
+
+    const { getAllByRole } = render(getMockPersonalSignConfirmState());
+
+    const cancelButton = getAllByRole('button')[0];
+    fireEvent.click(cancelButton);
+
+    expect(rejectSpy).not.toHaveBeenCalled();
+  });
+
   it('disables submit button if required LedgerHidConnection is not yet established', () => {
     const { getAllByRole } = render(
       getMockPersonalSignConfirmStateForRequest(
@@ -235,34 +245,6 @@ describe('ConfirmFooter', () => {
     );
     const submitButton = getAllByRole('button')[1];
     expect(submitButton).toBeDisabled();
-  });
-
-  it('submit button should be disabled if useMMIConfirmations returns true for mmiSubmitDisabled', () => {
-    jest
-      .spyOn(MMIConfirmations, 'useMMIConfirmations')
-      .mockImplementation(() => ({
-        mmiOnSignCallback: () => Promise.resolve(),
-        mmiOnTransactionCallback: () => Promise.resolve(),
-        mmiSubmitDisabled: true,
-      }));
-    const { getAllByRole } = render();
-    const submitButton = getAllByRole('button')[1];
-    expect(submitButton).toBeDisabled();
-  });
-
-  it('invoke mmiOnSignCallback returned from hook useMMIConfirmations when submit button is clicked', () => {
-    const mockFn = jest.fn();
-    jest
-      .spyOn(MMIConfirmations, 'useMMIConfirmations')
-      .mockImplementation(() => ({
-        mmiOnSignCallback: mockFn,
-        mmiOnTransactionCallback: mockFn,
-        mmiSubmitDisabled: false,
-      }));
-    const { getAllByRole } = render();
-    const submitButton = getAllByRole('button')[1];
-    fireEvent.click(submitButton);
-    expect(mockFn).toHaveBeenCalledTimes(1);
   });
 
   describe('ConfirmButton', () => {

@@ -13,13 +13,17 @@ export default class MetaFoxLogo extends PureComponent {
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     src: PropTypes.string,
     ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     theme: PropTypes.string,
-    ///: END:ONLY_INCLUDE_IF
   };
 
   static defaultProps = {
     onClick: undefined,
+    unsetIconHeight: false,
+    isOnboarding: false,
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    src: undefined,
+    ///: END:ONLY_INCLUDE_IF
+    theme: undefined,
   };
 
   render() {
@@ -30,23 +34,16 @@ export default class MetaFoxLogo extends PureComponent {
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       src,
       ///: END:ONLY_INCLUDE_IF
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       theme,
-      ///: END:ONLY_INCLUDE_IF
     } = this.props;
+
     const iconProps = unsetIconHeight ? {} : { height: 42, width: 42 };
 
     iconProps.src = './images/logo/metamask-fox.svg';
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    iconProps.src = './build-types/mmi/images/logo/mmi-logo-with-words.svg';
-    ///: END:ONLY_INCLUDE_IF
-
     let renderHorizontalLogo = () => (
       <MetaFoxHorizontalLogo
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         theme={theme}
-        ///: END:ONLY_INCLUDE_IF
         className={classnames({
           'app-header__metafox-logo--horizontal': !isOnboarding,
           'onboarding-app-header__metafox-logo--horizontal': isOnboarding,

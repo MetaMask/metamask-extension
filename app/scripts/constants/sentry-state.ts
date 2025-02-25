@@ -75,6 +75,7 @@ export const SENTRY_BACKGROUND_STATE = {
     defaultHomeActiveTabName: true,
     fullScreenGasPollTokens: true,
     hadAdvancedGasFeesSetPriorToMigration92_3: true,
+    isRampCardClosed: true,
     nftsDetectionNoticeDismissed: true,
     nftsDropdownState: true,
     notificationGasPollTokens: true,
@@ -93,11 +94,19 @@ export const SENTRY_BACKGROUND_STATE = {
     surveyLinkLastClickedOrClosed: true,
     snapsInstallPrivacyWarningShown: true,
     termsOfUseLastAgreed: true,
+    throttledOrigins: false,
     timeoutMinutes: true,
     trezorModel: true,
   },
   MultichainBalancesController: {
     balances: false,
+  },
+  MultichainAssetsController: {
+    accountsAssets: false,
+    assetsMetadata: false,
+  },
+  MultichainAssetsRatesController: {
+    assetsRates: false,
   },
   BridgeController: {
     bridgeState: {
@@ -107,12 +116,6 @@ export const SENTRY_BACKGROUND_STATE = {
           chains: {},
         },
       },
-      destTokens: {},
-      destTopAssets: [],
-      destTokensLoadingStatus: true,
-      srcTokens: {},
-      srcTopAssets: [],
-      srcTokensLoadingStatus: true,
       quoteRequest: {
         walletAddress: false,
         srcTokenAddress: true,
@@ -248,8 +251,6 @@ export const SENTRY_BACKGROUND_STATE = {
     preferences: {
       autoLockTimeLimit: true,
       hideZeroBalanceTokens: true,
-      redesignedConfirmationsEnabled: true,
-      isRedesignedConfirmationsDeveloperEnabled: false,
       showExtensionInFullSizeView: true,
       showFiatInTestnets: true,
       showTestNetworks: true,
@@ -271,7 +272,6 @@ export const SENTRY_BACKGROUND_STATE = {
     useCurrencyRateCheck: true,
     useMultiAccountBalanceChecker: true,
     useNftDetection: true,
-    useNonceField: true,
     usePhishDetect: true,
     useTokenDetection: true,
     useTransactionSimulations: true,
@@ -441,8 +441,10 @@ export const SENTRY_UI_STATE = {
     isInitialized: true,
     useSafeChainsListValidation: true,
     watchEthereumAccountEnabled: false,
+    ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
     bitcoinSupportEnabled: false,
     bitcoinTestnetSupportEnabled: false,
+    ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,
     snapsAddSnapAccountModalDismissed: false,

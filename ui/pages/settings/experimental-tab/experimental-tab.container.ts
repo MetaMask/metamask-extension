@@ -2,14 +2,15 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   setBitcoinSupportEnabled,
   setBitcoinTestnetSupportEnabled,
+  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   setAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
   setPetnamesEnabled,
   setFeatureNotificationsEnabled,
-  setRedesignedConfirmationsEnabled,
   setWatchEthereumAccountEnabled,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   setSolanaSupportEnabled,
@@ -19,14 +20,15 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   getIsSolanaSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   getIsBitcoinSupportEnabled,
   getIsBitcoinTestnetSupportEnabled,
+  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
   getPetnamesEnabled,
   getFeatureNotificationsEnabled,
-  getRedesignedConfirmationsEnabled,
   getIsWatchEthereumAccountEnabled,
 } from '../../../selectors';
 import type {
@@ -43,14 +45,15 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
     solanaSupportEnabled: getIsSolanaSupportEnabled(state),
     ///: END:ONLY_INCLUDE_IF
     watchAccountEnabled: getIsWatchEthereumAccountEnabled(state),
+    ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
     bitcoinSupportEnabled: getIsBitcoinSupportEnabled(state),
     bitcoinTestnetSupportEnabled: getIsBitcoinTestnetSupportEnabled(state),
+    ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: getIsAddSnapAccountEnabled(state),
     ///: END:ONLY_INCLUDE_IF
     petnamesEnabled,
     featureNotificationsEnabled,
-    redesignedConfirmationsEnabled: getRedesignedConfirmationsEnabled(state),
   };
 };
 
@@ -61,10 +64,12 @@ const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
     ///: BEGIN:ONLY_INCLUDE_IF(solana)
     setSolanaSupportEnabled: (value: boolean) => setSolanaSupportEnabled(value),
     ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
     setBitcoinSupportEnabled: (value: boolean) =>
       setBitcoinSupportEnabled(value),
     setBitcoinTestnetSupportEnabled: (value: boolean) =>
       setBitcoinTestnetSupportEnabled(value),
+    ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     setAddSnapAccountEnabled: (value: boolean) =>
       setAddSnapAccountEnabled(value),
@@ -75,8 +80,6 @@ const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
     setFeatureNotificationsEnabled: (value: boolean) => {
       return dispatch(setFeatureNotificationsEnabled(value));
     },
-    setRedesignedConfirmationsEnabled: (value: boolean) =>
-      dispatch(setRedesignedConfirmationsEnabled(value)),
   };
 };
 

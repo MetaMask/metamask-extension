@@ -13,6 +13,8 @@ import {
 } from './shared/labelable';
 import {
   Label,
+  RegressionStage,
+  craftRegressionLabel,
   externalContributorLabel,
   flakyTestsLabel,
   invalidIssueTemplateLabel,
@@ -21,15 +23,14 @@ import {
 import { TemplateType, templates } from './shared/template';
 import { retrievePullRequest } from './shared/pull-request';
 
-enum RegressionStage {
-  DevelopmentFeature,
-  DevelopmentMain,
-  Testing,
-  Beta,
-  Production
-}
-
-const knownBots = ["metamaskbot", "dependabot", "github-actions", "sentry-io", "devin-ai-integration"];
+const knownBots = [
+  'metamaskbot',
+  'dependabot',
+  'github-actions',
+  'sentry-io',
+  'devin-ai-integration',
+  'runway-github',
+];
 
 main().catch((error: Error): void => {
   console.error(error);
@@ -83,7 +84,10 @@ async function main(): Promise<void> {
   }
 
   // If author is not part of the MetaMask organisation
-  if (!knownBots.includes(labelable?.author) && !(await userBelongsToMetaMaskOrg(octokit, labelable?.author))) {
+  if (
+    !knownBots.includes(labelable?.author) &&
+    !(await userBelongsToMetaMaskOrg(octokit, labelable?.author))
+  ) {
     // Add external contributor label to the issue
     await addLabelToLabelable(octokit, labelable, externalContributorLabel);
   }
@@ -95,16 +99,21 @@ async function main(): Promise<void> {
 
   // If labelable's author is a bot we skip the template checks as bots don't use templates
   if (knownBots.includes(labelable.author)) {
-    console.log(`${labelable.type === LabelableType.PullRequest ? 'PR' : 'Issue'} was created by a bot (${labelable.author}). Skip template checks.`);
+    console.log(
+      `${
+        labelable.type === LabelableType.PullRequest ? 'PR' : 'Issue'
+      } was created by a bot (${labelable.author}). Skip template checks.`,
+    );
     process.exit(0); // Stop the process and exit with a success status code
   }
 
   if (labelable.type === LabelableType.Issue) {
-
     // If labelable is a flaky test report, no template is needed (we just add a link to circle.ci in the description), we skip the template checks
     const flakyTestsLabelFound = findLabel(labelable, flakyTestsLabel);
     if (flakyTestsLabelFound?.id) {
-      console.log(`Issue ${labelable?.number} was created to report a flaky test. Issue's description doesn't need to match issue template in that case as the issue's description only includes a link redirecting to circle.ci. Skip template checks.`);
+      console.log(
+        `Issue ${labelable?.number} was created to report a flaky test. Issue's description doesn't need to match issue template in that case as the issue's description only includes a link redirecting to circle.ci. Skip template checks.`,
+      );
       await removeLabelFromLabelableIfPresent(
         octokit,
         labelable,
@@ -130,7 +139,6 @@ async function main(): Promise<void> {
 
       // Add regression label to the bug report issue
       addRegressionLabelToIssue(octokit, labelable);
-
     } else {
       const errorMessage =
         "Issue body does not match any of expected templates ('general-issue.yml' or 'bug-report.yml').\n\nMake sure issue's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/main/.github/scripts/shared/template.ts#L14-L37";
@@ -152,8 +160,7 @@ async function main(): Promise<void> {
         invalidPullRequestTemplateLabel,
       );
     } else {
-      const errorMessage =
-        `PR body does not match template ('pull-request-template.md').\n\nMake sure PR's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/main/.github/scripts/shared/template.ts#L40-L47`;
+      const errorMessage = `PR body does not match template ('pull-request-template.md').\n\nMake sure PR's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/main/.github/scripts/shared/template.ts#L40-L47`;
       console.log(errorMessage);
 
       // Add label to indicate PR body doesn't match template
@@ -269,7 +276,10 @@ async function addRegressionLabelToIssue(
   );
 
   // Craft regression label to add
-  const regressionLabel: Label = craftRegressionLabel(regressionStage, releaseVersion);
+  const regressionLabel: Label = craftRegressionLabel(
+    regressionStage,
+    releaseVersion,
+  );
 
   let regressionLabelFound: boolean = false;
   const regressionLabelsToBeRemoved: {
@@ -292,9 +302,7 @@ async function addRegressionLabelToIssue(
       `Issue ${issue?.number} already has ${regressionLabel.name} label.`,
     );
   } else {
-    console.log(
-      `Add ${regressionLabel.name} label to issue ${issue?.number}.`,
-    );
+    console.log(`Add ${regressionLabel.name} label to issue ${issue?.number}.`);
     await addLabelToLabelable(octokit, issue, regressionLabel);
   }
 
@@ -330,51 +338,4 @@ async function userBelongsToMetaMaskOrg(
   } = await octokit.graphql(userBelongsToMetaMaskOrgQuery, { login: username });
 
   return Boolean(userBelongsToMetaMaskOrgResult?.user?.organization?.id);
-}
-
-// This function crafts appropriate label, corresponding to regression stage and release version.
-function craftRegressionLabel(regressionStage: RegressionStage | undefined, releaseVersion: string | undefined): Label {
-  switch (regressionStage) {
-    case RegressionStage.DevelopmentFeature:
-      return {
-        name: `feature-branch-bug`,
-        color: '5319E7', // violet
-        description: `bug that was found on a feature branch, but not yet merged in main branch`,
-      };
-
-    case RegressionStage.DevelopmentMain:
-      return {
-        name: `regression-main`,
-        color: '5319E7', // violet
-        description: `Regression bug that was found on main branch, but not yet present in production`,
-      };
-
-    case RegressionStage.Testing:
-      return {
-        name: `regression-RC-${releaseVersion || '*'}`,
-        color: '744C11', // orange
-        description: releaseVersion ? `Regression bug that was found in release candidate (RC) for release ${releaseVersion}` : `TODO: Unknown release version. Please replace with correct 'regression-RC-x.y.z' label, where 'x.y.z' is the number of the release where bug was found.`,
-      };
-
-    case RegressionStage.Beta:
-      return {
-        name: `regression-beta-${releaseVersion || '*'}`,
-        color: 'D94A83', // pink
-        description: releaseVersion ? `Regression bug that was found in beta in release ${releaseVersion}` : `TODO: Unknown release version. Please replace with correct 'regression-beta-x.y.z' label, where 'x.y.z' is the number of the release where bug was found.`,
-      };
-
-    case RegressionStage.Production:
-      return {
-        name: `regression-prod-${releaseVersion || '*'}`,
-        color: '5319E7', // violet
-        description: releaseVersion ? `Regression bug that was found in production in release ${releaseVersion}` : `TODO: Unknown release version. Please replace with correct 'regression-prod-x.y.z' label, where 'x.y.z' is the number of the release where bug was found.`,
-      };
-
-    default:
-      return {
-        name: `regression-*`,
-        color: 'EDEDED', // grey
-        description: `TODO: Unknown regression stage. Please replace with correct regression label: 'regression-main', 'regression-RC-x.y.z', or 'regression-prod-x.y.z' label, where 'x.y.z' is the number of the release where bug was found.`,
-      };
-  }
 }
