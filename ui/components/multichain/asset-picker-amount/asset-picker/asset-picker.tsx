@@ -131,10 +131,13 @@ export function AssetPicker({
   // Badge details
   const currentChainId = useMultichainSelector(getMultichainCurrentChainId);
   const allNetworks = useSelector(getMultichainNetworkConfigurationsByChainId);
-  const currentNetwork_ =
+  // These 2 have similar data but different types
+  const currentNetworkConfiguration =
     allNetworks[currentChainId as keyof typeof allNetworks];
-  const currentNetwork = useMultichainSelector(getMultichainCurrentNetwork);
-  const selectedNetwork = networkProps?.network ?? currentNetwork_;
+  const currentNetworkProviderConfig = useMultichainSelector(
+    getMultichainCurrentNetwork,
+  );
+  const selectedNetwork = networkProps?.network ?? currentNetworkConfiguration;
 
   const allNetworksToUse = networkProps?.networks ?? Object.values(allNetworks);
   const { balanceByChainId } = useMultichainBalances();
@@ -194,7 +197,7 @@ export function AssetPicker({
             // If there is only 1 selected network switch to that network to populate tokens
             if (
               chainIds.length === 1 &&
-              chainIds[0] !== currentNetwork?.chainId
+              chainIds[0] !== currentNetworkProviderConfig?.chainId
             ) {
               if (networkProps?.onNetworkChange) {
                 networkProps.onNetworkChange(
