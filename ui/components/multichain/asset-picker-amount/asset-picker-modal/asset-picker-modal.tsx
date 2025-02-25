@@ -61,6 +61,7 @@ import {
 } from '../../../../selectors/multichain';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import { getAssetsMetadata } from '../../../../selectors/assets';
+import { Numeric } from '../../../../../shared/modules/Numeric';
 import type {
   ERC20Asset,
   NativeAsset,
@@ -258,7 +259,13 @@ export function AssetPickerModal({
                   ],
                 type: AssetType.native,
               }
-            : token;
+            : {
+                ...token,
+                // The Send flow requires the balance to be in Hex
+                balance: Numeric.from(token.balance ?? '0', 10)
+                  .shiftedBy(-1 * token.decimals)
+                  .toPrefixedHexString(),
+              };
         }
       }
 
