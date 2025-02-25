@@ -19,6 +19,7 @@ import {
   getIsSolanaSupportEnabled,
 } from '../selectors';
 import { getInternalAccounts } from '../accounts';
+import { Hex } from 'viem';
 
 // Selector types
 
@@ -108,7 +109,10 @@ export const getMultichainNetworkConfigurationsByChainId =
       nonEvmNetworkConfigurationsByChainId,
       networkConfigurationsByChainId,
       isNonEvmNetworksEnabled,
-    ): Record<CaipChainId, InternalMultichainNetworkConfiguration> => {
+    ): [
+      Record<CaipChainId, InternalMultichainNetworkConfiguration>,
+      Record<Hex, InternalNetworkConfiguration>,
+    ] => {
       const filteredNonEvmNetworkConfigurationsByChainId: Record<
         CaipChainId,
         InternalMultichainNetworkConfiguration
@@ -148,7 +152,7 @@ export const getMultichainNetworkConfigurationsByChainId =
         ...evmNetworks,
       };
 
-      return networks;
+      return [networks, networkConfigurationsByChainId];
     },
   );
 

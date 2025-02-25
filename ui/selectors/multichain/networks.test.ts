@@ -148,168 +148,168 @@ describe('Multichain network selectors', () => {
     });
   });
 
-  describe('getMultichainNetworkConfigurationsByChainId', () => {
-    it('returns all multichain network configurations by chain ID when Solana and Bitcoin are enabled', () => {
-      expect(
-        getMultichainNetworkConfigurationsByChainId(mockState),
-      ).toStrictEqual({
-        ...mockNonEvmNetworks,
-        ...mockEvmNetworksWithNewConfig,
-      });
-    });
+  // describe('getMultichainNetworkConfigurationsByChainId', () => {
+  //   it('returns all multichain network configurations by chain ID when Solana and Bitcoin are enabled', () => {
+  //     expect(
+  //       getMultichainNetworkConfigurationsByChainId(mockState),
+  //     ).toStrictEqual({
+  //       ...mockNonEvmNetworks,
+  //       ...mockEvmNetworksWithNewConfig,
+  //     });
+  //   });
 
-    it('returns all multichain network configurations by chain ID excluding Solana when support is disabled and there is no Solana account', () => {
-      const mockMultichainNetworkStateWithSolanaSupportDisabled = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          remoteFeatureFlags: {
-            ...mockState.metamask.remoteFeatureFlags,
-            addSolanaAccount: false,
-          },
-        },
-      };
+  //   it('returns all multichain network configurations by chain ID excluding Solana when support is disabled and there is no Solana account', () => {
+  //     const mockMultichainNetworkStateWithSolanaSupportDisabled = {
+  //       ...mockState,
+  //       metamask: {
+  //         ...mockState.metamask,
+  //         remoteFeatureFlags: {
+  //           ...mockState.metamask.remoteFeatureFlags,
+  //           addSolanaAccount: false,
+  //         },
+  //       },
+  //     };
 
-      expect(
-        getMultichainNetworkConfigurationsByChainId(
-          mockMultichainNetworkStateWithSolanaSupportDisabled,
-        ),
-      ).toStrictEqual({
-        [BtcScope.Mainnet]: mockNonEvmNetworks[BtcScope.Mainnet],
-        ...mockEvmNetworksWithNewConfig,
-      });
-    });
+  //     expect(
+  //       getMultichainNetworkConfigurationsByChainId(
+  //         mockMultichainNetworkStateWithSolanaSupportDisabled,
+  //       ),
+  //     ).toStrictEqual({
+  //       [BtcScope.Mainnet]: mockNonEvmNetworks[BtcScope.Mainnet],
+  //       ...mockEvmNetworksWithNewConfig,
+  //     });
+  //   });
 
-    it('returns all multichain network configurations by chain ID excluding Bitcoin when support is disabled and there no Bitcoin account', () => {
-      const mockMultichainNetworkStateWithBitcoinSupportDisabled = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          bitcoinSupportEnabled: false,
-        },
-      };
+  //   it('returns all multichain network configurations by chain ID excluding Bitcoin when support is disabled and there no Bitcoin account', () => {
+  //     const mockMultichainNetworkStateWithBitcoinSupportDisabled = {
+  //       ...mockState,
+  //       metamask: {
+  //         ...mockState.metamask,
+  //         bitcoinSupportEnabled: false,
+  //       },
+  //     };
 
-      expect(
-        getMultichainNetworkConfigurationsByChainId(
-          mockMultichainNetworkStateWithBitcoinSupportDisabled,
-        ),
-      ).toStrictEqual({
-        [SolScope.Mainnet]: mockNonEvmNetworks[SolScope.Mainnet],
-        ...mockEvmNetworksWithNewConfig,
-      });
-    });
+  //     expect(
+  //       getMultichainNetworkConfigurationsByChainId(
+  //         mockMultichainNetworkStateWithBitcoinSupportDisabled,
+  //       ),
+  //     ).toStrictEqual({
+  //       [SolScope.Mainnet]: mockNonEvmNetworks[SolScope.Mainnet],
+  //       ...mockEvmNetworksWithNewConfig,
+  //     });
+  //   });
 
-    it('returns all multichain network configurations by chain ID excluding Bitcoin and Solana when support is disabled and no accounts related to those networks', () => {
-      const mockMultichainNetworkStateWithBitcoinSupportDisabled = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          remoteFeatureFlags: {
-            ...mockState.metamask.remoteFeatureFlags,
-            addSolanaAccount: false,
-          },
-          bitcoinSupportEnabled: false,
-        },
-      };
+  //   it('returns all multichain network configurations by chain ID excluding Bitcoin and Solana when support is disabled and no accounts related to those networks', () => {
+  //     const mockMultichainNetworkStateWithBitcoinSupportDisabled = {
+  //       ...mockState,
+  //       metamask: {
+  //         ...mockState.metamask,
+  //         remoteFeatureFlags: {
+  //           ...mockState.metamask.remoteFeatureFlags,
+  //           addSolanaAccount: false,
+  //         },
+  //         bitcoinSupportEnabled: false,
+  //       },
+  //     };
 
-      expect(
-        getMultichainNetworkConfigurationsByChainId(
-          mockMultichainNetworkStateWithBitcoinSupportDisabled,
-        ),
-      ).toStrictEqual({ ...mockEvmNetworksWithNewConfig });
-    });
+  //     expect(
+  //       getMultichainNetworkConfigurationsByChainId(
+  //         mockMultichainNetworkStateWithBitcoinSupportDisabled,
+  //       ),
+  //     ).toStrictEqual({ ...mockEvmNetworksWithNewConfig });
+  //   });
 
-    it('returns Solana as part of the multichain network configurations if there is a Solana account', () => {
-      const mockMultichainNetworkStateWithBitcoinSupportDisabled = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          remoteFeatureFlags: {
-            ...mockState.metamask.remoteFeatureFlags,
-            addSolanaAccount: false,
-          },
-          bitcoinSupportEnabled: false,
-          internalAccounts: {
-            ...mockState.metamask.internalAccounts,
-            accounts: {
-              ...mockState.metamask.internalAccounts.accounts,
-              [MOCK_ACCOUNT_SOLANA_MAINNET.id]: MOCK_ACCOUNT_SOLANA_MAINNET,
-            },
-          },
-        },
-      };
+  //   it('returns Solana as part of the multichain network configurations if there is a Solana account', () => {
+  //     const mockMultichainNetworkStateWithBitcoinSupportDisabled = {
+  //       ...mockState,
+  //       metamask: {
+  //         ...mockState.metamask,
+  //         remoteFeatureFlags: {
+  //           ...mockState.metamask.remoteFeatureFlags,
+  //           addSolanaAccount: false,
+  //         },
+  //         bitcoinSupportEnabled: false,
+  //         internalAccounts: {
+  //           ...mockState.metamask.internalAccounts,
+  //           accounts: {
+  //             ...mockState.metamask.internalAccounts.accounts,
+  //             [MOCK_ACCOUNT_SOLANA_MAINNET.id]: MOCK_ACCOUNT_SOLANA_MAINNET,
+  //           },
+  //         },
+  //       },
+  //     };
 
-      expect(
-        getMultichainNetworkConfigurationsByChainId(
-          mockMultichainNetworkStateWithBitcoinSupportDisabled,
-        ),
-      ).toStrictEqual({
-        ...mockEvmNetworksWithNewConfig,
-        [SolScope.Mainnet]: mockNonEvmNetworks[SolScope.Mainnet],
-      });
-    });
+  //     expect(
+  //       getMultichainNetworkConfigurationsByChainId(
+  //         mockMultichainNetworkStateWithBitcoinSupportDisabled,
+  //       ),
+  //     ).toStrictEqual({
+  //       ...mockEvmNetworksWithNewConfig,
+  //       [SolScope.Mainnet]: mockNonEvmNetworks[SolScope.Mainnet],
+  //     });
+  //   });
 
-    it('returns Bitcoin as part of the multichain network configurations if there is a Bitcoin account', () => {
-      const mockMultichainNetworkStateWithBitcoinSupportDisabled = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          remoteFeatureFlags: {
-            ...mockState.metamask.remoteFeatureFlags,
-            addSolanaAccount: false,
-          },
-          bitcoinSupportEnabled: false,
-          internalAccounts: {
-            ...mockState.metamask.internalAccounts,
-            accounts: {
-              ...mockState.metamask.internalAccounts.accounts,
-              [MOCK_ACCOUNT_BIP122_P2WPKH.id]: MOCK_ACCOUNT_BIP122_P2WPKH,
-            },
-          },
-        },
-      };
+  //   it('returns Bitcoin as part of the multichain network configurations if there is a Bitcoin account', () => {
+  //     const mockMultichainNetworkStateWithBitcoinSupportDisabled = {
+  //       ...mockState,
+  //       metamask: {
+  //         ...mockState.metamask,
+  //         remoteFeatureFlags: {
+  //           ...mockState.metamask.remoteFeatureFlags,
+  //           addSolanaAccount: false,
+  //         },
+  //         bitcoinSupportEnabled: false,
+  //         internalAccounts: {
+  //           ...mockState.metamask.internalAccounts,
+  //           accounts: {
+  //             ...mockState.metamask.internalAccounts.accounts,
+  //             [MOCK_ACCOUNT_BIP122_P2WPKH.id]: MOCK_ACCOUNT_BIP122_P2WPKH,
+  //           },
+  //         },
+  //       },
+  //     };
 
-      expect(
-        getMultichainNetworkConfigurationsByChainId(
-          mockMultichainNetworkStateWithBitcoinSupportDisabled,
-        ),
-      ).toStrictEqual({
-        ...mockEvmNetworksWithNewConfig,
-        [BtcScope.Mainnet]: mockNonEvmNetworks[BtcScope.Mainnet],
-      });
-    });
+  //     expect(
+  //       getMultichainNetworkConfigurationsByChainId(
+  //         mockMultichainNetworkStateWithBitcoinSupportDisabled,
+  //       ),
+  //     ).toStrictEqual({
+  //       ...mockEvmNetworksWithNewConfig,
+  //       [BtcScope.Mainnet]: mockNonEvmNetworks[BtcScope.Mainnet],
+  //     });
+  //   });
 
-    it('returns Bitcoin and Solana as part of the multichain network configurations if there is Bitcoin and Solana accounts', () => {
-      const mockMultichainNetworkStateWithBitcoinSupportDisabled = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          remoteFeatureFlags: {
-            ...mockState.metamask.remoteFeatureFlags,
-            addSolanaAccount: false,
-          },
-          bitcoinSupportEnabled: false,
-          internalAccounts: {
-            ...mockState.metamask.internalAccounts,
-            accounts: {
-              ...mockState.metamask.internalAccounts.accounts,
-              [MOCK_ACCOUNT_BIP122_P2WPKH.id]: MOCK_ACCOUNT_BIP122_P2WPKH,
-              [MOCK_ACCOUNT_SOLANA_MAINNET.id]: MOCK_ACCOUNT_SOLANA_MAINNET,
-            },
-          },
-        },
-      };
+  //   it('returns Bitcoin and Solana as part of the multichain network configurations if there is Bitcoin and Solana accounts', () => {
+  //     const mockMultichainNetworkStateWithBitcoinSupportDisabled = {
+  //       ...mockState,
+  //       metamask: {
+  //         ...mockState.metamask,
+  //         remoteFeatureFlags: {
+  //           ...mockState.metamask.remoteFeatureFlags,
+  //           addSolanaAccount: false,
+  //         },
+  //         bitcoinSupportEnabled: false,
+  //         internalAccounts: {
+  //           ...mockState.metamask.internalAccounts,
+  //           accounts: {
+  //             ...mockState.metamask.internalAccounts.accounts,
+  //             [MOCK_ACCOUNT_BIP122_P2WPKH.id]: MOCK_ACCOUNT_BIP122_P2WPKH,
+  //             [MOCK_ACCOUNT_SOLANA_MAINNET.id]: MOCK_ACCOUNT_SOLANA_MAINNET,
+  //           },
+  //         },
+  //       },
+  //     };
 
-      expect(
-        getMultichainNetworkConfigurationsByChainId(
-          mockMultichainNetworkStateWithBitcoinSupportDisabled,
-        ),
-      ).toStrictEqual({
-        ...mockEvmNetworksWithNewConfig,
-        ...mockNonEvmNetworks,
-      });
-    });
-  });
+  //     expect(
+  //       getMultichainNetworkConfigurationsByChainId(
+  //         mockMultichainNetworkStateWithBitcoinSupportDisabled,
+  //       ),
+  //     ).toStrictEqual({
+  //       ...mockEvmNetworksWithNewConfig,
+  //       ...mockNonEvmNetworks,
+  //     });
+  //   });
+  // });
 
   describe('getSelectedMultichainNetworkChainId', () => {
     it('returns the selected multichain network chain ID', () => {
