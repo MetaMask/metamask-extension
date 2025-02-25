@@ -15,17 +15,9 @@ import {
   NftControllerState,
   RatesControllerState,
   TokenRatesControllerState,
-  MultichainBalancesController,
   MultichainBalancesControllerState,
-  MultichainAssetsController,
-  MultiChainAssetsRatesController,
-  MultichainAssetsControllerState,
-  MultichainAssetsRatesControllerState,
 } from '@metamask/assets-controllers';
-import {
-  KeyringController,
-  KeyringControllerState,
-} from '@metamask/keyring-controller';
+import { KeyringControllerState } from '@metamask/keyring-controller';
 import {
   AddressBookController,
   AddressBookControllerState,
@@ -43,14 +35,11 @@ import {
   AnnouncementController,
   AnnouncementControllerState,
 } from '@metamask/announcement-controller';
-import { NetworkController, NetworkState } from '@metamask/network-controller';
-import { GasFeeController, GasFeeState } from '@metamask/gas-fee-controller';
+import { NetworkState } from '@metamask/network-controller';
+import { GasFeeState } from '@metamask/gas-fee-controller';
 import {
-  CaveatConstraint,
   PermissionConstraint,
-  PermissionController,
   PermissionControllerState,
-  PermissionSpecificationConstraint,
   SubjectMetadataController,
   SubjectMetadataControllerState,
 } from '@metamask/permission-controller';
@@ -71,16 +60,11 @@ import {
   PermissionLogControllerState,
 } from '@metamask/permission-log-controller';
 import {
-  SnapController,
-  CronjobController,
-  SnapInterfaceController,
-  SnapInsightsController,
   SnapControllerState,
   CronjobControllerState,
   SnapsRegistryState,
   SnapInterfaceControllerState,
   SnapInsightsControllerState,
-  JsonSnapsRegistry,
 } from '@metamask/snaps-controllers';
 import {
   AccountsController,
@@ -90,7 +74,7 @@ import {
   SignatureController,
   SignatureControllerState,
 } from '@metamask/signature-controller';
-import { PPOMController, PPOMState } from '@metamask/ppom-validator';
+import { PPOMState } from '@metamask/ppom-validator';
 import { NameController, NameControllerState } from '@metamask/name-controller';
 import {
   QueuedRequestController,
@@ -112,21 +96,14 @@ import {
   NotificationServicesController,
   NotificationServicesPushController,
 } from '@metamask/notification-services-controller';
-import SmartTransactionsController, {
-  SmartTransactionsControllerState,
-} from '@metamask/smart-transactions-controller';
-import {
-  MultichainTransactionsController,
-  MultichainTransactionsControllerState,
-} from '@metamask/multichain-transactions-controller';
-import {
-  MultichainNetworkController,
-  MultichainNetworkControllerState,
-} from '@metamask/multichain-network-controller';
+import { SmartTransactionsControllerState } from '@metamask/smart-transactions-controller';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { MmiConfigurationController } from '@metamask-institutional/custody-keyring';
 import { InstitutionalFeaturesController } from '@metamask-institutional/institutional-features';
 import { CustodyController } from '@metamask-institutional/custody-controller';
+///: END:ONLY_INCLUDE_IF
 
+import { Controller as ModularInitControllers } from '../../app/scripts/controller-init/controller-list';
 import AccountTrackerController, {
   AccountTrackerControllerState,
 } from '../../app/scripts/controllers/account-tracker-controller';
@@ -138,10 +115,7 @@ import {
   AccountOrderController,
   AccountOrderControllerState,
 } from '../../app/scripts/controllers/account-order';
-import {
-  PreferencesController,
-  PreferencesControllerState,
-} from '../../app/scripts/controllers/preferences-controller';
+import { PreferencesControllerState } from '../../app/scripts/controllers/preferences-controller';
 import {
   AppStateController,
   AppStateControllerState,
@@ -163,9 +137,7 @@ import EncryptionPublicKeyController, {
 import DecryptMessageController, {
   DecryptMessageControllerState,
 } from '../../app/scripts/controllers/decrypt-message';
-import OnboardingController, {
-  OnboardingControllerState,
-} from '../../app/scripts/controllers/onboarding';
+import { OnboardingControllerState } from '../../app/scripts/controllers/onboarding';
 import MetaMetricsController, {
   MetaMetricsControllerState,
 } from '../../app/scripts/controllers/metametrics-controller';
@@ -176,11 +148,13 @@ import { SwapsControllerState } from '../../app/scripts/controllers/swaps/swaps.
 
 import { BridgeControllerState } from './bridge';
 import { BridgeStatusControllerState } from './bridge-status';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import {
   CustodyControllerState,
   InstitutionalFeaturesControllerState,
   MmiConfigurationControllerState,
 } from './institutional';
+///: END:ONLY_INCLUDE_IF
 
 export type ResetOnRestartStores = {
   AccountTracker: AccountTrackerController;
@@ -208,43 +182,50 @@ export type ResetOnRestartStoresComposedState = {
   ApprovalController: ApprovalControllerState;
 };
 
-export type PersistedControllers = {
-  PPOMController: PPOMController;
+export type ModularInitControllerMap = {
+  [Controller in ModularInitControllers as Controller['name']]: Controller;
 };
 
-export type ControllerPersistedState = {
-  PPOMController: PPOMState;
+export type ModularInitStatefulControllersMap = Omit<
+  ModularInitControllerMap,
+  'ExecutionService' | 'RateLimitController' | 'TransactionUpdateController'
+> & {
+  AccountsController: AccountsController;
+  SwapsController: SwapsController;
 };
+
+export type ModularInitControllerStateMap = {
+  [ControllerName in keyof ModularInitStatefulControllersMap as ModularInitStatefulControllersMap[ControllerName]['name']]: ModularInitStatefulControllersMap[ControllerName]['state'];
+};
+
+export type PersistedControllers = Omit<
+  ModularInitControllerMap,
+  'ExecutionService' | 'RateLimitController' | 'TransactionUpdateController'
+>;
+
+export type ControllerPersistedState = Pick<
+  ModularInitControllerStateMap,
+  keyof PersistedControllers
+>;
 
 export type StoreControllers = ResetOnRestartStores &
   PersistedControllers & {
     AccountsController: AccountsController;
     AppStateController: AppStateController;
     AppMetadataController: AppMetadataController;
-    KeyringController: KeyringController;
-    PreferencesController: PreferencesController;
     MetaMetricsController: MetaMetricsController;
     MetaMetricsDataDeletionController: MetaMetricsDataDeletionController;
     AddressBookController: AddressBookController;
     CurrencyController: CurrencyRateController;
-    MultichainNetworkController: MultichainNetworkController;
-    NetworkController: NetworkController;
     AlertController: AlertController;
-    OnboardingController: OnboardingController;
-    PermissionController: PermissionController<
-      PermissionSpecificationConstraint,
-      CaveatConstraint
-    >;
     PermissionLogController: PermissionLogController;
     SubjectMetadataController: SubjectMetadataController;
     AnnouncementController: AnnouncementController;
     NetworkOrderController: NetworkOrderController;
     AccountOrderController: AccountOrderController;
-    GasFeeController: GasFeeController;
     TokenListController: TokenListController;
     TokensController: TokensController;
     TokenBalancesController: TokenBalancesController;
-    SmartTransactionsController: SmartTransactionsController;
     NftController: NftController;
     PhishingController: PhishingController;
     SelectedNetworkController: SelectedNetworkController;
@@ -270,27 +251,19 @@ export type StoreControllersComposedState = ResetOnRestartStoresComposedState &
     AccountsController: AccountsControllerState;
     AppStateController: AppStateControllerState;
     AppMetadataController: AppMetadataControllerState;
-    KeyringController: KeyringControllerState;
-    PreferencesController: PreferencesControllerState;
     MetaMetricsController: MetaMetricsControllerState;
     MetaMetricsDataDeletionController: MetaMetricsDataDeletionState;
     AddressBookController: AddressBookControllerState;
     CurrencyController: CurrencyRateState;
-    MultichainNetworkController: MultichainNetworkControllerState;
-    NetworkController: NetworkState;
     AlertController: AlertControllerState;
-    OnboardingController: OnboardingControllerState;
-    PermissionController: PermissionControllerState<PermissionConstraint>;
     PermissionLogController: PermissionLogControllerState;
     SubjectMetadataController: SubjectMetadataControllerState;
     AnnouncementController: AnnouncementControllerState;
     NetworkOrderController: NetworkOrderControllerState;
     AccountOrderController: AccountOrderControllerState;
-    GasFeeController: GasFeeState;
     TokenListController: TokenListState;
     TokensController: TokensControllerState;
     TokenBalancesController: TokenBalancesControllerState;
-    SmartTransactionsController: SmartTransactionsControllerState;
     NftController: NftControllerState;
     PhishingController: PhishingControllerState;
     SelectedNetworkController: SelectedNetworkControllerState;
@@ -311,12 +284,24 @@ export type StoreControllersComposedState = ResetOnRestartStoresComposedState &
     RemoteFeatureFlagController: RemoteFeatureFlagControllerState;
   };
 
-export type MemControllers = {
-  TransactionController: TransactionController;
+export type MemControllers = Omit<
+  ModularInitControllerMap,
+  | 'ExecutionService'
+  | 'RateLimitController'
+  | 'TransactionUpdateController'
+  | 'TransactionController'
+> & {
+  TxController: TransactionController;
 };
 
-export type ControllerMemState = {
-  TransactionController: TransactionControllerState;
+export type ControllerMemState = Omit<
+  ModularInitControllerStateMap,
+  | 'ExecutionService'
+  | 'RateLimitController'
+  | 'TransactionUpdateController'
+  | 'TransactionController'
+> & {
+  TxController: TransactionControllerState;
 };
 
 export type MemStoreControllers = Omit<
@@ -328,18 +313,8 @@ export type MemStoreControllers = Omit<
   | 'MmiConfigurationController'
   ///: END:ONLY_INCLUDE_IF
 > &
-  MemControllers & {
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-    MultichainAssetsController: MultichainAssetsController;
-    MultichainBalancesController: MultichainBalancesController;
-    MultichainTransactionsController: MultichainTransactionsController;
-    MultiChainAssetsRatesController: MultiChainAssetsRatesController;
-    ///: END:ONLY_INCLUDE_IF
-    SnapController: SnapController;
-    CronjobController: CronjobController;
-    SnapsRegistry: JsonSnapsRegistry;
-    SnapInterfaceController: SnapInterfaceController;
-    SnapInsightsController: SnapInsightsController;
+  MemControllers &
+  ModularInitControllerMap & {
     QueuedRequestController: QueuedRequestController;
   };
 
@@ -353,17 +328,6 @@ export type MemStoreControllersComposedState = Omit<
   ///: END:ONLY_INCLUDE_IF
 > &
   ControllerMemState & {
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-    MultichainAssetsController: MultichainAssetsControllerState;
-    MultichainBalancesController: MultichainBalancesControllerState;
-    MultichainTransactionsController: MultichainTransactionsControllerState;
-    MultiChainAssetsRatesController: MultichainAssetsRatesControllerState;
-    ///: END:ONLY_INCLUDE_IF
-    SnapController: SnapControllerState;
-    CronjobController: CronjobControllerState;
-    SnapsRegistry: SnapsRegistryState;
-    SnapInterfaceController: SnapInterfaceControllerState;
-    SnapInsightsController: SnapInsightsControllerState;
     QueuedRequestController: QueuedRequestControllerState;
   };
 
