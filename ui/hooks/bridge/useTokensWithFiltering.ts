@@ -143,6 +143,8 @@ export const useTokensWithFiltering = (
               ...token,
               address: token.address || zeroAddress(),
               type: AssetType.token,
+              balance: '0',
+              string: undefined,
             };
           }
         }
