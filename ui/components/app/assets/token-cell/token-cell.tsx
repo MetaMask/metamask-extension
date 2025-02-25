@@ -41,7 +41,7 @@ import {
   TokenCellSecondaryDisplay,
 } from './cells';
 
-type TokenCellProps = {
+export type TokenCellProps = {
   token: TokenWithFiatAmount;
   privacyMode?: boolean;
   onClick?: (chainId: string, address: string) => void;
