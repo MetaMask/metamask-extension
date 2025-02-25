@@ -314,7 +314,6 @@ describe('Custom RPC history', function () {
         const networkItemClassName = '.multichain-network-list-item';
         const networkMenuClassName = '.multichain-network-list-menu';
 
-
         await driver.waitForSelector(networkMenuClassName);
         const networkListItems = await driver.findClickableElements(
           networkItemClassName,
