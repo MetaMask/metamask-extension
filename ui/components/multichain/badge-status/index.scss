@@ -2,8 +2,8 @@
   padding: 0;
 
   &__badge {
-    height: 16px;
-    width: 16px;
+    height: 12px;
+    width: 12px;
     z-index: 1;
   }
 
@@ -13,8 +13,8 @@
   }
 
   &__badge-not-connected {
-    height: 10px;
-    width: 10px;
+    height: 8px;
+    width: 8px;
   }
 
   &__badge-not-connected::after {

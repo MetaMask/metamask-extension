@@ -53,8 +53,8 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
         <BadgeWrapper
           positionObj={
             isConnectedAndNotActive
-              ? { bottom: 2, right: 5 }
-              : { bottom: -1, right: 2 }
+              ? { bottom: 0, right: 8 }
+              : { bottom: -1, right: 7 }
           }
           badge={
             <Box
