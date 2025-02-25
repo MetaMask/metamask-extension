@@ -13,7 +13,6 @@ import { BigNumber } from 'bignumber.js';
 import { type TokenListMap } from '@metamask/assets-controllers';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { toChecksumAddress, zeroAddress } from 'ethereumjs-util';
-import type { Hex, CaipChainId } from '@metamask/utils';
 import { SolAccountType } from '@metamask/keyring-api';
 import {
   setFromToken,
@@ -344,8 +343,6 @@ const PrepareBridgePage = () => {
       providerConfig?.rpcUrl,
       slippage,
       selectedAccount?.address,
-      isSwap,
-      selectedMultichainAccount?.address,
       selectedEvmAccount?.address,
       selectedDestinationAccount?.address,
       isToOrFromSolana,
