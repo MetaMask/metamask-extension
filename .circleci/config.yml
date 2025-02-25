@@ -251,9 +251,6 @@ workflows:
             - prep-build-flask
             - prep-build-flask-mv2
             - all-tests-pass
-      - job-push-firefox-bundle-script:
-          requires:
-            - prep-deps
       - job-publish-ts-migration-dashboard:
           filters:
             branches:
