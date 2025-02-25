@@ -839,10 +839,6 @@ export function getAddressBook(state) {
   return Object.values(state.metamask.addressBook[chainId]);
 }
 
-export function getEthereumMainnetAddressBook(state) {
-  return Object.values(state.metamask.addressBook['0x1']);
-}
-
 export function getEnsResolutionByAddress(state, address) {
   if (state.metamask.ensResolutionsByAddress[address]) {
     const ensResolution = state.metamask.ensResolutionsByAddress[address];
@@ -1669,7 +1665,7 @@ export const getAccountInfoByCaipChainId = createDeepEqualSelector(
     return Object.values(internalAccounts.accounts).reduce(
       (accountInfo, account) => {
         if (account.scopes.includes(caipChainId)) {
-          accountInfo[account.address] = account.metadata.name;
+          accountInfo[account.address.toLowerCase()] = account.metadata.name;
         }
         return accountInfo;
       },
