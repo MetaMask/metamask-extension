@@ -13,6 +13,7 @@ const {
   SWAPS_API_V2_BASE_URL,
   TOKEN_API_BASE_URL,
 } = require('../../shared/constants/swaps');
+const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
 const {
   DEFAULT_FEATURE_FLAGS_RESPONSE: BRIDGE_DEFAULT_FEATURE_FLAGS_RESPONSE,
@@ -301,6 +302,21 @@ async function setupMocking(
         },
       };
     });
+
+  // This endpoint returns metadata for "transaction simulation" supported networks.
+  await server.forGet(`${TX_SENTINEL_URL}/networks`).thenJson(200, {
+    1: {
+      name: 'Mainnet',
+      group: 'ethereum',
+      chainID: 1,
+      nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+      network: 'ethereum-mainnet',
+      explorer: 'https://etherscan.io',
+      confirmations: true,
+      smartTransactions: true,
+      hidden: false,
+    },
+  });
 
   await server
     .forGet(`${SWAPS_API_V2_BASE_URL}/featureFlags`)
