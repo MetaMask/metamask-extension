@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
-import { getAddress } from 'ethers/lib/utils';
 import {
   Text,
   TextField,
@@ -14,11 +13,8 @@ import { AssetPicker } from '../../../components/multichain/asset-picker-amount/
 import { TabName } from '../../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
-import {
-  formatCurrencyAmount,
-  formatTokenAmount,
-  isNativeAddress,
-} from '../utils/quote';
+import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
+import { isNativeAddress } from '../../../../shared/modules/bridge-utils/caip-formatters';
 import { Column, Row } from '../layout';
 import {
   Display,
@@ -28,7 +24,6 @@ import {
   TextVariant,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { AssetType } from '../../../../shared/constants/transaction';
 import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import {
   getBridgeQuotes,
@@ -40,6 +35,8 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { getMultichainCurrentChainId } from '../../../selectors/multichain';
 import { BridgeAssetPickerButton } from './components/bridge-asset-picker-button';
 
 const sanitizeAmountInput = (textToSanitize: string) => {
@@ -91,7 +88,8 @@ export const BridgeInputGroup = ({
   const currency = useSelector(getCurrentCurrency);
   const locale = useSelector(getIntlLocale);
 
-  const selectedChainId = networkProps?.network?.chainId;
+  const currentChainId = useMultichainSelector(getMultichainCurrentChainId);
+  const selectedChainId = networkProps?.network?.chainId ?? currentChainId;
   const { balanceAmount } = useLatestBalance(token, selectedChainId);
 
   const [, handleCopy] = useCopyToClipboard(MINUTE) as [
@@ -240,22 +238,22 @@ export const BridgeInputGroup = ({
           }
           onClick={() => {
             if (isAmountReadOnly && token && selectedChainId) {
-              handleCopy(getAddress(token.address));
+              handleCopy(token.address);
             }
           }}
           as={isAmountReadOnly ? 'a' : 'p'}
         >
           {isAmountReadOnly &&
-          token &&
-          selectedChainId &&
-          token.type === AssetType.token
-            ? shortenString(token.address, {
-                truncatedCharLimit: 11,
-                truncatedStartChars: 4,
-                truncatedEndChars: 4,
-                skipCharacterInEnd: false,
-              })
-            : undefined}
+            token &&
+            selectedChainId &&
+            (isNativeAddress(token.address)
+              ? undefined
+              : shortenString(token.address, {
+                  truncatedCharLimit: 11,
+                  truncatedStartChars: 4,
+                  truncatedEndChars: 4,
+                  skipCharacterInEnd: false,
+                }))}
           {!isAmountReadOnly && balanceAmount
             ? formatTokenAmount(locale, balanceAmount, token?.symbol)
             : undefined}

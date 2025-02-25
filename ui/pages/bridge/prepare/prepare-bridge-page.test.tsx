@@ -8,6 +8,7 @@ import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/jest/mock-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { createTestProviderTools } from '../../../../test/stub/provider';
+import { formatChainIdToCaip } from '../../../../shared/modules/bridge-utils/caip-formatters';
 import PrepareBridgePage from './prepare-bridge-page';
 
 describe('PrepareBridgePage', () => {
@@ -134,7 +135,7 @@ describe('PrepareBridgePage', () => {
           address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
           decimals: 6,
         },
-        toChainId: CHAIN_IDS.LINEA_MAINNET,
+        toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
       },
       bridgeStateOverrides: {
         quoteRequest: {
@@ -201,7 +202,7 @@ describe('PrepareBridgePage', () => {
           address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
           decimals: 6,
         },
-        toChainId: CHAIN_IDS.LINEA_MAINNET,
+        toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
       },
     });
 

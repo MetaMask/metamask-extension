@@ -37,7 +37,6 @@ export const Default = {
   args: {
     transaction: mockTransaction,
     onClose: () => console.log('Modal closed'),
-    addressLink: 'https://explorer.bitcoin.com/btc/tx/3302...90c1',
     multichainNetwork: {
       nickname: 'Bitcoin',
       isEvmNetwork: false,
