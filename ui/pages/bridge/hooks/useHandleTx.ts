@@ -6,7 +6,7 @@ import {
 } from '@metamask/transaction-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { KeyringRpcMethod } from '@metamask/keyring-api';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { Hex } from '@metamask/utils';
 import { useHistory } from 'react-router-dom';
 import {
@@ -179,10 +179,32 @@ export default function useHandleTx() {
   };
 
   const isSolana = useMultichainSelector(getMultichainIsSolana);
-  const handleTx = useMemo(
-    () => (isSolana ? handleSolanaTx : handleEvmTx),
-    [isSolana],
-  );
 
-  return { handleTx };
+  return {
+    handleTx: async ({
+      txType,
+      txParams,
+      fieldsToAddToTxMeta,
+    }: {
+      txType: TransactionType.bridgeApproval | TransactionType.bridge;
+      txParams: {
+        chainId: ChainId;
+        to: string;
+        from: string;
+        value: string;
+        data: string;
+        gasLimit: number | null;
+      };
+      fieldsToAddToTxMeta: Omit<Partial<TransactionMeta>, 'status'>; // We don't add status, so omit it to fix the type error
+    }) => {
+      if (
+        isSolana &&
+        txType === TransactionType.bridge &&
+        typeof txParams === 'string'
+      ) {
+        return handleSolanaTx({ txType, txParams, fieldsToAddToTxMeta });
+      }
+      return handleEvmTx({ txType, txParams, fieldsToAddToTxMeta });
+    },
+  };
 }
