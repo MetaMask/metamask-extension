@@ -38,6 +38,13 @@ jobs:
           pattern: prep-build-test-${{ matrix.buildType }}
           merge-multiple: true
 
+      - run: echo "set -g mouse on" >> ~/.tmux.conf
+
+      - name: Debugging with tmate
+        uses: ./.github/actions/actions-tmate
+        with:
+          limit-access-to-actor: true
+
       - name: Run the benchmark
         # Choose a benchmark command from env.COMMANDS
         # Then replace the {0} placeholder with the browser, and the {1} placeholder with the buildType
