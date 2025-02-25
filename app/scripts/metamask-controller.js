@@ -2639,7 +2639,25 @@ export default class MetamaskController extends EventEmitter {
             this.controllerMessenger,
             'SnapController:clearSnapState',
           ),
-          getMnemonic: this.getPrimaryKeyringMnemonic.bind(this),
+          getMnemonic: async (source) => {
+            if (!source) {
+              return this.getPrimaryKeyringMnemonic();
+            }
+
+            const mnemonic = await this.controllerMessenger.call(
+              'KeyringController:withKeyring',
+              {
+                id: source,
+              },
+              async (keyring) => keyring.mnemonic,
+            );
+
+            if (!mnemonic) {
+              throw new Error(`Entropy source with ID "${source}" not found.`);
+            }
+
+            return mnemonic;
+          },
           getUnlockPromise: this.appStateController.getUnlockPromise.bind(
             this.appStateController,
           ),
@@ -6365,6 +6383,29 @@ export default class MetamaskController extends EventEmitter {
             ...rate,
             currency: fiatCurrency,
           };
+        },
+        getEntropySources: () => {
+          /**
+           * @type {KeyringController['state']}
+           */
+          const state = this.controllerMessenger.call(
+            'KeyringController:getState',
+          );
+
+          return state.keyrings
+            .map((keyring, index) => {
+              if (keyring.type === KeyringTypes.hd) {
+                return {
+                  id: state.keyringsMetadata[index].id,
+                  name: state.keyringsMetadata[index].name,
+                  type: 'mnemonic',
+                  primary: index === 0,
+                };
+              }
+
+              return null;
+            })
+            .filter(Boolean);
         },
         hasPermission: this.permissionController.hasPermission.bind(
           this.permissionController,

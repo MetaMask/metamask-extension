@@ -171,6 +171,7 @@ export const unrestrictedMethods = Object.freeze([
   'snap_clearState',
   'snap_getFile',
   'snap_getState',
+  'snap_listEntropySources',
   'snap_createInterface',
   'snap_updateInterface',
   'snap_getInterfaceState',
