@@ -436,9 +436,6 @@ describe('Sending with max amount', function () {
         // confirms the transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-        await driver.clickElement(
-          '[data-testid="wallet-initiated-header-back-button"]',
-        );
         await driver.wait(async () => {
           const confirmedTxs = await driver.findElements(
             '.transaction-list__completed-transactions .activity-list-item',
