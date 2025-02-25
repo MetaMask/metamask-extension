@@ -8,7 +8,6 @@ describe('Check balance', function (this: Suite) {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
-        solanaSupportEnabled: true,
         showNativeTokenAsMainBalance: true,
       },
       async (driver) => {
@@ -22,7 +21,6 @@ describe('Check balance', function (this: Suite) {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
-        solanaSupportEnabled: true,
         showNativeTokenAsMainBalance: false,
       },
       async (driver) => {
@@ -36,7 +34,6 @@ describe('Check balance', function (this: Suite) {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
-        solanaSupportEnabled: true,
         showNativeTokenAsMainBalance: true,
         mockCalls: true,
       },
@@ -51,7 +48,6 @@ describe('Check balance', function (this: Suite) {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
-        solanaSupportEnabled: true,
         showNativeTokenAsMainBalance: false,
         mockCalls: true,
       },
