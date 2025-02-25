@@ -16,7 +16,7 @@ import {
 type GenericPermissionControllerSubject =
   PermissionControllerSubjects<PermissionConstraint>[string];
 
-export const version = 151;
+export const version = 144;
 
 /**
  * A map of the networks built into the extension at the time of this migration
@@ -36,9 +36,9 @@ const BUILT_IN_NETWORKS: ReadonlyMap<string, Hex> = new Map([
  * Snaps that have the `endowment:ethereum-provider` permission, and sets the
  * selected chain ID for each Snap to the current selected network chain ID.
  *
- * This is necessary following the Amon Hen v2 changes to the network controller
- * and other related controllers, as the `endowment:caip25` permission is now
- * required to use the Ethereum provider and switch networks.
+ * This is to enable Snaps to change their network which has become necessary
+ * since the extension has switched to a per origin selected network system -
+ * previously all origins shared the single selected network of the wallet.
  *
  * To simplify the use for Snaps, we automatically add or modify the
  * `endowment:caip25` permission with the current selected network chain ID to
