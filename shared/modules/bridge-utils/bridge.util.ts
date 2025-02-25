@@ -31,6 +31,7 @@ import {
   BridgeFeatureFlagsKey,
   type BridgeFeatureFlags,
   type GenericQuoteRequest,
+  FeeType,
 } from '../../types/bridge';
 import {
   formatAddressToString,
@@ -177,13 +178,11 @@ export async function fetchBridgeQuotes(
       validateResponse<BridgeAsset>(TOKEN_VALIDATORS, quote.destAsset, url) &&
       (typeof trade === 'string' ||
         validateResponse<TxData>(TX_DATA_VALIDATORS, trade, url)) &&
-      (quote.feeData?.metabridge
-        ? validateResponse<FeeData>(
-            FEE_DATA_VALIDATORS,
-            quote.feeData.metabridge,
-            url,
-          )
-        : true) &&
+      validateResponse<FeeData>(
+        FEE_DATA_VALIDATORS,
+        quote.feeData[FeeType.METABRIDGE],
+        url,
+      ) &&
       (approval
         ? validateResponse<TxData>(TX_DATA_VALIDATORS, approval, url)
         : true)
