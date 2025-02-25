@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
@@ -40,18 +40,11 @@ export const ConnectedSiteMenu = ({
   globalMenuColor,
   status,
   text,
-  onClick,
   disabled,
+  onClick,
 }) => {
   const t = useI18nContext();
   const [showPopover, setShowPopover] = useState(false);
-  const handleMouseEnter = () => {
-    setShowPopover(true);
-  };
-
-  const handleMouseLeave = () => {
-    setShowPopover(false);
-  };
 
   const [referenceElement, setReferenceElement] = useState();
 
@@ -95,10 +88,9 @@ export const ConnectedSiteMenu = ({
         display={Display.Flex}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        backgroundColor={BackgroundColor.backgroundDefault}
         ref={setBoxRef}
-        onClick={() => setShowPopover(true)}
+        onClick={process.env.REMOVE_GNS ? () => setShowPopover(true) : onClick}
       >
         {process.env.REMOVE_GNS ? (
           iconElement
@@ -146,6 +138,8 @@ export const ConnectedSiteMenu = ({
         <ConnectedSitePopover
           referenceElement={referenceElement}
           isOpen={showPopover}
+          isConnected={!currentTabHasNoAccounts}
+          onClick={onClick}
         />
       )}
     </>

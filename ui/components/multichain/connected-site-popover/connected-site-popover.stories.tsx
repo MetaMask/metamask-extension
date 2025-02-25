@@ -13,7 +13,6 @@ export default {
     isOpen: true,
     networkImageUrl: './images/eth_logo.svg',
     networkName: 'Avalanche Network C-Chain',
-    isConnected: true,
   },
 };
 
