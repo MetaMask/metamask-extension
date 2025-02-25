@@ -9,6 +9,7 @@ import type { BigNumber } from 'bignumber.js';
 export type ChainConfiguration = {
   isActiveSrc: boolean;
   isActiveDest: boolean;
+  refreshRate: number;
 };
 
 export type L1GasFees = {

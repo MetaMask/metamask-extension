@@ -31,6 +31,7 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { REFRESH_INTERVAL_MS } from '../../../../shared/constants/bridge';
 import {
   formatAddressToString,
+  formatChainIdToCaip,
   formatChainIdToHex,
 } from '../../../../shared/modules/bridge-utils/caip-formatters';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
@@ -156,6 +157,8 @@ export default class BridgeController extends StaticIntervalPollingController<Br
           !(await this.#hasSufficientBalance(updatedQuoteRequest));
       }
 
+      // Set refresh rate based on the source chain before starting polling
+      this.#setIntervalLength();
       this.startPolling({
         networkClientId: srcChainIdString,
         updatedQuoteRequest: {
@@ -208,9 +211,23 @@ export default class BridgeController extends StaticIntervalPollingController<Br
     this.update((_state) => {
       _state.bridgeState = { ...bridgeState, bridgeFeatureFlags };
     });
-    this.setIntervalLength(
-      bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].refreshRate,
-    );
+    this.#setIntervalLength();
+  };
+
+  /**
+   * Sets the interval length based on the source chain
+   */
+  #setIntervalLength = () => {
+    const { bridgeState } = this.state;
+    const { srcChainId } = bridgeState.quoteRequest;
+    const refreshRateOverride = srcChainId
+      ? bridgeState.bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG]
+          .chains[formatChainIdToCaip(srcChainId)].refreshRate
+      : undefined;
+    const defaultRefreshRate =
+      bridgeState.bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG]
+        .refreshRate;
+    this.setIntervalLength(refreshRateOverride ?? defaultRefreshRate);
   };
 
   #fetchBridgeQuotes = async ({
