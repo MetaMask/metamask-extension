@@ -1,5 +1,7 @@
 import type {
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   NetworkConfiguration,
+  ///: END:ONLY_INCLUDE_IF
   NetworkState,
 } from '@metamask/network-controller';
 import { orderBy, uniqBy } from 'lodash';
