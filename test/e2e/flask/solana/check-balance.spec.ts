@@ -25,23 +25,21 @@ describe('Check balance', function (this: Suite) {
         mockZeroBalance: true,
       },
       async (driver) => {
-        await driver.refresh();
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_getBalance(`0.00\nUSD`);
+        await homePage.check_getBalance(`$0.00 USD`);
       },
     );
   });
-  it.skip('For a non 0 balance account - SOL balance', async function () {
+  it('For a non 0 balance account - USD balance', async function () {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: true,
+        showNativeTokenAsMainBalance: false,
         mockCalls: true,
       },
       async (driver) => {
-        await driver.refresh();
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_getBalance(`$0.00 USD`);
+        await homePage.check_getBalance(`$9,921.00 USD`);
       },
     );
   });
