@@ -1,0 +1,137 @@
+diff --git a/dist/SmartTransactionsController.js b/dist/SmartTransactionsController.js
+index c11179c22fe0fa377199aba8418fceb4bb441e93..3e8fba2d0407f28ff9049947806dcf3bdf6d4bea 100644
+--- a/dist/SmartTransactionsController.js
++++ b/dist/SmartTransactionsController.js
+@@ -35,7 +35,7 @@ const ETH_QUERY_ERROR_MSG = '`ethQuery` is not defined on SmartTransactionsContr
+ const controllerName = 'SmartTransactionsController';
+ const controllerMetadata = {
+     smartTransactionsState: {
+-        persist: false,
++        persist: true,
+         anonymous: true,
+     },
+ };
+@@ -129,7 +129,8 @@ class SmartTransactionsController extends (0, polling_controller_1.StaticInterva
+         return this.updateSmartTransactions({ networkClientId });
+     }
+     checkPoll({ smartTransactionsState: { smartTransactions }, }) {
+-        const currentSmartTransactions = smartTransactions[__classPrivateFieldGet(this, _SmartTransactionsController_chainId, "f")];
++        const allChainsCurrentTransactions = Object.values(smartTransactions).flat();
++        const currentSmartTransactions = allChainsCurrentTransactions;
+         const pendingTransactions = currentSmartTransactions === null || currentSmartTransactions === void 0 ? void 0 : currentSmartTransactions.filter(utils_1.isSmartTransactionPending);
+         if (!this.timeoutHandle && (pendingTransactions === null || pendingTransactions === void 0 ? void 0 : pendingTransactions.length) > 0) {
+             this.poll();
+@@ -182,9 +183,9 @@ class SmartTransactionsController extends (0, polling_controller_1.StaticInterva
+             sensitiveProperties: (0, utils_1.getSmartTransactionMetricsSensitiveProperties)(updatedSmartTransaction),
+         });
+     }
+-    isNewSmartTransaction(smartTransactionUuid) {
++    isNewSmartTransaction(smartTransactionUuid, chainId) {
+         const { smartTransactionsState: { smartTransactions }, } = this.state;
+-        const currentSmartTransactions = smartTransactions[__classPrivateFieldGet(this, _SmartTransactionsController_chainId, "f")];
++        const currentSmartTransactions = smartTransactions[chainId !== null && chainId !== void 0 ? chainId : __classPrivateFieldGet(this, _SmartTransactionsController_chainId, "f")];
+         const currentIndex = currentSmartTransactions === null || currentSmartTransactions === void 0 ? void 0 : currentSmartTransactions.findIndex((stx) => stx.uuid === smartTransactionUuid);
+         return currentIndex === -1 || currentIndex === undefined;
+     }
+@@ -203,33 +204,60 @@ class SmartTransactionsController extends (0, polling_controller_1.StaticInterva
+     }
+     async updateSmartTransactions({ networkClientId, } = {}) {
+         const { smartTransactionsState: { smartTransactions }, } = this.state;
+-        const chainId = __classPrivateFieldGet(this, _SmartTransactionsController_instances, "m", _SmartTransactionsController_getChainId).call(this, { networkClientId });
+-        const smartTransactionsForChainId = smartTransactions[chainId];
+-        const transactionsToUpdate = smartTransactionsForChainId
+-            .filter(utils_1.isSmartTransactionPending)
+-            .map((smartTransaction) => smartTransaction.uuid);
+-        if (transactionsToUpdate.length > 0) {
+-            this.fetchSmartTransactionsStatus(transactionsToUpdate, {
+-                networkClientId,
++        // Iterate over each chain group directly
++        for (const [chainId, transactions] of Object.entries(smartTransactions)) {
++            // Filter pending transactions and map them to the desired shape
++            const pendingTransactions = transactions
++                .filter(utils_1.isSmartTransactionPending)
++                .map((tx) => {
++                var _a, _b, _c;
++                // Use the transaction's chainId (from the key) to derive a networkClientId
++                let networkClientIdToUse = networkClientId;
++                if (tx.chainId) {
++                    const configuration = this.messagingSystem.call('NetworkController:getState');
++                    networkClientIdToUse =
++                        (_c = (_b = (_a = configuration === null || configuration === void 0 ? void 0 : configuration.networkConfigurationsByChainId[chainId]) === null || _a === void 0 ? void 0 : _a.rpcEndpoints) === null || _b === void 0 ? void 0 : _b[configuration.networkConfigurationsByChainId[chainId]
++                            .defaultRpcEndpointIndex]) === null || _c === void 0 ? void 0 : _c.networkClientId;
++                }
++                return {
++                    uuid: tx.uuid,
++                    networkClientId: networkClientIdToUse,
++                    chainId: tx.chainId, // same as the key, but explicit on the transaction
++                };
+             });
++            if (pendingTransactions.length > 0) {
++                // Since each group is per chain, all transactions share the same chainId.
++                await this.fetchSmartTransactionsStatus(pendingTransactions);
++            }
+         }
+     }
+     // ! Ask backend API to accept list of uuids as params
+-    async fetchSmartTransactionsStatus(uuids, { networkClientId } = {}) {
+-        const params = new URLSearchParams({
+-            uuids: uuids.join(','),
++    async fetchSmartTransactionsStatus(transactions) {
++        // Since transactions come from the same chain group, take the chainId from the first one.
++        const { chainId } = transactions[0];
++        // Build query parameters with all UUIDs
++        const uuids = transactions.map((t) => t.uuid);
++        const params = new URLSearchParams({ uuids: uuids.join(',') });
++        // Get the ethQuery for the first transaction's networkClientId
++        const ethQuery = __classPrivateFieldGet(this, _SmartTransactionsController_instances, "m", _SmartTransactionsController_getEthQuery).call(this, {
++            networkClientId: transactions[0].networkClientId,
+         });
+-        const chainId = __classPrivateFieldGet(this, _SmartTransactionsController_instances, "m", _SmartTransactionsController_getChainId).call(this, { networkClientId });
+-        const ethQuery = __classPrivateFieldGet(this, _SmartTransactionsController_instances, "m", _SmartTransactionsController_getEthQuery).call(this, { networkClientId });
++        // Construct the URL and fetch the data
+         const url = `${(0, utils_1.getAPIRequestURL)(types_1.APIType.BATCH_STATUS, chainId)}?${params.toString()}`;
+         const data = (await __classPrivateFieldGet(this, _SmartTransactionsController_instances, "m", _SmartTransactionsController_fetch).call(this, url));
++        // Process each returned status
+         for (const [uuid, stxStatus] of Object.entries(data)) {
++            const matchingTx = transactions.find((tx) => tx.uuid === uuid);
++            if (!matchingTx) {
++                console.error(`No matching transaction found for uuid: ${uuid}`);
++                continue;
++            }
+             const smartTransaction = {
+                 statusMetadata: stxStatus,
+                 status: (0, utils_1.calculateStatus)(stxStatus),
+                 cancellable: (0, utils_1.isSmartTransactionCancellable)(stxStatus),
+                 uuid,
+-                networkClientId,
++                networkClientId: matchingTx.networkClientId,
+             };
+             await __classPrivateFieldGet(this, _SmartTransactionsController_instances, "m", _SmartTransactionsController_createOrUpdateSmartTransaction).call(this, smartTransaction, {
+                 chainId,
+@@ -469,7 +497,7 @@ async function _SmartTransactionsController_fetch(request, options) {
+     const { smartTransactionsState: { smartTransactions }, } = this.state;
+     const currentSmartTransactions = (_a = smartTransactions[chainId]) !== null && _a !== void 0 ? _a : [];
+     const currentIndex = currentSmartTransactions === null || currentSmartTransactions === void 0 ? void 0 : currentSmartTransactions.findIndex((stx) => stx.uuid === smartTransaction.uuid);
+-    const isNewSmartTransaction = this.isNewSmartTransaction(smartTransaction.uuid);
++    const isNewSmartTransaction = this.isNewSmartTransaction(smartTransaction.uuid, chainId);
+     if (__classPrivateFieldGet(this, _SmartTransactionsController_ethQuery, "f") === undefined) {
+         throw new Error(ETH_QUERY_ERROR_MSG);
+     }
+@@ -496,7 +524,7 @@ async function _SmartTransactionsController_fetch(request, options) {
+                 .concat(historifiedSmartTransaction)
+             : currentSmartTransactions.concat(historifiedSmartTransaction);
+         this.update((state) => {
+-            state.smartTransactionsState.smartTransactions[__classPrivateFieldGet(this, _SmartTransactionsController_chainId, "f")] =
++            state.smartTransactionsState.smartTransactions[chainId] =
+                 nextSmartTransactions;
+         });
+         return;
+@@ -621,7 +649,7 @@ async function _SmartTransactionsController_fetch(request, options) {
+     return __classPrivateFieldGet(this, _SmartTransactionsController_ethQuery, "f");
+ }, _SmartTransactionsController_getCurrentSmartTransactions = function _SmartTransactionsController_getCurrentSmartTransactions() {
+     const { smartTransactionsState: { smartTransactions }, } = this.state;
+-    const currentSmartTransactions = smartTransactions === null || smartTransactions === void 0 ? void 0 : smartTransactions[__classPrivateFieldGet(this, _SmartTransactionsController_chainId, "f")];
++    const currentSmartTransactions = Object.values(smartTransactions).flat();
+     if (!currentSmartTransactions || currentSmartTransactions.length === 0) {
+         return [];
+     }

@@ -6188,7 +6188,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@npm:^16.0.1":
+"@metamask/smart-transactions-controller@npm:16.0.1":
   version: 16.0.1
   resolution: "@metamask/smart-transactions-controller@npm:16.0.1"
   dependencies:
@@ -27021,21 +27021,12 @@ __metadata:
     "@pmmmwh/react-refresh-webpack-plugin": "npm:^0.5.11"
     "@popperjs/core": "npm:^2.4.0"
     "@reduxjs/toolkit": "patch:@reduxjs/toolkit@npm%3A1.9.7#~/.yarn/patches/@reduxjs-toolkit-npm-1.9.7-b14925495c.patch"
-    "@segment/loosely-validate-event": "npm:^2.0.0"
     "@sentry/browser": "npm:^8.33.1"
     "@sentry/cli": "npm:^2.19.4"
     "@sentry/types": "npm:^8.33.1"
     "@sentry/utils": "npm:^8.33.1"
     "@solana/addresses": "npm:2.0.0-rc.4"
     "@storybook/addon-a11y": "npm:^7.6.20"
-    "@storybook/addon-actions": "npm:^7.6.20"
-    "@storybook/addon-designs": "npm:^7.0.9"
-    "@storybook/addon-docs": "npm:^7.6.20"
-    "@storybook/addon-essentials": "npm:^7.6.20"
-    "@storybook/addon-mdx-gfm": "npm:^7.6.20"
-    "@storybook/addons": "npm:^7.6.20"
-    "@storybook/api": "npm:^7.6.20"
-    "@storybook/client-api": "npm:^7.6.20"
     "@storybook/components": "npm:^7.6.20"
     "@storybook/react": "npm:^7.6.20"
     "@storybook/react-webpack5": "npm:^7.6.20"
