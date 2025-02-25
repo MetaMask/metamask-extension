@@ -1125,6 +1125,7 @@ export default class MetamaskController extends EventEmitter {
         'AccountsController:setSelectedAccount',
         'AccountsController:getAccountByAddress',
         'AccountsController:setAccountName',
+        'AccountsController:listMultichainAccounts',
         'SnapController:handleRequest',
         'SnapController:get',
         'PreferencesController:getState',
