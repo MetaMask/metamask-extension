@@ -48,6 +48,7 @@ import {
 } from '../../../../../shared/constants/network';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import { getImageForChainId } from '../../../../selectors/multichain';
+import { getNftImage } from '../../../../helpers/utils/nfts';
 
 const ELLIPSIFY_LENGTH = 13; // 6 (start) + 4 (end) + 3 (...)
 
@@ -302,7 +303,7 @@ export function AssetPicker({
               >
                 <AvatarToken
                   borderRadius={isNFT ? BorderRadius.LG : BorderRadius.full}
-                  src={primaryTokenImage ?? undefined}
+                  src={getNftImage(primaryTokenImage) ?? undefined}
                   size={AvatarTokenSize.Md}
                   name={symbol}
                   {...(isNFT && {

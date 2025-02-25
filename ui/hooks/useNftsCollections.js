@@ -4,6 +4,7 @@ import { isEqual } from 'lodash';
 import { getNfts, getNftContracts } from '../ducks/metamask/metamask';
 import { getSelectedInternalAccount } from '../selectors';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
+import { getNftImage } from '../helpers/utils/nfts';
 import { usePrevious } from './usePrevious';
 import { useI18nContext } from './useI18nContext';
 
@@ -49,7 +50,7 @@ export function useNftsCollections() {
           );
           newCollections[nft.address] = {
             collectionName: collectionContract?.name || unknownCollectionText,
-            collectionImage: collectionContract?.logo || nft.image,
+            collectionImage: collectionContract?.logo || getNftImage(nft.image),
             nfts: [nft],
           };
         }

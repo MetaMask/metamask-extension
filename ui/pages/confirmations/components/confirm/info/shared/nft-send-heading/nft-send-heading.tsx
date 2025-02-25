@@ -16,7 +16,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
-import { getNftImageAlt } from '../../../../../../../helpers/utils/nfts';
+import {
+  getNftImage,
+  getNftImageAlt,
+} from '../../../../../../../helpers/utils/nfts';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/modules/selectors/networks';
@@ -46,7 +49,7 @@ const NFTSendHeading = () => {
         assetTokenId === tokenId.toString(),
     );
   const imageOriginal = (nft as Nft | undefined)?.imageOriginal;
-  const image = (nft as Nft | undefined)?.image;
+  const image = getNftImage((nft as Nft | undefined)?.image);
   const nftImageAlt = nft ? getNftImageAlt(nft) : '';
   const nftSrcUrl = imageOriginal ?? (image || '');
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
