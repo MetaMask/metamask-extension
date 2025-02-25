@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { isStrictHexString } from '@metamask/utils';
 import {
   getBridgeQuotes,
   getQuoteRequest,
@@ -43,7 +44,7 @@ export const useBridgeExchangeRates = () => {
 
   // Fetch exchange rates for selected src token if not found in marketData
   useEffect(() => {
-    if (fromChainId && fromTokenAddress) {
+    if (fromChainId && fromTokenAddress && isStrictHexString(fromChainId)) {
       const exchangeRate = exchangeRateFromMarketData(
         fromChainId,
         fromTokenAddress,

@@ -11,7 +11,9 @@ import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
 import {
   MultichainNetworks,
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   MULTICHAIN_PROVIDER_CONFIGS,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/constants/multichain/networks';
 import {
   getIsBridgeEnabled,
