@@ -1,4 +1,7 @@
-import type { NetworkState } from '@metamask/network-controller';
+import type {
+  NetworkConfiguration,
+  NetworkState,
+} from '@metamask/network-controller';
 import { orderBy, uniqBy } from 'lodash';
 import { createSelector } from 'reselect';
 import type { GasFeeEstimates } from '@metamask/gas-fee-controller';
@@ -96,7 +99,7 @@ export const getAllBridgeableNetworks = createDeepEqualSelector(
           rpcEndpoints: [{ url: '', type: '', networkClientId: '' }],
           defaultRpcEndpointIndex: 0,
           chainId: MultichainNetworks.SOLANA,
-        },
+        } as unknown as NetworkConfiguration,
         ///: END:ONLY_INCLUDE_IF
       ],
       'chainId',
