@@ -14,7 +14,6 @@ import {
   getBridgeQuotes,
   getFromChain,
   getToChain,
-  getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -22,20 +21,14 @@ import {
   formatTokenAmount,
   formatEtaInMinutes,
 } from '../utils/quote';
-import {
-  getCurrentCurrency,
-  getNativeCurrency,
-} from '../../../ducks/metamask/metamask';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
 import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
 import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
 import { useQuoteProperties } from '../../../hooks/bridge/events/useQuoteProperties';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import {
-  AlignItems,
   BackgroundColor,
-  BlockSize,
-  IconColor,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -51,24 +44,14 @@ import {
   MultichainNetworks,
 } from '../../../../shared/constants/multichain/networks';
 import { decimalToHex } from '../../../../shared/modules/conversion.utils';
-import { TERMS_OF_USE_LINK } from '../../../../shared/constants/terms';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { shortenString } from '../../../helpers/utils/util';
-import { BridgeQuotesModal } from './bridge-quotes-modal';
 import type { ChainId } from '../../../../shared/types/bridge';
+import { BridgeQuotesModal } from './bridge-quotes-modal';
 
-type MultichainBridgeQuoteCardProps = {
-  destinationAddress?: string;
-};
-
-export const MultichainBridgeQuoteCard = ({
-  destinationAddress,
-}: MultichainBridgeQuoteCardProps) => {
+export const MultichainBridgeQuoteCard = () => {
   const t = useI18nContext();
   const { activeQuote } = useSelector(getBridgeQuotes);
   const currency = useSelector(getCurrentCurrency);
-  const ticker = useSelector(getNativeCurrency);
-  const { isEstimatedReturnLow } = useSelector(getValidationErrors);
 
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
   const { quoteRequestProperties } = useRequestProperties();

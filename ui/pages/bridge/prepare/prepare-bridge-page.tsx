@@ -720,9 +720,7 @@ const PrepareBridgePage = () => {
             {!wasTxDeclined &&
               activeQuote &&
               (isSolanaEnabled ? (
-                <MultichainBridgeQuoteCard
-                  destinationAddress={selectedDestinationAccount?.address}
-                />
+                <MultichainBridgeQuoteCard />
               ) : (
                 <BridgeQuoteCard />
               ))}
