@@ -175,6 +175,7 @@ export function AssetPickerModal({
   const detectedTokens: Record<Hex, Record<string, Token[]>> = useSelector(
     getAllTokens,
   );
+  // This only returns the detected tokens for the selected EVM account address
   const allDetectedTokens = useMemo(
     () =>
       (isCaipChainId(currentChainId)
