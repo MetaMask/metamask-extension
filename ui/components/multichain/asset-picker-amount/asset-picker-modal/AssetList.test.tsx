@@ -6,7 +6,10 @@ import {
   getPreferences,
   getSelectedAccountCachedBalance,
 } from '../../../../selectors';
-import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
+import {
+  getNativeCurrency,
+  getTokenBalances,
+} from '../../../../ducks/metamask/metamask';
 import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { AssetType } from '../../../../../shared/constants/transaction';
@@ -25,6 +28,7 @@ jest.mock('../../../../selectors', () => ({
 
 jest.mock('../../../../ducks/metamask/metamask', () => ({
   getNativeCurrency: jest.fn(),
+  getTokenBalances: jest.fn(),
 }));
 
 jest.mock('../../../../hooks/useUserPreferencedCurrency', () => ({
@@ -87,6 +91,9 @@ describe('AssetList', () => {
     (useSelector as jest.Mock).mockImplementation((selector) => {
       if (selector === getNativeCurrency) {
         return nativeCurrency;
+      }
+      if (selector === getTokenBalances) {
+        return {};
       }
       if (selector === getSelectedAccountCachedBalance) {
         return balanceValue;
