@@ -34,6 +34,8 @@ import { fetchTopAssetsList } from '../../pages/swaps/swaps.util';
 import {
   fetchBridgeTokens,
   fetchNonEvmTokens,
+  getAssetImageUrl,
+  isTokenV3Asset,
 } from '../../../shared/modules/bridge-utils/bridge.util';
 import { MINUTE } from '../../../shared/constants/time';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
@@ -83,13 +85,15 @@ export const useTokensWithFiltering = (
         return cachedTokens[chainId]?.data;
       }
       // Otherwise fetch new token data
-      if (
-        formatChainIdToCaip(chainId) === MultichainNetworks.SOLANA &&
-        isCaipChainId(chainId)
-      ) {
-        return await fetchNonEvmTokens(chainId);
-      }
+
       return await fetchBridgeTokens(chainId);
+    }
+    if (
+      chainId &&
+      formatChainIdToCaip(chainId) === MultichainNetworks.SOLANA &&
+      isCaipChainId(chainId)
+    ) {
+      return await fetchNonEvmTokens(chainId);
     }
     return {};
   }, [chainId, cachedTokens]);
@@ -188,7 +192,7 @@ export const useTokensWithFiltering = (
                 image:
                   CHAIN_ID_TOKEN_IMAGE_MAP[
                     token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-                  ],
+                  ] ?? getAssetImageUrl(token.address),
               };
             } else {
               yield {
@@ -200,7 +204,9 @@ export const useTokensWithFiltering = (
                 type: AssetType.token,
                 balance: token.balance ?? '',
                 string: token.string ?? undefined,
-                image: tokenList?.[token.address.toLowerCase()]?.iconUrl,
+                image:
+                  tokenList?.[token.address.toLowerCase()]?.iconUrl ??
+                  getAssetImageUrl(token.address),
               };
             }
           }
@@ -227,21 +233,18 @@ export const useTokensWithFiltering = (
 
         if (chainId === MultichainNetworks.SOLANA) {
           // Yield topTokens from selected chain
-          for (const token_ of topTokens) {
-            const assetId = `${chainId}/token:${token_}`;
+          for (const { address: tokenAddress } of topTokens) {
+            const assetId = `${chainId}/token:${tokenAddress}`;
             const matchedToken = tokenList?.[assetId];
             if (
               matchedToken &&
+              isTokenV3Asset(matchedToken) &&
               shouldAddToken(matchedToken.symbol, matchedToken.assetId, chainId)
             ) {
               yield {
                 ...matchedToken,
                 type: AssetType.token,
-                image: `https://static.cx.metamask.io/api/v2/tokenIcons/assets/${assetId.replaceAll(
-                  ':',
-                  '/',
-                )}.png`,
-                // Only tokens with 0 balance are processed here so hardcode empty string
+                image: getAssetImageUrl(assetId),
                 balance: '',
                 string: undefined,
                 address: assetId,
@@ -255,16 +258,13 @@ export const useTokensWithFiltering = (
             if (
               token_ &&
               !token_.symbol.includes('$') &&
+              isTokenV3Asset(token_) &&
               shouldAddToken(token_.symbol, token_.assetId, chainId)
             ) {
               yield {
                 ...token_,
                 type: AssetType.token,
-                image: `https://static.cx.metamask.io/api/v2/tokenIcons/assets/${token_.assetId?.replaceAll(
-                  ':',
-                  '/',
-                )}.png`,
-                // Only tokens with 0 balance are processed here so hardcode empty string
+                image: getAssetImageUrl(token_.assetId),
                 balance: '',
                 string: undefined,
                 address: token_.assetId,

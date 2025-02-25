@@ -116,6 +116,17 @@ export async function fetchNonEvmTokens(
   return transformedTokens;
 }
 
+export const isTokenV3Asset = (asset: object): asset is TokenV3Asset => {
+  return 'assetId' in asset && typeof asset.assetId === 'string';
+};
+
+// Returns the image url for a caip-formatted asset
+export const getAssetImageUrl = (assetId: string) =>
+  `https://static.cx.metamask.io/api/v2/tokenIcons/assets/${assetId?.replaceAll(
+    ':',
+    '/',
+  )}.png`;
+
 // Returns a list of enabled (unblocked) tokens
 export async function fetchBridgeTokens(
   chainId: Hex,
