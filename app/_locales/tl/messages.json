@@ -2777,10 +2777,6 @@
     "message": "Hindi kami makakonekta sa $1",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "Ang network ay lumipat sa $1",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "URL Network"
   },

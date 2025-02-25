@@ -2777,10 +2777,6 @@
     "message": "Нам не удается подключиться к $1",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "Сеть изменена на $1",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "URL сети"
   },

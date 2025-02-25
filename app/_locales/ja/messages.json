@@ -2777,10 +2777,6 @@
     "message": "$1に接続できません",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "ネットワークが$1に切り替わりました",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "ネットワークURL"
   },

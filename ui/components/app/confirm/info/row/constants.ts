@@ -4,6 +4,7 @@ export enum RowAlertKey {
   EstimatedFee = 'estimatedFee',
   SigningInWith = 'signingInWith',
   RequestFrom = 'requestFrom',
+  Network = 'Network',
   Resimulation = 'resimulation',
   Speed = 'speed',
   To = 'to',

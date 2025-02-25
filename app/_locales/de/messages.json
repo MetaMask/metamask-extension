@@ -2777,10 +2777,6 @@
     "message": "Wir können keine Verbindung zu $1 aufbauen.",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "Netzwerk zu $1 gewechselt",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "Netzwerk-URL"
   },

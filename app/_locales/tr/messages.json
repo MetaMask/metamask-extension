@@ -2777,10 +2777,6 @@
     "message": "$1 ağına bağlanamıyoruz",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "Ağ şuna geçti: $1",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "Ağ URL adresi"
   },

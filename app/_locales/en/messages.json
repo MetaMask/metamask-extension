@@ -2902,6 +2902,13 @@
   "network": {
     "message": "Network:"
   },
+  "networkChanged": {
+    "message": "Network changed"
+  },
+  "networkChangedMessage": {
+    "message": "You're now transacting on $1.",
+    "description": "$1 is the name of the network"
+  },
   "networkDetails": {
     "message": "Network details"
   },
@@ -2987,10 +2994,6 @@
   },
   "networkSwitchConnectionError": {
     "message": "We can't connect to $1",
-    "description": "$1 represents the network name"
-  },
-  "networkSwitchMessage": {
-    "message": "Network switched to $1",
     "description": "$1 represents the network name"
   },
   "networkURL": {
@@ -3552,6 +3555,13 @@
   },
   "origin": {
     "message": "Origin"
+  },
+  "originChanged": {
+    "message": "Site changed"
+  },
+  "originChangedMessage": {
+    "message": "You're now reviewing a request from $1.",
+    "description": "$1 is the name of the origin"
   },
   "osTheme": {
     "message": "System"
