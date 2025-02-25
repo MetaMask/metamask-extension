@@ -434,6 +434,7 @@ export const AccountListMenu = ({
               paddingRight={4}
               paddingBottom={4}
               paddingTop={0}
+              style={{ overflowY: 'scroll' }}
             >
               <ImportSRP
                 onActionComplete={(confirmed: boolean) => {
