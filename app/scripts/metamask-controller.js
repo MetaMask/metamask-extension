@@ -3329,10 +3329,10 @@ export default class MetamaskController extends EventEmitter {
       verifyPassword: this.verifyPassword.bind(this),
 
       // network management
-      setActiveNetwork: (id) => {
+      setActiveNetwork: async (id) => {
         // The multichain network controller will proxy the call to the network controller
         // in the case that the ID is an EVM network client ID.
-        return this.multichainNetworkController.setActiveNetwork(id);
+        return await this.multichainNetworkController.setActiveNetwork(id);
       },
       // Avoids returning the promise so that initial call to switch network
       // doesn't block on the network lookup step
