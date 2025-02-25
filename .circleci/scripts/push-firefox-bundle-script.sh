@@ -23,10 +23,19 @@ cp .circleci/scripts/bundle.sh firefox-bundle-script/bundle.sh
 
 cd firefox-bundle-script
 
+# sed works differently on macOS and Linux
+# macOS requires an empty string argument for -i
+# so we need to handle this case based on the OS
+if sed --version 2>/dev/null | grep -q GNU; then
+    SED_OPTS=(-i)
+else
+    SED_OPTS=(-i '')
+fi
+
 # Insert exported environment variables
 awk -F '=' '/^\s*export / {gsub(/^export /, ""); print $1}' bundle.sh | while read -r var; do
     if [[ -n "${!var}" ]]; then
-        sed -i "s|^\(\s*export $var=\).*|\1\"${!var}\"|" bundle.sh
+        sed "${SED_OPTS[@]}" "s|^\(\s*export $var=\).*|\1\"${!var}\"|" bundle.sh
     fi
 done
 
