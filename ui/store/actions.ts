@@ -29,7 +29,6 @@ import {
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
 import {
-  GasFeeEstimates,
   TransactionMeta,
   TransactionParams,
   TransactionType,
@@ -44,7 +43,9 @@ import { KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { Patch } from 'immer';
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
+///: END:ONLY_INCLUDE_IF
 import switchDirection from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -444,12 +445,11 @@ export function importNewAccount(
   };
 }
 
-export function addNewAccount(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+export function addNewAccount(
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  keyringId?: string,
+  ///: END:ONLY_INCLUDE_IF
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.addNewAccount`);
   return async (dispatch, getState) => {
     const oldAccounts = getInternalAccounts(getState()).filter(
@@ -462,6 +462,9 @@ export function addNewAccount(): ThunkAction<
     try {
       addedAccountAddress = await submitRequestToBackground('addNewAccount', [
         Object.keys(oldAccounts).length,
+        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+        keyringId,
+        ///: END:ONLY_INCLUDE_IF
       ]);
     } catch (error) {
       dispatch(displayWarning(error));
@@ -4511,14 +4514,6 @@ export function estimateGas(params: TransactionParams): Promise<Hex> {
   return submitRequestToBackground('estimateGas', [params]);
 }
 
-export function estimateGasFee(request: {
-  transactionParams: TransactionParams;
-  chainId?: Hex;
-  networkClientId?: NetworkClientId;
-}): Promise<{ estimates: GasFeeEstimates }> {
-  return submitRequestToBackground('estimateGasFee', [request]);
-}
-
 export async function updateTokenType(
   tokenAddress: string,
 ): Promise<Token | undefined> {
@@ -5121,6 +5116,7 @@ export async function setWatchEthereumAccountEnabled(value: boolean) {
   }
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 export async function setBitcoinSupportEnabled(value: boolean) {
   try {
     await submitRequestToBackground('setBitcoinSupportEnabled', [value]);
@@ -5132,15 +5128,6 @@ export async function setBitcoinSupportEnabled(value: boolean) {
 export async function setBitcoinTestnetSupportEnabled(value: boolean) {
   try {
     await submitRequestToBackground('setBitcoinTestnetSupportEnabled', [value]);
-  } catch (error) {
-    logErrorWithMessage(error);
-  }
-}
-
-///: BEGIN:ONLY_INCLUDE_IF(solana)
-export async function setSolanaSupportEnabled(value: boolean) {
-  try {
-    await submitRequestToBackground('setSolanaSupportEnabled', [value]);
   } catch (error) {
     logErrorWithMessage(error);
   }
@@ -5904,7 +5891,7 @@ export async function decodeTransactionData({
     },
   ]);
 }
-
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 export async function multichainUpdateBalance(
   accountId: string,
 ): Promise<void> {
@@ -5912,6 +5899,15 @@ export async function multichainUpdateBalance(
     accountId,
   ]);
 }
+
+export async function multichainUpdateTransactions(
+  accountId: string,
+): Promise<void> {
+  return await submitRequestToBackground<void>('multichainUpdateTransactions', [
+    accountId,
+  ]);
+}
+///: END:ONLY_INCLUDE_IF
 
 export async function getLastInteractedConfirmationInfo(): Promise<
   LastInteractedConfirmationInfo | undefined
@@ -5972,6 +5968,7 @@ function applyPatches(
   return newState;
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 export async function sendMultichainTransaction(
   snapId: string,
   {
@@ -5995,3 +5992,4 @@ export async function sendMultichainTransaction(
     },
   });
 }
+///: END:ONLY_INCLUDE_IF

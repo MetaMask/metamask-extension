@@ -4653,15 +4653,6 @@
     "message": "Liên hệ với những người tạo ra $1 để được hỗ trợ thêm.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaSupportSectionTitle": {
-    "message": "Solana"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "Bật tính năng này sẽ cung cấp cho bạn tùy chọn thêm Tài khoản Solana vào Tiện ích mở rộng MetaMask bắt nguồn từ Cụm từ khôi phục bí mật hiện có của bạn. Đây là một tính năng Beta thử nghiệm, nên bạn phải tự chịu rủi ro khi sử dụng nó."
-  },
-  "solanaSupportToggleTitle": {
-    "message": "Bật \"Thêm tài khoản Solana mới (Beta)\""
-  },
   "somethingDoesntLookRight": {
     "message": "Có gì đó không ổn? $1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
