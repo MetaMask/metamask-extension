@@ -34,6 +34,12 @@ export const field: UIComponentFactory<FieldElement> = ({
         element: 'SnapUIAddressInput',
         props: {
           name: child.props.name,
+          placeholder: child.props.placeholder,
+          label: element.props.label,
+          form,
+          error: element.props.error !== undefined,
+          helpText: element.props.error,
+          disabled: child.props.disabled,
         },
       };
     }
