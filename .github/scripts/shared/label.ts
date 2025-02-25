@@ -29,7 +29,7 @@ export const externalContributorLabel: Label = {
 
 export const needsTriageLabel: Label = {
   name: 'needs-triage',
-  color: '#FA8072',
+  color: '#68AEE6',
   description: 'Issue needs to be triaged',
 };
 

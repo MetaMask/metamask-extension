@@ -140,6 +140,8 @@ async function main(): Promise<void> {
 
       // Add regression label to the bug report issue
       addRegressionLabelToIssue(octokit, labelable);
+
+      // Add needs triage label to the bug report issue
       addNeedsTriageLabelToIssue(octokit, labelable);
     } else {
       const errorMessage =
