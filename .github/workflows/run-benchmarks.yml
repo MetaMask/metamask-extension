@@ -12,6 +12,7 @@ jobs:
   benchmarks:
     runs-on: ubuntu-22.04
     strategy:
+      fail-fast: false
       matrix:
         browser: [chrome, firefox]
         buildType: [browserify, webpack]
