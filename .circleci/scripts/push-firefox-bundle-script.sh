@@ -28,7 +28,7 @@ ls
 # Insert exported environment variables
 awk -F '=' '/^\s*export / {gsub(/^export /, ""); print $1}' bundle.sh | while read -r var; do
     if [[ -n "${!var}" ]]; then
-        sed -i '' "s|^\(\s*export $var=\).*|\1\"${!var}\"|" bundle.sh
+        sed -i "s|^\(\s*export $var=\).*|\1\"${!var}\"|" bundle.sh
     fi
 done
 
