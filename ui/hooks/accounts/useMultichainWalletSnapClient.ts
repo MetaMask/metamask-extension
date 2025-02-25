@@ -3,11 +3,7 @@ import { HandlerType } from '@metamask/snaps-utils';
 import { CaipChainId, Json, JsonRpcRequest } from '@metamask/utils';
 import { SnapId } from '@metamask/snaps-sdk';
 import { useMemo } from 'react';
-import {
-  handleSnapRequest,
-  multichainUpdateBalance,
-  multichainUpdateTransactions,
-} from '../../store/actions';
+import { handleSnapRequest } from '../../store/actions';
 import { BITCOIN_WALLET_SNAP_ID } from '../../../shared/lib/accounts/bitcoin-wallet-snap';
 import { SOLANA_WALLET_SNAP_ID } from '../../../shared/lib/accounts/solana-wallet-snap';
 
@@ -54,7 +50,7 @@ export class MultichainWalletSnapClient {
 
   async createAccount(scope: CaipChainId) {
     // This will trigger the Snap account creation flow (+ account renaming)
-    const account = await this.#client.createAccount({
+    await this.#client.createAccount({
       scope,
     });
   }
