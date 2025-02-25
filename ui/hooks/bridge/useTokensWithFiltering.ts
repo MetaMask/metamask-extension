@@ -22,7 +22,10 @@ import {
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { AssetType } from '../../../shared/constants/transaction';
-import { isNativeAddress } from '../../../shared/modules/bridge-utils/caip-formatters';
+import {
+  formatChainIdToCaip,
+  isNativeAddress,
+} from '../../../shared/modules/bridge-utils/caip-formatters';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { Token } from '../../components/app/assets/types';
 import { useMultichainBalances } from '../useMultichainBalances';
@@ -34,6 +37,10 @@ import {
 } from '../../../shared/modules/bridge-utils/bridge.util';
 import { MINUTE } from '../../../shared/constants/time';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
+import {
+  type BridgeAppState,
+  getTopAssetsFromFeatureFlags,
+} from '../../ducks/bridge/selectors';
 
 type FilterPredicate = (
   symbol: string,
@@ -57,6 +64,9 @@ export const useTokensWithFiltering = (
   const allDetectedTokens: Record<string, Token[]> = useSelector(
     getAllDetectedTokensForSelectedAddress,
   );
+  const topAssetsFromFeatureFlags = useSelector((state: BridgeAppState) =>
+    getTopAssetsFromFeatureFlags(state, chainId),
+  );
 
   const { assetsWithBalance: multichainTokensWithBalance } =
     useMultichainBalances();
@@ -73,7 +83,10 @@ export const useTokensWithFiltering = (
         return cachedTokens[chainId]?.data;
       }
       // Otherwise fetch new token data
-      if (isCaipChainId(chainId)) {
+      if (
+        formatChainIdToCaip(chainId) === MultichainNetworks.SOLANA &&
+        isCaipChainId(chainId)
+      ) {
         return await fetchNonEvmTokens(chainId);
       }
       return await fetchBridgeTokens(chainId);
@@ -85,42 +98,17 @@ export const useTokensWithFiltering = (
     { address: string }[]
   >(async () => {
     if (chainId) {
-      if (isCaipChainId(chainId)) {
-        return {
-          [MultichainNetworks.SOLANA]: [
-            {
-              address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-            },
-            {
-              address: '6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN',
-            },
-            {
-              address: 'JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN',
-            },
-            {
-              address:
-                '7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxsDx8F8k8k3uYw1PDC',
-            },
-            {
-              address: '3iQL8BFS2vE7mww4ehAqQHAsbmRNCrPxizWAT2Zfyr9y',
-            },
-            {
-              address: '9zNQRsGLjNKwCUU5Gq5LR8beUCPzQMVMqKAi3SSZh54u',
-            },
-            {
-              address: 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263',
-            },
-            {
-              address: 'rndrizKT3MK1iimdxRdWabcF7Zg7AR5T4nud4EkHBof',
-            },
-            { address: '21AErpiB8uSb94oQKRcwuHqyHF93njAxBSbdUrpupump' },
-          ],
-        }[chainId];
+      // Use asset sorting from feature fags if defined
+      if (topAssetsFromFeatureFlags) {
+        return topAssetsFromFeatureFlags.map((tokenAddress: string) => ({
+          address: tokenAddress,
+        }));
       }
+
       return await fetchTopAssetsList(chainId);
     }
     return [];
-  }, [chainId]);
+  }, [chainId, topAssetsFromFeatureFlags]);
 
   // This transforms the token object from the bridge-api into the format expected by the AssetPicker
   const buildTokenData = (
@@ -240,7 +228,7 @@ export const useTokensWithFiltering = (
         if (chainId === MultichainNetworks.SOLANA) {
           // Yield topTokens from selected chain
           for (const token_ of topTokens) {
-            const assetId = `${chainId}/token:${token_.address}`;
+            const assetId = `${chainId}/token:${token_}`;
             const matchedToken = tokenList?.[assetId];
             if (
               matchedToken &&
