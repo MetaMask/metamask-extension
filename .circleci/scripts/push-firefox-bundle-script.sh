@@ -21,7 +21,7 @@ git config user.email metamaskbot@users.noreply.github.com
 git clone git@github.com:MetaMask/firefox-bundle-script.git
 cd firefox-bundle-script
 git checkout release
-cp .circleci/scripts/bundle.sh ./bundle.sh
+cp ../.circleci/scripts/bundle.sh ./bundle.sh
 
 # sed works differently on macOS and Linux
 # macOS requires an empty string argument for -i
