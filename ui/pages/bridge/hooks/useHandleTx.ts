@@ -153,8 +153,12 @@ export default function useHandleTx() {
       method: KeyringRpcMethod.SubmitRequest,
       params: {
         request: {
-          params: { base64EncodedTransactionMessage: txParams },
-          method: 'sendAndConfirmTransaction',
+          params: {
+            account: { address: selectedAccount.address },
+            transaction: txParams,
+            scope: currentChainId,
+          },
+          method: 'signAndSendTransaction',
         },
         id: crypto.randomUUID(),
         account: selectedAccount.id,
