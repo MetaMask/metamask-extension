@@ -66,8 +66,9 @@ export default function Asset({
       tokenSymbol={symbol}
       tokenImage={
         image ??
-        cachedTokens[chainId]?.data?.[((address as string) ?? '').toLowerCase()]
-          ?.iconUrl
+        cachedTokens?.[chainId]?.data?.[
+          ((address as string) ?? '').toLowerCase()
+        ]?.iconUrl
       }
       secondary={isTokenChainIdInWallet ? formattedAmount : undefined}
       primary={isTokenChainIdInWallet ? primaryAmountToUse : undefined}
