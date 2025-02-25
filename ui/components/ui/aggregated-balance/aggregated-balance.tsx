@@ -16,14 +16,19 @@ import {
   IconName,
   SensitiveText,
 } from '../../component-library';
-import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
+  getCurrentCurrency,
+  getTokenBalances,
+} from '../../../ducks/metamask/metamask';
+import {
+  getAccountAssets,
   getMultichainAggregatedBalance,
   getMultichainNativeTokenBalance,
 } from '../../../selectors/assets';
 import { getPreferences, getSelectedInternalAccount } from '../../../selectors';
 import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
 import { getIntlLocale } from '../../../ducks/locale/locale';
+import Spinner from '../spinner';
 
 export const AggregatedBalance = ({
   classPrefix,
@@ -37,6 +42,8 @@ export const AggregatedBalance = ({
   const { privacyMode, showNativeTokenAsMainBalance } =
     useSelector(getPreferences);
   const locale = useSelector(getIntlLocale);
+  const balances = useSelector(getTokenBalances);
+  const assets = useSelector(getAccountAssets);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const currentCurrency = useSelector(getCurrentCurrency);
   const multichainAggregatedBalance = useSelector((state) =>
@@ -64,7 +71,11 @@ export const AggregatedBalance = ({
       minimumFractionDigits: 5,
       maximumFractionDigits: 5,
     },
-  );
+  ).replace(/(\.0+|(?<=\.\d+)0+)$/u, ''); // strip trailing zeros
+
+  if (!balances || !assets[selectedAccount.id].length) {
+    return <Spinner className="loading-overlay__spinner" />;
+  }
 
   return (
     <>
@@ -94,7 +105,7 @@ export const AggregatedBalance = ({
         >
           {showNativeTokenAsMainBalance
             ? multichainNativeTokenBalance.unit
-            : currentCurrency.toUpperCase}
+            : currentCurrency.toUpperCase()}
         </SensitiveText>
 
         <ButtonIcon
