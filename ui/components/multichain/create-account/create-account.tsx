@@ -27,7 +27,7 @@ import { getAccountNameErrorMessage } from '../../../helpers/utils/accounts';
 import {
   getMetaMaskAccountsOrdered,
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  getMetaMaskKeyrings,
+  getMetaMaskHdKeyrings,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
@@ -117,20 +117,19 @@ export const CreateAccount: CreateAccountComponent = React.memo(
         defaultAccountName,
       );
       ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-      const keyrings: {
+      const hdKeyrings: {
         accounts: InternalAccount[];
         type: KeyringTypes;
         metadata: { id: string; name: string };
-      }[] = useSelector(getMetaMaskKeyrings);
-      const hdKeyrings = keyrings.filter(
-        (keyring) => keyring.type === KeyringTypes.hd,
-      );
+      }[] = useSelector(getMetaMaskHdKeyrings);
 
       const selectedKeyring = selectedKeyringId
-        ? keyrings.find((keyring) => keyring.metadata.id === selectedKeyringId)
+        ? hdKeyrings.find(
+            (keyring) => keyring.metadata.id === selectedKeyringId,
+          )
         : hdKeyrings[0];
 
-      const selectedKeyringIndex = keyrings.findIndex(
+      const selectedKeyringIndex = hdKeyrings.findIndex(
         (keyring) => keyring.metadata.id === selectedKeyring?.metadata.id,
       );
       ///: END:ONLY_INCLUDE_IF(multi-srp)

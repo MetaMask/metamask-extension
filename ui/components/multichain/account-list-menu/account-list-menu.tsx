@@ -74,6 +74,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   getIsSolanaSupportEnabled,
   getMetaMaskKeyrings,
+  getMetaMaskHdKeyrings,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
@@ -311,7 +312,10 @@ export const AccountListMenu = ({
   );
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  const primaryKeyringId = useSelector(getMetaMaskKeyrings)[0]?.id;
+  const [primaryKeyring] = useSelector(getMetaMaskHdKeyrings);
+  const {
+    metadata: { id: primaryKeyringId },
+  } = primaryKeyring;
   const [selectedKeyringId, setSelectedKeyringId] = useState(primaryKeyringId);
   ///: END:ONLY_INCLUDE_IF
 

@@ -127,6 +127,7 @@ import {
   getMultichainBalances,
   getMultichainNetworkProviders,
 } from './multichain';
+import { KeyringTypes } from '@metamask/keyring-controller';
 
 /** `appState` slice selectors */
 
@@ -526,6 +527,13 @@ export function getMetaMaskKeyrings(state) {
     metadata: state.metamask.keyringsMetadata?.[index] || {},
   }));
 }
+
+export const getMetaMaskHdKeyrings = createSelector(
+  getMetaMaskKeyrings,
+  (keyrings) => {
+    return keyrings.filter((keyring) => keyring.type === KeyringTypes.hd);
+  },
+);
 
 /**
  * Get account balances state.
