@@ -3228,12 +3228,6 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IF
-      ///: BEGIN:ONLY_INCLUDE_IF(solana)
-      setSolanaSupportEnabled:
-        preferencesController.setSolanaSupportEnabled.bind(
-          preferencesController,
-        ),
-      ///: END:ONLY_INCLUDE_IF
       ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
       setBitcoinSupportEnabled:
         preferencesController.setBitcoinSupportEnabled.bind(
@@ -6460,6 +6454,14 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'CronjobController:getBackgroundEvents',
           origin,
+        ),
+        getNetworkConfigurationByChainId: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'NetworkController:getNetworkConfigurationByChainId',
+        ),
+        getNetworkClientById: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'NetworkController:getNetworkClientById',
         ),
         ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
         handleSnapRpcRequest: (args) =>
