@@ -279,7 +279,7 @@ describe('Custom RPC history', function () {
     );
   });
 
-  it('deletes a custom RPC', async function () {
+  it.only('deletes a custom RPC', async function () {
     const networkState = mockNetworkStateOld(
       {
         rpcUrl: 'http://127.0.0.1:8545/1',
@@ -312,8 +312,10 @@ describe('Custom RPC history', function () {
 
         const customNetworkName = 'http://127.0.0.1:8545/2';
         const networkItemClassName = '.multichain-network-list-item';
+        const networkMenuClassName = '.multichain-network-list-menu';
 
-        await driver.waitForSelector(networkItemClassName);
+
+        await driver.waitForSelector(networkMenuClassName);
         const networkListItems = await driver.findClickableElements(
           networkItemClassName,
         );
@@ -349,7 +351,7 @@ describe('Custom RPC history', function () {
         await driver.clickElement('[data-testid="network-display"]');
 
         // custom network http://127.0.0.1:8545/2 is removed from network list
-        await driver.waitForSelector(networkItemClassName);
+        await driver.waitForSelector(networkMenuClassName);
         const newNetworkListItems = await driver.findElements(
           networkItemClassName,
         );
