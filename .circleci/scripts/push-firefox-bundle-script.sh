@@ -42,5 +42,6 @@ done
 git add bundle.sh
 
 version=$(git show -s --format='%s' HEAD | grep -Eo 'v[0-9]+\.[0-9]+\.[0-9]+')
+echo "${version}"
 git commit -m "${version}"
 git push origin release
