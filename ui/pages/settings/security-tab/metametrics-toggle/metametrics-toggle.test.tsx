@@ -76,6 +76,7 @@ const arrangeMocks = (stateOverrides: StateOverrides = {}) => {
 };
 
 describe('MetametricsToggle', () => {
+
   it('renders correctly', () => {
     const { metaMetricsContainer, metaMetricsToggleButton } = arrangeMocks();
     expect(metaMetricsContainer).toBeInTheDocument();
