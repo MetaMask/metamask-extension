@@ -23,6 +23,8 @@ cp .circleci/scripts/bundle.sh firefox-bundle-script/bundle.sh
 
 cd firefox-bundle-script
 
+ls
+
 # Insert exported environment variables
 awk -F '=' '/^\s*export / {gsub(/^export /, ""); print $1}' bundle.sh | while read -r var; do
     if [[ -n "${!var}" ]]; then
