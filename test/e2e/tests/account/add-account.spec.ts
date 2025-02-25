@@ -19,12 +19,12 @@ describe('Add account', function () {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
+      async ({ driver, localNodes }) => {
         await completeImportSRPOnboardingFlow({ driver });
 
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.check_localNodeBalanceIsDisplayed();
+        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
@@ -44,7 +44,7 @@ describe('Add account', function () {
         await accountListPage.check_accountDisplayedInAccountList('Account 1');
         await accountListPage.switchToAccount('Account 1');
         await headerNavbar.check_accountLabel('Account 1');
-        await homePage.check_localNodeBalanceIsDisplayed();
+        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
 
         await sendRedesignedTransactionToAccount({
           driver,
@@ -66,7 +66,7 @@ describe('Add account', function () {
 
         // Check wallet balance for both accounts
         await homePage.check_pageIsLoaded();
-        await homePage.check_localNodeBalanceIsDisplayed();
+        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
         await headerNavbar.openAccountMenu();
         await accountListPage.check_pageIsLoaded();
         await accountListPage.check_accountDisplayedInAccountList(

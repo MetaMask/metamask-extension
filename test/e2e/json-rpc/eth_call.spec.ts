@@ -6,6 +6,8 @@ import FixtureBuilder from '../fixture-builder';
 import ContractAddressRegistry from '../seeder/contract-address-registry';
 import { SMART_CONTRACTS } from '../seeder/smart-contracts';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { Anvil } from '../seeder/anvil';
+import { Ganache } from '../seeder/ganache';
 
 describe('eth_call', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -21,13 +23,15 @@ describe('eth_call', function () {
       },
       async ({
         driver,
+        localNodes,
         contractRegistry,
       }: {
         driver: Driver;
+        localNodes: Anvil[] | Ganache[] | undefined[];
         contractRegistry: ContractAddressRegistry;
       }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver);
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         // eth_call
         await driver.openNewPage(`http://127.0.0.1:8080`);

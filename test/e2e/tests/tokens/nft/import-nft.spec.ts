@@ -21,10 +21,10 @@ describe('Import NFT', function () {
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, contractRegistry }) => {
+      async ({ driver, localNodes, contractRegistry }) => {
         const contractAddress =
           contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver);
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         const homepage = new Homepage(driver);
         await homepage.goToNftTab();
@@ -46,10 +46,10 @@ describe('Import NFT', function () {
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, contractRegistry }) => {
+      async ({ driver, localNodes, contractRegistry }) => {
         const contractAddress =
           contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver);
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         // Import a NFT and check that it is displayed in the NFT tab on homepage
         const homepage = new Homepage(driver);
@@ -92,10 +92,10 @@ describe('Import NFT', function () {
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, contractRegistry }) => {
+      async ({ driver, localNodes, contractRegistry }) => {
         const contractAddress =
           contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver);
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         await new Homepage(driver).goToNftTab();
         await new NftListPage(driver).importNft(

@@ -19,8 +19,8 @@ describe('Personal sign', function () {
           .build(),
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        const addresses = await ganacheServer.getAccounts();
+      async ({ driver, localNodes }) => {
+        const addresses = await localNodes[0].getAccounts();
         const publicAddress = addresses[0];
         await unlockWallet(driver);
 
