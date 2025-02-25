@@ -19,7 +19,7 @@ describe('Transaction activity list', function (this: Suite) {
         mockSendTransaction: true,
         isNative: false,
         simulateTransaction: true,
-        mockGetTransactionSuccess: false,
+        mockGetTransactionSuccess: true,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
@@ -112,7 +112,7 @@ describe.skip('Transaction activity list', function (this: Suite) {
   });
 });
 
-describe.skip('Transaction activity list', function (this: Suite) {
+describe('Transaction activity list', function (this: Suite) {
   it('user can see activity list and a failed transaction details', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
@@ -123,6 +123,7 @@ describe.skip('Transaction activity list', function (this: Suite) {
         mockSendTransaction: true,
         isNative: false,
         simulateTransaction: true,
+        mockGetTransactionSuccess: true,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);

@@ -6421,10 +6421,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^1.7.0":
-  version: 1.7.0
-  resolution: "@metamask/solana-wallet-snap@npm:1.7.0"
-  checksum: 10/bf5a88a10388e5637c2379d811517c7ee7b77ae041dc90e3237d39d88b2daffbb8d0535538e030e16df6525d8a6b109565ab01415726bef9fba1b718cc732c4e
+"@metamask/solana-wallet-snap@npm:^1.8.0":
+  version: 1.8.0
+  resolution: "@metamask/solana-wallet-snap@npm:1.8.0"
+  checksum: 10/ff4d9bcb7ada1cb6fa0e5f3532e0819f1e907d3399b98b3414e0ee677e01ff9cc3b9a7873b713c8a079f3ae354a26f4b3d77ecc19e5a4fab3efec8078fea6aae
   languageName: node
   linkType: hard
 
@@ -27004,7 +27004,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "npm:^11.12.0"
     "@metamask/snaps-sdk": "npm:^6.18.0"
     "@metamask/snaps-utils": "npm:^9.0.0"
-    "@metamask/solana-wallet-snap": "npm:^1.7.0"
+    "@metamask/solana-wallet-snap": "npm:^1.8.0"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.0.0"
     "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm%3A45.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-45.0.0-010fef9da6.patch"
