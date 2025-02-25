@@ -11,14 +11,14 @@ import { type NetworkState } from '../../../shared/modules/selectors/networks';
 import type { AccountsState } from '../accounts';
 import {
   MOCK_ACCOUNT_EOA,
-  MOCK_ACCOUNT_BIP122_P2WPKH,
-  MOCK_ACCOUNT_SOLANA_MAINNET,
+  // MOCK_ACCOUNT_BIP122_P2WPKH,
+  // MOCK_ACCOUNT_SOLANA_MAINNET,
 } from '../../../test/data/mock-accounts';
 import { RemoteFeatureFlagsState } from '../remote-feature-flags';
 import {
   type MultichainNetworkControllerState,
   getNonEvmMultichainNetworkConfigurationsByChainId,
-  getMultichainNetworkConfigurationsByChainId,
+  // getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
   getSelectedMultichainNetworkConfiguration,
   getIsEvmMultichainNetworkSelected,
