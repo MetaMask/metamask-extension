@@ -56,7 +56,7 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { UseBridgeTxHistoryDataProps } from '../../../hooks/bridge/useBridgeTxHistoryData';
+import { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import TransactionActivityLog from '../../../components/app/transaction-activity-log';
 import {
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
@@ -174,10 +174,10 @@ const CrossChainSwapTxDetails = () => {
     getNetworkConfigurationsByChainId,
   );
 
-  const { transactionGroup, isEarliestNonce } = location.state
-    ? (location.state as UseBridgeTxHistoryDataProps)
-    : {};
-
+  const transactionGroup: TransactionGroup | null =
+    location.state?.transactionGroup || null;
+  const isEarliestNonce: boolean | null =
+    location.state?.isEarliestNonce || null;
   const srcChainTxMeta = selectedAddressTxList.find(
     (tx) => tx.id === srcTxMetaId,
   );
