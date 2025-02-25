@@ -2936,6 +2936,13 @@ export function signTransaction(history) {
         updateTransactionGasFees(draftTransaction.id, editingTx.txParams),
       );
 
+      await dispatch(
+        setMaxValueMode(
+          draftTransaction.id,
+          amountMode === AMOUNT_MODES.MAX &&
+            draftTransaction.sendAsset.type === AssetType.native,
+        ),
+      );
       history.push(CONFIRM_TRANSACTION_ROUTE);
     } else {
       let transactionType =
@@ -2961,6 +2968,8 @@ export function signTransaction(history) {
           `sendFlow - user clicked next and transaction should be added to controller`,
         ),
       );
+
+      let transactionId;
 
       if (isSwapAndSend) {
         // clear existing swap transaction if editing
@@ -3069,14 +3078,14 @@ export function signTransaction(history) {
         transactionId = basicSendTxId;
         history.push(CONFIRM_TRANSACTION_ROUTE);
       }
+      await dispatch(
+        setMaxValueMode(
+          transactionId,
+          amountMode === AMOUNT_MODES.MAX &&
+            draftTransaction.sendAsset.type === AssetType.native,
+        ),
+      );
     }
-    await dispatch(
-      setMaxValueMode(
-        transactionId,
-        amountMode === AMOUNT_MODES.MAX &&
-          draftTransaction.sendAsset.type === AssetType.native,
-      ),
-    );
     await dispatch(actions.setPrevSwapAndSend(prevSwapAndSendData));
   };
 }
