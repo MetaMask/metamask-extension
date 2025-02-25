@@ -2962,8 +2962,6 @@ export function signTransaction(history) {
         ),
       );
 
-      let transactionId;
-
       if (isSwapAndSend) {
         // clear existing swap transaction if editing
         if (stage === SEND_STAGES.EDIT) {
