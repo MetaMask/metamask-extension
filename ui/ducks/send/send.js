@@ -2938,7 +2938,6 @@ export function signTransaction(history) {
 
       history.push(CONFIRM_TRANSACTION_ROUTE);
     } else {
-      console.log("new flow will be called")
       let transactionType =
         draftTransaction.recipient.type === RECIPIENT_TYPES.SMART_CONTRACT
           ? TransactionType.contractInteraction
