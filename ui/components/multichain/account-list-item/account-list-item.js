@@ -7,13 +7,17 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSnapName, shortenAddress } from '../../../helpers/utils/util';
 
 import { AccountListItemMenu } from '../account-list-item-menu';
+///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import { AvatarGroup } from '../avatar-group';
+///: END:ONLY_INCLUDE_IF
 import { ConnectedAccountsMenu } from '../connected-accounts-menu';
 import {
   AvatarAccount,
   AvatarAccountVariant,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   AvatarToken,
   AvatarTokenSize,
+  ///: END:ONLY_INCLUDE_IF
   Box,
   ButtonIcon,
   Icon,
@@ -34,12 +38,19 @@ import {
   JustifyContent,
   Size,
   TextAlign,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   TextColor,
+  ///: END:ONLY_INCLUDE_IF
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
-import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
+import {
+  PRIMARY,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
+  SECONDARY,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../helpers/constants/common';
 import Tooltip from '../../ui/tooltip/tooltip';
 import {
   MetaMetricsEventCategory,
@@ -141,12 +152,14 @@ const AccountListItem = ({
     account,
     formattedTokensWithBalancesPerChain,
   );
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   // cross chain agg balance
   const mappedOrderedTokenList = accountTotalFiatBalances.orderedTokenList.map(
     (item) => ({
       avatarValue: item.iconUrl,
     }),
   );
+  ///: END:ONLY_INCLUDE_IF
   let balanceToTranslate;
   if (isEvmNetwork) {
     balanceToTranslate =
@@ -167,6 +180,7 @@ const AccountListItem = ({
   }, [itemRef, selected, shouldScrollToWhenSelected]);
 
   const trackEvent = useContext(MetaMetricsContext);
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   const primaryTokenImage = useMultichainSelector(
     getMultichainNativeCurrencyImage,
     account,
@@ -175,6 +189,7 @@ const AccountListItem = ({
     getMultichainNativeCurrency,
     account,
   );
+  ///: END:ONLY_INCLUDE_IF
   const currentTabIsConnectedToSelectedAddress = useSelector((state) =>
     isAccountConnectedToCurrentTab(state, account.address),
   );
