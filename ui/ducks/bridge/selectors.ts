@@ -243,36 +243,32 @@ export const getFromTokenConversionRate = createSelector(
     nativeToCurrencyRate,
     fromTokenExchangeRate,
   ) => {
-    let tokenToNativeAssetRate;
-
     if (fromChain?.chainId && fromToken) {
-      tokenToNativeAssetRate =
+      if (fromChain.chainId === MultichainNetworks.SOLANA) {
+        // For SOLANA tokens, we use the conversion rates provided by the multichain rates controller
+        const tokenToNativeAssetRate = tokenPriceInNativeAsset(
+          assetsRates[fromToken.address]?.rate,
+          nonEvmNativeToUsdRate.sol.conversionRate,
+        );
+        return exchangeRatesFromNativeAndCurrencyRates(
+          tokenToNativeAssetRate,
+          nonEvmNativeToUsdRate.sol.conversionRate,
+          nonEvmNativeToUsdRate.sol.usdConversionRate,
+        );
+      }
+      // For EVM tokens, we use the market data to get the exchange rate
+      const tokenToNativeAssetRate =
         exchangeRateFromMarketData(
           fromChain.chainId,
           fromToken.address,
           marketData,
         ) ??
-        (fromChain?.chainId === MultichainNetworks.SOLANA
-          ? tokenPriceInNativeAsset(
-              assetsRates[fromToken.address]?.rate,
-              nonEvmNativeToUsdRate.sol.conversionRate,
-            )
-          : tokenPriceInNativeAsset(
-              fromTokenExchangeRate,
-              nativeToCurrencyRate,
-            ));
-
-      return fromChain?.chainId === MultichainNetworks.SOLANA
-        ? exchangeRatesFromNativeAndCurrencyRates(
-            tokenToNativeAssetRate,
-            nonEvmNativeToUsdRate.sol.conversionRate,
-            nonEvmNativeToUsdRate.sol.usdConversionRate,
-          )
-        : exchangeRatesFromNativeAndCurrencyRates(
-            tokenToNativeAssetRate,
-            nativeToCurrencyRate,
-            nativeToUsdRate,
-          );
+        tokenPriceInNativeAsset(fromTokenExchangeRate, nativeToCurrencyRate);
+      return exchangeRatesFromNativeAndCurrencyRates(
+        tokenToNativeAssetRate,
+        nativeToCurrencyRate,
+        nativeToUsdRate,
+      );
     }
     return exchangeRatesFromNativeAndCurrencyRates();
   },
