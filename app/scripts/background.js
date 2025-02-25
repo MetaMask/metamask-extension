@@ -115,6 +115,7 @@ log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info', false);
 
 const platform = new ExtensionPlatform();
 const notificationManager = new NotificationManager();
+const isFirefox = getPlatform() === PLATFORM_FIREFOX;
 
 let openPopupCount = 0;
 let notificationIsOpen = false;
@@ -141,6 +142,24 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
 // Event emitter for state persistence
 export const statePersistenceEvents = new EventEmitter();
+
+if (isFirefox) {
+  browser.runtime.onInstalled.addListener(function (details) {
+    if (details.reason === 'install') {
+      browser.storage.session.set({ isFirstTimeInstall: true });
+    } else if (details.reason === 'update') {
+      browser.storage.session.set({ isFirstTimeInstall: false });
+    }
+  });
+} else if (!isManifestV3) {
+  browser.runtime.onInstalled.addListener(function (details) {
+    if (details.reason === 'install') {
+      global.sessionStorage.setItem('isFirstTimeInstall', true);
+    } else if (details.reason === 'update') {
+      global.sessionStorage.setItem('isFirstTimeInstall', false);
+    }
+  });
+}
 
 /**
  * This deferred Promise is used to track whether initialization has finished.
@@ -519,12 +538,18 @@ async function initialize() {
       await loadPhishingWarningPage();
       // Workaround for Bug #1446231 to override page CSP for inline script nodes injected by extension content scripts
       // https://bugzilla.mozilla.org/show_bug.cgi?id=1446231
-      if (getPlatform() === PLATFORM_FIREFOX) {
+      if (isFirefox) {
         overrideContentSecurityPolicyHeader();
       }
     }
     await sendReadyMessageToTabs();
     log.info('MetaMask initialization complete.');
+
+    if (isManifestV3 || isFirefox) {
+      browser.storage.session.set({ isFirstTimeInstall: false });
+    } else {
+      global.sessionStorage.setItem('isFirstTimeInstall', false);
+    }
 
     resolveInitialization();
   } catch (error) {
@@ -897,12 +922,11 @@ export function setupController(
     }
 
     let isMetaMaskInternalProcess = false;
-    const sourcePlatform = getPlatform();
     const senderUrl = remotePort.sender?.url
       ? new URL(remotePort.sender.url)
       : null;
 
-    if (sourcePlatform === PLATFORM_FIREFOX) {
+    if (isFirefox) {
       isMetaMaskInternalProcess = metamaskInternalProcessHash[processName];
     } else {
       isMetaMaskInternalProcess =
@@ -1298,12 +1322,16 @@ const addAppInstalledEvent = () => {
 
 // On first install, open a new tab with MetaMask
 async function onInstall() {
-  const storeAlreadyExisted = Boolean(await persistenceManager.get());
-  // If the store doesn't exist, then this is the first time running this script,
-  // and is therefore an install
+  const sessionData =
+    isManifestV3 || isFirefox
+      ? await browser.storage.session.get(['isFirstTimeInstall'])
+      : await global.sessionStorage.getItem('isFirstTimeInstall');
+
+  const isFirstTimeInstall = sessionData?.isFirstTimeInstall;
+
   if (process.env.IN_TEST) {
     addAppInstalledEvent();
-  } else if (!storeAlreadyExisted && !process.env.METAMASK_DEBUG) {
+  } else if (!isFirstTimeInstall && !process.env.METAMASK_DEBUG) {
     // If storeAlreadyExisted is true then this is a fresh installation
     // and an app installed event should be tracked.
     addAppInstalledEvent();

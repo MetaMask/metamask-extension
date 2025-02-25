@@ -1178,7 +1178,7 @@
     "message": "Connecting to Sepolia test network"
   },
   "connectionDescription": {
-    "message": "This site wants to"
+    "message": "Connect this website with MetaMask."
   },
   "connectionFailed": {
     "message": "Connection failed"
@@ -4491,6 +4491,9 @@
   },
   "select": {
     "message": "Select"
+  },
+  "selectAccountToConnect": {
+    "message": "Select an account to connect"
   },
   "selectAccounts": {
     "message": "Select the account(s) to use on this site"
