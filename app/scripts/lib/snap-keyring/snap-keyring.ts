@@ -400,7 +400,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     handleUserInput: (accepted: boolean) => Promise<void>,
     onceSaved: Promise<string>,
     accountNameSuggestion: string = '',
-    displayConfirmation: boolean = true,
+    displayConfirmation: boolean = false,
     displayAccountNameSuggestion: boolean = true,
   ) {
     assertIsValidSnapId(snapId);
