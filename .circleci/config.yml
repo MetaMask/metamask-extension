@@ -1061,7 +1061,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - '8b:21:e3:20:7c:c9:db:82:74:2d:86:d6:11:a7:2f:49'
+            - 'SHA256:It7UdNvvXY8g5aN32yfbPKFxZSV9ny7K8ifDdlP53rQ'
       - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
@@ -1090,7 +1090,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - '8b:21:e3:20:7c:c9:db:82:74:2d:86:d6:11:a7:2f:49'
+            - 'SHA256:It7UdNvvXY8g5aN32yfbPKFxZSV9ny7K8ifDdlP53rQ'
       - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
