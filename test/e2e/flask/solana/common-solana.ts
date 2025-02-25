@@ -1558,7 +1558,6 @@ export async function mockGetTokenAccountInfo(mockServer: Mockttp) {
 export async function withSolanaAccountSnap(
   {
     title,
-    solanaSupportEnabled,
     showNativeTokenAsMainBalance,
     mockCalls,
     mockSendTransaction,
@@ -1570,7 +1569,6 @@ export async function withSolanaAccountSnap(
     mockZeroBalance,
   }: {
     title?: string;
-    solanaSupportEnabled?: boolean;
     showNativeTokenAsMainBalance?: boolean;
     mockCalls?: boolean;
     mockSendTransaction?: boolean;
@@ -1584,9 +1582,7 @@ export async function withSolanaAccountSnap(
   test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
 ) {
   console.log('Starting withSolanaAccountSnap');
-  let fixtures = new FixtureBuilder().withPreferencesController({
-    solanaSupportEnabled: solanaSupportEnabled ?? true,
-  });
+  let fixtures = new FixtureBuilder();
   if (!showNativeTokenAsMainBalance) {
     fixtures =
       fixtures.withPreferencesControllerShowNativeTokenAsMainBalanceDisabled();

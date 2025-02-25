@@ -8,7 +8,6 @@ describe('Check balance', function (this: Suite) {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
-        solanaSupportEnabled: true,
         showNativeTokenAsMainBalance: true,
         mockCalls: true,
       },
@@ -22,11 +21,25 @@ describe('Check balance', function (this: Suite) {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
-        solanaSupportEnabled: true,
         showNativeTokenAsMainBalance: false,
         mockZeroBalance: true,
       },
       async (driver) => {
+        await driver.refresh();
+        const homePage = new NonEvmHomepage(driver);
+        await homePage.check_getBalance(`0.00\nUSD`);
+      },
+    );
+  });
+  it.skip('For a non 0 balance account - SOL balance', async function () {
+    await withSolanaAccountSnap(
+      {
+        title: this.test?.fullTitle(),
+        showNativeTokenAsMainBalance: true,
+        mockCalls: true,
+      },
+      async (driver) => {
+        await driver.refresh();
         const homePage = new NonEvmHomepage(driver);
         await homePage.check_getBalance(`$0.00 USD`);
       },
@@ -37,7 +50,6 @@ describe('Check balance', function (this: Suite) {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
-        solanaSupportEnabled: true,
         showNativeTokenAsMainBalance: false,
         mockCalls: true,
       },
