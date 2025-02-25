@@ -546,7 +546,7 @@ export enum MetaMetricsUserTrait {
    */
   NumberOfTokens = 'number_of_tokens',
   /**
-   * Identified when the user has HD Entropies
+   * Identified when the user has HD Entropies.
    */
   NumberOfHDEntropies = 'number_of_hd_entropies',
   /**
