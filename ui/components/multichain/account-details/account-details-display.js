@@ -53,7 +53,7 @@ export const AccountDetailsDisplay = ({
     metadata: { keyring },
   } = account;
   const exportPrivateKeyFeatureEnabled = isAbleToExportAccount(keyring?.type);
-  const exportSRPFeatureaEnabled = isAbleToRevealSrp(account, keyrings);
+  const exportSRPFeatureEnabled = isAbleToRevealSrp(account, keyrings);
 
   const chainId = useSelector(getCurrentChainId);
   const deviceName = useSelector(getHardwareWalletType);
@@ -103,7 +103,7 @@ export const AccountDetailsDisplay = ({
           {t('showPrivateKey')}
         </ButtonSecondary>
       ) : null}
-      {exportSRPFeatureaEnabled ? (
+      {exportSRPFeatureEnabled ? (
         <ButtonSecondary
           data-testid="account-details-display-export-srp"
           block

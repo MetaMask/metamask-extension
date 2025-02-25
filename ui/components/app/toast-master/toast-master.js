@@ -349,7 +349,7 @@ function NewSRPAddedToast() {
   const showNewSRPAddedToast = useSelector(selectNewSRPAdded);
   const autoHideDelay = 5 * SECOND;
 
-  // This will close the toast if the user clists the account menu.
+  // This will close the toast if the user clicks the account menu.
   useEffect(() => {
     const handleClickOutside = (event) => {
       const dismissElement = document.querySelector(

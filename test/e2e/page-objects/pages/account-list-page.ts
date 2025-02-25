@@ -750,12 +750,10 @@ class AccountListPage {
     await this.driver.clickElement(this.importSRPConfirmButton);
   }
 
-  async startExportSRPForAccount(accountLabel: string): Promise<string> {
+  async startExportSRPForAccount(accountLabel: string): Promise<void> {
     console.log(`Exporting SRP for account ${accountLabel}`);
     await this.openAccountDetailsModal(accountLabel);
     await this.driver.clickElement(this.exportSRPButton);
-
-    return '';
   }
 
   async check_accountBelongsToSRP(

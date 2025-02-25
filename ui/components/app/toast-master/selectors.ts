@@ -112,7 +112,7 @@ export function selectSwitchedNetworkNeverShowMessage(state: State): boolean {
 }
 
 /**
- * Retrieves user preference to never see the "Switched Network" toast
+ * Retrieves user preference to see the "New SRP Added" toast
  *
  * @param state - Redux state object.
  * @returns Boolean preference value

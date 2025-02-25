@@ -10,7 +10,7 @@ export const SECOND_TEST_E2E_SRP =
   'bench top weekend buyer spoon side resist become detect gauge eye feed';
 
 export async function withMultiSRP(
-  { title }: { title?: string; bitcoinSupportEnabled?: boolean },
+  { title }: { title?: string },
   test: (driver: Driver) => Promise<void>,
   srpToUse: string = SECOND_TEST_E2E_SRP,
 ) {
