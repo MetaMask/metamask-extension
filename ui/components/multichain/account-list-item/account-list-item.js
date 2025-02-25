@@ -338,40 +338,45 @@ const AccountListItem = ({
               {shortenAddress(normalizeSafeAddress(account.address))}
             </Text>
           </Box>
-          {mappedOrderedTokenList.length > 1 ? (
-            <AvatarGroup members={mappedOrderedTokenList} limit={4} />
-          ) : (
-            <Box
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              justifyContent={JustifyContent.center}
-              gap={1}
-              className="multichain-account-list-item__avatar-currency"
-            >
-              <AvatarToken
-                src={primaryTokenImage}
-                name={nativeCurrency}
-                size={AvatarTokenSize.Xs}
-                borderColor={BorderColor.borderDefault}
-              />
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-                textAlign={TextAlign.End}
-                as="div"
+
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-main)
+            mappedOrderedTokenList.length > 1 ? (
+              <AvatarGroup members={mappedOrderedTokenList} limit={4} />
+            ) : (
+              <Box
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                justifyContent={JustifyContent.center}
+                gap={1}
+                className="multichain-account-list-item__avatar-currency"
               >
-                <UserPreferencedCurrencyDisplay
-                  account={account}
-                  ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                  value={isEvmNetwork ? account.balance : balanceToTranslate}
-                  type={SECONDARY}
-                  showNative
-                  data-testid="second-currency-display"
-                  privacyMode={privacyMode}
+                <AvatarToken
+                  src={primaryTokenImage}
+                  name={nativeCurrency}
+                  size={AvatarTokenSize.Xs}
+                  borderColor={BorderColor.borderDefault}
                 />
-              </Text>
-            </Box>
-          )}
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                  textAlign={TextAlign.End}
+                  as="div"
+                >
+                  <UserPreferencedCurrencyDisplay
+                    account={account}
+                    ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
+                    value={isEvmNetwork ? account.balance : balanceToTranslate}
+                    type={SECONDARY}
+                    showNative
+                    data-testid="second-currency-display"
+                    privacyMode={privacyMode}
+                  />
+                </Text>
+              </Box>
+            )
+            ///: END:ONLY_INCLUDE_IF
+          }
         </Box>
         {accountLabel ? (
           <Tag
