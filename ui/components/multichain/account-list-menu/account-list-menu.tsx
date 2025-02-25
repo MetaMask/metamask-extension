@@ -105,7 +105,7 @@ import {
 } from '../../../selectors/accounts';
 ///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IF(build-flask,solana)
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
   WalletClientType,
@@ -291,7 +291,6 @@ export const AccountListMenu = ({
   const solanaWalletSnapClient = useMultichainWalletSnapClient(
     WalletClientType.Solana,
   );
-
   ///: END:ONLY_INCLUDE_IF
 
   const [searchQuery, setSearchQuery] = useState('');

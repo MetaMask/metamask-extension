@@ -1,6 +1,6 @@
-import { MultiChainAssetsRatesController } from '@metamask/assets-controllers';
+import { MultichainAssetsRatesController } from '@metamask/assets-controllers';
 import { ControllerInitFunction } from '../types';
-import { MultiChainAssetsRatesControllerMessenger } from '../messengers/multichain';
+import { MultichainAssetsRatesControllerMessenger } from '../messengers/multichain';
 
 /**
  * Initialize the Multichain Assets Rate controller.
@@ -10,13 +10,13 @@ import { MultiChainAssetsRatesControllerMessenger } from '../messengers/multicha
  * @param request.persistedState - The persisted state of the extension.
  * @returns The initialized controller.
  */
-export const MultiChainAssetsRatesControllerInit: ControllerInitFunction<
-  MultiChainAssetsRatesController,
-  MultiChainAssetsRatesControllerMessenger
+export const MultichainAssetsRatesControllerInit: ControllerInitFunction<
+  MultichainAssetsRatesController,
+  MultichainAssetsRatesControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
-  const controller = new MultiChainAssetsRatesController({
+  const controller = new MultichainAssetsRatesController({
     messenger: controllerMessenger,
-    state: persistedState.MultiChainAssetsRatesController,
+    state: persistedState.MultichainAssetsRatesController,
   });
 
   return {
