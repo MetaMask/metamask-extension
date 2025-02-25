@@ -34,10 +34,10 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
       TransactionEnvelopeType.legacy,
       async ({
         driver,
-        ganacheServer,
+        localNodes,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        const addresses = await (ganacheServer as Ganache).getAccounts();
+        const addresses = await localNodes[0].getAccounts();
         const publicAddress = addresses?.[0] as string;
         await initializePages(driver);
 

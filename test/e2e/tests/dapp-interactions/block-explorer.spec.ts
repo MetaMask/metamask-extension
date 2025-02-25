@@ -72,8 +72,8 @@ describe('Block Explorer', function () {
         smartContract: SMART_CONTRACTS.HST,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         // View TST token in block explorer
         const assetListPage = new AssetListPage(driver);

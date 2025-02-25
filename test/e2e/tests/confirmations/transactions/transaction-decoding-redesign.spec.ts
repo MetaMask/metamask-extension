@@ -129,8 +129,8 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         testSpecificMock: mockInfura,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, ganacheServer }: TestSuiteArguments) => {
-        const addresses = await (ganacheServer as Ganache).getAccounts();
+      async ({ driver, localNodes }: TestSuiteArguments) => {
+        const addresses = await localNodes[0].getAccounts();
         const publicAddress = addresses?.[0] as string;
 
         await unlockWallet(driver);

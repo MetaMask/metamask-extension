@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockedEndpoint, MockttpServer } from 'mockttp';
 import { largeDelayMs, veryLargeDelayMs } from '../../../helpers';
+import { Anvil } from '../../../seeder/anvil';
 import { Ganache } from '../../../seeder/ganache';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
@@ -14,7 +15,7 @@ const { scrollAndConfirmAndAssertConfirm } = require('../helpers');
 
 export type TestSuiteArguments = {
   driver: Driver;
-  ganacheServer?: Ganache;
+  localNodes?: Anvil[] | Ganache[] | undefined;
   contractRegistry?: ContractAddressRegistry;
   mockedEndpoint?: MockedEndpoint | MockedEndpoint[];
 };
