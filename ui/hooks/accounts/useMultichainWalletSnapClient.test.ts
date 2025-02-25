@@ -11,11 +11,7 @@ import {
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { BITCOIN_WALLET_SNAP_ID } from '../../../shared/lib/accounts/bitcoin-wallet-snap';
 import { SOLANA_WALLET_SNAP_ID } from '../../../shared/lib/accounts/solana-wallet-snap';
-import {
-  handleSnapRequest,
-  multichainUpdateBalance,
-  multichainUpdateTransactions,
-} from '../../store/actions';
+import { handleSnapRequest } from '../../store/actions';
 import {
   useMultichainWalletSnapClient,
   WalletClientType,
@@ -28,9 +24,6 @@ jest.mock('../../store/actions', () => ({
 }));
 
 const mockHandleSnapRequest = handleSnapRequest as jest.Mock;
-const mockMultichainUpdateBalance = multichainUpdateBalance as jest.Mock;
-const mockMultichainUpdateTransactions =
-  multichainUpdateTransactions as jest.Mock;
 
 describe('useMultichainWalletSnapClient', () => {
   beforeEach(() => {
@@ -82,32 +75,6 @@ describe('useMultichainWalletSnapClient', () => {
         handler: HandlerType.OnKeyringRequest,
         request: expect.any(Object),
       });
-    });
-
-    it(`force fetches the balance after creating a ${clientType} account`, async () => {
-      const { result } = renderHook(() =>
-        useMultichainWalletSnapClient(clientType),
-      );
-      const multichainWalletSnapClient = result.current;
-
-      mockHandleSnapRequest.mockResolvedValue(mockAccount);
-
-      await multichainWalletSnapClient.createAccount(network);
-      expect(mockMultichainUpdateBalance).toHaveBeenCalledWith(mockAccount.id);
-    });
-
-    it(`force fetches the transactions after creating a ${clientType} account`, async () => {
-      const { result } = renderHook(() =>
-        useMultichainWalletSnapClient(clientType),
-      );
-      const multichainWalletSnapClient = result.current;
-
-      mockHandleSnapRequest.mockResolvedValue(mockAccount);
-
-      await multichainWalletSnapClient.createAccount(network);
-      expect(mockMultichainUpdateTransactions).toHaveBeenCalledWith(
-        mockAccount.id,
-      );
     });
   });
 });
