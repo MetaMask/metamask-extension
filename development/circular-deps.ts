@@ -153,15 +153,16 @@ async function check(): Promise<void> {
 function maybeLogSkipped(skipped: string[]): boolean {
   if (skipped.length) {
     const file = `file${skipped.length === 1 ? '' : 's'}`;
-    console.error(chalk.yellow.bold(`✖ Skipped ${file} found:`));
-    skipped.forEach((module) => {
-      console.error(chalk.yellow(module));
+    console.error(
+      chalk.yellow.bold(`✖ ${skipped.length} skipped ${file} found:\n`),
+    );
+    skipped.forEach((module, index) => {
+      console.error(chalk.dim(`${index + 1}) `) + chalk.cyan(module));
     });
-    console.error('\n');
 
     console.error(
       chalk.yellow.bold(
-        "This likely means there is a problem generating a dependency tree (like importing a file from a path that doesn't exist), or there is an invalid build configuration.\n",
+        "\nThis likely means there is a problem generating a dependency tree (like importing a file from a path that doesn't exist), or there is an invalid madge configuration.\n",
       ),
     );
     return true;
@@ -178,7 +179,7 @@ function maybeLogSkipped(skipped: string[]): boolean {
 function maybeLogCircular(circular: CircularDeps): boolean {
   if (circular.length) {
     const dependency = `dependenc${circular.length === 1 ? 'y' : 'ies'}`;
-    stderr.write(
+    console.error(
       chalk.red.bold(`Found ${circular.length} circular ${dependency}\n`),
     );
 
@@ -255,7 +256,7 @@ function failIfDisallowedCircularDepsFound(tree: MadgeInstance): void {
 
   if (unusedAllowedPatterns.length > 0) {
     console.error(
-      chalk.yellow(
+      chalk.magenta(
         `The following allowed circular dependency patterns do not match any files:\n`,
       ),
     );
