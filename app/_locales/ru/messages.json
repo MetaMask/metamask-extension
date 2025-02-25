@@ -4649,15 +4649,6 @@
     "message": "Свяжитесь с авторами $1 для получения дополнительной поддержки.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaSupportSectionTitle": {
-    "message": "Solana"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "Включение этой функции даст вам возможность добавить в ваше расширение MetaMask счет Solana, созданный на основе вашей существующей секретной фразы для восстановления. Это экспериментальная бета-функция, которая используется вами на ваш страх и риск."
-  },
-  "solanaSupportToggleTitle": {
-    "message": "Включить «Добавить новый счет Solana (бета-версия)»"
-  },
   "somethingDoesntLookRight": {
     "message": "Что-то не так? $1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
