@@ -4,17 +4,19 @@ import { Driver } from '../../../webdriver/driver';
 class TransactionDetailsPage {
   private readonly driver: Driver;
 
+  private readonly solanaExplorerUrl = 'https://explorer.solana.com/';
+
   private readonly transactionFromToLink = (accountAddress: string) => {
     return {
       tag: 'a',
-      href: `https://explorer.solana.com/account/${accountAddress}`,
+      href: `${this.solanaExplorerUrl}/account/${accountAddress}`,
     };
   };
 
   private readonly transactionHashLink = (txHash: string) => {
     return {
       tag: 'a',
-      href: `https://explorer.solana.com/tx/${txHash}`,
+      href: `${this.solanaExplorerUrl}/tx/${txHash}`,
     };
   };
 
@@ -50,13 +52,13 @@ class TransactionDetailsPage {
 
   async check_transactionFromToLink(fromToAddress: string): Promise<void> {
     await this.driver.waitForSelector(
-      By.css(`a[href='https://explorer.solana.com/account/${fromToAddress}']`),
+      By.css(`a[href='${this.solanaExplorerUrl}/account/${fromToAddress}']`),
     );
   }
 
   async check_transactionHashLink(txHash: string): Promise<void> {
     await this.driver.waitForSelector(
-      By.css(`a[href='https://explorer.solana.com/tx/${txHash}']`),
+      By.css(`a[href='${this.solanaExplorerUrl}/tx/${txHash}']`),
     );
   }
 
