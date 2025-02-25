@@ -373,6 +373,7 @@ import {
   SnapInterfaceControllerInit,
   SnapsRegistryInit,
 } from './controller-init/snaps';
+import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../shared/constants/app';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -523,7 +524,7 @@ export default class MetamaskController extends EventEmitter {
         ApprovalType.EthGetEncryptionPublicKey,
         ApprovalType.EthDecrypt,
         // Exclude Smart TX Status Page from rate limiting to allow sequential transactions
-        'smartTransaction:showSmartTransactionStatusPage',
+        SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
       ],
     });
 
