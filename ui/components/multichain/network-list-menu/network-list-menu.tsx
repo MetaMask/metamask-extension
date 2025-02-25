@@ -391,6 +391,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         return {};
       }
 
+      // Non-EVM networks cannot be deleted, edited or have
+      // RPC endpoints so it's safe to call this conversion function here.
       const hexChainId = convertCaipToHexChainId(chainId);
       const isDeletable =
         isUnlocked &&
@@ -404,8 +406,6 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
               dispatch(
                 showModal({
                   name: 'CONFIRM_DELETE_NETWORK',
-                  // Non-EVM networks cannot be deleted, so it's safe to call
-                  // this conversion function here.
                   target: hexChainId,
                   onConfirm: () => undefined,
                 }),
@@ -415,8 +415,6 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         onEdit: () => {
           dispatch(
             setEditedNetwork({
-              // Non-EVM networks cannot be edited, so it's safe to call
-              // this conversion function here.
               chainId: hexChainId,
               nickname: network.name,
             }),
@@ -427,8 +425,6 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           ? () => {
               setActionMode(ACTION_MODE.SELECT_RPC);
               dispatch(
-                // Non-EVM networks cannot be edited, so it's safe to call
-                // this conversion function here.
                 setEditedNetwork({
                   chainId: hexChainId,
                 }),
