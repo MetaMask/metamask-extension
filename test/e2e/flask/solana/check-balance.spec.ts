@@ -49,7 +49,6 @@ describe('Check balance', function (this: Suite) {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
-        solanaSupportEnabled: true,
         showNativeTokenAsMainBalance: true,
         mockCalls: true,
       },
