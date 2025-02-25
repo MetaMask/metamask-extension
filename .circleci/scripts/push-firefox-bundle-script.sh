@@ -17,6 +17,7 @@ fi
 
 git config --global user.name "MetaMask Bot"
 git config --global user.email metamaskbot@users.noreply.github.com
+version=$(git show -s --format='%s' HEAD | grep -Eo 'v[0-9]+\.[0-9]+\.[0-9]+')
 
 git clone git@github.com:MetaMask/firefox-bundle-script.git
 cd firefox-bundle-script
@@ -40,7 +41,5 @@ awk -F '=' '/^\s*export / {gsub(/^export /, ""); print $1}' bundle.sh | while re
 done
 
 git add bundle.sh
-
-version=$(git show -s --format='%s' HEAD | grep -Eo 'v[0-9]+\.[0-9]+\.[0-9]+')
 git commit --allow-empty -m "${version}"
 git push origin release
