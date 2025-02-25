@@ -16,6 +16,13 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => <ConnectedSitePopover {...args} />;
+const Template = (args) => {
+  return <ConnectedSitePopover {...args} />;
+};
 
-DefaultStory.storyName = 'Default';
+export const DefaultStory = Template.bind({});
+
+export const ConnectedStory = Template.bind({});
+ConnectedStory.args = {
+  isConnected: true,
+};
