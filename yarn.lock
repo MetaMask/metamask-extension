@@ -5848,14 +5848,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/notification-services-controller@npm:^0.21.0":
-  version: 0.21.0
-  resolution: "@metamask/notification-services-controller@npm:0.21.0"
+"@metamask/notification-services-controller@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/notification-services-controller@npm:1.0.0"
   dependencies:
     "@contentful/rich-text-html-renderer": "npm:^16.5.2"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/controller-utils": "npm:^11.5.0"
-    "@metamask/utils": "npm:^11.1.0"
+    "@metamask/utils": "npm:^11.2.0"
     bignumber.js: "npm:^9.1.2"
     firebase: "npm:^11.2.0"
     loglevel: "npm:^1.8.1"
@@ -5863,7 +5863,7 @@ __metadata:
   peerDependencies:
     "@metamask/keyring-controller": ^19.0.0
     "@metamask/profile-sync-controller": ^8.0.0
-  checksum: 10/8014019e3d2aa174433f8e1f7b6ab895fe0047ba8dfaa93f2a3bb356ea34b066b6193fd0f7c38e8f71b9ed22c89ae2663491e886d598c21db0e03e501a46c6c1
+  checksum: 10/9cb7cee622ee8485d4424dcf42ffbd4c932572c2c21dc723d6e3e5204fb24f37c01a9080a1826bfd9cfea986233e757cb0630004512415ee966b3110db80f3e9
   languageName: node
   linkType: hard
 
@@ -26976,7 +26976,7 @@ __metadata:
     "@metamask/multichain-transactions-controller": "npm:^0.5.0"
     "@metamask/name-controller": "npm:^8.0.3"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A22.1.1#~/.yarn/patches/@metamask-network-controller-npm-22.1.1-09b6510f1e.patch"
-    "@metamask/notification-services-controller": "npm:^0.21.0"
+    "@metamask/notification-services-controller": "npm:^1.0.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^11.0.6"
