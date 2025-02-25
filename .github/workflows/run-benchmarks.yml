@@ -4,8 +4,8 @@ on:
 env:
   COMMANDS: |
     {
-      pageload: 'yarn benchmark:{0} --out test-artifacts/{0}/benchmark/{1}-pageload.json --retries 2',
-      userActions: 'SELENIUM_BROWSER={0} yarn tsx test/e2e/user-actions-benchmark.js --out test-artifacts/{0}/benchmark/{1}-userActions.json --retries 2',
+      pageload: 'SELENIUM_BROWSER={0} yarn tsx test/e2e/benchmark.mjs --out test-artifacts/benchmarks/{0}-{1}-pageload.json --retries 2',
+      userActions: 'SELENIUM_BROWSER={0} yarn tsx test/e2e/user-actions-benchmark.js --out test-artifacts/benchmarks/{0}-{1}-userActions.json --retries 2',
     }
 
 jobs:
@@ -38,12 +38,12 @@ jobs:
           pattern: prep-build-test-${{ matrix.buildType }}
           merge-multiple: true
 
-      - run: echo "set -g mouse on" >> ~/.tmux.conf
+      # - run: echo "set -g mouse on" >> ~/.tmux.conf
 
-      - name: Debugging with tmate
-        uses: ./.github/actions/actions-tmate
-        with:
-          limit-access-to-actor: true
+      # - name: Debugging with tmate
+      #   uses: ./.github/actions/actions-tmate
+      #   with:
+      #     limit-access-to-actor: true
 
       - name: Run the benchmark
         # Choose a benchmark command from env.COMMANDS
@@ -56,5 +56,5 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: benchmark-${{ matrix.buildType }}-${{ matrix.testType }}
-          path: test-artifacts/${{ matrix.browser }}/benchmark/
+          name: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.testType }}
+          path: test-artifacts/benchmarks/

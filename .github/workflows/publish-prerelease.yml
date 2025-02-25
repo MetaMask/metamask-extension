@@ -61,7 +61,7 @@ jobs:
 
       - run: |
           echo "Benchmark artifacts:"
-          ls -l ./test-artifacts/
+          ls -l ./test-artifacts/benchmarks
           ls -l ./test-artifacts/chrome/benchmark/
           ls -l ./test-artifacts/firefox/benchmark/
 
@@ -75,7 +75,7 @@ jobs:
       - name: Publish prerelease
         env:
           PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_NUMBER: 30480
           HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
           MERGE_BASE_COMMIT_HASH: ${{ steps.get-merge-base.outputs.MERGE_BASE }}
           CIRCLE_BUILD_NUM: ${{ steps.get-circleci-job-details.outputs.CIRCLE_BUILD_NUM }}

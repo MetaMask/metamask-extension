@@ -144,7 +144,7 @@ jobs:
 
   publish-prerelease:
     name: Publish prerelease
-    if: ${{ github.event_name == 'pull_request' }}
+    # if: ${{ github.event_name == 'pull_request' }}
     needs:
       - wait-for-circleci-workflow-status
       - build-storybook

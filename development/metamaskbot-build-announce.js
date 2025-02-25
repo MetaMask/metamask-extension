@@ -149,7 +149,7 @@ async function start() {
   const tsMigrationDashboardUrl = `${BUILD_LINK_BASE}/ts-migration-dashboard/index.html`;
   const tsMigrationDashboardLink = `<a href="${tsMigrationDashboardUrl}">Dashboard</a>`;
 
-  // links to bundle browser builds
+  // links to bundle browser builds TODO FIX
   const depVizUrl = `${BUILD_LINK_BASE}/build-artifacts/build-viz/index.html`;
   const depVizLink = `<a href="${depVizUrl}">Build System</a>`;
   const bundleSizeStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/bundle_size.json`;
@@ -189,7 +189,7 @@ async function start() {
     for (const buildType of buildTypes) {
       const benchmarkPath = path.resolve(
         __dirname,
-        `../test-artifacts/${benchmarkPlatforms}/benchmark/${buildType}-pageload.json`,
+        `../test-artifacts/benchmark/benchmark-${platform}-${buildType}-pageload.json`,
       );
       console.log(`benchmarkPath`, benchmarkPath);
       try {
