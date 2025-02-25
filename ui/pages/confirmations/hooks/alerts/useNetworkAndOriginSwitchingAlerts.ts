@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { LastInteractedConfirmationInfo } from '../../../../../shared/types/confirm';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
@@ -12,7 +13,6 @@ import {
 import { selectNetworkConfigurationByChainId } from '../../../../selectors';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../context/confirm';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { SignatureRequestType } from '../../types/confirm';
 
 const CHAIN_CHANGE_THRESHOLD_MILLISECONDS = 60 * 1000; // 1 Minute
@@ -60,7 +60,11 @@ const useNetworkAndOriginSwitchingAlerts = (): Alert[] => {
     return () => {
       isMounted = false;
     };
-  }, [currentConfirmationId, setLastInteractedConfirmationInfo, updateLastInteractedConfirmationInfo]);
+  }, [
+    currentConfirmationId,
+    setLastInteractedConfirmationInfo,
+    updateLastInteractedConfirmationInfo,
+  ]);
 
   const networkAndOriginSwitchingAlerts = useMemo<Alert[]>((): Alert[] => {
     if (!currentConfirmationId || !lastInteractedConfirmationInfo) {
@@ -99,7 +103,6 @@ const useNetworkAndOriginSwitchingAlerts = (): Alert[] => {
         });
       }
     }
-    console.log('---------- 1 ----------', alerts);
 
     return alerts;
   }, [currentConfirmationId, lastInteractedConfirmationInfo, origin, t]);

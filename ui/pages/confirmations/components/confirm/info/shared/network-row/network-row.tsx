@@ -24,7 +24,11 @@ import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { useConfirmContext } from '../../../../../context/confirm';
 
-export const NetworkRow = ({isShownWithAlertsOnly = false}: {isShownWithAlertsOnly?: boolean}) => {
+export const NetworkRow = ({
+  isShownWithAlertsOnly = false,
+}: {
+  isShownWithAlertsOnly?: boolean;
+}) => {
   {
     const t = useI18nContext();
     const { currentConfirmation } = useConfirmContext() ?? {};

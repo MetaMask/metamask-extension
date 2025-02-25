@@ -30,28 +30,28 @@ describe('useNetworkAndOriginSwitchingAlerts', () => {
       chainId: '0x1',
       origin: 'https://example.com',
     });
-      const { result } = renderHookWithConfirmContextProvider(
-        () => useNetworkAndOriginSwitchingAlerts(),
-        getMockContractInteractionConfirmState(),
-      );
-      await waitFor(() => {
-        expect(result.current).toEqual([
-          {
-            field: 'Network',
-            key: 'networkSwitchInfo',
-            message: "You're now transacting on Goerli.",
-            reason: 'Network changed',
-            severity: 'info',
-          },
-          {
-            field: 'requestFrom',
-            key: 'originSwitchInfo',
-            message:
-              "You're now reviewing a request from https://metamask.github.io.",
-            reason: 'Site changed',
-            severity: 'info',
-          },
-        ]);
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useNetworkAndOriginSwitchingAlerts(),
+      getMockContractInteractionConfirmState(),
+    );
+    await waitFor(() => {
+      expect(result.current).toEqual([
+        {
+          field: 'Network',
+          key: 'networkSwitchInfo',
+          message: "You're now transacting on Goerli.",
+          reason: 'Network changed',
+          severity: 'info',
+        },
+        {
+          field: 'requestFrom',
+          key: 'originSwitchInfo',
+          message:
+            "You're now reviewing a request from https://metamask.github.io.",
+          reason: 'Site changed',
+          severity: 'info',
+        },
+      ]);
     });
   });
 });
