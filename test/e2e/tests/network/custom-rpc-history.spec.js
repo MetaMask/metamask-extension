@@ -346,6 +346,7 @@ describe('Custom RPC history', function () {
 
         // Click add network from network options
         await driver.clickElement('[data-testid="network-display"]');
+        await driver.delay(500);
 
         // custom network http://127.0.0.1:8545/2 is removed from network list
         const newNetworkListItems = await driver.findElements(
