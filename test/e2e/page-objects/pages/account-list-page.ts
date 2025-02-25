@@ -2,6 +2,9 @@ import { Driver } from '../../webdriver/driver';
 import { largeDelayMs, regularDelayMs } from '../../helpers';
 import messages from '../../../../app/_locales/en/messages.json';
 import { ACCOUNT_TYPE } from '../../constants';
+import PrivacySettings from './settings/privacy-settings';
+import HeaderNavbar from './header-navbar';
+import SettingsPage from './settings/settings-page';
 
 class AccountListPage {
   private readonly driver: Driver;
@@ -755,11 +758,25 @@ class AccountListPage {
     return '';
   }
 
-  async check_currentAccountIsSRPAccount(srpIndex: number): Promise<void> {
+  async check_accountBelongsToSRP(
+    accountName: string,
+    srpIndex: number,
+  ): Promise<void> {
     console.log(`Check that current account is an imported account`);
-    await this.driver.waitForSelector({
-      css: this.currentSelectedAccount,
-      text: `SRP #${srpIndex}`,
+    await new HeaderNavbar(this.driver).openSettingsPage();
+    const settingsPage = new SettingsPage(this.driver);
+    await settingsPage.check_pageIsLoaded();
+    await settingsPage.goToPrivacySettings();
+
+    const privacySettings = new PrivacySettings(this.driver);
+    await privacySettings.openSRPList();
+
+    const srps = await this.driver.findElements('.select-srp__container');
+    const selectedSrp = srps[srpIndex - 1];
+
+    await this.driver.findNestedElement(selectedSrp, {
+      text: accountName,
+      tag: 'p',
     });
   }
 }

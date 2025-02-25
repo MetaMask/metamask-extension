@@ -72,71 +72,37 @@ export function getAvatarNetworkColor(name) {
   }
 }
 
-export function getAccountLabels(
+export function getAccountLabel(
   type,
   account,
-  keyrings,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   snapName,
   ///: END:ONLY_INCLUDE_IF
 ) {
   if (!account) {
-    return [];
+    return null;
   }
-
-  const labels = [];
-
-  const hdKeyrings = keyrings.filter(
-    (keyring) => keyring.type === KeyringType.hdKeyTree,
-  );
-
   switch (type) {
-    case KeyringType.hdKeyTree: {
-      if (hdKeyrings.length > 1) {
-        const hdKeyringIndex = hdKeyrings.findIndex((kr) =>
-          kr.accounts.includes(account.address),
-        );
-        const hdKeyringLabel = `SRP #${hdKeyringIndex + 1}`;
-        labels.push(hdKeyringLabel);
-      }
-      break;
-    }
+    case KeyringType.hdKeyTree:
+      return null;
     case KeyringType.imported:
-      labels.push(t('imported'));
-      break;
+      return t('imported');
     case KeyringType.qr:
-      labels.push(HardwareKeyringNames.qr);
-      break;
+      return HardwareKeyringNames.qr;
     case KeyringType.trezor:
-      labels.push(HardwareKeyringNames.trezor);
-      break;
+      return HardwareKeyringNames.trezor;
     case KeyringType.ledger:
-      labels.push(HardwareKeyringNames.ledger);
-      break;
+      return HardwareKeyringNames.ledger;
     case KeyringType.lattice:
-      labels.push(HardwareKeyringNames.lattice);
-      break;
+      return HardwareKeyringNames.lattice;
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-    case KeyringType.snap: {
-      const snapEntroypyId = account.options.entropyId;
-      if (snapEntroypyId) {
-        const hdKeyringIndex = hdKeyrings.findIndex(
-          (kr) => kr.metadata.id === snapEntroypyId,
-        );
-        const hdKeyringLabel = `SRP #${hdKeyringIndex + 1}`;
-        labels.push(hdKeyringLabel);
-      }
+    case KeyringType.snap:
       if (snapName) {
-        labels.push(`${snapName} (${t('beta')})`);
-        break;
+        return `${snapName} (${t('beta')})`;
       }
-      labels.push(`${t('snaps')} (${t('beta')})`);
-      break;
-    }
+      return `${t('snaps')} (${t('beta')})`;
     ///: END:ONLY_INCLUDE_IF
-    default: {
-      break;
-    }
+    default:
+      return null;
   }
-  return labels;
 }

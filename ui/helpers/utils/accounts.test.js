@@ -10,7 +10,7 @@ import { KeyringType } from '../../../shared/constants/keyring';
 import { HardwareKeyringNames } from '../../../shared/constants/hardware-wallets';
 import mockState from '../../../test/data/mock-state.json';
 import {
-  getAccountLabels,
+  getAccountLabel,
   getAccountNameErrorMessage,
   getAvatarNetworkColor,
 } from './accounts';
@@ -114,81 +114,51 @@ describe('Accounts', () => {
     };
 
     it('should return null for null account', () => {
-      expect(
-        getAccountLabels(KeyringType.qr, null, mockState.metamask.keyrings),
-      ).toStrictEqual([]);
+      expect(getAccountLabel(KeyringType.qr, null)).toBeNull();
     });
 
     it('should return null for HD Key Tree accounts', () => {
-      expect(
-        getAccountLabels(
-          KeyringType.hdKeyTree,
-          mockAccount,
-          mockState.metamask.keyrings,
-        ),
-      ).toStrictEqual([]);
+      expect(getAccountLabel(KeyringType.hdKeyTree, mockAccount)).toBeNull();
     });
 
     it('should return the correct label for imported accounts', () => {
       mockAccount.metadata.keyring.type = KeyringType.imported;
-      expect(
-        getAccountLabels(
-          KeyringType.imported,
-          mockAccount,
-          mockState.metamask.keyrings,
-        ),
-      ).toStrictEqual(['Imported']);
+      expect(getAccountLabel(KeyringType.imported, mockAccount)).toBe(
+        'Imported',
+      );
     });
 
     it('should return the correct label for QR hardware wallet', () => {
       mockAccount.metadata.keyring.type = KeyringType.qr;
-      expect(
-        getAccountLabels(
-          KeyringType.qr,
-          mockAccount,
-          mockState.metamask.keyrings,
-        ),
-      ).toStrictEqual([HardwareKeyringNames.qr]);
+      expect(getAccountLabel(KeyringType.qr, mockAccount)).toBe(
+        HardwareKeyringNames.qr,
+      );
     });
 
     it('should return the correct label for Trezor hardware wallet', () => {
       mockAccount.metadata.keyring.type = KeyringType.trezor;
-      expect(
-        getAccountLabels(
-          KeyringType.trezor,
-          mockAccount,
-          mockState.metamask.keyrings,
-        ),
-      ).toStrictEqual([HardwareKeyringNames.trezor]);
+      expect(getAccountLabel(KeyringType.trezor, mockAccount)).toBe(
+        HardwareKeyringNames.trezor,
+      );
     });
 
     it('should return the correct label for Ledger hardware wallet', () => {
       mockAccount.metadata.keyring.type = KeyringType.ledger;
-      expect(
-        getAccountLabels(
-          KeyringType.ledger,
-          mockAccount,
-          mockState.metamask.keyrings,
-        ),
-      ).toStrictEqual([HardwareKeyringNames.ledger]);
+      expect(getAccountLabel(KeyringType.ledger, mockAccount)).toBe(
+        HardwareKeyringNames.ledger,
+      );
     });
 
     it('should return the correct label for Lattice hardware wallet', () => {
       mockAccount.metadata.keyring.type = KeyringType.lattice;
-      expect(
-        getAccountLabels(
-          KeyringType.lattice,
-          mockAccount,
-          mockState.metamask.keyrings,
-        ),
-      ).toStrictEqual([HardwareKeyringNames.lattice]);
+      expect(getAccountLabel(KeyringType.lattice, mockAccount)).toBe(
+        HardwareKeyringNames.lattice,
+      );
     });
 
     it('should handle unhandled account types', () => {
       mockAccount.metadata.keyring.type = 'unknown';
-      expect(
-        getAccountLabels('unknown', mockAccount, mockState.metamask.keyrings),
-      ).toStrictEqual([]);
+      expect(getAccountLabel('unknown', mockAccount)).toBeNull();
     });
 
     describe('Snap Account Label', () => {
@@ -211,110 +181,19 @@ describe('Accounts', () => {
 
       it('should return snap name with beta tag if snap name is provided', () => {
         expect(
-          getAccountLabels(
+          getAccountLabel(
             KeyringType.snap,
             mockSnapAccountWithName,
-            mockState.metamask.keyrings,
             mockSnapName,
           ),
-        ).toStrictEqual(['Test Snap Name (Beta)']);
+        ).toBe('Test Snap Name (Beta)');
       });
 
       it('should return generic snap label with beta tag if snap name is not provided', () => {
         expect(
-          getAccountLabels(
-            KeyringType.snap,
-            mockSnapAccountWithoutName,
-            mockState.metamask.keyrings,
-          ),
-        ).toStrictEqual(['Snaps (Beta)']);
+          getAccountLabel(KeyringType.snap, mockSnapAccountWithoutName),
+        ).toBe('Snaps (Beta)');
       });
-    });
-  });
-
-  describe('SRP label', () => {
-    it('should show SRP label with index when there are multiple HD keyrings', () => {
-      const mockAccountWithHdKeyring = {
-        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        metadata: {
-          keyring: { type: KeyringType.hdKeyTree },
-        },
-      };
-
-      const multipleHdKeyrings = [
-        {
-          type: KeyringType.hdKeyTree,
-          accounts: ['0x123'],
-        },
-        {
-          type: KeyringType.hdKeyTree,
-          accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
-        },
-      ];
-
-      expect(
-        getAccountLabels(
-          KeyringType.hdKeyTree,
-          mockAccountWithHdKeyring,
-          multipleHdKeyrings,
-        ),
-      ).toStrictEqual(['SRP #2']);
-    });
-
-    it('should not show SRP label when there is only one HD keyring', () => {
-      const mockAccountWithHdKeyring = {
-        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        metadata: {
-          keyring: { type: KeyringType.hdKeyTree },
-        },
-      };
-
-      const singleHdKeyring = [
-        {
-          type: KeyringType.hdKeyTree,
-          accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
-        },
-      ];
-
-      expect(
-        getAccountLabels(
-          KeyringType.hdKeyTree,
-          mockAccountWithHdKeyring,
-          singleHdKeyring,
-        ),
-      ).toStrictEqual([]);
-    });
-
-    it('should show SRP label for snap accounts with entropyId matching HD keyring', () => {
-      const mockSnapAccount = {
-        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        options: {
-          entropyId: 'hdKeyring2',
-        },
-        metadata: {
-          keyring: { type: KeyringType.snap },
-        },
-      };
-
-      const keyringsWithMetadata = [
-        {
-          type: KeyringType.hdKeyTree,
-          metadata: { id: 'hdKeyring1' },
-        },
-        {
-          type: KeyringType.hdKeyTree,
-          metadata: { id: 'hdKeyring2' },
-        },
-      ];
-
-      expect(
-        getAccountLabels(
-          KeyringType.snap,
-          mockSnapAccount,
-          keyringsWithMetadata,
-          'Test Snap',
-        ),
-      ).toStrictEqual(['SRP #2', 'Test Snap (Beta)']);
     });
   });
 });

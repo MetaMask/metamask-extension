@@ -5,6 +5,7 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import { ACCOUNT_TYPE } from '../../constants';
 import { withMultiSRP } from './common-multi-srp';
 
+const newlyAddedAccount = 'Account 3';
 describe('Multi SRP - Add accounts', function (this: Suite) {
   it('adds a new account for the default srp', async function () {
     await withMultiSRP(
@@ -19,9 +20,7 @@ describe('Multi SRP - Add accounts', function (this: Suite) {
           srpIndex: 1,
         });
 
-        await headerNavbar.openAccountMenu();
-        await accountListPage.check_pageIsLoaded();
-        await accountListPage.check_currentAccountIsSRPAccount(1);
+        await accountListPage.check_accountBelongsToSRP(newlyAddedAccount, 1);
       },
     );
   });
@@ -39,9 +38,7 @@ describe('Multi SRP - Add accounts', function (this: Suite) {
           srpIndex: 2,
         });
 
-        await headerNavbar.openAccountMenu();
-        await accountListPage.check_pageIsLoaded();
-        await accountListPage.check_currentAccountIsSRPAccount(2);
+        await accountListPage.check_accountBelongsToSRP(newlyAddedAccount, 2);
       },
     );
   });

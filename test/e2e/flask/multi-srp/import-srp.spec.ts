@@ -11,12 +11,8 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
     await withMultiSRP(
       { title: this.test?.fullTitle() },
       async (driver: Driver) => {
-        // Check if the SRP was imported successfully
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
-        await driver.waitForSelector({
-          text: 'SRP #2',
-        });
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.check_accountBelongsToSRP('Account 2', 2);
       },
     );
   });
