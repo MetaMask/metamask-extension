@@ -140,6 +140,7 @@ export const ConnectedSiteMenu = ({
           isOpen={showPopover}
           isConnected={!currentTabHasNoAccounts}
           onClick={onClick}
+          onClose={() => setShowPopover(false)}
         />
       )}
     </>
