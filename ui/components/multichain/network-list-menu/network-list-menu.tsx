@@ -49,7 +49,6 @@ import {
   TEST_CHAINS,
 } from '../../../../shared/constants/network';
 import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import {
   getShowTestNetworks,
   getOnboardedInThisUISession,
@@ -150,7 +149,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const showNetworkBanner = useSelector(getShowNetworkBanner);
   // This selector provides all network configurations including EVM and non-EVM
   // with the data type MultichainNetworkConfiguration from @metamask/multichain-network-controller
-  const multichainNetworks = useSelector(
+  const [multichainNetworks, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
   const currentChainId = useSelector(getSelectedMultichainNetworkChainId);
@@ -158,7 +157,6 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   // data type NetworkConfiguration from @metamask/network-controller.
   // It includes necessary data like the RPC endpoints that are not
   // part of @metamask/multichain-network-controller.
-  const evmNetworks = useSelector(getNetworkConfigurationsByChainId);
   const { chainId: editingChainId, editCompleted } =
     useSelector(getEditedNetwork) ?? {};
   const permittedChainIds = useSelector((state) =>
