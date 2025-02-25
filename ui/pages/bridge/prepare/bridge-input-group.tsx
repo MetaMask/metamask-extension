@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
-import { Hex } from '@metamask/utils';
 import {
   Text,
   TextField,
