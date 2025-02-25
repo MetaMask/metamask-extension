@@ -289,13 +289,13 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
   async #addAccountFinalize({
     address,
     snapId,
-    skipConfirmation,
+    skipConfirmationDialog,
     accountName,
     onceSaved,
   }: {
     address: string;
     snapId: SnapId;
-    skipConfirmation: boolean;
+    skipConfirmationDialog: boolean;
     onceSaved: Promise<string>;
     accountName?: string;
   }) {
@@ -340,7 +340,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
           );
         }
 
-        if (!skipConfirmation) {
+        if (!skipConfirmationDialog) {
           // TODO: Add events tracking to the dialog itself, so that events are more
           // "linked" to UI actions
           // User should now see the "Successfuly added account" page
@@ -406,18 +406,19 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     assertIsValidSnapId(snapId);
 
     // If Snap is preinstalled and does not request confirmation, skip the confirmation dialog.
-    const skipConfirmation = isSnapPreinstalled(snapId) && !displayConfirmation;
+    const skipConfirmationDialog =
+      isSnapPreinstalled(snapId) && !displayConfirmation;
 
     // Only pre-installed Snaps can skip the account name suggestion dialog.
-    const skipAccountNameSuggestion =
+    const skipAccountNameSuggestionDialog =
       isSnapPreinstalled(snapId) && !displayAccountNameSuggestion;
 
     // First part of the flow, which includes confirmation dialogs (if not skipped).
     // Once confirmed, we resume the Snap execution.
     const { accountName } = await this.#addAccountConfirmations({
       snapId,
-      skipConfirmationDialog: skipConfirmation,
-      skipAccountNameSuggestionDialog: skipAccountNameSuggestion,
+      skipConfirmationDialog,
+      skipAccountNameSuggestionDialog,
       accountNameSuggestion,
       handleUserInput,
     });
@@ -429,7 +430,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     void this.#addAccountFinalize({
       address,
       snapId,
-      skipConfirmation,
+      skipConfirmationDialog,
       accountName,
       onceSaved,
     });
