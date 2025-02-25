@@ -110,14 +110,6 @@ export const AccountDetailsDisplay = ({
           size={ButtonSecondarySize.Lg}
           variant={TextVariant.bodyMd}
           onClick={() => {
-            trackEvent({
-              category: MetaMetricsEventCategory.Accounts,
-              event: MetaMetricsEventName.KeyExportSelected,
-              properties: {
-                key_type: MetaMetricsEventKeyType.Pkey,
-                location: 'Account Details Modal',
-              },
-            });
             onExportClick('SRP');
           }}
         >
