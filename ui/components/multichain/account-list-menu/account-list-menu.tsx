@@ -288,10 +288,8 @@ export const AccountListMenu = ({
       history.push(CONFIRMATION_V_NEXT_ROUTE);
     }
 
-    await bitcoinWalletSnapClient.createAccount(
-      network,
-      primaryKeyring.metadata.id,
-    );
+    // TODO: Forward the `primaryKeyring.metadata.id` to Bitcoin once supported.
+    await bitcoinWalletSnapClient.createAccount(network);
   };
   ///: END:ONLY_INCLUDE_IF
 
