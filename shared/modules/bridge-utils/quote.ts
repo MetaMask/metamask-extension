@@ -1,10 +1,7 @@
-import type {
-  BridgeControllerState,
-  GenericQuoteRequest,
-} from '../../types/bridge';
+import type { GenericQuoteRequest } from '../../types/bridge';
 
 export const isValidQuoteRequest = (
-  partialRequest: Partial<BridgeControllerState['bridgeState']['quoteRequest']>,
+  partialRequest: Partial<GenericQuoteRequest>,
   requireAmount = true,
 ): partialRequest is GenericQuoteRequest => {
   const STRING_FIELDS = [

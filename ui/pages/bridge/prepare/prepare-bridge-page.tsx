@@ -87,7 +87,6 @@ import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import {
   getCurrentKeyring,
   getSelectedEvmInternalAccount,
-  getSelectedInternalAccount,
   getTokenList,
 } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
@@ -96,9 +95,17 @@ import { BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE } from '../../../../share
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getMultichainIsEvm } from '../../../selectors/multichain';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import {
+  getLastSelectedNonEvmAccount,
+  getMultichainTransactions,
+  getMultichainIsEvm,
+} from '../../../selectors/multichain';
+import {
+  selectBridgeHistoryForAccount,
+  selectBridgeStatusState,
+} from '../../../ducks/bridge-status/selectors';
 import { formatChainIdToCaip } from '../../../../shared/modules/bridge-utils/caip-formatters';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 
@@ -151,12 +158,12 @@ const PrepareBridgePage = () => {
 
   const isEvm = useMultichainSelector(getMultichainIsEvm);
   const selectedEvmAccount = useSelector(getSelectedEvmInternalAccount);
-  const selectedMultichainAccount = useMultichainSelector(
-    getSelectedInternalAccount,
-  );
+
+  const lastSelectedNonEvmAccount = useSelector(getLastSelectedNonEvmAccount);
+
   const selectedAccount = isEvm
     ? selectedEvmAccount
-    : selectedMultichainAccount;
+    : lastSelectedNonEvmAccount;
 
   const keyring = useSelector(getCurrentKeyring);
   // @ts-expect-error keyring type is wrong maybe?
@@ -173,22 +180,19 @@ const PrepareBridgePage = () => {
   const { quotesRefreshCount } = useSelector(getBridgeQuotes);
   const { openBuyCryptoInPdapp } = useRamps();
 
-  const { balanceAmount: nativeAssetBalance } = useLatestBalance(
+  const nativeAssetBalance = useLatestBalance(
     SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
       fromChain?.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
     ],
     fromChain?.chainId,
   );
 
-  const { balanceAmount: srcTokenBalance } = useLatestBalance(
-    fromToken,
-    fromChain?.chainId,
-  );
+  const srcTokenBalance = useLatestBalance(fromToken, fromChain?.chainId);
 
   const {
     filteredTokenListGenerator: toTokenListGenerator,
     isLoading: isToTokensLoading,
-  } = useTokensWithFiltering(toChain?.chainId);
+  } = useTokensWithFiltering(toChain?.chainId ?? fromChain?.chainId);
 
   const { flippedRequestProperties } = useRequestProperties();
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
@@ -250,6 +254,17 @@ const PrepareBridgePage = () => {
     }
   }, []);
 
+  const tx = useSelector(getMultichainTransactions);
+  const accountHistory = useSelector(selectBridgeHistoryForAccount);
+  const bridgeStatusState = useSelector(selectBridgeStatusState);
+
+  useEffect(() => {
+    console.log('=====multichaintransactions', {
+      accountHistory,
+      bridgeStatusState,
+    });
+  }, [tx, accountHistory, bridgeStatusState]);
+
   // Scroll to bottom of the page when banners are shown
   const insufficientBalanceBannerRef = useRef<HTMLDivElement>(null);
   const isEstimatedReturnLowRef = useRef<HTMLDivElement>(null);
@@ -288,7 +303,7 @@ const PrepareBridgePage = () => {
               .split('.')[0]
           : undefined,
       srcChainId: fromChain?.chainId,
-      destChainId: toChain?.chainId,
+      destChainId: isSwap ? fromChain?.chainId : toChain?.chainId,
       // This override allows quotes to be returned when the rpcUrl is a tenderly fork
       // Otherwise quotes get filtered out by the bridge-api when the wallet's real
       // balance is less than the tenderly balance
@@ -300,7 +315,7 @@ const PrepareBridgePage = () => {
         (toChain?.chainId &&
           formatChainIdToCaip(toChain.chainId) === MultichainNetworks.SOLANA) ||
         isSwap
-          ? selectedMultichainAccount?.address
+          ? lastSelectedNonEvmAccount?.address
           : selectedEvmAccount?.address,
     }),
     [
@@ -313,8 +328,8 @@ const PrepareBridgePage = () => {
       providerConfig?.rpcUrl,
       slippage,
       selectedAccount?.address,
+      lastSelectedNonEvmAccount?.address,
       isSwap,
-      selectedMultichainAccount?.address,
       selectedEvmAccount?.address,
     ],
   );
@@ -573,8 +588,7 @@ const PrepareBridgePage = () => {
                 }
           }
           customTokenListGenerator={
-            // TODO use custom generator when we have a way to get all tokens for an unimported chain
-            toChain && !isSwap ? toTokenListGenerator : undefined
+            toChain || isSwap ? toTokenListGenerator : undefined
           }
           amountInFiat={
             activeQuote?.toTokenAmount?.valueInCurrency || undefined

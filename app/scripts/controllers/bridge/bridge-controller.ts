@@ -29,11 +29,11 @@ import { isValidQuoteRequest } from '../../../../shared/modules/bridge-utils/quo
 import { hasSufficientBalance } from '../../../../shared/modules/bridge-utils/balance';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { REFRESH_INTERVAL_MS } from '../../../../shared/constants/bridge';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
   formatAddressToString,
   formatChainIdToHex,
 } from '../../../../shared/modules/bridge-utils/caip-formatters';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
   BRIDGE_CONTROLLER_NAME,
   DEFAULT_BRIDGE_STATE,

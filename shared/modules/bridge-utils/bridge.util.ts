@@ -1,5 +1,5 @@
 import { Contract } from '@ethersproject/contracts';
-import { type Hex } from '@metamask/utils';
+import { type CaipChainId, type Hex } from '@metamask/utils';
 import { abiERC20 } from '@metamask/metamask-eth-abis';
 import {
   BRIDGE_API_BASE_URL,
@@ -31,6 +31,7 @@ import {
   type TxData,
   BridgeFeatureFlagsKey,
   type BridgeFeatureFlags,
+  type TokenV3Asset,
   type GenericQuoteRequest,
 } from '../../types/bridge';
 import {
@@ -46,6 +47,7 @@ import {
   validateResponse,
   QUOTE_RESPONSE_VALIDATORS,
   FEE_DATA_VALIDATORS,
+  ASSET_VALIDATORS,
 } from './validators';
 
 const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };
@@ -91,6 +93,27 @@ export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
       chains: {},
     },
   };
+}
+
+// Returns a list of non-EVM assets
+export async function fetchNonEvmTokens(
+  chainId: CaipChainId,
+): Promise<Record<string, TokenV3Asset>> {
+  const url = `https://tokens.api.cx.metamask.io/v3/chains/${chainId}/assets?first=15000`;
+  const { data: tokens } = await fetchWithCache({
+    url,
+    fetchOptions: { method: 'GET', headers: CLIENT_ID_HEADER },
+    cacheOptions: { cacheRefreshTime: 60000 },
+    functionName: 'fetchNonEvmTokens',
+  });
+
+  const transformedTokens: Record<string, TokenV3Asset> = {};
+  tokens.forEach((token: unknown) => {
+    if (validateResponse<TokenV3Asset>(ASSET_VALIDATORS, token, url, false)) {
+      transformedTokens[token.assetId] = token;
+    }
+  });
+  return transformedTokens;
 }
 
 // Returns a list of enabled (unblocked) tokens
@@ -140,12 +163,14 @@ export async function fetchBridgeQuotes(
 ): Promise<QuoteResponse[]> {
   const normalizedRequest = {
     walletAddress: formatAddressToString(request.walletAddress),
+    destWalletAddress: formatAddressToString(request.destWalletAddress),
+
     srcChainId: formatChainIdToDec(request.srcChainId).toString(),
     destChainId: formatChainIdToDec(request.destChainId).toString(),
     srcTokenAddress: formatAddressToString(request.srcTokenAddress),
     destTokenAddress: formatAddressToString(request.destTokenAddress),
     srcTokenAmount: request.srcTokenAmount,
-    slippage: request.slippage.toString(),
+    slippage: request.slippage,
     insufficientBal: request.insufficientBal ? 'true' : 'false',
     resetApproval: request.resetApproval ? 'true' : 'false',
   };
@@ -165,15 +190,16 @@ export async function fetchBridgeQuotes(
   const filteredQuotes = quotes.filter((quoteResponse: QuoteResponse) => {
     const { quote, approval, trade } = quoteResponse;
     return (
-      validateResponse<QuoteResponse>(
+      ((validateResponse<QuoteResponse>(
         QUOTE_RESPONSE_VALIDATORS,
         quoteResponse,
         url,
       ) &&
-      validateResponse<Quote>(QUOTE_VALIDATORS, quote, url) &&
-      validateResponse<BridgeAsset>(TOKEN_VALIDATORS, quote.srcAsset, url) &&
-      validateResponse<BridgeAsset>(TOKEN_VALIDATORS, quote.destAsset, url) &&
-      validateResponse<TxData>(TX_DATA_VALIDATORS, trade, url) &&
+        validateResponse<Quote>(QUOTE_VALIDATORS, quote, url) &&
+        validateResponse<BridgeAsset>(TOKEN_VALIDATORS, quote.srcAsset, url) &&
+        validateResponse<BridgeAsset>(TOKEN_VALIDATORS, quote.destAsset, url) &&
+        typeof trade === 'string') ||
+        validateResponse<TxData>(TX_DATA_VALIDATORS, trade, url)) &&
       validateResponse<FeeData>(
         FEE_DATA_VALIDATORS,
         quote.feeData[FeeType.METABRIDGE],

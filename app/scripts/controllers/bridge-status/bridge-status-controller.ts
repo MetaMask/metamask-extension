@@ -211,7 +211,9 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
   };
 
   #getSelectedAccount() {
-    return this.messagingSystem.call('AccountsController:getSelectedAccount');
+    return this.messagingSystem.call(
+      'AccountsController:getSelectedMultichainAccount',
+    );
   }
 
   #fetchBridgeTxStatus = async ({

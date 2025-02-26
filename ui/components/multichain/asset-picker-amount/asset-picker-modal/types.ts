@@ -55,7 +55,7 @@ export type NativeAsset = {
  * ERC20Asset or NativeAsset, plus additional fields for display purposes in the Asset component
  */
 export type AssetWithDisplayData<T extends ERC20Asset | NativeAsset> = T & {
-  balance: string; // raw balance
+  balance?: string; // raw balance
   string: string | undefined; // normalized balance as a stringified number
 } & Pick<TokenListToken, 'decimals'> & {
     tokenFiatAmount?: TokenWithFiatAmount['tokenFiatAmount'];
