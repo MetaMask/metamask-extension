@@ -44,6 +44,7 @@ export const field: UIComponentFactory<FieldElement> = ({
         },
       };
     }
+
     case 'FileInput': {
       return {
         element: 'SnapUIFileInput',
