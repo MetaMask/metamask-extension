@@ -22,8 +22,8 @@ jobs:
       - name: Get merge base commit hash
         id: get-merge-base
         env:
-          BASE_SHA: ${{ github.sha }}
-          HEAD_SHA: ${{ github.sha }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           merge_base="$(git merge-base "${BASE_SHA}" "${HEAD_SHA}")"
           echo "MERGE_BASE=${merge_base}" >> "$GITHUB_OUTPUT"
@@ -37,7 +37,7 @@ jobs:
           # For a `pull_request` event, the branch is `github.head_ref``.
           BRANCH: ${{ github.head_ref }}
           # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
-          HEAD_COMMIT_HASH: ${{ github.sha }}
+          HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
           JOB_NAME: job-publish-prerelease
         run: |
           pipeline_id=$(curl --silent "https://circleci.com/api/v2/project/gh/$OWNER/$REPOSITORY/pipeline?branch=$BRANCH" | jq --arg head_commit_hash "${HEAD_COMMIT_HASH}" -r '.items | map(select(.vcs.revision == $head_commit_hash)) | first | .id')
@@ -64,8 +64,7 @@ jobs:
           CIRCLE_WORKFLOW_JOB_ID: ${{ steps.get-circleci-job-details.outputs.CIRCLE_WORKFLOW_JOB_ID }}
         run: |
           mkdir -p test-artifacts/chrome
-          # curl --silent --location "https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0/test-artifacts/chrome/bundle_size.json" > "test-artifacts/chrome/bundle_size.json"
-          curl --location "https://output.circle-artifacts.com/output/job/953e080c-f125-4d7f-b121-4005f3468dd8/artifacts/0/test-artifacts/chrome/bundle_size.json" > "test-artifacts/chrome/bundle_size.json"
+          curl --silent --location "https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0/test-artifacts/chrome/bundle_size.json" > "test-artifacts/chrome/bundle_size.json"
 
       - run: |
           echo "Benchmark artifacts:"
@@ -74,10 +73,10 @@ jobs:
       - name: Publish prerelease
         env:
           PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
-          PR_NUMBER: 30480
-          HEAD_COMMIT_HASH: ${{ github.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
           MERGE_BASE_COMMIT_HASH: ${{ steps.get-merge-base.outputs.MERGE_BASE }}
-          CIRCLE_BUILD_NUM: 4581146
-          CIRCLE_WORKFLOW_JOB_ID: 971059a8-e363-494b-a334-61fe31993a2c
+          CIRCLE_BUILD_NUM: ${{ steps.get-circleci-job-details.outputs.CIRCLE_BUILD_NUM }}
+          CIRCLE_WORKFLOW_JOB_ID: ${{ steps.get-circleci-job-details.outputs.CIRCLE_WORKFLOW_JOB_ID }}
           HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
         run: ./development/metamaskbot-build-announce.js

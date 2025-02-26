@@ -2,6 +2,17 @@ name: Main
 
 on:
   push:
+    branches:
+      - main
+      - master
+      - Version-v*
+      - trigger-ci*
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+  merge_group:
 
 jobs:
   lint-workflows:
@@ -144,7 +155,7 @@ jobs:
 
   publish-prerelease:
     name: Publish prerelease
-    # if: ${{ github.event_name == 'pull_request' }}
+    if: ${{ github.event_name == 'pull_request' }}
     needs:
       - wait-for-circleci-workflow-status
       - build-storybook
