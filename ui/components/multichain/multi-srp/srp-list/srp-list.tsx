@@ -1,11 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  KeyringMetadata,
-  KeyringObject,
-  KeyringTypes,
-} from '@metamask/keyring-controller';
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import { KeyringMetadata, KeyringObject } from '@metamask/keyring-controller';
 import Card from '../../../ui/card';
 import {
   Box,
@@ -29,11 +24,8 @@ import {
   getMetaMaskAccounts,
   getMetaMaskHdKeyrings,
 } from '../../../../selectors/selectors';
-import { getInternalAccounts } from '../../../../selectors/accounts';
 import UserPreferencedCurrencyDisplay from '../../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { shortenAddress } from '../../../../helpers/utils/util';
-import { Numeric } from '../../../../../shared/modules/Numeric';
-import { EtherDenomination } from '../../../../../shared/constants/common';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import { getMultichainConversionRate } from '../../../../selectors/multichain';
 import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
