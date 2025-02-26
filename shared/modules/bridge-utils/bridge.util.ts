@@ -1,5 +1,5 @@
 import { Contract } from '@ethersproject/contracts';
-import { Hex, add0x } from '@metamask/utils';
+import { type Hex } from '@metamask/utils';
 import { abiERC20 } from '@metamask/metamask-eth-abis';
 import {
   BRIDGE_API_BASE_URL,
@@ -10,7 +10,7 @@ import {
 } from '../../constants/bridge';
 import { MINUTE } from '../../constants/time';
 import fetchWithCache from '../../lib/fetch-with-cache';
-import { decimalToHex, hexToDecimal } from '../conversion.utils';
+import { hexToDecimal } from '../conversion.utils';
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   SwapsTokenObject,
@@ -21,18 +21,23 @@ import {
 } from '../swaps.utils';
 import { CHAIN_IDS } from '../../constants/network';
 import {
-  BridgeAsset,
+  type BridgeAsset,
   BridgeFlag,
-  FeatureFlagResponse,
-  FeeData,
+  type FeatureFlagResponse,
+  type FeeData,
   FeeType,
-  Quote,
-  QuoteRequest,
-  QuoteResponse,
-  TxData,
+  type Quote,
+  type QuoteResponse,
+  type TxData,
   BridgeFeatureFlagsKey,
-  BridgeFeatureFlags,
+  type BridgeFeatureFlags,
+  type GenericQuoteRequest,
 } from '../../types/bridge';
+import {
+  formatAddressToString,
+  formatChainIdToDec,
+  formatChainIdToCaip,
+} from './caip-formatters';
 import {
   FEATURE_FLAG_VALIDATORS,
   QUOTE_VALIDATORS,
@@ -70,7 +75,7 @@ export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
         ).reduce(
           (acc, [chainId, value]) => ({
             ...acc,
-            [add0x(decimalToHex(chainId))]: value,
+            [formatChainIdToCaip(chainId)]: value,
           }),
           {},
         ),
@@ -128,21 +133,23 @@ export async function fetchBridgeTokens(
 }
 
 // Returns a list of bridge tx quotes
+// Converts the quote request to the format the bridge-api expects prior to fetching quotes
 export async function fetchBridgeQuotes(
-  request: QuoteRequest,
+  request: GenericQuoteRequest,
   signal: AbortSignal,
 ): Promise<QuoteResponse[]> {
-  const queryParams = new URLSearchParams({
-    walletAddress: request.walletAddress,
-    srcChainId: request.srcChainId.toString(),
-    destChainId: request.destChainId.toString(),
-    srcTokenAddress: request.srcTokenAddress,
-    destTokenAddress: request.destTokenAddress,
+  const normalizedRequest = {
+    walletAddress: formatAddressToString(request.walletAddress),
+    srcChainId: formatChainIdToDec(request.srcChainId).toString(),
+    destChainId: formatChainIdToDec(request.destChainId).toString(),
+    srcTokenAddress: formatAddressToString(request.srcTokenAddress),
+    destTokenAddress: formatAddressToString(request.destTokenAddress),
     srcTokenAmount: request.srcTokenAmount,
     slippage: request.slippage.toString(),
     insufficientBal: request.insufficientBal ? 'true' : 'false',
     resetApproval: request.resetApproval ? 'true' : 'false',
-  });
+  };
+  const queryParams = new URLSearchParams(normalizedRequest);
   const url = `${BRIDGE_API_BASE_URL}/getQuote?${queryParams}`;
   const quotes = await fetchWithCache({
     url,

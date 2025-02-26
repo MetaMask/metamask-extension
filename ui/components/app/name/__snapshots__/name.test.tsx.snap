@@ -6,7 +6,7 @@ exports[`Name renders address with image 1`] = `
     class="mm-box mm-box--display-flex"
   >
     <div
-      class="name name__saved"
+      class="name name__clickable name__saved"
     >
       <img
         alt=""
@@ -30,7 +30,7 @@ exports[`Name renders address with long saved name 1`] = `
     class="mm-box mm-box--display-flex"
   >
     <div
-      class="name name__saved"
+      class="name name__clickable name__saved"
     >
       <div
         class=""
@@ -92,7 +92,7 @@ exports[`Name renders address with no saved name 1`] = `
     class="mm-box mm-box--display-flex"
   >
     <div
-      class="name name__missing"
+      class="name name__clickable name__missing"
     >
       <span
         class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
@@ -114,7 +114,7 @@ exports[`Name renders address with saved name 1`] = `
     class="mm-box mm-box--display-flex"
   >
     <div
-      class="name name__saved"
+      class="name name__clickable name__saved"
     >
       <div
         class=""
@@ -176,7 +176,7 @@ exports[`Name renders when no address value is passed 1`] = `
     class="mm-box mm-box--display-flex"
   >
     <div
-      class="name name__missing"
+      class="name name__clickable name__missing"
     >
       <span
         class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"

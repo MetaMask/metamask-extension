@@ -4653,15 +4653,6 @@
     "message": "L’interface utilisateur (IU) spécifiée par le snap n’est pas valide.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaSupportSectionTitle": {
-    "message": "Solana"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "En activant cette fonctionnalité, vous aurez la possibilité d’ajouter un compte Solana à votre extension MetaMask dérivée de votre phrase secrète de récupération existante. Toute utilisation de cette fonctionnalité bêta expérimentale se fait à vos risques et périls."
-  },
-  "solanaSupportToggleTitle": {
-    "message": "Activer « Ajouter un nouveau compte Solana (Bêta) »"
-  },
   "somethingDoesntLookRight": {
     "message": "On dirait que quelque chose ne va pas ? $1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
