@@ -55,7 +55,7 @@ export const AggregatedBalance = ({
 
   const formattedFiatDisplay = formatWithThreshold(
     multichainAggregatedBalance,
-    0.01,
+    0.0,
     locale,
     {
       style: 'currency',
@@ -65,7 +65,7 @@ export const AggregatedBalance = ({
 
   const formattedTokenDisplay = formatWithThreshold(
     multichainNativeTokenBalance.amount,
-    0.00001,
+    0.0,
     locale,
     {
       minimumFractionDigits: 5,
