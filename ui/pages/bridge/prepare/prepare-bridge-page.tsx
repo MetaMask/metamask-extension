@@ -63,7 +63,11 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/swaps';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
-import { setActiveNetwork, setSelectedAccount } from '../../../store/actions';
+import {
+  setActiveNetwork,
+  setActiveNetworkWithError,
+  setSelectedAccount,
+} from '../../../store/actions';
 import type { GenericQuoteRequest } from '../../../../shared/types/bridge';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import {
@@ -510,7 +514,7 @@ const PrepareBridgePage = () => {
                   }
                   // if (isNetworkAdded(networkConfig)) {
                   dispatch(
-                    setActiveNetwork(
+                    setActiveNetworkWithError(
                       networkConfig.rpcEndpoints[
                         networkConfig.defaultRpcEndpointIndex
                       ].networkClientId || networkConfig.chainId,
