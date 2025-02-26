@@ -1759,15 +1759,12 @@ export const getAccountInfoByCaipChainId = createDeepEqualSelector(
   getInternalAccounts,
   (_, caipChainId) => caipChainId,
   (internalAccounts, caipChainId) => {
-    return Object.values(internalAccounts.accounts).reduce(
-      (accountInfo, account) => {
-        if (account.scopes.includes(caipChainId)) {
-          accountInfo[account.address.toLowerCase()] = account.metadata.name;
-        }
-        return accountInfo;
-      },
-      {},
-    );
+    return internalAccounts.reduce((accountInfo, account) => {
+      if (account.scopes.includes(caipChainId)) {
+        accountInfo[account.address.toLowerCase()] = account.metadata.name;
+      }
+      return accountInfo;
+    }, {});
   },
 );
 
