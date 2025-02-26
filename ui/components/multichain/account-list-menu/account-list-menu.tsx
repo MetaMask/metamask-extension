@@ -73,6 +73,7 @@ import {
   getDefaultHomeActiveTabName,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   getIsSolanaSupportEnabled,
+  getMetaMaskKeyrings,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
@@ -225,6 +226,11 @@ export const AccountListMenu = ({
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const { pathname } = useLocation();
   ///: END:ONLY_INCLUDE_IF
+  const [searchQuery, setSearchQuery] = useState('');
+  const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  const [primaryKeyring] = useSelector(getMetaMaskKeyrings);
+  ///: END:ONLY_INCLUDE_IF
   const hiddenAddresses = useSelector(getHiddenAccountsList);
   const updatedAccountsList = useSelector(getUpdatedAndSortedAccounts);
   const filteredUpdatedAccountList = useMemo(
@@ -282,7 +288,10 @@ export const AccountListMenu = ({
       history.push(CONFIRMATION_V_NEXT_ROUTE);
     }
 
-    await bitcoinWalletSnapClient.createAccount(network);
+    await bitcoinWalletSnapClient.createAccount(
+      network,
+      primaryKeyring.metadata.id,
+    );
   };
   ///: END:ONLY_INCLUDE_IF
 
@@ -292,9 +301,6 @@ export const AccountListMenu = ({
     WalletClientType.Solana,
   );
   ///: END:ONLY_INCLUDE_IF
-
-  const [searchQuery, setSearchQuery] = useState('');
-  const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
 
   let searchResults: MergedInternalAccount[] = filteredUpdatedAccountList;
   if (searchQuery) {
@@ -498,6 +504,7 @@ export const AccountListMenu = ({
 
                       await solanaWalletSnapClient.createAccount(
                         MultichainNetworks.SOLANA,
+                        primaryKeyring.metadata.id,
                       );
                     }}
                     data-testid="multichain-account-menu-popover-add-solana-account"

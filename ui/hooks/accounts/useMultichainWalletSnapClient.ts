@@ -52,11 +52,18 @@ export class MultichainWalletSnapClient {
     this.#client = new KeyringClient(new MultichainWalletSnapSender(snapId));
   }
 
-  async createAccount(scope: CaipChainId) {
+  async createAccount(scope: CaipChainId, entropySource?: string) {
     // This will trigger the Snap account creation flow (+ account renaming)
-    const account = await this.#client.createAccount({
-      scope,
-    });
+    const account = await this.#client.createAccount(
+      entropySource
+        ? ({
+            scope,
+            entropySource,
+          } as Record<string, string>)
+        : {
+            scope,
+          },
+    );
 
     // NOTE: The account's balance is going to be tracked automatically on when the new account
     // will be added to the Snap bridge keyring (see `MultichainBalancesController:#handleOnAccountAdded`).
