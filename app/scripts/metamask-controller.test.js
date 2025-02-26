@@ -4277,7 +4277,9 @@ describe('MetaMaskController', () => {
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
         await expect(() =>
           metamaskController.importMnemonicToVault(TEST_SEED),
-        ).rejects.toThrow('This mnemonic has already been imported.');
+        ).rejects.toThrow(
+          'This Secret Recovery Phrase has already been imported.',
+        );
       });
     });
   });

@@ -4313,7 +4313,9 @@ export default class MetamaskController extends EventEmitter {
         });
 
       if (alreadyImportedSRP) {
-        throw new Error('This mnemonic has already been imported.');
+        throw new Error(
+          'This Secret Recovery Phrase has already been imported.',
+        );
       }
 
       const newKeyring = await this.keyringController.addNewKeyring(

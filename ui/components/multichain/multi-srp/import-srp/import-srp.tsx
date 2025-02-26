@@ -74,7 +74,7 @@ export const ImportSRP = ({
         invalidWords = newDraftSrp.map((word) => !wordlist.includes(word));
 
         if (newDraftSrp.some((word) => word === '')) {
-          newSrpError = t('seedPhraseReq');
+          newSrpError = t('importSRPNumberOfWordsError');
         } else if (hasUpperCase(joinedDraftSrp)) {
           newSrpError = t('invalidSeedPhraseCaseSensitive');
         } else if (invalidWords.some((word) => word === true)) {
