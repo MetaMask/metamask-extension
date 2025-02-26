@@ -581,3 +581,23 @@ export const getValidationErrors = createDeepEqualSelector(
 export const getWasTxDeclined = (state: BridgeAppState): boolean => {
   return state.bridge.wasTxDeclined;
 };
+
+///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+/**
+ * Checks if Solana is enabled as either a fromChain or toChain for bridging
+ */
+export const isBridgeSolanaEnabled = createDeepEqualSelector(
+  (state: BridgeAppState) => state.metamask.bridgeState?.bridgeFeatureFlags,
+  (bridgeFeatureFlags) => {
+    const solanaChainId = MultichainNetworks.SOLANA;
+    const solanaChainIdCaip = formatChainIdToCaip(solanaChainId);
+
+    // Directly check if Solana is enabled as a source or destination chain
+    const solanaConfig =
+      bridgeFeatureFlags?.[BridgeFeatureFlagsKey.EXTENSION_CONFIG]?.chains?.[
+        solanaChainIdCaip
+      ];
+    return Boolean(solanaConfig?.isActiveSrc || solanaConfig?.isActiveDest);
+  },
+);
+///: END:ONLY_INCLUDE_IF

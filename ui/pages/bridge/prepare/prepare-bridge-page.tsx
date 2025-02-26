@@ -11,7 +11,9 @@ import { debounce } from 'lodash';
 import { useHistory, useLocation } from 'react-router-dom';
 import { BigNumber } from 'bignumber.js';
 import { type TokenListMap } from '@metamask/assets-controllers';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { toChecksumAddress, zeroAddress } from 'ethereumjs-util';
+import { SolAccountType } from '@metamask/keyring-api';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -36,6 +38,7 @@ import {
   getFromAmountInCurrency,
   getValidationErrors,
   getBridgeQuotesConfig,
+  isBridgeSolanaEnabled,
 } from '../../../ducks/bridge/selectors';
 import {
   BannerAlert,
@@ -63,7 +66,6 @@ import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFilte
 import { setActiveNetwork } from '../../../store/actions';
 import type { GenericQuoteRequest } from '../../../../shared/types/bridge';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
-import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
 import {
   formatTokenAmount,
   isQuoteExpired as isQuoteExpiredUtil,
@@ -88,6 +90,7 @@ import {
   getCurrentKeyring,
   getSelectedEvmInternalAccount,
   getSelectedInternalAccount,
+  getInternalAccounts,
   getTokenList,
 } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
@@ -97,10 +100,11 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainIsEvm } from '../../../selectors/multichain';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { formatChainIdToCaip } from '../../../../shared/modules/bridge-utils/caip-formatters';
+import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
+import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
+import { DestinationAccountPicker } from './components/destination-account-picker';
 
 const PrepareBridgePage = () => {
   const dispatch = useDispatch();
@@ -108,6 +112,7 @@ const PrepareBridgePage = () => {
   const t = useI18nContext();
 
   const isSwap = useIsMultichainSwap();
+  const accounts = useSelector(getInternalAccounts);
 
   const fromToken = useSelector(getFromToken);
   const fromTokens = useSelector(getTokenList) as TokenListMap;
@@ -272,6 +277,35 @@ const PrepareBridgePage = () => {
     isLowReturnBannerOpen,
   ]);
 
+  const [selectedDestinationAccount, setSelectedDestinationAccount] =
+    useState<InternalAccount | null>(null);
+  const hasAutoSelectedRef = useRef(false);
+
+  const isToOrFromSolana = useMemo(() => {
+    if (!fromChain?.chainId || !toChain?.chainId) {
+      return false;
+    }
+
+    const fromChainStartsWithSolana = fromChain.chainId
+      .toString()
+      .startsWith('solana:');
+    const toChainStartsWithSolana = toChain.chainId
+      .toString()
+      .startsWith('solana:');
+
+    return (
+      (toChainStartsWithSolana && !fromChainStartsWithSolana) ||
+      (!toChainStartsWithSolana && fromChainStartsWithSolana)
+    );
+  }, [fromChain?.chainId, toChain?.chainId]);
+
+  const isDestinationSolana = useMemo(() => {
+    if (!toChain?.chainId) {
+      return false;
+    }
+    return toChain.chainId.toString().startsWith('solana:');
+  }, [toChain?.chainId]);
+
   const quoteParams = useMemo(
     () => ({
       srcTokenAddress: fromToken?.address,
@@ -295,13 +329,9 @@ const PrepareBridgePage = () => {
       insufficientBal: Boolean(providerConfig?.rpcUrl?.includes('tenderly')),
       slippage,
       walletAddress: selectedAccount?.address ?? '',
-      // TODO override with account selector's value
-      destWalletAddress:
-        (toChain?.chainId &&
-          formatChainIdToCaip(toChain.chainId) === MultichainNetworks.SOLANA) ||
-        isSwap
-          ? selectedMultichainAccount?.address
-          : selectedEvmAccount?.address,
+      destWalletAddress: isToOrFromSolana
+        ? selectedDestinationAccount?.address
+        : selectedEvmAccount?.address,
     }),
     [
       fromToken?.address,
@@ -313,9 +343,9 @@ const PrepareBridgePage = () => {
       providerConfig?.rpcUrl,
       slippage,
       selectedAccount?.address,
-      isSwap,
-      selectedMultichainAccount?.address,
       selectedEvmAccount?.address,
+      selectedDestinationAccount?.address,
+      isToOrFromSolana,
     ],
   );
 
@@ -329,7 +359,40 @@ const PrepareBridgePage = () => {
 
   useEffect(() => {
     debouncedUpdateQuoteRequestInController(quoteParams);
-  }, [quoteParams]);
+  }, [quoteParams, debouncedUpdateQuoteRequestInController]);
+
+  // Auto-select most recently used account only once on initial load
+  useEffect(() => {
+    if (
+      !selectedDestinationAccount &&
+      !hasAutoSelectedRef.current &&
+      isToOrFromSolana
+    ) {
+      const filteredAccounts = accounts
+        .filter((account: InternalAccount) => {
+          const isSolAccount = Boolean(
+            account && account.type === SolAccountType.DataAccount,
+          );
+          return isDestinationSolana ? isSolAccount : !isSolAccount;
+        })
+        .sort((a: InternalAccount, b: InternalAccount) => {
+          const aLastSelected = a.metadata.lastSelected || 0;
+          const bLastSelected = b.metadata.lastSelected || 0;
+          return bLastSelected - aLastSelected;
+        });
+
+      if (filteredAccounts.length > 0) {
+        const mostRecentAccount = filteredAccounts[0];
+        setSelectedDestinationAccount(mostRecentAccount);
+        hasAutoSelectedRef.current = true;
+      }
+    }
+  }, [
+    isToOrFromSolana,
+    selectedDestinationAccount,
+    isDestinationSolana,
+    accounts,
+  ]);
 
   const trackInputEvent = useCallback(
     (
@@ -394,6 +457,8 @@ const PrepareBridgePage = () => {
         break;
     }
   }, [fromChain, fromToken, fromTokens, search, isFromTokensLoading]);
+
+  const isSolanaBridgeEnabled = useSelector(isBridgeSolanaEnabled);
 
   return (
     <Column className="prepare-bridge-page" gap={8}>
@@ -593,6 +658,17 @@ const PrepareBridgePage = () => {
           }}
           isTokenListLoading={isToTokensLoading}
         />
+
+        {isSolanaBridgeEnabled && isToOrFromSolana && (
+          <Box padding={6} paddingBottom={3} paddingTop={3}>
+            <DestinationAccountPicker
+              onAccountSelect={setSelectedDestinationAccount}
+              selectedSwapToAccount={selectedDestinationAccount}
+              isDestinationSolana={isDestinationSolana}
+            />
+          </Box>
+        )}
+
         <Column height={BlockSize.Full} justifyContent={JustifyContent.center}>
           {isLoading && !activeQuote ? (
             <>
@@ -607,7 +683,7 @@ const PrepareBridgePage = () => {
           ) : null}
         </Column>
 
-        <Row padding={6}>
+        <Row padding={6} paddingTop={activeQuote ? 0 : 6}>
           <Column
             gap={3}
             className={activeQuote ? 'highlight' : ''}
@@ -617,6 +693,14 @@ const PrepareBridgePage = () => {
               paddingInline: 16,
               position: 'relative',
               overflow: 'hidden',
+              ...(activeQuote && !wasTxDeclined && isSolanaBridgeEnabled
+                ? {
+                    boxShadow:
+                      'var(--shadow-size-sm) var(--color-shadow-default)',
+                    backgroundColor: 'var(--color-background-default)',
+                    borderRadius: 8,
+                  }
+                : {}),
             }}
           >
             {activeQuote && isQuoteGoingToRefresh && (
@@ -633,12 +717,23 @@ const PrepareBridgePage = () => {
                 backgroundColor={BackgroundColor.primaryMuted}
               />
             )}
-            {!wasTxDeclined && activeQuote && <BridgeQuoteCard />}
+            {!wasTxDeclined &&
+              activeQuote &&
+              (isSolanaBridgeEnabled ? (
+                <MultichainBridgeQuoteCard />
+              ) : (
+                <BridgeQuoteCard />
+              ))}
             <Footer padding={0} flexDirection={FlexDirection.Column} gap={2}>
               <BridgeCTAButton
                 onFetchNewQuotes={() => {
                   debouncedUpdateQuoteRequestInController(quoteParams);
                 }}
+                needsDestinationAddress={
+                  isSolanaBridgeEnabled &&
+                  isToOrFromSolana &&
+                  !selectedDestinationAccount
+                }
               />
               {activeQuote?.approval && fromAmount && fromToken ? (
                 <Row justifyContent={JustifyContent.center} gap={1}>
