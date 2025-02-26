@@ -64,10 +64,9 @@ export const SnapUIAddressInput: FunctionComponent<
 
   useEffect(() => {
     if (initialValue !== undefined && initialValue !== null) {
-      const { address } = parseCaipAccountId(initialValue as CaipAccountId);
-      setValue(address);
+      setValue(parsedAddress);
     }
-  }, [initialValue]);
+  }, [initialValue, parsedAddress]);
 
   /*
    * Focus input if the last focused input was this input
