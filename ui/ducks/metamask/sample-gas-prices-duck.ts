@@ -1,25 +1,17 @@
-import type { Hex } from '@metamask/utils';
 import { createSelector } from 'reselect';
 import { useSelector, useDispatch } from 'react-redux';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import type { MetaMaskReduxDispatch } from '../../store/store';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
-
-// Types
-export type GasPrices = {
-  low: string;
-  average: string;
-  high: string;
-  fetchedDate: number;
-};
-
-export type GasPricesState = {
-  gasPricesByChainId: Record<Hex, GasPrices>;
-};
+import {
+  SampleGasPrices,
+  SampleGasPricesControllerState,
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../../app/scripts/controllers/sample';
 
 // Actions
-export const UPDATE_GAS_PRICES = 'GasPricesController:updateGasPrices';
+export const UPDATE_GAS_PRICES = 'updateGasPrices';
 
 export const updateGasPrices = () => {
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -31,15 +23,15 @@ export const updateGasPrices = () => {
 // Selectors
 export const getGasPricesByChainId = createSelector(
   [
-    (state: { GasPricesController?: GasPricesState }) =>
-      state.GasPricesController?.gasPricesByChainId,
+    (state: { SampleGasPricesController?: SampleGasPricesControllerState }) =>
+      state.SampleGasPricesController?.gasPricesByChainId,
   ],
   (gasPricesByChainId) => gasPricesByChainId ?? {},
 );
 
 export const getGasPricesForCurrentChain = createSelector(
   [getGasPricesByChainId, getCurrentChainId],
-  (gasPricesByChainId, chainId): GasPrices | undefined =>
+  (gasPricesByChainId, chainId): SampleGasPrices | undefined =>
     gasPricesByChainId[chainId],
 );
 
