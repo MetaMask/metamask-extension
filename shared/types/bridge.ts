@@ -77,7 +77,7 @@ export type BridgeAsset = {
 // Generic types for the quote request
 // Only the controller and reducer should be overriding these types to prepare the fetch request
 export type QuoteRequest<
-  ChainIdType = ChainId,
+  ChainIdType = ChainId | number,
   TokenAddressType = string,
   WalletAddressType = string,
 > = {
@@ -197,13 +197,18 @@ export enum BridgeBackgroundAction {
   RESET_STATE = 'resetState',
   GET_BRIDGE_ERC20_ALLOWANCE = 'getBridgeERC20Allowance',
 }
+
+// These are types that components pass in. Since data is a mix of types when coming from the redux store, we need to use a generic type that can cover all the types.
+// This is formatted by fetchBridgeQuotes right before fetching quotes to whatever type the bridge-api is expecting.
+export type GenericQuoteRequest = QuoteRequest<
+  Hex | CaipChainId | string | number, // chainIds
+  Hex | CaipAssetId | string, // assetIds/addresses
+  Hex | CaipAccountId | string // accountIds/addresses
+>;
+
 export type BridgeState = {
   bridgeFeatureFlags: BridgeFeatureFlags;
-  // These are types that components pass in
-  // TODO should this jkust be a generic string to catch everything?
-  quoteRequest: Partial<
-    QuoteRequest<Hex | CaipChainId, Hex | CaipAssetId, Hex | CaipAccountId>
-  >;
+  quoteRequest: Partial<GenericQuoteRequest>;
   quotes: (QuoteResponse & L1GasFees)[];
   quotesInitialLoadTime?: number;
   quotesLastFetched?: number;

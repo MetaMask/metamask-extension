@@ -7,6 +7,7 @@ import {
 } from '../../ducks/bridge/selectors';
 import { getMarketData, getParticipateInMetaMetrics } from '../../selectors';
 import { getCurrentCurrency } from '../../ducks/metamask/metamask';
+import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import {
   setDestTokenExchangeRates,
   setDestTokenUsdExchangeRates,

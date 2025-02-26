@@ -12,7 +12,6 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { BigNumber } from 'bignumber.js';
 import { type TokenListMap } from '@metamask/assets-controllers';
 import { toChecksumAddress, zeroAddress } from 'ethereumjs-util';
-import type { Hex, CaipChainId } from '@metamask/utils';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -62,7 +61,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/swaps';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
 import { setActiveNetwork } from '../../../store/actions';
-import type { QuoteRequest } from '../../../../shared/types/bridge';
+import type { GenericQuoteRequest } from '../../../../shared/types/bridge';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
 import {
@@ -98,13 +97,14 @@ import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
   getLastSelectedNonEvmAccount,
-  getMultichainIsEvm,
   getMultichainTransactions,
+  getMultichainIsEvm,
 } from '../../../selectors/multichain';
 import {
   selectBridgeHistoryForAccount,
   selectBridgeStatusState,
 } from '../../../ducks/bridge-status/selectors';
+import { formatChainIdToCaip } from '../../../../shared/modules/bridge-utils/caip-formatters';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
@@ -113,6 +113,8 @@ const PrepareBridgePage = () => {
   const dispatch = useDispatch();
 
   const t = useI18nContext();
+
+  const isSwap = useIsMultichainSwap();
 
   const fromToken = useSelector(getFromToken);
   const fromTokens = useSelector(getTokenList) as TokenListMap;
@@ -196,8 +198,6 @@ const PrepareBridgePage = () => {
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
 
   const millisecondsUntilNextRefresh = useCountdownTimer();
-
-  const isSwap = useIsMultichainSwap();
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
 
@@ -312,7 +312,9 @@ const PrepareBridgePage = () => {
       walletAddress: selectedAccount?.address ?? '',
       // TODO override with account selector's value
       destWalletAddress:
-        toChain?.chainId === MultichainNetworks.SOLANA || isSwap
+        (toChain?.chainId &&
+          formatChainIdToCaip(toChain.chainId) === MultichainNetworks.SOLANA) ||
+        isSwap
           ? lastSelectedNonEvmAccount?.address
           : selectedEvmAccount?.address,
     }),
@@ -322,18 +324,18 @@ const PrepareBridgePage = () => {
       toToken?.address,
       fromAmount,
       fromChain?.chainId,
-      isSwap,
       toChain?.chainId,
       providerConfig?.rpcUrl,
       slippage,
       selectedAccount?.address,
-      selectedEvmAccount?.address,
       lastSelectedNonEvmAccount?.address,
+      isSwap,
+      selectedEvmAccount?.address,
     ],
   );
 
   const debouncedUpdateQuoteRequestInController = useCallback(
-    debounce((p: Partial<QuoteRequest<Hex | CaipChainId>>) => {
+    debounce((p: Partial<GenericQuoteRequest>) => {
       dispatch(updateQuoteRequestParams(p));
       dispatch(setSelectedQuote(null));
     }, 300),
@@ -436,12 +438,16 @@ const PrepareBridgePage = () => {
                 network: fromChain,
                 networks: fromChains,
                 onNetworkChange: (networkConfig) => {
-                  networkConfig.chainId !== fromChain?.chainId &&
+                  networkConfig?.chainId &&
+                    networkConfig.chainId !== fromChain?.chainId &&
                     trackInputEvent({
                       input: 'chain_source',
                       value: networkConfig.chainId,
                     });
-                  if (networkConfig.chainId === toChain?.chainId) {
+                  if (
+                    networkConfig?.chainId &&
+                    networkConfig.chainId === toChain?.chainId
+                  ) {
                     dispatch(setToChainId(null));
                     dispatch(setToToken(null));
                   }

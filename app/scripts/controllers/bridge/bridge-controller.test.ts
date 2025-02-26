@@ -2,7 +2,6 @@ import nock from 'nock';
 import { BigNumber } from 'bignumber.js';
 import { add0x } from '@metamask/utils';
 import { BRIDGE_API_BASE_URL } from '../../../../shared/constants/bridge';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { SWAPS_API_V2_BASE_URL } from '../../../../shared/constants/swaps';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
 import * as bridgeUtil from '../../../../shared/modules/bridge-utils/bridge.util';
@@ -12,6 +11,7 @@ import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quote
 import mockBridgeQuotesNativeErc20Eth from '../../../../test/data/bridge/mock-quotes-native-erc20-eth.json';
 import { type QuoteResponse } from '../../../../shared/types/bridge';
 import { decimalToHex } from '../../../../shared/modules/conversion.utils';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import BridgeController from './bridge-controller';
 import { BridgeControllerMessenger } from './types';
 import { DEFAULT_BRIDGE_STATE } from './constants';
@@ -132,10 +132,10 @@ describe('BridgeController', function () {
         refreshRate: 3,
         support: true,
         chains: {
-          [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: false },
-          [CHAIN_IDS.SCROLL]: { isActiveSrc: true, isActiveDest: false },
-          [CHAIN_IDS.POLYGON]: { isActiveSrc: false, isActiveDest: true },
-          [CHAIN_IDS.ARBITRUM]: { isActiveSrc: false, isActiveDest: true },
+          'eip155:10': { isActiveSrc: true, isActiveDest: false },
+          'eip155:534352': { isActiveSrc: true, isActiveDest: false },
+          'eip155:137': { isActiveSrc: false, isActiveDest: true },
+          'eip155:42161': { isActiveSrc: false, isActiveDest: true },
         },
       },
     };
@@ -272,22 +272,22 @@ describe('BridgeController', function () {
     });
 
     const quoteParams = {
-      srcChainId: 1,
-      destChainId: 10,
+      srcChainId: '0x1',
+      destChainId: MultichainNetworks.SOLANA,
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
       destTokenAddress: '0x123',
       srcTokenAmount: '1000000000000000000',
+      walletAddress: '0x123',
     };
     const quoteRequest = {
       ...quoteParams,
       slippage: 0.5,
-      walletAddress: '0x123',
     };
     await bridgeController.updateBridgeQuoteRequestParams(quoteParams);
 
     expect(stopAllPollingSpy).toHaveBeenCalledTimes(1);
-    expect(startPollingSpy).toHaveBeenCalledTimes(1);
     expect(hasSufficientBalanceSpy).toHaveBeenCalledTimes(1);
+    expect(startPollingSpy).toHaveBeenCalledTimes(1);
     expect(startPollingSpy).toHaveBeenCalledWith({
       networkClientId: expect.anything(),
       updatedQuoteRequest: {
@@ -298,7 +298,7 @@ describe('BridgeController', function () {
 
     expect(bridgeController.state.bridgeState).toStrictEqual(
       expect.objectContaining({
-        quoteRequest: { ...quoteRequest, walletAddress: undefined },
+        quoteRequest,
         quotes: DEFAULT_BRIDGE_STATE.quotes,
         quotesLastFetched: DEFAULT_BRIDGE_STATE.quotesLastFetched,
         quotesLoadingStatus: DEFAULT_BRIDGE_STATE.quotesLoadingStatus,
@@ -421,16 +421,16 @@ describe('BridgeController', function () {
     });
 
     const quoteParams = {
-      srcChainId: 1,
-      destChainId: 10,
+      srcChainId: '0x1',
+      destChainId: '0x10',
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
       destTokenAddress: '0x123',
       srcTokenAmount: '1000000000000000000',
+      walletAddress: '0x123',
     };
     const quoteRequest = {
       ...quoteParams,
       slippage: 0.5,
-      walletAddress: '0x123',
     };
     await bridgeController.updateBridgeQuoteRequestParams(quoteParams);
 
@@ -447,7 +447,7 @@ describe('BridgeController', function () {
 
     expect(bridgeController.state.bridgeState).toStrictEqual(
       expect.objectContaining({
-        quoteRequest: { ...quoteRequest, walletAddress: undefined },
+        quoteRequest,
         quotes: DEFAULT_BRIDGE_STATE.quotes,
         quotesLastFetched: DEFAULT_BRIDGE_STATE.quotesLastFetched,
         quotesInitialLoadTime: undefined,
@@ -614,16 +614,16 @@ describe('BridgeController', function () {
         });
 
       const quoteParams = {
-        srcChainId: 10,
-        destChainId: 1,
+        srcChainId: '0x10',
+        destChainId: '0x1',
         srcTokenAddress: '0x4200000000000000000000000000000000000006',
         destTokenAddress: '0x0000000000000000000000000000000000000000',
         srcTokenAmount: '991250000000000000',
+        walletAddress: 'eip:id/id:id/0x123',
       };
       const quoteRequest = {
         ...quoteParams,
         slippage: 0.5,
-        walletAddress: '0x123',
       };
       await bridgeController.updateBridgeQuoteRequestParams(quoteParams);
 
@@ -640,7 +640,7 @@ describe('BridgeController', function () {
 
       expect(bridgeController.state.bridgeState).toStrictEqual(
         expect.objectContaining({
-          quoteRequest: { ...quoteRequest, walletAddress: undefined },
+          quoteRequest,
           quotes: DEFAULT_BRIDGE_STATE.quotes,
           quotesLastFetched: DEFAULT_BRIDGE_STATE.quotesLastFetched,
           quotesLoadingStatus: DEFAULT_BRIDGE_STATE.quotesLoadingStatus,

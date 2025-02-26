@@ -61,6 +61,7 @@ import {
 } from '../../../../selectors/multichain';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import { getAssetsMetadata } from '../../../../selectors/assets';
+import { Numeric } from '../../../../../shared/modules/Numeric';
 import type {
   ERC20Asset,
   NativeAsset,
@@ -147,10 +148,8 @@ export function AssetPickerModal({
 
   const handleAssetChange = useCallback(onAssetChange, [onAssetChange]);
 
-  const currentChainId = useMultichainSelector(getMultichainCurrentChainId);
-  const allNetworks = useMultichainSelector(
-    getMultichainNetworkConfigurationsByChainId,
-  );
+  const currentChainId = useSelector(getMultichainCurrentChainId);
+  const allNetworks = useSelector(getMultichainNetworkConfigurationsByChainId);
   const selectedNetwork =
     network ??
     (currentChainId && allNetworks[currentChainId as keyof typeof allNetworks]);
@@ -167,15 +166,16 @@ export function AssetPickerModal({
 
   const tokenConversionRates = useMultichainSelector(getTokenExchangeRates);
   const conversionRate = useMultichainSelector(getMultichainConversionRate);
-  const currentCurrency = useMultichainSelector(getMultichainCurrentCurrency);
+  const currentCurrency = useSelector(getMultichainCurrentCurrency);
 
-  const { address: selectedEvmAddress } = useMultichainSelector(
+  const { address: selectedEvmAddress } = useSelector(
     getSelectedEvmInternalAccount,
   );
 
   const detectedTokens: Record<Hex, Record<string, Token[]>> = useSelector(
     getAllTokens,
   );
+  // This only returns the detected tokens for the selected EVM account address
   const allDetectedTokens = useMemo(
     () =>
       (isCaipChainId(currentChainId)
@@ -258,22 +258,27 @@ export function AssetPickerModal({
                   CHAIN_ID_TOKEN_IMAGE_MAP[
                     token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
                   ],
-                address: null,
                 type: AssetType.native,
               }
-            : token;
+            : {
+                ...token,
+                // The Send flow requires the balance to be in Hex
+                balance: Numeric.from(token.balance ?? '0', 10)
+                  .shiftedBy(-1 * token.decimals)
+                  .toPrefixedHexString(),
+              };
         }
       }
 
       // Yield the native token for the selected chain
       const nativeToken: AssetWithDisplayData<NativeAsset> = {
-        address: null,
+        address: '',
         symbol: nativeCurrency,
         decimals: 18,
         image: nativeCurrencyImage,
         balance: balanceValue,
         string: undefined,
-        chainId: currentChainId,
+        chainId: selectedNetwork.chainId,
         type: AssetType.native,
       };
 

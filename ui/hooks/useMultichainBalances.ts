@@ -2,12 +2,12 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { CaipChainId, Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
-import { getTokenBalancesEvm } from '../selectors';
 import type { TokenWithBalance } from '../components/app/assets/types';
 import {
   getAccountAssets,
   getAssetsMetadata,
   getAssetsRates,
+  getTokenBalancesEvm,
 } from '../selectors/assets';
 import {
   getLastSelectedNonEvmAccount,
@@ -15,11 +15,12 @@ import {
   getMultichainCoinRates,
 } from '../selectors/multichain';
 import { AssetType } from '../../shared/constants/transaction';
+import { getSelectedEvmInternalAccount } from '../selectors/selectors';
 import { useMultichainSelector } from './useMultichainSelector';
 
 // TODO replace this with getMultichainAssets
 const useNonEvmAssetsWithBalances = (): (
-  | Omit<TokenWithBalance, 'address' | 'chainId'> & {
+  | Omit<TokenWithBalance, 'address' | 'chainId' | 'primary' | 'secondary'> & {
       chainId: `${string}:${string}`;
       decimals: number;
       address: `${string}:${string}`;
@@ -98,22 +99,21 @@ const useNonEvmAssetsWithBalances = (): (
 // This also returns the total fiat balances by chainId/caipChainId
 export const useMultichainBalances = () => {
   // EVM data
-  const evmBalancesWithFiatByChainId: (TokenWithBalance & {
-    chainId: Hex;
-    decimals: number;
-    string: string;
-    tokenFiatAmount: number;
-    balance: string;
-  })[] = useSelector(getTokenBalancesEvm);
+  const selectedAccount = useSelector(getSelectedEvmInternalAccount);
+  const evmBalancesWithFiatByChainId = useSelector((state) =>
+    getTokenBalancesEvm(state, selectedAccount.address),
+  );
   // Non-EVM data
   const nonEvmBalancesWithFiatByChainId = useNonEvmAssetsWithBalances();
 
   // return TokenWithFiat sorted by fiat balance amount
   const assetsWithBalance = useMemo(() => {
-    return [
-      ...evmBalancesWithFiatByChainId,
-      ...nonEvmBalancesWithFiatByChainId,
-    ].sort((a, b) => (b.tokenFiatAmount ?? 0) - (a.tokenFiatAmount ?? 0));
+    return [...evmBalancesWithFiatByChainId, ...nonEvmBalancesWithFiatByChainId]
+      .map((t) => ({
+        ...t,
+        type: t.isNative ? AssetType.native : AssetType.token,
+      }))
+      .sort((a, b) => (b.tokenFiatAmount ?? 0) - (a.tokenFiatAmount ?? 0));
   }, [evmBalancesWithFiatByChainId, nonEvmBalancesWithFiatByChainId]);
 
   // return total fiat balances by chainId/caipChainId

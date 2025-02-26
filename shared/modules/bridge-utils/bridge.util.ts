@@ -1,10 +1,5 @@
 import { Contract } from '@ethersproject/contracts';
-import {
-  type CaipAccountId,
-  type CaipAssetId,
-  type CaipChainId,
-  type Hex,
-} from '@metamask/utils';
+import { type CaipChainId, type Hex } from '@metamask/utils';
 import { abiERC20 } from '@metamask/metamask-eth-abis';
 import {
   BRIDGE_API_BASE_URL,
@@ -26,23 +21,23 @@ import {
 } from '../swaps.utils';
 import { CHAIN_IDS } from '../../constants/network';
 import {
-  BridgeAsset,
+  type BridgeAsset,
   BridgeFlag,
-  FeatureFlagResponse,
-  FeeData,
+  type FeatureFlagResponse,
+  type FeeData,
   FeeType,
-  Quote,
-  QuoteRequest,
-  QuoteResponse,
-  TxData,
+  type Quote,
+  type QuoteResponse,
+  type TxData,
   BridgeFeatureFlagsKey,
-  BridgeFeatureFlags,
+  type BridgeFeatureFlags,
   type TokenV3Asset,
+  type GenericQuoteRequest,
 } from '../../types/bridge';
 import {
   formatAddressToString,
   formatChainIdToDec,
-  normalizeChainId,
+  formatChainIdToCaip,
 } from './caip-formatters';
 import {
   FEATURE_FLAG_VALIDATORS,
@@ -82,7 +77,7 @@ export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
         ).reduce(
           (acc, [chainId, value]) => ({
             ...acc,
-            [normalizeChainId(chainId)]: value,
+            [formatChainIdToCaip(chainId)]: value,
           }),
           {},
         ),
@@ -161,15 +156,17 @@ export async function fetchBridgeTokens(
 }
 
 // Returns a list of bridge tx quotes
+// Converts the quote request to the format the bridge-api expects prior to fetching quotes
 export async function fetchBridgeQuotes(
-  request: QuoteRequest<CaipChainId, CaipAssetId, CaipAccountId>,
+  request: GenericQuoteRequest,
   signal: AbortSignal,
 ): Promise<QuoteResponse[]> {
-  const normalizedRequest: QuoteRequest = {
+  const normalizedRequest = {
     walletAddress: formatAddressToString(request.walletAddress),
     destWalletAddress: formatAddressToString(request.destWalletAddress),
-    srcChainId: formatChainIdToDec(request.srcChainId),
-    destChainId: formatChainIdToDec(request.destChainId),
+
+    srcChainId: formatChainIdToDec(request.srcChainId).toString(),
+    destChainId: formatChainIdToDec(request.destChainId).toString(),
     srcTokenAddress: formatAddressToString(request.srcTokenAddress),
     destTokenAddress: formatAddressToString(request.destTokenAddress),
     srcTokenAmount: request.srcTokenAmount,

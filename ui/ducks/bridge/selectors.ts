@@ -1,6 +1,7 @@
 import type {
-  AddNetworkFields,
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   NetworkConfiguration,
+  ///: END:ONLY_INCLUDE_IF
   NetworkState,
 } from '@metamask/network-controller';
 import { orderBy, uniqBy } from 'lodash';
@@ -8,7 +9,12 @@ import { createSelector } from 'reselect';
 import type { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
-import type { Hex } from '@metamask/utils';
+///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+import {
+  MultichainNetworks,
+  MULTICHAIN_PROVIDER_CONFIGS,
+} from '../../../shared/constants/multichain/networks';
+///: END:ONLY_INCLUDE_IF
 import {
   getIsBridgeEnabled,
   getMarketData,
@@ -43,24 +49,22 @@ import {
   calcSwapRate,
   calcToAmount,
   calcEstimatedAndMaxTotalGasFee,
-  isNativeAddress,
 } from '../../pages/bridge/utils/quote';
+import {
+  isNativeAddress,
+  formatChainIdToCaip,
+} from '../../../shared/modules/bridge-utils/caip-formatters';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
-import { normalizeChainId } from '../../../shared/modules/bridge-utils/caip-formatters';
 import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
   FEATURED_RPCS,
 } from '../../../shared/constants/network';
 import {
-  getImageForChainId,
   getMultichainCoinRates,
   getMultichainNetworkConfigurationsByChainId,
   getMultichainProviderConfig,
+  getImageForChainId,
 } from '../../selectors/multichain';
-import {
-  MultichainNetworks,
-  MULTICHAIN_PROVIDER_CONFIGS,
-} from '../../../shared/constants/multichain/networks';
 import { getAssetsRates } from '../../selectors/assets';
 import type { BridgeState } from './bridge';
 import {
@@ -95,11 +99,11 @@ export const getAllBridgeableNetworks = createDeepEqualSelector(
         {
           ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
           blockExplorerUrls: [],
-          name: '',
+          name: 'Solana',
           nativeCurrency: 'sol',
           rpcEndpoints: [{ url: '', type: '', networkClientId: '' }],
           defaultRpcEndpointIndex: 0,
-          chainId: MultichainNetworks.SOLANA as unknown as Hex,
+          chainId: MultichainNetworks.SOLANA,
         } as unknown as NetworkConfiguration,
         ///: END:ONLY_INCLUDE_IF
       ],
@@ -119,7 +123,7 @@ export const getFromChains = createDeepEqualSelector(
     return allBridgeableNetworks.filter(
       ({ chainId }) =>
         bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].chains[
-          normalizeChainId(chainId)
+          formatChainIdToCaip(chainId)
         ]?.isActiveSrc,
     );
   },
@@ -128,7 +132,7 @@ export const getFromChains = createDeepEqualSelector(
 export const getFromChain = createDeepEqualSelector(
   getMultichainProviderConfig,
   getFromChains,
-  (providerConfig, fromChains): NetworkConfiguration | undefined => {
+  (providerConfig, fromChains) => {
     return providerConfig?.chainId
       ? fromChains.find(({ chainId }) => chainId === providerConfig.chainId)
       : undefined;
@@ -138,14 +142,11 @@ export const getFromChain = createDeepEqualSelector(
 export const getToChains = createDeepEqualSelector(
   getAllBridgeableNetworks,
   (state: BridgeAppState) => state.metamask.bridgeState?.bridgeFeatureFlags,
-  (
-    allBridgeableNetworks,
-    bridgeFeatureFlags,
-  ): (AddNetworkFields | NetworkConfiguration)[] =>
+  (allBridgeableNetworks, bridgeFeatureFlags) =>
     uniqBy([...allBridgeableNetworks, ...FEATURED_RPCS], 'chainId').filter(
       ({ chainId }) =>
         bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].chains[
-          normalizeChainId(chainId)
+          formatChainIdToCaip(chainId)
         ]?.isActiveDest,
     ),
 );
@@ -153,10 +154,10 @@ export const getToChains = createDeepEqualSelector(
 export const getToChain = createSelector(
   getToChains,
   (state: BridgeAppState) => state.bridge.toChainId,
-  (toChains, toChainId): NetworkConfiguration | AddNetworkFields | undefined =>
+  (toChains, toChainId) =>
     toChains.find(
       ({ chainId }) =>
-        chainId === toChainId || normalizeChainId(chainId) === toChainId,
+        chainId === toChainId || formatChainIdToCaip(chainId) === toChainId,
     ),
 );
 
@@ -174,7 +175,7 @@ export const getFromToken = createSelector(
       ...SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
         fromChain.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
       ],
-      chainId: normalizeChainId(fromChain.chainId),
+      chainId: formatChainIdToCaip(fromChain.chainId),
       image:
         CHAIN_ID_TOKEN_IMAGE_MAP[
           fromChain.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP

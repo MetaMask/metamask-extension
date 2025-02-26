@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { ChainId } from '@metamask/controller-utils';
-import { type CaipChainId, type Hex, isCaipChainId } from '@metamask/utils';
+import { isStrictHexString, type CaipChainId, type Hex } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
 import {
   getAllDetectedTokensForSelectedAddress,
@@ -17,7 +17,7 @@ import {
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { AssetType } from '../../../shared/constants/transaction';
-import { isNativeAddress } from '../../pages/bridge/utils/quote';
+import { isNativeAddress } from '../../../shared/modules/bridge-utils/caip-formatters';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { Token } from '../../components/app/assets/types';
 import { useMultichainBalances } from '../useMultichainBalances';
@@ -61,7 +61,7 @@ export const useTokensWithFiltering = (
   const { value: tokenList, pending: isTokenListLoading } = useAsyncResult<
     Record<string, SwapsTokenObject>
   >(async () => {
-    if (chainId) {
+    if (chainId && isStrictHexString(chainId)) {
       const timestamp = cachedTokens[chainId]?.timestamp;
       // Use cached token data if updated in the last 10 minutes
       if (timestamp && Date.now() - timestamp <= 10 * MINUTE) {
@@ -121,7 +121,7 @@ export const useTokensWithFiltering = (
   const buildTokenData = (
     token?: SwapsTokenObject,
   ): AssetWithDisplayData<NativeAsset | ERC20Asset> | undefined => {
-    if (!chainId || !token) {
+    if (!chainId || !token || !isStrictHexString(chainId)) {
       return undefined;
     }
     // Only tokens on the active chain are processed here here
@@ -143,8 +143,12 @@ export const useTokensWithFiltering = (
 
     return {
       ...sharedFields,
+      ...(tokenList?.[token.address.toLowerCase()] ?? {}),
       type: AssetType.token,
-      image: token.iconUrl,
+      image:
+        token.iconUrl ??
+        tokenList?.[token.address.toLowerCase()]?.iconUrl ??
+        '',
       // Only tokens with 0 balance are processed here so hardcode empty string
       balance: '',
       string: undefined,
@@ -169,18 +173,42 @@ export const useTokensWithFiltering = (
 
         // Yield multichain tokens with balances and are not blocked
         for (const token of multichainTokensWithBalance) {
-          if (shouldAddToken(token.symbol, token.address, token.chainId)) {
-            yield token.isNative
-              ? {
-                  ...token,
-                  image:
-                    CHAIN_ID_TOKEN_IMAGE_MAP[
-                      token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-                    ],
-                  address: null,
-                  type: AssetType.native,
-                }
-              : token;
+          if (
+            shouldAddToken(
+              token.symbol,
+              token.address ?? undefined,
+              token.chainId,
+            )
+          ) {
+            // If there's no address, set it to the native address in swaps/bridge
+            if (isNativeAddress(token.address)) {
+              yield {
+                symbol: token.symbol,
+                chainId: token.chainId,
+                tokenFiatAmount: token.tokenFiatAmount,
+                decimals: token.decimals,
+                address: zeroAddress(),
+                type: AssetType.native,
+                balance: token.balance ?? '0',
+                string: token.string ?? undefined,
+                image:
+                  CHAIN_ID_TOKEN_IMAGE_MAP[
+                    token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
+                  ],
+              };
+            } else {
+              yield {
+                symbol: token.symbol,
+                chainId: token.chainId,
+                tokenFiatAmount: token.tokenFiatAmount,
+                decimals: token.decimals,
+                address: token.address,
+                type: AssetType.token,
+                balance: token.balance ?? '',
+                string: token.string ?? undefined,
+                image: tokenList?.[token.address.toLowerCase()]?.iconUrl,
+              };
+            }
           }
         }
 

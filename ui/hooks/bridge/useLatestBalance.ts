@@ -1,6 +1,6 @@
 import {
-  CaipChainId,
-  Hex,
+  type Hex,
+  type CaipChainId,
   isCaipChainId,
   isStrictHexString,
 } from '@metamask/utils';

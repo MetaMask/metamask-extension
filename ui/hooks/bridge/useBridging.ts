@@ -33,6 +33,7 @@ import { getPortfolioUrl } from '../../helpers/utils/portfolio';
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 // eslint-disable-next-line import/no-restricted-paths
+import { formatChainIdToCaip } from '../../../shared/modules/bridge-utils/caip-formatters';
 import { useCrossChainSwapsEventTracker } from './useCrossChainSwapsEventTracker';
 ///: END:ONLY_INCLUDE_IF
 
@@ -77,7 +78,7 @@ const useBridging = () => {
               location === 'Home'
                 ? MetaMetricsSwapsEventSource.MainView
                 : MetaMetricsSwapsEventSource.TokenView,
-            chain_id_source: providerConfig.chainId,
+            chain_id_source: formatChainIdToCaip(providerConfig.chainId),
             token_symbol_source: token.symbol,
             token_address_source: token.address,
           },
