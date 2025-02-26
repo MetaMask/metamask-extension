@@ -531,7 +531,6 @@ export function getMetaMaskKeyrings(state) {
   }));
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 export const getMetaMaskHdKeyrings = createSelector(
   getMetaMaskKeyrings,
   (keyrings) => {
@@ -539,6 +538,7 @@ export const getMetaMaskHdKeyrings = createSelector(
   },
 );
 
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 export function getMetaMaskKeyringsMetadata(state) {
   return state.metamask.keyringsMetadata;
 }
