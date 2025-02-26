@@ -5,6 +5,7 @@ import { stderr } from 'node:process';
 import chalk from 'chalk';
 import madge, { type MadgeConfig, type MadgeInstance } from 'madge';
 import micromatch from 'micromatch';
+import prettier from 'prettier';
 
 /**
  * Circular dependencies are represented as an array of arrays, where each
@@ -75,10 +76,15 @@ async function update(): Promise<void> {
     console.log('Generating dependency graph...');
     const tree = await madge(ENTRYPOINTS, MADGE_CONFIG);
     const circularDeps = normalizeJson(tree.circular());
-    writeFileSync(
-      TARGET_FILE,
-      `${FILE_HEADER + JSON.stringify(circularDeps, null, 2)}\n`,
+    const formatted = prettier.format(
+      FILE_HEADER + JSON.stringify(circularDeps, null, 2),
+      {
+        // get options from .prettierrc
+        ...prettier.resolveConfig.sync(TARGET_FILE),
+        filepath: TARGET_FILE,
+      },
     );
+    writeFileSync(TARGET_FILE, formatted);
     console.log(`Found ${circularDeps.length} circular dependencies.`);
     console.log(`Wrote circular dependencies to ${TARGET_FILE}`);
   } catch (error) {
