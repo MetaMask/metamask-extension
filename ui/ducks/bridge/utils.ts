@@ -82,8 +82,8 @@ const fetchTokenExchangeRates = async (
 ) => {
   if (chainId === MultichainNetworks.SOLANA) {
     const queryParams = new URLSearchParams({
-      assetIds: tokenAddresses,
-      includeMarketData: true,
+      assetIds: tokenAddresses.join(','),
+      includeMarketData: 'true',
       vsCurrency: currency,
     });
     const url = `https://price.api.cx.metamask.io/v3/spot-prices?${queryParams}`;
