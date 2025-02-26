@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { ChainId } from '@metamask/controller-utils';
 import { type CaipChainId, isStrictHexString, type Hex } from '@metamask/utils';
-import { zeroAddress } from 'ethereumjs-util';
 import {
   getAllDetectedTokensForSelectedAddress,
   selectERC20TokensByChain,
@@ -119,7 +118,7 @@ export const useTokensWithFiltering = (
       return {
         ...sharedFields,
         type: AssetType.native,
-        address: zeroAddress(),
+        address: token.address,
         image:
           CHAIN_ID_TOKEN_IMAGE_MAP[
             chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
@@ -141,7 +140,7 @@ export const useTokensWithFiltering = (
       // Only tokens with 0 balance are processed here so hardcode empty string
       balance: '',
       string: undefined,
-      address: token.address || zeroAddress(),
+      address: token.address,
     };
   };
 
@@ -176,7 +175,7 @@ export const useTokensWithFiltering = (
                 chainId: token.chainId,
                 tokenFiatAmount: token.tokenFiatAmount,
                 decimals: token.decimals,
-                address: zeroAddress(),
+                address: token.address,
                 type: AssetType.native,
                 balance: token.balance ?? '0',
                 string: token.string ?? undefined,
