@@ -224,9 +224,6 @@
   "addNewBitcoinTestnetAccount": {
     "message": "एक नया Bitcoin अकाउंट जोड़ें (टैस्टनेट (testnet))"
   },
-  "addNewSolanaAccount": {
-    "message": "एक नया Solana अकाउंट जोड़ें (बीटा)"
-  },
   "addNft": {
     "message": "NFT जोड़ें"
   },

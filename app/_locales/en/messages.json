@@ -227,9 +227,6 @@
   "addNewEthereumAccountLabel": {
     "message": "Ethereum account"
   },
-  "addNewSolanaAccount": {
-    "message": "Add a new Solana account (Beta)"
-  },
   "addNewSolanaAccountLabel": {
     "message": "Solana account"
   },

@@ -288,9 +288,9 @@ describe('AccountListMenu', () => {
 
     // Click the button to ensure the options and close button display
     button[0].click();
-    expect(getByText('Add a new Ethereum account')).toBeInTheDocument();
-    expect(getByText('Import Private Key')).toBeInTheDocument();
-    expect(getByText('Add hardware wallet')).toBeInTheDocument();
+    expect(getByText('Ethereum account')).toBeInTheDocument();
+    expect(getByText('Private Key')).toBeInTheDocument();
+    expect(getByText('Hardware wallet')).toBeInTheDocument();
     const header = document.querySelector('header') as Element;
     expect(header.innerHTML).toContain('Add account');
     expect(
@@ -310,7 +310,7 @@ describe('AccountListMenu', () => {
     const button = getByTestId('multichain-account-menu-popover-action-button');
     button.click();
 
-    fireEvent.click(getByText('Add a new Ethereum account'));
+    fireEvent.click(getByText('Ethereum account'));
     const addAccountButton = document.querySelector(
       '[data-testid="submit-add-account-with-name"]',
     );
@@ -327,7 +327,7 @@ describe('AccountListMenu', () => {
     const button = getByTestId('multichain-account-menu-popover-action-button');
     button.click();
 
-    fireEvent.click(getByText('Import Private Key'));
+    fireEvent.click(getByText('Private Key'));
     expect(getByText('Import')).toBeInTheDocument();
     expect(getByText('Cancel')).toBeInTheDocument();
 
@@ -341,7 +341,7 @@ describe('AccountListMenu', () => {
     const button = getByTestId('multichain-account-menu-popover-action-button');
     button.click();
 
-    fireEvent.click(getByText('Add hardware wallet'));
+    fireEvent.click(getByText('Hardware wallet'));
     expect(historyPushMock).toHaveBeenCalledWith(CONNECT_HARDWARE_ROUTE);
   });
 

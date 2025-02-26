@@ -224,9 +224,6 @@
   "addNewBitcoinTestnetAccount": {
     "message": "Tambahkan akun Bitcoin baru (Testnet)"
   },
-  "addNewSolanaAccount": {
-    "message": "Tambahkan akun Solana baru (Beta)"
-  },
   "addNft": {
     "message": "Tambahkan NFT"
   },

@@ -224,9 +224,6 @@
   "addNewBitcoinTestnetAccount": {
     "message": "Προσθήκη νέου λογαριασμού Bitcoin (Testnet)"
   },
-  "addNewSolanaAccount": {
-    "message": "Προσθήκη νέου λογαριασμού Solana (Beta)"
-  },
   "addNft": {
     "message": "Προσθήκη του NFT"
   },
