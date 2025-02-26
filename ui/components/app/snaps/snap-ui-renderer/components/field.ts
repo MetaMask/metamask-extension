@@ -6,6 +6,7 @@ import {
   RadioGroupElement,
   CheckboxElement,
   SelectorElement,
+  AddressInputElement,
 } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 import { getPrimaryChildElementIndex, mapToTemplate } from '../utils';
@@ -30,16 +31,16 @@ export const field: UIComponentFactory<FieldElement> = ({
 
   switch (child.type) {
     case 'AddressInput': {
+      const addressInput = child as AddressInputElement;
       return {
         element: 'SnapUIAddressInput',
         props: {
-          name: child.props.name,
-          placeholder: child.props.placeholder,
+          name: addressInput.props.name,
+          placeholder: addressInput.props.placeholder,
           label: element.props.label,
           form,
-          error: element.props.error !== undefined,
-          helpText: element.props.error,
-          disabled: child.props.disabled,
+          error: element.props.error,
+          disabled: addressInput.props.disabled,
         },
       };
     }
