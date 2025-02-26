@@ -272,16 +272,32 @@ export default function AwaitingSwap({
     }
   }, [dispatch, errorKey]);
 
-  return (
-    <div className="awaiting-swap">
-      <div className="awaiting-swap__content">
-        {!(swapComplete || errorKey) && (
-          <Mascot
-            animationEventEmitter={animationEventEmitter.current}
+  const renderMascot = () => {
+    if (process.env.METAMASK_BUILD_TYPE === 'flask') {
+      return (
+        <div className="awaiting-swap__mascot">
+          <img
+            src="./images/logo/metamask-fox.svg"
+            alt="MetaMask Logo"
             width="90"
             height="90"
           />
-        )}
+        </div>
+      );
+    }
+    return (
+      <Mascot
+        animationEventEmitter={animationEventEmitter.current}
+        width="90"
+        height="90"
+      />
+    );
+  };
+
+  return (
+    <div className="awaiting-swap">
+      <div className="awaiting-swap__content">
+        {!(swapComplete || errorKey) && renderMascot()}
         <div className="awaiting-swap__status-image">{statusImage}</div>
         <div
           className="awaiting-swap__header"

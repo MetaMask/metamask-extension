@@ -152,6 +152,26 @@ export default class UnlockPage extends Component {
     );
   }
 
+  renderMascot = () => {
+    if (process.env.METAMASK_BUILD_TYPE === 'flask') {
+      return (
+        <img
+          src="./images/logo/metamask-fox.svg"
+          alt="MetaMask Logo"
+          width="120"
+          height="120"
+        />
+      );
+    }
+    return (
+      <Mascot
+        animationEventEmitter={this.animationEventEmitter}
+        width="120"
+        height="120"
+      />
+    );
+  };
+
   render() {
     const { password, error } = this.state;
     const { t } = this.context;
@@ -163,11 +183,7 @@ export default class UnlockPage extends Component {
       <div className="unlock-page__container">
         <div className="unlock-page" data-testid="unlock-page">
           <div className="unlock-page__mascot-container">
-            <Mascot
-              animationEventEmitter={this.animationEventEmitter}
-              width="120"
-              height="120"
-            />
+            {this.renderMascot()}
             {isBeta() ? (
               <div className="unlock-page__mascot-container__beta">
                 {t('beta')}
