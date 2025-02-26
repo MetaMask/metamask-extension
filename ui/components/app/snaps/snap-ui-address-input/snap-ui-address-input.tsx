@@ -84,6 +84,7 @@ export const SnapUIAddressInput: FunctionComponent<
     if (matchedName) {
       setMatchedAddressName(matchedName);
     }
+    // Debouncing to allow for rapid keystrokes before allowing the snap to react to the changes
     debounce(
       () => handleInputChange(name, event.target.value ?? null, form),
       80,
