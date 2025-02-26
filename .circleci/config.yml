@@ -257,9 +257,6 @@ workflows:
               only: main
           requires:
             - prep-build-ts-migration-dashboard
-      - job-push-firefox-bundle-script:
-          requires:
-            - prep-deps
 
   rerun-from-failed:
     when:
@@ -296,20 +293,6 @@ workflows:
             - validate-locales-only
 
 jobs:
-  job-push-firefox-bundle-script:
-    executor: node-browsers-small
-    steps:
-      - add_ssh_keys:
-          fingerprints:
-            - 'SHA256:It7UdNvvXY8g5aN32yfbPKFxZSV9ny7K8ifDdlP53rQ'
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Push Firefox bundle script
-          command: .circleci/scripts/push-firefox-bundle-script.sh
-
   create_release_pull_request:
     executor: node-browsers-medium
     steps:
