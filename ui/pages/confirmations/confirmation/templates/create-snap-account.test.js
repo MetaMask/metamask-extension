@@ -48,6 +48,10 @@ describe('create-snap-account confirmation', () => {
           },
         },
       },
+      confirmAlerts: {
+        alerts: {},
+        confirmed: {},
+      },
     };
     const store = configureMockStore(middleware)(testStore);
     const { container, getByText } = renderWithProvider(
