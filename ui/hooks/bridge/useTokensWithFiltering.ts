@@ -138,7 +138,7 @@ export const useTokensWithFiltering = (
       // Only tokens with 0 balance are processed here so hardcode empty string
       balance: '',
       string: undefined,
-      address: token.address || zeroAddress(),
+      address: token.address,
     };
   };
 
@@ -173,7 +173,7 @@ export const useTokensWithFiltering = (
                 chainId: token.chainId,
                 tokenFiatAmount: token.tokenFiatAmount,
                 decimals: token.decimals,
-                address: zeroAddress(),
+                address: token.address,
                 type: AssetType.native,
                 balance: token.balance ?? '0',
                 string: token.string ?? undefined,
