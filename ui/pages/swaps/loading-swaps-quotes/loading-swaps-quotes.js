@@ -89,12 +89,7 @@ export default function LoadingSwapsQuotes({
   const renderMascot = () => {
     if (process.env.METAMASK_BUILD_TYPE === 'flask') {
       return (
-        <img
-          src="./images/logo/metamask-fox.svg"
-          alt="MetaMask Logo"
-          width="90"
-          height="90"
-        />
+        <img src="./images/logo/metamask-fox.svg" width="90" height="90" />
       );
     }
     return (

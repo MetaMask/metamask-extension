@@ -13,7 +13,6 @@ export default function MascotBackgroundAnimation({ height, width }) {
       return (
         <img
           src="./images/logo/metamask-fox.svg"
-          alt="MetaMask Logo"
           width={width ?? '42'}
           height={height ?? '42'}
         />

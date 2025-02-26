@@ -155,12 +155,7 @@ export default class UnlockPage extends Component {
   renderMascot = () => {
     if (process.env.METAMASK_BUILD_TYPE === 'flask') {
       return (
-        <img
-          src="./images/logo/metamask-fox.svg"
-          alt="MetaMask Logo"
-          width="120"
-          height="120"
-        />
+        <img src="./images/logo/metamask-fox.svg" width="120" height="120" />
       );
     }
     return (

@@ -118,12 +118,7 @@ export default function OnboardingWelcome() {
   const renderMascot = () => {
     if (process.env.METAMASK_BUILD_TYPE === 'flask') {
       return (
-        <img
-          src="./images/logo/metamask-fox.svg"
-          alt="MetaMask Logo"
-          width="240"
-          height="240"
-        />
+        <img src="./images/logo/metamask-fox.svg" width="240" height="240" />
       );
     }
     return (

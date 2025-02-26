@@ -276,12 +276,7 @@ export default function AwaitingSwap({
     if (process.env.METAMASK_BUILD_TYPE === 'flask') {
       return (
         <div className="awaiting-swap__mascot">
-          <img
-            src="./images/logo/metamask-fox.svg"
-            alt="MetaMask Logo"
-            width="90"
-            height="90"
-          />
+          <img src="./images/logo/metamask-fox.svg" width="90" height="90" />
         </div>
       );
     }
