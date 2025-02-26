@@ -222,7 +222,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
     const { srcChainId } = bridgeState.quoteRequest;
     const refreshRateOverride = srcChainId
       ? bridgeState.bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG]
-          .chains[formatChainIdToCaip(srcChainId)].refreshRate
+          .chains[formatChainIdToCaip(srcChainId)]?.refreshRate
       : undefined;
     const defaultRefreshRate =
       bridgeState.bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG]
