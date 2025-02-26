@@ -49,7 +49,7 @@ class AccountListPage {
     '[data-testid="multichain-account-menu-popover-add-watch-only-account"]';
 
   private readonly addHardwareWalletButton = {
-    text: 'Add hardware wallet',
+    text: 'Hardware wallet',
     tag: 'button',
   };
 

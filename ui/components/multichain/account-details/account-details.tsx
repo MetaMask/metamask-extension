@@ -47,10 +47,10 @@ import {
 import { AddressCopyButton } from '../address-copy-button';
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import SRPQuiz from '../../app/srp-quiz-modal';
-import { findKeyringId } from '../../../../shared/constants/keyring';
+import { findKeyringId } from '../../../../shared/lib/keyring';
 import { isAbleToRevealSrp } from '../../../helpers/utils/util';
 ///: END:ONLY_INCLUDE_IF
-import { AttemptExportState } from '../../../../shared/accounts';
+import { AttemptExportState } from '../../../../shared/constants/accounts';
 import { AccountDetailsAuthenticate } from './account-details-authenticate';
 import { AccountDetailsDisplay } from './account-details-display';
 import { AccountDetailsKey } from './account-details-key';
