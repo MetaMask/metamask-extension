@@ -78,7 +78,11 @@ export const QUOTE_RESPONSE_VALIDATORS = [
     type: 'object|undefined',
     validator: (v: unknown) => v === undefined || isValidObject(v),
   },
-  { property: 'trade', type: 'object', validator: isValidObject },
+  {
+    property: 'trade',
+    type: 'string|object',
+    validator: (v: unknown) => isValidObject(v) || isValidString(v),
+  },
 ];
 
 export const QUOTE_VALIDATORS = [
