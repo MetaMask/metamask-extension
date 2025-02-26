@@ -3,14 +3,14 @@ import configureMockStore from 'redux-mock-store';
 import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { AggregatedBalance } from './aggregated-balance';
+import { SolAccountType, SolMethod, SolScope } from '@metamask/keyring-api';
 import { Cryptocurrency } from '@metamask/assets-controllers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { MultichainNativeAssets } from '../../../../shared/constants/multichain/assets';
 import mockState from '../../../../test/data/mock-state.json';
 import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts';
-import { SolAccountType, SolMethod, SolScope } from '@metamask/keyring-api';
 import { mockMultichainNetworkState } from '../../../../test/stub/networks';
+import { AggregatedBalance } from './aggregated-balance';
 
 const mockDispatch = jest.fn().mockReturnValue(() => jest.fn());
 jest.mock('react-redux', () => ({
