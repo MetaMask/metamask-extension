@@ -44,9 +44,8 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 # 3. Download and install Node.js 20.14.0
 nvm install 20.14.0
 
-# 4. Install Yarn v4.5.1
+# 4. Enable corepack to install yarn
 corepack enable
-yarn set version 4.5.1
 
 # 5. Install dependencies
 yarn
