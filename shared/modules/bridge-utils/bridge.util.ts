@@ -7,6 +7,7 @@ import {
   ETH_USDT_ADDRESS,
   METABRIDGE_ETHEREUM_ADDRESS,
   REFRESH_INTERVAL_MS,
+  STATIC_METAMASK_BASE_URL,
 } from '../../constants/bridge';
 import { MINUTE } from '../../constants/time';
 import fetchWithCache from '../../lib/fetch-with-cache';
@@ -14,6 +15,7 @@ import { hexToDecimal } from '../conversion.utils';
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   SwapsTokenObject,
+  TOKEN_API_BASE_URL,
 } from '../../constants/swaps';
 import {
   isSwapsDefaultTokenAddress,
@@ -99,7 +101,7 @@ export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
 export async function fetchNonEvmTokens(
   chainId: CaipChainId,
 ): Promise<Record<string, TokenV3Asset>> {
-  const url = `https://tokens.api.cx.metamask.io/v3/chains/${chainId}/assets?first=15000`;
+  const url = `${TOKEN_API_BASE_URL}/v3/chains/${chainId}/assets?first=15000`;
   const { data: tokens } = await fetchWithCache({
     url,
     fetchOptions: { method: 'GET', headers: CLIENT_ID_HEADER },
@@ -122,7 +124,7 @@ export const isTokenV3Asset = (asset: object): asset is TokenV3Asset => {
 
 // Returns the image url for a caip-formatted asset
 export const getAssetImageUrl = (assetId: string) =>
-  `https://static.cx.metamask.io/api/v2/tokenIcons/assets/${assetId?.replaceAll(
+  `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/${assetId?.replaceAll(
     ':',
     '/',
   )}.png`;
