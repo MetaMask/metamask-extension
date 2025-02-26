@@ -2,11 +2,6 @@ import { LavaDomeDebug } from '@lavamoat/lavadome-core';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
-import {
-  showSRP,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../../app/_locales/en/messages.json';
 import mockState from '../../../../test/data/mock-state.json';
 
 import { renderWithProvider } from '../../../../test/jest';
@@ -141,17 +136,17 @@ describe('AccountDetails', () => {
   });
 
   it("shows the `Show Secret Recovery Phrase` button when the account's type is a HD Keyring", () => {
-    render();
+    const { getByTestId } = render();
 
-    const showSRPButton = screen.getByText(showSRP.message);
+    const showSRPButton = getByTestId('account-details-display-export-srp');
 
     expect(showSRPButton).toBeInTheDocument();
   });
 
   it('shows srp flow when the `Show Secret Recovery Phrase` button is clicked', async () => {
-    render();
+    const { getByTestId } = render();
 
-    const showSRPButton = screen.getByText(showSRP.message);
+    const showSRPButton = getByTestId('account-details-display-export-srp');
     fireEvent.click(showSRPButton);
 
     const securityQuizTitle = screen.getByTestId('srp-quiz-header');

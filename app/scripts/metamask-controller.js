@@ -184,7 +184,7 @@ import {
   HardwareKeyringType,
   LedgerTransportTypes,
 } from '../../shared/constants/hardware-wallets';
-import { KeyringType } from '../../shared/constants/keyring';
+import { findKeyringId, KeyringType } from '../../shared/constants/keyring';
 import {
   RestrictedMethods,
   ExcludedSnapPermissions,
@@ -4300,25 +4300,6 @@ export default class MetamaskController extends EventEmitter {
         throw new Error('This mnemonic has already been imported.');
       }
 
-      // TODO: This kind of logic should be inside the `KeyringController` (using `KeyringSelector` query, or make `addNewKeyring` returns it keyring ID alongside
-      // its keyring.
-      const findKeyringIdByAddress = (address) => {
-        const { keyrings, keyringsMetadata } = this.keyringController.state;
-
-        const keyringIndex = keyrings.findIndex((keyring) => {
-          return (
-            keyring.accounts.includes(address) &&
-            keyring.type === KeyringTypes.hd
-          );
-        });
-        if (keyringIndex === -1) {
-          throw new Error(
-            'Could not find keyring ID, THIS SHOULD NEVER HAPPEN',
-          );
-        }
-        return keyringsMetadata[keyringIndex].id;
-      };
-
       const newKeyring = await this.keyringController.addNewKeyring(
         KeyringTypes.hd,
         {
@@ -4332,7 +4313,11 @@ export default class MetamaskController extends EventEmitter {
       this.accountsController.setSelectedAccount(account.id);
 
       // TODO: Find a way to encapsulate this logic in the KeyringController itself.
-      const keyringId = findKeyringIdByAddress(newAccountAddress);
+      const { keyrings, keyringsMetadata } = this.keyringController.state;
+      const keyringId = findKeyringId(keyrings, keyringsMetadata, {
+        address: newAccountAddress,
+        type: KeyringTypes.hd,
+      });
 
       await this._addAccountsWithBalance(keyringId);
 

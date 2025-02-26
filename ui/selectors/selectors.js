@@ -535,6 +535,10 @@ export const getMetaMaskHdKeyrings = createSelector(
   },
 );
 
+export function getMetaMaskKeyringsMetadata(state) {
+  return state.metamask.keyringsMetadata;
+}
+
 /**
  * Get account balances state.
  *

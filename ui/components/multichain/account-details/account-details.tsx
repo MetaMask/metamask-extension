@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { KeyringMetadata } from '@metamask/keyring-controller';
+import { KeyringMetadata, KeyringObject } from '@metamask/keyring-controller';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
@@ -19,6 +19,7 @@ import {
   getInternalAccountByAddress,
   getMetaMaskAccountsOrdered,
   getMetaMaskKeyrings,
+  getMetaMaskKeyringsMetadata,
   getUseBlockie,
 } from '../../../selectors';
 import {
@@ -44,12 +45,8 @@ import SRPQuiz from '../../app/srp-quiz-modal';
 import { AccountDetailsAuthenticate } from './account-details-authenticate';
 import { AccountDetailsDisplay } from './account-details-display';
 import { AccountDetailsKey } from './account-details-key';
-
-export enum AttemptExportState {
-  None = 'None',
-  PrivateKey = 'PrivateKey',
-  SRP = 'SRP',
-}
+import { AttemptExportState } from '../../../../shared/accounts';
+import { findKeyringIdByAddress } from '../../../../shared/constants/keyring';
 
 type AccountDetailsProps = { address: string };
 
@@ -62,12 +59,12 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
   const {
     metadata: { name },
   } = useSelector((state) => getInternalAccountByAddress(state, address));
-  const keyrings: {
-    accounts: string[];
-    metadata: KeyringMetadata;
-  }[] = useSelector(getMetaMaskKeyrings);
-  const keyringId = keyrings.find((kr) => kr.accounts.includes(address))
-    ?.metadata.id;
+  const keyrings: KeyringObject[] = useSelector(getMetaMaskKeyrings);
+  const keyringsMetadata: KeyringMetadata[] = useSelector(
+    getMetaMaskKeyringsMetadata,
+  );
+
+  const keyringId = findKeyringIdByAddress(keyrings, keyringsMetadata, address);
 
   const [showHoldToReveal, setShowHoldToReveal] = useState(false);
   const [attemptingExport, setAttemptingExport] = useState<AttemptExportState>(
