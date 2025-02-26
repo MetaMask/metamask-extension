@@ -2,6 +2,7 @@ import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { NetworkConfiguration } from '@metamask/network-controller';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import {
   updateNetwork,
@@ -182,6 +183,8 @@ describe('SelectRpcUrlModal Component', () => {
 
     expect(mockDispatch).toHaveBeenCalledWith(updateNetwork(updatedNetwork));
     expect(mockDispatch).toHaveBeenCalledWith(setEditedNetwork());
-    expect(mockOnNetworkChange).toHaveBeenCalledWith(updatedNetwork);
+    expect(mockOnNetworkChange).toHaveBeenCalledWith(
+      toEvmCaipChainId(updatedNetwork.chainId),
+    );
   });
 });
