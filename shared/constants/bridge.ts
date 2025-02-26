@@ -64,3 +64,5 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
 export const BRIDGE_MM_FEE_RATE = 0.875;
 export const REFRESH_INTERVAL_MS = 30 * 1000;
 export const DEFAULT_MAX_REFRESH_COUNT = 5;
+
+export const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
