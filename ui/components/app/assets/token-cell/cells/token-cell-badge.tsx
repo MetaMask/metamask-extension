@@ -9,7 +9,10 @@ import {
   BadgeWrapper,
 } from '../../../../component-library';
 import { getNativeCurrencyForChain } from '../../../../../selectors';
-import { getImageForChainId } from '../../../../../selectors/multichain';
+import {
+  getImageForChainId,
+  getMultichainIsEvm,
+} from '../../../../../selectors/multichain';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { TokenFiatDisplayInfo } from '../../types';
 
@@ -19,6 +22,7 @@ type TokenCellBadgeProps = {
 
 export const TokenCellBadge = React.memo(
   ({ token }: TokenCellBadgeProps) => {
+    const isEvm = useSelector(getMultichainIsEvm);
     const allNetworks = useSelector(getNetworkConfigurationsByChainId);
 
     return (
@@ -37,7 +41,7 @@ export const TokenCellBadge = React.memo(
         <AvatarToken
           name={token.symbol}
           src={
-            token.isNative
+            isEvm && token.isNative
               ? getNativeCurrencyForChain(token.chainId)
               : token.tokenImage
           }
