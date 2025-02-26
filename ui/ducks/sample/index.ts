@@ -1,3 +1,6 @@
+import counterReducer from './counter';
+
+export default counterReducer;
 import {
   createSelector,
   createSlice,
