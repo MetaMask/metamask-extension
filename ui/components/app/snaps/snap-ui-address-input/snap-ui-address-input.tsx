@@ -90,6 +90,13 @@ export const SnapUIAddressInput: FunctionComponent<
     return accountsInfo[normalizedAddress];
   };
 
+  const debouncedHandleInputChange = debounce(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      handleInputChange(name, event.target.value ?? null, form);
+    },
+    80,
+  );
+
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
     const matchedName = getMatchedAddressName(event.target.value);
@@ -97,10 +104,7 @@ export const SnapUIAddressInput: FunctionComponent<
       setMatchedAddressName(matchedName);
     }
     // Debouncing to allow for rapid keystrokes before allowing the snap to react to the changes
-    debounce(
-      () => handleInputChange(name, event.target.value ?? null, form),
-      80,
-    );
+    debouncedHandleInputChange(event);
   };
 
   const handleFocus = () => setCurrentFocusedInput(name);
@@ -109,7 +113,6 @@ export const SnapUIAddressInput: FunctionComponent<
   const handleClear = () => {
     setValue('');
     setMatchedAddressName(null);
-    handleInputChange(name, null, form);
   };
 
   const MatchedAccountInfo = () => {
