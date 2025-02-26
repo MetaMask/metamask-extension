@@ -26,6 +26,7 @@ import {
   getMultichainNativeTokenBalance,
 } from '../../../selectors/assets';
 import { getPreferences, getSelectedInternalAccount } from '../../../selectors';
+import { getMultichainNetwork } from '../../../selectors/multichain';
 import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import Spinner from '../spinner';
@@ -45,6 +46,7 @@ export const AggregatedBalance = ({
   const balances = useSelector(getTokenBalances);
   const assets = useSelector(getAccountAssets);
   const selectedAccount = useSelector(getSelectedInternalAccount);
+  const currentNetwork = useSelector(getMultichainNetwork);
   const currentCurrency = useSelector(getCurrentCurrency);
   const multichainAggregatedBalance = useSelector((state) =>
     getMultichainAggregatedBalance(state, selectedAccount),
@@ -104,7 +106,7 @@ export const AggregatedBalance = ({
           isHidden={privacyMode}
         >
           {showNativeTokenAsMainBalance
-            ? multichainNativeTokenBalance.unit
+            ? currentNetwork.network.ticker
             : currentCurrency.toUpperCase()}
         </SensitiveText>
 
