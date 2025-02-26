@@ -41,8 +41,8 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 # shellcheck disable=SC1091
 \. "${HOME}/.nvm/nvm.sh"
 
-# 3. Download and install Node.js 20.14.0
-nvm install 20.14.0
+# 3. Download and install Node.js
+nvm install
 
 # 4. Enable corepack to install yarn
 corepack enable
