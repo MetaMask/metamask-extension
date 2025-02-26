@@ -26,8 +26,8 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import {
-  getMetaMaskCachedBalances,
-  getMetaMaskKeyrings,
+  getMetaMaskAccounts,
+  getMetaMaskHdKeyrings,
 } from '../../../../selectors/selectors';
 import { getInternalAccounts } from '../../../../selectors/accounts';
 import UserPreferencedCurrencyDisplay from '../../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
@@ -36,6 +36,7 @@ import { Numeric } from '../../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../../shared/constants/common';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import { getMultichainConversionRate } from '../../../../selectors/multichain';
+import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
 
 type KeyringObjectWithMetadata = KeyringObject & { metadata: KeyringMetadata };
 
@@ -46,29 +47,14 @@ export const SRPList = ({
   onActionComplete: (id: string) => void;
   hideShowAccounts?: boolean;
 }) => {
-  const keyrings: KeyringObjectWithMetadata[] =
-    useSelector(getMetaMaskKeyrings);
-  const accounts: InternalAccount[] = useSelector(getInternalAccounts);
-  const accountBalances: Record<string, string> = useSelector(
-    getMetaMaskCachedBalances,
+  const hdKeyrings: KeyringObjectWithMetadata[] = useSelector(
+    getMetaMaskHdKeyrings,
   );
-  const conversionRate = useMultichainSelector(getMultichainConversionRate);
+  // This selector will return accounts with nonEVM balances as well.
+  const accountsWithBalances: Record<string, InternalAccountWithBalance> =
+    useSelector(getMetaMaskAccounts);
 
-  const accountByAddress: Record<string, InternalAccount> = useMemo(
-    () =>
-      accounts.reduce(
-        (acc: Record<string, InternalAccount>, account: InternalAccount) => ({
-          ...acc,
-          [account.address]: account,
-        }),
-        {},
-      ),
-    [accounts],
-  );
-  const hdKeyrings = useMemo(
-    () => keyrings.filter((keyring) => keyring.type === KeyringTypes.hd),
-    [keyrings],
-  );
+  const conversionRate = useMultichainSelector(getMultichainConversionRate);
 
   const showAccountsInitState = useMemo(
     () =>
@@ -91,8 +77,8 @@ export const SRPList = ({
       {hdKeyrings.map((keyring, index) => (
         <Card
           key={`srp-${index + 1}`}
-          data-testid={`hd-keyring-${keyring?.metadata.id}`}
-          onClick={() => onActionComplete(keyring?.metadata.id || '')}
+          data-testid={`hd-keyring-${keyring.metadata.id}`}
+          onClick={() => onActionComplete(keyring.metadata.id)}
           className="select-srp__container"
           marginBottom={3}
         >
@@ -156,7 +142,7 @@ export const SRPList = ({
                       variant={TextVariant.bodySm}
                       paddingLeft={3}
                     >
-                      {accountByAddress[address].metadata.name}
+                      {accountsWithBalances[address].metadata.name}
                     </Text>
                     <Text
                       variant={TextVariant.bodySm}
@@ -169,7 +155,7 @@ export const SRPList = ({
                   <Text variant={TextVariant.bodySm}>
                     <UserPreferencedCurrencyDisplay
                       value={new Numeric(
-                        accountBalances[address],
+                        accountsWithBalances[address].balance,
                         16,
                         EtherDenomination.WEI,
                       )
