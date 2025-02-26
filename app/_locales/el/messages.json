@@ -4650,15 +4650,6 @@
     "message": "Επικοινωνήστε με τους διαχειριστές του $1 για περαιτέρω υποστήριξη.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaSupportSectionTitle": {
-    "message": "Solana"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "Η ενεργοποίηση αυτής της λειτουργίας θα σας δώσει τη δυνατότητα να προσθέσετε έναν λογαριασμό Solana στην επέκταση του MetaMask που προέρχεται από την υπάρχουσα Μυστική Φράση Ανάκτησης. Πρόκειται για μια πειραματική λειτουργία Beta, οπότε θα πρέπει να τη χρησιμοποιήσετε με δική σας ευθύνη."
-  },
-  "solanaSupportToggleTitle": {
-    "message": "Ενεργοποίηση της λειτουργίας \"Προσθήκη νέου λογαριασμού Solana (Beta)\""
-  },
   "somethingDoesntLookRight": {
     "message": "Κάτι δεν φαίνεται σωστό; $1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."

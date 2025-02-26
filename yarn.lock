@@ -4895,9 +4895,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:51.0.1":
-  version: 51.0.1
-  resolution: "@metamask/assets-controllers@npm:51.0.1"
+"@metamask/assets-controllers@npm:51.0.2":
+  version: 51.0.2
+  resolution: "@metamask/assets-controllers@npm:51.0.2"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -4936,13 +4936,13 @@ __metadata:
     "@metamask/providers": ^18.1.0
     "@metamask/snaps-controllers": ^9.19.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/b8fb7cb1e77f66493290c3c92b64b6de5d96e3afadb722d0298e58a20c7cb3f00bad84984529fac2c9fa19145d81b5cbbe364c67741a10d4a9c340c36a1557ec
+  checksum: 10/6d6324042875c1e80ea54d196afc93aa8a8a98a137cbe962b457506f88cf107f930e10dae780f396efd6d5ba3249b4dfbad0da2f3ed28fe90c2ec1969fcd88b7
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A51.0.1#~/.yarn/patches/@metamask-assets-controllers-npm-51.0.1-4774fe3be4.patch":
-  version: 51.0.1
-  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A51.0.1#~/.yarn/patches/@metamask-assets-controllers-npm-51.0.1-4774fe3be4.patch::version=51.0.1&hash=7473ef"
+"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A51.0.2#~/.yarn/patches/@metamask-assets-controllers-npm-51.0.2-4dea2e3c06.patch":
+  version: 51.0.2
+  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A51.0.2#~/.yarn/patches/@metamask-assets-controllers-npm-51.0.2-4dea2e3c06.patch::version=51.0.2&hash=7473ef"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -4981,7 +4981,7 @@ __metadata:
     "@metamask/providers": ^18.1.0
     "@metamask/snaps-controllers": ^9.19.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/9c9aca6f284281cd551dbe58caa46b948eb9c6402c5982c974f3ad8d40f14cb43739b93b1707007ed28364074359a9c537b227c6cf7759e51f3f4e40c530ceb9
+  checksum: 10/8c6f6b5a06bc1e5b903dc7c17494f26202d83404fe00d2ef014d002b6bf7fbebb1ee3fa2f93570176a66362c82cd34ce5744fe8af780e2b8cfa1ad4313ce0f8e
   languageName: node
   linkType: hard
 
@@ -5329,7 +5329,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-snap-keyring@npm:^11.0.0, @metamask/eth-snap-keyring@npm:^11.1.0":
+"@metamask/eth-snap-keyring@npm:^11.1.0":
   version: 11.1.0
   resolution: "@metamask/eth-snap-keyring@npm:11.1.0"
   dependencies:
@@ -5848,14 +5848,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/notification-services-controller@npm:^0.21.0":
-  version: 0.21.0
-  resolution: "@metamask/notification-services-controller@npm:0.21.0"
+"@metamask/notification-services-controller@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/notification-services-controller@npm:1.0.0"
   dependencies:
     "@contentful/rich-text-html-renderer": "npm:^16.5.2"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/controller-utils": "npm:^11.5.0"
-    "@metamask/utils": "npm:^11.1.0"
+    "@metamask/utils": "npm:^11.2.0"
     bignumber.js: "npm:^9.1.2"
     firebase: "npm:^11.2.0"
     loglevel: "npm:^1.8.1"
@@ -5863,7 +5863,7 @@ __metadata:
   peerDependencies:
     "@metamask/keyring-controller": ^19.0.0
     "@metamask/profile-sync-controller": ^8.0.0
-  checksum: 10/8014019e3d2aa174433f8e1f7b6ab895fe0047ba8dfaa93f2a3bb356ea34b066b6193fd0f7c38e8f71b9ed22c89ae2663491e886d598c21db0e03e501a46c6c1
+  checksum: 10/9cb7cee622ee8485d4424dcf42ffbd4c932572c2c21dc723d6e3e5204fb24f37c01a9080a1826bfd9cfea986233e757cb0630004512415ee966b3110db80f3e9
   languageName: node
   linkType: hard
 
@@ -26931,7 +26931,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^7.0.3"
     "@metamask/api-specs": "npm:^0.10.15"
     "@metamask/approval-controller": "npm:^7.0.0"
-    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A51.0.1#~/.yarn/patches/@metamask-assets-controllers-npm-51.0.1-4774fe3be4.patch"
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A51.0.2#~/.yarn/patches/@metamask-assets-controllers-npm-51.0.2-4dea2e3c06.patch"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^0.9.0"
@@ -26953,7 +26953,7 @@ __metadata:
     "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
     "@metamask/eth-ledger-bridge-keyring": "npm:^8.0.3"
     "@metamask/eth-sig-util": "npm:^7.0.1"
-    "@metamask/eth-snap-keyring": "npm:^11.0.0"
+    "@metamask/eth-snap-keyring": "npm:^11.1.0"
     "@metamask/eth-token-tracker": "npm:^10.0.2"
     "@metamask/eth-trezor-keyring": "npm:^6.0.0"
     "@metamask/etherscan-link": "npm:^3.0.0"
@@ -26976,7 +26976,7 @@ __metadata:
     "@metamask/multichain-transactions-controller": "npm:^0.5.0"
     "@metamask/name-controller": "npm:^8.0.3"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A22.1.1#~/.yarn/patches/@metamask-network-controller-npm-22.1.1-09b6510f1e.patch"
-    "@metamask/notification-services-controller": "npm:^0.21.0"
+    "@metamask/notification-services-controller": "npm:^1.0.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^11.0.6"

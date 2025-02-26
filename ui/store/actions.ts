@@ -11,7 +11,7 @@ import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import type { DataWithOptionalCause } from '@metamask/rpc-errors';
-import type { Hex, Json } from '@metamask/utils';
+import type { CaipChainId, Hex, Json } from '@metamask/utils';
 import {
   AssetsContractController,
   BalanceMap,
@@ -2582,14 +2582,12 @@ export function updateNetwork(
 }
 
 export function setActiveNetwork(
-  networkConfigurationId: string,
+  id: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
-    log.debug(`background.setActiveNetwork: ${networkConfigurationId}`);
+    log.debug(`background.setActiveNetwork: ${id}`);
     try {
-      await submitRequestToBackground('setActiveNetwork', [
-        networkConfigurationId,
-      ]);
+      await submitRequestToBackground('setActiveNetwork', [id]);
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning('Had a problem changing networks!'));
@@ -4077,7 +4075,7 @@ export function removePermissionsFor(
  * @param chainIds - An array of hexadecimal chain IDs
  */
 export function updateNetworksList(
-  chainIds: Hex[],
+  chainIds: CaipChainId[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     await submitRequestToBackground('updateNetworksList', [chainIds]);
@@ -5204,16 +5202,6 @@ export async function setBitcoinSupportEnabled(value: boolean) {
 export async function setBitcoinTestnetSupportEnabled(value: boolean) {
   try {
     await submitRequestToBackground('setBitcoinTestnetSupportEnabled', [value]);
-  } catch (error) {
-    logErrorWithMessage(error);
-  }
-}
-///: END:ONLY_INCLUDE_IF
-
-///: BEGIN:ONLY_INCLUDE_IF(solana)
-export async function setSolanaSupportEnabled(value: boolean) {
-  try {
-    await submitRequestToBackground('setSolanaSupportEnabled', [value]);
   } catch (error) {
     logErrorWithMessage(error);
   }

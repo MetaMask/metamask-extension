@@ -14,6 +14,7 @@ import { TransactionStatus } from '@metamask/transaction-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { SnapEndowments } from '@metamask/snaps-rpc-methods';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import {
   getCurrentChainId,
   getProviderConfig,
@@ -127,7 +128,7 @@ import {
   getMultichainBalances,
   getMultichainNetworkProviders,
 } from './multichain';
-import { KeyringTypes } from '@metamask/keyring-controller';
+import { getRemoteFeatureFlags } from './remote-feature-flags';
 
 /** `appState` slice selectors */
 
@@ -588,7 +589,7 @@ export function getCrossChainMetaMaskCachedBalances(state) {
  */
 export function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
   const { accountsByChainId } = state.metamask;
-  const { address: selectedAddress } = getSelectedInternalAccount(state);
+  const { address: selectedAddress } = getSelectedEvmInternalAccount(state);
 
   const balancesByChainId = {};
   for (const [chainId, accounts] of Object.entries(accountsByChainId || {})) {
@@ -608,7 +609,7 @@ export function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
  */
 export function getSelectedAccountTokensAcrossChains(state) {
   const { allTokens } = state.metamask;
-  const selectedAddress = getSelectedInternalAccount(state).address;
+  const selectedAddress = getSelectedEvmInternalAccount(state).address;
 
   const tokensByChain = {};
 
@@ -2813,15 +2814,14 @@ export function getIsBitcoinTestnetSupportEnabled(state) {
 }
 
 /**
- * Get the state of the `solanaSupportEnabled` flag.
+ * Get the state of the `solanaSupportEnabled` remote feature flag.
  *
  * @param {*} state
- * @returns The state of the `solanaSupportEnabled` flag.
+ * @returns The state of the `solanaSupportEnabled` remote feature flag.
  */
 export function getIsSolanaSupportEnabled(state) {
-  // See `getIsBitcoinSupportEnabled` for details.
-  const { solanaSupportEnabled } = state.metamask;
-  return Boolean(solanaSupportEnabled);
+  const { addSolanaAccount } = getRemoteFeatureFlags(state);
+  return Boolean(addSolanaAccount);
 }
 
 export function getIsCustomNetwork(state) {
