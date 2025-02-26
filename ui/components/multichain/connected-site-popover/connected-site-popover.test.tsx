@@ -1,24 +1,27 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import configureStore from 'redux-mock-store';
+import configureStore from '../../../store/store';
+import mockState from '../../../../test/data/mock-state.json';
 import { ConnectedSitePopover } from './connected-site-popover';
 import { Store, AnyAction } from 'redux';
 
 const mockStore = configureStore([]);
+const store = configureStore({
+  metamask: {
+    ...mockState.metamask,
+    completedOnboarding: true,
+  },
+  activeTab: {
+    id: 113,
+    title: 'E2E Test Dapp',
+    origin: 'https://metamask.github.io',
+    protocol: 'https:',
+    url: 'https://metamask.github.io/test-dapp/',
+  },
+});
 
 describe('ConnectedSitePopover', () => {
-  let store: Store<any, AnyAction>;
-
-  beforeEach(() => {
-    store = mockStore({
-      metamask: {
-        providerConfig: { chainId: '0x1', nickname: 'Ethereum Mainnet' },
-      },
-    });
-    store.dispatch = jest.fn();
-  });
-
   it('renders the popover when isOpen is true', () => {
     render(
       <Provider store={store}>
@@ -58,7 +61,7 @@ describe('ConnectedSitePopover', () => {
         />
       </Provider>,
     );
-    expect(screen.getByText('Ethereum Mainnet')).toBeInTheDocument();
+    expect(screen.getByText('Goerli')).toBeInTheDocument();
   });
 
   it('triggers onClick when manage permissions button is clicked', () => {
