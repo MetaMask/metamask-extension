@@ -54,6 +54,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
                 'eth_signTypedData_v4',
               ],
               type: 'eip155:eoa',
+              scopes: ['eip155:0'],
             },
           },
         },
