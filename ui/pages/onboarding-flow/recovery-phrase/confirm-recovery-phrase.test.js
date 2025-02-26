@@ -20,7 +20,21 @@ describe('Confirm Recovery Phrase Component', () => {
   };
 
   const mockState = {
-    metamask: {},
+    metamask: {
+      internalAccounts: {
+        accounts: {
+          accountId: {
+            address: '0x0000000000000000000000000000000000000000',
+          },
+        },
+      },
+      keyrings: [
+        {
+          type: 'HD Key Tree',
+          accounts: ['0x0000000000000000000000000000000000000000'],
+        },
+      ],
+    },
   };
 
   const mockStore = configureMockStore([thunk])(mockState);

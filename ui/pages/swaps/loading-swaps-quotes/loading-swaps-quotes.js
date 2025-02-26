@@ -14,6 +14,7 @@ import {
 import {
   isHardwareWallet,
   getHardwareWalletType,
+  getHDEntropyIndex,
 } from '../../../selectors/selectors';
 import {
   getSmartTransactionsEnabled,
@@ -43,6 +44,7 @@ export default function LoadingSwapsQuotes({
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const history = useHistory();
   const animationEventEmitter = useRef(new EventEmitter());
 
@@ -73,6 +75,9 @@ export default function LoadingSwapsQuotes({
       stx_enabled: smartTransactionsEnabled,
       current_stx_enabled: currentSmartTransactionsEnabled,
       stx_user_opt_in: smartTransactionsOptInStatus,
+    },
+    properties: {
+      hd_entropy_index: hdEntropyIndex,
     },
   };
 

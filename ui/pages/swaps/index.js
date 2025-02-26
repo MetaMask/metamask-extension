@@ -23,6 +23,7 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
   getTokenList,
+  getHDEntropyIndex,
 } from '../../selectors/selectors';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import {
@@ -77,7 +78,10 @@ import {
 
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
-import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
 import { Icon, IconName, IconSize } from '../../components/component-library';
@@ -101,6 +105,7 @@ export default function Swap() {
   const history = useHistory();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
   const { pathname } = useLocation();
   const isAwaitingSwapRoute = pathname === AWAITING_SWAP_ROUTE;
@@ -221,7 +226,7 @@ export default function Swap() {
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const trackExitedSwapsEvent = () => {
     trackEvent({
-      event: 'Exited Swaps',
+      event: MetaMetricsEventName.ExitedSwaps,
       category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         token_from: fetchParams?.sourceTokenInfo?.symbol,
@@ -236,6 +241,9 @@ export default function Swap() {
         stx_enabled: smartTransactionsEnabled,
         current_stx_enabled: currentSmartTransactionsEnabled,
         stx_user_opt_in: smartTransactionsOptInStatus,
+      },
+      properties: {
+        hd_entropy_index: hdEntropyIndex,
       },
     });
   };
