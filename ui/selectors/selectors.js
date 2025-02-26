@@ -524,7 +524,7 @@ export function getNumberOfTokens(state) {
 export function getMetaMaskKeyrings(state) {
   return state.metamask.keyrings.map((keyring, index) => ({
     ...keyring,
-    metadata: state.metamask.keyringsMetadata?.[index] || {},
+    metadata: state.metamask.keyringsMetadata?.[index] ?? {},
   }));
 }
 

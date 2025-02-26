@@ -56,7 +56,7 @@ export class MultichainWalletSnapClient {
     // This will trigger the Snap account creation flow (+ account renaming)
     const account = await this.#client.createAccount({
       scope,
-      ...(entropySource ? { entropySource } : {})
+      ...(entropySource ? { entropySource } : {}),
     });
 
     // NOTE: The account's balance is going to be tracked automatically on when the new account
