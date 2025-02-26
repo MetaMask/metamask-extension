@@ -83,11 +83,11 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
   const displayExportSRPQuiz = keyringId && isAbleToExportSRP;
 
   const [showHoldToReveal, setShowHoldToReveal] = useState(false);
+  const [srpQuizModalVisible, setSrpQuizModalVisible] = useState(false);
   ///: END:ONLY_INCLUDE_IF
   const [attemptingExport, setAttemptingExport] = useState<AttemptExportState>(
     AttemptExportState.None,
   );
-  const [srpQuizModalVisible, setSrpQuizModalVisible] = useState(false);
 
   // This is only populated when the user properly authenticates
   const [privateKey, setPrivateKey] = useState('');
