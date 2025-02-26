@@ -5,8 +5,6 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import { ACCOUNT_TYPE } from '../../constants';
 import { withMultiSRP } from './common-multi-srp';
 
-const newlyAddedAccount = 'Account 3';
-
 const addAccountToSrp = async (driver: Driver, srpIndex: number) => {
   const headerNavbar = new HeaderNavbar(driver);
   await headerNavbar.openAccountMenu();

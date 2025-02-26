@@ -1,13 +1,13 @@
 import Bowser from 'bowser';
 import BN from 'bn.js';
 import { toChecksumAddress } from 'ethereumjs-util';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { addHexPrefixToObjectValues } from '../../../shared/lib/swaps-utils';
 import { toPrecisionWithoutTrailingZeros } from '../../../shared/lib/transactions-controller-utils';
 import { MinPermissionAbstractionDisplayCount } from '../../../shared/constants/permissions';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import * as util from './util';
-import { KeyringTypes } from '@metamask/keyring-controller';
 
 describe('util', () => {
   let ethInWei = '1';

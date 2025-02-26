@@ -38,7 +38,6 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-import { AttemptExportState } from '../../../../shared/constants/accounts';
 
 export const AccountDetailsDisplay = ({
   accounts,

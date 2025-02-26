@@ -68,7 +68,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getInternalAccountByAddress,
   getSelectedInternalAccount,
-  getMetaMaskKeyrings,
   getMetaMaskHdKeyrings,
 } from '../selectors';
 import {
