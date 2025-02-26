@@ -8,6 +8,7 @@ import React, {
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { debounce } from 'lodash';
+import { CaipAccountId, parseCaipAccountId } from '@metamask/utils';
 import {
   Box,
   FormTextField,
@@ -48,7 +49,11 @@ export const SnapUIAddressInput: FunctionComponent<
 
   const initialValue = getValue(name, form) as string;
 
-  const [value, setValue] = useState(initialValue ?? '');
+  const parsedAddress = parseCaipAccountId(
+    initialValue as CaipAccountId,
+  ).address;
+
+  const [value, setValue] = useState(parsedAddress ?? '');
   const [matchedAddressName, setMatchedAddressName] = useState<string | null>(
     null,
   );
@@ -59,7 +64,8 @@ export const SnapUIAddressInput: FunctionComponent<
 
   useEffect(() => {
     if (initialValue !== undefined && initialValue !== null) {
-      setValue(initialValue);
+      const { address } = parseCaipAccountId(initialValue as CaipAccountId);
+      setValue(address);
     }
   }, [initialValue]);
 
