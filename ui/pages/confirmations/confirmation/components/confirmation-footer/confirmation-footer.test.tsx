@@ -1,5 +1,5 @@
-import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
+import { fireEvent, render } from '@testing-library/react';
 
 import * as AlertContext from '../../alerts/alerts-context';
 import ConfirmationFooter from './confirmation-footer';
