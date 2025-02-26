@@ -1,7 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import { KeyringMetadata, KeyringObject } from '@metamask/keyring-controller';
+///: END:ONLY_INCLUDE_IF
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
@@ -18,8 +20,10 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getInternalAccountByAddress,
   getMetaMaskAccountsOrdered,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   getMetaMaskKeyrings,
   getMetaMaskKeyringsMetadata,
+  ///: END:ONLY_INCLUDE_IF
   getUseBlockie,
 } from '../../../selectors';
 import {
@@ -41,12 +45,17 @@ import {
   ModalBody,
 } from '../../component-library';
 import { AddressCopyButton } from '../address-copy-button';
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import SRPQuiz from '../../app/srp-quiz-modal';
+///: END:ONLY_INCLUDE_IF
 import { AccountDetailsAuthenticate } from './account-details-authenticate';
 import { AccountDetailsDisplay } from './account-details-display';
 import { AccountDetailsKey } from './account-details-key';
 import { AttemptExportState } from '../../../../shared/accounts';
-import { findKeyringIdByAddress } from '../../../../shared/constants/keyring';
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+import { findKeyringId } from '../../../../shared/constants/keyring';
+import { isAbleToRevealSrp } from '../../../helpers/utils/util';
+///: END:ONLY_INCLUDE_IF
 
 type AccountDetailsProps = { address: string };
 
@@ -56,17 +65,27 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
   const trackEvent = useContext(MetaMetricsContext);
   const useBlockie = useSelector(getUseBlockie);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
+  const account = useSelector((state) =>
+    getInternalAccountByAddress(state, address),
+  );
   const {
     metadata: { name },
-  } = useSelector((state) => getInternalAccountByAddress(state, address));
+  } = account;
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   const keyrings: KeyringObject[] = useSelector(getMetaMaskKeyrings);
   const keyringsMetadata: KeyringMetadata[] = useSelector(
     getMetaMaskKeyringsMetadata,
   );
 
-  const keyringId = findKeyringIdByAddress(keyrings, keyringsMetadata, address);
+  const keyringId = findKeyringId(keyrings, keyringsMetadata, {
+    address,
+  });
+
+  const isAbleToExportSRP = isAbleToRevealSrp(account, keyrings);
+  const displayExportSRPQuiz = keyringId && isAbleToExportSRP;
 
   const [showHoldToReveal, setShowHoldToReveal] = useState(false);
+  ///: END:ONLY_INCLUDE_IF
   const [attemptingExport, setAttemptingExport] = useState<AttemptExportState>(
     AttemptExportState.None,
   );
@@ -98,7 +117,9 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
     <>
       {/* This is the Modal that says "Show private key" on top and has a few states */}
       <Modal
+        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
         isOpen={!showHoldToReveal && !srpQuizModalVisible}
+        ///: END:ONLY_INCLUDE_IF
         onClose={onClose}
         data-testid="account-details-modal"
       >
@@ -125,9 +146,11 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
                 accountName={name}
                 address={address}
                 onExportClick={(attemptExportMode: AttemptExportState) => {
+                  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
                   if (attemptExportMode === AttemptExportState.SRP) {
                     setSrpQuizModalVisible(true);
                   }
+                  ///: END:ONLY_INCLUDE_IF
                   setAttemptingExport(attemptExportMode);
                 }}
               />
@@ -169,37 +192,44 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
           </ModalBody>
         </ModalContent>
       </Modal>
-
       {/* This is the Modal that says "Hold to reveal private key" */}
-      <HoldToRevealModal
-        isOpen={showHoldToReveal}
-        onClose={() => {
-          trackEvent({
-            category: MetaMetricsEventCategory.Keys,
-            event: MetaMetricsEventName.KeyExportCanceled,
-            properties: {
-              key_type: MetaMetricsEventKeyType.Pkey,
-            },
-          });
-          setPrivateKey('');
-          setShowHoldToReveal(false);
-        }}
-        onLongPressed={() => {
-          setShowHoldToReveal(false);
-        }}
-        holdToRevealType="PrivateKey"
-      />
-      {keyringId && (
-        <SRPQuiz
-          keyringId={keyringId}
-          isOpen={srpQuizModalVisible}
+      {
+        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+        <HoldToRevealModal
+          isOpen={showHoldToReveal}
           onClose={() => {
-            setSrpQuizModalVisible(false);
-            onClose();
+            trackEvent({
+              category: MetaMetricsEventCategory.Keys,
+              event: MetaMetricsEventName.KeyExportCanceled,
+              properties: {
+                key_type: MetaMetricsEventKeyType.Pkey,
+              },
+            });
+            setPrivateKey('');
+            setShowHoldToReveal(false);
           }}
-          closeAfterCompleting
+          onLongPressed={() => {
+            setShowHoldToReveal(false);
+          }}
+          holdToRevealType="PrivateKey"
         />
-      )}
+        ///: END:ONLY_INCLUDE_IF
+      }
+      {
+        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+        displayExportSRPQuiz && (
+          <SRPQuiz
+            keyringId={keyringId}
+            isOpen={srpQuizModalVisible}
+            onClose={() => {
+              setSrpQuizModalVisible(false);
+              onClose();
+            }}
+            closeAfterCompleting
+          />
+        )
+        ///: END:ONLY_INCLUDE_IF
+      }
     </>
   );
 };
