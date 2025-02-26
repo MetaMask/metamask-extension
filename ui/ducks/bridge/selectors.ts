@@ -9,13 +9,13 @@ import { createSelector } from 'reselect';
 import type { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
-///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
 import { CaipChainId, Hex } from '@metamask/utils';
 import {
   MultichainNetworks,
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   MULTICHAIN_PROVIDER_CONFIGS,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/constants/multichain/networks';
-///: END:ONLY_INCLUDE_IF
 import {
   getIsBridgeEnabled,
   getMarketData,
@@ -61,12 +61,14 @@ import {
   FEATURED_RPCS,
 } from '../../../shared/constants/network';
 import {
+  getMultichainCoinRates,
   getMultichainProviderConfig,
   getImageForChainId,
 } from '../../selectors/multichain';
+import { getAssetsRates } from '../../selectors/assets';
 import {
-  exchangeRatesFromNativeAndCurrencyRates,
   exchangeRateFromMarketData,
+  exchangeRatesFromNativeAndCurrencyRates,
   tokenPriceInNativeAsset,
 } from './utils';
 import type { BridgeState } from './bridge';
@@ -241,19 +243,36 @@ export const getBridgeSortOrder = (state: BridgeAppState) =>
 export const getFromTokenConversionRate = createSelector(
   getFromChain,
   getMarketData,
+  getAssetsRates,
   getFromToken,
   getUSDConversionRate,
+  getMultichainCoinRates,
   getConversionRate,
   (state) => state.bridge.fromTokenExchangeRate,
   (
     fromChain,
     marketData,
+    assetsRates,
     fromToken,
     nativeToUsdRate,
+    nonEvmNativeToUsdRate,
     nativeToCurrencyRate,
     fromTokenExchangeRate,
   ) => {
-    if (fromChain?.chainId && fromToken && marketData) {
+    if (fromChain?.chainId && fromToken) {
+      if (fromChain.chainId === MultichainNetworks.SOLANA) {
+        // For SOLANA tokens, we use the conversion rates provided by the multichain rates controller
+        const tokenToNativeAssetRate = tokenPriceInNativeAsset(
+          assetsRates[fromToken.address]?.rate,
+          nonEvmNativeToUsdRate.sol.conversionRate,
+        );
+        return exchangeRatesFromNativeAndCurrencyRates(
+          tokenToNativeAssetRate,
+          nonEvmNativeToUsdRate.sol.conversionRate,
+          nonEvmNativeToUsdRate.sol.usdConversionRate,
+        );
+      }
+      // For EVM tokens, we use the market data to get the exchange rate
       const tokenToNativeAssetRate =
         exchangeRateFromMarketData(
           fromChain.chainId,
@@ -261,7 +280,6 @@ export const getFromTokenConversionRate = createSelector(
           marketData,
         ) ??
         tokenPriceInNativeAsset(fromTokenExchangeRate, nativeToCurrencyRate);
-
       return exchangeRatesFromNativeAndCurrencyRates(
         tokenToNativeAssetRate,
         nativeToCurrencyRate,
