@@ -228,7 +228,7 @@ export const AccountListMenu = ({
   ///: END:ONLY_INCLUDE_IF
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
-  ///: BEGIN:ONLY_INCLUDE_IF(solana,build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
   const [primaryKeyring] = useSelector(getMetaMaskKeyrings);
   ///: END:ONLY_INCLUDE_IF
   const hiddenAddresses = useSelector(getHiddenAccountsList);
