@@ -489,9 +489,3 @@ export function getMultichainConversionRate(
     ? getConversionRate(state)
     : conversionRate;
 }
-
-export const getMultichainConversionRateSelector = createSelector(
-  (state) => state,
-  (_state, account) => account,
-  (state, account) => getMultichainConversionRate(state, account),
-);
