@@ -120,59 +120,55 @@ export const SRPList = ({
                 marginTop={2}
                 marginBottom={2}
               />
-              {keyring.accounts.map((address: string) => (
-                <Box
-                  key={address}
-                  display={Display.Flex}
-                  flexDirection={FlexDirection.Row}
-                  alignItems={AlignItems.center}
-                  justifyContent={JustifyContent.spaceBetween}
-                >
+              {keyring.accounts.map((address: string) => {
+                const account = accountsWithBalances[address];
+                return (
                   <Box
+                    key={address}
                     display={Display.Flex}
                     flexDirection={FlexDirection.Row}
                     alignItems={AlignItems.center}
+                    justifyContent={JustifyContent.spaceBetween}
                   >
-                    <AvatarAccount
-                      address={address}
-                      size={AvatarAccountSize.Xs}
-                    />
-                    <Text
-                      className="srp-list__account-name"
-                      variant={TextVariant.bodySm}
-                      paddingLeft={3}
+                    <Box
+                      display={Display.Flex}
+                      flexDirection={FlexDirection.Row}
+                      alignItems={AlignItems.center}
                     >
-                      {accountsWithBalances[address].metadata.name}
-                    </Text>
-                    <Text
-                      variant={TextVariant.bodySm}
-                      color={TextColor.textAlternative}
-                      marginLeft={1}
-                    >
-                      {shortenAddress(address)}
+                      <AvatarAccount
+                        address={address}
+                        size={AvatarAccountSize.Xs}
+                      />
+                      <Text
+                        className="srp-list__account-name"
+                        variant={TextVariant.bodySm}
+                        paddingLeft={3}
+                      >
+                        {account.metadata.name}
+                      </Text>
+                      <Text
+                        variant={TextVariant.bodySm}
+                        color={TextColor.textAlternative}
+                        marginLeft={1}
+                      >
+                        {shortenAddress(address)}
+                      </Text>
+                    </Box>
+                    <Text variant={TextVariant.bodySm}>
+                      <UserPreferencedCurrencyDisplay
+                        account={account}
+                        value={account.balance}
+                        type="PRIMARY"
+                        ethNumberOfDecimals={4}
+                        hideTitle
+                        showFiat
+                        isAggregatedFiatOverviewBalance
+                        hideLabel
+                      />
                     </Text>
                   </Box>
-                  <Text variant={TextVariant.bodySm}>
-                    <UserPreferencedCurrencyDisplay
-                      value={new Numeric(
-                        accountsWithBalances[address].balance,
-                        16,
-                        EtherDenomination.WEI,
-                      )
-                        .toDenomination(EtherDenomination.ETH)
-                        .toBase(10)
-                        .times(new Numeric(conversionRate, 10))
-                        .toString()}
-                      type="PRIMARY"
-                      ethNumberOfDecimals={4}
-                      hideTitle
-                      showFiat
-                      isAggregatedFiatOverviewBalance
-                      hideLabel
-                    />
-                  </Text>
-                </Box>
-              ))}
+                );
+              })}
             </Box>
           )}
         </Card>
