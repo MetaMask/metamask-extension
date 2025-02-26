@@ -197,7 +197,7 @@
     "message": "Add friends and addresses you trust"
   },
   "addHardwareWallet": {
-    "message": "Add hardware wallet"
+    "message": "Hardware wallet"
   },
   "addIPFSGateway": {
     "message": "Add your preferred IPFS gateway"
@@ -224,8 +224,14 @@
   "addNewBitcoinTestnetAccount": {
     "message": "Add a new Bitcoin account (Testnet)"
   },
+  "addNewEthereumAccountLabel": {
+    "message": "Ethereum account"
+  },
   "addNewSolanaAccount": {
     "message": "Add a new Solana account (Beta)"
+  },
+  "addNewSolanaAccountLabel": {
+    "message": "Solana account"
   },
   "addNft": {
     "message": "Add NFT"
@@ -234,12 +240,12 @@
     "message": "Add NFTs"
   },
   "addNonEvmAccount": {
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana",
-    "message": "Add $1 account"
+    "message": "Add $1 account",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
   },
   "addNonEvmAccountFromNetworkPicker": {
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana",
-    "message": "To enable the $1 network, you need to create a $1 account."
+    "message": "To enable the $1 network, you need to create a $1 account.",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "Add RPC URL"
@@ -1081,6 +1087,9 @@
   "connectAccounts": {
     "message": "Connect accounts"
   },
+  "connectAnAccountHeader": {
+    "message": "Connect an account"
+  },
   "connectManually": {
     "message": "Manually connect to current site"
   },
@@ -1247,6 +1256,9 @@
   },
   "create": {
     "message": "Create"
+  },
+  "createNewAccountHeader": {
+    "message": "Create a new account"
   },
   "createNewWallet": {
     "message": "Create a new wallet"
@@ -2305,7 +2317,7 @@
     "description": "$1 is the number of words in the recovery phrase"
   },
   "importPrivateKey": {
-    "message": "Import Private Key"
+    "message": "Private Key"
   },
   "importSRPDescription": {
     "message": "Enter your wallet's secret recovery phrase. You can import any Ethereum, Solana, or Bitcoin secret recovery phrase."
@@ -2319,7 +2331,7 @@
     "description": "$1 and $2 are multiple words that are mispelled."
   },
   "importSecretRecoveryPhrase": {
-    "message": "Import Secret Recovery Phrase"
+    "message": "Secret Recovery Phrase"
   },
   "importSelectedTokens": {
     "message": "Import selected tokens?"
@@ -2341,6 +2353,9 @@
   },
   "importWallet": {
     "message": "Import wallet"
+  },
+  "importWalletOrAccountHeader": {
+    "message": "Import a wallet or account"
   },
   "importWalletSuccess": {
     "message": "Wallet successfully imported"
