@@ -8,7 +8,11 @@ import React, {
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { debounce } from 'lodash';
-import { CaipAccountId, parseCaipAccountId } from '@metamask/utils';
+import {
+  CaipAccountId,
+  CaipChainId,
+  parseCaipAccountId,
+} from '@metamask/utils';
 import {
   Box,
   FormTextField,
@@ -37,11 +41,12 @@ export type SnapUIAddressInputProps = {
   name: string;
   form?: string;
   label?: string;
+  chainId: CaipChainId;
 };
 
 export const SnapUIAddressInput: FunctionComponent<
   SnapUIAddressInputProps & FormTextFieldProps<'div'>
-> = ({ name, form, label, error, ...props }) => {
+> = ({ name, form, label, chainId, error, ...props }) => {
   const { handleInputChange, getValue, focusedInput, setCurrentFocusedInput } =
     useSnapInterfaceContext();
 
@@ -59,7 +64,7 @@ export const SnapUIAddressInput: FunctionComponent<
   );
 
   const accountsInfo: Record<string, string> = useSelector(
-    getAccountInfoByCaipChainId(props.chainId),
+    getAccountInfoByCaipChainId(chainId),
   );
 
   useEffect(() => {
