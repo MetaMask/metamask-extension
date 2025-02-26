@@ -19,17 +19,17 @@ type GasPricesResponse = {
  * On its own:
  *
  * ``` ts
- * const gasPricesService = new GasPricesService({ fetch });
+ * const gasPricesService = new SampleGasPricesService({ fetch });
  * // Fetch gas prices for Mainnet
  * const gasPricesResponse = await gasPricesService.fetchGasPrices('0x1');
  * // ... Do something with the response ...
  * ```
  *
- * In conjunction with `GasPricesController`:
+ * In conjunction with `SampleGasPricesController`:
  *
  * ``` ts
- * const gasPricesService = new GasPricesService({ fetch });
- * const gasPricesController = new GasPricesController({
+ * const gasPricesService = new SampleGasPricesService({ fetch });
+ * const gasPricesController = new SampleGasPricesController({
  *   // ... state, messenger, etc. ...
  *   gasPricesService,
  * });
@@ -37,11 +37,11 @@ type GasPricesResponse = {
  * gasPricesController.updateGasPrices();
  * ```
  */
-export class GasPricesService {
+export class SampleGasPricesService {
   readonly #fetch: typeof fetch;
 
   /**
-   * Constructs a new GasPricesService object.
+   * Constructs a new SampleGasPricesService object.
    *
    * @param args - The arguments.
    * @param args.fetch - A function that can be used to make an HTTP request.

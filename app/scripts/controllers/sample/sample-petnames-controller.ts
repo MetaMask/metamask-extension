@@ -11,18 +11,18 @@ import type { Hex } from '@metamask/utils';
 // === GENERAL ===
 
 /**
- * The name of the {@link PetNamesController}, used to namespace the
+ * The name of the {@link SamplePetnamesController}, used to namespace the
  * controller's actions and events and to namespace the controller's state data
  * when composed with other controllers.
  */
-export const controllerName = 'PetNamesController';
+export const controllerName = 'SamplePetnamesController';
 
 // === STATE ===
 
 /**
- * Describes the shape of the state object for {@link PetNamesController}.
+ * Describes the shape of the state object for {@link SamplePetnamesController}.
  */
-export type PetNamesControllerState = {
+export type SamplePetnamesControllerState = {
   /**
    * The registry of pet names, categorized by chain ID first and address
    * second.
@@ -35,74 +35,80 @@ export type PetNamesControllerState = {
 };
 
 /**
- * The metadata for each property in {@link PetNamesControllerState}.
+ * The metadata for each property in {@link SamplePetnamesControllerState}.
  */
-const petNamesControllerMetadata = {
+const samplePetnamesControllerMetadata = {
   namesByChainIdAndAddress: {
     persist: true,
     anonymous: false,
   },
-} satisfies StateMetadata<PetNamesControllerState>;
+} satisfies StateMetadata<SamplePetnamesControllerState>;
 
 // === MESSENGER ===
 
 /**
  * The action which can be used to retrieve the state of the
- * {@link PetNamesController}.
+ * {@link SamplePetnamesController}.
  */
-export type PetNamesControllerGetStateAction = ControllerGetStateAction<
+export type SamplePetnamesControllerGetStateAction = ControllerGetStateAction<
   typeof controllerName,
-  PetNamesControllerState
->;
-
-export type PetNamesControllerAssignPetNameAction = {
-  type: `${typeof controllerName}:assignPetName`;
-  handler: PetNamesController['assignPetName'];
-};
-
-/**
- * All actions that {@link PetNamesController} registers, to be called
- * externally.
- */
-export type PetNamesControllerActions =
-  | PetNamesControllerGetStateAction
-  | PetNamesControllerAssignPetNameAction;
-
-/**
- * The event that {@link PetNamesController} publishes when updating state.
- */
-export type PetNamesControllerStateChangeEvent = ControllerStateChangeEvent<
-  typeof controllerName,
-  PetNamesControllerState
+  SamplePetnamesControllerState
 >;
 
 /**
- * All events that {@link PetNamesController} publishes, to be subscribed to
+ * All actions that {@link SamplePetnamesController} registers, to be called
  * externally.
  */
-export type PetNamesControllerEvents = PetNamesControllerStateChangeEvent;
+export type SamplePetnamesControllerActions =
+  SamplePetnamesControllerGetStateAction;
+
+/**
+ * All actions that {@link SamplePetnamesController} calls internally.
+ */
+type AllowedActions = never;
+
+/**
+ * The event that {@link SamplePetnamesController} publishes when updating state.
+ */
+export type SamplePetnamesControllerStateChangeEvent =
+  ControllerStateChangeEvent<
+    typeof controllerName,
+    SamplePetnamesControllerState
+  >;
+
+/**
+ * All events that {@link SamplePetnamesController} publishes, to be subscribed to
+ * externally.
+ */
+export type SamplePetnamesControllerEvents =
+  SamplePetnamesControllerStateChangeEvent;
+
+/**
+ * All events that {@link SamplePetnamesController} subscribes to internally.
+ */
+type AllowedEvents = never;
 
 /**
  * The messenger which is restricted to actions and events accessed by
- * {@link PetNamesController}.
+ * {@link SamplePetnamesController}.
  */
-export type PetNamesControllerMessenger = RestrictedMessenger<
+export type SamplePetnamesControllerMessenger = RestrictedMessenger<
   typeof controllerName,
-  PetNamesControllerActions,
-  PetNamesControllerEvents,
-  string,
-  string
+  SamplePetnamesControllerActions | AllowedActions,
+  SamplePetnamesControllerEvents | AllowedEvents,
+  AllowedActions['type'],
+  AllowedEvents['type']
 >;
 
 /**
- * Constructs the default {@link PetNamesController} state. This allows
+ * Constructs the default {@link SamplePetnamesController} state. This allows
  * consumers to provide a partial state object when initializing the controller
  * and also helps in constructing complete state objects for this controller in
  * tests.
  *
- * @returns The default {@link PetNamesController} state.
+ * @returns The default {@link SamplePetnamesController} state.
  */
-export function getDefaultPetNamesControllerState(): PetNamesControllerState {
+function getDefaultPetnamesControllerState(): SamplePetnamesControllerState {
   return {
     namesByChainIdAndAddress: {},
   };
@@ -111,7 +117,7 @@ export function getDefaultPetNamesControllerState(): PetNamesControllerState {
 // === CONTROLLER DEFINITION ===
 
 /**
- * `PetNamesController` records user-provided nicknames for various addresses on
+ * `SamplePetnamesController` records user-provided nicknames for various addresses on
  * various chains.
  *
  * @example
@@ -119,39 +125,39 @@ export function getDefaultPetNamesControllerState(): PetNamesControllerState {
  * ``` ts
  * import { Messenger } from '@metamask/base-controller';
  * import type {
- *   PetNamesControllerActions,
- *   PetNamesControllerEvents
+ *   SamplePetnamesControllerActions,
+ *   SamplePetnamesControllerEvents
  * } from '@metamask/example-controllers';
  *
  * const rootMessenger = new Messenger<
- *  PetNamesControllerActions,
- *  PetNamesControllerEvents
+ *  SamplePetnamesControllerActions,
+ *  SamplePetnamesControllerEvents
  * >();
- * const petNamesMessenger = rootMessenger.getRestricted({
- *   name: 'PetNamesController',
+ * const samplePetnamesMessenger = rootMessenger.getRestricted({
+ *   name: 'SamplePetnamesController',
  *   allowedActions: [],
  *   allowedEvents: [],
  * });
- * const petNamesController = new GasPricesController({
- *   messenger: petNamesMessenger,
+ * const samplePetnamesController = new SamplePetnamesController({
+ *   messenger: samplePetnamesMessenger,
  * });
  *
- * petNamesController.assignPetName(
+ * samplePetnamesController.assignPetname(
  *   '0x1',
  *   '0xF57F855e17483B1f09bFec62783C9d3b6c8b3A99',
  *   'Primary Account'
  * );
- * petNamesController.state.namesByChainIdAndAddress
+ * samplePetnamesController.state.namesByChainIdAndAddress
  * // => { '0x1': { '0xF57F855e17483B1f09bFec62783C9d3b6c8b3A99': 'Primary Account' } }
  * ```
  */
-export class PetNamesController extends BaseController<
+export class SamplePetnamesController extends BaseController<
   typeof controllerName,
-  PetNamesControllerState,
-  PetNamesControllerMessenger
+  SamplePetnamesControllerState,
+  SamplePetnamesControllerMessenger
 > {
   /**
-   * Constructs a new {@link PetNamesController}.
+   * Constructs a new {@link SamplePetnamesController}.
    *
    * @param args - The arguments to the controller.
    * @param args.messenger - The messenger suited for this controller.
@@ -162,23 +168,18 @@ export class PetNamesController extends BaseController<
     messenger,
     state,
   }: {
-    messenger: PetNamesControllerMessenger;
-    state?: Partial<PetNamesControllerState>;
+    messenger: SamplePetnamesControllerMessenger;
+    state?: Partial<SamplePetnamesControllerState>;
   }) {
     super({
       messenger,
-      metadata: petNamesControllerMetadata,
+      metadata: samplePetnamesControllerMetadata,
       name: controllerName,
       state: {
-        ...getDefaultPetNamesControllerState(),
+        ...getDefaultPetnamesControllerState(),
         ...state,
       },
     });
-
-    this.messagingSystem.registerActionHandler(
-      `${controllerName}:assignPetName`,
-      this.assignPetName.bind(this),
-    );
   }
 
   /**
@@ -189,7 +190,7 @@ export class PetNamesController extends BaseController<
    * @param address - The account address to name.
    * @param name - The name to assign to the address.
    */
-  assignPetName(chainId: Hex, address: Hex, name: string) {
+  assignPetname(chainId: Hex, address: Hex, name: string) {
     if (!isSafeDynamicKey(chainId)) {
       throw new Error('Invalid chain ID');
     }

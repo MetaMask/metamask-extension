@@ -1,7 +1,8 @@
+import { Hex } from '@metamask/utils';
 import {
-  PetNamesController as SamplePetnamesController,
-  PetNamesControllerMessenger as SamplePetnamesControllerMessenger,
-  PetNamesControllerState as SamplePetnamesControllerState,
+  SamplePetnamesController,
+  SamplePetnamesControllerMessenger,
+  SamplePetnamesControllerState,
 } from '../../controllers/sample';
 import { ControllerInitFunction } from '../types';
 
@@ -18,5 +19,10 @@ export const SamplePetnamesControllerInit: ControllerInitFunction<
 
   return {
     controller,
+    api: {
+      assignPetname: (chainId: Hex, address: Hex, name: string) => {
+        controller.assignPetname(chainId, address, name);
+      },
+    },
   };
 };

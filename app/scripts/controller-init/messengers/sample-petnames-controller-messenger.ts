@@ -1,5 +1,5 @@
 import { ActionConstraint, Messenger } from '@metamask/base-controller';
-import { PetNamesControllerMessenger as SamplePetnamesControllerMessenger } from '../../controllers/sample';
+import { SamplePetnamesControllerMessenger } from '../../controllers/sample';
 
 type MessengerActions = ActionConstraint;
 
@@ -10,7 +10,7 @@ export function getSamplePetnamesControllerMessenger(
   messenger: Messenger<MessengerActions, MessengerEvents>,
 ): SamplePetnamesControllerMessenger {
   return messenger.getRestricted({
-    name: 'PetNamesController',
+    name: 'SamplePetnamesController',
     allowedActions: ['NetworkController:getState'],
     allowedEvents: [],
   });
