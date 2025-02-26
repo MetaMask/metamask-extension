@@ -721,16 +721,13 @@ export const isAbleToRevealSrp = (accountToExport, keyrings) => {
   if (type !== KeyringTypes.hd && type !== KeyringTypes.snap) {
     return false;
   }
-  console.log(111);
 
   // All hd keyrings can reveal their srp.
   if (type === KeyringTypes.hd) {
     return true;
   }
-  console.log(222);
 
   // TODO: For snap accounts we must check if the entropy source was from a HD keyring (SIP-30).
-  console.log('keyrings', keyrings);
   const hdKeyringsIds = keyrings
     .filter((keyring) => keyring.type === KeyringTypes.hd)
     .map((keyring) => keyring.metadata.id);

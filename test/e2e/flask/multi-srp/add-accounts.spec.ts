@@ -34,7 +34,7 @@ describe('Multi SRP - Add accounts', function (this: Suite) {
     await withMultiSRP(
       { title: this.test?.fullTitle() },
       async (driver: Driver) => {
-        await addAccountToSrp(driver, 1);
+        await addAccountToSrp(driver, 2);
       },
     );
   });

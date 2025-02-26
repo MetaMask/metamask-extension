@@ -14,9 +14,7 @@ import { TransactionStatus } from '@metamask/transaction-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { SnapEndowments } from '@metamask/snaps-rpc-methods';
-///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import { KeyringTypes } from '@metamask/keyring-controller';
-///: END:ONLY_INCLUDE_IF
 import {
   getCurrentChainId,
   getProviderConfig,
