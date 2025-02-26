@@ -59,8 +59,8 @@ export const TokenDetailsSection = () => {
   return (
     <ConfirmInfoSection data-testid="confirmation__token-details-section">
       <NetworkRow />
-      {(shouldShowOriginRow || shouldShowTokenRow) && <ConfirmInfoRowDivider />}
       {shouldShowOriginRow && <OriginRow />}
+      {shouldShowTokenRow && <ConfirmInfoRowDivider />}
       {tokenRow}
     </ConfirmInfoSection>
   );

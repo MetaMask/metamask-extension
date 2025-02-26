@@ -31,6 +31,7 @@ const useNetworkAndOriginSwitchingAlerts = (): Alert[] => {
     if (newChainId) {
       return selectNetworkConfigurationByChainId(state, newChainId);
     }
+    return undefined;
   });
 
   const [lastInteractedConfirmationInfo, updateLastInteractedConfirmationInfo] =
@@ -44,8 +45,7 @@ const useNetworkAndOriginSwitchingAlerts = (): Alert[] => {
         updateLastInteractedConfirmationInfo(lastConfirmation);
 
         const isNewId =
-          !lastInteractedConfirmationInfo ||
-          lastInteractedConfirmationInfo?.id !== currentConfirmationId;
+          !lastConfirmation || lastConfirmation?.id !== currentConfirmationId;
 
         if (isNewId) {
           setLastInteractedConfirmationInfo({
@@ -62,7 +62,8 @@ const useNetworkAndOriginSwitchingAlerts = (): Alert[] => {
     };
   }, [
     currentConfirmationId,
-    setLastInteractedConfirmationInfo,
+    newChainId,
+    newOrigin,
     updateLastInteractedConfirmationInfo,
   ]);
 
@@ -105,7 +106,14 @@ const useNetworkAndOriginSwitchingAlerts = (): Alert[] => {
     }
 
     return alerts;
-  }, [currentConfirmationId, lastInteractedConfirmationInfo, origin, t]);
+  }, [
+    currentConfirmationId,
+    lastInteractedConfirmationInfo,
+    network?.name,
+    newChainId,
+    newOrigin,
+    t,
+  ]);
 
   return networkAndOriginSwitchingAlerts;
 };
