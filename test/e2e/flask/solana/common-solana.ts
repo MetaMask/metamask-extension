@@ -436,6 +436,26 @@ export async function mockGetFeeForMessage(mockServer: Mockttp) {
     });
 }
 
+export async function mockGetMinimumBalanceForRentExemption(
+  mockServer: Mockttp,
+) {
+  const response = {
+    statusCode: 200,
+    json: {
+      result: 500,
+      id: 1337,
+    },
+  };
+  return await mockServer
+    .forPost(SOLANA_URL_REGEX)
+    .withJsonBodyIncluding({
+      method: 'getMinimumBalanceForRentExemption',
+    })
+    .thenCallback(() => {
+      return response;
+    });
+}
+
 export async function withSolanaAccountSnap(
   {
     title,
@@ -480,6 +500,7 @@ export async function withSolanaAccountSnap(
             await mockMultiCoinPrice(mockServer),
             await mockGetLatestBlockhash(mockServer),
             await mockGetFeeForMessage(mockServer),
+            await mockGetMinimumBalanceForRentExemption(mockServer),
           ]);
         }
         if (mockSendTransaction) {
