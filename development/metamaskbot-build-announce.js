@@ -46,15 +46,24 @@ async function artifactExists(url) {
 }
 
 async function start() {
-  const {
-    PR_COMMENT_TOKEN,
-    PR_NUMBER,
-    HEAD_COMMIT_HASH,
-    MERGE_BASE_COMMIT_HASH,
-    CIRCLE_BUILD_NUM,
-    CIRCLE_WORKFLOW_JOB_ID,
-    HOST_URL,
-  } = process.env;
+  // const {
+  //   PR_COMMENT_TOKEN,
+  //   PR_NUMBER,
+  //   HEAD_COMMIT_HASH,
+  //   MERGE_BASE_COMMIT_HASH,
+  //   CIRCLE_BUILD_NUM,
+  //   CIRCLE_WORKFLOW_JOB_ID,
+  //   HOST_URL,
+  // } = process.env;
+
+  const PR_COMMENT_TOKEN = '**';
+  const PR_NUMBER = 30480;
+  const HEAD_COMMIT_HASH = '9355fbd1170ca14196a59ecdb34b636ff725a07e';
+  const MERGE_BASE_COMMIT_HASH = '9355fbd1170ca14196a59ecdb34b636ff725a07e';
+  const CIRCLE_BUILD_NUM = 4571044;
+  const CIRCLE_WORKFLOW_JOB_ID = ' eeef021d-9e0e-496f-b3f7-a7affabe8069';
+  const HOST_URL =
+    'https://diuv6g5fj9pvx.cloudfront.net/metamask-extension/13450471829';
 
   if (!PR_NUMBER) {
     console.warn(`No pull request detected for commit "${HEAD_COMMIT_HASH}"`);
@@ -210,6 +219,8 @@ async function start() {
     }
   }
 
+  console.log('benchmarkResults', benchmarkResults);
+
   const summaryPlatform = benchmarkPlatforms[0];
   const summaryBuildType = buildTypes[0];
   const summaryPage = 'home';
@@ -239,11 +250,13 @@ async function start() {
         allPlatforms.add(platform);
         const platformBenchmark = benchmarkResults[platform];
         const buildTypesInPlatform = Object.keys(platformBenchmark);
+        console.log('platform buildTypes', platform, buildTypesInPlatform);
         for (const buildType of buildTypesInPlatform) {
           allBuildTypes.add(buildType);
           const buildBenchmark = platformBenchmark[buildType];
           const pages = Object.keys(buildBenchmark);
           for (const page of pages) {
+            console.log('platform buildType page', platform, buildType, page);
             allPages.add(page);
             const pageBenchmark = buildBenchmark[page];
             const measures = Object.keys(pageBenchmark);
@@ -258,6 +271,10 @@ async function start() {
           }
         }
       }
+
+      console.log('dkjdkdjdk');
+
+      //TODO: Firefox firstPaint NaN
 
       const tableRows = [];
       for (const platform of allPlatforms) {
@@ -334,7 +351,7 @@ async function start() {
     ).json();
 
     console.log('prBundleSizeStats', prBundleSizeStats);
-    console.log('devBundleSizeStats', devBundleSizeStats);
+    // console.log('devBundleSizeStats', devBundleSizeStats);
 
     const prSizes = {
       background: prBundleSizeStats.background.size,
