@@ -1,4 +1,6 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { BigNumber } from 'bignumber.js';
 import {
   TextAlign,
   TextColor,
@@ -9,6 +11,8 @@ import {
   SensitiveTextLength,
 } from '../../../../component-library';
 import { TokenFiatDisplayInfo } from '../../types';
+import { formatWithThreshold } from '../../util/formatWithThreshold';
+import { getIntlLocale } from '../../../../../ducks/locale/locale';
 
 type TokenCellPrimaryDisplayProps = {
   token: TokenFiatDisplayInfo;
@@ -17,6 +21,18 @@ type TokenCellPrimaryDisplayProps = {
 
 export const TokenCellPrimaryDisplay = React.memo(
   ({ token, privacyMode }: TokenCellPrimaryDisplayProps) => {
+    const locale = useSelector(getIntlLocale);
+
+    const bnPrimary = new BigNumber(token.primary);
+    const formattedPrimary = formatWithThreshold(
+      bnPrimary.toNumber(),
+      0.00001,
+      locale,
+      {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 5,
+      },
+    );
     return (
       <SensitiveText
         data-testid="multichain-token-list-item-value"
@@ -26,7 +42,7 @@ export const TokenCellPrimaryDisplay = React.memo(
         isHidden={privacyMode}
         length={SensitiveTextLength.Short}
       >
-        {token.primary} {token.symbol}
+        {formattedPrimary} {token.symbol}
       </SensitiveText>
     );
   },
