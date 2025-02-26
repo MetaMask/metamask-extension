@@ -70,10 +70,10 @@ export const AggregatedBalance = ({
     0.0,
     locale,
     {
-      minimumFractionDigits: 5,
+      minimumFractionDigits: 0,
       maximumFractionDigits: 5,
     },
-  ).replace(/(\.0+|(?<=\.\d+)0+)$/u, ''); // strip trailing zeros
+  );
 
   if (!balances || !assets[selectedAccount.id]?.length) {
     return <Spinner className="loading-overlay__spinner" />;
