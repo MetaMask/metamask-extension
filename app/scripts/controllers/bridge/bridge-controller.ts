@@ -8,6 +8,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { BigNumber } from '@ethersproject/bignumber';
 import { TransactionParams } from '@metamask/transaction-controller';
 import type { ChainId } from '@metamask/controller-utils';
+import { HandlerType } from '@metamask/snaps-utils';
 import {
   fetchBridgeFeatureFlags,
   fetchBridgeQuotes,
@@ -24,6 +25,7 @@ import {
   BridgeFeatureFlagsKey,
   RequestStatus,
   type GenericQuoteRequest,
+  type SolanaFees,
 } from '../../../../shared/types/bridge';
 import { isValidQuoteRequest } from '../../../../shared/modules/bridge-utils/quote';
 import { hasSufficientBalance } from '../../../../shared/modules/bridge-utils/balance';
@@ -170,7 +172,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
   };
 
   #hasSufficientBalance = async (quoteRequest: GenericQuoteRequest) => {
-    const walletAddress = this.#getSelectedAccount().address;
+    const walletAddress = this.#getMultichainSelectedAccount()?.address;
     const srcChainIdInHex = formatChainIdToHex(quoteRequest.srcChainId);
     const provider = this.#getSelectedNetworkClient()?.provider;
     const srcTokenAddressWithoutPrefix = formatAddressToString(
@@ -179,6 +181,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
 
     return (
       provider &&
+      walletAddress &&
       srcTokenAddressWithoutPrefix &&
       quoteRequest.srcTokenAmount &&
       srcChainIdInHex &&
@@ -253,11 +256,14 @@ export default class BridgeController extends StaticIntervalPollingController<Br
       );
 
       const quotesWithL1GasFees = await this.#appendL1GasFees(quotes);
+      const quotesWithSolanaFees = await this.#appendSolanaFees(
+        quotesWithL1GasFees,
+      );
 
       this.update((_state) => {
         _state.bridgeState = {
           ..._state.bridgeState,
-          quotes: quotesWithL1GasFees,
+          quotes: quotesWithSolanaFees,
           quotesLoadingStatus: RequestStatus.FETCHED,
         };
       });
@@ -346,8 +352,49 @@ export default class BridgeController extends StaticIntervalPollingController<Br
     );
   };
 
-  #getSelectedAccount() {
-    return this.messagingSystem.call('AccountsController:getSelectedAccount');
+  #appendSolanaFees = async (
+    quotes: QuoteResponse[],
+  ): Promise<(QuoteResponse & SolanaFees)[]> => {
+    return await Promise.all(
+      quotes.map(async (quoteResponse) => {
+        const { quote, trade } = quoteResponse;
+        const selectedAccount = this.#getMultichainSelectedAccount();
+
+        if (
+          selectedAccount &&
+          typeof trade === 'string' &&
+          formatChainIdToCaip(quote.srcChainId) === MultichainNetworks.SOLANA
+        ) {
+          const { value: fees } = await this.messagingSystem.call(
+            'SnapController:handleRequest',
+            {
+              snapId: selectedAccount.metadata.snap.id,
+              origin: 'metamask',
+              handler: HandlerType.OnRpcRequest,
+              request: {
+                method: 'getFeeForTransaction',
+                params: {
+                  transaction: trade,
+                  scope: selectedAccount.options.scope,
+                },
+              },
+            },
+          );
+
+          return {
+            ...quoteResponse,
+            solanaFeesInLamports: fees,
+          };
+        }
+        return quoteResponse;
+      }),
+    );
+  };
+
+  #getMultichainSelectedAccount() {
+    return this.messagingSystem.call(
+      'AccountsController:getSelectedMultichainAccount',
+    ); // ?? this.messagingSystem.call('AccountsController:getSelectedAccount')
   }
 
   #getSelectedNetworkClient() {
@@ -380,7 +427,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
 
     const web3Provider = new Web3Provider(provider);
     const contract = new Contract(contractAddress, abiERC20, web3Provider);
-    const { address: walletAddress } = this.#getSelectedAccount();
+    const { address: walletAddress } = this.#getMultichainSelectedAccount();
     const allowance = await contract.allowance(
       walletAddress,
       METABRIDGE_CHAIN_TO_ADDRESS_MAP[chainId],
