@@ -22,7 +22,9 @@ import {
   DEFAULT_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
   SNAP_SETTINGS_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   REVEAL_SRP_LIST_ROUTE,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
