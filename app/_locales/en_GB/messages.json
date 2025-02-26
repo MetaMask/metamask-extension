@@ -2320,7 +2320,7 @@
     "message": "Import an existing wallet with your 12 or 24-word secret recovery phrase."
   },
   "importSRPNumberOfWordsError": {
-    "message": "Secret Recovery Phrases contain 12 or 24 words"
+    "message": "Secret Recovery Phrases contain 12, or 24 words"
   },
   "importSRPWordError": {
     "message": "Word $1 is incorrect or misspelled.",
