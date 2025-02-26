@@ -38,6 +38,7 @@ import {
   getFromAmountInCurrency,
   getValidationErrors,
   getBridgeQuotesConfig,
+  isBridgeSolanaEnabled,
 } from '../../../ducks/bridge/selectors';
 import {
   BannerAlert,
@@ -91,7 +92,6 @@ import {
   getSelectedInternalAccount,
   getInternalAccounts,
   getTokenList,
-  getIsSolanaSupportEnabled,
 } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
@@ -458,7 +458,7 @@ const PrepareBridgePage = () => {
     }
   }, [fromChain, fromToken, fromTokens, search, isFromTokensLoading]);
 
-  const isSolanaEnabled = useSelector(getIsSolanaSupportEnabled);
+  const isSolanaBridgeEnabled = useSelector(isBridgeSolanaEnabled);
 
   return (
     <Column className="prepare-bridge-page" gap={8}>
@@ -659,7 +659,7 @@ const PrepareBridgePage = () => {
           isTokenListLoading={isToTokensLoading}
         />
 
-        {isSolanaEnabled && isToOrFromSolana && (
+        {isSolanaBridgeEnabled && isToOrFromSolana && (
           <Box padding={6} paddingBottom={3} paddingTop={3}>
             <DestinationAccountPicker
               onAccountSelect={setSelectedDestinationAccount}
@@ -693,7 +693,7 @@ const PrepareBridgePage = () => {
               paddingInline: 16,
               position: 'relative',
               overflow: 'hidden',
-              ...(activeQuote && !wasTxDeclined && isSolanaEnabled
+              ...(activeQuote && !wasTxDeclined && isSolanaBridgeEnabled
                 ? {
                     boxShadow:
                       'var(--shadow-size-sm) var(--color-shadow-default)',
@@ -719,7 +719,7 @@ const PrepareBridgePage = () => {
             )}
             {!wasTxDeclined &&
               activeQuote &&
-              (isSolanaEnabled ? (
+              (isSolanaBridgeEnabled ? (
                 <MultichainBridgeQuoteCard />
               ) : (
                 <BridgeQuoteCard />
@@ -730,7 +730,7 @@ const PrepareBridgePage = () => {
                   debouncedUpdateQuoteRequestInController(quoteParams);
                 }}
                 needsDestinationAddress={
-                  isSolanaEnabled &&
+                  isSolanaBridgeEnabled &&
                   isToOrFromSolana &&
                   !selectedDestinationAccount
                 }
