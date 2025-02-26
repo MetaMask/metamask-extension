@@ -190,14 +190,10 @@ import {
   HardwareKeyringType,
   LedgerTransportTypes,
 } from '../../shared/constants/hardware-wallets';
-import {
-  ///: END:ONLY_INCLUDE_IF
-  KeyringType,
-} from '../../shared/constants/keyring';
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  findKeyringId,
-} from '../../shared/lib/keyring';
+import { KeyringType } from '../../shared/constants/keyring';
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+import { findKeyringId } from '../../shared/lib/keyring';
+///: END:ONLY_INCLUDE_IF
 import {
   RestrictedMethods,
   ExcludedSnapPermissions,
