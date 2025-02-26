@@ -376,6 +376,8 @@ import {
   SnapInterfaceControllerInit,
   SnapsRegistryInit,
 } from './controller-init/snaps';
+import { SampleGasPricesControllerInit } from './controller-init/sample/sample-gasprices-controller-init';
+import { SamplePetnamesControllerInit } from './controller-init/sample/sample-petnames-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -2038,6 +2040,8 @@ export default class MetamaskController extends EventEmitter {
       CronjobController: CronjobControllerInit,
       PPOMController: PPOMControllerInit,
       TransactionController: TransactionControllerInit,
+      SampleGasPricesController: SampleGasPricesControllerInit,
+      SamplePetnamesController: SamplePetnamesControllerInit,
       ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       MultichainAssetsController: MultichainAssetsControllerInit,
       MultichainAssetsRatesController: MultichainAssetsRatesControllerInit,
@@ -2072,6 +2076,9 @@ export default class MetamaskController extends EventEmitter {
     this.snapsRegistry = controllersByName.SnapsRegistry;
     this.ppomController = controllersByName.PPOMController;
     this.txController = controllersByName.TransactionController;
+    this.sampleGasPricesController =
+      controllersByName.SampleGasPricesController;
+    this.samplePetnamesController = controllersByName.SamplePetnamesController;
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     this.multichainAssetsController =
       controllersByName.MultichainAssetsController;
@@ -2231,6 +2238,8 @@ export default class MetamaskController extends EventEmitter {
       SelectedNetworkController: this.selectedNetworkController,
       LoggingController: this.loggingController,
       MultichainRatesController: this.multichainRatesController,
+      SampleGasPricesController: controllersByName.SampleGasPricesController,
+      SamplePetnamesController: controllersByName.SamplePetnamesController,
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       CustodyController: this.custodyController.store,
       InstitutionalFeaturesController:
@@ -2287,6 +2296,8 @@ export default class MetamaskController extends EventEmitter {
         SelectedNetworkController: this.selectedNetworkController,
         LoggingController: this.loggingController,
         MultichainRatesController: this.multichainRatesController,
+        SampleGasPricesController: controllersByName.SampleGasPricesController,
+        SamplePetnamesController: controllersByName.SamplePetnamesController,
         SnapController: this.snapController,
         CronjobController: this.cronjobController,
         SnapsRegistry: this.snapsRegistry,
