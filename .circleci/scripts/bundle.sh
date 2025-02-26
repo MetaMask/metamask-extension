@@ -35,7 +35,7 @@ export TZ="UTC"
 export ENABLE_MV3="false"
 
 # 1. Download and install nvm:
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/179d45050be0a71fd57591b0ed8aedf9b177ba10/install.sh | bash
 
 # 2. Activate nvm in lieu of restarting the shell
 # shellcheck disable=SC1091
