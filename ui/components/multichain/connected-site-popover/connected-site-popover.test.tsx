@@ -2,8 +2,8 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-import { ConnectedSitePopover } from './connected-site-popover';
 import { renderWithProvider } from '../../../../test/jest';
+import { ConnectedSitePopover } from './connected-site-popover';
 
 const props = {
   isOpen: true,
@@ -37,7 +37,7 @@ describe('ConnectedSitePopover', () => {
 
   it('displays site name correctly', () => {
     const { getByText } = render();
-    expect(getByText("metamask.github.io")).toBeInTheDocument();
+    expect(getByText('metamask.github.io')).toBeInTheDocument();
   });
 
   it('triggers onClick when manage permissions button is clicked', () => {

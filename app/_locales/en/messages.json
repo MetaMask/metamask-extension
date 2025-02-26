@@ -1179,6 +1179,9 @@
     "message": "Fetching of $1 failed, check your network and try again.",
     "description": "$1 is the name of the snap being fetched."
   },
+  "connectionPopoverDescription": {
+    "message": "To connect to a site, select the connect button. MetaMask can only connect to web3 sites."
+  },
   "connectionRequest": {
     "message": "Connection request"
   },
@@ -4782,9 +4785,6 @@
   },
   "slideCashOutTitle": {
     "message": "Cash out with MetaMask"
-  },
-  "connectionPopoverDescription": {
-    "message": "To connect to a site, select the connect button. MetaMask can only connect to web3 sites."
   },
   "slideDebitCardDescription": {
     "message": "Available in select regions"
