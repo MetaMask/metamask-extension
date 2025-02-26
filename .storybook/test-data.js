@@ -10,7 +10,10 @@ import { copyable, divider, heading, panel, text } from '@metamask/snaps-sdk';
 import { getJsxElementFromComponent } from '@metamask/snaps-utils';
 import { FirstTimeFlowType } from '../shared/constants/onboarding';
 import { ETH_EOA_METHODS } from '../shared/constants/eth-methods';
-import { mockNetworkState, mockMultichainNetworkState } from '../test/stub/networks';
+import {
+  mockNetworkState,
+  mockMultichainNetworkState,
+} from '../test/stub/networks';
 
 const state = {
   invalidCustomNetwork: {
@@ -1255,6 +1258,16 @@ const state = {
       {
         type: KeyringType.ledger,
         accounts: ['0x9d0ba4ddac06032527b140912ec808ab9451b788'],
+      },
+    ],
+    keyringsMetadata: [
+      {
+        id: '01JN08SYECPZHFHB3K0J1NHJ4H',
+        name: '',
+      },
+      {
+        id: '01JN08T38HEXPYQX2HKP1FCRMZ',
+        name: '',
       },
     ],
     ...mockNetworkState(
