@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { isStrictHexString } from '@metamask/utils';
 import {
   getBridgeQuotes,
   getQuoteRequest,
@@ -7,18 +8,19 @@ import {
 } from '../../ducks/bridge/selectors';
 import { getMarketData, getParticipateInMetaMetrics } from '../../selectors';
 import { getCurrentCurrency } from '../../ducks/metamask/metamask';
-import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import {
   setDestTokenExchangeRates,
   setDestTokenUsdExchangeRates,
   setSrcTokenExchangeRates,
 } from '../../ducks/bridge/bridge';
 import { exchangeRateFromMarketData } from '../../ducks/bridge/utils';
+import { useMultichainSelector } from '../useMultichainSelector';
+import { getMultichainCurrentChainId } from '../../selectors/multichain';
 
 export const useBridgeExchangeRates = () => {
   const { srcTokenAddress, destTokenAddress } = useSelector(getQuoteRequest);
   const { activeQuote } = useSelector(getBridgeQuotes);
-  const chainId = useSelector(getCurrentChainId);
+  const chainId = useMultichainSelector(getMultichainCurrentChainId);
   const toChain = useSelector(getToChain);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
 
@@ -42,7 +44,7 @@ export const useBridgeExchangeRates = () => {
 
   // Fetch exchange rates for selected src token if not found in marketData
   useEffect(() => {
-    if (fromChainId && fromTokenAddress) {
+    if (fromChainId && fromTokenAddress && isStrictHexString(fromChainId)) {
       const exchangeRate = exchangeRateFromMarketData(
         fromChainId,
         fromTokenAddress,
