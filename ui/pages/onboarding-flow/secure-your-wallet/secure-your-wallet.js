@@ -85,13 +85,6 @@ export default function SecureYourWallet() {
       >
         {t('seedPhraseIntroTitle')}
       </Text>
-      <Text
-        variant={TextVariant.bodyLgMedium}
-        marginBottom={6}
-        className="secure-your-wallet__details"
-      >
-        {t('seedPhraseIntroTitleCopy')}
-      </Text>
       <Box className="secure-your-wallet__srp-design-container">
         <img
           className="secure-your-wallet__srp-design-image"
