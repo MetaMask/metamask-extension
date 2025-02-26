@@ -39,7 +39,10 @@ describe('Swap-Send ERC20', function () {
             4000,
           );
 
-          await swapSendPage.verifyMaxButtonClick(['TST', 'TST'], ['10', '10']);
+          await swapSendPage.verifyMaxButtonClick(
+            ['TST', 'TST'],
+            ['10.0000', '10.0000'],
+          );
 
           await swapSendPage.fillAmountInput('10');
 
