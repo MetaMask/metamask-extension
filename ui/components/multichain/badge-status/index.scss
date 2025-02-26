@@ -17,6 +17,10 @@
     width: 8px;
   }
 
+  &__badge-disconnected {
+    display: none;
+  }
+
   &__badge-not-connected::after {
     content: '';
     position: absolute;

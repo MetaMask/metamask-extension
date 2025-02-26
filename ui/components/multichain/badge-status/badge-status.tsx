@@ -28,6 +28,7 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
   badgeBorderColor = BorderColor.borderMuted,
   address,
   isConnectedAndNotActive = false,
+  isDisconnected = false,
   text,
   ...props
 }): JSX.Element => {
@@ -61,6 +62,7 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
               className={classNames('multichain-badge-status__badge', {
                 'multichain-badge-status__badge-not-connected':
                   isConnectedAndNotActive,
+                'multichain-badge-status__badge-disconnected': isDisconnected,
               })}
               backgroundColor={badgeBackgroundColor}
               borderRadius={BorderRadius.full}
