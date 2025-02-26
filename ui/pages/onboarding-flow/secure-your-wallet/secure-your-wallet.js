@@ -1,6 +1,5 @@
 import React, { useState, useContext } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 
 import {
   TextAlign,
@@ -20,7 +19,6 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
-import { getCurrentLocale } from '../../../ducks/locale/locale';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -38,7 +36,6 @@ export default function SecureYourWallet() {
   const history = useHistory();
   const t = useI18nContext();
   const { search } = useLocation();
-  const currentLocale = useSelector(getCurrentLocale);
   const [showSkipSRPBackupPopover, setShowSkipSRPBackupPopover] =
     useState(false);
   const searchParams = new URLSearchParams(search);
@@ -64,25 +61,6 @@ export default function SecureYourWallet() {
     setShowSkipSRPBackupPopover(true);
   };
 
-  const subtitles = {
-    en: 'English',
-    es: 'Spanish',
-    hi: 'Hindi',
-    id: 'Indonesian',
-    ja: 'Japanese',
-    ko: 'Korean',
-    pt: 'Portuguese',
-    ru: 'Russian',
-    tl: 'Tagalog',
-    vi: 'Vietnamese',
-    de: 'German',
-    el: 'Greek',
-    fr: 'French',
-    tr: 'Turkish',
-    zh: 'Chinese - China',
-  };
-
-  const defaultLang = subtitles[currentLocale] ? currentLocale : 'en';
   return (
     <Box
       display={Display.Flex}
@@ -114,38 +92,13 @@ export default function SecureYourWallet() {
       >
         {t('seedPhraseIntroTitleCopy')}
       </Text>
-      {process.env.IN_TEST ? null : (
-        <Box
-          as="video"
-          borderRadius={BorderRadius.LG}
-          marginBottom={8}
-          className="secure-your-wallet__video"
-          onPlay={() => {
-            trackEvent({
-              category: MetaMetricsEventCategory.Onboarding,
-              event: MetaMetricsEventName.OnboardingWalletVideoPlay,
-            });
-          }}
-          controls
-        >
-          <source
-            type="video/webm"
-            src="./images/videos/recovery-onboarding/video.webm"
-          />
-          {Object.keys(subtitles).map((key) => {
-            return (
-              <track
-                default={Boolean(key === defaultLang)}
-                srcLang={key}
-                label={subtitles[key]}
-                key={`${key}-subtitles`}
-                kind="subtitles"
-                src={`./images/videos/recovery-onboarding/subtitles/${key}.vtt`}
-              />
-            );
-          })}
-        </Box>
-      )}
+      <Box className="secure-your-wallet__srp-design-container">
+        <img
+          className="secure-your-wallet__srp-design-image"
+          src="./images/srp-lock-design.png"
+          alt="SRP Design"
+        />
+      </Box>
       <Box
         className="secure-your-wallet__actions"
         marginBottom={8}
