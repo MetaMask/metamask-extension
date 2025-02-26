@@ -2328,7 +2328,7 @@
     "description": "$1 and $2 are multiple words that are mispelled."
   },
   "importSecretRecoveryPhrase": {
-    "message": "Secret Recovery Phrase"
+    "message": "Import Secret Recovery Phrase"
   },
   "importSelectedTokens": {
     "message": "Import selected tokens?"

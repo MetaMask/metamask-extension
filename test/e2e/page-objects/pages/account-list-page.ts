@@ -136,7 +136,7 @@ class AccountListPage {
     '.multichain-account-list-item__account-name';
 
   private readonly importSRPButton = {
-    text: 'Import Secret Recovery Phrase',
+    text: 'Secret Recovery Phrase',
     tag: 'button',
   };
 

@@ -608,7 +608,7 @@ export const AccountListMenu = ({
                   }}
                   data-testid="multichain-account-menu-popover-import-srp"
                 >
-                  {t('importSecretRecoveryPhrase')}
+                  {t('secretRecoveryPhrase')}
                 </ButtonLink>
               </Box>
               ///: END:ONLY_INCLUDE_IF
