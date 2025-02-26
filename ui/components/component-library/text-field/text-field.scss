@@ -13,6 +13,10 @@
     --size: 48px;
   }
 
+  &--size-xl {
+    --size: 56px;
+  }
+
   height: var(--text-field-height);
   border-color: var(--color-border-default);
 

@@ -10,6 +10,7 @@ export enum TextFieldSize {
   Sm = 'sm',
   Md = 'md',
   Lg = 'lg',
+  Xl = 'xl',
 }
 
 export enum TextFieldType {
