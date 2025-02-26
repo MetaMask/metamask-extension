@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { merge } from 'lodash';
-import { ManifestFlags } from '../../app/scripts/lib/manifestFlags';
+import { ManifestFlags } from '../../shared/lib/manifestFlags';
 import { fetchManifestFlagsFromPRAndGit } from '../../development/lib/get-manifest-flag';
 
 export const folder = `dist/${process.env.SELENIUM_BROWSER}`;

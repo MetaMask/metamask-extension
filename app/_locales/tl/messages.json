@@ -4653,15 +4653,6 @@
     "message": "Makipag-ugnayan sa mga tagalikha ng $1 para sa karagdagang suporta.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaSupportSectionTitle": {
-    "message": "Solana"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "Kapag in-on ang feature na ito, magkakaroon ka ng opsyon na magdagdag ng Solana Account sa MetaMask extension mo mula sa dati mo nang Lihim na Parirala sa Pagbawi. Isa itong eksperimental na Beta feature kaya gamitin ito nang may pag-iingat."
-  },
-  "solanaSupportToggleTitle": {
-    "message": "Paganahin ang \"Magdagdag ng bagong Solana account (Beta)\""
-  },
   "somethingDoesntLookRight": {
     "message": "Mayroon bang hindi tama? $1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."

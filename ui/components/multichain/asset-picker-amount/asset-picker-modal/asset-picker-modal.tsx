@@ -1,13 +1,11 @@
 import React, { useState, useCallback, useMemo } from 'react';
-
 import { useSelector } from 'react-redux';
-import { isEqual, uniqBy } from 'lodash';
-import {
+import type {
   Token,
   TokenListMap,
   TokenListToken,
 } from '@metamask/assets-controllers';
-import { Hex } from '@metamask/utils';
+import { isCaipChainId, isStrictHexString, type Hex } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
 import {
   Modal,
@@ -31,41 +29,44 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import { AssetType } from '../../../../../shared/constants/transaction';
 import {
-  getCurrentChainId,
-  getNetworkConfigurationsByChainId,
-} from '../../../../../shared/modules/selectors/networks';
-import {
   getAllTokens,
-  getNativeCurrencyImage,
-  getSelectedAccountCachedBalance,
-  getSelectedInternalAccount,
-  getShouldHideZeroBalanceTokens,
+  getSelectedEvmInternalAccount,
   getTokenExchangeRates,
   getTokenList,
   getUseExternalServices,
 } from '../../../../selectors';
-import {
-  getConversionRate,
-  getCurrentCurrency,
-  getNativeCurrency,
-} from '../../../../ducks/metamask/metamask';
-import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import { getSwapsBlockedTokens } from '../../../../ducks/send';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
+import {
+  CHAIN_ID_TOKEN_IMAGE_MAP,
+  NETWORK_TO_NAME_MAP,
+} from '../../../../../shared/constants/network';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import { AvatarType } from '../../avatar-group/avatar-group.types';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
 import { useAsyncResult } from '../../../../hooks/useAsyncResult';
 import { fetchTopAssetsList } from '../../../../pages/swaps/swaps.util';
-import { getImageForChainId } from '../../../../selectors/multichain';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import {
+  getMultichainConversionRate,
+  getMultichainCurrencyImage,
+  getImageForChainId,
+  getMultichainCurrentChainId,
+  getMultichainCurrentCurrency,
+  getMultichainNativeCurrency,
+  getMultichainNetworkConfigurationsByChainId,
+  getMultichainSelectedAccountCachedBalance,
+  getMultichainIsEvm,
+} from '../../../../selectors/multichain';
+import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
+import { getAssetsMetadata } from '../../../../selectors/assets';
+import { Numeric } from '../../../../../shared/modules/Numeric';
+import type {
   ERC20Asset,
   NativeAsset,
   NFT,
   AssetWithDisplayData,
-  TokenWithBalance,
 } from './types';
 import { AssetPickerModalTabs, TabName } from './asset-picker-modal-tabs';
 import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
@@ -147,55 +148,58 @@ export function AssetPickerModal({
 
   const handleAssetChange = useCallback(onAssetChange, [onAssetChange]);
 
-  const currentChainId = useSelector(getCurrentChainId);
-  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const currentChainId = useSelector(getMultichainCurrentChainId);
+  const allNetworks = useSelector(getMultichainNetworkConfigurationsByChainId);
   const selectedNetwork =
-    network ?? (currentChainId && allNetworks[currentChainId]);
+    network ??
+    (currentChainId && allNetworks[currentChainId as keyof typeof allNetworks]);
   const allNetworksToUse = networks ?? Object.values(allNetworks ?? {});
   // This indicates whether tokens in the wallet's active network are displayed
   const isSelectedNetworkActive = selectedNetwork.chainId === currentChainId;
+  const isEvm = useMultichainSelector(getMultichainIsEvm);
 
-  const nativeCurrencyImage = useSelector(getNativeCurrencyImage);
-  const nativeCurrency = useSelector(getNativeCurrency);
-  const balanceValue = useSelector(getSelectedAccountCachedBalance);
+  const nativeCurrencyImage = useMultichainSelector(getMultichainCurrencyImage);
+  const nativeCurrency = useMultichainSelector(getMultichainNativeCurrency);
+  const balanceValue = useMultichainSelector(
+    getMultichainSelectedAccountCachedBalance,
+  );
 
-  const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
-  const conversionRate = useSelector(getConversionRate);
-  const currentCurrency = useSelector(getCurrentCurrency);
+  const tokenConversionRates = useMultichainSelector(getTokenExchangeRates);
+  const conversionRate = useMultichainSelector(getMultichainConversionRate);
+  const currentCurrency = useSelector(getMultichainCurrentCurrency);
 
-  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
-  const shouldHideZeroBalanceTokens = useSelector(
-    getShouldHideZeroBalanceTokens,
+  const { address: selectedEvmAddress } = useSelector(
+    getSelectedEvmInternalAccount,
   );
 
   const detectedTokens: Record<Hex, Record<string, Token[]>> = useSelector(
     getAllTokens,
   );
-  const tokens = detectedTokens?.[currentChainId]?.[selectedAddress] ?? [];
-
-  const { tokensWithBalances }: { tokensWithBalances: TokenWithBalance[] } =
-    useTokenTracker({
-      tokens,
-      address: selectedAddress,
-      hideZeroBalanceTokens: Boolean(shouldHideZeroBalanceTokens),
-    });
+  // This only returns the detected tokens for the selected EVM account address
+  const allDetectedTokens = useMemo(
+    () =>
+      (isCaipChainId(currentChainId)
+        ? []
+        : detectedTokens?.[currentChainId]?.[selectedEvmAddress]) ?? [],
+    [detectedTokens, currentChainId, selectedEvmAddress],
+  );
 
   const { assetsWithBalance: multichainTokensWithBalance } =
     useMultichainBalances();
 
-  const tokenList = useSelector(getTokenList) as TokenListMap;
+  const evmTokenMetadataByAddress = useSelector(getTokenList) as TokenListMap;
+  const nonEvmTokenMetadataByAddress = useSelector(getAssetsMetadata);
 
   const allowExternalServices = useSelector(getUseExternalServices);
   // Swaps top tokens
-  const { value: topTokensResponse } = useAsyncResult<
-    { address: string }[] | undefined
+  const { value: topTokens } = useAsyncResult<
+    { address: Hex }[] | undefined
   >(async () => {
     if (allowExternalServices && selectedNetwork?.chainId) {
       return await fetchTopAssetsList(selectedNetwork.chainId);
     }
     return undefined;
   }, [selectedNetwork?.chainId, allowExternalServices]);
-  const topTokens = topTokensResponse ?? [];
 
   const getIsDisabled = useCallback(
     ({
@@ -214,13 +218,6 @@ export function AssetPickerModal({
     },
     [sendingAsset?.symbol, memoizedSwapsBlockedTokens],
   );
-
-  const memoizedUsersTokens: TokenWithBalance[] = useMemo(() => {
-    return uniqBy<TokenWithBalance>(
-      [...tokensWithBalances, ...tokens],
-      'address',
-    );
-  }, [tokensWithBalances, tokens]);
 
   /**
    * Generates a list of tokens sorted in this order
@@ -252,27 +249,41 @@ export function AssetPickerModal({
       const blockedTokens = [];
 
       // Yield multichain tokens with balances
-      if (isMultiselectEnabled) {
-        for (const token of multichainTokensWithBalance) {
-          if (shouldAddToken(token.symbol, token.address, token.chainId)) {
-            yield token;
-          }
+      for (const token of multichainTokensWithBalance) {
+        if (shouldAddToken(token.symbol, token.address, token.chainId)) {
+          yield token.isNative
+            ? {
+                ...token,
+                image:
+                  CHAIN_ID_TOKEN_IMAGE_MAP[
+                    token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
+                  ],
+                type: AssetType.native,
+              }
+            : {
+                ...token,
+                // The Send flow requires the balance to be in Hex
+                balance: Numeric.from(token.balance ?? '0', 10)
+                  .shiftedBy(-1 * token.decimals)
+                  .toPrefixedHexString(),
+              };
         }
       }
 
       // Yield the native token for the selected chain
       const nativeToken: AssetWithDisplayData<NativeAsset> = {
-        address: null,
+        address: '',
         symbol: nativeCurrency,
         decimals: 18,
         image: nativeCurrencyImage,
         balance: balanceValue,
         string: undefined,
-        chainId: currentChainId,
+        chainId: selectedNetwork.chainId,
         type: AssetType.native,
       };
 
       if (
+        isEvm &&
         shouldAddToken(
           nativeToken.symbol,
           nativeToken.address,
@@ -282,15 +293,36 @@ export function AssetPickerModal({
         yield nativeToken;
       }
 
-      for (const token of memoizedUsersTokens) {
+      for (const token of allDetectedTokens) {
         if (shouldAddToken(token.symbol, token.address, currentChainId)) {
           yield { ...token, chainId: currentChainId };
         }
       }
 
+      // Return early when SOLANA is selected since blocked and top tokens are not available
+      if (selectedNetwork?.chainId === MultichainNetworks.SOLANA) {
+        for (const [address, token] of Object.entries(
+          nonEvmTokenMetadataByAddress,
+        )) {
+          const [caipChainId] = address.split('/');
+
+          if (shouldAddToken(token.symbol, address, caipChainId)) {
+            yield {
+              ...token,
+              address,
+              chainId: caipChainId,
+              decimals: token.units[0].decimals,
+            };
+          }
+        }
+        return;
+      }
+
+      // For EVM tokens only
       // topTokens are sorted by popularity
-      for (const topToken of topTokens) {
-        const token = tokenList?.[topToken.address];
+      for (const topToken of topTokens ?? []) {
+        const token: TokenListToken =
+          evmTokenMetadataByAddress?.[topToken.address];
         if (
           token &&
           shouldAddToken(token.symbol, token.address, currentChainId)
@@ -304,7 +336,7 @@ export function AssetPickerModal({
         }
       }
 
-      for (const token of Object.values(tokenList)) {
+      for (const token of Object.values(evmTokenMetadataByAddress)) {
         if (shouldAddToken(token.symbol, token.address, currentChainId)) {
           yield { ...token, chainId: currentChainId };
         }
@@ -318,12 +350,15 @@ export function AssetPickerModal({
       nativeCurrency,
       nativeCurrencyImage,
       balanceValue,
-      memoizedUsersTokens,
-      topTokens,
-      tokenList,
-      getIsDisabled,
-      isMultiselectEnabled,
+      currentChainId,
+      isEvm,
+      selectedNetwork?.chainId,
       multichainTokensWithBalance,
+      allDetectedTokens,
+      nonEvmTokenMetadataByAddress,
+      topTokens,
+      evmTokenMetadataByAddress,
+      getIsDisabled,
     ],
   );
 
@@ -372,24 +407,28 @@ export function AssetPickerModal({
       }
 
       filteredTokensAddresses.add(getTokenKey(token.address, token.chainId));
-      filteredTokens.push(
-        customTokenListGenerator
-          ? token
-          : getRenderableTokenData(
-              token.address
-                ? ({
-                    ...token,
-                    ...tokenList[token.address.toLowerCase()],
-                    type: AssetType.token,
-                  } as AssetWithDisplayData<ERC20Asset>)
-                : token,
-              tokenConversionRates,
-              conversionRate,
-              currentCurrency,
-              token.chainId,
-              tokenList,
-            ),
-      );
+      if (!customTokenListGenerator && isStrictHexString(token.address)) {
+        filteredTokens.push(
+          getRenderableTokenData(
+            token.address
+              ? ({
+                  ...token,
+                  ...evmTokenMetadataByAddress[token.address.toLowerCase()],
+                  type: AssetType.token,
+                } as AssetWithDisplayData<ERC20Asset>)
+              : token,
+            tokenConversionRates,
+            conversionRate,
+            currentCurrency,
+            token.chainId,
+            evmTokenMetadataByAddress,
+          ),
+        );
+      } else {
+        filteredTokens.push(
+          token as unknown as AssetWithDisplayData<ERC20Asset>,
+        );
+      }
 
       if (filteredTokens.length > MAX_UNOWNED_TOKENS_RENDERED) {
         break;
@@ -398,16 +437,18 @@ export function AssetPickerModal({
 
     return filteredTokens;
   }, [
+    currentChainId,
     searchQuery,
+    isMultiselectEnabled,
+    selectedChainIds,
+    selectedNetwork?.chainId,
+    customTokenListGenerator,
+    tokenListGenerator,
+    action,
+    evmTokenMetadataByAddress,
     tokenConversionRates,
     conversionRate,
     currentCurrency,
-    currentChainId,
-    tokenListGenerator,
-    customTokenListGenerator,
-    isMultiselectEnabled,
-    selectedChainIds,
-    selectedNetwork,
   ]);
 
   const getNetworkPickerLabel = () => {
