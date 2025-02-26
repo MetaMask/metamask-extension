@@ -11,13 +11,10 @@ jobs:
     name: Publish prerelease
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout and setup secure
+        uses: metamask/github-tools/.github/actions/checkout-and-setup-secure@caching
         with:
           fetch-depth: 0 # This is needed to get merge base to calculate bundle size diff
-
-      - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@1d657e262aea7e3f216754febb624831527d2565
 
       - name: Get merge base commit hash
         id: get-merge-base
