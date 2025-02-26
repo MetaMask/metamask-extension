@@ -45,6 +45,7 @@ import { SnapUIIcon } from '../snaps/snap-ui-icon';
 import { SnapUIImage } from '../snaps/snap-ui-image';
 import { SnapUIInput } from '../snaps/snap-ui-input';
 import { SnapUILink } from '../snaps/snap-ui-link';
+import { SnapUIAddressInput } from '../snaps/snap-ui-address-input';
 import { SnapUIMarkdown } from '../snaps/snap-ui-markdown';
 import { SnapUIRadioGroup } from '../snaps/snap-ui-radio-group';
 import { SnapUISelector } from '../snaps/snap-ui-selector';
@@ -102,6 +103,7 @@ export const safeComponentList = {
   SnapUIIcon,
   SnapUIImage,
   SnapUIInput,
+  SnapUIAddressInput,
   SnapUILink,
   SnapUIMarkdown,
   SnapUIRadioGroup,
