@@ -69,7 +69,14 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
   const {
     metadata: { name },
   } = account;
+
+  const [showHoldToReveal, setShowHoldToReveal] = useState(false);
+  let showModal = !showHoldToReveal;
+
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  const [srpQuizModalVisible, setSrpQuizModalVisible] = useState(false);
+  showModal = !showHoldToReveal && !srpQuizModalVisible;
+
   const keyrings: KeyringObject[] = useSelector(getMetaMaskKeyrings);
   const keyringsMetadata: KeyringMetadata[] = useSelector(
     getMetaMaskKeyringsMetadata,
@@ -82,8 +89,6 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
   const isAbleToExportSRP = isAbleToRevealSrp(account, keyrings);
   const displayExportSRPQuiz = keyringId && isAbleToExportSRP;
 
-  const [showHoldToReveal, setShowHoldToReveal] = useState(false);
-  const [srpQuizModalVisible, setSrpQuizModalVisible] = useState(false);
   ///: END:ONLY_INCLUDE_IF
   const [attemptingExport, setAttemptingExport] = useState<AttemptExportState>(
     AttemptExportState.None,
@@ -115,9 +120,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
     <>
       {/* This is the Modal that says "Show private key" on top and has a few states */}
       <Modal
-        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-        isOpen={!showHoldToReveal && !srpQuizModalVisible}
-        ///: END:ONLY_INCLUDE_IF
+        isOpen={showModal}
         onClose={onClose}
         data-testid="account-details-modal"
       >

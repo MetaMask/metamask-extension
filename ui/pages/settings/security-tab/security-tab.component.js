@@ -48,7 +48,9 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   ADD_POPULAR_CUSTOM_NETWORK,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   REVEAL_SRP_LIST_ROUTE,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
 import {
   getNumberOfSettingRoutesInTab,
@@ -108,7 +110,9 @@ export default class SecurityTab extends PureComponent {
     toggleExternalServices: PropTypes.func.isRequired,
     setSecurityAlertsEnabled: PropTypes.func,
     metaMetricsDataDeletionId: PropTypes.string,
+    ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
     hasMultipleHDKeyrings: PropTypes.bool,
+    ///: END:ONLY_INCLUDE_IF
   };
 
   state = {
@@ -169,7 +173,9 @@ export default class SecurityTab extends PureComponent {
 
   renderSeedWords() {
     const { t } = this.context;
+    ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
     const { history, hasMultipleHDKeyrings } = this.props;
+    ///: END:ONLY_INCLUDE_IF
 
     return (
       <>
@@ -202,12 +208,14 @@ export default class SecurityTab extends PureComponent {
                   location: 'Settings',
                 },
               });
+              ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
               if (hasMultipleHDKeyrings) {
                 history.push({
                   pathname: REVEAL_SRP_LIST_ROUTE,
                 });
                 return;
               }
+              ///: END:ONLY_INCLUDE_IF
               this.setState({ srpQuizModalVisible: true });
             }}
           >

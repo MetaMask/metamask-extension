@@ -333,6 +333,11 @@ class AccountListPage {
     // Run if there are multiple srps
     if (accountType === ACCOUNT_TYPE.Ethereum && srpIndex) {
       const srpName = `Secret Phrase ${srpIndex.toString()}`;
+      // We click twice because, the first click is to go to the SRP List
+      // from there we select the SRP that we want to add the account to
+      await this.driver.clickElement({
+        text: 'Secret Phrase 1',
+      });
       await this.driver.clickElement({
         text: srpName,
       });

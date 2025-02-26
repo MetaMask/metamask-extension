@@ -377,17 +377,29 @@ export function verifyPassword(password: string): Promise<boolean> {
   });
 }
 
-export async function getSeedPhrase(password: string, keyringId: string) {
+export async function getSeedPhrase(
+  password: string,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  keyringId: string,
+  ///: END:ONLY_INCLUDE_IF
+) {
   const encodedSeedPhrase = await submitRequestToBackground<string>(
     'getSeedPhrase',
-    [password, keyringId],
+    [
+      password,
+      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+      keyringId,
+      ///: END:ONLY_INCLUDE_IF
+    ],
   );
   return Buffer.from(encodedSeedPhrase).toString('utf8');
 }
 
 export function requestRevealSeedWords(
   password: string,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   keyringId: string,
+  ///: END:ONLY_INCLUDE_IF
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
@@ -395,7 +407,12 @@ export function requestRevealSeedWords(
 
     try {
       await verifyPassword(password);
-      const seedPhrase = await getSeedPhrase(password, keyringId);
+      const seedPhrase = await getSeedPhrase(
+        password,
+        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+        keyringId,
+        ///: END:ONLY_INCLUDE_IF
+      );
       return seedPhrase;
     } finally {
       dispatch(hideLoadingIndication());
