@@ -233,6 +233,14 @@
   "addNfts": {
     "message": "Add NFTs"
   },
+  "addNonEvmAccount": {
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana",
+    "message": "Add $1 account"
+  },
+  "addNonEvmAccountFromNetworkPicker": {
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana",
+    "message": "To enable the $1 network, you need to create a $1 account."
+  },
   "addRpcUrl": {
     "message": "Add RPC URL"
   },
@@ -4993,15 +5001,6 @@
   "snapsUIError": {
     "message": "Contact the creators of $1 for further support.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "solanaSupportSectionTitle": {
-    "message": "Solana"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "Turning on this feature will give you the option to add a Solana Account to your MetaMask Extension derived from your existing Secret Recovery Phrase. This is an experimental Beta feature, so you should use it at your own risk."
-  },
-  "solanaSupportToggleTitle": {
-    "message": "Enable \"Add a new Solana account (Beta)\""
   },
   "someNetworks": {
     "message": "$1 networks"

@@ -4653,15 +4653,6 @@
     "message": "अधिक सहायता के लिए $1 के निर्माताओं से कॉन्टेक्ट करें।",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaSupportSectionTitle": {
-    "message": "सोलाना"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "इस फीचर को चालू करने से आपको अपने मौजूदा सीक्रेट रिकवरी फ्रेज़ से प्राप्त MetaMask एक्सटेंशन में एक सोलाना अकाउंट जोड़ने का विकल्प मिलेगा। यह एक प्रायोगिक बीटा फीचर है, इसलिए आपको इसका उपयोग अपने जोखिम पर करना होगा।"
-  },
-  "solanaSupportToggleTitle": {
-    "message": "\"एक नया सोलाना अकाउंट जोड़ें (बीटा)\" को चालू करें"
-  },
   "somethingDoesntLookRight": {
     "message": "कुछ तो गड़बड़ है? $1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
