@@ -53,6 +53,10 @@ describe('error template', () => {
           },
         },
       },
+      confirmAlerts: {
+        alerts: {},
+        confirmed: {},
+      },
     };
     const store = configureMockStore(middleware)(testStore);
     const { getByText, container } = renderWithProvider(

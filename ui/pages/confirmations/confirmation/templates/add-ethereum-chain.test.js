@@ -59,6 +59,10 @@ describe('add-ethereum-chain confirmation', () => {
           },
         },
       },
+      confirmAlerts: {
+        alerts: {},
+        confirmed: {},
+      },
     };
     const store = configureMockStore(middleware)(testStore);
     const { container } = renderWithProvider(<Confirmation />, store);
@@ -88,6 +92,10 @@ describe('add-ethereum-chain confirmation', () => {
             type: MESSAGE_TYPE.ADD_ETHEREUM_CHAIN,
           },
         },
+      },
+      confirmAlerts: {
+        alerts: {},
+        confirmed: {},
       },
     };
 
@@ -127,6 +135,10 @@ describe('add-ethereum-chain confirmation', () => {
           },
         },
       },
+      confirmAlerts: {
+        alerts: {},
+        confirmed: {},
+      },
     };
     const store = configureMockStore(middleware)(testStore);
     const { getByText } = renderWithProvider(<Confirmation />, store);
@@ -149,6 +161,10 @@ describe('add-ethereum-chain confirmation', () => {
             },
           },
         },
+      },
+      confirmAlerts: {
+        alerts: {},
+        confirmed: {},
       },
     };
     const store = configureMockStore(middleware)(testStore);
