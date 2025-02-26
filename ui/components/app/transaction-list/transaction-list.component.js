@@ -79,17 +79,20 @@ import {
   RampsCard,
 } from '../../multichain/ramps-card/ramps-card';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
+// eslint-disable-next-line import/no-duplicates
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
+// eslint-disable-next-line import/no-duplicates
+import { getMultichainNetwork } from '../../../selectors/multichain';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
 import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
 import { ActivityListItem } from '../../multichain';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import {
-  getMultichainNetwork,
-  getSelectedAccountMultichainTransactions,
-} from '../../../selectors/multichain';
+// eslint-disable-next-line import/no-duplicates
+import { getSelectedAccountMultichainTransactions } from '../../../selectors/multichain';
+// eslint-disable-next-line import/no-duplicates
 import { isSelectedInternalAccountSolana } from '../../../selectors/accounts';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
@@ -301,6 +304,8 @@ export default function TransactionList({
 
   const chainId = useSelector(getCurrentChainId);
   const selectedAccount = useSelector(getSelectedAccount);
+  const account = useSelector(getSelectedInternalAccount);
+  const { isEvmNetwork } = useMultichainSelector(getMultichainNetwork, account);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const shouldHideZeroBalanceTokens = useSelector(
@@ -327,7 +332,7 @@ export default function TransactionList({
   const renderDateStamp = (index, dateGroup) => {
     return index === 0 ? (
       <Text
-        paddingTop={4}
+        paddingTop={2}
         paddingInline={4}
         variant={TextVariant.bodyMd}
         color={TextColor.textAlternative}
@@ -403,10 +408,10 @@ export default function TransactionList({
   };
 
   const renderFilterButton = () => {
-    return (
+    return process.env.PORTFOLIO_VIEW && isEvmNetwork ? (
       <Box
-        marginLeft={4}
-        marginRight={4}
+        marginLeft={2}
+        marginRight={2}
         justifyContent={
           isFullScreen ? JustifyContent.flexStart : JustifyContent.spaceBetween
         }
@@ -414,7 +419,7 @@ export default function TransactionList({
       >
         <ButtonBase
           data-testid="sort-by-popover-toggle"
-          className="activity-list-control-bar__button"
+          className="asset-list-control-bar__button asset-list-control-bar__network_control"
           onClick={toggleNetworkFilterPopover}
           size={ButtonBaseSize.Sm}
           disabled={
@@ -427,8 +432,6 @@ export default function TransactionList({
               ? BackgroundColor.backgroundPressed
               : BackgroundColor.backgroundDefault
           }
-          borderColor={BorderColor.borderMuted}
-          borderStyle={BorderStyle.solid}
           color={TextColor.textDefault}
           marginRight={isFullScreen ? 2 : null}
           ellipsis
@@ -455,7 +458,7 @@ export default function TransactionList({
           <NetworkFilter handleClose={closePopover} />
         </Popover>
       </Box>
-    );
+    ) : null;
   };
 
   // Remove transaction groups with no transactions
