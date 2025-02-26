@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   KeyringMetadata,
@@ -36,6 +36,11 @@ import { Numeric } from '../../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../../shared/constants/common';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import { getMultichainConversionRate } from '../../../../selectors/multichain';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 
 type KeyringObjectWithMetadata = KeyringObject & { metadata: KeyringMetadata };
 
@@ -46,6 +51,8 @@ export const SRPList = ({
   onActionComplete: (id: string) => void;
   hideShowAccounts?: boolean;
 }) => {
+  const trackEvent = useContext(MetaMetricsContext);
+
   const keyrings: KeyringObjectWithMetadata[] =
     useSelector(getMetaMaskKeyrings);
   const accounts: InternalAccount[] = useSelector(getInternalAccounts);
@@ -92,7 +99,13 @@ export const SRPList = ({
         <Card
           key={`srp-${index + 1}`}
           data-testid={`hd-keyring-${keyring?.metadata.id}`}
-          onClick={() => onActionComplete(keyring?.metadata.id || '')}
+          onClick={() => {
+            trackEvent({
+              category: MetaMetricsEventCategory.Accounts,
+              event: MetaMetricsEventName.SecretRecoveryPhrasePickerSelected,
+            });
+            onActionComplete(keyring?.metadata.id || '');
+          }}
           className="select-srp__container"
           marginBottom={3}
         >
@@ -112,6 +125,11 @@ export const SRPList = ({
                   className="srp-list__show-accounts"
                   onClick={(event: React.MouseEvent) => {
                     event.stopPropagation();
+                    trackEvent({
+                      category: MetaMetricsEventCategory.Accounts,
+                      event:
+                        MetaMetricsEventName.SecretRecoveryPhrasePickerDetailsClicked,
+                    });
                     setShowAccounts({
                       ...showAccounts,
                       [index]: !showAccounts[index],
