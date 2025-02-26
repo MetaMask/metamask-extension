@@ -60,6 +60,16 @@ export const TOKEN_AGGREGATOR_VALIDATORS = [
   },
 ];
 
+export const ASSET_VALIDATORS = [
+  { property: 'decimals', type: 'number' },
+  { property: 'assetId', type: 'string', validator: isValidString },
+  {
+    property: 'symbol',
+    type: 'string',
+    validator: (v: unknown) => isValidString(v) && v.length <= 12,
+  },
+];
+
 export const TOKEN_VALIDATORS = [
   { property: 'decimals', type: 'number' },
   { property: 'address', type: 'string', validator: isValidHexAddress },
@@ -78,7 +88,11 @@ export const QUOTE_RESPONSE_VALIDATORS = [
     type: 'object|undefined',
     validator: (v: unknown) => v === undefined || isValidObject(v),
   },
-  { property: 'trade', type: 'object', validator: isValidObject },
+  {
+    property: 'trade',
+    type: 'string|object',
+    validator: (v: unknown) => isValidObject(v) || isValidString(v),
+  },
 ];
 
 export const QUOTE_VALIDATORS = [
