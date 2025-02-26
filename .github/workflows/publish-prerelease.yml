@@ -55,20 +55,21 @@ jobs:
       - name: Get benchmark job artifacts
         uses: actions/download-artifact@v4
         with:
-          path: ./test-artifacts/
+          path: ./test-artifacts/benchmarks/
           pattern: benchmark-*
           merge-multiple: true
-
-      - run: |
-          echo "Benchmark artifacts:"
-          ls -R ./test-artifacts/
 
       - name: Get CircleCI job artifacts
         env:
           CIRCLE_WORKFLOW_JOB_ID: ${{ steps.get-circleci-job-details.outputs.CIRCLE_WORKFLOW_JOB_ID }}
         run: |
           mkdir -p test-artifacts/chrome
-          curl --silent --location "https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0/test-artifacts/chrome/bundle_size.json" > "test-artifacts/chrome/bundle_size.json"
+          # curl --silent --location "https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0/test-artifacts/chrome/bundle_size.json" > "test-artifacts/chrome/bundle_size.json"
+          curl --location "https://output.circle-artifacts.com/output/job/953e080c-f125-4d7f-b121-4005f3468dd8/artifacts/0/test-artifacts/chrome/bundle_size.json" > "test-artifacts/chrome/bundle_size.json"
+
+      - run: |
+          echo "Benchmark artifacts:"
+          ls -R ./test-artifacts/
 
       - name: Publish prerelease
         env:
@@ -76,7 +77,7 @@ jobs:
           PR_NUMBER: 30480
           HEAD_COMMIT_HASH: ${{ github.sha }}
           MERGE_BASE_COMMIT_HASH: ${{ steps.get-merge-base.outputs.MERGE_BASE }}
-          CIRCLE_BUILD_NUM: ${{ steps.get-circleci-job-details.outputs.CIRCLE_BUILD_NUM }}
-          CIRCLE_WORKFLOW_JOB_ID: ${{ steps.get-circleci-job-details.outputs.CIRCLE_WORKFLOW_JOB_ID }}
+          CIRCLE_BUILD_NUM: 4581146
+          CIRCLE_WORKFLOW_JOB_ID: 971059a8-e363-494b-a334-61fe31993a2c
           HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
         run: ./development/metamaskbot-build-announce.js

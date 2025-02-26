@@ -189,7 +189,7 @@ async function start() {
     for (const buildType of buildTypes) {
       const benchmarkPath = path.resolve(
         __dirname,
-        `../test-artifacts/benchmark/benchmark-${platform}-${buildType}-pageload.json`,
+        `../test-artifacts/benchmarks/benchmark-${platform}-${buildType}-pageload.json`,
       );
       console.log(`benchmarkPath`, benchmarkPath);
       try {
@@ -198,7 +198,9 @@ async function start() {
         benchmarkResults[platform][buildType] = benchmark;
       } catch (error) {
         if (error.code === 'ENOENT') {
-          console.log(`No benchmark data found for ${platform}; skipping`);
+          console.log(
+            `No benchmark data found for ${platform}-${buildType}; skipping`,
+          );
         } else {
           console.error(
             `Error encountered processing benchmark data for '${platform}': '${error}'`,
@@ -260,7 +262,10 @@ async function start() {
       const tableRows = [];
       for (const platform of allPlatforms) {
         const pageRows = [];
-        for (const buildType of allBuildTypes) {
+
+        // Can't use allBuildTypes here because we skip firefox-webpack
+        const buildTypesInPlatform = Object.keys(benchmarkResults[platform]);
+        for (const buildType of buildTypesInPlatform) {
           for (const page of allPages) {
             const metricRows = [];
             for (const metric of allMetrics) {
@@ -327,6 +332,9 @@ async function start() {
         method: 'GET',
       })
     ).json();
+
+    console.log('prBundleSizeStats', prBundleSizeStats);
+    console.log('devBundleSizeStats', devBundleSizeStats);
 
     const prSizes = {
       background: prBundleSizeStats.background.size,

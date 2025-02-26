@@ -4,8 +4,8 @@ on:
 env:
   COMMANDS: |
     {
-      pageload: 'SELENIUM_BROWSER={0} yarn tsx test/e2e/benchmark.mjs --out test-artifacts/benchmarks/{0}-{1}-pageload.json --retries 2',
-      userActions: 'SELENIUM_BROWSER={0} yarn tsx test/e2e/user-actions-benchmark.js --out test-artifacts/benchmarks/{0}-{1}-userActions.json --retries 2',
+      pageload: 'SELENIUM_BROWSER={0} yarn tsx test/e2e/benchmark.mjs --out test-artifacts/benchmarks/benchmark-{0}-{1}-pageload.json --retries 2',
+      userActions: 'SELENIUM_BROWSER={0} yarn tsx test/e2e/user-actions-benchmark.js --out test-artifacts/benchmarks/benchmark-{0}-{1}-userActions.json --retries 2',
     }
 
 jobs:
