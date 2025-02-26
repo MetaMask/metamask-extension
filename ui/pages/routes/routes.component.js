@@ -280,6 +280,8 @@ export default class Routes extends Component {
             exact
           />
           <Authenticated
+            // `:keyringId` is optional here, if not provided, this will fallback
+            // to the main seed phrase.
             path={`${REVEAL_SEED_ROUTE}/:keyringId?`}
             component={RevealSeedConfirmation}
           />

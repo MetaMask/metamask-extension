@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box } from '../../../../components/component-library';
-import SRPQuiz from '../../../../components/app/srp-quiz-modal/SRPQuiz';
+import SRPQuiz as SRPQuizModal from '../../../../components/app/srp-quiz-modal/SRPQuiz';
 import { SRPList } from '../../../../components/multichain/multi-srp/srp-list/srp-list';
 
 export const RevealSRPList = () => {
@@ -17,7 +17,7 @@ export const RevealSRPList = () => {
         hideShowAccounts={true}
       />
       {srpQuizModalVisible && selectedKeyringId && (
-        <SRPQuiz
+        <SRPQuizModal
           keyringId={selectedKeyringId}
           isOpen={srpQuizModalVisible}
           onClose={() => setSrpQuizModalVisible(false)}

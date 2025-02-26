@@ -7,6 +7,7 @@ import { toPrecisionWithoutTrailingZeros } from '../../../shared/lib/transaction
 import { MinPermissionAbstractionDisplayCount } from '../../../shared/constants/permissions';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import * as util from './util';
+import { KeyringTypes } from '@metamask/keyring-controller';
 
 describe('util', () => {
   let ethInWei = '1';
@@ -1301,8 +1302,8 @@ describe('util', () => {
 
   describe('isAbleToRevealSrp', () => {
     const mockHDKeyring = {
-      id: 'hd-keyring-id',
-      type: 'HD Key Tree',
+      accounts: [],
+      type: KeyringTypes.hd,
       metadata: {
         id: '01JKDQSHNJH3EP2N4MPR0S5RQS',
         name: '',
@@ -1310,8 +1311,8 @@ describe('util', () => {
     };
 
     const mockSnapKeyring = {
-      id: 'snap-keyring-id',
-      type: 'Snap Keyring',
+      accounts: [],
+      type: KeyringTypes.snap,
       metadata: {
         id: '01JKDQSPB36DENHN7HWF8XED78',
         name: '',
@@ -1319,8 +1320,8 @@ describe('util', () => {
     };
 
     const mockLedgerKeyring = {
-      id: 'ledger-keyring-id',
-      type: 'Ledger Hardware',
+      accounts: [],
+      type: KeyringTypes.ledger,
       metadata: {
         id: '01JKDQSWKN9AHG8DKX29QE3PGA',
         name: '',
@@ -1333,13 +1334,13 @@ describe('util', () => {
       expect(util.isAbleToRevealSrp(hdAccount, [mockHDKeyring])).toBe(true);
     });
 
-    it.skip('should return true for Snap accounts derived from HD keyring', () => {
+    it('should return true for Snap accounts derived from HD keyring', () => {
       const snapAccount = {
-        type: 'Snap',
         address: '0x123',
         metadata: {
           keyring: {
-            id: 'hd-keyring-id',
+            id: mockHDKeyring.metadata.id,
+            type: KeyringTypes.snap,
           },
         },
       };
@@ -1351,11 +1352,11 @@ describe('util', () => {
 
     it('should return false for Snap accounts not derived from HD keyring', () => {
       const snapAccount = {
-        type: 'Snap',
         address: '0x123',
         metadata: {
           keyring: {
             id: 'some-other-id',
+            type: KeyringTypes.snap,
           },
         },
       };
@@ -1371,7 +1372,7 @@ describe('util', () => {
         address: '0x123',
         metadata: {
           keyring: {
-            id: 'ledger-keyring-id',
+            id: mockLedgerKeyring.metadata.id,
           },
         },
       };

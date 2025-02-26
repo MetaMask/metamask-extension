@@ -717,23 +717,23 @@ export const isAbleToExportAccount = (keyringType = '') => {
 };
 
 export const isAbleToRevealSrp = (accountToExport, keyrings) => {
-  if (
-    accountToExport.metadata.keyring.type !== KeyringTypes.hd &&
-    accountToExport.metadata.keyring.type !== KeyringTypes.snap
-  ) {
+  const { type, id: keyringId } = accountToExport.metadata.keyring;
+  if (type !== KeyringTypes.hd && type !== KeyringTypes.snap) {
     return false;
   }
+  console.log(111);
 
   // All hd keyrings can reveal their srp.
-  if (accountToExport.metadata.keyring.type === KeyringTypes.hd) {
+  if (type === KeyringTypes.hd) {
     return true;
   }
+  console.log(222);
 
-  // For snap accounts we must check if the entropy source was from a HD keyring.
-  const keyringId = accountToExport.metadata.keyring.id;
+  // TODO: For snap accounts we must check if the entropy source was from a HD keyring (SIP-30).
+  console.log('keyrings', keyrings);
   const hdKeyringsIds = keyrings
     .filter((keyring) => keyring.type === KeyringTypes.hd)
-    .map((keyring) => keyring.id);
+    .map((keyring) => keyring.metadata.id);
   return hdKeyringsIds.includes(keyringId);
 };
 

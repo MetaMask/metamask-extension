@@ -2882,7 +2882,7 @@ export function getShouldShowSeedPhraseReminder(state) {
   const { tokens, seedPhraseBackedUp, dismissSeedBackUpReminder, isUnlocked } =
     state.metamask;
 
-  const primaryKeyring = getMetaMaskKeyrings(state)[0];
+  const [primaryKeyring] = getMetaMaskHdKeyrings(state);
 
   if (!isUnlocked || !primaryKeyring) {
     return false;

@@ -31,7 +31,7 @@ import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/se
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import {
-  getMetaMaskKeyrings,
+  getMetaMaskHdKeyrings,
   getSelectedInternalAccount,
 } from '../../../selectors';
 ///: END:ONLY_INCLUDE_IF
@@ -63,10 +63,7 @@ const mapStateToProps = (state) => {
   const networkConfigurations = getNetworkConfigurationsByChainId(state);
 
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  const hasMultipleHDKeyrings =
-    getMetaMaskKeyrings(state).filter(
-      (keyring) => keyring.type === 'HD Key Tree',
-    ).length > 1;
+  const hasMultipleHDKeyrings = getMetaMaskHdKeyrings(state).length > 1;
   ///: END:ONLY_INCLUDE_IF
 
   return {

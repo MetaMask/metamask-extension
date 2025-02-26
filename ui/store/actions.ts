@@ -69,6 +69,7 @@ import {
   getInternalAccountByAddress,
   getSelectedInternalAccount,
   getMetaMaskKeyrings,
+  getMetaMaskHdKeyrings,
 } from '../selectors';
 import {
   getSelectedNetworkClientId,
@@ -261,7 +262,7 @@ export function importMnemonicToVault(
   };
 }
 
-export function generateNewHdKeyring(): ThunkAction<
+export function generateNewMnemonicAndAddToVault(): ThunkAction<
   void,
   MetaMaskReduxState,
   unknown,
@@ -528,7 +529,7 @@ export function addNewAccount(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.addNewAccount`);
   return async (dispatch, getState) => {
-    const keyrings = getMetaMaskKeyrings(getState());
+    const keyrings = getMetaMaskHdKeyrings(getState());
     const [defaultPrimaryKeyring] = keyrings;
     let oldAccounts = defaultPrimaryKeyring.accounts;
 

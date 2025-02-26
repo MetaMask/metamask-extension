@@ -194,26 +194,24 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
         </ModalContent>
       </Modal>
       {/* This is the Modal that says "Hold to reveal private key" */}
-      {
-        <HoldToRevealModal
-          isOpen={showHoldToReveal}
-          onClose={() => {
-            trackEvent({
-              category: MetaMetricsEventCategory.Keys,
-              event: MetaMetricsEventName.KeyExportCanceled,
-              properties: {
-                key_type: MetaMetricsEventKeyType.Pkey,
-              },
-            });
-            setPrivateKey('');
-            setShowHoldToReveal(false);
-          }}
-          onLongPressed={() => {
-            setShowHoldToReveal(false);
-          }}
-          holdToRevealType="PrivateKey"
-        />
-      }
+      <HoldToRevealModal
+        isOpen={showHoldToReveal}
+        onClose={() => {
+          trackEvent({
+            category: MetaMetricsEventCategory.Keys,
+            event: MetaMetricsEventName.KeyExportCanceled,
+            properties: {
+              key_type: MetaMetricsEventKeyType.Pkey,
+            },
+          });
+          setPrivateKey('');
+          setShowHoldToReveal(false);
+        }}
+        onLongPressed={() => {
+          setShowHoldToReveal(false);
+        }}
+        holdToRevealType="PrivateKey"
+      />
       {
         ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
         displayExportSRPQuiz && (

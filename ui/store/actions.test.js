@@ -2730,7 +2730,7 @@ describe('Actions', () => {
     });
   });
 
-  describe('generateNewHdKeyring', () => {
+  describe('generateNewMnemonicAndAddToVault', () => {
     it('calls generateNewMnemonicAndAddToVault in the background', async () => {
       const store = mockStore();
       const generateNewMnemonicAndAddToVaultStub = sinon
@@ -2747,7 +2747,7 @@ describe('Actions', () => {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      await store.dispatch(actions.generateNewHdKeyring());
+      await store.dispatch(actions.generateNewMnemonicAndAddToVault());
 
       expect(store.getActions()).toStrictEqual(expectedActions);
       expect(generateNewMnemonicAndAddToVaultStub.calledOnceWith()).toBe(true);

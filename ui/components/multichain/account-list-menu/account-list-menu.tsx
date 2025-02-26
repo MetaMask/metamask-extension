@@ -347,8 +347,10 @@ export const AccountListMenu = ({
   if (actionMode !== ACTION_MODES.LIST) {
     if (actionMode === ACTION_MODES.MENU) {
       onBack = () => setActionMode(ACTION_MODES.LIST);
+      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
     } else if (actionMode === ACTION_MODES.SELECT_SRP) {
       onBack = () => setActionMode(ACTION_MODES.ADD);
+      ///: END:ONLY_INCLUDE_IF
     } else {
       onBack = () => setActionMode(ACTION_MODES.MENU);
     }
