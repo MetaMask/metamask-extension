@@ -173,8 +173,6 @@ function TransactionListItemInner({
     isEarliestNonce,
   );
 
-  console.log('shouldShowSpeedUp ************', shouldShowSpeedUp);
-
   const {
     title,
     category,

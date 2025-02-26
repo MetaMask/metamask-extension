@@ -6216,9 +6216,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< HEAD
 "@metamask/snaps-controllers@npm:^10.0.0":
   version: 10.0.0
   resolution: "@metamask/snaps-controllers@npm:10.0.0"
+=======
+"@metamask/smart-transactions-controller@patch:@metamask/smart-transactions-controller@npm%3A16.0.1#~/.yarn/patches/@metamask-smart-transactions-controller-npm-16.0.1-7aa4f8249a.patch::version=16.0.1&hash=9f5e30":
+  version: 16.0.1
+  resolution: "@metamask/smart-transactions-controller@patch:@metamask/smart-transactions-controller@npm%3A16.0.1#~/.yarn/patches/@metamask-smart-transactions-controller-npm-16.0.1-7aa4f8249a.patch::version=16.0.1&hash=9f5e30"
+>>>>>>> 7fcea151d1 (fix: update patch)
   dependencies:
     "@metamask/approval-controller": "npm:^7.1.3"
     "@metamask/base-controller": "npm:^8.0.0"
