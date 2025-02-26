@@ -11,6 +11,10 @@ import { CaipChainId, Hex, KnownCaipNamespace } from '@metamask/utils';
 import { createSelector } from 'reselect';
 import { NetworkType } from '@metamask/controller-utils';
 import { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
+import {
+  NetworkConfiguration,
+  RpcEndpointType,
+} from '@metamask/network-controller';
 import { Numeric } from '../../shared/modules/Numeric';
 import {
   MultichainProviderConfig,
@@ -41,7 +45,11 @@ import {
 } from '../../shared/modules/selectors/networks';
 // eslint-disable-next-line import/no-restricted-paths
 import { getConversionRatesForNativeAsset } from '../../app/scripts/lib/util';
-import { AccountsState, getSelectedInternalAccount } from './accounts';
+import {
+  AccountsState,
+  getInternalAccounts,
+  getSelectedInternalAccount,
+} from './accounts';
 import {
   getIsMainnet,
   getMaybeSelectedInternalAccount,
@@ -447,7 +455,7 @@ function getNonEvmCachedBalance(
   return balanceOfAsset?.amount ?? 0;
 }
 
-export function getImageForChainId(chainId: string) {
+export function getImageForChainId(chainId: string): string | undefined {
   return {
     ...CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
     ...MULTICHAIN_TOKEN_IMAGE_MAP,
@@ -488,4 +496,35 @@ export function getMultichainConversionRate(
   return getMultichainIsEvm(state, account)
     ? getConversionRate(state)
     : conversionRate;
+}
+
+// TODO get this from the multichain network controller
+export const getMultichainNetworkConfigurationsByChainId = (
+  state: MultichainState,
+): Record<Hex | CaipChainId, NetworkConfiguration> => {
+  return {
+    ...getNetworkConfigurationsByChainId(state),
+    [MultichainNetworks.SOLANA]: {
+      ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
+      blockExplorerUrls: [],
+      name:
+        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA].nickname ?? '',
+      nativeCurrency: 'sol',
+      rpcEndpoints: [
+        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
+      ],
+      defaultRpcEndpointIndex: 0,
+      chainId: MultichainNetworks.SOLANA as unknown as Hex,
+    },
+  };
+};
+
+export function getLastSelectedNonEvmAccount(state: MultichainState) {
+  const nonEvmAccounts = getInternalAccounts(state);
+  const sortedNonEvmAccounts = nonEvmAccounts
+    .filter((account) => !isEvmAccountType(account.type))
+    .sort(
+      (a, b) => (b.metadata.lastSelected ?? 0) - (a.metadata.lastSelected ?? 0),
+    );
+  return sortedNonEvmAccounts.length > 0 ? sortedNonEvmAccounts[0] : undefined;
 }
