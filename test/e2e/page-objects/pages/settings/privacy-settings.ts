@@ -184,6 +184,7 @@ class PrivacySettings {
   }
 
   async openSRPList(): Promise<void> {
+    await this.driver.delay(1000);
     await this.driver.clickElement(this.revealSrpButton);
   }
 
@@ -191,7 +192,6 @@ class PrivacySettings {
     console.log('Open reveal SRP quiz on privacy settings page');
 
     if (srpIndex) {
-      await this.driver.delay(1000);
       await this.openSRPList();
       // We only pass in the srpIndex when there are multiple SRPs
       const srpSelector = {

@@ -333,9 +333,6 @@ class AccountListPage {
     // Run if there are multiple srps
     if (accountType === ACCOUNT_TYPE.Ethereum && srpIndex) {
       const srpName = `Secret Phrase ${srpIndex.toString()}`;
-      await this.driver.clickElement(
-        '[data-testid="select-srp-Secret Phrase 1"]',
-      );
       await this.driver.clickElement({
         text: srpName,
       });
@@ -753,6 +750,7 @@ class AccountListPage {
   async startExportSRPForAccount(accountLabel: string): Promise<void> {
     console.log(`Exporting SRP for account ${accountLabel}`);
     await this.openAccountDetailsModal(accountLabel);
+    await this.driver.delay(500);
     await this.driver.clickElement(this.exportSRPButton);
   }
 
