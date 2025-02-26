@@ -1,26 +1,153 @@
 import React from 'react';
+import configureMockStore from 'redux-mock-store';
 import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { AggregatedBalance } from './aggregated-balance';
+import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { AggregatedBalance } from './aggregated-balance';
+import { Cryptocurrency } from '@metamask/assets-controllers';
+import { MultichainNativeAssets } from '../../../../shared/constants/multichain/assets';
+import mockState from '../../../../test/data/mock-state.json';
+import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts';
+import { SolAccountType, SolMethod, SolScope } from '@metamask/keyring-api';
+import { mockMultichainNetworkState } from '../../../../test/stub/networks';
 
+const mockDispatch = jest.fn().mockReturnValue(() => jest.fn());
 jest.mock('react-redux', () => ({
-  useSelector: jest.fn(),
+  ...jest.requireActual('react-redux'),
+  useDispatch: () => mockDispatch,
 }));
 
-const mockState = {};
+const mockNonEvmBalance = '1';
+
+const mockNonEvmAccount = {
+  address: 'DtMUkCoeyzs35B6EpQQxPyyog6TRwXxV1W1Acp8nWBNa',
+  id: '542490c8-d178-433b-9f31-f680b11f45a5',
+  metadata: {
+    name: 'Solana Account',
+    keyring: {
+      type: 'Snap Keyring',
+    },
+    snap: {
+      id: SOLANA_WALLET_SNAP_ID,
+      name: 'sol-snap-name',
+    },
+  },
+  options: {},
+  methods: [SolMethod.SendAndConfirmTransaction],
+  type: SolAccountType.DataAccount,
+};
+
+const mockMetamaskStore = {
+  ...mockState.metamask,
+  ...mockMultichainNetworkState(),
+  completedOnboarding: true,
+  selectedMultichainNetworkChainId: SolScope.Mainnet,
+  isEvmSelected: false,
+  internalAccounts: {
+    selectedAccount: mockNonEvmAccount.id,
+    accounts: {
+      [mockNonEvmAccount.id]: mockNonEvmAccount,
+    },
+  },
+  preferences: {
+    showNativeTokenAsMainBalance: false,
+    tokenNetworkFilter: {},
+    privacyMode: false,
+  },
+  accountsAssets: {
+    [mockNonEvmAccount.id]: [MultichainNativeAssets.SOLANA],
+  },
+  balances: {
+    [mockNonEvmAccount.id]: {
+      [MultichainNativeAssets.SOLANA]: {
+        amount: mockNonEvmBalance,
+        unit: 'SOL',
+      },
+    },
+  },
+  fiatCurrency: 'usd',
+  conversionRates: {
+    [MultichainNativeAssets.SOLANA]: {
+      rate: '1.000',
+      conversionDate: 0,
+    },
+  },
+  cryptocurrencies: [Cryptocurrency.Solana],
+};
+
+function getStore(state?: Record<string, unknown>) {
+  return configureMockStore([thunk])({
+    metamask: mockMetamaskStore,
+    localeMessages: {
+      currentLocale: 'en',
+    },
+    ...state,
+  });
+}
 
 describe('AggregatedBalance Component', () => {
-  it.skip('renders Spinner when balances are missing', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+  it('renders Spinner when balances are missing', () => {
+    const testStore = getStore({
+      metamask: {
+        ...mockMetamaskStore,
+        accountsAssets: {
+          [mockNonEvmAccount.id]: [],
+        },
+      },
+    });
     const { container } = renderWithProvider(
       <AggregatedBalance
         classPrefix="test"
         balanceIsCached={false}
         handleSensitiveToggle={jest.fn()}
       />,
-      mockState, // Ensure mockStore is correctly defined
+      testStore,
     );
 
-    expect(screen.getByTestId('spinner')).toBeInTheDocument();
+    const spinner = container.querySelector('.spinner');
+    expect(spinner).toBeInTheDocument();
+  });
+
+  it('renders fiat balance when showNativeTokenAsMainBalance is false', () => {
+    renderWithProvider(
+      <AggregatedBalance
+        classPrefix="test"
+        balanceIsCached={false}
+        handleSensitiveToggle={jest.fn()}
+      />,
+      getStore(),
+    );
+
+    expect(screen.getByTestId('account-value-and-suffix')).toHaveTextContent(
+      '$1.00',
+    );
+    expect(screen.getByText('USD')).toBeInTheDocument();
+  });
+
+  it('renders token balance when showNativeTokenAsMainBalance is true, up to 5 decimal places with no trailing zero', () => {
+    renderWithProvider(
+      <AggregatedBalance
+        classPrefix="test"
+        balanceIsCached={false}
+        handleSensitiveToggle={jest.fn()}
+      />,
+      getStore({
+        metamask: {
+          ...mockMetamaskStore,
+          preferences: {
+            showNativeTokenAsMainBalance: true,
+          },
+        },
+      }),
+    );
+
+    expect(screen.getByTestId('account-value-and-suffix')).toHaveTextContent(
+      '1',
+    );
+    expect(screen.getByText('SOL')).toBeInTheDocument();
   });
 });
