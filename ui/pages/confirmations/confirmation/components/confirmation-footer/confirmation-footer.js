@@ -2,10 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import {
-  Button as ButtonComponent,
+  Button,
+  ButtonSize,
+  ButtonVariant,
   IconName,
 } from '../../../../../components/component-library';
-import Button from '../../../../../components/ui/button';
 import { useAlertContext } from '../../alerts/alerts-context';
 
 export default function ConfirmationFooter({
@@ -30,15 +31,18 @@ export default function ConfirmationFooter({
         <div className="confirmation-footer__actions" style={actionsStyle}>
           {onCancel ? (
             <Button
+              block
               data-testid="confirmation-cancel-button"
-              type="secondary"
+              variant={ButtonVariant.Secondary}
               onClick={onCancel}
+              size={ButtonSize.Lg}
             >
               {cancelText}
             </Button>
           ) : null}
           {onSubmit && submitText ? (
-            <ButtonComponent
+            <Button
+              block
               data-testid="confirmation-submit-button"
               disabled={Boolean(loading)}
               onClick={hasAlerts ? showAlertsModal : onSubmit}
@@ -46,9 +50,10 @@ export default function ConfirmationFooter({
                 centered: !onCancel,
               })}
               startIconName={hasAlerts ? IconName.Info : undefined}
+              size={ButtonSize.Lg}
             >
               {loading ? loadingText : submitText}
-            </ButtonComponent>
+            </Button>
           ) : null}
         </div>
       )}
