@@ -38,7 +38,7 @@ class AccountListPage {
   };
 
   private readonly addSolanaAccountButton = {
-    text: messages.addNewSolanaAccount.message,
+    text: messages.addNewSolanaAccountLabel.message,
     tag: 'button',
   };
 

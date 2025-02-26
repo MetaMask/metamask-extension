@@ -92,8 +92,8 @@ const mapStateToProps = (state) => {
     metaMetricsDataDeletionId: getMetaMetricsDataDeletionId(state),
     ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
     selectedAccount: getSelectedInternalAccount(state),
-    ///: END:ONLY_INCLUDE_IF
     hasMultipleHDKeyrings,
+    ///: END:ONLY_INCLUDE_IF
   };
 };
 
