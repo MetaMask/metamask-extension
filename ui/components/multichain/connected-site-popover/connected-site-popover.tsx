@@ -55,6 +55,8 @@ export const ConnectedSitePopover = forwardRef<
       onClickOutside={onClose}
       offset={[0, 0]}
       data-testid="connected-site-popover"
+      paddingLeft={0}
+      paddingRight={0}
     >
       <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
         <Box
