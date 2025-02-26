@@ -25,7 +25,6 @@ import {
   BridgeFlag,
   type FeatureFlagResponse,
   type FeeData,
-  FeeType,
   type Quote,
   type QuoteResponse,
   type TxData,
@@ -33,6 +32,7 @@ import {
   type BridgeFeatureFlags,
   type GenericQuoteRequest,
   type TokenV3Asset,
+  FeeType,
 } from '../../types/bridge';
 import {
   formatAddressToString,
@@ -174,6 +174,9 @@ export async function fetchBridgeQuotes(
 ): Promise<QuoteResponse[]> {
   const normalizedRequest = {
     walletAddress: formatAddressToString(request.walletAddress),
+    destWalletAddress: formatAddressToString(
+      request.destWalletAddress ?? request.walletAddress,
+    ),
     srcChainId: formatChainIdToDec(request.srcChainId).toString(),
     destChainId: formatChainIdToDec(request.destChainId).toString(),
     srcTokenAddress: formatAddressToString(request.srcTokenAddress),
@@ -207,7 +210,8 @@ export async function fetchBridgeQuotes(
       validateResponse<Quote>(QUOTE_VALIDATORS, quote, url) &&
       validateResponse<BridgeAsset>(TOKEN_VALIDATORS, quote.srcAsset, url) &&
       validateResponse<BridgeAsset>(TOKEN_VALIDATORS, quote.destAsset, url) &&
-      validateResponse<TxData>(TX_DATA_VALIDATORS, trade, url) &&
+      (typeof trade === 'string' ||
+        validateResponse<TxData>(TX_DATA_VALIDATORS, trade, url)) &&
       validateResponse<FeeData>(
         FEE_DATA_VALIDATORS,
         quote.feeData[FeeType.METABRIDGE],
