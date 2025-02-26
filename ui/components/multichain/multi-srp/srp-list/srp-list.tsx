@@ -8,8 +8,6 @@ import {
   Icon,
   Text,
   IconSize,
-  AvatarAccount,
-  AvatarAccountSize,
 } from '../../../component-library';
 import {
   JustifyContent,
@@ -24,11 +22,8 @@ import {
   getMetaMaskAccounts,
   getMetaMaskHdKeyrings,
 } from '../../../../selectors/selectors';
-import UserPreferencedCurrencyDisplay from '../../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
-import { shortenAddress } from '../../../../helpers/utils/util';
-import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
-import { getMultichainConversionRate } from '../../../../selectors/multichain';
 import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
+import { SRPListItem } from './srp-list-item';
 
 type KeyringObjectWithMetadata = KeyringObject & { metadata: KeyringMetadata };
 
@@ -45,8 +40,6 @@ export const SRPList = ({
   // This selector will return accounts with nonEVM balances as well.
   const accountsWithBalances: Record<string, InternalAccountWithBalance> =
     useSelector(getMetaMaskAccounts);
-
-  const conversionRate = useMultichainSelector(getMultichainConversionRate);
 
   const showAccountsInitState = useMemo(
     () =>
@@ -114,52 +107,7 @@ export const SRPList = ({
               />
               {keyring.accounts.map((address: string) => {
                 const account = accountsWithBalances[address];
-                return (
-                  <Box
-                    key={address}
-                    display={Display.Flex}
-                    flexDirection={FlexDirection.Row}
-                    alignItems={AlignItems.center}
-                    justifyContent={JustifyContent.spaceBetween}
-                  >
-                    <Box
-                      display={Display.Flex}
-                      flexDirection={FlexDirection.Row}
-                      alignItems={AlignItems.center}
-                    >
-                      <AvatarAccount
-                        address={address}
-                        size={AvatarAccountSize.Xs}
-                      />
-                      <Text
-                        className="srp-list__account-name"
-                        variant={TextVariant.bodySm}
-                        paddingLeft={3}
-                      >
-                        {account.metadata.name}
-                      </Text>
-                      <Text
-                        variant={TextVariant.bodySm}
-                        color={TextColor.textAlternative}
-                        marginLeft={1}
-                      >
-                        {shortenAddress(address)}
-                      </Text>
-                    </Box>
-                    <Text variant={TextVariant.bodySm}>
-                      <UserPreferencedCurrencyDisplay
-                        account={account}
-                        value={account.balance}
-                        type="PRIMARY"
-                        ethNumberOfDecimals={4}
-                        hideTitle
-                        showFiat
-                        isAggregatedFiatOverviewBalance
-                        hideLabel
-                      />
-                    </Text>
-                  </Box>
-                );
+                return <SRPListItem account={account} />;
               })}
             </Box>
           )}
