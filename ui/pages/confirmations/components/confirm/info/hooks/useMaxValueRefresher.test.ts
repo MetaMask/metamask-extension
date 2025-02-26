@@ -157,7 +157,33 @@ describe('useMaxValueRefresher', () => {
       expect(updateEditableParamsMock).toHaveBeenCalledWith(
         simpleSendTransactionMetaMock.id,
         {
-          value: '0xf1',
+          value: '0x110',
+        },
+      );
+    });
+
+    it('if userFeeLevel is one of GasFeeEstimateLevel', () => {
+      useConfirmContextMock.mockReturnValue({
+        currentConfirmation: {
+          ...simpleSendTransactionMetaMock,
+          txParams: {
+            maxFeePerGas: '0x020',
+            gas: '0x001',
+          },
+          gasFeeEstimates: {
+            low: {
+              maxFeePerGas: '0x010',
+            },
+          },
+        },
+      } as unknown as ReturnType<typeof useConfirmContext>);
+
+      renderHook(() => useMaxValueRefresher());
+
+      expect(updateEditableParamsMock).toHaveBeenCalledWith(
+        simpleSendTransactionMetaMock.id,
+        {
+          value: '0x111',
         },
       );
     });

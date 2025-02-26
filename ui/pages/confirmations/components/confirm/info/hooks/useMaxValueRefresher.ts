@@ -1,9 +1,12 @@
 import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  GasFeeEstimateLevel,
   TransactionType,
+  UserFeeLevel,
   type TransactionMeta,
   type FeeMarketGasFeeEstimates,
+  type GasFeeEstimates,
   type GasPriceGasFeeEstimates,
   type LegacyGasFeeEstimates,
 } from '@metamask/transaction-controller';
@@ -23,25 +26,6 @@ import { useConfirmContext } from '../../../../context/confirm';
 import { HEX_ZERO } from '../shared/constants';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 import { useSupportsEIP1559 } from './useSupportsEIP1559';
-
-function getMaxFeePerGas(transactionMeta: TransactionMeta): Hex {
-  const isCustomEstimateUsed = transactionMeta.estimateUsed;
-
-  // Temporarily medium estimate is used - this will be adjusted depending on the failed transaction metrics later
-  const { gasFeeEstimates } = transactionMeta;
-  // TODO: Remove this once transactionMeta.txParams.maxFeePerGas is updated properly if no custom estimation is used
-  let maxFeePerGas =
-    (gasFeeEstimates as FeeMarketGasFeeEstimates)?.medium?.maxFeePerGas ||
-    (gasFeeEstimates as LegacyGasFeeEstimates)?.medium ||
-    (gasFeeEstimates as GasPriceGasFeeEstimates)?.gasPrice;
-
-  if (isCustomEstimateUsed) {
-    // If custom estimation is used, the maxFeePerGas is updated in the transactionMeta.txParams.maxFeePerGas
-    maxFeePerGas = transactionMeta.txParams.maxFeePerGas as Hex;
-  }
-
-  return maxFeePerGas;
-}
 
 // This hook is used to refresh the max value of the transaction
 // when the user is in max amount mode only for the transaction type simpleSend
@@ -95,3 +79,44 @@ export const useMaxValueRefresher = () => {
     );
   }, [isMaxAmountMode, balance, maxFee]);
 };
+
+function getMaxFeePerGas(transactionMeta: TransactionMeta): Hex {
+  const { gasFeeEstimates, userFeeLevel } = transactionMeta;
+
+  // Temporarily medium estimate is used - this will be adjusted depending on the failed transaction metrics later
+  let maxFeePerGas = getMaxFeePerGasFromGasFeeEstimates(
+    gasFeeEstimates as GasFeeEstimates,
+    GasFeeEstimateLevel.Medium,
+  );
+
+  // If custom estimation is used, the maxFeePerGas is updated in the transactionMeta.txParams.maxFeePerGas
+  if (userFeeLevel === UserFeeLevel.CUSTOM) {
+    maxFeePerGas = transactionMeta.txParams.maxFeePerGas as Hex;
+  }
+
+  // TODO: Remove this once transactionMeta.txParams.maxFeePerGas is updated properly with
+  // given userFeeLevel then use transactionMeta.txParams.maxFeePerGas
+  // https://github.com/MetaMask/MetaMask-planning/issues/4287
+  if (
+    Object.values(GasFeeEstimateLevel).includes(
+      userFeeLevel as GasFeeEstimateLevel,
+    )
+  ) {
+    maxFeePerGas = getMaxFeePerGasFromGasFeeEstimates(
+      gasFeeEstimates as GasFeeEstimates,
+      userFeeLevel as GasFeeEstimateLevel,
+    );
+  }
+
+  return maxFeePerGas;
+}
+
+function getMaxFeePerGasFromGasFeeEstimates(
+  gasFeeEstimates: GasFeeEstimates,
+  userFeeLevel: GasFeeEstimateLevel,
+): Hex {
+  return ((gasFeeEstimates as FeeMarketGasFeeEstimates)?.[userFeeLevel]
+    ?.maxFeePerGas ||
+    (gasFeeEstimates as LegacyGasFeeEstimates)?.[userFeeLevel] ||
+    (gasFeeEstimates as GasPriceGasFeeEstimates)?.gasPrice) as Hex;
+}
