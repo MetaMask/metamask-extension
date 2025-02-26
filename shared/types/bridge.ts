@@ -9,6 +9,8 @@ import type { BigNumber } from 'bignumber.js';
 export type ChainConfiguration = {
   isActiveSrc: boolean;
   isActiveDest: boolean;
+  refreshRate?: number;
+  topAssets?: string[];
 };
 
 export type L1GasFees = {
@@ -219,4 +221,11 @@ export type BridgeState = {
 
 export type BridgeControllerState = {
   bridgeState: BridgeState;
+};
+
+export type TokenV3Asset = {
+  assetId: string;
+  symbol: string;
+  name: string;
+  decimals: number;
 };
