@@ -43,6 +43,8 @@ class SendTokenPage {
   private readonly warning =
     '[data-testid="send-warning"] .mm-box--min-width-0 span';
 
+  private readonly maxAmountButton = '[data-testid="max-clear-button"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -136,6 +138,10 @@ class SendTokenPage {
       `Fill recipient input with ${recipientAddress} on send token screen`,
     );
     await this.driver.pasteIntoField(this.inputRecipient, recipientAddress);
+  }
+
+  async clickMaxAmountButton(): Promise<void> {
+    await this.driver.clickElement(this.maxAmountButton);
   }
 
   async goToNextScreen(): Promise<void> {
