@@ -1,9 +1,10 @@
 import React, { forwardRef, useContext, RefObject } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
+  ButtonLink,
   ButtonSecondary,
   IconName,
   Popover,
@@ -17,19 +18,20 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
-import { getOriginOfCurrentTab } from '../../../selectors';
+import { getCurrentNetwork, getOriginOfCurrentTab } from '../../../selectors';
 import { getURLHost } from '../../../helpers/utils/util';
 import {
   getImageForChainId,
   getMultichainCurrentNetwork,
 } from '../../../selectors/multichain';
+import { toggleNetworkMenu } from '../../../store/actions';
 
 type ConnectedSitePopoverProps = {
   isOpen: boolean;
   isConnected: boolean;
   onClick: () => void;
   onClose: () => void;
-  // referenceElement?: RefObject<HTMLElement>;
+  referenceElement?: RefObject<HTMLElement>;
 };
 
 export const ConnectedSitePopover = forwardRef<
@@ -42,16 +44,13 @@ export const ConnectedSitePopover = forwardRef<
   // TODO: Replace it with networkClient Selector
   // const activeDomain = useSelector(getAllDomains);
   // const networkClientId = activeDomain?.[activeTabOrigin];
-  const currentNetwork = useSelector(getMultichainCurrentNetwork);
+  const currentNetwork = useSelector(getCurrentNetwork);
+  const dispatch = useDispatch();
 
   return (
     <Popover
-      referenceElement={referenceElement.current}
+      referenceElement={referenceElement?.current}
       isOpen={isOpen}
-      position={PopoverPosition.Bottom}
-      flip
-      paddingLeft={0}
-      paddingRight={0}
       style={{ width: '256px' }}
       onClickOutside={onClose}
       offset={[0, 0]}
@@ -73,11 +72,8 @@ export const ConnectedSitePopover = forwardRef<
               display={Display.Flex}
               flexDirection={FlexDirection.Row}
               alignItems={AlignItems.center}
-              gap={2}
+              gap={1}
             >
-              <Text variant={TextVariant.bodyMd}>
-                {currentNetwork?.nickname}
-              </Text>
               <AvatarNetwork
                 size={AvatarNetworkSize.Xs}
                 name={currentNetwork?.nickname || ''}
@@ -87,6 +83,9 @@ export const ConnectedSitePopover = forwardRef<
                     : undefined
                 }
               />
+              <ButtonLink onClick={() => dispatch(toggleNetworkMenu())}>
+                {currentNetwork?.nickname}
+              </ButtonLink>
             </Box>
           ) : (
             <Text variant={TextVariant.bodySm}>{t('statusNotConnected')}</Text>
