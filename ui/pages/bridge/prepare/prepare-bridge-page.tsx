@@ -600,6 +600,17 @@ const PrepareBridgePage = () => {
                     ? toChain.rpcEndpoints[toChain.defaultRpcEndpointIndex]
                         .networkClientId
                     : undefined;
+                if (
+                  toChain?.chainId === MultichainNetworks.SOLANA &&
+                  selectedSolanaAccount
+                ) {
+                  dispatch(setSelectedAccount(selectedSolanaAccount.address));
+                  setSelectedDestinationAccount(selectedEvmAccount);
+                } else {
+                  dispatch(setSelectedAccount(selectedEvmAccount.address));
+                  selectedSolanaAccount &&
+                    setSelectedDestinationAccount(selectedSolanaAccount);
+                }
                 toChainClientId && dispatch(setActiveNetwork(toChainClientId));
                 fromChain?.chainId && dispatch(setToChainId(fromChain.chainId));
               }
