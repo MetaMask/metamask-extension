@@ -5,14 +5,13 @@ import {
   Display,
   FlexDirection,
   AlignItems,
-  TextAlign,
   TextVariant,
   JustifyContent,
   BorderRadius,
   BackgroundColor,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { useGasPrices } from '../../../ducks/sample/gas-prices';
+import { useGasPrices } from '../../../ducks/metamask/sample-gas-prices-duck';
 import { useAsyncResult } from '../../../hooks/useAsyncResult';
 
 export function SampleGasPrices() {

@@ -24,8 +24,7 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getCurrentNetwork } from '../../selectors';
 import { SampleCounter } from './components/sample-counter';
-import { SampleGasPrices } from './components/sample-gas-prices';
-import { PetNameForm } from './components/pet-name-form';
+import { SamplePetNames } from './components/sample-pet-names';
 
 export function SamplePage() {
   const t = useI18nContext();
@@ -77,8 +76,8 @@ export function SamplePage() {
         </Box>
 
         <SampleCounter />
-        <SampleGasPrices />
-        <PetNameForm />
+        {/* <SampleGasPrices /> */}
+        <SamplePetNames />
       </Content>
     </Page>
   );
