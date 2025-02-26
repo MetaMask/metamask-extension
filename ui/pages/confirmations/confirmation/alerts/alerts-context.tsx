@@ -26,7 +26,7 @@ export const AlertContext = createContext<AlertContextType | undefined>(
 
 export const AlertContextProvider: React.FC<{
   children: ReactElement;
-  pendingConfirmation: ApprovalRequest<{}>;
+  pendingConfirmation: ApprovalRequest<{id: string}>;
   onCancel: () => void;
   onSubmit: () => void;
 }> = ({ children, pendingConfirmation, onCancel, onSubmit }) => {
