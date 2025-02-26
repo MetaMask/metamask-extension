@@ -996,9 +996,6 @@
   "seedPhraseIntroTitle": {
     "message": "保護您的錢包"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "在開始之前，觀賞這段短片來了解何謂助憶詞，以及如何保持您錢包的安全。"
-  },
   "seedPhraseReq": {
     "message": "助憶詞為 12, 15, 18, 21 或 24 個單字"
   },
