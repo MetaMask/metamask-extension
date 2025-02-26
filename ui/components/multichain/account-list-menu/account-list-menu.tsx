@@ -73,7 +73,6 @@ import {
   getDefaultHomeActiveTabName,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   getIsSolanaSupportEnabled,
-  getMetaMaskKeyrings,
   getMetaMaskHdKeyrings,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';

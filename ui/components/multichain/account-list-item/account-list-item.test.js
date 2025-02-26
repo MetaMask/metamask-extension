@@ -12,7 +12,6 @@ import {
   CHAIN_IDS,
 } from '../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { AccountListItem, AccountListItemMenuTypes } from '.';
 
 const mockAccount = {

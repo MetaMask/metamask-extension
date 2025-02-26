@@ -47,15 +47,13 @@ import {
 import { AddressCopyButton } from '../address-copy-button';
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import SRPQuiz from '../../app/srp-quiz-modal';
-///: END:ONLY_INCLUDE_IF
-import { AccountDetailsAuthenticate } from './account-details-authenticate';
-import { AccountDetailsDisplay } from './account-details-display';
-import { AccountDetailsKey } from './account-details-key';
-import { AttemptExportState } from '../../../../shared/accounts';
-///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import { findKeyringId } from '../../../../shared/constants/keyring';
 import { isAbleToRevealSrp } from '../../../helpers/utils/util';
 ///: END:ONLY_INCLUDE_IF
+import { AttemptExportState } from '../../../../shared/accounts';
+import { AccountDetailsAuthenticate } from './account-details-authenticate';
+import { AccountDetailsDisplay } from './account-details-display';
+import { AccountDetailsKey } from './account-details-key';
 
 type AccountDetailsProps = { address: string };
 
@@ -194,7 +192,6 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
       </Modal>
       {/* This is the Modal that says "Hold to reveal private key" */}
       {
-        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
         <HoldToRevealModal
           isOpen={showHoldToReveal}
           onClose={() => {
@@ -213,7 +210,6 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
           }}
           holdToRevealType="PrivateKey"
         />
-        ///: END:ONLY_INCLUDE_IF
       }
       {
         ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
