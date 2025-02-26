@@ -1,12 +1,7 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { ChainId } from '@metamask/controller-utils';
-import {
-  type CaipChainId,
-  isStrictHexString,
-  type Hex,
-  isCaipChainId,
-} from '@metamask/utils';
+import { type CaipChainId, isStrictHexString, type Hex } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
 import {
   getAllDetectedTokensForSelectedAddress,
@@ -88,11 +83,7 @@ export const useTokensWithFiltering = (
 
       return await fetchBridgeTokens(chainId);
     }
-    if (
-      chainId &&
-      formatChainIdToCaip(chainId) === MultichainNetworks.SOLANA &&
-      isCaipChainId(chainId)
-    ) {
+    if (chainId && formatChainIdToCaip(chainId) === MultichainNetworks.SOLANA) {
       return await fetchNonEvmTokens(chainId);
     }
     return {};
