@@ -1,8 +1,8 @@
 import {
-  GasPricesController as SampleGasPricesController,
-  GasPricesControllerMessenger as SampleGasPricesControllerMessenger,
-  GasPricesControllerState as SampleGasPricesControllerState,
-  GasPricesService as SampleGasPricesService,
+  SampleGasPricesController,
+  SampleGasPricesControllerMessenger,
+  SampleGasPricesControllerState,
+  SampleGasPricesService,
 } from '../../controllers/sample';
 import { ControllerInitFunction } from '../types';
 

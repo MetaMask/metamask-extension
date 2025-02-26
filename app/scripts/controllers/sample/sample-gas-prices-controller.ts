@@ -7,17 +7,17 @@ import type {
 import { BaseController } from '@metamask/base-controller';
 import type { Hex } from '@metamask/utils';
 
-import type { AbstractGasPricesService } from './gas-prices-service/abstract-gas-prices-service';
 import type { NetworkControllerGetStateAction } from './network-controller-types';
+import type { AbstractGasPricesService } from './sample-gas-prices-service';
 
 // === GENERAL ===
 
 /**
- * The name of the {@link GasPricesController}, used to namespace the
+ * The name of the {@link SampleGasPricesController}, used to namespace the
  * controller's actions and events and to namespace the controller's state data
  * when composed with other controllers.
  */
-export const controllerName = 'GasPricesController';
+export const controllerName = 'SampleGasPricesController';
 
 // === STATE ===
 
@@ -44,9 +44,9 @@ type GasPrices = {
 };
 
 /**
- * Describes the shape of the state object for {@link GasPricesController}.
+ * Describes the shape of the state object for {@link SampleGasPricesController}.
  */
-export type GasPricesControllerState = {
+export type SampleGasPricesControllerState = {
   /**
    * The registry of pet names, categorized by chain ID first and address
    * second.
@@ -57,87 +57,89 @@ export type GasPricesControllerState = {
 };
 
 /**
- * The metadata for each property in {@link GasPricesControllerState}.
+ * The metadata for each property in {@link SampleGasPricesControllerState}.
  */
 const gasPricesControllerMetadata = {
   gasPricesByChainId: {
     persist: true,
     anonymous: false,
   },
-} satisfies StateMetadata<GasPricesControllerState>;
+} satisfies StateMetadata<SampleGasPricesControllerState>;
 
 // === MESSENGER ===
 
 /**
  * The action which can be used to retrieve the state of the
- * {@link GasPricesController}.
+ * {@link SampleGasPricesController}.
  */
-export type GasPricesControllerGetStateAction = ControllerGetStateAction<
+export type SampleGasPricesControllerGetStateAction = ControllerGetStateAction<
   typeof controllerName,
-  GasPricesControllerState
+  SampleGasPricesControllerState
 >;
 
 /**
  * The action which can be used to update gas prices.
  */
-export type GasPricesControllerUpdateGasPricesAction = {
+export type SampleGasPricesControllerUpdateGasPricesAction = {
   type: `${typeof controllerName}:updateGasPrices`;
-  handler: GasPricesController['updateGasPrices'];
+  handler: SampleGasPricesController['updateGasPrices'];
 };
 
 /**
- * All actions that {@link GasPricesController} registers, to be called
+ * All actions that {@link SampleGasPricesController} registers, to be called
  * externally.
  */
-export type GasPricesControllerActions =
-  | GasPricesControllerGetStateAction
-  | GasPricesControllerUpdateGasPricesAction;
+export type SampleGasPricesControllerActions =
+  | SampleGasPricesControllerGetStateAction
+  | SampleGasPricesControllerUpdateGasPricesAction;
 
 /**
- * All actions that {@link GasPricesController} calls internally.
+ * All actions that {@link SampleGasPricesController} calls internally.
  */
 type AllowedActions = NetworkControllerGetStateAction;
 
 /**
- * The event that {@link GasPricesController} publishes when updating state.
+ * The event that {@link SampleGasPricesController} publishes when updating state.
  */
-export type GasPricesControllerStateChangeEvent = ControllerStateChangeEvent<
-  typeof controllerName,
-  GasPricesControllerState
->;
+export type SampleGasPricesControllerStateChangeEvent =
+  ControllerStateChangeEvent<
+    typeof controllerName,
+    SampleGasPricesControllerState
+  >;
 
 /**
- * All events that {@link GasPricesController} publishes, to be subscribed to
+ * All events that {@link SampleGasPricesController} publishes, to be subscribed to
  * externally.
  */
-export type GasPricesControllerEvents = GasPricesControllerStateChangeEvent;
+export type SampleGasPricesControllerEvents =
+  SampleGasPricesControllerStateChangeEvent;
 
 /**
- * All events that {@link GasPricesController} subscribes to internally.
+ * All events that {@link SampleGasPricesController} subscribes to internally.
  */
 type AllowedEvents = never;
 
 /**
  * The messenger which is restricted to actions and events accessed by
- * {@link GasPricesController}.
+ * {@link SampleGasPricesController}.
  */
-export type GasPricesControllerMessenger = RestrictedMessenger<
+export type SampleGasPricesControllerMessenger = RestrictedMessenger<
   typeof controllerName,
-  GasPricesControllerActions | NetworkControllerGetStateAction,
-  GasPricesControllerEvents,
-  NetworkControllerGetStateAction['type'],
-  string
+  SampleGasPricesControllerActions | AllowedActions,
+  SampleGasPricesControllerEvents | AllowedEvents,
+  AllowedActions['type'],
+  AllowedEvents['type']
 >;
 
 /**
- * Constructs the default {@link GasPricesController} state. This allows
+ * Constructs the default {@link SampleGasPricesController} state. This allows
  * consumers to provide a partial state object when initializing the controller
  * and also helps in constructing complete state objects for this controller in
  * tests.
  *
- * @returns The default {@link GasPricesController} state.
+ * @returns The default {@link SampleGasPricesController} state.
  */
-export function getDefaultGasPricesControllerState(): GasPricesControllerState {
+export function getDefaultSampleGasPricesControllerState(): SampleGasPricesControllerState {
   return {
     gasPricesByChainId: {},
   };
@@ -146,34 +148,34 @@ export function getDefaultGasPricesControllerState(): GasPricesControllerState {
 // === CONTROLLER DEFINITION ===
 
 /**
- * `GasPricesController` fetches and persists gas prices for various chains.
+ * `SampleGasPricesController` fetches and persists gas prices for various chains.
  *
  * @example
  *
  * ``` ts
  * import { Messenger } from '@metamask/base-controller';
  * import {
- *   GasPricesController,
- *   GasPricesService
+ *   SampleGasPricesController,
+ *   SampleGasPricesService
  * } from '@metamask/example-controllers';
  * import type {
- *   GasPricesControllerActions,
- *   GasPricesControllerEvents
+ *   SampleGasPricesControllerActions,
+ *   SampleGasPricesControllerEvents
  * } from '@metamask/example-controllers';
  * import type { NetworkControllerGetStateAction } from '@metamask/network-controller';
  *
  * // Assuming that you're using this in the browser
- * const gasPricesService = new GasPricesService({ fetch });
+ * const gasPricesService = new SampleGasPricesService({ fetch });
  * const rootMessenger = new Messenger<
- *  GasPricesControllerActions | NetworkControllerGetStateAction,
- *  GasPricesControllerEvents
+ *  SampleGasPricesControllerActions | NetworkControllerGetStateAction,
+ *  SampleGasPricesControllerEvents
  * >();
  * const gasPricesMessenger = rootMessenger.getRestricted({
- *   name: 'GasPricesController',
+ *   name: 'SampleGasPricesController',
  *   allowedActions: ['NetworkController:getState'],
  *   allowedEvents: [],
  * });
- * const gasPricesController = new GasPricesController({
+ * const gasPricesController = new SampleGasPricesController({
  *   messenger: gasPricesMessenger,
  *   gasPricesService,
  * });
@@ -185,10 +187,10 @@ export function getDefaultGasPricesControllerState(): GasPricesControllerState {
  * // => { '0x42': { low: 5, average: 10, high: 15, fetchedDate: '2024-01-02T00:00:00.000Z' } }
  * ```
  */
-export class GasPricesController extends BaseController<
+export class SampleGasPricesController extends BaseController<
   typeof controllerName,
-  GasPricesControllerState,
-  GasPricesControllerMessenger
+  SampleGasPricesControllerState,
+  SampleGasPricesControllerMessenger
 > {
   /**
    * The service object that is used to obtain gas prices.
@@ -196,7 +198,7 @@ export class GasPricesController extends BaseController<
   readonly #gasPricesService: AbstractGasPricesService;
 
   /**
-   * Constructs a new {@link GasPricesController}.
+   * Constructs a new {@link SampleGasPricesController}.
    *
    * @param args - The arguments to the controller.
    * @param args.messenger - The messenger suited for this controller.
@@ -210,8 +212,8 @@ export class GasPricesController extends BaseController<
     state,
     gasPricesService,
   }: {
-    messenger: GasPricesControllerMessenger;
-    state?: Partial<GasPricesControllerState>;
+    messenger: SampleGasPricesControllerMessenger;
+    state?: Partial<SampleGasPricesControllerState>;
     gasPricesService: AbstractGasPricesService;
   }) {
     super({
@@ -219,7 +221,7 @@ export class GasPricesController extends BaseController<
       metadata: gasPricesControllerMetadata,
       name: controllerName,
       state: {
-        ...getDefaultGasPricesControllerState(),
+        ...getDefaultSampleGasPricesControllerState(),
         ...state,
       },
     });

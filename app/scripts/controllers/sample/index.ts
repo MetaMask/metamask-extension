@@ -1,25 +1,25 @@
 export type {
-  GasPricesControllerActions,
-  GasPricesControllerEvents,
-  GasPricesControllerGetStateAction,
-  GasPricesControllerMessenger,
-  GasPricesControllerState,
-  GasPricesControllerStateChangeEvent,
-} from './gas-prices-controller';
+  SampleGasPricesControllerActions,
+  SampleGasPricesControllerEvents,
+  SampleGasPricesControllerGetStateAction,
+  SampleGasPricesControllerMessenger,
+  SampleGasPricesControllerState,
+  SampleGasPricesControllerStateChangeEvent,
+} from './sample-gas-prices-controller';
 export {
-  getDefaultGasPricesControllerState,
-  GasPricesController,
-} from './gas-prices-controller';
+  getDefaultSampleGasPricesControllerState,
+  SampleGasPricesController,
+} from './sample-gas-prices-controller';
 export type {
-  PetNamesControllerActions,
-  PetNamesControllerEvents,
-  PetNamesControllerGetStateAction,
-  PetNamesControllerMessenger,
-  PetNamesControllerState,
-  PetNamesControllerStateChangeEvent,
-} from './pet-names-controller';
+  SamplePetnamesControllerActions,
+  SamplePetnamesControllerEvents,
+  SamplePetnamesControllerGetStateAction,
+  SamplePetnamesControllerMessenger,
+  SamplePetnamesControllerState,
+  SamplePetnamesControllerStateChangeEvent,
+} from './sample-petnames-controller';
+export { SamplePetnamesController } from './sample-petnames-controller';
 export {
-  getDefaultPetNamesControllerState,
-  PetNamesController,
-} from './pet-names-controller';
-export { GasPricesService } from './gas-prices-service/gas-prices-service';
+  SampleGasPricesService,
+  type AbstractGasPricesService,
+} from './sample-gas-prices-service';
