@@ -33,6 +33,7 @@ import {
   Display,
   FlexDirection,
   FontWeight,
+  IconColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import Jazzicon from '../../../ui/jazzicon';
@@ -125,11 +126,11 @@ export const SnapUIAddressInput: FunctionComponent<
           alignItems={AlignItems.center}
           borderWidth={1}
           borderRadius={BorderRadius.SM}
-          borderColor={BorderColor.borderDefault}
+          borderColor={BorderColor.borderMuted}
           paddingLeft={4}
           paddingRight={4}
           gap={2}
-          style={{ height: '56px' }}
+          style={{ height: '48px' }}
         >
           <Jazzicon address={value} diameter={24} />
           <Box flexDirection={FlexDirection.Column} gap={2}>
@@ -138,7 +139,12 @@ export const SnapUIAddressInput: FunctionComponent<
               {value}
             </Text>
           </Box>
-          <Icon onClick={handleClear} name={IconName.Close} />
+          <Icon
+            onClick={handleClear}
+            name={IconName.Close}
+            color={IconColor.infoDefault}
+            style={{ cursor: 'pointer' }}
+          />
         </Box>
       </Box>
     );
@@ -159,11 +165,17 @@ export const SnapUIAddressInput: FunctionComponent<
       onChange={handleChange}
       label={label}
       error={Boolean(error)}
-      size={FormTextFieldSize.Xl}
-      paddingLeft={2}
+      size={FormTextFieldSize.Lg}
       helpText={error}
       endAccessory={
-        value ? <Icon onClick={handleClear} name={IconName.Close} /> : null
+        value ? (
+          <Icon
+            onClick={handleClear}
+            name={IconName.Close}
+            color={IconColor.infoDefault}
+            style={{ cursor: 'pointer' }}
+          />
+        ) : null
       }
       {...props}
     />

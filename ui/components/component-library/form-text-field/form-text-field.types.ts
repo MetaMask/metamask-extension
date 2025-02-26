@@ -11,7 +11,6 @@ export enum FormTextFieldSize {
   Sm = 'sm',
   Md = 'md',
   Lg = 'lg',
-  Xl = 'xl',
 }
 
 // TODO: Convert to a `type` in a future major version.
