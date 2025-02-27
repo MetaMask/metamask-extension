@@ -4456,10 +4456,6 @@
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
   },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "Secret Phrase $1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
-  },
   "secureWallet": {
     "message": "Secure wallet"
   },
