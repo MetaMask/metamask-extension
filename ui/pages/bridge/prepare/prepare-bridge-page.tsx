@@ -95,7 +95,10 @@ import {
 } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
-import { BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE } from '../../../../shared/constants/bridge';
+import {
+  BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
+  SOLANA_USDC_ASSET,
+} from '../../../../shared/constants/bridge';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
@@ -465,6 +468,14 @@ const PrepareBridgePage = () => {
         break;
     }
   }, [fromChain, fromToken, fromTokens, search, isFromTokensLoading]);
+
+  // Set the default destination token for the swap
+  useEffect(() => {
+    if (isSwap && fromChain && !toToken) {
+      dispatch(setToChainId(fromChain.chainId));
+      dispatch(setToToken(SOLANA_USDC_ASSET));
+    }
+  }, []);
 
   const isSolanaBridgeEnabled = useSelector(isBridgeSolanaEnabled);
 
