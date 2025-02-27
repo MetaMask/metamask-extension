@@ -89,8 +89,19 @@ function TransactionListItemInner({
   const dispatch = useDispatch();
 
   // Bridge transactions
+  const initialTx = transactionGroup.initialTransaction;
   const isBridgeTx =
-    transactionGroup.initialTransaction.type === TransactionType.bridge;
+    initialTx.type === TransactionType.bridge || 
+    // Check for the isBridgeTx flag we added for Solana transactions
+    initialTx.isBridgeTx === true ||
+    // Also check for the explicit isSolana flag that we set in handleSolanaTx
+    initialTx.isSolana === true;
+    
+  // Log for debugging
+  if (initialTx.isSolana) {
+    console.log('Found Solana transaction with isSolana flag:', initialTx);
+  }
+    
   const { bridgeTxHistoryItem, isBridgeComplete, showBridgeTxDetails } =
     useBridgeTxHistoryData({
       transactionGroup,
