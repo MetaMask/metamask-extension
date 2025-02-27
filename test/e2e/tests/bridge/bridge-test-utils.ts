@@ -1,10 +1,6 @@
 import { Mockttp } from 'mockttp';
 import FixtureBuilder from '../../fixture-builder';
-import {
-  BRIDGE_CLIENT_ID,
-  BRIDGE_DEV_API_BASE_URL,
-  BRIDGE_PROD_API_BASE_URL,
-} from '../../../../shared/constants/bridge';
+import { BRIDGE_CLIENT_ID } from '../../../../shared/constants/bridge';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Driver } from '../../webdriver/driver';
@@ -114,6 +110,90 @@ const mockServer =
       });
     return Promise.all([...featureFlagMocks, portfolioMock]);
   };
+async function mockFeatureFlag(
+  mockServer: Mockttp,
+  featureFlagOverrides: Partial<FeatureFlagResponse>,
+) {
+  return await mockServer
+    .forGet(/getAllFeatureFlags/)
+    .withHeaders({ 'X-Client-Id': BRIDGE_CLIENT_ID })
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          ...DEFAULT_FEATURE_FLAGS_RESPONSE,
+          ...featureFlagOverrides,
+          'extension-config': {
+            ...DEFAULT_FEATURE_FLAGS_RESPONSE['extension-config'],
+            ...featureFlagOverrides['extension-config'],
+          },
+        },
+      };
+    });
+}
+
+async function mockGetTxStatus(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(/getTxStatus/)
+    .always()
+    .thenCallback(async (req) => {
+      const urlObj = new URL(req.url);
+      const txHash = urlObj.searchParams.get('srcTxHash');
+      const srcChainId = urlObj.searchParams.get('srcChainId');
+      const destChainId = urlObj.searchParams.get('destChainId');
+      return {
+        statusCode: 200,
+        json: {
+          status: 'COMPLETE',
+          isExpectedToken: true,
+          bridge: 'across',
+          srcChain: {
+            chainId: srcChainId,
+            txHash,
+          },
+          destChain: {
+            chainId: destChainId,
+            txHash:
+              '0x7fadf05d079e457257564ee44c302968853a16c39a49428576d8ba1ca18127b7',
+          },
+        },
+      };
+    });
+}
+
+const GET_FEES_RESPONSE = {
+  blockNumber: 20728974,
+  id: '19d4eea3-8a49-463e-9e9c-099f9d9571ca',
+  txs: [
+    {
+      cancelFees: [],
+      return: '0x',
+      status: 1,
+      gasUsed: 190780,
+      gasLimit: 239420,
+      fees: [
+        {
+          maxFeePerGas: 4667609171,
+          maxPriorityFeePerGas: 1000000004,
+          gas: 239420,
+          balanceNeeded: 1217518987960240,
+          currentBalance: 751982303082919400,
+          error: '',
+        },
+      ],
+      feeEstimate: 627603309182220,
+      baseFeePerGas: 2289670348,
+      maxFeeEstimate: 1117518987720820,
+    },
+  ],
+};
+
+async function mockGetFees(mockServer: Mockttp) {
+  return await mockServer
+    .forPost('https://transaction.api.cx.metamask.io/networks/1/getFees')
+    .thenJson(200, GET_FEES_RESPONSE);
+}
 
 export const getBridgeFixtures = (
   title?: string,
@@ -137,13 +217,12 @@ export const getBridgeFixtures = (
       disableGanache: true,
     },
     fixtures: fixtureBuilder.build(),
-    testSpecificMock: mockServer(featureFlags),
+    testSpecificMock: async (mockServer: Mockttp) => [
+      await mockFeatureFlag(mockServer, featureFlags),
+      await mockGetTxStatus(mockServer),
+    ],
     smartContract: SMART_CONTRACTS.HST,
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
-    localNodeOptions: {
-      hardfork: 'london',
-      chain: { chainId: CHAIN_IDS.MAINNET },
-    },
     title,
   };
 };
