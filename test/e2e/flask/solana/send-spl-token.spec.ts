@@ -7,8 +7,7 @@ import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import { commonSolanaAddress, withSolanaAccountSnap } from './common-solana';
 
 const splTokenName = 'PKIN';
-describe.skip('Send flow', function (this: Suite) {
-  // skipped due to https://consensyssoftware.atlassian.net/browse/SOL-172
+describe('Send flow', function (this: Suite) {
   it('user with more than 1 token in the token list', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
