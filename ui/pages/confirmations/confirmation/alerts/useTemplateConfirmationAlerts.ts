@@ -1,16 +1,19 @@
-import { useEffect, useMemo } from 'react';
+import { ApprovalRequest } from '@metamask/approval-controller';
 import { useDispatch } from 'react-redux';
+import { useEffect, useMemo } from 'react';
+
 import {
   Alert,
   clearAlerts,
   updateAlerts,
 } from '../../../../ducks/confirm-alerts/confirm-alerts';
-// import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useAddEthereumChainAlerts } from './useAddEthereumChainAlerts';
 
-export const useTemplateConfirmationAlerts = (alertOwnerId: string) => {
+export const useTemplateConfirmationAlerts = (pendingConfirmation: ApprovalRequest<{ id: string }>) => {
   const dispatch = useDispatch();
-  // const t = useI18nContext();
-  const alerts: Alert[] = useMemo(() => [], []);
+  const addEthereumChainAlerts = useAddEthereumChainAlerts(pendingConfirmation);
+  const alerts: Alert[] = useMemo(() => addEthereumChainAlerts, [addEthereumChainAlerts]);
+  const alertOwnerId = pendingConfirmation?.id;
 
   useEffect(() => {
     dispatch(updateAlerts(alertOwnerId, alerts));

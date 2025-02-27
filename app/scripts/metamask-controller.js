@@ -353,7 +353,7 @@ import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
 import BridgeStatusController from './controllers/bridge-status/bridge-status-controller';
 import { BRIDGE_STATUS_CONTROLLER_NAME } from './controllers/bridge-status/constants';
-import { rejectAllApprovals } from './lib/approval/utils';
+import { rejectAllApprovals, rejectOriginApprovals } from './lib/approval/utils';
 import {
   handleBridgeTransactionComplete,
   handleBridgeTransactionFailed,
@@ -4144,6 +4144,20 @@ export default class MetamaskController extends EventEmitter {
     };
   }
 
+  rejectOriginPendingApprovals(origin) {
+    const deleteInterface = (id) =>
+      this.controllerMessenger.call(
+        'SnapInterfaceController:deleteInterface',
+        id,
+      );
+
+    rejectOriginApprovals({
+      approvalController: this.approvalController,
+      deleteInterface,
+      origin,
+    });
+  }
+
   async exportAccount(address, password) {
     await this.verifyPassword(password);
     return this.keyringController.exportAccount(password, address);
@@ -6069,18 +6083,20 @@ export default class MetamaskController extends EventEmitter {
     engine.push(createSelectedNetworkMiddleware(this.controllerMessenger));
 
     // Add a middleware that will switch chain on each request (as needed)
-    const requestQueueMiddleware = createQueuedRequestMiddleware({
-      enqueueRequest: this.queuedRequestController.enqueueRequest.bind(
-        this.queuedRequestController,
-      ),
-      shouldEnqueueRequest: (request) => {
-        return methodsThatShouldBeEnqueued.includes(request.method);
-      },
-      // This will be removed once we can actually remove useRequestQueue state
-      // i.e. unrevert https://github.com/MetaMask/core/pull/5065
-      useRequestQueue: () => true,
-    });
-    engine.push(requestQueueMiddleware);
+    if (!process.env.EVM_MULTICHAIN_ENABLED) {
+      const requestQueueMiddleware = createQueuedRequestMiddleware({
+        enqueueRequest: this.queuedRequestController.enqueueRequest.bind(
+          this.queuedRequestController,
+        ),
+        shouldEnqueueRequest: (request) => {
+          return methodsThatShouldBeEnqueued.includes(request.method);
+        },
+        // This will be removed once we can actually remove useRequestQueue state
+        // i.e. unrevert https://github.com/MetaMask/core/pull/5065
+        useRequestQueue: () => true,
+      });
+      engine.push(requestQueueMiddleware);
+    }
 
     // If the origin is not in the selectedNetworkController's `domains` state
     // when the provider engine is created, the selectedNetworkController will
@@ -6337,6 +6353,8 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController,
           origin,
         ),
+        rejectApprovalRequestsForOrigin: () =>
+          this.rejectOriginPendingApprovals(origin),
 
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         handleMmiAuthenticate:

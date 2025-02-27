@@ -34,6 +34,8 @@ export type MultipleAlertModalProps = {
   showCloseIcon?: boolean;
   /** Whether to skip the unconfirmed alerts validation and close the modal directly. */
   skipAlertNavigation?: boolean;
+  /** If true the modal will display non-field alerts also. */
+  displayAllAlerts?: boolean;
 };
 
 function PreviousButton({
@@ -151,10 +153,12 @@ export function MultipleAlertModal({
   ownerId,
   showCloseIcon = true,
   skipAlertNavigation = false,
+  displayAllAlerts = false,
 }: MultipleAlertModalProps) {
-  const { isAlertConfirmed, fieldAlerts: alerts } = useAlerts(ownerId);
+  const { isAlertConfirmed, fieldAlerts, alerts } = useAlerts(ownerId);
+  const alertsToDisplay = displayAllAlerts ? alerts : fieldAlerts;
 
-  const initialAlertIndex = alerts.findIndex(
+  const initialAlertIndex = alertsToDisplay.findIndex(
     (alert: Alert) => alert.key === alertKey,
   );
 
@@ -163,7 +167,7 @@ export function MultipleAlertModal({
   );
 
   // If the selected alert is not found, default to the first alert
-  const selectedAlert = alerts[selectedIndex] ?? alerts[0];
+  const selectedAlert = alertsToDisplay[selectedIndex] ?? alertsToDisplay[0];
 
   const hasUnconfirmedAlerts = alerts.some(
     (alert: Alert) =>
@@ -186,7 +190,7 @@ export function MultipleAlertModal({
       return;
     }
 
-    if (selectedIndex + 1 === alerts.length) {
+    if (selectedIndex + 1 === alertsToDisplay.length) {
       if (!hasUnconfirmedAlerts) {
         onFinalAcknowledgeClick();
         return;
@@ -200,7 +204,7 @@ export function MultipleAlertModal({
     onFinalAcknowledgeClick,
     handleNextButtonClick,
     selectedIndex,
-    alerts.length,
+    alertsToDisplay.length,
     hasUnconfirmedAlerts,
     skipAlertNavigation,
   ]);
@@ -213,7 +217,7 @@ export function MultipleAlertModal({
       onClose={onClose}
       headerStartAccessory={
         <PageNavigation
-          alerts={alerts}
+          alerts={alertsToDisplay}
           onBackButtonClick={handleBackButtonClick}
           onNextButtonClick={handleNextButtonClick}
           selectedIndex={selectedIndex}

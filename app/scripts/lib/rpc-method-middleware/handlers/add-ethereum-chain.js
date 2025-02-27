@@ -22,6 +22,7 @@ const addEthereumChain = {
     getCaveat: true,
     requestPermittedChainsPermissionForOrigin: true,
     requestPermittedChainsPermissionIncrementalForOrigin: true,
+    rejectApprovalRequestsForOrigin: true,
   },
 };
 
@@ -42,6 +43,7 @@ async function addEthereumChainHandler(
     getCaveat,
     requestPermittedChainsPermissionForOrigin,
     requestPermittedChainsPermissionIncrementalForOrigin,
+    rejectApprovalRequestsForOrigin,
   },
 ) {
   let validParams;
@@ -191,5 +193,6 @@ async function addEthereumChainHandler(
     getCaveat,
     requestPermittedChainsPermissionForOrigin,
     requestPermittedChainsPermissionIncrementalForOrigin,
+    rejectApprovalRequestsForOrigin,
   });
 }
