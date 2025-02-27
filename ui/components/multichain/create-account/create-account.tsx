@@ -47,7 +47,13 @@ type Props = {
   /**
    * Callback to get the next available account name.
    */
-  getNextAvailableAccountName: (accounts: InternalAccount[]) => Promise<string>;
+  getNextAvailableAccountName: ({
+    accounts,
+    entropySource,
+  }: {
+    accounts: InternalAccount[];
+    entropySource?: string;
+  }) => Promise<string>;
 
   /**
    * Callback to create the account.
@@ -65,6 +71,7 @@ type Props = {
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   onSelectSRP?: () => void;
   selectedKeyringId?: string;
+  chainId?: string;
   ///: END:ONLY_INCLUDE_IF
 };
 
@@ -84,6 +91,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
         ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
         onSelectSRP,
         selectedKeyringId,
+        chainId,
         ///: END:ONLY_INCLUDE_IF
         onActionComplete,
       }: CreateAccountProps<C>,
@@ -104,7 +112,15 @@ export const CreateAccount: CreateAccountComponent = React.memo(
       // We are not using `accounts` as a dependency here to avoid having the input
       // updating when the new account will be created.
       useEffect(() => {
-        getNextAvailableAccountName(accounts).then(setDefaultAccountName);
+        getNextAvailableAccountName({
+          accounts,
+          ...(selectedKeyringId && {
+            entropySource: selectedKeyringId,
+            chainId,
+          }),
+        }).then((name) => {
+          setDefaultAccountName(name);
+        });
       }, []);
 
       const [newAccountName, setNewAccountName] = useState('');
