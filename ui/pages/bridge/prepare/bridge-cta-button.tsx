@@ -13,8 +13,8 @@ import {
   getToToken,
   getBridgeQuotes,
   getValidationErrors,
-  getBridgeQuotesConfig,
   getWasTxDeclined,
+  getQuoteRefreshRate,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
@@ -56,7 +56,7 @@ export const BridgeCTAButton = ({
 
   const { isLoading, activeQuote, isQuoteGoingToRefresh, quotesLastFetchedMs } =
     useSelector(getBridgeQuotes);
-  const { refreshRate } = useSelector(getBridgeQuotesConfig);
+  const refreshRate = useSelector(getQuoteRefreshRate);
   const isQuoteExpired = isQuoteExpiredUtil(
     isQuoteGoingToRefresh,
     refreshRate,
