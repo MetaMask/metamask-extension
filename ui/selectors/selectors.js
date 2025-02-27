@@ -525,7 +525,7 @@ export function getNumberOfTokens(state) {
 export function getMetaMaskKeyrings(state) {
   return state.metamask.keyrings.map((keyring, index) => ({
     ...keyring,
-    metadata: state.metamask.keyringsMetadata?.[index] || {},
+    metadata: state.metamask.keyringsMetadata?.[index] ?? {},
   }));
 }
 
@@ -536,11 +536,9 @@ export const getMetaMaskHdKeyrings = createSelector(
   },
 );
 
-///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 export function getMetaMaskKeyringsMetadata(state) {
   return state.metamask.keyringsMetadata;
 }
-///: END:ONLY_INCLUDE_IF
 
 /**
  * Get account balances state.
