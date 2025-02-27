@@ -8,7 +8,6 @@ The below diagram outlines our process for design, development, and release. Bui
 
 <img width="664" alt="mm-dev-process" src="https://user-images.githubusercontent.com/1016190/56308059-36906000-60fb-11e9-8e61-6655bca0c54f.png">
 
-
 ## Preparation
 
 We try to ensure certain criteria are met before deploying:

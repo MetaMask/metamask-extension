@@ -4181,9 +4181,6 @@
   "seedPhraseIntroTitle": {
     "message": "I-secure ang wallet mo"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Bago magsimula, panoorin ang maikling video na ito upang malaman ang tungkol sa iyong Lihim na Parirala sa Pagbawi at paano mapapanatiling ligtas ang wallet mo."
-  },
   "seedPhraseReq": {
     "message": "Ang mga Lihim na Parirala sa Pagbawi ay naglalaman ng 12, 15, 18, 21, o 24 na salita"
   },

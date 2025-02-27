@@ -277,6 +277,9 @@ describe('toast display', () => {
         },
         selectedAccount: selectedAccountId ?? mockAccount.id,
       },
+      accountsAssets: {
+        [selectedAccountId ?? mockAccount.id]: [],
+      },
       subjects: {
         [mockOrigin]: {
           permissions: {

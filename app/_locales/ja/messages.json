@@ -4181,9 +4181,6 @@
   "seedPhraseIntroTitle": {
     "message": "ウォレットの保護"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "始める前に、この短いビデオを見て、シークレットリカバリーフレーズとウォレットを安全に保つ方法について確認してください。"
-  },
   "seedPhraseReq": {
     "message": "シークレットリカバリーフレーズは、12、15、18、21、24語で構成されます"
   },
