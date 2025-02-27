@@ -20,6 +20,8 @@ import {
   nonceSortedPendingTransactionsSelector,
 } from '../../../selectors/transactions';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
+import { Numeric } from '../../../../shared/modules/Numeric';
 import {
   getSelectedAccount,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -588,9 +590,38 @@ export default function TransactionList({
                                 {`${t('to')} ${
                                   transaction.bridgeInfo.destAsset?.symbol
                                 } ${t('on')} ${
+                                  // First try to use MULTICHAIN_PROVIDER_CONFIGS for non-EVM chains
                                   MULTICHAIN_PROVIDER_CONFIGS[
                                     transaction.bridgeInfo.destChainId
                                   ]?.nickname ||
+                                  // For EVM chains, convert decimal chain ID to hex and look up in NETWORK_TO_NAME_MAP
+                                  (() => {
+                                    try {
+                                      // Only attempt conversion if it's a number (EVM chain IDs are typically numbers)
+                                      if (
+                                        !isNaN(
+                                          Number(
+                                            transaction.bridgeInfo.destChainId,
+                                          ),
+                                        )
+                                      ) {
+                                        // Convert decimal to hex string with '0x' prefix
+                                        const hexChainId = new Numeric(
+                                          transaction.bridgeInfo.destChainId,
+                                          10,
+                                        ).toPrefixedHexString();
+
+                                        return (
+                                          NETWORK_TO_NAME_MAP[hexChainId] ||
+                                          null
+                                        );
+                                      }
+                                      return null;
+                                    } catch (e) {
+                                      return null;
+                                    }
+                                  })() ||
+                                  // Fall back to chain ID as last resort
                                   transaction.bridgeInfo.destChainId
                                 }`}
                               </Text>
