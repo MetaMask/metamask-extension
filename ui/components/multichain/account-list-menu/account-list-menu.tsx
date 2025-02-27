@@ -75,7 +75,7 @@ import {
   getDefaultHomeActiveTabName,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   getIsSolanaSupportEnabled,
-  getMetaMaskKeyrings,
+  getMetaMaskHdKeyrings,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
@@ -135,7 +135,7 @@ import {
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import { ImportSrp } from '../multi-srp/import-srp';
-///: END:ONLY_INCLUDE_IF
+import { SRPList } from '../multi-srp/srp-list';
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -156,7 +156,9 @@ const ACTION_MODES = {
   // Displays the import account form controls
   IMPORT: 'import',
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  CREATE_SRP: 'create-srp',
   IMPORT_SRP: 'import-srp',
+  SELECT_SRP: 'select-srp',
   ///: END:ONLY_INCLUDE_IF
 };
 
@@ -185,8 +187,12 @@ export const getActionTitle = (
     case ACTION_MODES.IMPORT:
       return t('importPrivateKey');
     ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+    case ACTION_MODES.CREATE_SRP:
+      return t('createSecretRecoveryPhrase');
     case ACTION_MODES.IMPORT_SRP:
       return t('importSecretRecoveryPhrase');
+    case ACTION_MODES.SELECT_SRP:
+      return t('addAccount');
     ///: END:ONLY_INCLUDE_IF
     default:
       return t('selectAnAccount');
@@ -240,9 +246,6 @@ export const AccountListMenu = ({
   ///: END:ONLY_INCLUDE_IF
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  const [primaryKeyring] = useSelector(getMetaMaskKeyrings);
-  ///: END:ONLY_INCLUDE_IF
   const hiddenAddresses = useSelector(getHiddenAccountsList);
   const updatedAccountsList = useSelector(getUpdatedAndSortedAccounts);
   const filteredUpdatedAccountList = useMemo(
@@ -311,6 +314,13 @@ export const AccountListMenu = ({
     WalletClientType.Solana,
   );
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  const [primaryKeyring] = useSelector(getMetaMaskHdKeyrings);
+  const {
+    metadata: { id: primaryKeyringId },
+  } = primaryKeyring;
+  const [selectedKeyringId, setSelectedKeyringId] = useState(primaryKeyringId);
+  ///: END:ONLY_INCLUDE_IF
 
   let searchResults: MergedInternalAccount[] = filteredUpdatedAccountList;
   if (searchQuery) {
@@ -336,6 +346,10 @@ export const AccountListMenu = ({
   if (actionMode !== ACTION_MODES.LIST) {
     if (actionMode === ACTION_MODES.MENU) {
       onBack = () => setActionMode(ACTION_MODES.LIST);
+      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+    } else if (actionMode === ACTION_MODES.SELECT_SRP) {
+      onBack = () => setActionMode(ACTION_MODES.ADD);
+      ///: END:ONLY_INCLUDE_IF
     } else {
       onBack = () => setActionMode(ACTION_MODES.MENU);
     }
@@ -393,6 +407,10 @@ export const AccountListMenu = ({
                   setActionMode(ACTION_MODES.LIST);
                 }
               }}
+              ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+              selectedKeyringId={selectedKeyringId}
+              onSelectSRP={() => setActionMode(ACTION_MODES.SELECT_SRP)}
+              ///: END:ONLY_INCLUDE_IF(multi-srp)
             />
           </Box>
         ) : null}
@@ -437,6 +455,19 @@ export const AccountListMenu = ({
           )
           ///: END:ONLY_INCLUDE_IF
         }
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+          actionMode === ACTION_MODES.SELECT_SRP && (
+            <SRPList
+              onActionComplete={(keyringId: string) => {
+                setSelectedKeyringId(keyringId);
+                setActionMode(ACTION_MODES.ADD);
+              }}
+            />
+          )
+          ///: END:ONLY_INCLUDE_IF
+        }
+
         {/* Add / Import / Hardware Menu */}
         {actionMode === ACTION_MODES.MENU ? (
           <Box padding={4}>
