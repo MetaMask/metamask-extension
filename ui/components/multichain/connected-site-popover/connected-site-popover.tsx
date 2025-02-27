@@ -8,7 +8,6 @@ import {
   ButtonSecondary,
   IconName,
   Popover,
-  PopoverPosition,
   Text,
 } from '../../component-library';
 import {
@@ -20,10 +19,7 @@ import {
 import { I18nContext } from '../../../contexts/i18n';
 import { getCurrentNetwork, getOriginOfCurrentTab } from '../../../selectors';
 import { getURLHost } from '../../../helpers/utils/util';
-import {
-  getImageForChainId,
-  getMultichainCurrentNetwork,
-} from '../../../selectors/multichain';
+import { getImageForChainId } from '../../../selectors/multichain';
 import { toggleNetworkMenu } from '../../../store/actions';
 
 type ConnectedSitePopoverProps = {
