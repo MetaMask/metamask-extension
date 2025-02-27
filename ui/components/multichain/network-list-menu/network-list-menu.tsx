@@ -342,15 +342,18 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   };
 
   const handleNetworkChange = async (chainId: CaipChainId) => {
-    const { isEvm } = multichainNetworks[chainId];
-    if (isEvm) {
+    const currentChain = multichainNetworks[currentChainId];
+    const chain = multichainNetworks[chainId];
+
+    if (chain.isEvm) {
       handleEvmNetworkChange(chainId);
     } else {
       await handleNonEvmNetworkChange(chainId);
     }
 
-    const chainIdToTrack = isEvm ? convertCaipToHexChainId(chainId) : chainId;
-    const currentChain = multichainNetworks[currentChainId];
+    const chainIdToTrack = chain?.isEvm
+      ? convertCaipToHexChainId(chainId)
+      : chainId;
     const currentChainIdToTrack = currentChain?.isEvm
       ? convertCaipToHexChainId(currentChainId)
       : currentChainId;
