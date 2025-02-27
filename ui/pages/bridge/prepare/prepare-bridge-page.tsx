@@ -38,7 +38,9 @@ import {
   getFromAmountInCurrency,
   getValidationErrors,
   getBridgeQuotesConfig,
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   isBridgeSolanaEnabled,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../ducks/bridge/selectors';
 import {
   BannerAlert,
@@ -177,6 +179,8 @@ const PrepareBridgePage = () => {
   } = useSelector(getValidationErrors);
   const { quotesRefreshCount } = useSelector(getBridgeQuotes);
   const { openBuyCryptoInPdapp } = useRamps();
+
+  console.log(6);
 
   const { balanceAmount: nativeAssetBalance } = useLatestBalance(
     SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
@@ -458,7 +462,10 @@ const PrepareBridgePage = () => {
     }
   }, [fromChain, fromToken, fromTokens, search, isFromTokensLoading]);
 
-  const isSolanaBridgeEnabled = useSelector(isBridgeSolanaEnabled);
+  let isSolanaBridgeEnabled = false;
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+  isSolanaBridgeEnabled = useSelector(isBridgeSolanaEnabled);
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <Column className="prepare-bridge-page" gap={8}>
