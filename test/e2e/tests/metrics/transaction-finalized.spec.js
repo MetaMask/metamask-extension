@@ -145,8 +145,8 @@ describe('Transaction Finalized Event', function () {
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
-      async ({ driver, mockedEndpoint: mockedEndpoints, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+        await logInWithBalanceValidation(driver);
         // TODO: Update Test when Multichain Send Flow is added
         await sendTransaction(driver, RECIPIENT, '2.0');
 
