@@ -614,7 +614,6 @@ export const getWasTxDeclined = (state: BridgeAppState): boolean => {
   return state.bridge.wasTxDeclined;
 };
 
-///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
 /**
  * Checks if Solana is enabled as either a fromChain or toChain for bridging
  */
@@ -632,4 +631,3 @@ export const isBridgeSolanaEnabled = createDeepEqualSelector(
     return Boolean(solanaConfig?.isActiveSrc || solanaConfig?.isActiveDest);
   },
 );
-///: END:ONLY_INCLUDE_IF
