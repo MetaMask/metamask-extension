@@ -1,12 +1,10 @@
 import { Suite } from 'mocha';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
-import { withSolanaAccountSnap } from './common-solana';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
-
+import { withSolanaAccountSnap } from './common-solana';
 
 describe('Multichain Asset List', function (this: Suite) {
-
   const NETWORK_NAME_MAINNET = 'Ethereum Mainnet';
   const LINEA_NAME_MAINNET = 'Linea Mainnet';
   const SOLANA_NAME_MAINNET = 'Solana Mainnet';
