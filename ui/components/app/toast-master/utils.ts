@@ -1,7 +1,9 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import { ReactFragment } from 'react';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   SET_SHOW_NEW_SRP_ADDED_TOAST,
+  ///: END:ONLY_INCLUDE_IF
   SHOW_NFT_DETECTION_ENABLEMENT_TOAST,
 } from '../../../store/actionConstants';
 import { submitRequestToBackground } from '../../../store/background-connection';

@@ -148,6 +148,7 @@ class AccountListPage {
     text: 'Import wallet',
     tag: 'button',
   };
+
   private readonly viewAccountOnExplorerButton = {
     text: 'View on explorer',
     tag: 'p',
