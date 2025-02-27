@@ -180,8 +180,6 @@ const PrepareBridgePage = () => {
   const { quotesRefreshCount } = useSelector(getBridgeQuotes);
   const { openBuyCryptoInPdapp } = useRamps();
 
-  console.log(6);
-
   const { balanceAmount: nativeAssetBalance } = useLatestBalance(
     SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
       fromChain?.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
