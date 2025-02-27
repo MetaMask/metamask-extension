@@ -121,7 +121,7 @@ type AppState = {
   isMultiRpcOnboarding: boolean;
   errorInSettings: string | null;
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  showNewSRPAddedToast: boolean;
+  showNewSrpAddedToast: boolean;
   ///: END:ONLY_INCLUDE_IF
 };
 
@@ -220,7 +220,7 @@ const initialState: AppState = {
   isMultiRpcOnboarding: false,
   errorInSettings: null,
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  showNewSRPAddedToast: false,
+  showNewSrpAddedToast: false,
   ///: END:ONLY_INCLUDE_IF
 };
 
@@ -747,7 +747,7 @@ export default function reduceApp(
     case actionConstants.SET_SHOW_NEW_SRP_ADDED_TOAST:
       return {
         ...appState,
-        showNewSRPAddedToast: action.payload,
+        showNewSrpAddedToast: action.payload,
       };
     ///: END:ONLY_INCLUDE_IF
 

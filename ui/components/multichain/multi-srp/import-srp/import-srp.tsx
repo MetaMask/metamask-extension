@@ -22,7 +22,7 @@ import {
   FlexDirection,
   BorderRadius,
 } from '../../../../helpers/constants/design-system';
-import { setShowNewSRPAddedToast } from '../../../app/toast-master/utils';
+import { setShowNewSrpAddedToast } from '../../../app/toast-master/utils';
 import { parseSecretRecoveryPhrase } from '../../../app/srp-input/parse-secret-recovery-phrase';
 import { clearClipboard } from '../../../../helpers/utils/util';
 
@@ -292,7 +292,7 @@ export const ImportSRP = ({
               setLoading(true);
               await importWallet();
               onActionComplete(true);
-              dispatch(setShowNewSRPAddedToast(true));
+              dispatch(setShowNewSrpAddedToast(true));
             } catch (e) {
               setSrpError(
                 e instanceof Error ? e.message : 'An unknown error occurred',

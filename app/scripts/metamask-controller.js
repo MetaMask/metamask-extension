@@ -4305,6 +4305,7 @@ export default class MetamaskController extends EventEmitter {
   async importMnemonicToVault(mnemonic) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
+      // TODO: `getKeyringsByType` is deprecated, this logic should probably be moved to the `KeyringController`.
       const alreadyImportedSRP = await this.keyringController
         .getKeyringsByType(KeyringTypes.hd)
         .some((keyring) => {

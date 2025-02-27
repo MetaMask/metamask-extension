@@ -67,7 +67,7 @@ import {
   setSurveyLinkLastClickedOrClosed,
   setSwitchedNetworkNeverShowMessage,
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  setShowNewSRPAddedToast,
+  setShowNewSrpAddedToast,
   ///: END:ONLY_INCLUDE_IF
 } from './utils';
 
@@ -346,7 +346,7 @@ function NewSRPAddedToast() {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const showNewSRPAddedToast = useSelector(selectNewSRPAdded);
+  const showNewSrpAddedToast = useSelector(selectNewSRPAdded);
   const autoHideDelay = 5 * SECOND;
 
   // This will close the toast if the user clicks the account menu.
@@ -356,7 +356,7 @@ function NewSRPAddedToast() {
         '[data-testid="account-menu-icon"]',
       );
       if (dismissElement && dismissElement.contains(event.target)) {
-        dispatch(setShowNewSRPAddedToast(false));
+        dispatch(setShowNewSrpAddedToast(false));
       }
     };
 
@@ -367,18 +367,16 @@ function NewSRPAddedToast() {
   }, [dispatch]);
 
   return (
-    showNewSRPAddedToast && (
+    showNewSrpAddedToast && (
       <Toast
         key="new-srp-added-toast"
         text={t('importWalletSuccess')}
         startAdornment={
           <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
         }
-        onClose={() => dispatch(setShowNewSRPAddedToast(false))}
+        onClose={() => dispatch(setShowNewSrpAddedToast(false))}
         autoHideTime={autoHideDelay}
-        onAutoHideToast={() =>
-          dispatch(setShowNftDetectionEnablementToast(false))
-        }
+        onAutoHideToast={() => dispatch(setShowNewSrpAddedToast(false))}
       />
     )
   );

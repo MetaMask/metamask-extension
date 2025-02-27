@@ -16,7 +16,7 @@ type State = Omit<MetaMaskReduxState, 'appState'> & {
   appState: {
     showNftDetectionEnablementToast?: boolean;
     ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-    showNewSRPAddedToast?: boolean;
+    showNewSrpAddedToast?: boolean;
     ///: END:ONLY_INCLUDE_IF
   };
   metamask: {
@@ -119,6 +119,6 @@ export function selectSwitchedNetworkNeverShowMessage(state: State): boolean {
  */
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 export function selectNewSRPAdded(state: State): boolean {
-  return Boolean(state.appState.showNewSRPAddedToast);
+  return Boolean(state.appState.showNewSrpAddedToast);
 }
 ///: END:ONLY_INCLUDE_IF

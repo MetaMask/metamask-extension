@@ -9,24 +9,24 @@ import {
 export function findKeyringId(
   keyrings: KeyringObject[],
   keyringsMetadata: KeyringMetadata[],
-  params: { address?: string; type?: KeyringTypes },
+  selector: { address?: string; type?: KeyringTypes },
 ): string {
   const keyringIndex = keyrings.findIndex((keyring) => {
-    if (params.address && params.type) {
+    if (selector.address && selector.type) {
       return (
-        keyring.accounts.includes(params.address) &&
-        keyring.type === params.type
+        keyring.accounts.includes(selector.address.toLowerCase()) &&
+        keyring.type === selector.type
       );
     }
-    if (params.address) {
-      return keyring.accounts.includes(params.address.toLowerCase());
+    if (selector.address) {
+      return keyring.accounts.includes(selector.address.toLowerCase());
     }
-    if (params.type) {
-      return keyring.type === params.type;
+    if (selector.type) {
+      return keyring.type === selector.type;
     }
-    throw new Error('Must provide either address or type parameter');
-  });
 
+    throw new Error('Must provide either address or type selector');
+  });
   if (keyringIndex === -1) {
     throw new Error('Could not find keyring with specified criteria');
   }

@@ -74,7 +74,7 @@ export function submitRequestToBackgroundAndCatch(
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-export function setShowNewSRPAddedToast(value: boolean) {
+export function setShowNewSrpAddedToast(value: boolean) {
   return {
     type: SET_SHOW_NEW_SRP_ADDED_TOAST,
     payload: value,
