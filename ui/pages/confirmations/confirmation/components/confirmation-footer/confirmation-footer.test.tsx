@@ -4,8 +4,8 @@ import { fireEvent, render } from '@testing-library/react';
 import * as AlertContext from '../../alerts/TemplateAlertContext';
 import ConfirmationFooter from './confirmation-footer';
 
-jest.mock('../../alerts/alerts-context', () => ({
-  ...jest.requireActual('../../alerts/alerts-context'),
+jest.mock('../../alerts/TemplateAlertContext', () => ({
+  ...jest.requireActual('../../alerts/TemplateAlertContext'),
   useTemplateAlertContext: jest.fn().mockReturnValue({
     hasAlerts: false,
     showAlertsModal: jest.fn(),
