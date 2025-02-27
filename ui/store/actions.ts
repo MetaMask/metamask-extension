@@ -536,7 +536,6 @@ export function addNewAccount(
       throw new Error('Keyring not found');
     }
     const oldAccounts = hdKeyring.accounts;
-    ///: END:ONLY_INCLUDE_IF
 
     dispatch(showLoadingIndication());
 
