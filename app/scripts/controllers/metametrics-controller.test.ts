@@ -25,7 +25,7 @@ import {
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
-import { BackgroundStateProxy } from '../../../shared/types/background';
+import type { BackgroundStateProxy } from '../../../shared/types/background';
 import * as Utils from '../lib/util';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { flushPromises } from '../../../test/lib/timer-helpers';
