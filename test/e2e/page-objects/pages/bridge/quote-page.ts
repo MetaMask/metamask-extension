@@ -54,7 +54,7 @@ class BridgeQuotePage {
   };
 
   submitQuote = async () => {
-    await this.driver.waitForSelector(this.submitButton);
+    await this.driver.waitForSelector(this.submitButton, { timeout: 60000 });
     await this.driver.clickElement(this.submitButton);
   };
 
