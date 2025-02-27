@@ -31,6 +31,7 @@ import { JsonRpcError, providerErrors } from '@metamask/rpc-errors';
 
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
+
 import {
   TrezorConnectBridge,
   TrezorKeyring,
@@ -107,6 +108,7 @@ import { InstitutionalFeaturesController } from '@metamask-institutional/institu
 import { CustodyController } from '@metamask-institutional/custody-controller';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 ///: END:ONLY_INCLUDE_IF
+
 import { SignatureController } from '@metamask/signature-controller';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
@@ -245,7 +247,10 @@ import {
   BridgeUserAction,
   BridgeBackgroundAction,
 } from '../../shared/types/bridge';
+///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
 import { isProduction } from '../../shared/modules/environment';
+import { DeferredPublicationController } from './lib/transaction/institutional-snap/deferred-publication-hooks';
+///: END:ONLY_INCLUDE_IF
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -2017,6 +2022,18 @@ export default class MetamaskController extends EventEmitter {
       }),
     });
 
+    ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+    this.deferredPublicationController = new DeferredPublicationController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'DeferredPublicationController',
+        allowedActions: [
+          'AccountsController:getAccountByAddress',
+          'SnapController:handleRequest',
+        ],
+        allowedEvents: [],
+      }),
+    });
+    ///: END:ONLY_INCLUDE_IF(institutional-snap)
     const existingControllers = [
       this.networkController,
       this.preferencesController,
@@ -2027,6 +2044,9 @@ export default class MetamaskController extends EventEmitter {
       this.transactionUpdateController,
       ///: END:ONLY_INCLUDE_IF
       this.smartTransactionsController,
+      ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+      this.deferredPublicationController,
+      ///: END:ONLY_INCLUDE_IF(institutional-snap)
     ];
 
     const controllerInitFunctions = {
@@ -3418,6 +3438,11 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IF
+
+      setManageInstitutionalWallets:
+        preferencesController.setManageInstitutionalWallets.bind(
+          preferencesController,
+        ),
 
       // AccountsController
       setSelectedInternalAccount: (id) => {

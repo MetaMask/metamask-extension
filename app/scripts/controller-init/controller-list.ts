@@ -33,6 +33,9 @@ import {
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
+///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+import { DeferredPublicationController } from '../lib/transaction/institutional-snap/deferred-publication-hooks';
+///: END:ONLY_INCLUDE_IF(institutional-snap)
 
 /**
  * Union of all controllers supporting or required by modular initialization.
@@ -65,7 +68,10 @@ export type Controller =
   | (TransactionUpdateController & {
       name: 'TransactionUpdateController';
       state: Record<string, unknown>;
-    });
+    })
+  ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+  | DeferredPublicationController;
+///: END:ONLY_INCLUDE_IF(institutional-snap)
 
 /**
  * Flat state object for all controllers supporting or required by modular initialization.
