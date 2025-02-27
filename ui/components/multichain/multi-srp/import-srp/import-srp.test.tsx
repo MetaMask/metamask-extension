@@ -104,31 +104,6 @@ describe('ImportSRP', () => {
     });
   });
 
-  it('logs an error and not call onActionComplete on import failure', async () => {
-    (actions.importMnemonicToVault as jest.Mock).mockImplementation(() =>
-      jest.fn().mockRejectedValue(new Error('error')),
-    );
-
-    const onActionComplete = jest.fn();
-    const render = renderWithProvider(
-      <ImportSRP onActionComplete={onActionComplete} />,
-      store,
-    );
-    const { getByText } = render;
-
-    expect(getByText('Import wallet')).not.toBeEnabled();
-    await pasteSRPIntoFirstInput(render, VALID_SECRET_RECOVERY_PHRASE);
-
-    fireEvent.click(getByText('Import wallet'));
-
-    await waitFor(() => {
-      expect(actions.importMnemonicToVault).toHaveBeenCalledWith(
-        VALID_SECRET_RECOVERY_PHRASE,
-      );
-      expect(onActionComplete).not.toHaveBeenCalled();
-    });
-  });
-
   it('displays an error if one of the words in the srp is incorrect', async () => {
     const onActionComplete = jest.fn();
     const render = renderWithProvider(
@@ -174,5 +149,30 @@ describe('ImportSRP', () => {
     });
 
     expect(mockClearClipboard).toHaveBeenCalled();
+  });
+
+  it('logs an error and not call onActionComplete on import failure', async () => {
+    (actions.importMnemonicToVault as jest.Mock).mockImplementation(() =>
+      jest.fn().mockRejectedValue(new Error('error')),
+    );
+
+    const onActionComplete = jest.fn();
+    const render = renderWithProvider(
+      <ImportSRP onActionComplete={onActionComplete} />,
+      store,
+    );
+    const { getByText } = render;
+
+    expect(getByText('Import wallet')).not.toBeEnabled();
+    await pasteSRPIntoFirstInput(render, VALID_SECRET_RECOVERY_PHRASE);
+
+    fireEvent.click(getByText('Import wallet'));
+
+    await waitFor(() => {
+      expect(actions.importMnemonicToVault).toHaveBeenCalledWith(
+        VALID_SECRET_RECOVERY_PHRASE,
+      );
+      expect(onActionComplete).not.toHaveBeenCalled();
+    });
   });
 });
