@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 
-import * as AlertContext from '../../alerts/alerts-context';
+import * as AlertContext from '../../alerts/TemplateAlertContext';
 import ConfirmationFooter from './confirmation-footer';
 
 jest.mock('../../alerts/alerts-context', () => ({

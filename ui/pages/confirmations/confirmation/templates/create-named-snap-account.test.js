@@ -89,10 +89,6 @@ const mockBaseStore = {
     approvalFlows: [],
     subjectMetadata: {},
   },
-  confirmAlerts: {
-    alerts: {},
-    confirmed: {},
-  },
 };
 
 const render = (approval = mockApproval) => {

@@ -11,20 +11,20 @@ import useAlerts from '../../../../hooks/useAlerts';
 import { AlertActionHandlerProvider } from '../../../../components/app/alert-system/contexts/alertActionHandler';
 import { AlertMetricsProvider } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
 import { ConfirmAlertModal } from '../../../../components/app/alert-system/confirm-alert-modal';
-import setAlerts from './setAlerts';
+import { useTemplateConfirmationAlerts } from './useTemplateConfirmationAlerts';
 
-type AlertContextType = {
+type TemplateAlertContextType = {
   hasAlerts: boolean;
   showAlertsModal: () => void;
 };
 
 const NopeFunction = () => undefined;
 
-export const AlertContext = createContext<AlertContextType | undefined>(
+export const TemplateAlertContext = createContext<TemplateAlertContextType | undefined>(
   undefined,
 );
 
-export const AlertContextProvider: React.FC<{
+export const TemplateAlertContextProvider: React.FC<{
   children: ReactElement;
   pendingConfirmation: ApprovalRequest<{ id: string }>;
   onCancel: () => void;
@@ -32,7 +32,7 @@ export const AlertContextProvider: React.FC<{
 }> = ({ children, pendingConfirmation, onCancel, onSubmit }) => {
   const [isAlertsModalVisible, setAlertsModalVisible] = useState(false);
   const alertOwnerId = pendingConfirmation?.id;
-  setAlerts(alertOwnerId);
+  useTemplateConfirmationAlerts(alertOwnerId);
   const { hasAlerts } = useAlerts(alertOwnerId);
 
   // todo: action implementations to come here as alerts are implemented
@@ -55,7 +55,7 @@ export const AlertContextProvider: React.FC<{
       }}
     >
       <AlertActionHandlerProvider onProcessAction={processAction}>
-        <AlertContext.Provider
+        <TemplateAlertContext.Provider
           value={{
             hasAlerts,
             showAlertsModal: () => setAlertsModalVisible(true),
@@ -72,17 +72,17 @@ export const AlertContextProvider: React.FC<{
             )}
             {children}
           </>
-        </AlertContext.Provider>
+        </TemplateAlertContext.Provider>
       </AlertActionHandlerProvider>
     </AlertMetricsProvider>
   );
 };
 
-export const useAlertContext = () => {
-  const context = useContext(AlertContext);
+export const useTemplateAlertContext = () => {
+  const context = useContext(TemplateAlertContext);
   if (!context) {
     throw new Error(
-      'useAlertContext must be used within an AlertContextProvider',
+      'useTemplateAlertContext must be used within an TemplateAlertContextProvider',
     );
   }
   return context;

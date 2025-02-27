@@ -50,10 +50,6 @@ describe('snap-account-redirect confirmation', () => {
           },
         },
       },
-      confirmAlerts: {
-        alerts: {},
-        confirmed: {},
-      },
     };
     const store = configureMockStore(middleware)(testStore);
     const { container, getByText } = renderWithProvider(

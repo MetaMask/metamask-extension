@@ -48,7 +48,7 @@ import { DAY } from '../../../../shared/constants/time';
 import { Nav } from '../components/confirm/nav';
 import { ConfirmContextProvider } from '../context/confirm';
 import { useConfirmationNavigation } from '../hooks/useConfirmationNavigation';
-import { AlertContextProvider } from './alerts/alerts-context';
+import { TemplateAlertContextProvider } from './alerts/TemplateAlertContext';
 import ConfirmationFooter from './components/confirmation-footer';
 import {
   getTemplateValues,
@@ -495,7 +495,7 @@ export default function ConfirmationPage({
 
   return (
     <ConfirmContextProvider>
-      <AlertContextProvider
+      <TemplateAlertContextProvider
         pendingConfirmation={pendingConfirmation}
         onSubmit={!templatedValues.hideSubmitButton && handleSubmit}
         onCancel={templatedValues.onCancel}
@@ -594,7 +594,7 @@ export default function ConfirmationPage({
             />
           )}
         </div>
-      </AlertContextProvider>
+      </TemplateAlertContextProvider>
     </ConfirmContextProvider>
   );
 }

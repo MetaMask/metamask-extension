@@ -57,10 +57,6 @@ describe('switch-ethereum-chain confirmation', () => {
         },
         transactions: [],
       },
-      confirmAlerts: {
-        alerts: {},
-        confirmed: {},
-      },
     };
     const store = configureMockStore(middleware)(testStore);
     const { container } = renderWithProvider(<Confirmation />, store);
@@ -87,10 +83,6 @@ describe('switch-ethereum-chain confirmation', () => {
             chainId: '0x9999',
           },
         ],
-      },
-      confirmAlerts: {
-        alerts: {},
-        confirmed: {},
       },
     };
 

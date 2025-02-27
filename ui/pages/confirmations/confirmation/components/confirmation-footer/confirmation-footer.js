@@ -7,7 +7,7 @@ import {
   ButtonVariant,
   IconName,
 } from '../../../../../components/component-library';
-import { useAlertContext } from '../../alerts/alerts-context';
+import { useAlertContext } from '../../alerts/TemplateAlertContext';
 
 export default function ConfirmationFooter({
   onSubmit,

@@ -54,10 +54,6 @@ describe('success template', () => {
         },
         transactions: [],
       },
-      confirmAlerts: {
-        alerts: {},
-        confirmed: {},
-      },
     };
     const store = configureMockStore(middleware)(testStore);
     const { getByText, container } = renderWithProvider(

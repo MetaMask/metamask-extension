@@ -7,10 +7,10 @@ import {
 } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-const setAlerts = (alertOwnerId: string) => {
+export const useTemplateConfirmationAlerts = (alertOwnerId: string) => {
   const dispatch = useDispatch();
   const t = useI18nContext();
-  const alerts: Alert[] = useMemo(() => [], [t]);
+  const alerts: Alert[] = useMemo(() => [], []);
 
   useEffect(() => {
     dispatch(updateAlerts(alertOwnerId, alerts));
@@ -22,5 +22,3 @@ const setAlerts = (alertOwnerId: string) => {
     };
   }, []);
 };
-
-export default setAlerts;
