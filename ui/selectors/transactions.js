@@ -22,6 +22,7 @@ import {
 } from '../../shared/modules/selectors/util';
 import { getSelectedInternalAccount } from './accounts';
 import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
+import { FEATURED_NETWORK_CHAIN_IDS } from '../../shared/constants/network';
 
 const INVALID_INITIAL_TRANSACTION_TYPES = [
   TransactionType.cancel,
@@ -57,11 +58,14 @@ export const getAllNetworkTransactions = createDeepEqualSelector(
   (state) => {
     const transactions = getTransactions(state);
 
+    const popularNetworks = FEATURED_NETWORK_CHAIN_IDS;
+
     if (!transactions.length) {
       return [];
     }
-
-    return transactions;
+    return transactions.filter((transaction) =>
+      popularNetworks.includes(transaction.chainId),
+    );
   },
   (transactions) => transactions,
 );
