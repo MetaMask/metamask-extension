@@ -2443,9 +2443,11 @@ export default class MetamaskController extends EventEmitter {
   triggerNetworkrequests() {
     this.txController.stopIncomingTransactionPolling();
 
-    this.txController.startIncomingTransactionPolling([
-      this.#getGlobalChainId(),
-    ]);
+    this.txController.stopIncomingTransactionPolling();
+
+    this.txController.startIncomingTransactionPolling(
+      this.#getAllAddedNetworks(),
+    );
 
     this.tokenDetectionController.enable();
     this.getInfuraFeatureFlags();
@@ -2751,9 +2753,9 @@ export default class MetamaskController extends EventEmitter {
         if (currState.incomingTransactionsPreferences?.[chainId]) {
           this.txController.stopIncomingTransactionPolling();
 
-          this.txController.startIncomingTransactionPolling([
-            this.#getGlobalChainId(),
-          ]);
+          this.txController.startIncomingTransactionPolling(
+            this.#getAllAddedNetworks(),
+          );
         } else {
           this.txController.stopIncomingTransactionPolling();
         }
@@ -7685,6 +7687,14 @@ export default class MetamaskController extends EventEmitter {
     );
 
     return globalNetworkClient.configuration.chainId;
+  }
+
+  #getAllAddedNetworks() {
+    const networksConfig =
+      this.networkController.state.networkConfigurationsByChainId;
+    const chainIds = Object.keys(networksConfig);
+
+    return chainIds;
   }
 
   /**
