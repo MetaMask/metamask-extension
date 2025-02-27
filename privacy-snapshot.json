@@ -1,10 +1,8 @@
 [
   "*.btc*.quiknode.pro",
-  "*solana*.mainnet.rpcpool.com",
   "accounts.api.cx.metamask.io",
   "acl.execution.metamask.io",
   "api.blockchair.com",
-  "api.devnet.solana.com",
   "api.lens.dev",
   "api.segment.io",
   "api.simplehash.com",
@@ -69,7 +67,6 @@
   "snaps.metamask.io",
   "solana-devnet.infura.io",
   "solana-mainnet.infura.io",
-  "solana.rpc.grove.city",
   "sourcify.dev",
   "start.metamask.io",
   "static.cx.metamask.io",
