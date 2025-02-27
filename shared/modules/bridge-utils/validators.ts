@@ -72,7 +72,7 @@ export const ASSET_VALIDATORS = [
 
 export const TOKEN_VALIDATORS = [
   { property: 'decimals', type: 'number' },
-  { property: 'address', type: 'string', validator: isValidHexAddress },
+  { property: 'address', type: 'string', validator: isValidString },
   {
     property: 'symbol',
     type: 'string',

@@ -128,6 +128,34 @@ describe('AggregatedBalance Component', () => {
     expect(screen.getByText('USD')).toBeInTheDocument();
   });
 
+  it('renders 0 fiat balance when showNativeTokenAsMainBalance is false, and balance is 0', () => {
+    renderWithProvider(
+      <AggregatedBalance
+        classPrefix="test"
+        balanceIsCached={false}
+        handleSensitiveToggle={jest.fn()}
+      />,
+      getStore({
+        metamask: {
+          ...mockMetamaskStore,
+          balances: {
+            [mockNonEvmAccount.id]: {
+              [MultichainNativeAssets.SOLANA]: {
+                amount: 0,
+                unit: 'SOL',
+              },
+            },
+          },
+        },
+      }),
+    );
+
+    expect(screen.getByTestId('account-value-and-suffix')).toHaveTextContent(
+      '$0.00',
+    );
+    expect(screen.getByText('USD')).toBeInTheDocument();
+  });
+
   it('renders token balance when showNativeTokenAsMainBalance is true, up to 5 decimal places with no trailing zero', () => {
     renderWithProvider(
       <AggregatedBalance
@@ -147,6 +175,37 @@ describe('AggregatedBalance Component', () => {
 
     expect(screen.getByTestId('account-value-and-suffix')).toHaveTextContent(
       '1',
+    );
+    expect(screen.getByText('SOL')).toBeInTheDocument();
+  });
+
+  it('renders 0 native balance when showNativeTokenAsMainBalance is true, and balance is 0', () => {
+    renderWithProvider(
+      <AggregatedBalance
+        classPrefix="test"
+        balanceIsCached={false}
+        handleSensitiveToggle={jest.fn()}
+      />,
+      getStore({
+        metamask: {
+          ...mockMetamaskStore,
+          preferences: {
+            showNativeTokenAsMainBalance: true,
+          },
+          balances: {
+            [mockNonEvmAccount.id]: {
+              [MultichainNativeAssets.SOLANA]: {
+                amount: 0,
+                unit: 'SOL',
+              },
+            },
+          },
+        },
+      }),
+    );
+
+    expect(screen.getByTestId('account-value-and-suffix')).toHaveTextContent(
+      '0',
     );
     expect(screen.getByText('SOL')).toBeInTheDocument();
   });
