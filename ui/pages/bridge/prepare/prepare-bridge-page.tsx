@@ -488,48 +488,44 @@ const PrepareBridgePage = () => {
               value: bridgeToken.address,
             });
         }}
-        networkProps={
-          isSwap
-            ? undefined
-            : {
-                network: fromChain,
-                networks: fromChains,
-                onNetworkChange: (networkConfig) => {
-                  networkConfig?.chainId &&
-                    networkConfig.chainId !== fromChain?.chainId &&
-                    trackInputEvent({
-                      input: 'chain_source',
-                      value: networkConfig.chainId,
-                    });
-                  if (
-                    networkConfig?.chainId &&
-                    networkConfig.chainId === toChain?.chainId
-                  ) {
-                    dispatch(setToChainId(null));
-                    dispatch(setToToken(null));
-                  }
-                  if (networkConfig.chainId === MultichainNetworks.SOLANA) {
-                    dispatch(setSelectedAccount(selectedEvmAccount.address));
-                  } else if (selectedSolanaAccount) {
-                    dispatch(setSelectedAccount(selectedSolanaAccount.address));
-                  }
-                  if (isNetworkAdded(networkConfig)) {
-                    dispatch(
-                      setActiveNetworkWithError(
-                        networkConfig.rpcEndpoints[
-                          networkConfig.defaultRpcEndpointIndex
-                        ].networkClientId || networkConfig.chainId,
-                      ),
-                    );
-                  } else {
-                    dispatch(setActiveNetworkWithError(networkConfig.chainId));
-                  }
-                  dispatch(setFromToken(null));
-                  dispatch(setFromTokenInputValue(null));
-                },
-                header: t('yourNetworks'),
-              }
-        }
+        networkProps={{
+          network: fromChain,
+          networks: isSwap ? undefined : fromChains,
+          onNetworkChange: (networkConfig) => {
+            networkConfig?.chainId &&
+              networkConfig.chainId !== fromChain?.chainId &&
+              trackInputEvent({
+                input: 'chain_source',
+                value: networkConfig.chainId,
+              });
+            if (
+              networkConfig?.chainId &&
+              networkConfig.chainId === toChain?.chainId
+            ) {
+              dispatch(setToChainId(null));
+              dispatch(setToToken(null));
+            }
+            if (networkConfig.chainId === MultichainNetworks.SOLANA) {
+              dispatch(setSelectedAccount(selectedEvmAccount.address));
+            } else if (selectedSolanaAccount) {
+              dispatch(setSelectedAccount(selectedSolanaAccount.address));
+            }
+            if (isNetworkAdded(networkConfig)) {
+              dispatch(
+                setActiveNetworkWithError(
+                  networkConfig.rpcEndpoints[
+                    networkConfig.defaultRpcEndpointIndex
+                  ].networkClientId || networkConfig.chainId,
+                ),
+              );
+            } else {
+              dispatch(setActiveNetworkWithError(networkConfig.chainId));
+            }
+            dispatch(setFromToken(null));
+            dispatch(setFromTokenInputValue(null));
+          },
+          header: t('yourNetworks'),
+        }}
         isMultiselectEnabled={!isSwap}
         onMaxButtonClick={(value: string) => {
           dispatch(setFromTokenInputValue(value));
