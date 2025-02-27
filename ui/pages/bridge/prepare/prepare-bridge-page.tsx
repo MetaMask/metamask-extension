@@ -501,6 +501,9 @@ const PrepareBridgePage = () => {
           };
           dispatch(setFromToken(bridgeToken));
           dispatch(setFromTokenInputValue(null));
+          if (token.address === toToken?.address) {
+            dispatch(setToToken(null));
+          }
           bridgeToken.address &&
             trackInputEvent({
               input: 'token_source',
