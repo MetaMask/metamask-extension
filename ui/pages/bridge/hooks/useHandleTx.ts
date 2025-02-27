@@ -147,7 +147,7 @@ export default function useHandleTx() {
     fieldsToAddToTxMeta: Omit<Partial<TransactionMeta>, 'status'>;
   }): Promise<TransactionMeta> => {
     // Submit a signing request to the snap
-    (await snapSender.send({
+    const snapResponse = await snapSender.send({
       id: crypto.randomUUID(),
       jsonrpc: '2.0',
       method: KeyringRpcMethod.SubmitRequest,
@@ -164,9 +164,43 @@ export default function useHandleTx() {
         account: selectedAccount.id,
         scope: currentChainId,
       },
-    })) as string;
+    });
 
-    return {
+    console.log('===SOLANA=== snap response:', snapResponse);
+
+    // Extract signature from snap response to use as hash
+    // This is crucial for the bridge status controller to track the transaction
+    let signature;
+
+    // Handle different response formats
+    if (typeof snapResponse === 'string') {
+      signature = snapResponse;
+    } else if (snapResponse && typeof snapResponse === 'object') {
+      // TODO: clean this up.
+      // If it's an object with result property, try to get the signature
+      // @ts-expect-error: snapResponse is not typed, need to clean this up later.
+      if (snapResponse.result && typeof snapResponse.result === 'object') {
+        // Log the result object to see its structure
+        // @ts-expect-error: snapResponse is not typed, need to clean this up later.
+        console.log('===SOLANA=== snap response result:', snapResponse.result);
+
+        // Try to extract signature from common locations in response object
+        signature =
+          // @ts-expect-error: snapResponse is not typed, need to clean this up later.
+          snapResponse.result.signature ||
+          // @ts-expect-error: snapResponse is not typed, need to clean this up later.
+          snapResponse.result.txid ||
+          // @ts-expect-error: snapResponse is not typed, need to clean this up later.
+          snapResponse.result.hash ||
+          // @ts-expect-error: snapResponse is not typed, need to clean this up later.
+          snapResponse.result.txHash;
+      }
+    }
+
+    console.log('===SOLANA=== Extracted signature:', signature);
+
+    // Create a transaction meta object with bridge-specific fields
+    const txMeta: TransactionMeta = {
       ...fieldsToAddToTxMeta,
       id: crypto.randomUUID(),
       chainId: currentChainId as Hex,
@@ -175,7 +209,39 @@ export default function useHandleTx() {
       txParams: { data: txParams } as TransactionParams,
       type: txType,
       status: TransactionStatus.submitted,
+      hash: signature, // Add the transaction signature as hash
+      // Add explicitly Solana-specific flags
+      isSolana: true,
+      isBridgeTx: true,
+      // Add key bridge-specific fields for proper categorization
+      actionId: txType,
+      origin: SOLANA_WALLET_SNAP_ID,
     };
+
+    // Log detailed transaction meta for debugging
+    console.log(
+      '===SOLANA=== Creating bridge transaction meta with ALL fields:',
+      {
+        id: txMeta.id,
+        hash: txMeta.hash,
+        isSolana: txMeta.isSolana,
+        isBridgeTx: txMeta.isBridgeTx,
+        type: txMeta.type,
+        chainId: txMeta.chainId,
+        networkClientId: txMeta.networkClientId,
+        time: txMeta.time,
+        status: txMeta.status,
+        origin: txMeta.origin,
+        actionId: txMeta.actionId,
+        fieldsFromParent: {
+          ...fieldsToAddToTxMeta,
+        },
+        txParams: txMeta.txParams,
+        fullObject: txMeta,
+      },
+    );
+
+    return txMeta;
   };
 
   const isSolana = useMultichainSelector(getMultichainIsSolana);
@@ -187,24 +253,40 @@ export default function useHandleTx() {
       fieldsToAddToTxMeta,
     }: {
       txType: TransactionType.bridgeApproval | TransactionType.bridge;
-      txParams: {
-        chainId: ChainId;
-        to: string;
-        from: string;
-        value: string;
-        data: string;
-        gasLimit: number | null;
-      };
+      txParams:
+        | {
+            chainId: ChainId;
+            to: string;
+            from: string;
+            value: string;
+            data: string;
+            gasLimit: number | null;
+          }
+        | string; // Allow string for Solana transactions
       fieldsToAddToTxMeta: Omit<Partial<TransactionMeta>, 'status'>; // We don't add status, so omit it to fix the type error
     }) => {
+      // Check for Solana transaction by the txParams type or the explicit isSolana flag
       if (
         isSolana &&
         txType === TransactionType.bridge &&
         typeof txParams === 'string'
       ) {
-        return handleSolanaTx({ txType, txParams, fieldsToAddToTxMeta });
+        console.log('Handling Solana bridge transaction');
+        // Handle as Solana transaction
+        return handleSolanaTx({
+          txType,
+          txParams:
+            typeof txParams === 'string' ? txParams : JSON.stringify(txParams),
+          fieldsToAddToTxMeta,
+        });
       }
-      return handleEvmTx({ txType, txParams, fieldsToAddToTxMeta });
+
+      // Handle as EVM transaction
+      return handleEvmTx({
+        txType,
+        txParams: txParams as any, // Cast to expected EVM type
+        fieldsToAddToTxMeta,
+      });
     },
   };
 }

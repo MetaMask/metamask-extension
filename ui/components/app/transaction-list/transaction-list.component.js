@@ -31,6 +31,7 @@ import TransactionListItem from '../transaction-list-item';
 import SmartTransactionListItem from '../transaction-list-item/smart-transaction-list-item.component';
 import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
+import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import {
   Box,
@@ -201,6 +202,144 @@ export default function TransactionList({
     getSelectedAccountMultichainTransactions,
   );
 
+  // Log non-EVM transactions to see what's being shown for Solana accounts
+  console.log('Non-EVM transactions for selected account:', nonEvmTransactions);
+
+  // Get bridge transactions from the bridge status controller
+  const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
+  console.log('Bridge history from status controller:', bridgeHistory);
+
+  // Log transaction signatures for direct comparison
+  console.log('==== SIGNATURES COMPARISON ====');
+
+  // Log non-EVM transaction signatures
+  console.log('Non-EVM transaction signatures:');
+  nonEvmTransactions?.transactions?.forEach((tx) => {
+    console.log(`NonEVM TX: ${tx.type}, Signature: ${tx.id}`);
+  });
+
+  // Log bridge transaction signatures
+  console.log('Bridge transaction signatures:');
+  Object.values(bridgeHistory || {}).forEach((bridgeTx) => {
+    console.log(
+      `Bridge TX: ${bridgeTx.txMetaId}, Signature: ${bridgeTx.status?.srcChain?.txHash}, Amount: ${bridgeTx.pricingData?.amountSent}`,
+    );
+  });
+
+  // Look for non-EVM transactions that match bridge transactions by signature/hash
+  const modifiedNonEvmTransactions = useMemo(() => {
+    if (!nonEvmTransactions?.transactions?.length || !bridgeHistory) {
+      return nonEvmTransactions;
+    }
+
+    // Create a map of bridge tx signatures to look up quickly
+    const bridgeTxSignatures = {};
+    Object.values(bridgeHistory).forEach((bridgeTx) => {
+      if (bridgeTx.status?.srcChain?.txHash) {
+        bridgeTxSignatures[bridgeTx.status.srcChain.txHash] = bridgeTx;
+      }
+    });
+
+    console.log('Bridge transaction signatures map:', bridgeTxSignatures);
+
+    // Create a modified copy of the transactions
+    const modifiedTransactions = nonEvmTransactions.transactions.map((tx) => {
+      // Check if this transaction's signature (id field) matches a bridge transaction
+      const txSignature = tx.id;
+
+      if (txSignature && bridgeTxSignatures[txSignature]) {
+        const matchingBridgeTx = bridgeTxSignatures[txSignature];
+        console.log('Found matching bridge transaction:', {
+          nonEvmTx: tx,
+          bridgeTx: matchingBridgeTx,
+        });
+
+        // Return a modified version of the transaction with bridge info
+        return {
+          ...tx,
+          // Change the type to bridge
+          type: 'bridge',
+          // Add bridge-specific fields
+          isBridgeTx: true,
+          // Include destination chain details
+          bridgeInfo: {
+            destChainId: matchingBridgeTx.quote?.destChainId,
+            destAsset: matchingBridgeTx.quote?.destAsset,
+            destTokenAmount: matchingBridgeTx.quote?.destTokenAmount,
+          },
+        };
+      }
+
+      // Return the original transaction unchanged
+      return tx;
+    });
+
+    return {
+      ...nonEvmTransactions,
+      transactions: modifiedTransactions,
+    };
+  }, [nonEvmTransactions, bridgeHistory]);
+
+  // Replace the original nonEvmTransactions with our modified version
+  // that correctly identifies bridge transactions
+  if (modifiedNonEvmTransactions !== nonEvmTransactions) {
+    console.log(
+      'Modified non-EVM transactions with bridge info:',
+      modifiedNonEvmTransactions,
+    );
+  }
+
+  // Check for exact matches between non-EVM transaction signatures and bridge transaction signatures
+  console.log('==== CHECKING FOR EXACT SIGNATURE MATCHES ====');
+
+  // Create a set of non-EVM transaction signatures for quick lookup
+  const nonEvmSignatures = new Set();
+  nonEvmTransactions?.transactions?.forEach((tx) => {
+    const signature = tx.id; // The signature is in the id field
+    if (signature) {
+      nonEvmSignatures.add(signature);
+    }
+  });
+
+  // Check bridge transactions for matching signatures
+  Object.values(bridgeHistory || {}).forEach((bridgeTx) => {
+    const bridgeSignature = bridgeTx.status?.srcChain?.txHash;
+    if (bridgeSignature && nonEvmSignatures.has(bridgeSignature)) {
+      console.log('EXACT SIGNATURE MATCH FOUND:', {
+        bridgeTxId: bridgeTx.txMetaId,
+        signature: bridgeSignature,
+        destChain: bridgeTx.quote?.destChainId,
+        destAsset: bridgeTx.quote?.destAsset?.symbol,
+      });
+    }
+  });
+
+  // Look for Solana bridge transactions in the bridge history
+  const solanaBridgeTxs = Object.values(bridgeHistory || {}).filter(
+    (historyItem) => {
+      // Check if any part of the transaction indicates it's a Solana transaction
+      const isSolanaBridge =
+        historyItem.quoteResponse?.isSolana === true ||
+        historyItem.quoteResponse?.srcChainId?.toString().includes('solana') ||
+        historyItem.quoteResponse?.quote?.srcChainId
+          ?.toString()
+          .includes('solana') ||
+        historyItem.quote?.srcChainId.toString().includes('1151111081099710'); // Solana chain ID
+
+      if (isSolanaBridge) {
+        console.log('Found Solana bridge transaction in history:', {
+          id: historyItem.txMetaId,
+          signature: historyItem.status?.srcChain?.txHash,
+          srcChainId: historyItem.quote?.srcChainId,
+        });
+      }
+
+      return isSolanaBridge;
+    },
+  );
+
+  console.log('Solana bridge transactions:', solanaBridgeTxs);
+
   const isSolanaAccount = useSelector(isSelectedInternalAccountSolana);
   ///: END:ONLY_INCLUDE_IF
 
@@ -355,91 +494,120 @@ export default function TransactionList({
           <Box className="transaction-list__transactions">
             {nonEvmTransactions?.transactions.length > 0 ? (
               <Box className="transaction-list__completed-transactions">
-                {groupNonEvmTransactionsByDate(nonEvmTransactions).map(
-                  (dateGroup) => (
-                    <Fragment key={dateGroup.date}>
-                      <Text
-                        paddingTop={4}
-                        paddingInline={4}
-                        variant={TextVariant.bodyMd}
-                        color={TextColor.textDefault}
-                      >
-                        {dateGroup.date}
-                      </Text>
-                      {dateGroup.transactionGroups.map((transaction, index) => (
-                        <ActivityListItem
-                          key={`${transaction.account}:${index}`}
-                          className="custom-class"
-                          data-testid="activity-list-item"
-                          onClick={() => toggleShowDetails(transaction)}
-                          icon={
-                            <BadgeWrapper
-                              anchorElementShape="circular"
-                              badge={
-                                <AvatarNetwork
-                                  borderColor="background-default"
-                                  borderWidth={1}
-                                  className="activity-tx__network-badge"
-                                  data-testid="activity-tx-network-badge"
-                                  name={
-                                    isSolanaAccount
-                                      ? MULTICHAIN_PROVIDER_CONFIGS[
-                                          MultichainNetworks.SOLANA
-                                        ].nickname
-                                      : MULTICHAIN_PROVIDER_CONFIGS[
-                                          MultichainNetworks.BITCOIN
-                                        ].nickname
-                                  }
-                                  size="xs"
-                                  src={
-                                    isSolanaAccount
-                                      ? SOLANA_TOKEN_IMAGE_URL
-                                      : BITCOIN_TOKEN_IMAGE_URL
-                                  }
-                                />
-                              }
-                              display="block"
-                              positionObj={{ right: -4, top: -4 }}
-                            >
-                              <TransactionIcon
-                                category={transaction.type}
-                                status={transaction.status}
+                {groupNonEvmTransactionsByDate(
+                  modifiedNonEvmTransactions || nonEvmTransactions,
+                ).map((dateGroup) => (
+                  <Fragment key={dateGroup.date}>
+                    <Text
+                      paddingTop={4}
+                      paddingInline={4}
+                      variant={TextVariant.bodyMd}
+                      color={TextColor.textDefault}
+                    >
+                      {dateGroup.date}
+                    </Text>
+                    {dateGroup.transactionGroups.map((transaction, index) => (
+                      <ActivityListItem
+                        key={`${transaction.account}:${index}`}
+                        className="custom-class"
+                        data-testid="activity-list-item"
+                        onClick={() => toggleShowDetails(transaction)}
+                        icon={
+                          <BadgeWrapper
+                            anchorElementShape="circular"
+                            badge={
+                              <AvatarNetwork
+                                borderColor="background-default"
+                                borderWidth={1}
+                                className="activity-tx__network-badge"
+                                data-testid="activity-tx-network-badge"
+                                name={
+                                  isSolanaAccount
+                                    ? MULTICHAIN_PROVIDER_CONFIGS[
+                                        MultichainNetworks.SOLANA
+                                      ].nickname
+                                    : MULTICHAIN_PROVIDER_CONFIGS[
+                                        MultichainNetworks.BITCOIN
+                                      ].nickname
+                                }
+                                size="xs"
+                                src={
+                                  isSolanaAccount
+                                    ? SOLANA_TOKEN_IMAGE_URL
+                                    : BITCOIN_TOKEN_IMAGE_URL
+                                }
                               />
-                            </BadgeWrapper>
-                          }
-                          rightContent={
+                            }
+                            display="block"
+                            positionObj={{ right: -4, top: -4 }}
+                          >
+                            <TransactionIcon
+                              category={transaction.type}
+                              status={transaction.status}
+                            />
+                          </BadgeWrapper>
+                        }
+                        rightContent={
+                          <>
+                            <Text
+                              className="activity-list-item__primary-currency"
+                              color="text-default"
+                              data-testid="transaction-list-item-primary-currency"
+                              ellipsis
+                              fontWeight="medium"
+                              textAlign="right"
+                              title="Primary Currency"
+                              variant="body-lg-medium"
+                            >
+                              {transaction.from?.[0]?.asset?.amount &&
+                              transaction.from[0]?.asset?.unit
+                                ? `${transaction.from[0].asset.amount} ${transaction.from[0].asset.unit}`
+                                : ''}
+                            </Text>
+                          </>
+                        }
+                        title={
+                          transaction.isBridgeTx
+                            ? t('bridge')
+                            : capitalize(transaction.type)
+                        }
+                        // eslint-disable-next-line react/jsx-no-duplicate-props
+                        subtitle={
+                          transaction.isBridgeTx && transaction.bridgeInfo ? (
                             <>
+                              <TransactionStatusLabel
+                                date={formatTimestamp(transaction.timestamp)}
+                                error={{}}
+                                status={transaction.status}
+                                statusOnly
+                              />
                               <Text
-                                className="activity-list-item__primary-currency"
-                                color="text-default"
-                                data-testid="transaction-list-item-primary-currency"
-                                ellipsis
-                                fontWeight="medium"
-                                textAlign="right"
-                                title="Primary Currency"
-                                variant="body-lg-medium"
+                                variant={TextVariant.bodyMd}
+                                color={TextColor.textAlternative}
                               >
-                                {transaction.from?.[0]?.asset?.amount &&
-                                transaction.from[0]?.asset?.unit
-                                  ? `${transaction.from[0].asset.amount} ${transaction.from[0].asset.unit}`
-                                  : ''}
+                                {`${t('to')} ${
+                                  transaction.bridgeInfo.destAsset?.symbol
+                                } ${t('on')} ${
+                                  MULTICHAIN_PROVIDER_CONFIGS[
+                                    transaction.bridgeInfo.destChainId
+                                  ]?.nickname ||
+                                  transaction.bridgeInfo.destChainId
+                                }`}
                               </Text>
                             </>
-                          }
-                          subtitle={
+                          ) : (
                             <TransactionStatusLabel
                               date={formatTimestamp(transaction.timestamp)}
                               error={{}}
                               status={transaction.status}
                               statusOnly
                             />
-                          }
-                          title={capitalize(transaction.type)}
-                        ></ActivityListItem>
-                      ))}
-                    </Fragment>
-                  ),
-                )}
+                          )
+                        }
+                      ></ActivityListItem>
+                    ))}
+                  </Fragment>
+                ))}
                 <Box className="transaction-list__view-on-block-explorer">
                   <Button
                     display={Display.Flex}

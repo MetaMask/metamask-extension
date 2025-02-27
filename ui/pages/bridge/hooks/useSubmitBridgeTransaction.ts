@@ -204,10 +204,48 @@ export default function useSubmitBridgeTransaction() {
       ...statusRequestCommon,
       srcTxHash: bridgeTxMeta.hash, // This might be undefined for STX
     };
+
+    // Ensure that for Solana transactions we're properly passing the signature as hash
+    // Check for the explicit isSolana flag set in the transaction metadata
+    const isSolana = bridgeTxMeta.isSolana === true;
+
+    // Log detailed information about the bridge transaction
+    console.log('Submit Bridge Transaction - DETAILED INFO:', {
+      isSolana,
+      hash: bridgeTxMeta.hash,
+      id: bridgeTxMeta.id,
+      type: bridgeTxMeta.type,
+      isBridgeTx: bridgeTxMeta.isBridgeTx,
+      status: bridgeTxMeta.status,
+      chainId: bridgeTxMeta.chainId,
+      networkClientId: bridgeTxMeta.networkClientId,
+      bridgeFields: {
+        sourceTokenSymbol: bridgeTxMeta.sourceTokenSymbol,
+        destinationTokenSymbol: bridgeTxMeta.destinationTokenSymbol,
+        sourceTokenAddress: bridgeTxMeta.sourceTokenAddress,
+        destinationTokenAddress: bridgeTxMeta.destinationTokenAddress,
+        destinationChainId: bridgeTxMeta.destinationChainId,
+      },
+      txParams: bridgeTxMeta.txParams,
+      fullTxMeta: bridgeTxMeta,
+      quoteInfo: {
+        bridge: quoteResponse.quote.bridges[0],
+        srcChainId: quoteResponse.quote.srcChainId,
+        destChainId: quoteResponse.quote.destChainId,
+      },
+    });
+
     dispatch(
       startPollingForBridgeTxStatus({
         bridgeTxMeta,
-        statusRequest,
+        statusRequest: {
+          ...statusRequest,
+          // For Solana, ensure we're tracking the correct hash
+          srcTxHash:
+            isSolana && bridgeTxMeta.hash
+              ? bridgeTxMeta.hash
+              : statusRequest.srcTxHash,
+        },
         quoteResponse: serializeQuoteMetadata(quoteResponse),
         slippagePercentage: slippage ?? 0,
         startTime: bridgeTxMeta.time,
