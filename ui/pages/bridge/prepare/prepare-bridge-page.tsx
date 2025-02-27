@@ -110,6 +110,7 @@ import {
 import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { formatChainIdToCaip } from '../../../../shared/modules/bridge-utils/caip-formatters';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
@@ -512,15 +513,17 @@ const PrepareBridgePage = () => {
                   } else if (selectedSolanaAccount) {
                     dispatch(setSelectedAccount(selectedSolanaAccount.address));
                   }
-                  // if (isNetworkAdded(networkConfig)) {
-                  dispatch(
-                    setActiveNetworkWithError(
-                      networkConfig.rpcEndpoints[
-                        networkConfig.defaultRpcEndpointIndex
-                      ].networkClientId || networkConfig.chainId,
-                    ),
-                  );
-                  // }
+                  if (isNetworkAdded(networkConfig)) {
+                    dispatch(
+                      setActiveNetworkWithError(
+                        networkConfig.rpcEndpoints[
+                          networkConfig.defaultRpcEndpointIndex
+                        ].networkClientId,
+                      ),
+                    );
+                  } else {
+                    dispatch(setActiveNetworkWithError(networkConfig.chainId));
+                  }
                   dispatch(setFromToken(null));
                   dispatch(setFromTokenInputValue(null));
                 },
@@ -605,7 +608,9 @@ const PrepareBridgePage = () => {
                         .networkClientId
                     : undefined;
                 if (
-                  toChain?.chainId === MultichainNetworks.SOLANA &&
+                  toChain?.chainId &&
+                  formatChainIdToCaip(toChain.chainId) ===
+                    MultichainNetworks.SOLANA &&
                   selectedSolanaAccount
                 ) {
                   dispatch(setSelectedAccount(selectedSolanaAccount.address));
