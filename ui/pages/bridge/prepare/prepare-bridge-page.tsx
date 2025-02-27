@@ -35,9 +35,9 @@ import {
   getWasTxDeclined,
   getFromAmountInCurrency,
   getValidationErrors,
-  getBridgeQuotesConfig,
   isBridgeSolanaEnabled,
   getIsToOrFromSolana,
+  getQuoteRefreshRate,
 } from '../../../ducks/bridge/selectors';
 import {
   BannerAlert,
@@ -97,7 +97,10 @@ import {
 } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
-import { BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE } from '../../../../shared/constants/bridge';
+import {
+  BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
+  SOLANA_USDC_ASSET,
+} from '../../../../shared/constants/bridge';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
@@ -148,7 +151,7 @@ const PrepareBridgePage = () => {
     isQuoteGoingToRefresh,
     quotesLastFetchedMs,
   } = useSelector(getBridgeQuotes);
-  const { refreshRate } = useSelector(getBridgeQuotesConfig);
+  const refreshRate = useSelector(getQuoteRefreshRate);
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
   // If latest quote is expired and user has sufficient balance
@@ -200,7 +203,7 @@ const PrepareBridgePage = () => {
   const {
     filteredTokenListGenerator: toTokenListGenerator,
     isLoading: isToTokensLoading,
-  } = useTokensWithFiltering(toChain?.chainId ?? fromChain?.chainId);
+  } = useTokensWithFiltering(toChain?.chainId ?? fromChain?.chainId, fromToken);
 
   const { flippedRequestProperties } = useRequestProperties();
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
@@ -314,7 +317,7 @@ const PrepareBridgePage = () => {
       // Otherwise quotes get filtered out by the bridge-api when the wallet's real
       // balance is less than the tenderly balance
       insufficientBal: Boolean(providerConfig?.rpcUrl?.includes('tenderly')),
-      slippage,
+      slippage: isSwap ? 0 : slippage,
       walletAddress: selectedAccount?.address ?? '',
       destWalletAddress: selectedDestinationAccount?.address,
     }),
@@ -408,6 +411,14 @@ const PrepareBridgePage = () => {
     }
   }, [fromChain, fromToken, fromTokens, search, isFromTokensLoading]);
 
+  // Set the default destination token for the swap
+  useEffect(() => {
+    if (isSwap && fromChain && !toToken) {
+      dispatch(setToChainId(fromChain.chainId));
+      dispatch(setToToken(SOLANA_USDC_ASSET));
+    }
+  }, []);
+
   const isSolanaBridgeEnabled = useSelector(isBridgeSolanaEnabled);
 
   return (
@@ -425,54 +436,52 @@ const PrepareBridgePage = () => {
           };
           dispatch(setFromToken(bridgeToken));
           dispatch(setFromTokenInputValue(null));
+          if (token.address === toToken?.address) {
+            dispatch(setToToken(null));
+          }
           bridgeToken.address &&
             trackInputEvent({
               input: 'token_source',
               value: bridgeToken.address,
             });
         }}
-        networkProps={
-          isSwap
-            ? undefined
-            : {
-                network: fromChain,
-                networks: fromChains,
-                onNetworkChange: (networkConfig) => {
-                  networkConfig?.chainId &&
-                    networkConfig.chainId !== fromChain?.chainId &&
-                    trackInputEvent({
-                      input: 'chain_source',
-                      value: networkConfig.chainId,
-                    });
-                  if (
-                    networkConfig?.chainId &&
-                    networkConfig.chainId === toChain?.chainId
-                  ) {
-                    dispatch(setToChainId(null));
-                    dispatch(setToToken(null));
-                  }
-                  if (networkConfig.chainId === MultichainNetworks.SOLANA) {
-                    dispatch(setSelectedAccount(selectedEvmAccount.address));
-                  } else if (selectedSolanaAccount) {
-                    dispatch(setSelectedAccount(selectedSolanaAccount.address));
-                  }
-                  if (isNetworkAdded(networkConfig)) {
-                    dispatch(
-                      setActiveNetworkWithError(
-                        networkConfig.rpcEndpoints[
-                          networkConfig.defaultRpcEndpointIndex
-                        ].networkClientId || networkConfig.chainId,
-                      ),
-                    );
-                  } else {
-                    dispatch(setActiveNetworkWithError(networkConfig.chainId));
-                  }
-                  dispatch(setFromToken(null));
-                  dispatch(setFromTokenInputValue(null));
-                },
-                header: t('yourNetworks'),
-              }
-        }
+        networkProps={{
+          network: fromChain,
+          networks: isSwap ? undefined : fromChains,
+          onNetworkChange: (networkConfig) => {
+            networkConfig?.chainId &&
+              networkConfig.chainId !== fromChain?.chainId &&
+              trackInputEvent({
+                input: 'chain_source',
+                value: networkConfig.chainId,
+              });
+            if (
+              networkConfig?.chainId &&
+              networkConfig.chainId === toChain?.chainId
+            ) {
+              dispatch(setToChainId(null));
+              dispatch(setToToken(null));
+            }
+            if (
+              networkConfig.chainId === MultichainNetworks.SOLANA &&
+              selectedSolanaAccount
+            ) {
+              dispatch(setSelectedAccount(selectedSolanaAccount.address));
+            } else if (isNetworkAdded(networkConfig)) {
+              dispatch(setSelectedAccount(selectedEvmAccount.address));
+              dispatch(
+                setActiveNetworkWithError(
+                  networkConfig.rpcEndpoints[
+                    networkConfig.defaultRpcEndpointIndex
+                  ].networkClientId || networkConfig.chainId,
+                ),
+              );
+            }
+            dispatch(setFromToken(null));
+            dispatch(setFromTokenInputValue(null));
+          },
+          header: t('yourNetworks'),
+        }}
         isMultiselectEnabled={!isSwap}
         onMaxButtonClick={(value: string) => {
           dispatch(setFromTokenInputValue(value));
