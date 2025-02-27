@@ -15,7 +15,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import Fuse from 'fuse.js';
 import * as URI from 'uri-js';
 import { EthScope } from '@metamask/keyring-api';
-import { isScopeEqualToAny } from '@metamask/keyring-utils';
 import {
   RpcEndpointType,
   type UpdateNetworkFields,
@@ -351,9 +350,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     }
 
     const chainIdToTrack = isEvm ? convertCaipToHexChainId(chainId) : chainId;
-    const currentChainIdToTrack = isScopeEqualToAny(currentChainId, [
-      'eip155:0',
-    ])
+    const currentChain = multichainNetworks[currentChainId];
+    const currentChainIdToTrack = currentChain?.isEvm
       ? convertCaipToHexChainId(currentChainId)
       : currentChainId;
 
