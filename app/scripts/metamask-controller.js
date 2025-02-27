@@ -3163,6 +3163,7 @@ export default class MetamaskController extends EventEmitter {
       userStorageController,
       notificationServicesController,
       notificationServicesPushController,
+      signatureController,
     } = this;
 
     return {
@@ -3577,6 +3578,9 @@ export default class MetamaskController extends EventEmitter {
           null,
           this.getTransactionMetricsRequest(),
         ),
+
+      newUnsignedTypedMessage:
+        signatureController.newUnsignedTypedMessage.bind(signatureController),
 
       // decryptMessageController
       decryptMessage: this.decryptMessageController.decryptMessage.bind(
