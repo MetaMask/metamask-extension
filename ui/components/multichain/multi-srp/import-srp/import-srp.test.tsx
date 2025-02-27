@@ -45,7 +45,7 @@ describe('ImportSRP', () => {
     jest.restoreAllMocks();
   });
 
-  it('should enable the "Import wallet" button when a valid secret recovery phrase is entered', async () => {
+  it('enables the "Import wallet" button when a valid secret recovery phrase is entered', async () => {
     const render = renderWithProvider(
       <ImportSRP onActionComplete={jest.fn()} />,
       store,
@@ -60,7 +60,7 @@ describe('ImportSRP', () => {
     });
   });
 
-  it('should not enable the "Import wallet" button when the secret recovery phrase is empty', async () => {
+  it('does not enable the "Import wallet" button when the secret recovery phrase is empty', async () => {
     const render = renderWithProvider(
       <ImportSRP onActionComplete={jest.fn()} />,
       store,
@@ -72,7 +72,7 @@ describe('ImportSRP', () => {
     expect(getByText('Import wallet')).not.toBeEnabled();
   });
 
-  it('should call addNewMnemonicToVault and showAlert on successful import', async () => {
+  it('calls addNewMnemonicToVault and showAlert on successful import', async () => {
     const onActionComplete = jest.fn();
     const render = renderWithProvider(
       <ImportSRP onActionComplete={onActionComplete} />,
@@ -98,7 +98,7 @@ describe('ImportSRP', () => {
     });
   });
 
-  it('should log an error and not call onActionComplete on import failure', async () => {
+  it('logs an error and not call onActionComplete on import failure', async () => {
     (actions.importMnemonicToVault as jest.Mock).mockImplementation(() =>
       jest.fn().mockRejectedValue(new Error('error')),
     );
