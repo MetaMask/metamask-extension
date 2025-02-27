@@ -30,10 +30,7 @@ import {
   RateLimitController,
   RateLimitedApiMap,
 } from '@metamask/rate-limit-controller';
-import {
-  SampleGasPricesController,
-  SamplePetnamesController,
-} from '../controllers/sample';
+import { SamplePetnamesController } from '../controllers/sample';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -70,7 +67,6 @@ export type Controller =
       name: 'TransactionUpdateController';
       state: Record<string, unknown>;
     })
-  | SampleGasPricesController
   | SamplePetnamesController;
 
 /**
