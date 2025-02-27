@@ -19,7 +19,7 @@ export function findKeyringId(
       );
     }
     if (params.address) {
-      return keyring.accounts.includes(params.address);
+      return keyring.accounts.includes(params.address.toLowerCase());
     }
     if (params.type) {
       return keyring.type === params.type;
