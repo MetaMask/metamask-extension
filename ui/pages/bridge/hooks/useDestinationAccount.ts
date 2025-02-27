@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   getSelectedInternalAccount,
   getSelectedEvmInternalAccount,
 } from '../../../selectors';
-import { useEffect, useState } from 'react';
-import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { getToChain } from '../../../ducks/bridge/selectors';
 import {
   getLastSelectedSolanaAccount,
