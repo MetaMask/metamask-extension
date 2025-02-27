@@ -224,9 +224,6 @@
   "addNewBitcoinTestnetAccount": {
     "message": "新しいビットコインアカウントの追加 (テストネット)"
   },
-  "addNewSolanaAccount": {
-    "message": "新しいSolanaアカウントの追加 (ベータ版)"
-  },
   "addNft": {
     "message": "NFTを追加"
   },
@@ -2061,9 +2058,6 @@
   "import": {
     "message": "インポート",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "アカウントをインポート"
   },
   "importAccountError": {
     "message": "アカウントのインポート中にエラーが発生しました。"

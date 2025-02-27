@@ -224,9 +224,6 @@
   "addNewBitcoinTestnetAccount": {
     "message": "Adicionar uma nova conta Bitcoin (Testnet)"
   },
-  "addNewSolanaAccount": {
-    "message": "Adicionar uma nova conta Solana (Beta)"
-  },
   "addNft": {
     "message": "Adicionar NFT"
   },
@@ -2064,9 +2061,6 @@
   "import": {
     "message": "Importar",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Importar conta"
   },
   "importAccountError": {
     "message": "Erro de importação de conta."
