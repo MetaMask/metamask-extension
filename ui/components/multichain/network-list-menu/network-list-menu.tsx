@@ -357,8 +357,6 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       ? convertCaipToHexChainId(currentChainId)
       : currentChainId;
 
-    console.log('chainIdToTrack', chainId, chainIdToTrack);
-    console.log('chainIdToTrack', currentChainId, currentChainIdToTrack);
     trackEvent({
       event: MetaMetricsEventName.NavNetworkSwitched,
       category: MetaMetricsEventCategory.Network,
