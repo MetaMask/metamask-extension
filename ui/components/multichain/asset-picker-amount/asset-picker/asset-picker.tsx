@@ -241,7 +241,7 @@ export function AssetPicker({
         networks={networkProps?.networks}
         selectedChainIds={selectedChainIds}
         onNetworkPickerClick={
-          networkProps
+          networkProps?.networks
             ? () => {
                 setShowAssetPickerModal(false);
                 setIsSelectingNetwork(true);
