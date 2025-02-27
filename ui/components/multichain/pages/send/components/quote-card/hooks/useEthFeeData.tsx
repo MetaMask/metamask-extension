@@ -11,7 +11,6 @@ import {
 import { EtherDenomination } from '../../../../../../../../shared/constants/common';
 import {
   checkNetworkAndAccountSupports1559,
-  getCurrentNetwork,
   getIsSwapsChain,
 } from '../../../../../../../selectors/selectors';
 import { getCurrentChainId } from '../../../../../../../../shared/modules/selectors/networks';
@@ -20,7 +19,6 @@ import {
   getUsedSwapsGasPrice,
 } from '../../../../../../../ducks/swaps/swaps';
 import { formatCurrency } from '../../../../../../../helpers/utils/confirm-tx.util';
-import { useGasFeeEstimates } from '../../../../../../../hooks/useGasFeeEstimates';
 import { toFixedNoTrailingZeros } from './utils';
 
 export default function useEthFeeData(gasLimit = 0) {
@@ -39,10 +37,8 @@ export default function useEthFeeData(gasLimit = 0) {
   const gasFee1559 = medium?.suggestedMaxFeePerGas;
 
   const chainId = useSelector(getCurrentChainId);
-  const network = useSelector(getCurrentNetwork);
   const isSwapsChain = useSelector(getIsSwapsChain);
 
-  useGasFeeEstimates(network?.id);
   const gasPriceNon1559 = useSelector(getUsedSwapsGasPrice);
 
   useEffect(() => {
