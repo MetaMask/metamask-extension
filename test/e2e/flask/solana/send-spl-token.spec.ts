@@ -49,7 +49,6 @@ describe('Send flow', function (this: Suite) {
         await sendSolanaPage.clickOnContinue();
 
         const confirmSolanaPage = new ConfirmSolanaTxPage(driver);
-        await sendSolanaPage.clickOnContinue();
         assert.equal(
           await confirmSolanaPage.checkAmountDisplayed('0.1', splTokenName),
           true,
@@ -84,7 +83,6 @@ describe('Send flow', function (this: Suite) {
           true,
           'Network fee is not displayed and it should',
         );
-
         await confirmSolanaPage.clickOnSend();
         const sentTxPage = new SolanaTxresultPage(driver);
         assert.equal(
