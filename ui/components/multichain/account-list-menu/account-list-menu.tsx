@@ -625,8 +625,8 @@ export const AccountListMenu = ({
                   }}
                   inputProps={{ autoFocus: true }}
                   // TODO: These props are required in the TextFieldSearch component. These should be optional
-                  endAccessory
-                  className
+                  endAccessory={null}
+                  className=''
                 />
               </Box>
             ) : null}
