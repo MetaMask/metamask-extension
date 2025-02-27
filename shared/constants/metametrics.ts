@@ -423,6 +423,10 @@ export type MetaMetricsUserTraits = {
    */
   number_of_tokens?: number;
   /**
+   * The number of HD Entropies the user has.
+   */
+  number_of_hd_entropies?: number;
+  /**
    * Does the user have the OpenSea API enabled?
    */
   opensea_api_enabled?: boolean;
@@ -541,6 +545,10 @@ export enum MetaMetricsUserTrait {
    * Identified when the number of tokens change.
    */
   NumberOfTokens = 'number_of_tokens',
+  /**
+   * Identified when the user has HD Entropies.
+   */
+  NumberOfHDEntropies = 'number_of_hd_entropies',
   /**
    * Identified when the OpenSea API is enabled.
    */

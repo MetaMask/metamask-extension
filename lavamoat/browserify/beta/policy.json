@@ -145,7 +145,6 @@
     },
     "@metamask/smart-transactions-controller>@ethereumjs/util": {
       "globals": {
-        "console.log": true,
         "console.warn": true,
         "fetch": true
       },
