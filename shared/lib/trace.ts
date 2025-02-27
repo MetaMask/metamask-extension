@@ -399,31 +399,27 @@ export const fetchWithSentryInstrumentation = async (
   }
 
   try {
-    await Sentry.startSpan(
+    Sentry.startSpan(
       { op: 'http.client', name: `${method} ${url}` },
-      async (span) => {
-        if (!span) {
-          return;
-        }
+      (span) => {
         const parsedURL = new URL(url, location.origin);
 
-        span.setAttribute('http.request.method', method);
-
-        span.setAttribute('server.address', parsedURL.hostname);
-        span.setAttribute('server.port', parsedURL.port || undefined);
-
-        span.setAttribute('http.response.status_code', response.status);
-        span.setAttribute(
-          'http.response_content_length',
-          Number(response.headers?.get('content-length')),
-        );
+        span.setAttributes({
+          'http.request.method': method,
+          'server.address': parsedURL.hostname,
+          'server.port': parsedURL.port || undefined,
+          'http.response.status_code': response.status,
+          'http.response_content_length': Number(
+            response.headers?.get('content-length'),
+          ),
+        });
 
         const cloudflareRayId =
           response.headers?.get('CF-RAY') ??
           response.headers?.get('CF-Ray') ??
           response.headers?.get('CF-ray') ??
           response.headers?.get('cf_ray');
-        if (cloudflareRayId) {
+        if (cloudflareRayId !== null) {
           span.setAttribute('CF-Ray', cloudflareRayId);
           const scope = Sentry.getCurrentScope();
           scope?.setTag('CF-Ray', cloudflareRayId);
