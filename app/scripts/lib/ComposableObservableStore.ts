@@ -19,7 +19,7 @@ type Controllers = MemStoreControllers &
   Partial<Pick<StoreControllers, 'PhishingController'>>;
 
 /**
- * An ObservableStore that can compose the state objects of its child stores and controllers
+ * An ObservableStore that can compose the state objects of its child controllers
  */
 export default class ComposableObservableStore<
   Config extends Record<
@@ -34,8 +34,8 @@ export default class ComposableObservableStore<
   },
 > extends ObservableStore<ComposedState> {
   /**
-   * Describes which stores are being composed. The key is the name of the
-   * store, and the value is either an ObservableStore, or a controller that
+   * Describes which controllers are being composed. The key is the name of the
+   * controller, and the value is a controller that
    * extends one of the two base controllers in the `@metamask/base-controller`
    * package.
    */
@@ -49,11 +49,11 @@ export default class ComposableObservableStore<
    * Create a new store
    *
    * @param options
-   * @param [options.config] - Map of internal state keys to child stores and controllers
+   * @param [options.config] - Map of internal state keys to child controllers
    * @param [options.controllerMessenger] - The controller
    * messenger, used for subscribing to events from BaseControllerV2-based
    * controllers.
-   * @param [options.state] - The composed state of the child stores and controllers
+   * @param [options.state] - The composed state of the child controllers
    * @param [options.persist] - Whether or not to apply the persistence for v2 controllers
    */
   constructor({
@@ -76,11 +76,10 @@ export default class ComposableObservableStore<
   }
 
   /**
-   * Composes a new internal store subscription structure
+   * Composes a new internal messenger subscription structure
    *
-   * @param config - Describes which stores are being
-   * composed. The key is the name of the store, and the value is either a controller
-   * with an `ObservableStore`-type `store` propeety, or a controller that extends one of the two base
+   * @param config - Describes which controllers are being
+   * composed. The key is the name of the controller, and the value is a controller that extends one of the two base
    * controllers in the `@metamask/base-controller` package.
    */
   updateStructure<NewConfig extends Partial<Config>>(config: NewConfig) {
