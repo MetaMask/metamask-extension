@@ -31,11 +31,16 @@ jobs:
       - name: Setup environment
         uses: metamask/github-tools/.github/actions/setup-environment@1d657e262aea7e3f216754febb624831527d2565
 
-      - name: Download artifact prep-build-test-${{ matrix.buildType }}
+      - name: Compute ARTIFACT_NAME
+        run: |
+          echo ARTIFACT_NAME="prep-build-test-${{ matrix.buildType }}$([[ ${{ matrix.buildType }} == "webpack" ]] && echo "-${{ matrix.browser }}")" >> $GITHUB_ENV
+          echo "ARTIFACT_NAME=$ARTIFACT_NAME"
+
+      - name: Download artifact ${{env.ARTIFACT_NAME}}
         uses: actions/download-artifact@v4
         with:
           path: ./dist/
-          pattern: prep-build-test-${{ matrix.buildType }}${{ matrix.buildType == 'webpack' && join('-',matrix.browser) || '' }}
+          pattern: ${{env.ARTIFACT_NAME}}
           merge-multiple: true
 
       # - run: echo "set -g mouse on" >> ~/.tmux.conf
