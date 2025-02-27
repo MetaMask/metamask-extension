@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import classnames from 'classnames';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import { Hex } from '@metamask/utils';
+import { type Hex, isStrictHexString } from '@metamask/utils';
 import {
   BackgroundColor,
   BlockSize,
@@ -108,9 +108,9 @@ export const TokenListItemComponent = ({
   const { safeChains } = useSafeChains();
   const currencyRates = useSelector(getCurrencyRates);
 
-  const decimalChainId = isEvm && parseInt(hexToDecimal(chainId), 10);
-
   const safeChainDetails: SafeChain | undefined = safeChains?.find((chain) => {
+    const decimalChainId =
+      isStrictHexString(chainId) && parseInt(hexToDecimal(chainId), 10);
     if (typeof decimalChainId === 'number') {
       return chain.chainId === decimalChainId.toString();
     }
@@ -289,7 +289,7 @@ export const TokenListItemComponent = ({
                 size={ButtonIconSize.Md}
                 backgroundColor={BackgroundColor.transparent}
                 data-testid="scam-warning"
-                ariaLabel={''}
+                ariaLabel=""
               />
             ) : (
               <SensitiveText

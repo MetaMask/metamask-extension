@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
+import { type Hex, type CaipChainId, isCaipChainId } from '@metamask/utils';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import { getSelectedInternalAccount } from '../../selectors';
@@ -20,7 +20,7 @@ const useLatestBalance = (
     decimals: number;
     symbol: string;
   } | null,
-  chainId?: Hex,
+  chainId?: Hex | CaipChainId,
 ) => {
   const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
   const currentChainId = useSelector(getCurrentChainId);
@@ -28,7 +28,13 @@ const useLatestBalance = (
   const { value: latestBalance } = useAsyncResult<
     Numeric | undefined
   >(async () => {
-    if (token?.address && chainId && currentChainId === chainId) {
+    if (
+      token?.address &&
+      // TODO check whether chainId is EVM when MultichainNetworkController is integrated
+      !isCaipChainId(chainId) &&
+      chainId &&
+      currentChainId === chainId
+    ) {
       return await calcLatestSrcBalance(
         global.ethereumProvider,
         selectedAddress,
@@ -37,13 +43,7 @@ const useLatestBalance = (
       );
     }
     return undefined;
-  }, [
-    chainId,
-    currentChainId,
-    token,
-    selectedAddress,
-    global.ethereumProvider,
-  ]);
+  }, [currentChainId, token?.address, selectedAddress]);
 
   if (token && !token.decimals) {
     throw new Error(

@@ -4185,9 +4185,6 @@
   "seedPhraseIntroTitle": {
     "message": "Защитите свой кошелек"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Прежде чем приступить к делу, посмотрите это короткое видео о секретной фразе для восстановления и споособах обезопасить кошелек."
-  },
   "seedPhraseReq": {
     "message": "Секретные фразы для восстановления содержат 12, 15, 18, 21 или 24 слова"
   },
@@ -4652,15 +4649,6 @@
   "snapsUIError": {
     "message": "Свяжитесь с авторами $1 для получения дополнительной поддержки.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "solanaSupportSectionTitle": {
-    "message": "Solana"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "Включение этой функции даст вам возможность добавить в ваше расширение MetaMask счет Solana, созданный на основе вашей существующей секретной фразы для восстановления. Это экспериментальная бета-функция, которая используется вами на ваш страх и риск."
-  },
-  "solanaSupportToggleTitle": {
-    "message": "Включить «Добавить новый счет Solana (бета-версия)»"
   },
   "somethingDoesntLookRight": {
     "message": "Что-то не так? $1",
