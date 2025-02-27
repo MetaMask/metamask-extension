@@ -224,7 +224,10 @@
     "tslib@npm:^2.4.0": "~2.6.0",
     "tslib@npm:^2.6.2": "~2.6.0",
     "@ethersproject/signing-key/elliptic": "^6.6.1",
-    "gridplus-sdk/elliptic": "^6.6.1"
+    "gridplus-sdk/elliptic": "^6.6.1",
+    "viem": "^2.23.5",
+    "@metamask-private/delegator-core-viem": "^0.6.0",
+    "@viem/anvil": "^0.0.10"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -254,6 +257,7 @@
     "@metamask-institutional/sdk": "^0.2.0",
     "@metamask-institutional/transaction-update": "^0.2.6",
     "@metamask-institutional/types": "^1.2.0",
+    "@metamask-private/delegator-core-viem": "^0.6.0",
     "@metamask/abi-utils": "^2.0.2",
     "@metamask/account-watcher": "^4.1.2",
     "@metamask/accounts-controller": "^26.0.0",
@@ -409,6 +413,7 @@
     "unicode-confusables": "^0.1.1",
     "uri-js": "^4.4.1",
     "uuid": "^8.3.2",
+    "viem": "^2.23.5",
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
@@ -644,7 +649,6 @@
     "ttest": "^2.1.1",
     "typescript": "~5.4.5",
     "unzipper": "^0.12.3",
-    "viem": "^2.21.8",
     "vinyl": "^2.2.1",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",

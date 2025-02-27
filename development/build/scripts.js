@@ -936,6 +936,8 @@ function setupBundlerDefaults(
             './**/node_modules/@firebase',
             './**/node_modules/marked',
             './**/node_modules/@solana',
+            './**/node_modules/viem',
+            './**/node_modules/isows',
           ],
           global: true,
         },
