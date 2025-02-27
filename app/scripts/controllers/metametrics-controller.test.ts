@@ -1458,6 +1458,7 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
+          sessionData: undefined,
         });
 
         expect(traits).toStrictEqual({
@@ -1555,6 +1556,7 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
+          sessionData: undefined,
         });
 
         const updatedTraits = controller._buildUserTraitsObject({
@@ -1614,6 +1616,14 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
+          sessionData: {
+            accessToken: '',
+            expiresIn: '',
+            profile: {
+              identifierId: 'identifierId',
+              profileId: 'profileId',
+            },
+          },
         });
 
         expect(updatedTraits).toStrictEqual({
@@ -1622,6 +1632,7 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.NumberOfTokens]: 1,
           [MetaMetricsUserTrait.OpenSeaApiEnabled]: false,
           [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]: false,
+          [MetaMetricsUserTrait.ProfileId]: 'profileId',
         });
       });
     });
@@ -1681,6 +1692,14 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
+          sessionData: {
+            accessToken: '',
+            expiresIn: '',
+            profile: {
+              identifierId: 'identifierId',
+              profileId: 'profileId',
+            },
+          },
         });
 
         const updatedTraits = controller._buildUserTraitsObject({
@@ -1730,6 +1749,14 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
+          sessionData: {
+            accessToken: '',
+            expiresIn: '',
+            profile: {
+              identifierId: 'identifierId',
+              profileId: 'profileId',
+            },
+          },
         });
         expect(updatedTraits).toStrictEqual(null);
       });

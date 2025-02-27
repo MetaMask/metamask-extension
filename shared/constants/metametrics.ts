@@ -490,6 +490,10 @@ export type MetaMetricsUserTraits = {
    * The number of petname addresses
    */
   petname_addresses_count?: number;
+  /**
+   * The profile ID of the user if they have been signed in
+   */
+  profile_id?: string;
 };
 
 export enum MetaMetricsUserTrait {
@@ -598,6 +602,10 @@ export enum MetaMetricsUserTrait {
    * Identified when the user prefers to see all tokens or current network tokens in wallet list
    */
   NetworkFilterPreference = 'selected_network_filter',
+  /**
+   * Identified when the user signs in
+   */
+  ProfileId = 'profile_id',
 }
 
 /**
