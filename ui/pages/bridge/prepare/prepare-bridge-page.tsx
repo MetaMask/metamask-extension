@@ -458,10 +458,7 @@ const PrepareBridgePage = () => {
     }
   }, [fromChain, fromToken, fromTokens, search, isFromTokensLoading]);
 
-  let isSolanaBridgeEnabled = false;
-  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
-  isSolanaBridgeEnabled = useSelector(isBridgeSolanaEnabled);
-  ///: END:ONLY_INCLUDE_IF
+  const isSolanaBridgeEnabled = useSelector(isBridgeSolanaEnabled);
 
   return (
     <Column className="prepare-bridge-page" gap={8}>
