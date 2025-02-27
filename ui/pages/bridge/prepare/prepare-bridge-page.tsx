@@ -329,9 +329,10 @@ const PrepareBridgePage = () => {
       insufficientBal: Boolean(providerConfig?.rpcUrl?.includes('tenderly')),
       slippage: isSwap ? 0 : slippage,
       walletAddress: selectedAccount?.address ?? '',
-      destWalletAddress: isToOrFromSolana
-        ? selectedDestinationAccount?.address
-        : selectedEvmAccount?.address,
+      destWalletAddress:
+        isToOrFromSolana || isSwap
+          ? selectedDestinationAccount?.address
+          : selectedEvmAccount?.address,
     }),
     [
       fromToken?.address,
@@ -364,6 +365,10 @@ const PrepareBridgePage = () => {
 
   // Auto-select most recently used account only once on initial load
   useEffect(() => {
+    if (isSwap) {
+      setSelectedDestinationAccount(selectedAccount);
+      return;
+    }
     if (
       !selectedDestinationAccount &&
       !hasAutoSelectedRef.current &&
@@ -393,6 +398,8 @@ const PrepareBridgePage = () => {
     selectedDestinationAccount,
     isDestinationSolana,
     accounts,
+    isSwap,
+    selectedAccount,
   ]);
 
   const trackInputEvent = useCallback(
