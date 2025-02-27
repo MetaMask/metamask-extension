@@ -6,6 +6,7 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import FixtureBuilder from '../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../constants';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 
 const SOLANA_URL_REGEX =
   /^https:\/\/(solana-mainnet\.infura\.io|api\.devnet\.solana\.com)/u;
@@ -1452,14 +1453,14 @@ export async function mockGetTokenAccountsByOwner(mockServer: Mockttp) {
                     parsed: {
                       info: {
                         isNative: false,
-                        mint: '2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
+                        mint: 'GkyZ3xtwoA35nTXE1t26uKGL6jjiC6zM9pGjvdtpump',
                         owner: 'CKFo3yPDXvpT8xbA5WQWi25VP2Rgf8CwP4G3MUAi8BB4',
                         state: 'initialized',
                         tokenAmount: {
-                          amount: '1000000',
+                          amount: '5000000',
                           decimals: 6,
-                          uiAmount: 1,
-                          uiAmountString: '1',
+                          uiAmount: 5,
+                          uiAmountString: '5',
                         },
                       },
                       type: 'account',
@@ -1473,7 +1474,7 @@ export async function mockGetTokenAccountsByOwner(mockServer: Mockttp) {
                   rentEpoch: 18446744073709552000,
                   space: 165,
                 },
-                pubkey: '6Mz37BPzamiCzMRnzCUgJEbVdZuF5WL5cyqFQ7X9tKNx',
+                pubkey: '5PnjF151TG4w1m6KX5domB2ahas3Q2X9LaTM5Fb7LEjS',
               },
             ],
           },
@@ -1618,9 +1619,13 @@ export async function withSolanaAccountSnap(
   }
   await withFixtures(
     {
-      fixtures: fixtures.build(),
+      fixtures: fixtures
+        .withPermissionControllerConnectedToTestDapp()
+        .withTokensControllerERC20({ chainId: 1 })
+        .build(),
       title,
       dapp: true,
+      smartContract: SMART_CONTRACTS.HST,
       testSpecificMock: async (mockServer: Mockttp) => {
         const mockList = [];
 
