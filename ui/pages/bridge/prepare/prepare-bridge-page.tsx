@@ -310,7 +310,7 @@ const PrepareBridgePage = () => {
     if (!toChain?.chainId) {
       return false;
     }
-    return toChain.chainId.toString().startsWith('solana:');
+    return formatChainIdToCaip(toChain.chainId) === MultichainNetworks.SOLANA;
   }, [toChain?.chainId]);
 
   const quoteParams = useMemo(
