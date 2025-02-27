@@ -285,6 +285,7 @@
     "@metamask/keyring-controller": "^19.2.0",
     "@metamask/keyring-internal-api": "^4.0.3",
     "@metamask/keyring-snap-client": "^4.0.1",
+    "@metamask/keyring-utils": "^2.3.1",
     "@metamask/logging-controller": "^6.0.4",
     "@metamask/logo": "^4.0.0",
     "@metamask/message-manager": "^12.0.1",

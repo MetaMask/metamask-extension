@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Fuse from 'fuse.js';
 import * as URI from 'uri-js';
 import { EthScope } from '@metamask/keyring-api';
+import { isScopeEqualToAny } from '@metamask/keyring-utils';
 import {
   RpcEndpointType,
   type UpdateNetworkFields,
@@ -349,13 +350,15 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       await handleNonEvmNetworkChange(chainId);
     }
 
-    const [chainIdToTrack, currentChainIdToTrack] = isEvm
-      ? [
-          convertCaipToHexChainId(chainId),
-          convertCaipToHexChainId(currentChainId),
-        ]
-      : [chainId, currentChainId];
+    const chainIdToTrack = isEvm ? convertCaipToHexChainId(chainId) : chainId;
+    const currentChainIdToTrack = isScopeEqualToAny(currentChainId, [
+      'eip155:0',
+    ])
+      ? convertCaipToHexChainId(currentChainId)
+      : currentChainId;
 
+    console.log('chainIdToTrack', chainId, chainIdToTrack);
+    console.log('chainIdToTrack', currentChainId, currentChainIdToTrack);
     trackEvent({
       event: MetaMetricsEventName.NavNetworkSwitched,
       category: MetaMetricsEventCategory.Network,
