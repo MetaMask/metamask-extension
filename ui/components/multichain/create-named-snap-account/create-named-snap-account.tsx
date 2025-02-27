@@ -43,11 +43,11 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
   }, []);
 
   const getNextAccountName = useCallback(
-    async (accounts: InternalAccount[]): Promise<string> => {
+    async ({ accounts }: { accounts: InternalAccount[] }): Promise<string> => {
       // If a snap-suggested account name exists, use it as a base
       return snapSuggestedAccountName
         ? getUniqueAccountName(accounts, snapSuggestedAccountName)
-        : getNextAvailableAccountName(KeyringTypes.snap);
+        : getNextAvailableAccountName({ keyringType: KeyringTypes.snap });
     },
     [],
   );
