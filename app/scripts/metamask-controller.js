@@ -2644,19 +2644,28 @@ export default class MetamaskController extends EventEmitter {
               return this.getPrimaryKeyringMnemonic();
             }
 
-            const mnemonic = await this.controllerMessenger.call(
-              'KeyringController:withKeyring',
-              {
-                id: source,
-              },
-              async (keyring) => keyring.mnemonic,
-            );
+            try {
+              const mnemonic = await this.controllerMessenger.call(
+                'KeyringController:withKeyring',
+                {
+                  id: source,
+                },
+                async (keyring) => keyring.mnemonic,
+              );
 
-            if (!mnemonic) {
+              if (!mnemonic) {
+                // The keyring isn't guaranteed to have a mnemonic (e.g.,
+                // hardware wallets, which can't be used as entropy sources),
+                // so we throw an error if it doesn't.
+                throw new Error(
+                  `Entropy source with ID "${source}" not found.`,
+                );
+              }
+
+              return mnemonic;
+            } catch {
               throw new Error(`Entropy source with ID "${source}" not found.`);
             }
-
-            return mnemonic;
           },
           getUnlockPromise: this.appStateController.getUnlockPromise.bind(
             this.appStateController,
