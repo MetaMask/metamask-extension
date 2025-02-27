@@ -17,11 +17,11 @@ jobs:
         browser: [chrome, firefox]
         buildType: [browserify, webpack]
         testType: [pageload, userActions]
-        exclude:
-          # webpack can build for Firefox, but it would require more custom code here,
-          # and it's probably not useful to test this right now anyway
-          - browser: firefox
-            buildType: webpack
+        # exclude:
+        #   # webpack can build for Firefox, but it would require more custom code here,
+        #   # and it's probably not useful to test this right now anyway
+        #   - browser: firefox
+        #     buildType: webpack
 
     name: ${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.testType }}
     steps:
@@ -35,7 +35,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: ./dist/
-          pattern: prep-build-test-${{ matrix.buildType }}
+          pattern: prep-build-test-${{ matrix.buildType }}${{ matrix.buildType == 'webpack' && join('-',matrix.browser) || '' }}
           merge-multiple: true
 
       # - run: echo "set -g mouse on" >> ~/.tmux.conf
