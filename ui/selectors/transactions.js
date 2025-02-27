@@ -20,9 +20,9 @@ import {
   createDeepEqualSelector,
   filterAndShapeUnapprovedTransactions,
 } from '../../shared/modules/selectors/util';
+import { FEATURED_NETWORK_CHAIN_IDS } from '../../shared/constants/network';
 import { getSelectedInternalAccount } from './accounts';
 import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
-import { FEATURED_NETWORK_CHAIN_IDS } from '../../shared/constants/network';
 
 const INVALID_INITIAL_TRANSACTION_TYPES = [
   TransactionType.cancel,

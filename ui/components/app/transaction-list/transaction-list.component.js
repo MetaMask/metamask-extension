@@ -62,8 +62,6 @@ import { formatTimestamp } from '../multichain-transaction-details-modal/helpers
 
 import {
   BackgroundColor,
-  BorderColor,
-  BorderStyle,
   JustifyContent,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   Display,
