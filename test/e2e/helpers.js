@@ -686,7 +686,7 @@ const locateAccountBalanceDOM = async (driver, localNode, address = null) => {
   }
 };
 
-const WALLET_PASSWORD = 'correct horse battery staple';
+export const WALLET_PASSWORD = 'correct horse battery staple';
 
 /**
  * Unlocks the wallet using the provided password.

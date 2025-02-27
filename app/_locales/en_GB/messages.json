@@ -4359,6 +4359,9 @@
   "reusedTokenNameWarning": {
     "message": "A token here reuses a symbol from another token you watch, this can be confusing or deceptive."
   },
+  "revealSecretRecoveryPhrase": {
+    "message": "Reveal Secret Recovery Phrase"
+  },
   "revealSeedWords": {
     "message": "Reveal Secret Recovery Phrase"
   },
@@ -4455,6 +4458,10 @@
   },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
+  },
+  "secretRecoveryPhrasePlusNumber": {
+    "message": "Secret Phrase $1",
+    "description": "The $1 is the order of the Secret Recovery Phrase"
   },
   "secureWallet": {
     "message": "Secure wallet"
@@ -4717,6 +4724,9 @@
   },
   "showPrivateKey": {
     "message": "Show private key"
+  },
+  "showSRP": {
+    "message": "Show secret recovery phrase"
   },
   "showTestnetNetworks": {
     "message": "Show test networks"
