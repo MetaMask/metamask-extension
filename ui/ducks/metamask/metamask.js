@@ -60,9 +60,7 @@ const initialState = {
     },
   },
   throttledOrigins: {},
-  SamplePetNamesController: {
-    namesByChainIdAndAddress: {},
-  },
+  samplePetnamesByChainIdAndAddress: {},
 };
 
 /**

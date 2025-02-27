@@ -27,7 +27,7 @@ export type SamplePetnamesControllerState = {
    * The registry of pet names, categorized by chain ID first and address
    * second.
    */
-  namesByChainIdAndAddress: {
+  samplePetnamesByChainIdAndAddress: {
     [chainId: Hex]: {
       [address: Hex]: string;
     };
@@ -38,7 +38,7 @@ export type SamplePetnamesControllerState = {
  * The metadata for each property in {@link SamplePetnamesControllerState}.
  */
 const samplePetnamesControllerMetadata = {
-  namesByChainIdAndAddress: {
+  samplePetnamesByChainIdAndAddress: {
     persist: true,
     anonymous: false,
   },
@@ -110,7 +110,7 @@ export type SamplePetnamesControllerMessenger = RestrictedMessenger<
  */
 function getDefaultPetnamesControllerState(): SamplePetnamesControllerState {
   return {
-    namesByChainIdAndAddress: {},
+    samplePetnamesByChainIdAndAddress: {},
   };
 }
 
@@ -147,7 +147,7 @@ function getDefaultPetnamesControllerState(): SamplePetnamesControllerState {
  *   '0xF57F855e17483B1f09bFec62783C9d3b6c8b3A99',
  *   'Primary Account'
  * );
- * samplePetnamesController.state.namesByChainIdAndAddress
+ * samplePetnamesController.state.samplePetnamesByChainIdAndAddress
  * // => { '0x1': { '0xF57F855e17483B1f09bFec62783C9d3b6c8b3A99': 'Primary Account' } }
  * ```
  */
@@ -198,8 +198,13 @@ export class SamplePetnamesController extends BaseController<
     const normalizedAddress = address.toLowerCase() as Hex;
 
     this.update((state) => {
-      state.namesByChainIdAndAddress[chainId] ??= {};
-      state.namesByChainIdAndAddress[chainId][normalizedAddress] = name;
+      state.samplePetnamesByChainIdAndAddress[chainId] ??= {};
+      state.samplePetnamesByChainIdAndAddress[chainId][normalizedAddress] =
+        name;
+      console.log(
+        'After assignment:',
+        JSON.stringify(state.samplePetnamesByChainIdAndAddress),
+      );
     });
   }
 }
