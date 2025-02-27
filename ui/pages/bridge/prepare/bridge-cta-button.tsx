@@ -75,8 +75,8 @@ export const BridgeCTAButton = ({
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
 
-  const { balanceAmount } = useLatestBalance(fromToken, fromChain?.chainId);
-  const { balanceAmount: nativeAssetBalance } = useLatestBalance(
+  const balanceAmount = useLatestBalance(fromToken, fromChain?.chainId);
+  const nativeAssetBalance = useLatestBalance(
     fromChain?.chainId
       ? SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
           fromChain.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
