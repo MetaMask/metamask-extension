@@ -188,17 +188,14 @@ const PrepareBridgePage = () => {
   const { quotesRefreshCount } = useSelector(getBridgeQuotes);
   const { openBuyCryptoInPdapp } = useRamps();
 
-  const { balanceAmount: nativeAssetBalance } = useLatestBalance(
+  const nativeAssetBalance = useLatestBalance(
     SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
       fromChain?.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
     ],
     fromChain?.chainId,
   );
 
-  const { balanceAmount: srcTokenBalance } = useLatestBalance(
-    fromToken,
-    fromChain?.chainId,
-  );
+  const srcTokenBalance = useLatestBalance(fromToken, fromChain?.chainId);
 
   const {
     filteredTokenListGenerator: toTokenListGenerator,
