@@ -1056,6 +1056,9 @@ jobs:
   job-publish-release:
     executor: node-browsers-small
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - 'SHA256:It7UdNvvXY8g5aN32yfbPKFxZSV9ny7K8ifDdlP53rQ'
       - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
@@ -1075,6 +1078,9 @@ jobs:
       - run:
           name: Create GitHub release
           command: .circleci/scripts/release-create-gh-release.sh
+      - run:
+          name: Push Firefox bundle script
+          command: .circleci/scripts/push-firefox-bundle-script.sh
 
   job-publish-ts-migration-dashboard:
     executor: node-browsers-small
