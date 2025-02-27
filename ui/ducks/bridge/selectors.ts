@@ -222,6 +222,16 @@ export const getBridgeQuotesConfig = (state: BridgeAppState) =>
     BridgeFeatureFlagsKey.EXTENSION_CONFIG
   ] ?? {};
 
+export const getQuoteRefreshRate = createSelector(
+  getBridgeQuotesConfig,
+  getFromChain,
+  (extensionConfig, fromChain) =>
+    (fromChain &&
+      extensionConfig.chains[formatChainIdToCaip(fromChain.chainId)]
+        ?.refreshRate) ??
+    extensionConfig.refreshRate,
+);
+
 const _getBridgeFeesPerGas = createSelector(
   getGasFeeEstimates,
   (gasFeeEstimates) => ({
