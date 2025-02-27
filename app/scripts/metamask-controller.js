@@ -142,9 +142,15 @@ import {
   UserStorageController,
 } from '@metamask/profile-sync-controller';
 import {
-  NotificationServicesPushController,
-  NotificationServicesController,
-} from '@metamask/notification-services-controller';
+  TRIGGER_TYPES,
+  Controller as NotificationServicesController,
+} from '@metamask/notification-services-controller/notification-services';
+import { Controller as NotificationServicesPushController } from '@metamask/notification-services-controller/push-services';
+import {
+  createRegToken,
+  deleteRegToken,
+  createSubscribeToPushNotifications,
+} from '@metamask/notification-services-controller/push-services/web';
 import {
   Caip25CaveatMutators,
   Caip25CaveatType,
@@ -196,6 +202,7 @@ import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
+  SMART_TRANSACTION_CONFIRMATION_TYPES,
 } from '../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -374,7 +381,6 @@ import {
   SnapsRegistryInit,
 } from './controller-init/snaps';
 
-const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
   // The process of updating the badge happens in app/scripts/background.js.
@@ -522,6 +528,8 @@ export default class MetamaskController extends EventEmitter {
         ApprovalType.WatchAsset,
         ApprovalType.EthGetEncryptionPublicKey,
         ApprovalType.EthDecrypt,
+        // Exclude Smart TX Status Page from rate limiting to allow sequential transactions
+        SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
       ],
     });
 
@@ -1339,6 +1347,7 @@ export default class MetamaskController extends EventEmitter {
       }),
     });
 
+    /** @type {import('@metamask/notification-services-controller/push-services').NotificationServicesPushControllerMessenger} */
     const notificationServicesPushControllerMessenger =
       this.controllerMessenger.getRestricted({
         name: 'NotificationServicesPushController',
@@ -1346,7 +1355,7 @@ export default class MetamaskController extends EventEmitter {
         allowedEvents: [],
       });
     this.notificationServicesPushController =
-      new NotificationServicesPushController.Controller({
+      new NotificationServicesPushController({
         messenger: notificationServicesPushControllerMessenger,
         state: initState.NotificationServicesPushController,
         env: {
@@ -1360,10 +1369,17 @@ export default class MetamaskController extends EventEmitter {
           vapidKey: process.env.VAPID_KEY ?? '',
         },
         config: {
-          isPushEnabled: isManifestV3,
+          isPushFeatureEnabled: isManifestV3,
           platform: 'extension',
-          onPushNotificationReceived,
-          onPushNotificationClicked,
+          pushService: {
+            createRegToken,
+            deleteRegToken,
+            subscribeToPushNotifications: createSubscribeToPushNotifications({
+              messenger: notificationServicesPushControllerMessenger,
+              onReceivedHandler: onPushNotificationReceived,
+              onClickHandler: onPushNotificationClicked,
+            }),
+          },
         },
       });
     notificationServicesPushControllerMessenger.subscribe(
@@ -1395,41 +1411,44 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    this.notificationServicesController =
-      new NotificationServicesController.Controller({
-        messenger: this.controllerMessenger.getRestricted({
-          name: 'NotificationServicesController',
-          allowedActions: [
-            'KeyringController:getAccounts',
-            'KeyringController:getState',
-            'AuthenticationController:getBearerToken',
-            'AuthenticationController:isSignedIn',
-            'AuthenticationController:performSignIn',
-            'UserStorageController:getStorageKey',
-            'UserStorageController:performGetStorage',
-            'UserStorageController:performSetStorage',
-            'NotificationServicesPushController:enablePushNotifications',
-            'NotificationServicesPushController:disablePushNotifications',
-            'NotificationServicesPushController:subscribeToPushNotifications',
-            'NotificationServicesPushController:updateTriggerPushNotifications',
-          ],
-          allowedEvents: [
-            'KeyringController:stateChange',
-            'KeyringController:lock',
-            'KeyringController:unlock',
-            'NotificationServicesPushController:onNewNotifications',
-          ],
-        }),
-        state: initState.NotificationServicesController,
-        env: {
-          isPushIntegrated: isManifestV3,
-          featureAnnouncements: {
-            platform: 'extension',
-            spaceId: process.env.CONTENTFUL_ACCESS_SPACE_ID ?? '',
-            accessToken: process.env.CONTENTFUL_ACCESS_TOKEN ?? '',
-          },
-        },
+    /** @type {import('@metamask/notification-services-controller/notification-services').NotificationServicesControllerMessenger} */
+    const notificationServicesControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'NotificationServicesController',
+        allowedActions: [
+          'KeyringController:getAccounts',
+          'KeyringController:getState',
+          'AuthenticationController:getBearerToken',
+          'AuthenticationController:isSignedIn',
+          'AuthenticationController:performSignIn',
+          'UserStorageController:getStorageKey',
+          'UserStorageController:performGetStorage',
+          'UserStorageController:performSetStorage',
+          'NotificationServicesPushController:enablePushNotifications',
+          'NotificationServicesPushController:disablePushNotifications',
+          'NotificationServicesPushController:subscribeToPushNotifications',
+          'NotificationServicesPushController:updateTriggerPushNotifications',
+        ],
+        allowedEvents: [
+          'KeyringController:stateChange',
+          'KeyringController:lock',
+          'KeyringController:unlock',
+          'NotificationServicesPushController:onNewNotifications',
+          'NotificationServicesPushController:stateChange',
+        ],
       });
+    this.notificationServicesController = new NotificationServicesController({
+      messenger: notificationServicesControllerMessenger,
+      state: initState.NotificationServicesController,
+      env: {
+        isPushIntegrated: isManifestV3,
+        featureAnnouncements: {
+          platform: 'extension',
+          spaceId: process.env.CONTENTFUL_ACCESS_SPACE_ID ?? '',
+          accessToken: process.env.CONTENTFUL_ACCESS_TOKEN ?? '',
+        },
+      },
+    });
 
     // account tracker watches balances, nonces, and any code at their address
     this.accountTrackerController = new AccountTrackerController({
@@ -1807,7 +1826,7 @@ export default class MetamaskController extends EventEmitter {
       this.controllerMessenger.getRestricted({
         name: BRIDGE_STATUS_CONTROLLER_NAME,
         allowedActions: [
-          'AccountsController:getSelectedAccount',
+          'AccountsController:getSelectedMultichainAccount',
           'NetworkController:getNetworkClientById',
           'NetworkController:findNetworkClientIdByChainId',
           'NetworkController:getState',
@@ -3324,8 +3343,10 @@ export default class MetamaskController extends EventEmitter {
       verifyPassword: this.verifyPassword.bind(this),
 
       // network management
-      setActiveNetwork: (networkConfigurationId) => {
-        return this.networkController.setActiveNetwork(networkConfigurationId);
+      setActiveNetwork: async (id) => {
+        // The multichain network controller will proxy the call to the network controller
+        // in the case that the ID is an EVM network client ID.
+        return await this.multichainNetworkController.setActiveNetwork(id);
       },
       // Avoids returning the promise so that initial call to switch network
       // doesn't block on the network lookup step

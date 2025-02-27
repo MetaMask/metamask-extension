@@ -3,6 +3,8 @@ import {
   RpcEndpointType,
 } from '@metamask/network-controller';
 import { capitalize, pick } from 'lodash';
+import { Hex } from '@metamask/utils';
+
 /**
  * A type representing built-in network types, used as an identifier.
  */
@@ -537,7 +539,7 @@ export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.LINEA_MAINNET,
 ] as const;
 
-export const TEST_CHAINS = [
+export const TEST_CHAINS: Hex[] = [
   CHAIN_IDS.SEPOLIA,
   CHAIN_IDS.LINEA_SEPOLIA,
   CHAIN_IDS.LOCALHOST,
@@ -808,7 +810,7 @@ export const CHAIN_ID_TO_RPC_URL_MAP = {
   [CHAIN_IDS.LOCALHOST]: LOCALHOST_RPC_URL,
 } as const;
 
-export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
+export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<Hex, string> = {
   [CHAIN_IDS.MAINNET]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.LINEA_GOERLI]: LINEA_GOERLI_TOKEN_IMAGE_URL,
   [CHAIN_IDS.LINEA_SEPOLIA]: LINEA_SEPOLIA_TOKEN_IMAGE_URL,
