@@ -6,7 +6,7 @@ import ConfirmationFooter from './confirmation-footer';
 
 jest.mock('../../alerts/alerts-context', () => ({
   ...jest.requireActual('../../alerts/alerts-context'),
-  useAlertContext: jest.fn().mockReturnValue({
+  useTemplateAlertContext: jest.fn().mockReturnValue({
     hasAlerts: false,
     showAlertsModal: jest.fn(),
   }),
@@ -24,7 +24,7 @@ describe('ConfirmationFooter', () => {
 
   it('invoke showAlertsModal when confirm button is clicked if alerts are present', () => {
     const mockShowAlertsModal = jest.fn();
-    jest.spyOn(AlertContext, 'useAlertContext').mockReturnValue({
+    jest.spyOn(AlertContext, 'useTemplateAlertContext').mockReturnValue({
       hasAlerts: true,
       showAlertsModal: mockShowAlertsModal,
     });

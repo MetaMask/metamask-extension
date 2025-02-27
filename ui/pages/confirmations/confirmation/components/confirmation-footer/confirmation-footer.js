@@ -7,7 +7,7 @@ import {
   ButtonVariant,
   IconName,
 } from '../../../../../components/component-library';
-import { useAlertContext } from '../../alerts/TemplateAlertContext';
+import { useTemplateAlertContext } from '../../alerts/TemplateAlertContext';
 
 export default function ConfirmationFooter({
   onSubmit,
@@ -21,7 +21,7 @@ export default function ConfirmationFooter({
   actionsStyle,
   style,
 }) {
-  const { hasAlerts, showAlertsModal } = useAlertContext();
+  const { hasAlerts, showAlertsModal } = useTemplateAlertContext();
   const showActions = Boolean(onCancel || onSubmit);
   return (
     <div className="confirmation-footer" style={style}>
