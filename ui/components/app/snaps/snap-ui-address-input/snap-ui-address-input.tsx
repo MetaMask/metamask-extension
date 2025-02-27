@@ -128,7 +128,7 @@ export const SnapUIAddressInput: FunctionComponent<
           backgroundColor={BackgroundColor.backgroundDefault}
           alignItems={AlignItems.center}
           borderWidth={1}
-          borderRadius={BorderRadius.SM}
+          borderRadius={BorderRadius.LG}
           borderColor={BorderColor.borderMuted}
           paddingLeft={4}
           paddingRight={4}
@@ -137,7 +137,7 @@ export const SnapUIAddressInput: FunctionComponent<
         >
           <Jazzicon address={value} diameter={24} />
           <Box flexDirection={FlexDirection.Column} gap={2}>
-            <Text fontWeight={FontWeight.Bold}>{matchedAddressName}</Text>
+            <Text fontWeight={FontWeight.Medium}>{matchedAddressName}</Text>
             <Text variant={TextVariant.bodyXs} ellipsis>
               {value}
             </Text>
@@ -170,6 +170,9 @@ export const SnapUIAddressInput: FunctionComponent<
       error={Boolean(error)}
       size={FormTextFieldSize.Lg}
       helpText={error}
+      textFieldProps={{
+        borderRadius: BorderRadius.LG,
+      }}
       endAccessory={
         value ? (
           <Icon
