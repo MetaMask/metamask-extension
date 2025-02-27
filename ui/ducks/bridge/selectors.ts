@@ -259,7 +259,7 @@ export const getFromTokenConversionRate = createSelector(
     assetsRates,
     fromToken,
     nativeToUsdRate,
-    nonEvmNativeToUsdRate,
+    nonEvmNativeConversionRate,
     nativeToCurrencyRate,
     fromTokenExchangeRate,
   ) => {
@@ -268,12 +268,12 @@ export const getFromTokenConversionRate = createSelector(
         // For SOLANA tokens, we use the conversion rates provided by the multichain rates controller
         const tokenToNativeAssetRate = tokenPriceInNativeAsset(
           assetsRates[fromToken.address]?.rate,
-          nonEvmNativeToUsdRate.sol.conversionRate,
+          nonEvmNativeConversionRate.sol.conversionRate,
         );
         return exchangeRatesFromNativeAndCurrencyRates(
           tokenToNativeAssetRate,
-          nonEvmNativeToUsdRate.sol.conversionRate,
-          nonEvmNativeToUsdRate.sol.usdConversionRate,
+          nonEvmNativeConversionRate.sol.conversionRate,
+          nonEvmNativeConversionRate.sol.usdConversionRate,
         );
       }
       // For EVM tokens, we use the market data to get the exchange rate
@@ -299,6 +299,7 @@ export const getFromTokenConversionRate = createSelector(
 export const getToTokenConversionRate = createDeepEqualSelector(
   getToChain,
   getMarketData,
+  getAssetsRates, // multichain equivalent of getMarketData
   getToToken,
   getNetworkConfigurationsByChainId,
   (state) => ({
@@ -306,12 +307,15 @@ export const getToTokenConversionRate = createDeepEqualSelector(
     toTokenExchangeRate: state.bridge.toTokenExchangeRate,
     toTokenUsdExchangeRate: state.bridge.toTokenUsdExchangeRate,
   }),
+  getMultichainCoinRates, // multichain native rates
   (
     toChain,
     marketData,
+    assetsRates,
     toToken,
     allNetworksByChainId,
     { state, toTokenExchangeRate, toTokenUsdExchangeRate },
+    nonEvmNativeConversionRate,
   ) => {
     // When the toChain is not imported, the exchange rate to native asset is not available
     // The rate in the bridge state is used instead
@@ -325,7 +329,20 @@ export const getToTokenConversionRate = createDeepEqualSelector(
         usd: toTokenUsdExchangeRate,
       };
     }
-    if (toChain?.chainId && toToken && marketData) {
+    if (toChain?.chainId && toToken) {
+      if (toChain.chainId === MultichainNetworks.SOLANA) {
+        // For SOLANA tokens, we use the conversion rates provided by the multichain rates controller
+        const tokenToNativeAssetRate = tokenPriceInNativeAsset(
+          assetsRates[toToken.address]?.rate,
+          nonEvmNativeConversionRate.sol.conversionRate,
+        );
+        return exchangeRatesFromNativeAndCurrencyRates(
+          tokenToNativeAssetRate,
+          nonEvmNativeConversionRate.sol.conversionRate,
+          nonEvmNativeConversionRate.sol.usdConversionRate,
+        );
+      }
+
       const { chainId } = toChain;
 
       const nativeToCurrencyRate = selectConversionRateByChainId(
@@ -351,6 +368,7 @@ const _getQuotesWithMetadata = createSelector(
   getToTokenConversionRate,
   getFromTokenConversionRate,
   getConversionRate,
+  getMultichainCoinRates,
   getUSDConversionRate,
   _getBridgeFeesPerGas,
   (
@@ -358,6 +376,7 @@ const _getQuotesWithMetadata = createSelector(
     toTokenExchangeRate,
     fromTokenExchangeRate,
     nativeToDisplayCurrencyExchangeRate,
+    nonEvmNativeConversionRate,
     nativeToUsdExchangeRate,
     {
       estimatedBaseFeeInDecGwei,
@@ -379,8 +398,8 @@ const _getQuotesWithMetadata = createSelector(
       if (isSolanaQuote) {
         totalEstimatedNetworkFee = calcSolanaTotalNetworkFee(
           quote,
-          nativeToDisplayCurrencyExchangeRate,
-          nativeToUsdExchangeRate,
+          nonEvmNativeConversionRate.sol.conversionRate,
+          nonEvmNativeConversionRate.sol.usdConversionRate,
         );
         gasFee = totalEstimatedNetworkFee;
         totalMaxNetworkFee = totalEstimatedNetworkFee;
