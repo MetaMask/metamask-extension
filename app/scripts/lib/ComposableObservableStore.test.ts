@@ -1,7 +1,7 @@
 import {
   BaseController,
-  ControllerMessenger,
-  RestrictedControllerMessengerConstraint,
+  Messenger,
+  RestrictedMessengerConstraint,
   ActionConstraint,
   EventConstraint,
 } from '@metamask/base-controller';
@@ -14,7 +14,7 @@ type ExampleControllerState = {
 class ExampleController extends BaseController<
   'ExampleController',
   ExampleControllerState,
-  RestrictedControllerMessengerConstraint<'ExampleController'>
+  RestrictedMessengerConstraint<'ExampleController'>
 > {
   static defaultState = {
     bar: 'bar',
@@ -29,7 +29,7 @@ class ExampleController extends BaseController<
   constructor({
     messenger,
   }: {
-    messenger: RestrictedControllerMessengerConstraint<'ExampleController'>;
+    messenger: RestrictedMessengerConstraint<'ExampleController'>;
   }) {
     super({
       messenger,
@@ -48,7 +48,7 @@ class ExampleController extends BaseController<
 
 describe('ComposableObservableStore', () => {
   it('should register initial state', () => {
-    const controllerMessenger = new ControllerMessenger<
+    const controllerMessenger = new Messenger<
       ActionConstraint,
       EventConstraint
     >();
@@ -61,7 +61,7 @@ describe('ComposableObservableStore', () => {
   });
 
   it('should update structure with BaseController-based controller', () => {
-    const controllerMessenger = new ControllerMessenger<
+    const controllerMessenger = new Messenger<
       ActionConstraint,
       EventConstraint
     >();
@@ -84,7 +84,7 @@ describe('ComposableObservableStore', () => {
   });
 
   it('should initialize state with BaseControllerV2 controller', () => {
-    const controllerMessenger = new ControllerMessenger<
+    const controllerMessenger = new Messenger<
       ActionConstraint,
       EventConstraint
     >();
@@ -111,7 +111,7 @@ describe('ComposableObservableStore', () => {
   });
 
   it('should strip non-persisted state from initial state', () => {
-    const controllerMessenger = new ControllerMessenger<
+    const controllerMessenger = new Messenger<
       ActionConstraint,
       EventConstraint
     >();
@@ -139,7 +139,7 @@ describe('ComposableObservableStore', () => {
   });
 
   it('should return empty state when not configured', () => {
-    const controllerMessenger = new ControllerMessenger<
+    const controllerMessenger = new Messenger<
       ActionConstraint,
       EventConstraint
     >();
@@ -150,7 +150,7 @@ describe('ComposableObservableStore', () => {
   });
 
   it('should throw if the controller messenger is omitted and the config includes a BaseControllerV2 controller', () => {
-    const controllerMessenger = new ControllerMessenger<
+    const controllerMessenger = new Messenger<
       ActionConstraint,
       EventConstraint
     >();
@@ -173,7 +173,7 @@ describe('ComposableObservableStore', () => {
   });
 
   it('should throw if the controller messenger is omitted and updateStructure called with a BaseControllerV2 controller', () => {
-    const controllerMessenger = new ControllerMessenger<
+    const controllerMessenger = new Messenger<
       ActionConstraint,
       EventConstraint
     >();
@@ -193,7 +193,7 @@ describe('ComposableObservableStore', () => {
   });
 
   it('should throw if initialized with undefined config entry', () => {
-    const controllerMessenger = new ControllerMessenger<
+    const controllerMessenger = new Messenger<
       ActionConstraint,
       EventConstraint
     >();
