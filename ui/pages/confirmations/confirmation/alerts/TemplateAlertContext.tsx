@@ -20,9 +20,9 @@ type TemplateAlertContextType = {
 
 const NopeFunction = () => undefined;
 
-export const TemplateAlertContext = createContext<TemplateAlertContextType | undefined>(
-  undefined,
-);
+export const TemplateAlertContext = createContext<
+  TemplateAlertContextType | undefined
+>(undefined);
 
 export const TemplateAlertContextProvider: React.FC<{
   children: ReactElement;
