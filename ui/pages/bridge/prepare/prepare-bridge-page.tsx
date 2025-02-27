@@ -37,6 +37,7 @@ import {
   getValidationErrors,
   getBridgeQuotesConfig,
   isBridgeSolanaEnabled,
+  getIsToOrFromSolana,
 } from '../../../ducks/bridge/selectors';
 import {
   BannerAlert,
@@ -283,27 +284,7 @@ const PrepareBridgePage = () => {
     isLowReturnBannerOpen,
   ]);
 
-  const [selectedDestinationAccount, setSelectedDestinationAccount] =
-    useState<InternalAccount | null>(null);
-  const hasAutoSelectedRef = useRef(false);
-
-  const isToOrFromSolana = useMemo(() => {
-    if (!fromChain?.chainId || !toChain?.chainId) {
-      return false;
-    }
-
-    const fromChainStartsWithSolana = fromChain.chainId
-      .toString()
-      .startsWith('solana:');
-    const toChainStartsWithSolana = toChain.chainId
-      .toString()
-      .startsWith('solana:');
-
-    return (
-      (toChainStartsWithSolana && !fromChainStartsWithSolana) ||
-      (!toChainStartsWithSolana && fromChainStartsWithSolana)
-    );
-  }, [fromChain?.chainId, toChain?.chainId]);
+  const isToOrFromSolana = useSelector(getIsToOrFromSolana);
 
   const isDestinationSolana = useMemo(() => {
     if (!toChain?.chainId) {

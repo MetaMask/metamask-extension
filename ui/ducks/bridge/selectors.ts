@@ -631,3 +631,25 @@ export const isBridgeSolanaEnabled = createDeepEqualSelector(
     return Boolean(solanaConfig?.isActiveSrc || solanaConfig?.isActiveDest);
   },
 );
+
+export const getIsToOrFromSolana = createSelector(
+  getFromChain,
+  getToChain,
+  (fromChain, toChain) => {
+    if (!fromChain?.chainId || !toChain?.chainId) {
+      return false;
+    }
+
+    const fromChainStartsWithSolana =
+      formatChainIdToCaip(fromChain.chainId) === MultichainNetworks.SOLANA;
+    const toChainStartsWithSolana =
+      formatChainIdToCaip(toChain.chainId) === MultichainNetworks.SOLANA;
+
+    // Only return true if either chain is Solana and the other is EVM
+    return !(fromChainStartsWithSolana && toChainStartsWithSolana);
+    // return (
+    //   (toChainStartsWithSolana && !fromChainStartsWithSolana) ||
+    //   (!toChainStartsWithSolana && fromChainStartsWithSolana)
+    // );
+  },
+);
