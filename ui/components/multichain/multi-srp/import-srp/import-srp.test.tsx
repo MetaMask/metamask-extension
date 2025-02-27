@@ -12,6 +12,12 @@ import mockState from '../../../../../test/data/mock-state.json';
 import * as actions from '../../../../store/actions';
 import { ImportSRP } from './import-srp';
 
+const mockClearClipboard = jest.fn();
+
+jest.mock('../../../../helpers/utils/util', () => ({
+  clearClipboard: () => mockClearClipboard(),
+}));
+
 const VALID_SECRET_RECOVERY_PHRASE =
   'input turtle oil scorpion exile useless dry foster vessel knee area label';
 
@@ -145,5 +151,28 @@ describe('ImportSRP', () => {
 
     expect(invalidWord).toBeInvalid();
     expect(importButton).toBeDisabled();
+  });
+
+  it('clears the secret recovery phrase after importing', async () => {
+    const onActionComplete = jest.fn();
+    const render = renderWithProvider(
+      <ImportSRP onActionComplete={onActionComplete} />,
+      store,
+    );
+    const { getByText } = render;
+
+    expect(getByText('Import wallet')).not.toBeEnabled();
+    await pasteSRPIntoFirstInput(render, VALID_SECRET_RECOVERY_PHRASE);
+
+    fireEvent.click(getByText('Import wallet'));
+
+    await waitFor(() => {
+      expect(actions.importMnemonicToVault).toHaveBeenCalledWith(
+        VALID_SECRET_RECOVERY_PHRASE,
+      );
+      expect(onActionComplete).toHaveBeenCalledWith(true);
+    });
+
+    expect(mockClearClipboard).toHaveBeenCalled();
   });
 });
