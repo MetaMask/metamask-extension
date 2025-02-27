@@ -47,3 +47,6 @@
 @import 'notifications-tag-counter';
 @import 'toast';
 @import "ramps-card";
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+@import "multi-srp";
+///: END:ONLY_INCLUDE_IF()

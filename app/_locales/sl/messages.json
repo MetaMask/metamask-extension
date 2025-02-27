@@ -307,9 +307,6 @@
     "message": "Uvoz",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Uvoz računa"
-  },
   "importAccountMsg": {
     "message": " Uvoženi računa ne bodo povezani s prvotnim seed phase. Preberite več o uvoženih računih "
   },

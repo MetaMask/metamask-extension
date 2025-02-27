@@ -197,7 +197,7 @@
     "message": "Add friends and addresses you trust"
   },
   "addHardwareWallet": {
-    "message": "Add hardware wallet"
+    "message": "Hardware wallet"
   },
   "addIPFSGateway": {
     "message": "Add your preferred IPFS gateway"
@@ -224,8 +224,11 @@
   "addNewBitcoinTestnetAccount": {
     "message": "Add a new Bitcoin account (Testnet)"
   },
-  "addNewSolanaAccount": {
-    "message": "Add a new Solana account (Beta)"
+  "addNewEthereumAccountLabel": {
+    "message": "Ethereum account"
+  },
+  "addNewSolanaAccountLabel": {
+    "message": "Solana account"
   },
   "addNft": {
     "message": "Add NFT"
@@ -234,12 +237,12 @@
     "message": "Add NFTs"
   },
   "addNonEvmAccount": {
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana",
-    "message": "Add $1 account"
+    "message": "Add $1 account",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
   },
   "addNonEvmAccountFromNetworkPicker": {
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana",
-    "message": "To enable the $1 network, you need to create a $1 account."
+    "message": "To enable the $1 network, you need to create a $1 account.",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "Add RPC URL"
@@ -1090,6 +1093,9 @@
   "connectAccounts": {
     "message": "Connect accounts"
   },
+  "connectAnAccountHeader": {
+    "message": "Connect an account"
+  },
   "connectManually": {
     "message": "Manually connect to current site"
   },
@@ -1256,6 +1262,9 @@
   },
   "create": {
     "message": "Create"
+  },
+  "createNewAccountHeader": {
+    "message": "Create a new account"
   },
   "createNewWallet": {
     "message": "Create a new wallet"
@@ -2273,9 +2282,6 @@
     "message": "Import",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Import account"
-  },
   "importAccountError": {
     "message": "Error importing account."
   },
@@ -2312,6 +2318,30 @@
   "importNFTTokenIdToolTip": {
     "message": "An NFT's ID is a unique identifier since no two NFTs are alike. Again, on OpenSea this number is under 'Details'. Make a note of it, or copy it onto your clipboard."
   },
+  "importNWordSRP": {
+    "message": "I have a $1 word recovery phrase",
+    "description": "$1 is the number of words in the recovery phrase"
+  },
+  "importPrivateKey": {
+    "message": "Private Key"
+  },
+  "importSRPDescription": {
+    "message": "Import an existing wallet with your 12 or 24-word secret recovery phrase."
+  },
+  "importSRPNumberOfWordsError": {
+    "message": "Secret Recovery Phrases contain 12, or 24 words"
+  },
+  "importSRPWordError": {
+    "message": "Word $1 is incorrect or misspelled.",
+    "description": "$1 is the word that is incorrect or misspelled"
+  },
+  "importSRPWordErrorAlternative": {
+    "message": "Word $1 and $2 is incorrect or misspelled.",
+    "description": "$1 and $2 are multiple words that are mispelled."
+  },
+  "importSecretRecoveryPhrase": {
+    "message": "Import Secret Recovery Phrase"
+  },
   "importSelectedTokens": {
     "message": "Import selected tokens?"
   },
@@ -2329,6 +2359,15 @@
   },
   "importTokensError": {
     "message": "We could not import the tokens. Please try again later."
+  },
+  "importWallet": {
+    "message": "Import wallet"
+  },
+  "importWalletOrAccountHeader": {
+    "message": "Import a wallet or account"
+  },
+  "importWalletSuccess": {
+    "message": "Wallet successfully imported"
   },
   "importWithCount": {
     "message": "Import $1",
@@ -4416,6 +4455,10 @@
   },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
+  },
+  "secretRecoveryPhrasePlusNumber": {
+    "message": "Secret Phrase $1",
+    "description": "The $1 is the order of the Secret Recovery Phrase"
   },
   "secureWallet": {
     "message": "Secure wallet"

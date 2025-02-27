@@ -313,9 +313,6 @@
     "message": "Importēt",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Importēt kontu"
-  },
   "importAccountMsg": {
     "message": "Importētie konti netiks piesaistīti sākotnēji izveidotā MetaMask konta atkopšanas frāzei. Uzziniet vairāk par importētajiem kontiem"
   },

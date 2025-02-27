@@ -224,9 +224,6 @@
   "addNewBitcoinTestnetAccount": {
     "message": "添加新的比特币账户（测试网）"
   },
-  "addNewSolanaAccount": {
-    "message": "添加新的Solana账户（测试版）"
-  },
   "addNft": {
     "message": "添加 NFT"
   },
@@ -2061,9 +2058,6 @@
   "import": {
     "message": "导入",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "导入账户"
   },
   "importAccountError": {
     "message": "导入账户时出错。"

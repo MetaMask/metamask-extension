@@ -313,9 +313,6 @@
     "message": "Импортиране",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Импортиране на акаунт"
-  },
   "importAccountMsg": {
     "message": "Импортираните акаунти няма да бъдат свързани с първоначално създадената ви фраза за метаМаск акаунт. Научете повече за импортираните акаунти"
   },

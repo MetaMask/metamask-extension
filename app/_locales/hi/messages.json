@@ -224,9 +224,6 @@
   "addNewBitcoinTestnetAccount": {
     "message": "एक नया Bitcoin अकाउंट जोड़ें (टैस्टनेट (testnet))"
   },
-  "addNewSolanaAccount": {
-    "message": "एक नया Solana अकाउंट जोड़ें (बीटा)"
-  },
   "addNft": {
     "message": "NFT जोड़ें"
   },
@@ -2061,9 +2058,6 @@
   "import": {
     "message": "इम्पोर्ट करें",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "अकाउंट इम्पोर्ट करें"
   },
   "importAccountError": {
     "message": "अकाउंट इम्पोर्ट करने में गड़बड़ी।"

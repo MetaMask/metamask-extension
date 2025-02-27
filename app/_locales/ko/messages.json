@@ -224,9 +224,6 @@
   "addNewBitcoinTestnetAccount": {
     "message": "새 비트코인 계정 추가(테스트넷)"
   },
-  "addNewSolanaAccount": {
-    "message": "새 솔라나 계정 추가(베타)"
-  },
   "addNft": {
     "message": "NFT 추가"
   },
@@ -2061,9 +2058,6 @@
   "import": {
     "message": "가져오기",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "계정 가져오기"
   },
   "importAccountError": {
     "message": "계정 가져오기 오류"
