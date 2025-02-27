@@ -1,4 +1,5 @@
 import { Suite } from 'mocha';
+import { Browser } from 'selenium-webdriver';
 import {
   withFixtures,
   openActionMenuAndStartSendFlow,
@@ -12,6 +13,7 @@ import {
 import { SWAP_SEND_QUOTES_RESPONSE_TST_ETH } from './mocks/erc20-data';
 
 const RECIPIENT_ADDRESS = '0xc427D562164062a23a5cFf596A4a3208e72Acd28';
+const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
 describe('Swap-Send ERC20', function () {
   describe('to non-contract address with data that matches swap data signature', function (this: Suite) {
@@ -39,10 +41,19 @@ describe('Swap-Send ERC20', function () {
             4000,
           );
 
-          await swapSendPage.verifyMaxButtonClick(
-            ['TST', 'TST'],
-            ['10.0000', '10.0000'],
-          );
+          // We made this due to a change on Firefox v125
+          // The 2 decimals are not displayed with values which are "rounded",
+          if (isFirefox) {
+            await swapSendPage.verifyMaxButtonClick(
+              ['TST', 'TST'],
+              ['10', '10'],
+            );
+          } else {
+            await swapSendPage.verifyMaxButtonClick(
+              ['TST', 'TST'],
+              ['10.0000', '10.0000'],
+            );
+          }
 
           await swapSendPage.fillAmountInput('10');
 
