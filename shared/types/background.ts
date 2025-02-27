@@ -432,7 +432,7 @@ export type FlattenedBackgroundStateProxy = {
   metaMetricsDataDeletionTimestamp: MetaMetricsDataDeletionState['metaMetricsDataDeletionTimestamp'];
   names: NameControllerState['names'];
   nameSources: NameControllerState['nameSources'];
-  // networkConfigurations: NetworkState['networkConfigurations'];
+  networkConfigurationsByChainId: NetworkState['networkConfigurationsByChainId'];
   networksMetadata: NetworkState['networksMetadata'];
   selectedNetworkClientId: NetworkState['selectedNetworkClientId'];
   allNftContracts: NftControllerState['allNftContracts'];
@@ -476,7 +476,6 @@ export type FlattenedBackgroundStateProxy = {
   useNftDetection: PreferencesControllerState['useNftDetection'];
   usePhishDetect: PreferencesControllerState['usePhishDetect'];
   useTokenDetection: PreferencesControllerState['useTokenDetection'];
-  // useRequestQueue: PreferencesControllerState['useRequestQueue'];
   useTransactionSimulations: PreferencesControllerState['useTransactionSimulations'];
   enableMV3TimestampSave: PreferencesControllerState['enableMV3TimestampSave'];
   useSafeChainsListValidation: PreferencesControllerState['useSafeChainsListValidation'];
