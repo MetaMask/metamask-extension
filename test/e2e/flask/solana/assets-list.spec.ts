@@ -2,11 +2,9 @@ import { Suite } from 'mocha';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
-import { withSolanaAccountSnap } from './common-solana';
-import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import { ACCOUNT_TYPE } from '../../constants';
-import HomePage from '../../page-objects/pages/home/homepage';
+import { withSolanaAccountSnap } from './common-solana';
 
 describe('Multichain Asset List', function (this: Suite) {
   const NETWORK_NAME_MAINNET = 'Ethereum Mainnet';
