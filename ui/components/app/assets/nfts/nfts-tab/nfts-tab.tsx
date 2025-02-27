@@ -134,7 +134,13 @@ export default function NftsTab() {
 
   if (!hasAnyNfts && nftsStillFetchingIndication) {
     return (
-      <Box className="nfts-tab__loading">
+      <Box
+        className="nfts-tab__loading"
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+        display={Display.Flex}
+        marginTop={4}
+      >
         <Spinner
           color="var(--color-warning-default)"
           className="loading-overlay__spinner"

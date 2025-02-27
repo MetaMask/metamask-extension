@@ -7,7 +7,6 @@ const {
   DAPP_URL,
   regularDelayMs,
   WINDOW_TITLES,
-  defaultGanacheOptions,
   switchToNotificationWindow,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
@@ -21,19 +20,20 @@ describe('Request Queueing chainId proxy sync', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
-
           .withSelectedNetworkControllerPerDomain()
           .build(),
-        localNodeOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
