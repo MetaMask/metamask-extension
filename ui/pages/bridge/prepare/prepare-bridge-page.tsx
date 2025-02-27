@@ -38,9 +38,7 @@ import {
   getFromAmountInCurrency,
   getValidationErrors,
   getBridgeQuotesConfig,
-  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   isBridgeSolanaEnabled,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../ducks/bridge/selectors';
 import {
   BannerAlert,
