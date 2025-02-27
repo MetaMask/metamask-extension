@@ -27,6 +27,7 @@ export default function useSolanaBridgeTransactionMapping(
    */
   const getNetworkName = (chainId: NumericValue) => {
     // First check if it's in the MULTICHAIN_PROVIDER_CONFIGS (for non-EVM chains)
+    // @ts-expect-error WIP: Need to fix type for indexing MULTICHAIN_PROVIDER_CONFIGS with NumericValue
     let networkName = MULTICHAIN_PROVIDER_CONFIGS[chainId]?.nickname;
 
     // If not found and it might be an EVM chain ID, convert to hex and check NETWORK_TO_NAME_MAP
@@ -34,6 +35,7 @@ export default function useSolanaBridgeTransactionMapping(
       try {
         // Convert decimal to hex with '0x' prefix
         const hexChainId = new Numeric(chainId, 10).toPrefixedHexString();
+        // @ts-expect-error WIP: Need to fix type for indexing NETWORK_TO_NAME_MAP with string
         networkName = NETWORK_TO_NAME_MAP[hexChainId];
       } catch (e) {
         // If conversion fails, just use the original chain ID
@@ -50,6 +52,7 @@ export default function useSolanaBridgeTransactionMapping(
   if (bridgeHistory) {
     Object.values(bridgeHistory).forEach((bridgeTx) => {
       if (bridgeTx.status?.srcChain?.txHash) {
+        // @ts-expect-error WIP: Need to add index signature to bridgeTxSignatures
         bridgeTxSignatures[bridgeTx.status.srcChain.txHash] = bridgeTx;
       }
     });
@@ -66,7 +69,12 @@ export default function useSolanaBridgeTransactionMapping(
     const txSignature = tx.id;
 
     // Check if this transaction signature matches a bridge transaction
-    if (txSignature && bridgeTxSignatures[txSignature]) {
+    if (
+      txSignature &&
+      // @ts-expect-error WIP: Need to add index signature to bridgeTxSignatures
+      bridgeTxSignatures[txSignature]
+    ) {
+      // @ts-expect-error WIP: Need to add index signature to bridgeTxSignatures
       const matchingBridgeTx = bridgeTxSignatures[txSignature];
 
       // Return an enhanced version of the transaction with bridge info
