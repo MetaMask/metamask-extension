@@ -207,33 +207,9 @@ export default function useSubmitBridgeTransaction() {
 
     // Ensure that for Solana transactions we're properly passing the signature as hash
     // Check for the explicit isSolana flag set in the transaction metadata
+    // TODO: see below.
+    // @ts-expect-error: bridgeTxMeta is not typed with isSolana, need to clean this up later.
     const isSolana = bridgeTxMeta.isSolana === true;
-
-    // Log detailed information about the bridge transaction
-    console.log('Submit Bridge Transaction - DETAILED INFO:', {
-      isSolana,
-      hash: bridgeTxMeta.hash,
-      id: bridgeTxMeta.id,
-      type: bridgeTxMeta.type,
-      isBridgeTx: bridgeTxMeta.isBridgeTx,
-      status: bridgeTxMeta.status,
-      chainId: bridgeTxMeta.chainId,
-      networkClientId: bridgeTxMeta.networkClientId,
-      bridgeFields: {
-        sourceTokenSymbol: bridgeTxMeta.sourceTokenSymbol,
-        destinationTokenSymbol: bridgeTxMeta.destinationTokenSymbol,
-        sourceTokenAddress: bridgeTxMeta.sourceTokenAddress,
-        destinationTokenAddress: bridgeTxMeta.destinationTokenAddress,
-        destinationChainId: bridgeTxMeta.destinationChainId,
-      },
-      txParams: bridgeTxMeta.txParams,
-      fullTxMeta: bridgeTxMeta,
-      quoteInfo: {
-        bridge: quoteResponse.quote.bridges[0],
-        srcChainId: quoteResponse.quote.srcChainId,
-        destChainId: quoteResponse.quote.destChainId,
-      },
-    });
 
     dispatch(
       startPollingForBridgeTxStatus({
