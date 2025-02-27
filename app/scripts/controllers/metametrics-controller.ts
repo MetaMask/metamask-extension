@@ -11,6 +11,7 @@ import {
 import { bufferToHex, keccak } from 'ethereumjs-util';
 import { v4 as uuidv4 } from 'uuid';
 import { Nft } from '@metamask/assets-controllers';
+import { PreferencesState } from '@metamask/preferences-controller';
 import { NameType } from '@metamask/name-controller';
 import {
   getErrorMessage,
@@ -1190,8 +1191,11 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.HasMarketingConsent]:
         metamaskState.MetaMetricsController.dataCollectionForMarketing,
       [MetaMetricsUserTrait.TokenSortPreference]:
-        metamaskState.PreferencesController.preferences?.tokenSortConfig?.key ||
-        '',
+        (
+          metamaskState.PreferencesController as PreferencesControllerState & {
+            tokenSortConfig: PreferencesState['tokenSortConfig'];
+          }
+        ).tokenSortConfig?.key || '',
       [MetaMetricsUserTrait.PrivacyModeEnabled]:
         metamaskState.PreferencesController.preferences?.privacyMode,
       [MetaMetricsUserTrait.NetworkFilterPreference]: Object.keys(

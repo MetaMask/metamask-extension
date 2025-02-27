@@ -1360,6 +1360,11 @@ describe('MetaMetricsController', function () {
       };
 
       await withController(({ controller }) => {
+        const networkState = mockNetworkState(
+          { chainId: CHAIN_IDS.MAINNET },
+          { chainId: CHAIN_IDS.GOERLI },
+          { chainId: '0xaf' },
+        );
         const traits = controller._buildUserTraitsObject({
           AddressBookController: {
             addressBook: {
@@ -1406,6 +1411,9 @@ describe('MetaMetricsController', function () {
               },
             },
           },
+          NetworkController: {
+            ...networkState,
+          },
           TokensController: {
             allTokens: MOCK_ALL_TOKENS,
             ...mockNetworkState(
@@ -1430,8 +1438,23 @@ describe('MetaMetricsController', function () {
             securityAlertsEnabled: true,
             theme: ThemeType.os,
             useTokenDetection: true,
-            showNativeTokenAsMainBalance: true,
             security_providers: [],
+            tokenSortConfig: {
+              key: 'token-sort-key',
+              order: 'dsc',
+              sortCallback: 'stringNumeric',
+            },
+            preferences: {
+              privacyMode: true,
+              tokenNetworkFilter: {},
+              showNativeTokenAsMainBalance: true,
+            },
+          },
+          MetaMetricsController: {
+            participateInMetaMetrics: true,
+            dataCollectionForMarketing: false,
+          },
+          NameController: {
             names: {
               [NameType.ETHEREUM_ADDRESS]: {
                 '0x123': {
@@ -1456,17 +1479,6 @@ describe('MetaMetricsController', function () {
                   } as NameEntry,
                 },
               },
-            },
-            tokenSortConfig: {
-              key: 'token-sort-key',
-              order: 'dsc',
-              sortCallback: 'stringNumeric',
-            },
-            participateInMetaMetrics: true,
-            dataCollectionForMarketing: false,
-            preferences: {
-              privacyMode: true,
-              tokenNetworkFilter: {},
             },
           },
           CurrencyController: {
@@ -1494,7 +1506,7 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.NumberOfTokens]: 5,
           [MetaMetricsUserTrait.OpenSeaApiEnabled]: true,
           [MetaMetricsUserTrait.ThreeBoxEnabled]: false,
-          [MetaMetricsUserTrait.Theme]: 'default',
+          [MetaMetricsUserTrait.Theme]: ThemeType.os,
           [MetaMetricsUserTrait.TokenDetectionEnabled]: true,
           [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]: true,
           [MetaMetricsUserTrait.CurrentCurrency]: 'usd',
@@ -1502,9 +1514,9 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.SecurityProviders]: ['blockaid'],
           [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          [MetaMetricsUserTrait.MmiExtensionId]: 'testid',
-          [MetaMetricsUserTrait.MmiAccountAddress]: null,
-          [MetaMetricsUserTrait.MmiIsCustodian]: false,
+          // [MetaMetricsUserTrait.MmiExtensionId]: 'testid',
+          // [MetaMetricsUserTrait.MmiAccountAddress]: null,
+          // [MetaMetricsUserTrait.MmiIsCustodian]: false,
           ///: END:ONLY_INCLUDE_IF
           ///: BEGIN:ONLY_INCLUDE_IF(petnames)
           [MetaMetricsUserTrait.PetnameAddressCount]: 3,
@@ -1523,113 +1535,160 @@ describe('MetaMetricsController', function () {
           { chainId: CHAIN_IDS.GOERLI },
         );
         controller._buildUserTraitsObject({
-          addressBook: {
-            [CHAIN_IDS.MAINNET]: {
-              '0x': {
-                address: '0x',
-              } as AddressBookEntry,
+          AddressBookController: {
+            addressBook: {
+              [CHAIN_IDS.MAINNET]: {
+                '0x': {
+                  address: '0x',
+                } as AddressBookEntry,
+              },
+              [CHAIN_IDS.GOERLI]: {
+                '0x': {
+                  address: '0x',
+                } as AddressBookEntry,
+                '0x0': {
+                  address: '0x0',
+                } as AddressBookEntry,
+              },
             },
-            [CHAIN_IDS.GOERLI]: {
-              '0x': {
-                address: '0x',
-              } as AddressBookEntry,
-              '0x0': {
-                address: '0x0',
-              } as AddressBookEntry,
+          },
+          TokensController: {
+            allTokens: {},
+          },
+          NetworkController: {
+            ...networkState,
+          },
+          AccountsController: {
+            internalAccounts: {
+              accounts: {
+                mock1: {} as InternalAccount,
+                mock2: {} as InternalAccount,
+              },
+              selectedAccount: 'mock1',
             },
           },
-          allTokens: {},
-          ...networkState,
-          ledgerTransportType: LedgerTransportTypes.webhid,
-          openSeaEnabled: true,
-          internalAccounts: {
-            accounts: {
-              mock1: {} as InternalAccount,
-              mock2: {} as InternalAccount,
+          PreferencesController: {
+            ledgerTransportType: LedgerTransportTypes.webhid,
+            openSeaEnabled: true,
+            useNftDetection: false,
+            theme: 'default',
+            useTokenDetection: true,
+            tokenSortConfig: {
+              key: 'token-sort-key',
+              order: 'dsc',
+              sortCallback: 'stringNumeric',
             },
-            selectedAccount: 'mock1',
+            preferences: {
+              privacyMode: true,
+              tokenNetworkFilter: [],
+              showNativeTokenAsMainBalance: true,
+            },
+            securityAlertsEnabled: true,
+            security_providers: ['blockaid'],
           },
-          useNftDetection: false,
-          theme: 'default',
-          useTokenDetection: true,
-          tokenSortConfig: {
-            key: 'token-sort-key',
-            order: 'dsc',
-            sortCallback: 'stringNumeric',
+          NftController: {
+            allNfts: {},
           },
-          ShowNativeTokenAsMainBalance: true,
-          allNfts: {},
-          participateInMetaMetrics: true,
-          dataCollectionForMarketing: false,
-          preferences: { privacyMode: true, tokenNetworkFilter: [] },
-          securityAlertsEnabled: true,
-          names: {
-            ethereumAddress: {},
+          MetaMetricsController: {
+            participateInMetaMetrics: true,
+            dataCollectionForMarketing: false,
           },
-          security_providers: ['blockaid'],
-          currentCurrency: 'usd',
+          NameController: {
+            names: {
+              ethereumAddress: {},
+            },
+          },
+          CurrencyController: {
+            currentCurrency: 'usd',
+          },
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          custodyAccountDetails: {},
+          CustodyController: {
+            custodyAccountDetails: {},
+          },
           ///: END:ONLY_INCLUDE_IF
           // TODO: Replace with spread of comprehensive state mock object
         } as unknown as BackgroundStateProxy);
 
         const updatedTraits = controller._buildUserTraitsObject({
-          addressBook: {
-            [CHAIN_IDS.MAINNET]: {
-              '0x': {
-                address: '0x',
-              } as AddressBookEntry,
-              '0x1': {
-                address: '0x1',
-              } as AddressBookEntry,
-            },
-            [CHAIN_IDS.GOERLI]: {
-              '0x': {
-                address: '0x',
-              } as AddressBookEntry,
-              '0x0': {
-                address: '0x0',
-              } as AddressBookEntry,
-            },
-          },
-          allTokens: {
-            [toHex(1)]: {
-              '0xabcde': [{ address: '0xtestAddress' } as Token],
+          AddressBookController: {
+            addressBook: {
+              [CHAIN_IDS.MAINNET]: {
+                '0x': {
+                  address: '0x',
+                } as AddressBookEntry,
+                '0x1': {
+                  address: '0x1',
+                } as AddressBookEntry,
+              },
+              [CHAIN_IDS.GOERLI]: {
+                '0x': {
+                  address: '0x',
+                } as AddressBookEntry,
+                '0x0': {
+                  address: '0x0',
+                } as AddressBookEntry,
+              },
             },
           },
-          ...networkState,
-          ledgerTransportType: LedgerTransportTypes.webhid,
-          openSeaEnabled: false,
-          internalAccounts: {
-            accounts: {
-              mock1: {} as InternalAccount,
-              mock2: {} as InternalAccount,
-              mock3: {} as InternalAccount,
+          TokensController: {
+            allTokens: {
+              [toHex(1)]: {
+                '0xabcde': [{ address: '0xtestAddress' } as Token],
+              },
             },
-            selectedAccount: 'mock1',
           },
-          useNftDetection: false,
-          theme: 'default',
-          useTokenDetection: true,
-          tokenSortConfig: {
-            key: 'token-sort-key',
-            order: 'dsc',
-            sortCallback: 'stringNumeric',
+          NetworkController: {
+            ...networkState,
           },
-          ShowNativeTokenAsMainBalance: false,
-          names: {
-            ethereumAddress: {},
+          AccountsController: {
+            internalAccounts: {
+              accounts: {
+                mock1: {} as InternalAccount,
+                mock2: {} as InternalAccount,
+                mock3: {} as InternalAccount,
+              },
+              selectedAccount: 'mock1',
+            },
           },
-          security_providers: ['blockaid'],
-          currentCurrency: 'usd',
-          allNfts: {},
-          participateInMetaMetrics: true,
-          dataCollectionForMarketing: false,
-          preferences: { privacyMode: true, tokenNetworkFilter: [] },
-          securityAlertsEnabled: true,
+          PreferencesController: {
+            ledgerTransportType: LedgerTransportTypes.webhid,
+            openSeaEnabled: false,
+            useNftDetection: false,
+            theme: 'default',
+            useTokenDetection: true,
+            tokenSortConfig: {
+              key: 'token-sort-key',
+              order: 'dsc',
+              sortCallback: 'stringNumeric',
+            },
+            preferences: {
+              privacyMode: true,
+              tokenNetworkFilter: [],
+              showNativeTokenAsMainBalance: false,
+            },
+            securityAlertsEnabled: true,
+            security_providers: ['blockaid'],
+          },
+
+          CurrencyController: {
+            currentCurrency: 'usd',
+          },
+          NftController: {
+            allNfts: {},
+          },
+          MetaMetricsController: {
+            participateInMetaMetrics: true,
+            dataCollectionForMarketing: false,
+          },
+          NameController: {
+            names: {
+              ethereumAddress: {},
+            },
+          },
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          custodyAccountDetails: {},
+          CustodyController: {
+            custodyAccountDetails: {},
+          },
           ///: END:ONLY_INCLUDE_IF
           // TODO: Replace with spread of comprehensive state mock object
         } as unknown as BackgroundStateProxy);
@@ -1651,103 +1710,150 @@ describe('MetaMetricsController', function () {
           { chainId: CHAIN_IDS.GOERLI },
         );
         controller._buildUserTraitsObject({
-          addressBook: {
-            [CHAIN_IDS.MAINNET]: {
-              '0x': {
-                address: '0x',
-              } as AddressBookEntry,
+          AddressBookController: {
+            addressBook: {
+              [CHAIN_IDS.MAINNET]: {
+                '0x': {
+                  address: '0x',
+                } as AddressBookEntry,
+              },
+              [CHAIN_IDS.GOERLI]: {
+                '0x': {
+                  address: '0x',
+                } as AddressBookEntry,
+                '0x0': {
+                  address: '0x0',
+                } as AddressBookEntry,
+              },
             },
-            [CHAIN_IDS.GOERLI]: {
-              '0x': {
-                address: '0x',
-              } as AddressBookEntry,
-              '0x0': {
-                address: '0x0',
-              } as AddressBookEntry,
+          },
+          TokensController: {
+            allTokens: {},
+          },
+          NetworkController: {
+            ...networkState,
+          },
+          AccountsController: {
+            internalAccounts: {
+              accounts: {
+                mock1: {} as InternalAccount,
+                mock2: {} as InternalAccount,
+              },
+              selectedAccount: 'mock1',
             },
           },
-          allTokens: {},
-          ...networkState,
-          ledgerTransportType: LedgerTransportTypes.webhid,
-          openSeaEnabled: true,
-          internalAccounts: {
-            accounts: {
-              mock1: {} as InternalAccount,
-              mock2: {} as InternalAccount,
+          PreferencesController: {
+            ledgerTransportType: LedgerTransportTypes.webhid,
+            openSeaEnabled: true,
+            useNftDetection: true,
+            theme: 'default',
+            useTokenDetection: true,
+            tokenSortConfig: {
+              key: 'token-sort-key',
+              order: 'dsc',
+              sortCallback: 'stringNumeric',
             },
-            selectedAccount: 'mock1',
+            preferences: {
+              privacyMode: true,
+              tokenNetworkFilter: [],
+              showNativeTokenAsMainBalance: true,
+            },
+            securityAlertsEnabled: true,
+            security_providers: ['blockaid'],
           },
-          useNftDetection: true,
-          theme: 'default',
-          useTokenDetection: true,
-          tokenSortConfig: {
-            key: 'token-sort-key',
-            order: 'dsc',
-            sortCallback: 'stringNumeric',
+          NftController: {
+            allNfts: {},
           },
-          ShowNativeTokenAsMainBalance: true,
-          allNfts: {},
-          participateInMetaMetrics: true,
-          dataCollectionForMarketing: false,
-          preferences: { privacyMode: true, tokenNetworkFilter: [] },
-          names: {
-            ethereumAddress: {},
+          MetaMetricsController: {
+            participateInMetaMetrics: true,
+            dataCollectionForMarketing: false,
           },
-          securityAlertsEnabled: true,
-          security_providers: ['blockaid'],
-          currentCurrency: 'usd',
+          NameController: {
+            names: {
+              ethereumAddress: {},
+            },
+          },
+
+          CurrencyController: {
+            currentCurrency: 'usd',
+          },
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          custodyAccountDetails: {},
+          CustodyController: {
+            custodyAccountDetails: {},
+          },
           ///: END:ONLY_INCLUDE_IF
           // TODO: Replace with spread of comprehensive state mock object
         } as unknown as BackgroundStateProxy);
 
         const updatedTraits = controller._buildUserTraitsObject({
-          addressBook: {
-            [CHAIN_IDS.MAINNET]: {
-              '0x': {
-                address: '0x',
-              } as AddressBookEntry,
+          AddressBookController: {
+            addressBook: {
+              [CHAIN_IDS.MAINNET]: {
+                '0x': {
+                  address: '0x',
+                } as AddressBookEntry,
+              },
+              [CHAIN_IDS.GOERLI]: {
+                '0x': {
+                  address: '0x',
+                } as AddressBookEntry,
+                '0x0': { address: '0x0' } as AddressBookEntry,
+              },
             },
-            [CHAIN_IDS.GOERLI]: {
-              '0x': {
-                address: '0x',
-              } as AddressBookEntry,
-              '0x0': { address: '0x0' } as AddressBookEntry,
+          },
+          TokensController: {
+            allTokens: {},
+          },
+          NetworkController: {
+            ...networkState,
+          },
+          PreferencesController: {
+            ledgerTransportType: LedgerTransportTypes.webhid,
+            openSeaEnabled: true,
+            useNftDetection: true,
+            theme: 'default',
+            useTokenDetection: true,
+            tokenSortConfig: {
+              key: 'token-sort-key',
+              order: 'dsc',
+              sortCallback: 'stringNumeric',
+            },
+            preferences: {
+              privacyMode: true,
+              tokenNetworkFilter: [],
+              showNativeTokenAsMainBalance: true,
+            },
+            securityAlertsEnabled: true,
+            security_providers: ['blockaid'],
+          },
+          AccountsController: {
+            internalAccounts: {
+              accounts: {
+                mock1: {} as InternalAccount,
+                mock2: {} as InternalAccount,
+              },
+              selectedAccount: 'mock1',
             },
           },
-          allTokens: {},
-          ...networkState,
-          ledgerTransportType: LedgerTransportTypes.webhid,
-          openSeaEnabled: true,
-          internalAccounts: {
-            accounts: {
-              mock1: {} as InternalAccount,
-              mock2: {} as InternalAccount,
+          NftController: {
+            allNfts: {},
+          },
+          MetaMetricsController: {
+            participateInMetaMetrics: true,
+            dataCollectionForMarketing: false,
+          },
+          NameController: {
+            names: {
+              ethereumAddress: {},
             },
-            selectedAccount: 'mock1',
           },
-          useNftDetection: true,
-          theme: 'default',
-          useTokenDetection: true,
-          tokenSortConfig: {
-            key: 'token-sort-key',
-            order: 'dsc',
-            sortCallback: 'stringNumeric',
+          CurrencyController: {
+            currentCurrency: 'usd',
           },
-          ShowNativeTokenAsMainBalance: true,
-          allNfts: {},
-          participateInMetaMetrics: true,
-          dataCollectionForMarketing: false,
-          preferences: { privacyMode: true, tokenNetworkFilter: [] },
-          names: {
-            ethereumAddress: {},
-          },
-          securityAlertsEnabled: true,
-          security_providers: ['blockaid'],
-          currentCurrency: 'usd',
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          custodyAccountDetails: {},
+          CustodyController: {
+            custodyAccountDetails: {},
+          },
           ///: END:ONLY_INCLUDE_IF
           // TODO: Replace with spread of comprehensive state mock object
         } as unknown as BackgroundStateProxy);
