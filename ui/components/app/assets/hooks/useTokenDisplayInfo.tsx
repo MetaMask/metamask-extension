@@ -64,9 +64,14 @@ export const useTokenDisplayInfo = ({
         )
       : undefined;
 
-  const primary = formatAmount(
+  const formattedPrimary = formatWithThreshold(
+    Number(token.primary),
+    0.00001,
     locale,
-    new BigNumber(Number(token.string) || '0', 10),
+    {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 5,
+    },
   );
 
   const isEvmMainnet =
@@ -101,7 +106,7 @@ export const useTokenDisplayInfo = ({
     return {
       title,
       tokenImage,
-      primary,
+      primary: formattedPrimary,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       secondary,
@@ -113,7 +118,7 @@ export const useTokenDisplayInfo = ({
   return {
     title: token.title,
     tokenImage: token.image,
-    primary: token.primary,
+    primary: formattedPrimary,
     secondary: token.secondary,
     isStakeable: false,
     tokenChainImage: token.image as string,
