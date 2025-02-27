@@ -545,7 +545,6 @@ export default class MetaMetricsController extends BaseController<
       : {};
 
     this.update((state) => {
-      // @ts-expect-error Type instantiation is excessively deep
       state.fragments[id] = merge({}, additionalFragmentProps, fragment);
     });
 
