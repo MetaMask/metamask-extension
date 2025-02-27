@@ -50,7 +50,7 @@ export const SrpList = ({
         }),
         {},
       ),
-    [hdKeyrings],
+    [hdKeyrings, hideShowAccounts],
   );
 
   const [showAccounts, setShowAccounts] = useState<Record<string, boolean>>(
@@ -107,7 +107,12 @@ export const SrpList = ({
               />
               {keyring.accounts.map((address: string) => {
                 const account = accountsWithBalances[address];
-                return <SRPListItem account={account} />;
+                return (
+                  <SRPListItem
+                    key={`account-${account.id}`}
+                    account={account}
+                  />
+                );
               })}
             </Box>
           )}
