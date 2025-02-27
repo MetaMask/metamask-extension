@@ -530,12 +530,13 @@ const PrepareBridgePage = () => {
                     dispatch(setToChainId(null));
                     dispatch(setToToken(null));
                   }
-                  if (networkConfig.chainId === MultichainNetworks.SOLANA) {
-                    dispatch(setSelectedAccount(selectedEvmAccount.address));
-                  } else if (selectedSolanaAccount) {
+                  if (
+                    networkConfig.chainId === MultichainNetworks.SOLANA &&
+                    selectedSolanaAccount
+                  ) {
                     dispatch(setSelectedAccount(selectedSolanaAccount.address));
-                  }
-                  if (isNetworkAdded(networkConfig)) {
+                  } else if (isNetworkAdded(networkConfig)) {
+                    dispatch(setSelectedAccount(selectedEvmAccount.address));
                     dispatch(
                       setActiveNetworkWithError(
                         networkConfig.rpcEndpoints[
@@ -543,8 +544,6 @@ const PrepareBridgePage = () => {
                         ].networkClientId,
                       ),
                     );
-                  } else {
-                    dispatch(setActiveNetworkWithError(networkConfig.chainId));
                   }
                   dispatch(setFromToken(null));
                   dispatch(setFromTokenInputValue(null));
