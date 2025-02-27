@@ -4185,9 +4185,6 @@
   "seedPhraseIntroTitle": {
     "message": "ウォレットの保護"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "始める前に、この短いビデオを見て、シークレットリカバリーフレーズとウォレットを安全に保つ方法について確認してください。"
-  },
   "seedPhraseReq": {
     "message": "シークレットリカバリーフレーズは、12、15、18、21、24語で構成されます"
   },
@@ -4652,15 +4649,6 @@
   "snapsUIError": {
     "message": "今後のサポートは、$1の作成者にお問い合わせください。",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "solanaSupportSectionTitle": {
-    "message": "Solana"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "この機能をオンにすると、既存のシークレットリカバリーフレーズで導出したSolanaアカウントをMetaMask Extensionに追加できるようになります。これは試験運用中のベータ機能であるため、自己責任でご使用ください。"
-  },
-  "solanaSupportToggleTitle": {
-    "message": "「新規Solanaアカウントの追加 (ベータ)」を有効にする"
   },
   "somethingDoesntLookRight": {
     "message": "何か不審な点があれば、$1",

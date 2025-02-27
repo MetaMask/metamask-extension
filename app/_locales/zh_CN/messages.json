@@ -4185,9 +4185,6 @@
   "seedPhraseIntroTitle": {
     "message": "保护您的钱包安全"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "在开始之前，观看这个简短的视频来了解您的账户助记词以及如何保护您的钱包安全。"
-  },
   "seedPhraseReq": {
     "message": "私钥助记词包含 12、15、18、21 或 24 个字词"
   },
@@ -4652,15 +4649,6 @@
   "snapsUIError": {
     "message": "联系 $1 的创建者以获得进一步支持。",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "solanaSupportSectionTitle": {
-    "message": "Solana"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "启用此功能后，您可以选择将 Solana 账户添加到衍生自现有私钥助记词的 MetaMask Extension 中。这是一个实验性的测试版功能，因此您应自行承担使用风险。"
-  },
-  "solanaSupportToggleTitle": {
-    "message": "启用“添加新的 Solana 账户（测试版）”"
   },
   "somethingDoesntLookRight": {
     "message": "有什么不对劲吗？$1",

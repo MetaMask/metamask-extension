@@ -73,6 +73,7 @@ import {
   getDefaultHomeActiveTabName,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   getIsSolanaSupportEnabled,
+  getMetaMaskKeyrings,
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
   getManageInstitutionalWallets,
@@ -109,7 +110,7 @@ import {
 } from '../../../selectors/accounts';
 ///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IF(build-flask,solana)
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
   WalletClientType,
@@ -233,6 +234,11 @@ export const AccountListMenu = ({
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const { pathname } = useLocation();
   ///: END:ONLY_INCLUDE_IF
+  const [searchQuery, setSearchQuery] = useState('');
+  const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  const [primaryKeyring] = useSelector(getMetaMaskKeyrings);
+  ///: END:ONLY_INCLUDE_IF
   const hiddenAddresses = useSelector(getHiddenAccountsList);
   const updatedAccountsList = useSelector(getUpdatedAndSortedAccounts);
   const filteredUpdatedAccountList = useMemo(
@@ -290,6 +296,7 @@ export const AccountListMenu = ({
       history.push(CONFIRMATION_V_NEXT_ROUTE);
     }
 
+    // TODO: Forward the `primaryKeyring.metadata.id` to Bitcoin once supported.
     await bitcoinWalletSnapClient.createAccount(network);
   };
   ///: END:ONLY_INCLUDE_IF
@@ -299,15 +306,11 @@ export const AccountListMenu = ({
   const solanaWalletSnapClient = useMultichainWalletSnapClient(
     WalletClientType.Solana,
   );
-
   ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
   const manageInstitutionalWallets = useSelector(getManageInstitutionalWallets);
   ///: END:ONLY_INCLUDE_IF
-
-  const [searchQuery, setSearchQuery] = useState('');
-  const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
 
   let searchResults: MergedInternalAccount[] = filteredUpdatedAccountList;
   if (searchQuery) {
@@ -511,6 +514,7 @@ export const AccountListMenu = ({
 
                       await solanaWalletSnapClient.createAccount(
                         MultichainNetworks.SOLANA,
+                        primaryKeyring.metadata.id,
                       );
                     }}
                     data-testid="multichain-account-menu-popover-add-solana-account"

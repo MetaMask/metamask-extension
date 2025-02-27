@@ -157,6 +157,9 @@
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
     "currentMigrationVersion": "number",
+    "multichainNetworkConfigurationsByChainId": "object",
+    "selectedMultichainNetworkChainId": "string",
+    "isEvmSelected": "boolean",
     "selectedNetworkClientId": "string",
     "networksMetadata": {
       "networkConfigurationId": {
@@ -166,6 +169,7 @@
     },
     "networkConfigurationsByChainId": "object",
     "keyrings": "object",
+    "keyringsMetadata": "object",
     "selectedAddress": "string",
     "usePhishDetect": true,
     "dismissSeedBackUpReminder": true,
@@ -283,7 +287,9 @@
     "isUpdatingMetamaskNotificationsAccount": "object",
     "isCheckingAccountsPresence": "boolean",
     "queuedRequestCount": 0,
+    "isPushEnabled": "boolean",
     "fcmToken": "string",
+    "isUpdatingFCMToken": "boolean",
     "remoteFeatureFlags": {},
     "cacheTimestamp": "number",
     "accounts": "object",
@@ -332,7 +338,11 @@
           "refreshRate": "number",
           "maxRefreshCount": "number",
           "support": "boolean",
-          "chains": { "0x1": "object", "0xa4b1": "object", "0xe708": "object" }
+          "chains": {
+            "eip155:1": "object",
+            "eip155:42161": "object",
+            "eip155:59144": "object"
+          }
         }
       },
       "quoteRequest": {
