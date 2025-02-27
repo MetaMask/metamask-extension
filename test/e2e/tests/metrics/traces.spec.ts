@@ -29,7 +29,6 @@ async function mockSentryHTTPRequestTrace(mockServer: MockttpServer) {
       .thenCallback(() => {
         return {
           statusCode: 200,
-          json: {},
         };
       }),
   ];
@@ -78,7 +77,7 @@ describe('Traces', function () {
     );
   });
 
-  it('sends custom HTTP request trace when opening UI if metrics enabled', async function () {
+  it('sends custom HTTP request trace when a fetch request is made if metrics enabled', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -99,7 +98,7 @@ describe('Traces', function () {
     );
   });
 
-  it('does not send custom HTTP request trace when opening UI if metrics disabled', async function () {
+  it('does not send custom HTTP request trace when a fetch request is made if metrics disabled', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()

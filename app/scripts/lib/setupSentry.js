@@ -588,7 +588,7 @@ function addDebugListeners() {
   log('Added debug listeners');
 }
 
-export function fetchWithSentryInstrumentation(f) {
+export function fetchWithSentryInstrumentation(fetchFunction) {
   return async (inputUrl, opts) => {
     const url =
       typeof inputUrl === 'string'
@@ -596,7 +596,7 @@ export function fetchWithSentryInstrumentation(f) {
         : inputUrl.toString() || String(inputUrl);
     const { method = 'GET' } = opts ?? {};
 
-    const response = await f(url, {
+    const response = await fetchFunction(url, {
       method,
       ...opts,
     });
