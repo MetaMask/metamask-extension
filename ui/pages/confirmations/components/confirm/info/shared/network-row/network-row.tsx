@@ -37,7 +37,7 @@ export const NetworkRow = ({
     return null;
   }
 
-  const chainId = currentConfirmation.chainId as Hex ?? '';
+  const chainId = (currentConfirmation.chainId as Hex) ?? '';
   const networkName = chainId ? networkConfigurations[chainId]?.name : '';
   const networkImageUrl = chainId
     ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[

@@ -17,7 +17,7 @@ import { useSigningOrSubmittingAlerts } from './alerts/transactions/useSigningOr
 ///: END:ONLY_INCLUDE_IF
 import useConfirmationOriginAlerts from './alerts/useConfirmationOriginAlerts';
 import useBlockaidAlerts from './alerts/useBlockaidAlerts';
-import {useNetworkAndOriginSwitchingAlerts} from './alerts/useNetworkAndOriginSwitchingAlerts';
+import { useNetworkAndOriginSwitchingAlerts } from './alerts/useNetworkAndOriginSwitchingAlerts';
 import { useSelectedAccountAlerts } from './alerts/useSelectedAccountAlerts';
 import { useNonContractAddressAlerts } from './alerts/transactions/useNonContractAddressAlerts';
 
