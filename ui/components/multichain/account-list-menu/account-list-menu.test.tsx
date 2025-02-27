@@ -7,6 +7,7 @@ import {
   KeyringAccountType,
 } from '@metamask/keyring-api';
 import { merge } from 'lodash';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { fireEvent, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -671,6 +672,69 @@ describe('AccountListMenu', () => {
 
       expect(queryByText(mockAccount.metadata.name)).not.toBeInTheDocument();
       expect(queryByText(mockBtcAccount.metadata.name)).toBeInTheDocument();
+    });
+  });
+
+  describe('Multi SRP', () => {
+    it('redirects to import srp component', () => {
+      const { getByTestId } = render();
+
+      const button = getByTestId(
+        'multichain-account-menu-popover-action-button',
+      );
+      button.click();
+
+      const addAccountButton = getByTestId(
+        'multichain-account-menu-popover-import-srp',
+      );
+      addAccountButton.click();
+
+      expect(getByTestId('import-srp-container')).toBeInTheDocument();
+    });
+
+    it('shows srp list if there are multiple srps when adding a new account', async () => {
+      const accountInSecondSRP = createMockInternalAccount({
+        address: '0xB1BAF6A2f4A808937bb97a2F12CCF08F1233e3D9',
+        name: 'Account in second SRP',
+      });
+      const secondHdKeyring = {
+        accounts: [accountInSecondSRP.address],
+        type: KeyringTypes.hd,
+      };
+      const secondHdKeyringMetadata = {
+        id: '01JN2RD391JM4K7Q5T4RP3JXMA',
+        name: '',
+      };
+
+      const { getByTestId } = render({
+        metamask: {
+          ...mockState.metamask,
+          keyrings: [...mockState.metamask.keyrings, secondHdKeyring],
+          keyringsMetadata: [
+            ...mockState.metamask.keyringsMetadata,
+            secondHdKeyringMetadata,
+          ],
+          internalAccounts: {
+            ...mockState.metamask.internalAccounts,
+            accounts: {
+              ...mockState.metamask.internalAccounts.accounts,
+              [accountInSecondSRP.id]: accountInSecondSRP,
+            },
+          },
+        },
+      });
+
+      const button = getByTestId(
+        'multichain-account-menu-popover-action-button',
+      );
+      await button.click();
+
+      const addAccountButton = getByTestId(
+        'multichain-account-menu-popover-add-account',
+      );
+      await addAccountButton.click();
+
+      expect(getByTestId('select-srp-container')).toBeInTheDocument();
     });
   });
 });
