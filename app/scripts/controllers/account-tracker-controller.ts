@@ -741,6 +741,8 @@ export default class AccountTrackerController extends BaseController<
         error.data.request.method !== 'eth_getBalance'
       ) {
         throw error;
+      } else {
+        log.error(`Failed to fetch balance for ${address}: ${error.message}`);
       }
     }
 
