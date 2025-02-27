@@ -40,7 +40,7 @@ describe('Queued Confirmations', function () {
             .withSelectedNetworkControllerPerDomain()
             .build(),
           dappOptions: { numberOfDapps: 2 },
-          ganacheOptions: {
+          localNodeOptions: {
             ...defaultGanacheOptions,
             concurrent: [
               {
@@ -85,7 +85,7 @@ describe('Queued Confirmations', function () {
             .withSelectedNetworkControllerPerDomain()
             .build(),
           dappOptions: { numberOfDapps: 2 },
-          ganacheOptions: {
+          localNodeOptions: {
             ...defaultGanacheOptions,
             concurrent: [
               {
@@ -137,7 +137,7 @@ describe('Queued Confirmations', function () {
             .withSelectedNetworkControllerPerDomain()
             .build(),
           dappOptions: { numberOfDapps: 2 },
-          ganacheOptions: {
+          localNodeOptions: {
             ...defaultGanacheOptions,
             concurrent: [
               {
@@ -192,7 +192,7 @@ describe('Queued Confirmations', function () {
             })
             .build(),
           dappOptions: { numberOfDapps: 2 },
-          ganacheOptions: {
+          localNodeOptions: {
             ...defaultGanacheOptions,
             concurrent: [
               {
@@ -277,7 +277,7 @@ describe('Queued Confirmations', function () {
             })
             .build(),
           dappOptions: { numberOfDapps: 2 },
-          ganacheOptions: {
+          localNodeOptions: {
             ...defaultGanacheOptions,
             concurrent: [
               {
@@ -312,7 +312,7 @@ describe('Queued Confirmations', function () {
           // create deposit transaction in dapp 1
           await createDepositTransaction(driver);
 
-          await driver.delay(2000);
+          await driver.delay(5000);
 
           await switchToDAppTwoAndCreateSignTypedDataRequest(driver);
 
@@ -392,7 +392,7 @@ async function connectToDappTwoAndSwitchBackToOne(
   await driver.waitUntilXWindowHandles(4);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-  await driver.clickElement({
+  await driver.clickElementAndWaitForWindowToClose({
     text: 'Connect',
     tag: 'button',
   });
@@ -417,8 +417,11 @@ async function switchChainToDappOne(driver: Driver) {
     `window.ethereum.request(${switchEthereumChainRequest})`,
   );
 
-  await driver.waitUntilXWindowHandles(4);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  // No dialog should appear as we already gave permissions to this network
+  await driver.waitForSelector({
+    css: '[id="chainId"]',
+    text: '0x3e8',
+  });
 }
 
 async function switchToDAppAndCreateTransactionRequest(driver: Driver) {

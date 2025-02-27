@@ -11,6 +11,7 @@ export const checkbox: UIComponentFactory<CheckboxElement> = ({
     name: element.props.name,
     label: element.props.label,
     variant: element.props.variant,
+    disabled: element.props.disabled,
     form,
   },
 });

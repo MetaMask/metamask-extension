@@ -36,7 +36,7 @@ import {
   BaseController,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedControllerMessenger,
+  RestrictedMessenger,
 } from '@metamask/base-controller';
 import { AddressBookControllerState } from '@metamask/address-book-controller';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
@@ -302,7 +302,7 @@ export type AllowedEvents =
 /**
  * Messenger type for the {@link MetaMetricsController}.
  */
-export type MetaMetricsControllerMessenger = RestrictedControllerMessenger<
+export type MetaMetricsControllerMessenger = RestrictedMessenger<
   typeof controllerName,
   MetaMetricsControllerActions | AllowedActions,
   MetaMetricsControllerEvents | AllowedEvents,

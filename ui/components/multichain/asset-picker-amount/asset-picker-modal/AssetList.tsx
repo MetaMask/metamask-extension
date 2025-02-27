@@ -27,7 +27,7 @@ import {
 import { TokenListItem } from '../..';
 import LoadingScreen from '../../../ui/loading-screen';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
+import { getImageForChainId } from '../../../../selectors/multichain';
 import AssetComponent from './Asset';
 import { AssetWithDisplayData, ERC20Asset, NFT, NativeAsset } from './types';
 
@@ -157,11 +157,7 @@ export default function AssetList({
                     secondary={secondaryCurrencyValue}
                     tokenImage={token.image}
                     isPrimaryTokenSymbolHidden
-                    tokenChainImage={
-                      CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                        token.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-                      ]
-                    }
+                    tokenChainImage={getImageForChainId(token.chainId)}
                     {...assetItemProps}
                   />
                 ) : (
