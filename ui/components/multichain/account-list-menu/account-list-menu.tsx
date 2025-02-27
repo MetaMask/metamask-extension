@@ -499,7 +499,7 @@ export const AccountListMenu = ({
                     }}
                     data-testid="multichain-account-menu-popover-add-solana-account"
                   >
-                    {t('addNewSolanaAccount')}
+                    {t('addNewSolanaAccountLabel')}
                   </ButtonLink>
                 </Box>
               )
