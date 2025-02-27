@@ -1,4 +1,5 @@
 import { Token, TokenListToken } from '@metamask/assets-controllers';
+import { type Hex, type CaipChainId } from '@metamask/utils';
 import type {
   AssetType,
   TokenStandard,
@@ -35,8 +36,8 @@ export type NFT = {
 export type ERC20Asset = {
   type: AssetType.token;
   image: string;
-} & Pick<TokenListToken, 'address' | 'symbol'> &
-  Pick<TokenWithFiatAmount, 'chainId'>;
+  chainId: Hex | CaipChainId;
+} & Pick<TokenListToken, 'address' | 'symbol'>;
 
 export type NativeAsset = {
   type: AssetType.native;
@@ -47,7 +48,8 @@ export type NativeAsset = {
   symbol: typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP extends Record<string, infer V>
     ? V
     : never; // only allow wallet's hardcoded symbols
-} & Pick<TokenWithFiatAmount, 'chainId'>;
+  chainId: Hex | CaipChainId;
+};
 
 /**
  * ERC20Asset or NativeAsset, plus additional fields for display purposes in the Asset component

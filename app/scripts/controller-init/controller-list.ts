@@ -13,7 +13,7 @@ import { TransactionUpdateController } from '@metamask-institutional/transaction
 import { AccountsController } from '@metamask/accounts-controller';
 import {
   MultichainAssetsController,
-  MultiChainAssetsRatesController,
+  MultichainAssetsRatesController,
   MultichainBalancesController,
 } from '@metamask/assets-controllers';
 import { MultichainNetworkController } from '@metamask/multichain-network-controller';
@@ -43,10 +43,12 @@ export type Controller =
   | GasFeeController
   | JsonSnapsRegistry
   | KeyringController
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   | MultichainAssetsController
-  | MultiChainAssetsRatesController
+  | MultichainAssetsRatesController
   | MultichainBalancesController
   | MultichainTransactionsController
+  ///: END:ONLY_INCLUDE_IF
   | MultichainNetworkController
   | NetworkController
   | OnboardingController
@@ -62,10 +64,12 @@ export type Controller =
   | SnapInterfaceController
   | SnapInsightsController
   | TransactionController
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   | (TransactionUpdateController & {
       name: 'TransactionUpdateController';
       state: Record<string, unknown>;
     });
+///: END:ONLY_INCLUDE_IF
 
 /**
  * Flat state object for all controllers supporting or required by modular initialization.
@@ -76,10 +80,12 @@ export type ControllerFlatState = AccountsController['state'] &
   GasFeeController['state'] &
   JsonSnapsRegistry['state'] &
   KeyringController['state'] &
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   MultichainAssetsController['state'] &
-  MultiChainAssetsRatesController['state'] &
+  MultichainAssetsRatesController['state'] &
   MultichainBalancesController['state'] &
   MultichainTransactionsController['state'] &
+  ///: END:ONLY_INCLUDE_IF
   MultichainNetworkController['state'] &
   NetworkController['state'] &
   OnboardingController['state'] &
