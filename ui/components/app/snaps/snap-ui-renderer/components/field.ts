@@ -6,6 +6,7 @@ import {
   RadioGroupElement,
   CheckboxElement,
   SelectorElement,
+  AssetSelectorElement,
 } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 import { getPrimaryChildElementIndex, mapToTemplate } from '../utils';
@@ -13,6 +14,7 @@ import { dropdown as dropdownFn } from './dropdown';
 import { radioGroup as radioGroupFn } from './radioGroup';
 import { checkbox as checkboxFn } from './checkbox';
 import { selector as selectorFn } from './selector';
+import { assetSelector as assetSelectorFn } from './asset-selector';
 import { UIComponentFactory, UIComponentParams } from './types';
 import { constructInputProps } from './input';
 
@@ -23,11 +25,12 @@ export const field: UIComponentFactory<FieldElement> = ({
 }) => {
   // For fields we don't render the Input itself, we just adapt SnapUIInput.
   const children = getJsxChildren(element);
+  console.log(children);
   const primaryChildIndex = getPrimaryChildElementIndex(
     children as JSXElement[],
   );
   const child = children[primaryChildIndex] as JSXElement;
-
+  console.log(child);
   switch (child.type) {
     case 'FileInput': {
       return {
@@ -177,6 +180,25 @@ export const field: UIComponentFactory<FieldElement> = ({
           form,
           error: element.props.error,
           disabled: child.props.disabled,
+        },
+      };
+    }
+
+    case 'AssetSelector': {
+      const assetSelector = child as AssetSelectorElement;
+      const assetSelectorMapped = assetSelectorFn({
+        ...params,
+        element: assetSelector,
+      } as UIComponentParams<AssetSelectorElement>);
+
+      return {
+        ...assetSelectorMapped,
+        element: 'SnapUIAssetSelector',
+        props: {
+          ...assetSelectorMapped.props,
+          label: element.props.label,
+          form,
+          error: element.props.error,
         },
       };
     }

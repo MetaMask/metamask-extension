@@ -10,6 +10,8 @@ import {
   isBtcMainnetAddress,
   isBtcTestnetAddress,
 } from '../../shared/lib/multichain/accounts';
+import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 
 export type AccountsState = {
   metamask: AccountsControllerState;
@@ -31,6 +33,15 @@ export const getInternalAccounts = createSelector(
   (state: AccountsState) =>
     Object.values(state.metamask.internalAccounts.accounts),
   (accounts) => accounts,
+);
+
+export const getMemoizedInternalAccountByAddress = createDeepEqualSelector(
+  [getInternalAccounts, (_state, address) => address],
+  (internalAccounts, address) => {
+    return internalAccounts.find((account) =>
+      isEqualCaseInsensitive(account.address, address),
+    );
+  },
 );
 
 export function getSelectedInternalAccount(state: AccountsState) {
