@@ -6216,21 +6216,37 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-"@metamask/snaps-controllers@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "@metamask/snaps-controllers@npm:10.0.0"
-=======
-"@metamask/smart-transactions-controller@patch:@metamask/smart-transactions-controller@npm%3A16.0.1#~/.yarn/patches/@metamask-smart-transactions-controller-npm-16.0.1-7aa4f8249a.patch::version=16.0.1&hash=9f5e30":
-  version: 16.0.1
-  resolution: "@metamask/smart-transactions-controller@patch:@metamask/smart-transactions-controller@npm%3A16.0.1#~/.yarn/patches/@metamask-smart-transactions-controller-npm-16.0.1-7aa4f8249a.patch::version=16.0.1&hash=9f5e30"
->>>>>>> 7fcea151d1 (fix: update patch)
-=======
 "@metamask/smart-transactions-controller@patch:@metamask/smart-transactions-controller@npm%3A16.0.1#~/.yarn/patches/@metamask-smart-transactions-controller-npm-16.0.1-7aa4f8249a.patch":
   version: 16.0.1
   resolution: "@metamask/smart-transactions-controller@patch:@metamask/smart-transactions-controller@npm%3A16.0.1#~/.yarn/patches/@metamask-smart-transactions-controller-npm-16.0.1-7aa4f8249a.patch::version=16.0.1&hash=83d6bd"
->>>>>>> fcbef05edd (fix: update smart transaction patch)
+  dependencies:
+    "@babel/runtime": "npm:^7.24.1"
+    "@ethereumjs/tx": "npm:^5.2.1"
+    "@ethereumjs/util": "npm:^9.0.2"
+    "@ethersproject/bytes": "npm:^5.7.0"
+    "@metamask/base-controller": "npm:^7.0.1"
+    "@metamask/controller-utils": "npm:^11.0.0"
+    "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/polling-controller": "npm:^12.0.0"
+    bignumber.js: "npm:^9.0.1"
+    fast-json-patch: "npm:^3.1.0"
+    lodash: "npm:^4.17.21"
+  peerDependencies:
+    "@metamask/network-controller": ^22.0.0
+    "@metamask/transaction-controller": ^42.0.0
+  peerDependenciesMeta:
+    "@metamask/accounts-controller":
+      optional: true
+    "@metamask/approval-controller":
+      optional: true
+  checksum: 10/7d272bfbe3124b56b1f023cba0bdc88aebbfc53226d3d0d800b3856ab9d0849d4a71b4986d67f6d1a9d4eedb2aca1a91e25968f48d5883d39f19262217671e80
+  languageName: node
+  linkType: hard
+
+"@metamask/snaps-controllers@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@metamask/snaps-controllers@npm:10.0.0"
   dependencies:
     "@metamask/approval-controller": "npm:^7.1.3"
     "@metamask/base-controller": "npm:^8.0.0"
@@ -6265,21 +6281,11 @@ __metadata:
   peerDependenciesMeta:
     "@metamask/snaps-execution-environments":
       optional: true
-<<<<<<< HEAD
   checksum: 10/eeb094883987a309ee7087bf540428ecd27d39189e494c81cc5f55623f46577fc9b6b4b907f2fc14cc5940486c56fca9074d204f5e43924d793e974cb3f63f34
   languageName: node
   linkType: hard
 
 "@metamask/snaps-controllers@npm:^9.19.0":
-=======
-    "@metamask/approval-controller":
-      optional: true
-  checksum: 10/7d272bfbe3124b56b1f023cba0bdc88aebbfc53226d3d0d800b3856ab9d0849d4a71b4986d67f6d1a9d4eedb2aca1a91e25968f48d5883d39f19262217671e80
-  languageName: node
-  linkType: hard
-
-"@metamask/snaps-controllers@npm:^9.19.0, @metamask/snaps-controllers@npm:^9.19.1":
->>>>>>> fcbef05edd (fix: update smart transaction patch)
   version: 9.19.1
   resolution: "@metamask/snaps-controllers@npm:9.19.1"
   dependencies:
@@ -27020,21 +27026,12 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^19.0.0"
     "@metamask/signature-controller": "npm:^23.1.0"
-<<<<<<< HEAD
-    "@metamask/smart-transactions-controller": "npm:^16.0.1"
+    "@metamask/smart-transactions-controller": "patch:@metamask/smart-transactions-controller@npm%3A16.0.1#~/.yarn/patches/@metamask-smart-transactions-controller-npm-16.0.1-7aa4f8249a.patch"
     "@metamask/snaps-controllers": "npm:^10.0.0"
     "@metamask/snaps-execution-environments": "npm:^7.0.0"
     "@metamask/snaps-rpc-methods": "npm:^11.12.0"
     "@metamask/snaps-sdk": "npm:^6.18.0"
     "@metamask/snaps-utils": "npm:^9.0.0"
-=======
-    "@metamask/smart-transactions-controller": "patch:@metamask/smart-transactions-controller@npm%3A16.0.1#~/.yarn/patches/@metamask-smart-transactions-controller-npm-16.0.1-7aa4f8249a.patch"
-    "@metamask/snaps-controllers": "npm:^9.19.1"
-    "@metamask/snaps-execution-environments": "npm:^6.14.0"
-    "@metamask/snaps-rpc-methods": "npm:^11.11.0"
-    "@metamask/snaps-sdk": "npm:^6.17.1"
-    "@metamask/snaps-utils": "npm:^8.10.0"
->>>>>>> fcbef05edd (fix: update smart transaction patch)
     "@metamask/solana-wallet-snap": "npm:^1.2.0"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.0.0"
@@ -27052,12 +27049,21 @@ __metadata:
     "@pmmmwh/react-refresh-webpack-plugin": "npm:^0.5.11"
     "@popperjs/core": "npm:^2.4.0"
     "@reduxjs/toolkit": "patch:@reduxjs/toolkit@npm%3A1.9.7#~/.yarn/patches/@reduxjs-toolkit-npm-1.9.7-b14925495c.patch"
+    "@segment/loosely-validate-event": "npm:^2.0.0"
     "@sentry/browser": "npm:^8.33.1"
     "@sentry/cli": "npm:^2.19.4"
     "@sentry/types": "npm:^8.33.1"
     "@sentry/utils": "npm:^8.33.1"
     "@solana/addresses": "npm:2.0.0-rc.4"
     "@storybook/addon-a11y": "npm:^7.6.20"
+    "@storybook/addon-actions": "npm:^7.6.20"
+    "@storybook/addon-designs": "npm:^7.0.9"
+    "@storybook/addon-docs": "npm:^7.6.20"
+    "@storybook/addon-essentials": "npm:^7.6.20"
+    "@storybook/addon-mdx-gfm": "npm:^7.6.20"
+    "@storybook/addons": "npm:^7.6.20"
+    "@storybook/api": "npm:^7.6.20"
+    "@storybook/client-api": "npm:^7.6.20"
     "@storybook/components": "npm:^7.6.20"
     "@storybook/react": "npm:^7.6.20"
     "@storybook/react-webpack5": "npm:^7.6.20"
