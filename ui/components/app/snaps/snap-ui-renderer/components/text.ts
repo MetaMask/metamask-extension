@@ -59,6 +59,9 @@ export const text: UIComponentFactory<TextElement> = ({
       color: getTextColor(element.props.color),
       className: 'snap-ui-renderer__text',
       textAlign: element.props.alignment,
+      style: {
+        flex: 1, // Ensure text can grow to fill the container
+      },
     },
   };
 };
