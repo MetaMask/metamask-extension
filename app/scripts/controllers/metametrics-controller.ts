@@ -72,6 +72,7 @@ import Analytics from '../lib/segment/analytics';
 import { ENVIRONMENT } from '../../../development/build/constants';
 ///: END:ONLY_INCLUDE_IF
 
+import { KeyringType } from '../../../shared/constants/keyring';
 import type {
   PreferencesControllerState,
   PreferencesControllerGetStateAction,
@@ -175,6 +176,7 @@ export type MetaMaskState = {
     };
   };
   ///: END:ONLY_INCLUDE_IF
+  keyrings: { type: string; accounts: string[] }[];
 };
 
 /**
@@ -1209,6 +1211,9 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.NumberOfTokens]: this.#getNumberOfTokens(
         metamaskState.allTokens,
       ),
+      [MetaMetricsUserTrait.NumberOfHDEntropies]:
+        this.#getNumberOfHDEntropies(metamaskState) ??
+        previousUserTraits?.number_of_hd_entropies,
       [MetaMetricsUserTrait.OpenSeaApiEnabled]: metamaskState.openSeaEnabled,
       [MetaMetricsUserTrait.ThreeBoxEnabled]: false, // deprecated, hard-coded as false
       [MetaMetricsUserTrait.Theme]: metamaskState.theme || 'default',
@@ -1333,6 +1338,19 @@ export default class MetaMetricsController extends BaseController<
     return Object.values(allTokens).reduce((result, accountsByChain) => {
       return result + sum(Object.values(accountsByChain).map(size));
     }, 0);
+  }
+
+  /**
+   * Returns the number of HD Entropies the user has.
+   *
+   * @param metamaskState
+   */
+  #getNumberOfHDEntropies(metamaskState: MetaMaskState): number {
+    return (
+      metamaskState.keyrings?.filter(
+        (keyring) => keyring.type === KeyringType.hdKeyTree,
+      ).length ?? 0
+    );
   }
 
   /**
