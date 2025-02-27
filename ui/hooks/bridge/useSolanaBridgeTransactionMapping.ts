@@ -1,12 +1,14 @@
 import { useSelector } from 'react-redux';
+import { Transaction } from '@metamask/keyring-api';
 import { Numeric, NumericValue } from '../../../shared/modules/Numeric';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import { MULTICHAIN_PROVIDER_CONFIGS } from '../../../shared/constants/multichain/networks';
 import { selectBridgeHistoryForAccount } from '../../ducks/bridge-status/selectors';
-import { Transaction } from '@metamask/keyring-api';
 
 /**
  * Hook to map Solana bridge transactions with EVM destination info
+ *
+ * @param nonEvmTransactions - The non-EVM transactions to process
  * @returns Enhanced non-EVM transactions with bridging information
  */
 export default function useSolanaBridgeTransactionMapping(
@@ -19,6 +21,7 @@ export default function useSolanaBridgeTransactionMapping(
 
   /**
    * Gets a human-readable network name from a chain ID
+   *
    * @param chainId - The chain ID to resolve (can be decimal or hex)
    * @returns The network name or the original chain ID if not found
    */
