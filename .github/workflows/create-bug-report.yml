@@ -23,7 +23,7 @@ jobs:
 
       - name: Setup environment
         if: steps.extract_version.outputs.version
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@caching
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@caching2
 
       - name: Create bug report issue on planning repo
         if: steps.extract_version.outputs.version

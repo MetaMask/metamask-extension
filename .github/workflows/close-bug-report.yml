@@ -13,7 +13,7 @@ jobs:
     if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'Version-v')
     steps:
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@caching
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@caching2
 
       - name: Close release bug report issue
         env:

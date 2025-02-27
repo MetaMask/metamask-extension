@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@caching
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@caching2
 
       - name: Check PR has required labels
         env:

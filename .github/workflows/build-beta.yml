@@ -41,7 +41,7 @@ jobs:
           fi
 
       - if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}
-        uses: metamask/github-tools/.github/actions/checkout-and-setup-secure@caching
+        uses: metamask/github-tools/.github/actions/checkout-and-setup-secure@caching2
 
       - name: Run beta build
         if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}
