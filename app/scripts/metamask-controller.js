@@ -191,6 +191,9 @@ import {
   LedgerTransportTypes,
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+import { findKeyringId } from '../../shared/lib/keyring';
+///: END:ONLY_INCLUDE_IF
 import {
   RestrictedMethods,
   ExcludedSnapPermissions,
@@ -4302,24 +4305,21 @@ export default class MetamaskController extends EventEmitter {
   async importMnemonicToVault(mnemonic) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
-      // TODO: This kind of logic should be inside the `KeyringController` (using `KeyringSelector` query, or make `addNewKeyring` returns it keyring ID alongside
-      // its keyring.
-      const findKeyringIdByAddress = (address) => {
-        const { keyrings, keyringsMetadata } = this.keyringController.state;
-
-        const keyringIndex = keyrings.findIndex((keyring) => {
+      const alreadyImportedSRP = await this.keyringController
+        .getKeyringsByType(KeyringTypes.hd)
+        .some((keyring) => {
           return (
-            keyring.accounts.includes(address) &&
-            keyring.type === KeyringTypes.hd
+            Buffer.from(
+              this._convertEnglishWordlistIndicesToCodepoints(keyring.mnemonic),
+            ).toString('utf8') === mnemonic
           );
         });
-        if (keyringIndex === -1) {
-          throw new Error(
-            'Could not find keyring ID, THIS SHOULD NEVER HAPPEN',
-          );
-        }
-        return keyringsMetadata[keyringIndex].id;
-      };
+
+      if (alreadyImportedSRP) {
+        throw new Error(
+          'This Secret Recovery Phrase has already been imported.',
+        );
+      }
 
       const newKeyring = await this.keyringController.addNewKeyring(
         KeyringTypes.hd,
@@ -4334,7 +4334,11 @@ export default class MetamaskController extends EventEmitter {
       this.accountsController.setSelectedAccount(account.id);
 
       // TODO: Find a way to encapsulate this logic in the KeyringController itself.
-      const keyringId = findKeyringIdByAddress(newAccountAddress);
+      const { keyrings, keyringsMetadata } = this.keyringController.state;
+      const keyringId = findKeyringId(keyrings, keyringsMetadata, {
+        address: newAccountAddress,
+        type: KeyringTypes.hd,
+      });
 
       await this._addAccountsWithBalance(keyringId);
 

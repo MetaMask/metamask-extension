@@ -204,9 +204,6 @@
     "message": "Pòte",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Pòte Kont"
-  },
   "importAccountMsg": {
     "message": " Kont pòte pa pral asosye avèk orijinal ou te kreye nan kont MetaMask seed fraz. Aprann plis sou kont enpòte "
   },

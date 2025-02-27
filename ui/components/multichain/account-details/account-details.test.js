@@ -1,11 +1,9 @@
 import { LavaDomeDebug } from '@lavamoat/lavadome-core';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { showPrivateKey } from '../../../../app/_locales/en/messages.json';
 import mockState from '../../../../test/data/mock-state.json';
+
 import { renderWithProvider } from '../../../../test/jest';
 import { shortenAddress } from '../../../helpers/utils/util';
 import {
@@ -66,8 +64,10 @@ describe('AccountDetails', () => {
   });
 
   it('shows export private key contents and password field when clicked', () => {
-    const { queryByText, queryByPlaceholderText } = render();
-    const exportPrivateKeyButton = queryByText(showPrivateKey.message);
+    const { queryByText, queryByPlaceholderText, getByTestId } = render();
+    const exportPrivateKeyButton = getByTestId(
+      'account-details-display-export-private-key',
+    );
     fireEvent.click(exportPrivateKeyButton);
 
     expect(
@@ -81,8 +81,10 @@ describe('AccountDetails', () => {
   it('attempts to validate password when submitted', async () => {
     const password = 'password';
 
-    const { queryByPlaceholderText, queryByText } = render();
-    const exportPrivateKeyButton = queryByText(showPrivateKey.message);
+    const { queryByPlaceholderText, queryByText, getByTestId } = render();
+    const exportPrivateKeyButton = getByTestId(
+      'account-details-display-export-private-key',
+    );
     fireEvent.click(exportPrivateKeyButton);
 
     queryByPlaceholderText('Password').focus();
@@ -131,5 +133,25 @@ describe('AccountDetails', () => {
     const accountName = screen.getByText('Snap Account 1');
 
     expect(accountName).toBeInTheDocument();
+  });
+
+  it("shows the `Show Secret Recovery Phrase` button when the account's type is a HD Keyring", () => {
+    const { getByTestId } = render();
+
+    const showSRPButton = getByTestId('account-details-display-export-srp');
+
+    expect(showSRPButton).toBeInTheDocument();
+  });
+
+  it('shows srp flow when the `Show Secret Recovery Phrase` button is clicked', async () => {
+    const { getByTestId } = render();
+
+    const showSRPButton = getByTestId('account-details-display-export-srp');
+    fireEvent.click(showSRPButton);
+
+    const securityQuizTitle = screen.getByTestId('srp-quiz-header');
+    await waitFor(() => {
+      expect(securityQuizTitle).toBeInTheDocument();
+    });
   });
 });

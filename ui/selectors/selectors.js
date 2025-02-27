@@ -14,6 +14,7 @@ import { TransactionStatus } from '@metamask/transaction-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { SnapEndowments } from '@metamask/snaps-rpc-methods';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import {
   getCurrentChainId,
   getProviderConfig,
@@ -522,8 +523,24 @@ export function getNumberOfTokens(state) {
 }
 
 export function getMetaMaskKeyrings(state) {
-  return state.metamask.keyrings;
+  return state.metamask.keyrings.map((keyring, index) => ({
+    ...keyring,
+    metadata: state.metamask.keyringsMetadata?.[index] || {},
+  }));
 }
+
+export const getMetaMaskHdKeyrings = createSelector(
+  getMetaMaskKeyrings,
+  (keyrings) => {
+    return keyrings.filter((keyring) => keyring.type === KeyringTypes.hd);
+  },
+);
+
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+export function getMetaMaskKeyringsMetadata(state) {
+  return state.metamask.keyringsMetadata;
+}
+///: END:ONLY_INCLUDE_IF
 
 /**
  * Get account balances state.
@@ -2860,15 +2877,25 @@ export function getAllAccountsOnNetworkAreEmpty(state) {
 }
 
 export function getShouldShowSeedPhraseReminder(state) {
-  const { tokens, seedPhraseBackedUp, dismissSeedBackUpReminder } =
+  const { tokens, seedPhraseBackedUp, dismissSeedBackUpReminder, isUnlocked } =
     state.metamask;
 
+  const [primaryKeyring] = getMetaMaskHdKeyrings(state);
+
+  if (!isUnlocked || !primaryKeyring) {
+    return false;
+  }
+
+  const selectedAccount = getSelectedInternalAccount(state);
   // if there is no account, we don't need to show the seed phrase reminder
-  const accountBalance = getSelectedInternalAccount(state)
-    ? getCurrentEthBalance(state)
-    : 0;
+  const accountBalance = selectedAccount ? getCurrentEthBalance(state) : 0;
+
+  const isAccountFromPrimarySrp = primaryKeyring.accounts.includes(
+    selectedAccount.address.toLowerCase(),
+  );
 
   return (
+    isAccountFromPrimarySrp &&
     seedPhraseBackedUp === false &&
     (parseInt(accountBalance, 16) > 0 || tokens.length > 0) &&
     dismissSeedBackUpReminder === false

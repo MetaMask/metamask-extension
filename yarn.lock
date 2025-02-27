@@ -5193,8 +5193,8 @@ __metadata:
   linkType: hard
 
 "@metamask/eth-hd-keyring@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "@metamask/eth-hd-keyring@npm:10.0.0"
+  version: 10.0.1
+  resolution: "@metamask/eth-hd-keyring@npm:10.0.1"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
@@ -5202,7 +5202,7 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.1.1"
     "@metamask/utils": "npm:^11.1.0"
     ethereum-cryptography: "npm:^2.1.2"
-  checksum: 10/d80611745171042f6ae7e0545e51563ebd705eb74e2bf131454766872d7ca57a54766af2ab398520a8fe0f58e8733a92c1df71664a2ea0e92c462661ea8a12f1
+  checksum: 10/91b5d9920e8588d56cf86ff26806d7ef7133d31b1ce1fcb66b0be150cf5cf03f15b0a8452697bbc431046870b88952dd386ee33803d1d3bd36b6126f720f9572
   languageName: node
   linkType: hard
 

@@ -68,7 +68,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getInternalAccountByAddress,
   getSelectedInternalAccount,
-  getInternalAccounts,
+  getMetaMaskHdKeyrings,
 } from '../selectors';
 import {
   getSelectedNetworkClientId,
@@ -233,6 +233,64 @@ export function createNewVaultAndRestore(
   };
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+export function importMnemonicToVault(
+  mnemonic: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.importMnemonicToVault`);
+
+    return new Promise<void>((resolve, reject) => {
+      callBackgroundMethod('importMnemonicToVault', [mnemonic], (err) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve();
+      });
+    })
+      .then(async () => {
+        dispatch(hideLoadingIndication());
+      })
+      .catch((err) => {
+        dispatch(displayWarning(err));
+        dispatch(hideLoadingIndication());
+        return Promise.reject(err);
+      });
+  };
+}
+
+export function generateNewMnemonicAndAddToVault(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.generateNewMnemonicAndAddToVault`);
+
+    return new Promise<void>((resolve, reject) => {
+      callBackgroundMethod('generateNewMnemonicAndAddToVault', [], (err) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve();
+      });
+    })
+      .then(async () => {
+        dispatch(hideLoadingIndication());
+      })
+      .catch((err) => {
+        dispatch(displayWarning(err));
+        dispatch(hideLoadingIndication());
+        return Promise.reject(err);
+      });
+  };
+}
+///: END:ONLY_INCLUDE_IF
 export function createNewVaultAndGetSeedPhrase(
   password: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -319,16 +377,29 @@ export function verifyPassword(password: string): Promise<boolean> {
   });
 }
 
-export async function getSeedPhrase(password: string) {
+export async function getSeedPhrase(
+  password: string,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  keyringId: string,
+  ///: END:ONLY_INCLUDE_IF
+) {
   const encodedSeedPhrase = await submitRequestToBackground<string>(
     'getSeedPhrase',
-    [password],
+    [
+      password,
+      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+      keyringId,
+      ///: END:ONLY_INCLUDE_IF
+    ],
   );
   return Buffer.from(encodedSeedPhrase).toString('utf8');
 }
 
 export function requestRevealSeedWords(
   password: string,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  keyringId: string,
+  ///: END:ONLY_INCLUDE_IF
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
@@ -336,7 +407,12 @@ export function requestRevealSeedWords(
 
     try {
       await verifyPassword(password);
-      const seedPhrase = await getSeedPhrase(password);
+      const seedPhrase = await getSeedPhrase(
+        password,
+        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+        keyringId,
+        ///: END:ONLY_INCLUDE_IF
+      );
       return seedPhrase;
     } finally {
       dispatch(hideLoadingIndication());
@@ -452,16 +528,33 @@ export function addNewAccount(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.addNewAccount`);
   return async (dispatch, getState) => {
-    const oldAccounts = getInternalAccounts(getState()).filter(
-      (internalAccount) =>
-        internalAccount.metadata.keyring.type === KeyringTypes.hd,
-    );
+    const keyrings = getMetaMaskHdKeyrings(getState());
+    const [defaultPrimaryKeyring] = keyrings;
+    let oldAccounts = defaultPrimaryKeyring.accounts;
+
+    ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+    const hdKeyring = keyringId
+      ? keyrings.find(
+          (keyring) =>
+            keyring.type === KeyringTypes.hd &&
+            keyring.metadata.id === keyringId,
+        )
+      : keyrings[0];
+
+    if (!hdKeyring) {
+      console.log('Should never reach this. There is always a keyring');
+      throw new Error('Keyring not found');
+    }
+
+    oldAccounts = hdKeyring.accounts;
+    ///: END:ONLY_INCLUDE_IF
+
     dispatch(showLoadingIndication());
 
     let addedAccountAddress;
     try {
       addedAccountAddress = await submitRequestToBackground('addNewAccount', [
-        Object.keys(oldAccounts).length,
+        oldAccounts.length,
         ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
         keyringId,
         ///: END:ONLY_INCLUDE_IF
@@ -3292,7 +3385,7 @@ export function toggleNetworkMenu(payload?: {
   };
 }
 
-export function setAccountDetailsAddress(address: string[]) {
+export function setAccountDetailsAddress(address: string) {
   return {
     type: actionConstants.SET_ACCOUNT_DETAILS_ADDRESS,
     payload: address,

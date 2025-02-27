@@ -1556,6 +1556,7 @@
         "@metamask/utils": true,
         "@metamask/name-controller>async-mutex": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
+        "ulid": true,
         "@metamask/keyring-controller>ulid": true
       }
     },
