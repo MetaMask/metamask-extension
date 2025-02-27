@@ -4185,9 +4185,6 @@
   "seedPhraseIntroTitle": {
     "message": "Cüzdanınızı koruyun"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Başlamadan önce Gizli Kurtarma İfadeniz ve cüzdanınızı nasıl güvende tutacağınız hakkında bilgi edinmek için bu kısa videoyu izleyin."
-  },
   "seedPhraseReq": {
     "message": "Gizli Kurtarma İfadeleri 12, 15, 18, 21 veya 24 kelimeden oluşur"
   },
