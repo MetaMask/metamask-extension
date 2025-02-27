@@ -48,6 +48,7 @@ import {
   NOTIFICATIONS_SETTINGS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE,
+  DELEGATION_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -132,6 +133,9 @@ const ReviewPermissions = mmLazy(() =>
     '../../components/multichain/pages/review-permissions-page/review-permissions-page'
   ),
 );
+
+const Delegation = mmLazy(() => import('../delegation'));
+
 const Home = mmLazy(() => import('../home'));
 // End Lazy Routes
 
@@ -357,6 +361,7 @@ export default class Routes extends Component {
             component={ReviewPermissions}
             exact
           />
+          <Authenticated path={DELEGATION_ROUTE} component={Delegation} exact />
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
       </Suspense>

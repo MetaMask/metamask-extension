@@ -116,17 +116,12 @@
         "@babel/core>@babel/types": true
       }
     },
-    "@babel/preset-env>@babel/plugin-transform-exponentiation-operator>@babel/helper-builder-binary-assignment-operator-visitor": {
-      "packages": {
-        "@babel/core>@babel/types": true
-      }
-    },
     "@babel/core>@babel/helper-compilation-targets": {
       "globals": {
         "console.warn": true,
         "process.env.BROWSERSLIST": true,
         "process.env.BROWSERSLIST_CONFIG": true,
-        "process.versions.node": true
+        "process.versions.node.split": true
       },
       "packages": {
         "@babel/preset-env>@babel/compat-data": true,
@@ -200,7 +195,6 @@
       "packages": {
         "@babel/core": true,
         "@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": true,
-        "@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": true,
         "@babel/code-frame>@babel/helper-validator-identifier": true,
         "depcheck>@babel/traverse": true
       }
@@ -224,11 +218,6 @@
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-member-expression-to-functions": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-optimise-call-expression": true,
         "depcheck>@babel/traverse": true
-      }
-    },
-    "@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": {
-      "packages": {
-        "@babel/core>@babel/types": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-for-of>@babel/helper-skip-transparent-expression-wrappers": {
@@ -360,7 +349,7 @@
         "@babel/preset-env>@babel/helper-plugin-utils": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers": true,
         "depcheck>@babel/traverse": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>globals": true
+        "depcheck>@babel/traverse>globals": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-computed-properties": {
@@ -401,8 +390,6 @@
     },
     "@babel/preset-env>@babel/plugin-transform-exponentiation-operator": {
       "packages": {
-        "@babel/core": true,
-        "@babel/preset-env>@babel/plugin-transform-exponentiation-operator>@babel/helper-builder-binary-assignment-operator-visitor": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true
       }
     },
@@ -460,8 +447,7 @@
       "packages": {
         "@babel/core": true,
         "@babel/core>@babel/helper-module-transforms": true,
-        "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": true
+        "@babel/preset-env>@babel/helper-plugin-utils": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-modules-systemjs": {
@@ -600,6 +586,12 @@
         "@babel/preset-env>@babel/plugin-transform-regenerator>regenerator-transform": true
       }
     },
+    "@babel/preset-env>@babel/plugin-transform-regexp-modifiers": {
+      "packages": {
+        "@babel/preset-env>@babel/plugin-transform-dotall-regex>@babel/helper-create-regexp-features-plugin": true,
+        "@babel/preset-env>@babel/helper-plugin-utils": true
+      }
+    },
     "@babel/preset-env>@babel/plugin-transform-reserved-words": {
       "packages": {
         "@babel/core": true,
@@ -736,6 +728,7 @@
         "@babel/preset-env>@babel/plugin-transform-private-property-in-object": true,
         "@babel/preset-env>@babel/plugin-transform-property-literals": true,
         "@babel/preset-env>@babel/plugin-transform-regenerator": true,
+        "@babel/preset-env>@babel/plugin-transform-regexp-modifiers": true,
         "@babel/preset-env>@babel/plugin-transform-reserved-words": true,
         "@babel/preset-env>@babel/plugin-transform-shorthand-properties": true,
         "@babel/preset-env>@babel/plugin-transform-spread": true,
@@ -795,7 +788,31 @@
         "depcheck>@babel/traverse>globals": true
       }
     },
+    "lavamoat>lavamoat-tofu>@babel/traverse": {
+      "globals": {
+        "console.log": true
+      },
+      "packages": {
+        "@babel/code-frame": true,
+        "@babel/core>@babel/generator": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/parser": true,
+        "@babel/core>@babel/template": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true,
+        "nock>debug": true,
+        "depcheck>@babel/traverse>globals": true
+      }
+    },
     "@babel/core>@babel/types": {
+      "globals": {
+        "console.warn": true,
+        "process.env": true
+      },
+      "packages": {
+        "@babel/core>@babel/types>@babel/helper-string-parser": true,
+        "@babel/code-frame>@babel/helper-validator-identifier": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": {
       "globals": {
         "console.warn": true,
         "process.env": true
@@ -881,7 +898,7 @@
         "eslint-plugin-prettier": true,
         "eslint-plugin-react": true,
         "eslint-plugin-react-hooks": true,
-        "eslint>globals": true,
+        "eslint>@eslint/eslintrc>globals": true,
         "eslint>ignore": true,
         "eslint>minimatch": true,
         "mocha>strip-json-comments": true
@@ -1810,6 +1827,7 @@
         "chokidar>anymatch": true,
         "chokidar>braces": true,
         "chokidar>fsevents": true,
+        "tsx>fsevents": true,
         "eslint>glob-parent": true,
         "chokidar>is-binary-path": true,
         "del>is-glob": true,
@@ -3380,6 +3398,13 @@
         "gulp-watch>chokidar>fsevents>node-pre-gyp": true
       }
     },
+    "tsx>fsevents": {
+      "globals": {
+        "console.assert": true,
+        "process.platform": true
+      },
+      "native": true
+    },
     "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge": {
       "builtin": {
         "util.format": true
@@ -4371,7 +4396,7 @@
       },
       "packages": {
         "lavamoat>lavamoat-tofu>@babel/parser": true,
-        "depcheck>@babel/traverse": true
+        "lavamoat>lavamoat-tofu>@babel/traverse": true
       }
     },
     "lavamoat>lavamoat-core>merge-deep>clone-deep>lazy-cache": {
