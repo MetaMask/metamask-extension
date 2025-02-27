@@ -2359,3 +2359,84 @@ describe('#getConnectedSitesList', () => {
     });
   });
 });
+
+describe('getShouldShowSeedPhraseReminder', () => {
+  const mockAccount = createMockInternalAccount();
+  const mockAccount2 = createMockInternalAccount({ address: 'mockAddress2' });
+  it('shows reminder for seed phrase if the primary srp is not backed up', () => {
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        internalAccounts: {
+          accounts: {
+            [mockAccount.id]: mockAccount,
+          },
+          selectedAccount: mockAccount.id,
+        },
+        keyrings: [
+          {
+            type: 'HD Key Tree',
+            accounts: [mockAccount.address],
+          },
+        ],
+        accounts: {
+          [mockAccount.address]: {
+            address: mockAccount.address,
+            balance: '0x1',
+          },
+        },
+        keyringsMetadata: [{ id: 'mockid', name: '' }],
+        seedPhraseBackedUp: false,
+        isUnlocked: true,
+        dismissSeedBackUpReminder: false,
+      },
+    };
+
+    expect(selectors.getShouldShowSeedPhraseReminder(state)).toBe(true);
+  });
+
+  it('does not show reminder for imported srps', () => {
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        internalAccounts: {
+          accounts: {
+            [mockAccount.id]: mockAccount,
+            [mockAccount2.id]: mockAccount2,
+          },
+          selectedAccount: mockAccount.id,
+        },
+        keyrings: [
+          // primary srp
+          {
+            type: 'HD Key Tree',
+            accounts: [mockAccount2.address],
+          },
+          // secondary srp
+          {
+            type: 'HD Key Tree',
+            accounts: [mockAccount.address],
+          },
+        ],
+        accounts: {
+          [mockAccount.address]: {
+            address: mockAccount.address,
+            balance: '0x1',
+          },
+          [mockAccount2.address]: {
+            address: mockAccount2.address,
+            balance: '0x1',
+          },
+        },
+        keyringsMetadata: [{ id: 'mockid', name: '' }],
+        seedPhraseBackedUp: false,
+        isUnlocked: true,
+        dismissSeedBackUpReminder: false,
+      },
+    };
+
+    expect(selectors.getShouldShowSeedPhraseReminder(state)).toBe(false);
+  });
+});

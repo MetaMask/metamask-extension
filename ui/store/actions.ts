@@ -397,6 +397,9 @@ export async function getSeedPhrase(
 
 export function requestRevealSeedWords(
   password: string,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  keyringId: string,
+  ///: END:ONLY_INCLUDE_IF
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
@@ -404,7 +407,12 @@ export function requestRevealSeedWords(
 
     try {
       await verifyPassword(password);
-      const seedPhrase = await getSeedPhrase(password);
+      const seedPhrase = await getSeedPhrase(
+        password,
+        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+        keyringId,
+        ///: END:ONLY_INCLUDE_IF
+      );
       return seedPhrase;
     } finally {
       dispatch(hideLoadingIndication());
@@ -522,20 +530,24 @@ export function addNewAccount(
   return async (dispatch, getState) => {
     const keyrings = getMetaMaskHdKeyrings(getState());
     const [defaultPrimaryKeyring] = keyrings;
+    let oldAccounts = defaultPrimaryKeyring.accounts;
 
-    // The HD keyring to add the account for.
-    let hdKeyring = defaultPrimaryKeyring;
     ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-    if (keyringId) {
-      hdKeyring = keyrings.find((keyring) => keyring.metadata.id === keyringId);
-    }
-    ///: END:ONLY_INCLUDE_IF
-    // Fail-safe in case we could not find the associated HD keyring.
+    const hdKeyring = keyringId
+      ? keyrings.find(
+          (keyring) =>
+            keyring.type === KeyringTypes.hd &&
+            keyring.metadata.id === keyringId,
+        )
+      : keyrings[0];
+
     if (!hdKeyring) {
-      console.error('Should never reach this. There is always a keyring');
+      console.log('Should never reach this. There is always a keyring');
       throw new Error('Keyring not found');
     }
-    const oldAccounts = hdKeyring.accounts;
+
+    oldAccounts = hdKeyring.accounts;
+    ///: END:ONLY_INCLUDE_IF
 
     dispatch(showLoadingIndication());
 

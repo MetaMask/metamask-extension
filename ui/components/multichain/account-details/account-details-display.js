@@ -9,8 +9,16 @@ import { setAccountLabel } from '../../../store/actions';
 import {
   getHardwareWalletType,
   getInternalAccountByAddress,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  getMetaMaskKeyrings,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
-import { isAbleToExportAccount } from '../../../helpers/utils/util';
+import {
+  isAbleToExportAccount,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  isAbleToRevealSrp,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../helpers/utils/util';
 import {
   Box,
   ButtonSecondary,
@@ -41,10 +49,17 @@ export const AccountDetailsDisplay = ({
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
 
+  const account = useSelector((state) =>
+    getInternalAccountByAddress(state, address),
+  );
   const {
     metadata: { keyring },
-  } = useSelector((state) => getInternalAccountByAddress(state, address));
+  } = account;
   const exportPrivateKeyFeatureEnabled = isAbleToExportAccount(keyring?.type);
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  const keyrings = useSelector(getMetaMaskKeyrings);
+  const exportSRPFeatureEnabled = isAbleToRevealSrp(account, keyrings);
+  ///: END:ONLY_INCLUDE_IF
 
   const chainId = useSelector(getCurrentChainId);
   const deviceName = useSelector(getHardwareWalletType);
@@ -74,9 +89,11 @@ export const AccountDetailsDisplay = ({
       <QrCodeView Qr={{ data: address }} />
       {exportPrivateKeyFeatureEnabled ? (
         <ButtonSecondary
+          data-testid="account-details-display-export-private-key"
           block
           size={ButtonSecondarySize.Lg}
           variant={TextVariant.bodyMd}
+          marginBottom={1}
           onClick={() => {
             trackEvent({
               category: MetaMetricsEventCategory.Accounts,
@@ -86,12 +103,29 @@ export const AccountDetailsDisplay = ({
                 location: 'Account Details Modal',
               },
             });
-            onExportClick();
+            onExportClick('PrivateKey');
           }}
         >
           {t('showPrivateKey')}
         </ButtonSecondary>
       ) : null}
+      {
+        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+        exportSRPFeatureEnabled ? (
+          <ButtonSecondary
+            data-testid="account-details-display-export-srp"
+            block
+            size={ButtonSecondarySize.Lg}
+            variant={TextVariant.bodyMd}
+            onClick={() => {
+              onExportClick('SRP');
+            }}
+          >
+            {t('showSRP')}
+          </ButtonSecondary>
+        ) : null
+        ///: END:ONLY_INCLUDE_IF
+      }
     </Box>
   );
 };

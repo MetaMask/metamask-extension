@@ -183,9 +183,27 @@ class PrivacySettings {
     return (await this.driver.findElement(this.displayedSrpText)).getText();
   }
 
-  async openRevealSrpQuiz(): Promise<void> {
-    console.log('Open reveal SRP quiz on privacy settings page');
+  async openSRPList(): Promise<void> {
+    // THe e2e clicks the reveal SRP too quickly before the component checks if there are multiple SRPs
+    await this.driver.delay(1000);
     await this.driver.clickElement(this.revealSrpButton);
+  }
+
+  async openRevealSrpQuiz(srpIndex?: number): Promise<void> {
+    console.log('Open reveal SRP quiz on privacy settings page');
+
+    if (srpIndex) {
+      await this.openSRPList();
+      // We only pass in the srpIndex when there are multiple SRPs
+      const srpSelector = {
+        text: `Secret Phrase ${srpIndex.toString()}`,
+        tag: 'p',
+      };
+      await this.driver.clickElement(srpSelector);
+    } else {
+      await this.driver.clickElement(this.revealSrpButton);
+    }
+
     await this.driver.waitForSelector(this.revealSrpQuizModalTitle);
   }
 
