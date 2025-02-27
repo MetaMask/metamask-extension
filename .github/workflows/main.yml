@@ -43,15 +43,48 @@ jobs:
         with:
           is-high-risk-environment: 'false'
 
-  # test3:
-  #   runs-on: ubuntu-latest
-  #   needs: prep-deps
-  #   steps:
-  #     - name: Setup environment
-  #       uses: metamask/github-tools/.github/actions/checkout-and-setup@caching2
-  #       with:
-  #         is-high-risk-environment: 'false'
-  #         ref: ${{ github.event.pull_request.head.sha || github.sha }}
+  low-risk-immediate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@caching2
+        with:
+          is-high-risk-environment: 'false'
 
-  #     - run: cat package.json
-  #       shell: bash
+  no-input:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@caching2
+
+  bad-string:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@caching2
+        with:
+          is-high-risk-environment: 'falsee'
+
+  bool-true:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@caching2
+        with:
+          is-high-risk-environment: true
+
+  bool-false:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@caching2
+        with:
+          is-high-risk-environment: false
+
+  one:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@caching2
+        with:
+          is-high-risk-environment: 1
