@@ -13,7 +13,7 @@ describe('Check balance', function (this: Suite) {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_getBalance('0 SOL');
+        await homePage.check_getBalance('0', 'SOL');
       },
     );
   });
@@ -26,7 +26,7 @@ describe('Check balance', function (this: Suite) {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_getBalance(`$0.00 USD`);
+        await homePage.check_getBalance('$0.00', 'USD');
       },
     );
   });
@@ -39,7 +39,7 @@ describe('Check balance', function (this: Suite) {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_getBalance(`$9,921.00 USD`);
+        await homePage.check_getBalance('$9,921.00', 'USD');
       },
     );
   });
@@ -52,20 +52,7 @@ describe('Check balance', function (this: Suite) {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_getBalance(`50 SOL`);
-      },
-    );
-  });
-  it('For a non 0 balance account - USD balance', async function () {
-    await withSolanaAccountSnap(
-      {
-        title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: false,
-        mockCalls: true,
-      },
-      async (driver) => {
-        const homePage = new NonEvmHomepage(driver);
-        await homePage.check_getBalance(`$9,921.00 USD`);
+        await homePage.check_getBalance('50', 'SOL');
       },
     );
   });

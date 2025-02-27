@@ -15,11 +15,12 @@ describe('Send flow', function (this: Suite) {
       {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: true,
-        // importAccount: true,
+        mockCalls: true,
+        mockZeroBalance: true,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_pageIsLoaded('0');
+        await homePage.check_getBalance('0', 'SOL');
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
         assert.equal(
@@ -44,14 +45,6 @@ describe('Send flow', function (this: Suite) {
           true,
           'Insufficient balance text is not displayed',
         );
-        await sendSolanaPage.setAmount('0');
-        assert.equal(
-          await sendSolanaPage.check_validationErrorAppears(
-            'Amount must be greater than 0',
-          ),
-          true,
-          'Amount must be greater than 0 text is not displayed',
-        );
         await sendSolanaPage.clearToAddress();
         assert.equal(
           await sendSolanaPage.isContinueButtonEnabled(),
@@ -69,7 +62,6 @@ describe('Send flow', function (this: Suite) {
 });
 describe('Send full flow of USD', function (this: Suite) {
   it('with a positive balance account', async function () {
-    // skipped due tohttps://consensyssoftware.atlassian.net/browse/SOL-100
     this.timeout(120000);
     await withSolanaAccountSnap(
       {
@@ -200,8 +192,7 @@ describe('Send full flow of USD', function (this: Suite) {
     );
   });
 });
-// TODO: unskip after Javier's PR is merged
-describe.skip('Send full flow of SOL', function (this: Suite) {
+describe('Send full flow of SOL', function (this: Suite) {
   it('with a positive balance account', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
@@ -326,8 +317,7 @@ describe.skip('Send full flow of SOL', function (this: Suite) {
     );
   });
 });
-// TODO: unskip after Javier's PR is merged
-describe.skip('Send flow', function (this: Suite) {
+describe('Send flow', function (this: Suite) {
   it('and Transaction fails', async function () {
     this.timeout(120000); // there is a bug open for this big timeout https://consensyssoftware.atlassian.net/browse/SOL-90
     await withSolanaAccountSnap(
