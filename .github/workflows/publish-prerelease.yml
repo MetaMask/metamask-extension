@@ -12,9 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup-secure@caching2
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@caching2
         with:
           fetch-depth: 0 # This is needed to get merge base to calculate bundle size diff
+          is-high-risk-environment: true
 
       - name: Get merge base commit hash
         id: get-merge-base
