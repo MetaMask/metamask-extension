@@ -4185,9 +4185,6 @@
   "seedPhraseIntroTitle": {
     "message": "Amankan dompet Anda"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Sebelum memulai, lihat video singkat ini untuk mempelajari tentang Frasa Pemulihan Rahasia Anda dan cara menjaga keamanan dompet Anda."
-  },
   "seedPhraseReq": {
     "message": "Frasa Pemulihan Rahasia berisi 12, 15, 18, 21, atau 24 kata"
   },
@@ -4652,15 +4649,6 @@
   "snapsUIError": {
     "message": "Hubungi pembuat $1 untuk dukungan lebih lanjut.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "solanaSupportSectionTitle": {
-    "message": "Solana"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "Mengaktifkan fitur ini akan memberi Anda opsi untuk menambahkan Akun Solana ke Ekstensi MetaMask yang berasal dari Frasa Pemulihan Rahasia yang sudah ada. Ini merupakan fitur Beta eksperimental, jadi Anda harus menggunakannya dengan risiko yang ditanggung sendiri."
-  },
-  "solanaSupportToggleTitle": {
-    "message": "Aktifkan \"Tambahkan akun Solana baru (Beta)\""
   },
   "somethingDoesntLookRight": {
     "message": "Ada yang tidak beres? $1",

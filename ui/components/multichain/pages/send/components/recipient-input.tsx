@@ -20,7 +20,7 @@ import {
 } from '../../../../../../shared/constants/metametrics';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
-import { SendPageRow } from '.';
+import { SendPageRow } from './send-page-row';
 
 export const SendPageRecipientInput = () => {
   const t = useContext(I18nContext);
