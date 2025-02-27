@@ -1,11 +1,12 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { SRPListItem } from './srp-list-item';
 import mockState from '../../../../../test/data/mock-state.json';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 import { InternalAccountWithBalance } from '../../../../selectors';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
+import { SRPListItem } from './srp-list-item';
+import { shortenAddress } from '../../../../helpers/utils/util';
 
 const mockTotalFiatBalance = '100';
 const mockAccount: InternalAccountWithBalance = {
@@ -20,7 +21,6 @@ const mocks = {
   useMultichainAccountTotalFiatBalance: jest.fn().mockReturnValue({
     totalFiatBalance: mockTotalFiatBalance,
   }),
-  shortenAddress: jest.fn().mockReturnValue(mockAccount.address),
 };
 
 jest.mock('../../../../hooks/useMultichainAccountTotalFiatBalance', () => ({
@@ -29,7 +29,6 @@ jest.mock('../../../../hooks/useMultichainAccountTotalFiatBalance', () => ({
 }));
 jest.mock('../../../../helpers/utils/util', () => ({
   ...jest.requireActual('../../../../helpers/utils/util'),
-  shortenAddress: (...args: any[]) => mocks.shortenAddress(...args),
 }));
 
 const render = () => {
@@ -43,7 +42,6 @@ describe('SRPListItem', () => {
     mocks.useMultichainAccountTotalFiatBalance.mockReturnValue({
       totalFiatBalance: mockTotalFiatBalance,
     });
-    mocks.shortenAddress.mockReturnValue(mockAccount.address);
   });
 
   afterEach(() => {
@@ -54,7 +52,7 @@ describe('SRPListItem', () => {
     const { getByText } = render();
 
     expect(getByText(mockAccount.metadata.name)).toBeInTheDocument();
-    expect(getByText(mockAccount.address)).toBeInTheDocument();
+    expect(getByText(shortenAddress(mockAccount.address))).toBeInTheDocument();
   });
 
   it('calls useMultichainAccountTotalFiatBalance with correct account', () => {
