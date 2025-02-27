@@ -222,31 +222,41 @@ export const ImportSRP = ({
         {Array.from({ length: numberOfWords }).map((_, index) => {
           const id = `import-srp__srp-word-${index}`;
           return (
-            <Box className="import-srp__srp-word" key={index} marginBottom={4}>
-              <Label variant={TextVariant.bodyMdMedium} marginRight={4}>
+            <Box
+              key={index}
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
+            >
+              <Label
+                className="import-srp__srp-label"
+                variant={TextVariant.bodyMdMedium}
+                marginRight={4}
+              >
                 {index + 1}.
               </Label>
-              <TextField
-                id={id}
-                data-testid={id}
-                borderRadius={BorderRadius.LG}
-                error={invalidSRPWords[index]}
-                type={TextFieldType.Text}
-                onChange={(e) => {
-                  e.preventDefault();
-                  onSrpWordChange(index, e.target.value);
-                }}
-                value={secretRecoveryPhrase[index]}
-                autoComplete={false}
-                onPaste={(event: React.ClipboardEvent) => {
-                  const newSrp = event.clipboardData.getData('text');
+              <Box className="import-srp__srp-word" marginBottom={4}>
+                <TextField
+                  id={id}
+                  data-testid={id}
+                  borderRadius={BorderRadius.LG}
+                  error={invalidSRPWords[index]}
+                  type={TextFieldType.Text}
+                  onChange={(e) => {
+                    e.preventDefault();
+                    onSrpWordChange(index, e.target.value);
+                  }}
+                  value={secretRecoveryPhrase[index]}
+                  autoComplete={false}
+                  onPaste={(event: React.ClipboardEvent) => {
+                    const newSrp = event.clipboardData.getData('text');
 
-                  if (newSrp.trim().match(/\s/u)) {
-                    event.preventDefault();
-                    onSrpPaste(newSrp);
-                  }
-                }}
-              />
+                    if (newSrp.trim().match(/\s/u)) {
+                      event.preventDefault();
+                      onSrpPaste(newSrp);
+                    }
+                  }}
+                />
+              </Box>
             </Box>
           );
         })}
