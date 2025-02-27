@@ -1405,7 +1405,7 @@ describe('MetaMetricsController', function () {
                 ] as Nft[],
               },
             },
-          } as unknown as BackgroundStateProxy['NftController'],
+          },
           TokensController: {
             allTokens: MOCK_ALL_TOKENS,
             ...mockNetworkState(
@@ -1413,7 +1413,7 @@ describe('MetaMetricsController', function () {
               { chainId: CHAIN_IDS.GOERLI },
               { chainId: '0xaf' },
             ),
-          } as unknown as BackgroundStateProxy['TokensController'],
+          },
           AccountsController: {
             internalAccounts: {
               accounts: {
@@ -1467,13 +1467,14 @@ describe('MetaMetricsController', function () {
             preferences: {
               privacyMode: true,
               tokenNetworkFilter: {},
-            } as PreferencesControllerState['preferences'],
+            },
           },
           CurrencyController: {
             currentCurrency: 'usd',
             currencyRates: {},
           },
-        });
+          // TODO: Replace with spread of comprehensive state mock object
+        } as unknown as BackgroundStateProxy);
 
         expect(traits).toStrictEqual({
           [MetaMetricsUserTrait.AddressBookEntries]: 3,
@@ -1570,7 +1571,8 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
-        });
+          // TODO: Replace with spread of comprehensive state mock object
+        } as unknown as BackgroundStateProxy);
 
         const updatedTraits = controller._buildUserTraitsObject({
           addressBook: {
@@ -1629,7 +1631,8 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
-        });
+          // TODO: Replace with spread of comprehensive state mock object
+        } as unknown as BackgroundStateProxy);
 
         expect(updatedTraits).toStrictEqual({
           [MetaMetricsUserTrait.AddressBookEntries]: 4,
@@ -1696,7 +1699,8 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
-        });
+          // TODO: Replace with spread of comprehensive state mock object
+        } as unknown as BackgroundStateProxy);
 
         const updatedTraits = controller._buildUserTraitsObject({
           addressBook: {
@@ -1745,7 +1749,8 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
-        });
+          // TODO: Replace with spread of comprehensive state mock object
+        } as unknown as BackgroundStateProxy);
         expect(updatedTraits).toStrictEqual(null);
       });
     });
