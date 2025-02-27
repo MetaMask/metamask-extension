@@ -12,20 +12,17 @@ import { submitRequestToBackground } from '../../store/background-connection';
 import { type SamplePetnamesControllerState } from '../../../app/scripts/controllers/sample/sample-petnames-controller';
 
 // Selectors
-export const getPetNamesState = (state: MetaMaskReduxState) =>
-  state.metamask.SamplePetNamesController as
-    | SamplePetnamesControllerState
+export const getSamplePetnamesByChainIdAndAddress = (
+  state: MetaMaskReduxState,
+) =>
+  state.metamask.samplePetnamesByChainIdAndAddress as
+    | SamplePetnamesControllerState['samplePetnamesByChainIdAndAddress']
     | undefined;
 
-export const getPetNamesByChainId = createSelector(
-  [getPetNamesState],
-  (state) => state?.namesByChainIdAndAddress ?? {},
-);
-
 export const getPetNamesForCurrentChain = createSelector(
-  [getPetNamesByChainId, getCurrentChainId],
-  (namesByChainIdAndAddress, chainId): Record<Hex, string> =>
-    namesByChainIdAndAddress[chainId] ?? {},
+  [getSamplePetnamesByChainIdAndAddress, getCurrentChainId],
+  (petnamesByChainIdAndAddress, chainId): Record<Hex, string> =>
+    petnamesByChainIdAndAddress?.[chainId] ?? {},
 );
 
 // Actions
