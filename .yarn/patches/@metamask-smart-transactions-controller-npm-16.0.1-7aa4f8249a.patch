@@ -1,7 +1,16 @@
 diff --git a/dist/SmartTransactionsController.js b/dist/SmartTransactionsController.js
-index c11179c22fe0fa377199aba8418fceb4bb441e93..3e8fba2d0407f28ff9049947806dcf3bdf6d4bea 100644
+index c11179c22fe0fa377199aba8418fceb4bb441e93..7581d803a2955ddc737ce9e9c394777d7f4deb91 100644
 --- a/dist/SmartTransactionsController.js
 +++ b/dist/SmartTransactionsController.js
+@@ -13,7 +13,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+ var __importDefault = (this && this.__importDefault) || function (mod) {
+     return (mod && mod.__esModule) ? mod : { "default": mod };
+ };
+-var _SmartTransactionsController_instances, _SmartTransactionsController_interval, _SmartTransactionsController_clientId, _SmartTransactionsController_chainId, _SmartTransactionsController_supportedChainIds, _SmartTransactionsController_getNonceLock, _SmartTransactionsController_ethQuery, _SmartTransactionsController_confirmExternalTransaction, _SmartTransactionsController_getRegularTransactions, _SmartTransactionsController_trackMetaMetricsEvent, _SmartTransactionsController_getMetaMetricsProps, _SmartTransactionsController_getFeatureFlags, _SmartTransactionsController_updateTransaction, _SmartTransactionsController_fetch, _SmartTransactionsController_updateSmartTransaction, _SmartTransactionsController_addMetaMetricsPropsToNewSmartTransaction, _SmartTransactionsController_createOrUpdateSmartTransaction, _SmartTransactionsController_doesTransactionNeedConfirmation, _SmartTransactionsController_confirmSmartTransaction, _SmartTransactionsController_addNonceToTransaction, _SmartTransactionsController_getChainId, _SmartTransactionsController_getEthQuery, _SmartTransactionsController_getCurrentSmartTransactions, _SmartTransactionsController_wipeSmartTransactionsPerChainId;
++var _SmartTransactionsController_instances, _SmartTransactionsController_interval, _SmartTransactionsController_clientId, _SmartTransactionsController_chainId, _SmartTransactionsController_supportedChainIds, _SmartTransactionsController_getNonceLock, _SmartTransactionsController_ethQuery, _SmartTransactionsController_confirmExternalTransaction, _SmartTransactionsController_getRegularTransactions, _SmartTransactionsController_trackMetaMetricsEvent, _SmartTransactionsController_getMetaMetricsProps, _SmartTransactionsController_getFeatureFlags, _SmartTransactionsController_updateTransaction, _SmartTransactionsController_fetch, _SmartTransactionsController_updateSmartTransaction, _SmartTransactionsController_addMetaMetricsPropsToNewSmartTransaction, _SmartTransactionsController_createOrUpdateSmartTransaction, _SmartTransactionsController_doesTransactionNeedConfirmation, _SmartTransactionsController_confirmSmartTransaction, _SmartTransactionsController_addNonceToTransaction, _SmartTransactionsController_getChainId, _SmartTransactionsController_getChainIds, _SmartTransactionsController_getNetworkClientId, _SmartTransactionsController_getNetworkClientIds, _SmartTransactionsController_getEthQuery, _SmartTransactionsController_getCurrentSmartTransactions, _SmartTransactionsController_wipeSmartTransactionsPerChainId;
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.getDefaultSmartTransactionsControllerState = exports.DEFAULT_INTERVAL = void 0;
+ const bytes_1 = require("@ethersproject/bytes");
 @@ -35,7 +35,7 @@ const ETH_QUERY_ERROR_MSG = '`ethQuery` is not defined on SmartTransactionsContr
  const controllerName = 'SmartTransactionsController';
  const controllerMetadata = {
@@ -11,8 +20,25 @@ index c11179c22fe0fa377199aba8418fceb4bb441e93..3e8fba2d0407f28ff9049947806dcf3b
          anonymous: true,
      },
  };
-@@ -129,7 +129,8 @@ class SmartTransactionsController extends (0, polling_controller_1.StaticInterva
-         return this.updateSmartTransactions({ networkClientId });
+@@ -117,19 +117,21 @@ class SmartTransactionsController extends (0, polling_controller_1.StaticInterva
+         });
+         this.messagingSystem.subscribe(`${controllerName}:stateChange`, (currentState) => this.checkPoll(currentState));
+     }
+-    async _executePoll({ networkClientId, }) {
++    async _executePoll({ chainIds, }) {
+         // if this is going to be truly UI driven polling we shouldn't really reach here
+         // with a networkClientId that is not supported, but for now I'll add a check in case
+         // wondering if we should add some kind of predicate to the polling controller to check whether
+         // we should poll or not
+-        const chainId = __classPrivateFieldGet(this, _SmartTransactionsController_instances, "m", _SmartTransactionsController_getChainId).call(this, { networkClientId });
+-        if (!__classPrivateFieldGet(this, _SmartTransactionsController_supportedChainIds, "f").includes(chainId)) {
++        // const chainId = this.#getChainId({ networkClientId });
++        const filteredChainIds = chainIds.filter((chainId) => __classPrivateFieldGet(this, _SmartTransactionsController_supportedChainIds, "f").includes(chainId));
++        if (filteredChainIds.length === 0) {
+             return Promise.resolve();
+         }
+-        return this.updateSmartTransactions({ networkClientId });
++        return this.updateSmartTransactions({ chainIds: filteredChainIds });
      }
      checkPoll({ smartTransactionsState: { smartTransactions }, }) {
 -        const currentSmartTransactions = smartTransactions[__classPrivateFieldGet(this, _SmartTransactionsController_chainId, "f")];
@@ -21,7 +47,7 @@ index c11179c22fe0fa377199aba8418fceb4bb441e93..3e8fba2d0407f28ff9049947806dcf3b
          const pendingTransactions = currentSmartTransactions === null || currentSmartTransactions === void 0 ? void 0 : currentSmartTransactions.filter(utils_1.isSmartTransactionPending);
          if (!this.timeoutHandle && (pendingTransactions === null || pendingTransactions === void 0 ? void 0 : pendingTransactions.length) > 0) {
              this.poll();
-@@ -182,9 +183,9 @@ class SmartTransactionsController extends (0, polling_controller_1.StaticInterva
+@@ -182,9 +184,9 @@ class SmartTransactionsController extends (0, polling_controller_1.StaticInterva
              sensitiveProperties: (0, utils_1.getSmartTransactionMetricsSensitiveProperties)(updatedSmartTransaction),
          });
      }
@@ -33,9 +59,14 @@ index c11179c22fe0fa377199aba8418fceb4bb441e93..3e8fba2d0407f28ff9049947806dcf3b
          const currentIndex = currentSmartTransactions === null || currentSmartTransactions === void 0 ? void 0 : currentSmartTransactions.findIndex((stx) => stx.uuid === smartTransactionUuid);
          return currentIndex === -1 || currentIndex === undefined;
      }
-@@ -203,33 +204,60 @@ class SmartTransactionsController extends (0, polling_controller_1.StaticInterva
+@@ -201,35 +203,62 @@ class SmartTransactionsController extends (0, polling_controller_1.StaticInterva
+             ethQuery,
+         });
      }
-     async updateSmartTransactions({ networkClientId, } = {}) {
+-    async updateSmartTransactions({ networkClientId, } = {}) {
++    async updateSmartTransactions({ chainIds, } = {
++        chainIds: __classPrivateFieldGet(this, _SmartTransactionsController_instances, "m", _SmartTransactionsController_getChainIds).call(this),
++    }) {
          const { smartTransactionsState: { smartTransactions }, } = this.state;
 -        const chainId = __classPrivateFieldGet(this, _SmartTransactionsController_instances, "m", _SmartTransactionsController_getChainId).call(this, { networkClientId });
 -        const smartTransactionsForChainId = smartTransactions[chainId];
@@ -47,19 +78,17 @@ index c11179c22fe0fa377199aba8418fceb4bb441e93..3e8fba2d0407f28ff9049947806dcf3b
 -                networkClientId,
 +        // Iterate over each chain group directly
 +        for (const [chainId, transactions] of Object.entries(smartTransactions)) {
++            if (chainIds && !chainIds.includes(chainId)) {
++                continue;
++            }
 +            // Filter pending transactions and map them to the desired shape
 +            const pendingTransactions = transactions
 +                .filter(utils_1.isSmartTransactionPending)
 +                .map((tx) => {
-+                var _a, _b, _c;
 +                // Use the transaction's chainId (from the key) to derive a networkClientId
-+                let networkClientIdToUse = networkClientId;
-+                if (tx.chainId) {
-+                    const configuration = this.messagingSystem.call('NetworkController:getState');
-+                    networkClientIdToUse =
-+                        (_c = (_b = (_a = configuration === null || configuration === void 0 ? void 0 : configuration.networkConfigurationsByChainId[chainId]) === null || _a === void 0 ? void 0 : _a.rpcEndpoints) === null || _b === void 0 ? void 0 : _b[configuration.networkConfigurationsByChainId[chainId]
-+                            .defaultRpcEndpointIndex]) === null || _c === void 0 ? void 0 : _c.networkClientId;
-+                }
++                const networkClientIdToUse = __classPrivateFieldGet(this, _SmartTransactionsController_instances, "m", _SmartTransactionsController_getNetworkClientId).call(this, {
++                    chainId: chainId,
++                });
 +                return {
 +                    uuid: tx.uuid,
 +                    networkClientId: networkClientIdToUse,
@@ -108,7 +137,7 @@ index c11179c22fe0fa377199aba8418fceb4bb441e93..3e8fba2d0407f28ff9049947806dcf3b
              };
              await __classPrivateFieldGet(this, _SmartTransactionsController_instances, "m", _SmartTransactionsController_createOrUpdateSmartTransaction).call(this, smartTransaction, {
                  chainId,
-@@ -469,7 +497,7 @@ async function _SmartTransactionsController_fetch(request, options) {
+@@ -469,7 +498,7 @@ async function _SmartTransactionsController_fetch(request, options) {
      const { smartTransactionsState: { smartTransactions }, } = this.state;
      const currentSmartTransactions = (_a = smartTransactions[chainId]) !== null && _a !== void 0 ? _a : [];
      const currentIndex = currentSmartTransactions === null || currentSmartTransactions === void 0 ? void 0 : currentSmartTransactions.findIndex((stx) => stx.uuid === smartTransaction.uuid);
@@ -117,7 +146,7 @@ index c11179c22fe0fa377199aba8418fceb4bb441e93..3e8fba2d0407f28ff9049947806dcf3b
      if (__classPrivateFieldGet(this, _SmartTransactionsController_ethQuery, "f") === undefined) {
          throw new Error(ETH_QUERY_ERROR_MSG);
      }
-@@ -496,7 +524,7 @@ async function _SmartTransactionsController_fetch(request, options) {
+@@ -496,7 +525,7 @@ async function _SmartTransactionsController_fetch(request, options) {
                  .concat(historifiedSmartTransaction)
              : currentSmartTransactions.concat(historifiedSmartTransaction);
          this.update((state) => {
@@ -126,7 +155,24 @@ index c11179c22fe0fa377199aba8418fceb4bb441e93..3e8fba2d0407f28ff9049947806dcf3b
                  nextSmartTransactions;
          });
          return;
-@@ -621,7 +649,7 @@ async function _SmartTransactionsController_fetch(request, options) {
+@@ -610,6 +639,16 @@ async function _SmartTransactionsController_fetch(request, options) {
+         return this.messagingSystem.call('NetworkController:getNetworkClientById', networkClientId).configuration.chainId;
+     }
+     return __classPrivateFieldGet(this, _SmartTransactionsController_chainId, "f");
++}, _SmartTransactionsController_getChainIds = function _SmartTransactionsController_getChainIds() {
++    const { networkConfigurationsByChainId } = this.messagingSystem.call('NetworkController:getState');
++    return Object.keys(networkConfigurationsByChainId).filter((chainId) => __classPrivateFieldGet(this, _SmartTransactionsController_supportedChainIds, "f").includes(chainId));
++}, _SmartTransactionsController_getNetworkClientId = function _SmartTransactionsController_getNetworkClientId({ chainId }) {
++    const { networkConfigurationsByChainId } = this.messagingSystem.call('NetworkController:getState');
++    return networkConfigurationsByChainId[chainId].rpcEndpoints[networkConfigurationsByChainId[chainId].defaultRpcEndpointIndex].networkClientId;
++}, _SmartTransactionsController_getNetworkClientIds = function _SmartTransactionsController_getNetworkClientIds() {
++    const { networkConfigurationsByChainId } = this.messagingSystem.call('NetworkController:getState');
++    return Object.values(networkConfigurationsByChainId).map((chainConfig) => chainConfig.rpcEndpoints[chainConfig.defaultRpcEndpointIndex]
++        .networkClientId);
+ }, _SmartTransactionsController_getEthQuery = function _SmartTransactionsController_getEthQuery({ networkClientId, } = {}) {
+     if (networkClientId) {
+         const { provider } = this.messagingSystem.call('NetworkController:getNetworkClientById', networkClientId);
+@@ -621,7 +660,7 @@ async function _SmartTransactionsController_fetch(request, options) {
      return __classPrivateFieldGet(this, _SmartTransactionsController_ethQuery, "f");
  }, _SmartTransactionsController_getCurrentSmartTransactions = function _SmartTransactionsController_getCurrentSmartTransactions() {
      const { smartTransactionsState: { smartTransactions }, } = this.state;
