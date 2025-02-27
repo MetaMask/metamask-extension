@@ -25,7 +25,6 @@ import {
   getMultichainNetworkControllerMessenger,
   getMultichainAssetsRatesControllerMessenger,
 } from './multichain';
-import { getSampleGasPricesControllerMessenger } from './sample-gasprices-controller-messenger';
 import { getSamplePetnamesControllerMessenger } from './sample-petnames-controller-messenger';
 
 export const CONTROLLER_MESSENGERS = {
@@ -35,10 +34,6 @@ export const CONTROLLER_MESSENGERS = {
   },
   ExecutionService: {
     getMessenger: getExecutionServiceMessenger,
-    getInitMessenger: noop,
-  },
-  SampleGasPricesController: {
-    getMessenger: getSampleGasPricesControllerMessenger,
     getInitMessenger: noop,
   },
   SamplePetnamesController: {
