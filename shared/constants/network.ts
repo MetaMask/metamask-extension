@@ -178,6 +178,8 @@ export const CHAIN_IDS = {
   INK: '0xdef1',
   MODE_SEPOLIA: '0x397',
   MODE: '0x868b',
+  ASSET_HUB: '0x190f1b43',
+  ASSET_HUB_WESTEND: '0x190f1b45',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -1036,6 +1038,8 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
 export const CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP = {
   [CHAIN_IDS.OPTIMISM]: 1,
   [CHAIN_IDS.OPTIMISM_TESTNET]: 1,
+  [CHAIN_IDS.ASSET_HUB_WESTEND]: 1,
+  [CHAIN_IDS.ASSET_HUB]: 1,
 };
 
 /**
