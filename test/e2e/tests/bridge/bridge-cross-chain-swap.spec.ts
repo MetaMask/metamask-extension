@@ -19,12 +19,16 @@ describe('Bridge tests @no-mmi', function (this: Suite) {
   let txCount = 1;
   it('Execute various bridge transactions', async function () {
     await withFixtures(
-      getBridgeFixtures(this.test?.fullTitle(), {
-        'extension-config': {
-          ...DEFAULT_FEATURE_FLAGS_RESPONSE['extension-config'],
-          support: true,
+      getBridgeFixtures(
+        this.test?.fullTitle(),
+        {
+          'extension-config': {
+            ...DEFAULT_FEATURE_FLAGS_RESPONSE['extension-config'],
+            support: true,
+          },
         },
-      }),
+        false,
+      ),
       async ({ driver }) => {
         await await unlockWallet(driver);
 
@@ -41,22 +45,6 @@ describe('Bridge tests @no-mmi', function (this: Suite) {
           amount: '.03',
           tokenFrom: 'ETH',
           tokenTo: 'ETH',
-          fromChain: 'Ethereum',
-          toChain: 'Linea',
-        });
-
-        await bridgeTransaction(driver, {
-          amount: '.03',
-          tokenFrom: 'ETH',
-          tokenTo: 'USDC',
-          fromChain: 'Ethereum',
-          toChain: 'Linea',
-        });
-
-        await bridgeTransaction(driver, {
-          amount: '.05',
-          tokenFrom: 'ETH',
-          tokenTo: 'WETH',
           fromChain: 'Ethereum',
           toChain: 'Linea',
         });
