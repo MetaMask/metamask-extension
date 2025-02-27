@@ -4185,9 +4185,6 @@
   "seedPhraseIntroTitle": {
     "message": "지갑 보호하기"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "시작하기 전에 이 짧은 동영상을 보고 비밀복구구문과 지갑을 안전하게 보호하는 방법에 대해 알아보세요."
-  },
   "seedPhraseReq": {
     "message": "비밀복구구문은 12, 15, 18, 21 또는 24개의 단어로 구성됩니다"
   },
@@ -4652,15 +4649,6 @@
   "snapsUIError": {
     "message": "$1 작성자에게 연락하여 향후 지원을 요청하세요.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "solanaSupportSectionTitle": {
-    "message": "솔라나"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "이 기능을 켜면 기존 비밀복구구문에서 파생된 솔라나 계정을 MetaMask 확장 프로그램에 추가하는 옵션이 제공됩니다. 이는 실험적 베타 기능이므로 사용자의 책임하에 사용해야 합니다."
-  },
-  "solanaSupportToggleTitle": {
-    "message": "'새 솔라나 계정 추가(베타)' 활성화"
   },
   "somethingDoesntLookRight": {
     "message": "무언가 잘못되었나요? $1",

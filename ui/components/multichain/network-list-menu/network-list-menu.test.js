@@ -177,7 +177,7 @@ describe('NetworkListMenu', () => {
 
   it('should match snapshot when editing a network', async () => {
     const { baseElement } = render({
-      editedNetwork: { chainId: '0x1' },
+      editedNetwork: { chainId: 'eip155:1' },
     });
     expect(baseElement).toMatchSnapshot();
   });
