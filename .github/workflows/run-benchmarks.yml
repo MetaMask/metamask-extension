@@ -33,8 +33,13 @@ jobs:
 
       - name: Compute ARTIFACT_NAME
         run: |
-          echo ARTIFACT_NAME="prep-build-test-${{ matrix.buildType }}$([[ ${{ matrix.buildType }} == "webpack" ]] && echo "-${{ matrix.browser }}")" >> $GITHUB_ENV
-          echo "ARTIFACT_NAME=$ARTIFACT_NAME"
+          if [[ "${{ matrix.buildType }}" == "webpack" ]]; then
+            ARTIFACT_NAME="prep-build-test-${{ matrix.buildType }}-${{ matrix.browser }}"
+          else
+            ARTIFACT_NAME="prep-build-test-${{ matrix.buildType }}"
+          fi
+
+          echo "ARTIFACT_NAME=$ARTIFACT_NAME" >> "$GITHUB_ENV"
 
       - name: Download artifact ${{env.ARTIFACT_NAME}}
         uses: actions/download-artifact@v4
