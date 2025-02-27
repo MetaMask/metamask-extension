@@ -9,6 +9,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { TransactionParams } from '@metamask/transaction-controller';
 import type { ChainId } from '@metamask/controller-utils';
 import { HandlerType } from '@metamask/snaps-utils';
+import type { SnapId } from '@metamask/snaps-sdk';
 import {
   fetchBridgeFeatureFlags,
   fetchBridgeQuotes,
@@ -256,14 +257,12 @@ export default class BridgeController extends StaticIntervalPollingController<Br
       );
 
       const quotesWithL1GasFees = await this.#appendL1GasFees(quotes);
-      const quotesWithSolanaFees = await this.#appendSolanaFees(
-        quotesWithL1GasFees,
-      );
+      const quotesWithSolanaFees = await this.#appendSolanaFees(quotes);
 
       this.update((_state) => {
         _state.bridgeState = {
           ..._state.bridgeState,
-          quotes: quotesWithSolanaFees,
+          quotes: quotesWithL1GasFees ?? quotesWithSolanaFees ?? quotes,
           quotesLoadingStatus: RequestStatus.FETCHED,
         };
       });
@@ -315,38 +314,46 @@ export default class BridgeController extends StaticIntervalPollingController<Br
 
   #appendL1GasFees = async (
     quotes: QuoteResponse[],
-  ): Promise<(QuoteResponse & L1GasFees)[]> => {
+  ): Promise<(QuoteResponse & L1GasFees)[] | undefined> => {
+    // Return undefined if some of the quotes are not for optimism or base
+    if (
+      quotes.some(({ quote }) => {
+        const chainId = formatChainIdToCaip(quote.srcChainId);
+        return ![CHAIN_IDS.OPTIMISM, CHAIN_IDS.BASE]
+          .map(formatChainIdToCaip)
+          .includes(chainId);
+      })
+    ) {
+      return undefined;
+    }
+
     return await Promise.all(
       quotes.map(async (quoteResponse) => {
         const { quote, trade, approval } = quoteResponse;
         const chainId = add0x(decimalToHex(quote.srcChainId)) as ChainId;
-        if (
-          [CHAIN_IDS.OPTIMISM.toString(), CHAIN_IDS.BASE.toString()].includes(
-            chainId,
-          )
-        ) {
-          const getTxParams = (txData: TxData) => ({
-            from: txData.from,
-            to: txData.to,
-            value: txData.value,
-            data: txData.data,
-            gasLimit: txData.gasLimit?.toString(),
-          });
-          const approvalL1GasFees = approval
-            ? await this.#getLayer1GasFee({
-                transactionParams: getTxParams(approval),
-                chainId,
-              })
-            : '0';
-          const tradeL1GasFees = await this.#getLayer1GasFee({
-            transactionParams: getTxParams(trade),
-            chainId,
-          });
-          return {
-            ...quoteResponse,
-            l1GasFeesInHexWei: sumHexes(approvalL1GasFees, tradeL1GasFees),
-          };
-        }
+
+        const getTxParams = (txData: TxData) => ({
+          from: txData.from,
+          to: txData.to,
+          value: txData.value,
+          data: txData.data,
+          gasLimit: txData.gasLimit?.toString(),
+        });
+        const approvalL1GasFees = approval
+          ? await this.#getLayer1GasFee({
+              transactionParams: getTxParams(approval),
+              chainId,
+            })
+          : '0';
+        const tradeL1GasFees = await this.#getLayer1GasFee({
+          transactionParams: getTxParams(trade),
+          chainId,
+        });
+        return {
+          ...quoteResponse,
+          l1GasFeesInHexWei: sumHexes(approvalL1GasFees, tradeL1GasFees),
+        };
+
         return quoteResponse;
       }),
     );
@@ -354,21 +361,28 @@ export default class BridgeController extends StaticIntervalPollingController<Br
 
   #appendSolanaFees = async (
     quotes: QuoteResponse[],
-  ): Promise<(QuoteResponse & SolanaFees)[]> => {
+  ): Promise<(QuoteResponse & SolanaFees)[] | undefined> => {
+    // Return undefined if some of the quotes are not for solana
+    if (
+      quotes.some(({ quote }) => {
+        return (
+          formatChainIdToCaip(quote.srcChainId) !== MultichainNetworks.SOLANA
+        );
+      })
+    ) {
+      return undefined;
+    }
+
     return await Promise.all(
       quotes.map(async (quoteResponse) => {
-        const { quote, trade } = quoteResponse;
+        const { trade } = quoteResponse;
         const selectedAccount = this.#getMultichainSelectedAccount();
 
-        if (
-          selectedAccount &&
-          typeof trade === 'string' &&
-          formatChainIdToCaip(quote.srcChainId) === MultichainNetworks.SOLANA
-        ) {
-          const { value: fees } = await this.messagingSystem.call(
+        if (selectedAccount?.metadata?.snap?.id && typeof trade === 'string') {
+          const { value: fees } = (await this.messagingSystem.call(
             'SnapController:handleRequest',
             {
-              snapId: selectedAccount.metadata.snap.id,
+              snapId: selectedAccount.metadata.snap.id as SnapId,
               origin: 'metamask',
               handler: HandlerType.OnRpcRequest,
               request: {
@@ -379,7 +393,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
                 },
               },
             },
-          );
+          )) as { value: string };
 
           return {
             ...quoteResponse,
@@ -427,7 +441,8 @@ export default class BridgeController extends StaticIntervalPollingController<Br
 
     const web3Provider = new Web3Provider(provider);
     const contract = new Contract(contractAddress, abiERC20, web3Provider);
-    const { address: walletAddress } = this.#getMultichainSelectedAccount();
+    const { address: walletAddress } =
+      this.#getMultichainSelectedAccount() ?? {};
     const allowance = await contract.allowance(
       walletAddress,
       METABRIDGE_CHAIN_TO_ADDRESS_MAP[chainId],
