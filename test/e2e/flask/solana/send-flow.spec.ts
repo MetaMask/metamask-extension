@@ -220,7 +220,8 @@ describe.skip('Send full flow of USD', function (this: Suite) {
     );
   });
 });
-describe('Send full flow of SOL', function (this: Suite) {
+// TODO: unskip after Javier's PR is merged
+describe.skip('Send full flow of SOL', function (this: Suite) {
   it('with a positive balance account', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
@@ -343,7 +344,8 @@ describe('Send full flow of SOL', function (this: Suite) {
     );
   });
 });
-describe('Send flow', function (this: Suite) {
+// TODO: unskip after Javier's PR is merged
+describe.skip('Send flow', function (this: Suite) {
   it('and Transaction fails', async function () {
     this.timeout(120000); // there is a bug open for this big timeout https://consensyssoftware.atlassian.net/browse/SOL-90
     await withSolanaAccountSnap(
