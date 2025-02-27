@@ -7,10 +7,7 @@ import {
   getAllDetectedTokensForSelectedAddress,
   selectERC20TokensByChain,
 } from '../../selectors';
-import {
-  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
-  SwapsTokenObject,
-} from '../../../shared/constants/swaps';
+import { SwapsTokenObject } from '../../../shared/constants/swaps';
 import {
   AssetWithDisplayData,
   ERC20Asset,
@@ -54,9 +51,18 @@ type FilterPredicate = (
  * - all other tokens
  *
  * @param chainId - the selected src/dest chainId
+ * @param tokenToExclude - a token to exclude from the token list, usually the token being swapped from
+ * @param tokenToExclude.symbol
+ * @param tokenToExclude.address
+ * @param tokenToExclude.chainId
  */
 export const useTokensWithFiltering = (
   chainId?: ChainId | Hex | CaipChainId,
+  tokenToExclude?: null | {
+    symbol: string;
+    address?: string;
+    chainId?: string;
+  },
 ) => {
   const allDetectedTokens: Record<string, Token[]> = useSelector(
     getAllDetectedTokensForSelectedAddress,
@@ -119,7 +125,7 @@ export const useTokensWithFiltering = (
       return {
         ...sharedFields,
         type: AssetType.native,
-        address: zeroAddress(),
+        address: token.address === zeroAddress() ? null : token.address,
         image:
           CHAIN_ID_TOKEN_IMAGE_MAP[
             chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
@@ -141,16 +147,30 @@ export const useTokensWithFiltering = (
       // Only tokens with 0 balance are processed here so hardcode empty string
       balance: '',
       string: undefined,
-      address: token.address || zeroAddress(),
+      address: token.address,
     };
   };
 
   // shouldAddToken is a filter condition passed in from the AssetPicker that determines whether a token should be included
   const filteredTokenListGenerator = useCallback(
-    (shouldAddToken: FilterPredicate) =>
+    (filterCondition: FilterPredicate) =>
       (function* (): Generator<
         AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>
       > {
+        const shouldAddToken = (
+          symbol: string,
+          address?: string,
+          tokenChainId?: string,
+        ) =>
+          filterCondition(symbol, address, tokenChainId) &&
+          (tokenToExclude && tokenChainId
+            ? !(
+                tokenToExclude.symbol === symbol &&
+                tokenToExclude.address === address &&
+                tokenToExclude.chainId === formatChainIdToCaip(tokenChainId)
+              )
+            : true);
+
         if (
           !chainId ||
           !topTokens ||
@@ -176,7 +196,7 @@ export const useTokensWithFiltering = (
                 chainId: token.chainId,
                 tokenFiatAmount: token.tokenFiatAmount,
                 decimals: token.decimals,
-                address: zeroAddress(),
+                address: token.address,
                 type: AssetType.native,
                 balance: token.balance ?? '0',
                 string: token.string ?? undefined,
@@ -203,25 +223,7 @@ export const useTokensWithFiltering = (
           }
         }
 
-        // Yield the native token for the selected chain
-        const nativeToken =
-          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
-            chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
-          ];
-        if (
-          nativeToken &&
-          shouldAddToken(
-            nativeToken.symbol,
-            nativeToken.address ?? undefined,
-            chainId,
-          )
-        ) {
-          const tokenWithData = buildTokenData(nativeToken);
-          if (tokenWithData) {
-            yield tokenWithData;
-          }
-        }
-
+        // Yield tokens for solana from TokenApi V3 then return
         if (chainId === MultichainNetworks.SOLANA) {
           // Yield topTokens from selected chain
           for (const { address: tokenAddress } of topTokens) {
@@ -244,7 +246,7 @@ export const useTokensWithFiltering = (
             }
           }
 
-          // Yield other tokens from selected chain
+          // Yield Solana top tokens
           for (const token_ of Object.values(tokenList)) {
             if (
               token_ &&
@@ -266,7 +268,7 @@ export const useTokensWithFiltering = (
           return;
         }
 
-        // Yield topTokens from selected chain
+        // Yield topTokens from selected EVM chain
         for (const token_ of topTokens) {
           const matchedToken = tokenList?.[token_.address];
           if (
@@ -303,6 +305,7 @@ export const useTokensWithFiltering = (
       chainId,
       tokenList,
       allDetectedTokens,
+      tokenToExclude,
     ],
   );
   return {

@@ -1,10 +1,11 @@
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
-import {
+import type {
   QuoteResponse,
   Quote,
   L1GasFees,
   TokenAmountValues,
+  SolanaFees,
 } from '../../../../shared/types/bridge';
 import {
   hexToDecimal,
@@ -27,6 +28,27 @@ export const isQuoteExpired = (
       quotesLastFetchedMs &&
       Date.now() - quotesLastFetchedMs > refreshRate,
   );
+
+export const calcSolanaTotalNetworkFee = (
+  bridgeQuote: QuoteResponse & SolanaFees,
+  nativeToDisplayCurrencyExchangeRate?: number,
+  nativeToUsdExchangeRate?: number,
+) => {
+  const { solanaFeesInLamports } = bridgeQuote;
+  const solanaFeeInNative = calcTokenAmount(
+    new BigNumber(solanaFeesInLamports ?? '0'),
+    9,
+  );
+  return {
+    amount: solanaFeeInNative,
+    valueInCurrency: nativeToDisplayCurrencyExchangeRate
+      ? solanaFeeInNative.mul(nativeToDisplayCurrencyExchangeRate.toString())
+      : null,
+    usd: nativeToUsdExchangeRate
+      ? solanaFeeInNative.mul(nativeToUsdExchangeRate.toString())
+      : null,
+  };
+};
 
 export const calcToAmount = (
   { destTokenAmount, destAsset }: Quote,

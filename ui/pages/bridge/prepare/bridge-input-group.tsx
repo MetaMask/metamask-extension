@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
+import { Hex } from '@metamask/utils';
 import {
   Text,
   TextField,
@@ -87,7 +88,7 @@ export const BridgeInputGroup = ({
   const locale = useSelector(getIntlLocale);
 
   const selectedChainId = networkProps?.network?.chainId;
-  const { balanceAmount } = useLatestBalance(token, selectedChainId);
+  const balanceAmount = useLatestBalance(token, selectedChainId);
 
   const [, handleCopy] = useCopyToClipboard(MINUTE) as [
     boolean,

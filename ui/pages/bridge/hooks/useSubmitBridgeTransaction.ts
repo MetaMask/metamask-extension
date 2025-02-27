@@ -31,6 +31,10 @@ import {
   MetricsBackgroundState,
   StatusTypes,
 } from '../../../../shared/types/bridge-status';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { getMultichainIsEvm } from '../../../selectors/multichain';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { formatChainIdToCaip } from '../../../../shared/modules/bridge-utils/caip-formatters';
 import useAddToken from './useAddToken';
 import useHandleApprovalTx, {
   APPROVAL_TX_ERROR,
@@ -83,6 +87,7 @@ export default function useSubmitBridgeTransaction() {
   const { slippage } = useSelector(getQuoteRequest);
   const selectedAddress = useSelector(getSelectedAddress);
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
+  const isEvm = useMultichainSelector(getMultichainIsEvm);
 
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
@@ -210,15 +215,21 @@ export default function useSubmitBridgeTransaction() {
         startTime: bridgeTxMeta.time,
       }),
     );
-
-    // Add tokens if not the native gas token
-    if (quoteResponse.quote.srcAsset.address !== zeroAddress()) {
-      addSourceToken(quoteResponse);
+    // Only add tokens if the source or dest chain is an EVM chain bc non-evm tokens
+    // are detected by the multichain asset controllers
+    if (isEvm) {
+      // Add tokens if not the native gas token
+      if (quoteResponse.quote.srcAsset.address !== zeroAddress()) {
+        addSourceToken(quoteResponse);
+      }
+      if (
+        quoteResponse.quote.destAsset.address !== zeroAddress() &&
+        formatChainIdToCaip(quoteResponse.quote.destChainId) !==
+          MultichainNetworks.SOLANA
+      ) {
+        await addDestToken(quoteResponse);
+      }
     }
-    if (quoteResponse.quote.destAsset.address !== zeroAddress()) {
-      await addDestToken(quoteResponse);
-    }
-
     // Route user to activity tab on Home page
     await dispatch(setDefaultHomeActiveTabName('activity'));
     history.push({

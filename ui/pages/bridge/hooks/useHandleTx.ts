@@ -1,8 +1,14 @@
 import {
-  TransactionMeta,
+  type TransactionMeta,
+  type TransactionParams,
+  TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
 import { useDispatch, useSelector } from 'react-redux';
+import { KeyringRpcMethod } from '@metamask/keyring-api';
+import { useEffect } from 'react';
+import { Hex } from '@metamask/utils';
+import { useHistory } from 'react-router-dom';
 import {
   forceUpdateMetamaskState,
   addTransaction,
@@ -14,10 +20,26 @@ import {
   getTxGasEstimates,
 } from '../../../ducks/bridge/utils';
 import { getGasFeeEstimates } from '../../../ducks/metamask/metamask';
-import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import type { ChainId } from '../../../../shared/types/bridge';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
+import {
+  getMultichainCurrentChainId,
+  getMultichainIsSolana,
+} from '../../../selectors/multichain';
+import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/solana-wallet-snap';
+import { useMultichainWalletSnapSender } from '../../../hooks/accounts/useMultichainWalletSnapClient';
+import {
+  checkNetworkAndAccountSupports1559,
+  getMemoizedUnapprovedTemplatedConfirmations,
+  getMemoizedUnapprovedConfirmations,
+  getSelectedInternalAccount,
+} from '../../../selectors';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  CONFIRMATION_V_NEXT_ROUTE,
+} from '../../../helpers/constants/routes';
 
 export default function useHandleTx() {
   const dispatch = useDispatch();
@@ -27,7 +49,7 @@ export default function useHandleTx() {
   const networkGasFeeEstimates = useSelector(getGasFeeEstimates);
   const shouldUseSmartTransaction = useSelector(getIsSmartTransaction);
 
-  const handleTx = async ({
+  const handleEvmTx = async ({
     txType,
     txParams,
     fieldsToAddToTxMeta,
@@ -88,5 +110,101 @@ export default function useHandleTx() {
     return txMeta;
   };
 
-  return { handleTx };
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const currentChainId = useSelector(getMultichainCurrentChainId);
+  const snapSender = useMultichainWalletSnapSender(SOLANA_WALLET_SNAP_ID);
+  const history = useHistory();
+
+  // Find unapproved confirmations which the snap has initiated
+  const unapprovedTemplatedConfirmations = useSelector(
+    getMemoizedUnapprovedTemplatedConfirmations,
+  );
+  const unapprovedConfirmations = useSelector(
+    getMemoizedUnapprovedConfirmations,
+  );
+  // Redirect to the confirmation page if an unapproved confirmation exists
+  useEffect(() => {
+    const templatedSnapApproval = unapprovedTemplatedConfirmations.find(
+      (approval) => approval.origin === SOLANA_WALLET_SNAP_ID,
+    );
+    const snapApproval = unapprovedConfirmations.find(
+      (approval) => approval.origin === SOLANA_WALLET_SNAP_ID,
+    );
+    if (templatedSnapApproval) {
+      history.push(`${CONFIRMATION_V_NEXT_ROUTE}/${templatedSnapApproval.id}`);
+    } else if (snapApproval) {
+      history.push(`${CONFIRM_TRANSACTION_ROUTE}/${snapApproval.id}`);
+    }
+  }, [history, unapprovedTemplatedConfirmations, unapprovedConfirmations]);
+
+  const handleSolanaTx = async ({
+    txType,
+    txParams,
+    fieldsToAddToTxMeta,
+  }: {
+    txType: TransactionType.bridge;
+    txParams: string;
+    fieldsToAddToTxMeta: Omit<Partial<TransactionMeta>, 'status'>;
+  }): Promise<TransactionMeta> => {
+    // Submit a signing request to the snap
+    (await snapSender.send({
+      id: crypto.randomUUID(),
+      jsonrpc: '2.0',
+      method: KeyringRpcMethod.SubmitRequest,
+      params: {
+        request: {
+          params: {
+            account: { address: selectedAccount.address },
+            transaction: txParams,
+            scope: currentChainId,
+          },
+          method: 'signAndSendTransaction',
+        },
+        id: crypto.randomUUID(),
+        account: selectedAccount.id,
+        scope: currentChainId,
+      },
+    })) as string;
+
+    return {
+      ...fieldsToAddToTxMeta,
+      id: crypto.randomUUID(),
+      chainId: currentChainId as Hex,
+      networkClientId: selectedAccount.id,
+      time: Date.now(),
+      txParams: { data: txParams } as TransactionParams,
+      type: txType,
+      status: TransactionStatus.submitted,
+    };
+  };
+
+  const isSolana = useMultichainSelector(getMultichainIsSolana);
+
+  return {
+    handleTx: async ({
+      txType,
+      txParams,
+      fieldsToAddToTxMeta,
+    }: {
+      txType: TransactionType.bridgeApproval | TransactionType.bridge;
+      txParams: {
+        chainId: ChainId;
+        to: string;
+        from: string;
+        value: string;
+        data: string;
+        gasLimit: number | null;
+      };
+      fieldsToAddToTxMeta: Omit<Partial<TransactionMeta>, 'status'>; // We don't add status, so omit it to fix the type error
+    }) => {
+      if (
+        isSolana &&
+        txType === TransactionType.bridge &&
+        typeof txParams === 'string'
+      ) {
+        return handleSolanaTx({ txType, txParams, fieldsToAddToTxMeta });
+      }
+      return handleEvmTx({ txType, txParams, fieldsToAddToTxMeta });
+    },
+  };
 }

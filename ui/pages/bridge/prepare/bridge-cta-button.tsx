@@ -13,8 +13,8 @@ import {
   getToToken,
   getBridgeQuotes,
   getValidationErrors,
-  getBridgeQuotesConfig,
   getWasTxDeclined,
+  getQuoteRefreshRate,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
@@ -56,7 +56,7 @@ export const BridgeCTAButton = ({
 
   const { isLoading, activeQuote, isQuoteGoingToRefresh, quotesLastFetchedMs } =
     useSelector(getBridgeQuotes);
-  const { refreshRate } = useSelector(getBridgeQuotesConfig);
+  const refreshRate = useSelector(getQuoteRefreshRate);
   const isQuoteExpired = isQuoteExpiredUtil(
     isQuoteGoingToRefresh,
     refreshRate,
@@ -75,8 +75,8 @@ export const BridgeCTAButton = ({
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
 
-  const { balanceAmount } = useLatestBalance(fromToken, fromChain?.chainId);
-  const { balanceAmount: nativeAssetBalance } = useLatestBalance(
+  const balanceAmount = useLatestBalance(fromToken, fromChain?.chainId);
+  const nativeAssetBalance = useLatestBalance(
     fromChain?.chainId
       ? SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
           fromChain.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
