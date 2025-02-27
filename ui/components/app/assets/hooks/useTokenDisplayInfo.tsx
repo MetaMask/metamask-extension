@@ -1,5 +1,4 @@
 import { useSelector } from 'react-redux';
-import { BigNumber } from 'bignumber.js';
 import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import {
   getIsTestnet,
@@ -17,7 +16,6 @@ import {
 } from '../../../../selectors/multichain';
 import { formatWithThreshold } from '../util/formatWithThreshold';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
-import { formatAmount } from '../../../../pages/confirmations/components/simulation-details/formatAmount';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 
