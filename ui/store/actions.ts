@@ -38,6 +38,10 @@ import {
   NetworkClientId,
   NetworkConfiguration,
 } from '@metamask/network-controller';
+import {
+  MessageParamsTyped,
+  OriginalRequest,
+} from '@metamask/signature-controller';
 import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
@@ -6065,3 +6069,14 @@ export async function sendMultichainTransaction(
   });
 }
 ///: END:ONLY_INCLUDE_IF
+
+export async function newUnsignedTypedMessage(
+  messageParams: MessageParamsTyped,
+  request: OriginalRequest,
+): Promise<TransactionMeta> {
+  return await submitRequestToBackground('newUnsignedTypedMessage', [
+    messageParams,
+    request,
+    'V4',
+  ]);
+}
