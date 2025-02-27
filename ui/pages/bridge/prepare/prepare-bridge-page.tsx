@@ -63,7 +63,11 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/swaps';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
-import { setActiveNetwork } from '../../../store/actions';
+import {
+  setActiveNetwork,
+  setActiveNetworkWithError,
+  setSelectedAccount,
+} from '../../../store/actions';
 import type { GenericQuoteRequest } from '../../../../shared/types/bridge';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import {
@@ -99,9 +103,14 @@ import { BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE } from '../../../../share
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getMultichainIsEvm } from '../../../selectors/multichain';
+import {
+  getLastSelectedNonEvmAccount,
+  getMultichainIsEvm,
+} from '../../../selectors/multichain';
 import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { formatChainIdToCaip } from '../../../../shared/modules/bridge-utils/caip-formatters';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
@@ -156,6 +165,7 @@ const PrepareBridgePage = () => {
 
   const isEvm = useMultichainSelector(getMultichainIsEvm);
   const selectedEvmAccount = useSelector(getSelectedEvmInternalAccount);
+  const selectedSolanaAccount = useSelector(getLastSelectedNonEvmAccount);
   const selectedMultichainAccount = useMultichainSelector(
     getSelectedInternalAccount,
   );
@@ -498,14 +508,21 @@ const PrepareBridgePage = () => {
                     dispatch(setToChainId(null));
                     dispatch(setToToken(null));
                   }
+                  if (networkConfig.chainId === MultichainNetworks.SOLANA) {
+                    dispatch(setSelectedAccount(selectedEvmAccount.address));
+                  } else if (selectedSolanaAccount) {
+                    dispatch(setSelectedAccount(selectedSolanaAccount.address));
+                  }
                   if (isNetworkAdded(networkConfig)) {
                     dispatch(
-                      setActiveNetwork(
+                      setActiveNetworkWithError(
                         networkConfig.rpcEndpoints[
                           networkConfig.defaultRpcEndpointIndex
-                        ].networkClientId,
+                        ].networkClientId || networkConfig.chainId,
                       ),
                     );
+                  } else {
+                    dispatch(setActiveNetworkWithError(networkConfig.chainId));
                   }
                   dispatch(setFromToken(null));
                   dispatch(setFromTokenInputValue(null));
@@ -590,6 +607,19 @@ const PrepareBridgePage = () => {
                     ? toChain.rpcEndpoints[toChain.defaultRpcEndpointIndex]
                         .networkClientId
                     : undefined;
+                if (
+                  toChain?.chainId &&
+                  formatChainIdToCaip(toChain.chainId) ===
+                    MultichainNetworks.SOLANA &&
+                  selectedSolanaAccount
+                ) {
+                  dispatch(setSelectedAccount(selectedSolanaAccount.address));
+                  setSelectedDestinationAccount(selectedEvmAccount);
+                } else {
+                  dispatch(setSelectedAccount(selectedEvmAccount.address));
+                  selectedSolanaAccount &&
+                    setSelectedDestinationAccount(selectedSolanaAccount);
+                }
                 toChainClientId && dispatch(setActiveNetwork(toChainClientId));
                 fromChain?.chainId && dispatch(setToChainId(fromChain.chainId));
               }
