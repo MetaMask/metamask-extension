@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   getNativeCurrency,
   getConversionRate,
-  getGasFeeEstimates,
   getCurrentCurrency,
+  getGasFeeControllerEstimates,
 } from '../../../../../../../ducks/metamask/metamask';
 import { getUsedSwapsGasPrice } from '../../../../../../../ducks/swaps/swaps';
 import {
@@ -28,7 +28,7 @@ describe('useEthFeeData', () => {
     getConversionRate: 2000,
     getCurrentCurrency: 'USD',
     checkNetworkAndAccountSupports1559: true,
-    getGasFeeEstimates: {
+    getGasFeeControllerEstimates: {
       medium: { suggestedMaxFeePerGas: '20' },
       gasPrice: null, // assume fallback every time
     } as Record<string, unknown>,
@@ -52,8 +52,8 @@ describe('useEthFeeData', () => {
           return mockState.getCurrentCurrency;
         case checkNetworkAndAccountSupports1559:
           return mockState.checkNetworkAndAccountSupports1559;
-        case getGasFeeEstimates:
-          return mockState.getGasFeeEstimates;
+        case getGasFeeControllerEstimates:
+          return mockState.getGasFeeControllerEstimates;
         case getCurrentChainId:
           return mockState.getCurrentChainId;
         case getIsSwapsChain:
@@ -91,7 +91,7 @@ describe('useEthFeeData', () => {
 
   it('should return both empty strings if gas fee is not available', () => {
     const gasLimit = 21000;
-    mockState.getGasFeeEstimates = {};
+    mockState.getGasFeeControllerEstimates = {};
 
     const { result } = renderHook(() => useEthFeeData(gasLimit));
 
