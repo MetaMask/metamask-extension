@@ -290,7 +290,7 @@
     "@metamask/message-manager": "^12.0.1",
     "@metamask/message-signing-snap": "^0.6.0",
     "@metamask/metamask-eth-abis": "^3.1.1",
-    "@metamask/multichain": "^2.1.0",
+    "@metamask/multichain": "^3.0.0",
     "@metamask/multichain-network-controller": "^0.1.0",
     "@metamask/multichain-transactions-controller": "^0.5.0",
     "@metamask/name-controller": "^8.0.3",
