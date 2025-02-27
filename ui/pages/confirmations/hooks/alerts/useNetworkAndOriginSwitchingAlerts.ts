@@ -27,7 +27,9 @@ export const useNetworkAndOriginSwitchingAlerts = (): Alert[] => {
     (currentConfirmation as TransactionMeta)?.origin ??
     (currentConfirmation as SignatureRequestType)?.msgParams?.origin ??
     '';
-  const newNetwork = useSelector((state) => selectNetworkConfigurationByChainId(state, newChainId));
+  const newNetwork = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, newChainId),
+  );
   const [lastInteractedConfirmationInfo, updateLastInteractedConfirmationInfo] =
     useState<LastInteractedConfirmationInfo>();
 
@@ -35,21 +37,25 @@ export const useNetworkAndOriginSwitchingAlerts = (): Alert[] => {
     let isMounted = true;
     (async () => {
       const lastConfirmation = await getLastInteractedConfirmationInfo();
-      if (isMounted) {
-        updateLastInteractedConfirmationInfo(lastConfirmation);
 
-        const isNewId =
-          !lastConfirmation || lastConfirmation?.id !== currentConfirmationId;
-
-        if (isNewId) {
-          setLastInteractedConfirmationInfo({
-            id: currentConfirmationId,
-            chainId: newChainId,
-            origin: newOrigin,
-            timestamp: new Date().getTime(),
-          });
-        }
+      if (!isMounted) {
+        return;
       }
+
+      updateLastInteractedConfirmationInfo(lastConfirmation);
+
+      const isNewId =
+        !lastConfirmation || lastConfirmation?.id !== currentConfirmationId;
+      if (!isNewId) {
+        return;
+      }
+
+      setLastInteractedConfirmationInfo({
+        id: currentConfirmationId,
+        chainId: newChainId,
+        origin: newOrigin,
+        timestamp: new Date().getTime(),
+      });
     })();
     return () => {
       isMounted = false;
@@ -75,28 +81,30 @@ export const useNetworkAndOriginSwitchingAlerts = (): Alert[] => {
     const recentlyViewedOtherConfirmation =
       timeSinceLastConfirmation <= CHANGE_THRESHOLD_MS;
 
-    if (recentlyViewedOtherConfirmation) {
-      const { chainId, origin } = lastInteractedConfirmationInfo;
+    if (!recentlyViewedOtherConfirmation) {
+      return [];
+    }
 
-      if (chainId !== newChainId) {
-        alerts.push({
-          key: 'networkSwitchInfo',
-          reason: t('networkChanged'),
-          field: RowAlertKey.Network,
-          severity: Severity.Info,
-          message: t('networkChangedMessage', [newNetwork?.name ?? '']),
-        });
-      }
+    const { chainId, origin } = lastInteractedConfirmationInfo;
 
-      if (origin !== newOrigin) {
-        alerts.push({
-          key: 'originSwitchInfo',
-          reason: t('originChanged'),
-          field: RowAlertKey.RequestFrom,
-          severity: Severity.Info,
-          message: t('originChangedMessage', [newOrigin ?? '']),
-        });
-      }
+    if (chainId !== newChainId) {
+      alerts.push({
+        key: 'networkSwitchInfo',
+        reason: t('networkChanged'),
+        field: RowAlertKey.Network,
+        severity: Severity.Info,
+        message: t('networkChangedMessage', [newNetwork?.name ?? '']),
+      });
+    }
+
+    if (origin !== newOrigin) {
+      alerts.push({
+        key: 'originSwitchInfo',
+        reason: t('originChanged'),
+        field: RowAlertKey.RequestFrom,
+        severity: Severity.Info,
+        message: t('originChangedMessage', [newOrigin ?? '']),
+      });
     }
 
     return alerts;
