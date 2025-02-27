@@ -211,6 +211,7 @@ export default function useHandleTx() {
       status: TransactionStatus.submitted,
       hash: signature, // Add the transaction signature as hash
       // Add explicitly Solana-specific flags
+      // @ts-expect-error: txMeta is not typed, need to clean this up later.
       isSolana: true,
       isBridgeTx: true,
       // Add key bridge-specific fields for proper categorization
@@ -224,7 +225,9 @@ export default function useHandleTx() {
       {
         id: txMeta.id,
         hash: txMeta.hash,
+        // @ts-expect-error: txMeta is not typed, need to clean this up later.
         isSolana: txMeta.isSolana,
+        // @ts-expect-error: txMeta is not typed, need to clean this up later.
         isBridgeTx: txMeta.isBridgeTx,
         type: txMeta.type,
         chainId: txMeta.chainId,
@@ -284,7 +287,14 @@ export default function useHandleTx() {
       // Handle as EVM transaction
       return handleEvmTx({
         txType,
-        txParams: txParams as any, // Cast to expected EVM type
+        txParams: txParams as {
+          chainId: ChainId;
+          to: string;
+          from: string;
+          value: string;
+          data: string;
+          gasLimit: number | null;
+        },
         fieldsToAddToTxMeta,
       });
     },

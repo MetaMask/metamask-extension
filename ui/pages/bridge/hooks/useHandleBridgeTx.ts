@@ -4,7 +4,6 @@ import { useDispatch } from 'react-redux';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { FeeType, type QuoteResponse } from '../../../../shared/types/bridge';
 import useHandleTx from './useHandleTx';
-import { addTransaction } from '../../../store/actions';
 
 export default function useHandleBridgeTx() {
   const { handleTx } = useHandleTx();
@@ -27,8 +26,6 @@ export default function useHandleBridgeTx() {
     // Detect if this is a Solana transaction by the type of trade data
     // Solana transactions are passed as strings
     const isSolana = typeof quoteResponse.trade === 'string';
-    
-    console.log('Bridge transaction detected trade type:', typeof quoteResponse.trade, 'Setting isSolana flag:', isSolana);
 
     const fieldsToAddToTxMeta = {
       destinationChainId: new Numeric(quoteResponse.quote.destChainId, 10)
@@ -66,24 +63,22 @@ export default function useHandleBridgeTx() {
     // Solana returns a different object structure so we need to handle it separately
     if (isSolana && txMeta) {
       // Ensure the isSolana flag is set in the transaction metadata
+      // @ts-expect-error: txMeta is not typed, need to clean this up later.
       if (!txMeta.isSolana) {
-        console.log('Adding isSolana flag to transaction metadata');
+        // @ts-expect-error: txMeta is not typed, need to clean this up later.
         txMeta.isSolana = true;
       }
-      
+
       // Make sure the transaction hash is set so it can be tracked by the bridge status controller
       // and displayed properly in the UI
       if (txMeta.hash) {
         // We need to dispatch the transaction from here for Solana since
         // the handleSolanaTx function doesn't use addTransaction
         // This ensures it's properly registered in the UI
-        console.log('Dispatching Solana bridge transaction to transaction controller:', txMeta);
         dispatch({
           type: 'TRANSACTION_CREATED',
           payload: txMeta,
         });
-      } else {
-        console.warn('Solana bridge transaction has no hash, bridge tracking may not work correctly');
       }
     }
 
