@@ -20,6 +20,7 @@ jobs:
       - name: Setup environment
         uses: metamask/github-tools/.github/actions/checkout-and-setup@caching2
         with:
+          is-high-risk-environment: 'false'
           should-cache-restore: ${{ vars.USE_CACHING }}
 
       - name: Download artifact prep-build-test-${{ matrix.buildType }}

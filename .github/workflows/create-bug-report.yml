@@ -24,6 +24,8 @@ jobs:
       - name: Setup environment
         if: steps.extract_version.outputs.version
         uses: metamask/github-tools/.github/actions/checkout-and-setup@caching2
+        with:
+          is-high-risk-environment: 'false'
 
       - name: Create bug report issue on planning repo
         if: steps.extract_version.outputs.version

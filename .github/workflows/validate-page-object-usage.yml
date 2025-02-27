@@ -15,6 +15,8 @@ jobs:
     steps:
       - name: Setup environment
         uses: metamask/github-tools/.github/actions/checkout-and-setup@caching2
+        with:
+          is-high-risk-environment: 'false'
 
       - name: Run E2E Page Object Usage Validation
         env:

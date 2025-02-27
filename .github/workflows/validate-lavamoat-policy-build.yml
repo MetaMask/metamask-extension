@@ -11,7 +11,7 @@ jobs:
       - name: Setup environment
         uses: metamask/github-tools/.github/actions/checkout-and-setup@caching2
         with:
-          should-cache-restore: ${{ vars.USE_CACHING }}
+          is-high-risk-environment: 'false'
 
       - name: Validate lavamoat build policy
         run: yarn lavamoat:build:auto
