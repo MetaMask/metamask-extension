@@ -91,6 +91,8 @@ export function getAccountLabel(
       return HardwareKeyringNames.qr;
     case KeyringType.trezor:
       return HardwareKeyringNames.trezor;
+    case KeyringType.oneKey:
+      return HardwareKeyringNames.oneKey;
     case KeyringType.ledger:
       return HardwareKeyringNames.ledger;
     case KeyringType.lattice:

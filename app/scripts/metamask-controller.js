@@ -32,6 +32,7 @@ import { JsonRpcError, providerErrors } from '@metamask/rpc-errors';
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
 import {
+  OneKeyKeyring,
   TrezorConnectBridge,
   TrezorKeyring,
 } from '@metamask/eth-trezor-keyring';
@@ -400,9 +401,6 @@ export const METAMASK_CONTROLLER_EVENTS = {
 
 // stream channels
 const PHISHING_SAFELIST = 'metamask-phishing-safelist';
-
-// OneKey devices can connect to Metamask using Trezor USB transport. They use a specific device minor version (99) to differentiate between genuine Trezor and OneKey devices.
-export const ONE_KEY_VIA_TREZOR_MINOR_VERSION = 99;
 
 const environmentMappingForRemoteFeatureFlag = {
   [ENVIRONMENT.DEVELOPMENT]: EnvironmentType.Development,
@@ -1074,6 +1072,10 @@ export default class MetamaskController extends EventEmitter {
           bridge: keyringOverrides?.trezorBridge || TrezorConnectBridge,
         },
         {
+          keyring: keyringOverrides?.oneKey || OneKeyKeyring,
+          bridge: keyringOverrides?.oneKeyBridge || TrezorConnectBridge,
+        },
+        {
           keyring: keyringOverrides?.ledger || LedgerKeyring,
           bridge: keyringOverrides?.ledgerBridge || LedgerIframeBridge,
         },
@@ -1096,6 +1098,10 @@ export default class MetamaskController extends EventEmitter {
         hardwareKeyringBuilderFactory(
           TrezorKeyring,
           keyringOverrides?.trezorBridge || TrezorOffscreenBridge,
+        ),
+        hardwareKeyringBuilderFactory(
+          OneKeyKeyring,
+          keyringOverrides?.oneKey || TrezorOffscreenBridge,
         ),
         hardwareKeyringBuilderFactory(
           LedgerKeyring,
@@ -4755,11 +4761,7 @@ export default class MetamaskController extends EventEmitter {
     // The `getKeyringForAccount` is now deprecated, so we just use `withKeyring` instead to access our keyring.
     return await this.keyringController.withKeyring(
       { address },
-      ({ type: keyringType, bridge: keyringBridge }) =>
-        // Specific case for OneKey devices, see `ONE_KEY_VIA_TREZOR_MINOR_VERSION` for further details.
-        keyringBridge?.minorVersion === ONE_KEY_VIA_TREZOR_MINOR_VERSION
-          ? HardwareKeyringType.oneKey
-          : HardwareKeyringType[keyringType],
+      ({ type }) => HardwareKeyringType[type],
     );
   }
 
@@ -7603,8 +7605,10 @@ export default class MetamaskController extends EventEmitter {
     let keyringType = null;
     switch (options.name) {
       case HardwareDeviceNames.trezor:
-      case HardwareDeviceNames.oneKey:
         keyringType = keyringOverrides?.trezor?.type || TrezorKeyring.type;
+        break;
+      case HardwareDeviceNames.oneKey:
+        keyringType = keyringOverrides?.oneKey?.type || OneKeyKeyring?.type;
         break;
       case HardwareDeviceNames.ledger:
         keyringType = keyringOverrides?.ledger?.type || LedgerKeyring.type;
