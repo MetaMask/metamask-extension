@@ -477,9 +477,11 @@ const PrepareBridgePage = () => {
                       setActiveNetworkWithError(
                         networkConfig.rpcEndpoints[
                           networkConfig.defaultRpcEndpointIndex
-                        ].networkClientId,
+                        ].networkClientId || networkConfig.chainId,
                       ),
                     );
+                  } else {
+                    dispatch(setActiveNetworkWithError(networkConfig.chainId));
                   }
                   dispatch(setFromToken(null));
                   dispatch(setFromTokenInputValue(null));
