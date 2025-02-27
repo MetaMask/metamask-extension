@@ -37,8 +37,8 @@ import {
   getWasTxDeclined,
   getFromAmountInCurrency,
   getValidationErrors,
-  getBridgeQuotesConfig,
   isBridgeSolanaEnabled,
+  getQuoteRefreshRate,
 } from '../../../ducks/bridge/selectors';
 import {
   BannerAlert,
@@ -141,7 +141,7 @@ const PrepareBridgePage = () => {
     isQuoteGoingToRefresh,
     quotesLastFetchedMs,
   } = useSelector(getBridgeQuotes);
-  const { refreshRate } = useSelector(getBridgeQuotesConfig);
+  const refreshRate = useSelector(getQuoteRefreshRate);
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
   // If latest quote is expired and user has sufficient balance
