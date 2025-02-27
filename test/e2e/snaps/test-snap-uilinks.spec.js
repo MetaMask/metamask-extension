@@ -112,7 +112,7 @@ describe('Test Snap UI Links', function () {
 
         // check that the correct page has been opened
         await driver.waitForSelector({
-          text: 'Most popular',
+          text: 'Most Popular',
           tag: 'h2',
         });
 
