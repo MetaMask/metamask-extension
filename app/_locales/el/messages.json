@@ -2777,10 +2777,6 @@
     "message": "Δεν μπορούμε να συνδεθούμε στο $1",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "Το δίκτυο άλλαξε σε $1",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "Διεύθυνση URL του δικτύου"
   },

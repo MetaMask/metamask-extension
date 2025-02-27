@@ -2777,10 +2777,6 @@
     "message": "$1 연결이 불가능합니다",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "네트워크가 $1(으)로 전환됨",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "네트워크 URL"
   },
