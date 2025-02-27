@@ -147,7 +147,7 @@ export default function useHandleTx() {
     fieldsToAddToTxMeta: Omit<Partial<TransactionMeta>, 'status'>;
   }): Promise<TransactionMeta> => {
     // Submit a signing request to the snap
-    (await snapSender.send({
+    const snapResponse = await snapSender.send({
       id: crypto.randomUUID(),
       jsonrpc: '2.0',
       method: KeyringRpcMethod.SubmitRequest,
@@ -164,7 +164,9 @@ export default function useHandleTx() {
         account: selectedAccount.id,
         scope: currentChainId,
       },
-    })) as string;
+    });
+
+    console.log('===SOLANA=== snap response:', snapResponse);
 
     return {
       ...fieldsToAddToTxMeta,
