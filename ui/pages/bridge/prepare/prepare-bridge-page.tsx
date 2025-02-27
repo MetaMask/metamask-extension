@@ -37,8 +37,8 @@ import {
   getWasTxDeclined,
   getFromAmountInCurrency,
   getValidationErrors,
-  getBridgeQuotesConfig,
   isBridgeSolanaEnabled,
+  getQuoteRefreshRate,
 } from '../../../ducks/bridge/selectors';
 import {
   BannerAlert,
@@ -99,7 +99,10 @@ import {
 } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
-import { BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE } from '../../../../shared/constants/bridge';
+import {
+  BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
+  SOLANA_USDC_ASSET,
+} from '../../../../shared/constants/bridge';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
@@ -150,7 +153,7 @@ const PrepareBridgePage = () => {
     isQuoteGoingToRefresh,
     quotesLastFetchedMs,
   } = useSelector(getBridgeQuotes);
-  const { refreshRate } = useSelector(getBridgeQuotesConfig);
+  const refreshRate = useSelector(getQuoteRefreshRate);
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
   // If latest quote is expired and user has sufficient balance
@@ -203,7 +206,7 @@ const PrepareBridgePage = () => {
   const {
     filteredTokenListGenerator: toTokenListGenerator,
     isLoading: isToTokensLoading,
-  } = useTokensWithFiltering(toChain?.chainId ?? fromChain?.chainId);
+  } = useTokensWithFiltering(toChain?.chainId ?? fromChain?.chainId, fromToken);
 
   const { flippedRequestProperties } = useRequestProperties();
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
@@ -337,11 +340,12 @@ const PrepareBridgePage = () => {
       // Otherwise quotes get filtered out by the bridge-api when the wallet's real
       // balance is less than the tenderly balance
       insufficientBal: Boolean(providerConfig?.rpcUrl?.includes('tenderly')),
-      slippage,
+      slippage: isSwap ? 0 : slippage,
       walletAddress: selectedAccount?.address ?? '',
-      destWalletAddress: isToOrFromSolana
-        ? selectedDestinationAccount?.address
-        : selectedEvmAccount?.address,
+      destWalletAddress:
+        isToOrFromSolana || isSwap
+          ? selectedDestinationAccount?.address
+          : selectedEvmAccount?.address,
     }),
     [
       fromToken?.address,
@@ -356,6 +360,7 @@ const PrepareBridgePage = () => {
       selectedEvmAccount?.address,
       selectedDestinationAccount?.address,
       isToOrFromSolana,
+      isSwap,
     ],
   );
 
@@ -373,6 +378,10 @@ const PrepareBridgePage = () => {
 
   // Auto-select most recently used account only once on initial load
   useEffect(() => {
+    if (isSwap) {
+      setSelectedDestinationAccount(selectedAccount);
+      return;
+    }
     if (
       !selectedDestinationAccount &&
       !hasAutoSelectedRef.current &&
@@ -402,6 +411,8 @@ const PrepareBridgePage = () => {
     selectedDestinationAccount,
     isDestinationSolana,
     accounts,
+    isSwap,
+    selectedAccount,
   ]);
 
   const trackInputEvent = useCallback(
@@ -467,6 +478,14 @@ const PrepareBridgePage = () => {
         break;
     }
   }, [fromChain, fromToken, fromTokens, search, isFromTokensLoading]);
+
+  // Set the default destination token for the swap
+  useEffect(() => {
+    if (isSwap && fromChain && !toToken) {
+      dispatch(setToChainId(fromChain.chainId));
+      dispatch(setToToken(SOLANA_USDC_ASSET));
+    }
+  }, []);
 
   const isSolanaBridgeEnabled = useSelector(isBridgeSolanaEnabled);
 
