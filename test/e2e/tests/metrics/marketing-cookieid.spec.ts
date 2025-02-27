@@ -6,7 +6,6 @@ import {
   getEventPayloads,
   WINDOW_TITLES,
   withFixtures,
-  defaultGanacheOptions,
   unlockWallet,
   openDapp,
 } from '../../helpers';
@@ -18,7 +17,7 @@ const selectors = {
   globalMenuSettingsButton: '[data-testid="global-menu-settings"]',
   securityAndPrivacySettings: { text: 'Security & privacy', tag: 'div' },
   dataCollectionForMarketingToggle:
-    '[data-testid="dataCollectionForMarketing"] .toggle-button',
+    '[data-testid="data-collection-for-marketing-toggle"] .toggle-button',
   dataCollectionWarningAckButton: { text: 'Okay', tag: 'Button' },
 };
 
@@ -60,7 +59,6 @@ describe('Marketing cookieId', function (this: Suite) {
             dataCollectionForMarketing: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -103,7 +101,6 @@ describe('Marketing cookieId', function (this: Suite) {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -141,7 +138,6 @@ describe('Marketing cookieId', function (this: Suite) {
         dapp: true,
         dappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
         fixtures: new FixtureBuilder().withMetaMetricsController().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -183,7 +179,6 @@ describe('Marketing cookieId', function (this: Suite) {
             dataCollectionForMarketing: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },

@@ -1,6 +1,6 @@
 import React from 'react';
 import configureStore from 'redux-mock-store';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType, EthMethod, EthScope } from '@metamask/keyring-api';
 import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -45,6 +45,7 @@ describe('PermissionDetailsModal', () => {
             },
             options: {},
             methods: [...Object.values(EthMethod)],
+            scopes: [EthScope.Eoa],
             type: EthAccountType.Eoa,
           },
           '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
@@ -61,6 +62,7 @@ describe('PermissionDetailsModal', () => {
             },
             options: {},
             methods: [...Object.values(EthMethod)],
+            scopes: [EthScope.Eoa],
             type: EthAccountType.Eoa,
           },
         },
@@ -69,20 +71,28 @@ describe('PermissionDetailsModal', () => {
       subjects: {
         'https://remix.ethereum.org': {
           permissions: {
-            eth_accounts: {
+            'endowment:caip25': {
               caveats: [
                 {
-                  type: 'restrictReturnedAccounts',
-                  value: [
-                    '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
-                    '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
-                  ],
+                  type: 'authorizedScopes',
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        accounts: [
+                          'eip155:1:0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+                          'eip155:1:0x7250739de134d33ec7ab1ee592711e15098c9d2d',
+                        ],
+                      },
+                    },
+                    isMultichainOrigin: false,
+                  },
                 },
               ],
               date: 1586359844177,
               id: '3aa65a8b-3bcb-4944-941b-1baa5fe0ed8b',
               invoker: 'https://remix.ethereum.org',
-              parentCapability: 'eth_accounts',
+              parentCapability: 'endowment:caip25',
             },
           },
         },
@@ -128,6 +138,7 @@ describe('PermissionDetailsModal', () => {
       },
       options: {},
       methods: ETH_EOA_METHODS,
+      scopes: [EthScope.Eoa],
       type: EthAccountType.Eoa,
       label: '',
     },

@@ -11,12 +11,12 @@ import {
 import { Driver } from '../../webdriver/driver';
 import { RECIPIENT_ADDRESS_MOCK } from '../simulation-details/types';
 
-describe('AssetPickerSendFlow @no-mmi', function () {
+describe('AssetPickerSendFlow', function () {
   const chainId = CHAIN_IDS.MAINNET;
 
   const fixtures = {
     fixtures: new FixtureBuilder({ inputChainId: chainId }).build(),
-    ganacheOptions: {
+    localNodeOptions: {
       ...defaultGanacheOptions,
       chainId: parseInt(chainId, 16),
     },
@@ -88,7 +88,7 @@ describe('AssetPickerSendFlow @no-mmi', function () {
         await searchInputField.sendKeys('CHZ');
 
         // check that CHZ is disabled
-        const [, tkn] = await driver.findElements(
+        const [tkn] = await driver.findElements(
           '[data-testid="multichain-token-list-button"]',
         );
 

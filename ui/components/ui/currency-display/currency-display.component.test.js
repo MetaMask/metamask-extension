@@ -24,7 +24,32 @@ describe('CurrencyDisplay Component', () => {
       <CurrencyDisplay {...props} />,
       mockStore,
     );
+    expect(container).toMatchSnapshot();
+  });
 
+  it('should render without title (tooltip)', () => {
+    const props = {
+      displayValue: '$123.45',
+      privacyMode: true,
+    };
+
+    const { container } = renderWithProvider(
+      <CurrencyDisplay {...props} />,
+      mockStore,
+    );
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should render with title (tooltip)', () => {
+    const props = {
+      displayValue: '$123.45',
+      privacyMode: false,
+    };
+
+    const { container } = renderWithProvider(
+      <CurrencyDisplay {...props} />,
+      mockStore,
+    );
     expect(container).toMatchSnapshot();
   });
 

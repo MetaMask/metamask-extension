@@ -231,7 +231,7 @@ describe('Sentry errors', function () {
     ],
   };
 
-  describe('before initialization, after opting out of metrics @no-mmi', function () {
+  describe('before initialization, after opting out of metrics', function () {
     it('should NOT send error events in the background', async function () {
       await withFixtures(
         {
@@ -245,7 +245,7 @@ describe('Sentry errors', function () {
             // Intentionally corrupt state to trigger migration error during initialization
             meta: undefined,
           },
-          ganacheOptions,
+          localNodeOptions: ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryMigratorError,
           manifestFlags: {
@@ -276,7 +276,7 @@ describe('Sentry errors', function () {
               participateInMetaMetrics: false,
             })
             .build(),
-          ganacheOptions,
+          localNodeOptions: ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           manifestFlags: {
@@ -303,7 +303,7 @@ describe('Sentry errors', function () {
     });
   });
 
-  describe('before initialization, after opting into metrics @no-mmi', function () {
+  describe('before initialization, after opting into metrics', function () {
     it('should send error events in background', async function () {
       await withFixtures(
         {
@@ -317,7 +317,7 @@ describe('Sentry errors', function () {
             // Intentionally corrupt state to trigger migration error during initialization
             meta: undefined,
           },
-          ganacheOptions,
+          localNodeOptions: ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryMigratorError,
           manifestFlags: {
@@ -363,7 +363,7 @@ describe('Sentry errors', function () {
             // Intentionally corrupt state to trigger migration error during initialization
             meta: undefined,
           },
-          ganacheOptions,
+          localNodeOptions: ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryMigratorError,
           manifestFlags: {
@@ -424,7 +424,7 @@ describe('Sentry errors', function () {
               .withBadPreferencesControllerState()
               .build(),
           },
-          ganacheOptions,
+          localNodeOptions: ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryInvariantMigrationError,
           manifestFlags: {
@@ -472,7 +472,7 @@ describe('Sentry errors', function () {
               participateInMetaMetrics: true,
             })
             .build(),
-          ganacheOptions,
+          localNodeOptions: ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           ignoredConsoleErrors: ['TestError'],
@@ -518,7 +518,7 @@ describe('Sentry errors', function () {
               participateInMetaMetrics: true,
             })
             .build(),
-          ganacheOptions,
+          localNodeOptions: ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           ignoredConsoleErrors: ['TestError'],
@@ -573,7 +573,7 @@ describe('Sentry errors', function () {
     });
   });
 
-  describe('after initialization, after opting out of metrics @no-mmi', function () {
+  describe('after initialization, after opting out of metrics', function () {
     it('should NOT send error events in the background', async function () {
       await withFixtures(
         {
@@ -583,7 +583,7 @@ describe('Sentry errors', function () {
               participateInMetaMetrics: false,
             })
             .build(),
-          ganacheOptions,
+          localNodeOptions: ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           manifestFlags: {
@@ -618,7 +618,7 @@ describe('Sentry errors', function () {
               participateInMetaMetrics: false,
             })
             .build(),
-          ganacheOptions,
+          localNodeOptions: ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           ignoredConsoleErrors: ['TestError'],
@@ -644,7 +644,7 @@ describe('Sentry errors', function () {
     });
   });
 
-  describe('after initialization, after opting into metrics @no-mmi', function () {
+  describe('after initialization, after opting into metrics', function () {
     it('should send error events in background', async function () {
       await withFixtures(
         {
@@ -654,7 +654,7 @@ describe('Sentry errors', function () {
               participateInMetaMetrics: true,
             })
             .build(),
-          ganacheOptions,
+          localNodeOptions: ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           manifestFlags: {
@@ -700,7 +700,7 @@ describe('Sentry errors', function () {
               participateInMetaMetrics: true,
             })
             .build(),
-          ganacheOptions,
+          localNodeOptions: ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           manifestFlags: {
@@ -763,7 +763,7 @@ describe('Sentry errors', function () {
               participateInMetaMetrics: true,
             })
             .build(),
-          ganacheOptions,
+          localNodeOptions: ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           ignoredConsoleErrors: ['TestError'],
@@ -807,7 +807,7 @@ describe('Sentry errors', function () {
               participateInMetaMetrics: true,
             })
             .build(),
-          ganacheOptions,
+          localNodeOptions: ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           ignoredConsoleErrors: ['TestError'],
@@ -862,7 +862,7 @@ describe('Sentry errors', function () {
     });
   });
 
-  it('should not have extra properties in UI state mask @no-mmi', async function () {
+  it('should not have extra properties in UI state mask', async function () {
     const expectedMissingState = {
       bridgeState: {
         // This can get wiped out during initialization due to a bug in
@@ -876,6 +876,9 @@ describe('Sentry errors', function () {
         },
         quotesLastFetched: true,
         quotesLoadingStatus: true,
+        quotesRefreshCount: true,
+        quoteFetchError: true,
+        quotesInitialLoadTime: true,
       },
       currentPopupId: false, // Initialized as undefined
       // Part of transaction controller store, but missing from the initial
@@ -886,6 +889,10 @@ describe('Sentry errors', function () {
         showConfirmationAdvancedDetails: true,
         privacyMode: false,
       },
+      balances: false,
+      accountsAssets: false,
+      assetsMetadata: false,
+      assetsRates: false,
       smartTransactionsState: {
         fees: {
           approvalTxFees: true, // Initialized as undefined
@@ -899,6 +906,13 @@ describe('Sentry errors', function () {
         // the "resetState" method
         swapsFeatureFlags: true,
       },
+      // Part of the AuthenticationController store, but initialized as undefined
+      // Only populated once the client is authenticated
+      sessionData: {
+        accessToken: false,
+        expiresIn: true,
+        profile: true,
+      },
       // This can get erased due to a bug in the app state controller's
       // preferences state change handler
       timeoutMinutes: true,
@@ -911,7 +925,7 @@ describe('Sentry errors', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
+        localNodeOptions: ganacheOptions,
         title: this.test.fullTitle(),
         manifestFlags: {
           sentry: { forceEnable: false },

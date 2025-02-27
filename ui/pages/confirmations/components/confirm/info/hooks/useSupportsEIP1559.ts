@@ -4,10 +4,8 @@ import {
 } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 import { isLegacyTransaction } from '../../../../../../helpers/utils/transactions.util';
-import {
-  checkNetworkAndAccountSupports1559,
-  getSelectedNetworkClientId,
-} from '../../../../../../selectors';
+import { checkNetworkAndAccountSupports1559 } from '../../../../../../selectors';
+import { getSelectedNetworkClientId } from '../../../../../../../shared/modules/selectors/networks';
 
 export function useSupportsEIP1559(transactionMeta: TransactionMeta) {
   const isLegacyTxn =

@@ -2,9 +2,8 @@ import React from 'react';
 import classnames from 'classnames';
 
 import { Display } from '../../../helpers/constants/design-system';
-import { Box } from '..';
-import type { BoxProps, PolymorphicRef } from '..';
 
+import { Box, type BoxProps, type PolymorphicRef } from '../box';
 import {
   BadgeWrapperPosition,
   BadgeWrapperAnchorElementShape,
@@ -18,9 +17,9 @@ export const BadgeWrapper: BadgeWrapperComponent = React.forwardRef(
       children,
       badge,
       badgeContainerProps,
-      position = BadgeWrapperPosition.topRight,
+      position = BadgeWrapperPosition.bottomRight,
       positionObj,
-      anchorElementShape = BadgeWrapperAnchorElementShape.circular,
+      anchorElementShape = BadgeWrapperAnchorElementShape.rectangular,
       className = '',
       ...props
     }: BadgeWrapperProps<C>,

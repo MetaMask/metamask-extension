@@ -2,7 +2,6 @@ const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
 
 const {
-  defaultGanacheOptions,
   unlockWallet,
   withFixtures,
   getEventPayloads,
@@ -51,7 +50,7 @@ async function mockServerCalls(mockServer) {
   ];
 }
 
-describe('PPOM Blockaid Alert - Metrics @no-mmi', function () {
+describe('PPOM Blockaid Alert - Metrics', function () {
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('Successfully track button toggle on/off', async function () {
     await withFixtures(
@@ -65,7 +64,6 @@ describe('PPOM Blockaid Alert - Metrics @no-mmi', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockServerCalls,
       },

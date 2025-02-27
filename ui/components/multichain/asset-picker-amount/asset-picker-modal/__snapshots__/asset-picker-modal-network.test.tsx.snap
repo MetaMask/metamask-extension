@@ -33,20 +33,6 @@ exports[`AssetPickerModalNetwork renders modal with no network list by default 1
             class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
           >
             <div
-              class="mm-box"
-              style="min-width: 0px;"
-            >
-              <button
-                aria-label="Back"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-              >
-                <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/arrow-left.svg');"
-                />
-              </button>
-            </div>
-            <div
               class="mm-box mm-box--width-full"
             >
               <h4
@@ -71,11 +57,10 @@ exports[`AssetPickerModalNetwork renders modal with no network list by default 1
             </div>
           </header>
           <div
-            class="mm-box multichain-asset-picker__network-list"
+            class="mm-box multichain-asset-picker__network-list mm-box--display-flex"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--height-full"
-              style="grid-column-start: 1; grid-column-end: 3;"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
             />
           </div>
         </section>
@@ -123,20 +108,6 @@ exports[`AssetPickerModalNetwork should not show selected network when network p
             class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
           >
             <div
-              class="mm-box"
-              style="min-width: 0px;"
-            >
-              <button
-                aria-label="Back"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-              >
-                <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/arrow-left.svg');"
-                />
-              </button>
-            </div>
-            <div
               class="mm-box mm-box--width-full"
             >
               <h4
@@ -161,20 +132,19 @@ exports[`AssetPickerModalNetwork should not show selected network when network p
             </div>
           </header>
           <div
-            class="mm-box multichain-asset-picker__network-list"
+            class="mm-box multichain-asset-picker__network-list mm-box--display-flex"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--height-full"
-              style="grid-column-start: 1; grid-column-end: 3;"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
             >
               <div
                 class="mm-box multichain-network-list-item mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                 >
                   <img
-                    alt="Network name 3 logo"
+                    alt="Ethereum logo"
                     class="mm-avatar-network__network-image"
                     src="./images/eth_logo.svg"
                   />
@@ -185,14 +155,25 @@ exports[`AssetPickerModalNetwork should not show selected network when network p
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
-                    data-testid="Network name 3"
+                    data-testid="Ethereum"
                   >
-                    <p
-                      class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
-                      tabindex="0"
+                    <div
+                      class="multichain-network-list-item__tooltip"
                     >
-                      Network name 3
-                    </p>
+                      <div
+                        class=""
+                        style="display: inline;"
+                        tabindex="0"
+                        title=""
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                          tabindex="0"
+                        >
+                          Ethereum
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -200,10 +181,10 @@ exports[`AssetPickerModalNetwork should not show selected network when network p
                 class="mm-box multichain-network-list-item mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                 >
                   <img
-                    alt="Network name 4 logo"
+                    alt="OP Mainnet logo"
                     class="mm-avatar-network__network-image"
                     src="./images/optimism.svg"
                   />
@@ -214,14 +195,25 @@ exports[`AssetPickerModalNetwork should not show selected network when network p
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
-                    data-testid="Network name 4"
+                    data-testid="OP Mainnet"
                   >
-                    <p
-                      class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
-                      tabindex="0"
+                    <div
+                      class="multichain-network-list-item__tooltip"
                     >
-                      Network name 4
-                    </p>
+                      <div
+                        class=""
+                        style="display: inline;"
+                        tabindex="0"
+                        title=""
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                          tabindex="0"
+                        >
+                          OP Mainnet
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -310,11 +302,10 @@ exports[`AssetPickerModalNetwork should use passed in network as default when ne
             </div>
           </header>
           <div
-            class="mm-box multichain-asset-picker__network-list"
+            class="mm-box multichain-asset-picker__network-list mm-box--display-flex"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--height-full"
-              style="grid-column-start: 1; grid-column-end: 3;"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
             >
               <div
                 class="mm-box multichain-network-list-item multichain-network-list-item--selected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-primary-muted"
@@ -323,10 +314,10 @@ exports[`AssetPickerModalNetwork should use passed in network as default when ne
                   class="mm-box multichain-network-list-item__selected-indicator mm-box--background-color-primary-default mm-box--rounded-pill"
                 />
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                 >
                   <img
-                    alt="Network name 3 logo"
+                    alt="Ethereum logo"
                     class="mm-avatar-network__network-image"
                     src="./images/eth_logo.svg"
                   />
@@ -337,14 +328,25 @@ exports[`AssetPickerModalNetwork should use passed in network as default when ne
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
-                    data-testid="Network name 3"
+                    data-testid="Ethereum"
                   >
-                    <p
-                      class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
-                      tabindex="0"
+                    <div
+                      class="multichain-network-list-item__tooltip"
                     >
-                      Network name 3
-                    </p>
+                      <div
+                        class=""
+                        style="display: inline;"
+                        tabindex="0"
+                        title=""
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                          tabindex="0"
+                        >
+                          Ethereum
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -352,10 +354,10 @@ exports[`AssetPickerModalNetwork should use passed in network as default when ne
                 class="mm-box multichain-network-list-item mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                 >
                   <img
-                    alt="Network name 4 logo"
+                    alt="OP Mainnet logo"
                     class="mm-avatar-network__network-image"
                     src="./images/optimism.svg"
                   />
@@ -366,14 +368,25 @@ exports[`AssetPickerModalNetwork should use passed in network as default when ne
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
-                    data-testid="Network name 4"
+                    data-testid="OP Mainnet"
                   >
-                    <p
-                      class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
-                      tabindex="0"
+                    <div
+                      class="multichain-network-list-item__tooltip"
                     >
-                      Network name 4
-                    </p>
+                      <div
+                        class=""
+                        style="display: inline;"
+                        tabindex="0"
+                        title=""
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                          tabindex="0"
+                        >
+                          OP Mainnet
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

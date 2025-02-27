@@ -1,10 +1,10 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
-import { withFixtures, defaultGanacheOptions } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Ganache } from '../../seeder/ganache';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import HomePage from '../../page-objects/pages/homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import {
   switchToNetworkFlow,
@@ -16,7 +16,6 @@ describe('Switch network - ', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({
@@ -36,19 +35,19 @@ describe('Switch network - ', function (this: Suite) {
 
         // Validate the switch network functionality to Ethereum Mainnet
         await switchToNetworkFlow(driver, 'Ethereum Mainnet');
-        await homePage.check_ganacheBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localNodeBalanceIsDisplayed(ganacheServer);
 
         // Validate the switch network functionality to test network
         await switchToNetworkFlow(driver, 'Localhost 8545', true);
-        await homePage.check_ganacheBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localNodeBalanceIsDisplayed(ganacheServer);
 
         // Add Arbitrum network and perform the switch network functionality
         await searchAndSwitchToNetworkFlow(driver, 'Arbitrum One');
-        await homePage.check_ganacheBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localNodeBalanceIsDisplayed(ganacheServer);
 
         // Validate the switch network functionality back to Ethereum Mainnet
         await switchToNetworkFlow(driver, 'Ethereum Mainnet');
-        await homePage.check_ganacheBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localNodeBalanceIsDisplayed(ganacheServer);
       },
     );
   });

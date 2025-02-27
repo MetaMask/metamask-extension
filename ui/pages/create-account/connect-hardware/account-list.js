@@ -72,6 +72,7 @@ class AccountList extends Component {
       HardwareDeviceNames.ledger,
       HardwareDeviceNames.lattice,
       HardwareDeviceNames.trezor,
+      HardwareDeviceNames.oneKey,
     ].includes(device.toLowerCase());
     return (
       <div className="hw-connect">

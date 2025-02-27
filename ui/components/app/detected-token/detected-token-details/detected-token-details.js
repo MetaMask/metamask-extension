@@ -18,17 +18,18 @@ import {
   getTestNetworkBackgroundColor,
   getTokenList,
 } from '../../../../selectors';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 
 const DetectedTokenDetails = ({
   token,
   handleTokenSelection,
   tokensListDetected,
+  chainId,
 }) => {
   const tokenList = useSelector(getTokenList);
   const tokenData = tokenList[token.address?.toLowerCase()];
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
   const currentNetwork = useSelector(getCurrentNetwork);
-
   return (
     <Box
       display={Display.Flex}
@@ -39,9 +40,10 @@ const DetectedTokenDetails = ({
         badge={
           <AvatarNetwork
             size={AvatarNetworkSize.Xs}
+            src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]}
             name={currentNetwork?.nickname || ''}
-            src={currentNetwork?.rpcPrefs?.imageUrl}
             backgroundColor={testNetworkBackgroundColor}
+            borderWidth={2}
           />
         }
         marginRight={2}
@@ -84,6 +86,7 @@ DetectedTokenDetails.propTypes = {
   }),
   handleTokenSelection: PropTypes.func.isRequired,
   tokensListDetected: PropTypes.object,
+  chainId: PropTypes.string,
 };
 
 export default DetectedTokenDetails;

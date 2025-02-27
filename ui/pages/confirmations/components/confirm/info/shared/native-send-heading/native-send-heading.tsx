@@ -3,9 +3,11 @@ import { BigNumber } from 'bignumber.js';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  CHAIN_ID_TOKEN_IMAGE_MAP,
   TEST_CHAINS,
 } from '../../../../../../../../shared/constants/network';
+import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
+import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/modules/selectors/networks';
 import {
   AvatarToken,
   AvatarTokenSize,
@@ -16,13 +18,13 @@ import Tooltip from '../../../../../../../components/ui/tooltip';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 import {
   AlignItems,
+  BackgroundColor,
   Display,
   FlexDirection,
   JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
-import { MIN_AMOUNT } from '../../../../../../../hooks/useCurrencyDisplay';
 import { useFiatFormatter } from '../../../../../../../hooks/useFiatFormatter';
 import {
   getPreferences,
@@ -30,11 +32,8 @@ import {
 } from '../../../../../../../selectors';
 import { getMultichainNetwork } from '../../../../../../../selectors/multichain';
 import { useConfirmContext } from '../../../../../context/confirm';
-import {
-  formatAmount,
-  formatAmountMaxPrecision,
-} from '../../../../simulation-details/formatAmount';
-import { toNonScientificString } from '../../hooks/use-token-values';
+import { formatAmount } from '../../../../simulation-details/formatAmount';
+import { useSendingValueMetric } from '../../hooks/useSendingValueMetric';
 
 const NativeSendHeading = () => {
   const { currentConfirmation: transactionMeta } =
@@ -42,9 +41,10 @@ const NativeSendHeading = () => {
 
   const { chainId } = transactionMeta;
 
-  const nativeAssetTransferValue = new BigNumber(
+  const nativeAssetTransferValue = calcTokenAmount(
     transactionMeta.txParams.value as string,
-  ).dividedBy(new BigNumber(10).pow(18));
+    18,
+  );
 
   const conversionRate = useSelector((state) =>
     selectConversionRateByChainId(state, chainId),
@@ -63,12 +63,17 @@ const NativeSendHeading = () => {
   const multichainNetwork = useSelector(getMultichainNetwork);
   const ticker = multichainNetwork?.network?.ticker;
 
+  const networkConfigurationsByChainId = useSelector(
+    getNetworkConfigurationsByChainId,
+  );
+
+  const network = networkConfigurationsByChainId?.[transactionMeta.chainId];
+  const { nativeCurrency } = network;
+
   const locale = useSelector(getIntlLocale);
   const roundedTransferValue = formatAmount(locale, nativeAssetTransferValue);
 
-  const transferValue = toNonScientificString(
-    nativeAssetTransferValue.toNumber(),
-  );
+  const transferValue = nativeAssetTransferValue.toFixed();
 
   type TestNetChainId = (typeof TEST_CHAINS)[number];
   const isTestnet = TEST_CHAINS.includes(
@@ -79,19 +84,26 @@ const NativeSendHeading = () => {
   const NetworkImage = (
     <AvatarToken
       src={
-        multichainNetwork?.network?.rpcPrefs?.imageUrl ||
-        CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-          transactionMeta.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+        CHAIN_ID_TOKEN_IMAGE_MAP[
+          transactionMeta.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
         ]
       }
-      name={multichainNetwork?.nickname}
+      name={nativeCurrency}
       size={AvatarTokenSize.Xl}
+      backgroundColor={BackgroundColor.backgroundDefault}
     />
   );
 
   const NativeAssetAmount =
-    roundedTransferValue ===
-    `<${formatAmountMaxPrecision(locale, MIN_AMOUNT)}` ? (
+    roundedTransferValue === transferValue ? (
+      <Text
+        variant={TextVariant.headingLg}
+        color={TextColor.inherit}
+        marginTop={3}
+      >
+        {`${roundedTransferValue} ${ticker}`}
+      </Text>
+    ) : (
       <Tooltip title={transferValue} position="right">
         <Text
           variant={TextVariant.headingLg}
@@ -101,14 +113,6 @@ const NativeSendHeading = () => {
           {`${roundedTransferValue} ${ticker}`}
         </Text>
       </Tooltip>
-    ) : (
-      <Text
-        variant={TextVariant.headingLg}
-        color={TextColor.inherit}
-        marginTop={3}
-      >
-        {`${roundedTransferValue} ${ticker}`}
-      </Text>
     );
 
   const NativeAssetFiatConversion = Boolean(fiatDisplayValue) &&
@@ -117,6 +121,8 @@ const NativeSendHeading = () => {
         {fiatDisplayValue}
       </Text>
     );
+
+  useSendingValueMetric({ transactionMeta, fiatValue });
 
   return (
     <Box

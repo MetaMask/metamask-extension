@@ -17,7 +17,7 @@ describe('eth_newBlockFilter', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        localNodeOptions: ganacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({

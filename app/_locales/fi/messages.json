@@ -254,9 +254,6 @@
   "from": {
     "message": "Alkaen"
   },
-  "functionType": {
-    "message": "Funktion tyyppi"
-  },
   "gasLimit": {
     "message": "Gas-raja"
   },
@@ -381,9 +378,6 @@
   "loading": {
     "message": "Ladataan..."
   },
-  "loadingTokens": {
-    "message": "Käyttötunnuksia ladataan..."
-  },
   "localhost": {
     "message": "Paikallisjoukko 8545"
   },
@@ -446,9 +440,6 @@
   "noConversionRateAvailable": {
     "message": "Vaihtokurssi ei saatavilla"
   },
-  "noTransactions": {
-    "message": "Sinulla ei ole tapahtumia"
-  },
   "noWebcamFound": {
     "message": "Tietokoneesi verkkokameraa ei löytynyt. Ole hyvä ja yritä uudestaan."
   },
@@ -469,9 +460,6 @@
   },
   "origin": {
     "message": "Alkuperä"
-  },
-  "parameters": {
-    "message": "Parametrit"
   },
   "participateInMetaMetrics": {
     "message": "Osallistu MetaMetricsiin"
@@ -541,9 +529,6 @@
   "removeAccountDescription": {
     "message": "Tämä tili poistetaan kukkarostasi. Varmistathan ennen kuin jatkat, että sinulla on alkuperäinen salausteksti tai yksityinen avain tätä tuotua tiliä varten. Voit tuoda tai luoda tilejä uudestaan tilin pudotusvalikosta."
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "vahvistusta odottavaa pyyntöä"
-  },
   "required": {
     "message": "Pakollinen"
   },
@@ -610,9 +595,6 @@
   },
   "showHexDataDescription": {
     "message": "Näytä hex-tietokenttä lähetysnäytössä valitsemalla tämän"
-  },
-  "sigRequest": {
-    "message": "Allekirjoitus pyydetään"
   },
   "sign": {
     "message": "Allekirjoita"
@@ -710,9 +692,6 @@
   "transactionErrored": {
     "message": "Tapahtumissa tapahtui virhe."
   },
-  "transactionFee": {
-    "message": "Siirtomaksu"
-  },
   "transactionResubmitted": {
     "message": "Tapahtuma toimitettiin uudelleen bensataksan noustessa summaan $1 kohdassa $2."
   },
@@ -739,9 +718,6 @@
   },
   "unknown": {
     "message": "Tuntematon"
-  },
-  "unknownNetwork": {
-    "message": "Tuntematon yksityinen verkko"
   },
   "unknownQrCode": {
     "message": "Virhe: Emme onnistuneet tunnistamaan kyseistä QR-koodia"
@@ -772,9 +748,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Käyttääksesi tätä ominaisuutta sinun tarvitsee antaa kameralle käyttöoikeudet."
-  },
-  "youSign": {
-    "message": "Olet allekirjoittamassa"
   },
   "yourPrivateSeedPhrase": {
     "message": "Sinun yksityinen siemenlauseesi"

@@ -149,9 +149,6 @@
   "loading": {
     "message": "Bezig met laden..."
   },
-  "loadingTokens": {
-    "message": "Tokens laden ..."
-  },
   "lock": {
     "message": "Uitloggen"
   },
@@ -185,9 +182,6 @@
   },
   "next": {
     "message": "volgende"
-  },
-  "noTransactions": {
-    "message": "Geen transacties"
   },
   "pastePrivateKey": {
     "message": "Plak hier uw privésleutelstring:",
@@ -246,9 +240,6 @@
   "settings": {
     "message": "instellingen"
   },
-  "sigRequest": {
-    "message": "Ondertekeningsverzoek"
-  },
   "sign": {
     "message": "Teken"
   },
@@ -282,9 +273,6 @@
   "unknown": {
     "message": "Onbekend"
   },
-  "unknownNetwork": {
-    "message": "Onbekend privénetwerk"
-  },
   "unlock": {
     "message": "Log in"
   },
@@ -296,8 +284,5 @@
   },
   "visitWebSite": {
     "message": "Bezoek onze website"
-  },
-  "youSign": {
-    "message": "U ondertekent"
   }
 }

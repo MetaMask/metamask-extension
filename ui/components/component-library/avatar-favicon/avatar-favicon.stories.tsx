@@ -9,7 +9,8 @@ import {
 import { Box } from '../box';
 
 import README from './README.mdx';
-import { AvatarFavicon, AvatarFaviconSize } from '.';
+import { AvatarFavicon } from './avatar-favicon';
+import { AvatarFaviconSize } from './avatar-favicon.types';
 
 export default {
   title: 'Components/ComponentLibrary/AvatarFavicon',

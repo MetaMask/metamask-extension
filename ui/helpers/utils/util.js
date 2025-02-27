@@ -1,7 +1,7 @@
 import punycode from 'punycode/punycode';
 import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
-import * as ethUtil from 'ethereumjs-util';
+import BN from 'bn.js';
 import { DateTime } from 'luxon';
 import {
   getFormattedIpfsUrl,
@@ -13,7 +13,9 @@ import bowser from 'bowser';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { stripSnapPrefix } from '@metamask/snaps-utils';
 import { isObject, isStrictHexString } from '@metamask/utils';
-import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
+import { Web3Provider } from '@ethersproject/providers';
+import { Contract } from '@ethersproject/contracts';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import { logErrorWithMessage } from '../../../shared/modules/error';
 import {
   toChecksumHexAddress,
@@ -168,10 +170,10 @@ export function isOriginContractAddress(to, sendTokenAddress) {
 // Takes wei Hex, returns wei BN, even if input is null
 export function numericBalance(balance) {
   if (!balance) {
-    return new ethUtil.BN(0, 16);
+    return new BN(0, 16);
   }
   const stripped = stripHexPrefix(balance);
-  return new ethUtil.BN(stripped, 16);
+  return new BN(stripped, 16);
 }
 
 // Takes  hex, returns [beforeDecimal, afterDecimal]
@@ -227,7 +229,11 @@ export function formatBalance(
 }
 
 export function getContractAtAddress(tokenAddress) {
-  return global.eth.contract(abi).at(tokenAddress);
+  return new Contract(
+    tokenAddress,
+    abi,
+    new Web3Provider(global.ethereumProvider),
+  );
 }
 
 export function getRandomFileName() {
@@ -700,21 +706,6 @@ export const sanitizeString = (value) => {
 };
 
 /**
- * This method checks current provider type and returns its string representation
- *
- * @param {*} provider
- * @param {*} t
- * @returns
- */
-
-export const getNetworkNameFromProviderType = (providerName) => {
-  if (providerName === NETWORK_TYPES.RPC) {
-    return '';
-  }
-  return providerName;
-};
-
-/**
  * Checks if the given keyring type is able to export an account.
  *
  * @param keyringType - The type of the keyring.
@@ -805,6 +796,49 @@ export const hexToText = (hex) => {
  */
 export const getAvatarFallbackLetter = (subjectName) => {
   return subjectName?.match(/[a-z0-9]/iu)?.[0] ?? '?';
+};
+
+/**
+ * Check whether raw origin URL is an IP address.
+ *
+ * Note: IPv6 addresses are expected to be wrapped in brackets (e.g. [fe80::1])
+ * because of how URL formatting works.
+ *
+ * @param {string} rawOriginUrl - Raw origin (URL) with protocol that is potentially an IP address
+ * @returns Boolean, true if the origin is an IP address, false otherwise.
+ */
+export const isIpAddress = (rawOriginUrl) => {
+  if (typeof rawOriginUrl === 'string') {
+    return Boolean(
+      rawOriginUrl.match(/^(\d{1,3}\.){3}\d{1,3}$|^\[[0-9a-f:]+\]$/iu),
+    );
+  }
+
+  return false;
+};
+
+/**
+ * Transforms full raw URLs to something that can be used as title.
+ * Basically, it removes subdomain and protocol prefixes.
+ *
+ * Note: For IP address origins, full IP address without protocol will be returned.
+ *
+ * @param {string} rawOrigin - Raw origin (URL) with protocol.
+ * @returns User friendly title extracted from raw URL.
+ */
+export const transformOriginToTitle = (rawOrigin) => {
+  try {
+    const url = new URL(rawOrigin);
+
+    if (isIpAddress(url.hostname)) {
+      return url.hostname;
+    }
+
+    const parts = url.hostname.split('.');
+    return parts.slice(-2).join('.');
+  } catch (e) {
+    return 'Unknown Origin';
+  }
 };
 
 /**

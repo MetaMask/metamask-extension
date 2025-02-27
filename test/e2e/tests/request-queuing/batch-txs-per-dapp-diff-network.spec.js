@@ -7,10 +7,8 @@ const {
   DAPP_URL,
   DAPP_ONE_URL,
   WINDOW_TITLES,
-  defaultGanacheOptions,
   largeDelayMs,
 } = require('../../helpers');
-const { PAGES } = require('../../webdriver/driver');
 
 describe('Request Queuing for Multiple Dapps and Txs on different networks', function () {
   it('should batch confirmation txs for different dapps on different networks.', async function () {
@@ -21,27 +19,25 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         title: this.test.fullTitle(),
       },
 
       async ({ driver }) => {
         await unlockWallet(driver);
-
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
 
         // Open Dapp One
         await openDapp(driver, undefined, DAPP_URL);
@@ -103,32 +99,27 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.waitForSelector(
-          By.xpath("//div[normalize-space(.)='1 of 2']"),
+          By.xpath("//p[normalize-space(.)='1 of 2']"),
         );
 
-        // Reject All Transactions
-        await driver.clickElement('.page-container__footer-secondary a');
-
-        // TODO: Do we want to confirm here?
         await driver.clickElementAndWaitForWindowToClose({
           text: 'Reject all',
           tag: 'button',
         });
 
         // Wait for confirmation to close
-        // TODO: find a better way to handle different dialog ids
         await driver.delay(2000);
 
         // Wait for new confirmations queued from second dapp to open
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.waitForSelector(
-          By.xpath("//div[normalize-space(.)='1 of 2']"),
+          By.xpath("//p[normalize-space(.)='1 of 2']"),
         );
 
         // Check correct network on confirm tx.
         await driver.findElement({
-          css: '[data-testid="network-display"]',
+          css: 'p',
           text: 'Localhost 8546',
         });
       },
