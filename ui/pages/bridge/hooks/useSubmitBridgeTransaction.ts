@@ -206,10 +206,24 @@ export default function useSubmitBridgeTransaction() {
       ...statusRequestCommon,
       srcTxHash: bridgeTxMeta.hash, // This might be undefined for STX
     };
+
+    // Ensure that for Solana transactions we're properly passing the signature as hash
+    // Check for the explicit isSolana flag set in the transaction metadata
+    // TODO: see below.
+    // @ts-expect-error: bridgeTxMeta is not typed with isSolana, need to clean this up later.
+    const isSolana = bridgeTxMeta.isSolana === true;
+
     dispatch(
       startPollingForBridgeTxStatus({
         bridgeTxMeta,
-        statusRequest,
+        statusRequest: {
+          ...statusRequest,
+          // For Solana, ensure we're tracking the correct hash
+          srcTxHash:
+            isSolana && bridgeTxMeta.hash
+              ? bridgeTxMeta.hash
+              : statusRequest.srcTxHash,
+        },
         quoteResponse: serializeQuoteMetadata(quoteResponse),
         slippagePercentage: slippage ?? 0,
         startTime: bridgeTxMeta.time,
