@@ -1446,6 +1446,35 @@ export async function mockGetTokenAccountsByOwner(mockServer: Mockttp) {
                 },
                 pubkey: 'EzG33TbDzHVaWBqgQgHhtQSY6tcAVsWub6hBRepcsDt4',
               },
+              {
+                account: {
+                  data: {
+                    parsed: {
+                      info: {
+                        isNative: false,
+                        mint: '2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
+                        owner: 'CKFo3yPDXvpT8xbA5WQWi25VP2Rgf8CwP4G3MUAi8BB4',
+                        state: 'initialized',
+                        tokenAmount: {
+                          amount: '1000000',
+                          decimals: 6,
+                          uiAmount: 1,
+                          uiAmountString: '1',
+                        },
+                      },
+                      type: 'account',
+                    },
+                    program: 'spl-token',
+                    space: 165,
+                  },
+                  executable: false,
+                  lamports: 2039280,
+                  owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+                  rentEpoch: 18446744073709552000,
+                  space: 165,
+                },
+                pubkey: '6Mz37BPzamiCzMRnzCUgJEbVdZuF5WL5cyqFQ7X9tKNx',
+              },
             ],
           },
         },
