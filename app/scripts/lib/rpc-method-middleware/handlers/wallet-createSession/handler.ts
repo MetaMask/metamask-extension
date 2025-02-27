@@ -116,10 +116,10 @@ async function walletCreateSessionHandler(
     const { normalizedRequiredScopes, normalizedOptionalScopes } =
       validateAndNormalizeScopes(requiredScopes || {}, optionalScopes || {});
 
-    const supportedRequiredScopesObjects = getSupportedScopeObjects(
+    const requiredScopesWithSupportedMethodsAndNotifications = getSupportedScopeObjects(
       normalizedRequiredScopes,
     );
-    const supportedOptionalScopesObjects = getSupportedScopeObjects(
+    const optionalScopesWithSupportedMethodsAndNotifications = getSupportedScopeObjects(
       normalizedOptionalScopes,
     );
 
@@ -133,7 +133,7 @@ async function walletCreateSessionHandler(
     };
 
     const { supportedScopes: supportedRequiredScopes } = bucketScopes(
-      supportedRequiredScopesObjects,
+      requiredScopesWithSupportedMethodsAndNotifications,
       {
         isChainIdSupported: existsNetworkClientForChainId,
         isChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
@@ -141,7 +141,7 @@ async function walletCreateSessionHandler(
     );
 
     const { supportedScopes: supportedOptionalScopes } = bucketScopes(
-      supportedOptionalScopesObjects,
+      optionalScopesWithSupportedMethodsAndNotifications,
       {
         isChainIdSupported: existsNetworkClientForChainId,
         isChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
