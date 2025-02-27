@@ -32,7 +32,7 @@ const getFetchWithTimeout = memoize((timeout = SECOND * 30) => {
     const abortHandler = () => combinedAbortController.abort();
     abortSignals.forEach((sig) => sig.addEventListener('abort', abortHandler));
 
-    const f = globalThis.fetch(url, {
+    const f = window.fetch(url, {
       ...opts,
       signal: combinedAbortController.signal,
     });
