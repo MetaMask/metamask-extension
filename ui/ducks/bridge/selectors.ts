@@ -255,7 +255,7 @@ export const getFromTokenConversionRate = createSelector(
     assetsRates,
     fromToken,
     nativeToUsdRate,
-    nonEvmNativeToUsdRate,
+    nonEvmNativeConversionRate,
     nativeToCurrencyRate,
     fromTokenExchangeRate,
   ) => {
@@ -264,12 +264,12 @@ export const getFromTokenConversionRate = createSelector(
         // For SOLANA tokens, we use the conversion rates provided by the multichain rates controller
         const tokenToNativeAssetRate = tokenPriceInNativeAsset(
           assetsRates[fromToken.address]?.rate,
-          nonEvmNativeToUsdRate.sol.conversionRate,
+          nonEvmNativeConversionRate?.sol?.conversionRate,
         );
         return exchangeRatesFromNativeAndCurrencyRates(
           tokenToNativeAssetRate,
-          nonEvmNativeToUsdRate.sol.conversionRate,
-          nonEvmNativeToUsdRate.sol.usdConversionRate,
+          nonEvmNativeConversionRate?.sol?.conversionRate,
+          nonEvmNativeConversionRate?.sol?.usdConversionRate,
         );
       }
       // For EVM tokens, we use the market data to get the exchange rate
@@ -640,16 +640,12 @@ export const getIsToOrFromSolana = createSelector(
       return false;
     }
 
-    const fromChainStartsWithSolana =
+    const fromChainIsSolana =
       formatChainIdToCaip(fromChain.chainId) === MultichainNetworks.SOLANA;
-    const toChainStartsWithSolana =
+    const toChainIsSolana =
       formatChainIdToCaip(toChain.chainId) === MultichainNetworks.SOLANA;
 
     // Only return true if either chain is Solana and the other is EVM
-    return !(fromChainStartsWithSolana && toChainStartsWithSolana);
-    // return (
-    //   (toChainStartsWithSolana && !fromChainStartsWithSolana) ||
-    //   (!toChainStartsWithSolana && fromChainStartsWithSolana)
-    // );
+    return toChainIsSolana !== fromChainIsSolana;
   },
 );

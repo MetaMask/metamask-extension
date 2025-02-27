@@ -41,9 +41,9 @@ export const useDestinationAccount = (isSwap = false) => {
     }
 
     setSelectedDestinationAccount(
-      isDestinationSolana ? selectedSolanaAccount : selectedAccount,
+      isDestinationSolana ? selectedSolanaAccount : selectedEvmAccount,
     );
-  }, [isDestinationSolana, selectedAccount, selectedEvmAccount]);
+  }, [isDestinationSolana, selectedSolanaAccount, selectedEvmAccount]);
 
   return { selectedDestinationAccount, setSelectedDestinationAccount };
 };

@@ -329,7 +329,6 @@ const PrepareBridgePage = () => {
       slippage,
       selectedAccount?.address,
       selectedDestinationAccount?.address,
-      isSwap,
     ],
   );
 
@@ -557,12 +556,10 @@ const PrepareBridgePage = () => {
                     MultichainNetworks.SOLANA &&
                   selectedSolanaAccount
                 ) {
+                  // Switch accounts to switch to solana
                   dispatch(setSelectedAccount(selectedSolanaAccount.address));
-                  setSelectedDestinationAccount(selectedEvmAccount);
                 } else {
                   dispatch(setSelectedAccount(selectedEvmAccount.address));
-                  selectedSolanaAccount &&
-                    setSelectedDestinationAccount(selectedSolanaAccount);
                 }
                 toChainClientId && dispatch(setActiveNetwork(toChainClientId));
                 fromChain?.chainId && dispatch(setToChainId(fromChain.chainId));
