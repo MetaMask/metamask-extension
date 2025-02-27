@@ -15,9 +15,9 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../context/confirm';
 import { SignatureRequestType } from '../../types/confirm';
 
-const CHAIN_CHANGE_THRESHOLD_MILLISECONDS = 60 * 1000; // 1 Minute
+const CHANGE_THRESHOLD_MS = 60 * 1000; // 1 Minute
 
-const useNetworkAndOriginSwitchingAlerts = (): Alert[] => {
+export const useNetworkAndOriginSwitchingAlerts = (): Alert[] => {
   const t = useI18nContext();
 
   const { currentConfirmation } = useConfirmContext();
@@ -27,13 +27,7 @@ const useNetworkAndOriginSwitchingAlerts = (): Alert[] => {
     (currentConfirmation as TransactionMeta)?.origin ??
     (currentConfirmation as SignatureRequestType)?.msgParams?.origin ??
     '';
-  const network = useSelector((state) => {
-    if (newChainId) {
-      return selectNetworkConfigurationByChainId(state, newChainId);
-    }
-    return undefined;
-  });
-
+  const newNetwork = useSelector((state) => selectNetworkConfigurationByChainId(state, newChainId));
   const [lastInteractedConfirmationInfo, updateLastInteractedConfirmationInfo] =
     useState<LastInteractedConfirmationInfo>();
 
@@ -79,7 +73,7 @@ const useNetworkAndOriginSwitchingAlerts = (): Alert[] => {
       currentTimestamp - lastInteractedConfirmationInfo.timestamp;
 
     const recentlyViewedOtherConfirmation =
-      timeSinceLastConfirmation <= CHAIN_CHANGE_THRESHOLD_MILLISECONDS;
+      timeSinceLastConfirmation <= CHANGE_THRESHOLD_MS;
 
     if (recentlyViewedOtherConfirmation) {
       const { chainId, origin } = lastInteractedConfirmationInfo;
@@ -90,7 +84,7 @@ const useNetworkAndOriginSwitchingAlerts = (): Alert[] => {
           reason: t('networkChanged'),
           field: RowAlertKey.Network,
           severity: Severity.Info,
-          message: t('networkChangedMessage', [network?.name ?? '']),
+          message: t('networkChangedMessage', [newNetwork?.name ?? '']),
         });
       }
 
@@ -109,7 +103,7 @@ const useNetworkAndOriginSwitchingAlerts = (): Alert[] => {
   }, [
     currentConfirmationId,
     lastInteractedConfirmationInfo,
-    network?.name,
+    newNetwork?.name,
     newChainId,
     newOrigin,
     t,
@@ -117,5 +111,3 @@ const useNetworkAndOriginSwitchingAlerts = (): Alert[] => {
 
   return networkAndOriginSwitchingAlerts;
 };
-
-export default useNetworkAndOriginSwitchingAlerts;

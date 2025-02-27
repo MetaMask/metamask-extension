@@ -1,4 +1,5 @@
 import React from 'react';
+import { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../../shared/constants/network';
@@ -36,8 +37,13 @@ export const NetworkRow = ({
     return null;
   }
 
-  const chainId = (currentConfirmation?.chainId as `0x${string}`) ?? '';
+  const chainId = currentConfirmation.chainId as Hex ?? '';
   const networkName = chainId ? networkConfigurations[chainId]?.name : '';
+  const networkImageUrl = chainId
+    ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+        chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+      ]
+    : '';
 
   return (
     <ConfirmInfoAlertRow
@@ -56,11 +62,7 @@ export const NetworkRow = ({
         <AvatarNetwork
           borderColor={BorderColor.backgroundDefault}
           size={AvatarNetworkSize.Xs}
-          src={
-            CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-              chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-            ]
-          }
+          src={networkImageUrl}
           name={networkName}
         />
         <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>

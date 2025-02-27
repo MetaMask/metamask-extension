@@ -4,7 +4,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { getMockContractInteractionConfirmState } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import * as Actions from '../../../../store/actions';
-import useNetworkAndOriginSwitchingAlerts from './useNetworkAndOriginSwitchingAlerts';
+import {useNetworkAndOriginSwitchingAlerts} from './useNetworkAndOriginSwitchingAlerts';
 
 describe('useNetworkAndOriginSwitchingAlerts', () => {
   it('returns an empty array when there is no current confirmation', () => {
