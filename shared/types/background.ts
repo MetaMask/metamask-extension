@@ -103,7 +103,7 @@ import { InstitutionalFeaturesController } from '@metamask-institutional/institu
 import { CustodyController } from '@metamask-institutional/custody-controller';
 ///: END:ONLY_INCLUDE_IF
 
-import { Controller as ModularInitControllers } from '../../app/scripts/controller-init/controller-list';
+import { Controller as ModularInitControllersUnion } from '../../app/scripts/controller-init/controller-list';
 import AccountTrackerController, {
   AccountTrackerControllerState,
 } from '../../app/scripts/controllers/account-tracker-controller';
@@ -182,12 +182,12 @@ export type ResetOnRestartStoresComposedState = {
   ApprovalController: ApprovalControllerState;
 };
 
-export type ModularInitControllerMap = {
-  [Controller in ModularInitControllers as Controller['name']]: Controller;
+export type ModularInitControllers = {
+  [Controller in ModularInitControllersUnion as Controller['name']]: Controller;
 };
 
-export type ModularInitStatefulControllersMap = Omit<
-  ModularInitControllerMap,
+export type ModularInitStatefulControllers = Omit<
+  ModularInitControllers,
   'ExecutionService' | 'RateLimitController' | 'TransactionUpdateController'
 > & {
   AccountsController: AccountsController;
@@ -195,11 +195,11 @@ export type ModularInitStatefulControllersMap = Omit<
 };
 
 export type ModularInitControllerStateMap = {
-  [ControllerName in keyof ModularInitStatefulControllersMap as ModularInitStatefulControllersMap[ControllerName]['name']]: ModularInitStatefulControllersMap[ControllerName]['state'];
+  [ControllerName in keyof ModularInitStatefulControllers as ModularInitStatefulControllers[ControllerName]['name']]: ModularInitStatefulControllers[ControllerName]['state'];
 };
 
 export type PersistedControllers = Omit<
-  ModularInitControllerMap,
+  ModularInitControllers,
   'ExecutionService' | 'RateLimitController' | 'TransactionUpdateController'
 >;
 
@@ -285,7 +285,7 @@ export type StoreControllersComposedState = ResetOnRestartStoresComposedState &
   };
 
 export type MemControllers = Omit<
-  ModularInitControllerMap,
+  ModularInitControllers,
   | 'ExecutionService'
   | 'RateLimitController'
   | 'TransactionUpdateController'
@@ -313,8 +313,7 @@ export type MemStoreControllers = Omit<
   | 'MmiConfigurationController'
   ///: END:ONLY_INCLUDE_IF
 > &
-  MemControllers &
-  ModularInitControllerMap & {
+  MemControllers & {
     QueuedRequestController: QueuedRequestController;
   };
 
