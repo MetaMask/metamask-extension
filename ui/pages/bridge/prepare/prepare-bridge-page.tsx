@@ -193,7 +193,7 @@ const PrepareBridgePage = () => {
   const {
     filteredTokenListGenerator: toTokenListGenerator,
     isLoading: isToTokensLoading,
-  } = useTokensWithFiltering(toChain?.chainId ?? fromChain?.chainId);
+  } = useTokensWithFiltering(toChain?.chainId ?? fromChain?.chainId, fromToken);
 
   const { flippedRequestProperties } = useRequestProperties();
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
