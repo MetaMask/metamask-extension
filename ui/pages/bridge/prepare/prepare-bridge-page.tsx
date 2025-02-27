@@ -327,7 +327,7 @@ const PrepareBridgePage = () => {
       // Otherwise quotes get filtered out by the bridge-api when the wallet's real
       // balance is less than the tenderly balance
       insufficientBal: Boolean(providerConfig?.rpcUrl?.includes('tenderly')),
-      slippage,
+      slippage: isSwap ? 0 : slippage,
       walletAddress: selectedAccount?.address ?? '',
       destWalletAddress: isToOrFromSolana
         ? selectedDestinationAccount?.address
@@ -346,6 +346,7 @@ const PrepareBridgePage = () => {
       selectedEvmAccount?.address,
       selectedDestinationAccount?.address,
       isToOrFromSolana,
+      isSwap,
     ],
   );
 
