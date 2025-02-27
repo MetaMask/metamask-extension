@@ -9,6 +9,7 @@ import { createSelector } from 'reselect';
 import type { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
+import { CaipChainId, Hex } from '@metamask/utils';
 import {
   MultichainNetworks,
   ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
@@ -72,7 +73,7 @@ import {
 } from './utils';
 import type { BridgeState } from './bridge';
 
-type BridgeAppState = {
+export type BridgeAppState = {
   metamask: BridgeControllerState &
     NetworkState & {
       useExternalServices: boolean;
@@ -149,6 +150,19 @@ export const getToChains = createDeepEqualSelector(
         ]?.isActiveDest,
     ),
 );
+
+export const getTopAssetsFromFeatureFlags = (
+  state: BridgeAppState,
+  chainId?: CaipChainId | Hex,
+) => {
+  if (!chainId) {
+    return undefined;
+  }
+  const bridgeFeatureFlags = state.metamask.bridgeState?.bridgeFeatureFlags;
+  return bridgeFeatureFlags?.[BridgeFeatureFlagsKey.EXTENSION_CONFIG].chains[
+    formatChainIdToCaip(chainId)
+  ]?.topAssets;
+};
 
 export const getToChain = createSelector(
   getToChains,
@@ -600,7 +614,6 @@ export const getWasTxDeclined = (state: BridgeAppState): boolean => {
   return state.bridge.wasTxDeclined;
 };
 
-///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
 /**
  * Checks if Solana is enabled as either a fromChain or toChain for bridging
  */
@@ -618,4 +631,3 @@ export const isBridgeSolanaEnabled = createDeepEqualSelector(
     return Boolean(solanaConfig?.isActiveSrc || solanaConfig?.isActiveDest);
   },
 );
-///: END:ONLY_INCLUDE_IF

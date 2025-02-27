@@ -1,5 +1,5 @@
 import { Contract } from '@ethersproject/contracts';
-import { type Hex } from '@metamask/utils';
+import { CaipChainId, type Hex } from '@metamask/utils';
 import { abiERC20 } from '@metamask/metamask-eth-abis';
 import {
   BRIDGE_API_BASE_URL,
@@ -7,6 +7,7 @@ import {
   ETH_USDT_ADDRESS,
   METABRIDGE_ETHEREUM_ADDRESS,
   REFRESH_INTERVAL_MS,
+  STATIC_METAMASK_BASE_URL,
 } from '../../constants/bridge';
 import { MINUTE } from '../../constants/time';
 import fetchWithCache from '../../lib/fetch-with-cache';
@@ -14,6 +15,7 @@ import { hexToDecimal } from '../conversion.utils';
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   SwapsTokenObject,
+  TOKEN_API_BASE_URL,
 } from '../../constants/swaps';
 import {
   isSwapsDefaultTokenAddress,
@@ -31,6 +33,7 @@ import {
   BridgeFeatureFlagsKey,
   type BridgeFeatureFlags,
   type GenericQuoteRequest,
+  type TokenV3Asset,
   FeeType,
 } from '../../types/bridge';
 import {
@@ -46,6 +49,7 @@ import {
   validateResponse,
   QUOTE_RESPONSE_VALIDATORS,
   FEE_DATA_VALIDATORS,
+  ASSET_VALIDATORS,
 } from './validators';
 
 const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };
@@ -92,6 +96,38 @@ export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
     },
   };
 }
+
+// Returns a list of non-EVM assets
+export async function fetchNonEvmTokens(
+  chainId: CaipChainId,
+): Promise<Record<string, TokenV3Asset>> {
+  const url = `${TOKEN_API_BASE_URL}/v3/chains/${chainId}/assets?first=15000`;
+  const { data: tokens } = await fetchWithCache({
+    url,
+    fetchOptions: { method: 'GET', headers: CLIENT_ID_HEADER },
+    cacheOptions: { cacheRefreshTime: 60000 },
+    functionName: 'fetchNonEvmTokens',
+  });
+
+  const transformedTokens: Record<string, TokenV3Asset> = {};
+  tokens.forEach((token: unknown) => {
+    if (validateResponse<TokenV3Asset>(ASSET_VALIDATORS, token, url, false)) {
+      transformedTokens[token.assetId] = token;
+    }
+  });
+  return transformedTokens;
+}
+
+export const isTokenV3Asset = (asset: object): asset is TokenV3Asset => {
+  return 'assetId' in asset && typeof asset.assetId === 'string';
+};
+
+// Returns the image url for a caip-formatted asset
+export const getAssetImageUrl = (assetId: string) =>
+  `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/${assetId?.replaceAll(
+    ':',
+    '/',
+  )}.png`;
 
 // Returns a list of enabled (unblocked) tokens
 export async function fetchBridgeTokens(
