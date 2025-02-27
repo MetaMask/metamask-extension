@@ -14,6 +14,7 @@ import { fetchTokenExchangeRates as fetchTokenExchangeRatesUtil } from '../../he
 import { formatChainIdToHex } from '../../../shared/modules/bridge-utils/caip-formatters';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
+import { BRIDGE_CLIENT_ID } from '../../../shared/constants/bridge';
 
 type GasFeeEstimate = {
   suggestedMaxPriorityFeePerGas: string;
@@ -80,6 +81,7 @@ const fetchTokenExchangeRates = async (
   currency: string,
   ...tokenAddresses: string[]
 ) => {
+  let exchangeRates;
   if (chainId === MultichainNetworks.SOLANA) {
     const queryParams = new URLSearchParams({
       assetIds: tokenAddresses.join(','),
@@ -87,24 +89,31 @@ const fetchTokenExchangeRates = async (
       vsCurrency: currency,
     });
     const url = `https://price.api.cx.metamask.io/v3/spot-prices?${queryParams}`;
-    const exchangeRates = await fetchWithCache({
+    const tokenV3PriceResponse = (await fetchWithCache({
       url,
       fetchOptions: {
         method: 'GET',
-        headers: 'metamask',
+        headers: { 'X-Client-Id': BRIDGE_CLIENT_ID },
       },
       cacheOptions: { cacheRefreshTime: 0 },
-      functionName: 'fetchTokenExchangeRates',
-    });
+      functionName: 'fetchSolanaTokenExchangeRates',
+    })) as Record<string, { price: number }>;
 
-    return exchangeRates;
+    exchangeRates = Object.entries(tokenV3PriceResponse).reduce(
+      (acc, [k, curr]) => {
+        acc[k] = curr.price;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
+  } else {
+    exchangeRates = await fetchTokenExchangeRatesUtil(
+      currency,
+      tokenAddresses,
+      formatChainIdToHex(chainId),
+    );
   }
 
-  const exchangeRates = await fetchTokenExchangeRatesUtil(
-    currency,
-    tokenAddresses,
-    formatChainIdToHex(chainId),
-  );
   return Object.keys(exchangeRates).reduce(
     (acc: Record<string, number | undefined>, address) => {
       acc[address] = exchangeRates[address];
@@ -129,6 +138,11 @@ export const getTokenExchangeRate = async (request: {
     tokenAddress,
   );
   if (chainId === MultichainNetworks.SOLANA) {
+    console.log(
+      '=====getTokenExchangeRate solana',
+      exchangeRates,
+      tokenAddress,
+    );
     return exchangeRates?.[tokenAddress];
   }
   // The exchange rate can be checksummed or not, so we need to check both
