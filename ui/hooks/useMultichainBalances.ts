@@ -82,7 +82,7 @@ const useNonEvmAssetsWithBalances = (): (
             .toNumber(),
         };
       })
-      .filter((token) => token !== null);
+      .filter(Boolean);
   }, [
     assetMetadataById,
     assetRates,
@@ -109,9 +109,9 @@ export const useMultichainBalances = () => {
   // return TokenWithFiat sorted by fiat balance amount
   const assetsWithBalance = useMemo(() => {
     return [...evmBalancesWithFiatByChainId, ...nonEvmBalancesWithFiatByChainId]
-      .map((t) => ({
-        ...t,
-        type: t.isNative ? AssetType.native : AssetType.token,
+      .map((token) => ({
+        ...token,
+        type: token.isNative ? AssetType.native : AssetType.token,
       }))
       .sort((a, b) => (b.tokenFiatAmount ?? 0) - (a.tokenFiatAmount ?? 0));
   }, [evmBalancesWithFiatByChainId, nonEvmBalancesWithFiatByChainId]);

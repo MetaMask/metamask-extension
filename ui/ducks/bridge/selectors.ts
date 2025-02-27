@@ -99,8 +99,9 @@ export const getAllBridgeableNetworks = createDeepEqualSelector(
         {
           ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
           blockExplorerUrls: [],
-          name: 'Solana',
-          nativeCurrency: 'sol',
+          name: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA].nickname,
+          nativeCurrency:
+            MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA].ticker,
           rpcEndpoints: [{ url: '', type: '', networkClientId: '' }],
           defaultRpcEndpointIndex: 0,
           chainId: MultichainNetworks.SOLANA,
