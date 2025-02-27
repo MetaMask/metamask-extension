@@ -20,13 +20,13 @@ import SnapInstall from './snaps/snap-install';
 import SnapUpdate from './snaps/snap-update';
 import SnapResult from './snaps/snap-result';
 import { ConnectPage } from './connect-page/connect-page';
-import { getRequestedSessionScopes } from './connect-page/utils';
+import { getRequestedCaip25CaveatValue } from './connect-page/utils';
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
 
 function getDefaultSelectedAccounts(currentAddress, permissions) {
-  const requestedSessionsScopes = getRequestedSessionScopes(permissions);
-  const requestedAccounts = getEthAccounts(requestedSessionsScopes);
+  const requestedCaip25CaveatValue = getRequestedCaip25CaveatValue(permissions);
+  const requestedAccounts = getEthAccounts(requestedCaip25CaveatValue);
 
   if (requestedAccounts.length > 0) {
     return new Set(
@@ -42,8 +42,8 @@ function getDefaultSelectedAccounts(currentAddress, permissions) {
 }
 
 function getRequestedChainIds(permissions) {
-  const requestedSessionsScopes = getRequestedSessionScopes(permissions);
-  return getPermittedEthChainIds(requestedSessionsScopes);
+  const requestedCaip25CaveatValue = getRequestedCaip25CaveatValue(permissions);
+  return getPermittedEthChainIds(requestedCaip25CaveatValue);
 }
 
 export default class PermissionConnect extends Component {
