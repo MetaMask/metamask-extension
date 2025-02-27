@@ -1,17 +1,22 @@
+import { ButtonVariant } from '@metamask/snaps-sdk';
 import React, { useContext } from 'react';
-
-import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useHistory } from 'react-router-dom';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { Button, ButtonSize } from '../../../components/component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
+import { BlockSize } from '../../../helpers/constants/design-system';
+import { DELEGATION_ROUTE } from '../../../helpers/constants/routes';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 const FlaskHomeFooter = () => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const history = useHistory();
 
   return (
     <>
@@ -46,6 +51,18 @@ const FlaskHomeFooter = () => {
       >
         {t('needHelpFeedback')}
       </a>
+      <Button
+        key="test"
+        variant={ButtonVariant.Primary}
+        width={BlockSize.Full}
+        size={ButtonSize.Lg}
+        onClick={() => {
+          console.log('clicked');
+          history.push(DELEGATION_ROUTE);
+        }}
+      >
+        Open Delegation Central
+      </Button>
     </>
   );
 };
