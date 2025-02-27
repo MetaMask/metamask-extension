@@ -151,20 +151,31 @@ async function start() {
   const depVizLink = `<a href="${depVizUrl}">Build System</a>`;
   const bundleSizeStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/bundle_size.json`;
   const bundleSizeStatsLink = `<a href="${bundleSizeStatsUrl}">Bundle Size Stats</a>`;
-  const userActionsStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/benchmark/user_actions.json`;
-  const userActionsStatsLink = `<a href="${userActionsStatsUrl}">E2e Actions Stats</a>`;
+
+  const gitHubArtifactList = await (
+    await fetch(
+      `https://api.github.com/repos/metamask/metamask-extension/actions/runs/${process.env.GITHUB_RUN_ID}/artifacts`,
+    )
+  ).json();
+
+  const userActionsArtifact = gitHubArtifactList.artifacts.find(
+    (artifact) => artifact.name === 'benchmark-chrome-browserify-userActions',
+  );
+
+  const userActionsStatsUrl = `https://github.com/MetaMask/metamask-extension/actions/runs/${process.env.GITHUB_RUN_ID}/artifacts/${userActionsArtifact.id}`;
+  const userActionsStatsLink = `<a href="${userActionsStatsUrl}">user actions</a>`;
 
   // link to artifacts
-  const allArtifactsUrl = `https://circleci.com/gh/MetaMask/metamask-extension/${CIRCLE_BUILD_NUM}#artifacts/containers/0`;
+  const allArtifactsUrl = `https://app.circleci.com/pipelines/github/MetaMask/metamask-extension/jobs/${CIRCLE_BUILD_NUM}/artifacts/`;
 
   const contentRows = [
     ...buildContentRows,
     `build viz: ${depVizLink}`,
-    `mv3: ${bundleSizeStatsLink}`,
-    `mv2: ${userActionsStatsLink}`,
+    `bundle size: ${bundleSizeStatsLink}`,
+    `user-actions-benchmark: ${userActionsStatsLink}`,
     `storybook: ${storybookLink}`,
     `typescript migration: ${tsMigrationDashboardLink}`,
-    `<a href="${allArtifactsUrl}">all artifacts</a>`,
+    `<a href="${allArtifactsUrl}">all CircleCI artifacts</a>`,
     `<details>
        <summary>bundle viz:</summary>
        ${bundleMarkup}
