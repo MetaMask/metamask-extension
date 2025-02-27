@@ -52,7 +52,7 @@ describe('SrpListItem', () => {
     const { getByText } = render();
 
     expect(getByText(mockAccount.metadata.name)).toBeInTheDocument();
-    expect(getByText(shortenAddress(mockAccount.address))).toBeInTheDocument();
+    expect(getByText(mockAccount.address)).toBeInTheDocument();
   });
 
   it('calls useMultichainAccountTotalFiatBalance with correct account', () => {
