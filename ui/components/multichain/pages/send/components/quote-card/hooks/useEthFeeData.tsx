@@ -4,13 +4,14 @@ import { isHexString } from '@metamask/utils';
 import { Numeric } from '../../../../../../../../shared/modules/Numeric';
 import {
   getConversionRate,
-  getGasFeeEstimates,
   getNativeCurrency,
   getCurrentCurrency,
+  getGasFeeControllerEstimates,
 } from '../../../../../../../ducks/metamask/metamask';
 import { EtherDenomination } from '../../../../../../../../shared/constants/common';
 import {
   checkNetworkAndAccountSupports1559,
+  getCurrentNetwork,
   getIsSwapsChain,
 } from '../../../../../../../selectors/selectors';
 import { getCurrentChainId } from '../../../../../../../../shared/modules/selectors/networks';
@@ -19,6 +20,7 @@ import {
   getUsedSwapsGasPrice,
 } from '../../../../../../../ducks/swaps/swaps';
 import { formatCurrency } from '../../../../../../../helpers/utils/confirm-tx.util';
+import { useGasFeeEstimates } from '../../../../../../../hooks/useGasFeeEstimates';
 import { toFixedNoTrailingZeros } from './utils';
 
 export default function useEthFeeData(gasLimit = 0) {
@@ -32,14 +34,15 @@ export default function useEthFeeData(gasLimit = 0) {
   const networkAndAccountSupports1559 = useSelector(
     checkNetworkAndAccountSupports1559,
   );
-  const { medium, gasPrice: maybeGasFee } = useSelector(getGasFeeEstimates);
-
-  // remove this logic once getGasFeeEstimates is typed
-  const gasFee1559 = maybeGasFee ?? medium?.suggestedMaxFeePerGas;
+  // Need to use estimates from gas fee controller instead of transaction gas estimates bc transaction gasEstimates don't get cleared after submitting a POL tx
+  const { medium } = useSelector(getGasFeeControllerEstimates);
+  const gasFee1559 = medium?.suggestedMaxFeePerGas;
 
   const chainId = useSelector(getCurrentChainId);
+  const network = useSelector(getCurrentNetwork);
   const isSwapsChain = useSelector(getIsSwapsChain);
 
+  useGasFeeEstimates(network?.id);
   const gasPriceNon1559 = useSelector(getUsedSwapsGasPrice);
 
   useEffect(() => {
@@ -84,7 +87,7 @@ export default function useEthFeeData(gasLimit = 0) {
     return { formattedFiatGasFee, formattedEthGasFee };
   }, [
     networkAndAccountSupports1559,
-    medium?.suggestedMaxFeePerGas,
+    gasFee1559,
     gasPriceNon1559,
     gasLimit,
     selectedNativeConversionRate,

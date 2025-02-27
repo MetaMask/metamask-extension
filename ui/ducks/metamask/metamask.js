@@ -327,7 +327,7 @@ function getGasFeeControllerEstimateTypeByChainId(state, chainId) {
   return state.metamask.gasFeeEstimatesByChainId?.[chainId]?.gasEstimateType;
 }
 
-function getGasFeeControllerEstimates(state) {
+export function getGasFeeControllerEstimates(state) {
   return state.metamask.gasFeeEstimates;
 }
 
