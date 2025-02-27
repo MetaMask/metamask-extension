@@ -71,6 +71,9 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import { getMultichainAggregatedBalance } from '../../../selectors/assets';
+///: END:ONLY_INCLUDE_IF
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -123,6 +126,13 @@ const AccountListItem = ({
     shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
   const accountTotalFiatBalances =
     useMultichainAccountTotalFiatBalance(account);
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const multichainAggregatedBalance = useSelector((state) =>
+    getMultichainAggregatedBalance(state, account),
+  );
+  ///: END:ONLY_INCLUDE_IF
+
   // cross chain agg balance
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
@@ -154,7 +164,12 @@ const AccountListItem = ({
         ? account.balance
         : totalFiatBalance;
   } else {
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    balanceToTranslate = multichainAggregatedBalance;
+    ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
     balanceToTranslate = accountTotalFiatBalances.totalBalance;
+    ///: END:ONLY_INCLUDE_IF
   }
 
   // If this is the selected item in the Account menu,
@@ -181,6 +196,31 @@ const AccountListItem = ({
   const isConnected =
     currentTabOrigin && currentTabIsConnectedToSelectedAddress;
   const isSingleAccount = accountsCount === 1;
+
+  const getIsAggregatedFiatOverviewBalanceProp = () => {
+    let isAggregatedFiatOverviewBalance;
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    isAggregatedFiatOverviewBalance =
+      (!isTestnet && process.env.PORTFOLIO_VIEW && shouldShowFiat) ||
+      !isEvmNetwork;
+    ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
+    isAggregatedFiatOverviewBalance =
+      !isTestnet && process.env.PORTFOLIO_VIEW && shouldShowFiat;
+    ///: END:ONLY_INCLUDE_IF
+    return isAggregatedFiatOverviewBalance;
+  };
+
+  const getPreferredCurrencyValue = () => {
+    let value;
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    value = account.balance;
+    ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
+    value = isEvmNetwork ? account.balance : balanceToTranslate;
+    ///: END:ONLY_INCLUDE_IF
+    return value;
+  };
 
   return (
     <Box
@@ -316,9 +356,7 @@ const AccountListItem = ({
                 value={balanceToTranslate}
                 type={PRIMARY}
                 showFiat={showFiat}
-                isAggregatedFiatOverviewBalance={
-                  !isTestnet && process.env.PORTFOLIO_VIEW && shouldShowFiat
-                }
+                isAggregatedFiatOverviewBalance={getIsAggregatedFiatOverviewBalanceProp()}
                 data-testid="first-currency-display"
                 privacyMode={privacyMode}
               />
@@ -363,7 +401,7 @@ const AccountListItem = ({
                 <UserPreferencedCurrencyDisplay
                   account={account}
                   ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                  value={isEvmNetwork ? account.balance : balanceToTranslate}
+                  value={getPreferredCurrencyValue()}
                   type={SECONDARY}
                   showNative
                   data-testid="second-currency-display"
