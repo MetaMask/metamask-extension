@@ -1,6 +1,4 @@
-///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
 import { MultichainNetworks } from './multichain/networks';
-///: END:ONLY_INCLUDE_IF
 import { CHAIN_IDS, NETWORK_TO_NAME_MAP } from './network';
 
 // TODO read from feature flags
