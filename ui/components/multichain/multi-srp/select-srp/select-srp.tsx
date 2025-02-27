@@ -16,6 +16,7 @@ import {
   AlignItems,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export const SelectSrp = ({
   srpName,
@@ -26,9 +27,11 @@ export const SelectSrp = ({
   srpAccounts: number;
   onClick: () => void;
 }) => {
+  const t = useI18nContext();
+
   return (
-    <Box>
-      <Label>Select Secret Recovery Phrase</Label>
+    <Box data-testid="select-srp-container">
+      <Label>{t('selectSecretRecoveryPhrase')}</Label>
       <Card
         onClick={onClick}
         paddingTop={1}
@@ -45,14 +48,14 @@ export const SelectSrp = ({
           <Box>
             <Text>{srpName}</Text>
             <Text variant={TextVariant.bodySm} color={TextColor.textMuted}>
-              ({srpAccounts} accounts)
+              {t('srpListNumberOfAccounts', [srpAccounts])}
             </Text>
           </Box>
           <Icon name={IconName.ArrowRight} size={IconSize.Sm} />
         </Box>
       </Card>
       <Text variant={TextVariant.bodySm} marginTop={1}>
-        The Secret Recovery Phrase your new account will be generated from
+        {t('srpListSelectionDescription')}
       </Text>
     </Box>
   );
