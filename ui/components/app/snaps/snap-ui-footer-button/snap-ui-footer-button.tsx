@@ -47,7 +47,8 @@ export const SnapUIFooterButton: FunctionComponent<
   form,
   ...props
 }) => {
-  const { handleEvent, snapId } = useSnapInterfaceContext();
+  const { handleEvent, snapId, requireScroll, buttonsEnabled } =
+    useSnapInterfaceContext();
   const hideSnapBranding = useSelector((state) =>
     getHideSnapBranding(state, snapId),
   );
@@ -82,7 +83,7 @@ export const SnapUIFooterButton: FunctionComponent<
       {...props}
       size={ButtonSize.Lg}
       block
-      disabled={disabled}
+      disabled={requireScroll ? !buttonsEnabled : disabled}
       variant={buttonVariant}
       onClick={handleClick}
       textProps={{
