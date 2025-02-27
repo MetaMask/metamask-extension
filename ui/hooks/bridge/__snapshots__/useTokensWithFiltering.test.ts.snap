@@ -70,14 +70,6 @@ exports[`useTokensWithFiltering should fetch bridge tokens if cached tokens have
     "type": "NATIVE",
   },
   {
-    "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
-    "balance": "",
-    "chainId": "0x1",
-    "decimals": 6,
-    "string": undefined,
-    "type": "TOKEN",
-  },
-  {
     "address": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2",
     "aggregators": [],
     "balance": "",
@@ -119,6 +111,18 @@ exports[`useTokensWithFiltering should fetch bridge tokens if cached tokens have
     "string": undefined,
     "symbol": "USDT",
     "type": "TOKEN",
+  },
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "balance": "0",
+    "chainId": "0x1",
+    "decimals": 18,
+    "iconUrl": "./images/eth_logo.svg",
+    "image": "./images/eth_logo.svg",
+    "name": "Ether",
+    "string": "0",
+    "symbol": "ETH",
+    "type": "NATIVE",
   },
 ]
 `;
@@ -193,14 +197,6 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
     "type": "NATIVE",
   },
   {
-    "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
-    "balance": "",
-    "chainId": "0x1",
-    "decimals": 6,
-    "string": undefined,
-    "type": "TOKEN",
-  },
-  {
     "address": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2",
     "aggregators": [],
     "balance": "",
@@ -242,6 +238,18 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
     "string": undefined,
     "symbol": "USDT",
     "type": "TOKEN",
+  },
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "balance": "0",
+    "chainId": "0x1",
+    "decimals": 18,
+    "iconUrl": "./images/eth_logo.svg",
+    "image": "./images/eth_logo.svg",
+    "name": "Ether",
+    "string": "0",
+    "symbol": "ETH",
+    "type": "NATIVE",
   },
 ]
 `;

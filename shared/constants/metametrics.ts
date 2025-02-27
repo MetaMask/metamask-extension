@@ -648,6 +648,7 @@ export enum MetaMetricsEventName {
   BannerDisplay = 'Banner Display',
   BannerCloseAll = 'Banner Close All',
   BannerSelect = 'Banner Select',
+  BannerNavigated = 'Banner Navigated',
   BridgeLinkClicked = 'Bridge Link Clicked',
   BitcoinSupportToggled = 'Bitcoin Support Toggled',
   BitcoinTestnetSupportToggled = 'Bitcoin Testnet Support Toggled',

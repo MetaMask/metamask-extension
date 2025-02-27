@@ -4181,9 +4181,6 @@
   "seedPhraseIntroTitle": {
     "message": "지갑 보호하기"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "시작하기 전에 이 짧은 동영상을 보고 비밀복구구문과 지갑을 안전하게 보호하는 방법에 대해 알아보세요."
-  },
   "seedPhraseReq": {
     "message": "비밀복구구문은 12, 15, 18, 21 또는 24개의 단어로 구성됩니다"
   },

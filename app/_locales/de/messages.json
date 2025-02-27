@@ -4181,9 +4181,6 @@
   "seedPhraseIntroTitle": {
     "message": "Sichern Sie Ihre Wallet"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Bevor Sie loslegen, schauen Sie sich dieses kurze Video an, um mehr über Ihre geheime Wiederherstellungsphrase zu erfahren und wie Sie Ihre Wallet sicher halten können."
-  },
   "seedPhraseReq": {
     "message": "Geheime Wiederherstellungsphrasen bestehen aus 12, 15, 18, 21 oder 24 Wörtern."
   },
