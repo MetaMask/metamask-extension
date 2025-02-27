@@ -22,6 +22,7 @@ import reduceMetamask, {
   getSendToAccounts,
   isNotEIP1559Network,
   getCurrentCurrency,
+  getGasFeeControllerEstimates,
 } from './metamask';
 
 jest.mock('@metamask/transaction-controller', () => ({
@@ -530,6 +531,20 @@ describe('MetaMask Reducers', () => {
         gasFeeControllerEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
         transactionGasFeeEstimates: TRANSACTION_ESTIMATES_MOCK,
       });
+    });
+  });
+
+  describe('getGasFeeControllerEstimates', () => {
+    it('returns GasFeeController estimate', () => {
+      const state = {
+        metamask: {
+          gasFeeEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+        },
+      };
+
+      expect(getGasFeeControllerEstimates(state)).toStrictEqual(
+        GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+      );
     });
   });
 
