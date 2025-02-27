@@ -118,7 +118,7 @@ export function selectSwitchedNetworkNeverShowMessage(state: State): boolean {
  * @returns Boolean preference value
  */
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-export function selectNewSRPAdded(state: State): boolean {
+export function selectNewSrpAdded(state: State): boolean {
   return Boolean(state.appState.showNewSrpAddedToast);
 }
 ///: END:ONLY_INCLUDE_IF

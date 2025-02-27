@@ -57,7 +57,7 @@ import {
   selectShowSurveyToast,
   selectSwitchedNetworkNeverShowMessage,
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  selectNewSRPAdded,
+  selectNewSrpAdded,
   ///: END:ONLY_INCLUDE_IF
 } from './selectors';
 import {
@@ -92,7 +92,7 @@ export function ToastMaster() {
         <PermittedNetworkToast />
         {
           ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-          <NewSRPAddedToast />
+          <NewSrpAddedToast />
           ///: END:ONLY_INCLUDE_IF
         }
       </ToastContainer>
@@ -342,11 +342,11 @@ function PermittedNetworkToast() {
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-function NewSRPAddedToast() {
+function NewSrpAddedToast() {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const showNewSrpAddedToast = useSelector(selectNewSRPAdded);
+  const showNewSrpAddedToast = useSelector(selectNewSrpAdded);
   const autoHideDelay = 5 * SECOND;
 
   // This will close the toast if the user clicks the account menu.
