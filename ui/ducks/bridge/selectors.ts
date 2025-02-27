@@ -28,7 +28,10 @@ import {
   BRIDGE_PREFERRED_GAS_ESTIMATE,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
 } from '../../../shared/constants/bridge';
-import type { BridgeControllerState } from '../../../shared/types/bridge';
+import type {
+  BridgeControllerState,
+  SolanaFees,
+} from '../../../shared/types/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
 import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
@@ -50,6 +53,7 @@ import {
   calcSwapRate,
   calcToAmount,
   calcEstimatedAndMaxTotalGasFee,
+  calcSolanaTotalNetworkFee,
 } from '../../pages/bridge/utils/quote';
 import {
   isNativeAddress,
@@ -361,39 +365,55 @@ const _getQuotesWithMetadata = createSelector(
       maxFeePerGasInDecGwei,
     },
   ): (QuoteResponse & QuoteMetadata)[] => {
-    const newQuotes = quotes.map((quote: QuoteResponse) => {
+    const newQuotes = quotes.map((quote: QuoteResponse & SolanaFees) => {
+      const isSolanaQuote =
+        formatChainIdToCaip(quote.quote.srcChainId) ===
+          MultichainNetworks.SOLANA && quote.solanaFeesInLamports;
+
       const toTokenAmount = calcToAmount(
         quote.quote,
         toTokenExchangeRate.valueInCurrency,
         toTokenExchangeRate.usd,
       );
-      const gasFee = calcEstimatedAndMaxTotalGasFee({
-        bridgeQuote: quote,
-        estimatedBaseFeeInDecGwei,
-        maxFeePerGasInDecGwei,
-        maxPriorityFeePerGasInDecGwei,
-        nativeToDisplayCurrencyExchangeRate,
-        nativeToUsdExchangeRate,
-      });
-      const relayerFee = calcRelayerFee(
-        quote,
-        nativeToDisplayCurrencyExchangeRate,
-        nativeToUsdExchangeRate,
-      );
-      const totalEstimatedNetworkFee = {
-        amount: gasFee.amount.plus(relayerFee.amount),
-        valueInCurrency:
-          gasFee.valueInCurrency?.plus(relayerFee.valueInCurrency || '0') ??
-          null,
-        usd: gasFee.usd?.plus(relayerFee.usd || '0') ?? null,
-      };
-      const totalMaxNetworkFee = {
-        amount: gasFee.amountMax.plus(relayerFee.amount),
-        valueInCurrency:
-          gasFee.valueInCurrencyMax?.plus(relayerFee.valueInCurrency || '0') ??
-          null,
-        usd: gasFee.usdMax?.plus(relayerFee.usd || '0') ?? null,
-      };
+      let totalEstimatedNetworkFee, gasFee, totalMaxNetworkFee;
+      if (isSolanaQuote) {
+        totalEstimatedNetworkFee = calcSolanaTotalNetworkFee(
+          quote,
+          nativeToDisplayCurrencyExchangeRate,
+          nativeToUsdExchangeRate,
+        );
+        gasFee = totalEstimatedNetworkFee;
+        totalMaxNetworkFee = totalEstimatedNetworkFee;
+      } else {
+        gasFee = calcEstimatedAndMaxTotalGasFee({
+          bridgeQuote: quote,
+          estimatedBaseFeeInDecGwei,
+          maxFeePerGasInDecGwei,
+          maxPriorityFeePerGasInDecGwei,
+          nativeToDisplayCurrencyExchangeRate,
+          nativeToUsdExchangeRate,
+        });
+        const relayerFee = calcRelayerFee(
+          quote,
+          nativeToDisplayCurrencyExchangeRate,
+          nativeToUsdExchangeRate,
+        );
+        totalEstimatedNetworkFee = {
+          amount: gasFee.amount.plus(relayerFee.amount),
+          valueInCurrency:
+            gasFee.valueInCurrency?.plus(relayerFee.valueInCurrency || '0') ??
+            null,
+          usd: gasFee.usd?.plus(relayerFee.usd || '0') ?? null,
+        };
+        totalMaxNetworkFee = {
+          amount: gasFee.amountMax.plus(relayerFee.amount),
+          valueInCurrency:
+            gasFee.valueInCurrencyMax?.plus(
+              relayerFee.valueInCurrency || '0',
+            ) ?? null,
+          usd: gasFee.usdMax?.plus(relayerFee.usd || '0') ?? null,
+        };
+      }
 
       const sentAmount = calcSentAmount(
         quote.quote,
@@ -404,10 +424,8 @@ const _getQuotesWithMetadata = createSelector(
         toTokenAmount,
         totalEstimatedNetworkFee,
       );
-
       return {
         ...quote,
-
         // QuoteMetadata fields
         toTokenAmount,
         sentAmount,
