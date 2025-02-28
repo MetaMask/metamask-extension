@@ -1,11 +1,11 @@
 import { act } from '@testing-library/react-hooks';
-import { useCounter } from './sample-hooks';
+import { useSample } from './sample-hooks';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 
 describe('sample hooks', () => {
   describe('useCounter hook', () => {
     it('should return the counter value', () => {
-      const { result } = renderHookWithProvider(useCounter, {
+      const { result } = renderHookWithProvider(useSample, {
         sample: { counter: 5, error: null },
       });
 
@@ -13,7 +13,7 @@ describe('sample hooks', () => {
     });
 
     it('should return error', () => {
-      const { result } = renderHookWithProvider(useCounter, {
+      const { result } = renderHookWithProvider(useSample, {
         sample: { counter: 0, error: 'test error' },
       });
 
@@ -21,7 +21,7 @@ describe('sample hooks', () => {
     });
 
     it('should increment counter when increment is called', () => {
-      const { result } = renderHookWithProvider(useCounter, {
+      const { result } = renderHookWithProvider(useSample, {
         sample: { counter: 0, error: null },
       });
 
@@ -34,7 +34,7 @@ describe('sample hooks', () => {
     });
 
     it('should set counter when setCounter is called with valid value', () => {
-      const { result } = renderHookWithProvider(useCounter, {
+      const { result } = renderHookWithProvider(useSample, {
         sample: { counter: 0, error: null },
       });
 
@@ -47,7 +47,7 @@ describe('sample hooks', () => {
     });
 
     it('should set error when setCounter is called with negative value', () => {
-      const { result } = renderHookWithProvider(useCounter, {
+      const { result } = renderHookWithProvider(useSample, {
         sample: { counter: 0, error: null },
       });
 

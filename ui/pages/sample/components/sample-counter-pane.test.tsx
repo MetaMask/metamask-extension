@@ -8,9 +8,9 @@ import { SampleCounterPane } from './sample-counter-pane';
 const mockIncrement = jest.fn();
 
 // Mock the counter module
-jest.mock('../../../ducks/sample/counter', () => {
+jest.mock('../../../ducks/sample/sample-hooks', () => {
   return {
-    useCounter: () => ({
+    useSample: () => ({
       value: 5,
       error: null,
       increment: mockIncrement,

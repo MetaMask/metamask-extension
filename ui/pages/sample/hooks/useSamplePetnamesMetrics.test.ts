@@ -6,16 +6,15 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { useSamplePetnamesMetrics } from './useSamplePetnamesMetrics';
 
-// Mock the MetaMetricsContext
+// Mock the useContext hook
 const mockTrackEvent = jest.fn();
-jest.mock('../../../contexts/metametrics', () => ({
-  ...jest.requireActual('../../../contexts/metametrics'),
-  MetaMetricsContext: {
-    Consumer: jest.fn(),
-    Provider: jest.fn(),
-  },
-  useMetaMetricsContext: () => mockTrackEvent,
-}));
+jest.mock('react', () => {
+  const originalReact = jest.requireActual('react');
+  return {
+    ...originalReact,
+    useContext: () => mockTrackEvent,
+  };
+});
 
 describe('useSamplePetnamesMetrics', () => {
   beforeEach(() => {

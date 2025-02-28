@@ -5,7 +5,7 @@ import { setCounter } from './sample-thunks';
 import { selectCounterValue, selectCounterError } from './sample-selectors';
 
 // Hook
-export function useCounter() {
+export function useSample() {
   const value = useSelector(selectCounterValue);
   const error = useSelector(selectCounterError);
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
