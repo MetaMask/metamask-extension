@@ -67,6 +67,15 @@ export default function useSolanaBridgeTransactionMapping(
   const modifiedTransactions = nonEvmTransactions.transactions.map((tx) => {
     // The signature is in the id field for non-EVM transactions
     const txSignature = tx.id;
+    
+    // If the transaction type is explicitly 'swap', never mark it as a bridge
+    if (tx.type === 'swap') {
+      return {
+        ...tx,
+        // Explicitly set to false to ensure it's never marked as a bridge
+        isBridgeTx: false
+      };
+    }
 
     // Check if this transaction signature matches a bridge transaction
     if (
@@ -76,21 +85,28 @@ export default function useSolanaBridgeTransactionMapping(
     ) {
       // @ts-expect-error WIP: Need to add index signature to bridgeTxSignatures
       const matchingBridgeTx = bridgeTxSignatures[txSignature];
+      
+      // Get source and destination chain IDs
+      const srcChainId = matchingBridgeTx.quote?.srcChainId;
+      const destChainId = matchingBridgeTx.quote?.destChainId;
+      
+      // Only consider it a bridge if source and destination chains are different
+      const isBridgeTx = srcChainId && destChainId && srcChainId !== destChainId;
 
       // Return an enhanced version of the transaction with bridge info
       return {
         ...tx,
-        // Change the type to bridge
-        type: 'bridge',
-        // Add bridge-specific flags
-        isBridgeTx: true,
+        // Change the type to bridge only if it's truly a bridge transaction
+        type: isBridgeTx ? 'bridge' : tx.type,
+        // Add bridge-specific flag based on chain comparison
+        isBridgeTx,
         // Include destination chain details
-        bridgeInfo: {
+        bridgeInfo: isBridgeTx ? {
           destChainId: matchingBridgeTx.quote?.destChainId,
           destChainName: getNetworkName(matchingBridgeTx.quote?.destChainId),
           destAsset: matchingBridgeTx.quote?.destAsset,
           destTokenAmount: matchingBridgeTx.quote?.destTokenAmount,
-        },
+        } : undefined,
       };
     }
 
