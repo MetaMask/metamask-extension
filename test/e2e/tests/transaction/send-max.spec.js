@@ -13,6 +13,8 @@ const {
 } = require('../../page-objects/flows/send-transaction.flow');
 
 describe('Sending with max amount', function () {
+  // This test is flaky in FF - so we are skipping it for now
+  // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('with correct amount', async function () {
     await withFixtures(
       {
