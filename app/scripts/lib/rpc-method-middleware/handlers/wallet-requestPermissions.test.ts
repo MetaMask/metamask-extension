@@ -432,6 +432,7 @@ describe('requestPermissionsHandler', () => {
       });
     });
   });
+
   describe('both CAIP-25 equivalent and other permissions requested', () => {
     describe('both CAIP-25 equivalent permissions and other permissions are approved', () => {
       it('returns eth_accounts, permittedChains, and other permissions that were granted', async () => {

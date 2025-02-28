@@ -116,6 +116,13 @@ async function requestPermissionsImplementation(
 
   if (hasCaip25EquivalentPermissions) {
     const caip25Endowment = grantedPermissions[Caip25EndowmentPermissionName];
+
+    if (!caip25Endowment) {
+      throw new Error(
+        `could not find ${Caip25EndowmentPermissionName} permission.`,
+      );
+    }
+
     const caip25CaveatValue = caip25Endowment?.caveats?.find(
       ({ type }) => type === Caip25CaveatType,
     )?.value as Caip25CaveatValue | undefined;
