@@ -18,15 +18,17 @@ jest.mock('react-redux', () => ({
 }));
 
 // Mock the components used in SamplePage
-jest.mock('./components/sample-counter', () => ({
-  SampleCounter: () => (
-    <div data-testid="mock-sample-counter">Mock Counter Component</div>
+jest.mock('./components/sample-counter-pane', () => ({
+  SampleCounterPane: () => (
+    <div data-testid="mock-sample-counter-pane">Mock Counter Component</div>
   ),
 }));
 
-jest.mock('./components/sample-petnames', () => ({
-  SamplePetnames: () => (
-    <div data-testid="mock-sample-petnames">Mock Petnames Component</div>
+jest.mock('./components/sample-petnames-form', () => ({
+  SamplePetnamesForm: () => (
+    <div data-testid="mock-sample-petnames-form">
+      Mock Petnames Form Component
+    </div>
   ),
 }));
 
@@ -66,8 +68,8 @@ describe('SamplePage', () => {
     expect(screen.getByText('Test Network')).toBeInTheDocument();
 
     // Check that child components are rendered
-    expect(screen.getByTestId('mock-sample-counter')).toBeInTheDocument();
-    expect(screen.getByTestId('mock-sample-pet-names')).toBeInTheDocument();
+    expect(screen.getByTestId('mock-sample-counter-pane')).toBeInTheDocument();
+    expect(screen.getByTestId('mock-sample-petnames-form')).toBeInTheDocument();
   });
 
   it('navigates back when back button is clicked', () => {
