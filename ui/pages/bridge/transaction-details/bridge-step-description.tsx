@@ -59,7 +59,6 @@ const getBridgeActionText = (
     ];
 
   const destSymbol = step?.destAsset?.symbol;
-  console.log('destSymbol', destSymbol, step);
   if (!destSymbol) {
     return null;
   }
