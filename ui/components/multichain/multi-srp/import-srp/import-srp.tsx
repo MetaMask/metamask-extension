@@ -32,7 +32,7 @@ const hasUpperCase = (draftSrp: string) => {
 
 const defaultNumberOfWords = 12;
 
-export const ImportSRP = ({
+export const ImportSrp = ({
   onActionComplete,
 }: {
   onActionComplete: (completed: boolean) => void;
@@ -45,7 +45,7 @@ export const ImportSRP = ({
     Array(defaultNumberOfWords).fill(''),
   );
   const [numberOfWords, setNumberOfWords] = useState(defaultNumberOfWords);
-  const [invalidSRPWords, setInvalidSRPWords] = useState(
+  const [invalidSrpWords, setInvalidSrpWords] = useState(
     Array(defaultNumberOfWords).fill(false),
   );
 
@@ -60,13 +60,13 @@ export const ImportSRP = ({
     }
   }
 
-  const isValidSRP = useMemo(() => {
+  const isValidSrp = useMemo(() => {
     return isValidMnemonic(secretRecoveryPhrase.join(' '));
   }, [secretRecoveryPhrase]);
 
   const onSrpChange = useCallback(
     (newDraftSrp: string[]) => {
-      const validateSRP = (phrase: string[], words: boolean[]) => {
+      const validateSrp = (phrase: string[], words: boolean[]) => {
         if (!phrase.some((word) => word !== '')) {
           return { error: '', words };
         }
@@ -147,7 +147,7 @@ export const ImportSRP = ({
 
       const joinedDraftSrp = newDraftSrp.join(' ').trim();
       const invalidWords = Array(newDraftSrp.length).fill(false);
-      let validationResult = validateSRP(newDraftSrp, invalidWords);
+      let validationResult = validateSrp(newDraftSrp, invalidWords);
       validationResult = validateCompleteness(validationResult, newDraftSrp);
       validationResult = validateCase(validationResult, joinedDraftSrp);
       validationResult = validateWords(validationResult);
@@ -155,7 +155,7 @@ export const ImportSRP = ({
 
       setSecretRecoveryPhrase(newDraftSrp);
       setSrpError(validationResult.error);
-      setInvalidSRPWords(validationResult.words);
+      setInvalidSrpWords(validationResult.words);
     },
     [t, setSrpError, setSecretRecoveryPhrase],
   );
@@ -239,7 +239,7 @@ export const ImportSRP = ({
                   id={id}
                   data-testid={id}
                   borderRadius={BorderRadius.LG}
-                  error={invalidSRPWords[index]}
+                  error={invalidSrpWords[index]}
                   type={TextFieldType.Text}
                   onChange={(e) => {
                     e.preventDefault();
@@ -285,7 +285,7 @@ export const ImportSRP = ({
       <Box width={BlockSize.Full} marginTop={4}>
         <ButtonPrimary
           width={BlockSize.Full}
-          disabled={!isValidSRP}
+          disabled={!isValidSrp}
           loading={loading}
           onClick={async () => {
             try {

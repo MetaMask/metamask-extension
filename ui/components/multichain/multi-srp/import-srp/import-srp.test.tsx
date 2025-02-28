@@ -10,7 +10,7 @@ import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 import mockState from '../../../../../test/data/mock-state.json';
 import * as actions from '../../../../store/actions';
-import { ImportSRP } from './import-srp';
+import { ImportSrp } from './import-srp';
 
 const mockClearClipboard = jest.fn();
 
@@ -29,19 +29,26 @@ jest.mock('../../../../store/actions', () => ({
   hideAlert: jest.fn().mockReturnValue({ type: 'ALERT_CLOSE' }),
 }));
 
-const pasteSRPIntoFirstInput = async (render: RenderResult, srp: string) => {
+const pasteSrpIntoFirstInput = (render: RenderResult, srp: string) => {
+  const [firstWord] = srp.split(' ');
+
   const firstSRPWordDiv = render.getByTestId('import-srp__srp-word-0');
   // This is safe because the input is always present in the word div.
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const firstSRPWordInput = firstSRPWordDiv.querySelector('input')!;
+  const firstSrpWordInput = firstSRPWordDiv.querySelector('input')!;
 
-  const pasteEvent = createEvent.paste(firstSRPWordInput, {
+  const pasteEvent = createEvent.paste(firstSrpWordInput, {
     clipboardData: {
       getData: () => srp,
     },
   });
 
-  fireEvent(firstSRPWordInput, pasteEvent);
+  fireEvent(firstSrpWordInput, pasteEvent);
+
+  return {
+    word: firstWord,
+    input: firstSrpWordInput,
+  };
 };
 
 describe('ImportSRP', () => {
@@ -53,41 +60,42 @@ describe('ImportSRP', () => {
 
   it('enables the "Import wallet" button when a valid secret recovery phrase is entered', async () => {
     const render = renderWithProvider(
-      <ImportSRP onActionComplete={jest.fn()} />,
+      <ImportSrp onActionComplete={jest.fn()} />,
       store,
     );
     const { getByText } = render;
 
-    expect(getByText('Import wallet')).not.toBeEnabled();
-    await pasteSRPIntoFirstInput(render, VALID_SECRET_RECOVERY_PHRASE);
+    const importButton = getByText('Import wallet');
 
+    expect(importButton).not.toBeEnabled();
+    pasteSrpIntoFirstInput(render, VALID_SECRET_RECOVERY_PHRASE);
     await waitFor(() => {
-      expect(getByText('Import wallet')).toBeEnabled();
+      expect(importButton).toBeEnabled();
     });
   });
 
   it('does not enable the "Import wallet" button when the secret recovery phrase is empty', async () => {
     const render = renderWithProvider(
-      <ImportSRP onActionComplete={jest.fn()} />,
+      <ImportSrp onActionComplete={jest.fn()} />,
       store,
     );
     const { getByText } = render;
 
     expect(getByText('Import wallet')).not.toBeEnabled();
-    await pasteSRPIntoFirstInput(render, '');
+    pasteSrpIntoFirstInput(render, '');
     expect(getByText('Import wallet')).not.toBeEnabled();
   });
 
   it('calls addNewMnemonicToVault and showAlert on successful import', async () => {
     const onActionComplete = jest.fn();
     const render = renderWithProvider(
-      <ImportSRP onActionComplete={onActionComplete} />,
+      <ImportSrp onActionComplete={onActionComplete} />,
       store,
     );
     const { getByText } = render;
 
     expect(getByText('Import wallet')).not.toBeEnabled();
-    await pasteSRPIntoFirstInput(render, VALID_SECRET_RECOVERY_PHRASE);
+    pasteSrpIntoFirstInput(render, VALID_SECRET_RECOVERY_PHRASE);
 
     fireEvent.click(getByText('Import wallet'));
 
@@ -107,37 +115,31 @@ describe('ImportSRP', () => {
   it('displays an error if one of the words in the srp is incorrect', async () => {
     const onActionComplete = jest.fn();
     const render = renderWithProvider(
-      <ImportSRP onActionComplete={onActionComplete} />,
+      <ImportSrp onActionComplete={onActionComplete} />,
       store,
     );
-    const { getByText, getByTestId } = render;
+    const { getByText } = render;
 
     const invalidSRP = VALID_SECRET_RECOVERY_PHRASE.replace('input', 'inptu');
     expect(getByText('Import wallet')).not.toBeEnabled();
-    await pasteSRPIntoFirstInput(render, invalidSRP);
 
-    // This is safe because the input is always present in the word div.
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const invalidWord = getByTestId('import-srp__srp-word-0').querySelector(
-      'input',
-    )!;
-
+    const { input } = pasteSrpIntoFirstInput(render, invalidSRP);
     const importButton = getByText('Import wallet');
 
-    expect(invalidWord).toBeInvalid();
-    expect(importButton).toBeDisabled();
+    expect(input).toBeInvalid();
+    expect(importButton).not.toBeEnabled();
   });
 
-  it('clears the secret recovery phrase after importing', async () => {
+  it('clears the secret recovery phrase from clipboard after importing', async () => {
     const onActionComplete = jest.fn();
     const render = renderWithProvider(
-      <ImportSRP onActionComplete={onActionComplete} />,
+      <ImportSrp onActionComplete={onActionComplete} />,
       store,
     );
     const { getByText } = render;
 
     expect(getByText('Import wallet')).not.toBeEnabled();
-    await pasteSRPIntoFirstInput(render, VALID_SECRET_RECOVERY_PHRASE);
+    pasteSrpIntoFirstInput(render, VALID_SECRET_RECOVERY_PHRASE);
 
     fireEvent.click(getByText('Import wallet'));
 
@@ -158,13 +160,13 @@ describe('ImportSRP', () => {
 
     const onActionComplete = jest.fn();
     const render = renderWithProvider(
-      <ImportSRP onActionComplete={onActionComplete} />,
+      <ImportSrp onActionComplete={onActionComplete} />,
       store,
     );
     const { getByText } = render;
 
     expect(getByText('Import wallet')).not.toBeEnabled();
-    await pasteSRPIntoFirstInput(render, VALID_SECRET_RECOVERY_PHRASE);
+    pasteSrpIntoFirstInput(render, VALID_SECRET_RECOVERY_PHRASE);
 
     fireEvent.click(getByText('Import wallet'));
 

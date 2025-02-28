@@ -1,1 +1,1 @@
-export { ImportSRP } from './import-srp';
+export { ImportSrp as ImportSRP } from './import-srp';
