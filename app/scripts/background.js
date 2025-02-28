@@ -64,7 +64,7 @@ import NotificationManager, {
 import MetamaskController, {
   METAMASK_CONTROLLER_EVENTS,
 } from './metamask-controller';
-import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
+import getFirstPreferredLangCode from './lib/getFirstPreferredLangCode';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import {

@@ -78,7 +78,7 @@ class MetaRPCClient {
     }
 
     if (error) {
-      const e = new JsonRpcError(error.code, extractEthjsErrorMessage(error.message), error.data);
+      const e = new JsonRpcError(error.code, error.message, error.data);
       // preserve the stack from serializeError
       e.stack = error.stack;
       if (cb) {
@@ -118,7 +118,15 @@ const metaRPCClientFactory = (connectionStream) => {
           params,
           id,
         };
-        object.send(id, payload, cb);
+        object.send(id, payload, (err, result) => {
+          if (err) {
+            const specificErrorMessage = extractEthjsErrorMessage(err.message);
+            err.message = specificErrorMessage;
+            cb(err);
+          } else {
+            cb(null, result);
+          }
+        });
       };
     },
   });
