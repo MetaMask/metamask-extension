@@ -20,7 +20,7 @@ import {
   BackgroundColor,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { usePetnames } from '../../../ducks/metamask/sample-petnames-duck';
+import { usePetnames } from '../../../ducks/metamask/sample-petnames-controller';
 import { useSamplePetnamesMetrics } from '../hooks/useSamplePetnamesMetrics';
 import { useSamplePerformanceTrace } from '../hooks/useSamplePerformanceTrace';
 
