@@ -20,6 +20,7 @@ import {
   MultichainAssetsControllerState,
 } from '@metamask/assets-controllers';
 import { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
+import { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 import { KeyringControllerState } from '@metamask/keyring-controller';
 import {
   AddressBookController,
@@ -157,7 +158,6 @@ import {
   InstitutionalFeaturesControllerState,
   MmiConfigurationControllerState,
 } from './institutional';
-import { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 ///: END:ONLY_INCLUDE_IF
 
 export type ResetOnRestartStores = {
