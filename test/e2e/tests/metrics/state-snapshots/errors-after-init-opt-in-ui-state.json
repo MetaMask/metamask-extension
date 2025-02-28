@@ -346,8 +346,7 @@
         }
       },
       "quoteRequest": {
-        "srcTokenAddress": "0x0000000000000000000000000000000000000000",
-        "slippage": 0.5
+        "srcTokenAddress": "0x0000000000000000000000000000000000000000"
       },
       "quotes": {},
       "quotesRefreshCount": 0

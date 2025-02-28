@@ -4,10 +4,7 @@ import {
   SnapCaveatType,
   WALLET_SNAP_PERMISSION_KEY,
 } from '@metamask/snaps-rpc-methods';
-import {
-  Caip25EndowmentPermissionName,
-  getPermittedEthChainIds,
-} from '@metamask/multichain';
+import { Caip25EndowmentPermissionName } from '@metamask/multichain';
 import { SubjectType } from '@metamask/permission-controller';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { PageContainerFooter } from '../../ui/page-container';
@@ -24,7 +21,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../component-library';
 import {
-  getRequestedSessionScopes,
+  getRequestedCaip25CaveatValue,
   getCaip25PermissionsResponse,
 } from '../../../pages/permissions-connect/connect-page/utils';
 import { containsEthPermissionsAndNonEvmAccount } from '../../../helpers/utils/permissions';
@@ -145,22 +142,26 @@ export default class PermissionPageContainer extends Component {
       approvePermissionsRequest,
       rejectPermissionsRequest,
       selectedAccounts,
+      requestedChainIds,
     } = this.props;
 
     const approvedAccounts = selectedAccounts.map(
       (selectedAccount) => selectedAccount.address,
     );
 
-    const requestedSessionsScopes = getRequestedSessionScopes(
+    const requestedCaip25CaveatValue = getRequestedCaip25CaveatValue(
       _request.permissions,
     );
-    const approvedChainIds = getPermittedEthChainIds(requestedSessionsScopes);
 
     const request = {
       ..._request,
       permissions: {
         ..._request.permissions,
-        ...getCaip25PermissionsResponse(approvedAccounts, approvedChainIds),
+        ...getCaip25PermissionsResponse(
+          requestedCaip25CaveatValue,
+          approvedAccounts,
+          requestedChainIds,
+        ),
       },
     };
 

@@ -8,7 +8,7 @@ import {
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
 } from '@metamask/network-controller';
-import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
+import { AccountsControllerGetSelectedMultichainAccountAction } from '@metamask/accounts-controller';
 import { TransactionControllerGetStateAction } from '@metamask/transaction-controller';
 import {
   BridgeHistoryItem,
@@ -63,7 +63,7 @@ type AllowedActions =
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetStateAction
   | NetworkControllerGetNetworkClientByIdAction
-  | AccountsControllerGetSelectedAccountAction
+  | AccountsControllerGetSelectedMultichainAccountAction
   | TransactionControllerGetStateAction;
 
 /**

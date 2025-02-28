@@ -200,6 +200,7 @@ import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
+  SMART_TRANSACTION_CONFIRMATION_TYPES,
 } from '../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -408,6 +409,7 @@ const environmentMappingForRemoteFeatureFlag = {
 const buildTypeMappingForRemoteFeatureFlag = {
   flask: DistributionType.Flask,
   main: DistributionType.Main,
+  beta: 'beta',
 };
 
 export default class MetamaskController extends EventEmitter {
@@ -523,6 +525,8 @@ export default class MetamaskController extends EventEmitter {
         ApprovalType.WatchAsset,
         ApprovalType.EthGetEncryptionPublicKey,
         ApprovalType.EthDecrypt,
+        // Exclude Smart TX Status Page from rate limiting to allow sequential transactions
+        SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
       ],
     });
 
@@ -1803,7 +1807,9 @@ export default class MetamaskController extends EventEmitter {
     const bridgeControllerMessenger = this.controllerMessenger.getRestricted({
       name: BRIDGE_CONTROLLER_NAME,
       allowedActions: [
-        'AccountsController:getSelectedAccount',
+        // 'AccountsController:getSelectedAccount',
+        'AccountsController:getSelectedMultichainAccount',
+        'SnapController:handleRequest',
         'NetworkController:getSelectedNetworkClient',
         'NetworkController:findNetworkClientIdByChainId',
       ],
@@ -1819,7 +1825,7 @@ export default class MetamaskController extends EventEmitter {
       this.controllerMessenger.getRestricted({
         name: BRIDGE_STATUS_CONTROLLER_NAME,
         allowedActions: [
-          'AccountsController:getSelectedAccount',
+          'AccountsController:getSelectedMultichainAccount',
           'NetworkController:getNetworkClientById',
           'NetworkController:findNetworkClientIdByChainId',
           'NetworkController:getState',
