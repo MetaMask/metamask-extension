@@ -1,6 +1,8 @@
-import { SolanaModalHeader } from '../../ui/components/app/whats-new-modal/solana/modal-header';
-import { SolanaModalBody } from '../../ui/components/app/whats-new-modal/solana/modal-body';
-import { SolanaModalFooter } from '../../ui/components/app/whats-new-modal/solana/modal-footer';
+import {
+  SolanaModalHeader,
+  SolanaModalBody,
+  SolanaModalFooter,
+} from '../../ui/components/app/whats-new-modal/solana';
 
 type NotificationImage = {
   src: string;

@@ -69,7 +69,7 @@ const renderNotification = ({
       {modal?.body && <modal.body.component title={title} />}
       {modal?.footer && (
         <modal.footer.component
-          onCreateAccount={() => {
+          onAction={() => {
             onNotificationViewed(id);
             onClose();
           }}

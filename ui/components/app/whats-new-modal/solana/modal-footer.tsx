@@ -8,12 +8,12 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 type ModalFooterProps = {
-  onCreateAccount: () => void;
+  onAction: () => void;
   onCancel: () => void;
 };
 
 export const SolanaModalFooter = ({
-  onCreateAccount,
+  onAction,
   onCancel,
 }: ModalFooterProps) => {
   const t = useI18nContext();
@@ -24,7 +24,10 @@ export const SolanaModalFooter = ({
         block
         size={ButtonSize.Md}
         variant={ButtonVariant.Primary}
-        onClick={onCreateAccount}
+        onClick={() => {
+          onAction();
+          // TODO: Add create account method call for Solana
+        }}
       >
         {t('createSolanaAccount')}
       </Button>
