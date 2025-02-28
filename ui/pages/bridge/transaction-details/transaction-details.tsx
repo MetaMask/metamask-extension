@@ -174,10 +174,10 @@ const CrossChainSwapTxDetails = () => {
     getNetworkConfigurationsByChainId,
   );
 
-  const { transactionGroup, isEarliestNonce } = location.state as {
-    transactionGroup: TransactionGroup;
-    isEarliestNonce: boolean;
-  };
+  const transactionGroup: TransactionGroup | null =
+    location.state?.transactionGroup || null;
+  const isEarliestNonce: boolean | null =
+    location.state?.isEarliestNonce || null;
   const srcChainTxMeta = selectedAddressTxList.find(
     (tx) => tx.id === srcTxMetaId,
   );
@@ -457,12 +457,13 @@ const CrossChainSwapTxDetails = () => {
                   : undefined
               }
             />
-
-            <TransactionActivityLog
-              transactionGroup={transactionGroup}
-              className="transaction-list-item-details__transaction-activity-log"
-              isEarliestNonce={isEarliestNonce}
-            />
+            {transactionGroup && typeof isEarliestNonce !== 'undefined' && (
+              <TransactionActivityLog
+                transactionGroup={transactionGroup}
+                className="transaction-list-item-details__transaction-activity-log"
+                isEarliestNonce={isEarliestNonce}
+              />
+            )}
           </Box>
         </Box>
       </Content>
