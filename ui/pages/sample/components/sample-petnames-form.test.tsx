@@ -4,12 +4,12 @@ import { Hex } from '@metamask/utils';
 import configureStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { SamplePetnamesForm } from './sample-petnames-form';
-import { usePetnames } from '../../../ducks/metamask/sample-petnames-duck';
+import { usePetnames } from '../../../ducks/metamask/sample-petnames-controller';
 import { useSamplePetnamesMetrics } from '../hooks/useSamplePetnamesMetrics';
 import { useSamplePerformanceTrace } from '../hooks/useSamplePerformanceTrace';
 
 // Mock the hooks
-jest.mock('../../../ducks/metamask/sample-petnames-duck');
+jest.mock('../../../ducks/metamask/sample-petnames-controller');
 jest.mock('../hooks/useSamplePetnamesMetrics');
 jest.mock('../hooks/useSamplePerformanceTrace');
 
