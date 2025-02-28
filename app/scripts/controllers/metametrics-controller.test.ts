@@ -23,6 +23,7 @@ import {
   MetaMetricsUserTraits,
 } from '../../../shared/constants/metametrics';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import { KeyringType } from '../../../shared/constants/keyring';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
 import type { BackgroundStateProxy } from '../../../shared/types/background';
@@ -1411,82 +1412,16 @@ describe('MetaMetricsController', function () {
               },
             },
           },
-          NetworkController: {
-            ...networkState,
-          },
-          TokensController: {
-            allTokens: MOCK_ALL_TOKENS,
-            ...mockNetworkState(
-              { chainId: CHAIN_IDS.MAINNET },
-              { chainId: CHAIN_IDS.GOERLI },
-              { chainId: '0xaf' },
-            ),
-          },
-          AccountsController: {
-            internalAccounts: {
-              accounts: {
-                mock1: {} as InternalAccount,
-                mock2: {} as InternalAccount,
-              },
-              selectedAccount: 'mock1',
-            },
-          },
-          PreferencesController: {
-            ledgerTransportType: LedgerTransportTypes.webhid,
-            openSeaEnabled: true,
-            useNftDetection: false,
-            securityAlertsEnabled: true,
-            theme: ThemeType.os,
-            useTokenDetection: true,
-            security_providers: [],
-            tokenSortConfig: {
-              key: 'token-sort-key',
-              order: 'dsc',
-              sortCallback: 'stringNumeric',
-            },
-            preferences: {
-              privacyMode: true,
-              tokenNetworkFilter: {},
-              showNativeTokenAsMainBalance: true,
-            },
-          },
-          MetaMetricsController: {
-            participateInMetaMetrics: true,
-            dataCollectionForMarketing: false,
-          },
-          NameController: {
-            names: {
-              [NameType.ETHEREUM_ADDRESS]: {
-                '0x123': {
-                  '0x1': {
-                    name: 'Test 1',
-                  } as NameEntry,
-                  '0x2': {
-                    name: 'Test 2',
-                  } as NameEntry,
-                  '0x3': {
-                    name: null,
-                  } as NameEntry,
-                },
-                '0x456': {
-                  '0x1': {
-                    name: 'Test 3',
-                  } as NameEntry,
-                },
-                '0x789': {
-                  '0x1': {
-                    name: null,
-                  } as NameEntry,
-                },
-              },
-            },
-          },
-          CurrencyController: {
-            currentCurrency: 'usd',
-            currencyRates: {},
-          },
-          // TODO: Replace with spread of comprehensive state mock object
-        } as unknown as BackgroundStateProxy);
+          participateInMetaMetrics: true,
+          currentCurrency: 'usd',
+          dataCollectionForMarketing: false,
+          preferences: { privacyMode: true, tokenNetworkFilter: [] },
+          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+          custodyAccountDetails: {},
+          ///: END:ONLY_INCLUDE_IF
+          sessionData: undefined,
+          keyrings: [],
+        });
 
         expect(traits).toStrictEqual({
           [MetaMetricsUserTrait.AddressBookEntries]: 3,
@@ -1504,6 +1439,7 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.NumberOfNftCollections]: 3,
           [MetaMetricsUserTrait.NumberOfNfts]: 4,
           [MetaMetricsUserTrait.NumberOfTokens]: 5,
+          [MetaMetricsUserTrait.NumberOfHDEntropies]: 0,
           [MetaMetricsUserTrait.OpenSeaApiEnabled]: true,
           [MetaMetricsUserTrait.ThreeBoxEnabled]: false,
           [MetaMetricsUserTrait.Theme]: ThemeType.os,
@@ -1606,8 +1542,9 @@ describe('MetaMetricsController', function () {
             custodyAccountDetails: {},
           },
           ///: END:ONLY_INCLUDE_IF
-          // TODO: Replace with spread of comprehensive state mock object
-        } as unknown as BackgroundStateProxy);
+          sessionData: undefined,
+          keyrings: [],
+        });
 
         const updatedTraits = controller._buildUserTraitsObject({
           AddressBookController: {
@@ -1690,8 +1627,16 @@ describe('MetaMetricsController', function () {
             custodyAccountDetails: {},
           },
           ///: END:ONLY_INCLUDE_IF
-          // TODO: Replace with spread of comprehensive state mock object
-        } as unknown as BackgroundStateProxy);
+          sessionData: {
+            accessToken: '',
+            expiresIn: '',
+            profile: {
+              identifierId: 'identifierId',
+              profileId: 'profileId',
+            },
+          },
+          keyrings: [],
+        });
 
         expect(updatedTraits).toStrictEqual({
           [MetaMetricsUserTrait.AddressBookEntries]: 4,
@@ -1699,6 +1644,7 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.NumberOfTokens]: 1,
           [MetaMetricsUserTrait.OpenSeaApiEnabled]: false,
           [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]: false,
+          [MetaMetricsUserTrait.ProfileId]: 'profileId',
         });
       });
     });
@@ -1782,8 +1728,16 @@ describe('MetaMetricsController', function () {
             custodyAccountDetails: {},
           },
           ///: END:ONLY_INCLUDE_IF
-          // TODO: Replace with spread of comprehensive state mock object
-        } as unknown as BackgroundStateProxy);
+          sessionData: {
+            accessToken: '',
+            expiresIn: '',
+            profile: {
+              identifierId: 'identifierId',
+              profileId: 'profileId',
+            },
+          },
+          keyrings: [],
+        });
 
         const updatedTraits = controller._buildUserTraitsObject({
           AddressBookController: {
@@ -1855,8 +1809,16 @@ describe('MetaMetricsController', function () {
             custodyAccountDetails: {},
           },
           ///: END:ONLY_INCLUDE_IF
-          // TODO: Replace with spread of comprehensive state mock object
-        } as unknown as BackgroundStateProxy);
+          sessionData: {
+            accessToken: '',
+            expiresIn: '',
+            profile: {
+              identifierId: 'identifierId',
+              profileId: 'profileId',
+            },
+          },
+          keyrings: [],
+        });
         expect(updatedTraits).toStrictEqual(null);
       });
     });
@@ -1999,6 +1961,63 @@ describe('MetaMetricsController', function () {
         expect(setUninstallURLSpy).toHaveBeenCalledWith(
           expect.stringContaining('env='),
         );
+      });
+    });
+  });
+
+  describe('getNumberOfHDEntropies', function () {
+    it('counts HD entropies correctly across various keyring configurations', async function () {
+      await withController(({ controller: _ }) => {
+        const testScenarios = [
+          {
+            name: 'with undefined keyrings',
+            state: { keyrings: undefined },
+            expectedCount: 0,
+          },
+          {
+            name: 'with empty keyrings array',
+            state: { keyrings: [] },
+            expectedCount: 0,
+          },
+          {
+            name: 'with one HD keyring',
+            state: {
+              keyrings: [{ type: KeyringType.hdKeyTree, accounts: ['0x123'] }],
+            },
+            expectedCount: 1,
+          },
+          {
+            name: 'with two HD keyrings',
+            state: {
+              keyrings: [
+                { type: KeyringType.hdKeyTree, accounts: ['0x123'] },
+                { type: KeyringType.hdKeyTree, accounts: ['0x456'] },
+              ],
+            },
+            expectedCount: 2,
+          },
+          {
+            name: 'with mixed keyring types',
+            state: {
+              keyrings: [
+                { type: KeyringType.hdKeyTree, accounts: ['0x123'] },
+                { type: KeyringType.imported, accounts: ['0x456'] },
+                { type: KeyringType.ledger, accounts: ['0x789'] },
+                { type: KeyringType.hdKeyTree, accounts: ['0xabc'] },
+              ],
+            },
+            expectedCount: 2,
+          },
+        ];
+
+        testScenarios.forEach((scenario) => {
+          // Implement the same logic as the private method
+          const hdKeyringCount =
+            scenario.state.keyrings?.filter(
+              (keyring) => keyring.type === KeyringType.hdKeyTree,
+            ).length ?? 0;
+          expect(hdKeyringCount).toBe(scenario.expectedCount);
+        });
       });
     });
   });

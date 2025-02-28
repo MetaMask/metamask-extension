@@ -49,6 +49,7 @@ import {
   AccountsState,
   getInternalAccounts,
   getSelectedInternalAccount,
+  isSolanaAccount,
 } from './accounts';
 import {
   getIsMainnet,
@@ -523,6 +524,16 @@ export function getLastSelectedNonEvmAccount(state: MultichainState) {
   const nonEvmAccounts = getInternalAccounts(state);
   const sortedNonEvmAccounts = nonEvmAccounts
     .filter((account) => !isEvmAccountType(account.type))
+    .sort(
+      (a, b) => (b.metadata.lastSelected ?? 0) - (a.metadata.lastSelected ?? 0),
+    );
+  return sortedNonEvmAccounts.length > 0 ? sortedNonEvmAccounts[0] : undefined;
+}
+
+export function getLastSelectedSolanaAccount(state: MultichainState) {
+  const nonEvmAccounts = getInternalAccounts(state);
+  const sortedNonEvmAccounts = nonEvmAccounts
+    .filter((account) => isSolanaAccount(account))
     .sort(
       (a, b) => (b.metadata.lastSelected ?? 0) - (a.metadata.lastSelected ?? 0),
     );

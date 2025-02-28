@@ -16,7 +16,10 @@ import {
   RatesControllerState,
   TokenRatesControllerState,
   MultichainBalancesControllerState,
+  MultichainAssetsRatesControllerState,
+  MultichainAssetsControllerState,
 } from '@metamask/assets-controllers';
+import { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import { KeyringControllerState } from '@metamask/keyring-controller';
 import {
   AddressBookController,
@@ -154,6 +157,7 @@ import {
   InstitutionalFeaturesControllerState,
   MmiConfigurationControllerState,
 } from './institutional';
+import { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 ///: END:ONLY_INCLUDE_IF
 
 export type ResetOnRestartStores = {
@@ -365,6 +369,7 @@ export type FlattenedBackgroundStateProxy = {
   defaultHomeActiveTabName: AppStateControllerState['defaultHomeActiveTabName'];
   fullScreenGasPollTokens: AppStateControllerState['fullScreenGasPollTokens'];
   hadAdvancedGasFeesSetPriorToMigration92_3: AppStateControllerState['hadAdvancedGasFeesSetPriorToMigration92_3'];
+  lastViewedUserSurvey: AppStateControllerState['lastViewedUserSurvey'];
   nftsDetectionNoticeDismissed: AppStateControllerState['nftsDetectionNoticeDismissed'];
   nftsDropdownState: AppStateControllerState['nftsDropdownState'];
   notificationGasPollTokens: AppStateControllerState['notificationGasPollTokens'];
@@ -374,6 +379,7 @@ export type FlattenedBackgroundStateProxy = {
   recoveryPhraseReminderHasBeenShown: AppStateControllerState['recoveryPhraseReminderHasBeenShown'];
   recoveryPhraseReminderLastShown: AppStateControllerState['recoveryPhraseReminderLastShown'];
   signatureSecurityAlertResponses: AppStateControllerState['signatureSecurityAlertResponses'];
+  slides: AppStateControllerState['slides'];
   showBetaHeader: AppStateControllerState['showBetaHeader'];
   showPermissionsTour: AppStateControllerState['showPermissionsTour'];
   showNetworkBanner: AppStateControllerState['showNetworkBanner'];
@@ -389,8 +395,15 @@ export type FlattenedBackgroundStateProxy = {
   newPrivacyPolicyToastClickedOrClosed: AppStateControllerState['newPrivacyPolicyToastClickedOrClosed'];
   newPrivacyPolicyToastShownDate: AppStateControllerState['newPrivacyPolicyToastShownDate'];
   balances: MultichainBalancesControllerState['balances'];
-  bridgeState: BridgeControllerState;
-  bridgeStatusState: BridgeStatusControllerState;
+  nonEvmTransactions: MultichainTransactionsControllerState['nonEvmTransactions'];
+  conversionRates: MultichainAssetsRatesControllerState['conversionRates'];
+  assetsMetadata: MultichainAssetsControllerState['assetsMetadata'];
+  accountsAssets: MultichainAssetsControllerState['accountsAssets'];
+  multichainNetworkConfigurationsByChainId: MultichainNetworkControllerState['multichainNetworkConfigurationsByChainId'];
+  selectedMultichainNetworkChainId: MultichainNetworkControllerState['selectedMultichainNetworkChainId'];
+  isEvmSelected: MultichainNetworkControllerState['isEvmSelected'];
+  bridgeState: BridgeControllerState['bridgeState'];
+  bridgeStatusState: BridgeStatusControllerState['bridgeStatusState'];
   jobs: CronjobControllerState['jobs'];
   currentCurrency: CurrencyRateState['currentCurrency'];
   currencyRates: CurrencyRateState['currencyRates'];
@@ -407,6 +420,7 @@ export type FlattenedBackgroundStateProxy = {
   nonRPCGasFeeApisDisabled: GasFeeState['nonRPCGasFeeApisDisabled'];
   isUnlocked: KeyringControllerState['isUnlocked'];
   keyrings: KeyringControllerState['keyrings'];
+  keyringsMetadata: KeyringControllerState['keyringsMetadata'];
   logs: LoggingControllerState['logs'];
   subscriptionAccountsSeen: NotificationServicesController.NotificationServicesControllerState['subscriptionAccountsSeen'];
   isMetamaskNotificationsFeatureSeen: NotificationServicesController.NotificationServicesControllerState['isMetamaskNotificationsFeatureSeen'];
@@ -429,6 +443,7 @@ export type FlattenedBackgroundStateProxy = {
   marketingCampaignCookieId: MetaMetricsControllerState['marketingCampaignCookieId'];
   latestNonAnonymousEventTimestamp: MetaMetricsControllerState['latestNonAnonymousEventTimestamp'];
   metaMetricsDataDeletionId: MetaMetricsDataDeletionState['metaMetricsDataDeletionId'];
+  metaMetricsDataDeletionStatus: MetaMetricsDataDeletionState['metaMetricsDataDeletionStatus'];
   metaMetricsDataDeletionTimestamp: MetaMetricsDataDeletionState['metaMetricsDataDeletionTimestamp'];
   names: NameControllerState['names'];
   nameSources: NameControllerState['nameSources'];
