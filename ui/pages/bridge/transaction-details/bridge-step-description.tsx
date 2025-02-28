@@ -58,7 +58,8 @@ const getBridgeActionText = (
       destNetworkConfiguration?.chainId as AllowedBridgeChainIds
     ];
 
-  const destSymbol = step?.destAsset?.symbol;
+  const destSymbol = step.destAsset?.symbol;
+
   if (!destSymbol) {
     return null;
   }
@@ -114,8 +115,8 @@ const getSwapActionText = (
   status: StatusTypes | null,
   step: Step,
 ) => {
-  const srcSymbol = step?.srcAsset?.symbol;
-  const destSymbol = step?.destAsset?.symbol;
+  const srcSymbol = step.srcAsset?.symbol;
+  const destSymbol = step.destAsset?.symbol;
 
   if (!srcSymbol || !destSymbol) {
     return null;

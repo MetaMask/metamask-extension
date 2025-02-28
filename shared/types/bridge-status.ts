@@ -43,7 +43,7 @@ export type StatusRequestWithSrcTxHash = StatusRequest & {
   srcTxHash: string;
 };
 
-export type Asset = {
+export type 3Asset = {
   chainId: ChainId;
   address: string;
   symbol: string;
@@ -115,7 +115,7 @@ export type Step = {
   action: ActionTypes;
   srcChainId: ChainId;
   destChainId?: ChainId;
-  srcAsset: Asset;
+  srcAsset?: Asset;
   destAsset: Asset;
   srcAmount: string;
   destAmount: string;
