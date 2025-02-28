@@ -83,7 +83,7 @@ export const SnapUIFooterButton: FunctionComponent<
       {...props}
       size={ButtonSize.Lg}
       block
-      disabled={requireScroll ? !buttonsEnabled : disabled}
+      disabled={disabled || (requireScroll && !buttonsEnabled)}
       variant={buttonVariant}
       onClick={handleClick}
       textProps={{

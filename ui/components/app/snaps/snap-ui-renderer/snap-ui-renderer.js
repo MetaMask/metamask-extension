@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo, useReducer, useRef } from 'react';
+import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Container } from '@metamask/snaps-sdk/jsx';
@@ -45,27 +45,6 @@ const LoadingSpinner = memo(function LoadingSpinner() {
   );
 });
 
-const scrollReducer = (state, action) => {
-  let hasReachedBottom;
-  switch (action.type) {
-    case 'MANUAL_SCROLL':
-      hasReachedBottom = state.hasReachedBottom || action.isAtBottom;
-      return {
-        buttonsEnabled: hasReachedBottom,
-        showArrow: !hasReachedBottom && action.isScrollable,
-        hasReachedBottom,
-      };
-    case 'COMPLETE_SCROLL':
-      return {
-        buttonsEnabled: true,
-        showArrow: false,
-        hasReachedBottom: true,
-      };
-    default:
-      return state;
-  }
-};
-
 // Component that maps Snaps UI JSON format to MetaMask Template Renderer format
 const SnapUIRendererComponent = ({
   snapId,
@@ -97,38 +76,44 @@ const SnapUIRendererComponent = ({
       : Container({ children: rawContent });
   }, [interfaceState?.content]);
 
-  const requireScroll = useMemo(
-    () => Boolean(content?.props?.children?.[1]?.props?.requireScroll),
-    [content?.props?.children],
+  const requireScroll = Boolean(
+    content?.props?.children?.[1]?.props?.requireScroll,
   );
 
   const isProgrammaticScrollRef = useRef(false);
 
-  const [scrollState, dispatch] = useReducer(scrollReducer, {
-    isProgrammaticScroll: false,
+  const [scrollState, setScrollState] = useState({
     buttonsEnabled: !requireScroll,
     showArrow: false,
-    hasReachedBottom: !requireScroll,
   });
 
-  const { onScroll, scrollToBottom, isScrollable, ref } = useScrollRequired(
-    [],
-    {
-      // Only enable the hook if we need to handle scroll events
-      enabled: requireScroll,
-      // This lets us batch state updates and avoid an unnecessary render
-      onMeasure: ({ isScrollable: canScroll, hasMeasured }) => {
-        if (!requireScroll || !hasMeasured) {
-          return;
-        }
-        dispatch({
-          type: 'MANUAL_SCROLL',
-          isScrollable: canScroll,
-          isAtBottom: !canScroll,
+  const handleScrollStateUpdate = useCallback(
+    (buttonsAreEnabled, showArrow) => {
+      if (
+        buttonsAreEnabled !== scrollState.buttonsEnabled ||
+        showArrow !== scrollState.showArrow
+      ) {
+        setScrollState({
+          buttonsEnabled: buttonsAreEnabled,
+          showArrow,
         });
-      },
+      }
     },
+    [scrollState],
   );
+
+  const { scrollToBottom, ref } = useScrollRequired([], {
+    // Only enable the hook if we need to handle scroll events
+    enabled: requireScroll,
+    // This lets us batch state updates and avoid an unnecessary render
+    onMeasure: ({ isScrollable: canScroll, hasMeasured }) => {
+      if (!requireScroll || !hasMeasured) {
+        return;
+      }
+
+      handleScrollStateUpdate(!canScroll, canScroll);
+    },
+  });
 
   const buttonsEnabled = useMemo(
     () => (requireScroll ? scrollState.buttonsEnabled : true),
@@ -141,24 +126,22 @@ const SnapUIRendererComponent = ({
         return;
       }
 
-      const isActuallyAtBottom =
+      const isAtBottom =
         Math.abs(
           e.target.scrollTop + e.target.clientHeight - e.target.scrollHeight,
         ) < 2;
 
-      if (isProgrammaticScrollRef.current && isActuallyAtBottom) {
-        isProgrammaticScrollRef.current = false;
-        dispatch({ type: 'COMPLETE_SCROLL' });
-      } else {
-        dispatch({
-          type: 'MANUAL_SCROLL',
-          isAtBottom: isActuallyAtBottom,
-          isScrollable,
-        });
-      }
-      onScroll?.(e);
+      handleScrollStateUpdate(
+        scrollState.buttonsEnabled || isAtBottom,
+        !isAtBottom && scrollState.showArrow,
+      );
     },
-    [onScroll, isScrollable, requireScroll],
+    [
+      requireScroll,
+      scrollState.buttonsEnabled,
+      handleScrollStateUpdate,
+      scrollState.showArrow,
+    ],
   );
 
   const handleScrollToBottom = useCallback(() => {
@@ -180,13 +163,10 @@ const SnapUIRendererComponent = ({
     [inputValue, onInputChange, placeholder, isPrompt],
   );
 
-  const backgroundColor = useMemo(
-    () =>
-      contentBackgroundColor ??
-      mapToExtensionCompatibleColor(content?.props?.backgroundColor) ??
-      BackgroundColor.backgroundAlternative,
-    [contentBackgroundColor, content?.props?.backgroundColor],
-  );
+  const backgroundColor =
+    contentBackgroundColor ??
+    mapToExtensionCompatibleColor(content?.props?.backgroundColor) ??
+    BackgroundColor.backgroundAlternative;
 
   const sections = useMemo(
     () =>
@@ -206,10 +186,7 @@ const SnapUIRendererComponent = ({
 
   // The renderer should only have a footer if there is a default cancel action
   // or if the footer component has been used.
-  const hasFooter = useMemo(
-    () => onCancel || content?.props?.children?.[1] !== undefined,
-    [onCancel, content?.props?.children],
-  );
+  const hasFooter = onCancel || content?.props?.children?.[1] !== undefined;
 
   if (isLoading || !content) {
     return <LoadingSpinner />;
