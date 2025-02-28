@@ -24,6 +24,7 @@ describe('Sending with max amount', function () {
           })
           .build(),
         localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
+        driverOptions: { timeOut: 15000 },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
