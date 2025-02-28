@@ -24,9 +24,9 @@ jest.mock('./components/sample-counter', () => ({
   ),
 }));
 
-jest.mock('./components/sample-pet-names', () => ({
-  SamplePetNames: () => (
-    <div data-testid="mock-sample-pet-names">Mock Pet Names Component</div>
+jest.mock('./components/sample-petnames', () => ({
+  SamplePetnames: () => (
+    <div data-testid="mock-sample-petnames">Mock Petnames Component</div>
   ),
 }));
 

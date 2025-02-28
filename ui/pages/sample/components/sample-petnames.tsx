@@ -20,7 +20,7 @@ import {
   BackgroundColor,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { usePetNames } from '../../../ducks/metamask/sample-petnames-duck';
+import { usePetnames } from '../../../ducks/metamask/sample-petnames-duck';
 
 // Define validation utilities
 const validateAddress = (address: string): string | undefined => {
@@ -62,8 +62,8 @@ type ErrorState = {
   form?: string;
 };
 
-export function SamplePetNames() {
-  const petNames = usePetNames();
+export function SamplePetnames() {
+  const petNames = usePetnames();
   const [values, setValues] = useState<FormState>({
     address: '',
     petName: '',
@@ -147,7 +147,7 @@ export function SamplePetNames() {
         alignItems={AlignItems.center}
         gap={4}
       >
-        <Text variant={TextVariant.headingSm}>Pet Names</Text>
+        <Text variant={TextVariant.headingSm}>Pet Names on this network</Text>
 
         {/* Pet Names List */}
         <Box
