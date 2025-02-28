@@ -8,10 +8,10 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { useCounter } from '../../../ducks/sample/counter';
+import { useSample } from '../../../ducks/sample';
 
 export function SampleCounterPane() {
-  const counter = useCounter();
+  const counter = useSample();
 
   return (
     <Card data-testid="sample-counter-pane-card">

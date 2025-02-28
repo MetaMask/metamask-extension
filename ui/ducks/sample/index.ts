@@ -15,6 +15,6 @@ export {
   selectCounterValue,
   selectCounterError,
 } from './sample-selectors';
-export { useCounter } from './sample-hooks';
+export { useSample } from './sample-hooks';
 
 export default sampleReducer;

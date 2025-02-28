@@ -1,6 +1,6 @@
-import { useCallback } from 'react';
+import { useCallback, useContext } from 'react';
 import { Hex } from '@metamask/utils';
-import { useMetaMetricsContext } from '../../../contexts/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -11,7 +11,7 @@ import {
  * @returns Object containing tracking functions for petnames actions
  */
 export function useSamplePetnamesMetrics() {
-  const trackEvent = useMetaMetricsContext();
+  const trackEvent = useContext(MetaMetricsContext);
 
   /**
    * Track when the petnames form is viewed
