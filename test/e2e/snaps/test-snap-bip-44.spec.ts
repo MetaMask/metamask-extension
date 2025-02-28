@@ -77,8 +77,20 @@ describe('Test Snap bip-44', function () {
 
         await driver.waitForSelector({
           css: '#bip44SignResult',
-          text: '"0xaad1b09202c4d48e7730dece56ef547fa1a19fcda345bf600704f14bb848cf4e7bb72b73e2a2d564de6ea75b3ab0ce3116a3fddd2122102a7dc79cebf0235338044a4020407e25f60232b8a04f59785c3db26bfb076862284df46fed8afce9e5"',
+          text: '"0xa8fdc184ded6d9a1b16d2d4070470720e4a946c9899ceb5165c05f9a8c4b026e8f630d6bdb60151f9e84b3c415c4b46c11bc2571022c8391b07faedc0d8c258d532d34c33149c5fc29e17c310437dc47e8afb43b2c55bd47b1b09ea295f7dcb3"',
         });
+
+        // Select an invalid (non-existent) entropy source, and sign.
+        await driver.delay(1000);
+        await testSnaps.selectEntropySource('bip44', 'Invalid');
+        await driver.delay(1000);
+        await testSnaps.fillBip44MessageAndSign('foo bar');
+
+        // Check the error message and close the alert.
+        await driver.waitForAlert(
+          'Entropy source with ID "invalid" not found.',
+        );
+        await driver.closeAlertPopup();
       },
     );
   });

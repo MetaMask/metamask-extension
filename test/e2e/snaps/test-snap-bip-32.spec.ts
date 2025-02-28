@@ -123,6 +123,16 @@ describe('Test Snap bip-32', function () {
           css: '#bip32MessageResult-secp256k1',
           text: '"0x3045022100ad81b36b28f5f5dd47f45a46b2e7cf42e501d2e9b5768627b0702c100f80eb3c02200a481cbbe22b47b4ea6cd923a7da22952f5b21a0dc52e841dcd08f7af8c74e05"',
         });
+
+        // Select an invalid (non-existent) entropy source, and sign.
+        await testSnaps.selectEntropySource('bip32', 'Invalid');
+        await testSnaps.fillMessageSecp256k1('bar baz');
+
+        // Check the error message and close the alert.
+        await driver.waitForAlert(
+          'Entropy source with ID "invalid" not found.',
+        );
+        await driver.closeAlertPopup();
       },
     );
   });

@@ -165,7 +165,7 @@ export class TestSnaps {
 
     await this.driver.clickElement({
       text: name,
-      tag: 'option',
+      css: `#${id}-entropy-selector option`,
     });
   }
 }
