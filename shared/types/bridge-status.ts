@@ -116,7 +116,7 @@ export type Step = {
   srcChainId: ChainId;
   destChainId?: ChainId;
   srcAsset?: Asset;
-  destAsset: Asset;
+  destAsset?: Asset;
   srcAmount: string;
   destAmount: string;
   protocol: Protocol;
