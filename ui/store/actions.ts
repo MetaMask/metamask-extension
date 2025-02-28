@@ -29,6 +29,7 @@ import {
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
 import {
+  BatchTransactionParams,
   TransactionMeta,
   TransactionParams,
   TransactionType,
@@ -1101,9 +1102,10 @@ export async function addTransaction(
 }
 
 export function updateAndApproveTx(
-  txMeta: TransactionMeta,
+  txMeta: TransactionMeta | undefined,
   dontShowLoadingIndicator: boolean,
   loadingIndicatorMessage: string,
+  isUpdateRequired: boolean = true,
 ): ThunkAction<
   Promise<TransactionMeta | null>,
   MetaMaskReduxState,
@@ -1122,7 +1124,11 @@ export function updateAndApproveTx(
 
       callBackgroundMethod(
         'resolvePendingApproval',
-        [String(txMeta.id), { txMeta, actionId }, { waitForResult: true }],
+        [
+          String(txMeta.id),
+          { txMeta: isUpdateRequired ? txMeta : undefined, actionId },
+          { waitForResult: true },
+        ],
         (err) => {
           dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
 
@@ -5991,3 +5997,12 @@ export async function sendMultichainTransaction(
   });
 }
 ///: END:ONLY_INCLUDE_IF
+
+export async function updateBatchTransactions(
+  transactionId: string,
+  batchTransactions: BatchTransactionParams[],
+) {
+  await submitRequestToBackground('updateBatchTransactions', [
+    { transactionId, batchTransactions },
+  ]);
+}

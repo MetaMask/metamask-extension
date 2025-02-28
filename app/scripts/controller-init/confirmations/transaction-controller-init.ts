@@ -152,6 +152,14 @@ export const TransactionControllerInit: ControllerInitFunction<
           transactionMeta,
           rawTx,
         ),
+      publishBatch: async (_request) => {
+        return {
+          results: _request.transactions.map((_tx) => ({
+            transactionHash:
+              '0x4a54c1c8f56149c67d9e0356cf6ce7d1c5b3a001a2a0f6f2d3793c385f451783',
+          })),
+        };
+      },
     },
     // @ts-expect-error Keyring controller expects TxData returned but TransactionController expects TypedTransaction
     sign: (...args) => keyringController().signTransaction(...args),
@@ -176,6 +184,8 @@ function getApi(
       controller.abortTransactionSigning.bind(controller),
     getLayer1GasFee: controller.getLayer1GasFee.bind(controller),
     getTransactions: controller.getTransactions.bind(controller),
+    updateBatchTransactions:
+      controller.updateBatchTransactions.bind(controller),
     updateEditableParams: controller.updateEditableParams.bind(controller),
     updatePreviousGasParams:
       controller.updatePreviousGasParams.bind(controller),

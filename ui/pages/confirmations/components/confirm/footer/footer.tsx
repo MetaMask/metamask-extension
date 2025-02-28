@@ -1,3 +1,7 @@
+import {
+  BatchTransactionParams,
+  TransactionMeta,
+} from '@metamask/transaction-controller';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { useCallback, useState } from 'react';
@@ -28,6 +32,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   updateAndApproveTx,
   ///: END:ONLY_INCLUDE_IF
+  updateBatchTransactions,
   updateCustomNonce,
 } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
@@ -201,7 +206,7 @@ const Footer = () => {
     [currentConfirmation],
   );
 
-  const onSubmit = useCallback(() => {
+  const onSubmit = useCallback(async () => {
     if (!currentConfirmation) {
       return;
     }
@@ -211,24 +216,36 @@ const Footer = () => {
     );
 
     if (isTransactionConfirmation) {
-      const mergeTxDataWithNonce = (transactionData: TransactionMeta) =>
-        customNonceValue
-          ? {
-              ...transactionData,
-              customNonceValue,
-            }
-          : transactionData;
+      const extraTransactions: BatchTransactionParams[] = [
+        {
+          data: '0x12345678',
+          to: '0x1234567890123456789012345678901234567890',
+          value: '0x123',
+        },
+        {
+          data: '0xabcdabcd',
+          to: '0x1234567890123456789012345678901234567890',
+          value: '0x321',
+        },
+      ];
 
-      const updatedTx = mergeTxDataWithNonce(
-        currentConfirmation as TransactionMeta,
-      );
+      await updateBatchTransactions(currentConfirmation.id, extraTransactions);
+
+      const updatedTx = {
+        ...currentConfirmation,
+        customNonceValue,
+      } as TransactionMeta;
+
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-      dispatch(updateAndApproveTx(updatedTx, true, ''));
+      dispatch(
+        updateAndApproveTx(updatedTx, true, '', Boolean(customNonceValue)),
+      );
       ///: END:ONLY_INCLUDE_IF
     } else {
       dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
     }
-    resetTransactionState();
+    dispatch(updateCustomNonce(''));
+    dispatch(setNextNonce(''));
   }, [currentConfirmation, customNonceValue]);
 
   const handleFooterCancel = useCallback(() => {
