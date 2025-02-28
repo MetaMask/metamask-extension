@@ -44,5 +44,5 @@ export function useAddEthereumChainAlerts(
         severity: Severity.Warning,
       },
     ];
-  }, []);
+  }, [pendingConfirmation, pendingConfirmations, t]);
 }

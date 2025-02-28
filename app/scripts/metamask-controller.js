@@ -353,7 +353,10 @@ import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
 import BridgeStatusController from './controllers/bridge-status/bridge-status-controller';
 import { BRIDGE_STATUS_CONTROLLER_NAME } from './controllers/bridge-status/constants';
-import { rejectAllApprovals, rejectOriginApprovals } from './lib/approval/utils';
+import {
+  rejectAllApprovals,
+  rejectOriginApprovals,
+} from './lib/approval/utils';
 import {
   handleBridgeTransactionComplete,
   handleBridgeTransactionFailed,

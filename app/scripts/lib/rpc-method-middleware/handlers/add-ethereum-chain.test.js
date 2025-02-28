@@ -79,6 +79,7 @@ const createMockedHandler = () => {
     }),
     requestPermittedChainsPermissionForOrigin: jest.fn(),
     requestPermittedChainsPermissionIncrementalForOrigin: jest.fn(),
+    rejectApprovalRequestsForOrigin: jest.fn(),
   };
   const response = {};
   const handler = (request) =>
@@ -191,6 +192,7 @@ describe('addEthereumChainHandler', () => {
           mocks.requestPermittedChainsPermissionForOrigin,
         requestPermittedChainsPermissionIncrementalForOrigin:
           mocks.requestPermittedChainsPermissionIncrementalForOrigin,
+        rejectApprovalRequestsForOrigin: mocks.rejectApprovalRequestsForOrigin,
       },
     );
   });
@@ -258,6 +260,8 @@ describe('addEthereumChainHandler', () => {
               mocks.requestPermittedChainsPermissionForOrigin,
             requestPermittedChainsPermissionIncrementalForOrigin:
               mocks.requestPermittedChainsPermissionIncrementalForOrigin,
+            rejectApprovalRequestsForOrigin:
+              mocks.rejectApprovalRequestsForOrigin,
           },
         );
       });
@@ -305,6 +309,8 @@ describe('addEthereumChainHandler', () => {
               mocks.requestPermittedChainsPermissionForOrigin,
             requestPermittedChainsPermissionIncrementalForOrigin:
               mocks.requestPermittedChainsPermissionIncrementalForOrigin,
+            rejectApprovalRequestsForOrigin:
+              mocks.rejectApprovalRequestsForOrigin,
           },
         );
       });
