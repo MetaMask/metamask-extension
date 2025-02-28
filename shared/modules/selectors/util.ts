@@ -1,4 +1,7 @@
-import { TransactionStatus } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionStatus,
+} from '@metamask/transaction-controller';
 import { isEqual } from 'lodash';
 import { createSelectorCreator, lruMemoize } from 'reselect';
 
@@ -7,10 +10,12 @@ export const createDeepEqualSelector = createSelectorCreator(
   isEqual,
 );
 
-export const filterAndShapeUnapprovedTransactions = (transactions) => {
+export const filterAndShapeUnapprovedTransactions = (
+  transactions: TransactionMeta[],
+) => {
   return transactions
     .filter(({ status }) => status === TransactionStatus.unapproved)
-    .reduce((result, transaction) => {
+    .reduce<{ [id: string]: TransactionMeta }>((result, transaction) => {
       result[transaction.id] = transaction;
       return result;
     }, {});

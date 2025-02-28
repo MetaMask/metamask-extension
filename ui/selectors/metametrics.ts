@@ -16,7 +16,10 @@ export const getLatestMetricsEventTimestamp = (state: MetaMaskReduxState) =>
 export const selectFragmentBySuccessEvent = createSelector(
   selectFragments,
   (_, fragmentOptions) => fragmentOptions,
-  (fragments, fragmentOptions) => {
+  (
+    fragments: ReturnType<typeof selectFragments>,
+    fragmentOptions: { persist: boolean; successEvent: string },
+  ) => {
     if (fragmentOptions.persist) {
       return Object.values(fragments).find(
         (fragment) => fragment.successEvent === fragmentOptions.successEvent,
