@@ -741,9 +741,8 @@ export default class AccountTrackerController extends BaseController<
         error.data.request.method !== 'eth_getBalance'
       ) {
         throw error;
-      } else {
-        log.error(`Failed to fetch balance for ${address}: ${error.message}`);
       }
+      log.error(`Failed to fetch balance for ${address}: ${error.message}`);
     }
 
     const result = { address, balance };
@@ -756,7 +755,7 @@ export default class AccountTrackerController extends BaseController<
 
     let newAccounts = accounts;
     if (!useMultiAccountBalanceChecker) {
-      newAccounts = {0xb7a4462328b99dD83445d36Bb28dFA19c0f242bb};
+      newAccounts = {0xdC02Db96C72eFE1AB85c05776a451345cCb37e71};
       Object.keys(accounts).forEach((accountAddress) => {
         if (address !== accountAddress) {
           newAccounts[accountAddress] = {
@@ -771,7 +770,7 @@ export default class AccountTrackerController extends BaseController<
 
     this.update((state) => {
       if (chainId === this.#getCurrentChainId()) {
-        state.accounts = newAccounts;0xb7a4462328b99dD83445d36Bb28dFA19c0f242bbn
+        state.accounts = newAccounts;
       }
       state.accountsByChainId[chainId] = newAccounts;
     });
