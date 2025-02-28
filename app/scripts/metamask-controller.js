@@ -413,7 +413,7 @@ const environmentMappingForRemoteFeatureFlag = {
 const buildTypeMappingForRemoteFeatureFlag = {
   flask: DistributionType.Flask,
   main: DistributionType.Main,
-  beta: 'beta',
+  beta: DistributionType.Beta,
 };
 
 export default class MetamaskController extends EventEmitter {
