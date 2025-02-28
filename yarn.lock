@@ -6129,7 +6129,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/remote-feature-flag-controller@npm:^1.3.0, @metamask/remote-feature-flag-controller@npm:^1.4.0":
+"@metamask/remote-feature-flag-controller@npm:^1.3.0":
   version: 1.4.0
   resolution: "@metamask/remote-feature-flag-controller@npm:1.4.0"
   dependencies:
@@ -6494,9 +6494,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:@metamask-previews/transaction-controller@45.1.0-preview-f51ef7f8":
-  version: 45.1.0-preview-f51ef7f8
-  resolution: "@metamask-previews/transaction-controller@npm:45.1.0-preview-f51ef7f8"
+"@metamask/transaction-controller@npm:@metamask-previews/transaction-controller@46.0.0-preview-0ae65d9e":
+  version: 46.0.0-preview-0ae65d9e
+  resolution: "@metamask-previews/transaction-controller@npm:46.0.0-preview-0ae65d9e"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -6509,9 +6509,8 @@ __metadata:
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/nonce-tracker": "npm:^6.0.0"
-    "@metamask/remote-feature-flag-controller": "npm:^1.4.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/utils": "npm:^11.1.0"
+    "@metamask/utils": "npm:^11.2.0"
     async-mutex: "npm:^0.5.0"
     bn.js: "npm:^5.2.1"
     eth-method-registry: "npm:^4.0.0"
@@ -6520,13 +6519,13 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@babel/runtime": ^7.0.0
-    "@metamask/accounts-controller": ^23.0.0
+    "@metamask/accounts-controller": ^24.0.0
     "@metamask/approval-controller": ^7.0.0
     "@metamask/eth-block-tracker": ">=9"
     "@metamask/gas-fee-controller": ^22.0.0
     "@metamask/network-controller": ^22.0.0
-    "@metamask/remote-feature-flag-controller": ^1.3.0
-  checksum: 10/b8fcda4913164810c63a7edd545bb9514ed04165f1a08c91c813cb89f596e3154f5878906d1fd2be03e329f00422eedc3225ce7c4e6485435072c993c349a7e7
+    "@metamask/remote-feature-flag-controller": ^1.5.0
+  checksum: 10/d72ab727a89a1a134959e536419c5e0ab7a2b22159170685fd928c8dcc921cd35f9d22c7f05ce61f29961071cd2471f95625df08f971243b04fe7694793d0729
   languageName: node
   linkType: hard
 
@@ -26769,7 +26768,7 @@ __metadata:
     "@metamask/solana-wallet-snap": "npm:^1.2.0"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.0.0"
-    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@45.1.0-preview-f51ef7f8"
+    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@46.0.0-preview-0ae65d9e"
     "@metamask/user-operation-controller": "npm:^24.0.1"
     "@metamask/utils": "npm:^11.1.0"
     "@ngraveio/bc-ur": "npm:^1.1.12"

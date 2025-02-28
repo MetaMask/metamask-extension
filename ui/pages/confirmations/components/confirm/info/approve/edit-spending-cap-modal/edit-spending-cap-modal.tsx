@@ -1,5 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
@@ -40,11 +40,13 @@ export function countDecimalDigits(numberString: string) {
 export const EditSpendingCapModal = ({
   data,
   isOpenEditSpendingCapModal,
+  onSubmit,
   setIsOpenEditSpendingCapModal,
   to,
 }: {
   data?: Hex;
   isOpenEditSpendingCapModal: boolean;
+  onSubmit?: (data: Hex) => void;
   setIsOpenEditSpendingCapModal: (newValue: boolean) => void;
   to?: Hex;
 }) => {
@@ -74,15 +76,18 @@ export const EditSpendingCapModal = ({
     Number(decimals ?? '0'),
   ).toFixed();
 
-  const finalTransactionMeta = {
-    ...transactionMeta,
-    txParams: {
-      ...transactionMeta.txParams,
-      to: transactionTo,
-      from: currentFrom,
-      data: transactionData,
-    },
-  };
+  const finalTransactionMeta = useMemo(
+    () => ({
+      ...transactionMeta,
+      txParams: {
+        ...transactionMeta.txParams,
+        to: transactionTo,
+        from: currentFrom,
+        data: transactionData,
+      },
+    }),
+    [currentFrom, transactionData, transactionMeta, transactionTo],
+  );
 
   const { formattedSpendingCap, spendingCap } = useApproveTokenSimulation(
     finalTransactionMeta,
@@ -110,39 +115,47 @@ export const EditSpendingCapModal = ({
   const [isModalSaving, setIsModalSaving] = useState(false);
 
   const handleSubmit = useCallback(async () => {
-    // Pending future ticket to update data of specific nested transaction within batch transaction.
-    if (data) {
-      return;
-    }
-
     setIsModalSaving(true);
 
     const customTxParamsData = getCustomTxParamsData(
-      transactionMeta?.txParams?.data,
+      finalTransactionMeta?.txParams?.data,
       {
         customPermissionAmount: customSpendingCapInputValue || '0',
         decimals: decimals || '0',
       },
-    );
+    ) as Hex;
 
-    const estimatedGasLimit = await estimateGas({
-      from: transactionMeta.txParams.from,
-      to: transactionMeta.txParams.to,
-      value: transactionMeta.txParams.value,
-      data: customTxParamsData,
-    });
-
-    dispatch(
-      updateEditableParams(transactionMeta.id, {
+    if (onSubmit) {
+      onSubmit(customTxParamsData);
+    } else {
+      const estimatedGasLimit = await estimateGas({
+        from: finalTransactionMeta.txParams.from,
+        to: finalTransactionMeta.txParams.to,
+        value: finalTransactionMeta.txParams.value,
         data: customTxParamsData,
-        gas: hexToDecimal(estimatedGasLimit as string),
-      }),
-    );
+      });
+
+      dispatch(
+        updateEditableParams(transactionMeta.id, {
+          data: customTxParamsData,
+          gas: hexToDecimal(estimatedGasLimit as string),
+        }),
+      );
+    }
 
     setIsModalSaving(false);
     setIsOpenEditSpendingCapModal(false);
     setCustomSpendingCapInputValue(spendingCap);
-  }, [customSpendingCapInputValue, spendingCap]);
+  }, [
+    customSpendingCapInputValue,
+    decimals,
+    dispatch,
+    finalTransactionMeta,
+    onSubmit,
+    setIsOpenEditSpendingCapModal,
+    spendingCap,
+    transactionMeta.id,
+  ]);
 
   const showDecimalError =
     decimals &&

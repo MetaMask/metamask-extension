@@ -87,7 +87,14 @@ describe('useBatchApproveBalanceChanges', () => {
       pending: false,
     });
 
-    const result = await runHook({});
+    const result = await runHook({
+      nestedTransactions: [
+        {
+          data: DATA_MOCK,
+          to: TO_MOCK,
+        },
+      ],
+    });
 
     expect(result).toStrictEqual({
       pending: false,
@@ -97,7 +104,7 @@ describe('useBatchApproveBalanceChanges', () => {
           isApproval: true,
           isAllApproval: false,
           isUnlimitedApproval: false,
-          nestedTransaction: {},
+          nestedTransactionIndex: 0,
         },
       ],
     });
@@ -124,10 +131,7 @@ describe('useBatchApproveBalanceChanges', () => {
             isAll: false,
             isDecrease: true,
             isUnlimited: false,
-            nestedTransaction: {
-              data: DATA_MOCK,
-              to: TO_MOCK,
-            },
+            nestedTransactionIndex: 0,
             newBalance: '0x0',
             previousBalance: '0x0',
             standard: SimulationTokenStandard.erc20,
@@ -161,7 +165,7 @@ describe('useBatchApproveBalanceChanges', () => {
             isAll: false,
             isUnlimited: true,
             isDecrease: true,
-            nestedTransaction,
+            nestedTransactionIndex: 0,
             newBalance: '0x0',
             previousBalance: '0x0',
             standard: SimulationTokenStandard.erc20,
@@ -196,10 +200,7 @@ describe('useBatchApproveBalanceChanges', () => {
             isAll: false,
             isDecrease: true,
             isUnlimited: false,
-            nestedTransaction: {
-              data: DATA_MOCK,
-              to: TO_MOCK,
-            },
+            nestedTransactionIndex: 0,
             newBalance: '0x0',
             previousBalance: '0x0',
             standard: SimulationTokenStandard.erc721,
@@ -234,7 +235,7 @@ describe('useBatchApproveBalanceChanges', () => {
             isAll: true,
             isDecrease: true,
             isUnlimited: false,
-            nestedTransaction,
+            nestedTransactionIndex: 0,
             newBalance: '0x0',
             previousBalance: '0x0',
             standard: SimulationTokenStandard.erc721,
@@ -269,7 +270,7 @@ describe('useBatchApproveBalanceChanges', () => {
             isAll: true,
             isDecrease: true,
             isUnlimited: false,
-            nestedTransaction,
+            nestedTransactionIndex: 0,
             newBalance: '0x0',
             previousBalance: '0x0',
             standard: SimulationTokenStandard.erc1155,

@@ -42,7 +42,7 @@ const BALANCE_CHANGE_ERC20_MOCK: ApprovalBalanceChange = {
   isApproval: true,
   isAllApproval: false,
   isUnlimitedApproval: false,
-  nestedTransaction: NESTED_TRANSACTION_MOCK,
+  nestedTransactionIndex: 0,
 };
 
 const BALANCE_CHANGE_ERC721_MOCK: ApprovalBalanceChange = {
@@ -57,7 +57,7 @@ const BALANCE_CHANGE_ERC721_MOCK: ApprovalBalanceChange = {
   isApproval: true,
   isAllApproval: false,
   isUnlimitedApproval: false,
-  nestedTransaction: NESTED_TRANSACTION_MOCK,
+  nestedTransactionIndex: 0,
 };
 
 const BALANCE_CHANGE_ERC1155_MOCK: ApprovalBalanceChange = {
@@ -72,13 +72,14 @@ const BALANCE_CHANGE_ERC1155_MOCK: ApprovalBalanceChange = {
   isApproval: true,
   isAllApproval: false,
   isUnlimitedApproval: false,
-  nestedTransaction: NESTED_TRANSACTION_MOCK,
+  nestedTransactionIndex: 0,
 };
 
 function render() {
   const store = configureStore(
     getMockConfirmStateForTransaction(
       genUnapprovedContractInteractionConfirmation({
+        nestedTransactions: [NESTED_TRANSACTION_MOCK],
         simulationData: {
           tokenBalanceChanges: [],
         },

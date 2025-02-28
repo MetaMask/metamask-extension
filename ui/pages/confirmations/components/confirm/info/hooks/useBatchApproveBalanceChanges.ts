@@ -16,11 +16,11 @@ import { isSpendingCapUnlimited } from '../approve/hooks/use-approve-token-simul
 type ApprovalSimulationBalanceChange = SimulationTokenBalanceChange & {
   isAll: boolean;
   isUnlimited: boolean;
-  nestedTransaction: BatchTransactionParams;
+  nestedTransactionIndex: number;
 };
 
 export type ApprovalBalanceChange = BalanceChange & {
-  nestedTransaction: BatchTransactionParams;
+  nestedTransactionIndex: number;
 };
 
 export function useBatchApproveBalanceChanges() {
@@ -49,7 +49,7 @@ export function useBatchApproveBalanceChanges() {
         isApproval: true,
         isAllApproval: simulation?.isAll ?? false,
         isUnlimitedApproval: simulation?.isUnlimited ?? false,
-        nestedTransaction: simulation?.nestedTransaction ?? {},
+        nestedTransactionIndex: simulation?.nestedTransactionIndex ?? -1,
       };
     },
   );
@@ -81,7 +81,8 @@ async function buildSimulationTokenBalanceChanges({
     return balanceChanges;
   }
 
-  for (const transaction of nestedTransactions) {
+  for (let i = 0; i < nestedTransactions.length; i++) {
+    const transaction = nestedTransactions[i];
     const { data, to } = transaction;
 
     if (!data || !to) {
@@ -124,7 +125,7 @@ async function buildSimulationTokenBalanceChanges({
       isDecrease: true,
       isUnlimited,
       newBalance: '0x0',
-      nestedTransaction: transaction,
+      nestedTransactionIndex: i,
       previousBalance: '0x0',
       standard,
     };

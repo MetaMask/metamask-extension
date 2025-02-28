@@ -1,8 +1,6 @@
 import React, { useCallback, useState } from 'react';
-import {
-  BatchTransactionParams,
-  TransactionMeta,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
+import { Hex } from '@metamask/utils';
 import {
   SimulationDetails,
   StaticRow,
@@ -15,6 +13,7 @@ import { useConfirmContext } from '../../../../../context/confirm';
 import { EditSpendingCapModal } from '../../approve/edit-spending-cap-modal/edit-spending-cap-modal';
 import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { updateAtomicBatchData } from '../../../../../../../store/actions/transaction-controller';
 
 export function BatchSimulationDetails() {
   const t = useI18nContext();
@@ -22,19 +21,35 @@ export function BatchSimulationDetails() {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
+  const { id, nestedTransactions } = transactionMeta;
+
   const { value: approveBalanceChanges } =
     useBatchApproveBalanceChanges() ?? {};
 
   const [isEditApproveModalOpen, setIsEditApproveModalOpen] = useState(false);
 
-  const [nestedTransactionToEdit, setNestedTransactionToEdit] = useState<
-    BatchTransactionParams | undefined
-  >();
+  const [nestedTransactionIndexToEdit, setNestedTransactionIndexToEdit] =
+    useState<number | undefined>();
 
   const handleEdit = useCallback((balanceChange: ApprovalBalanceChange) => {
-    setNestedTransactionToEdit(balanceChange.nestedTransaction);
+    setNestedTransactionIndexToEdit(balanceChange.nestedTransactionIndex);
     setIsEditApproveModalOpen(true);
   }, []);
+
+  const handleEditSubmit = useCallback(
+    async (data: Hex) => {
+      if (nestedTransactionIndexToEdit === undefined) {
+        return;
+      }
+
+      await updateAtomicBatchData({
+        transactionId: id,
+        transactionData: data,
+        transactionIndex: nestedTransactionIndexToEdit,
+      });
+    },
+    [id, nestedTransactionIndexToEdit],
+  );
 
   const finalBalanceChanges = approveBalanceChanges?.map((change) => ({
     ...change,
@@ -49,12 +64,18 @@ export function BatchSimulationDetails() {
     balanceChanges: finalBalanceChanges ?? [],
   };
 
+  const nestedTransactionToEdit =
+    nestedTransactionIndexToEdit === undefined
+      ? undefined
+      : nestedTransactions?.[nestedTransactionIndexToEdit];
+
   return (
     <>
       {isEditApproveModalOpen && (
         <EditSpendingCapModal
           data={nestedTransactionToEdit?.data}
-          isOpenEditSpendingCapModal={isEditApproveModalOpen}
+          isOpenEditSpendingCapModal={true}
+          onSubmit={handleEditSubmit}
           setIsOpenEditSpendingCapModal={setIsEditApproveModalOpen}
           to={nestedTransactionToEdit?.to}
         />
