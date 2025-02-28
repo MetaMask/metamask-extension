@@ -1,15 +1,16 @@
-const { strict: assert } = require('assert');
-
-const {
-  withFixtures,
-  unlockWallet,
-  generateGanacheOptions,
-} = require('../../helpers');
+const { withFixtures, generateGanacheOptions } = require('../../helpers');
 const {
   createInternalTransactionWithMaxAmount,
+  reviewTransaction,
 } = require('../../page-objects/flows/transaction');
 const FixtureBuilder = require('../../fixture-builder');
 const { GAS_API_BASE_URL } = require('../../../../shared/constants/swaps');
+const {
+  loginWithBalanceValidation,
+} = require('../../page-objects/flows/login.flow');
+const {
+  validateTransaction,
+} = require('../../page-objects/flows/send-transaction.flow');
 
 describe('Sending with max amount', function () {
   it('with correct amount', async function () {
@@ -26,45 +27,16 @@ describe('Sending with max amount', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         await createInternalTransactionWithMaxAmount(driver);
+        await reviewTransaction(driver);
 
-        // verify initial max amount
-        await driver.waitForSelector({
-          text: '$42,499.08',
-          tag: 'p',
+        await driver.clickElementAndWaitToDisappear({
+          text: 'Confirm',
+          tag: 'button',
         });
-
-        // has correct updated value on the confirm screen the transaction
-        await driver.waitForSelector({
-          css: '[data-testid="first-gas-field"]',
-          text: '0.0004 ETH',
-        });
-
-        await driver.waitForSelector({
-          css: '[data-testid="native-currency"]',
-          text: '$0.75',
-        });
-
-        // confirms the transaction
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-        await driver.wait(async () => {
-          const confirmedTxs = await driver.findElements(
-            '.transaction-list__completed-transactions .activity-list-item',
-          );
-          return confirmedTxs.length === 1;
-        }, 10000);
-
-        const txValues = await driver.findElements(
-          '[data-testid="transaction-list-item-primary-currency"]',
-        );
-        assert.equal(txValues.length, 1);
-        assert.ok(/-24.99945808\s*ETH/u.test(await txValues[0].getText()));
+        await validateTransaction(driver, '-24.99945808');
       },
     );
   });
@@ -84,27 +56,10 @@ describe('Sending with max amount', function () {
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
-          await unlockWallet(driver);
+          await loginWithBalanceValidation(driver);
 
           await createInternalTransactionWithMaxAmount(driver);
-
-          // verify initial max amount
-          await driver.waitForSelector({
-            text: '$42,499.08',
-            tag: 'p',
-          });
-
-          // has correct updated value on the confirm screen the transaction
-          await driver.waitForSelector({
-            css: '[data-testid="first-gas-field"]',
-            text: '0.0004 ETH',
-          });
-
-          await driver.waitForSelector({
-            css: '[data-testid="native-currency"]',
-            text: '$0.75',
-          });
-
+          await reviewTransaction(driver);
           // update estimates to high
           await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
           await driver.waitForSelector({
@@ -144,23 +99,12 @@ describe('Sending with max amount', function () {
           });
 
           // confirms the transaction
-          await driver.clickElement({ text: 'Confirm', tag: 'button' });
+          await driver.clickElementAndWaitToDisappear({
+            text: 'Confirm',
+            tag: 'button',
+          });
 
-          await driver.clickElement(
-            '[data-testid="account-overview__activity-tab"]',
-          );
-          await driver.wait(async () => {
-            const confirmedTxs = await driver.findElements(
-              '.transaction-list__completed-transactions .activity-list-item',
-            );
-            return confirmedTxs.length === 1;
-          }, 10000);
-
-          const txValues = await driver.findElements(
-            '[data-testid="transaction-list-item-primary-currency"]',
-          );
-          assert.equal(txValues.length, 1);
-          assert.ok(/-24.997\s*ETH/u.test(await txValues[0].getText()));
+          await validateTransaction(driver, '-24.997');
         },
       );
     });
@@ -179,27 +123,10 @@ describe('Sending with max amount', function () {
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
-          await unlockWallet(driver);
+          await loginWithBalanceValidation(driver);
 
           await createInternalTransactionWithMaxAmount(driver);
-
-          // verify initial max amount
-          await driver.waitForSelector({
-            text: '$42,499.08',
-            tag: 'p',
-          });
-
-          // has correct updated value on the confirm screen the transaction
-          await driver.waitForSelector({
-            css: '[data-testid="first-gas-field"]',
-            text: '0.0004 ETH',
-          });
-
-          await driver.waitForSelector({
-            css: '[data-testid="native-currency"]',
-            text: '$0.75',
-          });
-
+          await reviewTransaction(driver);
           // update estimates to high
           await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
           await driver.waitForSelector({
@@ -226,23 +153,12 @@ describe('Sending with max amount', function () {
           });
 
           // confirms the transaction
-          await driver.clickElement({ text: 'Confirm', tag: 'button' });
+          await driver.clickElementAndWaitToDisappear({
+            text: 'Confirm',
+            tag: 'button',
+          });
 
-          await driver.clickElement(
-            '[data-testid="account-overview__activity-tab"]',
-          );
-          await driver.wait(async () => {
-            const confirmedTxs = await driver.findElements(
-              '.transaction-list__completed-transactions .activity-list-item',
-            );
-            return confirmedTxs.length === 1;
-          }, 10000);
-
-          const txValues = await driver.findElements(
-            '[data-testid="transaction-list-item-primary-currency"]',
-          );
-          assert.equal(txValues.length, 1);
-          assert.ok(/-24.99957067\s*ETH/u.test(await txValues[0].getText()));
+          await validateTransaction(driver, '-24.99957067');
         },
       );
     });
@@ -298,26 +214,9 @@ describe('Sending with max amount', function () {
         },
       },
       async ({ driver, mockServer }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         await createInternalTransactionWithMaxAmount(driver);
-
-        // verify initial max amount
-        await driver.waitForSelector({
-          text: '$42,499.08',
-          tag: 'p',
-        });
-
-        // has correct updated value on the confirm screen the transaction
-        await driver.waitForSelector({
-          css: '[data-testid="first-gas-field"]',
-          text: '0.0004 ETH',
-        });
-
-        await driver.waitForSelector({
-          css: '[data-testid="native-currency"]',
-          text: '$0.75',
-        });
 
         mockServer
           .forGet(`${GAS_API_BASE_URL}/networks/1337/suggestedGasFees`)
@@ -366,23 +265,11 @@ describe('Sending with max amount', function () {
         });
 
         // confirms the transaction
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-        await driver.wait(async () => {
-          const confirmedTxs = await driver.findElements(
-            '.transaction-list__completed-transactions .activity-list-item',
-          );
-          return confirmedTxs.length === 1;
-        }, 10000);
-
-        const txValues = await driver.findElements(
-          '[data-testid="transaction-list-item-primary-currency"]',
-        );
-        assert.equal(txValues.length, 1);
-        assert.ok(/-24.99893308\s*ETH/u.test(await txValues[0].getText()));
+        await driver.clickElementAndWaitToDisappear({
+          text: 'Confirm',
+          tag: 'button',
+        });
+        await validateTransaction(driver, '-24.99893308');
       },
     );
   });
@@ -401,27 +288,10 @@ describe('Sending with max amount', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         await createInternalTransactionWithMaxAmount(driver);
-
-        // verify initial max amount
-        await driver.waitForSelector({
-          text: '$42,499.08',
-          tag: 'p',
-        });
-
-        // has correct updated value on the confirm screen the transaction
-        await driver.waitForSelector({
-          css: '[data-testid="first-gas-field"]',
-          text: '0.0004 ETH',
-        });
-
-        await driver.waitForSelector({
-          css: '[data-testid="native-currency"]',
-          text: '$0.75',
-        });
-
+        await reviewTransaction(driver);
         // navigate back to edit
         await driver.clickElement(
           '[data-testid="wallet-initiated-header-back-button"]',
@@ -434,20 +304,12 @@ describe('Sending with max amount', function () {
         await driver.clickElement({ text: 'Continue', css: 'button' });
 
         // confirms the transaction
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
+        await driver.clickElementAndWaitToDisappear({
+          text: 'Confirm',
+          tag: 'button',
+        });
 
-        await driver.wait(async () => {
-          const confirmedTxs = await driver.findElements(
-            '.transaction-list__completed-transactions .activity-list-item',
-          );
-          return confirmedTxs.length === 1;
-        }, 10000);
-
-        const txValues = await driver.findElements(
-          '[data-testid="transaction-list-item-primary-currency"]',
-        );
-        assert.equal(txValues.length, 1);
-        assert.ok(/-10\s*ETH/u.test(await txValues[0].getText()));
+        await validateTransaction(driver, '-10');
       },
     );
   });
