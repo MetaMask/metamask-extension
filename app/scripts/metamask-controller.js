@@ -2476,11 +2476,14 @@ export default class MetamaskController extends EventEmitter {
    * @returns {SnapKeyring}
    */
   async getSnapKeyring() {
+    // TODO: Use `withKeyring` instead
     let [snapKeyring] = this.keyringController.getKeyringsByType(
       KeyringType.snap,
     );
     if (!snapKeyring) {
-      snapKeyring = await this.keyringController.addNewKeyring(
+      await this.keyringController.addNewKeyring(KeyringType.snap);
+      // TODO: Use `withKeyring` instead
+      [snapKeyring] = this.keyringController.getKeyringsByType(
         KeyringType.snap,
       );
     }
@@ -4305,41 +4308,22 @@ export default class MetamaskController extends EventEmitter {
   async importMnemonicToVault(mnemonic) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
-      // TODO: This kind of logic should be inside the `KeyringController` (using `KeyringSelector` query, or make `addNewKeyring` returns it keyring ID alongside
-      // its keyring.
-      const findKeyringIdByAddress = (address) => {
-        const { keyrings, keyringsMetadata } = this.keyringController.state;
-
-        const keyringIndex = keyrings.findIndex((keyring) => {
-          return (
-            keyring.accounts.includes(address) &&
-            keyring.type === KeyringTypes.hd
-          );
-        });
-        if (keyringIndex === -1) {
-          throw new Error(
-            'Could not find keyring ID, THIS SHOULD NEVER HAPPEN',
-          );
-        }
-        return keyringsMetadata[keyringIndex].id;
-      };
-
-      const newKeyring = await this.keyringController.addNewKeyring(
+      const { id } = await this.keyringController.addNewKeyring(
         KeyringTypes.hd,
         {
           mnemonic,
           numberOfAccounts: 1,
         },
       );
-      const [newAccountAddress] = await newKeyring.getAccounts();
+      const [newAccountAddress] = await this.keyringController.withKeyring(
+        { id },
+        async ({ keyring }) => keyring.getAccounts(),
+      );
       const account =
         this.accountsController.getAccountByAddress(newAccountAddress);
       this.accountsController.setSelectedAccount(account.id);
 
-      // TODO: Find a way to encapsulate this logic in the KeyringController itself.
-      const keyringId = findKeyringIdByAddress(newAccountAddress);
-
-      await this._addAccountsWithBalance(keyringId);
+      await this._addAccountsWithBalance(id);
 
       return newAccountAddress;
     } finally {
@@ -4360,10 +4344,13 @@ export default class MetamaskController extends EventEmitter {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
       // addNewKeyring auto creates 1 account.
-      const newHdkeyring = await this.keyringController.addNewKeyring(
+      const { id } = await this.keyringController.addNewKeyring(
         KeyringTypes.hd,
       );
-      const [newAccount] = await newHdkeyring.getAccounts();
+      const [newAccount] = await this.keyringController.withKeyring(
+        { id },
+        async ({ keyring }) => keyring.getAccounts(),
+      );
       const account = this.accountsController.getAccountByAddress(newAccount);
       this.accountsController.setSelectedAccount(account.id);
 
