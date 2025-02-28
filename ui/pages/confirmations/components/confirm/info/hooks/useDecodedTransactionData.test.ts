@@ -5,7 +5,9 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 
+import { Hex } from '@metamask/utils';
 import {
+  TRANSACTION_DATA_FOUR_BYTE,
   TRANSACTION_DATA_UNISWAP,
   TRANSACTION_DECODE_SOURCIFY,
 } from '../../../../../../../test/data/confirmations/transaction-decode';
@@ -22,9 +24,12 @@ jest.mock('../../../../../../store/actions', () => ({
 const CONTRACT_ADDRESS_MOCK = '0x123';
 const CHAIN_ID_MOCK = '0x5';
 
-async function runHook(state: Record<string, unknown>) {
+async function runHook(
+  state: Record<string, unknown>,
+  { data, to }: { data?: Hex; to?: Hex } = {},
+) {
   const response = renderHookWithConfirmContextProvider(
-    useDecodedTransactionData,
+    () => useDecodedTransactionData({ data, to }),
     state,
   );
 
@@ -37,6 +42,10 @@ async function runHook(state: Record<string, unknown>) {
 
 describe('useDecodedTransactionData', () => {
   const decodeTransactionDataMock = jest.mocked(decodeTransactionData);
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
 
   // @ts-expect-error This is missing from the Mocha type definitions
   it.each([undefined, null, '', '0x', '0X'])(
@@ -155,5 +164,32 @@ describe('useDecodedTransactionData', () => {
         },
       }
     `);
+  });
+
+  it('decodes data using data and to overrides', async () => {
+    decodeTransactionDataMock.mockResolvedValue(TRANSACTION_DECODE_SOURCIFY);
+
+    await runHook(
+      getMockConfirmStateForTransaction({
+        id: '123',
+        chainId: CHAIN_ID_MOCK,
+        type: TransactionType.contractInteraction,
+        status: TransactionStatus.unapproved,
+        txParams: {
+          data: TRANSACTION_DATA_FOUR_BYTE,
+          to: '0x1234',
+        } as TransactionParams,
+      }),
+      {
+        data: TRANSACTION_DATA_UNISWAP,
+        to: CONTRACT_ADDRESS_MOCK,
+      },
+    );
+
+    expect(decodeTransactionDataMock).toHaveBeenCalledWith({
+      chainId: CHAIN_ID_MOCK,
+      contractAddress: CONTRACT_ADDRESS_MOCK,
+      transactionData: TRANSACTION_DATA_UNISWAP,
+    });
   });
 });
