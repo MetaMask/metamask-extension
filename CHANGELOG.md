@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.14.0]
-### Uncategorized
+### Fixed
 - refactor: Support permitted chains on permission confirmation page ([#30443](https://github.com/MetaMask/metamask-extension/pull/30443))
 - feat: submit multichain tx ([#30416](https://github.com/MetaMask/metamask-extension/pull/30416))
 - feat: test covering SPL tokens and transaction list ([#30471](https://github.com/MetaMask/metamask-extension/pull/30471))
