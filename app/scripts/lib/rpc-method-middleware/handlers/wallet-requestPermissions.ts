@@ -137,22 +137,20 @@ async function requestPermissionsImplementation(
     // because the accounts will not be in order of lastSelected
     const ethAccounts = getAccounts();
 
-    if (caip25Endowment) {
-      grantedPermissions[RestrictedMethods.eth_accounts] = {
-        ...caip25Endowment,
-        parentCapability: RestrictedMethods.eth_accounts,
-        caveats: [
-          {
-            type: CaveatTypes.restrictReturnedAccounts,
-            value: ethAccounts,
-          },
-        ],
-      };
-    }
+    grantedPermissions[RestrictedMethods.eth_accounts] = {
+      ...caip25Endowment,
+      parentCapability: RestrictedMethods.eth_accounts,
+      caveats: [
+        {
+          type: CaveatTypes.restrictReturnedAccounts,
+          value: ethAccounts,
+        },
+      ],
+    };
 
     const ethChainIds = getPermittedEthChainIds(caip25CaveatValue);
 
-    if (ethChainIds.length > 0 && caip25Endowment) {
+    if (ethChainIds.length > 0) {
       grantedPermissions[PermissionNames.permittedChains] = {
         ...caip25Endowment,
         parentCapability: PermissionNames.permittedChains,
