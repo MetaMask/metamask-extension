@@ -22,6 +22,9 @@ export const createInternalTransaction = async (driver: Driver) => {
 export const createInternalTransactionWithMaxAmount = async (
   driver: Driver,
 ) => {
+  // Firefox has incorrect balance if send flow started too quickly.
+  await driver.delay(1000);
+
   const homePage = new HomePage(driver);
   await homePage.startSendFlow();
 

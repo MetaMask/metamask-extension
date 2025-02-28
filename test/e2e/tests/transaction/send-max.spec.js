@@ -255,19 +255,20 @@ describe('Sending with max amount', function () {
             };
           });
 
-        // Let this assertions run for 15 seconds - because the gas fee is updated every 10 seconds
-        await driver.wait(async () => {
-          // verify gas fee changed
-          await driver.waitForSelector({
-            text: '0.0005 ETH',
-          });
+        // Wait atleast 10 seconds for the gas fee to change
+        // this is because GasFeeController interval is 10 seconds
+        await driver.delay(10000);
 
-          // verify initial max amount
-          await driver.waitForSelector({
-            text: '$42,498.19',
-            tag: 'p',
-          });
-        }, 15 * 1000);
+        // verify gas fee changed
+        await driver.waitForSelector({
+          text: '0.0005 ETH',
+        });
+
+        // verify initial max amount
+        await driver.waitForSelector({
+          text: '$42,498.19',
+          tag: 'p',
+        });
 
         // confirms the transaction
         await driver.clickElementAndWaitToDisappear({
