@@ -67,13 +67,13 @@ export default function useSolanaBridgeTransactionMapping(
   const modifiedTransactions = nonEvmTransactions.transactions.map((tx) => {
     // The signature is in the id field for non-EVM transactions
     const txSignature = tx.id;
-    
+
     // If the transaction type is explicitly 'swap', never mark it as a bridge
     if (tx.type === 'swap') {
       return {
         ...tx,
         // Explicitly set to false to ensure it's never marked as a bridge
-        isBridgeTx: false
+        isBridgeTx: false,
       };
     }
 
@@ -85,13 +85,14 @@ export default function useSolanaBridgeTransactionMapping(
     ) {
       // @ts-expect-error WIP: Need to add index signature to bridgeTxSignatures
       const matchingBridgeTx = bridgeTxSignatures[txSignature];
-      
+
       // Get source and destination chain IDs
       const srcChainId = matchingBridgeTx.quote?.srcChainId;
       const destChainId = matchingBridgeTx.quote?.destChainId;
-      
+
       // Only consider it a bridge if source and destination chains are different
-      const isBridgeTx = srcChainId && destChainId && srcChainId !== destChainId;
+      const isBridgeTx =
+        srcChainId && destChainId && srcChainId !== destChainId;
 
       // Return an enhanced version of the transaction with bridge info
       return {
@@ -101,12 +102,16 @@ export default function useSolanaBridgeTransactionMapping(
         // Add bridge-specific flag based on chain comparison
         isBridgeTx,
         // Include destination chain details
-        bridgeInfo: isBridgeTx ? {
-          destChainId: matchingBridgeTx.quote?.destChainId,
-          destChainName: getNetworkName(matchingBridgeTx.quote?.destChainId),
-          destAsset: matchingBridgeTx.quote?.destAsset,
-          destTokenAmount: matchingBridgeTx.quote?.destTokenAmount,
-        } : undefined,
+        bridgeInfo: isBridgeTx
+          ? {
+              destChainId: matchingBridgeTx.quote?.destChainId,
+              destChainName: getNetworkName(
+                matchingBridgeTx.quote?.destChainId,
+              ),
+              destAsset: matchingBridgeTx.quote?.destAsset,
+              destTokenAmount: matchingBridgeTx.quote?.destTokenAmount,
+            }
+          : undefined,
       };
     }
 
