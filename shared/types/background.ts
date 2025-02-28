@@ -157,6 +157,7 @@ import {
   InstitutionalFeaturesControllerState,
   MmiConfigurationControllerState,
 } from './institutional';
+import { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 ///: END:ONLY_INCLUDE_IF
 
 export type ResetOnRestartStores = {
@@ -398,6 +399,9 @@ export type FlattenedBackgroundStateProxy = {
   conversionRates: MultichainAssetsRatesControllerState['conversionRates'];
   assetsMetadata: MultichainAssetsControllerState['assetsMetadata'];
   accountsAssets: MultichainAssetsControllerState['accountsAssets'];
+  multichainNetworkConfigurationsByChainId: MultichainNetworkControllerState['multichainNetworkConfigurationsByChainId'];
+  selectedMultichainNetworkChainId: MultichainNetworkControllerState['selectedMultichainNetworkChainId'];
+  isEvmSelected: MultichainNetworkControllerState['isEvmSelected'];
   bridgeState: BridgeControllerState['bridgeState'];
   bridgeStatusState: BridgeStatusControllerState['bridgeStatusState'];
   jobs: CronjobControllerState['jobs'];
