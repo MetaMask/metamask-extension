@@ -19,8 +19,8 @@ import { Content, Header, Page } from '../../components/multichain/pages/page';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getCurrentNetwork } from '../../selectors';
-import { SampleCounter } from './components/sample-counter';
-import { SamplePetnames } from './components/sample-petnames';
+import { SampleCounterPane } from './components/sample-counter-pane';
+import { SamplePetnamesForm } from './components/sample-petnames-form';
 import { SampleNetworkDisplay } from './components/sample-network-display';
 
 export function SamplePage() {
@@ -68,8 +68,8 @@ export function SamplePage() {
           imageUrl={currentNetwork.rpcPrefs?.imageUrl}
         />
 
-        <SampleCounter />
-        <SamplePetnames />
+        <SampleCounterPane />
+        <SamplePetnamesForm />
       </Content>
     </Page>
   );

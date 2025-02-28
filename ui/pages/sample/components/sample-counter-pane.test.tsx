@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { SampleCounter } from './sample-counter';
+import { SampleCounterPane } from './sample-counter-pane';
 
 // Create mock functions
 const mockIncrement = jest.fn();
@@ -19,7 +19,7 @@ jest.mock('../../../ducks/sample/counter', () => {
   };
 });
 
-describe('SampleCounter', () => {
+describe('SampleCounterPane', () => {
   // Create a mock store before each test
   let mockStore: ReturnType<typeof configureStore>;
   let store: ReturnType<typeof mockStore>;
@@ -41,7 +41,7 @@ describe('SampleCounter', () => {
   });
 
   it('renders the counter component', () => {
-    renderWithProvider(<SampleCounter />, store);
+    renderWithProvider(<SampleCounterPane />, store);
 
     expect(screen.getByText('Counter')).toBeInTheDocument();
 
@@ -52,7 +52,7 @@ describe('SampleCounter', () => {
   });
 
   it('calls increment when button is clicked', () => {
-    renderWithProvider(<SampleCounter />, store);
+    renderWithProvider(<SampleCounterPane />, store);
 
     fireEvent.click(screen.getByText('Increment Redux Counter'));
 

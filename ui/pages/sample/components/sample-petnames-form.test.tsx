@@ -3,7 +3,7 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { Hex } from '@metamask/utils';
 import configureStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { SamplePetnames } from './sample-petnames';
+import { SamplePetnamesForm } from './sample-petnames-form';
 
 // Import the hook before mocking it
 import { usePetnames } from '../../../ducks/metamask/sample-petnames-duck';
@@ -13,7 +13,7 @@ jest.mock('../../../ducks/metamask/sample-petnames-duck', () => ({
   usePetnames: jest.fn(),
 }));
 
-describe('SamplePetnames', () => {
+describe('SamplePetnamesForm', () => {
   const mockAssignPetname = jest.fn().mockResolvedValue(undefined);
   let mockStore: ReturnType<typeof configureStore>;
   let store: ReturnType<typeof mockStore>;
@@ -36,9 +36,9 @@ describe('SamplePetnames', () => {
       assignPetname: mockAssignPetname,
     });
 
-    renderWithProvider(<SamplePetnames />, store);
+    renderWithProvider(<SamplePetnamesForm />, store);
 
-    expect(screen.getByText('Pet Names')).toBeInTheDocument();
+    expect(screen.getByText('Pet Names on this network')).toBeInTheDocument();
     expect(screen.getByText('No pet names added yet')).toBeInTheDocument();
 
     // Form elements should be present
@@ -60,9 +60,9 @@ describe('SamplePetnames', () => {
       assignPetname: mockAssignPetname,
     });
 
-    renderWithProvider(<SamplePetnames />, store);
+    renderWithProvider(<SamplePetnamesForm />, store);
 
-    expect(screen.getByText('Pet Names')).toBeInTheDocument();
+    expect(screen.getByText('Pet Names on this network')).toBeInTheDocument();
     expect(screen.getByText('TestName1')).toBeInTheDocument();
     expect(screen.getByText('TestName2')).toBeInTheDocument();
     expect(
@@ -71,7 +71,7 @@ describe('SamplePetnames', () => {
   });
 
   it('disables submit button with invalid inputs', () => {
-    renderWithProvider(<SamplePetnames />, store);
+    renderWithProvider(<SamplePetnamesForm />, store);
 
     const addressInput = screen.getByLabelText('Address');
     const nameInput = screen.getByLabelText('Name');
@@ -112,7 +112,7 @@ describe('SamplePetnames', () => {
       assignPetname: mockAssignPetname,
     }));
 
-    renderWithProvider(<SamplePetnames />, store);
+    renderWithProvider(<SamplePetnamesForm />, store);
 
     const addressInput = screen.getByLabelText('Address');
     const nameInput = screen.getByLabelText('Name');
@@ -148,7 +148,7 @@ describe('SamplePetnames', () => {
       },
     }));
 
-    renderWithProvider(<SamplePetnames />, store);
+    renderWithProvider(<SamplePetnamesForm />, store);
 
     const addressInput = screen.getByLabelText('Address');
     const nameInput = screen.getByLabelText('Name');

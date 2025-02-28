@@ -62,7 +62,7 @@ type ErrorState = {
   form?: string;
 };
 
-export function SamplePetnames() {
+export function SamplePetnamesForm() {
   const petNames = usePetnames();
   const [values, setValues] = useState<FormState>({
     address: '',

@@ -10,11 +10,11 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useCounter } from '../../../ducks/sample/counter';
 
-export function SampleCounter() {
+export function SampleCounterPane() {
   const counter = useCounter();
 
   return (
-    <Card data-testid="sample-counter-card">
+    <Card data-testid="sample-counter-pane-card">
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
@@ -23,15 +23,15 @@ export function SampleCounter() {
       >
         <Text
           variant={TextVariant.headingSm}
-          data-testid="sample-counter-title"
+          data-testid="sample-counter-pane-title"
         >
           Counter
         </Text>
-        <Text data-testid="sample-counter-value">{`Value: ${counter.value}`}</Text>
+        <Text data-testid="sample-counter-pane-value">{`Value: ${counter.value}`}</Text>
         <Button
           onClick={() => counter.increment()}
           textAlign={TextAlign.Center}
-          data-testid="sample-counter-increment-button"
+          data-testid="sample-counter-pane-increment-button"
         >
           Increment Redux Counter
         </Button>
