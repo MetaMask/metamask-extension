@@ -43,7 +43,7 @@ export type StatusRequestWithSrcTxHash = StatusRequest & {
   srcTxHash: string;
 };
 
-export type 3Asset = {
+export type Asset = {
   chainId: ChainId;
   address: string;
   symbol: string;
