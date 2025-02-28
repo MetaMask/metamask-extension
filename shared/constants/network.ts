@@ -3,6 +3,8 @@ import {
   RpcEndpointType,
 } from '@metamask/network-controller';
 import { capitalize, pick } from 'lodash';
+import { Hex } from '@metamask/utils';
+
 /**
  * A type representing built-in network types, used as an identifier.
  */
@@ -138,6 +140,7 @@ export const CHAIN_IDS = {
   CELO_TESTNET: '0xaef3',
   ZK_SYNC_ERA_TESTNET: '0x12c',
   MANTA_SEPOLIA: '0x138b',
+  UNICHAIN: '0x82',
   UNICHAIN_SEPOLIA: '0x515',
   LINEA_MAINNET: '0xe708',
   AURORA: '0x4e454152',
@@ -519,6 +522,7 @@ export const SONIC_MAINNET_IMAGE_URL = './images/sonic.svg';
 export const SONEIUM_IMAGE_URL = './images/soneium.svg';
 export const MODE_SEPOLIA_IMAGE_URL = './images/mode-sepolia.svg';
 export const MODE_IMAGE_URL = './images/mode.svg';
+export const UNICHAIN_IMAGE_URL = './images/unichain.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -527,7 +531,7 @@ export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.LINEA_MAINNET,
 ] as const;
 
-export const TEST_CHAINS = [
+export const TEST_CHAINS: Hex[] = [
   CHAIN_IDS.SEPOLIA,
   CHAIN_IDS.LINEA_SEPOLIA,
   CHAIN_IDS.LOCALHOST,
@@ -795,7 +799,7 @@ export const CHAIN_ID_TO_RPC_URL_MAP = {
   [CHAIN_IDS.LOCALHOST]: LOCALHOST_RPC_URL,
 } as const;
 
-export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
+export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<Hex, string> = {
   [CHAIN_IDS.MAINNET]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.LINEA_GOERLI]: LINEA_GOERLI_TOKEN_IMAGE_URL,
   [CHAIN_IDS.LINEA_SEPOLIA]: LINEA_SEPOLIA_TOKEN_IMAGE_URL,
@@ -883,6 +887,8 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.SONEIUM_TESTNET]: SONEIUM_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.MODE_SEPOLIA]: MODE_SEPOLIA_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.MODE]: MODE_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN]: UNICHAIN_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN_SEPOLIA]: UNICHAIN_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -928,6 +934,8 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.SONIC_MAINNET]: SONIC_MAINNET_IMAGE_URL,
   [CHAIN_IDS.MODE]: ETH_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.FUNKICHAIN]: ETH_TOKEN_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN]: ETH_TOKEN_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN_SEPOLIA]: ETH_TOKEN_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';

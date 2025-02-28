@@ -423,6 +423,10 @@ export type MetaMetricsUserTraits = {
    */
   number_of_tokens?: number;
   /**
+   * The number of HD Entropies the user has.
+   */
+  number_of_hd_entropies?: number;
+  /**
    * Does the user have the OpenSea API enabled?
    */
   opensea_api_enabled?: boolean;
@@ -542,6 +546,10 @@ export enum MetaMetricsUserTrait {
    */
   NumberOfTokens = 'number_of_tokens',
   /**
+   * Identified when the user has HD Entropies.
+   */
+  NumberOfHDEntropies = 'number_of_hd_entropies',
+  /**
    * Identified when the OpenSea API is enabled.
    */
   OpenSeaApiEnabled = 'opensea_api_enabled',
@@ -648,10 +656,10 @@ export enum MetaMetricsEventName {
   BannerDisplay = 'Banner Display',
   BannerCloseAll = 'Banner Close All',
   BannerSelect = 'Banner Select',
+  BannerNavigated = 'Banner Navigated',
   BridgeLinkClicked = 'Bridge Link Clicked',
   BitcoinSupportToggled = 'Bitcoin Support Toggled',
   BitcoinTestnetSupportToggled = 'Bitcoin Testnet Support Toggled',
-  SolanaSupportToggled = 'Solana Support Toggled',
   CurrentCurrency = 'Current Currency',
   DappViewed = 'Dapp Viewed',
   DecryptionApproved = 'Decryption Approved',

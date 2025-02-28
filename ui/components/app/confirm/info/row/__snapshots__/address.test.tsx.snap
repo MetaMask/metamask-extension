@@ -289,7 +289,7 @@ exports[`ConfirmInfoRowAddress renders appropriately with PetNames enabled 1`] =
       class="mm-box mm-box--display-flex"
     >
       <div
-        class="name name__missing"
+        class="name name__clickable name__missing"
       >
         <span
           class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"

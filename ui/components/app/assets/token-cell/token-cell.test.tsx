@@ -19,6 +19,8 @@ import {
 
 import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
+import { TokenWithFiatAmount } from '../types';
+import { TokenCellProps } from './token-cell';
 import TokenCell from '.';
 
 jest.mock('react-redux', () => {
@@ -84,35 +86,45 @@ describe('Token Cell', () => {
   };
 
   const mockStore = configureMockStore([thunk])(mockState);
-
-  const props = {
-    token: {
+  const propToken: Partial<TokenWithFiatAmount> & { currentCurrency: string } =
+    {
       address: '0xAnotherToken' as Hex,
       symbol: 'TEST',
       string: '5.000',
       currentCurrency: 'usd',
+      primary: '5.00',
       image: '',
       chainId: '0x1' as Hex,
       tokenFiatAmount: 5,
       aggregators: [],
       decimals: 18,
       isNative: false,
+    };
+
+  const props = {
+    token: {
+      ...propToken,
     },
     onClick: jest.fn(),
   };
-
+  const propAnotherToken: Partial<TokenWithFiatAmount> & {
+    currentCurrency: string;
+  } = {
+    address: '0xAnotherToken' as Hex,
+    symbol: 'TEST',
+    string: '5000000',
+    currentCurrency: 'usd',
+    image: '',
+    chainId: '0x1' as Hex,
+    tokenFiatAmount: 5000000,
+    primary: '5000000',
+    aggregators: [],
+    decimals: 18,
+    isNative: false,
+  };
   const propsLargeAmount = {
     token: {
-      address: '0xAnotherToken' as Hex,
-      symbol: 'TEST',
-      string: '5000000',
-      currentCurrency: 'usd',
-      image: '',
-      chainId: '0x1' as Hex,
-      tokenFiatAmount: 5000000,
-      aggregators: [],
-      decimals: 18,
-      isNative: false,
+      ...propAnotherToken,
     },
     onClick: jest.fn(),
   };
@@ -145,7 +157,7 @@ describe('Token Cell', () => {
 
   it('should match snapshot', () => {
     const { container } = renderWithProvider(
-      <TokenCell {...props} />,
+      <TokenCell {...(props as TokenCellProps)} />,
       mockStore,
     );
 
@@ -154,7 +166,7 @@ describe('Token Cell', () => {
 
   it('calls onClick when clicked', () => {
     const { queryByTestId } = renderWithProvider(
-      <TokenCell {...props} />,
+      <TokenCell {...(props as TokenCellProps)} />,
       mockStore,
     );
 
@@ -167,7 +179,7 @@ describe('Token Cell', () => {
 
   it('should render the correct token and filter by symbol and address', () => {
     const { getByTestId, getByAltText } = renderWithProvider(
-      <TokenCell {...props} />,
+      <TokenCell {...(props as TokenCellProps)} />,
       mockStore,
     );
 
@@ -180,7 +192,7 @@ describe('Token Cell', () => {
 
   it('should render amount with the correct format', () => {
     const { getByTestId } = renderWithProvider(
-      <TokenCell {...propsLargeAmount} />,
+      <TokenCell {...(propsLargeAmount as TokenCellProps)} />,
       mockStore,
     );
 
