@@ -234,12 +234,12 @@
     "message": "Add NFTs"
   },
   "addNonEvmAccount": {
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana",
-    "message": "Add $1 account"
+    "message": "Add $1 account",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
   },
   "addNonEvmAccountFromNetworkPicker": {
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana",
-    "message": "To enable the $1 network, you need to create a $1 account."
+    "message": "To enable the $1 network, you need to create a $1 account.",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "Add RPC URL"
@@ -3643,6 +3643,10 @@
   "pending": {
     "message": "Pending"
   },
+  "pendingConfirmationAddNetworkAlertMessage": {
+    "message": "Updating network will cancel $1 pending transactions from this site.",
+    "description": "Number of transactions."
+  },
   "pendingTransactionAlertMessage": {
     "message": "This transaction won't go through until a previous transaction is complete. $1",
     "description": "$1 represents the words 'how to cancel or speed up a transaction' in a hyperlink"
@@ -4378,6 +4382,9 @@
   },
   "reviewAlerts": {
     "message": "Review alerts"
+  },
+  "reviewPendingTransactions": {
+    "message": "Review pending transactions"
   },
   "reviewPermissions": {
     "message": "Review permissions"
