@@ -1459,6 +1459,7 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
+          sessionData: undefined,
           keyrings: [],
         });
 
@@ -1559,6 +1560,7 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
+          sessionData: undefined,
           keyrings: [],
         });
 
@@ -1619,6 +1621,14 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
+          sessionData: {
+            accessToken: '',
+            expiresIn: '',
+            profile: {
+              identifierId: 'identifierId',
+              profileId: 'profileId',
+            },
+          },
           keyrings: [],
         });
 
@@ -1628,6 +1638,7 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.NumberOfTokens]: 1,
           [MetaMetricsUserTrait.OpenSeaApiEnabled]: false,
           [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]: false,
+          [MetaMetricsUserTrait.ProfileId]: 'profileId',
         });
       });
     });
@@ -1687,6 +1698,14 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
+          sessionData: {
+            accessToken: '',
+            expiresIn: '',
+            profile: {
+              identifierId: 'identifierId',
+              profileId: 'profileId',
+            },
+          },
           keyrings: [],
         });
 
@@ -1737,6 +1756,14 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
+          sessionData: {
+            accessToken: '',
+            expiresIn: '',
+            profile: {
+              identifierId: 'identifierId',
+              profileId: 'profileId',
+            },
+          },
           keyrings: [],
         });
         expect(updatedTraits).toStrictEqual(null);
