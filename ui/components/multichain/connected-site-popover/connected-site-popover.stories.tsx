@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { ConnectedSitePopover } from './connected-site-popover';
+import { AvatarFavicon, Box, PopoverPosition } from '../../component-library';
+import { Display, FlexDirection,  } from '../../../helpers/constants/design-system';
 
 export default {
   title: 'Components/Multichain/ConnectedSitePopover',
@@ -16,13 +18,11 @@ export default {
   },
 };
 
-const Template = (args) => {
-  return <ConnectedSitePopover {...args} />;
-};
 
-export const DefaultStory = Template.bind({});
+export const DefaultStory = {};
 
-export const ConnectedStory = Template.bind({});
-ConnectedStory.args = {
-  isConnected: true,
+export const ConnectedStory= {
+  args: {
+    isConnected: true,
+  }
 };

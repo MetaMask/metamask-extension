@@ -1,4 +1,4 @@
-import React, { forwardRef, useContext, RefObject } from 'react';
+import React, { useContext, RefObject } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   AvatarNetwork,
@@ -8,6 +8,7 @@ import {
   ButtonSecondary,
   IconName,
   Popover,
+  PopoverPosition,
   Text,
 } from '../../component-library';
 import {
@@ -30,10 +31,13 @@ type ConnectedSitePopoverProps = {
   referenceElement?: RefObject<HTMLElement>;
 };
 
-export const ConnectedSitePopover = forwardRef<
-  HTMLDivElement,
-  ConnectedSitePopoverProps
->(({ isOpen, isConnected, onClick, onClose, referenceElement }) => {
+export const ConnectedSitePopover = ({
+  isOpen,
+  isConnected,
+  onClick,
+  onClose,
+  referenceElement,
+}: ConnectedSitePopoverProps) => {
   const t = useContext(I18nContext);
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const siteName = getURLHost(activeTabOrigin);
@@ -49,10 +53,11 @@ export const ConnectedSitePopover = forwardRef<
       isOpen={isOpen}
       style={{ width: '256px' }}
       onClickOutside={onClose}
-      offset={[0, 0]}
       data-testid="connected-site-popover"
       paddingLeft={0}
       paddingRight={0}
+      position={PopoverPosition.BottomEnd}
+      flip
     >
       <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
         <Box
@@ -109,4 +114,4 @@ export const ConnectedSitePopover = forwardRef<
       </Box>
     </Popover>
   );
-});
+};

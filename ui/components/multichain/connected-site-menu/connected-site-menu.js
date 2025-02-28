@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
@@ -46,11 +46,7 @@ export const ConnectedSiteMenu = ({
   const t = useI18nContext();
   const [showPopover, setShowPopover] = useState(false);
 
-  const [referenceElement, setReferenceElement] = useState();
-
-  const setBoxRef = (ref) => {
-    setReferenceElement(ref);
-  };
+  const referenceElement = useRef(null);
 
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const subjectMetadata = useSelector(getSubjectMetadata);
@@ -89,7 +85,7 @@ export const ConnectedSiteMenu = ({
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
         backgroundColor={BackgroundColor.backgroundDefault}
-        ref={setBoxRef}
+        ref={referenceElement}
         onClick={process.env.REMOVE_GNS ? () => setShowPopover(true) : onClick}
       >
         {process.env.REMOVE_GNS ? (
