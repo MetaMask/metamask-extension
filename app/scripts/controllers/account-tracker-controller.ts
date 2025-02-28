@@ -760,7 +760,7 @@ export default class AccountTrackerController extends BaseController<
         if (address !== accountAddress) {
           newAccounts[accountAddress] = {
             address: accountAddress,
-            balance: null,
+            balance:5000,
           };
         }
       });
