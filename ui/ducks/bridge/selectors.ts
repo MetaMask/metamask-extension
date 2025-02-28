@@ -279,12 +279,12 @@ export const getFromTokenConversionRate = createSelector(
         // For SOLANA tokens, we use the conversion rates provided by the multichain rates controller
         const tokenToNativeAssetRate = tokenPriceInNativeAsset(
           assetsRates[fromToken.address]?.rate,
-          nonEvmNativeConversionRate.sol.conversionRate,
+          nonEvmNativeConversionRate?.sol?.conversionRate,
         );
         return exchangeRatesFromNativeAndCurrencyRates(
           tokenToNativeAssetRate,
-          nonEvmNativeConversionRate.sol.conversionRate,
-          nonEvmNativeConversionRate.sol.usdConversionRate,
+          nonEvmNativeConversionRate?.sol?.conversionRate,
+          nonEvmNativeConversionRate?.sol?.usdConversionRate,
         );
       }
       // For EVM tokens, we use the market data to get the exchange rate
@@ -677,5 +677,23 @@ export const isBridgeSolanaEnabled = createDeepEqualSelector(
         solanaChainIdCaip
       ];
     return Boolean(solanaConfig?.isActiveSrc || solanaConfig?.isActiveDest);
+  },
+);
+
+export const getIsToOrFromSolana = createSelector(
+  getFromChain,
+  getToChain,
+  (fromChain, toChain) => {
+    if (!fromChain?.chainId || !toChain?.chainId) {
+      return false;
+    }
+
+    const fromChainIsSolana =
+      formatChainIdToCaip(fromChain.chainId) === MultichainNetworks.SOLANA;
+    const toChainIsSolana =
+      formatChainIdToCaip(toChain.chainId) === MultichainNetworks.SOLANA;
+
+    // Only return true if either chain is Solana and the other is EVM
+    return toChainIsSolana !== fromChainIsSolana;
   },
 );
