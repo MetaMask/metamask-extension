@@ -5000,7 +5000,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^7.0.1, @metamask/base-controller@npm:^7.0.2, @metamask/base-controller@npm:^7.0.3, @metamask/base-controller@npm:^7.1.0, @metamask/base-controller@npm:^7.1.1":
+"@metamask/base-controller@npm:^7.0.1, @metamask/base-controller@npm:^7.0.2, @metamask/base-controller@npm:^7.0.3, @metamask/base-controller@npm:^7.1.1":
   version: 7.1.1
   resolution: "@metamask/base-controller@npm:7.1.1"
   dependencies:
@@ -6108,15 +6108,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/remote-feature-flag-controller@npm:^1.3.0":
-  version: 1.3.0
-  resolution: "@metamask/remote-feature-flag-controller@npm:1.3.0"
+"@metamask/remote-feature-flag-controller@npm:^1.6.0":
+  version: 1.6.0
+  resolution: "@metamask/remote-feature-flag-controller@npm:1.6.0"
   dependencies:
-    "@metamask/base-controller": "npm:^7.1.0"
-    "@metamask/utils": "npm:^11.0.1"
-    cockatiel: "npm:^3.1.2"
+    "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/controller-utils": "npm:^11.5.0"
+    "@metamask/utils": "npm:^11.2.0"
     uuid: "npm:^8.3.2"
-  checksum: 10/929c055b499588d8969d86b9d399967dcbcbdc8362d534f8bef7a0a55c2f137e18773d0a4cdf719889934a8e0092850550c8b55abf90a82013bffd81b72488d2
+  checksum: 10/a9ba0b4c28861ae7106dbc8d1ffe073b13ecfd80f38fc6807409a3e6bec0ee484e0e1c856919310e73273ab330db69dde424292ff6b82eb6adf6bc67222c9f28
   languageName: node
   linkType: hard
 
@@ -27295,7 +27295,7 @@ __metadata:
     "@metamask/providers": "npm:^20.0.0"
     "@metamask/queued-request-controller": "npm:^7.0.1"
     "@metamask/rate-limit-controller": "npm:^6.0.3"
-    "@metamask/remote-feature-flag-controller": "npm:^1.3.0"
+    "@metamask/remote-feature-flag-controller": "npm:^1.6.0"
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
