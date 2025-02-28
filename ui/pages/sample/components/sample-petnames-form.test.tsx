@@ -1,15 +1,17 @@
 import React from 'react';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor, act } from '@testing-library/react';
 import { Hex } from '@metamask/utils';
 import configureStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { SamplePetnamesForm } from './sample-petnames-form';
 import { usePetnames } from '../../../ducks/metamask/sample-petnames-duck';
 import { useSamplePetnamesMetrics } from '../hooks/useSamplePetnamesMetrics';
+import { useSamplePerformanceTrace } from '../hooks/useSamplePerformanceTrace';
 
 // Mock the hooks
 jest.mock('../../../ducks/metamask/sample-petnames-duck');
 jest.mock('../hooks/useSamplePetnamesMetrics');
+jest.mock('../hooks/useSamplePerformanceTrace');
 
 describe('SamplePetnamesForm', () => {
   const mockAssignPetname = jest.fn().mockResolvedValue(undefined);
@@ -40,6 +42,14 @@ describe('SamplePetnamesForm', () => {
       trackFormValidationError: jest.fn(),
       trackFormSubmissionError: jest.fn(),
       trackFormInteraction: jest.fn(),
+    });
+
+    // Mock the useSamplePerformanceTrace hook
+    (useSamplePerformanceTrace as jest.Mock).mockReturnValue({
+      traceFormSubmission: jest.fn().mockReturnValue({
+        startTrace: jest.fn(),
+        endTrace: jest.fn(),
+      }),
     });
   });
 
@@ -225,7 +235,10 @@ describe('SamplePetnamesForm', () => {
 
     // Submit the form directly by finding and submitting the form element
     const form = container.querySelector('form');
-    fireEvent.submit(form as HTMLFormElement);
+
+    await act(async () => {
+      fireEvent.submit(form as HTMLFormElement);
+    });
 
     // Wait for state updates
     await waitFor(() => {
@@ -254,7 +267,12 @@ describe('SamplePetnamesForm', () => {
 
     // Submit the form
     const submitButton = screen.getByText('Add Pet Name');
-    fireEvent.click(submitButton);
+
+    await act(async () => {
+      fireEvent.click(submitButton);
+      // Wait for the promise to resolve
+      await new Promise(process.nextTick);
+    });
 
     // Wait for the async action to complete
     await waitFor(() => {
@@ -285,14 +303,183 @@ describe('SamplePetnamesForm', () => {
 
     // Submit the form
     const submitButton = screen.getByText('Add Pet Name');
-    fireEvent.click(submitButton);
+
+    await act(async () => {
+      fireEvent.click(submitButton);
+      // Wait for the promise to reject
+      await new Promise(process.nextTick);
+    });
 
     // Wait for the async action to complete
-    await new Promise(process.nextTick);
+    await waitFor(() => {
+      expect(
+        (useSamplePetnamesMetrics as jest.Mock).mock.results[0].value
+          .trackFormSubmissionError,
+      ).toHaveBeenCalledWith(errorMessage);
+    });
+  });
 
-    expect(
-      (useSamplePetnamesMetrics as jest.Mock).mock.results[0].value
-        .trackFormSubmissionError,
-    ).toHaveBeenCalledWith(errorMessage);
+  it('should initialize performance tracing with correct component name', () => {
+    renderWithProvider(<SamplePetnamesForm />, store);
+
+    expect(useSamplePerformanceTrace).toHaveBeenCalledWith({
+      componentName: 'SamplePetnamesForm',
+      featureId: 'petnames-feature',
+    });
+  });
+
+  it('should trace form submission when adding a valid pet name', async () => {
+    // Create spy for the trace functions
+    const startTraceSpy = jest.fn();
+    const endTraceSpy = jest.fn();
+
+    // Mock the trace hook to return our spy functions
+    (useSamplePerformanceTrace as jest.Mock).mockReturnValue({
+      traceFormSubmission: jest.fn().mockReturnValue({
+        startTrace: startTraceSpy,
+        endTrace: endTraceSpy,
+      }),
+    });
+
+    // Ensure the mock returns a successful promise
+    mockAssignPetname.mockResolvedValueOnce(undefined);
+
+    const { getByLabelText, getByText } = renderWithProvider(
+      <SamplePetnamesForm />,
+      store,
+    );
+
+    // Fill out the form
+    const addressInput = getByLabelText('Address');
+    const nameInput = getByLabelText('Name');
+
+    fireEvent.change(addressInput, {
+      target: { value: '0x1234567890123456789012345678901234567890' },
+    });
+    fireEvent.change(nameInput, { target: { value: 'Test Name' } });
+
+    // Submit the form
+    const addButton = getByText('Add Pet Name');
+
+    // Use act to wrap the state updates
+    await act(async () => {
+      fireEvent.click(addButton);
+    });
+
+    // Verify that trace was started
+    expect(startTraceSpy).toHaveBeenCalled();
+
+    // Wait for the form submission to complete
+    await waitFor(() => {
+      // Verify the API was called
+      expect(mockAssignPetname).toHaveBeenCalledWith(
+        '0x1234567890123456789012345678901234567890',
+        'Test Name',
+      );
+
+      // Verify the trace was ended with success
+      expect(endTraceSpy).toHaveBeenCalledWith(
+        true,
+        expect.objectContaining({
+          success: true,
+          addressLength: expect.any(Number),
+          petNameLength: expect.any(Number),
+        }),
+      );
+    });
+  });
+
+  it('should trace validation errors during form submission', async () => {
+    // Create spy for the trace functions
+    const startTraceSpy = jest.fn();
+    const endTraceSpy = jest.fn();
+
+    // Mock the trace hook to return our spy functions
+    (useSamplePerformanceTrace as jest.Mock).mockReturnValue({
+      traceFormSubmission: jest.fn().mockReturnValue({
+        startTrace: startTraceSpy,
+        endTrace: endTraceSpy,
+      }),
+    });
+
+    const { container } = renderWithProvider(<SamplePetnamesForm />, store);
+
+    // Find the form element
+    const form = container.querySelector('form');
+
+    // Use act to wrap the state updates
+    await act(async () => {
+      // Submit the form directly to trigger validation errors
+      fireEvent.submit(form as HTMLFormElement);
+    });
+
+    // Verify that trace was started
+    expect(startTraceSpy).toHaveBeenCalled();
+
+    // Verify the trace was ended with validation errors
+    expect(endTraceSpy).toHaveBeenCalledWith(
+      false,
+      expect.objectContaining({
+        reason: 'validation_error',
+        hasAddressError: true,
+        hasPetNameError: true,
+      }),
+    );
+  });
+
+  it('should trace API errors during form submission', async () => {
+    // Create spy for the trace functions
+    const startTraceSpy = jest.fn();
+    const endTraceSpy = jest.fn();
+
+    // Mock API to throw an error
+    mockAssignPetname.mockRejectedValueOnce(new Error('Test error'));
+
+    // Mock the trace hook to return our spy functions
+    (useSamplePerformanceTrace as jest.Mock).mockReturnValue({
+      traceFormSubmission: jest.fn().mockReturnValue({
+        startTrace: startTraceSpy,
+        endTrace: endTraceSpy,
+      }),
+    });
+
+    const { getByLabelText, getByText } = renderWithProvider(
+      <SamplePetnamesForm />,
+      store,
+    );
+
+    // Fill out the form
+    const addressInput = getByLabelText('Address');
+    const nameInput = getByLabelText('Name');
+
+    fireEvent.change(addressInput, {
+      target: { value: '0x1234567890123456789012345678901234567890' },
+    });
+    fireEvent.change(nameInput, { target: { value: 'Error Test' } });
+
+    // Submit the form
+    const addButton = getByText('Add Pet Name');
+
+    // Use act to wrap the state updates
+    await act(async () => {
+      fireEvent.click(addButton);
+      // Wait for the promise to resolve/reject
+      await new Promise(process.nextTick);
+    });
+
+    // Verify that trace was started
+    expect(startTraceSpy).toHaveBeenCalled();
+
+    // Wait for the form submission to fail
+    await waitFor(() => {
+      // Verify the trace was ended with an API error
+      expect(endTraceSpy).toHaveBeenCalledWith(
+        false,
+        expect.objectContaining({
+          success: false,
+          error: expect.stringContaining('Test error'),
+        }),
+      );
+    });
   });
 });

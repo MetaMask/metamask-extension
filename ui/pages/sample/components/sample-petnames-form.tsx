@@ -22,6 +22,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { usePetnames } from '../../../ducks/metamask/sample-petnames-duck';
 import { useSamplePetnamesMetrics } from '../hooks/useSamplePetnamesMetrics';
+import { useSamplePerformanceTrace } from '../hooks/useSamplePerformanceTrace';
 
 // Define validation utilities
 const validateAddress = (address: string): string | undefined => {
@@ -66,6 +67,13 @@ type ErrorState = {
 export function SamplePetnamesForm() {
   const petNames = usePetnames();
   const metrics = useSamplePetnamesMetrics();
+
+  // Add performance tracing
+  const { traceFormSubmission } = useSamplePerformanceTrace({
+    componentName: 'SamplePetnamesForm',
+    featureId: 'petnames-feature',
+  });
+
   const [values, setValues] = useState<FormState>({
     address: '0x',
     petName: '',
@@ -107,6 +115,12 @@ export function SamplePetnamesForm() {
     };
 
   const handleSubmit = async () => {
+    // Create form submission trace
+    const formSubmissionTrace = traceFormSubmission();
+
+    // Start tracing the form submission process
+    formSubmissionTrace.startTrace();
+
     // Final validation before submission
     const addressError = validateAddress(values.address);
     const petNameError = validatePetName(values.petName);
@@ -124,6 +138,14 @@ export function SamplePetnamesForm() {
         petName: petNameError,
       });
       setFormState('error');
+
+      // End trace with validation failure
+      formSubmissionTrace.endTrace(false, {
+        reason: 'validation_error',
+        hasAddressError: Boolean(addressError),
+        hasPetNameError: Boolean(petNameError),
+      });
+
       return;
     }
 
@@ -142,6 +164,13 @@ export function SamplePetnamesForm() {
         address: '0x',
         petName: '',
       });
+
+      // End trace with success
+      formSubmissionTrace.endTrace(true, {
+        success: true,
+        addressLength: values.address.length,
+        petNameLength: values.petName.length,
+      });
     } catch (error) {
       metrics.trackFormSubmissionError(
         error instanceof Error ? error.message : 'Unknown error',
@@ -151,6 +180,12 @@ export function SamplePetnamesForm() {
         form: error instanceof Error ? error.message : 'Failed to add pet name',
       });
       setFormState('error');
+
+      // End trace with error
+      formSubmissionTrace.endTrace(false, {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
     } finally {
       setIsSubmitting(false);
     }
