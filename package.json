@@ -739,7 +739,9 @@
       "level>classic-level": false,
       "jest-preview": false,
       "@metamask/solana-wallet-snap>@solana/web3.js>bigint-buffer": false,
-      "@lavamoat/allow-scripts>@lavamoat/preinstall-always-fail": false
+      "@lavamoat/allow-scripts>@lavamoat/preinstall-always-fail": false,
+      "@metamask/notification-services-controller>firebase>@firebase/util": false,
+      "@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>@everstake/wallet-sdk>@solana/web3.js>bigint-buffer": false
     }
   },
   "packageManager": "yarn@4.5.1",
