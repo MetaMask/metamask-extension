@@ -52,15 +52,23 @@ jobs:
 
           echo "Getting artifacts from pipeline '${pipeline_id}', workflow '${workflow_id}', build number '${build_num}', job id '${job_id}'"
 
-      - name: Get CircleCI job artifacts
+      - name: Get CircleCI bundle_size artifact
         env:
           CIRCLE_WORKFLOW_JOB_ID: ${{ steps.get-circleci-job-details.outputs.CIRCLE_WORKFLOW_JOB_ID }}
         run: |
-          mkdir -p test-artifacts/chrome/benchmark
-          curl --silent --location "https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0/test-artifacts/chrome/benchmark/pageload.json" > "test-artifacts/chrome/benchmark/pageload.json"
-
           mkdir -p test-artifacts/chrome
           curl --silent --location "https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0/test-artifacts/chrome/bundle_size.json" > "test-artifacts/chrome/bundle_size.json"
+
+      - name: Get benchmark job artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./test-artifacts/benchmarks/
+          pattern: benchmark-*
+          merge-multiple: true
+
+      - run: |
+          echo "Benchmark artifacts:"
+          ls -R ./test-artifacts/
 
       - name: Publish prerelease
         env:

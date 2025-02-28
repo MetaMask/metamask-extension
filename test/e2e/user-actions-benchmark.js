@@ -34,6 +34,7 @@ async function loadNewAccount() {
       fixtures: new FixtureBuilder().build(),
       localNodeOptions: ganacheOptions,
       disableServerMochaToBackground: true,
+      title: 'benchmark-userActions-loadNewAccount',
     },
     async ({ driver }) => {
       await unlockWallet(driver);
@@ -66,6 +67,7 @@ async function confirmTx() {
       fixtures: new FixtureBuilder().build(),
       localNodeOptions: ganacheOptions,
       disableServerMochaToBackground: true,
+      title: 'benchmark-userActions-confirmTx',
     },
     async ({ driver, ganacheServer }) => {
       await logInWithBalanceValidation(driver, ganacheServer);
