@@ -10,7 +10,7 @@ import { submitRequestToBackground } from '../../../store/background-connection'
  * @returns true if the privacy policy toast was shown either never, or less than a day ago
  */
 export function getIsPrivacyToastRecent(
-  newPrivacyPolicyToastShownDate?: number,
+  newPrivacyPolicyToastShownDate?: number | null,
 ): boolean {
   if (!newPrivacyPolicyToastShownDate) {
     return true;

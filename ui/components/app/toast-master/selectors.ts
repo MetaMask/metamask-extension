@@ -12,19 +12,19 @@ import { MetaMaskReduxState } from '../../../store/store';
 import { getIsPrivacyToastRecent } from './utils';
 
 // TODO: get this into one of the larger definitions of state type
-type State = Omit<MetaMaskReduxState, 'appState'> & {
-  appState: {
-    showNftDetectionEnablementToast?: boolean;
-  };
-  metamask: {
-    newPrivacyPolicyToastClickedOrClosed?: boolean;
-    newPrivacyPolicyToastShownDate?: number;
-    onboardingDate?: number;
-    showNftDetectionEnablementToast?: boolean;
-    surveyLinkLastClickedOrClosed?: number;
-    switchedNetworkNeverShowMessage?: boolean;
-  };
-};
+// type State = Omit<MetaMaskReduxState, 'appState'> & {
+//   appState: {
+//     showNftDetectionEnablementToast?: boolean;
+//   };
+//   metamask: {
+//     newPrivacyPolicyToastClickedOrClosed?: boolean;
+//     newPrivacyPolicyToastShownDate?: number;
+//     onboardingDate?: number;
+//     showNftDetectionEnablementToast?: boolean;
+//     surveyLinkLastClickedOrClosed?: number;
+//     switchedNetworkNeverShowMessage?: boolean;
+//   };
+// };
 
 /**
  * Determines if the survey toast should be shown based on the current time, survey start and end times, and whether the survey link was last clicked or closed.
@@ -32,7 +32,7 @@ type State = Omit<MetaMaskReduxState, 'appState'> & {
  * @param state - The application state containing the necessary survey data.
  * @returns True if the current time is between the survey start and end times and the survey link was not last clicked or closed. False otherwise.
  */
-export function selectShowSurveyToast(state: State): boolean {
+export function selectShowSurveyToast(state: MetaMaskReduxState): boolean {
   if (state.metamask?.surveyLinkLastClickedOrClosed) {
     return false;
   }
@@ -50,9 +50,9 @@ export function selectShowSurveyToast(state: State): boolean {
  * @param state - The application state containing the privacy policy data.
  * @returns Boolean is True if the toast should be shown, and the number is the date the toast was last shown.
  */
-export function selectShowPrivacyPolicyToast(state: State): {
+export function selectShowPrivacyPolicyToast(state: MetaMaskReduxState): {
   showPrivacyPolicyToast: boolean;
-  newPrivacyPolicyToastShownDate?: number;
+  newPrivacyPolicyToastShownDate?: number | null;
 } {
   const {
     newPrivacyPolicyToastClickedOrClosed,
@@ -74,27 +74,29 @@ export function selectShowPrivacyPolicyToast(state: State): {
   return { showPrivacyPolicyToast, newPrivacyPolicyToastShownDate };
 }
 
-export function selectNftDetectionEnablementToast(state: State): boolean {
+export function selectNftDetectionEnablementToast(
+  state: MetaMaskReduxState,
+): boolean {
   return Boolean(state.appState?.showNftDetectionEnablementToast);
 }
 
 // If there is more than one connected account to activeTabOrigin,
 // *BUT* the current account is not one of them, show the banner
 export function selectShowConnectAccountToast(
-  state: State,
+  state: MetaMaskReduxState,
   account: InternalAccount,
 ): boolean {
   const allowShowAccountSetting = getAlertEnabledness(state).unconnectedAccount;
   const connectedAccounts = getPermittedAccountsForCurrentTab(state);
   const isEvmAccount = isEvmAccountType(account?.type);
 
-  return (
+  return Boolean(
     allowShowAccountSetting &&
-    account &&
-    state.activeTab?.origin &&
-    isEvmAccount &&
-    connectedAccounts.length > 0 &&
-    !connectedAccounts.some((address) => address === account.address)
+      account &&
+      state.activeTab?.origin &&
+      isEvmAccount &&
+      connectedAccounts.length > 0 &&
+      !connectedAccounts.some((address) => address === account.address),
   );
 }
 
@@ -104,6 +106,8 @@ export function selectShowConnectAccountToast(
  * @param state - Redux state object.
  * @returns Boolean preference value
  */
-export function selectSwitchedNetworkNeverShowMessage(state: State): boolean {
+export function selectSwitchedNetworkNeverShowMessage(
+  state: MetaMaskReduxState,
+): boolean {
   return Boolean(state.metamask.switchedNetworkNeverShowMessage);
 }

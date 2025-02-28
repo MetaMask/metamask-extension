@@ -92,8 +92,8 @@ export const calcSentAmount = (
 
 export const calcRelayerFee = (
   bridgeQuote: QuoteResponse,
-  nativeToDisplayCurrencyExchangeRate?: number,
-  nativeToUsdExchangeRate?: number,
+  nativeToDisplayCurrencyExchangeRate?: number | null,
+  nativeToUsdExchangeRate?: number | null,
 ) => {
   const {
     quote: { srcAsset, srcTokenAmount, feeData },
@@ -128,8 +128,8 @@ const calcTotalGasFee = ({
   bridgeQuote: QuoteResponse & L1GasFees;
   feePerGasInDecGwei: string;
   priorityFeePerGasInDecGwei: string;
-  nativeToDisplayCurrencyExchangeRate?: number;
-  nativeToUsdExchangeRate?: number;
+  nativeToDisplayCurrencyExchangeRate?: number | null;
+  nativeToUsdExchangeRate?: number | null;
 }) => {
   const { approval, trade, l1GasFeesInHexWei } = bridgeQuote;
 
@@ -179,8 +179,8 @@ export const calcEstimatedAndMaxTotalGasFee = ({
   estimatedBaseFeeInDecGwei: string;
   maxFeePerGasInDecGwei: string;
   maxPriorityFeePerGasInDecGwei: string;
-  nativeToDisplayCurrencyExchangeRate?: number;
-  nativeToUsdExchangeRate?: number;
+  nativeToDisplayCurrencyExchangeRate?: number | null;
+  nativeToUsdExchangeRate?: number | null;
 }) => {
   const { amount, valueInCurrency, usd } = calcTotalGasFee({
     bridgeQuote,

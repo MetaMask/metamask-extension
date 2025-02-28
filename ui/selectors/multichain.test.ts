@@ -1,6 +1,5 @@
 import { Cryptocurrency } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
-import { NetworkConfiguration } from '@metamask/network-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   getCurrentCurrency,
@@ -17,6 +16,8 @@ import {
   MOCK_ACCOUNT_BIP122_P2WPKH,
   MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
 } from '../../test/data/mock-accounts';
+import { MetaMaskReduxState } from '../store/store';
+
 import {
   CHAIN_IDS,
   ETH_TOKEN_IMAGE_URL,
@@ -25,9 +26,7 @@ import {
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 import { mockNetworkState } from '../../test/stub/networks';
 import { getProviderConfig } from '../../shared/modules/selectors/networks';
-import { AccountsState } from './accounts';
 import {
-  MultichainState,
   getMultichainCurrentChainId,
   getMultichainCurrentCurrency,
   getMultichainDefaultToken,
@@ -45,18 +44,21 @@ import {
 } from './multichain';
 import { getSelectedAccountCachedBalance, getShouldShowFiat } from '.';
 
-type TestState = MultichainState &
-  AccountsState & {
-    metamask: {
-      preferences: { showFiatInTestnets: boolean };
-      accountsByChainId: Record<string, Record<string, { balance: string }>>;
-      networkConfigurationsByChainId: Record<Hex, NetworkConfiguration>;
-      currentCurrency: string;
-      currencyRates: Record<string, { conversionRate: string }>;
-      completedOnboarding: boolean;
-      selectedNetworkClientId?: string;
-    };
-  };
+type TestState = MetaMaskReduxState;
+
+// TODO: Restore more granular selector state input type
+// type TestState = MultichainState &
+//   AccountsState & {
+//     metamask: {
+//       preferences: { showFiatInTestnets: boolean };
+//       accountsByChainId: Record<string, Record<string, { balance: string }>>;
+//       networkConfigurationsByChainId: Record<Hex, NetworkConfiguration>;
+//       currentCurrency: string;
+//       currencyRates: Record<string, { conversionRate: string }>;
+//       completedOnboarding: boolean;
+//       selectedNetworkClientId?: string;
+//     };
+//   };
 
 function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
   return {

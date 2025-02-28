@@ -1,3 +1,4 @@
+// @ts-expect-error No types for JS package
 import { toUnicode } from 'punycode/punycode.js';
 import { memoize } from 'lodash';
 import semver from 'semver';
