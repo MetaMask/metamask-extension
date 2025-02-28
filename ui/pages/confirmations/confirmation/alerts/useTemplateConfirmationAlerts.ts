@@ -9,10 +9,15 @@ import {
 } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { useAddEthereumChainAlerts } from './useAddEthereumChainAlerts';
 
-export const useTemplateConfirmationAlerts = (pendingConfirmation: ApprovalRequest<{ id: string }>) => {
+export const useTemplateConfirmationAlerts = (
+  pendingConfirmation: ApprovalRequest<{ id: string }>,
+) => {
   const dispatch = useDispatch();
   const addEthereumChainAlerts = useAddEthereumChainAlerts(pendingConfirmation);
-  const alerts: Alert[] = useMemo(() => addEthereumChainAlerts, [addEthereumChainAlerts]);
+  const alerts: Alert[] = useMemo(
+    () => addEthereumChainAlerts,
+    [addEthereumChainAlerts],
+  );
   const alertOwnerId = pendingConfirmation?.id;
 
   useEffect(() => {

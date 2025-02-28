@@ -37,6 +37,7 @@ describe('useAlertActions', () => {
       .mockReturnValue({
         getIndex: jest.fn(),
         navigateToIndex: mockNavigateToIndex,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
     const { result } = renderHookWithProvider(
       () => useAlertsActions(mockHideAlertModal, PENDING_APPROVAL_MOCK),
