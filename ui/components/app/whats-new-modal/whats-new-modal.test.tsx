@@ -4,7 +4,7 @@ import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { NOTIFICATION_BLOCKAID_DEFAULT } from '../../../../shared/notifications';
-import WhatsNewPopup from './whats-new-popup';
+import WhatsNewPopup from './whats-new-modal';
 
 const render = () => {
   const store = configureStore({

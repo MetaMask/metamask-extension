@@ -1269,6 +1269,9 @@
   "createSnapAccountTitle": {
     "message": "Create account"
   },
+  "createSolanaAccount": {
+    "message": "Create Solana account"
+  },
   "creatorAddress": {
     "message": "Creator address"
   },
@@ -3170,6 +3173,9 @@
   "noSnaps": {
     "message": "You don't have any snaps installed."
   },
+  "notNow": {
+    "message": "Not now"
+  },
   "noThanks": {
     "message": "No thanks"
   },
@@ -5016,6 +5022,9 @@
   "snapsUIError": {
     "message": "Contact the creators of $1 for further support.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
+  },
+  "solanaOnMetaMask": {
+    "message": "Solana on MetaMask"
   },
   "someNetworks": {
     "message": "$1 networks"

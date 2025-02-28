@@ -101,7 +101,7 @@ import {
   hexToDecimal,
 } from '../../shared/modules/conversion.utils';
 import { BackgroundColor } from '../helpers/constants/design-system';
-import { NOTIFICATION_DROP_LEDGER_FIREFOX } from '../../shared/notifications';
+import { NOTIFICATION_SOLANA_ON_METAMASK } from '../../shared/notifications';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 import { BridgeFeatureFlagsKey } from '../../shared/types/bridge';
@@ -2103,7 +2103,7 @@ function getAllowedAnnouncementIds(state) {
   const isFirefox = window.navigator.userAgent.includes('Firefox');
 
   return {
-    [NOTIFICATION_DROP_LEDGER_FIREFOX]: currentKeyringIsLedger && isFirefox,
+    [NOTIFICATION_SOLANA_ON_METAMASK]: true,
   };
 }
 
@@ -2129,8 +2129,8 @@ export function getSortedAnnouncementsToShow(state) {
   const announcements = Object.values(state.metamask.announcements);
   const allowedAnnouncementIds = getAllowedAnnouncementIds(state);
   const announcementsToShow = announcements.filter(
-    (announcement) =>
-      !announcement.isShown && allowedAnnouncementIds[announcement.id],
+    (announcement) => allowedAnnouncementIds[announcement.id],
+      // !announcement.isShown && allowedAnnouncementIds[announcement.id],
   );
   const announcementsSortedByDate = announcementsToShow.sort(
     (a, b) => new Date(b.date) - new Date(a.date),

@@ -11,7 +11,7 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
-import WhatsNewPopup from '../../components/app/whats-new-popup';
+import WhatsNewModal from '../../components/app/whats-new-modal';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 ///: END:ONLY_INCLUDE_IF
 import HomeNotification from '../../components/app/home-notification';
@@ -845,7 +845,7 @@ export default class Home extends PureComponent {
             ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
           }
           {showMultiRpcEditModal && <MultiRpcEditModal />}
-          {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
+          {showWhatsNew ? <WhatsNewModal onClose={hideWhatsNewPopup} /> : null}
           {!showWhatsNew && showRecoveryPhraseReminder ? (
             <RecoveryPhraseReminder
               hasBackedUp={seedPhraseBackedUp}
