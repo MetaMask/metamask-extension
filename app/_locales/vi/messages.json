@@ -2771,10 +2771,6 @@
     "message": "Chúng tôi không thể kết nối với $1",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "Mạng được chuyển thành $1",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "URL mạng"
   },

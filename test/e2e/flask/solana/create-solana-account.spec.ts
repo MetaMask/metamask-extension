@@ -4,9 +4,8 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import { ACCOUNT_TYPE } from '../../constants';
 import { withSolanaAccountSnap } from './common-solana';
 
-// Scenarios skipped due to https://consensyssoftware.atlassian.net/browse/SOL-87
 describe('Create Solana Account', function (this: Suite) {
-  it.skip('Creates 2 Solana accounts', async function () {
+  it('Creates 2 Solana accounts', async function () {
     await withSolanaAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver) => {
@@ -42,7 +41,7 @@ describe('Create Solana Account', function (this: Suite) {
     );
   });
 });
-it.skip('Removes Solana account after creating it', async function () {
+it('Removes Solana account after creating it', async function () {
   await withSolanaAccountSnap(
     { title: this.test?.fullTitle() },
     async (driver) => {

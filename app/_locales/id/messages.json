@@ -2771,10 +2771,6 @@
     "message": "Kami tidak dapat terhubung ke $1",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "Jaringan beralih ke $1",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "URL Jaringan"
   },

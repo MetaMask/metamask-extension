@@ -63,8 +63,8 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   getCaip25PermissionsResponse,
-  getRequestedSessionScopes,
   PermissionsRequest,
+  getRequestedCaip25CaveatValue,
 } from './utils';
 
 export type ConnectPageRequest = {
@@ -98,11 +98,11 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const requestedSessionsScopes = getRequestedSessionScopes(
+  const requestedCaip25CaveatValue = getRequestedCaip25CaveatValue(
     request.permissions,
   );
-  const requestedAccounts = getEthAccounts(requestedSessionsScopes);
-  const requestedChainIds = getPermittedEthChainIds(requestedSessionsScopes);
+  const requestedAccounts = getEthAccounts(requestedCaip25CaveatValue);
+  const requestedChainIds = getPermittedEthChainIds(requestedCaip25CaveatValue);
 
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const [nonTestNetworks, testNetworks] = useMemo(
@@ -180,6 +180,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       permissions: {
         ...request.permissions,
         ...getCaip25PermissionsResponse(
+          requestedCaip25CaveatValue,
           selectedAccountAddresses as Hex[],
           selectedChainIds,
         ),

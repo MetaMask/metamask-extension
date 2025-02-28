@@ -2771,10 +2771,6 @@
     "message": "हम $1 से कनेक्ट नहीं कर सकते",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "नेटवर्क $1 पर स्विच किया गया",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "नेटवर्क URL"
   },

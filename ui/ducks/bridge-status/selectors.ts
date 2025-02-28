@@ -17,7 +17,8 @@ export const selectBridgeStatusState = (state: BridgeStatusAppState) =>
 export const selectBridgeHistoryForAccount = createSelector(
   [getSelectedAddress, selectBridgeStatusState],
   (selectedAddress, bridgeStatusState) => {
-    const { txHistory } = bridgeStatusState;
+    // Handle the case when bridgeStatusState is undefined
+    const { txHistory = {} } = bridgeStatusState || {};
 
     return Object.keys(txHistory).reduce<Record<string, BridgeHistoryItem>>(
       (acc, txMetaId) => {

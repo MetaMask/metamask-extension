@@ -4204,7 +4204,7 @@ describe('MetaMaskController', () => {
       });
 
       it('returna config when not matching default mapping', async () => {
-        process.env.METAMASK_BUILD_TYPE = 'beta';
+        process.env.METAMASK_BUILD_TYPE = 'non-existent-distribution';
         process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.RELEASE_CANDIDATE;
 
         const result =

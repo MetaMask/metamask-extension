@@ -2774,10 +2774,6 @@
     "message": "Não podemos conectar a $1",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "Rede mudou para $1",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "URL da rede"
   },
