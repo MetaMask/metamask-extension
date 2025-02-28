@@ -139,13 +139,13 @@ export function getValueFromWeiHex({
   value: NumericValue;
   fromCurrency?: EtherDenomination | string;
   toCurrency?: EtherDenomination | string;
-  conversionRate?: number;
+  conversionRate?: number | null;
   numberOfDecimals?: number;
   toDenomination?: EtherDenomination;
 }) {
   let numeric = new Numeric(value, 16, EtherDenomination.WEI);
   if (fromCurrency !== toCurrency) {
-    numeric = numeric.applyConversionRate(conversionRate);
+    numeric = numeric.applyConversionRate(conversionRate ?? undefined);
   }
   return numeric
     .toBase(10)

@@ -33,6 +33,7 @@ import { MetaMaskReduxState } from '../../store/store';
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
+import { isEtherDenomination } from '../../selectors/selectors.utils';
 
 const initialState = {
   isInitialized: false,
@@ -296,7 +297,8 @@ export function getBlockGasLimit(state: MetaMaskReduxState) {
 }
 
 export function getNativeCurrency(state: MetaMaskReduxState) {
-  return getProviderConfig(state).ticker;
+  const { ticker } = getProviderConfig(state);
+  return isEtherDenomination(ticker) ? ticker : undefined;
 }
 
 export function getConversionRate(state: MetaMaskReduxState) {

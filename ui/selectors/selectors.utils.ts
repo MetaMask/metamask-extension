@@ -6,6 +6,7 @@ import {
 } from '../../shared/constants/network';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../shared/constants/swaps';
 import { InternalAccountWithBalance } from './selectors.types';
+import { EtherDenomination } from '../../shared/constants/common';
 
 export const isPropertyKeyOf = (
   key: unknown,
@@ -45,3 +46,9 @@ export const isInternalAccountWithLastSelectedTimestamp = (
   account.connections !== undefined &&
   'lastSelected' in account &&
   account.lastSelected !== undefined;
+
+export const isEtherDenomination = (
+  currency: unknown,
+): currency is EtherDenomination =>
+  Object.values(EtherDenomination).find((ticker) => ticker === currency) !==
+  undefined;
