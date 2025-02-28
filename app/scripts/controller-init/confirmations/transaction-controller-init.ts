@@ -72,6 +72,9 @@ export const TransactionControllerInit: ControllerInitFunction<
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     transactionUpdateController,
     ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+    deferredPublicationController,
+    ///: END:ONLY_INCLUDE_IF(institutional-snap)
   } = getControllers(request);
 
   const controller: TransactionController = new TransactionController({
@@ -128,6 +131,19 @@ export const TransactionControllerInit: ControllerInitFunction<
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
     hooks: {
+      ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+      beforePublish: (transactionMeta) => {
+        return deferredPublicationController().deferPublicationHook(
+          controller,
+          transactionMeta,
+        );
+      },
+
+      beforeCheckPendingTransactions:
+        deferredPublicationController().beforeCheckPendingTransactionHook.bind(
+          deferredPublicationController(),
+        ),
+      ///: END:ONLY_INCLUDE_IF(institutional-snap)
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       afterSign: (txMeta, signedEthTx) =>
         afterTransactionSignMMI(
@@ -139,7 +155,7 @@ export const TransactionControllerInit: ControllerInitFunction<
         ),
       beforeCheckPendingTransaction:
         beforeCheckPendingTransactionMMI.bind(this),
-      beforePublish: beforeTransactionPublishMMI.bind(this),
+      // beforePublish: beforeTransactionPublishMMI.bind(this),
       getAdditionalSignArguments: getAdditionalSignArgumentsMMI.bind(this),
       ///: END:ONLY_INCLUDE_IF
       // @ts-expect-error Controller type does not support undefined return value
@@ -204,6 +220,10 @@ function getControllers(
       request.getController('SmartTransactionsController'),
     transactionUpdateController: () =>
       request.getController('TransactionUpdateController'),
+    ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+    deferredPublicationController: () =>
+      request.getController('DeferredPublicationController'),
+    ///: END:ONLY_INCLUDE_IF(institutional-snap)
   };
 }
 
