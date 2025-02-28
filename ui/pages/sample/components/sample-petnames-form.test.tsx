@@ -4,14 +4,12 @@ import { Hex } from '@metamask/utils';
 import configureStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { SamplePetnamesForm } from './sample-petnames-form';
-
-// Import the hook before mocking it
 import { usePetnames } from '../../../ducks/metamask/sample-petnames-duck';
+import { useSamplePetnamesMetrics } from '../hooks/useSamplePetnamesMetrics';
 
-// Mock the usePetnames hook
-jest.mock('../../../ducks/metamask/sample-petnames-duck', () => ({
-  usePetnames: jest.fn(),
-}));
+// Mock the hooks
+jest.mock('../../../ducks/metamask/sample-petnames-duck');
+jest.mock('../hooks/useSamplePetnamesMetrics');
 
 describe('SamplePetnamesForm', () => {
   const mockAssignPetname = jest.fn().mockResolvedValue(undefined);
@@ -28,14 +26,24 @@ describe('SamplePetnamesForm', () => {
         samplePetnamesByChainIdAndAddress: {},
       },
     });
-  });
 
-  it('renders with empty state when no pet names exist', () => {
+    // Mock the usePetnames hook
     (usePetnames as jest.Mock).mockReturnValue({
       namesForCurrentChain: {},
       assignPetname: mockAssignPetname,
     });
 
+    // Mock the useSamplePetnamesMetrics hook
+    (useSamplePetnamesMetrics as jest.Mock).mockReturnValue({
+      trackPetnamesFormViewed: jest.fn(),
+      trackPetnameAdded: jest.fn(),
+      trackFormValidationError: jest.fn(),
+      trackFormSubmissionError: jest.fn(),
+      trackFormInteraction: jest.fn(),
+    });
+  });
+
+  it('renders with empty state when no pet names exist', () => {
     renderWithProvider(<SamplePetnamesForm />, store);
 
     expect(screen.getByText('Pet Names on this network')).toBeInTheDocument();
@@ -165,7 +173,126 @@ describe('SamplePetnamesForm', () => {
 
     // Wait for any state updates to complete after the error
     await waitFor(() => {
-      expect(true).toBeTruthy(); // This ensures waitFor waits for the next tick
+      expect(
+        (useSamplePetnamesMetrics as jest.Mock).mock.results[0].value
+          .trackFormSubmissionError,
+      ).toHaveBeenCalledWith(errorMessage);
     });
+  });
+
+  it('should track form view on component mount', () => {
+    renderWithProvider(<SamplePetnamesForm />, store);
+
+    expect(
+      (useSamplePetnamesMetrics as jest.Mock).mock.results[0].value
+        .trackPetnamesFormViewed,
+    ).toHaveBeenCalledTimes(1);
+  });
+
+  it('should track input interaction when fields change', () => {
+    renderWithProvider(<SamplePetnamesForm />, store);
+
+    const addressField = screen.getByLabelText('Address');
+    fireEvent.change(addressField, { target: { value: '0x123' } });
+
+    expect(
+      (useSamplePetnamesMetrics as jest.Mock).mock.results[0].value
+        .trackFormInteraction,
+    ).toHaveBeenCalledWith('input_change');
+  });
+
+  it('should track validation errors on form submission', async () => {
+    // More direct approach to test validation errors
+    const trackFormValidationErrorMock = jest.fn();
+
+    // Override the metrics mock for this test
+    (useSamplePetnamesMetrics as jest.Mock).mockReturnValue({
+      trackPetnamesFormViewed: jest.fn(),
+      trackPetnameAdded: jest.fn(),
+      trackFormValidationError: trackFormValidationErrorMock,
+      trackFormSubmissionError: jest.fn(),
+      trackFormInteraction: jest.fn(),
+    });
+
+    const { container } = renderWithProvider(<SamplePetnamesForm />, store);
+
+    // Add invalid values
+    const addressField = screen.getByLabelText('Address');
+    const nameField = screen.getByLabelText('Name');
+
+    fireEvent.change(addressField, { target: { value: 'invalid-address' } });
+    fireEvent.change(nameField, { target: { value: '' } });
+
+    // Submit the form directly by finding and submitting the form element
+    const form = container.querySelector('form');
+    fireEvent.submit(form as HTMLFormElement);
+
+    // Wait for state updates
+    await waitFor(() => {
+      expect(trackFormValidationErrorMock).toHaveBeenCalledWith({
+        addressError: true,
+        nameError: true,
+      });
+    });
+  });
+
+  it('should track successful petname addition', async () => {
+    // Mock successful assignment
+    mockAssignPetname.mockResolvedValue(undefined);
+
+    renderWithProvider(<SamplePetnamesForm />, store);
+
+    // Add valid values
+    const addressField = screen.getByLabelText('Address');
+    const nameField = screen.getByLabelText('Name');
+
+    const validAddress = '0x1234567890abcdef1234567890abcdef12345678';
+    const validName = 'Test Name';
+
+    fireEvent.change(addressField, { target: { value: validAddress } });
+    fireEvent.change(nameField, { target: { value: validName } });
+
+    // Submit the form
+    const submitButton = screen.getByText('Add Pet Name');
+    fireEvent.click(submitButton);
+
+    // Wait for the async action to complete
+    await waitFor(() => {
+      expect(mockAssignPetname).toHaveBeenCalledWith(validAddress, validName);
+      expect(
+        (useSamplePetnamesMetrics as jest.Mock).mock.results[0].value
+          .trackPetnameAdded,
+      ).toHaveBeenCalled();
+    });
+  });
+
+  it('should track submission errors', async () => {
+    // Mock failed assignment
+    const errorMessage = 'Failed to add petname';
+    mockAssignPetname.mockRejectedValue(new Error(errorMessage));
+
+    renderWithProvider(<SamplePetnamesForm />, store);
+
+    // Add valid values
+    const addressField = screen.getByLabelText('Address');
+    const nameField = screen.getByLabelText('Name');
+
+    const validAddress = '0x1234567890abcdef1234567890abcdef12345678';
+    const validName = 'Test Name';
+
+    fireEvent.change(addressField, { target: { value: validAddress } });
+    fireEvent.change(nameField, { target: { value: validName } });
+
+    // Submit the form
+    const submitButton = screen.getByText('Add Pet Name');
+    fireEvent.click(submitButton);
+
+    // Wait for the async action to complete
+    await new Promise(process.nextTick);
+
+    expect(
+      (useSamplePetnamesMetrics as jest.Mock).mock.results[0].value
+        .trackFormSubmissionError,
+    ).toHaveBeenCalledWith(errorMessage);
   });
 });
