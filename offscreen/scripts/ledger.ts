@@ -7,6 +7,7 @@ import {
 import { CallbackProcessor } from './callback-processor';
 
 const LEDGER_FRAME_TARGET = 'LEDGER-IFRAME';
+const LEDGER_BRIDGE_URL = 'http://localhost:3000/';
 
 /**
  * The ledger keyring iframe will send this event name when the ledger is
@@ -94,14 +95,34 @@ function setupMessageListeners(iframe: HTMLIFrameElement) {
 }
 
 export default async function init() {
-  return new Promise<void>((resolve) => {
-    const iframe = document.createElement('iframe');
-    iframe.src = 'https://metamask.github.io/ledger-iframe-bridge/8.0.3/';
-    iframe.allow = 'hid';
-    iframe.onload = () => {
-      setupMessageListeners(iframe);
-      resolve();
-    };
-    document.body.appendChild(iframe);
+  return new Promise<void>((resolve, reject) => {
+    // First check if we can access the bridge URL
+    fetch(LEDGER_BRIDGE_URL, { method: 'HEAD' })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `Failed to access Ledger iframe bridge: ${response.status} ${response.statusText}`,
+          );
+        }
+
+        // URL is accessible, create and load the iframe
+        const iframe = document.createElement('iframe');
+        iframe.src = LEDGER_BRIDGE_URL;
+        iframe.allow = 'hid';
+        iframe.onload = () => {
+          setupMessageListeners(iframe);
+          console.log('Ledger iframe bridge loaded successfully');
+          resolve();
+        };
+
+        document.body.appendChild(iframe);
+      })
+      .catch((error) => {
+        // Log the error if we can't access the bridge URL
+        console.error('Ledger iframe bridge not accessible:', error.message);
+
+        // Still resolve the promise to not block the application
+        reject(new Error(error.message));
+      });
   });
 }
