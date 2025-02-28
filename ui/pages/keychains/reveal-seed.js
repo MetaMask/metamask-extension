@@ -1,5 +1,5 @@
 import qrCode from 'qrcode-generator';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { getErrorMessage } from '../../../shared/modules/error';
@@ -56,6 +56,26 @@ export default function RevealSeedPage() {
   const [error, setError] = useState(null);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const [isShowingHoldModal, setIsShowingHoldModal] = useState(false);
+  const [srpViewEventTracked, setSrpViewEventTracked] = useState(false);
+
+  const onClickCopy = useCallback(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Keys,
+      event: MetaMetricsEventName.KeyExportCopied,
+      properties: {
+        key_type: MetaMetricsEventKeyType.Srp,
+        copy_method: 'clipboard',
+      },
+    });
+    trackEvent({
+      category: MetaMetricsEventCategory.Keys,
+      event: MetaMetricsEventName.SrpCopiedToClipboard,
+      properties: {
+        key_type: MetaMetricsEventKeyType.Srp,
+        copy_method: 'clipboard',
+      },
+    });
+  }, [trackEvent]);
 
   useEffect(() => {
     const passwordBox = document.getElementById('password-box');
@@ -146,13 +166,16 @@ export default function RevealSeedPage() {
 
   const renderRevealSeedContent = () => {
     // default for SRP_VIEW_SRP_TEXT event because this is the first thing shown after rendering
-    trackEvent({
-      category: MetaMetricsEventCategory.Keys,
-      event: MetaMetricsEventName.SrpViewSrpText,
-      properties: {
-        key_type: MetaMetricsEventKeyType.Srp,
-      },
-    });
+    if (!srpViewEventTracked) {
+      trackEvent({
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.SrpViewSrpText,
+        properties: {
+          key_type: MetaMetricsEventKeyType.Srp,
+        },
+      });
+      setSrpViewEventTracked(true);
+    }
 
     return (
       <div>
@@ -160,6 +183,7 @@ export default function RevealSeedPage() {
           defaultActiveTabName={t('revealSeedWordsText')}
           onTabClick={(tabName) => {
             if (tabName === 'text-seed') {
+              console.log('TRACKING EVENT: onTabClick text-seed');
               trackEvent({
                 category: MetaMetricsEventCategory.Keys,
                 event: MetaMetricsEventName.SrpViewSrpText,
@@ -185,27 +209,7 @@ export default function RevealSeedPage() {
             tabKey="text-seed"
           >
             <Label marginTop={4}>{t('yourPrivateSeedPhrase')}</Label>
-            <ExportTextContainer
-              text={seedWords}
-              onClickCopy={() => {
-                trackEvent({
-                  category: MetaMetricsEventCategory.Keys,
-                  event: MetaMetricsEventName.KeyExportCopied,
-                  properties: {
-                    key_type: MetaMetricsEventKeyType.Srp,
-                    copy_method: 'clipboard',
-                  },
-                });
-                trackEvent({
-                  category: MetaMetricsEventCategory.Keys,
-                  event: MetaMetricsEventName.SrpCopiedToClipboard,
-                  properties: {
-                    key_type: MetaMetricsEventKeyType.Srp,
-                    copy_method: 'clipboard',
-                  },
-                });
-              }}
-            />
+            <ExportTextContainer text={seedWords} onClickCopy={onClickCopy} />
           </Tab>
           <Tab
             name={t('revealSeedWordsQR')}
