@@ -6930,21 +6930,11 @@ export default class MetamaskController extends EventEmitter {
       ),
     );
 
-    engine.push((req, res, _next, end) => {
+    engine.push(async (req, res) => {
       const { provider } = this.networkController.getNetworkClientById(
         req.networkClientId,
       );
-
-      // send request to provider
-      provider.sendAsync(req, (err, providerRes) => {
-        // forward any error
-        if (err) {
-          return end(err);
-        }
-        // copy provider response onto original response
-        Object.assign(res, providerRes);
-        return end();
-      });
+      res.result = await provider.request(req);
     });
 
     return engine;
