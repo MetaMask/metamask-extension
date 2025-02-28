@@ -21,6 +21,7 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import { usePetnames } from '../../../ducks/metamask/sample-petnames-duck';
+import { useSamplePetnamesMetrics } from '../hooks/useSamplePetnamesMetrics';
 
 // Define validation utilities
 const validateAddress = (address: string): string | undefined => {
@@ -52,7 +53,7 @@ const validatePetName = (name: string): string | undefined => {
 };
 
 type FormState = {
-  address: string;
+  address: Hex;
   petName: string;
 };
 
@@ -64,8 +65,9 @@ type ErrorState = {
 
 export function SamplePetnamesForm() {
   const petNames = usePetnames();
+  const metrics = useSamplePetnamesMetrics();
   const [values, setValues] = useState<FormState>({
-    address: '',
+    address: '0x',
     petName: '',
   });
   const [errors, setErrors] = useState<ErrorState>({});
@@ -73,6 +75,11 @@ export function SamplePetnamesForm() {
   const [formState, setFormState] = useState<'default' | 'success' | 'error'>(
     'default',
   );
+
+  // Track when the form is viewed
+  useEffect(() => {
+    metrics.trackPetnamesFormViewed();
+  }, [metrics]);
 
   // Validate inputs on change
   useEffect(() => {
@@ -92,6 +99,7 @@ export function SamplePetnamesForm() {
 
   const handleInputChange =
     (field: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      metrics.trackFormInteraction('input_change');
       setValues({
         ...values,
         [field]: e.target.value,
@@ -106,6 +114,11 @@ export function SamplePetnamesForm() {
     const hasErrors = Boolean(addressError || petNameError);
 
     if (hasErrors) {
+      metrics.trackFormValidationError({
+        addressError: Boolean(addressError),
+        nameError: Boolean(petNameError),
+      });
+
       setErrors({
         address: addressError,
         petName: petNameError,
@@ -118,15 +131,22 @@ export function SamplePetnamesForm() {
       setIsSubmitting(true);
       setErrors({});
 
-      await petNames.assignPetname(values.address as Hex, values.petName);
+      await petNames.assignPetname(values.address, values.petName);
+
+      // Track successful petname addition
+      metrics.trackPetnameAdded(values.address, values.petName.length);
 
       // Handle success
       setFormState('success');
       setValues({
-        address: '',
+        address: '0x',
         petName: '',
       });
     } catch (error) {
+      metrics.trackFormSubmissionError(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
+
       setErrors({
         form: error instanceof Error ? error.message : 'Failed to add pet name',
       });
