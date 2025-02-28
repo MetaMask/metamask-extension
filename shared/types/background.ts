@@ -16,7 +16,10 @@ import {
   RatesControllerState,
   TokenRatesControllerState,
   MultichainBalancesControllerState,
+  MultichainAssetsRatesControllerState,
+  MultichainAssetsControllerState,
 } from '@metamask/assets-controllers';
+import { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import { KeyringControllerState } from '@metamask/keyring-controller';
 import {
   AddressBookController,
@@ -391,6 +394,10 @@ export type FlattenedBackgroundStateProxy = {
   newPrivacyPolicyToastClickedOrClosed: AppStateControllerState['newPrivacyPolicyToastClickedOrClosed'];
   newPrivacyPolicyToastShownDate: AppStateControllerState['newPrivacyPolicyToastShownDate'];
   balances: MultichainBalancesControllerState['balances'];
+  nonEvmTransactions: MultichainTransactionsControllerState['nonEvmTransactions'];
+  conversionRates: MultichainAssetsRatesControllerState['conversionRates'];
+  assetsMetadata: MultichainAssetsControllerState['assetsMetadata'];
+  accountsAssets: MultichainAssetsControllerState['accountsAssets'];
   bridgeState: BridgeControllerState['bridgeState'];
   bridgeStatusState: BridgeStatusControllerState['bridgeStatusState'];
   jobs: CronjobControllerState['jobs'];
@@ -432,7 +439,7 @@ export type FlattenedBackgroundStateProxy = {
   marketingCampaignCookieId: MetaMetricsControllerState['marketingCampaignCookieId'];
   latestNonAnonymousEventTimestamp: MetaMetricsControllerState['latestNonAnonymousEventTimestamp'];
   metaMetricsDataDeletionId: MetaMetricsDataDeletionState['metaMetricsDataDeletionId'];
-  metaMetricsDataDeletionStatus: MetaMetricsDataDeletionController['metaMetricsDataDeletionStatus'];
+  metaMetricsDataDeletionStatus: MetaMetricsDataDeletionState['metaMetricsDataDeletionStatus'];
   metaMetricsDataDeletionTimestamp: MetaMetricsDataDeletionState['metaMetricsDataDeletionTimestamp'];
   names: NameControllerState['names'];
   nameSources: NameControllerState['nameSources'];
