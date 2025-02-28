@@ -130,7 +130,7 @@ describe('requestPermissionsHandler', () => {
   });
 
   describe('only CAIP-25 "endowment:caip25" permissions requested', () => {
-    it('should call "requestPermissionsForOrigin" hook with empty object if only "endowment:caip25" permission requested', async () => {
+    it('should call "requestPermissionsForOrigin" hook with empty object', async () => {
       const { handler, requestPermissionsForOrigin } = createMockedHandler();
 
       await handler(
