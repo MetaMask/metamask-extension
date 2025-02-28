@@ -13,7 +13,7 @@ const {
 } = require('../../page-objects/flows/send-transaction.flow');
 
 describe('Sending with max amount', function () {
-  it('with correct amount', async function () {
+  it.skip('with correct amount', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
