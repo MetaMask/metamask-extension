@@ -390,6 +390,7 @@ export default class Home extends PureComponent {
     const items = [
       newNftAddedMessage === 'success' ? (
         <ActionableMessage
+          key="new-nft-added"
           type="success"
           className="home__new-network-notification"
           autoHideTime={autoHideDelay}
@@ -412,6 +413,7 @@ export default class Home extends PureComponent {
       ) : null,
       removeNftMessage === 'success' ? (
         <ActionableMessage
+          key="remove-nft"
           type="success"
           className="home__new-network-notification"
           autoHideTime={autoHideDelay}
@@ -434,6 +436,7 @@ export default class Home extends PureComponent {
       ) : null,
       removeNftMessage === 'error' ? (
         <ActionableMessage
+          key="remove-nft-error"
           type="danger"
           className="home__new-network-notification"
           autoHideTime={autoHideDelay}
@@ -456,6 +459,7 @@ export default class Home extends PureComponent {
       ) : null,
       newNetworkAddedName ? (
         <ActionableMessage
+          key="new-network-added"
           type="success"
           className="home__new-network-notification"
           message={
@@ -477,6 +481,7 @@ export default class Home extends PureComponent {
       ) : null,
       editedNetwork?.editCompleted ? (
         <ActionableMessage
+          key="edited-network"
           type="success"
           className="home__new-tokens-imported-notification"
           autoHideTime={autoHideDelay}
@@ -502,6 +507,7 @@ export default class Home extends PureComponent {
       ) : null,
       newTokensImported ? (
         <ActionableMessage
+          key="new-tokens-imported"
           type="success"
           autoHideTime={autoHideDelay}
           onAutoHide={onAutoHide}
@@ -539,6 +545,7 @@ export default class Home extends PureComponent {
       ) : null,
       newTokensImportedError ? (
         <ActionableMessage
+          key="new-tokens-imported-error"
           type="danger"
           className="home__new-tokens-imported-notification"
           autoHideTime={autoHideDelay}
@@ -561,6 +568,7 @@ export default class Home extends PureComponent {
       ) : null,
       shouldShowWeb3ShimUsageNotification ? (
         <HomeNotification
+          key="show-web3-shim"
           descriptionText={t('web3ShimUsageNotification', [
             <span
               key="web3ShimUsageNotificationLink"
@@ -581,12 +589,12 @@ export default class Home extends PureComponent {
           }}
           checkboxText={t('dontShowThisAgain')}
           checkboxTooltipText={t('canToggleInSettings')}
-          key="home-web3ShimUsageNotification"
         />
       ) : null,
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       shouldShowSeedPhraseReminder ? (
         <HomeNotification
+          key="show-seed-phrase-reminder"
           descriptionText={t('backupApprovalNotice')}
           acceptText={t('backupNow')}
           onAccept={() => {
@@ -598,12 +606,12 @@ export default class Home extends PureComponent {
             }
           }}
           infoText={t('backupApprovalInfo')}
-          key="home-backupApprovalNotice"
         />
       ) : null,
       ///: END:ONLY_INCLUDE_IF
       infuraBlocked && this.state.canShowBlockageNotification ? (
         <HomeNotification
+          key="infura-blocked"
           descriptionText={t('infuraBlockedNotification', [
             <span
               key="infuraBlockedNotificationLink"
@@ -621,18 +629,17 @@ export default class Home extends PureComponent {
               canShowBlockageNotification: false,
             });
           }}
-          key="home-infuraBlockedNotification"
         />
       ) : null,
       showOutdatedBrowserWarning ? (
         <HomeNotification
+          key="outdated-browser-notification"
           descriptionText={outdatedBrowserNotificationDescriptionText}
           acceptText={t('gotIt')}
           onAccept={this.onOutdatedBrowserWarningClose}
-          key="home-outdatedBrowserNotification"
         />
       ) : null,
-    ].filter((item) => item !== null);
+    ].filter(Boolean);
 
     return items.length ? (
       <MultipleNotifications>{items}</MultipleNotifications>
