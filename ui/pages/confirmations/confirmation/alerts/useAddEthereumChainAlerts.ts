@@ -19,9 +19,10 @@ export function useAddEthereumChainAlerts(
       return [];
     }
 
-    const { origin } = pendingConfirmation;
+    const { origin, id } = pendingConfirmation;
     const pendingConfirmationsFromSameOrigin = pendingConfirmations.filter(
-      (confirmation) => confirmation.origin === origin,
+      (confirmation) =>
+        confirmation.origin === origin && confirmation.id !== id,
     );
 
     if (!pendingConfirmationsFromSameOrigin?.length) {
