@@ -1197,7 +1197,28 @@ class Driver {
     await this.driver.close();
   }
 
-  // Close Alert Popup
+  /**
+   * Get the text of the alert popup that is currently open in the browser
+   * session.
+   *
+   * @param text - The text of the alert popup.
+   * @param options - Options for the function.
+   * @param options.timeout - The maximum time to wait for the alert to be
+   * present.
+   * @returns {Promise<string>} The text of the alert popup.
+   */
+  async waitForAlert(text, { timeout = this.timeout } = {}) {
+    await this.driver.wait(until.alertIsPresent(), timeout);
+    const alert = await this.driver.switchTo().alert();
+    const alertText = await alert.getText();
+
+    if (text && alertText !== text) {
+      throw new Error(
+        `Expected alert text to be "${text}", but got "${alertText}".`,
+      );
+    }
+  }
+
   /**
    * Close the alert popup that is currently open in the browser session.
    *

@@ -177,6 +177,40 @@ describe('Test Snap getEntropy', function (this: Suite) {
           css: '#entropySignResult',
           text: '"0xad9ddfa10cb90467a229a7bcb70d78efe5b8241d9b8083d9610ae816ad7a3a20b1176bc0baa84b998330ace7f5ebb43d0591c96c42100605ba19d2073d4a790a513cbf54dd3893af4aa0b1fa8778c2ad35ed6fb231b8f981fc3d1663a07c4042"',
         });
+
+        // Select an invalid (non-existent) entropy source.
+        await driver.scrollToElement(selector);
+        await selector.click();
+
+        await driver.clickElement({
+          text: 'Invalid',
+          css: '#get-entropy-entropy-selector option',
+        });
+
+        // Sign a message with the new entropy source.
+        await driver.clickElement('#signEntropyMessage');
+
+        // Switch to approve signature message window.
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // Wait for and click on approve and wait for window to close.
+        await driver.waitForSelector({
+          text: 'Approve',
+          tag: 'button',
+        });
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Approve',
+          tag: 'button',
+        });
+
+        // Switch back to `test-snaps` page.
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+
+        // Check the error message and close the alert.
+        await driver.waitForAlert(
+          'Entropy source with ID "invalid" not found.',
+        );
+        await driver.closeAlertPopup();
       },
     );
   });
