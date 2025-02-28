@@ -175,6 +175,8 @@ describe('Sending with max amount', function () {
           })
           .build(),
         localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
+        // Some assertions in this test take 15 seconds to run - so we need to increase the timeout
+        driverOptions: { timeOut: 15000 },
         title: this.test.fullTitle(),
         testSpecificMock: (mockServer) => {
           mockServer
@@ -253,16 +255,19 @@ describe('Sending with max amount', function () {
             };
           });
 
-        // wait for the gas fee to change
-        await driver.waitForSelector({
-          text: '0.0005 ETH',
-        });
+        // Let this assertions run for 15 seconds - because the gas fee is updated every 10 seconds
+        await driver.wait(async () => {
+          // verify gas fee changed
+          await driver.waitForSelector({
+            text: '0.0005 ETH',
+          });
 
-        // verify initial max amount
-        await driver.waitForSelector({
-          text: '$42,498.19',
-          tag: 'p',
-        });
+          // verify initial max amount
+          await driver.waitForSelector({
+            text: '$42,498.19',
+            tag: 'p',
+          });
+        }, 15 * 1000);
 
         // confirms the transaction
         await driver.clickElementAndWaitToDisappear({
