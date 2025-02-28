@@ -7,6 +7,7 @@ import {
 import { useHistory } from 'react-router-dom';
 import { selectBridgeHistoryForAccount } from '../../ducks/bridge-status/selectors';
 import { CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE } from '../../helpers/constants/routes';
+import { SmartTransactionMeta } from '../../selectors';
 
 export const FINAL_NON_CONFIRMED_STATUSES = [
   TransactionStatus.failed,
@@ -17,10 +18,10 @@ export const FINAL_NON_CONFIRMED_STATUSES = [
 export type TransactionGroup = {
   hasCancelled: boolean;
   hasRetried: boolean;
-  initialTransaction: TransactionMeta;
+  initialTransaction: TransactionMeta | SmartTransactionMeta;
   nonce: Hex;
-  primaryTransaction: TransactionMeta;
-  transactions: TransactionMeta[];
+  primaryTransaction: TransactionMeta | SmartTransactionMeta;
+  transactions: (TransactionMeta | SmartTransactionMeta)[];
 };
 
 export type UseBridgeTxHistoryDataProps = {
@@ -35,7 +36,7 @@ export function useBridgeTxHistoryData({
   const history = useHistory();
   const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
   const txMeta = transactionGroup.initialTransaction;
-  const srcTxMetaId = txMeta.id;
+  const srcTxMetaId = (txMeta as TransactionMeta).id;
   const bridgeHistoryItem = bridgeHistory[srcTxMetaId];
 
   // By complete, this means BOTH source and dest tx are confirmed
@@ -46,8 +47,8 @@ export function useBridgeTxHistoryData({
       )
     : null;
 
-  const showBridgeTxDetails = FINAL_NON_CONFIRMED_STATUSES.includes(
-    txMeta.status,
+  const showBridgeTxDetails = FINAL_NON_CONFIRMED_STATUSES.find(
+    (statue) => statue === txMeta.status,
   )
     ? undefined
     : () => {

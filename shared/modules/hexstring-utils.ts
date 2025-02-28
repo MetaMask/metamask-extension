@@ -76,7 +76,7 @@ export function isPossibleAddress(candidate: string) {
   return /^(0x)?[0-9a-fA-F]{40}$/iu.test(candidate);
 }
 
-export function toChecksumHexAddress(address: string) {
+export function toChecksumHexAddress(address: string | undefined) {
   if (!address) {
     // our internal checksumAddress function that this method replaces would
     // return an empty string for nullish input. If any direct usages of

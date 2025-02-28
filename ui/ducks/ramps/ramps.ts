@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
+import { MetaMaskReduxState } from '../../store/store';
 import { getUseExternalServices } from '../../selectors';
 import RampAPI from '../../helpers/ramps/rampApi/rampAPI';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
@@ -12,8 +13,7 @@ import { AggregatorNetwork } from './types';
 export const fetchBuyableChains = createAsyncThunk(
   'ramps/fetchBuyableChains',
   async (_, { getState }) => {
-    const state = getState();
-    // @ts-expect-error: TS doesn't know about the root state interface yet
+    const state = getState() as MetaMaskReduxState;
     const { isFetched } = state.ramps;
     const allowExternalRequests = getUseExternalServices(state);
     if (!allowExternalRequests) {
@@ -22,7 +22,6 @@ export const fetchBuyableChains = createAsyncThunk(
     if (!isFetched) {
       return await RampAPI.getNetworks();
     }
-    // @ts-expect-error: TS doesn't know about the root state interface yet
     return state.ramps.buyableChains;
   },
 );

@@ -3,6 +3,9 @@ import {
   getAllowedSmartTransactionsChainIds,
   SKIP_STX_RPC_URL_CHECK_CHAIN_IDS,
 } from '../../constants/smartTransactions';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { MetaMaskReduxState } from '../../../ui/store/store';
 import {
   getCurrentNetwork,
   accountSupportsSmartTx,
@@ -12,7 +15,7 @@ import {
 } from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
 import { isProduction } from '../environment';
 import { getFeatureFlagsByChainId } from './feature-flags';
-import { getCurrentChainId, NetworkState } from './networks';
+import { getCurrentChainId } from './networks';
 
 export type SmartTransactionsMetaMaskState = {
   metamask: {
@@ -105,7 +108,6 @@ export const getSmartTransactionsMigrationAppliedInternal = createSelector(
  * @returns true if the user has explicitly opted in, false if they have opted out,
  * or null if they have not explicitly opted in or out.
  */
-// @ts-expect-error TODO: Fix types for `getSmartTransactionsOptInStatusInternal` once `getPreferences is converted to TypeScript
 export const getSmartTransactionsOptInStatusForMetrics = createSelector(
   getSmartTransactionsOptInStatusInternal,
   (optInStatus: boolean): boolean => optInStatus,
@@ -118,7 +120,6 @@ export const getSmartTransactionsOptInStatusForMetrics = createSelector(
  * @param state
  * @returns
  */
-// @ts-expect-error TODO: Fix types for `getSmartTransactionsOptInStatusInternal` once `getPreferences is converted to TypeScript
 export const getSmartTransactionsPreferenceEnabled = createSelector(
   getSmartTransactionsOptInStatusInternal,
   (optInStatus: boolean): boolean => {
@@ -130,13 +131,13 @@ export const getSmartTransactionsPreferenceEnabled = createSelector(
 );
 
 export const getCurrentChainSupportsSmartTransactions = (
-  state: NetworkState,
+  state: MetaMaskReduxState,
 ): boolean => {
   const chainId = getCurrentChainId(state);
   return getAllowedSmartTransactionsChainIds().includes(chainId);
 };
 
-const getIsAllowedRpcUrlForSmartTransactions = (state: NetworkState) => {
+const getIsAllowedRpcUrlForSmartTransactions = (state: MetaMaskReduxState) => {
   const chainId = getCurrentChainId(state);
   // Allow in non-production or if chain ID is on skip list.
   if (!isProduction() || SKIP_STX_RPC_URL_CHECK_CHAIN_IDS.includes(chainId)) {
@@ -154,7 +155,7 @@ const getIsAllowedRpcUrlForSmartTransactions = (state: NetworkState) => {
 };
 
 export const getSmartTransactionsEnabled = (
-  state: SmartTransactionsMetaMaskState & NetworkState,
+  state: MetaMaskReduxState,
 ): boolean => {
   const supportedAccount = accountSupportsSmartTx(state);
   // @ts-expect-error Smart transaction selector types does not match controller state
@@ -173,9 +174,7 @@ export const getSmartTransactionsEnabled = (
   );
 };
 
-export const getIsSmartTransaction = (
-  state: SmartTransactionsMetaMaskState & NetworkState,
-): boolean => {
+export const getIsSmartTransaction = (state: MetaMaskReduxState): boolean => {
   const smartTransactionsPreferenceEnabled =
     getSmartTransactionsPreferenceEnabled(state);
   const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
