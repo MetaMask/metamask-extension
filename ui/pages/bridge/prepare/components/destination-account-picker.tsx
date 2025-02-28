@@ -1,8 +1,6 @@
-import * as React from 'react';
+import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { SolAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { useState } from 'react';
 import {
   TextField,
   Box,
@@ -14,6 +12,7 @@ import {
 import {
   getSelectedInternalAccount,
   getInternalAccounts,
+  isSolanaAccount,
 } from '../../../../selectors';
 import {
   BlockSize,
@@ -44,17 +43,21 @@ export const DestinationAccountPicker = ({
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const accounts = useSelector(getInternalAccounts);
 
-  const filteredAccounts = accounts.filter((account) => {
-    const matchesSearch = account.metadata.name
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
+  const filteredAccounts = useMemo(
+    () =>
+      accounts.filter((account) => {
+        const matchesSearch = account.metadata.name
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase());
 
-    const matchesChain = isDestinationSolana
-      ? account.type === SolAccountType.DataAccount
-      : account.type !== SolAccountType.DataAccount;
+        const matchesChain = isDestinationSolana
+          ? isSolanaAccount(account)
+          : !isSolanaAccount(account);
 
-    return matchesSearch && matchesChain;
-  });
+        return matchesSearch && matchesChain;
+      }),
+    [accounts, isDestinationSolana, searchQuery],
+  );
 
   if (selectedSwapToAccount) {
     return (
@@ -69,9 +72,7 @@ export const DestinationAccountPicker = ({
         style={{
           height: '70px',
           borderRadius: '8px',
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          boxShadow: 'var(--shadow-bridge-picker)',
+          boxShadow: 'var(--shadow-size-sm) var(--color-shadow-default)',
         }}
       >
         <Box
@@ -116,9 +117,6 @@ export const DestinationAccountPicker = ({
       style={{
         borderRadius: '8px',
         position: 'relative',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        boxShadow: 'var(--shadow-bridge-picker)',
       }}
     >
       <Box
@@ -134,6 +132,7 @@ export const DestinationAccountPicker = ({
           borderBottomStyle: 'solid',
           borderBottomColor: '#B7BBC866',
           borderRadius: '8px 8px 0 0',
+          boxShadow: 'var(--shadow-size-sm) var(--color-shadow-default)',
         }}
       >
         <TextField
@@ -151,20 +150,21 @@ export const DestinationAccountPicker = ({
           }}
         />
       </Box>
+      {/* Invisible buffer to match selected account height */}
+      <Box style={{ height: '20px' }} />
       <Box
         className="destination-account-picker__list"
         backgroundColor={BackgroundColor.backgroundDefault}
         style={{
           position: 'absolute',
-          top: '45px',
+          top: '50px',
           left: 0,
           right: 0,
-          minHeight: '79px',
           maxHeight: '240px',
           overflowY: 'auto',
           borderRadius: '0 0 8px 8px',
           zIndex: 1000,
-          boxShadow: 'var(--shadow-bridge-picker)',
+          boxShadow: 'var(--shadow-size-sm) var(--color-shadow-default)',
         }}
       >
         {filteredAccounts.map((account) => (

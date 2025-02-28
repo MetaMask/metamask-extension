@@ -25,7 +25,6 @@ export const useTokenAlerts = () => {
 
   useEffect(() => {
     async function fetchData() {
-
       // At the moment we only support Solana Chain
       if (!fromToken || !fromChain || !toToken || !toChain) {
         return;
@@ -35,7 +34,9 @@ export const useTokenAlerts = () => {
         toChain?.chainId as AllowedBridgeChainIds,
       );
 
-      if (!chainName) return null;
+      if (!chainName) {
+        return;
+      }
 
       const tAlert = await fetchTokenAlert(chainName, toToken.address);
 

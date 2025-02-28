@@ -2777,10 +2777,6 @@
     "message": "No podemos conectar a $1",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "La red cambió a $1",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "Dirección URL de la red"
   },
@@ -4184,9 +4180,6 @@
   },
   "seedPhraseIntroTitle": {
     "message": "Proteger su cartera"
-  },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Antes de comenzar, mire este breve video para aprender sobre su frase de recuperación y sobre cómo mantener seguro su monedero."
   },
   "seedPhraseReq": {
     "message": "Las frases secretas de recuperación contienen 12, 15, 18, 21 o 24 palabras"
