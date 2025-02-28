@@ -1078,14 +1078,6 @@
         "immer": true
       }
     },
-    "@metamask/remote-feature-flag-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
     "@metamask/selected-network-controller>@metamask/base-controller": {
       "globals": {
         "setTimeout": true
@@ -1899,8 +1891,8 @@
     },
     "@metamask/remote-feature-flag-controller": {
       "packages": {
-        "@metamask/remote-feature-flag-controller>@metamask/base-controller": true,
-        "cockatiel": true,
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
         "uuid": true
       }
     },
