@@ -8,7 +8,7 @@ describe('Test Snap bip-44', function () {
   it('can pop up bip-44 snap and get private key result', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder().withKeyringControllerMultiSRP().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -26,7 +26,7 @@ describe('Test Snap bip-44', function () {
         // check the results of the public key test using waitForSelector
         await driver.waitForSelector({
           css: '#bip44Result',
-          text: '"0x86debb44fb3a984d93f326131d4c1db0bc39644f1a67b673b3ab45941a1cea6a385981755185ac4594b6521e4d1e08d1"',
+          text: '"0xa40ed930feb776ceefaffa83eebc544302a74143376413bbbfa7a241c1edcd71cc870bbfb7dc1ca6c121f5ec1f659dc6"',
         });
 
         // enter a message to sign
@@ -44,7 +44,40 @@ describe('Test Snap bip-44', function () {
         // check the results of the message signature using waitForSelector
         await driver.waitForSelector({
           css: '#bip44SignResult',
-          text: '"0xa41ab87ca50606eefd47525ad90294bbe44c883f6bc53655f1b8a55aa8e1e35df216f31be62e52c7a1faa519420e20810162e07dedb0fde2a4d997ff7180a78232ecd8ce2d6f4ba42ccacad33c5e9e54a8c4d41506bdffb2bb4c368581d8b086"',
+          text: '"0x8663842acfa967d82615ed421d0fed7e371591b9224917240288705078c2fe4831fb92d7967b4392e5566ca6ae1ec07517186c784501c2312a485c6f4216e0ae36e439337e4535352f8f30292aeed56507f3e5e450795fdb119c0d28d9bc1144"',
+        });
+
+        // Select a different entropy source.
+        await testSnaps.selectEntropySource('bip44', 'SRP 1 (primary)');
+
+        // Change the message and sign.
+        await testSnaps.fillBip44MessageAndSign('foo bar');
+
+        // Hit 'approve' on the signature confirmation and wait for window to
+        // close, then switch back to the `test-snaps` window.
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await snapInstall.clickApproveButton();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+
+        // Check the results of the message signature using `waitForSelector`.
+        await driver.waitForSelector({
+          css: '#bip44SignResult',
+          text: '"0xaad1b09202c4d48e7730dece56ef547fa1a19fcda345bf600704f14bb848cf4e7bb72b73e2a2d564de6ea75b3ab0ce3116a3fddd2122102a7dc79cebf0235338044a4020407e25f60232b8a04f59785c3db26bfb076862284df46fed8afce9e5"',
+        });
+
+        // Select a different entropy source and sign.
+        await testSnaps.selectEntropySource('bip44', 'SRP 2');
+        await testSnaps.fillBip44MessageAndSign('foo bar');
+
+        // Hit 'approve' on the signature confirmation and wait for window to
+        // close, then switch back to the `test-snaps` window.
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await snapInstall.clickApproveButton();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+
+        await driver.waitForSelector({
+          css: '#bip44SignResult',
+          text: '"0xaad1b09202c4d48e7730dece56ef547fa1a19fcda345bf600704f14bb848cf4e7bb72b73e2a2d564de6ea75b3ab0ce3116a3fddd2122102a7dc79cebf0235338044a4020407e25f60232b8a04f59785c3db26bfb076862284df46fed8afce9e5"',
         });
       },
     );

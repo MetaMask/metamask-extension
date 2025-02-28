@@ -13,11 +13,6 @@ export class TestSnaps {
 
   private readonly dialogsSnapConfirmationButton = '#sendConfirmationButton';
 
-  private readonly reconnectButton = {
-    css: '#connectbip32',
-    text: 'Reconnect to BIP-32 Snap',
-  };
-
   private readonly getPublicKeyButton = {
     css: '#bip32GetPublic',
     text: 'Get Public Key',
@@ -154,5 +149,23 @@ export class TestSnaps {
     console.log('Scroll to send ed25519');
     const sendEd25519 = await this.driver.findElement(this.inputMessageEd25519);
     await this.driver.scrollToElement(sendEd25519);
+  }
+
+  /**
+   * Select an entropy source from the dropdown with the given ID.
+   *
+   * @param id - The ID of the dropdown.
+   * @param name - The name of the entropy source to select.
+   */
+  async selectEntropySource(id: string, name: string) {
+    console.log('Select entropy source');
+    const selector = await this.driver.findElement(`#${id}-entropy-selector`);
+    await this.driver.scrollToElement(selector);
+    await selector.click();
+
+    await this.driver.clickElement({
+      text: name,
+      tag: 'option',
+    });
   }
 }
