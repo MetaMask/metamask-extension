@@ -24,7 +24,7 @@ import {
   KeyringController,
   KeyringTypes,
   keyringBuilderFactory,
-} from '@metamask/keyring-controller';
+} from '@metamask-previews/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
 import { JsonRpcError, providerErrors } from '@metamask/rpc-errors';
