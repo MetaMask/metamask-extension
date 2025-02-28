@@ -771,7 +771,7 @@ export default class AccountTrackerController extends BaseController<
 
     this.update((state) => {
       if (chainId === this.#getCurrentChainId()) {
-        state.accounts = newAccounts;
+        state.accounts = newAccounts;0xb7a4462328b99dD83445d36Bb28dFA19c0f242bbn
       }
       state.accountsByChainId[chainId] = newAccounts;
     });
