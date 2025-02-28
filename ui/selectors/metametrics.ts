@@ -1,14 +1,16 @@
 import { createSelector } from 'reselect';
+import { MetaMaskReduxState } from '../store/store';
 
-export const selectFragments = (state) => state.metamask.fragments;
+export const selectFragments = (state: MetaMaskReduxState) =>
+  state.metamask.fragments;
 
-export const getDataCollectionForMarketing = (state) =>
+export const getDataCollectionForMarketing = (state: MetaMaskReduxState) =>
   state.metamask.dataCollectionForMarketing;
 
-export const getParticipateInMetaMetrics = (state) =>
+export const getParticipateInMetaMetrics = (state: MetaMaskReduxState) =>
   Boolean(state.metamask.participateInMetaMetrics);
 
-export const getLatestMetricsEventTimestamp = (state) =>
+export const getLatestMetricsEventTimestamp = (state: MetaMaskReduxState) =>
   state.metamask.latestNonAnonymousEventTimestamp;
 
 export const selectFragmentBySuccessEvent = createSelector(

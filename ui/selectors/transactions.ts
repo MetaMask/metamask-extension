@@ -1,15 +1,20 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { createSelector } from 'reselect';
 import {
+  TransactionMeta,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
+
 import {
   PRIORITY_STATUS_HASH,
   PENDING_STATUS_HASH,
 } from '../helpers/constants/transactions';
 import txHelper from '../helpers/utils/tx-helper';
+import { TransactionGroup } from '../hooks/useTransactionDisplayData';
+
+import { MetaMaskReduxState } from '../store/store';
 import { SmartTransactionStatus } from '../../shared/constants/transaction';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import {
@@ -41,7 +46,7 @@ const allowedSwapsSmartTransactionStatusesForActivityList = [
 ];
 
 export const getTransactions = createDeepEqualSelector(
-  (state) => {
+  (state: MetaMaskReduxState) => {
     const { transactions } = state.metamask ?? {};
 
     if (!transactions?.length) {
@@ -54,7 +59,7 @@ export const getTransactions = createDeepEqualSelector(
 );
 
 export const getCurrentNetworkTransactions = createDeepEqualSelector(
-  (state) => {
+  (state: MetaMaskReduxState) => {
     const transactions = getTransactions(state);
 
     if (!transactions.length) {
@@ -71,7 +76,7 @@ export const getCurrentNetworkTransactions = createDeepEqualSelector(
 );
 
 export const getUnapprovedTransactions = createDeepEqualSelector(
-  (state) => {
+  (state: MetaMaskReduxState) => {
     const currentNetworkTransactions = getCurrentNetworkTransactions(state);
     return filterAndShapeUnapprovedTransactions(currentNetworkTransactions);
   },
@@ -81,7 +86,7 @@ export const getUnapprovedTransactions = createDeepEqualSelector(
 // Unlike `getUnapprovedTransactions` and `getCurrentNetworkTransactions`
 // returns the total number of unapproved transactions on all networks
 export const getAllUnapprovedTransactions = createDeepEqualSelector(
-  (state) => {
+  (state: MetaMaskReduxState) => {
     const { transactions } = state.metamask || [];
     if (!transactions?.length) {
       return [];
@@ -97,7 +102,7 @@ export const getAllUnapprovedTransactions = createDeepEqualSelector(
 );
 
 export const getApprovedAndSignedTransactions = createDeepEqualSelector(
-  (state) => {
+  (state: MetaMaskReduxState) => {
     // Fetch transactions across all networks to address a nonce management limitation.
     // This issue arises when a pending transaction exists on one network, and the user initiates another transaction on a different network.
     const transactions = getTransactions(state);
@@ -112,7 +117,7 @@ export const getApprovedAndSignedTransactions = createDeepEqualSelector(
 );
 
 export const incomingTxListSelector = createDeepEqualSelector(
-  (state) => {
+  (state: MetaMaskReduxState) => {
     const { incomingTransactionsPreferences } = state.metamask;
     if (!incomingTransactionsPreferences) {
       return [];
@@ -130,16 +135,17 @@ export const incomingTxListSelector = createDeepEqualSelector(
   (transactions) => transactions,
 );
 
-export const unapprovedPersonalMsgsSelector = (state) =>
+export const unapprovedPersonalMsgsSelector = (state: MetaMaskReduxState) =>
   state.metamask.unapprovedPersonalMsgs;
-export const unapprovedDecryptMsgsSelector = (state) =>
+export const unapprovedDecryptMsgsSelector = (state: MetaMaskReduxState) =>
   state.metamask.unapprovedDecryptMsgs;
-export const unapprovedEncryptionPublicKeyMsgsSelector = (state) =>
-  state.metamask.unapprovedEncryptionPublicKeyMsgs;
-export const unapprovedTypedMessagesSelector = (state) =>
+export const unapprovedEncryptionPublicKeyMsgsSelector = (
+  state: MetaMaskReduxState,
+) => state.metamask.unapprovedEncryptionPublicKeyMsgs;
+export const unapprovedTypedMessagesSelector = (state: MetaMaskReduxState) =>
   state.metamask.unapprovedTypedMessages;
 
-export const smartTransactionsListSelector = (state) => {
+export const smartTransactionsListSelector = (state: MetaMaskReduxState) => {
   const { address: selectedAddress } = getSelectedInternalAccount(state);
   return state.metamask.smartTransactionsState?.smartTransactions?.[
     getCurrentChainId(state)
@@ -235,10 +241,10 @@ export const transactionsSelector = createSelector(
  * @private
  * @description Inserts (mutates) a nonce into an array of ordered nonces, sorted in ascending
  * order.
- * @param {string[]} nonces - Array of nonce strings in hex
- * @param {string} nonceToInsert - Nonce string in hex to be inserted into the array of nonces.
+ * @param nonces - Array of nonce strings in hex
+ * @param nonceToInsert - Nonce string in hex to be inserted into the array of nonces.
  */
-const insertOrderedNonce = (nonces, nonceToInsert) => {
+const insertOrderedNonce = (nonces: string[], nonceToInsert: string) => {
   let insertIndex = nonces.length;
 
   for (let i = 0; i < nonces.length; i++) {
@@ -258,10 +264,13 @@ const insertOrderedNonce = (nonces, nonceToInsert) => {
  * @private
  * @description Inserts (mutates) a transaction object into an array of ordered transactions, sorted
  * in ascending order by time.
- * @param {object[]} transactions - Array of transaction objects.
- * @param {object} transaction - Transaction object to be inserted into the array of transactions.
+ * @param transactions - Array of transaction objects.
+ * @param transaction - Transaction object to be inserted into the array of transactions.
  */
-const insertTransactionByTime = (transactions, transaction) => {
+const insertTransactionByTime = (
+  transactions: TransactionMeta[],
+  transaction: TransactionMeta,
+) => {
   const { time } = transaction;
 
   let insertIndex = transactions.length;
@@ -296,11 +305,14 @@ const insertTransactionByTime = (transactions, transaction) => {
  * @private
  * @description Inserts (mutates) a transactionGroup object into an array of ordered
  * transactionGroups, sorted in ascending order by nonce.
- * @param {transactionGroup[]} transactionGroups - Array of transactionGroup objects.
- * @param {transactionGroup} transactionGroup - transactionGroup object to be inserted into the
+ * @param transactionGroups - Array of transactionGroup objects.
+ * @param transactionGroup - transactionGroup object to be inserted into the
  * array of transactionGroups.
  */
-const insertTransactionGroupByTime = (transactionGroups, transactionGroup) => {
+const insertTransactionGroupByTime = (
+  transactionGroups: TransactionGroup[],
+  transactionGroup: TransactionGroup,
+) => {
   const { primaryTransaction: { time: groupToInsertTime } = {} } =
     transactionGroup;
 
@@ -324,14 +336,14 @@ const insertTransactionGroupByTime = (transactionGroups, transactionGroup) => {
  * @private
  * @description Inserts (mutates) transactionGroups that are not to be ordered by nonce into an array
  * of nonce-ordered transactionGroups by time.
- * @param {transactionGroup[]} orderedTransactionGroups - Array of transactionGroups ordered by
+ * @param orderedTransactionGroups - Array of transactionGroups ordered by
  * nonce.
- * @param {transactionGroup[]} nonNonceTransactionGroups - Array of transactionGroups not intended to be ordered by nonce,
+ * @param nonNonceTransactionGroups - Array of transactionGroups not intended to be ordered by nonce,
  * but intended to be ordered by timestamp
  */
 const mergeNonNonceTransactionGroups = (
-  orderedTransactionGroups,
-  nonNonceTransactionGroups,
+  orderedTransactionGroups: TransactionGroup[],
+  nonNonceTransactionGroups: TransactionGroup[],
 ) => {
   nonNonceTransactionGroups.forEach((transactionGroup) => {
     insertTransactionGroupByTime(orderedTransactionGroups, transactionGroup);
@@ -341,7 +353,7 @@ const mergeNonNonceTransactionGroups = (
 /**
  * @name nonceSortedTransactionsSelector
  * @description Returns an array of transactionGroups sorted by nonce in ascending order.
- * @returns {transactionGroup[]}
+ * @returns An array of type `TransactionGroup[]`
  */
 export const nonceSortedTransactionsSelector = createSelector(
   transactionsSelector,
@@ -618,7 +630,7 @@ export const nonceSortedPendingTransactionsSelector = createSelector(
  * @name nonceSortedCompletedTransactionsSelector
  * @description Returns an array of transactionGroups where transactions are confirmed sorted by
  * nonce in descending order.
- * @returns {transactionGroup[]}
+ * @returns Array of type `TransactionGroup[]`
  */
 export const nonceSortedCompletedTransactionsSelector = createSelector(
   nonceSortedTransactionsSelector,
@@ -646,7 +658,7 @@ const TRANSACTION_APPROVAL_TYPES = [
   ApprovalType.PersonalSign,
 ];
 
-export function hasTransactionPendingApprovals(state) {
+export function hasTransactionPendingApprovals(state: MetaMaskReduxState) {
   const unapprovedTxRequests = getApprovalRequestsByType(
     state,
     ApprovalType.Transaction,
@@ -657,7 +669,10 @@ export function hasTransactionPendingApprovals(state) {
   );
 }
 
-export function selectTransactionMetadata(state, transactionId) {
+export function selectTransactionMetadata(
+  state: MetaMaskReduxState,
+  transactionId: string,
+) {
   return state.metamask.transactions.find(
     (transaction) => transaction.id === transactionId,
   );

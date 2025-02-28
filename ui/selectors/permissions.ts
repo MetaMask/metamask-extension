@@ -1,4 +1,6 @@
 import { ApprovalType } from '@metamask/controller-utils';
+import { SubjectMetadata } from '@metamask/permission-controller';
+import { SnapId } from '@metamask/snaps-sdk';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import {
@@ -7,6 +9,7 @@ import {
   getEthAccounts,
   getPermittedEthChainIds,
 } from '@metamask/multichain';
+import { MetaMaskReduxState } from '../store/store';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { getApprovalRequestsByType } from './approvals';
 import {
@@ -22,32 +25,32 @@ import { getSelectedInternalAccount } from './accounts';
 /**
  * Deep equal selector to get the permission subjects object.
  *
- * @param {object} state - The current state.
- * @returns {object} The permissions subjects object.
+ * @param state - The current state.
+ * @returns The permissions subjects object.
  */
 export const getPermissionSubjectsDeepEqual = createDeepEqualSelector(
-  (state) => state.metamask.subjects || {},
+  (state: MetaMaskReduxState) => state.metamask.subjects || {},
   (subjects) => subjects,
 );
 
 /**
  * Deep equal selector to get the subject metadata object.
  *
- * @param {object} state - The current state.
- * @returns {object} The subject metadata object.
+ * @param state - The current state.
+ * @returns The subject metadata object.
  */
 export const getSubjectMetadataDeepEqual = createDeepEqualSelector(
-  (state) => state.metamask.subjectMetadata,
+  (state: MetaMaskReduxState) => state.metamask.subjectMetadata,
   (metadata) => metadata,
 );
 
 /**
  * Selector to get the permission subjects object.
  *
- * @param {object} state - The current state.
- * @returns {object} The permissions subjects object.
+ * @param state - The current state.
+ * @returns The permissions subjects object.
  */
-export function getPermissionSubjects(state) {
+export function getPermissionSubjects(state: MetaMaskReduxState) {
   return state.metamask.subjects || {};
 }
 
@@ -55,17 +58,20 @@ export function getPermissionSubjects(state) {
  * Selects the permitted accounts from the eth_accounts permission given state
  * and an origin.
  *
- * @param {object} state - The current state.
- * @param {string} origin - The origin/subject to get the permitted accounts for.
- * @returns {Array<string>} An empty array or an array of accounts.
+ * @param state - The current state.
+ * @param origin - The origin/subject to get the permitted accounts for.
+ * @returns An empty array or an array of accounts.
  */
-export function getPermittedAccounts(state, origin) {
+export function getPermittedAccounts(
+  state: MetaMaskReduxState,
+  origin: string,
+) {
   return getAccountsFromPermission(
     getCaip25PermissionFromSubject(subjectSelector(state, origin)),
   );
 }
 
-export function getPermittedChains(state, origin) {
+export function getPermittedChains(state: MetaMaskReduxState, origin: string) {
   return getChainsFromPermission(
     getCaip25PermissionFromSubject(subjectSelector(state, origin)),
   );
@@ -75,32 +81,38 @@ export function getPermittedChains(state, origin) {
  * Selects the permitted accounts from the eth_accounts permission for the
  * origin of the current tab.
  *
- * @param {object} state - The current state.
- * @returns {Array<string>} An empty array or an array of accounts.
+ * @param state - The current state.
+ * @returns An empty array or an array of accounts.
  */
-export function getPermittedAccountsForCurrentTab(state) {
+export function getPermittedAccountsForCurrentTab(state: MetaMaskReduxState) {
   return getPermittedAccounts(state, getOriginOfCurrentTab(state));
 }
 
-export function getPermittedAccountsForSelectedTab(state, activeTab) {
+export function getPermittedAccountsForSelectedTab(
+  state: MetaMaskReduxState,
+  activeTab: MetaMaskReduxState['activeTab'],
+) {
   return getPermittedAccounts(state, activeTab);
 }
 
-export function getPermittedChainsForCurrentTab(state) {
+export function getPermittedChainsForCurrentTab(state: MetaMaskReduxState) {
   return getPermittedAccounts(state, getOriginOfCurrentTab(state));
 }
 
-export function getPermittedChainsForSelectedTab(state, activeTab) {
+export function getPermittedChainsForSelectedTab(
+  state: MetaMaskReduxState,
+  activeTab: MetaMaskReduxState['activeTab'],
+) {
   return getPermittedChains(state, activeTab);
 }
 
 /**
  * Returns a map of permitted accounts by origin for all origins.
  *
- * @param {object} state - The current state.
- * @returns {object} Permitted accounts by origin.
+ * @param state - The current state.
+ * @returns Permitted accounts by origin.
  */
-export function getPermittedAccountsByOrigin(state) {
+export function getPermittedAccountsByOrigin(state: MetaMaskReduxState) {
   const subjects = getPermissionSubjects(state);
   return Object.keys(subjects).reduce((acc, subjectKey) => {
     const accounts = getAccountsFromSubject(subjects[subjectKey]);
@@ -111,7 +123,7 @@ export function getPermittedAccountsByOrigin(state) {
   }, {});
 }
 
-export function getPermittedChainsByOrigin(state) {
+export function getPermittedChainsByOrigin(state: MetaMaskReduxState) {
   const subjects = getPermissionSubjects(state);
   return Object.keys(subjects).reduce((acc, subjectKey) => {
     const chains = getChainsFromSubject(subjects[subjectKey]);
@@ -122,7 +134,7 @@ export function getPermittedChainsByOrigin(state) {
   }, {});
 }
 
-export function getSubjectMetadata(state) {
+export function getSubjectMetadata(state: MetaMaskReduxState) {
   return state.metamask.subjectMetadata;
 }
 
@@ -133,10 +145,12 @@ export function getSubjectMetadata(state) {
  * - name
  * - icon
  *
- * @param {object} state - The current state.
- * @returns {Array<object>} An array of connected subject objects.
+ * @param state - The current state.
+ * @returns An array of connected subject objects.
  */
-export function getConnectedSubjectsForSelectedAddress(state) {
+export function getConnectedSubjectsForSelectedAddress(
+  state: MetaMaskReduxState,
+) {
   const selectedInternalAccount = getSelectedInternalAccount(state);
   const subjects = getPermissionSubjects(state);
   const subjectMetadata = getSubjectMetadata(state);
@@ -169,7 +183,7 @@ export function getConnectedSubjectsForSelectedAddress(state) {
 /**
  * Retrieves the connected subjects for all addresses.
  *
- * @returns {AccountConnections}  The connected subjects for all addresses.
+ * @returns The connected subjects for all addresses in an `AccountConnections` type object.
  */
 export const getConnectedSubjectsForAllAddresses = createDeepEqualSelector(
   getPermissionSubjects,
@@ -194,7 +208,10 @@ export const getConnectedSubjectsForAllAddresses = createDeepEqualSelector(
   },
 );
 
-export function getSubjectsWithPermission(state, permissionName) {
+export function getSubjectsWithPermission(
+  state: MetaMaskReduxState,
+  permissionName: string,
+) {
   const subjects = getPermissionSubjects(state);
 
   const connectedSubjects = [];
@@ -215,7 +232,10 @@ export function getSubjectsWithPermission(state, permissionName) {
   return connectedSubjects;
 }
 
-export function getSubjectsWithSnapPermission(state, snapId) {
+export function getSubjectsWithSnapPermission(
+  state: MetaMaskReduxState,
+  snapId: SnapId,
+) {
   const subjects = getPermissionSubjects(state);
 
   return Object.entries(subjects)
@@ -241,11 +261,11 @@ export function getSubjectsWithSnapPermission(state, snapId) {
  * - iconUrl
  * - name
  *
- * @param {object} state - The current state.
- * @returns {object} A mapping of addresses to a mapping of origins to
+ * @param state - The current state.
+ * @returns A mapping of addresses to a mapping of origins to
  * connected subject info.
  */
-export function getAddressConnectedSubjectMap(state) {
+export function getAddressConnectedSubjectMap(state: MetaMaskReduxState) {
   const subjectMetadata = getSubjectMetadata(state);
   const accountsMap = getPermittedAccountsByOrigin(state);
   const addressConnectedIconMap = {};
@@ -277,15 +297,15 @@ export const isAccountConnectedToCurrentTab = createDeepEqualSelector(
 );
 
 // selector helpers
-function getCaip25PermissionFromSubject(subject = {}) {
+function getCaip25PermissionFromSubject(subject: SubjectMetadata = {}) {
   return subject.permissions?.[Caip25EndowmentPermissionName] || {};
 }
 
-function getAccountsFromSubject(subject) {
+function getAccountsFromSubject(subject: SubjectMetadata) {
   return getAccountsFromPermission(getCaip25PermissionFromSubject(subject));
 }
 
-function getChainsFromSubject(subject) {
+function getChainsFromSubject(subject: SubjectMetadata) {
   return getChainsFromPermission(getCaip25PermissionFromSubject(subject));
 }
 
@@ -306,11 +326,11 @@ function getChainsFromPermission(caip25Permission) {
   return caip25Caveat ? getPermittedEthChainIds(caip25Caveat.value) : [];
 }
 
-function subjectSelector(state, origin) {
+function subjectSelector(state: MetaMaskReduxState, origin: string) {
   return origin && state.metamask.subjects?.[origin];
 }
 
-export function getAccountToConnectToActiveTab(state) {
+export function getAccountToConnectToActiveTab(state: MetaMaskReduxState) {
   const selectedInternalAccount = getSelectedInternalAccount(state);
   const connectedAccounts = getPermittedAccountsForCurrentTab(state);
 
@@ -337,7 +357,9 @@ export function getAccountToConnectToActiveTab(state) {
   return undefined;
 }
 
-export function getOrderedConnectedAccountsForActiveTab(state) {
+export function getOrderedConnectedAccountsForActiveTab(
+  state: MetaMaskReduxState,
+) {
   const {
     activeTab,
     metamask: { permissionHistory },
@@ -374,7 +396,10 @@ export function getOrderedConnectedAccountsForActiveTab(state) {
     );
 }
 
-export function getOrderedConnectedAccountsForConnectedDapp(state, activeTab) {
+export function getOrderedConnectedAccountsForConnectedDapp(
+  state: MetaMaskReduxState,
+  activeTab: MetaMaskReduxState['activeTab'],
+) {
   const {
     metamask: { permissionHistory },
   } = state;
@@ -413,7 +438,7 @@ export function getOrderedConnectedAccountsForConnectedDapp(state, activeTab) {
     );
 }
 
-export function getPermissionsForActiveTab(state) {
+export function getPermissionsForActiveTab(state: MetaMaskReduxState) {
   const { activeTab, metamask } = state;
   const { subjects = {} } = metamask;
 
@@ -426,7 +451,7 @@ export function getPermissionsForActiveTab(state) {
   });
 }
 
-export function activeTabHasPermissions(state) {
+export function activeTabHasPermissions(state: MetaMaskReduxState) {
   const { activeTab, metamask } = state;
   const { subjects = {} } = metamask;
 
@@ -438,11 +463,11 @@ export function activeTabHasPermissions(state) {
 /**
  * Get the connected accounts history for all origins.
  *
- * @param {Record<string, unknown>} state - The MetaMask state.
- * @returns {Record<string, { accounts: Record<string, number> }>} An object
+ * @param state - The MetaMask state.
+ * @returns An object of type `Record<string, { accounts: Record<string, number> }>`
  * with account connection histories by origin.
  */
-export function getLastConnectedInfo(state) {
+export function getLastConnectedInfo(state: MetaMaskReduxState) {
   const { permissionHistory = {} } = state.metamask;
   return Object.keys(permissionHistory).reduce((lastConnectedInfo, origin) => {
     if (permissionHistory[origin].eth_accounts) {
@@ -455,7 +480,7 @@ export function getLastConnectedInfo(state) {
   }, {});
 }
 
-export function getSnapInstallOrUpdateRequests(state) {
+export function getSnapInstallOrUpdateRequests(state: MetaMaskReduxState) {
   return Object.values(state.metamask.pendingApprovals)
     .filter(
       ({ type }) =>
@@ -466,30 +491,30 @@ export function getSnapInstallOrUpdateRequests(state) {
     .map(({ requestData }) => requestData);
 }
 
-export function getFirstSnapInstallOrUpdateRequest(state) {
+export function getFirstSnapInstallOrUpdateRequest(state: MetaMaskReduxState) {
   return getSnapInstallOrUpdateRequests(state)?.[0] ?? null;
 }
 
-export function getPermissionsRequests(state) {
+export function getPermissionsRequests(state: MetaMaskReduxState) {
   return getApprovalRequestsByType(
     state,
     ApprovalType.WalletRequestPermissions,
   )?.map(({ requestData }) => requestData);
 }
 
-export function getFirstPermissionRequest(state) {
+export function getFirstPermissionRequest(state: MetaMaskReduxState) {
   const requests = getPermissionsRequests(state);
-  return requests && requests[0] ? requests[0] : null;
+  return requests?.[0] ?? null;
 }
 
-export function getPermissions(state, origin) {
+export function getPermissions(state: MetaMaskReduxState, origin: string) {
   return getPermissionSubjects(state)[origin]?.permissions;
 }
 
-export function getRequestState(state, id) {
+export function getRequestState(state: MetaMaskReduxState, id: string) {
   return state.metamask.pendingApprovals[id]?.requestState;
 }
 
-export function getRequestType(state, id) {
+export function getRequestType(state: MetaMaskReduxState, id: string) {
   return state.metamask.pendingApprovals[id]?.type;
 }

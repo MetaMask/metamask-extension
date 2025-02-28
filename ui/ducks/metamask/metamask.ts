@@ -1,6 +1,13 @@
 import { addHexPrefix, isHexString } from 'ethereumjs-util';
+import type { AnyAction } from 'redux';
 import { createSelector } from 'reselect';
-import { mergeGasFeeEstimates } from '@metamask/transaction-controller';
+import {
+  mergeGasFeeEstimates,
+  TransactionMeta,
+} from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
+
+import { FlattenedBackgroundStateProxy } from '../../../shared/types/background';
 import { AlertTypes } from '../../../shared/constants/alerts';
 import {
   GasEstimateTypes,
@@ -21,6 +28,7 @@ import {
   getSelectedNetworkClientId,
 } from '../../../shared/modules/selectors/networks';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
+import { MetaMaskReduxState } from '../../store/store';
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
@@ -63,14 +71,16 @@ const initialState = {
 };
 
 /**
- * Temporary types for this slice so that inferrence of MetaMask state tree can
+ * Temporary types for this slice so that inference of MetaMask state tree can
  * occur
  *
- * @param {typeof initialState} state - State
- * @param {any} action
- * @returns {typeof initialState}
+ * @param state - State
+ * @param action
  */
-export default function reduceMetamask(state = initialState, action) {
+export default function reduceMetamask(
+  state: FlattenedBackgroundStateProxy,
+  action: AnyAction,
+): FlattenedBackgroundStateProxy {
   // I don't think we should be spreading initialState into this. Once the
   // state tree has begun by way of the first reduce call the initialState is
   // set. The only time it should be used again is if we reset the state with a
@@ -79,7 +89,7 @@ export default function reduceMetamask(state = initialState, action) {
   // for this slice*. I attempted to remove this and it caused nearly 40 test
   // failures. We are going to refactor this slice anyways, possibly removing
   // it so we will fix this issue when that time comes.
-  const metamaskState = { ...initialState, ...state };
+  const metamaskState = { ...initialState, ...(state ?? {}) };
   switch (action.type) {
     case actionConstants.UPDATE_METAMASK_STATE:
       return { ...metamaskState, ...action.value };
@@ -176,7 +186,7 @@ export default function reduceMetamask(state = initialState, action) {
   }
 }
 
-const toHexWei = (value, expectHexWei) => {
+const toHexWei = (value: string, expectHexWei: boolean) => {
   return addHexPrefix(expectHexWei ? value : decGWEIToHexWEI(value));
 };
 
@@ -188,6 +198,13 @@ export function updateGasFees({
   maxFeePerGas,
   transaction,
   expectHexWei = false,
+}: {
+  gasPrice: string;
+  gasLimit: string;
+  maxPriorityFeePerGas: string;
+  maxFeePerGas: string;
+  transaction: TransactionMeta;
+  expectHexWei: boolean;
 }) {
   return async (dispatch) => {
     const txParamsCopy = { ...transaction.txParams, gas: gasLimit };
@@ -217,24 +234,26 @@ export function updateGasFees({
 
 // Selectors
 
-export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
+export const getAlertEnabledness = (state: MetaMaskReduxState) =>
+  state.metamask.alertEnabledness;
 
-export const getUnconnectedAccountAlertEnabledness = (state) =>
-  getAlertEnabledness(state)[AlertTypes.unconnectedAccount];
+export const getUnconnectedAccountAlertEnabledness = (
+  state: MetaMaskReduxState,
+) => getAlertEnabledness(state)[AlertTypes.unconnectedAccount];
 
-export const getWeb3ShimUsageAlertEnabledness = (state) =>
+export const getWeb3ShimUsageAlertEnabledness = (state: MetaMaskReduxState) =>
   getAlertEnabledness(state)[AlertTypes.web3ShimUsage];
 
-export const getUnconnectedAccountAlertShown = (state) =>
+export const getUnconnectedAccountAlertShown = (state: MetaMaskReduxState) =>
   state.metamask.unconnectedAccountAlertShownOrigins;
 
-export const getTokens = (state) => state.metamask.tokens;
+export const getTokens = (state: MetaMaskReduxState) => state.metamask.tokens;
 
-export function getNftsDropdownState(state) {
+export function getNftsDropdownState(state: MetaMaskReduxState) {
   return state.metamask.nftsDropdownState;
 }
 
-export const getNfts = (state) => {
+export const getNfts = (state: MetaMaskReduxState) => {
   const {
     metamask: { allNfts },
   } = state;
@@ -245,7 +264,7 @@ export const getNfts = (state) => {
   return allNfts?.[selectedAddress]?.[chainId] ?? [];
 };
 
-export const getNFTsByChainId = (state, chainId) => {
+export const getNFTsByChainId = (state: MetaMaskReduxState, chainId: Hex) => {
   const {
     metamask: { allNfts },
   } = state;
@@ -254,7 +273,7 @@ export const getNFTsByChainId = (state, chainId) => {
   return allNfts?.[selectedAddress]?.[chainId] ?? [];
 };
 
-export const getNftContracts = (state) => {
+export const getNftContracts = (state: MetaMaskReduxState) => {
   const {
     metamask: { allNftContracts },
   } = state;
@@ -263,28 +282,28 @@ export const getNftContracts = (state) => {
   return allNftContracts?.[selectedAddress]?.[chainId] ?? [];
 };
 
-export function getBlockGasLimit(state) {
+export function getBlockGasLimit(state: MetaMaskReduxState) {
   return state.metamask.currentBlockGasLimit;
 }
 
-export function getNativeCurrency(state) {
+export function getNativeCurrency(state: MetaMaskReduxState) {
   return getProviderConfig(state).ticker;
 }
 
-export function getConversionRate(state) {
+export function getConversionRate(state: MetaMaskReduxState) {
   return state.metamask.currencyRates[getProviderConfig(state).ticker]
     ?.conversionRate;
 }
 
-export function getCurrencyRates(state) {
+export function getCurrencyRates(state: MetaMaskReduxState) {
   return state.metamask.currencyRates;
 }
 
-export function getSendHexDataFeatureFlagState(state) {
+export function getSendHexDataFeatureFlagState(state: MetaMaskReduxState) {
   return state.metamask.featureFlags.sendHexData;
 }
 
-export function getSendToAccounts(state) {
+export function getSendToAccounts(state: MetaMaskReduxState) {
   const fromAccounts = accountsWithSendEtherInfoSelector(state);
   const addressBookAccounts = getAddressBook(state);
   return [...fromAccounts, ...addressBookAccounts];
@@ -295,7 +314,7 @@ export function getSendToAccounts(state) {
  *
  * @param state
  */
-export function isNotEIP1559Network(state) {
+export function isNotEIP1559Network(state: MetaMaskReduxState) {
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
   return (
     state.metamask.networksMetadata[selectedNetworkClientId].EIPS[1559] ===
@@ -309,7 +328,10 @@ export function isNotEIP1559Network(state) {
  * @param state
  * @param networkClientId - The optional network client ID to check for EIP-1559 support. Defaults to the currently selected network.
  */
-export function isEIP1559Network(state, networkClientId) {
+export function isEIP1559Network(
+  state: MetaMaskReduxState,
+  networkClientId?: string,
+) {
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
 
   return (
@@ -319,28 +341,37 @@ export function isEIP1559Network(state, networkClientId) {
   );
 }
 
-function getGasFeeControllerEstimateType(state) {
+function getGasFeeControllerEstimateType(state: MetaMaskReduxState) {
   return state.metamask.gasEstimateType;
 }
 
-function getGasFeeControllerEstimateTypeByChainId(state, chainId) {
+function getGasFeeControllerEstimateTypeByChainId(
+  state: MetaMaskReduxState,
+  chainId: Hex,
+) {
   return state.metamask.gasFeeEstimatesByChainId?.[chainId]?.gasEstimateType;
 }
 
-function getGasFeeControllerEstimates(state) {
+function getGasFeeControllerEstimates(state: MetaMaskReduxState) {
   return state.metamask.gasFeeEstimates;
 }
 
-function getGasFeeControllerEstimatesByChainId(state, chainId) {
+function getGasFeeControllerEstimatesByChainId(
+  state: MetaMaskReduxState,
+  chainId: Hex,
+) {
   return state.metamask.gasFeeEstimatesByChainId?.[chainId]?.gasFeeEstimates;
 }
 
-function getTransactionGasFeeEstimates(state) {
+function getTransactionGasFeeEstimates(state: MetaMaskReduxState) {
   const transactionMetadata = state.confirmTransaction?.txData;
   return transactionMetadata?.gasFeeEstimates;
 }
 
-function getTransactionGasFeeEstimatesByChainId(state, chainId) {
+function getTransactionGasFeeEstimatesByChainId(
+  state: MetaMaskReduxState,
+  chainId: Hex,
+) {
   const transactionMetadata = state.confirmTransaction?.txData;
   const transactionChainId = transactionMetadata?.chainId;
 
@@ -380,10 +411,10 @@ export const getGasEstimateTypeByChainId = createSelector(
 /**
  * Returns the balances of imported and detected tokens across all accounts and chains.
  *
- * @param {*} state
- * @returns { import('@metamask/assets-controllers').TokenBalancesControllerState['tokenBalances']}
+ * @param state
+ * @returns Object of type `TokenBalancesControllerState['tokenBalances']`
  */
-export function getTokenBalances(state) {
+export function getTokenBalances(state: MetaMaskReduxState) {
   return state.metamask.tokenBalances;
 }
 
@@ -417,16 +448,19 @@ export const getGasFeeEstimates = createSelector(
   },
 );
 
-export function getEstimatedGasFeeTimeBounds(state) {
+export function getEstimatedGasFeeTimeBounds(state: MetaMaskReduxState) {
   return state.metamask.estimatedGasFeeTimeBounds;
 }
 
-export function getEstimatedGasFeeTimeBoundsByChainId(state, chainId) {
+export function getEstimatedGasFeeTimeBoundsByChainId(
+  state: MetaMaskReduxState,
+  chainId: Hex,
+) {
   return state.metamask.gasFeeEstimatesByChainId?.[chainId]
     ?.estimatedGasFeeTimeBounds;
 }
 
-export function getIsGasEstimatesLoading(state) {
+export function getIsGasEstimatesLoading(state: MetaMaskReduxState) {
   const networkAndAccountSupports1559 =
     checkNetworkAndAccountSupports1559(state);
   const gasEstimateType = getGasEstimateType(state);
@@ -447,8 +481,8 @@ export function getIsGasEstimatesLoading(state) {
 }
 
 export function getIsGasEstimatesLoadingByChainId(
-  state,
-  { chainId, networkClientId },
+  state: MetaMaskReduxState,
+  { chainId, networkClientId }: { chainId: Hex; networkClientId: string },
 ) {
   const networkAndAccountSupports1559 = checkNetworkAndAccountSupports1559(
     state,
@@ -471,34 +505,40 @@ export function getIsGasEstimatesLoadingByChainId(
   return isGasEstimatesLoading;
 }
 
-export function getIsNetworkBusyByChainId(state, chainId) {
+export function getIsNetworkBusyByChainId(
+  state: MetaMaskReduxState,
+  chainId: Hex,
+) {
   const gasFeeEstimates = getGasFeeEstimatesByChainId(state, chainId);
   return gasFeeEstimates?.networkCongestion >= NetworkCongestionThresholds.busy;
 }
 
-export function getCompletedOnboarding(state) {
+export function getCompletedOnboarding(state: MetaMaskReduxState) {
   return state.metamask.completedOnboarding;
 }
-export function getIsInitialized(state) {
+export function getIsInitialized(state: MetaMaskReduxState) {
   return state.metamask.isInitialized;
 }
 
-export function getIsUnlocked(state) {
+export function getIsUnlocked(state: MetaMaskReduxState) {
   return state.metamask.isUnlocked;
 }
 
-export function getSeedPhraseBackedUp(state) {
+export function getSeedPhraseBackedUp(state: MetaMaskReduxState) {
   return state.metamask.seedPhraseBackedUp;
 }
 
 /**
  * Given the redux state object and an address, finds a keyring that contains that address, if one exists
  *
- * @param {object} state - the redux state object
- * @param {string} address - the address to search for among the keyring addresses
- * @returns {object | undefined} The keyring which contains the passed address, or undefined
+ * @param state - the redux state object
+ * @param address - the address to search for among the keyring addresses
+ * @returns The keyring which contains the passed address, or undefined
  */
-export function findKeyringForAddress(state, address) {
+export function findKeyringForAddress(
+  state: MetaMaskReduxState,
+  address: string,
+) {
   const keyring = state.metamask.keyrings.find((kr) => {
     return kr.accounts.some((account) => {
       return (
@@ -514,21 +554,21 @@ export function findKeyringForAddress(state, address) {
 /**
  * Given the redux state object, returns the users preferred ledger transport type
  *
- * @param {object} state - the redux state object
- * @returns {string} The users preferred ledger transport type. One of 'webhid' on chrome or 'u2f' on firefox
+ * @param state - the redux state object
+ * @returns The users preferred ledger transport type. One of 'webhid' on chrome or 'u2f' on firefox
  */
-export function getLedgerTransportType(state) {
+export function getLedgerTransportType(state: MetaMaskReduxState) {
   return state.metamask.ledgerTransportType;
 }
 
 /**
  * Given the redux state object and an address, returns a boolean indicating whether the passed address is part of a Ledger keyring
  *
- * @param {object} state - the redux state object
- * @param {string} address - the address to search for among all keyring addresses
- * @returns {boolean} true if the passed address is part of a ledger keyring, and false otherwise
+ * @param state - the redux state object
+ * @param address - the address to search for among all keyring addresses
+ * @returns true if the passed address is part of a ledger keyring, and false otherwise
  */
-export function isAddressLedger(state, address) {
+export function isAddressLedger(state: MetaMaskReduxState, address: string) {
   const keyring = findKeyringForAddress(state, address);
 
   return keyring?.type === KeyringType.ledger;
@@ -538,15 +578,15 @@ export function isAddressLedger(state, address) {
  * Given the redux state object, returns a boolean indicating whether the user has any Ledger accounts added to MetaMask (i.e. Ledger keyrings
  * in state)
  *
- * @param {object} state - the redux state object
- * @returns {boolean} true if the user has a Ledger account and false otherwise
+ * @param state - the redux state object
+ * @returns true if the user has a Ledger account and false otherwise
  */
-export function doesUserHaveALedgerAccount(state) {
+export function doesUserHaveALedgerAccount(state: MetaMaskReduxState) {
   return state.metamask.keyrings.some((kr) => {
     return kr.type === KeyringType.ledger;
   });
 }
 
-export function getCurrentCurrency(state) {
+export function getCurrentCurrency(state: MetaMaskReduxState) {
   return state.metamask.currentCurrency;
 }
