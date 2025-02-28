@@ -25,6 +25,7 @@ import {
   getMultichainNetworkControllerMessenger,
   getMultichainAssetsRatesControllerMessenger,
 } from './multichain';
+import { getSamplePetnamesControllerMessenger } from './sample-petnames-controller-messenger';
 
 export const CONTROLLER_MESSENGERS = {
   CronjobController: {
@@ -33,6 +34,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   ExecutionService: {
     getMessenger: getExecutionServiceMessenger,
+    getInitMessenger: noop,
+  },
+  SamplePetnamesController: {
+    getMessenger: getSamplePetnamesControllerMessenger,
     getInitMessenger: noop,
   },
   MultichainAssetsController: {
