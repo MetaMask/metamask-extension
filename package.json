@@ -224,7 +224,8 @@
     "tslib@npm:^2.4.0": "~2.6.0",
     "tslib@npm:^2.6.2": "~2.6.0",
     "@ethersproject/signing-key/elliptic": "^6.6.1",
-    "gridplus-sdk/elliptic": "^6.6.1"
+    "gridplus-sdk/elliptic": "^6.6.1",
+    "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@^19.2.1-preview-b8f29301"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -254,7 +255,6 @@
     "@metamask-institutional/sdk": "^0.2.0",
     "@metamask-institutional/transaction-update": "^0.2.6",
     "@metamask-institutional/types": "^1.2.0",
-    "@metamask-previews/keyring-controller": "^19.2.1-preview-b8f29301",
     "@metamask/abi-utils": "^2.0.2",
     "@metamask/account-watcher": "^4.1.2",
     "@metamask/accounts-controller": "^24.1.0",
@@ -283,6 +283,7 @@
     "@metamask/json-rpc-engine": "^10.0.0",
     "@metamask/json-rpc-middleware-stream": "^8.0.4",
     "@metamask/keyring-api": "^17.2.1",
+    "@metamask/keyring-controller": "^19.2.0",
     "@metamask/keyring-internal-api": "^5.0.0",
     "@metamask/keyring-snap-client": "^4.0.1",
     "@metamask/logging-controller": "^6.0.4",
