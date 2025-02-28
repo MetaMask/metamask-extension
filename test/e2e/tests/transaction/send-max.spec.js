@@ -164,7 +164,7 @@ describe('Sending with max amount', function () {
     });
   });
 
-  it.only('adjust max amount when gas estimations changed', async function () {
+  it('adjust max amount when gas estimations changed', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -175,7 +175,6 @@ describe('Sending with max amount', function () {
           })
           .build(),
         localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
-        // Some assertions in this test take 15 seconds to run - so we need to increase the timeout
         driverOptions: { timeOut: 15000 },
         title: this.test.fullTitle(),
       },
@@ -218,10 +217,6 @@ describe('Sending with max amount', function () {
               statusCode: 200,
             };
           });
-
-        // Wait atleast 10 seconds for the gas fee to change
-        // this is because GasFeeController interval is 10 seconds
-        await driver.delay(10000);
 
         // verify gas fee changed
         await driver.waitForSelector({
