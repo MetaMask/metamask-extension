@@ -1,9 +1,10 @@
 import { addHexPrefix, isHexString } from 'ethereumjs-util';
-import type { AnyAction } from 'redux';
+import type { AnyAction, Dispatch } from 'redux';
 import { createSelector } from 'reselect';
 import {
   mergeGasFeeEstimates,
   TransactionMeta,
+  TransactionParams,
 } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 
@@ -109,19 +110,21 @@ export default function reduceMetamask(
         return internalAccount.address.toLowerCase() === account.toLowerCase();
       });
 
-      const internalAccounts = {
-        ...metamaskState.internalAccounts,
-        accounts: {
-          ...metamaskState.internalAccounts.accounts,
-          [accountToUpdate.id]: {
-            ...accountToUpdate,
-            metadata: {
-              ...accountToUpdate.metadata,
-              name,
+      const internalAccounts = accountToUpdate
+        ? {
+            ...metamaskState.internalAccounts,
+            accounts: {
+              ...metamaskState.internalAccounts.accounts,
+              [accountToUpdate.id]: {
+                ...accountToUpdate,
+                metadata: {
+                  ...accountToUpdate.metadata,
+                  name,
+                },
+              },
             },
-          },
-        },
-      };
+          }
+        : { ...metamaskState.internalAccounts };
       return Object.assign(metamaskState, { internalAccounts });
     }
 
@@ -191,6 +194,16 @@ const toHexWei = (value: string, expectHexWei: boolean) => {
 };
 
 // Action Creators
+
+type UpdateGasFeeOptions = Required<
+  Pick<
+    TransactionParams,
+    'gasPrice' | 'gasLimit' | 'maxPriorityFeePerGas' | 'maxFeePerGas'
+  >
+> & {
+  transaction: TransactionMeta;
+  expectHexWei: boolean;
+};
 export function updateGasFees({
   gasPrice,
   gasLimit,
@@ -198,19 +211,12 @@ export function updateGasFees({
   maxFeePerGas,
   transaction,
   expectHexWei = false,
-}: {
-  gasPrice: string;
-  gasLimit: string;
-  maxPriorityFeePerGas: string;
-  maxFeePerGas: string;
-  transaction: TransactionMeta;
-  expectHexWei: boolean;
-}) {
-  return async (dispatch) => {
+}: UpdateGasFeeOptions) {
+  return async (dispatch: Dispatch) => {
     const txParamsCopy = { ...transaction.txParams, gas: gasLimit };
     if (gasPrice) {
       dispatch(
-        setCustomGasPrice(toHexWei(txParamsCopy.gasPrice, expectHexWei)),
+        setCustomGasPrice(toHexWei(txParamsCopy.gasPrice ?? '0', expectHexWei)),
       );
       txParamsCopy.gasPrice = toHexWei(gasPrice, expectHexWei);
     } else if (maxFeePerGas && maxPriorityFeePerGas) {
@@ -226,9 +232,12 @@ export function updateGasFees({
 
     const customGasLimit = isHexString(addHexPrefix(gasLimit))
       ? addHexPrefix(gasLimit)
-      : addHexPrefix(gasLimit.toString(16));
+      : addHexPrefix(gasLimit.toString());
     dispatch(setCustomGasLimit(customGasLimit));
-    await dispatch(updateTransactionGasFees(updatedTx.id, updatedTx));
+    await dispatch(
+      // TODO: Fix type for ThunkAction involving async background update
+      updateTransactionGasFees(updatedTx.id, updatedTx) as unknown as AnyAction,
+    );
   };
 }
 
@@ -360,7 +369,9 @@ function getGasFeeControllerEstimatesByChainId(
   state: MetaMaskReduxState,
   chainId: Hex,
 ) {
-  return state.metamask.gasFeeEstimatesByChainId?.[chainId]?.gasFeeEstimates;
+  return (
+    state.metamask.gasFeeEstimatesByChainId?.[chainId]?.gasFeeEstimates ?? {}
+  );
 }
 
 function getTransactionGasFeeEstimates(state: MetaMaskReduxState) {
@@ -422,7 +433,12 @@ export const getGasFeeEstimatesByChainId = createSelector(
   getGasFeeControllerEstimatesByChainId,
   getTransactionGasFeeEstimatesByChainId,
   (gasFeeControllerEstimates, transactionGasFeeEstimates) => {
-    if (transactionGasFeeEstimates) {
+    if (
+      transactionGasFeeEstimates &&
+      !((obj): obj is Record<string, never> => Object.keys(obj).length === 0)(
+        gasFeeControllerEstimates,
+      )
+    ) {
       return mergeGasFeeEstimates({
         gasFeeControllerEstimates,
         transactionGasFeeEstimates,
@@ -437,7 +453,12 @@ export const getGasFeeEstimates = createSelector(
   getGasFeeControllerEstimates,
   getTransactionGasFeeEstimates,
   (gasFeeControllerEstimates, transactionGasFeeEstimates) => {
-    if (transactionGasFeeEstimates) {
+    if (
+      transactionGasFeeEstimates &&
+      !((obj): obj is Record<string, never> => Object.keys(obj).length === 0)(
+        gasFeeControllerEstimates,
+      )
+    ) {
       return mergeGasFeeEstimates({
         gasFeeControllerEstimates,
         transactionGasFeeEstimates,
@@ -510,7 +531,12 @@ export function getIsNetworkBusyByChainId(
   chainId: Hex,
 ) {
   const gasFeeEstimates = getGasFeeEstimatesByChainId(state, chainId);
-  return gasFeeEstimates?.networkCongestion >= NetworkCongestionThresholds.busy;
+  return (
+    gasFeeEstimates &&
+    'networkCongestion' in gasFeeEstimates &&
+    (gasFeeEstimates.networkCongestion ?? -Math.min) >=
+      NetworkCongestionThresholds.busy
+  );
 }
 
 export function getCompletedOnboarding(state: MetaMaskReduxState) {

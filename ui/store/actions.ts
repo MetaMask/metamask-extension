@@ -29,6 +29,7 @@ import {
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
 import {
+  DefaultGasEstimates,
   TransactionMeta,
   TransactionParams,
   TransactionType,
@@ -920,7 +921,11 @@ export function removeSlide(
 // TODO: Not a thunk, but rather a wrapper around a background call
 export function updateTransactionGasFees(
   txId: string,
-  txGasFees: Partial<TxGasFees>,
+  txGasFees:
+    | (Partial<Omit<TxGasFees, 'defaultGasEstimates'>> & {
+        defaultGasEstimates: DefaultGasEstimates;
+      })
+    | { txParams: TransactionParams },
 ): ThunkAction<
   Promise<TransactionMeta>,
   MetaMaskReduxState,
