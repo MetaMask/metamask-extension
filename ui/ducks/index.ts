@@ -6,7 +6,6 @@ import localeMessagesReducer from './locale/locale';
 import sendReducer from './send/send';
 import domainReducer from './domains';
 import appStateReducer from './app/app';
-import backgroundReducer from './background/background';
 import confirmTransactionReducer from './confirm-transaction/confirm-transaction.duck';
 import gasReducer from './gas/gas.duck';
 import { invalidCustomNetwork, unconnectedAccount } from './alerts';
@@ -22,7 +21,6 @@ export default combineReducers({
   activeTab: (s) => (s === undefined ? null : s),
   background: backgroundReducer,
   metamask: metamaskReducer,
-  background: backgroundReducer,
   appState: appStateReducer,
   DNS: domainReducer,
   history: historyReducer,
