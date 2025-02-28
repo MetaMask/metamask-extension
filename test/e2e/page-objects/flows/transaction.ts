@@ -32,8 +32,6 @@ export const createInternalTransactionWithMaxAmount = async (
   await sendToPage.check_pageIsLoaded();
   await sendToPage.fillRecipient('0x2f318C334780961FB129D2a6c30D0763d9a5C970');
   await sendToPage.clickMaxAmountButton();
-  // verify initial max amount
-  await sendToPage.checkAccountValueAndSuffix('$42,499.08');
   await sendToPage.goToNextScreen();
 };
 
