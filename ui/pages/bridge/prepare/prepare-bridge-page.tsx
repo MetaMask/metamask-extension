@@ -221,7 +221,7 @@ const PrepareBridgePage = () => {
 
   // Resets the banner visibility when new alerts found
   const [isTokenAlertBannerOpen, setIsTokenAlertBannerOpen] = useState(true);
-  useEffect(() => setIsLowReturnBannerOpen(true), [tokenAlert]);
+  useEffect(() => setIsTokenAlertBannerOpen(true), [tokenAlert]);
 
   // Background updates are debounced when the switch button is clicked
   // To prevent putting the frontend in an unexpected state, prevent the user
@@ -787,7 +787,7 @@ const PrepareBridgePage = () => {
             ref={tokenAlertBannerRef}
             marginInline={4}
             marginBottom={3}
-            title={tokenAlert.titleId ? t('tokenAlert.titleId') : ''}
+            title={tokenAlert.titleId ? t(tokenAlert.titleId) : ''}
             severity={
               tokenAlert.type === TokenFeatureType.MALICIOUS
                 ? BannerAlertSeverity.Danger
@@ -795,7 +795,7 @@ const PrepareBridgePage = () => {
             }
             description={
               tokenAlert.descriptionId
-                ? t('tokenAlert.descriptionId')
+                ? t(tokenAlert.descriptionId)
                 : tokenAlert.description
             }
             textAlign={TextAlign.Left}
