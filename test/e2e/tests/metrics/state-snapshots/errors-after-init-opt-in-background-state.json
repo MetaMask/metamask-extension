@@ -140,7 +140,6 @@
     "marketingCampaignCookieId": null,
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
-    "previousUserTraits": "object",
     "fragments": "object",
     "segmentApiCalls": "object"
   },
