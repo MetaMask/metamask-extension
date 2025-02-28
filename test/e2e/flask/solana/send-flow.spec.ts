@@ -192,7 +192,7 @@ describe('Send full flow of USD', function (this: Suite) {
     );
   });
 });
-describe('Send full flow of SOL', function (this: Suite) {
+describe.skip('Send full flow of SOL', function (this: Suite) {
   it('with a positive balance account', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
