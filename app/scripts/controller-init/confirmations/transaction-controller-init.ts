@@ -45,6 +45,9 @@ import {
 import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import { ControllerFlatState } from '../controller-list';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
+// TODO: Fix import path
+// eslint-disable-next-line import/no-restricted-paths
+import { MetaMaskReduxState } from '../../../../ui/store/store';
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
@@ -119,8 +122,14 @@ export const TransactionControllerInit: ControllerInitFunction<
       isResubmitEnabled: () => {
         const uiState = getUIState(getFlatState());
         return !(
-          getSmartTransactionsPreferenceEnabled(uiState) &&
-          getCurrentChainSupportsSmartTransactions(uiState)
+          getSmartTransactionsPreferenceEnabled(
+            // TODO: Remove type assertion once heterogeneous selector types are implemented
+            uiState as unknown as MetaMaskReduxState,
+          ) &&
+          getCurrentChainSupportsSmartTransactions(
+            // TODO: Remove type assertion once heterogeneous selector types are implemented
+            uiState as unknown as MetaMaskReduxState,
+          )
         );
       },
     },
@@ -237,7 +246,10 @@ function publishSmartTransactionHook(
     smartTransactionsController,
     controllerMessenger: hookControllerMessenger,
     isSmartTransaction,
-    isHardwareWallet: isHardwareWallet(uiState),
+    isHardwareWallet: isHardwareWallet(
+      // TODO: Remove type assertion once heterogeneous selector types are implemented
+      uiState as unknown as MetaMaskReduxState,
+    ),
     // @ts-expect-error Smart transaction selector return type does not match FeatureFlags type from hook
     featureFlags,
   });

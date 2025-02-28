@@ -5,8 +5,8 @@ import {
   CHAIN_ID_TO_RPC_URL_MAP,
 } from '../../shared/constants/network';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../shared/constants/swaps';
-import { InternalAccountWithBalance } from './selectors.types';
 import { EtherDenomination } from '../../shared/constants/common';
+import type { InternalAccountWithBalance } from './selectors.types';
 
 export const isPropertyKeyOf = (
   key: unknown,
