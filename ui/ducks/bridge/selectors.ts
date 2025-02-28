@@ -28,7 +28,10 @@ import {
   BRIDGE_PREFERRED_GAS_ESTIMATE,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
 } from '../../../shared/constants/bridge';
-import type { BridgeControllerState } from '../../../shared/types/bridge';
+import type {
+  BridgeControllerState,
+  SolanaFees,
+} from '../../../shared/types/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
 import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
@@ -50,6 +53,7 @@ import {
   calcSwapRate,
   calcToAmount,
   calcEstimatedAndMaxTotalGasFee,
+  calcSolanaTotalNetworkFee,
 } from '../../pages/bridge/utils/quote';
 import {
   isNativeAddress,
@@ -99,8 +103,9 @@ export const getAllBridgeableNetworks = createDeepEqualSelector(
         {
           ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
           blockExplorerUrls: [],
-          name: 'Solana',
-          nativeCurrency: 'sol',
+          name: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA].nickname,
+          nativeCurrency:
+            MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA].ticker,
           rpcEndpoints: [{ url: '', type: '', networkClientId: '' }],
           defaultRpcEndpointIndex: 0,
           chainId: MultichainNetworks.SOLANA,
@@ -218,6 +223,16 @@ export const getBridgeQuotesConfig = (state: BridgeAppState) =>
     BridgeFeatureFlagsKey.EXTENSION_CONFIG
   ] ?? {};
 
+export const getQuoteRefreshRate = createSelector(
+  getBridgeQuotesConfig,
+  getFromChain,
+  (extensionConfig, fromChain) =>
+    (fromChain &&
+      extensionConfig.chains[formatChainIdToCaip(fromChain.chainId)]
+        ?.refreshRate) ??
+    extensionConfig.refreshRate,
+);
+
 const _getBridgeFeesPerGas = createSelector(
   getGasFeeEstimates,
   (gasFeeEstimates) => ({
@@ -255,7 +270,7 @@ export const getFromTokenConversionRate = createSelector(
     assetsRates,
     fromToken,
     nativeToUsdRate,
-    nonEvmNativeToUsdRate,
+    nonEvmNativeConversionRate,
     nativeToCurrencyRate,
     fromTokenExchangeRate,
   ) => {
@@ -264,12 +279,12 @@ export const getFromTokenConversionRate = createSelector(
         // For SOLANA tokens, we use the conversion rates provided by the multichain rates controller
         const tokenToNativeAssetRate = tokenPriceInNativeAsset(
           assetsRates[fromToken.address]?.rate,
-          nonEvmNativeToUsdRate.sol.conversionRate,
+          nonEvmNativeConversionRate.sol.conversionRate,
         );
         return exchangeRatesFromNativeAndCurrencyRates(
           tokenToNativeAssetRate,
-          nonEvmNativeToUsdRate.sol.conversionRate,
-          nonEvmNativeToUsdRate.sol.usdConversionRate,
+          nonEvmNativeConversionRate.sol.conversionRate,
+          nonEvmNativeConversionRate.sol.usdConversionRate,
         );
       }
       // For EVM tokens, we use the market data to get the exchange rate
@@ -295,6 +310,7 @@ export const getFromTokenConversionRate = createSelector(
 export const getToTokenConversionRate = createDeepEqualSelector(
   getToChain,
   getMarketData,
+  getAssetsRates, // multichain equivalent of getMarketData
   getToToken,
   getNetworkConfigurationsByChainId,
   (state) => ({
@@ -302,12 +318,15 @@ export const getToTokenConversionRate = createDeepEqualSelector(
     toTokenExchangeRate: state.bridge.toTokenExchangeRate,
     toTokenUsdExchangeRate: state.bridge.toTokenUsdExchangeRate,
   }),
+  getMultichainCoinRates, // multichain native rates
   (
     toChain,
     marketData,
+    assetsRates,
     toToken,
     allNetworksByChainId,
     { state, toTokenExchangeRate, toTokenUsdExchangeRate },
+    nonEvmNativeConversionRate,
   ) => {
     // When the toChain is not imported, the exchange rate to native asset is not available
     // The rate in the bridge state is used instead
@@ -321,7 +340,20 @@ export const getToTokenConversionRate = createDeepEqualSelector(
         usd: toTokenUsdExchangeRate,
       };
     }
-    if (toChain?.chainId && toToken && marketData) {
+    if (toChain?.chainId && toToken) {
+      if (toChain.chainId === MultichainNetworks.SOLANA) {
+        // For SOLANA tokens, we use the conversion rates provided by the multichain rates controller
+        const tokenToNativeAssetRate = tokenPriceInNativeAsset(
+          assetsRates[toToken.address]?.rate,
+          nonEvmNativeConversionRate.sol.conversionRate,
+        );
+        return exchangeRatesFromNativeAndCurrencyRates(
+          tokenToNativeAssetRate,
+          nonEvmNativeConversionRate.sol.conversionRate,
+          nonEvmNativeConversionRate.sol.usdConversionRate,
+        );
+      }
+
       const { chainId } = toChain;
 
       const nativeToCurrencyRate = selectConversionRateByChainId(
@@ -347,6 +379,7 @@ const _getQuotesWithMetadata = createSelector(
   getToTokenConversionRate,
   getFromTokenConversionRate,
   getConversionRate,
+  getMultichainCoinRates,
   getUSDConversionRate,
   _getBridgeFeesPerGas,
   (
@@ -354,6 +387,7 @@ const _getQuotesWithMetadata = createSelector(
     toTokenExchangeRate,
     fromTokenExchangeRate,
     nativeToDisplayCurrencyExchangeRate,
+    nonEvmNativeConversionRate,
     nativeToUsdExchangeRate,
     {
       estimatedBaseFeeInDecGwei,
@@ -361,39 +395,55 @@ const _getQuotesWithMetadata = createSelector(
       maxFeePerGasInDecGwei,
     },
   ): (QuoteResponse & QuoteMetadata)[] => {
-    const newQuotes = quotes.map((quote: QuoteResponse) => {
+    const newQuotes = quotes.map((quote: QuoteResponse & SolanaFees) => {
+      const isSolanaQuote =
+        formatChainIdToCaip(quote.quote.srcChainId) ===
+          MultichainNetworks.SOLANA && quote.solanaFeesInLamports;
+
       const toTokenAmount = calcToAmount(
         quote.quote,
         toTokenExchangeRate.valueInCurrency,
         toTokenExchangeRate.usd,
       );
-      const gasFee = calcEstimatedAndMaxTotalGasFee({
-        bridgeQuote: quote,
-        estimatedBaseFeeInDecGwei,
-        maxFeePerGasInDecGwei,
-        maxPriorityFeePerGasInDecGwei,
-        nativeToDisplayCurrencyExchangeRate,
-        nativeToUsdExchangeRate,
-      });
-      const relayerFee = calcRelayerFee(
-        quote,
-        nativeToDisplayCurrencyExchangeRate,
-        nativeToUsdExchangeRate,
-      );
-      const totalEstimatedNetworkFee = {
-        amount: gasFee.amount.plus(relayerFee.amount),
-        valueInCurrency:
-          gasFee.valueInCurrency?.plus(relayerFee.valueInCurrency || '0') ??
-          null,
-        usd: gasFee.usd?.plus(relayerFee.usd || '0') ?? null,
-      };
-      const totalMaxNetworkFee = {
-        amount: gasFee.amountMax.plus(relayerFee.amount),
-        valueInCurrency:
-          gasFee.valueInCurrencyMax?.plus(relayerFee.valueInCurrency || '0') ??
-          null,
-        usd: gasFee.usdMax?.plus(relayerFee.usd || '0') ?? null,
-      };
+      let totalEstimatedNetworkFee, gasFee, totalMaxNetworkFee;
+      if (isSolanaQuote) {
+        totalEstimatedNetworkFee = calcSolanaTotalNetworkFee(
+          quote,
+          nonEvmNativeConversionRate.sol.conversionRate,
+          nonEvmNativeConversionRate.sol.usdConversionRate,
+        );
+        gasFee = totalEstimatedNetworkFee;
+        totalMaxNetworkFee = totalEstimatedNetworkFee;
+      } else {
+        gasFee = calcEstimatedAndMaxTotalGasFee({
+          bridgeQuote: quote,
+          estimatedBaseFeeInDecGwei,
+          maxFeePerGasInDecGwei,
+          maxPriorityFeePerGasInDecGwei,
+          nativeToDisplayCurrencyExchangeRate,
+          nativeToUsdExchangeRate,
+        });
+        const relayerFee = calcRelayerFee(
+          quote,
+          nativeToDisplayCurrencyExchangeRate,
+          nativeToUsdExchangeRate,
+        );
+        totalEstimatedNetworkFee = {
+          amount: gasFee.amount.plus(relayerFee.amount),
+          valueInCurrency:
+            gasFee.valueInCurrency?.plus(relayerFee.valueInCurrency || '0') ??
+            null,
+          usd: gasFee.usd?.plus(relayerFee.usd || '0') ?? null,
+        };
+        totalMaxNetworkFee = {
+          amount: gasFee.amountMax.plus(relayerFee.amount),
+          valueInCurrency:
+            gasFee.valueInCurrencyMax?.plus(
+              relayerFee.valueInCurrency || '0',
+            ) ?? null,
+          usd: gasFee.usdMax?.plus(relayerFee.usd || '0') ?? null,
+        };
+      }
 
       const sentAmount = calcSentAmount(
         quote.quote,
@@ -404,10 +454,8 @@ const _getQuotesWithMetadata = createSelector(
         toTokenAmount,
         totalEstimatedNetworkFee,
       );
-
       return {
         ...quote,
-
         // QuoteMetadata fields
         toTokenAmount,
         sentAmount,
