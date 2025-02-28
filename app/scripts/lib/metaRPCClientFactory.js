@@ -2,6 +2,7 @@ import { JsonRpcError } from '@metamask/rpc-errors';
 import SafeEventEmitter from '@metamask/safe-event-emitter';
 import createRandomId from '../../../shared/modules/random-id';
 import { TEN_SECONDS_IN_MILLISECONDS } from '../../../shared/lib/transactions-controller-utils';
+import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 
 class DisconnectError extends Error {}
 
@@ -77,7 +78,7 @@ class MetaRPCClient {
     }
 
     if (error) {
-      const e = new JsonRpcError(error.code, error.message, error.data);
+      const e = new JsonRpcError(error.code, extractEthjsErrorMessage(error.message), error.data);
       // preserve the stack from serializeError
       e.stack = error.stack;
       if (cb) {
