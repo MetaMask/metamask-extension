@@ -7,7 +7,6 @@ import {
   IconColor,
   TextAlign,
   TextVariant,
-  Display,
   TextColor,
 } from '../../helpers/constants/design-system';
 import {
@@ -15,16 +14,14 @@ import {
   ButtonIconSize,
   IconName,
   Text,
-  AvatarNetwork,
-  AvatarNetworkSize,
-  Box,
 } from '../../components/component-library';
 import { Content, Header, Page } from '../../components/multichain/pages/page';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getCurrentNetwork } from '../../selectors';
 import { SampleCounter } from './components/sample-counter';
-import { SamplePetNames } from './components/sample-pet-names';
+import { SamplePetnames } from './components/sample-petnames';
+import { SampleNetworkDisplay } from './components/sample-network-display';
 
 export function SamplePage() {
   const t = useI18nContext();
@@ -66,18 +63,13 @@ export function SamplePage() {
           in MetaMask.
         </Text>
 
-        <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-          <AvatarNetwork
-            size={AvatarNetworkSize.Md}
-            name={currentNetwork.nickname || 'Network'}
-            src={currentNetwork.rpcPrefs?.imageUrl}
-          />
-          <Text>{currentNetwork.nickname || 'Custom Network'}</Text>
-        </Box>
+        <SampleNetworkDisplay
+          name={currentNetwork.nickname || 'Custom Network'}
+          imageUrl={currentNetwork.rpcPrefs?.imageUrl}
+        />
 
         <SampleCounter />
-        {/* <SampleGasPrices /> */}
-        <SamplePetNames />
+        <SamplePetnames />
       </Content>
     </Page>
   );

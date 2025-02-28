@@ -3,17 +3,17 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { Hex } from '@metamask/utils';
 import configureStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { SamplePetNames } from './sample-pet-names';
+import { SamplePetnames } from './sample-petnames';
 
 // Import the hook before mocking it
-import { usePetNames } from '../../../ducks/metamask/sample-petnames-duck';
+import { usePetnames } from '../../../ducks/metamask/sample-petnames-duck';
 
-// Mock the usePetNames hook
+// Mock the usePetnames hook
 jest.mock('../../../ducks/metamask/sample-petnames-duck', () => ({
-  usePetNames: jest.fn(),
+  usePetnames: jest.fn(),
 }));
 
-describe('SamplePetNames', () => {
+describe('SamplePetnames', () => {
   const mockAssignPetname = jest.fn().mockResolvedValue(undefined);
   let mockStore: ReturnType<typeof configureStore>;
   let store: ReturnType<typeof mockStore>;
@@ -31,12 +31,12 @@ describe('SamplePetNames', () => {
   });
 
   it('renders with empty state when no pet names exist', () => {
-    (usePetNames as jest.Mock).mockReturnValue({
+    (usePetnames as jest.Mock).mockReturnValue({
       namesForCurrentChain: {},
       assignPetname: mockAssignPetname,
     });
 
-    renderWithProvider(<SamplePetNames />, store);
+    renderWithProvider(<SamplePetnames />, store);
 
     expect(screen.getByText('Pet Names')).toBeInTheDocument();
     expect(screen.getByText('No pet names added yet')).toBeInTheDocument();
@@ -55,12 +55,12 @@ describe('SamplePetNames', () => {
       '0xabcdef1234567890abcdef1234567890abcdef12': 'TestName2',
     };
 
-    (usePetNames as jest.Mock).mockReturnValue({
+    (usePetnames as jest.Mock).mockReturnValue({
       namesForCurrentChain: mockNames,
       assignPetname: mockAssignPetname,
     });
 
-    renderWithProvider(<SamplePetNames />, store);
+    renderWithProvider(<SamplePetnames />, store);
 
     expect(screen.getByText('Pet Names')).toBeInTheDocument();
     expect(screen.getByText('TestName1')).toBeInTheDocument();
@@ -71,7 +71,7 @@ describe('SamplePetNames', () => {
   });
 
   it('disables submit button with invalid inputs', () => {
-    renderWithProvider(<SamplePetNames />, store);
+    renderWithProvider(<SamplePetnames />, store);
 
     const addressInput = screen.getByLabelText('Address');
     const nameInput = screen.getByLabelText('Name');
@@ -107,12 +107,12 @@ describe('SamplePetNames', () => {
   });
 
   it('submits form with valid inputs', async () => {
-    (usePetNames as jest.Mock).mockImplementation(() => ({
+    (usePetnames as jest.Mock).mockImplementation(() => ({
       namesForCurrentChain: {},
       assignPetname: mockAssignPetname,
     }));
 
-    renderWithProvider(<SamplePetNames />, store);
+    renderWithProvider(<SamplePetnames />, store);
 
     const addressInput = screen.getByLabelText('Address');
     const nameInput = screen.getByLabelText('Name');
@@ -141,14 +141,14 @@ describe('SamplePetNames', () => {
     const errorMessage = 'Something went wrong';
 
     // Mock the component to show error message
-    (usePetNames as jest.Mock).mockImplementation(() => ({
+    (usePetnames as jest.Mock).mockImplementation(() => ({
       namesForCurrentChain: {},
       assignPetname: () => {
         return Promise.reject(new Error(errorMessage));
       },
     }));
 
-    renderWithProvider(<SamplePetNames />, store);
+    renderWithProvider(<SamplePetnames />, store);
 
     const addressInput = screen.getByLabelText('Address');
     const nameInput = screen.getByLabelText('Name');

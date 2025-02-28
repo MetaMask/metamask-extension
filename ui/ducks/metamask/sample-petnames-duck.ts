@@ -40,7 +40,7 @@ export const assignPetname = (chainId: Hex, address: Hex, name: string) => {
 };
 
 // Hook
-export function usePetNames() {
+export function usePetnames() {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const namesForCurrentChain = useSelector(getPetNamesForCurrentChain);
   const chainId = useSelector(getCurrentChainId);
