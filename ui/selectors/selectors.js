@@ -588,6 +588,23 @@ export function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
   return balancesByChainId;
 }
 
+export const getSelectedAccountNativeTokenCachedBalanceByChainIdDeepEq =
+  createDeepEqualSelector(
+    (state) => state.metamask.accountsByChainId,
+    getSelectedInternalAccount,
+    (accountsByChainId, { address: selectedAddress }) => {
+      const balancesByChainId = {};
+      for (const [chainId, accounts] of Object.entries(
+        accountsByChainId || {},
+      )) {
+        if (accounts[selectedAddress]) {
+          balancesByChainId[chainId] = accounts[selectedAddress].balance;
+        }
+      }
+      return balancesByChainId;
+    },
+  );
+
 /**
  * Based on the current account address, query for all tokens across all chain networks on that account,
  * including the native tokens, without hardcoding any native token information.
@@ -636,6 +653,12 @@ export function getSelectedAccountTokensAcrossChains(state) {
 
   return tokensByChain;
 }
+
+export const getSelectedAccountTokensAcrossChainsDeepEq =
+  createDeepEqualSelector(
+    getSelectedAccountTokensAcrossChains,
+    (result) => result,
+  );
 
 /**
  * Get the native token balance for a given account address and chainId
