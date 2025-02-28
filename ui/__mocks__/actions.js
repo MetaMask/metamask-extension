@@ -10,6 +10,7 @@ const {
 
 const ERC20_TOKEN_1_MOCK = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'; // WBTC
 const ERC20_TOKEN_2_MOCK = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'; // USDC
+const ERC721_TOKEN_MOCK = '0x06012c8cf97bead5deae237070f9587f8e7a266d'; // CryptoKitties
 
 const TOKEN_DETAILS_MOCK = {
   [ERC20_TOKEN_1_MOCK]: {
@@ -23,6 +24,11 @@ const TOKEN_DETAILS_MOCK = {
     standard: 'ERC20',
     decimals: 6,
     name: 'USD Coin',
+  },
+  [ERC721_TOKEN_MOCK]: {
+    address: ERC721_TOKEN_MOCK,
+    standard: 'ERC721',
+    name: 'CryptoKitties',
   },
 };
 
