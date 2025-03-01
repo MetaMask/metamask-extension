@@ -60,6 +60,8 @@ jobs:
           PR_NUMBER: ${{ github.event.issue.number }}
       - name: Checkout and setup environment
         uses: metamask/github-tools/.github/actions/checkout-and-setup@caching
+        with:
+          is-high-risk-environment: false
       - name: Get commit SHA
         id: commit-sha
         run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
@@ -79,6 +81,8 @@ jobs:
           PR_NUMBER: ${{ github.event.issue.number }}
       - name: Checkout and setup environment
         uses: metamask/github-tools/.github/actions/checkout-and-setup@caching
+        with:
+          is-high-risk-environment: false
       - name: Update LavaMoat build policy
         run: yarn lavamoat:build:auto
       - name: Cache build policy
@@ -108,6 +112,8 @@ jobs:
           PR_NUMBER: ${{ github.event.issue.number }}
       - name: Checkout and setup environment
         uses: metamask/github-tools/.github/actions/checkout-and-setup@caching
+        with:
+          is-high-risk-environment: false
       - name: Restore build policy
         uses: actions/cache/restore@v4
         with:

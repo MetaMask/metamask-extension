@@ -20,6 +20,8 @@ jobs:
     steps:
       - name: Checkout and setup environment
         uses: metamask/github-tools/.github/actions/checkout-and-setup@caching
+        with:
+          is-high-risk-environment: false
 
       - name: test:unit:coverage
         run: yarn test:unit:coverage --shard=${{ matrix.shard }}/${{ strategy.job-total }}
@@ -38,6 +40,8 @@ jobs:
     steps:
       - name: Checkout and setup environment
         uses: metamask/github-tools/.github/actions/checkout-and-setup@caching
+        with:
+          is-high-risk-environment: false
 
       - name: test:unit:webpack:coverage
         run: yarn test:unit:webpack:coverage
@@ -56,6 +60,8 @@ jobs:
     steps:
       - name: Checkout and setup environment
         uses: metamask/github-tools/.github/actions/checkout-and-setup@caching
+        with:
+          is-high-risk-environment: false
 
       - name: test:integration:coverage
         run: yarn test:integration:coverage
@@ -81,6 +87,8 @@ jobs:
     steps:
       - name: Checkout and setup environment
         uses: metamask/github-tools/.github/actions/checkout-and-setup@caching
+        with:
+          is-high-risk-environment: false
 
       - name: Download artifacts
         uses: actions/download-artifact@v4

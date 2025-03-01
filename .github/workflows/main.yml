@@ -21,6 +21,7 @@ jobs:
       - name: Checkout and setup environment
         uses: metamask/github-tools/.github/actions/checkout-and-setup@caching
         with:
+          is-high-risk-environment: false
           cache-node-modules: 'true'
 
   lint-workflows:
@@ -38,6 +39,8 @@ jobs:
     steps:
       - name: Checkout and setup environment
         uses: metamask/github-tools/.github/actions/checkout-and-setup@caching
+        with:
+          is-high-risk-environment: false
 
       - name: Check circular dependencies
         run: yarn circular-deps:check
@@ -65,6 +68,8 @@ jobs:
     steps:
       - name: Checkout and setup environment
         uses: metamask/github-tools/.github/actions/checkout-and-setup@caching
+        with:
+          is-high-risk-environment: false
 
       - run: yarn build:test
 
@@ -80,6 +85,8 @@ jobs:
     steps:
       - name: Checkout and setup environment
         uses: metamask/github-tools/.github/actions/checkout-and-setup@caching
+        with:
+          is-high-risk-environment: false
 
       - run: yarn webpack --test --no-lavamoat --no-cache --browser=chrome --lockdown --sentry --snow --env production
         env:
