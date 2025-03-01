@@ -1758,6 +1758,19 @@ export const getMemoizedMetaMaskInternalAccounts = createDeepEqualSelector(
   (internalAccounts) => internalAccounts,
 );
 
+export const getAccountInfoByCaipChainId = createDeepEqualSelector(
+  getInternalAccounts,
+  (_, caipChainId) => caipChainId,
+  (internalAccounts, caipChainId) => {
+    return internalAccounts.reduce((accountInfo, account) => {
+      if (account.scopes.includes(caipChainId)) {
+        accountInfo[account.address.toLowerCase()] = account.metadata.name;
+      }
+      return accountInfo;
+    }, {});
+  },
+);
+
 export const selectERC20TokensByChain = createDeepEqualSelector(
   (state) => state.metamask.tokensChainsCache,
   (erc20TokensByChain) => erc20TokensByChain,
