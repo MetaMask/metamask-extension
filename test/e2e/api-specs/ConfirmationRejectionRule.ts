@@ -14,6 +14,7 @@ import { addToQueue } from './helpers';
 type ConfirmationsRejectRuleOptions = {
   driver: Driver;
   only: string[];
+  requiresEthAccountsPermission: string[];
 };
 // this rule makes sure that all confirmation requests are rejected.
 // it also validates that the JSON-RPC response is an error with
@@ -29,11 +30,7 @@ export class ConfirmationsRejectRule implements Rule {
     this.driver = options.driver;
     this.only = options.only;
 
-    this.requiresEthAccountsPermission = [
-      'personal_sign',
-      'eth_signTypedData_v4',
-      'eth_getEncryptionPublicKey',
-    ];
+    this.requiresEthAccountsPermission = options.requiresEthAccountsPermission;
   }
 
   getTitle() {
@@ -99,8 +96,6 @@ export class ConfirmationsRejectRule implements Rule {
               await this.driver.executeScript(
                 `window.ethereum.request(${switchEthereumChainRequest})`,
               );
-
-              await switchToOrOpenDapp(this.driver);
             }
           } catch (e) {
             console.log(e);
