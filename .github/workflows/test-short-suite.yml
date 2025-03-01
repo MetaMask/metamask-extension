@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout and setup environment
         uses: metamask/github-tools/.github/actions/checkout-and-setup@caching
+        with:
+          is-high-risk-environment: false
 
       # test-lint-shellcheck
       - name: ShellCheck Lint

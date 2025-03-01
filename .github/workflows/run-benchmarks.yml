@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout and setup environment
         uses: metamask/github-tools/.github/actions/checkout-and-setup@caching
+        with:
+          is-high-risk-environment: false
 
       - name: Download artifact prep-build-test-${{ matrix.buildType }}
         uses: actions/download-artifact@v4

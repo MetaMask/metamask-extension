@@ -11,8 +11,10 @@ jobs:
     name: Build storybook
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout and setup secure
-        uses: metamask/github-tools/.github/actions/checkout-and-setup-secure@caching
+      - name: Checkout and setup high risk environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@caching
+        with:
+          is-high-risk-environment: true
 
       - name: Build storybook
         run: yarn storybook:build
