@@ -1,7 +1,7 @@
 # DESCRIPTION
 #
 # This script will print out all of the CHANGELOG.md lines for a given version
-# with the assumption that the CHANGELOG.md files looks something along the
+# with the assumption that the CHANGELOG.md files look something along the
 # lines of:
 #
 # ```
