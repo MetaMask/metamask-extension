@@ -6,6 +6,7 @@ import { UIComponentFactory } from './types';
 
 export const link: UIComponentFactory<LinkElement> = ({
   element,
+  onCancel,
   ...params
 }) => ({
   element: 'SnapUILink',
@@ -15,5 +16,6 @@ export const link: UIComponentFactory<LinkElement> = ({
   ),
   props: {
     href: element.props.href,
+    onCancel,
   },
 });
