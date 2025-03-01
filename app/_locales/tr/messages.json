@@ -224,9 +224,6 @@
   "addNewBitcoinTestnetAccount": {
     "message": "Yeni bir Bitcoin hesabı ekle (Test Ağı)"
   },
-  "addNewSolanaAccount": {
-    "message": "Yeni bir Solana hesabı ekle (Beta)"
-  },
   "addNft": {
     "message": "NFT ekleyin"
   },
@@ -2061,9 +2058,6 @@
   "import": {
     "message": "İçe Aktar",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Hesabı içe aktar"
   },
   "importAccountError": {
     "message": "Hesap içe aktarılırken hata oluştu."
