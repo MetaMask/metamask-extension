@@ -708,8 +708,8 @@ describe('Sentry errors', function () {
             sentry: { forceEnable: false },
           },
         },
-        async ({ driver, ganacheServer, mockedEndpoint }) => {
-          await logInWithBalanceValidation(driver, ganacheServer);
+        async ({ driver, mockedEndpoint }) => {
+          await logInWithBalanceValidation(driver);
 
           await driver.delay(2000);
           // Trigger error
@@ -816,8 +816,8 @@ describe('Sentry errors', function () {
             sentry: { forceEnable: false },
           },
         },
-        async ({ driver, ganacheServer, mockedEndpoint }) => {
-          await logInWithBalanceValidation(driver, ganacheServer);
+        async ({ driver, mockedEndpoint }) => {
+          await logInWithBalanceValidation(driver);
 
           await driver.delay(2000);
 

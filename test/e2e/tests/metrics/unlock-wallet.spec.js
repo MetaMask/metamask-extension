@@ -33,8 +33,8 @@ describe('Unlock wallet', function () {
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
-      async ({ driver, mockedEndpoint, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, mockedEndpoint }) => {
+        await logInWithBalanceValidation(driver);
         const events = await getEventPayloads(driver, mockedEndpoint);
         const sortedEvents = sortEventsByTime(events);
         await assert.equal(sortedEvents.length, 3);
