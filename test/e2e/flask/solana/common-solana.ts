@@ -6,6 +6,7 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import FixtureBuilder from '../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../constants';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 
 const SOLANA_URL_REGEX =
   /^https:\/\/(solana-mainnet\.infura\.io|api\.devnet\.solana\.com)/u;
@@ -1446,6 +1447,35 @@ export async function mockGetTokenAccountsByOwner(mockServer: Mockttp) {
                 },
                 pubkey: 'EzG33TbDzHVaWBqgQgHhtQSY6tcAVsWub6hBRepcsDt4',
               },
+              {
+                account: {
+                  data: {
+                    parsed: {
+                      info: {
+                        isNative: false,
+                        mint: 'GkyZ3xtwoA35nTXE1t26uKGL6jjiC6zM9pGjvdtpump',
+                        owner: 'CKFo3yPDXvpT8xbA5WQWi25VP2Rgf8CwP4G3MUAi8BB4',
+                        state: 'initialized',
+                        tokenAmount: {
+                          amount: '5000000',
+                          decimals: 6,
+                          uiAmount: 5,
+                          uiAmountString: '5',
+                        },
+                      },
+                      type: 'account',
+                    },
+                    program: 'spl-token',
+                    space: 165,
+                  },
+                  executable: false,
+                  lamports: 2039280,
+                  owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+                  rentEpoch: 18446744073709552000,
+                  space: 165,
+                },
+                pubkey: '5PnjF151TG4w1m6KX5domB2ahas3Q2X9LaTM5Fb7LEjS',
+              },
             ],
           },
         },
@@ -1589,9 +1619,13 @@ export async function withSolanaAccountSnap(
   }
   await withFixtures(
     {
-      fixtures: fixtures.build(),
+      fixtures: fixtures
+        .withPermissionControllerConnectedToTestDapp()
+        .withTokensControllerERC20({ chainId: 1 })
+        .build(),
       title,
       dapp: true,
+      smartContract: SMART_CONTRACTS.HST,
       testSpecificMock: async (mockServer: Mockttp) => {
         const mockList = [];
 
