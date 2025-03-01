@@ -1,6 +1,7 @@
 import React from 'react';
 import { BigNumber } from 'bignumber.js';
 import { BatchTransactionParams } from '@metamask/transaction-controller';
+import { act } from '@testing-library/react';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import configureStore from '../../../../../../../store/store';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
@@ -13,6 +14,8 @@ import { AlertMetricsProvider } from '../../../../../../../components/app/alert-
 import { useBalanceChanges } from '../../../../simulation-details/useBalanceChanges';
 import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
 import { buildApproveTransactionData } from '../../../../../../../../test/data/confirmations/token-approve';
+import { updateAtomicBatchData } from '../../../../../../../store/actions/transaction-controller';
+import { getCustomTxParamsData } from '../../../../../confirm-approve/confirm-approve.util';
 import { BatchSimulationDetails } from './batch-simulation-details';
 
 jest.mock('../../../../simulation-details/useBalanceChanges', () => ({
@@ -23,8 +26,17 @@ jest.mock('../../hooks/useBatchApproveBalanceChanges', () => ({
   useBatchApproveBalanceChanges: jest.fn(),
 }));
 
+jest.mock('../../../../../../../store/actions/transaction-controller', () => ({
+  updateAtomicBatchData: jest.fn(),
+}));
+
+jest.mock('../../../../../confirm-approve/confirm-approve.util', () => ({
+  getCustomTxParamsData: jest.fn(),
+}));
+
 const ADDRESS_MOCK = '0x1234567891234567891234567891234567891234';
 const ADDRESS_SHORT_MOCK = '0x12345...91234';
+const DATA_MOCK = '0x12345678';
 
 const NESTED_TRANSACTION_MOCK: BatchTransactionParams = {
   data: buildApproveTransactionData(ADDRESS_MOCK, 123),
@@ -97,6 +109,8 @@ function render() {
 
 describe('BatchSimulationDetails', () => {
   const useBalanceChangesMock = jest.mocked(useBalanceChanges);
+  const updateAtomicBatchDataMock = jest.mocked(updateAtomicBatchData);
+  const getCustomTxParamsDataMock = jest.mocked(getCustomTxParamsData);
 
   const useBatchApproveBalanceChangesMock = jest.mocked(
     useBatchApproveBalanceChanges,
@@ -234,5 +248,31 @@ describe('BatchSimulationDetails', () => {
     getByTestId('balance-change-edit').click();
 
     expect(getByText('Edit spending cap')).toBeInTheDocument();
+  });
+
+  it('updates nested transaction data on modal submit', async () => {
+    useBatchApproveBalanceChangesMock.mockReturnValue({
+      pending: false,
+      value: [BALANCE_CHANGE_ERC20_MOCK],
+    });
+
+    getCustomTxParamsDataMock.mockReturnValue(DATA_MOCK);
+
+    const { getByTestId, getByText } = render();
+
+    await act(async () => {
+      getByTestId('balance-change-edit').click();
+    });
+
+    await act(async () => {
+      getByText('Save').click();
+    });
+
+    expect(updateAtomicBatchDataMock).toHaveBeenCalledTimes(1);
+    expect(updateAtomicBatchDataMock).toHaveBeenCalledWith({
+      transactionId: expect.any(String),
+      transactionData: DATA_MOCK,
+      transactionIndex: 0,
+    });
   });
 });
