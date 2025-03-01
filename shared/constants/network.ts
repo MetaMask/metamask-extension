@@ -176,6 +176,7 @@ export const CHAIN_IDS = {
   LISK_SEPOLIA: '0x106a',
   INK_SEPOLIA: '0xba5eD',
   INK: '0xdef1',
+  GOAT_MAINNET: '0x929',
   MODE_SEPOLIA: '0x397',
   MODE: '0x868b',
 } as const;
@@ -300,6 +301,7 @@ export const LISK_SEPOLIA_DISPLAY_NAME = 'Lisk Sepolia';
 export const INK_SEPOLIA_DISPLAY_NAME = 'Ink Sepolia';
 export const INK_DISPLAY_NAME = 'Ink Mainnet';
 export const SONEIUM_DISPLAY_NAME = 'Soneium Mainnet';
+export const GOAT_DISPLAY_NAME = 'GOAT Network';
 export const MODE_SEPOLIA_DISPLAY_NAME = 'Mode Sepolia';
 export const MODE_DISPLAY_NAME = 'Mode Mainnet';
 
@@ -429,6 +431,7 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   LISK: 'ETH',
   SONEIUM_MAINNET: 'ETH',
   SONEIUM_TESTNET: 'ETH',
+  GOAT_MAINNET: 'BTC',
   MODE: 'ETH',
 } as const;
 
@@ -455,6 +458,7 @@ export const GNOSIS_TOKEN_IMAGE_URL = './images/gnosis.svg';
 export const ZK_SYNC_ERA_TOKEN_IMAGE_URL = './images/zk-sync.svg';
 export const BASE_TOKEN_IMAGE_URL = './images/base.svg';
 export const ACALA_TOKEN_IMAGE_URL = './images/acala-network-logo.svg';
+export const BTC_TOKEN_IMAGE_URL = './images/bitcoin-logo.svg';
 export const ARBITRUM_NOVA_IMAGE_URL = './images/arbitrum-nova-logo.svg';
 export const ASTAR_IMAGE_URL = './images/astar-logo.svg';
 export const BAHAMUT_IMAGE_URL = './images/bahamut.png';
@@ -520,6 +524,7 @@ export const INK_SEPOLIA_IMAGE_URL = './images/ink-sepolia.svg';
 export const INK_IMAGE_URL = './images/ink.svg';
 export const SONIC_MAINNET_IMAGE_URL = './images/sonic.svg';
 export const SONEIUM_IMAGE_URL = './images/soneium.svg';
+export const GOAT_IMAGE_URL = './images/goat-network.svg';
 export const MODE_SEPOLIA_IMAGE_URL = './images/mode-sepolia.svg';
 export const MODE_IMAGE_URL = './images/mode.svg';
 export const UNICHAIN_IMAGE_URL = './images/unichain.svg';
@@ -635,6 +640,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.METACHAIN_ONE]: METACHAIN_ONE_DISPLAY_NAME,
   [CHAIN_IDS.LISK]: LISK_DISPLAY_NAME,
   [CHAIN_IDS.LISK_SEPOLIA]: LISK_SEPOLIA_DISPLAY_NAME,
+  [CHAIN_IDS.GOAT_MAINNET]: GOAT_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -760,6 +766,8 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
     CHAINLIST_CURRENCY_SYMBOLS_MAP.SONEIUM_MAINNET,
   [CHAINLIST_CHAIN_IDS_MAP.SONEIUM_TESTNET]:
     CHAINLIST_CURRENCY_SYMBOLS_MAP.SONEIUM_TESTNET,
+  [CHAINLIST_CHAIN_IDS_MAP.GOAT_MAINNET]:
+    CHAINLIST_CURRENCY_SYMBOLS_MAP.GOAT_MAINNET,
 } as const;
 
 /**
@@ -885,6 +893,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<Hex, string> = {
   [CHAINLIST_CHAIN_IDS_MAP.SONIC_MAINNET]: SONIC_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.SONEIUM_MAINNET]: SONEIUM_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.SONEIUM_TESTNET]: SONEIUM_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.GOAT_MAINNET]: GOAT_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.MODE_SEPOLIA]: MODE_SEPOLIA_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.MODE]: MODE_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN]: UNICHAIN_IMAGE_URL,
@@ -932,6 +941,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.ZORA_MAINNET]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.INK]: ETH_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.SONIC_MAINNET]: SONIC_MAINNET_IMAGE_URL,
+  [CHAIN_IDS.GOAT_MAINNET]: BTC_TOKEN_IMAGE_URL,
   [CHAIN_IDS.MODE]: ETH_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.FUNKICHAIN]: ETH_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN]: ETH_TOKEN_IMAGE_URL,
