@@ -1,0 +1,10 @@
+{
+  "signatures": [
+    {
+      "name": "Contributor Name",
+      "github": "contributor_github_username",
+      "date": "2025-01-16"
+    }
+    // Add more signatures as needed
+  ]
+}
