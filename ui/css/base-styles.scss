@@ -17,10 +17,7 @@ body {
 
 html {
   min-height: 500px;
-}
 
-html,
-body {
   @include design-system.screen-sm-max {
     &:not([data-theme]) {
       background-color: var(--color-background-default);
@@ -36,6 +33,10 @@ body {
     &:not([data-theme]) {
       color: var(--brand-colors-white);
       background-color: var(--brand-colors-grey-grey900);
+
+      body {
+        color: var(--brand-colors-white);
+      }
     }
 
     @include design-system.screen-sm-max {
