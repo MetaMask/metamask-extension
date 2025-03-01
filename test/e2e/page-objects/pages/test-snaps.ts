@@ -212,4 +212,22 @@ export class TestSnaps {
     console.log('Wait for reconnect button');
     await this.driver.waitForSelector(this.reconnectBip44Button);
   }
+
+  /**
+   * Select an entropy source from the dropdown with the given ID.
+   *
+   * @param id - The ID of the dropdown.
+   * @param name - The name of the entropy source to select.
+   */
+  async selectEntropySource(id: string, name: string) {
+    console.log('Select entropy source');
+    const selector = await this.driver.findElement(`#${id}-entropy-selector`);
+    await this.driver.scrollToElement(selector);
+    await selector.click();
+
+    await this.driver.clickElement({
+      text: name,
+      css: `#${id}-entropy-selector option`,
+    });
+  }
 }
