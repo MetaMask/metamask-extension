@@ -75,6 +75,7 @@ export const ConnectedStatus: React.FC<ConnectedStatusProps> = ({
       badgeBorderColor={badgeBorderColor}
       text={tooltipText}
       isConnectedAndNotActive={connectedAndNotActive}
+      isDisconnected={status === STATUS_NOT_CONNECTED}
     />
   );
 };
