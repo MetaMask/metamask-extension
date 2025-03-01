@@ -16,6 +16,7 @@ describe('Ethereum Chain Utils', () => {
       requestPermittedChainsPermissionForOrigin: jest.fn(),
       requestPermittedChainsPermissionIncrementalForOrigin: jest.fn(),
       setTokenNetworkFilter: jest.fn(),
+      rejectApprovalRequestsForOrigin: jest.fn(),
     };
     const response: { result?: true } = {};
     const switchChain = (chainId: Hex, networkClientId: string) =>
@@ -38,6 +39,13 @@ describe('Ethereum Chain Utils', () => {
         target: Caip25EndowmentPermissionName,
         caveatType: Caip25CaveatType,
       });
+    });
+
+    it('calls rejectApprovalRequestsForOrigin if passed', async () => {
+      const { mocks, switchChain } = createMockedSwitchChain();
+      await switchChain('0x1', 'mainnet');
+
+      expect(mocks.rejectApprovalRequestsForOrigin).toHaveBeenCalledTimes(1);
     });
 
     describe('with no existing CAIP-25 permission', () => {

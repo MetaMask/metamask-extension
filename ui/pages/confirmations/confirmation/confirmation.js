@@ -498,7 +498,6 @@ export default function ConfirmationPage({
       <TemplateAlertContextProvider
         pendingConfirmation={pendingConfirmation}
         onSubmit={!templatedValues.hideSubmitButton && handleSubmit}
-        onCancel={templatedValues.onCancel}
       >
         <div className="confirmation-page">
           <Header
