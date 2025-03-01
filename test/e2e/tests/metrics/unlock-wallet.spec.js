@@ -5,6 +5,7 @@ const {
   getEventPayloads,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+const { MOCK_META_METRICS_ID } = require('../../constants');
 
 describe('Unlock wallet', function () {
   async function mockSegment(mockServer) {
@@ -26,7 +27,7 @@ describe('Unlock wallet', function () {
       {
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
