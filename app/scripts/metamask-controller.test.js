@@ -2455,7 +2455,7 @@ describe('MetaMaskController', () => {
           async (type) => {
             jest
               .spyOn(metamaskController.keyringController, 'withKeyring')
-              .mockImplementation((_, fn) => fn({ type }));
+              .mockImplementation((_, fn) => fn({ keyring: { type } }));
 
             const result = await metamaskController.getHardwareTypeForMetric(
               '0x123',

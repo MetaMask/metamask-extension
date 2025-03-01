@@ -1155,8 +1155,8 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth": true,
         "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util": true,
+        "@metamask/utils": true,
         "browserify>buffer": true,
-        "webpack>events": true,
         "@metamask/eth-trezor-keyring>hdkey": true
       }
     },
@@ -1325,10 +1325,10 @@
         "@ethereumjs/tx": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-trezor-keyring>@metamask/eth-sig-util": true,
+        "@metamask/utils": true,
         "@metamask/eth-trezor-keyring>@trezor/connect-plugin-ethereum": true,
         "@trezor/connect-web": true,
         "browserify>buffer": true,
-        "webpack>events": true,
         "@metamask/eth-trezor-keyring>hdkey": true
       }
     },
