@@ -6,6 +6,7 @@ import { TestSnaps } from '../page-objects/pages/test-snaps';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
 import SnapListPage from '../page-objects/pages/snap-list-page';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
+import { completeSnapInstallConfirmation } from '../page-objects/flows/snap-permission.flow';
 
 describe('Test Snap Homepage', function (this: Suite) {
   it('tests snap home page functionality', async function () {
@@ -23,7 +24,7 @@ describe('Test Snap Homepage', function (this: Suite) {
 
         await testSnaps.openPage();
         await testSnaps.clickConnectHomePage();
-        await testSnaps.completeSnapInstallConfirmation();
+        await completeSnapInstallConfirmation(driver);
 
         // switch to metamask page and open the three dots menu
         await driver.switchToWindowWithTitle(
