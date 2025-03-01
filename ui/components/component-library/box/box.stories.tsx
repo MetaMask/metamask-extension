@@ -243,10 +243,7 @@ export const Margin: StoryFn<typeof Box> = (args) => {
     <Box borderColor={BorderColor.borderMuted}>
       <Box
         {...args}
-        margin={2}
-        padding={4}
-        backgroundColor={BackgroundColor.backgroundAlternative}
-        borderColor={BorderColor.borderMuted}
+        className="m-2 p-4 bg-alternative border border-muted"
       >
         Static margin
       </Box>
