@@ -315,7 +315,7 @@
     "@metamask/scure-bip39": "^2.0.3",
     "@metamask/selected-network-controller": "^19.0.0",
     "@metamask/signature-controller": "^23.1.0",
-    "@metamask/smart-transactions-controller": "^16.0.1",
+    "@metamask/smart-transactions-controller": "patch:@metamask/smart-transactions-controller@npm%3A16.0.1#~/.yarn/patches/@metamask-smart-transactions-controller-npm-16.0.1-7aa4f8249a.patch",
     "@metamask/snaps-controllers": "^10.0.0",
     "@metamask/snaps-execution-environments": "^7.0.0",
     "@metamask/snaps-rpc-methods": "^11.12.0",
