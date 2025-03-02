@@ -4609,7 +4609,7 @@
       },
       "packages": {
         "chokidar>braces": true,
-        "chokidar>anymatch>picomatch": true
+        "fast-glob>micromatch>picomatch": true
       }
     },
     "eslint>minimatch": {
@@ -5112,6 +5112,26 @@
       }
     },
     "chokidar>anymatch>picomatch": {
+      "builtin": {
+        "path.basename": true,
+        "path.sep": true
+      },
+      "globals": {
+        "process.platform": true,
+        "process.version.slice": true
+      }
+    },
+    "fast-glob>micromatch>picomatch": {
+      "builtin": {
+        "path.basename": true,
+        "path.sep": true
+      },
+      "globals": {
+        "process.platform": true,
+        "process.version.slice": true
+      }
+    },
+    "chokidar>readdirp>picomatch": {
       "builtin": {
         "path.basename": true,
         "path.sep": true
@@ -7054,7 +7074,7 @@
         "process.versions.node.split": true
       },
       "packages": {
-        "chokidar>anymatch>picomatch": true
+        "chokidar>readdirp>picomatch": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-dotall-regex>@babel/helper-create-regexp-features-plugin>regexpu-core>regenerate": {
