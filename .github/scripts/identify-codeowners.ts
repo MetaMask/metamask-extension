@@ -104,7 +104,7 @@ async function getCodeownersContent(
     });
 
     if (response) {
-      return response.data.content;
+      return response.data;
     }
 
     throw new Error('Failed to get CODEOWNERS file content');
@@ -136,7 +136,7 @@ function matchFilesToCodeowners(files: string[], codeowners: CodeOwnerRule[]): M
         if (!ownerSet) {
           fileOwners.set(file, new Set(owners));
         } else {
-          ownerSet.add(...owners);
+          owners.forEach((owner) => ownerSet.add(owner));
         }
       }
     }
