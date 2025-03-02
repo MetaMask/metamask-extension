@@ -491,6 +491,7 @@
     "@types/mocha": "^10.0.3",
     "@types/node": "^20",
     "@types/path-browserify": "^1.0.2",
+    "@types/picomatch": "^3.0.2",
     "@types/pify": "^5.0.1",
     "@types/react": "^16.9.53",
     "@types/react-beautiful-dnd": "^13",

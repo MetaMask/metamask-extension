@@ -41,6 +41,10 @@ main().catch((error: Error): void => {
 
 async function main(): Promise<void> {
   const PR_COMMENT_TOKEN = process.env.PR_COMMENT_TOKEN;
+  if (!PR_COMMENT_TOKEN) {
+    core.setFailed('PR_COMMENT_TOKEN not found');
+    process.exit(1);
+  }
 
   // Initialise octokit, required to call Github API
   const octokit: InstanceType<typeof GitHub> = getOctokit(PR_COMMENT_TOKEN);
@@ -48,7 +52,12 @@ async function main(): Promise<void> {
 
   const owner = context.repo.owner;
   const repo = context.repo.repo;
-  const prNumber = context.payload.pull_request.number;
+  const prNumber = context.payload.pull_request?.number;
+  if (!prNumber) {
+    core.setFailed('Pull request number not found');
+    process.exit(1);
+  }
+
   // Get the changed files in the PR
   const changedFiles = await retrievePullRequestFiles(octokit, owner, repo, prNumber);
 
@@ -95,7 +104,7 @@ async function getCodeownersContent(
     });
 
     if (response) {
-      return response;
+      return response.data.content;
     }
 
     throw new Error('Failed to get CODEOWNERS file content');
@@ -114,7 +123,7 @@ function parseCodeowners(content: string): CodeOwnerRule[] {
     });
 }
 
-function matchFilesToCodeowners(files: string[], codeowners: CodeOwnerRule[]): Record<string, string[]> {
+function matchFilesToCodeowners(files: string[], codeowners: CodeOwnerRule[]): Map<string, Set<string>> {
   const fileOwners: Map<string, Set<string>> = new Map();
 
   files.forEach(file => {

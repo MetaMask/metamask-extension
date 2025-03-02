@@ -11541,6 +11541,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/picomatch@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "@types/picomatch@npm:3.0.2"
+  checksum: 10/da4e0e0f4437576dfd59b94f5868f89a2bd5ce4aaa57eb5dc601818885ac7bd03ccb3e8d3402a6820e5a3d63c86c7030031a5fdc67a0598d0675dea912b6512e
+  languageName: node
+  linkType: hard
+
 "@types/pify@npm:^5.0.1":
   version: 5.0.1
   resolution: "@types/pify@npm:5.0.1"
@@ -27370,6 +27377,7 @@ __metadata:
     "@types/mocha": "npm:^10.0.3"
     "@types/node": "npm:^20"
     "@types/path-browserify": "npm:^1.0.2"
+    "@types/picomatch": "npm:^3.0.2"
     "@types/pify": "npm:^5.0.1"
     "@types/react": "npm:^16.9.53"
     "@types/react-beautiful-dnd": "npm:^13"
