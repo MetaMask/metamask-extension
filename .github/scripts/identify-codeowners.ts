@@ -180,14 +180,14 @@ function groupFilesByTeam(fileOwners: Map<string, Set<string>>): TeamFiles {
 }
 
 function createCommentBody(teamFiles: TeamFiles, teamEmojis: TeamEmojis): string {
-  let commentBody = `<!-- METAMASK-CODEOWNERS-BOT -->\n## Files requiring review\n\n`;
+  let commentBody = `<!-- METAMASK-CODEOWNERS-BOT -->\n✨ Files requiring CODEOWNER review ✨\n---\n`;
 
   // Sort teams for consistent ordering
   const sortedTeams = Object.keys(teamFiles).sort();
 
   sortedTeams.forEach(team => {
     const emoji = teamEmojis[team] || '📄';
-    commentBody += `### ${emoji} ${team}\n`;
+    commentBody += `${emoji} ${team}\n`;
     teamFiles[team].forEach(file => {
       commentBody += `- \`${file}\`\n`;
     });
