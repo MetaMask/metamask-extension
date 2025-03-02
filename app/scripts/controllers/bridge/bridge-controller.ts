@@ -1,4 +1,4 @@
-import { add0x, Hex } from '@metamask/utils';
+import { add0x, type Hex } from '@metamask/utils';
 import { StaticIntervalPollingController } from '@metamask/polling-controller';
 import { NetworkClientId } from '@metamask/network-controller';
 import { StateMetadata } from '@metamask/base-controller';
@@ -8,6 +8,8 @@ import { Web3Provider } from '@ethersproject/providers';
 import { BigNumber } from '@ethersproject/bignumber';
 import { TransactionParams } from '@metamask/transaction-controller';
 import type { ChainId } from '@metamask/controller-utils';
+import { HandlerType } from '@metamask/snaps-utils';
+import type { SnapId } from '@metamask/snaps-sdk';
 import {
   fetchBridgeFeatureFlags,
   fetchBridgeQuotes,
@@ -18,17 +20,24 @@ import {
 } from '../../../../shared/modules/conversion.utils';
 import {
   type L1GasFees,
-  type QuoteRequest,
   type QuoteResponse,
   type TxData,
   type BridgeControllerState,
   BridgeFeatureFlagsKey,
   RequestStatus,
+  type GenericQuoteRequest,
+  type SolanaFees,
 } from '../../../../shared/types/bridge';
 import { isValidQuoteRequest } from '../../../../shared/modules/bridge-utils/quote';
 import { hasSufficientBalance } from '../../../../shared/modules/bridge-utils/balance';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { REFRESH_INTERVAL_MS } from '../../../../shared/constants/bridge';
+import {
+  formatAddressToString,
+  formatChainIdToCaip,
+  formatChainIdToHex,
+} from '../../../../shared/modules/bridge-utils/caip-formatters';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
   BRIDGE_CONTROLLER_NAME,
   DEFAULT_BRIDGE_STATE,
@@ -48,7 +57,7 @@ const RESET_STATE_ABORT_MESSAGE = 'Reset controller state';
 /** The input to start polling for the {@link BridgeController} */
 type BridgePollingInput = {
   networkClientId: NetworkClientId;
-  updatedQuoteRequest: QuoteRequest;
+  updatedQuoteRequest: GenericQuoteRequest;
 };
 
 export default class BridgeController extends StaticIntervalPollingController<BridgePollingInput>()<
@@ -113,7 +122,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
   };
 
   updateBridgeQuoteRequestParams = async (
-    paramsToUpdate: Partial<QuoteRequest>,
+    paramsToUpdate: Partial<GenericQuoteRequest>,
   ) => {
     this.stopAllPolling();
     this.#abortController?.abort('Quote request updated');
@@ -139,38 +148,48 @@ export default class BridgeController extends StaticIntervalPollingController<Br
 
     if (isValidQuoteRequest(updatedQuoteRequest)) {
       this.#quotesFirstFetched = Date.now();
-      const walletAddress = this.#getSelectedAccount().address;
-      const srcChainIdInHex = add0x(
-        decimalToHex(updatedQuoteRequest.srcChainId),
-      );
+      const srcChainIdString = updatedQuoteRequest.srcChainId.toString();
 
-      const insufficientBal =
-        paramsToUpdate.insufficientBal ||
-        !(await this.#hasSufficientBalance(updatedQuoteRequest));
+      // Query the balance of the source token if the source chain is an EVM chain
+      let insufficientBal: boolean | undefined;
+      if (srcChainIdString === MultichainNetworks.SOLANA) {
+        insufficientBal = paramsToUpdate.insufficientBal;
+      } else {
+        insufficientBal =
+          paramsToUpdate.insufficientBal ||
+          !(await this.#hasSufficientBalance(updatedQuoteRequest));
+      }
 
-      const networkClientId = this.#getSelectedNetworkClientId(srcChainIdInHex);
+      // Set refresh rate based on the source chain before starting polling
+      this.#setIntervalLength();
       this.startPolling({
-        networkClientId,
+        networkClientId: srcChainIdString,
         updatedQuoteRequest: {
           ...updatedQuoteRequest,
-          walletAddress,
           insufficientBal,
         },
       });
     }
   };
 
-  #hasSufficientBalance = async (quoteRequest: QuoteRequest) => {
-    const walletAddress = this.#getSelectedAccount().address;
-    const srcChainIdInHex = add0x(decimalToHex(quoteRequest.srcChainId));
+  #hasSufficientBalance = async (quoteRequest: GenericQuoteRequest) => {
+    const walletAddress = this.#getMultichainSelectedAccount()?.address;
+    const srcChainIdInHex = formatChainIdToHex(quoteRequest.srcChainId);
     const provider = this.#getSelectedNetworkClient()?.provider;
+    const srcTokenAddressWithoutPrefix = formatAddressToString(
+      quoteRequest.srcTokenAddress,
+    );
 
     return (
       provider &&
+      walletAddress &&
+      srcTokenAddressWithoutPrefix &&
+      quoteRequest.srcTokenAmount &&
+      srcChainIdInHex &&
       (await hasSufficientBalance(
         provider,
         walletAddress,
-        quoteRequest.srcTokenAddress,
+        srcTokenAddressWithoutPrefix,
         quoteRequest.srcTokenAmount,
         srcChainIdInHex,
       ))
@@ -196,9 +215,23 @@ export default class BridgeController extends StaticIntervalPollingController<Br
     this.update((_state) => {
       _state.bridgeState = { ...bridgeState, bridgeFeatureFlags };
     });
-    this.setIntervalLength(
-      bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].refreshRate,
-    );
+    this.#setIntervalLength();
+  };
+
+  /**
+   * Sets the interval length based on the source chain
+   */
+  #setIntervalLength = () => {
+    const { bridgeState } = this.state;
+    const { srcChainId } = bridgeState.quoteRequest;
+    const refreshRateOverride = srcChainId
+      ? bridgeState.bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG]
+          .chains[formatChainIdToCaip(srcChainId)]?.refreshRate
+      : undefined;
+    const defaultRefreshRate =
+      bridgeState.bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG]
+        .refreshRate;
+    this.setIntervalLength(refreshRateOverride ?? defaultRefreshRate);
   };
 
   #fetchBridgeQuotes = async ({
@@ -207,7 +240,6 @@ export default class BridgeController extends StaticIntervalPollingController<Br
   }: BridgePollingInput) => {
     this.#abortController?.abort('New quote request');
     this.#abortController = new AbortController();
-
     const { bridgeState } = this.state;
     this.update((_state) => {
       _state.bridgeState = {
@@ -225,11 +257,12 @@ export default class BridgeController extends StaticIntervalPollingController<Br
       );
 
       const quotesWithL1GasFees = await this.#appendL1GasFees(quotes);
+      const quotesWithSolanaFees = await this.#appendSolanaFees(quotes);
 
       this.update((_state) => {
         _state.bridgeState = {
           ..._state.bridgeState,
-          quotes: quotesWithL1GasFees,
+          quotes: quotesWithL1GasFees ?? quotesWithSolanaFees ?? quotes,
           quotesLoadingStatus: RequestStatus.FETCHED,
         };
       });
@@ -281,36 +314,90 @@ export default class BridgeController extends StaticIntervalPollingController<Br
 
   #appendL1GasFees = async (
     quotes: QuoteResponse[],
-  ): Promise<(QuoteResponse & L1GasFees)[]> => {
+  ): Promise<(QuoteResponse & L1GasFees)[] | undefined> => {
+    // Return undefined if some of the quotes are not for optimism or base
+    if (
+      quotes.some(({ quote }) => {
+        const chainId = formatChainIdToCaip(quote.srcChainId);
+        return ![CHAIN_IDS.OPTIMISM, CHAIN_IDS.BASE]
+          .map(formatChainIdToCaip)
+          .includes(chainId);
+      })
+    ) {
+      return undefined;
+    }
+
     return await Promise.all(
       quotes.map(async (quoteResponse) => {
         const { quote, trade, approval } = quoteResponse;
         const chainId = add0x(decimalToHex(quote.srcChainId)) as ChainId;
-        if (
-          [CHAIN_IDS.OPTIMISM.toString(), CHAIN_IDS.BASE.toString()].includes(
-            chainId,
-          )
-        ) {
-          const getTxParams = (txData: TxData) => ({
-            from: txData.from,
-            to: txData.to,
-            value: txData.value,
-            data: txData.data,
-            gasLimit: txData.gasLimit?.toString(),
-          });
-          const approvalL1GasFees = approval
-            ? await this.#getLayer1GasFee({
-                transactionParams: getTxParams(approval),
-                chainId,
-              })
-            : '0';
-          const tradeL1GasFees = await this.#getLayer1GasFee({
-            transactionParams: getTxParams(trade),
-            chainId,
-          });
+
+        const getTxParams = (txData: TxData) => ({
+          from: txData.from,
+          to: txData.to,
+          value: txData.value,
+          data: txData.data,
+          gasLimit: txData.gasLimit?.toString(),
+        });
+        const approvalL1GasFees = approval
+          ? await this.#getLayer1GasFee({
+              transactionParams: getTxParams(approval),
+              chainId,
+            })
+          : '0';
+        const tradeL1GasFees = await this.#getLayer1GasFee({
+          transactionParams: getTxParams(trade),
+          chainId,
+        });
+        return {
+          ...quoteResponse,
+          l1GasFeesInHexWei: sumHexes(approvalL1GasFees, tradeL1GasFees),
+        };
+
+        return quoteResponse;
+      }),
+    );
+  };
+
+  #appendSolanaFees = async (
+    quotes: QuoteResponse[],
+  ): Promise<(QuoteResponse & SolanaFees)[] | undefined> => {
+    // Return undefined if some of the quotes are not for solana
+    if (
+      quotes.some(({ quote }) => {
+        return (
+          formatChainIdToCaip(quote.srcChainId) !== MultichainNetworks.SOLANA
+        );
+      })
+    ) {
+      return undefined;
+    }
+
+    return await Promise.all(
+      quotes.map(async (quoteResponse) => {
+        const { trade } = quoteResponse;
+        const selectedAccount = this.#getMultichainSelectedAccount();
+
+        if (selectedAccount?.metadata?.snap?.id && typeof trade === 'string') {
+          const { value: fees } = (await this.messagingSystem.call(
+            'SnapController:handleRequest',
+            {
+              snapId: selectedAccount.metadata.snap.id as SnapId,
+              origin: 'metamask',
+              handler: HandlerType.OnRpcRequest,
+              request: {
+                method: 'getFeeForTransaction',
+                params: {
+                  transaction: trade,
+                  scope: selectedAccount.options.scope,
+                },
+              },
+            },
+          )) as { value: string };
+
           return {
             ...quoteResponse,
-            l1GasFeesInHexWei: sumHexes(approvalL1GasFees, tradeL1GasFees),
+            solanaFeesInLamports: fees,
           };
         }
         return quoteResponse;
@@ -318,8 +405,10 @@ export default class BridgeController extends StaticIntervalPollingController<Br
     );
   };
 
-  #getSelectedAccount() {
-    return this.messagingSystem.call('AccountsController:getSelectedAccount');
+  #getMultichainSelectedAccount() {
+    return this.messagingSystem.call(
+      'AccountsController:getSelectedMultichainAccount',
+    ); // ?? this.messagingSystem.call('AccountsController:getSelectedAccount')
   }
 
   #getSelectedNetworkClient() {
@@ -352,7 +441,8 @@ export default class BridgeController extends StaticIntervalPollingController<Br
 
     const web3Provider = new Web3Provider(provider);
     const contract = new Contract(contractAddress, abiERC20, web3Provider);
-    const { address: walletAddress } = this.#getSelectedAccount();
+    const { address: walletAddress } =
+      this.#getMultichainSelectedAccount() ?? {};
     const allowance = await contract.allowance(
       walletAddress,
       METABRIDGE_CHAIN_TO_ADDRESS_MAP[chainId],

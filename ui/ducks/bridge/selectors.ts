@@ -1,6 +1,7 @@
 import type {
-  AddNetworkFields,
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   NetworkConfiguration,
+  ///: END:ONLY_INCLUDE_IF
   NetworkState,
 } from '@metamask/network-controller';
 import { orderBy, uniqBy } from 'lodash';
@@ -8,6 +9,13 @@ import { createSelector } from 'reselect';
 import type { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
+import { CaipChainId, Hex } from '@metamask/utils';
+import {
+  MultichainNetworks,
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+  MULTICHAIN_PROVIDER_CONFIGS,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../shared/constants/multichain/networks';
 import {
   getIsBridgeEnabled,
   getMarketData,
@@ -20,13 +28,13 @@ import {
   BRIDGE_PREFERRED_GAS_ESTIMATE,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
 } from '../../../shared/constants/bridge';
-import type { BridgeControllerState } from '../../../shared/types/bridge';
+import type {
+  BridgeControllerState,
+  SolanaFees,
+} from '../../../shared/types/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
-import {
-  getProviderConfig,
-  getNetworkConfigurationsByChainId,
-} from '../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
 import { getConversionRate, getGasFeeEstimates } from '../metamask/metamask';
 import {
   type L1GasFees,
@@ -45,22 +53,31 @@ import {
   calcSwapRate,
   calcToAmount,
   calcEstimatedAndMaxTotalGasFee,
-  isNativeAddress,
+  calcSolanaTotalNetworkFee,
 } from '../../pages/bridge/utils/quote';
-import { AssetType } from '../../../shared/constants/transaction';
+import {
+  isNativeAddress,
+  formatChainIdToCaip,
+} from '../../../shared/modules/bridge-utils/caip-formatters';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
   FEATURED_RPCS,
 } from '../../../shared/constants/network';
 import {
-  exchangeRatesFromNativeAndCurrencyRates,
+  getMultichainCoinRates,
+  getMultichainProviderConfig,
+  getImageForChainId,
+} from '../../selectors/multichain';
+import { getAssetsRates } from '../../selectors/assets';
+import {
   exchangeRateFromMarketData,
+  exchangeRatesFromNativeAndCurrencyRates,
   tokenPriceInNativeAsset,
 } from './utils';
 import type { BridgeState } from './bridge';
 
-type BridgeAppState = {
+export type BridgeAppState = {
   metamask: BridgeControllerState &
     NetworkState & {
       useExternalServices: boolean;
@@ -79,7 +96,22 @@ export const getAllBridgeableNetworks = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
   (networkConfigurationsByChainId) => {
     return uniqBy(
-      Object.values(networkConfigurationsByChainId),
+      [
+        ...Object.values(networkConfigurationsByChainId),
+        ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+        // TODO: get this from network controller, use placeholder values for now
+        {
+          ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
+          blockExplorerUrls: [],
+          name: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA].nickname,
+          nativeCurrency:
+            MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA].ticker,
+          rpcEndpoints: [{ url: '', type: '', networkClientId: '' }],
+          defaultRpcEndpointIndex: 0,
+          chainId: MultichainNetworks.SOLANA,
+        } as unknown as NetworkConfiguration,
+        ///: END:ONLY_INCLUDE_IF
+      ],
       'chainId',
     ).filter(({ chainId }) =>
       ALLOWED_BRIDGE_CHAIN_IDS.includes(
@@ -92,47 +124,59 @@ export const getAllBridgeableNetworks = createDeepEqualSelector(
 export const getFromChains = createDeepEqualSelector(
   getAllBridgeableNetworks,
   (state: BridgeAppState) => state.metamask.bridgeState?.bridgeFeatureFlags,
-  (allBridgeableNetworks, bridgeFeatureFlags) =>
-    allBridgeableNetworks.filter(
+  (allBridgeableNetworks, bridgeFeatureFlags) => {
+    return allBridgeableNetworks.filter(
       ({ chainId }) =>
         bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].chains[
-          chainId
+          formatChainIdToCaip(chainId)
         ]?.isActiveSrc,
-    ),
+    );
+  },
 );
 
 export const getFromChain = createDeepEqualSelector(
-  getNetworkConfigurationsByChainId,
-  getProviderConfig,
-  (
-    networkConfigurationsByChainId,
-    providerConfig,
-  ): NetworkConfiguration | undefined =>
-    providerConfig?.chainId
-      ? networkConfigurationsByChainId[providerConfig.chainId]
-      : undefined,
+  getMultichainProviderConfig,
+  getFromChains,
+  (providerConfig, fromChains) => {
+    return providerConfig?.chainId
+      ? fromChains.find(({ chainId }) => chainId === providerConfig.chainId)
+      : undefined;
+  },
 );
 
 export const getToChains = createDeepEqualSelector(
   getAllBridgeableNetworks,
   (state: BridgeAppState) => state.metamask.bridgeState?.bridgeFeatureFlags,
-  (
-    allBridgeableNetworks,
-    bridgeFeatureFlags,
-  ): (AddNetworkFields | NetworkConfiguration)[] =>
+  (allBridgeableNetworks, bridgeFeatureFlags) =>
     uniqBy([...allBridgeableNetworks, ...FEATURED_RPCS], 'chainId').filter(
       ({ chainId }) =>
         bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].chains[
-          chainId
+          formatChainIdToCaip(chainId)
         ]?.isActiveDest,
     ),
 );
 
-export const getToChain = createDeepEqualSelector(
+export const getTopAssetsFromFeatureFlags = (
+  state: BridgeAppState,
+  chainId?: CaipChainId | Hex,
+) => {
+  if (!chainId) {
+    return undefined;
+  }
+  const bridgeFeatureFlags = state.metamask.bridgeState?.bridgeFeatureFlags;
+  return bridgeFeatureFlags?.[BridgeFeatureFlagsKey.EXTENSION_CONFIG].chains[
+    formatChainIdToCaip(chainId)
+  ]?.topAssets;
+};
+
+export const getToChain = createSelector(
   getToChains,
   (state: BridgeAppState) => state.bridge.toChainId,
-  (toChains, toChainId): NetworkConfiguration | AddNetworkFields | undefined =>
-    toChains.find(({ chainId }) => chainId === toChainId),
+  (toChains, toChainId) =>
+    toChains.find(
+      ({ chainId }) =>
+        chainId === toChainId || formatChainIdToCaip(chainId) === toChainId,
+    ),
 );
 
 export const getFromToken = createSelector(
@@ -149,14 +193,13 @@ export const getFromToken = createSelector(
       ...SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
         fromChain.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
       ],
-      chainId: fromChain.chainId,
+      chainId: formatChainIdToCaip(fromChain.chainId),
       image:
         CHAIN_ID_TOKEN_IMAGE_MAP[
           fromChain.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-        ],
+        ] ?? getImageForChainId(fromChain.chainId),
       balance: '0',
       string: '0',
-      type: AssetType.native,
     };
   },
 );
@@ -179,6 +222,16 @@ export const getBridgeQuotesConfig = (state: BridgeAppState) =>
   state.metamask.bridgeState?.bridgeFeatureFlags[
     BridgeFeatureFlagsKey.EXTENSION_CONFIG
   ] ?? {};
+
+export const getQuoteRefreshRate = createSelector(
+  getBridgeQuotesConfig,
+  getFromChain,
+  (extensionConfig, fromChain) =>
+    (fromChain &&
+      extensionConfig.chains[formatChainIdToCaip(fromChain.chainId)]
+        ?.refreshRate) ??
+    extensionConfig.refreshRate,
+);
 
 const _getBridgeFeesPerGas = createSelector(
   getGasFeeEstimates,
@@ -205,19 +258,36 @@ export const getBridgeSortOrder = (state: BridgeAppState) =>
 export const getFromTokenConversionRate = createSelector(
   getFromChain,
   getMarketData,
+  getAssetsRates,
   getFromToken,
   getUSDConversionRate,
+  getMultichainCoinRates,
   getConversionRate,
   (state) => state.bridge.fromTokenExchangeRate,
   (
     fromChain,
     marketData,
+    assetsRates,
     fromToken,
     nativeToUsdRate,
+    nonEvmNativeConversionRate,
     nativeToCurrencyRate,
     fromTokenExchangeRate,
   ) => {
-    if (fromChain?.chainId && fromToken && marketData) {
+    if (fromChain?.chainId && fromToken) {
+      if (fromChain.chainId === MultichainNetworks.SOLANA) {
+        // For SOLANA tokens, we use the conversion rates provided by the multichain rates controller
+        const tokenToNativeAssetRate = tokenPriceInNativeAsset(
+          assetsRates[fromToken.address]?.rate,
+          nonEvmNativeConversionRate?.sol?.conversionRate,
+        );
+        return exchangeRatesFromNativeAndCurrencyRates(
+          tokenToNativeAssetRate,
+          nonEvmNativeConversionRate?.sol?.conversionRate,
+          nonEvmNativeConversionRate?.sol?.usdConversionRate,
+        );
+      }
+      // For EVM tokens, we use the market data to get the exchange rate
       const tokenToNativeAssetRate =
         exchangeRateFromMarketData(
           fromChain.chainId,
@@ -225,7 +295,6 @@ export const getFromTokenConversionRate = createSelector(
           marketData,
         ) ??
         tokenPriceInNativeAsset(fromTokenExchangeRate, nativeToCurrencyRate);
-
       return exchangeRatesFromNativeAndCurrencyRates(
         tokenToNativeAssetRate,
         nativeToCurrencyRate,
@@ -241,6 +310,7 @@ export const getFromTokenConversionRate = createSelector(
 export const getToTokenConversionRate = createDeepEqualSelector(
   getToChain,
   getMarketData,
+  getAssetsRates, // multichain equivalent of getMarketData
   getToToken,
   getNetworkConfigurationsByChainId,
   (state) => ({
@@ -248,12 +318,15 @@ export const getToTokenConversionRate = createDeepEqualSelector(
     toTokenExchangeRate: state.bridge.toTokenExchangeRate,
     toTokenUsdExchangeRate: state.bridge.toTokenUsdExchangeRate,
   }),
+  getMultichainCoinRates, // multichain native rates
   (
     toChain,
     marketData,
+    assetsRates,
     toToken,
     allNetworksByChainId,
     { state, toTokenExchangeRate, toTokenUsdExchangeRate },
+    nonEvmNativeConversionRate,
   ) => {
     // When the toChain is not imported, the exchange rate to native asset is not available
     // The rate in the bridge state is used instead
@@ -267,7 +340,20 @@ export const getToTokenConversionRate = createDeepEqualSelector(
         usd: toTokenUsdExchangeRate,
       };
     }
-    if (toChain?.chainId && toToken && marketData) {
+    if (toChain?.chainId && toToken) {
+      if (toChain.chainId === MultichainNetworks.SOLANA) {
+        // For SOLANA tokens, we use the conversion rates provided by the multichain rates controller
+        const tokenToNativeAssetRate = tokenPriceInNativeAsset(
+          assetsRates[toToken.address]?.rate,
+          nonEvmNativeConversionRate.sol.conversionRate,
+        );
+        return exchangeRatesFromNativeAndCurrencyRates(
+          tokenToNativeAssetRate,
+          nonEvmNativeConversionRate.sol.conversionRate,
+          nonEvmNativeConversionRate.sol.usdConversionRate,
+        );
+      }
+
       const { chainId } = toChain;
 
       const nativeToCurrencyRate = selectConversionRateByChainId(
@@ -293,6 +379,7 @@ const _getQuotesWithMetadata = createSelector(
   getToTokenConversionRate,
   getFromTokenConversionRate,
   getConversionRate,
+  getMultichainCoinRates,
   getUSDConversionRate,
   _getBridgeFeesPerGas,
   (
@@ -300,6 +387,7 @@ const _getQuotesWithMetadata = createSelector(
     toTokenExchangeRate,
     fromTokenExchangeRate,
     nativeToDisplayCurrencyExchangeRate,
+    nonEvmNativeConversionRate,
     nativeToUsdExchangeRate,
     {
       estimatedBaseFeeInDecGwei,
@@ -307,39 +395,55 @@ const _getQuotesWithMetadata = createSelector(
       maxFeePerGasInDecGwei,
     },
   ): (QuoteResponse & QuoteMetadata)[] => {
-    const newQuotes = quotes.map((quote: QuoteResponse) => {
+    const newQuotes = quotes.map((quote: QuoteResponse & SolanaFees) => {
+      const isSolanaQuote =
+        formatChainIdToCaip(quote.quote.srcChainId) ===
+          MultichainNetworks.SOLANA && quote.solanaFeesInLamports;
+
       const toTokenAmount = calcToAmount(
         quote.quote,
         toTokenExchangeRate.valueInCurrency,
         toTokenExchangeRate.usd,
       );
-      const gasFee = calcEstimatedAndMaxTotalGasFee({
-        bridgeQuote: quote,
-        estimatedBaseFeeInDecGwei,
-        maxFeePerGasInDecGwei,
-        maxPriorityFeePerGasInDecGwei,
-        nativeToDisplayCurrencyExchangeRate,
-        nativeToUsdExchangeRate,
-      });
-      const relayerFee = calcRelayerFee(
-        quote,
-        nativeToDisplayCurrencyExchangeRate,
-        nativeToUsdExchangeRate,
-      );
-      const totalEstimatedNetworkFee = {
-        amount: gasFee.amount.plus(relayerFee.amount),
-        valueInCurrency:
-          gasFee.valueInCurrency?.plus(relayerFee.valueInCurrency || '0') ??
-          null,
-        usd: gasFee.usd?.plus(relayerFee.usd || '0') ?? null,
-      };
-      const totalMaxNetworkFee = {
-        amount: gasFee.amountMax.plus(relayerFee.amount),
-        valueInCurrency:
-          gasFee.valueInCurrencyMax?.plus(relayerFee.valueInCurrency || '0') ??
-          null,
-        usd: gasFee.usdMax?.plus(relayerFee.usd || '0') ?? null,
-      };
+      let totalEstimatedNetworkFee, gasFee, totalMaxNetworkFee;
+      if (isSolanaQuote) {
+        totalEstimatedNetworkFee = calcSolanaTotalNetworkFee(
+          quote,
+          nonEvmNativeConversionRate.sol.conversionRate,
+          nonEvmNativeConversionRate.sol.usdConversionRate,
+        );
+        gasFee = totalEstimatedNetworkFee;
+        totalMaxNetworkFee = totalEstimatedNetworkFee;
+      } else {
+        gasFee = calcEstimatedAndMaxTotalGasFee({
+          bridgeQuote: quote,
+          estimatedBaseFeeInDecGwei,
+          maxFeePerGasInDecGwei,
+          maxPriorityFeePerGasInDecGwei,
+          nativeToDisplayCurrencyExchangeRate,
+          nativeToUsdExchangeRate,
+        });
+        const relayerFee = calcRelayerFee(
+          quote,
+          nativeToDisplayCurrencyExchangeRate,
+          nativeToUsdExchangeRate,
+        );
+        totalEstimatedNetworkFee = {
+          amount: gasFee.amount.plus(relayerFee.amount),
+          valueInCurrency:
+            gasFee.valueInCurrency?.plus(relayerFee.valueInCurrency || '0') ??
+            null,
+          usd: gasFee.usd?.plus(relayerFee.usd || '0') ?? null,
+        };
+        totalMaxNetworkFee = {
+          amount: gasFee.amountMax.plus(relayerFee.amount),
+          valueInCurrency:
+            gasFee.valueInCurrencyMax?.plus(
+              relayerFee.valueInCurrency || '0',
+            ) ?? null,
+          usd: gasFee.usdMax?.plus(relayerFee.usd || '0') ?? null,
+        };
+      }
 
       const sentAmount = calcSentAmount(
         quote.quote,
@@ -350,10 +454,8 @@ const _getQuotesWithMetadata = createSelector(
         toTokenAmount,
         totalEstimatedNetworkFee,
       );
-
       return {
         ...quote,
-
         // QuoteMetadata fields
         toTokenAmount,
         sentAmount,
@@ -559,3 +661,39 @@ export const getValidationErrors = createDeepEqualSelector(
 export const getWasTxDeclined = (state: BridgeAppState): boolean => {
   return state.bridge.wasTxDeclined;
 };
+
+/**
+ * Checks if Solana is enabled as either a fromChain or toChain for bridging
+ */
+export const isBridgeSolanaEnabled = createDeepEqualSelector(
+  (state: BridgeAppState) => state.metamask.bridgeState?.bridgeFeatureFlags,
+  (bridgeFeatureFlags) => {
+    const solanaChainId = MultichainNetworks.SOLANA;
+    const solanaChainIdCaip = formatChainIdToCaip(solanaChainId);
+
+    // Directly check if Solana is enabled as a source or destination chain
+    const solanaConfig =
+      bridgeFeatureFlags?.[BridgeFeatureFlagsKey.EXTENSION_CONFIG]?.chains?.[
+        solanaChainIdCaip
+      ];
+    return Boolean(solanaConfig?.isActiveSrc || solanaConfig?.isActiveDest);
+  },
+);
+
+export const getIsToOrFromSolana = createSelector(
+  getFromChain,
+  getToChain,
+  (fromChain, toChain) => {
+    if (!fromChain?.chainId || !toChain?.chainId) {
+      return false;
+    }
+
+    const fromChainIsSolana =
+      formatChainIdToCaip(fromChain.chainId) === MultichainNetworks.SOLANA;
+    const toChainIsSolana =
+      formatChainIdToCaip(toChain.chainId) === MultichainNetworks.SOLANA;
+
+    // Only return true if either chain is Solana and the other is EVM
+    return toChainIsSolana !== fromChainIsSolana;
+  },
+);
