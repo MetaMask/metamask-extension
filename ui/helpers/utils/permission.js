@@ -684,6 +684,7 @@ export const getPermissionDescription = ({
   // dummy comment 3
   // dummy comment 4
   // dummy comment 5
+  // dummy comment 6
   const result = value({
     t,
     isLegacySwitchEthereumChain,
