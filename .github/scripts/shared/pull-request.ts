@@ -88,6 +88,5 @@ export async function retrievePullRequestFiles(
     pull_number: prNumber,
   });
 
-  // Filter out deleted files and return only the filenames
   return response.data.map((file) => file.filename);
 }
