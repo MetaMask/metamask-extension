@@ -1,0 +1,20 @@
+name: Identify Codeowners
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+jobs:
+  identify-codeowners:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@1d657e262aea7e3f216754febb624831527d2565
+
+      - name: Identify codeowners
+        env:
+          PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
+        run: yarn run identify-codeowners
