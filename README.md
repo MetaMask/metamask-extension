@@ -94,6 +94,8 @@ If you are using VS Code and are unable to make commits from the source control 
 
 ### Development builds
 
+#### Dummy
+
 To start a development build (e.g. with logging and file watching) run `yarn start`.
 
 #### Development build with wallet state
