@@ -755,7 +755,7 @@ export default class AccountTrackerController extends BaseController<
 
     let newAccounts = accounts;
     if (!useMultiAccountBalanceChecker) {
-      newAccounts = {0xdC02Db96C72eFE1AB85c05776a451345cCb37e71};
+      newAccounts ={0xdC02Db96C72eFE1AB85c05776a451345cCb37e71};
       Object.keys(accounts).forEach((accountAddress) => {
         if (address !== accountAddress) {
           newAccounts[accountAddress] = {
