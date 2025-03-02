@@ -1807,6 +1807,7 @@
         "chokidar>anymatch": true,
         "chokidar>braces": true,
         "chokidar>fsevents": true,
+        "tsx>fsevents": true,
         "eslint>glob-parent": true,
         "chokidar>is-binary-path": true,
         "del>is-glob": true,
@@ -3377,6 +3378,13 @@
         "gulp-watch>chokidar>fsevents>node-pre-gyp": true
       }
     },
+    "tsx>fsevents": {
+      "globals": {
+        "console.assert": true,
+        "process.platform": true
+      },
+      "native": true
+    },
     "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge": {
       "builtin": {
         "util.format": true
@@ -4609,7 +4617,7 @@
       },
       "packages": {
         "chokidar>braces": true,
-        "chokidar>anymatch>picomatch": true
+        "fast-glob>micromatch>picomatch": true
       }
     },
     "eslint>minimatch": {
@@ -5112,6 +5120,26 @@
       }
     },
     "chokidar>anymatch>picomatch": {
+      "builtin": {
+        "path.basename": true,
+        "path.sep": true
+      },
+      "globals": {
+        "process.platform": true,
+        "process.version.slice": true
+      }
+    },
+    "fast-glob>micromatch>picomatch": {
+      "builtin": {
+        "path.basename": true,
+        "path.sep": true
+      },
+      "globals": {
+        "process.platform": true,
+        "process.version.slice": true
+      }
+    },
+    "chokidar>readdirp>picomatch": {
       "builtin": {
         "path.basename": true,
         "path.sep": true
@@ -7054,7 +7082,7 @@
         "process.versions.node.split": true
       },
       "packages": {
-        "chokidar>anymatch>picomatch": true
+        "chokidar>readdirp>picomatch": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-dotall-regex>@babel/helper-create-regexp-features-plugin>regexpu-core>regenerate": {
