@@ -26,8 +26,6 @@ import {
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { getGasFeeTimeEstimate } from '../../../../store/actions';
 import { useDraftTransactionWithTxParams } from '../../hooks/useDraftTransactionWithTxParams';
-import { isMMI } from '../../../../helpers/utils/build-types';
-
 // Once we reach this second threshold, we switch to minutes as a unit
 const SECOND_CUTOFF = 90;
 
@@ -132,7 +130,7 @@ export default function GasTiming({
 
   const estimateToUse =
     estimateUsed || transactionData.userFeeLevel || 'medium';
-  const estimateEmoji = isMMI() ? '' : PRIORITY_LEVEL_ICON_MAP[estimateToUse];
+  const estimateEmoji = PRIORITY_LEVEL_ICON_MAP[estimateToUse];
   let text = `${estimateEmoji} ${t(estimateToUse)}`;
   let time = '';
 
@@ -178,13 +176,15 @@ export default function GasTiming({
 
   return (
     <Box display={Display.Flex} flexWrap={FlexWrap.Wrap}>
-      <Text
-        color={TextColor.textAlternative}
-        variant={TextVariant.bodyMd}
-        paddingInlineEnd={1}
-      >
-        {text}
-      </Text>
+      {text && (
+        <Text
+          color={TextColor.textAlternative}
+          variant={TextVariant.bodyMd}
+          paddingInlineEnd={1}
+        >
+          {text}
+        </Text>
+      )}
 
       {time && (
         <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>

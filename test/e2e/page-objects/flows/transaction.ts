@@ -1,7 +1,7 @@
 import { TransactionParams } from '@metamask/transaction-controller';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { Driver } from '../../webdriver/driver';
-import HomePage from '../pages/homepage';
+import HomePage from '../pages/home/homepage';
 import SendTokenPage from '../pages/send/send-token-page';
 import TestDapp from '../pages/test-dapp';
 
@@ -17,6 +17,27 @@ export const createInternalTransaction = async (driver: Driver) => {
   await sendToPage.fillRecipient('0x2f318C334780961FB129D2a6c30D0763d9a5C970');
   await sendToPage.fillAmount('1');
   await sendToPage.goToNextScreen();
+};
+
+export const createInternalTransactionWithMaxAmount = async (
+  driver: Driver,
+) => {
+  // Firefox has incorrect balance if send flow started too quickly.
+  await driver.delay(1000);
+
+  const homePage = new HomePage(driver);
+  await homePage.startSendFlow();
+
+  const sendToPage = new SendTokenPage(driver);
+  await sendToPage.check_pageIsLoaded();
+  await sendToPage.fillRecipient('0x2f318C334780961FB129D2a6c30D0763d9a5C970');
+  await sendToPage.clickMaxAmountButton();
+  await sendToPage.goToNextScreen();
+};
+
+export const reviewTransaction = async (driver: Driver) => {
+  const sendToPage = new SendTokenPage(driver);
+  await sendToPage.validateSendFees();
 };
 
 export const createDappTransaction = async (

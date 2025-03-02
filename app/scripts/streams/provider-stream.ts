@@ -33,7 +33,7 @@ let legacyExtMux: ObjectMultiplex,
 
 let extensionMux: ObjectMultiplex,
   extensionChannel: Substream,
-  extensionPort: browser.Runtime.Port,
+  extensionPort: browser.Runtime.Port | null,
   extensionStream: PortStream | null,
   pageMux: ObjectMultiplex,
   pageChannel: Substream;
@@ -65,7 +65,7 @@ const setupPageStreams = () => {
 // The field below is used to ensure that replay is done only once for each restart.
 let METAMASK_EXTENSION_CONNECT_SENT = false;
 
-const setupExtensionStreams = () => {
+export const setupExtensionStreams = () => {
   METAMASK_EXTENSION_CONNECT_SENT = true;
   extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
   extensionStream = new PortStream(extensionPort);
@@ -227,18 +227,34 @@ const onMessageSetUpExtensionStreams = (msg: MessageType) => {
 };
 
 /**
+ * Ends two-way communication streams between browser extension and
+ * the local per-page browser context.
+ */
+export function destroyStreams() {
+  if (!extensionPort) {
+    return;
+  }
+  extensionPort.onDisconnect.removeListener(onDisconnectDestroyStreams);
+
+  destroyExtensionStreams();
+  destroyLegacyExtensionStreams();
+
+  extensionPort.disconnect();
+  extensionPort = null;
+
+  METAMASK_EXTENSION_CONNECT_SENT = false;
+}
+
+/**
  * This listener destroys the extension streams when the extension port is disconnected,
  * so that streams may be re-established later when the extension port is reconnected.
  *
  * @param [err] - Stream connection error
  */
-export const onDisconnectDestroyStreams = (err: unknown) => {
+export function onDisconnectDestroyStreams(err: unknown) {
   const lastErr = err || checkForLastError();
 
-  extensionPort.onDisconnect.removeListener(onDisconnectDestroyStreams);
-
-  destroyExtensionStreams();
-  destroyLegacyExtensionStreams();
+  destroyStreams();
 
   /**
    * If an error is found, reset the streams. When running two or more dapps, resetting the service
@@ -251,7 +267,7 @@ export const onDisconnectDestroyStreams = (err: unknown) => {
     console.warn(`${lastErr} Resetting the streams.`);
     setTimeout(setupExtensionStreams, 1000);
   }
-};
+}
 
 /**
  * Initializes two-way communication streams between the browser extension and

@@ -1,15 +1,14 @@
-import { BoxElement, JSXElement } from '@metamask/snaps-sdk/jsx';
+import { ContainerElement, JSXElement } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 import { mapToTemplate } from '../utils';
 import {
-  BlockSize,
   Display,
   FlexDirection,
 } from '../../../../../helpers/constants/design-system';
 import { UIComponentFactory } from './types';
 import { DEFAULT_FOOTER } from './footer';
 
-export const container: UIComponentFactory<BoxElement> = ({
+export const container: UIComponentFactory<ContainerElement> = ({
   element,
   useFooter,
   onCancel,
@@ -78,12 +77,7 @@ export const container: UIComponentFactory<BoxElement> = ({
     props: {
       display: Display.Flex,
       flexDirection: FlexDirection.Column,
-      height: BlockSize.Full,
       className: 'snap-ui-renderer__container',
-      style: {
-        overflowY: 'auto',
-        paddingBottom: useFooter ? '80px' : 'initial',
-      },
     },
   };
 };

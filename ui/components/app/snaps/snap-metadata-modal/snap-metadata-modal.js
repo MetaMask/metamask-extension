@@ -1,7 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { getSnapPrefix, stripSnapPrefix } from '@metamask/snaps-utils';
+import {
+  getSnapPrefix,
+  isSnapId,
+  stripSnapPrefix,
+} from '@metamask/snaps-utils';
 import {
   getSnap,
   getSnapRegistryData,
@@ -39,7 +43,6 @@ import { ShowMore } from '../show-more';
 import SnapExternalPill from '../snap-version/snap-external-pill';
 import { useSafeWebsite } from '../../../../hooks/snaps/useSafeWebsite';
 import Tooltip from '../../../ui/tooltip';
-import { isSnapId } from '../../../../helpers/utils/snaps';
 import { SnapIcon } from '../snap-icon';
 
 export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {

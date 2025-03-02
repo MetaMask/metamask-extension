@@ -69,9 +69,7 @@ class FirefoxDriver {
       'browser.download.dir',
       `${process.cwd()}/test-artifacts/downloads`,
     );
-    if (process.env.CI === 'true') {
-      options.setBinary('/opt/firefox/firefox');
-    }
+
     if (isHeadless('SELENIUM')) {
       // TODO: Remove notice and consider non-experimental when results are consistent
       console.warn(

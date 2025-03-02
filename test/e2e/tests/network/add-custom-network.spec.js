@@ -2,7 +2,6 @@ const { strict: assert } = require('assert');
 const { toHex } = require('@metamask/controller-utils');
 const FixtureBuilder = require('../../fixture-builder');
 const {
-  defaultGanacheOptions,
   withFixtures,
   openDapp,
   openMenuSafe,
@@ -131,7 +130,6 @@ describe('Custom network', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
@@ -378,7 +376,6 @@ describe('Custom network', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
@@ -438,7 +435,6 @@ describe('Custom network', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
@@ -515,7 +511,6 @@ describe('Custom network', function () {
               selectedNetworkClientId: 'networkConfigurationId',
             })
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
@@ -527,7 +522,7 @@ describe('Custom network', function () {
 
           // Go to Edit Menu
           const networkMenu = await driver.findElement(
-            '[data-testid="network-list-item-options-button-0xa4b1"]',
+            '[data-testid="network-list-item-options-button-eip155:42161"]',
           );
 
           await networkMenu.click();
@@ -575,7 +570,6 @@ describe('Custom network', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockRPCURLAndChainId,
         },
@@ -615,7 +609,6 @@ describe('Custom network', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockRPCURLAndChainId,
         },
@@ -650,7 +643,6 @@ describe('Custom network', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockRPCURLAndChainId,
         },
@@ -762,7 +754,6 @@ describe('Custom network', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockRPCURLAndChainId,
         },
@@ -862,7 +853,6 @@ describe('Custom network', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockRPCURLAndChainId,
         },

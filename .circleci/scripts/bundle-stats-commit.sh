@@ -16,9 +16,9 @@ then
     exit 1
 fi
 
-if [[ "${CIRCLE_BRANCH}" != "develop" ]]
+if [[ "${CIRCLE_BRANCH}" != "main" ]]
 then
-    printf 'This is not develop branch'
+    printf 'This is not main branch'
     exit 0
 fi
 

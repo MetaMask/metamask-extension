@@ -12,10 +12,9 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
-  getCurrentChainId,
-  getCurrentCurrency,
   getRpcPrefsForCurrentProvider,
   getUSDConversionRate,
   isHardwareWallet,
@@ -273,16 +272,27 @@ export default function AwaitingSwap({
     }
   }, [dispatch, errorKey]);
 
+  const renderMascot = () => {
+    if (process.env.METAMASK_BUILD_TYPE === 'flask') {
+      return (
+        <div className="awaiting-swap__mascot">
+          <img src="./images/logo/metamask-fox.svg" width="90" height="90" />
+        </div>
+      );
+    }
+    return (
+      <Mascot
+        animationEventEmitter={animationEventEmitter.current}
+        width="90"
+        height="90"
+      />
+    );
+  };
+
   return (
     <div className="awaiting-swap">
       <div className="awaiting-swap__content">
-        {!(swapComplete || errorKey) && (
-          <Mascot
-            animationEventEmitter={animationEventEmitter.current}
-            width="90"
-            height="90"
-          />
-        )}
+        {!(swapComplete || errorKey) && renderMascot()}
         <div className="awaiting-swap__status-image">{statusImage}</div>
         <div
           className="awaiting-swap__header"

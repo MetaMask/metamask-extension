@@ -35,6 +35,16 @@ const render = (
           [selectedInternalAccount.address]: { balance },
         },
       },
+      preferences: {
+        tokenNetworkFilter: {},
+        tokenSortConfig: {
+          key: 'token-sort-key',
+          order: 'dsc',
+          sortCallback: 'stringNumeric',
+        },
+      },
+      allTokens: {},
+      tokenBalances: {},
     },
   };
   const store = configureStore(state);

@@ -17,9 +17,11 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn((selector) => selector()),
 }));
 
-jest.mock('../../../../selectors', () => ({
-  getCurrentChainId: jest.fn(),
+jest.mock('../../../../ducks/metamask/metamask', () => ({
   getCurrentCurrency: jest.fn(),
+}));
+
+jest.mock('../../../../selectors', () => ({
   selectConversionRateByChainId: jest.fn(),
 }));
 

@@ -56,17 +56,18 @@ import {
   getValueFromWeiHex,
   hexWEIToDecGWEI,
 } from '../../../shared/modules/conversion.utils';
+import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
+import { getFeatureFlagsByChainId } from '../../../shared/modules/selectors/feature-flags';
 import {
   getSelectedAccount,
   getTokenExchangeRates,
   getUSDConversionRate,
   getSwapsDefaultToken,
-  getCurrentChainId,
   isHardwareWallet,
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
-  getSelectedNetworkClientId,
   getSelectedInternalAccount,
+  getSelectedNetwork,
 } from '../../selectors';
 import {
   getSmartTransactionsEnabled,
@@ -85,6 +86,7 @@ import {
   SWAPS_FETCH_ORDER_CONFLICT,
   ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS,
   Slippage,
+  SWAPS_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
 } from '../../../shared/constants/swaps';
 import {
   IN_PROGRESS_TRANSACTION_STATUSES,
@@ -99,6 +101,7 @@ import {
 import { EtherDenomination } from '../../../shared/constants/common';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { calculateMaxGasLimit } from '../../../shared/lib/swaps-utils';
+import { useTokenFiatAmount } from '../../hooks/useTokenFiatAmount';
 
 const debugLog = createProjectLogger('swaps');
 
@@ -589,6 +592,7 @@ export const fetchSwapsLivenessAndFeatureFlags = () => {
         await dispatch(fetchSmartTransactionsLiveness());
         const transactions = await getTransactions({
           searchCriteria: {
+            chainId,
             from: getSelectedInternalAccount(state)?.address,
           },
         });
@@ -628,14 +632,14 @@ export const fetchQuotesAndSetQuoteState = (
 ) => {
   return async (dispatch, getState) => {
     const state = getState();
-    const chainId = getCurrentChainId(state);
+    const selectedNetwork = getSelectedNetwork(state);
     let swapsLivenessForNetwork = {
       swapsFeatureIsLive: false,
     };
     try {
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
       swapsLivenessForNetwork = getSwapsLivenessForNetwork(
-        chainId,
+        selectedNetwork.configuration.chainId,
         swapsFeatureFlags,
       );
     } catch (error) {
@@ -650,7 +654,6 @@ export const fetchQuotesAndSetQuoteState = (
 
     const fetchParams = getFetchParams(state);
     const selectedAccount = getSelectedAccount(state);
-    const networkClientId = getSelectedNetworkClientId(state);
     const balanceError = getBalanceError(state);
     const swapsDefaultToken = getSwapsDefaultToken(state);
     const fetchParamsFromToken =
@@ -697,7 +700,7 @@ export const fetchQuotesAndSetQuoteState = (
             symbol: toTokenSymbol,
             decimals: toTokenDecimals,
             image: toTokenIconUrl,
-            networkClientId,
+            networkClientId: selectedNetwork.clientId,
           },
           true,
         ),
@@ -725,7 +728,7 @@ export const fetchQuotesAndSetQuoteState = (
             symbol: fromTokenSymbol,
             decimals: fromTokenDecimals,
             image: fromTokenIconUrl,
-            networkClientId,
+            networkClientId: selectedNetwork.clientId,
           },
           true,
         ),
@@ -791,7 +794,7 @@ export const fetchQuotesAndSetQuoteState = (
             sourceTokenInfo,
             destinationTokenInfo,
             accountBalance: selectedAccount.balance,
-            chainId,
+            networkClientId: selectedNetwork.clientId,
           },
         ),
       );
@@ -896,12 +899,12 @@ export const signAndSendSwapsSmartTransaction = ({
     const { metaData, value: swapTokenValue, slippage } = fetchParams;
     const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData;
     const usedQuote = getUsedQuote(state);
-    const swapsNetworkConfig = getSwapsNetworkConfig(state);
-    const chainId = getCurrentChainId(state);
+    const selectedNetwork = getSelectedNetwork(state);
+    const swapsFeatureFlags = getFeatureFlagsByChainId(state);
 
     dispatch(
       setSmartTransactionsRefreshInterval(
-        swapsNetworkConfig?.stxBatchStatusRefreshTime,
+        swapsFeatureFlags?.smartTransactions?.batchStatusPollingInterval,
       ),
     );
 
@@ -948,7 +951,12 @@ export const signAndSendSwapsSmartTransaction = ({
       sensitiveProperties: swapMetaData,
     });
 
-    if (!isContractAddressValid(usedTradeTxParams.to, chainId)) {
+    if (
+      !isContractAddressValid(
+        usedTradeTxParams.to,
+        selectedNetwork.configuration.chainId,
+      )
+    ) {
       captureMessage('Invalid contract address', {
         extra: {
           token_from: swapMetaData.token_from,
@@ -993,7 +1001,7 @@ export const signAndSendSwapsSmartTransaction = ({
         updatedApproveTxParams.gas = `0x${decimalToHex(
           fees.approvalTxFees?.gasLimit || 0,
         )}`;
-        updatedApproveTxParams.chainId = chainId;
+        updatedApproveTxParams.chainId = selectedNetwork.configuration.chainId;
         approvalTxUuid = await dispatch(
           signAndSendSmartTransaction({
             unsignedTransaction: updatedApproveTxParams,
@@ -1004,7 +1012,7 @@ export const signAndSendSwapsSmartTransaction = ({
       unsignedTransaction.gas = `0x${decimalToHex(
         fees.tradeTxFees?.gasLimit || 0,
       )}`;
-      unsignedTransaction.chainId = chainId;
+      unsignedTransaction.chainId = selectedNetwork.configuration.chainId;
       const uuid = await dispatch(
         signAndSendSmartTransaction({
           unsignedTransaction,
@@ -1360,7 +1368,10 @@ export function fetchMetaSwapsGasPriceEstimates() {
       dispatch(swapGasPriceEstimatesFetchFailed());
 
       try {
-        const gasPrice = await global.ethQuery.gasPrice();
+        const gasPrice = await global.ethereumProvider.request({
+          method: 'eth_gasPrice',
+          params: [],
+        });
         const gasPriceInDecGWEI = hexWEIToDecGWEI(gasPrice.toString(10));
 
         dispatch(retrievedFallbackSwapsGasPrice(gasPriceInDecGWEI));
@@ -1426,3 +1437,55 @@ export function cancelSwapsSmartTransaction(uuid) {
     }
   };
 }
+
+export const getIsEstimatedReturnLow = ({ usedQuote, rawNetworkFees }) => {
+  const sourceTokenAmount = calcTokenAmount(
+    usedQuote?.sourceAmount,
+    usedQuote?.sourceTokenInfo?.decimals,
+  );
+  // Disabled because it's not a hook
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const sourceTokenFiatAmount = useTokenFiatAmount(
+    usedQuote?.sourceTokenInfo?.address,
+    sourceTokenAmount || 0,
+    usedQuote?.sourceTokenInfo?.symbol,
+    {
+      showFiat: true,
+    },
+    true,
+    null,
+    false,
+  );
+  const destinationTokenAmount = calcTokenAmount(
+    usedQuote?.destinationAmount,
+    usedQuote?.destinationTokenInfo?.decimals,
+  );
+  // Disabled because it's not a hook
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const destinationTokenFiatAmount = useTokenFiatAmount(
+    usedQuote?.destinationTokenInfo?.address,
+    destinationTokenAmount || 0,
+    usedQuote?.destinationTokenInfo?.symbol,
+    {
+      showFiat: true,
+    },
+    true,
+    null,
+    false,
+  );
+  const adjustedReturnValue =
+    destinationTokenFiatAmount && rawNetworkFees
+      ? new BigNumber(destinationTokenFiatAmount).minus(
+          new BigNumber(rawNetworkFees),
+        )
+      : null;
+  const isEstimatedReturnLow =
+    sourceTokenFiatAmount && adjustedReturnValue
+      ? adjustedReturnValue.lt(
+          new BigNumber(sourceTokenFiatAmount).times(
+            1 - SWAPS_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
+          ),
+        )
+      : false;
+  return isEstimatedReturnLow;
+};

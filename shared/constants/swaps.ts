@@ -1,3 +1,8 @@
+import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from './multichain/assets';
+import {
+  MULTICHAIN_TOKEN_IMAGE_MAP,
+  MultichainNetworks,
+} from './multichain/networks';
 import {
   ETH_TOKEN_IMAGE_URL,
   TEST_ETH_TOKEN_IMAGE_URL,
@@ -21,6 +26,7 @@ export const SLIPPAGE_LOW_ERROR = 'slippage-low';
 export const SLIPPAGE_NEGATIVE_ERROR = 'slippage-negative';
 
 export const MAX_ALLOWED_SLIPPAGE = 15;
+export const SWAPS_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE = 0.35;
 
 // An address that the metaswap-api recognizes as the default token for the current network,
 // in place of the token address that ERC-20 tokens have
@@ -125,6 +131,14 @@ export const BASE_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
   ...ETH_SWAPS_TOKEN_OBJECT,
 } as const;
 
+const SOLANA_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
+  symbol: 'SOL',
+  name: 'Solana',
+  address: MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.SOL,
+  decimals: 9,
+  iconUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.SOLANA],
+};
+
 // A gas value for ERC20 approve calls that should be sufficient for all ERC20 approve implementations
 export const DEFAULT_ERC20_APPROVE_GAS = '0x1d4c0';
 
@@ -181,6 +195,9 @@ export const ALLOWED_PROD_SWAPS_CHAIN_IDS = [
   CHAIN_IDS.ZKSYNC_ERA,
   CHAIN_IDS.LINEA_MAINNET,
   CHAIN_IDS.BASE,
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+  MultichainNetworks.SOLANA,
+  ///: END:ONLY_INCLUDE_IF
 ] as const;
 
 export const ALLOWED_DEV_SWAPS_CHAIN_IDS = [
@@ -281,6 +298,7 @@ export const SWAPS_CHAINID_DEFAULT_TOKEN_MAP = {
   [CHAIN_IDS.ZKSYNC_ERA]: ZKSYNC_ERA_SWAPS_TOKEN_OBJECT,
   [CHAIN_IDS.LINEA_MAINNET]: LINEA_SWAPS_TOKEN_OBJECT,
   [CHAIN_IDS.BASE]: BASE_SWAPS_TOKEN_OBJECT,
+  [MultichainNetworks.SOLANA]: SOLANA_SWAPS_TOKEN_OBJECT,
 } as const;
 
 export const ETHEREUM = 'ethereum';

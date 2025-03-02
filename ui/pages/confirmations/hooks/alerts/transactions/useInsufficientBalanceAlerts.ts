@@ -7,6 +7,7 @@ import {
   selectTransactionFeeById,
   selectTransactionValue,
 } from '../../../../../selectors';
+import { getMultichainNativeCurrency } from '../../../../../selectors/multichain';
 import { isBalanceSufficient } from '../../../send/send.utils';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Severity } from '../../../../../helpers/constants/design-system';
@@ -33,6 +34,8 @@ export function useInsufficientBalanceAlerts(): Alert[] {
     selectTransactionFeeById(state, transactionId),
   );
 
+  const nativeCurrency = useSelector(getMultichainNativeCurrency);
+
   const insufficientBalance = !isBalanceSufficient({
     amount: value,
     gasTotal: hexMaximumTransactionFee,
@@ -49,13 +52,15 @@ export function useInsufficientBalanceAlerts(): Alert[] {
         actions: [
           {
             key: AlertActionKey.Buy,
-            label: t('alertActionBuy'),
+            label: t('alertActionBuyWithNativeCurrency', [nativeCurrency]),
           },
         ],
         field: RowAlertKey.EstimatedFee,
         isBlocking: true,
         key: 'insufficientBalance',
-        message: t('alertMessageInsufficientBalance2'),
+        message: t('alertMessageInsufficientBalanceWithNativeCurrency', [
+          nativeCurrency,
+        ]),
         reason: t('alertReasonInsufficientBalance'),
         severity: Severity.Danger,
       },

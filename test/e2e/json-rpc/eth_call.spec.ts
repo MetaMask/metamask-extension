@@ -1,10 +1,10 @@
 import { strict as assert } from 'assert';
 import { keccak } from 'ethereumjs-util';
-import { defaultGanacheOptions, withFixtures } from '../helpers';
+import { withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import FixtureBuilder from '../fixture-builder';
 import { Ganache } from '../seeder/ganache';
-import GanacheContractAddressRegistry from '../seeder/ganache-contract-address-registry';
+import ContractAddressRegistry from '../seeder/contract-address-registry';
 import { SMART_CONTRACTS } from '../seeder/smart-contracts';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 
@@ -17,7 +17,6 @@ describe('eth_call', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test?.fullTitle(),
       },
@@ -28,7 +27,7 @@ describe('eth_call', function () {
       }: {
         driver: Driver;
         ganacheServer?: Ganache;
-        contractRegistry: GanacheContractAddressRegistry;
+        contractRegistry: ContractAddressRegistry;
       }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
         await loginWithBalanceValidation(driver, ganacheServer);

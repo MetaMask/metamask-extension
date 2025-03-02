@@ -1,0 +1,71 @@
+.mm-carousel {
+  height: 100px;
+}
+
+.mm-carousel--single-slide {
+  height: 70px;
+
+  .control-dots {
+    display: none !important;
+  }
+}
+
+.mm-carousel-slide {
+  position: relative;
+  cursor: pointer;
+
+  /* !important needed to override react-responsive-carousel default padding */
+  padding: 0 !important;
+  background-color: var(--color-background-muted);
+
+  &:hover {
+    background-color: var(--color-background-muted-hover);
+  }
+
+  &:active,
+  &.active {
+    background-color: var(--color-background-muted-pressed);
+  }
+}
+
+.mm-carousel__loading {
+  cursor: default;
+}
+
+.mm-carousel-slide__accessory {
+  background-size: cover;
+  background-position: center;
+  height: 100%;
+
+  /* !important needed to override react-responsive-carousel default width */
+  width: 60px !important;
+}
+
+.mm-carousel-slide__close-button {
+  position: absolute;
+  top: 8px;
+  right: 6px;
+}
+
+.control-dots {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  height: 40px;
+  align-items: center;
+  gap: 8px;
+
+  /* !important needed to override react-responsive-carousel default margin */
+  margin: 0 !important;
+}
+
+.dot {
+  /* !important rules needed to override react-responsive-carousel default styles */
+  margin: 0 !important;
+  background: var(--color-icon-muted) !important;
+  box-shadow: none !important;
+
+  &.selected {
+    background: var(--color-icon-default) !important;
+  }
+}

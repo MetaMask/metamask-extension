@@ -164,12 +164,15 @@ function AlertDetails({
     >
       {customDetails ?? (
         <Box>
-          <Text
-            variant={TextVariant.bodyMd}
-            data-testid="alert-modal__selected-alert"
-          >
-            {selectedAlert.message}
-          </Text>
+          {Boolean(selectedAlert.content) && selectedAlert.content}
+          {Boolean(selectedAlert.message) && (
+            <Text
+              variant={TextVariant.bodyMd}
+              data-testid="alert-modal__selected-alert"
+            >
+              {selectedAlert.message}
+            </Text>
+          )}
           {selectedAlert.alertDetails?.length ? (
             <Text variant={TextVariant.bodyMdBold} marginTop={1}>
               {t('alertModalDetails')}
@@ -326,15 +329,22 @@ export function AlertModal({
     }
   }, [selectedAlert, trackAlertRender]);
 
+  const isConfirmed = selectedAlert
+    ? isAlertConfirmed(selectedAlert.key)
+    : false;
+  const isAlertDanger = selectedAlert
+    ? selectedAlert.severity === Severity.Danger
+    : false;
+
+  const handleCheckboxClick = useCallback(() => {
+    if (selectedAlert) {
+      setAlertConfirmed(selectedAlert.key, !isConfirmed);
+    }
+  }, [isConfirmed, selectedAlert, setAlertConfirmed]);
+
   if (!selectedAlert) {
     return null;
   }
-  const isConfirmed = isAlertConfirmed(selectedAlert.key);
-  const isAlertDanger = selectedAlert.severity === Severity.Danger;
-
-  const handleCheckboxClick = useCallback(() => {
-    return setAlertConfirmed(selectedAlert.key, !isConfirmed);
-  }, [isConfirmed, selectedAlert.key, setAlertConfirmed]);
 
   return (
     <Modal isOpen onClose={handleClose} data-testid="alert-modal">
@@ -352,7 +362,7 @@ export function AlertModal({
         />
         <AlertHeader selectedAlert={selectedAlert} customTitle={customTitle} />
         <ModalBody>
-          {selectedAlert?.provider === SecurityProvider.Blockaid ? (
+          {selectedAlert.provider === SecurityProvider.Blockaid ? (
             <BlockaidAlertDetails />
           ) : (
             <AlertDetails

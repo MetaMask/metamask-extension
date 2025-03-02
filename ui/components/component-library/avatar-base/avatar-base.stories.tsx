@@ -9,9 +9,11 @@ import {
   IconColor,
 } from '../../../helpers/constants/design-system';
 
-import { AvatarBase, Icon, IconName, Box } from '..';
 import { AvatarBaseSize } from './avatar-base.types';
 import README from './README.mdx';
+import { AvatarBase } from './avatar-base';
+import { Box } from '../box';
+import { Icon, IconName } from '../icon';
 
 const marginSizeKnobOptions = [
   0,

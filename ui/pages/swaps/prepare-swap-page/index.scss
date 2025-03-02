@@ -133,10 +133,10 @@
 
   &__from-token-amount {
     border: 0;
-    outline: none;
+    margin-right: -4px;
 
     input {
-      padding-right: 0;
+      padding-right: 4px;
       text-align: right;
       font-weight: var(--typography-s-heading-lg-font-weight);
       font-size: var(--typography-s-heading-lg-font-size);

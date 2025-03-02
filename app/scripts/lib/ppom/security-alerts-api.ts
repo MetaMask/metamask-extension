@@ -1,8 +1,7 @@
-import { Hex, JsonRpcRequest } from '@metamask/utils';
+import { JsonRpcRequest } from '@metamask/utils';
 import { SecurityAlertResponse } from './types';
 
 const ENDPOINT_VALIDATE = 'validate';
-const ENDPOINT_SUPPORTED_CHAINS = 'supportedChains';
 
 type SecurityAlertsAPIRequestBody = {
   method: string;
@@ -36,10 +35,6 @@ export async function validateWithSecurityAlertsAPI(
   });
 }
 
-export async function getSecurityAlertsAPISupportedChainIds(): Promise<Hex[]> {
-  return request(ENDPOINT_SUPPORTED_CHAINS);
-}
-
 async function request(endpoint: string, options?: RequestInit) {
   const url = getUrl(endpoint);
 
@@ -51,7 +46,7 @@ async function request(endpoint: string, options?: RequestInit) {
     );
   }
 
-  return response.json();
+  return await response.json();
 }
 
 function getUrl(endpoint: string) {

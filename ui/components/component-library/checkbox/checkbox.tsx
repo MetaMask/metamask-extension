@@ -10,10 +10,10 @@ import {
   AlignItems,
 } from '../../../helpers/constants/design-system';
 
-import type { PolymorphicRef, TextProps } from '..';
-import { Box, Icon, IconName, Text } from '..';
-
-import { CheckboxProps, CheckboxComponent } from './checkbox.types';
+import { type PolymorphicRef, Box } from '../box';
+import { Text, type TextProps } from '../text';
+import { Icon, IconName } from '../icon';
+import type { CheckboxProps, CheckboxComponent } from './checkbox.types';
 
 export const Checkbox: CheckboxComponent = React.forwardRef(
   <C extends React.ElementType = 'div'>(

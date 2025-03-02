@@ -69,10 +69,15 @@ const createProviderWrapper = (store, pathname = '/') => {
   };
 };
 
-export function renderWithProvider(component, store, pathname = '/') {
+export function renderWithProvider(
+  component,
+  store,
+  pathname = '/',
+  renderer = render,
+) {
   const { history, Wrapper } = createProviderWrapper(store, pathname);
   return {
-    ...render(component, { wrapper: Wrapper }),
+    ...renderer(component, { wrapper: Wrapper }),
     history,
   };
 }

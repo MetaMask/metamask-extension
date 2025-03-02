@@ -10,18 +10,18 @@ import {
   SignatureController,
   SignatureRequest,
 } from '@metamask/signature-controller';
-import { Hex } from '@metamask/utils';
+import { Hex, JsonRpcRequest } from '@metamask/utils';
 import {
   BlockaidReason,
   BlockaidResultType,
   LOADING_SECURITY_ALERT_RESPONSE,
-  SECURITY_ALERT_RESPONSE_CHAIN_NOT_SUPPORTED,
   SecurityAlertSource,
 } from '../../../../shared/constants/security-provider';
 import { AppStateController } from '../../controllers/app-state-controller';
 import {
   generateSecurityAlertId,
-  isChainSupported,
+  METHOD_SIGN_TYPED_DATA_V3,
+  METHOD_SIGN_TYPED_DATA_V4,
   updateSecurityAlertResponse,
   validateRequestWithPPOM,
 } from './ppom-util';
@@ -56,6 +56,10 @@ const TRANSACTION_PARAMS_MOCK_1: TransactionParams = {
   from: '0x123',
   value: '0x123',
 };
+
+const SIGN_TYPED_DATA_PARAMS_MOCK_1 = '0x123';
+const SIGN_TYPED_DATA_PARAMS_MOCK_2 =
+  '{"primaryType":"Permit","domain":{},"types":{}}';
 
 const TRANSACTION_PARAMS_MOCK_2: TransactionParams = {
   ...TRANSACTION_PARAMS_MOCK_1,
@@ -107,10 +111,6 @@ function createTransactionControllerMock(
 describe('PPOM Utils', () => {
   const normalizeTransactionParamsMock = jest.mocked(
     normalizeTransactionParams,
-  );
-  const getSupportedChainIdsMock = jest.spyOn(
-    securityAlertAPI,
-    'getSecurityAlertsAPISupportedChainIds',
   );
   let isSecurityAlertsEnabledMock: jest.SpyInstance;
 
@@ -198,6 +198,7 @@ describe('PPOM Utils', () => {
           result_type: BlockaidResultType.Errored,
           reason: BlockaidReason.errored,
           description: 'Test Error: Test error message',
+          source: SecurityAlertSource.Local,
         },
       );
     });
@@ -219,6 +220,7 @@ describe('PPOM Utils', () => {
           result_type: BlockaidResultType.Errored,
           reason: BlockaidReason.errored,
           description: 'Test Error: Test error message',
+          source: SecurityAlertSource.Local,
         },
       );
     });
@@ -259,22 +261,47 @@ describe('PPOM Utils', () => {
       );
     });
 
-    it('updates response indicating chain is not supported', async () => {
-      const ppomController = {} as PPOMController;
-      const CHAIN_ID_UNSUPPORTED_MOCK = '0x2';
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([METHOD_SIGN_TYPED_DATA_V3, METHOD_SIGN_TYPED_DATA_V4])(
+      'sanitizes request params if method is %s',
+      async (method: string) => {
+        const ppom = createPPOMMock();
+        const ppomController = createPPOMControllerMock();
 
-      await validateRequestWithPPOM({
-        ...validateRequestWithPPOMOptionsBase,
-        ppomController,
-        chainId: CHAIN_ID_UNSUPPORTED_MOCK,
-      });
+        ppomController.usePPOM.mockImplementation(
+          (callback) =>
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            callback(ppom as any) as any,
+        );
 
-      expect(updateSecurityAlertResponseMock).toHaveBeenCalledWith(
-        validateRequestWithPPOMOptionsBase.request.method,
-        SECURITY_ALERT_ID_MOCK,
-        SECURITY_ALERT_RESPONSE_CHAIN_NOT_SUPPORTED,
-      );
-    });
+        const firstTwoParams = [
+          SIGN_TYPED_DATA_PARAMS_MOCK_1,
+          SIGN_TYPED_DATA_PARAMS_MOCK_2,
+        ];
+
+        const unwantedParams = [{}, undefined, 1, null];
+
+        const params = [...firstTwoParams, ...unwantedParams];
+
+        const request = {
+          ...REQUEST_MOCK,
+          method,
+          params,
+        } as unknown as JsonRpcRequest;
+
+        await validateRequestWithPPOM({
+          ...validateRequestWithPPOMOptionsBase,
+          ppomController,
+          request,
+        });
+
+        expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
+        expect(ppom.validateJsonRpc).toHaveBeenCalledWith({
+          ...request,
+          params: firstTwoParams,
+        });
+      },
+    );
   });
 
   describe('generateSecurityAlertId', () => {
@@ -405,38 +432,6 @@ describe('PPOM Utils', () => {
         CHAIN_ID_MOCK,
         request,
       );
-    });
-  });
-
-  describe('isChainSupported', () => {
-    describe('when security alerts API is enabled', () => {
-      beforeEach(async () => {
-        isSecurityAlertsEnabledMock.mockReturnValue(true);
-        getSupportedChainIdsMock.mockResolvedValue([CHAIN_ID_MOCK]);
-      });
-
-      it('returns true if chain is supported', async () => {
-        expect(await isChainSupported(CHAIN_ID_MOCK)).toStrictEqual(true);
-      });
-
-      it('returns false if chain is not supported', async () => {
-        expect(await isChainSupported('0x2')).toStrictEqual(false);
-      });
-
-      it('returns correctly if security alerts API throws', async () => {
-        getSupportedChainIdsMock.mockRejectedValue(new Error('Test Error'));
-        expect(await isChainSupported(CHAIN_ID_MOCK)).toStrictEqual(true);
-      });
-    });
-
-    describe('when security alerts API is disabled', () => {
-      it('returns true if chain is supported', async () => {
-        expect(await isChainSupported(CHAIN_ID_MOCK)).toStrictEqual(true);
-      });
-
-      it('returns false if chain is not supported', async () => {
-        expect(await isChainSupported('0x2')).toStrictEqual(false);
-      });
     });
   });
 });

@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-
+import { BigNumber } from 'bignumber.js';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { shortenAddress } from '../../../helpers/utils/util';
+import { getSnapName, shortenAddress } from '../../../helpers/utils/util';
 
-import { AccountListItemMenu, AvatarGroup } from '..';
+import { AccountListItemMenu } from '../account-list-item-menu';
+import { AvatarGroup } from '../avatar-group';
 import { ConnectedAccountsMenu } from '../connected-accounts-menu';
 import {
   AvatarAccount,
@@ -47,9 +48,14 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   isAccountConnectedToCurrentTab,
-  getShowFiatInTestnets,
   getUseBlockie,
+  getShouldHideZeroBalanceTokens,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
+  getShowFiatInTestnets,
+  getChainIdsToPoll,
+  getSnapsMetadata,
 } from '../../../selectors';
+import { getIntlLocale } from '../../../ducks/locale/locale';
 import {
   getMultichainIsTestnet,
   getMultichainNativeCurrency,
@@ -58,15 +64,15 @@ import {
   getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
 import { useMultichainAccountTotalFiatBalance } from '../../../hooks/useMultichainAccountTotalFiatBalance';
-import { ConnectedStatus } from '../connected-status/connected-status';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
-import { useTheme } from '../../../hooks/useTheme';
-///: END:ONLY_INCLUDE_IF
+import { ConnectedStatus } from '../connected-status';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
+import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
+import { getAccountLabel } from '../../../helpers/utils/accounts';
+import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -90,15 +96,25 @@ const AccountListItem = ({
   privacyMode = false,
 }) => {
   const t = useI18nContext();
+  const locale = useSelector(getIntlLocale);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
+  const snapMetadata = useSelector(getSnapsMetadata);
+  const accountLabel = getAccountLabel(
+    account.metadata.keyring.type,
+    account,
+    account.metadata.keyring.type === KeyringType.snap
+      ? getSnapName(snapMetadata)(account.metadata?.snap.id)
+      : null,
+  );
 
   const useBlockie = useSelector(getUseBlockie);
   const { isEvmNetwork } = useMultichainSelector(getMultichainNetwork, account);
   const setAccountListItemMenuRef = (ref) => {
     setAccountListItemMenuElement(ref);
   };
+
   const isTestnet = useMultichainSelector(getMultichainIsTestnet, account);
   const isMainnet = !isTestnet;
   const shouldShowFiat = useMultichainSelector(
@@ -110,21 +126,50 @@ const AccountListItem = ({
     shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
   const accountTotalFiatBalances =
     useMultichainAccountTotalFiatBalance(account);
+  // cross chain agg balance
+  const shouldHideZeroBalanceTokens = useSelector(
+    getShouldHideZeroBalanceTokens,
+  );
+  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
+    getIsTokenNetworkFilterEqualCurrentNetwork,
+  );
+  const allChainIDs = useSelector(getChainIdsToPoll);
+  const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
+    account,
+    shouldHideZeroBalanceTokens,
+    isTokenNetworkFilterEqualCurrentNetwork,
+    allChainIDs,
+  );
+  const { totalFiatBalance } = useAccountTotalCrossChainFiatBalance(
+    account,
+    formattedTokensWithBalancesPerChain,
+  );
+  // cross chain agg balance
   const mappedOrderedTokenList = accountTotalFiatBalances.orderedTokenList.map(
     (item) => ({
       avatarValue: item.iconUrl,
     }),
   );
-  const balanceToTranslate = isEvmNetwork
-    ? account.balance
-    : accountTotalFiatBalances.totalBalance;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const custodianIcon = useSelector((state) =>
-    getCustodianIconForAddress(state, account.address),
-  );
-  const theme = useTheme();
-  ///: END:ONLY_INCLUDE_IF
+  let balanceToTranslate;
+  if (isEvmNetwork) {
+    balanceToTranslate =
+      !shouldShowFiat || isTestnet || !process.env.PORTFOLIO_VIEW
+        ? account.balance
+        : totalFiatBalance;
+  } else {
+    const balanceOrFallback = accountTotalFiatBalances?.totalBalance ?? 0;
+    const bnBalance = new BigNumber(balanceOrFallback);
+    const formattedBalanceToTranslate = formatWithThreshold(
+      bnBalance.toNumber(),
+      0.00001,
+      locale,
+      {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 5,
+      },
+    );
+    balanceToTranslate = formattedBalanceToTranslate;
+  }
 
   // If this is the selected item in the Account menu,
   // scroll the item into view
@@ -206,34 +251,6 @@ const AccountListItem = ({
             />
             ///: END:ONLY_INCLUDE_IF
           }
-
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            custodianIcon ? (
-              <img
-                src={custodianIcon}
-                data-testid="custody-logo"
-                className="custody-logo"
-                alt="custody logo"
-                style={{
-                  backgroundColor: theme === 'light' ? 'transparent' : 'white',
-                }}
-              />
-            ) : (
-              <AvatarAccount
-                borderColor={BorderColor.transparent}
-                size={Size.MD}
-                address={account.address}
-                variant={
-                  useBlockie
-                    ? AvatarAccountVariant.Blockies
-                    : AvatarAccountVariant.Jazzicon
-                }
-                marginInlineEnd={2}
-              />
-            )
-            ///: END:ONLY_INCLUDE_IF
-          }
         </Box>
       </>
 
@@ -313,6 +330,9 @@ const AccountListItem = ({
                 value={balanceToTranslate}
                 type={PRIMARY}
                 showFiat={showFiat}
+                isAggregatedFiatOverviewBalance={
+                  !isTestnet && process.env.PORTFOLIO_VIEW && shouldShowFiat
+                }
                 data-testid="first-currency-display"
                 privacyMode={privacyMode}
               />
@@ -332,8 +352,7 @@ const AccountListItem = ({
               {shortenAddress(normalizeSafeAddress(account.address))}
             </Text>
           </Box>
-          {/* For non-EVM networks we always want to show tokens */}
-          {mappedOrderedTokenList.length > 1 || !isEvmNetwork ? (
+          {mappedOrderedTokenList.length > 1 ? (
             <AvatarGroup members={mappedOrderedTokenList} limit={4} />
           ) : (
             <Box
@@ -358,7 +377,7 @@ const AccountListItem = ({
                 <UserPreferencedCurrencyDisplay
                   account={account}
                   ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                  value={account.balance}
+                  value={isEvmNetwork ? account.balance : balanceToTranslate}
                   type={SECONDARY}
                   showNative
                   data-testid="second-currency-display"
@@ -368,9 +387,9 @@ const AccountListItem = ({
             </Box>
           )}
         </Box>
-        {account.label ? (
+        {accountLabel ? (
           <Tag
-            label={account.label}
+            label={accountLabel}
             labelProps={{
               variant: TextVariant.bodyXs,
               color: Color.textAlternative,
@@ -412,7 +431,7 @@ const AccountListItem = ({
           account={account}
           onClose={() => setAccountOptionsMenuOpen(false)}
           isOpen={accountOptionsMenuOpen}
-          isRemovable={account.keyring.type !== KeyringType.hdKeyTree}
+          isRemovable={account.metadata.keyring.type !== KeyringType.hdKeyTree}
           closeMenu={closeMenu}
           isPinned={isPinned}
           isHidden={isHidden}
@@ -453,10 +472,6 @@ AccountListItem.propTypes = {
         type: PropTypes.string.isRequired,
       }).isRequired,
     }).isRequired,
-    keyring: PropTypes.shape({
-      type: PropTypes.string.isRequired,
-    }).isRequired,
-    label: PropTypes.string,
   }).isRequired,
   /**
    * Represents if this account is currently selected

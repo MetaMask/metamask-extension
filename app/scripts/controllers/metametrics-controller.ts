@@ -36,9 +36,10 @@ import {
   BaseController,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedControllerMessenger,
+  RestrictedMessenger,
 } from '@metamask/base-controller';
 import { AddressBookControllerState } from '@metamask/address-book-controller';
+import { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
@@ -72,6 +73,7 @@ import Analytics from '../lib/segment/analytics';
 import { ENVIRONMENT } from '../../../development/build/constants';
 ///: END:ONLY_INCLUDE_IF
 
+import { KeyringType } from '../../../shared/constants/keyring';
 import type {
   PreferencesControllerState,
   PreferencesControllerGetStateAction,
@@ -166,7 +168,9 @@ export type MetaMaskState = {
   currentCurrency: string;
   preferences: {
     privacyMode: PreferencesControllerState['preferences']['privacyMode'];
+    tokenNetworkFilter: string[];
   };
+  sessionData: AuthenticationControllerState['sessionData'];
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   custodyAccountDetails: {
     [address: string]: {
@@ -174,6 +178,7 @@ export type MetaMaskState = {
     };
   };
   ///: END:ONLY_INCLUDE_IF
+  keyrings: { type: string; accounts: string[] }[];
 };
 
 /**
@@ -301,7 +306,7 @@ export type AllowedEvents =
 /**
  * Messenger type for the {@link MetaMetricsController}.
  */
-export type MetaMetricsControllerMessenger = RestrictedControllerMessenger<
+export type MetaMetricsControllerMessenger = RestrictedMessenger<
   typeof controllerName,
   MetaMetricsControllerActions | AllowedActions,
   MetaMetricsControllerEvents | AllowedEvents,
@@ -583,8 +588,7 @@ export default class MetaMetricsController extends BaseController<
       : {};
 
     this.update((state) => {
-      // @ts-expect-error this is caused by a bug in Immer, not being able to handle recursive types like Json
-      state.fragments[id] = merge(additionalFragmentProps, fragment);
+      state.fragments[id] = merge({}, additionalFragmentProps, fragment);
     });
 
     if (fragment.initialEvent) {
@@ -778,13 +782,14 @@ export default class MetaMetricsController extends BaseController<
     const query: {
       mmi?: string;
       env?: string;
-      av?: string;
-    } = {};
+      av: string;
+    } = {
+      av: this.version,
+    };
     if (participateInMetaMetrics) {
       // We only want to track these things if a user opted into metrics.
       query.mmi = Buffer.from(metaMetricsId).toString('base64');
       query.env = this.#environment;
-      query.av = this.version;
     }
     const queryString = new URLSearchParams(query);
 
@@ -1208,6 +1213,9 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.NumberOfTokens]: this.#getNumberOfTokens(
         metamaskState.allTokens,
       ),
+      [MetaMetricsUserTrait.NumberOfHDEntropies]:
+        this.#getNumberOfHDEntropies(metamaskState) ??
+        previousUserTraits?.number_of_hd_entropies,
       [MetaMetricsUserTrait.OpenSeaApiEnabled]: metamaskState.openSeaEnabled,
       [MetaMetricsUserTrait.ThreeBoxEnabled]: false, // deprecated, hard-coded as false
       [MetaMetricsUserTrait.Theme]: metamaskState.theme || 'default',
@@ -1233,9 +1241,14 @@ export default class MetaMetricsController extends BaseController<
         metamaskState.tokenSortConfig?.key || '',
       [MetaMetricsUserTrait.PrivacyModeEnabled]:
         metamaskState.preferences.privacyMode,
+      [MetaMetricsUserTrait.NetworkFilterPreference]: Object.keys(
+        metamaskState.preferences.tokenNetworkFilter || {},
+      ),
+      [MetaMetricsUserTrait.ProfileId]:
+        metamaskState.sessionData?.profile?.profileId,
     };
 
-    if (!previousUserTraits) {
+    if (!previousUserTraits && metamaskState.participateInMetaMetrics) {
       this.update((state) => {
         state.previousUserTraits = currentTraits;
       });
@@ -1248,9 +1261,13 @@ export default class MetaMetricsController extends BaseController<
         const previous = previousUserTraits[k];
         return !isEqual(previous, v);
       });
-      this.update((state) => {
-        state.previousUserTraits = currentTraits;
-      });
+
+      if (metamaskState.participateInMetaMetrics) {
+        this.update((state) => {
+          state.previousUserTraits = currentTraits;
+        });
+      }
+
       return updates;
     }
 
@@ -1325,6 +1342,19 @@ export default class MetaMetricsController extends BaseController<
     return Object.values(allTokens).reduce((result, accountsByChain) => {
       return result + sum(Object.values(accountsByChain).map(size));
     }, 0);
+  }
+
+  /**
+   * Returns the number of HD Entropies the user has.
+   *
+   * @param metamaskState
+   */
+  #getNumberOfHDEntropies(metamaskState: MetaMaskState): number {
+    return (
+      metamaskState.keyrings?.filter(
+        (keyring) => keyring.type === KeyringType.hdKeyTree,
+      ).length ?? 0
+    );
   }
 
   /**

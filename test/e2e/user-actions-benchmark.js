@@ -32,7 +32,7 @@ async function loadNewAccount() {
   await withFixtures(
     {
       fixtures: new FixtureBuilder().build(),
-      ganacheOptions,
+      localNodeOptions: ganacheOptions,
       disableServerMochaToBackground: true,
     },
     async ({ driver }) => {
@@ -64,7 +64,7 @@ async function confirmTx() {
   await withFixtures(
     {
       fixtures: new FixtureBuilder().build(),
-      ganacheOptions,
+      localNodeOptions: ganacheOptions,
       disableServerMochaToBackground: true,
     },
     async ({ driver, ganacheServer }) => {

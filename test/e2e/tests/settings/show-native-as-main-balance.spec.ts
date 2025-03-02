@@ -2,7 +2,6 @@ import { strict as assert } from 'assert';
 import { expect } from '@playwright/test';
 import {
   withFixtures,
-  defaultGanacheOptions,
   logInWithBalanceValidation,
   unlockWallet,
   getEventPayloads,
@@ -32,7 +31,6 @@ describe('Settings: Show native token as main balance', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withConversionRateDisabled().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({
@@ -64,7 +62,6 @@ describe('Settings: Show native token as main balance', function () {
           .withConversionRateEnabled()
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -108,7 +105,6 @@ describe('Settings: Show native token as main balance', function () {
           .withConversionRateEnabled()
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -156,7 +152,6 @@ describe('Settings: Show native token as main balance', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -202,7 +197,6 @@ describe('Settings: Show native token as main balance', function () {
           })
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .build(),
-        defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },

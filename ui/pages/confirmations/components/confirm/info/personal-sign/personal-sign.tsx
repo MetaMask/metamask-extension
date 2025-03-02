@@ -1,8 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { isSnapId } from '@metamask/snaps-utils';
 import {
-  ConfirmInfoRowAddress,
   ConfirmInfoRowText,
   ConfirmInfoRowUrl,
 } from '../../../../../../components/app/confirm/info/row';
@@ -28,7 +28,6 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../../helpers/constants/design-system';
-import { isSnapId } from '../../../../../../helpers/utils/snaps';
 import {
   hexToText,
   sanitizeString,
@@ -38,7 +37,18 @@ import { useConfirmContext } from '../../../../context/confirm';
 import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
 import { SignatureRequestType } from '../../../../types/confirm';
 import { isSIWESignatureRequest } from '../../../../utils';
+import { NetworkRow } from '../shared/network-row/network-row';
+import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
+import { isValidUTF8 } from '../utils';
 import { SIWESignInfo } from './siwe-sign';
+
+const getMessageText = (hexString?: string) => {
+  if (!hexString) {
+    return hexString;
+  }
+  const messageText = sanitizeString(hexToText(hexString));
+  return isValidUTF8(messageText) ? messageText : hexString;
+};
 
 const PersonalSignInfo: React.FC = () => {
   const t = useI18nContext();
@@ -51,11 +61,9 @@ const PersonalSignInfo: React.FC = () => {
     return null;
   }
 
-  const { from } = currentConfirmation.msgParams;
   const isSIWE = isSIWESignatureRequest(currentConfirmation);
-  const chainId = currentConfirmation.chainId as string;
-  const messageText = sanitizeString(
-    hexToText(currentConfirmation.msgParams?.data),
+  const messageText = getMessageText(
+    currentConfirmation.msgParams?.data as string,
   );
 
   let toolTipMessage;
@@ -130,6 +138,7 @@ const PersonalSignInfo: React.FC = () => {
         </ConfirmInfoSection>
       )}
       <ConfirmInfoSection>
+        <NetworkRow isShownWithAlertsOnly />
         <ConfirmInfoAlertRow
           alertKey={RowAlertKey.RequestFrom}
           ownerId={currentConfirmation.id}
@@ -138,15 +147,7 @@ const PersonalSignInfo: React.FC = () => {
         >
           <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
         </ConfirmInfoAlertRow>
-        {isSIWE && (
-          <ConfirmInfoAlertRow
-            alertKey={RowAlertKey.SigningInWith}
-            label={t('signingInWith')}
-            ownerId={currentConfirmation.id}
-          >
-            <ConfirmInfoRowAddress address={from} chainId={chainId} />
-          </ConfirmInfoAlertRow>
-        )}
+        <SigningInWithRow />
       </ConfirmInfoSection>
       <ConfirmInfoSection>
         {isSIWE ? (

@@ -6,8 +6,7 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 
-import { Box } from '..';
-
+import { Box } from '../box';
 import type { PolymorphicRef, BoxProps } from '../box';
 
 import { TextProps, TextComponent } from './text.types';
