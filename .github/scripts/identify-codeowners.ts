@@ -104,7 +104,7 @@ async function getCodeownersContent(
     });
 
     if (response) {
-      return response.data as string;
+      return response.data as unknown as string;
     }
 
     throw new Error('Failed to get CODEOWNERS file content');
