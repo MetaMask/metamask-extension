@@ -38,7 +38,6 @@ const render = () => {
 
 describe('SrpListItem', () => {
   beforeEach(() => {
-    // Reset mock implementations before each test
     mocks.useMultichainAccountTotalFiatBalance.mockReturnValue({
       totalFiatBalance: mockTotalFiatBalance,
     });
@@ -52,7 +51,7 @@ describe('SrpListItem', () => {
     const { getByText } = render();
 
     expect(getByText(mockAccount.metadata.name)).toBeInTheDocument();
-    expect(getByText(mockAccount.address)).toBeInTheDocument();
+    expect(getByText(shortenAddress(mockAccount.address))).toBeInTheDocument();
   });
 
   it('calls useMultichainAccountTotalFiatBalance with correct account', () => {
