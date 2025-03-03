@@ -35,6 +35,11 @@ export const createInternalTransactionWithMaxAmount = async (
   await sendToPage.goToNextScreen();
 };
 
+export const reviewTransaction = async (driver: Driver) => {
+  const sendToPage = new SendTokenPage(driver);
+  await sendToPage.validateSendFees();
+};
+
 export const createDappTransaction = async (
   driver: Driver,
   override?: Partial<TransactionParams>,
