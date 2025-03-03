@@ -43,8 +43,8 @@ import {
   ControllerInitResult,
 } from '../types';
 import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
-import { ControllerFlatState } from '../controller-list';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
+import type { FlattenedBackgroundStateProxy } from '../../../../shared/types/background';
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
@@ -211,7 +211,7 @@ function publishSmartTransactionHook(
   transactionController: TransactionController,
   smartTransactionsController: SmartTransactionsController,
   hookControllerMessenger: SmartTransactionHookMessenger,
-  flatState: ControllerFlatState,
+  flatState: FlattenedBackgroundStateProxy,
   transactionMeta: TransactionMeta,
   signedTransactionInHex: Hex,
 ) {
@@ -219,7 +219,6 @@ function publishSmartTransactionHook(
   // Ideally all backend logic would instead rely on messenger event / state subscriptions.
   const uiState = getUIState(flatState);
 
-  // @ts-expect-error Smart transaction selector types does not match controller state
   const isSmartTransaction = getIsSmartTransaction(uiState);
 
   if (!isSmartTransaction) {
@@ -318,6 +317,6 @@ function addTransactionControllerListeners(
   );
 }
 
-function getUIState(flatState: ControllerFlatState) {
+function getUIState(flatState: FlattenedBackgroundStateProxy) {
   return { metamask: flatState };
 }

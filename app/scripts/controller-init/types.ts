@@ -8,9 +8,10 @@ import {
 import { Hex } from '@metamask/utils';
 import { Duplex } from 'readable-stream';
 import { SubjectType } from '@metamask/permission-controller';
+import type { FlattenedBackgroundStateProxy } from '../../../shared/types/background';
 import type { TransactionMetricsRequest } from '../../../shared/types/metametrics';
 import { MessageSender } from '../../../types/global';
-import { Controller, ControllerFlatState } from './controller-list';
+import { Controller } from './controller-list';
 
 /** The supported controller names. */
 export type ControllerName = Controller['name'];
@@ -79,7 +80,7 @@ export type ControllerInitRequest<
    *
    * @deprecated Subscribe to other controller state via the messenger.
    */
-  getFlatState: () => ControllerFlatState;
+  getFlatState: () => FlattenedBackgroundStateProxy;
 
   /**
    * Retrieve the chain ID of the globally selected network.
