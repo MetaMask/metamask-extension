@@ -1433,14 +1433,17 @@ describe('MetaMetricsController', function () {
             securityAlertsEnabled: true,
             theme: 'default',
             useTokenDetection: true,
-            ShowNativeTokenAsMainBalance: true,
             security_providers: [],
-            tokenSortConfig: {
-              key: 'token-sort-key',
-              order: 'dsc',
-              sortCallback: 'stringNumeric',
+            preferences: {
+              ShowNativeTokenAsMainBalance: true,
+              tokenSortConfig: {
+                key: 'token-sort-key',
+                order: 'dsc',
+                sortCallback: 'stringNumeric',
+              },
+              privacyMode: true,
+              tokenNetworkFilter: [],
             },
-            preferences: { privacyMode: true, tokenNetworkFilter: [] },
           },
           NameController: {
             names: {
@@ -1575,15 +1578,15 @@ describe('MetaMetricsController', function () {
             useNftDetection: false,
             theme: 'default',
             useTokenDetection: true,
-            tokenSortConfig: {
-              key: 'token-sort-key',
-              order: 'dsc',
-              sortCallback: 'stringNumeric',
-            },
             preferences: {
+              tokenSortConfig: {
+                key: 'token-sort-key',
+                order: 'dsc',
+                sortCallback: 'stringNumeric',
+              },
               privacyMode: true,
               tokenNetworkFilter: [],
-              showNativeTokenAsMainBalance: true,
+              ShowNativeTokenAsMainBalance: true,
             },
             securityAlertsEnabled: true,
             security_providers: ['blockaid'],
@@ -1663,15 +1666,15 @@ describe('MetaMetricsController', function () {
             useNftDetection: false,
             theme: 'default',
             useTokenDetection: true,
-            tokenSortConfig: {
-              key: 'token-sort-key',
-              order: 'dsc',
-              sortCallback: 'stringNumeric',
-            },
             preferences: {
+              tokenSortConfig: {
+                key: 'token-sort-key',
+                order: 'dsc',
+                sortCallback: 'stringNumeric',
+              },
               privacyMode: true,
               tokenNetworkFilter: [],
-              showNativeTokenAsMainBalance: false,
+              ShowNativeTokenAsMainBalance: false,
             },
             securityAlertsEnabled: true,
             security_providers: ['blockaid'],
@@ -1768,15 +1771,15 @@ describe('MetaMetricsController', function () {
             useNftDetection: true,
             theme: 'default',
             useTokenDetection: true,
-            tokenSortConfig: {
-              key: 'token-sort-key',
-              order: 'dsc',
-              sortCallback: 'stringNumeric',
-            },
             preferences: {
+              tokenSortConfig: {
+                key: 'token-sort-key',
+                order: 'dsc',
+                sortCallback: 'stringNumeric',
+              },
               privacyMode: true,
               tokenNetworkFilter: [],
-              showNativeTokenAsMainBalance: true,
+              ShowNativeTokenAsMainBalance: true,
             },
             securityAlertsEnabled: true,
             security_providers: ['blockaid'],
@@ -1845,15 +1848,15 @@ describe('MetaMetricsController', function () {
             useNftDetection: true,
             theme: 'default',
             useTokenDetection: true,
-            tokenSortConfig: {
-              key: 'token-sort-key',
-              order: 'dsc',
-              sortCallback: 'stringNumeric',
-            },
             preferences: {
+              tokenSortConfig: {
+                key: 'token-sort-key',
+                order: 'dsc',
+                sortCallback: 'stringNumeric',
+              },
               privacyMode: true,
               tokenNetworkFilter: [],
-              showNativeTokenAsMainBalance: true,
+              ShowNativeTokenAsMainBalance: true,
             },
             securityAlertsEnabled: true,
             security_providers: ['blockaid'],

@@ -10,9 +10,9 @@ import {
 } from 'lodash';
 import { bufferToHex, keccak } from 'ethereumjs-util';
 import { v4 as uuidv4 } from 'uuid';
-import { Nft } from '@metamask/assets-controllers';
 import { PreferencesState } from '@metamask/preferences-controller';
-import { NameType } from '@metamask/name-controller';
+import { NameControllerState, NameType } from '@metamask/name-controller';
+import { AccountsControllerState } from '@metamask/accounts-controller';
 import {
   getErrorMessage,
   Hex,
@@ -24,8 +24,14 @@ import {
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
   NetworkControllerNetworkDidChangeEvent,
+  NetworkState,
 } from '@metamask/network-controller';
 import { Browser } from 'webextension-polyfill';
+import {
+  Nft,
+  NftControllerState,
+  TokensControllerState,
+} from '@metamask/assets-controllers';
 import { captureException as sentryCaptureException } from '@sentry/browser';
 import {
   BaseController,
@@ -61,6 +67,7 @@ import {
   AnonymousTransactionMetaMetricsEvent,
   TransactionMetaMetricsEvent,
 } from '../../../shared/constants/transaction';
+import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import Analytics from '../lib/segment/analytics';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
@@ -69,8 +76,8 @@ import { ENVIRONMENT } from '../../../development/build/constants';
 
 import { KeyringType } from '../../../shared/constants/keyring';
 import type {
-  PreferencesControllerGetStateAction,
   PreferencesControllerState,
+  PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
 
@@ -142,37 +149,61 @@ type SegmentEventType = 'identify' | 'track' | 'page';
 
 // TODO: Complete MetaMaskState by adding the full state definition and relocate it after the background is converted to TypeScript.
 export type MetaMaskState = {
-  ledgerTransportType: LedgerTransportTypes;
-  networkConfigurationsByChainId: NetworkState['networkConfigurationsByChainId'];
-  internalAccounts: AccountsControllerState['internalAccounts'];
-  allNfts: NftControllerState['allNfts'];
-  allTokens: TokensControllerState['allTokens'];
-  theme: string;
-  participateInMetaMetrics: boolean;
-  dataCollectionForMarketing: boolean;
-  ShowNativeTokenAsMainBalance: boolean;
-  useNftDetection: PreferencesControllerState['useNftDetection'];
-  openSeaEnabled: PreferencesControllerState['openSeaEnabled'];
-  securityAlertsEnabled: PreferencesControllerState['securityAlertsEnabled'];
-  useTokenDetection: PreferencesControllerState['useTokenDetection'];
-  tokenSortConfig: PreferencesControllerState['preferences']['tokenSortConfig'];
-  names: NameControllerState['names'];
-  security_providers: string[];
-  addressBook: AddressBookControllerState['addressBook'];
-  currentCurrency: string;
-  preferences: {
-    privacyMode: PreferencesControllerState['preferences']['privacyMode'];
-    tokenNetworkFilter: string[];
+  NetworkController: {
+    networkConfigurationsByChainId: NetworkState['networkConfigurationsByChainId'];
   };
-  sessionData: AuthenticationControllerState['sessionData'];
+  AccountsController: {
+    internalAccounts: AccountsControllerState['internalAccounts'];
+  };
+  NftController: {
+    allNfts: NftControllerState['allNfts'];
+  };
+  TokensController: {
+    allTokens: TokensControllerState['allTokens'];
+  };
+  PreferencesController: {
+    theme: string;
+    useNftDetection: PreferencesControllerState['useNftDetection'];
+    openSeaEnabled: PreferencesControllerState['openSeaEnabled'];
+    securityAlertsEnabled: PreferencesControllerState['securityAlertsEnabled'];
+    useTokenDetection: PreferencesControllerState['useTokenDetection'];
+    preferences: {
+      ShowNativeTokenAsMainBalance: boolean;
+      tokenSortConfig: PreferencesControllerState['preferences']['tokenSortConfig'];
+      privacyMode: PreferencesControllerState['preferences']['privacyMode'];
+      tokenNetworkFilter: string[];
+    };
+    ledgerTransportType: LedgerTransportTypes;
+    security_providers: string[];
+  };
+  MetaMetricsController: {
+    participateInMetaMetrics: boolean;
+    dataCollectionForMarketing: boolean;
+  };
+  NameController: {
+    names: NameControllerState['names'];
+  };
+  AddressBookController: {
+    addressBook: AddressBookControllerState['addressBook'];
+  };
+  CurrencyController: {
+    currentCurrency: string;
+  };
+  AuthenticationController: {
+    sessionData: AuthenticationControllerState['sessionData'];
+  };
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  custodyAccountDetails: {
-    [address: string]: {
-      custodianName: string;
+  CustodyController: {
+    custodyAccountDetails: {
+      [address: string]: {
+        custodianName: string;
+      };
     };
   };
   ///: END:ONLY_INCLUDE_IF
-  keyrings: { type: string; accounts: string[] }[];
+  KeyringController: {
+    keyrings: { type: string; accounts: string[] }[];
+  };
 };
 
 /**
@@ -582,6 +613,7 @@ export default class MetaMetricsController extends BaseController<
       : {};
 
     this.update((state) => {
+      // @ts-expect-error Type instantiation is excessively deep
       state.fragments[id] = merge({}, additionalFragmentProps, fragment);
     });
 
@@ -1002,7 +1034,7 @@ export default class MetaMetricsController extends BaseController<
     }
   }
 
-  handleMetaMaskStateUpdate(newState: BackgroundStateProxy): void {
+  handleMetaMaskStateUpdate(newState: MetaMaskState): void {
     const userTraits = this._buildUserTraitsObject(newState);
     if (userTraits) {
       this.identify(userTraits);
@@ -1167,7 +1199,7 @@ export default class MetaMetricsController extends BaseController<
    * @returns traits that have changed since last update
    */
   _buildUserTraitsObject(
-    metamaskState: BackgroundStateProxy,
+    metamaskState: MetaMaskState,
   ): Partial<MetaMetricsUserTraits> | null {
     const { traits, previousUserTraits } = this.state;
 
@@ -1207,7 +1239,8 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.NumberOfHDEntropies]:
         this.#getNumberOfHDEntropies(metamaskState) ??
         previousUserTraits?.number_of_hd_entropies,
-      [MetaMetricsUserTrait.OpenSeaApiEnabled]: metamaskState.openSeaEnabled,
+      [MetaMetricsUserTrait.OpenSeaApiEnabled]:
+        metamaskState.PreferencesController.openSeaEnabled,
       [MetaMetricsUserTrait.ThreeBoxEnabled]: false, // deprecated, hard-coded as false
       [MetaMetricsUserTrait.Theme]:
         metamaskState.PreferencesController.theme || 'default',
@@ -1215,7 +1248,7 @@ export default class MetaMetricsController extends BaseController<
         metamaskState.PreferencesController.useTokenDetection,
       [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]:
         metamaskState.PreferencesController.preferences
-          ?.showNativeTokenAsMainBalance,
+          ?.ShowNativeTokenAsMainBalance,
       [MetaMetricsUserTrait.CurrentCurrency]:
         metamaskState.CurrencyController.currentCurrency,
       [MetaMetricsUserTrait.SecurityProviders]: metamaskState
@@ -1229,11 +1262,8 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.HasMarketingConsent]:
         metamaskState.MetaMetricsController.dataCollectionForMarketing,
       [MetaMetricsUserTrait.TokenSortPreference]:
-        (
-          metamaskState.PreferencesController as PreferencesControllerState & {
-            tokenSortConfig: PreferencesState['tokenSortConfig'];
-          }
-        ).tokenSortConfig?.key || '',
+        metamaskState.PreferencesController.preferences.tokenSortConfig?.key ||
+        '',
       [MetaMetricsUserTrait.PrivacyModeEnabled]:
         metamaskState.PreferencesController.preferences?.privacyMode,
       [MetaMetricsUserTrait.NetworkFilterPreference]: Object.keys(
@@ -1241,7 +1271,7 @@ export default class MetaMetricsController extends BaseController<
           {},
       ),
       [MetaMetricsUserTrait.ProfileId]:
-        metamaskState.sessionData?.profile?.profileId,
+        metamaskState.AuthenticationController.sessionData?.profile?.profileId,
     };
 
     if (
@@ -1312,7 +1342,7 @@ export default class MetaMetricsController extends BaseController<
    * @param allNfts
    */
   #getAllNFTsFlattened = memoize(
-    (allNfts: BackgroundStateProxy['NftController']['allNfts'] = {}) => {
+    (allNfts: MetaMaskState['NftController']['allNfts'] = {}) => {
       return Object.values(allNfts).reduce((result: Nft[], chainNFTs) => {
         return result.concat(...Object.values(chainNFTs));
       }, []);
@@ -1326,7 +1356,7 @@ export default class MetaMetricsController extends BaseController<
    * @param allNfts
    */
   #getAllUniqueNFTAddressesLength(
-    allNfts: BackgroundStateProxy['NftController']['allNfts'] = {},
+    allNfts: MetaMaskState['NftController']['allNfts'] = {},
   ): number {
     const allNFTAddresses = this.#getAllNFTsFlattened(allNfts).map(
       (nft) => nft.address,
@@ -1340,7 +1370,7 @@ export default class MetaMetricsController extends BaseController<
    * @returns number of unique token addresses
    */
   #getNumberOfTokens(
-    allTokens: BackgroundStateProxy['TokensController']['allTokens'],
+    allTokens: MetaMaskState['TokensController']['allTokens'],
   ): number {
     return Object.values(allTokens).reduce((result, accountsByChain) => {
       return result + sum(Object.values(accountsByChain).map(size));
@@ -1354,7 +1384,7 @@ export default class MetaMetricsController extends BaseController<
    */
   #getNumberOfHDEntropies(metamaskState: MetaMaskState): number {
     return (
-      metamaskState.keyrings?.filter(
+      metamaskState.KeyringController.keyrings?.filter(
         (keyring) => keyring.type === KeyringType.hdKeyTree,
       ).length ?? 0
     );
@@ -1578,7 +1608,7 @@ export default class MetaMetricsController extends BaseController<
    *
    * @param metamaskState
    */
-  #getPetnameAddressCount(metamaskState: BackgroundStateProxy): number {
+  #getPetnameAddressCount(metamaskState: MetaMaskState): number {
     const addressNames =
       metamaskState.NameController.names?.[NameType.ETHEREUM_ADDRESS] ?? {};
 
