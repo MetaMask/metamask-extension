@@ -18,7 +18,7 @@ jobs:
     name: ${{ matrix.buildType }}-${{ matrix.testType }}
     steps:
       - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@caching
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
         with:
           is-high-risk-environment: false
 
