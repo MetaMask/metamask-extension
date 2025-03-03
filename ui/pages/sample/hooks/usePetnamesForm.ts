@@ -4,44 +4,19 @@ import { usePetnames } from '../../../ducks/metamask/sample-petnames-controller'
 import { useSamplePetnamesMetrics } from './useSamplePetnamesMetrics';
 import { useSamplePerformanceTrace } from './useSamplePerformanceTrace';
 import { useForm } from '../../../hooks/useForm';
+import {
+  validateAddress,
+  validatePetname,
+} from '../../../../app/scripts/controllers/sample/sample-petnames-controller-utils';
 
 type FormState = {
   address: Hex;
   petName: string;
 };
 
-// Validation utilities
-const validateAddress = (address: string): string | undefined => {
-  if (!address) {
-    return 'Address is required';
-  }
-
-  if (!address.startsWith('0x') || address.length !== 42) {
-    return 'Invalid Ethereum address format';
-  }
-
-  return undefined;
-};
-
-const validatePetName = (name: string): string | undefined => {
-  if (!name) {
-    return 'Pet name is required';
-  }
-
-  if (name.trim() === '') {
-    return 'Pet name cannot be empty';
-  }
-
-  if (name.length > 32) {
-    return 'Pet name must be 32 characters or less';
-  }
-
-  return undefined;
-};
-
 const validateForm = (values: FormState) => ({
   address: validateAddress(values.address),
-  petName: validatePetName(values.petName),
+  petName: validatePetname(values.petName),
 });
 
 /**
@@ -65,6 +40,28 @@ export function usePetnamesForm() {
   const handleSubmit = async (values: FormState) => {
     const formSubmissionTrace = traceFormSubmission();
     formSubmissionTrace.startTrace();
+
+    // Check for validation errors first
+    const validationErrors = validateForm(values);
+    const hasAddressError = Boolean(validationErrors.address);
+    const hasPetNameError = Boolean(validationErrors.petName);
+
+    if (hasAddressError || hasPetNameError) {
+      // Track validation errors
+      metrics.trackFormValidationError({
+        addressError: hasAddressError,
+        nameError: hasPetNameError,
+      });
+
+      // End trace with validation errors
+      formSubmissionTrace.endTrace(false, {
+        reason: 'validation_error',
+        hasAddressError,
+        hasPetNameError,
+      });
+
+      return Promise.reject(new Error('Validation failed'));
+    }
 
     try {
       await petNames.assignPetname(values.address, values.petName);

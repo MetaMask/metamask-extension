@@ -93,30 +93,10 @@ export function useSamplePetnamesMetrics() {
     [trackEvent],
   );
 
-  /**
-   * Track when user interacts with the form
-   *
-   * @param interactionType - The type of interaction
-   */
-  const trackFormInteraction = useCallback(
-    (interactionType: string) => {
-      trackEvent({
-        event: MetaMetricsEventName.SampleFeatureInteraction,
-        category: MetaMetricsEventCategory.Wallet,
-        properties: {
-          feature: 'sample-petnames',
-          action: interactionType,
-        },
-      });
-    },
-    [trackEvent],
-  );
-
   return {
     trackPetnamesFormViewed,
     trackPetnameAdded,
     trackFormValidationError,
     trackFormSubmissionError,
-    trackFormInteraction,
   };
 }

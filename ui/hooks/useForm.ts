@@ -35,23 +35,16 @@ export function useForm<T extends Record<string, any>>({
   const [formState, setFormState] = useState<FormStatus>('default');
   const [submissionError, setSubmissionError] = useState<string | undefined>();
 
-  // Validate inputs on change, but only show errors for touched fields
+  // Validate inputs on change
   useEffect(() => {
     const validationErrors = validate(values);
-    const newErrors = Object.keys(values).reduce((acc, key) => {
-      if (touched[key as keyof T]) {
-        acc[key as keyof T] = validationErrors[key as keyof T];
-      }
-      return acc;
-    }, {} as ValidationErrors<T>);
-
-    setErrors(newErrors);
+    setErrors(validationErrors); // Always store all validation errors
 
     // Reset form state when inputs change
     if (formState === 'error' || formState === 'success') {
       setFormState('default');
     }
-  }, [values, touched, formState, validate]);
+  }, [values, formState, validate]);
 
   const handleInputChange = useCallback(
     (field: keyof T) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,20 +59,24 @@ export function useForm<T extends Record<string, any>>({
   const handleBlur = useCallback(
     (field: keyof T) => () => {
       setTouched((prev) => ({ ...prev, [field]: true }));
-      const validationErrors = validate(values);
-      setErrors((prev) => ({
-        ...prev,
-        [field]: validationErrors[field],
-      }));
     },
-    [values, validate],
+    [],
   );
 
   const handleSubmit = useCallback(async () => {
+    // Mark all fields as touched
+    setTouched(
+      Object.keys(values).reduce(
+        (acc, key) => ({ ...acc, [key]: true }),
+        {} as TouchedState<T>,
+      ),
+    );
+
     const validationErrors = validate(values);
     const hasErrors = Object.values(validationErrors).some(Boolean);
 
     if (hasErrors) {
+      setErrors(validationErrors);
       setFormState('error');
       return;
     }
@@ -99,9 +96,11 @@ export function useForm<T extends Record<string, any>>({
     }
   }, [values, validate, onSubmit]);
 
-  const isFormValid = Object.keys(values).every(
-    (key) => values[key as keyof T] && !errors[key as keyof T],
-  );
+  // Calculate form validity based on current validation errors
+  const isFormValid = useCallback(() => {
+    const validationErrors = validate(values);
+    return !Object.values(validationErrors).some(Boolean);
+  }, [values, validate]);
 
   const getFieldProps = useCallback(
     (field: keyof T) => ({
@@ -123,7 +122,7 @@ export function useForm<T extends Record<string, any>>({
     isSubmitting,
     formState,
     submissionError,
-    isFormValid,
+    isFormValid: isFormValid(),
 
     // Form handlers
     handleInputChange,

@@ -7,6 +7,11 @@ import type {
 import { BaseController } from '@metamask/base-controller';
 import { isSafeDynamicKey } from '@metamask/controller-utils';
 import type { Hex } from '@metamask/utils';
+import {
+  validateAddress,
+  validatePetname,
+  normalizeAddress,
+} from './sample-petnames-controller-utils';
 
 // === GENERAL ===
 
@@ -195,7 +200,19 @@ export class SamplePetnamesController extends BaseController<
       throw new Error('Invalid chain ID');
     }
 
-    const normalizedAddress = address.toLowerCase() as Hex;
+    // Use validation functions
+    const addressError = validateAddress(address);
+    if (addressError) {
+      throw new Error(addressError);
+    }
+
+    const nameError = validatePetname(name);
+    if (nameError) {
+      throw new Error(nameError);
+    }
+
+    // Use the normalized address from our utility
+    const normalizedAddress = normalizeAddress(address);
 
     this.update((state) => {
       state.samplePetnamesByChainIdAndAddress[chainId] ??= {};

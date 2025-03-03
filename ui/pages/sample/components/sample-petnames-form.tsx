@@ -33,6 +33,11 @@ export function SamplePetnamesForm() {
     getFieldProps,
   } = usePetnamesForm();
 
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleSubmit();
+  };
+
   return (
     <Card>
       <Box
@@ -93,10 +98,7 @@ export function SamplePetnamesForm() {
           flexDirection={FlexDirection.Column}
           gap={2}
           style={{ width: '100%' }}
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSubmit();
-          }}
+          onSubmit={onSubmit}
         >
           <FormTextField
             label="Address"
