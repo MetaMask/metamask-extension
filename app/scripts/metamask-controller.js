@@ -4330,7 +4330,14 @@ export default class MetamaskController extends EventEmitter {
           numberOfAccounts: 1,
         },
       );
-      const [newAccountAddress] = await newKeyring.getAccounts();
+
+      const [newAccountAddress] = await this.keyringController.withKeyring(
+        {
+          id: newKeyring.id,
+        },
+        async ({ keyring }) => await keyring.getAccounts(),
+      );
+
       const account =
         this.accountsController.getAccountByAddress(newAccountAddress);
       this.accountsController.setSelectedAccount(account.id);
