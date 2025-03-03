@@ -188,8 +188,9 @@ function createCommentBody(teamFiles: TeamFiles, teamEmojis: TeamEmojis): string
   const teamOwners = allOwners.filter(owner => owner.startsWith('@MetaMask/'));
   const individualOwners = allOwners.filter(owner => !owner.startsWith('@MetaMask/'));
 
-  const sortedTeamOwners = teamOwners.sort();
-  const sortedIndividualOwners = individualOwners.sort();
+  const sortFn = (a, b) => a.toLowerCase().localeCompare(b.toLowerCase());
+  const sortedTeamOwners = teamOwners.sort(sortFn);
+  const sortedIndividualOwners = individualOwners.sort(sortFn);
 
   const sortedOwners= [...sortedTeamOwners, ...sortedIndividualOwners];
 
