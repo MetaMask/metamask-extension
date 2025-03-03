@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-
+import { BigNumber } from 'bignumber.js';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSnapName, shortenAddress } from '../../../helpers/utils/util';
@@ -55,6 +55,7 @@ import {
   getChainIdsToPoll,
   getSnapsMetadata,
 } from '../../../selectors';
+import { getIntlLocale } from '../../../ducks/locale/locale';
 import {
   getMultichainIsTestnet,
   getMultichainNativeCurrency,
@@ -71,6 +72,7 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
+import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -94,6 +96,7 @@ const AccountListItem = ({
   privacyMode = false,
 }) => {
   const t = useI18nContext();
+  const locale = useSelector(getIntlLocale);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
@@ -154,7 +157,18 @@ const AccountListItem = ({
         ? account.balance
         : totalFiatBalance;
   } else {
-    balanceToTranslate = accountTotalFiatBalances.totalBalance;
+    const balanceOrFallback = accountTotalFiatBalances?.totalBalance ?? 0;
+    const bnBalance = new BigNumber(balanceOrFallback);
+    const formattedBalanceToTranslate = formatWithThreshold(
+      bnBalance.toNumber(),
+      0.00001,
+      locale,
+      {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 5,
+      },
+    );
+    balanceToTranslate = formattedBalanceToTranslate;
   }
 
   // If this is the selected item in the Account menu,
