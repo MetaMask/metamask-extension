@@ -48,7 +48,7 @@ type AssertSignatureMetricsOptions = {
 type SignatureEventProperty = {
   account_type: 'MetaMask';
   category: 'inpage_provider';
-  chain_id: '0x539';
+  chain_id: '1337';
   environment_type: 'background';
   locale: 'en';
   security_alert_reason: string;
@@ -105,7 +105,7 @@ function getSignatureEventProperty(
     account_type: 'MetaMask',
     signature_type: signatureType,
     category: 'inpage_provider',
-    chain_id: '0x539',
+    chain_id: '1337',
     environment_type: 'background',
     locale: 'en',
     security_alert_reason: securityAlertReason,
@@ -256,7 +256,7 @@ export async function assertAccountDetailsMetrics(
     signature_type: type,
     category: 'Confirmations',
     locale: 'en',
-    chain_id: '0x539',
+    chain_id: '1337',
     environment_type: 'notification',
   });
 }

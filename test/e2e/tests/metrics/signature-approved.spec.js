@@ -50,7 +50,7 @@ const expectedEventPropertiesBase = {
   account_type: 'MetaMask',
   category: 'inpage_provider',
   locale: 'en',
-  chain_id: '0x539',
+  chain_id: '1337',
   environment_type: 'background',
   security_alert_reason: 'validation_in_progress',
   security_alert_response: 'loading',

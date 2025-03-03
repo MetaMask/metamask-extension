@@ -28,6 +28,7 @@ import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets
 import * as Utils from '../lib/util';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { flushPromises } from '../../../test/lib/timer-helpers';
+import { convertHexChainIdToDecimal } from '../../../shared/modules/network.utils';
 import MetaMetricsController, {
   AllowedActions,
   AllowedEvents,
@@ -82,7 +83,7 @@ const DEFAULT_TEST_CONTEXT = {
 };
 
 const DEFAULT_SHARED_PROPERTIES = {
-  chain_id: DEFAULT_CHAIN_ID,
+  chain_id: convertHexChainIdToDecimal(DEFAULT_CHAIN_ID),
   locale: LOCALE.replace('_', '-'),
   environment_type: 'background',
 };

@@ -16,6 +16,7 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
 } from '../constants/network';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../constants/multichain/networks';
+import { hexToDecimal } from './conversion.utils';
 
 type RpcEndpoint = {
   name?: string;
@@ -192,4 +193,17 @@ export const getRpcDataByChainId = (
     rpcEndpoints,
     defaultRpcEndpoint,
   };
+};
+
+/**
+ * Converting a hex chainId to decimal
+ *
+ * @param chainId - The chainId to be converted
+ * @returns The chainId passed as parameter if it is a non-hex value else the corresponding decimal value.
+ */
+export const convertHexChainIdToDecimal = (chainId: string) => {
+  if (chainId.startsWith('0x')) {
+    return hexToDecimal(chainId);
+  }
+  return chainId;
 };

@@ -11,6 +11,9 @@ const {
 } = require('../../../../../shared/constants/metametrics');
 const { CHAIN_IDS } = require('../../../../../shared/constants/network');
 const { MOCK_META_METRICS_ID } = require('../../../constants');
+const {
+  convertHexChainIdToDecimal,
+} = require('../../../../../shared/modules/network.utils');
 
 async function mockedNftRemoved(mockServer) {
   return await mockServer
@@ -85,7 +88,10 @@ describe('Remove NFT', function () {
         assert.equal(nftRemovedProperties.token_standard, 'ERC721');
         assert.equal(nftRemovedProperties.token_standard, 'ERC721');
         assert.equal(nftRemovedProperties.isSuccessful, true);
-        assert.equal(nftRemovedProperties.chain_id, CHAIN_IDS.LOCALHOST);
+        assert.equal(
+          nftRemovedProperties.chain_id,
+          convertHexChainIdToDecimal(CHAIN_IDS.LOCALHOST),
+        );
       },
     );
   });

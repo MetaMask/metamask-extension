@@ -14,6 +14,7 @@ import {
   convertCaipToHexChainId,
   sortNetworks,
   getRpcDataByChainId,
+  convertHexChainIdToDecimal,
 } from './network.utils';
 
 describe('network utils', () => {
@@ -319,6 +320,20 @@ describe('network utils', () => {
       expect(() => getRpcDataByChainId('eip155:2', evmNetworks)).toThrow(
         'Network configuration not found for chain ID: eip155:2 (0x2)',
       );
+    });
+  });
+
+  describe('convertHexChainIdToDecimal', () => {
+    it('returns decimal value of chainID  given a string that matches a hex number formatted as a "0x"-prefixed string', () => {
+      expect(convertHexChainIdToDecimal('0x1')).toBe('1');
+      expect(convertHexChainIdToDecimal('0xa')).toBe('10');
+      expect(convertHexChainIdToDecimal('0xabc123')).toBe('11256099');
+      expect(convertHexChainIdToDecimal('0xABC123')).toBe('11256099');
+    });
+
+    it('returns chainId passed as parameter if it is a non-hex value', () => {
+      expect(convertHexChainIdToDecimal('20')).toBe('20');
+      expect(convertHexChainIdToDecimal('eip155:1')).toBe('eip155:1');
     });
   });
 });

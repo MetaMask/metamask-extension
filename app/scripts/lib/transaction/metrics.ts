@@ -49,6 +49,7 @@ import type {
 
 import { getSnapAndHardwareInfoForMetrics } from '../snap-keyring/metrics';
 import { shouldUseRedesignForTransactions } from '../../../../shared/lib/confirmation.utils';
+import { convertHexChainIdToDecimal } from '../../../../shared/modules/network.utils';
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
 
@@ -975,7 +976,7 @@ async function buildEventFragmentProperties({
 
   /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
   let properties = {
-    chain_id: chainId,
+    chain_id: convertHexChainIdToDecimal(chainId),
     referrer,
     source,
     status,

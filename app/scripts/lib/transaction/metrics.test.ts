@@ -27,6 +27,7 @@ import {
 } from '../../../../shared/constants/security-provider';
 import { decimalToHex } from '../../../../shared/modules/conversion.utils';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
+import { convertHexChainIdToDecimal } from '../../../../shared/modules/network.utils';
 import {
   handleTransactionAdded,
   handleTransactionApproved,
@@ -145,7 +146,7 @@ describe('Transaction metrics', () => {
       account_snap_version: 'snapversion',
       account_type: undefined,
       asset_type: AssetType.native,
-      chain_id: mockChainId,
+      chain_id: convertHexChainIdToDecimal(mockChainId),
       device_model: undefined,
       eip_1559_version: '0',
       gas_edit_attempted: 'none',
