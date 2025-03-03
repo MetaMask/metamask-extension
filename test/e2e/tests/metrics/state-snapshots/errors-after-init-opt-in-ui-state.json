@@ -66,6 +66,9 @@
     "isMultiRpcOnboarding": "boolean",
     "errorInSettings": null
   },
+  "background": {
+    "isInitialized": false
+  },
   "bridge": "object",
   "confirmAlerts": "object",
   "confirmTransaction": "object",
@@ -91,9 +94,13 @@
       "smartTransactionsOptInStatus": true,
       "showNativeTokenAsMainBalance": true,
       "petnamesEnabled": true,
-      "showMultiRpcModal": "boolean",
-      "tokenSortConfig": "object",
-      "shouldShowAggregatedBalancePopover": "boolean",
+      "showMultiRpcModal": false,
+      "tokenSortConfig": {
+        "key": "string",
+        "order": "string",
+        "sortCallback": "string"
+      },
+      "shouldShowAggregatedBalancePopover": true,
       "tokenNetworkFilter": { "0x539": "boolean" },
       "smartTransactionsMigrationApplied": "boolean"
     },
@@ -260,6 +267,9 @@
     },
     "cryptocurrencies": ["btc", "sol"],
     "snaps": "object",
+    "snapStates": "object",
+    "unencryptedSnapStates": "object",
+    "vault": "string",
     "jobs": "object",
     "events": "object",
     "database": null,

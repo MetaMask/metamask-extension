@@ -111,10 +111,14 @@
         "showNativeTokenAsMainBalance": true,
         "petnamesEnabled": true,
         "showConfirmationAdvancedDetails": false,
-        "tokenSortConfig": "object",
+        "tokenSortConfig": {
+          "key": "string",
+          "order": "string",
+          "sortCallback": "string"
+        },
         "tokenNetworkFilter": {},
-        "showMultiRpcModal": "boolean",
-        "shouldShowAggregatedBalancePopover": "boolean"
+        "showMultiRpcModal": false,
+        "shouldShowAggregatedBalancePopover": true
       },
       "selectedAddress": "string",
       "theme": "light",
