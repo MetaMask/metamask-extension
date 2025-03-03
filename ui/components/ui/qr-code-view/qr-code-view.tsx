@@ -8,7 +8,6 @@ import { isHexPrefixed } from 'ethereumjs-util';
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import type { CombinedBackgroundAndReduxState } from '../../../store/store';
 import {
   AlignItems,
   Display,
@@ -24,8 +23,9 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import type { MetaMaskReduxState } from '../../../store/store';
 
-function mapStateToProps(state: CombinedBackgroundAndReduxState) {
+function mapStateToProps(state: MetaMaskReduxState) {
   const { buyView, warning } = state.appState;
   return {
     buyView,

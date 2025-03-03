@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { BtcAccountType } from '@metamask/keyring-api';
+import type { FlattenedBackgroundStateProxy } from '../../../../../../shared/types/background';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { fireEvent, renderWithProvider } from '../../../../../../test/jest';
 import { SEND_STAGES } from '../../../../../ducks/send';
@@ -9,7 +10,6 @@ import {
   INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
   createMockInternalAccount,
 } from '../../../../../../test/jest/mocks';
-import { CombinedBackgroundAndReduxState } from '../../../../../store/store';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -18,7 +18,7 @@ import { SendPageAccountPicker } from '.';
 
 type State = {
   metamask: Pick<
-    CombinedBackgroundAndReduxState['metamask'],
+    FlattenedBackgroundStateProxy,
     'internalAccounts' | 'keyrings'
   >;
 };
