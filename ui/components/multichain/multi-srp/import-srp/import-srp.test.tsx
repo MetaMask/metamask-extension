@@ -95,11 +95,12 @@ describe('ImportSrp', () => {
       store,
     );
     const { getByText } = render;
+    const importButton = getByText('Import wallet');
 
-    expect(getByText('Import wallet')).not.toBeEnabled();
+    expect(importButton).not.toBeEnabled();
     pasteSrpIntoFirstInput(render, VALID_SECRET_RECOVERY_PHRASE);
 
-    fireEvent.click(getByText('Import wallet'));
+    fireEvent.click(importButton);
 
     await waitFor(() => {
       expect(actions.importMnemonicToVault).toHaveBeenCalledWith(
@@ -121,12 +122,12 @@ describe('ImportSrp', () => {
       store,
     );
     const { getByText } = render;
+    const importButton = getByText('Import wallet');
 
     const invalidSRP = VALID_SECRET_RECOVERY_PHRASE.replace('input', 'inptu');
     expect(getByText('Import wallet')).not.toBeEnabled();
 
     const { input } = pasteSrpIntoFirstInput(render, invalidSRP);
-    const importButton = getByText('Import wallet');
 
     expect(input).toBeInvalid();
     expect(importButton).not.toBeEnabled();
@@ -139,11 +140,12 @@ describe('ImportSrp', () => {
       store,
     );
     const { getByText } = render;
+    const importButton = getByText('Import wallet');
 
-    expect(getByText('Import wallet')).not.toBeEnabled();
+    expect(importButton).not.toBeEnabled();
     pasteSrpIntoFirstInput(render, VALID_SECRET_RECOVERY_PHRASE);
 
-    fireEvent.click(getByText('Import wallet'));
+    fireEvent.click(importButton);
 
     await waitFor(() => {
       expect(actions.importMnemonicToVault).toHaveBeenCalledWith(
@@ -166,11 +168,12 @@ describe('ImportSrp', () => {
       store,
     );
     const { getByText } = render;
+    const importButton = getByText('Import wallet');
 
-    expect(getByText('Import wallet')).not.toBeEnabled();
+    expect(importButton).not.toBeEnabled();
     pasteSrpIntoFirstInput(render, VALID_SECRET_RECOVERY_PHRASE);
 
-    fireEvent.click(getByText('Import wallet'));
+    fireEvent.click(importButton);
 
     await waitFor(() => {
       expect(actions.importMnemonicToVault).toHaveBeenCalledWith(
