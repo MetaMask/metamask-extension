@@ -31,21 +31,10 @@ import {
   SwapsControllerSetTradeTxIdAction,
 } from '../../controllers/swaps/swaps.types';
 
-export type KeyringControllerSignAuthorization = {
-  type: 'KeyringController:signEip7702AuthorizationMessage';
-  handler: (authorization: {
-    chainId: number;
-    contractAddress: string;
-    from: string;
-    nonce: number;
-  }) => Promise<string>;
-};
-
 type MessengerActions =
   | ApprovalControllerActions
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerGetStateAction
-  | KeyringControllerSignAuthorization
   | KeyringControllerSignEip7702AuthorizationAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetEIP1559CompatibilityAction
@@ -75,23 +64,13 @@ export type TransactionControllerInitMessenger = ReturnType<
 export function getTransactionControllerMessenger(
   messenger: Messenger<MessengerActions, MessengerEvents>,
 ): TransactionControllerMessenger {
-  messenger.registerActionHandler(
-    'KeyringController:signEip7702AuthorizationMessage',
-    async (req) => {
-      return await messenger.call(
-        'KeyringController:signEip7702Authorization',
-        req,
-      );
-    },
-  );
-
   return messenger.getRestricted({
     name: 'TransactionController',
     allowedActions: [
       'AccountsController:getSelectedAccount',
       'AccountsController:getState',
       `ApprovalController:addRequest`,
-      'KeyringController:signEip7702AuthorizationMessage',
+      'KeyringController:signEip7702Authorization',
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
       'RemoteFeatureFlagController:getState',
