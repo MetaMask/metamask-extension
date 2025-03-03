@@ -2777,10 +2777,6 @@
     "message": "$1に接続できません",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "ネットワークが$1に切り替わりました",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "ネットワークURL"
   },
@@ -4185,9 +4181,6 @@
   "seedPhraseIntroTitle": {
     "message": "ウォレットの保護"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "始める前に、この短いビデオを見て、シークレットリカバリーフレーズとウォレットを安全に保つ方法について確認してください。"
-  },
   "seedPhraseReq": {
     "message": "シークレットリカバリーフレーズは、12、15、18、21、24語で構成されます"
   },
@@ -4653,15 +4646,6 @@
     "message": "今後のサポートは、$1の作成者にお問い合わせください。",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaSupportSectionTitle": {
-    "message": "Solana"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "この機能をオンにすると、既存のシークレットリカバリーフレーズで導出したSolanaアカウントをMetaMask Extensionに追加できるようになります。これは試験運用中のベータ機能であるため、自己責任でご使用ください。"
-  },
-  "solanaSupportToggleTitle": {
-    "message": "「新規Solanaアカウントの追加 (ベータ)」を有効にする"
-  },
   "somethingDoesntLookRight": {
     "message": "何か不審な点があれば、$1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
@@ -4894,9 +4878,6 @@
   "stxFailureDescription": {
     "message": "突然の市場変動が失敗の原因になります。問題が解決されないようでしたら、$1にお問い合わせください。",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
-  },
-  "stxOptInDescription": {
-    "message": "スマートトランザクションをオンにして、イーサリアムメインネット上でのトランザクションの信頼性と安全性を高めましょう。$1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "スワップを非公開で送信中..."

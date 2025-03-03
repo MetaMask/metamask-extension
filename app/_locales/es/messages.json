@@ -2777,10 +2777,6 @@
     "message": "No podemos conectar a $1",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "La red cambió a $1",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "Dirección URL de la red"
   },
@@ -4185,9 +4181,6 @@
   "seedPhraseIntroTitle": {
     "message": "Proteger su cartera"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Antes de comenzar, mire este breve video para aprender sobre su frase de recuperación y sobre cómo mantener seguro su monedero."
-  },
   "seedPhraseReq": {
     "message": "Las frases secretas de recuperación contienen 12, 15, 18, 21 o 24 palabras"
   },
@@ -4653,15 +4646,6 @@
     "message": "Póngase en contacto con los creadores de $1 para obtener más ayuda.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaSupportSectionTitle": {
-    "message": "Solana"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "Activar esta función le dará la opción de añadir una cuenta de Solana a su extensión MetaMask derivada de su frase secreta de recuperación existente. Esta es una característica Beta experimental, por lo que debe utilizarla bajo su propio riesgo."
-  },
-  "solanaSupportToggleTitle": {
-    "message": "Activar \"Añadir una nueva cuenta de Solana (Beta)\""
-  },
   "somethingDoesntLookRight": {
     "message": "Algo no se ve bien, ¿cierto? $1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
@@ -4894,9 +4878,6 @@
   "stxFailureDescription": {
     "message": "Los cambios repentinos del mercado pueden causar fallas. Si el problema persiste, comuníquese con $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
-  },
-  "stxOptInDescription": {
-    "message": "Active las transacciones inteligentes para realizar transacciones más confiables y seguras en la red principal de Ethereum. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Enviando su intercambio de forma privada..."

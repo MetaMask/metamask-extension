@@ -2777,10 +2777,6 @@
     "message": "Nous ne pouvons pas nous connecter à $1",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "Le réseau est passé à $1",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "URL du réseau"
   },
@@ -4185,9 +4181,6 @@
   "seedPhraseIntroTitle": {
     "message": "Sécuriser votre portefeuille"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Avant de commencer, regardez cette courte vidéo pour vous informer sur votre phrase secrète de récupération et sur la manière de sécuriser votre portefeuille."
-  },
   "seedPhraseReq": {
     "message": "Les phrases secrètes de récupération sont composées de 12, 15, 18, 21 ou 24 mots"
   },
@@ -4653,15 +4646,6 @@
     "message": "L’interface utilisateur (IU) spécifiée par le snap n’est pas valide.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaSupportSectionTitle": {
-    "message": "Solana"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "En activant cette fonctionnalité, vous aurez la possibilité d’ajouter un compte Solana à votre extension MetaMask dérivée de votre phrase secrète de récupération existante. Toute utilisation de cette fonctionnalité bêta expérimentale se fait à vos risques et périls."
-  },
-  "solanaSupportToggleTitle": {
-    "message": "Activer « Ajouter un nouveau compte Solana (Bêta) »"
-  },
   "somethingDoesntLookRight": {
     "message": "On dirait que quelque chose ne va pas ? $1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
@@ -4894,9 +4878,6 @@
   "stxFailureDescription": {
     "message": "Les fluctuations soudaines du marché peuvent provoquer des échecs. Si le problème persiste, veuillez contacter $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
-  },
-  "stxOptInDescription": {
-    "message": "Activez les transactions intelligentes pour profiter de transactions plus fiables et plus sûres sur le réseau principal Ethereum. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Soumission privée de votre Swap..."

@@ -2777,10 +2777,6 @@
     "message": "$1 ağına bağlanamıyoruz",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "Ağ şuna geçti: $1",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "Ağ URL adresi"
   },
@@ -4185,9 +4181,6 @@
   "seedPhraseIntroTitle": {
     "message": "Cüzdanınızı koruyun"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Başlamadan önce Gizli Kurtarma İfadeniz ve cüzdanınızı nasıl güvende tutacağınız hakkında bilgi edinmek için bu kısa videoyu izleyin."
-  },
   "seedPhraseReq": {
     "message": "Gizli Kurtarma İfadeleri 12, 15, 18, 21 veya 24 kelimeden oluşur"
   },
@@ -4653,15 +4646,6 @@
     "message": "Daha fazla destek için $1 oluşturucuları ile iletişime geçin.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaSupportSectionTitle": {
-    "message": "Solana"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "Bu özelliği açtığınızda mevcut Gizli Kurtarma İfadenizden türetilen MetaMask Uzantınıza bir Solana Hesabı ekleme seçeneğiniz olacaktır. Bu, deneysel bir Beta özelliğidir, bu yüzden riski kendinize ait olarak kullanmalısınız."
-  },
-  "solanaSupportToggleTitle": {
-    "message": "\"Yeni bir Solana hesabı ekle (Beta)\" seçeneğini etkinleştir"
-  },
   "somethingDoesntLookRight": {
     "message": "Doğru görünmeyen bir şeyler mi var? $1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
@@ -4894,9 +4878,6 @@
   "stxFailureDescription": {
     "message": "Ani piyasa değişiklikleri başarısızlıklara neden olabilir. Sorun devam ederse lütfen $1 ile iletişime geç.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
-  },
-  "stxOptInDescription": {
-    "message": "Daha güvenilir ve güvenli işlemler için Ethereum Ana Ağı üzerinde Akıllı İşlemleri açın. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Swap işlemin özel olarak gönderiliyor..."

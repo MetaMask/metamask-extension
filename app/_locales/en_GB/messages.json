@@ -233,6 +233,14 @@
   "addNfts": {
     "message": "Add NFTs"
   },
+  "addNonEvmAccount": {
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana",
+    "message": "Add $1 account"
+  },
+  "addNonEvmAccountFromNetworkPicker": {
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana",
+    "message": "To enable the $1 network, you need to create a $1 account."
+  },
   "addRpcUrl": {
     "message": "Add RPC URL"
   },
@@ -747,6 +755,9 @@
   "bridgeEnterAmount": {
     "message": "Select amount"
   },
+  "bridgeEnterAmountAndSelectAccount": {
+    "message": "Enter amount and select destination account"
+  },
   "bridgeExplorerLinkViewOn": {
     "message": "View on $1"
   },
@@ -769,8 +780,14 @@
   "bridgeQuoteExpired": {
     "message": "Your quote timed out."
   },
+  "bridgeSelectDestinationAccount": {
+    "message": "Select destination account"
+  },
   "bridgeSelectNetwork": {
     "message": "Select network"
+  },
+  "bridgeSelectTokenAmountAndAccount": {
+    "message": "Select token, amount and destination account"
   },
   "bridgeSelectTokenAndAmount": {
     "message": "Select token and amount"
@@ -1170,7 +1187,7 @@
     "message": "Connecting to Sepolia test network"
   },
   "connectionDescription": {
-    "message": "This site wants to"
+    "message": "Connect this website with MetaMask."
   },
   "connectionFailed": {
     "message": "Connection failed"
@@ -1491,6 +1508,15 @@
   "descriptionFromSnap": {
     "message": "Description from $1",
     "description": "$1 represents the name of the snap"
+  },
+  "destinationAccountPickerNoEligible": {
+    "message": "No eligible accounts found"
+  },
+  "destinationAccountPickerNoMatching": {
+    "message": "No matching accounts found"
+  },
+  "destinationAccountPickerSearchPlaceholder": {
+    "message": "Receiving address or SNS"
   },
   "details": {
     "message": "Details"
@@ -2779,6 +2805,15 @@
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "You're adding this network to MetaMask and giving this site permission to use it."
   },
+  "multichainQuoteCardBridgingLabel": {
+    "message": "Bridging"
+  },
+  "multichainQuoteCardQuoteLabel": {
+    "message": "Quote"
+  },
+  "multichainQuoteCardTimeLabel": {
+    "message": "Time"
+  },
   "multipleSnapConnectionWarning": {
     "message": "$1 wants to use $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -2893,6 +2928,13 @@
   "network": {
     "message": "Network:"
   },
+  "networkChanged": {
+    "message": "Network changed"
+  },
+  "networkChangedMessage": {
+    "message": "You're now transacting on $1.",
+    "description": "$1 is the name of the network"
+  },
   "networkDetails": {
     "message": "Network details"
   },
@@ -2978,10 +3020,6 @@
   },
   "networkSwitchConnectionError": {
     "message": "We can't connect to $1",
-    "description": "$1 represents the network name"
-  },
-  "networkSwitchMessage": {
-    "message": "Network switched to $1",
     "description": "$1 represents the network name"
   },
   "networkURL": {
@@ -3543,6 +3581,13 @@
   },
   "origin": {
     "message": "Origin"
+  },
+  "originChanged": {
+    "message": "Site changed"
+  },
+  "originChangedMessage": {
+    "message": "You're now reviewing a request from $1.",
+    "description": "$1 is the name of the origin"
   },
   "osTheme": {
     "message": "System"
@@ -4460,9 +4505,6 @@
   "seedPhraseIntroTitle": {
     "message": "Secure your wallet"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Before getting started, watch this short video to learn about your Secret Recovery Phrase and how to keep your wallet safe."
-  },
   "seedPhraseReq": {
     "message": "Secret Recovery Phrases contain 12, 15, 18, 21, or 24 words"
   },
@@ -4474,6 +4516,9 @@
   },
   "select": {
     "message": "Select"
+  },
+  "selectAccountToConnect": {
+    "message": "Select an account to connect"
   },
   "selectAccounts": {
     "message": "Select the account(s) to use on this site"
@@ -4766,13 +4811,13 @@
     "message": "Cash out with MetaMask"
   },
   "slideDebitCardDescription": {
-    "message": "Available in selected regions"
+    "message": "Available in select regions"
   },
   "slideDebitCardTitle": {
     "message": "MetaMask debit card"
   },
   "slideFundWalletDescription": {
-    "message": "Get started by adding funds"
+    "message": "Add or transfer tokens to get started"
   },
   "slideFundWalletTitle": {
     "message": "Fund your wallet"
@@ -4981,15 +5026,6 @@
   "snapsUIError": {
     "message": "Contact the creators of $1 for further support.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "solanaSupportSectionTitle": {
-    "message": "Solana"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "Turning on this feature will give you the option to add a Solana Account to your MetaMask Extension derived from your existing Secret Recovery Phrase. This is an experimental Beta feature, so you should use it at your own risk."
-  },
-  "solanaSupportToggleTitle": {
-    "message": "Enable \"Add a new Solana account (Beta)\""
   },
   "someNetworks": {
     "message": "$1 networks"
@@ -5252,8 +5288,8 @@
     "message": "Sudden market changes can cause failures. If the problem persists, please reach out to $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxOptInDescription": {
-    "message": "Turn on Smart Transactions for more reliable and secure transactions on Ethereum Mainnet. $1"
+  "stxOptInEthereumBnbDescription": {
+    "message": "Turn on Smart Transactions for more reliable and secure transactions on Ethereum Mainnet and BNB Smart Chain. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Privately submitting your Swap..."
@@ -6201,6 +6237,18 @@
   },
   "visitSite": {
     "message": "Visit site"
+  },
+  "visitSupportDataConsentModalAccept": {
+    "message": "Confirm"
+  },
+  "visitSupportDataConsentModalDescription": {
+    "message": "Do you want to share your MetaMask Identifier and app version with our Support Center? This can help us better solve your problem, but is optional."
+  },
+  "visitSupportDataConsentModalReject": {
+    "message": "Don’t share"
+  },
+  "visitSupportDataConsentModalTitle": {
+    "message": "Share device details with support"
   },
   "visitWebSite": {
     "message": "Visit our website"

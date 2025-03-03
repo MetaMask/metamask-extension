@@ -2777,10 +2777,6 @@
     "message": "我们无法连接到 $1",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "网络已切换至 $1",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "网络 URL"
   },
@@ -4185,9 +4181,6 @@
   "seedPhraseIntroTitle": {
     "message": "保护您的钱包安全"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "在开始之前，观看这个简短的视频来了解您的账户助记词以及如何保护您的钱包安全。"
-  },
   "seedPhraseReq": {
     "message": "私钥助记词包含 12、15、18、21 或 24 个字词"
   },
@@ -4653,15 +4646,6 @@
     "message": "联系 $1 的创建者以获得进一步支持。",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaSupportSectionTitle": {
-    "message": "Solana"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "启用此功能后，您可以选择将 Solana 账户添加到衍生自现有私钥助记词的 MetaMask Extension 中。这是一个实验性的测试版功能，因此您应自行承担使用风险。"
-  },
-  "solanaSupportToggleTitle": {
-    "message": "启用“添加新的 Solana 账户（测试版）”"
-  },
   "somethingDoesntLookRight": {
     "message": "有什么不对劲吗？$1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
@@ -4894,9 +4878,6 @@
   "stxFailureDescription": {
     "message": "突然的市场变化可能导致失败。如果问题仍然存在，请联系$1。",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
-  },
-  "stxOptInDescription": {
-    "message": "开启智能交易，以便在以太坊主网上实现更加安全可靠的交易。$1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "正在秘密提交您的Swap..."

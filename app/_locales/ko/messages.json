@@ -2777,10 +2777,6 @@
     "message": "$1 연결이 불가능합니다",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "네트워크가 $1(으)로 전환됨",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "네트워크 URL"
   },
@@ -4185,9 +4181,6 @@
   "seedPhraseIntroTitle": {
     "message": "지갑 보호하기"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "시작하기 전에 이 짧은 동영상을 보고 비밀복구구문과 지갑을 안전하게 보호하는 방법에 대해 알아보세요."
-  },
   "seedPhraseReq": {
     "message": "비밀복구구문은 12, 15, 18, 21 또는 24개의 단어로 구성됩니다"
   },
@@ -4653,15 +4646,6 @@
     "message": "$1 작성자에게 연락하여 향후 지원을 요청하세요.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaSupportSectionTitle": {
-    "message": "솔라나"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "이 기능을 켜면 기존 비밀복구구문에서 파생된 솔라나 계정을 MetaMask 확장 프로그램에 추가하는 옵션이 제공됩니다. 이는 실험적 베타 기능이므로 사용자의 책임하에 사용해야 합니다."
-  },
-  "solanaSupportToggleTitle": {
-    "message": "'새 솔라나 계정 추가(베타)' 활성화"
-  },
   "somethingDoesntLookRight": {
     "message": "무언가 잘못되었나요? $1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
@@ -4894,9 +4878,6 @@
   "stxFailureDescription": {
     "message": "시장 상황이 갑자기 변하면 실패할 수 있습니다. 문제가 지속되면 $1(으)로 문의하세요.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
-  },
-  "stxOptInDescription": {
-    "message": "이더리움 메인넷에서 더욱 안정적이고 안전하게 트랜잭션을 진행하려면 스마트 트랜잭션을 활성화하세요. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "스왑을 비공개로 제출하는 중..."

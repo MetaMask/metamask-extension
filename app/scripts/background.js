@@ -158,9 +158,9 @@ if (isFirefox) {
 } else if (!isManifestV3) {
   browser.runtime.onInstalled.addListener(function (details) {
     if (details.reason === 'install') {
-      global.localStorage.setItem('isFirstTimeInstall', true);
+      global.sessionStorage.setItem('isFirstTimeInstall', true);
     } else if (details.reason === 'update') {
-      global.localStorage.setItem('isFirstTimeInstall', false);
+      global.sessionStorage.setItem('isFirstTimeInstall', false);
     }
   });
 }
@@ -589,7 +589,7 @@ async function initialize() {
     if (isManifestV3 || isFirefox) {
       browser.storage.session.set({ isFirstTimeInstall: false });
     } else {
-      global.localStorage.setItem('isFirstTimeInstall', false);
+      global.sessionStorage.setItem('isFirstTimeInstall', false);
     }
 
     resolveInitialization();
@@ -1377,7 +1377,7 @@ async function onInstall() {
   const sessionData =
     isManifestV3 || isFirefox
       ? await browser.storage.session.get(['isFirstTimeInstall'])
-      : await global.localStorage.getItem('isFirstTimeInstall');
+      : await global.sessionStorage.getItem('isFirstTimeInstall');
 
   const isFirstTimeInstall = sessionData?.isFirstTimeInstall;
   let stateWasJustRestoredFromBackup;

@@ -1,11 +1,11 @@
-import { zeroAddress } from 'ethereumjs-util';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
-import {
+import type {
   QuoteResponse,
   Quote,
   L1GasFees,
   TokenAmountValues,
+  SolanaFees,
 } from '../../../../shared/types/bridge';
 import {
   hexToDecimal,
@@ -16,6 +16,7 @@ import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
+import { isNativeAddress } from '../../../../shared/modules/bridge-utils/caip-formatters';
 
 export const isQuoteExpired = (
   isQuoteGoingToRefresh: boolean,
@@ -28,8 +29,26 @@ export const isQuoteExpired = (
       Date.now() - quotesLastFetchedMs > refreshRate,
   );
 
-export const isNativeAddress = (address?: string | null) =>
-  address === zeroAddress() || address === '' || !address;
+export const calcSolanaTotalNetworkFee = (
+  bridgeQuote: QuoteResponse & SolanaFees,
+  nativeToDisplayCurrencyExchangeRate?: number,
+  nativeToUsdExchangeRate?: number,
+) => {
+  const { solanaFeesInLamports } = bridgeQuote;
+  const solanaFeeInNative = calcTokenAmount(
+    new BigNumber(solanaFeesInLamports ?? '0'),
+    9,
+  );
+  return {
+    amount: solanaFeeInNative,
+    valueInCurrency: nativeToDisplayCurrencyExchangeRate
+      ? solanaFeeInNative.mul(nativeToDisplayCurrencyExchangeRate.toString())
+      : null,
+    usd: nativeToUsdExchangeRate
+      ? solanaFeeInNative.mul(nativeToUsdExchangeRate.toString())
+      : null,
+  };
+};
 
 export const calcToAmount = (
   { destTokenAmount, destAsset }: Quote,
