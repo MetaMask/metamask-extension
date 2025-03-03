@@ -59,7 +59,6 @@ import {
 } from '@metamask/network-controller';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import {
-  MethodNames,
   PermissionController,
   PermissionDoesNotExistError,
   PermissionsRequestNotFoundError,
@@ -158,7 +157,6 @@ import {
   getEthAccounts,
   setPermittedEthChainIds,
   setEthAccounts,
-  addPermittedEthChainId,
 } from '@metamask/multichain';
 import {
   methodsRequiringNetworkSwitch,
@@ -314,8 +312,6 @@ import {
   NOTIFICATION_NAMES,
   unrestrictedMethods,
   PermissionNames,
-  validateCaveatAccounts,
-  validateCaveatNetworks,
 } from './controllers/permissions';
 import { MetaMetricsDataDeletionController } from './controllers/metametrics-data-deletion/metametrics-data-deletion';
 import { DataDeletionService } from './services/data-deletion-service';
@@ -413,6 +409,7 @@ const environmentMappingForRemoteFeatureFlag = {
 const buildTypeMappingForRemoteFeatureFlag = {
   flask: DistributionType.Flask,
   main: DistributionType.Main,
+  beta: 'beta',
 };
 
 export default class MetamaskController extends EventEmitter {
@@ -1810,7 +1807,9 @@ export default class MetamaskController extends EventEmitter {
     const bridgeControllerMessenger = this.controllerMessenger.getRestricted({
       name: BRIDGE_CONTROLLER_NAME,
       allowedActions: [
-        'AccountsController:getSelectedAccount',
+        // 'AccountsController:getSelectedAccount',
+        'AccountsController:getSelectedMultichainAccount',
+        'SnapController:handleRequest',
         'NetworkController:getSelectedNetworkClient',
         'NetworkController:findNetworkClientIdByChainId',
       ],
@@ -1826,7 +1825,7 @@ export default class MetamaskController extends EventEmitter {
       this.controllerMessenger.getRestricted({
         name: BRIDGE_STATUS_CONTROLLER_NAME,
         allowedActions: [
-          'AccountsController:getSelectedAccount',
+          'AccountsController:getSelectedMultichainAccount',
           'NetworkController:getNetworkClientById',
           'NetworkController:findNetworkClientIdByChainId',
           'NetworkController:getState',
@@ -5217,75 +5216,19 @@ export default class MetamaskController extends EventEmitter {
       [chainId],
     );
 
-    const id = nanoid();
-    await this.approvalController.addAndShowApprovalRequest({
-      id,
-      origin,
-      requestData: {
-        metadata: {
-          id,
-          origin,
-        },
-        permissions: {
-          [Caip25EndowmentPermissionName]: {
-            caveats: [
-              {
-                type: Caip25CaveatType,
-                value: caveatValueWithChains,
-              },
-            ],
-          },
-        },
-        isLegacySwitchEthereumChain: true,
-      },
-      type: MethodNames.RequestPermissions,
-    });
-  }
-
-  /**
-   * Requests permittedChains permission for the specified origin
-   * and replaces any existing CAIP-25 permission with a new one.
-   * Allows for granting without prompting for user approval which
-   * would be used as part of flows like `wallet_addEthereumChain`
-   * requests where the addition of the network and the permitting
-   * of the chain are combined into one approval.
-   *
-   * @param {object} options - The options object
-   * @param {string} options.origin - The origin to request approval for.
-   * @param {Hex} options.chainId - The chainId to permit.
-   * @param {boolean} options.autoApprove - If the chain should be granted without prompting for user approval.
-   */
-  async requestPermittedChainsPermission({ origin, chainId, autoApprove }) {
-    if (isSnapId(origin)) {
-      throw new Error(
-        `Cannot request permittedChains permission for Snaps with origin "${origin}"`,
-      );
-    }
-
-    if (!autoApprove) {
-      await this.requestApprovalPermittedChainsPermission(origin, chainId);
-    }
-
-    let caveatValue = {
-      requiredScopes: {},
-      optionalScopes: {},
-      isMultichainOrigin: false,
-    };
-    caveatValue = addPermittedEthChainId(caveatValue, chainId);
-
-    this.permissionController.grantPermissions({
-      subject: { origin },
-      approvedPermissions: {
+    await this.permissionController.requestPermissionsIncremental(
+      { origin },
+      {
         [Caip25EndowmentPermissionName]: {
           caveats: [
             {
               type: Caip25CaveatType,
-              value: caveatValue,
+              value: caveatValueWithChains,
             },
           ],
         },
       },
-    });
+    );
   }
 
   /**
@@ -5312,75 +5255,60 @@ export default class MetamaskController extends EventEmitter {
       );
     }
 
+    const caveatValueWithChains = setPermittedEthChainIds(
+      {
+        requiredScopes: {},
+        optionalScopes: {},
+        isMultichainOrigin: false,
+      },
+      [chainId],
+    );
+
     if (!autoApprove) {
-      await this.requestApprovalPermittedChainsPermission(origin, chainId);
+      await this.permissionController.requestPermissionsIncremental(
+        { origin },
+        {
+          [Caip25EndowmentPermissionName]: {
+            caveats: [
+              {
+                type: Caip25CaveatType,
+                value: caveatValueWithChains,
+              },
+            ],
+          },
+        },
+      );
+      return;
     }
 
-    const caip25Caveat = this.permissionController.getCaveat(
-      origin,
-      Caip25EndowmentPermissionName,
-      Caip25CaveatType,
-    );
-
-    const caveatValueWithChainsAdded = addPermittedEthChainId(
-      caip25Caveat.value,
-      chainId,
-    );
-
-    const ethAccounts = getEthAccounts(caip25Caveat.value);
-    const caveatValueWithAccountsSynced = setEthAccounts(
-      caveatValueWithChainsAdded,
-      ethAccounts,
-    );
-
-    this.permissionController.updateCaveat(
-      origin,
-      Caip25EndowmentPermissionName,
-      Caip25CaveatType,
-      caveatValueWithAccountsSynced,
-    );
+    await this.permissionController.grantPermissionsIncremental({
+      subject: { origin },
+      approvedPermissions: {
+        [Caip25EndowmentPermissionName]: {
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: caveatValueWithChains,
+            },
+          ],
+        },
+      },
+    });
   }
 
   /**
    * Requests user approval for the CAIP-25 permission for the specified origin
-   * and returns a permissions object that must be passed to
-   * PermissionController.grantPermissions() to complete the permission granting.
+   * and returns a granted permissions object.
    *
    * @param {string} origin - The origin to request approval for.
    * @param requestedPermissions - The legacy permissions to request approval for.
-   * @returns the approved permissions object that must then be granted by calling the PermissionController.
+   * @returns the approved permissions object.
    */
-  async requestCaip25Approval(origin, requestedPermissions = {}) {
+  getCaip25PermissionFromLegacyPermissions(origin, requestedPermissions = {}) {
     const permissions = pick(requestedPermissions, [
       RestrictedMethods.eth_accounts,
       PermissionNames.permittedChains,
     ]);
-
-    const requestedAccounts =
-      permissions[RestrictedMethods.eth_accounts]?.caveats?.find(
-        (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
-      )?.value ?? [];
-
-    const requestedChains =
-      permissions[PermissionNames.permittedChains]?.caveats?.find(
-        (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
-      )?.value ?? [];
-
-    if (permissions[RestrictedMethods.eth_accounts]?.caveats) {
-      validateCaveatAccounts(
-        requestedAccounts,
-        this.accountsController.listAccounts.bind(this.accountsController),
-      );
-    }
-
-    if (permissions[PermissionNames.permittedChains]?.caveats) {
-      validateCaveatNetworks(
-        requestedChains,
-        this.networkController.findNetworkClientIdByChainId.bind(
-          this.networkController,
-        ),
-      );
-    }
 
     if (!permissions[RestrictedMethods.eth_accounts]) {
       permissions[RestrictedMethods.eth_accounts] = {};
@@ -5393,6 +5321,16 @@ export default class MetamaskController extends EventEmitter {
     if (isSnapId(origin)) {
       delete permissions[PermissionNames.permittedChains];
     }
+
+    const requestedAccounts =
+      permissions[RestrictedMethods.eth_accounts]?.caveats?.find(
+        (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
+      )?.value ?? [];
+
+    const requestedChains =
+      permissions[PermissionNames.permittedChains]?.caveats?.find(
+        (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
+      )?.value ?? [];
 
     const newCaveatValue = {
       requiredScopes: {},
@@ -5414,32 +5352,16 @@ export default class MetamaskController extends EventEmitter {
       requestedAccounts,
     );
 
-    const id = nanoid();
-
-    const { permissions: approvedPermissions } =
-      await this.approvalController.addAndShowApprovalRequest({
-        id,
-        origin,
-        requestData: {
-          metadata: {
-            id,
-            origin,
+    return {
+      [Caip25EndowmentPermissionName]: {
+        caveats: [
+          {
+            type: Caip25CaveatType,
+            value: caveatValueWithAccountsAndChains,
           },
-          permissions: {
-            [Caip25EndowmentPermissionName]: {
-              caveats: [
-                {
-                  type: Caip25CaveatType,
-                  value: caveatValueWithAccountsAndChains,
-                },
-              ],
-            },
-          },
-        },
-        type: MethodNames.RequestPermissions,
-      });
-
-    return approvedPermissions;
+        ],
+      },
+    };
   }
   // ---------------------------------------------------------------------------
   // Identity Management (signature operations)
@@ -6215,25 +6137,12 @@ export default class MetamaskController extends EventEmitter {
         ),
         // Permission-related
         getAccounts: this.getPermittedAccounts.bind(this, origin),
-        requestCaip25ApprovalForOrigin: this.requestCaip25Approval.bind(
-          this,
-          origin,
-        ),
-        grantPermissionsForOrigin: (approvedPermissions) => {
-          return this.permissionController.grantPermissions({
-            subject: { origin },
-            approvedPermissions,
-          });
-        },
+        getCaip25PermissionFromLegacyPermissionsForOrigin:
+          this.getCaip25PermissionFromLegacyPermissions.bind(this, origin),
         getPermissionsForOrigin: this.permissionController.getPermissions.bind(
           this.permissionController,
           origin,
         ),
-        requestPermittedChainsPermissionForOrigin: (options) =>
-          this.requestPermittedChainsPermission({
-            ...options,
-            origin,
-          }),
         requestPermittedChainsPermissionIncrementalForOrigin: (options) =>
           this.requestPermittedChainsPermissionIncremental({
             ...options,
