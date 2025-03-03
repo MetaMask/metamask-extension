@@ -213,7 +213,7 @@ async function withFixtures(options, testSuite) {
     fixtureServer.loadJsonState(fixtures, contractRegistry);
 
     if (localNode && useBundler) {
-      await initBundler(bundlerServer, localNode[0], usePaymaster);
+      await initBundler(bundlerServer, localNodes[0], usePaymaster);
     }
 
     await phishingPageServer.start();
