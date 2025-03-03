@@ -61,7 +61,7 @@ import ExperimentalTab from './experimental-tab';
 import SettingsSearch from './settings-search';
 import SettingsSearchList from './settings-search-list';
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-import { RevealSRPList } from './security-tab/reveal-srp-list';
+import { RevealSrpList } from './security-tab/reveal-srp-list';
 ///: END:ONLY_INCLUDE_IF
 
 class SettingsPage extends PureComponent {
@@ -469,7 +469,7 @@ class SettingsPage extends PureComponent {
         />
         {
           ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-          <Route exact path={REVEAL_SRP_LIST_ROUTE} component={RevealSRPList} />
+          <Route exact path={REVEAL_SRP_LIST_ROUTE} component={RevealSrpList} />
           ///: END:ONLY_INCLUDE_IF
         }
         <Route

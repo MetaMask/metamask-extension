@@ -1,1 +1,1 @@
-export { RevealSRPList } from './reveal-srp-list';
+export { RevealSrpList } from './reveal-srp-list';

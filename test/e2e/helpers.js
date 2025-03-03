@@ -656,7 +656,7 @@ const locateAccountBalanceDOM = async (driver, localNode, address = null) => {
   }
 };
 
-export const WALLET_PASSWORD = 'correct horse battery staple';
+const WALLET_PASSWORD = 'correct horse battery staple';
 
 /**
  * Unlocks the wallet using the provided password.
@@ -916,6 +916,7 @@ module.exports = {
   PRIVATE_KEY_TWO,
   ACCOUNT_1,
   ACCOUNT_2,
+  WALLET_PASSWORD,
   getWindowHandles,
   convertToHexValue,
   tinyDelayMs,
@@ -937,7 +938,6 @@ module.exports = {
   unlockWallet,
   logInWithBalanceValidation,
   locateAccountBalanceDOM,
-  WALLET_PASSWORD,
   WINDOW_TITLES,
   convertETHToHexGwei,
   roundToXDecimalPlaces,
