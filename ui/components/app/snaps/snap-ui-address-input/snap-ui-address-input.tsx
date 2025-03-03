@@ -58,7 +58,7 @@ export const SnapUIAddressInput: FunctionComponent<
   const [value, setValue] = useState(
     initialValue
       ? parseCaipAccountId(initialValue as CaipAccountId).address
-      : '',
+      : null,
   );
   const [matchedAddressName, setMatchedAddressName] = useState<string | null>(
     null,
@@ -67,13 +67,6 @@ export const SnapUIAddressInput: FunctionComponent<
   const accountsInfo: Record<string, string> = useSelector((state) =>
     getAccountInfoByCaipChainId(state, chainId),
   );
-
-  useEffect(() => {
-    if (initialValue !== undefined && initialValue !== null) {
-      const { address } = parseCaipAccountId(initialValue as CaipAccountId);
-      setValue(address);
-    }
-  }, [initialValue]);
 
   /*
    * Focus input if the last focused input was this input
@@ -153,9 +146,11 @@ export const SnapUIAddressInput: FunctionComponent<
     );
   };
 
-  return matchedAddressName ? (
-    <MatchedAccountInfo />
-  ) : (
+  if (matchedAddressName) {
+    return <MatchedAccountInfo />;
+  }
+
+  return (
     <FormTextField
       ref={inputRef}
       onFocus={handleFocus}
@@ -164,7 +159,7 @@ export const SnapUIAddressInput: FunctionComponent<
         'snap-ui-renderer__field': label !== undefined,
       })}
       id={name}
-      value={value}
+      value={value ?? ''}
       onChange={handleChange}
       label={label}
       error={Boolean(error)}
