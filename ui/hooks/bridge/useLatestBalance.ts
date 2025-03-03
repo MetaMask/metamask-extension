@@ -11,6 +11,10 @@ import {
   getMultichainCurrentChainId,
 } from '../../selectors/multichain';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
+import {
+  formatChainIdToCaip,
+  formatChainIdToHex,
+} from '../../../shared/modules/bridge-utils/caip-formatters';
 
 /**
  * Custom hook to fetch and format the latest balance of a given token or native asset.
@@ -42,24 +46,23 @@ const useLatestBalance = (
   const value = useAsyncResult<Numeric | undefined>(async () => {
     if (
       token?.address &&
-      // TODO check whether chainId is EVM when MultichainNetworkController is integrated
-      !isCaipChainId(chainId) &&
       chainId &&
+      formatChainIdToCaip(chainId) !== MultichainNetworks.SOLANA &&
       currentChainId === chainId
     ) {
       return await calcLatestSrcBalance(
         global.ethereumProvider,
         selectedAddress,
         token.address,
-        chainId,
+        formatChainIdToHex(chainId),
       );
     }
 
     // No need to fetch the balance for non-EVM tokens, use the balance provided by the
     // multichain balances controller
     if (
-      isCaipChainId(chainId) &&
-      chainId === MultichainNetworks.SOLANA &&
+      chainId &&
+      formatChainIdToCaip(chainId) === MultichainNetworks.SOLANA &&
       token?.decimals
     ) {
       return Numeric.from(
