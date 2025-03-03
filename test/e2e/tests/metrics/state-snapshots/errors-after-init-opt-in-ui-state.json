@@ -67,6 +67,7 @@
     "isMultiRpcOnboarding": "boolean",
     "errorInSettings": null
   },
+  "background": "object",
   "bridge": "object",
   "confirmAlerts": "object",
   "confirmTransaction": "object",
