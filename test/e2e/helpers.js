@@ -146,9 +146,6 @@ async function withFixtures(options, testSuite) {
   let driver;
   let failed = false;
 
-  // ganacheServer variable to be deleted once all specs are migrated to anvil
-  // and use localNode and localNodes solely
-  let ganacheServer;
   let localNode;
   const localNodes = [];
 
@@ -166,9 +163,9 @@ async function withFixtures(options, testSuite) {
           break;
 
         case 'ganache':
-          ganacheServer = new Ganache();
-          await ganacheServer.start(nodeOptions);
-          localNodes.push(ganacheServer);
+          localNode = new Ganache();
+          await localNode.start(nodeOptions);
+          localNodes.push(localNode);
           break;
 
         case 'none':
@@ -213,8 +210,8 @@ async function withFixtures(options, testSuite) {
     await fixtureServer.start();
     fixtureServer.loadJsonState(fixtures, contractRegistry);
 
-    if (ganacheServer && useBundler) {
-      await initBundler(bundlerServer, ganacheServer, usePaymaster);
+    if (localNode && useBundler) {
+      await initBundler(bundlerServer, localNode[0], usePaymaster);
     }
 
     await phishingPageServer.start();
@@ -298,7 +295,6 @@ async function withFixtures(options, testSuite) {
       bundlerServer,
       contractRegistry,
       driver: driverProxy ?? driver,
-      ganacheServer,
       localNodes,
       mockedEndpoint,
       mockServer,
