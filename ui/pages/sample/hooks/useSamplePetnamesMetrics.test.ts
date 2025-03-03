@@ -1,5 +1,4 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -19,16 +18,6 @@ jest.mock('react', () => {
 describe('useSamplePetnamesMetrics', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-  });
-
-  it('should provide all required tracking functions', () => {
-    const { result } = renderHook(() => useSamplePetnamesMetrics());
-
-    expect(result.current.trackPetnamesFormViewed).toBeDefined();
-    expect(result.current.trackPetnameAdded).toBeDefined();
-    expect(result.current.trackFormValidationError).toBeDefined();
-    expect(result.current.trackFormSubmissionError).toBeDefined();
-    expect(result.current.trackFormInteraction).toBeDefined();
   });
 
   describe('trackPetnamesFormViewed', () => {

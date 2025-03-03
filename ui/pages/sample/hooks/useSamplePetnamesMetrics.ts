@@ -8,6 +8,7 @@ import {
 
 /**
  * Hook that provides tracking functions for the sample petnames feature
+ *
  * @returns Object containing tracking functions for petnames actions
  */
 export function useSamplePetnamesMetrics() {
@@ -29,6 +30,7 @@ export function useSamplePetnamesMetrics() {
 
   /**
    * Track when a user successfully adds a petname
+   *
    * @param address - The Ethereum address
    * @param nameLength - The length of the petname added
    */
@@ -52,6 +54,7 @@ export function useSamplePetnamesMetrics() {
 
   /**
    * Track form validation errors
+   *
    * @param errorTypes - Types of errors encountered
    */
   const trackFormValidationError = useCallback(
@@ -72,6 +75,7 @@ export function useSamplePetnamesMetrics() {
 
   /**
    * Track form submission errors
+   *
    * @param errorMessage - The error message
    */
   const trackFormSubmissionError = useCallback(
@@ -91,6 +95,7 @@ export function useSamplePetnamesMetrics() {
 
   /**
    * Track when user interacts with the form
+   *
    * @param interactionType - The type of interaction
    */
   const trackFormInteraction = useCallback(
