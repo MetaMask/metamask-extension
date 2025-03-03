@@ -156,6 +156,12 @@
   "addAlias": {
     "message": "Add alias"
   },
+  "addBitcoinAccountLabel": {
+    "message": "Add a new Bitcoin account (Beta)"
+  },
+  "addBitcoinTestnetAccountLabel": {
+    "message": "Add a new Bitcoin account (Testnet)"
+  },
   "addBlockExplorer": {
     "message": "Add a block explorer"
   },
@@ -196,7 +202,7 @@
   "addFriendsAndAddresses": {
     "message": "Add friends and addresses you trust"
   },
-  "addHardwareWallet": {
+  "addHardwareWalletLabel": {
     "message": "Hardware wallet"
   },
   "addIPFSGateway": {
@@ -217,12 +223,6 @@
   },
   "addNewAccount": {
     "message": "Add a new Ethereum account"
-  },
-  "addNewBitcoinAccount": {
-    "message": "Add a new Bitcoin account (Beta)"
-  },
-  "addNewBitcoinTestnetAccount": {
-    "message": "Add a new Bitcoin account (Testnet)"
   },
   "addNewEthereumAccountLabel": {
     "message": "Ethereum account"
