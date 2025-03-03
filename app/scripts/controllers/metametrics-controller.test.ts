@@ -1431,7 +1431,7 @@ describe('MetaMetricsController', function () {
             openSeaEnabled: true,
             useNftDetection: false,
             securityAlertsEnabled: true,
-            theme: 'default',
+            theme: ThemeType.os,
             useTokenDetection: true,
             security_providers: [],
             preferences: {

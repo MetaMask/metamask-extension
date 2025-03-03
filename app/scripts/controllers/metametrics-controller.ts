@@ -10,7 +10,6 @@ import {
 } from 'lodash';
 import { bufferToHex, keccak } from 'ethereumjs-util';
 import { v4 as uuidv4 } from 'uuid';
-import { PreferencesState } from '@metamask/preferences-controller';
 import { NameControllerState, NameType } from '@metamask/name-controller';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import {
@@ -613,7 +612,6 @@ export default class MetaMetricsController extends BaseController<
       : {};
 
     this.update((state) => {
-      // @ts-expect-error Type instantiation is excessively deep
       state.fragments[id] = merge({}, additionalFragmentProps, fragment);
     });
 
@@ -1262,7 +1260,7 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.HasMarketingConsent]:
         metamaskState.MetaMetricsController.dataCollectionForMarketing,
       [MetaMetricsUserTrait.TokenSortPreference]:
-        metamaskState.PreferencesController.preferences.tokenSortConfig?.key ||
+        metamaskState.PreferencesController.preferences?.tokenSortConfig?.key ||
         '',
       [MetaMetricsUserTrait.PrivacyModeEnabled]:
         metamaskState.PreferencesController.preferences?.privacyMode,

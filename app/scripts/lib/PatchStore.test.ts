@@ -48,7 +48,7 @@ describe('PatchStore', () => {
         { test2: false },
       );
 
-      const patches = patchStore.flushPendingPatches({ isFlattened: true });
+      const patches = patchStore.flushPendingPatches({ isFlattened: false });
 
       expect(patches).toEqual([
         {
@@ -87,7 +87,7 @@ describe('PatchStore', () => {
         { test3: { test: 'value' } },
       );
 
-      const patches = patchStore.flushPendingPatches({ isFlattened: true });
+      const patches = patchStore.flushPendingPatches({ isFlattened: false });
 
       expect(patches).toEqual([
         {
@@ -102,7 +102,7 @@ describe('PatchStore', () => {
       const composableStoreMock = createComposableStoreMock();
       const patchStore = new PatchStore(composableStoreMock);
 
-      const patches = patchStore.flushPendingPatches({ isFlattened: true });
+      const patches = patchStore.flushPendingPatches({ isFlattened: false });
 
       expect(patches).toEqual([]);
     });
@@ -117,8 +117,8 @@ describe('PatchStore', () => {
         { test1: 'value2' },
       );
 
-      const patches1 = patchStore.flushPendingPatches({ isFlattened: true });
-      const patches2 = patchStore.flushPendingPatches({ isFlattened: true });
+      const patches1 = patchStore.flushPendingPatches({ isFlattened: false });
+      const patches2 = patchStore.flushPendingPatches({ isFlattened: false });
 
       expect(patches1).toHaveLength(1);
       expect(patches2).toHaveLength(0);
@@ -139,7 +139,7 @@ describe('PatchStore', () => {
         { test1: true },
       );
 
-      const patches = patchStore.flushPendingPatches({ isFlattened: true });
+      const patches = patchStore.flushPendingPatches({ isFlattened: false });
 
       expect(patches).toEqual([
         {
@@ -156,7 +156,7 @@ describe('PatchStore', () => {
 
       triggerStateChange(composableStoreMock, { vault: 0 }, { vault: 123 });
 
-      const patches = patchStore.flushPendingPatches({ isFlattened: true });
+      const patches = patchStore.flushPendingPatches({ isFlattened: false });
 
       expect(patches).toEqual([
         {
