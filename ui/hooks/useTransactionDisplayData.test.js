@@ -31,7 +31,7 @@ const expectedResults = [
     subtitle: 'To: 0xffe5b...91a97',
     subtitleContainsOrigin: false,
     date: formatDateWithYearContext(1589314601567),
-    primaryCurrency: '-1 GoerliETH',
+    primaryCurrency: '-1 ETH',
     senderAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     recipientAddress: '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
     secondaryCurrency: '-1 ETH',
