@@ -1,5 +1,5 @@
+import type { MetaMaskSliceState } from '../../../ducks/metamask/metamask';
 import { getPreferences } from '../../../selectors';
-import { MetaMaskReduxState } from '../../../store/store';
 
 // export type RootState = {
 //   metamask: {
@@ -7,11 +7,11 @@ import { MetaMaskReduxState } from '../../../store/store';
 //   };
 // };
 
-export const selectUseTransactionSimulations = (state: MetaMaskReduxState) =>
+export const selectUseTransactionSimulations = (state: MetaMaskSliceState) =>
   state.metamask.useTransactionSimulations;
 
 export function selectConfirmationAdvancedDetailsOpen(
-  state: MetaMaskReduxState,
+  state: MetaMaskSliceState,
 ) {
   return Boolean(getPreferences(state).showConfirmationAdvancedDetails);
 }

@@ -13,8 +13,9 @@ import {
   getEthAccounts,
   getPermittedEthChainIds,
 } from '@metamask/multichain';
-import { MetaMaskReduxState } from '../store/store';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+import type { MetaMaskReduxState } from '../store/store';
+import type { MetaMaskSliceState } from '../ducks/metamask/metamask';
 import { getApprovalRequestsByType } from './approvals';
 import {
   getInternalAccount,
@@ -34,7 +35,7 @@ import { ConnectedSubject } from './selectors.types';
  * @returns The permissions subjects object.
  */
 export const getPermissionSubjectsDeepEqual = createDeepEqualSelector(
-  (state: MetaMaskReduxState) => state.metamask.subjects || {},
+  (state: MetaMaskSliceState) => state.metamask.subjects || {},
   (subjects) => subjects,
 );
 
@@ -45,7 +46,7 @@ export const getPermissionSubjectsDeepEqual = createDeepEqualSelector(
  * @returns The subject metadata object.
  */
 export const getSubjectMetadataDeepEqual = createDeepEqualSelector(
-  (state: MetaMaskReduxState) => state.metamask.subjectMetadata,
+  (state: MetaMaskSliceState) => state.metamask.subjectMetadata,
   (metadata) => metadata,
 );
 
@@ -55,7 +56,7 @@ export const getSubjectMetadataDeepEqual = createDeepEqualSelector(
  * @param state - The current state.
  * @returns The permissions subjects object.
  */
-export function getPermissionSubjects(state: MetaMaskReduxState) {
+export function getPermissionSubjects(state: MetaMaskSliceState) {
   return state.metamask.subjects || {};
 }
 
@@ -68,7 +69,7 @@ export function getPermissionSubjects(state: MetaMaskReduxState) {
  * @returns An empty array or an array of accounts.
  */
 export function getPermittedAccounts(
-  state: MetaMaskReduxState,
+  state: MetaMaskSliceState,
   origin: string,
 ) {
   return getAccountsFromPermission(
@@ -76,7 +77,7 @@ export function getPermittedAccounts(
   );
 }
 
-export function getPermittedChains(state: MetaMaskReduxState, origin: string) {
+export function getPermittedChains(state: MetaMaskSliceState, origin: string) {
   return getChainsFromPermission(
     getCaip25PermissionFromSubject(subjectSelector(state, origin)),
   );
@@ -117,7 +118,7 @@ export function getPermittedChainsForSelectedTab(
  * @param state - The current state.
  * @returns Permitted accounts by origin.
  */
-export function getPermittedAccountsByOrigin(state: MetaMaskReduxState) {
+export function getPermittedAccountsByOrigin(state: MetaMaskSliceState) {
   const subjects = getPermissionSubjects(state);
   return getKnownPropertyNames(subjects).reduce<{
     [subjectKey: string]: Hex[];
@@ -130,7 +131,7 @@ export function getPermittedAccountsByOrigin(state: MetaMaskReduxState) {
   }, {});
 }
 
-export function getPermittedChainsByOrigin(state: MetaMaskReduxState) {
+export function getPermittedChainsByOrigin(state: MetaMaskSliceState) {
   const subjects = getPermissionSubjects(state);
   return getKnownPropertyNames(subjects).reduce<{
     [subjectKey: string]: Hex[];
@@ -143,7 +144,7 @@ export function getPermittedChainsByOrigin(state: MetaMaskReduxState) {
   }, {});
 }
 
-export function getSubjectMetadata(state: MetaMaskReduxState) {
+export function getSubjectMetadata(state: MetaMaskSliceState) {
   return state.metamask.subjectMetadata;
 }
 
@@ -158,7 +159,7 @@ export function getSubjectMetadata(state: MetaMaskReduxState) {
  * @returns An array of connected subject objects.
  */
 export function getConnectedSubjectsForSelectedAddress(
-  state: MetaMaskReduxState,
+  state: MetaMaskSliceState,
 ) {
   const selectedInternalAccount = getSelectedInternalAccount(state);
   const subjects = getPermissionSubjects(state);
@@ -220,7 +221,7 @@ export const getConnectedSubjectsForAllAddresses = createDeepEqualSelector(
 );
 
 export function getSubjectsWithPermission(
-  state: MetaMaskReduxState,
+  state: MetaMaskSliceState,
   permissionName: string,
 ) {
   const subjects = getPermissionSubjects(state);
@@ -245,7 +246,7 @@ export function getSubjectsWithPermission(
 }
 
 export function getSubjectsWithSnapPermission(
-  state: MetaMaskReduxState,
+  state: MetaMaskSliceState,
   snapId: SnapId,
 ) {
   const subjects = getPermissionSubjects(state);
@@ -280,7 +281,7 @@ export function getSubjectsWithSnapPermission(
  * @returns A mapping of addresses to a mapping of origins to
  * connected subject info.
  */
-export function getAddressConnectedSubjectMap(state: MetaMaskReduxState) {
+export function getAddressConnectedSubjectMap(state: MetaMaskSliceState) {
   const subjectMetadata = getSubjectMetadata(state);
   const accountsMap = getPermittedAccountsByOrigin(state);
 
@@ -368,7 +369,7 @@ function getChainsFromPermission(
     : [];
 }
 
-function subjectSelector(state: MetaMaskReduxState, origin: string) {
+function subjectSelector(state: MetaMaskSliceState, origin: string) {
   return origin ? state.metamask.subjects?.[origin] : undefined;
 }
 
@@ -524,7 +525,7 @@ export function activeTabHasPermissions(state: MetaMaskReduxState) {
  * @returns An object of type `Record<string, { accounts: Record<string, number> }>`
  * with account connection histories by origin.
  */
-export function getLastConnectedInfo(state: MetaMaskReduxState) {
+export function getLastConnectedInfo(state: MetaMaskSliceState) {
   const { permissionHistory = {} } = state.metamask;
   return getKnownPropertyNames(permissionHistory).reduce<{
     [origin: string]: { accounts: Record<string, number> };
@@ -539,7 +540,7 @@ export function getLastConnectedInfo(state: MetaMaskReduxState) {
   }, {});
 }
 
-export function getSnapInstallOrUpdateRequests(state: MetaMaskReduxState) {
+export function getSnapInstallOrUpdateRequests(state: MetaMaskSliceState) {
   return Object.values(state.metamask.pendingApprovals)
     .filter(
       ({ type }) =>
@@ -550,30 +551,30 @@ export function getSnapInstallOrUpdateRequests(state: MetaMaskReduxState) {
     .map(({ requestData }) => requestData);
 }
 
-export function getFirstSnapInstallOrUpdateRequest(state: MetaMaskReduxState) {
+export function getFirstSnapInstallOrUpdateRequest(state: MetaMaskSliceState) {
   return getSnapInstallOrUpdateRequests(state)?.[0] ?? null;
 }
 
-export function getPermissionsRequests(state: MetaMaskReduxState) {
+export function getPermissionsRequests(state: MetaMaskSliceState) {
   return getApprovalRequestsByType(
     state,
     ApprovalType.WalletRequestPermissions,
   )?.map(({ requestData }) => requestData);
 }
 
-export function getFirstPermissionRequest(state: MetaMaskReduxState) {
+export function getFirstPermissionRequest(state: MetaMaskSliceState) {
   const requests = getPermissionsRequests(state);
   return requests?.[0] ?? null;
 }
 
-export function getPermissions(state: MetaMaskReduxState, origin: string) {
+export function getPermissions(state: MetaMaskSliceState, origin: string) {
   return getPermissionSubjects(state)[origin]?.permissions;
 }
 
-export function getRequestState(state: MetaMaskReduxState, id: string) {
+export function getRequestState(state: MetaMaskSliceState, id: string) {
   return state.metamask.pendingApprovals[id]?.requestState;
 }
 
-export function getRequestType(state: MetaMaskReduxState, id: string) {
+export function getRequestType(state: MetaMaskSliceState, id: string) {
   return state.metamask.pendingApprovals[id]?.type;
 }

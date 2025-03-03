@@ -1,16 +1,16 @@
 import { createSelector } from 'reselect';
-import { MetaMaskReduxState } from '../store/store';
+import type { MetaMaskSliceState } from '../ducks/metamask/metamask';
 
-export const selectFragments = (state: MetaMaskReduxState) =>
+export const selectFragments = (state: MetaMaskSliceState) =>
   state.metamask.fragments;
 
-export const getDataCollectionForMarketing = (state: MetaMaskReduxState) =>
+export const getDataCollectionForMarketing = (state: MetaMaskSliceState) =>
   state.metamask.dataCollectionForMarketing;
 
-export const getParticipateInMetaMetrics = (state: MetaMaskReduxState) =>
+export const getParticipateInMetaMetrics = (state: MetaMaskSliceState) =>
   Boolean(state.metamask.participateInMetaMetrics);
 
-export const getLatestMetricsEventTimestamp = (state: MetaMaskReduxState) =>
+export const getLatestMetricsEventTimestamp = (state: MetaMaskSliceState) =>
   state.metamask.latestNonAnonymousEventTimestamp;
 
 export const selectFragmentBySuccessEvent = createSelector(

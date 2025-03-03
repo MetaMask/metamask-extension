@@ -14,7 +14,7 @@ import {
   getNetworkConfigurationsByChainId,
 } from '../../../shared/modules/selectors/networks';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
-import { MetaMaskReduxState } from '../../store/store';
+import type { MetaMaskSliceState } from '../../ducks/metamask/metamask';
 import {
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
@@ -66,7 +66,7 @@ export type MultichainNetworkConfigState =
 // Selectors
 
 export const getNonEvmMultichainNetworkConfigurationsByChainId = (
-  state: MetaMaskReduxState,
+  state: MetaMaskSliceState,
 ) => state.metamask.multichainNetworkConfigurationsByChainId;
 
 export const getIsNonEvmNetworksEnabled = createDeepEqualSelector(
@@ -153,11 +153,11 @@ export const getMultichainNetworkConfigurationsByChainId =
     },
   );
 
-export const getIsEvmMultichainNetworkSelected = (state: MetaMaskReduxState) =>
+export const getIsEvmMultichainNetworkSelected = (state: MetaMaskSliceState) =>
   state.metamask.isEvmSelected;
 
 export const getSelectedMultichainNetworkChainId = (
-  state: MetaMaskReduxState,
+  state: MetaMaskSliceState,
 ) => {
   const isEvmSelected = getIsEvmMultichainNetworkSelected(state);
 
@@ -169,7 +169,7 @@ export const getSelectedMultichainNetworkChainId = (
 };
 
 export const getSelectedMultichainNetworkConfiguration = (
-  state: MetaMaskReduxState,
+  state: MetaMaskSliceState,
 ) => {
   const chainId = getSelectedMultichainNetworkChainId(state);
   const networkConfigurationsByChainId =

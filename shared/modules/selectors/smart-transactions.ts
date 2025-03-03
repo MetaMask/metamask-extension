@@ -5,7 +5,6 @@ import {
 } from '../../constants/smartTransactions';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { MetaMaskReduxState } from '../../../ui/store/store';
 import {
   getCurrentNetwork,
   accountSupportsSmartTx,
@@ -13,6 +12,9 @@ import {
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import type { MetaMaskSliceState } from '../../../ui/ducks/metamask/metamask';
 import { isProduction } from '../environment';
 import { getFeatureFlagsByChainId } from './feature-flags';
 import { getCurrentChainId } from './networks';
@@ -131,13 +133,13 @@ export const getSmartTransactionsPreferenceEnabled = createSelector(
 );
 
 export const getCurrentChainSupportsSmartTransactions = (
-  state: MetaMaskReduxState,
+  state: MetaMaskSliceState,
 ): boolean => {
   const chainId = getCurrentChainId(state);
   return getAllowedSmartTransactionsChainIds().includes(chainId);
 };
 
-const getIsAllowedRpcUrlForSmartTransactions = (state: MetaMaskReduxState) => {
+const getIsAllowedRpcUrlForSmartTransactions = (state: MetaMaskSliceState) => {
   const chainId = getCurrentChainId(state);
   // Allow in non-production or if chain ID is on skip list.
   if (!isProduction() || SKIP_STX_RPC_URL_CHECK_CHAIN_IDS.includes(chainId)) {
@@ -155,7 +157,7 @@ const getIsAllowedRpcUrlForSmartTransactions = (state: MetaMaskReduxState) => {
 };
 
 export const getSmartTransactionsEnabled = (
-  state: MetaMaskReduxState,
+  state: MetaMaskSliceState,
 ): boolean => {
   const supportedAccount = accountSupportsSmartTx(state);
   // @ts-expect-error Smart transaction selector types does not match controller state
@@ -174,7 +176,7 @@ export const getSmartTransactionsEnabled = (
   );
 };
 
-export const getIsSmartTransaction = (state: MetaMaskReduxState): boolean => {
+export const getIsSmartTransaction = (state: MetaMaskSliceState): boolean => {
   const smartTransactionsPreferenceEnabled =
     getSmartTransactionsPreferenceEnabled(state);
   const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
