@@ -22,11 +22,11 @@ export const useTemplateConfirmationAlerts = (
 
   useEffect(() => {
     dispatch(updateAlerts(alertOwnerId, alerts));
-  }, [alerts, alertOwnerId]);
+  }, [alerts, alertOwnerId, dispatch]);
 
   useEffect(() => {
     return () => {
       dispatch(clearAlerts(alertOwnerId));
     };
-  }, []);
+  }, [alertOwnerId, dispatch]);
 };
