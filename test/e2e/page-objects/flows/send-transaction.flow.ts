@@ -3,6 +3,7 @@ import SendTokenPage from '../pages/send/send-token-page';
 import { Driver } from '../../webdriver/driver';
 import SnapSimpleKeyringPage from '../pages/snap-simple-keyring-page';
 import TransactionConfirmation from '../pages/confirmations/redesign/transaction-confirmation';
+import ActivityListPage from '../pages/home/activity-list';
 
 /**
  * This function initiates the steps required to send a transaction from the homepage to final confirmation.
@@ -109,4 +110,14 @@ export const sendRedesignedTransactionWithSnapAccount = async ({
       approveTransaction,
     );
   }
+};
+
+export const validateTransaction = async (driver: Driver, quantity: string) => {
+  const homePage = new HomePage(driver);
+  await homePage.goToActivityList();
+  const activityList = new ActivityListPage(driver);
+  await activityList.check_confirmedTxNumberDisplayedInActivity(1);
+
+  await activityList.check_txAction('Send', 1);
+  await activityList.check_txAmountInActivity(`${quantity} ETH`, 1);
 };

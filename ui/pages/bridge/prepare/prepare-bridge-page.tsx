@@ -11,9 +11,7 @@ import { debounce } from 'lodash';
 import { useHistory, useLocation } from 'react-router-dom';
 import { BigNumber } from 'bignumber.js';
 import { type TokenListMap } from '@metamask/assets-controllers';
-import { InternalAccount } from '@metamask/keyring-internal-api';
 import { toChecksumAddress, zeroAddress } from 'ethereumjs-util';
-import { SolAccountType } from '@metamask/keyring-api';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -37,8 +35,9 @@ import {
   getWasTxDeclined,
   getFromAmountInCurrency,
   getValidationErrors,
-  getBridgeQuotesConfig,
   isBridgeSolanaEnabled,
+  getIsToOrFromSolana,
+  getQuoteRefreshRate,
 } from '../../../ducks/bridge/selectors';
 import {
   BannerAlert,
@@ -63,7 +62,11 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/swaps';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
-import { setActiveNetwork } from '../../../store/actions';
+import {
+  setActiveNetwork,
+  setActiveNetworkWithError,
+  setSelectedAccount,
+} from '../../../store/actions';
 import type { GenericQuoteRequest } from '../../../../shared/types/bridge';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import {
@@ -90,18 +93,26 @@ import {
   getCurrentKeyring,
   getSelectedEvmInternalAccount,
   getSelectedInternalAccount,
-  getInternalAccounts,
   getTokenList,
 } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
-import { BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE } from '../../../../shared/constants/bridge';
+import {
+  BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
+  SOLANA_USDC_ASSET,
+} from '../../../../shared/constants/bridge';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getMultichainIsEvm } from '../../../selectors/multichain';
+import {
+  getLastSelectedNonEvmAccount,
+  getMultichainIsEvm,
+} from '../../../selectors/multichain';
 import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { formatChainIdToCaip } from '../../../../shared/modules/bridge-utils/caip-formatters';
+import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
@@ -112,7 +123,6 @@ const PrepareBridgePage = () => {
   const t = useI18nContext();
 
   const isSwap = useIsMultichainSwap();
-  const accounts = useSelector(getInternalAccounts);
 
   const fromToken = useSelector(getFromToken);
   const fromTokens = useSelector(getTokenList) as TokenListMap;
@@ -141,7 +151,7 @@ const PrepareBridgePage = () => {
     isQuoteGoingToRefresh,
     quotesLastFetchedMs,
   } = useSelector(getBridgeQuotes);
-  const { refreshRate } = useSelector(getBridgeQuotesConfig);
+  const refreshRate = useSelector(getQuoteRefreshRate);
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
   // If latest quote is expired and user has sufficient balance
@@ -156,6 +166,7 @@ const PrepareBridgePage = () => {
 
   const isEvm = useMultichainSelector(getMultichainIsEvm);
   const selectedEvmAccount = useSelector(getSelectedEvmInternalAccount);
+  const selectedSolanaAccount = useSelector(getLastSelectedNonEvmAccount);
   const selectedMultichainAccount = useMultichainSelector(
     getSelectedInternalAccount,
   );
@@ -178,22 +189,21 @@ const PrepareBridgePage = () => {
   const { quotesRefreshCount } = useSelector(getBridgeQuotes);
   const { openBuyCryptoInPdapp } = useRamps();
 
-  const { balanceAmount: nativeAssetBalance } = useLatestBalance(
+  const nativeAssetBalance = useLatestBalance(
     SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
       fromChain?.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
     ],
     fromChain?.chainId,
   );
 
-  const { balanceAmount: srcTokenBalance } = useLatestBalance(
-    fromToken,
-    fromChain?.chainId,
-  );
+  const srcTokenBalance = useLatestBalance(fromToken, fromChain?.chainId);
+  const { selectedDestinationAccount, setSelectedDestinationAccount } =
+    useDestinationAccount(isSwap);
 
   const {
     filteredTokenListGenerator: toTokenListGenerator,
     isLoading: isToTokensLoading,
-  } = useTokensWithFiltering(toChain?.chainId ?? fromChain?.chainId);
+  } = useTokensWithFiltering(toChain?.chainId ?? fromChain?.chainId, fromToken);
 
   const { flippedRequestProperties } = useRequestProperties();
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
@@ -277,33 +287,13 @@ const PrepareBridgePage = () => {
     isLowReturnBannerOpen,
   ]);
 
-  const [selectedDestinationAccount, setSelectedDestinationAccount] =
-    useState<InternalAccount | null>(null);
-  const hasAutoSelectedRef = useRef(false);
-
-  const isToOrFromSolana = useMemo(() => {
-    if (!fromChain?.chainId || !toChain?.chainId) {
-      return false;
-    }
-
-    const fromChainStartsWithSolana = fromChain.chainId
-      .toString()
-      .startsWith('solana:');
-    const toChainStartsWithSolana = toChain.chainId
-      .toString()
-      .startsWith('solana:');
-
-    return (
-      (toChainStartsWithSolana && !fromChainStartsWithSolana) ||
-      (!toChainStartsWithSolana && fromChainStartsWithSolana)
-    );
-  }, [fromChain?.chainId, toChain?.chainId]);
+  const isToOrFromSolana = useSelector(getIsToOrFromSolana);
 
   const isDestinationSolana = useMemo(() => {
     if (!toChain?.chainId) {
       return false;
     }
-    return toChain.chainId.toString().startsWith('solana:');
+    return formatChainIdToCaip(toChain.chainId) === MultichainNetworks.SOLANA;
   }, [toChain?.chainId]);
 
   const quoteParams = useMemo(
@@ -327,11 +317,9 @@ const PrepareBridgePage = () => {
       // Otherwise quotes get filtered out by the bridge-api when the wallet's real
       // balance is less than the tenderly balance
       insufficientBal: Boolean(providerConfig?.rpcUrl?.includes('tenderly')),
-      slippage,
+      slippage: isSwap ? 0 : slippage,
       walletAddress: selectedAccount?.address ?? '',
-      destWalletAddress: isToOrFromSolana
-        ? selectedDestinationAccount?.address
-        : selectedEvmAccount?.address,
+      destWalletAddress: selectedDestinationAccount?.address,
     }),
     [
       fromToken?.address,
@@ -343,9 +331,7 @@ const PrepareBridgePage = () => {
       providerConfig?.rpcUrl,
       slippage,
       selectedAccount?.address,
-      selectedEvmAccount?.address,
       selectedDestinationAccount?.address,
-      isToOrFromSolana,
     ],
   );
 
@@ -360,39 +346,6 @@ const PrepareBridgePage = () => {
   useEffect(() => {
     debouncedUpdateQuoteRequestInController(quoteParams);
   }, [quoteParams, debouncedUpdateQuoteRequestInController]);
-
-  // Auto-select most recently used account only once on initial load
-  useEffect(() => {
-    if (
-      !selectedDestinationAccount &&
-      !hasAutoSelectedRef.current &&
-      isToOrFromSolana
-    ) {
-      const filteredAccounts = accounts
-        .filter((account: InternalAccount) => {
-          const isSolAccount = Boolean(
-            account && account.type === SolAccountType.DataAccount,
-          );
-          return isDestinationSolana ? isSolAccount : !isSolAccount;
-        })
-        .sort((a: InternalAccount, b: InternalAccount) => {
-          const aLastSelected = a.metadata.lastSelected || 0;
-          const bLastSelected = b.metadata.lastSelected || 0;
-          return bLastSelected - aLastSelected;
-        });
-
-      if (filteredAccounts.length > 0) {
-        const mostRecentAccount = filteredAccounts[0];
-        setSelectedDestinationAccount(mostRecentAccount);
-        hasAutoSelectedRef.current = true;
-      }
-    }
-  }, [
-    isToOrFromSolana,
-    selectedDestinationAccount,
-    isDestinationSolana,
-    accounts,
-  ]);
 
   const trackInputEvent = useCallback(
     (
@@ -458,6 +411,14 @@ const PrepareBridgePage = () => {
     }
   }, [fromChain, fromToken, fromTokens, search, isFromTokensLoading]);
 
+  // Set the default destination token for the swap
+  useEffect(() => {
+    if (isSwap && fromChain && !toToken) {
+      dispatch(setToChainId(fromChain.chainId));
+      dispatch(setToToken(SOLANA_USDC_ASSET));
+    }
+  }, []);
+
   const isSolanaBridgeEnabled = useSelector(isBridgeSolanaEnabled);
 
   return (
@@ -475,47 +436,52 @@ const PrepareBridgePage = () => {
           };
           dispatch(setFromToken(bridgeToken));
           dispatch(setFromTokenInputValue(null));
+          if (token.address === toToken?.address) {
+            dispatch(setToToken(null));
+          }
           bridgeToken.address &&
             trackInputEvent({
               input: 'token_source',
               value: bridgeToken.address,
             });
         }}
-        networkProps={
-          isSwap
-            ? undefined
-            : {
-                network: fromChain,
-                networks: fromChains,
-                onNetworkChange: (networkConfig) => {
-                  networkConfig?.chainId &&
-                    networkConfig.chainId !== fromChain?.chainId &&
-                    trackInputEvent({
-                      input: 'chain_source',
-                      value: networkConfig.chainId,
-                    });
-                  if (
-                    networkConfig?.chainId &&
-                    networkConfig.chainId === toChain?.chainId
-                  ) {
-                    dispatch(setToChainId(null));
-                    dispatch(setToToken(null));
-                  }
-                  if (isNetworkAdded(networkConfig)) {
-                    dispatch(
-                      setActiveNetwork(
-                        networkConfig.rpcEndpoints[
-                          networkConfig.defaultRpcEndpointIndex
-                        ].networkClientId,
-                      ),
-                    );
-                  }
-                  dispatch(setFromToken(null));
-                  dispatch(setFromTokenInputValue(null));
-                },
-                header: t('yourNetworks'),
-              }
-        }
+        networkProps={{
+          network: fromChain,
+          networks: isSwap ? undefined : fromChains,
+          onNetworkChange: (networkConfig) => {
+            networkConfig?.chainId &&
+              networkConfig.chainId !== fromChain?.chainId &&
+              trackInputEvent({
+                input: 'chain_source',
+                value: networkConfig.chainId,
+              });
+            if (
+              networkConfig?.chainId &&
+              networkConfig.chainId === toChain?.chainId
+            ) {
+              dispatch(setToChainId(null));
+              dispatch(setToToken(null));
+            }
+            if (
+              networkConfig.chainId === MultichainNetworks.SOLANA &&
+              selectedSolanaAccount
+            ) {
+              dispatch(setSelectedAccount(selectedSolanaAccount.address));
+            } else if (isNetworkAdded(networkConfig)) {
+              dispatch(setSelectedAccount(selectedEvmAccount.address));
+              dispatch(
+                setActiveNetworkWithError(
+                  networkConfig.rpcEndpoints[
+                    networkConfig.defaultRpcEndpointIndex
+                  ].networkClientId || networkConfig.chainId,
+                ),
+              );
+            }
+            dispatch(setFromToken(null));
+            dispatch(setFromTokenInputValue(null));
+          },
+          header: t('yourNetworks'),
+        }}
         isMultiselectEnabled={!isSwap}
         onMaxButtonClick={(value: string) => {
           dispatch(setFromTokenInputValue(value));
@@ -593,6 +559,17 @@ const PrepareBridgePage = () => {
                     ? toChain.rpcEndpoints[toChain.defaultRpcEndpointIndex]
                         .networkClientId
                     : undefined;
+                if (
+                  toChain?.chainId &&
+                  formatChainIdToCaip(toChain.chainId) ===
+                    MultichainNetworks.SOLANA &&
+                  selectedSolanaAccount
+                ) {
+                  // Switch accounts to switch to solana
+                  dispatch(setSelectedAccount(selectedSolanaAccount.address));
+                } else {
+                  dispatch(setSelectedAccount(selectedEvmAccount.address));
+                }
                 toChainClientId && dispatch(setActiveNetwork(toChainClientId));
                 fromChain?.chainId && dispatch(setToChainId(fromChain.chainId));
               }
