@@ -16,6 +16,8 @@ export class PatchStore<
 
   private pendingPatches: Map<string, Patch> = new Map();
 
+  private flattenedPendingPatches: Map<string, Patch> = new Map();
+
   private listener: (request: {
     controllerKey: ControllerKey;
     oldState: MemStoreControllersComposedState[ControllerKey];
@@ -32,10 +34,13 @@ export class PatchStore<
     log('Created', this.id);
   }
 
-  flushPendingPatches(): Patch[] {
-    const patches = [...this.pendingPatches.values()];
+  flushPendingPatches({ isFlattened = true }): Patch[] {
+    const patches = isFlattened
+      ? [...this.flattenedPendingPatches.values()]
+      : [...this.pendingPatches.values()];
 
     this.pendingPatches.clear();
+    this.flattenedPendingPatches.clear();
 
     for (const patch of patches) {
       log('Flushed', patch.path.join('.'), this.id, patch);
@@ -81,11 +86,18 @@ export class PatchStore<
     }
 
     for (const patch of patches) {
-      const path = patch.path.join('.');
+      const pathKey = patch.path.join('.');
+      const flattenedPath = patch.path.slice(
+        Math.min(1, patch.path.length - 1),
+      );
 
-      this.pendingPatches.set(path, patch);
+      this.pendingPatches.set(pathKey, patch);
+      this.flattenedPendingPatches.set(flattenedPath.join('.'), {
+        ...patch,
+        path: flattenedPath,
+      });
 
-      log('Updated', path, this.id, patch);
+      log('Updated', pathKey, this.id, patch);
     }
   }
 

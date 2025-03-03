@@ -5,6 +5,7 @@ import { clone } from 'lodash';
 import React from 'react';
 import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
+import { getKnownPropertyNames } from '@metamask/utils';
 
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -72,7 +73,28 @@ export default async function launchMetamaskUi(opts) {
     () => promisify(backgroundConnection.getState.bind(backgroundConnection))(),
   );
 
-  const store = await startApp(metamaskState, backgroundConnection, opts);
+  const flattenedMetamaskState = getKnownPropertyNames(metamaskState).reduce(
+    (flattenedState, key) => {
+      if (typeof metamaskState[key] !== 'object') {
+        flattenedState[key] = metamaskState[key];
+        return flattenedState;
+      }
+      getKnownPropertyNames(metamaskState[key]).forEach(
+        (controllerStatePropertyKey) => {
+          flattenedState[controllerStatePropertyKey] =
+            metamaskState[key][controllerStatePropertyKey];
+        },
+      );
+      return flattenedState;
+    },
+    {},
+  );
+
+  const store = await startApp(
+    flattenedMetamaskState,
+    backgroundConnection,
+    opts,
+  );
 
   await promisify(
     backgroundConnection.startPatches.bind(backgroundConnection),

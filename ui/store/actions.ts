@@ -1588,11 +1588,11 @@ export function updateMetamaskState(
       return currentState;
     }
 
-    const newState = applyPatches<FlattenedBackgroundStateProxy>(
-      currentState,
+    const newState = applyPatches<FlattenedBackgroundStateProxy>({
+      oldState: currentState,
       patches,
-      true,
-    );
+      isFlattened: true,
+    });
     const { currentLocale } = currentState;
     const currentInternalAccount = getSelectedInternalAccount(state);
     const selectedAddress = currentInternalAccount?.address;
@@ -5959,6 +5959,10 @@ function applyPatches<State extends Record<string, unknown>>({
   patches: Patch[];
   isFlattened: boolean;
 }): State {
+  if (!Array.isArray(patches)) {
+    return oldState;
+  }
+
   const newState = { ...oldState };
 
   for (const patch of patches) {

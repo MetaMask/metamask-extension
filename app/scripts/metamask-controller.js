@@ -5842,7 +5842,7 @@ export default class MetamaskController extends EventEmitter {
         return;
       }
 
-      const patches = patchStore.flushPendingPatches();
+      const patches = patchStore.flushPendingPatches({ isFlattened: true });
 
       outStream.write({
         jsonrpc: '2.0',
@@ -5858,7 +5858,8 @@ export default class MetamaskController extends EventEmitter {
         uiReady = true;
         handleUpdate();
       },
-      getStatePatches: () => patchStore.flushPendingPatches(),
+      getStatePatches: () =>
+        patchStore.flushPendingPatches({ isFlattened: true }),
     };
 
     this.on('update', handleUpdate);
