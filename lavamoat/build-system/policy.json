@@ -1309,7 +1309,7 @@
     "chokidar>anymatch": {
       "packages": {
         "chokidar>anymatch>normalize-path": true,
-        "micromatch>picomatch": true
+        "chokidar>anymatch>picomatch": true
       }
     },
     "gulp>glob-watcher>anymatch": {
@@ -4615,15 +4615,6 @@
         "gulp-watch>anymatch>micromatch>regex-cache": true
       }
     },
-    "fast-glob>micromatch": {
-      "builtin": {
-        "util.inspect": true
-      },
-      "packages": {
-        "chokidar>braces": true,
-        "fast-glob>micromatch>picomatch": true
-      }
-    },
     "eslint>minimatch": {
       "builtin": {
         "path": true
@@ -5123,7 +5114,7 @@
         "process.platform": true
       }
     },
-    "micromatch>picomatch": {
+    "chokidar>anymatch>picomatch": {
       "builtin": {
         "path.basename": true,
         "path.sep": true
@@ -5133,7 +5124,7 @@
         "process.version.slice": true
       }
     },
-    "fast-glob>micromatch>picomatch": {
+    "micromatch>picomatch": {
       "builtin": {
         "path.basename": true,
         "path.sep": true
