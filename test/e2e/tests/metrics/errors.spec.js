@@ -61,6 +61,7 @@ const removedBackgroundFields = [
   'AppStateController.timeoutMinutes',
   'AppStateController.lastInteractedConfirmationInfo',
   'BridgeController.bridgeState.quoteRequest.walletAddress',
+  'BridgeController.bridgeState.quoteRequest.slippage',
   'PPOMController.chainStatus.0x539.lastVisited',
   'PPOMController.versionInfo',
   // This property is timing-dependent
@@ -873,6 +874,7 @@ describe('Sentry errors', function () {
           srcChainId: true,
           srcTokenAmount: true,
           walletAddress: false,
+          slippage: true,
         },
         quotesLastFetched: true,
         quotesLoadingStatus: true,
