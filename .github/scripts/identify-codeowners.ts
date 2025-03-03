@@ -183,10 +183,18 @@ function createCommentBody(teamFiles: TeamFiles, teamEmojis: TeamEmojis): string
   let commentBody = `<!-- METAMASK-CODEOWNERS-BOT -->\n✨ Files requiring CODEOWNER review ✨\n---\n`;
 
   // Sort teams for consistent ordering
-  const sortedTeams = Object.keys(teamFiles).sort();
+  const allOwners = Object.keys(teamFiles);
+
+  const teamOwners = allOwners.filter(owner => owner.startsWith('@MetaMask/'));
+  const individualOwners = allOwners.filter(owner => !owner.startsWith('@MetaMask/'));
+
+  const sortedTeamOwners = teamOwners.sort();
+  const sortedIndividualOwners = individualOwners.sort();
+
+  const sortedOwners= [...sortedTeamOwners, ...sortedIndividualOwners];
 
   sortedTeams.forEach(team => {
-    const emoji = teamEmojis[team] || '📄';
+    const emoji = teamEmojis[team] || '👨‍🔧';
     commentBody += `${emoji} ${team}\n`;
     teamFiles[team].forEach(file => {
       commentBody += `- \`${file}\`\n`;
