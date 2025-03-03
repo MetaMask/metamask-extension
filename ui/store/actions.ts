@@ -1574,7 +1574,28 @@ export function unlockSucceeded(message?: string) {
   };
 }
 
-// TODO: Create duplicate method `updateBackgroundState` and populate with unflattened versions of operations found here as controllers are migrated from `metamask` to `background` slice.
+export function updateBackgroundState(
+  patches: Patch[],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch, getState) => {
+    const state = getState();
+    const { background: currentState } = state;
+
+    if (!patches?.length) {
+      return currentState;
+    }
+
+    const newState = applyPatches(currentState, patches);
+
+    dispatch({
+      type: actionConstants.UPDATE_METAMASK_STATE,
+      value: newState,
+    });
+
+    return newState;
+  };
+}
+
 // TODO: Eventually remove and replace with `updateBackgroundState`.
 export function updateMetamaskState(
   patches: Patch[],
