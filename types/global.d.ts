@@ -17,11 +17,11 @@ import {
   EthereumSignMessage,
   EthereumSignTypedDataTypes,
 } from '@trezor/connect-web';
+import type { Provider } from '@metamask/network-controller';
 import {
   OffscreenCommunicationTarget,
   TrezorAction,
-} from 'shared/constants/offscreen-communication';
-import type { Provider } from '@metamask/network-controller';
+} from '../shared/constants/offscreen-communication';
 import type { Preferences } from '../app/scripts/controllers/preferences-controller';
 
 declare class Platform {
