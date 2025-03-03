@@ -1526,7 +1526,7 @@
         "console.error": true
       },
       "packages": {
-        "@metamask/api-specs": true,
+        "@metamask/multichain>@metamask/api-specs": true,
         "@metamask/controller-utils": true,
         "@metamask/eth-json-rpc-filters": true,
         "@metamask/json-rpc-engine": true,
@@ -4679,7 +4679,7 @@
         "react": true
       }
     },
-    "mockttp>express>qs": {
+    "mockttp>body-parser>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
       }
@@ -5488,7 +5488,7 @@
     "browserify>url": {
       "packages": {
         "browserify>punycode": true,
-        "mockttp>express>qs": true
+        "mockttp>body-parser>qs": true
       }
     },
     "react-focus-lock>use-callback-ref": {
