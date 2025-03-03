@@ -4698,8 +4698,6 @@ export async function accountTrackerStartPolling(
   return pollingToken;
 }
 
-
-
 /**
  * Stops polling on the account tracker controller.
  *
