@@ -26,7 +26,6 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
-import type { BackgroundStateProxy } from '../../../shared/types/background';
 import * as Utils from '../lib/util';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { flushPromises } from '../../../test/lib/timer-helpers';
@@ -1412,15 +1411,82 @@ describe('MetaMetricsController', function () {
               },
             },
           },
-          participateInMetaMetrics: true,
-          currentCurrency: 'usd',
-          dataCollectionForMarketing: false,
-          preferences: { privacyMode: true, tokenNetworkFilter: [] },
+          TokensController: {
+            allTokens: MOCK_ALL_TOKENS,
+          },
+          NetworkController: {
+            ...networkState,
+          },
+          AccountsController: {
+            internalAccounts: {
+              accounts: {
+                mock1: {} as InternalAccount,
+                mock2: {} as InternalAccount,
+              },
+              selectedAccount: 'mock1',
+            },
+          },
+          PreferencesController: {
+            ledgerTransportType: LedgerTransportTypes.webhid,
+            openSeaEnabled: true,
+            useNftDetection: false,
+            securityAlertsEnabled: true,
+            theme: 'default',
+            useTokenDetection: true,
+            ShowNativeTokenAsMainBalance: true,
+            security_providers: [],
+            tokenSortConfig: {
+              key: 'token-sort-key',
+              order: 'dsc',
+              sortCallback: 'stringNumeric',
+            },
+            preferences: { privacyMode: true, tokenNetworkFilter: [] },
+          },
+          NameController: {
+            names: {
+              [NameType.ETHEREUM_ADDRESS]: {
+                '0x123': {
+                  '0x1': {
+                    name: 'Test 1',
+                  } as NameEntry,
+                  '0x2': {
+                    name: 'Test 2',
+                  } as NameEntry,
+                  '0x3': {
+                    name: null,
+                  } as NameEntry,
+                },
+                '0x456': {
+                  '0x1': {
+                    name: 'Test 3',
+                  } as NameEntry,
+                },
+                '0x789': {
+                  '0x1': {
+                    name: null,
+                  } as NameEntry,
+                },
+              },
+            },
+          },
+          MetaMetricsController: {
+            participateInMetaMetrics: true,
+            dataCollectionForMarketing: false,
+          },
+          CurrencyController: {
+            currentCurrency: 'usd',
+          },
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          custodyAccountDetails: {},
+          CustodyController: {
+            custodyAccountDetails: {},
+          },
           ///: END:ONLY_INCLUDE_IF
-          sessionData: undefined,
-          keyrings: [],
+          AuthenticationController: {
+            sessionData: undefined,
+          },
+          KeyringController: {
+            keyrings: [],
+          },
         });
 
         expect(traits).toStrictEqual({
@@ -1542,8 +1608,12 @@ describe('MetaMetricsController', function () {
             custodyAccountDetails: {},
           },
           ///: END:ONLY_INCLUDE_IF
-          sessionData: undefined,
-          keyrings: [],
+          AuthenticationController: {
+            sessionData: undefined,
+          },
+          KeyringController: {
+            keyrings: [],
+          },
         });
 
         const updatedTraits = controller._buildUserTraitsObject({
@@ -1627,15 +1697,19 @@ describe('MetaMetricsController', function () {
             custodyAccountDetails: {},
           },
           ///: END:ONLY_INCLUDE_IF
-          sessionData: {
-            accessToken: '',
-            expiresIn: '',
-            profile: {
-              identifierId: 'identifierId',
-              profileId: 'profileId',
+          AuthenticationController: {
+            sessionData: {
+              accessToken: '',
+              expiresIn: '',
+              profile: {
+                identifierId: 'identifierId',
+                profileId: 'profileId',
+              },
             },
           },
-          keyrings: [],
+          KeyringController: {
+            keyrings: [],
+          },
         });
 
         expect(updatedTraits).toStrictEqual({
@@ -1728,15 +1802,19 @@ describe('MetaMetricsController', function () {
             custodyAccountDetails: {},
           },
           ///: END:ONLY_INCLUDE_IF
-          sessionData: {
-            accessToken: '',
-            expiresIn: '',
-            profile: {
-              identifierId: 'identifierId',
-              profileId: 'profileId',
+          AuthenticationController: {
+            sessionData: {
+              accessToken: '',
+              expiresIn: '',
+              profile: {
+                identifierId: 'identifierId',
+                profileId: 'profileId',
+              },
             },
           },
-          keyrings: [],
+          KeyringController: {
+            keyrings: [],
+          },
         });
 
         const updatedTraits = controller._buildUserTraitsObject({
@@ -1809,15 +1887,19 @@ describe('MetaMetricsController', function () {
             custodyAccountDetails: {},
           },
           ///: END:ONLY_INCLUDE_IF
-          sessionData: {
-            accessToken: '',
-            expiresIn: '',
-            profile: {
-              identifierId: 'identifierId',
-              profileId: 'profileId',
+          AuthenticationController: {
+            sessionData: {
+              accessToken: '',
+              expiresIn: '',
+              profile: {
+                identifierId: 'identifierId',
+                profileId: 'profileId',
+              },
             },
           },
-          keyrings: [],
+          KeyringController: {
+            keyrings: [],
+          },
         });
         expect(updatedTraits).toStrictEqual(null);
       });
