@@ -32,10 +32,10 @@ jest.mock('../../../../store/actions', () => ({
 const pasteSrpIntoFirstInput = (render: RenderResult, srp: string) => {
   const [firstWord] = srp.split(' ');
 
-  const firstSRPWordDiv = render.getByTestId('import-srp__srp-word-0');
+  const firstSrpWordDiv = render.getByTestId('import-srp__srp-word-0');
   // This is safe because the input is always present in the word div.
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const firstSrpWordInput = firstSRPWordDiv.querySelector('input')!;
+  const firstSrpWordInput = firstSrpWordDiv.querySelector('input')!;
 
   const pasteEvent = createEvent.paste(firstSrpWordInput, {
     clipboardData: {
@@ -51,7 +51,7 @@ const pasteSrpIntoFirstInput = (render: RenderResult, srp: string) => {
   };
 };
 
-describe('ImportSRP', () => {
+describe('ImportSrp', () => {
   const store = configureMockStore([thunk])(mockState);
 
   beforeEach(() => {
@@ -81,9 +81,11 @@ describe('ImportSRP', () => {
     );
     const { getByText } = render;
 
-    expect(getByText('Import wallet')).not.toBeEnabled();
+    const importButton = getByText('Import wallet');
+
+    expect(importButton).not.toBeEnabled();
     pasteSrpIntoFirstInput(render, '');
-    expect(getByText('Import wallet')).not.toBeEnabled();
+    expect(importButton).not.toBeEnabled();
   });
 
   it('calls addNewMnemonicToVault and showAlert on successful import', async () => {
