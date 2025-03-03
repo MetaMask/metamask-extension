@@ -22,7 +22,12 @@ import {
   NetworkControllerGetStateAction,
   Provider,
 } from '@metamask/network-controller';
-import { hasProperty, type Hex, type JsonRpcParams } from '@metamask/utils';
+import {
+  getKnownPropertyNames,
+  hasProperty,
+  type Hex,
+  type JsonRpcParams,
+} from '@metamask/utils';
 import {
   BaseController,
   ControllerGetStateAction,
@@ -64,7 +69,7 @@ type Account = {
 export type AccountTrackerControllerState = {
   accounts: Record<string, Account | Record<string, never>>;
   currentBlockGasLimit: string;
-  accountsByChainId: Record<string, AccountTrackerControllerState['accounts']>;
+  accountsByChainId: Record<Hex, AccountTrackerControllerState['accounts']>;
   currentBlockGasLimitByChainId: Record<Hex, string>;
 };
 
@@ -517,7 +522,7 @@ export default class AccountTrackerController extends BaseController<
     addresses.forEach((address) => {
       accounts[address] = {};
     });
-    Object.keys(accountsByChainId).forEach((chainId) => {
+    getKnownPropertyNames(accountsByChainId).forEach((chainId) => {
       addresses.forEach((address) => {
         accountsByChainId[chainId][address] = {};
       });
@@ -555,7 +560,7 @@ export default class AccountTrackerController extends BaseController<
     addresses.forEach((address) => {
       delete accounts[address];
     });
-    Object.keys(accountsByChainId).forEach((chainId) => {
+    getKnownPropertyNames(accountsByChainId).forEach((chainId) => {
       addresses.forEach((address) => {
         delete accountsByChainId[chainId][address];
       });

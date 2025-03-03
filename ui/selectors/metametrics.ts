@@ -1,20 +1,25 @@
 import { createSelector } from 'reselect';
+import type { MetaMaskSliceState } from '../ducks/metamask/metamask';
 
-export const selectFragments = (state) => state.metamask.fragments;
+export const selectFragments = (state: MetaMaskSliceState) =>
+  state.metamask.fragments;
 
-export const getDataCollectionForMarketing = (state) =>
+export const getDataCollectionForMarketing = (state: MetaMaskSliceState) =>
   state.metamask.dataCollectionForMarketing;
 
-export const getParticipateInMetaMetrics = (state) =>
+export const getParticipateInMetaMetrics = (state: MetaMaskSliceState) =>
   Boolean(state.metamask.participateInMetaMetrics);
 
-export const getLatestMetricsEventTimestamp = (state) =>
+export const getLatestMetricsEventTimestamp = (state: MetaMaskSliceState) =>
   state.metamask.latestNonAnonymousEventTimestamp;
 
 export const selectFragmentBySuccessEvent = createSelector(
   selectFragments,
   (_, fragmentOptions) => fragmentOptions,
-  (fragments, fragmentOptions) => {
+  (
+    fragments: ReturnType<typeof selectFragments>,
+    fragmentOptions: { persist: boolean; successEvent: string },
+  ) => {
     if (fragmentOptions.persist) {
       return Object.values(fragments).find(
         (fragment) => fragment.successEvent === fragmentOptions.successEvent,

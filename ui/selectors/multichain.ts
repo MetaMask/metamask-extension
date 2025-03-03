@@ -23,6 +23,7 @@ import {
   MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET,
   MULTICHAIN_TOKEN_IMAGE_MAP,
 } from '../../shared/constants/multichain/networks';
+import type { MetaMaskSliceState } from '../ducks/metamask/metamask';
 import {
   getCompletedOnboarding,
   getConversionRate,
@@ -161,7 +162,7 @@ export function getMultichainNetworkProviders(
 }
 
 export function getMultichainNetwork(
-  state: MultichainState,
+  state: MetaMaskSliceState,
   account?: InternalAccount,
 ): MultichainNetwork {
   const isEvm = getMultichainIsEvm(state, account);
@@ -229,7 +230,7 @@ export function getMultichainNetwork(
 // currency will be BTC..
 
 export function getMultichainIsEvm(
-  state: MultichainState,
+  state: MetaMaskSliceState,
   account?: InternalAccount,
 ) {
   const isOnboarded = getCompletedOnboarding(state);
@@ -244,7 +245,7 @@ export function getMultichainIsEvm(
 }
 
 export function getMultichainIsBitcoin(
-  state: MultichainState,
+  state: MetaMaskSliceState,
   account?: InternalAccount,
 ) {
   const isEvm = getMultichainIsEvm(state, account);
@@ -254,7 +255,7 @@ export function getMultichainIsBitcoin(
 }
 
 export function getMultichainIsSolana(
-  state: MultichainState,
+  state: MetaMaskSliceState,
   account?: InternalAccount,
 ) {
   const isEvm = getMultichainIsEvm(state, account);
@@ -275,21 +276,21 @@ export function getMultichainIsSolana(
  * @returns The current multichain provider configuration.
  */
 export function getMultichainProviderConfig(
-  state: MultichainState,
+  state: MetaMaskSliceState,
   account?: InternalAccount,
 ) {
   return getMultichainNetwork(state, account).network;
 }
 
 export function getMultichainCurrentNetwork(
-  state: MultichainState,
+  state: MetaMaskSliceState,
   account?: InternalAccount,
 ) {
   return getMultichainProviderConfig(state, account);
 }
 
 export function getMultichainNativeCurrency(
-  state: MultichainState,
+  state: MetaMaskSliceState,
   account?: InternalAccount,
 ) {
   return getMultichainIsEvm(state, account)
@@ -297,12 +298,12 @@ export function getMultichainNativeCurrency(
     : getMultichainProviderConfig(state, account).ticker;
 }
 
-export function getMultichainCurrentCurrency(state: MultichainState) {
+export function getMultichainCurrentCurrency(state: MetaMaskSliceState) {
   return getCurrentCurrency(state);
 }
 
 export function getMultichainCurrencyImage(
-  state: MultichainState,
+  state: MetaMaskSliceState,
   account?: InternalAccount,
 ) {
   if (getMultichainIsEvm(state, account)) {
@@ -317,14 +318,14 @@ export function getMultichainCurrencyImage(
 }
 
 export function getMultichainNativeCurrencyImage(
-  state: MultichainState,
+  state: MetaMaskSliceState,
   account?: InternalAccount,
 ) {
   return getMultichainCurrencyImage(state, account);
 }
 
 export function getMultichainShouldShowFiat(
-  state: MultichainState,
+  state: MetaMaskSliceState,
   account?: InternalAccount,
 ) {
   const selectedAccount = account ?? getSelectedInternalAccount(state);
@@ -337,7 +338,7 @@ export function getMultichainShouldShowFiat(
 }
 
 export function getMultichainDefaultToken(
-  state: MultichainState,
+  state: MetaMaskSliceState,
   account?: InternalAccount,
 ) {
   const symbol = getMultichainIsEvm(state, account)
@@ -348,7 +349,7 @@ export function getMultichainDefaultToken(
   return { symbol };
 }
 
-export function getMultichainCurrentChainId(state: MultichainState) {
+export function getMultichainCurrentChainId(state: MetaMaskSliceState) {
   const { chainId } = getMultichainProviderConfig(state);
   return chainId;
 }
@@ -358,7 +359,7 @@ export function isChainIdMainnet(chainId: string) {
 }
 
 export function getMultichainIsMainnet(
-  state: MultichainState,
+  state: MetaMaskSliceState,
   account?: InternalAccount,
 ) {
   const selectedAccount = account ?? getSelectedInternalAccount(state);
@@ -371,11 +372,11 @@ export function getMultichainIsMainnet(
   const mainnet = (
     MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET as Record<string, string>
   )[selectedAccount.type];
-  return providerConfig.chainId === mainnet ?? false;
+  return providerConfig.chainId === mainnet;
 }
 
 export function getMultichainIsTestnet(
-  state: MultichainState,
+  state: MetaMaskSliceState,
   account?: InternalAccount,
 ) {
   // NOTE: Since there are 2 different implementations for `IsTestnet` and `IsMainnet` we follow
@@ -395,19 +396,19 @@ export function getMultichainIsTestnet(
 }
 
 export function getMultichainBalances(
-  state: MultichainState,
+  state: MetaMaskSliceState,
 ): BalancesState['metamask']['balances'] {
   return state.metamask.balances;
 }
 
 export function getMultichainTransactions(
-  state: MultichainState,
+  state: MetaMaskSliceState,
 ): TransactionsState['metamask']['nonEvmTransactions'] {
   return state.metamask.nonEvmTransactions;
 }
 
 export function getSelectedAccountMultichainTransactions(
-  state: MultichainState,
+  state: MetaMaskSliceState,
 ):
   | { transactions: Transaction[]; next: string | null; lastUpdated: number }
   | undefined {
@@ -420,12 +421,12 @@ export function getSelectedAccountMultichainTransactions(
   return state.metamask.nonEvmTransactions[selectedAccount.id];
 }
 
-export const getMultichainCoinRates = (state: MultichainState) => {
+export const getMultichainCoinRates = (state: MetaMaskSliceState) => {
   return state.metamask.rates;
 };
 
 function getNonEvmCachedBalance(
-  state: MultichainState,
+  state: MetaMaskSliceState,
   account?: InternalAccount,
 ) {
   const balances = getMultichainBalances(state);
@@ -466,7 +467,7 @@ export function getImageForChainId(chainId: string): string | undefined {
 // This selector is not compatible with `useMultichainSelector` since it uses the selected
 // account implicitly!
 export function getMultichainSelectedAccountCachedBalance(
-  state: MultichainState,
+  state: MetaMaskSliceState,
 ) {
   return getMultichainIsEvm(state)
     ? getSelectedAccountCachedBalance(state)
@@ -483,7 +484,7 @@ export const getMultichainSelectedAccountCachedBalanceIsZero = createSelector(
 );
 
 export function getMultichainConversionRate(
-  state: MultichainState,
+  state: MetaMaskSliceState,
   account?: InternalAccount,
 ) {
   const { conversionRates } = state.metamask;
@@ -501,7 +502,7 @@ export function getMultichainConversionRate(
 
 // TODO get this from the multichain network controller
 export const getMultichainNetworkConfigurationsByChainId = (
-  state: MultichainState,
+  state: MetaMaskSliceState,
 ): Record<Hex | CaipChainId, NetworkConfiguration> => {
   return {
     ...getNetworkConfigurationsByChainId(state),
@@ -520,7 +521,7 @@ export const getMultichainNetworkConfigurationsByChainId = (
   };
 };
 
-export function getLastSelectedNonEvmAccount(state: MultichainState) {
+export function getLastSelectedNonEvmAccount(state: MetaMaskSliceState) {
   const nonEvmAccounts = getInternalAccounts(state);
   const sortedNonEvmAccounts = nonEvmAccounts
     .filter((account) => !isEvmAccountType(account.type))
@@ -530,7 +531,7 @@ export function getLastSelectedNonEvmAccount(state: MultichainState) {
   return sortedNonEvmAccounts.length > 0 ? sortedNonEvmAccounts[0] : undefined;
 }
 
-export function getLastSelectedSolanaAccount(state: MultichainState) {
+export function getLastSelectedSolanaAccount(state: MetaMaskSliceState) {
   const nonEvmAccounts = getInternalAccounts(state);
   const sortedNonEvmAccounts = nonEvmAccounts
     .filter((account) => isSolanaAccount(account))

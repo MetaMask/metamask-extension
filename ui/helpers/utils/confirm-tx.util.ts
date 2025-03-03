@@ -38,7 +38,7 @@ export function getTransactionFee({
   value: string;
   fromCurrency: EtherDenomination;
   toCurrency: string;
-  conversionRate: number;
+  conversionRate: number | null;
   numberOfDecimals: number;
 }): string {
   let fee = new Numeric(value, 16, EtherDenomination.WEI)
