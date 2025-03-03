@@ -1,4 +1,5 @@
 import { ApprovalRequest } from '@metamask/approval-controller';
+import { ApprovalType } from '@metamask/controller-utils';
 
 import mockState from '../../../../../test/data/mock-state.json';
 import { getMockPersonalSignConfirmState } from '../../../../../test/data/confirmations/helper';
@@ -15,6 +16,7 @@ jest.mock('react-redux', () => ({
 const PENDING_APPROVAL_MOCK = {
   id: 'testApprovalId',
   requestData: { testProperty: 'testValue' },
+  type: ApprovalType.AddEthereumChain,
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as ApprovalRequest<any>;
