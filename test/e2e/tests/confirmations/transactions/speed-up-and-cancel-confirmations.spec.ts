@@ -50,7 +50,8 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
-          await localNodes[0]?.mineBlock();
+          (await localNodes?.[0]?.mineBlock()) ??
+            console.error('localNodes is undefined or empty');
 
           const homePage = new HomePage(driver);
           await homePage.goToActivityList();
@@ -61,7 +62,8 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           await activityListPage.click_transactionListItem();
           await activityListPage.click_speedUpTransaction();
           await activityListPage.click_confirmTransactionReplacement();
-          await localNodes[0]?.mineBlock();
+          (await localNodes?.[0]?.mineBlock()) ??
+            console.error('localNodes is undefined or empty');
 
           await activityListPage.check_waitForTransactionStatus('confirmed');
         },
@@ -80,7 +82,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           localNodeOptions: defaultGanacheOptionsForType2Transactions,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, ganacheServer }: TestSuiteArguments) => {
+        async ({ driver, localNodes }: TestSuiteArguments) => {
           await unlockWallet(driver);
 
           // Create initial stuck transaction
@@ -95,8 +97,8 @@ describe('Speed Up and Cancel Transaction Tests', function () {
 
           const confirmationPage = new Confirmation(driver);
           await confirmationPage.clickFooterConfirmButton();
-          await ganacheServer?.mineBlock();
-
+          (await localNodes?.[0]?.mineBlock()) ??
+            console.error('localNodes is undefined or empty');
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
@@ -109,8 +111,8 @@ describe('Speed Up and Cancel Transaction Tests', function () {
 
           await activityListPage.click_cancelTransaction();
           await activityListPage.click_confirmTransactionReplacement();
-          await ganacheServer?.mineBlock();
-
+          (await localNodes?.[0]?.mineBlock()) ??
+            console.error('localNodes is undefined or empty');
           await activityListPage.check_waitForTransactionStatus('cancelled');
         },
       );
