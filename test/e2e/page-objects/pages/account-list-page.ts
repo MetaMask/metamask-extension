@@ -30,7 +30,7 @@ class AccountListPage {
     '[data-testid="submit-add-account-with-name"]';
 
   private readonly addBtcAccountButton = {
-    text: messages.addNewBitcoinAccount.message,
+    text: messages.addBitcoinAccountLabel.message,
     tag: 'button',
   };
 

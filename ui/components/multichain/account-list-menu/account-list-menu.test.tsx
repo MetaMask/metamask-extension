@@ -591,7 +591,7 @@ describe('AccountListMenu', () => {
       button.click();
 
       const createBtcAccountButton = getByText(
-        messages.addNewBitcoinAccount.message,
+        messages.addBitcoinAccountLabel.message,
       );
 
       createBtcAccountButton.click();
@@ -612,7 +612,7 @@ describe('AccountListMenu', () => {
       button.click();
 
       const createBtcAccountButton = getByText(
-        messages.addNewBitcoinAccount.message,
+        messages.addBitcoinAccountLabel.message,
       );
 
       createBtcAccountButton.click();
