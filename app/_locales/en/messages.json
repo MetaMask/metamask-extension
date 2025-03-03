@@ -5026,6 +5026,24 @@
   "solanaOnMetaMask": {
     "message": "Solana on MetaMask"
   },
+  "solanaSendReceiveSwapTokens": {
+    "message": "Send, receive, and swap tokens"
+  },
+  "solanaImportAccounts": {
+    "message": "Import Solana accounts"
+  },
+  "solanaMoreFeaturesComingSoon": {
+    "message": "More features coming soon"
+  },
+  "solanaSendReceiveSwapTokensDescription": {
+    "message": "Transfer and transact with tokens such as SOL, USDC, and more."
+  },
+  "solanaImportAccountsDescription": {
+    "message": "Import a Secret Recovery Phrase to migrate your Solana account from an other wallet."
+  },
+  "solanaMoreFeaturesComingSoonDescription": {
+    "message": "Solana dapps, NFTs, ETH-SOL bridging, hardware wallet support, and more coming soon."
+  },
   "someNetworks": {
     "message": "$1 networks"
   },

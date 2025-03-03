@@ -1,9 +1,9 @@
 import React from 'react';
-import WhatsNewPopup from '.';
+import WhatsNewModal from '.';
 
 export default {
-  title: 'Components/Multichain/WhatsNewPopup',
-  component: WhatsNewPopup,
+  title: 'Components/Multichain/WhatsNewModal',
+  component: WhatsNewModal,
   argTypes: {
     onClose: {
       action: 'onClose',
@@ -11,6 +11,6 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => <WhatsNewPopup {...args} />;
+export const DefaultStory = (args) => <WhatsNewModal {...args} />;
 
 DefaultStory.storyName = 'Default';

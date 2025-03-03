@@ -6,27 +6,40 @@ import {
   ButtonVariant,
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import {
+  WalletClientType,
+  useMultichainWalletSnapClient,
+} from '../../../../hooks/accounts/useMultichainWalletSnapClient';
+import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
+import { useSelector } from 'react-redux';
+import { getMetaMaskKeyrings } from '../../../../selectors';
 
 type ModalFooterProps = {
   onAction: () => void;
   onCancel: () => void;
 };
 
-export const SolanaModalFooter = ({
-  onAction,
-  onCancel,
-}: ModalFooterProps) => {
+export const SolanaModalFooter = ({ onAction, onCancel }: ModalFooterProps) => {
   const t = useI18nContext();
+  const solanaWalletSnapClient = useMultichainWalletSnapClient(
+    WalletClientType.Solana,
+  );
+  const [primaryKeyring] = useSelector(getMetaMaskKeyrings);
 
   return (
-    <BaseModalFooter paddingTop={4}>
+    <BaseModalFooter paddingTop={4} data-testid="solana-modal-footer">
       <Button
         block
         size={ButtonSize.Md}
         variant={ButtonVariant.Primary}
-        onClick={() => {
+        data-testid="create-solana-account-button"
+        onClick={async () => {
           onAction();
-          // TODO: Add create account method call for Solana
+
+          await solanaWalletSnapClient.createAccount(
+            MultichainNetworks.SOLANA,
+            primaryKeyring.metadata.id,
+          );
         }}
       >
         {t('createSolanaAccount')}
@@ -35,6 +48,7 @@ export const SolanaModalFooter = ({
         block
         size={ButtonSize.Md}
         variant={ButtonVariant.Link}
+        data-testid="not-now-button"
         onClick={onCancel}
       >
         {t('notNow')}

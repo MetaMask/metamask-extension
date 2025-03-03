@@ -31,24 +31,21 @@ export const SolanaModalBody = ({ title }: ModalBodyProps) => {
 
   const FEATURE_BLOCKS: FeatureBlock[] = [
     {
-      title: 'Send, receive, and swap tokens',
-      description:
-        'Transfer and transact with tokens such as SOL, USDC, and more.',
+      title: t('solanaSendReceiveSwapTokens'),
+      description: t('solanaSendReceiveSwapTokensDescription'),
     },
     {
-      title: 'Import Solana accounts',
-      description:
-        'Import a Secret Recovery Phrase to migrate your Solana account from an other wallet.',
+      title: t('solanaImportAccounts'),
+      description: t('solanaImportAccountsDescription'),
     },
     {
-      title: 'More features coming soon',
-      description:
-        'Solana dapps, NFTs, ETH-SOL bridging, hardware wallet support, and more coming soon.',
+      title: t('solanaMoreFeaturesComingSoon'),
+      description: t('solanaMoreFeaturesComingSoonDescription'),
     },
   ];
 
   return (
-    <BaseModalBody>
+    <BaseModalBody data-testid="solana-modal-body">
       <Box
         display={Display.Flex}
         justifyContent={JustifyContent.center}

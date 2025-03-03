@@ -1,132 +1,93 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-import { NOTIFICATION_BLOCKAID_DEFAULT } from '../../../../shared/notifications';
-import WhatsNewPopup from './whats-new-modal';
+import { NOTIFICATION_SOLANA_ON_METAMASK } from '../../../../shared/notifications';
+import { useMultichainWalletSnapClient } from '../../../hooks/accounts/useMultichainWalletSnapClient';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import WhatsNewModal from './whats-new-modal';
 
-const render = () => {
-  const store = configureStore({
-    metamask: {
-      ...mockState.metamask,
-      announcements: {
-        1: {
-          date: '2021-03-17',
-          id: 1,
-          image: {
-            height: '230px',
-            placeImageBelowDescription: true,
-            src: 'images/mobile-link-qr.svg',
-            width: '230px',
-          },
-          isShown: false,
-        },
-        3: {
-          date: '2021-03-08',
-          id: 3,
-          isShown: false,
-        },
-        4: {
-          date: '2021-05-11',
-          id: 4,
-          image: {
-            src: 'images/source-logos-bsc.svg',
-            width: '100%',
-          },
-          isShown: false,
-        },
-        5: {
-          date: '2021-06-09',
-          id: 5,
-          isShown: false,
-        },
-        6: {
-          date: '2021-05-26',
-          id: 6,
-          isShown: false,
-        },
-        7: {
-          date: '2021-09-17',
-          id: 7,
-          isShown: false,
-        },
-        8: {
-          date: '2021-11-01',
-          id: 8,
-          isShown: false,
-        },
-        9: {
-          date: '2021-12-07',
-          id: 9,
-          image: {
-            src: 'images/txinsights.png',
-            width: '80%',
-          },
-          isShown: false,
-        },
-        10: {
-          date: '2022-04-18',
-          id: 10,
-          image: {
-            src: 'images/token-detection.svg',
-            width: '100%',
-          },
-          isShown: true,
-        },
-        11: {
-          date: '2022-04-18',
-          id: 11,
-          isShown: true,
-        },
-        12: {
-          date: '2022-05-18',
-          id: 12,
-          image: {
-            src: 'images/darkmode-banner.png',
-            width: '100%',
-          },
-          isShown: false,
-        },
-        13: {
-          date: '2022-07-12',
-          id: 13,
-          isShown: true,
-        },
-        23: {
-          date: '2022-07-24',
-          id: 23,
-          isShown: false,
-        },
-        [NOTIFICATION_BLOCKAID_DEFAULT]: {
-          date: '2022-07-24',
-          id: Number(NOTIFICATION_BLOCKAID_DEFAULT),
-          isShown: false,
-        },
-      },
-    },
-  });
-  return renderWithProvider(<WhatsNewPopup />, store);
-};
+jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient', () => ({
+  useMultichainWalletSnapClient: jest.fn(),
+  WalletClientType: {
+    Solana: 'solana',
+  },
+}));
 
-describe('WhatsNewPopup', () => {
+describe('WhatsNewModal', () => {
+  const mockOnClose = jest.fn();
+  const mockCreateAccount = jest.fn();
+  const KEYRING_ID = '01JKAF3DSGM3AB87EM9N0K41AJ';
+
   beforeEach(() => {
-    const mockIntersectionObserver = jest.fn();
-    mockIntersectionObserver.mockReturnValue({
-      observe: () => null,
-      unobserve: () => null,
-      disconnect: () => null,
+    jest.clearAllMocks();
+
+    (useMultichainWalletSnapClient as jest.Mock).mockReturnValue({
+      createAccount: mockCreateAccount,
     });
-    window.IntersectionObserver = mockIntersectionObserver;
   });
 
-  it("renders WhatsNewPopup component and shows What's new text", () => {
-    render();
-    expect(screen.getByText("What's new")).toBeInTheDocument();
-  });
+  const renderModalWithNotification = (notificationId: number) => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        announcements: {
+          [notificationId]: {
+            date: '2025-03-03',
+            id: notificationId,
+            isShown: false,
+          },
+        },
+        keyrings: [
+          {
+            metadata: {
+              id: KEYRING_ID,
+            },
+          },
+        ],
+      },
+    });
+    return renderWithProvider(<WhatsNewModal onClose={mockOnClose} />, store);
+  };
 
-  it('renders WhatsNewPopup component and shows close button', () => {
-    render();
-    expect(screen.getByTestId('popover-close')).toBeInTheDocument();
+  describe('Whats new notification modal', () => {
+    beforeEach(() => {
+      renderModalWithNotification(NOTIFICATION_SOLANA_ON_METAMASK);
+    });
+
+    it('calls onClose when the modal is closed', () => {
+      const closeButton = screen.getByRole('button', { name: /close/i });
+      fireEvent.click(closeButton);
+      expect(mockOnClose).toHaveBeenCalled();
+    });
+
+    it('renders Solana notification content correctly', () => {
+      expect(screen.getByTestId('solana-modal-body')).toBeInTheDocument();
+      expect(
+        screen.getByText(/Send, receive, and swap tokens/iu),
+      ).toBeInTheDocument();
+      expect(screen.getByText(/Import Solana accounts/iu)).toBeInTheDocument();
+      expect(
+        screen.getByText(/More features coming soon/iu),
+      ).toBeInTheDocument();
+    });
+
+    it('calls createAccount when clicking the create account button', async () => {
+      const createButton = screen.getByTestId('create-solana-account-button');
+      fireEvent.click(createButton);
+
+      expect(mockCreateAccount).toHaveBeenCalledWith(
+        MultichainNetworks.SOLANA,
+        KEYRING_ID,
+      );
+      expect(mockOnClose).toHaveBeenCalled();
+    });
+
+    it('closes the modal when clicking "Not Now"', () => {
+      const notNowButton = screen.getByTestId('not-now-button');
+      fireEvent.click(notNowButton);
+      expect(mockOnClose).toHaveBeenCalled();
+    });
   });
 });
