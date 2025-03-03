@@ -1,4 +1,5 @@
 import { ApprovalRequest } from '@metamask/approval-controller';
+import { ApprovalType } from '@metamask/controller-utils';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -8,6 +9,11 @@ import { Severity } from '../../../../helpers/constants/design-system';
 import { getMemoizedUnapprovedConfirmations } from '../../../../selectors';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
+const VALIDATED_APPROVAL_TYPES = [
+  ApprovalType.AddEthereumChain,
+  ApprovalType.SwitchEthereumChain,
+];
+
 export function useAddEthereumChainAlerts(
   pendingConfirmation: ApprovalRequest<{ id: string }>,
 ): Alert[] {
@@ -15,7 +21,13 @@ export function useAddEthereumChainAlerts(
 
   const t = useI18nContext();
   return useMemo(() => {
-    if (!pendingConfirmation || !pendingConfirmations?.length) {
+    if (
+      !pendingConfirmation ||
+      !pendingConfirmations?.length ||
+      !VALIDATED_APPROVAL_TYPES.includes(
+        pendingConfirmation.type as ApprovalType,
+      )
+    ) {
       return [];
     }
 
