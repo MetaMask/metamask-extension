@@ -12,11 +12,13 @@ const ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS_DEVELOPMENT: string[] = [
   CHAIN_IDS.MAINNET,
   CHAIN_IDS.SEPOLIA,
   CHAIN_IDS.BSC,
+  CHAIN_IDS.BASE,
 ];
 
 const ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS_PRODUCTION: string[] = [
   CHAIN_IDS.MAINNET,
   CHAIN_IDS.BSC,
+  CHAIN_IDS.BASE,
 ];
 
 export const getAllowedSmartTransactionsChainIds = (): string[] => {
