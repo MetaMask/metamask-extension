@@ -134,7 +134,7 @@ import {
 } from '../../../../shared/lib/accounts/solana-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-import { ImportSRP } from '../multi-srp/import-srp';
+import { ImportSrp } from '../multi-srp/import-srp';
 ///: END:ONLY_INCLUDE_IF
 import { HiddenAccountList } from './hidden-account-list';
 
@@ -424,7 +424,7 @@ export const AccountListMenu = ({
               paddingTop={0}
               style={{ overflowY: 'scroll' }}
             >
-              <ImportSRP
+              <ImportSrp
                 onActionComplete={(confirmed: boolean) => {
                   if (confirmed) {
                     onClose();

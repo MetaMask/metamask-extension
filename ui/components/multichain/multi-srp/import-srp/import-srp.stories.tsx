@@ -1,11 +1,11 @@
 import React from 'react';
-import { ImportSRP } from '.';
+import { ImportSrp } from '.';
 
 export default {
-  title: 'Components/Multichain/ImportSRP',
-  component: ImportSRP,
+  title: 'Components/Multichain/ImportSrp',
+  component: ImportSrp,
 };
 
-export const DefaultStory = (args) => <ImportSRP {...args} />;
+export const DefaultStory = (args) => <ImportSrp {...args} />;
 
 DefaultStory.storyName = 'Default';
