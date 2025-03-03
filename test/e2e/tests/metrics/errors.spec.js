@@ -911,8 +911,11 @@ describe('Sentry errors', function () {
       // Part of the AuthenticationController store, but initialized as undefined
       // Only populated once the client is authenticated
       sessionData: {
-        accessToken: false,
-        expiresIn: true,
+        token: {
+          accessToken: false,
+          expiresIn: true,
+          obtainedAt: true,
+        },
         profile: true,
       },
       // This can get erased due to a bug in the app state controller's
