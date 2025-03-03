@@ -203,6 +203,7 @@ exports[`Security Tab should match snapshot 1`] = `
     </span>
     <div
       class="settings-page__content-padded"
+      data-testid="profile-sync"
     >
       <div
         class="mm-box"
