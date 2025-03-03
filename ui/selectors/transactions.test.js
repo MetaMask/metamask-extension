@@ -840,7 +840,7 @@ describe('Transaction Selectors', () => {
         },
         {
           id: 2,
-          chainId: CHAIN_IDS.GOERLI,
+          chainId: CHAIN_IDS.MAINNET,
           status: TransactionStatus.approved,
           txParams: {
             from: '0xAddress2',
@@ -882,7 +882,7 @@ describe('Transaction Selectors', () => {
         },
         {
           id: 3,
-          chainId: CHAIN_IDS.GOERLI,
+          chainId: CHAIN_IDS.MAINNET,
           status: TransactionStatus.unapproved,
           txParams: {
             from: '0xAddress3',
@@ -970,21 +970,25 @@ describe('Transaction Selectors', () => {
           transactions: [
             {
               id: 1,
+              chainId: '0x1',
               type: TransactionType.incoming,
               txParams: { to: '0xSelectedAddress' },
             },
             {
               id: 2,
+              chainId: '0x1',
               type: TransactionType.incoming,
               txParams: { to: '0xOtherAddress' },
             },
             {
               id: 3,
+              chainId: '0x1',
               type: TransactionType.outgoing,
               txParams: { to: '0xSelectedAddress' },
             },
             {
               id: 4,
+              chainId: '0x1',
               type: TransactionType.incoming,
               txParams: { to: '0xSelectedAddress' },
             },
@@ -1112,11 +1116,13 @@ describe('Transaction Selectors', () => {
           transactions: [
             {
               id: 1,
+              chainId: '0x1',
               type: TransactionType.incoming,
               txParams: { from: '0xSelectedAddress', to: '0xAnotherAddress' },
             },
             {
               id: 2,
+              chainId: '0x1',
               type: TransactionType.contractInteraction,
               txParams: { from: '0xSelectedAddress', to: '0xAnotherAddress' },
             },
@@ -1172,16 +1178,19 @@ describe('Transaction Selectors', () => {
           transactions: [
             {
               id: 1,
+              chainId: '0x1',
               type: TransactionType.incoming,
               txParams: { from: '0xAnotherAddress', to: '0xSelectedAddress' },
             },
             {
               id: 2,
+              chainId: '0x1',
               type: TransactionType.simpleSend,
               txParams: { from: '0xSelectedAddress', to: '0xAnotherAddress' },
             },
             {
               id: 3,
+              chainId: '0x1',
               type: TransactionType.contractInteraction,
               txParams: { from: '0xSelectedAddress', to: '0xAnotherAddress' },
             },
@@ -1346,6 +1355,7 @@ describe('Transaction Selectors', () => {
       const incomingTxList = [
         {
           id: 1,
+          chainId: '0x1',
           type: 'incoming',
           txParams: { to: '0xSelectedAddress', from: '0xOtherAddress' },
         },
@@ -1402,6 +1412,7 @@ describe('Transaction Selectors', () => {
       const unapprovedMessages = [
         {
           id: 1,
+          chainId: '0x1',
           status: 'unapproved',
           msgParams: { from: '0xAddress', data: '0xData' },
         },
@@ -1410,6 +1421,7 @@ describe('Transaction Selectors', () => {
       const incomingTxList = [
         {
           id: 2,
+          chainId: '0x1',
           type: 'incoming',
           txParams: { to: '0xSelectedAddress', from: '0xOtherAddress' },
         },
