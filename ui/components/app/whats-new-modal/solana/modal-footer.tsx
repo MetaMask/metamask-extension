@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import {
   ModalFooter as BaseModalFooter,
   Button,
@@ -11,7 +12,6 @@ import {
   useMultichainWalletSnapClient,
 } from '../../../../hooks/accounts/useMultichainWalletSnapClient';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
-import { useSelector } from 'react-redux';
 import { getMetaMaskKeyrings } from '../../../../selectors';
 
 type ModalFooterProps = {

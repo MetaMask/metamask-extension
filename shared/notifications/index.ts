@@ -1,9 +1,3 @@
-import {
-  SolanaModalHeader,
-  SolanaModalBody,
-  SolanaModalFooter,
-} from '../../ui/components/app/whats-new-modal/solana';
-
 type NotificationImage = {
   src: string;
   width?: string;
@@ -20,14 +14,21 @@ type UINotifications = {
   [key: number]: UINotification;
 };
 
-type TranslationFunction = (key: string) => string;
+export type TranslationFunction = (key: string) => string;
 
-type ModalComponent = {
-  component: React.ComponentType<any>;
-  props?: Record<string, any>;
+export type ModalComponent<T> = {
+  component: React.ComponentType<T>;
+  props?: Partial<T>;
 };
 
-type TranslatedUINotification = {
+export type ModalHeaderProps = {
+  onClose: () => void;
+  image?: NotificationImage;
+};
+export type ModalBodyProps = { title: string };
+export type ModalFooterProps = { onAction: () => void; onCancel: () => void };
+
+export type TranslatedUINotification = {
   id: number;
   date: string | null;
   image?: NotificationImage;
@@ -35,13 +36,13 @@ type TranslatedUINotification = {
   description: string[] | string;
   actionText?: string;
   modal?: {
-    header?: ModalComponent;
-    body?: ModalComponent;
-    footer?: ModalComponent;
+    header?: ModalComponent<ModalHeaderProps>;
+    body?: ModalComponent<ModalBodyProps>;
+    footer?: ModalComponent<ModalFooterProps>;
   };
 };
 
-type TranslatedUINotifications = {
+export type TranslatedUINotifications = {
   [key: number | string]: TranslatedUINotification;
 };
 
@@ -52,33 +53,4 @@ export const UI_NOTIFICATIONS: UINotifications = {
     id: Number(NOTIFICATION_SOLANA_ON_METAMASK),
     date: null,
   },
-};
-
-export const getTranslatedUINotifications = (
-  t: TranslationFunction,
-): TranslatedUINotifications => {
-  return {
-    [NOTIFICATION_SOLANA_ON_METAMASK]: {
-      ...UI_NOTIFICATIONS[NOTIFICATION_SOLANA_ON_METAMASK],
-      title: t('solanaOnMetaMask'),
-      description: '',
-      image: {
-        src: 'images/solana-logo-transparent.svg',
-        width: 'auto',
-        height: '70px',
-      },
-      date: UI_NOTIFICATIONS[NOTIFICATION_SOLANA_ON_METAMASK].date || '',
-      modal: {
-        header: {
-          component: SolanaModalHeader,
-        },
-        body: {
-          component: SolanaModalBody,
-        },
-        footer: {
-          component: SolanaModalFooter,
-        },
-      },
-    },
-  };
 };

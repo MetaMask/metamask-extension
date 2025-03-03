@@ -116,7 +116,9 @@ const mapStateToProps = (state) => {
   ]);
 
   const TEMPORARY_DISABLE_WHATS_NEW = true;
-  const showWhatsNewPopup = getShowWhatsNewPopup(state);
+  const showWhatsNewPopup = TEMPORARY_DISABLE_WHATS_NEW
+    ? false
+    : getShowWhatsNewPopup(state);
 
   return {
     useExternalServices: getUseExternalServices(state),

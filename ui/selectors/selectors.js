@@ -2094,14 +2094,9 @@ export const getSnapInsights = createDeepEqualSelector(
 /**
  * Get an object of announcement IDs and if they are allowed or not.
  *
- * @param {object} state
  * @returns {object}
  */
-function getAllowedAnnouncementIds(state) {
-  const currentKeyring = getCurrentKeyring(state);
-  const currentKeyringIsLedger = currentKeyring?.type === KeyringType.ledger;
-  const isFirefox = window.navigator.userAgent.includes('Firefox');
-
+function getAllowedAnnouncementIds() {
   return {
     [NOTIFICATION_SOLANA_ON_METAMASK]: true,
   };
@@ -2129,8 +2124,8 @@ export function getSortedAnnouncementsToShow(state) {
   const announcements = Object.values(state.metamask.announcements);
   const allowedAnnouncementIds = getAllowedAnnouncementIds(state);
   const announcementsToShow = announcements.filter(
-    (announcement) => allowedAnnouncementIds[announcement.id],
-      // !announcement.isShown && allowedAnnouncementIds[announcement.id],
+    (announcement) =>
+      !announcement.isShown && allowedAnnouncementIds[announcement.id],
   );
   const announcementsSortedByDate = announcementsToShow.sort(
     (a, b) => new Date(b.date) - new Date(a.date),

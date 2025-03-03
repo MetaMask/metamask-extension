@@ -57,7 +57,7 @@ describe('WhatsNewModal', () => {
     });
 
     it('calls onClose when the modal is closed', () => {
-      const closeButton = screen.getByRole('button', { name: /close/i });
+      const closeButton = screen.getByRole('button', { name: /close/iu });
       fireEvent.click(closeButton);
       expect(mockOnClose).toHaveBeenCalled();
     });

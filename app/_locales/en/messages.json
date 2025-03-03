@@ -3173,9 +3173,6 @@
   "noSnaps": {
     "message": "You don't have any snaps installed."
   },
-  "notNow": {
-    "message": "Not now"
-  },
   "noThanks": {
     "message": "No thanks"
   },
@@ -3211,6 +3208,9 @@
   },
   "notEnoughGas": {
     "message": "Not enough gas"
+  },
+  "notNow": {
+    "message": "Not now"
   },
   "notificationDetail": {
     "message": "Details"
@@ -5023,26 +5023,26 @@
     "message": "Contact the creators of $1 for further support.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
+  "solanaImportAccounts": {
+    "message": "Import Solana accounts"
+  },
+  "solanaImportAccountsDescription": {
+    "message": "Import a Secret Recovery Phrase to migrate your Solana account from an other wallet."
+  },
+  "solanaMoreFeaturesComingSoon": {
+    "message": "More features coming soon"
+  },
+  "solanaMoreFeaturesComingSoonDescription": {
+    "message": "Solana dapps, NFTs, ETH-SOL bridging, hardware wallet support, and more coming soon."
+  },
   "solanaOnMetaMask": {
     "message": "Solana on MetaMask"
   },
   "solanaSendReceiveSwapTokens": {
     "message": "Send, receive, and swap tokens"
   },
-  "solanaImportAccounts": {
-    "message": "Import Solana accounts"
-  },
-  "solanaMoreFeaturesComingSoon": {
-    "message": "More features coming soon"
-  },
   "solanaSendReceiveSwapTokensDescription": {
     "message": "Transfer and transact with tokens such as SOL, USDC, and more."
-  },
-  "solanaImportAccountsDescription": {
-    "message": "Import a Secret Recovery Phrase to migrate your Solana account from an other wallet."
-  },
-  "solanaMoreFeaturesComingSoonDescription": {
-    "message": "Solana dapps, NFTs, ETH-SOL bridging, hardware wallet support, and more coming soon."
   },
   "someNetworks": {
     "message": "$1 networks"

@@ -10,11 +10,11 @@ import {
 } from '../../../component-library';
 
 type ModalHeaderProps = {
-  onClose: () => void;
+  onClose?: () => void;
   image?: {
     src: string;
-    width: number;
-    height: number;
+    width?: string;
+    height?: string;
   };
 };
 
