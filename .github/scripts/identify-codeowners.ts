@@ -193,7 +193,7 @@ function createCommentBody(teamFiles: TeamFiles, teamEmojis: TeamEmojis): string
 
   const sortedOwners= [...sortedTeamOwners, ...sortedIndividualOwners];
 
-  sortedTeams.forEach(team => {
+  sortedOwners.forEach(team => {
     const emoji = teamEmojis[team] || '👨‍🔧';
     commentBody += `${emoji} ${team}\n`;
     teamFiles[team].forEach(file => {
