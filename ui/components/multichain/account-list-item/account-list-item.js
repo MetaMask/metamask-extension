@@ -1,7 +1,9 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
 import { BigNumber } from 'bignumber.js';
+///: END:ONLY_INCLUDE_IF
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSnapName, shortenAddress } from '../../../helpers/utils/util';
@@ -55,7 +57,9 @@ import {
   getChainIdsToPoll,
   getSnapsMetadata,
 } from '../../../selectors';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
 import { getIntlLocale } from '../../../ducks/locale/locale';
+///: END:ONLY_INCLUDE_IF
 import {
   getMultichainIsTestnet,
   getMultichainNativeCurrency,
@@ -75,7 +79,9 @@ import { getAccountLabel } from '../../../helpers/utils/accounts';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { getMultichainAggregatedBalance } from '../../../selectors/assets';
 ///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
 import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
+///: END:ONLY_INCLUDE_IF
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -99,7 +105,9 @@ const AccountListItem = ({
   privacyMode = false,
 }) => {
   const t = useI18nContext();
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
   const locale = useSelector(getIntlLocale);
+  ///: END:ONLY_INCLUDE_IF
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
