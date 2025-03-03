@@ -66,7 +66,7 @@ type AppState = {
   showNftDetectionEnablementToast: boolean;
   loadingMessage: string | null;
   scrollToBottom: boolean;
-  warning: string | null | undefined;
+  warning: string | null;
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   buyView: Record<string, any>;
@@ -569,7 +569,7 @@ export default function reduceApp(
     case actionConstants.HIDE_WARNING:
       return {
         ...appState,
-        warning: undefined,
+        warning: null,
       };
 
     case actionConstants.SHOW_PRIVATE_KEY:
