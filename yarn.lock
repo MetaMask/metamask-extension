@@ -5565,7 +5565,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:^19.2.0, @metamask/keyring-controller@npm:^19.2.1":
+"@metamask/keyring-controller@npm:^19.2.1":
   version: 19.2.1
   resolution: "@metamask/keyring-controller@npm:19.2.1"
   dependencies:
@@ -6033,9 +6033,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:^8.1.1":
-  version: 8.1.1
-  resolution: "@metamask/profile-sync-controller@npm:8.1.1"
+"@metamask/profile-sync-controller@npm:@metamask-previews/profile-sync-controller@8.1.1-preview-1b0ea93a":
+  version: 8.1.1-preview-1b0ea93a
+  resolution: "@metamask-previews/profile-sync-controller@npm:8.1.1-preview-1b0ea93a"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/keyring-api": "npm:^17.2.0"
@@ -6055,7 +6055,7 @@ __metadata:
     "@metamask/providers": ^18.1.0
     "@metamask/snaps-controllers": ^9.19.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/4b18a546c0d78f010fbf1cf16644001ba0139c60941ceb70b83c7850e2fafcd5d17b8148f8020dcfe0e8c3f897259480077fa6b4402f4d270ed68e248d628369
+  checksum: 10/649e08b014222c2a44e1574906df27fd125b2c39a882815bad8983099a74426ea31f596e67dfd6eb6ee3d7499a3561b5bd80fe4ddfb162a95448ff0143d87a7e
   languageName: node
   linkType: hard
 
@@ -26964,7 +26964,7 @@ __metadata:
     "@metamask/json-rpc-engine": "npm:^10.0.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.4"
     "@metamask/keyring-api": "npm:^17.2.1"
-    "@metamask/keyring-controller": "npm:^19.2.0"
+    "@metamask/keyring-controller": "npm:^19.2.1"
     "@metamask/keyring-internal-api": "npm:^4.0.3"
     "@metamask/keyring-snap-client": "npm:^4.0.1"
     "@metamask/logging-controller": "npm:^6.0.4"
@@ -26989,7 +26989,7 @@ __metadata:
     "@metamask/ppom-validator": "npm:0.36.0"
     "@metamask/preferences-controller": "npm:^15.0.2"
     "@metamask/preinstalled-example-snap": "npm:^0.3.0"
-    "@metamask/profile-sync-controller": "npm:^8.1.1"
+    "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@8.1.1-preview-1b0ea93a"
     "@metamask/providers": "npm:^20.0.0"
     "@metamask/queued-request-controller": "npm:^7.0.1"
     "@metamask/rate-limit-controller": "npm:^6.0.3"

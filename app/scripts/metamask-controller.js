@@ -1329,7 +1329,6 @@ export default class MetamaskController extends EventEmitter {
           'AuthenticationController:getBearerToken',
           'AuthenticationController:getSessionProfile',
           'AuthenticationController:isSignedIn',
-          'AuthenticationController:performSignOut',
           'AuthenticationController:performSignIn',
           'AccountsController:listAccounts',
           'AccountsController:updateAccountMetadata',
