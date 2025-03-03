@@ -6045,9 +6045,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:^8.1.1":
-  version: 8.1.1
-  resolution: "@metamask/profile-sync-controller@npm:8.1.1"
+"@metamask/profile-sync-controller@npm:@metamask-previews/profile-sync-controller@8.1.1-preview-b8f29301":
+  version: 8.1.1-preview-b8f29301
+  resolution: "@metamask-previews/profile-sync-controller@npm:8.1.1-preview-b8f29301"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/keyring-api": "npm:^17.2.0"
@@ -6067,7 +6067,7 @@ __metadata:
     "@metamask/providers": ^18.1.0
     "@metamask/snaps-controllers": ^9.19.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/4b18a546c0d78f010fbf1cf16644001ba0139c60941ceb70b83c7850e2fafcd5d17b8148f8020dcfe0e8c3f897259480077fa6b4402f4d270ed68e248d628369
+  checksum: 10/1447cb79cd3c900e9860e1384a17128585d7c8f73319d5de8dac4a6d1f509bcb2cbdd0dcb8a401ebf1fad89802a91be1d0d146515fbc0a24ef763af76168ee11
   languageName: node
   linkType: hard
 

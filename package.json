@@ -225,7 +225,8 @@
     "tslib@npm:^2.6.2": "~2.6.0",
     "@ethersproject/signing-key/elliptic": "^6.6.1",
     "gridplus-sdk/elliptic": "^6.6.1",
-    "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@19.2.1-preview-b8f29301"
+    "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@19.2.1-preview-b8f29301",
+    "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@8.1.1-preview-b8f29301"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
