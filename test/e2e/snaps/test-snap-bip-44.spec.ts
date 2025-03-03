@@ -56,7 +56,7 @@ describe('Test Snap bip-44', function () {
         // Hit 'approve' on the signature confirmation and wait for window to
         // close, then switch back to the `test-snaps` window.
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await snapInstall.clickApproveButton();
+        await testSnaps.snapInstall.clickApproveButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // Check the results of the message signature using `waitForSelector`.
@@ -72,7 +72,7 @@ describe('Test Snap bip-44', function () {
         // Hit 'approve' on the signature confirmation and wait for window to
         // close, then switch back to the `test-snaps` window.
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await snapInstall.clickApproveButton();
+        await testSnaps.snapInstall.clickApproveButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         await driver.waitForSelector({
