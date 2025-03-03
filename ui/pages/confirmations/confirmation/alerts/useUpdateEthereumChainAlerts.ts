@@ -14,7 +14,7 @@ const VALIDATED_APPROVAL_TYPES = [
   ApprovalType.SwitchEthereumChain,
 ];
 
-export function useAddEthereumChainAlerts(
+export function useUpdateEthereumChainAlerts(
   pendingConfirmation: ApprovalRequest<{ id: string }>,
 ): Alert[] {
   const pendingConfirmationsFromOrigin = useSelector((state) =>
@@ -41,9 +41,12 @@ export function useAddEthereumChainAlerts(
           },
         ],
         key: 'pendingConfirmationFromSameOrigin',
-        message: t('pendingConfirmationAddNetworkAlertMessage', [
-          pendingConfirmationsFromOrigin.length - 1,
-        ]),
+        message: t(
+          pendingConfirmation.type === ApprovalType.AddEthereumChain
+            ? 'pendingConfirmationAddNetworkAlertMessage'
+            : 'pendingConfirmationSwitchNetworkAlertMessage',
+          [pendingConfirmationsFromOrigin.length - 1],
+        ),
         reason: t('areYouSure'),
         severity: Severity.Warning,
       },
