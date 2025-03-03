@@ -13,7 +13,7 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
-import { isBeta } from '../../helpers/utils/build-types';
+import { isFlask, isBeta } from '../../helpers/utils/build-types';
 import { getCaretCoordinates } from './unlock-page.util';
 
 export default class UnlockPage extends Component {
@@ -153,7 +153,12 @@ export default class UnlockPage extends Component {
   }
 
   renderMascot = () => {
-    if (process.env.METAMASK_BUILD_TYPE === 'flask') {
+    if (isFlask()) {
+      return (
+        <img src="./images/logo/metamask-fox.svg" width="120" height="120" />
+      );
+    }
+    if (isBeta()) {
       return (
         <img src="./images/logo/metamask-fox.svg" width="120" height="120" />
       );

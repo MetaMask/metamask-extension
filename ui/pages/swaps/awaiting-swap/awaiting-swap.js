@@ -51,6 +51,7 @@ import {
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
 import { isSwapsDefaultTokenSymbol } from '../../../../shared/modules/swaps.utils';
 import PulseLoader from '../../../components/ui/pulse-loader';
+import { isFlask, isBeta } from '../../../helpers/utils/build-types';
 
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
@@ -273,7 +274,14 @@ export default function AwaitingSwap({
   }, [dispatch, errorKey]);
 
   const renderMascot = () => {
-    if (process.env.METAMASK_BUILD_TYPE === 'flask') {
+    if (isFlask()) {
+      return (
+        <div className="awaiting-swap__mascot">
+          <img src="./images/logo/metamask-fox.svg" width="90" height="90" />
+        </div>
+      );
+    }
+    if (isBeta()) {
       return (
         <div className="awaiting-swap__mascot">
           <img src="./images/logo/metamask-fox.svg" width="90" height="90" />
