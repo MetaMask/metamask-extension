@@ -132,7 +132,7 @@ class AccountListPage {
   private readonly selectAccountSelector =
     '.multichain-account-list-item__account-name';
 
-  private readonly importSRPButton = {
+  private readonly importSrpButton = {
     text: 'Secret Recovery Phrase',
     tag: 'button',
   };
@@ -142,9 +142,9 @@ class AccountListPage {
     tag: 'h4',
   };
 
-  private readonly importSRPInput = '#import-srp__srp-word-0';
+  private readonly importSrpInput = '#import-srp__srp-word-0';
 
-  private readonly importSRPConfirmButton = {
+  private readonly importSrpConfirmButton = {
     text: 'Import wallet',
     tag: 'button',
   };
@@ -716,10 +716,10 @@ class AccountListPage {
   async startImportSecretPhrase(srp: string): Promise<void> {
     console.log(`Importing ${srp.split(' ').length} word srp`);
     await this.driver.clickElement(this.createAccountButton);
-    await this.driver.clickElement(this.importSRPButton);
+    await this.driver.clickElement(this.importSrpButton);
     await this.driver.waitForSelector(this.importSRPModalTitle);
-    await this.driver.pasteIntoField(this.importSRPInput, srp);
-    await this.driver.clickElement(this.importSRPConfirmButton);
+    await this.driver.pasteIntoField(this.importSrpInput, srp);
+    await this.driver.clickElement(this.importSrpConfirmButton);
   }
 }
 

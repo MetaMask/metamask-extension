@@ -4309,7 +4309,7 @@ export default class MetamaskController extends EventEmitter {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
       // TODO: `getKeyringsByType` is deprecated, this logic should probably be moved to the `KeyringController`.
-      const alreadyImportedSRP = await this.keyringController
+      const alreadyImportedSrp = await this.keyringController
         .getKeyringsByType(KeyringTypes.hd)
         .some((keyring) => {
           return (
@@ -4319,7 +4319,7 @@ export default class MetamaskController extends EventEmitter {
           );
         });
 
-      if (alreadyImportedSRP) {
+      if (alreadyImportedSrp) {
         throw new Error(
           'This Secret Recovery Phrase has already been imported.',
         );
