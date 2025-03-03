@@ -5,8 +5,8 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 import { InternalAccountWithBalance } from '../../../../selectors';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
-import { SRPListItem } from './srp-list-item';
 import { shortenAddress } from '../../../../helpers/utils/util';
+import { SRPListItem } from './srp-list-item';
 
 const mockTotalFiatBalance = '100';
 const mockAccount: InternalAccountWithBalance = {
