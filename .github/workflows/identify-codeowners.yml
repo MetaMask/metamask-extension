@@ -17,4 +17,4 @@ jobs:
       - name: Identify codeowners
         env:
           PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
-        run: yarn run identify-codeowners
+        run: yarn tsx ./.github/scripts/identify-codeowners.ts
