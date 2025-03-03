@@ -25,7 +25,7 @@ export default function reduceBackground(
     ...state,
   };
   switch (action.type) {
-    case actionConstants.UPDATE_METAMASK_STATE:
+    case actionConstants.UPDATE_BACKGROUND_STATE:
       return { ...backgroundState, ...action.value };
 
     default:
