@@ -20,7 +20,7 @@ function isBtcAccount(account: InternalAccount) {
   return Boolean(account && account.type === P2wpkh);
 }
 
-function isSolanaAccount(account: InternalAccount) {
+export function isSolanaAccount(account: InternalAccount) {
   const { DataAccount } = SolAccountType;
 
   return Boolean(account && account.type === DataAccount);

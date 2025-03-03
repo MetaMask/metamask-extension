@@ -3051,12 +3051,14 @@
     "@trezor/connect-web": {
       "globals": {
         "URLSearchParams": true,
+        "WebSocket": true,
         "__TREZOR_CONNECT_SRC": true,
         "addEventListener": true,
         "btoa": true,
         "chrome": true,
         "clearInterval": true,
         "clearTimeout": true,
+        "console.error": true,
         "console.warn": true,
         "document.body": true,
         "document.createElement": true,
@@ -3134,11 +3136,13 @@
         "console.info": true,
         "console.log": true,
         "console.warn": true,
+        "crypto.getRandomValues": true,
         "setInterval": true,
         "setTimeout": true
       },
       "packages": {
         "@trezor/connect-web>@trezor/utils>bignumber.js": true,
+        "browserify>browser-resolve": true,
         "browserify>buffer": true,
         "webpack>events": true,
         "tslib": true

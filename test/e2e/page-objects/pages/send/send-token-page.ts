@@ -45,6 +45,10 @@ class SendTokenPage {
 
   private readonly maxAmountButton = '[data-testid="max-clear-button"]';
 
+  private readonly gasFeeField = '[data-testid="first-gas-field"]';
+
+  private readonly fiatFeeField = '[data-testid="native-currency"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -146,6 +150,19 @@ class SendTokenPage {
 
   async goToNextScreen(): Promise<void> {
     await this.driver.clickElement(this.continueButton);
+  }
+
+  async validateSendFees(): Promise<void> {
+    // Wait for both fields to be present and have the expected values
+    await this.driver.waitForSelector({
+      css: this.gasFeeField,
+      text: '0.0004 ETH',
+    });
+    await this.driver.waitForSelector({
+      css: this.fiatFeeField,
+      text: '$0.75',
+    });
+    console.log('Send fees validation successful');
   }
 
   /**

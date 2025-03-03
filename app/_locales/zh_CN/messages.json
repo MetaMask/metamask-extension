@@ -2777,10 +2777,6 @@
     "message": "我们无法连接到 $1",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "网络已切换至 $1",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "网络 URL"
   },

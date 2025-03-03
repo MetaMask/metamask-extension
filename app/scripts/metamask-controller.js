@@ -1816,7 +1816,9 @@ export default class MetamaskController extends EventEmitter {
     const bridgeControllerMessenger = this.controllerMessenger.getRestricted({
       name: BRIDGE_CONTROLLER_NAME,
       allowedActions: [
-        'AccountsController:getSelectedAccount',
+        // 'AccountsController:getSelectedAccount',
+        'AccountsController:getSelectedMultichainAccount',
+        'SnapController:handleRequest',
         'NetworkController:getSelectedNetworkClient',
         'NetworkController:findNetworkClientIdByChainId',
       ],
@@ -2491,11 +2493,14 @@ export default class MetamaskController extends EventEmitter {
    * @returns {SnapKeyring}
    */
   async getSnapKeyring() {
+    // TODO: Use `withKeyring` instead
     let [snapKeyring] = this.keyringController.getKeyringsByType(
       KeyringType.snap,
     );
     if (!snapKeyring) {
-      snapKeyring = await this.keyringController.addNewKeyring(
+      await this.keyringController.addNewKeyring(KeyringType.snap);
+      // TODO: Use `withKeyring` instead
+      [snapKeyring] = this.keyringController.getKeyringsByType(
         KeyringType.snap,
       );
     }
@@ -4320,41 +4325,22 @@ export default class MetamaskController extends EventEmitter {
   async importMnemonicToVault(mnemonic) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
-      // TODO: This kind of logic should be inside the `KeyringController` (using `KeyringSelector` query, or make `addNewKeyring` returns it keyring ID alongside
-      // its keyring.
-      const findKeyringIdByAddress = (address) => {
-        const { keyrings, keyringsMetadata } = this.keyringController.state;
-
-        const keyringIndex = keyrings.findIndex((keyring) => {
-          return (
-            keyring.accounts.includes(address) &&
-            keyring.type === KeyringTypes.hd
-          );
-        });
-        if (keyringIndex === -1) {
-          throw new Error(
-            'Could not find keyring ID, THIS SHOULD NEVER HAPPEN',
-          );
-        }
-        return keyringsMetadata[keyringIndex].id;
-      };
-
-      const newKeyring = await this.keyringController.addNewKeyring(
+      const { id } = await this.keyringController.addNewKeyring(
         KeyringTypes.hd,
         {
           mnemonic,
           numberOfAccounts: 1,
         },
       );
-      const [newAccountAddress] = await newKeyring.getAccounts();
+      const [newAccountAddress] = await this.keyringController.withKeyring(
+        { id },
+        async ({ keyring }) => keyring.getAccounts(),
+      );
       const account =
         this.accountsController.getAccountByAddress(newAccountAddress);
       this.accountsController.setSelectedAccount(account.id);
 
-      // TODO: Find a way to encapsulate this logic in the KeyringController itself.
-      const keyringId = findKeyringIdByAddress(newAccountAddress);
-
-      await this._addAccountsWithBalance(keyringId);
+      await this._addAccountsWithBalance(id);
 
       return newAccountAddress;
     } finally {
@@ -4375,10 +4361,13 @@ export default class MetamaskController extends EventEmitter {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
       // addNewKeyring auto creates 1 account.
-      const newHdkeyring = await this.keyringController.addNewKeyring(
+      const { id } = await this.keyringController.addNewKeyring(
         KeyringTypes.hd,
       );
-      const [newAccount] = await newHdkeyring.getAccounts();
+      const [newAccount] = await this.keyringController.withKeyring(
+        { id },
+        async ({ keyring }) => keyring.getAccounts(),
+      );
       const account = this.accountsController.getAccountByAddress(newAccount);
       this.accountsController.setSelectedAccount(account.id);
 
@@ -4454,7 +4443,7 @@ export default class MetamaskController extends EventEmitter {
 
       const accounts = await this.keyringController.withKeyring(
         keyringSelector,
-        async (keyring) => {
+        async ({ keyring }) => {
           return await keyring.getAccounts();
         },
       );
@@ -4490,7 +4479,7 @@ export default class MetamaskController extends EventEmitter {
         // This account has assets, so check the next one
         address = await this.keyringController.withKeyring(
           keyringSelector,
-          async (keyring) => {
+          async ({ keyring }) => {
             const [newAddress] = await keyring.addAccounts(1);
             return newAddress;
           },
@@ -4773,11 +4762,13 @@ export default class MetamaskController extends EventEmitter {
     // The `getKeyringForAccount` is now deprecated, so we just use `withKeyring` instead to access our keyring.
     return await this.keyringController.withKeyring(
       { address },
-      ({ type: keyringType, bridge: keyringBridge }) =>
+      ({ keyring }) => {
+        const { type: keyringType, bridge: keyringBridge } = keyring;
         // Specific case for OneKey devices, see `ONE_KEY_VIA_TREZOR_MINOR_VERSION` for further details.
-        keyringBridge?.minorVersion === ONE_KEY_VIA_TREZOR_MINOR_VERSION
+        return keyringBridge?.minorVersion === ONE_KEY_VIA_TREZOR_MINOR_VERSION
           ? HardwareKeyringType.oneKey
-          : HardwareKeyringType[keyringType],
+          : HardwareKeyringType[keyringType];
+      },
     );
   }
 
@@ -4835,23 +4826,26 @@ export default class MetamaskController extends EventEmitter {
    * @returns {'ledger' | 'lattice' | string | undefined}
    */
   async getDeviceModel(address) {
-    return this.keyringController.withKeyring({ address }, async (keyring) => {
-      switch (keyring.type) {
-        case KeyringType.trezor:
-        case KeyringType.oneKey:
-          return keyring.getModel();
-        case KeyringType.qr:
-          return keyring.getName();
-        case KeyringType.ledger:
-          // TODO: get model after ledger keyring exposes method
-          return HardwareDeviceNames.ledger;
-        case KeyringType.lattice:
-          // TODO: get model after lattice keyring exposes method
-          return HardwareDeviceNames.lattice;
-        default:
-          return undefined;
-      }
-    });
+    return this.keyringController.withKeyring(
+      { address },
+      async ({ keyring }) => {
+        switch (keyring.type) {
+          case KeyringType.trezor:
+          case KeyringType.oneKey:
+            return keyring.getModel();
+          case KeyringType.qr:
+            return keyring.getName();
+          case KeyringType.ledger:
+            // TODO: get model after ledger keyring exposes method
+            return HardwareDeviceNames.ledger;
+          case KeyringType.lattice:
+            // TODO: get model after lattice keyring exposes method
+            return HardwareDeviceNames.lattice;
+          default:
+            return undefined;
+        }
+      },
+    );
   }
 
   /**
@@ -4939,7 +4933,7 @@ export default class MetamaskController extends EventEmitter {
 
     const addedAccountAddress = await this.keyringController.withKeyring(
       keyringSelector,
-      async (keyring) => {
+      async ({ keyring }) => {
         if (keyring.type !== KeyringTypes.hd) {
           throw new Error('Cannot add account to non-HD keyring');
         }
@@ -7641,7 +7635,7 @@ export default class MetamaskController extends EventEmitter {
 
     return this.keyringController.withKeyring(
       { type: keyringType },
-      async (keyring) => {
+      async ({ keyring }) => {
         if (options.hdPath && keyring.setHdPath) {
           keyring.setHdPath(options.hdPath);
         }

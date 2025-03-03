@@ -1,6 +1,4 @@
-///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
 import { MultichainNetworks } from './multichain/networks';
-///: END:ONLY_INCLUDE_IF
 import { CHAIN_IDS, NETWORK_TO_NAME_MAP } from './network';
 
 // TODO read from feature flags
@@ -66,3 +64,13 @@ export const REFRESH_INTERVAL_MS = 30 * 1000;
 export const DEFAULT_MAX_REFRESH_COUNT = 5;
 
 export const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
+
+export const SOLANA_USDC_ASSET = {
+  address:
+    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+  symbol: 'USDC',
+  decimals: 6,
+  image:
+    'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
+  chainId: MultichainNetworks.SOLANA,
+};
