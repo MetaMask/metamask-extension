@@ -135,7 +135,7 @@ import {
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import { ImportSrp } from '../multi-srp/import-srp';
-import { SRPList } from '../multi-srp/srp-list';
+import { SrpList } from '../multi-srp/srp-list';
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -458,7 +458,7 @@ export const AccountListMenu = ({
         {
           ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
           actionMode === ACTION_MODES.SELECT_SRP && (
-            <SRPList
+            <SrpList
               onActionComplete={(keyringId: string) => {
                 setSelectedKeyringId(keyringId);
                 setActionMode(ACTION_MODES.ADD);
