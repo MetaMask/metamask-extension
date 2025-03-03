@@ -20,7 +20,6 @@ const addEthereumChain = {
     requestUserApproval: true,
     getCurrentChainIdForDomain: true,
     getCaveat: true,
-    requestPermittedChainsPermissionForOrigin: true,
     requestPermittedChainsPermissionIncrementalForOrigin: true,
   },
 };
@@ -40,7 +39,6 @@ async function addEthereumChainHandler(
     requestUserApproval,
     getCurrentChainIdForDomain,
     getCaveat,
-    requestPermittedChainsPermissionForOrigin,
     requestPermittedChainsPermissionIncrementalForOrigin,
   },
 ) {
@@ -189,7 +187,6 @@ async function addEthereumChainHandler(
     autoApprove: shouldAddOrUpdateNetwork,
     setActiveNetwork,
     getCaveat,
-    requestPermittedChainsPermissionForOrigin,
     requestPermittedChainsPermissionIncrementalForOrigin,
   });
 }
