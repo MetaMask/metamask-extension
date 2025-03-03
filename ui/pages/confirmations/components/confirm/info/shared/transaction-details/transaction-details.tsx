@@ -21,6 +21,7 @@ import { PRIMARY } from '../../../../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../../../../hooks/useUserPreferencedCurrency';
 import { HEX_ZERO } from '../constants';
 import { hasValueAndNativeBalanceMismatch as checkValueAndNativeBalanceMismatch } from '../../utils';
+import { NetworkRow } from '../network-row/network-row';
 import { SigningInWithRow } from '../sign-in-with-row/sign-in-with-row';
 
 export const OriginRow = () => {
@@ -159,6 +160,7 @@ export const TransactionDetails = () => {
   return (
     <>
       <ConfirmInfoSection data-testid="transaction-details-section">
+        <NetworkRow isShownWithAlertsOnly />
         <OriginRow />
         <RecipientRow />
         {showAdvancedDetails && <MethodDataRow />}
