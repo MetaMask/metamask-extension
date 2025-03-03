@@ -5761,7 +5761,17 @@ export default class MetamaskController extends EventEmitter {
         return;
       }
 
-      const patches = patchStore.flushPendingPatches({ isFlattened: true });
+      const flattendPatches = patchStore.flushPendingPatches({
+        isFlattened: true,
+      });
+
+      outStream.write({
+        jsonrpc: '2.0',
+        method: 'sendFlattenedUpdate',
+        params: [flattendPatches],
+      });
+
+      const patches = patchStore.flushPendingPatches({ isFlattened: false });
 
       outStream.write({
         jsonrpc: '2.0',

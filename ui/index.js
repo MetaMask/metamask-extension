@@ -53,8 +53,10 @@ let reduxStore;
 export const updateBackgroundConnection = (backgroundConnection) => {
   setBackgroundConnection(backgroundConnection);
   backgroundConnection.onNotification((data) => {
-    if (data.method === 'sendUpdate') {
+    if (data.method === 'sendFlattenedUpdate') {
       reduxStore.dispatch(actions.updateMetamaskState(data.params[0]));
+    } else if (data.method === 'sendUpdate') {
+      reduxStore.dispatch(actions.updateBackgroundState(data.params[0]));
     } else {
       throw new Error(
         `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
