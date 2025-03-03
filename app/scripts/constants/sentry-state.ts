@@ -434,6 +434,9 @@ export const SENTRY_UI_STATE = {
     slides: false,
     confirmationExchangeRates: true,
   },
+  background: {
+    isInitialized: true,
+  },
   metamask: {
     ...flattenedBackgroundStateMask,
     // This property comes from the background but isn't in controller state
