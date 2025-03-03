@@ -91,7 +91,7 @@ const SETTINGS_CONSTANTS = [
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('smartTransactions'),
-    descriptionMessage: (t) => t('stxOptInEthereumBnbDescription'),
+    descriptionMessage: (t) => t('stxOptInSupportedNetworksDescription'),
     route: `${ADVANCED_ROUTE}#smart-transactions`,
     icon: 'fas fa-upload',
   },
