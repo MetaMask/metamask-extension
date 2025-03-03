@@ -15,6 +15,7 @@ const CHAIN_ID_MOCK = '0x123';
 const CHAIN_ID_2_MOCK = '0xabc';
 const BATCH_ID_MOCK = '123-456';
 const NETWORK_CLIENT_ID_MOCK = 'test-client';
+const ORIGIN_MOCK = 'test.com';
 
 const RECEIPT_MOCK = {
   status: '0x1',
@@ -38,6 +39,7 @@ const REQUEST_MOCK = {
   jsonrpc: '2.0',
   method: 'wallet_sendCalls',
   networkClientId: NETWORK_CLIENT_ID_MOCK,
+  origin: ORIGIN_MOCK,
   params: [SEND_CALLS_MOCK],
 } as JsonRpcRequest<SendCallsParams> & { networkClientId: string };
 
@@ -85,6 +87,7 @@ describe('EIP-5792', () => {
       ).toHaveBeenCalledWith({
         from: SEND_CALLS_MOCK.from,
         networkClientId: NETWORK_CLIENT_ID_MOCK,
+        origin: ORIGIN_MOCK,
         transactions: [{ params: SEND_CALLS_MOCK.calls[0] }],
       });
     });

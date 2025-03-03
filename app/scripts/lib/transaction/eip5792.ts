@@ -8,10 +8,10 @@ export async function processSendCalls(
   transactionController: TransactionController,
   networkController: NetworkController,
   params: SendCalls,
-  req: JsonRpcRequest & { networkClientId: string },
+  req: JsonRpcRequest & { networkClientId: string; origin?: string },
 ) {
   const { calls, chainId: requestChainId, from } = params;
-  const { networkClientId } = req;
+  const { networkClientId, origin } = req;
   const transactions = calls.map((call) => ({ params: call }));
 
   const dappChainId =
@@ -30,6 +30,7 @@ export async function processSendCalls(
   const result = await transactionController.addTransactionBatch({
     from,
     networkClientId,
+    origin,
     transactions,
   });
 
