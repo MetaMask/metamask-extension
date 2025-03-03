@@ -24,8 +24,8 @@ describe(`migration #${version}`, () => {
               profile: {
                 identifierId: 'identifierId',
                 profileId: 'profileId',
-              }
-            }
+              },
+            },
           },
         },
       };
