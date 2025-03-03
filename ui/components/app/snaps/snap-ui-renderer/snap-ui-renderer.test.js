@@ -718,7 +718,7 @@ describe('SnapUIRenderer', () => {
     expect(container).toMatchSnapshot();
   });
 
-  describe('Scroll Behavior', () => {
+  describe('Scroll behavior', () => {
     const createLongContent = (lines) => {
       return Array(lines)
         .fill()

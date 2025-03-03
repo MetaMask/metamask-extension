@@ -69,12 +69,11 @@ const SnapUIRendererComponent = ({
     (oldState, newState) => isEqual(oldState.content, newState.content),
   );
 
-  const content = useMemo(() => {
-    const rawContent = interfaceState?.content;
-    return rawContent?.type === 'Container' || !rawContent
+  const rawContent = interfaceState?.content;
+  const content =
+    rawContent?.type === 'Container' || !rawContent
       ? rawContent
       : Container({ children: rawContent });
-  }, [interfaceState?.content]);
 
   const requireScroll = Boolean(
     content?.props?.children?.[1]?.props?.requireScroll,
