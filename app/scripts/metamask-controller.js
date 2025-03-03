@@ -4419,7 +4419,7 @@ export default class MetamaskController extends EventEmitter {
         // Ledger Keyring GitHub downtime
         this.#withKeyringForDevice(
           { name: HardwareDeviceNames.ledger },
-          async (keyring) => this.setLedgerTransportPreference(keyring),
+          async ({ keyring }) => this.setLedgerTransportPreference(keyring),
         );
       }
     } finally {
@@ -4438,7 +4438,7 @@ export default class MetamaskController extends EventEmitter {
 
       const accounts = await this.keyringController.withKeyring(
         keyringSelector,
-        async (keyring) => {
+        async ({ keyring }) => {
           return await keyring.getAccounts();
         },
       );
@@ -4474,7 +4474,7 @@ export default class MetamaskController extends EventEmitter {
         // This account has assets, so check the next one
         address = await this.keyringController.withKeyring(
           keyringSelector,
-          async (keyring) => {
+          async ({ keyring }) => {
             const [newAddress] = await keyring.addAccounts(1);
             return newAddress;
           },
@@ -4576,7 +4576,7 @@ export default class MetamaskController extends EventEmitter {
     if (completedOnboarding) {
       this.#withKeyringForDevice(
         { name: HardwareDeviceNames.ledger },
-        async (keyring) => this.setLedgerTransportPreference(keyring),
+        async ({ keyring }) => this.setLedgerTransportPreference(keyring),
       );
     }
   }
@@ -4684,7 +4684,7 @@ export default class MetamaskController extends EventEmitter {
   async attemptLedgerTransportCreation() {
     return await this.#withKeyringForDevice(
       { name: HardwareDeviceNames.ledger },
-      async (keyring) => keyring.attemptMakeApp(),
+      async ({ keyring }) => keyring.attemptMakeApp(),
     );
   }
 
@@ -4699,7 +4699,7 @@ export default class MetamaskController extends EventEmitter {
   async connectHardware(deviceName, page, hdPath) {
     return this.#withKeyringForDevice(
       { name: deviceName, hdPath },
-      async (keyring) => {
+      async ({ keyring }) => {
         if (deviceName === HardwareDeviceNames.ledger) {
           await this.setLedgerTransportPreference(keyring);
         }
@@ -4741,7 +4741,7 @@ export default class MetamaskController extends EventEmitter {
   async checkHardwareStatus(deviceName, hdPath) {
     return this.#withKeyringForDevice(
       { name: deviceName, hdPath },
-      async (keyring) => {
+      async ({ keyring }) => {
         return keyring.isUnlocked();
       },
     );
@@ -4772,15 +4772,18 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<boolean>}
    */
   async forgetDevice(deviceName) {
-    return this.#withKeyringForDevice({ name: deviceName }, async (keyring) => {
-      for (const address of keyring.accounts) {
-        this._onAccountRemoved(address);
-      }
+    return this.#withKeyringForDevice(
+      { name: deviceName },
+      async ({ keyring }) => {
+        for (const address of keyring.accounts) {
+          this._onAccountRemoved(address);
+        }
 
-      keyring.forgetDevice();
+        keyring.forgetDevice();
 
-      return true;
-    });
+        return true;
+      },
+    );
   }
 
   /**
@@ -4819,23 +4822,26 @@ export default class MetamaskController extends EventEmitter {
    * @returns {'ledger' | 'lattice' | string | undefined}
    */
   async getDeviceModel(address) {
-    return this.keyringController.withKeyring({ address }, async (keyring) => {
-      switch (keyring.type) {
-        case KeyringType.trezor:
-        case KeyringType.oneKey:
-          return keyring.getModel();
-        case KeyringType.qr:
-          return keyring.getName();
-        case KeyringType.ledger:
-          // TODO: get model after ledger keyring exposes method
-          return HardwareDeviceNames.ledger;
-        case KeyringType.lattice:
-          // TODO: get model after lattice keyring exposes method
-          return HardwareDeviceNames.lattice;
-        default:
-          return undefined;
-      }
-    });
+    return this.keyringController.withKeyring(
+      { address },
+      async ({ keyring }) => {
+        switch (keyring.type) {
+          case KeyringType.trezor:
+          case KeyringType.oneKey:
+            return keyring.getModel();
+          case KeyringType.qr:
+            return keyring.getName();
+          case KeyringType.ledger:
+            // TODO: get model after ledger keyring exposes method
+            return HardwareDeviceNames.ledger;
+          case KeyringType.lattice:
+            // TODO: get model after lattice keyring exposes method
+            return HardwareDeviceNames.lattice;
+          default:
+            return undefined;
+        }
+      },
+    );
   }
 
   /**
@@ -4870,7 +4876,7 @@ export default class MetamaskController extends EventEmitter {
     const { address: unlockedAccount, label } =
       await this.#withKeyringForDevice(
         { name: deviceName, hdPath },
-        async (keyring) => {
+        async ({ keyring }) => {
           keyring.setAccountToUnlock(index);
           const [address] = await keyring.addAccounts(1);
           return {
@@ -4923,7 +4929,7 @@ export default class MetamaskController extends EventEmitter {
 
     const addedAccountAddress = await this.keyringController.withKeyring(
       keyringSelector,
-      async (keyring) => {
+      async ({ keyring }) => {
         if (keyring.type !== KeyringTypes.hd) {
           throw new Error('Cannot add account to non-HD keyring');
         }
@@ -7625,7 +7631,7 @@ export default class MetamaskController extends EventEmitter {
 
     return this.keyringController.withKeyring(
       { type: keyringType },
-      async (keyring) => {
+      async ({ keyring }) => {
         if (options.hdPath && keyring.setHdPath) {
           keyring.setHdPath(options.hdPath);
         }
