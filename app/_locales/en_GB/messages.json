@@ -234,12 +234,12 @@
     "message": "Add NFTs"
   },
   "addNonEvmAccount": {
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana",
-    "message": "Add $1 account"
+    "message": "Add $1 account",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
   },
   "addNonEvmAccountFromNetworkPicker": {
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana",
-    "message": "To enable the $1 network, you need to create a $1 account."
+    "message": "To enable the $1 network, you need to create a $1 account.",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "Add RPC URL"
@@ -1268,6 +1268,9 @@
   },
   "createSnapAccountTitle": {
     "message": "Create account"
+  },
+  "createSolanaAccount": {
+    "message": "Create Solana account"
   },
   "creatorAddress": {
     "message": "Creator address"
@@ -3206,6 +3209,9 @@
   "notEnoughGas": {
     "message": "Not enough gas"
   },
+  "notNow": {
+    "message": "Not now"
+  },
   "notificationDetail": {
     "message": "Details"
   },
@@ -3337,14 +3343,6 @@
   },
   "notifications": {
     "message": "Notifications"
-  },
-  "notificationsDropLedgerFirefoxDescription": {
-    "message": "Firefox no longer supports U2F, so Ledger won't work with MetaMask on Firefox. Try MetaMask on Google Chrome instead.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
-  },
-  "notificationsDropLedgerFirefoxTitle": {
-    "message": "Dropping Ledger Support for Firefox",
-    "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
   },
   "notificationsFeatureToggle": {
     "message": "Enable Wallet Notifications",
@@ -5017,6 +5015,27 @@
     "message": "Contact the creators of $1 for further support.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
+  "solanaImportAccounts": {
+    "message": "Import Solana accounts"
+  },
+  "solanaImportAccountsDescription": {
+    "message": "Import a Secret Recovery Phrase to migrate your Solana account from an other wallet."
+  },
+  "solanaMoreFeaturesComingSoon": {
+    "message": "More features coming soon"
+  },
+  "solanaMoreFeaturesComingSoonDescription": {
+    "message": "Solana dapps, NFTs, ETH-SOL bridging, hardware wallet support, and more coming soon."
+  },
+  "solanaOnMetaMask": {
+    "message": "Solana on MetaMask"
+  },
+  "solanaSendReceiveSwapTokens": {
+    "message": "Send, receive, and swap tokens"
+  },
+  "solanaSendReceiveSwapTokensDescription": {
+    "message": "Transfer and transact with tokens such as SOL, USDC, and more."
+  },
   "someNetworks": {
     "message": "$1 networks"
   },
@@ -6315,10 +6334,6 @@
   },
   "welcomeToMetaMaskIntro": {
     "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
-  },
-  "whatsNew": {
-    "message": "What's new",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
   },
   "whatsThis": {
     "message": "What's this?"
