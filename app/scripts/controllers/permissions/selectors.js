@@ -4,7 +4,7 @@ import {
   getEthAccounts,
   getPermittedEthChainIds,
 } from '@metamask/multichain';
-import { createDeepEqualSelector } from '../../../../shared/modules/selectors/util';
+import { createSelector } from 'reselect';
 
 /**
  * This file contains selectors for PermissionController selector event
@@ -26,7 +26,7 @@ const getSubjects = (state) => state.subjects;
  *
  * @returns {Map<string, string[]>} The current origin:accounts[] map.
  */
-export const getPermittedAccountsByOrigin = createDeepEqualSelector(
+export const getPermittedAccountsByOrigin = createSelector(
   getSubjects,
   (subjects) => {
     return Object.values(subjects).reduce((originToAccountsMap, subject) => {
@@ -51,7 +51,7 @@ export const getPermittedAccountsByOrigin = createDeepEqualSelector(
  *
  * @returns {Map<string, Caip25Authorization>} The current origin:authorization map.
  */
-export const getAuthorizedScopesByOrigin = createDeepEqualSelector(
+export const getAuthorizedScopesByOrigin = createSelector(
   getSubjects,
   (subjects) => {
     return Object.values(subjects).reduce(
@@ -78,7 +78,7 @@ export const getAuthorizedScopesByOrigin = createDeepEqualSelector(
  *
  * @returns {Map<string, string[]>} The current origin:chainIds[] map.
  */
-export const getPermittedChainsByOrigin = createDeepEqualSelector(
+export const getPermittedChainsByOrigin = createSelector(
   getSubjects,
   (subjects) => {
     return Object.values(subjects).reduce((originToChainsMap, subject) => {
