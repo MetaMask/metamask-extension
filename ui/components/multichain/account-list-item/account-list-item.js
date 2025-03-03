@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-
+import { BigNumber } from 'bignumber.js';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSnapName, shortenAddress } from '../../../helpers/utils/util';
@@ -55,6 +55,7 @@ import {
   getChainIdsToPoll,
   getSnapsMetadata,
 } from '../../../selectors';
+import { getIntlLocale } from '../../../ducks/locale/locale';
 import {
   getMultichainIsTestnet,
   getMultichainNativeCurrency,
@@ -74,6 +75,7 @@ import { getAccountLabel } from '../../../helpers/utils/accounts';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { getMultichainAggregatedBalance } from '../../../selectors/assets';
 ///: END:ONLY_INCLUDE_IF
+import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -97,6 +99,7 @@ const AccountListItem = ({
   privacyMode = false,
 }) => {
   const t = useI18nContext();
+  const locale = useSelector(getIntlLocale);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
@@ -168,7 +171,18 @@ const AccountListItem = ({
     balanceToTranslate = multichainAggregatedBalance;
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
-    balanceToTranslate = accountTotalFiatBalances.totalBalance;
+    const balanceOrFallback = accountTotalFiatBalances?.totalBalance ?? 0;
+    const bnBalance = new BigNumber(balanceOrFallback);
+    const formattedBalanceToTranslate = formatWithThreshold(
+      bnBalance.toNumber(),
+      0.00001,
+      locale,
+      {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 5,
+      },
+    );
+    balanceToTranslate = formattedBalanceToTranslate;
     ///: END:ONLY_INCLUDE_IF
   }
 
