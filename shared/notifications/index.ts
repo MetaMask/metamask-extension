@@ -46,7 +46,7 @@ export type TranslatedUINotifications = {
   [key: number | string]: TranslatedUINotification;
 };
 
-export const NOTIFICATION_SOLANA_ON_METAMASK = 25;
+export const NOTIFICATION_SOLANA_ON_METAMASK = 26;
 
 export const UI_NOTIFICATIONS: UINotifications = {
   [NOTIFICATION_SOLANA_ON_METAMASK]: {

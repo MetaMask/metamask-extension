@@ -57,6 +57,11 @@ const renderNotification = ({
 }: RenderNotificationProps) => {
   const { id, title, image, modal } = notification;
 
+  const handleNotificationClose = () => {
+    onNotificationViewed(id);
+    onClose();
+  };
+
   return (
     <ModalContent
       modalDialogProps={{
@@ -71,11 +76,8 @@ const renderNotification = ({
       {modal?.body && <modal.body.component title={title} />}
       {modal?.footer && (
         <modal.footer.component
-          onAction={() => {
-            onNotificationViewed(id);
-            onClose();
-          }}
-          onCancel={onClose}
+          onAction={handleNotificationClose}
+          onCancel={handleNotificationClose}
         />
       )}
     </ModalContent>
