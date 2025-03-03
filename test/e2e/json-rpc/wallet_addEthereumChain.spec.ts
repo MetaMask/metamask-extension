@@ -213,7 +213,6 @@ describe('Add Ethereum Chain', function () {
           await driver.executeScript(
             `window.ethereum.request(${addEthereumChainRequest})`,
           );
-
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await driver.findElement({ text: 'Use your enabled networks' });
           await driver.findElement({ text: 'Localhost 8546' });
