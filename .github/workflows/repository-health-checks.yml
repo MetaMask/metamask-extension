@@ -1,14 +1,14 @@
 # This suite originally ran on 7 individual VMs that each took about 1m30s to execute
 # It's now combined onto a single VM that takes about 1m20s
 # The `if: always()` statements make all independent tests run, even if one fails.
-name: Test short suite
+name: Repository health checks
 
 on:
   workflow_call:
 
 jobs:
-  test-short-suite:
-    name: Test short suite
+  repository-health-checks:
+    name: Repository health checks
     runs-on: ubuntu-latest
     steps:
       - name: Checkout and setup environment

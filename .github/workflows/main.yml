@@ -45,9 +45,9 @@ jobs:
       - name: Check circular dependencies
         run: yarn circular-deps:check
 
-  test-short-suite:
+  repository-health-checks:
     needs: prep-deps
-    uses: ./.github/workflows/test-short-suite.yml
+    uses: ./.github/workflows/repository-health-checks.yml
 
   test-storybook:
     name: Test storybook
@@ -159,7 +159,7 @@ jobs:
     needs:
       - lint-workflows
       - test-lint
-      - test-short-suite
+      - repository-health-checks
       - test-storybook
       - validate-lavamoat-policy-build
       - validate-lavamoat-policy-webapp
