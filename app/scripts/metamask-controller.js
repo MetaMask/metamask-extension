@@ -4419,7 +4419,7 @@ export default class MetamaskController extends EventEmitter {
         // Ledger Keyring GitHub downtime
         this.#withKeyringForDevice(
           { name: HardwareDeviceNames.ledger },
-          async ({ keyring }) => this.setLedgerTransportPreference(keyring),
+          async (keyring) => this.setLedgerTransportPreference(keyring),
         );
       }
     } finally {
@@ -4576,7 +4576,7 @@ export default class MetamaskController extends EventEmitter {
     if (completedOnboarding) {
       this.#withKeyringForDevice(
         { name: HardwareDeviceNames.ledger },
-        async ({ keyring }) => this.setLedgerTransportPreference(keyring),
+        async (keyring) => this.setLedgerTransportPreference(keyring),
       );
     }
   }
@@ -4684,7 +4684,7 @@ export default class MetamaskController extends EventEmitter {
   async attemptLedgerTransportCreation() {
     return await this.#withKeyringForDevice(
       { name: HardwareDeviceNames.ledger },
-      async ({ keyring }) => keyring.attemptMakeApp(),
+      async (keyring) => keyring.attemptMakeApp(),
     );
   }
 
@@ -4699,7 +4699,7 @@ export default class MetamaskController extends EventEmitter {
   async connectHardware(deviceName, page, hdPath) {
     return this.#withKeyringForDevice(
       { name: deviceName, hdPath },
-      async ({ keyring }) => {
+      async (keyring) => {
         if (deviceName === HardwareDeviceNames.ledger) {
           await this.setLedgerTransportPreference(keyring);
         }
@@ -4741,7 +4741,7 @@ export default class MetamaskController extends EventEmitter {
   async checkHardwareStatus(deviceName, hdPath) {
     return this.#withKeyringForDevice(
       { name: deviceName, hdPath },
-      async ({ keyring }) => {
+      async (keyring) => {
         return keyring.isUnlocked();
       },
     );
@@ -4772,18 +4772,15 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<boolean>}
    */
   async forgetDevice(deviceName) {
-    return this.#withKeyringForDevice(
-      { name: deviceName },
-      async ({ keyring }) => {
-        for (const address of keyring.accounts) {
-          this._onAccountRemoved(address);
-        }
+    return this.#withKeyringForDevice({ name: deviceName }, async (keyring) => {
+      for (const address of keyring.accounts) {
+        this._onAccountRemoved(address);
+      }
 
-        keyring.forgetDevice();
+      keyring.forgetDevice();
 
-        return true;
-      },
-    );
+      return true;
+    });
   }
 
   /**
@@ -4876,7 +4873,7 @@ export default class MetamaskController extends EventEmitter {
     const { address: unlockedAccount, label } =
       await this.#withKeyringForDevice(
         { name: deviceName, hdPath },
-        async ({ keyring }) => {
+        async (keyring) => {
           keyring.setAccountToUnlock(index);
           const [address] = await keyring.addAccounts(1);
           return {
