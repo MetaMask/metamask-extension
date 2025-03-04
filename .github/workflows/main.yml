@@ -98,6 +98,38 @@ jobs:
           name: prep-build-test-webpack
           path: ./dist/
 
+  prep-build:
+    needs: prep-deps
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout and setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        with:
+          is-high-risk-environment: false
+
+      - name: Build for non-master branch
+        if: github.ref != 'refs/heads/master'
+        run: yarn build dist
+
+      - name: Build for master branch
+        if: github.ref == 'refs/heads/master'
+        run: yarn build prod
+
+      - name: Debug build
+        run: find dist/ -type f -exec md5sum {} \; | sort -k 2
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: builds
+          path: ./builds/
+
+      - name: Upload dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: ./dist/
+
   run-tests:
     name: Run tests
     needs: prep-deps
@@ -167,6 +199,7 @@ jobs:
       - wait-for-circleci-workflow-status
       - build-storybook
       - build-beta
+      - prep-build
     outputs:
       PASSED: ${{ steps.set-output.outputs.PASSED }}
     steps:
