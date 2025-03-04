@@ -1,11 +1,7 @@
 import { Context } from 'mocha';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import FixtureBuilder from '../../fixture-builder';
-import {
-  unlockWallet,
-  withFixtures,
-  largeDelayMs,
-} from '../../helpers';
+import { unlockWallet, withFixtures, largeDelayMs } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AssetListPage from '../../page-objects/pages/home/asset-list';

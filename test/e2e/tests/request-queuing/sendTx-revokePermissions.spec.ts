@@ -4,10 +4,7 @@ import TransactionConfirmation from '../../page-objects/pages/confirmations/rede
 import { Driver } from '../../webdriver/driver';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import FixtureBuilder from '../../fixture-builder';
-import {
-  withFixtures,
-  WINDOW_TITLES,
-} from '../../helpers';
+import { withFixtures, WINDOW_TITLES } from '../../helpers';
 
 describe('Request Queuing', function () {
   // TODO: add a new spec which checks that after revoking and connecting again
