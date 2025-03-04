@@ -58,7 +58,7 @@ export const SnapUIAddressInput: FunctionComponent<
   const [value, setValue] = useState(
     initialValue
       ? parseCaipAccountId(initialValue as CaipAccountId).address
-      : null,
+      : '',
   );
   const [matchedAddressName, setMatchedAddressName] = useState<string | null>(
     null,
@@ -159,7 +159,7 @@ export const SnapUIAddressInput: FunctionComponent<
         'snap-ui-renderer__field': label !== undefined,
       })}
       id={name}
-      value={value ?? ''}
+      value={value}
       onChange={handleChange}
       label={label}
       error={Boolean(error)}
