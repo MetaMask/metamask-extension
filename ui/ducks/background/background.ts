@@ -9,12 +9,18 @@ export type BackgroundSliceState = {
 };
 
 /**
- * Temporary types for this slice so that inference of MetaMask state tree can
- * occur
+ * The `background` slice is keyed by controller name, while the `metamask` slice is flattened,
+ * meaning all controller state properties are nested at the same level without any indication as to which controller owns which property.
+ *
+ * The `background` slice is intended to eventually replace the `metamask` slice.
+ * As the state properties of each background controller are migrated from the `metamask` slice to `background` slices,
+ * any related patches, selectors, actions, types etc. that are currently defined in the `metamask` slice will also need to be migrated.
+ *
+ * ! Do not modify. See https://github.com/MetaMask/metamask-extension/issues/29600.
  *
  * @param state - State
  * @param action
- * @returns
+ * @returns Composed state object consisting of background controller state objects keyed by controller name.
  */
 export default function reduceBackground(
   state: BackgroundSliceState['background'],
