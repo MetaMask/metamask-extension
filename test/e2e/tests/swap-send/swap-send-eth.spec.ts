@@ -17,9 +17,9 @@ describe('Swap-Send ETH', function () {
     it('submits a transaction successfully', async function () {
       await withFixtures(
         getSwapSendFixtures(this.test?.fullTitle()),
-        async ({ driver, ganacheServer }) => {
+        async ({ driver }) => {
           const swapSendPage = new SwapSendPage(driver);
-          await logInWithBalanceValidation(driver, ganacheServer);
+          await logInWithBalanceValidation(driver);
 
           // START SWAP AND SEND FLOW
           await openActionMenuAndStartSendFlow(driver);
@@ -81,9 +81,9 @@ describe('Swap-Send ETH', function () {
   it('sets max amount', async function () {
     await withFixtures(
       getSwapSendFixtures(this.test?.fullTitle()),
-      async ({ driver, ganacheServer }) => {
+      async ({ driver }) => {
         const swapSendPage = new SwapSendPage(driver);
-        await logInWithBalanceValidation(driver, ganacheServer);
+        await logInWithBalanceValidation(driver);
 
         // START SWAP AND SEND FLOW
         await openActionMenuAndStartSendFlow(driver);

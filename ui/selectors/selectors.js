@@ -101,7 +101,7 @@ import {
   hexToDecimal,
 } from '../../shared/modules/conversion.utils';
 import { BackgroundColor } from '../helpers/constants/design-system';
-import { NOTIFICATION_DROP_LEDGER_FIREFOX } from '../../shared/notifications';
+import { NOTIFICATION_SOLANA_ON_METAMASK } from '../../shared/notifications';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 import { BridgeFeatureFlagsKey } from '../../shared/types/bridge';
@@ -2094,16 +2094,11 @@ export const getSnapInsights = createDeepEqualSelector(
 /**
  * Get an object of announcement IDs and if they are allowed or not.
  *
- * @param {object} state
  * @returns {object}
  */
-function getAllowedAnnouncementIds(state) {
-  const currentKeyring = getCurrentKeyring(state);
-  const currentKeyringIsLedger = currentKeyring?.type === KeyringType.ledger;
-  const isFirefox = window.navigator.userAgent.includes('Firefox');
-
+function getAllowedAnnouncementIds() {
   return {
-    [NOTIFICATION_DROP_LEDGER_FIREFOX]: currentKeyringIsLedger && isFirefox,
+    [NOTIFICATION_SOLANA_ON_METAMASK]: true,
   };
 }
 
