@@ -1,7 +1,10 @@
 import React, { useCallback, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import TokenList from '../token-list';
-import { getMultichainIsEvm } from '../../../../selectors/multichain';
+import {
+  getMultichainIsEvm,
+  getMultichainNetwork,
+} from '../../../../selectors/multichain';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -12,6 +15,8 @@ import {
   useAssetListTokenDetection,
   usePrimaryCurrencyProperties,
 } from '../hooks';
+import { getSelectedInternalAccount } from '../../../../selectors';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import AssetListControlBar from './asset-list-control-bar';
 import AssetListFundingModals from './asset-list-funding-modals';
 
@@ -22,20 +27,27 @@ type AssetListProps = {
 
 const TokenListContainer = React.memo(
   ({ onClickAsset }: Pick<AssetListProps, 'onClickAsset'>) => {
+    const account = useSelector(getSelectedInternalAccount);
+    const { isEvmNetwork } = useMultichainSelector(
+      getMultichainNetwork,
+      account,
+    );
     const trackEvent = useContext(MetaMetricsContext);
     const { primaryCurrencyProperties } = usePrimaryCurrencyProperties();
 
     const onTokenClick = useCallback(
       (chainId: string, tokenAddress: string) => {
-        onClickAsset(chainId, tokenAddress);
-        trackEvent({
-          event: MetaMetricsEventName.TokenScreenOpened,
-          category: MetaMetricsEventCategory.Navigation,
-          properties: {
-            token_symbol: primaryCurrencyProperties.suffix,
-            location: 'Home',
-          },
-        });
+        if (isEvmNetwork) {
+          onClickAsset(chainId, tokenAddress);
+          trackEvent({
+            event: MetaMetricsEventName.TokenScreenOpened,
+            category: MetaMetricsEventCategory.Navigation,
+            properties: {
+              token_symbol: primaryCurrencyProperties.suffix,
+              location: 'Home',
+            },
+          });
+        }
       },
       [],
     );

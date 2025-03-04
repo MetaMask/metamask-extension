@@ -11,5 +11,5 @@ To take a state dump, follow these steps:
 3. In case it isn't already selected, click the "Console" tab in the new Developer Tools window.
 4. In the console, type this command exactly: `logState()`. This should print a bunch of JSON text into your console.
 5. Copy that printed JSON text
-6. *Optional*: Anonymize that text if you'd like (you may change all instances of an account address to another valid account address, for example) We may automate the anonymization in the future.
+6. _Optional_: Anonymize that text if you'd like (you may change all instances of an account address to another valid account address, for example) We may automate the anonymization in the future.
 7. Send that JSON text to the developer, ideally pasting it in the issue regarding the bug.

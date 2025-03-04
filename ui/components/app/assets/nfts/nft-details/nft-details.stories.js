@@ -1,5 +1,5 @@
 import React from 'react';
-import NftDetails from './nft-details';
+import { NftDetailsComponent } from './nft-details';
 
 const nft = {
   name: 'Catnip Spicywright',
@@ -18,6 +18,8 @@ const nft = {
   },
 };
 
+const nftChainId = '0x1';
+
 export default {
   title: 'Components/App/NftsDetail',
 
@@ -28,17 +30,18 @@ export default {
   },
   args: {
     nft,
+    nftChainId,
   },
 };
 
 export const DefaultStory = (args) => {
-  return <NftDetails {...args} />;
+  return <NftDetailsComponent {...args} />;
 };
 
 DefaultStory.storyName = 'Default';
 
 export const NoImage = (args) => {
-  return <NftDetails {...args} />;
+  return <NftDetailsComponent {...args} />;
 };
 
 NoImage.args = {

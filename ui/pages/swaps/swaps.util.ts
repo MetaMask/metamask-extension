@@ -208,7 +208,7 @@ export async function fetchAggregatorMetadata(chainId: any): Promise<object> {
 
 export async function fetchTopAssetsList(
   chainId: string,
-): Promise<{ address: string }[]> {
+): Promise<{ address: Hex }[]> {
   const topAssetsUrl = getBaseApi('topAssets', chainId);
   const response =
     (await fetchWithCache({

@@ -17,9 +17,10 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
           .withPreferencesControllerPetnamesDisabled()
           .build(),
         title: this.test.fullTitle(),
+        localNodeOptions: 'anvil',
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, localNodes }) => {
+        await logInWithBalanceValidation(driver, localNodes[0]);
 
         // Send ETH
         await openActionMenuAndStartSendFlow(driver);
@@ -62,9 +63,10 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
           .withPreferencesControllerPetnamesDisabled()
           .build(),
         title: this.test.fullTitle(),
+        localNodeOptions: 'anvil',
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, localNodes }) => {
+        await logInWithBalanceValidation(driver, localNodes[0]);
 
         // Send ETH
         await openActionMenuAndStartSendFlow(driver);
@@ -113,14 +115,16 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           .build(),
         smartContract,
         title: this.test.fullTitle(),
+        localNodeOptions: 'anvil',
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, localNodes }) => {
+        await logInWithBalanceValidation(driver, localNodes[0]);
 
         // Send TST
         await driver.clickElement(
           '[data-testid="account-overview__asset-tab"]',
         );
+
         await driver.clickElement(
           '[data-testid="multichain-token-list-button"]',
         );
@@ -175,9 +179,10 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           .build(),
         smartContract,
         title: this.test.fullTitle(),
+        localNodeOptions: 'anvil',
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, localNodes }) => {
+        await logInWithBalanceValidation(driver, localNodes[0]);
 
         // Send TST
         await driver.clickElement(

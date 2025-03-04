@@ -198,6 +198,9 @@ const baseStore = {
     ticker: 'ETH',
     snaps: {},
   },
+  localeMessages: {
+    currentLocale: 'en',
+  },
   activeTab: {
     origin: 'https://uniswap.org/',
   },

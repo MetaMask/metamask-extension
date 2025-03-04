@@ -39,6 +39,7 @@ import {
   RestrictedMessenger,
 } from '@metamask/base-controller';
 import { AddressBookControllerState } from '@metamask/address-book-controller';
+import { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
@@ -72,6 +73,7 @@ import Analytics from '../lib/segment/analytics';
 import { ENVIRONMENT } from '../../../development/build/constants';
 ///: END:ONLY_INCLUDE_IF
 
+import { KeyringType } from '../../../shared/constants/keyring';
 import type {
   PreferencesControllerState,
   PreferencesControllerGetStateAction,
@@ -168,6 +170,7 @@ export type MetaMaskState = {
     privacyMode: PreferencesControllerState['preferences']['privacyMode'];
     tokenNetworkFilter: string[];
   };
+  sessionData: AuthenticationControllerState['sessionData'];
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   custodyAccountDetails: {
     [address: string]: {
@@ -175,6 +178,7 @@ export type MetaMaskState = {
     };
   };
   ///: END:ONLY_INCLUDE_IF
+  keyrings: { type: string; accounts: string[] }[];
 };
 
 /**
@@ -1209,6 +1213,9 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.NumberOfTokens]: this.#getNumberOfTokens(
         metamaskState.allTokens,
       ),
+      [MetaMetricsUserTrait.NumberOfHDEntropies]:
+        this.#getNumberOfHDEntropies(metamaskState) ??
+        previousUserTraits?.number_of_hd_entropies,
       [MetaMetricsUserTrait.OpenSeaApiEnabled]: metamaskState.openSeaEnabled,
       [MetaMetricsUserTrait.ThreeBoxEnabled]: false, // deprecated, hard-coded as false
       [MetaMetricsUserTrait.Theme]: metamaskState.theme || 'default',
@@ -1237,6 +1244,8 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.NetworkFilterPreference]: Object.keys(
         metamaskState.preferences.tokenNetworkFilter || {},
       ),
+      [MetaMetricsUserTrait.ProfileId]:
+        metamaskState.sessionData?.profile?.profileId,
     };
 
     if (!previousUserTraits && metamaskState.participateInMetaMetrics) {
@@ -1333,6 +1342,19 @@ export default class MetaMetricsController extends BaseController<
     return Object.values(allTokens).reduce((result, accountsByChain) => {
       return result + sum(Object.values(accountsByChain).map(size));
     }, 0);
+  }
+
+  /**
+   * Returns the number of HD Entropies the user has.
+   *
+   * @param metamaskState
+   */
+  #getNumberOfHDEntropies(metamaskState: MetaMaskState): number {
+    return (
+      metamaskState.keyrings?.filter(
+        (keyring) => keyring.type === KeyringType.hdKeyTree,
+      ).length ?? 0
+    );
   }
 
   /**

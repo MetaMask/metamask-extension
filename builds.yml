@@ -40,11 +40,16 @@ buildTypes:
     features:
       - build-beta
       - keyring-snaps
+      - multichain
+      - solana
+      - solana-swaps
     env:
       - INFURA_BETA_PROJECT_ID
       - SEGMENT_BETA_WRITE_KEY
       - INFURA_ENV_KEY_REF: INFURA_BETA_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_BETA_WRITE_KEY
+      - SUPPORT_LINK: https://intercom.help/internal-beta-testing/
+      - SUPPORT_REQUEST_LINK: https://intercom.help/internal-beta-testing/
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
@@ -64,8 +69,11 @@ buildTypes:
     features:
       - build-flask
       - keyring-snaps
+      # - bitcoin
       - solana
+      - multi-srp
       - solana-swaps
+      - multichain
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
@@ -137,10 +145,14 @@ features:
   keyring-snaps:
     assets:
       - ./{app,shared,ui}/**/keyring-snaps/**
+  bitcoin:
   solana:
+  multi-srp:
     assets:
-      - ./{app,shared,ui}/**/solana/**
+      # srp-list is a special case and is used in the srp recovery flow now.
+      - ./{app,shared,ui}/**/multi-srp/(?!.*srp-list)/**
   solana-swaps:
+  multichain:
 
 # Env variables that are required for all types of builds
 #
@@ -303,6 +315,8 @@ env:
 
   # Uses yaml anchors to DRY - https://juju.is/docs/sdk/yaml-anchors-and-aliases
   - METAMASK_BUILD_TYPE_DEFAULT: *default
+  # Path to a JSON file that will be used to override the default manifest values.
+  - MANIFEST_OVERRIDES: null
 
   ###
   # Account Abstraction (EIP-4337)

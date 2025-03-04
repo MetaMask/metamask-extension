@@ -1,15 +1,9 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import * as Sentry from '@sentry/browser';
 import browser from 'webextension-polyfill';
-import {
-  MetaMetricsContextProp,
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
 
 import { getParticipateInMetaMetrics } from '../../selectors';
-import { MetaMetricsContext } from '../../contexts/metametrics';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   BannerAlert,
@@ -40,11 +34,10 @@ import {
   TextVariant,
 } from '../../helpers/constants/design-system';
 
-import { SUPPORT_REQUEST_LINK } from '../../helpers/constants/common';
-
 import { Textarea } from '../../components/component-library/textarea/textarea';
 import { TextareaResize } from '../../components/component-library/textarea/textarea.types';
 import { ButtonSize } from '../../components/component-library/button/button.types';
+import VisitSupportDataConsentModal from '../../components/app/modals/visit-support-data-consent-modal';
 
 type ErrorPageProps = {
   error: {
@@ -57,12 +50,13 @@ type ErrorPageProps = {
 
 const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
 
   const [feedbackMessage, setFeedbackMessage] = useState('');
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [isSuccessModalShown, setIsSuccessModalShown] = useState(false);
+  const [isSupportDataConsentModalOpen, setIsSupportDataConsentModalOpen] =
+    useState(false);
 
   const handleClickDescribeButton = (): void => {
     setIsFeedbackModalOpen(true);
@@ -269,6 +263,12 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
             </ModalContent>
           </Modal>
         )}
+        {isSupportDataConsentModalOpen && (
+          <VisitSupportDataConsentModal
+            isOpen={isSupportDataConsentModalOpen}
+            onClose={() => setIsSupportDataConsentModalOpen(false)}
+          />
+        )}
         <Box
           width={BlockSize.Full}
           display={Display.Flex}
@@ -293,23 +293,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
             variant={ButtonVariant.Secondary}
             block
             data-testid="error-page-contact-support-button"
-            onClick={() => {
-              window.open(SUPPORT_REQUEST_LINK, '_blank');
-              trackEvent(
-                {
-                  category: MetaMetricsEventCategory.Error,
-                  event: MetaMetricsEventName.SupportLinkClicked,
-                  properties: {
-                    url: SUPPORT_REQUEST_LINK,
-                  },
-                },
-                {
-                  contextPropsIntoEventProperties: [
-                    MetaMetricsContextProp.PageTitle,
-                  ],
-                },
-              );
-            }}
+            onClick={() => setIsSupportDataConsentModalOpen(true)}
           >
             {t('errorPageContactSupport')}
           </Button>

@@ -4,6 +4,7 @@ import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import OnboardingMetricsPage from '../../page-objects/pages/onboarding/onboarding-metrics-page';
 import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
+import { MOCK_META_METRICS_ID } from '../../constants';
 
 /**
  * Mocks the segment API multiple times for specific payloads that we expect to
@@ -36,7 +37,7 @@ describe('App Installed Events', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
@@ -71,7 +72,7 @@ describe('App Installed Events', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
           })
           .build(),
         title: this.test?.fullTitle(),

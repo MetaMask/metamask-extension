@@ -58,15 +58,15 @@ const getBridgeActionText = (
       destNetworkConfiguration?.chainId as AllowedBridgeChainIds
     ];
 
+  const destSymbol = step.destAsset?.symbol;
+
+  if (!destSymbol) {
+    return null;
+  }
+
   return stepStatus === StatusTypes.COMPLETE
-    ? t('bridgeStepActionBridgeComplete', [
-        step.destAsset.symbol,
-        destChainName,
-      ])
-    : t('bridgeStepActionBridgePending', [
-        step.destAsset.symbol,
-        destChainName,
-      ]);
+    ? t('bridgeStepActionBridgeComplete', [destSymbol, destChainName])
+    : t('bridgeStepActionBridgePending', [destSymbol, destChainName]);
 };
 
 const getBridgeActionStatus = (bridgeHistoryItem: BridgeHistoryItem) => {
@@ -115,15 +115,16 @@ const getSwapActionText = (
   status: StatusTypes | null,
   step: Step,
 ) => {
+  const srcSymbol = step.srcAsset?.symbol;
+  const destSymbol = step.destAsset?.symbol;
+
+  if (!srcSymbol || !destSymbol) {
+    return null;
+  }
+
   return status === StatusTypes.COMPLETE
-    ? t('bridgeStepActionSwapComplete', [
-        step.srcAsset.symbol,
-        step.destAsset.symbol,
-      ])
-    : t('bridgeStepActionSwapPending', [
-        step.srcAsset.symbol,
-        step.destAsset.symbol,
-      ]);
+    ? t('bridgeStepActionSwapComplete', [srcSymbol, destSymbol])
+    : t('bridgeStepActionSwapPending', [srcSymbol, destSymbol]);
 };
 
 export const getStepStatus = ({
