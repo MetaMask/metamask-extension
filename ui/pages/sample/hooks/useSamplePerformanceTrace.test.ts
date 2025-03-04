@@ -1,6 +1,5 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import * as traceModule from '../../../../shared/lib/trace';
-import { TraceContext } from '../../../../shared/lib/trace';
 import {
   useSamplePerformanceTrace,
   TraceHandlers,
@@ -23,7 +22,7 @@ describe('useSamplePerformanceTrace', () => {
   });
 
   it('should start component trace on mount', () => {
-    const { result } = renderHook(() =>
+    renderHook(() =>
       useSamplePerformanceTrace({
         componentName: 'TestComponent',
         featureId: 'test-feature',
@@ -90,9 +89,8 @@ describe('useSamplePerformanceTrace', () => {
       jest.clearAllMocks();
 
       // Start the trace
-      let traceContext: TraceContext;
       act(() => {
-        traceContext = formSubmissionTrace.startTrace();
+        formSubmissionTrace.startTrace();
       });
 
       // Verify trace was called with the right parameters

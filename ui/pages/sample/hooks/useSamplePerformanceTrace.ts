@@ -9,10 +9,10 @@ import {
 /**
  * Interface defining the trace handlers returned by traceFormSubmission
  */
-export interface TraceHandlers {
+export type TraceHandlers = {
   startTrace: () => TraceContext;
   endTrace: (success: boolean, metadata?: Record<string, unknown>) => void;
-}
+};
 
 /**
  * Custom hook for performance tracing in the Sample Feature
@@ -20,7 +20,7 @@ export interface TraceHandlers {
  * @param options - Configuration options for the trace
  * @param options.componentName - Name of the component being traced
  * @param options.featureId - ID of the feature being traced
- * @returns - Object containing trace-related utility functions
+ * @returns Object containing trace-related utility functions
  */
 export function useSamplePerformanceTrace({
   componentName,
@@ -32,7 +32,7 @@ export function useSamplePerformanceTrace({
   // Start the main component trace when it mounts
   useEffect(() => {
     // Create a trace context for the entire component lifecycle
-    const componentTraceContext = trace({
+    trace({
       name: TraceName.DeveloperTest,
       data: {
         component: componentName,

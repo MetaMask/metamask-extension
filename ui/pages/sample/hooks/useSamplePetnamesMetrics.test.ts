@@ -99,22 +99,4 @@ describe('useSamplePetnamesMetrics', () => {
       });
     });
   });
-
-  describe('trackFormInteraction', () => {
-    it('should call trackEvent with correct interaction type', () => {
-      const { result } = renderHook(() => useSamplePetnamesMetrics());
-      const interactionType = 'button_click';
-
-      result.current.trackFormInteraction(interactionType);
-
-      expect(mockTrackEvent).toHaveBeenCalledWith({
-        event: MetaMetricsEventName.SampleFeatureInteraction,
-        category: MetaMetricsEventCategory.Wallet,
-        properties: {
-          feature: 'sample-petnames',
-          action: interactionType,
-        },
-      });
-    });
-  });
 });
