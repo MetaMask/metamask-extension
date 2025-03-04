@@ -153,7 +153,7 @@ describe('Navigate transactions', function () {
         title: this.test.fullTitle(),
         dapp: true,
       },
-      async ({ driver, ganacheServer }) => {
+      async ({ driver }) => {
         await unlockWallet(driver);
 
         await createRedesignedMultipleTransactions(driver, TRANSACTION_COUNT);
@@ -164,7 +164,7 @@ describe('Navigate transactions', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await locateAccountBalanceDOM(driver, ganacheServer);
+        await locateAccountBalanceDOM(driver);
       },
     );
   });
