@@ -56,7 +56,6 @@ export default class DomainInput extends Component {
   }
 
   onPaste = (event) => {
-    console.log('onPasting!!!!!!!!!!');
     if (event.clipboardData.items?.length) {
       const clipboardItem = event.clipboardData.items[0];
       clipboardItem?.getAsString((text) => {
