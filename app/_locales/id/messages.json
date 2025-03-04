@@ -73,9 +73,6 @@
   "accountActivityText": {
     "message": "Pilih akun yang ingin mendapatkan notifikasi:"
   },
-  "accountBalance": {
-    "message": "Saldo akun"
-  },
   "accountDetails": {
     "message": "Detail akun"
   },
@@ -4694,9 +4691,6 @@
   },
   "spendingCap": {
     "message": "Batas penggunaan"
-  },
-  "spendingCapTooltipDesc": {
-    "message": "Ini adalah jumlah token yang dapat diakses oleh pembeli atas nama Anda."
   },
   "srpInputNumberOfWords": {
     "message": "Frasa milik saya memiliki $1 kata",

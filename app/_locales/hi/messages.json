@@ -73,9 +73,6 @@
   "accountActivityText": {
     "message": "वे अकाउंट चुनें जिनके बारे में आप सूचित होना चाहते हैं:"
   },
-  "accountBalance": {
-    "message": "अकाउंट बैलेंस"
-  },
   "accountDetails": {
     "message": "अकाउंट की जानकारी"
   },
@@ -4694,9 +4691,6 @@
   },
   "spendingCap": {
     "message": "खर्च करने की लिमिट"
-  },
-  "spendingCapTooltipDesc": {
-    "message": "यह टोकन की वह राशि है जिसे खर्च करने वाला आपकी ओर से प्राप्त कर सकेगा।"
   },
   "srpInputNumberOfWords": {
     "message": "मेरे पास एक $1-शब्द का फ़्रेज़ है",

@@ -73,9 +73,6 @@
   "accountActivityText": {
     "message": "Chọn tài khoản mà bạn muốn nhận thông báo:"
   },
-  "accountBalance": {
-    "message": "Số dư tài khoản"
-  },
   "accountDetails": {
     "message": "Chi tiết tài khoản"
   },
@@ -4694,9 +4691,6 @@
   },
   "spendingCap": {
     "message": "Hạn mức chi tiêu"
-  },
-  "spendingCapTooltipDesc": {
-    "message": "Đây là số lượng token mà người chi tiêu có thể truy cập thay mặt cho bạn."
   },
   "srpInputNumberOfWords": {
     "message": "Tôi có một cụm từ gồm $1 từ",

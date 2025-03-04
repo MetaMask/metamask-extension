@@ -73,9 +73,6 @@
   "accountActivityText": {
     "message": "Piliin ang mga account na nais mong makakuha ng abiso:"
   },
-  "accountBalance": {
-    "message": "Balanse ng account"
-  },
   "accountDetails": {
     "message": "Mga detalye ng account"
   },
@@ -4694,9 +4691,6 @@
   },
   "spendingCap": {
     "message": "Limitasyon sa paggastos"
-  },
-  "spendingCapTooltipDesc": {
-    "message": "Ito ang halaga ng mga token na maa-access ng gumagastos sa ngalan mo."
   },
   "srpInputNumberOfWords": {
     "message": "Mayroon akong word phrase ng $1",

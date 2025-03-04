@@ -73,9 +73,6 @@
   "accountActivityText": {
     "message": "Επιλέξτε τους λογαριασμούς για τους οποίους θέλετε να λαμβάνετε ειδοποιήσεις:"
   },
-  "accountBalance": {
-    "message": "Υπόλοιπο λογαριασμού"
-  },
   "accountDetails": {
     "message": "Στοιχεία λογαριασμού"
   },
@@ -4694,9 +4691,6 @@
   },
   "spendingCap": {
     "message": "Ανώτατο όριο δαπανών"
-  },
-  "spendingCapTooltipDesc": {
-    "message": "Αυτό είναι το ποσό των tokens που θα μπορεί να έχει πρόσβαση ο διαθέτης για λογαριασμό σας."
   },
   "srpInputNumberOfWords": {
     "message": "Έχω μια φράση $1 λέξεων",

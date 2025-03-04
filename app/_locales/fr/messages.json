@@ -73,9 +73,6 @@
   "accountActivityText": {
     "message": "Sélectionnez les comptes pour lesquels vous souhaitez recevoir des notifications :"
   },
-  "accountBalance": {
-    "message": "Solde du compte"
-  },
   "accountDetails": {
     "message": "Détails du compte"
   },
@@ -4694,9 +4691,6 @@
   },
   "spendingCap": {
     "message": "Plafond de dépenses"
-  },
-  "spendingCapTooltipDesc": {
-    "message": "Il s’agit du nombre de jetons auquel le dépenseur pourra accéder en votre nom."
   },
   "srpInputNumberOfWords": {
     "message": "J’ai une phrase de $1 mots",

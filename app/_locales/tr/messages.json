@@ -73,9 +73,6 @@
   "accountActivityText": {
     "message": "Hakkında bildirim almak istediğiniz hesapları seçin:"
   },
-  "accountBalance": {
-    "message": "Hesap bakiyesi"
-  },
   "accountDetails": {
     "message": "Hesap bilgileri"
   },
@@ -4694,9 +4691,6 @@
   },
   "spendingCap": {
     "message": "Harcama üst limiti"
-  },
-  "spendingCapTooltipDesc": {
-    "message": "Bu, harcama yapan tarafın sizin adınıza erişim sağlayabileceği token miktarıdır."
   },
   "srpInputNumberOfWords": {
     "message": "$1 sözcükten oluşan bir ifadem var",

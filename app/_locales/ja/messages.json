@@ -73,9 +73,6 @@
   "accountActivityText": {
     "message": "通知を受けたいアカウントを選択してください:"
   },
-  "accountBalance": {
-    "message": "アカウント残高"
-  },
   "accountDetails": {
     "message": "アカウントの詳細"
   },
@@ -4694,9 +4691,6 @@
   },
   "spendingCap": {
     "message": "使用上限"
-  },
-  "spendingCapTooltipDesc": {
-    "message": "これは、使用者が代理でアクセスできるようになるトークンの金額です。"
   },
   "srpInputNumberOfWords": {
     "message": "$1語のフレーズがあります",

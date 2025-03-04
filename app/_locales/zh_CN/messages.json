@@ -73,9 +73,6 @@
   "accountActivityText": {
     "message": "选择您想要接收通知的账户："
   },
-  "accountBalance": {
-    "message": "账户余额"
-  },
   "accountDetails": {
     "message": "账户详情"
   },
@@ -4694,9 +4691,6 @@
   },
   "spendingCap": {
     "message": "支出上限"
-  },
-  "spendingCapTooltipDesc": {
-    "message": "他人可代表您访问该代币金额并进行消费。"
   },
   "srpInputNumberOfWords": {
     "message": "我有一个包含$1个单词的私钥助记词",
