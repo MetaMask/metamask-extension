@@ -116,12 +116,10 @@ async function walletCreateSessionHandler(
     const { normalizedRequiredScopes, normalizedOptionalScopes } =
       validateAndNormalizeScopes(requiredScopes || {}, optionalScopes || {});
 
-    const requiredScopesWithSupportedMethodsAndNotifications = getSupportedScopeObjects(
-      normalizedRequiredScopes,
-    );
-    const optionalScopesWithSupportedMethodsAndNotifications = getSupportedScopeObjects(
-      normalizedOptionalScopes,
-    );
+    const requiredScopesWithSupportedMethodsAndNotifications =
+      getSupportedScopeObjects(normalizedRequiredScopes);
+    const optionalScopesWithSupportedMethodsAndNotifications =
+      getSupportedScopeObjects(normalizedOptionalScopes);
 
     const existsNetworkClientForChainId = (chainId: Hex) => {
       try {
