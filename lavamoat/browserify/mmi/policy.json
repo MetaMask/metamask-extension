@@ -514,6 +514,99 @@
         "ethers>@ethersproject/strings": true
       }
     },
+    "@metamask/notification-services-controller>firebase>@firebase/app": {
+      "globals": {
+        "FinalizationRegistry": true,
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/component": true,
+        "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/logger": true,
+        "@metamask/notification-services-controller>firebase>@firebase/util": true,
+        "@metamask/notification-services-controller>firebase>@firebase/app>idb": true
+      }
+    },
+    "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/component": {
+      "packages": {
+        "@metamask/notification-services-controller>firebase>@firebase/util": true
+      }
+    },
+    "@metamask/notification-services-controller>firebase>@firebase/installations": {
+      "globals": {
+        "BroadcastChannel": true,
+        "Headers": true,
+        "btoa": true,
+        "console.error": true,
+        "crypto": true,
+        "fetch": true,
+        "msCrypto": true,
+        "navigator.onLine": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/notification-services-controller>firebase>@firebase/app": true,
+        "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/component": true,
+        "@metamask/notification-services-controller>firebase>@firebase/util": true,
+        "@metamask/notification-services-controller>firebase>@firebase/app>idb": true
+      }
+    },
+    "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/logger": {
+      "globals": {
+        "console": true
+      }
+    },
+    "@metamask/notification-services-controller>firebase>@firebase/messaging": {
+      "globals": {
+        "Headers": true,
+        "Notification.maxActions": true,
+        "Notification.permission": true,
+        "Notification.requestPermission": true,
+        "PushSubscription.prototype.hasOwnProperty": true,
+        "ServiceWorkerRegistration": true,
+        "URL": true,
+        "addEventListener": true,
+        "atob": true,
+        "btoa": true,
+        "clearTimeout": true,
+        "clients.matchAll": true,
+        "clients.openWindow": true,
+        "console.warn": true,
+        "document": true,
+        "fetch": true,
+        "indexedDB": true,
+        "location.href": true,
+        "location.origin": true,
+        "navigator": true,
+        "origin.replace": true,
+        "registration.showNotification": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/notification-services-controller>firebase>@firebase/app": true,
+        "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/component": true,
+        "@metamask/notification-services-controller>firebase>@firebase/installations": true,
+        "@metamask/notification-services-controller>firebase>@firebase/util": true,
+        "@metamask/notification-services-controller>firebase>@firebase/app>idb": true
+      }
+    },
+    "@metamask/notification-services-controller>firebase>@firebase/util": {
+      "globals": {
+        "WorkerGlobalScope": true,
+        "atob": true,
+        "browser": true,
+        "btoa": true,
+        "chrome": true,
+        "console": true,
+        "document": true,
+        "indexedDB": true,
+        "navigator": true,
+        "process": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "process": true
+      }
+    },
     "@metamask/multichain>@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": {
       "packages": {
         "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": true,
@@ -1604,7 +1697,10 @@
     "@metamask/notification-services-controller": {
       "globals": {
         "Intl.NumberFormat": true,
-        "fetch": true
+        "addEventListener": true,
+        "fetch": true,
+        "registration": true,
+        "removeEventListener": true
       },
       "packages": {
         "@metamask/notification-services-controller>@contentful/rich-text-html-renderer": true,
@@ -1613,6 +1709,7 @@
         "@metamask/profile-sync-controller": true,
         "@metamask/utils": true,
         "@metamask/notification-services-controller>bignumber.js": true,
+        "@metamask/notification-services-controller>firebase": true,
         "loglevel": true,
         "uuid": true
       }
@@ -3827,6 +3924,12 @@
         "@metamask/snaps-utils>fast-xml-parser>strnum": true
       }
     },
+    "@metamask/notification-services-controller>firebase": {
+      "packages": {
+        "@metamask/notification-services-controller>firebase>@firebase/app": true,
+        "@metamask/notification-services-controller>firebase>@firebase/messaging": true
+      }
+    },
     "react-focus-lock>focus-lock": {
       "globals": {
         "HTMLIFrameElement": true,
@@ -4007,6 +4110,19 @@
       "packages": {
         "stream-http": true,
         "browserify>url": true
+      }
+    },
+    "@metamask/notification-services-controller>firebase>@firebase/app>idb": {
+      "globals": {
+        "DOMException": true,
+        "IDBCursor": true,
+        "IDBDatabase": true,
+        "IDBIndex": true,
+        "IDBObjectStore": true,
+        "IDBRequest": true,
+        "IDBTransaction": true,
+        "indexedDB.deleteDatabase": true,
+        "indexedDB.open": true
       }
     },
     "eth-ens-namehash>idna-uts46-hx": {
