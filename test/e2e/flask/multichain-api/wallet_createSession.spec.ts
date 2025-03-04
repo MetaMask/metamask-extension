@@ -195,6 +195,10 @@ describe('Multichain API', function () {
             );
 
             await addAccountInWalletAndAuthorize(driver);
+            const permissionsTab = await driver.findElement(
+              '[data-testid="permissions-tab"]',
+            );
+            await permissionsTab.click();
             await updateNetworkCheckboxes(driver, ['Localhost 8545']);
 
             await driver.clickElement({ text: 'Connect', tag: 'button' });
