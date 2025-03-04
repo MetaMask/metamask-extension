@@ -2,7 +2,7 @@ import * as core from '@actions/core';
 import { context, getOctokit } from '@actions/github';
 import { GitHub } from '@actions/github/lib/utils';
 import { retrievePullRequestFiles } from './shared/pull-request';
-import picomatch from 'picomatch';
+import micromatch from 'micromatch';
 
 type TeamFiles = Record<string, string[]>;
 
@@ -148,17 +148,17 @@ function matchFilesToCodeowners(files: string[], codeowners: CodeOwnerRule[]): M
 function isFileMatchingPattern(file: string, pattern: string): boolean {
   // Case 1: Pattern explicitly ends with a slash (e.g., "docs/")
   if (pattern.endsWith('/')) {
-    return picomatch.isMatch(file, `${pattern}**`);
+    return micromatch.isMatch(file, `${pattern}**`);
   }
 
   // Case 2: Pattern doesn't end with a file extension - treat as directory
   if (!pattern.match(/\.[^/]*$/)) {
     // Treat as directory - match this path and everything under it
-    return picomatch.isMatch(file, `${pattern}/**`);
+    return micromatch.isMatch(file, `${pattern}/**`);
   }
 
   // Case 3: Pattern with file extension or already has wildcards
-  return picomatch.isMatch(file, pattern);
+  return micromatch.isMatch(file, pattern);
 }
 
 function groupFilesByTeam(fileOwners: Map<string, Set<string>>): TeamFiles {

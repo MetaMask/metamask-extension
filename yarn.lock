@@ -11557,13 +11557,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/picomatch@npm:^3.0.2":
-  version: 3.0.2
-  resolution: "@types/picomatch@npm:3.0.2"
-  checksum: 10/da4e0e0f4437576dfd59b94f5868f89a2bd5ce4aaa57eb5dc601818885ac7bd03ccb3e8d3402a6820e5a3d63c86c7030031a5fdc67a0598d0675dea912b6512e
-  languageName: node
-  linkType: hard
-
 "@types/pify@npm:^5.0.1":
   version: 5.0.1
   resolution: "@types/pify@npm:5.0.1"
@@ -27394,7 +27387,6 @@ __metadata:
     "@types/mocha": "npm:^10.0.3"
     "@types/node": "npm:^20"
     "@types/path-browserify": "npm:^1.0.2"
-    "@types/picomatch": "npm:^3.0.2"
     "@types/pify": "npm:^5.0.1"
     "@types/react": "npm:^16.9.53"
     "@types/react-beautiful-dnd": "npm:^13"
@@ -27543,7 +27535,6 @@ __metadata:
     node-fetch: "npm:^2.6.1"
     nyc: "npm:^15.1.0"
     path-browserify: "npm:^1.0.1"
-    picomatch: "npm:^4.0.2"
     pify: "npm:^5.0.0"
     postcss: "npm:^8.4.32"
     postcss-discard-font-face: "npm:^3.0.0"
@@ -30298,13 +30289,6 @@ __metadata:
   version: 2.3.1
   resolution: "picomatch@npm:2.3.1"
   checksum: 10/60c2595003b05e4535394d1da94850f5372c9427ca4413b71210f437f7b2ca091dbd611c45e8b37d10036fa8eade25c1b8951654f9d3973bfa66a2ff4d3b08bc
-  languageName: node
-  linkType: hard
-
-"picomatch@npm:^4.0.2":
-  version: 4.0.2
-  resolution: "picomatch@npm:4.0.2"
-  checksum: 10/ce617b8da36797d09c0baacb96ca8a44460452c89362d7cb8f70ca46b4158ba8bc3606912de7c818eb4a939f7f9015cef3c766ec8a0c6bfc725fdc078e39c717
   languageName: node
   linkType: hard
 
