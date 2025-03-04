@@ -4309,6 +4309,7 @@ export default class MetamaskController extends EventEmitter {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
       // TODO: `getKeyringsByType` is deprecated, this logic should probably be moved to the `KeyringController`.
+      // FIXME: The `KeyringController` does not check yet for duplicated accounts with HD keyrings, see: https://github.com/MetaMask/core/issues/5411
       const alreadyImportedSrp = await this.keyringController
         .getKeyringsByType(KeyringTypes.hd)
         .some((keyring) => {
