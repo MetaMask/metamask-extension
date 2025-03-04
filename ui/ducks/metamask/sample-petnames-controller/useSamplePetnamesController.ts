@@ -6,7 +6,7 @@ import { getPetNamesForCurrentChain } from './sample-petnames-controller-selecto
 import { assignPetname } from './sample-petnames-controller-thunks';
 
 // Hook
-export function usePetnames() {
+export function useSamplePetnamesController() {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const namesForCurrentChain = useSelector(getPetNamesForCurrentChain);
   const chainId = useSelector(getCurrentChainId);

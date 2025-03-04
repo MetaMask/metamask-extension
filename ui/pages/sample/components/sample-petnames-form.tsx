@@ -19,11 +19,11 @@ import {
   BackgroundColor,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { usePetnames } from '../../../ducks/metamask/sample-petnames-controller';
+import { useSamplePetnamesController } from '../../../ducks/metamask/sample-petnames-controller';
 import { useSamplePetnamesForm } from '../hooks/useSamplePetnamesForm';
 
 export function SamplePetnamesForm() {
-  const petNames = usePetnames();
+  const petNames = useSamplePetnamesController();
   const {
     isSubmitting,
     formState,

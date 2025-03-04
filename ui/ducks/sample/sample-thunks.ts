@@ -1,5 +1,7 @@
 import { Dispatch } from '@reduxjs/toolkit';
-import { _setCounter, setError } from './sample-reducer';
+import sampleSlice from './sample-slice';
+
+const { setError, _setCounter } = sampleSlice.actions;
 
 // --- Thunk (with validation) ---
 

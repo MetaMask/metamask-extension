@@ -1,13 +1,14 @@
 import { useEffect } from 'react';
 import { Hex } from '@metamask/utils';
-import { usePetnames } from '../../../ducks/metamask/sample-petnames-controller';
-import { useSamplePetnamesMetrics } from './useSamplePetnamesMetrics';
-import { useSamplePerformanceTrace } from './useSamplePerformanceTrace';
+import { useSamplePetnamesController } from '../../../ducks/metamask/sample-petnames-controller';
 import { useForm } from '../../../hooks/useForm';
 import {
   validateAddress,
   validatePetname,
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../app/scripts/controllers/sample/sample-petnames-controller-utils';
+import { useSamplePetnamesMetrics } from './useSamplePetnamesMetrics';
+import { useSamplePerformanceTrace } from './useSamplePerformanceTrace';
 
 type FormState = {
   address: Hex;
@@ -25,7 +26,7 @@ const validateForm = (values: FormState) => ({
  * @returns Object containing form state, handlers, and validation
  */
 export function useSamplePetnamesForm() {
-  const petNames = usePetnames();
+  const petNames = useSamplePetnamesController();
   const metrics = useSamplePetnamesMetrics();
   const { traceFormSubmission } = useSamplePerformanceTrace({
     componentName: 'SamplePetnamesForm',
@@ -60,7 +61,9 @@ export function useSamplePetnamesForm() {
         hasPetNameError,
       });
 
-      return Promise.reject(new Error('Validation failed'));
+      throw new Error(
+        `Validation failed: ${Object.values(validationErrors).join(', ')}`,
+      );
     }
 
     try {

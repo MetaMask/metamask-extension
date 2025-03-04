@@ -1,20 +1,15 @@
 // Export from each file
 // Export the reducer as default
-import sampleReducer from './sample-reducer';
 
-export {
-  default as counterReducer,
-  increment,
-  setError,
-  SLICE_NAME,
-  type SampleState,
-} from './sample-reducer';
+import sampleSlice from './sample-slice';
+
+export const { increment, setError } = sampleSlice.actions;
 export { setCounter } from './sample-thunks';
 export {
   selectCounterState,
   selectCounterValue,
   selectCounterError,
 } from './sample-selectors';
-export { useSample } from './sample-hooks';
+export { useSample } from './useSample';
 
-export default sampleReducer;
+export default sampleSlice.reducer;

@@ -1,5 +1,5 @@
 import { act } from '@testing-library/react-hooks';
-import { useSample } from './sample-hooks';
+import { useSample } from './useSample';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 
 describe('sample hooks', () => {

@@ -1,10 +1,12 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { MetaMaskReduxDispatch } from '../../store/store';
-import { increment } from './sample-reducer';
-import { setCounter } from './sample-thunks';
-import { selectCounterValue, selectCounterError } from './sample-selectors';
+import {
+  increment,
+  selectCounterValue,
+  selectCounterError,
+  setCounter,
+} from '.';
 
-// Hook
 export function useSample() {
   const value = useSelector(selectCounterValue);
   const error = useSelector(selectCounterError);

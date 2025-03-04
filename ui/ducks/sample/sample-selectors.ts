@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { SLICE_NAME, SampleState } from './sample-reducer';
+import { SLICE_NAME, SampleState } from './sample-slice';
 
 // --- Selectors ---
 

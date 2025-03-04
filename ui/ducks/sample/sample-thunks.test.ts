@@ -1,12 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setCounter } from './sample-thunks';
-import counterReducer, { SampleState } from './sample-reducer';
+import sampleSlice, { SampleState } from './sample-slice';
 
 // Create a test store for Redux tests
 const createTestStore = (preloadedState?: { sample: SampleState }) => {
   return configureStore({
     reducer: {
-      sample: counterReducer,
+      sample: sampleSlice.reducer,
     },
     preloadedState,
   });

@@ -8,7 +8,7 @@ import { SampleCounterPane } from './sample-counter-pane';
 const mockIncrement = jest.fn();
 
 // Mock the counter module
-jest.mock('../../../ducks/sample/sample-hooks', () => {
+jest.mock('../../../ducks/sample/useSample', () => {
   return {
     useSample: () => ({
       value: 5,
@@ -45,7 +45,7 @@ describe('SampleCounterPane', () => {
 
     expect(screen.getByText('Counter')).toBeInTheDocument();
 
-    const valueElement = screen.getByText(/Value:/);
+    const valueElement = screen.getByText(/Value:/u);
     expect(valueElement).toBeInTheDocument();
 
     expect(screen.getByText('Increment Redux Counter')).toBeInTheDocument();

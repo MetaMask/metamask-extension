@@ -1,33 +1,34 @@
-import counterReducer, {
-  increment,
-  setError,
-  INITIAL_STATE,
-} from './sample-reducer';
+import sampleSlice, { INITIAL_STATE } from './sample-slice';
+
+const { increment, setError } = sampleSlice.actions;
 
 describe('sample reducer', () => {
   describe('reducer', () => {
     it('should return the initial state', () => {
-      const nextState = counterReducer(undefined, { type: 'unknown' });
+      const nextState = sampleSlice.reducer(undefined, { type: 'unknown' });
       expect(nextState).toEqual(INITIAL_STATE);
     });
 
     it('should handle increment', () => {
       const initialState = { counter: 0, error: null };
-      const nextState = counterReducer(initialState, increment());
+      const nextState = sampleSlice.reducer(initialState, increment());
       expect(nextState.counter).toEqual(1);
       expect(nextState.error).toBeNull();
     });
 
     it('should handle increment from non-zero starting value', () => {
       const initialState = { counter: 5, error: null };
-      const nextState = counterReducer(initialState, increment());
+      const nextState = sampleSlice.reducer(initialState, increment());
       expect(nextState.counter).toEqual(6);
     });
 
     it('should handle setError', () => {
       const initialState = { counter: 0, error: null };
       const errorMessage = 'Test error message';
-      const nextState = counterReducer(initialState, setError(errorMessage));
+      const nextState = sampleSlice.reducer(
+        initialState,
+        setError(errorMessage),
+      );
       expect(nextState.error).toEqual(errorMessage);
       expect(nextState.counter).toEqual(initialState.counter);
     });

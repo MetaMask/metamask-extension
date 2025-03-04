@@ -35,13 +35,13 @@ export const validateAddress = (address: string): string | undefined => {
  * @returns An error message if invalid, undefined if valid
  */
 export const validatePetname = (name: string): string | undefined => {
-  name = name.trim();
+  const trimmedName = name.trim();
 
-  if (!name) {
+  if (!trimmedName) {
     return 'Pet name is required';
   }
 
-  if (name.length > 12) {
+  if (trimmedName.length > 12) {
     return `Pet name must be 12 characters or less`;
   }
 

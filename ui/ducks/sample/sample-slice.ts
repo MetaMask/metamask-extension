@@ -12,7 +12,7 @@ export const INITIAL_STATE: SampleState = {
   error: null,
 };
 
-const counterSlice = createSlice({
+export default createSlice({
   name: SLICE_NAME,
   initialState: INITIAL_STATE,
   reducers: {
@@ -30,7 +30,3 @@ const counterSlice = createSlice({
     },
   },
 });
-
-export const { increment, setError, _setCounter } = counterSlice.actions;
-
-export default counterSlice.reducer;

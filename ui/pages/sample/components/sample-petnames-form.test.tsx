@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { usePetnames } from '../../../ducks/metamask/sample-petnames-controller';
+import { useSamplePetnamesController } from '../../../ducks/metamask/sample-petnames-controller';
 import { useSamplePetnamesMetrics } from '../hooks/useSamplePetnamesMetrics';
 import { useSamplePerformanceTrace } from '../hooks/useSamplePerformanceTrace';
 import { useSamplePetnamesForm } from '../hooks/useSamplePetnamesForm';
@@ -60,7 +60,9 @@ describe('SamplePetnamesForm', () => {
     };
 
     // Mock implementations
-    (usePetnames as jest.Mock).mockReturnValue(defaultPetnamesConfig);
+    (useSamplePetnamesController as jest.Mock).mockReturnValue(
+      defaultPetnamesConfig,
+    );
     (useSamplePetnamesForm as jest.Mock).mockReturnValue(defaultFormConfig);
 
     // Mock metrics
