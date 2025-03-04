@@ -68,14 +68,14 @@ describe('Keyring utils', () => {
         }),
       ).toThrow('Could not find keyring with specified criteria');
     });
-  });
-  it('throws error if not every selectors are matching', () => {
-    expect(() =>
-      findKeyringId(mockKeyrings, mockMetadata, {
-        type: KeyringTypes.hd,
-        address: mockAddress3,
-      }),
-    ).toThrow('Could not find keyring with specified criteria');
+    it('throws error if not every selectors are matching', () => {
+      expect(() =>
+        findKeyringId(mockKeyrings, mockMetadata, {
+          type: KeyringTypes.hd,
+          address: mockAddress3,
+        }),
+      ).toThrow('Could not find keyring with specified criteria');
+    });
   });
 
   describe('findKeyringIdByAddress', () => {
