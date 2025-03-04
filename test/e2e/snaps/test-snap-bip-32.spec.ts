@@ -8,7 +8,7 @@ describe('Test Snap bip-32', function () {
   it('tests various functions of bip-32', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder().withKeyringControllerMultiSRP().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -90,6 +90,49 @@ describe('Test Snap bip-32', function () {
           css: '#bip32MessageResult-ed25519Bip32',
           text: '"0xc279ee3e49f7e392a4e511136c39791e076f9be01d8648f3f1586ecf0f41def1739fa2978f90cfb2da4cf53ccb99405558cffcc4d190199b6949b03b1b8dae05"',
         });
+
+        // Select a different entropy source.
+        await testSnaps.selectEntropySource('bip32', 'SRP 1 (primary)');
+
+        // Change the message and sign.
+        await testSnaps.fillMessageSecp256k1('bar baz');
+
+        // Hit 'approve' on the signature confirmation and wait for window to
+        // close, then switch back to the `test-snaps` window.
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await testSnaps.snapInstall.clickApproveButton();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+
+        // Check the results of the message signature using `waitForSelector`.
+        await driver.waitForSelector({
+          css: '#bip32MessageResult-secp256k1',
+          text: '"0x3045022100bd7301b5288fcc15e9c19bf548b666356230343a57f4ef0327a8e81f19ac562c022062698ed00a36e9ddd1563e1dc2e357d747bdfb233192ee1597cabb6c7210a6ba"',
+        });
+
+        // Select a different entropy source and sign.
+        await testSnaps.selectEntropySource('bip32', 'SRP 2');
+        await testSnaps.fillMessageSecp256k1('bar baz');
+
+        // Hit 'approve' on the signature confirmation and wait for window to
+        // close, then switch back to the `test-snaps` window.
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await testSnaps.snapInstall.clickApproveButton();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+
+        await driver.waitForSelector({
+          css: '#bip32MessageResult-secp256k1',
+          text: '"0x3045022100ad81b36b28f5f5dd47f45a46b2e7cf42e501d2e9b5768627b0702c100f80eb3c02200a481cbbe22b47b4ea6cd923a7da22952f5b21a0dc52e841dcd08f7af8c74e05"',
+        });
+
+        // Select an invalid (non-existent) entropy source, and sign.
+        await testSnaps.selectEntropySource('bip32', 'Invalid');
+        await testSnaps.fillMessageSecp256k1('bar baz');
+
+        // Check the error message and close the alert.
+        await driver.waitForAlert(
+          'Entropy source with ID "invalid" not found.',
+        );
+        await driver.closeAlertPopup();
       },
     );
   });
