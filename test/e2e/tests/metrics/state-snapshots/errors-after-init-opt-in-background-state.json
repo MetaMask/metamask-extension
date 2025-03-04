@@ -238,16 +238,10 @@
       "smartTransactionsOptInStatus": true,
       "showNativeTokenAsMainBalance": true,
       "petnamesEnabled": true,
-      "showMultiRpcModal": false,
-      "tokenSortConfig": {
-        "key": "string",
-        "order": "string",
-        "sortCallback": "string"
-      },
-      "shouldShowAggregatedBalancePopover": true,
-      "tokenNetworkFilter": {
-        "0x539": "boolean"
-      },
+      "showMultiRpcModal": "boolean",
+      "tokenSortConfig": "object",
+      "shouldShowAggregatedBalancePopover": "boolean",
+      "tokenNetworkFilter": { "0x539": "boolean" },
       "smartTransactionsMigrationApplied": "boolean"
     },
     "ipfsGateway": "string",
