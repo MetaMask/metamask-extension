@@ -196,9 +196,6 @@
   "addFriendsAndAddresses": {
     "message": "Magdagdag ng mga kaibigan at address na pinagkakatiwalaan mo"
   },
-  "addHardwareWallet": {
-    "message": "Magdagdag ng wallet na hardware"
-  },
   "addIPFSGateway": {
     "message": "Idagdag ang mas gusto mong IPFS gateway"
   },
@@ -217,12 +214,6 @@
   },
   "addNewAccount": {
     "message": "Magdagdag ng bagong account sa Ethereum"
-  },
-  "addNewBitcoinAccount": {
-    "message": "Magdagdag ng bagong account sa Bitcoin (Beta)"
-  },
-  "addNewBitcoinTestnetAccount": {
-    "message": "Magdagdag ng bagong account sa Bitcoin (Testnet)"
   },
   "addNft": {
     "message": "Magdagdag ng NFT"

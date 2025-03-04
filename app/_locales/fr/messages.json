@@ -196,9 +196,6 @@
   "addFriendsAndAddresses": {
     "message": "Ajoutez uniquement des amis et des adresses de confiance"
   },
-  "addHardwareWallet": {
-    "message": "Ajouter un portefeuille matériel"
-  },
   "addIPFSGateway": {
     "message": "Ajoutez votre passerelle IPFS préférée"
   },
@@ -217,12 +214,6 @@
   },
   "addNewAccount": {
     "message": "Ajouter un nouveau compte Ethereum"
-  },
-  "addNewBitcoinAccount": {
-    "message": "Ajouter un nouveau compte Bitcoin (Bêta)"
-  },
-  "addNewBitcoinTestnetAccount": {
-    "message": "Ajouter un nouveau compte Bitcoin (Testnet)"
   },
   "addNft": {
     "message": "Ajouter un NFT"

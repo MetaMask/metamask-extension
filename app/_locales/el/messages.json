@@ -196,9 +196,6 @@
   "addFriendsAndAddresses": {
     "message": "Προσθέστε φίλους και διευθύνσεις που εμπιστεύεστε"
   },
-  "addHardwareWallet": {
-    "message": "Προσθήκη πορτοφολιού υλικού"
-  },
   "addIPFSGateway": {
     "message": "Προσθέστε την πύλη IPFS που προτιμάτε"
   },
@@ -217,12 +214,6 @@
   },
   "addNewAccount": {
     "message": "Προσθήκη νέου λογαριασμού Ethereum"
-  },
-  "addNewBitcoinAccount": {
-    "message": "Προσθήκη νέου λογαριασμού Bitcoin (Beta)"
-  },
-  "addNewBitcoinTestnetAccount": {
-    "message": "Προσθήκη νέου λογαριασμού Bitcoin (Testnet)"
   },
   "addNft": {
     "message": "Προσθήκη του NFT"

@@ -196,9 +196,6 @@
   "addFriendsAndAddresses": {
     "message": "Добавьте друзей и адреса, которым доверяете"
   },
-  "addHardwareWallet": {
-    "message": "Добавить аппаратный кошелек"
-  },
   "addIPFSGateway": {
     "message": "Добавьте предпочтительный шлюз IPFS"
   },
@@ -217,12 +214,6 @@
   },
   "addNewAccount": {
     "message": "Добавить новый счет Ethereum"
-  },
-  "addNewBitcoinAccount": {
-    "message": "Добавить новый счет в биткойнах (бета-версия)"
-  },
-  "addNewBitcoinTestnetAccount": {
-    "message": "Добавить новый счет в биткойнах (тестнет)"
   },
   "addNft": {
     "message": "Добавить NFT"

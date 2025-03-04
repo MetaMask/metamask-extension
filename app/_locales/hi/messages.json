@@ -196,9 +196,6 @@
   "addFriendsAndAddresses": {
     "message": "उन मित्रों और पतों को जोड़ें, जिन पर आप भरोसा करते हैं"
   },
-  "addHardwareWallet": {
-    "message": "hardware wallet जोड़ें"
-  },
   "addIPFSGateway": {
     "message": "अपना पसंदीदा IPFS गेटवे जोड़ें"
   },
@@ -217,12 +214,6 @@
   },
   "addNewAccount": {
     "message": "एक नया Ethereum अकाउंट जोड़ें"
-  },
-  "addNewBitcoinAccount": {
-    "message": "एक नया Bitcoin अकाउंट जोड़ें (बीटा)"
-  },
-  "addNewBitcoinTestnetAccount": {
-    "message": "एक नया Bitcoin अकाउंट जोड़ें (टैस्टनेट (testnet))"
   },
   "addNft": {
     "message": "NFT जोड़ें"

@@ -196,9 +196,6 @@
   "addFriendsAndAddresses": {
     "message": "Güvendiğiniz arkadaşlarınızı ve adresleri ekleyin"
   },
-  "addHardwareWallet": {
-    "message": "Donanım cüzdanı ekleyin"
-  },
   "addIPFSGateway": {
     "message": "Tercih ettiğiniz IPFS ağ geçidini ekleyin"
   },
@@ -217,12 +214,6 @@
   },
   "addNewAccount": {
     "message": "Yeni bir Ethereum hesabı ekle"
-  },
-  "addNewBitcoinAccount": {
-    "message": "Yeni bir Bitcoin hesabı ekle (Beta)"
-  },
-  "addNewBitcoinTestnetAccount": {
-    "message": "Yeni bir Bitcoin hesabı ekle (Test Ağı)"
   },
   "addNft": {
     "message": "NFT ekleyin"

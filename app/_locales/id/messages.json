@@ -196,9 +196,6 @@
   "addFriendsAndAddresses": {
     "message": "Tambahkan teman dan alamat yang Anda percayai"
   },
-  "addHardwareWallet": {
-    "message": "Tambahkan dompet perangkat keras"
-  },
   "addIPFSGateway": {
     "message": "Tambahkan gateway IPFS pilihan Anda"
   },
@@ -217,12 +214,6 @@
   },
   "addNewAccount": {
     "message": "Tambahkan akun Ethereum baru"
-  },
-  "addNewBitcoinAccount": {
-    "message": "Tambahkan akun Bitcoin baru (Beta)"
-  },
-  "addNewBitcoinTestnetAccount": {
-    "message": "Tambahkan akun Bitcoin baru (Testnet)"
   },
   "addNft": {
     "message": "Tambahkan NFT"
