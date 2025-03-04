@@ -98,6 +98,139 @@ jobs:
           name: prep-build-test-webpack
           path: ./dist/
 
+  prep-build-test:
+    needs: prep-deps
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout and setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        with:
+          is-high-risk-environment: false
+
+      - run: yarn build:test
+
+      - name: Move test build to dist-test
+        run: mv ./dist ./dist-test
+
+      - name: Move test zips to builds-test
+        run: mv ./builds ./builds-test
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: builds-test
+          path: ./builds-test/
+
+      - name: Upload dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-test
+          path: ./dist-test/
+
+  prep-build-test-mv2:
+    needs: prep-deps
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout and setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        with:
+          is-high-risk-environment: false
+
+      - run: yarn build:test:mv2
+
+      - name: Move test build to dist-test-mv2
+        run: mv ./dist ./dist-test-mv2
+
+      - name: Move test zips to builds-test-mv2
+        run: mv ./builds ./builds-test-mv2
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: builds-test-mv2
+          path: ./builds-test-mv2/
+
+      - name: Upload dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-test-mv2
+          path: ./dist-test-mv2/
+
+  prep-build-test-flask:
+    needs: prep-deps
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout and setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        with:
+          is-high-risk-environment: false
+
+      - run: yarn build:test:flask
+
+      - name: Move test build to dist-test-flask
+        run: mv ./dist ./dist-test-flask
+
+      - name: Move test zips to builds-test-flask
+        run: mv ./builds ./builds-test-flask
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: builds-test-flask
+          path: ./builds-test-flask/
+
+      - name: Upload dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-test-flask
+          path: ./dist-test-flask/
+
+  prep-build-test-flask-mv2:
+    needs: prep-deps
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout and setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        with:
+          is-high-risk-environment: false
+
+      - run: yarn build:test:flask:mv2
+
+      - name: Move test build to dist-test-flask-mv2
+        run: mv ./dist ./dist-test-flask-mv2
+
+      - name: Move test zips to builds-test-flask-mv2
+        run: mv ./builds ./builds-test-flask-mv2
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: builds-test-flask-mv2
+          path: ./builds-test-flask-mv2/
+
+      - name: Upload dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-test-flask-mv2
+          path: ./dist-test-flask-mv2/
+
+  prep-build-ts-migration-dashboard:
+    needs: prep-deps
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout and setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        with:
+          is-high-risk-environment: false
+
+      - run: yarn ts-migration:dashboard:build
+
+      - name: Upload ts-migration-dashboard
+        uses: actions/upload-artifact@v4
+        with:
+          name: ts-migration-dashboard
+          path: ./development/ts-migration-dashboard/build/final/
+
   prep-build:
     needs: prep-deps
     runs-on: ubuntu-latest
@@ -327,6 +460,13 @@ jobs:
       - prep-build-mv2
       - prep-build-flask
       - prep-build-flask-mv2
+      - prep-build-test
+      - prep-build-test-mv2
+      - prep-build-test-flask
+      - prep-build-test-flask-mv2
+      - prep-build-ts-migration-dashboard
+      - prep-build-test-browserify
+      - prep-build-test-webpack
     outputs:
       PASSED: ${{ steps.set-output.outputs.PASSED }}
     steps:
