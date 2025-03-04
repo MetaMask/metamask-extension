@@ -134,6 +134,10 @@ describe('Multichain API', function () {
         await testDapp.initCreateSessionScopes(requestScopes);
 
         // navigate to network selection screen
+        const permissionsTab = await driver.findElement(
+          '[data-testid="permissions-tab"]',
+        );
+        await permissionsTab.click();
         const editButtons = await driver.findElements('[data-testid="edit"]');
         await editButtons[1].click();
         await driver.delay(largeDelayMs);

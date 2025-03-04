@@ -88,6 +88,10 @@ export const updateNetworkCheckboxes = async (
   driver: Driver,
   selectedNetworkNames: string[],
 ): Promise<void> => {
+  const permissionsTab = await driver.findElement(
+    '[data-testid="permissions-tab"]',
+  );
+  await permissionsTab.click();
   const editButtons = await driver.findElements('[data-testid="edit"]');
   await editButtons[1].click();
   await driver.delay(regularDelayMs);

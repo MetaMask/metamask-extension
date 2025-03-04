@@ -143,8 +143,8 @@ async function withFixtures(options, testSuite) {
     getServerMochaToBackground();
   }
 
-  let driver;
   let webDriver;
+  let driver;
   let extensionId;
   let failed = false;
 
@@ -270,7 +270,6 @@ async function withFixtures(options, testSuite) {
     driver = wd.driver;
     extensionId = wd.extensionId;
     webDriver = driver.driver;
-    extensionId = driver.extensionId;
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       await driver.checkBrowserForExceptions(ignoredConsoleErrors);
