@@ -4113,7 +4113,7 @@ export function updateThrottledOriginState(
   origin: string,
   throttledOriginState: ThrottledOrigin,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async () => {
     await submitRequestToBackground('updateThrottledOriginState', [
       origin,
       throttledOriginState,
