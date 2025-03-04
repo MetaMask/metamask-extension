@@ -1309,7 +1309,7 @@
     "chokidar>anymatch": {
       "packages": {
         "chokidar>anymatch>normalize-path": true,
-        "chokidar>anymatch>picomatch": true
+        "micromatch>picomatch": true
       }
     },
     "gulp>glob-watcher>anymatch": {
@@ -5114,27 +5114,7 @@
         "process.platform": true
       }
     },
-    "chokidar>anymatch>picomatch": {
-      "builtin": {
-        "path.basename": true,
-        "path.sep": true
-      },
-      "globals": {
-        "process.platform": true,
-        "process.version.slice": true
-      }
-    },
     "micromatch>picomatch": {
-      "builtin": {
-        "path.basename": true,
-        "path.sep": true
-      },
-      "globals": {
-        "process.platform": true,
-        "process.version.slice": true
-      }
-    },
-    "chokidar>readdirp>picomatch": {
       "builtin": {
         "path.basename": true,
         "path.sep": true
@@ -7077,7 +7057,7 @@
         "process.versions.node.split": true
       },
       "packages": {
-        "chokidar>readdirp>picomatch": true
+        "micromatch>picomatch": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-dotall-regex>@babel/helper-create-regexp-features-plugin>regexpu-core>regenerate": {
