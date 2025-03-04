@@ -69,16 +69,6 @@ describe('Test Snap update via snaps component', function () {
           tag: 'button',
         });
 
-        // wait for permissions popover, click checkboxes and confirm
-        await driver.waitForSelector('.mm-checkbox__input');
-        await driver.clickElement('.mm-checkbox__input');
-        await driver.waitForSelector(
-          '[data-testid="snap-install-warning-modal-confirm"]',
-        );
-        await driver.clickElement(
-          '[data-testid="snap-install-warning-modal-confirm"]',
-        );
-
         // wait for and click OK button and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
         await driver.clickElementAndWaitForWindowToClose({
@@ -116,11 +106,11 @@ describe('Test Snap update via snaps component', function () {
 
         // click into snap view and attempt to update the snap
         await driver.waitForSelector({
-          text: 'BIP-32 Example Snap',
+          text: 'Webpack Plugin Example Snap',
           tag: 'p',
         });
         await driver.clickElement({
-          text: 'BIP-32 Example Snap',
+          text: 'Webpack Plugin Example Snap',
           tag: 'p',
         });
         await driver.waitForSelector({
@@ -142,14 +132,6 @@ describe('Test Snap update via snaps component', function () {
           text: 'Confirm',
           tag: 'button',
         });
-
-        // click checkbox
-        await driver.clickElement('.mm-checkbox__input');
-
-        // click install warning confirm
-        await driver.clickElement(
-          '[data-testid="snap-install-warning-modal-confirm"]',
-        );
 
         // wait for and click ok
         await driver.waitForSelector({ text: 'OK' });
@@ -175,11 +157,11 @@ describe('Test Snap update via snaps component', function () {
 
         // wait for and click into snap view
         await driver.waitForSelector({
-          text: 'BIP-32 Example Snap',
+          text: 'Webpack Plugin Example Snap',
           tag: 'p',
         });
         await driver.clickElement({
-          text: 'BIP-32 Example Snap',
+          text: 'Webpack Plugin Example Snap',
           tag: 'p',
         });
 
@@ -193,7 +175,7 @@ describe('Test Snap update via snaps component', function () {
           {
             // make sure the Snap page has loaded
             findElementGuard: {
-              text: 'Description from BIP-32 Example Snap',
+              text: 'Description from Webpack Plugin Example Snap',
               tag: 'p',
             },
           },
