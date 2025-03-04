@@ -110,8 +110,6 @@ jobs:
       - name: Build for non-master branch
         if: github.ref != 'refs/heads/master'
         run: yarn build dist
-        env:
-          INFURA_PROJECT_ID: ''
 
       - name: Build for master branch
         if: github.ref == 'refs/heads/master'
@@ -131,6 +129,120 @@ jobs:
         with:
           name: dist
           path: ./dist/
+
+  prep-build-mv2:
+    needs: prep-deps
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout and setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        with:
+          is-high-risk-environment: false
+
+      - name: Build for non-master branch
+        if: github.ref != 'refs/heads/master'
+        run: ENABLE_MV3=false yarn build dist
+
+      - name: Build for master branch
+        if: github.ref == 'refs/heads/master'
+        run: ENABLE_MV3=false yarn build prod
+
+      - name: Debug build
+        run: find dist/ -type f -exec md5sum {} \; | sort -k 2
+
+      - name: Move build to dist-mv2
+        run: mv ./dist ./dist-mv2
+
+      - name: Move zips to builds-mv2
+        run: mv ./builds ./builds-mv2
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: builds-mv2
+          path: ./builds-mv2/
+
+      - name: Upload dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-mv2
+          path: ./dist-mv2/
+
+  prep-build-flask:
+    needs: prep-deps
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout and setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        with:
+          is-high-risk-environment: false
+
+      - name: Build for non-master branch
+        if: github.ref != 'refs/heads/master'
+        run: yarn build --build-type flask dist
+
+      - name: Build for master branch
+        if: github.ref == 'refs/heads/master'
+        run: yarn build --build-type flask prod
+
+      - name: Debug build
+        run: find dist/ -type f -exec md5sum {} \; | sort -k 2
+
+      - name: Move build to dist-flask
+        run: mv ./dist ./dist-flask
+
+      - name: Move zips to builds-flask
+        run: mv ./builds ./builds-flask
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: builds-flask
+          path: ./builds-flask/
+
+      - name: Upload dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-flask
+          path: ./dist-flask/
+
+  prep-build-flask-mv2:
+    needs: prep-deps
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout and setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        with:
+          is-high-risk-environment: false
+
+      - name: Build for non-master branch
+        if: github.ref != 'refs/heads/master'
+        run: ENABLE_MV3=false yarn build --build-type flask dist
+
+      - name: Build for master branch
+        if: github.ref == 'refs/heads/master'
+        run: ENABLE_MV3=false yarn build --build-type flask prod
+
+      - name: Debug build
+        run: find dist/ -type f -exec md5sum {} \; | sort -k 2
+
+      - name: Move build to dist-flask-mv2
+        run: mv ./dist ./dist-flask-mv2
+
+      - name: Move zips to builds-flask-mv2
+        run: mv ./builds ./builds-flask-mv2
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: builds-flask-mv2
+          path: ./builds-flask-mv2/
+
+      - name: Upload dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-flask-mv2
+          path: ./dist-flask-mv2/
 
   run-tests:
     name: Run tests
@@ -202,6 +314,7 @@ jobs:
       - build-storybook
       - build-beta
       - prep-build
+      - prep-build-mv2
     outputs:
       PASSED: ${{ steps.set-output.outputs.PASSED }}
     steps:
