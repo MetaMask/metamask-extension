@@ -16,6 +16,7 @@ const {
   sentryRegEx,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
+const { MOCK_META_METRICS_ID } = require('../../constants');
 
 /**
  * Derive a UI state field from a background state field.
@@ -311,7 +312,7 @@ describe('Sentry errors', function () {
           fixtures: {
             ...new FixtureBuilder()
               .withMetaMetricsController({
-                metaMetricsId: 'fake-metrics-id',
+                metaMetricsId: MOCK_META_METRICS_ID,
                 participateInMetaMetrics: true,
               })
               .build(),
@@ -357,7 +358,7 @@ describe('Sentry errors', function () {
           fixtures: {
             ...new FixtureBuilder()
               .withMetaMetricsController({
-                metaMetricsId: 'fake-metrics-id',
+                metaMetricsId: MOCK_META_METRICS_ID,
                 participateInMetaMetrics: true,
               })
               .build(),
@@ -419,7 +420,7 @@ describe('Sentry errors', function () {
           fixtures: {
             ...new FixtureBuilder()
               .withMetaMetricsController({
-                metaMetricsId: 'fake-metrics-id',
+                metaMetricsId: MOCK_META_METRICS_ID,
                 participateInMetaMetrics: true,
               })
               .withBadPreferencesControllerState()
@@ -469,7 +470,7 @@ describe('Sentry errors', function () {
         {
           fixtures: new FixtureBuilder()
             .withMetaMetricsController({
-              metaMetricsId: 'fake-metrics-id',
+              metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
             })
             .build(),
@@ -515,7 +516,7 @@ describe('Sentry errors', function () {
         {
           fixtures: new FixtureBuilder()
             .withMetaMetricsController({
-              metaMetricsId: 'fake-metrics-id',
+              metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
             })
             .build(),
@@ -651,7 +652,7 @@ describe('Sentry errors', function () {
         {
           fixtures: new FixtureBuilder()
             .withMetaMetricsController({
-              metaMetricsId: 'fake-metrics-id',
+              metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
             })
             .build(),
@@ -697,7 +698,7 @@ describe('Sentry errors', function () {
         {
           fixtures: new FixtureBuilder()
             .withMetaMetricsController({
-              metaMetricsId: 'fake-metrics-id',
+              metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
             })
             .build(),
@@ -760,7 +761,7 @@ describe('Sentry errors', function () {
         {
           fixtures: new FixtureBuilder()
             .withMetaMetricsController({
-              metaMetricsId: 'fake-metrics-id',
+              metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
             })
             .build(),
@@ -804,7 +805,7 @@ describe('Sentry errors', function () {
         {
           fixtures: new FixtureBuilder()
             .withMetaMetricsController({
-              metaMetricsId: 'fake-metrics-id',
+              metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
             })
             .build(),
