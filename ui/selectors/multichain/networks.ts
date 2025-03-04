@@ -114,6 +114,7 @@ export const getMultichainNetworkConfigurationsByChainId =
         InternalMultichainNetworkConfiguration
       > = {};
 
+      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       // This is not ideal but since there are only two non EVM networks
       // we can just filter them out based on the support enabled
       const { bitcoinEnabled, solanaEnabled } = isNonEvmNetworksEnabled;
@@ -126,6 +127,7 @@ export const getMultichainNetworkConfigurationsByChainId =
         filteredNonEvmNetworkConfigurationsByChainId[SolScope.Mainnet] =
           nonEvmNetworkConfigurationsByChainId[SolScope.Mainnet];
       }
+      ///: END:ONLY_INCLUDE_IF
 
       // There's a fallback for EVM network names/nicknames, in case the network
       // does not have a name/nickname the fallback is the first rpc endpoint url.
@@ -144,7 +146,9 @@ export const getMultichainNetworkConfigurationsByChainId =
       );
 
       const networks = {
+        ///: BEGIN:ONLY_INCLUDE_IF(multichain)
         ...filteredNonEvmNetworkConfigurationsByChainId,
+        ///: END:ONLY_INCLUDE_IF
         ...evmNetworks,
       };
 
