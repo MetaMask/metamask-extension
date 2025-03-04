@@ -2777,10 +2777,6 @@
     "message": "Chúng tôi không thể kết nối với $1",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "Mạng được chuyển thành $1",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "URL mạng"
   },
@@ -4185,9 +4181,6 @@
   "seedPhraseIntroTitle": {
     "message": "Bảo mật cho ví của bạn"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Trước khi bắt đầu, hãy xem video ngắn này để tìm hiểu thêm về cụm từ khôi phục bí mật của bạn và cách bảo vệ ví của bạn."
-  },
   "seedPhraseReq": {
     "message": "Cụm từ khôi phục bí mật gồm 12, 15, 18, 21 hoặc 24 từ"
   },
@@ -4652,15 +4645,6 @@
   "snapsUIError": {
     "message": "Liên hệ với những người tạo ra $1 để được hỗ trợ thêm.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "solanaSupportSectionTitle": {
-    "message": "Solana"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "Bật tính năng này sẽ cung cấp cho bạn tùy chọn thêm Tài khoản Solana vào Tiện ích mở rộng MetaMask bắt nguồn từ Cụm từ khôi phục bí mật hiện có của bạn. Đây là một tính năng Beta thử nghiệm, nên bạn phải tự chịu rủi ro khi sử dụng nó."
-  },
-  "solanaSupportToggleTitle": {
-    "message": "Bật \"Thêm tài khoản Solana mới (Beta)\""
   },
   "somethingDoesntLookRight": {
     "message": "Có gì đó không ổn? $1",

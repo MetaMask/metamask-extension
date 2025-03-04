@@ -18,6 +18,8 @@ import {
   unapprovedTypedSignMsgV4,
 } from '../../../../../../../test/data/confirmations/typed_sign';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
+import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
+import { Severity } from '../../../../../../helpers/constants/design-system';
 import TypedSignInfo from './typed-sign';
 
 jest.mock(
@@ -189,5 +191,32 @@ describe('TypedSignInfo', () => {
     expect(
       queryByText('This is the site asking for your signature.'),
     ).toBeDefined();
+  });
+
+  it('display network info if there is an alert on that field', () => {
+    const state = {
+      ...getMockTypedSignConfirmStateForRequest(unapprovedTypedSignMsgV4),
+      confirmAlerts: {
+        alerts: {
+          [unapprovedTypedSignMsgV4.id]: [
+            {
+              key: 'networkSwitchInfo',
+              field: RowAlertKey.Network,
+              severity: Severity.Info,
+              message: 'dummy message',
+              reason: 'dummy reason',
+            },
+          ],
+        },
+        confirmed: {},
+      },
+    };
+    const mockStore = configureMockStore([])(state);
+    const { getByText } = renderWithConfirmContextProvider(
+      <TypedSignInfo />,
+      mockStore,
+    );
+    expect(getByText('Network')).toBeInTheDocument();
+    expect(getByText('Goerli')).toBeInTheDocument();
   });
 });

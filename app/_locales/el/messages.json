@@ -2777,10 +2777,6 @@
     "message": "Δεν μπορούμε να συνδεθούμε στο $1",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "Το δίκτυο άλλαξε σε $1",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "Διεύθυνση URL του δικτύου"
   },
@@ -4185,9 +4181,6 @@
   "seedPhraseIntroTitle": {
     "message": "Προστατεύστε το πορτοφόλι σας"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Πριν ξεκινήσετε, παρακολουθήστε αυτό το σύντομο βίντεο για να μάθετε για τη Μυστική Φράση Ανάκτησης και πώς να διατηρείτε ασφαλές το πορτοφόλι σας."
-  },
   "seedPhraseReq": {
     "message": "Οι Μυστικές Φράσεις Ανάκτησης περέχουν 12, 15, 18, 21 ή 24 λέξεις"
   },
@@ -4652,15 +4645,6 @@
   "snapsUIError": {
     "message": "Επικοινωνήστε με τους διαχειριστές του $1 για περαιτέρω υποστήριξη.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "solanaSupportSectionTitle": {
-    "message": "Solana"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "Η ενεργοποίηση αυτής της λειτουργίας θα σας δώσει τη δυνατότητα να προσθέσετε έναν λογαριασμό Solana στην επέκταση του MetaMask που προέρχεται από την υπάρχουσα Μυστική Φράση Ανάκτησης. Πρόκειται για μια πειραματική λειτουργία Beta, οπότε θα πρέπει να τη χρησιμοποιήσετε με δική σας ευθύνη."
-  },
-  "solanaSupportToggleTitle": {
-    "message": "Ενεργοποίηση της λειτουργίας \"Προσθήκη νέου λογαριασμού Solana (Beta)\""
   },
   "somethingDoesntLookRight": {
     "message": "Κάτι δεν φαίνεται σωστό; $1",

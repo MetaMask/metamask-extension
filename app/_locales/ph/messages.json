@@ -1034,9 +1034,6 @@
   "seedPhraseIntroTitle": {
     "message": "I-secure ang iyong wallet"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Bago magsimula, panoorin ang maikling video na ito para matuto tungkol sa recovery phrase at kung paano panatilihing ligtas ang iyong wallet."
-  },
   "seedPhraseReq": {
     "message": "Ang mga Secret Recovery Phrase ay naglalaman ng 12, 15, 18, 21, o 24 na salita"
   },

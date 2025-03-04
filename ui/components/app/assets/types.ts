@@ -2,8 +2,8 @@ import { Hex } from '@metamask/utils';
 
 // Common mixin for primary and secondary display values
 export type TokenDisplayValues = {
-  primary?: string;
-  secondary?: string;
+  primary: string;
+  secondary: number;
   string?: string;
 };
 
@@ -45,6 +45,7 @@ export type TokenWithFiatAmount = Token &
   TokenDisplayValues &
   TokenBalanceValues & {
     isStakeable?: boolean;
+    title: string;
   };
 
 export type TokenFiatDisplayInfo = TokenWithFiatAmount & TokenDisplayInfo;

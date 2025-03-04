@@ -2780,10 +2780,6 @@
     "message": "Não podemos conectar a $1",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "Rede mudou para $1",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "URL da rede"
   },
@@ -4188,9 +4184,6 @@
   "seedPhraseIntroTitle": {
     "message": "Proteja sua carteira"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Antes de iniciar, assista a esse vídeo curto para aprender sobre sua Frase de Recuperação Secreta e sobre como manter sua carteira segura."
-  },
   "seedPhraseReq": {
     "message": "As Frases de Recuperação Secretas contêm 12, 15, 18, 21 ou 24 palavras"
   },
@@ -4655,15 +4648,6 @@
   "snapsUIError": {
     "message": "Contate os criadores de $1 para receber mais suporte.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "solanaSupportSectionTitle": {
-    "message": "Solana"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "Ativar este recurso lhe dará a opção de adicionar uma conta Solana à sua extensão da MetaMask derivada de sua Frase de Recuperação Secreta existente. Este é um recurso beta experimental, portanto seu uso será por sua conta e risco."
-  },
-  "solanaSupportToggleTitle": {
-    "message": "Ative \"Adicionar uma nova conta Solana (Beta)\""
   },
   "somethingDoesntLookRight": {
     "message": "Alguma coisa não parece certa? $1",

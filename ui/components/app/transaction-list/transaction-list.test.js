@@ -11,9 +11,10 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
-  MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP,
+  MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP,
   MultichainNetworks,
 } from '../../../../shared/constants/multichain/networks';
+import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
 import TransactionList from './transaction-list.component';
 
 const defaultState = {
@@ -96,9 +97,13 @@ describe('TransactionList', () => {
     });
     expect(viewOnExplorerBtn).toBeInTheDocument();
 
-    const blockExplorerDomain = new URL(
-      MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP[MultichainNetworks.BITCOIN],
-    ).host;
+    const blockExplorerUrl = formatBlockExplorerAddressUrl(
+      MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+        MultichainNetworks.BITCOIN
+      ],
+      btcState.metamask.internalAccounts.selectedAccount.address,
+    );
+    const blockExplorerDomain = new URL(blockExplorerUrl).host;
     fireEvent.click(viewOnExplorerBtn);
     expect(mockTrackEvent).toHaveBeenCalledWith({
       event: MetaMetricsEventName.ExternalLinkClicked,
