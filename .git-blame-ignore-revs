@@ -35,10 +35,6 @@ b6ccd22d6c0ff6b9797c7aa24429f3df6d031af7
 09d81ac5f2c94d7730d2e981b4f05734858030bf
 29742b951954f1b463de331df84ff75b22a9498d
 
-#17092 Added storybook check to CI @NidhiKJha
-#### Let's discuss if this one should be removed from the list
-c5368c152b544433a2087597f0cb36b33fbd9c6a
-
 #22639 Confirmations code re-structuring @jpuri
 c4c12ecd53ee8d1c76d4329af21649ce93d5f9bd
 
