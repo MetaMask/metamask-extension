@@ -56,6 +56,7 @@ export default class DomainInput extends Component {
   }
 
   onPaste = (event) => {
+    console.log('onPasting!!!!!!!!!!');
     if (event.clipboardData.items?.length) {
       const clipboardItem = event.clipboardData.items[0];
       clipboardItem?.getAsString((text) => {
@@ -80,8 +81,8 @@ export default class DomainInput extends Component {
     } = this.props;
     const input = value.trim();
 
-    onChange(input);
     if (internalSearch) {
+      onChange(input);
       return null;
     }
 
@@ -92,9 +93,12 @@ export default class DomainInput extends Component {
         !isBurnAddress(input) &&
         isValidHexAddress(input, { mixedCaseUseChecksum: true })
       ) {
-        onValidAddressTyped(addHexPrefix(input));
+        const hexInput = addHexPrefix(input);
+        onChange(hexInput);
+        onValidAddressTyped(addHexPrefix(hexInput));
       }
     } else {
+      onChange(input);
       lookupDomainName(input);
     }
 
