@@ -446,8 +446,6 @@ jobs:
       - wait-for-circleci-workflow-status
       - build-storybook
       - build-beta
-      - prep-build-flask
-      - prep-build-flask-mv2
     uses: ./.github/workflows/publish-prerelease.yml
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
