@@ -7,7 +7,6 @@ import FixtureBuilder from '../fixture-builder';
 import { Driver } from '../webdriver/driver';
 import {
   withFixtures,
-  defaultGanacheOptions,
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
@@ -479,7 +478,6 @@ describe('Add Ethereum Chain', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
             .build(),
-          localNodeOptions: defaultGanacheOptions,
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {

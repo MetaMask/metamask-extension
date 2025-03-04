@@ -6,7 +6,6 @@ import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import FixtureBuilder from '../../fixture-builder';
 import {
   withFixtures,
-  defaultGanacheOptions,
   WINDOW_TITLES,
 } from '../../helpers';
 
@@ -22,9 +21,6 @@ describe('Request Queuing', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withSelectedNetworkControllerPerDomain()
           .build(),
-        localNodeOptions: {
-          ...defaultGanacheOptions,
-        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

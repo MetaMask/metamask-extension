@@ -5,7 +5,6 @@ import { Browser } from 'selenium-webdriver';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import FixtureBuilder from '../../fixture-builder';
 import {
-  defaultGanacheOptions,
   unlockWallet,
   withFixtures,
 } from '../../helpers';
@@ -30,7 +29,6 @@ describe('Token List', function () {
   const fixtures = {
     fixtures: new FixtureBuilder({ inputChainId: chainId }).build(),
     localNodeOptions: {
-      ...defaultGanacheOptions,
       chainId: parseInt(chainId, 16),
     },
   };

@@ -2,7 +2,6 @@ import { Context } from 'mocha';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import FixtureBuilder from '../../fixture-builder';
 import {
-  defaultGanacheOptions,
   unlockWallet,
   withFixtures,
   largeDelayMs,
@@ -19,7 +18,6 @@ describe('Token List Sorting', function () {
   const testFixtures = {
     fixtures: new FixtureBuilder({ inputChainId: mainnetChainId }).build(),
     localNodeOptions: {
-      ...defaultGanacheOptions,
       chainId: parseInt(mainnetChainId, 16),
     },
   };

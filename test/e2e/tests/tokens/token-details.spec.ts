@@ -4,7 +4,6 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { formatCurrency } from '../../../../ui/helpers/utils/confirm-tx.util';
 import FixtureBuilder from '../../fixture-builder';
 import {
-  defaultGanacheOptions,
   unlockWallet,
   withFixtures,
 } from '../../helpers';
@@ -26,7 +25,6 @@ describe('Token Details', function () {
   const fixtures = {
     fixtures: new FixtureBuilder({ inputChainId: chainId }).build(),
     localNodeOptions: {
-      ...defaultGanacheOptions,
       chainId: parseInt(chainId, 16),
     },
   };
