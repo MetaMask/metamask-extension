@@ -62,6 +62,7 @@ jobs:
         with:
           path: ./test-artifacts/chrome/
           pattern: bundle-size
+          merge-multiple: true
 
       - run: |
           echo "Benchmark artifacts:"

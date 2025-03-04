@@ -4,6 +4,8 @@ import startCase from 'lodash/startCase';
 import path from 'path';
 import { version as VERSION } from '../package.json';
 
+start().catch(console.error);
+
 function getHumanReadableSize(bytes) {
   if (!bytes) {
     return '0 Bytes';
@@ -84,7 +86,10 @@ async function start() {
     '-s',
     '--format=%s',
     HEAD_COMMIT_HASH,
-  ]).stdout.trim();
+  ])
+    .toString()
+    .trim();
+
   const betaVersionRegex = /Version v[0-9]+\.[0-9]+\.[0-9]+-beta\.[0-9]+/u;
   const betaMatch = commitMessage.match(betaVersionRegex);
 
@@ -194,8 +199,7 @@ async function start() {
 
     for (const buildType of buildTypes) {
       const benchmarkPath = path.resolve(
-        __dirname,
-        `../test-artifacts/benchmarks/benchmark-${platform}-${buildType}-pageload.json`,
+        `test-artifacts/benchmarks/benchmark-${platform}-${buildType}-pageload.json`,
       );
 
       try {
@@ -324,11 +328,7 @@ async function start() {
   try {
     const prBundleSizeStats = JSON.parse(
       await fs.readFile(
-        path.resolve(
-          __dirname,
-          '..',
-          path.join('test-artifacts', 'chrome', 'bundle_size.json'),
-        ),
+        path.resolve('test-artifacts/chrome/bundle_size.json'),
         'utf-8',
       ),
     );
