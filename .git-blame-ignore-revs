@@ -1,6 +1,9 @@
-# To make this work for you locally, run:
+# This file is used to ignore commits when running git blame.
+#
+# It should work in Cursor and VSCode with GitLens automatically because of .vscode/settings.json
+#
+# To make this work for you everywhere locally, run:
 # git config blame.ignoreRevsFile .git-blame-ignore-revs
-# (if not autorun by postinstall)
 
 #6304 Folder restructure @danjm
 31175625b446cb5d18b17db23018bca8b14d280c
