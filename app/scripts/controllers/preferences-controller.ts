@@ -142,11 +142,10 @@ export type PreferencesControllerState = Omit<
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   watchEthereumAccountEnabled: boolean;
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  solanaSupportEnabled: boolean;
-  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   bitcoinSupportEnabled: boolean;
   bitcoinTestnetSupportEnabled: boolean;
+  ///: END:ONLY_INCLUDE_IF
   addSnapAccountEnabled?: boolean;
   advancedGasFee: Record<string, Record<string, string>>;
   incomingTransactionsPreferences: Record<number, boolean>;
@@ -187,9 +186,6 @@ export const getDefaultPreferencesControllerState =
     openSeaEnabled: true,
     securityAlertsEnabled: true,
     watchEthereumAccountEnabled: false,
-    ///: BEGIN:ONLY_INCLUDE_IF(solana)
-    solanaSupportEnabled: false,
-    ///: END:ONLY_INCLUDE_IF
     bitcoinSupportEnabled: false,
     bitcoinTestnetSupportEnabled: false,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -337,10 +333,6 @@ const controllerMetadata = {
     anonymous: false,
   },
   watchEthereumAccountEnabled: {
-    persist: true,
-    anonymous: false,
-  },
-  solanaSupportEnabled: {
     persist: true,
     anonymous: false,
   },
@@ -663,20 +655,7 @@ export class PreferencesController extends BaseController<
   }
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  /**
-   * Setter for the `solanaSupportEnabled` property.
-   *
-   * @param solanaSupportEnabled - Whether or not the user wants to
-   * enable the "Add a new Solana account" button.
-   */
-  setSolanaSupportEnabled(solanaSupportEnabled: boolean): void {
-    this.update((state) => {
-      state.solanaSupportEnabled = solanaSupportEnabled;
-    });
-  }
-  ///: END:ONLY_INCLUDE_IF
-
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   /**
    * Setter for the `bitcoinSupportEnabled` property.
    *
@@ -700,6 +679,7 @@ export class PreferencesController extends BaseController<
       state.bitcoinTestnetSupportEnabled = bitcoinTestnetSupportEnabled;
     });
   }
+  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Setter for the `useExternalNameSources` property

@@ -233,6 +233,14 @@
   "addNfts": {
     "message": "Add NFTs"
   },
+  "addNonEvmAccount": {
+    "message": "Add $1 account",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
+  },
+  "addNonEvmAccountFromNetworkPicker": {
+    "message": "To enable the $1 network, you need to create a $1 account.",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
+  },
   "addRpcUrl": {
     "message": "Add RPC URL"
   },
@@ -322,6 +330,12 @@
   "agreeTermsOfUse": {
     "message": "I agree to MetaMask's $1",
     "description": "$1 is the `terms` link"
+  },
+  "airDropPatternDescription": {
+    "message": "The token's on-chain history reveals prior instances of suspicious airdrop activities."
+  },
+  "airDropPatternTitle": {
+    "message": "Airdrop Pattern"
   },
   "airgapVault": {
     "message": "AirGap Vault"
@@ -747,6 +761,9 @@
   "bridgeEnterAmount": {
     "message": "Select amount"
   },
+  "bridgeEnterAmountAndSelectAccount": {
+    "message": "Enter amount and select destination account"
+  },
   "bridgeExplorerLinkViewOn": {
     "message": "View on $1"
   },
@@ -769,8 +786,14 @@
   "bridgeQuoteExpired": {
     "message": "Your quote timed out."
   },
+  "bridgeSelectDestinationAccount": {
+    "message": "Select destination account"
+  },
   "bridgeSelectNetwork": {
     "message": "Select network"
+  },
+  "bridgeSelectTokenAmountAndAccount": {
+    "message": "Select token, amount and destination account"
   },
   "bridgeSelectTokenAndAmount": {
     "message": "Select token and amount"
@@ -1170,7 +1193,7 @@
     "message": "Connecting to Sepolia test network"
   },
   "connectionDescription": {
-    "message": "This site wants to"
+    "message": "Connect this website with MetaMask."
   },
   "connectionFailed": {
     "message": "Connection failed"
@@ -1251,6 +1274,9 @@
   },
   "createSnapAccountTitle": {
     "message": "Create account"
+  },
+  "createSolanaAccount": {
+    "message": "Create Solana account"
   },
   "creatorAddress": {
     "message": "Creator address"
@@ -1491,6 +1517,15 @@
   "descriptionFromSnap": {
     "message": "Description from $1",
     "description": "$1 represents the name of the snap"
+  },
+  "destinationAccountPickerNoEligible": {
+    "message": "No eligible accounts found"
+  },
+  "destinationAccountPickerNoMatching": {
+    "message": "No matching accounts found"
+  },
+  "destinationAccountPickerSearchPlaceholder": {
+    "message": "Receiving address or SNS"
   },
   "details": {
     "message": "Details"
@@ -2218,6 +2253,13 @@
   "holdToRevealUnlockedLabel": {
     "message": "hold to reveal circle unlocked"
   },
+  "honeypotDescription": {
+    "message": "This token might pose a honeypot risk. It is advised to conduct due diligence before interacting to prevent any potential financial loss."
+  },
+  "honeypotTitle": {
+    "message": "Honey Pot"
+  },
+
   "howNetworkFeesWorkExplanation": {
     "message": "Estimated fee required to process the transaction. The max fee is $1."
   },
@@ -2351,6 +2393,13 @@
   "insufficientFundsForGas": {
     "message": "Insufficient funds for gas"
   },
+  "insufficientLockedLiquidityDescription": {
+    "message": "The lack of adequately locked or burned liquidity leaves the token vulnerable to sudden liquidity withdrawals, potentially causing market instability."
+  },
+  "insufficientLockedLiquidityTitle": {
+    "message": "Insufficient Locked Liquidity"
+  },
+
   "insufficientTokens": {
     "message": "Insufficient tokens."
   },
@@ -2779,6 +2828,15 @@
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "You're adding this network to MetaMask and giving this site permission to use it."
   },
+  "multichainQuoteCardBridgingLabel": {
+    "message": "Bridging"
+  },
+  "multichainQuoteCardQuoteLabel": {
+    "message": "Quote"
+  },
+  "multichainQuoteCardTimeLabel": {
+    "message": "Time"
+  },
   "multipleSnapConnectionWarning": {
     "message": "$1 wants to use $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -2893,6 +2951,13 @@
   "network": {
     "message": "Network:"
   },
+  "networkChanged": {
+    "message": "Network changed"
+  },
+  "networkChangedMessage": {
+    "message": "You're now transacting on $1.",
+    "description": "$1 is the name of the network"
+  },
   "networkDetails": {
     "message": "Network details"
   },
@@ -2978,10 +3043,6 @@
   },
   "networkSwitchConnectionError": {
     "message": "We can't connect to $1",
-    "description": "$1 represents the network name"
-  },
-  "networkSwitchMessage": {
-    "message": "Network switched to $1",
     "description": "$1 represents the network name"
   },
   "networkURL": {
@@ -3171,6 +3232,9 @@
   "notEnoughGas": {
     "message": "Not enough gas"
   },
+  "notNow": {
+    "message": "Not now"
+  },
   "notificationDetail": {
     "message": "Details"
   },
@@ -3302,14 +3366,6 @@
   },
   "notifications": {
     "message": "Notifications"
-  },
-  "notificationsDropLedgerFirefoxDescription": {
-    "message": "Firefox no longer supports U2F, so Ledger won't work with MetaMask on Firefox. Try MetaMask on Google Chrome instead.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
-  },
-  "notificationsDropLedgerFirefoxTitle": {
-    "message": "Dropping Ledger Support for Firefox",
-    "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
   },
   "notificationsFeatureToggle": {
     "message": "Enable Wallet Notifications",
@@ -3543,6 +3599,13 @@
   },
   "origin": {
     "message": "Origin"
+  },
+  "originChanged": {
+    "message": "Site changed"
+  },
+  "originChangedMessage": {
+    "message": "You're now reviewing a request from $1.",
+    "description": "$1 is the name of the origin"
   },
   "osTheme": {
     "message": "System"
@@ -4460,9 +4523,6 @@
   "seedPhraseIntroTitle": {
     "message": "Secure your wallet"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Before getting started, watch this short video to learn about your Secret Recovery Phrase and how to keep your wallet safe."
-  },
   "seedPhraseReq": {
     "message": "Secret Recovery Phrases contain 12, 15, 18, 21, or 24 words"
   },
@@ -4474,6 +4534,9 @@
   },
   "select": {
     "message": "Select"
+  },
+  "selectAccountToConnect": {
+    "message": "Select an account to connect"
   },
   "selectAccounts": {
     "message": "Select the account(s) to use on this site"
@@ -4766,13 +4829,13 @@
     "message": "Cash out with MetaMask"
   },
   "slideDebitCardDescription": {
-    "message": "Available in selected regions"
+    "message": "Available in select regions"
   },
   "slideDebitCardTitle": {
     "message": "MetaMask debit card"
   },
   "slideFundWalletDescription": {
-    "message": "Get started by adding funds"
+    "message": "Add or transfer tokens to get started"
   },
   "slideFundWalletTitle": {
     "message": "Fund your wallet"
@@ -4982,14 +5045,26 @@
     "message": "Contact the creators of $1 for further support.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaSupportSectionTitle": {
-    "message": "Solana"
+  "solanaImportAccounts": {
+    "message": "Import Solana accounts"
   },
-  "solanaSupportToggleDescription": {
-    "message": "Turning on this feature will give you the option to add a Solana Account to your MetaMask Extension derived from your existing Secret Recovery Phrase. This is an experimental Beta feature, so you should use it at your own risk."
+  "solanaImportAccountsDescription": {
+    "message": "Import a Secret Recovery Phrase to migrate your Solana account from an other wallet."
   },
-  "solanaSupportToggleTitle": {
-    "message": "Enable \"Add a new Solana account (Beta)\""
+  "solanaMoreFeaturesComingSoon": {
+    "message": "More features coming soon"
+  },
+  "solanaMoreFeaturesComingSoonDescription": {
+    "message": "Solana dapps, NFTs, ETH-SOL bridging, hardware wallet support, and more coming soon."
+  },
+  "solanaOnMetaMask": {
+    "message": "Solana on MetaMask"
+  },
+  "solanaSendReceiveSwapTokens": {
+    "message": "Send, receive, and swap tokens"
+  },
+  "solanaSendReceiveSwapTokensDescription": {
+    "message": "Transfer and transact with tokens such as SOL, USDC, and more."
   },
   "someNetworks": {
     "message": "$1 networks"
@@ -5252,8 +5327,8 @@
     "message": "Sudden market changes can cause failures. If the problem persists, please reach out to $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxOptInDescription": {
-    "message": "Turn on Smart Transactions for more reliable and secure transactions on Ethereum Mainnet. $1"
+  "stxOptInEthereumBnbDescription": {
+    "message": "Turn on Smart Transactions for more reliable and secure transactions on Ethereum Mainnet and BNB Smart Chain. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Privately submitting your Swap..."
@@ -6080,6 +6155,13 @@
     "message": "Sending NFT (ERC-721) tokens is not currently supported",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
   },
+  "unstableTokenPriceDescription": {
+    "message": "The price of this token in USD is highly volatile, indicating a high risk of losing significant value by interacting with it."
+  },
+  "unstableTokenPriceTitle": {
+    "message": "Unstable Token Price"
+  },
+
   "upArrow": {
     "message": "up arrow"
   },
@@ -6202,6 +6284,18 @@
   "visitSite": {
     "message": "Visit site"
   },
+  "visitSupportDataConsentModalAccept": {
+    "message": "Confirm"
+  },
+  "visitSupportDataConsentModalDescription": {
+    "message": "Do you want to share your MetaMask Identifier and app version with our Support Center? This can help us better solve your problem, but is optional."
+  },
+  "visitSupportDataConsentModalReject": {
+    "message": "Don’t share"
+  },
+  "visitSupportDataConsentModalTitle": {
+    "message": "Share device details with support"
+  },
   "visitWebSite": {
     "message": "Visit our website"
   },
@@ -6277,10 +6371,6 @@
   },
   "welcomeToMetaMaskIntro": {
     "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
-  },
-  "whatsNew": {
-    "message": "What's new",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
   },
   "whatsThis": {
     "message": "What's this?"

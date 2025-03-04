@@ -4,6 +4,15 @@ import { IDENTITY_TEAM_STORAGE_KEY } from '../constants';
 import { createEncryptedResponse } from '../../../helpers/identity/user-storage/generateEncryptedData';
 import { UserStorageAccount } from './helpers';
 
+/**
+ * This array represents the accounts mock data before it is encrypted and sent to UserStorage.
+ * Each object within the array represents a UserStorageAccount, which includes properties such as:
+ * - v: The version of the User Storage.
+ * - a: The address of the account.
+ * - i: The id of the account.
+ * - n: The name of the account.
+ * - nlu: The name last updated timestamp of the account.
+ */
 export const accountsToMockForAccountsSync: UserStorageAccount[] = [
   {
     v: '1',

@@ -30,10 +30,14 @@ import {
   ButtonLink,
   ButtonLinkSize,
 } from '../../component-library';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsEventLinkType,
+} from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
 import { ConfirmInfoRowDivider as Divider } from '../confirm/info/row';
-import { shortenAddress } from '../../../helpers/utils/util';
+import { getURLHostName, shortenAddress } from '../../../helpers/utils/util';
 import {
   formatTimestamp,
   getTransactionUrl,
@@ -44,13 +48,11 @@ import {
 export type MultichainTransactionDetailsModalProps = {
   transaction: Transaction;
   onClose: () => void;
-  addressLink: string;
 };
 
 export function MultichainTransactionDetailsModal({
   transaction,
   onClose,
-  addressLink,
 }: MultichainTransactionDetailsModalProps) {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -219,7 +221,7 @@ export function MultichainTransactionDetailsModal({
                   }}
                   as="a"
                   externalLink
-                  href={getTransactionUrl(txId, chain)}
+                  href={getAddressUrl(fromAddress, chain)}
                 >
                   {shortenAddress(fromAddress)}
                   <Icon
@@ -258,7 +260,7 @@ export function MultichainTransactionDetailsModal({
                   }}
                   as="a"
                   externalLink
-                  href={getTransactionUrl(txId, chain)}
+                  href={getAddressUrl(toAddress, chain)}
                 >
                   {shortenAddress(toAddress)}
                   <Icon
@@ -334,7 +336,19 @@ export function MultichainTransactionDetailsModal({
             size={ButtonSize.Md}
             variant={ButtonVariant.Link}
             onClick={() => {
-              openBlockExplorer(addressLink, 'Transaction Details', trackEvent);
+              global.platform.openTab({
+                url: getTransactionUrl(txId, chain),
+              });
+
+              trackEvent({
+                event: MetaMetricsEventName.ExternalLinkClicked,
+                category: MetaMetricsEventCategory.Navigation,
+                properties: {
+                  link_type: MetaMetricsEventLinkType.AccountTracker,
+                  location: 'Transaction Details',
+                  url_domain: getURLHostName(getTransactionUrl(txId, chain)),
+                },
+              });
             }}
             endIconName={IconName.Export}
           >

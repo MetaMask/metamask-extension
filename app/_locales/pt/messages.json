@@ -2780,10 +2780,6 @@
     "message": "Não podemos conectar a $1",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "Rede mudou para $1",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "URL da rede"
   },
@@ -3090,14 +3086,6 @@
   },
   "notifications": {
     "message": "Notificações"
-  },
-  "notificationsDropLedgerFirefoxDescription": {
-    "message": "O Firefox não oferece mais suporte ao U2F, então a Ledger não funcionará com a MetaMask no Firefox. Em vez disso, experimente a MetaMask no Google Chrome.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
-  },
-  "notificationsDropLedgerFirefoxTitle": {
-    "message": "Suporte à Ledger descontinuado no Firefox",
-    "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
   },
   "notificationsFeatureToggle": {
     "message": "Ativar notificações da carteira",
@@ -4188,9 +4176,6 @@
   "seedPhraseIntroTitle": {
     "message": "Proteja sua carteira"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Antes de iniciar, assista a esse vídeo curto para aprender sobre sua Frase de Recuperação Secreta e sobre como manter sua carteira segura."
-  },
   "seedPhraseReq": {
     "message": "As Frases de Recuperação Secretas contêm 12, 15, 18, 21 ou 24 palavras"
   },
@@ -4656,15 +4641,6 @@
     "message": "Contate os criadores de $1 para receber mais suporte.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaSupportSectionTitle": {
-    "message": "Solana"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "Ativar este recurso lhe dará a opção de adicionar uma conta Solana à sua extensão da MetaMask derivada de sua Frase de Recuperação Secreta existente. Este é um recurso beta experimental, portanto seu uso será por sua conta e risco."
-  },
-  "solanaSupportToggleTitle": {
-    "message": "Ative \"Adicionar uma nova conta Solana (Beta)\""
-  },
   "somethingDoesntLookRight": {
     "message": "Alguma coisa não parece certa? $1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
@@ -4897,9 +4873,6 @@
   "stxFailureDescription": {
     "message": "Mudanças repentinas no mercado podem causar falhas. Se o problema persistir, entre em contato com $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
-  },
-  "stxOptInDescription": {
-    "message": "Ative as Transações Inteligentes para fazer transações mais confiáveis ​​e seguras na Mainnet da Ethereum. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Enviando sua troca de forma privada..."
@@ -5910,10 +5883,6 @@
   },
   "welcomeToMetaMaskIntro": {
     "message": "Com a confiança de milhões de usuários, a MetaMask é uma carteira segura que torna o mundo da Web3 acessível a todos."
-  },
-  "whatsNew": {
-    "message": "Novidades",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
   },
   "whatsThis": {
     "message": "O que é isso?"
