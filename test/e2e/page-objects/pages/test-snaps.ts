@@ -92,6 +92,53 @@ export class TestSnaps {
     });
   }
 
+  /**
+   * Click a button with the given selector.
+   *
+   * @param selector - The selector for the button to click.
+   * @returns A promise that resolves after the button is clicked.
+   */
+  async clickButton(selector: string) {
+    console.log('Wait and click button');
+    await this.driver.waitForSelector(selector);
+    await this.driver.clickElement(selector);
+  }
+
+  /**
+   * Paste a message into a field with the given selector.
+   *
+   * @param selector - The selector for the field to paste the message into.
+   * @param message - The message to paste into the field.
+   * @returns A promise that resolves after the message is pasted into the
+   * field.
+   */
+  async pasteIntoField(selector: string, message: string) {
+    await this.driver.pasteIntoField(selector, message);
+  }
+
+  /**
+   * Click the approve button in the dialog window.
+   *
+   * @returns A promise that resolves after the approve button is clicked.
+   */
+  async approveDialog() {
+    // Switch to approve window.
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+    // Wait for and click on approve and wait for window to close.
+    await this.driver.waitForSelector({
+      text: 'Approve',
+      tag: 'button',
+    });
+    await this.driver.clickElementAndWaitForWindowToClose({
+      text: 'Approve',
+      tag: 'button',
+    });
+
+    // Switch back to `test-snaps` page.
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+  }
+
   async clickDialogsSnapConfirmationButton() {
     await this.driver.clickElement(this.dialogsSnapConfirmationButton);
   }
