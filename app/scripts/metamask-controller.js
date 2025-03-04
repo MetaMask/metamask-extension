@@ -2645,15 +2645,18 @@ export default class MetamaskController extends EventEmitter {
             }
 
             try {
-              const mnemonic = await this.controllerMessenger.call(
+              const { type, mnemonic } = await this.controllerMessenger.call(
                 'KeyringController:withKeyring',
                 {
                   id: source,
                 },
-                async (keyring) => keyring.mnemonic,
+                async (keyring) => ({
+                  type: keyring.type,
+                  mnemonic: keyring.mnemonic,
+                }),
               );
 
-              if (!mnemonic) {
+              if (type !== KeyringTypes.hd || !mnemonic) {
                 // The keyring isn't guaranteed to have a mnemonic (e.g.,
                 // hardware wallets, which can't be used as entropy sources),
                 // so we throw an error if it doesn't.
