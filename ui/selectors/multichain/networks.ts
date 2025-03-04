@@ -101,20 +101,24 @@ export const getIsNonEvmNetworksEnabled = createDeepEqualSelector(
 
 export const getMultichainNetworkConfigurationsByChainId =
   createDeepEqualSelector(
-    getNonEvmMultichainNetworkConfigurationsByChainId,
-    getNetworkConfigurationsByChainId,
+    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     getIsNonEvmNetworksEnabled,
+    getNonEvmMultichainNetworkConfigurationsByChainId,
+    ///: END:ONLY_INCLUDE_IF
+    getNetworkConfigurationsByChainId,
     (
-      nonEvmNetworkConfigurationsByChainId,
-      networkConfigurationsByChainId,
+      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       isNonEvmNetworksEnabled,
+      nonEvmNetworkConfigurationsByChainId,
+      ///: END:ONLY_INCLUDE_IF
+      networkConfigurationsByChainId,
     ): Record<CaipChainId, InternalMultichainNetworkConfiguration> => {
+      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       const filteredNonEvmNetworkConfigurationsByChainId: Record<
         CaipChainId,
         InternalMultichainNetworkConfiguration
       > = {};
 
-      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       // This is not ideal but since there are only two non EVM networks
       // we can just filter them out based on the support enabled
       const { bitcoinEnabled, solanaEnabled } = isNonEvmNetworksEnabled;
