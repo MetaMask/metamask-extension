@@ -20,7 +20,7 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import { usePetnames } from '../../../ducks/metamask/sample-petnames-controller';
-import { usePetnamesForm } from '../hooks/usePetnamesForm';
+import { useSamplePetnamesForm } from '../hooks/useSamplePetnamesForm';
 
 export function SamplePetnamesForm() {
   const petNames = usePetnames();
@@ -31,7 +31,7 @@ export function SamplePetnamesForm() {
     isFormValid,
     handleSubmit,
     getFieldProps,
-  } = usePetnamesForm();
+  } = useSamplePetnamesForm();
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();

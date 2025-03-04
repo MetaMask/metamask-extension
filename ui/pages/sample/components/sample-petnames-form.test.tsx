@@ -5,14 +5,14 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { usePetnames } from '../../../ducks/metamask/sample-petnames-controller';
 import { useSamplePetnamesMetrics } from '../hooks/useSamplePetnamesMetrics';
 import { useSamplePerformanceTrace } from '../hooks/useSamplePerformanceTrace';
-import { usePetnamesForm } from '../hooks/usePetnamesForm';
+import { useSamplePetnamesForm } from '../hooks/useSamplePetnamesForm';
 import { SamplePetnamesForm } from './sample-petnames-form';
 
 // Mock the hooks
 jest.mock('../../../ducks/metamask/sample-petnames-controller');
 jest.mock('../hooks/useSamplePetnamesMetrics');
 jest.mock('../hooks/useSamplePerformanceTrace');
-jest.mock('../hooks/usePetnamesForm');
+jest.mock('../hooks/useSamplePetnamesForm');
 
 describe('SamplePetnamesForm', () => {
   // Setup helper functions
@@ -61,7 +61,7 @@ describe('SamplePetnamesForm', () => {
 
     // Mock implementations
     (usePetnames as jest.Mock).mockReturnValue(defaultPetnamesConfig);
-    (usePetnamesForm as jest.Mock).mockReturnValue(defaultFormConfig);
+    (useSamplePetnamesForm as jest.Mock).mockReturnValue(defaultFormConfig);
 
     // Mock metrics
     const trackPetnamesFormViewedMock = jest.fn();

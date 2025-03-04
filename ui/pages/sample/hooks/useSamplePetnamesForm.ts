@@ -24,7 +24,7 @@ const validateForm = (values: FormState) => ({
  *
  * @returns Object containing form state, handlers, and validation
  */
-export function usePetnamesForm() {
+export function useSamplePetnamesForm() {
   const petNames = usePetnames();
   const metrics = useSamplePetnamesMetrics();
   const { traceFormSubmission } = useSamplePerformanceTrace({
