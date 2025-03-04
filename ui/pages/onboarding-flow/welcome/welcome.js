@@ -115,6 +115,17 @@ export default function OnboardingWelcome() {
     ///: END:ONLY_INCLUDE_IF
   };
 
+  const renderMascot = () => {
+    if (process.env.METAMASK_BUILD_TYPE === 'flask') {
+      return (
+        <img src="./images/logo/metamask-fox.svg" width="240" height="240" />
+      );
+    }
+    return (
+      <Mascot animationEventEmitter={eventEmitter} width="250" height="300" />
+    );
+  };
+
   return (
     <div className="onboarding-welcome" data-testid="onboarding-welcome">
       {
@@ -132,13 +143,7 @@ export default function OnboardingWelcome() {
             <Text textAlign={TextAlign.Center} marginLeft={6} marginRight={6}>
               {t('welcomeToMetaMaskIntro')}
             </Text>
-            <div className="onboarding-welcome__mascot">
-              <Mascot
-                animationEventEmitter={eventEmitter}
-                width="250"
-                height="300"
-              />
-            </div>
+            <div className="onboarding-welcome__mascot">{renderMascot()}</div>
           </div>
           <div>
             <Text

@@ -96,6 +96,7 @@ function normalizeLocalNodeOptions(localNodeOptions) {
  * @property {Bundler} bundlerServer - The bundler server.
  * @property {mockttp.Mockttp} mockServer - The mock server.
  * @property {object} manifestFlags - Flags to add to the manifest in order to change things at runtime.
+ * @property {string} extensionId - The extension ID (useful for connecting via `externally_connectable`).
  */
 
 /**
@@ -144,6 +145,7 @@ async function withFixtures(options, testSuite) {
 
   let webDriver;
   let driver;
+  let extensionId;
   let failed = false;
 
   // ganacheServer variable to be deleted once all specs are migrated to anvil
@@ -266,6 +268,7 @@ async function withFixtures(options, testSuite) {
 
     driver = (await buildWebDriver(driverOptions)).driver;
     webDriver = driver.driver;
+    extensionId = driver.extensionId;
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       await driver.checkBrowserForExceptions(ignoredConsoleErrors);
@@ -302,6 +305,7 @@ async function withFixtures(options, testSuite) {
       localNodes,
       mockedEndpoint,
       mockServer,
+      extensionId,
     });
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();

@@ -2777,10 +2777,6 @@
     "message": "Δεν μπορούμε να συνδεθούμε στο $1",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "Το δίκτυο άλλαξε σε $1",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "Διεύθυνση URL του δικτύου"
   },
@@ -4184,9 +4180,6 @@
   },
   "seedPhraseIntroTitle": {
     "message": "Προστατεύστε το πορτοφόλι σας"
-  },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Πριν ξεκινήσετε, παρακολουθήστε αυτό το σύντομο βίντεο για να μάθετε για τη Μυστική Φράση Ανάκτησης και πώς να διατηρείτε ασφαλές το πορτοφόλι σας."
   },
   "seedPhraseReq": {
     "message": "Οι Μυστικές Φράσεις Ανάκτησης περέχουν 12, 15, 18, 21 ή 24 λέξεις"

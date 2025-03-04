@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { Browser } = require('selenium-webdriver');
+const { toEvmCaipChainId } = require('@metamask/multichain-network-controller');
 const { CHAIN_IDS } = require('../../../../shared/constants/network');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -427,7 +428,9 @@ describe('Request-queue UI changes', function () {
 
         const networkMenu = await driver.findNestedElement(
           networkRow,
-          `[data-testid="network-list-item-options-button-${CHAIN_IDS.LOCALHOST}"]`,
+          `[data-testid="network-list-item-options-button-${toEvmCaipChainId(
+            CHAIN_IDS.LOCALHOST,
+          )}"]`,
         );
 
         await networkMenu.click();

@@ -522,7 +522,10 @@ export function getNumberOfTokens(state) {
 }
 
 export function getMetaMaskKeyrings(state) {
-  return state.metamask.keyrings;
+  return state.metamask.keyrings.map((keyring, index) => ({
+    ...keyring,
+    metadata: state.metamask.keyringsMetadata?.[index] ?? {},
+  }));
 }
 
 /**
@@ -574,7 +577,7 @@ export function getCrossChainMetaMaskCachedBalances(state) {
  */
 export function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
   const { accountsByChainId } = state.metamask;
-  const { address: selectedAddress } = getSelectedInternalAccount(state);
+  const { address: selectedAddress } = getSelectedEvmInternalAccount(state);
 
   const balancesByChainId = {};
   for (const [chainId, accounts] of Object.entries(accountsByChainId || {})) {
@@ -594,7 +597,7 @@ export function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
  */
 export function getSelectedAccountTokensAcrossChains(state) {
   const { allTokens } = state.metamask;
-  const selectedAddress = getSelectedInternalAccount(state).address;
+  const selectedAddress = getSelectedEvmInternalAccount(state).address;
 
   const tokensByChain = {};
 

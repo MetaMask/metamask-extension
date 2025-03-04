@@ -168,7 +168,6 @@ describe('BridgeController', function () {
     bridgeController.updateBridgeQuoteRequestParams({ srcChainId: 1 });
     expect(bridgeController.state.bridgeState.quoteRequest).toStrictEqual({
       srcChainId: 1,
-      slippage: 0.5,
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
       walletAddress: undefined,
     });
@@ -176,7 +175,6 @@ describe('BridgeController', function () {
     bridgeController.updateBridgeQuoteRequestParams({ destChainId: 10 });
     expect(bridgeController.state.bridgeState.quoteRequest).toStrictEqual({
       destChainId: 10,
-      slippage: 0.5,
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
       walletAddress: undefined,
     });
@@ -184,13 +182,13 @@ describe('BridgeController', function () {
     bridgeController.updateBridgeQuoteRequestParams({ destChainId: undefined });
     expect(bridgeController.state.bridgeState.quoteRequest).toStrictEqual({
       destChainId: undefined,
-      slippage: 0.5,
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
       walletAddress: undefined,
     });
 
     bridgeController.updateBridgeQuoteRequestParams({
       srcTokenAddress: undefined,
+      slippage: 0.5,
     });
     expect(bridgeController.state.bridgeState.quoteRequest).toStrictEqual({
       slippage: 0.5,
@@ -217,14 +215,12 @@ describe('BridgeController', function () {
       srcTokenAddress: '0x2ABC',
     });
     expect(bridgeController.state.bridgeState.quoteRequest).toStrictEqual({
-      slippage: 0.5,
       srcTokenAddress: '0x2ABC',
       walletAddress: undefined,
     });
 
     bridgeController.resetState();
     expect(bridgeController.state.bridgeState.quoteRequest).toStrictEqual({
-      slippage: 0.5,
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
       walletAddress: undefined,
     });
@@ -278,10 +274,11 @@ describe('BridgeController', function () {
       destTokenAddress: '0x123',
       srcTokenAmount: '1000000000000000000',
       walletAddress: '0x123',
+      slippage: 0,
     };
     const quoteRequest = {
       ...quoteParams,
-      slippage: 0.5,
+      slippage: 0,
     };
     await bridgeController.updateBridgeQuoteRequestParams(quoteParams);
 
@@ -427,6 +424,7 @@ describe('BridgeController', function () {
       destTokenAddress: '0x123',
       srcTokenAmount: '1000000000000000000',
       walletAddress: '0x123',
+      slippage: 0.5,
     };
     const quoteRequest = {
       ...quoteParams,
@@ -526,6 +524,7 @@ describe('BridgeController', function () {
       destChainId: 10,
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
       destTokenAddress: '0x123',
+      slippage: 0.5,
     });
 
     expect(stopAllPollingSpy).toHaveBeenCalledTimes(1);
@@ -620,6 +619,7 @@ describe('BridgeController', function () {
         destTokenAddress: '0x0000000000000000000000000000000000000000',
         srcTokenAmount: '991250000000000000',
         walletAddress: 'eip:id/id:id/0x123',
+        slippage: 0.5,
       };
       const quoteRequest = {
         ...quoteParams,

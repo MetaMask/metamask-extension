@@ -2777,10 +2777,6 @@
     "message": "我们无法连接到 $1",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "网络已切换至 $1",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "网络 URL"
   },
@@ -4184,9 +4180,6 @@
   },
   "seedPhraseIntroTitle": {
     "message": "保护您的钱包安全"
-  },
-  "seedPhraseIntroTitleCopy": {
-    "message": "在开始之前，观看这个简短的视频来了解您的账户助记词以及如何保护您的钱包安全。"
   },
   "seedPhraseReq": {
     "message": "私钥助记词包含 12、15、18、21 或 24 个字词"

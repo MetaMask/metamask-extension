@@ -184,7 +184,7 @@ describe('Bridge utils', () => {
           symbol: 'DEF',
         },
         {
-          address: '0x124',
+          address: 'NONevmTOken1324fgcdrskljffsiodujfkl,jfd',
           symbol: 'JKL',
           decimals: 16,
         },
@@ -217,6 +217,11 @@ describe('Bridge utils', () => {
           decimals: 16,
           symbol: 'DEF',
           aggregators: ['lifi'],
+        },
+        'NONevmTOken1324fgcdrskljffsiodujfkl,jfd': {
+          address: 'NONevmTOken1324fgcdrskljffsiodujfkl,jfd',
+          decimals: 16,
+          symbol: 'JKL',
         },
         '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
           address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
@@ -256,7 +261,7 @@ describe('Bridge utils', () => {
       );
 
       expect(fetchWithCache).toHaveBeenCalledWith({
-        url: 'https://bridge.api.cx.metamask.io/getQuote?walletAddress=0x123&srcChainId=1&destChainId=10&srcTokenAddress=0x0000000000000000000000000000000000000000&destTokenAddress=0x0000000000000000000000000000000000000000&srcTokenAmount=20000&slippage=0.5&insufficientBal=false&resetApproval=false',
+        url: 'https://bridge.api.cx.metamask.io/getQuote?walletAddress=0x123&destWalletAddress=0x123&srcChainId=1&destChainId=10&srcTokenAddress=0x0000000000000000000000000000000000000000&destTokenAddress=0x0000000000000000000000000000000000000000&srcTokenAmount=20000&slippage=0.5&insufficientBal=false&resetApproval=false',
         fetchOptions: {
           method: 'GET',
           headers: { 'X-Client-Id': 'extension' },
@@ -270,11 +275,9 @@ describe('Bridge utils', () => {
     });
 
     it('should fetch bridge quotes successfully, with approvals', async () => {
-      (fetchWithCache as jest.Mock).mockResolvedValue([
-        ...mockBridgeQuotesErc20Erc20,
-        { ...mockBridgeQuotesErc20Erc20[0], approval: null },
-        { ...mockBridgeQuotesErc20Erc20[0], trade: null },
-      ]);
+      (fetchWithCache as jest.Mock).mockResolvedValue(
+        mockBridgeQuotesErc20Erc20,
+      );
       const { signal } = new AbortController();
 
       const result = await fetchBridgeQuotes(
@@ -291,7 +294,7 @@ describe('Bridge utils', () => {
       );
 
       expect(fetchWithCache).toHaveBeenCalledWith({
-        url: 'https://bridge.api.cx.metamask.io/getQuote?walletAddress=0x123&srcChainId=1&destChainId=10&srcTokenAddress=0x0000000000000000000000000000000000000000&destTokenAddress=0x0000000000000000000000000000000000000000&srcTokenAmount=20000&slippage=0.5&insufficientBal=false&resetApproval=false',
+        url: 'https://bridge.api.cx.metamask.io/getQuote?walletAddress=0x123&destWalletAddress=0x123&srcChainId=1&destChainId=10&srcTokenAddress=0x0000000000000000000000000000000000000000&destTokenAddress=0x0000000000000000000000000000000000000000&srcTokenAmount=20000&slippage=0.5&insufficientBal=false&resetApproval=false',
         fetchOptions: {
           method: 'GET',
           headers: { 'X-Client-Id': 'extension' },
@@ -345,7 +348,7 @@ describe('Bridge utils', () => {
       );
 
       expect(fetchWithCache).toHaveBeenCalledWith({
-        url: 'https://bridge.api.cx.metamask.io/getQuote?walletAddress=0x123&srcChainId=1&destChainId=10&srcTokenAddress=0x0000000000000000000000000000000000000000&destTokenAddress=0x0000000000000000000000000000000000000000&srcTokenAmount=20000&slippage=0.5&insufficientBal=false&resetApproval=false',
+        url: 'https://bridge.api.cx.metamask.io/getQuote?walletAddress=0x123&destWalletAddress=0x123&srcChainId=1&destChainId=10&srcTokenAddress=0x0000000000000000000000000000000000000000&destTokenAddress=0x0000000000000000000000000000000000000000&srcTokenAmount=20000&slippage=0.5&insufficientBal=false&resetApproval=false',
         fetchOptions: {
           method: 'GET',
           headers: { 'X-Client-Id': 'extension' },

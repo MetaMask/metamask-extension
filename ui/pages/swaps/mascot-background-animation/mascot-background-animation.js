@@ -8,6 +8,26 @@ import Mascot from '../../../components/ui/mascot';
 export default function MascotBackgroundAnimation({ height, width }) {
   const animationEventEmitter = useRef(new EventEmitter());
 
+  const renderMascot = () => {
+    if (process.env.METAMASK_BUILD_TYPE === 'flask') {
+      return (
+        <img
+          src="./images/logo/metamask-fox.svg"
+          width={width ?? '42'}
+          height={height ?? '42'}
+        />
+      );
+    }
+    return (
+      <Mascot
+        animationEventEmitter={animationEventEmitter.current}
+        width={width ?? '42'}
+        height={height ?? '42'}
+        followMouse={false}
+      />
+    );
+  };
+
   return (
     <div className="mascot-background-animation__animation">
       <div
@@ -219,12 +239,7 @@ export default function MascotBackgroundAnimation({ height, width }) {
         className="mascot-background-animation__mascot-container"
         data-testid="mascot-background-animation-mascot-container"
       >
-        <Mascot
-          animationEventEmitter={animationEventEmitter.current}
-          width={width ?? '42'}
-          height={height ?? '42'}
-          followMouse={false}
-        />
+        {renderMascot()}
       </div>
     </div>
   );

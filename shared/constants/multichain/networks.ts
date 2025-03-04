@@ -46,6 +46,14 @@ export const MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET = {
   [SolAccountType.DataAccount]: MultichainNetworks.SOLANA,
 } as const;
 
+export const MULTICHAIN_NETWORK_TO_NICKNAME: Record<CaipChainId, string> = {
+  [MultichainNetworks.BITCOIN]: 'Bitcoin',
+  [MultichainNetworks.BITCOIN_TESTNET]: 'Bitcoin (testnet)',
+  [MultichainNetworks.SOLANA]: 'Solana',
+  [MultichainNetworks.SOLANA_DEVNET]: 'Solana (devnet)',
+  [MultichainNetworks.SOLANA_TESTNET]: 'Solana (testnet)',
+};
+
 export const BITCOIN_TOKEN_IMAGE_URL = './images/bitcoin-logo.svg';
 export const SOLANA_TOKEN_IMAGE_URL = './images/solana-logo.svg';
 
@@ -81,7 +89,7 @@ export const MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP: Record<
   },
 } as const;
 
-export const MULTICHAIN_TOKEN_IMAGE_MAP = {
+export const MULTICHAIN_TOKEN_IMAGE_MAP: Record<CaipChainId, string> = {
   [MultichainNetworks.BITCOIN]: BITCOIN_TOKEN_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_TOKEN_IMAGE_URL,
 } as const;

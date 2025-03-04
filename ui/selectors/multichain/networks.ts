@@ -2,7 +2,7 @@ import {
   type MultichainNetworkControllerState as InternalMultichainNetworkState,
   type MultichainNetworkConfiguration as InternalMultichainNetworkConfiguration,
   toEvmCaipChainId,
-  toMultichainNetworkConfigurationsByChainId,
+  toMultichainNetworkConfiguration,
 } from '@metamask/multichain-network-controller';
 import { type NetworkConfiguration as InternalNetworkConfiguration } from '@metamask/network-controller';
 import { type CaipChainId, BtcScope, SolScope } from '@metamask/keyring-api';
@@ -80,11 +80,14 @@ export const getIsNonEvmNetworksEnabled = createDeepEqualSelector(
     let bitcoinEnabled = isBitcoinEnabled;
     let solanaEnabled = isSolanaEnabled;
 
+    // The scopes have been set to optional because the first time
+    // they're used we can't guarantee that the scopes will be set
+    // during the keyring migration execution.
     for (const { scopes } of internalAccounts) {
-      if (scopes.includes(BtcScope.Mainnet)) {
+      if (scopes?.includes(BtcScope.Mainnet)) {
         bitcoinEnabled = true;
       }
-      if (scopes.includes(SolScope.Mainnet)) {
+      if (scopes?.includes(SolScope.Mainnet)) {
         solanaEnabled = true;
       }
       if (bitcoinEnabled && solanaEnabled) {
@@ -124,11 +127,25 @@ export const getMultichainNetworkConfigurationsByChainId =
           nonEvmNetworkConfigurationsByChainId[SolScope.Mainnet];
       }
 
+      // There's a fallback for EVM network names/nicknames, in case the network
+      // does not have a name/nickname the fallback is the first rpc endpoint url.
+      // TODO: Update toMultichainNetworkConfigurationsByChainId to handle this case.
+      const evmNetworks = Object.entries(networkConfigurationsByChainId).reduce(
+        (acc, [, network]) => ({
+          ...acc,
+          [toEvmCaipChainId(network.chainId)]: {
+            ...toMultichainNetworkConfiguration(network),
+            name:
+              network.name ||
+              network.rpcEndpoints[network.defaultRpcEndpointIndex].url,
+          },
+        }),
+        {},
+      );
+
       const networks = {
         ...filteredNonEvmNetworkConfigurationsByChainId,
-        ...toMultichainNetworkConfigurationsByChainId(
-          networkConfigurationsByChainId,
-        ),
+        ...evmNetworks,
       };
 
       return networks;
