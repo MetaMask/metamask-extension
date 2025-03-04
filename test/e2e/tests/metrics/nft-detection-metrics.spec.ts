@@ -73,7 +73,7 @@ describe('Nft detection event', function () {
           participateInMetaMetrics: true,
         });
         const events = await getEventPayloads(driver, mockedEndpoints);
-        assert.equal(events.length, 3);
+        assert.equal(events.length, 2);
         assert.deepStrictEqual(events[0].properties, {
           account_type: 'metamask',
           category: 'Onboarding',
