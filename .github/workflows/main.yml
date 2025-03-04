@@ -330,8 +330,8 @@ jobs:
       #  if: github.ref == 'refs/heads/master'
         run: yarn build --build-type flask prod
         env:
-          INFURA_PROD_PROJECT_ID: ''
-          SEGMENT_PROD_WRITE_KEY: ''
+          INFURA_FLASK_PROJECT_ID: ''
+          SEGMENT_FLASK_WRITE_KEY: ''
 
       - name: Debug build
         run: find dist/ -type f -exec md5sum {} \; | sort -k 2
@@ -373,8 +373,8 @@ jobs:
         #if: github.ref == 'refs/heads/master'
         run: ENABLE_MV3=false yarn build --build-type flask prod
         env:
-          INFURA_PROD_PROJECT_ID: ''
-          SEGMENT_PROD_WRITE_KEY: ''
+          INFURA_FLASK_PROJECT_ID: ''
+          SEGMENT_FLASK_WRITE_KEY: ''
 
       - name: Debug build
         run: find dist/ -type f -exec md5sum {} \; | sort -k 2
