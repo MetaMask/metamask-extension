@@ -318,7 +318,7 @@
     "@metamask/smart-transactions-controller": "^16.0.1",
     "@metamask/snaps-controllers": "^10.0.1",
     "@metamask/snaps-execution-environments": "^7.0.0",
-    "@metamask/snaps-rpc-methods": "^11.13.0",
+    "@metamask/snaps-rpc-methods": "^11.13.1",
     "@metamask/snaps-sdk": "^6.19.0",
     "@metamask/snaps-utils": "^9.0.1",
     "@metamask/solana-wallet-snap": "^1.10.0",

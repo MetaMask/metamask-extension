@@ -6330,9 +6330,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-rpc-methods@npm:^11.11.0, @metamask/snaps-rpc-methods@npm:^11.13.0":
-  version: 11.13.0
-  resolution: "@metamask/snaps-rpc-methods@npm:11.13.0"
+"@metamask/snaps-rpc-methods@npm:^11.11.0, @metamask/snaps-rpc-methods@npm:^11.13.0, @metamask/snaps-rpc-methods@npm:^11.13.1":
+  version: 11.13.1
+  resolution: "@metamask/snaps-rpc-methods@npm:11.13.1"
   dependencies:
     "@metamask/key-tree": "npm:^10.0.2"
     "@metamask/permission-controller": "npm:^11.0.6"
@@ -6343,7 +6343,7 @@ __metadata:
     "@metamask/utils": "npm:^11.2.0"
     "@noble/hashes": "npm:^1.3.1"
     luxon: "npm:^3.5.0"
-  checksum: 10/263c23ca5abd6b9263f2bef2396693abdd7a99ddc6497c929ed9195a1f13fc1838dc98cf5b49b68fdc2ccf71c104f12ed6071a6fac59c4829f103f8a07c46c74
+  checksum: 10/72298b0cb5cf79ffaacb48368590513ec5befa10f9ffb84865ce1eab5dc2ff28f5b0e765a7fb55885e8e0583091af404e879fad8510e9c8cb49ee455cf7b9444
   languageName: node
   linkType: hard
 
@@ -27320,7 +27320,7 @@ __metadata:
     "@metamask/smart-transactions-controller": "npm:^16.0.1"
     "@metamask/snaps-controllers": "npm:^10.0.1"
     "@metamask/snaps-execution-environments": "npm:^7.0.0"
-    "@metamask/snaps-rpc-methods": "npm:^11.13.0"
+    "@metamask/snaps-rpc-methods": "npm:^11.13.1"
     "@metamask/snaps-sdk": "npm:^6.19.0"
     "@metamask/snaps-utils": "npm:^9.0.1"
     "@metamask/solana-wallet-snap": "npm:^1.10.0"
