@@ -147,6 +147,7 @@ jobs:
       - wait-for-circleci-workflow-status
       - build-storybook
       - build-beta
+      - run-benchmarks
     uses: ./.github/workflows/publish-prerelease.yml
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
