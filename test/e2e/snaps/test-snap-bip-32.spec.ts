@@ -26,7 +26,7 @@ describe('Test Snap bip-32', function () {
         // check for proper public key response using waitForSelector
         await driver.waitForSelector({
           css: '#bip32PublicKeyResult',
-          text: '"0x0425093606ebba8e4dd7b028fc1a7d77b79ef36fa231faf00c71123bac0e3dd7b7b608c7f5e532aafbff5519dd48b4d65c6b9ef6eb799c0bf9c683250448de214e',
+          text: '"0x043e98d696ae15caef75fa8dd204a7c5c08d1272b2218ba3c20feeb4c691eec366606ece56791c361a2320e7fad8bcbb130f66d51c591fc39767ab2856e93f8dfb',
         });
 
         // scroll to and click get compressed public key
@@ -35,7 +35,7 @@ describe('Test Snap bip-32', function () {
         // check for proper public key response using waitForSelector
         await driver.waitForSelector({
           css: '#bip32PublicKeyResult',
-          text: '"0x0225093606ebba8e4dd7b028fc1a7d77b79ef36fa231faf00c71123bac0e3dd7b7',
+          text: '"0x033e98d696ae15caef75fa8dd204a7c5c08d1272b2218ba3c20feeb4c691eec366',
         });
 
         // wait then run SECP256K1 test
@@ -51,7 +51,7 @@ describe('Test Snap bip-32', function () {
         // check results of the secp256k1 signature with waitForSelector
         await driver.waitForSelector({
           css: '#bip32MessageResult-secp256k1',
-          text: '"0x30450221008727a4e13e6abab2275e64ea2959a7c04119fbb5b32acc7479afbb103c30c363022027c08035d5dc41b4e639703fb6db3950a27b68d65c98a1300b527b0a1d137649',
+          text: '"0x3045022100b3ade2992ea3e5eb58c7550e9bddad356e9554233c8b099ebc3cb418e9301ae2022064746e15ae024808f0ba5d860e44dc4c97e65c8cba6f5ef9ea2e8c819930d2dc',
         });
 
         // scroll further into messages section
@@ -71,7 +71,7 @@ describe('Test Snap bip-32', function () {
         // check results of ed25519 signature with waitForSelector
         await driver.waitForSelector({
           css: '#bip32MessageResult-ed25519',
-          text: '"0xec5dafc0e11dd77f7aa9c30ee78c676bb4c10352da6bd1ca69686f281010e0f13068dfcb8f5e96610861fca88f3220797f95514a8134d336b18cdebc993df60d"',
+          text: '"0xf3215b4d6c59aac7e01b4ceef530d1e2abf4857926b85a81aaae3894505699243768a887b7da4a8c2e0f25196196ba290b6531050db8dc15c252bdd508532a0a"',
         });
 
         // wait then run ed25519 test
@@ -88,7 +88,7 @@ describe('Test Snap bip-32', function () {
         // check results of ed25519 signature with waitForSelector
         await driver.waitForSelector({
           css: '#bip32MessageResult-ed25519Bip32',
-          text: '"0x299ef8f91d1f0fed398de26eb1aceae44be08fe69f461a908b9080a18bce41ef4e181620f1e2e2d3c24529a652441cdc9b6ed9a2fa6163e6cb249926712a1f06"',
+          text: '"0xc279ee3e49f7e392a4e511136c39791e076f9be01d8648f3f1586ecf0f41def1739fa2978f90cfb2da4cf53ccb99405558cffcc4d190199b6949b03b1b8dae05"',
         });
 
         // Select a different entropy source.
@@ -106,7 +106,7 @@ describe('Test Snap bip-32', function () {
         // Check the results of the message signature using `waitForSelector`.
         await driver.waitForSelector({
           css: '#bip32MessageResult-secp256k1',
-          text: '"0x3044022061957f2e5aed783f014b221d8dd086746b57ba65c96987cad7d30ee32a7a7476022003d130308d5d5405eac1b7eb6131cfcfa736a9a28dc49c3b8ba4ef26fd28de6c"',
+          text: '"0x3045022100bd7301b5288fcc15e9c19bf548b666356230343a57f4ef0327a8e81f19ac562c022062698ed00a36e9ddd1563e1dc2e357d747bdfb233192ee1597cabb6c7210a6ba"',
         });
 
         // Select a different entropy source and sign.

@@ -101,7 +101,7 @@ describe('Test Snap getEntropy', function (this: Suite) {
         // check the results of the message signature using waitForSelector
         await driver.waitForSelector({
           css: '#entropySignResult',
-          text: '"0xb6c421dfcb510a89cb39116f9d0fcd6f06ffc3f83801d952ec2f5aa12e14f0da6194a4149bf4c66272987eda48fdeaf80b4a27b95c91a0fe9084469767c8579df4bf4e7abfa79d026234073d2ca1ab99779ccbbbf99095c2ee3a649e0042a166"',
+          text: '"0x9341785782b512c86235612365f1076b16731ed9473beb4d0804c30b7fcc3a055aa7103b02dc64014d923220712dfbef023ddcf6327b313ea2dfd4d83dc5a53e1c5e7f4e10bce49830eded302294054df8a7a46e5b6cb3e50eec564ecba17941"',
         });
 
         // Select a different entropy source.
@@ -141,7 +141,7 @@ describe('Test Snap getEntropy', function (this: Suite) {
         // Check the results of the message signature using `waitForSelector`.
         await driver.waitForSelector({
           css: '#entropySignResult',
-          text: '"0xa7181c5c40af3fc4a7202720b10e517fba904f28fbf199d97f266371e602cdcddff2e9b296c0aaf8ccf16098db9aa4260f06a560423e3a8520be2889e8d02e9e3f4d3bbfc1367b8dfcb175f7ed29d6ec7d02b4696a01798060a33226dabe5ffc"',
+          text: '"0xadd276f9d715223dcd20a595acb475f9b7353c451a57af64efb23633280c21aa172bd6689c27a0ac3c003ec4469b093207db956a6bf76689b3cc0b710c4187d5fcdca5f09c9594f146c9a39461e2f6cb03a446f4e62bd341a448ca9a33e96cf2"',
         });
 
         // Select a different entropy source.
