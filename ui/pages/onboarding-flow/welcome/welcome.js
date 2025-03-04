@@ -35,6 +35,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { isFlask, isBeta } from '../../../helpers/utils/build-types';
 
 export default function OnboardingWelcome() {
   const t = useI18nContext();
@@ -116,7 +117,12 @@ export default function OnboardingWelcome() {
   };
 
   const renderMascot = () => {
-    if (process.env.METAMASK_BUILD_TYPE === 'flask') {
+    if (isFlask()) {
+      return (
+        <img src="./images/logo/metamask-fox.svg" width="240" height="240" />
+      );
+    }
+    if (isBeta()) {
       return (
         <img src="./images/logo/metamask-fox.svg" width="240" height="240" />
       );
