@@ -101,7 +101,7 @@ describe('Test Snap getEntropy', function (this: Suite) {
         // check the results of the message signature using waitForSelector
         await driver.waitForSelector({
           css: '#entropySignResult',
-          text: '"0xad9e430e9fdab85a611ec9725e2c3a023c54dab5dbe40f0f51d0fc0503a48e1c9f5837b5c55a5fb1bbf18f8218de4fb309005a52ca1e6bf293a6fed77b30757642dff20f1a29f006125a8354b3d67253ac9952d43349c87503e114821dd3c888"',
+          text: '"0xb6c421dfcb510a89cb39116f9d0fcd6f06ffc3f83801d952ec2f5aa12e14f0da6194a4149bf4c66272987eda48fdeaf80b4a27b95c91a0fe9084469767c8579df4bf4e7abfa79d026234073d2ca1ab99779ccbbbf99095c2ee3a649e0042a166"',
         });
 
         // Select a different entropy source.
@@ -141,7 +141,7 @@ describe('Test Snap getEntropy', function (this: Suite) {
         // Check the results of the message signature using `waitForSelector`.
         await driver.waitForSelector({
           css: '#entropySignResult',
-          text: '"0x815abf3cda44b469a1d6f51aa7ff1e390d3352b6ee677119c68a04e3b1d2e06e2e611d4074fae930bf62c57b56859f4b0fb49d664763bab460f13f6919fc5dca452ecf6c72859bda39391a0cae0d4e4e4f50e039e41f29d69dfc83f35995e2b8"',
+          text: '"0xa7181c5c40af3fc4a7202720b10e517fba904f28fbf199d97f266371e602cdcddff2e9b296c0aaf8ccf16098db9aa4260f06a560423e3a8520be2889e8d02e9e3f4d3bbfc1367b8dfcb175f7ed29d6ec7d02b4696a01798060a33226dabe5ffc"',
         });
 
         // Select a different entropy source.
@@ -175,7 +175,7 @@ describe('Test Snap getEntropy', function (this: Suite) {
         // Check the results of the message signature using `waitForSelector`.
         await driver.waitForSelector({
           css: '#entropySignResult',
-          text: '"0xad9ddfa10cb90467a229a7bcb70d78efe5b8241d9b8083d9610ae816ad7a3a20b1176bc0baa84b998330ace7f5ebb43d0591c96c42100605ba19d2073d4a790a513cbf54dd3893af4aa0b1fa8778c2ad35ed6fb231b8f981fc3d1663a07c4042"',
+          text: '"0xa1dba3ddefabb56c5d6d37135fd07752662b5d720c005d619c0ff49eede2fe6f92a3e88e70ff4bb706b9ec2a076925ec159e3f6aa7170d51e428ccafe2353dd858da425c075912f0cd78c750942afef230393dff20d9fb58de14c56a5cd213b1"',
         });
 
         // Select an invalid (non-existent) entropy source.
