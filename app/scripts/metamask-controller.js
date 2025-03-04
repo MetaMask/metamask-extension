@@ -4026,6 +4026,14 @@ export default class MetamaskController extends EventEmitter {
           userStorageController,
         ),
 
+      performSetStorage: userStorageController.performSetStorage.bind(
+        userStorageController,
+      ),
+
+      performGetStorage: userStorageController.performGetStorage.bind(
+        userStorageController,
+      ),
+
       // NotificationServicesController
       checkAccountsPresence:
         notificationServicesController.checkAccountsPresence.bind(
