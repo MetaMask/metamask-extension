@@ -24,6 +24,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import Tooltip from '../tooltip';
 
 function mapStateToProps(state: CombinedBackgroundAndReduxState) {
   const { buyView, warning } = state.appState;
@@ -65,6 +66,7 @@ function QrCodeView({
     data.length - SUFFIX_LEN,
   );
   const addressEnd: string = data.substring(data.length - SUFFIX_LEN);
+  const tooltipTitle = copied ? t('addressCopied') : t('copyToClipboard');
 
   return (
     <div className="qr-code">
@@ -120,32 +122,34 @@ function QrCodeView({
         </Text>
         {addressEnd}
       </Text>
-      <Box
-        display={Display.Flex}
-        marginBottom={4}
-        gap={2}
-        alignItems={AlignItems.center}
-        color={TextColor.primaryDefault}
-        className="qr-code__copy-button"
-        data-testid="address-copy-button-text"
-        onClick={() => {
-          handleCopy(checksummedAddress);
-          trackEvent({
-            category: MetaMetricsEventCategory.Accounts,
-            event: MetaMetricsEventName.PublicAddressCopied,
-            properties: {
-              location: 'Account Details Modal',
-            },
-          });
-        }}
-      >
-        <Icon
-          name={copied ? IconName.CopySuccess : IconName.Copy}
-          size={IconSize.Sm}
-          color={IconColor.primaryDefault}
-        />
-        {t('copyAddressShort')}
-      </Box>
+      <Tooltip position="top" title={tooltipTitle}>
+        <Box
+          display={Display.Flex}
+          marginBottom={4}
+          gap={2}
+          alignItems={AlignItems.center}
+          color={TextColor.primaryDefault}
+          className="qr-code__copy-button"
+          data-testid="address-copy-button-text"
+          onClick={() => {
+            handleCopy(checksummedAddress);
+            trackEvent({
+              category: MetaMetricsEventCategory.Accounts,
+              event: MetaMetricsEventName.PublicAddressCopied,
+              properties: {
+                location: 'Account Details Modal',
+              },
+            });
+          }}
+        >
+          <Icon
+            name={copied ? IconName.CopySuccess : IconName.Copy}
+            size={IconSize.Sm}
+            color={IconColor.primaryDefault}
+          />
+          {t('copyAddressShort')}
+        </Box>
+      </Tooltip>
     </div>
   );
 }
