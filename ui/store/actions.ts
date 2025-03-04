@@ -43,7 +43,10 @@ import {
   OriginalRequest,
 } from '@metamask/signature-controller';
 import { InterfaceState } from '@metamask/snaps-sdk';
-import { KeyringTypes } from '@metamask/keyring-controller';
+import {
+  KeyringTypes,
+  SignTypedDataVersion,
+} from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { Patch } from 'immer';
@@ -6124,13 +6127,32 @@ export function setTransactionActive(
   };
 }
 
-export async function newUnsignedTypedMessage(
-  messageParams: MessageParamsTyped,
-  request: OriginalRequest,
-): Promise<TransactionMeta> {
+export async function newUnsignedTypedMessage({
+  messageParams,
+  request,
+  version,
+}: {
+  messageParams: MessageParamsTyped;
+  request: OriginalRequest;
+  version: SignTypedDataVersion;
+}): Promise<Hex> {
   return await submitRequestToBackground('newUnsignedTypedMessage', [
     messageParams,
     request,
-    'V4',
+    version,
   ]);
+}
+
+export async function performSetStorage({
+  path,
+  value,
+}: {
+  path: string;
+  value: string;
+}) {
+  return await submitRequestToBackground('performSetStorage', [path, value]);
+}
+
+export async function performGetStorage({ path }: { path: string }) {
+  return await submitRequestToBackground('performGetStorage', [path]);
 }
