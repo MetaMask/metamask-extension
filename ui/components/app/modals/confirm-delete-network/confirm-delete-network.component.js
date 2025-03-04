@@ -30,7 +30,7 @@ export default class ConfirmDeleteNetwork extends PureComponent {
     } = this.props;
 
     // An implicit auto-switch in the network-controller should occur
-    // to mainnet the network being deleted is the current selected
+    // to mainnet when the network being deleted is the current selected
     // EVM network and the active network is a non-EVM network.
     //
     // This logic must be ported to the multichain-network-controller
