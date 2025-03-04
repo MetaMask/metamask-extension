@@ -4,12 +4,22 @@ import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import Mascot from '../../../components/ui/mascot';
+import { isFlask, isBeta } from '../../../helpers/utils/build-types';
 
 export default function MascotBackgroundAnimation({ height, width }) {
   const animationEventEmitter = useRef(new EventEmitter());
 
   const renderMascot = () => {
-    if (process.env.METAMASK_BUILD_TYPE === 'flask') {
+    if (isFlask()) {
+      return (
+        <img
+          src="./images/logo/metamask-fox.svg"
+          width={width ?? '42'}
+          height={height ?? '42'}
+        />
+      );
+    }
+    if (isBeta()) {
       return (
         <img
           src="./images/logo/metamask-fox.svg"
