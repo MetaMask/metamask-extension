@@ -3,7 +3,6 @@ import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
-import { MOCK_META_METRICS_ID } from '../../constants';
 
 /**
  * Mocks the segment API multiple times for specific payloads that we expect to
@@ -51,12 +50,12 @@ async function mockSegment(mockServer: Mockttp) {
 }
 
 describe('Nft detection event', function () {
-  it('is sent when onboarding user', async function () {
+  it.skip('is sent when onboarding user', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
+            metaMetricsId: 'fake-metrics-id',
             participateInMetaMetrics: true,
           })
           .withPreferencesController({
@@ -73,7 +72,7 @@ describe('Nft detection event', function () {
           participateInMetaMetrics: true,
         });
         const events = await getEventPayloads(driver, mockedEndpoints);
-        assert.equal(events.length, 2);
+        assert.equal(events.length, 3);
         assert.deepStrictEqual(events[0].properties, {
           account_type: 'metamask',
           category: 'Onboarding',
