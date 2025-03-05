@@ -36,6 +36,10 @@ import {
   type TokenV3Asset,
   FeeType,
 } from '../../types/bridge';
+///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+import { MultichainNetworks } from '../../constants/multichain/networks';
+///: END:ONLY_INCLUDE_IF
+
 import {
   formatAddressToString,
   formatChainIdToDec,
@@ -174,6 +178,15 @@ export async function fetchBridgeQuotes(
   request: GenericQuoteRequest,
   signal: AbortSignal,
 ): Promise<QuoteResponse[]> {
+  // Ignore slippage for solana swaps
+  let ignoreSlippage = false;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+  ignoreSlippage =
+    request.srcChainId === request.destChainId &&
+    request.destChainId === MultichainNetworks.SOLANA;
+  ///: END:ONLY_INCLUDE_IF
+
   const normalizedRequest = {
     walletAddress: formatAddressToString(request.walletAddress),
     destWalletAddress: formatAddressToString(
@@ -184,7 +197,7 @@ export async function fetchBridgeQuotes(
     srcTokenAddress: formatAddressToString(request.srcTokenAddress),
     destTokenAddress: formatAddressToString(request.destTokenAddress),
     srcTokenAmount: request.srcTokenAmount,
-    slippage: request.slippage.toString(),
+    ...(ignoreSlippage ? {} : { slippage: request.slippage.toString() }),
     insufficientBal: request.insufficientBal ? 'true' : 'false',
     resetApproval: request.resetApproval ? 'true' : 'false',
   };
