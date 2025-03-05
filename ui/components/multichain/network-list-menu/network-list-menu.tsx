@@ -147,16 +147,16 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
   const showNetworkBanner = useSelector(getShowNetworkBanner);
-  // This selector provides all network configurations including EVM and non-EVM
-  // with the data type MultichainNetworkConfiguration from @metamask/multichain-network-controller
+  // This selector provides an array with two elements.
+  // 1 - All network configurations including EVM and non-EVM with the data type
+  // MultichainNetworkConfiguration from @metamask/multichain-network-controller
+  // 2 - All EVM network configurations with the data type NetworkConfiguration
+  // from @metamask/network-controller. It includes necessary data like
+  // the RPC endpoints that are not part of @metamask/multichain-network-controller.
   const [multichainNetworks, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
   const currentChainId = useSelector(getSelectedMultichainNetworkChainId);
-  // This selector provides all EVM network configurations with the
-  // data type NetworkConfiguration from @metamask/network-controller.
-  // It includes necessary data like the RPC endpoints that are not
-  // part of @metamask/multichain-network-controller.
   const { chainId: editingChainId, editCompleted } =
     useSelector(getEditedNetwork) ?? {};
   const permittedChainIds = useSelector((state) =>
