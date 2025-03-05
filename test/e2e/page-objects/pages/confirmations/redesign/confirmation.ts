@@ -45,7 +45,9 @@ class Confirmation {
   }
 
   async clickFooterConfirmButton() {
-    await this.driver.clickElement(this.footerConfirmButton);
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.footerConfirmButton,
+    );
   }
 
   async clickHeaderAccountDetailsButton() {
