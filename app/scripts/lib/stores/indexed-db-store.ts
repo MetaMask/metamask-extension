@@ -141,7 +141,7 @@ export default class IndexedDBStore extends BaseStore {
         .then((objectStore) => {
           const request = objectStore.get(id);
           request.onsuccess = () => {
-            return resolve(request.result.state);
+            return resolve(request?.result?.state);
           };
           request.onerror = () => reject(request.error);
         })
