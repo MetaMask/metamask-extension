@@ -5,7 +5,8 @@ import {
   toMultichainNetworkConfiguration,
 } from '@metamask/multichain-network-controller';
 import { type NetworkConfiguration as InternalNetworkConfiguration } from '@metamask/network-controller';
-import { type CaipChainId, BtcScope, SolScope } from '@metamask/keyring-api';
+import { BtcScope, SolScope } from '@metamask/keyring-api';
+import { type CaipChainId, type Hex } from '@metamask/utils';
 
 import {
   type ProviderConfigState,
@@ -101,14 +102,22 @@ export const getIsNonEvmNetworksEnabled = createDeepEqualSelector(
 
 export const getMultichainNetworkConfigurationsByChainId =
   createDeepEqualSelector(
-    getNonEvmMultichainNetworkConfigurationsByChainId,
-    getNetworkConfigurationsByChainId,
+    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     getIsNonEvmNetworksEnabled,
+    getNonEvmMultichainNetworkConfigurationsByChainId,
+    ///: END:ONLY_INCLUDE_IF
+    getNetworkConfigurationsByChainId,
     (
-      nonEvmNetworkConfigurationsByChainId,
-      networkConfigurationsByChainId,
+      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       isNonEvmNetworksEnabled,
-    ): Record<CaipChainId, InternalMultichainNetworkConfiguration> => {
+      nonEvmNetworkConfigurationsByChainId,
+      ///: END:ONLY_INCLUDE_IF
+      networkConfigurationsByChainId,
+    ): [
+      Record<CaipChainId, InternalMultichainNetworkConfiguration>,
+      Record<Hex, InternalNetworkConfiguration>,
+    ] => {
+      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       const filteredNonEvmNetworkConfigurationsByChainId: Record<
         CaipChainId,
         InternalMultichainNetworkConfiguration
@@ -126,6 +135,7 @@ export const getMultichainNetworkConfigurationsByChainId =
         filteredNonEvmNetworkConfigurationsByChainId[SolScope.Mainnet] =
           nonEvmNetworkConfigurationsByChainId[SolScope.Mainnet];
       }
+      ///: END:ONLY_INCLUDE_IF
 
       // There's a fallback for EVM network names/nicknames, in case the network
       // does not have a name/nickname the fallback is the first rpc endpoint url.
@@ -144,11 +154,13 @@ export const getMultichainNetworkConfigurationsByChainId =
       );
 
       const networks = {
+        ///: BEGIN:ONLY_INCLUDE_IF(multichain)
         ...filteredNonEvmNetworkConfigurationsByChainId,
+        ///: END:ONLY_INCLUDE_IF
         ...evmNetworks,
       };
 
-      return networks;
+      return [networks, networkConfigurationsByChainId];
     },
   );
 
@@ -171,7 +183,7 @@ export const getSelectedMultichainNetworkConfiguration = (
   state: MultichainNetworkConfigState,
 ) => {
   const chainId = getSelectedMultichainNetworkChainId(state);
-  const networkConfigurationsByChainId =
+  const [networkConfigurationsByChainId] =
     getMultichainNetworkConfigurationsByChainId(state);
   return networkConfigurationsByChainId[chainId];
 };
