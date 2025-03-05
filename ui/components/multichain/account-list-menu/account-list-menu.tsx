@@ -22,6 +22,7 @@ import {
   KeyringAccountType,
   ///: END:ONLY_INCLUDE_IF
 } from '@metamask/keyring-api';
+import { CaipChainId } from '@metamask/utils';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import {
   BITCOIN_WALLET_NAME,
@@ -126,6 +127,7 @@ import {
   AccountOverviewTabKey,
 } from '../../../../shared/constants/app-state';
 import { CreateEthAccount } from '../create-eth-account';
+import { CreateSnapAccount } from '../create-snap-account';
 import { ImportAccount } from '../import-account';
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
 import {
@@ -153,6 +155,10 @@ const ACTION_MODES = {
   ADD_BITCOIN: 'add-bitcoin',
   // Same but for testnet
   ADD_BITCOIN_TESTNET: 'add-bitcoin-testnet',
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  // Displays the add account form controls (for solana account)
+  ADD_SOLANA: 'add-solana',
   ///: END:ONLY_INCLUDE_IF
   // Displays the import account form controls
   IMPORT: 'import',
@@ -183,6 +189,10 @@ export const getActionTitle = (
     case ACTION_MODES.ADD_BITCOIN:
       return t('addAccount');
     case ACTION_MODES.ADD_BITCOIN_TESTNET:
+      return t('addAccount');
+    ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(solana)
+    case ACTION_MODES.ADD_SOLANA:
       return t('addAccount');
     ///: END:ONLY_INCLUDE_IF
     case ACTION_MODES.IMPORT:
@@ -247,6 +257,9 @@ export const AccountListMenu = ({
   ///: END:ONLY_INCLUDE_IF
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
+  const [previousActionMode, setPreviousActionMode] = useState(
+    ACTION_MODES.LIST,
+  );
   const hiddenAddresses = useSelector(getHiddenAccountsList);
   const updatedAccountsList = useSelector(getUpdatedAndSortedAccounts);
   const filteredUpdatedAccountList = useMemo(
@@ -311,9 +324,6 @@ export const AccountListMenu = ({
 
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   const solanaSupportEnabled = useSelector(getIsSolanaSupportEnabled);
-  const solanaWalletSnapClient = useMultichainWalletSnapClient(
-    WalletClientType.Solana,
-  );
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   const [primaryKeyring] = useSelector(getMetaMaskHdKeyrings);
@@ -349,7 +359,7 @@ export const AccountListMenu = ({
       onBack = () => setActionMode(ACTION_MODES.LIST);
       ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
     } else if (actionMode === ACTION_MODES.SELECT_SRP) {
-      onBack = () => setActionMode(ACTION_MODES.ADD);
+      onBack = () => setActionMode(previousActionMode);
       ///: END:ONLY_INCLUDE_IF
     } else {
       onBack = () => setActionMode(ACTION_MODES.MENU);
@@ -383,6 +393,42 @@ export const AccountListMenu = ({
     [dispatch, onClose, trackEvent],
   );
 
+  /**
+   * Helper function to determine the client type and chain ID based on action mode
+   *
+   * @param mode - The current action mode
+   * @returns An object containing the client type and chain ID, or null values if not a snap account creation mode
+   */
+  const getSnapClientConfig = (
+    mode: string,
+  ): { clientType: WalletClientType | null; chainId: CaipChainId | null } => {
+    switch (mode) {
+      case ACTION_MODES.ADD_BITCOIN:
+        return {
+          clientType: WalletClientType.Bitcoin,
+          chainId: MultichainNetworks.BITCOIN,
+        };
+      case ACTION_MODES.ADD_BITCOIN_TESTNET:
+        return {
+          clientType: WalletClientType.Bitcoin,
+          chainId: MultichainNetworks.BITCOIN_TESTNET,
+        };
+      case ACTION_MODES.ADD_SOLANA:
+        return {
+          clientType: WalletClientType.Solana,
+          chainId: MultichainNetworks.SOLANA,
+        };
+      default:
+        return {
+          clientType: null,
+          chainId: null,
+        };
+    }
+  };
+
+  // Use the helper function to get client type and chain ID
+  const { clientType, chainId } = getSnapClientConfig(actionMode);
+
   return (
     <Modal isOpen onClose={onClose}>
       <ModalOverlay />
@@ -410,8 +456,31 @@ export const AccountListMenu = ({
               }}
               ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
               selectedKeyringId={selectedKeyringId}
-              onSelectSRP={() => setActionMode(ACTION_MODES.SELECT_SRP)}
+              onSelectSRP={() => {
+                setPreviousActionMode(ACTION_MODES.ADD);
+                setActionMode(ACTION_MODES.SELECT_SRP);
+              }}
               ///: END:ONLY_INCLUDE_IF(multi-srp)
+            />
+          </Box>
+        ) : null}
+        {clientType && chainId ? (
+          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+            <CreateSnapAccount
+              onActionComplete={async (confirmed: boolean) => {
+                if (confirmed) {
+                  onClose();
+                } else {
+                  setActionMode(ACTION_MODES.LIST);
+                }
+              }}
+              selectedKeyringId={selectedKeyringId}
+              onSelectSRP={() => {
+                setPreviousActionMode(actionMode);
+                setActionMode(ACTION_MODES.SELECT_SRP);
+              }}
+              clientType={clientType}
+              chainId={chainId}
             />
           </Box>
         ) : null}
@@ -462,7 +531,7 @@ export const AccountListMenu = ({
             <SrpList
               onActionComplete={(keyringId: string) => {
                 setSelectedKeyringId(keyringId);
-                setActionMode(ACTION_MODES.ADD);
+                setActionMode(previousActionMode);
               }}
             />
           )
@@ -519,16 +588,7 @@ export const AccountListMenu = ({
                           location: 'Main Menu',
                         },
                       });
-
-                      // The account creation + renaming is handled by the
-                      // Snap account bridge, so we need to close the current
-                      // modal
-                      onClose();
-
-                      await solanaWalletSnapClient.createAccount(
-                        MultichainNetworks.SOLANA,
-                        primaryKeyring.metadata.id,
-                      );
+                      setActionMode(ACTION_MODES.ADD_SOLANA);
                     }}
                     data-testid="multichain-account-menu-popover-add-solana-account"
                   >
