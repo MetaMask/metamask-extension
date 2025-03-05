@@ -1485,6 +1485,7 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.HasMarketingConsent]: false,
           [MetaMetricsUserTrait.SecurityProviders]: ['blockaid'],
           [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
+          [MetaMetricsUserTrait.ProfileId]: undefined,
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           [MetaMetricsUserTrait.MmiExtensionId]: 'testid',
           [MetaMetricsUserTrait.MmiAccountAddress]: null,
