@@ -35,8 +35,6 @@ export default class ConfirmDeleteNetwork extends PureComponent {
     //
     // This logic must be ported to the multichain-network-controller
     // so the remove use case can be properly handled
-    console.log('chainId', chainId);
-    console.log('currentChainId', currentChainId);
     if (chainId === currentChainId) {
       await switchEvmNetwork(ethereumMainnetClientId);
     }
