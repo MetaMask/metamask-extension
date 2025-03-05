@@ -662,7 +662,7 @@
   },
   "engines": {
     "node": ">=20.12.0 <20.15.0 || >=20.17.0",
-    "yarn": "^4.4.1"
+    "yarn": "^4.7.0"
   },
   "lavamoat": {
     "allowScripts": {
@@ -744,7 +744,7 @@
       "@lavamoat/allow-scripts>@lavamoat/preinstall-always-fail": false
     }
   },
-  "packageManager": "yarn@4.5.1",
+  "packageManager": "yarn@4.7.0",
   "foundryup": {
     "binaries": [
       "anvil"
