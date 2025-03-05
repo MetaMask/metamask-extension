@@ -41,6 +41,7 @@ import {
 import {
   MessageParamsTyped,
   OriginalRequest,
+  TypedSigningOptions,
 } from '@metamask/signature-controller';
 import { InterfaceState } from '@metamask/snaps-sdk';
 import {
@@ -6077,15 +6078,18 @@ export async function newUnsignedTypedMessage({
   messageParams,
   request,
   version,
+  signingOptions,
 }: {
   messageParams: MessageParamsTyped;
   request: OriginalRequest;
   version: SignTypedDataVersion;
+  signingOptions?: TypedSigningOptions;
 }): Promise<Hex> {
   return await submitRequestToBackground('newUnsignedTypedMessage', [
     messageParams,
     request,
     version,
+    signingOptions,
   ]);
 }
 
