@@ -130,6 +130,7 @@ function runningOnGitHubActions(testPaths) {
 
   // Determine the test matrix division
   // GitHub Actions uses matrix.index (0-based) and matrix.total values for test splitting
+  // Improve test strategy maybe in the future?
   const matrixIndex = parseInt(process.env.MATRIX_INDEX || '0', 10);
   const matrixTotal = parseInt(process.env.MATRIX_TOTAL || '1', 10);
 
