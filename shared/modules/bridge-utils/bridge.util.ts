@@ -175,10 +175,11 @@ export async function fetchBridgeQuotes(
   request: GenericQuoteRequest,
   signal: AbortSignal,
 ): Promise<QuoteResponse[]> {
+
+  // Ignore slippage for solana swaps
   let ignoreSlippage = false;
 
   ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
-  // Ignore slippage for solana swaps
   ignoreSlippage =
     request.srcChainId === request.destChainId &&
     request.destChainId === MultichainNetworks.SOLANA;
