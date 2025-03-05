@@ -24,6 +24,25 @@ jobs:
           is-high-risk-environment: false
           cache-node-modules: 'true'
 
+  get-changed-files-with-git-diff:
+    needs: prep-deps
+    runs-on: ubuntu-latest
+    if: github.ref != 'refs/heads/master'
+    steps:
+      - name: Checkout and setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        with:
+          is-high-risk-environment: false
+
+      - name: Get changed files with git diff
+        run: yarn git-diff-default-branch
+
+      - name: Upload changed files artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: changed-files
+          path: ./changed-files/
+
   lint-workflows:
     name: Lint workflows
     uses: metamask/github-tools/.github/workflows/lint-workflows.yml@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
@@ -230,6 +249,56 @@ jobs:
         with:
           name: ts-migration-dashboard
           path: ./development/ts-migration-dashboard/build/final/
+
+  test-e2e-chrome-webpack:
+    name: Test e2e chrome webpack
+    #if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/Version-v')
+    if: github.ref == 'refs/heads/ci-prep-build'
+    needs:
+      - prep-build-test-webpack
+      - get-changed-files-with-git-diff
+    runs-on: ubuntu-latest
+    #strategy:
+    #  fail-fast: false
+    #  matrix:
+    #    shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+    steps:
+      - name: Checkout and setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        with:
+          is-high-risk-environment: false
+
+      - name: Download prep-build-test-webpack artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: prep-build-test-webpack
+          path: ./dist/
+
+      - name: Download changed-files artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: changed-files
+          path: ./changed-files/
+
+      - name: Run e2e tests
+        run: .github/scripts/test-run-e2e.sh yarn test:e2e:chrome:webpack
+        env:
+          # 5 minutes timeout for the e2e tests
+          TIMEOUT: 5
+
+      - name: Upload test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-artifacts-e2e-chrome-webpack
+          path: ./test-artifacts
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-e2e-chrome-webpack
+          path: ./test/test-results/e2e
 
   prep-build:
     needs: prep-deps
@@ -477,6 +546,8 @@ jobs:
       - prep-build-ts-migration-dashboard
       - prep-build-test-browserify
       - prep-build-test-webpack
+      - get-changed-files-with-git-diff
+      - test-e2e-chrome-webpack
     outputs:
       PASSED: ${{ steps.set-output.outputs.PASSED }}
     steps:
