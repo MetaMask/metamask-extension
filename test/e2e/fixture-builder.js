@@ -268,6 +268,22 @@ class FixtureBuilder {
     });
   }
 
+  /**
+   * Add a keyring controller with a vault that contains multiple SRP keyrings.
+   *
+   * @returns {FixtureBuilder}
+   */
+  withKeyringControllerMultiSRP() {
+    return this.withKeyringController({
+      keyringsMetadata: [
+        { id: '01JNGTRZ3QCEEQ7GYYFXBSQSBK', name: 'SRP 1' },
+        { id: '01JNGTTNRVYNQVN5FN8YTFAMJ4', name: 'SRP 2' },
+      ],
+      vault:
+        '{"data":"EfMp/e5oTwIWzxXXUKJDBwnG9ooALjzWDh0Stb2anQ5Q763pW9H0KJ6LJ8J+AnMkfWqP93JWEl0i7meCgDHQz/2rkE15ZAsY3IInEgLYPFqDbEr4zI/wfvHNg5GJGA4v14X/C+ts6asQeJUdMlUgC3m2mVdpis7ALACtDCIWWRuTkdq0jtkafXQra1ExMulPV31ZOMnDsvgHUuoXlL7+om8yNYqKuwMqVO/09X+WdbRG7EJqjNzjfV8BrNvOAJnhmdQpWGXKyIk0IA4o1QFJO8fmrXZMRmf64a3TWYAmEp6jAG3Rz9X4nnL52BpLjMBcik0L8k5y8ZuUZH5+Wme1D86HaHwnJtZvsRULuPFYbb/UCsfW9PwcyYZ4bmDOn/xYiOEFTk0Ku8PE6vkFqcIrrkCJoWaw6BnuriRovsoduzuGcAaJNvQ2bXvV2yyCdQSP7i2WnlXGgRDO7beCamoa80YIf+PAGFC00UxuyBWda4eZ+ipixGmGdp4EpBzt0GgY9GMknA6ivyb2UUNOyz4DMVL/CjjiU9ezf/Go22RzSLcXLUYF4KlpLEP6sFJCG3Uo2WzUWQFiy6Gs/VrYitLeB52MTNRfEviXXmlN+rSQc02zg8xPG19WCnjA3e7fkYzP0aL/DOtWuNqIZwP3s7EziiIGlb/cxIxc0VwyI/Ew0XG2/xbxt8WKsY2DkXdgMsviHcz3u+1STZaxiORVOeBsKnj8w6nEtzbqPxTRpqva7q4nOICk6Xbc//YHezqg8kJWvPmLeZAuYY4VyMiBthCG+qvHqtnhIQ8iobUdhqJ5+QlukPLmFMXfKqPF1fFEPk1vtpCNwhURkG7z2xDzGIzjXmSQUjtlFP6vqmFaqJAgpbuw1mVfoDudQ3cZCH71W5gOyn3TeMIyVse39W/+dK3YLXqmt+Sx05GsXco9QeSlBzAGhMYFB1GKxaiZIEACGg==","iv":"JvKKq/Rs8pbTTamsoPgcGQ==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"Su9hh66sokHRahkEZLUGowOI1pPbNCT90ymFqLFYza0="}',
+    });
+  }
+
   withMetaMetricsController(data) {
     merge(this.fixture.data.MetaMetricsController, data);
     return this;

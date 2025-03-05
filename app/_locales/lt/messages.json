@@ -313,9 +313,6 @@
     "message": "Importuoti",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Importuoti paskyrą"
-  },
   "importAccountMsg": {
     "message": "Importuotos paskyros nebus susietos su pirmiau sukurta „MetaMask“ paskyros atkūrimo fraze. Sužinokite daugiau apie importuotas paskyras"
   },

@@ -196,9 +196,6 @@
   "addFriendsAndAddresses": {
     "message": "Agregue amigos y direcciones de confianza"
   },
-  "addHardwareWallet": {
-    "message": "Agregar monedero físico"
-  },
   "addIPFSGateway": {
     "message": "Agregue su puerta de enlace de IPFS preferida"
   },
@@ -217,15 +214,6 @@
   },
   "addNewAccount": {
     "message": "Añadir una cuenta nueva de Ethereum"
-  },
-  "addNewBitcoinAccount": {
-    "message": "Añadir una nueva cuenta de Bitcoin (Beta)"
-  },
-  "addNewBitcoinTestnetAccount": {
-    "message": "Añadir una nueva cuenta de Bitcoin (Testnet)"
-  },
-  "addNewSolanaAccount": {
-    "message": "Añadir una nueva cuenta de Solana (Beta)"
   },
   "addNft": {
     "message": "Añadir NFT"
@@ -2062,9 +2050,6 @@
     "message": "Importar",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Importar cuenta"
-  },
   "importAccountError": {
     "message": "Error al importar la cuenta."
   },
@@ -3083,14 +3068,6 @@
   },
   "notifications": {
     "message": "Notificaciones"
-  },
-  "notificationsDropLedgerFirefoxDescription": {
-    "message": "Firefox ya no es compatible con U2F, por lo que Ledger no funcionará con MetaMask en Firefox. En su lugar, pruebe MetaMask en Google Chrome.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
-  },
-  "notificationsDropLedgerFirefoxTitle": {
-    "message": "Eliminación de la compatibilidad de Ledger para Firefox",
-    "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
   },
   "notificationsFeatureToggle": {
     "message": "Habilitar notificaciones del monedero",
@@ -5888,10 +5865,6 @@
   },
   "welcomeToMetaMaskIntro": {
     "message": "Con la confianza de millones de usuarios, MetaMask es un monedero seguro que permite que todos puedan acceder al mundo de Web3."
-  },
-  "whatsNew": {
-    "message": "Novedades",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
   },
   "whatsThis": {
     "message": "¿Qué es esto?"

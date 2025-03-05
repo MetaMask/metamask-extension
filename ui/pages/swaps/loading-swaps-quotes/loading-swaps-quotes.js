@@ -33,6 +33,7 @@ import {
   JustifyContent,
   TextTransform,
 } from '../../../helpers/constants/design-system';
+import { isFlask, isBeta } from '../../../helpers/utils/build-types';
 import BackgroundAnimation from './background-animation';
 
 export default function LoadingSwapsQuotes({
@@ -87,7 +88,12 @@ export default function LoadingSwapsQuotes({
   const [midPointTarget, setMidpointTarget] = useState(null);
 
   const renderMascot = () => {
-    if (process.env.METAMASK_BUILD_TYPE === 'flask') {
+    if (isFlask()) {
+      return (
+        <img src="./images/logo/metamask-fox.svg" width="90" height="90" />
+      );
+    }
+    if (isBeta()) {
       return (
         <img src="./images/logo/metamask-fox.svg" width="90" height="90" />
       );

@@ -152,10 +152,10 @@ describe('Multichain network selectors', () => {
     it('returns all multichain network configurations by chain ID when Solana and Bitcoin are enabled', () => {
       expect(
         getMultichainNetworkConfigurationsByChainId(mockState),
-      ).toStrictEqual({
-        ...mockNonEvmNetworks,
-        ...mockEvmNetworksWithNewConfig,
-      });
+      ).toStrictEqual([
+        { ...mockNonEvmNetworks, ...mockEvmNetworksWithNewConfig },
+        mockEvmNetworksWithOldConfig,
+      ]);
     });
 
     it('returns all multichain network configurations by chain ID excluding Solana when support is disabled and there is no Solana account', () => {
@@ -174,10 +174,13 @@ describe('Multichain network selectors', () => {
         getMultichainNetworkConfigurationsByChainId(
           mockMultichainNetworkStateWithSolanaSupportDisabled,
         ),
-      ).toStrictEqual({
-        [BtcScope.Mainnet]: mockNonEvmNetworks[BtcScope.Mainnet],
-        ...mockEvmNetworksWithNewConfig,
-      });
+      ).toStrictEqual([
+        {
+          [BtcScope.Mainnet]: mockNonEvmNetworks[BtcScope.Mainnet],
+          ...mockEvmNetworksWithNewConfig,
+        },
+        mockEvmNetworksWithOldConfig,
+      ]);
     });
 
     it('returns all multichain network configurations by chain ID excluding Bitcoin when support is disabled and there no Bitcoin account', () => {
@@ -193,10 +196,13 @@ describe('Multichain network selectors', () => {
         getMultichainNetworkConfigurationsByChainId(
           mockMultichainNetworkStateWithBitcoinSupportDisabled,
         ),
-      ).toStrictEqual({
-        [SolScope.Mainnet]: mockNonEvmNetworks[SolScope.Mainnet],
-        ...mockEvmNetworksWithNewConfig,
-      });
+      ).toStrictEqual([
+        {
+          [SolScope.Mainnet]: mockNonEvmNetworks[SolScope.Mainnet],
+          ...mockEvmNetworksWithNewConfig,
+        },
+        mockEvmNetworksWithOldConfig,
+      ]);
     });
 
     it('returns all multichain network configurations by chain ID excluding Bitcoin and Solana when support is disabled and no accounts related to those networks', () => {
@@ -216,7 +222,10 @@ describe('Multichain network selectors', () => {
         getMultichainNetworkConfigurationsByChainId(
           mockMultichainNetworkStateWithBitcoinSupportDisabled,
         ),
-      ).toStrictEqual({ ...mockEvmNetworksWithNewConfig });
+      ).toStrictEqual([
+        mockEvmNetworksWithNewConfig,
+        mockEvmNetworksWithOldConfig,
+      ]);
     });
 
     it('returns Solana as part of the multichain network configurations if there is a Solana account', () => {
@@ -243,10 +252,13 @@ describe('Multichain network selectors', () => {
         getMultichainNetworkConfigurationsByChainId(
           mockMultichainNetworkStateWithBitcoinSupportDisabled,
         ),
-      ).toStrictEqual({
-        ...mockEvmNetworksWithNewConfig,
-        [SolScope.Mainnet]: mockNonEvmNetworks[SolScope.Mainnet],
-      });
+      ).toStrictEqual([
+        {
+          ...mockEvmNetworksWithNewConfig,
+          [SolScope.Mainnet]: mockNonEvmNetworks[SolScope.Mainnet],
+        },
+        mockEvmNetworksWithOldConfig,
+      ]);
     });
 
     it('returns Bitcoin as part of the multichain network configurations if there is a Bitcoin account', () => {
@@ -273,10 +285,13 @@ describe('Multichain network selectors', () => {
         getMultichainNetworkConfigurationsByChainId(
           mockMultichainNetworkStateWithBitcoinSupportDisabled,
         ),
-      ).toStrictEqual({
-        ...mockEvmNetworksWithNewConfig,
-        [BtcScope.Mainnet]: mockNonEvmNetworks[BtcScope.Mainnet],
-      });
+      ).toStrictEqual([
+        {
+          ...mockEvmNetworksWithNewConfig,
+          [BtcScope.Mainnet]: mockNonEvmNetworks[BtcScope.Mainnet],
+        },
+        mockEvmNetworksWithOldConfig,
+      ]);
     });
 
     it('returns Bitcoin and Solana as part of the multichain network configurations if there is Bitcoin and Solana accounts', () => {
@@ -304,10 +319,13 @@ describe('Multichain network selectors', () => {
         getMultichainNetworkConfigurationsByChainId(
           mockMultichainNetworkStateWithBitcoinSupportDisabled,
         ),
-      ).toStrictEqual({
-        ...mockEvmNetworksWithNewConfig,
-        ...mockNonEvmNetworks,
-      });
+      ).toStrictEqual([
+        {
+          ...mockEvmNetworksWithNewConfig,
+          ...mockNonEvmNetworks,
+        },
+        mockEvmNetworksWithOldConfig,
+      ]);
     });
   });
 
