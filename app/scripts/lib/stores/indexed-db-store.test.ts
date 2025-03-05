@@ -1,8 +1,8 @@
 // IndexedDBStore.test.ts
 import { captureException } from '@sentry/browser';
 import log from 'loglevel';
-import { IndexedDBStore } from './IndexedDBStore';
-import type { MetaMaskStorageStructure } from './BaseStore';
+import IndexedDBStore from './indexed-db-store';
+import type { MetaMaskStorageStructure } from './base-store';
 
 global.indexedDB = {
   open: jest.fn(),

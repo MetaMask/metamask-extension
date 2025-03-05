@@ -1,6 +1,6 @@
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
-import { BaseStore, MetaMaskStorageStructure } from './BaseStore';
+import { BaseStore, MetaMaskStorageStructure } from './base-store';
 
 const STATE_KEY = 'metamaskState';
 
@@ -13,7 +13,7 @@ enum DatabaseError {
   INVALID_STATE_ERROR = 'InvalidStateError', // happens when changing the database schema (e.g., delete an object store) and then try to access the deleted store in an existing connection,
 }
 
-export class IndexedDBStore extends BaseStore {
+export default class IndexedDBStore extends BaseStore {
   storeName: string;
 
   dbVersion: number;
@@ -141,7 +141,7 @@ export class IndexedDBStore extends BaseStore {
         .then((objectStore) => {
           const request = objectStore.get(id);
           request.onsuccess = () => {
-            return resolve(request.result);
+            return resolve(request.result.state);
           };
           request.onerror = () => reject(request.error);
         })
