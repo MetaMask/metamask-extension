@@ -2,6 +2,7 @@ import * as path from 'path';
 import { By } from 'selenium-webdriver';
 import { KnownRpcMethods, KnownNotifications } from '@metamask/multichain';
 import {
+  defaultGanacheOptions,
   multipleGanacheOptions,
   regularDelayMs,
   WINDOW_TITLES,
@@ -25,21 +26,31 @@ export const DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS = {
       'build',
     ),
   ],
-  localNodeOptions: {
-    ...multipleGanacheOptions,
-    concurrent: [
-      {
+  localNodeOptions: [
+    {
+      type: 'ganache',
+      options: {
+        ...defaultGanacheOptions,
+        accounts: multipleGanacheOptions.accounts,
+      },
+    },
+    {
+      type: 'ganache',
+      options: {
         port: 8546,
         chainId: 1338,
-        ganacheOptions2: multipleGanacheOptions,
+        accounts: multipleGanacheOptions.accounts,
       },
-      {
+    },
+    {
+      type: 'ganache',
+      options: {
         port: 7777,
         chainId: 1000,
-        ganacheOptions2: multipleGanacheOptions,
+        accounts: multipleGanacheOptions.accounts,
       },
-    ],
-  },
+    },
+  ],
 };
 
 /**
