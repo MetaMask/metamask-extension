@@ -189,9 +189,6 @@ import {
   LedgerTransportTypes,
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
-///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-import { findKeyringId } from '../../shared/lib/keyring';
-///: END:ONLY_INCLUDE_IF
 import {
   RestrictedMethods,
   ExcludedSnapPermissions,
@@ -4339,7 +4336,7 @@ export default class MetamaskController extends EventEmitter {
     try {
       // TODO: `getKeyringsByType` is deprecated, this logic should probably be moved to the `KeyringController`.
       // FIXME: The `KeyringController` does not check yet for duplicated accounts with HD keyrings, see: https://github.com/MetaMask/core/issues/5411
-      const alreadyImportedSrp = await this.keyringController
+      const alreadyImportedSrp = this.keyringController
         .getKeyringsByType(KeyringTypes.hd)
         .some((keyring) => {
           return (
