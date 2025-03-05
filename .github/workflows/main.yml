@@ -284,7 +284,7 @@ jobs:
       #    INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
       - name: Build for master branch
-        if: github.ref == 'refs/heads/master'
+        #if: github.ref == 'refs/heads/master'
         run: ENABLE_MV3=false yarn build prod
         env:
           INFURA_PROD_PROJECT_ID: ${{ secrets.INFURA_PROD_PROJECT_ID }}
@@ -327,7 +327,7 @@ jobs:
       #    INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
       - name: Build for master branch
-        if: github.ref == 'refs/heads/master'
+        #if: github.ref == 'refs/heads/master'
         run: yarn build --build-type flask prod
         env:
           INFURA_FLASK_PROJECT_ID: ${{ secrets.INFURA_FLASK_PROJECT_ID }}
