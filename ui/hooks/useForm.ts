@@ -1,6 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-
-type FormStatus = 'default' | 'success' | 'error';
+import { useReducer, useEffect, useCallback, useMemo } from 'react';
+import { produce } from 'immer';
 
 type ValidationErrors<T> = {
   [K in keyof T]?: string;
@@ -18,115 +17,178 @@ type FormConfig<T> = {
   onSubmit: (values: T) => Promise<void>;
 };
 
-export function useForm<T extends Record<string, any>>({
+type FormStatus = 'default' | 'success' | 'error';
+
+// Define the form state type
+type FormState<T> = {
+  values: T;
+  touched: TouchedState<T>;
+  errors: ValidationErrors<T>;
+  isSubmitting: boolean;
+  formStatus: FormStatus;
+  submissionError?: string;
+};
+
+function createTouchedState<T>(values: T, touched: boolean): TouchedState<T> {
+  return Object.keys(values as object).reduce(
+    (acc, key) => ({ ...acc, [key]: touched }),
+    {} as TouchedState<T>,
+  );
+}
+
+// Define the action types
+type FormAction<T> =
+  | { type: 'SET_VALUE'; field: keyof T; value: T[keyof T] }
+  | { type: 'MARK_TOUCHED'; field: keyof T }
+  | { type: 'MARK_ALL_TOUCHED' }
+  | { type: 'SET_ERRORS'; errors: ValidationErrors<T> }
+  | { type: 'SUBMIT_START' }
+  | { type: 'SUBMIT_SUCCESS' }
+  | { type: 'SUBMIT_ERROR'; error: string }
+  | { type: 'RESET_FORM_STATUS' };
+
+// Define the reducer function using Immer for cleaner state updates
+function formReducer<T extends Record<string, unknown>>(
+  state: FormState<T>,
+  action: FormAction<T>,
+): FormState<T> {
+  return produce(state, (draft: FormState<T>) => {
+    switch (action.type) {
+      case 'SET_VALUE':
+        draft.values[action.field as keyof T] = action.value;
+        break;
+
+      case 'MARK_TOUCHED':
+        draft.touched[action.field as keyof T] = true;
+        break;
+
+      case 'MARK_ALL_TOUCHED':
+        draft.touched = createTouchedState(draft.values, true);
+        break;
+
+      case 'SET_ERRORS':
+        draft.errors = action.errors;
+        break;
+
+      case 'SUBMIT_START':
+        draft.isSubmitting = true;
+        draft.submissionError = undefined;
+        break;
+
+      case 'SUBMIT_SUCCESS':
+        draft.isSubmitting = false;
+        draft.formStatus = 'success';
+        break;
+
+      case 'SUBMIT_ERROR':
+        draft.isSubmitting = false;
+        draft.formStatus = 'error';
+        draft.submissionError = action.error;
+        break;
+
+      case 'RESET_FORM_STATUS':
+        draft.formStatus = 'default';
+        break;
+
+      default:
+        break;
+    }
+  });
+}
+
+export function useForm<T extends Record<string, unknown>>({
   initialValues,
   validate,
   onSubmit,
 }: FormConfig<T>) {
-  const [values, setValues] = useState<T>(initialValues);
-  const [touched, setTouched] = useState<TouchedState<T>>(
-    Object.keys(initialValues).reduce(
-      (acc, key) => ({ ...acc, [key]: false }),
-      {} as TouchedState<T>,
-    ),
-  );
-  const [errors, setErrors] = useState<ValidationErrors<T>>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formState, setFormState] = useState<FormStatus>('default');
-  const [submissionError, setSubmissionError] = useState<string | undefined>();
+  // Initialize form state
+  const initialState: FormState<T> = {
+    values: initialValues,
+    touched: createTouchedState(initialValues, false),
+    errors: {},
+    isSubmitting: false,
+    formStatus: 'default',
+    submissionError: undefined,
+  };
+
+  const [state, dispatch] = useReducer(formReducer<T>, initialState);
+  const { values, touched, errors, isSubmitting, formStatus, submissionError } =
+    state;
 
   // Validate inputs on change
   useEffect(() => {
     const validationErrors = validate(values);
-    setErrors(validationErrors); // Always store all validation errors
+    dispatch({ type: 'SET_ERRORS', errors: validationErrors });
 
     // Reset form state when inputs change
-    if (formState === 'error' || formState === 'success') {
-      setFormState('default');
+    if (formStatus === 'error' || formStatus === 'success') {
+      dispatch({ type: 'RESET_FORM_STATUS' });
     }
-  }, [values, formState, validate]);
+  }, [values, formStatus, validate]);
 
-  const handleInputChange = useCallback(
-    (field: keyof T) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      setValues({
-        ...values,
-        [field]: e.target.value,
-      });
-    },
-    [values],
-  );
-
-  const handleBlur = useCallback(
-    (field: keyof T) => () => {
-      setTouched((prev) => ({ ...prev, [field]: true }));
-    },
-    [],
+  // Create a reusable utility for field handling
+  const getFieldProps = useCallback(
+    (field: keyof T) => ({
+      name: field,
+      value: values[field],
+      onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+        dispatch({
+          type: 'SET_VALUE',
+          field,
+          value: e.target.value as T[keyof T],
+        }),
+      onBlur: () => dispatch({ type: 'MARK_TOUCHED', field }),
+      error: Boolean(errors[field] && touched[field]),
+      helpText: touched[field] ? errors[field] : undefined,
+      disabled: isSubmitting,
+    }),
+    [values, errors, touched, isSubmitting, dispatch],
   );
 
   const handleSubmit = useCallback(async () => {
     // Mark all fields as touched
-    setTouched(
-      Object.keys(values).reduce(
-        (acc, key) => ({ ...acc, [key]: true }),
-        {} as TouchedState<T>,
-      ),
-    );
+    dispatch({ type: 'MARK_ALL_TOUCHED' });
 
     const validationErrors = validate(values);
     const hasErrors = Object.values(validationErrors).some(Boolean);
 
     if (hasErrors) {
-      setErrors(validationErrors);
-      setFormState('error');
+      dispatch({ type: 'SET_ERRORS', errors: validationErrors });
+      dispatch({
+        type: 'SUBMIT_ERROR',
+        error: validationErrors.form || 'Validation failed',
+      });
       return;
     }
 
     try {
-      setIsSubmitting(true);
-      setSubmissionError(undefined);
+      dispatch({ type: 'SUBMIT_START' });
       await onSubmit(values);
-      setFormState('success');
+      dispatch({ type: 'SUBMIT_SUCCESS' });
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Form submission failed';
-      setSubmissionError(errorMessage);
-      setFormState('error');
-    } finally {
-      setIsSubmitting(false);
+      dispatch({ type: 'SUBMIT_ERROR', error: errorMessage });
     }
   }, [values, validate, onSubmit]);
 
   // Calculate form validity based on current validation errors
-  const isFormValid = useCallback(() => {
+  const isFormValid = useMemo(() => {
     const validationErrors = validate(values);
     return !Object.values(validationErrors).some(Boolean);
   }, [values, validate]);
-
-  const getFieldProps = useCallback(
-    (field: keyof T) => ({
-      name: field,
-      value: values[field],
-      onChange: handleInputChange(field),
-      onBlur: handleBlur(field),
-      error: Boolean(errors[field]),
-      helpText: errors[field],
-      disabled: isSubmitting,
-    }),
-    [values, errors, isSubmitting, handleInputChange, handleBlur],
-  );
 
   return {
     // Form state
     values,
     errors,
+    touched,
     isSubmitting,
-    formState,
+    formStatus,
     submissionError,
-    isFormValid: isFormValid(),
+    isFormValid,
 
     // Form handlers
-    handleInputChange,
-    handleBlur,
     handleSubmit,
     getFieldProps,
   };
