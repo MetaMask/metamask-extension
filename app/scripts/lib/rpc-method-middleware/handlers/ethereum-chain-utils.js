@@ -168,7 +168,6 @@ export function validateAddEthereumChainParams(params) {
  * @param {boolean} [hooks.autoApprove] - A boolean indicating whether the request should prompt the user or be automatically approved.
  * @param {Function} hooks.setActiveNetwork - The callback to change the current network for the origin.
  * @param {Function} hooks.getCaveat - The callback to get the CAIP-25 caveat for the origin.
- * @param {Function} hooks.requestPermittedChainsPermissionForOrigin - The callback to request a new permittedChains-equivalent CAIP-25 permission.
  * @param {Function} hooks.requestPermittedChainsPermissionIncrementalForOrigin - The callback to add a new chain to the permittedChains-equivalent CAIP-25 permission.
  * @param {Function} hooks.setTokenNetworkFilter - The callback to set the token network filter.
  * @param {Function} hooks.rejectApprovalRequestsForOrigin - The callback to reject all pending approval requests for the origin.
@@ -183,7 +182,6 @@ export async function switchChain(
     autoApprove,
     setActiveNetwork,
     getCaveat,
-    requestPermittedChainsPermissionForOrigin,
     requestPermittedChainsPermissionIncrementalForOrigin,
     setTokenNetworkFilter,
     rejectApprovalRequestsForOrigin,
@@ -205,7 +203,7 @@ export async function switchChain(
         });
       }
     } else {
-      await requestPermittedChainsPermissionForOrigin({
+      await requestPermittedChainsPermissionIncrementalForOrigin({
         chainId,
         autoApprove,
       });
