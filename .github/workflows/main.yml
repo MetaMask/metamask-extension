@@ -253,7 +253,7 @@ jobs:
   test-e2e-chrome-webpack:
     name: Test e2e chrome webpack
     #if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/Version-v')
-    if: github.ref == 'refs/heads/ci-prep-build'
+    #if: github.ref == 'refs/heads/ci-prep-build'
     needs:
       - prep-build-test-webpack
       - get-changed-files-with-git-diff
