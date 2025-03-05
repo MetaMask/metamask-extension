@@ -86,7 +86,7 @@ async function fetchUntilMergeBaseFound() {
       return;
     } catch (error: unknown) {
       if (error instanceof Error && 'code' in error) {
-        core.setFailed(
+        core.warning(
           `Error 'no merge base' encountered with depth ${depth}. Incrementing depth...`,
         );
       } else {
