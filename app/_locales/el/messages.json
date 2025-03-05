@@ -196,9 +196,6 @@
   "addFriendsAndAddresses": {
     "message": "Προσθέστε φίλους και διευθύνσεις που εμπιστεύεστε"
   },
-  "addHardwareWallet": {
-    "message": "Προσθήκη πορτοφολιού υλικού"
-  },
   "addIPFSGateway": {
     "message": "Προσθέστε την πύλη IPFS που προτιμάτε"
   },
@@ -217,15 +214,6 @@
   },
   "addNewAccount": {
     "message": "Προσθήκη νέου λογαριασμού Ethereum"
-  },
-  "addNewBitcoinAccount": {
-    "message": "Προσθήκη νέου λογαριασμού Bitcoin (Beta)"
-  },
-  "addNewBitcoinTestnetAccount": {
-    "message": "Προσθήκη νέου λογαριασμού Bitcoin (Testnet)"
-  },
-  "addNewSolanaAccount": {
-    "message": "Προσθήκη νέου λογαριασμού Solana (Beta)"
   },
   "addNft": {
     "message": "Προσθήκη του NFT"
@@ -2061,9 +2049,6 @@
   "import": {
     "message": "Εισαγωγή",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Εισαγωγή λογαριασμού"
   },
   "importAccountError": {
     "message": "Σφάλμα κατά την εισαγωγή του λογαριασμού."

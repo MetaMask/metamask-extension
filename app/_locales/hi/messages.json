@@ -196,9 +196,6 @@
   "addFriendsAndAddresses": {
     "message": "उन मित्रों और पतों को जोड़ें, जिन पर आप भरोसा करते हैं"
   },
-  "addHardwareWallet": {
-    "message": "hardware wallet जोड़ें"
-  },
   "addIPFSGateway": {
     "message": "अपना पसंदीदा IPFS गेटवे जोड़ें"
   },
@@ -217,15 +214,6 @@
   },
   "addNewAccount": {
     "message": "एक नया Ethereum अकाउंट जोड़ें"
-  },
-  "addNewBitcoinAccount": {
-    "message": "एक नया Bitcoin अकाउंट जोड़ें (बीटा)"
-  },
-  "addNewBitcoinTestnetAccount": {
-    "message": "एक नया Bitcoin अकाउंट जोड़ें (टैस्टनेट (testnet))"
-  },
-  "addNewSolanaAccount": {
-    "message": "एक नया Solana अकाउंट जोड़ें (बीटा)"
   },
   "addNft": {
     "message": "NFT जोड़ें"
@@ -2061,9 +2049,6 @@
   "import": {
     "message": "इम्पोर्ट करें",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "अकाउंट इम्पोर्ट करें"
   },
   "importAccountError": {
     "message": "अकाउंट इम्पोर्ट करने में गड़बड़ी।"

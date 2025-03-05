@@ -196,9 +196,6 @@
   "addFriendsAndAddresses": {
     "message": "Thêm bạn bè và địa chỉ mà bạn tin tưởng"
   },
-  "addHardwareWallet": {
-    "message": "Thêm ví cứng"
-  },
   "addIPFSGateway": {
     "message": "Thêm cổng IPFS ưa thích của bạn"
   },
@@ -217,15 +214,6 @@
   },
   "addNewAccount": {
     "message": "Thêm tài khoản Ethereum mới"
-  },
-  "addNewBitcoinAccount": {
-    "message": "Thêm tài khoản Bitcoin mới (Beta)"
-  },
-  "addNewBitcoinTestnetAccount": {
-    "message": "Thêm tài khoản Bitcoin mới (Mạng thử nghiệm)"
-  },
-  "addNewSolanaAccount": {
-    "message": "Thêm tài khoản Solana mới (Beta)"
   },
   "addNft": {
     "message": "Thêm NFT"
@@ -2061,9 +2049,6 @@
   "import": {
     "message": "Nhập",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Nhập tài khoản"
   },
   "importAccountError": {
     "message": "Lỗi khi nhập tài khoản."
