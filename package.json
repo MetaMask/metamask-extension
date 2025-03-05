@@ -275,7 +275,7 @@
     "@metamask/eth-sig-util": "^7.0.1",
     "@metamask/eth-snap-keyring": "^11.1.0",
     "@metamask/eth-token-tracker": "^10.0.2",
-    "@metamask/eth-trezor-keyring": "^7.0.0",
+    "@metamask/eth-trezor-keyring": "^6.1.1",
     "@metamask/etherscan-link": "^3.0.0",
     "@metamask/gas-fee-controller": "^22.0.3",
     "@metamask/jazzicon": "^2.0.0",
