@@ -7,6 +7,7 @@ import {
   AlignItems,
   TextAlign,
   TextVariant,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
 import { useSample } from '../../../ducks/sample';
 
@@ -14,7 +15,11 @@ export function SampleCounterPane() {
   const counter = useSample();
 
   return (
-    <Card data-testid="sample-counter-pane-card">
+    <Card
+      data-testid="sample-counter-pane-card"
+      width={BlockSize.Full}
+      style={{ maxWidth: '500px' }}
+    >
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
@@ -32,6 +37,7 @@ export function SampleCounterPane() {
           onClick={() => counter.increment()}
           textAlign={TextAlign.Center}
           data-testid="sample-counter-pane-increment-button"
+          block
         >
           Increment Redux Counter
         </Button>

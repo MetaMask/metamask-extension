@@ -18,6 +18,7 @@ import {
   BorderRadius,
   BackgroundColor,
   TextColor,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
 import { useSamplePetnamesController } from '../../../ducks/metamask/sample-petnames-controller';
 import { useSamplePetnamesForm } from '../hooks/useSamplePetnamesForm';
@@ -39,7 +40,7 @@ export function SamplePetnamesForm() {
   };
 
   return (
-    <Card>
+    <Card width={BlockSize.Full} style={{ maxWidth: '500px' }}>
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
@@ -53,7 +54,7 @@ export function SamplePetnamesForm() {
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
           gap={2}
-          style={{ width: '100%', minWidth: '300px' }}
+          width={BlockSize.Full}
         >
           {Object.entries(petNames.namesForCurrentChain).length === 0 ? (
             <Text
@@ -97,7 +98,7 @@ export function SamplePetnamesForm() {
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
           gap={2}
-          style={{ width: '100%' }}
+          width={BlockSize.Full}
           onSubmit={onSubmit}
         >
           <FormTextField
@@ -133,7 +134,7 @@ export function SamplePetnamesForm() {
             </Text>
           )}
 
-          <Button type="submit" disabled={isSubmitting || !isFormValid}>
+          <Button type="submit" disabled={isSubmitting || !isFormValid} block>
             {isSubmitting ? 'Adding...' : 'Add Pet Name'}
           </Button>
         </Box>
