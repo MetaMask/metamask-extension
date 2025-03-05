@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { AlertActionKey } from '../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../helpers/constants/design-system';
-import { getMemoizedUnapprovedConfirmations } from '../../../../selectors';
+import { getApprovalsByOrigin } from '../../../../selectors';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 const VALIDATED_APPROVAL_TYPES = [
@@ -17,27 +17,18 @@ const VALIDATED_APPROVAL_TYPES = [
 export function useAddEthereumChainAlerts(
   pendingConfirmation: ApprovalRequest<{ id: string }>,
 ): Alert[] {
-  const pendingConfirmations = useSelector(getMemoizedUnapprovedConfirmations);
+  const pendingConfirmationsFromOrigin = useSelector((state) =>
+    getApprovalsByOrigin(state, pendingConfirmation?.origin),
+  );
 
   const t = useI18nContext();
   return useMemo(() => {
     if (
-      !pendingConfirmation ||
-      !pendingConfirmations?.length ||
+      pendingConfirmationsFromOrigin?.length <= 1 ||
       !VALIDATED_APPROVAL_TYPES.includes(
-        pendingConfirmation.type as ApprovalType,
+        pendingConfirmation?.type as ApprovalType,
       )
     ) {
-      return [];
-    }
-
-    const { origin, id } = pendingConfirmation;
-    const pendingConfirmationsFromSameOrigin = pendingConfirmations.filter(
-      (confirmation) =>
-        confirmation.origin === origin && confirmation.id !== id,
-    );
-
-    if (!pendingConfirmationsFromSameOrigin?.length) {
       return [];
     }
 
@@ -51,11 +42,11 @@ export function useAddEthereumChainAlerts(
         ],
         key: 'pendingConfirmationFromSameOrigin',
         message: t('pendingConfirmationAddNetworkAlertMessage', [
-          pendingConfirmationsFromSameOrigin.length,
+          pendingConfirmationsFromOrigin.length - 1,
         ]),
         reason: t('areYouSure'),
         severity: Severity.Warning,
       },
     ];
-  }, [pendingConfirmation, pendingConfirmations, t]);
+  }, [pendingConfirmation?.type, pendingConfirmationsFromOrigin?.length, t]);
 }

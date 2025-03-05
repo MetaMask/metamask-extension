@@ -211,9 +211,7 @@ export async function switchChain(
       });
     }
 
-    if (rejectApprovalRequestsForOrigin) {
-      rejectApprovalRequestsForOrigin();
-    }
+    rejectApprovalRequestsForOrigin?.();
 
     await setActiveNetwork(networkClientId);
     setTokenNetworkFilter(chainId);

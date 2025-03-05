@@ -6086,7 +6086,7 @@ export default class MetamaskController extends EventEmitter {
     engine.push(createSelectedNetworkMiddleware(this.controllerMessenger));
 
     // Add a middleware that will switch chain on each request (as needed)
-    if (!process.env.EVM_MULTICHAIN_ENABLED) {
+    if (process.env.EVM_MULTICHAIN_ENABLED !== true) {
       const requestQueueMiddleware = createQueuedRequestMiddleware({
         enqueueRequest: this.queuedRequestController.enqueueRequest.bind(
           this.queuedRequestController,

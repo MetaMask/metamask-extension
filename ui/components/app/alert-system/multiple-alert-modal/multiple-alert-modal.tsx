@@ -24,6 +24,8 @@ import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 export type MultipleAlertModalProps = {
   /** The key of the initial alert to display. */
   alertKey?: string;
+  /** If true the modal will display non-field alerts also. */
+  displayAllAlerts?: boolean;
   /** The function to be executed when the button in the alert modal is clicked. */
   onFinalAcknowledgeClick: () => void;
   /** The function to be executed when the modal needs to be closed. */
@@ -34,8 +36,6 @@ export type MultipleAlertModalProps = {
   showCloseIcon?: boolean;
   /** Whether to skip the unconfirmed alerts validation and close the modal directly. */
   skipAlertNavigation?: boolean;
-  /** If true the modal will display non-field alerts also. */
-  displayAllAlerts?: boolean;
 };
 
 function PreviousButton({
@@ -148,12 +148,12 @@ function PageNavigation({
 
 export function MultipleAlertModal({
   alertKey,
+  displayAllAlerts = false,
   onClose,
   onFinalAcknowledgeClick,
   ownerId,
   showCloseIcon = true,
   skipAlertNavigation = false,
-  displayAllAlerts = false,
 }: MultipleAlertModalProps) {
   const { isAlertConfirmed, fieldAlerts, alerts } = useAlerts(ownerId);
   const alertsToDisplay = displayAllAlerts ? alerts : fieldAlerts;
