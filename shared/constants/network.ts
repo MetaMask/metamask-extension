@@ -1064,6 +1064,8 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     defaultRpcEndpointIndex: 0,
     blockExplorerUrls: ['https://lineascan.build/'],
     defaultBlockExplorerUrlIndex: 0,
+    portfolioDiscoverUrl:
+      'https://portfolio.metamask.io//explore/networks/linea',
   },
   {
     chainId: CHAIN_IDS.ARBITRUM,

@@ -109,6 +109,7 @@ import {
 } from '../../../ducks/metamask/metamask';
 import NetworksForm from '../../../pages/settings/networks-tab/networks-form';
 import { useNetworkFormState } from '../../../pages/settings/networks-tab/networks-form/networks-form-state';
+import { openWindow } from '../../../helpers/utils/window';
 import PopularNetworkList from './popular-network-list/popular-network-list';
 import NetworkListSearch from './network-list-search/network-list-search';
 import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
@@ -421,6 +422,11 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           );
           setActionMode(ACTION_MODE.ADD_EDIT);
         },
+        onDiscoverClick: network.portfolioDiscoverUrl
+          ? () => {
+              openWindow(network.portfolioDiscoverUrl as string, '_blank');
+            }
+          : undefined,
         onRpcConfigEdit: hasMultiRpcOptions(network)
           ? () => {
               setActionMode(ACTION_MODE.SELECT_RPC);
@@ -442,7 +448,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   ) => {
     const { chainId } = network;
     const isCurrentNetwork = chainId === currentChainId;
-    const { onDelete, onEdit, onRpcConfigEdit } = getItemCallbacks(network);
+    const { onDelete, onEdit, onDiscoverClick, onRpcConfigEdit } =
+      getItemCallbacks(network);
     const iconSrc = getNetworkIcon(network);
 
     return (
@@ -464,6 +471,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         }}
         onDeleteClick={onDelete}
         onEditClick={onEdit}
+        onDiscoverClick={onDiscoverClick}
         onRpcEndpointClick={onRpcConfigEdit}
         disabled={!isNetworkEnabled(network)}
       />
