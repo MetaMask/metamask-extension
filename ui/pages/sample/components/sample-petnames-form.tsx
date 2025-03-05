@@ -26,7 +26,7 @@ export function SamplePetnamesForm() {
   const petNames = useSamplePetnamesController();
   const {
     isSubmitting,
-    formState,
+    formStatus,
     submissionError,
     isFormValid,
     handleSubmit,
@@ -122,7 +122,7 @@ export function SamplePetnamesForm() {
             </HelpText>
           )}
 
-          {formState === 'success' && (
+          {formStatus === 'success' && (
             <Text
               variant={TextVariant.bodyMd}
               color={TextColor.successDefault}

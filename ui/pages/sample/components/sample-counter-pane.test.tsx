@@ -1,61 +1,79 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
-import configureStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { useSample } from '../../../ducks/sample/useSample';
 import { SampleCounterPane } from './sample-counter-pane';
+
+// Import the mocked module to control its implementation
 
 // Create mock functions
 const mockIncrement = jest.fn();
+const mockSetCounter = jest.fn();
 
 // Mock the counter module
-jest.mock('../../../ducks/sample/useSample', () => {
-  return {
-    useSample: () => ({
-      value: 5,
-      error: null,
-      increment: mockIncrement,
-      setCounter: jest.fn(),
-    }),
-  };
-});
+jest.mock('../../../ducks/sample/useSample', () => ({
+  useSample: jest.fn(),
+}));
 
 describe('SampleCounterPane', () => {
-  // Create a mock store before each test
-  let mockStore: ReturnType<typeof configureStore>;
-  let store: ReturnType<typeof mockStore>;
+  // Helper function to setup the mock with different values
+  const setupMock = (value = 5, error: Error | null = null) => {
+    (useSample as jest.Mock).mockReturnValue({
+      value,
+      error,
+      increment: mockIncrement,
+      setCounter: mockSetCounter,
+    });
+  };
 
   beforeEach(() => {
     // Reset all mocks before each test
     jest.clearAllMocks();
-
-    // Create a fresh mock store for each test
-    mockStore = configureStore([]);
-    store = mockStore({
-      sample: {
-        counter: {
-          value: 5,
-          error: null,
-        },
-      },
-    });
+    setupMock();
   });
 
-  it('renders the counter component', () => {
-    renderWithProvider(<SampleCounterPane />, store);
+  it('renders the counter component with correct value', () => {
+    render(<SampleCounterPane />);
 
-    expect(screen.getByText('Counter')).toBeInTheDocument();
+    // Check heading
+    expect(screen.getByTestId('sample-counter-pane-title')).toHaveTextContent(
+      'Counter',
+    );
 
-    const valueElement = screen.getByText(/Value:/u);
-    expect(valueElement).toBeInTheDocument();
+    // Check value display
+    expect(screen.getByTestId('sample-counter-pane-value')).toHaveTextContent(
+      'Value: 5',
+    );
 
-    expect(screen.getByText('Increment Redux Counter')).toBeInTheDocument();
+    // Check button
+    expect(
+      screen.getByTestId('sample-counter-pane-increment-button'),
+    ).toHaveTextContent('Increment Redux Counter');
   });
 
   it('calls increment when button is clicked', () => {
-    renderWithProvider(<SampleCounterPane />, store);
+    render(<SampleCounterPane />);
 
-    fireEvent.click(screen.getByText('Increment Redux Counter'));
+    fireEvent.click(screen.getByTestId('sample-counter-pane-increment-button'));
 
-    expect(mockIncrement).toHaveBeenCalled();
+    expect(mockIncrement).toHaveBeenCalledTimes(1);
+  });
+
+  it('displays different counter values', () => {
+    // Test with a different value
+    setupMock(10);
+    render(<SampleCounterPane />);
+
+    expect(screen.getByTestId('sample-counter-pane-value')).toHaveTextContent(
+      'Value: 10',
+    );
+  });
+
+  it('handles error states gracefully', () => {
+    // Test with an error state
+    setupMock(0, new Error('Failed to load counter'));
+    render(<SampleCounterPane />);
+
+    // Component should still render even with an error
+    expect(screen.getByTestId('sample-counter-pane-value')).toBeInTheDocument();
   });
 });

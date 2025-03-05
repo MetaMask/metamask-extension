@@ -86,7 +86,7 @@ export function useSamplePetnamesForm() {
     }
   };
 
-  const form = useForm<FormState>({
+  return useForm<FormState>({
     initialValues: {
       address: '0x',
       petName: '',
@@ -94,6 +94,4 @@ export function useSamplePetnamesForm() {
     validate: validateForm,
     onSubmit: handleSubmit,
   });
-
-  return form;
 }
