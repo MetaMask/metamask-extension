@@ -27,9 +27,9 @@ export function SamplePetnamesForm() {
   const petNames = useSamplePetnamesController();
   const {
     isSubmitting,
-    formStatus,
-    submissionError,
+    submitStatus,
     isFormValid,
+    formError,
     handleSubmit,
     getFieldProps,
   } = useSamplePetnamesForm();
@@ -117,13 +117,13 @@ export function SamplePetnamesForm() {
             {...getFieldProps('petName')}
           />
 
-          {submissionError && (
+          {formError && (
             <HelpText severity={HelpTextSeverity.Danger} marginBottom={2}>
-              {submissionError}
+              {formError}
             </HelpText>
           )}
 
-          {formStatus === 'success' && (
+          {submitStatus === 'success' && (
             <Text
               variant={TextVariant.bodyMd}
               color={TextColor.successDefault}

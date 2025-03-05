@@ -127,18 +127,18 @@ describe('useForm', () => {
       const { result } = setupHook();
 
       expect(result.current.values).toEqual(initialValues);
-      expect(result.current.formStatus).toBe('default');
+      expect(result.current.submitStatus).toBe('idle');
       expect(result.current.isSubmitting).toBe(false);
       expect(result.current.touched).toEqual({
         name: false,
         email: false,
       });
-      expect(result.current.submissionError).toBeUndefined();
+      expect(result.current.formError).toBeUndefined();
     });
 
     it('should initialize with validation errors and show isFormValid as false', () => {
       const { result } = setupHook();
-      expect(result.current.errors).toEqual({
+      expect(result.current.fieldErrors).toEqual({
         name: mockErrorMessages.requiredName,
         email: mockErrorMessages.requiredEmail,
       });
@@ -149,7 +149,7 @@ describe('useForm', () => {
       const { result } = setupHook({
         validator: () => ({}),
       });
-      expect(result.current.errors).toEqual({});
+      expect(result.current.fieldErrors).toEqual({});
       expect(result.current.isFormValid).toBe(true);
     });
 
@@ -162,7 +162,7 @@ describe('useForm', () => {
       const { result } = setupHook({ initialValues: customValues });
 
       expect(result.current.values).toEqual(customValues);
-      expect(result.current.errors).toEqual({});
+      expect(result.current.fieldErrors).toEqual({});
       expect(result.current.isFormValid).toBe(true);
     });
   });
@@ -174,8 +174,10 @@ describe('useForm', () => {
       await formInteractions.setValue(result, 'name', 'John Doe');
 
       expect(result.current.values.name).toBe('John Doe');
-      expect(result.current.errors.name).toBeUndefined();
-      expect(result.current.errors.email).toBe(mockErrorMessages.requiredEmail);
+      expect(result.current.fieldErrors.name).toBeUndefined();
+      expect(result.current.fieldErrors.email).toBe(
+        mockErrorMessages.requiredEmail,
+      );
     });
 
     it('should mark fields as touched on blur', async () => {
@@ -191,10 +193,12 @@ describe('useForm', () => {
       const { result } = setupHook();
 
       await formInteractions.setValue(result, 'email', 'invalid-email');
-      expect(result.current.errors.email).toBe(mockErrorMessages.invalidEmail);
+      expect(result.current.fieldErrors.email).toBe(
+        mockErrorMessages.invalidEmail,
+      );
 
       await formInteractions.setValue(result, 'email', 'valid@example.com');
-      expect(result.current.errors.email).toBeUndefined();
+      expect(result.current.fieldErrors.email).toBeUndefined();
     });
   });
 
@@ -353,10 +357,9 @@ describe('useForm', () => {
       });
 
       expect(failingSubmit).toHaveBeenCalledTimes(1);
-      expect(result.current.submissionError).toBe(
-        mockErrorMessages.submissionFailed,
-      );
+      expect(result.current.formError).toBe(mockErrorMessages.submissionFailed);
       expect(result.current.isSubmitting).toBe(false);
+      expect(result.current.submitStatus).toBe('error');
     });
   });
 });

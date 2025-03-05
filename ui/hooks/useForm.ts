@@ -1,53 +1,39 @@
 import { useReducer, useEffect, useCallback, useMemo } from 'react';
 import { produce } from 'immer';
 
-type ValidationErrors<T> = {
-  [K in keyof T]?: string;
-} & {
-  form?: string;
-};
-
-type TouchedState<T> = {
-  [K in keyof T]: boolean;
-};
-
 type FormConfig<T> = {
   initialValues: T;
   validate: (values: T) => ValidationErrors<T>;
   onSubmit: (values: T) => Promise<void>;
 };
 
-type FormStatus = 'default' | 'success' | 'error';
+type SubmitStatus = 'idle' | 'submitting' | 'success' | 'error';
 
-// Define the form state type
+type ValidationErrors<T> = {
+  [K in keyof T]?: string;
+};
+
+type TouchedState<T> = {
+  [K in keyof T]: boolean;
+};
+
 type FormState<T> = {
   values: T;
   touched: TouchedState<T>;
-  errors: ValidationErrors<T>;
-  isSubmitting: boolean;
-  formStatus: FormStatus;
-  submissionError?: string;
+  fieldErrors: ValidationErrors<T>;
+  formError?: string; // Single source for form-level errors
+  submitStatus: SubmitStatus; // Single field for submission state
 };
 
-function createTouchedState<T>(values: T, touched: boolean): TouchedState<T> {
-  return Object.keys(values as object).reduce(
-    (acc, key) => ({ ...acc, [key]: touched }),
-    {} as TouchedState<T>,
-  );
-}
-
-// Define the action types
 type FormAction<T> =
   | { type: 'SET_VALUE'; field: keyof T; value: T[keyof T] }
   | { type: 'MARK_TOUCHED'; field: keyof T }
   | { type: 'MARK_ALL_TOUCHED' }
-  | { type: 'SET_ERRORS'; errors: ValidationErrors<T> }
+  | { type: 'VALIDATE_FIELDS'; errors: ValidationErrors<T> }
+  | { type: 'SET_FORM_ERROR'; error?: string }
   | { type: 'SUBMIT_START' }
-  | { type: 'SUBMIT_SUCCESS' }
-  | { type: 'SUBMIT_ERROR'; error: string }
-  | { type: 'RESET_FORM_STATUS' };
+  | { type: 'SUBMIT_END'; success: boolean; error?: string };
 
-// Define the reducer function using Immer for cleaner state updates
 function formReducer<T extends Record<string, unknown>>(
   state: FormState<T>,
   action: FormAction<T>,
@@ -55,42 +41,40 @@ function formReducer<T extends Record<string, unknown>>(
   return produce(state, (draft: FormState<T>) => {
     switch (action.type) {
       case 'SET_VALUE':
-        draft.values[action.field as keyof T] = action.value;
+        draft.values[action.field] = action.value;
         break;
 
       case 'MARK_TOUCHED':
-        draft.touched[action.field as keyof T] = true;
+        draft.touched[action.field] = true;
         break;
 
       case 'MARK_ALL_TOUCHED':
-        draft.touched = createTouchedState(draft.values, true);
+        draft.touched = Object.keys(draft.values as object).reduce(
+          (acc, key) => ({ ...acc, [key]: true }),
+          {} as TouchedState<T>,
+        );
         break;
 
-      case 'SET_ERRORS':
-        draft.errors = action.errors;
+      case 'VALIDATE_FIELDS':
+        draft.fieldErrors = action.errors;
+        break;
+
+      case 'SET_FORM_ERROR':
+        draft.formError = action.error;
         break;
 
       case 'SUBMIT_START':
-        draft.isSubmitting = true;
-        draft.submissionError = undefined;
+        draft.submitStatus = 'submitting';
+        draft.formError = undefined;
         break;
 
-      case 'SUBMIT_SUCCESS':
-        draft.isSubmitting = false;
-        draft.formStatus = 'success';
-        break;
-
-      case 'SUBMIT_ERROR':
-        draft.isSubmitting = false;
-        draft.formStatus = 'error';
-        draft.submissionError = action.error;
-        break;
-
-      case 'RESET_FORM_STATUS':
-        draft.formStatus = 'default';
+      case 'SUBMIT_END':
+        draft.submitStatus = action.success ? 'success' : 'error';
+        draft.formError = action.error;
         break;
 
       default:
+        // No action for default case
         break;
     }
   });
@@ -104,27 +88,25 @@ export function useForm<T extends Record<string, unknown>>({
   // Initialize form state
   const initialState: FormState<T> = {
     values: initialValues,
-    touched: createTouchedState(initialValues, false),
-    errors: {},
-    isSubmitting: false,
-    formStatus: 'default',
-    submissionError: undefined,
+    touched: Object.keys(initialValues).reduce(
+      (acc, key) => ({ ...acc, [key]: false }),
+      {} as TouchedState<T>,
+    ),
+    fieldErrors: {},
+    formError: undefined,
+    submitStatus: 'idle',
   };
 
   const [state, dispatch] = useReducer(formReducer<T>, initialState);
-  const { values, touched, errors, isSubmitting, formStatus, submissionError } =
-    state;
+  const { values, touched, fieldErrors, formError, submitStatus } = state;
+
+  const isSubmitting = submitStatus === 'submitting';
 
   // Validate inputs on change
   useEffect(() => {
     const validationErrors = validate(values);
-    dispatch({ type: 'SET_ERRORS', errors: validationErrors });
-
-    // Reset form state when inputs change
-    if (formStatus === 'error' || formStatus === 'success') {
-      dispatch({ type: 'RESET_FORM_STATUS' });
-    }
-  }, [values, formStatus, validate]);
+    dispatch({ type: 'VALIDATE_FIELDS', errors: validationErrors });
+  }, [values, submitStatus, validate]);
 
   // Create a reusable utility for field handling
   const getFieldProps = useCallback(
@@ -138,11 +120,11 @@ export function useForm<T extends Record<string, unknown>>({
           value: e.target.value as T[keyof T],
         }),
       onBlur: () => dispatch({ type: 'MARK_TOUCHED', field }),
-      error: Boolean(errors[field] && touched[field]),
-      helpText: touched[field] ? errors[field] : undefined,
+      error: Boolean(fieldErrors[field] && touched[field]),
+      helpText: touched[field] ? fieldErrors[field] : undefined,
       disabled: isSubmitting,
     }),
-    [values, errors, touched, isSubmitting, dispatch],
+    [values, fieldErrors, touched, isSubmitting],
   );
 
   const handleSubmit = useCallback(async () => {
@@ -150,13 +132,13 @@ export function useForm<T extends Record<string, unknown>>({
     dispatch({ type: 'MARK_ALL_TOUCHED' });
 
     const validationErrors = validate(values);
-    const hasErrors = Object.values(validationErrors).some(Boolean);
+    const hasFieldErrors = Object.values(validationErrors).some(Boolean);
 
-    if (hasErrors) {
-      dispatch({ type: 'SET_ERRORS', errors: validationErrors });
+    if (hasFieldErrors) {
+      dispatch({ type: 'VALIDATE_FIELDS', errors: validationErrors });
       dispatch({
-        type: 'SUBMIT_ERROR',
-        error: validationErrors.form || 'Validation failed',
+        type: 'SET_FORM_ERROR',
+        error: 'Please fix the errors in the form',
       });
       return;
     }
@@ -164,11 +146,11 @@ export function useForm<T extends Record<string, unknown>>({
     try {
       dispatch({ type: 'SUBMIT_START' });
       await onSubmit(values);
-      dispatch({ type: 'SUBMIT_SUCCESS' });
+      dispatch({ type: 'SUBMIT_END', success: true });
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Form submission failed';
-      dispatch({ type: 'SUBMIT_ERROR', error: errorMessage });
+      dispatch({ type: 'SUBMIT_END', success: false, error: errorMessage });
     }
   }, [values, validate, onSubmit]);
 
@@ -181,12 +163,12 @@ export function useForm<T extends Record<string, unknown>>({
   return {
     // Form state
     values,
-    errors,
+    fieldErrors,
     touched,
+    formError,
     isSubmitting,
-    formStatus,
-    submissionError,
     isFormValid,
+    submitStatus,
 
     // Form handlers
     handleSubmit,
