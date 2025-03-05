@@ -33,8 +33,9 @@ export default class ConfirmDeleteNetwork extends PureComponent {
     // to mainnet when the network being deleted is the current selected
     // EVM network and the active network is a non-EVM network.
     //
-    // This logic must be ported to the multichain-network-controller
-    // so the remove use case can be properly handled
+    // TODO: This logic must be ported to the 
+    // multichain-network-controller so the "remove use case" can
+    // be properly handled.
     if (chainId === currentChainId) {
       await switchEvmNetwork(ethereumMainnetClientId);
     }
