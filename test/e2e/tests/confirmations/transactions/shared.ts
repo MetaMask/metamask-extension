@@ -40,6 +40,7 @@ export async function createContractDeploymentTransaction(driver: Driver) {
 }
 
 export async function confirmContractDeploymentTransaction(driver: Driver) {
+  await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.waitForSelector({
@@ -48,6 +49,9 @@ export async function confirmContractDeploymentTransaction(driver: Driver) {
   });
 
   await scrollAndConfirmAndAssertConfirm(driver);
+
+  await driver.delay(2000);
+  await driver.waitUntilXWindowHandles(2);
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
   await driver.clickElement({ text: 'Activity', tag: 'button' });
@@ -59,6 +63,7 @@ export async function confirmContractDeploymentTransaction(driver: Driver) {
 export async function confirmRedesignedContractDeploymentTransaction(
   driver: Driver,
 ) {
+  await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.waitForSelector({
@@ -73,6 +78,9 @@ export async function confirmRedesignedContractDeploymentTransaction(
 
   await scrollAndConfirmAndAssertConfirm(driver);
 
+  await driver.delay(2000);
+  await driver.waitUntilXWindowHandles(2);
+
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
   await driver.clickElement({ text: 'Activity', tag: 'button' });
   await driver.waitForSelector(
@@ -86,6 +94,8 @@ export async function createDepositTransaction(driver: Driver) {
 }
 
 export async function confirmDepositTransaction(driver: Driver) {
+  await driver.waitUntilXWindowHandles(3);
+
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.waitForSelector({
@@ -109,6 +119,7 @@ export async function confirmDepositTransactionWithCustomNonce(
   driver: Driver,
   customNonce: string,
 ) {
+  await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.waitForSelector({
