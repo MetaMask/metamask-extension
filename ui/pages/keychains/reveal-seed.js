@@ -183,7 +183,6 @@ export default function RevealSeedPage() {
           defaultActiveTabName={t('revealSeedWordsText')}
           onTabClick={(tabName) => {
             if (tabName === 'text-seed') {
-              console.log('TRACKING EVENT: onTabClick text-seed');
               trackEvent({
                 category: MetaMetricsEventCategory.Keys,
                 event: MetaMetricsEventName.SrpViewSrpText,
