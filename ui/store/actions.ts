@@ -1059,7 +1059,6 @@ export async function addTransactionAndWaitForPublish(
         ...options,
         origin: ORIGIN_METAMASK,
         actionId,
-        networkClientId,
       },
     ],
   );
@@ -1101,7 +1100,6 @@ export async function addTransaction(
       ...options,
       origin: ORIGIN_METAMASK,
       actionId,
-      networkClientId,
     },
   ]);
 }
