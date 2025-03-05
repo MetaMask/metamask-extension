@@ -36,7 +36,10 @@ import {
   type TokenV3Asset,
   FeeType,
 } from '../../types/bridge';
+///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
 import { MultichainNetworks } from '../../constants/multichain/networks';
+///: END:ONLY_INCLUDE_IF
+
 import {
   formatAddressToString,
   formatChainIdToDec,
@@ -175,7 +178,6 @@ export async function fetchBridgeQuotes(
   request: GenericQuoteRequest,
   signal: AbortSignal,
 ): Promise<QuoteResponse[]> {
-
   // Ignore slippage for solana swaps
   let ignoreSlippage = false;
 
