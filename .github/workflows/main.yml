@@ -275,10 +275,14 @@ jobs:
           is-high-risk-environment: false
 
       - name: Setup Chrome and ChromeDriver
+        id: setup-chrome
         uses: browser-actions/setup-chrome@c785b87e244131f27c9f19c1a33e2ead956ab7ce
         with:
           chrome-version: 120
           install-chromedriver: true
+
+      - name: Set CHROME_PATH environment variable
+        run: echo "CHROME_PATH=${{ steps.setup-chrome.outputs.chrome-path }}" >> $GITHUB_ENV
 
       - name: Download prep-build-test-webpack artifact
         uses: actions/download-artifact@v4
