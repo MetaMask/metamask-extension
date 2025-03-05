@@ -2777,10 +2777,6 @@
     "message": "Wir können keine Verbindung zu $1 aufbauen.",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "Netzwerk zu $1 gewechselt",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "Netzwerk-URL"
   },
@@ -3087,14 +3083,6 @@
   },
   "notifications": {
     "message": "Benachrichtigungen"
-  },
-  "notificationsDropLedgerFirefoxDescription": {
-    "message": "Firefox unterstützt U2F nicht mehr, daher wird Ledger nicht mit MetaMask auf Firefox funktionieren. Probieren Sie stattdessen MetaMask auf Google Chrome aus.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
-  },
-  "notificationsDropLedgerFirefoxTitle": {
-    "message": "Einstellung der Ledger-Unterstützung für Firefox",
-    "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
   },
   "notificationsFeatureToggle": {
     "message": "Wallet-Benachrichtigungen aktivieren",
@@ -4184,9 +4172,6 @@
   },
   "seedPhraseIntroTitle": {
     "message": "Sichern Sie Ihre Wallet"
-  },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Bevor Sie loslegen, schauen Sie sich dieses kurze Video an, um mehr über Ihre geheime Wiederherstellungsphrase zu erfahren und wie Sie Ihre Wallet sicher halten können."
   },
   "seedPhraseReq": {
     "message": "Geheime Wiederherstellungsphrasen bestehen aus 12, 15, 18, 21 oder 24 Wörtern."
@@ -5895,10 +5880,6 @@
   },
   "welcomeToMetaMaskIntro": {
     "message": "MetaMask ist eine sichere Wallet, welche die Welt von web3 für alle zugänglich macht und die das Vertrauen von Millionen genießt."
-  },
-  "whatsNew": {
-    "message": "Was neu ist",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
   },
   "whatsThis": {
     "message": "Was ist das?"

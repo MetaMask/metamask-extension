@@ -2777,10 +2777,6 @@
     "message": "Δεν μπορούμε να συνδεθούμε στο $1",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "Το δίκτυο άλλαξε σε $1",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "Διεύθυνση URL του δικτύου"
   },
@@ -3087,14 +3083,6 @@
   },
   "notifications": {
     "message": "Ειδοποιήσεις"
-  },
-  "notificationsDropLedgerFirefoxDescription": {
-    "message": "Ο Firefox δεν υποστηρίζει πλέον το U2F, οπότε το Ledger δεν θα λειτουργεί με το MetaMask στον Firefox. Δοκιμάστε αντ' αυτού το MetaMask στο Google Chrome.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
-  },
-  "notificationsDropLedgerFirefoxTitle": {
-    "message": "Διακοπή της υποστήριξης του Ledger για τον Firefox",
-    "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
   },
   "notificationsFeatureToggle": {
     "message": "Ενεργοποίηση ειδοποιήσεων για το πορτοφόλι",
@@ -4184,9 +4172,6 @@
   },
   "seedPhraseIntroTitle": {
     "message": "Προστατεύστε το πορτοφόλι σας"
-  },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Πριν ξεκινήσετε, παρακολουθήστε αυτό το σύντομο βίντεο για να μάθετε για τη Μυστική Φράση Ανάκτησης και πώς να διατηρείτε ασφαλές το πορτοφόλι σας."
   },
   "seedPhraseReq": {
     "message": "Οι Μυστικές Φράσεις Ανάκτησης περέχουν 12, 15, 18, 21 ή 24 λέξεις"
@@ -5895,10 +5880,6 @@
   },
   "welcomeToMetaMaskIntro": {
     "message": "Το MetaMask, το οποίο εμπιστεύονται εκατομμύρια χρήστες, είναι ένα ασφαλές πορτοφόλι που κάνει τον κόσμο του web3 προσβάσιμο σε όλους."
-  },
-  "whatsNew": {
-    "message": "Τι νέο υπάρχει",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
   },
   "whatsThis": {
     "message": "Τι είναι αυτό;"

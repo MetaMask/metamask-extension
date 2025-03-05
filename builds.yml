@@ -40,6 +40,9 @@ buildTypes:
     features:
       - build-beta
       - keyring-snaps
+      - multichain
+      - solana
+      - solana-swaps
     env:
       - INFURA_BETA_PROJECT_ID
       - SEGMENT_BETA_WRITE_KEY

@@ -2777,10 +2777,6 @@
     "message": "$1 ağına bağlanamıyoruz",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "Ağ şuna geçti: $1",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "Ağ URL adresi"
   },
@@ -3087,14 +3083,6 @@
   },
   "notifications": {
     "message": "Bildirimler"
-  },
-  "notificationsDropLedgerFirefoxDescription": {
-    "message": "Firefox artık U2F'yi desteklemiyor, bu yüzden Ledger Firefox'ta Metamask ile çalışmayacaktır. Onun yerine MetaMask'i Google Chrome'da deneyin.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
-  },
-  "notificationsDropLedgerFirefoxTitle": {
-    "message": "Firefox için Ledger Desteğinin Bitmesi",
-    "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
   },
   "notificationsFeatureToggle": {
     "message": "Cüzdan Bildirimleri Etkinleştir",
@@ -4184,9 +4172,6 @@
   },
   "seedPhraseIntroTitle": {
     "message": "Cüzdanınızı koruyun"
-  },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Başlamadan önce Gizli Kurtarma İfadeniz ve cüzdanınızı nasıl güvende tutacağınız hakkında bilgi edinmek için bu kısa videoyu izleyin."
   },
   "seedPhraseReq": {
     "message": "Gizli Kurtarma İfadeleri 12, 15, 18, 21 veya 24 kelimeden oluşur"
@@ -5895,10 +5880,6 @@
   },
   "welcomeToMetaMaskIntro": {
     "message": "Milyonların güvendiği MetaMask, web3 dünyasını herkes için erişilebilir kılan güvenli bir cüzdandır."
-  },
-  "whatsNew": {
-    "message": "Yenilikler",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
   },
   "whatsThis": {
     "message": "Bu nedir?"

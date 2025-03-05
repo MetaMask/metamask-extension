@@ -9,11 +9,18 @@ import type { BigNumber } from 'bignumber.js';
 export type ChainConfiguration = {
   isActiveSrc: boolean;
   isActiveDest: boolean;
+  refreshRate?: number;
+  topAssets?: string[];
 };
 
 export type L1GasFees = {
   l1GasFeesInHexWei?: string; // l1 fees for approval and trade in hex wei, appended by controller
 };
+
+export type SolanaFees = {
+  solanaFeesInLamports?: string; // solana fees in lamports, appended by controller
+};
+
 // Values derived from the quote response
 // valueInCurrency values are calculated based on the user's selected currency
 export type TokenAmountValues = {
@@ -110,8 +117,8 @@ type Step = {
   action: ActionTypes;
   srcChainId: ChainId;
   destChainId?: ChainId;
-  srcAsset: BridgeAsset;
-  destAsset: BridgeAsset;
+  srcAsset?: BridgeAsset;
+  destAsset?: BridgeAsset;
   srcAmount: string;
   destAmount: string;
   protocol: Protocol;
@@ -209,7 +216,7 @@ export type GenericQuoteRequest = QuoteRequest<
 export type BridgeState = {
   bridgeFeatureFlags: BridgeFeatureFlags;
   quoteRequest: Partial<GenericQuoteRequest>;
-  quotes: (QuoteResponse & L1GasFees)[];
+  quotes: (QuoteResponse & L1GasFees & SolanaFees)[];
   quotesInitialLoadTime?: number;
   quotesLastFetched?: number;
   quotesLoadingStatus?: RequestStatus;
@@ -219,4 +226,11 @@ export type BridgeState = {
 
 export type BridgeControllerState = {
   bridgeState: BridgeState;
+};
+
+export type TokenV3Asset = {
+  assetId: string;
+  symbol: string;
+  name: string;
+  decimals: number;
 };

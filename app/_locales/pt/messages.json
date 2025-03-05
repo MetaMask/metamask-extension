@@ -2780,10 +2780,6 @@
     "message": "Não podemos conectar a $1",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "Rede mudou para $1",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "URL da rede"
   },
@@ -3090,14 +3086,6 @@
   },
   "notifications": {
     "message": "Notificações"
-  },
-  "notificationsDropLedgerFirefoxDescription": {
-    "message": "O Firefox não oferece mais suporte ao U2F, então a Ledger não funcionará com a MetaMask no Firefox. Em vez disso, experimente a MetaMask no Google Chrome.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
-  },
-  "notificationsDropLedgerFirefoxTitle": {
-    "message": "Suporte à Ledger descontinuado no Firefox",
-    "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
   },
   "notificationsFeatureToggle": {
     "message": "Ativar notificações da carteira",
@@ -4187,9 +4175,6 @@
   },
   "seedPhraseIntroTitle": {
     "message": "Proteja sua carteira"
-  },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Antes de iniciar, assista a esse vídeo curto para aprender sobre sua Frase de Recuperação Secreta e sobre como manter sua carteira segura."
   },
   "seedPhraseReq": {
     "message": "As Frases de Recuperação Secretas contêm 12, 15, 18, 21 ou 24 palavras"
@@ -5898,10 +5883,6 @@
   },
   "welcomeToMetaMaskIntro": {
     "message": "Com a confiança de milhões de usuários, a MetaMask é uma carteira segura que torna o mundo da Web3 acessível a todos."
-  },
-  "whatsNew": {
-    "message": "Novidades",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
   },
   "whatsThis": {
     "message": "O que é isso?"

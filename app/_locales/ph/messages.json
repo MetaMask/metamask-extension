@@ -1034,9 +1034,6 @@
   "seedPhraseIntroTitle": {
     "message": "I-secure ang iyong wallet"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Bago magsimula, panoorin ang maikling video na ito para matuto tungkol sa recovery phrase at kung paano panatilihing ligtas ang iyong wallet."
-  },
   "seedPhraseReq": {
     "message": "Ang mga Secret Recovery Phrase ay naglalaman ng 12, 15, 18, 21, o 24 na salita"
   },
@@ -1543,10 +1540,6 @@
   },
   "welcomeBack": {
     "message": "Welcome back!"
-  },
-  "whatsNew": {
-    "message": "Ano'ng bago",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
   },
   "whatsThis": {
     "message": "Ano ito?"

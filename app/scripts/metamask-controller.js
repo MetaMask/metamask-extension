@@ -59,7 +59,6 @@ import {
 } from '@metamask/network-controller';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import {
-  MethodNames,
   PermissionController,
   PermissionDoesNotExistError,
   PermissionsRequestNotFoundError,
@@ -142,9 +141,15 @@ import {
   UserStorageController,
 } from '@metamask/profile-sync-controller';
 import {
-  NotificationServicesPushController,
-  NotificationServicesController,
-} from '@metamask/notification-services-controller';
+  TRIGGER_TYPES,
+  Controller as NotificationServicesController,
+} from '@metamask/notification-services-controller/notification-services';
+import { Controller as NotificationServicesPushController } from '@metamask/notification-services-controller/push-services';
+import {
+  createRegToken,
+  deleteRegToken,
+  createSubscribeToPushNotifications,
+} from '@metamask/notification-services-controller/push-services/web';
 import {
   Caip25CaveatMutators,
   Caip25CaveatType,
@@ -152,7 +157,6 @@ import {
   getEthAccounts,
   setPermittedEthChainIds,
   setEthAccounts,
-  addPermittedEthChainId,
 } from '@metamask/multichain';
 import {
   methodsRequiringNetworkSwitch,
@@ -196,6 +200,7 @@ import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
+  SMART_TRANSACTION_CONFIRMATION_TYPES,
 } from '../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -307,8 +312,6 @@ import {
   NOTIFICATION_NAMES,
   unrestrictedMethods,
   PermissionNames,
-  validateCaveatAccounts,
-  validateCaveatNetworks,
 } from './controllers/permissions';
 import { MetaMetricsDataDeletionController } from './controllers/metametrics-data-deletion/metametrics-data-deletion';
 import { DataDeletionService } from './services/data-deletion-service';
@@ -374,7 +377,6 @@ import {
   SnapsRegistryInit,
 } from './controller-init/snaps';
 
-const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
   // The process of updating the badge happens in app/scripts/background.js.
@@ -407,6 +409,7 @@ const environmentMappingForRemoteFeatureFlag = {
 const buildTypeMappingForRemoteFeatureFlag = {
   flask: DistributionType.Flask,
   main: DistributionType.Main,
+  beta: DistributionType.Beta,
 };
 
 export default class MetamaskController extends EventEmitter {
@@ -522,6 +525,8 @@ export default class MetamaskController extends EventEmitter {
         ApprovalType.WatchAsset,
         ApprovalType.EthGetEncryptionPublicKey,
         ApprovalType.EthDecrypt,
+        // Exclude Smart TX Status Page from rate limiting to allow sequential transactions
+        SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
       ],
     });
 
@@ -1339,6 +1344,7 @@ export default class MetamaskController extends EventEmitter {
       }),
     });
 
+    /** @type {import('@metamask/notification-services-controller/push-services').NotificationServicesPushControllerMessenger} */
     const notificationServicesPushControllerMessenger =
       this.controllerMessenger.getRestricted({
         name: 'NotificationServicesPushController',
@@ -1346,7 +1352,7 @@ export default class MetamaskController extends EventEmitter {
         allowedEvents: [],
       });
     this.notificationServicesPushController =
-      new NotificationServicesPushController.Controller({
+      new NotificationServicesPushController({
         messenger: notificationServicesPushControllerMessenger,
         state: initState.NotificationServicesPushController,
         env: {
@@ -1360,10 +1366,17 @@ export default class MetamaskController extends EventEmitter {
           vapidKey: process.env.VAPID_KEY ?? '',
         },
         config: {
-          isPushEnabled: isManifestV3,
+          isPushFeatureEnabled: isManifestV3,
           platform: 'extension',
-          onPushNotificationReceived,
-          onPushNotificationClicked,
+          pushService: {
+            createRegToken,
+            deleteRegToken,
+            subscribeToPushNotifications: createSubscribeToPushNotifications({
+              messenger: notificationServicesPushControllerMessenger,
+              onReceivedHandler: onPushNotificationReceived,
+              onClickHandler: onPushNotificationClicked,
+            }),
+          },
         },
       });
     notificationServicesPushControllerMessenger.subscribe(
@@ -1395,41 +1408,44 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    this.notificationServicesController =
-      new NotificationServicesController.Controller({
-        messenger: this.controllerMessenger.getRestricted({
-          name: 'NotificationServicesController',
-          allowedActions: [
-            'KeyringController:getAccounts',
-            'KeyringController:getState',
-            'AuthenticationController:getBearerToken',
-            'AuthenticationController:isSignedIn',
-            'AuthenticationController:performSignIn',
-            'UserStorageController:getStorageKey',
-            'UserStorageController:performGetStorage',
-            'UserStorageController:performSetStorage',
-            'NotificationServicesPushController:enablePushNotifications',
-            'NotificationServicesPushController:disablePushNotifications',
-            'NotificationServicesPushController:subscribeToPushNotifications',
-            'NotificationServicesPushController:updateTriggerPushNotifications',
-          ],
-          allowedEvents: [
-            'KeyringController:stateChange',
-            'KeyringController:lock',
-            'KeyringController:unlock',
-            'NotificationServicesPushController:onNewNotifications',
-          ],
-        }),
-        state: initState.NotificationServicesController,
-        env: {
-          isPushIntegrated: isManifestV3,
-          featureAnnouncements: {
-            platform: 'extension',
-            spaceId: process.env.CONTENTFUL_ACCESS_SPACE_ID ?? '',
-            accessToken: process.env.CONTENTFUL_ACCESS_TOKEN ?? '',
-          },
-        },
+    /** @type {import('@metamask/notification-services-controller/notification-services').NotificationServicesControllerMessenger} */
+    const notificationServicesControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'NotificationServicesController',
+        allowedActions: [
+          'KeyringController:getAccounts',
+          'KeyringController:getState',
+          'AuthenticationController:getBearerToken',
+          'AuthenticationController:isSignedIn',
+          'AuthenticationController:performSignIn',
+          'UserStorageController:getStorageKey',
+          'UserStorageController:performGetStorage',
+          'UserStorageController:performSetStorage',
+          'NotificationServicesPushController:enablePushNotifications',
+          'NotificationServicesPushController:disablePushNotifications',
+          'NotificationServicesPushController:subscribeToPushNotifications',
+          'NotificationServicesPushController:updateTriggerPushNotifications',
+        ],
+        allowedEvents: [
+          'KeyringController:stateChange',
+          'KeyringController:lock',
+          'KeyringController:unlock',
+          'NotificationServicesPushController:onNewNotifications',
+          'NotificationServicesPushController:stateChange',
+        ],
       });
+    this.notificationServicesController = new NotificationServicesController({
+      messenger: notificationServicesControllerMessenger,
+      state: initState.NotificationServicesController,
+      env: {
+        isPushIntegrated: isManifestV3,
+        featureAnnouncements: {
+          platform: 'extension',
+          spaceId: process.env.CONTENTFUL_ACCESS_SPACE_ID ?? '',
+          accessToken: process.env.CONTENTFUL_ACCESS_TOKEN ?? '',
+        },
+      },
+    });
 
     // account tracker watches balances, nonces, and any code at their address
     this.accountTrackerController = new AccountTrackerController({
@@ -1791,7 +1807,9 @@ export default class MetamaskController extends EventEmitter {
     const bridgeControllerMessenger = this.controllerMessenger.getRestricted({
       name: BRIDGE_CONTROLLER_NAME,
       allowedActions: [
-        'AccountsController:getSelectedAccount',
+        // 'AccountsController:getSelectedAccount',
+        'AccountsController:getSelectedMultichainAccount',
+        'SnapController:handleRequest',
         'NetworkController:getSelectedNetworkClient',
         'NetworkController:findNetworkClientIdByChainId',
       ],
@@ -1807,7 +1825,7 @@ export default class MetamaskController extends EventEmitter {
       this.controllerMessenger.getRestricted({
         name: BRIDGE_STATUS_CONTROLLER_NAME,
         allowedActions: [
-          'AccountsController:getSelectedAccount',
+          'AccountsController:getSelectedMultichainAccount',
           'NetworkController:getNetworkClientById',
           'NetworkController:findNetworkClientIdByChainId',
           'NetworkController:getState',
@@ -5198,75 +5216,19 @@ export default class MetamaskController extends EventEmitter {
       [chainId],
     );
 
-    const id = nanoid();
-    await this.approvalController.addAndShowApprovalRequest({
-      id,
-      origin,
-      requestData: {
-        metadata: {
-          id,
-          origin,
-        },
-        permissions: {
-          [Caip25EndowmentPermissionName]: {
-            caveats: [
-              {
-                type: Caip25CaveatType,
-                value: caveatValueWithChains,
-              },
-            ],
-          },
-        },
-        isLegacySwitchEthereumChain: true,
-      },
-      type: MethodNames.RequestPermissions,
-    });
-  }
-
-  /**
-   * Requests permittedChains permission for the specified origin
-   * and replaces any existing CAIP-25 permission with a new one.
-   * Allows for granting without prompting for user approval which
-   * would be used as part of flows like `wallet_addEthereumChain`
-   * requests where the addition of the network and the permitting
-   * of the chain are combined into one approval.
-   *
-   * @param {object} options - The options object
-   * @param {string} options.origin - The origin to request approval for.
-   * @param {Hex} options.chainId - The chainId to permit.
-   * @param {boolean} options.autoApprove - If the chain should be granted without prompting for user approval.
-   */
-  async requestPermittedChainsPermission({ origin, chainId, autoApprove }) {
-    if (isSnapId(origin)) {
-      throw new Error(
-        `Cannot request permittedChains permission for Snaps with origin "${origin}"`,
-      );
-    }
-
-    if (!autoApprove) {
-      await this.requestApprovalPermittedChainsPermission(origin, chainId);
-    }
-
-    let caveatValue = {
-      requiredScopes: {},
-      optionalScopes: {},
-      isMultichainOrigin: false,
-    };
-    caveatValue = addPermittedEthChainId(caveatValue, chainId);
-
-    this.permissionController.grantPermissions({
-      subject: { origin },
-      approvedPermissions: {
+    await this.permissionController.requestPermissionsIncremental(
+      { origin },
+      {
         [Caip25EndowmentPermissionName]: {
           caveats: [
             {
               type: Caip25CaveatType,
-              value: caveatValue,
+              value: caveatValueWithChains,
             },
           ],
         },
       },
-    });
+    );
   }
 
   /**
@@ -5293,75 +5255,60 @@ export default class MetamaskController extends EventEmitter {
       );
     }
 
+    const caveatValueWithChains = setPermittedEthChainIds(
+      {
+        requiredScopes: {},
+        optionalScopes: {},
+        isMultichainOrigin: false,
+      },
+      [chainId],
+    );
+
     if (!autoApprove) {
-      await this.requestApprovalPermittedChainsPermission(origin, chainId);
+      await this.permissionController.requestPermissionsIncremental(
+        { origin },
+        {
+          [Caip25EndowmentPermissionName]: {
+            caveats: [
+              {
+                type: Caip25CaveatType,
+                value: caveatValueWithChains,
+              },
+            ],
+          },
+        },
+      );
+      return;
     }
 
-    const caip25Caveat = this.permissionController.getCaveat(
-      origin,
-      Caip25EndowmentPermissionName,
-      Caip25CaveatType,
-    );
-
-    const caveatValueWithChainsAdded = addPermittedEthChainId(
-      caip25Caveat.value,
-      chainId,
-    );
-
-    const ethAccounts = getEthAccounts(caip25Caveat.value);
-    const caveatValueWithAccountsSynced = setEthAccounts(
-      caveatValueWithChainsAdded,
-      ethAccounts,
-    );
-
-    this.permissionController.updateCaveat(
-      origin,
-      Caip25EndowmentPermissionName,
-      Caip25CaveatType,
-      caveatValueWithAccountsSynced,
-    );
+    await this.permissionController.grantPermissionsIncremental({
+      subject: { origin },
+      approvedPermissions: {
+        [Caip25EndowmentPermissionName]: {
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: caveatValueWithChains,
+            },
+          ],
+        },
+      },
+    });
   }
 
   /**
    * Requests user approval for the CAIP-25 permission for the specified origin
-   * and returns a permissions object that must be passed to
-   * PermissionController.grantPermissions() to complete the permission granting.
+   * and returns a granted permissions object.
    *
    * @param {string} origin - The origin to request approval for.
    * @param requestedPermissions - The legacy permissions to request approval for.
-   * @returns the approved permissions object that must then be granted by calling the PermissionController.
+   * @returns the approved permissions object.
    */
-  async requestCaip25Approval(origin, requestedPermissions = {}) {
+  getCaip25PermissionFromLegacyPermissions(origin, requestedPermissions = {}) {
     const permissions = pick(requestedPermissions, [
       RestrictedMethods.eth_accounts,
       PermissionNames.permittedChains,
     ]);
-
-    const requestedAccounts =
-      permissions[RestrictedMethods.eth_accounts]?.caveats?.find(
-        (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
-      )?.value ?? [];
-
-    const requestedChains =
-      permissions[PermissionNames.permittedChains]?.caveats?.find(
-        (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
-      )?.value ?? [];
-
-    if (permissions[RestrictedMethods.eth_accounts]?.caveats) {
-      validateCaveatAccounts(
-        requestedAccounts,
-        this.accountsController.listAccounts.bind(this.accountsController),
-      );
-    }
-
-    if (permissions[PermissionNames.permittedChains]?.caveats) {
-      validateCaveatNetworks(
-        requestedChains,
-        this.networkController.findNetworkClientIdByChainId.bind(
-          this.networkController,
-        ),
-      );
-    }
 
     if (!permissions[RestrictedMethods.eth_accounts]) {
       permissions[RestrictedMethods.eth_accounts] = {};
@@ -5374,6 +5321,16 @@ export default class MetamaskController extends EventEmitter {
     if (isSnapId(origin)) {
       delete permissions[PermissionNames.permittedChains];
     }
+
+    const requestedAccounts =
+      permissions[RestrictedMethods.eth_accounts]?.caveats?.find(
+        (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
+      )?.value ?? [];
+
+    const requestedChains =
+      permissions[PermissionNames.permittedChains]?.caveats?.find(
+        (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
+      )?.value ?? [];
 
     const newCaveatValue = {
       requiredScopes: {},
@@ -5395,32 +5352,16 @@ export default class MetamaskController extends EventEmitter {
       requestedAccounts,
     );
 
-    const id = nanoid();
-
-    const { permissions: approvedPermissions } =
-      await this.approvalController.addAndShowApprovalRequest({
-        id,
-        origin,
-        requestData: {
-          metadata: {
-            id,
-            origin,
+    return {
+      [Caip25EndowmentPermissionName]: {
+        caveats: [
+          {
+            type: Caip25CaveatType,
+            value: caveatValueWithAccountsAndChains,
           },
-          permissions: {
-            [Caip25EndowmentPermissionName]: {
-              caveats: [
-                {
-                  type: Caip25CaveatType,
-                  value: caveatValueWithAccountsAndChains,
-                },
-              ],
-            },
-          },
-        },
-        type: MethodNames.RequestPermissions,
-      });
-
-    return approvedPermissions;
+        ],
+      },
+    };
   }
   // ---------------------------------------------------------------------------
   // Identity Management (signature operations)
@@ -6196,25 +6137,12 @@ export default class MetamaskController extends EventEmitter {
         ),
         // Permission-related
         getAccounts: this.getPermittedAccounts.bind(this, origin),
-        requestCaip25ApprovalForOrigin: this.requestCaip25Approval.bind(
-          this,
-          origin,
-        ),
-        grantPermissionsForOrigin: (approvedPermissions) => {
-          return this.permissionController.grantPermissions({
-            subject: { origin },
-            approvedPermissions,
-          });
-        },
+        getCaip25PermissionFromLegacyPermissionsForOrigin:
+          this.getCaip25PermissionFromLegacyPermissions.bind(this, origin),
         getPermissionsForOrigin: this.permissionController.getPermissions.bind(
           this.permissionController,
           origin,
         ),
-        requestPermittedChainsPermissionForOrigin: (options) =>
-          this.requestPermittedChainsPermission({
-            ...options,
-            origin,
-          }),
         requestPermittedChainsPermissionIncrementalForOrigin: (options) =>
           this.requestPermittedChainsPermissionIncremental({
             ...options,

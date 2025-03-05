@@ -2777,10 +2777,6 @@
     "message": "Chúng tôi không thể kết nối với $1",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "Mạng được chuyển thành $1",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "URL mạng"
   },
@@ -3087,14 +3083,6 @@
   },
   "notifications": {
     "message": "Thông báo"
-  },
-  "notificationsDropLedgerFirefoxDescription": {
-    "message": "Firefox không còn hỗ trợ U2F nên Ledger sẽ không hoạt động với MetaMask trên Firefox. Thay vào đó hãy dùng thử MetaMask trên Google Chrome.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
-  },
-  "notificationsDropLedgerFirefoxTitle": {
-    "message": "Bỏ Hỗ trợ Ledger cho Firefox",
-    "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
   },
   "notificationsFeatureToggle": {
     "message": "Bật thông báo ví",
@@ -4184,9 +4172,6 @@
   },
   "seedPhraseIntroTitle": {
     "message": "Bảo mật cho ví của bạn"
-  },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Trước khi bắt đầu, hãy xem video ngắn này để tìm hiểu thêm về cụm từ khôi phục bí mật của bạn và cách bảo vệ ví của bạn."
   },
   "seedPhraseReq": {
     "message": "Cụm từ khôi phục bí mật gồm 12, 15, 18, 21 hoặc 24 từ"
@@ -5895,10 +5880,6 @@
   },
   "welcomeToMetaMaskIntro": {
     "message": "Được hàng triệu người tin dùng, MetaMask là một ví an toàn cho phép mọi người có thể truy cập vào thế giới web3."
-  },
-  "whatsNew": {
-    "message": "Xem tính năng mới",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
   },
   "whatsThis": {
     "message": "Đây là gì?"
