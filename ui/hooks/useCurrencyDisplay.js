@@ -163,7 +163,7 @@ export function useCurrencyDisplay(
       return displayValue;
     }
 
-    if (!isEvm) {
+    if (!isEvm && !isAggregatedFiatOverviewBalance) {
       return formatNonEvmAssetCurrencyDisplay({
         tokenSymbol: nativeCurrency,
         isNativeCurrency,
