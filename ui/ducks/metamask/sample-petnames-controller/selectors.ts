@@ -7,7 +7,7 @@ import { type SamplePetnamesControllerState } from '../../../../app/scripts/cont
 
 // Selectors
 export const getSamplePetnamesByChainIdAndAddress = (
-  state: MetaMaskReduxState,
+  state: Pick<MetaMaskReduxState, 'metamask'>,
 ) =>
   state.metamask.samplePetnamesByChainIdAndAddress as
     | SamplePetnamesControllerState['samplePetnamesByChainIdAndAddress']

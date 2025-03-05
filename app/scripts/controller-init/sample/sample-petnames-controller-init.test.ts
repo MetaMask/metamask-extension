@@ -1,76 +1,87 @@
 import { Hex } from '@metamask/utils';
+import type { ControllerInitRequest } from '../types';
+import type {
+  SamplePetnamesControllerMessenger,
+  SamplePetnamesControllerState,
+} from '../../controllers/sample';
 import { SamplePetnamesControllerInit } from './sample-petnames-controller-init';
 
 // Mock the controller class
-jest.mock('../../controllers/sample', () => {
-  return {
-    SamplePetnamesController: jest.fn().mockImplementation(() => {
-      return {
-        assignPetname: jest.fn(),
-      };
-    }),
-  };
-});
+jest.mock('../../controllers/sample', () => ({
+  SamplePetnamesController: jest.fn().mockImplementation(() => ({
+    assignPetname: jest.fn(),
+  })),
+}));
 
 const { SamplePetnamesController } = jest.requireMock(
   '../../controllers/sample',
-);
+) as { SamplePetnamesController: jest.Mock };
 
 describe('SamplePetnamesControllerInit', () => {
-  let mockControllerMessenger: any;
-  let mockControllerInstance: any;
-  let mockPersistedState: { SamplePetnamesController: Record<string, unknown> };
+  // Common test variables
+  const mockControllerMessenger = {} as SamplePetnamesControllerMessenger;
+  const mockPersistedState = {
+    SamplePetnamesController: {
+      samplePetnamesByChainIdAndAddress: {},
+    } as Partial<SamplePetnamesControllerState>,
+  };
+
+  const mockControllerInstance = {
+    assignPetname: jest.fn(),
+  };
+
+  /**
+   * Creates a valid controller init request with all required properties
+   *
+   * @returns A properly configured controller init request
+   */
+  const createMockRequest = () => {
+    return {
+      controllerMessenger: mockControllerMessenger,
+      persistedState: mockPersistedState,
+    } as ControllerInitRequest<SamplePetnamesControllerMessenger>;
+  };
+
+  /**
+   * Sample test data for petname assignments
+   */
+  const testPetnameData = {
+    chainId: '0x1' as Hex,
+    address: '0x1234567890abcdef1234567890abcdef12345678' as Hex,
+    name: 'TestPetName',
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
-
-    mockControllerMessenger = {};
-
-    mockPersistedState = {
-      SamplePetnamesController: { testState: 'value' },
-    };
-
-    mockControllerInstance = {
-      assignPetname: jest.fn(),
-    };
-
     SamplePetnamesController.mockImplementation(() => mockControllerInstance);
   });
 
-  it('should initialize the controller with correct parameters', () => {
-    const result = SamplePetnamesControllerInit({
-      controllerMessenger: mockControllerMessenger,
-      persistedState: mockPersistedState,
-    } as any);
+  it('creates a new controller instance with the correct parameters', () => {
+    // Arrange
+    const request = createMockRequest();
 
+    // Act
+    const result = SamplePetnamesControllerInit(request);
+
+    // Assert
     expect(SamplePetnamesController).toHaveBeenCalledWith({
       messenger: mockControllerMessenger,
       state: mockPersistedState.SamplePetnamesController,
     });
-
-    expect(result).toBeDefined();
     expect(result.controller).toBe(mockControllerInstance);
   });
 
-  it('should return an API with assignPetname method', () => {
-    const result = SamplePetnamesControllerInit({
-      controllerMessenger: mockControllerMessenger,
-      persistedState: mockPersistedState,
-    } as any);
+  it('provides an API that delegates assignPetname calls to the controller', () => {
+    // Arrange
+    const request = createMockRequest();
+    const result = SamplePetnamesControllerInit(request);
+    const { chainId, address, name } = testPetnameData;
 
-    // Ensure the API is defined.
+    // Act
     expect(result.api).toBeDefined();
+    result.api?.assignPetname(chainId, address, name);
 
-    if (!result.api) {
-      throw new Error('API is undefined');
-    }
-
-    const chainId = '0x1' as Hex;
-    const address = '0x1234567890abcdef1234567890abcdef12345678' as Hex;
-    const name = 'TestPetName';
-
-    result.api.assignPetname(chainId, address, name);
-
+    // Assert
     expect(mockControllerInstance.assignPetname).toHaveBeenCalledWith(
       chainId,
       address,

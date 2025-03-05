@@ -1,4 +1,4 @@
 // Export all from individual files
-export * from './sample-petnames-controller-selectors';
-export * from './sample-petnames-controller-thunks';
-export * from './useSamplePetnamesController';
+export * from './selectors';
+export * from './actions';
+export { default as useSamplePetnamesController } from './useSamplePetnamesController';

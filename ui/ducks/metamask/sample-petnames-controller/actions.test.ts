@@ -1,6 +1,5 @@
 import { Hex } from '@metamask/utils';
-import { assignPetname } from './sample-petnames-controller-thunks';
-import { ASSIGN_PET_NAME_METHOD } from './sample-petnames-controller-thunks';
+import { assignPetname, ASSIGN_PET_NAME_METHOD } from './actions';
 import type { Dispatch } from 'redux';
 
 const mockSubmitRequestToBackground = jest.fn().mockResolvedValue(undefined);

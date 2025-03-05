@@ -2,7 +2,7 @@ import { Hex } from '@metamask/utils';
 import {
   getSamplePetnamesByChainIdAndAddress,
   getPetNamesForCurrentChain,
-} from './sample-petnames-controller-selectors';
+} from './selectors';
 
 jest.mock('../../../../shared/modules/selectors/networks', () => ({
   getCurrentChainId: (state: any) => state.metamask.provider.chainId,

@@ -2,11 +2,11 @@ import type { Hex } from '@metamask/utils';
 import { useSelector, useDispatch } from 'react-redux';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
-import { getPetNamesForCurrentChain } from './sample-petnames-controller-selectors';
-import { assignPetname } from './sample-petnames-controller-thunks';
+import { getPetNamesForCurrentChain } from './selectors';
+import { assignPetname } from './actions';
 
 // Hook
-export function useSamplePetnamesController() {
+export default function useSamplePetnamesController() {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const namesForCurrentChain = useSelector(getPetNamesForCurrentChain);
   const chainId = useSelector(getCurrentChainId);
