@@ -3,21 +3,20 @@ import { screen } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { getCurrentNetwork } from '../../selectors';
 import { SamplePage } from './sample-page';
 
-// Mock the useHistory hook
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useHistory: jest.fn(),
 }));
 
-// Mock useSelector
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useSelector: jest.fn(),
 }));
 
-// Mock the components used in SamplePage
 jest.mock('./components/sample-counter-pane', () => ({
   SampleCounterPane: () => (
     <div data-testid="mock-sample-counter-pane">Mock Counter Component</div>
@@ -33,41 +32,40 @@ jest.mock('./components/sample-petnames-form', () => ({
 }));
 
 describe('SamplePage', () => {
+  const mockNetworkDetails = {
+    nickname: 'Custom Network',
+    rpcPrefs: {
+      imageUrl: 'https://test.network/image.png',
+    },
+  };
+
   const mockHistoryPush = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
-    (useHistory as jest.Mock).mockReturnValue({
-      push: mockHistoryPush,
-    });
-    (useSelector as jest.Mock).mockImplementation((selector) => {
-      // Mock the getCurrentNetwork selector
-      return {
-        nickname: 'Test Network',
-        rpcPrefs: {
-          imageUrl: 'https://test.network/image.png',
-        },
-      };
-    });
+
+    (useHistory as jest.Mock).mockReturnValue({ push: mockHistoryPush });
+
+    (useSelector as jest.Mock).mockImplementation((selectorFn) =>
+      selectorFn === getCurrentNetwork ? mockNetworkDetails : {},
+    );
   });
 
-  it('renders the sample page with all components', () => {
+  it('renders the sample page with correct structure and text', () => {
     renderWithProvider(<SamplePage />);
+
+    // Verify the page container
+    expect(screen.getByTestId('sample-page')).toBeInTheDocument();
 
     // Check for header text
     expect(screen.getByText('Sample Feature')).toBeInTheDocument();
 
-    // Check for description text
     expect(
       screen.getByText(
         'This is a page demonstrating how to build a sample feature end-to-end in MetaMask.',
       ),
     ).toBeInTheDocument();
-
-    // Check for network display
-    expect(screen.getByText('Test Network')).toBeInTheDocument();
-
-    // Check that child components are rendered
+    expect(screen.getByText('Custom Network')).toBeInTheDocument();
     expect(screen.getByTestId('mock-sample-counter-pane')).toBeInTheDocument();
     expect(screen.getByTestId('mock-sample-petnames-form')).toBeInTheDocument();
   });
@@ -75,11 +73,9 @@ describe('SamplePage', () => {
   it('navigates back when back button is clicked', () => {
     renderWithProvider(<SamplePage />);
 
-    // Find back button by its aria-label and click it
     const backButton = screen.getByLabelText('[back]');
     backButton.click();
 
-    // Check that history.push was called with the correct route
-    expect(mockHistoryPush).toHaveBeenCalledWith('/');
+    expect(mockHistoryPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 });
