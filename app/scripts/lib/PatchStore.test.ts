@@ -48,17 +48,17 @@ describe('PatchStore', () => {
         { test2: false },
       );
 
-      const patches = patchStore.flushPendingPatches();
+      const patches = patchStore.flushPendingPatches({ isFlattened: false });
 
       expect(patches).toEqual([
         {
           op: 'replace',
-          path: ['test1'],
+          path: ['test-controller', 'test1'],
           value: 'value2',
         },
         {
           op: 'replace',
-          path: ['test2'],
+          path: ['test-controller', 'test2'],
           value: false,
         },
       ]);
@@ -87,12 +87,12 @@ describe('PatchStore', () => {
         { test3: { test: 'value' } },
       );
 
-      const patches = patchStore.flushPendingPatches();
+      const patches = patchStore.flushPendingPatches({ isFlattened: false });
 
       expect(patches).toEqual([
         {
           op: 'replace',
-          path: ['test3'],
+          path: ['test-controller', 'test3'],
           value: { test: 'value' },
         },
       ]);
@@ -102,7 +102,7 @@ describe('PatchStore', () => {
       const composableStoreMock = createComposableStoreMock();
       const patchStore = new PatchStore(composableStoreMock);
 
-      const patches = patchStore.flushPendingPatches();
+      const patches = patchStore.flushPendingPatches({ isFlattened: false });
 
       expect(patches).toEqual([]);
     });
@@ -117,8 +117,8 @@ describe('PatchStore', () => {
         { test1: 'value2' },
       );
 
-      const patches1 = patchStore.flushPendingPatches();
-      const patches2 = patchStore.flushPendingPatches();
+      const patches1 = patchStore.flushPendingPatches({ isFlattened: false });
+      const patches2 = patchStore.flushPendingPatches({ isFlattened: false });
 
       expect(patches1).toHaveLength(1);
       expect(patches2).toHaveLength(0);
@@ -128,7 +128,10 @@ describe('PatchStore', () => {
       const composableStoreMock = createComposableStoreMock();
       const patchStore = new PatchStore(composableStoreMock);
 
-      sanitizeUIStateMock.mockReturnValueOnce({ test2: 'value' });
+      sanitizeUIStateMock.mockReturnValueOnce({
+        // @ts-expect-error Intentionally passing in a mock value for testing purposes.
+        'test-controller': { test2: 'value' },
+      });
 
       triggerStateChange(
         composableStoreMock,
@@ -136,12 +139,12 @@ describe('PatchStore', () => {
         { test1: true },
       );
 
-      const patches = patchStore.flushPendingPatches();
+      const patches = patchStore.flushPendingPatches({ isFlattened: false });
 
       expect(patches).toEqual([
         {
           op: 'replace',
-          path: ['test2'],
+          path: ['test-controller', 'test2'],
           value: 'value',
         },
       ]);
@@ -153,12 +156,12 @@ describe('PatchStore', () => {
 
       triggerStateChange(composableStoreMock, { vault: 0 }, { vault: 123 });
 
-      const patches = patchStore.flushPendingPatches();
+      const patches = patchStore.flushPendingPatches({ isFlattened: false });
 
       expect(patches).toEqual([
         {
           op: 'replace',
-          path: ['vault'],
+          path: ['test-controller', 'vault'],
           value: 123,
         },
         {

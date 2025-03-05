@@ -134,7 +134,11 @@ import { isSnapId } from '@metamask/snaps-utils';
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { hexToBigInt, toCaipChainId } from '@metamask/utils';
+import {
+  getKnownPropertyNames,
+  hexToBigInt,
+  toCaipChainId,
+} from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 import {
   AuthenticationController,
@@ -3040,7 +3044,9 @@ export default class MetamaskController extends EventEmitter {
 
     const updatePublicConfigStore = async (memState) => {
       const networkStatus =
-        memState.networksMetadata[memState.selectedNetworkClientId]?.status;
+        memState.NetworkController.networksMetadata[
+          memState.NetworkController.selectedNetworkClientId
+        ].status;
       if (networkStatus === NetworkStatus.Available) {
         publicConfigStore.putState(await selectPublicState(memState));
       }
@@ -3126,17 +3132,34 @@ export default class MetamaskController extends EventEmitter {
   /**
    * The metamask-state of the various controllers, made available to the UI
    *
-   * @returns {object} status
+   * @returns {import('../../shared/types/background').BackgroundStateProxy} status
    */
   getState() {
     const { vault } = this.keyringController.state;
     const isInitialized = Boolean(vault);
-    const flatState = this.memStore.getFlatState();
+    const memState = this.memStore.getState();
 
     return {
       isInitialized,
-      ...sanitizeUIState(flatState),
+      ...sanitizeUIState(memState),
     };
+  }
+
+  // TODO: Remove and replace with `getState`
+  getFlatState() {
+    const { isInitialized, ...composedState } = this.getState();
+    const flattenedState = getKnownPropertyNames(composedState).reduce(
+      (state, controllerKey) => {
+        getKnownPropertyNames(composedState[controllerKey] ?? {}).forEach(
+          (propertyKey) => {
+            state[propertyKey] = composedState[controllerKey][propertyKey];
+          },
+        );
+        return state;
+      },
+      {},
+    );
+    return Object.assign(flattenedState, { isInitialized });
   }
 
   /**
@@ -5423,7 +5446,8 @@ export default class MetamaskController extends EventEmitter {
       customGasSettings,
       options,
     );
-    const state = this.getState();
+    // TODO: Replace `.getFlatState()` call with `.getState()`
+    const state = this.getFlatState();
     return state;
   }
 
@@ -5446,7 +5470,8 @@ export default class MetamaskController extends EventEmitter {
       customGasSettings,
       options,
     );
-    const state = this.getState();
+    // TODO: Replace `.getFlatState()` call with `.getState()`
+    const state = this.getFlatState();
     return state;
   }
 
@@ -5736,7 +5761,17 @@ export default class MetamaskController extends EventEmitter {
         return;
       }
 
-      const patches = patchStore.flushPendingPatches();
+      const flattenedPatches = patchStore.flushPendingPatches({
+        isFlattened: true,
+      });
+
+      outStream.write({
+        jsonrpc: '2.0',
+        method: 'sendFlattenedUpdate',
+        params: [flattenedPatches],
+      });
+
+      const patches = patchStore.flushPendingPatches({ isFlattened: false });
 
       outStream.write({
         jsonrpc: '2.0',
@@ -5752,7 +5787,10 @@ export default class MetamaskController extends EventEmitter {
         uiReady = true;
         handleUpdate();
       },
-      getStatePatches: () => patchStore.flushPendingPatches(),
+      getUnflattenedStatePatches: () =>
+        patchStore.flushPendingPatches({ isFlattened: false }),
+      getStatePatches: () =>
+        patchStore.flushPendingPatches({ isFlattened: true }),
     };
 
     this.on('update', handleUpdate);
@@ -6122,7 +6160,8 @@ export default class MetamaskController extends EventEmitter {
           this.subjectMetadataController.addSubjectMetadata.bind(
             this.subjectMetadataController,
           ),
-        metamaskState: this.getState(),
+        // TODO: Replace `.getFlatState()` call with `.getState()`
+        metamaskState: this.getFlatState(),
         getProviderState: this.getProviderState.bind(this),
         getUnlockPromise: this.appStateController.getUnlockPromise.bind(
           this.appStateController,
@@ -6651,7 +6690,8 @@ export default class MetamaskController extends EventEmitter {
    * @param newState
    */
   _onStateUpdate(newState) {
-    this.isClientOpenAndUnlocked = newState.isUnlocked && this._isClientOpen;
+    this.isClientOpenAndUnlocked =
+      newState.KeyringController.isUnlocked && this._isClientOpen;
     this._notifyChainChange();
   }
 
@@ -6773,7 +6813,8 @@ export default class MetamaskController extends EventEmitter {
       'BridgeStatusController:bridgeTransactionComplete',
       (payload) =>
         handleBridgeTransactionComplete(payload, {
-          backgroundState: this.getState(),
+          // TODO: Replace `.getFlatState()` call with `.getState()`
+          backgroundState: this.getFlatState(),
           trackEvent: this.metaMetricsController.trackEvent.bind(
             this.metaMetricsController,
           ),
@@ -6784,7 +6825,8 @@ export default class MetamaskController extends EventEmitter {
       'BridgeStatusController:bridgeTransactionFailed',
       (payload) =>
         handleBridgeTransactionFailed(payload, {
-          backgroundState: this.getState(),
+          // TODO: Replace `.getFlatState()` call with `.getState()`
+          backgroundState: this.getFlatState(),
           trackEvent: this.metaMetricsController.trackEvent.bind(
             this.metaMetricsController,
           ),
@@ -6796,7 +6838,8 @@ export default class MetamaskController extends EventEmitter {
       (payload) => {
         if (payload.transactionMeta.type === TransactionType.bridge) {
           handleTransactionFailedTypeBridge(payload, {
-            backgroundState: this.getState(),
+            // TODO: Replace `.getFlatState()` call with `.getState()`
+            backgroundState: this.getFlatState(),
             trackEvent: this.metaMetricsController.trackEvent.bind(
               this.metaMetricsController,
             ),
@@ -7400,7 +7443,8 @@ export default class MetamaskController extends EventEmitter {
 
   _trackTransactionFailure(transactionMeta) {
     const { txReceipt } = transactionMeta;
-    const metamaskState = this.getState();
+    // TODO: Replace `.getFlatState()` call with `.getState()`
+    const metamaskState = this.getFlatState();
 
     if (!txReceipt || txReceipt.status !== '0x0') {
       return;
@@ -7477,7 +7521,8 @@ export default class MetamaskController extends EventEmitter {
 
   _getMetaMaskState() {
     return {
-      metamask: this.getState(),
+      // TODO: Replace `.getFlatState()` call with `.getState()`
+      metamask: this.getFlatState(),
     };
   }
 
@@ -7607,7 +7652,9 @@ export default class MetamaskController extends EventEmitter {
 
   #initControllers({ existingControllers, initFunctions, initState }) {
     const initRequest = {
-      getFlatState: this.getState.bind(this),
+      getState: this.getState.bind(this),
+      // TODO: Replace `.getFlatState()` call with `.getState()`
+      getFlatState: this.getFlatState.bind(this),
       getGlobalChainId: this.#getGlobalChainId.bind(this),
       getPermittedAccounts: this.getPermittedAccounts.bind(this),
       getProvider: () => this.provider,

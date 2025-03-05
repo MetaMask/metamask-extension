@@ -369,7 +369,7 @@
   ["ui/ducks/alerts/unconnected-account.js", "ui/store/actions.ts"],
   [
     "ui/ducks/confirm-transaction/confirm-transaction.duck.js",
-    "ui/ducks/index.js",
+    "ui/ducks/index.ts",
     "ui/ducks/metamask/metamask.js",
     "ui/ducks/send/send.js",
     "ui/pages/confirmations/confirmation/ResultTemplate.ts",
@@ -381,7 +381,7 @@
   ],
   [
     "ui/ducks/confirm-transaction/confirm-transaction.duck.js",
-    "ui/ducks/index.js",
+    "ui/ducks/index.ts",
     "ui/ducks/metamask/metamask.js",
     "ui/pages/confirmations/confirmation/ResultTemplate.ts",
     "ui/pages/confirmations/confirmation/templates/error.js",
@@ -403,12 +403,12 @@
   ],
   [
     "ui/ducks/domains.js",
-    "ui/ducks/index.js",
+    "ui/ducks/index.ts",
     "ui/store/actions.ts",
     "ui/store/store.ts"
   ],
   [
-    "ui/ducks/index.js",
+    "ui/ducks/index.ts",
     "ui/ducks/metamask/metamask.js",
     "ui/ducks/ramps/ramps.ts",
     "ui/pages/confirmations/confirmation/ResultTemplate.ts",
@@ -420,7 +420,7 @@
     "ui/store/store.ts"
   ],
   [
-    "ui/ducks/index.js",
+    "ui/ducks/index.ts",
     "ui/ducks/metamask/metamask.js",
     "ui/ducks/swaps/swaps.js",
     "ui/hooks/useTokenFiatAmount.js",
@@ -432,7 +432,7 @@
     "ui/store/store.ts"
   ],
   [
-    "ui/ducks/index.js",
+    "ui/ducks/index.ts",
     "ui/ducks/metamask/metamask.js",
     "ui/ducks/swaps/swaps.js",
     "ui/pages/confirmations/confirmation/ResultTemplate.ts",
@@ -443,7 +443,7 @@
     "ui/store/store.ts"
   ],
   [
-    "ui/ducks/index.js",
+    "ui/ducks/index.ts",
     "ui/ducks/metamask/metamask.js",
     "ui/pages/confirmations/confirmation/ResultTemplate.ts",
     "ui/pages/confirmations/confirmation/templates/error.js",
@@ -453,7 +453,7 @@
     "ui/store/store.ts"
   ],
   [
-    "ui/ducks/index.js",
+    "ui/ducks/index.ts",
     "ui/ducks/ramps/ramps.ts",
     "ui/pages/confirmations/confirmation/ResultTemplate.ts",
     "ui/pages/confirmations/confirmation/templates/error.js",
@@ -464,7 +464,7 @@
     "ui/store/store.ts"
   ],
   [
-    "ui/ducks/index.js",
+    "ui/ducks/index.ts",
     "ui/ducks/swaps/swaps.js",
     "ui/helpers/utils/token-util.js",
     "ui/hooks/useTokenFiatAmount.js",
@@ -472,7 +472,7 @@
     "ui/store/store.ts"
   ],
   [
-    "ui/ducks/index.js",
+    "ui/ducks/index.ts",
     "ui/ducks/swaps/swaps.js",
     "ui/store/actions.ts",
     "ui/store/store.ts"

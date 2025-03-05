@@ -2836,7 +2836,9 @@ describe('MetaMaskController', () => {
       it('adds and sets forgottenPassword to config data to true', () => {
         metamaskController.markPasswordForgotten(noop);
         const state = metamaskController.getState();
-        expect(state.forgottenPassword).toStrictEqual(true);
+        expect(state.PreferencesController.forgottenPassword).toStrictEqual(
+          true,
+        );
       });
     });
 
@@ -2844,7 +2846,9 @@ describe('MetaMaskController', () => {
       it('adds and sets forgottenPassword to config data to false', () => {
         metamaskController.unMarkPasswordForgotten(noop);
         const state = metamaskController.getState();
-        expect(state.forgottenPassword).toStrictEqual(false);
+        expect(state.PreferencesController.forgottenPassword).toStrictEqual(
+          false,
+        );
       });
     });
 
