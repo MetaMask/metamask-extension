@@ -3279,6 +3279,23 @@ export function setServiceWorkerKeepAlivePreference(
   };
 }
 
+export async function forceUpdateBackgroundState(
+  dispatch: MetaMaskReduxDispatch,
+) {
+  let pendingPatches: Patch[] | undefined;
+
+  try {
+    pendingPatches = await submitRequestToBackground<Patch[]>(
+      'getUnflattenedStatePatches',
+    );
+  } catch (error) {
+    dispatch(displayWarning(error));
+    throw error;
+  }
+
+  return dispatch(updateBackgroundState(pendingPatches));
+}
+
 export async function forceUpdateMetamaskState(
   dispatch: MetaMaskReduxDispatch,
 ) {

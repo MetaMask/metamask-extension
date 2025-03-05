@@ -56,7 +56,8 @@ export const updateBackgroundConnection = (backgroundConnection) => {
     if (data.method === 'sendFlattenedUpdate') {
       reduxStore.dispatch(actions.updateMetamaskState(data.params[0]));
     } else if (data.method === 'sendUpdate') {
-      reduxStore.dispatch(actions.updateBackgroundState(data.params[0]));
+      // TODO: uncomment to send patches to `background` redux slice.
+      // reduxStore.dispatch(actions.updateBackgroundState(data.params[0]));
     } else {
       throw new Error(
         `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
@@ -110,40 +111,42 @@ export default async function launchMetamaskUi(opts) {
 /**
  * Method to setup initial redux store for the ui application
  *
- * @param {*} metamaskState - flatten background state
+ * @param {*} flattenedMetamaskState - flattened background state
  * @param {*} backgroundConnection - rpc client connecting to the background process
  * @param {*} activeTab - active browser tab
  * @returns redux store
  */
 export async function setupInitialStore(
-  metamaskState,
+  flattenedMetamaskState,
   backgroundConnection,
   activeTab,
 ) {
   // parse opts
-  if (!metamaskState.featureFlags) {
-    metamaskState.featureFlags = {};
+  if (!flattenedMetamaskState.featureFlags) {
+    flattenedMetamaskState.featureFlags = {};
   }
 
   const { currentLocaleMessages, enLocaleMessages } = await setupLocale(
-    metamaskState.currentLocale,
+    flattenedMetamaskState.currentLocale,
   );
 
-  if (metamaskState.textDirection === 'rtl') {
+  if (flattenedMetamaskState.textDirection === 'rtl') {
     switchDirection('rtl');
   }
 
   const draftInitialState = {
     activeTab,
 
-    // metamaskState represents the cross-tab state
-    metamask: metamaskState,
+    // TODO: Populate with unflattened background state properties.
+    background: {},
+    // flattenedMetamaskState represents the cross-tab state
+    metamask: flattenedMetamaskState,
 
     // appState represents the current tab's popup state
     appState: {},
 
     localeMessages: {
-      currentLocale: metamaskState.currentLocale,
+      currentLocale: flattenedMetamaskState.currentLocale,
       current: currentLocaleMessages,
       en: enLocaleMessages,
     },
@@ -179,17 +182,17 @@ export async function setupInitialStore(
   const store = configureStore(draftInitialState);
   reduxStore = store;
 
-  const unapprovedTxs = getUnapprovedTransactions(metamaskState);
+  const unapprovedTxs = getUnapprovedTransactions(flattenedMetamaskState);
 
   // if unconfirmed txs, start on txConf page
   const unapprovedTxsAll = txHelper(
     unapprovedTxs,
-    metamaskState.unapprovedPersonalMsgs,
-    metamaskState.unapprovedDecryptMsgs,
-    metamaskState.unapprovedEncryptionPublicKeyMsgs,
-    metamaskState.unapprovedTypedMessages,
-    metamaskState.networkId,
-    getCurrentChainId({ metamask: metamaskState }),
+    flattenedMetamaskState.unapprovedPersonalMsgs,
+    flattenedMetamaskState.unapprovedDecryptMsgs,
+    flattenedMetamaskState.unapprovedEncryptionPublicKeyMsgs,
+    flattenedMetamaskState.unapprovedTypedMessages,
+    flattenedMetamaskState.networkId,
+    getCurrentChainId({ metamask: flattenedMetamaskState }),
   );
   const numberOfUnapprovedTx = unapprovedTxsAll.length;
   if (numberOfUnapprovedTx > 0) {
@@ -203,10 +206,10 @@ export async function setupInitialStore(
   return store;
 }
 
-async function startApp(metamaskState, backgroundConnection, opts) {
+async function startApp(flattenedMetamaskState, backgroundConnection, opts) {
   const { traceContext } = opts;
 
-  const tags = getStartupTraceTags({ metamask: metamaskState });
+  const tags = getStartupTraceTags({ metamask: flattenedMetamaskState });
 
   const store = await trace(
     {
@@ -215,7 +218,11 @@ async function startApp(metamaskState, backgroundConnection, opts) {
       tags,
     },
     () =>
-      setupInitialStore(metamaskState, backgroundConnection, opts.activeTab),
+      setupInitialStore(
+        flattenedMetamaskState,
+        backgroundConnection,
+        opts.activeTab,
+      ),
   );
 
   // global metamask api - used by tooling

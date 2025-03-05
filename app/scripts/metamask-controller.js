@@ -5761,14 +5761,14 @@ export default class MetamaskController extends EventEmitter {
         return;
       }
 
-      const flattendPatches = patchStore.flushPendingPatches({
+      const flattenedPatches = patchStore.flushPendingPatches({
         isFlattened: true,
       });
 
       outStream.write({
         jsonrpc: '2.0',
         method: 'sendFlattenedUpdate',
-        params: [flattendPatches],
+        params: [flattenedPatches],
       });
 
       const patches = patchStore.flushPendingPatches({ isFlattened: false });
@@ -5787,6 +5787,8 @@ export default class MetamaskController extends EventEmitter {
         uiReady = true;
         handleUpdate();
       },
+      getUnflattenedStatePatches: () =>
+        patchStore.flushPendingPatches({ isFlattened: false }),
       getStatePatches: () =>
         patchStore.flushPendingPatches({ isFlattened: true }),
     };
