@@ -196,9 +196,6 @@
   "addFriendsAndAddresses": {
     "message": "信頼できる友達とアドレスを追加する"
   },
-  "addHardwareWallet": {
-    "message": "ハードウェアウォレットを追加"
-  },
   "addIPFSGateway": {
     "message": "優先IPFSゲートウェイを追加"
   },
@@ -217,15 +214,6 @@
   },
   "addNewAccount": {
     "message": "新しいイーサリアムアカウントを追加"
-  },
-  "addNewBitcoinAccount": {
-    "message": "新しいビットコインアカウントの追加 (ベータ)"
-  },
-  "addNewBitcoinTestnetAccount": {
-    "message": "新しいビットコインアカウントの追加 (テストネット)"
-  },
-  "addNewSolanaAccount": {
-    "message": "新しいSolanaアカウントの追加 (ベータ版)"
   },
   "addNft": {
     "message": "NFTを追加"
@@ -2061,9 +2049,6 @@
   "import": {
     "message": "インポート",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "アカウントをインポート"
   },
   "importAccountError": {
     "message": "アカウントのインポート中にエラーが発生しました。"
