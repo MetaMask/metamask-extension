@@ -1,50 +1,17 @@
 import { Driver } from '../../webdriver/driver';
 import { TEST_SNAPS_WEBSITE_URL } from '../../snaps/enums';
 import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
+import SnapInstall from './dialog/snap-install';
+import SnapInstallWarning from './dialog/snap-install-warning';
 
 export class TestSnaps {
   driver: Driver;
 
+  public readonly snapInstall;
+
   private readonly installedSnapsHeader = '[data-testid="InstalledSnaps"]';
 
-  private readonly connectDialogsSnapButton =
-    '[data-testid="dialogs"] [data-testid="connect-button"]';
-
   private readonly dialogsSnapConfirmationButton = '#sendConfirmationButton';
-
-  private readonly dialogConnectButton = {
-    text: 'Connect',
-    tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
-  };
-
-  private readonly dialogConfirmButton = {
-    text: 'Confirm',
-    tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
-  };
-
-  private readonly dialogOkButton = {
-    text: 'OK',
-    tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
-  };
-
-  private readonly connectHomePage = '#connecthomepage';
-
-  private readonly connectBip32 = '#connectbip32';
-
-  private readonly connectBip44 = '#connectbip44';
-
-  private readonly reconnectButton = {
-    css: '#connectbip32',
-    text: 'Reconnect to BIP-32 Snap',
-  };
-
-  private readonly reconnectBip44Button = {
-    css: '#connectbip44',
-    text: 'Reconnect to BIP-44 Snap',
-  };
 
   private readonly getPublicKeyButton = {
     css: '#bip32GetPublic',
@@ -76,6 +43,7 @@ export class TestSnaps {
 
   constructor(driver: Driver) {
     this.driver = driver;
+    this.snapInstall = new SnapInstall(driver);
   }
 
   async openPage() {
@@ -83,36 +51,96 @@ export class TestSnaps {
     await this.driver.waitForSelector(this.installedSnapsHeader);
   }
 
-  async clickConnectDialogsSnapButton() {
+  /**
+   * Install a Snap with the given `connectButton` selector. This assumes a
+   * button exists on the `test-snaps` page that will open a dialog to install
+   * the Snap.
+   *
+   * @param connectButton - The selector for the button that will open the
+   * dialog to install the Snap.
+   * @param withWarning - Whether the installation will have a warning dialog,
+   * e.g., in the case of entropy Snaps requiring special permissions.
+   */
+  async installSnap(connectButton: string, withWarning = false) {
     await this.driver.scrollToElement(
-      this.driver.findClickableElement(this.connectDialogsSnapButton),
+      this.driver.findClickableElement(connectButton),
     );
+
     await this.driver.delay(largeDelayMs);
-    await this.driver.clickElement(this.connectDialogsSnapButton);
+    await this.driver.waitForSelector(connectButton);
+    await this.driver.clickElement(connectButton);
+
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.snapInstall.check_pageIsLoaded();
+    await this.snapInstall.clickNextButton();
+
+    // click confirm
+    await this.snapInstall.clickConfirmButton();
+
+    if (withWarning) {
+      const snapInstallWarning = new SnapInstallWarning(this.driver);
+      await snapInstallWarning.clickCheckboxPermission();
+      await snapInstallWarning.clickConfirmButton();
+    }
+
+    await this.snapInstall.clickNextButton();
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+
+    await this.driver.waitForSelector({
+      css: connectButton,
+      text: 'Reconnect',
+    });
+  }
+
+  /**
+   * Click a button with the given selector.
+   *
+   * @param selector - The selector for the button to click.
+   * @returns A promise that resolves after the button is clicked.
+   */
+  async clickButton(selector: string) {
+    console.log('Wait and click button');
+    await this.driver.waitForSelector(selector);
+    await this.driver.clickElement(selector);
+  }
+
+  /**
+   * Paste a message into a field with the given selector.
+   *
+   * @param selector - The selector for the field to paste the message into.
+   * @param message - The message to paste into the field.
+   * @returns A promise that resolves after the message is pasted into the
+   * field.
+   */
+  async pasteIntoField(selector: string, message: string) {
+    await this.driver.pasteIntoField(selector, message);
+  }
+
+  /**
+   * Click the approve button in the dialog window.
+   *
+   * @returns A promise that resolves after the approve button is clicked.
+   */
+  async approveDialog() {
+    // Switch to approve window.
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+    // Wait for and click on approve and wait for window to close.
+    await this.driver.waitForSelector({
+      text: 'Approve',
+      tag: 'button',
+    });
+    await this.driver.clickElementAndWaitForWindowToClose({
+      text: 'Approve',
+      tag: 'button',
+    });
+
+    // Switch back to `test-snaps` page.
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
   }
 
   async clickDialogsSnapConfirmationButton() {
     await this.driver.clickElement(this.dialogsSnapConfirmationButton);
-  }
-
-  async clickConnectBip32() {
-    console.log('Wait, scroll and click connect button');
-    await this.driver.scrollToElement(
-      this.driver.findClickableElement(this.connectBip32),
-    );
-    await this.driver.delay(largeDelayMs);
-    await this.driver.waitForSelector(this.connectBip32);
-    await this.driver.clickElement(this.connectBip32);
-  }
-
-  async clickConnectBip44() {
-    console.log('Wait, scroll and click connect button');
-    await this.driver.scrollToElement(
-      this.driver.findClickableElement(this.connectBip44),
-    );
-    await this.driver.delay(largeDelayMs);
-    await this.driver.waitForSelector(this.connectBip44);
-    await this.driver.clickElement(this.connectBip44);
   }
 
   async clickGetPublicKeyButton() {
@@ -131,39 +159,6 @@ export class TestSnaps {
     console.log('Wait and click get compressed public key button');
     await this.driver.waitForSelector(this.getCompressedKeyButton);
     await this.driver.clickElement(this.getCompressedKeyButton);
-  }
-
-  async completeSnapInstallConfirmation() {
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-    await this.driver.waitForSelector(this.dialogConnectButton);
-
-    await this.driver.clickElement(this.dialogConnectButton);
-
-    await this.driver.waitForSelector(this.dialogConfirmButton);
-
-    await this.driver.clickElement(this.dialogConfirmButton);
-
-    await this.driver.waitForSelector(this.dialogOkButton);
-
-    await this.driver.clickElement(this.dialogOkButton);
-
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
-  }
-
-  async clickConnectHomePage() {
-    // find and scroll to the homepage snap
-    const connectHomePageButton = await this.driver.findElement(
-      this.connectHomePage,
-    );
-    await this.driver.scrollToElement(connectHomePageButton);
-
-    // added delay for firefox
-    await this.driver.delayFirefox(1000);
-
-    // wait for and click connect
-    await this.driver.waitForSelector(this.connectHomePage);
-    await this.driver.clickElement(this.connectHomePage);
   }
 
   async fillMessageSecp256k1(message: string) {
@@ -203,13 +198,21 @@ export class TestSnaps {
     await this.driver.scrollToElement(sendEd25519);
   }
 
-  async waitForReconnectButton() {
-    console.log('Wait for reconnect button');
-    await this.driver.waitForSelector(this.reconnectButton);
-  }
+  /**
+   * Select an entropy source from the dropdown with the given ID.
+   *
+   * @param id - The ID of the dropdown.
+   * @param name - The name of the entropy source to select.
+   */
+  async selectEntropySource(id: string, name: string) {
+    console.log('Select entropy source');
+    const selector = await this.driver.findElement(`#${id}-entropy-selector`);
+    await this.driver.scrollToElement(selector);
+    await selector.click();
 
-  async waitForReconnectBip44Button() {
-    console.log('Wait for reconnect button');
-    await this.driver.waitForSelector(this.reconnectBip44Button);
+    await this.driver.clickElement({
+      text: name,
+      css: `#${id}-entropy-selector option`,
+    });
   }
 }

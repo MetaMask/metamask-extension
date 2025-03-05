@@ -341,20 +341,33 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     setActionMode(ACTION_MODE.ADD_NON_EVM_ACCOUNT);
   };
 
+  const getMultichainNetworkConfigurationOrThrow = (chainId: CaipChainId) => {
+    const network = multichainNetworks[chainId];
+    if (!network) {
+      throw new Error(
+        `Network configuration not found for chainId: ${chainId}`,
+      );
+    }
+    return network;
+  };
+
   const handleNetworkChange = async (chainId: CaipChainId) => {
-    const { isEvm } = multichainNetworks[chainId];
-    if (isEvm) {
+    const currentChain =
+      getMultichainNetworkConfigurationOrThrow(currentChainId);
+    const chain = getMultichainNetworkConfigurationOrThrow(chainId);
+
+    if (chain.isEvm) {
       handleEvmNetworkChange(chainId);
     } else {
       await handleNonEvmNetworkChange(chainId);
     }
 
-    const [chainIdToTrack, currentChainIdToTrack] = isEvm
-      ? [
-          convertCaipToHexChainId(chainId),
-          convertCaipToHexChainId(currentChainId),
-        ]
-      : [chainId, currentChainId];
+    const chainIdToTrack = chain.isEvm
+      ? convertCaipToHexChainId(chainId)
+      : chainId;
+    const currentChainIdToTrack = currentChain.isEvm
+      ? convertCaipToHexChainId(currentChainId)
+      : currentChainId;
 
     trackEvent({
       event: MetaMetricsEventName.NavNetworkSwitched,
