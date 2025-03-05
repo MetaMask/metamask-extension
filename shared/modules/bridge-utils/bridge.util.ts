@@ -175,10 +175,14 @@ export async function fetchBridgeQuotes(
   request: GenericQuoteRequest,
   signal: AbortSignal,
 ): Promise<QuoteResponse[]> {
+  let ignoreSlippage = false;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   // Ignore slippage for solana swaps
-  const isSolanaSwap =
+  ignoreSlippage =
     request.srcChainId === request.destChainId &&
     request.destChainId === MultichainNetworks.SOLANA;
+  ///: END:ONLY_INCLUDE_IF
 
   const normalizedRequest = {
     walletAddress: formatAddressToString(request.walletAddress),
@@ -190,7 +194,7 @@ export async function fetchBridgeQuotes(
     srcTokenAddress: formatAddressToString(request.srcTokenAddress),
     destTokenAddress: formatAddressToString(request.destTokenAddress),
     srcTokenAmount: request.srcTokenAmount,
-    ...(isSolanaSwap ? {} : { slippage: request.slippage.toString() }),
+    ...(ignoreSlippage ? {} : { slippage: request.slippage.toString() }),
     insufficientBal: request.insufficientBal ? 'true' : 'false',
     resetApproval: request.resetApproval ? 'true' : 'false',
   };
