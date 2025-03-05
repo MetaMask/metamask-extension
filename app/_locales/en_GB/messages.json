@@ -157,10 +157,10 @@
     "message": "Add alias"
   },
   "addBitcoinAccountLabel": {
-    "message": "Add a new Bitcoin account (Beta)"
+    "message": "Bitcoin account (Beta)"
   },
   "addBitcoinTestnetAccountLabel": {
-    "message": "Add a new Bitcoin account (Testnet)"
+    "message": "Bitcoin account (Testnet)"
   },
   "addBlockExplorer": {
     "message": "Add a block explorer"
