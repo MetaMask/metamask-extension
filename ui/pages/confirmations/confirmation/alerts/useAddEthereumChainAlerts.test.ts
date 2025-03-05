@@ -17,6 +17,7 @@ const PENDING_APPROVAL_MOCK = {
   id: 'testApprovalId',
   requestData: { testProperty: 'testValue' },
   type: ApprovalType.AddEthereumChain,
+  origin: 'https://metamask.github.io',
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as ApprovalRequest<any>;
@@ -36,9 +37,19 @@ const ADD_ETH_CHAIN_ALERT = [
 
 describe('useAddEthereumChainAlerts', () => {
   it('returns alert if there are pending confirmations', () => {
+    const state = getMockPersonalSignConfirmState();
     const { result } = renderHookWithProvider(
       () => useAddEthereumChainAlerts(PENDING_APPROVAL_MOCK),
-      getMockPersonalSignConfirmState(),
+      {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          pendingApprovals: {
+            ...state.metamask.pendingApprovals,
+            [PENDING_APPROVAL_MOCK.id]: PENDING_APPROVAL_MOCK,
+          },
+        },
+      },
     );
     expect(result.current).toStrictEqual(ADD_ETH_CHAIN_ALERT);
   });
