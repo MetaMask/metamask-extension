@@ -1,64 +1,76 @@
 import { act } from '@testing-library/react-hooks';
-import { useSample } from './useSample';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
+import { useSample } from './useSample';
 
-describe('sample hooks', () => {
-  describe('useCounter hook', () => {
-    it('should return the counter value', () => {
-      const { result } = renderHookWithProvider(useSample, {
-        sample: { counter: 5, error: null },
-      });
+// Import SampleState type from slice
+import { SampleState } from './slice';
 
+describe('useSample hook', () => {
+  const setupHook = (
+    initialState: SampleState = { counter: 0, error: null },
+  ) => {
+    return renderHookWithProvider(useSample, {
+      sample: initialState,
+    });
+  };
+
+  describe('initial state', () => {
+    it('should return the counter value from state', () => {
+      const { result } = setupHook({ counter: 5, error: null });
       expect(result.current.value).toBe(5);
     });
 
-    it('should return error', () => {
-      const { result } = renderHookWithProvider(useSample, {
-        sample: { counter: 0, error: 'test error' },
-      });
-
+    it('should return error from state', () => {
+      const { result } = setupHook({ counter: 0, error: 'test error' });
       expect(result.current.error).toBe('test error');
     });
+  });
 
+  describe('actions', () => {
     it('should increment counter when increment is called', () => {
-      const { result } = renderHookWithProvider(useSample, {
-        sample: { counter: 0, error: null },
-      });
+      const { result } = setupHook();
 
       act(() => {
         result.current.increment();
       });
 
-      // Check if the value updated in the hook's return value
       expect(result.current.value).toBe(1);
+      expect(result.current.error).toBeNull();
     });
 
-    it('should set counter when setCounter is called with valid value', () => {
-      const { result } = renderHookWithProvider(useSample, {
-        sample: { counter: 0, error: null },
+    describe('setCounter', () => {
+      it('should set counter when called with valid positive value', () => {
+        const { result } = setupHook();
+
+        act(() => {
+          result.current.setCounter(10);
+        });
+
+        expect(result.current.value).toBe(10);
+        expect(result.current.error).toBeNull();
       });
 
-      act(() => {
-        result.current.setCounter(10);
+      it('should set counter when called with zero', () => {
+        const { result } = setupHook({ counter: 5, error: null });
+
+        act(() => {
+          result.current.setCounter(0);
+        });
+
+        expect(result.current.value).toBe(0);
+        expect(result.current.error).toBeNull();
       });
 
-      // Check if the value updated in the hook's return value
-      expect(result.current.value).toBe(10);
-    });
+      it('should set error when called with negative value', () => {
+        const { result } = setupHook();
 
-    it('should set error when setCounter is called with negative value', () => {
-      const { result } = renderHookWithProvider(useSample, {
-        sample: { counter: 0, error: null },
+        act(() => {
+          result.current.setCounter(-5);
+        });
+
+        expect(result.current.error).toBe('Counter cannot be negative.');
+        expect(result.current.value).toBe(0); // Counter should remain unchanged
       });
-
-      act(() => {
-        result.current.setCounter(-5);
-      });
-
-      // Check the error in the hook's return value
-      expect(result.current.error).toBe('Counter cannot be negative.');
-      // Counter should remain unchanged
-      expect(result.current.value).toBe(0);
     });
   });
 });
