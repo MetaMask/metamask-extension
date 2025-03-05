@@ -3115,9 +3115,7 @@ export function getKeyringSnapAccounts(state) {
 }
 ///: END:ONLY_INCLUDE_IF
 
-// permissions
-
-// selectors
+//#region permissions selectors
 
 /**
  * Deep equal selector to get the permission subjects object.
@@ -3561,3 +3559,5 @@ export function getRequestState(state, id) {
 export function getRequestType(state, id) {
   return state.metamask.pendingApprovals[id]?.type;
 }
+
+//#endregion permissions selectors
