@@ -693,6 +693,8 @@ describe('AccountListMenu', () => {
     });
 
     it('shows srp list if there are multiple srps when adding a new account', async () => {
+      mockNextAccountName.mockReturnValue('Next HD Account');
+
       const accountInSecondSRP = createMockInternalAccount({
         address: '0xB1BAF6A2f4A808937bb97a2F12CCF08F1233e3D9',
         name: 'Account in second SRP',
@@ -720,6 +722,7 @@ describe('AccountListMenu', () => {
               ...mockState.metamask.internalAccounts.accounts,
               [accountInSecondSRP.id]: accountInSecondSRP,
             },
+            selectedAccount: accountInSecondSRP.id,
           },
         },
       });
