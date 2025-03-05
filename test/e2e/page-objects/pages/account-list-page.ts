@@ -137,7 +137,7 @@ class AccountListPage {
     tag: 'button',
   };
 
-  private readonly importSRPModalTitle = {
+  private readonly importSrpModalTitle = {
     text: 'Import Secret Recovery Phrase',
     tag: 'h4',
   };
@@ -717,7 +717,7 @@ class AccountListPage {
     console.log(`Importing ${srp.split(' ').length} word srp`);
     await this.driver.clickElement(this.createAccountButton);
     await this.driver.clickElement(this.importSrpButton);
-    await this.driver.waitForSelector(this.importSRPModalTitle);
+    await this.driver.waitForSelector(this.importSrpModalTitle);
     await this.driver.pasteIntoField(this.importSrpInput, srp);
     await this.driver.clickElement(this.importSrpConfirmButton);
   }

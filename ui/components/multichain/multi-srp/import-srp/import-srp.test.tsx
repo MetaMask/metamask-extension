@@ -125,7 +125,7 @@ describe('ImportSrp', () => {
     const importButton = getByText('Import wallet');
 
     const invalidSRP = VALID_SECRET_RECOVERY_PHRASE.replace('input', 'inptu');
-    expect(getByText('Import wallet')).not.toBeEnabled();
+    expect(importButton).not.toBeEnabled();
 
     const { input } = pasteSrpIntoFirstInput(render, invalidSRP);
 

@@ -475,6 +475,7 @@ export const AccountListMenu = ({
                   <ButtonLink
                     size={ButtonLinkSize.Sm}
                     startIconName={IconName.Add}
+                    startIconProps={{ size: IconSize.Md }}
                     onClick={async () => {
                       trackEvent({
                         category: MetaMetricsEventCategory.Navigation,
