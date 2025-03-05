@@ -115,7 +115,12 @@ const mapStateToProps = (state) => {
     ///: END:ONLY_INCLUDE_IF
   ]);
 
-  const TEMPORARY_DISABLE_WHATS_NEW = true;
+  let TEMPORARY_DISABLE_WHATS_NEW = true;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  TEMPORARY_DISABLE_WHATS_NEW = false;
+  ///: END:ONLY_INCLUDE_IF
+
   const showWhatsNewPopup = TEMPORARY_DISABLE_WHATS_NEW
     ? false
     : getShowWhatsNewPopup(state);
