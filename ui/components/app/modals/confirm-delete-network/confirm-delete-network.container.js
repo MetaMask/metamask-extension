@@ -15,11 +15,9 @@ import ConfirmDeleteNetwork from './confirm-delete-network.component';
 const mapStateToProps = (state, ownProps) => {
   const networks = getNetworkConfigurationsByChainId(state);
   const currentChainId = getCurrentChainId(state);
-  const ethereumMainnetConfig = networks[CHAIN_IDS.MAINNET];
+  const { rpcEndpoints, defaultRpcEndpointIndex } = networks[CHAIN_IDS.MAINNET];
   const ethereumMainnetClientId =
-    ethereumMainnetConfig.rpcEndpoints[
-      ethereumMainnetConfig.defaultRpcEndpointIndex
-    ].networkClientId;
+    rpcEndpoints[defaultRpcEndpointIndex].networkClientId;
   const { chainId, name: networkNickname } = networks[ownProps.target];
   return { ethereumMainnetClientId, currentChainId, chainId, networkNickname };
 };
