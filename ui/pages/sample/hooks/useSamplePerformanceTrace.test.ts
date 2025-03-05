@@ -5,160 +5,292 @@ import {
   TraceHandlers,
 } from './useSamplePerformanceTrace';
 
-// Create mocks for the trace functions
-jest.mock('../../../../shared/lib/trace', () => ({
-  ...jest.requireActual('../../../../shared/lib/trace'),
-  trace: jest.fn(() => 'mock-trace-context'),
-  endTrace: jest.fn(),
-  TraceName: {
-    Transaction: 'Transaction',
-    DeveloperTest: 'Developer Test',
-  },
-}));
+// Mock the trace module
+jest.mock('../../../../shared/lib/trace', () => {
+  const original = jest.requireActual('../../../../shared/lib/trace');
+  return {
+    ...original,
+    trace: jest.fn(() => 'mock-trace-context'),
+    endTrace: jest.fn(),
+    TraceName: {
+      ...original.TraceName,
+      Transaction: 'Transaction',
+      DeveloperTest: 'Developer Test',
+    },
+  };
+});
 
 describe('useSamplePerformanceTrace', () => {
+  // Test data
+  const defaultProps = {
+    componentName: 'TestComponent',
+    featureId: 'test-feature',
+  };
+
+  // Test helpers
+  const setupHook = (props = defaultProps) => {
+    return renderHook(() => useSamplePerformanceTrace(props));
+  };
+
+  const setupFormSubmissionTrace = () => {
+    const { result } = setupHook();
+    let formSubmissionTrace = {} as TraceHandlers;
+
+    act(() => {
+      formSubmissionTrace = result.current.traceFormSubmission();
+    });
+
+    jest.clearAllMocks();
+
+    return { result, formSubmissionTrace };
+  };
+
+  // Setup and teardown
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.spyOn(console, 'debug').mockImplementation();
   });
 
-  it('should start component trace on mount', () => {
-    renderHook(() =>
-      useSamplePerformanceTrace({
-        componentName: 'TestComponent',
-        featureId: 'test-feature',
-      }),
-    );
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
 
-    // Check that trace was called for component mount
-    expect(traceModule.trace).toHaveBeenCalledWith({
-      name: traceModule.TraceName.DeveloperTest,
-      data: {
-        component: 'TestComponent',
-        featureId: 'test-feature',
-      },
+  describe('Hook initialization', () => {
+    it('should return a traceFormSubmission function', () => {
+      const { result } = setupHook();
+
+      expect(result.current).toHaveProperty('traceFormSubmission');
+      expect(typeof result.current.traceFormSubmission).toBe('function');
     });
-  });
 
-  it('should end component trace on unmount', () => {
-    const { unmount } = renderHook(() =>
-      useSamplePerformanceTrace({
-        componentName: 'TestComponent',
-        featureId: 'test-feature',
-      }),
-    );
+    it('should ensure traceFormSubmission is memoized with componentName dependency', () => {
+      const { result, rerender } = setupHook();
+      const initialTraceFormSubmission = result.current.traceFormSubmission;
 
-    // Clear mocks to isolate the unmount call
-    jest.clearAllMocks();
+      // Rerender with the same props
+      rerender();
 
-    unmount();
-
-    // Check that endTrace was called
-    expect(traceModule.endTrace).toHaveBeenCalledWith({
-      name: traceModule.TraceName.DeveloperTest,
-    });
-  });
-
-  it('should return traceFormSubmission function', () => {
-    const { result } = renderHook(() =>
-      useSamplePerformanceTrace({
-        componentName: 'TestComponent',
-        featureId: 'test-feature',
-      }),
-    );
-
-    // Verify function is returned
-    expect(typeof result.current.traceFormSubmission).toBe('function');
-  });
-
-  describe('traceFormSubmission', () => {
-    it('should start and end a trace for form submission', () => {
-      const { result } = renderHook(() =>
-        useSamplePerformanceTrace({
-          componentName: 'TestComponent',
-          featureId: 'test-feature',
-        }),
+      // function reference should be the same (memoized)
+      expect(result.current.traceFormSubmission).toBe(
+        initialTraceFormSubmission,
       );
 
-      // Create the trace handlers
-      let formSubmissionTrace: TraceHandlers;
-      act(() => {
-        formSubmissionTrace = result.current.traceFormSubmission();
-      });
+      // Render with different featureId but same componentName
+      // (componentName is the only dependency in useCallback)
+      rerender({ ...defaultProps, featureId: 'different-feature' });
 
-      // Clear mocks to isolate the function calls for the form submission trace
+      // Function reference should still be the same
+      expect(result.current.traceFormSubmission).toBe(
+        initialTraceFormSubmission,
+      );
+    });
+  });
+
+  describe('Component lifecycle tracing', () => {
+    it('should start component trace on mount with correct parameters', () => {
+      setupHook();
+
+      expect(traceModule.trace).toHaveBeenCalledTimes(1);
+      expect(traceModule.trace).toHaveBeenCalledWith({
+        name: traceModule.TraceName.DeveloperTest,
+        data: {
+          component: defaultProps.componentName,
+          featureId: defaultProps.featureId,
+        },
+      });
+    });
+
+    it('should use customized component name and featureId when provided', () => {
+      const customProps = {
+        componentName: 'CustomComponent',
+        featureId: 'custom-feature',
+      };
+
+      setupHook(customProps);
+
+      expect(traceModule.trace).toHaveBeenCalledWith({
+        name: traceModule.TraceName.DeveloperTest,
+        data: {
+          component: customProps.componentName,
+          featureId: customProps.featureId,
+        },
+      });
+    });
+
+    it('should end component trace on unmount with correct parameters', () => {
+      const { unmount } = setupHook();
       jest.clearAllMocks();
 
-      // Start the trace
-      act(() => {
-        formSubmissionTrace.startTrace();
-      });
+      unmount();
 
-      // Verify trace was called with the right parameters
-      expect(traceModule.trace).toHaveBeenCalledWith(
-        expect.objectContaining({
-          name: traceModule.TraceName.Transaction,
-          id: expect.any(String),
-          data: expect.objectContaining({
-            operation: 'formSubmission',
-            component: 'TestComponent',
-          }),
-        }),
-      );
-
-      // End the trace
-      act(() => {
-        formSubmissionTrace.endTrace(true, { extraData: 'test' });
-      });
-
-      // Verify endTrace was called
+      expect(traceModule.endTrace).toHaveBeenCalledTimes(1);
       expect(traceModule.endTrace).toHaveBeenCalledWith({
-        name: traceModule.TraceName.Transaction,
-        id: expect.any(String),
+        name: traceModule.TraceName.DeveloperTest,
+      });
+    });
+  });
+
+  describe('traceFormSubmission function', () => {
+    describe('returned handlers', () => {
+      it('should return an object with startTrace and endTrace functions', () => {
+        const { result } = setupHook();
+        const handlers = result.current.traceFormSubmission();
+
+        expect(handlers).toHaveProperty('startTrace');
+        expect(handlers).toHaveProperty('endTrace');
+        expect(typeof handlers.startTrace).toBe('function');
+        expect(typeof handlers.endTrace).toBe('function');
       });
     });
 
-    it('should pass the success flag to endTrace when form submission fails', () => {
-      const { result } = renderHook(() =>
-        useSamplePerformanceTrace({
-          componentName: 'TestComponent',
-          featureId: 'test-feature',
-        }),
-      );
+    describe('trace id generation', () => {
+      // Setup a fixed timestamp for deterministic testing
+      const FIXED_TIMESTAMP = 12345;
+      let originalDateNow: () => number;
 
-      // Get the function and create the trace handlers
-      let formSubmissionTrace: TraceHandlers;
-      act(() => {
-        formSubmissionTrace = result.current.traceFormSubmission();
+      beforeEach(() => {
+        originalDateNow = Date.now;
+        Date.now = jest.fn(() => FIXED_TIMESTAMP);
       });
 
-      // Clear mocks to isolate the function calls
-      jest.clearAllMocks();
-
-      // Mock console.debug to check metadata logging
-      const originalConsoleDebug = console.debug;
-      console.debug = jest.fn();
-
-      // Start trace
-      act(() => {
-        formSubmissionTrace.startTrace();
+      afterEach(() => {
+        Date.now = originalDateNow;
       });
 
-      // End trace with failure
-      act(() => {
-        formSubmissionTrace.endTrace(false, { reason: 'validation_error' });
+      it('should generate a traceId with form-submission prefix and timestamp', () => {
+        const { formSubmissionTrace } = setupFormSubmissionTrace();
+
+        act(() => {
+          formSubmissionTrace.startTrace();
+        });
+
+        expect(traceModule.trace).toHaveBeenCalledWith(
+          expect.objectContaining({
+            id: `form-submission-${FIXED_TIMESTAMP}`,
+          }),
+        );
+      });
+    });
+
+    describe('startTrace function', () => {
+      it('should call trace with correct parameters', () => {
+        const { formSubmissionTrace } = setupFormSubmissionTrace();
+
+        let traceContext;
+        act(() => {
+          traceContext = formSubmissionTrace.startTrace();
+        });
+
+        expect(traceModule.trace).toHaveBeenCalledTimes(1);
+        expect(traceModule.trace).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: traceModule.TraceName.Transaction,
+            data: expect.objectContaining({
+              operation: 'formSubmission',
+              component: defaultProps.componentName,
+            }),
+          }),
+        );
+        expect(traceContext).toBe('mock-trace-context');
+      });
+    });
+
+    describe('endTrace function', () => {
+      beforeEach(() => {
+        // Setup a fixed timestamp for deterministic testing
+        jest.spyOn(Date, 'now').mockReturnValue(12345);
       });
 
-      // Verify console.debug was called with the right metadata
-      expect(console.debug).toHaveBeenCalledWith(
-        '[FormSubmission] Complete:',
-        expect.objectContaining({
-          success: false,
-          reason: 'validation_error',
-        }),
-      );
+      it('should call endTrace with correct parameters on success', () => {
+        const { formSubmissionTrace } = setupFormSubmissionTrace();
+        const extraData = { extraData: 'test' };
 
-      // Restore console.debug
-      console.debug = originalConsoleDebug;
+        act(() => {
+          formSubmissionTrace.startTrace();
+        });
+
+        act(() => {
+          formSubmissionTrace.endTrace(true, extraData);
+        });
+
+        // check that endTrace was called correctly
+        expect(traceModule.endTrace).toHaveBeenCalledTimes(1);
+        expect(traceModule.endTrace).toHaveBeenCalledWith({
+          name: traceModule.TraceName.Transaction,
+          id: 'form-submission-12345',
+        });
+      });
+
+      it('should log metadata on success with console.debug', () => {
+        const { formSubmissionTrace } = setupFormSubmissionTrace();
+        const extraData = { extraData: 'test' };
+
+        act(() => {
+          formSubmissionTrace.startTrace();
+        });
+
+        act(() => {
+          formSubmissionTrace.endTrace(true, extraData);
+        });
+
+        // check that console.debug was called with correct metadata
+        expect(console.debug).toHaveBeenCalledTimes(1);
+        expect(console.debug).toHaveBeenCalledWith(
+          '[FormSubmission] Complete:',
+          expect.objectContaining({
+            success: true,
+            extraData: 'test',
+          }),
+        );
+      });
+
+      it('should log metadata on failure with console.debug', () => {
+        const { formSubmissionTrace } = setupFormSubmissionTrace();
+        const errorData = { reason: 'validation_error' };
+
+        act(() => {
+          formSubmissionTrace.startTrace();
+        });
+
+        act(() => {
+          formSubmissionTrace.endTrace(false, errorData);
+        });
+
+        // check that console.debug was called with correct metadata
+        expect(console.debug).toHaveBeenCalledWith(
+          '[FormSubmission] Complete:',
+          expect.objectContaining({
+            success: false,
+            reason: 'validation_error',
+          }),
+        );
+      });
+
+      it('should handle form submission without additional metadata', () => {
+        const { formSubmissionTrace } = setupFormSubmissionTrace();
+
+        act(() => {
+          formSubmissionTrace.startTrace();
+        });
+
+        act(() => {
+          formSubmissionTrace.endTrace(true);
+        });
+
+        expect(console.debug).toHaveBeenCalledWith(
+          '[FormSubmission] Complete:',
+          expect.objectContaining({
+            success: true,
+          }),
+        );
+
+        expect(console.debug).not.toHaveBeenCalledWith(
+          '[FormSubmission] Complete:',
+          expect.objectContaining({
+            extraData: expect.anything(),
+          }),
+        );
+      });
     });
   });
 });
