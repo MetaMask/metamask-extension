@@ -95,6 +95,8 @@ export default class DomainInput extends Component {
         const hexInput = addHexPrefix(input);
         onChange(hexInput);
         onValidAddressTyped(hexInput);
+      } else {
+        onChange(input);
       }
     } else {
       onChange(input);
