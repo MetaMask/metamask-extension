@@ -243,8 +243,6 @@ jobs:
       - name: Build for non-master branch
         if: github.ref != 'refs/heads/master'
         run: yarn build dist
-        env:
-          INFURA_PROJECT_ID: ''
 
       - name: Build for master branch
         if: github.ref == 'refs/heads/master'
@@ -280,8 +278,6 @@ jobs:
       - name: Build for non-master branch
         if: github.ref != 'refs/heads/master'
         run: ENABLE_MV3=false yarn build dist
-        env:
-          INFURA_PROJECT_ID: ''
 
       - name: Build for master branch
         if: github.ref == 'refs/heads/master'
@@ -323,8 +319,6 @@ jobs:
       - name: Build for non-master branch
         if: github.ref != 'refs/heads/master'
         run: yarn build --build-type flask dist
-        env:
-          INFURA_PROJECT_ID: ''
 
       - name: Build for master branch
         if: github.ref == 'refs/heads/master'
@@ -366,8 +360,6 @@ jobs:
       - name: Build for non-master branch
         if: github.ref != 'refs/heads/master'
         run: ENABLE_MV3=false yarn build --build-type flask dist
-        env:
-          INFURA_PROJECT_ID: ''
 
       - name: Build for master branch
         if: github.ref == 'refs/heads/master'
