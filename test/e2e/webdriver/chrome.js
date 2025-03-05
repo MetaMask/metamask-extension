@@ -86,6 +86,13 @@ class ChromeDriver {
       });
     }
 
+    // GitHub Actions specific configuration
+    if (process.env.GITHUB_ACTIONS) {
+      // Use Chrome from the installed version from the browser-actions/setup-chrome action
+      const chromePath = process.env.CHROME_PATH || '/opt/hostedtoolcache/chrome/stable/x64/chrome';
+      options.setChromeBinaryPath(chromePath);
+    }
+
     const builder = new Builder()
       .forBrowser('chrome')
       .setChromeOptions(options);

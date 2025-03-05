@@ -260,15 +260,25 @@ jobs:
       - prep-build-test-webpack
       - get-changed-files-with-git-diff
     runs-on: ubuntu-latest
-    #strategy:
-    #  fail-fast: false
-    #  matrix:
-    #    shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+    strategy:
+      fail-fast: false
+      matrix:
+        index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    env:
+      MATRIX_INDEX: ${{ matrix.index }}
+      MATRIX_TOTAL: 10
+      GITHUB_ACTIONS: true
     steps:
       - name: Checkout and setup environment
         uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
         with:
           is-high-risk-environment: false
+
+      - name: Setup Chrome and ChromeDriver
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: 120
+          install-chromedriver: true
 
       - name: Download prep-build-test-webpack artifact
         uses: actions/download-artifact@v4
@@ -292,14 +302,14 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-artifacts-e2e-chrome-webpack
+          name: test-artifacts-e2e-chrome-webpack-${{ matrix.index }}
           path: ./test-artifacts
 
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results-e2e-chrome-webpack
+          name: test-results-e2e-chrome-webpack-${{ matrix.index }}
           path: ./test/test-results/e2e
 
   prep-build:
