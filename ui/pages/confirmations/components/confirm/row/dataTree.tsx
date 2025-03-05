@@ -202,7 +202,7 @@ const DataField = memo(
     }
 
     if (type === 'bool') {
-      return <ConfirmInfoRowText text={String(value)} />;
+      return <ConfirmInfoRowText text={String(Boolean(value))} />;
     }
 
     return <ConfirmInfoRowText text={sanitizeString(value)} />;
