@@ -23,7 +23,7 @@ import {
   getMetaMaskHdKeyrings,
 } from '../../../../selectors/selectors';
 import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
-import { SRPListItem } from './srp-list-item';
+import { SrpListItem } from './srp-list-item';
 
 type KeyringObjectWithMetadata = KeyringObject & { metadata: KeyringMetadata };
 
@@ -108,7 +108,7 @@ export const SrpList = ({
               {keyring.accounts.map((address: string) => {
                 const account = accountsWithBalances[address];
                 return (
-                  <SRPListItem
+                  <SrpListItem
                     key={`account-${account.id}`}
                     account={account}
                   />

@@ -50,7 +50,7 @@ const render = () => {
   );
 };
 
-describe('SRPList', () => {
+describe('SrpList', () => {
   it('renders list of secret recovery phrases', () => {
     const { getByText } = render();
     expect(getByText('Secret Phrase 1')).toBeInTheDocument();

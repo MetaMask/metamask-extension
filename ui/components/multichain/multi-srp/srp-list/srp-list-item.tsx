@@ -18,11 +18,11 @@ import {
   Box,
 } from '../../../component-library';
 
-type SRPListItemProps = {
+type SrpListItemProps = {
   account: InternalAccountWithBalance;
 };
 
-export const SRPListItem = ({ account }: SRPListItemProps) => {
+export const SrpListItem = ({ account }: SrpListItemProps) => {
   const { totalFiatBalance } = useMultichainAccountTotalFiatBalance(account);
 
   return (

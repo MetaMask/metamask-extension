@@ -6,7 +6,7 @@ import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 import { InternalAccountWithBalance } from '../../../../selectors';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 import { shortenAddress } from '../../../../helpers/utils/util';
-import { SRPListItem } from './srp-list-item';
+import { SrpListItem } from './srp-list-item';
 
 const mockTotalFiatBalance = '100';
 const mockAccount: InternalAccountWithBalance = {
@@ -33,10 +33,10 @@ jest.mock('../../../../helpers/utils/util', () => ({
 
 const render = () => {
   const store = configureMockStore([thunk])(mockState);
-  return renderWithProvider(<SRPListItem account={mockAccount} />, store);
+  return renderWithProvider(<SrpListItem account={mockAccount} />, store);
 };
 
-describe('SRPListItem', () => {
+describe('SrpListItem', () => {
   beforeEach(() => {
     // Reset mock implementations before each test
     mocks.useMultichainAccountTotalFiatBalance.mockReturnValue({
