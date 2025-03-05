@@ -13,21 +13,16 @@ import {
 } from './shared/labelable';
 import {
   Label,
+  RegressionStage,
+  craftRegressionLabel,
   externalContributorLabel,
+  needsTriageLabel,
   flakyTestsLabel,
   invalidIssueTemplateLabel,
   invalidPullRequestTemplateLabel,
 } from './shared/label';
 import { TemplateType, templates } from './shared/template';
 import { retrievePullRequest } from './shared/pull-request';
-
-enum RegressionStage {
-  DevelopmentFeature,
-  DevelopmentMain,
-  Testing,
-  Beta,
-  Production,
-}
 
 const knownBots = [
   'metamaskbot',
@@ -145,6 +140,9 @@ async function main(): Promise<void> {
 
       // Add regression label to the bug report issue
       addRegressionLabelToIssue(octokit, labelable);
+
+      // Add needs triage label to the bug report issue
+      addNeedsTriageLabelToIssue(octokit, labelable);
     } else {
       const errorMessage =
         "Issue body does not match any of expected templates ('general-issue.yml' or 'bug-report.yml').\n\nMake sure issue's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/main/.github/scripts/shared/template.ts#L14-L37";
@@ -266,6 +264,13 @@ function extractReleaseVersionFromBugReportIssueBody(
   return version;
 }
 
+// This function adds the "needs-triage" label to the issue if it doesn't have it
+async function addNeedsTriageLabelToIssue(
+  octokit: InstanceType<typeof GitHub>,
+  issue: Labelable,
+): Promise<void> {
+  await addLabelToLabelable(octokit, issue, needsTriageLabel);
+}
 // This function adds the correct regression label to the issue, and removes other ones
 async function addRegressionLabelToIssue(
   octokit: InstanceType<typeof GitHub>,
@@ -344,60 +349,4 @@ async function userBelongsToMetaMaskOrg(
   } = await octokit.graphql(userBelongsToMetaMaskOrgQuery, { login: username });
 
   return Boolean(userBelongsToMetaMaskOrgResult?.user?.organization?.id);
-}
-
-// This function crafts appropriate label, corresponding to regression stage and release version.
-function craftRegressionLabel(
-  regressionStage: RegressionStage | undefined,
-  releaseVersion: string | undefined,
-): Label {
-  switch (regressionStage) {
-    case RegressionStage.DevelopmentFeature:
-      return {
-        name: `feature-branch-bug`,
-        color: '5319E7', // violet
-        description: `bug that was found on a feature branch, but not yet merged in main branch`,
-      };
-
-    case RegressionStage.DevelopmentMain:
-      return {
-        name: `regression-main`,
-        color: '5319E7', // violet
-        description: `Regression bug that was found on main branch, but not yet present in production`,
-      };
-
-    case RegressionStage.Testing:
-      return {
-        name: `regression-RC-${releaseVersion || '*'}`,
-        color: '744C11', // orange
-        description: releaseVersion
-          ? `Regression bug that was found in release candidate (RC) for release ${releaseVersion}`
-          : `TODO: Unknown release version. Please replace with correct 'regression-RC-x.y.z' label, where 'x.y.z' is the number of the release where bug was found.`,
-      };
-
-    case RegressionStage.Beta:
-      return {
-        name: `regression-beta-${releaseVersion || '*'}`,
-        color: 'D94A83', // pink
-        description: releaseVersion
-          ? `Regression bug that was found in beta in release ${releaseVersion}`
-          : `TODO: Unknown release version. Please replace with correct 'regression-beta-x.y.z' label, where 'x.y.z' is the number of the release where bug was found.`,
-      };
-
-    case RegressionStage.Production:
-      return {
-        name: `regression-prod-${releaseVersion || '*'}`,
-        color: '5319E7', // violet
-        description: releaseVersion
-          ? `Regression bug that was found in production in release ${releaseVersion}`
-          : `TODO: Unknown release version. Please replace with correct 'regression-prod-x.y.z' label, where 'x.y.z' is the number of the release where bug was found.`,
-      };
-
-    default:
-      return {
-        name: `regression-*`,
-        color: 'EDEDED', // grey
-        description: `TODO: Unknown regression stage. Please replace with correct regression label: 'regression-main', 'regression-RC-x.y.z', or 'regression-prod-x.y.z' label, where 'x.y.z' is the number of the release where bug was found.`,
-      };
-  }
 }

@@ -313,9 +313,6 @@
     "message": "Імпортувати",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Імпортувати обліковий запис"
-  },
   "importAccountMsg": {
     "message": "Імпортовані облікові записи не будуть пов'язані з вашою первісно створеною початковою фразою облікового запису MetaMask. Дізнайтесь більше про імпортовані облікові записи"
   },

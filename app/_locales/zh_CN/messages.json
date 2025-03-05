@@ -196,9 +196,6 @@
   "addFriendsAndAddresses": {
     "message": "添加您信任的朋友和地址"
   },
-  "addHardwareWallet": {
-    "message": "添加硬件钱包"
-  },
   "addIPFSGateway": {
     "message": "添加您首选的IPFS网关"
   },
@@ -217,15 +214,6 @@
   },
   "addNewAccount": {
     "message": "添加新账户"
-  },
-  "addNewBitcoinAccount": {
-    "message": "添加新的比特币账户（测试版）"
-  },
-  "addNewBitcoinTestnetAccount": {
-    "message": "添加新的比特币账户（测试网）"
-  },
-  "addNewSolanaAccount": {
-    "message": "添加新的Solana账户（测试版）"
   },
   "addNft": {
     "message": "添加 NFT"
@@ -2062,9 +2050,6 @@
     "message": "导入",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "导入账户"
-  },
   "importAccountError": {
     "message": "导入账户时出错。"
   },
@@ -2777,10 +2762,6 @@
     "message": "我们无法连接到 $1",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "网络已切换至 $1",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "网络 URL"
   },
@@ -3087,14 +3068,6 @@
   },
   "notifications": {
     "message": "通知"
-  },
-  "notificationsDropLedgerFirefoxDescription": {
-    "message": "Firefox 不再支持 U2F，因此在 Firefox 上，MetaMask 无法使用 Ledger。请尝试在 Google Chrome 上使用 MetaMask。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
-  },
-  "notificationsDropLedgerFirefoxTitle": {
-    "message": "放弃在 Firefox 上支持 Ledger",
-    "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
   },
   "notificationsFeatureToggle": {
     "message": "启用钱包通知",
@@ -4185,9 +4158,6 @@
   "seedPhraseIntroTitle": {
     "message": "保护您的钱包安全"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "在开始之前，观看这个简短的视频来了解您的账户助记词以及如何保护您的钱包安全。"
-  },
   "seedPhraseReq": {
     "message": "私钥助记词包含 12、15、18、21 或 24 个字词"
   },
@@ -4652,15 +4622,6 @@
   "snapsUIError": {
     "message": "联系 $1 的创建者以获得进一步支持。",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "solanaSupportSectionTitle": {
-    "message": "Solana"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "启用此功能后，您可以选择将 Solana 账户添加到衍生自现有私钥助记词的 MetaMask Extension 中。这是一个实验性的测试版功能，因此您应自行承担使用风险。"
-  },
-  "solanaSupportToggleTitle": {
-    "message": "启用“添加新的 Solana 账户（测试版）”"
   },
   "somethingDoesntLookRight": {
     "message": "有什么不对劲吗？$1",
@@ -5904,10 +5865,6 @@
   },
   "welcomeToMetaMaskIntro": {
     "message": "MetaMask 深受数百万人信任，是一款可以让所有人进入 web3 世界的安全钱包。"
-  },
-  "whatsNew": {
-    "message": "最新动态",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
   },
   "whatsThis": {
     "message": "这是什么？"

@@ -196,9 +196,6 @@
   "addFriendsAndAddresses": {
     "message": "신뢰하는 친구 및 주소 추가"
   },
-  "addHardwareWallet": {
-    "message": "하드웨어 지갑 추가"
-  },
   "addIPFSGateway": {
     "message": "선호하는 IPFS 게이트웨이를 추가하세요"
   },
@@ -217,15 +214,6 @@
   },
   "addNewAccount": {
     "message": "새 이더리움 계정 추가"
-  },
-  "addNewBitcoinAccount": {
-    "message": "새 비트코인 계정 추가(베타)"
-  },
-  "addNewBitcoinTestnetAccount": {
-    "message": "새 비트코인 계정 추가(테스트넷)"
-  },
-  "addNewSolanaAccount": {
-    "message": "새 솔라나 계정 추가(베타)"
   },
   "addNft": {
     "message": "NFT 추가"
@@ -2062,9 +2050,6 @@
     "message": "가져오기",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "계정 가져오기"
-  },
   "importAccountError": {
     "message": "계정 가져오기 오류"
   },
@@ -2777,10 +2762,6 @@
     "message": "$1 연결이 불가능합니다",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "네트워크가 $1(으)로 전환됨",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "네트워크 URL"
   },
@@ -3087,14 +3068,6 @@
   },
   "notifications": {
     "message": "알림"
-  },
-  "notificationsDropLedgerFirefoxDescription": {
-    "message": "Firefox에서 더 이상 U2F를 지원하지 않아 Firefox를 이용한 MetaMask에서 Ledger를 이용할 수 없습니다. 대신 Google Chrome에서 MetaMask를 이용해 보세요.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
-  },
-  "notificationsDropLedgerFirefoxTitle": {
-    "message": "Firefox의 Ledger 지원 중단",
-    "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
   },
   "notificationsFeatureToggle": {
     "message": "지갑 알림 활성화",
@@ -4185,9 +4158,6 @@
   "seedPhraseIntroTitle": {
     "message": "지갑 보호하기"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "시작하기 전에 이 짧은 동영상을 보고 비밀복구구문과 지갑을 안전하게 보호하는 방법에 대해 알아보세요."
-  },
   "seedPhraseReq": {
     "message": "비밀복구구문은 12, 15, 18, 21 또는 24개의 단어로 구성됩니다"
   },
@@ -4652,15 +4622,6 @@
   "snapsUIError": {
     "message": "$1 작성자에게 연락하여 향후 지원을 요청하세요.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "solanaSupportSectionTitle": {
-    "message": "솔라나"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "이 기능을 켜면 기존 비밀복구구문에서 파생된 솔라나 계정을 MetaMask 확장 프로그램에 추가하는 옵션이 제공됩니다. 이는 실험적 베타 기능이므로 사용자의 책임하에 사용해야 합니다."
-  },
-  "solanaSupportToggleTitle": {
-    "message": "'새 솔라나 계정 추가(베타)' 활성화"
   },
   "somethingDoesntLookRight": {
     "message": "무언가 잘못되었나요? $1",
@@ -5904,10 +5865,6 @@
   },
   "welcomeToMetaMaskIntro": {
     "message": "수백만 명이 신뢰하는 MetaMask는 모든 사람이 web3의 세계에 접근할 수 있도록 하는 안전한 지갑입니다."
-  },
-  "whatsNew": {
-    "message": "새로운 소식",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
   },
   "whatsThis": {
     "message": "이것은 무엇인가요?"

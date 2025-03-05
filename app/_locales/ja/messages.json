@@ -196,9 +196,6 @@
   "addFriendsAndAddresses": {
     "message": "信頼できる友達とアドレスを追加する"
   },
-  "addHardwareWallet": {
-    "message": "ハードウェアウォレットを追加"
-  },
   "addIPFSGateway": {
     "message": "優先IPFSゲートウェイを追加"
   },
@@ -217,15 +214,6 @@
   },
   "addNewAccount": {
     "message": "新しいイーサリアムアカウントを追加"
-  },
-  "addNewBitcoinAccount": {
-    "message": "新しいビットコインアカウントの追加 (ベータ)"
-  },
-  "addNewBitcoinTestnetAccount": {
-    "message": "新しいビットコインアカウントの追加 (テストネット)"
-  },
-  "addNewSolanaAccount": {
-    "message": "新しいSolanaアカウントの追加 (ベータ版)"
   },
   "addNft": {
     "message": "NFTを追加"
@@ -2062,9 +2050,6 @@
     "message": "インポート",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "アカウントをインポート"
-  },
   "importAccountError": {
     "message": "アカウントのインポート中にエラーが発生しました。"
   },
@@ -2777,10 +2762,6 @@
     "message": "$1に接続できません",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "ネットワークが$1に切り替わりました",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "ネットワークURL"
   },
@@ -3087,14 +3068,6 @@
   },
   "notifications": {
     "message": "通知"
-  },
-  "notificationsDropLedgerFirefoxDescription": {
-    "message": "FirefoxはU2Fをサポートしなくなったため、LedgerはFirefox版の MetaMaskでは機能しません。代わりにGoogle Chrome版のMetaMaskをお試しください。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
-  },
-  "notificationsDropLedgerFirefoxTitle": {
-    "message": "FirefoxでのLedger サポートの停止",
-    "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
   },
   "notificationsFeatureToggle": {
     "message": "ウォレットの通知を有効にする",
@@ -4185,9 +4158,6 @@
   "seedPhraseIntroTitle": {
     "message": "ウォレットの保護"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "始める前に、この短いビデオを見て、シークレットリカバリーフレーズとウォレットを安全に保つ方法について確認してください。"
-  },
   "seedPhraseReq": {
     "message": "シークレットリカバリーフレーズは、12、15、18、21、24語で構成されます"
   },
@@ -4652,15 +4622,6 @@
   "snapsUIError": {
     "message": "今後のサポートは、$1の作成者にお問い合わせください。",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "solanaSupportSectionTitle": {
-    "message": "Solana"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "この機能をオンにすると、既存のシークレットリカバリーフレーズで導出したSolanaアカウントをMetaMask Extensionに追加できるようになります。これは試験運用中のベータ機能であるため、自己責任でご使用ください。"
-  },
-  "solanaSupportToggleTitle": {
-    "message": "「新規Solanaアカウントの追加 (ベータ)」を有効にする"
   },
   "somethingDoesntLookRight": {
     "message": "何か不審な点があれば、$1",
@@ -5904,10 +5865,6 @@
   },
   "welcomeToMetaMaskIntro": {
     "message": "MetaMaskは何百万人もに信頼されている安全なウォレットで、すべての人々によるWeb3の世界へのアクセスを可能にしています。"
-  },
-  "whatsNew": {
-    "message": "新機能",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
   },
   "whatsThis": {
     "message": "これは何ですか？"

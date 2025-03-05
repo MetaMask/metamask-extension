@@ -1,7 +1,9 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
+import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
 import {
   Button,
@@ -10,28 +12,28 @@ import {
   IconName,
 } from '../../../../../components/component-library';
 import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
+import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import { clearConfirmTransaction } from '../../../../../ducks/confirm-transaction/confirm-transaction.duck';
+import { Severity } from '../../../../../helpers/constants/design-system';
+import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   doesAddressRequireLedgerHidConnection,
   getCustomNonceValue,
 } from '../../../../../selectors';
-
-import useAlerts from '../../../../../hooks/useAlerts';
 import {
   rejectPendingApproval,
   resolvePendingApproval,
+  setNextNonce,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   updateAndApproveTx,
   ///: END:ONLY_INCLUDE_IF
+  updateCustomNonce,
 } from '../../../../../store/actions';
-import { isSignatureTransactionType } from '../../../utils';
 import { useConfirmContext } from '../../../context/confirm';
-import { getConfirmationSender } from '../utils';
-import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
-import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
-import { Severity } from '../../../../../helpers/constants/design-system';
-import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
+import { isSignatureTransactionType } from '../../../utils';
+import { getConfirmationSender } from '../utils';
 import OriginThrottleModal from './origin-throttle-modal';
 
 export type OnCancelHandler = ({
@@ -176,6 +178,12 @@ const Footer = () => {
     (!isScrollToBottomCompleted && !isSignature) ||
     hardwareWalletRequiresConnection;
 
+  const resetTransactionState = () => {
+    dispatch(updateCustomNonce(''));
+    dispatch(setNextNonce(''));
+    dispatch(clearConfirmTransaction());
+  };
+
   const onCancel = useCallback(
     ({ location }: { location?: MetaMetricsEventLocation }) => {
       if (!currentConfirmation) {
@@ -188,6 +196,7 @@ const Footer = () => {
       dispatch(
         rejectPendingApproval(currentConfirmation.id, serializeError(error)),
       );
+      resetTransactionState();
     },
     [currentConfirmation],
   );
@@ -219,6 +228,7 @@ const Footer = () => {
     } else {
       dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
     }
+    resetTransactionState();
   }, [currentConfirmation, customNonceValue]);
 
   const handleFooterCancel = useCallback(() => {

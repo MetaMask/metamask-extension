@@ -83,6 +83,13 @@ export default function createOriginThrottlingMiddleware({
 
     next((callback: () => void) => {
       if ('error' in res && res.error && isUserRejectedError(res.error)) {
+        const extraData = res.error?.data as { cause?: string };
+        // Any rejection caused by rejectAllApprovals is not evaluated as user rejection for now
+        if (extraData?.cause === 'rejectAllApprovals') {
+          callback();
+          return;
+        }
+
         // User rejected the request
         const throttledOriginState = getThrottledOriginState(origin) || {
           rejections: 0,
