@@ -315,8 +315,10 @@ export const AccountListMenu = ({
     WalletClientType.Solana,
   );
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp,solana)
   const [primaryKeyring] = useSelector(getMetaMaskHdKeyrings);
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   const {
     metadata: { id: primaryKeyringId },
   } = primaryKeyring;
