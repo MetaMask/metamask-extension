@@ -2653,7 +2653,7 @@ export default class MetamaskController extends EventEmitter {
                 {
                   id: source,
                 },
-                async (keyring) => ({
+                async ({ keyring }) => ({
                   type: keyring.type,
                   mnemonic: keyring.mnemonic,
                 }),
