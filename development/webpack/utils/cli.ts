@@ -380,6 +380,7 @@ Zip: ${args.zip}
 Snow: ${args.snow}
 LavaMoat: ${args.lavamoat}
 Lockdown: ${args.lockdown}
+Sentry: ${args.sentry}
 Manifest version: ${args.manifest_version}
 Release version: ${args.releaseVersion}
 Browsers: ${args.browser.join(', ')}

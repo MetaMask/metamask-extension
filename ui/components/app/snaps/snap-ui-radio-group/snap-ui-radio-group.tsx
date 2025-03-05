@@ -15,7 +15,11 @@ import {
   Text,
 } from '../../../component-library';
 
-export type SnapUIRadioOption = { value: string; name: string };
+export type SnapUIRadioOption = {
+  value: string;
+  name: string;
+  disabled: boolean;
+};
 
 export type SnapUIRadioGroupProps = {
   name: string;
@@ -23,6 +27,7 @@ export type SnapUIRadioGroupProps = {
   error?: string;
   options: SnapUIRadioOption[];
   form?: string;
+  disabled?: boolean;
 };
 
 export const SnapUIRadioGroup: FunctionComponent<SnapUIRadioGroupProps> = ({
@@ -30,6 +35,7 @@ export const SnapUIRadioGroup: FunctionComponent<SnapUIRadioGroupProps> = ({
   label,
   error,
   form,
+  disabled,
   ...props
 }) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
@@ -61,8 +67,13 @@ export const SnapUIRadioGroup: FunctionComponent<SnapUIRadioGroupProps> = ({
             checked={value === option.value}
             onChange={() => handleChange(option.value)}
             style={{ margin: '0' }} // radio buttons have default margins that need to be stripped to ensure proper centering
+            disabled={disabled || option.disabled}
           />
           <Text
+            className={classnames({
+              'snap-ui-renderer__radio-label--disabled':
+                disabled || option.disabled,
+            })}
             as="label"
             htmlFor={option.name}
             variant={TextVariant.bodyMd}

@@ -29,7 +29,7 @@ describe('Alert for insufficient funds', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        localNodeOptions: ganacheOptions,
         smartContract: nftSmartContract,
         title: this.test?.fullTitle(),
       },

@@ -12,7 +12,6 @@ import { setBackgroundConnection } from '../../../store/background-connection';
 
 import {
   CONFIRM_TRANSACTION_ROUTE,
-  SIGNATURE_REQUEST_PATH,
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
@@ -82,14 +81,6 @@ jest.mock('../../confirm-encryption-public-key', () => {
   };
 });
 
-jest.mock('../confirm-signature-request', () => {
-  return {
-    __esModule: true,
-    default: () => {
-      return <div className="mock-confirm-signature-request" />;
-    },
-  };
-});
 jest.mock('./confirm-token-transaction-switch', () => {
   return {
     __esModule: true,
@@ -136,7 +127,6 @@ describe('Confirmation Transaction Page', () => {
   [
     [DECRYPT_MESSAGE_REQUEST_PATH, '.mock-confirm-decrypt-message'],
     [ENCRYPTION_PUBLIC_KEY_REQUEST_PATH, '.mock-confirm-encryption-public-key'],
-    [SIGNATURE_REQUEST_PATH, '.mock-confirm-signature-request'],
   ].forEach(([componentPath, mockClassNameMatch]) => {
     it(`should render "${componentPath}" route`, () => {
       const mockStore = configureMockStore(middleware)(mockState);

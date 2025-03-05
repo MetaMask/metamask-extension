@@ -26,7 +26,7 @@ import { Box, SensitiveText } from '../../component-library';
 import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
-import { TokenWithBalance } from '../assets/asset-list/asset-list';
+import { TokenWithBalance } from '../assets/types';
 
 export const AggregatedPercentageOverviewCrossChains = () => {
   const locale = useSelector(getIntlLocale);

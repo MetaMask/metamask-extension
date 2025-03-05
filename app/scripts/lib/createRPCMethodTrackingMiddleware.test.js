@@ -1,6 +1,6 @@
 import { errorCodes } from '@metamask/rpc-errors';
 import { detectSIWE } from '@metamask/controller-utils';
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 
 import MetaMetricsController from '../controllers/metametrics-controller';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
@@ -49,24 +49,21 @@ const appStateController = {
   },
 };
 
-const controllerMessenger = new ControllerMessenger();
+const messenger = new Messenger();
 
-controllerMessenger.registerActionHandler(
-  'PreferencesController:getState',
-  () => ({
-    ...getDefaultPreferencesControllerState(),
-    currentLocale: 'en_US',
-  }),
-);
+messenger.registerActionHandler('PreferencesController:getState', () => ({
+  ...getDefaultPreferencesControllerState(),
+  currentLocale: 'en_US',
+}));
 
-controllerMessenger.registerActionHandler(
+messenger.registerActionHandler(
   'NetworkController:getState',
   jest.fn().mockReturnValue({
     selectedNetworkClientId: 'selectedNetworkClientId',
   }),
 );
 
-controllerMessenger.registerActionHandler(
+messenger.registerActionHandler(
   'NetworkController:getNetworkClientById',
   jest.fn().mockReturnValue({
     configuration: {
@@ -82,7 +79,7 @@ const metaMetricsController = new MetaMetricsController({
     fragments: {},
     events: {},
   },
-  messenger: controllerMessenger.getRestricted({
+  messenger: messenger.getRestricted({
     name: 'MetaMetricsController',
     allowedActions: [
       'PreferencesController:getState',

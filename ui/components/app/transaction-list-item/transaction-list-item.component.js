@@ -11,7 +11,7 @@ import {
 } from '@metamask/transaction-controller';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-
+import CancelSpeedupPopover from '../cancel-speedup-popover';
 import TransactionListItemDetails from '../transaction-list-item-details';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
@@ -418,6 +418,7 @@ const TransactionListItem = (props) => {
         <TransactionListItemInner {...props} setEditGasMode={setEditGasMode} />
         {supportsEIP1559 && (
           <>
+            <CancelSpeedupPopover />
             <EditGasFeePopover />
             <AdvancedGasFeePopover />
           </>

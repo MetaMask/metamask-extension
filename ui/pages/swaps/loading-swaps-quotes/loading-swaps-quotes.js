@@ -33,6 +33,7 @@ import {
   JustifyContent,
   TextTransform,
 } from '../../../helpers/constants/design-system';
+import { isFlask, isBeta } from '../../../helpers/utils/build-types';
 import BackgroundAnimation from './background-animation';
 
 export default function LoadingSwapsQuotes({
@@ -85,6 +86,27 @@ export default function LoadingSwapsQuotes({
 
   const [quoteCount, updateQuoteCount] = useState(0);
   const [midPointTarget, setMidpointTarget] = useState(null);
+
+  const renderMascot = () => {
+    if (isFlask()) {
+      return (
+        <img src="./images/logo/metamask-fox.svg" width="90" height="90" />
+      );
+    }
+    if (isBeta()) {
+      return (
+        <img src="./images/logo/metamask-fox.svg" width="90" height="90" />
+      );
+    }
+    return (
+      <Mascot
+        animationEventEmitter={animationEventEmitter.current}
+        width="90"
+        height="90"
+        lookAtTarget={midPointTarget}
+      />
+    );
+  };
 
   useEffect(() => {
     let timeoutLength;
@@ -170,12 +192,7 @@ export default function LoadingSwapsQuotes({
             className="loading-swaps-quotes__mascot-container"
             ref={mascotContainer}
           >
-            <Mascot
-              animationEventEmitter={animationEventEmitter.current}
-              width="90"
-              height="90"
-              lookAtTarget={midPointTarget}
-            />
+            {renderMascot()}
           </div>
         </div>
       </div>

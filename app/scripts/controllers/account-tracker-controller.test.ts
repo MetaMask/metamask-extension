@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { BlockTracker, Provider } from '@metamask/network-controller';
 
@@ -107,16 +107,13 @@ async function withController<ReturnValue>(
   });
   const blockTrackerStub = buildMockBlockTracker();
 
-  const controllerMessenger = new ControllerMessenger<
-    AllowedActions,
-    AllowedEvents
-  >();
+  const messenger = new Messenger<AllowedActions, AllowedEvents>();
   const getSelectedAccountStub = () =>
     ({
       id: 'accountId',
       address: SELECTED_ADDRESS,
     } as InternalAccount);
-  controllerMessenger.registerActionHandler(
+  messenger.registerActionHandler(
     'AccountsController:getSelectedAccount',
     getSelectedAccount || getSelectedAccountStub,
   );
@@ -134,7 +131,7 @@ async function withController<ReturnValue>(
   const getNetworkStateStub = jest.fn().mockReturnValue({
     selectedNetworkClientId: 'selectedNetworkClientId',
   });
-  controllerMessenger.registerActionHandler(
+  messenger.registerActionHandler(
     'NetworkController:getState',
     getNetworkStateStub,
   );
@@ -147,7 +144,7 @@ async function withController<ReturnValue>(
     blockTracker: blockTrackerFromHookStub,
     provider: providerFromHook,
   });
-  controllerMessenger.registerActionHandler(
+  messenger.registerActionHandler(
     'NetworkController:getNetworkClientById',
     getNetworkClientById || getNetworkClientByIdStub,
   );
@@ -155,7 +152,7 @@ async function withController<ReturnValue>(
   const getOnboardingControllerState = jest.fn().mockReturnValue({
     completedOnboarding,
   });
-  controllerMessenger.registerActionHandler(
+  messenger.registerActionHandler(
     'OnboardingController:getState',
     getOnboardingControllerState,
   );
@@ -163,7 +160,7 @@ async function withController<ReturnValue>(
   const getPreferencesControllerState = jest.fn().mockReturnValue({
     useMultiAccountBalanceChecker,
   });
-  controllerMessenger.registerActionHandler(
+  messenger.registerActionHandler(
     'PreferencesController:getState',
     getPreferencesControllerState,
   );
@@ -173,7 +170,7 @@ async function withController<ReturnValue>(
     provider: provider as Provider,
     blockTracker: blockTrackerStub as unknown as BlockTracker,
     getNetworkIdentifier: jest.fn(),
-    messenger: controllerMessenger.getRestricted({
+    messenger: messenger.getRestricted({
       name: 'AccountTrackerController',
       allowedActions: [
         'AccountsController:getSelectedAccount',
@@ -196,7 +193,7 @@ async function withController<ReturnValue>(
     blockTrackerFromHookStub,
     blockTrackerStub,
     triggerAccountRemoved: (address: string) => {
-      controllerMessenger.publish('KeyringController:accountRemoved', address);
+      messenger.publish('KeyringController:accountRemoved', address);
     },
   });
 }

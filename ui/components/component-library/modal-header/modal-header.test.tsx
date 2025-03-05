@@ -1,7 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render, fireEvent } from '@testing-library/react';
 import React from 'react';
-import { IconName } from '..';
+import { IconName } from '../icon';
 import { ModalHeader } from './modal-header';
 
 describe('ModalHeader', () => {

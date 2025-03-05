@@ -45,6 +45,7 @@ function ReportLink({
     <Text marginTop={1} display={Display.Flex}>
       {t('somethingDoesntLookRight', [
         <ButtonLink
+          data-testid="alert-provider-report-link"
           key={`security-provider-button-supporturl-${provider}`}
           size={ButtonLinkSize.Inherit}
           href={reportUrl ?? ZENDESK_URLS.SUPPORT_URL}

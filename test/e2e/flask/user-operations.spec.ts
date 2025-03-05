@@ -210,8 +210,10 @@ async function withAccountSnap(
       useBundler: true,
       usePaymaster: Boolean(paymaster),
       dapp: true,
-      ganacheOptions: {
+      localNodeOptions: {
         hardfork: 'london',
+        mnemonic:
+          'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
       },
       testSpecificMock: mockSwapsTransactionQuote,
     },

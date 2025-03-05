@@ -2,11 +2,7 @@ import { strict as assert } from 'assert';
 import { JsonRpcRequest } from '@metamask/utils';
 import { MockedEndpoint } from 'mockttp';
 import FixtureBuilder from '../../fixture-builder';
-import {
-  defaultGanacheOptions,
-  veryLargeDelayMs,
-  withFixtures,
-} from '../../helpers';
+import { veryLargeDelayMs, withFixtures } from '../../helpers';
 import { Mockttp } from '../../mock-e2e';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -102,7 +98,6 @@ describe('Account Tracker API Usage', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
       },
@@ -156,7 +151,6 @@ describe('Account Tracker API Usage', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
       },

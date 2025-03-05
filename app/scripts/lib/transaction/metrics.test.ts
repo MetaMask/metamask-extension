@@ -26,6 +26,7 @@ import {
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
 import { decimalToHex } from '../../../../shared/modules/conversion.utils';
+import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import {
   handleTransactionAdded,
   handleTransactionApproved,
@@ -35,7 +36,6 @@ import {
   handleTransactionRejected,
   handleTransactionSubmitted,
   METRICS_STATUS_FAILED,
-  TransactionMetricsRequest,
 } from './metrics';
 
 const providerResultStub = {

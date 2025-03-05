@@ -18,7 +18,7 @@ describe('Token List Sorting', function () {
 
   const testFixtures = {
     fixtures: new FixtureBuilder({ inputChainId: mainnetChainId }).build(),
-    ganacheOptions: {
+    localNodeOptions: {
       ...defaultGanacheOptions,
       chainId: parseInt(mainnetChainId, 16),
     },

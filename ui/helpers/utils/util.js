@@ -15,7 +15,7 @@ import { stripSnapPrefix } from '@metamask/snaps-utils';
 import { isObject, isStrictHexString } from '@metamask/utils';
 import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
-import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import { logErrorWithMessage } from '../../../shared/modules/error';
 import {
   toChecksumHexAddress,
@@ -706,21 +706,6 @@ export const sanitizeString = (value) => {
 };
 
 /**
- * This method checks current provider type and returns its string representation
- *
- * @param {*} provider
- * @param {*} t
- * @returns
- */
-
-export const getNetworkNameFromProviderType = (providerName) => {
-  if (providerName === NETWORK_TYPES.RPC) {
-    return '';
-  }
-  return providerName;
-};
-
-/**
  * Checks if the given keyring type is able to export an account.
  *
  * @param keyringType - The type of the keyring.
@@ -811,6 +796,49 @@ export const hexToText = (hex) => {
  */
 export const getAvatarFallbackLetter = (subjectName) => {
   return subjectName?.match(/[a-z0-9]/iu)?.[0] ?? '?';
+};
+
+/**
+ * Check whether raw origin URL is an IP address.
+ *
+ * Note: IPv6 addresses are expected to be wrapped in brackets (e.g. [fe80::1])
+ * because of how URL formatting works.
+ *
+ * @param {string} rawOriginUrl - Raw origin (URL) with protocol that is potentially an IP address
+ * @returns Boolean, true if the origin is an IP address, false otherwise.
+ */
+export const isIpAddress = (rawOriginUrl) => {
+  if (typeof rawOriginUrl === 'string') {
+    return Boolean(
+      rawOriginUrl.match(/^(\d{1,3}\.){3}\d{1,3}$|^\[[0-9a-f:]+\]$/iu),
+    );
+  }
+
+  return false;
+};
+
+/**
+ * Transforms full raw URLs to something that can be used as title.
+ * Basically, it removes subdomain and protocol prefixes.
+ *
+ * Note: For IP address origins, full IP address without protocol will be returned.
+ *
+ * @param {string} rawOrigin - Raw origin (URL) with protocol.
+ * @returns User friendly title extracted from raw URL.
+ */
+export const transformOriginToTitle = (rawOrigin) => {
+  try {
+    const url = new URL(rawOrigin);
+
+    if (isIpAddress(url.hostname)) {
+      return url.hostname;
+    }
+
+    const parts = url.hostname.split('.');
+    return parts.slice(-2).join('.');
+  } catch (e) {
+    return 'Unknown Origin';
+  }
 };
 
 /**

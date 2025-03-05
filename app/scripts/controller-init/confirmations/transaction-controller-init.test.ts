@@ -3,7 +3,7 @@ import {
   TransactionControllerMessenger,
   TransactionControllerOptions,
 } from '@metamask/transaction-controller';
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import { NetworkController } from '@metamask/network-controller';
 import { buildControllerInitRequestMock, CHAIN_ID_MOCK } from '../test/utils';
 import {
@@ -39,11 +39,12 @@ function buildControllerMock(
 
 function buildInitRequestMock(): jest.Mocked<
   ControllerInitRequest<
+    // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
     TransactionControllerMessenger,
     TransactionControllerInitMessenger
   >
 > {
-  const baseControllerMessenger = new ControllerMessenger();
+  const baseControllerMessenger = new Messenger();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),

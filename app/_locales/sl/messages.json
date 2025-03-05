@@ -254,9 +254,6 @@
   "from": {
     "message": "Od"
   },
-  "functionType": {
-    "message": "Vrsta funkcije"
-  },
   "gasLimitInfoTooltipContent": {
     "message": "Omejitev plina je največja količina enot plina, ki ste jo pripravljeni porabiti."
   },
@@ -309,9 +306,6 @@
   "import": {
     "message": "Uvoz",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Uvoz računa"
   },
   "importAccountMsg": {
     "message": " Uvoženi računa ne bodo povezani s prvotnim seed phase. Preberite več o uvoženih računih "
@@ -455,9 +449,6 @@
   "origin": {
     "message": "Izvor"
   },
-  "parameters": {
-    "message": "Parametri"
-  },
   "participateInMetaMetrics": {
     "message": "Sodelujte v MetaMetrics"
   },
@@ -526,9 +517,6 @@
   "removeAccountDescription": {
     "message": "Ta račun bo izbrisan. Prepričajte se, da imate seed phase ali zasebni ključ tega računa, da ga boste lahko kasneje obnovili. "
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "zahteve, ki čakajo na potrditev"
-  },
   "required": {
     "message": "Zahtevano"
   },
@@ -595,9 +583,6 @@
   },
   "showHexDataDescription": {
     "message": "Izberite za prikaz hex podatkov na zaslonu za pošiljanje"
-  },
-  "sigRequest": {
-    "message": "Zahteva za podpis"
   },
   "sign": {
     "message": "Podpiši"
@@ -722,9 +707,6 @@
   "unknown": {
     "message": "Neznano"
   },
-  "unknownNetwork": {
-    "message": "Neznano zasebno omrežje"
-  },
   "unknownQrCode": {
     "message": "Napaka: Te QR kode ni bilo mogoče prepoznati"
   },
@@ -754,9 +736,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Za uporabo te funkcije boste potrebovali dostop do kamere."
-  },
-  "youSign": {
-    "message": "Podpisali boste"
   },
   "yourPrivateSeedPhrase": {
     "message": "Vaš zasebni seed phrase"

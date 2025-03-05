@@ -29,6 +29,7 @@ describe('ProfileSyncToggle', () => {
     expect(getByTestId('profileSyncToggle')).toBeInTheDocument();
   });
 
+  // Logic to disable profile syncing is not tested here because it happens in confirm-turn-off-profile-syncing.test.tsx
   it('calls enableProfileSyncing when toggle is turned on', () => {
     const store = initialStore();
     store.metamask.isProfileSyncingEnabled = false; // We want to test enabling this toggle

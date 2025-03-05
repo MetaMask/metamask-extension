@@ -1,7 +1,6 @@
 const { strict: assert } = require('assert');
 const { By } = require('selenium-webdriver');
 const {
-  defaultGanacheOptions,
   withFixtures,
   openDapp,
   regularDelayMs,
@@ -18,11 +17,10 @@ describe('Personal sign', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        const addresses = await ganacheServer.getAccounts();
+      async ({ driver, localNodes }) => {
+        const addresses = await localNodes[0].getAccounts();
         const publicAddress = addresses[0];
         await unlockWallet(driver);
 

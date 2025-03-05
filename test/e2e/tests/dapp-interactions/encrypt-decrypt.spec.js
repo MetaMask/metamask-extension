@@ -1,5 +1,4 @@
 const {
-  defaultGanacheOptions,
   withFixtures,
   openDapp,
   unlockWallet,
@@ -72,7 +71,6 @@ describe('Encrypt Decrypt', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -111,7 +109,6 @@ describe('Encrypt Decrypt', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -166,7 +163,6 @@ describe('Encrypt Decrypt', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -207,7 +203,6 @@ describe('Encrypt Decrypt', function () {
             },
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

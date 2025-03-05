@@ -1,7 +1,6 @@
 /* eslint-disable no-useless-escape */
 const { isEqual, omit } = require('lodash');
 const {
-  defaultGanacheOptions,
   withFixtures,
   sendTransaction,
   getEventPayloads,
@@ -9,6 +8,7 @@ const {
   logInWithBalanceValidation,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+const { MOCK_META_METRICS_ID } = require('../../constants');
 
 /**
  * mocks the segment api multiple times for specific payloads that we expect to
@@ -139,16 +139,15 @@ describe('Transaction Finalized Event', function () {
       {
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
-      async ({ driver, mockedEndpoint: mockedEndpoints, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+        await logInWithBalanceValidation(driver);
         // TODO: Update Test when Multichain Send Flow is added
         await sendTransaction(driver, RECIPIENT, '2.0');
 
