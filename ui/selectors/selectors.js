@@ -23,6 +23,7 @@ import {
   getEthAccounts,
   getPermittedEthChainIds,
 } from '@metamask/multichain';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import {
   getCurrentChainId,
   getProviderConfig,
@@ -529,6 +530,17 @@ export function getMetaMaskKeyrings(state) {
     ...keyring,
     metadata: state.metamask.keyringsMetadata?.[index] ?? {},
   }));
+}
+
+export const getMetaMaskHdKeyrings = createSelector(
+  getMetaMaskKeyrings,
+  (keyrings) => {
+    return keyrings.filter((keyring) => keyring.type === KeyringTypes.hd);
+  },
+);
+
+export function getMetaMaskKeyringsMetadata(state) {
+  return state.metamask.keyringsMetadata;
 }
 
 /**
