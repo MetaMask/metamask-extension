@@ -10,15 +10,15 @@ then
     exit 1
 fi
 
-if [[ "${GITHUB_REF_NAME}" != "main" ]]
-then
-    printf 'This is not the main branch'
-    exit 0
-fi
+# if [[ "${GITHUB_REF_NAME}" != "main" ]]
+# then
+#     printf 'This is not the main branch'
+#     exit 0
+# fi
 
-if [[ -z "${METAMASKBOT_TOKEN:-}" ]]
+if [[ -z "${EXTENSION_BUNDLESIZE_STATS_TOKEN:-}" ]]
 then
-    printf '%s\n' 'METAMASKBOT_TOKEN environment variable must be set'
+    printf '%s\n' 'EXTENSION_BUNDLESIZE_STATS_TOKEN environment variable must be set'
     exit 1
 fi
 
@@ -28,7 +28,7 @@ git config --global user.email "metamaskbot@users.noreply.github.com"
 
 git config --global user.name "MetaMask Bot"
 
-git clone git@github.com:MetaMask/extension_bundlesize_stats.git temp
+git clone https://github.com/MetaMask/extension_bundlesize_stats.git temp --depth 1
 
 {
     echo " '${GITHUB_SHA}': ";
@@ -69,7 +69,7 @@ git add .
 git commit --message "Adding bundle size at commit: ${GITHUB_SHA}"
 
 repo_slug="$GITHUB_REPOSITORY_OWNER/extension_bundlesize_stats"
-git push "https://metamaskbot:$METAMASKBOT_TOKEN@github.com/$repo_slug" main
+git push "https://metamaskbot:$EXTENSION_BUNDLESIZE_STATS_TOKEN@github.com/$repo_slug" main
 
 cd ..
 
