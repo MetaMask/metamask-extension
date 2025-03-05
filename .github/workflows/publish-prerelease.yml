@@ -11,20 +11,19 @@ jobs:
     name: Publish prerelease
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout and setup high risk environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
         with:
+          is-high-risk-environment: true
           fetch-depth: 0 # This is needed to get merge base to calculate bundle size diff
-
-      - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
 
       - name: Get merge base commit hash
         id: get-merge-base
         env:
-          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          merge_base="$(git merge-base "origin/${BASE_REF}" HEAD)"
+          merge_base="$(git merge-base "${BASE_SHA}" "${HEAD_SHA}")"
           echo "MERGE_BASE=${merge_base}" >> "$GITHUB_OUTPUT"
           echo "Merge base is '${merge_base}'"
 
@@ -60,9 +59,6 @@ jobs:
 
           mkdir -p test-artifacts/chrome
           curl --silent --location "https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0/test-artifacts/chrome/bundle_size.json" > "test-artifacts/chrome/bundle_size.json"
-
-          mkdir storybook-build
-          curl --silent --location "https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0/storybook/stories.json" > "storybook-build/stories.json"
 
       - name: Publish prerelease
         env:

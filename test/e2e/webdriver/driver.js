@@ -23,8 +23,6 @@ const PAGES = {
   POPUP: 'popup',
 };
 
-const artifactDir = (title) => `./test-artifacts/${this.browser}/${title}`;
-
 /**
  * Temporary workaround to patch selenium's element handle API with methods
  * that match the playwright API for Elements
@@ -669,13 +667,24 @@ class Driver {
     throw new Error('Element did not stop moving within the timeout period');
   }
 
-  /** @param {string} title - The title of the window or tab the screenshot is being taken in */
-  async takeScreenshot(title) {
-    const filepathBase = `${artifactDir(title)}/test-screenshot`;
-    await fs.mkdir(artifactDir(title), { recursive: true });
+  /**
+   * @param {string} testTitle - The title of the test
+   */
+  #getArtifactDir(testTitle) {
+    return `./test-artifacts/${this.browser}/${testTitle}`;
+  }
+
+  /**
+   * @param {string} testTitle - The title of the test
+   * @param {string} screenshotTitle - The title of the screenshot
+   * @returns {Promise<void>} Promise that resolves when the screenshot is taken
+   */
+  async takeScreenshot(testTitle, screenshotTitle) {
+    const artifactDir = this.#getArtifactDir(testTitle);
+    await fs.mkdir(artifactDir, { recursive: true });
 
     const screenshot = await this.driver.takeScreenshot();
-    await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, {
+    await fs.writeFile(`${artifactDir}/${screenshotTitle}.png`, screenshot, {
       encoding: 'base64',
     });
   }
@@ -704,7 +713,7 @@ class Driver {
    * @param rawLocator - Element locator
    * @param timeout - The maximum time in ms to wait for the element
    */
-  async clickElementSafe(rawLocator, timeout = 1000) {
+  async clickElementSafe(rawLocator, timeout = 2000) {
     try {
       const locator = this.buildLocator(rawLocator);
       const elements = await this.driver.wait(
@@ -771,6 +780,16 @@ class Driver {
       .pause(ms)
       .release()
       .perform();
+  }
+
+  /**
+   * Move the mouse to the given element to test hover behaviour.
+   *
+   * @param element - Previously located element
+   * @returns {Promise<void>} promise resolving after mouse move completed
+   */
+  async hoverElement(element) {
+    await this.driver.actions().move({ origin: element, x: 1, y: 1 }).perform();
   }
 
   /**
@@ -1155,6 +1174,19 @@ class Driver {
   }
 
   /**
+   * Waits until the current URL includes the specified substring.
+   *
+   * @param {object} options - Parameters for the function.
+   * @param {string} options.url - Substring to wait for in the URL.
+   * @param {number} [options.timeout]  - optional timeout period, defaults to `this.timeout`.
+   * @returns {Promise<void>} Promise that resolves once the URL includes the substring.
+   * @throws {Error} Throws an error if the URL does not include the substring within the timeout period.
+   */
+  async waitForUrlContaining({ url, timeout = this.timeout }) {
+    await this.driver.wait(until.urlContains(url), timeout);
+  }
+
+  /**
    * Closes the current window tab in the browser session
    *
    *  @returns {Promise<void>} promise resolving after closing the current window
@@ -1207,47 +1239,54 @@ class Driver {
 
   // Error handling
 
-  async verboseReportOnFailure(title, error) {
+  async verboseReportOnFailure(testTitle, error) {
     console.error(
-      `Failure on testcase: '${title}', for more information see the ${
+      `Failure on testcase: '${testTitle}', for more information see the ${
         process.env.CIRCLECI ? 'artifacts tab in CI' : 'test-artifacts folder'
       }\n`,
     );
     console.error(`${error}\n`);
 
-    const filepathBase = `${artifactDir(title)}/test-failure`;
-    await fs.mkdir(artifactDir(title), { recursive: true });
+    const filepathBase = `${this.#getArtifactDir(testTitle)}/test-failure`;
+    await fs.mkdir(this.#getArtifactDir(testTitle), { recursive: true });
+
+    const windowHandles = await this.driver.getAllWindowHandles();
     // On occasion there may be a bug in the offscreen document which does
     // not render visibly to the user and therefore no screenshot can be
     // taken. In this case we skip the screenshot and log the error.
     try {
       // If there's more than one tab open, we want to iterate through all of them and take a screenshot with a unique name
-      const windowHandles = await this.driver.getAllWindowHandles();
       for (const handle of windowHandles) {
         await this.driver.switchTo().window(handle);
         const windowTitle = await this.driver.getTitle();
         if (windowTitle !== 'MetaMask Offscreen Page') {
-          const screenshot = await this.driver.takeScreenshot();
-          await fs.writeFile(
-            `${filepathBase}-screenshot-${
-              windowHandles.indexOf(handle) + 1
-            }.png`,
-            screenshot,
-            {
-              encoding: 'base64',
-            },
-          );
+          const screenshotTitle = `test-failure-screenshot-${
+            windowHandles.indexOf(handle) + 1
+          }`;
+          await this.takeScreenshot(testTitle, screenshotTitle);
         }
       }
     } catch (e) {
       console.error('Failed to take screenshot', e);
     }
-    const htmlSource = await this.driver.getPageSource();
-    await fs.writeFile(`${filepathBase}-dom.html`, htmlSource);
+
+    try {
+      for (const handle of windowHandles) {
+        const windowNumber = windowHandles.indexOf(handle) + 1;
+        await this.driver.switchTo().window(handle);
+
+        const htmlSource = await this.driver.getPageSource();
+        await fs.writeFile(
+          `${filepathBase}-dom-${windowNumber}.html`,
+          htmlSource,
+        );
+      }
+    } catch (e) {
+      console.error('Failed to capture DOM snapshot', e);
+    }
 
     // We want to take a state snapshot of the app if possible, this is useful for debugging
     try {
-      const windowHandles = await this.driver.getAllWindowHandles();
       for (const handle of windowHandles) {
         await this.driver.switchTo().window(handle);
         const uiState = await this.driver.executeScript(

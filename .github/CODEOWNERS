@@ -44,6 +44,11 @@ offscreen/scripts/offscreen.ts       @MetaMask/snaps-devs
 # make all such communication opt IN versus opt OUT.
 privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
 
+
+# A machine-generated file that tracks circular dependencies in the codebase.
+# It is updated using yarn circular-deps:update
+development/circular-deps.jsonc      @MetaMask/extension-security-team @HowardBraham @dbrans
+
 # The CODEOWNERS file constitutes an agreement amongst organization
 # admins and maintainers to restrict approval capabilities to a subset
 # of contributors. Modifications to this file result in a modification of
@@ -56,18 +61,13 @@ privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
 .devcontainer/                       @MetaMask/extension-security-team @HowardBraham
 
 # Confirmations team to own code for confirmations on UI.
-app/scripts/lib/ppom                    @MetaMask/confirmations
-app/scripts/lib/signature               @MetaMask/confirmations
-app/scripts/lib/transaction/decode      @MetaMask/confirmations
-app/scripts/lib/transaction/metrics.*   @MetaMask/confirmations
-app/scripts/lib/transaction/util.*      @MetaMask/confirmations
-ui/pages/confirmations                  @MetaMask/confirmations
-
-# MMI team is responsible for code related with Institutioanl version of MetaMask
-ui/pages/institutional               @MetaMask/mmi
-ui/components/institutional          @MetaMask/mmi
-ui/ducks/institutional               @MetaMask/mmi
-ui/selectors/institutional           @MetaMask/mmi
+app/scripts/controller-init/confirmations                         @MetaMask/confirmations
+app/scripts/lib/ppom                                              @MetaMask/confirmations
+app/scripts/lib/signature                                         @MetaMask/confirmations
+app/scripts/lib/transaction/decode                                @MetaMask/confirmations
+app/scripts/lib/transaction/metrics.*                             @MetaMask/confirmations
+app/scripts/lib/transaction/util.*                                @MetaMask/confirmations
+ui/pages/confirmations                                            @MetaMask/confirmations
 
 # Design System to own code for the component-library folder
 # Slack handle: @metamask-design-system-team | Slack channel: #metamask-design-system

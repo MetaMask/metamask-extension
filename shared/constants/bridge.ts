@@ -1,6 +1,4 @@
-///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
 import { MultichainNetworks } from './multichain/networks';
-///: END:ONLY_INCLUDE_IF
 import { CHAIN_IDS, NETWORK_TO_NAME_MAP } from './network';
 
 // TODO read from feature flags
@@ -33,7 +31,7 @@ export const ETH_USDT_ADDRESS = '0xdac17f958d2ee523a2206206994597c13d831ec7';
 export const METABRIDGE_ETHEREUM_ADDRESS =
   '0x0439e60F02a8900a951603950d8D4527f400C3f1';
 export const BRIDGE_QUOTE_MAX_ETA_SECONDS = 60 * 60; // 1 hour
-export const BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE = 0.5; // if a quote returns in x times less return than the best quote, ignore it
+export const BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE = 0.35; // if a quote returns in x times less return than the best quote, ignore it
 
 export const BRIDGE_PREFERRED_GAS_ESTIMATE = 'high';
 export const BRIDGE_DEFAULT_SLIPPAGE = 0.5;
@@ -55,6 +53,8 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   [MultichainNetworks.SOLANA]: 'Solana',
   [MultichainNetworks.SOLANA_TESTNET]: 'Solana Testnet',
   [MultichainNetworks.SOLANA_DEVNET]: 'Solana Devnet',
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   [MultichainNetworks.BITCOIN]: 'Bitcoin',
   [MultichainNetworks.BITCOIN_TESTNET]: 'Bitcoin Testnet',
   ///: END:ONLY_INCLUDE_IF
@@ -62,3 +62,15 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
 export const BRIDGE_MM_FEE_RATE = 0.875;
 export const REFRESH_INTERVAL_MS = 30 * 1000;
 export const DEFAULT_MAX_REFRESH_COUNT = 5;
+
+export const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
+
+export const SOLANA_USDC_ASSET = {
+  address:
+    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+  symbol: 'USDC',
+  decimals: 6,
+  image:
+    'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
+  chainId: MultichainNetworks.SOLANA,
+};

@@ -75,7 +75,6 @@ function onboardingFixture() {
           showNativeTokenAsMainBalance: true,
           petnamesEnabled: true,
           showMultiRpcModal: false,
-          isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
           tokenSortConfig: {
             key: 'tokenFiatAmount',
@@ -89,7 +88,6 @@ function onboardingFixture() {
         theme: 'light',
         useBlockie: false,
         useNftDetection: false,
-        useNonceField: false,
         usePhishDetect: true,
         useTokenDetection: false,
         useCurrencyRateCheck: true,
@@ -455,8 +453,6 @@ class FixtureBuilder {
             chains: {},
           },
         },
-        destTokens: {},
-        destTopAssets: [],
       },
     };
     return this;
@@ -490,7 +486,7 @@ class FixtureBuilder {
     });
   }
 
-  withPermissionControllerConnectedToTestDappWithChain() {
+  withPermissionControllerConnectedToTestDappWithChains(chainIds) {
     return this.withPermissionController({
       subjects: {
         [DAPP_URL]: {
@@ -515,7 +511,7 @@ class FixtureBuilder {
               caveats: [
                 {
                   type: 'restrictNetworkSwitching',
-                  value: ['0x539'],
+                  value: chainIds,
                 },
               ],
               date: 1664388714637,
@@ -764,6 +760,7 @@ class FixtureBuilder {
               'eth_signTypedData_v4',
             ],
             type: 'eip155:eoa',
+            scopes: ['eip155:0'],
             metadata: {
               name: 'Account 1',
               lastSelected: 1665507600000,
@@ -784,6 +781,7 @@ class FixtureBuilder {
               'eth_signTypedData_v4',
             ],
             type: 'eip155:eoa',
+            scopes: ['eip155:0'],
             metadata: {
               name: 'Account 2',
               keyring: {
@@ -803,6 +801,7 @@ class FixtureBuilder {
               'eth_signTypedData_v4',
             ],
             type: 'eip155:eoa',
+            scopes: ['eip155:0'],
             metadata: {
               name: 'Account 3',
               keyring: {
@@ -831,6 +830,7 @@ class FixtureBuilder {
               'eth_signTypedData_v4',
             ],
             type: 'eip155:eoa',
+            scopes: ['eip155:0'],
             metadata: {
               name: 'Account 1',
               lastSelected: 1665507600000,
@@ -851,6 +851,7 @@ class FixtureBuilder {
               'eth_signTypedData_v4',
             ],
             type: 'eip155:eoa',
+            scopes: ['eip155:0'],
             metadata: {
               name: 'Account 2',
               lastSelected: 1665507800000,
@@ -1433,6 +1434,7 @@ class FixtureBuilder {
                 'eth_signTypedData_v4',
               ],
               type: 'eip155:eoa',
+              scopes: ['eip155:0'],
               metadata: {
                 name: 'Account 1',
                 importTime: 1724486724986,
@@ -1455,6 +1457,7 @@ class FixtureBuilder {
                 'eth_signTypedData_v4',
               ],
               type: 'eip155:eoa',
+              scopes: ['eip155:0'],
               metadata: {
                 name: 'Trezor 1',
                 importTime: 1724486729079,

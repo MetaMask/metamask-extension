@@ -4,10 +4,8 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { createTestProviderTools } from '../../test/stub/provider';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { TransactionMetricsRequest } from '../../app/scripts/lib/transaction/metrics';
 import { CHAIN_IDS } from '../constants/network';
+import { TransactionMetricsRequest } from '../types/metametrics';
 import { getSmartTransactionMetricsProperties } from './metametrics';
 
 const txHash =
@@ -29,6 +27,7 @@ const createTransactionMetricsRequest = (customProps = {}) => {
     updateEventFragment: jest.fn(),
     getAccountType: jest.fn(),
     getDeviceModel: jest.fn(),
+    getHardwareTypeForMetric: jest.fn(),
     getEIP1559GasFeeEstimates: jest.fn(),
     getSelectedAddress: jest.fn(),
     getParticipateInMetrics: jest.fn(),
@@ -42,7 +41,6 @@ const createTransactionMetricsRequest = (customProps = {}) => {
     getIsSmartTransaction: jest.fn(),
     getSmartTransactionByMinedTxHash: jest.fn(),
     getMethodData: jest.fn(),
-    getIsRedesignedConfirmationsDeveloperEnabled: jest.fn(),
     getIsConfirmationAdvancedDetailsOpen: jest.fn(),
     ...customProps,
   } as TransactionMetricsRequest;

@@ -1,7 +1,9 @@
 import { Hex } from '@metamask/utils';
-import { ChainAddressMarketData, Token } from '../token-list/token-list';
-
-type SymbolCurrencyRateMapping = Record<string, Record<string, number>>;
+import {
+  ChainAddressMarketData,
+  SymbolCurrencyRateMapping,
+  Token,
+} from '../types';
 
 type CalculateTokenFiatAmountParams = {
   token: Token;

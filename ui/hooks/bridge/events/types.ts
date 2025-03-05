@@ -1,4 +1,5 @@
-import { StatusTypes } from '../../../../shared/types/bridge-status';
+import type { CaipChainId } from '@metamask/utils';
+import type { StatusTypes } from '../../../../shared/types/bridge-status';
 
 export enum ActionType {
   CROSSCHAIN_V1 = 'crosschain-v1',
@@ -6,8 +7,8 @@ export enum ActionType {
 }
 
 export type RequestParams = {
-  chain_id_source: string;
-  chain_id_destination?: string;
+  chain_id_source: CaipChainId;
+  chain_id_destination?: CaipChainId;
   token_symbol_source: string;
   token_symbol_destination?: string;
   token_address_source: string;
@@ -42,6 +43,6 @@ export type TradeData = {
 export type TxStatusData = {
   allowance_reset_transaction?: StatusTypes;
   approval_transaction?: StatusTypes;
-  source_transaction: StatusTypes;
+  source_transaction?: StatusTypes;
   destination_transaction?: StatusTypes;
 };

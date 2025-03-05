@@ -21,102 +21,36 @@ describe('confirmation.utils', () => {
 
     const unsupportedTransactionType = TransactionType.swap;
 
-    describe('when developer mode is enabled', () => {
-      const originalEnv = process.env;
-
-      beforeEach(() => {
-        process.env = { ...originalEnv };
-      });
-
-      afterEach(() => {
-        process.env = originalEnv;
-      });
-
-      it('should return true for supported transaction types when ENABLE_CONFIRMATION_REDESIGN is true', () => {
-        process.env.ENABLE_CONFIRMATION_REDESIGN = 'true';
-
-        supportedTransactionTypes.forEach((transactionType) => {
-          expect(
-            shouldUseRedesignForTransactions({
-              transactionMetadataType: transactionType,
-              isRedesignedConfirmationsDeveloperEnabled: false, // developer setting disabled
-            }),
-          ).toBe(true);
-        });
-      });
-
-      it('should return true for supported transaction types when developer setting is enabled', () => {
-        supportedTransactionTypes.forEach((transactionType) => {
-          expect(
-            shouldUseRedesignForTransactions({
-              transactionMetadataType: transactionType,
-              isRedesignedConfirmationsDeveloperEnabled: true, // developer setting enabled
-            }),
-          ).toBe(true);
-        });
-      });
-
-      it('should return false for unsupported transaction types even if developer mode is enabled', () => {
-        process.env.ENABLE_CONFIRMATION_REDESIGN = 'true';
-
+    it('should return true for supported transaction types', () => {
+      supportedTransactionTypes.forEach((transactionType) => {
         expect(
           shouldUseRedesignForTransactions({
-            transactionMetadataType: unsupportedTransactionType,
-            isRedesignedConfirmationsDeveloperEnabled: true, // developer setting enabled
+            transactionMetadataType: transactionType,
           }),
-        ).toBe(false);
+        ).toBe(true);
       });
+    });
+
+    it('should return false for unsupported transaction types', () => {
+      expect(
+        shouldUseRedesignForTransactions({
+          transactionMetadataType: unsupportedTransactionType,
+        }),
+      ).toBe(false);
     });
   });
 
   describe('shouldUseRedesignForSignatures', () => {
-    const originalEnv = process.env;
-
     const supportedSignatureApprovalTypes = [
       ApprovalType.EthSignTypedData,
       ApprovalType.PersonalSign,
     ];
 
-    beforeEach(() => {
-      jest.resetModules();
-      process.env = { ...originalEnv };
-      process.env.ENABLE_CONFIRMATION_REDESIGN = 'false';
-    });
-
-    afterEach(() => {
-      process.env = originalEnv;
-    });
-
-    it('should return true for supported approval types when user setting is enabled', () => {
+    it('should return true for supported approval types', () => {
       supportedSignatureApprovalTypes.forEach((approvalType) => {
         expect(
           shouldUseRedesignForSignatures({
             approvalType,
-            isRedesignedConfirmationsDeveloperEnabled: false, // developer setting disabled
-          }),
-        ).toBe(true);
-      });
-    });
-
-    it('should return true for supported approval types when developer mode is enabled via env', () => {
-      process.env.ENABLE_CONFIRMATION_REDESIGN = 'true';
-
-      supportedSignatureApprovalTypes.forEach((approvalType) => {
-        expect(
-          shouldUseRedesignForSignatures({
-            approvalType,
-            isRedesignedConfirmationsDeveloperEnabled: false, // developer setting disabled
-          }),
-        ).toBe(true);
-      });
-    });
-
-    it('should return true for supported approval types when developer setting is enabled', () => {
-      supportedSignatureApprovalTypes.forEach((approvalType) => {
-        expect(
-          shouldUseRedesignForSignatures({
-            approvalType,
-            isRedesignedConfirmationsDeveloperEnabled: true, // developer setting enabled
           }),
         ).toBe(true);
       });
@@ -128,22 +62,8 @@ describe('confirmation.utils', () => {
       expect(
         shouldUseRedesignForSignatures({
           approvalType: unsupportedApprovalType,
-          isRedesignedConfirmationsDeveloperEnabled: false, // developer setting enabled
         }),
       ).toBe(false);
-    });
-
-    it('should return true when a signature type is supported', () => {
-      process.env.ENABLE_CONFIRMATION_REDESIGN = 'false';
-
-      supportedSignatureApprovalTypes.forEach((approvalType) => {
-        expect(
-          shouldUseRedesignForSignatures({
-            approvalType,
-            isRedesignedConfirmationsDeveloperEnabled: false, // developer setting disabled
-          }),
-        ).toBe(true);
-      });
     });
   });
 });

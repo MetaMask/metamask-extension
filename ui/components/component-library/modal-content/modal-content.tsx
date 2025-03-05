@@ -11,10 +11,10 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 
-import { Box, ModalFocus, useModalContext } from '..';
-
-import { BoxProps } from '../box';
+import { Box, BoxProps } from '../box';
 import type { PolymorphicRef } from '../box';
+import { useModalContext } from '../modal/modal.context';
+import { ModalFocus } from '../modal-focus';
 import {
   ModalContentProps,
   ModalContentSize,

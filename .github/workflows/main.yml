@@ -6,6 +6,7 @@ on:
       - main
       - master
       - Version-v*
+      - trigger-ci*
   pull_request:
     types:
       - opened
@@ -14,53 +15,99 @@ on:
   merge_group:
 
 jobs:
+  prep-deps:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout and setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        with:
+          is-high-risk-environment: false
+          cache-node-modules: 'true'
+
   lint-workflows:
     name: Lint workflows
-    uses: metamask/github-tools/.github/workflows/lint-workflows.yml@c534f265e02af2f2422a3c686bb09a11bfbf4cc2
-
-  test-lint-shellcheck:
-    name: Test lint shellcheck
-    uses: ./.github/workflows/test-lint-shellcheck.yml
+    uses: metamask/github-tools/.github/workflows/lint-workflows.yml@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
 
   test-lint:
-    name: Test lint
+    needs: prep-deps
     uses: ./.github/workflows/test-lint.yml
 
-  test-lint-changelog:
-    name: Test lint changelog
-    uses: ./.github/workflows/test-lint-changelog.yml
+  test-circular-deps:
+    name: Test circular deps
+    needs: prep-deps
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout and setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        with:
+          is-high-risk-environment: false
 
-  test-lint-lockfile:
-    name: Test lint lockfile
-    uses: ./.github/workflows/test-lint-lockfile.yml
+      - name: Check circular dependencies
+        run: yarn circular-deps:check
 
-  test-deps-audit:
-    name: Test deps audit
-    uses: ./.github/workflows/test-deps-audit.yml
+  repository-health-checks:
+    needs: prep-deps
+    uses: ./.github/workflows/repository-health-checks.yml
 
-  test-yarn-dedupe:
-    name: Test yarn dedupe
-    uses: ./.github/workflows/test-yarn-dedupe.yml
-
-  test-deps-depcheck:
-    name: Test deps depcheck
-    uses: ./.github/workflows/test-deps-depcheck.yml
-
-  validate-lavamoat-allow-scripts:
-    name: Validate lavamoat allow scripts
-    uses: ./.github/workflows/validate-lavamoat-allow-scripts.yml
+  test-storybook:
+    name: Test storybook
+    needs: prep-deps
+    uses: ./.github/workflows/test-storybook.yml
 
   validate-lavamoat-policy-build:
-    name: Validate lavamoat policy build
+    needs: prep-deps
     uses: ./.github/workflows/validate-lavamoat-policy-build.yml
 
   validate-lavamoat-policy-webapp:
-    name: Validate lavamoat policy webapp
+    needs: prep-deps
     uses: ./.github/workflows/validate-lavamoat-policy-webapp.yml
+
+  prep-build-test-browserify:
+    needs: prep-deps
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout and setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        with:
+          is-high-risk-environment: false
+
+      - run: yarn build:test
+
+      - name: Upload artifact prep-build-test-browserify
+        uses: actions/upload-artifact@v4
+        with:
+          name: prep-build-test-browserify
+          path: ./dist/
+
+  prep-build-test-webpack:
+    needs: prep-deps
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout and setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        with:
+          is-high-risk-environment: false
+
+      - run: yarn webpack --test --no-lavamoat --no-cache --browser=chrome --lockdown --sentry --snow --env production
+        env:
+          SEGMENT_PROD_WRITE_KEY: '-' # A fake key just to make the build succeed
+
+      - name: Upload artifact prep-build-test-webpack
+        uses: actions/upload-artifact@v4
+        with:
+          name: prep-build-test-webpack
+          path: ./dist/
 
   run-tests:
     name: Run tests
+    needs: prep-deps
     uses: ./.github/workflows/run-tests.yml
+
+  run-benchmarks:
+    uses: ./.github/workflows/run-benchmarks.yml
+    needs:
+      - prep-build-test-browserify
+      - prep-build-test-webpack
 
   wait-for-circleci-workflow-status:
     name: Wait for CircleCI workflow status
@@ -75,11 +122,22 @@ jobs:
       - wait-for-circleci-workflow-status
     uses: ./.github/workflows/runway.yml
 
+  build-storybook:
+    name: Build storybook
+    uses: ./.github/workflows/build-storybook.yml
+    secrets:
+      STORYBOOK_TOKEN: ${{ secrets.STORYBOOK_TOKEN }}
+    permissions:
+      contents: read
+      # id-token permission is required for uploading to s3
+      id-token: write
+
   build-beta:
     name: Build beta
     uses: ./.github/workflows/build-beta.yml
     permissions:
       contents: read
+      # id-token permission is required for uploading to s3
       id-token: write
 
   publish-prerelease:
@@ -87,27 +145,27 @@ jobs:
     if: ${{ github.event_name == 'pull_request' }}
     needs:
       - wait-for-circleci-workflow-status
+      - build-storybook
       - build-beta
     uses: ./.github/workflows/publish-prerelease.yml
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
 
+  # Explanation for all-jobs-completed and all-jobs-pass being separate:
+  # https://github.com/MetaMask/metamask-module-template/pull/151
   all-jobs-completed:
     name: All jobs completed
     runs-on: ubuntu-latest
     needs:
       - lint-workflows
-      - test-lint-shellcheck
       - test-lint
-      - test-lint-changelog
-      - test-lint-lockfile
-      - test-yarn-dedupe
-      - test-deps-depcheck
-      - validate-lavamoat-allow-scripts
+      - repository-health-checks
+      - test-storybook
       - validate-lavamoat-policy-build
       - validate-lavamoat-policy-webapp
       - run-tests
       - wait-for-circleci-workflow-status
+      - build-storybook
       - build-beta
     outputs:
       PASSED: ${{ steps.set-output.outputs.PASSED }}

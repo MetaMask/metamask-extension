@@ -20,12 +20,12 @@ describe('Incremental Security', function () {
     ],
   };
 
-  it('Back up Secret Recovery Phrase from backup reminder @no-mmi', async function () {
+  it('Back up Secret Recovery Phrase from backup reminder', async function () {
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions,
+        localNodeOptions: ganacheOptions,
         title: this.test.fullTitle(),
         dappPath: 'send-eth-with-private-key-test',
       },

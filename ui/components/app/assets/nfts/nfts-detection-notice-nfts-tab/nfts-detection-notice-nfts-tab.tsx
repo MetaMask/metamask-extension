@@ -36,11 +36,6 @@ export default function NFTsDetectionNoticeNFTsTab() {
         t('newNFTDetectedInNFTsTabMessage')
         ///: END:ONLY_INCLUDE_IF
       }
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        t('mmiNewNFTDetectedInNFTsTabMessage')
-        ///: END:ONLY_INCLUDE_IF
-      }
     </BannerAlert>
   );
 }

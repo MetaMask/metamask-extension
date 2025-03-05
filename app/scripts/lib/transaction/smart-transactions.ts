@@ -15,7 +15,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import log from 'loglevel';
-import { RestrictedControllerMessenger } from '@metamask/base-controller';
+import { RestrictedMessenger } from '@metamask/base-controller';
 import {
   AddApprovalRequest,
   UpdateRequestState,
@@ -40,7 +40,7 @@ export type AllowedActions =
 
 export type AllowedEvents = SmartTransactionsControllerSmartTransactionEvent;
 
-export type SmartTransactionHookMessenger = RestrictedControllerMessenger<
+export type SmartTransactionHookMessenger = RestrictedMessenger<
   typeof namespace,
   AllowedActions,
   AllowedEvents,

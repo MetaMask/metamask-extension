@@ -11,9 +11,10 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
-  MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP,
+  MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP,
   MultichainNetworks,
 } from '../../../../shared/constants/multichain/networks';
+import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
 import TransactionList from './transaction-list.component';
 
 const defaultState = {
@@ -26,6 +27,25 @@ const defaultState = {
 const btcState = {
   metamask: {
     ...mockState.metamask,
+    nonEvmTransactions: {
+      [MOCK_ACCOUNT_BIP122_P2WPKH.id]: {
+        transactions: [
+          {
+            timestamp: 1733736433,
+            chain: MultichainNetworks.BITCOIN,
+            status: 'confirmed',
+            type: 'send',
+            account: MOCK_ACCOUNT_BIP122_P2WPKH.id,
+            from: [],
+            to: [],
+            fees: [],
+            events: [],
+          },
+        ],
+        next: null,
+        lastUpdated: expect.any(Number),
+      },
+    },
     internalAccounts: {
       ...mockState.metamask.internalAccounts,
       accounts: {
@@ -62,18 +82,28 @@ describe('TransactionList', () => {
     expect(queryByText('You have no transactions')).toBeNull();
   });
 
-  it('renders TransactionList component and shows Bitcoin activity is not supported text', () => {
-    const { getByText, getByRole } = render(btcState);
+  it('renders TransactionList component and shows a Bitcoin Tx in the activity list', () => {
+    const { getByText, getByRole, getByTestId } = render(btcState);
 
-    expect(getByText('Bitcoin activity is not supported')).toBeInTheDocument();
+    // The activity list item has a status of "Confirmed" and a type of "Send"
+    expect(getByText('Confirmed')).toBeInTheDocument();
+    expect(getByText('Send')).toBeInTheDocument();
+
+    // A BTC activity list iteem exists
+    expect(getByTestId('activity-list-item')).toBeInTheDocument();
+
     const viewOnExplorerBtn = getByRole('button', {
       name: 'View on block explorer',
     });
     expect(viewOnExplorerBtn).toBeInTheDocument();
 
-    const blockExplorerDomain = new URL(
-      MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP[MultichainNetworks.BITCOIN],
-    ).host;
+    const blockExplorerUrl = formatBlockExplorerAddressUrl(
+      MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+        MultichainNetworks.BITCOIN
+      ],
+      btcState.metamask.internalAccounts.selectedAccount.address,
+    );
+    const blockExplorerDomain = new URL(blockExplorerUrl).host;
     fireEvent.click(viewOnExplorerBtn);
     expect(mockTrackEvent).toHaveBeenCalledWith({
       event: MetaMetricsEventName.ExternalLinkClicked,

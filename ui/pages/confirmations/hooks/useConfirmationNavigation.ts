@@ -76,12 +76,14 @@ export function navigateToConfirmation(
   hasApprovalFlows: boolean,
   history: ReturnType<typeof useHistory>,
 ) {
-  if (hasApprovalFlows) {
+  const hasNoConfirmations = confirmations?.length <= 0 || !confirmationId;
+
+  if (hasApprovalFlows && hasNoConfirmations) {
     history.replace(`${CONFIRMATION_V_NEXT_ROUTE}`);
     return;
   }
 
-  if (confirmations?.length <= 0 || !confirmationId) {
+  if (hasNoConfirmations) {
     return;
   }
 

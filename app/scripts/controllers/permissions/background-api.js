@@ -12,8 +12,6 @@ import {
   setPermittedEthChainIds,
 } from '@metamask/multichain';
 import { isSnapId } from '@metamask/snaps-utils';
-import { RestrictedMethods } from '../../../../shared/constants/permissions';
-import { PermissionNames } from './specifications';
 
 export function getPermissionBackgroundApiMethods({
   permissionController,
@@ -102,14 +100,15 @@ export function getPermissionBackgroundApiMethods({
   };
 
   const requestAccountsAndChainPermissions = async (origin, id) => {
-    // Note that we are purposely requesting an approval from the ApprovalController
-    // and then manually forming the permission that is then granted via the
-    // PermissionController rather than calling the PermissionController.requestPermissions()
-    // directly because the Approval UI is still dependent on the notion of there
-    // being separate "eth_accounts" and "endowment:permitted-chains" permissions.
-    // After that depedency is refactored, we can move to requesting "endowment:caip25"
-    // directly from the PermissionController instead.
-    const legacyApproval = await approvalController.addAndShowApprovalRequest({
+    /**
+     * Note that we are purposely requesting an approval from the ApprovalController
+     * and then manually forming the permission that is then granted via the
+     * PermissionController rather than calling the PermissionController.requestPermissions()
+     * directly because the CAIP-25 permission is missing the factory method implementation.
+     * After the factory method is added, we can move to requesting "endowment:caip25"
+     * directly from the PermissionController instead.
+     */
+    const { permissions } = await approvalController.addAndShowApprovalRequest({
       id,
       origin,
       requestData: {
@@ -118,41 +117,26 @@ export function getPermissionBackgroundApiMethods({
           origin,
         },
         permissions: {
-          [RestrictedMethods.eth_accounts]: {},
-          [PermissionNames.permittedChains]: {},
+          [Caip25EndowmentPermissionName]: {
+            caveats: [
+              {
+                type: Caip25CaveatType,
+                value: {
+                  requiredScopes: {},
+                  optionalScopes: {},
+                  isMultichainOrigin: false,
+                },
+              },
+            ],
+          },
         },
       },
       type: MethodNames.RequestPermissions,
     });
 
-    const newCaveatValue = {
-      requiredScopes: {},
-      optionalScopes: {},
-      isMultichainOrigin: false,
-    };
-
-    const caveatValueWithChains = setPermittedEthChainIds(
-      newCaveatValue,
-      legacyApproval.approvedChainIds,
-    );
-
-    const caveatValueWithAccounts = setEthAccounts(
-      caveatValueWithChains,
-      legacyApproval.approvedAccounts,
-    );
-
     permissionController.grantPermissions({
       subject: { origin },
-      approvedPermissions: {
-        [Caip25EndowmentPermissionName]: {
-          caveats: [
-            {
-              type: Caip25CaveatType,
-              value: caveatValueWithAccounts,
-            },
-          ],
-        },
-      },
+      approvedPermissions: permissions,
     });
   };
 

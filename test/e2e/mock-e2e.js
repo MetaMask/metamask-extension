@@ -1,9 +1,6 @@
 const fs = require('fs');
 
 const {
-  SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS_FALLBACK_LIST,
-} = require('../../shared/constants/security-provider');
-const {
   BRIDGE_DEV_API_BASE_URL,
   BRIDGE_PROD_API_BASE_URL,
 } = require('../../shared/constants/bridge');
@@ -16,6 +13,8 @@ const {
   SWAPS_API_V2_BASE_URL,
   TOKEN_API_BASE_URL,
 } = require('../../shared/constants/swaps');
+const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
+const { MOCK_META_METRICS_ID } = require('./constants');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
 const {
   DEFAULT_FEATURE_FLAGS_RESPONSE: BRIDGE_DEFAULT_FEATURE_FLAGS_RESPONSE,
@@ -162,15 +161,6 @@ async function setupMocking(
   });
 
   await server
-    .forGet(`${SECURITY_ALERTS_PROD_API_BASE_URL}/supportedChains`)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS_FALLBACK_LIST,
-      };
-    });
-
-  await server
     .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/${chainId}`)
     .thenCallback(() => {
       return {
@@ -314,6 +304,21 @@ async function setupMocking(
       };
     });
 
+  // This endpoint returns metadata for "transaction simulation" supported networks.
+  await server.forGet(`${TX_SENTINEL_URL}/networks`).thenJson(200, {
+    1: {
+      name: 'Mainnet',
+      group: 'ethereum',
+      chainID: 1,
+      nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+      network: 'ethereum-mainnet',
+      explorer: 'https://etherscan.io',
+      confirmations: true,
+      smartTransactions: true,
+      hidden: false,
+    },
+  });
+
   await server
     .forGet(`${SWAPS_API_V2_BASE_URL}/featureFlags`)
     .thenCallback(() => {
@@ -386,8 +391,8 @@ async function setupMocking(
 
   let surveyCallCount = 0;
   [
-    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/fake-metrics-id-power-user/surveys`,
-    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/fake-metrics-id-power-user/surveys`,
+    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/${MOCK_META_METRICS_ID}/surveys`,
+    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/${MOCK_META_METRICS_ID}/surveys`,
   ].forEach(
     async (url) =>
       await server.forGet(url).thenCallback(() => {

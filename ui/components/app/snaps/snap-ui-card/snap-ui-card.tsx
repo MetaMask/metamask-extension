@@ -44,7 +44,7 @@ export const SnapUICard: FunctionComponent<SnapUICardProps> = ({
             width="32px"
             height="32px"
             value={image}
-            style={{ borderRadius: '999px' }}
+            borderRadius="999px"
           />
         )}
         <Box

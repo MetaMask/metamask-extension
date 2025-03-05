@@ -1,12 +1,12 @@
 import React from 'react';
 import classnames from 'classnames';
-import { ButtonBase, IconSize } from '..';
 import {
   BackgroundColor,
   Color,
 } from '../../../helpers/constants/design-system';
 import type { PolymorphicRef } from '../box';
-import type { ButtonBaseProps } from '../button-base';
+import { ButtonBase, type ButtonBaseProps } from '../button-base';
+import { IconSize } from '../icon';
 import type { ButtonLinkProps } from './button-link.types';
 import { ButtonLinkSize, ButtonLinkComponent } from './button-link.types';
 

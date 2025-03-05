@@ -3,7 +3,6 @@ import AssetListPage from '../../page-objects/pages/home/asset-list';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import {
   withFixtures,
-  defaultGanacheOptions,
   openDapp,
   WINDOW_TITLES,
   DAPP_URL,
@@ -20,7 +19,6 @@ describe('Multiple ERC20 Watch Asset', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -62,8 +60,8 @@ describe('Multiple ERC20 Watch Asset', function () {
         // Check all three tokens have been added to the token list.
         const tokenList = new AssetListPage(driver);
         await tokenList.check_tokenItemNumber(4); // 3 tokens plus ETH
-        await tokenList.check_tokenIsDisplayed('Ethereum');
-        await tokenList.check_tokenIsDisplayed('TST');
+        await tokenList.check_tokenExistsInList('Ethereum');
+        await tokenList.check_tokenExistsInList('TST');
       },
     );
   });

@@ -1,6 +1,5 @@
 const { strict: assert } = require('assert');
 const {
-  defaultGanacheOptions,
   withFixtures,
   unlockWallet,
   getEventPayloads,
@@ -11,6 +10,7 @@ const {
   MetaMetricsEventName,
 } = require('../../../../../shared/constants/metametrics');
 const { CHAIN_IDS } = require('../../../../../shared/constants/network');
+const { MOCK_META_METRICS_ID } = require('../../../constants');
 
 async function mockedNftRemoved(mockServer) {
   return await mockServer
@@ -38,11 +38,10 @@ describe('Remove NFT', function () {
         fixtures: new FixtureBuilder()
           .withNftControllerERC721()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,

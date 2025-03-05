@@ -35,7 +35,7 @@ export const ganacheOptions: ServerOptions & { miner: { blockTime?: number } } =
 
 export const withFixturesOptions = {
   fixtures: new FixtureBuilder().build(),
-  ganacheOptions,
+  localNodeOptions: ganacheOptions,
 };
 
 type SwapOptions = {
@@ -188,12 +188,6 @@ export const checkActivityTransaction = async (
   });
 
   await driver.clickElement('[data-testid="popover-close"]');
-};
-
-export const closeSmartTransactionsMigrationNotification = async (
-  driver: Driver,
-) => {
-  await driver.clickElement('[aria-label="Close"]');
 };
 
 export const checkNotification = async (

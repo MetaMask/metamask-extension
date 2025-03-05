@@ -19,6 +19,10 @@ import {
   getSmartTransactionsOptInStatusInternal,
   getSmartTransactionsMigrationAppliedInternal,
 } from '../../../../../shared/modules/selectors/smart-transactions';
+import {
+  getCurrentChainSupportsSmartTransactions,
+  getSmartTransactionsPreferenceEnabled,
+} from '../../../../../shared/modules/selectors';
 
 type MarginType = 'default' | 'none' | 'noTop' | 'onlyTop';
 
@@ -55,6 +59,14 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
       getSmartTransactionsMigrationAppliedInternal,
     );
 
+    const chainSupportsSmartTransactions = useSelector(
+      getCurrentChainSupportsSmartTransactions,
+    );
+
+    const smartTransactionsPreferenceEnabled = useSelector(
+      getSmartTransactionsPreferenceEnabled,
+    );
+
     const dismissAlert = useCallback(() => {
       setAlertEnabledness(AlertTypes.smartTransactionsMigration, false);
     }, []);
@@ -68,7 +80,9 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
     const alertConditions =
       alertEnabled &&
       smartTransactionsOptIn &&
-      smartTransactionsMigrationApplied;
+      smartTransactionsMigrationApplied &&
+      chainSupportsSmartTransactions &&
+      smartTransactionsPreferenceEnabled;
 
     const shouldRender =
       currentConfirmation === null

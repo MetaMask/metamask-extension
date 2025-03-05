@@ -39,6 +39,16 @@ const defaultState = {
         balance: '0x0',
       },
     },
+    keyrings: [
+      {
+        type: 'HD Key Tree',
+        accounts: [
+          {
+            address: '0xFirstAddress',
+          },
+        ],
+      },
+    ],
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     internalAccounts: {
       accounts: {
@@ -397,10 +407,11 @@ describe('Actions', () => {
         metamask: { ...defaultState.metamask },
       });
 
-      const addNewAccount = background.addNewAccount.callsFake((_, cb) =>
-        cb(null, {
-          addedAccountAddress: '0x123',
-        }),
+      const addNewAccount = background.addNewAccount.callsFake(
+        (_, _secondUnusedVar, cb) =>
+          cb(null, {
+            addedAccountAddress: '0x123',
+          }),
       );
 
       setBackgroundConnection(background);
@@ -412,7 +423,7 @@ describe('Actions', () => {
     it('displays warning error message when addNewAccount in background callback errors', async () => {
       const store = mockStore();
 
-      background.addNewAccount.callsFake((_, cb) => {
+      background.addNewAccount.callsFake((_, _secondUnusedVar, cb) => {
         cb(new Error('error'));
       });
 
@@ -474,50 +485,6 @@ describe('Actions', () => {
 
       await expect(
         store.dispatch(actions.checkHardwareStatus()),
-      ).rejects.toThrow('error');
-
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
-  describe('#getDeviceNameForMetric', () => {
-    const deviceName = 'ledger';
-    const hdPath = "m/44'/60'/0'/0/0";
-
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls getDeviceNameForMetric in background', async () => {
-      const store = mockStore();
-
-      const mockGetDeviceName = background.getDeviceNameForMetric.callsFake(
-        (_, __, cb) => cb(),
-      );
-
-      setBackgroundConnection(background);
-
-      await store.dispatch(actions.getDeviceNameForMetric(deviceName, hdPath));
-      expect(mockGetDeviceName.callCount).toStrictEqual(1);
-    });
-
-    it('shows loading indicator and displays error', async () => {
-      const store = mockStore();
-
-      background.getDeviceNameForMetric.callsFake((_, __, cb) =>
-        cb(new Error('error')),
-      );
-
-      setBackgroundConnection(background);
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
-      await expect(
-        store.dispatch(actions.getDeviceNameForMetric(deviceName, hdPath)),
       ).rejects.toThrow('error');
 
       expect(store.getActions()).toStrictEqual(expectedActions);

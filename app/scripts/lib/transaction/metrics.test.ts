@@ -26,6 +26,7 @@ import {
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
 import { decimalToHex } from '../../../../shared/modules/conversion.utils';
+import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import {
   handleTransactionAdded,
   handleTransactionApproved,
@@ -35,7 +36,6 @@ import {
   handleTransactionRejected,
   handleTransactionSubmitted,
   METRICS_STATUS_FAILED,
-  TransactionMetricsRequest,
 } from './metrics';
 
 const providerResultStub = {
@@ -63,6 +63,7 @@ const mockTransactionMetricsRequest = {
   updateEventFragment: jest.fn(),
   getAccountType: jest.fn(),
   getDeviceModel: jest.fn(),
+  getHardwareTypeForMetric: jest.fn(),
   getEIP1559GasFeeEstimates: jest.fn(),
   getSelectedAddress: jest.fn(),
   getParticipateInMetrics: jest.fn(),
@@ -76,7 +77,6 @@ const mockTransactionMetricsRequest = {
   getIsSmartTransaction: jest.fn(),
   getSmartTransactionByMinedTxHash: jest.fn(),
   getMethodData: jest.fn(),
-  getIsRedesignedConfirmationsDeveloperEnabled: jest.fn(),
   getIsConfirmationAdvancedDetailsOpen: jest.fn(),
 } as TransactionMetricsRequest;
 

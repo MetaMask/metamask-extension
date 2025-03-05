@@ -1,6 +1,7 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
+import { Anvil } from '../../seeder/anvil';
 import { Ganache } from '../../seeder/ganache';
 import ContractAddressRegistry from '../../seeder/contract-address-registry';
 import {
@@ -18,7 +19,7 @@ import TestDapp from '../../page-objects/pages/test-dapp';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-describe('Snap Account Contract interaction @no-mmi', function (this: Suite) {
+describe('Snap Account Contract interaction', function (this: Suite) {
   const smartContract = SMART_CONTRACTS.PIGGYBANK;
   it('deposits to piggybank contract', async function () {
     await withFixtures(
@@ -26,26 +27,21 @@ describe('Snap Account Contract interaction @no-mmi', function (this: Suite) {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerSnapAccountConnectedToTestDapp()
-          .withPreferencesController({
-            preferences: {
-              isRedesignedConfirmationsDeveloperEnabled: true,
-            },
-          })
           .build(),
-        ganacheOptions: multipleGanacheOptionsForType2Transactions,
+        localNodeOptions: multipleGanacheOptionsForType2Transactions,
         smartContract,
         title: this.test?.fullTitle(),
       },
       async ({
         driver,
         contractRegistry,
-        ganacheServer,
+        localNodes,
       }: {
         driver: Driver;
         contractRegistry: ContractAddressRegistry;
-        ganacheServer?: Ganache;
+        localNodes: Anvil[] | Ganache[] | undefined[];
       }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver, localNodes[0]);
         await installSnapSimpleKeyring(driver);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
 
