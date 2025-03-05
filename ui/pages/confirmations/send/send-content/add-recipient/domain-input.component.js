@@ -94,7 +94,7 @@ export default class DomainInput extends Component {
       ) {
         const hexInput = addHexPrefix(input);
         onChange(hexInput);
-        onValidAddressTyped(addHexPrefix(hexInput));
+        onValidAddressTyped(hexInput);
       }
     } else {
       onChange(input);
