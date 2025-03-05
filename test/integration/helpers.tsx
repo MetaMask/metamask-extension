@@ -37,7 +37,7 @@ export function mock4byte(hexSignature: string, textSignature?: string) {
  * @param testId - The test ID of the element to be clicked.
  * @returns A promise that resolves when the click action is completed.
  */
-export const clickElement = async (testId: string) => {
+export const clickElementById = async (testId: string) => {
   await act(async () => {
     fireEvent.click(await screen.findByTestId(testId));
   });
@@ -49,7 +49,7 @@ export const clickElement = async (testId: string) => {
  * @param testId - The test ID of the element to wait for.
  * @returns A promise that resolves when the element is found in the document.
  */
-export const waitForElement = async (testId: string) => {
+export const waitForElementById = async (testId: string) => {
   await waitFor(() => {
     expect(screen.getByTestId(testId)).toBeInTheDocument();
   });
@@ -65,5 +65,23 @@ export const waitForElement = async (testId: string) => {
 export const changeInputValue = async (testId: string, value: string) => {
   await act(async () => {
     fireEvent.change(await screen.findByTestId(testId), { target: { value } });
+  });
+};
+
+/**
+ * Waits for an element with the specified text to be present in the document.
+ *
+ * @param text - The text content of the element to wait for.
+ * @returns A promise that resolves when the element is found in the document.
+ */
+export const waitForElementByText = async (text: string) => {
+  await waitFor(() => {
+    expect(screen.getByText(text)).toBeInTheDocument();
+  });
+};
+
+export const clickElementByText = async (text: string) => {
+  await act(async () => {
+    fireEvent.click(await screen.findByText(text));
   });
 };
