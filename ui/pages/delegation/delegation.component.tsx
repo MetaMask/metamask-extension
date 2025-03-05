@@ -1,53 +1,36 @@
 import {
   createCaveatBuilder,
   createRootDelegation,
+  DelegationFramework,
   DelegationStruct,
   getDeleGatorEnvironment,
-  Implementation,
-  MetaMaskSmartAccount,
   SIGNABLE_DELEGATION_TYPED_DATA,
-  toMetaMaskSmartAccount,
+  SINGLE_TRY_MODE,
 } from '@metamask-private/delegator-core-viem';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import { SignTypedDataVersion } from '@metamask/keyring-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import React, { useState, useEffect } from 'react';
-import {
-  createPublicClient,
-  http,
-  parseEther,
-  recoverTypedDataAddress,
-} from 'viem';
-import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts';
+import React, { useEffect, useState } from 'react';
+import { parseEther } from 'viem';
 import { sepolia } from 'viem/chains';
-import { SEPOLIA_RPC_URL } from '../../../shared/constants/network';
 import { Box, Button, Label, Text } from '../../components/component-library';
 import Card from '../../components/ui/card';
 import {
   BlockSize,
   Display,
   FlexDirection,
+  TextColor,
 } from '../../helpers/constants/design-system';
 import {
+  addTransaction,
   newUnsignedTypedMessage,
-  performSetStorage,
   performGetStorage,
+  performSetStorage,
 } from '../../store/actions';
 
 const SWAP_LIMIT = parseEther('0.1');
 export const GATOR_ENV = getDeleGatorEnvironment(sepolia.id, '1.1.0');
 const DELEGATION_STORAGE_PATH = 'accounts_v2.delegation';
-
-const TYPED_DATA_OBJ = {
-  types: SIGNABLE_DELEGATION_TYPED_DATA,
-  primaryType: 'Delegation',
-  domain: {
-    name: 'DelegationManager',
-    version: '1',
-    chainId: sepolia.id,
-    verifyingContract: GATOR_ENV.DelegationManager as `0x${string}`,
-  },
-};
 
 /**
  * Helper function to save data to delegation storage
@@ -119,77 +102,28 @@ async function getDelegationStorage(): Promise<Record<string, unknown>> {
 }
 
 export default function Delegation({
-  currentAccount,
+  accounts,
 }: {
-  currentAccount: InternalAccount;
+  accounts: InternalAccount[];
 }) {
-  const [metaMaskSmartAccount, setMetaMaskSmartAccount] = useState<
-    MetaMaskSmartAccount<Implementation.Hybrid> | undefined
-  >();
   const [loading, setLoading] = useState<boolean>(false);
-
   const [delegation, setDelegation] = useState<DelegationStruct | undefined>();
   const [signedDelegation, setSignedDelegation] = useState<
     DelegationStruct | undefined
   >();
-  const [verificationStatus, setVerificationStatus] = useState<string | null>(
-    null,
-  );
 
-  const publicClient = createPublicClient({
-    chain: sepolia,
-    transport: http(SEPOLIA_RPC_URL),
-  });
+  // Get delegator (account 1) and delegate (account 2)
+  const delegatorAccount = accounts[0];
+  const delegateAccount = accounts.length > 1 ? accounts[1] : null;
+  const delegateNotFound = !delegateAccount;
 
-  const loadMetaMaskAccount = async () => {
-    setLoading(true);
-    try {
-      // First, check if we already have an owner private key stored
-      let ownerPk;
-      const storedData = await getDelegationStorage();
-
-      ownerPk = storedData.ownerPk as string;
-
-      if (ownerPk) {
-        console.log('Found existing owner private key');
-      } else {
-        // If no existing owner PK, generate a new one
-        ownerPk = generatePrivateKey();
-        console.log('Generated new owner private key');
-
-        await saveDelegationStorage('ownerPk', ownerPk);
-      }
-
-      const owner = privateKeyToAccount(ownerPk as `0x${string}`);
-
-      const account = await toMetaMaskSmartAccount({
-        client: publicClient,
-        implementation: Implementation.Hybrid,
-        deployParams: [owner.address, [], [], []],
-        deploySalt: '0x',
-        signatory: { account: owner },
-      });
-
-      setMetaMaskSmartAccount(account);
-      return account;
-    } catch (error) {
-      console.error('Error loading MetaMask account:', error);
-      throw error; // Re-throw to be handled by the caller
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Load MetaMask account and any saved delegation data on component mount
-  useEffect(() => {
+  // Load any saved delegation data on component mount
+  /*  useEffect(() => {
     const loadSavedData = async () => {
       try {
         setLoading(true);
 
-        // Load account first
-        await loadMetaMaskAccount();
-
-        // Then try to load any saved delegation data
+        // Try to load any saved delegation data
         const storedData = await getDelegationStorage();
         console.log('Raw stored data from storage:', storedData);
 
@@ -221,15 +155,11 @@ export default function Delegation({
     };
 
     loadSavedData();
-  }, []);
-
-  const createMetaMaskAccount = async () => {
-    return await loadMetaMaskAccount();
-  };
+  }, []); */
 
   const createDelegation = async () => {
-    if (!metaMaskSmartAccount) {
-      throw new Error('MetaMask Smart Account not found');
+    if (!delegatorAccount || !delegateAccount) {
+      throw new Error('Cannot create delegation: Missing accounts');
     }
 
     const caveateBuilder = createCaveatBuilder(GATOR_ENV);
@@ -239,8 +169,8 @@ export default function Delegation({
     );
 
     const rootDelegation = createRootDelegation(
-      metaMaskSmartAccount.address,
-      currentAccount.address as `0x${string}`,
+      delegateAccount.address as `0x${string}`,
+      delegatorAccount.address as `0x${string}`,
       caveats.build(),
       BigInt(0),
     );
@@ -256,7 +186,14 @@ export default function Delegation({
 
     try {
       const typedDataObj = {
-        ...TYPED_DATA_OBJ,
+        types: SIGNABLE_DELEGATION_TYPED_DATA,
+        primaryType: 'Delegation',
+        domain: {
+          name: 'DelegationManager',
+          version: '1',
+          chainId: sepolia.id,
+          verifyingContract: GATOR_ENV.DelegationManager as `0x${string}`,
+        },
         message: {
           delegator: delegation.delegator,
           delegate: delegation.delegate,
@@ -268,8 +205,9 @@ export default function Delegation({
 
       const signature = await newUnsignedTypedMessage({
         messageParams: {
-          from: currentAccount.address,
-          data: JSON.stringify(typedDataObj),
+          from: delegatorAccount.address,
+          data: typedDataObj,
+          version: SignTypedDataVersion.V4,
         },
         request: {
           id: 1,
@@ -278,16 +216,19 @@ export default function Delegation({
           networkClientId: sepolia.name.toLowerCase(),
         },
         version: SignTypedDataVersion.V4,
+        signingOptions: {
+          parseJsonData: true,
+        },
       });
       console.log('signature', signature);
 
       if (signature) {
         const signedDelegationData = { ...delegation, signature };
         setSignedDelegation(signedDelegationData);
-        await saveDelegationStorage('signedDelegation', {
+        /* await saveDelegationStorage('signedDelegation', {
           ...signedDelegationData,
           salt: signedDelegationData.salt.toString(),
-        });
+        }); */
         console.log('Saved delegation data to storage');
       }
     } catch (error) {
@@ -296,68 +237,10 @@ export default function Delegation({
     }
   };
 
-  const verifySignature = async () => {
-    if (!signedDelegation || !currentAccount.address) {
-      setVerificationStatus('Missing data for verification');
-      return;
-    }
-
-    try {
-      // Ensure the salt is properly handled whether it's a BigInt or a string
-      const salt =
-        typeof signedDelegation.salt === 'bigint'
-          ? signedDelegation.salt.toString()
-          : signedDelegation.salt;
-
-      const recoveredAddress = await recoverTypedDataAddress({
-        domain: TYPED_DATA_OBJ.domain,
-        types: TYPED_DATA_OBJ.types,
-        primaryType: TYPED_DATA_OBJ.primaryType,
-        message: {
-          delegator: signedDelegation.delegator,
-          delegate: signedDelegation.delegate,
-          salt,
-          caveats: signedDelegation.caveats,
-          authority: signedDelegation.authority,
-        },
-        signature: signedDelegation.signature as `0x${string}`,
-      });
-
-      console.log('Recovered address:', recoveredAddress);
-      console.log('Current account address:', currentAccount.address);
-
-      if (
-        recoveredAddress.toLowerCase() === currentAccount.address.toLowerCase()
-      ) {
-        setVerificationStatus('✅ Signature verified successfully!');
-      } else {
-        setVerificationStatus('❌ Signature verification failed!');
-      }
-    } catch (error: unknown) {
-      console.error('Error verifying signature:', error);
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error';
-      setVerificationStatus(`❌ Error: ${errorMessage}`);
-    }
-  };
-
-  const onCreateMetaMaskAccount = async () => {
-    try {
-      setLoading(true);
-      const account = await createMetaMaskAccount();
-      setMetaMaskSmartAccount(account);
-    } catch (error) {
-      console.error('Error creating MetaMask account:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const onCreateDelegation = async () => {
     try {
       setLoading(true);
       await createDelegation();
-      // We don't save delegation here anymore, only when signed
     } catch (error) {
       console.error('Error creating delegation:', error);
     } finally {
@@ -376,15 +259,68 @@ export default function Delegation({
     }
   };
 
-  const onVerifySignature = async () => {
+  // Add this new function for sending a standard transaction to redeem delegations
+  const redeemDelegationAsTransaction = async () => {
+    if (!signedDelegation) {
+      throw new Error('Signed delegation not found');
+    }
+
+    if (!delegateAccount) {
+      throw new Error('Delegate account not found');
+    }
+
     try {
       setLoading(true);
-      await verifySignature();
-    } catch (error: unknown) {
-      console.error('Error verifying signature:', error);
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error';
-      setVerificationStatus(`❌ Error: ${errorMessage}`);
+
+      console.log('signedDelegation', signedDelegation);
+
+      const swapAmount = parseEther('0.001');
+
+      // Get the contract address from the environment
+      const delegationManagerAddress = GATOR_ENV.DelegationManager;
+
+      // Create a transaction to the DelegationManager contract
+      const encodedCallData = DelegationFramework.encode.redeemDelegations(
+        [[{ ...signedDelegation, salt: signedDelegation.salt.toString() }]],
+        [SINGLE_TRY_MODE],
+        [
+          [
+            {
+              target: delegateAccount.address as `0x${string}`,
+              callData: '0x',
+              value: swapAmount,
+            },
+          ],
+        ],
+      );
+
+      // Send the transaction using MetaMask's sendTransaction action
+      const txHash = await addTransaction(
+        {
+          from: delegateAccount.address,
+          to: delegationManagerAddress,
+          data: encodedCallData,
+          value: '0x0', // No ETH sent with the transaction
+        },
+        { method: 'eth_sendTransaction' },
+      );
+
+      console.log('Transaction sent:', txHash);
+      return txHash;
+    } catch (error) {
+      console.error('Error redeeming delegation as transaction:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onRedeemDelegation = async () => {
+    try {
+      setLoading(true);
+      await redeemDelegationAsTransaction();
+    } catch (error) {
+      console.error('Error redeeming delegation:', error);
     } finally {
       setLoading(false);
     }
@@ -399,29 +335,41 @@ export default function Delegation({
         paddingTop={2}
         width={BlockSize.Full}
       >
-        <Button
-          onClick={onCreateMetaMaskAccount}
-          disabled={Boolean(metaMaskSmartAccount) || loading}
-        >
-          {loading ? 'Loading...' : 'Create MetaMask Smart Account'}
-        </Button>
+        <Text as="h2">Delegation Demo</Text>
 
-        {metaMaskSmartAccount && (
+        <Card>
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            style={{ gap: '16px' }}
+          >
+            <Text as="h3">Account Information</Text>
+            {delegatorAccount && delegateAccount ? (
+              <>
+                <Text as="p">
+                  Delegator (Account 1): {delegatorAccount.address}
+                </Text>
+                <Text as="p">
+                  Delegate (Account 2): {delegateAccount.address}
+                </Text>
+              </>
+            ) : (
+              <Text as="p" color={TextColor.errorDefault}>
+                {delegateNotFound
+                  ? 'Please add a second account to use as delegate'
+                  : 'Account information not available'}
+              </Text>
+            )}
+          </Box>
+        </Card>
+
+        {delegatorAccount && delegateAccount && (
           <Card
             display={Display.Flex}
             width={BlockSize.Full}
             gap={2}
             flexDirection={FlexDirection.Column}
           >
-            <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Row}
-              gap={2}
-            >
-              <Label>Smart Account Address:</Label>
-              <Text>{metaMaskSmartAccount?.address}</Text>
-            </Box>
-
             <Box
               display={Display.Flex}
               flexDirection={FlexDirection.Column}
@@ -447,24 +395,11 @@ export default function Delegation({
                   <Text style={{ wordBreak: 'break-all' }}>
                     {signedDelegation.signature}
                   </Text>
-
-                  <Button
-                    onClick={onVerifySignature}
-                    disabled={!signedDelegation || loading}
-                  >
-                    {loading ? 'Verifying...' : 'Verify Signature'}
+                  <Button onClick={onRedeemDelegation} disabled={loading}>
+                    {loading
+                      ? 'Processing...'
+                      : 'Redeem Delegation (Transaction)'}
                   </Button>
-
-                  {verificationStatus && (
-                    <Box
-                      display={Display.Flex}
-                      flexDirection={FlexDirection.Row}
-                      gap={2}
-                    >
-                      <Label>Verification Status:</Label>
-                      <Text>{verificationStatus}</Text>
-                    </Box>
-                  )}
                 </>
               )}
             </Box>
