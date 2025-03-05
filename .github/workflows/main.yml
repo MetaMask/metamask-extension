@@ -28,6 +28,8 @@ jobs:
     needs: prep-deps
     runs-on: ubuntu-latest
     if: github.ref != 'refs/heads/master'
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout and setup environment
         uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
