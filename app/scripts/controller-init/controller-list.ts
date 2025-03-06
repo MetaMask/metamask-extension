@@ -34,7 +34,7 @@ import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
 ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
-import { DeferredPublicationController } from '../lib/transaction/institutional-snap/deferred-publication-hooks';
+import { InstitutionalSnapController } from '../lib/transaction/institutional-snap/InstitutionalSnapController';
 ///: END:ONLY_INCLUDE_IF(institutional-snap)
 
 /**
@@ -70,7 +70,7 @@ export type Controller =
       state: Record<string, unknown>;
     })
   ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
-  | DeferredPublicationController;
+  | InstitutionalSnapController;
 ///: END:ONLY_INCLUDE_IF(institutional-snap)
 
 /**

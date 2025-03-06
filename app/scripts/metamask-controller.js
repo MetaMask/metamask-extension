@@ -247,10 +247,8 @@ import {
   BridgeUserAction,
   BridgeBackgroundAction,
 } from '../../shared/types/bridge';
-///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
 import { isProduction } from '../../shared/modules/environment';
-import { DeferredPublicationController } from './lib/transaction/institutional-snap/deferred-publication-hooks';
-///: END:ONLY_INCLUDE_IF
+
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -364,6 +362,10 @@ import {
   handleBridgeTransactionFailed,
   handleTransactionFailedTypeBridge,
 } from './lib/bridge-status/metrics';
+
+// BEGIN: ONLY_INCLUDE_IF(institutional-snap)
+import { InstitutionalSnapControllerInit } from './controller-init/accounts/institutional-snap-controller-init';
+// END: ONLY_INCLUDE_IF(institutional-snap)
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   MultichainAssetsControllerInit,
@@ -2022,18 +2024,6 @@ export default class MetamaskController extends EventEmitter {
       }),
     });
 
-    ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
-    this.deferredPublicationController = new DeferredPublicationController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'DeferredPublicationController',
-        allowedActions: [
-          'AccountsController:getAccountByAddress',
-          'SnapController:handleRequest',
-        ],
-        allowedEvents: [],
-      }),
-    });
-    ///: END:ONLY_INCLUDE_IF(institutional-snap)
     const existingControllers = [
       this.networkController,
       this.preferencesController,
@@ -2044,13 +2034,13 @@ export default class MetamaskController extends EventEmitter {
       this.transactionUpdateController,
       ///: END:ONLY_INCLUDE_IF
       this.smartTransactionsController,
-      ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
-      this.deferredPublicationController,
-      ///: END:ONLY_INCLUDE_IF(institutional-snap)
     ];
 
     const controllerInitFunctions = {
       ExecutionService: ExecutionServiceInit,
+      // BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+      InstitutionalSnapController: InstitutionalSnapControllerInit,
+      // END:ONLY_INCLUDE_IF(institutional-snap)
       RateLimitController: RateLimitControllerInit,
       SnapsRegistry: SnapsRegistryInit,
       SnapController: SnapControllerInit,

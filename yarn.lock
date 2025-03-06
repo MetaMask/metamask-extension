@@ -5103,6 +5103,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/controller-utils@npm:^11.6.0":
+  version: 11.6.0
+  resolution: "@metamask/controller-utils@npm:11.6.0"
+  dependencies:
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/ethjs-unit": "npm:^0.3.0"
+    "@metamask/utils": "npm:^11.2.0"
+    "@spruceid/siwe-parser": "npm:2.1.0"
+    "@types/bn.js": "npm:^5.1.5"
+    bignumber.js: "npm:^9.1.2"
+    bn.js: "npm:^5.2.1"
+    cockatiel: "npm:^3.1.2"
+    eth-ens-namehash: "npm:^2.0.8"
+    fast-deep-equal: "npm:^3.1.3"
+  peerDependencies:
+    "@babel/runtime": ^7.0.0
+  checksum: 10/0bbb36cb2a8107362ecc13ad4227922f9eba5a5cfb7f7742c6b7a6a1023bd1c4d93a0e6cdfd0cef49228a719950753c26d0ee77598cbafd69944b0f89f6e6452
+  languageName: node
+  linkType: hard
+
 "@metamask/controller-utils@npm:^5.0.2":
   version: 5.0.2
   resolution: "@metamask/controller-utils@npm:5.0.2"
@@ -6307,18 +6328,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/remote-feature-flag-controller@npm:^1.5.0":
-  version: 1.5.0
-  resolution: "@metamask/remote-feature-flag-controller@npm:1.5.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/controller-utils": "npm:^11.5.0"
-    "@metamask/utils": "npm:^11.2.0"
-    uuid: "npm:^8.3.2"
-  checksum: 10/2a921d706e655417de24582ebf11ac2153932b97f05a1d24e40d1142e9cd0a9cb9c138033a3bea1f4984aa25a6d65f7834a3c30532f94d2375b792b01c174588
-  languageName: node
-  linkType: hard
-
 "@metamask/rpc-errors@npm:^6.0.0, @metamask/rpc-errors@npm:^6.1.0, @metamask/rpc-errors@npm:^6.2.1":
   version: 6.4.0
   resolution: "@metamask/rpc-errors@npm:6.4.0"
@@ -6768,22 +6777,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:@metamask-previews/transaction-controller@46.0.0-preview-1cc9329c":
-  version: 46.0.0-preview-1cc9329c
-  resolution: "@metamask-previews/transaction-controller@npm:46.0.0-preview-1cc9329c"
+"@metamask/transaction-controller@npm:@metamask-previews/transaction-controller@48.0.0-preview-b08aa8e7":
+  version: 48.0.0-preview-b08aa8e7
+  resolution: "@metamask-previews/transaction-controller@npm:48.0.0-preview-b08aa8e7"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
-    "@ethereumjs/util": "npm:^8.1.0"
+    "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
     "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/controller-utils": "npm:^11.5.0"
+    "@metamask/controller-utils": "npm:^11.6.0"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/nonce-tracker": "npm:^6.0.0"
-    "@metamask/remote-feature-flag-controller": "npm:^1.5.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/utils": "npm:^11.2.0"
     async-mutex: "npm:^0.5.0"
@@ -6794,13 +6802,13 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@babel/runtime": ^7.0.0
-    "@metamask/accounts-controller": ^24.0.0
+    "@metamask/accounts-controller": ^26.0.0
     "@metamask/approval-controller": ^7.0.0
     "@metamask/eth-block-tracker": ">=9"
     "@metamask/gas-fee-controller": ^22.0.0
     "@metamask/network-controller": ^22.0.0
-    "@metamask/remote-feature-flag-controller": ^1.3.0
-  checksum: 10/0b2f9077f78ebb3b8b10e676a0e8fe3f39f1051967711554c8bdaa348efcaef6a5b74881a766a46c6b5693241e4d609e534ffed7b75cb5deb1dbf02c5eade7f2
+    "@metamask/remote-feature-flag-controller": ^1.5.0
+  checksum: 10/455d195c09240d9c00dab7ea4d5b614195f2e2becb4dc1ef615a81b56eb13a057ddbd065e65e03a43c40515917cc0d1c97657ea307e9610fb1d9af87e31401ff
   languageName: node
   linkType: hard
 

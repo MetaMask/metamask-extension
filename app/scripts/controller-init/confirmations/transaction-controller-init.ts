@@ -72,9 +72,6 @@ export const TransactionControllerInit: ControllerInitFunction<
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     transactionUpdateController,
     ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
-    deferredPublicationController,
-    ///: END:ONLY_INCLUDE_IF(institutional-snap)
   } = getControllers(request);
 
   const controller: TransactionController = new TransactionController({
@@ -132,17 +129,22 @@ export const TransactionControllerInit: ControllerInitFunction<
     trace,
     hooks: {
       ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
-      beforePublish: (transactionMeta) => {
-        return deferredPublicationController().deferPublicationHook(
-          controller,
+      beforePublish: (transactionMeta: TransactionMeta) => {
+        const response = initMessenger.call(
+          'InstitutionalSnapController:publishHook',
           transactionMeta,
         );
+        return response;
       },
 
-      beforeCheckPendingTransactions:
-        deferredPublicationController().beforeCheckPendingTransactionHook.bind(
-          deferredPublicationController(),
-        ),
+      beforeCheckPendingTransactions: (transactionMeta: TransactionMeta) => {
+        const response = initMessenger.call(
+          'InstitutionalSnapController:beforeCheckPendingTransactionHook',
+          transactionMeta,
+        );
+
+        return response;
+      },
       ///: END:ONLY_INCLUDE_IF(institutional-snap)
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       afterSign: (txMeta, signedEthTx) =>
@@ -153,8 +155,8 @@ export const TransactionControllerInit: ControllerInitFunction<
             transactionUpdateController(),
           ),
         ),
-      beforeCheckPendingTransaction:
-        beforeCheckPendingTransactionMMI.bind(this),
+      // beforeCheckPendingTransaction:
+      //  beforeCheckPendingTransactionMMI.bind(this),
       // beforePublish: beforeTransactionPublishMMI.bind(this),
       getAdditionalSignArguments: getAdditionalSignArgumentsMMI.bind(this),
       ///: END:ONLY_INCLUDE_IF
@@ -221,8 +223,8 @@ function getControllers(
     transactionUpdateController: () =>
       request.getController('TransactionUpdateController'),
     ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
-    deferredPublicationController: () =>
-      request.getController('DeferredPublicationController'),
+    institutionalSnapController: () =>
+      request.getController('InstitutionalSnapController'),
     ///: END:ONLY_INCLUDE_IF(institutional-snap)
   };
 }

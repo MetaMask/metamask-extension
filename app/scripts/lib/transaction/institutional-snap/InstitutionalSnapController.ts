@@ -1,5 +1,5 @@
 import {
-  TransactionController,
+  TransactionControllerUpdateCustodialTransactionAction,
   TransactionEnvelopeType,
   TransactionMeta,
   TransactionStatus,
@@ -11,7 +11,9 @@ import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
 import InstitutionalWalletSnap from '@metamask/institutional-wallet-snap/dist/preinstalled-snap.json';
 import { AccountsControllerGetAccountByAddressAction } from '@metamask/accounts-controller';
 
-const snapId = InstitutionalWalletSnap.snapId as SnapId;
+const SNAP_ID = InstitutionalWalletSnap.snapId as SnapId;
+
+const controllerName = 'InstitutionalSnapController';
 
 type SnapRPCRequest = Parameters<HandleSnapRequest['handler']>[0];
 
@@ -81,10 +83,11 @@ export type InstitutionalSnapRequestSearchParameters = {
 
 type AllowedActions =
   | HandleSnapRequest
-  | AccountsControllerGetAccountByAddressAction;
+  | AccountsControllerGetAccountByAddressAction
+  | TransactionControllerUpdateCustodialTransactionAction;
 
-export type DeferredPublicationHookMessenger = RestrictedMessenger<
-  'DeferredPublicationHookMessenger',
+export type InstitutionalSnapControllerMessenger = RestrictedMessenger<
+  'InstitutionalSnapControllerMessenger',
   AllowedActions,
   never,
   AllowedActions['type'],
@@ -99,22 +102,40 @@ type DeferrableTransactionAccount = {
   };
 };
 
-type DeferredPublicationControllerState = Record<string, never>;
+type InstitutionalSnapControllerControllerState = Record<string, never>;
 
 const metadata = {};
 
-export class DeferredPublicationController extends BaseController<
-  'DeferredPublicationController',
-  DeferredPublicationControllerState,
-  DeferredPublicationHookMessenger
+export class InstitutionalSnapController extends BaseController<
+  'InstitutionalSnapController',
+  InstitutionalSnapControllerControllerState,
+  InstitutionalSnapControllerMessenger
 > {
-  constructor({ messenger }: { messenger: DeferredPublicationHookMessenger }) {
+  constructor({
+    messenger,
+  }: {
+    messenger: InstitutionalSnapControllerMessenger;
+  }) {
     super({
       messenger,
-      name: 'DeferredPublicationController',
+      name: controllerName,
       state: {},
       metadata,
     });
+
+    this.#registerMessageHandlers();
+  }
+
+  #registerMessageHandlers() {
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:publishHook`,
+      this.deferPublicationHook.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:beforeCheckPendingTransactionHook`,
+      this.beforeCheckPendingTransactionHook.bind(this),
+    );
   }
 
   private async handleSnapRequest(args: SnapRPCRequest) {
@@ -125,17 +146,54 @@ export class DeferredPublicationController extends BaseController<
     return response as InstitutionalSnapResponse;
   }
 
+  private async updateTransaction(
+    transactionId: string,
+    {
+      status,
+      hash,
+      nonce,
+      gasLimit,
+      maxFeePerGas,
+      maxPriorityFeePerGas,
+      type,
+    }: {
+      status: TransactionStatus;
+      hash: string;
+      nonce: string;
+      gasLimit: string;
+      maxFeePerGas: string;
+      maxPriorityFeePerGas: string;
+      type: TransactionEnvelopeType;
+    },
+  ) {
+    const response = await this.messagingSystem.call(
+      'TransactionController:updateCustodialTransaction',
+      {
+        transactionId,
+        status,
+        hash,
+        nonce,
+        gasLimit,
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+        type,
+      },
+    );
+    return response;
+  }
+
   private async shouldDeferPublication(transactionMeta: TransactionMeta) {
     const account = (await this.messagingSystem.call(
       'AccountsController:getAccountByAddress',
       transactionMeta.txParams.from as string,
     )) as unknown as DeferrableTransactionAccount;
 
+    console.log('account', account);
+
     return account?.options.custodian?.deferPublication;
   }
 
   async deferPublicationHook(
-    transactionController: TransactionController,
     transactionMeta: TransactionMeta,
   ): Promise<boolean> {
     const shouldDefer = await this.shouldDeferPublication(transactionMeta);
@@ -150,7 +208,7 @@ export class DeferredPublicationController extends BaseController<
       };
 
       const snapGetMutableTransactionParamsPayload: SnapRPCRequest = {
-        snapId,
+        snapId: SNAP_ID,
         origin: 'metamask',
         handler: HandlerType.OnRpcRequest,
         request: {
@@ -165,7 +223,7 @@ export class DeferredPublicationController extends BaseController<
 
       const hash = snapResponse.transaction.transactionHash;
 
-      transactionController.updateCustodialTransaction(transactionMeta.id, {
+      await this.updateTransaction(transactionMeta.id, {
         status: TransactionStatus.submitted,
         hash,
         nonce: snapResponse.transaction.nonce,
@@ -176,6 +234,7 @@ export class DeferredPublicationController extends BaseController<
       });
       return false;
     }
+
     return true;
   }
 
