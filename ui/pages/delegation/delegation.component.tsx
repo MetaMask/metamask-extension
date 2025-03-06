@@ -3,17 +3,23 @@ import {
   createRootDelegation,
   DelegationFramework,
   DelegationStruct,
+  getDelegationHashOffchain,
   getDeleGatorEnvironment,
+  Implementation,
+  MetaMaskSmartAccount,
+  createDelegation,
   SIGNABLE_DELEGATION_TYPED_DATA,
-  SINGLE_TRY_MODE,
+  SINGLE_DEFAULT_MODE,
+  toMetaMaskSmartAccount,
 } from '@metamask-private/delegator-core-viem';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import { SignTypedDataVersion } from '@metamask/keyring-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import React, { useEffect, useState } from 'react';
-import { parseEther } from 'viem';
+import React, { useState, useEffect } from 'react';
+import { createPublicClient, http, parseEther, formatEther } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
 import { sepolia } from 'viem/chains';
-import { Box, Button, Label, Text } from '../../components/component-library';
+import { Box, Button, Text } from '../../components/component-library';
 import Card from '../../components/ui/card';
 import {
   BlockSize,
@@ -21,85 +27,14 @@ import {
   FlexDirection,
   TextColor,
 } from '../../helpers/constants/design-system';
-import {
-  addTransaction,
-  newUnsignedTypedMessage,
-  performGetStorage,
-  performSetStorage,
-} from '../../store/actions';
+import { addTransaction, newUnsignedTypedMessage } from '../../store/actions';
+import { generateActionId } from '../../store/background-connection';
 
 const SWAP_LIMIT = parseEther('0.1');
-export const GATOR_ENV = getDeleGatorEnvironment(sepolia.id, '1.1.0');
-const DELEGATION_STORAGE_PATH = 'accounts_v2.delegation';
-
-/**
- * Helper function to save data to delegation storage
- * Gets the existing data first and merges with new data
- *
- * @param key - The key to save the value under
- * @param value - The value to save
- * @returns A promise that resolves when storage is updated
- */
-async function saveDelegationStorage(
-  key: string,
-  value: unknown,
-): Promise<void> {
-  try {
-    // Get existing data
-    let existingData: Record<string, unknown> = {};
-    try {
-      const storedData = await performGetStorage({
-        path: DELEGATION_STORAGE_PATH,
-      });
-
-      if (storedData) {
-        existingData =
-          typeof storedData === 'string' ? JSON.parse(storedData) : storedData;
-      }
-    } catch (error) {
-      console.error('Error getting existing delegation storage:', error);
-    }
-
-    // Merge with new data
-    const updatedData = {
-      ...existingData,
-      [key]: value,
-    };
-
-    // Save updated data
-    await performSetStorage({
-      path: DELEGATION_STORAGE_PATH,
-      value: JSON.stringify(updatedData),
-    });
-    console.log(`Successfully saved ${key} to delegation storage`);
-  } catch (error) {
-    console.error(`Error saving ${key} to delegation storage:`, error);
-    throw error;
-  }
-}
-
-/**
- * Helper function to get data from delegation storage
- *
- * @returns A promise that resolves with the storage data
- */
-async function getDelegationStorage(): Promise<Record<string, unknown>> {
-  try {
-    const storedData = await performGetStorage({
-      path: DELEGATION_STORAGE_PATH,
-    });
-
-    if (storedData) {
-      return typeof storedData === 'string'
-        ? JSON.parse(storedData)
-        : storedData;
-    }
-    return {};
-  } catch (error) {
-    console.error('Error getting delegation storage:', error);
-    return {};
-  }
-}
+const TRANSFER_AMOUNT = parseEther('0.001');
+export const GATOR_ENV = getDeleGatorEnvironment(sepolia.id, '1.2.0');
+const INTERNAL_GATOR_PK = '';
+const RPC_URL = '';
 
 export default function Delegation({
   accounts,
@@ -107,58 +42,102 @@ export default function Delegation({
   accounts: InternalAccount[];
 }) {
   const [loading, setLoading] = useState<boolean>(false);
-  const [delegation, setDelegation] = useState<DelegationStruct | undefined>();
-  const [signedDelegation, setSignedDelegation] = useState<
+  const [rootDelegation, setRootDelegation] = useState<
+    DelegationStruct | undefined
+  >();
+  const [redelegation, setRedelegation] = useState<
     DelegationStruct | undefined
   >();
 
+  const [metaMaskSmartAccount, setMetaMaskSmartAccount] = useState<
+    MetaMaskSmartAccount<Implementation.Hybrid> | undefined
+  >();
+  const [loadingSmartAccount, setLoadingSmartAccount] =
+    useState<boolean>(false);
+  const [isDeployed, setIsDeployed] = useState<boolean>(false);
+  const [gatorBalance, setGatorBalance] = useState<string>('0');
+
   // Get delegator (account 1) and delegate (account 2)
-  const delegatorAccount = accounts[0];
-  const delegateAccount = accounts.length > 1 ? accounts[1] : null;
-  const delegateNotFound = !delegateAccount;
+  const account1 = accounts[0];
+  const account2 = accounts.length > 1 ? accounts[1] : null;
+  const delegateNotFound = !account2;
+  const hasAllAccounts = account1 && account2 && metaMaskSmartAccount;
 
-  // Load any saved delegation data on component mount
-  /*  useEffect(() => {
-    const loadSavedData = async () => {
-      try {
-        setLoading(true);
+  const publicClient = createPublicClient({
+    chain: sepolia,
+    transport: http(RPC_URL),
+  });
 
-        // Try to load any saved delegation data
-        const storedData = await getDelegationStorage();
-        console.log('Raw stored data from storage:', storedData);
+  const fetchGatorBalance = async (address: string) => {
+    try {
+      const balance = await publicClient.getBalance({
+        address: address as `0x${string}`,
+      });
+      setGatorBalance(formatEther(balance));
+    } catch (error) {
+      console.error('Error fetching gator balance:', error);
+      setGatorBalance('Error');
+    }
+  };
 
-        // Restore signed delegation if it exists
-        if (storedData.signedDelegation) {
-          console.log(
-            'Raw signedDelegation from storage:',
-            storedData.signedDelegation,
-          );
-          // Convert the salt back to BigInt when loading from storage
-          const loadedDelegation = {
-            ...(storedData.signedDelegation as Omit<DelegationStruct, 'salt'>),
-            salt: BigInt(
-              (storedData.signedDelegation as { salt: string }).salt,
-            ),
-          };
-          console.log(
-            'Processed loadedDelegation after salt conversion:',
-            loadedDelegation,
-          );
-          setSignedDelegation(loadedDelegation);
-          console.log('Loaded saved signed delegation from storage');
-        }
-      } catch (error) {
-        console.error('Failed to load data on mount:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const loadMetaMaskAccount = async () => {
+    const owner = privateKeyToAccount(INTERNAL_GATOR_PK as `0x${string}`);
 
-    loadSavedData();
-  }, []); */
+    const account = await toMetaMaskSmartAccount({
+      client: publicClient,
+      implementation: Implementation.Hybrid,
+      deployParams: [owner.address, [], [], []],
+      deploySalt: '0x',
+      signatory: { account: owner },
+    });
 
-  const createDelegation = async () => {
-    if (!delegatorAccount || !delegateAccount) {
+    setMetaMaskSmartAccount(account);
+
+    const deployed = await account.isDeployed();
+    setIsDeployed(deployed);
+
+    // Fetch balance after setting the account
+    fetchGatorBalance(account.address);
+
+    return account;
+  };
+
+  // Refresh balance when account is deployed
+  useEffect(() => {
+    if (metaMaskSmartAccount && isDeployed) {
+      fetchGatorBalance(metaMaskSmartAccount.address);
+    }
+  }, [isDeployed, metaMaskSmartAccount]);
+
+  const deployMetaMaskAccount = async () => {
+    if (!metaMaskSmartAccount) {
+      throw new Error('MetaMask smart account not loaded');
+    }
+
+    const { factory, factoryData } =
+      await metaMaskSmartAccount.getFactoryArgs();
+
+    if (factory && factoryData) {
+      const txHash = await addTransaction(
+        {
+          from: account1.address,
+          to: factory,
+          data: factoryData,
+          value: '0x0', // No ETH sent with the transaction
+        },
+        { method: 'eth_sendTransaction' },
+      );
+
+      console.log('txHash', txHash);
+
+      // Check if deployment was successful
+      const deployed = await metaMaskSmartAccount.isDeployed();
+      setIsDeployed(deployed);
+    }
+  };
+
+  const generateRootDelegation = async () => {
+    if (!account1 || !metaMaskSmartAccount) {
       throw new Error('Cannot create delegation: Missing accounts');
     }
 
@@ -168,23 +147,53 @@ export default function Delegation({
       SWAP_LIMIT,
     );
 
-    const rootDelegation = createRootDelegation(
-      delegateAccount.address as `0x${string}`,
-      delegatorAccount.address as `0x${string}`,
-      caveats.build(),
+    const delegation = createRootDelegation(
+      account1.address as `0x${string}`,
+      metaMaskSmartAccount?.address as `0x${string}`,
+      caveats,
       BigInt(0),
     );
 
-    console.log('delegation', rootDelegation);
-    setDelegation(rootDelegation);
+    const signature = await metaMaskSmartAccount.signDelegation({
+      delegation,
+    });
+
+    const rootDelegationWithSignature = {
+      ...delegation,
+      signature,
+    };
+
+    setRootDelegation(rootDelegationWithSignature);
+
+    console.log('rootDelegationWithSignature', rootDelegationWithSignature);
   };
 
-  const signDelegation = async () => {
-    if (!delegation) {
+  const generateRedelegation = async () => {
+    if (!rootDelegation || !account2 || !account1) {
+      throw new Error('Root delegation or accounts not found');
+    }
+
+    const newRedelegation = createDelegation(
+      account2.address as `0x${string}`,
+      account1?.address as `0x${string}`,
+      getDelegationHashOffchain(rootDelegation),
+      [],
+      BigInt(0),
+    );
+
+    setRedelegation(newRedelegation);
+
+    console.log('newRedelegation', newRedelegation);
+  };
+
+  const signRedelegation = async () => {
+    if (!redelegation) {
       throw new Error('Delegation not found');
     }
 
     try {
+      const id = generateActionId();
+
       const typedDataObj = {
         types: SIGNABLE_DELEGATION_TYPED_DATA,
         primaryType: 'Delegation',
@@ -192,44 +201,39 @@ export default function Delegation({
           name: 'DelegationManager',
           version: '1',
           chainId: sepolia.id,
-          verifyingContract: GATOR_ENV.DelegationManager as `0x${string}`,
+          verifyingContract: GATOR_ENV.DelegationManager,
         },
-        message: {
-          delegator: delegation.delegator,
-          delegate: delegation.delegate,
-          salt: delegation.salt.toString(),
-          caveats: delegation.caveats,
-          authority: delegation.authority,
-        },
+        message: redelegation,
       };
 
       const signature = await newUnsignedTypedMessage({
         messageParams: {
-          from: delegatorAccount.address,
-          data: typedDataObj,
+          requestId: id,
+          origin: ORIGIN_METAMASK,
+          from: account1.address,
           version: SignTypedDataVersion.V4,
+          data: JSON.stringify({
+            ...typedDataObj,
+            message: {
+              ...redelegation,
+              salt: redelegation.salt.toString(),
+            },
+          }),
         },
         request: {
-          id: 1,
+          id,
           origin: ORIGIN_METAMASK,
           params: [],
           networkClientId: sepolia.name.toLowerCase(),
         },
         version: SignTypedDataVersion.V4,
-        signingOptions: {
-          parseJsonData: true,
-        },
       });
       console.log('signature', signature);
 
       if (signature) {
-        const signedDelegationData = { ...delegation, signature };
-        setSignedDelegation(signedDelegationData);
-        /* await saveDelegationStorage('signedDelegation', {
-          ...signedDelegationData,
-          salt: signedDelegationData.salt.toString(),
-        }); */
-        console.log('Saved delegation data to storage');
+        const signedDelegationData = { ...redelegation, signature };
+        setRedelegation(signedDelegationData);
+        console.log('signedDelegationData', signedDelegationData);
       }
     } catch (error) {
       console.error('Error signing delegation:', error);
@@ -237,92 +241,92 @@ export default function Delegation({
     }
   };
 
-  const onCreateDelegation = async () => {
-    try {
-      setLoading(true);
-      await createDelegation();
-    } catch (error) {
-      console.error('Error creating delegation:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const onSignDelegation = async () => {
-    try {
-      setLoading(true);
-      await signDelegation();
-    } catch (error) {
-      console.error('Error signing delegation:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Add this new function for sending a standard transaction to redeem delegations
-  const redeemDelegationAsTransaction = async () => {
-    if (!signedDelegation) {
-      throw new Error('Signed delegation not found');
-    }
-
-    if (!delegateAccount) {
-      throw new Error('Delegate account not found');
+  const redeemRootDelegation = async () => {
+    if (!rootDelegation) {
+      throw new Error('Root delegation not found');
     }
 
     try {
-      setLoading(true);
-
-      console.log('signedDelegation', signedDelegation);
-
-      const swapAmount = parseEther('0.001');
-
-      // Get the contract address from the environment
+      const delegations = [rootDelegation];
       const delegationManagerAddress = GATOR_ENV.DelegationManager;
 
-      // Create a transaction to the DelegationManager contract
       const encodedCallData = DelegationFramework.encode.redeemDelegations(
-        [[{ ...signedDelegation, salt: signedDelegation.salt.toString() }]],
-        [SINGLE_TRY_MODE],
+        [delegations],
+        [SINGLE_DEFAULT_MODE],
         [
           [
             {
-              target: delegateAccount.address as `0x${string}`,
+              target: account1.address as `0x${string}`,
               callData: '0x',
-              value: swapAmount,
+              value: TRANSFER_AMOUNT,
             },
           ],
         ],
       );
 
-      // Send the transaction using MetaMask's sendTransaction action
       const txHash = await addTransaction(
         {
-          from: delegateAccount.address,
+          from: account1.address,
           to: delegationManagerAddress,
           data: encodedCallData,
-          value: '0x0', // No ETH sent with the transaction
+          value: '0x0',
         },
         { method: 'eth_sendTransaction' },
       );
 
-      console.log('Transaction sent:', txHash);
+      console.log('Root delegation redeemed:', txHash);
       return txHash;
     } catch (error) {
-      console.error('Error redeeming delegation as transaction:', error);
+      console.error('Error redeeming root delegation:', error);
       throw error;
-    } finally {
-      setLoading(false);
     }
   };
 
-  const onRedeemDelegation = async () => {
+  const redeemRedelegation = async () => {
+    if (!redelegation || !rootDelegation) {
+      throw new Error('Signed delegations not found');
+    }
+
+    if (!account2) {
+      throw new Error('Delegate account not found');
+    }
+
     try {
-      setLoading(true);
-      await redeemDelegationAsTransaction();
+      const delegations = [redelegation, rootDelegation];
+      const delegationManagerAddress = GATOR_ENV.DelegationManager;
+
+      console.log('delegations', delegations);
+
+      // Create a transaction to the DelegationManager contract for the chain
+      const encodedCallData = DelegationFramework.encode.redeemDelegations(
+        [delegations],
+        [SINGLE_DEFAULT_MODE],
+        [
+          [
+            {
+              target: account2.address as `0x${string}`,
+              callData: '0x',
+              value: TRANSFER_AMOUNT,
+            },
+          ],
+        ],
+      );
+
+      const txHash = await addTransaction(
+        {
+          from: account2.address,
+          to: delegationManagerAddress,
+          data: encodedCallData,
+          value: '0x0',
+        },
+        { method: 'eth_sendTransaction' },
+      );
+
+      console.log('Redelegation redeemed:', txHash);
+      return txHash;
     } catch (error) {
-      console.error('Error redeeming delegation:', error);
-    } finally {
-      setLoading(false);
+      console.error('Error redeeming redelegation:', error);
+      throw error;
     }
   };
 
@@ -344,14 +348,46 @@ export default function Delegation({
             style={{ gap: '16px' }}
           >
             <Text as="h3">Account Information</Text>
-            {delegatorAccount && delegateAccount ? (
+            {account1 && account2 ? (
               <>
-                <Text as="p">
-                  Delegator (Account 1): {delegatorAccount.address}
-                </Text>
-                <Text as="p">
-                  Delegate (Account 2): {delegateAccount.address}
-                </Text>
+                {metaMaskSmartAccount && (
+                  <>
+                    <Text as="p">
+                      MetaMask Smart Account: {metaMaskSmartAccount.address}
+                    </Text>
+                    <Text as="p">
+                      Deployment Status:{' '}
+                      {isDeployed ? 'Deployed ✓' : 'Not Deployed ✗'}
+                    </Text>
+                    <Text as="p">Gator Balance: {gatorBalance} ETH</Text>
+                    {isDeployed && (
+                      <Button
+                        onClick={() =>
+                          fetchGatorBalance(metaMaskSmartAccount.address)
+                        }
+                        style={{ marginTop: '8px' }}
+                      >
+                        Refresh Balance
+                      </Button>
+                    )}
+                  </>
+                )}
+                {metaMaskSmartAccount && !isDeployed && (
+                  <Button
+                    onClick={deployMetaMaskAccount}
+                    disabled={loadingSmartAccount || loading}
+                  >
+                    Deploy Internal Gator
+                  </Button>
+                )}
+                {!metaMaskSmartAccount && (
+                  <Button
+                    onClick={loadMetaMaskAccount}
+                    disabled={loadingSmartAccount || loading}
+                  >
+                    Load Internal Gator
+                  </Button>
+                )}
               </>
             ) : (
               <Text as="p" color={TextColor.errorDefault}>
@@ -363,7 +399,7 @@ export default function Delegation({
           </Box>
         </Card>
 
-        {delegatorAccount && delegateAccount && (
+        {hasAllAccounts && (
           <Card
             display={Display.Flex}
             width={BlockSize.Full}
@@ -375,33 +411,66 @@ export default function Delegation({
               flexDirection={FlexDirection.Column}
               gap={2}
             >
+              {/* Step 3: Create root delegation */}
               <Button
-                onClick={onCreateDelegation}
-                disabled={Boolean(delegation) || loading}
+                onClick={generateRootDelegation}
+                disabled={!isDeployed || Boolean(rootDelegation) || loading}
               >
-                {loading ? 'Processing...' : 'Create Delegation'}
+                Generate Root Delegation (Gator -&gt; {account1.metadata.name})
               </Button>
 
+              {/* Step 4: Redeem root delegation */}
               <Button
-                onClick={onSignDelegation}
-                disabled={!delegation || loading}
+                onClick={redeemRootDelegation}
+                disabled={!rootDelegation || loading}
               >
-                {loading ? 'Signing...' : 'Sign Delegation'}
+                Redeem Root Delegation (Trigger Transfer Transaction (0.001 ETH)
+                from Gator to {account1.metadata.name})
+              </Button>
+            </Box>
+          </Card>
+        )}
+        {hasAllAccounts && rootDelegation && (
+          <Card
+            display={Display.Flex}
+            width={BlockSize.Full}
+            gap={2}
+            flexDirection={FlexDirection.Column}
+          >
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              gap={2}
+            >
+              {/* Step 3: Create root delegation */}
+              <Button
+                onClick={generateRedelegation}
+                disabled={loading || Boolean(redelegation)}
+              >
+                Generate Redelegation ({account1.metadata.name} -&gt;{' '}
+                {account2.metadata.name})
               </Button>
 
-              {signedDelegation && (
-                <>
-                  <Label>Signed Delegation:</Label>
-                  <Text style={{ wordBreak: 'break-all' }}>
-                    {signedDelegation.signature}
-                  </Text>
-                  <Button onClick={onRedeemDelegation} disabled={loading}>
-                    {loading
-                      ? 'Processing...'
-                      : 'Redeem Delegation (Transaction)'}
-                  </Button>
-                </>
-              )}
+              {/* Step 4: Sign redelegation */}
+              <Button
+                onClick={signRedelegation}
+                disabled={
+                  !redelegation || redelegation?.signature !== '0x' || loading
+                }
+              >
+                Sign Redelegation (From {account1.metadata.name})
+              </Button>
+
+              {/* Step 5: Redeem root delegation */}
+              <Button
+                onClick={redeemRedelegation}
+                disabled={
+                  !redelegation || redelegation?.signature === '0x' || loading
+                }
+              >
+                Redeem Redelegation (Trigger Transfer Transaction (0.001 ETH)
+                from {account1.metadata.name} to {account2.metadata.name})
+              </Button>
             </Box>
           </Card>
         )}
