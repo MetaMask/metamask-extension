@@ -97,9 +97,9 @@ export function MultichainTransactionDetailsModal({
       (entry) => entry.address === userAddress,
     );
 
-    fromAddress = txFromEntry?.address || transaction.from[0].address;
-    fromAsset = txFromEntry?.asset || transaction.from[0].asset;
-    toAddress = txToEntry?.address || transaction.to[0].address;
+    fromAddress = txFromEntry?.address;
+    fromAsset = txFromEntry?.asset;
+    toAddress = txToEntry?.address;
   } else {
     fromAddress = transaction.from[0].address;
     fromAsset = transaction.from[0].asset;
