@@ -16,7 +16,7 @@ describe('Send ERC20', function () {
           .withNetworkControllerOnMainnet()
           .withTokensController({
             allTokens: {
-              ['0x1']: {
+              '0x1': {
                 '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
                   {
                     address: '0x6b175474e89094c44da98b954eedeac495271d0f',
@@ -31,14 +31,15 @@ describe('Send ERC20', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        localNodeOptions: [{
-          type: 'anvil',
-          options: {
-            chainId: 1,
-            loadState: './test/e2e/seeder/localNodeStates/withDai.json'
-          }
-        }
-      ]
+        localNodeOptions: [
+          {
+            type: 'anvil',
+            options: {
+              chainId: 1,
+              loadState: './test/e2e/seeder/network-states/with50Dai.json',
+            },
+          },
+        ],
       },
       async ({ driver, localNodes }) => {
         await loginWithBalanceValidation(driver, localNodes[0]);
@@ -55,11 +56,13 @@ describe('Send ERC20', function () {
 
         const sendTokenPage = new SendTokenPage(driver);
         await sendTokenPage.check_pageIsLoaded();
-        await sendTokenPage.fillRecipient('0x5cfe73b6021e818b776b421b1c4db2474086a7e1');
+        await sendTokenPage.fillRecipient(
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+        );
         await sendTokenPage.fillAmount('10');
         await sendTokenPage.goToNextScreen();
 
-
+        // Check transaction in the Activity list
         const tokenTransferTransactionConfirmation =
           new TokenTransferTransactionConfirmation(driver);
         await tokenTransferTransactionConfirmation.check_walletInitiatedHeadingTitle();
@@ -71,8 +74,7 @@ describe('Send ERC20', function () {
         const activityList = new ActivityListPage(driver);
         await activityList.check_confirmedTxNumberDisplayedInActivity();
         await activityList.check_txAmountInActivity('-10 DAI');
-
       },
     );
   });
-})
+});
