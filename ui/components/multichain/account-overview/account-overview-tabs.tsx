@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { endTrace, trace } from '../../../../shared/lib/trace';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { ASSET_ROUTE } from '../../../helpers/constants/routes';
+import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   SUPPORT_LINK,
@@ -42,12 +42,14 @@ import {
 import { detectNfts } from '../../../store/actions';
 import { getAllChainsToPoll } from '../../../selectors';
 import { AccountOverviewCommonProps } from './common';
+import DeFi from '../../app/assets/defi/defi-asset-list';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
   showTokens: boolean;
   showTokensLinks?: boolean;
   showNfts: boolean;
   showActivity: boolean;
+  showDefi: boolean;
 };
 
 export const AccountOverviewTabs = ({
@@ -60,6 +62,7 @@ export const AccountOverviewTabs = ({
   showTokensLinks,
   showNfts,
   showActivity,
+  showDefi,
 }: AccountOverviewTabsProps) => {
   const history = useHistory();
   const t = useI18nContext();
@@ -115,8 +118,15 @@ export const AccountOverviewTabs = ({
   ///: END:ONLY_INCLUDE_IF
 
   const onClickAsset = useCallback(
-    (chainId: string, asset: string) =>
-      history.push(`${ASSET_ROUTE}/${chainId}/${asset}`),
+    (chainId: string, asset: string) => {
+      return history.push(`${ASSET_ROUTE}/${chainId}/${asset}`);
+    },
+    [history],
+  );
+  const onClickDefi = useCallback(
+    (chainId: string, protocolId: string) => {
+      return history.push(`${DEFI_ROUTE}/${chainId}/${protocolId}`);
+    },
     [history],
   );
 
@@ -139,6 +149,27 @@ export const AccountOverviewTabs = ({
                 showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickAsset}
               />
+              {
+                ///: BEGIN:ONLY_INCLUDE_IF(build-main)
+                <NeedHelpButtonLink
+                  justifyContent={JustifyContent.flexStart}
+                  paddingLeft={4}
+                  marginBottom={4}
+                ></NeedHelpButtonLink>
+                ///: END:ONLY_INCLUDE_IF
+              }
+            </Box>
+          </Tab>
+        )}
+        {showDefi && (
+          <Tab
+            name={'DeFi'}
+            tabKey="defi"
+            data-testid="account-overview__defi-tab"
+            {...tabProps}
+          >
+            <Box marginTop={2}>
+              <DeFi onClickDefi={onClickDefi} />
               {
                 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
                 <NeedHelpButtonLink
