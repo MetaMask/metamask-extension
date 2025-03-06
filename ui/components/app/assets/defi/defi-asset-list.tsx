@@ -1,7 +1,8 @@
 import React from 'react';
 import { TokenWithFiatAmount } from '../types';
 import TokenCell from '../token-cell';
-import { data } from './data';
+import { defiData } from '../../../../pages/defi/components/data';
+
 
 function getDefiTokenCell(data: any): TokenWithFiatAmount[] {
   return Object.keys(data).flatMap((chainId) =>
@@ -35,7 +36,7 @@ const DeFi = ({
 }) => {
   return (
     <>
-      {getDefiTokenCell(data).map((token) => (
+      {getDefiTokenCell(defiData).map((token) => (
         <TokenCell
           key={`${token.chainId}-${token.address}`}
           token={token}

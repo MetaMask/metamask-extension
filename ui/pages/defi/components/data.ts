@@ -1,4 +1,4 @@
-export const data ={
+export const defiData ={
   '0x1': {
     aggregatedMarketValue: 20540,
     protocols: {

@@ -19,7 +19,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TokenCell from '../../../components/app/assets/token-cell';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { data } from './data';
+import { defiData } from './data';
 
 import { TokenWithFiatAmount } from '../../../components/app/assets/types';
 
@@ -128,7 +128,7 @@ export const DeFiDetails = ({
   chainId: Hex;
   protocolId: string;
 }) => {
-  const chainData = data[chainId as keyof typeof data];
+  const chainData = defiData[chainId as keyof typeof defiData];
   const protocol = chainData.protocols[
     protocolId as keyof typeof chainData.protocols
   ] as any;
