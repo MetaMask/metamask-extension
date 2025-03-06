@@ -9,9 +9,7 @@ const platform = new ExtensionPlatform();
 
 // This instance of `localStore` is used by Sentry to get the persisted state
 const sentryLocalStore = new PersistenceManager({
-  localStore: process.env.IN_TEST
-    ? new ReadOnlyNetworkStore()
-    : new ExtensionStore(),
+  localStore: false ? new ReadOnlyNetworkStore() : new ExtensionStore(),
 });
 
 /**
