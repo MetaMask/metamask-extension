@@ -1069,6 +1069,7 @@ export function setupController(
     });
   };
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   connectRemoteCaip = async (remotePort) => {
     if (metamaskBlockedPorts.includes(remotePort.name)) {
       return;
