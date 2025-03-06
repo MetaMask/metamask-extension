@@ -362,7 +362,7 @@ export default function TransactionList({
 
   const formatTransactionTitle = (transaction, userAddress) => {
     switch (transaction.type) {
-      case TransactionType.swap:
+      case TransactionType.swap: {
         const userToEntry = transaction.to?.find(
           (entry) => entry.address === userAddress,
         );
@@ -375,6 +375,7 @@ export default function TransactionList({
           }`;
         }
         return capitalize(transaction.type);
+      }
       default:
         return capitalize(transaction.type);
     }

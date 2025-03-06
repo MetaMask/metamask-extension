@@ -309,49 +309,61 @@ export function MultichainTransactionDetailsModal({
               </Box>
             </Box>
 
-            {/* Network Fee */}
+            {/* Network Fees */}
             {fees?.length > 0 && (
-              <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text
-                  variant={TextVariant.bodyMd}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {t('networkFee')}
-                </Text>
-                <Box
-                  display={Display.Flex}
-                  flexDirection={FlexDirection.Column}
-                  alignItems={AlignItems.flexEnd}
-                >
-                  {baseFee && (
+              <>
+                {baseFee && (
+                  <Box
+                    display={Display.Flex}
+                    justifyContent={JustifyContent.spaceBetween}
+                  >
                     <Text
                       variant={TextVariant.bodyMd}
-                      data-testid="transaction-base-fee"
+                      fontWeight={FontWeight.Medium}
                     >
-                      {t('baseFee')}: {getAssetDisplay(baseFee)}
+                      {t('networkFee')}
                     </Text>
-                  )}
-                  {priorityFee && (
+                    <Box
+                      display={Display.Flex}
+                      flexDirection={FlexDirection.Column}
+                      alignItems={AlignItems.flexEnd}
+                    >
+                      <Text
+                        variant={TextVariant.bodyMd}
+                        data-testid="transaction-base-fee"
+                      >
+                        {getAssetDisplay(baseFee)}
+                      </Text>
+                    </Box>
+                  </Box>
+                )}
+
+                {priorityFee && (
+                  <Box
+                    display={Display.Flex}
+                    justifyContent={JustifyContent.spaceBetween}
+                  >
                     <Text
                       variant={TextVariant.bodyMd}
-                      data-testid="transaction-priority-fee"
+                      fontWeight={FontWeight.Medium}
                     >
-                      {t('priorityFee')}: {getAssetDisplay(priorityFee)}
+                      {t('priorityFee')}
                     </Text>
-                  )}
-                  {!baseFee && !priorityFee && fees[0]?.asset && (
-                    <Text
-                      variant={TextVariant.bodyMd}
-                      data-testid="transaction-network-fee"
+                    <Box
+                      display={Display.Flex}
+                      flexDirection={FlexDirection.Column}
+                      alignItems={AlignItems.flexEnd}
                     >
-                      {getAssetDisplay(fees[0].asset)}
-                    </Text>
-                  )}
-                </Box>
-              </Box>
+                      <Text
+                        variant={TextVariant.bodyMd}
+                        data-testid="transaction-priority-fee"
+                      >
+                        {getAssetDisplay(priorityFee)}
+                      </Text>
+                    </Box>
+                  </Box>
+                )}
+              </>
             )}
           </Box>
         </Box>
