@@ -32,7 +32,7 @@ describe('smartTransactions', () => {
       expect(allowedChainIds).toStrictEqual([
         CHAIN_IDS.MAINNET,
         CHAIN_IDS.BSC,
-        CHAIN_IDS.BASE,
+        // CHAIN_IDS.BASE, // TODO: Add base to production when ready
       ]);
     });
   });
