@@ -45,7 +45,7 @@ class TransactionDetailsPage {
 
   async check_transactionNetworkFee(networkFee: string): Promise<void> {
     await this.driver.waitForSelector({
-      contains: networkFee,
+      text: `Base fee: ${networkFee}`,
       tag: 'p',
     });
   }
