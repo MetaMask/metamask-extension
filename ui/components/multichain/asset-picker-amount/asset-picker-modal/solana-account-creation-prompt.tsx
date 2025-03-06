@@ -1,0 +1,95 @@
+import React from 'react';
+import { useSelector } from 'react-redux';
+import {
+  Box,
+  Text,
+  Button,
+  ButtonSize,
+  ButtonVariant,
+} from '../../../component-library';
+import {
+  Display,
+  TextAlign,
+  TextColor,
+  TextVariant,
+  AlignItems,
+  JustifyContent,
+  FlexDirection,
+} from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
+import { getMetaMaskKeyrings } from '../../../../selectors';
+import {
+  WalletClientType,
+  useMultichainWalletSnapClient,
+} from '../../../../hooks/accounts/useMultichainWalletSnapClient';
+
+export const SolanaAccountCreationPrompt = ({
+  onSuccess,
+}: {
+  onSuccess: () => void;
+}) => {
+  const t = useI18nContext();
+  const solanaWalletSnapClient = useMultichainWalletSnapClient(
+    WalletClientType.Solana,
+  );
+  const [primaryKeyring] = useSelector(getMetaMaskKeyrings);
+  const [isCreating, setIsCreating] = React.useState(false);
+
+  const handleCreateAccount = async () => {
+    try {
+      setIsCreating(true);
+      await solanaWalletSnapClient.createAccount(
+        MultichainNetworks.SOLANA,
+        primaryKeyring.metadata.id,
+      );
+      onSuccess();
+    } catch (error) {
+      console.error('Error creating Solana account:', error);
+    } finally {
+      setIsCreating(false);
+    }
+  };
+
+  return (
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      alignItems={AlignItems.center}
+      justifyContent={JustifyContent.center}
+      gap={4}
+      padding={4}
+      className="solana-account-creation-prompt"
+      data-testid="solana-account-creation-prompt"
+      style={{ minHeight: '300px' }}
+    >
+      <Text
+        variant={TextVariant.headingMd}
+        textAlign={TextAlign.Center}
+        color={TextColor.textDefault}
+      >
+        {/* {t('createSolanaAccountTitle')} */}
+        create solana account
+      </Text>
+
+      <Text
+        variant={TextVariant.bodyMd}
+        textAlign={TextAlign.Center}
+        color={TextColor.textAlternative}
+      >
+        create 2{/* {t('createSolanaAccountToUseDestinationDescription')} */}
+      </Text>
+
+      <Button
+        block
+        size={ButtonSize.Md}
+        variant={ButtonVariant.Primary}
+        onClick={handleCreateAccount}
+        loading={isCreating}
+        data-testid="create-solana-account-button"
+      >
+        {t('createSolanaAccount')}
+      </Button>
+    </Box>
+  );
+};
