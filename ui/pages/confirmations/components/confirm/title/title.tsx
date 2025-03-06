@@ -268,7 +268,7 @@ const ConfirmTitle: React.FC = memo(() => {
         <Text
           variant={TextVariant.headingLg}
           paddingTop={4}
-          paddingBottom={4}
+          paddingBottom={2}
           textAlign={TextAlign.Center}
         >
           {title}

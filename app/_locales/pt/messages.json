@@ -73,9 +73,6 @@
   "accountActivityText": {
     "message": "Selecione as contas das quais deseja receber notificações:"
   },
-  "accountBalance": {
-    "message": "Saldo da conta"
-  },
   "accountDetails": {
     "message": "Detalhes da conta"
   },
@@ -5020,12 +5017,6 @@
   },
   "spendingCap": {
     "message": "Limite de gastos"
-  },
-  "spendingCapTooltipDesc": {
-    "message": "Esta é a quantidade de tokens que o consumidor poderá acessar em seu nome."
-  },
-  "spendingCaps": {
-    "message": "Limites de gastos"
   },
   "srpInputNumberOfWords": {
     "message": "Eu tenho uma frase com $1 palavras",
