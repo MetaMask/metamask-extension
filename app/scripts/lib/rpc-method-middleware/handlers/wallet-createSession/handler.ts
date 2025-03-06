@@ -123,11 +123,11 @@ async function walletCreateSessionHandler(
 
     const requiredScopesWithSupportedMethodsAndNotifications =
       getSupportedScopeObjects(normalizedRequiredScopes, {
-        getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods
+        getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods,
       });
     const optionalScopesWithSupportedMethodsAndNotifications =
       getSupportedScopeObjects(normalizedOptionalScopes, {
-        getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods
+        getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods,
       });
 
     const networkClientExistsForChainId = (chainId: Hex) => {
