@@ -97,9 +97,9 @@ export function MultichainTransactionDetailsModal({
       (entry) => entry.address === userAddress,
     );
 
-    fromAddress = txFromEntry?.address;
+    fromAddress = txFromEntry?.address || '';
     fromAsset = txFromEntry?.asset || null;
-    toAddress = txToEntry?.address;
+    toAddress = txToEntry?.address || '';
   } else {
     fromAddress = transaction.from[0].address;
     fromAsset = transaction.from[0].asset;
@@ -230,7 +230,7 @@ export function MultichainTransactionDetailsModal({
                   }}
                   as="a"
                   externalLink
-                  href={getAddressUrl(fromAddress || '', chain)}
+                  href={getAddressUrl(fromAddress, chain)}
                 >
                   {shortenAddress(fromAddress)}
                   <Icon
@@ -240,7 +240,7 @@ export function MultichainTransactionDetailsModal({
                     color={IconColor.primaryDefault}
                     onClick={() =>
                       navigator.clipboard.writeText(
-                        getAddressUrl(fromAddress || '', chain),
+                        getAddressUrl(fromAddress, chain),
                       )
                     }
                   />
@@ -269,7 +269,7 @@ export function MultichainTransactionDetailsModal({
                   }}
                   as="a"
                   externalLink
-                  href={getAddressUrl(toAddress || '', chain)}
+                  href={getAddressUrl(toAddress, chain)}
                 >
                   {shortenAddress(toAddress)}
                   <Icon
@@ -279,7 +279,7 @@ export function MultichainTransactionDetailsModal({
                     color={IconColor.primaryDefault}
                     onClick={() =>
                       navigator.clipboard.writeText(
-                        getAddressUrl(toAddress || '', chain),
+                        getAddressUrl(toAddress, chain),
                       )
                     }
                   />
