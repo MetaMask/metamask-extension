@@ -111,7 +111,7 @@ const PermitSimulation: React.FC<object> = () => {
   let descriptionKey = 'permitSimulationDetailInfo';
   if (isNFT) {
     descriptionKey = 'simulationDetailsApproveDesc';
-  } else if (message.allowed === false) {
+  } else if (message.allowed === false || message.value === '0') {
     // revoke permit
     descriptionKey = 'revokeSimulationDetailsDesc';
   }

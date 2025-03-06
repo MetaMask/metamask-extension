@@ -103,7 +103,7 @@ const getTitle = (
         const isRevokeDAIPermit = getIsRevokeDAIPermit(
           confirmation as SignatureRequestType,
         );
-        if (isRevokeDAIPermit) {
+        if (isRevokeDAIPermit || customSpendingCap === '0') {
           return t('confirmTitleRevokeApproveTransaction');
         }
 
@@ -163,7 +163,7 @@ const getDescription = (
         const isRevokeDAIPermit = getIsRevokeDAIPermit(
           confirmation as SignatureRequestType,
         );
-        if (isRevokeDAIPermit) {
+        if (isRevokeDAIPermit || customSpendingCap === '0') {
           return '';
         }
 
