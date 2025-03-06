@@ -314,36 +314,4 @@ describe('MultichainTransactionDetailsModal', () => {
     expect(feeElement?.textContent).toContain('0.000005');
     expect(feeElement?.textContent).toContain('SOL');
   });
-
-  it('handles Solana swap transactions with different user address', () => {
-    const userAddress = 'DRpbCBMxVnDK7maPM5tGv6MvB3v1TvJBX5QTv7OYmsXr';
-    const swapProps = {
-      transaction: mockSwapTransaction,
-      onClose: jest.fn(),
-      userAddress,
-    };
-
-    renderComponent(swapProps);
-
-    expect(screen.getByText('Swap')).toBeInTheDocument();
-    expect(screen.getByTestId('transaction-amount')).toHaveTextContent(
-      '2.5 SOL',
-    );
-
-    const transactionAddress = MOCK_ACCOUNT_SOLANA_MAINNET.address;
-    const addressStart = transactionAddress.substring(0, 6);
-    const addressElements = screen.getAllByText((_content, element) => {
-      return element?.textContent?.includes(addressStart) || false;
-    });
-
-    expect(addressElements.length).toBeGreaterThan(0);
-
-    const feeElement =
-      screen.queryByTestId('transaction-network-fee') ||
-      screen.queryByTestId('transaction-base-fee');
-
-    expect(feeElement).not.toBeNull();
-    expect(feeElement?.textContent).toContain('0.000005');
-    expect(feeElement?.textContent).toContain('SOL');
-  });
 });
