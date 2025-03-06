@@ -6,9 +6,6 @@ export class TestSnaps {
 
   private readonly installedSnapsHeader = '[data-testid="InstalledSnaps"]';
 
-  private readonly connectDialogsSnapButton =
-    '[data-testid="dialogs"] [data-testid="connect-button"]';
-
   private readonly dialogsSnapConfirmationButton = '#sendConfirmationButton';
 
   private readonly connectHomePage = '#connecthomepage';
@@ -26,6 +23,8 @@ export class TestSnaps {
   public readonly connectUpdateNewButton = '#connectUpdateNew';
 
   private readonly connectClientStatusButton = '#connectclient-status';
+
+  private readonly connectGetEntropySnapButton = '#connectGetEntropySnap';
 
   private readonly sendGetFileTextButton = '#sendGetFileTextButton';
 
@@ -70,6 +69,8 @@ export class TestSnaps {
 
   private readonly inputMessageEd25519 = '#bip32Message-ed25519';
 
+  private readonly inputEntropyMessage = '#entropyMessage';
+
   private readonly inputMessageEd25519Bip32 = '#bip32Message-ed25519Bip32';
 
   private readonly inputMessageSecp256k1 = '#bip32Message-secp256k1';
@@ -85,6 +86,8 @@ export class TestSnaps {
   private readonly buttonSignBip44Message = '#signBip44Message';
 
   private readonly buttonSignEd25519Bip32Message = '#sendBip32-ed25519Bip32';
+
+  private readonly buttonSignEntropyMessage = '#signEntropyMessage';
 
   private readonly clientStatusResultSpan = '#clientStatusResult';
 
@@ -111,6 +114,14 @@ export class TestSnaps {
   public readonly wasmResultSpan = '#wasmResult';
 
   public readonly updateVersionSpan = '#updateSnapVersion';
+
+  public readonly entropySignResultSpan = '#entropySignResult';
+
+  public readonly bip32EntropyDrpDown = '#bip32-entropy-selector';
+
+  public readonly bip44EntropyDrpDown = '#bip44-entropy-selector';
+
+  public readonly getEntropyDrpDown = '#get-entropy-entropy-selector';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -157,7 +168,11 @@ export class TestSnaps {
   }
 
   async clickConnectDialogsSnapButton() {
-    await this.clickButton(this.connectDialogsSnapButton);
+    await this.driver.clickElement(this.connectDialogsButton);
+  }
+
+  async clickConnectGetEntropySnapButton() {
+    await this.clickButton(this.connectGetEntropySnapButton);
   }
 
   async clickGetFileTextButton() {
@@ -290,10 +305,32 @@ export class TestSnaps {
     await this.clickButton(this.buttonSignBip44Message);
   }
 
+  async fillEntropyMessage(message: string) {
+    console.log('Filling entropy message ');
+    await this.driver.pasteIntoField(this.inputEntropyMessage, message);
+    await this.clickButton(this.buttonSignEntropyMessage);
+  }
+
   async scrollToSignWithEd25519Button() {
     console.log('Scrolling to sign with ed25519 button');
     const sendEd25519 = await this.driver.findElement(this.inputMessageEd25519);
     await this.driver.scrollToElement(sendEd25519);
+  }
+
+  async scrollToBip32EntropySource() {
+    console.log('Scrolling to bip32 entropy source dropdown');
+    const bip32Entropy = await this.driver.findElement(
+      this.bip32EntropyDrpDown,
+    );
+    await this.driver.scrollToElement(bip32Entropy);
+  }
+
+  async scrollToBip44EntropySource() {
+    console.log('Scrolling to bip44 entropy source dropdown');
+    const bip44Entropy = await this.driver.findElement(
+      this.bip44EntropyDrpDown,
+    );
+    await this.driver.scrollToElement(bip44Entropy);
   }
 
   async check_installationComplete(selector: string, expectedMessage: string) {
@@ -322,6 +359,42 @@ export class TestSnaps {
     await this.driver.waitForSelector({
       css: spanSelectorId,
       text: expectedMessage,
+    });
+  }
+
+  /**
+   * Select an entropy source from the dropdown with the given name.
+   *
+   * @param name - The name of the entropy source to select.
+   */
+  async scrollAndSelectBip32EntropySource(name: string) {
+    console.log('Select Bip22 entropy source');
+    this.scrollToBip32EntropySource();
+    await this.driver.clickElement(this.bip32EntropyDrpDown);
+    await this.driver.clickElement({
+      text: name,
+      css: `${this.bip32EntropyDrpDown} option`,
+    });
+  }
+
+  async scrollAndSelectBip44EntropySource(name: string) {
+    console.log('Select Bip44 entropy source');
+    this.scrollToBip44EntropySource();
+    await this.driver.clickElement(this.bip44EntropyDrpDown);
+    await this.driver.clickElement({
+      text: name,
+      css: `${this.bip44EntropyDrpDown} option`,
+    });
+  }
+
+  async scrollAndSelectEntropySource(name: string) {
+    console.log('Select entropy source');
+    const selector = await this.driver.findElement(this.getEntropyDrpDown);
+    await this.driver.scrollToElement(selector);
+    await this.driver.clickElement(this.getEntropyDrpDown);
+    await this.driver.clickElement({
+      text: name,
+      css: `${this.getEntropyDrpDown} option`,
     });
   }
 }

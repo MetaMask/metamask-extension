@@ -2,7 +2,7 @@ import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
-import { withFixtures, WINDOW_TITLES } from '../helpers';
+import { withFixtures } from '../helpers';
 import {
   approvePermissionAndConfirm,
   switchToDialogAndClickApproveButton,
@@ -18,12 +18,16 @@ const publicKeyGeneratedWithEd2551 =
   '"0xf3215b4d6c59aac7e01b4ceef530d1e2abf4857926b85a81aaae3894505699243768a887b7da4a8c2e0f25196196ba290b6531050db8dc15c252bdd508532a0a"';
 const publicKeyGeneratedWithEd25519Bip32 =
   '"0xc279ee3e49f7e392a4e511136c39791e076f9be01d8648f3f1586ecf0f41def1739fa2978f90cfb2da4cf53ccb99405558cffcc4d190199b6949b03b1b8dae05"';
+const publicKeyGeneratedWithEntropySourceSRP1 =
+  '"0x3045022100bd7301b5288fcc15e9c19bf548b666356230343a57f4ef0327a8e81f19ac562c022062698ed00a36e9ddd1563e1dc2e357d747bdfb233192ee1597cabb6c7210a6ba"';
+const publicKeyGeneratedWithEntropySourceSRP2 =
+  '"0x3045022100ad81b36b28f5f5dd47f45a46b2e7cf42e501d2e9b5768627b0702c100f80eb3c02200a481cbbe22b47b4ea6cd923a7da22952f5b21a0dc52e841dcd08f7af8c74e05"';
 
 describe('Test Snap bip-32', function () {
   it('tests various functions of bip-32', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder().withKeyringControllerMultiSRP().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -34,10 +38,9 @@ describe('Test Snap bip-32', function () {
         // Navigate to test snaps page, click bip32, connect and approve
         await testSnaps.openPage();
         await testSnaps.clickConnectBip32Button();
-        await approvePermissionAndConfirm(driver);
+        await approvePermissionAndConfirm(driver, true);
 
-        // Switch back to test snaps window and check the installation status
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+        // check the installation status
         await testSnaps.check_installationComplete(
           testSnaps.reconnectBip32Button,
           'Reconnect to BIP-32 Snap',
@@ -60,7 +63,6 @@ describe('Test Snap bip-32', function () {
         // Enter secp256k1 signature message, click sign button, approve and validate the result
         await testSnaps.fillMessageAndSignSecp256k1('foo bar');
         await switchToDialogAndClickApproveButton(driver);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await testSnaps.check_messageResultSpan(
           testSnaps.bip32MessageResultSecp256k1Span,
           publicKeyGeneratedWithSecp256k1Message,
@@ -70,7 +72,6 @@ describe('Test Snap bip-32', function () {
         await testSnaps.scrollToSignWithEd25519Button();
         await testSnaps.fillMessageAndSignEd25519('foo bar');
         await switchToDialogAndClickApproveButton(driver);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await testSnaps.check_messageResultSpan(
           testSnaps.bip32MessageResultEd25519Span,
           publicKeyGeneratedWithEd2551,
@@ -79,11 +80,38 @@ describe('Test Snap bip-32', function () {
         // Enter ed25519 signature message, click sign button, approve and validate the result
         await testSnaps.fillMessageAndSignEd25519Bip32('foo bar');
         await switchToDialogAndClickApproveButton(driver);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await testSnaps.check_messageResultSpan(
           testSnaps.messageResultEd25519SBip32Span,
           publicKeyGeneratedWithEd25519Bip32,
         );
+
+        // Select entropy source SRP 1, enter a message, sign, approve and validate the result
+        await testSnaps.scrollAndSelectBip32EntropySource('SRP 1 (primary)');
+        await testSnaps.fillMessageAndSignSecp256k1('bar baz');
+        await switchToDialogAndClickApproveButton(driver);
+        await testSnaps.check_messageResultSpan(
+          testSnaps.bip32MessageResultSecp256k1Span,
+          publicKeyGeneratedWithEntropySourceSRP1,
+        );
+
+        // Select entropy source SRP 2, enter a message, sign, approve and validate the result
+        await testSnaps.scrollAndSelectBip32EntropySource('SRP 2');
+        await testSnaps.fillMessageAndSignSecp256k1('bar baz');
+        await switchToDialogAndClickApproveButton(driver);
+        await testSnaps.check_messageResultSpan(
+          testSnaps.bip32MessageResultSecp256k1Span,
+          publicKeyGeneratedWithEntropySourceSRP2,
+        );
+
+        // Select an invalid (non-existent) entropy source, enter a message, sign, approve and validate the result
+        await testSnaps.scrollAndSelectBip32EntropySource('Invalid');
+        await testSnaps.fillMessageAndSignSecp256k1('bar baz');
+
+        // Check the error message and close the alert.
+        await driver.waitForAlert(
+          'Entropy source with ID "invalid" not found.',
+        );
+        await driver.closeAlertPopup();
       },
     );
   });

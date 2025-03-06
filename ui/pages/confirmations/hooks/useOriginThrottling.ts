@@ -33,8 +33,8 @@ export function useOriginThrottling() {
   const originState = throttledOrigins[origin];
   const shouldThrottleOrigin = willNextRejectionReachThreshold(originState);
 
-  const resetOrigin = useCallback(async () => {
-    await dispatch(
+  const resetOrigin = useCallback(() => {
+    dispatch(
       updateThrottledOriginState(origin, {
         rejections: 0,
         lastRejection: 0,

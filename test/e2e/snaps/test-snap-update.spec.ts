@@ -4,7 +4,7 @@ import { Driver } from '../webdriver/driver';
 import { withFixtures, WINDOW_TITLES } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
-import { approvePermissionAndConfirm } from '../page-objects/flows/snap-permission.flow';
+import { completeSnapInstallConfirmation } from '../page-objects/flows/snap-permission.flow';
 
 describe('Test Snap update', function () {
   it('can install an old and then updated version', async function () {
@@ -22,7 +22,7 @@ describe('Test Snap update', function () {
         // Navigate to test snaps page and connect update
         await testSnaps.openPage();
         await testSnaps.clickConnectUpdateButton();
-        await approvePermissionAndConfirm(driver);
+        await completeSnapInstallConfirmation(driver);
 
         // Switch back to test snaps window and check the installation status
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
@@ -44,7 +44,7 @@ describe('Test Snap update', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await testSnaps.check_messageResultSpan(
           testSnaps.updateVersionSpan,
-          '"0.35.2-flask.1"',
+          '"2.1.3"',
         );
       },
     );
