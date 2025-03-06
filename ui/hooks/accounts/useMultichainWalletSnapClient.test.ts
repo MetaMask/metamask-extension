@@ -75,12 +75,21 @@ describe('useMultichainWalletSnapClient', () => {
 
       mockHandleSnapRequest.mockResolvedValue(mockAccount);
 
-      await multichainWalletSnapClient.createAccount(network);
+      await multichainWalletSnapClient.createAccount(
+        network,
+        'test-entropy-source',
+      );
       expect(mockHandleSnapRequest).toHaveBeenCalledWith({
         origin: 'metamask',
         snapId,
         handler: HandlerType.OnKeyringRequest,
-        request: expect.any(Object),
+        request: expect.objectContaining({
+          params: expect.objectContaining({
+            options: expect.objectContaining({
+              entropySource: 'test-entropy-source',
+            }),
+          }),
+        }),
       });
     });
 

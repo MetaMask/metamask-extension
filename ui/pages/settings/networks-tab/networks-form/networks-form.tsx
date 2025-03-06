@@ -2,7 +2,7 @@ import log from 'loglevel';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  NetworkConfiguration,
+  type UpdateNetworkFields,
   RpcEndpointType,
 } from '@metamask/network-controller';
 import { Hex, isStrictHexString } from '@metamask/utils';
@@ -78,7 +78,7 @@ export const NetworksForm = ({
   onBlockExplorerAdd,
 }: {
   networkFormState: ReturnType<typeof useNetworkFormState>;
-  existingNetwork?: NetworkConfiguration;
+  existingNetwork?: UpdateNetworkFields;
   onRpcAdd: () => void;
   onBlockExplorerAdd: () => void;
 }) => {

@@ -104,7 +104,7 @@ describe('Remove Network:', function (this: Suite) {
 
         // Go to Edit Menu
         await driver.clickElement(
-          '[data-testid="network-list-item-options-button-0x53a"]',
+          '[data-testid="network-list-item-options-button-eip155:1338"]',
         );
 
         await driver.delay(regularDelayMs);
@@ -197,7 +197,7 @@ describe('Remove Network:', function (this: Suite) {
 
         // Go to Edit Menu
         await driver.clickElement(
-          '[data-testid="network-list-item-options-button-0x53a"]',
+          '[data-testid="network-list-item-options-button-eip155:1338"]',
         );
 
         await driver.delay(regularDelayMs);

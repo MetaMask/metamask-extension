@@ -307,9 +307,6 @@
     "message": "Importă",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Importare cont"
-  },
   "importAccountMsg": {
     "message": "Conturile importate nu vor fi asociate cu seedphrase-ul contului dumneavoastră MetaMask creat inițial. Aflați mai multe despre conturile importate"
   },

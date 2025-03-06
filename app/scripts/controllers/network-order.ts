@@ -1,9 +1,11 @@
+import { BtcScope, SolScope } from '@metamask/keyring-api';
 import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
 import {
   NetworkControllerStateChangeEvent,
   NetworkState,
 } from '@metamask/network-controller';
-import { Hex } from '@metamask/utils';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import type { CaipChainId, Hex } from '@metamask/utils';
 import type { Patch } from 'immer';
 import { TEST_CHAINS } from '../../../shared/constants/network';
 
@@ -14,7 +16,7 @@ const controllerName = 'NetworkOrderController';
  * Information about an ordered network.
  */
 export type NetworksInfo = {
-  networkId: Hex; // The network's chain id
+  networkId: CaipChainId; // The network's chain id
 };
 
 // State shape for NetworkOrderController
@@ -112,10 +114,15 @@ export class NetworkOrderController extends BaseController<
   }: NetworkState) {
     this.update((state) => {
       // Filter out testnets, which are in the state but not orderable
-      const chainIds = Object.keys(networkConfigurationsByChainId).filter(
+      const hexChainIds = Object.keys(networkConfigurationsByChainId).filter(
         (chainId) =>
           !TEST_CHAINS.includes(chainId as (typeof TEST_CHAINS)[number]),
       ) as Hex[];
+      const chainIds: CaipChainId[] = hexChainIds.map(toEvmCaipChainId);
+      const nonEvmChainIds: CaipChainId[] = [
+        BtcScope.Mainnet,
+        SolScope.Mainnet,
+      ];
 
       const newNetworks = chainIds
         .filter(
@@ -128,7 +135,14 @@ export class NetworkOrderController extends BaseController<
 
       state.orderedNetworkList = state.orderedNetworkList
         // Filter out deleted networks
-        .filter(({ networkId }) => chainIds.includes(networkId))
+        .filter(
+          ({ networkId }) =>
+            chainIds.includes(networkId) ||
+            // Since Bitcoin and Solana are not part of the @metamask/network-controller, we have
+            // to add a second check to make sure it is not filtered out.
+            // TODO: Update this logic to @metamask/multichain-network-controller once all networks are migrated.
+            nonEvmChainIds.includes(networkId),
+        )
         // Append new networks to the end
         .concat(newNetworks);
     });
@@ -140,7 +154,7 @@ export class NetworkOrderController extends BaseController<
    * @param networkList - The list of networks to update in the state.
    */
 
-  updateNetworksList(chainIds: Hex[]) {
+  updateNetworksList(chainIds: CaipChainId[]) {
     this.update((state) => {
       state.orderedNetworkList = chainIds.map((chainId) => ({
         networkId: chainId,

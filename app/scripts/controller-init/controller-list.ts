@@ -13,7 +13,7 @@ import { TransactionUpdateController } from '@metamask-institutional/transaction
 import { AccountsController } from '@metamask/accounts-controller';
 import {
   MultichainAssetsController,
-  MultiChainAssetsRatesController,
+  MultichainAssetsRatesController,
   MultichainBalancesController,
 } from '@metamask/assets-controllers';
 import { MultichainNetworkController } from '@metamask/multichain-network-controller';
@@ -44,7 +44,7 @@ export type Controller =
   | JsonSnapsRegistry
   | KeyringController
   | MultichainAssetsController
-  | MultiChainAssetsRatesController
+  | MultichainAssetsRatesController
   | MultichainBalancesController
   | MultichainTransactionsController
   | MultichainNetworkController
@@ -77,7 +77,7 @@ export type ControllerFlatState = AccountsController['state'] &
   JsonSnapsRegistry['state'] &
   KeyringController['state'] &
   MultichainAssetsController['state'] &
-  MultiChainAssetsRatesController['state'] &
+  MultichainAssetsRatesController['state'] &
   MultichainBalancesController['state'] &
   MultichainTransactionsController['state'] &
   MultichainNetworkController['state'] &

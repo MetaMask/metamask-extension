@@ -139,7 +139,7 @@ function getTracesSampleRate(sentryTarget) {
     return 1.0;
   }
 
-  return 0.01;
+  return 0.0075;
 }
 
 /**

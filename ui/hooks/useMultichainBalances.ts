@@ -1,151 +1,135 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
+import type { CaipChainId, Hex } from '@metamask/utils';
+import { BigNumber } from 'bignumber.js';
+import type { TokenWithBalance } from '../components/app/assets/types';
 import {
-  getCurrencyRates,
-  getMarketData,
-  getSelectedAccount,
-  getSelectedAccountNativeTokenCachedBalanceByChainId,
-  getSelectedAccountTokensAcrossChains,
-  selectERC20TokensByChain,
-} from '../selectors';
-import { ChainAddressMarketData, Token } from '../components/app/assets/types';
-import { calculateTokenFiatAmount } from '../components/app/assets/util/calculateTokenFiatAmount';
-import { calculateTokenBalance } from '../components/app/assets/util/calculateTokenBalance';
+  getAccountAssets,
+  getAssetsMetadata,
+  getAssetsRates,
+  getTokenBalancesEvm,
+} from '../selectors/assets';
 import {
-  CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
-  CHAIN_ID_TOKEN_IMAGE_MAP,
-  TEST_CHAINS,
-} from '../../shared/constants/network';
-import {
-  AssetWithDisplayData,
-  ERC20Asset,
-  NativeAsset,
-} from '../components/multichain/asset-picker-amount/asset-picker-modal/types';
+  getLastSelectedNonEvmAccount,
+  getMultichainBalances,
+  getMultichainCoinRates,
+} from '../selectors/multichain';
 import { AssetType } from '../../shared/constants/transaction';
-import { useTokenBalances } from './useTokenBalances';
+import { getSelectedEvmInternalAccount } from '../selectors/selectors';
+import { useMultichainSelector } from './useMultichainSelector';
 
-const useFilteredAccountTokens = () => {
-  const selectedAccountTokensChains: Record<string, Token[]> = useSelector(
-    getSelectedAccountTokensAcrossChains,
-  ) as Record<string, Token[]>;
+// TODO replace this with getMultichainAssets
+const useNonEvmAssetsWithBalances = (): (
+  | Omit<TokenWithBalance, 'address' | 'chainId' | 'primary' | 'secondary'> & {
+      chainId: `${string}:${string}`;
+      decimals: number;
+      address: `${string}:${string}`;
+      string: string;
+      balance: string;
+      tokenFiatAmount: number;
+      symbol: string;
+    }
+)[] => {
+  const nonEvmAccount = useSelector(getLastSelectedNonEvmAccount);
+  // non-evm tokens owned by non-evm account, includes native and non-native assets
+  const assetsByAccountId = useSelector(getAccountAssets);
+  const assetMetadataById = useSelector(getAssetsMetadata);
 
-  const filteredAccountTokensChains = useMemo(() => {
-    return Object.fromEntries(
-      Object.entries(selectedAccountTokensChains).filter(
-        ([chainId]) => !(TEST_CHAINS as string[]).includes(chainId),
-      ),
-    );
-  }, [selectedAccountTokensChains, TEST_CHAINS]);
+  // includes native and asset balances for non-evm account
+  const nonEvmBalancesByAccountId = useMultichainSelector(
+    getMultichainBalances,
+  );
+  // native exchange rates
+  const nativeRates = useSelector(getMultichainCoinRates);
+  // asset exchange rates
+  const assetRates = useSelector(getAssetsRates);
 
-  return filteredAccountTokensChains;
+  const nonEvmTokensWithFiatBalances = useMemo(() => {
+    if (!nonEvmAccount?.id) {
+      return [];
+    }
+
+    const assetIds = assetsByAccountId[nonEvmAccount.id];
+    const balancesByAssetId = nonEvmBalancesByAccountId[nonEvmAccount.id];
+    if (!balancesByAssetId || !assetIds) {
+      return [];
+    }
+    // build TokenWithFiat for each asset
+    return assetIds
+      .filter((caipAssetId) => assetMetadataById[caipAssetId])
+      .map((caipAssetId) => {
+        const [caipChainId, address] = caipAssetId.split('/');
+        const [type] = address.split(':');
+        return {
+          chainId: caipChainId as `${string}:${string}`,
+          symbol: assetMetadataById[caipAssetId]?.symbol ?? '',
+          address: caipAssetId,
+          string: balancesByAssetId[caipAssetId]?.amount ?? '0',
+          balance: balancesByAssetId[caipAssetId]?.amount ?? '0',
+          decimals: assetMetadataById[caipAssetId]?.units[0]?.decimals,
+          image: assetMetadataById[caipAssetId]?.iconUrl ?? '',
+          type: type === 'token' ? AssetType.token : AssetType.native,
+          tokenFiatAmount: new BigNumber(
+            balancesByAssetId[caipAssetId]?.amount ?? '1',
+          )
+            .times(
+              assetRates?.[caipAssetId]?.rate ??
+                nativeRates?.[
+                  assetMetadataById[caipAssetId]?.units[0]?.symbol.toLowerCase()
+                ]?.conversionRate ??
+                '1',
+            )
+            .toNumber(),
+        };
+      })
+      .filter(Boolean);
+  }, [
+    assetMetadataById,
+    assetRates,
+    assetsByAccountId,
+    nativeRates,
+    nonEvmAccount?.id,
+    nonEvmBalancesByAccountId,
+  ]);
+
+  return nonEvmTokensWithFiatBalances;
 };
 
-// This hook is used to get the balances of all tokens across all chains
-// native balances are included, with fields isNative=true and address=''
+// This hook is used to get the balances of all tokens and native tokens across all chains
+// This also returns the total fiat balances by chainId/caipChainId
 export const useMultichainBalances = () => {
-  const selectedAccountTokensChains = useFilteredAccountTokens();
-  const selectedAccount = useSelector(getSelectedAccount);
+  // EVM data
+  const selectedAccount = useSelector(getSelectedEvmInternalAccount);
+  const evmBalancesWithFiatByChainId = useSelector((state) =>
+    getTokenBalancesEvm(state, selectedAccount.address),
+  );
+  // Non-EVM data
+  const nonEvmBalancesWithFiatByChainId = useNonEvmAssetsWithBalances();
 
-  const { tokenBalances } = useTokenBalances();
-  const selectedAccountTokenBalancesAcrossChains =
-    tokenBalances[selectedAccount.address];
-
-  const marketData: ChainAddressMarketData = useSelector(
-    getMarketData,
-  ) as ChainAddressMarketData;
-
-  const currencyRates = useSelector(getCurrencyRates);
-  const nativeBalances: Record<Hex, Hex> = useSelector(
-    getSelectedAccountNativeTokenCachedBalanceByChainId,
-  ) as Record<Hex, Hex>;
-
-  const erc20TokensByChain = useSelector(selectERC20TokensByChain);
-
+  // return TokenWithFiat sorted by fiat balance amount
   const assetsWithBalance = useMemo(() => {
-    const tokensWithBalance: AssetWithDisplayData<ERC20Asset | NativeAsset>[] =
-      [];
+    return [...evmBalancesWithFiatByChainId, ...nonEvmBalancesWithFiatByChainId]
+      .map((token) => ({
+        ...token,
+        type: token.isNative ? AssetType.native : AssetType.token,
+      }))
+      .sort((a, b) => (b.tokenFiatAmount ?? 0) - (a.tokenFiatAmount ?? 0));
+  }, [evmBalancesWithFiatByChainId, nonEvmBalancesWithFiatByChainId]);
 
-    Object.entries(selectedAccountTokensChains).forEach(
-      ([stringChainKey, tokens]) => {
-        const chainId = stringChainKey as Hex;
-        tokens.forEach((token: Token) => {
-          const { isNative, address, decimals } = token;
-          const balance =
-            calculateTokenBalance({
-              isNative,
-              chainId,
-              address,
-              decimals,
-              nativeBalances,
-              selectedAccountTokenBalancesAcrossChains,
-            }) || '';
-
-          const tokenFiatAmount = calculateTokenFiatAmount({
-            token,
-            chainId,
-            balance,
-            marketData,
-            currencyRates,
-          });
-
-          // Append processed token with balance and fiat amount
-          const sharedFields = {
-            balance,
-            tokenFiatAmount,
-            chainId,
-            string: String(balance),
-          };
-          if (token.isNative) {
-            tokensWithBalance.push({
-              ...sharedFields,
-              type: AssetType.native,
-              image:
-                CHAIN_ID_TOKEN_IMAGE_MAP[
-                  chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-                ],
-              symbol:
-                CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
-                  chainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
-                ],
-              decimals: token.decimals,
-            });
-          } else {
-            tokensWithBalance.push({
-              ...token,
-              ...sharedFields,
-              image:
-                token.image ||
-                erc20TokensByChain?.[chainId]?.data?.[
-                  token.address.toLowerCase()
-                ]?.iconUrl,
-              address: token.address,
-              type: AssetType.token,
-            });
-          }
-        });
-      },
-    );
-
-    return tokensWithBalance.sort(
-      (a, b) => (b.tokenFiatAmount ?? 0) - (a.tokenFiatAmount ?? 0),
-    );
-  }, [JSON.stringify(selectedAccountTokensChains)]);
-
+  // return total fiat balances by chainId/caipChainId
   const balanceByChainId = useMemo(() => {
-    return assetsWithBalance.reduce(
-      (acc: Record<`0x${string}`, number>, { chainId, tokenFiatAmount }) => {
-        if (!acc[chainId]) {
-          acc[chainId] = 0;
-        }
-        if (tokenFiatAmount) {
-          acc[chainId] += tokenFiatAmount;
-        }
-        return acc;
-      },
-      {},
-    );
-  }, [assetsWithBalance]);
+    return [
+      ...evmBalancesWithFiatByChainId,
+      ...nonEvmBalancesWithFiatByChainId,
+    ].reduce((acc: Record<Hex | CaipChainId, number>, tokenWithBalanceData) => {
+      if (!acc[tokenWithBalanceData.chainId]) {
+        acc[tokenWithBalanceData.chainId] = 0;
+      }
+      acc[tokenWithBalanceData.chainId] +=
+        tokenWithBalanceData.tokenFiatAmount ?? 0;
+      return acc;
+    }, {});
+  }, [evmBalancesWithFiatByChainId, nonEvmBalancesWithFiatByChainId]);
 
   return { assetsWithBalance, balanceByChainId };
 };
