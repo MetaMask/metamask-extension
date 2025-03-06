@@ -667,9 +667,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfo": {
-    "message": "Bu taleple ilerlemenizi önermiyoruz."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Bu talebi onaylarsanız dolandırıcılıkla ünlü üçüncü bir taraf tüm varlıklarınızı çalabilir."
   },
@@ -1030,9 +1027,6 @@
   },
   "confirmationAlertDetails": {
     "message": "Varlıklarınızı korumak için talebi reddetmenizi öneririz."
-  },
-  "confirmationAlertModalTitle": {
-    "message": "Bu talep şüphelidir"
   },
   "confirmed": {
     "message": "Onaylandı"

@@ -176,7 +176,7 @@ export function ConfirmAlertModal({
       onAcknowledgeClick={onClose}
       alertKey={selectedAlert.key}
       onClose={onClose}
-      customTitle={t('confirmationAlertModalTitle')}
+      customTitle={t('confirmationAlertModalTitleDescription')}
       customDetails={
         <ConfirmDetails onAlertLinkClick={handleOpenMultipleAlertModal} />
       }
