@@ -305,6 +305,24 @@ async function getMetaMetricsEnabled() {
   }
 }
 
+/**
+ * Sets the Sentry user ID if available from the application state
+ */
+function setUserIdIfAvailable() {
+  try {
+    const metaMetricsId = getMetaMetricsId();
+
+    if (metaMetricsId) {
+      Sentry.setUser({ id: metaMetricsId });
+      log('Set Sentry user ID:', metaMetricsId);
+    } else {
+      log('No metaMetricsId available for Sentry.setUser');
+    }
+  } catch (err) {
+    log('Error setting Sentry user ID', err);
+  }
+}
+
 function setSentryClient() {
   const clientOptions = getClientOptions();
   const { dsn, environment, release, tracesSampleRate } = clientOptions;
@@ -336,6 +354,8 @@ function setSentryClient() {
   setCircleCiTags();
 
   addDebugListeners();
+
+  setUserIdIfAvailable();
 
   return true;
 }
@@ -411,6 +431,8 @@ export function removeUrlsFromBreadCrumb(breadcrumb) {
  */
 export function rewriteReport(report) {
   try {
+    log('Processing report in rewriteReport');
+
     // simplify certain complex error messages (e.g. Ethjs)
     simplifyErrorMessages(report);
     // remove urls from error message
@@ -623,4 +645,28 @@ function getEventType(event) {
   }
 
   return 'Event';
+}
+
+// Add this function to directly get the metaMetricsId from various sources
+async function getMetaMetricsId() {
+  try {
+    const state = getState();
+    let metaMetricsId =
+      state?.state?.MetaMetricsController?.metaMetricsId ||
+      state?.state?.metamask?.metaMetricsId;
+
+    const persistedState = await globalThis.stateHooks.getPersistedState();
+    metaMetricsId =
+      metaMetricsId ||
+      persistedState?.data?.MetaMetricsController?.metaMetricsId;
+
+    if (metaMetricsId) {
+      return metaMetricsId;
+    }
+    log('Could not find metaMetricsId in any source');
+    return null;
+  } catch (error) {
+    log('Error in getMetaMetricsId', error);
+    return null;
+  }
 }
