@@ -15,6 +15,7 @@ import {
   AlignItems,
   JustifyContent,
   FlexDirection,
+  BlockSize,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
@@ -56,13 +57,19 @@ export const SolanaAccountCreationPrompt = ({
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       alignItems={AlignItems.center}
-      justifyContent={JustifyContent.center}
+      justifyContent={JustifyContent.flexStart}
       gap={4}
       padding={4}
       className="solana-account-creation-prompt"
       data-testid="solana-account-creation-prompt"
-      style={{ minHeight: '300px' }}
+      style={{ height: '100vh', paddingTop: '72px' }}
     >
+      <img
+        src="/images/solana-logo.svg"
+        alt="Solana Logo"
+        style={{ width: '60px', height: '60px', marginBottom: '8px' }}
+      />
+
       <Text
         variant={TextVariant.headingSm}
         textAlign={TextAlign.Center}
@@ -86,6 +93,7 @@ export const SolanaAccountCreationPrompt = ({
         onClick={handleCreateAccount}
         loading={isCreating}
         data-testid="create-solana-account-button"
+        style={{ width: '75%' }}
       >
         {t('createSolanaAccount')}
       </Button>
