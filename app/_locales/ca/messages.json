@@ -304,9 +304,6 @@
     "message": "Importa",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Importa compte"
-  },
   "importAccountMsg": {
     "message": "Els comptes importats no s'associaran amb la teva frase de recuperació creada originalment a MetaMask. Aprèn més sobre els comptes importats"
   },
