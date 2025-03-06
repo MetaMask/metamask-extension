@@ -50,7 +50,7 @@ export type BridgeToken = {
   symbol: string;
   image: string;
   decimals: number;
-  chainId: CaipChainId;
+  chainId: number | Hex | ChainId | CaipChainId;
   balance: string; // raw balance
   string: string | undefined; // normalized balance as a stringified number
   tokenFiatAmount?: number | null;

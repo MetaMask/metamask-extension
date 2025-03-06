@@ -82,7 +82,7 @@ const bridgeSlice = createSlice({
           ...payload,
           balance: payload.balance ?? '0',
           string: payload.string ?? '0',
-          chainId: formatChainIdToCaip(payload.chainId),
+          chainId: payload.chainId,
         };
       } else {
         state.fromToken = payload;
@@ -94,7 +94,7 @@ const bridgeSlice = createSlice({
           ...payload,
           balance: payload.balance ?? '0',
           string: payload.string ?? '0',
-          chainId: formatChainIdToCaip(payload.chainId),
+          chainId: payload.chainId,
           address: payload.address || zeroAddress(),
         };
       } else {
