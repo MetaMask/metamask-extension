@@ -394,11 +394,8 @@ function overrideContentSecurityPolicyHeader() {
 // These are set after initialization
 let connectRemote;
 let connectExternalExtension;
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-// TODO: make sure browser is not chrome
 let connectExternalCaip;
 let connectRemoteCaip;
-///: END:ONLY_INCLUDE_IF
 
 browser.runtime.onConnect.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
@@ -407,10 +404,8 @@ browser.runtime.onConnect.addListener(async (...args) => {
   // This is set in `setupController`, which is called as part of initialization
   connectRemote(...args);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   // TODO: make sure browser is not chrome
   connectRemoteCaip(...args);
-  ///: END:ONLY_INCLUDE_IF
 });
 browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
@@ -1069,8 +1064,11 @@ export function setupController(
     });
   };
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   connectRemoteCaip = async (remotePort) => {
+    if (!process.env.MULTICHAIN_API) {
+      return;
+    }
+
     if (metamaskBlockedPorts.includes(remotePort.name)) {
       return;
     }
@@ -1090,7 +1088,6 @@ export function setupController(
       sender: remotePort.sender,
     });
   };
-  ///: END:ONLY_INCLUDE_IF
 
   if (overrides?.registerConnectListeners) {
     overrides.registerConnectListeners(connectRemote, connectExternalExtension);
