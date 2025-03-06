@@ -1318,7 +1318,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-trezor-keyring>@metamask/eth-sig-util": true,
         "@metamask/eth-trezor-keyring>@trezor/connect-plugin-ethereum": true,
-        "@trezor/connect-web": true,
+        "@metamask/eth-trezor-keyring>@trezor/connect-web": true,
         "browserify>buffer": true,
         "webpack>events": true,
         "@metamask/eth-trezor-keyring>hdkey": true
@@ -2732,6 +2732,21 @@
         "tslib": true
       }
     },
+    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect-common": {
+      "globals": {
+        "console.warn": true,
+        "localStorage.getItem": true,
+        "localStorage.setItem": true,
+        "navigator": true,
+        "setTimeout": true,
+        "window": true
+      },
+      "packages": {
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect-common>@trezor/env-utils": true,
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect-common>@trezor/utils": true,
+        "tslib": true
+      }
+    },
     "@metamask/eth-trezor-keyring>@trezor/connect-plugin-ethereum": {
       "packages": {
         "@metamask/eth-trezor-keyring>@metamask/eth-sig-util": true,
@@ -2739,6 +2754,39 @@
       }
     },
     "@trezor/connect-web": {
+      "globals": {
+        "URLSearchParams": true,
+        "WebSocket": true,
+        "__TREZOR_CONNECT_SRC": true,
+        "addEventListener": true,
+        "btoa": true,
+        "chrome": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.warn": true,
+        "document.body": true,
+        "document.createElement": true,
+        "document.createTextNode": true,
+        "document.getElementById": true,
+        "document.querySelectorAll": true,
+        "location.origin": true,
+        "navigator": true,
+        "open": true,
+        "origin": true,
+        "removeEventListener": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@trezor/connect-web>@trezor/connect-common": true,
+        "@trezor/connect-web>@trezor/connect": true,
+        "@trezor/connect-web>@trezor/utils": true,
+        "webpack>events": true,
+        "tslib": true
+      }
+    },
+    "@metamask/eth-trezor-keyring>@trezor/connect-web": {
       "globals": {
         "URLSearchParams": true,
         "WebSocket": true,
@@ -2764,9 +2812,9 @@
         "setTimeout": true
       },
       "packages": {
-        "@trezor/connect-web>@trezor/connect-common": true,
-        "@trezor/connect-web>@trezor/connect": true,
-        "@trezor/connect-web>@trezor/utils": true,
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect-common": true,
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect": true,
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils": true,
         "webpack>events": true,
         "tslib": true
       }
@@ -2777,6 +2825,15 @@
         "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
         "@trezor/connect-web>@trezor/connect>@trezor/transport": true,
         "@trezor/connect-web>@trezor/utils": true,
+        "tslib": true
+      }
+    },
+    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect": {
+      "packages": {
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/protobuf": true,
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport": true,
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utils": true,
         "tslib": true
       }
     },
@@ -2798,9 +2855,36 @@
         "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils>ua-parser-js": true
       }
     },
+    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect-common>@trezor/env-utils": {
+      "globals": {
+        "innerHeight": true,
+        "innerWidth": true,
+        "location.hostname": true,
+        "location.origin": true,
+        "navigator.languages": true,
+        "navigator.platform": true,
+        "navigator.userAgent": true,
+        "screen.height": true,
+        "screen.width": true
+      },
+      "packages": {
+        "process": true,
+        "tslib": true,
+        "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils>ua-parser-js": true
+      }
+    },
     "@trezor/connect-web>@trezor/connect>@trezor/protobuf": {
       "packages": {
         "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
+        "browserify>buffer": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>long": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": true,
+        "tslib": true
+      }
+    },
+    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/protobuf": {
+      "packages": {
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
         "browserify>buffer": true,
         "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": true,
         "tslib": true
@@ -2816,7 +2900,17 @@
         "ts-mixer": true
       }
     },
-    "@trezor/connect-web>@trezor/utils": {
+    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/schema-utils": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@trezor/connect-web>@trezor/connect>@trezor/schema-utils>@sinclair/typebox": true,
+        "browserify>buffer": true,
+        "ts-mixer": true
+      }
+    },
+    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect-common>@trezor/utils": {
       "globals": {
         "AbortController": true,
         "Intl.NumberFormat": true,
@@ -2831,7 +2925,75 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect-common>@trezor/utils>bignumber.js": true,
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "webpack>events": true,
+        "tslib": true
+      }
+    },
+    "@trezor/connect-web>@trezor/utils": {
+      "globals": {
+        "AbortController": true,
+        "Blob": true,
+        "Intl.NumberFormat": true,
+        "TextEncoder": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.info": true,
+        "console.log": true,
+        "console.warn": true,
+        "crypto.getRandomValues": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
         "@trezor/connect-web>@trezor/utils>bignumber.js": true,
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "webpack>events": true,
+        "tslib": true
+      }
+    },
+    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils": {
+      "globals": {
+        "AbortController": true,
+        "Intl.NumberFormat": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.info": true,
+        "console.log": true,
+        "console.warn": true,
+        "crypto.getRandomValues": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils>bignumber.js": true,
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "webpack>events": true,
+        "tslib": true
+      }
+    },
+    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utils": {
+      "globals": {
+        "AbortController": true,
+        "Intl.NumberFormat": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.info": true,
+        "console.log": true,
+        "console.warn": true,
+        "crypto.getRandomValues": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utils>bignumber.js": true,
         "browserify>browser-resolve": true,
         "browserify>buffer": true,
         "webpack>events": true,
@@ -3085,7 +3247,25 @@
         "define": true
       }
     },
+    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect-common>@trezor/utils>bignumber.js": {
+      "globals": {
+        "crypto": true,
+        "define": true
+      }
+    },
     "@trezor/connect-web>@trezor/utils>bignumber.js": {
+      "globals": {
+        "crypto": true,
+        "define": true
+      }
+    },
+    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils>bignumber.js": {
+      "globals": {
+        "crypto": true,
+        "define": true
+      }
+    },
+    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utils>bignumber.js": {
       "globals": {
         "crypto": true,
         "define": true
@@ -4269,6 +4449,13 @@
         "localStorage": true,
         "log": "write",
         "navigator": true
+      }
+    },
+    "@trezor/connect-web>@trezor/connect>@trezor/protobuf>long": {
+      "globals": {
+        "WebAssembly.Instance": true,
+        "WebAssembly.Module": true,
+        "define": true
       }
     },
     "lottie-web": {
