@@ -94,6 +94,7 @@ export const SENTRY_BACKGROUND_STATE = {
     surveyLinkLastClickedOrClosed: true,
     snapsInstallPrivacyWarningShown: true,
     termsOfUseLastAgreed: true,
+    throttledOrigins: false,
     timeoutMinutes: true,
     trezorModel: true,
   },
@@ -103,6 +104,9 @@ export const SENTRY_BACKGROUND_STATE = {
   MultichainAssetsController: {
     accountsAssets: false,
     assetsMetadata: false,
+  },
+  MultichainAssetsRatesController: {
+    assetsRates: false,
   },
   BridgeController: {
     bridgeState: {
@@ -437,8 +441,10 @@ export const SENTRY_UI_STATE = {
     isInitialized: true,
     useSafeChainsListValidation: true,
     watchEthereumAccountEnabled: false,
+    ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
     bitcoinSupportEnabled: false,
     bitcoinTestnetSupportEnabled: false,
+    ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,
     snapsAddSnapAccountModalDismissed: false,

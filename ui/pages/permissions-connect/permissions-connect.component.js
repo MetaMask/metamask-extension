@@ -13,7 +13,6 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import PermissionPageContainer from '../../components/app/permission-page-container';
 import { Box } from '../../components/component-library';
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header/snap-authorship-header';
-import PermissionConnectHeader from '../../components/app/permission-connect-header';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
 import SnapsConnect from './snaps/snaps-connect';
@@ -277,17 +276,11 @@ export default class PermissionConnect extends Component {
             'var(--shadow-size-lg) var(--color-shadow-default)',
         }}
       >
-        {targetSubjectMetadata.subjectType === SubjectType.Snap ? (
+        {targetSubjectMetadata.subjectType === SubjectType.Snap && (
           <SnapAuthorshipHeader
             snapId={targetSubjectMetadata.origin}
             boxShadow="none"
             onCancel={handleCancelFromHeader}
-          />
-        ) : (
-          <PermissionConnectHeader
-            requestId={permissionsRequestId}
-            origin={targetSubjectMetadata.origin}
-            iconUrl={targetSubjectMetadata.iconUrl}
           />
         )}
       </Box>
@@ -375,6 +368,7 @@ export default class PermissionConnect extends Component {
                     request={permissionsRequest || {}}
                     permissionsRequestId={permissionsRequestId}
                     approveConnection={this.approveConnection}
+                    targetSubjectMetadata={targetSubjectMetadata}
                   />
                 )
               }

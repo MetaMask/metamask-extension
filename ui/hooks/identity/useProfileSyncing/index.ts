@@ -1,7 +1,6 @@
 export {
   useDisableProfileSyncing,
   useEnableProfileSyncing,
-  useSetIsProfileSyncingEnabled,
 } from './profileSyncing';
 export {
   useAccountSyncing,

@@ -2777,10 +2777,6 @@
     "message": "Chúng tôi không thể kết nối với $1",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "Mạng được chuyển thành $1",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "URL mạng"
   },
@@ -3087,14 +3083,6 @@
   },
   "notifications": {
     "message": "Thông báo"
-  },
-  "notificationsDropLedgerFirefoxDescription": {
-    "message": "Firefox không còn hỗ trợ U2F nên Ledger sẽ không hoạt động với MetaMask trên Firefox. Thay vào đó hãy dùng thử MetaMask trên Google Chrome.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
-  },
-  "notificationsDropLedgerFirefoxTitle": {
-    "message": "Bỏ Hỗ trợ Ledger cho Firefox",
-    "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
   },
   "notificationsFeatureToggle": {
     "message": "Bật thông báo ví",
@@ -4185,9 +4173,6 @@
   "seedPhraseIntroTitle": {
     "message": "Bảo mật cho ví của bạn"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Trước khi bắt đầu, hãy xem video ngắn này để tìm hiểu thêm về cụm từ khôi phục bí mật của bạn và cách bảo vệ ví của bạn."
-  },
   "seedPhraseReq": {
     "message": "Cụm từ khôi phục bí mật gồm 12, 15, 18, 21 hoặc 24 từ"
   },
@@ -4653,15 +4638,6 @@
     "message": "Liên hệ với những người tạo ra $1 để được hỗ trợ thêm.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaSupportSectionTitle": {
-    "message": "Solana"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "Bật tính năng này sẽ cung cấp cho bạn tùy chọn thêm Tài khoản Solana vào Tiện ích mở rộng MetaMask bắt nguồn từ Cụm từ khôi phục bí mật hiện có của bạn. Đây là một tính năng Beta thử nghiệm, nên bạn phải tự chịu rủi ro khi sử dụng nó."
-  },
-  "solanaSupportToggleTitle": {
-    "message": "Bật \"Thêm tài khoản Solana mới (Beta)\""
-  },
   "somethingDoesntLookRight": {
     "message": "Có gì đó không ổn? $1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
@@ -4894,9 +4870,6 @@
   "stxFailureDescription": {
     "message": "Thị trường thay đổi đột ngột có thể gây thất bại. Nếu sự cố vẫn tiếp diễn, vui lòng liên hệ $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
-  },
-  "stxOptInDescription": {
-    "message": "Bật Giao dịch thông minh để có các giao dịch đáng tin cậy và an toàn hơn trên Ethereum Mainnet. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Đang bí mật gửi yêu cầu Hoán đổi của bạn..."
@@ -5907,10 +5880,6 @@
   },
   "welcomeToMetaMaskIntro": {
     "message": "Được hàng triệu người tin dùng, MetaMask là một ví an toàn cho phép mọi người có thể truy cập vào thế giới web3."
-  },
-  "whatsNew": {
-    "message": "Xem tính năng mới",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
   },
   "whatsThis": {
     "message": "Đây là gì?"

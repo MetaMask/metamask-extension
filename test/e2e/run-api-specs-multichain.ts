@@ -99,7 +99,7 @@ async function main() {
     {
       dapp: true,
       fixtures: new FixtureBuilder().build(),
-      disableGanache: true,
+      localNodeOptions: 'none',
       title: 'api-specs-multichain coverage',
     },
     async ({
@@ -170,7 +170,7 @@ async function main() {
       fixtures: new FixtureBuilder()
         .withPermissionControllerConnectedToMultichainTestDapp()
         .build(),
-      disableGanache: true,
+      localNodeOptions: 'none',
       title: 'api-specs-multichain coverage (wallet_invokeMethod)',
     },
     async ({

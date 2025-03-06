@@ -38,7 +38,6 @@ export function getRequestedCaip25CaveatValue(
  * @param caip25CaveatValue - The requested CAIP-25 caveat value to modify.
  * @param ethAccountAddresses - The list of permitted eth addresses.
  * @param ethChainIds - The list of permitted eth chainIds.
- * @returns The granted permissions with the target name of the {@link Caip25EndowmentPermissionName}.
  */
 export function getCaip25PermissionsResponse(
   caip25CaveatValue: Caip25CaveatValue,

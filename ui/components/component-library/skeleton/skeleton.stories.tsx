@@ -9,9 +9,11 @@ import {
   TextVariant,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import { Box, Button, ButtonVariant, Text } from '..';
+import { Text } from '../text';
 import README from './README.mdx';
 import { Skeleton } from './skeleton';
+import { Box } from '../box';
+import { Button, ButtonVariant } from '../button';
 
 const meta: Meta<typeof Skeleton> = {
   title: 'Components/ComponentLibrary/Skeleton',

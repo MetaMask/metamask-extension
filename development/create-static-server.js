@@ -23,6 +23,7 @@ const createStaticServer = (options) => {
     }
 
     // Handle test-dapp-multichain URLs by removing the prefix
+    // See here for details: https://github.com/MetaMask/MetaMask-planning/issues/4145
     if (request.url.startsWith('/test-dapp-multichain/')) {
       request.url = request.url.slice('/test-dapp-multichain'.length);
     }

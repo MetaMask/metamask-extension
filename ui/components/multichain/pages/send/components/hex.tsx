@@ -4,7 +4,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Label } from '../../../../component-library';
 import { getSendHexData, updateSendHexData } from '../../../../../ducks/send';
 import { Textarea } from '../../../../component-library/textarea';
-import { SendPageRow } from '.';
+import { SendPageRow } from './send-page-row';
 
 export const SendHexData = () => {
   const t = useI18nContext();

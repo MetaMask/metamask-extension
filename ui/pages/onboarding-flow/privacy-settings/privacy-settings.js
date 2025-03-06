@@ -8,8 +8,8 @@ import { ButtonVariant } from '@metamask/snaps-sdk';
 import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
 
 import {
-  useSetIsProfileSyncingEnabled,
   useEnableProfileSyncing,
+  useDisableProfileSyncing,
 } from '../../../hooks/identity/useProfileSyncing';
 import {
   MetaMetricsEventCategory,
@@ -53,7 +53,6 @@ import {
   getExternalServicesOnboardingToggleState,
 } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
-import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
 import {
   setIpfsGateway,
   setUseCurrencyRateCheck,
@@ -77,40 +76,10 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   TEST_CHAINS,
 } from '../../../../shared/constants/network';
+import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
 import { Setting } from './setting';
 
 const ANIMATION_TIME = 500;
-
-/**
- * Profile Syncing Setting props
- *
- * @param {boolean} basicFunctionalityOnboarding
- * @returns props that are used for the profile syncing toggle.
- */
-function useProfileSyncingProps(basicFunctionalityOnboarding) {
-  const { setIsProfileSyncingEnabled, error: setIsProfileSyncingEnabledError } =
-    useSetIsProfileSyncingEnabled();
-  const { enableProfileSyncing, error: enableProfileSyncingError } =
-    useEnableProfileSyncing();
-
-  const profileSyncingError =
-    setIsProfileSyncingEnabledError || enableProfileSyncingError;
-
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
-
-  // Effect - toggle profile syncing on/off based on basic functionality toggle
-  useEffect(() => {
-    const changeProfileSync = basicFunctionalityOnboarding === true;
-    setIsProfileSyncingEnabled(changeProfileSync);
-  }, [basicFunctionalityOnboarding, setIsProfileSyncingEnabled]);
-
-  return {
-    setIsProfileSyncingEnabled,
-    enableProfileSyncing,
-    profileSyncingError,
-    isProfileSyncingEnabled,
-  };
-}
 
 export default function PrivacySettings() {
   const t = useI18nContext();
@@ -161,9 +130,24 @@ export default function PrivacySettings() {
     getExternalServicesOnboardingToggleState,
   );
 
-  const profileSyncingProps = useProfileSyncingProps(
+  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+
+  const { enableProfileSyncing, error: enableProfileSyncingError } =
+    useEnableProfileSyncing();
+  const { disableProfileSyncing, error: disableProfileSyncingError } =
+    useDisableProfileSyncing();
+
+  useEffect(() => {
+    if (externalServicesOnboardingToggleState) {
+      enableProfileSyncing();
+    } else {
+      disableProfileSyncing();
+    }
+  }, [
     externalServicesOnboardingToggleState,
-  );
+    enableProfileSyncing,
+    disableProfileSyncing,
+  ]);
 
   const handleSubmit = () => {
     dispatch(setUse4ByteResolution(turnOn4ByteResolution));
@@ -178,7 +162,7 @@ export default function PrivacySettings() {
 
     // Profile Syncing Setup
     if (!externalServicesOnboardingToggleState) {
-      profileSyncingProps.setIsProfileSyncingEnabled(false);
+      disableProfileSyncing();
     }
 
     if (ipfsURL && !ipfsError) {
@@ -191,7 +175,7 @@ export default function PrivacySettings() {
       event: MetaMetricsEventName.OnboardingWalletAdvancedSettings,
       properties: {
         settings_group: 'onboarding_advanced_configuration',
-        is_profile_syncing_enabled: profileSyncingProps.isProfileSyncingEnabled,
+        is_profile_syncing_enabled: isProfileSyncingEnabled,
         is_basic_functionality_enabled: externalServicesOnboardingToggleState,
         show_incoming_tx: incomingTransactionsPreferences,
         turnon_token_detection: turnOnTokenDetection,
@@ -201,18 +185,18 @@ export default function PrivacySettings() {
     history.push(ONBOARDING_COMPLETION_ROUTE);
   };
 
-  const handleUseProfileSync = async () => {
-    if (profileSyncingProps.isProfileSyncingEnabled) {
+  const handleProfileSyncToggleSetValue = async () => {
+    if (isProfileSyncingEnabled) {
       dispatch(
         showModal({
           name: 'CONFIRM_TURN_OFF_PROFILE_SYNCING',
           turnOffProfileSyncing: () => {
-            profileSyncingProps.setIsProfileSyncingEnabled(false);
+            disableProfileSyncing();
           },
         }),
       );
     } else {
-      profileSyncingProps.setIsProfileSyncingEnabled(true);
+      enableProfileSyncing();
     }
   };
 
@@ -442,8 +426,8 @@ export default function PrivacySettings() {
                   <Setting
                     dataTestId="profile-sync-toggle"
                     disabled={!externalServicesOnboardingToggleState}
-                    value={profileSyncingProps.isProfileSyncingEnabled}
-                    setValue={handleUseProfileSync}
+                    value={isProfileSyncingEnabled}
+                    setValue={handleProfileSyncToggleSetValue}
                     title={t('profileSync')}
                     description={t('profileSyncDescription', [
                       <a
@@ -457,7 +441,8 @@ export default function PrivacySettings() {
                     ])}
                   />
 
-                  {profileSyncingProps.profileSyncingError && (
+                  {(enableProfileSyncingError ||
+                    disableProfileSyncingError) && (
                     <Box paddingBottom={4}>
                       <Text
                         as="p"

@@ -4,15 +4,15 @@ import {
   ACCOUNT_2,
   convertETHToHexGwei,
   largeDelayMs,
+  unlockWallet,
   WINDOW_TITLES,
   withFixtures,
 } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { DEFAULT_GANACHE_ETH_BALANCE_DEC } from '../../constants';
+import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
 import {
-  initCreateSessionScopes,
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
-  openMultichainDappAndConnectWalletWithExternallyConnectable,
   addAccountInWalletAndAuthorize,
   escapeColon,
   type FixtureCallbackArgs,
@@ -37,11 +37,12 @@ describe('Multichain API', function () {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
-            await openMultichainDappAndConnectWalletWithExternallyConnectable(
-              driver,
-              extensionId,
-            );
-            await initCreateSessionScopes(driver, GANACHE_SCOPES, ACCOUNTS);
+            await unlockWallet(driver);
+
+            const testDapp = new TestDappMultichain(driver);
+            await testDapp.openTestDappPage();
+            await testDapp.connectExternallyConnectable(extensionId);
+            await testDapp.initCreateSessionScopes(GANACHE_SCOPES, ACCOUNTS);
             await addAccountInWalletAndAuthorize(driver);
             await driver.clickElement({ text: 'Connect', tag: 'button' });
             await driver.delay(largeDelayMs);
@@ -100,11 +101,12 @@ describe('Multichain API', function () {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
-            await openMultichainDappAndConnectWalletWithExternallyConnectable(
-              driver,
-              extensionId,
-            );
-            await initCreateSessionScopes(driver, GANACHE_SCOPES, ACCOUNTS);
+            await unlockWallet(driver);
+
+            const testDapp = new TestDappMultichain(driver);
+            await testDapp.openTestDappPage();
+            await testDapp.connectExternallyConnectable(extensionId);
+            await testDapp.initCreateSessionScopes(GANACHE_SCOPES, ACCOUNTS);
             await addAccountInWalletAndAuthorize(driver);
             await driver.clickElement({ text: 'Connect', tag: 'button' });
 
@@ -165,11 +167,12 @@ describe('Multichain API', function () {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
-            await openMultichainDappAndConnectWalletWithExternallyConnectable(
-              driver,
-              extensionId,
-            );
-            await initCreateSessionScopes(driver, GANACHE_SCOPES, ACCOUNTS);
+            await unlockWallet(driver);
+
+            const testDapp = new TestDappMultichain(driver);
+            await testDapp.openTestDappPage();
+            await testDapp.connectExternallyConnectable(extensionId);
+            await testDapp.initCreateSessionScopes(GANACHE_SCOPES, ACCOUNTS);
             await addAccountInWalletAndAuthorize(driver);
             await driver.clickElement({ text: 'Connect', tag: 'button' });
 

@@ -14,7 +14,14 @@ describe('Editing Confirm Transaction', function () {
   it('goes back from confirm page to edit eth value, gas price and gas limit', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withConversionRateDisabled().build(),
+        fixtures: new FixtureBuilder()
+          .withPreferencesController({
+            preferences: {
+              showFiatInTestnets: true,
+            },
+          })
+          .withConversionRateDisabled()
+          .build(),
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -95,7 +102,14 @@ describe('Editing Confirm Transaction', function () {
   it('goes back from confirm page to edit eth value, baseFee, priorityFee and gas limit - 1559 V2', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withConversionRateDisabled().build(),
+        fixtures: new FixtureBuilder()
+          .withConversionRateDisabled()
+          .withPreferencesController({
+            preferences: {
+              showFiatInTestnets: true,
+            },
+          })
+          .build(),
         localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
       },

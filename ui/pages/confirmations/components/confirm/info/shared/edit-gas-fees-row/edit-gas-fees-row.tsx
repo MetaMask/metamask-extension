@@ -70,8 +70,17 @@ export const EditGasFeesRow = ({
           {nativeFee}
         </Text>
         {(!isTestnet || showFiatInTestnets) &&
-        fiatFeeWith18SignificantDigits ? (
-          <Tooltip title={fiatFeeWith18SignificantDigits}>
+          (fiatFeeWith18SignificantDigits ? (
+            <Tooltip title={fiatFeeWith18SignificantDigits}>
+              <Text
+                marginRight={2}
+                color={TextColor.textAlternative}
+                data-testid="native-currency"
+              >
+                {fiatFee}
+              </Text>
+            </Tooltip>
+          ) : (
             <Text
               marginRight={2}
               color={TextColor.textAlternative}
@@ -79,16 +88,7 @@ export const EditGasFeesRow = ({
             >
               {fiatFee}
             </Text>
-          </Tooltip>
-        ) : (
-          <Text
-            marginRight={2}
-            color={TextColor.textAlternative}
-            data-testid="native-currency"
-          >
-            {fiatFee}
-          </Text>
-        )}
+          ))}
       </Box>
     </ConfirmInfoAlertRow>
   );

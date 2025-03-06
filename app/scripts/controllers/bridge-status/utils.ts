@@ -1,7 +1,4 @@
-import {
-  BRIDGE_API_BASE_URL,
-  BRIDGE_CLIENT_ID,
-} from '../../../../shared/constants/bridge';
+import { BRIDGE_CLIENT_ID } from '../../../../shared/constants/bridge';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import {
   StatusResponse,
@@ -10,10 +7,9 @@ import {
 } from '../../../../shared/types/bridge-status';
 import type { Quote } from '../../../../shared/types/bridge';
 import { validateResponse, validators } from './validators';
+import { BRIDGE_STATUS_BASE_URL } from './constants';
 
 const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };
-
-export const BRIDGE_STATUS_BASE_URL = `${BRIDGE_API_BASE_URL}/getTxStatus`;
 
 export const getStatusRequestDto = (
   statusRequest: StatusRequestWithSrcTxHash,

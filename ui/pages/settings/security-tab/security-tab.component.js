@@ -357,6 +357,7 @@ export default class SecurityTab extends PureComponent {
       participateInMetaMetrics,
       setDataCollectionForMarketing,
       setParticipateInMetaMetrics,
+      useExternalServices,
     } = this.props;
 
     return (
@@ -381,6 +382,7 @@ export default class SecurityTab extends PureComponent {
         >
           <ToggleButton
             value={dataCollectionForMarketing}
+            disabled={!useExternalServices}
             onToggle={(value) => {
               const newMarketingConsent = Boolean(!value);
               setDataCollectionForMarketing(newMarketingConsent);

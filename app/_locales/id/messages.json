@@ -2777,10 +2777,6 @@
     "message": "Kami tidak dapat terhubung ke $1",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "Jaringan beralih ke $1",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "URL Jaringan"
   },
@@ -3087,14 +3083,6 @@
   },
   "notifications": {
     "message": "Notifikasi"
-  },
-  "notificationsDropLedgerFirefoxDescription": {
-    "message": "Firefox tidak lagi mendukung U2F, sehingga Ledger tidak akan berfungsi dengan MetaMask di Firefox. Cobalah MetaMask di Google Chrome sebagai gantinya.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
-  },
-  "notificationsDropLedgerFirefoxTitle": {
-    "message": "Menghapus Dukungan Ledger untuk Firefox",
-    "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
   },
   "notificationsFeatureToggle": {
     "message": "Aktifkan Notifikasi Dompet",
@@ -4185,9 +4173,6 @@
   "seedPhraseIntroTitle": {
     "message": "Amankan dompet Anda"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Sebelum memulai, lihat video singkat ini untuk mempelajari tentang Frasa Pemulihan Rahasia Anda dan cara menjaga keamanan dompet Anda."
-  },
   "seedPhraseReq": {
     "message": "Frasa Pemulihan Rahasia berisi 12, 15, 18, 21, atau 24 kata"
   },
@@ -4653,15 +4638,6 @@
     "message": "Hubungi pembuat $1 untuk dukungan lebih lanjut.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaSupportSectionTitle": {
-    "message": "Solana"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "Mengaktifkan fitur ini akan memberi Anda opsi untuk menambahkan Akun Solana ke Ekstensi MetaMask yang berasal dari Frasa Pemulihan Rahasia yang sudah ada. Ini merupakan fitur Beta eksperimental, jadi Anda harus menggunakannya dengan risiko yang ditanggung sendiri."
-  },
-  "solanaSupportToggleTitle": {
-    "message": "Aktifkan \"Tambahkan akun Solana baru (Beta)\""
-  },
   "somethingDoesntLookRight": {
     "message": "Ada yang tidak beres? $1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
@@ -4894,9 +4870,6 @@
   "stxFailureDescription": {
     "message": "Perubahan pasar yang terjadi secara tiba-tiba dapat menyebabkan kegagalan. Jika masalah berlanjut, hubungi $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
-  },
-  "stxOptInDescription": {
-    "message": "Aktifkan Transaksi Pintar untuk transaksi yang lebih andal dan aman di Mainnet Ethereum. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Kirimkan Swap Anda secara pribadi..."
@@ -5907,10 +5880,6 @@
   },
   "welcomeToMetaMaskIntro": {
     "message": "MetaMask merupakan dompet aman yang dipercaya oleh jutaan orang, yang membuat dunia web3 dapat diakses oleh semua orang."
-  },
-  "whatsNew": {
-    "message": "Apa yang baru",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
   },
   "whatsThis": {
     "message": "Apa ini?"

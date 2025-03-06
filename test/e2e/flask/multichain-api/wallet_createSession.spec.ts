@@ -7,13 +7,12 @@ import {
   withFixtures,
   ACCOUNT_1,
   ACCOUNT_2,
+  unlockWallet,
 } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
+import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
 import {
-  initCreateSessionScopes,
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
-  getSessionScopes,
-  openMultichainDappAndConnectWalletWithExternallyConnectable,
   getExpectedSessionScope,
   addAccountInWalletAndAuthorize,
   updateNetworkCheckboxes,
@@ -33,25 +32,24 @@ describe('Multichain API', function () {
         },
         async ({ driver, extensionId }: FixtureCallbackArgs) => {
           const scopesToIgnore = ['eip155:1338', 'eip155:1000'];
-          await openMultichainDappAndConnectWalletWithExternallyConnectable(
-            driver,
-            extensionId,
-          );
-          await initCreateSessionScopes(driver, [
+
+          await unlockWallet(driver);
+
+          const testDapp = new TestDappMultichain(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.connectExternallyConnectable(extensionId);
+          await testDapp.initCreateSessionScopes([
             'eip155:1337',
             ...scopesToIgnore,
           ]);
 
           await driver.clickElement({ text: 'Connect', tag: 'button' });
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.MultichainTestDApp,
-          );
 
-          const getSessionScopesResult = await getSessionScopes(driver);
+          const getSessionResult = await testDapp.getSession();
 
           for (const scope of scopesToIgnore) {
             assert.strictEqual(
-              getSessionScopesResult.sessionScopes[scope],
+              getSessionResult.sessionScopes[scope],
               undefined,
             );
           }
@@ -81,31 +79,26 @@ describe('Multichain API', function () {
           const ACCOUNT_NOT_IN_WALLET =
             '0x9999999999999999999999999999999999999999';
 
-          await openMultichainDappAndConnectWalletWithExternallyConnectable(
-            driver,
-            extensionId,
-          );
+          await unlockWallet(driver);
 
-          await initCreateSessionScopes(
-            driver,
+          const testDapp = new TestDappMultichain(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.connectExternallyConnectable(extensionId);
+          await testDapp.initCreateSessionScopes(
             [REQUEST_SCOPE],
             [SECOND_ACCOUNT_IN_WALLET, ACCOUNT_NOT_IN_WALLET],
           );
 
           await driver.clickElement({ text: 'Connect', tag: 'button' });
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.MultichainTestDApp,
-          );
 
-          const getSessionScopesResult = await getSessionScopes(driver);
+          const getSessionResult = await testDapp.getSession();
           /**
            * Accounts in scope should not include invalid account {@link ACCOUNT_NOT_IN_WALLET}, only the valid accounts.
            */
           const expectedSessionScope = getExpectedSessionScope(REQUEST_SCOPE, [
             SECOND_ACCOUNT_IN_WALLET,
           ]);
-          const result =
-            getSessionScopesResult.sessionScopes[REQUEST_SCOPE].accounts;
+          const result = getSessionResult.sessionScopes[REQUEST_SCOPE].accounts;
 
           assert.deepEqual(
             expectedSessionScope.accounts,
@@ -133,14 +126,18 @@ describe('Multichain API', function () {
         const requestScopes = Object.keys(requestScopesToNetworkMap);
         const networksToRequest = Object.values(requestScopesToNetworkMap);
 
-        await openMultichainDappAndConnectWalletWithExternallyConnectable(
-          driver,
-          extensionId,
-        );
+        await unlockWallet(driver);
 
-        await initCreateSessionScopes(driver, requestScopes);
+        const testDapp = new TestDappMultichain(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.connectExternallyConnectable(extensionId);
+        await testDapp.initCreateSessionScopes(requestScopes);
 
         // navigate to network selection screen
+        const permissionsTab = await driver.findElement(
+          '[data-testid="permissions-tab"]',
+        );
+        await permissionsTab.click();
         const editButtons = await driver.findElements('[data-testid="edit"]');
         await editButtons[1].click();
         await driver.delay(largeDelayMs);
@@ -187,36 +184,36 @@ describe('Multichain API', function () {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
-            await openMultichainDappAndConnectWalletWithExternallyConnectable(
-              driver,
-              extensionId,
-            );
+            await unlockWallet(driver);
 
-            await initCreateSessionScopes(
-              driver,
+            const testDapp = new TestDappMultichain(driver);
+            await testDapp.openTestDappPage();
+            await testDapp.connectExternallyConnectable(extensionId);
+            await testDapp.initCreateSessionScopes(
               ['eip155:1337', 'eip155:1338'],
               [ACCOUNT_1],
             );
 
             await addAccountInWalletAndAuthorize(driver);
+            const permissionsTab = await driver.findElement(
+              '[data-testid="permissions-tab"]',
+            );
+            await permissionsTab.click();
             await updateNetworkCheckboxes(driver, ['Localhost 8545']);
 
             await driver.clickElement({ text: 'Connect', tag: 'button' });
-            await driver.switchToWindowWithTitle(
-              WINDOW_TITLES.MultichainTestDApp,
-            );
 
-            const getSessionScopesResult = await getSessionScopes(driver);
+            const getSessionResult = await testDapp.getSession();
 
             assert.strictEqual(
-              getSessionScopesResult.sessionScopes['eip155:1338'],
+              getSessionResult.sessionScopes['eip155:1338'],
               undefined,
             );
 
-            assert.ok(getSessionScopesResult.sessionScopes['eip155:1337']);
+            assert.ok(getSessionResult.sessionScopes['eip155:1337']);
 
             assert.deepEqual(
-              getSessionScopesResult.sessionScopes['eip155:1337'].accounts,
+              getSessionResult.sessionScopes['eip155:1337'].accounts,
               getExpectedSessionScope('eip155:1337', [ACCOUNT_1, ACCOUNT_2])
                 .accounts,
               `Should add account ${ACCOUNT_2} to scope`,
@@ -236,12 +233,12 @@ describe('Multichain API', function () {
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
         async ({ driver, extensionId }: FixtureCallbackArgs) => {
-          await openMultichainDappAndConnectWalletWithExternallyConnectable(
-            driver,
-            extensionId,
-          );
+          await unlockWallet(driver);
 
-          await initCreateSessionScopes(driver, ['eip155:1337']);
+          const testDapp = new TestDappMultichain(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.connectExternallyConnectable(extensionId);
+          await testDapp.initCreateSessionScopes(['eip155:1337']);
 
           const editButtons = await driver.findElements('[data-testid="edit"]');
           await editButtons[0].click();
@@ -275,12 +272,12 @@ describe('Multichain API', function () {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
-            await openMultichainDappAndConnectWalletWithExternallyConnectable(
-              driver,
-              extensionId,
-            );
+            await unlockWallet(driver);
 
-            await initCreateSessionScopes(driver, ['eip155:1']);
+            const testDapp = new TestDappMultichain(driver);
+            await testDapp.openTestDappPage();
+            await testDapp.connectExternallyConnectable(extensionId);
+            await testDapp.initCreateSessionScopes(['eip155:1']);
 
             await addAccountInWalletAndAuthorize(driver);
 
@@ -289,10 +286,10 @@ describe('Multichain API', function () {
               WINDOW_TITLES.MultichainTestDApp,
             );
 
-            const getSessionScopesResult = await getSessionScopes(driver);
+            const getSessionResult = await testDapp.getSession();
 
             assert.deepEqual(
-              getSessionScopesResult.sessionScopes['eip155:1'].accounts,
+              getSessionResult.sessionScopes['eip155:1'].accounts,
               getExpectedSessionScope('eip155:1', [ACCOUNT_1, ACCOUNT_2])
                 .accounts,
               'The dapp should receive a response that includes permissions for the accounts that were selected for sharing',
@@ -311,12 +308,12 @@ describe('Multichain API', function () {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
-            await openMultichainDappAndConnectWalletWithExternallyConnectable(
-              driver,
-              extensionId,
-            );
+            await unlockWallet(driver);
 
-            await initCreateSessionScopes(driver, ['eip155:1337']);
+            const testDapp = new TestDappMultichain(driver);
+            await testDapp.openTestDappPage();
+            await testDapp.connectExternallyConnectable(extensionId);
+            await testDapp.initCreateSessionScopes(['eip155:1337']);
 
             const editButtons = await driver.findElements(
               '[data-testid="edit"]',
@@ -368,18 +365,19 @@ describe('Multichain API', function () {
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
         async ({ driver, extensionId }: FixtureCallbackArgs) => {
-          await openMultichainDappAndConnectWalletWithExternallyConnectable(
-            driver,
-            extensionId,
-          );
+          await unlockWallet(driver);
+
+          const testDapp = new TestDappMultichain(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.connectExternallyConnectable(extensionId);
 
           /**
            * We first make sure sessions exist
            */
-          const existingGetSessionScopesResult = await getSessionScopes(driver);
+          const existinggetSessionResult = await testDapp.getSession();
           OLD_SCOPES.forEach((scope) =>
             assert.strictEqual(
-              isObject(existingGetSessionScopesResult.sessionScopes[scope]),
+              isObject(existinggetSessionResult.sessionScopes[scope]),
               true,
               `scope ${scope} should exist`,
             ),
@@ -392,21 +390,18 @@ describe('Multichain API', function () {
             async (scope) =>
               await driver.clickElement(`input[name="${scope}"]`),
           );
-          await initCreateSessionScopes(driver, NEW_SCOPES, [TREZOR_ACCOUNT]);
+          await testDapp.initCreateSessionScopes(NEW_SCOPES, [TREZOR_ACCOUNT]);
           await driver.clickElement({ text: 'Connect', tag: 'button' });
           await driver.delay(largeDelayMs);
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.MultichainTestDApp,
-          );
 
-          const newGetSessionScopesResult = await getSessionScopes(driver);
+          const newgetSessionResult = await testDapp.getSession();
 
           /**
            * Assert old sessions don't exist anymore, as they are overwritten by new session scopes
            */
           OLD_SCOPES.forEach((scope) =>
             assert.strictEqual(
-              newGetSessionScopesResult.sessionScopes[scope],
+              newgetSessionResult.sessionScopes[scope],
               undefined,
               `scope ${scope} should not exist anymore`,
             ),
@@ -420,7 +415,7 @@ describe('Multichain API', function () {
             const [scopeName] = Object.keys(expectedSessionScope);
             const expectedScopeObject = expectedSessionScope[scopeName];
             const resultSessionScope =
-              newGetSessionScopesResult.sessionScopes[scopeName];
+              newgetSessionResult.sessionScopes[scopeName];
 
             assert.deepEqual(
               expectedScopeObject,

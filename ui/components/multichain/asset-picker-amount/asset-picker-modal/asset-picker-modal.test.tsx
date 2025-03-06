@@ -14,7 +14,7 @@ import { AssetType } from '../../../../../shared/constants/transaction';
 import {
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
-  getSelectedInternalAccount,
+  getSelectedEvmInternalAccount,
   getShouldHideZeroBalanceTokens,
   getTokenExchangeRates,
   getTokenList,
@@ -23,16 +23,16 @@ import {
   getConversionRate,
   getNativeCurrency,
   getTokens,
-  getCurrentCurrency,
 } from '../../../../ducks/metamask/metamask';
 import { getTopAssets } from '../../../../ducks/swaps/swaps';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import * as actions from '../../../../store/actions';
 import { getSwapsBlockedTokens } from '../../../../ducks/send';
 import {
-  getCurrentChainId,
-  getNetworkConfigurationsByChainId,
-} from '../../../../../shared/modules/selectors/networks';
+  getMultichainNetworkConfigurationsByChainId,
+  getMultichainCurrentChainId,
+  getMultichainCurrentCurrency,
+} from '../../../../selectors/multichain';
 import { AssetPickerModal } from './asset-picker-modal';
 import AssetList from './AssetList';
 import { ERC20Asset } from './types';
@@ -103,13 +103,13 @@ describe('AssetPickerModal', () => {
 
   beforeEach(() => {
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === getNetworkConfigurationsByChainId) {
+      if (selector === getMultichainNetworkConfigurationsByChainId) {
         return { '0x1': { chainId: '0x1' } };
       }
-      if (selector === getCurrentChainId) {
+      if (selector === getMultichainCurrentChainId) {
         return '0x1';
       }
-      if (selector === getCurrentCurrency) {
+      if (selector === getMultichainCurrentCurrency) {
         return 'USD';
       }
       if (selector === getNativeCurrencyImage) {
@@ -118,7 +118,7 @@ describe('AssetPickerModal', () => {
       if (selector === getSelectedAccountCachedBalance) {
         return '1000';
       }
-      if (selector === getSelectedInternalAccount) {
+      if (selector === getSelectedEvmInternalAccount) {
         return { address: '0xAddress' };
       }
       if (selector === getShouldHideZeroBalanceTokens) {
@@ -169,7 +169,7 @@ describe('AssetPickerModal', () => {
       tokensWithBalances: [],
     });
     (getRenderableTokenData as jest.Mock).mockReturnValue({});
-    mockUseMultichainBalances.mockReturnValue({});
+    mockUseMultichainBalances.mockReturnValue({ assetsWithBalance: [] });
   });
 
   afterEach(() => {

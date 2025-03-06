@@ -115,6 +115,7 @@ log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info', false);
 
 const platform = new ExtensionPlatform();
 const notificationManager = new NotificationManager();
+const isFirefox = getPlatform() === PLATFORM_FIREFOX;
 
 let openPopupCount = 0;
 let notificationIsOpen = false;
@@ -141,6 +142,24 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
 // Event emitter for state persistence
 export const statePersistenceEvents = new EventEmitter();
+
+if (isFirefox) {
+  browser.runtime.onInstalled.addListener(function (details) {
+    if (details.reason === 'install') {
+      browser.storage.session.set({ isFirstTimeInstall: true });
+    } else if (details.reason === 'update') {
+      browser.storage.session.set({ isFirstTimeInstall: false });
+    }
+  });
+} else if (!isManifestV3) {
+  browser.runtime.onInstalled.addListener(function (details) {
+    if (details.reason === 'install') {
+      global.sessionStorage.setItem('isFirstTimeInstall', true);
+    } else if (details.reason === 'update') {
+      global.sessionStorage.setItem('isFirstTimeInstall', false);
+    }
+  });
+}
 
 /**
  * This deferred Promise is used to track whether initialization has finished.
@@ -374,9 +393,7 @@ function overrideContentSecurityPolicyHeader() {
 // These are set after initialization
 let connectRemote;
 let connectExternalExtension;
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 let connectExternalCaip;
-///: END:ONLY_INCLUDE_IF
 
 browser.runtime.onConnect.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
@@ -390,17 +407,13 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
   await isInitialized;
   // This is set in `setupController`, which is called as part of initialization
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-mmi)
-  connectExternalExtension(...args);
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const port = args[0];
-  if (port.sender.tab?.id) {
-    connectExternalCaip(...args);
-  } else {
+  const isDappConnecting = port.sender.tab?.id;
+  if (!process.env.MULTICHAIN_API || !isDappConnecting) {
     connectExternalExtension(...args);
+  } else {
+    connectExternalCaip(...args);
   }
-  ///: END:ONLY_INCLUDE_IF
 });
 
 function saveTimestamp() {
@@ -526,12 +539,18 @@ async function initialize() {
       await loadPhishingWarningPage();
       // Workaround for Bug #1446231 to override page CSP for inline script nodes injected by extension content scripts
       // https://bugzilla.mozilla.org/show_bug.cgi?id=1446231
-      if (getPlatform() === PLATFORM_FIREFOX) {
+      if (isFirefox) {
         overrideContentSecurityPolicyHeader();
       }
     }
     await sendReadyMessageToTabs();
     log.info('MetaMask initialization complete.');
+
+    if (isManifestV3 || isFirefox) {
+      browser.storage.session.set({ isFirstTimeInstall: false });
+    } else {
+      global.sessionStorage.setItem('isFirstTimeInstall', false);
+    }
 
     resolveInitialization();
   } catch (error) {
@@ -904,12 +923,11 @@ export function setupController(
     }
 
     let isMetaMaskInternalProcess = false;
-    const sourcePlatform = getPlatform();
     const senderUrl = remotePort.sender?.url
       ? new URL(remotePort.sender.url)
       : null;
 
-    if (sourcePlatform === PLATFORM_FIREFOX) {
+    if (isFirefox) {
       isMetaMaskInternalProcess = metamaskInternalProcessHash[processName];
     } else {
       isMetaMaskInternalProcess =
@@ -1018,8 +1036,11 @@ export function setupController(
     });
   };
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   connectExternalCaip = async (remotePort) => {
+    if (!process.env.MULTICHAIN_API) {
+      return;
+    }
+
     if (metamaskBlockedPorts.includes(remotePort.name)) {
       return;
     }
@@ -1037,7 +1058,6 @@ export function setupController(
       sender: remotePort.sender,
     });
   };
-  ///: END:ONLY_INCLUDE_IF
 
   if (overrides?.registerConnectListeners) {
     overrides.registerConnectListeners(connectRemote, connectExternalExtension);
@@ -1307,12 +1327,16 @@ const addAppInstalledEvent = () => {
 
 // On first install, open a new tab with MetaMask
 async function onInstall() {
-  const storeAlreadyExisted = Boolean(await persistenceManager.get());
-  // If the store doesn't exist, then this is the first time running this script,
-  // and is therefore an install
+  const sessionData =
+    isManifestV3 || isFirefox
+      ? await browser.storage.session.get(['isFirstTimeInstall'])
+      : await global.sessionStorage.getItem('isFirstTimeInstall');
+
+  const isFirstTimeInstall = sessionData?.isFirstTimeInstall;
+
   if (process.env.IN_TEST) {
     addAppInstalledEvent();
-  } else if (!storeAlreadyExisted && !process.env.METAMASK_DEBUG) {
+  } else if (!isFirstTimeInstall && !process.env.METAMASK_DEBUG) {
     // If storeAlreadyExisted is true then this is a fresh installation
     // and an app installed event should be tracked.
     addAppInstalledEvent();

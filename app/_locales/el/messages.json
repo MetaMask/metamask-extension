@@ -2777,10 +2777,6 @@
     "message": "Δεν μπορούμε να συνδεθούμε στο $1",
     "description": "$1 represents the network name"
   },
-  "networkSwitchMessage": {
-    "message": "Το δίκτυο άλλαξε σε $1",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "Διεύθυνση URL του δικτύου"
   },
@@ -3087,14 +3083,6 @@
   },
   "notifications": {
     "message": "Ειδοποιήσεις"
-  },
-  "notificationsDropLedgerFirefoxDescription": {
-    "message": "Ο Firefox δεν υποστηρίζει πλέον το U2F, οπότε το Ledger δεν θα λειτουργεί με το MetaMask στον Firefox. Δοκιμάστε αντ' αυτού το MetaMask στο Google Chrome.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
-  },
-  "notificationsDropLedgerFirefoxTitle": {
-    "message": "Διακοπή της υποστήριξης του Ledger για τον Firefox",
-    "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
   },
   "notificationsFeatureToggle": {
     "message": "Ενεργοποίηση ειδοποιήσεων για το πορτοφόλι",
@@ -4185,9 +4173,6 @@
   "seedPhraseIntroTitle": {
     "message": "Προστατεύστε το πορτοφόλι σας"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Πριν ξεκινήσετε, παρακολουθήστε αυτό το σύντομο βίντεο για να μάθετε για τη Μυστική Φράση Ανάκτησης και πώς να διατηρείτε ασφαλές το πορτοφόλι σας."
-  },
   "seedPhraseReq": {
     "message": "Οι Μυστικές Φράσεις Ανάκτησης περέχουν 12, 15, 18, 21 ή 24 λέξεις"
   },
@@ -4653,15 +4638,6 @@
     "message": "Επικοινωνήστε με τους διαχειριστές του $1 για περαιτέρω υποστήριξη.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaSupportSectionTitle": {
-    "message": "Solana"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "Η ενεργοποίηση αυτής της λειτουργίας θα σας δώσει τη δυνατότητα να προσθέσετε έναν λογαριασμό Solana στην επέκταση του MetaMask που προέρχεται από την υπάρχουσα Μυστική Φράση Ανάκτησης. Πρόκειται για μια πειραματική λειτουργία Beta, οπότε θα πρέπει να τη χρησιμοποιήσετε με δική σας ευθύνη."
-  },
-  "solanaSupportToggleTitle": {
-    "message": "Ενεργοποίηση της λειτουργίας \"Προσθήκη νέου λογαριασμού Solana (Beta)\""
-  },
   "somethingDoesntLookRight": {
     "message": "Κάτι δεν φαίνεται σωστό; $1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
@@ -4894,9 +4870,6 @@
   "stxFailureDescription": {
     "message": "Οι ξαφνικές αλλαγές στην αγορά μπορεί να προκαλέσουν αποτυχίες. Εάν το πρόβλημα επιμένει, παρακαλούμε επικοινωνήστε με το $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
-  },
-  "stxOptInDescription": {
-    "message": "Ενεργοποιήστε τις Έξυπνες Συναλλαγές για πιο αξιόπιστες και ασφαλείς συναλλαγές στο Ethereum Mainnet. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Ιδιωτική υποβολή της Ανταλλαγής σας..."
@@ -5907,10 +5880,6 @@
   },
   "welcomeToMetaMaskIntro": {
     "message": "Το MetaMask, το οποίο εμπιστεύονται εκατομμύρια χρήστες, είναι ένα ασφαλές πορτοφόλι που κάνει τον κόσμο του web3 προσβάσιμο σε όλους."
-  },
-  "whatsNew": {
-    "message": "Τι νέο υπάρχει",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
   },
   "whatsThis": {
     "message": "Τι είναι αυτό;"

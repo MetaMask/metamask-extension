@@ -121,16 +121,16 @@ async function walletCreateSessionHandler(
     const { normalizedRequiredScopes, normalizedOptionalScopes } =
       validateAndNormalizeScopes(requiredScopes || {}, optionalScopes || {});
 
-    const supportedRequiredScopesObjects = getSupportedScopeObjects(
-      normalizedRequiredScopes,
-      { getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods },
-    );
-    const supportedOptionalScopesObjects = getSupportedScopeObjects(
-      normalizedOptionalScopes,
-      { getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods },
-    );
+    const requiredScopesWithSupportedMethodsAndNotifications =
+      getSupportedScopeObjects(normalizedRequiredScopes, {
+        getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods
+      });
+    const optionalScopesWithSupportedMethodsAndNotifications =
+      getSupportedScopeObjects(normalizedOptionalScopes, {
+        getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods
+      });
 
-    const existsNetworkClientForChainId = (chainId: Hex) => {
+    const networkClientExistsForChainId = (chainId: Hex) => {
       try {
         hooks.findNetworkClientIdByChainId(chainId);
         return true;
@@ -140,9 +140,9 @@ async function walletCreateSessionHandler(
     };
 
     const { supportedScopes: supportedRequiredScopes } = bucketScopes(
-      supportedRequiredScopesObjects,
+      requiredScopesWithSupportedMethodsAndNotifications,
       {
-        isEvmChainIdSupported: existsNetworkClientForChainId,
+        isEvmChainIdSupported: networkClientExistsForChainId,
         isEvmChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
         getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods,
         isNonEvmScopeSupported: hooks.isNonEvmScopeSupported,
@@ -150,9 +150,9 @@ async function walletCreateSessionHandler(
     );
 
     const { supportedScopes: supportedOptionalScopes } = bucketScopes(
-      supportedOptionalScopesObjects,
+      optionalScopesWithSupportedMethodsAndNotifications,
       {
-        isEvmChainIdSupported: existsNetworkClientForChainId,
+        isEvmChainIdSupported: networkClientExistsForChainId,
         isEvmChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
         getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods,
         isNonEvmScopeSupported: hooks.isNonEvmScopeSupported,
