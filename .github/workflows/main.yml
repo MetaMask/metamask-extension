@@ -286,6 +286,10 @@ jobs:
         with:
           is-high-risk-environment: false
 
+      - name: Install zstd
+        run: sudo apt-get update && sudo apt-get install zstd
+        shell: bash
+
       - name: Download prep-build-test-webpack artifact
         uses: actions/download-artifact@v4
         with:
@@ -304,10 +308,6 @@ jobs:
         with:
           name: metamask-cache
           path: ./
-
-      - name: Install zstd
-        run: sudo apt-get update && sudo apt-get install zstd
-        shell: bash
 
       # Find and fix permissions for all anvil binaries
       - name: Find and fix permissions for all anvil binaries
