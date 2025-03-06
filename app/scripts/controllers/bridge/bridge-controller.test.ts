@@ -366,10 +366,7 @@ describe('BridgeController', function () {
     expect(bridgeController.state.bridgeState).toEqual(
       expect.objectContaining({
         quoteRequest: { ...quoteRequest, insufficientBal: false },
-        quotes: [
-          ...mockBridgeQuotesNativeErc20Eth,
-          ...mockBridgeQuotesNativeErc20Eth,
-        ],
+        quotes: [],
         quotesLoadingStatus: 2,
         quoteFetchError: 'Network error',
         quotesRefreshCount: 3,

@@ -330,11 +330,20 @@ const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#dataCollectionForMarketing`,
     icon: 'fa fa-lock',
   },
+  // securityAndPrivacy settingsRefs[20]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('deleteMetaMetricsData'),
     descriptionMessage: (t) => t('deleteMetaMetricsDataDescription'),
     route: `${SECURITY_ROUTE}#delete-metametrics-data`,
+    icon: 'fa fa-lock',
+  },
+  // securityAndPrivacy settingsRefs[21]
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('profileSync'),
+    descriptionMessage: (t) => t('profileSyncDescription'),
+    route: `${SECURITY_ROUTE}#profile-sync`,
     icon: 'fa fa-lock',
   },
   {

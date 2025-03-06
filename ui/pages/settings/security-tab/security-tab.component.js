@@ -1163,7 +1163,11 @@ export default class SecurityTab extends PureComponent {
           {this.context.t('privacy')}
         </span>
 
-        <div className="settings-page__content-padded">
+        <div
+          ref={this.settingsRefs[21]}
+          className="settings-page__content-padded"
+          data-testid="profile-sync"
+        >
           <ProfileSyncToggle />
         </div>
 

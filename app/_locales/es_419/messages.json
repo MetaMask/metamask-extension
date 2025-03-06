@@ -887,9 +887,6 @@
     "message": "Importar",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Importar cuenta"
-  },
   "importAccountError": {
     "message": "Error al importar la cuenta."
   },
@@ -2257,10 +2254,6 @@
   },
   "welcomeToMetaMaskIntro": {
     "message": "Con la confianza de millones de personas, MetaMask es una cartera segura que pone el mundo de la web3 al alcance de todos."
-  },
-  "whatsNew": {
-    "message": "Novedades",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
   },
   "whatsThis": {
     "message": "¿Qué es esto?"

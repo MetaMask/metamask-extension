@@ -17,6 +17,7 @@ import {
   getNftIsStillFetchingIndication,
 } from '../../../../../selectors';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
+import NFTGridItemErrorBoundary from './nft-grid-item-error-boundary';
 
 const NFTGridItem = (props: {
   nft: NFT;
@@ -89,18 +90,19 @@ export default function NftGrid({
           const { tokenURI } = nft;
 
           return (
-            <Box
-              data-testid="nft-wrapper"
-              key={tokenURI}
-              className="nft-items__image-wrapper"
-            >
-              <NFTGridItem
-                currentChain={currentChain}
-                nft={nft}
-                onClick={() => handleNftClick(nft)}
-                privacyMode={privacyMode}
-              />
-            </Box>
+            <NFTGridItemErrorBoundary key={tokenURI} fallback={() => null}>
+              <Box
+                data-testid="nft-wrapper"
+                className="nft-items__image-wrapper"
+              >
+                <NFTGridItem
+                  currentChain={currentChain}
+                  nft={nft}
+                  onClick={() => handleNftClick(nft)}
+                  privacyMode={privacyMode}
+                />
+              </Box>
+            </NFTGridItemErrorBoundary>
           );
         })}
       </Box>
