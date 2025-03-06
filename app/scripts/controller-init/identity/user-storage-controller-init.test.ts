@@ -31,9 +31,7 @@ function buildInitRequestMock(): jest.Mocked<
 }
 
 describe('UserStorageControllerInit', () => {
-  const UserStorageControllerClassMock = jest.mocked(
-    UserStorageController,
-  );
+  const UserStorageControllerClassMock = jest.mocked(UserStorageController);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -41,9 +39,9 @@ describe('UserStorageControllerInit', () => {
 
   it('returns controller instance', () => {
     const requestMock = buildInitRequestMock();
-    expect(
-      UserStorageControllerInit(requestMock).controller,
-    ).toBeInstanceOf(UserStorageController);
+    expect(UserStorageControllerInit(requestMock).controller).toBeInstanceOf(
+      UserStorageController,
+    );
   });
 
   it('initializes with correct messenger and state', () => {
@@ -63,7 +61,7 @@ describe('UserStorageControllerInit', () => {
       },
       env: {
         isAccountSyncingEnabled: true,
-      }
+      },
     });
   });
 });

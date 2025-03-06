@@ -7,8 +7,6 @@ describe('getUserStorageControllerMessenger', () => {
     const userStorageControllerMessenger =
       getUserStorageControllerMessenger(messenger);
 
-    expect(userStorageControllerMessenger).toBeInstanceOf(
-      RestrictedMessenger,
-    );
+    expect(userStorageControllerMessenger).toBeInstanceOf(RestrictedMessenger);
   });
 });

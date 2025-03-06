@@ -3,4 +3,3 @@ export type { AuthenticationControllerMessenger } from './authentication-control
 
 export { getUserStorageControllerMessenger } from './user-storage-controller-messenger';
 export type { UserStorageControllerMessenger } from './user-storage-controller-messenger';
-
