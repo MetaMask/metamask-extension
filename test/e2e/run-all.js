@@ -290,7 +290,7 @@ async function main() {
   if (process.env.CIRCLECI) {
     ({ fullTestList: myTestList, changedOrNewTests = [] } =
       runningOnCircleCI(testPaths));
-  } else if (process.env.GITHUB_ACTIONS) {
+  } else if (process.env.GITHUB_ACTION) {
     ({ fullTestList: myTestList, changedOrNewTests = [] } =
       runningOnGitHubActions(testPaths));
   } else {

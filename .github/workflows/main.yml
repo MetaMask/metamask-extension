@@ -7,6 +7,7 @@ on:
       - master
       - Version-v*
       - trigger-ci*
+      - ci-prep-build*
   pull_request:
     types:
       - opened
@@ -259,7 +260,7 @@ jobs:
     needs:
       - prep-build-test-webpack
       - get-changed-files-with-git-diff
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -267,22 +268,11 @@ jobs:
     env:
       MATRIX_INDEX: ${{ matrix.index }}
       MATRIX_TOTAL: 10
-      GITHUB_ACTIONS: true
     steps:
       - name: Checkout and setup environment
         uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
         with:
           is-high-risk-environment: false
-
-      - name: Setup Chrome and ChromeDriver
-        id: setup-chrome
-        uses: browser-actions/setup-chrome@c785b87e244131f27c9f19c1a33e2ead956ab7ce
-        with:
-          chrome-version: 120
-          install-chromedriver: true
-
-      - name: Set CHROME_PATH environment variable
-        run: echo "CHROME_PATH=${{ steps.setup-chrome.outputs.chrome-path }}" >> $GITHUB_ENV
 
       - name: Download prep-build-test-webpack artifact
         uses: actions/download-artifact@v4
@@ -291,6 +281,7 @@ jobs:
           path: ./dist/
 
       - name: Download changed-files artifact
+        continue-on-error: true
         uses: actions/download-artifact@v4
         with:
           name: changed-files
