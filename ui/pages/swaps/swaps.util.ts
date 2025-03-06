@@ -50,7 +50,7 @@ import {
   sumHexes,
 } from '../../../shared/modules/conversion.utils';
 import { EtherDenomination } from '../../../shared/constants/common';
-import { estimateGasFee } from '../../store/actions';
+import { estimateGasFee } from './swaps.util.gas';
 
 const CACHE_REFRESH_FIVE_MINUTES = 300000;
 const USD_CURRENCY_CODE = 'usd';
@@ -208,7 +208,7 @@ export async function fetchAggregatorMetadata(chainId: any): Promise<object> {
 
 export async function fetchTopAssetsList(
   chainId: string,
-): Promise<{ address: string }[]> {
+): Promise<{ address: Hex }[]> {
   const topAssetsUrl = getBaseApi('topAssets', chainId);
   const response =
     (await fetchWithCache({

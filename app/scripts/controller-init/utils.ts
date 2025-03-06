@@ -40,7 +40,7 @@ export type ControllersToInitialize =
   | 'CronjobController'
   | 'ExecutionService'
   | 'MultichainAssetsController'
-  | 'MultiChainAssetsRatesController'
+  | 'MultichainAssetsRatesController'
   | 'MultichainBalancesController'
   | 'MultichainTransactionsController'
   | 'RateLimitController'

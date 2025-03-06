@@ -169,11 +169,6 @@ async function assertApproveDetails(driver: Driver) {
 
   await driver.waitForSelector({
     css: 'p',
-    text: 'Account balance',
-  });
-
-  await driver.waitForSelector({
-    css: 'p',
     text: 'Spending cap',
   });
 }

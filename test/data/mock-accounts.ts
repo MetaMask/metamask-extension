@@ -4,8 +4,11 @@ import {
   EthAccountType,
   BtcMethod,
   BtcAccountType,
+  SolAccountType,
   EthScope,
   BtcScope,
+  SolMethod,
+  SolScope,
 } from '@metamask/keyring-api';
 import {
   ETH_EOA_METHODS,
@@ -70,6 +73,21 @@ export const MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET: InternalAccount = {
     keyring: { type: KeyringTypes.snap },
     importTime: 1691565967600,
     lastSelected: 1955565967656,
+  },
+};
+
+export const MOCK_ACCOUNT_SOLANA_MAINNET: InternalAccount = {
+  id: 'a3f9c2d4-6b8e-4d3a-9b2e-7f4b8e1a9c3d',
+  address: '3yZe7d5m8V9x2Q1w4u6t8b9n7k5j3h2g1f4d6s8a9p7q2r5t8v',
+  options: {},
+  methods: [SolMethod.SendAndConfirmTransaction],
+  scopes: [SolScope.Mainnet],
+  type: SolAccountType.DataAccount,
+  metadata: {
+    name: 'Solana Account',
+    keyring: { type: KeyringTypes.snap },
+    importTime: 1691592567600,
+    lastSelected: 1955565999999,
   },
 };
 
