@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { capitalize } from 'lodash';
-import { Transaction, TransactionStatus } from '@metamask/keyring-api';
+import { Transaction, TransactionStatus, Asset } from '@metamask/keyring-api';
 import {
   Display,
   FlexDirection,
@@ -72,7 +72,7 @@ export function MultichainTransactionDetailsModal({
     }
   };
 
-  const getAssetDisplay = (asset: any) => {
+  const getAssetDisplay = (asset: Asset | null) => {
     if (!asset) {
       return null;
     }
@@ -87,7 +87,7 @@ export function MultichainTransactionDetailsModal({
 
   const { id: txId, fees, timestamp, status, chain, type } = transaction;
 
-  let fromAddress, fromAsset, toAddress, toAsset;
+  let fromAddress, fromAsset, toAddress;
 
   if (type === 'swap' && userAddress) {
     const txFromEntry = transaction.from?.find(
@@ -100,12 +100,10 @@ export function MultichainTransactionDetailsModal({
     fromAddress = txFromEntry?.address || transaction.from[0].address;
     fromAsset = txFromEntry?.asset || transaction.from[0].asset;
     toAddress = txToEntry?.address || transaction.to[0].address;
-    toAsset = txToEntry?.asset || transaction.to[0].asset;
   } else {
     fromAddress = transaction.from[0].address;
     fromAsset = transaction.from[0].asset;
     toAddress = transaction.to[0].address;
-    toAsset = transaction.to[0].asset;
   }
 
   const baseFee = fees?.find((fee) => fee.type === 'base')?.asset;

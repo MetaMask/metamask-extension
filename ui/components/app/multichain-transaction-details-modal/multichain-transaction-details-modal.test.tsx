@@ -300,7 +300,7 @@ describe('MultichainTransactionDetailsModal', () => {
     );
 
     const addressStart = userAddress.substring(0, 6);
-    const addressElements = screen.getAllByText((content, element) => {
+    const addressElements = screen.getAllByText((_content, element) => {
       return element?.textContent?.includes(addressStart) || false;
     });
 
@@ -332,7 +332,7 @@ describe('MultichainTransactionDetailsModal', () => {
 
     const transactionAddress = MOCK_ACCOUNT_SOLANA_MAINNET.address;
     const addressStart = transactionAddress.substring(0, 6);
-    const addressElements = screen.getAllByText((content, element) => {
+    const addressElements = screen.getAllByText((_content, element) => {
       return element?.textContent?.includes(addressStart) || false;
     });
 
