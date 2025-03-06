@@ -73,9 +73,6 @@
   "accountActivityText": {
     "message": "Выберите счета, о которых хотите получать уведомления:"
   },
-  "accountBalance": {
-    "message": "Баланс счета"
-  },
   "accountDetails": {
     "message": "Реквизиты счета"
   },
@@ -5020,12 +5017,6 @@
   },
   "spendingCap": {
     "message": "Лимит расходов"
-  },
-  "spendingCapTooltipDesc": {
-    "message": "Это количество токенов, к которым покупатель сможет получить доступ от вашего имени."
-  },
-  "spendingCaps": {
-    "message": "Лимиты расходов"
   },
   "srpInputNumberOfWords": {
     "message": "У меня есть фраза из $1 слов(-а)",
