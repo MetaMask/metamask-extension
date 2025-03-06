@@ -2,7 +2,7 @@ import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
-import { withFixtures, WINDOW_TITLES } from '../helpers';
+import { withFixtures } from '../helpers';
 import { completeSnapInstallConfirmation } from '../page-objects/flows/snap-permission.flow';
 
 const jsonTextValidation = '"foo": "bar"';
@@ -21,13 +21,10 @@ describe('Test Snap Get File', function () {
 
         const testSnaps = new TestSnaps(driver);
 
-        // Navigate to test snaps page and connect to get-file snap
+        // Navigate to test snaps page, connect to get-file snap, complete installation and validate
         await testSnaps.openPage();
         await testSnaps.connectGetFileButton();
         await completeSnapInstallConfirmation(driver);
-
-        // Switch back to test snaps window and check the installation status
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await testSnaps.check_installationComplete(
           testSnaps.connectGetFile,
           'Reconnect to Get File Snap',
