@@ -1998,6 +1998,8 @@ export default class MetamaskController extends EventEmitter {
     ///: END:ONLY_INCLUDE_IF
     this.multichainNetworkController =
       controllersByName.MultichainNetworkController;
+    this.authenticationController = controllersByName.AuthenticationController;
+    this.userStorageController = controllersByName.UserStorageController;
 
     this.controllerMessenger.subscribe(
       'TransactionController:transactionStatusUpdated',
