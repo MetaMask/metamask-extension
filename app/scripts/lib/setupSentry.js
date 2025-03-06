@@ -432,8 +432,6 @@ export function removeUrlsFromBreadCrumb(breadcrumb) {
  */
 export function rewriteReport(report) {
   try {
-    log('Processing report in rewriteReport');
-
     // simplify certain complex error messages (e.g. Ethjs)
     simplifyErrorMessages(report);
     // remove urls from error message
