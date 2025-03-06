@@ -31,16 +31,6 @@ jobs:
           # Install anvil
           yarn foundryup
 
-          # Make the binary executable (ensure it has proper permissions)
-          find .metamask/cache -name anvil -type f -exec chmod 755 {} \;
-
-          # Verify installation
-          echo "Checking node_modules/.bin/anvil:"
-          ls -la node_modules/.bin/anvil || echo "node_modules/.bin/anvil not found"
-
-          echo "Testing if binary works:"
-          node_modules/.bin/anvil --version || echo "Failed to execute anvil"
-
       # Upload the .metamask/cache directory (contains anvil binary)
       - name: Upload .metamask/cache
         uses: actions/upload-artifact@v4
@@ -317,6 +307,12 @@ jobs:
         with:
           name: metamask-cache
           path: ./
+
+      # Find and fix permissions for all anvil binaries
+      - name: Find and fix permissions for all anvil binaries
+        run: |
+          find .metamask -name anvil -type f -exec chmod 755 {} \;
+          ls -la node_modules/.bin/anvil
 
       - name: Run e2e tests
         run: .github/scripts/test-run-e2e.sh yarn test:e2e:chrome:webpack
