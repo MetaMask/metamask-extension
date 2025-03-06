@@ -173,4 +173,27 @@ describe('getMultiChainAssets', () => {
       ]),
     );
   });
+
+  it('returns the same data if state does not change', () => {
+    const mockState = {
+      metamask: {
+        ...mockAssetsState.metamask,
+        ...mockRatesState.metamask,
+        accountsAssets: mockAccountAssets,
+        preferences: {
+          hideZeroBalanceTokens: false,
+        },
+        balances: mockMultichainBalances,
+      },
+    };
+    const result1 = getMultiChainAssets(mockState, {
+      address: '0xAddress',
+      id: mockAccountId,
+    });
+    const result2 = getMultiChainAssets(mockState, {
+      address: '0xAddress',
+      id: mockAccountId,
+    });
+    expect(result1 === result2).toBe(true);
+  });
 });
