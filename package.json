@@ -224,7 +224,8 @@
     "tslib@npm:^2.4.0": "~2.6.0",
     "tslib@npm:^2.6.2": "~2.6.0",
     "@ethersproject/signing-key/elliptic": "^6.6.1",
-    "gridplus-sdk/elliptic": "^6.6.1"
+    "gridplus-sdk/elliptic": "^6.6.1",
+    "@metamask/eth-snap-keyring@^11.1.0": "npm:@metamask-previews/eth-snap-keyring@12.0.0-cfe31db"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",

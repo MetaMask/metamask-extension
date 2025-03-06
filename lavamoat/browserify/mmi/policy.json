@@ -46,6 +46,12 @@
         "webpack>events": true
       }
     },
+    "@metamask/eth-snap-keyring>@ethereumjs/tx>@ethereumjs/common": {
+      "packages": {
+        "@metamask/eth-snap-keyring>@ethereumjs/tx>@ethereumjs/common>@ethereumjs/util": true,
+        "webpack>events": true
+      }
+    },
     "@metamask/smart-transactions-controller>@ethereumjs/tx>@ethereumjs/common": {
       "packages": {
         "@metamask/smart-transactions-controller>@ethereumjs/util": true,
@@ -73,7 +79,17 @@
         "TextEncoder": true
       }
     },
+    "@metamask/eth-snap-keyring>@ethereumjs/tx>@ethereumjs/rlp": {
+      "globals": {
+        "TextEncoder": true
+      }
+    },
     "@metamask/smart-transactions-controller>@ethereumjs/tx>@ethereumjs/rlp": {
+      "globals": {
+        "TextEncoder": true
+      }
+    },
+    "@metamask/eth-snap-keyring>@ethereumjs/tx>@ethereumjs/common>@ethereumjs/util>@ethereumjs/rlp": {
       "globals": {
         "TextEncoder": true
       }
@@ -96,6 +112,14 @@
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "browserify>insert-module-globals>is-buffer": true
+      }
+    },
+    "@metamask/eth-snap-keyring>@ethereumjs/tx": {
+      "packages": {
+        "@metamask/eth-snap-keyring>@ethereumjs/tx>@ethereumjs/common": true,
+        "@metamask/eth-snap-keyring>@ethereumjs/tx>@ethereumjs/rlp": true,
+        "@metamask/eth-snap-keyring>@ethereumjs/tx>@ethereumjs/util": true,
+        "@ethereumjs/tx>ethereum-cryptography": true
       }
     },
     "@metamask/smart-transactions-controller>@ethereumjs/tx": {
@@ -130,6 +154,17 @@
         "browserify>insert-module-globals>is-buffer": true
       }
     },
+    "@metamask/eth-snap-keyring>@ethereumjs/tx>@ethereumjs/common>@ethereumjs/util": {
+      "globals": {
+        "console.warn": true,
+        "fetch": true
+      },
+      "packages": {
+        "@metamask/eth-snap-keyring>@ethereumjs/tx>@ethereumjs/common>@ethereumjs/util>@ethereumjs/rlp": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "webpack>events": true
+      }
+    },
     "@ethereumjs/tx>@ethereumjs/util": {
       "globals": {
         "console.warn": true
@@ -141,6 +176,17 @@
         "webpack>events": true,
         "browserify>insert-module-globals>is-buffer": true,
         "@ethereumjs/tx>@ethereumjs/util>micro-ftch": true
+      }
+    },
+    "@metamask/eth-snap-keyring>@ethereumjs/tx>@ethereumjs/util": {
+      "globals": {
+        "console.warn": true,
+        "fetch": true
+      },
+      "packages": {
+        "@metamask/eth-snap-keyring>@ethereumjs/tx>@ethereumjs/rlp": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "webpack>events": true
       }
     },
     "@metamask/smart-transactions-controller>@ethereumjs/util": {
@@ -1371,14 +1417,15 @@
       "globals": {
         "URL": true,
         "console.error": true,
-        "console.info": true
+        "console.info": true,
+        "console.warn": true
       },
       "packages": {
-        "@ethereumjs/tx": true,
+        "@metamask/eth-snap-keyring>@ethereumjs/tx": true,
         "@metamask/eth-snap-keyring>@metamask/eth-sig-util": true,
         "@metamask/keyring-api": true,
         "@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client": true,
-        "@metamask/keyring-api>@metamask/keyring-utils": true,
+        "@metamask/eth-snap-keyring>@metamask/keyring-utils": true,
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils": true,
         "webpack>events": true,
@@ -1563,6 +1610,16 @@
         "@metamask/keyring-api>@metamask/keyring-utils": true,
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/keyring-snap-client>uuid": true
+      }
+    },
+    "@metamask/eth-snap-keyring>@metamask/keyring-utils": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "bitcoin-address-validation": true
       }
     },
     "@metamask/keyring-api>@metamask/keyring-utils": {
