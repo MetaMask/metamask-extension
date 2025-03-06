@@ -272,6 +272,7 @@ jobs:
     runs-on: ubuntu-22.04
     container:
       image: cimg/node:22.13-browsers
+      options: --user root
     strategy:
       fail-fast: false
       matrix:
