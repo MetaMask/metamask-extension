@@ -338,7 +338,7 @@ export default function TransactionList({
     // We are showing what the user received so we look in the "to" array
     if (transaction.type === 'swap') {
       const userToEntry = transaction.to?.find(
-        entry => entry.address === userAddress
+        (entry) => entry.address === userAddress,
       );
 
       if (userToEntry?.asset?.amount) {
@@ -347,7 +347,7 @@ export default function TransactionList({
     }
 
     const userFromEntry = transaction.from?.find(
-      entry => entry.address === userAddress
+      (entry) => entry.address === userAddress,
     );
 
     if (userFromEntry?.asset?.amount) {
@@ -356,7 +356,9 @@ export default function TransactionList({
 
     // A fallback that should never happen
     if (transaction.from?.[0]?.asset?.amount) {
-      return `${transaction.from[0].asset.amount} ${transaction.from[0].asset.unit || ''}`;
+      return `${transaction.from[0].asset.amount} ${
+        transaction.from[0].asset.unit || ''
+      }`;
     }
 
     return '';
@@ -456,7 +458,10 @@ export default function TransactionList({
                               title="Primary Currency"
                               variant="body-lg-medium"
                             >
-                              {getTransactionDisplayAmount(transaction, selectedAccount.address)}
+                              {getTransactionDisplayAmount(
+                                transaction,
+                                selectedAccount.address,
+                              )}
                             </Text>
                           </>
                         }

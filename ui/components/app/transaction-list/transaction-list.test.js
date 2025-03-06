@@ -3,7 +3,10 @@ import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-import { MOCK_ACCOUNT_BIP122_P2WPKH, MOCK_ACCOUNT_SOLANA_MAINNET } from '../../../../test/data/mock-accounts';
+import {
+  MOCK_ACCOUNT_BIP122_P2WPKH,
+  MOCK_ACCOUNT_SOLANA_MAINNET,
+} from '../../../../test/data/mock-accounts';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
