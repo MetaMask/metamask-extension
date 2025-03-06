@@ -27,7 +27,10 @@ import {
   PLATFORM_FIREFOX,
 } from '../../shared/constants/app';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
-import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
+import {
+  checkForLastErrorAndLog,
+  checkForLastError,
+} from '../../shared/modules/browser-runtime.utils';
 import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
 import {
   getErrorHtml,
@@ -105,6 +108,7 @@ async function start() {
    */
   const messageListener = async (message) => {
     const method = message?.data?.method;
+    const name = message?.name;
 
     if (method !== METHOD_START_UI_SYNC) {
       const error = JSON.parse(message.error ?? '');
@@ -113,6 +117,10 @@ async function start() {
           error,
           JSON.parse(message.metamaskState ?? ''),
         );
+      }
+
+      if (name === 'RESTORE_VAULT_FROM_BACKUP') {
+        window.location.reload();
       }
 
       return;
