@@ -710,8 +710,8 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfo": {
-    "message": "We don't recommend proceeding with this request."
+  "blockaidAlertInfoDescription": {
+    "message": "A third party known for scams has access to this site. If you proceed, you'll lose assets."
   },
   "blockaidDescriptionApproveFarming": {
     "message": "If you approve this request, a third party known for scams might take all your assets."
@@ -1131,8 +1131,8 @@
   "confirmationAlertDetails": {
     "message": "To protect your assets, we suggest you reject the request."
   },
-  "confirmationAlertModalTitle": {
-    "message": "This request is suspicious"
+  "confirmationAlertModalTitleDescription": {
+    "message": "Your assets may be at risk"
   },
   "confirmed": {
     "message": "Confirmed"

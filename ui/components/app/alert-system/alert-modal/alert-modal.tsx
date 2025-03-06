@@ -139,7 +139,7 @@ function BlockaidAlertDetails() {
   const t = useI18nContext();
   return (
     <Text textAlign={TextAlign.Center} variant={TextVariant.bodyMd}>
-      {t('blockaidAlertInfo')}
+      {t('blockaidAlertInfoDescription')}
     </Text>
   );
 }
