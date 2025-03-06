@@ -73,9 +73,6 @@
   "accountActivityText": {
     "message": "选择您想要接收通知的账户："
   },
-  "accountBalance": {
-    "message": "账户余额"
-  },
   "accountDetails": {
     "message": "账户详情"
   },
@@ -5019,12 +5016,6 @@
     "message": "这是能够代表您花费您的代币的地址。"
   },
   "spendingCap": {
-    "message": "支出上限"
-  },
-  "spendingCapTooltipDesc": {
-    "message": "他人可代表您访问该代币金额并进行消费。"
-  },
-  "spendingCaps": {
     "message": "支出上限"
   },
   "srpInputNumberOfWords": {
