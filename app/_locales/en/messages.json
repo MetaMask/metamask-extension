@@ -3984,7 +3984,7 @@
     "message": "You receive"
   },
   "permitSimulationChange_revoke": {
-    "message": "Spending cap"
+    "message": "Revoke"
   },
   "permitSimulationChange_transfer": {
     "message": "You send"
