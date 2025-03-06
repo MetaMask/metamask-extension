@@ -133,6 +133,7 @@
     "validate-e2e-page-object-usage": "tsx .github/scripts/validate-e2e-page-object-usage.ts"
   },
   "resolutions": {
+    "@trezor/connect-web": "9.5.1",
     "chokidar": "^3.6.0",
     "@types/react": "^16.9.53",
     "bn.js": "^5.2.1",
