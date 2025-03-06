@@ -196,9 +196,6 @@
   "addFriendsAndAddresses": {
     "message": "添加您信任的朋友和地址"
   },
-  "addHardwareWallet": {
-    "message": "添加硬件钱包"
-  },
   "addIPFSGateway": {
     "message": "添加您首选的IPFS网关"
   },
@@ -217,15 +214,6 @@
   },
   "addNewAccount": {
     "message": "添加新账户"
-  },
-  "addNewBitcoinAccount": {
-    "message": "添加新的比特币账户（测试版）"
-  },
-  "addNewBitcoinTestnetAccount": {
-    "message": "添加新的比特币账户（测试网）"
-  },
-  "addNewSolanaAccount": {
-    "message": "添加新的Solana账户（测试版）"
   },
   "addNft": {
     "message": "添加 NFT"
@@ -2061,9 +2049,6 @@
   "import": {
     "message": "导入",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "导入账户"
   },
   "importAccountError": {
     "message": "导入账户时出错。"

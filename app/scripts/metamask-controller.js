@@ -409,7 +409,7 @@ const environmentMappingForRemoteFeatureFlag = {
 const buildTypeMappingForRemoteFeatureFlag = {
   flask: DistributionType.Flask,
   main: DistributionType.Main,
-  beta: 'beta',
+  beta: DistributionType.Beta,
 };
 
 export default class MetamaskController extends EventEmitter {
@@ -2642,7 +2642,37 @@ export default class MetamaskController extends EventEmitter {
             this.controllerMessenger,
             'SnapController:clearSnapState',
           ),
-          getMnemonic: this.getPrimaryKeyringMnemonic.bind(this),
+          getMnemonic: async (source) => {
+            if (!source) {
+              return this.getPrimaryKeyringMnemonic();
+            }
+
+            try {
+              const { type, mnemonic } = await this.controllerMessenger.call(
+                'KeyringController:withKeyring',
+                {
+                  id: source,
+                },
+                async ({ keyring }) => ({
+                  type: keyring.type,
+                  mnemonic: keyring.mnemonic,
+                }),
+              );
+
+              if (type !== KeyringTypes.hd || !mnemonic) {
+                // The keyring isn't guaranteed to have a mnemonic (e.g.,
+                // hardware wallets, which can't be used as entropy sources),
+                // so we throw an error if it doesn't.
+                throw new Error(
+                  `Entropy source with ID "${source}" not found.`,
+                );
+              }
+
+              return mnemonic;
+            } catch {
+              throw new Error(`Entropy source with ID "${source}" not found.`);
+            }
+          },
           getUnlockPromise: this.appStateController.getUnlockPromise.bind(
             this.appStateController,
           ),
@@ -4304,6 +4334,24 @@ export default class MetamaskController extends EventEmitter {
   async importMnemonicToVault(mnemonic) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
+      // TODO: `getKeyringsByType` is deprecated, this logic should probably be moved to the `KeyringController`.
+      // FIXME: The `KeyringController` does not check yet for duplicated accounts with HD keyrings, see: https://github.com/MetaMask/core/issues/5411
+      const alreadyImportedSrp = this.keyringController
+        .getKeyringsByType(KeyringTypes.hd)
+        .some((keyring) => {
+          return (
+            Buffer.from(
+              this._convertEnglishWordlistIndicesToCodepoints(keyring.mnemonic),
+            ).toString('utf8') === mnemonic
+          );
+        });
+
+      if (alreadyImportedSrp) {
+        throw new Error(
+          'This Secret Recovery Phrase has already been imported.',
+        );
+      }
+
       const { id } = await this.keyringController.addNewKeyring(
         KeyringTypes.hd,
         {
@@ -6357,6 +6405,29 @@ export default class MetamaskController extends EventEmitter {
             ...rate,
             currency: fiatCurrency,
           };
+        },
+        getEntropySources: () => {
+          /**
+           * @type {KeyringController['state']}
+           */
+          const state = this.controllerMessenger.call(
+            'KeyringController:getState',
+          );
+
+          return state.keyrings
+            .map((keyring, index) => {
+              if (keyring.type === KeyringTypes.hd) {
+                return {
+                  id: state.keyringsMetadata[index].id,
+                  name: state.keyringsMetadata[index].name,
+                  type: 'mnemonic',
+                  primary: index === 0,
+                };
+              }
+
+              return null;
+            })
+            .filter(Boolean);
         },
         hasPermission: this.permissionController.hasPermission.bind(
           this.permissionController,

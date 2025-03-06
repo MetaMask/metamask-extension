@@ -196,9 +196,6 @@
   "addFriendsAndAddresses": {
     "message": "Freunde und Adressen hinzufügen, welchen Sie vertrauen"
   },
-  "addHardwareWallet": {
-    "message": "Hardware-Wallet hinzufügen"
-  },
   "addIPFSGateway": {
     "message": "Fügen Sie Ihr bevorzugtes IPFS-Gateway hinzu."
   },
@@ -217,15 +214,6 @@
   },
   "addNewAccount": {
     "message": "Ein neues Konto hinzufügen"
-  },
-  "addNewBitcoinAccount": {
-    "message": "Ein neues Bitcoin-Konto hinzufügen (Beta)"
-  },
-  "addNewBitcoinTestnetAccount": {
-    "message": "Ein neues Bitcoin-Konto hinzufügen (Testnet)"
-  },
-  "addNewSolanaAccount": {
-    "message": "Ein neues Solana-Konto hinzufügen (Beta)"
   },
   "addNft": {
     "message": "NFT hinzufügen"
@@ -2061,9 +2049,6 @@
   "import": {
     "message": "Importieren",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Konto importieren"
   },
   "importAccountError": {
     "message": "Fehler beim Importieren des Kontos."
