@@ -6,6 +6,7 @@ import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { filterEvents } from './sentry-filter-events';
+import { v4 as uuidv4 } from 'uuid';
 
 const projectLogger = createProjectLogger('sentry');
 let installType = 'unknown';
@@ -306,18 +307,13 @@ async function getMetaMetricsEnabled() {
 }
 
 /**
- * Sets the Sentry user ID if available from the application state
+ * Sets the Sentry user ID using a generated UUID v4
  */
 function setUserIdIfAvailable() {
   try {
-    const metaMetricsId = getMetaMetricsId();
-
-    if (metaMetricsId) {
-      Sentry.setUser({ id: metaMetricsId });
-      log('Set Sentry user ID:', metaMetricsId);
-    } else {
-      log('No metaMetricsId available for Sentry.setUser');
-    }
+    const userId = uuidv4();
+    Sentry.setUser({ id: userId });
+    log('Set Sentry user ID:', userId);
   } catch (err) {
     log('Error setting Sentry user ID', err);
   }
@@ -645,28 +641,4 @@ function getEventType(event) {
   }
 
   return 'Event';
-}
-
-// Add this function to directly get the metaMetricsId from various sources
-async function getMetaMetricsId() {
-  try {
-    const state = getState();
-    let metaMetricsId =
-      state?.state?.MetaMetricsController?.metaMetricsId ||
-      state?.state?.metamask?.metaMetricsId;
-
-    const persistedState = await globalThis.stateHooks.getPersistedState();
-    metaMetricsId =
-      metaMetricsId ||
-      persistedState?.data?.MetaMetricsController?.metaMetricsId;
-
-    if (metaMetricsId) {
-      return metaMetricsId;
-    }
-    log('Could not find metaMetricsId in any source');
-    return null;
-  } catch (error) {
-    log('Error in getMetaMetricsId', error);
-    return null;
-  }
 }
