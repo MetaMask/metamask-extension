@@ -25,6 +25,17 @@ jobs:
           is-high-risk-environment: false
           cache-node-modules: 'true'
 
+      # Run foundryup to install anvil
+      - name: Install Anvil
+        run: yarn foundryup
+
+      # Persist .metamask/cache to ensure anvil is available in subsequent jobs
+      - name: Upload .metamask/cache
+        uses: actions/upload-artifact@v4
+        with:
+          name: metamask-cache
+          path: .metamask/cache/
+
   get-changed-files-with-git-diff:
     needs: prep-deps
     runs-on: ubuntu-latest
@@ -286,6 +297,13 @@ jobs:
         with:
           name: changed-files
           path: ./changed-files/
+
+      # Download metamask-cache artifact containing anvil binary
+      - name: Download metamask-cache artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: metamask-cache
+          path: .metamask/cache/
 
       - name: Run e2e tests
         run: .github/scripts/test-run-e2e.sh yarn test:e2e:chrome:webpack
