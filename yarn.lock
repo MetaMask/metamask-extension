@@ -6162,23 +6162,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@npm:^23.1.0":
-  version: 23.1.0
-  resolution: "@metamask/signature-controller@npm:23.1.0"
+"@metamask/signature-controller@file:.yalc/@metamask/signature-controller::locator=metamask-crx%40workspace%3A.":
+  version: 24.0.0
+  resolution: "@metamask/signature-controller@file:.yalc/@metamask/signature-controller#.yalc/@metamask/signature-controller::hash=a2bbf6&locator=metamask-crx%40workspace%3A."
   dependencies:
-    "@metamask/base-controller": "npm:^7.0.2"
-    "@metamask/controller-utils": "npm:^11.4.4"
-    "@metamask/eth-sig-util": "npm:^8.0.0"
-    "@metamask/utils": "npm:^10.0.0"
+    "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/controller-utils": "npm:^11.5.0"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
+    "@metamask/utils": "npm:^11.2.0"
     jsonschema: "npm:^1.4.1"
     lodash: "npm:^4.17.21"
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/approval-controller": ^7.0.0
-    "@metamask/keyring-controller": ^19.0.0
+    "@metamask/keyring-controller": ^20.0.0
     "@metamask/logging-controller": ^6.0.0
     "@metamask/network-controller": ^22.0.0
-  checksum: 10/2f97e6412bc3a3a13aa2106dfd679500680881918a6e3e2621d4e225e6380df7a01218f7ce26747575b09c85d8ac8be2f5029240339b28fc6d849fad480c5b72
+  checksum: 10/4a5c1c7042a21d707f8d4d3eb6da7434562df65335ee5ad7b8e22449e8ee9bfbf542bd8810f881fbc89642b02ab4408e20a39e6a297091fa734926a4af51017d
   languageName: node
   linkType: hard
 
@@ -27316,7 +27316,7 @@ __metadata:
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^19.0.0"
-    "@metamask/signature-controller": "npm:^23.1.0"
+    "@metamask/signature-controller": "file:.yalc/@metamask/signature-controller"
     "@metamask/smart-transactions-controller": "npm:^16.0.1"
     "@metamask/snaps-controllers": "npm:^10.0.1"
     "@metamask/snaps-execution-environments": "npm:^7.0.0"

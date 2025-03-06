@@ -21,6 +21,7 @@ import {
   TransactionControllerUnapprovedTransactionAddedEvent,
 } from '@metamask/transaction-controller';
 import { SmartTransactionsControllerSmartTransactionEvent } from '@metamask/smart-transactions-controller';
+import { SignDelegationAction } from '@metamask/signature-controller';
 import {
   SwapsControllerSetApproveTxIdAction,
   SwapsControllerSetTradeTxIdAction,
@@ -32,6 +33,7 @@ type MessengerActions =
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetEIP1559CompatibilityAction
   | NetworkControllerGetNetworkClientByIdAction
+  | SignDelegationAction
   | SwapsControllerSetApproveTxIdAction
   | SwapsControllerSetTradeTxIdAction;
 
@@ -93,6 +95,7 @@ export function getTransactionControllerInitMessenger(
       'ApprovalController:startFlow',
       'ApprovalController:updateRequestState',
       'NetworkController:getEIP1559Compatibility',
+      'SignatureController:signDelegation',
       'SwapsController:setApproveTxId',
       'SwapsController:setTradeTxId',
     ],
