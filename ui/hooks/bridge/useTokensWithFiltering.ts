@@ -51,9 +51,18 @@ type FilterPredicate = (
  * - all other tokens
  *
  * @param chainId - the selected src/dest chainId
+ * @param tokenToExclude - a token to exclude from the token list, usually the token being swapped from
+ * @param tokenToExclude.symbol
+ * @param tokenToExclude.address
+ * @param tokenToExclude.chainId
  */
 export const useTokensWithFiltering = (
   chainId?: ChainId | Hex | CaipChainId,
+  tokenToExclude?: null | {
+    symbol: string;
+    address?: string;
+    chainId?: string;
+  },
 ) => {
   const allDetectedTokens: Record<string, Token[]> = useSelector(
     getAllDetectedTokensForSelectedAddress,
@@ -138,16 +147,30 @@ export const useTokensWithFiltering = (
       // Only tokens with 0 balance are processed here so hardcode empty string
       balance: '',
       string: undefined,
-      address: token.address || zeroAddress(),
+      address: token.address,
     };
   };
 
   // shouldAddToken is a filter condition passed in from the AssetPicker that determines whether a token should be included
   const filteredTokenListGenerator = useCallback(
-    (shouldAddToken: FilterPredicate) =>
+    (filterCondition: FilterPredicate) =>
       (function* (): Generator<
         AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>
       > {
+        const shouldAddToken = (
+          symbol: string,
+          address?: string,
+          tokenChainId?: string,
+        ) =>
+          filterCondition(symbol, address, tokenChainId) &&
+          (tokenToExclude && tokenChainId
+            ? !(
+                tokenToExclude.symbol === symbol &&
+                tokenToExclude.address === address &&
+                tokenToExclude.chainId === formatChainIdToCaip(tokenChainId)
+              )
+            : true);
+
         if (
           !chainId ||
           !topTokens ||
@@ -173,7 +196,7 @@ export const useTokensWithFiltering = (
                 chainId: token.chainId,
                 tokenFiatAmount: token.tokenFiatAmount,
                 decimals: token.decimals,
-                address: zeroAddress(),
+                address: token.address,
                 type: AssetType.native,
                 balance: token.balance ?? '0',
                 string: token.string ?? undefined,
@@ -282,6 +305,7 @@ export const useTokensWithFiltering = (
       chainId,
       tokenList,
       allDetectedTokens,
+      tokenToExclude,
     ],
   );
   return {

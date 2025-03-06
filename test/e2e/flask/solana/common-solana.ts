@@ -1645,9 +1645,6 @@ export async function withSolanaAccountSnap(
           mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
           mockList.push(await mockGetSuccessTransaction(mockServer));
         }
-        if (mockZeroBalance) {
-          mockList.push(await mockSolanaBalanceQuote(mockServer, true));
-        }
         if (mockCalls) {
           mockList.push([
             await mockSolanaBalanceQuote(mockServer),
@@ -1664,6 +1661,9 @@ export async function withSolanaAccountSnap(
             await mockGetTokenAccountInfo(mockServer),
             await mockGetAccountInfo(mockServer),
           ]);
+        }
+        if (mockZeroBalance) {
+          mockList.push(await mockSolanaBalanceQuote(mockServer, true));
         }
         if (mockSendTransaction) {
           mockList.push(await mockSendSolanaTransaction(mockServer));

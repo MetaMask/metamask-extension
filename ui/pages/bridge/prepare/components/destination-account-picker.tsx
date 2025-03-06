@@ -1,8 +1,6 @@
-import * as React from 'react';
+import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { SolAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { useState } from 'react';
 import {
   TextField,
   Box,
@@ -14,6 +12,7 @@ import {
 import {
   getSelectedInternalAccount,
   getInternalAccounts,
+  isSolanaAccount,
 } from '../../../../selectors';
 import {
   BlockSize,
@@ -44,17 +43,21 @@ export const DestinationAccountPicker = ({
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const accounts = useSelector(getInternalAccounts);
 
-  const filteredAccounts = accounts.filter((account) => {
-    const matchesSearch = account.metadata.name
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
+  const filteredAccounts = useMemo(
+    () =>
+      accounts.filter((account) => {
+        const matchesSearch = account.metadata.name
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase());
 
-    const matchesChain = isDestinationSolana
-      ? account.type === SolAccountType.DataAccount
-      : account.type !== SolAccountType.DataAccount;
+        const matchesChain = isDestinationSolana
+          ? isSolanaAccount(account)
+          : !isSolanaAccount(account);
 
-    return matchesSearch && matchesChain;
-  });
+        return matchesSearch && matchesChain;
+      }),
+    [accounts, isDestinationSolana, searchQuery],
+  );
 
   if (selectedSwapToAccount) {
     return (
