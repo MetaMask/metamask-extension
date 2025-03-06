@@ -87,7 +87,7 @@ export function MultichainTransactionDetailsModal({
 
   const { id: txId, fees, timestamp, status, chain, type } = transaction;
 
-  let fromAddress, fromAsset, toAddress;
+  let fromAddress, toAddress, toAsset;
 
   if (type === 'swap' && userAddress) {
     const txFromEntry = transaction.from?.find(
@@ -98,12 +98,12 @@ export function MultichainTransactionDetailsModal({
     );
 
     fromAddress = txFromEntry?.address || '';
-    fromAsset = txFromEntry?.asset || null;
     toAddress = txToEntry?.address || '';
+    toAsset = txToEntry?.asset || null;
   } else {
     fromAddress = transaction.from[0].address;
-    fromAsset = transaction.from[0].asset;
     toAddress = transaction.to[0].address;
+    toAsset = transaction.to[0].asset;
   }
 
   const baseFee = fees?.find((fee) => fee.type === 'base')?.asset;
@@ -304,7 +304,7 @@ export function MultichainTransactionDetailsModal({
                   variant={TextVariant.bodyMd}
                   data-testid="transaction-amount"
                 >
-                  {getAssetDisplay(fromAsset)}
+                  {getAssetDisplay(toAsset)}
                 </Text>
               </Box>
             </Box>

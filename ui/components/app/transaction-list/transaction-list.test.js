@@ -319,11 +319,11 @@ describe('TransactionList', () => {
     const { getByText, getByRole, getByTestId } = render(solanaSwapState);
 
     expect(getByText('Confirmed')).toBeInTheDocument();
-    expect(getByText('Swap')).toBeInTheDocument();
+    expect(getByText('Swap SOL to BONK')).toBeInTheDocument();
 
     expect(getByTestId('activity-list-item')).toBeInTheDocument();
 
-    expect(getByText('2583.72 BONK')).toBeInTheDocument();
+    expect(getByText('-0.01 SOL')).toBeInTheDocument();
 
     const viewOnExplorerBtn = getByRole('button', {
       name: 'View on block explorer',

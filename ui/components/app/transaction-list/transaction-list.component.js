@@ -335,23 +335,12 @@ export default function TransactionList({
   }, []);
 
   const getTransactionDisplayAmount = (transaction, userAddress) => {
-    // We are showing what the user received so we look in the "to" array
-    if (transaction.type === 'swap') {
-      const userToEntry = transaction.to?.find(
-        (entry) => entry.address === userAddress,
-      );
-
-      if (userToEntry?.asset?.amount) {
-        return `${userToEntry.asset.amount} ${userToEntry.asset.unit || ''}`;
-      }
-    }
-
     const userFromEntry = transaction.from?.find(
       (entry) => entry.address === userAddress,
     );
 
     if (userFromEntry?.asset?.amount) {
-      return `${userFromEntry.asset.amount} ${userFromEntry.asset.unit || ''}`;
+      return `-${userFromEntry.asset.amount} ${userFromEntry.asset.unit || ''}`;
     }
 
     // A fallback that should never happen
@@ -370,6 +359,26 @@ export default function TransactionList({
   );
 
   const trackEvent = useContext(MetaMetricsContext);
+
+  const formatTransactionTitle = (transaction, userAddress) => {
+    switch (transaction.type) {
+      case TransactionType.swap:
+        const userToEntry = transaction.to?.find(
+          (entry) => entry.address === userAddress,
+        );
+        const userFromEntry = transaction.from?.find(
+          (entry) => entry.address === userAddress,
+        );
+        if (userFromEntry && userToEntry) {
+          return `${t('swap')} ${userFromEntry.asset.unit} ${'to'} ${
+            userToEntry.asset.unit
+          }`;
+        }
+        return capitalize(transaction.type);
+      default:
+        return capitalize(transaction.type);
+    }
+  };
 
   if (!isEvmAccountType(selectedAccount.type)) {
     const addressLink = getMultichainAccountUrl(
@@ -468,7 +477,10 @@ export default function TransactionList({
                         title={
                           transaction.isBridgeTx
                             ? t('bridge')
-                            : capitalize(transaction.type)
+                            : formatTransactionTitle(
+                                transaction,
+                                selectedAccount.address,
+                              )
                         }
                         // eslint-disable-next-line react/jsx-no-duplicate-props
                         subtitle={
