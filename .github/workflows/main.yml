@@ -270,6 +270,8 @@ jobs:
       - prep-build-test-webpack
       - get-changed-files-with-git-diff
     runs-on: ubuntu-22.04
+    container:
+      image: cimg/node:22.13-browsers
     strategy:
       fail-fast: false
       matrix:
