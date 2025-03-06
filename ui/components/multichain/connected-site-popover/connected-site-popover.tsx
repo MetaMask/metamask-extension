@@ -56,6 +56,7 @@ export const ConnectedSitePopover = ({
       data-testid="connected-site-popover"
       paddingLeft={0}
       paddingRight={0}
+      offset={[0, 0]}
       position={PopoverPosition.BottomEnd}
       flip
     >
