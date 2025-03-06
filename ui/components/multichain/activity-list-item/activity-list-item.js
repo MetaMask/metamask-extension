@@ -77,8 +77,6 @@ export const ActivityListItem = ({
             display={Display.InlineFlex}
             flexDirection={FlexDirection.Column}
             className="activity-list-item__detail-container"
-            flexShrink="1"
-            flexGrow="1"
             minWidth="0"
           >
             <Text
