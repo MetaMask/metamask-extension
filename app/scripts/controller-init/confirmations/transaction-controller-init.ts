@@ -117,13 +117,7 @@ export const TransactionControllerInit: ControllerInitFunction<
       preferencesController().state.useTransactionSimulations,
     messenger: controllerMessenger,
     pendingTransactions: {
-      isResubmitEnabled: () => {
-        const uiState = getUIState(getFlatState());
-        return !(
-          getSmartTransactionsPreferenceEnabled(uiState) &&
-          getCurrentChainSupportsSmartTransactions(uiState)
-        );
-      },
+      isResubmitEnabled: () => false,
     },
     testGasFeeFlows: Boolean(process.env.TEST_GAS_FEE_FLOWS === 'true'),
     // @ts-expect-error Controller uses string for names rather than enum

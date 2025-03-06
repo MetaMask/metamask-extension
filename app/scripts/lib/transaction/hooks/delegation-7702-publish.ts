@@ -1,11 +1,11 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
-import { Hex, createProjectLogger } from '@metamask/utils';
+import { Hex, createProjectLogger, hexToNumber } from '@metamask/utils';
 import { Delegation } from '@metamask/signature-controller';
-import { data } from 'browserslist';
 
 const CHAIN_ID = '0x7a69';
 const DELEGATION_MANAGER_ADDRESS = '0x663F3ad617193148711d28f5334eE4Ed07016602';
+const SMART_CONTRACT_ADDRESS = '0x8438Ad1C834623CfF278AB6829a248E37C2D7E3f';
 const RELAY_ACCOUNT = '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC' as Hex;
 const RELAY_URL = 'http://localhost:3000/';
 const SALT = 123;
@@ -23,6 +23,34 @@ export async function delegation7702PublishHook(
   const { messenger } = request;
   const { networkClientId, txParams } = transactionMeta;
   const from = txParams.from as Hex;
+  const nonce = txParams.nonce as Hex;
+
+  const { provider } = await messenger.call(
+    'NetworkController:getNetworkClientById',
+    networkClientId,
+  );
+
+  const code = (await provider.request({
+    method: 'eth_getCode',
+    params: [from],
+  })) as Hex;
+
+  const isUpgraded = code?.length > 3;
+  let authorization = undefined;
+
+  if (!isUpgraded) {
+    authorization = await messenger.call(
+      'KeyringController:signEip7702Authorization',
+      {
+        chainId: hexToNumber(CHAIN_ID),
+        contractAddress: SMART_CONTRACT_ADDRESS,
+        from,
+        nonce: hexToNumber(nonce),
+      },
+    );
+
+    log('Authorization signature', authorization);
+  }
 
   const delegation: Delegation = {
     authority: ROOT_AUTHORITY,
@@ -55,7 +83,9 @@ export async function delegation7702PublishHook(
   };
 
   const relayRequest = {
+    authorization,
     delegation: { ...delegation, signature: delegationSignature },
+    nonce,
     transactionParams,
   };
 
@@ -74,5 +104,5 @@ export async function delegation7702PublishHook(
 
   log('Transaction hash', transactionHash);
 
-  return transactionHash;
+  return { transactionHash };
 }

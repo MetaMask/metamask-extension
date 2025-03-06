@@ -22,6 +22,7 @@ import {
 } from '@metamask/transaction-controller';
 import { SmartTransactionsControllerSmartTransactionEvent } from '@metamask/smart-transactions-controller';
 import { SignDelegationAction } from '@metamask/signature-controller';
+import { KeyringControllerSignEip7702AuthorizationAction } from '@metamask/keyring-controller';
 import {
   SwapsControllerSetApproveTxIdAction,
   SwapsControllerSetTradeTxIdAction,
@@ -30,6 +31,7 @@ import {
 type MessengerActions =
   | ApprovalControllerActions
   | AccountsControllerGetSelectedAccountAction
+  | KeyringControllerSignEip7702AuthorizationAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetEIP1559CompatibilityAction
   | NetworkControllerGetNetworkClientByIdAction
@@ -94,7 +96,9 @@ export function getTransactionControllerInitMessenger(
       'ApprovalController:endFlow',
       'ApprovalController:startFlow',
       'ApprovalController:updateRequestState',
+      'KeyringController:signEip7702Authorization',
       'NetworkController:getEIP1559Compatibility',
+      'NetworkController:getNetworkClientById',
       'SignatureController:signDelegation',
       'SwapsController:setApproveTxId',
       'SwapsController:setTradeTxId',
