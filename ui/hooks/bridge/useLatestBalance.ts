@@ -36,7 +36,8 @@ const useLatestBalance = (
   const nonEvmBalancesByAccountId = useMultichainSelector(
     getMultichainBalances,
   );
-  const nonEvmBalances = nonEvmBalancesByAccountId[id];
+
+  const nonEvmBalances = nonEvmBalancesByAccountId?.[id];
 
   const value = useAsyncResult<Numeric | undefined>(async () => {
     if (

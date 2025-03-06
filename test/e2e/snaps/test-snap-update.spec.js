@@ -57,17 +57,6 @@ describe('Test Snap update', function () {
           tag: 'button',
         });
 
-        // wait for permissions popover, click checkboxes and confirm
-        const permissionsConfirmButtonSelector =
-          '[data-testid="snap-install-warning-modal-confirm"]';
-        await driver.waitForSelector(permissionsConfirmButtonSelector);
-        await driver.clickElement('.mm-checkbox__input');
-
-        await driver.findClickableElement(permissionsConfirmButtonSelector);
-        await driver.clickElementAndWaitToDisappear(
-          permissionsConfirmButtonSelector,
-        );
-
         // finish the permission with OK button
         await driver.clickElement('[data-testid="page-container-footer-next"]');
 
@@ -113,7 +102,7 @@ describe('Test Snap update', function () {
         // look for the correct version text
         await driver.waitForSelector({
           css: '#updateSnapVersion',
-          text: '"0.35.2-flask.1"',
+          text: '"2.1.3"',
         });
       },
     );
