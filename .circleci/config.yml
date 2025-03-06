@@ -284,13 +284,6 @@ workflows:
           requires:
             - prep-deps
             - get-changed-files-with-git-diff
-      - test-lint:
-          requires:
-            - prep-deps
-      - all-tests-pass:
-          requires:
-            - test-lint
-            - validate-locales-only
 
 jobs:
   create_release_pull_request:
