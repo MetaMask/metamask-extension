@@ -25,13 +25,7 @@ jobs:
           is-high-risk-environment: false
           cache-node-modules: 'true'
 
-      # Run foundryup to install anvil
-      - name: Install Anvil
-        run: |
-          # Install anvil
-          yarn foundryup
-
-      # Upload the .metamask/cache directory (contains anvil binary)
+      # Upload the .metamask/cache directory and anvil binary which are already installed
       - name: Upload .metamask/cache
         uses: actions/upload-artifact@v4
         with:
