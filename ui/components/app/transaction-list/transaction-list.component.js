@@ -339,11 +339,12 @@ export default function TransactionList({
       (entry) => entry.address === userAddress,
     );
 
+    // Amount of the token sent
     if (userFromEntry?.asset?.amount) {
       return `-${userFromEntry.asset.amount} ${userFromEntry.asset.unit || ''}`;
     }
 
-    // A fallback that should never happen
+    // Amount of the token received
     if (transaction.from?.[0]?.asset?.amount) {
       return `${transaction.from[0].asset.amount} ${
         transaction.from[0].asset.unit || ''
