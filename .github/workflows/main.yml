@@ -7,7 +7,6 @@ on:
       - master
       - Version-v*
       - trigger-ci*
-      - ci-prep-build*
   pull_request:
     types:
       - opened
