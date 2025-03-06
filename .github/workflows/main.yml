@@ -281,14 +281,14 @@ jobs:
       MATRIX_INDEX: ${{ matrix.index }}
       MATRIX_TOTAL: 10
     steps:
+      - name: Install zstd
+        run: sudo apt-get update && sudo apt-get install zstd
+        shell: bash
+
       - name: Checkout and setup environment
         uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
         with:
           is-high-risk-environment: false
-
-      - name: Install zstd
-        run: sudo apt-get update && sudo apt-get install zstd
-        shell: bash
 
       - name: Download prep-build-test-webpack artifact
         uses: actions/download-artifact@v4
