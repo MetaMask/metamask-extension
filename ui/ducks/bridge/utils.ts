@@ -138,11 +138,6 @@ export const getTokenExchangeRate = async (request: {
     tokenAddress,
   );
   if (chainId === MultichainNetworks.SOLANA) {
-    console.log(
-      '=====getTokenExchangeRate solana',
-      exchangeRates,
-      tokenAddress,
-    );
     return exchangeRates?.[tokenAddress];
   }
   // The exchange rate can be checksummed or not, so we need to check both

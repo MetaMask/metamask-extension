@@ -276,6 +276,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
       this.update((_state) => {
         _state.bridgeState = {
           ...bridgeState,
+          quotes: DEFAULT_BRIDGE_STATE.quotes,
           quoteFetchError:
             error instanceof Error ? error.message : 'Unknown error',
           quotesLoadingStatus: RequestStatus.ERROR,

@@ -208,7 +208,7 @@ export class TestSnaps {
     console.log('Select entropy source');
     const selector = await this.driver.findElement(`#${id}-entropy-selector`);
     await this.driver.scrollToElement(selector);
-    await selector.click();
+    await this.driver.clickElement(`#${id}-entropy-selector`);
 
     await this.driver.clickElement({
       text: name,

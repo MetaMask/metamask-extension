@@ -73,9 +73,6 @@
   "accountActivityText": {
     "message": "Select the accounts you want to be notified about:"
   },
-  "accountBalance": {
-    "message": "Account balance"
-  },
   "accountDetails": {
     "message": "Account details"
   },
@@ -5192,9 +5189,6 @@
   },
   "spendingCap": {
     "message": "Spending cap"
-  },
-  "spendingCapTooltipDesc": {
-    "message": "This is the amount of tokens the spender will be able to access on your behalf."
   },
   "spendingCaps": {
     "message": "Spending caps"
