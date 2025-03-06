@@ -64,26 +64,25 @@ export const SolanaAccountCreationPrompt = ({
       style={{ minHeight: '300px' }}
     >
       <Text
-        variant={TextVariant.headingMd}
+        variant={TextVariant.headingSm}
         textAlign={TextAlign.Center}
         color={TextColor.textDefault}
       >
-        {/* {t('createSolanaAccountTitle')} */}
-        create solana account
+        {t('bridgeCreateSolanaAccountTitle')}
       </Text>
 
       <Text
-        variant={TextVariant.bodyMd}
+        variant={TextVariant.bodySm}
         textAlign={TextAlign.Center}
         color={TextColor.textAlternative}
       >
-        create 2{/* {t('createSolanaAccountToUseDestinationDescription')} */}
+        {t('bridgeCreateSolanaAccountDescription')}
       </Text>
 
       <Button
         block
         size={ButtonSize.Md}
-        variant={ButtonVariant.Primary}
+        variant={ButtonVariant.Secondary}
         onClick={handleCreateAccount}
         loading={isCreating}
         data-testid="create-solana-account-button"

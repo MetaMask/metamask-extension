@@ -758,6 +758,13 @@
   "bridgeConfirmTwoTransactions": {
     "message": "You'll need to confirm 2 transactions on your hardware wallet:"
   },
+  "bridgeCreateSolanaAccountDescription": {
+    "message": "To swap to the Solana network, you'll need to create a Solana account first."
+  },
+  "bridgeCreateSolanaAccountTitle": {
+    "message": "You haven't enabled Solana yet."
+  },
+
   "bridgeEnterAmount": {
     "message": "Select amount"
   },
