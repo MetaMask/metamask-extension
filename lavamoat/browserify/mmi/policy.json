@@ -1255,7 +1255,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/abi-utils": true,
         "@metamask/eth-sig-util>@metamask/utils": true,
-        "@metamask/scure-bip39>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util>tweetnacl": true
@@ -1267,7 +1267,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/scure-bip39>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util>tweetnacl": true
@@ -1279,7 +1279,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/scure-bip39>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util>tweetnacl": true
@@ -1291,7 +1291,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/scure-bip39>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util>tweetnacl": true
@@ -1303,7 +1303,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/scure-bip39>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util>tweetnacl": true
@@ -1315,7 +1315,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/scure-bip39>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util>tweetnacl": true
@@ -1327,7 +1327,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/scure-bip39>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util>tweetnacl": true
@@ -1339,7 +1339,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/keyring-controller>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/scure-bip39>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util>tweetnacl": true
@@ -1351,7 +1351,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/signature-controller>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/signature-controller>@metamask/eth-sig-util>@metamask/utils": true,
-        "@metamask/scure-bip39>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util>tweetnacl": true
@@ -1524,7 +1524,7 @@
         "@metamask/utils": true,
         "viem>@scure/bip32>@noble/curves": true,
         "@noble/hashes": true,
-        "@metamask/snaps-sdk>@metamask/key-tree>@scure/base": true
+        "@metamask/utils>@scure/base": true
       }
     },
     "@metamask/keyring-api": {
@@ -1916,7 +1916,7 @@
       },
       "packages": {
         "@metamask/scure-bip39>@noble/hashes": true,
-        "@metamask/scure-bip39>@scure/base": true
+        "@metamask/utils>@scure/base": true
       }
     },
     "@metamask/selected-network-controller": {
@@ -2068,7 +2068,7 @@
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils": true,
         "@noble/hashes": true,
-        "@metamask/snaps-utils>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "chalk": true,
         "@metamask/snaps-utils>cron-parser": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
@@ -2103,7 +2103,7 @@
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils": true,
         "@noble/hashes": true,
-        "@metamask/assets-controllers>@metamask/snaps-utils>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "chalk": true,
         "@metamask/snaps-utils>cron-parser": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
@@ -2138,7 +2138,7 @@
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils": true,
         "@noble/hashes": true,
-        "@metamask/multichain-transactions-controller>@metamask/snaps-utils>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "chalk": true,
         "@metamask/snaps-utils>cron-parser": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
@@ -2225,7 +2225,7 @@
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
         "@noble/hashes": true,
-        "@metamask/abi-utils>@metamask/utils>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "@metamask/utils>pony-cause": true,
@@ -2240,7 +2240,7 @@
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
         "@noble/hashes": true,
-        "@metamask/signature-controller>@metamask/eth-sig-util>@metamask/abi-utils>@metamask/utils>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "@metamask/utils>pony-cause": true,
@@ -2255,7 +2255,7 @@
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
         "@noble/hashes": true,
-        "@metamask/browser-passworder>@metamask/utils>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "@metamask/utils>pony-cause": true,
@@ -2270,7 +2270,7 @@
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
         "@noble/hashes": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/utils>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "@metamask/utils>pony-cause": true,
@@ -2285,7 +2285,7 @@
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
         "@noble/hashes": true,
-        "@metamask/eth-sig-util>@metamask/utils>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "@metamask/utils>pony-cause": true,
@@ -2300,7 +2300,7 @@
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
         "@noble/hashes": true,
-        "@metamask/signature-controller>@metamask/eth-sig-util>@metamask/utils>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "@metamask/utils>pony-cause": true,
@@ -2315,7 +2315,7 @@
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
         "@noble/hashes": true,
-        "@metamask/network-controller>@metamask/utils>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "@metamask/utils>pony-cause": true,
@@ -2330,7 +2330,7 @@
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
         "@noble/hashes": true,
-        "@metamask/queued-request-controller>@metamask/utils>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "@metamask/utils>pony-cause": true,
@@ -2345,7 +2345,7 @@
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
         "@noble/hashes": true,
-        "@metamask/signature-controller>@metamask/utils>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "@metamask/utils>pony-cause": true,
@@ -2489,91 +2489,7 @@
         "document.defaultView": true
       }
     },
-    "@metamask/snaps-sdk>@metamask/key-tree>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@metamask/scure-bip39>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@metamask/snaps-utils>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@metamask/assets-controllers>@metamask/snaps-utils>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@metamask/multichain-transactions-controller>@metamask/snaps-utils>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
     "@metamask/utils>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@metamask/abi-utils>@metamask/utils>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@metamask/signature-controller>@metamask/eth-sig-util>@metamask/abi-utils>@metamask/utils>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@metamask/browser-passworder>@metamask/utils>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/utils>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@metamask/eth-sig-util>@metamask/utils>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@metamask/signature-controller>@metamask/eth-sig-util>@metamask/utils>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@metamask/network-controller>@metamask/utils>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@metamask/queued-request-controller>@metamask/utils>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@metamask/signature-controller>@metamask/utils>@scure/base": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
@@ -2583,7 +2499,7 @@
       "packages": {
         "viem>@scure/bip32>@noble/curves": true,
         "viem>@scure/bip32>@noble/hashes": true,
-        "@metamask/scure-bip39>@scure/base": true
+        "@metamask/utils>@scure/base": true
       }
     },
     "@segment/loosely-validate-event": {
@@ -2931,7 +2847,7 @@
         "document.createTextNode": true,
         "document.getElementById": true,
         "document.querySelectorAll": true,
-        "location.origin": true,
+        "location": true,
         "navigator": true,
         "open": true,
         "origin": true,
@@ -2978,7 +2894,6 @@
       "packages": {
         "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
         "browserify>buffer": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>long": true,
         "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": true,
         "tslib": true
       }
@@ -2996,9 +2911,7 @@
     "@trezor/connect-web>@trezor/utils": {
       "globals": {
         "AbortController": true,
-        "Blob": true,
         "Intl.NumberFormat": true,
-        "TextEncoder": true,
         "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
@@ -4448,13 +4361,6 @@
         "localStorage": true,
         "log": "write",
         "navigator": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@trezor/protobuf>long": {
-      "globals": {
-        "WebAssembly.Instance": true,
-        "WebAssembly.Module": true,
-        "define": true
       }
     },
     "lottie-web": {
