@@ -1,5 +1,24 @@
+import * as Sentry from '@sentry/browser';
+import { validate as uuidValidate, version as uuidVersion } from 'uuid';
 import { rewriteReport, removeUrlsFromBreadCrumb } from './setupSentry';
+
+// Import the mocked module
 import * as setupSentry from './setupSentry';
+
+// Mock the entire setupSentry module
+jest.mock('./setupSentry', () => {
+  const originalModule = jest.requireActual('./setupSentry');
+  return {
+    ...originalModule,
+    sentryUserId: null,
+    log: jest.fn(),
+    setUserIdIfAvailable: jest.fn(),
+  };
+});
+
+jest.mock('@sentry/browser', () => ({
+  setUser: jest.fn(),
+}));
 
 describe('Setup Sentry', () => {
   describe('rewriteReport', () => {
@@ -237,6 +256,40 @@ describe('Setup Sentry', () => {
         to: '',
         from: 'chrome-extension://abcefg/home.html',
       });
+    });
+  });
+
+  describe('setUserIdIfAvailable', () => {
+    beforeEach(() => {
+      // Reset mocks
+      jest.clearAllMocks();
+
+      // Restore the original implementation for the test
+      setupSentry.setUserIdIfAvailable.mockImplementation(
+        jest.requireActual('./setupSentry').setUserIdIfAvailable,
+      );
+    });
+
+    it('should set user ID with a UUID v4 when called', () => {
+      setupSentry.setUserIdIfAvailable();
+      expect(Sentry.setUser).toHaveBeenCalledTimes(1);
+      const userId = Sentry.setUser.mock.calls[0][0].id;
+      expect(uuidValidate(userId)).toBe(true);
+      expect(uuidVersion(userId)).toBe(4);
+    });
+
+    it('should reuse the same UUID when called multiple times', () => {
+      // Call the function twice
+      setupSentry.setUserIdIfAvailable();
+      setupSentry.setUserIdIfAvailable();
+
+      // Should call setUser twice
+      expect(Sentry.setUser).toHaveBeenCalledTimes(2);
+
+      // Both calls should use the same UUID
+      const firstCallId = Sentry.setUser.mock.calls[0][0].id;
+      const secondCallId = Sentry.setUser.mock.calls[1][0].id;
+      expect(firstCallId).toStrictEqual(secondCallId);
     });
   });
 });

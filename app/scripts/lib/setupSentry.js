@@ -2,14 +2,15 @@ import { createModuleLogger, createProjectLogger } from '@metamask/utils';
 import * as Sentry from '@sentry/browser';
 import { logger } from '@sentry/utils';
 import browser from 'webextension-polyfill';
+import { v4 as uuidv4 } from 'uuid';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { filterEvents } from './sentry-filter-events';
-import { v4 as uuidv4 } from 'uuid';
 
 const projectLogger = createProjectLogger('sentry');
 let installType = 'unknown';
+let sentryUserId = null;
 
 export const log = createModuleLogger(
   projectLogger,
@@ -308,12 +309,16 @@ async function getMetaMetricsEnabled() {
 
 /**
  * Sets the Sentry user ID using a generated UUID v4
+ * The ID is stored in a module-level variable to ensure consistency within a session
  */
-function setUserIdIfAvailable() {
+export function setUserIdIfAvailable() {
   try {
-    const userId = uuidv4();
-    Sentry.setUser({ id: userId });
-    log('Set Sentry user ID:', userId);
+    // Use existing ID if available, otherwise generate a new one
+    if (!sentryUserId) {
+      sentryUserId = uuidv4();
+    }
+    Sentry.setUser({ id: sentryUserId });
+    log('Set Sentry user ID:', sentryUserId);
   } catch (err) {
     log('Error setting Sentry user ID', err);
   }
