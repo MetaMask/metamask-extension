@@ -284,6 +284,9 @@ workflows:
           requires:
             - prep-deps
             - get-changed-files-with-git-diff
+      - all-tests-pass:
+          requires:
+            - validate-locales-only
 
 jobs:
   create_release_pull_request:
