@@ -8,7 +8,11 @@ import { Hex, parseCaipAssetType } from '@metamask/utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { getTokenBalances } from '../ducks/metamask/metamask';
 import { TEST_CHAINS } from '../../shared/constants/network';
-import { Token, TokenWithFiatAmount } from '../components/app/assets/types';
+import {
+  NonEvmTokenWithFiatAmount,
+  Token,
+  TokenWithFiatAmount,
+} from '../components/app/assets/types';
 import { calculateTokenBalance } from '../components/app/assets/util/calculateTokenBalance';
 import { calculateTokenFiatAmount } from '../components/app/assets/util/calculateTokenFiatAmount';
 import {
@@ -157,16 +161,21 @@ export const getMultiChainAssets = createDeepEqualSelector(
   getAccountAssets,
   getAssetsMetadata,
   getAssetsRates,
+  getPreferences,
   (
     selectedAccountAddress,
     multichainBalances,
     accountAssets,
     assetsMetadata,
     assetRates,
+    preferences,
   ) => {
+    const { hideZeroBalanceTokens } = preferences;
     const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
     const balances = multichainBalances?.[selectedAccountAddress.id];
-    return assetIds.map((assetId: CaipAssetId) => {
+
+    const allAssets: NonEvmTokenWithFiatAmount[] = [];
+    assetIds.forEach((assetId: CaipAssetId) => {
       const { chainId, assetNamespace } = parseCaipAssetType(assetId);
       const isNative = assetNamespace === 'slip44';
       const balance = balances?.[assetId] || { amount: '0', unit: '' };
@@ -182,22 +191,24 @@ export const getMultiChainAssets = createDeepEqualSelector(
 
       const metadata = assetsMetadata[assetId] || assetMetadataFallback;
       const decimals = metadata.units[0]?.decimals || 0;
-
-      return {
-        title: metadata.name,
-        address: assetId,
-        symbol: metadata.symbol,
-        image: metadata.iconUrl,
-        decimals,
-        chainId,
-        isNative,
-        primary: balance.amount,
-        secondary: balanceInFiat.toNumber(),
-        string: '',
-        tokenFiatAmount: balanceInFiat, // for now we are keeping this is to satisfy sort, this should be fiat amount
-        isStakeable: false,
-      };
+      if (!hideZeroBalanceTokens || balance.amount !== '0' || isNative) {
+        allAssets.push({
+          title: metadata.name,
+          address: assetId,
+          symbol: metadata.symbol,
+          image: metadata.iconUrl,
+          decimals,
+          chainId,
+          isNative,
+          primary: balance.amount,
+          secondary: balanceInFiat.toNumber(),
+          string: '',
+          tokenFiatAmount: balanceInFiat, // for now we are keeping this is to satisfy sort, this should be fiat amount
+          isStakeable: false,
+        });
+      }
     });
+    return allAssets;
   },
 );
 
