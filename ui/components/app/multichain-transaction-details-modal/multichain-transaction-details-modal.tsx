@@ -48,11 +48,13 @@ import {
 export type MultichainTransactionDetailsModalProps = {
   transaction: Transaction;
   onClose: () => void;
+  userAddress: string;
 };
 
 export function MultichainTransactionDetailsModal({
   transaction,
   onClose,
+  userAddress,
 }: MultichainTransactionDetailsModalProps) {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -70,7 +72,7 @@ export function MultichainTransactionDetailsModal({
     }
   };
 
-  const getAssetDisplay = (asset: typeof fromAsset) => {
+  const getAssetDisplay = (asset: any) => {
     if (!asset) {
       return null;
     }
@@ -83,22 +85,31 @@ export function MultichainTransactionDetailsModal({
     return null;
   };
 
-  if (!transaction?.from?.[0] || !transaction?.to?.[0]) {
-    return null;
+  const { id: txId, fees, timestamp, status, chain, type } = transaction;
+
+  let fromAddress, fromAsset, toAddress, toAsset;
+
+  if (type === 'swap' && userAddress) {
+    const txFromEntry = transaction.from?.find(
+      (entry) => entry.address === userAddress,
+    );
+    const txToEntry = transaction.to?.find(
+      (entry) => entry.address === userAddress,
+    );
+
+    fromAddress = txFromEntry?.address || transaction.from[0].address;
+    fromAsset = txFromEntry?.asset || transaction.from[0].asset;
+    toAddress = txToEntry?.address || transaction.to[0].address;
+    toAsset = txToEntry?.asset || transaction.to[0].asset;
+  } else {
+    fromAddress = transaction.from[0].address;
+    fromAsset = transaction.from[0].asset;
+    toAddress = transaction.to[0].address;
+    toAsset = transaction.to[0].asset;
   }
 
-  // We only support 1 recipient for "from" and "to" for now:
-  const {
-    id: txId,
-    from: [{ address: fromAddress, asset: fromAsset }],
-    to: [{ address: toAddress }],
-    fees: [{ asset: feeAsset }],
-    fees,
-    timestamp,
-    status,
-    chain,
-    type,
-  } = transaction;
+  const baseFee = fees?.find((fee) => fee.type === 'base')?.asset;
+  const priorityFee = fees?.find((fee) => fee.type === 'priority')?.asset;
 
   return (
     <Modal
@@ -136,7 +147,7 @@ export function MultichainTransactionDetailsModal({
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
-            gap={3}
+            gap={4}
           >
             {/* Status */}
             <Box
@@ -198,7 +209,7 @@ export function MultichainTransactionDetailsModal({
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
-            gap={3}
+            gap={4}
           >
             {/* From */}
             <Box
@@ -221,7 +232,7 @@ export function MultichainTransactionDetailsModal({
                   }}
                   as="a"
                   externalLink
-                  href={getAddressUrl(fromAddress, chain)}
+                  href={getAddressUrl(fromAddress || '', chain)}
                 >
                   {shortenAddress(fromAddress)}
                   <Icon
@@ -231,7 +242,7 @@ export function MultichainTransactionDetailsModal({
                     color={IconColor.primaryDefault}
                     onClick={() =>
                       navigator.clipboard.writeText(
-                        getAddressUrl(fromAddress, chain),
+                        getAddressUrl(fromAddress || '', chain),
                       )
                     }
                   />
@@ -260,7 +271,7 @@ export function MultichainTransactionDetailsModal({
                   }}
                   as="a"
                   externalLink
-                  href={getAddressUrl(toAddress, chain)}
+                  href={getAddressUrl(toAddress || '', chain)}
                 >
                   {shortenAddress(toAddress)}
                   <Icon
@@ -270,7 +281,7 @@ export function MultichainTransactionDetailsModal({
                     color={IconColor.primaryDefault}
                     onClick={() =>
                       navigator.clipboard.writeText(
-                        getAddressUrl(toAddress, chain),
+                        getAddressUrl(toAddress || '', chain),
                       )
                     }
                   />
@@ -317,9 +328,30 @@ export function MultichainTransactionDetailsModal({
                   flexDirection={FlexDirection.Column}
                   alignItems={AlignItems.flexEnd}
                 >
-                  <Text variant={TextVariant.bodyMd}>
-                    {getAssetDisplay(feeAsset)}
-                  </Text>
+                  {baseFee && (
+                    <Text
+                      variant={TextVariant.bodyMd}
+                      data-testid="transaction-base-fee"
+                    >
+                      {t('baseFee')}: {getAssetDisplay(baseFee)}
+                    </Text>
+                  )}
+                  {priorityFee && (
+                    <Text
+                      variant={TextVariant.bodyMd}
+                      data-testid="transaction-priority-fee"
+                    >
+                      {t('priorityFee')}: {getAssetDisplay(priorityFee)}
+                    </Text>
+                  )}
+                  {!baseFee && !priorityFee && fees[0]?.asset && (
+                    <Text
+                      variant={TextVariant.bodyMd}
+                      data-testid="transaction-network-fee"
+                    >
+                      {getAssetDisplay(fees[0].asset)}
+                    </Text>
+                  )}
                 </Box>
               </Box>
             )}

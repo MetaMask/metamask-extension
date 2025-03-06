@@ -334,6 +334,34 @@ export default function TransactionList({
     setSelectedTransaction(transaction);
   }, []);
 
+  const getTransactionDisplayAmount = (transaction, userAddress) => {
+    // We are showing what the user received so we look in the "to" array
+    if (transaction.type === 'swap') {
+      const userToEntry = transaction.to?.find(
+        entry => entry.address === userAddress
+      );
+
+      if (userToEntry?.asset?.amount) {
+        return `${userToEntry.asset.amount} ${userToEntry.asset.unit || ''}`;
+      }
+    }
+
+    const userFromEntry = transaction.from?.find(
+      entry => entry.address === userAddress
+    );
+
+    if (userFromEntry?.asset?.amount) {
+      return `${userFromEntry.asset.amount} ${userFromEntry.asset.unit || ''}`;
+    }
+
+    // A fallback that should never happen
+    if (transaction.from?.[0]?.asset?.amount) {
+      return `${transaction.from[0].asset.amount} ${transaction.from[0].asset.unit || ''}`;
+    }
+
+    return '';
+  };
+
   const multichainNetwork = useMultichainSelector(
     getMultichainNetwork,
     selectedAccount,
@@ -354,6 +382,7 @@ export default function TransactionList({
           <MultichainTransactionDetailsModal
             transaction={selectedTransaction}
             onClose={() => toggleShowDetails(null)}
+            userAddress={selectedAccount.address}
           />
         )}
 
@@ -427,10 +456,7 @@ export default function TransactionList({
                               title="Primary Currency"
                               variant="body-lg-medium"
                             >
-                              {transaction.from?.[0]?.asset?.amount &&
-                              transaction.from[0]?.asset?.unit
-                                ? `${transaction.from[0].asset.amount} ${transaction.from[0].asset.unit}`
-                                : ''}
+                              {getTransactionDisplayAmount(transaction, selectedAccount.address)}
                             </Text>
                           </>
                         }
