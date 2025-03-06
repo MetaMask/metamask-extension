@@ -119,6 +119,13 @@ export async function getStateCorruptionErrorHtml(
   const t = getLocaleContext(currentLocaleMessages, enLocaleMessages);
 
   return getErrorHtmlBase(`
+    <div id="critical-error-button" class="critical-error__link critical-error__link-restore">
+    ${
+      hasBackup === true
+        ? t('restoreAccountsFromBackup')
+        : t('resetMetaMaskState')
+    }
+    </div>
     <p>
       ${t('stateCorruptionDetectedErrorMessage')}
     </p>
