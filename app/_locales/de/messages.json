@@ -73,9 +73,6 @@
   "accountActivityText": {
     "message": "Wählen Sie die Konten aus, über die Sie benachrichtigt werden möchten:"
   },
-  "accountBalance": {
-    "message": "Kontostand"
-  },
   "accountDetails": {
     "message": "Kontodetails"
   },
@@ -5020,12 +5017,6 @@
   },
   "spendingCap": {
     "message": "Ausgabenobergrenze"
-  },
-  "spendingCapTooltipDesc": {
-    "message": "Dies ist die Menge an Tokens, auf die der Spender in Ihrem Namen zugreifen kann."
-  },
-  "spendingCaps": {
-    "message": "Ausgabenobergrenzen"
   },
   "srpInputNumberOfWords": {
     "message": "Ich habe eine $1-Wort-Phrase.",
