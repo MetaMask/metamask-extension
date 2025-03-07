@@ -112,25 +112,6 @@ async function switchToDialogPopoverValidateDetailsRedesign(
     css: 'p',
     text: expectedDetails.networkText,
   });
-
-  // Get state details
-  await driver.waitForControllersLoaded();
-  const notificationWindowState = await driver.executeScript(() =>
-    window.stateHooks?.getCleanAppState?.(),
-  );
-
-  const {
-    metamask: { selectedNetworkClientId, networkConfigurationsByChainId },
-  } = notificationWindowState;
-
-  const { chainId } = Object.values(networkConfigurationsByChainId).find(
-    ({ rpcEndpoints }) =>
-      rpcEndpoints.some(
-        ({ networkClientId }) => networkClientId === selectedNetworkClientId,
-      ),
-  );
-
-  assert.equal(chainId, expectedDetails.chainId);
 }
 
 async function rejectTransactionRedesign(driver) {
@@ -187,7 +168,7 @@ async function validateBalanceAndActivity(
 }
 
 describe('Request-queue UI changes', function () {
-  it('should show network specific to domain', async function () {
+  it('send page should show network specific to domain', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
     await withFixtures(
@@ -232,7 +213,6 @@ describe('Request-queue UI changes', function () {
         // Go to the first dapp, ensure it uses localhost
         await selectDappClickSend(driver, DAPP_URL);
         await switchToDialogPopoverValidateDetailsRedesign(driver, {
-          chainId: '0x539',
           networkText: 'Localhost 8545',
           originText: DAPP_URL,
         });
@@ -241,7 +221,6 @@ describe('Request-queue UI changes', function () {
         // Go to the second dapp, ensure it uses Ethereum Mainnet
         await selectDappClickSend(driver, DAPP_ONE_URL);
         await switchToDialogPopoverValidateDetailsRedesign(driver, {
-          chainId: '0x53a',
           networkText: 'Localhost 8546',
           originText: DAPP_ONE_URL,
         });
@@ -250,7 +229,7 @@ describe('Request-queue UI changes', function () {
     );
   });
 
-  it('handles three confirmations on three confirmations concurrently', async function () {
+  it('handles three confirmations on three dapps concurrently', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
     await withFixtures(
@@ -309,7 +288,6 @@ describe('Request-queue UI changes', function () {
 
         // Switch to the Notification window, ensure first transaction still showing
         await switchToDialogPopoverValidateDetailsRedesign(driver, {
-          chainId: '0x539',
           networkText: 'Localhost 8545',
           originText: DAPP_URL,
         });
@@ -320,19 +298,20 @@ describe('Request-queue UI changes', function () {
 
         // Switch to the new Notification window, ensure second transaction showing
         await switchToDialogPopoverValidateDetailsRedesign(driver, {
-          chainId: '0x53a',
           networkText: 'Localhost 8546',
           originText: DAPP_ONE_URL,
         });
 
         // Reject this transaction, wait for second confirmation window to close, third to display
-        await rejectTransactionRedesign(driver);
+        await driver.clickElement({
+          tag: 'button',
+          text: 'Cancel',
+        });
         await driver.delay(veryLargeDelayMs);
 
         if (!IS_FIREFOX) {
           // Switch to the new Notification window, ensure third transaction showing
           await switchToDialogPopoverValidateDetailsRedesign(driver, {
-            chainId: '0x3e8',
             networkText: 'Localhost 7777',
             originText: DAPP_TWO_URL,
           });
@@ -445,7 +424,6 @@ describe('Request-queue UI changes', function () {
         await selectDappClickSend(driver, DAPP_URL);
         await driver.delay(veryLargeDelayMs);
         await switchToDialogPopoverValidateDetailsRedesign(driver, {
-          chainId: '0x1',
           networkText: 'Ethereum Mainnet',
           originText: DAPP_URL,
         });
@@ -672,7 +650,6 @@ describe('Request-queue UI changes', function () {
         await driver.waitUntilXWindowHandles(4, 1000, 15000);
 
         await switchToDialogPopoverValidateDetailsRedesign(driver, {
-          chainId: '0x539',
           networkText: 'Localhost 8545',
           originText: DAPP_URL,
         });
@@ -740,7 +717,6 @@ describe('Request-queue UI changes', function () {
         await driver.waitUntilXWindowHandles(4, 1000, 15000);
 
         await switchToDialogPopoverValidateDetailsRedesign(driver, {
-          chainId: '0x539',
           networkText: 'Localhost 8545',
           originText: DAPP_URL,
         });

@@ -11,7 +11,7 @@ const {
 } = require('../../helpers');
 
 describe('Request Queuing for Multiple Dapps and Txs on different networks', function () {
-  it('should batch confirmation txs for different dapps on different networks adds extra tx after.', async function () {
+  it('should queue confirmation txs for different dapps on different networks adds extra tx after.', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -123,28 +123,18 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.waitForSelector(
-          By.xpath("//p[normalize-space(.)='1 of 2']"),
+          By.xpath("//p[normalize-space(.)='1 of 5']"),
         );
 
-        // Reject All Transactions
-        await driver.clickElementAndWaitForWindowToClose({
-          text: 'Reject all',
-          tag: 'button',
+        await driver.findElement({
+          css: 'p',
+          text: 'Localhost 8546',
         });
 
-        await driver.switchToWindowWithUrl(DAPP_URL);
-
-        // Wait for new confirmations queued from second dapp to open
-        // We need a big delay to make sure dialog is not invalidated
-        // TODO: find a better way to handle different dialog ids
-        await driver.delay(2000);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        await driver.waitForSelector(
-          By.xpath("//p[normalize-space(.)='1 of 2']"),
+        await driver.clickElement(
+          '[data-testid="confirm-nav__next-confirmation"]',
         );
 
-        // Check correct network on confirm tx.
         await driver.findElement({
           css: 'p',
           text: 'Localhost 8546',
@@ -155,13 +145,6 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
           text: 'Reject all',
           tag: 'button',
         });
-
-        // Wait for new confirmations queued from second dapp to open
-        // We need a big delay to make sure dialog is not invalidated
-        // TODO: find a better way to handle different dialog ids
-        await driver.delay(2000);
-        await driver.switchToWindowWithUrl(DAPP_URL);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
       },
     );
   });

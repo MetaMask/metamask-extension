@@ -7,11 +7,10 @@ const {
   DAPP_ONE_URL,
   regularDelayMs,
   WINDOW_TITLES,
-  largeDelayMs,
 } = require('../../helpers');
 
 describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
-  it('should queue signTypedData tx after eth_sendTransaction confirmation and signTypedData confirmation should target the correct network after eth_sendTransaction is confirmed', async function () {
+  it('should queue in order they are submitted and should show correct network for the requests', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -132,25 +131,19 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.waitUntilXWindowHandles(4);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // Check correct network on the send confirmation.
-        await driver.waitForSelector({
-          css: 'p',
-          text: 'Localhost 7777',
-        });
-
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-
-        await driver.delay(largeDelayMs);
-        await driver.waitUntilXWindowHandles(4);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        // Check correct network on the signTypedData confirmation.
         await driver.waitForSelector({
           css: 'p',
           text: 'Localhost 8546',
         });
 
         await driver.clickElement({ text: 'Cancel', tag: 'button' });
+
+        await driver.waitForSelector({
+          css: 'p',
+          text: 'Localhost 7777',
+        });
+
+        await driver.clickElement({ text: 'Confirm', tag: 'button' });
       },
     );
   });
