@@ -1,0 +1,42 @@
+diff --git a/dist/cjs/util.js b/dist/cjs/util.js
+index d60cf924ee8144ee49dd07e8e910d87a2c4bfb6a..5651d71e272db4c507956d162b89da7a70b9c97f 100644
+--- a/dist/cjs/util.js
++++ b/dist/cjs/util.js
+@@ -119,10 +119,7 @@ class AuthorizationLists {
+                 }
+                 const chainId = (0, util_1.hexToBytes)(item.chainId);
+                 const addressBytes = (0, util_1.hexToBytes)(item.address);
+-                const nonceList = [];
+-                for (let j = 0; j < item.nonce.length; j++) {
+-                    nonceList.push((0, util_1.hexToBytes)(item.nonce[j]));
+-                }
++                const nonceList = (0, util_1.hexToBytes)(item.nonce);
+                 const yParity = (0, util_1.hexToBytes)(item.yParity);
+                 const r = (0, util_1.hexToBytes)(item.r);
+                 const s = (0, util_1.hexToBytes)(item.s);
+@@ -138,11 +135,7 @@ class AuthorizationLists {
+                 const data = bufferAuthorizationList[i];
+                 const chainId = (0, util_1.bytesToHex)(data[0]);
+                 const address = (0, util_1.bytesToHex)(data[1]);
+-                const nonces = data[2];
+-                const nonceList = [];
+-                for (let j = 0; j < nonces.length; j++) {
+-                    nonceList.push((0, util_1.bytesToHex)(nonces[j]));
+-                }
++                const nonceList = (0, util_1.bytesToHex)(data[2]);
+                 const yParity = (0, util_1.bytesToHex)(data[3]);
+                 const r = (0, util_1.bytesToHex)(data[4]);
+                 const s = (0, util_1.bytesToHex)(data[5]);
+@@ -175,12 +168,6 @@ class AuthorizationLists {
+             if (address.length !== 20) {
+                 throw new Error('Invalid EIP-7702 transaction: address length should be 20 bytes');
+             }
+-            if (nonceList.length > 1) {
+-                throw new Error('Invalid EIP-7702 transaction: nonce list should consist of at most 1 item');
+-            }
+-            else if (nonceList.length === 1) {
+-                (0, util_1.validateNoLeadingZeroes)({ nonce: nonceList[0] });
+-            }
+         }
+     }
+     static getDataFeeEIP7702(authorityList, common) {
