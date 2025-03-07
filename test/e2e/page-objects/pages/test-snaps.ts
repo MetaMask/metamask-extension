@@ -278,25 +278,25 @@ export class TestSnaps {
   async fillWasmMessageAndSign(message: string) {
     console.log('Filling message in wasm');
     await this.driver.fill(this.wasmInput, message);
-    await this.clickButton(this.sendWasmMessageButton,false);
+    await this.clickButton(this.sendWasmMessageButton, false);
   }
 
   async fillMessageAndSignSecp256k1(message: string) {
     console.log('Filling message in secp256k1');
     await this.driver.fill(this.messageSecp256k1Input, message);
-    await this.clickButton(this.messageSecp256k1Button),false;
+    await this.clickButton(this.messageSecp256k1Button, false);
   }
 
   async fillMessageAndSignEd25519(message: string) {
     console.log('Filling message in ed25519');
     await this.driver.fill(this.messageEd25519Input, message);
-    await this.clickButton(this.signEd25519MessageButton),false;
+    await this.clickButton(this.signEd25519MessageButton, false);
   }
 
   async fillMessageAndSignEd25519Bip32(message: string) {
     console.log('Filling message in ed25519 bip32');
     await this.driver.fill(this.messageEd25519Bip32Input, message);
-    await this.clickButton(this.signEd25519Bip32MessageButton,false);
+    await this.clickButton(this.signEd25519Bip32MessageButton, false);
   }
 
   async fillBip44MessageAndSign(message: string) {
