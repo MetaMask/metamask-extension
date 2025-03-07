@@ -77,6 +77,7 @@ import {
   getIsSolanaSupportEnabled,
   getMetaMaskKeyrings,
   ///: END:ONLY_INCLUDE_IF
+  getManageInstitutionalWallets,
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -136,6 +137,7 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import { ImportSrp } from '../multi-srp/import-srp';
 ///: END:ONLY_INCLUDE_IF
+import { INSTITUTIONAL_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/institutional-wallet-snap';
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -311,6 +313,8 @@ export const AccountListMenu = ({
     WalletClientType.Solana,
   );
   ///: END:ONLY_INCLUDE_IF
+
+  const manageInstitutionalWallets = useSelector(getManageInstitutionalWallets);
 
   let searchResults: MergedInternalAccount[] = filteredUpdatedAccountList;
   if (searchQuery) {
@@ -688,6 +692,24 @@ export const AccountListMenu = ({
               )
               ///: END:ONLY_INCLUDE_IF
             }
+            {manageInstitutionalWallets && (
+              <Box marginTop={4}>
+                <ButtonLink
+                  size={ButtonLinkSize.Sm}
+                  startIconName={IconName.Add}
+                  onClick={() => {
+                    onClose();
+                    history.push(
+                      `/snaps/view/${encodeURIComponent(
+                        INSTITUTIONAL_WALLET_SNAP_ID,
+                      )}`,
+                    );
+                  }}
+                >
+                  {t('manageInstitutionalWallets')}
+                </ButtonLink>
+              </Box>
+            )}
           </Box>
         ) : null}
         {actionMode === ACTION_MODES.LIST ? (
