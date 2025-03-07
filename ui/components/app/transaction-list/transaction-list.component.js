@@ -339,16 +339,18 @@ export default function TransactionList({
       (entry) => entry.address === userAddress,
     );
 
+    const userToEntry = transaction.to?.find(
+      (entry) => entry.address === userAddress,
+    );
+
     // Amount of the token sent
     if (userFromEntry?.asset?.amount) {
       return `-${userFromEntry.asset.amount} ${userFromEntry.asset.unit || ''}`;
     }
 
     // Amount of the token received
-    if (transaction.from?.[0]?.asset?.amount) {
-      return `${transaction.from[0].asset.amount} ${
-        transaction.from[0].asset.unit || ''
-      }`;
+    if (userToEntry?.asset?.amount) {
+      return `${userToEntry.asset.amount} ${userToEntry.asset.unit || ''}`;
     }
 
     return '';
@@ -370,6 +372,7 @@ export default function TransactionList({
         const userFromEntry = transaction.from?.find(
           (entry) => entry.address === userAddress,
         );
+
         if (userFromEntry && userToEntry) {
           return `${t('swap')} ${userFromEntry.asset.unit} ${'to'} ${
             userToEntry.asset.unit
@@ -387,6 +390,8 @@ export default function TransactionList({
       selectedAccount.address,
       multichainNetwork,
     );
+
+    console.log('nonEvmTransactions', nonEvmTransactions);
 
     const metricsLocation = 'Activity Tab';
     return (

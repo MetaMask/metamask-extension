@@ -1,6 +1,11 @@
 import React, { useContext } from 'react';
 import { capitalize } from 'lodash';
-import { Transaction, TransactionStatus, Asset } from '@metamask/keyring-api';
+import {
+  Transaction,
+  TransactionStatus,
+  Asset,
+  TransactionType,
+} from '@metamask/keyring-api';
 import {
   Display,
   FlexDirection,
@@ -87,23 +92,35 @@ export function MultichainTransactionDetailsModal({
 
   const { id: txId, fees, timestamp, status, chain, type } = transaction;
 
-  let fromAddress, toAddress, toAsset;
+  let fromAddress, toAddress, fromAsset;
 
-  if (type === 'swap' && userAddress) {
-    const txFromEntry = transaction.from?.find(
-      (entry) => entry?.address === userAddress,
-    );
-    const txToEntry = transaction.to?.find(
-      (entry) => entry?.address === userAddress,
-    );
+  const txFromEntry = transaction.from?.find(
+    (entry) => entry?.address === userAddress,
+  );
+  const txToEntry = transaction.to?.find(
+    (entry) => entry?.address === userAddress,
+  );
 
-    fromAddress = txFromEntry?.address || '';
-    toAddress = txToEntry?.address || '';
-    toAsset = txToEntry?.asset || null;
-  } else {
-    fromAddress = transaction.from?.[0]?.address || '';
-    toAddress = transaction.to?.[0]?.address || '';
-    toAsset = transaction.to?.[0]?.asset || null;
+  switch (type) {
+    case TransactionType.Swap:
+      fromAddress = txFromEntry?.address || '';
+      toAddress = txToEntry?.address || '';
+      fromAsset = txFromEntry?.asset || null;
+      break;
+    case TransactionType.Send:
+      fromAddress = txFromEntry?.address || '';
+      toAddress = txToEntry?.address || '';
+      fromAsset = txFromEntry?.asset || null;
+      break;
+    case TransactionType.Receive:
+      fromAddress = txFromEntry?.address || '';
+      toAddress = txToEntry?.address || '';
+      fromAsset = txFromEntry?.asset || null;
+      break;
+    default:
+      fromAddress = transaction.from?.[0]?.address || '';
+      toAddress = transaction.to?.[0]?.address || '';
+      fromAsset = transaction.to?.[0]?.asset || null;
   }
 
   const baseFee = fees?.find((fee) => fee.type === 'base')?.asset;
@@ -304,7 +321,7 @@ export function MultichainTransactionDetailsModal({
                   variant={TextVariant.bodyMd}
                   data-testid="transaction-amount"
                 >
-                  {getAssetDisplay(toAsset)}
+                  {getAssetDisplay(fromAsset)}
                 </Text>
               </Box>
             </Box>
