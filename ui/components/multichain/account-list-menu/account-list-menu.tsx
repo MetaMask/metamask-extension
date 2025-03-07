@@ -420,7 +420,13 @@ export const AccountListMenu = ({
               }}
               ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
               selectedKeyringId={selectedKeyringId}
-              onSelectSrp={() => setActionMode(ACTION_MODES.SELECT_SRP)}
+              onSelectSRP={() => {
+                trackEvent({
+                  category: MetaMetricsEventCategory.Accounts,
+                  event: MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
+                });
+                setActionMode(ACTION_MODES.SELECT_SRP);
+              }}
               ///: END:ONLY_INCLUDE_IF(multi-srp)
             />
           </Box>
@@ -617,6 +623,11 @@ export const AccountListMenu = ({
                   startIconName={IconName.Wallet}
                   startIconProps={{ size: IconSize.Md }}
                   onClick={() => {
+                    trackEvent({
+                      category: MetaMetricsEventCategory.Navigation,
+                      event:
+                        MetaMetricsEventName.ImportSecretRecoveryPhraseClicked,
+                    });
                     setActionMode(ACTION_MODES.IMPORT_SRP);
                   }}
                   data-testid="multichain-account-menu-popover-import-srp"
