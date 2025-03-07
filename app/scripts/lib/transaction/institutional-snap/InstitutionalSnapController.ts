@@ -10,6 +10,7 @@ import { HandlerType } from '@metamask/snaps-utils';
 import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
 import InstitutionalWalletSnap from '@metamask/institutional-wallet-snap/dist/preinstalled-snap.json';
 import { AccountsControllerGetAccountByAddressAction } from '@metamask/accounts-controller';
+import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 
 const SNAP_ID = InstitutionalWalletSnap.snapId as SnapId;
 
@@ -142,7 +143,7 @@ export class InstitutionalSnapController extends BaseController<
 
       const snapGetMutableTransactionParamsPayload: SnapRPCRequest = {
         snapId: SNAP_ID,
-        origin: 'metamask',
+        origin: ORIGIN_METAMASK,
         handler: HandlerType.OnRpcRequest,
         request: {
           method: 'transactions.getMutableTransactionParameters',
