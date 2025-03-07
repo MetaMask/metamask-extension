@@ -2,6 +2,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { isValidAddress } from 'ethereumjs-util';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
@@ -48,14 +49,12 @@ export const OriginRow = () => {
   );
 };
 
-export const RecipientRow = () => {
+export const RecipientRow = ({ recipient }: { recipient?: Hex } = {}) => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const to = recipient ?? currentConfirmation?.txParams?.to;
 
-  if (
-    !currentConfirmation?.txParams?.to ||
-    !isValidAddress(currentConfirmation?.txParams?.to ?? '')
-  ) {
+  if (!to || !isValidAddress(to)) {
     return null;
   }
 
@@ -67,10 +66,7 @@ export const RecipientRow = () => {
       label={t('interactingWith')}
       tooltip={t('interactingWithTransactionDescription')}
     >
-      <ConfirmInfoRowAddress
-        address={currentConfirmation.txParams.to}
-        chainId={chainId}
-      />
+      <ConfirmInfoRowAddress address={to} chainId={chainId} />
     </ConfirmInfoRow>
   );
 };
@@ -78,7 +74,10 @@ export const RecipientRow = () => {
 export const MethodDataRow = () => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const methodData = useFourByte(currentConfirmation);
+  const { txParams } = currentConfirmation ?? {};
+  const to = txParams?.to as Hex | undefined;
+  const data = txParams?.data as Hex | undefined;
+  const methodData = useFourByte({ to, data });
 
   if (!methodData?.name) {
     return null;
