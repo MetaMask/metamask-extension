@@ -71,14 +71,13 @@ export const formatChainIdToHex = (
   }
   if (isCaipChainId(chainId)) {
     const { reference } = parseCaipChainId(chainId);
-    if (isCaipReference(reference) && isValidNumber(reference)) {
+    if (isCaipReference(reference) && !isNaN(Number(reference))) {
       return decimalToPrefixedHex(reference);
     }
   }
-  // TODO handle non-evm chainIds
   // Throw an error if a non-evm chainId is passed to this function
   // This should never happen, but it's a sanity check
-  throw new Error('Invalid cross-chain swaps chainId');
+  throw new Error(`Invalid cross-chain swaps chainId: ${chainId}`);
 };
 
 // Converts an asset or account address to a string that can be used for bridge-api requests
