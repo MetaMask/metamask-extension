@@ -8,7 +8,7 @@ export class TestSnaps {
 
   private readonly dialogsSnapConfirmationButton = '#sendConfirmationButton';
 
-  private readonly connectHomePage = '#connecthomepage';
+  private readonly connectHomePageButton = '#connecthomepage';
 
   public readonly connectDialogsButton = '#connectdialogs';
 
@@ -34,7 +34,7 @@ export class TestSnaps {
 
   private readonly connectImagesButton = '#connectimages';
 
-  public readonly connectGetFile = '#connectgetfile';
+  public readonly connectGetFileButton = '#connectgetfile';
 
   public readonly fileResultSpan = '#getFileResult';
 
@@ -65,29 +65,29 @@ export class TestSnaps {
 
   private readonly publicKeyBip44Button = '#sendBip44Test';
 
-  private readonly inputWasm = '#wasmInput';
+  private readonly wasmInput = '#wasmInput';
 
-  private readonly inputMessageEd25519 = '#bip32Message-ed25519';
+  private readonly messageEd25519Input = '#bip32Message-ed25519';
 
-  private readonly inputEntropyMessage = '#entropyMessage';
+  private readonly entropyMessageInput = '#entropyMessage';
 
-  private readonly inputMessageEd25519Bip32 = '#bip32Message-ed25519Bip32';
+  private readonly messageEd25519Bip32Input = '#bip32Message-ed25519Bip32';
 
-  private readonly inputMessageSecp256k1 = '#bip32Message-secp256k1';
+  private readonly messageSecp256k1Input = '#bip32Message-secp256k1';
 
-  private readonly buttonSendWasmMessage = '#sendWasmMessage';
+  private readonly sendWasmMessageButton = '#sendWasmMessage';
 
-  private readonly buttonMessageSecp256k1 = '#sendBip32-secp256k1';
+  private readonly messageSecp256k1Button = '#sendBip32-secp256k1';
 
-  private readonly buttonSignEd25519Message = '#sendBip32-ed25519';
+  private readonly signEd25519MessageButton = '#sendBip32-ed25519';
 
-  private readonly inputMessageBip44 = '#bip44Message';
+  private readonly messageBip44Input = '#bip44Message';
 
-  private readonly buttonSignBip44Message = '#signBip44Message';
+  private readonly signBip44MessageButton = '#signBip44Message';
 
-  private readonly buttonSignEd25519Bip32Message = '#sendBip32-ed25519Bip32';
+  private readonly signEd25519Bip32MessageButton = '#sendBip32-ed25519Bip32';
 
-  private readonly buttonSignEntropyMessage = '#signEntropyMessage';
+  private readonly signEntropyMessageButton = '#signEntropyMessage';
 
   private readonly clientStatusResultSpan = '#clientStatusResult';
 
@@ -117,11 +117,11 @@ export class TestSnaps {
 
   public readonly entropySignResultSpan = '#entropySignResult';
 
-  public readonly bip32EntropyDrpDown = '#bip32-entropy-selector';
+  public readonly bip32EntropyDropDown = '#bip32-entropy-selector';
 
-  public readonly bip44EntropyDrpDown = '#bip44-entropy-selector';
+  public readonly bip44EntropyDropDown = '#bip44-entropy-selector';
 
-  public readonly getEntropyDrpDown = '#get-entropy-entropy-selector';
+  public readonly getEntropyDropDown = '#get-entropy-entropy-selector';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -187,8 +187,8 @@ export class TestSnaps {
     await this.driver.clickElement(this.sendGetFileHexButton);
   }
 
-  async connectGetFileButton() {
-    await this.clickButton(this.connectGetFile, true);
+  async clickConnectGetFileButton() {
+    await this.clickButton(this.connectGetFileButton, true);
   }
 
   async clickConnectUpdateButton() {
@@ -248,7 +248,7 @@ export class TestSnaps {
   }
 
   async clickConnectHomePage() {
-    await this.clickButton(this.connectHomePage);
+    await this.clickButton(this.connectHomePageButton);
   }
 
   async clickConnectErrorsButton() {
@@ -277,43 +277,43 @@ export class TestSnaps {
 
   async fillWasmMessageAndSign(message: string) {
     console.log('Filling message in wasm');
-    await this.driver.fill(this.inputWasm, message);
-    await this.driver.clickElement(this.buttonSendWasmMessage);
+    await this.driver.fill(this.wasmInput, message);
+    await this.clickButton(this.sendWasmMessageButton,false);
   }
 
   async fillMessageAndSignSecp256k1(message: string) {
     console.log('Filling message in secp256k1');
-    await this.driver.fill(this.inputMessageSecp256k1, message);
-    await this.driver.clickElement(this.buttonMessageSecp256k1);
+    await this.driver.fill(this.messageSecp256k1Input, message);
+    await this.clickButton(this.messageSecp256k1Button),false;
   }
 
   async fillMessageAndSignEd25519(message: string) {
     console.log('Filling message in ed25519');
-    await this.driver.fill(this.inputMessageEd25519, message);
-    await this.driver.clickElement(this.buttonSignEd25519Message);
+    await this.driver.fill(this.messageEd25519Input, message);
+    await this.clickButton(this.signEd25519MessageButton),false;
   }
 
   async fillMessageAndSignEd25519Bip32(message: string) {
     console.log('Filling message in ed25519 bip32');
-    await this.driver.fill(this.inputMessageEd25519Bip32, message);
-    await this.driver.clickElement(this.buttonSignEd25519Bip32Message);
+    await this.driver.fill(this.messageEd25519Bip32Input, message);
+    await this.clickButton(this.signEd25519Bip32MessageButton,false);
   }
 
   async fillBip44MessageAndSign(message: string) {
     console.log('Filling bip44 message ');
-    await this.driver.pasteIntoField(this.inputMessageBip44, message);
-    await this.clickButton(this.buttonSignBip44Message);
+    await this.driver.pasteIntoField(this.messageBip44Input, message);
+    await this.clickButton(this.signBip44MessageButton);
   }
 
   async fillEntropyMessage(message: string) {
     console.log('Filling entropy message ');
-    await this.driver.pasteIntoField(this.inputEntropyMessage, message);
-    await this.clickButton(this.buttonSignEntropyMessage);
+    await this.driver.pasteIntoField(this.entropyMessageInput, message);
+    await this.clickButton(this.signEntropyMessageButton);
   }
 
   async scrollToSignWithEd25519Button() {
     console.log('Scrolling to sign with ed25519 button');
-    const sendEd25519 = await this.driver.findElement(this.inputMessageEd25519);
+    const sendEd25519 = await this.driver.findElement(this.messageEd25519Input);
     await this.driver.scrollToElement(sendEd25519);
   }
 
@@ -356,13 +356,13 @@ export class TestSnaps {
     let dropDownLocator: string;
     switch (dropDownName) {
       case 'bip32':
-        dropDownLocator = this.bip32EntropyDrpDown;
+        dropDownLocator = this.bip32EntropyDropDown;
         break;
       case 'bip44':
-        dropDownLocator = this.bip44EntropyDrpDown;
+        dropDownLocator = this.bip44EntropyDropDown;
         break;
       case 'getEntropy':
-        dropDownLocator = this.getEntropyDrpDown;
+        dropDownLocator = this.getEntropyDropDown;
         break;
       default:
         throw new Error(`Unknown entropy source type: ${dropDownName}`);
