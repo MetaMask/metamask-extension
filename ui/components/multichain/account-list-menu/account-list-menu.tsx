@@ -78,6 +78,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp,solana)
   getMetaMaskHdKeyrings,
+  getKeyringOfSelectedAccount,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
@@ -321,10 +322,10 @@ export const AccountListMenu = ({
   const [primaryKeyring] = useSelector(getMetaMaskHdKeyrings);
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  const {
-    metadata: { id: primaryKeyringId },
-  } = primaryKeyring;
-  const [selectedKeyringId, setSelectedKeyringId] = useState(primaryKeyringId);
+  const keyringOfSelectedAccount = useSelector(getKeyringOfSelectedAccount);
+  const [selectedKeyringId, setSelectedKeyringId] = useState(
+    keyringOfSelectedAccount.metadata.id,
+  );
   ///: END:ONLY_INCLUDE_IF
 
   let searchResults: MergedInternalAccount[] = filteredUpdatedAccountList;

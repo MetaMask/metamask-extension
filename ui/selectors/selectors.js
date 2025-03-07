@@ -3114,3 +3114,13 @@ export const getHdKeyringIndexByIdOrDefault = createSelector(
     );
   },
 );
+
+export const getKeyringOfSelectedAccount = createSelector(
+  getSelectedInternalAccount,
+  getMetaMaskKeyrings,
+  (selectedAccount, keyrings) => {
+    return keyrings.find((keyring) =>
+      keyring.accounts.includes(selectedAccount.address.toLowerCase()),
+    );
+  },
+);

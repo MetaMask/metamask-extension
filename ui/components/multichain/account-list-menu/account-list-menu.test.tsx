@@ -696,7 +696,7 @@ describe('AccountListMenu', () => {
       mockNextAccountName.mockReturnValue('Next HD Account');
 
       const accountInSecondSrp = createMockInternalAccount({
-        address: '0xB1BAF6A2f4A808937bb97a2F12CCF08F1233e3D9',
+        address: '0xb1baf6a2f4a808937bb97a2f12ccf08f1233e3d9',
         name: 'Account in second Srp',
       });
       const secondHdKeyring = {
@@ -711,6 +711,12 @@ describe('AccountListMenu', () => {
       const { getByTestId } = render({
         metamask: {
           ...mockState.metamask,
+          accounts: {
+            [accountInSecondSrp.address]: {
+              address: accountInSecondSrp.address,
+              balance: '0x0',
+            },
+          },
           keyrings: [...mockState.metamask.keyrings, secondHdKeyring],
           keyringsMetadata: [
             ...mockState.metamask.keyringsMetadata,
