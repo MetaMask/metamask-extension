@@ -49,8 +49,8 @@ const useNonEvmAssetsWithBalances = (): (
       return [];
     }
 
-    const assetIds = assetsByAccountId[nonEvmAccount.id];
-    const balancesByAssetId = nonEvmBalancesByAccountId[nonEvmAccount.id];
+    const assetIds = assetsByAccountId?.[nonEvmAccount.id];
+    const balancesByAssetId = nonEvmBalancesByAccountId?.[nonEvmAccount.id];
     if (!balancesByAssetId || !assetIds) {
       return [];
     }
