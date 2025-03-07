@@ -22,16 +22,7 @@ jobs:
         uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
         with:
           is-high-risk-environment: false
-          cache-node-modules: 'true'
-
-      # Upload the .metamask/cache directory and anvil binary which are already installed
-      - name: Upload .metamask/cache
-        uses: actions/upload-artifact@v4
-        with:
-          name: metamask-cache
-          path: |
-            .metamask/cache/
-            node_modules/.bin/anvil
+          cache-node-modules: true
 
   get-changed-files-with-git-diff:
     needs: prep-deps
@@ -262,26 +253,26 @@ jobs:
           path: ./development/ts-migration-dashboard/build/final/
 
   test-e2e-chrome-webpack:
-    name: Test e2e chrome webpack
-    #if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/Version-v')
-    #if: github.ref == 'refs/heads/ci-prep-build'
     needs:
       - prep-build-test-webpack
       - get-changed-files-with-git-diff
     runs-on: ubuntu-22.04
     container:
       image: cimg/node:22.13-browsers
-      options: --user root
     strategy:
       fail-fast: false
       matrix:
-        index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        index:
+          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
     env:
       MATRIX_INDEX: ${{ matrix.index }}
-      MATRIX_TOTAL: 10
+      MATRIX_TOTAL: 20
     steps:
       - name: Install zstd
         run: sudo apt-get update && sudo apt-get install zstd
+        shell: bash
+
+      - run: sudo corepack enable
         shell: bash
 
       - name: Checkout and setup environment
@@ -289,11 +280,17 @@ jobs:
         with:
           is-high-risk-environment: false
 
+      - name: Install anvil (not installed by checkout-and-setup when cache is restored)
+        run: yarn foundryup
+
       - name: Download prep-build-test-webpack artifact
         uses: actions/download-artifact@v4
         with:
           name: prep-build-test-webpack
           path: ./dist/
+
+      - name: Configure Xvfb
+        run: Xvfb -ac :99 -screen 0 1280x1024x16 &
 
       - name: Download changed-files artifact
         continue-on-error: true
@@ -302,37 +299,20 @@ jobs:
           name: changed-files
           path: ./changed-files/
 
-      - name: Download .metamask/cache
-        uses: actions/download-artifact@v4
-        with:
-          name: metamask-cache
-          path: ./
-
-      # Find and fix permissions for all anvil binaries
-      - name: Find and fix permissions for all anvil binaries
-        run: |
-          find .metamask -name anvil -type f -exec chmod 755 {} \;
-          ls -la node_modules/.bin/anvil
-
       - name: Run e2e tests
         run: .github/scripts/test-run-e2e.sh yarn test:e2e:chrome:webpack
         env:
           # 5 minutes timeout for the e2e tests
           TIMEOUT: 5
 
-      - name: Upload test artifacts
+      - name: Upload test results and artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-artifacts-e2e-chrome-webpack-${{ matrix.index }}
-          path: ./test-artifacts
-
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results-e2e-chrome-webpack-${{ matrix.index }}
-          path: ./test/test-results/e2e
+          name: test-e2e-chrome-webpack-${{ matrix.index }}
+          path: |
+            ./test-artifacts
+            ./test/test-results/e2e
 
   prep-build:
     needs: prep-deps
