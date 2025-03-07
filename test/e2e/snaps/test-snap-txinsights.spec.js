@@ -3,7 +3,7 @@ const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap TxInsights', function () {
-  // External transactions cannot target internal accounts.
+  // External transactions cannot target internal accounts with data.
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('tests tx insights functionality', async function () {
     await withFixtures(
