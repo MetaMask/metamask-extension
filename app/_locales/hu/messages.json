@@ -313,9 +313,6 @@
     "message": "Importálás",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Fiók importálása"
-  },
   "importAccountMsg": {
     "message": "Az importált fiókot nem társítjuk az eredetileg létrehozott MetaMask-fiók seed mondatához. További információ az importált fiókokról"
   },
