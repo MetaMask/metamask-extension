@@ -178,6 +178,8 @@ export const CHAIN_IDS = {
   INK: '0xdef1',
   MODE_SEPOLIA: '0x397',
   MODE: '0x868b',
+  DAVINCI_MAINNET: '0x125',
+
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -246,6 +248,8 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   SONEIUM_TESTNET: '0x79a',
   MODE_SEPOLIA: '0x397',
   MODE: '0x868b',
+  DAVINCI_MAINNET: '0x125',
+
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
@@ -523,6 +527,7 @@ export const SONEIUM_IMAGE_URL = './images/soneium.svg';
 export const MODE_SEPOLIA_IMAGE_URL = './images/mode-sepolia.svg';
 export const MODE_IMAGE_URL = './images/mode.svg';
 export const UNICHAIN_IMAGE_URL = './images/unichain.svg';
+export const DAVINCI_MAINNET_IMAGE_URL = './images/davinci.png';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -889,6 +894,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<Hex, string> = {
   [CHAINLIST_CHAIN_IDS_MAP.MODE]: MODE_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN]: UNICHAIN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN_SEPOLIA]: UNICHAIN_IMAGE_URL,
+   [CHAINLIST_CHAIN_IDS_MAP.DAVINCI_MAINNET]: DAVINCI_MAINNET_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -936,6 +942,8 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.FUNKICHAIN]: ETH_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN]: ETH_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN_SEPOLIA]: ETH_TOKEN_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.DAVINCI_MAINNET]: DAVINCI_MAINNET_IMAGE_URL,
+
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
