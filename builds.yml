@@ -57,6 +57,7 @@ buildTypes:
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/7.0.0/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
+      - EVM_MULTICHAIN_ENABLED: false
     # Modifies how the version is displayed.
     # eg. instead of 10.25.0 -> 10.25.0-beta.2
     isPrerelease: true
@@ -89,6 +90,7 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://metamask.github.io/snaps-directory-staging/main/account-management
       - EIP_4337_ENTRYPOINT: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789'
+      - EVM_MULTICHAIN_ENABLED: false
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
     buildNameOverride: MetaMask Flask
@@ -111,6 +113,7 @@ buildTypes:
       - SUPPORT_LINK: https://support.metamask-institutional.io
       - SUPPORT_REQUEST_LINK: https://support.metamask-institutional.io
       - SENTRY_DSN: SENTRY_MMI_DSN
+      - EVM_MULTICHAIN_ENABLED: false
     # For some reason, MMI uses this type of versioning
     # Leaving it on for backwards compatibility
     isPrerelease: true
