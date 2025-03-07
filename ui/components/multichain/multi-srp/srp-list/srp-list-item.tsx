@@ -42,6 +42,7 @@ export const SrpListItem = ({ account }: SrpListItemProps) => {
         <Text
           className="srp-list__account-name"
           variant={TextVariant.bodySm}
+          ellipsis
           paddingInlineStart={3}
         >
           {account.metadata.name}
