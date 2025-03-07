@@ -294,18 +294,20 @@ jobs:
         with:
           is-high-risk-environment: false
 
-      - name: Download .metamask/cache
-        continue-on-error: true
-        uses: actions/cache/restore@v4
-        with:
-          key: metamask-cache
-          path: ./
+      - run: yarn --immutable
 
-      # Find and fix permissions for all anvil binaries
-      - name: Find and fix permissions for all anvil binaries
-        run: |
-          find .metamask -name anvil -type f -exec chmod 755 {} \;
-          ls -la node_modules/.bin/anvil
+      # - name: Download .metamask/cache
+      #   continue-on-error: true
+      #   uses: actions/cache/restore@v4
+      #   with:
+      #     key: metamask-cache
+      #     path: ./
+
+      # # Find and fix permissions for all anvil binaries
+      # - name: Find and fix permissions for all anvil binaries
+      #   run: |
+      #     find .metamask -name anvil -type f -exec chmod 755 {} \;
+      #     ls -la node_modules/.bin/anvil
 
       - name: Download prep-build-test-webpack artifact
         uses: actions/download-artifact@v4
