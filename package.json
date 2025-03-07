@@ -50,7 +50,7 @@
     "anvil": "node_modules/.bin/anvil",
     "test:unit:watch": "jest --watch",
     "test:unit:coverage": "jest --coverage",
-    "test:unit:webpack": "tsx --test developmen        run: .github/scripts/test-run-e2e.sh yarn test:e2e:chrome:webpackt/webpack/test/*.test.ts",
+    "test:unit:webpack": "tsx --test development/webpack/test/*.test.ts",
     "test:unit:webpack:coverage": "nyc --reporter=html --reporter=json --reporter=text --report-dir=./coverage/webpack tsx --test development/webpack/test/*.test.ts",
     "test:integration": "npx webpack build --config ./development/webpack/webpack.integration.tests.config.ts && jest --config jest.integration.config.js",
     "test:integration:coverage": "yarn test:integration --coverage",
