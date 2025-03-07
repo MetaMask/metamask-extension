@@ -73,9 +73,6 @@
   "accountActivityText": {
     "message": "Pilih akun yang ingin mendapatkan notifikasi:"
   },
-  "accountBalance": {
-    "message": "Saldo akun"
-  },
   "accountDetails": {
     "message": "Detail akun"
   },
@@ -5019,12 +5016,6 @@
     "message": "Ini adalah alamat yang dapat menggunakan token Anda atas nama Anda."
   },
   "spendingCap": {
-    "message": "Batas penggunaan"
-  },
-  "spendingCapTooltipDesc": {
-    "message": "Ini adalah jumlah token yang dapat diakses oleh pembeli atas nama Anda."
-  },
-  "spendingCaps": {
     "message": "Batas penggunaan"
   },
   "srpInputNumberOfWords": {
