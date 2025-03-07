@@ -25,12 +25,12 @@ export const field: UIComponentFactory<FieldElement> = ({
 }) => {
   // For fields we don't render the Input itself, we just adapt SnapUIInput.
   const children = getJsxChildren(element);
-  console.log(children);
+
   const primaryChildIndex = getPrimaryChildElementIndex(
     children as JSXElement[],
   );
   const child = children[primaryChildIndex] as JSXElement;
-  console.log(child);
+
   switch (child.type) {
     case 'FileInput': {
       return {
