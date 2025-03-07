@@ -126,6 +126,56 @@ export class InstitutionalSnapController extends BaseController<
     this.#registerMessageHandlers();
   }
 
+  async deferPublicationHook(
+    transactionMeta: TransactionMeta,
+  ): Promise<boolean> {
+    const shouldDefer = await this.#shouldDeferPublication(transactionMeta);
+
+    if (shouldDefer) {
+      const searchParams: InstitutionalSnapRequestSearchParameters = {
+        from: transactionMeta.txParams.from as string,
+        to: transactionMeta.txParams.to as string,
+        value: transactionMeta.txParams.value as string,
+        data: transactionMeta.txParams.data as string,
+        chainId: transactionMeta.chainId as string,
+      };
+
+      const snapGetMutableTransactionParamsPayload: SnapRPCRequest = {
+        snapId: SNAP_ID,
+        origin: 'metamask',
+        handler: HandlerType.OnRpcRequest,
+        request: {
+          method: 'transactions.getMutableTransactionParameters',
+          params: searchParams,
+        },
+      };
+
+      const snapResponse = await this.#handleSnapRequest(
+        snapGetMutableTransactionParamsPayload,
+      );
+
+      const hash = snapResponse.transaction.transactionHash;
+
+      await this.#updateTransaction(transactionMeta.id, {
+        status: TransactionStatus.submitted,
+        hash,
+        nonce: snapResponse.transaction.nonce,
+        gasLimit: snapResponse.transaction.gasLimit,
+        maxFeePerGas: snapResponse.transaction.maxFeePerGas,
+        maxPriorityFeePerGas: snapResponse.transaction.maxPriorityFeePerGas,
+        type: snapResponse.transaction.type as TransactionEnvelopeType,
+      });
+      return false;
+    }
+
+    return true;
+  }
+
+  async beforeCheckPendingTransactionHook(transactionMeta: TransactionMeta) {
+    const shouldDefer = await this.#shouldDeferPublication(transactionMeta);
+    return !shouldDefer;
+  }
+
   #registerMessageHandlers() {
     this.messagingSystem.registerActionHandler(
       `${controllerName}:publishHook`,
@@ -138,7 +188,7 @@ export class InstitutionalSnapController extends BaseController<
     );
   }
 
-  private async handleSnapRequest(args: SnapRPCRequest) {
+  async #handleSnapRequest(args: SnapRPCRequest) {
     const response = await this.messagingSystem.call(
       'SnapController:handleRequest',
       args,
@@ -146,7 +196,7 @@ export class InstitutionalSnapController extends BaseController<
     return response as InstitutionalSnapResponse;
   }
 
-  private async updateTransaction(
+  async #updateTransaction(
     transactionId: string,
     {
       status,
@@ -180,56 +230,6 @@ export class InstitutionalSnapController extends BaseController<
       },
     );
     return response;
-  }
-
-  async deferPublicationHook(
-    transactionMeta: TransactionMeta,
-  ): Promise<boolean> {
-    const shouldDefer = await this.#shouldDeferPublication(transactionMeta);
-
-    if (shouldDefer) {
-      const searchParams: InstitutionalSnapRequestSearchParameters = {
-        from: transactionMeta.txParams.from as string,
-        to: transactionMeta.txParams.to as string,
-        value: transactionMeta.txParams.value as string,
-        data: transactionMeta.txParams.data as string,
-        chainId: transactionMeta.chainId as string,
-      };
-
-      const snapGetMutableTransactionParamsPayload: SnapRPCRequest = {
-        snapId: SNAP_ID,
-        origin: 'metamask',
-        handler: HandlerType.OnRpcRequest,
-        request: {
-          method: 'transactions.getMutableTransactionParameters',
-          params: searchParams,
-        },
-      };
-
-      const snapResponse = await this.handleSnapRequest(
-        snapGetMutableTransactionParamsPayload,
-      );
-
-      const hash = snapResponse.transaction.transactionHash;
-
-      await this.updateTransaction(transactionMeta.id, {
-        status: TransactionStatus.submitted,
-        hash,
-        nonce: snapResponse.transaction.nonce,
-        gasLimit: snapResponse.transaction.gasLimit,
-        maxFeePerGas: snapResponse.transaction.maxFeePerGas,
-        maxPriorityFeePerGas: snapResponse.transaction.maxPriorityFeePerGas,
-        type: snapResponse.transaction.type as TransactionEnvelopeType,
-      });
-      return false;
-    }
-
-    return true;
-  }
-
-  async beforeCheckPendingTransactionHook(transactionMeta: TransactionMeta) {
-    const shouldDefer = await this.#shouldDeferPublication(transactionMeta);
-    return !shouldDefer;
   }
 
   async #shouldDeferPublication(transactionMeta: TransactionMeta) {
