@@ -2,7 +2,11 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-import { KeyringMetadata, KeyringObject } from '@metamask/keyring-controller';
+import {
+  KeyringMetadata,
+  KeyringObject,
+  KeyringTypes,
+} from '@metamask/keyring-controller';
 ///: END:ONLY_INCLUDE_IF
 import {
   MetaMetricsEventCategory,
@@ -67,7 +71,15 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
     getInternalAccountByAddress(state, address),
   );
   const {
-    metadata: { name },
+    metadata: {
+      name,
+      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+      keyring: { type: keyringType },
+      ///: END:ONLY_INCLUDE_IF
+    },
+    ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+    options: { entropySource },
+    ///: END:ONLY_INCLUDE_IF
   } = account;
 
   const [showHoldToReveal, setShowHoldToReveal] = useState(false);
@@ -82,9 +94,13 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
     getMetaMaskKeyringsMetadata,
   );
 
-  const keyringId = findKeyringId(keyrings, keyringsMetadata, {
-    address,
-  });
+  // Snap accounts have an entropy source that is the id of the hd keyring
+  const keyringId =
+    keyringType === KeyringTypes.snap && entropySource
+      ? entropySource
+      : findKeyringId(keyrings, keyringsMetadata, {
+          address,
+        });
 
   const isAbleToExportSRP = isAbleToRevealSrp(account, keyrings);
   const displayExportSRPQuiz = keyringId && isAbleToExportSRP;

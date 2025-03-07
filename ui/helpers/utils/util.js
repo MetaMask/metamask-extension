@@ -717,7 +717,11 @@ export const isAbleToExportAccount = (keyringType = '') => {
 };
 
 export const isAbleToRevealSrp = (accountToExport, keyrings) => {
-  const { type, id: keyringId } = accountToExport.metadata.keyring;
+  const {
+    metadata: {
+      keyring: { type },
+    },
+  } = accountToExport;
   if (type !== KeyringTypes.hd && type !== KeyringTypes.snap) {
     return false;
   }
@@ -727,7 +731,8 @@ export const isAbleToRevealSrp = (accountToExport, keyrings) => {
     return true;
   }
 
-  // TODO: For snap accounts we must check if the entropy source was from a HD keyring (SIP-30).
+  // Not all snaps have an entropy source
+  const keyringId = accountToExport.options?.entropySource;
   return keyrings.some(
     (keyring) =>
       keyring.type === KeyringTypes.hd && keyring.metadata.id === keyringId,
