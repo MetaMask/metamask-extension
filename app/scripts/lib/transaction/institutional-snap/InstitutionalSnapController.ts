@@ -182,21 +182,10 @@ export class InstitutionalSnapController extends BaseController<
     return response;
   }
 
-  private async shouldDeferPublication(transactionMeta: TransactionMeta) {
-    const account = (await this.messagingSystem.call(
-      'AccountsController:getAccountByAddress',
-      transactionMeta.txParams.from as string,
-    )) as unknown as DeferrableTransactionAccount;
-
-    console.log('account', account);
-
-    return account?.options.custodian?.deferPublication;
-  }
-
   async deferPublicationHook(
     transactionMeta: TransactionMeta,
   ): Promise<boolean> {
-    const shouldDefer = await this.shouldDeferPublication(transactionMeta);
+    const shouldDefer = await this.#shouldDeferPublication(transactionMeta);
 
     if (shouldDefer) {
       const searchParams: InstitutionalSnapRequestSearchParameters = {
@@ -239,7 +228,18 @@ export class InstitutionalSnapController extends BaseController<
   }
 
   async beforeCheckPendingTransactionHook(transactionMeta: TransactionMeta) {
-    const shouldDefer = await this.shouldDeferPublication(transactionMeta);
+    const shouldDefer = await this.#shouldDeferPublication(transactionMeta);
     return !shouldDefer;
+  }
+
+  async #shouldDeferPublication(transactionMeta: TransactionMeta) {
+    const account = (await this.messagingSystem.call(
+      'AccountsController:getAccountByAddress',
+      transactionMeta.txParams.from as string,
+    )) as unknown as DeferrableTransactionAccount;
+
+    console.log('account', account);
+
+    return account?.options.custodian?.deferPublication;
   }
 }
