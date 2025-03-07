@@ -78,6 +78,7 @@ const createMockedHandler = () => {
       rpcEndpoints: [{ networkClientId: 123 }],
     }),
     requestPermittedChainsPermissionIncrementalForOrigin: jest.fn(),
+    rejectApprovalRequestsForOrigin: jest.fn(),
   };
   const response = {};
   const handler = (request) =>
@@ -188,6 +189,7 @@ describe('addEthereumChainHandler', () => {
         setActiveNetwork: mocks.setActiveNetwork,
         requestPermittedChainsPermissionIncrementalForOrigin:
           mocks.requestPermittedChainsPermissionIncrementalForOrigin,
+        rejectApprovalRequestsForOrigin: mocks.rejectApprovalRequestsForOrigin,
       },
     );
   });
@@ -253,6 +255,8 @@ describe('addEthereumChainHandler', () => {
             setActiveNetwork: mocks.setActiveNetwork,
             requestPermittedChainsPermissionIncrementalForOrigin:
               mocks.requestPermittedChainsPermissionIncrementalForOrigin,
+            rejectApprovalRequestsForOrigin:
+              mocks.rejectApprovalRequestsForOrigin,
           },
         );
       });
@@ -298,6 +302,8 @@ describe('addEthereumChainHandler', () => {
             setActiveNetwork: mocks.setActiveNetwork,
             requestPermittedChainsPermissionIncrementalForOrigin:
               mocks.requestPermittedChainsPermissionIncrementalForOrigin,
+            rejectApprovalRequestsForOrigin:
+              mocks.rejectApprovalRequestsForOrigin,
           },
         );
       });
