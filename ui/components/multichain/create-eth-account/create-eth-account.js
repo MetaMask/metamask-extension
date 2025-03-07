@@ -12,7 +12,7 @@ import { CreateAccount } from '../create-account';
 export const CreateEthAccount = ({
   onActionComplete,
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  onSelectSRP,
+  onSelectSrp,
   selectedKeyringId,
   ///: END:ONLY_INCLUDE_IF(multi-srp)
 }) => {
@@ -42,7 +42,7 @@ export const CreateEthAccount = ({
       onCreateAccount={onCreateAccount}
       getNextAvailableAccountName={getNextAvailableAccountName}
       ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-      onSelectSRP={onSelectSRP}
+      onSelectSrp={onSelectSrp}
       selectedKeyringId={selectedKeyringId}
       ///: END:ONLY_INCLUDE_IF(multi-srp)
     ></CreateAccount>
@@ -54,11 +54,14 @@ CreateEthAccount.propTypes = {
    * Executes when the Create button is clicked
    */
   onActionComplete: PropTypes.func.isRequired,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   /**
    * Callback to select the SRP
    */
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  onSelectSRP: PropTypes.func,
+  onSelectSrp: PropTypes.func,
+  /**
+   * Currently selected HD keyring
+   */
   selectedKeyringId: PropTypes.string,
   ///: END:ONLY_INCLUDE_IF(multi-srp)
 };

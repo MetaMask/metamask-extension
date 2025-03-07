@@ -3091,3 +3091,26 @@ export function getKeyringSnapAccounts(state) {
   return keyringAccounts;
 }
 ///: END:ONLY_INCLUDE_IF
+
+export const getSelectedKeyringByIdOrDefault = createSelector(
+  getMetaMaskKeyrings,
+  (_state, keyringId) => keyringId,
+  (keyrings, keyringId) => {
+    return (
+      keyrings.find((keyring) => keyring.metadata.id === keyringId) ??
+      keyrings[0]
+    );
+  },
+);
+
+export const getHdKeyringIndexByIdOrDefault = createSelector(
+  getMetaMaskHdKeyrings,
+  (_state, keyringId) => keyringId,
+  (keyrings, keyringId) => {
+    console.log('getHdKeyringIndexByIdOrDefault', keyrings, keyringId);
+    return (
+      // 0 is the default hd keyring index.
+      keyrings.findIndex((keyring) => keyring.metadata.id === keyringId) ?? 0
+    );
+  },
+);

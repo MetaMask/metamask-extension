@@ -13,15 +13,15 @@ jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => mockI18nContext,
 }));
 
-const mockSRPName = 'Test SRP';
+const mockSrpName = 'Test Srp';
 
 const defaultProps = {
-  srpName: mockSRPName,
+  srpName: mockSrpName,
   srpAccounts: 5,
   onClick: jest.fn(),
 };
 
-describe('SelectSRP', () => {
+describe('SelectSrp', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -30,15 +30,15 @@ describe('SelectSRP', () => {
     const { getByTestId, getByText } = render(<SelectSrp {...defaultProps} />);
 
     expect(getByTestId('select-srp-container')).toBeInTheDocument();
-    expect(getByTestId(`select-srp-${mockSRPName}`)).toBeInTheDocument();
-    expect(getByText(mockSRPName)).toBeInTheDocument();
+    expect(getByTestId(`select-srp-${mockSrpName}`)).toBeInTheDocument();
+    expect(getByText(mockSrpName)).toBeInTheDocument();
     expect(getByText('5 accounts')).toBeInTheDocument();
   });
 
   it('calls onClick when card is clicked', () => {
     const { getByTestId } = render(<SelectSrp {...defaultProps} />);
 
-    fireEvent.click(getByTestId('select-srp-Test SRP'));
+    fireEvent.click(getByTestId(`select-srp-${mockSrpName}`));
     expect(defaultProps.onClick).toHaveBeenCalledTimes(1);
   });
 

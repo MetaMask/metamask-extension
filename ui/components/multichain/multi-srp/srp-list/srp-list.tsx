@@ -23,6 +23,7 @@ import {
   getMetaMaskHdKeyrings,
 } from '../../../../selectors/selectors';
 import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { SrpListItem } from './srp-list-item';
 
 type KeyringObjectWithMetadata = KeyringObject & { metadata: KeyringMetadata };
@@ -34,6 +35,7 @@ export const SrpList = ({
   onActionComplete: (id: string) => void;
   hideShowAccounts?: boolean;
 }) => {
+  const t = useI18nContext();
   const hdKeyrings: KeyringObjectWithMetadata[] = useSelector(
     getMetaMaskHdKeyrings,
   );
@@ -42,26 +44,30 @@ export const SrpList = ({
     useSelector(getMetaMaskAccounts);
 
   const showAccountsInitState = useMemo(
-    () =>
-      hdKeyrings.reduce(
-        (acc: Record<string, boolean>, _, index) => ({
-          ...acc,
-          [index]: Boolean(hideShowAccounts), // if hideShowAccounts is true, show all accounts by default
-        }),
-        {},
-      ),
+    () => new Array(hdKeyrings.length).fill(hideShowAccounts),
     [hdKeyrings, hideShowAccounts],
   );
 
-  const [showAccounts, setShowAccounts] = useState<Record<string, boolean>>(
+  const [showAccounts, setShowAccounts] = useState<boolean[]>(
     showAccountsInitState,
   );
+
+  const showHideText = (index: number, numberOfAccounts: number): string => {
+    if (numberOfAccounts > 1) {
+      return showAccounts[index]
+        ? t('SrpListHideAccounts', [numberOfAccounts])
+        : t('SrpListShowAccounts', [numberOfAccounts]);
+    }
+    return showAccounts[index]
+      ? t('SrpListHideSingleAccount', [numberOfAccounts])
+      : t('SrpListShowSingleAccount', [numberOfAccounts]);
+  };
 
   return (
     <Box padding={4} data-testid="srp-list">
       {hdKeyrings.map((keyring, index) => (
         <Card
-          key={`srp-${index + 1}`}
+          key={`srp-${keyring.metadata.id}`}
           data-testid={`hd-keyring-${keyring.metadata.id}`}
           onClick={() => onActionComplete(keyring.metadata.id)}
           className="select-srp__container"
@@ -83,15 +89,14 @@ export const SrpList = ({
                   className="srp-list__show-accounts"
                   onClick={(event: React.MouseEvent) => {
                     event.stopPropagation();
-                    setShowAccounts({
-                      ...showAccounts,
-                      [index]: !showAccounts[index],
-                    });
+                    setShowAccounts((prevState) =>
+                      prevState.map((value, i) =>
+                        i === index ? !value : value,
+                      ),
+                    );
                   }}
                 >
-                  {showAccounts[index] ? 'Hide' : 'Show'}{' '}
-                  {keyring.accounts.length} account
-                  {keyring.accounts.length > 1 ? 's' : ''}
+                  {showHideText(index, keyring.accounts.length)}
                 </Text>
               )}
             </Box>

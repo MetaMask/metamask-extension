@@ -414,7 +414,7 @@ export const AccountListMenu = ({
               }}
               ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
               selectedKeyringId={selectedKeyringId}
-              onSelectSRP={() => setActionMode(ACTION_MODES.SELECT_SRP)}
+              onSelectSrp={() => setActionMode(ACTION_MODES.SELECT_SRP)}
               ///: END:ONLY_INCLUDE_IF(multi-srp)
             />
           </Box>

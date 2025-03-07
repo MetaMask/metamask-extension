@@ -28,6 +28,8 @@ import {
   getMetaMaskAccountsOrdered,
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   getMetaMaskHdKeyrings,
+  getSelectedKeyringByIdOrDefault,
+  getHdKeyringIndexByIdOrDefault,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
@@ -63,7 +65,7 @@ type Props = {
    * Callback to select the SRP
    */
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  onSelectSRP?: () => void;
+  onSelectSrp?: () => void;
   selectedKeyringId?: string;
   ///: END:ONLY_INCLUDE_IF
 };
@@ -82,7 +84,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
         getNextAvailableAccountName,
         onCreateAccount,
         ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-        onSelectSRP,
+        onSelectSrp,
         selectedKeyringId,
         ///: END:ONLY_INCLUDE_IF
         onActionComplete,
@@ -123,14 +125,11 @@ export const CreateAccount: CreateAccountComponent = React.memo(
         metadata: { id: string; name: string };
       }[] = useSelector(getMetaMaskHdKeyrings);
 
-      const selectedKeyring = selectedKeyringId
-        ? hdKeyrings.find(
-            (keyring) => keyring.metadata.id === selectedKeyringId,
-          )
-        : hdKeyrings[0];
-
-      const selectedKeyringIndex = hdKeyrings.findIndex(
-        (keyring) => keyring.metadata.id === selectedKeyring?.metadata.id,
+      const selectedKeyring = useSelector((state) =>
+        getSelectedKeyringByIdOrDefault(state, selectedKeyringId),
+      );
+      const selectedHdKeyringIndex = useSelector((state) =>
+        getHdKeyringIndexByIdOrDefault(state, selectedKeyringId),
       );
       ///: END:ONLY_INCLUDE_IF(multi-srp)
 
@@ -186,12 +185,12 @@ export const CreateAccount: CreateAccountComponent = React.memo(
           />
           {
             ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-            hdKeyrings.length > 1 && onSelectSRP && selectedKeyring ? (
+            hdKeyrings.length > 1 && onSelectSrp && selectedKeyring ? (
               <Box marginBottom={3}>
                 <SelectSrp
-                  onClick={onSelectSRP}
+                  onClick={onSelectSrp}
                   srpName={t('secretRecoveryPhrasePlusNumber', [
-                    selectedKeyringIndex + 1,
+                    selectedHdKeyringIndex + 1,
                   ])}
                   srpAccounts={selectedKeyring.accounts.length}
                 />

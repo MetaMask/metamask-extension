@@ -42,7 +42,7 @@ export const SrpListItem = ({ account }: SrpListItemProps) => {
         <Text
           className="srp-list__account-name"
           variant={TextVariant.bodySm}
-          paddingLeft={3}
+          paddingInlineStart={3}
         >
           {account.metadata.name}
         </Text>
@@ -50,6 +50,7 @@ export const SrpListItem = ({ account }: SrpListItemProps) => {
           variant={TextVariant.bodySm}
           color={TextColor.textAlternative}
           marginLeft={1}
+          paddingInlineStart={1}
         >
           {shortenAddress(account.address)}
         </Text>

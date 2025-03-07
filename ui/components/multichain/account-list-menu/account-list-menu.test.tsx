@@ -675,7 +675,7 @@ describe('AccountListMenu', () => {
     });
   });
 
-  describe('Multi SRP', () => {
+  describe('Multi Srp', () => {
     it('redirects to import srp component', () => {
       const { getByTestId } = render();
 
@@ -695,12 +695,12 @@ describe('AccountListMenu', () => {
     it('shows srp list if there are multiple srps when adding a new account', async () => {
       mockNextAccountName.mockReturnValue('Next HD Account');
 
-      const accountInSecondSRP = createMockInternalAccount({
+      const accountInSecondSrp = createMockInternalAccount({
         address: '0xB1BAF6A2f4A808937bb97a2F12CCF08F1233e3D9',
-        name: 'Account in second SRP',
+        name: 'Account in second Srp',
       });
       const secondHdKeyring = {
-        accounts: [accountInSecondSRP.address],
+        accounts: [accountInSecondSrp.address],
         type: KeyringTypes.hd,
       };
       const secondHdKeyringMetadata = {
@@ -720,9 +720,9 @@ describe('AccountListMenu', () => {
             ...mockState.metamask.internalAccounts,
             accounts: {
               ...mockState.metamask.internalAccounts.accounts,
-              [accountInSecondSRP.id]: accountInSecondSRP,
+              [accountInSecondSrp.id]: accountInSecondSrp,
             },
-            selectedAccount: accountInSecondSRP.id,
+            selectedAccount: accountInSecondSrp.id,
           },
         },
       });

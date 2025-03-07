@@ -44,6 +44,18 @@
   "QRHardwareWalletSteps2Description": {
     "message": "Ngrave Zero"
   },
+  "SrpListHideAccounts": {
+    "message": "Hide $1 accounts"
+  },
+  "SrpListHideSingleAccount": {
+    "message": "Hide $1 account"
+  },
+  "SrpListShowAccounts": {
+    "message": "Show $1 accounts"
+  },
+  "SrpListShowSingleAccount": {
+    "message": "Show $1 account"
+  },
   "about": {
     "message": "About"
   },
