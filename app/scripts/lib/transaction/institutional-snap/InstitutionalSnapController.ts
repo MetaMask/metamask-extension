@@ -171,9 +171,10 @@ export class InstitutionalSnapController extends BaseController<
     return true;
   }
 
-  async beforeCheckPendingTransactionHook(transactionMeta: TransactionMeta) {
-    const shouldDefer = await this.#shouldDeferPublication(transactionMeta);
-    return !shouldDefer;
+  async beforeCheckPendingTransactionHook(
+    transactionMeta: TransactionMeta,
+  ): Promise<boolean> {
+    return !this.#shouldDeferPublication(transactionMeta);
   }
 
   #registerMessageHandlers() {
@@ -237,8 +238,6 @@ export class InstitutionalSnapController extends BaseController<
       'AccountsController:getAccountByAddress',
       transactionMeta.txParams.from as string,
     )) as unknown as DeferrableTransactionAccount;
-
-    console.log('account', account);
 
     return account?.options.custodian?.deferPublication;
   }
