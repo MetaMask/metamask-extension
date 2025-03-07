@@ -26,5 +26,7 @@ export function buildControllerInitRequestMock(): jest.Mocked<
     removeAllConnections: jest.fn(),
     setupUntrustedCommunicationEip1193: jest.fn(),
     showNotification: jest.fn(),
+    trackEvent: jest.fn(),
+    getMetaMetricsId: jest.fn(),
   };
 }
