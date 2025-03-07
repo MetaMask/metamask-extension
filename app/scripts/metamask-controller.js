@@ -6784,6 +6784,9 @@ export default class MetamaskController extends EventEmitter {
             ...options,
             origin,
           }),
+
+        rejectApprovalRequestsForOrigin: () =>
+          this.rejectOriginPendingApprovals(origin),
       }),
     );
 
