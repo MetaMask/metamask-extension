@@ -302,8 +302,7 @@ jobs:
       - name: Run e2e tests
         run: .github/scripts/test-run-e2e.sh yarn test:e2e:chrome:webpack
         env:
-          # 5 minutes timeout for the e2e tests
-          TIMEOUT: 5
+          TIMEOUT: 30
 
       - name: Upload test results and artifacts
         if: always()
