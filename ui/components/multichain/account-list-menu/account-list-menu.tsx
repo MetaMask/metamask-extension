@@ -78,7 +78,9 @@ import {
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp,solana)
   getMetaMaskHdKeyrings,
-  getKeyringOfSelectedAccount,
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  getHdKeyringOfSelectedAccountOrPrimaryKeyring,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
@@ -322,9 +324,12 @@ export const AccountListMenu = ({
   const [primaryKeyring] = useSelector(getMetaMaskHdKeyrings);
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  const keyringOfSelectedAccount = useSelector(getKeyringOfSelectedAccount);
+
+  // Here we are getting the keyring of the last selected account
+  // if it is not an hd keyring, we will use the primary keyring
+  const hdKeyring = useSelector(getHdKeyringOfSelectedAccountOrPrimaryKeyring);
   const [selectedKeyringId, setSelectedKeyringId] = useState(
-    keyringOfSelectedAccount.metadata.id,
+    hdKeyring.metadata.id,
   );
   ///: END:ONLY_INCLUDE_IF
 
