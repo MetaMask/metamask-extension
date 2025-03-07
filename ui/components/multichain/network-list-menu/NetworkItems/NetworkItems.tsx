@@ -3,7 +3,7 @@ import { type MultichainNetworkConfiguration } from '@metamask/multichain-networ
 import { CaipChainId, EthScope } from '@metamask/keyring-api';
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { NetworkListItem } from '../..';
+import { NetworkListItem } from '../../network-list-item';
 import { AvatarNetworkSize } from '../../../component-library';
 import {
   getNetworkIcon,
