@@ -26,8 +26,16 @@ import {
   getMultichainAssetsRatesControllerMessenger,
 } from './multichain';
 import { getInstitutionalSnapControllerMessenger } from './accounts/institutional-snap-controller-messenger';
+import {
+  getAuthenticationControllerMessenger,
+  getUserStorageControllerMessenger,
+} from './identity';
 
 export const CONTROLLER_MESSENGERS = {
+  AuthenticationController: {
+    getMessenger: getAuthenticationControllerMessenger,
+    getInitMessenger: noop,
+  },
   CronjobController: {
     getMessenger: getCronjobControllerMessenger,
     getInitMessenger: noop,
@@ -86,5 +94,9 @@ export const CONTROLLER_MESSENGERS = {
   TransactionController: {
     getMessenger: getTransactionControllerMessenger,
     getInitMessenger: getTransactionControllerInitMessenger,
+  },
+  UserStorageController: {
+    getMessenger: getUserStorageControllerMessenger,
+    getInitMessenger: noop,
   },
 } as const;
