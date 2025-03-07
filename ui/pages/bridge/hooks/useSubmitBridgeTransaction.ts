@@ -31,6 +31,10 @@ import {
   MetricsBackgroundState,
   StatusTypes,
 } from '../../../../shared/types/bridge-status';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { getMultichainIsEvm } from '../../../selectors/multichain';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { formatChainIdToCaip } from '../../../../shared/modules/bridge-utils/caip-formatters';
 import useAddToken from './useAddToken';
 import useHandleApprovalTx, {
   APPROVAL_TX_ERROR,
@@ -83,6 +87,7 @@ export default function useSubmitBridgeTransaction() {
   const { slippage } = useSelector(getQuoteRequest);
   const selectedAddress = useSelector(getSelectedAddress);
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
+  const isEvm = useMultichainSelector(getMultichainIsEvm);
 
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
@@ -201,24 +206,44 @@ export default function useSubmitBridgeTransaction() {
       ...statusRequestCommon,
       srcTxHash: bridgeTxMeta.hash, // This might be undefined for STX
     };
+
+    // Ensure that for Solana transactions we're properly passing the signature as hash
+    // Check for the explicit isSolana flag set in the transaction metadata
+    // TODO: see below.
+    // @ts-expect-error: bridgeTxMeta is not typed with isSolana, need to clean this up later.
+    const isSolana = bridgeTxMeta.isSolana === true;
+
     dispatch(
       startPollingForBridgeTxStatus({
         bridgeTxMeta,
-        statusRequest,
+        statusRequest: {
+          ...statusRequest,
+          // For Solana, ensure we're tracking the correct hash
+          srcTxHash:
+            isSolana && bridgeTxMeta.hash
+              ? bridgeTxMeta.hash
+              : statusRequest.srcTxHash,
+        },
         quoteResponse: serializeQuoteMetadata(quoteResponse),
         slippagePercentage: slippage ?? 0,
         startTime: bridgeTxMeta.time,
       }),
     );
-
-    // Add tokens if not the native gas token
-    if (quoteResponse.quote.srcAsset.address !== zeroAddress()) {
-      addSourceToken(quoteResponse);
+    // Only add tokens if the source or dest chain is an EVM chain bc non-evm tokens
+    // are detected by the multichain asset controllers
+    if (isEvm) {
+      // Add tokens if not the native gas token
+      if (quoteResponse.quote.srcAsset.address !== zeroAddress()) {
+        addSourceToken(quoteResponse);
+      }
+      if (
+        quoteResponse.quote.destAsset.address !== zeroAddress() &&
+        formatChainIdToCaip(quoteResponse.quote.destChainId) !==
+          MultichainNetworks.SOLANA
+      ) {
+        await addDestToken(quoteResponse);
+      }
     }
-    if (quoteResponse.quote.destAsset.address !== zeroAddress()) {
-      await addDestToken(quoteResponse);
-    }
-
     // Route user to activity tab on Home page
     await dispatch(setDefaultHomeActiveTabName('activity'));
     history.push({

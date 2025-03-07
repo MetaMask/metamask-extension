@@ -46,7 +46,7 @@ const inputData = {
 async function navigateToEditNetwork(driver: Driver) {
   await driver.clickElement('.mm-picker-network');
   await driver.clickElement(
-    '[data-testid="network-list-item-options-button-0x539"]',
+    '[data-testid="network-list-item-options-button-eip155:1337"]',
   );
   await driver.clickElement('[data-testid="network-list-item-options-edit"]');
 }
@@ -205,7 +205,7 @@ describe('Update Network:', function (this: Suite) {
 
         // Go to Edit Menu
         await driver.clickElement(
-          '[data-testid="network-list-item-options-button-0xa4b1"]',
+          '[data-testid="network-list-item-options-button-eip155:42161"]',
         );
 
         await driver.delay(regularDelayMs);
@@ -248,7 +248,7 @@ describe('Update Network:', function (this: Suite) {
 
         // Go back to edit the network
         await driver.clickElement(
-          '[data-testid="network-list-item-options-button-0xa4b1"]',
+          '[data-testid="network-list-item-options-button-eip155:42161"]',
         );
         await driver.delay(regularDelayMs);
         await driver.clickElement(
@@ -320,7 +320,7 @@ describe('Update Network:', function (this: Suite) {
 
         // Go to edit the network
         await driver.clickElement(
-          '[data-testid="network-list-item-options-button-0xa4b1"]',
+          '[data-testid="network-list-item-options-button-eip155:42161"]',
         );
         await driver.delay(regularDelayMs);
         await driver.clickElement(
@@ -373,7 +373,7 @@ describe('Update Network:', function (this: Suite) {
 
         // Go back to edit the network
         await driver.clickElement(
-          '[data-testid="network-list-item-options-button-0xa4b1"]',
+          '[data-testid="network-list-item-options-button-eip155:42161"]',
         );
         await driver.delay(regularDelayMs);
         await driver.clickElement(

@@ -62,6 +62,58 @@ export const createNewWalletOnboardingFlow = async ({
 };
 
 /**
+ * Incomplete create new wallet onboarding flow
+ *
+ * @param options - The options object.
+ * @param options.driver - The WebDriver instance.
+ * @param [options.password] - The password to use. Defaults to WALLET_PASSWORD.
+ * @param [options.participateInMetaMetrics] - Whether to participate in MetaMetrics. Defaults to false.
+ * @param [options.needNavigateToNewPage] - Indicates whether to navigate to a new page before starting the onboarding flow. Defaults to true.
+ * @param [options.dataCollectionForMarketing] - Whether to opt in to data collection for marketing. Defaults to false.
+ */
+export const incompleteCreateNewWalletOnboardingFlow = async ({
+  driver,
+  password = WALLET_PASSWORD,
+  participateInMetaMetrics = false,
+  needNavigateToNewPage = true,
+  dataCollectionForMarketing = false,
+}: {
+  driver: Driver;
+  password?: string;
+  participateInMetaMetrics?: boolean;
+  needNavigateToNewPage?: boolean;
+  dataCollectionForMarketing?: boolean;
+}): Promise<void> => {
+  console.log('Starting the creation of a new wallet onboarding flow');
+  if (needNavigateToNewPage) {
+    await driver.navigate();
+  }
+  const startOnboardingPage = new StartOnboardingPage(driver);
+  await startOnboardingPage.check_pageIsLoaded();
+  await startOnboardingPage.checkTermsCheckbox();
+  await startOnboardingPage.clickCreateWalletButton();
+
+  const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+  await onboardingMetricsPage.check_pageIsLoaded();
+  if (dataCollectionForMarketing) {
+    await onboardingMetricsPage.clickDataCollectionForMarketingCheckbox();
+  }
+  if (participateInMetaMetrics) {
+    await onboardingMetricsPage.clickIAgreeButton();
+  } else {
+    await onboardingMetricsPage.clickNoThanksButton();
+  }
+
+  const onboardingPasswordPage = new OnboardingPasswordPage(driver);
+  await onboardingPasswordPage.check_pageIsLoaded();
+  await onboardingPasswordPage.createWalletPassword(password);
+
+  const secureWalletPage = new SecureWalletPage(driver);
+  await secureWalletPage.check_pageIsLoaded();
+  await secureWalletPage.revealAndDoNotConfirmSRP();
+};
+
+/**
  * Import SRP onboarding flow
  *
  * @param options - The options object.

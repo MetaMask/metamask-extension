@@ -4,7 +4,7 @@ import {
   isBtcMainnetAddress,
   isBtcTestnetAddress,
   isSolanaAddress,
-} from './multichain';
+} from './accounts';
 
 const BTC_MAINNET_ADDRESSES = [
   // P2WPKH

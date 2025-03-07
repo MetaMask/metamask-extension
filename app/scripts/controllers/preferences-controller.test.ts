@@ -4,6 +4,7 @@
 import { Messenger } from '@metamask/base-controller';
 import { AccountsController } from '@metamask/accounts-controller';
 import { KeyringControllerStateChangeEvent } from '@metamask/keyring-controller';
+import type { MultichainNetworkControllerNetworkDidChangeEvent } from '@metamask/multichain-network-controller';
 import { SnapControllerStateChangeEvent } from '@metamask/snaps-controllers';
 import { Hex } from '@metamask/utils';
 import {
@@ -52,6 +53,7 @@ const setupController = ({
     | SnapKeyringAccountAssetListUpdatedEvent
     | SnapKeyringAccountBalancesUpdatedEvent
     | SnapKeyringAccountTransactionsUpdatedEvent
+    | MultichainNetworkControllerNetworkDidChangeEvent
   >();
   const preferencesControllerMessenger: PreferencesControllerMessenger =
     messenger.getRestricted({
@@ -85,6 +87,7 @@ const setupController = ({
       'SnapKeyring:accountAssetListUpdated',
       'SnapKeyring:accountBalancesUpdated',
       'SnapKeyring:accountTransactionsUpdated',
+      'MultichainNetworkController:networkDidChange',
     ],
     allowedActions: [],
   });
@@ -152,6 +155,12 @@ describe('preferences controller', () => {
               accounts: [firstAddress, secondAddress],
             },
           ],
+          keyringsMetadata: [
+            {
+              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+              name: '',
+            },
+          ],
         },
         [],
       );
@@ -195,6 +204,12 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
+            },
+          ],
+          keyringsMetadata: [
+            {
+              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+              name: '',
             },
           ],
         },
@@ -248,6 +263,12 @@ describe('preferences controller', () => {
               accounts: [firstAddress, secondAddress],
             },
           ],
+          keyringsMetadata: [
+            {
+              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+              name: '',
+            },
+          ],
         },
         [],
       );
@@ -281,6 +302,12 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
+            },
+          ],
+          keyringsMetadata: [
+            {
+              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+              name: '',
             },
           ],
         },
@@ -524,6 +551,12 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
+            },
+          ],
+          keyringsMetadata: [
+            {
+              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+              name: '',
             },
           ],
         },
@@ -840,21 +873,6 @@ describe('preferences controller', () => {
       expect(controller.state.snapsAddSnapAccountModalDismissed).toStrictEqual(
         true,
       );
-    });
-  });
-
-  describe('setSolanaSupportEnabled', () => {
-    const { controller } = setupController({});
-    it('has the default value as false', () => {
-      expect(controller.state.solanaSupportEnabled).toStrictEqual(false);
-    });
-
-    it('sets the solanaSupportEnabled property in state to true and then false', () => {
-      controller.setSolanaSupportEnabled(true);
-      expect(controller.state.solanaSupportEnabled).toStrictEqual(true);
-
-      controller.setSolanaSupportEnabled(false);
-      expect(controller.state.solanaSupportEnabled).toStrictEqual(false);
     });
   });
 });

@@ -299,6 +299,7 @@ const AssetPage = ({
               chainId,
               symbol,
               image,
+              title: name ?? symbol,
               tokenFiatAmount:
                 showFiat && tokenMarketPrice ? tokenFiatAmount : null,
               string: balance ? balance.toString() : '',
@@ -308,6 +309,8 @@ const AssetPage = ({
                   ? asset.aggregators
                   : [],
               isNative: type === AssetType.native,
+              primary: balance ? balance.toString() : '',
+              secondary: balance ? Number(balance) : 0,
             }}
           />
         )}

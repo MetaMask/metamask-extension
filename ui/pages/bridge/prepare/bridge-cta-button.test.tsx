@@ -5,6 +5,7 @@ import { createBridgeMockStore } from '../../../../test/jest/mock-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
 import { RequestStatus } from '../../../../shared/types/bridge';
+import { formatChainIdToCaip } from '../../../../shared/modules/bridge-utils/caip-formatters';
 import { BridgeCTAButton } from './bridge-cta-button';
 
 describe('BridgeCTAButton', () => {
@@ -48,7 +49,7 @@ describe('BridgeCTAButton', () => {
         fromTokenInputValue: null,
         fromToken: 'ETH',
         toToken: 'ETH',
-        toChainId: CHAIN_IDS.LINEA_MAINNET,
+        toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
       },
     });
     const { getByText } = renderWithProvider(
@@ -77,7 +78,7 @@ describe('BridgeCTAButton', () => {
         fromTokenInputValue: null,
         fromToken: 'ETH',
         toToken: null,
-        toChainId: CHAIN_IDS.LINEA_MAINNET,
+        toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
       },
     });
     const { getByText, container } = renderWithProvider(
@@ -107,7 +108,7 @@ describe('BridgeCTAButton', () => {
         fromTokenInputValue: 1,
         fromToken: 'ETH',
         toToken: 'ETH',
-        toChainId: CHAIN_IDS.LINEA_MAINNET,
+        toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
       },
       bridgeStateOverrides: {
         quotes: mockBridgeQuotesNativeErc20,
@@ -148,7 +149,7 @@ describe('BridgeCTAButton', () => {
         fromTokenInputValue: 1,
         fromToken: 'ETH',
         toToken: 'ETH',
-        toChainId: CHAIN_IDS.LINEA_MAINNET,
+        toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
       },
       bridgeStateOverrides: {
         quotes: [],
@@ -188,7 +189,7 @@ describe('BridgeCTAButton', () => {
         fromTokenInputValue: 1,
         fromToken: 'ETH',
         toToken: 'ETH',
-        toChainId: CHAIN_IDS.LINEA_MAINNET,
+        toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
       },
       bridgeStateOverrides: {
         quotes: mockBridgeQuotesNativeErc20,

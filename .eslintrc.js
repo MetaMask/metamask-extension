@@ -299,14 +299,8 @@ module.exports = {
       rules: {
         'react/no-unused-prop-types': 'warn',
         'react/no-unused-state': 'warn',
-        'react/jsx-boolean-value': 'warn',
-        'react/jsx-curly-brace-presence': [
-          'warn',
-          {
-            props: 'never',
-            children: 'never',
-          },
-        ],
+        'react/jsx-boolean-value': 'off',
+        'react/jsx-curly-brace-presence': 'off',
         'react/no-deprecated': 'warn',
         'react/default-props-match-prop-types': 'warn',
         'react/jsx-no-duplicate-props': 'warn',
