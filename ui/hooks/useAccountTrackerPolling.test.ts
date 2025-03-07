@@ -16,26 +16,13 @@ jest.mock('../store/actions', () => ({
   accountTrackerStopPollingByPollingToken: jest.fn(),
 }));
 
-let originalPortfolioView: string | undefined;
-
 describe('useAccountTrackerPolling', () => {
   beforeEach(() => {
-    // Mock process.env.PORTFOLIO_VIEW
-    originalPortfolioView = process.env.PORTFOLIO_VIEW;
-    process.env.PORTFOLIO_VIEW = 'true'; // Set your desired mock value here
-
     mockPromises = [];
     jest.clearAllMocks();
   });
 
-  afterEach(() => {
-    // Restore the original value
-    process.env.PORTFOLIO_VIEW = originalPortfolioView;
-  });
-
   it('should poll account trackers for network client IDs when enabled and stop on dismount', async () => {
-    process.env.PORTFOLIO_VIEW = 'true';
-
     const state = {
       metamask: {
         isUnlocked: true,
