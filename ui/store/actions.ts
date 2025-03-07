@@ -29,6 +29,7 @@ import {
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
 import {
+  TransactionController,
   TransactionMeta,
   TransactionParams,
   TransactionType,
@@ -6063,3 +6064,9 @@ export async function sendMultichainTransaction(
   });
 }
 ///: END:ONLY_INCLUDE_IF
+
+export async function updateGasFeeToken(
+  ...args: Parameters<TransactionController['updateGasFeeToken']>
+) {
+  return await submitRequestToBackground<void>('updateGasFeeToken', args);
+}

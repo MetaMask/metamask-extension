@@ -1,5 +1,6 @@
 import {
   CHAIN_IDS,
+  GasFeeToken,
   SimulationData,
   TransactionMeta,
   TransactionStatus,
@@ -26,10 +27,12 @@ export const genUnapprovedContractInteractionConfirmation = ({
   txData = DEPOSIT_METHOD_DATA,
   chainId = CHAIN_ID,
   simulationData,
+  gasFeeTokens,
 }: {
   address?: Hex;
   txData?: Hex;
   chainId?: string;
+  gasFeeTokens?: GasFeeToken[];
   simulationData?: SimulationData;
 } = {}): Confirmation => {
   const confirmation: Confirmation = {
@@ -45,6 +48,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
       maxPriorityFeePerGas: '0x59682f00',
     },
     gasFeeEstimatesLoaded: true,
+    gasFeeTokens,
     history: [
       {
         actionId: String(400855682),

@@ -1,4 +1,7 @@
-import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
+import {
+  AccountsControllerGetSelectedAccountAction,
+  AccountsControllerGetStateAction,
+} from '@metamask/accounts-controller';
 import { ApprovalControllerActions } from '@metamask/approval-controller';
 import { Messenger } from '@metamask/base-controller';
 import {
@@ -23,18 +26,21 @@ import {
 import { SmartTransactionsControllerSmartTransactionEvent } from '@metamask/smart-transactions-controller';
 import { SignDelegationAction } from '@metamask/signature-controller';
 import { KeyringControllerSignEip7702AuthorizationAction } from '@metamask/keyring-controller';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
   SwapsControllerSetApproveTxIdAction,
   SwapsControllerSetTradeTxIdAction,
 } from '../../controllers/swaps/swaps.types';
 
 type MessengerActions =
+  | AccountsControllerGetStateAction
   | ApprovalControllerActions
   | AccountsControllerGetSelectedAccountAction
   | KeyringControllerSignEip7702AuthorizationAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetEIP1559CompatibilityAction
   | NetworkControllerGetNetworkClientByIdAction
+  | RemoteFeatureFlagControllerGetStateAction
   | SignDelegationAction
   | SwapsControllerSetApproveTxIdAction
   | SwapsControllerSetTradeTxIdAction;
@@ -65,9 +71,11 @@ export function getTransactionControllerMessenger(
     name: 'TransactionController',
     allowedActions: [
       'AccountsController:getSelectedAccount',
+      'AccountsController:getState',
       `ApprovalController:addRequest`,
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
+      'RemoteFeatureFlagController:getState',
     ],
     allowedEvents: [`NetworkController:stateChange`],
   });

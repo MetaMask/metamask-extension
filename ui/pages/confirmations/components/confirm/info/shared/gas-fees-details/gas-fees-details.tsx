@@ -30,6 +30,7 @@ export const GasFeesDetails = ({
 
   const { maxFeePerGas, maxPriorityFeePerGas } =
     useEIP1559TxFees(transactionMeta);
+
   const { supportsEIP1559 } = useSupportsEIP1559(transactionMeta);
 
   const hasLayer1GasFee = Boolean(transactionMeta?.layer1GasFee);

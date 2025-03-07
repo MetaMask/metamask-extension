@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import {
   selectTransactionAvailableBalance,
@@ -19,8 +20,8 @@ import { useConfirmContext } from '../../../context/confirm';
 
 export function useInsufficientBalanceAlerts(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext();
-  const { id: transactionId } = currentConfirmation ?? {};
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { id: transactionId, selectedGasFeeToken } = currentConfirmation ?? {};
 
   const balance = useSelector((state) =>
     selectTransactionAvailableBalance(state, transactionId),
@@ -36,11 +37,13 @@ export function useInsufficientBalanceAlerts(): Alert[] {
 
   const nativeCurrency = useSelector(getMultichainNativeCurrency);
 
-  const insufficientBalance = !isBalanceSufficient({
-    amount: value,
-    gasTotal: hexMaximumTransactionFee,
-    balance,
-  });
+  const insufficientBalance =
+    !selectedGasFeeToken &&
+    !isBalanceSufficient({
+      amount: value,
+      gasTotal: hexMaximumTransactionFee,
+      balance,
+    });
 
   return useMemo(() => {
     if (!insufficientBalance) {
