@@ -184,7 +184,7 @@ describe('Bridge utils', () => {
           symbol: 'DEF',
         },
         {
-          address: '0x124',
+          address: 'NONevmTOken1324fgcdrskljffsiodujfkl,jfd',
           symbol: 'JKL',
           decimals: 16,
         },
@@ -217,6 +217,11 @@ describe('Bridge utils', () => {
           decimals: 16,
           symbol: 'DEF',
           aggregators: ['lifi'],
+        },
+        'NONevmTOken1324fgcdrskljffsiodujfkl,jfd': {
+          address: 'NONevmTOken1324fgcdrskljffsiodujfkl,jfd',
+          decimals: 16,
+          symbol: 'JKL',
         },
         '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
           address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
