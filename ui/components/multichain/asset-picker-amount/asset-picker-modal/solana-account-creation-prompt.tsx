@@ -15,7 +15,6 @@ import {
   AlignItems,
   JustifyContent,
   FlexDirection,
-  BlockSize,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
