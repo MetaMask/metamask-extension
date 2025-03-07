@@ -110,24 +110,24 @@ jobs:
           name: prep-build-test-browserify
           path: ./dist/
 
-  # prep-build-test-webpack:
-  #   needs: prep-deps
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout and setup environment
-  #       uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
-  #       with:
-  #         is-high-risk-environment: false
+  prep-build-test-webpack:
+    needs: prep-deps
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout and setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        with:
+          is-high-risk-environment: false
 
-  #     - run: yarn webpack --test --no-lavamoat --no-cache --browser=chrome --lockdown --sentry --snow --env production
-  #       env:
-  #         SEGMENT_PROD_WRITE_KEY: ${{ secrets.SEGMENT_PROD_WRITE_KEY }}
+      - run: yarn webpack --test --no-lavamoat --no-cache --browser=chrome --lockdown --sentry --snow --env production
+        env:
+          SEGMENT_PROD_WRITE_KEY: '-' # A fake key just to make the build succeed
 
-  #     - name: Upload artifact prep-build-test-webpack
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: prep-build-test-webpack
-  #         path: ./dist/
+      - name: Upload artifact prep-build-test-webpack
+        uses: actions/upload-artifact@v4
+        with:
+          name: prep-build-test-webpack
+          path: ./dist/
 
   # prep-build-test:
   #   needs: prep-deps
@@ -262,9 +262,9 @@ jobs:
   #         name: ts-migration-dashboard
   #         path: ./development/ts-migration-dashboard/build/final/
 
-  test-e2e-chrome-browserify-cimg:
+  test-e2e-chrome-webpack-cimg:
     needs:
-      - prep-build-test-browserify
+      - prep-build-test-webpack
       - get-changed-files-with-git-diff
     runs-on: ubuntu-22.04
     container:
@@ -289,10 +289,10 @@ jobs:
         with:
           is-high-risk-environment: false
 
-      - name: Download prep-build-test-browserify artifact
+      - name: Download prep-build-test-webpack artifact
         uses: actions/download-artifact@v4
         with:
-          name: prep-build-test-browserify
+          name: prep-build-test-webpack
           path: ./dist/
 
       - name: Download changed-files artifact
@@ -339,9 +339,9 @@ jobs:
           name: test-results-e2e-chrome-webpack-${{ matrix.index }}
           path: ./test/test-results/e2e
 
-  test-e2e-chrome-browserify-nocontainer:
+  test-e2e-chrome-webpack-nocontainer:
     needs:
-      - prep-build-test-browserify
+      - prep-build-test-webpack
       - get-changed-files-with-git-diff
     runs-on: ubuntu-22.04
     strategy:
@@ -363,10 +363,10 @@ jobs:
         with:
           is-high-risk-environment: false
 
-      - name: Download prep-build-test-browserify artifact
+      - name: Download prep-build-test-webpack artifact
         uses: actions/download-artifact@v4
         with:
-          name: prep-build-test-browserify
+          name: prep-build-test-webpack
           path: ./dist/
 
       - name: Download changed-files artifact
