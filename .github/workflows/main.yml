@@ -278,11 +278,11 @@ jobs:
       MATRIX_INDEX: ${{ matrix.index }}
       MATRIX_TOTAL: 20
       USE_SANDBOX: false
-      USE_HEADLESS: true
+      USE_HEADLESS: false
     steps:
-      # - name: Install zstd
-      #   run: sudo apt-get update && sudo apt-get install zstd
-      #   shell: bash
+      - name: Install zstd
+        run: sudo apt-get update && sudo apt-get install zstd
+        shell: bash
 
       - run: sudo corepack enable
         shell: bash
@@ -301,8 +301,8 @@ jobs:
           path: ./dist/
           merge-multiple: true
 
-      # - name: Configure Xvfb
-      #   run: Xvfb -ac :99 -screen 0 1280x1024x16 &
+      - name: Configure Xvfb
+        run: Xvfb -ac :99 -screen 0 1280x1024x16 &
 
       - name: Download changed-files artifact
         continue-on-error: true
