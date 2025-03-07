@@ -23,6 +23,7 @@ import {
   ValidPermission,
 } from '@metamask/permission-controller';
 import {
+  CaipChainId,
   Hex,
   isPlainObject,
   Json,
@@ -73,6 +74,8 @@ type AbstractPermissionController = PermissionController<
  * @param hooks.metamaskState.permissionHistory - The permission history object keyed by origin.
  * @param hooks.metamaskState.accounts - The accounts object keyed by address.
  * @param hooks.grantPermissions - The hook that grants permission for the origin.
+ * @param hooks.getNonEvmSupportedMethods
+ * @param hooks.isNonEvmScopeSupported
  */
 async function walletCreateSessionHandler(
   req: JsonRpcRequest<Caip25Authorization> & { origin: string },
@@ -100,6 +103,8 @@ async function walletCreateSessionHandler(
     grantPermissions: (
       ...args: Parameters<AbstractPermissionController['grantPermissions']>
     ) => Record<string, ValidPermission<string, Caveat<string, Json>>>;
+    getNonEvmSupportedMethods: (scope: CaipChainId) => string[];
+    isNonEvmScopeSupported: (scope: CaipChainId) => boolean;
   },
 ) {
   const { origin } = req;
@@ -117,9 +122,13 @@ async function walletCreateSessionHandler(
       validateAndNormalizeScopes(requiredScopes || {}, optionalScopes || {});
 
     const requiredScopesWithSupportedMethodsAndNotifications =
-      getSupportedScopeObjects(normalizedRequiredScopes);
+      getSupportedScopeObjects(normalizedRequiredScopes, {
+        getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods,
+      });
     const optionalScopesWithSupportedMethodsAndNotifications =
-      getSupportedScopeObjects(normalizedOptionalScopes);
+      getSupportedScopeObjects(normalizedOptionalScopes, {
+        getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods,
+      });
 
     const networkClientExistsForChainId = (chainId: Hex) => {
       try {
@@ -133,16 +142,20 @@ async function walletCreateSessionHandler(
     const { supportedScopes: supportedRequiredScopes } = bucketScopes(
       requiredScopesWithSupportedMethodsAndNotifications,
       {
-        isChainIdSupported: networkClientExistsForChainId,
-        isChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
+        isEvmChainIdSupported: networkClientExistsForChainId,
+        isEvmChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
+        getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods,
+        isNonEvmScopeSupported: hooks.isNonEvmScopeSupported,
       },
     );
 
     const { supportedScopes: supportedOptionalScopes } = bucketScopes(
       optionalScopesWithSupportedMethodsAndNotifications,
       {
-        isChainIdSupported: networkClientExistsForChainId,
-        isChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
+        isEvmChainIdSupported: networkClientExistsForChainId,
+        isEvmChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
+        getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods,
+        isNonEvmScopeSupported: hooks.isNonEvmScopeSupported,
       },
     );
 
@@ -169,6 +182,13 @@ async function walletCreateSessionHandler(
       supportedEthAccounts,
     );
 
+    // Note that we do not verify non-evm accounts here. Instead we rely on
+    // the CAIP-25 caveat validator to throw an error about the requested
+    // accounts being invalid. Once the Approval UI supports displaying and selecting
+    // non-evm accounts and networks, we should add the non-evm account filtering
+    // logic to this handler so that unsupported/invalid non-evm accounts
+    // never make it into the approval request in the first place.
+
     const { permissions: approvedPermissions } =
       await hooks.requestPermissionApprovalForOrigin({
         [Caip25EndowmentPermissionName]: {
@@ -190,7 +210,9 @@ async function walletCreateSessionHandler(
       throw rpcErrors.internal();
     }
 
-    const sessionScopes = getSessionScopes(approvedCaip25CaveatValue);
+    const sessionScopes = getSessionScopes(approvedCaip25CaveatValue, {
+      getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods,
+    });
 
     hooks.grantPermissions({
       subject: {
@@ -244,5 +266,7 @@ export const walletCreateSession = {
     grantPermissions: true,
     sendMetrics: true,
     metamaskState: true,
+    getNonEvmSupportedMethods: true,
+    isNonEvmScopeSupported: true,
   },
 };
