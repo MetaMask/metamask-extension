@@ -105,10 +105,12 @@ async function gitDiff(): Promise<string> {
   return diffResult;
 }
 
-function writePrBodyToFile(prBody: string) {
+function writePrBodyAndInfoToFile(prInfo: PRInfo) {
   const prBodyPath = path.resolve(CHANGED_FILES_DIR, 'pr-body.txt');
-  fs.writeFileSync(prBodyPath, prBody.trim());
-  console.log(`PR body saved to ${prBodyPath}`);
+  const labels = prInfo.labels.map(label => label.name).join(', ');
+  const updatedPrBody = `PR labels: {${labels}}\nPR base: {${prInfo.base.ref}}\n${prInfo.body.trim()}`;
+  fs.writeFileSync(prBodyPath, updatedPrBody);
+  console.log(`PR body and info saved to ${prBodyPath}`);
 }
 
 /**
@@ -135,17 +137,9 @@ async function storeGitDiffOutputAndPrBody() {
     if (!baseRef) {
       console.log('Not a PR, skipping git diff');
       return;
-    } else if (baseRef !== GITHUB_DEFAULT_BRANCH) {
-      console.log(`This is for a PR targeting '${baseRef}', skipping git diff`);
-      writePrBodyToFile(prInfo.body);
-      return;
-    } else if (
-      prInfo.labels.some((label) => label.name === 'skip-e2e-quality-gate')
-    ) {
-      console.log('PR has the skip-e2e-quality-gate label, skipping git diff');
-      return;
     }
-
+    // We perform git diff even if the PR base is not main or skip-e2e-quality-gate label is applied
+    // because we rely on the git diff results for other jobs
     console.log('Attempting to get git diff...');
     const diffOutput = await gitDiff();
     console.log(diffOutput);
@@ -155,7 +149,7 @@ async function storeGitDiffOutputAndPrBody() {
     fs.writeFileSync(outputPath, diffOutput.trim());
     console.log(`Git diff results saved to ${outputPath}`);
 
-    writePrBodyToFile(prInfo.body);
+    writePrBodyAndInfoToFile(prInfo);
 
     process.exit(0);
   } catch (error: any) {

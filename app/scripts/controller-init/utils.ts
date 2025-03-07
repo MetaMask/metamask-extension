@@ -29,18 +29,27 @@ export type InitControllersResult = {
 
 type BaseControllerInitRequest = ControllerInitRequest<
   BaseRestrictedControllerMessenger,
-  BaseRestrictedControllerMessenger
+  BaseRestrictedControllerMessenger | void
 >;
 
 type ControllerMessengerCallback = (
   BaseControllerMessenger: BaseControllerMessenger,
 ) => BaseRestrictedControllerMessenger;
 
-type ControllersToInitialize =
-  | 'PPOMController'
-  | 'TransactionController'
+export type ControllersToInitialize =
+  | 'CronjobController'
+  | 'ExecutionService'
+  | 'MultichainAssetsController'
+  | 'MultichainAssetsRatesController'
   | 'MultichainBalancesController'
-  | 'MultichainTransactionsController';
+  | 'MultichainTransactionsController'
+  | 'RateLimitController'
+  | 'SnapsRegistry'
+  | 'SnapController'
+  | 'SnapInsightsController'
+  | 'SnapInterfaceController'
+  | 'PPOMController'
+  | 'TransactionController';
 
 type InitFunction<Name extends ControllersToInitialize> =
   ControllerInitFunction<
@@ -123,8 +132,6 @@ export function initControllers({
       initMessenger,
     };
 
-    // TODO: Remove @ts-expect-error once base-controller version mismatch is resolved
-    // Instead of suppressing all type errors, we'll be specific about the controllerMessenger mismatch
     const result = initFunction({
       ...finalInitRequest,
       controllerMessenger: finalInitRequest.controllerMessenger,
@@ -146,9 +153,8 @@ export function initControllers({
     const memStateKey =
       memStateKeyRaw === null ? undefined : memStateKeyRaw ?? controllerName;
 
-    (partialControllersByName as Record<ControllersToInitialize, Controller>)[
-      controllerName
-    ] = controller;
+    // @ts-expect-error: Union too complex.
+    partialControllersByName[controllerName] = controller;
 
     controllerApi = {
       ...controllerApi,

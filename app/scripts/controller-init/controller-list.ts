@@ -11,7 +11,12 @@ import SmartTransactionsController from '@metamask/smart-transactions-controller
 import { TransactionController } from '@metamask/transaction-controller';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import { AccountsController } from '@metamask/accounts-controller';
-import { MultichainBalancesController } from '@metamask/assets-controllers';
+import {
+  MultichainAssetsController,
+  MultichainAssetsRatesController,
+  MultichainBalancesController,
+} from '@metamask/assets-controllers';
+import { MultichainNetworkController } from '@metamask/multichain-network-controller';
 import { MultichainTransactionsController } from '@metamask/multichain-transactions-controller';
 import {
   CronjobController,
@@ -38,6 +43,11 @@ export type Controller =
   | GasFeeController
   | JsonSnapsRegistry
   | KeyringController
+  | MultichainAssetsController
+  | MultichainAssetsRatesController
+  | MultichainBalancesController
+  | MultichainTransactionsController
+  | MultichainNetworkController
   | NetworkController
   | OnboardingController
   | PermissionController<
@@ -46,8 +56,6 @@ export type Controller =
     >
   | PPOMController
   | PreferencesController
-  | MultichainBalancesController
-  | MultichainTransactionsController
   | RateLimitController<RateLimitedApiMap>
   | SmartTransactionsController
   | SnapController
@@ -68,6 +76,11 @@ export type ControllerFlatState = AccountsController['state'] &
   GasFeeController['state'] &
   JsonSnapsRegistry['state'] &
   KeyringController['state'] &
+  MultichainAssetsController['state'] &
+  MultichainAssetsRatesController['state'] &
+  MultichainBalancesController['state'] &
+  MultichainTransactionsController['state'] &
+  MultichainNetworkController['state'] &
   NetworkController['state'] &
   OnboardingController['state'] &
   PermissionController<
@@ -76,8 +89,6 @@ export type ControllerFlatState = AccountsController['state'] &
   >['state'] &
   PPOMController['state'] &
   PreferencesController['state'] &
-  MultichainBalancesController['state'] &
-  MultichainTransactionsController['state'] &
   SmartTransactionsController['state'] &
   SnapController['state'] &
   SnapInsightsController['state'] &

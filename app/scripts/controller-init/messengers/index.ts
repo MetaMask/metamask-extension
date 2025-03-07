@@ -1,3 +1,4 @@
+import { noop } from 'lodash';
 import {
   getPPOMControllerMessenger,
   getPPOMControllerInitMessenger,
@@ -19,19 +20,39 @@ import {
 } from './transaction-controller-messenger';
 import {
   getMultichainBalancesControllerMessenger,
-  getMultichainBalancesControllerInitMessenger,
-} from './multichain-balances-controller-messenger';
-import {
   getMultichainTransactionsControllerMessenger,
-  getMultichainTransactionsControllerInitMessenger,
-} from './multichain-transactions-controller-messenger';
+  getMultichainAssetsControllerMessenger,
+  getMultichainNetworkControllerMessenger,
+  getMultichainAssetsRatesControllerMessenger,
+} from './multichain';
 
 export const CONTROLLER_MESSENGERS = {
   CronjobController: {
     getMessenger: getCronjobControllerMessenger,
+    getInitMessenger: noop,
   },
   ExecutionService: {
     getMessenger: getExecutionServiceMessenger,
+    getInitMessenger: noop,
+  },
+  MultichainAssetsController: {
+    getMessenger: getMultichainAssetsControllerMessenger,
+    getInitMessenger: noop,
+  },
+  MultichainAssetsRatesController: {
+    getMessenger: getMultichainAssetsRatesControllerMessenger,
+    getInitMessenger: noop,
+  },
+  MultichainBalancesController: {
+    getMessenger: getMultichainBalancesControllerMessenger,
+    getInitMessenger: noop,
+  },
+  MultichainTransactionsController: {
+    getMessenger: getMultichainTransactionsControllerMessenger,
+    getInitMessenger: noop,
+  },
+  MultichainNetworkController: {
+    getMessenger: getMultichainNetworkControllerMessenger,
   },
   RateLimitController: {
     getMessenger: getRateLimitControllerMessenger,
@@ -39,6 +60,7 @@ export const CONTROLLER_MESSENGERS = {
   },
   SnapsRegistry: {
     getMessenger: getSnapsRegistryMessenger,
+    getInitMessenger: noop,
   },
   SnapController: {
     getMessenger: getSnapControllerMessenger,
@@ -46,9 +68,11 @@ export const CONTROLLER_MESSENGERS = {
   },
   SnapInsightsController: {
     getMessenger: getSnapInsightsControllerMessenger,
+    getInitMessenger: noop,
   },
   SnapInterfaceController: {
     getMessenger: getSnapInterfaceControllerMessenger,
+    getInitMessenger: noop,
   },
   PPOMController: {
     getMessenger: getPPOMControllerMessenger,
@@ -57,13 +81,5 @@ export const CONTROLLER_MESSENGERS = {
   TransactionController: {
     getMessenger: getTransactionControllerMessenger,
     getInitMessenger: getTransactionControllerInitMessenger,
-  },
-  MultichainBalancesController: {
-    getMessenger: getMultichainBalancesControllerMessenger,
-    getInitMessenger: getMultichainBalancesControllerInitMessenger,
-  },
-  MultichainTransactionsController: {
-    getMessenger: getMultichainTransactionsControllerMessenger,
-    getInitMessenger: getMultichainTransactionsControllerInitMessenger,
   },
 } as const;

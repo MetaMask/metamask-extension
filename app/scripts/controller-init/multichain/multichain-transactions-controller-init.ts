@@ -1,20 +1,19 @@
 import { MultichainTransactionsController } from '@metamask/multichain-transactions-controller';
 import { ControllerInitFunction } from '../types';
-import { MultichainTransactionsControllerInitMessenger } from '../messengers/multichain-transactions-controller-messenger';
+import { MultichainTransactionsControllerMessenger } from '../messengers/multichain';
 
-// We are inferring the messenger type from the controllers constructor
-// because the messenger is not exported from the package.
-type MultichainTransactionsControllerMessenger = ConstructorParameters<
-  typeof MultichainTransactionsController
->[0]['messenger'];
-
+/**
+ * Initialize the Multichain Transactions controller.
+ *
+ * @param request - The request object.
+ * @param request.controllerMessenger - The messenger to use for the controller.
+ * @param request.persistedState - The persisted state of the extension.
+ * @returns The initialized controller.
+ */
 export const MultichainTransactionsControllerInit: ControllerInitFunction<
   MultichainTransactionsController,
-  MultichainTransactionsControllerMessenger,
-  MultichainTransactionsControllerInitMessenger
-> = (request) => {
-  const { controllerMessenger, persistedState } = request;
-
+  MultichainTransactionsControllerMessenger
+> = ({ controllerMessenger, persistedState }) => {
   const controller = new MultichainTransactionsController({
     messenger: controllerMessenger,
     state: persistedState.MultichainTransactionsController,

@@ -13,6 +13,8 @@ class TestDapp {
     tag: 'button',
   };
 
+  private readonly addNetworkButton = '#addEthereumChain';
+
   private readonly approveTokensButton = '#approveTokens';
 
   private readonly approveTokensButtonWithoutGas = '#approveTokensWithoutGas';
@@ -34,8 +36,8 @@ class TestDapp {
   private readonly connectAccountButton = '#connectButton';
 
   private readonly connectMetaMaskMessage = {
-    text: 'Connect with MetaMask',
-    tag: 'h2',
+    text: 'Connect this website with MetaMask.',
+    tag: 'p',
   };
 
   private readonly connectedAccount = '#accounts';
@@ -501,6 +503,14 @@ class TestDapp {
     await this.driver.clickElement(this.addTokensToWalletButton);
   }
 
+  async clickAddNetworkButton() {
+    await this.driver.clickElement(this.addNetworkButton);
+  }
+
+  async clickConnectAccountButton() {
+    await this.driver.clickElement(this.connectAccountButton);
+  }
+
   async clickApproveTokens() {
     await this.driver.clickElement(this.approveTokensButton);
   }
@@ -624,7 +634,7 @@ class TestDapp {
     chainId?: string;
   }) {
     console.log('Connect account to test dapp');
-    await this.driver.clickElement(this.connectAccountButton);
+    await this.clickConnectAccountButton();
     if (connectAccountButtonEnabled) {
       await this.confirmConnectAccountModal();
     } else {

@@ -30,7 +30,8 @@ jobs:
             done
           fi
 
-          if [ "$workflow_status" != "success" ]; then
+          # The "not_run" only happens when you're developing CI workflows and testing weird cases
+          if [ "$workflow_status" != "success" ] && [ "$workflow_status" != "not_run" ]; then
             echo "::error::Workflow status is '$workflow_status'. Exiting with error."
             exit 1
           fi

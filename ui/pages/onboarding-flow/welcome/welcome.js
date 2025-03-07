@@ -35,6 +35,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { isFlask, isBeta } from '../../../helpers/utils/build-types';
 
 export default function OnboardingWelcome() {
   const t = useI18nContext();
@@ -115,6 +116,22 @@ export default function OnboardingWelcome() {
     ///: END:ONLY_INCLUDE_IF
   };
 
+  const renderMascot = () => {
+    if (isFlask()) {
+      return (
+        <img src="./images/logo/metamask-fox.svg" width="240" height="240" />
+      );
+    }
+    if (isBeta()) {
+      return (
+        <img src="./images/logo/metamask-fox.svg" width="240" height="240" />
+      );
+    }
+    return (
+      <Mascot animationEventEmitter={eventEmitter} width="250" height="300" />
+    );
+  };
+
   return (
     <div className="onboarding-welcome" data-testid="onboarding-welcome">
       {
@@ -132,13 +149,7 @@ export default function OnboardingWelcome() {
             <Text textAlign={TextAlign.Center} marginLeft={6} marginRight={6}>
               {t('welcomeToMetaMaskIntro')}
             </Text>
-            <div className="onboarding-welcome__mascot">
-              <Mascot
-                animationEventEmitter={eventEmitter}
-                width="250"
-                height="250"
-              />
-            </div>
+            <div className="onboarding-welcome__mascot">{renderMascot()}</div>
           </div>
           <div>
             <Text
@@ -154,10 +165,13 @@ export default function OnboardingWelcome() {
             </Text>
             <div className="onboarding-welcome__image">
               <img
-                src="/images/onboarding-welcome-say-hello.svg"
-                width="169"
-                height="237"
-                alt=""
+                src="/images/onboarding-welcome-say-hello.png"
+                width="200"
+                height="275"
+                style={{
+                  objectFit: 'contain',
+                }}
+                alt="onboarding-welcome-say-hello"
               />
             </div>
           </div>
@@ -175,10 +189,13 @@ export default function OnboardingWelcome() {
             </Text>
             <div className="onboarding-welcome__image">
               <img
-                src="/images/onboarding-welcome-decentralised-apps.svg"
-                width="327"
-                height="256"
-                alt=""
+                src="/images/onboarding-welcome-decentralised-apps.png"
+                width="200"
+                height="275"
+                alt="onboarding-welcome-decentralised-apps"
+                style={{
+                  objectFit: 'contain',
+                }}
               />
             </div>
           </div>
