@@ -354,9 +354,9 @@ export default function TransactionList({
     }
 
     // Fallback: Amount of the token received
-    if (transaction.to?.[0]?.asset?.amount) {
-      return `${transaction.to?.[0]?.asset?.amount} ${
-        transaction.to?.[0]?.asset?.unit || ''
+    if (transaction.from?.[0]?.asset?.amount) {
+      return `${transaction.from?.[0]?.asset?.amount} ${
+        transaction.from?.[0]?.asset?.unit || ''
       }`;
     }
 
