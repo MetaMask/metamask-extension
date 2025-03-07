@@ -16,11 +16,11 @@ then
     exit 1
 fi
 
-if [[ "${CIRCLE_BRANCH}" != "main" ]]
-then
-    printf 'This is not main branch'
-    exit 0
-fi
+#if [[ "${CIRCLE_BRANCH}" != "main" ]]
+#then
+#    printf 'This is not main branch'
+#   exit 0
+#fi
 
 if [[ -z "${GITHUB_TOKEN:-}" ]]
 then
@@ -60,8 +60,20 @@ jq --arg sha "$CIRCLE_SHA1" --argjson data "$(cat "$BUNDLE_SIZE_FILE")" \
 # Overwrite the original JSON file with the corrected version
 mv "$TEMP_FILE" "$STATS_FILE"
 
+{
+    echo " '${CIRCLE_SHA1}': ";
+    cat test-artifacts/chrome/bundle_size_stats.json;
+    echo ", ";
+} >> temp/stats/bundle_size_data.temp.js
+
+cp temp/stats/bundle_size_data.temp.js temp/stats/bundle_size_data.js
+echo " }" >> temp/stats/bundle_size_data.js
+
+# Stage `.js` file for commit
+git add temp/stats/bundle_size_data.js
+
 cd temp
-git add stats/bundle_size_data.json
+git add .
 git commit --message "Adding bundle size at commit: ${CIRCLE_SHA1}"
 
 repo_slug="$CIRCLE_PROJECT_USERNAME/extension_bundlesize_stats"
