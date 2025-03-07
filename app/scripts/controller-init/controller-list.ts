@@ -30,6 +30,7 @@ import {
   RateLimitController,
   RateLimitedApiMap,
 } from '@metamask/rate-limit-controller';
+import { SamplePetnamesController } from '../controllers/sample';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -65,7 +66,8 @@ export type Controller =
   | (TransactionUpdateController & {
       name: 'TransactionUpdateController';
       state: Record<string, unknown>;
-    });
+    })
+  | SamplePetnamesController;
 
 /**
  * Flat state object for all controllers supporting or required by modular initialization.

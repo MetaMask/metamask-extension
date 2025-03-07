@@ -904,6 +904,13 @@ export enum MetaMetricsEventName {
   QuoteSelected = 'Quote Selected',
   CrossChainSwapsQuotesReceived = 'Cross-chain Quotes Received',
   CrossChainSwapsQuotesRequested = 'Cross-chain Quotes Requested',
+
+  // Sample Feature events
+  SampleFeatureViewed = 'Sample Feature Viewed',
+  SampleFeaturePetnameAdded = 'Sample Feature Petname Added',
+  SampleFeatureFormError = 'Sample Feature Form Error',
+  SampleFeatureError = 'Sample Feature Error',
+  SampleFeatureInteraction = 'Sample Feature Interaction',
 }
 
 export enum MetaMetricsEventAccountType {
