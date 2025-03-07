@@ -1115,6 +1115,7 @@ export function addTransactionAndRouteToConfirmationPage(
  * @param options.swaps.hasApproveTx - Whether the swap required an approval transaction.
  * @param options.swaps.meta - Additional transaction metadata required by swaps.
  * @param options.type
+ * @param options.networkClientId - The network client id to use for the transaction.
  * @returns
  */
 export async function addTransactionAndWaitForPublish(
@@ -1124,6 +1125,7 @@ export async function addTransactionAndWaitForPublish(
     requireApproval?: boolean;
     swaps?: { hasApproveTx?: boolean; meta?: Record<string, unknown> };
     type?: TransactionType;
+    networkClientId?: string;
   },
 ): Promise<TransactionMeta> {
   log.debug('background.addTransactionAndWaitForPublish');
@@ -1156,6 +1158,7 @@ export async function addTransactionAndWaitForPublish(
  * @param options.swaps.hasApproveTx - Whether the swap required an approval transaction.
  * @param options.swaps.meta - Additional transaction metadata required by swaps.
  * @param options.type
+ * @param options.networkClientId - The network client id to use for the transaction.
  * @returns
  */
 export async function addTransaction(
@@ -1165,6 +1168,7 @@ export async function addTransaction(
     requireApproval?: boolean;
     swaps?: { hasApproveTx?: boolean; meta?: Record<string, unknown> };
     type?: TransactionType;
+    networkClientId?: string;
   },
 ): Promise<TransactionMeta> {
   log.debug('background.addTransaction');
@@ -4190,14 +4194,16 @@ export function rejectAllMessages(
   };
 }
 
-export async function updateThrottledOriginState(
+export function updateThrottledOriginState(
   origin: string,
   throttledOriginState: ThrottledOrigin,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  await submitRequestToBackground('updateThrottledOriginState', [
-    origin,
-    throttledOriginState,
-  ]);
+  return async () => {
+    await submitRequestToBackground('updateThrottledOriginState', [
+      origin,
+      throttledOriginState,
+    ]);
+  };
 }
 
 export function setFirstTimeFlowType(
