@@ -5583,12 +5583,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/institutional-wallet-snap@npm:0.3.1":
-  version: 0.3.1
-  resolution: "@metamask/institutional-wallet-snap@npm:0.3.1"
+"@metamask/institutional-wallet-snap@npm:1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/institutional-wallet-snap@npm:1.0.0"
   dependencies:
     "@ethereumjs/common": "npm:^3.1.2"
     "@ethereumjs/tx": "npm:^4.1.2"
+    "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/eth-sig-util": "npm:^7.0.1"
     "@metamask/keyring-api": "npm:11.0.0"
     "@metamask/snaps-sdk": "npm:6.12.0"
@@ -5597,7 +5598,7 @@ __metadata:
     "@metamask/utils": "npm:^8.1.0"
     async-mutex: "npm:^0.5.0"
     uuid: "npm:^9.0.0"
-  checksum: 10/a5b504cbcbd9981610f5429406e1e8dd47f132dc2ccafd1faf05673ede14544953428caa5dd992a281c6b4c4c9f1a3e9e8a3a3d7b70200c54a4d3caedcef7e80
+  checksum: 10/24ec0ab1197c7daa5a68ae5d8dcbc5f2f23ab572979fdb6558e56c0eeb1581734bc9a28176b0530398ebb3b615b1054f220e83b9c4869fc85f0cb9d7dc5c828a
   languageName: node
   linkType: hard
 
@@ -27604,7 +27605,7 @@ __metadata:
     "@metamask/etherscan-link": "npm:^3.0.0"
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/gas-fee-controller": "npm:^22.0.3"
-    "@metamask/institutional-wallet-snap": "npm:0.3.1"
+    "@metamask/institutional-wallet-snap": "npm:1.0.0"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/json-rpc-engine": "npm:^10.0.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.4"

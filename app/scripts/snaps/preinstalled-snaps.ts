@@ -12,11 +12,7 @@ import BitcoinWalletSnap from '@metamask/bitcoin-wallet-snap/dist/preinstalled-s
 import SolanaWalletSnap from '@metamask/solana-wallet-snap/dist/preinstalled-snap.json';
 ///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
-// import InstitutionalWalletSnap from '@metamask/institutional-wallet-snap/dist/preinstalled-snap.json';
-// FIXME: go back to using the snap from the snap package after we can release again
-import InstitutionalWalletSnap from '../../../tmp/institutional-wallet-snap.json';
-///: END:ONLY_INCLUDE_IF
+import InstitutionalWalletSnap from '@metamask/institutional-wallet-snap/dist/preinstalled-snap.json';
 
 // The casts here are less than ideal but we expect the SnapController to validate the inputs.
 const PREINSTALLED_SNAPS = Object.freeze<PreinstalledSnap[]>([
@@ -32,9 +28,7 @@ const PREINSTALLED_SNAPS = Object.freeze<PreinstalledSnap[]>([
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SolanaWalletSnap as unknown as PreinstalledSnap,
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
   InstitutionalWalletSnap as unknown as PreinstalledSnap,
-  ///: END:ONLY_INCLUDE_IF
 ]);
 
 export default PREINSTALLED_SNAPS;

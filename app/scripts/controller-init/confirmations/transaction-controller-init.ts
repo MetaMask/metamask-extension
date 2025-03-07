@@ -128,7 +128,6 @@ export const TransactionControllerInit: ControllerInitFunction<
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
     hooks: {
-      ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
       beforePublish: (transactionMeta: TransactionMeta) => {
         const response = initMessenger.call(
           'InstitutionalSnapController:publishHook',
@@ -145,7 +144,6 @@ export const TransactionControllerInit: ControllerInitFunction<
 
         return response;
       },
-      ///: END:ONLY_INCLUDE_IF(institutional-snap)
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       afterSign: (txMeta, signedEthTx) =>
         afterTransactionSignMMI(
@@ -156,8 +154,6 @@ export const TransactionControllerInit: ControllerInitFunction<
           ),
         ),
       // beforeCheckPendingTransaction:
-      //  beforeCheckPendingTransactionMMI.bind(this),
-      // beforePublish: beforeTransactionPublishMMI.bind(this),
       getAdditionalSignArguments: getAdditionalSignArgumentsMMI.bind(this),
       ///: END:ONLY_INCLUDE_IF
       // @ts-expect-error Controller type does not support undefined return value
@@ -222,10 +218,8 @@ function getControllers(
       request.getController('SmartTransactionsController'),
     transactionUpdateController: () =>
       request.getController('TransactionUpdateController'),
-    ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
     institutionalSnapController: () =>
       request.getController('InstitutionalSnapController'),
-    ///: END:ONLY_INCLUDE_IF(institutional-snap)
   };
 }
 

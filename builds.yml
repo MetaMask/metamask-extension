@@ -69,7 +69,6 @@ buildTypes:
     # will not be removed
     features:
       - build-flask
-      - institutional-snap
       - keyring-snaps
       # - bitcoin
       - solana
@@ -154,9 +153,6 @@ features:
       # srp-list is a special case and is used in the srp recovery flow now.
       - ./{app,shared,ui}/**/multi-srp/(?!.*srp-list)/**
   solana-swaps:
-  institutional-snap:
-    assets:
-      - ./{app,shared,ui}/**/institutional-snap/**
   multichain:
 
 # Env variables that are required for all types of builds

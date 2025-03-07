@@ -25,9 +25,7 @@ import {
   getMultichainNetworkControllerMessenger,
   getMultichainAssetsRatesControllerMessenger,
 } from './multichain';
-// BEGIN:ONLY_INCLUDE_IF(institutional-snap)
 import { getInstitutionalSnapControllerMessenger } from './accounts/institutional-snap-controller-messenger';
-// END:ONLY_INCLUDE_IF(institutional-snap)
 
 export const CONTROLLER_MESSENGERS = {
   CronjobController: {
@@ -38,12 +36,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getExecutionServiceMessenger,
     getInitMessenger: noop,
   },
-  // BEGIN:ONLY_INCLUDE_IF(institutional-snap)
   InstitutionalSnapController: {
     getMessenger: getInstitutionalSnapControllerMessenger,
     getInitMessenger: noop,
   },
-  // END:ONLY_INCLUDE_IF(institutional-snap)
   MultichainAssetsController: {
     getMessenger: getMultichainAssetsControllerMessenger,
     getInitMessenger: noop,

@@ -62,10 +62,8 @@ export default class AdvancedTab extends PureComponent {
     setShowExtensionInFullSizeView: PropTypes.func.isRequired,
     overrideContentSecurityPolicyHeader: PropTypes.bool,
     setOverrideContentSecurityPolicyHeader: PropTypes.func.isRequired,
-    ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
     manageInstitutionalWallets: PropTypes.bool,
     setManageInstitutionalWallets: PropTypes.func.isRequired,
-    ///: END:ONLY_INCLUDE_IF
   };
 
   state = {
@@ -593,7 +591,6 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
   renderManageInstitutionalWallets() {
     const { t } = this.context;
     const { manageInstitutionalWallets, setManageInstitutionalWallets } =
@@ -627,7 +624,6 @@ export default class AdvancedTab extends PureComponent {
       </Box>
     );
   }
-  ///: END:ONLY_INCLUDE_IF
 
   render() {
     const { errorInSettings } = this.props;
@@ -639,11 +635,11 @@ export default class AdvancedTab extends PureComponent {
         ) : null}
         {this.renderStateLogs()}
         {this.renderResetAccount()}
-        {this.renderManageInstitutionalWallets()}
         {this.renderToggleStxOptIn()}
         {this.renderHexDataOptIn()}
         {this.renderShowConversionInTestnets()}
         {this.renderToggleTestNetworks()}
+        {this.renderManageInstitutionalWallets()}
         {this.renderToggleExtensionInFullSizeView()}
         {this.renderAutoLockTimeLimit()}
         {this.renderUserDataBackup()}

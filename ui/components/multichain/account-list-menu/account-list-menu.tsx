@@ -77,9 +77,7 @@ import {
   getIsSolanaSupportEnabled,
   getMetaMaskKeyrings,
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
   getManageInstitutionalWallets,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 
 import { setSelectedAccount } from '../../../store/actions';
@@ -318,9 +316,7 @@ export const AccountListMenu = ({
   );
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
   const manageInstitutionalWallets = useSelector(getManageInstitutionalWallets);
-  ///: END:ONLY_INCLUDE_IF
 
   let searchResults: MergedInternalAccount[] = filteredUpdatedAccountList;
   if (searchQuery) {
@@ -698,28 +694,24 @@ export const AccountListMenu = ({
               )
               ///: END:ONLY_INCLUDE_IF
             }
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
-              manageInstitutionalWallets && (
-                <Box marginTop={4}>
-                  <ButtonLink
-                    size={ButtonLinkSize.Sm}
-                    startIconName={IconName.Add}
-                    onClick={() => {
-                      onClose();
-                      history.push(
-                        `/snaps/view/${encodeURIComponent(
-                          INSTITUTIONAL_WALLET_SNAP_ID,
-                        )}`,
-                      );
-                    }}
-                  >
-                    {t('manageInstitutionalWallets')}
-                  </ButtonLink>
-                </Box>
-              )
-              ///: END:ONLY_INCLUDE_IF
-            }
+            {manageInstitutionalWallets && (
+              <Box marginTop={4}>
+                <ButtonLink
+                  size={ButtonLinkSize.Sm}
+                  startIconName={IconName.Add}
+                  onClick={() => {
+                    onClose();
+                    history.push(
+                      `/snaps/view/${encodeURIComponent(
+                        INSTITUTIONAL_WALLET_SNAP_ID,
+                      )}`,
+                    );
+                  }}
+                >
+                  {t('manageInstitutionalWallets')}
+                </ButtonLink>
+              </Box>
+            )}
           </Box>
         ) : null}
         {actionMode === ACTION_MODES.LIST ? (
