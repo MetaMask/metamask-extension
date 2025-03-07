@@ -12,7 +12,21 @@ import {
 } from '../../../../../shared/modules/network.utils';
 import { showModal, setEditedNetwork } from '../../../../store/actions';
 import { useAccountCreationOnNetworkChange } from '../../../../hooks/accounts/useAccountCreationOnNetworkChange';
-import { ACTION_MODE } from '../network-list-menu';
+
+export enum ACTION_MODE {
+  // Displays the search box and network list
+  LIST,
+  // Displays the form to add or edit a network
+  ADD_EDIT,
+  // Displays the page for adding an additional RPC URL
+  ADD_RPC,
+  // Displays the page for adding an additional explorer URL
+  ADD_EXPLORER_URL,
+  // Displays the page for selecting an RPC URL
+  SELECT_RPC,
+  // Add account for non EVM networks
+  ADD_NON_EVM_ACCOUNT,
+}
 
 type NetworkItemsProps = {
   network: MultichainNetworkConfiguration;

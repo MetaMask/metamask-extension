@@ -278,6 +278,12 @@
   ],
   [
     "ui/components/multichain/index.js",
+    "ui/components/multichain/network-list-menu/NetworkItems/NetworkItems.tsx",
+    "ui/components/multichain/network-list-menu/index.js",
+    "ui/components/multichain/network-list-menu/network-list-menu.tsx"
+  ],
+  [
+    "ui/components/multichain/index.js",
     "ui/components/multichain/notification-detail-block-explorer-button/index.ts",
     "ui/components/multichain/notification-detail-block-explorer-button/notification-detail-block-explorer-button.tsx",
     "ui/components/multichain/notification-detail-button/index.ts",
