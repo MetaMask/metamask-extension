@@ -91,19 +91,19 @@ export function MultichainTransactionDetailsModal({
 
   if (type === 'swap' && userAddress) {
     const txFromEntry = transaction.from?.find(
-      (entry) => entry.address === userAddress,
+      (entry) => entry?.address === userAddress,
     );
     const txToEntry = transaction.to?.find(
-      (entry) => entry.address === userAddress,
+      (entry) => entry?.address === userAddress,
     );
 
     fromAddress = txFromEntry?.address || '';
     toAddress = txToEntry?.address || '';
     toAsset = txToEntry?.asset || null;
   } else {
-    fromAddress = transaction.from[0].address;
-    toAddress = transaction.to[0].address;
-    toAsset = transaction.to[0].asset;
+    fromAddress = transaction.from?.[0]?.address || '';
+    toAddress = transaction.to?.[0]?.address || '';
+    toAsset = transaction.to?.[0]?.asset || null;
   }
 
   const baseFee = fees?.find((fee) => fee.type === 'base')?.asset;
