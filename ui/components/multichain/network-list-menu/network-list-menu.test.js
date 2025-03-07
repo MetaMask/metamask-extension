@@ -164,8 +164,6 @@ const render = ({
   return renderWithProvider(<NetworkListMenu onClose={jest.fn()} />, store);
 };
 
-const verifyIfDiscoverButtonIsVisible = (chainId) => {};
-
 describe('NetworkListMenu', () => {
   beforeEach(() => {
     jest.clearAllMocks();
