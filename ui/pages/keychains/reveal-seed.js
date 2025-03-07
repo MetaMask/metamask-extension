@@ -67,7 +67,7 @@ export default function RevealSeedPage() {
       properties: {
         key_type: MetaMetricsEventKeyType.Srp,
         copy_method: 'clipboard',
-        hd_srp_index: hdSrpIndex,
+        hd_entropy_index: hdEntropyIndex,
       },
     });
     trackEvent({
@@ -76,10 +76,10 @@ export default function RevealSeedPage() {
       properties: {
         key_type: MetaMetricsEventKeyType.Srp,
         copy_method: 'clipboard',
-        hd_srp_index: hdSrpIndex,
+        hd_entropy_index: hdEntropyIndex,
       },
     });
-  }, [trackEvent, hdSrpIndex]);
+  }, [trackEvent, hdEntropyIndex]);
 
   useEffect(() => {
     const passwordBox = document.getElementById('password-box');
