@@ -96,7 +96,7 @@ export type ConnectPageProps = {
 function getNonEvmAccountsForScopes(
   scopes: Caip25CaveatValue['optionalScopes'],
 ) {
-  return Object.values(scopes).flatMap((scope) => scope.addresses);
+  return Object.values(scopes).flatMap((scope) => scope.accounts);
 }
 
 function getNonEvmAccounts(caipRequest: Caip25CaveatValue): string[] {
