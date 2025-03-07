@@ -3120,7 +3120,9 @@ export const getKeyringOfSelectedAccount = createSelector(
   getMetaMaskKeyrings,
   (selectedAccount, keyrings) => {
     return keyrings.find((keyring) =>
-      keyring.accounts.includes(selectedAccount.address.toLowerCase()),
+      keyring.accounts.some((account) =>
+        isEqualCaseInsensitive(account, selectedAccount.address),
+      ),
     );
   },
 );
