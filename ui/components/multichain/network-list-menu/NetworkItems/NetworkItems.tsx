@@ -1,35 +1,29 @@
-import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { NetworkConfiguration } from '@metamask/network-controller';
+import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
+import { CaipChainId, EthScope } from '@metamask/keyring-api';
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { NetworkListItem } from '../..';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import { AvatarNetworkSize } from '../../../component-library';
+import {
+  getNetworkIcon,
+  getRpcDataByChainId,
+  convertCaipToHexChainId,
+} from '../../../../../shared/modules/network.utils';
 import { showModal, setEditedNetwork } from '../../../../store/actions';
+import { useAccountCreationOnNetworkChange } from '../../../../hooks/accounts/useAccountCreationOnNetworkChange';
+import { ACTION_MODE } from '../network-list-menu';
 
 type NetworkItemsProps = {
-  network: NetworkConfiguration;
+  network: MultichainNetworkConfiguration;
   isUnlocked: boolean;
   currentChainId: string;
-  handleNetworkChange: (network: NetworkConfiguration) => void;
+  handleNetworkChange: (chainId: CaipChainId) => void;
   toggleNetworkMenu: () => void;
-  setActionMode: React.Dispatch<React.SetStateAction<ACTION_MODES>>;
+  setActionMode: React.Dispatch<React.SetStateAction<ACTION_MODE>>;
   focusSearch: boolean;
-  showMultiRpcSelectors: boolean;
+  evmNetworks: Record<`0x${string}`, NetworkConfiguration>;
 };
-
-export enum ACTION_MODES {
-  // Displays the search box and network list
-  LIST,
-  // Displays the form to add or edit a network
-  ADD_EDIT,
-  // Displays the page for adding an additional RPC URL
-  ADD_RPC,
-  // Displays the page for adding an additional explorer URL
-  ADD_EXPLORER_URL,
-  // Displays the page for selecting an RPC URL
-  SELECT_RPC,
-}
 
 export const NetworkItems: React.FC<NetworkItemsProps> = ({
   network,
@@ -39,65 +33,109 @@ export const NetworkItems: React.FC<NetworkItemsProps> = ({
   toggleNetworkMenu,
   setActionMode,
   focusSearch,
-  showMultiRpcSelectors,
+  evmNetworks,
 }) => {
   const isCurrentNetwork = network.chainId === currentChainId;
-  const canDeleteNetwork =
-    isUnlocked && !isCurrentNetwork && network.chainId !== CHAIN_IDS.MAINNET;
+
+  const iconSrc = getNetworkIcon(network);
+
   const dispatch = useDispatch();
+  const { hasAnyAccountsInNetwork } = useAccountCreationOnNetworkChange();
 
-  const onClickCallback = useCallback(() => {
-    handleNetworkChange(network);
-  }, [handleNetworkChange, network]);
+  const hasMultiRpcOptions = useCallback(
+    (networkConfig: MultichainNetworkConfiguration): boolean =>
+      networkConfig.isEvm &&
+      getRpcDataByChainId(networkConfig.chainId, evmNetworks).rpcEndpoints
+        .length > 1,
+    [evmNetworks],
+  );
 
-  const onDeleteClickCallback = useCallback(() => {
-    dispatch(toggleNetworkMenu());
-    dispatch(
-      showModal({
-        name: 'CONFIRM_DELETE_NETWORK',
-        target: network.chainId,
-        onConfirm: () => undefined,
-      }),
-    );
-  }, [dispatch, toggleNetworkMenu, showModal, network]);
+  const getItemCallbacks = useCallback(
+    (
+      networkConfig: MultichainNetworkConfiguration,
+    ): Record<string, (() => void) | undefined> => {
+      const { chainId, isEvm } = network;
 
-  const onEditClickCallback = useCallback(() => {
-    dispatch(
-      setEditedNetwork({
-        chainId: network.chainId,
-        nickname: network.name,
-      }),
-    );
-    setActionMode(ACTION_MODES.ADD_EDIT);
-  }, [dispatch, network, setEditedNetwork, setActionMode, ACTION_MODES]);
+      if (!isEvm) {
+        return {};
+      }
 
-  const onRpcEndpointClickCallback = useCallback(() => {
-    setActionMode(ACTION_MODES.SELECT_RPC);
-    dispatch(setEditedNetwork({ chainId: network.chainId }));
-  }, [dispatch, network, setEditedNetwork, setActionMode, ACTION_MODES]);
+      // Non-EVM networks cannot be deleted, edited or have
+      // RPC endpoints so it's safe to call this conversion function here.
+      const hexChainId = convertCaipToHexChainId(chainId);
+      const isDeletable =
+        isUnlocked &&
+        networkConfig.chainId !== currentChainId &&
+        networkConfig.chainId !== EthScope.Mainnet;
+
+      return {
+        onDelete: isDeletable
+          ? () => {
+              dispatch(toggleNetworkMenu());
+              dispatch(
+                showModal({
+                  name: 'CONFIRM_DELETE_NETWORK',
+                  target: hexChainId,
+                  onConfirm: () => undefined,
+                }),
+              );
+            }
+          : undefined,
+        onEdit: () => {
+          dispatch(
+            setEditedNetwork({
+              chainId: hexChainId,
+              nickname: networkConfig.name,
+            }),
+          );
+          setActionMode(ACTION_MODE.ADD_EDIT);
+        },
+        onRpcConfigEdit: hasMultiRpcOptions(networkConfig)
+          ? () => {
+              setActionMode(ACTION_MODE.SELECT_RPC);
+              dispatch(
+                setEditedNetwork({
+                  chainId: hexChainId,
+                }),
+              );
+            }
+          : undefined,
+      };
+    },
+    [currentChainId, dispatch, hasMultiRpcOptions, isUnlocked],
+  );
+
+  const { onDelete, onEdit, onRpcConfigEdit } = getItemCallbacks(network);
+
+  const isNetworkEnabled = useCallback(
+    (networkConfig: MultichainNetworkConfiguration): boolean =>
+      networkConfig.isEvm ||
+      isUnlocked ||
+      hasAnyAccountsInNetwork(networkConfig.chainId),
+    [hasAnyAccountsInNetwork, isUnlocked],
+  );
 
   return (
     <NetworkListItem
-      name={network.name}
       key={network.chainId}
-      iconSrc={
-        CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-          network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-        ]
-      }
-      iconSize={AvatarNetworkSize.Sm}
-      rpcEndpoint={
-        showMultiRpcSelectors
-          ? network.rpcEndpoints[network.defaultRpcEndpointIndex]
-          : undefined
-      }
       chainId={network.chainId}
+      name={network.name}
+      iconSrc={iconSrc}
+      iconSize={AvatarNetworkSize.Sm}
       selected={isCurrentNetwork && !focusSearch}
       focus={isCurrentNetwork && !focusSearch}
-      onClick={onClickCallback}
-      onDeleteClick={canDeleteNetwork ? onDeleteClickCallback : undefined}
-      onEditClick={onEditClickCallback}
-      onRpcEndpointClick={onRpcEndpointClickCallback}
+      rpcEndpoint={
+        hasMultiRpcOptions(network)
+          ? getRpcDataByChainId(network.chainId, evmNetworks).defaultRpcEndpoint
+          : undefined
+      }
+      onClick={async () => {
+        await handleNetworkChange(network.chainId);
+      }}
+      onDeleteClick={onDelete}
+      onEditClick={onEdit}
+      onRpcEndpointClick={onRpcConfigEdit}
+      disabled={!isNetworkEnabled(network)}
     />
   );
 };
