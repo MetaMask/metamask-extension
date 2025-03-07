@@ -4,7 +4,7 @@ import FixtureBuilder from '../fixture-builder';
 import { Driver } from '../webdriver/driver';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
-import { completeSnapInstallConfirmation } from '../page-objects/flows/snap-permission.flow';
+import { completeSnapInstallSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
 
 const { strict: assert } = require('assert');
 const { withFixtures, getEventPayloads } = require('../helpers');
@@ -65,7 +65,7 @@ describe('Test Snap installed', function () {
         const testSnaps = new TestSnaps(driver);
         await testSnaps.openPage();
         await testSnaps.clickConnectDialogsSnapButton();
-        await completeSnapInstallConfirmation(driver);
+        await completeSnapInstallSwitchToTestSnap(driver);
 
         // Check installation success
         await testSnaps.check_installationComplete(
@@ -88,7 +88,7 @@ describe('Test Snap installed', function () {
 
         // Click to connect to errors snap and validate the install snaps result
         await testSnaps.clickConnectErrorsButton();
-        await completeSnapInstallConfirmation(driver);
+        await completeSnapInstallSwitchToTestSnap(driver);
         await testSnaps.check_installedSnapsResult(
           'npm:@metamask/dialog-example-snap, npm:@metamask/error-example-snap',
         );

@@ -6,7 +6,7 @@ import SendTokenPage from '../page-objects/pages/send/send-token-page';
 import FixtureBuilder from '../fixture-builder';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { withFixtures, WINDOW_TITLES } from '../helpers';
-import { completeSnapInstallConfirmation } from '../page-objects/flows/snap-permission.flow';
+import { completeSnapInstallSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
 
 describe('Name lookup', function () {
   it('validate the recipient address appears in the send flow', async function () {
@@ -25,7 +25,7 @@ describe('Name lookup', function () {
         // Open a new tab and navigate to test snaps page and click name lookup
         await testSnaps.openPage();
         await testSnaps.clickNameLookupButton();
-        await completeSnapInstallConfirmation(driver);
+        await completeSnapInstallSwitchToTestSnap(driver);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );

@@ -3,7 +3,7 @@ import { Driver } from '../webdriver/driver';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
 import { withFixtures } from '../helpers';
-import { completeSnapInstallConfirmation } from '../page-objects/flows/snap-permission.flow';
+import { completeSnapInstallSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
 
 const jsonTextValidation = '"foo": "bar"';
 const base64TextFile = '"ewogICJmb28iOiAiYmFyIgp9Cg=="';
@@ -24,7 +24,7 @@ describe('Test Snap Get File', function () {
         // Navigate to test snaps page, connect to get-file snap, complete installation and validate
         await testSnaps.openPage();
         await testSnaps.connectGetFileButton();
-        await completeSnapInstallConfirmation(driver);
+        await completeSnapInstallSwitchToTestSnap(driver);
         await testSnaps.check_installationComplete(
           testSnaps.connectGetFile,
           'Reconnect to Get File Snap',

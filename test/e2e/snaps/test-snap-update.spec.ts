@@ -4,7 +4,7 @@ import { Driver } from '../webdriver/driver';
 import { withFixtures, WINDOW_TITLES } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
-import { completeSnapInstallConfirmation } from '../page-objects/flows/snap-permission.flow';
+import { completeSnapInstallSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
 
 describe('Test Snap update', function () {
   it('can install an old and then updated version', async function () {
@@ -22,7 +22,7 @@ describe('Test Snap update', function () {
         // Navigate to test snaps page, connect update, complete installation and validate
         await testSnaps.openPage();
         await testSnaps.clickConnectUpdateButton();
-        await completeSnapInstallConfirmation(driver);
+        await completeSnapInstallSwitchToTestSnap(driver);
         await testSnaps.check_installationComplete(
           this.connectUpdateButton,
           'Reconnect to Update Snap',

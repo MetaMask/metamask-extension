@@ -4,12 +4,13 @@ import SnapInstallWarning from '../pages/dialog/snap-install-warning';
 import { WINDOW_TITLES } from '../../helpers';
 
 /**
- * Grant permission to the snap installed
+ * Grant permission to the snap installed with the optional warning dialog.
+ * Finally switches back to the TestSnaps window.
  *
  * @param driver - WebDriver instance used to interact with the browser.
  * @param withWarning - Whether the installation will have a warning dialog, default is false.
  */
-export async function approvePermissionAndConfirm(
+export async function confirmPermissionSwitchToTestSnap(
   driver: Driver,
   withWarning = false,
 ) {
@@ -29,11 +30,12 @@ export async function approvePermissionAndConfirm(
 }
 
 /**
- * Switch to dialog and click approve button
+ * Switches to the dialog window and clicks the approve button.
+ * Finally switches back to the TestSnaps window.
  *
  * @param driver - WebDriver instance used to interact with the browser.
  */
-export async function switchToDialogAndClickApproveButton(driver: Driver) {
+export async function switchAndApproveDialogSwitchToTestSnap(driver: Driver) {
   const snapInstall = new SnapInstall(driver);
   console.log('Switching to dialog and clicking approve button');
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -42,11 +44,11 @@ export async function switchToDialogAndClickApproveButton(driver: Driver) {
 }
 
 /**
- * Complete snap install confirmation
+ * Complete snap install confirmation and switch back to the TestSnaps window.
  *
  * @param driver - WebDriver instance used to interact with the browser.
  */
-export async function completeSnapInstallConfirmation(driver: Driver) {
+export async function completeSnapInstallSwitchToTestSnap(driver: Driver) {
   const snapInstall = new SnapInstall(driver);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await snapInstall.clickNextButton();

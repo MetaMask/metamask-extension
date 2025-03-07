@@ -317,22 +317,6 @@ export class TestSnaps {
     await this.driver.scrollToElement(sendEd25519);
   }
 
-  async scrollToBip32EntropySource() {
-    console.log('Scrolling to bip32 entropy source dropdown');
-    const bip32Entropy = await this.driver.findElement(
-      this.bip32EntropyDrpDown,
-    );
-    await this.driver.scrollToElement(bip32Entropy);
-  }
-
-  async scrollToBip44EntropySource() {
-    console.log('Scrolling to bip44 entropy source dropdown');
-    const bip44Entropy = await this.driver.findElement(
-      this.bip44EntropyDrpDown,
-    );
-    await this.driver.scrollToElement(bip44Entropy);
-  }
-
   async check_installationComplete(selector: string, expectedMessage: string) {
     console.log(`Checking installation is complete - ${expectedMessage}`);
     await this.driver.waitForSelector({
@@ -365,36 +349,31 @@ export class TestSnaps {
   /**
    * Select an entropy source from the dropdown with the given name.
    *
+   * @param dropDownName - The name of the dropdown locator to select the entropy source from.
    * @param name - The name of the entropy source to select.
    */
-  async scrollAndSelectBip32EntropySource(name: string) {
-    console.log('Select Bip22 entropy source');
-    this.scrollToBip32EntropySource();
-    await this.driver.clickElement(this.bip32EntropyDrpDown);
-    await this.driver.clickElement({
-      text: name,
-      css: `${this.bip32EntropyDrpDown} option`,
-    });
-  }
-
-  async scrollAndSelectBip44EntropySource(name: string) {
-    console.log('Select Bip44 entropy source');
-    this.scrollToBip44EntropySource();
-    await this.driver.clickElement(this.bip44EntropyDrpDown);
-    await this.driver.clickElement({
-      text: name,
-      css: `${this.bip44EntropyDrpDown} option`,
-    });
-  }
-
-  async scrollAndSelectEntropySource(name: string) {
-    console.log('Select entropy source');
-    const selector = await this.driver.findElement(this.getEntropyDrpDown);
+  async scrollAndSelectEntropySource(dropDownName: string, name: string) {
+    let dropDownLocator: string;
+    switch (dropDownName) {
+      case 'bip32':
+        dropDownLocator = this.bip32EntropyDrpDown;
+        break;
+      case 'bip44':
+        dropDownLocator = this.bip44EntropyDrpDown;
+        break;
+      case 'getEntropy':
+        dropDownLocator = this.getEntropyDrpDown;
+        break;
+      default:
+        throw new Error(`Unknown entropy source type: ${dropDownName}`);
+    }
+    console.log(`Select ${dropDownName} entropy source`);
+    const selector = await this.driver.findElement(dropDownLocator);
     await this.driver.scrollToElement(selector);
-    await this.driver.clickElement(this.getEntropyDrpDown);
+    await this.driver.clickElement(dropDownLocator);
     await this.driver.clickElement({
       text: name,
-      css: `${this.getEntropyDrpDown} option`,
+      css: `${dropDownLocator} option`,
     });
   }
 }

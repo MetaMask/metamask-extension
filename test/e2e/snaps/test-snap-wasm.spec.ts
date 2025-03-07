@@ -2,7 +2,7 @@ import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { withFixtures } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
-import { completeSnapInstallConfirmation } from '../page-objects/flows/snap-permission.flow';
+import { completeSnapInstallSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
 
 describe('Test Snap WASM', function () {
   it('can use webassembly inside a snap', async function () {
@@ -18,7 +18,7 @@ describe('Test Snap WASM', function () {
         // Navigate to test snaps page and connect to wasm snap
         await testSnaps.openPage();
         await testSnaps.clickConnectWasmButton();
-        await completeSnapInstallConfirmation(driver);
+        await completeSnapInstallSwitchToTestSnap(driver);
 
         // Check installation success
         await testSnaps.check_installationComplete(
