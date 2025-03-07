@@ -398,8 +398,6 @@ export default function TransactionList({
       multichainNetwork,
     );
 
-    console.log('nonEvmTransactions', nonEvmTransactions);
-
     const metricsLocation = 'Activity Tab';
     return (
       <>
