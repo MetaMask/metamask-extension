@@ -63,8 +63,6 @@ class ChromeDriver {
 
     // Add --no-sandbox only for GitHub Actions that are NOT benchmarks
     if (process.env.GITHUB_ACTION && !process.env.BENCHMARK) {
-      args.push('--window-size=1920,1200');
-      args.push('--ignore-certificate-errors');
       args.push('--no-sandbox');
     }
 
