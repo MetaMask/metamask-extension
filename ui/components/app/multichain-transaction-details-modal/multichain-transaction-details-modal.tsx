@@ -92,7 +92,7 @@ export function MultichainTransactionDetailsModal({
 
   const { id: txId, fees, timestamp, status, chain, type } = transaction;
 
-  let fromAddress, toAddress, fromAsset;
+  let fromAddress, toAddress, asset;
 
   const txFromEntry = transaction.from?.find(
     (entry) => entry?.address === userAddress,
@@ -105,22 +105,22 @@ export function MultichainTransactionDetailsModal({
     case TransactionType.Swap:
       fromAddress = txFromEntry?.address || '';
       toAddress = txToEntry?.address || '';
-      fromAsset = txFromEntry?.asset || null;
+      asset = txFromEntry?.asset || null;
       break;
     case TransactionType.Send:
       fromAddress = txFromEntry?.address || '';
-      toAddress = txToEntry?.address || '';
-      fromAsset = txFromEntry?.asset || null;
+      toAddress = transaction.to?.[0]?.address || '';
+      asset = txFromEntry?.asset || null;
       break;
     case TransactionType.Receive:
-      fromAddress = txFromEntry?.address || '';
+      fromAddress = transaction.from?.[0]?.address || '';
       toAddress = txToEntry?.address || '';
-      fromAsset = txFromEntry?.asset || null;
+      asset = txToEntry?.asset || null;
       break;
     default:
       fromAddress = transaction.from?.[0]?.address || '';
       toAddress = transaction.to?.[0]?.address || '';
-      fromAsset = transaction.to?.[0]?.asset || null;
+      asset = transaction.to?.[0]?.asset || null;
   }
 
   const baseFee = fees?.find((fee) => fee.type === 'base')?.asset;
@@ -321,7 +321,7 @@ export function MultichainTransactionDetailsModal({
                   variant={TextVariant.bodyMd}
                   data-testid="transaction-amount"
                 >
-                  {getAssetDisplay(fromAsset)}
+                  {getAssetDisplay(asset)}
                 </Text>
               </Box>
             </Box>
