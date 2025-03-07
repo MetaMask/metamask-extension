@@ -54,7 +54,7 @@ export type BridgeToken = {
   balance: string; // raw balance
   string: string | undefined; // normalized balance as a stringified number
   tokenFiatAmount?: number | null;
-} | null;
+};
 // Types copied from Metabridge API
 
 export enum BridgeFlag {

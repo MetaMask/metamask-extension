@@ -36,6 +36,7 @@ import {
   type BridgeAppState,
   getTopAssetsFromFeatureFlags,
 } from '../../ducks/bridge/selectors';
+import { type BridgeToken } from '../../../shared/types/bridge';
 
 type FilterPredicate = (
   symbol: string,
@@ -59,11 +60,7 @@ type FilterPredicate = (
  */
 export const useTokensWithFiltering = (
   chainId?: ChainId | Hex | CaipChainId,
-  tokenToExclude?: null | {
-    symbol: string;
-    address?: string;
-    chainId?: string;
-  },
+  tokenToExclude?: null | Pick<BridgeToken, 'symbol' | 'address' | 'chainId'>,
 ) => {
   const allDetectedTokens: Record<string, Token[]> = useSelector(
     getAllDetectedTokensForSelectedAddress,
