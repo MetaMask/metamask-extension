@@ -167,6 +167,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
           value: '0x00',
         },
         {
+          networkClientId: expect.any(String),
           requireApproval: false,
           type: 'bridge',
         },
@@ -218,6 +219,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
           value: '0x00',
         },
         {
+          networkClientId: expect.any(String),
           requireApproval: false,
           type: 'bridgeApproval',
         },
@@ -236,6 +238,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
           value: '0x00',
         },
         {
+          networkClientId: expect.any(String),
           requireApproval: false,
           type: 'bridge',
         },

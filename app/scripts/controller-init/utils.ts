@@ -37,6 +37,7 @@ type ControllerMessengerCallback = (
 ) => BaseRestrictedControllerMessenger;
 
 export type ControllersToInitialize =
+  | 'AuthenticationController'
   | 'CronjobController'
   | 'ExecutionService'
   | 'MultichainAssetsController'
@@ -49,7 +50,8 @@ export type ControllersToInitialize =
   | 'SnapInsightsController'
   | 'SnapInterfaceController'
   | 'PPOMController'
-  | 'TransactionController';
+  | 'TransactionController'
+  | 'UserStorageController';
 
 type InitFunction<Name extends ControllersToInitialize> =
   ControllerInitFunction<

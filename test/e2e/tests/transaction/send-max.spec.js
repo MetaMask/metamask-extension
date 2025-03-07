@@ -1,4 +1,4 @@
-const { withFixtures, generateGanacheOptions } = require('../../helpers');
+const { withFixtures } = require('../../helpers');
 const {
   createInternalTransactionWithMaxAmount,
   reviewTransaction,
@@ -25,7 +25,7 @@ describe('Sending with max amount', function () {
             },
           })
           .build(),
-        localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: { hardfork: 'london' },
         driverOptions: { timeOut: 15000 },
         title: this.test.fullTitle(),
       },
@@ -55,7 +55,7 @@ describe('Sending with max amount', function () {
               },
             })
             .build(),
-          localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
+          localNodeOptions: { hardfork: 'london' },
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
@@ -122,7 +122,7 @@ describe('Sending with max amount', function () {
               },
             })
             .build(),
-          localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
+          localNodeOptions: { hardfork: 'london' },
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
@@ -177,7 +177,7 @@ describe('Sending with max amount', function () {
             },
           })
           .build(),
-        localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: { hardfork: 'london' },
         driverOptions: { timeOut: 15000 },
         title: this.test.fullTitle(),
       },
@@ -252,7 +252,7 @@ describe('Sending with max amount', function () {
             },
           })
           .build(),
-        localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: { hardfork: 'london' },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

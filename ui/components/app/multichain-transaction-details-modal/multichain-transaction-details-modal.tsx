@@ -1,6 +1,11 @@
 import React, { useContext } from 'react';
 import { capitalize } from 'lodash';
-import { Transaction, TransactionStatus } from '@metamask/keyring-api';
+import {
+  Transaction,
+  TransactionStatus,
+  Asset,
+  TransactionType,
+} from '@metamask/keyring-api';
 import {
   Display,
   FlexDirection,
@@ -48,11 +53,13 @@ import {
 export type MultichainTransactionDetailsModalProps = {
   transaction: Transaction;
   onClose: () => void;
+  userAddress: string;
 };
 
 export function MultichainTransactionDetailsModal({
   transaction,
   onClose,
+  userAddress,
 }: MultichainTransactionDetailsModalProps) {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -70,7 +77,7 @@ export function MultichainTransactionDetailsModal({
     }
   };
 
-  const getAssetDisplay = (asset: typeof fromAsset) => {
+  const getAssetDisplay = (asset: Asset | null) => {
     if (!asset) {
       return null;
     }
@@ -83,22 +90,42 @@ export function MultichainTransactionDetailsModal({
     return null;
   };
 
-  if (!transaction?.from?.[0] || !transaction?.to?.[0]) {
-    return null;
+  const { id: txId, fees, timestamp, status, chain, type } = transaction;
+
+  let fromAddress, toAddress, asset;
+
+  const txFromEntry = transaction.from?.find(
+    (entry) => entry?.address === userAddress,
+  );
+  const txToEntry = transaction.to?.find(
+    (entry) => entry?.address === userAddress,
+  );
+
+  switch (type) {
+    case TransactionType.Swap:
+      fromAddress = txFromEntry?.address || '';
+      toAddress = txToEntry?.address || '';
+      asset = txFromEntry?.asset || null;
+      break;
+    case TransactionType.Send:
+      fromAddress =
+        txFromEntry?.address || transaction.from?.[0]?.address || '';
+      toAddress = transaction.to?.[0]?.address || '';
+      asset = txFromEntry?.asset || transaction.from?.[0]?.asset || null;
+      break;
+    case TransactionType.Receive:
+      fromAddress = transaction.from?.[0]?.address || '';
+      toAddress = txToEntry?.address || transaction.to?.[0]?.address || '';
+      asset = txToEntry?.asset || transaction.to?.[0]?.asset || null;
+      break;
+    default:
+      fromAddress = transaction.from?.[0]?.address || '';
+      toAddress = transaction.to?.[0]?.address || '';
+      asset = transaction.to?.[0]?.asset || null;
   }
 
-  // We only support 1 recipient for "from" and "to" for now:
-  const {
-    id: txId,
-    from: [{ address: fromAddress, asset: fromAsset }],
-    to: [{ address: toAddress }],
-    fees: [{ asset: feeAsset }],
-    fees,
-    timestamp,
-    status,
-    chain,
-    type,
-  } = transaction;
+  const baseFee = fees?.find((fee) => fee.type === 'base')?.asset;
+  const priorityFee = fees?.find((fee) => fee.type === 'priority')?.asset;
 
   return (
     <Modal
@@ -136,7 +163,7 @@ export function MultichainTransactionDetailsModal({
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
-            gap={3}
+            gap={4}
           >
             {/* Status */}
             <Box
@@ -198,7 +225,7 @@ export function MultichainTransactionDetailsModal({
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
-            gap={3}
+            gap={4}
           >
             {/* From */}
             <Box
@@ -295,33 +322,66 @@ export function MultichainTransactionDetailsModal({
                   variant={TextVariant.bodyMd}
                   data-testid="transaction-amount"
                 >
-                  {getAssetDisplay(fromAsset)}
+                  {getAssetDisplay(asset)}
                 </Text>
               </Box>
             </Box>
 
-            {/* Network Fee */}
+            {/* Network Fees */}
             {fees?.length > 0 && (
-              <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text
-                  variant={TextVariant.bodyMd}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {t('networkFee')}
-                </Text>
-                <Box
-                  display={Display.Flex}
-                  flexDirection={FlexDirection.Column}
-                  alignItems={AlignItems.flexEnd}
-                >
-                  <Text variant={TextVariant.bodyMd}>
-                    {getAssetDisplay(feeAsset)}
-                  </Text>
-                </Box>
-              </Box>
+              <>
+                {baseFee && (
+                  <Box
+                    display={Display.Flex}
+                    justifyContent={JustifyContent.spaceBetween}
+                  >
+                    <Text
+                      variant={TextVariant.bodyMd}
+                      fontWeight={FontWeight.Medium}
+                    >
+                      {t('networkFee')}
+                    </Text>
+                    <Box
+                      display={Display.Flex}
+                      flexDirection={FlexDirection.Column}
+                      alignItems={AlignItems.flexEnd}
+                    >
+                      <Text
+                        variant={TextVariant.bodyMd}
+                        data-testid="transaction-base-fee"
+                      >
+                        {getAssetDisplay(baseFee)}
+                      </Text>
+                    </Box>
+                  </Box>
+                )}
+
+                {priorityFee && (
+                  <Box
+                    display={Display.Flex}
+                    justifyContent={JustifyContent.spaceBetween}
+                  >
+                    <Text
+                      variant={TextVariant.bodyMd}
+                      fontWeight={FontWeight.Medium}
+                    >
+                      {t('priorityFee')}
+                    </Text>
+                    <Box
+                      display={Display.Flex}
+                      flexDirection={FlexDirection.Column}
+                      alignItems={AlignItems.flexEnd}
+                    >
+                      <Text
+                        variant={TextVariant.bodyMd}
+                        data-testid="transaction-priority-fee"
+                      >
+                        {getAssetDisplay(priorityFee)}
+                      </Text>
+                    </Box>
+                  </Box>
+                )}
+              </>
             )}
           </Box>
         </Box>

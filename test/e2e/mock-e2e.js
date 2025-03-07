@@ -161,7 +161,9 @@ async function setupMocking(
   });
 
   await server
-    .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/${chainId}`)
+    .forPost(
+      `${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/0x${chainId.toString(16)}`,
+    )
     .thenCallback(() => {
       return {
         statusCode: 200,
