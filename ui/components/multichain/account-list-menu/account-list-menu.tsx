@@ -79,7 +79,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getManageInstitutionalWallets,
 } from '../../../selectors';
-
 import { setSelectedAccount } from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
@@ -138,7 +137,6 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import { ImportSrp } from '../multi-srp/import-srp';
 ///: END:ONLY_INCLUDE_IF
-
 import { INSTITUTIONAL_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/institutional-wallet-snap';
 import { HiddenAccountList } from './hidden-account-list';
 

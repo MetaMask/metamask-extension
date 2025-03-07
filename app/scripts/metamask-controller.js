@@ -31,7 +31,6 @@ import { JsonRpcError, providerErrors } from '@metamask/rpc-errors';
 
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
-
 import {
   TrezorConnectBridge,
   TrezorKeyring,
@@ -241,7 +240,6 @@ import {
   BridgeUserAction,
   BridgeBackgroundAction,
 } from '../../shared/types/bridge';
-
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -353,7 +351,6 @@ import {
   handleBridgeTransactionFailed,
   handleTransactionFailedTypeBridge,
 } from './lib/bridge-status/metrics';
-
 import { InstitutionalSnapControllerInit } from './controller-init/accounts/institutional-snap-controller-init';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -1496,7 +1493,6 @@ export default class MetamaskController extends EventEmitter {
       captureException,
     });
     ///: END:ONLY_INCLUDE_IF
-
     this.backup = new Backup({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
