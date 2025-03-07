@@ -277,7 +277,7 @@ jobs:
     env:
       MATRIX_INDEX: ${{ matrix.index }}
       MATRIX_TOTAL: 1
-      USE_SANDBOX: true
+      USE_SANDBOX: false
       USE_HEADLESS: false
     steps:
       - uses: actions/checkout@v4
