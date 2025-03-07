@@ -6,7 +6,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { Button, ButtonSize } from '../../../components/component-library';
+import { Button, ButtonSize, Box } from '../../../components/component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
 import { BlockSize } from '../../../helpers/constants/design-system';
@@ -51,18 +51,20 @@ const FlaskHomeFooter = () => {
       >
         {t('needHelpFeedback')}
       </a>
-      <Button
-        key="test"
-        variant={ButtonVariant.Primary}
-        width={BlockSize.Full}
-        size={ButtonSize.Lg}
-        onClick={() => {
-          console.log('clicked');
-          history.push(DELEGATION_ROUTE);
-        }}
-      >
-        Open Delegation Central
-      </Button>
+      <Box padding={4}>
+        <Button
+          key="test"
+          variant={ButtonVariant.Primary}
+          width={BlockSize.Full}
+          size={ButtonSize.Lg}
+          onClick={() => {
+            console.log('clicked');
+            history.push(DELEGATION_ROUTE);
+          }}
+        >
+          Open Delegation Central
+        </Button>
+      </Box>
     </>
   );
 };
