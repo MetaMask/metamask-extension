@@ -321,7 +321,7 @@
     "@metamask/snaps-rpc-methods": "^11.13.1",
     "@metamask/snaps-sdk": "^6.19.0",
     "@metamask/snaps-utils": "^9.0.1",
-    "@metamask/solana-wallet-snap": "^1.10.0",
+    "@metamask/solana-wallet-snap": "^1.11.0",
     "@metamask/transaction-controller": "^46.0.0",
     "@metamask/user-operation-controller": "^24.0.1",
     "@metamask/utils": "^11.1.0",
