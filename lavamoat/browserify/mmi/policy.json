@@ -1078,14 +1078,6 @@
         "immer": true
       }
     },
-    "@metamask/remote-feature-flag-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
     "@metamask/selected-network-controller>@metamask/base-controller": {
       "globals": {
         "setTimeout": true
@@ -1247,8 +1239,8 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth": true,
         "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util": true,
+        "@metamask/utils": true,
         "browserify>buffer": true,
-        "webpack>events": true,
         "@metamask/eth-trezor-keyring>hdkey": true
       }
     },
@@ -1899,8 +1891,8 @@
     },
     "@metamask/remote-feature-flag-controller": {
       "packages": {
-        "@metamask/remote-feature-flag-controller>@metamask/base-controller": true,
-        "cockatiel": true,
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
         "uuid": true
       }
     },
