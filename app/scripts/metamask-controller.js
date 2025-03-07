@@ -597,7 +597,8 @@ export default class MetamaskController extends EventEmitter {
 
       Object.values(networks).forEach((network) => {
         const id = network.rpcEndpoints[0].networkClientId;
-        if (id !== 'megaeth-testnet') { // Skip for our custom network
+        if (id !== 'megaeth-testnet') {
+          // Skip for our custom network
           network.blockExplorerUrls = [BlockExplorerUrl[id]];
         }
         network.defaultBlockExplorerUrlIndex = 0;
