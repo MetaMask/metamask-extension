@@ -23,11 +23,11 @@ jobs:
         uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
         with:
           is-high-risk-environment: false
-          cache-node-modules: 'true'
+          cache-node-modules: true
 
       # Upload the .metamask/cache directory and anvil binary which are already installed
       - name: Upload .metamask/cache
-        uses: actions/upload-artifact@v4
+        uses: actions/cache/save@v4
         with:
           name: metamask-cache
           path: |
@@ -269,7 +269,7 @@ jobs:
     runs-on: ubuntu-22.04
     container:
       image: cimg/node:22.13-browsers
-      options: --user root
+      # options: --user root
     strategy:
       fail-fast: false
       matrix:
@@ -289,15 +289,23 @@ jobs:
       - run: sudo corepack enable
         shell: bash
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Checkout and setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
         with:
-          node-version-file: .nvmrc
-          cache: yarn
+          is-high-risk-environment: false
 
-      - name: Install dependencies
-        run: yarn --immutable
-        shell: bash
+      - name: Download .metamask/cache
+        continue-on-error: true
+        uses: actions/cache/restore@v4
+        with:
+          name: metamask-cache
+          path: ./
+
+      # Find and fix permissions for all anvil binaries
+      - name: Find and fix permissions for all anvil binaries
+        run: |
+          find .metamask -name anvil -type f -exec chmod 755 {} \;
+          ls -la node_modules/.bin/anvil
 
       - name: Download prep-build-test-webpack artifact
         uses: actions/download-artifact@v4
