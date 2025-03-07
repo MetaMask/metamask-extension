@@ -182,6 +182,9 @@ import {
   NETWORK_TYPES,
   NetworkStatus,
   MAINNET_DISPLAY_NAME,
+  MEGAETH_TESTNET_DISPLAY_NAME,
+  TEST_NETWORK_TICKER_MAP,
+  MEGAETH_TESTNET_IMAGE_URL,
 } from '../../shared/constants/network';
 import { getAllowedSmartTransactionsChainIds } from '../../shared/constants/smartTransactions';
 
@@ -579,10 +582,29 @@ export default class MetamaskController extends EventEmitter {
       networks[CHAIN_IDS.MAINNET].name = MAINNET_DISPLAY_NAME;
       delete networks[CHAIN_IDS.GOERLI];
       delete networks[CHAIN_IDS.LINEA_GOERLI];
+      // Add MegaETH Testnet as a default network
+      networks[CHAIN_IDS.MEGAETH_TESTNET] = {
+        chainId: CHAIN_IDS.MEGAETH_TESTNET,
+        name: MEGAETH_TESTNET_DISPLAY_NAME,
+        nativeCurrency: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MEGAETH_TESTNET],
+        blockExplorerUrls: ['https://www.megaexplorer.xyz'],
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [
+          {
+            networkClientId: 'megaeth-testnet',
+            url: 'https://carrot.megaeth.com/rpc',
+            type: 'custom',
+          },
+        ],
+        imageUrl: MEGAETH_TESTNET_IMAGE_URL,
+      };
 
       Object.values(networks).forEach((network) => {
         const id = network.rpcEndpoints[0].networkClientId;
-        network.blockExplorerUrls = [BlockExplorerUrl[id]];
+        if (id !== 'megaeth-testnet') {
+          // Skip for our custom network
+          network.blockExplorerUrls = [BlockExplorerUrl[id]];
+        }
         network.defaultBlockExplorerUrlIndex = 0;
       });
 
