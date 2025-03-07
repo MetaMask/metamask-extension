@@ -353,6 +353,13 @@ export default function TransactionList({
       return `${userToEntry.asset.amount} ${userToEntry.asset.unit || ''}`;
     }
 
+    // Fallback: Amount of the token received
+    if (transaction.to?.[0]?.asset?.amount) {
+      return `${transaction.to?.[0]?.asset?.amount} ${
+        transaction.to?.[0]?.asset?.unit || ''
+      }`;
+    }
+
     return '';
   };
 
