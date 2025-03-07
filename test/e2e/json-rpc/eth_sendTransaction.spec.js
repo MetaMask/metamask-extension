@@ -13,11 +13,7 @@ describe('eth_sendTransaction', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        localNodeOptions: {
-          hardfork: 'london',
-          mnemonic:
-            'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
-        },
+        localNodeOptions: { hardfork: 'london' },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -63,11 +59,7 @@ describe('eth_sendTransaction', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        localNodeOptions: {
-          hardfork: 'london',
-          mnemonic:
-            'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
-        },
+        localNodeOptions: { hardfork: 'london' },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
