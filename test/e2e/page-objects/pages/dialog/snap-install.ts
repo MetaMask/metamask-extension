@@ -100,7 +100,7 @@ class SnapInstall {
   }
 
   async clickApproveButton() {
-    console.log('Clicking approve button');
+    console.log('Clicking the approve button');
     await this.driver.clickElement(this.approveButton);
   }
 
