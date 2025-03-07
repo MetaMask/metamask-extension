@@ -13,57 +13,49 @@ export type PermissionsRequest = Record<
 >;
 
 /**
- * Takes in an incoming {@link PermissionsRequest} and attempts to return the {@link Caip25CaveatValue} with the Ethereum accounts set.
+ * Takes in an incoming {@link PermissionsRequest} and attempts to return the {@link Caip25CaveatValue}.
  *
  * @param permissions - The {@link PermissionsRequest} with the target name of the {@link Caip25EndowmentPermissionName}.
- * @returns The {@link Caip25CaveatValue} with the Ethereum accounts set.
+ * @returns The {@link Caip25CaveatValue}.
  */
-export function getRequestedSessionScopes(
+export function getRequestedCaip25CaveatValue(
   permissions?: PermissionsRequest,
-): Pick<Caip25CaveatValue, 'requiredScopes' | 'optionalScopes'> {
+): Caip25CaveatValue {
   return (
     permissions?.[Caip25EndowmentPermissionName]?.caveats?.find(
       (caveat) => caveat.type === Caip25CaveatType,
     )?.value ?? {
       optionalScopes: {},
       requiredScopes: {},
+      isMultichainOrigin: false,
     }
   );
 }
 
 /**
- * Parses the CAIP-25 authorized permissions object after UI confirmation.
+ * Modifies the requested CAIP-25 permissions object after UI confirmation.
  *
- * @param addresses - The list of permitted addresses.
- * @param hexChainIds - The list of permitted chains.
- * @returns The granted permissions with the target name of the {@link Caip25EndowmentPermissionName}.
+ * @param caip25CaveatValue - The requested CAIP-25 caveat value to modify.
+ * @param ethAccountAddresses - The list of permitted eth addresses.
+ * @param ethChainIds - The list of permitted eth chainIds.
  */
 export function getCaip25PermissionsResponse(
-  addresses: Hex[],
-  hexChainIds: Hex[],
+  caip25CaveatValue: Caip25CaveatValue,
+  ethAccountAddresses: Hex[],
+  ethChainIds: Hex[],
 ): {
   [Caip25EndowmentPermissionName]: {
     caveats: [{ type: string; value: Caip25CaveatValue }];
   };
 } {
-  const caveatValue: Caip25CaveatValue = {
-    requiredScopes: {},
-    optionalScopes: {
-      'wallet:eip155': {
-        accounts: [],
-      },
-    },
-    isMultichainOrigin: false,
-  };
-
   const caveatValueWithChains = setPermittedEthChainIds(
-    caveatValue,
-    hexChainIds,
+    caip25CaveatValue,
+    ethChainIds,
   );
 
   const caveatValueWithAccounts = setEthAccounts(
     caveatValueWithChains,
-    addresses,
+    ethAccountAddresses,
   );
 
   return {

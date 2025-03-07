@@ -35,6 +35,7 @@ import {
   ButtonSecondary,
   ButtonSecondarySize,
   IconName,
+  IconSize,
   Modal,
   ModalOverlay,
   Text,
@@ -52,6 +53,7 @@ import {
   FlexDirection,
   Size,
   TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -73,6 +75,7 @@ import {
   getDefaultHomeActiveTabName,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   getIsSolanaSupportEnabled,
+  getMetaMaskKeyrings,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
@@ -105,7 +108,7 @@ import {
 } from '../../../selectors/accounts';
 ///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IF(build-flask,solana)
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
   WalletClientType,
@@ -130,6 +133,9 @@ import {
   SOLANA_WALLET_SNAP_ID,
 } from '../../../../shared/lib/accounts/solana-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+import { ImportSrp } from '../multi-srp/import-srp';
+///: END:ONLY_INCLUDE_IF
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -149,6 +155,9 @@ const ACTION_MODES = {
   ///: END:ONLY_INCLUDE_IF
   // Displays the import account form controls
   IMPORT: 'import',
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  IMPORT_SRP: 'import-srp',
+  ///: END:ONLY_INCLUDE_IF
 };
 
 /**
@@ -174,7 +183,11 @@ export const getActionTitle = (
       return t('addAccount');
     ///: END:ONLY_INCLUDE_IF
     case ACTION_MODES.IMPORT:
-      return t('importAccount');
+      return t('importPrivateKey');
+    ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+    case ACTION_MODES.IMPORT_SRP:
+      return t('importSecretRecoveryPhrase');
+    ///: END:ONLY_INCLUDE_IF
     default:
       return t('selectAnAccount');
   }
@@ -224,6 +237,11 @@ export const AccountListMenu = ({
   const dispatch = useDispatch();
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const { pathname } = useLocation();
+  ///: END:ONLY_INCLUDE_IF
+  const [searchQuery, setSearchQuery] = useState('');
+  const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  const [primaryKeyring] = useSelector(getMetaMaskKeyrings);
   ///: END:ONLY_INCLUDE_IF
   const hiddenAddresses = useSelector(getHiddenAccountsList);
   const updatedAccountsList = useSelector(getUpdatedAndSortedAccounts);
@@ -282,6 +300,7 @@ export const AccountListMenu = ({
       history.push(CONFIRMATION_V_NEXT_ROUTE);
     }
 
+    // TODO: Forward the `primaryKeyring.metadata.id` to Bitcoin once supported.
     await bitcoinWalletSnapClient.createAccount(network);
   };
   ///: END:ONLY_INCLUDE_IF
@@ -291,11 +310,7 @@ export const AccountListMenu = ({
   const solanaWalletSnapClient = useMultichainWalletSnapClient(
     WalletClientType.Solana,
   );
-
   ///: END:ONLY_INCLUDE_IF
-
-  const [searchQuery, setSearchQuery] = useState('');
-  const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
 
   let searchResults: MergedInternalAccount[] = filteredUpdatedAccountList;
   if (searchQuery) {
@@ -399,13 +414,44 @@ export const AccountListMenu = ({
             />
           </Box>
         ) : null}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+          actionMode === ACTION_MODES.IMPORT_SRP && (
+            <Box
+              paddingLeft={4}
+              paddingRight={4}
+              paddingBottom={4}
+              paddingTop={0}
+              style={{ overflowY: 'scroll' }}
+            >
+              <ImportSrp
+                onActionComplete={(confirmed: boolean) => {
+                  if (confirmed) {
+                    onClose();
+                  } else {
+                    setActionMode(ACTION_MODES.LIST);
+                  }
+                }}
+              />
+            </Box>
+          )
+          ///: END:ONLY_INCLUDE_IF
+        }
         {/* Add / Import / Hardware Menu */}
         {actionMode === ACTION_MODES.MENU ? (
           <Box padding={4}>
+            <Text
+              variant={TextVariant.bodySmMedium}
+              marginBottom={4}
+              color={TextColor.textAlternative}
+            >
+              {t('createNewAccountHeader')}
+            </Text>
             <Box>
               <ButtonLink
                 size={ButtonLinkSize.Sm}
                 startIconName={IconName.Add}
+                startIconProps={{ size: IconSize.Md }}
                 onClick={() => {
                   trackEvent({
                     category: MetaMetricsEventCategory.Navigation,
@@ -419,60 +465,9 @@ export const AccountListMenu = ({
                 }}
                 data-testid="multichain-account-menu-popover-add-account"
               >
-                {t('addNewAccount')}
+                {t('addNewEthereumAccountLabel')}
               </ButtonLink>
             </Box>
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-              bitcoinSupportEnabled && (
-                <Box marginTop={4}>
-                  <ButtonLink
-                    disabled={isBtcMainnetAccountAlreadyCreated}
-                    size={ButtonLinkSize.Sm}
-                    startIconName={IconName.Add}
-                    onClick={async () => {
-                      trackEvent({
-                        category: MetaMetricsEventCategory.Navigation,
-                        event: MetaMetricsEventName.AccountAddSelected,
-                        properties: {
-                          account_type: MetaMetricsEventAccountType.Snap,
-                          snap_id: BITCOIN_WALLET_SNAP_ID,
-                          snap_name: BITCOIN_WALLET_NAME,
-                          location: 'Main Menu',
-                        },
-                      });
-
-                      await handleAccountCreation(MultichainNetworks.BITCOIN);
-                    }}
-                    data-testid="multichain-account-menu-popover-add-btc-account"
-                  >
-                    {t('addNewBitcoinAccount')}
-                  </ButtonLink>
-                </Box>
-              )
-              ///: END:ONLY_INCLUDE_IF
-            }
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-              bitcoinTestnetSupportEnabled ? (
-                <Box marginTop={4}>
-                  <ButtonLink
-                    disabled={isBtcTestnetAccountAlreadyCreated}
-                    size={ButtonLinkSize.Sm}
-                    startIconName={IconName.Add}
-                    onClick={async () => {
-                      await handleAccountCreation(
-                        MultichainNetworks.BITCOIN_TESTNET,
-                      );
-                    }}
-                    data-testid="multichain-account-menu-popover-add-btc-account-testnet"
-                  >
-                    {t('addNewBitcoinTestnetAccount')}
-                  </ButtonLink>
-                </Box>
-              ) : null
-              ///: END:ONLY_INCLUDE_IF
-            }
             {
               ///: BEGIN:ONLY_INCLUDE_IF(solana)
               solanaSupportEnabled && (
@@ -480,6 +475,7 @@ export const AccountListMenu = ({
                   <ButtonLink
                     size={ButtonLinkSize.Sm}
                     startIconName={IconName.Add}
+                    startIconProps={{ size: IconSize.Md }}
                     onClick={async () => {
                       trackEvent({
                         category: MetaMetricsEventCategory.Navigation,
@@ -499,20 +495,101 @@ export const AccountListMenu = ({
 
                       await solanaWalletSnapClient.createAccount(
                         MultichainNetworks.SOLANA,
+                        primaryKeyring.metadata.id,
                       );
                     }}
                     data-testid="multichain-account-menu-popover-add-solana-account"
                   >
-                    {t('addNewSolanaAccount')}
+                    {t('addNewSolanaAccountLabel')}
                   </ButtonLink>
                 </Box>
               )
               ///: END:ONLY_INCLUDE_IF
             }
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+              bitcoinSupportEnabled && (
+                <Box marginTop={4}>
+                  <ButtonLink
+                    disabled={isBtcMainnetAccountAlreadyCreated}
+                    size={ButtonLinkSize.Sm}
+                    startIconName={IconName.Add}
+                    startIconProps={{ size: IconSize.Md }}
+                    onClick={async () => {
+                      trackEvent({
+                        category: MetaMetricsEventCategory.Navigation,
+                        event: MetaMetricsEventName.AccountAddSelected,
+                        properties: {
+                          account_type: MetaMetricsEventAccountType.Snap,
+                          snap_id: BITCOIN_WALLET_SNAP_ID,
+                          snap_name: BITCOIN_WALLET_NAME,
+                          location: 'Main Menu',
+                        },
+                      });
+
+                      await handleAccountCreation(MultichainNetworks.BITCOIN);
+                    }}
+                    data-testid="multichain-account-menu-popover-add-btc-account"
+                  >
+                    {t('addBitcoinAccountLabel')}
+                  </ButtonLink>
+                </Box>
+              )
+              ///: END:ONLY_INCLUDE_IF
+            }
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+              bitcoinTestnetSupportEnabled ? (
+                <Box marginTop={4}>
+                  <ButtonLink
+                    disabled={isBtcTestnetAccountAlreadyCreated}
+                    size={ButtonLinkSize.Sm}
+                    startIconName={IconName.Add}
+                    startIconProps={{ size: IconSize.Md }}
+                    onClick={async () => {
+                      await handleAccountCreation(
+                        MultichainNetworks.BITCOIN_TESTNET,
+                      );
+                    }}
+                    data-testid="multichain-account-menu-popover-add-btc-account-testnet"
+                  >
+                    {t('addBitcoinTestnetAccountLabel')}
+                  </ButtonLink>
+                </Box>
+              ) : null
+              ///: END:ONLY_INCLUDE_IF
+            }
+            <Text
+              variant={TextVariant.bodySmMedium}
+              marginTop={4}
+              marginBottom={4}
+              color={TextColor.textAlternative}
+            >
+              {t('importWalletOrAccountHeader')}
+            </Text>
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+              <Box marginTop={4}>
+                <ButtonLink
+                  size={ButtonLinkSize.Sm}
+                  startIconName={IconName.Wallet}
+                  startIconProps={{ size: IconSize.Md }}
+                  onClick={() => {
+                    setActionMode(ACTION_MODES.IMPORT_SRP);
+                  }}
+                  data-testid="multichain-account-menu-popover-import-srp"
+                >
+                  {t('secretRecoveryPhrase')}
+                </ButtonLink>
+              </Box>
+              ///: END:ONLY_INCLUDE_IF
+            }
+
             <Box marginTop={4}>
               <ButtonLink
                 size={ButtonLinkSize.Sm}
-                startIconName={IconName.Import}
+                startIconName={IconName.Key}
+                startIconProps={{ size: IconSize.Md }}
                 data-testid="multichain-account-menu-popover-add-imported-account"
                 onClick={() => {
                   trackEvent({
@@ -526,13 +603,22 @@ export const AccountListMenu = ({
                   setActionMode(ACTION_MODES.IMPORT);
                 }}
               >
-                {t('importAccount')}
+                {t('importPrivateKey')}
               </ButtonLink>
             </Box>
+            <Text
+              variant={TextVariant.bodySmMedium}
+              marginTop={4}
+              marginBottom={4}
+              color={TextColor.textAlternative}
+            >
+              {t('connectAnAccountHeader')}
+            </Text>
             <Box marginTop={4}>
               <ButtonLink
                 size={ButtonLinkSize.Sm}
                 startIconName={IconName.Hardware}
+                startIconProps={{ size: IconSize.Md }}
                 onClick={() => {
                   onClose();
                   trackEvent({
@@ -552,7 +638,7 @@ export const AccountListMenu = ({
                   }
                 }}
               >
-                {t('addHardwareWallet')}
+                {t('addHardwareWalletLabel')}
               </ButtonLink>
             </Box>
             {
@@ -562,6 +648,7 @@ export const AccountListMenu = ({
                   <ButtonLink
                     size={ButtonLinkSize.Sm}
                     startIconName={IconName.Snaps}
+                    startIconProps={{ size: IconSize.Md }}
                     onClick={() => {
                       onClose();
                       trackEvent({
@@ -591,6 +678,7 @@ export const AccountListMenu = ({
                     disabled={!isAddWatchEthereumAccountEnabled}
                     size={ButtonLinkSize.Sm}
                     startIconName={IconName.Eye}
+                    startIconProps={{ size: IconSize.Md }}
                     onClick={handleAddWatchAccount}
                     data-testid="multichain-account-menu-popover-add-watch-only-account"
                   >

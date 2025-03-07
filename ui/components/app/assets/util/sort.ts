@@ -25,7 +25,11 @@ const sortingCallbacks: SortingCallbacksT = {
     const numB = b ? parseFloat(parseFloat(b).toFixed(5)) : 0;
     return numA - numB;
   },
-  alphaNumeric: (a: string, b: string) => a.localeCompare(b),
+  alphaNumeric: (a: string | null, b: string | null) => {
+    const valueA = a ?? '';
+    const valueB = b ?? '';
+    return valueA.localeCompare(valueB);
+  },
   date: (a: Date, b: Date) => a.getTime() - b.getTime(),
 };
 

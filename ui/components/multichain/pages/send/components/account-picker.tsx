@@ -14,7 +14,7 @@ import {
 import { I18nContext } from '../../../../../contexts/i18n';
 import { AccountListMenu } from '../../..';
 import { SEND_STAGES, getSendStage } from '../../../../../ducks/send';
-import { SendPageRow } from '.';
+import { SendPageRow } from './send-page-row';
 
 export const SendPageAccountPicker = () => {
   const t = useContext(I18nContext);

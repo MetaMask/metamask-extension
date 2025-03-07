@@ -2,11 +2,15 @@ import {
   ControllerStateChangeEvent,
   RestrictedMessenger,
 } from '@metamask/base-controller';
-import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
+import {
+  // AccountsControllerGetSelectedAccountAction,
+  AccountsControllerGetSelectedMultichainAccountAction,
+} from '@metamask/accounts-controller';
 import {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetSelectedNetworkClientAction,
 } from '@metamask/network-controller';
+import { HandleSnapRequest } from '@metamask/snaps-controllers';
 import type {
   BridgeBackgroundAction,
   BridgeControllerState,
@@ -33,7 +37,9 @@ type BridgeControllerEvents = ControllerStateChangeEvent<
 >;
 
 type AllowedActions =
-  | AccountsControllerGetSelectedAccountAction
+  // | AccountsControllerGetSelectedAccountAction
+  | AccountsControllerGetSelectedMultichainAccountAction
+  | HandleSnapRequest
   | NetworkControllerGetSelectedNetworkClientAction
   | NetworkControllerFindNetworkClientIdByChainIdAction;
 type AllowedEvents = never;

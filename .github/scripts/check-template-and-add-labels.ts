@@ -16,6 +16,7 @@ import {
   RegressionStage,
   craftRegressionLabel,
   externalContributorLabel,
+  needsTriageLabel,
   flakyTestsLabel,
   invalidIssueTemplateLabel,
   invalidPullRequestTemplateLabel,
@@ -139,6 +140,9 @@ async function main(): Promise<void> {
 
       // Add regression label to the bug report issue
       addRegressionLabelToIssue(octokit, labelable);
+
+      // Add needs triage label to the bug report issue
+      addNeedsTriageLabelToIssue(octokit, labelable);
     } else {
       const errorMessage =
         "Issue body does not match any of expected templates ('general-issue.yml' or 'bug-report.yml').\n\nMake sure issue's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/main/.github/scripts/shared/template.ts#L14-L37";
@@ -260,6 +264,13 @@ function extractReleaseVersionFromBugReportIssueBody(
   return version;
 }
 
+// This function adds the "needs-triage" label to the issue if it doesn't have it
+async function addNeedsTriageLabelToIssue(
+  octokit: InstanceType<typeof GitHub>,
+  issue: Labelable,
+): Promise<void> {
+  await addLabelToLabelable(octokit, issue, needsTriageLabel);
+}
 // This function adds the correct regression label to the issue, and removes other ones
 async function addRegressionLabelToIssue(
   octokit: InstanceType<typeof GitHub>,

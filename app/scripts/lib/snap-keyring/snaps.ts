@@ -1,23 +1,10 @@
 import { SnapId } from '@metamask/snaps-sdk';
 import {
   getLocalizedSnapManifest,
-  isSnapId,
   stripSnapPrefix,
 } from '@metamask/snaps-utils';
 import PREINSTALLED_SNAPS from '../../snaps/preinstalled-snaps';
 import { SnapKeyringBuilderMessenger } from './types';
-
-/**
- * Assert that a Snap ID is valid.
- *
- * @param snapId - Snap ID to assert.
- * @throws An error if the Snap ID is invalid.
- */
-export function assetIsSnapId(snapId: string): asserts snapId is SnapId {
-  if (!isSnapId(snapId)) {
-    throw new Error(`Invalid Snap ID: ${snapId}`);
-  }
-}
 
 /**
  * Check if a Snap is a preinstalled Snap.

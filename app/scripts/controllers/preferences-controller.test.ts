@@ -155,6 +155,12 @@ describe('preferences controller', () => {
               accounts: [firstAddress, secondAddress],
             },
           ],
+          keyringsMetadata: [
+            {
+              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+              name: '',
+            },
+          ],
         },
         [],
       );
@@ -198,6 +204,12 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
+            },
+          ],
+          keyringsMetadata: [
+            {
+              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+              name: '',
             },
           ],
         },
@@ -251,6 +263,12 @@ describe('preferences controller', () => {
               accounts: [firstAddress, secondAddress],
             },
           ],
+          keyringsMetadata: [
+            {
+              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+              name: '',
+            },
+          ],
         },
         [],
       );
@@ -284,6 +302,12 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
+            },
+          ],
+          keyringsMetadata: [
+            {
+              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+              name: '',
             },
           ],
         },
@@ -527,6 +551,12 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
+            },
+          ],
+          keyringsMetadata: [
+            {
+              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+              name: '',
             },
           ],
         },
@@ -843,21 +873,6 @@ describe('preferences controller', () => {
       expect(controller.state.snapsAddSnapAccountModalDismissed).toStrictEqual(
         true,
       );
-    });
-  });
-
-  describe('setSolanaSupportEnabled', () => {
-    const { controller } = setupController({});
-    it('has the default value as false', () => {
-      expect(controller.state.solanaSupportEnabled).toStrictEqual(false);
-    });
-
-    it('sets the solanaSupportEnabled property in state to true and then false', () => {
-      controller.setSolanaSupportEnabled(true);
-      expect(controller.state.solanaSupportEnabled).toStrictEqual(true);
-
-      controller.setSolanaSupportEnabled(false);
-      expect(controller.state.solanaSupportEnabled).toStrictEqual(false);
     });
   });
 });

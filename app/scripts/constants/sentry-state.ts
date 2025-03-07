@@ -105,7 +105,7 @@ export const SENTRY_BACKGROUND_STATE = {
     accountsAssets: false,
     assetsMetadata: false,
   },
-  MultiChainAssetsRatesController: {
+  MultichainAssetsRatesController: {
     assetsRates: false,
   },
   BridgeController: {
@@ -188,7 +188,6 @@ export const SENTRY_BACKGROUND_STATE = {
     fragments: false,
     metaMetricsId: true,
     participateInMetaMetrics: true,
-    previousUserTraits: false,
     segmentApiCalls: false,
     traits: false,
     dataCollectionForMarketing: false,
@@ -441,8 +440,10 @@ export const SENTRY_UI_STATE = {
     isInitialized: true,
     useSafeChainsListValidation: true,
     watchEthereumAccountEnabled: false,
+    ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
     bitcoinSupportEnabled: false,
     bitcoinTestnetSupportEnabled: false,
+    ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,
     snapsAddSnapAccountModalDismissed: false,
