@@ -133,39 +133,13 @@ export class InstitutionalSnapController extends BaseController<
     const shouldDefer = await this.#shouldDeferPublication(transactionMeta);
 
     if (shouldDefer) {
-      const searchParams: InstitutionalSnapRequestSearchParameters = {
-        from: transactionMeta.txParams.from as string,
-        to: transactionMeta.txParams.to as string,
-        value: transactionMeta.txParams.value as string,
-        data: transactionMeta.txParams.data as string,
-        chainId: transactionMeta.chainId as string,
-      };
+      const updatedTransactionParameters =
+        await this.#getUpdatedTransactionParameters(transactionMeta);
 
-      const snapGetMutableTransactionParamsPayload: SnapRPCRequest = {
-        snapId: SNAP_ID,
-        origin: ORIGIN_METAMASK,
-        handler: HandlerType.OnRpcRequest,
-        request: {
-          method: 'transactions.getMutableTransactionParameters',
-          params: searchParams,
-        },
-      };
-
-      const snapResponse = await this.#handleSnapRequest(
-        snapGetMutableTransactionParamsPayload,
+      await this.#updateTransaction(
+        transactionMeta.id,
+        updatedTransactionParameters,
       );
-
-      const hash = snapResponse.transaction.transactionHash;
-
-      await this.#updateTransaction(transactionMeta.id, {
-        status: TransactionStatus.submitted,
-        hash,
-        nonce: snapResponse.transaction.nonce,
-        gasLimit: snapResponse.transaction.gasLimit,
-        maxFeePerGas: snapResponse.transaction.maxFeePerGas,
-        maxPriorityFeePerGas: snapResponse.transaction.maxPriorityFeePerGas,
-        type: snapResponse.transaction.type as TransactionEnvelopeType,
-      });
       return false;
     }
 
@@ -196,6 +170,42 @@ export class InstitutionalSnapController extends BaseController<
       args,
     );
     return response as InstitutionalSnapResponse;
+  }
+
+  async #getUpdatedTransactionParameters(transactionMeta: TransactionMeta) {
+    const searchParams: InstitutionalSnapRequestSearchParameters = {
+      from: transactionMeta.txParams.from as string,
+      to: transactionMeta.txParams.to as string,
+      value: transactionMeta.txParams.value as string,
+      data: transactionMeta.txParams.data as string,
+      chainId: transactionMeta.chainId as string,
+    };
+
+    const snapGetMutableTransactionParamsPayload: SnapRPCRequest = {
+      snapId: SNAP_ID,
+      origin: ORIGIN_METAMASK,
+      handler: HandlerType.OnRpcRequest,
+      request: {
+        method: 'transactions.getMutableTransactionParameters',
+        params: searchParams,
+      },
+    };
+
+    const snapResponse = await this.#handleSnapRequest(
+      snapGetMutableTransactionParamsPayload,
+    );
+
+    const hash = snapResponse.transaction.transactionHash;
+
+    return {
+      hash,
+      nonce: snapResponse.transaction.nonce,
+      gasLimit: snapResponse.transaction.gasLimit,
+      maxFeePerGas: snapResponse.transaction.maxFeePerGas,
+      maxPriorityFeePerGas: snapResponse.transaction.maxPriorityFeePerGas,
+      type: snapResponse.transaction.type as TransactionEnvelopeType,
+      status: TransactionStatus.submitted,
+    };
   }
 
   async #updateTransaction(
