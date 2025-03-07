@@ -14,4 +14,5 @@ export enum AlertActionKey {
   Buy = 'buy',
   ShowAdvancedGasFeeModal = 'showAdvancedGasModal',
   ShowGasFeeModal = 'showGasFeeModal',
+  ShowPendingConfirmation = 'showPendingConfirmation',
 }
