@@ -29,7 +29,7 @@ jobs:
       - name: Upload .metamask/cache
         uses: actions/cache/save@v4
         with:
-          name: metamask-cache
+          key: metamask-cache
           path: |
             .metamask/cache/
             node_modules/.bin/anvil
@@ -267,9 +267,9 @@ jobs:
       - prep-build-test-webpack
       - get-changed-files-with-git-diff
     runs-on: ubuntu-22.04
-    container:
-      image: cimg/node:22.13-browsers
-      # options: --user root
+    # container:
+    #   image: cimg/node:22.13-browsers
+    # options: --user root
     strategy:
       fail-fast: false
       matrix:
@@ -298,7 +298,7 @@ jobs:
         continue-on-error: true
         uses: actions/cache/restore@v4
         with:
-          name: metamask-cache
+          key: metamask-cache
           path: ./
 
       # Find and fix permissions for all anvil binaries
