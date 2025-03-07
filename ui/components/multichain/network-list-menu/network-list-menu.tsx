@@ -22,6 +22,7 @@ import {
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import {
   type CaipChainId,
+  type Hex,
   parseCaipChainId,
   KnownCaipNamespace,
 } from '@metamask/utils';
@@ -47,6 +48,7 @@ import {
 import {
   FEATURED_RPCS,
   TEST_CHAINS,
+  CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP,
 } from '../../../../shared/constants/network';
 import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
@@ -65,6 +67,7 @@ import {
   getPreferences,
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
+  getIsPortfolioLandingPageEnabled,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -149,6 +152,11 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
   const showNetworkBanner = useSelector(getShowNetworkBanner);
+  // This selector provides the indication if the "Discover" button
+  // is enabled based on the remote feature flag.
+  const isPortfolioLandingPageEnabled = useSelector(
+    getIsPortfolioLandingPageEnabled,
+  );
   // This selector provides all network configurations including EVM and non-EVM
   // with the data type MultichainNetworkConfiguration from @metamask/multichain-network-controller
   const multichainNetworks = useSelector(
@@ -369,6 +377,18 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     });
   };
 
+  const isDiscoverBtnEnabled = useCallback(
+    (hexChainId: Hex): boolean => {
+      // For now, the "Discover" button should be enabled only for Linea network base on
+      // the feature flag and the constants `CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP`.
+      return (
+        isPortfolioLandingPageEnabled &&
+        CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[hexChainId] !== undefined
+      );
+    },
+    [isPortfolioLandingPageEnabled],
+  );
+
   const hasMultiRpcOptions = useCallback(
     (network: MultichainNetworkConfiguration): boolean =>
       network.isEvm &&
@@ -422,9 +442,12 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           );
           setActionMode(ACTION_MODE.ADD_EDIT);
         },
-        onDiscoverClick: network.portfolioDiscoverUrl
+        onDiscoverClick: isDiscoverBtnEnabled(hexChainId)
           ? () => {
-              openWindow(network.portfolioDiscoverUrl as string, '_blank');
+              openWindow(
+                CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[hexChainId] as string,
+                '_blank',
+              );
             }
           : undefined,
         onRpcConfigEdit: hasMultiRpcOptions(network)

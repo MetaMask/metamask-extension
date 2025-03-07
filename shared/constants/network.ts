@@ -938,6 +938,14 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN_SEPOLIA]: ETH_TOKEN_IMAGE_URL,
 } as const;
 
+/**
+ * A mapping for networks with enabled profolio landing page to their URLs.
+ */
+export const CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP: Record<Hex, string> = {
+  [CHAIN_IDS.LINEA_MAINNET]:
+    'https://portfolio.metamask.io/explore/networks/linea',
+} as const;
+
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
 
 const defaultEtherscanDomain = 'etherscan.io';
@@ -1064,8 +1072,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     defaultRpcEndpointIndex: 0,
     blockExplorerUrls: ['https://lineascan.build/'],
     defaultBlockExplorerUrlIndex: 0,
-    portfolioDiscoverUrl:
-      'https://portfolio.metamask.io/explore/networks/linea',
   },
   {
     chainId: CHAIN_IDS.ARBITRUM,
