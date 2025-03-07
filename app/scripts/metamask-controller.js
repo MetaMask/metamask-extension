@@ -136,10 +136,7 @@ import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { hexToBigInt, toCaipChainId } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
-import {
-  AuthenticationController,
-  UserStorageController,
-} from '@metamask/profile-sync-controller';
+
 import {
   TRIGGER_TYPES,
   Controller as NotificationServicesController,
@@ -242,7 +239,6 @@ import {
   BridgeUserAction,
   BridgeBackgroundAction,
 } from '../../shared/types/bridge';
-import { isProduction } from '../../shared/modules/environment';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -348,7 +344,10 @@ import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
 import BridgeStatusController from './controllers/bridge-status/bridge-status-controller';
 import { BRIDGE_STATUS_CONTROLLER_NAME } from './controllers/bridge-status/constants';
-import { rejectAllApprovals } from './lib/approval/utils';
+import {
+  rejectAllApprovals,
+  rejectOriginApprovals,
+} from './lib/approval/utils';
 import {
   handleBridgeTransactionComplete,
   handleBridgeTransactionFailed,
@@ -375,6 +374,8 @@ import {
   SnapInterfaceControllerInit,
   SnapsRegistryInit,
 } from './controller-init/snaps';
+import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
+import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1253,95 +1254,6 @@ export default class MetamaskController extends EventEmitter {
     });
 
     // Notification Controllers
-    this.authenticationController = new AuthenticationController.Controller({
-      state: initState.AuthenticationController,
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'AuthenticationController',
-        allowedActions: [
-          'KeyringController:getState',
-          'SnapController:handleRequest',
-        ],
-        allowedEvents: ['KeyringController:lock', 'KeyringController:unlock'],
-      }),
-      metametrics: {
-        getMetaMetricsId: () => this.metaMetricsController.getMetaMetricsId(),
-        agent: 'extension',
-      },
-    });
-
-    this.userStorageController = new UserStorageController.Controller({
-      state: initState.UserStorageController,
-      config: {
-        accountSyncing: {
-          maxNumberOfAccountsToAdd: isProduction() ? undefined : 100,
-          onAccountAdded: (profileId) => {
-            this.metaMetricsController.trackEvent({
-              category: MetaMetricsEventCategory.ProfileSyncing,
-              event: MetaMetricsEventName.AccountsSyncAdded,
-              properties: {
-                profile_id: profileId,
-              },
-            });
-          },
-          onAccountNameUpdated: (profileId) => {
-            this.metaMetricsController.trackEvent({
-              category: MetaMetricsEventCategory.ProfileSyncing,
-              event: MetaMetricsEventName.AccountsSyncNameUpdated,
-              properties: {
-                profile_id: profileId,
-              },
-            });
-          },
-          onAccountSyncErroneousSituation: (
-            profileId,
-            situationMessage,
-            sentryContext,
-          ) => {
-            captureException(
-              new Error(`Account sync - ${situationMessage}`),
-              sentryContext,
-            );
-            this.metaMetricsController.trackEvent({
-              category: MetaMetricsEventCategory.ProfileSyncing,
-              event: MetaMetricsEventName.AccountsSyncErroneousSituation,
-              properties: {
-                profile_id: profileId,
-                situation_message: situationMessage,
-              },
-            });
-          },
-        },
-      },
-      env: {
-        isAccountSyncingEnabled: isManifestV3,
-      },
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'UserStorageController',
-        allowedActions: [
-          'KeyringController:getState',
-          'KeyringController:withKeyring',
-          'SnapController:handleRequest',
-          'AuthenticationController:getBearerToken',
-          'AuthenticationController:getSessionProfile',
-          'AuthenticationController:isSignedIn',
-          'AuthenticationController:performSignOut',
-          'AuthenticationController:performSignIn',
-          'AccountsController:listAccounts',
-          'AccountsController:updateAccountMetadata',
-          'NetworkController:getState',
-          'NetworkController:addNetwork',
-          'NetworkController:removeNetwork',
-          'NetworkController:updateNetwork',
-        ],
-        allowedEvents: [
-          'KeyringController:lock',
-          'KeyringController:unlock',
-          'AccountsController:accountAdded',
-          'AccountsController:accountRenamed',
-          'NetworkController:networkRemoved',
-        ],
-      }),
-    });
 
     /** @type {import('@metamask/notification-services-controller/push-services').NotificationServicesPushControllerMessenger} */
     const notificationServicesPushControllerMessenger =
@@ -2044,6 +1956,8 @@ export default class MetamaskController extends EventEmitter {
       MultichainTransactionsController: MultichainTransactionsControllerInit,
       ///: END:ONLY_INCLUDE_IF
       MultichainNetworkController: MultichainNetworkControllerInit,
+      AuthenticationController: AuthenticationControllerInit,
+      UserStorageController: UserStorageControllerInit,
     };
 
     const {
@@ -2083,6 +1997,8 @@ export default class MetamaskController extends EventEmitter {
     ///: END:ONLY_INCLUDE_IF
     this.multichainNetworkController =
       controllersByName.MultichainNetworkController;
+    this.authenticationController = controllersByName.AuthenticationController;
+    this.userStorageController = controllersByName.UserStorageController;
 
     this.controllerMessenger.subscribe(
       'TransactionController:transactionStatusUpdated',
@@ -4153,6 +4069,20 @@ export default class MetamaskController extends EventEmitter {
     };
   }
 
+  rejectOriginPendingApprovals(origin) {
+    const deleteInterface = (id) =>
+      this.controllerMessenger.call(
+        'SnapInterfaceController:deleteInterface',
+        id,
+      );
+
+    rejectOriginApprovals({
+      approvalController: this.approvalController,
+      deleteInterface,
+      origin,
+    });
+  }
+
   async exportAccount(address, password) {
     await this.verifyPassword(password);
     return this.keyringController.exportAccount(password, address);
@@ -6010,18 +5940,20 @@ export default class MetamaskController extends EventEmitter {
     engine.push(createSelectedNetworkMiddleware(this.controllerMessenger));
 
     // Add a middleware that will switch chain on each request (as needed)
-    const requestQueueMiddleware = createQueuedRequestMiddleware({
-      enqueueRequest: this.queuedRequestController.enqueueRequest.bind(
-        this.queuedRequestController,
-      ),
-      shouldEnqueueRequest: (request) => {
-        return methodsThatShouldBeEnqueued.includes(request.method);
-      },
-      // This will be removed once we can actually remove useRequestQueue state
-      // i.e. unrevert https://github.com/MetaMask/core/pull/5065
-      useRequestQueue: () => true,
-    });
-    engine.push(requestQueueMiddleware);
+    if (process.env.EVM_MULTICHAIN_ENABLED !== true) {
+      const requestQueueMiddleware = createQueuedRequestMiddleware({
+        enqueueRequest: this.queuedRequestController.enqueueRequest.bind(
+          this.queuedRequestController,
+        ),
+        shouldEnqueueRequest: (request) => {
+          return methodsThatShouldBeEnqueued.includes(request.method);
+        },
+        // This will be removed once we can actually remove useRequestQueue state
+        // i.e. unrevert https://github.com/MetaMask/core/pull/5065
+        useRequestQueue: () => true,
+      });
+      engine.push(requestQueueMiddleware);
+    }
 
     // If the origin is not in the selectedNetworkController's `domains` state
     // when the provider engine is created, the selectedNetworkController will
@@ -6265,6 +6197,8 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController,
           origin,
         ),
+        rejectApprovalRequestsForOrigin: () =>
+          this.rejectOriginPendingApprovals(origin),
 
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         handleMmiAuthenticate:
@@ -7665,6 +7599,12 @@ export default class MetamaskController extends EventEmitter {
       setupUntrustedCommunicationEip1193:
         this.setupUntrustedCommunicationEip1193.bind(this),
       showNotification: this.platform._showNotification,
+      getMetaMetricsId: this.metaMetricsController.getMetaMetricsId.bind(
+        this.metaMetricsController,
+      ),
+      trackEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
     };
 
     return initControllers({
