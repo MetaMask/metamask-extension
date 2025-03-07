@@ -555,24 +555,6 @@ const multipleGanacheOptionsForType2Transactions = {
   hardfork: 'london',
 };
 
-const generateGanacheOptions = ({
-  secretKey = PRIVATE_KEY,
-  balance = convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
-  ...otherProps
-}) => {
-  const accounts = [
-    {
-      secretKey,
-      balance,
-    },
-  ];
-
-  return {
-    accounts,
-    ...otherProps, // eg: hardfork
-  };
-};
-
 // Edit priority gas fee form
 const editGasFeeForm = async (driver, gasLimit, gasPrice) => {
   const inputs = await driver.findElements('input[type="number"]');
@@ -953,7 +935,6 @@ module.exports = {
   unlockWallet,
   logInWithBalanceValidation,
   locateAccountBalanceDOM,
-  generateGanacheOptions,
   WALLET_PASSWORD,
   WINDOW_TITLES,
   convertETHToHexGwei,

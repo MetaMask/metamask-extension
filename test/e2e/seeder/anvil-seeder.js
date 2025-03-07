@@ -44,12 +44,13 @@ class AnvilSeeder {
     });
 
     if (contractName === SMART_CONTRACTS.NFTS) {
-      const transaction = await walletClient.sendTransaction({
-        from: fromAddress,
-        data: contractConfig.abi.encodeFunctionData('mintNFTs', [1]),
-        to: receipt.contractAddress,
+      await walletClient.writeContract({
+        address: receipt.contractAddress,
+        abi: contractConfig.abi,
+        functionName: 'mintNFTs',
+        args: [1],
+        account: fromAddress,
       });
-      await publicClient.getTransactionReceipt({ hash: transaction.hash });
     }
 
     if (contractName === SMART_CONTRACTS.ERC1155) {
