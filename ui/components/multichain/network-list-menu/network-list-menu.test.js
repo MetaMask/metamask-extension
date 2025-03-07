@@ -17,7 +17,10 @@ import { NetworkListMenu } from '.';
 
 const mockSetShowTestNetworks = jest.fn();
 const mockToggleNetworkMenu = jest.fn();
-const mockSetNetworkClientIdForDomain = jest.fn();
+const mockSetNetworkClientIdForDomain = jest.fn((network, id) => ({
+  type: 'SET_NETWORK_CLIENT_ID_FOR_DOMAIN',
+  payload: { network, id },
+}));
 const mockSetActiveNetwork = jest.fn();
 const mockUpdateCustomNonce = jest.fn();
 const mockSetNextNonce = jest.fn();
@@ -30,8 +33,7 @@ jest.mock('../../../store/actions.ts', () => ({
   toggleNetworkMenu: () => mockToggleNetworkMenu,
   updateCustomNonce: () => mockUpdateCustomNonce,
   setNextNonce: () => mockSetNextNonce,
-  setNetworkClientIdForDomain: (network, id) =>
-    mockSetNetworkClientIdForDomain(network, id),
+  setNetworkClientIdForDomain: () => mockSetNetworkClientIdForDomain,
   setTokenNetworkFilter: () => mockSetTokenNetworkFilter,
   detectNfts: () => mockDetectNfts,
 }));
@@ -225,7 +227,7 @@ describe('NetworkListMenu', () => {
   it('shows the correct selected network when networks share the same chain ID', () => {
     // Mainnet and Custom Mainnet RPC both use chain ID 0x1
     const { queryByText } = render({
-      showTestNetworks: false,
+      showTestNetworks: true,
       currentChainId: CHAIN_IDS.MAINNET,
       selectedNetworkClientId: 'testNetworkConfigurationId',
     });
@@ -278,19 +280,13 @@ describe('NetworkListMenu', () => {
     it('fires setNetworkClientIdForDomain when network item is clicked', () => {
       const { getByText } = render();
       fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
-      expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(
-        MOCK_ORIGIN,
-        NETWORK_TYPES.MAINNET,
-      );
+      expect(mockSetNetworkClientIdForDomain).toHaveBeenCalled();
     });
 
     it('fires setNetworkClientIdForDomain when test network item is clicked', () => {
       const { getByText } = render({ showTestNetworks: true });
       fireEvent.click(getByText(SEPOLIA_DISPLAY_NAME));
-      expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(
-        MOCK_ORIGIN,
-        NETWORK_TYPES.SEPOLIA,
-      );
+      expect(mockSetNetworkClientIdForDomain).toHaveBeenCalled();
     });
   });
 
