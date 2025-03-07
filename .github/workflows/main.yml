@@ -268,20 +268,17 @@ jobs:
       MATRIX_INDEX: ${{ matrix.index }}
       MATRIX_TOTAL: 20
     steps:
-      - name: Install zstd
-        run: sudo apt-get update && sudo apt-get install zstd
-        shell: bash
-
-      - run: sudo corepack enable
+      - name: Install dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install zstd
+          sudo corepack enable
+          yarn foundryup
         shell: bash
 
       - name: Checkout and setup environment
         uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
         with:
           is-high-risk-environment: false
-
-      - name: Install anvil (not installed by checkout-and-setup when cache is restored)
-        run: yarn foundryup
 
       - name: Download prep-build-test-webpack artifact
         uses: actions/download-artifact@v4
