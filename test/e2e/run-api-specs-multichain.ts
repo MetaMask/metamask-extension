@@ -30,6 +30,7 @@ import { MultichainAuthorizationConfirmation } from './api-specs/MultichainAutho
 import transformOpenRPCDocument from './api-specs/transform';
 import { MultichainAuthorizationConfirmationErrors } from './api-specs/MultichainAuthorizationConfirmationErrors';
 import { ConfirmationsRejectRule } from './api-specs/ConfirmationRejectionRule';
+import { Mockttp } from 'mockttp';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const mockServer = require('@open-rpc/mock-server/build/index').default;
@@ -172,6 +173,17 @@ async function main() {
         .build(),
       localNodeOptions: 'none',
       title: 'api-specs-multichain coverage (wallet_invokeMethod)',
+      testSpecificMock: async (server: Mockttp) => {
+        // See: <https://github.com/MetaMask/api-specs/blob/1f763929bbe781d6f2abefee86fd11a829595fe5/openrpc.yaml#L461>
+        await server
+          .forGet('https://foo.io/token-image.svg')
+          .thenCallback(() => {
+            return {
+              statusCode: 200,
+              body: '',
+            };
+          });
+      },
     },
     async ({
       driver,

@@ -790,12 +790,6 @@ async function setupMocking(
       };
     });
 
-  // Multichain API tests
-  // See: <https://github.com/MetaMask/api-specs/blob/1f763929bbe781d6f2abefee86fd11a829595fe5/openrpc.yaml#L461>
-  await server.forGet('https://foo.io/token-image.svg').thenCallback(() => {
-    return '';
-  });
-
   /**
    * Returns an array of alphanumerically sorted hostnames that were requested
    * during the current test suite.
