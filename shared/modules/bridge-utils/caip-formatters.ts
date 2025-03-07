@@ -12,7 +12,6 @@ import { MultichainNetworks } from '../../constants/multichain/networks';
 import { ChainId } from '../../types/bridge';
 import { decimalToPrefixedHex, hexToDecimal } from '../conversion.utils';
 import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../constants/multichain/assets';
-import { isValidNumber } from './validators';
 
 // Returns true if the address looka like a native asset
 export const isNativeAddress = (address?: string | null) =>
