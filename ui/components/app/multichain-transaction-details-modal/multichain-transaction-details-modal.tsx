@@ -108,14 +108,15 @@ export function MultichainTransactionDetailsModal({
       asset = txFromEntry?.asset || null;
       break;
     case TransactionType.Send:
-      fromAddress = txFromEntry?.address || '';
+      fromAddress =
+        txFromEntry?.address || transaction.from?.[0]?.address || '';
       toAddress = transaction.to?.[0]?.address || '';
-      asset = txFromEntry?.asset || null;
+      asset = txFromEntry?.asset || transaction.from?.[0]?.asset || null;
       break;
     case TransactionType.Receive:
       fromAddress = transaction.from?.[0]?.address || '';
-      toAddress = txToEntry?.address || '';
-      asset = txToEntry?.asset || null;
+      toAddress = txToEntry?.address || transaction.to?.[0]?.address || '';
+      asset = txToEntry?.asset || transaction.to?.[0]?.asset || null;
       break;
     default:
       fromAddress = transaction.from?.[0]?.address || '';
