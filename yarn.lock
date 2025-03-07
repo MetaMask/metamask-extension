@@ -5193,9 +5193,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-hd-keyring@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "@metamask/eth-hd-keyring@npm:10.0.0"
+"@metamask/eth-hd-keyring@npm:^11.0.0":
+  version: 11.0.0
+  resolution: "@metamask/eth-hd-keyring@npm:11.0.0"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
@@ -5203,7 +5203,7 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.1.1"
     "@metamask/utils": "npm:^11.1.0"
     ethereum-cryptography: "npm:^2.1.2"
-  checksum: 10/d80611745171042f6ae7e0545e51563ebd705eb74e2bf131454766872d7ca57a54766af2ab398520a8fe0f58e8733a92c1df71664a2ea0e92c462661ea8a12f1
+  checksum: 10/34e79c06740273518b653bfbef75371f2934ac1d73698f2a0f5f3e124300d5b43c86351f6989dc5aae5026ad2410171e75caabb7a14e9eacaea868f83be1b36d
   languageName: node
   linkType: hard
 
@@ -5264,17 +5264,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-ledger-bridge-keyring@npm:^8.0.3":
-  version: 8.0.3
-  resolution: "@metamask/eth-ledger-bridge-keyring@npm:8.0.3"
+"@metamask/eth-ledger-bridge-keyring@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@metamask/eth-ledger-bridge-keyring@npm:9.0.0"
   dependencies:
     "@ethereumjs/rlp": "npm:^5.0.2"
     "@ethereumjs/tx": "npm:^4.2.0"
     "@ethereumjs/util": "npm:^8.1.0"
     "@ledgerhq/hw-app-eth": "npm:^6.42.0"
-    "@metamask/eth-sig-util": "npm:^8.1.2"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
     hdkey: "npm:^2.1.0"
-  checksum: 10/5b5c9f72eec882638985b11198350ace3647fa0ec92facbac3a9c1a67543a8270017c583d2d1464e2ec96cb93ff8b64509c0c8ebc395f8ce7de5ffd8f483ca63
+  checksum: 10/dac1a4ff7c03ebb3c591035eb2cf0d4149ed1c1bb78baa02ed8b91e60884f91dc5639141bf4e69252974bf03217f15800401fe50c2953e3799dba30345b7c6e2
   languageName: node
   linkType: hard
 
@@ -5317,16 +5317,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-simple-keyring@npm:^8.1.0":
-  version: 8.1.1
-  resolution: "@metamask/eth-simple-keyring@npm:8.1.1"
+"@metamask/eth-simple-keyring@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@metamask/eth-simple-keyring@npm:9.0.0"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/utils": "npm:^11.1.0"
     ethereum-cryptography: "npm:^2.1.2"
     randombytes: "npm:^2.1.0"
-  checksum: 10/8fa7193625bedb58dffefac5120a72cd5864c18f94fae76fbe13f999f2d7bf063e95818702615942d8c9c56ecd460353fb34102a149503bdf7fdeaabcaca7d68
+  checksum: 10/2f7062546288afcc986a7baf703fc518b1a26587d3675dddd97a0ea940b54020e8878b3aa94fc562bf96196e67aa5ff854b428de68eb8da65101868f4487d034
   languageName: node
   linkType: hard
 
@@ -5369,18 +5369,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-trezor-keyring@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@metamask/eth-trezor-keyring@npm:6.0.0"
+"@metamask/eth-trezor-keyring@npm:^6.1.1":
+  version: 6.1.1
+  resolution: "@metamask/eth-trezor-keyring@npm:6.1.1"
   dependencies:
     "@ethereumjs/tx": "npm:^4.2.0"
     "@ethereumjs/util": "npm:^8.1.0"
-    "@metamask/eth-sig-util": "npm:^8.0.0"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
     "@trezor/connect-plugin-ethereum": "npm:^9.0.3"
     "@trezor/connect-web": "npm:^9.1.11"
     hdkey: "npm:^2.1.0"
     tslib: "npm:^2.6.2"
-  checksum: 10/d5d799c60eeab963ef3e5533de472044b08b6f72652ecefbf26cec99784829bbcd706df57f6450ddb019c7dff7c41b0e0dad244aad62b7d03b51fc97755e2c4c
+  checksum: 10/b344be61ec81b8e4008d385f88d16fb68274cbe6bd7d76e66d832e6370e6eececbab42edd8cf598142dc0de7a647b5f93d6ec9be51aef3dcca4d548ba2e5bebe
   languageName: node
   linkType: hard
 
@@ -5565,25 +5565,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:^19.2.0, @metamask/keyring-controller@npm:^19.2.1":
-  version: 19.2.1
-  resolution: "@metamask/keyring-controller@npm:19.2.1"
+"@metamask/keyring-controller@npm:^20.0.0":
+  version: 20.0.0
+  resolution: "@metamask/keyring-controller@npm:20.0.0"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.14.1"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
-    "@metamask/eth-hd-keyring": "npm:^10.0.0"
+    "@metamask/eth-hd-keyring": "npm:^11.0.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
-    "@metamask/eth-simple-keyring": "npm:^8.1.0"
+    "@metamask/eth-simple-keyring": "npm:^9.0.0"
     "@metamask/keyring-api": "npm:^17.2.0"
-    "@metamask/keyring-internal-api": "npm:^4.0.3"
+    "@metamask/keyring-internal-api": "npm:^5.0.0"
     "@metamask/utils": "npm:^11.2.0"
     async-mutex: "npm:^0.5.0"
     ethereumjs-wallet: "npm:^1.0.1"
     immer: "npm:^9.0.6"
     ulid: "npm:^2.3.0"
-  checksum: 10/e9715a0743689c54843fd68f58ba1a577fd2f1a3ff104bd2e3d592c9246c56098f90288fab6c0d511e4a7115d2e9b835862885f37c3495aa2dd12db7df673326
+  checksum: 10/cfddaed8d1548086ef7f4fb8fe6788a799378efdc8c99cf8277600ce491229d8a64614981273d2d2dbaa7e3803302d474db4ae76af75605027ca1962dbb9c709
   languageName: node
   linkType: hard
 
@@ -5596,6 +5596,17 @@ __metadata:
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^11.1.0"
   checksum: 10/11a18a1179cfa710257319d42619f44984cfc6dae7060d9bb35019ce6869511a5bc14eea51db34535d2f9b844b8153dce231bb97e036387487dc6f7adb48fe86
+  languageName: node
+  linkType: hard
+
+"@metamask/keyring-internal-api@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "@metamask/keyring-internal-api@npm:5.0.0"
+  dependencies:
+    "@metamask/keyring-api": "npm:^17.2.1"
+    "@metamask/keyring-utils": "npm:^2.3.1"
+    "@metamask/superstruct": "npm:^3.1.0"
+  checksum: 10/1c691c6343691ef19c1cea6a353cbb325dbad7b10462d17139365151dc23a7f0aa74eecb9e8787a4472cc5d73424c1e050d0efb5a3b68c59c766adede40b9ea2
   languageName: node
   linkType: hard
 
@@ -6033,13 +6044,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:^8.1.1":
-  version: 8.1.1
-  resolution: "@metamask/profile-sync-controller@npm:8.1.1"
+"@metamask/profile-sync-controller@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@metamask/profile-sync-controller@npm:9.0.0"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/keyring-api": "npm:^17.2.0"
-    "@metamask/keyring-controller": "npm:^19.2.1"
+    "@metamask/keyring-controller": "npm:^20.0.0"
     "@metamask/network-controller": "npm:^22.2.1"
     "@metamask/snaps-sdk": "npm:^6.17.1"
     "@metamask/snaps-utils": "npm:^8.10.0"
@@ -6049,13 +6060,13 @@ __metadata:
     loglevel: "npm:^1.8.1"
     siwe: "npm:^2.3.2"
   peerDependencies:
-    "@metamask/accounts-controller": ^24.0.0
-    "@metamask/keyring-controller": ^19.0.0
+    "@metamask/accounts-controller": ^25.0.0
+    "@metamask/keyring-controller": ^20.0.0
     "@metamask/network-controller": ^22.0.0
     "@metamask/providers": ^18.1.0
     "@metamask/snaps-controllers": ^9.19.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/4b18a546c0d78f010fbf1cf16644001ba0139c60941ceb70b83c7850e2fafcd5d17b8148f8020dcfe0e8c3f897259480077fa6b4402f4d270ed68e248d628369
+  checksum: 10/bcfb112b5352ccb6d6534320084ce12a1e738e97ad683bb3fb9bc4672bfd570e76ff61dd714cb31482b77b9990eea688192db54c568ab83c1a909e1d2b07383c
   languageName: node
   linkType: hard
 
@@ -27270,11 +27281,11 @@ __metadata:
     "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
     "@metamask/eth-json-rpc-middleware": "npm:^15.1.2"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
-    "@metamask/eth-ledger-bridge-keyring": "npm:^8.0.3"
+    "@metamask/eth-ledger-bridge-keyring": "npm:^9.0.0"
     "@metamask/eth-sig-util": "npm:^7.0.1"
     "@metamask/eth-snap-keyring": "npm:^11.1.0"
     "@metamask/eth-token-tracker": "npm:^10.0.2"
-    "@metamask/eth-trezor-keyring": "npm:^6.0.0"
+    "@metamask/eth-trezor-keyring": "npm:^6.1.1"
     "@metamask/etherscan-link": "npm:^3.0.0"
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/gas-fee-controller": "npm:^22.0.3"
@@ -27282,8 +27293,8 @@ __metadata:
     "@metamask/json-rpc-engine": "npm:^10.0.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.4"
     "@metamask/keyring-api": "npm:^17.2.1"
-    "@metamask/keyring-controller": "npm:^19.2.0"
-    "@metamask/keyring-internal-api": "npm:^4.0.3"
+    "@metamask/keyring-controller": "npm:^20.0.0"
+    "@metamask/keyring-internal-api": "npm:^5.0.0"
     "@metamask/keyring-snap-client": "npm:^4.0.1"
     "@metamask/logging-controller": "npm:^6.0.4"
     "@metamask/logo": "npm:^4.0.0"
@@ -27307,7 +27318,7 @@ __metadata:
     "@metamask/ppom-validator": "npm:0.36.0"
     "@metamask/preferences-controller": "npm:^15.0.2"
     "@metamask/preinstalled-example-snap": "npm:^0.3.0"
-    "@metamask/profile-sync-controller": "npm:^8.1.1"
+    "@metamask/profile-sync-controller": "npm:^9.0.0"
     "@metamask/providers": "npm:^20.0.0"
     "@metamask/queued-request-controller": "npm:^7.0.1"
     "@metamask/rate-limit-controller": "npm:^6.0.3"
