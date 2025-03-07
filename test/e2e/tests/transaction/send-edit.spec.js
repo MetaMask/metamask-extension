@@ -3,11 +3,7 @@ const {
   createInternalTransaction,
 } = require('../../page-objects/flows/transaction');
 
-const {
-  withFixtures,
-  unlockWallet,
-  generateGanacheOptions,
-} = require('../../helpers');
+const { withFixtures, unlockWallet } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Editing Confirm Transaction', function () {
@@ -110,7 +106,7 @@ describe('Editing Confirm Transaction', function () {
             },
           })
           .build(),
-        localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: { hardfork: 'london' },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

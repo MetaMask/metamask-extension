@@ -48,7 +48,6 @@ import { TransactionMetricsRequest } from '../../../../shared/types/metametrics'
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
-  // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
   TransactionControllerMessenger,
   TransactionControllerInitMessenger
 > = (request) => {
@@ -189,7 +188,6 @@ function getApi(
 
 function getControllers(
   request: ControllerInitRequest<
-    // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
     TransactionControllerMessenger,
     TransactionControllerInitMessenger
   >,

@@ -334,12 +334,63 @@ export default function TransactionList({
     setSelectedTransaction(transaction);
   }, []);
 
+  const getTransactionDisplayAmount = (transaction, userAddress) => {
+    const userFromEntry = transaction.from?.find(
+      (entry) => entry.address === userAddress,
+    );
+
+    const userToEntry = transaction.to?.find(
+      (entry) => entry.address === userAddress,
+    );
+
+    // Amount of the token sent
+    if (userFromEntry?.asset?.amount) {
+      return `-${userFromEntry.asset.amount} ${userFromEntry.asset.unit || ''}`;
+    }
+
+    // Amount of the token received
+    if (userToEntry?.asset?.amount) {
+      return `${userToEntry.asset.amount} ${userToEntry.asset.unit || ''}`;
+    }
+
+    // Fallback: Amount of the token received
+    if (transaction.from?.[0]?.asset?.amount) {
+      return `${transaction.from?.[0]?.asset?.amount} ${
+        transaction.from?.[0]?.asset?.unit || ''
+      }`;
+    }
+
+    return '';
+  };
+
   const multichainNetwork = useMultichainSelector(
     getMultichainNetwork,
     selectedAccount,
   );
 
   const trackEvent = useContext(MetaMetricsContext);
+
+  const formatTransactionTitle = (transaction, userAddress) => {
+    switch (transaction.type) {
+      case TransactionType.swap: {
+        const userToEntry = transaction.to?.find(
+          (entry) => entry.address === userAddress,
+        );
+        const userFromEntry = transaction.from?.find(
+          (entry) => entry.address === userAddress,
+        );
+
+        if (userFromEntry && userToEntry) {
+          return `${t('swap')} ${userFromEntry.asset.unit} ${'to'} ${
+            userToEntry.asset.unit
+          }`;
+        }
+        return capitalize(transaction.type);
+      }
+      default:
+        return capitalize(transaction.type);
+    }
+  };
 
   if (!isEvmAccountType(selectedAccount.type)) {
     const addressLink = getMultichainAccountUrl(
@@ -354,6 +405,7 @@ export default function TransactionList({
           <MultichainTransactionDetailsModal
             transaction={selectedTransaction}
             onClose={() => toggleShowDetails(null)}
+            userAddress={selectedAccount.address}
           />
         )}
 
@@ -427,17 +479,20 @@ export default function TransactionList({
                               title="Primary Currency"
                               variant="body-lg-medium"
                             >
-                              {transaction.from?.[0]?.asset?.amount &&
-                              transaction.from[0]?.asset?.unit
-                                ? `${transaction.from[0].asset.amount} ${transaction.from[0].asset.unit}`
-                                : ''}
+                              {getTransactionDisplayAmount(
+                                transaction,
+                                selectedAccount.address,
+                              )}
                             </Text>
                           </>
                         }
                         title={
                           transaction.isBridgeTx
                             ? t('bridge')
-                            : capitalize(transaction.type)
+                            : formatTransactionTitle(
+                                transaction,
+                                selectedAccount.address,
+                              )
                         }
                         // eslint-disable-next-line react/jsx-no-duplicate-props
                         subtitle={

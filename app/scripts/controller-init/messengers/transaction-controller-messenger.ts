@@ -56,7 +56,6 @@ export type TransactionControllerInitMessenger = ReturnType<
 export function getTransactionControllerMessenger(
   messenger: Messenger<MessengerActions, MessengerEvents>,
 ): TransactionControllerMessenger {
-  // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
   return messenger.getRestricted({
     name: 'TransactionController',
     allowedActions: [
