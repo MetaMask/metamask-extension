@@ -93,22 +93,22 @@ jobs:
   #   needs: prep-deps
   #   uses: ./.github/workflows/validate-lavamoat-policy-webapp.yml
 
-  prep-build-test-browserify:
-    needs: prep-deps
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
-        with:
-          is-high-risk-environment: false
+  # prep-build-test-browserify:
+  #   needs: prep-deps
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout and setup environment
+  #       uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+  #       with:
+  #         is-high-risk-environment: false
 
-      - run: yarn build:test
+  #     - run: yarn build:test
 
-      - name: Upload artifact prep-build-test-browserify
-        uses: actions/upload-artifact@v4
-        with:
-          name: prep-build-test-browserify
-          path: ./dist/
+  #     - name: Upload artifact prep-build-test-browserify
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: prep-build-test-browserify
+  #         path: ./dist/
 
   prep-build-test-webpack:
     needs: prep-deps
@@ -262,26 +262,49 @@ jobs:
   #         name: ts-migration-dashboard
   #         path: ./development/ts-migration-dashboard/build/final/
 
-  test-e2e-chrome-webpack-cimg:
+  test-e2e-chrome-webpack:
     needs:
       - prep-build-test-webpack
       - get-changed-files-with-git-diff
     runs-on: ubuntu-22.04
     container:
       image: cimg/node:22.13-browsers
-    # options: --user root
     strategy:
       fail-fast: false
       matrix:
-        index: [0] #, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        index:
+          [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+          ]
     env:
       MATRIX_INDEX: ${{ matrix.index }}
-      MATRIX_TOTAL: 1
+      MATRIX_TOTAL: 24
       USE_SANDBOX: false
       USE_HEADLESS: false
     steps:
-      - uses: actions/checkout@v4
-
       - name: Install zstd
         run: sudo apt-get update && sudo apt-get install zstd
         shell: bash
@@ -296,19 +319,6 @@ jobs:
 
       - run: yarn foundryup
 
-      # - name: Download .metamask/cache
-      #   continue-on-error: true
-      #   uses: actions/cache/restore@v4
-      #   with:
-      #     key: metamask-cache
-      #     path: ./
-
-      # # Find and fix permissions for all anvil binaries
-      # - name: Find and fix permissions for all anvil binaries
-      #   run: |
-      #     find .metamask -name anvil -type f -exec chmod 755 {} \;
-      #     ls -la node_modules/.bin/anvil
-
       - name: Download prep-build-test-webpack artifact
         uses: actions/download-artifact@v4
         with:
@@ -319,77 +329,6 @@ jobs:
       - name: Configure Xvfb
         run: Xvfb -ac :99 -screen 0 1280x1024x16 &
 
-      # - name: Download changed-files artifact
-      #   continue-on-error: true
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: changed-files
-      #     path: ./changed-files/
-
-      # - run: wget https://github.com/MetaMask/metamask-extension/actions/runs/13708013399/artifacts/2706756326
-
-      # - name: Download .metamask/cache
-      #   continue-on-error: true
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: metamask-cache
-      #     path: ./
-
-      # - run: yarn install
-
-      # Find and fix permissions for all anvil binaries
-      # - name: Find and fix permissions for all anvil binaries
-      #   run: |
-      #     find .metamask -name anvil -type f -exec chmod 755 {} \;
-      #     ls -la node_modules/.bin/anvil
-
-      - name: Run e2e tests
-        run: yarn test:e2e:chrome:webpack
-
-      # - name: Upload test artifacts
-      #   if: always()
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: test-artifacts-e2e-chrome-webpack-${{ matrix.index }}
-      #     path: ./test-artifacts
-
-      # - name: Upload test results
-      #   if: always()
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: test-results-e2e-chrome-webpack-${{ matrix.index }}
-      #     path: ./test/test-results/e2e
-
-  test-e2e-chrome-webpack-nocontainer:
-    needs:
-      - prep-build-test-webpack
-      - get-changed-files-with-git-diff
-    runs-on: ubuntu-22.04
-    strategy:
-      fail-fast: false
-      matrix:
-        index: [0] #, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-    env:
-      MATRIX_INDEX: ${{ matrix.index }}
-      MATRIX_TOTAL: 1
-      USE_SANDBOX: false
-      USE_HEADLESS: true
-    steps:
-      - name: Install zstd
-        run: sudo apt-get update && sudo apt-get install zstd
-        shell: bash
-
-      - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
-        with:
-          is-high-risk-environment: true
-
-      - name: Download prep-build-test-webpack artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: prep-build-test-webpack
-          path: ./dist/
-
       - name: Download changed-files artifact
         continue-on-error: true
         uses: actions/download-artifact@v4
@@ -397,26 +336,8 @@ jobs:
           name: changed-files
           path: ./changed-files/
 
-      # - name: Download .metamask/cache
-      #   continue-on-error: true
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: metamask-cache
-      #     path: ./
-
-      # - run: yarn install
-
-      # Find and fix permissions for all anvil binaries
-      # - name: Find and fix permissions for all anvil binaries
-      #   run: |
-      #     find .metamask -name anvil -type f -exec chmod 755 {} \;
-      #     ls -la node_modules/.bin/anvil
-
       - name: Run e2e tests
-        run: .github/scripts/test-run-e2e.sh yarn test:e2e:chrome:webpack
-        env:
-          # 5 minutes timeout for the e2e tests
-          TIMEOUT: 5
+        run: yarn test:e2e:chrome:webpack
 
       - name: Upload test artifacts
         if: always()
