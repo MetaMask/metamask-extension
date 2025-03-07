@@ -26,6 +26,7 @@ import {
   getMultichainNativeTokenBalance,
 } from '../../../selectors/assets';
 import { getPreferences, getSelectedInternalAccount } from '../../../selectors';
+import { getMultichainNetwork } from '../../../selectors/multichain';
 import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import Spinner from '../spinner';
@@ -45,6 +46,7 @@ export const AggregatedBalance = ({
   const balances = useSelector(getTokenBalances);
   const assets = useSelector(getAccountAssets);
   const selectedAccount = useSelector(getSelectedInternalAccount);
+  const currentNetwork = useSelector(getMultichainNetwork);
   const currentCurrency = useSelector(getCurrentCurrency);
   const multichainAggregatedBalance = useSelector((state) =>
     getMultichainAggregatedBalance(state, selectedAccount),
@@ -55,7 +57,7 @@ export const AggregatedBalance = ({
 
   const formattedFiatDisplay = formatWithThreshold(
     multichainAggregatedBalance,
-    0.01,
+    0.0,
     locale,
     {
       style: 'currency',
@@ -65,13 +67,13 @@ export const AggregatedBalance = ({
 
   const formattedTokenDisplay = formatWithThreshold(
     multichainNativeTokenBalance.amount,
-    0.00001,
+    0.0,
     locale,
     {
-      minimumFractionDigits: 5,
+      minimumFractionDigits: 0,
       maximumFractionDigits: 5,
     },
-  ).replace(/(\.0+|(?<=\.\d+)0+)$/u, ''); // strip trailing zeros
+  );
 
   if (!balances || !assets[selectedAccount.id]?.length) {
     return <Spinner className="loading-overlay__spinner" />;
@@ -104,7 +106,7 @@ export const AggregatedBalance = ({
           isHidden={privacyMode}
         >
           {showNativeTokenAsMainBalance
-            ? multichainNativeTokenBalance.unit
+            ? currentNetwork.network.ticker
             : currentCurrency.toUpperCase()}
         </SensitiveText>
 

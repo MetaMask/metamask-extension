@@ -3,8 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { isStrictHexString } from '@metamask/utils';
 import {
   getBridgeQuotes,
+  getFromToken,
   getQuoteRequest,
   getToChain,
+  getToToken,
 } from '../../ducks/bridge/selectors';
 import { getMarketData, getParticipateInMetaMetrics } from '../../selectors';
 import { getCurrentCurrency } from '../../ducks/metamask/metamask';
@@ -20,25 +22,30 @@ import { getMultichainCurrentChainId } from '../../selectors/multichain';
 export const useBridgeExchangeRates = () => {
   const { srcTokenAddress, destTokenAddress } = useSelector(getQuoteRequest);
   const { activeQuote } = useSelector(getBridgeQuotes);
-  const chainId = useMultichainSelector(getMultichainCurrentChainId);
+  const fromChainId = useMultichainSelector(getMultichainCurrentChainId);
   const toChain = useSelector(getToChain);
+  const toChainId = toChain?.chainId;
+
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
 
   const dispatch = useDispatch();
 
   const currency = useSelector(getCurrentCurrency);
 
-  // Use values from activeQuote if available, otherwise use validated input field values
-  const fromTokenAddress = activeQuote
+  // Only use token address from quote as a fallback if there is no token address in the store
+  const fromTokenAddressFromQuote = activeQuote
     ? activeQuote.quote.srcAsset.address
     : srcTokenAddress;
-  const toTokenAddress = activeQuote
+  const fromTokenFromStore = useSelector(getFromToken);
+  const fromTokenAddress =
+    fromTokenFromStore?.address ?? fromTokenAddressFromQuote;
+
+  // Only use token address from quote as a fallback if there is no token address in the store
+  const toTokenAddressFromQuote = activeQuote
     ? activeQuote.quote.destAsset.address
     : destTokenAddress;
-  const fromChainId = activeQuote ? activeQuote.quote.srcChainId : chainId;
-  const toChainId = activeQuote
-    ? activeQuote.quote.destChainId
-    : toChain?.chainId;
+  const toTokenFromStore = useSelector(getToToken);
+  const toTokenAddress = toTokenFromStore?.address ?? toTokenAddressFromQuote;
 
   const marketData = useSelector(getMarketData);
 
