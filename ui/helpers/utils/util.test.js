@@ -1337,9 +1337,11 @@ describe('util', () => {
     it('should return true for Snap accounts derived from HD keyring', () => {
       const snapAccount = {
         address: '0x123',
+        options: {
+          entropySource: mockHDKeyring.metadata.id,
+        },
         metadata: {
           keyring: {
-            id: mockHDKeyring.metadata.id,
             type: KeyringTypes.snap,
           },
         },
@@ -1353,9 +1355,11 @@ describe('util', () => {
     it('should return false for Snap accounts not derived from HD keyring', () => {
       const snapAccount = {
         address: '0x123',
+        options: {
+          entropySource: 'some-other-id',
+        },
         metadata: {
           keyring: {
-            id: 'some-other-id',
             type: KeyringTypes.snap,
           },
         },

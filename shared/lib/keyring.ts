@@ -3,6 +3,7 @@ import {
   KeyringMetadata,
   KeyringTypes,
 } from '@metamask/keyring-controller';
+import { isEqualCaseInsensitive } from '../modules/string-utils';
 
 // TODO: This kind of logic should be inside the `KeyringController` (using `KeyringSelector` query, or make `addNewKeyring` returns it keyring ID alongside
 
@@ -14,12 +15,15 @@ export function findKeyringId(
   const keyringIndex = keyrings.findIndex((keyring) => {
     if (selector.address && selector.type) {
       return (
-        keyring.accounts.includes(selector.address.toLowerCase()) &&
-        keyring.type === selector.type
+        keyring.accounts.some((account) =>
+          isEqualCaseInsensitive(account, selector.address as string),
+        ) && keyring.type === selector.type
       );
     }
     if (selector.address) {
-      return keyring.accounts.includes(selector.address.toLowerCase());
+      return keyring.accounts.some((account) =>
+        isEqualCaseInsensitive(account, selector.address as string),
+      );
     }
     if (selector.type) {
       return keyring.type === selector.type;
