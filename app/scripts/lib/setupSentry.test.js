@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/browser';
 import { validate as uuidValidate, version as uuidVersion } from 'uuid';
 import * as setupSentry from './setupSentry';
 
-// Mock the entire setupSentry module
+// Mock the entire setupSentry module because it is a readonly module
 jest.mock('./setupSentry', () => {
   const originalModule = jest.requireActual('./setupSentry');
   return {
@@ -12,7 +12,6 @@ jest.mock('./setupSentry', () => {
     setUserIdIfAvailable: jest.fn(),
   };
 });
-
 jest.mock('@sentry/browser', () => ({
   setUser: jest.fn(),
 }));
@@ -179,7 +178,8 @@ describe('Setup Sentry', () => {
           url: 'https://example.com',
         },
       };
-      const rewrittenBreadcrumb = setupSentry.removeUrlsFromBreadCrumb(testBreadcrumb);
+      const rewrittenBreadcrumb =
+        setupSentry.removeUrlsFromBreadCrumb(testBreadcrumb);
       expect(rewrittenBreadcrumb.data.url).toStrictEqual('');
     });
 
@@ -189,7 +189,8 @@ describe('Setup Sentry', () => {
           to: 'https://example.com',
         },
       };
-      const rewrittenBreadcrumb = setupSentry.removeUrlsFromBreadCrumb(testBreadcrumb);
+      const rewrittenBreadcrumb =
+        setupSentry.removeUrlsFromBreadCrumb(testBreadcrumb);
       expect(rewrittenBreadcrumb.data.to).toStrictEqual('');
     });
 
@@ -199,7 +200,8 @@ describe('Setup Sentry', () => {
           from: 'https://example.com',
         },
       };
-      const rewrittenBreadcrumb = setupSentry.removeUrlsFromBreadCrumb(testBreadcrumb);
+      const rewrittenBreadcrumb =
+        setupSentry.removeUrlsFromBreadCrumb(testBreadcrumb);
       expect(rewrittenBreadcrumb.data.from).toStrictEqual('');
     });
 
@@ -209,7 +211,8 @@ describe('Setup Sentry', () => {
           url: 'chrome-extension://abcefg/home.html',
         },
       };
-      const rewrittenBreadcrumb = setupSentry.removeUrlsFromBreadCrumb(testBreadcrumb);
+      const rewrittenBreadcrumb =
+        setupSentry.removeUrlsFromBreadCrumb(testBreadcrumb);
       expect(rewrittenBreadcrumb.data.url).toStrictEqual(
         'chrome-extension://abcefg/home.html',
       );
@@ -221,7 +224,8 @@ describe('Setup Sentry', () => {
           to: 'chrome-extension://abcefg/home.html',
         },
       };
-      const rewrittenBreadcrumb = setupSentry.removeUrlsFromBreadCrumb(testBreadcrumb);
+      const rewrittenBreadcrumb =
+        setupSentry.removeUrlsFromBreadCrumb(testBreadcrumb);
       expect(rewrittenBreadcrumb.data.to).toStrictEqual(
         'chrome-extension://abcefg/home.html',
       );
@@ -233,7 +237,8 @@ describe('Setup Sentry', () => {
           from: 'chrome-extension://abcefg/home.html',
         },
       };
-      const rewrittenBreadcrumb = setupSentry.removeUrlsFromBreadCrumb(testBreadcrumb);
+      const rewrittenBreadcrumb =
+        setupSentry.removeUrlsFromBreadCrumb(testBreadcrumb);
       expect(rewrittenBreadcrumb.data.from).toStrictEqual(
         'chrome-extension://abcefg/home.html',
       );
@@ -247,7 +252,8 @@ describe('Setup Sentry', () => {
           from: 'chrome-extension://abcefg/home.html',
         },
       };
-      const rewrittenBreadcrumb = setupSentry.removeUrlsFromBreadCrumb(testBreadcrumb);
+      const rewrittenBreadcrumb =
+        setupSentry.removeUrlsFromBreadCrumb(testBreadcrumb);
       expect(rewrittenBreadcrumb.data).toStrictEqual({
         url: 'chrome-extension://abcefg/home.html',
         to: '',
