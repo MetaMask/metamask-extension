@@ -12,11 +12,11 @@ describe('Click bridge button', function (this: Suite) {
           support: true,
         },
       }),
-      async ({ driver, ganacheServer }) => {
+      async ({ driver }) => {
         const bridgePage = new BridgePage(driver);
-        await logInWithBalanceValidation(driver, ganacheServer);
+        await logInWithBalanceValidation(driver);
         await bridgePage.navigateToBridgePage();
-        await bridgePage.verifySwapPage(1);
+        await bridgePage.verifySwapPage();
       },
     );
   });

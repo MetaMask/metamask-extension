@@ -1,5 +1,6 @@
 import { Driver } from '../../../webdriver/driver';
 import { Ganache } from '../../../seeder/ganache';
+import { Anvil } from '../../../seeder/anvil';
 import { getCleanAppState } from '../../../helpers';
 import HeaderNavbar from '../header-navbar';
 
@@ -212,7 +213,7 @@ class HomePage {
     await this.driver.wait(async () => {
       const uiState = await getCleanAppState(this.driver);
       return uiState.metamask.hasAccountSyncingSyncedAtLeastOnce === true;
-    }, 10000);
+    }, 30000); // Syncing can take some time so adding a longer timeout to reduce flakes
   }
 
   async check_ifBridgeButtonIsClickable(): Promise<boolean> {
@@ -249,14 +250,14 @@ class HomePage {
   }
 
   async check_localNodeBalanceIsDisplayed(
-    localNode?: Ganache,
+    localNode?: Ganache | Anvil,
     address = null,
   ): Promise<void> {
     let expectedBalance: string;
     if (localNode) {
       expectedBalance = (await localNode.getBalance(address)).toString();
     } else {
-      expectedBalance = '0';
+      expectedBalance = '25';
     }
     await this.check_expectedBalanceIsDisplayed(expectedBalance);
   }

@@ -33,6 +33,10 @@ import {
   CarouselSlide,
 } from '../../../shared/constants/app-state';
 import type {
+  ThrottledOrigins,
+  ThrottledOrigin,
+} from '../../../shared/types/origin-throttling';
+import type {
   Preferences,
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
@@ -81,6 +85,7 @@ export type AppStateControllerState = {
   noteToTraderMessage?: string;
   custodianDeepLink?: { fromAddress: string; custodyId: string };
   slides: CarouselSlide[];
+  throttledOrigins: ThrottledOrigins;
 };
 
 const controllerName = 'AppStateController';
@@ -193,6 +198,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   surveyLinkLastClickedOrClosed: null,
   switchedNetworkNeverShowMessage: false,
   slides: [],
+  throttledOrigins: {},
   ...getInitialStateOverrides(),
 });
 
@@ -357,6 +363,10 @@ const controllerMetadata = {
   },
   slides: {
     persist: true,
+    anonymous: true,
+  },
+  throttledOrigins: {
+    persist: false,
     anonymous: true,
   },
 };
@@ -1086,5 +1096,18 @@ export class AppStateController extends BaseController<
     }
 
     this.#approvalRequestId = null;
+  }
+
+  getThrottledOriginState(origin: string): ThrottledOrigin {
+    return this.state.throttledOrigins[origin];
+  }
+
+  updateThrottledOriginState(
+    origin: string,
+    throttledOriginState: ThrottledOrigin,
+  ): void {
+    this.update((state) => {
+      state.throttledOrigins[origin] = throttledOriginState;
+    });
   }
 }

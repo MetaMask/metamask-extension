@@ -31,7 +31,7 @@ jobs:
         with:
           repository: ${{ github.event.workflow_run.head_repository.full_name }} # Use the repository that triggered the workflow
           ref: ${{ github.event.workflow_run.head_branch }} # Use the branch that triggered the workflow
-          fetch-depth: 0  # Shallow clones should be disabled for better relevancy of analysis
+          fetch-depth: 0 # Shallow clones should be disabled for better relevancy of analysis
 
       - name: Download artifacts
         uses: actions/download-artifact@v4

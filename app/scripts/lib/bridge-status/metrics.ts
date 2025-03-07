@@ -24,6 +24,7 @@ import {
 } from '../../../../shared/types/bridge-status';
 import { isEthUsdt } from '../../../../shared/modules/bridge-utils/bridge.util';
 import { getCommonProperties } from '../../../../shared/lib/bridge-status/metrics';
+import { formatChainIdToHex } from '../../../../shared/modules/bridge-utils/caip-formatters';
 import { getTokenUsdValue } from './metrics-utils';
 
 type TrackEvent = (
@@ -62,7 +63,7 @@ export const handleBridgeTransactionComplete = async (
   ).toNumber();
   const destTokenUsdValue =
     (await getTokenUsdValue({
-      chainId: chain_id_destination,
+      chainId: formatChainIdToHex(chain_id_destination),
       tokenAmount: destTokenAmount,
       tokenAddress: quote.destAsset.address,
       state,
