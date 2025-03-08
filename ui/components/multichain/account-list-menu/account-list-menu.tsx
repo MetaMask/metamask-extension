@@ -346,28 +346,26 @@ export const AccountListMenu = ({
   }
 
   const onAccountListItemItemClicked = useCallback(
-    (address: string) => {
-      return () => {
-        onClose();
-        trackEvent({
-          category: MetaMetricsEventCategory.Navigation,
-          event: MetaMetricsEventName.NavAccountSwitched,
-          properties: {
-            location: 'Main Menu',
-          },
-        });
-        endTrace({
-          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
-            defaultHomeActiveTabName
-          ],
-        });
-        trace({
-          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
-            defaultHomeActiveTabName
-          ],
-        });
-        dispatch(setSelectedAccount(address));
-      };
+    (account: MergedInternalAccount) => {
+      onClose();
+      trackEvent({
+        category: MetaMetricsEventCategory.Navigation,
+        event: MetaMetricsEventName.NavAccountSwitched,
+        properties: {
+          location: 'Main Menu',
+        },
+      });
+      endTrace({
+        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
+          defaultHomeActiveTabName
+        ],
+      });
+      trace({
+        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
+          defaultHomeActiveTabName
+        ],
+      });
+      dispatch(setSelectedAccount(account.address));
     },
     [dispatch, onClose, trackEvent, defaultHomeActiveTabName],
   );
@@ -393,7 +391,7 @@ export const AccountListMenu = ({
           key={account.address}
         >
           <AccountListItem
-            onClick={onAccountListItemItemClicked(account.address)}
+            onClick={onAccountListItemItemClicked}
             account={account}
             key={account.address}
             selected={selectedAccount.address === account.address}
