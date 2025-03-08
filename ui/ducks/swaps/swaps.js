@@ -68,6 +68,7 @@ import {
   checkNetworkAndAccountSupports1559,
   getSelectedInternalAccount,
   getSelectedNetwork,
+  getHDEntropyIndex,
 } from '../../selectors';
 import {
   getSmartTransactionsEnabled,
@@ -632,6 +633,7 @@ export const fetchQuotesAndSetQuoteState = (
 ) => {
   return async (dispatch, getState) => {
     const state = getState();
+    const hdEntropyIndex = getHDEntropyIndex(state);
     const selectedNetwork = getSelectedNetwork(state);
     let swapsLivenessForNetwork = {
       swapsFeatureIsLive: false,
@@ -770,6 +772,9 @@ export const fetchQuotesAndSetQuoteState = (
         stx_user_opt_in: getSmartTransactionsOptInStatusForMetrics(state),
         anonymizedData: true,
       },
+      properties: {
+        hd_entropy_index: hdEntropyIndex,
+      },
     });
 
     try {
@@ -864,6 +869,9 @@ export const fetchQuotesAndSetQuoteState = (
             gas_included: newSelectedQuote.isGasIncludedTrade,
             anonymizedData: true,
           },
+          properties: {
+            hd_entropy_index: hdEntropyIndex,
+          },
         });
 
         dispatch(setInitialGasEstimate(selectedAggId));
@@ -893,6 +901,7 @@ export const signAndSendSwapsSmartTransaction = ({
   return async (dispatch, getState) => {
     dispatch(setSwapsSTXSubmitLoading(true));
     const state = getState();
+    const hdEntropyIndex = getHDEntropyIndex(state);
     const fetchParams = getFetchParams(state);
     const hardwareWalletUsed = isHardwareWallet(state);
     const hardwareWalletType = getHardwareWalletType(state);
@@ -949,6 +958,9 @@ export const signAndSendSwapsSmartTransaction = ({
       event: 'STX Swap Started',
       category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: swapMetaData,
+      properties: {
+        hd_entropy_index: hdEntropyIndex,
+      },
     });
 
     if (
@@ -1068,6 +1080,7 @@ export const signAndSendTransactions = (
 ) => {
   return async (dispatch, getState) => {
     const state = getState();
+    const hdEntropyIndex = getHDEntropyIndex(state);
     const chainId = getCurrentChainId(state);
     const hardwareWalletUsed = isHardwareWallet(state);
     const networkAndAccountSupports1559 =
@@ -1236,6 +1249,9 @@ export const signAndSendTransactions = (
       event: MetaMetricsEventName.SwapStarted,
       category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: swapMetaData,
+      properties: {
+        hd_entropy_index: hdEntropyIndex,
+      },
     });
 
     if (!isContractAddressValid(usedTradeTxParams.to, chainId)) {

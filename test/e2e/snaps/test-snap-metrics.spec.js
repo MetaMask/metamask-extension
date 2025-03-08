@@ -251,6 +251,7 @@ describe('Test Snap Metrics', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
+          hd_entropy_index: 0,
         });
       },
     );
