@@ -29,4 +29,8 @@ export interface BadgeStatusProps extends StyleUtilityProps {
    * Address for AvatarAccount
    */
   address: string;
+  /**
+   * To determine if the connection is disconnected
+   */
+  isDisconnected: boolean;
 }
