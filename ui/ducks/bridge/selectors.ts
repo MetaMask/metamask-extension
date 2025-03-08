@@ -175,7 +175,7 @@ export const getToChains = createDeepEqualSelector(
   (allBridgeableNetworks, bridgeFeatureFlags) =>
     uniqBy([...allBridgeableNetworks, ...FEATURED_RPCS], 'chainId').filter(
       ({ chainId }) =>
-        bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].chains[
+        bridgeFeatureFlags?.[BridgeFeatureFlagsKey.EXTENSION_CONFIG]?.chains?.[
           formatChainIdToCaip(chainId)
         ]?.isActiveDest,
     ),
@@ -196,12 +196,14 @@ export const getTopAssetsFromFeatureFlags = (
 
 export const getToChain = createSelector(
   getToChains,
-  (state: BridgeAppState) => state.bridge.toChainId,
+  (state: BridgeAppState) => state.bridge?.toChainId,
   (toChains, toChainId) =>
-    toChains.find(
-      ({ chainId }) =>
-        chainId === toChainId || formatChainIdToCaip(chainId) === toChainId,
-    ),
+    toChainId
+      ? toChains.find(
+          ({ chainId }) =>
+            chainId === toChainId || formatChainIdToCaip(chainId) === toChainId,
+        )
+      : undefined,
 );
 
 export const getFromToken = createSelector(
