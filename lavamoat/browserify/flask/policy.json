@@ -1392,7 +1392,7 @@
         "eth-lattice-keyring>@ethereumjs/util": true,
         "@metamask/abi-utils": true,
         "@metamask/eth-sig-util>@metamask/utils": true,
-        "@metamask/utils>@scure/base": true,
+        "@metamask/eth-sig-util>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util>tweetnacl": true
@@ -1404,7 +1404,7 @@
         "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/utils>@scure/base": true,
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util>tweetnacl": true
@@ -1416,7 +1416,7 @@
         "eth-lattice-keyring>@ethereumjs/util": true,
         "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/utils>@scure/base": true,
+        "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util>tweetnacl": true
@@ -1428,7 +1428,7 @@
         "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/utils>@scure/base": true,
+        "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util>tweetnacl": true
@@ -1440,7 +1440,7 @@
         "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/utils>@scure/base": true,
+        "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/eth-sig-util>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util>tweetnacl": true
@@ -1452,7 +1452,7 @@
         "eth-lattice-keyring>@ethereumjs/util": true,
         "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/utils>@scure/base": true,
+        "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util>tweetnacl": true
@@ -1464,7 +1464,7 @@
         "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/utils>@scure/base": true,
+        "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util>tweetnacl": true
@@ -1476,7 +1476,7 @@
         "@metamask/keyring-controller>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/keyring-controller>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/utils>@scure/base": true,
+        "@metamask/keyring-controller>@metamask/eth-sig-util>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util>tweetnacl": true
@@ -1488,7 +1488,7 @@
         "eth-lattice-keyring>@ethereumjs/util": true,
         "@metamask/signature-controller>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/signature-controller>@metamask/eth-sig-util>@metamask/utils": true,
-        "@metamask/utils>@scure/base": true,
+        "@metamask/signature-controller>@metamask/eth-sig-util>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util>tweetnacl": true
@@ -1659,7 +1659,7 @@
       "packages": {
         "@metamask/scure-bip39": true,
         "@metamask/utils": true,
-        "viem>@scure/bip32>@noble/curves": true,
+        "viem>@noble/curves": true,
         "@noble/hashes": true,
         "@metamask/utils>@scure/base": true
       }
@@ -2073,7 +2073,7 @@
       },
       "packages": {
         "@metamask/scure-bip39>@noble/hashes": true,
-        "@metamask/utils>@scure/base": true
+        "@metamask/scure-bip39>@scure/base": true
       }
     },
     "@metamask/selected-network-controller": {
@@ -2173,7 +2173,7 @@
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils": true,
-        "viem>@scure/bip32>@noble/curves": true,
+        "viem>@noble/curves": true,
         "@noble/hashes": true
       }
     },
@@ -2441,7 +2441,7 @@
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
         "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
+        "@metamask/eth-sig-util>@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "@metamask/utils>pony-cause": true,
@@ -2456,7 +2456,7 @@
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
         "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
+        "@metamask/signature-controller>@metamask/eth-sig-util>@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "@metamask/utils>pony-cause": true,
@@ -2527,12 +2527,20 @@
         "crypto": true
       }
     },
-    "viem>@scure/bip32>@noble/curves": {
+    "@ethereumjs/tx>ethereum-cryptography>@noble/curves": {
       "globals": {
         "TextEncoder": true
       },
       "packages": {
-        "viem>@scure/bip32>@noble/curves>@noble/hashes": true
+        "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "viem>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@noble/hashes": true
       }
     },
     "@noble/hashes": {
@@ -2542,18 +2550,6 @@
       }
     },
     "@metamask/scure-bip39>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
-    "viem>@scure/bip32>@noble/curves>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
-    "viem>@scure/bip32>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -2645,17 +2641,95 @@
         "document.defaultView": true
       }
     },
+    "@metamask/eth-sig-util>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/eth-sig-util>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/keyring-controller>@metamask/eth-sig-util>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/signature-controller>@metamask/eth-sig-util>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/scure-bip39>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
     "@metamask/utils>@scure/base": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
       }
     },
-    "viem>@scure/bip32": {
+    "@metamask/eth-sig-util>@metamask/utils>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/signature-controller>@metamask/eth-sig-util>@metamask/utils>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": {
       "packages": {
-        "viem>@scure/bip32>@noble/curves": true,
-        "viem>@scure/bip32>@noble/hashes": true,
-        "@metamask/utils>@scure/base": true
+        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
+        "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true,
+        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@scure/base": true
       }
     },
     "@segment/loosely-validate-event": {
@@ -3913,9 +3987,9 @@
         "crypto": true
       },
       "packages": {
-        "viem>@scure/bip32>@noble/curves": true,
+        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
         "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true,
-        "viem>@scure/bip32": true
+        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": true
       }
     },
     "eth-lattice-keyring>@ethereumjs/tx>ethereum-cryptography": {
@@ -4919,7 +4993,7 @@
         "react": true
       }
     },
-    "mockttp>body-parser>qs": {
+    "mockttp>express>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
       }
@@ -5728,7 +5802,7 @@
     "browserify>url": {
       "packages": {
         "browserify>punycode": true,
-        "mockttp>body-parser>qs": true
+        "mockttp>express>qs": true
       }
     },
     "react-focus-lock>use-callback-ref": {

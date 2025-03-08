@@ -2165,6 +2165,10 @@ export default class MetamaskController extends EventEmitter {
           addTransactionBatch: this.txController.addTransactionBatch.bind(
             this.txController,
           ),
+          getDisabledAccountUpgradeChains:
+            this.preferencesController.getDisabledAccountUpgradeChains.bind(
+              this.preferencesController,
+            ),
         },
         this.controllerMessenger,
       ),
@@ -2176,6 +2180,10 @@ export default class MetamaskController extends EventEmitter {
         isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
           this.txController,
         ),
+        getDisabledAccountUpgradeChains:
+          this.preferencesController.getDisabledAccountUpgradeChains.bind(
+            this.preferencesController,
+          ),
       }),
     });
 
