@@ -17,8 +17,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
-import { SendPageRow } from './send-page-row';
 import { MergedInternalAccount } from '../../../../../selectors/selectors.types';
+import { SendPageRow } from './send-page-row';
 
 type SendPageYourAccountsProps = {
   allowedAccountTypes?: KeyringAccountType[];
