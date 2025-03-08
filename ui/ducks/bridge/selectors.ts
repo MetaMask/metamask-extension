@@ -139,8 +139,18 @@ export const getAllBridgeableNetworks = createDeepEqualSelector(
 export const getFromChains = createDeepEqualSelector(
   getAllBridgeableNetworks,
   (state: BridgeAppState) => state.metamask.bridgeState?.bridgeFeatureFlags,
-  (allBridgeableNetworks, bridgeFeatureFlags) => {
-    return allBridgeableNetworks.filter(
+  (state: BridgeAppState) => hasSolanaAccounts(state),
+  (allBridgeableNetworks, bridgeFeatureFlags, hasSolanaAccount) => {
+    // First filter out Solana from source chains if no Solana account exists
+    const filteredNetworks = hasSolanaAccount
+      ? allBridgeableNetworks
+      : allBridgeableNetworks.filter(
+          // @ts-expect-error: gotta fix type here.
+          ({ chainId }) => chainId !== MultichainNetworks.SOLANA,
+        );
+
+    // Then apply the standard filter for active source chains
+    return filteredNetworks.filter(
       ({ chainId }) =>
         bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].chains[
           formatChainIdToCaip(chainId)
