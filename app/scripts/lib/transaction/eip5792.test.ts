@@ -9,7 +9,7 @@ import {
   NetworkControllerGetNetworkClientByIdAction,
 } from '@metamask/network-controller';
 import { SendCalls, SendCallsParams } from '@metamask/eth-json-rpc-middleware';
-import { JsonRpcRequest } from '@metamask/utils';
+import { Hex, JsonRpcRequest } from '@metamask/utils';
 import { Messenger } from '@metamask/base-controller';
 import {
   EIP5792Messenger,
@@ -22,6 +22,7 @@ const CHAIN_ID_MOCK = '0x123';
 const CHAIN_ID_2_MOCK = '0xabc';
 const BATCH_ID_MOCK = '123-456';
 const NETWORK_CLIENT_ID_MOCK = 'test-client';
+const FROM_MOCK = '0xabc123';
 const ORIGIN_MOCK = 'test.com';
 
 const RECEIPT_MOCK = {
@@ -38,7 +39,7 @@ const SEND_CALLS_MOCK: SendCalls = {
   version: '1.0',
   calls: [{ to: '0x123' }],
   chainId: CHAIN_ID_MOCK,
-  from: '0x123',
+  from: FROM_MOCK,
 };
 
 const REQUEST_MOCK = {
@@ -67,6 +68,8 @@ describe('EIP-5792', () => {
     TransactionControllerGetStateAction['handler']
   >;
 
+  let getDisabledAccountUpgradeChainsMock: jest.MockedFn<() => Hex[]>;
+
   let messenger: EIP5792Messenger;
 
   beforeEach(() => {
@@ -76,6 +79,7 @@ describe('EIP-5792', () => {
     isAtomicBatchSupportedMock = jest.fn();
     getTransactionControllerStateMock = jest.fn();
     getNetworkClientByIdMock = jest.fn();
+    getDisabledAccountUpgradeChainsMock = jest.fn();
 
     messenger = new Messenger();
 
@@ -96,12 +100,16 @@ describe('EIP-5792', () => {
     } as unknown as AutoManagedNetworkClient<CustomNetworkClientConfiguration>);
 
     addTransactionBatchMock.mockResolvedValue({ batchId: BATCH_ID_MOCK });
+    getDisabledAccountUpgradeChainsMock.mockReturnValue([]);
   });
 
   describe('processSendCalls', () => {
     it('calls adds transaction batch hook', async () => {
       await processSendCalls(
-        { addTransactionBatch: addTransactionBatchMock },
+        {
+          addTransactionBatch: addTransactionBatchMock,
+          getDisabledAccountUpgradeChains: getDisabledAccountUpgradeChainsMock,
+        },
         messenger,
         SEND_CALLS_MOCK,
         REQUEST_MOCK,
@@ -118,7 +126,11 @@ describe('EIP-5792', () => {
     it('returns batch ID from hook', async () => {
       expect(
         await processSendCalls(
-          { addTransactionBatch: addTransactionBatchMock },
+          {
+            addTransactionBatch: addTransactionBatchMock,
+            getDisabledAccountUpgradeChains:
+              getDisabledAccountUpgradeChainsMock,
+          },
           messenger,
           SEND_CALLS_MOCK,
           REQUEST_MOCK,
@@ -129,13 +141,36 @@ describe('EIP-5792', () => {
     it('throws if chain ID does not match network client', async () => {
       await expect(
         processSendCalls(
-          { addTransactionBatch: addTransactionBatchMock },
+          {
+            addTransactionBatch: addTransactionBatchMock,
+            getDisabledAccountUpgradeChains:
+              getDisabledAccountUpgradeChainsMock,
+          },
           messenger,
           { ...SEND_CALLS_MOCK, chainId: CHAIN_ID_2_MOCK },
           REQUEST_MOCK,
         ),
       ).rejects.toThrow(
         `Chain ID must match the dApp selected network: Got ${CHAIN_ID_2_MOCK}, expected ${CHAIN_ID_MOCK}`,
+      );
+    });
+
+    it('throws if disabled preference for chain', async () => {
+      getDisabledAccountUpgradeChainsMock.mockReturnValue([CHAIN_ID_MOCK]);
+
+      await expect(
+        processSendCalls(
+          {
+            addTransactionBatch: addTransactionBatchMock,
+            getDisabledAccountUpgradeChains:
+              getDisabledAccountUpgradeChainsMock,
+          },
+          messenger,
+          SEND_CALLS_MOCK,
+          REQUEST_MOCK,
+        ),
+      ).rejects.toThrow(
+        `EIP-5792 is not supported for this chain and account - Chain ID: ${CHAIN_ID_MOCK}, Account: ${SEND_CALLS_MOCK.from}`,
       );
     });
   });
@@ -165,8 +200,12 @@ describe('EIP-5792', () => {
 
       expect(
         await getCapabilities(
-          { isAtomicBatchSupported: isAtomicBatchSupportedMock },
-          '0x123',
+          {
+            getDisabledAccountUpgradeChains:
+              getDisabledAccountUpgradeChainsMock,
+            isAtomicBatchSupported: isAtomicBatchSupportedMock,
+          },
+          SEND_CALLS_MOCK.from,
         ),
       ).toStrictEqual({
         [CHAIN_ID_MOCK]: {
@@ -174,6 +213,32 @@ describe('EIP-5792', () => {
             supported: true,
           },
         },
+        [CHAIN_ID_2_MOCK]: {
+          atomicBatch: {
+            supported: true,
+          },
+        },
+      });
+    });
+
+    it('does not include chain if disabled in preferences', async () => {
+      getDisabledAccountUpgradeChainsMock.mockReturnValue([CHAIN_ID_MOCK]);
+
+      isAtomicBatchSupportedMock.mockResolvedValueOnce([
+        CHAIN_ID_MOCK,
+        CHAIN_ID_2_MOCK,
+      ]);
+
+      expect(
+        await getCapabilities(
+          {
+            getDisabledAccountUpgradeChains:
+              getDisabledAccountUpgradeChainsMock,
+            isAtomicBatchSupported: isAtomicBatchSupportedMock,
+          },
+          FROM_MOCK,
+        ),
+      ).toStrictEqual({
         [CHAIN_ID_2_MOCK]: {
           atomicBatch: {
             supported: true,

@@ -1,4 +1,5 @@
 import {
+  AuthorizationList,
   CHAIN_IDS,
   SimulationData,
   TransactionMeta,
@@ -23,11 +24,13 @@ export const CHAIN_ID = CHAIN_IDS.GOERLI;
 
 export const genUnapprovedContractInteractionConfirmation = ({
   address = CONTRACT_INTERACTION_SENDER_ADDRESS,
+  authorizationList = undefined,
   txData = DEPOSIT_METHOD_DATA,
   chainId = CHAIN_ID,
   simulationData,
 }: {
   address?: Hex;
+  authorizationList?: AuthorizationList;
   txData?: Hex;
   chainId?: string;
   simulationData?: SimulationData;
@@ -68,6 +71,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
         status: TransactionStatus.unapproved,
         time: 1713534772044,
         txParams: {
+          authorizationList,
           data: txData,
           from: address,
           gas: '0xab77',
@@ -153,6 +157,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
     status: TransactionStatus.unapproved,
     time: 1713534772044,
     txParams: {
+      authorizationList,
       data: txData,
       from: address,
       gas: '0xab77',
