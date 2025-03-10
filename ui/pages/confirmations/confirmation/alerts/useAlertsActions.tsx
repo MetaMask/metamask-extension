@@ -3,15 +3,21 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { AlertActionKey } from '../../../../components/app/confirm/info/row/constants';
-import { getApprovalsByOrigin } from '../../../../selectors';
 import { useConfirmationNavigation } from '../../hooks/useConfirmationNavigation';
+import {
+  ApprovalsMetaMaskState,
+  getApprovalsByOrigin,
+} from '../../../../selectors';
 
 export const useAlertsActions = (
   hideAlertModal: () => void,
   pendingConfirmation: ApprovalRequest<{ id: string }>,
 ) => {
   const pendingConfirmationsFromOrigin = useSelector((state) =>
-    getApprovalsByOrigin(state, pendingConfirmation?.origin),
+    getApprovalsByOrigin(
+      state as ApprovalsMetaMaskState,
+      pendingConfirmation?.origin,
+    ),
   );
 
   const { getIndex, navigateToIndex } = useConfirmationNavigation();

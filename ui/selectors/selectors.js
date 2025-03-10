@@ -1503,21 +1503,6 @@ export const getMemoizedUnapprovedConfirmations = createDeepEqualSelector(
 );
 
 /**
- * Get pending confirmation from specified origin.
- *
- * @param state - Redux state object.
- * @param origin - Origin to ger approvals from.
- * @returns array of approvals from an origin
- */
-export const getApprovalsByOrigin = (state, origin) => {
-  const pendingApprovals = getMemoizedUnapprovedConfirmations(state);
-
-  return pendingApprovals?.filter(
-    (confirmation) => confirmation.origin === origin,
-  );
-};
-
-/**
  * Get a memoized version of the unapproved templated confirmations.
  */
 export const getMemoizedUnapprovedTemplatedConfirmations =
