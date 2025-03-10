@@ -40,37 +40,34 @@ git config --global user.name "MetaMask Bot"
 
 git clone git@github.com:MetaMask/extension_bundlesize_stats.git temp
 
+BUNDLE_SIZE_FILE="test-artifacts/chrome/bundle_size_stats.json"
+STATS_FILE="temp/stats/bundle_size_data.json"
+TEMP_FILE="temp/stats/bundle_size_data.temp.json"
+
+# Ensure the JSON file exists
+if [[ ! -f "$STATS_FILE" ]]; then
+    echo "{}" > "$STATS_FILE"
+fi
+
+# Validate JSON files before modification
+jq . "$STATS_FILE" > /dev/null || { echo "Error: Existing stats JSON is invalid"; exit 1; }
+jq . "$BUNDLE_SIZE_FILE" > /dev/null || { echo "Error: New bundle size JSON is invalid"; exit 1; }
+
+# Append new bundle size data correctly using jq
+jq --arg sha "$CIRCLE_SHA1" --argjson data "$(cat "$BUNDLE_SIZE_FILE")" \
+   '. + {($sha): $data}' "$STATS_FILE" > "$TEMP_FILE"
+
+# Overwrite the original JSON file with the corrected version
+mv "$TEMP_FILE" "$STATS_FILE"
+
 {
     echo " '${CIRCLE_SHA1}': ";
-    cat test-artifacts/chrome/bundle_size_stats.json;
+    cat "$BUNDLE_SIZE_FILE";
     echo ", ";
 } >> temp/stats/bundle_size_data.temp.js
 
 cp temp/stats/bundle_size_data.temp.js temp/stats/bundle_size_data.js
-
 echo " }" >> temp/stats/bundle_size_data.js
-
-if [ -f temp/stats/bundle_size_data.json ]; then
-  # copy bundle_size_data.json in bundle_size_data.temp.json without last 2 lines
-  head -$(($(wc -l < temp/stats/bundle_size_data.json) - 2)) temp/stats/bundle_size_data.json > bundle_size_stats.temp.json
-
-  {
-    echo "},";
-    echo "\"$CIRCLE_SHA1\":";
-    cat test-artifacts/chrome/bundle_size_stats.json;
-    echo "}";
-  } >> bundle_size_stats.temp.json
-else
-  {
-    echo "{";
-    echo "\"$CIRCLE_SHA1\":";
-    cat test-artifacts/chrome/bundle_size_stats.json;
-    echo "}";
-  } > bundle_size_stats.temp.json
-fi
-
-jq . bundle_size_stats.temp.json > temp/stats/bundle_size_data.json
-rm bundle_size_stats.temp.json
 
 cd temp
 
