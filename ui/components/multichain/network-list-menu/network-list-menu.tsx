@@ -462,7 +462,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           : undefined,
       };
     },
-    [currentChainId, dispatch, hasMultiRpcOptions, isUnlocked],
+    [currentChainId, dispatch, hasMultiRpcOptions, isUnlocked, isDiscoverBtnEnabled],
   );
 
   // Renders a network in the network list
