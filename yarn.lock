@@ -15446,13 +15446,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cephes@npm:^1.1.2":
-  version: 1.2.0
-  resolution: "cephes@npm:1.2.0"
-  checksum: 10/df094e77566aa0d191c4cf31ef9a5cd815891a9ce014f99fe31a87ccde0e2184054e38735dd87b202b47e4de677951bd9df49ec403b8d526fb2232cdbe144f88
-  languageName: node
-  linkType: hard
-
 "chain-function@npm:^1.0.0":
   version: 1.0.1
   resolution: "chain-function@npm:1.0.1"
@@ -17872,15 +17865,6 @@ __metadata:
   dependencies:
     path-type: "npm:^4.0.0"
   checksum: 10/fa05e18324510d7283f55862f3161c6759a3f2f8dbce491a2fc14c8324c498286c54282c1f0e933cb930da8419b30679389499b919122952a4f8592362ef4615
-  languageName: node
-  linkType: hard
-
-"distributions@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "distributions@npm:2.1.0"
-  dependencies:
-    cephes: "npm:^1.1.2"
-  checksum: 10/4f4424cd67e107eaf8c88e1f570c80453756a9b7ea2cc2c4b69f9b9184d8f45047ffc878f52c7388ada19a14e695deaec569e698c3ada39dbd6297be29f5e481
   languageName: node
   linkType: hard
 
@@ -27658,7 +27642,6 @@ __metadata:
     ts-node: "npm:^10.9.2"
     tslib: "npm:~2.6.0"
     tsx: "npm:^4.19.2"
-    ttest: "npm:^2.1.1"
     typescript: "npm:~5.4.5"
     unicode-confusables: "npm:^0.1.1"
     unzipper: "npm:^0.12.3"
@@ -35611,13 +35594,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"summary@npm:0.3.x":
-  version: 0.3.2
-  resolution: "summary@npm:0.3.2"
-  checksum: 10/fadbfdaa13a0044be9dc03ee845cc2af017e59eaa554c67a30c965965faae17158a221fbfbaf90de7d840fac9d0e4fe46a2e1a76b408079b3a70c61a508886bf
-  languageName: node
-  linkType: hard
-
 "superstruct@npm:^1.0.3":
   version: 1.0.3
   resolution: "superstruct@npm:1.0.3"
@@ -36480,16 +36456,6 @@ __metadata:
   bin:
     tsx: dist/cli.mjs
   checksum: 10/4c5610ed1fb2f80d766681f8ac7827e1e8118dfe354c18f74800691f3ef1e9ed676a29842ab818806bcf8613cdc97c6af84b5645e768ddb7f4b0527b9100deda
-  languageName: node
-  linkType: hard
-
-"ttest@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "ttest@npm:2.1.1"
-  dependencies:
-    distributions: "npm:^2.1.0"
-    summary: "npm:0.3.x"
-  checksum: 10/21661076d66f1e0a3d9f7854b38fe95936393d55e8fc6b33fec254ebb622e6321b37ff0a154628399af5a40aa72739fba3e161546cd552d59396aad2737e8ee9
   languageName: node
   linkType: hard
 
