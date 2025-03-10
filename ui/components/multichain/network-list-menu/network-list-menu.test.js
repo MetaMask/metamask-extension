@@ -281,15 +281,15 @@ describe('NetworkListMenu', () => {
   });
 
   // For now, we only have Linea Mainnet enabled for the discover button.
-  it.each([CHAIN_IDS.LINEA_MAINNET])(
+  it(
     'enables the "Discover" button when the Feature Flag `enablePortfolioLandingPage` is true and the network is supported',
-    (chainId) => {
+    () => {
       const { queryByTestId } = render({
         enablePortfolioLandingPage: true,
       });
 
       const menuButton = queryByTestId(
-        `network-list-item-options-button-eip155:${hexToDecimal(chainId)}`);
+        `network-list-item-options-button-eip155:${hexToDecimal(CHAIN_IDS.LINEA_MAINNET)}`);
       fireEvent.click(menuButton);
 
       expect(
@@ -298,15 +298,15 @@ describe('NetworkListMenu', () => {
     },
   );
 
-  it.each([CHAIN_IDS.LINEA_MAINNET])(
+  it(
     'disables the "Discover" button when the Feature Flag `enablePortfolioLandingPage` is false regardness if the network or not',
-    (chainId) => {
+    () => {
       const { queryByTestId } = render({
         enablePortfolioLandingPage: false,
       });
 
       const menuButton = queryByTestId(
-        `network-list-item-options-button-eip155:${hexToDecimal(chainId)}`,
+        `network-list-item-options-button-eip155:${hexToDecimal(CHAIN_IDS.LINEA_MAINNET)}`,
       );
       fireEvent.click(menuButton);
 
@@ -316,15 +316,15 @@ describe('NetworkListMenu', () => {
     },
   );
 
-  it.each([CHAIN_IDS.MAINNET])(
+  it(
     'disables the "Discover" button when the network is not supported regardness the response of the Feature Flag `enablePortfolioLandingPage`',
-    (chainId) => {
+    () => {
       const { queryByTestId } = render({
         enablePortfolioLandingPage: true,
       });
 
       const menuButton = queryByTestId(
-        `network-list-item-options-button-eip155:${hexToDecimal(chainId)}`,
+        `network-list-item-options-button-eip155:${hexToDecimal(CHAIN_IDS.MAINNET)}`,
       );
       fireEvent.click(menuButton);
 
