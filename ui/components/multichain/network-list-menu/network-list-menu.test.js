@@ -299,7 +299,7 @@ describe('NetworkListMenu', () => {
   );
 
   it(
-    'disables the "Discover" button when the Feature Flag `enablePortfolioLandingPage` is false regardness if the network or not',
+    'disables the "Discover" button when the Feature Flag `enablePortfolioLandingPage` is false regardness if the network supported or not',
     () => {
       const { queryByTestId } = render({
         enablePortfolioLandingPage: false,
