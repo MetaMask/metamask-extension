@@ -13,6 +13,7 @@ import {
   BNB_DISPLAY_NAME,
   LINEA_SEPOLIA_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { NetworkListMenu } from '.';
 
 const mockSetShowTestNetworks = jest.fn();
