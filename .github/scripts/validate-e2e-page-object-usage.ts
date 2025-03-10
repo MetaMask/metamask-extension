@@ -11,7 +11,7 @@ import {
 async function verifyE2ePageObjectsUsage(fileStatus: 'M' | 'A' | 'both') {
     let e2eFiles: string[];
 
-    if (process.env.GITHUB_ACTIONS) {
+    if (process.env.GITHUB_ACTION) {
         // Running in Github Actions
         const branch = process.env.BRANCH || '';
         const headCommitHash = process.env.HEAD_COMMIT_HASH || '';

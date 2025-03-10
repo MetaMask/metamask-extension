@@ -61,7 +61,16 @@ class ChromeDriver {
       args.push('--disable-gpu');
     }
 
-    if (process.env.GITHUB_ACTION || isHeadless('SELENIUM')) {
+    // Add --no-sandbox only for GitHub Actions that are NOT benchmarks
+    if (process.env.GITHUB_ACTION && !process.env.BENCHMARK) {
+      args.push('--no-sandbox');
+    }
+
+    // Add headless=new for normal Selenium headless OR for benchmarks
+    if (
+      (isHeadless('SELENIUM') && !process.env.GITHUB_ACTION) ||
+      process.env.BENCHMARK
+    ) {
       // TODO: Remove notice and consider non-experimental when results are consistent
       console.warn(
         '*** Running e2e tests in headless mode is experimental and some tests are known to fail for unknown reasons',
