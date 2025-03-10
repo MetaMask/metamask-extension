@@ -2,6 +2,7 @@ import { JsonRpcError } from '@metamask/rpc-errors';
 import SafeEventEmitter from '@metamask/safe-event-emitter';
 import createRandomId from '../../../shared/modules/random-id';
 import { TEN_SECONDS_IN_MILLISECONDS } from '../../../shared/lib/transactions-controller-utils';
+import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 
 class DisconnectError extends Error {}
 
@@ -117,7 +118,15 @@ const metaRPCClientFactory = (connectionStream) => {
           params,
           id,
         };
-        object.send(id, payload, cb);
+        object.send(id, payload, (err, result) => {
+          if (err) {
+            const specificErrorMessage = extractEthjsErrorMessage(err.message);
+            err.message = specificErrorMessage;
+            cb(err);
+          } else {
+            cb(null, result);
+          }
+        });
       };
     },
   });
