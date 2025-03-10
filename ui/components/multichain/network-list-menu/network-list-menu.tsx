@@ -445,7 +445,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         onDiscoverClick: isDiscoverBtnEnabled(hexChainId)
           ? () => {
               openWindow(
-                CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[hexChainId] as string,
+                CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[hexChainId],
                 '_blank',
               );
             }
