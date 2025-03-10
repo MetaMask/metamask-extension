@@ -1,9 +1,358 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`SnapUIRenderer Scroll Behavior does not show scroll arrow when requireScroll is false 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    data-testid="snap-ui-renderer__content"
+    style="overflow-y: auto; margin-bottom: 80px;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 1
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 2
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 3
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 4
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 5
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 6
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 7
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 8
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 9
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 10
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 11
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 12
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 13
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 14
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 15
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 16
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 17
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 18
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 19
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 20
+        </p>
+      </div>
+      <div
+        class="box snap-ui-renderer__footer box--padding-4 box--display-flex box--gap-4 box--flex-direction-row box--width-full box--background-color-background-default"
+        style="box-shadow: var(--shadow-size-md) var(--color-shadow-default); height: 80px; position: fixed; bottom: 0px;"
+      >
+        <button
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block snap-ui-renderer__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+          textvariant="body-md"
+        >
+          <span
+            class="mm-box mm-text mm-text--inherit mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center mm-box--color-primary-inverse"
+          >
+            <div
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-right-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
+              style="border-width: 0px;"
+            >
+              B
+            </div>
+            Submit
+          </span>
+        </button>
+      </div>
+    </div>
+    <span
+      data-renders="1"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;
+
+exports[`SnapUIRenderer Scroll Behavior renders footer with scroll arrow when content is scrollable 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    data-testid="snap-ui-renderer__content"
+    style="overflow-y: auto; margin-bottom: 80px;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 1
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 2
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 3
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 4
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 5
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 6
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 7
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 8
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 9
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 10
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 11
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 12
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 13
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 14
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 15
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 16
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 17
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 18
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 19
+        </p>
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Line 20
+        </p>
+      </div>
+      <div
+        class="box snap-ui-renderer__footer box--padding-4 box--display-flex box--gap-4 box--flex-direction-row box--width-full box--background-color-background-default"
+        style="box-shadow: var(--shadow-size-md) var(--color-shadow-default); height: 80px; position: fixed; bottom: 0px;"
+      >
+        <button
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-base--block snap-ui-renderer__footer-button mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+          disabled=""
+          textvariant="body-md"
+        >
+          <span
+            class="mm-box mm-text mm-text--inherit mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center mm-box--color-primary-inverse"
+          >
+            <div
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-right-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
+              style="border-width: 0px;"
+            >
+              B
+            </div>
+            Submit
+          </span>
+        </button>
+      </div>
+    </div>
+    <span
+      data-renders="2"
+      data-testid="performance"
+    />
+  </div>
+  <div
+    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-icon snap-ui-renderer__scroll-button mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-info-default mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+    data-testid="snap-ui-renderer__scroll-button"
+    style="cursor: pointer; position: absolute; left: 0px; right: 0px; margin-left: auto; margin-right: auto; z-index: auto; bottom: 84px;"
+  >
+    <span
+      class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+      style="mask-image: url('./images/icons/arrow-2-down.svg');"
+    />
+  </div>
+</div>
+`;
+
+exports[`SnapUIRenderer Scroll Behavior renders footer without scroll arrow when content is not scrollable 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    data-testid="snap-ui-renderer__content"
+    style="overflow-y: auto; margin-bottom: 80px;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <p
+          class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+        >
+          Short content
+        </p>
+      </div>
+      <div
+        class="box snap-ui-renderer__footer box--padding-4 box--display-flex box--gap-4 box--flex-direction-row box--width-full box--background-color-background-default"
+        style="box-shadow: var(--shadow-size-md) var(--color-shadow-default); height: 80px; position: fixed; bottom: 0px;"
+      >
+        <button
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block snap-ui-renderer__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+          textvariant="body-md"
+        >
+          <span
+            class="mm-box mm-text mm-text--inherit mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center mm-box--color-primary-inverse"
+          >
+            <div
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-right-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
+              style="border-width: 0px;"
+            >
+              B
+            </div>
+            Submit
+          </span>
+        </button>
+      </div>
+    </div>
+    <span
+      data-renders="2"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;
+
 exports[`SnapUIRenderer prefills interactive inputs with existing state 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    data-testid="snap-ui-renderer__content"
     style="overflow-y: auto; margin-bottom: 0px;"
   >
     <div
@@ -42,6 +391,7 @@ exports[`SnapUIRenderer re-focuses input after re-render 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    data-testid="snap-ui-renderer__content"
     style="overflow-y: auto; margin-bottom: 0px;"
   >
     <div
@@ -96,6 +446,7 @@ exports[`SnapUIRenderer re-renders when the interface changes 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    data-testid="snap-ui-renderer__content"
     style="overflow-y: auto; margin-bottom: 0px;"
   >
     <div
@@ -150,6 +501,7 @@ exports[`SnapUIRenderer re-syncs state when the interface changes 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    data-testid="snap-ui-renderer__content"
     style="overflow-y: auto; margin-bottom: 0px;"
   >
     <div
@@ -204,6 +556,7 @@ exports[`SnapUIRenderer renders basic UI 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    data-testid="snap-ui-renderer__content"
     style="overflow-y: auto; margin-bottom: 0px;"
   >
     <div
@@ -231,6 +584,7 @@ exports[`SnapUIRenderer renders footers 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    data-testid="snap-ui-renderer__content"
     style="overflow-y: auto; margin-bottom: 80px;"
   >
     <div
@@ -302,6 +656,7 @@ exports[`SnapUIRenderer supports container backgrounds 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-default"
+    data-testid="snap-ui-renderer__content"
     style="overflow-y: auto; margin-bottom: 80px;"
   >
     <div
@@ -350,6 +705,7 @@ exports[`SnapUIRenderer supports file inputs 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    data-testid="snap-ui-renderer__content"
     style="overflow-y: auto; margin-bottom: 0px;"
   >
     <div
@@ -413,6 +769,7 @@ exports[`SnapUIRenderer supports forms 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    data-testid="snap-ui-renderer__content"
     style="overflow-y: auto; margin-bottom: 0px;"
   >
     <div
@@ -463,6 +820,7 @@ exports[`SnapUIRenderer supports forms with fields 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    data-testid="snap-ui-renderer__content"
     style="overflow-y: auto; margin-bottom: 0px;"
   >
     <div
@@ -545,6 +903,7 @@ exports[`SnapUIRenderer supports interactive inputs 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    data-testid="snap-ui-renderer__content"
     style="overflow-y: auto; margin-bottom: 0px;"
   >
     <div
@@ -583,6 +942,7 @@ exports[`SnapUIRenderer supports the contentBackgroundColor prop 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-default"
+    data-testid="snap-ui-renderer__content"
     style="overflow-y: auto; margin-bottom: 80px;"
   >
     <div
@@ -631,6 +991,7 @@ exports[`SnapUIRenderer supports the onCancel prop 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    data-testid="snap-ui-renderer__content"
     style="overflow-y: auto; margin-bottom: 80px;"
   >
     <div
