@@ -356,6 +356,7 @@ function TransactionListItemInner({
           showRetry={
             status === TransactionStatus.failed &&
             !isSwap &&
+            isBridgeTx &&
             !isSmartTransaction
           }
           showSpeedUp={shouldShowSpeedUp}
