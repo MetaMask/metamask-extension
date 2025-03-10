@@ -4,37 +4,85 @@ on:
 env:
   COMMANDS: |
     {
-      pageload: 'yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json --retries 2',
-      userActions: 'yarn user-actions-benchmark:chrome --out test-artifacts/chrome/benchmark/user_actions.json --retries 2',
+      pageload: 'SELENIUM_BROWSER={0} yarn tsx test/e2e/benchmark.mjs --out test-artifacts/benchmarks/benchmark-{0}-{1}-pageload.json --retries 2',
+      userActions: 'SELENIUM_BROWSER={0} yarn tsx test/e2e/user-actions-benchmark.mjs --out test-artifacts/benchmarks/benchmark-{0}-{1}-userActions.json --retries 2',
     }
 
 jobs:
   benchmarks:
     runs-on: ubuntu-22.04
     strategy:
+      fail-fast: false
       matrix:
+        browser: [chrome, firefox]
         buildType: [browserify, webpack]
         testType: [pageload, userActions]
-    name: ${{ matrix.buildType }}-${{ matrix.testType }}
+    name: ${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.testType }}
     steps:
       - name: Checkout and setup environment
         uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
         with:
           is-high-risk-environment: false
 
-      - name: Download artifact prep-build-test-${{ matrix.buildType }}
+      - name: Compute ARTIFACT_NAME
+        run: |
+          if [[ "${{ matrix.buildType }}" == "webpack" ]]; then
+            ARTIFACT_NAME="prep-build-test-${{ matrix.buildType }}-${{ matrix.browser }}"
+          else
+            ARTIFACT_NAME="prep-build-test-${{ matrix.buildType }}"
+          fi
+
+          echo "ARTIFACT_NAME=$ARTIFACT_NAME" >> "$GITHUB_ENV"
+          echo "ARTIFACT_NAME is $ARTIFACT_NAME"
+
+      - name: Download artifact ${{env.ARTIFACT_NAME}}
         uses: actions/download-artifact@v4
         with:
           path: ./dist/
-          pattern: prep-build-test-${{ matrix.buildType }}
+          pattern: ${{env.ARTIFACT_NAME}}
           merge-multiple: true
 
       - name: Run the benchmark
         # Choose a benchmark command from env.COMMANDS
-        run: ${{ fromJson(env.COMMANDS)[matrix.testType] }}
+        # Then replace the {0} placeholder with the browser, and the {1} placeholder with the buildType
+        run: ${{ format(fromJson(env.COMMANDS)[matrix.testType], matrix.browser, matrix.buildType) }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: benchmark-${{ matrix.buildType }}-${{ matrix.testType }}
-          path: test-artifacts/chrome/benchmark/
+          name: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.testType }}
+          path: test-artifacts/benchmarks/
+
+  bundle-size:
+    runs-on: ubuntu-22.04
+    env:
+      EXTENSION_BUNDLESIZE_STATS_TOKEN: ${{ secrets.EXTENSION_BUNDLESIZE_STATS_TOKEN }}
+    steps:
+      - name: Checkout and setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        with:
+          is-high-risk-environment: false
+
+      - name: Download artifact prep-build-test-browserify
+        uses: actions/download-artifact@v4
+        with:
+          path: ./dist/
+          pattern: prep-build-test-browserify
+          merge-multiple: true
+
+      - name: Measure bundle size
+        run: SELENIUM_BROWSER=chrome yarn tsx test/e2e/mv3-perf-stats/bundle-size.mjs --out test-artifacts/chrome
+
+      - name: Install jq
+        run: sudo apt install jq -y
+
+      # TODO: fix this
+      - name: Record bundle size at commit
+        # if: ${{ github.ref_name	== 'main' }}
+        run: ./.circleci/scripts/bundle-stats-commit.sh
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-size
+          path: test-artifacts/chrome/

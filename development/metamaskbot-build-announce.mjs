@@ -1,19 +1,10 @@
-#!/usr/bin/env node
-
-const { promisify } = require('util');
-const { promises: fs } = require('fs');
-const execFile = promisify(require('child_process').execFile);
-const path = require('path');
-// Fetch is part of node js in future versions, thus triggering no-shadow
-// eslint-disable-next-line no-shadow
-const fetch = require('node-fetch');
-const VERSION = require('../package.json').version;
+import { execFileSync } from 'child_process';
+import { promises as fs } from 'fs';
+import startCase from 'lodash/startCase';
+import path from 'path';
+import { version as VERSION } from '../package.json';
 
 start().catch(console.error);
-
-function capitalizeFirstLetter(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
 
 function getHumanReadableSize(bytes) {
   if (!bytes) {
@@ -80,9 +71,6 @@ async function start() {
       chrome: `${BUILD_LINK_BASE}/builds-flask/metamask-flask-chrome-${VERSION}-flask.0.zip`,
       firefox: `${BUILD_LINK_BASE}/builds-flask-mv2/metamask-flask-firefox-${VERSION}-flask.0.zip`,
     },
-    'builds (MMI)': {
-      chrome: `${BUILD_LINK_BASE}/builds-mmi/metamask-mmi-chrome-${VERSION}-mmi.0.zip`,
-    },
     'builds (test)': {
       chrome: `${BUILD_LINK_BASE}/builds-test/metamask-chrome-${VERSION}.zip`,
       firefox: `${BUILD_LINK_BASE}/builds-test-mv2/metamask-firefox-${VERSION}.zip`,
@@ -93,9 +81,15 @@ async function start() {
     },
   };
 
-  const commitMessage = (
-    await execFile('git', ['show', '-s', '--format=%s', HEAD_COMMIT_HASH])
-  ).stdout.trim();
+  const commitMessage = execFileSync('git', [
+    'show',
+    '-s',
+    '--format=%s',
+    HEAD_COMMIT_HASH,
+  ])
+    .toString()
+    .trim();
+
   const betaVersionRegex = /Version v[0-9]+\.[0-9]+\.[0-9]+-beta\.[0-9]+/u;
   const betaMatch = commitMessage.match(betaVersionRegex);
 
@@ -160,20 +154,31 @@ async function start() {
   const depVizLink = `<a href="${depVizUrl}">Build System</a>`;
   const bundleSizeStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/bundle_size.json`;
   const bundleSizeStatsLink = `<a href="${bundleSizeStatsUrl}">Bundle Size Stats</a>`;
-  const userActionsStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/benchmark/user_actions.json`;
-  const userActionsStatsLink = `<a href="${userActionsStatsUrl}">E2e Actions Stats</a>`;
+
+  const gitHubArtifactList = await (
+    await fetch(
+      `https://api.github.com/repos/metamask/metamask-extension/actions/runs/${process.env.GITHUB_RUN_ID}/artifacts`,
+    )
+  ).json();
+
+  const userActionsArtifact = gitHubArtifactList.artifacts.find(
+    (artifact) => artifact.name === 'benchmark-chrome-browserify-userActions',
+  );
+
+  const userActionsStatsUrl = `https://github.com/MetaMask/metamask-extension/actions/runs/${process.env.GITHUB_RUN_ID}/artifacts/${userActionsArtifact.id}`;
+  const userActionsStatsLink = `<a href="${userActionsStatsUrl}">user actions</a>`;
 
   // link to artifacts
-  const allArtifactsUrl = `https://circleci.com/gh/MetaMask/metamask-extension/${CIRCLE_BUILD_NUM}#artifacts/containers/0`;
+  const allArtifactsUrl = `https://app.circleci.com/pipelines/github/MetaMask/metamask-extension/jobs/${CIRCLE_BUILD_NUM}/artifacts/`;
 
   const contentRows = [
     ...buildContentRows,
     `build viz: ${depVizLink}`,
-    `mv3: ${bundleSizeStatsLink}`,
-    `mv2: ${userActionsStatsLink}`,
+    `bundle size: ${bundleSizeStatsLink}`,
+    `user-actions-benchmark: ${userActionsStatsLink}`,
     `storybook: ${storybookLink}`,
     `typescript migration: ${tsMigrationDashboardLink}`,
-    `<a href="${allArtifactsUrl}">all artifacts</a>`,
+    `<a href="${allArtifactsUrl}">all CircleCI artifacts</a>`,
     `<details>
        <summary>bundle viz:</summary>
        ${bundleMarkup}
@@ -185,62 +190,80 @@ async function start() {
   const exposedContent = `Builds ready [${SHORT_SHA1}]`;
   const artifactsBody = `<details><summary>${exposedContent}</summary>${hiddenContent}</details>\n\n`;
 
-  const benchmarkPlatforms = ['chrome'];
+  const benchmarkPlatforms = ['chrome', 'firefox'];
+  const buildTypes = ['browserify', 'webpack'];
+
   const benchmarkResults = {};
   for (const platform of benchmarkPlatforms) {
-    const benchmarkPath = path.resolve(
-      __dirname,
-      '..',
-      path.join('test-artifacts', platform, 'benchmark', 'pageload.json'),
-    );
-    try {
-      const data = await fs.readFile(benchmarkPath, 'utf8');
-      const benchmark = JSON.parse(data);
-      benchmarkResults[platform] = benchmark;
-    } catch (error) {
-      if (error.code === 'ENOENT') {
-        console.log(`No benchmark data found for ${platform}; skipping`);
-      } else {
-        console.error(
-          `Error encountered processing benchmark data for '${platform}': '${error}'`,
-        );
+    benchmarkResults[platform] = {};
+
+    for (const buildType of buildTypes) {
+      const benchmarkPath = path.resolve(
+        `test-artifacts/benchmarks/benchmark-${platform}-${buildType}-pageload.json`,
+      );
+
+      try {
+        const data = await fs.readFile(benchmarkPath, 'utf8');
+        const benchmark = JSON.parse(data);
+        benchmarkResults[platform][buildType] = benchmark;
+      } catch (error) {
+        if (error.code === 'ENOENT') {
+          console.log(
+            `No benchmark data found for ${platform}-${buildType}; skipping`,
+          );
+        } else {
+          console.error(
+            `Error encountered processing benchmark data for '${platform}': '${error}'`,
+          );
+        }
       }
     }
   }
 
-  const summaryPlatform = 'chrome';
+  const summaryPlatform = benchmarkPlatforms[0];
+  const summaryBuildType = buildTypes[0];
   const summaryPage = 'home';
   let commentBody = artifactsBody;
-  if (benchmarkResults[summaryPlatform]) {
+  if (benchmarkResults[summaryPlatform][summaryBuildType]) {
     try {
-      const summaryPageLoad = Math.round(
-        parseFloat(benchmarkResults[summaryPlatform][summaryPage].average.load),
-      );
-      const summaryPageLoadMarginOfError = Math.round(
+      const summaryPageStartup = Math.round(
         parseFloat(
-          benchmarkResults[summaryPlatform][summaryPage].marginOfError.load,
+          benchmarkResults[summaryPlatform][summaryBuildType][summaryPage].mean
+            .uiStartup,
         ),
       );
-      const benchmarkSummary = `Page Load Metrics (${summaryPageLoad} ± ${summaryPageLoadMarginOfError} ms)`;
+      const summaryPageStartupStandardDeviation = Math.round(
+        parseFloat(
+          benchmarkResults[summaryPlatform][summaryBuildType][summaryPage]
+            .stdDev.uiStartup,
+        ),
+      );
+      const benchmarkSummary = `UI Startup Metrics (${summaryPageStartup} ± ${summaryPageStartupStandardDeviation} ms)`;
 
       const allPlatforms = new Set();
+      const allBuildTypes = new Set();
       const allPages = new Set();
       const allMetrics = new Set();
       const allMeasures = new Set();
       for (const platform of Object.keys(benchmarkResults)) {
         allPlatforms.add(platform);
         const platformBenchmark = benchmarkResults[platform];
-        const pages = Object.keys(platformBenchmark);
-        for (const page of pages) {
-          allPages.add(page);
-          const pageBenchmark = platformBenchmark[page];
-          const measures = Object.keys(pageBenchmark);
-          for (const measure of measures) {
-            allMeasures.add(measure);
-            const measureBenchmark = pageBenchmark[measure];
-            const metrics = Object.keys(measureBenchmark);
-            for (const metric of metrics) {
-              allMetrics.add(metric);
+        const buildTypesInPlatform = Object.keys(platformBenchmark);
+        for (const buildType of buildTypesInPlatform) {
+          allBuildTypes.add(buildType);
+          const buildBenchmark = platformBenchmark[buildType];
+          const pages = Object.keys(buildBenchmark);
+          for (const page of pages) {
+            allPages.add(page);
+            const pageBenchmark = buildBenchmark[page];
+            const measures = Object.keys(pageBenchmark);
+            for (const measure of measures) {
+              allMeasures.add(measure);
+              const measureBenchmark = pageBenchmark[measure];
+              const metrics = Object.keys(measureBenchmark);
+              for (const metric of metrics) {
+                allMetrics.add(metric);
+              }
             }
           }
         }
@@ -249,33 +272,44 @@ async function start() {
       const tableRows = [];
       for (const platform of allPlatforms) {
         const pageRows = [];
-        for (const page of allPages) {
-          const metricRows = [];
-          for (const metric of allMetrics) {
-            let metricData = `<td>${metric}</td>`;
-            for (const measure of allMeasures) {
-              metricData += `<td align="right">${Math.round(
-                parseFloat(benchmarkResults[platform][page][measure][metric]),
-              )}</td>`;
+
+        // We don't want to use allBuildTypes here because we might skip certain builds in the future
+        const buildTypesInPlatform = Object.keys(benchmarkResults[platform]);
+        for (const buildType of buildTypesInPlatform) {
+          for (const page of allPages) {
+            const metricRows = [];
+            for (const metric of allMetrics) {
+              let metricData = `<td>${metric}</td>`;
+              for (const measure of allMeasures) {
+                metricData += `<td align="right">${Math.round(
+                  parseFloat(
+                    benchmarkResults[platform][buildType][page][measure][
+                      metric
+                    ],
+                  ),
+                )}</td>`;
+              }
+              metricRows.push(metricData);
             }
-            metricRows.push(metricData);
+            metricRows[0] = `<td rowspan="${allMetrics.size}">${startCase(
+              buildType,
+            )}</td><td rowspan="${allMetrics.size}">${startCase(page)}</td>${
+              metricRows[0]
+            }`;
+            pageRows.push(...metricRows);
           }
-          metricRows[0] = `<td rowspan="${
-            allMetrics.size
-          }">${capitalizeFirstLetter(page)}</td>${metricRows[0]}`;
-          pageRows.push(...metricRows);
         }
         pageRows[0] = `<td rowspan="${
-          allPages.size * allMetrics.size
-        }">${capitalizeFirstLetter(platform)}</td>${pageRows[0]}`;
+          allPages.size * allBuildTypes.size * allMetrics.size
+        }">${startCase(platform)}</td>${pageRows[0]}`;
         for (const row of pageRows) {
           tableRows.push(`<tr>${row}</tr>`);
         }
       }
 
-      const benchmarkTableHeaders = ['Platform', 'Page', 'Metric'];
+      const benchmarkTableHeaders = ['Platform', 'BuildType', 'Page', 'Metric'];
       for (const measure of allMeasures) {
-        benchmarkTableHeaders.push(`${capitalizeFirstLetter(measure)} (ms)`);
+        benchmarkTableHeaders.push(`${startCase(measure)} (ms)`);
       }
       const benchmarkTableHeader = `<thead><tr>${benchmarkTableHeaders
         .map((header) => `<th>${header}</th>`)
@@ -294,11 +328,7 @@ async function start() {
   try {
     const prBundleSizeStats = JSON.parse(
       await fs.readFile(
-        path.resolve(
-          __dirname,
-          '..',
-          path.join('test-artifacts', 'chrome', 'bundle_size.json'),
-        ),
+        path.resolve('test-artifacts/chrome/bundle_size.json'),
         'utf-8',
       ),
     );

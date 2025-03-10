@@ -82,20 +82,24 @@ jobs:
   prep-build-test-webpack:
     needs: prep-deps
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        browser: [chrome, firefox]
+    name: prep-build-test-webpack-${{ matrix.browser }}
     steps:
       - name: Checkout and setup environment
         uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
         with:
           is-high-risk-environment: false
 
-      - run: yarn webpack --test --no-lavamoat --no-cache --browser=chrome --lockdown --sentry --snow --env production
+      - run: yarn webpack --test --no-lavamoat --no-cache --browser=${{ matrix.browser }} --lockdown --sentry --snow --env production
         env:
           SEGMENT_PROD_WRITE_KEY: '-' # A fake key just to make the build succeed
 
       - name: Upload artifact prep-build-test-webpack
         uses: actions/upload-artifact@v4
         with:
-          name: prep-build-test-webpack
+          name: prep-build-test-webpack-${{ matrix.browser }}
           path: ./dist/
 
   run-tests:
@@ -147,6 +151,7 @@ jobs:
       - wait-for-circleci-workflow-status
       - build-storybook
       - build-beta
+      - run-benchmarks
     uses: ./.github/workflows/publish-prerelease.yml
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
