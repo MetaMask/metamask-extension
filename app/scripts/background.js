@@ -147,6 +147,7 @@ if (isFirefox) {
   browser.runtime.onInstalled.addListener(function (details) {
     if (details.reason === 'install') {
       browser.storage.session.set({ isFirstTimeInstall: true });
+      browser.storage.local.set({ vaultHasNotYetBeenCreated: true });
     } else if (details.reason === 'update') {
       browser.storage.session.set({ isFirstTimeInstall: false });
     }
@@ -155,6 +156,7 @@ if (isFirefox) {
   browser.runtime.onInstalled.addListener(function (details) {
     if (details.reason === 'install') {
       global.sessionStorage.setItem('isFirstTimeInstall', true);
+      browser.storage.local.set({ vaultHasNotYetBeenCreated: true });
     } else if (details.reason === 'update') {
       global.sessionStorage.setItem('isFirstTimeInstall', false);
     }
@@ -390,6 +392,14 @@ function overrideContentSecurityPolicyHeader() {
   );
 }
 
+function stringifyError(error) {
+  return JSON.stringify({
+    message: error.message,
+    name: error.name,
+    stack: error.stack,
+  });
+}
+
 // These are set after initialization
 let connectRemote;
 let connectExternalExtension;
@@ -397,10 +407,22 @@ let connectExternalCaip;
 
 browser.runtime.onConnect.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
-  await isInitialized;
+  try {
+    await isInitialized;
+    connectRemote(...args);
+  } catch (error) {
+    const port = args[0];
+
+    const _state = await localStore.get();
+
+    port.postMessage({
+      target: 'ui',
+      error: stringifyError(error),
+      metamaskState: JSON.stringify(_state),
+    });
+  }
 
   // This is set in `setupController`, which is called as part of initialization
-  connectRemote(...args);
 });
 browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
@@ -640,11 +662,29 @@ export async function loadStateFromPersistence() {
     firstTimeState = { ...firstTimeState, ...stateOverrides };
   }
 
+  const { vaultHasNotYetBeenCreated } = await browser.storage.local.get(
+    'vaultHasNotYetBeenCreated',
+  );
+
   // read from disk
   // first from preferred, async API:
-  const preMigrationVersionedData =
-    (await persistenceManager.get()) ||
-    migrator.generateInitialState(firstTimeState);
+  let preMigrationVersionedData = await persistenceManager.get();
+
+  const vaultDataPresent = Boolean(
+    preMigrationVersionedData?.data?.KeyringController?.vault,
+  );
+
+  if (vaultHasNotYetBeenCreated === undefined && !vaultDataPresent) {
+    throw new Error('Data error: storage.local does not contain vault data');
+  }
+
+  if (!preMigrationVersionedData.data && !preMigrationVersionedData.meta) {
+    const initialState = migrator.generateInitialState(firstTimeState);
+    preMigrationVersionedData = {
+      ...preMigrationVersionedData,
+      ...initialState,
+    };
+  }
 
   // report migration errors to sentry
   migrator.on('error', (err) => {
@@ -1368,8 +1408,8 @@ function setupSentryGetStateGlobal(store) {
 }
 
 async function initBackground() {
-  await onInstall();
   try {
+    await onInstall();
     await initialize();
     if (process.env.IN_TEST) {
       // Send message to offscreen document
@@ -1385,6 +1425,7 @@ async function initBackground() {
     persistenceManager.cleanUpMostRecentRetrievedState();
   } catch (error) {
     log.error(error);
+    rejectInitialization(error);
   }
 }
 if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {

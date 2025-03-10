@@ -17,7 +17,7 @@ import { SENTRY_UI_STATE } from '../app/scripts/constants/sentry-state';
 import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
 import { COPY_OPTIONS } from '../shared/constants/copy';
 import switchDirection from '../shared/lib/switch-direction';
-import { setupLocale } from '../shared/lib/error-utils';
+import { setupErrorLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/modules/selectors/networks';
 import * as actions from './store/actions';
@@ -101,7 +101,7 @@ export async function setupInitialStore(
     metamaskState.featureFlags = {};
   }
 
-  const { currentLocaleMessages, enLocaleMessages } = await setupLocale(
+  const { currentLocaleMessages, enLocaleMessages } = await setupErrorLocale(
     metamaskState.currentLocale,
   );
 
