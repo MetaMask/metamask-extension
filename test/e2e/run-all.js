@@ -134,7 +134,9 @@ function runningOnGitHubActions(testPaths) {
   const matrixIndex = parseInt(process.env.MATRIX_INDEX || '0', 10);
   const matrixTotal = parseInt(process.env.MATRIX_TOTAL || '1', 10);
 
-  console.log(`GitHub Actions matrix: index ${matrixIndex} of ${matrixTotal} total jobs`);
+  console.log(
+    `GitHub Actions matrix: index ${matrixIndex} of ${matrixTotal} total jobs`,
+  );
 
   // Split the tests evenly amongst the matrix jobs
   const testsArray = fullTestList.split('\n').filter(Boolean);
@@ -143,12 +145,18 @@ function runningOnGitHubActions(testPaths) {
   const endIndex = Math.min(startIndex + chunkSize, testsArray.length);
 
   if (startIndex >= testsArray.length) {
-    console.log('run-all.js info: Skipping this node because there are no tests for this matrix index');
+    console.log(
+      'run-all.js info: Skipping this node because there are no tests for this matrix index',
+    );
     return { fullTestList: [] };
   }
 
   const myTestList = testsArray.slice(startIndex, endIndex);
-  console.log(`Running tests ${startIndex + 1} to ${endIndex} of ${testsArray.length} total tests`);
+  console.log(
+    `Running tests ${startIndex + 1} to ${endIndex} of ${
+      testsArray.length
+    } total tests`,
+  );
 
   // Write the list to a file similar to CircleCI
   fs.writeFileSync('test/test-results/myTestList.txt', myTestList.join(' '));
