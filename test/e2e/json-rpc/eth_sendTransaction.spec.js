@@ -4,7 +4,7 @@ const FixtureBuilder = require('../fixture-builder');
 
 describe('eth_sendTransaction', function () {
   const expectedHash =
-    '0x855951a65dcf5949dc54beb032adfb604c52a0a548a0f616799d6873a9521470';
+    '0x19d0a880289aa0b696af4253795505c6ab2e5d41a259aa3bc21e74f1cdcc4b77';
 
   it('confirms a new transaction', async function () {
     await withFixtures(
@@ -26,7 +26,7 @@ describe('eth_sendTransaction', function () {
           method: 'eth_sendTransaction',
           params: [
             {
-              to: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+              to: '0x6cfe73b6021e818b776b421b1c4db2474086a7e1',
               from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
               value: '0x0',
               maxPriorityFeePerGas: '0x3b9aca00',
@@ -72,7 +72,7 @@ describe('eth_sendTransaction', function () {
           method: 'eth_sendTransaction',
           params: [
             {
-              to: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+              to: '0x6cfe73b6021e818b776b421b1c4db2474086a7e1',
               from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
               value: '0x0',
               maxPriorityFeePerGas: '0x3b9aca00',

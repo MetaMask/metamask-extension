@@ -31,6 +31,16 @@ import {
   SwapsControllerSetTradeTxIdAction,
 } from '../../controllers/swaps/swaps.types';
 
+export type KeyringControllerSignAuthorization = {
+  type: 'KeyringController:signEip7702AuthorizationMessage';
+  handler: (authorization: {
+    chainId: number;
+    contractAddress: string;
+    from: string;
+    nonce: number;
+  }) => Promise<string>;
+};
+
 type MessengerActions =
   | ApprovalControllerActions
   | AccountsControllerGetSelectedAccountAction

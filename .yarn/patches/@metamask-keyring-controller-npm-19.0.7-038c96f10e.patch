@@ -1,0 +1,479 @@
+diff --git a/dist/KeyringController.cjs b/dist/KeyringController.cjs
+index afbdc24076d20a7783435c30be53da5863a7945a..55b26c20909939e62242cab307aaac29fbab2d55 100644
+--- a/dist/KeyringController.cjs
++++ b/dist/KeyringController.cjs
+@@ -108,7 +108,10 @@ function keyringBuilderFactory(KeyringConstructor) {
+ }
+ exports.keyringBuilderFactory = keyringBuilderFactory;
+ const defaultKeyringBuilders = [
++    // todo: keyring types are mismatched, this should be fixed in they keyrings themselves
++    // @ts-expect-error keyring types are mismatched
+     keyringBuilderFactory(eth_simple_keyring_1.default),
++    // @ts-expect-error keyring types are mismatched
+     keyringBuilderFactory(eth_hd_keyring_1.default),
+ ];
+ const getDefaultKeyringState = () => {
+@@ -651,6 +654,27 @@ class KeyringController extends base_controller_1.BaseController {
+         }
+         return await keyring.signMessage(address, messageParams.data);
+     }
++    /**
++     * Signs EIP-7702 Authorization message by calling down into a specific keyring.
++     *
++     * @param params - EIP7702AuthorizationParams object to sign.
++     * @returns Promise resolving to an EIP-7702 Authorization signature.
++     * @throws Will throw UnsupportedSignEIP7702Authorization if the keyring does not support signing EIP-7702 Authorization messages.
++     */
++    async signEip7702Authorization(params) {
++        const from = (0, eth_sig_util_1.normalize)(params.from);
++        const keyring = (await this.getKeyringForAccount(from));
++        if (!keyring.signEip7702Authorization) {
++            throw new Error(constants_1.KeyringControllerError.UnsupportedSignEip7702Authorization);
++        }
++        const { chainId, nonce } = params;
++        const contractAddress = (0, eth_sig_util_1.normalize)(params.contractAddress);
++        return await keyring.signEip7702Authorization(from, [
++            chainId,
++            contractAddress,
++            nonce,
++        ]);
++    }
+     /**
+      * Signs personal message by calling down into a specific keyring.
+      *
+@@ -1040,6 +1064,7 @@ class KeyringController extends base_controller_1.BaseController {
+ exports.KeyringController = KeyringController;
+ _KeyringController_controllerOperationMutex = new WeakMap(), _KeyringController_vaultOperationMutex = new WeakMap(), _KeyringController_keyringBuilders = new WeakMap(), _KeyringController_unsupportedKeyrings = new WeakMap(), _KeyringController_encryptor = new WeakMap(), _KeyringController_cacheEncryptionKey = new WeakMap(), _KeyringController_keyrings = new WeakMap(), _KeyringController_password = new WeakMap(), _KeyringController_qrKeyringStateListener = new WeakMap(), _KeyringController_instances = new WeakSet(), _KeyringController_registerMessageHandlers = function _KeyringController_registerMessageHandlers() {
+     this.messagingSystem.registerActionHandler(`${name}:signMessage`, this.signMessage.bind(this));
++    this.messagingSystem.registerActionHandler(`${name}:signEip7702Authorization`, this.signEip7702Authorization.bind(this));
+     this.messagingSystem.registerActionHandler(`${name}:signPersonalMessage`, this.signPersonalMessage.bind(this));
+     this.messagingSystem.registerActionHandler(`${name}:signTypedMessage`, this.signTypedMessage.bind(this));
+     this.messagingSystem.registerActionHandler(`${name}:decryptMessage`, this.decryptMessage.bind(this));
+diff --git a/dist/KeyringController.d.cts b/dist/KeyringController.d.cts
+index 805f36473d284885afc66419803b2b0a7ecbc0b6..dc36f1a19089a313d84637cba0ecbc76fac31e60 100644
+--- a/dist/KeyringController.d.cts
++++ b/dist/KeyringController.d.cts
+@@ -5,9 +5,9 @@ import { BaseController } from "@metamask/base-controller";
+ import * as encryptorUtils from "@metamask/browser-passworder";
+ import type { KeyringExecutionContext, EthBaseTransaction, EthBaseUserOperation, EthUserOperation, EthUserOperationPatch } from "@metamask/keyring-api";
+ import type { EthKeyring } from "@metamask/keyring-internal-api";
+-import type { PersonalMessageParams, TypedMessageParams } from "@metamask/message-manager";
+ import type { Eip1024EncryptedData, Hex, Json, KeyringClass } from "@metamask/utils";
+ import type { Patch } from "immer";
++import type { Eip7702AuthorizationParams, PersonalMessageParams, TypedMessageParams } from "./types.cjs";
+ declare const name = "KeyringController";
+ /**
+  * Available keyring types
+@@ -66,6 +66,10 @@ export type KeyringControllerSignMessageAction = {
+     type: `${typeof name}:signMessage`;
+     handler: KeyringController['signMessage'];
+ };
++export type KeyringControllerSignEip7702AuthorizationAction = {
++    type: `${typeof name}:signEip7702Authorization`;
++    handler: KeyringController['signEip7702Authorization'];
++};
+ export type KeyringControllerSignPersonalMessageAction = {
+     type: `${typeof name}:signPersonalMessage`;
+     handler: KeyringController['signPersonalMessage'];
+@@ -134,7 +138,7 @@ export type KeyringControllerQRKeyringStateChangeEvent = {
+     type: `${typeof name}:qrKeyringStateChange`;
+     payload: [ReturnType<IQRKeyringState['getState']>];
+ };
+-export type KeyringControllerActions = KeyringControllerGetStateAction | KeyringControllerSignMessageAction | KeyringControllerSignPersonalMessageAction | KeyringControllerSignTypedMessageAction | KeyringControllerDecryptMessageAction | KeyringControllerGetEncryptionPublicKeyAction | KeyringControllerGetAccountsAction | KeyringControllerGetKeyringsByTypeAction | KeyringControllerGetKeyringForAccountAction | KeyringControllerPersistAllKeyringsAction | KeyringControllerPrepareUserOperationAction | KeyringControllerPatchUserOperationAction | KeyringControllerSignUserOperationAction | KeyringControllerAddNewAccountAction;
++export type KeyringControllerActions = KeyringControllerGetStateAction | KeyringControllerSignMessageAction | KeyringControllerSignEip7702AuthorizationAction | KeyringControllerSignPersonalMessageAction | KeyringControllerSignTypedMessageAction | KeyringControllerDecryptMessageAction | KeyringControllerGetEncryptionPublicKeyAction | KeyringControllerGetAccountsAction | KeyringControllerGetKeyringsByTypeAction | KeyringControllerGetKeyringForAccountAction | KeyringControllerPersistAllKeyringsAction | KeyringControllerPrepareUserOperationAction | KeyringControllerPatchUserOperationAction | KeyringControllerSignUserOperationAction | KeyringControllerAddNewAccountAction;
+ export type KeyringControllerEvents = KeyringControllerStateChangeEvent | KeyringControllerLockEvent | KeyringControllerUnlockEvent | KeyringControllerAccountRemovedEvent | KeyringControllerQRKeyringStateChangeEvent;
+ export type KeyringControllerMessenger = RestrictedMessenger<typeof name, KeyringControllerActions, KeyringControllerEvents, never, never>;
+ export type KeyringControllerOptions = {
+@@ -471,6 +475,14 @@ export declare class KeyringController extends BaseController<typeof name, Keyri
+      * @returns Promise resolving to a signed message string.
+      */
+     signMessage(messageParams: PersonalMessageParams): Promise<string>;
++    /**
++     * Signs EIP-7702 Authorization message by calling down into a specific keyring.
++     *
++     * @param params - EIP7702AuthorizationParams object to sign.
++     * @returns Promise resolving to an EIP-7702 Authorization signature.
++     * @throws Will throw UnsupportedSignEIP7702Authorization if the keyring does not support signing EIP-7702 Authorization messages.
++     */
++    signEip7702Authorization(params: Eip7702AuthorizationParams): Promise<string>;
+     /**
+      * Signs personal message by calling down into a specific keyring.
+      *
+diff --git a/dist/KeyringController.d.mts b/dist/KeyringController.d.mts
+index de509867fe8513e53a76db79b1809cefa6267b58..cb0750deb3ff7e9a61b00810878b1cc4e61de61c 100644
+--- a/dist/KeyringController.d.mts
++++ b/dist/KeyringController.d.mts
+@@ -5,9 +5,9 @@ import { BaseController } from "@metamask/base-controller";
+ import * as encryptorUtils from "@metamask/browser-passworder";
+ import type { KeyringExecutionContext, EthBaseTransaction, EthBaseUserOperation, EthUserOperation, EthUserOperationPatch } from "@metamask/keyring-api";
+ import type { EthKeyring } from "@metamask/keyring-internal-api";
+-import type { PersonalMessageParams, TypedMessageParams } from "@metamask/message-manager";
+ import type { Eip1024EncryptedData, Hex, Json, KeyringClass } from "@metamask/utils";
+ import type { Patch } from "immer";
++import type { Eip7702AuthorizationParams, PersonalMessageParams, TypedMessageParams } from "./types.mjs";
+ declare const name = "KeyringController";
+ /**
+  * Available keyring types
+@@ -66,6 +66,10 @@ export type KeyringControllerSignMessageAction = {
+     type: `${typeof name}:signMessage`;
+     handler: KeyringController['signMessage'];
+ };
++export type KeyringControllerSignEip7702AuthorizationAction = {
++    type: `${typeof name}:signEip7702Authorization`;
++    handler: KeyringController['signEip7702Authorization'];
++};
+ export type KeyringControllerSignPersonalMessageAction = {
+     type: `${typeof name}:signPersonalMessage`;
+     handler: KeyringController['signPersonalMessage'];
+@@ -134,7 +138,7 @@ export type KeyringControllerQRKeyringStateChangeEvent = {
+     type: `${typeof name}:qrKeyringStateChange`;
+     payload: [ReturnType<IQRKeyringState['getState']>];
+ };
+-export type KeyringControllerActions = KeyringControllerGetStateAction | KeyringControllerSignMessageAction | KeyringControllerSignPersonalMessageAction | KeyringControllerSignTypedMessageAction | KeyringControllerDecryptMessageAction | KeyringControllerGetEncryptionPublicKeyAction | KeyringControllerGetAccountsAction | KeyringControllerGetKeyringsByTypeAction | KeyringControllerGetKeyringForAccountAction | KeyringControllerPersistAllKeyringsAction | KeyringControllerPrepareUserOperationAction | KeyringControllerPatchUserOperationAction | KeyringControllerSignUserOperationAction | KeyringControllerAddNewAccountAction;
++export type KeyringControllerActions = KeyringControllerGetStateAction | KeyringControllerSignMessageAction | KeyringControllerSignEip7702AuthorizationAction | KeyringControllerSignPersonalMessageAction | KeyringControllerSignTypedMessageAction | KeyringControllerDecryptMessageAction | KeyringControllerGetEncryptionPublicKeyAction | KeyringControllerGetAccountsAction | KeyringControllerGetKeyringsByTypeAction | KeyringControllerGetKeyringForAccountAction | KeyringControllerPersistAllKeyringsAction | KeyringControllerPrepareUserOperationAction | KeyringControllerPatchUserOperationAction | KeyringControllerSignUserOperationAction | KeyringControllerAddNewAccountAction;
+ export type KeyringControllerEvents = KeyringControllerStateChangeEvent | KeyringControllerLockEvent | KeyringControllerUnlockEvent | KeyringControllerAccountRemovedEvent | KeyringControllerQRKeyringStateChangeEvent;
+ export type KeyringControllerMessenger = RestrictedMessenger<typeof name, KeyringControllerActions, KeyringControllerEvents, never, never>;
+ export type KeyringControllerOptions = {
+@@ -471,6 +475,14 @@ export declare class KeyringController extends BaseController<typeof name, Keyri
+      * @returns Promise resolving to a signed message string.
+      */
+     signMessage(messageParams: PersonalMessageParams): Promise<string>;
++    /**
++     * Signs EIP-7702 Authorization message by calling down into a specific keyring.
++     *
++     * @param params - EIP7702AuthorizationParams object to sign.
++     * @returns Promise resolving to an EIP-7702 Authorization signature.
++     * @throws Will throw UnsupportedSignEIP7702Authorization if the keyring does not support signing EIP-7702 Authorization messages.
++     */
++    signEip7702Authorization(params: Eip7702AuthorizationParams): Promise<string>;
+     /**
+      * Signs personal message by calling down into a specific keyring.
+      *
+diff --git a/dist/KeyringController.mjs b/dist/KeyringController.mjs
+index 7305a4b4f64cc3928cf1cac816e47f841ff4ea85..080031a8b2d6260add040a23c3abda88230125e3 100644
+--- a/dist/KeyringController.mjs
++++ b/dist/KeyringController.mjs
+@@ -19,11 +19,9 @@ function $importDefault(module) {
+ import { isValidPrivate, toBuffer, getBinarySize } from "@ethereumjs/util";
+ import { BaseController } from "@metamask/base-controller";
+ import * as encryptorUtils from "@metamask/browser-passworder";
+-import $HDKeyring from "@metamask/eth-hd-keyring";
+-const HDKeyring = $importDefault($HDKeyring);
++import HDKeyring from "@metamask/eth-hd-keyring";
+ import { normalize as ethNormalize } from "@metamask/eth-sig-util";
+-import $SimpleKeyring from "@metamask/eth-simple-keyring";
+-const SimpleKeyring = $importDefault($SimpleKeyring);
++import SimpleKeyring from "@metamask/eth-simple-keyring";
+ import { add0x, assertIsStrictHexString, bytesToHex, hasProperty, isObject, isStrictHexString, isValidHexAddress, isValidJson, remove0x } from "@metamask/utils";
+ import { Mutex } from "async-mutex";
+ import $Wallet from "ethereumjs-wallet";
+@@ -87,7 +85,10 @@ export function keyringBuilderFactory(KeyringConstructor) {
+     return builder;
+ }
+ const defaultKeyringBuilders = [
++    // todo: keyring types are mismatched, this should be fixed in they keyrings themselves
++    // @ts-expect-error keyring types are mismatched
+     keyringBuilderFactory(SimpleKeyring),
++    // @ts-expect-error keyring types are mismatched
+     keyringBuilderFactory(HDKeyring),
+ ];
+ export const getDefaultKeyringState = () => {
+@@ -629,6 +630,27 @@ export class KeyringController extends BaseController {
+         }
+         return await keyring.signMessage(address, messageParams.data);
+     }
++    /**
++     * Signs EIP-7702 Authorization message by calling down into a specific keyring.
++     *
++     * @param params - EIP7702AuthorizationParams object to sign.
++     * @returns Promise resolving to an EIP-7702 Authorization signature.
++     * @throws Will throw UnsupportedSignEIP7702Authorization if the keyring does not support signing EIP-7702 Authorization messages.
++     */
++    async signEip7702Authorization(params) {
++        const from = ethNormalize(params.from);
++        const keyring = (await this.getKeyringForAccount(from));
++        if (!keyring.signEip7702Authorization) {
++            throw new Error(KeyringControllerError.UnsupportedSignEip7702Authorization);
++        }
++        const { chainId, nonce } = params;
++        const contractAddress = ethNormalize(params.contractAddress);
++        return await keyring.signEip7702Authorization(from, [
++            chainId,
++            contractAddress,
++            nonce,
++        ]);
++    }
+     /**
+      * Signs personal message by calling down into a specific keyring.
+      *
+@@ -1017,6 +1039,7 @@ export class KeyringController extends BaseController {
+ }
+ _KeyringController_controllerOperationMutex = new WeakMap(), _KeyringController_vaultOperationMutex = new WeakMap(), _KeyringController_keyringBuilders = new WeakMap(), _KeyringController_unsupportedKeyrings = new WeakMap(), _KeyringController_encryptor = new WeakMap(), _KeyringController_cacheEncryptionKey = new WeakMap(), _KeyringController_keyrings = new WeakMap(), _KeyringController_password = new WeakMap(), _KeyringController_qrKeyringStateListener = new WeakMap(), _KeyringController_instances = new WeakSet(), _KeyringController_registerMessageHandlers = function _KeyringController_registerMessageHandlers() {
+     this.messagingSystem.registerActionHandler(`${name}:signMessage`, this.signMessage.bind(this));
++    this.messagingSystem.registerActionHandler(`${name}:signEip7702Authorization`, this.signEip7702Authorization.bind(this));
+     this.messagingSystem.registerActionHandler(`${name}:signPersonalMessage`, this.signPersonalMessage.bind(this));
+     this.messagingSystem.registerActionHandler(`${name}:signTypedMessage`, this.signTypedMessage.bind(this));
+     this.messagingSystem.registerActionHandler(`${name}:decryptMessage`, this.decryptMessage.bind(this));
+diff --git a/dist/constants.cjs b/dist/constants.cjs
+index e592c49ed4626e0a2bdd4fc95fc52d17c2511129..06bbad793488f0578dc3ca9935a2d1ec1dfe997e 100644
+--- a/dist/constants.cjs
++++ b/dist/constants.cjs
+@@ -19,6 +19,7 @@ var KeyringControllerError;
+     KeyringControllerError["UnsupportedSignTransaction"] = "KeyringController - The keyring for the current address does not support the method signTransaction.";
+     KeyringControllerError["UnsupportedSignMessage"] = "KeyringController - The keyring for the current address does not support the method signMessage.";
+     KeyringControllerError["UnsupportedSignPersonalMessage"] = "KeyringController - The keyring for the current address does not support the method signPersonalMessage.";
++    KeyringControllerError["UnsupportedSignEip7702Authorization"] = "KeyringController - The keyring for the current address does not support the method signEip7702Authorization.";
+     KeyringControllerError["UnsupportedGetEncryptionPublicKey"] = "KeyringController - The keyring for the current address does not support the method getEncryptionPublicKey.";
+     KeyringControllerError["UnsupportedDecryptMessage"] = "KeyringController - The keyring for the current address does not support the method decryptMessage.";
+     KeyringControllerError["UnsupportedSignTypedMessage"] = "KeyringController - The keyring for the current address does not support the method signTypedMessage.";
+diff --git a/dist/constants.d.cts b/dist/constants.d.cts
+index a889bfffbae17dbbc26e019dc2a63b3f40eefb59..ec521eb0d617789f7424ea56bb930a2cd9f4b9dc 100644
+--- a/dist/constants.d.cts
++++ b/dist/constants.d.cts
+@@ -15,6 +15,7 @@ export declare enum KeyringControllerError {
+     UnsupportedSignTransaction = "KeyringController - The keyring for the current address does not support the method signTransaction.",
+     UnsupportedSignMessage = "KeyringController - The keyring for the current address does not support the method signMessage.",
+     UnsupportedSignPersonalMessage = "KeyringController - The keyring for the current address does not support the method signPersonalMessage.",
++    UnsupportedSignEip7702Authorization = "KeyringController - The keyring for the current address does not support the method signEip7702Authorization.",
+     UnsupportedGetEncryptionPublicKey = "KeyringController - The keyring for the current address does not support the method getEncryptionPublicKey.",
+     UnsupportedDecryptMessage = "KeyringController - The keyring for the current address does not support the method decryptMessage.",
+     UnsupportedSignTypedMessage = "KeyringController - The keyring for the current address does not support the method signTypedMessage.",
+diff --git a/dist/constants.d.mts b/dist/constants.d.mts
+index 887886db0d775aed949247dda001cc582a93dc52..fd92772bcb68c0f8ca9e4e15a642460bafbcdf28 100644
+--- a/dist/constants.d.mts
++++ b/dist/constants.d.mts
+@@ -15,6 +15,7 @@ export declare enum KeyringControllerError {
+     UnsupportedSignTransaction = "KeyringController - The keyring for the current address does not support the method signTransaction.",
+     UnsupportedSignMessage = "KeyringController - The keyring for the current address does not support the method signMessage.",
+     UnsupportedSignPersonalMessage = "KeyringController - The keyring for the current address does not support the method signPersonalMessage.",
++    UnsupportedSignEip7702Authorization = "KeyringController - The keyring for the current address does not support the method signEip7702Authorization.",
+     UnsupportedGetEncryptionPublicKey = "KeyringController - The keyring for the current address does not support the method getEncryptionPublicKey.",
+     UnsupportedDecryptMessage = "KeyringController - The keyring for the current address does not support the method decryptMessage.",
+     UnsupportedSignTypedMessage = "KeyringController - The keyring for the current address does not support the method signTypedMessage.",
+diff --git a/dist/constants.mjs b/dist/constants.mjs
+index 0b7a257f7e1acef0d1d22e8d4d49daccd6b7c251..3ab1da7cff612984013328b181f5f9800aff2113 100644
+--- a/dist/constants.mjs
++++ b/dist/constants.mjs
+@@ -16,6 +16,7 @@ export var KeyringControllerError;
+     KeyringControllerError["UnsupportedSignTransaction"] = "KeyringController - The keyring for the current address does not support the method signTransaction.";
+     KeyringControllerError["UnsupportedSignMessage"] = "KeyringController - The keyring for the current address does not support the method signMessage.";
+     KeyringControllerError["UnsupportedSignPersonalMessage"] = "KeyringController - The keyring for the current address does not support the method signPersonalMessage.";
++    KeyringControllerError["UnsupportedSignEip7702Authorization"] = "KeyringController - The keyring for the current address does not support the method signEip7702Authorization.";
+     KeyringControllerError["UnsupportedGetEncryptionPublicKey"] = "KeyringController - The keyring for the current address does not support the method getEncryptionPublicKey.";
+     KeyringControllerError["UnsupportedDecryptMessage"] = "KeyringController - The keyring for the current address does not support the method decryptMessage.";
+     KeyringControllerError["UnsupportedSignTypedMessage"] = "KeyringController - The keyring for the current address does not support the method signTypedMessage.";
+diff --git a/dist/index.d.cts b/dist/index.d.cts
+index 467db70646dbca915a59fc5b6346e167f9352079..c477127539e2fa90ac9dba22f1051e8e791c59ce 100644
+--- a/dist/index.d.cts
++++ b/dist/index.d.cts
+@@ -1,2 +1,3 @@
+ export * from "./KeyringController.cjs";
++export type * from "./types.cjs";
+ //# sourceMappingURL=index.d.cts.map
+\ No newline at end of file
+diff --git a/dist/index.d.mts b/dist/index.d.mts
+index 7a72c9f5c3910053eef9848c980fb686bab1ccbf..7f819915ac947dd3a71b0cd2af82add8ddcd6827 100644
+--- a/dist/index.d.mts
++++ b/dist/index.d.mts
+@@ -1,2 +1,3 @@
+ export * from "./KeyringController.mjs";
++export type * from "./types.mjs";
+ //# sourceMappingURL=index.d.mts.map
+\ No newline at end of file
+diff --git a/dist/types.cjs b/dist/types.cjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..77841ecb4d38fd8a60a4a6003226b153190e0a44
+--- /dev/null
++++ b/dist/types.cjs
+@@ -0,0 +1,3 @@
++"use strict";
++Object.defineProperty(exports, "__esModule", { value: true });
++//# sourceMappingURL=types.cjs.map
+\ No newline at end of file
+diff --git a/dist/types.d.cts b/dist/types.d.cts
+new file mode 100644
+index 0000000000000000000000000000000000000000..f2a1adacb61db8d6be4c09650b632af19aa0ee0e
+--- /dev/null
++++ b/dist/types.d.cts
+@@ -0,0 +1,70 @@
++import type { SIWEMessage } from "@metamask/controller-utils";
++/**
++ * AbstractMessageParams
++ *
++ * Represents the parameters to pass to the signing method once the signature request is approved.
++ *
++ * from - Address from which the message is processed
++ * origin? - Added for request origin identification
++ * requestId? - Original request id
++ * deferSetAsSigned? - Whether to defer setting the message as signed immediately after the keyring is told to sign it
++ */
++export type AbstractMessageParams = {
++    from: string;
++    origin?: string;
++    requestId?: number;
++    deferSetAsSigned?: boolean;
++};
++/**
++ * Eip7702AuthorizationParams
++ *
++ * Represents the parameters for EIP-7702 authorization signing requests.
++ *
++ * chainId - The chain ID
++ * contractAddress - The contract address
++ * nonce - The nonce
++ */
++export type Eip7702AuthorizationParams = {
++    chainId: number;
++    contractAddress: string;
++    nonce: number;
++} & AbstractMessageParams;
++/**
++ * PersonalMessageParams
++ *
++ * Represents the parameters for personal signing messages.
++ *
++ * data - The data to sign
++ * siwe? - The SIWE message
++ */
++export type PersonalMessageParams = {
++    data: string;
++    siwe?: SIWEMessage;
++} & AbstractMessageParams;
++/**
++ * SignTypedDataMessageV3V4
++ *
++ * Represents the structure of a typed data message for EIP-712 signing requests.
++ *
++ * types - The types of the message
++ * domain - The domain of the message
++ * primaryType - The primary type of the message
++ * message - The message
++ */
++export type SignTypedDataMessageV3V4 = {
++    types: Record<string, unknown>;
++    domain: Record<string, unknown>;
++    primaryType: string;
++    message: unknown;
++};
++/**
++ * TypedMessageParams
++ *
++ * Represents the parameters for typed signing messages.
++ *
++ * data - The data to sign
++ */
++export type TypedMessageParams = {
++    data: Record<string, unknown>[] | string | SignTypedDataMessageV3V4;
++} & AbstractMessageParams;
++//# sourceMappingURL=types.d.cts.map
+\ No newline at end of file
+diff --git a/dist/types.d.mts b/dist/types.d.mts
+new file mode 100644
+index 0000000000000000000000000000000000000000..798e57dfb3106cd90be9e1cf672b8fb20dc17905
+--- /dev/null
++++ b/dist/types.d.mts
+@@ -0,0 +1,70 @@
++import type { SIWEMessage } from "@metamask/controller-utils";
++/**
++ * AbstractMessageParams
++ *
++ * Represents the parameters to pass to the signing method once the signature request is approved.
++ *
++ * from - Address from which the message is processed
++ * origin? - Added for request origin identification
++ * requestId? - Original request id
++ * deferSetAsSigned? - Whether to defer setting the message as signed immediately after the keyring is told to sign it
++ */
++export type AbstractMessageParams = {
++    from: string;
++    origin?: string;
++    requestId?: number;
++    deferSetAsSigned?: boolean;
++};
++/**
++ * Eip7702AuthorizationParams
++ *
++ * Represents the parameters for EIP-7702 authorization signing requests.
++ *
++ * chainId - The chain ID
++ * contractAddress - The contract address
++ * nonce - The nonce
++ */
++export type Eip7702AuthorizationParams = {
++    chainId: number;
++    contractAddress: string;
++    nonce: number;
++} & AbstractMessageParams;
++/**
++ * PersonalMessageParams
++ *
++ * Represents the parameters for personal signing messages.
++ *
++ * data - The data to sign
++ * siwe? - The SIWE message
++ */
++export type PersonalMessageParams = {
++    data: string;
++    siwe?: SIWEMessage;
++} & AbstractMessageParams;
++/**
++ * SignTypedDataMessageV3V4
++ *
++ * Represents the structure of a typed data message for EIP-712 signing requests.
++ *
++ * types - The types of the message
++ * domain - The domain of the message
++ * primaryType - The primary type of the message
++ * message - The message
++ */
++export type SignTypedDataMessageV3V4 = {
++    types: Record<string, unknown>;
++    domain: Record<string, unknown>;
++    primaryType: string;
++    message: unknown;
++};
++/**
++ * TypedMessageParams
++ *
++ * Represents the parameters for typed signing messages.
++ *
++ * data - The data to sign
++ */
++export type TypedMessageParams = {
++    data: Record<string, unknown>[] | string | SignTypedDataMessageV3V4;
++} & AbstractMessageParams;
++//# sourceMappingURL=types.d.mts.map
+\ No newline at end of file
+diff --git a/dist/types.mjs b/dist/types.mjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..ce3aaacc9b65f971207c7833c2825c31e165c600
+--- /dev/null
++++ b/dist/types.mjs
+@@ -0,0 +1,2 @@
++export {};
++//# sourceMappingURL=types.mjs.map
+\ No newline at end of file
+diff --git a/package.json b/package.json
+index 20118c64fb60f479ef10ef19e4fb9906761e3145..6ff6a95f0e9e67cc81d86b131e5dc037724c5b72 100644
+--- a/package.json
++++ b/package.json
+@@ -51,13 +51,12 @@
+     "@keystonehq/metamask-airgapped-keyring": "^0.14.1",
+     "@metamask/base-controller": "^8.0.0",
+     "@metamask/browser-passworder": "^4.3.0",
+-    "@metamask/eth-hd-keyring": "^7.0.4",
+-    "@metamask/eth-sig-util": "^8.0.0",
+-    "@metamask/eth-simple-keyring": "^6.0.5",
+-    "@metamask/keyring-api": "^17.0.0",
+-    "@metamask/keyring-internal-api": "^4.0.1",
+-    "@metamask/message-manager": "^12.0.1",
+-    "@metamask/utils": "^11.1.0",
++    "@metamask/eth-hd-keyring": "^10.0.0",
++    "@metamask/eth-sig-util": "^8.2.0",
++    "@metamask/eth-simple-keyring": "^8.1.0",
++    "@metamask/keyring-api": "^17.1.0",
++    "@metamask/keyring-internal-api": "^4.0.2",
++    "@metamask/utils": "^11.2.0",
+     "async-mutex": "^0.5.0",
+     "ethereumjs-wallet": "^1.0.1",
+     "immer": "^9.0.6"

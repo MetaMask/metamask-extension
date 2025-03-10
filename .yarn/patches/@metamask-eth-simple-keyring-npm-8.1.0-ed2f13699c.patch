@@ -1,0 +1,49 @@
+diff --git a/dist/simple-keyring.cjs b/dist/simple-keyring.cjs
+index 41b74d1451d33c16536e4dd3e81258594b825be1..8be9f3e209dcc1ca1d6f18388badc64fe0d71016 100644
+--- a/dist/simple-keyring.cjs
++++ b/dist/simple-keyring.cjs
+@@ -15,7 +15,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
+ };
+ var _SimpleKeyring_instances, _SimpleKeyring_wallets, _SimpleKeyring_getPrivateKeyFor, _SimpleKeyring_getWalletForAccount;
+ Object.defineProperty(exports, "__esModule", { value: true });
+-const tx_1 = require("@ethereumjs/tx");
+ const util_1 = require("@ethereumjs/util");
+ const eth_sig_util_1 = require("@metamask/eth-sig-util");
+ const utils_1 = require("@metamask/utils");
+diff --git a/dist/simple-keyring.d.cts b/dist/simple-keyring.d.cts
+index 33e25f1e91f26f8afe84901c3c3a64cfb490ca41..75e7b90a8f77539973d65d6e741064691e77ced2 100644
+--- a/dist/simple-keyring.d.cts
++++ b/dist/simple-keyring.d.cts
+@@ -1,4 +1,4 @@
+-import { TypedTransaction } from "@ethereumjs/tx";
++import { type TypedTransaction } from "@ethereumjs/tx";
+ import { EIP7702Authorization, SignTypedDataVersion } from "@metamask/eth-sig-util";
+ import { Eip1024EncryptedData, Hex, Keyring } from "@metamask/utils";
+ type KeyringOpt = {
+diff --git a/dist/simple-keyring.d.mts b/dist/simple-keyring.d.mts
+index e075b39e8317e7a1bfc41a5bd9b8e0fb13b298a8..ab98afa2ddb3a385eaced9e62a8ff0443fa6e031 100644
+--- a/dist/simple-keyring.d.mts
++++ b/dist/simple-keyring.d.mts
+@@ -1,4 +1,4 @@
+-import { TypedTransaction } from "@ethereumjs/tx";
++import { type TypedTransaction } from "@ethereumjs/tx";
+ import { EIP7702Authorization, SignTypedDataVersion } from "@metamask/eth-sig-util";
+ import { Eip1024EncryptedData, Hex, Keyring } from "@metamask/utils";
+ type KeyringOpt = {
+diff --git a/dist/simple-keyring.mjs b/dist/simple-keyring.mjs
+index d021069e7356c19e4f1332ad02826c2ea2e320e4..4c486f4d5fa916138a55cd095008eb39332ed1ec 100644
+--- a/dist/simple-keyring.mjs
++++ b/dist/simple-keyring.mjs
+@@ -16,12 +16,9 @@ function $importDefault(module) {
+     }
+     return module;
+ }
+-import $ethereumjstx from "@ethereumjs/tx";
+-const { TypedTransaction } = $ethereumjstx;
+ import { arrToBufArr, bufferToHex, ecsign, isValidPrivate, privateToPublic, publicToAddress, stripHexPrefix, toBuffer } from "@ethereumjs/util";
+ import { concatSig, decrypt, getEncryptionPublicKey, normalize, personalSign, signEIP7702Authorization, signTypedData, SignTypedDataVersion } from "@metamask/eth-sig-util";
+ import $metamaskethsigutil from "@metamask/eth-sig-util";
+-const { EIP7702Authorization } = $metamaskethsigutil;
+ import { add0x, Eip1024EncryptedData, Hex, Keyring } from "@metamask/utils";
+ import { keccak256 } from "ethereum-cryptography/keccak";
+ import $randombytes from "randombytes";
