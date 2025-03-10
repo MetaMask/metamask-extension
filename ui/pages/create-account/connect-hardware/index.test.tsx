@@ -1,7 +1,8 @@
-import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import React from 'react';
+import configureMockStore from 'redux-mock-store';
+
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import {
   LedgerTransportTypes,
@@ -50,6 +51,7 @@ const mockProps = {
   hideAlert: () => jest.fn(),
   unlockHardwareWalletAccount: () => jest.fn(),
   setHardwareWalletDefaultHdPath: () => jest.fn(),
+  connectHardware: () => mockConnectHardware,
   history: {
     push: mockHistoryPush,
   },
@@ -224,6 +226,88 @@ describe('ConnectHardwareForm', () => {
       expect(learnMoreButton).toBeInTheDocument();
       fireEvent.click(learnMoreButton);
       expect(window.open).toHaveBeenCalled();
+    });
+  });
+
+  describe('getPage method', () => {
+    beforeEach(() => {
+      mockConnectHardware.mockReset();
+    });
+
+    it('should call connectHardware with loadHid=true', async () => {
+      mockConnectHardware.mockReset();
+
+      const mockAccounts = [
+        { address: '0xAddress1', balance: null, index: 0 },
+        { address: '0xAddress2', balance: null, index: 1 },
+      ];
+      mockConnectHardware.mockResolvedValue(mockAccounts);
+
+      renderWithProvider(<ConnectHardwareForm {...mockProps} />, mockStore);
+
+      const hdPath = "m/44'/60'/0'/0";
+      const deviceName = 'ledger';
+      const pageIndex = 0;
+      const loadHidValue = true;
+
+      await mockConnectHardware(
+        deviceName,
+        pageIndex,
+        hdPath,
+        loadHidValue,
+        jest.fn(),
+      );
+
+      expect(mockConnectHardware).toHaveBeenCalledWith(
+        deviceName,
+        pageIndex,
+        hdPath,
+        loadHidValue,
+        expect.any(Function),
+      );
+    });
+
+    it('should call connectHardware with loadHid=false', async () => {
+      mockConnectHardware.mockReset();
+
+      const mockAccounts = [
+        { address: '0xAddress1', balance: null, index: 0 },
+        { address: '0xAddress2', balance: null, index: 1 },
+      ];
+      mockConnectHardware.mockResolvedValue(mockAccounts);
+
+      renderWithProvider(<ConnectHardwareForm {...mockProps} />, mockStore);
+
+      const hdPath = "m/44'/60'/0'/0";
+      const deviceName = 'ledger';
+      const pageIndex = 0;
+      const loadHidValue = false;
+
+      await mockConnectHardware(
+        deviceName,
+        pageIndex,
+        hdPath,
+        loadHidValue,
+        jest.fn(),
+      );
+
+      expect(mockConnectHardware).toHaveBeenCalledWith(
+        deviceName,
+        pageIndex,
+        hdPath,
+        loadHidValue,
+        expect.any(Function),
+      );
+    });
+
+    it('should handle errors when connectHardware fails', async () => {
+      const testError = new Error('Test Error');
+      mockConnectHardware.mockReset();
+      mockConnectHardware.mockRejectedValue(testError);
+
+      renderWithProvider(<ConnectHardwareForm {...mockProps} />, mockStore);
+
+      await expect(mockConnectHardware()).rejects.toThrow('Test Error');
     });
   });
 });
