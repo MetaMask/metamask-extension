@@ -19,14 +19,14 @@ class AccountList extends Component {
   goToNextPage = () => {
     // If we have < 5 accounts, it's restricted by BIP-44
     if (this.props.accounts.length === 5) {
-      this.props.getPage(this.props.device, 1, this.props.selectedPath);
+      this.props.getPage(this.props.device, 1, this.props.selectedPath, false);
     } else {
       this.props.onAccountRestriction();
     }
   };
 
   goToPreviousPage = () => {
-    this.props.getPage(this.props.device, -1, this.props.selectedPath);
+    this.props.getPage(this.props.device, -1, this.props.selectedPath, false);
   };
 
   setPath(pathValue) {
