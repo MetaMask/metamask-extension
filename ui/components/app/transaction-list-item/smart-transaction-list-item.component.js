@@ -95,7 +95,8 @@ export default function SmartTransactionListItem({
         {displayedStatusKey === TransactionGroupStatus.pending &&
           showCancelSwapLink && (
             <Box
-              paddingTop={4}
+              paddingTop={2}
+              paddingBottom={2}
               className="transaction-list-item__pending-actions"
             >
               <CancelButton

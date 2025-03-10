@@ -44,7 +44,9 @@ export const ActivityListItem = ({
         }
       }}
       data-testid={dataTestId}
-      padding={4}
+      paddingTop={2}
+      paddingBottom={2}
+      paddingInline={4}
       display={Display.Flex}
       width={BlockSize.Full}
       flexWrap={FlexWrap.Wrap}
@@ -82,7 +84,7 @@ export const ActivityListItem = ({
             <Text
               ellipsis
               textAlign={TextAlign.Left}
-              variant={TextVariant.bodyLgMedium}
+              variant={TextVariant.bodyMdMedium}
               fontWeight={FontWeight.Medium}
               data-testid="activity-list-item-action"
             >
@@ -93,8 +95,8 @@ export const ActivityListItem = ({
                 as="div"
                 ellipsis
                 textAlign={TextAlign.Left}
-                variant={TextVariant.bodyMd}
-                fontWeight={FontWeight.Normal}
+                variant={TextVariant.bodySmMedium}
+                fontWeight={FontWeight.Medium}
               >
                 {subtitle}
               </Text>

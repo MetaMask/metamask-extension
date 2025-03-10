@@ -237,10 +237,10 @@ export default function TransactionList({
   const renderDateStamp = (index, dateGroup) => {
     return index === 0 ? (
       <Text
-        paddingTop={4}
+        paddingBottom={2}
         paddingInline={4}
-        variant={TextVariant.bodyMd}
-        color={TextColor.textDefault}
+        variant={TextVariant.bodyMdMedium}
+        color={TextColor.textAlternative}
         key={dateGroup.dateMillis}
       >
         {dateGroup.date}
@@ -419,10 +419,11 @@ export default function TransactionList({
                 ).map((dateGroup) => (
                   <Fragment key={dateGroup.date}>
                     <Text
-                      paddingTop={4}
+                      paddingTop={2}
+                      paddingBottom={2}
                       paddingInline={4}
-                      variant={TextVariant.bodyMd}
-                      color={TextColor.textDefault}
+                      variant={TextVariant.bodyMdMedium}
+                      color={TextColor.textAlternative}
                     >
                       {dateGroup.date}
                     </Text>
@@ -477,7 +478,7 @@ export default function TransactionList({
                               fontWeight="medium"
                               textAlign="right"
                               title="Primary Currency"
-                              variant="body-lg-medium"
+                              variant="body-md-medium"
                             >
                               {getTransactionDisplayAmount(
                                 transaction,
