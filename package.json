@@ -133,6 +133,7 @@
     "validate-e2e-page-object-usage": "tsx .github/scripts/validate-e2e-page-object-usage.ts"
   },
   "resolutions": {
+    "@trezor/connect-web": "9.5.1",
     "chokidar": "^3.6.0",
     "@types/react": "^16.9.53",
     "bn.js": "^5.2.1",
@@ -335,7 +336,7 @@
     "@sentry/utils": "^8.33.1",
     "@solana/addresses": "2.0.0-rc.4",
     "@swc/core": "1.4.11",
-    "@trezor/connect-web": "~9.4.7",
+    "@trezor/connect-web": "~9.5.1",
     "@zxing/browser": "^0.1.4",
     "@zxing/library": "0.20.0",
     "await-semaphore": "^0.1.3",
