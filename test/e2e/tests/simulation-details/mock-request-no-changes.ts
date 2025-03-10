@@ -4,7 +4,7 @@ export const NO_CHANGES_TRANSACTION_MOCK = {
   from: SENDER_ADDRESS_MOCK,
   maxFeePerGas: '0x0',
   maxPriorityFeePerGas: '0x0',
-  to: '0x00000000000000adc04c56bf30ac9d3c0aaf14dc',
+  to: SENDER_ADDRESS_MOCK,
   value: '0x0',
 };
 

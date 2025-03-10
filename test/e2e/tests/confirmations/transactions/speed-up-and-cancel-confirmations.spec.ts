@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { Hex } from '@metamask/utils';
 import { decimalToPrefixedHex } from '../../../../../shared/modules/conversion.utils';
+import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
 import {
   defaultGanacheOptionsForType2Transactions,
   unlockWallet,
@@ -36,6 +37,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
             value: ethInHexWei(0.1),
             maxFeePerGas: decimalToPrefixedHex(0),
             maxPriorityFeePerGas: decimalToPrefixedHex(0),
+            to: DEFAULT_FIXTURE_ACCOUNT,
           });
 
           // Wait for confirmation dialog and confirm initial transaction
@@ -88,6 +90,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
             value: ethInHexWei(0.1),
             maxFeePerGas: decimalToPrefixedHex(0),
             maxPriorityFeePerGas: decimalToPrefixedHex(0),
+            to: DEFAULT_FIXTURE_ACCOUNT,
           });
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
