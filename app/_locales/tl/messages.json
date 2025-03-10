@@ -664,9 +664,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfo": {
-    "message": "Hindi namin inirerekomendang magpatuloy sa hiling na ito."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Kung aaprubahan mo ang kahilingang ito, posibleng kunin ng third party na kilala sa mga panloloko ang lahat ng asset mo."
   },
@@ -1027,9 +1024,6 @@
   },
   "confirmationAlertDetails": {
     "message": "Para protektahan ang iyong mga asset, iminumungkahi namin na tanggihan mo ang kahilingan."
-  },
-  "confirmationAlertModalTitle": {
-    "message": "Kahina-hinala ang kahilingang ito"
   },
   "confirmed": {
     "message": "Nakumpirma"

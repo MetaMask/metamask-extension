@@ -664,9 +664,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfo": {
-    "message": "No le recomendamos que siga adelante con esta solicitud."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Si aprueba esta solicitud, un tercero conocido por realizar estafas podría tomar todos sus activos."
   },
@@ -1027,9 +1024,6 @@
   },
   "confirmationAlertDetails": {
     "message": "Para proteger sus activos, le sugerimos que rechace la solicitud."
-  },
-  "confirmationAlertModalTitle": {
-    "message": "Esta solicitud es sospechosa"
   },
   "confirmed": {
     "message": "Confirmado"

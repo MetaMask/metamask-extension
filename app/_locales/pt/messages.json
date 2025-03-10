@@ -664,9 +664,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfo": {
-    "message": "Não é recomendável prosseguir com esta solicitação."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Se você aprovar essa solicitação, algum terceiro conhecido por aplicar golpes poderá tomar todos os seus ativos."
   },
@@ -1027,9 +1024,6 @@
   },
   "confirmationAlertDetails": {
     "message": "Para proteger seus ativos, é recomendável que você recuse a solicitação."
-  },
-  "confirmationAlertModalTitle": {
-    "message": "Esta solicitação é suspeita"
   },
   "confirmed": {
     "message": "Confirmada"
