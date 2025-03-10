@@ -80,6 +80,8 @@ const render = ({
               networkClientId: 'linea-mainnet',
             },
           ],
+          portfolioDiscoverUrl:
+            'https://portfolio.metamask.io/explore/networks/linea',
         },
         '0x38': {
           nativeCurrency: 'BNB',
@@ -271,6 +273,32 @@ describe('NetworkListMenu', () => {
     expect(
       document.querySelectorAll('multichain-network-list-item__delete'),
     ).toHaveLength(0);
+  });
+
+  it('shows the discover button when the portfolioDiscoverUrl is set', () => {
+    const { queryByTestId } = render();
+
+    const menuButton = queryByTestId(
+      'network-list-item-options-button-eip155:59144',
+    );
+    fireEvent.click(menuButton);
+
+    expect(
+      queryByTestId('network-list-item-options-discover'),
+    ).toBeInTheDocument();
+  });
+
+  it('does not show the discover button when the portfolioDiscoverUrl is not set', () => {
+    const { queryByTestId } = render();
+
+    const menuButton = queryByTestId(
+      'network-list-item-options-button-eip155:1',
+    );
+    fireEvent.click(menuButton);
+
+    expect(
+      queryByTestId('network-list-item-options-discover'),
+    ).not.toBeInTheDocument();
   });
 
   describe('selectedTabOrigin is connected to wallet', () => {

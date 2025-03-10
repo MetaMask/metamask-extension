@@ -45,6 +45,7 @@ export const NetworkListItem = ({
   onClick,
   onDeleteClick,
   onEditClick,
+  onDiscoverClick,
   onRpcEndpointClick,
   startAccessory,
   endAccessory,
@@ -62,6 +63,7 @@ export const NetworkListItem = ({
   onRpcEndpointClick?: () => void;
   onDeleteClick?: () => void;
   onEditClick?: () => void;
+  onDiscoverClick?: () => void;
   focus?: boolean;
   startAccessory?: ReactNode;
   endAccessory?: ReactNode;
@@ -83,7 +85,7 @@ export const NetworkListItem = ({
   const [networkOptionsMenuOpen, setNetworkOptionsMenuOpen] = useState(false);
 
   const renderButton = () => {
-    return onDeleteClick || onEditClick ? (
+    return onDeleteClick || onEditClick || onDiscoverClick ? (
       <ButtonIcon
         iconName={IconName.MoreVertical}
         ref={setNetworkListItemMenuRef}
@@ -217,6 +219,7 @@ export const NetworkListItem = ({
               isOpen={networkOptionsMenuOpen}
               onDeleteClick={onDeleteClick}
               onEditClick={onEditClick}
+              onDiscoverClick={onDiscoverClick}
               onClose={() => setNetworkOptionsMenuOpen(false)}
             />
           )
