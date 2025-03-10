@@ -91,6 +91,7 @@ import {
   isAddressLedger,
   getIsUnlocked,
   getCompletedOnboarding,
+  getCurrentCurrency,
 } from '../ducks/metamask/metamask';
 import {
   getLedgerWebHidConnectedStatus,
@@ -3106,3 +3107,8 @@ export function getKeyringSnapAccounts(state) {
   return keyringAccounts;
 }
 ///: END:ONLY_INCLUDE_IF
+
+export const getMemoizedCurrentCurrency = createDeepEqualSelector(
+  [getCurrentCurrency],
+  (currency) => currency,
+);
