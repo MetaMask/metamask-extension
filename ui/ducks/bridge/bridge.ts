@@ -14,8 +14,8 @@ import { getTokenExchangeRate } from './utils';
 
 export type BridgeState = {
   toChainId: CaipChainId | null;
-  fromToken: BridgeToken;
-  toToken: BridgeToken;
+  fromToken: BridgeToken | null;
+  toToken: BridgeToken | null;
   fromTokenInputValue: string | null;
   fromTokenExchangeRate: number | null; // Exchange rate from selected token to the default currency (can be fiat or crypto)
   toTokenExchangeRate: number | null; // Exchange rate from the selected token to the default currency (can be fiat or crypto)
@@ -82,7 +82,7 @@ const bridgeSlice = createSlice({
           ...payload,
           balance: payload.balance ?? '0',
           string: payload.string ?? '0',
-          chainId: formatChainIdToCaip(payload.chainId),
+          chainId: payload.chainId,
         };
       } else {
         state.fromToken = payload;
@@ -94,7 +94,7 @@ const bridgeSlice = createSlice({
           ...payload,
           balance: payload.balance ?? '0',
           string: payload.string ?? '0',
-          chainId: formatChainIdToCaip(payload.chainId),
+          chainId: payload.chainId,
           address: payload.address || zeroAddress(),
         };
       } else {

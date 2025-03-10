@@ -16,6 +16,7 @@ import {
 import { AssetType } from '../../../shared/constants/transaction';
 import {
   formatChainIdToCaip,
+  formatChainIdToHex,
   isNativeAddress,
 } from '../../../shared/modules/bridge-utils/caip-formatters';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
@@ -35,6 +36,7 @@ import {
   type BridgeAppState,
   getTopAssetsFromFeatureFlags,
 } from '../../ducks/bridge/selectors';
+import { type BridgeToken } from '../../../shared/types/bridge';
 
 type FilterPredicate = (
   symbol: string,
@@ -58,11 +60,7 @@ type FilterPredicate = (
  */
 export const useTokensWithFiltering = (
   chainId?: ChainId | Hex | CaipChainId,
-  tokenToExclude?: null | {
-    symbol: string;
-    address?: string;
-    chainId?: string;
-  },
+  tokenToExclude?: null | Pick<BridgeToken, 'symbol' | 'address' | 'chainId'>,
 ) => {
   const allDetectedTokens: Record<string, Token[]> = useSelector(
     getAllDetectedTokensForSelectedAddress,
@@ -79,15 +77,15 @@ export const useTokensWithFiltering = (
   const { value: tokenList, pending: isTokenListLoading } = useAsyncResult<
     Record<string, SwapsTokenObject>
   >(async () => {
-    if (chainId && isStrictHexString(chainId)) {
-      const timestamp = cachedTokens[chainId]?.timestamp;
+    if (chainId && chainId !== MultichainNetworks.SOLANA) {
+      const hexChainId = formatChainIdToHex(chainId);
+      const timestamp = cachedTokens[hexChainId]?.timestamp;
       // Use cached token data if updated in the last 10 minutes
       if (timestamp && Date.now() - timestamp <= 10 * MINUTE) {
-        return cachedTokens[chainId]?.data;
+        return cachedTokens[hexChainId]?.data;
       }
       // Otherwise fetch new token data
-
-      return await fetchBridgeTokens(chainId);
+      return await fetchBridgeTokens(hexChainId);
     }
     if (chainId && formatChainIdToCaip(chainId) === MultichainNetworks.SOLANA) {
       return await fetchNonEvmTokens(chainId);
@@ -118,8 +116,9 @@ export const useTokensWithFiltering = (
     if (!chainId || !token || !isStrictHexString(chainId)) {
       return undefined;
     }
+    const hexChainId = formatChainIdToHex(chainId);
     // Only tokens on the active chain are processed here here
-    const sharedFields = { ...token, chainId };
+    const sharedFields = { ...token, chainId: hexChainId };
 
     if (isNativeAddress(token.address)) {
       return {
@@ -138,12 +137,8 @@ export const useTokensWithFiltering = (
 
     return {
       ...sharedFields,
-      ...(tokenList?.[token.address.toLowerCase()] ?? {}),
       type: AssetType.token,
-      image:
-        token.iconUrl ??
-        tokenList?.[token.address.toLowerCase()]?.iconUrl ??
-        '',
+      image: token.iconUrl ?? tokenList?.[token.address]?.iconUrl ?? '',
       // Only tokens with 0 balance are processed here so hardcode empty string
       balance: '',
       string: undefined,
@@ -273,11 +268,7 @@ export const useTokensWithFiltering = (
           const matchedToken = tokenList?.[token_.address];
           if (
             matchedToken &&
-            shouldAddToken(
-              matchedToken.symbol,
-              matchedToken.address ?? undefined,
-              chainId,
-            )
+            shouldAddToken(matchedToken.symbol, matchedToken.address, chainId)
           ) {
             const token = buildTokenData(matchedToken);
             if (token) {
@@ -290,7 +281,7 @@ export const useTokensWithFiltering = (
         for (const token_ of Object.values(tokenList)) {
           if (
             token_ &&
-            shouldAddToken(token_.symbol, token_.address ?? undefined, chainId)
+            shouldAddToken(token_.symbol, token_.address, chainId)
           ) {
             const token = buildTokenData(token_);
             if (token) {
