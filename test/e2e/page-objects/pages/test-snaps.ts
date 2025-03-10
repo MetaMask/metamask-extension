@@ -1,218 +1,379 @@
 import { Driver } from '../../webdriver/driver';
 import { TEST_SNAPS_WEBSITE_URL } from '../../snaps/enums';
-import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
-import SnapInstall from './dialog/snap-install';
-import SnapInstallWarning from './dialog/snap-install-warning';
 
 export class TestSnaps {
   driver: Driver;
-
-  public readonly snapInstall;
 
   private readonly installedSnapsHeader = '[data-testid="InstalledSnaps"]';
 
   private readonly dialogsSnapConfirmationButton = '#sendConfirmationButton';
 
-  private readonly getPublicKeyButton = {
-    css: '#bip32GetPublic',
-    text: 'Get Public Key',
-  };
+  private readonly connectHomePageButton = '#connecthomepage';
 
-  private readonly getCompressedKeyButton = {
-    css: '#bip32GetCompressedPublic',
-    text: 'Get Compressed Public Key',
-  };
+  public readonly connectDialogsButton = '#connectdialogs';
+
+  private readonly connectErrorsButton = '#connecterrors';
+
+  private readonly connectBip32Button = '#connectbip32';
+
+  private readonly connectBip44Button = '#connectbip44';
+
+  public readonly connectUpdateButton = '#connectUpdate';
+
+  public readonly connectUpdateNewButton = '#connectUpdateNew';
+
+  private readonly connectClientStatusButton = '#connectclient-status';
+
+  private readonly connectGetEntropySnapButton = '#connectGetEntropySnap';
+
+  private readonly sendGetFileTextButton = '#sendGetFileTextButton';
+
+  private readonly sendGetFileBase64Button = '#sendGetFileBase64Button';
+
+  private readonly sendGetFileHexButton = '#sendGetFileHexButton';
+
+  private readonly connectImagesButton = '#connectimages';
+
+  public readonly connectGetFileButton = '#connectgetfile';
+
+  public readonly fileResultSpan = '#getFileResult';
+
+  public readonly connectLifeCycleButton = '#connectlifecycle-hooks';
+
+  private readonly connectTransactionInsightButton =
+    '#connecttransaction-insights';
+
+  public readonly connectWasmButton = '#connectwasm';
+
+  private readonly getAccountButton = '#getAccounts';
+
+  private readonly sendInsightButton = '#sendInsights';
+
+  private readonly nameLookUpButton = '#connectname-lookup';
+
+  private readonly submitClientStatusButton = '#sendClientStatusTest';
+
+  private readonly sendErrorButton = '#sendError';
+
+  public readonly reconnectBip32Button = '#connectbip32';
+
+  public readonly reconnectBip44Button = '#connectbip44';
+
+  private readonly getPublicKeyButton = '#bip32GetPublic';
+
+  private readonly getCompressedKeyButton = '#bip32GetCompressedPublic';
 
   private readonly publicKeyBip44Button = '#sendBip44Test';
 
-  private readonly inputMessageEd25519 = '#bip32Message-ed25519';
+  private readonly wasmInput = '#wasmInput';
 
-  private readonly inputMessageEd25519Bip32 = '#bip32Message-ed25519Bip32';
+  private readonly messageEd25519Input = '#bip32Message-ed25519';
 
-  private readonly inputMessageSecp256k1 = '#bip32Message-secp256k1';
+  private readonly entropyMessageInput = '#entropyMessage';
 
-  private readonly buttonMessageSecp256k1 = '#sendBip32-secp256k1';
+  private readonly messageEd25519Bip32Input = '#bip32Message-ed25519Bip32';
 
-  private readonly buttonSignEd25519Message = '#sendBip32-ed25519';
+  private readonly messageSecp256k1Input = '#bip32Message-secp256k1';
 
-  private readonly inputMessageBip44 = '#bip44Message';
+  private readonly sendWasmMessageButton = '#sendWasmMessage';
 
-  private readonly buttonSignBip44Message = '#signBip44Message';
+  private readonly messageSecp256k1Button = '#sendBip32-secp256k1';
 
-  private readonly buttonSignEd25519Bip32Message = '#sendBip32-ed25519Bip32';
+  private readonly signEd25519MessageButton = '#sendBip32-ed25519';
+
+  private readonly messageBip44Input = '#bip44Message';
+
+  private readonly signBip44MessageButton = '#signBip44Message';
+
+  private readonly signEd25519Bip32MessageButton = '#sendBip32-ed25519Bip32';
+
+  private readonly signEntropyMessageButton = '#signEntropyMessage';
+
+  private readonly clientStatusResultSpan = '#clientStatusResult';
+
+  public readonly bip32ResultSpan = '#bip32Result';
+
+  public readonly bip32PublicKeyResultSpan = '#bip32PublicKeyResult';
+
+  public readonly bip32MessageResultSecp256k1Span =
+    '#bip32MessageResult-secp256k1';
+
+  public readonly bip32MessageResultEd25519Span = '#bip32MessageResult-ed25519';
+
+  public readonly messageResultEd25519SBip32Span =
+    '#bip32MessageResult-ed25519Bip32';
+
+  public readonly bip44ResultSpan = '#bip44Result';
+
+  public readonly bip44SignResultSpan = '#bip44SignResult';
+
+  public readonly errorResultSpan = '#errorResult';
+
+  public readonly installedSnapResultSpan = '#installedSnapsResult';
+
+  public readonly wasmResultSpan = '#wasmResult';
+
+  public readonly updateVersionSpan = '#updateSnapVersion';
+
+  public readonly entropySignResultSpan = '#entropySignResult';
+
+  public readonly bip32EntropyDropDown = '#bip32-entropy-selector';
+
+  public readonly bip44EntropyDropDown = '#bip44-entropy-selector';
+
+  public readonly getEntropyDropDown = '#get-entropy-entropy-selector';
 
   constructor(driver: Driver) {
     this.driver = driver;
-    this.snapInstall = new SnapInstall(driver);
   }
 
   async openPage() {
+    console.log('Opening Test Snap Dapp page');
     await this.driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
     await this.driver.waitForSelector(this.installedSnapsHeader);
   }
 
-  /**
-   * Install a Snap with the given `connectButton` selector. This assumes a
-   * button exists on the `test-snaps` page that will open a dialog to install
-   * the Snap.
-   *
-   * @param connectButton - The selector for the button that will open the
-   * dialog to install the Snap.
-   * @param withWarning - Whether the installation will have a warning dialog,
-   * e.g., in the case of entropy Snaps requiring special permissions.
-   */
-  async installSnap(connectButton: string, withWarning = false) {
-    await this.driver.scrollToElement(
-      this.driver.findClickableElement(connectButton),
-    );
-
-    await this.driver.delay(largeDelayMs);
-    await this.driver.waitForSelector(connectButton);
-    await this.driver.clickElement(connectButton);
-
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.snapInstall.check_pageIsLoaded();
-    await this.snapInstall.clickNextButton();
-
-    // click confirm
-    await this.snapInstall.clickConfirmButton();
-
-    if (withWarning) {
-      const snapInstallWarning = new SnapInstallWarning(this.driver);
-      await snapInstallWarning.clickCheckboxPermission();
-      await snapInstallWarning.clickConfirmButton();
+  async check_pageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.installedSnapsHeader,
+        this.connectBip32Button,
+      ]);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for Test Snap Dapp page to be loaded',
+        e,
+      );
+      throw e;
     }
+    console.log('Test Snap Dapp page is loaded');
+  }
 
-    await this.snapInstall.clickNextButton();
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
-
+  async check_clientStatus(expectedStatus: string): Promise<void> {
+    console.log(`Checking that the client status should be ${expectedStatus}`);
     await this.driver.waitForSelector({
-      css: connectButton,
-      text: 'Reconnect',
+      css: this.clientStatusResultSpan,
+      text: expectedStatus,
     });
   }
 
-  /**
-   * Click a button with the given selector.
-   *
-   * @param selector - The selector for the button to click.
-   * @returns A promise that resolves after the button is clicked.
-   */
-  async clickButton(selector: string) {
-    console.log('Wait and click button');
-    await this.driver.waitForSelector(selector);
-    await this.driver.clickElement(selector);
+  async clickButton(buttonElement: string, scrollTo: boolean = true) {
+    if (scrollTo) {
+      console.log(`Finding, scrolling to, and clicking ${buttonElement}`);
+      await this.driver.findScrollToAndClickElement(buttonElement);
+    } else {
+      console.log(`Clicking the button ${buttonElement}`);
+      await this.driver.clickElement(buttonElement);
+    }
   }
 
-  /**
-   * Paste a message into a field with the given selector.
-   *
-   * @param selector - The selector for the field to paste the message into.
-   * @param message - The message to paste into the field.
-   * @returns A promise that resolves after the message is pasted into the
-   * field.
-   */
-  async pasteIntoField(selector: string, message: string) {
-    await this.driver.pasteIntoField(selector, message);
+  async clickConnectDialogsSnapButton() {
+    await this.driver.clickElement(this.connectDialogsButton);
   }
 
-  /**
-   * Click the approve button in the dialog window.
-   *
-   * @returns A promise that resolves after the approve button is clicked.
-   */
-  async approveDialog() {
-    // Switch to approve window.
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  async clickConnectGetEntropySnapButton() {
+    await this.clickButton(this.connectGetEntropySnapButton);
+  }
 
-    // Wait for and click on approve and wait for window to close.
-    await this.driver.waitForSelector({
-      text: 'Approve',
-      tag: 'button',
-    });
-    await this.driver.clickElementAndWaitForWindowToClose({
-      text: 'Approve',
-      tag: 'button',
-    });
+  async clickGetFileTextButton() {
+    await this.clickButton(this.sendGetFileTextButton);
+  }
 
-    // Switch back to `test-snaps` page.
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+  async clickGetFileBase64Button() {
+    await this.clickButton(this.sendGetFileBase64Button, false);
+  }
+
+  async clickGetFileTextHexButton() {
+    await this.driver.clickElement(this.sendGetFileHexButton);
+  }
+
+  async clickConnectGetFileButton() {
+    await this.clickButton(this.connectGetFileButton, true);
+  }
+
+  async clickConnectUpdateButton() {
+    await this.clickButton(this.connectUpdateButton);
+  }
+
+  async clickConnectUpdateNewButton() {
+    await this.clickButton(this.connectUpdateNewButton);
+  }
+
+  async clickConnectWasmButton() {
+    await this.clickButton(this.connectWasmButton);
+  }
+
+  async clickSendErrorButton() {
+    await this.clickButton(this.sendErrorButton);
   }
 
   async clickDialogsSnapConfirmationButton() {
-    await this.driver.clickElement(this.dialogsSnapConfirmationButton);
+    await this.clickButton(this.dialogsSnapConfirmationButton, false);
   }
 
-  async clickGetPublicKeyButton() {
-    console.log('Wait and click get public key button');
-    await this.driver.waitForSelector(this.getPublicKeyButton);
-    await this.driver.clickElement(this.getPublicKeyButton);
+  async clickConnectBip32Button() {
+    await this.clickButton(this.connectBip32Button);
+  }
+
+  async clickConnectBip44Button() {
+    await this.clickButton(this.connectBip44Button);
+  }
+
+  async clickConnectClientStatusButton() {
+    await this.clickButton(this.connectClientStatusButton);
+  }
+
+  async clickGetAccountButton() {
+    await this.clickButton(this.getAccountButton, false);
+  }
+
+  async clickSendInsightButton() {
+    await this.clickButton(this.sendInsightButton, false);
+  }
+
+  async clickConnectDialogsButton() {
+    await this.clickButton(this.connectDialogsButton, false);
+  }
+
+  async clickGetPublicKeyBip32Button() {
+    await this.clickButton(this.getPublicKeyButton, false);
   }
 
   async clickPublicKeyBip44Button() {
-    console.log('Wait and click get public key button');
-    await this.driver.waitForSelector(this.publicKeyBip44Button);
-    await this.driver.clickElement(this.publicKeyBip44Button);
+    await this.clickButton(this.publicKeyBip44Button, false);
   }
 
-  async clickGetCompressedPublicKeyButton() {
-    console.log('Wait and click get compressed public key button');
-    await this.driver.waitForSelector(this.getCompressedKeyButton);
-    await this.driver.clickElement(this.getCompressedKeyButton);
+  async clickGetCompressedPublicKeyBip32Button() {
+    await this.clickButton(this.getCompressedKeyButton, false);
   }
 
-  async fillMessageSecp256k1(message: string) {
-    console.log('Wait and fill message in secp256k1');
-    await this.driver.fill(this.inputMessageSecp256k1, message);
-    await this.driver.clickElement(this.buttonMessageSecp256k1);
+  async clickConnectHomePage() {
+    await this.clickButton(this.connectHomePageButton);
   }
 
-  async fillMessageEd25519(message: string) {
-    console.log('Wait and fill message in ed25519');
-    await this.driver.waitForSelector(this.inputMessageEd25519);
-    await this.driver.fill(this.inputMessageEd25519, message);
-    await this.driver.clickElement(this.buttonSignEd25519Message);
+  async clickConnectErrorsButton() {
+    await this.clickButton(this.connectErrorsButton);
   }
 
-  async fillMessageEd25519Bip32(message: string) {
-    console.log('Wait and fill message in ed25519 bip32');
-    await this.driver.waitForSelector(this.inputMessageEd25519Bip32);
-    await this.driver.fill(this.inputMessageEd25519Bip32, message);
-    await this.driver.clickElement(this.buttonSignEd25519Bip32Message);
+  async clickConnectImagesButton() {
+    await this.clickButton(this.connectImagesButton);
+  }
+
+  async clickLifeCycleHooksButton() {
+    await this.clickButton(this.connectLifeCycleButton);
+  }
+
+  async clickNameLookupButton() {
+    await this.clickButton(this.nameLookUpButton);
+  }
+
+  async clickTransactionInsightButton() {
+    await this.clickButton(this.connectTransactionInsightButton);
+  }
+
+  async clickSubmitClientStatusButton() {
+    await this.clickButton(this.submitClientStatusButton);
+  }
+
+  async fillWasmMessageAndSign(message: string) {
+    console.log('Filling message in wasm');
+    await this.driver.fill(this.wasmInput, message);
+    await this.clickButton(this.sendWasmMessageButton, false);
+  }
+
+  async fillMessageAndSignSecp256k1(message: string) {
+    console.log('Filling message in secp256k1');
+    await this.driver.fill(this.messageSecp256k1Input, message);
+    await this.clickButton(this.messageSecp256k1Button, false);
+  }
+
+  async fillMessageAndSignEd25519(message: string) {
+    console.log('Filling message in ed25519');
+    await this.driver.fill(this.messageEd25519Input, message);
+    await this.clickButton(this.signEd25519MessageButton, false);
+  }
+
+  async fillMessageAndSignEd25519Bip32(message: string) {
+    console.log('Filling message in ed25519 bip32');
+    await this.driver.fill(this.messageEd25519Bip32Input, message);
+    await this.clickButton(this.signEd25519Bip32MessageButton, false);
   }
 
   async fillBip44MessageAndSign(message: string) {
-    console.log('Wait and enter bip44 message ');
-    await this.driver.pasteIntoField(this.inputMessageBip44, message);
-    const buttonSignBip44 = await this.driver.findElement(
-      this.buttonSignBip44Message,
-    );
-    await this.driver.scrollToElement(buttonSignBip44);
-    await this.driver.waitForSelector(this.buttonSignBip44Message);
-    await this.driver.clickElement(this.buttonSignBip44Message);
+    console.log('Filling bip44 message ');
+    await this.driver.pasteIntoField(this.messageBip44Input, message);
+    await this.clickButton(this.signBip44MessageButton);
   }
 
-  async scrollToSendEd25519() {
-    console.log('Scroll to send ed25519');
-    const sendEd25519 = await this.driver.findElement(this.inputMessageEd25519);
+  async fillEntropyMessage(message: string) {
+    console.log('Filling entropy message ');
+    await this.driver.pasteIntoField(this.entropyMessageInput, message);
+    await this.clickButton(this.signEntropyMessageButton);
+  }
+
+  async scrollToSignWithEd25519Button() {
+    console.log('Scrolling to sign with ed25519 button');
+    const sendEd25519 = await this.driver.findElement(this.messageEd25519Input);
     await this.driver.scrollToElement(sendEd25519);
   }
 
+  async check_installationComplete(selector: string, expectedMessage: string) {
+    console.log(`Checking installation is complete - ${expectedMessage}`);
+    await this.driver.waitForSelector({
+      css: selector,
+      text: expectedMessage,
+    });
+  }
+
+  async check_installedSnapsResult(expectedMessage: string) {
+    console.log('Checking installed snaps, result section on the top left');
+    await this.driver.waitForSelector({
+      css: this.installedSnapResultSpan,
+      text: expectedMessage,
+    });
+  }
+
+  async check_messageResultSpan(
+    spanSelectorId: string,
+    expectedMessage: string,
+  ) {
+    console.log(
+      `Checking the received result against the following expected result: ${expectedMessage}`,
+    );
+    await this.driver.waitForSelector({
+      css: spanSelectorId,
+      text: expectedMessage,
+    });
+  }
+
   /**
-   * Select an entropy source from the dropdown with the given ID.
+   * Select an entropy source from the dropdown with the given name.
    *
-   * @param id - The ID of the dropdown.
+   * @param dropDownName - The name of the dropdown locator to select the entropy source from.
    * @param name - The name of the entropy source to select.
    */
-  async selectEntropySource(id: string, name: string) {
-    console.log('Select entropy source');
-    const selector = await this.driver.findElement(`#${id}-entropy-selector`);
+  async scrollAndSelectEntropySource(dropDownName: string, name: string) {
+    let dropDownLocator: string;
+    switch (dropDownName) {
+      case 'bip32':
+        dropDownLocator = this.bip32EntropyDropDown;
+        break;
+      case 'bip44':
+        dropDownLocator = this.bip44EntropyDropDown;
+        break;
+      case 'getEntropy':
+        dropDownLocator = this.getEntropyDropDown;
+        break;
+      default:
+        throw new Error(`Unknown entropy source type: ${dropDownName}`);
+    }
+    console.log(`Select ${dropDownName} entropy source`);
+    const selector = await this.driver.findElement(dropDownLocator);
     await this.driver.scrollToElement(selector);
-    await this.driver.clickElement(`#${id}-entropy-selector`);
-
+    await this.driver.clickElement(dropDownLocator);
     await this.driver.clickElement({
       text: name,
-      css: `#${id}-entropy-selector option`,
+      css: `${dropDownLocator} option`,
     });
   }
 }

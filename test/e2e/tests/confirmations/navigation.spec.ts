@@ -13,6 +13,7 @@ import TestDapp from '../../page-objects/pages/test-dapp';
 import { createDappTransaction } from '../../page-objects/flows/transaction';
 import { TestSnaps } from '../../page-objects/pages/test-snaps';
 import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
+import { completeSnapInstallSwitchToTestSnap } from '../../page-objects/flows/snap-permission.flow';
 import { withTransactionEnvelopeTypeFixtures } from './helpers';
 
 describe('Confirmation Navigation', function (this: Suite) {
@@ -135,7 +136,8 @@ describe('Confirmation Navigation', function (this: Suite) {
 
         const testSnaps = new TestSnaps(driver);
         await testSnaps.openPage();
-        await testSnaps.installSnap('#connectdialogs');
+        await testSnaps.clickConnectDialogsSnapButton();
+        await completeSnapInstallSwitchToTestSnap(driver);
         await testSnaps.clickDialogsSnapConfirmationButton();
 
         const testDapp = new TestDapp(driver);
