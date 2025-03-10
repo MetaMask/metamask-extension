@@ -300,10 +300,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Les frais de priorité (aussi appelés « pourboire du mineur ») vont directement aux mineurs et les incitent à accorder la priorité à votre transaction."
   },
-  "aggregatedBalancePopover": {
-    "message": "Cette valeur reflète la valeur de tous les jetons que vous possédez sur un réseau donné. Si vous préférez que cette valeur soit affichée en ETH ou dans d’autres monnaies, veuillez accéder à $1.",
-    "description": "$1 represents the settings page"
-  },
   "agreeTermsOfUse": {
     "message": "J’accepte les $1 de MetaMask",
     "description": "$1 is the `terms` link"
