@@ -201,6 +201,9 @@ export async function fetchBridgeQuotes(
     insufficientBal: request.insufficientBal ? 'true' : 'false',
     resetApproval: request.resetApproval ? 'true' : 'false',
   };
+  if (request.slippage !== undefined) {
+    normalizedRequest.slippage = request.slippage.toString();
+  }
   const queryParams = new URLSearchParams(normalizedRequest);
   const url = `${BRIDGE_API_BASE_URL}/getQuote?${queryParams}`;
   const quotes = await fetchWithCache({
