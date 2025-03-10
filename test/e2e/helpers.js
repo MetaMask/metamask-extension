@@ -68,7 +68,7 @@ function normalizeLocalNodeOptions(localNodeOptions) {
       if (typeof node === 'object' && node !== null) {
         // Case 3: Array of objects
         return {
-          type: node.type || 'ganache',
+          type: node.type || 'anvil',
           options: node.options || {},
         };
       }
@@ -79,7 +79,7 @@ function normalizeLocalNodeOptions(localNodeOptions) {
     // Case 4: Passing an options object without type
     return [
       {
-        type: 'ganache',
+        type: 'anvil',
         options: localNodeOptions,
       },
     ];
@@ -108,7 +108,7 @@ async function withFixtures(options, testSuite) {
   const {
     dapp,
     fixtures,
-    localNodeOptions = 'ganache',
+    localNodeOptions = 'anvil',
     smartContract,
     driverOptions,
     dappOptions,
