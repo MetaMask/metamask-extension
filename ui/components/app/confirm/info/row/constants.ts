@@ -7,7 +7,7 @@ export enum RowAlertKey {
   Network = 'network',
   Resimulation = 'resimulation',
   Speed = 'speed',
-  To = 'to',
+  InteractingWith = 'interactingWith',
 }
 
 export enum AlertActionKey {

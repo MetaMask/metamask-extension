@@ -49,7 +49,7 @@ export function useNonContractAddressAlerts(): Alert[] {
 
     return [
       {
-        field: RowAlertKey.To,
+        field: RowAlertKey.InteractingWith,
         isBlocking: false,
         key: 'hexDataWhileInteractingWithNonContractAddress',
         reason: t('nonContractAddressAlertTitle'),
