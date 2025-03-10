@@ -91,6 +91,7 @@ buildTypes:
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://metamask.github.io/snaps-directory-staging/main/account-management
       - EIP_4337_ENTRYPOINT: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789'
       - EVM_MULTICHAIN_ENABLED: false
+      - MULTICHAIN_API: true
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
     buildNameOverride: MetaMask Flask
@@ -291,8 +292,14 @@ env:
   - NODE_DEBUG: ''
   # Used by react-devtools-core
   - EDITOR_URL: ''
-  # Determines if Barad Dur features should be used
-  - BARAD_DUR: ''
+  # Determines if Multichain API features should be used
+  # NOTE: The manifest.json for the build that sets this feature flag
+  # must also include an "externally_connectable" entry as follows:
+  # "externally_connectable": {
+  #   "matches": ["http://*/*", "https://*/*"],
+  #   "ids": ["*"]
+  # }
+  - MULTICHAIN_API: false
   # Determines if feature flagged Chain permissions
   - CHAIN_PERMISSIONS: ''
   # Determines if Portfolio View UI should be shown

@@ -538,6 +538,97 @@ class FixtureBuilder {
     });
   }
 
+  withPermissionControllerConnectedToMultichainTestDapp({
+    account = '',
+    useLocalhostHostname = false,
+  } = {}) {
+    const selectedAccount = account || DEFAULT_FIXTURE_ACCOUNT;
+    const subjects = {
+      [useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL]: {
+        origin: useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL,
+        permissions: {
+          'endowment:caip25': {
+            caveats: [
+              {
+                type: 'authorizedScopes',
+                value: {
+                  requiredScopes: {},
+                  optionalScopes: {
+                    'eip155:1337': {
+                      accounts: [
+                        `eip155:1337:${selectedAccount.toLowerCase()}`,
+                      ],
+                    },
+                    'wallet:eip155': {
+                      accounts: [
+                        `wallet:eip155:${selectedAccount.toLowerCase()}`,
+                      ],
+                    },
+                    wallet: {
+                      accounts: [],
+                    },
+                  },
+                  isMultichainOrigin: true,
+                },
+              },
+            ],
+            id: 'ZaqPEWxyhNCJYACFw93jE',
+            date: 1664388714636,
+            invoker: DAPP_URL,
+            parentCapability: 'endowment:caip25',
+          },
+        },
+      },
+    };
+    return this.withPermissionController({
+      subjects,
+    });
+  }
+
+  withPermissionControllerConnectedToMultichainTestDappWithTwoAccounts({
+    scopes = ['eip155:1337'],
+  }) {
+    const optionalScopes = scopes
+      .map((scope) => ({
+        [scope]: {
+          accounts: [
+            `${scope}:0x5cfe73b6021e818b776b421b1c4db2474086a7e1`,
+            `${scope}:0x09781764c08de8ca82e156bbf156a3ca217c7950`,
+          ],
+        },
+      }))
+      .reduce((acc, curr) => {
+        return { ...acc, ...curr };
+      }, {});
+
+    const subjects = {
+      [DAPP_URL]: {
+        origin: DAPP_URL,
+        permissions: {
+          'endowment:caip25': {
+            caveats: [
+              {
+                type: 'authorizedScopes',
+                value: {
+                  requiredScopes: {},
+                  optionalScopes,
+                  isMultichainOrigin: true,
+                },
+              },
+            ],
+            id: 'ZaqPEWxyhNCJYACFw93jE',
+            date: 1664388714636,
+            invoker: DAPP_URL,
+            parentCapability: 'endowment:caip25',
+          },
+        },
+      },
+    };
+    return this.withPermissionController({
+      subjects,
+    });
+  }
+
   withPermissionControllerConnectedToTestDappWithTwoAccounts() {
     const subjects = {
       [DAPP_URL]: {
@@ -1557,6 +1648,69 @@ class FixtureBuilder {
   withTransactions(transactions) {
     return this.withTransactionController({
       transactions,
+    });
+  }
+
+  withPopularNetworks() {
+    return this.withNetworkController({
+      networkConfigurations: {
+        'op-mainnet': {
+          chainId: CHAIN_IDS.OPTIMISM,
+          nickname: 'OP Mainnet',
+          rpcPrefs: {},
+          rpcUrl: 'https://mainnet.optimism.io',
+          ticker: 'ETH',
+          id: 'op-mainnet',
+        },
+        'polygon-mainnet': {
+          chainId: CHAIN_IDS.POLYGON,
+          nickname: 'Polygon Mainnet',
+          rpcPrefs: {},
+          rpcUrl: 'https://polygon-rpc.com',
+          ticker: 'MATIC',
+          id: 'polygon-mainnet',
+        },
+        'arbitrum-one': {
+          chainId: CHAIN_IDS.ARBITRUM,
+          nickname: 'Arbitrum One',
+          rpcPrefs: {},
+          rpcUrl: 'https://arb1.arbitrum.io/rpc',
+          ticker: 'ETH',
+          id: 'arbitrum-one',
+        },
+        'avalanche-mainnet': {
+          chainId: CHAIN_IDS.AVALANCHE,
+          nickname: 'Avalanche Network C-Chain',
+          rpcPrefs: {},
+          rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
+          ticker: 'AVAX',
+          id: 'avalanche-mainnet',
+        },
+        'bnb-mainnet': {
+          chainId: CHAIN_IDS.BSC,
+          nickname: 'BNB Chain',
+          rpcPrefs: {},
+          rpcUrl: 'https://bsc-dataseed.binance.org',
+          ticker: 'BNB',
+          id: 'bnb-mainnet',
+        },
+        'base-mainnet': {
+          chainId: CHAIN_IDS.BASE,
+          nickname: 'Base',
+          rpcPrefs: {},
+          rpcUrl: 'https://mainnet.base.org',
+          ticker: 'ETH',
+          id: 'base-mainnet',
+        },
+        'zksync-mainnet': {
+          chainId: CHAIN_IDS.ZKSYNC_ERA,
+          nickname: 'zkSync Era',
+          rpcPrefs: {},
+          rpcUrl: 'https://mainnet.era.zksync.io',
+          ticker: 'ETH',
+          id: 'zksync-mainnet',
+        },
+      },
     });
   }
 

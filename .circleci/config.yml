@@ -159,6 +159,10 @@ workflows:
           requires:
             - prep-build-test
             - get-changed-files-with-git-diff
+      - test-api-specs-multichain:
+          requires:
+            - prep-build-test-flask
+            - get-changed-files-with-git-diff
       - test-e2e-chrome-multiple-providers:
           requires:
             - prep-build-test
@@ -702,6 +706,37 @@ jobs:
           destination: test-artifacts
       - store_test_results:
           path: test/test-results/e2e
+
+  test-api-specs-multichain:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone-and-enable-vnc
+      - run: sudo corepack enable
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-flask ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-flask ./builds
+      - gh/install
+      - run:
+          name: test:api-specs-multichain
+          command: .circleci/scripts/test-run-e2e.sh yarn test:api-specs-multichain
+          no_output_timeout: 5m
+      - run:
+          name: Comment on PR
+          command: |
+            if [  -f html-report-multichain/index.html ]; then
+              gh pr comment "${CIRCLE_PR_NUMBER}" --body ":x: Multichain API Spec Test Failed. View the report [here](https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/${CIRCLE_NODE_INDEX}/html-report-multichain/index.html)."
+            else
+              echo "Multichain API Spec Report not found!"
+            fi
+          when: on_fail
+      - store_artifacts:
+          path: html-report-multichain
+          destination: html-report-multichain
 
   test-api-specs:
     executor: node-browsers-medium-plus
