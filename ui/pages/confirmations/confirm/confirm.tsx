@@ -1,5 +1,5 @@
 import { ReactNodeLike } from 'prop-types';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, memo } from 'react';
 
 import { Page } from '../../../components/multichain/pages/page';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
@@ -39,7 +39,7 @@ const GasFeeContextProviderWrapper: React.FC<{
   );
 };
 
-const Confirm = () => (
+const Confirm = memo(() => (
   <ConfirmContextProvider>
     <TransactionModalContextProvider>
       {/* This context should be removed once we implement the new edit gas fees popovers */}
@@ -63,6 +63,6 @@ const Confirm = () => (
       </GasFeeContextProviderWrapper>
     </TransactionModalContextProvider>
   </ConfirmContextProvider>
-);
+));
 
 export default Confirm;
