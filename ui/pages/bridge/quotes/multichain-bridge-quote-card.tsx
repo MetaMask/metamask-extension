@@ -14,6 +14,7 @@ import {
   getBridgeQuotes,
   getFromChain,
   getToChain,
+  getIsBridgeTx,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -61,6 +62,7 @@ export const MultichainBridgeQuoteCard = () => {
   const fromChain = useSelector(getFromChain);
   const toChain = useSelector(getToChain);
   const locale = useSelector(getIntlLocale);
+  const isBridgeTx = useSelector(getIsBridgeTx);
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
 
@@ -123,32 +125,34 @@ export const MultichainBridgeQuoteCard = () => {
               </Text>
             </Row>
 
-            {/* Bridging */}
-            <Row justifyContent={JustifyContent.spaceBetween}>
-              <Text
-                variant={TextVariant.bodyMd}
-                color={TextColor.textAlternative}
-              >
-                {t('multichainQuoteCardBridgingLabel')}
-              </Text>
-              <Row gap={1}>
-                <AvatarNetwork
-                  name={fromChain?.name ?? ''}
-                  src={getNetworkImage(activeQuote.quote.srcChainId)}
-                  size={AvatarNetworkSize.Xs}
-                  backgroundColor={BackgroundColor.transparent}
-                />
-                <Text>{getNetworkName(activeQuote.quote.srcChainId)}</Text>
-                <Icon name={IconName.Arrow2Right} size={IconSize.Xs} />
-                <AvatarNetwork
-                  name={toChain?.name ?? ''}
-                  src={getNetworkImage(activeQuote.quote.destChainId)}
-                  size={AvatarNetworkSize.Xs}
-                  backgroundColor={BackgroundColor.transparent}
-                />
-                <Text>{getNetworkName(activeQuote.quote.destChainId)}</Text>
+            {/* Bridging - Only show when it's a bridge transaction */}
+            {isBridgeTx && (
+              <Row justifyContent={JustifyContent.spaceBetween}>
+                <Text
+                  variant={TextVariant.bodyMd}
+                  color={TextColor.textAlternative}
+                >
+                  {t('multichainQuoteCardBridgingLabel')}
+                </Text>
+                <Row gap={1}>
+                  <AvatarNetwork
+                    name={fromChain?.name ?? ''}
+                    src={getNetworkImage(activeQuote.quote.srcChainId)}
+                    size={AvatarNetworkSize.Xs}
+                    backgroundColor={BackgroundColor.transparent}
+                  />
+                  <Text>{getNetworkName(activeQuote.quote.srcChainId)}</Text>
+                  <Icon name={IconName.Arrow2Right} size={IconSize.Xs} />
+                  <AvatarNetwork
+                    name={toChain?.name ?? ''}
+                    src={getNetworkImage(activeQuote.quote.destChainId)}
+                    size={AvatarNetworkSize.Xs}
+                    backgroundColor={BackgroundColor.transparent}
+                  />
+                  <Text>{getNetworkName(activeQuote.quote.destChainId)}</Text>
+                </Row>
               </Row>
-            </Row>
+            )}
 
             {/* Network Fee */}
             <Row justifyContent={JustifyContent.spaceBetween}>

@@ -51,7 +51,6 @@ import {
   CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP,
 } from '../../../../shared/constants/network';
 import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import {
   getShowTestNetworks,
   getOnboardedInThisUISession,
@@ -152,17 +151,16 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
   const showNetworkBanner = useSelector(getShowNetworkBanner);
-  // This selector provides all network configurations including EVM and non-EVM
-  // with the data type MultichainNetworkConfiguration from @metamask/multichain-network-controller
-  const multichainNetworks = useSelector(
+  // This selector provides an array with two elements.
+  // 1 - All network configurations including EVM and non-EVM with the data type
+  // MultichainNetworkConfiguration from @metamask/multichain-network-controller
+  // 2 - All EVM network configurations with the data type NetworkConfiguration
+  // from @metamask/network-controller. It includes necessary data like
+  // the RPC endpoints that are not part of @metamask/multichain-network-controller.
+  const [multichainNetworks, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
   const currentChainId = useSelector(getSelectedMultichainNetworkChainId);
-  // This selector provides all EVM network configurations with the
-  // data type NetworkConfiguration from @metamask/network-controller.
-  // It includes necessary data like the RPC endpoints that are not
-  // part of @metamask/multichain-network-controller.
-  const evmNetworks = useSelector(getNetworkConfigurationsByChainId);
   const { chainId: editingChainId, editCompleted } =
     useSelector(getEditedNetwork) ?? {};
   const permittedChainIds = useSelector((state) =>
@@ -345,20 +343,33 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     setActionMode(ACTION_MODE.ADD_NON_EVM_ACCOUNT);
   };
 
+  const getMultichainNetworkConfigurationOrThrow = (chainId: CaipChainId) => {
+    const network = multichainNetworks[chainId];
+    if (!network) {
+      throw new Error(
+        `Network configuration not found for chainId: ${chainId}`,
+      );
+    }
+    return network;
+  };
+
   const handleNetworkChange = async (chainId: CaipChainId) => {
-    const { isEvm } = multichainNetworks[chainId];
-    if (isEvm) {
+    const currentChain =
+      getMultichainNetworkConfigurationOrThrow(currentChainId);
+    const chain = getMultichainNetworkConfigurationOrThrow(chainId);
+
+    if (chain.isEvm) {
       handleEvmNetworkChange(chainId);
     } else {
       await handleNonEvmNetworkChange(chainId);
     }
 
-    const [chainIdToTrack, currentChainIdToTrack] = isEvm
-      ? [
-          convertCaipToHexChainId(chainId),
-          convertCaipToHexChainId(currentChainId),
-        ]
-      : [chainId, currentChainId];
+    const chainIdToTrack = chain.isEvm
+      ? convertCaipToHexChainId(chainId)
+      : chainId;
+    const currentChainIdToTrack = currentChain.isEvm
+      ? convertCaipToHexChainId(currentChainId)
+      : currentChainId;
 
     trackEvent({
       event: MetaMetricsEventName.NavNetworkSwitched,
