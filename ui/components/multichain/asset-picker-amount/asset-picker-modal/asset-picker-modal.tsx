@@ -34,6 +34,7 @@ import {
   getTokenExchangeRates,
   getTokenList,
   getUseExternalServices,
+  hasCreatedSolanaAccount,
 } from '../../../../selectors';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import { getSwapsBlockedTokens } from '../../../../ducks/send';
@@ -59,9 +60,6 @@ import {
   getMultichainSelectedAccountCachedBalance,
   getMultichainIsEvm,
 } from '../../../../selectors/multichain';
-///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
-import { needsSolanaAccountForDestination } from '../../../../ducks/bridge/selectors';
-///: END:ONLY_INCLUDE_IF
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import { getAssetsMetadata } from '../../../../selectors/assets';
 import { Numeric } from '../../../../../shared/modules/Numeric';
@@ -145,14 +143,6 @@ export function AssetPickerModal({
 
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Default to false before the code fence is enabled (will not render the prompt)
-  let needsSolanaAccount = false;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
-  // Check if we need to show the Solana account creation UI when Solana Swaps are enabled
-  needsSolanaAccount = useSelector(needsSolanaAccountForDestination);
-  ///: END:ONLY_INCLUDE_IF
-
   const swapsBlockedTokens = useSelector(getSwapsBlockedTokens);
   const memoizedSwapsBlockedTokens = useMemo(() => {
     return new Set<string>(swapsBlockedTokens);
@@ -179,6 +169,16 @@ export function AssetPickerModal({
   const tokenConversionRates = useMultichainSelector(getTokenExchangeRates);
   const conversionRate = useMultichainSelector(getMultichainConversionRate);
   const currentCurrency = useSelector(getMultichainCurrentCurrency);
+
+  // Default to false before the code fence is enabled (will not render the prompt)
+  let needsSolanaAccount = false;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+  // Check if we need to show the Solana account creation UI when Solana is selected
+  const hasSolanaAccount = useSelector(hasCreatedSolanaAccount);
+  needsSolanaAccount =
+    !hasSolanaAccount && selectedNetwork.chainId === MultichainNetworks.SOLANA;
+  ///: END:ONLY_INCLUDE_IF
 
   const { address: selectedEvmAddress } = useSelector(
     getSelectedEvmInternalAccount,
