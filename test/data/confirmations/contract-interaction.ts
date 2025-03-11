@@ -143,6 +143,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
     id: '1d7c08c0-fe54-11ee-9243-91b1e533746a',
     nestedTransactions,
     origin: 'https://metamask.github.io',
+    nestedTransactions,
     securityAlertResponse: {
       features: [],
       reason: '',
