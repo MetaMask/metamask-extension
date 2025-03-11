@@ -77,8 +77,8 @@ const createMockedHandler = () => {
       defaultRpcEndpointIndex: 0,
       rpcEndpoints: [{ networkClientId: 123 }],
     }),
-    requestPermittedChainsPermissionForOrigin: jest.fn(),
     requestPermittedChainsPermissionIncrementalForOrigin: jest.fn(),
+    rejectApprovalRequestsForOrigin: jest.fn(),
   };
   const response = {};
   const handler = (request) =>
@@ -187,10 +187,9 @@ describe('addEthereumChainHandler', () => {
         autoApprove: true,
         getCaveat: mocks.getCaveat,
         setActiveNetwork: mocks.setActiveNetwork,
-        requestPermittedChainsPermissionForOrigin:
-          mocks.requestPermittedChainsPermissionForOrigin,
         requestPermittedChainsPermissionIncrementalForOrigin:
           mocks.requestPermittedChainsPermissionIncrementalForOrigin,
+        rejectApprovalRequestsForOrigin: mocks.rejectApprovalRequestsForOrigin,
       },
     );
   });
@@ -254,10 +253,10 @@ describe('addEthereumChainHandler', () => {
             autoApprove: true,
             getCaveat: mocks.getCaveat,
             setActiveNetwork: mocks.setActiveNetwork,
-            requestPermittedChainsPermissionForOrigin:
-              mocks.requestPermittedChainsPermissionForOrigin,
             requestPermittedChainsPermissionIncrementalForOrigin:
               mocks.requestPermittedChainsPermissionIncrementalForOrigin,
+            rejectApprovalRequestsForOrigin:
+              mocks.rejectApprovalRequestsForOrigin,
           },
         );
       });
@@ -301,10 +300,10 @@ describe('addEthereumChainHandler', () => {
             autoApprove: false,
             getCaveat: mocks.getCaveat,
             setActiveNetwork: mocks.setActiveNetwork,
-            requestPermittedChainsPermissionForOrigin:
-              mocks.requestPermittedChainsPermissionForOrigin,
             requestPermittedChainsPermissionIncrementalForOrigin:
               mocks.requestPermittedChainsPermissionIncrementalForOrigin,
+            rejectApprovalRequestsForOrigin:
+              mocks.rejectApprovalRequestsForOrigin,
           },
         );
       });

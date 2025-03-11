@@ -87,7 +87,7 @@ exports[`Info renders info section for approve request 1`] = `
             class="mm-box mm-box--display-flex"
           >
             <div
-              class="name name__missing"
+              class="name name__clickable name__missing"
             >
               <span
                 class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
@@ -428,8 +428,8 @@ exports[`Info renders info section for contract interaction request 1`] = `
             <mask
               height="16"
               id="mask0"
+              mask-type="alpha"
               maskUnits="userSpaceOnUse"
-              style="mask-type: alpha;"
               width="16"
               x="0"
               y="0"
@@ -901,7 +901,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
             class="mm-box mm-box--display-flex"
           >
             <div
-              class="name name__missing"
+              class="name name__clickable name__missing"
             >
               <span
                 class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"

@@ -1,9 +1,10 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
 import { AlignItems, Display } from '../../../helpers/constants/design-system';
-import { Box } from '..';
 import README from './README.mdx';
-import { ButtonPrimary, ButtonPrimarySize } from '.';
+import { ButtonPrimary } from './button-primary';
+import { ButtonPrimarySize } from './button-primary.types';
+import { Box } from '../box';
 
 export default {
   title: 'Components/ComponentLibrary/ButtonPrimary',

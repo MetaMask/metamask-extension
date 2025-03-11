@@ -244,6 +244,7 @@ describe('toast display', () => {
       pendingApprovalCount: 0,
       swapsState: { swapsFeatureIsLive: true },
       newPrivacyPolicyToastShownDate: new Date(0),
+      isRampCardClosed: false,
       newPrivacyPolicyToastClickedOrClosed: true,
       preferences: {
         tokenSortConfig: {
@@ -275,6 +276,9 @@ describe('toast display', () => {
           [mockAccount2.id]: mockAccount2,
         },
         selectedAccount: selectedAccountId ?? mockAccount.id,
+      },
+      accountsAssets: {
+        [selectedAccountId ?? mockAccount.id]: [],
       },
       subjects: {
         [mockOrigin]: {

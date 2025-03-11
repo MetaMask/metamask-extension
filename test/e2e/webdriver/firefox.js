@@ -63,19 +63,13 @@ class FirefoxDriver {
       parseInt(proxyServerURL.port, 10),
     );
 
-    // Temporarily lock to version 134 until fix provided by Firefox/Selenium
-    // See issue https://github.com/MetaMask/MetaMask-planning/issues/4122
-    options.setBrowserVersion('134');
-
     options.setAcceptInsecureCerts(true);
     options.setPreference('browser.download.folderList', 2);
     options.setPreference(
       'browser.download.dir',
       `${process.cwd()}/test-artifacts/downloads`,
     );
-    if (process.env.CI === 'true') {
-      options.setBinary('/opt/firefox/firefox');
-    }
+
     if (isHeadless('SELENIUM')) {
       // TODO: Remove notice and consider non-experimental when results are consistent
       console.warn(

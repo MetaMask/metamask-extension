@@ -1,4 +1,9 @@
 {
+  "excludeRegExp": [
+    "/.[^/]*\/test\/.[^/]*/u"
+  ],
+  "fileExtensions": ["js", "jsx", "ts", "tsx"],
+  "tsConfig": "tsconfig.json",
   "detectiveOptions": {
     "es6": {
       "skipTypeImports": true
@@ -11,5 +16,20 @@
       "skipTypeImports": true,
       "skipAsyncImports": true
     }
-  }
+  },
+  "allowedCircularGlob": [
+    "ui/pages/confirmations/**",
+    "ui/pages/notifications/**",
+    "ui/ducks/**",
+    "ui/selectors/**",
+    "ui/hooks/**",
+    "ui/store/**",
+    "ui/helpers/utils/token-util.js",
+    "ui/components/multichain/**",
+    "ui/components/app/**",
+    "ui/components/component-library/**",
+    "shared/modules/selectors/**",
+    "app/scripts/metamask-controller.js",
+    "app/scripts/lib/snap-keyring/**"
+  ]
 }

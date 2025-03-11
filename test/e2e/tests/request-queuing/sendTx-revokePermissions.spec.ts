@@ -1,15 +1,10 @@
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import { Ganache } from '../../seeder/ganache';
 import { Driver } from '../../webdriver/driver';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import FixtureBuilder from '../../fixture-builder';
-import {
-  withFixtures,
-  defaultGanacheOptions,
-  WINDOW_TITLES,
-} from '../../helpers';
+import { withFixtures, WINDOW_TITLES } from '../../helpers';
 
 describe('Request Queuing', function () {
   // TODO: add a new spec which checks that after revoking and connecting again
@@ -23,19 +18,10 @@ describe('Request Queuing', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withSelectedNetworkControllerPerDomain()
           .build(),
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-        },
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer?: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
 
         // Open test dapp
         const testDapp = new TestDapp(driver);

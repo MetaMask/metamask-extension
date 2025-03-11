@@ -7,7 +7,7 @@ import {
   Asset,
   StatusTypes,
 } from '../../../../shared/types/bridge-status';
-import { BRIDGE_STATUS_BASE_URL } from './utils';
+import { BRIDGE_STATUS_BASE_URL } from './constants';
 
 type Validator<ExpectedResponse, DataToValidate> = {
   property: keyof ExpectedResponse | string;

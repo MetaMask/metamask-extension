@@ -1,10 +1,10 @@
 import { strict as assert } from 'assert';
-import { withFixtures } from '../../helpers';
+import { unlockWallet, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
+import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   type FixtureCallbackArgs,
-  openMultichainDappAndConnectWalletWithExternallyConnectable,
 } from './testHelpers';
 
 describe('Calling `eth_subscribe` on a particular network event', function () {
@@ -18,10 +18,11 @@ describe('Calling `eth_subscribe` on a particular network event', function () {
         ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
       },
       async ({ driver, extensionId }: FixtureCallbackArgs) => {
-        await openMultichainDappAndConnectWalletWithExternallyConnectable(
-          driver,
-          extensionId,
-        );
+        await unlockWallet(driver);
+
+        const testDapp = new TestDappMultichain(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.connectExternallyConnectable(extensionId);
         const SCOPE = 'eip155:1337';
 
         await driver.clickElementSafe(

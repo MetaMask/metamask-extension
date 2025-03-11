@@ -122,7 +122,7 @@ describe('Swaps - notifications', function () {
     await withFixtures(
       {
         ...withFixturesOptions,
-        ganacheOptions: lowBalanceGanacheOptions,
+        localNodeOptions: lowBalanceGanacheOptions,
         testSpecificMock: mockSwapsTransactionQuote,
         title: this.test?.fullTitle(),
       },

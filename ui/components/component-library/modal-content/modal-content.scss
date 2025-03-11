@@ -5,8 +5,6 @@
   left: 0;
   top: 0;
   z-index: design-system.$modal-z-index;
-  overflow: auto;
-  overscroll-behavior-y: none;
 
   // Maximize dialog visibility on small screen heights
   @media (max-height: 475px) {
@@ -35,6 +33,17 @@
     max-height: 100%;
     box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
 
+    // Animate for users who have no reduced motion preferences
+    @media (prefers-reduced-motion: no-preference) {
+      animation: modal-dialog-slide-up 400ms cubic-bezier(0.3, 0.8, 0.3, 1) forwards;
+    }
+
+    // Don't animate for users who have reduced motion preferences
+    @media (prefers-reduced-motion: reduce) {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     &--size-sm {
       --size: 360px;
 
@@ -51,6 +60,22 @@
       --size: 720px;
 
       max-width: var(--modal-content-size);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes modal-dialog-slide-up {
+    from {
+      transform: translateY(24px);
+      opacity: 0;
+      overflow: hidden;
+    }
+
+    to {
+      transform: translateY(0);
+      opacity: 1;
+      overflow: hidden;
     }
   }
 }

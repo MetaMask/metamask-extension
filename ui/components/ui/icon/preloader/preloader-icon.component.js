@@ -19,7 +19,7 @@ const Preloader = ({ className, size }) => (
     />
     <mask
       id="mask0"
-      style={{ maskType: 'alpha' }}
+      mask-type="alpha"
       maskUnits="userSpaceOnUse"
       x="0"
       y="0"

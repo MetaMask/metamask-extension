@@ -3,26 +3,28 @@ import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sd
 import { withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
-import {
-  IDENTITY_TEAM_PASSWORD,
-  IDENTITY_TEAM_SEED_PHRASE,
-} from '../constants';
 import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
-import { accountsSyncMockResponse } from './mockData';
+import { completeOnboardFlowIdentity } from '../flows';
 import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
+import {
+  accountsToMockForAccountsSync,
+  getAccountsSyncMockResponse,
+} from './mock-data';
 
-describe('Account syncing - Onboarding', function () {
+describe('Account syncing - Onboarding', async function () {
   if (!IS_ACCOUNT_SYNCING_ENABLED) {
     return;
   }
+
+  const unencryptedAccounts = accountsToMockForAccountsSync;
+  const mockedAccountSyncResponse = await getAccountsSyncMockResponse();
+
   describe('from inside MetaMask', function () {
     it('retrieves all previously synced accounts', async function () {
       const userStorageMockttpController = new UserStorageMockttpController();
-
       await withFixtures(
         {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
@@ -32,21 +34,15 @@ describe('Account syncing - Onboarding', function () {
               USER_STORAGE_FEATURE_NAMES.accounts,
               server,
               {
-                getResponse: accountsSyncMockResponse,
+                getResponse: mockedAccountSyncResponse,
               },
             );
             return mockIdentityServices(server, userStorageMockttpController);
           },
         },
         async ({ driver }) => {
-          await completeImportSRPOnboardingFlow({
-            driver,
-            seedPhrase: IDENTITY_TEAM_SEED_PHRASE,
-            password: IDENTITY_TEAM_PASSWORD,
-          });
+          await completeOnboardFlowIdentity(driver);
           const homePage = new HomePage(driver);
-          await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed();
           await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
           const header = new HeaderNavbar(driver);
@@ -56,13 +52,13 @@ describe('Account syncing - Onboarding', function () {
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
           await accountListPage.check_numberOfAvailableAccounts(
-            accountsSyncMockResponse.length,
+            mockedAccountSyncResponse.length,
           );
           await accountListPage.check_accountDisplayedInAccountList(
-            'My First Synced Account',
+            unencryptedAccounts[0].n,
           );
           await accountListPage.check_accountDisplayedInAccountList(
-            'My Second Synced Account',
+            unencryptedAccounts[1].n,
           );
         },
       );

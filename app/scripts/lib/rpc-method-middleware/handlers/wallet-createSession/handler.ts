@@ -116,14 +116,12 @@ async function walletCreateSessionHandler(
     const { normalizedRequiredScopes, normalizedOptionalScopes } =
       validateAndNormalizeScopes(requiredScopes || {}, optionalScopes || {});
 
-    const supportedRequiredScopesObjects = getSupportedScopeObjects(
-      normalizedRequiredScopes,
-    );
-    const supportedOptionalScopesObjects = getSupportedScopeObjects(
-      normalizedOptionalScopes,
-    );
+    const requiredScopesWithSupportedMethodsAndNotifications =
+      getSupportedScopeObjects(normalizedRequiredScopes);
+    const optionalScopesWithSupportedMethodsAndNotifications =
+      getSupportedScopeObjects(normalizedOptionalScopes);
 
-    const existsNetworkClientForChainId = (chainId: Hex) => {
+    const networkClientExistsForChainId = (chainId: Hex) => {
       try {
         hooks.findNetworkClientIdByChainId(chainId);
         return true;
@@ -133,17 +131,17 @@ async function walletCreateSessionHandler(
     };
 
     const { supportedScopes: supportedRequiredScopes } = bucketScopes(
-      supportedRequiredScopesObjects,
+      requiredScopesWithSupportedMethodsAndNotifications,
       {
-        isChainIdSupported: existsNetworkClientForChainId,
+        isChainIdSupported: networkClientExistsForChainId,
         isChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
       },
     );
 
     const { supportedScopes: supportedOptionalScopes } = bucketScopes(
-      supportedOptionalScopesObjects,
+      optionalScopesWithSupportedMethodsAndNotifications,
       {
-        isChainIdSupported: existsNetworkClientForChainId,
+        isChainIdSupported: networkClientExistsForChainId,
         isChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
       },
     );
