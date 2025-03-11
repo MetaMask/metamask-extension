@@ -39,10 +39,10 @@ async function getPrInfo(): Promise<PRInfo | null> {
     `https://api.github.com/repos/${owner}/${repo}/pulls/${PR_NUMBER}`,
     {
       headers: {
-        'Authorization': `token ${process.env.GITHUB_TOKEN}`,
-        'Accept': 'application/vnd.github.v3+json'
-      }
-    }
+        Authorization: `token ${process.env.GITHUB_TOKEN}`,
+        Accept: 'application/vnd.github.v3+json',
+      },
+    },
   );
 
   return await response.json();
@@ -63,7 +63,7 @@ async function fetchWithDepth(depth: number): Promise<boolean> {
       );
     }
     return true;
-  } catch (error: unknown) {
+  } catch (error) {
     core.warning(`Failed to fetch with depth ${depth}:`, error);
     return false;
   }
@@ -107,7 +107,9 @@ async function fetchUntilMergeBaseFound() {
 async function gitDiff(): Promise<string> {
   await fetchUntilMergeBaseFound();
   const { stdout: diffResult } = await exec(
-    `git diff --name-status "origin/${GITHUB_DEFAULT_BRANCH}...${SOURCE_BRANCH || 'HEAD'}"`
+    `git diff --name-status "origin/${GITHUB_DEFAULT_BRANCH}...${
+      SOURCE_BRANCH || 'HEAD'
+    }"`,
   );
   if (!diffResult) {
     throw new Error('Unable to get diff after full checkout.');
@@ -117,8 +119,10 @@ async function gitDiff(): Promise<string> {
 
 function writePrBodyAndInfoToFile(prInfo: PRInfo) {
   const prBodyPath = path.resolve(CHANGED_FILES_DIR, 'pr-body.txt');
-  const labels = prInfo.labels.map(label => label.name).join(', ');
-  const updatedPrBody = `PR labels: {${labels}}\nPR base: {${prInfo.base.ref}}\n${prInfo.body.trim()}`;
+  const labels = prInfo.labels.map((label) => label.name).join(', ');
+  const updatedPrBody = `PR labels: {${labels}}\nPR base: {${
+    prInfo.base.ref
+  }}\n${prInfo.body.trim()}`;
   fs.writeFileSync(prBodyPath, updatedPrBody);
   core.info(`PR body and info saved to ${prBodyPath}`);
 }
@@ -159,7 +163,7 @@ async function storeGitDiffOutputAndPrBody() {
 
     writePrBodyAndInfoToFile(prInfo);
 
-    core.info('success', 'true');
+    core.info('success');
   } catch (error: any) {
     core.setFailed(`Failed to process git diff: ${error.message}`);
   }
