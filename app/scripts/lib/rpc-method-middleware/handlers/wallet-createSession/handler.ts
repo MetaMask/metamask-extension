@@ -14,13 +14,11 @@ import {
   Caip25CaveatValue,
 } from '@metamask/multichain';
 import {
-  Caveat,
   CaveatSpecificationConstraint,
   invalidParams,
   PermissionController,
   PermissionSpecificationConstraint,
   RequestedPermissions,
-  ValidPermission,
 } from '@metamask/permission-controller';
 import {
   Hex,
@@ -48,6 +46,10 @@ type AbstractPermissionController = PermissionController<
   CaveatSpecificationConstraint
 >;
 
+type GrantedPermissions = Awaited<
+  ReturnType<AbstractPermissionController['requestPermissions']>
+>[0]; // TODO: don't dry this (wallet-requestPermissions);
+
 /**
  * Handler for the `wallet_createSession` RPC method which is responsible
  * for prompting for approval and granting a CAIP-25 permission.
@@ -66,13 +68,12 @@ type AbstractPermissionController = PermissionController<
  * @param hooks - The hooks object.
  * @param hooks.listAccounts - The hook that returns an array of the wallet's evm accounts.
  * @param hooks.findNetworkClientIdByChainId - The hook that returns the networkClientId for a chainId.
- * @param hooks.requestPermissionApprovalForOrigin - The hook that prompts the user approval for requested permissions.
+ * @param hooks.requestPermissionsForOrigin - The hook that approves and grants requested permissions.
  * @param hooks.sendMetrics - The hook that tracks an analytics event.
  * @param hooks.metamaskState - The wallet state.
  * @param hooks.metamaskState.metaMetricsId - The analytics id.
  * @param hooks.metamaskState.permissionHistory - The permission history object keyed by origin.
  * @param hooks.metamaskState.accounts - The accounts object keyed by address.
- * @param hooks.grantPermissions - The hook that grants permission for the origin.
  */
 async function walletCreateSessionHandler(
   req: JsonRpcRequest<Caip25Authorization> & { origin: string },
@@ -85,9 +86,9 @@ async function walletCreateSessionHandler(
   hooks: {
     listAccounts: () => { address: string }[];
     findNetworkClientIdByChainId: NetworkController['findNetworkClientIdByChainId'];
-    requestPermissionApprovalForOrigin: (
+    requestPermissionsForOrigin: (
       requestedPermissions: RequestedPermissions,
-    ) => Promise<{ permissions: RequestedPermissions }>;
+    ) => Promise<[GrantedPermissions]>;
     sendMetrics: (
       payload: MetaMetricsEventPayload,
       options?: MetaMetricsEventOptions,
@@ -97,9 +98,6 @@ async function walletCreateSessionHandler(
       permissionHistory: Record<string, unknown>;
       accounts: Record<string, unknown>;
     };
-    grantPermissions: (
-      ...args: Parameters<AbstractPermissionController['grantPermissions']>
-    ) => Record<string, ValidPermission<string, Caveat<string, Json>>>;
   },
 ) {
   const { origin } = req;
@@ -169,8 +167,8 @@ async function walletCreateSessionHandler(
       supportedEthAccounts,
     );
 
-    const { permissions: approvedPermissions } =
-      await hooks.requestPermissionApprovalForOrigin({
+    const [approvedGrantedPermissions] =
+      await hooks.requestPermissionsForOrigin({
         [Caip25EndowmentPermissionName]: {
           caveats: [
             {
@@ -182,7 +180,7 @@ async function walletCreateSessionHandler(
       });
 
     const approvedCaip25Permission =
-      approvedPermissions[Caip25EndowmentPermissionName];
+      approvedGrantedPermissions[Caip25EndowmentPermissionName];
     const approvedCaip25CaveatValue = approvedCaip25Permission?.caveats?.find(
       (caveat) => caveat.type === Caip25CaveatType,
     )?.value as Caip25CaveatValue;
@@ -191,13 +189,6 @@ async function walletCreateSessionHandler(
     }
 
     const sessionScopes = getSessionScopes(approvedCaip25CaveatValue);
-
-    hooks.grantPermissions({
-      subject: {
-        origin,
-      },
-      approvedPermissions,
-    });
 
     // TODO: Contact analytics team for how they would prefer to track this
     // first time connection to dapp will lead to no log in the permissionHistory
@@ -240,7 +231,7 @@ export const walletCreateSession = {
   hookNames: {
     findNetworkClientIdByChainId: true,
     listAccounts: true,
-    requestPermissionApprovalForOrigin: true,
+    requestPermissionsForOrigin: true,
     grantPermissions: true,
     sendMetrics: true,
     metamaskState: true,

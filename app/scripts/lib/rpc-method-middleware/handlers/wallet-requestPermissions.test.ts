@@ -67,6 +67,7 @@ const createMockedHandler = () => {
   };
 };
 
+// TODO: update test
 describe('requestPermissionsHandler', () => {
   afterEach(() => {
     jest.resetAllMocks();
