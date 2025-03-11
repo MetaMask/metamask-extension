@@ -28,6 +28,7 @@ import {
   TextColor,
 } from '../../helpers/constants/design-system';
 import { addTransaction, newUnsignedTypedMessage } from '../../store/actions';
+import { SEPOLIA_RPC_URL } from '../../../shared/constants/network';
 
 const SWAP_LIMIT = parseEther('0.1');
 const TRANSFER_AMOUNT = parseEther('0.001');
@@ -45,8 +46,12 @@ const EIP712Domain = [
 
 export default function Delegation({
   accounts,
+  isHardwareWallet,
+  hardwareWalletType,
 }: {
   accounts: InternalAccount[];
+  isHardwareWallet: boolean;
+  hardwareWalletType: string;
 }) {
   const [loading, setLoading] = useState<boolean>(false);
   const [rootDelegation, setRootDelegation] = useState<
@@ -72,7 +77,7 @@ export default function Delegation({
 
   const publicClient = createPublicClient({
     chain: sepolia,
-    transport: http(RPC_URL),
+    transport: http(SEPOLIA_RPC_URL),
   });
 
   const fetchGatorBalance = useCallback(async (address: string) => {
@@ -116,6 +121,12 @@ export default function Delegation({
       fetchGatorBalance(metaMaskSmartAccount.address);
     }
   }, [fetchGatorBalance, isDeployed, metaMaskSmartAccount]);
+
+  useEffect(() => {
+    console.log('isHardwareWallet', isHardwareWallet);
+    console.log('hardwareWalletType', hardwareWalletType);
+    console.log('sepolia rpc url', SEPOLIA_RPC_URL);
+  }, [isHardwareWallet, hardwareWalletType]);
 
   const deployMetaMaskAccount = async () => {
     setLoading(true);
