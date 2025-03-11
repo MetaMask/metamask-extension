@@ -3,7 +3,7 @@ import { memoize } from 'lodash';
 // eslint-disable-next-line import/no-restricted-paths
 import getFirstPreferredLangCode from '../../app/scripts/lib/get-first-preferred-lang-code';
 import { fetchLocale, loadRelativeTimeFormatLocaleData } from '../modules/i18n';
-import switchDirection from './switch-direction';
+import { switchDirectionForPreferredLocale } from './switch-direction';
 
 const defaultLocale = 'en';
 const _setupLocale = async (currentLocale) => {
@@ -51,11 +51,8 @@ export async function getErrorHtml(errorKey, supportLink, metamaskState) {
     response = await setupLocale(preferredLocale);
   }
 
-  const textDirection = ['ar', 'dv', 'fa', 'he', 'ku'].includes(preferredLocale)
-    ? 'rtl'
-    : 'auto';
+  switchDirectionForPreferredLocale(preferredLocale);
 
-  switchDirection(textDirection);
   const { currentLocaleMessages, enLocaleMessages } = response;
   const t = getLocaleContext(currentLocaleMessages, enLocaleMessages);
 
@@ -107,11 +104,7 @@ export async function getStateCorruptionErrorHtml(supportLink, metamaskState) {
     response = await setupLocale(preferredLocale);
   }
 
-  const textDirection = ['ar', 'dv', 'fa', 'he', 'ku'].includes(preferredLocale)
-    ? 'rtl'
-    : 'auto';
-
-  switchDirection(textDirection);
+  switchDirectionForPreferredLocale(preferredLocale);
   const { currentLocaleMessages, enLocaleMessages } = response;
   const t = getLocaleContext(currentLocaleMessages, enLocaleMessages);
   /**
