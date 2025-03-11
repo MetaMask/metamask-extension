@@ -14,10 +14,7 @@ import {
   Caip25CaveatValue,
 } from '@metamask/multichain';
 import {
-  CaveatSpecificationConstraint,
   invalidParams,
-  PermissionController,
-  PermissionSpecificationConstraint,
   RequestedPermissions,
 } from '@metamask/permission-controller';
 import {
@@ -40,15 +37,7 @@ import {
 } from '../../../../../../shared/constants/metametrics';
 import { shouldEmitDappViewedEvent } from '../../../util';
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
-
-type AbstractPermissionController = PermissionController<
-  PermissionSpecificationConstraint,
-  CaveatSpecificationConstraint
->;
-
-type GrantedPermissions = Awaited<
-  ReturnType<AbstractPermissionController['requestPermissions']>
->[0]; // TODO: don't dry this (wallet-requestPermissions);
+import { GrantedPermissions } from '../types';
 
 /**
  * Handler for the `wallet_createSession` RPC method which is responsible
@@ -167,20 +156,19 @@ async function walletCreateSessionHandler(
       supportedEthAccounts,
     );
 
-    const [approvedGrantedPermissions] =
-      await hooks.requestPermissionsForOrigin({
-        [Caip25EndowmentPermissionName]: {
-          caveats: [
-            {
-              type: Caip25CaveatType,
-              value: requestedCaip25CaveatValueWithSupportedEthAccounts,
-            },
-          ],
-        },
-      });
+    const [grantedPermissions] = await hooks.requestPermissionsForOrigin({
+      [Caip25EndowmentPermissionName]: {
+        caveats: [
+          {
+            type: Caip25CaveatType,
+            value: requestedCaip25CaveatValueWithSupportedEthAccounts,
+          },
+        ],
+      },
+    });
 
     const approvedCaip25Permission =
-      approvedGrantedPermissions[Caip25EndowmentPermissionName];
+      grantedPermissions[Caip25EndowmentPermissionName];
     const approvedCaip25CaveatValue = approvedCaip25Permission?.caveats?.find(
       (caveat) => caveat.type === Caip25CaveatType,
     )?.value as Caip25CaveatValue;
