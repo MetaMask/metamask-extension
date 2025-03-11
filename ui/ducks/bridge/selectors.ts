@@ -209,7 +209,7 @@ export const getToChain = createSelector(
 export const getFromToken = createSelector(
   (state: BridgeAppState) => state.bridge.fromToken,
   getFromChain,
-  (fromToken, fromChain): BridgeToken => {
+  (fromToken, fromChain): BridgeToken | null => {
     if (!fromChain?.chainId) {
       return null;
     }
@@ -231,7 +231,7 @@ export const getFromToken = createSelector(
   },
 );
 
-export const getToToken = (state: BridgeAppState): BridgeToken => {
+export const getToToken = (state: BridgeAppState): BridgeToken | null => {
   return state.bridge.toToken;
 };
 
