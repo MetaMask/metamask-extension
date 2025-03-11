@@ -97,7 +97,7 @@ const mockState = {
 describe('ConnectHardwareForm', () => {
   const mockStore = configureMockStore([thunk])(mockState);
 
-  it('should match snapshot', () => {
+  it('matchs snapshot', () => {
     const { container } = renderWithProvider(
       <ConnectHardwareForm {...mockProps} />,
       mockStore,
@@ -106,7 +106,7 @@ describe('ConnectHardwareForm', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should close the form when close button is clicked', () => {
+  it('closes the form when close button is clicked', () => {
     const { getByTestId } = renderWithProvider(
       <ConnectHardwareForm {...mockProps} />,
       mockStore,
@@ -118,7 +118,7 @@ describe('ConnectHardwareForm', () => {
   });
 
   describe('U2F Error', () => {
-    it('should render a U2F error', async () => {
+    it('renders a U2F error', async () => {
       mockConnectHardware.mockRejectedValue(new Error('U2F Error'));
       const mockStateWithU2F = Object.assign(mockState, {});
       mockStateWithU2F.appState.ledgerTransportType = LedgerTransportTypes.u2f;
@@ -148,7 +148,7 @@ describe('ConnectHardwareForm', () => {
       });
     });
 
-    it('should render a different U2F error for firefox', async () => {
+    it('renders a different U2F error for firefox', async () => {
       jest
         .spyOn(window.navigator, 'userAgent', 'get')
         .mockReturnValue(
@@ -182,7 +182,7 @@ describe('ConnectHardwareForm', () => {
   });
 
   describe('QR Hardware Wallet Steps', () => {
-    it('should render the QR hardware wallet steps', async () => {
+    it('renders the QR hardware wallet steps', async () => {
       const { getByText, getByLabelText } = renderWithProvider(
         <ConnectHardwareForm {...mockProps} />,
         mockStore,
@@ -205,7 +205,7 @@ describe('ConnectHardwareForm', () => {
   });
 
   describe('Select Hardware', () => {
-    it('should check link buttons for Ngrave Zero brand', async () => {
+    it('checks link buttons for Ngrave Zero brand', async () => {
       window.open = jest.fn();
 
       const { getByLabelText, getByTestId } = renderWithProvider(
@@ -234,7 +234,7 @@ describe('ConnectHardwareForm', () => {
       mockConnectHardware.mockReset();
     });
 
-    it('should call connectHardware with loadHid=true', async () => {
+    it('calls connectHardware with loadHid=true', async () => {
       mockConnectHardware.mockReset();
 
       const mockAccounts = [
@@ -267,7 +267,7 @@ describe('ConnectHardwareForm', () => {
       );
     });
 
-    it('should call connectHardware with loadHid=false', async () => {
+    it('calls connectHardware with loadHid=false', async () => {
       mockConnectHardware.mockReset();
 
       const mockAccounts = [
@@ -300,7 +300,7 @@ describe('ConnectHardwareForm', () => {
       );
     });
 
-    it('should handle errors when connectHardware fails', async () => {
+    it('handles errors when connectHardware fails', async () => {
       const testError = new Error('Test Error');
       mockConnectHardware.mockReset();
       mockConnectHardware.mockRejectedValue(testError);
