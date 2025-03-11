@@ -48,13 +48,15 @@ export const SelectSrp = ({
           <Box>
             <Text>{srpName}</Text>
             <Text variant={TextVariant.bodySm} color={TextColor.textMuted}>
-              {t('srpListNumberOfAccounts', [srpAccounts])}
+              {srpAccounts > 1
+                ? t('srpListNumberOfAccounts', [srpAccounts])
+                : t('srpListSingleOrZero', [srpAccounts])}
             </Text>
           </Box>
           <Icon name={IconName.ArrowRight} size={IconSize.Sm} />
         </Box>
       </Card>
-      <Text variant={TextVariant.bodySm} marginTop={1}>
+      <Text variant={TextVariant.bodySm} marginTop={4}>
         {t('srpListSelectionDescription')}
       </Text>
     </Box>
