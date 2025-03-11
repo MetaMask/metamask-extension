@@ -122,6 +122,9 @@ const destroyExtensionStreams = () => {
   extensionEip1193Channel.removeAllListeners();
   extensionEip1193Channel.destroy();
 
+  extensionCaipChannel.removeAllListeners();
+  extensionCaipChannel.destroy();
+
   extensionStream = null;
 };
 
