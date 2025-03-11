@@ -37,10 +37,9 @@ const confirmContextMock = {
 
 describe('useTransactionFocusEffect', () => {
   const dispatchMock = jest.fn();
-  const setTransactionActiveMock =
-    setTransactionActive as jest.MockedFunction<
-      typeof setTransactionActive
-    >;
+  const setTransactionActiveMock = setTransactionActive as jest.MockedFunction<
+    typeof setTransactionActive
+  >;
   const useConfirmContextMock = useConfirmContext as jest.MockedFunction<
     typeof useConfirmContext
   >;
@@ -63,9 +62,7 @@ describe('useTransactionFocusEffect', () => {
   it('should focus the confirmation when window is focused and type is valid', () => {
     renderHook(() => useTransactionFocusEffect());
 
-    expect(dispatchMock).toHaveBeenCalledWith(
-      setTransactionActive('1', true),
-    );
+    expect(dispatchMock).toHaveBeenCalledWith(setTransactionActive('1', true));
   });
 
   it('should focus new confirmation if previous confirmation is different', () => {
@@ -83,12 +80,8 @@ describe('useTransactionFocusEffect', () => {
 
     rerender();
 
-    expect(dispatchMock).toHaveBeenCalledWith(
-      setTransactionActive('1', false),
-    );
-    expect(dispatchMock).toHaveBeenCalledWith(
-      setTransactionActive('2', true),
-    );
+    expect(dispatchMock).toHaveBeenCalledWith(setTransactionActive('1', false));
+    expect(dispatchMock).toHaveBeenCalledWith(setTransactionActive('2', true));
   });
 
   it('should unfocus the confirmation when window is not focused', () => {
@@ -98,9 +91,7 @@ describe('useTransactionFocusEffect', () => {
 
     rerender();
 
-    expect(dispatchMock).toHaveBeenCalledWith(
-      setTransactionActive('1', false),
-    );
+    expect(dispatchMock).toHaveBeenCalledWith(setTransactionActive('1', false));
   });
 
   describe('when confirmation type is not valid', () => {
