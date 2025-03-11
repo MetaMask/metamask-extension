@@ -620,7 +620,7 @@ describe('Actions', () => {
         },
       });
 
-      const mockHidDevice = { vendorId: 11415 }; // Matches LEDGER_USB_VENDOR_ID as a number
+      const mockHidDevice = { vendorId: 11415 };
       const mockRequestDevice = sinon.stub().resolves([mockHidDevice]);
 
       Object.defineProperty(window, 'navigator', {
@@ -653,7 +653,7 @@ describe('Actions', () => {
           0,
           `m/44'/60'/0'/0`,
           true,
-          (key) => `translated_${key}`, // mock translation function
+          (key) => `translated_${key}`,
         ),
       );
 
@@ -761,7 +761,7 @@ describe('Actions', () => {
       );
 
       expect(connectHardware.callCount).toStrictEqual(1);
-      expect(mockRequestDevice.callCount).toStrictEqual(0); // Should not be called
+      expect(mockRequestDevice.callCount).toStrictEqual(0);
       expect(accounts).toStrictEqual([{ address: '0xLedgerAddress' }]);
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
@@ -775,7 +775,7 @@ describe('Actions', () => {
         },
       });
 
-      const mockHidDevice = { vendorId: 11415 }; // Matches LEDGER_USB_VENDOR_ID as a number
+      const mockHidDevice = { vendorId: 11415 };
       const mockRequestDevice = sinon.stub();
       mockRequestDevice.resolves([mockHidDevice]);
       Object.defineProperty(window, 'navigator', {
@@ -788,7 +788,6 @@ describe('Actions', () => {
         writable: true,
       });
 
-      // Device connection fails with specific error
       const deviceOpenError = new Error('Failed to open the device');
       background.connectHardware.callsFake((_, __, ___, cb) =>
         cb(deviceOpenError),
@@ -865,7 +864,7 @@ describe('Actions', () => {
       );
 
       expect(connectHardware.callCount).toStrictEqual(1);
-      expect(mockRequestDevice.callCount).toStrictEqual(0); // Should not be called for non-Ledger
+      expect(mockRequestDevice.callCount).toStrictEqual(0);
       expect(accounts).toStrictEqual([{ address: '0xTrezorAddress' }]);
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
