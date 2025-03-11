@@ -429,3 +429,103 @@ jobs:
           path: |
             ./test-artifacts
             ./test/test-results/e2e
+
+  prep-build-mv2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout and setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        with:
+          is-high-risk-environment: false
+
+      - run: ENABLE_MV3=false yarn build dist
+
+      - name: Upload dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-mv2
+          path: ./dist/
+
+  test-mozilla-lint-mv2:
+    needs:
+      - prep-build-mv2
+      - get-changed-files-with-git-diff
+    runs-on: ubuntu-22.04
+    container:
+      image: cimg/node:22.13-browsers
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install zstd
+          sudo corepack enable
+        shell: bash
+
+      - name: Checkout and setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        with:
+          is-high-risk-environment: false
+
+      - name: Download prep-build-mv2 artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-mv2
+          path: ./dist/
+
+      - name: Download changed-files artifact
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: changed-files
+          path: ./changed-files/
+
+      - name: test:mozilla-lint
+        run: yarn mozilla-lint
+
+      - name: Upload test results and artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-mozilla-lint-mv2
+          path: ./test-artifacts
+
+  validate-source-maps-mv2:
+    needs:
+      - prep-build-mv2
+      - get-changed-files-with-git-diff
+    runs-on: ubuntu-22.04
+    container:
+      image: cimg/node:22.13-browsers
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install zstd
+          sudo corepack enable
+        shell: bash
+
+      - name: Checkout and setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        with:
+          is-high-risk-environment: false
+
+      - name: Download prep-build-mv2 artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-mv2
+          path: ./dist/
+
+      - name: Download changed-files artifact
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: changed-files
+          path: ./changed-files/
+
+      - name: Validate source maps
+        run: yarn validate-source-maps
+
+      - name: Upload validation artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-maps-validation-mv2
+          path: ./validation-artifacts
