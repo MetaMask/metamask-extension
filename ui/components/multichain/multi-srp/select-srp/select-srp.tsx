@@ -18,15 +18,17 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
+export type SelectSrpProps = {
+  srpName: string;
+  srpAccounts: number;
+  onClick: () => void;
+};
+
 export const SelectSrp = ({
   srpName,
   srpAccounts,
   onClick,
-}: {
-  srpName: string;
-  srpAccounts: number;
-  onClick: () => void;
-}) => {
+}: SelectSrpProps) => {
   const t = useI18nContext();
 
   return (
