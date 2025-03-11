@@ -414,6 +414,7 @@ browser.runtime.onConnect.addListener(async (...args) => {
     const port = args[0];
 
     const _state = await localStore.get();
+    sentry?.captureException(error);
 
     port.postMessage({
       target: 'ui',
