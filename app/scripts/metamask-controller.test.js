@@ -195,6 +195,7 @@ const buildMockKeyringBridge = (publicKeyPayload) =>
   jest.fn(() => ({
     init: jest.fn(),
     dispose: jest.fn(),
+    destroy: jest.fn(),
     updateTransportMethod: jest.fn(),
     getPublicKey: jest.fn(async () => publicKeyPayload),
   }));
@@ -214,6 +215,7 @@ jest.mock('@metamask/eth-ledger-bridge-keyring', () => ({
   ...jest.requireActual('@metamask/eth-ledger-bridge-keyring'),
   LedgerIframeBridge: buildMockKeyringBridge({
     publicKey: KNOWN_PUBLIC_KEY,
+    address: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
     chainCode: '0x1',
   }),
 }));
@@ -1859,7 +1861,7 @@ describe('MetaMaskController', () => {
           async (type) => {
             jest
               .spyOn(metamaskController.keyringController, 'withKeyring')
-              .mockImplementation((_, fn) => fn({ type }));
+              .mockImplementation((_, fn) => fn({ keyring: { type } }));
 
             const result = await metamaskController.getHardwareTypeForMetric(
               '0x123',
@@ -1877,7 +1879,7 @@ describe('MetaMaskController', () => {
                 type: 'trezor',
                 bridge: { minorVersion: ONE_KEY_VIA_TREZOR_MINOR_VERSION },
               };
-              return fn(keyring);
+              return fn({ keyring });
             });
 
           const result = await metamaskController.getHardwareTypeForMetric(
@@ -3672,6 +3674,18 @@ describe('MetaMaskController', () => {
         ).toHaveLength(2);
         expect(currentKeyrings).toHaveLength(previousKeyrings.length + 1);
         expect(newSRP).toStrictEqual(TEST_SEED_ALT);
+      });
+
+      it('throws an error if a duplicate srp is added', async () => {
+        const password = 'what-what-what';
+        jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
+
+        await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+        await expect(() =>
+          metamaskController.importMnemonicToVault(TEST_SEED),
+        ).rejects.toThrow(
+          'This Secret Recovery Phrase has already been imported.',
+        );
       });
     });
   });

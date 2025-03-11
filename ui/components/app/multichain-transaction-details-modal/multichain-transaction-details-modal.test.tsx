@@ -1,9 +1,14 @@
 import React from 'react';
 import { CaipChainId } from '@metamask/utils';
-import { CaipAssetType, TransactionStatus } from '@metamask/keyring-api';
+import {
+  CaipAssetType,
+  Transaction,
+  TransactionStatus,
+} from '@metamask/keyring-api';
 import { screen, fireEvent } from '@testing-library/react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { MOCK_ACCOUNT_SOLANA_MAINNET } from '../../../../test/data/mock-accounts';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { MultichainTransactionDetailsModal } from './multichain-transaction-details-modal';
@@ -60,24 +65,53 @@ const mockTransaction = {
   ],
 };
 
+const mockSwapTransaction = {
+  type: 'swap' as const,
+  status: TransactionStatus.Confirmed as TransactionStatus,
+  timestamp: new Date('2023-09-30T12:56:00').getTime(),
+  id: '5Y64J6gUNd67hM63Aeks3qVLGWRM3A52PFFjqKSPTVDdAZFbaPDHHLTFCs3ioeFcAAXFmqcUftZeLJVZCzqovAJ4',
+  chain: MultichainNetworks.SOLANA as CaipChainId,
+  account: 'test-account-id',
+  events: [],
+  from: [
+    {
+      address: MOCK_ACCOUNT_SOLANA_MAINNET.address,
+      asset: {
+        fungible: true as const,
+        type: 'native' as CaipAssetType,
+        amount: '2.5',
+        unit: 'SOL',
+      },
+    },
+  ],
+  to: [
+    {
+      address: MOCK_ACCOUNT_SOLANA_MAINNET.address,
+      asset: {
+        fungible: true as const,
+        type: 'token' as CaipAssetType,
+        amount: '100',
+        unit: 'USDC',
+      },
+    },
+  ],
+  fees: [
+    {
+      type: 'base' as const,
+      asset: {
+        fungible: true as const,
+        type: 'native' as CaipAssetType,
+        amount: '0.000005',
+        unit: 'SOL',
+      },
+    },
+  ],
+};
+
 const mockProps = {
   transaction: mockTransaction,
   onClose: jest.fn(),
-  multichainNetwork: {
-    nickname: 'Bitcoin',
-    isEvmNetwork: false,
-    chainId: 'bip122:000000000019d6689c085ae165831e93' as CaipChainId,
-    network: {
-      type: 'bitcoin',
-      chainId: 'bip122:000000000019d6689c085ae165831e93' as CaipChainId,
-      ticker: 'BTC',
-      nickname: 'Bitcoin',
-      isAddressCompatible: (_address: string) => true,
-      rpcPrefs: {
-        blockExplorerUrl: 'https://explorer.bitcoin.com',
-      },
-    },
-  },
+  userAddress: MOCK_ACCOUNT_SOLANA_MAINNET.address,
 };
 
 describe('MultichainTransactionDetailsModal', () => {
@@ -92,7 +126,13 @@ describe('MultichainTransactionDetailsModal', () => {
     jest.clearAllMocks();
   });
 
-  const renderComponent = (props = mockProps) => {
+  const renderComponent = (
+    props: {
+      transaction: Transaction;
+      onClose: jest.Mock;
+      userAddress: string;
+    } = mockProps,
+  ) => {
     return renderWithProvider(
       <MetaMetricsContext.Provider value={mockTrackEvent}>
         <MultichainTransactionDetailsModal {...props} />
@@ -125,7 +165,14 @@ describe('MultichainTransactionDetailsModal', () => {
 
   it('displays network fee when present', () => {
     renderComponent();
-    expect(screen.getByText('1.0001 BTC')).toBeInTheDocument();
+
+    const feeElement =
+      screen.queryByTestId('transaction-network-fee') ||
+      screen.queryByTestId('transaction-base-fee');
+
+    expect(feeElement).not.toBeNull();
+    expect(feeElement?.textContent).toContain('1.0001');
+    expect(feeElement?.textContent).toContain('BTC');
   });
 
   it('calls onClose when close button is clicked', () => {
@@ -235,5 +282,36 @@ describe('MultichainTransactionDetailsModal', () => {
     expect(getAddressUrl(address, chainId)).toBe(
       `https://blockstream.info/testnet/address/${address}`,
     );
+  });
+
+  it('renders Solana swap transaction details correctly', () => {
+    const userAddress = MOCK_ACCOUNT_SOLANA_MAINNET.address;
+    const swapProps = {
+      transaction: mockSwapTransaction,
+      onClose: jest.fn(),
+      userAddress,
+    };
+
+    renderComponent(swapProps);
+
+    expect(screen.getByText('Swap')).toBeInTheDocument();
+    expect(screen.getByTestId('transaction-amount')).toHaveTextContent(
+      '2.5 SOL',
+    );
+
+    const addressStart = userAddress.substring(0, 6);
+    const addressElements = screen.getAllByText((_content, element) => {
+      return element?.textContent?.includes(addressStart) || false;
+    });
+
+    expect(addressElements.length).toBeGreaterThan(0);
+
+    const feeElement =
+      screen.queryByTestId('transaction-network-fee') ||
+      screen.queryByTestId('transaction-base-fee');
+
+    expect(feeElement).not.toBeNull();
+    expect(feeElement?.textContent).toContain('0.000005');
+    expect(feeElement?.textContent).toContain('SOL');
   });
 });

@@ -14,6 +14,7 @@ import { TransactionStatus } from '@metamask/transaction-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { SnapEndowments } from '@metamask/snaps-rpc-methods';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import {
   getCurrentChainId,
   getProviderConfig,
@@ -526,6 +527,17 @@ export function getMetaMaskKeyrings(state) {
     ...keyring,
     metadata: state.metamask.keyringsMetadata?.[index] ?? {},
   }));
+}
+
+export const getMetaMaskHdKeyrings = createSelector(
+  getMetaMaskKeyrings,
+  (keyrings) => {
+    return keyrings.filter((keyring) => keyring.type === KeyringTypes.hd);
+  },
+);
+
+export function getMetaMaskKeyringsMetadata(state) {
+  return state.metamask.keyringsMetadata;
 }
 
 /**
@@ -1489,6 +1501,21 @@ export const getMemoizedUnapprovedConfirmations = createDeepEqualSelector(
   getUnapprovedConfirmations,
   (confirmations) => confirmations,
 );
+
+/**
+ * Get pending confirmation from specified origin.
+ *
+ * @param state - Redux state object.
+ * @param origin - Origin to ger approvals from.
+ * @returns array of approvals from an origin
+ */
+export const getApprovalsByOrigin = (state, origin) => {
+  const pendingApprovals = getMemoizedUnapprovedConfirmations(state);
+
+  return pendingApprovals?.filter(
+    (confirmation) => confirmation.origin === origin,
+  );
+};
 
 /**
  * Get a memoized version of the unapproved templated confirmations.
