@@ -16,16 +16,24 @@ on:
         type: string
         description: The test command to run
       test-timeout-minutes:
-        required: false
         type: number
         default: 30
         description: The timeout in minutes for the test command
+      matrix-index:
+        type: number
+        description: The index of the job in the matrix
+      matrix-total:
+        type: number
+        description: The total number of jobs in the matrix
 
 jobs:
   run-e2e:
     runs-on: ubuntu-22.04
     container:
       image: cimg/node:22.13-browsers
+    env:
+      MATRIX_INDEX: ${{ github.event.inputs.matrix-index }}
+      MATRIX_TOTAL: ${{ github.event.inputs.matrix-total }}
     steps:
       - name: Install dependencies
         run: |
@@ -56,7 +64,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.test-suite-name }}
+          name: ${{ inputs.test-suite-name }}${{ env.MATRIX_TOTAL > 0 && format('-{N}', env.MATRIX_INDEX) || '' }}
           path: |
             ./test-artifacts
             ./test/test-results/e2e
