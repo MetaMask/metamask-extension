@@ -56,6 +56,22 @@ jobs:
           name: dist-e2e-tests-flask
           path: ./dist/
 
+  prep-build-test-mv2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout and setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        with:
+          is-high-risk-environment: false
+
+      - run: yarn build:test:mv2
+
+      - name: Upload dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-e2e-tests-mv2
+          path: ./dist/
+
   test-e2e-chrome:
     needs:
       - prep-build-test
@@ -275,6 +291,65 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-e2e-chrome-rpc
+          path: |
+            ./test-artifacts
+            ./test/test-results/e2e
+
+  test-e2e-firefox:
+    needs:
+      - prep-build-test-mv2
+      - get-changed-files-with-git-diff
+    runs-on: ubuntu-22.04
+    container:
+      image: cimg/node:22.13-browsers
+    strategy:
+      fail-fast: false
+      matrix:
+        index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
+    env:
+      MATRIX_INDEX: ${{ matrix.index }}
+      MATRIX_TOTAL: 24
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install zstd
+          sudo corepack enable
+        shell: bash
+
+      - name: Checkout and setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        with:
+          is-high-risk-environment: false
+
+      - name: Install anvil (not installed by checkout-and-setup when cache is restored)
+        run: yarn foundryup
+
+      - name: Download prep-build-test-mv2 artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-e2e-tests-mv2
+          path: ./dist/
+
+      - name: Configure Xvfb
+        run: Xvfb -ac :99 -screen 0 1280x1024x16 &
+
+      - name: Download changed-files artifact
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: changed-files
+          path: ./changed-files/
+
+      - name: Run e2e tests
+        run: .github/scripts/test-run-e2e.sh yarn test:e2e:firefox
+        env:
+          TIMEOUT: 30
+
+      - name: Upload test results and artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-e2e-firefox-${{ matrix.index }}
           path: |
             ./test-artifacts
             ./test/test-results/e2e
