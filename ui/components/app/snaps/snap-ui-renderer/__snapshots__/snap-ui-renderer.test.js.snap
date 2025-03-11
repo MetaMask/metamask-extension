@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SnapUIRenderer Scroll Behavior does not show scroll arrow when requireScroll is false 1`] = `
+exports[`SnapUIRenderer Scroll behavior does not show scroll arrow when requireScroll is false 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
@@ -144,7 +144,7 @@ exports[`SnapUIRenderer Scroll Behavior does not show scroll arrow when requireS
 </div>
 `;
 
-exports[`SnapUIRenderer Scroll Behavior renders footer with scroll arrow when content is scrollable 1`] = `
+exports[`SnapUIRenderer Scroll behavior renders footer with scroll arrow when content is scrollable 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
@@ -299,7 +299,7 @@ exports[`SnapUIRenderer Scroll Behavior renders footer with scroll arrow when co
 </div>
 `;
 
-exports[`SnapUIRenderer Scroll Behavior renders footer without scroll arrow when content is not scrollable 1`] = `
+exports[`SnapUIRenderer Scroll behavior renders footer without scroll arrow when content is not scrollable 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"

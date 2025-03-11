@@ -739,11 +739,26 @@ describe('SnapUIRenderer', () => {
     });
 
     it('renders footer without scroll arrow when content is not scrollable', () => {
-      mockUseScrollRequired.mockReturnValue({
-        isScrollable: false,
-        scrollToBottom: jest.fn(),
-        ref: { current: {} },
-        onScroll: jest.fn(),
+      let triggerStateChange;
+
+      mockUseScrollRequired.mockImplementation(() => {
+        const [hookState, setHookState] = React.useState({
+          isScrollable: false,
+          isScrolledToBottom: false,
+          hasScrolledToBottom: false,
+          ref: { current: null },
+        });
+
+        triggerStateChange = setHookState;
+
+        return {
+          isScrollable: hookState.isScrollable,
+          isScrolledToBottom: hookState.isScrolledToBottom,
+          hasScrolledToBottom: hookState.hasScrolledToBottom,
+          scrollToBottom: jest.fn(),
+          ref: hookState.ref,
+          onScroll: jest.fn(),
+        };
       });
 
       const { container, queryByTestId, getRenderCount, getByRole } =
@@ -760,11 +775,13 @@ describe('SnapUIRenderer', () => {
           { useFooter: true },
         );
 
-      // We have to simulate the state update manually because JSDOM isn't able to make scroll calculations
+      // Trigger the state change to simulate measurement completion
       act(() => {
-        const onMeasureCallback =
-          mockUseScrollRequired.mock.calls[0][1].onMeasure;
-        onMeasureCallback({ isScrollable: false, hasMeasured: true });
+        triggerStateChange({
+          isScrolledToBottom: true,
+          hasScrolledToBottom: true,
+          ref: { current: document.createElement('div') },
+        });
       });
 
       const submitButton = getByRole('button');
@@ -772,19 +789,42 @@ describe('SnapUIRenderer', () => {
       expect(
         queryByTestId('snap-ui-renderer__scroll-button'),
       ).not.toBeInTheDocument();
-      expect(getRenderCount()).toBe(2); // One for initial render, one for scroll state update
+      expect(getRenderCount()).toBe(2); // One for initial render, second for re-render on ref attachment
       expect(container).toMatchSnapshot();
     });
 
     it('renders footer with scroll arrow when content is scrollable', () => {
+      let triggerStateChange;
+
+      mockUseScrollRequired.mockImplementation(() => {
+        const [hookState, setHookState] = React.useState({
+          isScrollable: false,
+          isScrolledToBottom: false,
+          hasScrolledToBottom: false,
+          ref: { current: null },
+        });
+
+        triggerStateChange = setHookState;
+
+        return {
+          isScrollable: hookState.isScrollable,
+          isScrolledToBottom: hookState.isScrolledToBottom,
+          hasScrolledToBottom: hookState.hasScrolledToBottom,
+          scrollToBottom: jest.fn(),
+          ref: hookState.ref,
+          onScroll: jest.fn(),
+        };
+      });
+
       const { container, getByTestId, getRenderCount, getByRole } =
         renderInterface(mockContent, { useFooter: true });
 
-      // We have to simulate the state update manually because JSDOM isn't able to make scroll calculations
+      // Trigger the state change to simulate measurement completion
       act(() => {
-        const onMeasureCallback =
-          mockUseScrollRequired.mock.calls[0][1].onMeasure;
-        onMeasureCallback({ isScrollable: true, hasMeasured: true });
+        triggerStateChange({
+          isScrollable: true,
+          ref: { current: document.createElement('div') },
+        });
       });
 
       const submitButton = getByRole('button');
@@ -797,38 +837,51 @@ describe('SnapUIRenderer', () => {
     });
 
     it('handles scroll arrow click with minimal renders', () => {
+      let triggerStateChange;
+
+      mockUseScrollRequired.mockImplementation(() => {
+        const [hookState, setHookState] = React.useState({
+          isScrollable: false,
+          isScrolledToBottom: false,
+          hasScrolledToBottom: false,
+          ref: { current: null },
+        });
+
+        triggerStateChange = setHookState;
+
+        return {
+          isScrollable: hookState.isScrollable,
+          isScrolledToBottom: hookState.isScrolledToBottom,
+          hasScrolledToBottom: hookState.hasScrolledToBottom,
+          scrollToBottom: jest.fn(),
+          ref: hookState.ref,
+          onScroll: jest.fn(),
+        };
+      });
+
       const { queryByTestId, getByTestId, getRenderCount, getByRole } =
         renderInterface(mockContent, {
           useFooter: true,
         });
 
-      // We have to simulate the state update manually because JSDOM isn't able to make scroll calculations
+      // Trigger the state change to simulate measurement completion
       act(() => {
-        const onMeasureCallback =
-          mockUseScrollRequired.mock.calls[0][1].onMeasure;
-        onMeasureCallback({ isScrollable: true, hasMeasured: true });
+        triggerStateChange({
+          isScrollable: true,
+          ref: { current: document.createElement('div') },
+        });
       });
 
       const submitButton = getByRole('button');
       expect(submitButton).toBeDisabled();
 
-      const scrollArrow = getByTestId('snap-ui-renderer__scroll-button');
-
       act(() => {
+        const scrollArrow = getByTestId('snap-ui-renderer__scroll-button');
         fireEvent.click(scrollArrow);
-      });
-
-      act(() => {
-        const contentDiv = getByTestId('snap-ui-renderer__content');
-        // Create a mock event with the target having all the properties we need
-        const mockEvent = {
-          target: Object.create(contentDiv, {
-            scrollTop: { value: 1000 },
-            scrollHeight: { value: 1000 },
-            clientHeight: { value: 0 },
-          }),
-        };
-        fireEvent.scroll(contentDiv, mockEvent);
+        triggerStateChange({
+          isScrolledToBottom: true,
+          hasScrolledToBottom: true,
+        });
       });
 
       expect(
