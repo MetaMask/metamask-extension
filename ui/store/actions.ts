@@ -3575,17 +3575,14 @@ export function detectTokens(): ThunkAction<
   };
 }
 
-export function detectNfts(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+export function detectNfts(
+  chainIds: string[],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showNftStillFetchingIndication());
     log.debug(`background.detectNfts`);
     try {
-      await submitRequestToBackground('detectNfts');
+      await submitRequestToBackground('detectNfts', [chainIds]);
     } finally {
       dispatch(hideNftStillFetchingIndication());
     }

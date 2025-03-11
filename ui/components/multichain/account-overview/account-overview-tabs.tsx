@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { endTrace, trace } from '../../../../shared/lib/trace';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -41,6 +41,7 @@ import {
 } from '../../../../shared/constants/app-state';
 import { detectNfts } from '../../../store/actions';
 import { AccountOverviewCommonProps } from './common';
+import { getAllChainsToPoll } from '../../../selectors';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
   showTokens: boolean;
@@ -64,6 +65,7 @@ export const AccountOverviewTabs = ({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
+  const allChainIds = useSelector(getAllChainsToPoll);
 
   const tabProps = useMemo(
     () => ({
@@ -77,7 +79,7 @@ export const AccountOverviewTabs = ({
     (tabName: AccountOverviewTabKey) => {
       onTabClick(tabName);
       if (tabName === AccountOverviewTabKey.Nfts) {
-        dispatch(detectNfts());
+        dispatch(detectNfts(allChainIds));
       }
       trackEvent({
         category: MetaMetricsEventCategory.Home,
