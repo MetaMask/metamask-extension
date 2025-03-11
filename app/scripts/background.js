@@ -663,10 +663,6 @@ export async function loadStateFromPersistence() {
     firstTimeState = { ...firstTimeState, ...stateOverrides };
   }
 
-  const { vaultHasNotYetBeenCreated } = await browser.storage.local.get(
-    'vaultHasNotYetBeenCreated',
-  );
-
   // read from disk
   // first from preferred, async API:
   let preMigrationVersionedData = await persistenceManager.get();
@@ -675,8 +671,14 @@ export async function loadStateFromPersistence() {
     preMigrationVersionedData?.data?.KeyringController?.vault,
   );
 
-  if (vaultHasNotYetBeenCreated === undefined && !vaultDataPresent) {
-    throw new Error('Data error: storage.local does not contain vault data');
+  if (!vaultDataPresent) {
+    const { vaultHasNotYetBeenCreated } = await browser.storage.local.get(
+      'vaultHasNotYetBeenCreated',
+    );
+    const weShouldHaveAVault = vaultHasNotYetBeenCreated === undefined;
+    if (weShouldHaveAVault) {
+      throw new Error('Data error: storage.local does not contain vault data');
+    }
   }
 
   if (!preMigrationVersionedData.data && !preMigrationVersionedData.meta) {
