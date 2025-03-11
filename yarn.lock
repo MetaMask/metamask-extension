@@ -2328,13 +2328,13 @@ __metadata:
 
 "@ethereumjs/tx@patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch":
   version: 5.4.0
-  resolution: "@ethereumjs/tx@patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch::version=5.4.0&hash=944b6a"
+  resolution: "@ethereumjs/tx@patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch::version=5.4.0&hash=20f328"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/rlp": "npm:^5.0.2"
     "@ethereumjs/util": "npm:^9.1.0"
     ethereum-cryptography: "npm:^2.2.1"
-  checksum: 10/2737c3cee0db839535733ef777efc86a568ff8c101ccda61ca62319e9c45547fdb2770c34dab6e4eab10d24f07341b1aff47072fe75f6bee33df1aae0fa61a5a
+  checksum: 10/46ebd5359365d55390f20f01dd0672a22b2c00b245a24c51ca90ffeff7a71226a0c8fb76ed9bf57ed77246fe7324c6b572125548333a161432b9db813276ba4e
   languageName: node
   linkType: hard
 
@@ -27264,7 +27264,7 @@ __metadata:
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch"
     "@blockaid/ppom_release": "npm:^1.5.3"
     "@ensdomains/content-hash": "npm:^2.5.7"
-    "@ethereumjs/tx": "npm:^5.4.0"
+    "@ethereumjs/tx": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch"
     "@ethersproject/abi": "npm:^5.6.4"
     "@ethersproject/bignumber": "npm:^5.7.0"
     "@ethersproject/bytes": "npm:^5.7.0"
