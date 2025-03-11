@@ -136,7 +136,12 @@ import { isSnapId } from '@metamask/snaps-utils';
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { hasProperty, hexToBigInt, toCaipChainId } from '@metamask/utils';
+import {
+  hasProperty,
+  hexToBigInt,
+  toCaipChainId,
+  parseCaipAccountId,
+} from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 
 import {
@@ -251,6 +256,7 @@ import { endTrace, trace } from '../../shared/lib/trace';
 import { BridgeStatusAction } from '../../shared/types/bridge-status';
 import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
+import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import {
   BridgeUserAction,
   BridgeBackgroundAction,
@@ -328,6 +334,7 @@ import {
   getRemovedAuthorizations,
   getChangedAuthorizations,
   getAuthorizedScopesByOrigin,
+  getPermittedAccountsForScopesByOrigin,
 } from './controllers/permissions';
 import { MetaMetricsDataDeletionController } from './controllers/metametrics-data-deletion/metametrics-data-deletion';
 import { DataDeletionService } from './services/data-deletion-service';
@@ -2812,6 +2819,20 @@ export default class MetamaskController extends EventEmitter {
    */
   setupControllerEventSubscriptions() {
     let lastSelectedAddress;
+    let lastSelectedSolanaAccountAddress;
+
+    if (process.env.MULTICHAIN_API) {
+      // this throws if there is no solana account... perhaps we should handle this better at the controller level
+      try {
+        lastSelectedSolanaAccountAddress =
+          this.accountsController.getSelectedMultichainAccount(
+            MultichainNetworks.SOLANA,
+          )?.address;
+      } catch {
+        // noop
+      }
+    }
+
     this.controllerMessenger.subscribe(
       'PreferencesController:stateChange',
       previousValueComparator(async (prevState, currState) => {
@@ -2936,6 +2957,39 @@ export default class MetamaskController extends EventEmitter {
         },
         getAuthorizedScopesByOrigin,
       );
+      if (process.env.MULTICHAIN_API) {
+        this.controllerMessenger.subscribe(
+          `${this.accountsController.name}:selectedAccountChange`,
+          async (account) => {
+            if (
+              account.type === 'solana:data-account' &&
+              account.address !== lastSelectedSolanaAccountAddress
+            ) {
+              lastSelectedSolanaAccountAddress = account.address;
+
+              const solanaAccounts = getPermittedAccountsForScopesByOrigin(
+                this.permissionController.state,
+                [
+                  MultichainNetworks.SOLANA,
+                  MultichainNetworks.SOLANA_DEVNET,
+                  MultichainNetworks.SOLANA_TESTNET,
+                ],
+              );
+
+              for (const [origin, accounts] of solanaAccounts.entries()) {
+                const parsedSolanaAddresses = accounts.map((caipAccountId) => {
+                  const { address } = parseCaipAccountId(caipAccountId);
+                  return address;
+                });
+
+                if (parsedSolanaAddresses.includes(account.address)) {
+                  this._notifySolanaAccountChange(origin, account.address);
+                }
+              }
+            }
+          },
+        );
+      }
     }
 
     this.controllerMessenger.subscribe(
@@ -7107,7 +7161,6 @@ export default class MetamaskController extends EventEmitter {
    */
   notifyConnections(origin, payload, apiType) {
     const connections = this.connections[origin];
-
     if (connections) {
       Object.values(connections).forEach((conn) => {
         if (apiType && conn.apiType !== apiType) {
@@ -7796,6 +7849,23 @@ export default class MetamaskController extends EventEmitter {
             getNonEvmSupportedMethods:
               this.getNonEvmSupportedMethods.bind(this),
           }),
+        },
+      },
+      API_TYPE.CAIP_MULTICHAIN,
+    );
+  }
+
+  async _notifySolanaAccountChange(origin, accountAddress) {
+    this.notifyConnections(
+      origin,
+      {
+        method: NOTIFICATION_NAMES.walletNotify,
+        params: {
+          scope: MultichainNetworks.SOLANA,
+          notification: {
+            method: NOTIFICATION_NAMES.accountsChanged,
+            params: [accountAddress],
+          },
         },
       },
       API_TYPE.CAIP_MULTICHAIN,

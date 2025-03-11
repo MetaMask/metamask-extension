@@ -44,6 +44,57 @@ export const getPermittedAccountsByOrigin = createSelector(
   },
 );
 
+// This will be moved to the @metamask/chain-agnostic-permission package
+/**
+ * Get the permitted accounts for a given scope.
+ *
+ * @param {Pick<Caip25CaveatValue, 'requiredScopes' | 'optionalScopes'>} caip25CaveatValue - The CAIP-25 CaveatValue to get the permitted accounts for
+ * @param {string[]} scopes - The scopes to get the permitted accounts for
+ * @returns {string[]} An array of permitted accounts
+ */
+export const getPermittedAccountsForScopes = (caip25CaveatValue, scopes) => {
+  const scopeAccounts = [];
+
+  scopes.forEach((scope) => {
+    const requiredScope = caip25CaveatValue.requiredScopes[scope];
+    const optionalScope = caip25CaveatValue.optionalScopes[scope];
+    if (requiredScope) {
+      scopeAccounts.push(...requiredScope.accounts);
+    }
+
+    if (optionalScope) {
+      scopeAccounts.push(...optionalScope.accounts);
+    }
+  });
+  return scopeAccounts;
+};
+
+/**
+ * Get the permitted accounts for a given origin and scope.
+ *
+ * @param {Record<string, Record<string, unknown>>} state - The PermissionController state
+ * @param {string[]} scopes - The scopes to get the permitted accounts for
+ * @returns {Map<string, string[]>} A map of origins to permitted accounts for the given scope
+ */
+export const getPermittedAccountsForScopesByOrigin = (state, scopes) => {
+  const subjects = getSubjects(state);
+
+  return Object.values(subjects).reduce((originToAccountsMap, subject) => {
+    const caveats =
+      subject.permissions?.[Caip25EndowmentPermissionName]?.caveats || [];
+
+    const caveat = caveats.find(({ type }) => type === Caip25CaveatType);
+
+    if (caveat) {
+      const scopeAccounts = getPermittedAccountsForScopes(caveat.value, scopes);
+
+      if (scopeAccounts.length > 0) {
+        originToAccountsMap.set(subject.origin, scopeAccounts);
+      }
+    }
+    return originToAccountsMap;
+  }, new Map());
+};
 /**
  * Get the authorized CAIP-25 scopes for each subject, keyed by origin.
  * The values of the returned map are immutable values from the
