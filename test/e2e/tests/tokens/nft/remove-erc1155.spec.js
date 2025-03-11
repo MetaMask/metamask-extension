@@ -22,6 +22,9 @@ describe('Remove ERC1155 NFT', function () {
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC1155().build(),
         smartContract,
+        localNodeOptions: {
+          hardfork: 'london',
+        },
         title: this.test.fullTitle(),
         testSpecificMock: mockIPFSRequest,
       },

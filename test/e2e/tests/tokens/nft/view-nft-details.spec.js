@@ -12,6 +12,7 @@ describe('View NFT details', function () {
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC721().build(),
         smartContract,
+        localNodeOptions: { hardfork: 'london' },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

@@ -54,17 +54,13 @@ class AnvilSeeder {
     }
 
     if (contractName === SMART_CONTRACTS.ERC1155) {
-      const transaction = await walletClient.sendTransaction({
-        from: fromAddress,
-        data: contractConfig.abi.encodeFunctionData('mintBatch', [
-          fromAddress,
-          [1, 2, 3],
-          [1, 1, 100000000000000],
-          '0x',
-        ]),
-        to: receipt.contractAddress,
+      await walletClient.writeContract({
+        address: receipt.contractAddress,
+        abi: contractConfig.abi,
+        functionName: 'mintBatch',
+        args: [fromAddress, [1, 2, 3], [1, 1, 100000000000000], '0x'],
+        account: fromAddress,
       });
-      await publicClient.getTransactionReceipt({ hash: transaction.hash });
     }
 
     this.storeSmartContractAddress(contractName, receipt.contractAddress);

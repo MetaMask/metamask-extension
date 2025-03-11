@@ -29,6 +29,9 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
             .build(),
           testSpecificMock: mocked4BytesResponse,
           smartContract,
+          localNodeOptions: {
+            hardfork: 'london',
+          },
           title: this.test?.fullTitle(),
         },
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
@@ -62,6 +65,9 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         testSpecificMock: mockedSourcifyResponse,
+        localNodeOptions: {
+          hardfork: 'london',
+        },
         smartContract,
         title: this.test?.fullTitle(),
       },
@@ -94,6 +100,9 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
+        localNodeOptions: {
+          hardfork: 'london',
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver, contractRegistry }: TestSuiteArguments) => {
