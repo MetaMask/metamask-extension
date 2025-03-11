@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
 import { setTransactionActive } from '../../../store/actions';
-import { useConfirmContext } from '../context/confirm';
 import { useWindowFocus } from '../../../hooks/useWindowFocus';
+import { useConfirmContext } from '../context/confirm';
 
 const shouldSetFocusedForType = (type: TransactionType) => {
   return (

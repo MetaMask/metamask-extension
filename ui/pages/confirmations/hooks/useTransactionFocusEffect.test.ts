@@ -1,9 +1,9 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { renderHook } from '@testing-library/react-hooks';
 import { useDispatch } from 'react-redux';
-import { useConfirmContext } from '../context/confirm';
-import { useWindowFocus } from '../../../hooks/useWindowFocus';
 import { setTransactionActive } from '../../../store/actions';
+import { useWindowFocus } from '../../../hooks/useWindowFocus';
+import { useConfirmContext } from '../context/confirm';
 import { type Confirmation } from '../types/confirm';
 import { useTransactionFocusEffect } from './useTransactionFocusEffect';
 
