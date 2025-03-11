@@ -577,16 +577,16 @@ export default class MetamaskController extends EventEmitter {
       delete networks[CHAIN_IDS.GOERLI];
       delete networks[CHAIN_IDS.LINEA_GOERLI];
 
-      // Due to the MegaETH Testnet is not included from `getDefaultNetworkControllerState()`.
-      // And it is not using Infura as a provider, hence we need to add it manually.
+      // Due to the MegaETH Testnet not being included in getDefaultNetworkControllerState().
+      // and it not using Infura as a provider, we need to add it manually.
       networks[CHAIN_IDS.MEGAETH_TESTNET] = cloneDeep(
         DEFAULT_CUSTOM_TESTNET_MAP[CHAIN_IDS.MEGAETH_TESTNET],
       );
 
       Object.values(networks).forEach((network) => {
         const id = network.rpcEndpoints[0].networkClientId;
-        // Only process if the default network has a matching networkClientId in BlockExplorerUrl.
-        // For now the MegaETH Testnet is the only default network that does not included,
+        // Process only if the default network has a corresponding networkClientId in BlockExplorerUrl.
+        // Note: The MegaETH Testnet is currently the only network that is not included.
         if (hasProperty(BlockExplorerUrl, id)) {
           network.blockExplorerUrls = [BlockExplorerUrl[id]];
         }
