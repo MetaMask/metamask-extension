@@ -134,6 +134,10 @@ async function main() {
             description: `run json-rpc specific e2e tests`,
             type: 'boolean',
           })
+          .option('bridge', {
+            description: `run bridge specific e2e tests`,
+            type: 'boolean',
+          })
           .option('multi-provider', {
             description: `run multi injected provider e2e tests`,
             type: 'boolean',
@@ -169,6 +173,7 @@ async function main() {
     debug,
     retries,
     rpc,
+    bridge,
     buildType,
     updateSnapshot,
     updatePrivacySnapshot,
@@ -193,6 +198,9 @@ async function main() {
     ];
   } else if (rpc) {
     const testDir = path.join(__dirname, 'json-rpc');
+    testPaths = await getTestPathsForTestDir(testDir);
+  } else if (bridge) {
+    const testDir = path.join(__dirname, 'bridge');
     testPaths = await getTestPathsForTestDir(testDir);
   } else if (multiProvider) {
     // Copy dist/ to folder

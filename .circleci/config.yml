@@ -178,6 +178,10 @@ workflows:
       - test-e2e-swap-playwright - OPTIONAL:
           requires:
             - prep-build
+      - test-e2e-chrome-bridge - OPTIONAL:
+          requires:
+            - prep-build-test
+            - get-changed-files-with-git-diff
       - test-e2e-chrome-vault-decryption:
           filters:
             branches:
@@ -870,6 +874,30 @@ jobs:
       - run:
           name: test:e2e:chrome:flask
           command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:chrome:flask
+          no_output_timeout: 5m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e
+
+  test-e2e-chrome-bridge - OPTIONAL:
+    executor: node-browsers-medium-plus
+    parallelism: 20
+    steps:
+      - run: *shallow-git-clone-and-enable-vnc
+      - run: sudo corepack enable
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-bridge ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-bridge ./builds
+      - run:
+          name: test:e2e:chrome:bridge
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:chrome:bridge
           no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
