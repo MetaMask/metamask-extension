@@ -177,9 +177,6 @@ import {
   NETWORK_TYPES,
   NetworkStatus,
   MAINNET_DISPLAY_NAME,
-  MEGAETH_TESTNET_DISPLAY_NAME,
-  TEST_NETWORK_TICKER_MAP,
-  MEGAETH_TESTNET_IMAGE_URL,
   DEFAULT_CUSTOM_TESTNET_MAP,
 } from '../../shared/constants/network';
 import { getAllowedSmartTransactionsChainIds } from '../../shared/constants/smartTransactions';
