@@ -6106,8 +6106,10 @@ export async function setTransactionActive(
   transactionId: string,
   isFocused: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  await submitRequestToBackground('setTransactionActive', [
-    transactionId,
-    isFocused,
-  ]);
+  return async () => {
+    await submitRequestToBackground('setTransactionActive', [
+      transactionId,
+      isFocused,
+    ]);
+  };
 }
