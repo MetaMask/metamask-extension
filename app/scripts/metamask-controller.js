@@ -19,7 +19,7 @@ import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { debounce, throttle, memoize, wrap, pick } from 'lodash';
+import { debounce, throttle, memoize, wrap, pick, cloneDeep } from 'lodash';
 import {
   KeyringController,
   KeyringTypes,
@@ -134,7 +134,7 @@ import { isSnapId } from '@metamask/snaps-utils';
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { hexToBigInt, toCaipChainId } from '@metamask/utils';
+import { hasProperty, hexToBigInt, toCaipChainId } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 
 import {
@@ -180,6 +180,7 @@ import {
   MEGAETH_TESTNET_DISPLAY_NAME,
   TEST_NETWORK_TICKER_MAP,
   MEGAETH_TESTNET_IMAGE_URL,
+  DEFAULT_CUSTOM_TESTNET,
 } from '../../shared/constants/network';
 import { getAllowedSmartTransactionsChainIds } from '../../shared/constants/smartTransactions';
 
@@ -578,27 +579,16 @@ export default class MetamaskController extends EventEmitter {
       networks[CHAIN_IDS.MAINNET].name = MAINNET_DISPLAY_NAME;
       delete networks[CHAIN_IDS.GOERLI];
       delete networks[CHAIN_IDS.LINEA_GOERLI];
-      // Add MegaETH Testnet as a default network
-      networks[CHAIN_IDS.MEGAETH_TESTNET] = {
-        chainId: CHAIN_IDS.MEGAETH_TESTNET,
-        name: MEGAETH_TESTNET_DISPLAY_NAME,
-        nativeCurrency: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MEGAETH_TESTNET],
-        blockExplorerUrls: ['https://www.megaexplorer.xyz'],
-        defaultRpcEndpointIndex: 0,
-        rpcEndpoints: [
-          {
-            networkClientId: 'megaeth-testnet',
-            url: 'https://carrot.megaeth.com/rpc',
-            type: 'custom',
-          },
-        ],
-        imageUrl: MEGAETH_TESTNET_IMAGE_URL,
-      };
+
+      // Due to the MegaETH Testnet is not included from `getDefaultNetworkControllerState()`.
+      // And it is not using Infura as a provider, hence we need to add it manually.
+      networks[CHAIN_IDS.MEGAETH_TESTNET] = cloneDeep(DEFAULT_CUSTOM_TESTNET[CHAIN_IDS.MEGAETH_TESTNET]);
 
       Object.values(networks).forEach((network) => {
         const id = network.rpcEndpoints[0].networkClientId;
-        if (id !== 'megaeth-testnet') {
-          // Skip for our custom network
+        // Only process if the default network has a matching networkClientId in BlockExplorerUrl.
+        // For now the MegaETH Testnet is the only default network that does not included,
+        if (hasProperty(BlockExplorerUrl, id)) {
           network.blockExplorerUrls = [BlockExplorerUrl[id]];
         }
         network.defaultBlockExplorerUrlIndex = 0;
