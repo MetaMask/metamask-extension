@@ -47,7 +47,6 @@ const render = ({
   selectedTabOriginInDomainsState = true,
   isAddingNewNetwork = false,
   editedNetwork = undefined,
-  enablePortfolioLandingPage = false,
 } = {}) => {
   const state = {
     appState: {
@@ -151,9 +150,6 @@ const render = ({
         ...(selectedTabOriginInDomainsState
           ? { [origin]: selectedNetworkClientId }
           : {}),
-      },
-      remoteFeatureFlags: {
-        enablePortfolioLandingPage,
       },
     },
     activeTab: {
@@ -281,58 +277,39 @@ describe('NetworkListMenu', () => {
   });
 
   // For now, we only have Linea Mainnet enabled for the discover button.
-  it(
-    'enables the "Discover" button when the Feature Flag `enablePortfolioLandingPage` is true and the network is supported',
-    () => {
-      const { queryByTestId } = render({
-        enablePortfolioLandingPage: true,
-      });
+  it('enables the "Discover" button when the network is in the list of `CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP`', () => {
+    const { queryByTestId } = render({
+      enablePortfolioLandingPage: true,
+    });
 
-      const menuButton = queryByTestId(
-        `network-list-item-options-button-eip155:${hexToDecimal(CHAIN_IDS.LINEA_MAINNET)}`);
-      fireEvent.click(menuButton);
+    const menuButton = queryByTestId(
+      `network-list-item-options-button-eip155:${hexToDecimal(
+        CHAIN_IDS.LINEA_MAINNET,
+      )}`,
+    );
+    fireEvent.click(menuButton);
 
-      expect(
-        queryByTestId('network-list-item-options-discover'),
-      ).toBeInTheDocument();
-    },
-  );
+    expect(
+      queryByTestId('network-list-item-options-discover'),
+    ).toBeInTheDocument();
+  });
 
-  it(
-    'disables the "Discover" button when the Feature Flag `enablePortfolioLandingPage` is false regardness if the network supported or not',
-    () => {
-      const { queryByTestId } = render({
-        enablePortfolioLandingPage: false,
-      });
+  it('disables the "Discover" button when the network is not in the list of `CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP`', () => {
+    const { queryByTestId } = render({
+      enablePortfolioLandingPage: false,
+    });
 
-      const menuButton = queryByTestId(
-        `network-list-item-options-button-eip155:${hexToDecimal(CHAIN_IDS.LINEA_MAINNET)}`,
-      );
-      fireEvent.click(menuButton);
+    const menuButton = queryByTestId(
+      `network-list-item-options-button-eip155:${hexToDecimal(
+        CHAIN_IDS.LINEA_MAINNET,
+      )}`,
+    );
+    fireEvent.click(menuButton);
 
-      expect(
-        queryByTestId('network-list-item-options-discover'),
-      ).not.toBeInTheDocument();
-    },
-  );
-
-  it(
-    'disables the "Discover" button when the network is not supported regardness the response of the Feature Flag `enablePortfolioLandingPage`',
-    () => {
-      const { queryByTestId } = render({
-        enablePortfolioLandingPage: true,
-      });
-
-      const menuButton = queryByTestId(
-        `network-list-item-options-button-eip155:${hexToDecimal(CHAIN_IDS.MAINNET)}`,
-      );
-      fireEvent.click(menuButton);
-
-      expect(
-        queryByTestId('network-list-item-options-discover'),
-      ).not.toBeInTheDocument();
-    },
-  );
+    expect(
+      queryByTestId('network-list-item-options-discover'),
+    ).not.toBeInTheDocument();
+  });
 
   describe('selectedTabOrigin is connected to wallet', () => {
     it('fires setNetworkClientIdForDomain when network item is clicked', () => {

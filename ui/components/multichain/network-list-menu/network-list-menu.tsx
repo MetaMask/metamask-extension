@@ -152,11 +152,6 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
   const showNetworkBanner = useSelector(getShowNetworkBanner);
-  // This selector provides the indication if the "Discover" button
-  // is enabled based on the remote feature flag.
-  const isPortfolioLandingPageEnabled = useSelector(
-    getIsPortfolioLandingPageEnabled,
-  );
   // This selector provides all network configurations including EVM and non-EVM
   // with the data type MultichainNetworkConfiguration from @metamask/multichain-network-controller
   const multichainNetworks = useSelector(
@@ -377,17 +372,11 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     });
   };
 
-  const isDiscoverBtnEnabled = useCallback(
-    (hexChainId: Hex): boolean => {
-      // For now, the "Discover" button should be enabled only for Linea network base on
-      // the feature flag and the constants `CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP`.
-      return (
-        isPortfolioLandingPageEnabled &&
-        CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[hexChainId] !== undefined
-      );
-    },
-    [isPortfolioLandingPageEnabled],
-  );
+  const isDiscoverBtnEnabled = useCallback((hexChainId: Hex): boolean => {
+    // For now, the "Discover" button should be enabled only for Linea network base on
+    // the constants `CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP`.
+    return CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[hexChainId] !== undefined;
+  }, []);
 
   const hasMultiRpcOptions = useCallback(
     (network: MultichainNetworkConfiguration): boolean =>
@@ -462,7 +451,13 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           : undefined,
       };
     },
-    [currentChainId, dispatch, hasMultiRpcOptions, isUnlocked, isDiscoverBtnEnabled],
+    [
+      currentChainId,
+      dispatch,
+      hasMultiRpcOptions,
+      isUnlocked,
+      isDiscoverBtnEnabled,
+    ],
   );
 
   // Renders a network in the network list

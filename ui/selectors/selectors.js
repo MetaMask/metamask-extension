@@ -2818,18 +2818,6 @@ export function getIsCustomNetwork(state) {
   return !CHAIN_ID_TO_RPC_URL_MAP[chainId];
 }
 
-/**
- * Get the state of the `enablePortfolioLandingPage` remote feature flag.
- * This flag determines whether the user should see a `Discover` button for on the network menu list.
- *
- * @param {*} state
- * @returns The state of the `enablePortfolioLandingPage` remote feature flag.
- */
-export function getIsPortfolioLandingPageEnabled(state) {
-  const { enablePortfolioLandingPage } = getRemoteFeatureFlags(state);
-  return Boolean(enablePortfolioLandingPage);
-}
-
 export function getBlockExplorerLinkText(
   state,
   accountDetailsModalComponent = false,
