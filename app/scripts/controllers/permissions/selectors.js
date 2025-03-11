@@ -72,6 +72,25 @@ export const getAuthorizedScopesByOrigin = createSelector(
 );
 
 /**
+ * Get an array of origins that have a permission for the given scope.
+ *
+ * @param {string} scope - The scope to check for.
+ * @returns {string[]} An array of origins that have a permission for the given scope.
+ */
+export const getOriginsWithScope = (scope) =>
+  createSelector(getSubjects, (subjects) => {
+    return Object.values(subjects)
+      .filter((subject) => {
+        return subject.permissions?.[Caip25EndowmentPermissionName]?.caveats?.some(
+          (caveat) => {
+            return caveat.value.includes(scope);
+          },
+        );
+      })
+      .map((subject) => subject.origin);
+  });
+
+/**
  * Get the permitted chains for each subject, keyed by origin.
  * The values of the returned map are immutable values from the
  * PermissionController state.

@@ -2391,6 +2391,25 @@ export default class MetamaskController extends EventEmitter {
     if (this.onboardingController.state.completedOnboarding) {
       this.postOnboardingInitialization();
     }
+
+    /**
+     * Get an array of origins that have a permission for the given scope.
+     *
+     * @param {string} scope - The scope to check for.
+     * @returns {string[]} An array of origins that have a permission for the given scope.
+     */
+    this.getOriginsWithScope = (scope) => {
+      const { subjects } = this.permissionController.state;
+      return Object.values(subjects)
+        .filter((subject) => {
+          return subject.permissions?.[
+            Caip25EndowmentPermissionName
+          ]?.caveats?.some((caveat) => {
+            return caveat.value.includes(scope);
+          });
+        })
+        .map((subject) => subject.origin);
+    };
   }
 
   // Provides a method for getting feature flags for the multichain
@@ -2759,6 +2778,10 @@ export default class MetamaskController extends EventEmitter {
    */
   setupControllerEventSubscriptions() {
     let lastSelectedAddress;
+    let lastSelectedSolanaAccountAddress =
+      this.accountsController.getSelectedMultichainAccount(
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      )?.address;
     this.controllerMessenger.subscribe(
       'PreferencesController:stateChange',
       previousValueComparator(async (prevState, currState) => {
@@ -2787,6 +2810,46 @@ export default class MetamaskController extends EventEmitter {
         if (account.address && account.address !== lastSelectedAddress) {
           lastSelectedAddress = account.address;
           await this._onAccountChange(account.address);
+        }
+      },
+    );
+
+    this.controllerMessenger.subscribe(
+      'AccountsController:stateChange',
+      (newValue, previousValue) => {
+        // const {
+        //   internalSelectedAccount: { selectedAccount, accounts },
+        // } = accountsControllerState;
+
+        console.log('AccountsController:stateChange, newValue', newValue);
+        console.log(
+          'AccountsController:stateChange, previousValue',
+          previousValue,
+        );
+        // wallet_notify accountChanged to all connected domains with solana scope connected
+        // wallet_notify accountChanged to all connected domains with solana scope connected
+        //
+      },
+    );
+
+    this.controllerMessenger.subscribe(
+      'AccountsController:selectedAccountChange',
+      (newSelectedAccount) => {
+        // const {
+        //   internalSelectedAccount: { selectedAccount, accounts },
+        // } = accountsControllerState;
+
+        if (
+          newSelectedAccount.type === 'solana:data-account' &&
+          newSelectedAccount.address !== lastSelectedSolanaAccountAddress
+        ) {
+          lastSelectedSolanaAccountAddress = newSelectedAccount.address;
+
+          // Get all origins with solana scope and notify them of account change
+          const originsWithSolanaScope = this.getOriginsWithScope('solana');
+          originsWithSolanaScope.forEach(() => {
+            this._notifySolanaAccountChange();
+          });
         }
       },
     );
@@ -2877,6 +2940,25 @@ export default class MetamaskController extends EventEmitter {
         },
         getAuthorizedScopesByOrigin,
       );
+
+      // this.controllerMessenger.subscribe(
+      //   'AccountsController:stateChange',
+      //   (newAccountsControllerState, previousAccountsControllerState) => {
+      //     const {
+      //       internalSelectedAccount: { selectedAccount, accounts },
+      //     } = newAccountsControllerState;
+
+      //     const {
+      //       internalSelectedAccount: {
+      //         selectedAccount: previousSelectedAccount,
+      //       },
+      //     } = previousAccountsControllerState;
+
+      //     if (selectedAccount !== previousSelectedAccount) {
+      //       this._notifySolanaAccountChange();
+      //     }
+      //   },
+      // );
     }
 
     this.controllerMessenger.subscribe(
@@ -7678,6 +7760,16 @@ export default class MetamaskController extends EventEmitter {
           sessionScopes: getSessionScopes(newAuthorization),
         },
       },
+      API_TYPE.CAIP_MULTICHAIN,
+    );
+  }
+
+  async _notifySolanaAccountChange() {
+    this.notifyAllConnections(
+      async (origin) => ({
+        method: NOTIFICATION_NAMES.accountsChanged,
+        params: await this.getProviderNetworkState(origin),
+      }),
       API_TYPE.CAIP_MULTICHAIN,
     );
   }
