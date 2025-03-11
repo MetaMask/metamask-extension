@@ -49,7 +49,7 @@ jobs:
           is-high-risk-environment: false
 
       - name: Get changed files with git diff
-        run: yarn git-diff-default-branch:github
+        run: yarn tsx .github/scripts/git-diff-default-branch.ts
 
       - name: Upload changed files artifact
         uses: actions/upload-artifact@v4
