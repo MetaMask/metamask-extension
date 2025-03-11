@@ -133,11 +133,7 @@ export async function getStateCorruptionErrorHtml(supportLink, metamaskState) {
         </div>
         <div>
           <p>
-            ${
-              hasBackup === true
-                ? t('stateCorruptionDetectedWithBackup')
-                : t('stateCorruptionDetectedNoBackup')
-            }
+            ${t('stateCorruptionDetectedErrorMessage')}
           </p>
           <p class="critical-error__footer">
             <span>${t('unexpectedBehavior')}</span>
