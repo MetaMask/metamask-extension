@@ -527,7 +527,7 @@ export const SONEIUM_IMAGE_URL = './images/soneium.svg';
 export const MODE_SEPOLIA_IMAGE_URL = './images/mode-sepolia.svg';
 export const MODE_IMAGE_URL = './images/mode.svg';
 export const UNICHAIN_IMAGE_URL = './images/unichain.svg';
-export const MEGAETH_TESTNET_IMAGE_URL = './images/MegaETH-logo-testnet.svg';
+export const MEGAETH_TESTNET_IMAGE_URL = './images/MegaETH-logo-testnet.png';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
