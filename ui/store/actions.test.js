@@ -24,6 +24,8 @@ import { setBackgroundConnection } from './background-connection';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
+const mockUlid = '01JMPHQSH1A4DQAAS6ES7NDJ38';
+
 const middleware = [thunk];
 const defaultState = {
   metamask: {
@@ -39,6 +41,22 @@ const defaultState = {
         balance: '0x0',
       },
     },
+    keyrings: [
+      {
+        type: 'HD Key Tree',
+        accounts: [
+          {
+            address: '0xFirstAddress',
+          },
+        ],
+      },
+    ],
+    keyringsMetadata: [
+      {
+        id: mockUlid,
+        name: '',
+      },
+    ],
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     internalAccounts: {
       accounts: {
@@ -210,7 +228,7 @@ describe('Actions', () => {
       const verifyPassword = background.verifyPassword.callsFake((_, cb) =>
         cb(),
       );
-      const getSeedPhrase = background.getSeedPhrase.callsFake((_, cb) =>
+      const getSeedPhrase = background.getSeedPhrase.callsFake((_, _2, cb) =>
         cb(null, Array.from(Buffer.from('test').values())),
       );
 
@@ -225,7 +243,7 @@ describe('Actions', () => {
       const store = mockStore();
 
       background.verifyPassword.callsFake((_, cb) => cb());
-      background.getSeedPhrase.callsFake((_, cb) => {
+      background.getSeedPhrase.callsFake((_, _2, cb) => {
         cb(new Error('error'));
       });
 
@@ -397,10 +415,11 @@ describe('Actions', () => {
         metamask: { ...defaultState.metamask },
       });
 
-      const addNewAccount = background.addNewAccount.callsFake((_, cb) =>
-        cb(null, {
-          addedAccountAddress: '0x123',
-        }),
+      const addNewAccount = background.addNewAccount.callsFake(
+        (_, _secondUnusedVar, cb) =>
+          cb(null, {
+            addedAccountAddress: '0x123',
+          }),
       );
 
       setBackgroundConnection(background);
@@ -412,7 +431,7 @@ describe('Actions', () => {
     it('displays warning error message when addNewAccount in background callback errors', async () => {
       const store = mockStore();
 
-      background.addNewAccount.callsFake((_, cb) => {
+      background.addNewAccount.callsFake((_, _secondUnusedVar, cb) => {
         cb(new Error('error'));
       });
 
@@ -2670,6 +2689,57 @@ describe('Actions', () => {
       await store.dispatch(actions.setSmartTransactionsRefreshInterval(null));
 
       expect(background.setStatusRefreshInterval.called).toBe(false);
+    });
+  });
+
+  describe('generateNewMnemonicAndAddToVault', () => {
+    it('calls generateNewMnemonicAndAddToVault in the background', async () => {
+      const store = mockStore();
+      const generateNewMnemonicAndAddToVaultStub = sinon
+        .stub()
+        .callsFake((cb) => cb(null, {}));
+      background.getApi.returns({
+        generateNewMnemonicAndAddToVault: generateNewMnemonicAndAddToVaultStub,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      await store.dispatch(actions.generateNewMnemonicAndAddToVault());
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
+      expect(generateNewMnemonicAndAddToVaultStub.calledOnceWith()).toBe(true);
+    });
+  });
+
+  describe('importMnemonicToVault', () => {
+    it('calls importMnemonicToVault in the background', async () => {
+      const store = mockStore();
+      const importMnemonicToVaultStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb(null, {}));
+      background.getApi.returns({
+        importMnemonicToVault: importMnemonicToVaultStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      const mnemonic = 'mock seed';
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      await store.dispatch(actions.importMnemonicToVault(mnemonic));
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
+      expect(importMnemonicToVaultStub.calledOnceWith(mnemonic)).toStrictEqual(
+        true,
+      );
     });
   });
 });

@@ -3207,7 +3207,7 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(5);
+        expect(actionResult).toHaveLength(6);
         expect(
           checkIfTypesExistInActionResult(actionResult, [
             {

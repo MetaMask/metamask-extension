@@ -4,6 +4,7 @@ import type { KeyringControllerGetAccountsAction } from '@metamask/keyring-contr
 import { GetSubjectMetadata } from '@metamask/permission-controller';
 import {
   AccountsControllerGetAccountByAddressAction,
+  AccountsControllerListMultichainAccountsAction,
   AccountsControllerSetAccountNameAction,
   AccountsControllerSetSelectedAccountAction,
 } from '@metamask/accounts-controller';
@@ -34,6 +35,7 @@ export type SnapKeyringBuilderAllowActions =
   | AccountsControllerSetSelectedAccountAction
   | AccountsControllerGetAccountByAddressAction
   | AccountsControllerSetAccountNameAction
+  | AccountsControllerListMultichainAccountsAction
   | HandleSnapRequest
   | GetSnap
   | PreferencesControllerGetStateAction;
