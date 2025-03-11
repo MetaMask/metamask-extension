@@ -4451,7 +4451,7 @@
     "message": "Revoke permission"
   },
   "revokePermissionTitle": {
-    "message": "Revoke $1 permission",
+    "message": "Remove $1 permission",
     "description": "The token symbol that is being revoked"
   },
   "revokeSimulationDetailsDesc": {
