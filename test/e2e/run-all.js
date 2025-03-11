@@ -200,7 +200,7 @@ async function main() {
     const testDir = path.join(__dirname, 'json-rpc');
     testPaths = await getTestPathsForTestDir(testDir);
   } else if (bridge) {
-    const testDir = path.join(__dirname, 'bridge');
+    const testDir = path.join(__dirname, 'tests/bridge');
     testPaths = await getTestPathsForTestDir(testDir);
   } else if (multiProvider) {
     // Copy dist/ to folder
