@@ -66,7 +66,6 @@ import {
   getPreferences,
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
-  getIsPortfolioLandingPageEnabled,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
