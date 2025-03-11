@@ -30,17 +30,6 @@ async function mockApis(mockServer: Mockttp) {
       }),
     await mockServer
       .forGet('https://min-api.cryptocompare.com/data/pricemulti')
-      .withQuery({ fsyms: 'ETH', tsyms: 'usd' })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            fakedata: 0,
-          },
-        };
-      }),
-    await mockServer
-      .forGet('https://min-api.cryptocompare.com/data/pricemulti')
       .withQuery({ fsyms: 'ETH,MegaETH', tsyms: 'usd' })
       .thenCallback(() => {
         return {
