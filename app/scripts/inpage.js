@@ -36,8 +36,6 @@ import { v4 as uuid } from 'uuid';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/initializeInpageProvider';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
-import ObjectMultiplex from '@metamask/object-multiplex';
-import { pipeline } from 'readable-stream';
 
 // contexts
 const CONTENT_SCRIPT = 'metamask-contentscript';
@@ -58,24 +56,15 @@ if (shouldInjectProvider()) {
     target: CONTENT_SCRIPT,
   });
 
-  window.metamaskMux = new ObjectMultiplex(metamaskStream)
-
-  window.caipStream =  window.metamaskMux.createStream('metamask-provider-caip')
-
-  pipeline(window.metamaskMux, window.metamaskStream, window.metamaskMux, (err) => {
-    console.log({err})
+  initializeProvider({
+    connectionStream: metamaskStream,
+    logger: log,
+    shouldShimWeb3: true,
+    providerInfo: {
+      uuid: uuid(),
+      name: process.env.METAMASK_BUILD_NAME,
+      icon: process.env.METAMASK_BUILD_ICON,
+      rdns: process.env.METAMASK_BUILD_APP_ID,
+    },
   });
-
-
-  // initializeProvider({
-  //   connectionStream: metamaskStream,
-  //   logger: log,
-  //   shouldShimWeb3: true,
-  //   providerInfo: {
-  //     uuid: uuid(),
-  //     name: process.env.METAMASK_BUILD_NAME,
-  //     icon: process.env.METAMASK_BUILD_ICON,
-  //     rdns: process.env.METAMASK_BUILD_APP_ID,
-  //   },
-  // });
 }
