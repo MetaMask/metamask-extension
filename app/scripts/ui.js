@@ -26,6 +26,10 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   PLATFORM_FIREFOX,
 } from '../../shared/constants/app';
+import {
+  MISSING_VAULT_ERROR,
+  CORRUPTION_BLOCK_CHECKSUM_MISMATCH,
+} from '../../shared/constants/errors';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
@@ -44,8 +48,8 @@ const PHISHING_WARNING_SW_STORAGE_KEY = 'phishing-warning-sw-registered';
 const METHOD_START_UI_SYNC = 'startUISync';
 
 const STATE_CORRUPTION_ERRORS = [
-  'Data error: storage.local does not contain vault data',
-  'Corruption: block checksum mismatch',
+  MISSING_VAULT_ERROR,
+  CORRUPTION_BLOCK_CHECKSUM_MISMATCH,
 ];
 
 const container = document.getElementById('app-content');

@@ -17,7 +17,7 @@ import { storeAsStream } from '@metamask/obs-store';
 import { isObject } from '@metamask/utils';
 import PortStream from 'extension-port-stream';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-
+import { MISSING_VAULT_ERROR } from '../../shared/constants/errors';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -677,7 +677,7 @@ export async function loadStateFromPersistence() {
     );
     const weShouldHaveAVault = vaultHasNotYetBeenCreated === undefined;
     if (weShouldHaveAVault) {
-      throw new Error('Data error: storage.local does not contain vault data');
+      throw new Error(MISSING_VAULT_ERROR);
     }
   }
 
