@@ -1,3 +1,4 @@
+import { merge } from 'lodash';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   CONTRACT_INTERACTION_SENDER_ADDRESS,
@@ -64,6 +65,28 @@ describe('useFeeCalculations', () => {
       }
     `);
 
+    const mockStateWithBNBNetwork = merge({}, mockState, {
+      metamask: {
+        networkConfigurationsByChainId: {
+          '0x38': {
+            chainId: '0x38',
+            name: 'BNB Smart Chain',
+            nativeCurrency: 'BNB',
+            defaultRpcEndpointIndex: 0,
+            ticker: 'BNB',
+            rpcEndpoints: [
+              {
+                type: 'custom',
+                url: 'https://bsc-rpc.com',
+                networkClientId: 'bsc-test',
+              },
+            ],
+            blockExplorerUrls: [],
+          },
+        },
+      },
+    });
+
     const transactionOnBNB = genUnapprovedContractInteractionConfirmation({
       address: CONTRACT_INTERACTION_SENDER_ADDRESS,
       chainId: '0x38',
@@ -71,7 +94,7 @@ describe('useFeeCalculations', () => {
 
     const { result: resultOnBNB } = renderHookWithProvider(
       () => useFeeCalculations(transactionOnBNB),
-      mockState,
+      mockStateWithBNBNetwork,
     );
 
     expect(resultOnBNB.current).toMatchInlineSnapshot(`
