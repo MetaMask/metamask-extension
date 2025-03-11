@@ -53,8 +53,8 @@ const render = () => {
 describe('SrpList', () => {
   it('renders list of secret recovery phrases', () => {
     const { getByText } = render();
-    expect(getByText('Secret Phrase 1')).toBeInTheDocument();
-    expect(getByText('Secret Phrase 2')).toBeInTheDocument();
+    expect(getByText('Secret Recovery Phrase 1')).toBeInTheDocument();
+    expect(getByText('Secret Recovery Phrase 2')).toBeInTheDocument();
   });
 
   it('shows/hides accounts when clicking show/hide text', () => {
