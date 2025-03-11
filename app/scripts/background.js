@@ -80,6 +80,7 @@ import rawFirstTimeState from './first-time-state';
 /* eslint-enable import/first */
 
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
+import { METAMASK_CAIP_PROVIDER } from './constants/stream';
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
@@ -1084,7 +1085,7 @@ export function setupController(
     const mux = setupMultiplex(portStream);
 
     controller.setupUntrustedCommunicationCaip({
-      connectionStream: mux.createStream('metamask-provider-caip'),
+      connectionStream: mux.createStream(METAMASK_CAIP_PROVIDER),
       sender: remotePort.sender,
     });
   };

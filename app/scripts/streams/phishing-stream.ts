@@ -13,7 +13,7 @@ import {
   LEGACY_PROVIDER,
   LEGACY_PUBLIC_CONFIG,
   METAMASK_COOKIE_HANDLER,
-  METAMASK_PROVIDER,
+  METAMASK_EIP_1193_PROVIDER,
   PHISHING_SAFELIST,
   PHISHING_STREAM,
   PHISHING_WARNING_PAGE,
@@ -55,7 +55,7 @@ function setupPhishingPageStreams(): void {
   phishingPageMux.ignoreStream(METAMASK_COOKIE_HANDLER);
   phishingPageMux.ignoreStream(LEGACY_PUBLIC_CONFIG);
   phishingPageMux.ignoreStream(LEGACY_PROVIDER);
-  phishingPageMux.ignoreStream(METAMASK_PROVIDER);
+  phishingPageMux.ignoreStream(METAMASK_EIP_1193_PROVIDER);
   phishingPageMux.ignoreStream(PHISHING_STREAM);
 }
 
@@ -115,7 +115,7 @@ export const setupPhishingExtStreams = (): void => {
   phishingExtMux.ignoreStream(METAMASK_COOKIE_HANDLER);
   phishingExtMux.ignoreStream(LEGACY_PUBLIC_CONFIG);
   phishingExtMux.ignoreStream(LEGACY_PROVIDER);
-  phishingExtMux.ignoreStream(METAMASK_PROVIDER);
+  phishingExtMux.ignoreStream(METAMASK_EIP_1193_PROVIDER);
   phishingExtMux.ignoreStream(PHISHING_STREAM);
 
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
