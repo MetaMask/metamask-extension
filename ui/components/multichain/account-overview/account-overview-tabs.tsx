@@ -40,8 +40,8 @@ import {
   AccountOverviewTabKey,
 } from '../../../../shared/constants/app-state';
 import { detectNfts } from '../../../store/actions';
-import { AccountOverviewCommonProps } from './common';
 import { getAllChainsToPoll } from '../../../selectors';
+import { AccountOverviewCommonProps } from './common';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
   showTokens: boolean;
