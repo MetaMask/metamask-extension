@@ -232,7 +232,6 @@ export const walletCreateSession = {
     findNetworkClientIdByChainId: true,
     listAccounts: true,
     requestPermissionsForOrigin: true,
-    grantPermissions: true,
     sendMetrics: true,
     metamaskState: true,
   },
