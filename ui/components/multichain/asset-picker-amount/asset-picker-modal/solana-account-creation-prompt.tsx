@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -36,7 +36,7 @@ export const SolanaAccountCreationPrompt = ({
   const [primaryKeyring] = useSelector(getMetaMaskKeyrings);
   const [isCreating, setIsCreating] = React.useState(false);
 
-  const handleCreateAccount = async () => {
+  const handleCreateAccount = useCallback(async () => {
     try {
       setIsCreating(true);
       await solanaWalletSnapClient.createAccount(
@@ -49,7 +49,7 @@ export const SolanaAccountCreationPrompt = ({
     } finally {
       setIsCreating(false);
     }
-  };
+  }, [solanaWalletSnapClient, primaryKeyring?.metadata?.id, onSuccess]);
 
   return (
     <Box
