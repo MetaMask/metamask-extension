@@ -1,9 +1,4 @@
-import {
-  truthyString,
-  validHex,
-  validateData,
-} from '../../../../shared/lib/swaps-utils';
-import { isValidHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { truthyString, validateData } from '../../../../shared/lib/swaps-utils';
 import {
   BridgeId,
   DestChainStatus,
@@ -39,7 +34,7 @@ const assetValidators = [
   {
     property: 'address',
     type: 'string',
-    validator: (v: unknown): v is string => isValidHexAddress(v as string),
+    validator: (v: unknown): v is string => truthyString(v as string),
   },
   {
     property: 'symbol',
