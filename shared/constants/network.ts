@@ -1,10 +1,8 @@
 import type {
   AddNetworkFields,
-  NetworkConfiguration
+  NetworkConfiguration,
 } from '@metamask/network-controller';
-import {
-  RpcEndpointType,
-} from '@metamask/network-controller';
+import { RpcEndpointType } from '@metamask/network-controller';
 import { capitalize, pick } from 'lodash';
 import { Hex } from '@metamask/utils';
 
@@ -560,10 +558,12 @@ export const TEST_NETWORK_TICKER_MAP: {
     'localhost' | 'mainnet' | 'rpc' | 'linea-mainnet'
   >]: string;
 } = {
-  [NETWORK_TYPES.GOERLI]: `${typedCapitalize(NETWORK_TYPES.GOERLI)}${CURRENCY_SYMBOLS.ETH
-    }`,
-  [NETWORK_TYPES.SEPOLIA]: `${typedCapitalize(NETWORK_TYPES.SEPOLIA)}${CURRENCY_SYMBOLS.ETH
-    }`,
+  [NETWORK_TYPES.GOERLI]: `${typedCapitalize(NETWORK_TYPES.GOERLI)}${
+    CURRENCY_SYMBOLS.ETH
+  }`,
+  [NETWORK_TYPES.SEPOLIA]: `${typedCapitalize(NETWORK_TYPES.SEPOLIA)}${
+    CURRENCY_SYMBOLS.ETH
+  }`,
   [NETWORK_TYPES.LINEA_GOERLI]: `Linea${CURRENCY_SYMBOLS.ETH}`,
   [NETWORK_TYPES.LINEA_SEPOLIA]: `Linea${CURRENCY_SYMBOLS.ETH}`,
   [NETWORK_TYPES.MEGAETH_TESTNET]: CURRENCY_SYMBOLS.ETH,
@@ -969,8 +969,9 @@ const defaultEtherscanSubdomainPrefix = 'api';
 export const ETHERSCAN_SUPPORTED_NETWORKS = {
   [CHAIN_IDS.GOERLI]: {
     domain: defaultEtherscanDomain,
-    subdomain: `${defaultEtherscanSubdomainPrefix}-${CHAIN_ID_TO_TYPE_MAP[CHAIN_IDS.GOERLI]
-      }`,
+    subdomain: `${defaultEtherscanSubdomainPrefix}-${
+      CHAIN_ID_TO_TYPE_MAP[CHAIN_IDS.GOERLI]
+    }`,
   },
   [CHAIN_IDS.MAINNET]: {
     domain: defaultEtherscanDomain,
@@ -978,8 +979,9 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
   },
   [CHAIN_IDS.SEPOLIA]: {
     domain: defaultEtherscanDomain,
-    subdomain: `${defaultEtherscanSubdomainPrefix}-${CHAIN_ID_TO_TYPE_MAP[CHAIN_IDS.SEPOLIA]
-      }`,
+    subdomain: `${defaultEtherscanSubdomainPrefix}-${
+      CHAIN_ID_TO_TYPE_MAP[CHAIN_IDS.SEPOLIA]
+    }`,
   },
   [CHAIN_IDS.LINEA_GOERLI]: {
     domain: 'lineascan.build',
@@ -1190,8 +1192,8 @@ export const FEATURED_NETWORK_CHAIN_IDS = [
 
 /**
  * A mapping for the default custom testnets.
- **/
-export const DEFAULT_CUSTOM_TESTNET_MAP: Record<Hex, NetworkConfiguration>= {
+ */
+export const DEFAULT_CUSTOM_TESTNET_MAP: Record<Hex, NetworkConfiguration> = {
   [CHAIN_IDS.MEGAETH_TESTNET]: {
     chainId: CHAIN_IDS.MEGAETH_TESTNET,
     name: MEGAETH_TESTNET_DISPLAY_NAME,
@@ -1203,10 +1205,10 @@ export const DEFAULT_CUSTOM_TESTNET_MAP: Record<Hex, NetworkConfiguration>= {
       {
         networkClientId: 'megaeth-testnet',
         url: 'https://carrot.megaeth.com/rpc',
-        type: RpcEndpointType.Custom
+        type: RpcEndpointType.Custom,
       },
-    ]
-  }
+    ],
+  },
 };
 
 export const infuraChainIdsTestNets: string[] = [

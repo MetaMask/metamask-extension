@@ -1,5 +1,8 @@
 import { cloneDeep } from 'lodash';
-import { CHAIN_IDS, DEFAULT_CUSTOM_TESTNET_MAP } from '../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  DEFAULT_CUSTOM_TESTNET_MAP,
+} from '../../../shared/constants/network';
 import { migrate, version } from './146';
 
 const oldVersion = 145;
@@ -117,18 +120,20 @@ describe(`migration #${version}`, () => {
                 nativeCurrency: 'ETH',
               },
             },
-          }
-        }
-      }
+          },
+        },
+      };
 
       const expectedData = {
         NetworkController: {
           ...oldState.data.NetworkController,
           networkConfigurationsByChainId: {
             ...oldState.data.NetworkController.networkConfigurationsByChainId,
-            [CHAIN_IDS.MEGAETH_TESTNET]: cloneDeep(DEFAULT_CUSTOM_TESTNET_MAP[CHAIN_IDS.MEGAETH_TESTNET]),
-          }
-        }
+            [CHAIN_IDS.MEGAETH_TESTNET]: cloneDeep(
+              DEFAULT_CUSTOM_TESTNET_MAP[CHAIN_IDS.MEGAETH_TESTNET],
+            ),
+          },
+        },
       };
 
       const newStorage = await migrate(oldState);
@@ -144,10 +149,12 @@ describe(`migration #${version}`, () => {
             networksMetadata: {},
             networkConfigurationsByChainId: {
               [CHAIN_IDS.MEGAETH_TESTNET]: {
-                ...cloneDeep(DEFAULT_CUSTOM_TESTNET_MAP[CHAIN_IDS.MEGAETH_TESTNET]),
+                ...cloneDeep(
+                  DEFAULT_CUSTOM_TESTNET_MAP[CHAIN_IDS.MEGAETH_TESTNET],
+                ),
                 name: 'Some other name',
               },
-            }
+            },
           },
         },
       };
@@ -157,11 +164,12 @@ describe(`migration #${version}`, () => {
           ...oldStorage.data.NetworkController,
           networkConfigurationsByChainId: {
             ...oldStorage.data.NetworkController.networkConfigurationsByChainId,
-            [CHAIN_IDS.MEGAETH_TESTNET]: cloneDeep(DEFAULT_CUSTOM_TESTNET_MAP[CHAIN_IDS.MEGAETH_TESTNET]),
-          }
-        }
+            [CHAIN_IDS.MEGAETH_TESTNET]: cloneDeep(
+              DEFAULT_CUSTOM_TESTNET_MAP[CHAIN_IDS.MEGAETH_TESTNET],
+            ),
+          },
+        },
       };
-
 
       const newStorage = await migrate(oldStorage);
       expect(newStorage.data).toStrictEqual(expectedData);
