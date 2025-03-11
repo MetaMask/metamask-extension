@@ -67,7 +67,7 @@ describe('lockdown', function (this: Mocha.Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
+        localNodeOptions: ganacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -85,7 +85,7 @@ describe('lockdown', function (this: Mocha.Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
+        localNodeOptions: ganacheOptions,
         ignoredConsoleErrors: ['Error: Could not establish connection.'],
         title: this.test?.fullTitle(),
       },

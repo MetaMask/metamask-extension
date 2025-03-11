@@ -24,7 +24,7 @@ async function mockTokenPriceApi(
   ];
 }
 
-describe('MetaMask onboarding @no-mmi', function () {
+describe('MetaMask onboarding', function () {
   it("doesn't make any token price API requests before create new wallet onboarding is completed", async function () {
     await withFixtures(
       {

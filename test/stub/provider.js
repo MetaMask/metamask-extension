@@ -53,6 +53,12 @@ export function createTestProviderTools(opts = {}) {
         network_id: opts.networkId ?? 1,
         chain: { chainId: opts.chainId ?? CHAIN_IDS.MAINNET },
         hardfork: 'muirGlacier',
+        logging: {
+          logger: {
+            // eslint-disable-next-line no-empty-function
+            log: () => {}, // don't do anything
+          },
+        },
       }),
     ),
   );

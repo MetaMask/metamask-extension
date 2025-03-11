@@ -2,8 +2,6 @@ const { strict: assert } = require('assert');
 const { mockNetworkStateOld } = require('../../../stub/networks');
 
 const {
-  defaultGanacheOptions,
-  generateGanacheOptions,
   withFixtures,
   regularDelayMs,
   unlockWallet,
@@ -20,9 +18,18 @@ describe('Custom RPC history', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: generateGanacheOptions({
-          concurrent: [{ port, chainId }],
-        }),
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
+              port,
+              chainId,
+            },
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -95,7 +102,6 @@ describe('Custom RPC history', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -152,7 +158,6 @@ describe('Custom RPC history', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -211,7 +216,6 @@ describe('Custom RPC history', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -247,7 +251,6 @@ describe('Custom RPC history', function () {
         fixtures: new FixtureBuilder()
           .withNetworkController(networkState)
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -298,7 +301,6 @@ describe('Custom RPC history', function () {
         fixtures: new FixtureBuilder()
           .withNetworkController(networkState)
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -310,14 +312,16 @@ describe('Custom RPC history', function () {
 
         const customNetworkName = 'http://127.0.0.1:8545/2';
         const networkItemClassName = '.multichain-network-list-item';
+        const networkMenuClassName = '.multichain-network-list-menu';
 
+        await driver.waitForSelector(networkMenuClassName);
         const networkListItems = await driver.findClickableElements(
           networkItemClassName,
         );
 
         // click on menu button
         await driver.clickElement(
-          '[data-testid="network-list-item-options-button-0x540"]',
+          '[data-testid="network-list-item-options-button-eip155:1344"]',
         );
 
         // click on delere button
@@ -346,6 +350,7 @@ describe('Custom RPC history', function () {
         await driver.clickElement('[data-testid="network-display"]');
 
         // custom network http://127.0.0.1:8545/2 is removed from network list
+        await driver.waitForSelector(networkMenuClassName);
         const newNetworkListItems = await driver.findElements(
           networkItemClassName,
         );

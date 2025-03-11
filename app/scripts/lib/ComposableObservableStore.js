@@ -2,7 +2,7 @@ import { ObservableStore } from '@metamask/obs-store';
 import { getPersistentState } from '@metamask/base-controller';
 
 /**
- * @typedef {import('@metamask/base-controller').ControllerMessenger} ControllerMessenger
+ * @typedef {import('@metamask/base-controller').Messenger} Messenger
  */
 
 /**
@@ -25,7 +25,7 @@ export default class ComposableObservableStore extends ObservableStore {
    *
    * @param {object} options
    * @param {object} [options.config] - Map of internal state keys to child stores
-   * @param {ControllerMessenger} options.controllerMessenger - The controller
+   * @param {Messenger} options.controllerMessenger - The controller
    *   messenger, used for subscribing to events from BaseControllerV2-based
    *   controllers.
    * @param {object} [options.state] - The initial store state

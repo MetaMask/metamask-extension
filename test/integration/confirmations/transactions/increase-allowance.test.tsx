@@ -49,7 +49,6 @@ const getMetaMaskStateWithUnapprovedIncreaseAllowanceTransaction = (opts?: {
     ...mockMetaMaskState,
     preferences: {
       ...mockMetaMaskState.preferences,
-      redesignedConfirmationsEnabled: true,
       showConfirmationAdvancedDetails: opts?.showAdvanceDetails ?? false,
     },
     pendingApprovals: {
@@ -270,46 +269,6 @@ describe('ERC20 increaseAllowance Confirmation', () => {
     await testUser.hover(approveDetailsRequestFromTooltip);
     const requestFromTooltipContent = await screen.findByText(
       tEn('requestFromTransactionDescription') as string,
-    );
-    expect(requestFromTooltipContent).toBeInTheDocument();
-  });
-
-  it('displays spending cap section with correct data', async () => {
-    const testUser = userEvent.setup();
-
-    const mockedMetaMaskState =
-      getMetaMaskStateWithUnapprovedIncreaseAllowanceTransaction();
-
-    await act(async () => {
-      await integrationTestRender({
-        preloadedState: mockedMetaMaskState,
-        backgroundConnection: backgroundConnectionMocked,
-      });
-    });
-
-    const spendingCapSection = await screen.findByTestId(
-      'confirmation__approve-spending-cap-section',
-    );
-    expect(spendingCapSection).toBeInTheDocument();
-
-    expect(spendingCapSection).toHaveTextContent(
-      tEn('accountBalance') as string,
-    );
-    expect(spendingCapSection).toHaveTextContent('0');
-    const spendingCapGroup = await screen.findByTestId(
-      'confirmation__approve-spending-cap-group',
-    );
-    expect(spendingCapSection).toContainElement(spendingCapGroup);
-    expect(spendingCapGroup).toHaveTextContent(tEn('spendingCap') as string);
-    expect(spendingCapGroup).toHaveTextContent('3');
-
-    const spendingCapGroupTooltip = await screen.findByTestId(
-      'confirmation__approve-spending-cap-group-tooltip',
-    );
-    expect(spendingCapGroup).toContainElement(spendingCapGroupTooltip);
-    await testUser.hover(spendingCapGroupTooltip);
-    const requestFromTooltipContent = await screen.findByText(
-      tEn('spendingCapTooltipDesc') as string,
     );
     expect(requestFromTooltipContent).toBeInTheDocument();
   });

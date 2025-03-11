@@ -18,8 +18,8 @@ import {
 import { Content, Page } from '../../../components/multichain/pages/page';
 import SnapAuthorshipHeader from '../../../components/app/snaps/snap-authorship-header';
 import SnapHomeMenu from '../../../components/app/snaps/snap-home-menu';
+import { SnapHomeRenderer } from '../../../components/app/snaps/snap-home-page/snap-home-renderer';
 import SnapSettings from './snap-settings';
-import SnapHome from './snap-home';
 
 function SnapView() {
   const history = useHistory();
@@ -129,7 +129,7 @@ function SnapView() {
               resetInitRemove={resetInitRemove}
             />
           ) : (
-            <SnapHome snapId={snapId} />
+            <SnapHomeRenderer snapId={snapId} />
           )}
         </Content>
       </Page>

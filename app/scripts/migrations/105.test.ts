@@ -1,9 +1,11 @@
 import { v4 as uuid } from 'uuid';
+
 import { sha256 } from '@noble/hashes/sha256';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { toBuffer } from 'ethereumjs-util';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import { migrate } from './105';
+import type { Identity, InternalAccountV1 } from './105';
 
 const MOCK_ADDRESS = '0x0';
 const MOCK_ADDRESS_2 = '0x1';
@@ -22,12 +24,6 @@ function addressToUUID(address: string): string {
     random: sha256(toBuffer(address)).slice(0, 16),
   });
 }
-
-type Identity = {
-  name: string;
-  address: string;
-  lastSelected?: number;
-};
 
 type Identities = {
   [key: string]: Identity;
@@ -63,7 +59,7 @@ function expectedInternalAccount(
   address: string,
   nickname: string,
   lastSelected?: number,
-): InternalAccount {
+): InternalAccountV1 {
   return {
     address,
     id: addressToUUID(address),

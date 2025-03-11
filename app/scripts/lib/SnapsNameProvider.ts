@@ -19,7 +19,7 @@ import {
   GetSnap,
   HandleSnapRequest,
 } from '@metamask/snaps-controllers';
-import { RestrictedControllerMessenger } from '@metamask/base-controller';
+import { RestrictedMessenger } from '@metamask/base-controller';
 
 type AllowedActions =
   | GetAllSnaps
@@ -27,7 +27,7 @@ type AllowedActions =
   | HandleSnapRequest
   | GetPermissionControllerState;
 
-export type SnapsNameProviderMessenger = RestrictedControllerMessenger<
+export type SnapsNameProviderMessenger = RestrictedMessenger<
   'SnapsNameProvider',
   AllowedActions,
   never,

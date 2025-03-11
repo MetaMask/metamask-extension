@@ -16,7 +16,7 @@ import {
   AccountsControllerGetSelectedAccountAction,
   AccountsControllerSetSelectedAccountAction,
 } from '@metamask/accounts-controller';
-import { RestrictedControllerMessenger } from '@metamask/base-controller';
+import { RestrictedMessenger } from '@metamask/base-controller';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { AppStateController } from '../../app/scripts/controllers/app-state-controller';
@@ -55,7 +55,7 @@ export type AllowedActions =
 /**
  * Messenger type for the {@link MMIController}.
  */
-export type MMIControllerMessenger = RestrictedControllerMessenger<
+export type MMIControllerMessenger = RestrictedMessenger<
   typeof controllerName,
   AllowedActions,
   never,

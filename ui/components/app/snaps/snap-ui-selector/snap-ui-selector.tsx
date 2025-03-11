@@ -34,7 +34,7 @@ import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 export type SnapUISelectorProps = {
   name: string;
   title: string;
-  options: string[];
+  options: { value: string; disabled: boolean }[];
   optionComponents: React.ReactNode[];
   form?: string;
   label?: string;
@@ -46,12 +46,14 @@ type SelectorItemProps = {
   value: string;
   children: React.ReactNode;
   onSelect: (value: string) => void;
+  disabled?: boolean;
 };
 
 const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
   value,
   children,
   onSelect,
+  disabled,
 }) => {
   const handleClick = () => {
     onSelect(value);
@@ -79,6 +81,7 @@ const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
         minHeight: '48px',
         maxHeight: '64px',
       }}
+      disabled={disabled}
     >
       {children}
     </ButtonBase>
@@ -122,7 +125,7 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
   };
 
   const selectedOptionIndex = options.findIndex(
-    (option) => option === selectedOptionValue,
+    (option) => option.value === selectedOptionValue,
   );
 
   const selectedOption = optionComponents[selectedOptionIndex];
@@ -193,7 +196,11 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
               gap={2}
             >
               {optionComponents.map((component, index) => (
-                <SelectorItem value={options[index]} onSelect={handleSelect}>
+                <SelectorItem
+                  value={options[index].value}
+                  disabled={options[index]?.disabled}
+                  onSelect={handleSelect}
+                >
                   {component}
                 </SelectorItem>
               ))}

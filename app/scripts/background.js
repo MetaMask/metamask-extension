@@ -49,11 +49,12 @@ import {
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { addNonceToCsp } from '../../shared/modules/add-nonce-to-csp';
 import { checkURLForProviderInjection } from '../../shared/modules/provider-injection';
+import { PersistenceManager } from './lib/stores/persistence-manager';
+import ExtensionStore from './lib/stores/extension-store';
+import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
-import LocalStore from './lib/local-store';
-import ReadOnlyNetworkStore from './lib/network-store';
 import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
 
 import createStreamSink from './lib/createStreamSink';
@@ -63,7 +64,6 @@ import NotificationManager, {
 import MetamaskController, {
   METAMASK_CONTROLLER_EVENTS,
 } from './metamask-controller';
-import rawFirstTimeState from './first-time-state';
 import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
@@ -72,8 +72,9 @@ import {
   getPlatform,
   shouldEmitDappViewedEvent,
 } from './lib/util';
-import { generateWalletState } from './fixtures/generate-wallet-state';
 import { createOffscreen } from './offscreen';
+import { generateWalletState } from './fixtures/generate-wallet-state';
+import rawFirstTimeState from './first-time-state';
 
 /* eslint-enable import/first */
 
@@ -87,9 +88,17 @@ const BADGE_MAX_COUNT = 9;
 
 // Setup global hook for improved Sentry state snapshots during initialization
 const inTest = process.env.IN_TEST;
-const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
+const migrator = new Migrator({
+  migrations,
+  defaultVersion: process.env.WITH_STATE
+    ? FIXTURE_STATE_METADATA_VERSION
+    : null,
+});
+
+const localStore = inTest ? new ReadOnlyNetworkStore() : new ExtensionStore();
+const persistenceManager = new PersistenceManager({ localStore });
 global.stateHooks.getMostRecentPersistedState = () =>
-  localStore.mostRecentRetrievedState;
+  persistenceManager.mostRecentRetrievedState;
 
 const { sentry } = global;
 let firstTimeState = { ...rawFirstTimeState };
@@ -106,6 +115,7 @@ log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info', false);
 
 const platform = new ExtensionPlatform();
 const notificationManager = new NotificationManager();
+const isFirefox = getPlatform() === PLATFORM_FIREFOX;
 
 let openPopupCount = 0;
 let notificationIsOpen = false;
@@ -113,11 +123,11 @@ let uiIsTriggering = false;
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
-let versionedData;
 const tabOriginMapping = {};
 
 if (inTest || process.env.METAMASK_DEBUG) {
-  global.stateHooks.metamaskGetState = localStore.get.bind(localStore);
+  global.stateHooks.metamaskGetState =
+    persistenceManager.get.bind(persistenceManager);
 }
 
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
@@ -132,6 +142,24 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
 // Event emitter for state persistence
 export const statePersistenceEvents = new EventEmitter();
+
+if (isFirefox) {
+  browser.runtime.onInstalled.addListener(function (details) {
+    if (details.reason === 'install') {
+      browser.storage.session.set({ isFirstTimeInstall: true });
+    } else if (details.reason === 'update') {
+      browser.storage.session.set({ isFirstTimeInstall: false });
+    }
+  });
+} else if (!isManifestV3) {
+  browser.runtime.onInstalled.addListener(function (details) {
+    if (details.reason === 'install') {
+      global.sessionStorage.setItem('isFirstTimeInstall', true);
+    } else if (details.reason === 'update') {
+      global.sessionStorage.setItem('isFirstTimeInstall', false);
+    }
+  });
+}
 
 /**
  * This deferred Promise is used to track whether initialization has finished.
@@ -510,12 +538,18 @@ async function initialize() {
       await loadPhishingWarningPage();
       // Workaround for Bug #1446231 to override page CSP for inline script nodes injected by extension content scripts
       // https://bugzilla.mozilla.org/show_bug.cgi?id=1446231
-      if (getPlatform() === PLATFORM_FIREFOX) {
+      if (isFirefox) {
         overrideContentSecurityPolicyHeader();
       }
     }
     await sendReadyMessageToTabs();
     log.info('MetaMask initialization complete.');
+
+    if (isManifestV3 || isFirefox) {
+      browser.storage.session.set({ isFirstTimeInstall: false });
+    } else {
+      global.sessionStorage.setItem('isFirstTimeInstall', false);
+    }
 
     resolveInitialization();
   } catch (error) {
@@ -599,12 +633,6 @@ async function loadPhishingWarningPage() {
  */
 export async function loadStateFromPersistence() {
   // migrations
-  const migrator = new Migrator({
-    migrations,
-    defaultVersion: process.env.WITH_STATE
-      ? FIXTURE_STATE_METADATA_VERSION
-      : null,
-  });
   migrator.on('error', console.warn);
 
   if (process.env.WITH_STATE) {
@@ -614,23 +642,14 @@ export async function loadStateFromPersistence() {
 
   // read from disk
   // first from preferred, async API:
-  versionedData =
-    (await localStore.get()) || migrator.generateInitialState(firstTimeState);
-
-  // check if somehow state is empty
-  // this should never happen but new error reporting suggests that it has
-  // for a small number of users
-  // https://github.com/metamask/metamask-extension/issues/3919
-  if (versionedData && !versionedData.data) {
-    // unable to recover, clear state
-    versionedData = migrator.generateInitialState(firstTimeState);
-    sentry.captureMessage('MetaMask - Empty vault found - unable to recover');
-  }
+  const preMigrationVersionedData =
+    (await persistenceManager.get()) ||
+    migrator.generateInitialState(firstTimeState);
 
   // report migration errors to sentry
   migrator.on('error', (err) => {
     // get vault structure without secrets
-    const vaultStructure = getObjStructure(versionedData);
+    const vaultStructure = getObjStructure(preMigrationVersionedData);
     sentry.captureException(err, {
       // "extra" key is required by Sentry
       extra: { vaultStructure },
@@ -638,7 +657,7 @@ export async function loadStateFromPersistence() {
   });
 
   // migrate data
-  versionedData = await migrator.migrateData(versionedData);
+  const versionedData = await migrator.migrateData(preMigrationVersionedData);
   if (!versionedData) {
     throw new Error('MetaMask - migrator returned undefined');
   } else if (!isObject(versionedData.meta)) {
@@ -656,10 +675,10 @@ export async function loadStateFromPersistence() {
     );
   }
   // this initializes the meta/version data as a class variable to be used for future writes
-  localStore.setMetadata(versionedData.meta);
+  persistenceManager.setMetadata(versionedData.meta);
 
   // write to disk
-  localStore.set(versionedData.data);
+  persistenceManager.set(versionedData.data);
 
   // return just the data
   return versionedData;
@@ -677,13 +696,9 @@ function emitDappViewedMetricEvent(origin) {
     return;
   }
 
-  const permissions = controller.controllerMessenger.call(
-    'PermissionController:getPermissions',
-    origin,
-  );
   const numberOfConnectedAccounts =
-    permissions?.eth_accounts?.caveats[0]?.value.length;
-  if (!numberOfConnectedAccounts) {
+    controller.getPermittedAccounts(origin).length;
+  if (numberOfConnectedAccounts === 0) {
     return;
   }
 
@@ -825,7 +840,7 @@ export function setupController(
     getOpenMetamaskTabsIds: () => {
       return openMetamaskTabsIDs;
     },
-    localStore,
+    persistenceManager,
     overrides,
     isFirstMetaMaskControllerSetup,
     currentMigrationVersion: stateMetadata.version,
@@ -849,7 +864,7 @@ export function setupController(
     storeAsStream(controller.store),
     debounce(1000),
     createStreamSink(async (state) => {
-      await localStore.set(state);
+      await persistenceManager.set(state);
       statePersistenceEvents.emit('state-persisted', state);
     }),
     (error) => {
@@ -907,12 +922,11 @@ export function setupController(
     }
 
     let isMetaMaskInternalProcess = false;
-    const sourcePlatform = getPlatform();
     const senderUrl = remotePort.sender?.url
       ? new URL(remotePort.sender.url)
       : null;
 
-    if (sourcePlatform === PLATFORM_FIREFOX) {
+    if (isFirefox) {
       isMetaMaskInternalProcess = metamaskInternalProcessHash[processName];
     } else {
       isMetaMaskInternalProcess =
@@ -1049,12 +1063,12 @@ export function setupController(
   //
   updateBadge();
 
-  controller.decryptMessageController.hub.on(
-    METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
+  controller.controllerMessenger.subscribe(
+    METAMASK_CONTROLLER_EVENTS.DECRYPT_MESSAGE_MANAGER_UPDATE_BADGE,
     updateBadge,
   );
-  controller.encryptionPublicKeyController.hub.on(
-    METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
+  controller.controllerMessenger.subscribe(
+    METAMASK_CONTROLLER_EVENTS.ENCRYPTION_PUBLIC_KEY_MANAGER_UPDATE_BADGE,
     updateBadge,
   );
   controller.signatureController.hub.on(
@@ -1308,12 +1322,18 @@ const addAppInstalledEvent = () => {
 
 // On first install, open a new tab with MetaMask
 async function onInstall() {
-  const storeAlreadyExisted = Boolean(await localStore.get());
-  // If the store doesn't exist, then this is the first time running this script,
-  // and is therefore an install
+  const sessionData =
+    isManifestV3 || isFirefox
+      ? await browser.storage.session.get(['isFirstTimeInstall'])
+      : await global.sessionStorage.getItem('isFirstTimeInstall');
+
+  const isFirstTimeInstall = sessionData?.isFirstTimeInstall;
+
   if (process.env.IN_TEST) {
     addAppInstalledEvent();
-  } else if (!storeAlreadyExisted && !process.env.METAMASK_DEBUG) {
+  } else if (!isFirstTimeInstall && !process.env.METAMASK_DEBUG) {
+    // If storeAlreadyExisted is true then this is a fresh installation
+    // and an app installed event should be tracked.
     addAppInstalledEvent();
     platform.openExtensionInBrowser();
   }
@@ -1362,7 +1382,7 @@ async function initBackground() {
         window.document?.documentElement?.classList.add('controller-loaded');
       }
     }
-    localStore.cleanUpMostRecentRetrievedState();
+    persistenceManager.cleanUpMostRecentRetrievedState();
   } catch (error) {
     log.error(error);
   }

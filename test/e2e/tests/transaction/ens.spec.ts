@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
-import { defaultGanacheOptions, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -82,7 +82,6 @@ describe('ENS', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
       },

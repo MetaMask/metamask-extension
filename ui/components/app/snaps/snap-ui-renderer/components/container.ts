@@ -1,4 +1,4 @@
-import { BoxElement, JSXElement } from '@metamask/snaps-sdk/jsx';
+import { ContainerElement, JSXElement } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 import { mapToTemplate } from '../utils';
 import {
@@ -8,7 +8,7 @@ import {
 import { UIComponentFactory } from './types';
 import { DEFAULT_FOOTER } from './footer';
 
-export const container: UIComponentFactory<BoxElement> = ({
+export const container: UIComponentFactory<ContainerElement> = ({
   element,
   useFooter,
   onCancel,

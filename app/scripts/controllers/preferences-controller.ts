@@ -11,7 +11,7 @@ import {
   BaseController,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedControllerMessenger,
+  RestrictedMessenger,
 } from '@metamask/base-controller';
 import { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import {
@@ -85,7 +85,7 @@ export type AllowedActions =
  */
 export type AllowedEvents = AccountsControllerChangeEvent;
 
-export type PreferencesControllerMessenger = RestrictedControllerMessenger<
+export type PreferencesControllerMessenger = RestrictedMessenger<
   typeof controllerName,
   PreferencesControllerActions | AllowedActions,
   PreferencesControllerEvents | AllowedEvents,
@@ -109,12 +109,9 @@ export type Preferences = {
   useNativeCurrencyAsPrimaryCurrency: boolean;
   hideZeroBalanceTokens: boolean;
   petnamesEnabled: boolean;
-  redesignedConfirmationsEnabled: boolean;
-  redesignedTransactionsEnabled: boolean;
   featureNotificationsEnabled: boolean;
   showMultiRpcModal: boolean;
   privacyMode: boolean;
-  isRedesignedConfirmationsDeveloperEnabled: boolean;
   showConfirmationAdvancedDetails: boolean;
   tokenSortConfig: {
     key: string;
@@ -136,7 +133,6 @@ export type PreferencesControllerState = Omit<
   | 'useMultiRpcMigration'
 > & {
   useBlockie: boolean;
-  useNonceField: boolean;
   usePhishDetect: boolean;
   dismissSeedBackUpReminder: boolean;
   overrideContentSecurityPolicyHeader: boolean;
@@ -146,11 +142,10 @@ export type PreferencesControllerState = Omit<
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   watchEthereumAccountEnabled: boolean;
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  solanaSupportEnabled: boolean;
-  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   bitcoinSupportEnabled: boolean;
   bitcoinTestnetSupportEnabled: boolean;
+  ///: END:ONLY_INCLUDE_IF
   addSnapAccountEnabled?: boolean;
   advancedGasFee: Record<string, Record<string, string>>;
   incomingTransactionsPreferences: Record<number, boolean>;
@@ -177,7 +172,6 @@ export const getDefaultPreferencesControllerState =
   (): PreferencesControllerState => ({
     selectedAddress: '',
     useBlockie: false,
-    useNonceField: false,
     usePhishDetect: true,
     dismissSeedBackUpReminder: false,
     overrideContentSecurityPolicyHeader: true,
@@ -192,9 +186,6 @@ export const getDefaultPreferencesControllerState =
     openSeaEnabled: true,
     securityAlertsEnabled: true,
     watchEthereumAccountEnabled: false,
-    ///: BEGIN:ONLY_INCLUDE_IF(solana)
-    solanaSupportEnabled: false,
-    ///: END:ONLY_INCLUDE_IF
     bitcoinSupportEnabled: false,
     bitcoinTestnetSupportEnabled: false,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -222,10 +213,7 @@ export const getDefaultPreferencesControllerState =
       useNativeCurrencyAsPrimaryCurrency: true,
       hideZeroBalanceTokens: false,
       petnamesEnabled: true,
-      redesignedConfirmationsEnabled: true,
-      redesignedTransactionsEnabled: true,
       featureNotificationsEnabled: false,
-      isRedesignedConfirmationsDeveloperEnabled: false,
       showConfirmationAdvancedDetails: false,
       showMultiRpcModal: false,
       privacyMode: false,
@@ -300,10 +288,6 @@ const controllerMetadata = {
     persist: true,
     anonymous: true,
   },
-  useNonceField: {
-    persist: true,
-    anonymous: true,
-  },
   usePhishDetect: {
     persist: true,
     anonymous: true,
@@ -349,10 +333,6 @@ const controllerMetadata = {
     anonymous: false,
   },
   watchEthereumAccountEnabled: {
-    persist: true,
-    anonymous: false,
-  },
-  solanaSupportEnabled: {
     persist: true,
     anonymous: false,
   },
@@ -537,17 +517,6 @@ export class PreferencesController extends BaseController<
   }
 
   /**
-   * Setter for the `useNonceField` property
-   *
-   * @param val - Whether or not the user prefers to set nonce
-   */
-  setUseNonceField(val: boolean): void {
-    this.update((state) => {
-      state.useNonceField = val;
-    });
-  }
-
-  /**
    * Setter for the `usePhishDetect` property
    *
    * @param val - Whether or not the user prefers phishing domain protection
@@ -686,20 +655,7 @@ export class PreferencesController extends BaseController<
   }
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  /**
-   * Setter for the `solanaSupportEnabled` property.
-   *
-   * @param solanaSupportEnabled - Whether or not the user wants to
-   * enable the "Add a new Solana account" button.
-   */
-  setSolanaSupportEnabled(solanaSupportEnabled: boolean): void {
-    this.update((state) => {
-      state.solanaSupportEnabled = solanaSupportEnabled;
-    });
-  }
-  ///: END:ONLY_INCLUDE_IF
-
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   /**
    * Setter for the `bitcoinSupportEnabled` property.
    *
@@ -723,6 +679,7 @@ export class PreferencesController extends BaseController<
       state.bitcoinTestnetSupportEnabled = bitcoinTestnetSupportEnabled;
     });
   }
+  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Setter for the `useExternalNameSources` property

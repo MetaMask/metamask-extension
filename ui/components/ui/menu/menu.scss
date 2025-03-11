@@ -42,6 +42,11 @@
     background: var(--color-background-default-hover);
   }
 
+  &:focus {
+    outline: 2px solid var(--color-primary-default);
+    outline-offset: -2px;
+  }
+
   &__icon {
     margin-right: 8px;
     grid-row: 1 / span 2;

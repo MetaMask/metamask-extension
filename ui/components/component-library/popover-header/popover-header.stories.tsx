@@ -10,10 +10,12 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 
-import { AvatarAccount, ButtonSize, Button, Text } from '..';
+import { Text } from '../text';
 
 import { PopoverHeader } from './popover-header';
 import README from './README.mdx';
+import { AvatarAccount } from '../avatar-account';
+import { Button, ButtonSize } from '../button';
 
 export default {
   title: 'Components/ComponentLibrary/PopoverHeader',

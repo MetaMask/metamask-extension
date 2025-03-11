@@ -12,7 +12,7 @@ import { TestSuiteArguments } from './shared';
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
 describe('Confirmation Redesign ERC1155 setApprovalForAll', function () {
-  describe('Submit a transaction @no-mmi', function () {
+  describe('Submit a transaction', function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
       await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
@@ -86,6 +86,7 @@ async function createTransactionAssertDetailsAndConfirm(
   const testDapp = new TestDapp(driver);
 
   await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await testDapp.clickERC1155SetApprovalForAllButton();
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);

@@ -33,7 +33,7 @@ describe('useGetAssetImageUrl', () => {
 
   it('should return data successfully when image is null', async () => {
     mockGetAssetImageURL.mockResolvedValueOnce('');
-    const testImage = null;
+    const testImage = undefined;
     let result;
     await act(async () => {
       result = renderHook(() =>

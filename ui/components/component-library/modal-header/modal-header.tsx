@@ -1,13 +1,16 @@
 import React from 'react';
 import classnames from 'classnames';
-import { HeaderBase, Text, ButtonIcon, ButtonIconSize, IconName } from '..';
+import { Text } from '../text';
 import {
   TextVariant,
   TextAlign,
   BlockSize,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { ModalHeaderProps } from '.';
+import { ButtonIcon, ButtonIconSize } from '../button-icon';
+import { IconName } from '../icon';
+import { HeaderBase } from '../header-base';
+import { ModalHeaderProps } from './modal-header.types';
 
 export const ModalHeader: React.FC<ModalHeaderProps> = ({
   children,

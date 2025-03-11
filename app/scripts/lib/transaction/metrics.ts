@@ -1,9 +1,5 @@
-import EthQuery, { Provider } from '@metamask/eth-query';
-import { FetchGasFeeEstimateOptions } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { isHexString } from 'ethereumjs-util';
-
-import { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
 import {
   TransactionMeta,
   TransactionType,
@@ -15,12 +11,9 @@ import {
 } from '../../../../shared/constants/gas';
 import {
   MetaMetricsEventCategory,
-  MetaMetricsEventFragment,
   MetaMetricsEventName,
   MetaMetricsEventUiCustomization,
   MetaMetricsEventTransactionEstimateType,
-  MetaMetricsPageObject,
-  MetaMetricsReferrerObject,
 } from '../../../../shared/constants/metametrics';
 import {
   TokenStandard,
@@ -33,6 +26,7 @@ import {
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
 import {
+  hexToDecimal,
   hexWEIToDecETH,
   hexWEIToDecGWEI,
 } from '../../../../shared/modules/conversion.utils';
@@ -47,78 +41,16 @@ import {
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../ui/helpers/utils/metrics';
+import type {
+  TransactionEventPayload,
+  TransactionMetaEventPayload,
+  TransactionMetricsRequest,
+} from '../../../../shared/types/metametrics';
 
-import {
-  getSnapAndHardwareInfoForMetrics,
-  type SnapAndHardwareMessenger,
-} from '../snap-keyring/metrics';
+import { getSnapAndHardwareInfoForMetrics } from '../snap-keyring/metrics';
 import { shouldUseRedesignForTransactions } from '../../../../shared/lib/confirmation.utils';
 
-export type TransactionMetricsRequest = {
-  createEventFragment: (
-    options: Omit<MetaMetricsEventFragment, 'id'>,
-  ) => MetaMetricsEventFragment;
-  finalizeEventFragment: (
-    fragmentId: string,
-    options?: {
-      abandoned?: boolean;
-      page?: MetaMetricsPageObject;
-      referrer?: MetaMetricsReferrerObject;
-    },
-  ) => void;
-  getEventFragmentById: (fragmentId: string) => MetaMetricsEventFragment;
-  updateEventFragment: (
-    fragmentId: string,
-    payload: Partial<MetaMetricsEventFragment>,
-  ) => void;
-  getAccountType: (
-    address: string,
-  ) => Promise<'hardware' | 'imported' | 'MetaMask'>;
-  getDeviceModel: (
-    address: string,
-  ) => Promise<'ledger' | 'lattice' | 'N/A' | string>;
-  // According to the type GasFeeState returned from getEIP1559GasFeeEstimates
-  // doesn't include some properties used in buildEventFragmentProperties,
-  // hence returning any here to avoid type errors.
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getEIP1559GasFeeEstimates(options?: FetchGasFeeEstimateOptions): Promise<any>;
-  getParticipateInMetrics: () => boolean;
-  getSelectedAddress: () => string;
-  getTokenStandardAndDetails: () => Promise<{
-    decimals?: string;
-    balance?: string;
-    symbol?: string;
-    standard?: TokenStandard;
-  }>;
-  getTransaction: (transactionId: string) => TransactionMeta;
-  provider: Provider;
-  snapAndHardwareMessenger: SnapAndHardwareMessenger;
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  trackEvent: (payload: any) => void;
-  getIsSmartTransaction: () => boolean;
-  getSmartTransactionByMinedTxHash: (
-    txhash: string | undefined,
-  ) => SmartTransaction;
-  getRedesignedTransactionsEnabled: () => boolean;
-  getMethodData: (data: string) => Promise<{ name: string }>;
-  getIsRedesignedConfirmationsDeveloperEnabled: () => boolean;
-  getIsConfirmationAdvancedDetailsOpen: () => boolean;
-};
-
 export const METRICS_STATUS_FAILED = 'failed on-chain';
-
-export type TransactionEventPayload = {
-  transactionMeta: TransactionMeta;
-  actionId?: string;
-  error?: string;
-};
-
-export type TransactionMetaEventPayload = TransactionMeta & {
-  actionId?: string;
-  error?: string;
-};
 
 /**
  * This function is called when a transaction is added to the controller.
@@ -228,11 +160,20 @@ export const handleTransactionConfirmed = async (
   const { txReceipt } = transactionMeta;
 
   extraParams.gas_used = txReceipt?.gasUsed;
+  extraParams.block_number =
+    txReceipt?.blockNumber && hexToDecimal(txReceipt.blockNumber);
 
-  const { submittedTime } = transactionMeta;
+  const { submittedTime, blockTimestamp } = transactionMeta;
 
   if (submittedTime) {
     extraParams.completion_time = getTransactionCompletionTime(submittedTime);
+  }
+
+  if (submittedTime && blockTimestamp) {
+    extraParams.completion_time_onchain = getTransactionOnchainCompletionTime(
+      submittedTime,
+      blockTimestamp,
+    );
   }
 
   if (txReceipt?.status === '0x0') {
@@ -799,7 +740,6 @@ async function buildEventFragmentProperties({
     id,
     userFeeLevel,
   } = transactionMeta;
-  const query = new EthQuery(transactionMetricsRequest.provider);
   const source = referrer === ORIGIN_METAMASK ? 'user' : 'dapp';
 
   const gasFeeSelected =
@@ -807,7 +747,7 @@ async function buildEventFragmentProperties({
 
   const { assetType, tokenStandard } = await determineTransactionAssetType(
     transactionMeta,
-    query,
+    transactionMetricsRequest.provider,
     transactionMetricsRequest.getTokenStandardAndDetails,
   );
 
@@ -1015,10 +955,6 @@ async function buildEventFragmentProperties({
 
   const isRedesignedForTransaction = shouldUseRedesignForTransactions({
     transactionMetadataType: transactionMeta.type as TransactionType,
-    isRedesignedTransactionsUserSettingEnabled:
-      transactionMetricsRequest.getRedesignedTransactionsEnabled(),
-    isRedesignedConfirmationsDeveloperEnabled:
-      transactionMetricsRequest.getIsRedesignedConfirmationsDeveloperEnabled(),
   });
   if (isRedesignedForTransaction) {
     uiCustomizations.push(
@@ -1074,6 +1010,7 @@ async function buildEventFragmentProperties({
   const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
     transactionMetricsRequest.getAccountType,
     transactionMetricsRequest.getDeviceModel,
+    transactionMetricsRequest.getHardwareTypeForMetric,
     transactionMetricsRequest.snapAndHardwareMessenger,
   );
   Object.assign(properties, snapAndHardwareInfo);
@@ -1131,6 +1068,30 @@ function getGasValuesInGWEI(gasParams: Record<string, any>) {
 
 function getTransactionCompletionTime(submittedTime: number) {
   return Math.round((Date.now() - submittedTime) / 1000).toString();
+}
+
+/**
+ * Returns number of seconds (rounded to the hundredths) between submitted time
+ * and the block timestamp.
+ *
+ * @param submittedTimeMs - The UNIX timestamp in milliseconds in which the
+ * transaction has been submitted
+ * @param blockTimestampHex - The UNIX timestamp in seconds in hexadecimal in which
+ * the transaction has been confirmed in a block
+ */
+function getTransactionOnchainCompletionTime(
+  submittedTimeMs: number,
+  blockTimestampHex: string,
+): string {
+  const DECIMAL_DIGITS = 2;
+
+  const blockTimestampSeconds = Number(hexToDecimal(blockTimestampHex));
+  const completionTimeSeconds = blockTimestampSeconds - submittedTimeMs / 1000;
+  const completionTimeSecondsRounded =
+    Math.round(completionTimeSeconds * 10 ** DECIMAL_DIGITS) /
+    10 ** DECIMAL_DIGITS;
+
+  return completionTimeSecondsRounded.toString();
 }
 
 /**

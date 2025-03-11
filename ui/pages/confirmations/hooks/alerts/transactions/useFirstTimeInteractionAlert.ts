@@ -33,7 +33,7 @@ export function useFirstTimeInteractionAlert(): Alert[] {
     return [
       {
         actions: [],
-        field: RowAlertKey.FirstTimeInteraction,
+        field: RowAlertKey.InteractingWith,
         isBlocking: false,
         key: 'firstTimeInteractionTitle',
         message: t('alertMessageFirstTimeInteraction'),

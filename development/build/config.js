@@ -160,4 +160,5 @@ async function getConfig(buildType, environment) {
 
 module.exports = {
   getConfig,
+  fromIniFile,
 };
