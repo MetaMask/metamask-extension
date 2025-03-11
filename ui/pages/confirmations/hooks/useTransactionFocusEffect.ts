@@ -61,5 +61,5 @@ export const useTransactionFocusEffect = () => {
       setTransactionFocus(focusedConfirmation, false);
       setFocusedConfirmation(null);
     }
-  }, [isWindowFocused, id, focusedConfirmation, setTransactionFocus, type]);
+  }, [focusedConfirmation, id, isWindowFocused, setTransactionFocus, type]);
 };
