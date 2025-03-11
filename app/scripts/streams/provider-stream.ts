@@ -154,6 +154,7 @@ const setupLegacyPageStreams = () => {
 
   legacyPageMux.ignoreStream(METAMASK_COOKIE_HANDLER);
   legacyPageMux.ignoreStream(METAMASK_EIP_1193_PROVIDER);
+  legacyPageMux.ignoreStream(METAMASK_CAIP_PROVIDER);
   legacyPageMux.ignoreStream(PHISHING_SAFELIST);
   legacyPageMux.ignoreStream(PHISHING_STREAM);
 };
@@ -199,6 +200,7 @@ const setupLegacyExtensionStreams = () => {
         error,
       ),
   );
+  legacyExtMux.ignoreStream(METAMASK_CAIP_PROVIDER);
   legacyExtMux.ignoreStream(METAMASK_COOKIE_HANDLER);
   legacyExtMux.ignoreStream(LEGACY_PROVIDER);
   legacyExtMux.ignoreStream(PHISHING_SAFELIST);
