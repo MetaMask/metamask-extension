@@ -72,9 +72,9 @@ import {
   getPlatform,
   shouldEmitDappViewedEvent,
 } from './lib/util';
+import { createOffscreen } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import { generateWalletState } from './fixtures/generate-wallet-state';
-import { createOffscreen } from './offscreen';
 import rawFirstTimeState from './first-time-state';
 
 /* eslint-enable import/first */
