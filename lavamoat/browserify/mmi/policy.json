@@ -99,11 +99,6 @@
         "TextEncoder": true
       }
     },
-    "@metamask/controller-utils>@ethereumjs/util>@ethereumjs/rlp": {
-      "globals": {
-        "TextEncoder": true
-      }
-    },
     "@metamask/keyring-controller>@metamask/eth-hd-keyring>@ethereumjs/util>@ethereumjs/rlp": {
       "globals": {
         "TextEncoder": true
@@ -209,17 +204,6 @@
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/rlp": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
-        "webpack>events": true
-      }
-    },
-    "@metamask/controller-utils>@ethereumjs/util": {
-      "globals": {
-        "console.warn": true,
-        "fetch": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@ethereumjs/util>@ethereumjs/rlp": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true
       }
@@ -1283,22 +1267,6 @@
         "immer": true
       }
     },
-    "@metamask/queued-request-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/selected-network-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
     "@metamask/signature-controller>@metamask/base-controller": {
       "globals": {
         "setTimeout": true
@@ -1336,7 +1304,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/controller-utils>@ethereumjs/util": true,
+        "eth-lattice-keyring>@ethereumjs/util": true,
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
@@ -2097,11 +2065,11 @@
     },
     "@metamask/queued-request-controller": {
       "packages": {
-        "@metamask/queued-request-controller>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
         "@metamask/selected-network-controller": true,
-        "@metamask/queued-request-controller>@metamask/utils": true
+        "@metamask/utils": true
       }
     },
     "@metamask/rate-limit-controller": {
@@ -2146,7 +2114,7 @@
     },
     "@metamask/selected-network-controller": {
       "packages": {
-        "@metamask/selected-network-controller>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true
       }
     },
@@ -2532,21 +2500,6 @@
       }
     },
     "@metamask/network-controller>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "@metamask/utils>pony-cause": true,
-        "semver": true
-      }
-    },
-    "@metamask/queued-request-controller>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
@@ -4987,7 +4940,7 @@
         "react": true
       }
     },
-    "mockttp>body-parser>qs": {
+    "mockttp>express>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
       }
@@ -5796,7 +5749,7 @@
     "browserify>url": {
       "packages": {
         "browserify>punycode": true,
-        "mockttp>body-parser>qs": true
+        "mockttp>express>qs": true
       }
     },
     "react-focus-lock>use-callback-ref": {
