@@ -29,6 +29,7 @@ import {
 } from '../../helpers/constants/design-system';
 import { addTransaction, newUnsignedTypedMessage } from '../../store/actions';
 import { SEPOLIA_RPC_URL } from '../../../shared/constants/network';
+import useLedgerConnection from '../confirmations/hooks/useLedgerConnection';
 
 const SWAP_LIMIT = parseEther('0.1');
 const TRANSFER_AMOUNT = parseEther('0.001');
@@ -48,12 +49,10 @@ export default function Delegation({
   accounts,
   isHardwareWallet,
   hardwareWalletType,
-  ledgerConnectionStatus,
 }: {
   accounts: InternalAccount[];
   isHardwareWallet: boolean;
   hardwareWalletType?: string;
-  ledgerConnectionStatus: string | null;
 }) {
   const [loading, setLoading] = useState<boolean>(false);
   const [rootDelegation, setRootDelegation] = useState<
@@ -70,6 +69,12 @@ export default function Delegation({
     useState<boolean>(false);
   const [isDeployed, setIsDeployed] = useState<boolean>(false);
   const [gatorBalance, setGatorBalance] = useState<string>('0');
+  const {
+    isLedgerWallet,
+    ledgerTransportType,
+    transportStatus,
+    webHidConnectedStatus,
+  } = useLedgerConnection();
 
   // Get delegator (account 1) and delegate (account 2)
   const account1 = accounts[0];
@@ -128,8 +133,18 @@ export default function Delegation({
     console.log('isHardwareWallet', isHardwareWallet);
     console.log('hardwareWalletType', hardwareWalletType);
     console.log('sepolia rpc url', SEPOLIA_RPC_URL);
-    console.log('ledgerConnectionStatus', ledgerConnectionStatus);
-  }, [isHardwareWallet, hardwareWalletType, ledgerConnectionStatus]);
+    console.log('isLedgerWallet', isLedgerWallet);
+    console.log('ledgerTransportType', ledgerTransportType);
+    console.log('transportStatus', transportStatus);
+    console.log('webHidConnectedStatus', webHidConnectedStatus);
+  }, [
+    isHardwareWallet,
+    hardwareWalletType,
+    isLedgerWallet,
+    ledgerTransportType,
+    transportStatus,
+    webHidConnectedStatus,
+  ]);
 
   const deployMetaMaskAccount = async () => {
     setLoading(true);

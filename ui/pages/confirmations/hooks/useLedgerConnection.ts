@@ -112,7 +112,12 @@ const useLedgerConnection = () => {
     };
   }, [dispatch]);
 
-  return { isLedgerWallet };
+  return {
+    isLedgerWallet,
+    transportStatus,
+    ledgerTransportType,
+    webHidConnectedStatus,
+  };
 };
 
 export default useLedgerConnection;
