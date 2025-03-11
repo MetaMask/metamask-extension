@@ -405,8 +405,9 @@ browser.runtime.onConnect.addListener(async (...args) => {
   // This is set in `setupController`, which is called as part of initialization
   connectRemote(...args);
 
-  // TODO: make sure browser is not chrome
-  connectRemoteCaip(...args);
+  if (process.env.MULTICHAIN_API && !isManifestV3) {
+    connectRemoteCaip(...args);
+  }
 });
 browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
