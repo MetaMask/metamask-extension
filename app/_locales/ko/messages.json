@@ -73,9 +73,6 @@
   "accountActivityText": {
     "message": "알림을 수신할 계정을 선택하세요."
   },
-  "accountBalance": {
-    "message": "계정 잔액"
-  },
   "accountDetails": {
     "message": "계정 세부 정보"
   },
@@ -5019,12 +5016,6 @@
     "message": "이 주소는 회원님을 대신하여 토큰을 사용할 수 있는 주소입니다."
   },
   "spendingCap": {
-    "message": "지출 한도"
-  },
-  "spendingCapTooltipDesc": {
-    "message": "지출자가 회원님을 대신하여 접근할 수 있는 토큰의 양입니다."
-  },
-  "spendingCaps": {
     "message": "지출 한도"
   },
   "srpInputNumberOfWords": {
