@@ -1,5 +1,5 @@
 import { MockedEndpoint, Mockttp } from 'mockttp';
-import { defaultGanacheOptions, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
@@ -48,7 +48,6 @@ describe('Add existing token using search', function () {
           })
           .build(),
         localNodeOptions: {
-          ...defaultGanacheOptions,
           chainId: parseInt(CHAIN_IDS.BSC, 16),
         },
         title: this.test?.fullTitle(),
