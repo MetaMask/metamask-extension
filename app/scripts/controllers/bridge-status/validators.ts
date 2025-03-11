@@ -1,4 +1,8 @@
-import { validHex, validateData } from '../../../../shared/lib/swaps-utils';
+import {
+  truthyString,
+  validHex,
+  validateData,
+} from '../../../../shared/lib/swaps-utils';
 import { isValidHexAddress } from '../../../../shared/modules/hexstring-utils';
 import {
   BridgeId,
@@ -75,7 +79,7 @@ const srcChainStatusValidators = [
   {
     property: 'txHash',
     type: 'string',
-    validator: validHex,
+    validator: truthyString,
   },
   {
     property: 'amount',
@@ -159,7 +163,7 @@ export const validators = [
     property: 'bridge',
     type: 'string|undefined',
     validator: (v: unknown): v is BridgeId | undefined =>
-      v === undefined || Object.values(BridgeId).includes(v as BridgeId),
+      v === undefined || typeof v === 'string',
   },
   {
     property: 'isExpectedToken',
