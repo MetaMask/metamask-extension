@@ -599,7 +599,7 @@ export const BUILT_IN_NETWORKS = {
   [NETWORK_TYPES.MEGAETH_TESTNET]: {
     chainId: CHAIN_IDS.MEGAETH_TESTNET,
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MEGAETH_TESTNET],
-    blockExplorerUrl: 'https://www.megaexplorer.xyz',
+    blockExplorerUrl: 'https://megaexplorer.xyz',
   },
 } as const;
 
@@ -1198,7 +1198,7 @@ export const DEFAULT_CUSTOM_TESTNET_MAP: Record<Hex, NetworkConfiguration> = {
     chainId: CHAIN_IDS.MEGAETH_TESTNET,
     name: MEGAETH_TESTNET_DISPLAY_NAME,
     nativeCurrency: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MEGAETH_TESTNET],
-    blockExplorerUrls: ['https://www.megaexplorer.xyz'],
+    blockExplorerUrls: ['https://megaexplorer.xyz'],
     defaultRpcEndpointIndex: 0,
     defaultBlockExplorerUrlIndex: 0,
     rpcEndpoints: [
