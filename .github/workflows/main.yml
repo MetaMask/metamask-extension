@@ -130,52 +130,11 @@ jobs:
 
       - run: yarn build:test
 
-      - name: Move test build to dist-test
-        run: mv ./dist ./dist-test
-
-      - name: Move test zips to builds-test
-        run: mv ./builds ./builds-test
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: builds-test
-          path: ./builds-test/
-
       - name: Upload dist
         uses: actions/upload-artifact@v4
         with:
-          name: dist-test
-          path: ./dist-test/
-
-  prep-build-test-mv2:
-    needs: prep-deps
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
-        with:
-          is-high-risk-environment: false
-
-      - run: yarn build:test:mv2
-
-      - name: Move test build to dist-test-mv2
-        run: mv ./dist ./dist-test-mv2
-
-      - name: Move test zips to builds-test-mv2
-        run: mv ./builds ./builds-test-mv2
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: builds-test-mv2
-          path: ./builds-test-mv2/
-
-      - name: Upload dist
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist-test-mv2
-          path: ./dist-test-mv2/
+          name: dist-e2e-tests
+          path: ./dist/
 
   prep-build-test-flask:
     needs: prep-deps
@@ -188,52 +147,11 @@ jobs:
 
       - run: yarn build:test:flask
 
-      - name: Move test build to dist-test-flask
-        run: mv ./dist ./dist-test-flask
-
-      - name: Move test zips to builds-test-flask
-        run: mv ./builds ./builds-test-flask
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: builds-test-flask
-          path: ./builds-test-flask/
-
       - name: Upload dist
         uses: actions/upload-artifact@v4
         with:
-          name: dist-test-flask
-          path: ./dist-test-flask/
-
-  prep-build-test-flask-mv2:
-    needs: prep-deps
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
-        with:
-          is-high-risk-environment: false
-
-      - run: yarn build:test:flask:mv2
-
-      - name: Move test build to dist-test-flask-mv2
-        run: mv ./dist ./dist-test-flask-mv2
-
-      - name: Move test zips to builds-test-flask-mv2
-        run: mv ./builds ./builds-test-flask-mv2
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: builds-test-flask-mv2
-          path: ./builds-test-flask-mv2/
-
-      - name: Upload dist
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist-test-flask-mv2
-          path: ./dist-test-flask-mv2/
+          name: dist-e2e-tests-flask
+          path: ./dist/
 
   prep-build-ts-migration-dashboard:
     needs: prep-deps
@@ -251,66 +169,6 @@ jobs:
         with:
           name: ts-migration-dashboard
           path: ./development/ts-migration-dashboard/build/final/
-
-  #test-e2e-chrome-webpack:
-  #  needs:
-  #    - prep-build-test-webpack
-  #    - get-changed-files-with-git-diff
-  #  runs-on: ubuntu-22.04
-  #  container:
-  #    image: cimg/node:22.13-browsers
-  #  strategy:
-  #    fail-fast: false
-  #    matrix:
-  #      index:
-  #        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
-  #  env:
-  #    MATRIX_INDEX: ${{ matrix.index }}
-  #    MATRIX_TOTAL: 20
-  #  steps:
-  #    - name: Install dependencies
-  #      run: |
-  #        sudo apt-get update && sudo apt-get install zstd
-  #        sudo corepack enable
-  #      shell: bash
-  #
-  #    - name: Checkout and setup environment
-  #      uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
-  #      with:
-  #        is-high-risk-environment: false
-  #
-  #    - name: Install anvil (not installed by checkout-and-setup when cache is restored)
-  #      run: yarn foundryup
-  #
-  #    - name: Download prep-build-test-webpack artifact
-  #      uses: actions/download-artifact@v4
-  #      with:
-  #        name: prep-build-test-webpack
-  #        path: ./dist/
-  #
-  #    - name: Configure Xvfb
-  #      run: Xvfb -ac :99 -screen 0 1280x1024x16 &
-  #
-  #    - name: Download changed-files artifact
-  #      continue-on-error: true
-  #      uses: actions/download-artifact@v4
-  #      with:
-  #        name: changed-files
-  #        path: ./changed-files/
-  #
-  #    - name: Run e2e tests
-  #      run: .github/scripts/test-run-e2e.sh yarn test:e2e:chrome:webpack
-  #      env:
-  #        TIMEOUT: 30
-  #
-  #    - name: Upload test results and artifacts
-  #      if: always()
-  #      uses: actions/upload-artifact@v4
-  #      with:
-  #        name: test-e2e-chrome-webpack-${{ matrix.index }}
-  #        path: |
-  #          ./test-artifacts
-  #          ./test/test-results/e2e
 
   test-e2e-chrome:
     needs:
@@ -345,14 +203,8 @@ jobs:
       - name: Download prep-build-test artifact
         uses: actions/download-artifact@v4
         with:
-          name: dist-test
+          name: dist-e2e-tests
           path: ./dist/
-
-      - name: Download builds-test artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: builds-test
-          path: ./builds/
 
       - name: Configure Xvfb
         run: Xvfb -ac :99 -screen 0 1280x1024x16 &
@@ -410,14 +262,8 @@ jobs:
       - name: Download prep-build-test-flask artifact
         uses: actions/download-artifact@v4
         with:
-          name: dist-test-flask
+          name: dist-e2e-tests-flask
           path: ./dist/
-
-      - name: Download builds-test-flask artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: builds-test-flask
-          path: ./builds/
 
       - name: Configure Xvfb
         run: Xvfb -ac :99 -screen 0 1280x1024x16 &
@@ -468,14 +314,8 @@ jobs:
       - name: Download prep-build-test artifact
         uses: actions/download-artifact@v4
         with:
-          name: dist-test
+          name: dist-e2e-tests
           path: ./dist/
-
-      - name: Download builds-test artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: builds-test
-          path: ./builds/
 
       - name: Configure Xvfb
         run: Xvfb -ac :99 -screen 0 1280x1024x16 &
@@ -526,14 +366,8 @@ jobs:
       - name: Download prep-build-test artifact
         uses: actions/download-artifact@v4
         with:
-          name: dist-test
+          name: dist-e2e-tests
           path: ./dist/
-
-      - name: Download builds-test artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: builds-test
-          path: ./builds/
 
       - name: Configure Xvfb
         run: Xvfb -ac :99 -screen 0 1280x1024x16 &
@@ -558,172 +392,6 @@ jobs:
           path: |
             ./test-artifacts
             ./test/test-results/e2e
-
-  prep-build:
-    needs: prep-deps
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
-        with:
-          is-high-risk-environment: false
-
-      - name: Build for non-master branch
-        if: github.ref != 'refs/heads/master'
-        run: yarn build dist
-        env:
-          INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
-
-      - name: Build for master branch
-        if: github.ref == 'refs/heads/master'
-        run: yarn build prod
-        env:
-          INFURA_PROD_PROJECT_ID: ${{ secrets.INFURA_PROD_PROJECT_ID }}
-          SEGMENT_PROD_WRITE_KEY: ${{ secrets.SEGMENT_PROD_WRITE_KEY }}
-
-      - name: Debug build
-        run: find dist/ -type f -exec md5sum {} \; | sort -k 2
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: builds
-          path: ./builds/
-
-      - name: Upload dist
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: ./dist/
-
-  prep-build-mv2:
-    needs: prep-deps
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
-        with:
-          is-high-risk-environment: false
-
-      - name: Build for non-master branch
-        if: github.ref != 'refs/heads/master'
-        run: ENABLE_MV3=false yarn build dist
-        env:
-          INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
-
-      - name: Build for master branch
-        if: github.ref == 'refs/heads/master'
-        run: ENABLE_MV3=false yarn build prod
-        env:
-          INFURA_PROD_PROJECT_ID: ${{ secrets.INFURA_PROD_PROJECT_ID }}
-          SEGMENT_PROD_WRITE_KEY: ${{ secrets.SEGMENT_PROD_WRITE_KEY }}
-
-      - name: Debug build
-        run: find dist/ -type f -exec md5sum {} \; | sort -k 2
-
-      - name: Move build to dist-mv2
-        run: mv ./dist ./dist-mv2
-
-      - name: Move zips to builds-mv2
-        run: mv ./builds ./builds-mv2
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: builds-mv2
-          path: ./builds-mv2/
-
-      - name: Upload dist
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist-mv2
-          path: ./dist-mv2/
-
-  prep-build-flask:
-    needs: prep-deps
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
-        with:
-          is-high-risk-environment: false
-
-      - name: Build for non-master branch
-        if: github.ref != 'refs/heads/master'
-        run: yarn build --build-type flask dist
-        env:
-          INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
-
-      - name: Build for master branch
-        if: github.ref == 'refs/heads/master'
-        run: yarn build --build-type flask prod
-        env:
-          INFURA_FLASK_PROJECT_ID: ${{ secrets.INFURA_FLASK_PROJECT_ID }}
-          SEGMENT_FLASK_WRITE_KEY: ${{ secrets.SEGMENT_FLASK_WRITE_KEY }}
-
-      - name: Debug build
-        run: find dist/ -type f -exec md5sum {} \; | sort -k 2
-
-      - name: Move build to dist-flask
-        run: mv ./dist ./dist-flask
-
-      - name: Move zips to builds-flask
-        run: mv ./builds ./builds-flask
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: builds-flask
-          path: ./builds-flask/
-
-      - name: Upload dist
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist-flask
-          path: ./dist-flask/
-
-  prep-build-flask-mv2:
-    needs: prep-deps
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
-        with:
-          is-high-risk-environment: false
-
-      - name: Build for non-master branch
-        if: github.ref != 'refs/heads/master'
-        run: ENABLE_MV3=false yarn build --build-type flask dist
-        env:
-          INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
-
-      - name: Build for master branch
-        if: github.ref == 'refs/heads/master'
-        run: ENABLE_MV3=false yarn build --build-type flask prod
-        env:
-          INFURA_FLASK_PROJECT_ID: ${{ secrets.INFURA_FLASK_PROJECT_ID }}
-          SEGMENT_FLASK_WRITE_KEY: ${{ secrets.SEGMENT_FLASK_WRITE_KEY }}
-
-      - name: Debug build
-        run: find dist/ -type f -exec md5sum {} \; | sort -k 2
-
-      - name: Move build to dist-flask-mv2
-        run: mv ./dist ./dist-flask-mv2
-
-      - name: Move zips to builds-flask-mv2
-        run: mv ./builds ./builds-flask-mv2
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: builds-flask-mv2
-          path: ./builds-flask-mv2/
-
-      - name: Upload dist
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist-flask-mv2
-          path: ./dist-flask-mv2/
 
   run-tests:
     name: Run tests
@@ -794,15 +462,8 @@ jobs:
       - wait-for-circleci-workflow-status
       - build-storybook
       - build-beta
-      - prep-build
-      - prep-build-mv2
-      - prep-build-flask
-      - prep-build-flask-mv2
       - prep-build-test
-      - prep-build-test-mv2
       - prep-build-test-flask
-      - prep-build-test-flask-mv2
-      - prep-build-ts-migration-dashboard
       - prep-build-test-browserify
       - prep-build-test-webpack
       - get-changed-files-with-git-diff
