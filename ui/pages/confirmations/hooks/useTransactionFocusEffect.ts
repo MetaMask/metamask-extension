@@ -18,9 +18,8 @@ const shouldSetFocusedForType = (type: TransactionType) => {
 };
 
 export const useTransactionFocusEffect = () => {
-  const {
-    currentConfirmation: { id, type },
-  } = useConfirmContext();
+  const { currentConfirmation } = useConfirmContext();
+  const { id, type } = currentConfirmation ?? {};
   const isWindowFocused = useWindowFocus();
   const dispatch = useDispatch();
   const [focusedConfirmation, setFocusedConfirmation] = useState<string | null>(
