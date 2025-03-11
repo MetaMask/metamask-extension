@@ -107,12 +107,7 @@ export async function getStateCorruptionErrorHtml(supportLink, metamaskState) {
   switchDirectionForPreferredLocale(preferredLocale);
   const { currentLocaleMessages, enLocaleMessages } = response;
   const t = getLocaleContext(currentLocaleMessages, enLocaleMessages);
-  /**
-   * The pattern ${errorKey === 'troubleStarting' ? t('troubleStarting') : ''}
-   * is neccessary because we we need linter to see the string
-   * of the locale keys. If we use the variable directly, the linter will not
-   * see the string and will not be able to check if the locale key exists.
-   */
+
   return `
     <div class="critical-error__container">
       <div class="critical-error">
