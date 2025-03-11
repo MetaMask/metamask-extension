@@ -1,5 +1,6 @@
 import {
   createCaveatBuilder,
+  createDelegation,
   createRootDelegation,
   DelegationFramework,
   DelegationStruct,
@@ -7,16 +8,15 @@ import {
   getDeleGatorEnvironment,
   Implementation,
   MetaMaskSmartAccount,
-  createDelegation,
+  SIGNABLE_DELEGATION_TYPED_DATA,
   SINGLE_DEFAULT_MODE,
   toMetaMaskSmartAccount,
-  SIGNABLE_DELEGATION_TYPED_DATA,
 } from '@metamask-private/delegator-core-viem';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import { SignTypedDataVersion } from '@metamask/keyring-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import React, { useState, useEffect, useCallback } from 'react';
-import { createPublicClient, http, parseEther, formatEther } from 'viem';
+import React, { useCallback, useEffect, useState } from 'react';
+import { createPublicClient, formatEther, http, parseEther } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { sepolia } from 'viem/chains';
 import { Box, Button, Text } from '../../components/component-library';
@@ -27,11 +27,7 @@ import {
   FlexDirection,
   TextColor,
 } from '../../helpers/constants/design-system';
-import {
-  addTransaction,
-  addTransactionAndWaitForPublish,
-  newUnsignedTypedMessage,
-} from '../../store/actions';
+import { addTransaction, newUnsignedTypedMessage } from '../../store/actions';
 
 const SWAP_LIMIT = parseEther('0.1');
 const TRANSFER_AMOUNT = parseEther('0.001');
@@ -81,6 +77,7 @@ export default function Delegation({
 
   const fetchGatorBalance = useCallback(async (address: string) => {
     try {
+      console.log('fetching balance');
       const balance = await publicClient.getBalance({
         address: address as `0x${string}`,
       });
@@ -131,7 +128,7 @@ export default function Delegation({
         await metaMaskSmartAccount.getFactoryArgs();
 
       if (factory && factoryData) {
-        const txHash = await addTransactionAndWaitForPublish(
+        const txHash = await addTransaction(
           {
             from: account1.address,
             to: factory,
@@ -305,7 +302,7 @@ export default function Delegation({
           data: encodedCallData,
           value: '0x0',
         },
-        { method: 'eth_sendTransaction', requireApproval: false },
+        { method: 'eth_sendTransaction' },
       );
 
       console.log('Root delegation redeemed:', txHash);
