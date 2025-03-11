@@ -28,7 +28,6 @@ on:
 
 jobs:
   run-e2e:
-    name: ${{ github.event.inputs.test-suite-name }}${{ github.event.inputs.matrix-total > 0 && format(' ({0})', github.event.inputs.matrix-index) || '' }}
     runs-on: ubuntu-22.04
     container:
       image: cimg/node:22.13-browsers
@@ -37,8 +36,8 @@ jobs:
       # For a `pull_request` event, the branch is `github.head_ref``.
       # For a `push` event, the branch is `github.ref_name`.
       BRANCH: ${{ github.head_ref || github.ref_name }}
-      MATRIX_INDEX: ${{ github.event.inputs.matrix-index }}
-      MATRIX_TOTAL: ${{ github.event.inputs.matrix-total }}
+      MATRIX_INDEX: ${{ inputs.matrix-index }}
+      MATRIX_TOTAL: ${{ inputs.matrix-total }}
     steps:
       - name: Install dependencies
         run: |
