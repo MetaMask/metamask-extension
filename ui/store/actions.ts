@@ -6102,7 +6102,7 @@ export async function getCode(address: Hex, networkClientId: string) {
   ]);
 }
 
-export async function setTransactionActive(
+export function setTransactionActive(
   transactionId: string,
   isFocused: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
