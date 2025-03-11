@@ -95,7 +95,7 @@ export type BridgeAppState = {
 };
 
 // checks if the user has any solana accounts created
-export const hasSolanaAccounts = (state: BridgeAppState) => {
+const hasSolanaAccounts = (state: BridgeAppState) => {
   // Access accounts from the state
   const accounts = state.metamask.internalAccounts?.accounts || {};
 
