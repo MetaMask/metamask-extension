@@ -2889,7 +2889,8 @@ export function getShouldShowSeedPhraseReminder(state) {
     state.metamask;
 
   const currentKeyring = getCurrentKeyring(state);
-  const isNativeAccount = currentKeyring.type === KeyringType.hdKeyTree;
+  const isNativeAccount =
+    currentKeyring?.type && currentKeyring.type === KeyringType.hdKeyTree;
 
   // if there is no account, we don't need to show the seed phrase reminder
   const accountBalance = getSelectedInternalAccount(state)
