@@ -114,9 +114,6 @@ export async function getStateCorruptionErrorHtml(supportLink, metamaskState) {
   switchDirection(textDirection);
   const { currentLocaleMessages, enLocaleMessages } = response;
   const t = getLocaleContext(currentLocaleMessages, enLocaleMessages);
-  const hasBackup =
-    metamaskState?.data?.PreferencesController?.initializationFlags
-      ?.vaultBackedUp;
   /**
    * The pattern ${errorKey === 'troubleStarting' ? t('troubleStarting') : ''}
    * is neccessary because we we need linter to see the string
