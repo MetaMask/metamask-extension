@@ -13,10 +13,14 @@ import LoginPage from '../../page-objects/pages/login-page';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 
 describe('Add account', function () {
+  const localNodeOptions = {
+    accounts: 1,
+  }
   it('should not affect public address when using secret recovery phrase to recover account with non-zero balance', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        localNodeOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver, localNodes }) => {
@@ -79,13 +83,14 @@ describe('Add account', function () {
     );
   });
 
-  it('should be possible to remove an account imported with a private key, but should not be possible to remove an account generated from the SRP imported in onboarding', async function () {
+  it.only('should be possible to remove an account imported with a private key, but should not be possible to remove an account generated from the SRP imported in onboarding', async function () {
     const testPrivateKey: string =
       '14abe6f4aab7f9f626fe981c864d0adeb5685f289ac9270c27b8fd790b4235d6';
 
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        localNodeOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

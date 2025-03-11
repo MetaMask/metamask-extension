@@ -11,6 +11,9 @@ describe('Settings', function () {
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC1155().build(),
         smartContract,
+        localNodeOptions: {
+          hardfork: 'london',
+        },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

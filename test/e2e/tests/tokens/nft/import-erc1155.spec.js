@@ -14,6 +14,9 @@ describe('Import ERC1155 NFT', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
+        localNodeOptions: {
+          hardfork: 'london',
+        },
         title: this.test.fullTitle(),
       },
       async ({ driver, _, contractRegistry }) => {
@@ -60,6 +63,9 @@ describe('Import ERC1155 NFT', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
+        localNodeOptions: {
+          hardfork: 'london',
+        },
         title: this.test.fullTitle(),
       },
       async ({ driver, _, contractRegistry }) => {
