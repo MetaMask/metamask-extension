@@ -111,6 +111,10 @@ export function getTokenFeatureTitleDescriptionIds(
       titleId = 'airDropPatternTitle';
       descriptionId = 'airDropPatternDescription';
       break;
+    case 'CONCENTRATED_SUPPLY_DISTRIBUTION':
+      titleId = 'concentratedSupplyDistributionTitle';
+      descriptionId = 'concentratedSupplyDistributionDescription';
+      break;
 
     default:
       console.warn(
