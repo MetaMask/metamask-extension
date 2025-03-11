@@ -62,7 +62,9 @@ export const RecipientRow = () => {
   const { chainId } = currentConfirmation;
 
   return (
-    <ConfirmInfoRow
+    <ConfirmInfoAlertRow
+      ownerId={currentConfirmation.id}
+      alertKey={RowAlertKey.InteractingWith}
       data-testid="transaction-details-recipient-row"
       label={t('interactingWith')}
       tooltip={t('interactingWithTransactionDescription')}
@@ -71,7 +73,7 @@ export const RecipientRow = () => {
         address={currentConfirmation.txParams.to}
         chainId={chainId}
       />
-    </ConfirmInfoRow>
+    </ConfirmInfoAlertRow>
   );
 };
 
