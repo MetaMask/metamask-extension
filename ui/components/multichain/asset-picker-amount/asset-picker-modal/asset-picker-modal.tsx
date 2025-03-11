@@ -34,7 +34,9 @@ import {
   getTokenExchangeRates,
   getTokenList,
   getUseExternalServices,
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   hasCreatedSolanaAccount,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../../selectors';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import { getSwapsBlockedTokens } from '../../../../ducks/send';
