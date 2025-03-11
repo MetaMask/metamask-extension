@@ -32,6 +32,10 @@ jobs:
     container:
       image: cimg/node:22.13-browsers
     env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # For a `pull_request` event, the branch is `github.head_ref``.
+      # For a `push` event, the branch is `github.ref_name`.
+      BRANCH: ${{ github.head_ref || github.ref_name }}
       MATRIX_INDEX: ${{ github.event.inputs.matrix-index }}
       MATRIX_TOTAL: ${{ github.event.inputs.matrix-total }}
     steps:
@@ -55,6 +59,7 @@ jobs:
         run: Xvfb -ac :99 -screen 0 1280x1024x16 &
 
       - run: yarn tsx .github/scripts/git-diff-default-branch.ts
+        if: ${{ env.BRANCH != 'master' }}
 
       - name: Run E2E tests
         timeout-minutes: ${{ inputs.test-timeout-minutes }}
