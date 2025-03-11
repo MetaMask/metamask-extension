@@ -63,6 +63,33 @@ describe('useFeeCalculations', () => {
         "maxFeeNative": "0.0001 ETH",
       }
     `);
+
+    const transactionOnBNB = genUnapprovedContractInteractionConfirmation({
+      address: CONTRACT_INTERACTION_SENDER_ADDRESS,
+      chainId: '0x38',
+    }) as TransactionMeta;
+
+    const { result: resultOnBNB } = renderHookWithProvider(
+      () => useFeeCalculations(transactionOnBNB),
+      mockState,
+    );
+
+    expect(resultOnBNB.current).toMatchInlineSnapshot(`
+      {
+        "estimatedFeeFiat": "< $0.01",
+        "estimatedFeeFiatWith18SignificantDigits": "0.000065843",
+        "estimatedFeeNative": "0.0001 BNB",
+        "l1FeeFiat": "",
+        "l1FeeFiatWith18SignificantDigits": "",
+        "l1FeeNative": "",
+        "l2FeeFiat": "",
+        "l2FeeFiatWith18SignificantDigits": "",
+        "l2FeeNative": "",
+        "maxFeeFiat": "< $0.01",
+        "maxFeeFiatWith18SignificantDigits": "0.000125347",
+        "maxFeeNative": "0.0001 BNB",
+      }
+    `);
   });
 
   it('picks up gasLimitNoBuffer for minimum network fee on estimations', () => {

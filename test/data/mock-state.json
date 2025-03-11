@@ -461,6 +461,21 @@
           }
         ],
         "blockExplorerUrls": []
+      },
+      "0x38": {
+        "chainId": "0x38",
+        "name": "BNB Smart Chain",
+        "nativeCurrency": "BNB",
+        "defaultRpcEndpointIndex": 0,
+        "ticker": "BNB",
+        "rpcEndpoints": [
+          {
+            "type": "custom",
+            "url": "https://bsc-rpc.com",
+            "networkClientId": "bsc-test"
+          }
+        ],
+        "blockExplorerUrls": []
       }
     },
     "internalAccounts": {
