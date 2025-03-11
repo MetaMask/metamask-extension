@@ -1,0 +1,62 @@
+name: Run E2E
+
+on:
+  workflow_call:
+    inputs:
+      test-suite-name:
+        required: true
+        type: string
+        description: The name of the E2E test suite
+      build-command:
+        required: true
+        type: string
+        description: The build command to run
+      test-command:
+        required: true
+        type: string
+        description: The test command to run
+      test-timeout-minutes:
+        required: false
+        type: number
+        default: 30
+        description: The timeout in minutes for the test command
+
+jobs:
+  run-e2e:
+    runs-on: ubuntu-22.04
+    container:
+      image: cimg/node:22.13-browsers
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install zstd
+          sudo corepack enable
+
+      - name: Checkout and setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        with:
+          is-high-risk-environment: false
+
+      # not installed by checkout-and-setup when cache is restored
+      - name: Install anvil
+        run: yarn foundryup
+
+      - run: ${{ inputs.build-command }}
+
+      - name: Configure Xvfb
+        run: Xvfb -ac :99 -screen 0 1280x1024x16 &
+
+      - run: yarn tsx .github/scripts/git-diff-default-branch.ts
+
+      - name: Run E2E tests
+        timeout-minutes: ${{ inputs.test-timeout-minutes }}
+        run: ${{ inputs.test-command }}
+
+      - name: Upload test results and artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.test-suite-name }}
+          path: |
+            ./test-artifacts
+            ./test/test-results/e2e
