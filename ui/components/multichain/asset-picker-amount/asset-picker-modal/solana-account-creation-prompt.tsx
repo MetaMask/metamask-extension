@@ -57,7 +57,7 @@ export const SolanaAccountCreationPrompt = ({
       flexDirection={FlexDirection.Column}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.flexStart}
-      gap={4}
+      gap={1}
       padding={4}
       className="solana-account-creation-prompt"
       data-testid="solana-account-creation-prompt"
@@ -66,7 +66,12 @@ export const SolanaAccountCreationPrompt = ({
       <img
         src="/images/solana-logo.svg"
         alt="Solana Logo"
-        style={{ width: '60px', height: '60px', marginBottom: '8px' }}
+        style={{
+          width: '30px',
+          height: '30px',
+          marginBottom: '4px',
+          borderRadius: '4px',
+        }}
       />
 
       <Text
@@ -92,7 +97,7 @@ export const SolanaAccountCreationPrompt = ({
         onClick={handleCreateAccount}
         loading={isCreating}
         data-testid="create-solana-account-button"
-        style={{ width: '75%' }}
+        style={{ width: '75%', marginTop: '10px' }}
       >
         {t('createSolanaAccount')}
       </Button>
