@@ -1,10 +1,10 @@
 import React, { useEffect, useContext } from 'react';
-import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { getTokenTrackerLink, getAccountLink } from '@metamask/etherscan-link';
 import { Nft } from '@metamask/assets-controllers';
+import { Hex } from '@metamask/utils';
 import {
   TextColor,
   IconColor,
@@ -20,8 +20,15 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
-import { getCurrentChainId } from '../../../../../../shared/modules/selectors/networks';
-import { getCurrentNetwork, getIpfsGateway } from '../../../../../selectors';
+import {
+  getCurrentChainId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../../../shared/modules/selectors/networks';
+import {
+  getCurrentNetwork,
+  getIpfsGateway,
+  getNetworkConfigurationIdByChainId,
+} from '../../../../../selectors';
 import {
   ASSET_ROUTE,
   DEFAULT_ROUTE,
@@ -32,6 +39,8 @@ import {
   removeAndIgnoreNft,
   setRemoveNftMessage,
   setNewNftAddedMessage,
+  setActiveNetworkWithError,
+  setSwitchedNetworkDetails,
 } from '../../../../../store/actions';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import NftOptions from '../nft-options/nft-options';
@@ -72,13 +81,20 @@ import { Numeric } from '../../../../../../shared/modules/Numeric';
 // eslint-disable-next-line import/no-restricted-paths
 import { addUrlProtocolPrefix } from '../../../../../../app/scripts/lib/util';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
+import { getImageForChainId } from '../../../../../selectors/multichain';
 import NftDetailInformationRow from './nft-detail-information-row';
 import NftDetailInformationFrame from './nft-detail-information-frame';
 import NftDetailDescription from './nft-detail-description';
 
 const MAX_TOKEN_ID_LENGTH = 15;
 
-export default function NftDetails({ nft }: { nft: Nft }) {
+export function NftDetailsComponent({
+  nft,
+  nftChainId,
+}: {
+  nft: Nft;
+  nftChainId: string;
+}) {
   const {
     image,
     imageOriginal,
@@ -105,6 +121,14 @@ export default function NftDetails({ nft }: { nft: Nft }) {
   const currency = useSelector(getCurrentCurrency);
   const selectedNativeConversionRate = useSelector(getConversionRate);
 
+  const nftNetworkConfigs = useSelector(getNetworkConfigurationsByChainId);
+  const nftChainNetwork = nftNetworkConfigs[nftChainId as Hex];
+  const nftChainImage = getImageForChainId(nftChainId as string);
+  const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
+    string,
+    string
+  >;
+
   const [addressCopied, handleAddressCopy] = useCopyToClipboard();
 
   const nftImageAlt = getNftImageAlt(nft);
@@ -112,7 +136,10 @@ export default function NftDetails({ nft }: { nft: Nft }) {
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
   const isImageHosted =
     image?.startsWith('https:') || image?.startsWith('http:');
-  const nftImageURL = useGetAssetImageUrl(imageOriginal ?? image, ipfsGateway);
+  const nftImageURL = useGetAssetImageUrl(
+    imageOriginal ?? image ?? undefined,
+    ipfsGateway,
+  );
 
   const hasFloorAskPrice = Boolean(
     collection?.floorAsk?.price?.amount?.usd &&
@@ -238,7 +265,28 @@ export default function NftDetails({ nft }: { nft: Nft }) {
   const sendDisabled =
     standard !== TokenStandard.ERC721 && standard !== TokenStandard.ERC1155;
 
+  const setCorrectChain = async () => {
+    // If we aren't presently on the chain of the nft, change to it
+    if (nftChainId !== currentChain.chainId) {
+      try {
+        const networkConfigurationId = networks[nftChainId as Hex];
+        await dispatch(setActiveNetworkWithError(networkConfigurationId));
+        await dispatch(
+          setSwitchedNetworkDetails({
+            networkClientId: networkConfigurationId,
+          }),
+        );
+      } catch (err) {
+        console.error(`Failed to switch chains for NFT.
+          Target chainId: ${nftChainId}, Current chainId: ${currentChain.chainId}.
+          ${err}`);
+        throw err;
+      }
+    }
+  };
+
   const onSend = async () => {
+    await setCorrectChain();
     await dispatch(
       startNewDraftTransaction({
         type: AssetType.NFT,
@@ -310,6 +358,8 @@ export default function NftDetails({ nft }: { nft: Nft }) {
     return `${text.slice(0, chars)}...${text.slice(-chars)}`;
   };
 
+  const nftItemSrc = isImageHosted ? image : nftImageURL;
+
   return (
     <Page>
       <Content className="nft-details__content">
@@ -326,11 +376,13 @@ export default function NftDetails({ nft }: { nft: Nft }) {
             data-testid="nft__back"
           />
           <NftOptions
-            onViewOnOpensea={
-              openSeaLink
-                ? () => global.platform.openTab({ url: openSeaLink })
-                : null
-            }
+            showOpenSeaLink={Boolean(openSeaLink)}
+            onViewOnOpensea={() => {
+              if (!openSeaLink) {
+                return null;
+              }
+              return global.platform.openTab({ url: openSeaLink });
+            }}
             onRemove={onRemove}
           />
         </Box>
@@ -342,14 +394,13 @@ export default function NftDetails({ nft }: { nft: Nft }) {
         >
           <Box className="nft-details__nft-item">
             <NftItem
-              src={isImageHosted ? image : nftImageURL}
-              alt={image ? nftImageAlt : ''}
-              name={name}
-              tokenId={tokenId}
-              networkName={currentChain.nickname ?? ''}
-              networkSrc={currentChain.rpcPrefs?.imageUrl}
+              src={nftItemSrc as string | undefined}
+              alt={nftImageAlt}
+              networkName={nftChainNetwork.name ?? ''}
+              networkSrc={nftChainImage}
               isIpfsURL={isIpfsURL}
               onClick={handleImageClick}
+              detailView
               clickable
             />
           </Box>
@@ -847,105 +898,10 @@ export default function NftDetails({ nft }: { nft: Nft }) {
   );
 }
 
-NftDetails.propTypes = {
-  nft: PropTypes.shape({
-    address: PropTypes.string.isRequired,
-    tokenId: PropTypes.string.isRequired,
-    isCurrentlyOwned: PropTypes.bool,
-    name: PropTypes.string,
-    description: PropTypes.string,
-    image: PropTypes.string,
-    standard: PropTypes.string,
-    imageThumbnail: PropTypes.string,
-    imagePreview: PropTypes.string,
-    imageOriginal: PropTypes.string,
-    rarityRank: PropTypes.string,
+function NftDetails({ nft }: { nft: Nft }) {
+  const { chainId } = useParams();
 
-    creator: PropTypes.shape({
-      address: PropTypes.string,
-      config: PropTypes.string,
-      profile_img_url: PropTypes.string,
-    }),
-    attributes: PropTypes.arrayOf(
-      PropTypes.shape({
-        key: PropTypes.string,
-        value: PropTypes.string,
-      }),
-    ),
-    lastSale: PropTypes.shape({
-      timestamp: PropTypes.string,
-      orderSource: PropTypes.string,
-      price: PropTypes.shape({
-        amount: PropTypes.shape({
-          native: PropTypes.string,
-          decimal: PropTypes.string,
-          usd: PropTypes.string,
-        }),
-        currency: PropTypes.shape({
-          symbol: PropTypes.string,
-        }),
-      }),
-    }),
-    topBid: PropTypes.shape({
-      source: PropTypes.shape({
-        id: PropTypes.string,
-        domain: PropTypes.string,
-        name: PropTypes.string,
-        icon: PropTypes.string,
-        url: PropTypes.string,
-      }),
-      price: PropTypes.shape({
-        amount: PropTypes.shape({
-          native: PropTypes.string,
-          decimal: PropTypes.string,
-          usd: PropTypes.string,
-        }),
-        currency: PropTypes.shape({
-          symbol: PropTypes.string,
-        }),
-      }),
-    }),
-    collection: PropTypes.shape({
-      openseaVerificationStatus: PropTypes.string,
-      tokenCount: PropTypes.string,
-      name: PropTypes.string,
-      ownerCount: PropTypes.string,
-      creator: PropTypes.string,
-      symbol: PropTypes.string,
-      contractDeployedAt: PropTypes.string,
-      floorAsk: PropTypes.shape({
-        sourceDomain: PropTypes.string,
-        source: PropTypes.shape({
-          id: PropTypes.string,
-          domain: PropTypes.string,
-          name: PropTypes.string,
-          icon: PropTypes.string,
-          url: PropTypes.string,
-        }),
-        price: PropTypes.shape({
-          amount: PropTypes.shape({
-            native: PropTypes.string,
-            decimal: PropTypes.string,
-            usd: PropTypes.string,
-          }),
-          currency: PropTypes.shape({
-            symbol: PropTypes.string,
-          }),
-        }),
-      }),
-      topBid: PropTypes.shape({
-        sourceDomain: PropTypes.string,
-        price: PropTypes.shape({
-          amount: PropTypes.shape({
-            native: PropTypes.string,
-            decimal: PropTypes.string,
-            usd: PropTypes.string,
-          }),
-          currency: PropTypes.shape({
-            symbol: PropTypes.string,
-          }),
-        }),
-      }),
-    }),
-  }),
-};
+  return <NftDetailsComponent nft={nft} nftChainId={chainId ?? ''} />;
+}
+
+export default NftDetails;

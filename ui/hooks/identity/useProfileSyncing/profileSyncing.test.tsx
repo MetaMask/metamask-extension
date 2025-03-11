@@ -1,6 +1,6 @@
 import { act } from '@testing-library/react-hooks';
 import { renderHookWithProviderTyped } from '../../../../test/lib/render-helpers';
-import { MetamaskNotificationsProvider } from '../../../contexts/metamask-notifications';
+import { MetamaskIdentityProvider } from '../../../contexts/identity';
 import * as actions from '../../../store/actions';
 import {
   useDisableProfileSyncing,
@@ -37,7 +37,7 @@ describe('useDisableProfileSyncing()', () => {
       () => useDisableProfileSyncing(),
       {},
       undefined,
-      MetamaskNotificationsProvider,
+      MetamaskIdentityProvider,
     );
 
     await act(async () => {
@@ -45,27 +45,5 @@ describe('useDisableProfileSyncing()', () => {
     });
 
     expect(mockDisableProfileSyncingAction).toHaveBeenCalled();
-  });
-
-  it('should sign out the user if MetaMetrics is not enabled and the user is signed in', async () => {
-    const mockPerformSignOutAction = jest.spyOn(actions, 'performSignOut');
-
-    const { result } = renderHookWithProviderTyped(
-      () => useDisableProfileSyncing(),
-      {
-        metamask: {
-          participateInMetaMetrics: false,
-          isSignedIn: true,
-        },
-      },
-      undefined,
-      MetamaskNotificationsProvider,
-    );
-
-    await act(async () => {
-      await result.current.disableProfileSyncing();
-    });
-
-    expect(mockPerformSignOutAction).toHaveBeenCalled();
   });
 });

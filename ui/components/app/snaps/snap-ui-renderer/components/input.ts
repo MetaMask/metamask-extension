@@ -42,6 +42,7 @@ export const input: UIComponentFactory<InputElement> = ({ element, form }) => {
     props: {
       id: element.props.name,
       placeholder: element.props.placeholder,
+      disabled: element.props.disabled,
       ...constructInputProps(element.props),
       name: element.props.name,
       form,

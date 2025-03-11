@@ -16,7 +16,6 @@ const {
   DAPP_URL_LOCALHOST,
   DAPP_ONE_URL,
   DEFAULT_FIXTURE_ACCOUNT,
-  ERC_4337_ACCOUNT,
 } = require('./constants');
 const {
   defaultFixture,
@@ -76,7 +75,6 @@ function onboardingFixture() {
           showNativeTokenAsMainBalance: true,
           petnamesEnabled: true,
           showMultiRpcModal: false,
-          isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
           tokenSortConfig: {
             key: 'tokenFiatAmount',
@@ -90,7 +88,6 @@ function onboardingFixture() {
         theme: 'light',
         useBlockie: false,
         useNftDetection: false,
-        useNonceField: false,
         usePhishDetect: true,
         useTokenDetection: false,
         useCurrencyRateCheck: true,
@@ -268,6 +265,22 @@ class FixtureBuilder {
     return this.withKeyringController({
       vault:
         '{"data":"s6TpYjlUNsn7ifhEFTkuDGBUM1GyOlPrim7JSjtfIxgTt8/6MiXgiR/CtFfR4dWW2xhq85/NGIBYEeWrZThGdKGarBzeIqBfLFhw9n509jprzJ0zc2Rf+9HVFGLw+xxC4xPxgCS0IIWeAJQ+XtGcHmn0UZXriXm8Ja4kdlow6SWinB7sr/WM3R0+frYs4WgllkwggDf2/Tv6VHygvLnhtzp6hIJFyTjh+l/KnyJTyZW1TkZhDaNDzX3SCOHT","iv":"FbeHDAW5afeWNORfNJBR0Q==","salt":"TxZ+WbCW6891C9LK/hbMAoUsSEW1E8pyGLVBU6x5KR8="}',
+    });
+  }
+
+  /**
+   * Add a keyring controller with a vault that contains multiple SRP keyrings.
+   *
+   * @returns {FixtureBuilder}
+   */
+  withKeyringControllerMultiSRP() {
+    return this.withKeyringController({
+      keyringsMetadata: [
+        { id: '01JNGTRZ3QCEEQ7GYYFXBSQSBK', name: 'SRP 1' },
+        { id: '01JNGTTNRVYNQVN5FN8YTFAMJ4', name: 'SRP 2' },
+      ],
+      vault:
+        '{"data":"EfMp/e5oTwIWzxXXUKJDBwnG9ooALjzWDh0Stb2anQ5Q763pW9H0KJ6LJ8J+AnMkfWqP93JWEl0i7meCgDHQz/2rkE15ZAsY3IInEgLYPFqDbEr4zI/wfvHNg5GJGA4v14X/C+ts6asQeJUdMlUgC3m2mVdpis7ALACtDCIWWRuTkdq0jtkafXQra1ExMulPV31ZOMnDsvgHUuoXlL7+om8yNYqKuwMqVO/09X+WdbRG7EJqjNzjfV8BrNvOAJnhmdQpWGXKyIk0IA4o1QFJO8fmrXZMRmf64a3TWYAmEp6jAG3Rz9X4nnL52BpLjMBcik0L8k5y8ZuUZH5+Wme1D86HaHwnJtZvsRULuPFYbb/UCsfW9PwcyYZ4bmDOn/xYiOEFTk0Ku8PE6vkFqcIrrkCJoWaw6BnuriRovsoduzuGcAaJNvQ2bXvV2yyCdQSP7i2WnlXGgRDO7beCamoa80YIf+PAGFC00UxuyBWda4eZ+ipixGmGdp4EpBzt0GgY9GMknA6ivyb2UUNOyz4DMVL/CjjiU9ezf/Go22RzSLcXLUYF4KlpLEP6sFJCG3Uo2WzUWQFiy6Gs/VrYitLeB52MTNRfEviXXmlN+rSQc02zg8xPG19WCnjA3e7fkYzP0aL/DOtWuNqIZwP3s7EziiIGlb/cxIxc0VwyI/Ew0XG2/xbxt8WKsY2DkXdgMsviHcz3u+1STZaxiORVOeBsKnj8w6nEtzbqPxTRpqva7q4nOICk6Xbc//YHezqg8kJWvPmLeZAuYY4VyMiBthCG+qvHqtnhIQ8iobUdhqJ5+QlukPLmFMXfKqPF1fFEPk1vtpCNwhURkG7z2xDzGIzjXmSQUjtlFP6vqmFaqJAgpbuw1mVfoDudQ3cZCH71W5gOyn3TeMIyVse39W/+dK3YLXqmt+Sx05GsXco9QeSlBzAGhMYFB1GKxaiZIEACGg==","iv":"JvKKq/Rs8pbTTamsoPgcGQ==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"Su9hh66sokHRahkEZLUGowOI1pPbNCT90ymFqLFYza0="}',
     });
   }
 
@@ -456,17 +469,12 @@ class FixtureBuilder {
             chains: {},
           },
         },
-        destTokens: {},
-        destTopAssets: [],
-        srcTokens: {},
-        srcTopAssets: [],
       },
     };
     return this;
   }
 
   withPermissionControllerConnectedToTestDapp({
-    restrictReturnedAccounts = true,
     account = '',
     useLocalhostHostname = false,
   } = {}) {
@@ -480,14 +488,10 @@ class FixtureBuilder {
               id: 'ZaqPEWxyhNCJYACFw93jE',
               parentCapability: 'eth_accounts',
               invoker: DAPP_URL,
-              caveats: restrictReturnedAccounts && [
+              caveats: [
                 {
                   type: 'restrictReturnedAccounts',
-                  value: [
-                    selectedAccount.toLowerCase(),
-                    '0x09781764c08de8ca82e156bbf156a3ca217c7950',
-                    ERC_4337_ACCOUNT.toLowerCase(),
-                  ],
+                  value: [selectedAccount.toLowerCase()],
                 },
               ],
               date: 1664388714636,
@@ -498,9 +502,7 @@ class FixtureBuilder {
     });
   }
 
-  withPermissionControllerSnapAccountConnectedToTestDapp(
-    restrictReturnedAccounts = true,
-  ) {
+  withPermissionControllerConnectedToTestDappWithChains(chainIds) {
     return this.withPermissionController({
       subjects: {
         [DAPP_URL]: {
@@ -510,7 +512,71 @@ class FixtureBuilder {
               id: 'ZaqPEWxyhNCJYACFw93jE',
               parentCapability: 'eth_accounts',
               invoker: DAPP_URL,
-              caveats: restrictReturnedAccounts && [
+              caveats: [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: [DEFAULT_FIXTURE_ACCOUNT.toLowerCase()],
+                },
+              ],
+              date: 1664388714636,
+            },
+            'endowment:permitted-chains': {
+              id: 'D7cac0a2e3BD8f349506a',
+              parentCapability: 'endowment:permitted-chains',
+              invoker: DAPP_URL,
+              caveats: [
+                {
+                  type: 'restrictNetworkSwitching',
+                  value: chainIds,
+                },
+              ],
+              date: 1664388714637,
+            },
+          },
+        },
+      },
+    });
+  }
+
+  withPermissionControllerConnectedToTestDappWithTwoAccounts() {
+    const subjects = {
+      [DAPP_URL]: {
+        origin: DAPP_URL,
+        permissions: {
+          eth_accounts: {
+            id: 'ZaqPEWxyhNCJYACFw93jE',
+            parentCapability: 'eth_accounts',
+            invoker: DAPP_URL,
+            caveats: [
+              {
+                type: 'restrictReturnedAccounts',
+                value: [
+                  '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                  '0x09781764c08de8ca82e156bbf156a3ca217c7950',
+                ],
+              },
+            ],
+            date: 1664388714636,
+          },
+        },
+      },
+    };
+    return this.withPermissionController({
+      subjects,
+    });
+  }
+
+  withPermissionControllerSnapAccountConnectedToTestDapp() {
+    return this.withPermissionController({
+      subjects: {
+        [DAPP_URL]: {
+          origin: DAPP_URL,
+          permissions: {
+            eth_accounts: {
+              id: 'ZaqPEWxyhNCJYACFw93jE',
+              parentCapability: 'eth_accounts',
+              invoker: DAPP_URL,
+              caveats: [
                 {
                   type: 'restrictReturnedAccounts',
                   value: ['0x09781764c08de8ca82e156bbf156a3ca217c7950'],
@@ -524,9 +590,7 @@ class FixtureBuilder {
     });
   }
 
-  withPermissionControllerConnectedToTwoTestDapps(
-    restrictReturnedAccounts = true,
-  ) {
+  withPermissionControllerConnectedToTwoTestDapps() {
     return this.withPermissionController({
       subjects: {
         [DAPP_URL]: {
@@ -536,13 +600,10 @@ class FixtureBuilder {
               id: 'ZaqPEWxyhNCJYACFw93jE',
               parentCapability: 'eth_accounts',
               invoker: DAPP_URL,
-              caveats: restrictReturnedAccounts && [
+              caveats: [
                 {
                   type: 'restrictReturnedAccounts',
-                  value: [
-                    '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-                    '0x09781764c08de8ca82e156bbf156a3ca217c7950',
-                  ],
+                  value: ['0x5cfe73b6021e818b776b421b1c4db2474086a7e1'],
                 },
               ],
               date: 1664388714636,
@@ -556,13 +617,10 @@ class FixtureBuilder {
               id: 'AqPEWxyhNCJYACFw93jE4',
               parentCapability: 'eth_accounts',
               invoker: DAPP_ONE_URL,
-              caveats: restrictReturnedAccounts && [
+              caveats: [
                 {
                   type: 'restrictReturnedAccounts',
-                  value: [
-                    '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-                    '0x09781764c08de8ca82e156bbf156a3ca217c7950',
-                  ],
+                  value: ['0x5cfe73b6021e818b776b421b1c4db2474086a7e1'],
                 },
               ],
               date: 1664388714636,
@@ -696,11 +754,6 @@ class FixtureBuilder {
     });
   }
 
-  withPreferencesControllerAndFeatureFlag(flags) {
-    merge(this.fixture.data.PreferencesController, flags);
-    return this;
-  }
-
   withAccountsController(data) {
     merge(this.fixture.data.AccountsController, data);
     return this;
@@ -723,6 +776,7 @@ class FixtureBuilder {
               'eth_signTypedData_v4',
             ],
             type: 'eip155:eoa',
+            scopes: ['eip155:0'],
             metadata: {
               name: 'Account 1',
               lastSelected: 1665507600000,
@@ -743,6 +797,7 @@ class FixtureBuilder {
               'eth_signTypedData_v4',
             ],
             type: 'eip155:eoa',
+            scopes: ['eip155:0'],
             metadata: {
               name: 'Account 2',
               keyring: {
@@ -762,6 +817,7 @@ class FixtureBuilder {
               'eth_signTypedData_v4',
             ],
             type: 'eip155:eoa',
+            scopes: ['eip155:0'],
             metadata: {
               name: 'Account 3',
               keyring: {
@@ -790,6 +846,7 @@ class FixtureBuilder {
               'eth_signTypedData_v4',
             ],
             type: 'eip155:eoa',
+            scopes: ['eip155:0'],
             metadata: {
               name: 'Account 1',
               lastSelected: 1665507600000,
@@ -810,6 +867,7 @@ class FixtureBuilder {
               'eth_signTypedData_v4',
             ],
             type: 'eip155:eoa',
+            scopes: ['eip155:0'],
             metadata: {
               name: 'Account 2',
               lastSelected: 1665507800000,
@@ -1392,6 +1450,7 @@ class FixtureBuilder {
                 'eth_signTypedData_v4',
               ],
               type: 'eip155:eoa',
+              scopes: ['eip155:0'],
               metadata: {
                 name: 'Account 1',
                 importTime: 1724486724986,
@@ -1414,6 +1473,7 @@ class FixtureBuilder {
                 'eth_signTypedData_v4',
               ],
               type: 'eip155:eoa',
+              scopes: ['eip155:0'],
               metadata: {
                 name: 'Trezor 1',
                 importTime: 1724486729079,

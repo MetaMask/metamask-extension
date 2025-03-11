@@ -30,12 +30,12 @@ class AccountListPage {
     '[data-testid="submit-add-account-with-name"]';
 
   private readonly addBtcAccountButton = {
-    text: messages.addNewBitcoinAccount.message,
+    text: messages.addBitcoinAccountLabel.message,
     tag: 'button',
   };
 
   private readonly addSolanaAccountButton = {
-    text: messages.addNewSolanaAccount.message,
+    text: messages.addNewSolanaAccountLabel.message,
     tag: 'button',
   };
 
@@ -46,7 +46,7 @@ class AccountListPage {
     '[data-testid="multichain-account-menu-popover-add-watch-only-account"]';
 
   private readonly addHardwareWalletButton = {
-    text: 'Add hardware wallet',
+    text: 'Hardware wallet',
     tag: 'button',
   };
 
@@ -129,6 +129,31 @@ class AccountListPage {
     tag: 'h4',
   };
 
+  private readonly selectAccountSelector =
+    '.multichain-account-list-item__account-name';
+
+  private readonly importSrpButton = {
+    text: 'Secret Recovery Phrase',
+    tag: 'button',
+  };
+
+  private readonly importSrpModalTitle = {
+    text: 'Import Secret Recovery Phrase',
+    tag: 'h4',
+  };
+
+  private readonly importSrpInput = '#import-srp__srp-word-0';
+
+  private readonly importSrpConfirmButton = {
+    text: 'Import wallet',
+    tag: 'button',
+  };
+
+  private readonly viewAccountOnExplorerButton = {
+    text: 'View on explorer',
+    tag: 'p',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -203,6 +228,49 @@ class AccountListPage {
       await this.driver.clickElementAndWaitToDisappear(
         this.importAccountConfirmButton,
       );
+    }
+  }
+
+  /**
+   * Adds a new Solana account with optional custom name.
+   *
+   * @param options - Options for creating the Solana account
+   * @param [options.solanaAccountCreationEnabled] - Whether Solana account creation is enabled. If false, verifies the create button is disabled.
+   * @param [options.accountName] - Optional custom name for the new account
+   * @returns Promise that resolves when account creation is complete
+   */
+  async addNewSolanaAccount({
+    solanaAccountCreationEnabled = true,
+    accountName = '',
+  }: {
+    solanaAccountCreationEnabled?: boolean;
+    accountName?: string;
+  } = {}): Promise<void> {
+    console.log(
+      `Adding new Solana account${
+        accountName ? ` with custom name: ${accountName}` : ' with default name'
+      }`,
+    );
+    if (solanaAccountCreationEnabled) {
+      await this.driver.clickElement(this.addSolanaAccountButton);
+      // needed to mitigate a race condition with the state update
+      // there is no condition we can wait for in the UI
+      if (accountName) {
+        await this.driver.fill(this.accountNameInput, accountName);
+      }
+      await this.driver.clickElementAndWaitToDisappear(
+        this.addAccountConfirmButton,
+        // Longer timeout than usual, this reduces the flakiness
+        // around Bitcoin account creation (mainly required for
+        // Firefox)
+        5000,
+      );
+    } else {
+      const createButton = await this.driver.findElement(
+        this.addSolanaAccountButton,
+      );
+      assert.equal(await createButton.isEnabled(), false);
+      await this.driver.clickElement(this.closeAccountModalButton);
     }
   }
 
@@ -333,6 +401,19 @@ class AccountListPage {
   }
 
   /**
+   * View the account on explorer for the specified account in account list.
+   *
+   * @param accountLabel - The label of the account to view on explorer.
+   */
+  async viewAccountOnExplorer(accountLabel: string): Promise<void> {
+    console.log(
+      `View account on explorer in account list for account ${accountLabel}`,
+    );
+    await this.openAccountOptionsInAccountList(accountLabel);
+    await this.driver.clickElement(this.viewAccountOnExplorerButton);
+  }
+
+  /**
    * Checks that the account value and suffix is displayed in the account list.
    *
    * @param expectedValueAndSuffix - The expected value and suffix to check.
@@ -343,10 +424,16 @@ class AccountListPage {
     console.log(
       `Check that account value and suffix ${expectedValueAndSuffix} is displayed in account list`,
     );
-    await this.driver.waitForSelector({
-      css: this.accountValueAndSuffix,
-      text: expectedValueAndSuffix,
-    });
+    await this.driver.findElement(this.accountValueAndSuffix, 5000);
+    await this.driver.waitForSelector(
+      {
+        css: this.accountValueAndSuffix,
+        text: expectedValueAndSuffix,
+      },
+      {
+        timeout: 20000,
+      },
+    );
   }
 
   async check_addBitcoinAccountAvailable(
@@ -483,6 +570,18 @@ class AccountListPage {
     });
   }
 
+  async check_accountNotDisplayedInAccountList(
+    expectedLabel: string = 'Account',
+  ): Promise<void> {
+    console.log(
+      `Check that account label ${expectedLabel} is not displayed in account list`,
+    );
+    await this.driver.assertElementNotPresent({
+      css: this.accountListItem,
+      text: expectedLabel,
+    });
+  }
+
   /**
    * Checks that the account with the specified label is not displayed in the account list.
    *
@@ -605,6 +704,22 @@ class AccountListPage {
     );
     await this.openAccountOptionsInAccountList(accountLabel);
     await this.driver.assertElementNotPresent(this.removeAccountButton);
+  }
+
+  async selectAccount(accountLabel: string): Promise<void> {
+    await this.driver.clickElement({
+      css: this.selectAccountSelector,
+      text: accountLabel,
+    });
+  }
+
+  async startImportSecretPhrase(srp: string): Promise<void> {
+    console.log(`Importing ${srp.split(' ').length} word srp`);
+    await this.driver.clickElement(this.createAccountButton);
+    await this.driver.clickElement(this.importSrpButton);
+    await this.driver.waitForSelector(this.importSrpModalTitle);
+    await this.driver.pasteIntoField(this.importSrpInput, srp);
+    await this.driver.clickElement(this.importSrpConfirmButton);
   }
 }
 

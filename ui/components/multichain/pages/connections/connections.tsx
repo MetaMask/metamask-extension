@@ -51,7 +51,7 @@ import {
 import { Content, Footer, Header, Page } from '../page';
 import { ConnectAccountsModal } from '../../connect-accounts-modal/connect-accounts-modal';
 import {
-  requestAccountsPermissionWithId,
+  requestAccountsAndChainPermissionsWithId,
   removePermissionsFor,
 } from '../../../../store/actions';
 import {
@@ -126,7 +126,7 @@ export const Connections = () => {
   }
   const requestAccountsPermission = async () => {
     const requestId = await dispatch(
-      requestAccountsPermissionWithId(tabToConnect.origin),
+      requestAccountsAndChainPermissionsWithId(tabToConnect.origin),
     );
     history.push(`${CONNECT_ROUTE}/${requestId}`);
   };
@@ -389,7 +389,7 @@ export const Connections = () => {
               size={ButtonPrimarySize.Lg}
               block
               data-test-id="no-connections-button"
-              onClick={() => dispatch(requestAccountsPermission())}
+              onClick={() => requestAccountsPermission()}
             >
               {t('connectAccounts')}
             </ButtonPrimary>

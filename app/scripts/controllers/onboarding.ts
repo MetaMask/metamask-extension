@@ -2,7 +2,7 @@ import {
   BaseController,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedControllerMessenger,
+  RestrictedMessenger,
 } from '@metamask/base-controller';
 import log from 'loglevel';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
@@ -99,7 +99,7 @@ export type AllowedEvents = never;
 /**
  * Messenger type for the {@link OnboardingController}.
  */
-export type OnboardingControllerMessenger = RestrictedControllerMessenger<
+export type OnboardingControllerMessenger = RestrictedMessenger<
   typeof controllerName,
   OnboardingControllerActions | AllowedActions,
   OnboardingControllerControllerEvents | AllowedEvents,

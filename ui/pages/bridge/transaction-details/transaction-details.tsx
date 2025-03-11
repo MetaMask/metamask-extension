@@ -39,13 +39,14 @@ import {
   AlignItems,
   Display,
   FlexDirection,
+  FlexWrap,
+  JustifyContent,
   TextColor,
   TextTransform,
 } from '../../../helpers/constants/design-system';
 import { formatDate } from '../../../helpers/utils/util';
 import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { selectedAddressTxListSelector } from '../../../selectors';
 import {
   MetaMetricsContextProp,
@@ -57,6 +58,11 @@ import { formatAmount } from '../../confirmations/components/simulation-details/
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import TransactionActivityLog from '../../../components/app/transaction-activity-log';
+import {
+  NETWORK_TO_SHORT_NETWORK_NAME_MAP,
+  AllowedBridgeChainIds,
+} from '../../../../shared/constants/bridge';
+import { getImageForChainId } from '../../../selectors/multichain';
 import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
 import BridgeStepList from './bridge-step-list';
@@ -168,10 +174,10 @@ const CrossChainSwapTxDetails = () => {
     getNetworkConfigurationsByChainId,
   );
 
-  const { transactionGroup, isEarliestNonce } = location.state as {
-    transactionGroup: TransactionGroup;
-    isEarliestNonce: boolean;
-  };
+  const transactionGroup: TransactionGroup | null =
+    location.state?.transactionGroup || null;
+  const isEarliestNonce: boolean | null =
+    location.state?.isEarliestNonce || null;
   const srcChainTxMeta = selectedAddressTxList.find(
     (tx) => tx.id === srcTxMetaId,
   );
@@ -196,19 +202,21 @@ const CrossChainSwapTxDetails = () => {
     : StatusTypes.PENDING;
 
   const srcChainIconUrl = srcNetwork
-    ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-        srcNetwork.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-      ]
+    ? getImageForChainId(srcNetwork.chainId)
     : undefined;
 
   const destChainIconUrl = destNetwork
-    ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-        destNetwork.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-      ]
+    ? getImageForChainId(destNetwork.chainId)
     : undefined;
 
-  const srcNetworkName = srcNetwork?.name;
-  const destNetworkName = destNetwork?.name;
+  const srcNetworkName =
+    NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+      srcNetwork?.chainId as AllowedBridgeChainIds
+    ];
+  const destNetworkName =
+    NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+      destNetwork?.chainId as AllowedBridgeChainIds
+    ];
 
   const data = srcChainTxMeta
     ? getTransactionBreakdownData({
@@ -354,6 +362,8 @@ const CrossChainSwapTxDetails = () => {
                   display={Display.Flex}
                   gap={1}
                   alignItems={AlignItems.center}
+                  flexWrap={FlexWrap.Wrap}
+                  justifyContent={JustifyContent.flexEnd}
                 >
                   {srcNetworkIconName}
                   <Icon name={IconName.Arrow2Right} size={IconSize.Sm} />
@@ -385,6 +395,8 @@ const CrossChainSwapTxDetails = () => {
                   display={Display.Flex}
                   gap={1}
                   alignItems={AlignItems.center}
+                  flexWrap={FlexWrap.Wrap}
+                  justifyContent={JustifyContent.flexEnd}
                 >
                   {t('bridgeTxDetailsTokenAmountOnChain', [
                     bridgeAmountSent,
@@ -394,22 +406,27 @@ const CrossChainSwapTxDetails = () => {
                 </Box>
               }
             />
-            <TransactionDetailRow
-              title={t('bridgeTxDetailsYouReceived')}
-              value={
-                <Box
-                  display={Display.Flex}
-                  gap={1}
-                  alignItems={AlignItems.center}
-                >
-                  {t('bridgeTxDetailsTokenAmountOnChain', [
-                    bridgeAmountReceived,
-                    bridgeHistoryItem?.quote.destAsset.symbol,
-                  ])}
-                  {destNetworkIconName}
-                </Box>
-              }
-            />
+            {bridgeAmountReceived &&
+              bridgeHistoryItem?.quote.destAsset.symbol && (
+                <TransactionDetailRow
+                  title={t('bridgeTxDetailsYouReceived')}
+                  value={
+                    <Box
+                      display={Display.Flex}
+                      gap={1}
+                      alignItems={AlignItems.center}
+                      flexWrap={FlexWrap.Wrap}
+                      justifyContent={JustifyContent.flexEnd}
+                    >
+                      {t('bridgeTxDetailsTokenAmountOnChain', [
+                        bridgeAmountReceived,
+                        bridgeHistoryItem?.quote.destAsset.symbol,
+                      ])}
+                      {destNetworkIconName}
+                    </Box>
+                  }
+                />
+              )}
             <TransactionDetailRow
               title={t('bridgeTxDetailsTotalGasFee')}
               value={
@@ -440,12 +457,13 @@ const CrossChainSwapTxDetails = () => {
                   : undefined
               }
             />
-
-            <TransactionActivityLog
-              transactionGroup={transactionGroup}
-              className="transaction-list-item-details__transaction-activity-log"
-              isEarliestNonce={isEarliestNonce}
-            />
+            {transactionGroup && typeof isEarliestNonce !== 'undefined' && (
+              <TransactionActivityLog
+                transactionGroup={transactionGroup}
+                className="transaction-list-item-details__transaction-activity-log"
+                isEarliestNonce={isEarliestNonce}
+              />
+            )}
           </Box>
         </Box>
       </Content>

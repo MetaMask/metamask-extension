@@ -1,5 +1,6 @@
 import { ChangeEvent as ReactChangeEvent } from 'react';
 import { JSXElement, SnapsChildren } from '@metamask/snaps-sdk/jsx';
+import type { COMPONENT_MAPPING } from '.';
 
 export type UIComponentParams<T extends JSXElement> = {
   map: Record<string, number>;
@@ -13,6 +14,8 @@ export type UIComponentParams<T extends JSXElement> = {
     placeholder?: string;
   };
   t: (key: string) => string;
+  contentBackgroundColor: string | undefined;
+  componentMap: COMPONENT_MAPPING;
 };
 
 export type UIComponent = {

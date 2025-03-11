@@ -60,7 +60,10 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
 
   useEffect(() => {
     setSelectedAccountAddresses(defaultSelectedAccountAddresses);
-  }, [defaultSelectedAccountAddresses]);
+  }, [
+    // TODO: Fix the source of this prop value to be the same array instance each render
+    JSON.stringify(defaultSelectedAccountAddresses),
+  ]);
 
   const selectAll = () => {
     const allNetworksAccountAddresses = accounts.map(({ address }) => address);

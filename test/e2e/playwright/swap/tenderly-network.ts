@@ -4,7 +4,7 @@ export const Tenderly = {
   Mainnet: {
     name: 'Ethereum Mainnet',
     rpcName: 'Tenderly - Mainnet',
-    url: 'https://virtual.mainnet.rpc.tenderly.co/03bb8912-7505-4856-839f-52819a26d0cd',
+    url: 'https://virtual.mainnet.rpc.tenderly.co/6a1cf1d8-3625-4ba0-b07e-c620d326ecb9',
     chainID: '0x1',
     symbol: 'ETH',
   },
@@ -25,7 +25,7 @@ export const Tenderly = {
   Linea: {
     name: 'Linea',
     rpcName: '',
-    url: 'https://virtual.linea.rpc.tenderly.co/2c429ceb-43db-45bc-9d84-21a40d21e0d2',
+    url: 'https://virtual.linea.rpc.tenderly.co/76ec2678-5c4e-4cd8-baa0-8d3dea738645',
     chainID: '0xe708',
     symbol: 'ETH',
   },

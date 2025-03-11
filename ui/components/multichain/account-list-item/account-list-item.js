@@ -1,7 +1,9 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
+import { BigNumber } from 'bignumber.js';
+///: END:ONLY_INCLUDE_IF
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSnapName, shortenAddress } from '../../../helpers/utils/util';
@@ -55,6 +57,9 @@ import {
   getChainIdsToPoll,
   getSnapsMetadata,
 } from '../../../selectors';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
+import { getIntlLocale } from '../../../ducks/locale/locale';
+///: END:ONLY_INCLUDE_IF
 import {
   getMultichainIsTestnet,
   getMultichainNativeCurrency,
@@ -64,10 +69,6 @@ import {
 } from '../../../selectors/multichain';
 import { useMultichainAccountTotalFiatBalance } from '../../../hooks/useMultichainAccountTotalFiatBalance';
 import { ConnectedStatus } from '../connected-status';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
-import { useTheme } from '../../../hooks/useTheme';
-///: END:ONLY_INCLUDE_IF
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
@@ -75,6 +76,12 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
+import { getMultichainAggregatedBalance } from '../../../selectors/assets';
+///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
+import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
+///: END:ONLY_INCLUDE_IF
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -98,6 +105,9 @@ const AccountListItem = ({
   privacyMode = false,
 }) => {
   const t = useI18nContext();
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
+  const locale = useSelector(getIntlLocale);
+  ///: END:ONLY_INCLUDE_IF
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
@@ -127,6 +137,13 @@ const AccountListItem = ({
     shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
   const accountTotalFiatBalances =
     useMultichainAccountTotalFiatBalance(account);
+
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  const multichainAggregatedBalance = useSelector((state) =>
+    getMultichainAggregatedBalance(state, account),
+  );
+  ///: END:ONLY_INCLUDE_IF
+
   // cross chain agg balance
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
@@ -158,15 +175,24 @@ const AccountListItem = ({
         ? account.balance
         : totalFiatBalance;
   } else {
-    balanceToTranslate = accountTotalFiatBalances.totalBalance;
+    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+    balanceToTranslate = multichainAggregatedBalance;
+    ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
+    const balanceOrFallback = accountTotalFiatBalances?.totalBalance ?? 0;
+    const bnBalance = new BigNumber(balanceOrFallback);
+    const formattedBalanceToTranslate = formatWithThreshold(
+      bnBalance.toNumber(),
+      0.00001,
+      locale,
+      {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 5,
+      },
+    );
+    balanceToTranslate = formattedBalanceToTranslate;
+    ///: END:ONLY_INCLUDE_IF
   }
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const custodianIcon = useSelector((state) =>
-    getCustodianIconForAddress(state, account.address),
-  );
-  const theme = useTheme();
-  ///: END:ONLY_INCLUDE_IF
 
   // If this is the selected item in the Account menu,
   // scroll the item into view
@@ -192,6 +218,31 @@ const AccountListItem = ({
   const isConnected =
     currentTabOrigin && currentTabIsConnectedToSelectedAddress;
   const isSingleAccount = accountsCount === 1;
+
+  const getIsAggregatedFiatOverviewBalanceProp = () => {
+    let isAggregatedFiatOverviewBalance;
+    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+    isAggregatedFiatOverviewBalance =
+      (!isTestnet && process.env.PORTFOLIO_VIEW && shouldShowFiat) ||
+      !isEvmNetwork;
+    ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
+    isAggregatedFiatOverviewBalance =
+      !isTestnet && process.env.PORTFOLIO_VIEW && shouldShowFiat;
+    ///: END:ONLY_INCLUDE_IF
+    return isAggregatedFiatOverviewBalance;
+  };
+
+  const getPreferredCurrencyValue = () => {
+    let value;
+    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+    value = account.balance;
+    ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
+    value = isEvmNetwork ? account.balance : balanceToTranslate;
+    ///: END:ONLY_INCLUDE_IF
+    return value;
+  };
 
   return (
     <Box
@@ -246,34 +297,6 @@ const AccountListItem = ({
               }
               marginInlineEnd={2}
             />
-            ///: END:ONLY_INCLUDE_IF
-          }
-
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            custodianIcon ? (
-              <img
-                src={custodianIcon}
-                data-testid="custody-logo"
-                className="custody-logo"
-                alt="custody logo"
-                style={{
-                  backgroundColor: theme === 'light' ? 'transparent' : 'white',
-                }}
-              />
-            ) : (
-              <AvatarAccount
-                borderColor={BorderColor.transparent}
-                size={Size.MD}
-                address={account.address}
-                variant={
-                  useBlockie
-                    ? AvatarAccountVariant.Blockies
-                    : AvatarAccountVariant.Jazzicon
-                }
-                marginInlineEnd={2}
-              />
-            )
             ///: END:ONLY_INCLUDE_IF
           }
         </Box>
@@ -355,9 +378,7 @@ const AccountListItem = ({
                 value={balanceToTranslate}
                 type={PRIMARY}
                 showFiat={showFiat}
-                isAggregatedFiatOverviewBalance={
-                  !isTestnet && process.env.PORTFOLIO_VIEW && shouldShowFiat
-                }
+                isAggregatedFiatOverviewBalance={getIsAggregatedFiatOverviewBalanceProp()}
                 data-testid="first-currency-display"
                 privacyMode={privacyMode}
               />
@@ -402,7 +423,7 @@ const AccountListItem = ({
                 <UserPreferencedCurrencyDisplay
                   account={account}
                   ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                  value={isEvmNetwork ? account.balance : balanceToTranslate}
+                  value={getPreferredCurrencyValue()}
                   type={SECONDARY}
                   showNative
                   data-testid="second-currency-display"

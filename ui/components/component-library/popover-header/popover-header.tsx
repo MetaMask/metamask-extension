@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import { HeaderBase, ButtonIcon, ButtonIconSize, IconName, Text } from '..';
+import { Text } from '../text';
 import {
   IconColor,
   TextVariant,
@@ -8,7 +8,10 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { PopoverHeaderProps } from '.';
+import { HeaderBase } from '../header-base';
+import { ButtonIcon, ButtonIconSize } from '../button-icon';
+import { IconName } from '../icon';
+import type { PopoverHeaderProps } from './popover-header.types';
 
 export const PopoverHeader: React.FC<PopoverHeaderProps> = ({
   children,

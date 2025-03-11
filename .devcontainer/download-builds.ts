@@ -1,6 +1,10 @@
 import { execSync } from 'child_process';
 import util from 'util';
-
+import {
+  getJobsByWorkflowId,
+  getPipelineId,
+  getWorkflowId,
+} from '../.github/scripts/shared/circle-artifacts';
 const exec = util.promisify(require('node:child_process').exec);
 
 function getGitBranch() {
@@ -10,34 +14,10 @@ function getGitBranch() {
   return gitOutput.match(branchRegex)?.groups?.branch || 'main';
 }
 
-async function getCircleJobs(branch: string) {
-  let response = await fetch(
-    `https://circleci.com/api/v2/project/gh/MetaMask/metamask-extension/pipeline?branch=${branch}`,
-  );
-
-  const pipelineId = (await response.json()).items[0].id;
-
-  console.log('pipelineId:', pipelineId);
-
-  response = await fetch(
-    `https://circleci.com/api/v2/pipeline/${pipelineId}/workflow`,
-  );
-
-  const workflowId = (await response.json()).items[0].id;
-
-  console.log('workflowId:', workflowId);
-
-  response = await fetch(
-    `https://circleci.com/api/v2/workflow/${workflowId}/job`,
-  );
-
-  const jobs = (await response.json()).items;
-
-  return jobs;
-}
-
 async function getBuilds(branch: string, jobNames: string[]) {
-  const jobs = await getCircleJobs(branch);
+  const pipelineId = await getPipelineId(branch);
+  const workflowId = await getWorkflowId(pipelineId);
+  const jobs = await getJobsByWorkflowId(workflowId);
   let builds = [] as any[];
 
   for (const jobName of jobNames) {
@@ -137,7 +117,7 @@ function unzipBuilds(folder: 'builds' | 'builds-test', versionNumber: string) {
 }
 
 async function main(jobNames: string[]) {
-  const branch = getGitBranch();
+  const branch = process.env.CIRCLE_BRANCH || getGitBranch();
 
   const builds = await getBuilds(branch, jobNames);
 
