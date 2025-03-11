@@ -6658,9 +6658,6 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(
       middlewareMaker({
-        grantPermissions: this.permissionController.grantPermissions.bind(
-          this.permissionController,
-        ),
         findNetworkClientIdByChainId:
           this.networkController.findNetworkClientIdByChainId.bind(
             this.networkController,
@@ -6668,10 +6665,11 @@ export default class MetamaskController extends EventEmitter {
         listAccounts: this.accountsController.listAccounts.bind(
           this.accountsController,
         ),
-        requestPermissionApprovalForOrigin: this.requestPermissionApproval.bind(
-          this,
-          origin,
-        ),
+        requestPermissionsForOrigin: (requestedPermissions) =>
+          this.permissionController.requestPermissions(
+            { origin },
+            requestedPermissions,
+          ),
         sendMetrics: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),

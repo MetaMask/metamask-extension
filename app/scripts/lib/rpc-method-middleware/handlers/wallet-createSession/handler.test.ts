@@ -54,8 +54,8 @@ const baseRequest = {
 const createMockedHandler = () => {
   const next = jest.fn();
   const end = jest.fn();
-  const requestPermissionApprovalForOrigin = jest.fn().mockResolvedValue({
-    permissions: {
+  const requestPermissionsForOrigin = jest.fn().mockResolvedValue([
+    {
       [Caip25EndowmentPermissionName]: {
         caveats: [
           {
@@ -78,8 +78,7 @@ const createMockedHandler = () => {
         ],
       },
     },
-  });
-  const grantPermissions = jest.fn().mockResolvedValue(undefined);
+  ]);
   const findNetworkClientIdByChainId = jest.fn().mockReturnValue('mainnet');
   const sendMetrics = jest.fn();
   const metamaskState = {
@@ -104,8 +103,7 @@ const createMockedHandler = () => {
   ) =>
     walletCreateSession.implementation(request, response, next, end, {
       findNetworkClientIdByChainId,
-      requestPermissionApprovalForOrigin,
-      grantPermissions,
+      requestPermissionsForOrigin,
       metamaskState,
       sendMetrics,
       listAccounts,
@@ -116,8 +114,7 @@ const createMockedHandler = () => {
     next,
     end,
     findNetworkClientIdByChainId,
-    requestPermissionApprovalForOrigin,
-    grantPermissions,
+    requestPermissionsForOrigin,
     metamaskState,
     sendMetrics,
     listAccounts,
@@ -317,7 +314,7 @@ describe('wallet_createSession', () => {
   });
 
   it('requests approval for account and permitted chains permission based on the supported eth accounts and eth chains from the supported scopes in the request', async () => {
-    const { handler, listAccounts, requestPermissionApprovalForOrigin } =
+    const { handler, listAccounts, requestPermissionsForOrigin } =
       createMockedHandler();
     listAccounts.mockReturnValue([
       { address: '0x1' },
@@ -349,7 +346,7 @@ describe('wallet_createSession', () => {
       });
     await handler(baseRequest);
 
-    expect(requestPermissionApprovalForOrigin).toHaveBeenCalledWith({
+    expect(requestPermissionsForOrigin).toHaveBeenCalledWith({
       [Caip25EndowmentPermissionName]: {
         caveats: [
           {
@@ -374,9 +371,8 @@ describe('wallet_createSession', () => {
   });
 
   it('throws an error when requesting account permission approval fails', async () => {
-    const { handler, requestPermissionApprovalForOrigin, end } =
-      createMockedHandler();
-    requestPermissionApprovalForOrigin.mockImplementation(() => {
+    const { handler, requestPermissionsForOrigin, end } = createMockedHandler();
+    requestPermissionsForOrigin.mockImplementation(() => {
       throw new Error('failed to request account permission approval');
     });
     await handler(baseRequest);
@@ -385,105 +381,10 @@ describe('wallet_createSession', () => {
     );
   });
 
-  it('grants the CAIP-25 permission for the supported scopes and accounts that were approved', async () => {
-    const { handler, grantPermissions, requestPermissionApprovalForOrigin } =
-      createMockedHandler();
-    MockMultichain.bucketScopes
-      .mockReturnValueOnce({
-        supportedScopes: {
-          'eip155:5': {
-            methods: ['eth_chainId'],
-            notifications: ['accountsChanged'],
-            accounts: [],
-          },
-        },
-        supportableScopes: {},
-        unsupportableScopes: {},
-      })
-      .mockReturnValueOnce({
-        supportedScopes: {
-          'eip155:100': {
-            methods: ['eth_sendTransaction'],
-            notifications: ['chainChanged'],
-            accounts: ['eip155:1:0x3'],
-          },
-        },
-        supportableScopes: {},
-        unsupportableScopes: {},
-      });
-    requestPermissionApprovalForOrigin.mockResolvedValue({
-      permissions: {
-        [Caip25EndowmentPermissionName]: {
-          caveats: [
-            {
-              type: Caip25CaveatType,
-              value: {
-                requiredScopes: {
-                  'eip155:5': {
-                    accounts: ['eip155:5:0x1', 'eip155:5:0x2'],
-                  },
-                },
-                optionalScopes: {
-                  'eip155:100': {
-                    accounts: ['eip155:100:0x1', 'eip155:100:0x2'],
-                  },
-                  'eip155:1337': {
-                    accounts: ['eip155:1337:0x1', 'eip155:1337:0x2'],
-                  },
-                },
-                isMultichainOrigin: true,
-              },
-            },
-          ],
-        },
-      },
-    });
-    await handler(baseRequest);
-
-    expect(grantPermissions).toHaveBeenCalledWith({
-      subject: { origin: 'http://test.com' },
-      approvedPermissions: {
-        [Caip25EndowmentPermissionName]: {
-          caveats: [
-            {
-              type: Caip25CaveatType,
-              value: {
-                requiredScopes: {
-                  'eip155:5': {
-                    accounts: ['eip155:5:0x1', 'eip155:5:0x2'],
-                  },
-                },
-                optionalScopes: {
-                  'eip155:100': {
-                    accounts: ['eip155:100:0x1', 'eip155:100:0x2'],
-                  },
-                  'eip155:1337': {
-                    accounts: ['eip155:1337:0x1', 'eip155:1337:0x2'],
-                  },
-                },
-                isMultichainOrigin: true,
-              },
-            },
-          ],
-        },
-      },
-    });
-  });
-
-  it('throws an error when granting the CAIP-25 permission fails', async () => {
-    const { handler, grantPermissions, end } = createMockedHandler();
-    grantPermissions.mockImplementation(() => {
-      throw new Error('failed to grant CAIP-25 permissions');
-    });
-    await handler(baseRequest);
-    expect(end).toHaveBeenCalledWith(
-      new Error('failed to grant CAIP-25 permissions'),
-    );
-  });
-
   it('emits the dapp viewed metrics event', async () => {
     MockUtil.shouldEmitDappViewedEvent.mockReturnValue(true);
     const { handler, sendMetrics } = createMockedHandler();
+
     MockMultichain.bucketScopes.mockReturnValue({
       supportedScopes: {},
       supportableScopes: {},
