@@ -301,7 +301,7 @@ describe('NetworkListMenu', () => {
 
     const menuButton = queryByTestId(
       `network-list-item-options-button-eip155:${hexToDecimal(
-        CHAIN_IDS.LINEA_MAINNET,
+        CHAIN_IDS.MAINNET,
       )}`,
     );
     fireEvent.click(menuButton);
