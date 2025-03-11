@@ -14,7 +14,7 @@ export const version = 146;
 
 /**
  * This migration add MegaETH to the network controller
- * as an default avaiable testnet.
+ * as a default Testnet.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly
  * what we persist to disk.
