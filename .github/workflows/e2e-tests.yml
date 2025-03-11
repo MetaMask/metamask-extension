@@ -4,11 +4,11 @@ on:
   workflow_call:
 
 jobs:
-  skip-e2e:
-    name: Skip E2E
+  needs-e2e:
+    name: Needs E2E
     runs-on: ubuntu-latest
     outputs:
-      skip-e2e: ${{ steps.skip-e2e.outputs.SKIP_E2E}}
+      needs-e2e: ${{ steps.needs-e2e.outputs.NEEDS_E2E }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -23,23 +23,23 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Skip E2E
-        id: skip-e2e
+        id: needs-e2e
         env:
           HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
           if git show --format='%B' --no-patch "${HEAD_COMMIT_HASH}" | grep --fixed-strings --quiet '[skip e2e]'; then
               printf '%s\n' "${HEAD_COMMIT_HASH} contains the tag '[skip e2e]' so e2e tests will not run"
-              echo "SKIP_E2E=true" >> "$GITHUB_OUTPUT"
+              echo "NEEDS_E2E=false" >> "$GITHUB_OUTPUT"
           else
               printf '%s\n' "${HEAD_COMMIT_HASH} does not contain the tag '[skip e2e]' so e2e tests will run"
-              echo "SKIP_E2E=false" >> "$GITHUB_OUTPUT"
+              echo "NEEDS_E2E=true" >> "$GITHUB_OUTPUT"
           fi
 
   get-changed-files-with-git-diff:
     needs:
-      - skip-e2e
+      - needs-e2e
     runs-on: ubuntu-latest
-    if: ${{ github.ref != 'refs/heads/master' && !needs.skip-e2e.outputs.skip-e2e }}
+    if: ${{ github.ref != 'refs/heads/master' && needs.needs-e2e.outputs.needs-e2e == 'true' }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -59,8 +59,8 @@ jobs:
 
   prep-build-test:
     needs:
-      - skip-e2e
-    if: ${{ !needs.skip-e2e.outputs.skip-e2e }}
+      - needs-e2e
+    if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout and setup environment
@@ -76,69 +76,12 @@ jobs:
           name: dist-e2e-tests
           path: ./dist/
 
-  prep-build-test-flask:
-    needs:
-      - skip-e2e
-    if: ${{ !needs.skip-e2e.outputs.skip-e2e }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
-        with:
-          is-high-risk-environment: false
-
-      - run: yarn build:test:flask
-
-      - name: Upload dist
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist-e2e-tests-flask
-          path: ./dist/
-
-  prep-build-test-mv2:
-    needs:
-      - skip-e2e
-    if: ${{ !needs.skip-e2e.outputs.skip-e2e }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
-        with:
-          is-high-risk-environment: false
-
-      - run: yarn build:test:mv2
-
-      - name: Upload dist
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist-e2e-tests-mv2
-          path: ./dist/
-
-  prep-build-test-flask-mv2:
-    needs:
-      - skip-e2e
-    if: ${{ !needs.skip-e2e.outputs.skip-e2e }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
-        with:
-          is-high-risk-environment: false
-
-      - run: yarn build:test:flask:mv2
-
-      - name: Upload dist
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist-e2e-tests-flask-mv2
-          path: ./dist/
-
   test-e2e-chrome:
     needs:
-      - skip-e2e
+      - needs-e2e
       - get-changed-files-with-git-diff
       - prep-build-test
-    if: ${{ !needs.skip-e2e.outputs.skip-e2e }}
+    if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     runs-on: ubuntu-22.04
     container:
       image: cimg/node:22.13-browsers
@@ -196,10 +139,9 @@ jobs:
 
   test-e2e-chrome-flask:
     needs:
-      - skip-e2e
-      - prep-build-test-flask
+      - needs-e2e
       - get-changed-files-with-git-diff
-    if: ${{ !needs.skip-e2e.outputs.skip-e2e }}
+    if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     runs-on: ubuntu-22.04
     container:
       image: cimg/node:22.13-browsers
@@ -225,11 +167,7 @@ jobs:
       - name: Install anvil (not installed by checkout-and-setup when cache is restored)
         run: yarn foundryup
 
-      - name: Download prep-build-test-flask artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: dist-e2e-tests-flask
-          path: ./dist/
+      - run: yarn build:test:flask
 
       - name: Configure Xvfb
         run: Xvfb -ac :99 -screen 0 1280x1024x16 &
@@ -256,10 +194,10 @@ jobs:
 
   test-e2e-chrome-multiple-providers:
     needs:
-      - skip-e2e
+      - needs-e2e
       - prep-build-test
       - get-changed-files-with-git-diff
-    if: ${{ !needs.skip-e2e.outputs.skip-e2e }}
+    if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     runs-on: ubuntu-22.04
     container:
       image: cimg/node:22.13-browsers
@@ -309,10 +247,10 @@ jobs:
 
   test-e2e-chrome-rpc:
     needs:
-      - skip-e2e
+      - needs-e2e
       - prep-build-test
       - get-changed-files-with-git-diff
-    if: ${{ !needs.skip-e2e.outputs.skip-e2e }}
+    if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     runs-on: ubuntu-22.04
     container:
       image: cimg/node:22.13-browsers
@@ -359,231 +297,3 @@ jobs:
           path: |
             ./test-artifacts
             ./test/test-results/e2e
-
-  test-e2e-firefox:
-    needs:
-      - skip-e2e
-      - prep-build-test-mv2
-      - get-changed-files-with-git-diff
-    if: ${{ !needs.skip-e2e.outputs.skip-e2e }}
-    runs-on: ubuntu-22.04
-    container:
-      image: cimg/node:22.13-browsers
-    strategy:
-      fail-fast: false
-      matrix:
-        index:
-          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
-    env:
-      MATRIX_INDEX: ${{ matrix.index }}
-      MATRIX_TOTAL: ${{ strategy.job-total }}
-    steps:
-      - name: Install dependencies
-        run: |
-          sudo apt-get update && sudo apt-get install zstd
-          sudo corepack enable
-        shell: bash
-
-      - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
-        with:
-          is-high-risk-environment: false
-
-      - name: Install anvil (not installed by checkout-and-setup when cache is restored)
-        run: yarn foundryup
-
-      - name: Download prep-build-test-mv2 artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: dist-e2e-tests-mv2
-          path: ./dist/
-
-      - name: Configure Xvfb
-        run: Xvfb -ac :99 -screen 0 1280x1024x16 &
-
-      - name: Download changed-files artifact
-        continue-on-error: true
-        uses: actions/download-artifact@v4
-        with:
-          name: changed-files
-          path: ./changed-files/
-
-      - name: Run e2e tests
-        timeout-minutes: 30
-        run: yarn test:e2e:firefox
-
-      - name: Upload test results and artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-e2e-firefox-${{ matrix.index }}
-          path: |
-            ./test-artifacts
-            ./test/test-results/e2e
-
-  test-e2e-firefox-flask:
-    needs:
-      - skip-e2e
-      - prep-build-test-flask-mv2
-      - get-changed-files-with-git-diff
-    if: ${{ !needs.skip-e2e.outputs.skip-e2e }}
-    runs-on: ubuntu-22.04
-    container:
-      image: cimg/node:22.13-browsers
-    strategy:
-      fail-fast: false
-      matrix:
-        index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-    env:
-      MATRIX_INDEX: ${{ matrix.index }}
-      MATRIX_TOTAL: ${{ strategy.job-total }}
-    steps:
-      - name: Install dependencies
-        run: |
-          sudo apt-get update && sudo apt-get install zstd
-          sudo corepack enable
-        shell: bash
-
-      - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
-        with:
-          is-high-risk-environment: false
-
-      - name: Install anvil (not installed by checkout-and-setup when cache is restored)
-        run: yarn foundryup
-
-      - name: Download prep-build-test-flask-mv2 artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: dist-e2e-tests-flask-mv2
-          path: ./dist/
-
-      - name: Configure Xvfb
-        run: Xvfb -ac :99 -screen 0 1280x1024x16 &
-
-      - name: Download changed-files artifact
-        continue-on-error: true
-        uses: actions/download-artifact@v4
-        with:
-          name: changed-files
-          path: ./changed-files/
-
-      - name: Run e2e tests
-        timeout-minutes: 30
-        run: yarn test:e2e:firefox:flask
-
-      - name: Upload test results and artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-e2e-firefox-flask-${{ matrix.index }}
-          path: |
-            ./test-artifacts
-            ./test/test-results/e2e
-
-  prep-build-mv2:
-    needs:
-      - skip-e2e
-    if: ${{ !needs.skip-e2e.outputs.skip-e2e }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
-        with:
-          is-high-risk-environment: false
-
-      - run: ENABLE_MV3=false yarn build dist
-
-      - name: Upload dist
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist-mv2
-          path: ./dist/
-
-  test-mozilla-lint-mv2:
-    needs:
-      - skip-e2e
-      - prep-build-mv2
-      - get-changed-files-with-git-diff
-    if: ${{ !needs.skip-e2e.outputs.skip-e2e }}
-    runs-on: ubuntu-22.04
-    container:
-      image: cimg/node:22.13-browsers
-    steps:
-      - name: Install dependencies
-        run: |
-          sudo apt-get update && sudo apt-get install zstd
-          sudo corepack enable
-        shell: bash
-
-      - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
-        with:
-          is-high-risk-environment: false
-
-      - name: Download prep-build-mv2 artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: dist-mv2
-          path: ./dist/
-
-      - name: Download changed-files artifact
-        continue-on-error: true
-        uses: actions/download-artifact@v4
-        with:
-          name: changed-files
-          path: ./changed-files/
-
-      - name: test:mozilla-lint
-        run: yarn mozilla-lint
-
-      - name: Upload test results and artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-mozilla-lint-mv2
-          path: ./test-artifacts
-
-  validate-source-maps-mv2:
-    needs:
-      - skip-e2e
-      - prep-build-mv2
-      - get-changed-files-with-git-diff
-    if: ${{ !needs.skip-e2e.outputs.skip-e2e }}
-    runs-on: ubuntu-22.04
-    container:
-      image: cimg/node:22.13-browsers
-    steps:
-      - name: Install dependencies
-        run: |
-          sudo apt-get update && sudo apt-get install zstd
-          sudo corepack enable
-        shell: bash
-
-      - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
-        with:
-          is-high-risk-environment: false
-
-      - name: Download prep-build-mv2 artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: dist-mv2
-          path: ./dist/
-
-      - name: Download changed-files artifact
-        continue-on-error: true
-        uses: actions/download-artifact@v4
-        with:
-          name: changed-files
-          path: ./changed-files/
-
-      - name: Validate source maps
-        run: yarn validate-source-maps
-
-      - name: Upload validation artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: source-maps-validation-mv2
-          path: ./validation-artifacts
