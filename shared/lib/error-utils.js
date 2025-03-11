@@ -29,7 +29,7 @@ const _setupLocale = async (currentLocale) => {
   return { currentLocaleMessages, enLocaleMessages };
 };
 
-export const setupErrorLocale = memoize(_setupLocale);
+export const setupLocale = memoize(_setupLocale);
 
 const getLocaleContext = (currentLocaleMessages, enLocaleMessages) => {
   return (key) => {
@@ -45,10 +45,10 @@ export async function getErrorHtml(errorKey, supportLink, metamaskState) {
   let response, preferredLocale;
   if (metamaskState?.currentLocale) {
     preferredLocale = metamaskState.currentLocale;
-    response = await setupErrorLocale(metamaskState.currentLocale);
+    response = await setupLocale(metamaskState.currentLocale);
   } else {
     preferredLocale = await getFirstPreferredLangCode();
-    response = await setupErrorLocale(preferredLocale);
+    response = await setupLocale(preferredLocale);
   }
 
   const textDirection = ['ar', 'dv', 'fa', 'he', 'ku'].includes(preferredLocale)
@@ -101,10 +101,10 @@ export async function getStateCorruptionErrorHtml(supportLink, metamaskState) {
   let response, preferredLocale;
   if (metamaskState?.currentLocale) {
     preferredLocale = metamaskState.currentLocale;
-    response = await setupErrorLocale(metamaskState.currentLocale);
+    response = await setupLocale(metamaskState.currentLocale);
   } else {
     preferredLocale = await getFirstPreferredLangCode();
-    response = await setupErrorLocale(preferredLocale);
+    response = await setupLocale(preferredLocale);
   }
 
   const textDirection = ['ar', 'dv', 'fa', 'he', 'ku'].includes(preferredLocale)
