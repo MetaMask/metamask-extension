@@ -1,6 +1,6 @@
 import {
   CHAIN_IDS,
-  DEFAULT_CUSTOM_TESTNET,
+  DEFAULT_CUSTOM_TESTNET_MAP,
 } from '../../../shared/constants/network';
 import {  hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
@@ -33,7 +33,7 @@ function transformState(state: Record<string, unknown>) {
     isObject(state.NetworkController) &&
     isObject(state.NetworkController.networkConfigurationsByChainId)
   ) {
-    state.NetworkController.networkConfigurationsByChainId[CHAIN_IDS.MEGAETH_TESTNET] = cloneDeep(DEFAULT_CUSTOM_TESTNET[CHAIN_IDS.MEGAETH_TESTNET]);
+    state.NetworkController.networkConfigurationsByChainId[CHAIN_IDS.MEGAETH_TESTNET] = cloneDeep(DEFAULT_CUSTOM_TESTNET_MAP[CHAIN_IDS.MEGAETH_TESTNET]);
   }
   return state;
 }

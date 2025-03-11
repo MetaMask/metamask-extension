@@ -180,7 +180,7 @@ import {
   MEGAETH_TESTNET_DISPLAY_NAME,
   TEST_NETWORK_TICKER_MAP,
   MEGAETH_TESTNET_IMAGE_URL,
-  DEFAULT_CUSTOM_TESTNET,
+  DEFAULT_CUSTOM_TESTNET_MAP,
 } from '../../shared/constants/network';
 import { getAllowedSmartTransactionsChainIds } from '../../shared/constants/smartTransactions';
 
@@ -582,7 +582,7 @@ export default class MetamaskController extends EventEmitter {
 
       // Due to the MegaETH Testnet is not included from `getDefaultNetworkControllerState()`.
       // And it is not using Infura as a provider, hence we need to add it manually.
-      networks[CHAIN_IDS.MEGAETH_TESTNET] = cloneDeep(DEFAULT_CUSTOM_TESTNET[CHAIN_IDS.MEGAETH_TESTNET]);
+      networks[CHAIN_IDS.MEGAETH_TESTNET] = cloneDeep(DEFAULT_CUSTOM_TESTNET_MAP[CHAIN_IDS.MEGAETH_TESTNET]);
 
       Object.values(networks).forEach((network) => {
         const id = network.rpcEndpoints[0].networkClientId;

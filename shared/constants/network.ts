@@ -1,5 +1,8 @@
-import {
+import type {
   AddNetworkFields,
+  NetworkConfiguration
+} from '@metamask/network-controller';
+import {
   RpcEndpointType,
 } from '@metamask/network-controller';
 import { capitalize, pick } from 'lodash';
@@ -1188,21 +1191,21 @@ export const FEATURED_NETWORK_CHAIN_IDS = [
 /**
  * A mapping for the default custom testnets.
  **/
-export const DEFAULT_CUSTOM_TESTNET = {
+export const DEFAULT_CUSTOM_TESTNET_MAP: Record<Hex, NetworkConfiguration>= {
   [CHAIN_IDS.MEGAETH_TESTNET]: {
     chainId: CHAIN_IDS.MEGAETH_TESTNET,
     name: MEGAETH_TESTNET_DISPLAY_NAME,
     nativeCurrency: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MEGAETH_TESTNET],
     blockExplorerUrls: ['https://www.megaexplorer.xyz'],
     defaultRpcEndpointIndex: 0,
+    defaultBlockExplorerUrlIndex: 0,
     rpcEndpoints: [
       {
         networkClientId: 'megaeth-testnet',
         url: 'https://carrot.megaeth.com/rpc',
         type: RpcEndpointType.Custom
       },
-    ],
-    imageUrl: MEGAETH_TESTNET_IMAGE_URL,
+    ]
   }
 };
 
