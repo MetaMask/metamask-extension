@@ -5953,7 +5953,7 @@ function applyPatches(
   oldState: Record<string, unknown>,
   patches: Patch[],
 ): Record<string, unknown> {
-  const newState = { ...oldState };
+  const newState = oldState;
 
   for (const patch of patches) {
     const { op, path, value } = patch;

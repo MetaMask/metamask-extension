@@ -71,18 +71,22 @@ const initialState = {
  * @returns {typeof initialState}
  */
 export default function reduceMetamask(state = initialState, action) {
-  // I don't think we should be spreading initialState into this. Once the
-  // state tree has begun by way of the first reduce call the initialState is
-  // set. The only time it should be used again is if we reset the state with a
-  // deliberate action. However, our tests are *relying upon the initialState
-  // tree above to be spread into the reducer as a way of hydrating the state
-  // for this slice*. I attempted to remove this and it caused nearly 40 test
-  // failures. We are going to refactor this slice anyways, possibly removing
-  // it so we will fix this issue when that time comes.
-  const metamaskState = { ...initialState, ...state };
+  // add in properties from initialState into state:
+  for(const key in initialState) {
+    if(!(key in state)) {
+      state[key] = initialState[key];
+    }
+  }
+  const metamaskState = state;
+
   switch (action.type) {
     case actionConstants.UPDATE_METAMASK_STATE:
-      return { ...metamaskState, ...action.value };
+      if(metamaskState !== action.value){
+        for(const key in action.value) {
+          metamaskState[key] = action.value[key];
+        }
+      }
+      return metamaskState;
 
     case actionConstants.LOCK_METAMASK:
       return {
