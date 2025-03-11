@@ -59,7 +59,9 @@ import {
   getMultichainSelectedAccountCachedBalance,
   getMultichainIsEvm,
 } from '../../../../selectors/multichain';
+///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
 import { needsSolanaAccountForDestination } from '../../../../ducks/bridge/selectors';
+///: END:ONLY_INCLUDE_IF
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import { getAssetsMetadata } from '../../../../selectors/assets';
 import { Numeric } from '../../../../../shared/modules/Numeric';
@@ -143,8 +145,13 @@ export function AssetPickerModal({
 
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Check if we need to show the Solana account creation UI
-  const needsSolanaAccount = useSelector(needsSolanaAccountForDestination);
+  // Default to false before the code fence is enabled (will not render the prompt)
+  let needsSolanaAccount = false;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+  // Check if we need to show the Solana account creation UI when Solana Swaps are enabled
+  needsSolanaAccount = useSelector(needsSolanaAccountForDestination);
+  ///: END:ONLY_INCLUDE_IF
 
   const swapsBlockedTokens = useSelector(getSwapsBlockedTokens);
   const memoizedSwapsBlockedTokens = useMemo(() => {
