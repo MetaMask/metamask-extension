@@ -4,12 +4,7 @@ const {
   createDappTransaction,
 } = require('../../page-objects/flows/transaction');
 
-const {
-  withFixtures,
-  unlockWallet,
-  generateGanacheOptions,
-  WINDOW_TITLES,
-} = require('../../helpers');
+const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Editing Confirm Transaction', function () {
@@ -17,7 +12,7 @@ describe('Editing Confirm Transaction', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: { hardfork: 'london' },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -97,7 +92,7 @@ describe('Editing Confirm Transaction', function () {
             },
           })
           .build(),
-        localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: { hardfork: 'london' },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -178,7 +173,7 @@ describe('Editing Confirm Transaction', function () {
             },
           })
           .build(),
-        localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: { hardfork: 'london' },
         title: this.test.fullTitle(),
         dapp: true,
       },

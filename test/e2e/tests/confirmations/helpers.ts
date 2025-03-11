@@ -1,7 +1,6 @@
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import FixtureBuilder from '../../fixture-builder';
 import {
-  defaultGanacheOptions,
   defaultGanacheOptionsForType2Transactions,
   withFixtures,
 } from '../../helpers';
@@ -44,7 +43,7 @@ export function withTransactionEnvelopeTypeFixtures(
         .build(),
       localNodeOptions:
         transactionEnvelopeType === TransactionEnvelopeType.legacy
-          ? defaultGanacheOptions
+          ? {}
           : defaultGanacheOptionsForType2Transactions,
       ...(smartContract && { smartContract }),
       ...(mocks && { testSpecificMock: mocks }),

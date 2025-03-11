@@ -39,7 +39,6 @@ function buildControllerMock(
 
 function buildInitRequestMock(): jest.Mocked<
   ControllerInitRequest<
-    // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
     TransactionControllerMessenger,
     TransactionControllerInitMessenger
   >
