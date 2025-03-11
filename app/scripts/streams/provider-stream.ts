@@ -33,7 +33,7 @@ let legacyExtMux: ObjectMultiplex,
   notificationTransformStream: Transform;
 
 let extensionMux: ObjectMultiplex,
-  extensionChannel: Substream,
+  extensionEip1193Channel: Substream,
   extensionCaipChannel: Substream,
   extensionPort: browser.Runtime.Port | null,
   extensionStream: PortStream | null,
@@ -88,8 +88,8 @@ export const setupExtensionStreams = () => {
   });
 
   // forward communication across inpage-background for these channels only
-  extensionChannel = extensionMux.createStream(METAMASK_EIP_1193_PROVIDER);
-  pipeline(pageChannel, extensionChannel, pageChannel, (error: Error) =>
+  extensionEip1193Channel = extensionMux.createStream(METAMASK_EIP_1193_PROVIDER);
+  pipeline(pageChannel, extensionEip1193Channel, pageChannel, (error: Error) =>
     console.debug(
       `MetaMask: Muxed traffic for channel "${METAMASK_EIP_1193_PROVIDER}" failed.`,
       error,
@@ -119,8 +119,8 @@ const destroyExtensionStreams = () => {
   extensionMux.removeAllListeners();
   extensionMux.destroy();
 
-  extensionChannel.removeAllListeners();
-  extensionChannel.destroy();
+  extensionEip1193Channel.removeAllListeners();
+  extensionEip1193Channel.destroy();
 
   extensionStream = null;
 };
