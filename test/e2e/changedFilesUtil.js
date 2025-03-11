@@ -12,7 +12,7 @@ const PR_INFO_PATH = path.join(BASE_PATH, 'changed-files', 'pr-body.txt');
 /**
  * Reads the list of changed files from the git diff file with status (A, M, D).
  *
- * @returns {string[]} An array of changed file paths.
+ * @returns {Array<{status: string, filePath: string}>} An array of changed file paths.
  */
 function readChangedAndNewFilesWithStatus() {
   try {
