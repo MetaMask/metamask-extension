@@ -64,7 +64,7 @@ export const SrpList = ({
   };
 
   return (
-    <Box padding={4} data-testid="srp-list">
+    <Box className="srp-list__container" padding={4} data-testid="srp-list">
       {hdKeyrings.map((keyring, index) => (
         <Card
           key={`srp-${keyring.metadata.id}`}
@@ -81,7 +81,7 @@ export const SrpList = ({
             paddingLeft={4}
           >
             <Box>
-              <Text>{`Secret Phrase ${index + 1}`}</Text>
+              <Text>{t('srpListName', [index + 1])}</Text>
               {!hideShowAccounts && (
                 <Text
                   variant={TextVariant.bodySm}

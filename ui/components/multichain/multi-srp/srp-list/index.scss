@@ -1,6 +1,10 @@
 @use "design-system";
 
 .srp-list {
+  &__container {
+    overflow-y: scroll;
+  }
+
   &__divider {
     height: 1px;
     background-color: var(--color-border-muted);
