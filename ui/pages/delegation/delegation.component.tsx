@@ -48,10 +48,12 @@ export default function Delegation({
   accounts,
   isHardwareWallet,
   hardwareWalletType,
+  ledgerConnectionStatus,
 }: {
   accounts: InternalAccount[];
   isHardwareWallet: boolean;
-  hardwareWalletType: string;
+  hardwareWalletType?: string;
+  ledgerConnectionStatus: string | null;
 }) {
   const [loading, setLoading] = useState<boolean>(false);
   const [rootDelegation, setRootDelegation] = useState<
@@ -126,7 +128,8 @@ export default function Delegation({
     console.log('isHardwareWallet', isHardwareWallet);
     console.log('hardwareWalletType', hardwareWalletType);
     console.log('sepolia rpc url', SEPOLIA_RPC_URL);
-  }, [isHardwareWallet, hardwareWalletType]);
+    console.log('ledgerConnectionStatus', ledgerConnectionStatus);
+  }, [isHardwareWallet, hardwareWalletType, ledgerConnectionStatus]);
 
   const deployMetaMaskAccount = async () => {
     setLoading(true);
