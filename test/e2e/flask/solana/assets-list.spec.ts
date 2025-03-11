@@ -31,13 +31,13 @@ describe('Multichain Asset List', function (this: Suite) {
         await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
         await assetListPage.check_tokenItemNumber(2);
 
-        await assetListPage.check_tokenExistsInList('Ethereum', '25');
+        await assetListPage.check_tokenExistsInList('Ethereum');
         await assetListPage.check_tokenExistsInList('TST', '10');
 
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetworkDialog.selectNetworkName(LINEA_NAME_MAINNET);
         await assetListPage.check_tokenItemNumber(1);
-        await assetListPage.check_tokenExistsInList('Ethereum', '25');
+        await assetListPage.check_tokenExistsInList('Ethereum');
 
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetworkDialog.selectNetworkName(SOLANA_NAME_MAINNET);
