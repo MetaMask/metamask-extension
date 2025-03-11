@@ -38,7 +38,7 @@ describe(`migration #${version}`, () => {
       expect(newStorage.data).toStrictEqual(oldStorage.data);
     });
 
-    it('does nothing if `NetworkOrderController.orderedNetworkList` is not an object', async () => {
+    it('does nothing if `NetworkController.networkConfigurationsByChainId` is not an object', async () => {
       const oldStorage = {
         meta: { version: oldVersion },
         data: {
@@ -51,7 +51,7 @@ describe(`migration #${version}`, () => {
       expect(newStorage.data).toStrictEqual(oldStorage.data);
     });
 
-    it('adds a new network `MetaETH` to `NetworkController.networkConfigurationsByChainId`', async () => {
+    it('adds a new network `MegaETH` to `NetworkController.networkConfigurationsByChainId`', async () => {
       const oldState = {
         meta: { version: oldVersion },
         data: {
@@ -140,7 +140,7 @@ describe(`migration #${version}`, () => {
       expect(newStorage.data).toStrictEqual(expectedData);
     });
 
-    it('updates the `MetaETH` network if it has already in `NetworkController.networkConfigurationsByChainId`', async () => {
+    it('updates the `MegaETH` network if it has already in `NetworkController.networkConfigurationsByChainId`', async () => {
       const oldStorage = {
         meta: { version: oldVersion },
         data: {
