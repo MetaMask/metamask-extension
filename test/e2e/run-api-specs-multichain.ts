@@ -11,6 +11,7 @@ import JsonSchemaFakerRule from '@open-rpc/test-coverage/build/rules/json-schema
 import ExamplesRule from '@open-rpc/test-coverage/build/rules/examples-rule';
 import { Call, IOptions } from '@open-rpc/test-coverage/build/coverage';
 import { InternalScopeString } from '@metamask/multichain';
+import { Mockttp } from 'mockttp';
 import { Driver, PAGES } from './webdriver/driver';
 
 import {
@@ -172,6 +173,17 @@ async function main() {
         .build(),
       localNodeOptions: 'none',
       title: 'api-specs-multichain coverage (wallet_invokeMethod)',
+      testSpecificMock: async (server: Mockttp) => {
+        // See: <https://github.com/MetaMask/api-specs/blob/1f763929bbe781d6f2abefee86fd11a829595fe5/openrpc.yaml#L461>
+        await server
+          .forGet('https://foo.io/token-image.svg')
+          .thenCallback(() => {
+            return {
+              statusCode: 200,
+              body: '',
+            };
+          });
+      },
     },
     async ({
       driver,
