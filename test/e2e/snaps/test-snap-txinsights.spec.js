@@ -1,4 +1,9 @@
-const { withFixtures, unlockWallet, WINDOW_TITLES, openDapp } = require('../helpers');
+const {
+  withFixtures,
+  unlockWallet,
+  WINDOW_TITLES,
+  openDapp,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -7,7 +12,9 @@ describe('Test Snap TxInsights', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().withPermissionControllerConnectedToTestDapp().build(),
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -72,6 +79,10 @@ describe('Test Snap TxInsights', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // click send tx
+        const sendTransactionButton = await driver.findElement(
+          '#maliciousERC20TransferButton',
+        );
+        await driver.scrollToElement(sendTransactionButton);
         await driver.clickElement('#maliciousERC20TransferButton');
 
         // delay added for rendering (deflake)
