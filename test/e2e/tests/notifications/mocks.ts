@@ -20,11 +20,11 @@ type MockResponse = {
  * E2E mock setup for notification APIs (Auth, UserStorage, Notifications, Push Notifications, Profile syncing)
  *
  * @param server - server obj used to mock our endpoints
- * @param userStorageMockttpController - optional controller to mock user storage endpoints
+ * @param userStorageMockttpControllerInstance - optional instance of UserStorageMockttpController, useful if you need persisted user storage between tests
  */
 export async function mockNotificationServices(
   server: Mockttp,
-  userStorageMockttpController?: UserStorageMockttpController,
+  userStorageMockttpControllerInstance: UserStorageMockttpController = new UserStorageMockttpController(),
 ) {
   // Auth
   mockAPICall(server, AuthMocks.getMockAuthNonceResponse());
@@ -32,14 +32,14 @@ export async function mockNotificationServices(
   mockAPICall(server, AuthMocks.getMockAuthAccessTokenResponse());
 
   // Storage
-  if (!userStorageMockttpController?.paths.get('accounts')) {
-    new UserStorageMockttpController().setupPath('accounts', server);
+  if (!userStorageMockttpControllerInstance?.paths.get('accounts')) {
+    userStorageMockttpControllerInstance.setupPath('accounts', server);
   }
-  if (!userStorageMockttpController?.paths.get('networks')) {
-    new UserStorageMockttpController().setupPath('networks', server);
+  if (!userStorageMockttpControllerInstance?.paths.get('networks')) {
+    userStorageMockttpControllerInstance.setupPath('networks', server);
   }
-  if (!userStorageMockttpController?.paths.get('notifications')) {
-    new UserStorageMockttpController().setupPath('notifications', server);
+  if (!userStorageMockttpControllerInstance?.paths.get('notifications')) {
+    userStorageMockttpControllerInstance.setupPath('notifications', server);
   }
 
   // Notifications

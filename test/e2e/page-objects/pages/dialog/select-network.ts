@@ -5,29 +5,47 @@ class SelectNetwork {
 
   private networkName: string | undefined;
 
-  private addNetworkButton: object;
+  private readonly addNetworkButton = {
+    tag: 'button',
+    text: 'Add a custom network',
+  };
 
-  private closeButton: string;
+  private readonly closeButton = 'button[aria-label="Close"]';
 
-  private toggleButton: string;
+  private readonly searchInput =
+    '[data-testid="network-redesign-modal-search-input"]';
 
-  private searchInput: string;
+  private readonly selectNetworkMessage = {
+    text: 'Select a network',
+    tag: 'h4',
+  };
+
+  private readonly toggleButton = '.toggle-button > div';
 
   constructor(driver: Driver) {
     this.driver = driver;
-    this.addNetworkButton = {
-      tag: 'button',
-      text: 'Add a custom network',
-    };
-    this.closeButton = 'button[aria-label="Close"]';
-    this.toggleButton = '.toggle-button > div';
-    this.searchInput = '[data-testid="network-redesign-modal-search-input"]';
   }
 
-  async clickNetworkName(networkName: string): Promise<void> {
+  async check_pageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.selectNetworkMessage,
+        this.searchInput,
+      ]);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for select network dialog to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Select network dialog is loaded');
+  }
+
+  async selectNetworkName(networkName: string): Promise<void> {
     console.log(`Click ${networkName}`);
     this.networkName = `[data-testid="${networkName}"]`;
-    await this.driver.clickElement(this.networkName);
+    await this.driver.clickElementAndWaitToDisappear(this.networkName);
   }
 
   async addNewNetwork(): Promise<void> {
@@ -40,8 +58,8 @@ class SelectNetwork {
     await this.driver.clickElementAndWaitToDisappear(this.closeButton);
   }
 
-  async clickToggleButton(): Promise<void> {
-    console.log('Click Toggle Button');
+  async toggleShowTestNetwork(): Promise<void> {
+    console.log('Toggle show test network in select network dialog');
     await this.driver.clickElement(this.toggleButton);
   }
 

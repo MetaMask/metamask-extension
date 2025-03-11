@@ -21,14 +21,32 @@ describe('Test Snap Interactive UI', function () {
 
         // navigate to test snaps page and connect to interactive ui snap
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(1000);
+
+        // wait for page to load
+        await driver.waitForSelector({
+          text: 'Installed Snaps',
+          tag: 'h2',
+        });
+
+        // scroll to interactive-ui snap
         const dialogButton = await driver.findElement('#connectinteractive-ui');
         await driver.scrollToElement(dialogButton);
-        await driver.delay(1000);
+
+        // added delay for firefox (deflake)
+        await driver.delayFirefox(1000);
+
+        // wait for and click connect
+        await driver.waitForSelector('#connectinteractive-ui');
         await driver.clickElement('#connectinteractive-ui');
 
-        // switch to metamask extension and click connect
+        // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -47,9 +65,9 @@ describe('Test Snap Interactive UI', function () {
           tag: 'button',
         });
 
-        // wait for anc click OK
+        // wait for and click OK and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
@@ -93,8 +111,10 @@ describe('Test Snap Interactive UI', function () {
         await driver.waitForSelector({ text: 'option3', tag: 'p' });
         await driver.waitForSelector({ text: 'true', tag: 'p' });
 
-        // try to click on approve
-        await driver.clickElement('[data-testid="confirmation-submit-button"]');
+        // click on approve and wait for window to close
+        await driver.clickElementAndWaitForWindowToClose(
+          '[data-testid="confirmation-submit-button"]',
+        );
 
         // switch to test snaps tab
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);

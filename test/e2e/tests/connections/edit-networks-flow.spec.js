@@ -9,11 +9,6 @@ const {
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
-async function switchToNetworkByName(driver, networkName) {
-  await driver.clickElement('.mm-picker-network');
-  await driver.clickElement(`[data-testid="${networkName}"]`);
-}
-
 describe('Edit Networks Flow', function () {
   it('should be able to edit networks', async function () {
     await withFixtures(
@@ -43,9 +38,6 @@ describe('Edit Networks Flow', function () {
         await driver.clickElement(
           '.mm-modal-content__dialog button[aria-label="Close"]',
         );
-
-        // Switch to first network, whose send transaction was just confirmed
-        await switchToNetworkByName(driver, 'Localhost 8545');
         await locateAccountBalanceDOM(driver);
         await driver.clickElement(
           '[data-testid ="account-options-menu-button"]',

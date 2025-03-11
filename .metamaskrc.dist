@@ -4,6 +4,10 @@
 ; This variable is required
 INFURA_PROJECT_ID=00000000000
 
+; This variable is not required but it's necessary for the storybook
+; to render stories that use onchain data.
+INFURA_STORYBOOK_PROJECT_ID=
+
 ;PASSWORD=METAMASK PASSWORD
 ;SEGMENT_WRITE_KEY=
 ;BRIDGE_USE_DEV_APIS=

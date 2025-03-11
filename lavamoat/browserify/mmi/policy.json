@@ -766,13 +766,13 @@
         "@ethersproject/providers": true,
         "@metamask/abi-utils": true,
         "@metamask/assets-controllers>@metamask/polling-controller": true,
-        "@metamask/assets-controllers>@metamask/rpc-errors": true,
         "@metamask/base-controller": true,
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/eth-query": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/name-controller>async-mutex": true,
+        "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "bn.js": true,
         "cockatiel": true,
@@ -792,12 +792,6 @@
         "@metamask/base-controller": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "uuid": true
-      }
-    },
-    "@metamask/assets-controllers>@metamask/rpc-errors": {
-      "packages": {
-        "@metamask/rpc-errors>fast-safe-stringify": true,
-        "@metamask/utils": true
       }
     },
     "@metamask/base-controller": {
@@ -1366,6 +1360,17 @@
         "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true
+      }
+    },
+    "@metamask/json-rpc-middleware-stream": {
+      "globals": {
+        "console.warn": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/safe-event-emitter": true,
+        "@metamask/utils": true,
+        "readable-stream": true
       }
     },
     "@metamask/keyring-api": {
@@ -2060,6 +2065,7 @@
       "globals": {
         "TextEncoder": true,
         "URL": true,
+        "console.error": true,
         "fetch": true
       },
       "packages": {
@@ -2208,17 +2214,6 @@
     "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/binary": {
       "packages": {
         "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/binary>@stablelib/int": true
-      }
-    },
-    "@metamask/providers>@metamask/json-rpc-middleware-stream": {
-      "globals": {
-        "console.warn": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/safe-event-emitter": true,
-        "@metamask/utils": true,
-        "readable-stream": true
       }
     },
     "@metamask/queued-request-controller": {
@@ -2584,9 +2579,9 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/json-rpc-middleware-stream": true,
         "@metamask/object-multiplex": true,
         "@metamask/post-message-stream": true,
-        "@metamask/providers>@metamask/json-rpc-middleware-stream": true,
         "@metamask/snaps-controllers>@metamask/base-controller": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/snaps-controllers>@metamask/permission-controller": true,
@@ -4615,16 +4610,6 @@
       "packages": {
         "browserify>url": true,
         "stream-http": true
-      }
-    },
-    "json-rpc-middleware-stream": {
-      "globals": {
-        "console.warn": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/safe-event-emitter": true,
-        "readable-stream": true
       }
     },
     "koa>content-disposition>safe-buffer": {

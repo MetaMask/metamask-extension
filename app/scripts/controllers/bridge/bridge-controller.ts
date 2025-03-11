@@ -9,6 +9,9 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { fetchTopAssetsList } from '../../../../ui/pages/swaps/swaps.util';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { QuoteRequest } from '../../../../ui/pages/bridge/types';
 import {
   BRIDGE_CONTROLLER_NAME,
   DEFAULT_BRIDGE_CONTROLLER_STATE,
@@ -47,7 +50,28 @@ export default class BridgeController extends BaseController<
       `${BRIDGE_CONTROLLER_NAME}:selectDestNetwork`,
       this.selectDestNetwork.bind(this),
     );
+    this.messagingSystem.registerActionHandler(
+      `${BRIDGE_CONTROLLER_NAME}:updateBridgeQuoteRequestParams`,
+      this.updateBridgeQuoteRequestParams.bind(this),
+    );
   }
+
+  updateBridgeQuoteRequestParams = (paramsToUpdate: Partial<QuoteRequest>) => {
+    const { bridgeState } = this.state;
+    const updatedQuoteRequest = {
+      ...DEFAULT_BRIDGE_CONTROLLER_STATE.quoteRequest,
+      ...paramsToUpdate,
+    };
+
+    this.update((_state) => {
+      _state.bridgeState = {
+        ...bridgeState,
+        quoteRequest: {
+          ...updatedQuoteRequest,
+        },
+      };
+    });
+  };
 
   resetState = () => {
     this.update((_state) => {

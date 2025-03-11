@@ -16,9 +16,10 @@ const useCurrencyRatePolling = (networkClientId?: string) => {
   const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
 
   usePolling({
-    startPollingByNetworkClientId: currencyRateStartPollingByNetworkClientId,
+    startPolling: (input) =>
+      currencyRateStartPollingByNetworkClientId(input.networkClientId),
     stopPollingByPollingToken: currencyRateStopPollingByPollingToken,
-    networkClientId: networkClientId ?? selectedNetworkClientId,
+    input: { networkClientId: networkClientId ?? selectedNetworkClientId },
     enabled: useCurrencyRateCheck && completedOnboarding,
   });
 };

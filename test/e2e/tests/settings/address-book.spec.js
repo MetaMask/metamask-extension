@@ -69,6 +69,44 @@ describe('Address Book', function () {
       },
     );
   });
+
+  it('Adds a new contact to the address book', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+        await openMenuSafe(driver);
+
+        await driver.clickElement({ text: 'Settings', tag: 'div' });
+        await driver.clickElement({ text: 'Contacts', tag: 'div' });
+
+        await driver.clickElement('.address-book__link');
+
+        await driver.fill('#nickname', 'Test User');
+
+        await driver.fill(
+          '[data-testid="ens-input"]',
+          '0x56A355d3427bC2B1E22c78197AF091230919Cc2A',
+        );
+
+        await driver.clickElement('[data-testid="page-container-footer-next"]');
+
+        await driver.waitForSelector({
+          text: 'Test User',
+          css: '.address-list-item__label',
+        });
+        await driver.waitForSelector({
+          css: '[data-testid="address-list-item-address"]',
+          text: '0x56A35...9Cc2A',
+        });
+      },
+    );
+  });
+
   it('Edit entry in address book', async function () {
     await withFixtures(
       {

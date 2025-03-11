@@ -6,8 +6,29 @@ import StartOnboardingPage from '../pages/onboarding/start-onboarding-page';
 import SecureWalletPage from '../pages/onboarding/secure-wallet-page';
 import OnboardingCompletePage from '../pages/onboarding/onboarding-complete-page';
 
+export const createNewWalletOnboardingFlow = async (driver: Driver) => {
+  console.log('Starting the creation of a new wallet onboarding flow');
+  await driver.navigate();
+  const startOnboardingPage = new StartOnboardingPage(driver);
+  await startOnboardingPage.check_pageIsLoaded();
+  await startOnboardingPage.checkTermsCheckbox();
+  await startOnboardingPage.clickCreateWalletButton();
+
+  const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+  await onboardingMetricsPage.check_pageIsLoaded();
+  await onboardingMetricsPage.clickNoThanksButton();
+
+  const onboardingPasswordPage = new OnboardingPasswordPage(driver);
+  await onboardingPasswordPage.check_pageIsLoaded();
+  await onboardingPasswordPage.createWalletPassword();
+
+  const secureWalletPage = new SecureWalletPage(driver);
+  await secureWalletPage.check_pageIsLoaded();
+  await secureWalletPage.revealAndConfirmSRP();
+};
+
 export const importSRPOnboardingFlow = async (driver: Driver) => {
-  console.log('start import srp onboarding flow ');
+  console.log('Starting the import of SRP onboarding flow');
   await driver.navigate();
   const startOnboardingPage = new StartOnboardingPage(driver);
   await startOnboardingPage.check_pageIsLoaded();
@@ -30,24 +51,7 @@ export const importSRPOnboardingFlow = async (driver: Driver) => {
 
 export const completeCreateNewWalletOnboardingFlow = async (driver: Driver) => {
   console.log('start to complete create new wallet onboarding flow ');
-  await driver.navigate();
-  const startOnboardingPage = new StartOnboardingPage(driver);
-  await startOnboardingPage.check_pageIsLoaded();
-  await startOnboardingPage.checkTermsCheckbox();
-  await startOnboardingPage.clickCreateWalletButton();
-
-  const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-  await onboardingMetricsPage.check_pageIsLoaded();
-  await onboardingMetricsPage.clickNoThanksButton();
-
-  const onboardingPasswordPage = new OnboardingPasswordPage(driver);
-  await onboardingPasswordPage.check_pageIsLoaded();
-  await onboardingPasswordPage.createWalletPassword();
-
-  const secureWalletPage = new SecureWalletPage(driver);
-  await secureWalletPage.check_pageIsLoaded();
-  await secureWalletPage.revealAndConfirmSRP();
-
+  await createNewWalletOnboardingFlow(driver);
   const onboardingCompletePage = new OnboardingCompletePage(driver);
   await onboardingCompletePage.check_pageIsLoaded();
   await onboardingCompletePage.check_congratulationsMessageIsDisplayed();

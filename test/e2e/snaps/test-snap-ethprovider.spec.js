@@ -2,7 +2,6 @@ const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
-  switchToNotificationWindow,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -28,30 +27,42 @@ describe('Test Snap ethereum_provider', function () {
           tag: 'h2',
         });
 
+        // scroll to ethereum provider snap
         const snapButton = await driver.findElement(
           '#connectethereum-provider',
         );
         await driver.scrollToElement(snapButton);
-        await driver.delay(1000);
+
+        // added delay for firefox (deflake)
+        await driver.delayFirefox(1000);
+
+        // wait for and click connect
+        await driver.waitForSelector('#connectethereum-provider');
         await driver.clickElement('#connectethereum-provider');
 
-        // switch to metamask extension and click connect
-        await switchToNotificationWindow(driver, 2);
+        // switch to metamask extension
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
+        // wait for and click confirm
         await driver.waitForSelector({ text: 'Confirm' });
-
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
 
+        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
@@ -85,17 +96,19 @@ describe('Test Snap ethereum_provider', function () {
         await driver.delay(500);
         await driver.clickElement('#sendEthproviderAccounts');
 
-        // switch to metamask window and click through confirmations
-        await switchToNotificationWindow(driver, 2);
+        // switch to metamask window
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({
           text: 'Next',
           tag: 'button',
         });
+
+        // wait for and click confirm and wait for window to close
         await driver.waitForSelector({
           text: 'Confirm',
           tag: 'button',
         });
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Confirm',
           tag: 'button',
         });

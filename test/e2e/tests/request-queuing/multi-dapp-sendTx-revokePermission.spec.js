@@ -88,7 +88,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks revok
         await driver.switchToWindowWithUrl(DAPP_URL);
         await driver.findElement({
           css: '[id="chainId"]',
-          text: '0x1',
+          text: '0x539',
         });
         await driver.clickElement('#sendButton');
 
@@ -108,7 +108,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks revok
         await driver.switchToWindowWithUrl(DAPP_URL);
         await driver.findElement({
           css: '[id="chainId"]',
-          text: '0x1',
+          text: '0x539',
         });
         await driver.assertElementNotPresent({
           css: '[id="chainId"]',
