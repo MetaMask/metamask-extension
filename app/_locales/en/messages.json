@@ -4693,6 +4693,10 @@
   "settingsSubHeadingSignaturesAndTransactions": {
     "message": "Signature and transaction requests"
   },
+  "shN": {
+    "message": "MetaMask",
+    "description": "An alternate key for appName, to comply with the 12 character limit of the short_name property in the manifest, where this will be referenced as __MSG_shN__"
+  },
   "show": {
     "message": "Show"
   },

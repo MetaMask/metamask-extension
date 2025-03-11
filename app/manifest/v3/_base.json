@@ -80,5 +80,5 @@
   "sandbox": {
     "pages": ["snaps/index.html"]
   },
-  "short_name": "__MSG_appName__"
+  "short_name": "__MSG_shN__"
 }
