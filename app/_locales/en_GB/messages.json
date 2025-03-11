@@ -73,9 +73,6 @@
   "accountActivityText": {
     "message": "Select the accounts you want to be notified about:"
   },
-  "accountBalance": {
-    "message": "Account balance"
-  },
   "accountDetails": {
     "message": "Account details"
   },
@@ -987,6 +984,12 @@
   "comboNoOptions": {
     "message": "No options found",
     "description": "Default text shown in the combo field dropdown if no options."
+  },
+  "concentratedSupplyDistributionDescription": {
+    "message": "The majority of the token's supply is held by the top token holders, posing a risk of centralized price manipulation"
+  },
+  "concentratedSupplyDistributionTitle": {
+    "message": "Concentrated Supply Distribution"
   },
   "configureSnapPopupDescription": {
     "message": "You're now leaving MetaMask to configure this snap."
@@ -3698,6 +3701,10 @@
   "pending": {
     "message": "Pending"
   },
+  "pendingConfirmationAddNetworkAlertMessage": {
+    "message": "Updating network will cancel $1 pending transactions from this site.",
+    "description": "Number of transactions."
+  },
   "pendingTransactionAlertMessage": {
     "message": "This transaction won't go through until a previous transaction is complete. $1",
     "description": "$1 represents the words 'how to cancel or speed up a transaction' in a hyperlink"
@@ -4433,6 +4440,9 @@
   },
   "reviewAlerts": {
     "message": "Review alerts"
+  },
+  "reviewPendingTransactions": {
+    "message": "Review pending transactions"
   },
   "reviewPermissions": {
     "message": "Review permissions"
@@ -5192,9 +5202,6 @@
   },
   "spendingCap": {
     "message": "Spending cap"
-  },
-  "spendingCapTooltipDesc": {
-    "message": "This is the amount of tokens the spender will be able to access on your behalf."
   },
   "spendingCaps": {
     "message": "Spending caps"
