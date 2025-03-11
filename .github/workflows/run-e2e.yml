@@ -28,6 +28,7 @@ on:
 
 jobs:
   run-e2e:
+    name: ${{ github.event.inputs.test-suite-name }}${{ github.event.inputs.matrix-total > 0 && format(' ({0})', github.event.inputs.matrix-index) || '' }}
     runs-on: ubuntu-22.04
     container:
       image: cimg/node:22.13-browsers
