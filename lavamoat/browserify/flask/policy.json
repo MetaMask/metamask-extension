@@ -6042,6 +6042,11 @@
         "@metamask/eth-token-tracker>deep-equal>which-collection>is-weakset": true
       }
     },
+    "@metamask/keyring-snap-client>@metamask/keyring-utils": {
+      "packages": {
+        "bitcoing-address-validation": true
+      }
+    },
     "browserify>util>which-typed-array": {
       "packages": {
         "string.prototype.matchall>es-abstract>available-typed-arrays": true,

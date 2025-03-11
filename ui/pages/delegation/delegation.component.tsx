@@ -51,7 +51,7 @@ export default function Delegation({
 }: {
   accounts: InternalAccount[];
   isHardwareWallet: boolean;
-  hardwareWalletType: string;
+  hardwareWalletType?: string;
 }) {
   const [loading, setLoading] = useState<boolean>(false);
   const [rootDelegation, setRootDelegation] = useState<

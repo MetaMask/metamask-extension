@@ -380,6 +380,8 @@ import {
 import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
 
+import { MockKeyring } from '../../shared/modules/mock-keyring';
+
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
   // The process of updating the badge happens in app/scripts/background.js.
@@ -7523,6 +7525,7 @@ export default class MetamaskController extends EventEmitter {
   async #withKeyringForDevice(options, callback) {
     const keyringOverrides = this.opts.overrides?.keyrings;
     let keyringType = null;
+    console.log('MetamaskController:#withKeyringForDevice - options', options);
     switch (options.name) {
       case HardwareDeviceNames.trezor:
       case HardwareDeviceNames.oneKey:
@@ -7537,9 +7540,12 @@ export default class MetamaskController extends EventEmitter {
       case HardwareDeviceNames.lattice:
         keyringType = keyringOverrides?.lattice?.type || LatticeKeyring.type;
         break;
+      case HardwareDeviceNames.mock:
+        keyringType = MockKeyring.type;
+        break;
       default:
         throw new Error(
-          'MetamaskController:#withKeyringForDevice - Unknown device',
+          'MetamaskController:#withKeyringForDevice - Unknown deviceeee',
         );
     }
 

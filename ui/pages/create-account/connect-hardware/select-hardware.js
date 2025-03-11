@@ -179,6 +179,23 @@ export default class SelectHardware extends Component {
     );
   }
 
+  renderConnectToMockButton() {
+    return (
+      <button
+        data-testid="connect-mock-btn"
+        className={classnames('hw-connect__btn', {
+          selected: this.state.selectedDevice === HardwareDeviceNames.mock,
+        })}
+        style={{ color: 'white', fontSize: '2rem' }}
+        onClick={(_) =>
+          this.setState({ selectedDevice: HardwareDeviceNames.mock })
+        }
+      >
+        Mock
+      </button>
+    );
+  }
+
   renderButtons() {
     return (
       <>
@@ -193,6 +210,7 @@ export default class SelectHardware extends Component {
         >
           {this.renderConnectToOnekeyButton()}
           {this.renderConnectToQRButton()}
+          {this.renderConnectToMockButton()}
         </div>
       </>
     );
