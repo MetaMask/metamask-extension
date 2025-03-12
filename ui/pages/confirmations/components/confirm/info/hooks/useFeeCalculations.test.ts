@@ -1,3 +1,4 @@
+import { merge } from 'lodash';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   CONTRACT_INTERACTION_SENDER_ADDRESS,
@@ -61,6 +62,55 @@ describe('useFeeCalculations', () => {
         "maxFeeFiat": "$0.07",
         "maxFeeFiatWith18SignificantDigits": null,
         "maxFeeNative": "0.0001 ETH",
+      }
+    `);
+
+    const mockStateWithBNBNetwork = merge({}, mockState, {
+      metamask: {
+        networkConfigurationsByChainId: {
+          '0x38': {
+            chainId: '0x38',
+            name: 'BNB Smart Chain',
+            nativeCurrency: 'BNB',
+            defaultRpcEndpointIndex: 0,
+            ticker: 'BNB',
+            rpcEndpoints: [
+              {
+                type: 'custom',
+                url: 'https://bsc-rpc.com',
+                networkClientId: 'bsc-test',
+              },
+            ],
+            blockExplorerUrls: [],
+          },
+        },
+      },
+    });
+
+    const transactionOnBNB = genUnapprovedContractInteractionConfirmation({
+      address: CONTRACT_INTERACTION_SENDER_ADDRESS,
+      chainId: '0x38',
+    }) as TransactionMeta;
+
+    const { result: resultOnBNB } = renderHookWithProvider(
+      () => useFeeCalculations(transactionOnBNB),
+      mockStateWithBNBNetwork,
+    );
+
+    expect(resultOnBNB.current).toMatchInlineSnapshot(`
+      {
+        "estimatedFeeFiat": "< $0.01",
+        "estimatedFeeFiatWith18SignificantDigits": "0.000065843",
+        "estimatedFeeNative": "0.0001 BNB",
+        "l1FeeFiat": "",
+        "l1FeeFiatWith18SignificantDigits": "",
+        "l1FeeNative": "",
+        "l2FeeFiat": "",
+        "l2FeeFiatWith18SignificantDigits": "",
+        "l2FeeNative": "",
+        "maxFeeFiat": "< $0.01",
+        "maxFeeFiatWith18SignificantDigits": "0.000125347",
+        "maxFeeNative": "0.0001 BNB",
       }
     `);
   });
