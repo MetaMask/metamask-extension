@@ -571,7 +571,7 @@ export default class MetamaskController extends EventEmitter {
         initialNetworkControllerState.networkConfigurationsByChainId;
 
       // Note: Consider changing `getDefaultNetworkControllerState`
-      // on the controller side to include some of these tweaks.
+      // on the controller side to includes some of these tweaks.
       networks[CHAIN_IDS.MAINNET].name = MAINNET_DISPLAY_NAME;
       delete networks[CHAIN_IDS.GOERLI];
       delete networks[CHAIN_IDS.LINEA_GOERLI];
