@@ -32,9 +32,6 @@ export async function withFixturesForSmartTransactions(
         .build(),
       title,
       testSpecificMock,
-      localNodeOptions: {
-        chainId: 1,
-      },
       dapp: true,
     },
     async ({ driver }) => {
