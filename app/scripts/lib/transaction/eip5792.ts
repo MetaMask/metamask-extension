@@ -7,7 +7,7 @@ import {
   TransactionReceipt,
   TransactionStatus,
 } from '@metamask/transaction-controller';
-import { Hex, JsonRpcRequest, bytesToHex, hexToBytes } from '@metamask/utils';
+import { Hex, JsonRpcRequest } from '@metamask/utils';
 import { Messenger } from '@metamask/base-controller';
 import {
   GetCallsStatusCode,
@@ -15,7 +15,6 @@ import {
   SendCalls,
   SendCallsResult,
 } from '@metamask/eth-json-rpc-middleware';
-import { parse, stringify } from 'uuid';
 
 type Actions =
   | NetworkControllerGetNetworkClientByIdAction
@@ -83,14 +82,12 @@ export async function processSendCalls(
     );
   }
 
-  const { batchId } = await addTransactionBatch({
+  const { batchId: id } = await addTransactionBatch({
     from,
     networkClientId,
     origin,
     transactions,
   });
-
-  const id = getBatchIdHex(batchId);
 
   return { id };
 }
@@ -99,14 +96,12 @@ export function getCallsStatus(
   messenger: EIP5792Messenger,
   id: Hex,
 ): GetCallsStatusResult {
-  const batchId = getBatchIdString(id);
-
   const transactions = messenger
     .call('TransactionController:getState')
-    .transactions.filter((tx) => tx.id === batchId);
+    .transactions.filter((tx) => tx.batchId === id);
 
   if (!transactions?.length) {
-    throw rpcErrors.invalidInput(`No calls found with id: ${id}`);
+    throw rpcErrors.invalidInput(`No matching calls found`);
   }
 
   const {
@@ -161,37 +156,7 @@ export function getCallsStatus(
   };
 }
 
-export async function getCapabilities(
-  hooks: {
-    getDisabledAccountUpgradeChains: () => Hex[];
-    isAtomicBatchSupported: (address: Hex) => Promise<Hex[]>;
-  },
-  address: Hex,
-) {
-  const { getDisabledAccountUpgradeChains, isAtomicBatchSupported } = hooks;
-
-  const atomicBatchChains = await isAtomicBatchSupported(address);
-  const disabledChains = getDisabledAccountUpgradeChains();
-
-  return atomicBatchChains
-    .filter((chainId) => !disabledChains.includes(chainId))
-    .reduce(
-      (acc, chainId) => ({
-        ...acc,
-        [chainId]: {
-          atomicBatch: {
-            supported: true,
-          },
-        },
-      }),
-      {},
-    );
-}
-
-function getBatchIdHex(batchId: string): Hex {
-  return bytesToHex(new Uint8Array(parse(batchId)));
-}
-
-export function getBatchIdString(batchId: Hex): string {
-  return stringify(hexToBytes(batchId));
+export async function getCapabilities(_address: Hex, _chainIds?: Hex[]) {
+  // No capabilities currently supported
+  return {};
 }

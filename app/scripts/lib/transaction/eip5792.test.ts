@@ -25,8 +25,7 @@ import {
 
 const CHAIN_ID_MOCK = '0x123';
 const CHAIN_ID_2_MOCK = '0xabc';
-const BATCH_ID_STRING_MOCK = 'f3472db2-a413-4607-a172-13b7e9ca26e3';
-const BATCH_ID_HEX_MOCK = '0xf3472db2a4134607a17213b7e9ca26e3';
+const BATCH_ID_MOCK = '0xf3472db2a4134607a17213b7e9ca26e3';
 const NETWORK_CLIENT_ID_MOCK = 'test-client';
 const FROM_MOCK = '0xabc123';
 const ORIGIN_MOCK = 'test.com';
@@ -48,7 +47,7 @@ const REQUEST_MOCK = {
 } as JsonRpcRequest<SendCallsParams> & { networkClientId: string };
 
 const TRANSACTION_META_MOCK = {
-  id: BATCH_ID_STRING_MOCK,
+  batchId: BATCH_ID_MOCK,
   chainId: CHAIN_ID_MOCK,
   status: TransactionStatus.confirmed,
   txReceipt: {
@@ -77,10 +76,6 @@ describe('EIP-5792', () => {
     TransactionController['addTransactionBatch']
   >;
 
-  let isAtomicBatchSupportedMock: jest.MockedFn<
-    TransactionController['isAtomicBatchSupported']
-  >;
-
   let getNetworkClientByIdMock: jest.MockedFn<
     NetworkControllerGetNetworkClientByIdAction['handler']
   >;
@@ -97,7 +92,6 @@ describe('EIP-5792', () => {
     jest.resetAllMocks();
 
     addTransactionBatchMock = jest.fn();
-    isAtomicBatchSupportedMock = jest.fn();
     getTransactionControllerStateMock = jest.fn();
     getNetworkClientByIdMock = jest.fn();
     getDisabledAccountUpgradeChainsMock = jest.fn();
@@ -121,7 +115,7 @@ describe('EIP-5792', () => {
     } as unknown as AutoManagedNetworkClient<CustomNetworkClientConfiguration>);
 
     addTransactionBatchMock.mockResolvedValue({
-      batchId: BATCH_ID_STRING_MOCK,
+      batchId: BATCH_ID_MOCK,
     });
     getDisabledAccountUpgradeChainsMock.mockReturnValue([]);
   });
@@ -158,7 +152,7 @@ describe('EIP-5792', () => {
           SEND_CALLS_MOCK,
           REQUEST_MOCK,
         ),
-      ).toStrictEqual({ id: BATCH_ID_HEX_MOCK });
+      ).toStrictEqual({ id: BATCH_ID_MOCK });
     });
 
     it('throws if chain ID does not match network client', async () => {
@@ -254,9 +248,9 @@ describe('EIP-5792', () => {
         transactions: [TRANSACTION_META_MOCK],
       } as unknown as TransactionControllerState);
 
-      expect(getCallsStatus(messenger, BATCH_ID_HEX_MOCK)).toStrictEqual({
+      expect(getCallsStatus(messenger, BATCH_ID_MOCK)).toStrictEqual({
         version: '1.0',
-        id: BATCH_ID_HEX_MOCK,
+        id: BATCH_ID_MOCK,
         chainId: CHAIN_ID_MOCK,
         status: GetCallsStatusCode.CONFIRMED,
         receipts: [
@@ -285,7 +279,7 @@ describe('EIP-5792', () => {
         ],
       } as unknown as TransactionControllerState);
 
-      const receiptResult = getCallsStatus(messenger, BATCH_ID_HEX_MOCK)
+      const receiptResult = getCallsStatus(messenger, BATCH_ID_MOCK)
         ?.receipts?.[0];
 
       expect(receiptResult).not.toHaveProperty('extra');
@@ -309,8 +303,8 @@ describe('EIP-5792', () => {
         ],
       } as unknown as TransactionControllerState);
 
-      const receiptLog = getCallsStatus(messenger, BATCH_ID_HEX_MOCK)
-        ?.receipts?.[0]?.logs?.[0];
+      const receiptLog = getCallsStatus(messenger, BATCH_ID_MOCK)?.receipts?.[0]
+        ?.logs?.[0];
 
       expect(receiptLog).not.toHaveProperty('extra');
     });
@@ -326,9 +320,9 @@ describe('EIP-5792', () => {
         ],
       } as unknown as TransactionControllerState);
 
-      expect(
-        getCallsStatus(messenger, BATCH_ID_HEX_MOCK)?.status,
-      ).toStrictEqual(GetCallsStatusCode.FAILED_OFFCHAIN);
+      expect(getCallsStatus(messenger, BATCH_ID_MOCK)?.status).toStrictEqual(
+        GetCallsStatusCode.FAILED_OFFCHAIN,
+      );
     });
 
     it('returns reverted status if transaction status is failed and hash', () => {
@@ -342,9 +336,9 @@ describe('EIP-5792', () => {
         ],
       } as unknown as TransactionControllerState);
 
-      expect(
-        getCallsStatus(messenger, BATCH_ID_HEX_MOCK)?.status,
-      ).toStrictEqual(GetCallsStatusCode.REVERTED);
+      expect(getCallsStatus(messenger, BATCH_ID_MOCK)?.status).toStrictEqual(
+        GetCallsStatusCode.REVERTED,
+      );
     });
 
     it('returns reverted status if transaction status is dropped', () => {
@@ -357,9 +351,9 @@ describe('EIP-5792', () => {
         ],
       } as unknown as TransactionControllerState);
 
-      expect(
-        getCallsStatus(messenger, BATCH_ID_HEX_MOCK)?.status,
-      ).toStrictEqual(GetCallsStatusCode.REVERTED);
+      expect(getCallsStatus(messenger, BATCH_ID_MOCK)?.status).toStrictEqual(
+        GetCallsStatusCode.REVERTED,
+      );
     });
 
     // @ts-expect-error This function is missing from the Mocha type definitions
@@ -380,9 +374,9 @@ describe('EIP-5792', () => {
           ],
         } as unknown as TransactionControllerState);
 
-        expect(
-          getCallsStatus(messenger, BATCH_ID_HEX_MOCK)?.status,
-        ).toStrictEqual(GetCallsStatusCode.PENDING);
+        expect(getCallsStatus(messenger, BATCH_ID_MOCK)?.status).toStrictEqual(
+          GetCallsStatusCode.PENDING,
+        );
       },
     );
 
@@ -391,66 +385,24 @@ describe('EIP-5792', () => {
         transactions: [],
       } as unknown as TransactionControllerState);
 
-      expect(() => getCallsStatus(messenger, BATCH_ID_HEX_MOCK)).toThrow(
-        `No calls found with id: ${BATCH_ID_HEX_MOCK}`,
+      expect(() => getCallsStatus(messenger, BATCH_ID_MOCK)).toThrow(
+        `No matching calls found`,
       );
     });
   });
 
   describe('getCapabilities', () => {
-    it('returns atomic batch capabilities using hook', async () => {
-      isAtomicBatchSupportedMock.mockResolvedValueOnce([
-        CHAIN_ID_MOCK,
-        CHAIN_ID_2_MOCK,
-      ]);
-
-      expect(
-        await getCapabilities(
-          {
-            getDisabledAccountUpgradeChains:
-              getDisabledAccountUpgradeChainsMock,
-            isAtomicBatchSupported: isAtomicBatchSupportedMock,
-          },
-          SEND_CALLS_MOCK.from,
-        ),
-      ).toStrictEqual({
-        [CHAIN_ID_MOCK]: {
-          atomicBatch: {
-            supported: true,
-          },
-        },
-        [CHAIN_ID_2_MOCK]: {
-          atomicBatch: {
-            supported: true,
-          },
-        },
-      });
+    it('returns empty', async () => {
+      expect(await getCapabilities(SEND_CALLS_MOCK.from)).toStrictEqual({});
     });
 
-    it('does not include chain if disabled in preferences', async () => {
-      getDisabledAccountUpgradeChainsMock.mockReturnValue([CHAIN_ID_MOCK]);
-
-      isAtomicBatchSupportedMock.mockResolvedValueOnce([
-        CHAIN_ID_MOCK,
-        CHAIN_ID_2_MOCK,
-      ]);
-
+    it('returns empty if chain IDs included', async () => {
       expect(
-        await getCapabilities(
-          {
-            getDisabledAccountUpgradeChains:
-              getDisabledAccountUpgradeChainsMock,
-            isAtomicBatchSupported: isAtomicBatchSupportedMock,
-          },
-          FROM_MOCK,
-        ),
-      ).toStrictEqual({
-        [CHAIN_ID_2_MOCK]: {
-          atomicBatch: {
-            supported: true,
-          },
-        },
-      });
+        await getCapabilities(SEND_CALLS_MOCK.from, [
+          CHAIN_ID_MOCK,
+          CHAIN_ID_2_MOCK,
+        ]),
+      ).toStrictEqual({});
     });
   });
 });
