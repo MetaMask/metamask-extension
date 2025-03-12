@@ -17,12 +17,13 @@ export type EIP5792Messenger = Messenger<Actions, never>;
 export async function processSendCalls(
   hooks: {
     addTransactionBatch: TransactionController['addTransactionBatch'];
+    getDisabledAccountUpgradeChains: () => Hex[];
   },
   messenger: EIP5792Messenger,
   params: SendCalls,
   req: JsonRpcRequest & { networkClientId: string; origin?: string },
 ) {
-  const { addTransactionBatch } = hooks;
+  const { addTransactionBatch, getDisabledAccountUpgradeChains } = hooks;
   const { calls, chainId: requestChainId, from } = params;
   const { networkClientId, origin } = req;
   const transactions = calls.map((call) => ({ params: call }));
@@ -38,6 +39,15 @@ export async function processSendCalls(
   ) {
     throw rpcErrors.invalidInput(
       `Chain ID must match the dApp selected network: Got ${requestChainId}, expected ${dappChainId}`,
+    );
+  }
+
+  const disabledChains = getDisabledAccountUpgradeChains();
+  const isDisabled = disabledChains.includes(dappChainId);
+
+  if (isDisabled) {
+    throw rpcErrors.methodNotSupported(
+      `EIP-5792 is not supported for this chain and account - Chain ID: ${dappChainId}, Account: ${from}`,
     );
   }
 
@@ -63,22 +73,27 @@ export function getTransactionReceiptsByBatchId(
 
 export async function getCapabilities(
   hooks: {
-    isAtomicBatchSupported: (address: Hex) => Promise<string[]>;
+    getDisabledAccountUpgradeChains: () => Hex[];
+    isAtomicBatchSupported: (address: Hex) => Promise<Hex[]>;
   },
   address: Hex,
 ) {
-  const { isAtomicBatchSupported } = hooks;
-  const atomicBatchChains = await isAtomicBatchSupported(address);
+  const { getDisabledAccountUpgradeChains, isAtomicBatchSupported } = hooks;
 
-  return atomicBatchChains.reduce(
-    (acc, chainId) => ({
-      ...acc,
-      [chainId]: {
-        atomicBatch: {
-          supported: true,
+  const atomicBatchChains = await isAtomicBatchSupported(address);
+  const disabledChains = getDisabledAccountUpgradeChains();
+
+  return atomicBatchChains
+    .filter((chainId) => !disabledChains.includes(chainId))
+    .reduce(
+      (acc, chainId) => ({
+        ...acc,
+        [chainId]: {
+          atomicBatch: {
+            supported: true,
+          },
         },
-      },
-    }),
-    {},
-  );
+      }),
+      {},
+    );
 }
