@@ -323,7 +323,7 @@ describe('TransactionList', () => {
 
     expect(getByTestId('activity-list-item')).toBeInTheDocument();
 
-    expect(getByText('-0.01 SOL')).toBeInTheDocument();
+    expect(getByText('0.01 SOL')).toBeInTheDocument();
 
     const viewOnExplorerBtn = getByRole('button', {
       name: 'View on block explorer',
