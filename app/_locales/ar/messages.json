@@ -317,9 +317,6 @@
     "message": "الاستيراد",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "استيراد الحساب"
-  },
   "importAccountMsg": {
     "message": "لن يتم ربط الحسابات التي تم استيرادها بعبارة أمان حساب MetaMask الذي تم إنشاؤها في الأصل. تعرف على المزيد حول الحسابات المستوردة"
   },
