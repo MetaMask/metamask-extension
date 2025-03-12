@@ -15,7 +15,7 @@ import BridgeQuotePage, {
 import ActivityListPage from '../page-objects/pages/home/activity-list';
 import { sleep } from '@metamask/test-bundler/dist/utils';
 
-describe('Bridge tests @no-mmi', function (this: Suite) {
+describe('Bridge tests', function (this: Suite) {
   let txCount = 1;
   it('Execute various bridge transactions', async function () {
     await withFixtures(
