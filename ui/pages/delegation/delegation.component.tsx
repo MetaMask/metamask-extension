@@ -16,11 +16,21 @@ import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import { SignTypedDataVersion } from '@metamask/keyring-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import React, { useCallback, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { createPublicClient, formatEther, http, parseEther } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { sepolia } from 'viem/chains';
+import { SEPOLIA_RPC_URL } from '../../../shared/constants/network';
 import { Box, Button, Text } from '../../components/component-library';
 import Card from '../../components/ui/card';
+import {
+  getLedgerTransportStatus,
+  getLedgerWebHidConnectedStatus,
+} from '../../ducks/app/app';
+import {
+  getLedgerTransportType,
+  isAddressLedger,
+} from '../../ducks/metamask/metamask';
 import {
   BlockSize,
   Display,
@@ -28,15 +38,13 @@ import {
   TextColor,
 } from '../../helpers/constants/design-system';
 import { addTransaction, newUnsignedTypedMessage } from '../../store/actions';
-import { SEPOLIA_RPC_URL } from '../../../shared/constants/network';
-import useLedgerConnection from '../confirmations/hooks/useLedgerConnection';
 
 const SWAP_LIMIT = parseEther('0.1');
 const TRANSFER_AMOUNT = parseEther('0.001');
 export const GATOR_ENV = getDeleGatorEnvironment(sepolia.id, '1.2.0');
 const INTERNAL_GATOR_PK = '';
 
-const RPC_URL = '';
+const RPC_URL = SEPOLIA_RPC_URL;
 
 const EIP712Domain = [
   { name: 'name', type: 'string' },
@@ -46,10 +54,12 @@ const EIP712Domain = [
 ];
 
 export default function Delegation({
+  selectedAccount,
   accounts,
   isHardwareWallet,
   hardwareWalletType,
 }: {
+  selectedAccount: InternalAccount;
   accounts: InternalAccount[];
   isHardwareWallet: boolean;
   hardwareWalletType?: string;
@@ -69,12 +79,14 @@ export default function Delegation({
     useState<boolean>(false);
   const [isDeployed, setIsDeployed] = useState<boolean>(false);
   const [gatorBalance, setGatorBalance] = useState<string>('0');
-  const {
-    isLedgerWallet,
-    ledgerTransportType,
-    transportStatus,
-    webHidConnectedStatus,
-  } = useLedgerConnection();
+  const ledgerTransportType = useSelector(getLedgerTransportType);
+  const transportStatus = useSelector(getLedgerTransportStatus);
+  const webHidConnectedStatus = useSelector(getLedgerWebHidConnectedStatus);
+  const isLedgerWallet = useSelector(
+    (state) =>
+      selectedAccount.address &&
+      isAddressLedger(state, selectedAccount.address),
+  );
 
   // Get delegator (account 1) and delegate (account 2)
   const account1 = accounts[0];
@@ -84,7 +96,7 @@ export default function Delegation({
 
   const publicClient = createPublicClient({
     chain: sepolia,
-    transport: http(SEPOLIA_RPC_URL),
+    transport: http(RPC_URL),
   });
 
   const fetchGatorBalance = useCallback(async (address: string) => {
@@ -140,7 +152,6 @@ export default function Delegation({
   }, [
     isHardwareWallet,
     hardwareWalletType,
-    isLedgerWallet,
     ledgerTransportType,
     transportStatus,
     webHidConnectedStatus,
