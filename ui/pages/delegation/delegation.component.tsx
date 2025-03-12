@@ -38,6 +38,7 @@ import {
   TextColor,
 } from '../../helpers/constants/design-system';
 import { addTransaction, newUnsignedTypedMessage } from '../../store/actions';
+import { LEDGER_USB_VENDOR_ID } from '../../../shared/constants/hardware-wallets';
 
 const SWAP_LIMIT = parseEther('0.1');
 const TRANSFER_AMOUNT = parseEther('0.001');
@@ -133,6 +134,14 @@ export default function Delegation({
     fetchGatorBalance(account.address);
     return account;
   };
+  const checkLedgerConnection = async () => {
+    const devices = await window.navigator?.hid?.getDevices();
+    const webHidIsConnected = devices?.some(
+      (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
+    );
+    console.log('ledger is connected?', webHidIsConnected);
+    return webHidIsConnected;
+  };
 
   // Refresh balance when account is deployed
   useEffect(() => {
@@ -149,12 +158,14 @@ export default function Delegation({
     console.log('ledgerTransportType', ledgerTransportType);
     console.log('transportStatus', transportStatus);
     console.log('webHidConnectedStatus', webHidConnectedStatus);
+    checkLedgerConnection();
   }, [
     isHardwareWallet,
     hardwareWalletType,
     ledgerTransportType,
     transportStatus,
     webHidConnectedStatus,
+    isLedgerWallet,
   ]);
 
   const deployMetaMaskAccount = async () => {
