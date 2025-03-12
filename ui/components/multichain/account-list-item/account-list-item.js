@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
+///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import { BigNumber } from 'bignumber.js';
 ///: END:ONLY_INCLUDE_IF
 import { useSelector } from 'react-redux';
@@ -57,7 +57,7 @@ import {
   getChainIdsToPoll,
   getSnapsMetadata,
 } from '../../../selectors';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
+///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import { getIntlLocale } from '../../../ducks/locale/locale';
 ///: END:ONLY_INCLUDE_IF
 import {
@@ -76,10 +76,10 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
+///: BEGIN:ONLY_INCLUDE_IF(multichain,build-beta)
 import { getMultichainAggregatedBalance } from '../../../selectors/assets';
 ///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
+///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
 ///: END:ONLY_INCLUDE_IF
 import { AccountListItemMenuTypes } from './account-list-item.types';
@@ -105,7 +105,7 @@ const AccountListItem = ({
   privacyMode = false,
 }) => {
   const t = useI18nContext();
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   const locale = useSelector(getIntlLocale);
   ///: END:ONLY_INCLUDE_IF
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
@@ -138,7 +138,7 @@ const AccountListItem = ({
   const accountTotalFiatBalances =
     useMultichainAccountTotalFiatBalance(account);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain,build-beta)
   const multichainAggregatedBalance = useSelector((state) =>
     getMultichainAggregatedBalance(state, account),
   );
@@ -175,10 +175,10 @@ const AccountListItem = ({
         ? account.balance
         : totalFiatBalance;
   } else {
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+    ///: BEGIN:ONLY_INCLUDE_IF(multichain,build-beta)
     balanceToTranslate = multichainAggregatedBalance;
     ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main)
     const balanceOrFallback = accountTotalFiatBalances?.totalBalance ?? 0;
     const bnBalance = new BigNumber(balanceOrFallback);
     const formattedBalanceToTranslate = formatWithThreshold(
@@ -221,12 +221,12 @@ const AccountListItem = ({
 
   const getIsAggregatedFiatOverviewBalanceProp = () => {
     let isAggregatedFiatOverviewBalance;
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+    ///: BEGIN:ONLY_INCLUDE_IF(multichain,build-beta)
     isAggregatedFiatOverviewBalance =
       (!isTestnet && process.env.PORTFOLIO_VIEW && shouldShowFiat) ||
       !isEvmNetwork;
     ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main)
     isAggregatedFiatOverviewBalance =
       !isTestnet && process.env.PORTFOLIO_VIEW && shouldShowFiat;
     ///: END:ONLY_INCLUDE_IF
@@ -235,10 +235,10 @@ const AccountListItem = ({
 
   const getPreferredCurrencyValue = () => {
     let value;
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+    ///: BEGIN:ONLY_INCLUDE_IF(multichain,build-beta)
     value = account.balance;
     ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main)
     value = isEvmNetwork ? account.balance : balanceToTranslate;
     ///: END:ONLY_INCLUDE_IF
     return value;
