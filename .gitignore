@@ -88,3 +88,7 @@ html-report/
 
 # UI Integration tests
 test/integration/config/assets
+
+# Bundle size data
+temp/stats/bundle_size_data.js
+temp/stats/bundle_size_data.temp.js

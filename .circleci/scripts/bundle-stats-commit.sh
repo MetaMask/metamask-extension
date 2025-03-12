@@ -16,11 +16,11 @@ then
     exit 1
 fi
 
-if [[ "${CIRCLE_BRANCH}" != "main" ]]
-then
-    printf 'This is not main branch'
-    exit 0
-fi
+#if [[ "${CIRCLE_BRANCH}" != "main" ]]
+#then
+#    printf 'This is not main branch'
+#    exit 0
+#fi
 
 if [[ -z "${GITHUB_TOKEN:-}" ]]
 then
@@ -53,6 +53,12 @@ fi
 jq . "$STATS_FILE" > /dev/null || { echo "Error: Existing stats JSON is invalid"; exit 1; }
 jq . "$BUNDLE_SIZE_FILE" > /dev/null || { echo "Error: New bundle size JSON is invalid"; exit 1; }
 
+# Check if the SHA already exists in the stats file
+if jq -e "has(\"$CIRCLE_SHA1\")" "$STATS_FILE" > /dev/null; then
+    echo "SHA $CIRCLE_SHA1 already exists in stats file. No new commit needed."
+    exit 0
+fi
+
 # Append new bundle size data correctly using jq
 jq --arg sha "$CIRCLE_SHA1" --argjson data "$(cat "$BUNDLE_SIZE_FILE")" \
    '. + {($sha): $data}' "$STATS_FILE" > "$TEMP_FILE"
@@ -71,7 +77,8 @@ echo " }" >> temp/stats/bundle_size_data.js
 
 cd temp
 
-git add .
+# Only add the JSON file
+git add stats/bundle_size_data.json
 
 git commit --message "Adding bundle size at commit: ${CIRCLE_SHA1}"
 
