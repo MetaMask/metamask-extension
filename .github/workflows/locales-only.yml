@@ -27,5 +27,7 @@ jobs:
       - name: Validate locales only
         run: yarn tsx .circleci/scripts/validate-locales-only.ts
 
-      - name: Lint
-        uses: ./.github/workflows/test-lint.yml
+  test-lint:
+    needs:
+      - locales-only
+    uses: ./.github/workflows/test-lint.yml
