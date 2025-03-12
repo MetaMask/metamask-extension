@@ -67,3 +67,8 @@ export function hasCreatedBtcMainnetAccount(state: AccountsState) {
 export function hasCreatedBtcTestnetAccount(state: AccountsState) {
   return hasCreatedBtcAccount(state, isBtcTestnetAddress);
 }
+
+export function hasCreatedSolanaAccount(state: AccountsState) {
+  const accounts = getInternalAccounts(state);
+  return accounts.some((account) => isSolanaAccount(account));
+}
