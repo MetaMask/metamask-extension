@@ -230,6 +230,7 @@ const ConfirmTitle: React.FC = memo(() => {
       isRevokeSetApprovalForAll,
       spendingCapPending,
       primaryType,
+      t,
       tokenStandard,
     ],
   );
@@ -253,6 +254,7 @@ const ConfirmTitle: React.FC = memo(() => {
       isRevokeSetApprovalForAll,
       spendingCapPending,
       primaryType,
+      t,
       tokenStandard,
     ],
   );
