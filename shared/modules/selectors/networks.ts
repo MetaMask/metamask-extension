@@ -43,6 +43,48 @@ export function getSelectedNetworkClientId(
 ) {
   return state.metamask.selectedNetworkClientId;
 }
+/**
+ * Type to extend InternalNetworkState with multichain configurations.
+ */
+type ExtendedInternalNetworkState = InternalNetworkState & {
+  multichainNetworkConfigurationsByChainId: Record<
+    string,
+    NetworkConfiguration
+  >;
+};
+
+/**
+ * State type that includes both standard and multichain network configurations.
+ */
+export type ConsolidatedNetworkConfigurationsState = {
+  metamask: Pick<
+    ExtendedInternalNetworkState,
+    | 'networkConfigurationsByChainId'
+    | 'multichainNetworkConfigurationsByChainId'
+  >;
+};
+
+/**
+ * Combines and returns network configurations from both, EVM and multichain sources.
+ *
+ * @param state - Redux state.
+ * @returns A consolidated object containing all available network configurations.
+ */
+export const getConsolidatedNetworkConfigurations = createDeepEqualSelector(
+  (state: ConsolidatedNetworkConfigurationsState) =>
+    state.metamask.networkConfigurationsByChainId,
+  (state: ConsolidatedNetworkConfigurationsState) =>
+    state.metamask.multichainNetworkConfigurationsByChainId,
+  (
+    networkConfigurationsByChainId,
+    multichainNetworkConfigurationsByChainId,
+  ) => {
+    return {
+      ...networkConfigurationsByChainId,
+      ...multichainNetworkConfigurationsByChainId,
+    };
+  },
+);
 
 /**
  * Get the provider configuration for the current selected network.

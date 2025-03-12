@@ -86,11 +86,11 @@ export const SiteCell: React.FC<SiteCellProps> = ({
 
   const networkMessageConnectedState =
     selectedChainIdsLength === 1
-      ? t('connectedWithNetworkName', [selectedNetworks[0].name])
+      ? t('connectedWithNetworkName', [selectedNetworks[0]?.name])
       : t('connectedWithNetwork', [selectedChainIdsLength]);
   const networkMessageNotConnectedState =
     selectedChainIdsLength === 1
-      ? t('requestingForNetwork', [selectedNetworks[0].name])
+      ? t('requestingForNetwork', [selectedNetworks[0]?.name])
       : t('requestingFor');
 
   const handleOpenAccountsModal = () => {

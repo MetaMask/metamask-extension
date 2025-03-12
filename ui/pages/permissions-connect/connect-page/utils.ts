@@ -6,6 +6,9 @@ import {
   setEthAccounts,
   setPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
+import { isEvmAccountType } from '@metamask/keyring-api';
+import { NetworkConfiguration } from '@metamask/network-controller';
+import { MergedInternalAccount } from '../../../selectors/selectors.types';
 
 export type PermissionsRequest = Record<
   string,
@@ -69,4 +72,114 @@ export function getCaip25PermissionsResponse(
       ],
     },
   };
+}
+
+/**
+ * Filters and returns accounts available for selection based on the scope requested.
+ *
+ * @param accounts - All available accounts.
+ * @param requestedCaip25CaveatValue - CAIP-25 request values.
+ * @returns Accounts available for selection.
+ */
+export function getFilteredAccounts(
+  accounts: MergedInternalAccount[],
+  requestedCaip25CaveatValue: Caip25CaveatValue,
+): MergedInternalAccount[] {
+  // This ensures backwards compatability
+  if (!requestedCaip25CaveatValue.isMultichainOrigin) {
+    return accounts.filter((account: MergedInternalAccount) =>
+      isEvmAccountType(account.type),
+    );
+  }
+
+  const requestedScopes = new Set([
+    ...Object.keys(requestedCaip25CaveatValue.requiredScopes),
+    ...Object.keys(requestedCaip25CaveatValue.optionalScopes),
+  ]);
+
+  const hasEipRequests = Array.from(requestedScopes).some((scope) =>
+    scope.startsWith('eip155:'),
+  );
+
+  return accounts.filter((account) => {
+    const hasUniversalEipScope =
+      hasEipRequests && account.scopes.includes('eip155:0');
+
+    if (hasUniversalEipScope) {
+      return true;
+    }
+
+    return account.scopes.some((accountScope) =>
+      requestedScopes.has(accountScope),
+    );
+  });
+}
+
+/**
+ * Find and return available requested accounts.
+ *
+ * @param requestedCaip25CaveatValue - CAIP-25 request values.
+ * @returns Accounts available for requesting.
+ */
+export function getRequestedAccounts(
+  requestedCaip25CaveatValue: Caip25CaveatValue,
+) {
+  const requiredNonEvmAccounts = Object.values(
+    requestedCaip25CaveatValue.requiredScopes,
+  )
+    .flatMap((scope) => scope.accounts)
+    .map((account) => account.split(':').pop() ?? '')
+    .filter(Boolean);
+
+  const optionalNonEvmAccounts = Object.values(
+    requestedCaip25CaveatValue.optionalScopes,
+  )
+    .flatMap((scope) => scope.accounts)
+    .map((account) => account.split(':').pop() ?? '')
+    .filter(Boolean);
+
+  return [...requiredNonEvmAccounts, ...optionalNonEvmAccounts].filter(Boolean);
+}
+
+/**
+ * Filters networks based on the CAIP request scopes.
+ *
+ * @param networks - Network configurations.
+ * @param requestedCaip25CaveatValue - CAIP-25 caveat value.
+ * @returns Filtered network configurations matching the requested scopes.
+ */
+export function getFilteredNetworks(
+  networks: Record<string, NetworkConfiguration>,
+  requestedCaip25CaveatValue: Caip25CaveatValue,
+): Record<string, NetworkConfiguration> {
+  // This ensures backwards compatability
+  if (
+    !requestedCaip25CaveatValue ||
+    (!requestedCaip25CaveatValue.requiredScopes &&
+      !requestedCaip25CaveatValue.optionalScopes)
+  ) {
+    return networks;
+  }
+
+  const filteredNetworks: Record<string, NetworkConfiguration> = {};
+  const allScopes = {
+    ...(requestedCaip25CaveatValue.requiredScopes || {}),
+    ...(requestedCaip25CaveatValue.optionalScopes || {}),
+  };
+
+  const hasEipRequest = Object.keys(allScopes).some(
+    (scope) => scope.startsWith('eip155:') || scope.startsWith('wallet:eip155'),
+  );
+
+  Object.entries(networks).forEach(([chainId, network]) => {
+    if (chainId.startsWith('0x')) {
+      if (hasEipRequest) {
+        filteredNetworks[chainId] = network;
+      }
+    } else if (Object.keys(allScopes).includes(chainId)) {
+      filteredNetworks[chainId] = network;
+    }
+  });
+
+  return filteredNetworks;
 }
