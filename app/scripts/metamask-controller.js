@@ -342,7 +342,11 @@ import { addTypedMessage, addPersonalMessage } from './lib/signature/util';
 ///: END:ONLY_INCLUDE_IF
 import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscreen-keyring';
 import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
-import { METAMASK_COOKIE_HANDLER } from './constants/stream';
+import {
+  METAMASK_CAIP_PROVIDER,
+  METAMASK_COOKIE_HANDLER,
+  METAMASK_EIP_1193_PROVIDER,
+} from './constants/stream';
 
 // Notification controllers
 import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verification-middleware';
@@ -5774,10 +5778,11 @@ export default class MetamaskController extends EventEmitter {
 
     // setup multiplexing
     const mux = setupMultiplex(connectionStream);
+    mux.ignoreStream(METAMASK_CAIP_PROVIDER);
 
     // messages between inpage and background
     this.setupProviderConnectionEip1193(
-      mux.createStream('metamask-provider'),
+      mux.createStream(METAMASK_EIP_1193_PROVIDER),
       sender,
       inputSubjectType,
     );
