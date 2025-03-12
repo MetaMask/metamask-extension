@@ -212,7 +212,6 @@ describe('Simulation Details', () => {
   it('displays error message if transaction will fail or revert', async function (this: Mocha.Context) {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, INSUFFICIENT_GAS_REQUEST_MOCK);
-      await mockServer.forGet(`${TX_SENTINEL_URL}/network`).thenJson(500, {});
     };
     await withFixturesForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },

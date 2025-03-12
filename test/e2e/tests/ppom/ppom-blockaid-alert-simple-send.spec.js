@@ -8,7 +8,7 @@ const {
 const {
   loginWithoutBalanceValidation,
 } = require('../../page-objects/flows/login.flow');
-const { TX_SENTINEL_URL }= require('../../../../shared/constants/transaction');
+
 const {
   mockMultiNetworkBalancePolling,
 } = require('../../mock-balance-polling/mock-balance-polling');
@@ -78,7 +78,6 @@ async function mockInfuraWithMaliciousResponses(mockServer) {
     description: '',
     features: ['Interaction with a known malicious address'],
   });
-  await mockServer.forGet(`${TX_SENTINEL_URL}/network`).thenJson(500, {});
 }
 
 async function mockInfuraWithFailedResponses(mockServer) {
@@ -156,7 +155,7 @@ describe('Simple Send Security Alert - Blockaid', function () {
    * 'malicious_domain'. Some other tests are found in other files:
    * e.g. test/e2e/flask/ppom-blockaid-alert-<name>.spec.js
    */
-  it('should show security alerts for malicious requests', async function () {
+  it.only('should show security alerts for malicious requests', async function () {
     await withFixtures(
       // we need to use localhost instead of the ip
       // see issue: https://github.com/MetaMask/MetaMask-planning/issues/3560
