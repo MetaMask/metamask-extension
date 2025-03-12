@@ -79,12 +79,12 @@ const PermitSimulation: React.FC<object> = () => {
   let infoRowLabelKey = 'spendingCap';
   let descriptionKey = 'permitSimulationDetailInfo';
 
-  if (isNFT) {
-    descriptionKey = 'simulationDetailsApproveDesc';
-    infoRowLabelKey = 'simulationApproveHeading';
-  } else if (isRevoke) {
+  if (isRevoke) {
     descriptionKey = 'revokeSimulationDetailsDesc';
     infoRowLabelKey = 'permitSimulationChange_revoke';
+  } else if (isNFT) {
+    descriptionKey = 'simulationDetailsApproveDesc';
+    infoRowLabelKey = 'simulationApproveHeading';
   }
 
   const SpendingCapRow = (
