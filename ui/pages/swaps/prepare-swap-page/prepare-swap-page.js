@@ -97,6 +97,7 @@ import {
   QUOTES_EXPIRED_ERROR,
   MAX_ALLOWED_SLIPPAGE,
   SWAPS_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
+  DEFAULT_TO_TOKEN_BY_NETWORK,
 } from '../../../../shared/constants/swaps';
 import {
   CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
@@ -753,6 +754,15 @@ export default function PrepareSwapPage({
       setReceiveToAmount('');
     }
   }, [showQuotesLoadingAnimation]);
+
+  // Set the default destination token for the swap
+  useEffect(() => {
+    if (!selectedToToken?.address && DEFAULT_TO_TOKEN_BY_NETWORK[chainId]) {
+      const defaultToken = DEFAULT_TO_TOKEN_BY_NETWORK[chainId];
+      defaultToken && dispatch(setSwapToToken(defaultToken));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tokensToSearchSwapTo, chainId]);
 
   const onOpenImportTokenModalClick = (item) => {
     setTokenForImport(item);
