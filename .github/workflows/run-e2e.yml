@@ -61,8 +61,18 @@ jobs:
       - name: Configure Xvfb
         run: Xvfb -ac :99 -screen 0 1280x1024x16 &
 
-      - run: yarn tsx .github/scripts/git-diff-default-branch.ts
+      - name: Download changed-files artifact
         if: ${{ env.BRANCH != 'master' }}
+        id: download-changed-files
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: changed-files
+          path: ./changed-files/
+
+      # if the changed-files artifact does not exist, we get the diff
+      - run: yarn tsx .github/scripts/git-diff-default-branch.ts
+        if: ${{ steps.download-changed-files.outcome == 'failure' }}
 
       - name: Run E2E tests
         timeout-minutes: ${{ inputs.test-timeout-minutes }}
