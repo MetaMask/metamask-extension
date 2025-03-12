@@ -134,7 +134,8 @@ export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
     case TransactionType.simpleSend: {
       return t('sendingNativeAsset', [nativeCurrency]);
     }
-    case TransactionType.contractInteraction: {
+    case TransactionType.contractInteraction:
+    case TransactionType.batch: {
       return t('contractInteraction');
     }
     case TransactionType.deployContract: {
