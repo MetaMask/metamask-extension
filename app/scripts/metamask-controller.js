@@ -76,6 +76,7 @@ import {
 import { LoggingController, LogType } from '@metamask/logging-controller';
 import { PermissionLogController } from '@metamask/permission-log-controller';
 
+import { MultichainRouter } from '@metamask/snaps-controllers';
 import {
   createSnapsMethodMiddleware,
   buildSnapEndowmentSpecifications,
@@ -1264,6 +1265,14 @@ export default class MetamaskController extends EventEmitter {
           this.networkController.findNetworkClientIdByChainId.bind(
             this.networkController,
           ),
+        isNonEvmScopeSupported: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'MultichainRouter:isSupportedScope',
+        ),
+        getNonEvmAccountAddresses: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'MultichainRouter:getSupportedAccounts',
+        ),
       }),
       permissionSpecifications: {
         ...getPermissionSpecifications(),
@@ -1314,6 +1323,28 @@ export default class MetamaskController extends EventEmitter {
       }),
       state: initState.SubjectMetadataController,
       subjectCacheLimit: 100,
+    });
+
+    const multichainRouterMessenger = this.controllerMessenger.getRestricted({
+      name: 'MultichainRouter',
+      allowedActions: [
+        `SnapController:getAll`,
+        `SnapController:handleRequest`,
+        `${this.permissionController.name}:getPermissions`,
+        `AccountsController:listMultichainAccounts`,
+      ],
+      allowedEvents: [],
+    });
+
+    this.multichainRouter = new MultichainRouter({
+      messenger: multichainRouterMessenger,
+      // Binding the call to provide the selector only giving the controller the option to pass the operation
+      withSnapKeyring: this.keyringController.withKeyring.bind(
+        this.keyringController,
+        {
+          type: 'Snap Keyring',
+        },
+      ),
     });
 
     // Notification Controllers
@@ -2826,7 +2857,10 @@ export default class MetamaskController extends EventEmitter {
             origin,
             authorization,
           ] of removedAuthorizations.entries()) {
-            const sessionScopes = getSessionScopes(authorization);
+            const sessionScopes = getSessionScopes(authorization, {
+              getNonEvmSupportedMethods:
+                this.getNonEvmSupportedMethods.bind(this),
+            });
             // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
             // then remove middleware and unsubscribe
             Object.entries(sessionScopes).forEach(([scope, scopeObject]) => {
@@ -2847,7 +2881,10 @@ export default class MetamaskController extends EventEmitter {
             origin,
             authorization,
           ] of changedAuthorizations.entries()) {
-            const sessionScopes = getSessionScopes(authorization);
+            const sessionScopes = getSessionScopes(authorization, {
+              getNonEvmSupportedMethods:
+                this.getNonEvmSupportedMethods.bind(this),
+            });
 
             // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
             // then get the subscriptionManager going for that scope
@@ -5556,6 +5593,14 @@ export default class MetamaskController extends EventEmitter {
       },
     };
   }
+
+  getNonEvmSupportedMethods(scope) {
+    return this.controllerMessenger.call(
+      'MultichainRouter:getSupportedMethods',
+      scope,
+    );
+  }
+
   // ---------------------------------------------------------------------------
   // Identity Management (signature operations)
 
@@ -6722,6 +6767,16 @@ export default class MetamaskController extends EventEmitter {
             this.permissionController,
             origin,
           ),
+        getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this),
+        isNonEvmScopeSupported: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'MultichainRouter:isSupportedScope',
+        ),
+        handleNonEvmRequestForOrigin: (params) =>
+          this.controllerMessenger.call('MultichainRouter:handleRequest', {
+            ...params,
+            origin,
+          }),
       }),
     );
 
@@ -6857,7 +6912,9 @@ export default class MetamaskController extends EventEmitter {
       );
 
       // add new notification subscriptions for changed authorizations
-      const sessionScopes = getSessionScopes(caip25Caveat.value);
+      const sessionScopes = getSessionScopes(caip25Caveat.value, {
+        getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this),
+      });
 
       // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
       // then get the subscriptionManager going for that scope
@@ -7675,7 +7732,10 @@ export default class MetamaskController extends EventEmitter {
       {
         method: NOTIFICATION_NAMES.sessionChanged,
         params: {
-          sessionScopes: getSessionScopes(newAuthorization),
+          sessionScopes: getSessionScopes(newAuthorization, {
+            getNonEvmSupportedMethods:
+              this.getNonEvmSupportedMethods.bind(this),
+          }),
         },
       },
       API_TYPE.CAIP_MULTICHAIN,
