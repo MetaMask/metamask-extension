@@ -1,5 +1,6 @@
 import { shallowEqual, useSelector } from 'react-redux';
 import { toChecksumAddress } from 'ethereumjs-util';
+import { useMemo } from 'react';
 import {
   getCurrentCurrency,
   getCurrencyRates,
@@ -44,72 +45,86 @@ export const useAccountTotalCrossChainFiatBalance = (
   const crossChainCachedBalances: Balances = useSelector(
     getCrossChainMetaMaskCachedBalances,
   );
-  const mergedCrossChainRates: Balances = {
-    ...crossChainContractRates, // todo add confirmation exchange rates?
-  };
-
-  const tokenFiatBalancesCrossChains = formattedTokensWithBalancesPerChain.map(
-    (singleChainTokenBalances) => {
-      const { tokensWithBalances } = singleChainTokenBalances;
-      const matchedChainSymbol =
-        allNetworks[singleChainTokenBalances.chainId as `0x${string}`]
-          .nativeCurrency;
-      const conversionRate =
-        currencyRates?.[matchedChainSymbol]?.conversionRate;
-      const tokenFiatBalances = tokensWithBalances.map((token) => {
-        const tokenExchangeRate =
-          mergedCrossChainRates?.[singleChainTokenBalances.chainId]?.[
-            toChecksumAddress(token.address)
-          ];
-        const totalFiatValue = getTokenFiatAmount(
-          tokenExchangeRate,
-          conversionRate,
-          currentCurrency,
-          token.string,
-          token.symbol,
-          false,
-          false,
-        );
-
-        return totalFiatValue;
-      });
-
-      const balanceCached =
-        crossChainCachedBalances?.[singleChainTokenBalances.chainId]?.[
-          account?.address
-        ] ?? 0;
-      const nativeFiatValue = getValueFromWeiHex({
-        value: balanceCached,
-        toCurrency: currentCurrency,
-        conversionRate,
-        numberOfDecimals: 2,
-      });
-      return {
-        ...singleChainTokenBalances,
-        tokenFiatBalances,
-        nativeFiatValue,
-      };
-    },
+  const mergedCrossChainRates: Balances = useMemo(
+    () => ({
+      ...crossChainContractRates, // todo add confirmation exchange rates?
+    }),
+    [crossChainContractRates],
   );
 
-  const finalTotal = tokenFiatBalancesCrossChains.reduce(
-    (accumulator, currentValue) => {
-      const tmpCurrentValueFiatBalances: string[] =
-        currentValue.tokenFiatBalances.filter(
-          (value): value is string => value !== undefined,
+  const tokenFiatBalancesCrossChains = useMemo(
+    () =>
+      formattedTokensWithBalancesPerChain.map((singleChainTokenBalances) => {
+        const { tokensWithBalances } = singleChainTokenBalances;
+        const matchedChainSymbol =
+          allNetworks[singleChainTokenBalances.chainId as `0x${string}`]
+            .nativeCurrency;
+        const conversionRate =
+          currencyRates?.[matchedChainSymbol]?.conversionRate;
+        const tokenFiatBalances = tokensWithBalances.map((token) => {
+          const tokenExchangeRate =
+            mergedCrossChainRates?.[singleChainTokenBalances.chainId]?.[
+              toChecksumAddress(token.address)
+            ];
+          const totalFiatValue = getTokenFiatAmount(
+            tokenExchangeRate,
+            conversionRate,
+            currentCurrency,
+            token.string,
+            token.symbol,
+            false,
+            false,
+          );
+
+          return totalFiatValue;
+        });
+
+        const balanceCached =
+          crossChainCachedBalances?.[singleChainTokenBalances.chainId]?.[
+            account?.address
+          ] ?? 0;
+        const nativeFiatValue = getValueFromWeiHex({
+          value: balanceCached,
+          toCurrency: currentCurrency,
+          conversionRate,
+          numberOfDecimals: 2,
+        });
+        return {
+          ...singleChainTokenBalances,
+          tokenFiatBalances,
+          nativeFiatValue,
+        };
+      }),
+    [
+      formattedTokensWithBalancesPerChain,
+      allNetworks,
+      currencyRates,
+      mergedCrossChainRates,
+      crossChainCachedBalances,
+      account?.address,
+      currentCurrency,
+    ],
+  );
+
+  const finalTotal = useMemo(
+    () =>
+      tokenFiatBalancesCrossChains.reduce((accumulator, currentValue) => {
+        const tmpCurrentValueFiatBalances: string[] =
+          currentValue.tokenFiatBalances.filter(
+            (value): value is string => value !== undefined,
+          );
+        const totalFiatBalance = sumDecimals(
+          currentValue.nativeFiatValue,
+          ...tmpCurrentValueFiatBalances,
         );
-      const totalFiatBalance = sumDecimals(
-        currentValue.nativeFiatValue,
-        ...tmpCurrentValueFiatBalances,
-      );
 
-      const totalAsNumber = totalFiatBalance.toNumber
-        ? totalFiatBalance.toNumber()
-        : Number(totalFiatBalance);
+        const totalAsNumber = totalFiatBalance.toNumber
+          ? totalFiatBalance.toNumber()
+          : Number(totalFiatBalance);
 
-      return accumulator + totalAsNumber;
-    },
-    0,
+        return accumulator + totalAsNumber;
+      }, 0),
+    [tokenFiatBalancesCrossChains],
   );
 
   return {
