@@ -3851,9 +3851,6 @@
   "permitSimulationChange_receive": {
     "message": "आप प्राप्त करते हैं"
   },
-  "permitSimulationChange_revoke": {
-    "message": "खर्च करने की लिमिट"
-  },
   "permitSimulationChange_transfer": {
     "message": "आप भेजते हैं"
   },

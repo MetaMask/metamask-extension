@@ -3851,9 +3851,6 @@
   "permitSimulationChange_receive": {
     "message": "Sie empfangen"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Ausgabenobergrenze"
-  },
   "permitSimulationChange_transfer": {
     "message": "Sie senden"
   },
