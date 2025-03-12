@@ -12,7 +12,8 @@ import { useConfirmationNavigation } from './useConfirmationNavigation';
 import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
 import { Hex } from '@metamask/utils';
 
-export const EIP_7702_REVOKE_ADDRESS = '0x0000000000000000000000000000000000000000';
+export const EIP_7702_REVOKE_ADDRESS =
+  '0x0000000000000000000000000000000000000000';
 
 export function useEIP7702Account({
   onRedirect,
