@@ -1,18 +1,18 @@
 const { strict: assert } = require('assert');
 import { ethers } from 'ethers';
 import { Suite } from 'mocha';
-import { unlockWallet, withFixtures } from '../../helpers';
+import { unlockWallet, withFixtures } from '../helpers';
 import { getBridgeFixtures } from './bridge-test-utils';
 import { DEFAULT_FEATURE_FLAGS_RESPONSE } from './constants';
-import { Tenderly, addFundsToAccount } from '../../tenderly-network';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import HomePage from '../../page-objects/pages/home/homepage';
+import { Tenderly, addFundsToAccount } from '../tenderly-network';
+import AccountListPage from '../page-objects/pages/account-list-page';
+import AssetListPage from '../page-objects/pages/home/asset-list';
+import HeaderNavbar from '../page-objects/pages/header-navbar';
+import HomePage from '../page-objects/pages/home/homepage';
 import BridgeQuotePage, {
   BridgeQuote,
-} from '../../page-objects/pages/bridge/quote-page';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+} from '../page-objects/pages/bridge/quote-page';
+import ActivityListPage from '../page-objects/pages/home/activity-list';
 import { sleep } from '@metamask/test-bundler/dist/utils';
 
 describe('Bridge tests @no-mmi', function (this: Suite) {
@@ -34,7 +34,7 @@ describe('Bridge tests @no-mmi', function (this: Suite) {
 
         const wallet = ethers.Wallet.createRandom();
         const response = await addFundsToAccount(
-          Tenderly.Mainnet.url,
+          Tenderly.Mainnet_Bridge.url,
           wallet.address,
         );
         assert.equal(response.error, undefined);
