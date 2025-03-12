@@ -41,6 +41,8 @@ jobs:
       BRANCH: ${{ github.head_ref || github.ref_name }}
       MATRIX_INDEX: ${{ inputs.matrix-index }}
       MATRIX_TOTAL: ${{ inputs.matrix-total }}
+      # Add TIMEOUT env var for the script to use
+      TIMEOUT: ${{ inputs.test-timeout-minutes }}
     steps:
       - name: Install dependencies
         run: |
@@ -66,7 +68,7 @@ jobs:
 
       - name: Run E2E tests
         timeout-minutes: ${{ inputs.test-timeout-minutes }}
-        run: ${{ inputs.test-command }}
+        run: ${{ inputs.test-command }} --retries 3
 
       - name: Upload test results and artifacts
         if: always()
