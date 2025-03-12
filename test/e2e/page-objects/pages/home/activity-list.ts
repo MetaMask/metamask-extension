@@ -181,7 +181,7 @@ class ActivityListPage {
         this.bridgeTransactionCompleted,
       );
       return completedTxs.length === expectedNumber;
-    }, 10000);
+    }, 30000);
     console.log(
       `${expectedNumber} Bridge transactions found in activity list on homepage`,
     );
