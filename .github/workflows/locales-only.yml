@@ -15,7 +15,7 @@ jobs:
           is-high-risk-environment: false
 
       - name: Get changed files with git diff
-        run: yarn tsx .circleci/scripts/git-diff-default-branch.ts
+        run: yarn tsx .github/scripts/git-diff-default-branch.ts
 
       - name: Validate locales only
         run: yarn tsx .circleci/scripts/validate-locales-only.ts
