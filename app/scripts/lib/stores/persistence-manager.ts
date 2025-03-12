@@ -1,5 +1,6 @@
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
+import { KeyringControllerState } from '@metamask/keyring-controller';
 import { captureException } from '@sentry/browser';
 import { isEmpty } from 'lodash';
 import { type MetaMaskStateType, MetaMaskStorageStructure } from './base-store';
@@ -88,7 +89,9 @@ export class PersistenceManager {
     }
     try {
       await this.#localStore.set({ data: state, meta: this.#metadata });
-      const newVaultReference = state.KeyringController?.vault ?? null;
+      const keyringController =
+        state.KeyringController as KeyringControllerState;
+      const newVaultReference = keyringController?.vault ?? null;
       if (newVaultReference !== this.#vaultReference) {
         if (newVaultReference && this.#vaultReference === null) {
           browser.storage.local.remove('vaultHasNotYetBeenCreated');
