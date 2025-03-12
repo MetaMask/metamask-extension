@@ -18,7 +18,7 @@ const { MOCK_META_METRICS_ID } = require('./constants');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
 const {
   DEFAULT_FEATURE_FLAGS_RESPONSE: BRIDGE_DEFAULT_FEATURE_FLAGS_RESPONSE,
-} = require('./tests/bridge/constants');
+} = require('./bridge/constants');
 
 const { ALLOWLISTED_HOSTS, ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
 

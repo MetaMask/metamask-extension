@@ -8,6 +8,13 @@ export const Tenderly = {
     chainID: '0x1',
     symbol: 'ETH',
   },
+  Mainnet_Bridge: {
+    name: 'Ethereum Mainnet',
+    rpcName: 'Tenderly - Mainnet',
+    url: 'https://virtual.mainnet.rpc.tenderly.co/6d43a7aa-6af0-4364-97e2-26f55aedc155',
+    chainID: '0x1',
+    symbol: 'ETH',
+  },
   Optimism: {
     name: 'OP Mainnet',
     rpcName: '',
