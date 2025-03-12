@@ -32,8 +32,19 @@ const isOffscreenAvailable = Boolean(global.chrome?.offscreen);
  */
 const isMv3ButOffscreenDocIsMissing = isManifestV3 && !isOffscreenAvailable;
 
+/**
+ * A boolean indicating whether the current extension's manifest has
+ * externally_connectable enabled for all webpages and extensions. This is
+ * only available when using a chromium browser with version 67 and higher.
+ */
+const isExternallyConnectableWildcardEnabled =
+  runtimeManifest?.externally_connectable?.matches?.includes['http://*/*'] &&
+  runtimeManifest?.externally_connectable?.matches?.includes['https://*/*'] &&
+  runtimeManifest?.externally_connectable?.ids?.includes['*'];
+
 module.exports = {
   isManifestV3,
   isOffscreenAvailable,
   isMv3ButOffscreenDocIsMissing,
+  isExternallyConnectableWildcardEnabled,
 };
