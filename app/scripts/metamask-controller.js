@@ -394,6 +394,11 @@ import {
 } from './controller-init/snaps';
 import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
+import {
+  getCapabilities,
+  getTransactionReceiptsByBatchId,
+  processSendCalls,
+} from './lib/transaction/eip5792';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -2141,6 +2146,26 @@ export default class MetamaskController extends EventEmitter {
           (meta) =>
             meta.hash === hash && meta.status === TransactionStatus.submitted,
         ),
+
+      // EIP-5792
+      processSendCalls: processSendCalls.bind(
+        null,
+        {
+          addTransactionBatch: this.txController.addTransactionBatch.bind(
+            this.txController,
+          ),
+        },
+        this.controllerMessenger,
+      ),
+      getTransactionReceiptsByBatchId: getTransactionReceiptsByBatchId.bind(
+        null,
+        this.controllerMessenger,
+      ),
+      getCapabilities: getCapabilities.bind(null, {
+        isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
+          this.txController,
+        ),
+      }),
     });
 
     // ensure isClientOpenAndUnlocked is updated when memState updates
