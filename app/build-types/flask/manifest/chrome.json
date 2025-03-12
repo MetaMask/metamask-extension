@@ -1,8 +1,4 @@
 {
   "description": "THIS IS THE CANARY DISTRIBUTION OF THE METAMASK EXTENSION, INTENDED FOR DEVELOPERS.",
-  "externally_connectable": {
-    "matches": ["http://*/*", "https://*/*"],
-    "ids": ["*"]
-  },
   "name": "MetaMask Flask DEVELOPMENT BUILD"
 }
