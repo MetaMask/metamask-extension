@@ -155,33 +155,21 @@ export function goHome() {
 export function tryUnlockMetamask(
   password: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     dispatch(unlockInProgress());
     log.debug(`background.submitPassword`);
 
-    return new Promise<void>((resolve, reject) => {
-      callBackgroundMethod('submitPassword', [password], (error) => {
-        if (error) {
-          reject(error);
-          return;
-        }
-
-        resolve();
-      });
-    })
-      .then(() => {
-        dispatch(unlockSucceeded());
-        return forceUpdateMetamaskState(dispatch);
-      })
-      .then(() => {
-        dispatch(hideLoadingIndication());
-      })
-      .catch((err) => {
-        dispatch(unlockFailed(getErrorMessage(err)));
-        dispatch(hideLoadingIndication());
-        return Promise.reject(err);
-      });
+    try {
+      await submitRequestToBackground('submitPassword', [password]);
+      dispatch(unlockSucceeded());
+      await forceUpdateMetamaskState(dispatch);
+    } catch(err) {
+      dispatch(unlockFailed(getErrorMessage(err)));
+      throw err;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
   };
 }
 
