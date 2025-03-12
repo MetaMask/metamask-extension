@@ -1,6 +1,6 @@
 import { Messenger } from '@metamask/base-controller';
 import { KeyringController } from '@metamask/keyring-controller';
-import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
+import { convertMnemonicToWordlistIndices } from '../lib/mnemonic';
 import { UI_NOTIFICATIONS } from '../../../shared/notifications';
 import { E2E_SRP, defaultFixture } from '../../../test/e2e/default-fixture';
 import FixtureBuilder from '../../../test/e2e/fixture-builder';
@@ -64,18 +64,11 @@ async function generateVaultAndAccount(encodedSeedPhrase, password) {
     messenger: keyringControllerMessenger,
   });
 
-  const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
-  const _convertMnemonicToWordlistIndices = (mnemonic) => {
-    const indices = mnemonic
-      .toString()
-      .split(' ')
-      .map((word) => wordlist.indexOf(word));
-    return new Uint8Array(new Uint16Array(indices).buffer);
-  };
+  const seedPhraseAsUint8Array = new TextEncoder().encode(encodedSeedPhrase);
 
   await krCtrl.createNewVaultAndRestore(
     password,
-    _convertMnemonicToWordlistIndices(seedPhraseAsBuffer),
+    convertMnemonicToWordlistIndices(seedPhraseAsUint8Array),
   );
 
   const accounts = [];

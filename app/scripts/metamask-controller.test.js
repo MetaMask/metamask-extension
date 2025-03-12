@@ -228,13 +228,19 @@ jest.mock('../../shared/modules/mv3.utils', () => ({
 }));
 
 const DEFAULT_LABEL = 'Account 1';
-const TEST_SEED =
-  'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
+const TEST_SEED = [
+  ...new TextEncoder().encode(
+    'debris dizzy just program just float decrease vacant alarm reduce speak stadium',
+  ),
+];
 const TEST_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 const TEST_ADDRESS_2 = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
 const TEST_ADDRESS_3 = '0xeb9e64b93097bc15f01f13eae97015c57ab64823';
-const TEST_SEED_ALT =
-  'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle';
+const TEST_SEED_ALT = [
+  ...new TextEncoder().encode(
+    'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle',
+  ),
+];
 const TEST_ADDRESS_ALT = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
 const TEST_INTERNAL_ACCOUNT = {
   id: '2d47e693-26c2-47cb-b374-6151199bbe3f',
