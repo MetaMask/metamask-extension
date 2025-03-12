@@ -51,23 +51,17 @@ export function useMultichainTransactionDisplay({
     [TransactionType.Send]: parseAssetWithThreshold(
       from?.asset ?? null,
       '0.00001',
-      {
-        locale,
-      },
+      { locale, isNegative: true },
     ),
     [TransactionType.Receive]: parseAssetWithThreshold(
       to?.asset ?? null,
       '0.00001',
-      {
-        locale,
-      },
+      { locale, isNegative: false },
     ),
     [TransactionType.Swap]: parseAssetWithThreshold(
       from?.asset ?? null,
       '0.00001',
-      {
-        locale,
-      },
+      { locale, isNegative: true },
     ),
   }[transaction.type];
 
@@ -78,11 +72,12 @@ export function useMultichainTransactionDisplay({
     asset,
     baseFee: parseAssetWithThreshold(baseFee?.asset ?? null, '0.0000001', {
       locale,
+      isNegative: false,
     }),
     priorityFee: parseAssetWithThreshold(
       priorityFee?.asset ?? null,
       '0.0000001',
-      { locale },
+      { locale, isNegative: false },
     ),
   };
 }
@@ -90,22 +85,31 @@ export function useMultichainTransactionDisplay({
 function parseAssetWithThreshold(
   asset: Token | Fee | null,
   threshold: string,
-  { locale }: { locale: string },
+  { locale, isNegative }: { locale: string; isNegative: boolean },
 ) {
   if (asset?.fungible) {
     const numberOfDecimals = threshold.split('.')?.[1]?.length ?? 0;
 
+    const amount = formatWithThreshold(
+      Number(asset?.amount),
+      Number(threshold),
+      locale,
+      {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: numberOfDecimals,
+      },
+    );
+
+    if (isNegative && !amount.startsWith('<')) {
+      return {
+        ...asset,
+        amount: `-${amount}`,
+      };
+    }
+
     return {
       ...asset,
-      amount: formatWithThreshold(
-        Number(asset?.amount),
-        Number(threshold),
-        locale,
-        {
-          minimumFractionDigits: 0,
-          maximumFractionDigits: numberOfDecimals,
-        },
-      ),
+      amount,
     };
   }
 
