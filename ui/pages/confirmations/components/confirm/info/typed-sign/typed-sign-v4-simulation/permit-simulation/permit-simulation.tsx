@@ -75,10 +75,20 @@ const PermitSimulation: React.FC<object> = () => {
     />
   );
 
+  const isRevoke = message.allowed === false;
+  let infoRowLabelKey = 'spendingCap';
+  let descriptionKey = 'permitSimulationDetailInfo';
+
+  if (isNFT) {
+    descriptionKey = 'simulationDetailsApproveDesc';
+    infoRowLabelKey = 'simulationApproveHeading';
+  } else if (isRevoke) {
+    descriptionKey = 'revokeSimulationDetailsDesc';
+    infoRowLabelKey = 'permitSimulationChange_revoke';
+  }
+
   const SpendingCapRow = (
-    <ConfirmInfoRow
-      label={t(isNFT ? 'simulationApproveHeading' : 'spendingCap')}
-    >
+    <ConfirmInfoRow label={t(infoRowLabelKey)}>
       <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
         {Array.isArray(tokenDetails) ? (
           <Box
@@ -107,14 +117,6 @@ const PermitSimulation: React.FC<object> = () => {
       </Box>
     </ConfirmInfoRow>
   );
-
-  let descriptionKey = 'permitSimulationDetailInfo';
-  if (isNFT) {
-    descriptionKey = 'simulationDetailsApproveDesc';
-  } else if (message.allowed === false || message.value === '0') {
-    // revoke permit
-    descriptionKey = 'revokeSimulationDetailsDesc';
-  }
 
   return (
     <StaticSimulation
