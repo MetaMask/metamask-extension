@@ -51,6 +51,13 @@ export default class IndexedDBStore extends BaseStore {
     });
   }
 
+  /**
+    * Saves the passed state in IndexedDB.
+    *
+    * @param state - The state to be saved.
+    * @throws If the state or metadata is missing.
+    * @returns A promise that resolves when the state is saved.
+    */
   async set(state: MetaMaskStorageStructure): Promise<void> {
     if (!state) {
       throw new Error('MetaMask - updated state is missing');
