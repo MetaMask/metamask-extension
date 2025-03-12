@@ -1,13 +1,7 @@
 import React, { useContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { InternalAccount } from '@metamask/keyring-internal-api';
-import { isEvmAccountType } from '@metamask/keyring-api';
 import { NetworkConfiguration } from '@metamask/network-controller';
-import {
-  getEthAccounts,
-  getPermittedEthChainIds,
-  Caip25CaveatValue,
-} from '@metamask/chain-agnostic-permission';
+import { getPermittedEthChainIds } from '@metamask/chain-agnostic-permission';
 import { Hex } from '@metamask/utils';
 import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -15,7 +9,7 @@ import {
   getSelectedInternalAccount,
   getUpdatedAndSortedAccounts,
 } from '../../../selectors';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { getConsolidatedNetworkConfigurations } from '../../../../shared/modules/selectors/networks';
 import {
   AvatarBase,
   AvatarBaseSize,
@@ -65,10 +59,14 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { MergedInternalAccount } from '../../../selectors/selectors.types';
 import {
   getCaip25PermissionsResponse,
   PermissionsRequest,
   getRequestedCaip25CaveatValue,
+  getFilteredAccounts,
+  getRequestedAccounts,
+  getFilteredNetworks,
 } from './utils';
 
 export type ConnectPageRequest = {
@@ -92,20 +90,6 @@ export type ConnectPageProps = {
   };
 };
 
-// FIXME: The changes to this file are temporary for testing only.
-function getNonEvmAccountsForScopes(
-  scopes: Caip25CaveatValue['optionalScopes'],
-) {
-  return Object.values(scopes).flatMap((scope) => scope.accounts);
-}
-
-function getNonEvmAccounts(caipRequest: Caip25CaveatValue): string[] {
-  return [
-    ...getNonEvmAccountsForScopes(caipRequest.requiredScopes),
-    ...getNonEvmAccountsForScopes(caipRequest.optionalScopes),
-  ];
-}
-
 export const ConnectPage: React.FC<ConnectPageProps> = ({
   request,
   permissionsRequestId,
@@ -119,22 +103,30 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const requestedCaip25CaveatValue = getRequestedCaip25CaveatValue(
     request.permissions,
   );
-  const requestedAccounts = getEthAccounts(requestedCaip25CaveatValue);
+  const requestedAccounts = getRequestedAccounts(requestedCaip25CaveatValue);
   const requestedChainIds = getPermittedEthChainIds(requestedCaip25CaveatValue);
-  const requestedNonEvmAccounts = getNonEvmAccounts(requestedCaip25CaveatValue);
 
-  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const networkConfigurations = useSelector(
+    getConsolidatedNetworkConfigurations,
+  );
+  const filteredNetworkConfigurations = getFilteredNetworks(
+    networkConfigurations,
+    requestedCaip25CaveatValue,
+  );
+
   const [nonTestNetworks, testNetworks] = useMemo(
     () =>
-      Object.entries(networkConfigurations).reduce(
+      Object.entries(filteredNetworkConfigurations).reduce(
         ([nonTestNetworksList, testNetworksList], [chainId, network]) => {
           const isTest = (TEST_CHAINS as string[]).includes(chainId);
-          (isTest ? testNetworksList : nonTestNetworksList).push(network);
+          (isTest ? testNetworksList : nonTestNetworksList).push(
+            network as NetworkConfiguration,
+          );
           return [nonTestNetworksList, testNetworksList];
         },
         [[] as NetworkConfiguration[], [] as NetworkConfiguration[]],
       ),
-    [networkConfigurations],
+    [filteredNetworkConfigurations],
   );
 
   const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);
@@ -170,21 +162,27 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     defaultSelectedChainIds,
   );
 
-  const accounts = useSelector(getUpdatedAndSortedAccounts);
-  const evmAccounts = useMemo(() => {
-    return accounts.filter((account: InternalAccount) =>
-      isEvmAccountType(account.type),
-    );
-  }, [accounts]);
+  const accounts = useSelector(
+    getUpdatedAndSortedAccounts,
+  ) as MergedInternalAccount[];
+  const filteredAccounts = getFilteredAccounts(
+    accounts,
+    requestedCaip25CaveatValue,
+  );
 
   const supportedRequestedAccounts = requestedAccounts.filter((account) =>
-    evmAccounts.find(({ address }) => isEqualCaseInsensitive(address, account)),
+    filteredAccounts.find(({ address }) =>
+      isEqualCaseInsensitive(address, account),
+    ),
   );
 
   const currentAccount = useSelector(getSelectedInternalAccount);
-  const currentAccountAddress = isEvmAccountType(currentAccount.type)
+  const currentAccountAddress = filteredAccounts.some(
+    (account) => account.address === currentAccount.address,
+  )
     ? [currentAccount.address]
-    : []; // We do not support non-EVM accounts connections
+    : [filteredAccounts[0]?.address].filter(Boolean);
+
   const defaultAccountsAddresses =
     supportedRequestedAccounts.length > 0
       ? supportedRequestedAccounts
@@ -208,10 +206,11 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     approveConnection(_request);
   };
 
-  const selectedAccounts = accounts.filter(({ address }) =>
-    selectedAccountAddresses.some((selectedAccountAddress) =>
-      isEqualCaseInsensitive(selectedAccountAddress, address),
-    ),
+  const selectedAccounts = filteredAccounts.filter(
+    (account): account is MergedInternalAccount =>
+      selectedAccountAddresses.some((selectedAccountAddress) =>
+        isEqualCaseInsensitive(selectedAccountAddress, account.address),
+      ),
   );
 
   const title = transformOriginToTitle(targetSubjectMetadata.origin);
@@ -367,7 +366,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               )}
               {showEditAccountsModal && (
                 <EditAccountsModal
-                  accounts={evmAccounts}
+                  accounts={filteredAccounts}
                   defaultSelectedAccountAddresses={selectedAccountAddresses}
                   onClose={() => setShowEditAccountsModal(false)}
                   onSubmit={setSelectedAccountAddresses}
@@ -385,7 +384,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               <SiteCell
                 nonTestNetworks={nonTestNetworks}
                 testNetworks={testNetworks}
-                accounts={evmAccounts}
+                accounts={filteredAccounts}
                 onSelectAccountAddresses={setSelectedAccountAddresses}
                 onSelectChainIds={setSelectedChainIds}
                 selectedAccountAddresses={selectedAccountAddresses}
@@ -419,9 +418,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               size={ButtonSize.Lg}
               onClick={onConfirm}
               disabled={
-                requestedNonEvmAccounts.length === 0 &&
-                (selectedAccountAddresses.length === 0 ||
-                  selectedChainIds.length === 0)
+                selectedAccountAddresses.length === 0 ||
+                selectedChainIds.length === 0
               }
             >
               {t('connect')}
