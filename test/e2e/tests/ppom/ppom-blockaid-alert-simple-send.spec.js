@@ -155,7 +155,7 @@ describe('Simple Send Security Alert - Blockaid', function () {
    * 'malicious_domain'. Some other tests are found in other files:
    * e.g. test/e2e/flask/ppom-blockaid-alert-<name>.spec.js
    */
-  it.only('should show security alerts for malicious requests', async function () {
+  it('should show security alerts for malicious requests', async function () {
     await withFixtures(
       // we need to use localhost instead of the ip
       // see issue: https://github.com/MetaMask/MetaMask-planning/issues/3560
