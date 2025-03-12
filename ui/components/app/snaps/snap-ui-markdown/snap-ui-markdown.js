@@ -17,6 +17,7 @@ import {
 } from '../../../component-library';
 import SnapLinkWarning from '../snap-link-warning';
 import useSnapNavigation from '../../../../hooks/snaps/useSnapNavigation';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
 
 const Paragraph = (props) => (
   <Text
@@ -90,7 +91,7 @@ export const SnapUIMarkdown = ({ children, markdown }) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   if (isMetaMaskUrl(href)) {
-                    navigate(href);
+                    navigate(href, ENVIRONMENT_TYPE_POPUP);
                   } else {
                     handleLinkClick(href);
                   }

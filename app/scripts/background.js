@@ -25,6 +25,7 @@ import {
   EXTENSION_MESSAGES,
   PLATFORM_FIREFOX,
   MESSAGE_TYPE,
+  POPUP_PREPARATION_LOGIC_TYPES,
 } from '../../shared/constants/app';
 import {
   REJECT_NOTIFICATION_CLOSE,
@@ -413,6 +414,42 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
     connectExternalCaip(...args);
   } else {
     connectExternalExtension(...args);
+  }
+});
+
+/**
+ * Returns the appropriate pre-popup logic based on action type
+ *
+ * @param {string} action - The action to execute before showing popup
+ * @param {object} params - Parameters needed for the action
+ * @returns {Promise<void>}
+ */
+function getPopupPreparationLogic(action, params) {
+  switch (action) {
+    case POPUP_PREPARATION_LOGIC_TYPES.SNAP_NAVIGATION:
+      return async () => {
+        await controller.appStateController.setSnapRoute(params.path);
+      };
+    default:
+      return async () => {
+        // No-op for unknown actions
+      };
+  }
+}
+
+browser.runtime.onMessage.addListener(async (message) => {
+  if (
+    message.type === EXTENSION_MESSAGES.OPEN_EXTENSION_POPUP_FROM_NOTIFICATION
+  ) {
+    // Waiting for the notification window to be closed otherwise it will try to render the route in the same window
+    setTimeout(async () => {
+      await getPopupPreparationLogic(message.action, message.params);
+      await controller.notificationManager.showPopup(
+        undefined,
+        undefined,
+        true,
+      );
+    }, 100);
   }
 });
 

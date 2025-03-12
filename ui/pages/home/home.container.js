@@ -27,6 +27,7 @@ import {
   getQueuedRequestCount,
   getEditedNetwork,
   selectPendingApprovalsForNavigation,
+  getSnapRoute,
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
 import {
@@ -47,6 +48,7 @@ import {
   setNewTokensImportedError,
   setDataCollectionForMarketing,
   setEditedNetwork,
+  clearSnapRoute,
 } from '../../store/actions';
 import {
   hideWhatsNewPopup,
@@ -170,6 +172,7 @@ const mapStateToProps = (state) => {
     onboardedInThisUISession: appState.onboardedInThisUISession,
     hasAllowedPopupRedirectApprovals,
     showMultiRpcModal: state.metamask.preferences.showMultiRpcModal,
+    snapRoute: getSnapRoute(state),
   };
 };
 
@@ -222,6 +225,7 @@ const mapDispatchToProps = (dispatch) => {
     setBasicFunctionalityModalOpen: () =>
       dispatch(openBasicFunctionalityModal()),
     fetchBuyableChains: () => dispatch(fetchBuyableChains()),
+    clearSnapRoute: () => dispatch(clearSnapRoute()),
   };
 };
 

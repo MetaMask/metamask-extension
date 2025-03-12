@@ -179,6 +179,8 @@ export default class Home extends PureComponent {
     useExternalServices: PropTypes.bool,
     setBasicFunctionalityModalOpen: PropTypes.func,
     fetchBuyableChains: PropTypes.func.isRequired,
+    snapRoute: PropTypes.string,
+    clearSnapRoute: PropTypes.func,
   };
 
   state = {
@@ -229,6 +231,8 @@ export default class Home extends PureComponent {
       location,
       pendingApprovals,
       hasApprovalFlows,
+      snapRoute,
+      clearSnapRoute,
     } = this.props;
     const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
 
@@ -246,6 +250,9 @@ export default class Home extends PureComponent {
         hasApprovalFlows,
         history,
       );
+    } else if (snapRoute) {
+      history.push(snapRoute);
+      clearSnapRoute();
     }
   }
 
