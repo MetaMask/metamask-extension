@@ -76,7 +76,7 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
-///: BEGIN:ONLY_INCLUDE_IF(multichain,build-beta)
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { getMultichainAggregatedBalance } from '../../../selectors/assets';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
@@ -138,7 +138,7 @@ const AccountListItem = ({
   const accountTotalFiatBalances =
     useMultichainAccountTotalFiatBalance(account);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain,build-beta)
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const multichainAggregatedBalance = useSelector((state) =>
     getMultichainAggregatedBalance(state, account),
   );
@@ -175,7 +175,7 @@ const AccountListItem = ({
         ? account.balance
         : totalFiatBalance;
   } else {
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain,build-beta)
+    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     balanceToTranslate = multichainAggregatedBalance;
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(build-main)
@@ -221,7 +221,7 @@ const AccountListItem = ({
 
   const getIsAggregatedFiatOverviewBalanceProp = () => {
     let isAggregatedFiatOverviewBalance;
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain,build-beta)
+    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     isAggregatedFiatOverviewBalance =
       (!isTestnet && process.env.PORTFOLIO_VIEW && shouldShowFiat) ||
       !isEvmNetwork;
@@ -235,7 +235,7 @@ const AccountListItem = ({
 
   const getPreferredCurrencyValue = () => {
     let value;
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain,build-beta)
+    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     value = account.balance;
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(build-main)
