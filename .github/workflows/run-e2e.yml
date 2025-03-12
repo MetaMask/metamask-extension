@@ -30,6 +30,7 @@ on:
 
 jobs:
   run-e2e:
+    name: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' (Matrix {0}/{1})', inputs.matrix-index, inputs.matrix-total) || '' }}
     runs-on: ubuntu-22.04
     container:
       image: cimg/node:22.13-browsers
@@ -71,7 +72,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.test-suite-name }}${{ env.MATRIX_TOTAL > 1 && format('-{0}', env.MATRIX_INDEX) || '' }}
+          name: ${{ inputs.test-suite-name }}${{ inputs['matrix-total'] > 1 && format('-{0}', inputs['matrix-index']) || '' }}
           path: |
             ./test-artifacts
             ./test/test-results/e2e
