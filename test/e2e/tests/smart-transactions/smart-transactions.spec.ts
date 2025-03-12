@@ -67,8 +67,7 @@ export const waitForTransactionToComplete = async (
   await driver.waitForSelector('[data-testid="account-overview__asset-tab"]');
 };
 
-// TODO: Reactivate tests once the mock issue is fixed by this PR: https://github.com/MetaMask/metamask-extension/pull/30932
-describe.skip('Smart Transactions', function () {
+describe('Smart Transactions', function () {
   it('Swap', async function () {
     await withFixturesForSmartTransactions(
       {
