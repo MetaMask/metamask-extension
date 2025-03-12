@@ -606,7 +606,7 @@ export default class MetamaskController extends EventEmitter {
       delete networks[CHAIN_IDS.LINEA_GOERLI];
 
       // Due to the MegaETH Testnet not being included in getDefaultNetworkControllerState().
-      // and it not using Infura as a provider, we need to add it manually.
+      // and it is not using Infura as a provider, we need to add it manually.
       networks[CHAIN_IDS.MEGAETH_TESTNET] = cloneDeep(
         DEFAULT_CUSTOM_TESTNET_MAP[CHAIN_IDS.MEGAETH_TESTNET],
       );
