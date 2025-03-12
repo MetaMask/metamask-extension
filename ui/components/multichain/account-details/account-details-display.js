@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -15,11 +15,15 @@ import {
   Box,
   ButtonSecondary,
   ButtonSecondarySize,
+  Text,
 } from '../../component-library';
 import {
   AlignItems,
+  BackgroundColor,
+  BorderRadius,
   Display,
   FlexDirection,
+  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -30,12 +34,73 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { useEIP7702Account } from '../../../pages/confirmations/hooks/useEIP7702Account';
+
+function SmartAccountPill() {
+  const { isUpgraded } = useEIP7702Account();
+
+  if (!isUpgraded) {
+    return null;
+  }
+
+  return (
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      backgroundColor={BackgroundColor.backgroundAlternative}
+      alignItems={AlignItems.center}
+      borderRadius={BorderRadius.pill}
+      margin={4}
+      style={{
+        padding: '0px 8px',
+        flexShrink: 1,
+        flexBasis: 'auto',
+        minWidth: 0,
+      }}
+    >
+      <Text
+        ellipsis
+        variant={TextVariant.bodyMd}
+        color={TextColor.textAlternativeSoft}
+      >
+        Smart account
+      </Text>
+    </Box>
+  );
+}
+
+function DowngradeAccountButton({ address, onClose }) {
+  const { downgradeAccount, isUpgraded } = useEIP7702Account({
+    onRedirect: onClose,
+  });
+
+  const handleClick = useCallback(() => {
+    downgradeAccount(address);
+  }, [address, downgradeAccount]);
+
+  if (!isUpgraded) {
+    return null;
+  }
+
+  return (
+    <ButtonSecondary
+      block
+      size={ButtonSecondarySize.Lg}
+      variant={TextVariant.bodyMd}
+      marginBottom={4}
+      onClick={handleClick}
+    >
+      Switch back to regular account
+    </ButtonSecondary>
+  );
+}
 
 export const AccountDetailsDisplay = ({
   accounts,
   accountName,
   address,
   onExportClick,
+  onClose,
 }) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
@@ -71,7 +136,9 @@ export const AccountDetailsDisplay = ({
         }}
         accounts={accounts}
       />
+      <SmartAccountPill />
       <QrCodeView Qr={{ data: address }} />
+      <DowngradeAccountButton address={address} onClose={onClose} />
       {exportPrivateKeyFeatureEnabled ? (
         <ButtonSecondary
           block
@@ -113,4 +180,19 @@ AccountDetailsDisplay.propTypes = {
    * Executes upon Export button click
    */
   onExportClick: PropTypes.func.isRequired,
+  /**
+   * Executes when closing the modal
+   */
+  onClose: PropTypes.func.isRequired,
+};
+
+DowngradeAccountButton.propTypes = {
+  /**
+   * Current address
+   */
+  address: PropTypes.string.isRequired,
+  /**
+   * Executes when closing the modal
+   */
+  onClose: PropTypes.func.isRequired,
 };

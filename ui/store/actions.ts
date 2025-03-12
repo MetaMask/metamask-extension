@@ -6084,3 +6084,10 @@ export async function disableAccountUpgradeForChain(chainId: string) {
     chainId,
   ]);
 }
+
+export async function getCode(address: Hex, networkClientId: string) {
+  return await submitRequestToBackground<string>('getCode', [
+    address,
+    networkClientId,
+  ]);
+}
