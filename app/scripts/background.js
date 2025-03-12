@@ -35,7 +35,6 @@ import {
 } from '../../shared/constants/metametrics';
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import {
-  isExternallyConnectableWildcardEnabled,
   isManifestV3,
 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
@@ -408,7 +407,7 @@ browser.runtime.onConnect.addListener(async (...args) => {
   // This is set in `setupController`, which is called as part of initialization
   connectRemote(...args);
 
-  if (process.env.MULTICHAIN_API && !isExternallyConnectableWildcardEnabled) {
+  if (process.env.MULTICHAIN_API && isFirefox) {
     connectRemoteCaip(...args);
   }
 });
