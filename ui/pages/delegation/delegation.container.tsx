@@ -9,12 +9,14 @@ import {
   AccountsState,
   getHardwareWalletType,
   getInternalAccounts,
+  getSelectedInternalAccount,
   isHardwareWallet,
 } from '../../selectors';
 import Delegation from './delegation.component';
 
 const mapStateToProps = (state: AccountsState) => {
   return {
+    selectedAccount: getSelectedInternalAccount(state),
     accounts: getInternalAccounts(state),
     isHardwareWallet: isHardwareWallet(state),
     hardwareWalletType: getHardwareWalletType(state),
