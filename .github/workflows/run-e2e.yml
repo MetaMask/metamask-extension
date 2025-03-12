@@ -7,6 +7,10 @@ on:
         required: true
         type: string
         description: The name of the E2E test suite
+      build-artifact:
+        type: string
+        default: ''
+        description: The build artifact to download
       build-command:
         required: true
         type: string
@@ -56,7 +60,18 @@ jobs:
       - name: Install anvil
         run: yarn foundryup
 
+      - name: Download build artifact
+        if: ${{ inputs.build-artifact != '' }}
+        id: download-build-artifact
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.build-artifact }}
+          path: ./dist/
+
+      # if there is no build artifact, or the specified artifact does not exist, we run the build command
       - run: ${{ inputs.build-command }}
+        if: ${{ inputs.build-artifact == '' || steps.download-build-artifact.outcome == 'failure' }}
 
       - name: Configure Xvfb
         run: Xvfb -ac :99 -screen 0 1280x1024x16 &
