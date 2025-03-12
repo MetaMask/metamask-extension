@@ -38,9 +38,9 @@ const isMv3ButOffscreenDocIsMissing = isManifestV3 && !isOffscreenAvailable;
  * only available when using a chromium browser with version 67 and higher.
  */
 const isExternallyConnectableWildcardEnabled =
-  runtimeManifest?.externally_connectable?.matches?.includes['http://*/*'] &&
-  runtimeManifest?.externally_connectable?.matches?.includes['https://*/*'] &&
-  runtimeManifest?.externally_connectable?.ids?.includes['*'];
+  runtimeManifest?.externally_connectable?.matches?.includes('http://*/*') &&
+  runtimeManifest?.externally_connectable?.matches?.includes('https://*/*') &&
+  runtimeManifest?.externally_connectable?.ids?.includes('*');
 
 module.exports = {
   isManifestV3,
