@@ -68,7 +68,7 @@ export async function processSendCalls(
 
   if (requiredCapabilities?.length) {
     throw rpcErrors.invalidInput(
-      `Non-optional capabilities are not supported: ${requiredCapabilities.join(
+      `Unsupported non-optional capabilities: ${requiredCapabilities.join(
         ', ',
       )}`,
     );

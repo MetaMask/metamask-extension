@@ -216,9 +216,7 @@ describe('EIP-5792', () => {
           },
           REQUEST_MOCK,
         ),
-      ).rejects.toThrow(
-        'Non-optional capabilities are not supported: test, test3',
-      );
+      ).rejects.toThrow('Unsupported non-optional capabilities: test, test3');
     });
 
     it('throws if call capability is required', async () => {
@@ -246,9 +244,7 @@ describe('EIP-5792', () => {
           },
           REQUEST_MOCK,
         ),
-      ).rejects.toThrow(
-        'Non-optional capabilities are not supported: test, test3',
-      );
+      ).rejects.toThrow('Unsupported non-optional capabilities: test, test3');
     });
   });
 
