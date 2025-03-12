@@ -2326,7 +2326,9 @@ export function automaticallySwitchNetwork(
   selectedTabOrigin: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await setActiveNetworkConfigurationId(networkClientIdForThisDomain);
+    await dispatch(
+      setActiveNetworkConfigurationId(networkClientIdForThisDomain),
+    );
     await dispatch(
       setSwitchedNetworkDetails({
         networkClientId: networkClientIdForThisDomain,
