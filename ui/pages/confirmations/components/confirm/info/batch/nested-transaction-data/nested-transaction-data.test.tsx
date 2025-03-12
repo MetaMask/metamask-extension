@@ -16,6 +16,15 @@ jest.mock('../../hooks/useDecodedTransactionData', () => ({
   useDecodedTransactionData: jest.fn(),
 }));
 
+jest.mock(
+  '../../../../../../../components/app/alert-system/contexts/alertMetricsContext',
+  () => ({
+    useAlertMetrics: () => ({
+      trackAlertMetrics: jest.fn(),
+    }),
+  }),
+);
+
 const FUNCTION_NAME_MOCK = 'TestFunction';
 
 const BATCH_TRANSACTION_PARAMS_MOCK: BatchTransactionParams = {
