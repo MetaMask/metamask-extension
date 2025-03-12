@@ -2847,8 +2847,9 @@ export default class MetamaskController extends EventEmitter {
 
           // Get all origins with solana scope and notify them of account change
           const originsWithSolanaScope = this.getOriginsWithScope('solana');
-          originsWithSolanaScope.forEach(() => {
-            this._notifySolanaAccountChange();
+          console.log('originsWithSolanaScope', originsWithSolanaScope);
+          originsWithSolanaScope.forEach((origin) => {
+            this._notifySolanaAccountChange(origin, newSelectedAccount.address);
           });
         }
       },
@@ -7764,12 +7765,13 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
-  async _notifySolanaAccountChange() {
-    this.notifyAllConnections(
-      async (origin) => ({
-        method: NOTIFICATION_NAMES.accountsChanged,
-        params: await this.getProviderNetworkState(origin),
-      }),
+  async _notifySolanaAccountChange(origin, accountAddress) {
+    this.notifyConnections(
+      origin,
+      {
+        method: NOTIFICATION_NAMES.solanaAccountChanged,
+        params: accountAddress,
+      },
       API_TYPE.CAIP_MULTICHAIN,
     );
   }
