@@ -318,7 +318,7 @@ async function setupMocking(
       confirmations: true,
       smartTransactions: true,
       hidden: false,
-    }
+    },
   });
   await server.forGet(`${TX_SENTINEL_URL}/network`).thenJson(200, {
     name: 'Mainnet',
