@@ -279,7 +279,7 @@
     "@metamask/eth-sig-util": "^7.0.1",
     "@metamask/eth-snap-keyring": "^12.0.0",
     "@metamask/eth-token-tracker": "^10.0.2",
-    "@metamask/eth-trezor-keyring": "^6.1.0",
+    "@metamask/eth-trezor-keyring": "^8.0.0",
     "@metamask/etherscan-link": "^3.0.0",
     "@metamask/gas-fee-controller": "^22.0.3",
     "@metamask/jazzicon": "^2.0.0",
@@ -746,11 +746,10 @@
       "level>classic-level": false,
       "jest-preview": false,
       "@metamask/solana-wallet-snap>@solana/web3.js>bigint-buffer": false,
+      "@metamask/test-dapp-multichain>react-scripts>react-app-polyfill>core-js": false,
       "@lavamoat/allow-scripts>@lavamoat/preinstall-always-fail": false,
-      "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>protobufjs": false,
-      "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false,
-      "@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>@solana/web3.js>rpc-websockets>bufferutil": false,
-      "@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>@solana/web3.js>rpc-websockets>utf-8-validate": false
+      "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>@solana/web3.js>bigint-buffer": false,
+      "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false
     }
   },
   "packageManager": "yarn@4.5.1",
