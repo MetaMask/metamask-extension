@@ -17,6 +17,8 @@ import {
 import {
   SmartTransactionHookMessenger,
   submitSmartTransactionHook,
+  submitBatchSmartTransactionHook,
+  type SignedTransaction,
 } from '../../lib/transaction/smart-transactions';
 import { trace } from '../../../../shared/lib/trace';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -152,14 +154,15 @@ export const TransactionControllerInit: ControllerInitFunction<
           transactionMeta,
           rawTx,
         ),
-      publishBatch: async (_request) => {
-        return {
-          results: _request.transactions.map((_tx) => ({
-            transactionHash:
-              '0x4a54c1c8f56149c67d9e0356cf6ce7d1c5b3a001a2a0f6f2d3793c385f451783',
-          })),
-        };
-      },
+      publishBatch: async (_request): Promise<any> =>
+        await publishBatchSmartTransactionHook(
+          controller,
+          smartTransactionsController(),
+          // Init messenger cannot yet be further restricted so is a superset of what is needed
+          initMessenger as SmartTransactionHookMessenger,
+          getFlatState(),
+          _request,
+        ),
     },
     // @ts-expect-error Keyring controller expects TxData returned but TransactionController expects TypedTransaction
     sign: (...args) => keyringController().signTransaction(...args),
@@ -241,6 +244,41 @@ function publishSmartTransactionHook(
   return submitSmartTransactionHook({
     transactionMeta,
     signedTransactionInHex,
+    transactionController,
+    smartTransactionsController,
+    controllerMessenger: hookControllerMessenger,
+    isSmartTransaction,
+    isHardwareWallet: isHardwareWallet(uiState),
+    // @ts-expect-error Smart transaction selector return type does not match FeatureFlags type from hook
+    featureFlags,
+  });
+}
+
+function publishBatchSmartTransactionHook(
+  transactionController: TransactionController,
+  smartTransactionsController: SmartTransactionsController,
+  hookControllerMessenger: SmartTransactionHookMessenger,
+  flatState: ControllerFlatState,
+  _request: {
+    transactions: SignedTransaction[];
+  },
+) {
+  // UI state is required to support shared selectors to avoid duplicate logic in frontend and backend.
+  // Ideally all backend logic would instead rely on messenger event / state subscriptions.
+  const uiState = getUIState(flatState);
+
+  // @ts-expect-error Smart transaction selector types does not match controller state
+  const isSmartTransaction = getIsSmartTransaction(uiState);
+
+  if (!isSmartTransaction) {
+    // Will cause TransactionController to publish to the RPC provider as normal.
+    return undefined;
+  }
+
+  // @ts-expect-error Smart transaction selector types does not match controller state
+  const featureFlags = getFeatureFlagsByChainId(uiState);
+  return submitBatchSmartTransactionHook({
+    transactions: _request.transactions as SignedTransaction[],
     transactionController,
     smartTransactionsController,
     controllerMessenger: hookControllerMessenger,
