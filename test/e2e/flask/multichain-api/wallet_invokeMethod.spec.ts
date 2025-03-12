@@ -14,11 +14,12 @@ import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   addAccountInWalletAndAuthorize,
+  describeChromeOnly,
   escapeColon,
   type FixtureCallbackArgs,
 } from './testHelpers';
 
-describe('Multichain API', function () {
+describeChromeOnly('Multichain API', function () {
   const GANACHE_SCOPES = ['eip155:1337', 'eip155:1338', 'eip155:1000'];
   const ACCOUNTS = [ACCOUNT_1, ACCOUNT_2];
   const DEFAULT_INITIAL_BALANCE_HEX = convertETHToHexGwei(
