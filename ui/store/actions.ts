@@ -237,28 +237,20 @@ export function createNewVaultAndRestore(
 export function importMnemonicToVault(
   mnemonic: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.importMnemonicToVault`);
 
-    return new Promise<void>((resolve, reject) => {
-      callBackgroundMethod('importMnemonicToVault', [mnemonic], (err) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve();
-      });
-    })
-      .then(async () => {
-        dispatch(hideLoadingIndication());
-      })
-      .catch((err) => {
-        dispatch(displayWarning(err));
-        dispatch(hideLoadingIndication());
-        return Promise.reject(err);
-      });
-  };
+    try {
+      await submitRequestToBackground('importMnemonicToVault', [mnemonic]);
+    } catch (err) {
+      dispatch(displayWarning(err));
+      throw err;
+    }
+    finally {
+      dispatch(hideLoadingIndication());
+    }
+    };
 }
 
 export function generateNewMnemonicAndAddToVault(): ThunkAction<
