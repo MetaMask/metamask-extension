@@ -197,7 +197,7 @@ export function createNewVaultAndRestore(
   password: string,
   seedPhrase: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.createNewVaultAndRestore`);
 
@@ -207,29 +207,16 @@ export function createNewVaultAndRestore(
       Buffer.from(seedPhrase, 'utf8').values(),
     );
 
-    return new Promise<void>((resolve, reject) => {
-      callBackgroundMethod(
-        'createNewVaultAndRestore',
-        [password, encodedSeedPhrase],
-        (err) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-          resolve();
-        },
-      );
-    })
-      .then(() => dispatch(unMarkPasswordForgotten()))
-      .then(() => {
-        dispatch(showAccountsPage());
-        dispatch(hideLoadingIndication());
-      })
-      .catch((err) => {
-        dispatch(displayWarning(err));
-        dispatch(hideLoadingIndication());
-        return Promise.reject(err);
-      });
+    try {
+      await submitRequestToBackground('createNewVaultAndRestore', [password, encodedSeedPhrase]);
+      await dispatch(unMarkPasswordForgotten());
+      dispatch(showAccountsPage());
+    } catch (err) {
+      dispatch(displayWarning(err));
+      throw err;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
   };
 }
 
