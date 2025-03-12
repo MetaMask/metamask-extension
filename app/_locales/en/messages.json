@@ -999,6 +999,12 @@
     "message": "No options found",
     "description": "Default text shown in the combo field dropdown if no options."
   },
+  "concentratedSupplyDistributionDescription": {
+    "message": "The majority of the token's supply is held by the top token holders, posing a risk of centralized price manipulation"
+  },
+  "concentratedSupplyDistributionTitle": {
+    "message": "Concentrated Supply Distribution"
+  },
   "configureSnapPopupDescription": {
     "message": "You're now leaving MetaMask to configure this snap."
   },
