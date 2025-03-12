@@ -4,7 +4,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import { withSolanaAccountSnap } from './common-solana';
 
-describe('Solana/Evm accounts', function (this: Suite) {
+describe('Solana network', function (this: Suite) {
   it.skip('keeps the network selector enabled when the Solana network is selected', async function () {
     await withSolanaAccountSnap(
       { title: this.test?.fullTitle() },
