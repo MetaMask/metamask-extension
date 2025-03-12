@@ -208,8 +208,11 @@ export function createNewVaultAndRestore(
     );
 
     try {
-      await submitRequestToBackground('createNewVaultAndRestore', [password, encodedSeedPhrase]);
-      await dispatch(unMarkPasswordForgotten());
+      await submitRequestToBackground('createNewVaultAndRestore', [
+        password,
+        encodedSeedPhrase,
+      ]);
+      dispatch(unMarkPasswordForgotten());
       dispatch(showAccountsPage());
     } catch (err) {
       dispatch(displayWarning(err));
