@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { Browser } from 'selenium-webdriver';
 import {
   ACCOUNT_1,
   ACCOUNT_2,
@@ -15,10 +16,11 @@ import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   getExpectedSessionScope,
   updateNetworkCheckboxes,
-  describeChromeOnly,
+  describeBrowserOnly,
 } from './testHelpers';
 
-describeChromeOnly(
+describeBrowserOnly(
+  Browser.CHROME,
   'Call `wallet_createSession`, then update the accounts and/or scopes in the permissions page of the wallet for that dapp',
   function () {
     const INITIAL_SCOPES = ['eip155:1337', 'eip155:1338'];

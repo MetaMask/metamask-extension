@@ -153,16 +153,18 @@ export const escapeColon = (selector: string): string =>
   selector.replace(':', '\\:');
 
 /**
- * Wraps a describe call in a skip call if the SELENIUM_BROWSER environment variable is not chrome.
+ * Wraps a describe call in a skip call if the SELENIUM_BROWSER environment variable is not the specified browser.
  *
+ * @param browser - The browser environment of the current test, against which to conditionally run or skip the test.
  * @param description - The description of the test suite.
  * @param callback - The callback function to execute the test suite.
  */
-export const describeChromeOnly = (
+export const describeBrowserOnly = (
+  browser: string,
   description: string,
   callback: () => void,
 ) => {
-  return process.env.SELENIUM_BROWSER === 'chrome'
+  return process.env.SELENIUM_BROWSER === browser
     ? describe(description, callback)
     : describe.skip(description, callback);
 };

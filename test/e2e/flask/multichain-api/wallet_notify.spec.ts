@@ -1,14 +1,16 @@
 import { strict as assert } from 'assert';
+import { Browser } from 'selenium-webdriver';
 import { unlockWallet, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   type FixtureCallbackArgs,
-  describeChromeOnly,
+  describeBrowserOnly,
 } from './testHelpers';
 
-describeChromeOnly(
+describeBrowserOnly(
+  Browser.CHROME,
   'Calling `eth_subscribe` on a particular network event',
   function () {
     it('Should receive a notification through the Multichain API for the event app subscribed to', async function () {

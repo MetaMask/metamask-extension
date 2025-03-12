@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { pick } from 'lodash';
-import {
+import { Browser } from 'selenium-webdriver';
   ACCOUNT_1,
   ACCOUNT_2,
   largeDelayMs,
@@ -14,9 +14,11 @@ import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   addAccountInWalletAndAuthorize,
   type FixtureCallbackArgs,
+  describeBrowserOnly,
 } from './testHelpers';
 
-describeChromeOnly(
+describeBrowserOnly(
+  Browser.CHROME,
   'Initializing a session w/ several scopes and accounts, then calling `wallet_revokeSession`',
   function () {
     const GANACHE_SCOPES = ['eip155:1337', 'eip155:1338', 'eip155:1000'];
