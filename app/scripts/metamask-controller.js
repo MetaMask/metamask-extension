@@ -395,6 +395,7 @@ import {
 import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
 import {
+  getCallsStatus,
   getCapabilities,
   getTransactionReceiptsByBatchId,
   processSendCalls,
@@ -2161,10 +2162,7 @@ export default class MetamaskController extends EventEmitter {
         },
         this.controllerMessenger,
       ),
-      getTransactionReceiptsByBatchId: getTransactionReceiptsByBatchId.bind(
-        null,
-        this.controllerMessenger,
-      ),
+      getCallsStatus: getCallsStatus.bind(null, this.controllerMessenger),
       getCapabilities: getCapabilities.bind(null, {
         isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
           this.txController,
