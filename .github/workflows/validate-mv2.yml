@@ -1,0 +1,27 @@
+name: Validate MV2
+
+on:
+  workflow_call:
+    inputs:
+      validation-job:
+        required: false
+        type: string
+        default: 'all'
+        description: Which validation job to run (source-maps, mozilla-lint, or all)
+
+jobs:
+  validate-source-maps-mv2:
+    if: inputs.validation-job == 'all' || inputs.validation-job == 'source-maps'
+    uses: ./.github/workflows/run-validation.yml
+    with:
+      validation-type: source-maps-mv2
+      build-command: yarn build dist
+      validation-command: yarn validate-source-maps
+
+  test-mozilla-lint-mv2:
+    if: inputs.validation-job == 'all' || inputs.validation-job == 'mozilla-lint'
+    uses: ./.github/workflows/run-validation.yml
+    with:
+      validation-type: mozilla-lint-mv2
+      build-command: yarn build dist
+      validation-command: yarn mozilla-lint
