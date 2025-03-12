@@ -51,7 +51,7 @@ log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn');
 
 if (shouldInjectProvider()) {
   // setup background connection
-  window.metamaskStream = new WindowPostMessageStream({
+  const metamaskStream = new WindowPostMessageStream({
     name: INPAGE,
     target: CONTENT_SCRIPT,
   });

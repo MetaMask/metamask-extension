@@ -88,7 +88,9 @@ export const setupExtensionStreams = () => {
   });
 
   // forward communication across inpage-background for these channels only
-  extensionEip1193Channel = extensionMux.createStream(METAMASK_EIP_1193_PROVIDER);
+  extensionEip1193Channel = extensionMux.createStream(
+    METAMASK_EIP_1193_PROVIDER,
+  );
   pipeline(pageChannel, extensionEip1193Channel, pageChannel, (error: Error) =>
     console.debug(
       `MetaMask: Muxed traffic for channel "${METAMASK_EIP_1193_PROVIDER}" failed.`,
