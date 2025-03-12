@@ -34,9 +34,7 @@ import {
   MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
-import {
-  isManifestV3,
-} from '../../shared/modules/mv3.utils';
+import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
 import { FIXTURE_STATE_METADATA_VERSION } from '../../test/e2e/default-fixture';
 import { getSocketBackgroundToMocha } from '../../test/e2e/background-socket/socket-background-to-mocha';
