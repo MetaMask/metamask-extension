@@ -36,6 +36,10 @@ jest.mock('../../../hooks/useAssetDetails', () => ({
   }),
 }));
 
+jest.mock('../../../hooks/useTransactionFocusEffect', () => ({
+  useTransactionFocusEffect: jest.fn(),
+}));
+
 describe('Info', () => {
   const mockedAssetDetails = jest.mocked(useAssetDetails);
 
