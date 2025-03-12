@@ -68,11 +68,53 @@ jobs:
       - prep-deps
     uses: ./.github/workflows/validate-lavamoat-policy-webapp.yml
 
-  validate-mv2:
-    name: Validate MV2
+  validate-source-maps-mv2:
+    name: Validate source maps MV2
+    runs-on: ubuntu-latest
+    container:
+      image: cimg/node:22.13-browsers
     needs:
       - prep-deps
-    uses: ./.github/workflows/validate-mv2.yml
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install zstd
+          sudo corepack enable
+
+      - name: Checkout and setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        with:
+          is-high-risk-environment: false
+
+      - name: Build
+        run: ENABLE_MV3=false yarn build dist
+
+      - name: Run validation
+        run: yarn validate-source-maps
+
+  test-mozilla-lint-mv2:
+    name: Test Mozilla lint MV2
+    runs-on: ubuntu-latest
+    container:
+      image: cimg/node:22.13-browsers
+    needs:
+      - prep-deps
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install zstd
+          sudo corepack enable
+
+      - name: Checkout and setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        with:
+          is-high-risk-environment: false
+
+      - name: Build
+        run: ENABLE_MV3=false yarn build dist
+
+      - name: Run validation
+        run: yarn mozilla-lint
 
   prep-build-test-browserify:
     needs:
@@ -184,7 +226,8 @@ jobs:
       - test-storybook
       - validate-lavamoat-policy-build
       - validate-lavamoat-policy-webapp
-      - validate-mv2
+      - validate-source-maps-mv2
+      - test-mozilla-lint-mv2
       - prep-build-test-browserify
       - prep-build-test-webpack
       - run-tests
