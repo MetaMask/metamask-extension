@@ -2302,6 +2302,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ethereumjs/tx@npm:5.4.0, @ethereumjs/tx@npm:^5.2.1":
+  version: 5.4.0
+  resolution: "@ethereumjs/tx@npm:5.4.0"
+  dependencies:
+    "@ethereumjs/common": "npm:^4.4.0"
+    "@ethereumjs/rlp": "npm:^5.0.2"
+    "@ethereumjs/util": "npm:^9.1.0"
+    ethereum-cryptography: "npm:^2.2.1"
+  checksum: 10/8d2c0a69ab37015f945f9de065cfb9f05e8e79179efeed725ea0a14760c3eb8ff900bcf915bb71ec29fe2f753db35d1b78a15ac4ddec489e87c995dec1ba6e85
+  languageName: node
+  linkType: hard
+
 "@ethereumjs/tx@npm:^4.0.2, @ethereumjs/tx@npm:^4.1.1, @ethereumjs/tx@npm:^4.2.0":
   version: 4.2.0
   resolution: "@ethereumjs/tx@npm:4.2.0"
@@ -2314,15 +2326,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethereumjs/tx@npm:^5.2.1, @ethereumjs/tx@npm:^5.4.0":
+"@ethereumjs/tx@patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch":
   version: 5.4.0
-  resolution: "@ethereumjs/tx@npm:5.4.0"
+  resolution: "@ethereumjs/tx@patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch::version=5.4.0&hash=20f328"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/rlp": "npm:^5.0.2"
     "@ethereumjs/util": "npm:^9.1.0"
     ethereum-cryptography: "npm:^2.2.1"
-  checksum: 10/8d2c0a69ab37015f945f9de065cfb9f05e8e79179efeed725ea0a14760c3eb8ff900bcf915bb71ec29fe2f753db35d1b78a15ac4ddec489e87c995dec1ba6e85
+  checksum: 10/46ebd5359365d55390f20f01dd0672a22b2c00b245a24c51ca90ffeff7a71226a0c8fb76ed9bf57ed77246fe7324c6b572125548333a161432b9db813276ba4e
   languageName: node
   linkType: hard
 
@@ -4829,16 +4841,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/accounts-controller@npm:^24.1.0":
-  version: 24.1.0
-  resolution: "@metamask/accounts-controller@npm:24.1.0"
+"@metamask/accounts-controller@npm:^26.0.0":
+  version: 26.0.0
+  resolution: "@metamask/accounts-controller@npm:26.0.0"
   dependencies:
-    "@ethereumjs/util": "npm:^8.1.0"
+    "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/eth-snap-keyring": "npm:^11.1.0"
+    "@metamask/eth-snap-keyring": "npm:^12.0.0"
     "@metamask/keyring-api": "npm:^17.2.0"
-    "@metamask/keyring-internal-api": "npm:^4.0.3"
-    "@metamask/keyring-utils": "npm:^2.3.1"
+    "@metamask/keyring-internal-api": "npm:^6.0.0"
+    "@metamask/keyring-utils": "npm:^3.0.0"
     "@metamask/network-controller": "npm:^22.2.1"
     "@metamask/snaps-sdk": "npm:^6.17.1"
     "@metamask/snaps-utils": "npm:^8.10.0"
@@ -4848,12 +4860,12 @@ __metadata:
     immer: "npm:^9.0.6"
     uuid: "npm:^8.3.2"
   peerDependencies:
-    "@metamask/keyring-controller": ^19.0.0
+    "@metamask/keyring-controller": ^21.0.0
     "@metamask/network-controller": ^22.0.0
     "@metamask/providers": ^18.1.0
     "@metamask/snaps-controllers": ^9.19.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/71b512c23168c1b19e54a0cc55f8c7cb8179eca38756e9be58956a4b17603e08be55034506fd04cf29222c47f6e8d52b6553bbe40d7aa1ee12d3babbf5545fc0
+  checksum: 10/6b2c7d638cc335b0de62042ff62d65fec7c317b3a5dda2e8e8bb5db61c6ec428df322d2f214fa94863186ffcba0291542cb5930a0ee0b240a6aca4d785ba29d1
   languageName: node
   linkType: hard
 
@@ -4877,10 +4889,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/api-specs@npm:^0.10.12, @metamask/api-specs@npm:^0.10.15":
+"@metamask/api-specs@npm:^0.10.12":
   version: 0.10.15
   resolution: "@metamask/api-specs@npm:0.10.15"
   checksum: 10/1d68914e43dd14a8bafa77d93965e08cb3ee4b036dc161501dd1d565a21c703d03abefd9e91f23019065c316f74719103b44c871409219f6d4d2cd5503224ac2
+  languageName: node
+  linkType: hard
+
+"@metamask/api-specs@npm:^0.11.0":
+  version: 0.11.0
+  resolution: "@metamask/api-specs@npm:0.11.0"
+  checksum: 10/1b86535966e3675cb53df51d631869c11beec2c39c53a0707672984309185f2a5ef3ab0a4ab629fcd86910eb21faaf096282053e2d50af84338d6ede9f205467
   languageName: node
   linkType: hard
 
@@ -5053,14 +5072,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.3.0, @metamask/controller-utils@npm:^11.4.0, @metamask/controller-utils@npm:^11.4.2, @metamask/controller-utils@npm:^11.4.4, @metamask/controller-utils@npm:^11.5.0":
-  version: 11.5.0
-  resolution: "@metamask/controller-utils@npm:11.5.0"
+"@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.3.0, @metamask/controller-utils@npm:^11.4.0, @metamask/controller-utils@npm:^11.4.2, @metamask/controller-utils@npm:^11.4.4, @metamask/controller-utils@npm:^11.5.0, @metamask/controller-utils@npm:^11.6.0":
+  version: 11.6.0
+  resolution: "@metamask/controller-utils@npm:11.6.0"
   dependencies:
-    "@ethereumjs/util": "npm:^8.1.0"
+    "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/ethjs-unit": "npm:^0.3.0"
-    "@metamask/utils": "npm:^11.1.0"
+    "@metamask/utils": "npm:^11.2.0"
     "@spruceid/siwe-parser": "npm:2.1.0"
     "@types/bn.js": "npm:^5.1.5"
     bignumber.js: "npm:^9.1.2"
@@ -5070,7 +5089,7 @@ __metadata:
     fast-deep-equal: "npm:^3.1.3"
   peerDependencies:
     "@babel/runtime": ^7.0.0
-  checksum: 10/ef3ca4c36fdd4658233467d639154321015be7985008d90c5e870ef69f92024143fe81908e398e6e79e10f9b40d5c33e8742beae0ed5690db0fbce3731fbfd0b
+  checksum: 10/0bbb36cb2a8107362ecc13ad4227922f9eba5a5cfb7f7742c6b7a6a1023bd1c4d93a0e6cdfd0cef49228a719950753c26d0ee77598cbafd69944b0f89f6e6452
   languageName: node
   linkType: hard
 
@@ -5193,9 +5212,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-hd-keyring@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "@metamask/eth-hd-keyring@npm:10.0.0"
+"@metamask/eth-hd-keyring@npm:^11.0.0":
+  version: 11.0.0
+  resolution: "@metamask/eth-hd-keyring@npm:11.0.0"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
@@ -5203,7 +5222,21 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.1.1"
     "@metamask/utils": "npm:^11.1.0"
     ethereum-cryptography: "npm:^2.1.2"
-  checksum: 10/d80611745171042f6ae7e0545e51563ebd705eb74e2bf131454766872d7ca57a54766af2ab398520a8fe0f58e8733a92c1df71664a2ea0e92c462661ea8a12f1
+  checksum: 10/34e79c06740273518b653bfbef75371f2934ac1d73698f2a0f5f3e124300d5b43c86351f6989dc5aae5026ad2410171e75caabb7a14e9eacaea868f83be1b36d
+  languageName: node
+  linkType: hard
+
+"@metamask/eth-hd-keyring@npm:^12.0.0":
+  version: 12.0.0
+  resolution: "@metamask/eth-hd-keyring@npm:12.0.0"
+  dependencies:
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
+    "@metamask/key-tree": "npm:^10.0.2"
+    "@metamask/scure-bip39": "npm:^2.1.1"
+    "@metamask/utils": "npm:^11.1.0"
+    ethereum-cryptography: "npm:^2.1.2"
+  checksum: 10/9567238a11c0e3a331a477fbe6ad5ee42b10bb943efdff9696bf178127b9d5aac2ce02295221fa19d18981231251ee25053034b7780495e2c2fc7427c5c02516
   languageName: node
   linkType: hard
 
@@ -5232,22 +5265,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@npm:^15.0.1, @metamask/eth-json-rpc-middleware@npm:^15.1.2":
-  version: 15.1.2
-  resolution: "@metamask/eth-json-rpc-middleware@npm:15.1.2"
+"@metamask/eth-json-rpc-middleware@npm:^15.0.1, @metamask/eth-json-rpc-middleware@npm:^15.3.0":
+  version: 15.3.0
+  resolution: "@metamask/eth-json-rpc-middleware@npm:15.3.0"
   dependencies:
     "@metamask/eth-block-tracker": "npm:^11.0.4"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.7"
     "@metamask/eth-sig-util": "npm:^8.1.2"
     "@metamask/json-rpc-engine": "npm:^10.0.2"
     "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/utils": "npm:^11.0.1"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.1.0"
     "@types/bn.js": "npm:^5.1.5"
     bn.js: "npm:^5.2.1"
     klona: "npm:^2.0.6"
     pify: "npm:^5.0.0"
     safe-stable-stringify: "npm:^2.4.3"
-  checksum: 10/71e7d61cc58df250bfef73438a9e30cc2f78e0e979feb8a9c0be72bbad470a2fe068fa790194cb88ef56865e36156e525272bc3e1a2a7135d07f7bd81a752239
+  checksum: 10/09e595a064b5f45bf0597dad38d04aaa4f2eb09700c70c85ec06ec22a6f642adffdbd1120380fd4b1d485c0d39bfc4b354c39c2b75d7ffa96210a2003189c0db
   languageName: node
   linkType: hard
 
@@ -5264,17 +5298,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-ledger-bridge-keyring@npm:^8.0.3":
-  version: 8.0.3
-  resolution: "@metamask/eth-ledger-bridge-keyring@npm:8.0.3"
+"@metamask/eth-ledger-bridge-keyring@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@metamask/eth-ledger-bridge-keyring@npm:10.0.0"
   dependencies:
     "@ethereumjs/rlp": "npm:^5.0.2"
-    "@ethereumjs/tx": "npm:^4.2.0"
-    "@ethereumjs/util": "npm:^8.1.0"
+    "@ethereumjs/tx": "npm:^5.4.0"
+    "@ethereumjs/util": "npm:^9.1.0"
     "@ledgerhq/hw-app-eth": "npm:^6.42.0"
-    "@metamask/eth-sig-util": "npm:^8.1.2"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
     hdkey: "npm:^2.1.0"
-  checksum: 10/5b5c9f72eec882638985b11198350ace3647fa0ec92facbac3a9c1a67543a8270017c583d2d1464e2ec96cb93ff8b64509c0c8ebc395f8ce7de5ffd8f483ca63
+  checksum: 10/a1e4e410aa051fa85abdff044eab4ae3fd594442186b53d1c21d12817d2ece51e510f86ecd9e69658fc2c3cbbf53d5941eb4ea93928f74c11e0ff5e399781a2e
   languageName: node
   linkType: hard
 
@@ -5317,37 +5351,50 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-simple-keyring@npm:^8.1.0":
-  version: 8.1.1
-  resolution: "@metamask/eth-simple-keyring@npm:8.1.1"
+"@metamask/eth-simple-keyring@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@metamask/eth-simple-keyring@npm:10.0.0"
+  dependencies:
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
+    "@metamask/utils": "npm:^11.1.0"
+    ethereum-cryptography: "npm:^2.1.2"
+    randombytes: "npm:^2.1.0"
+  checksum: 10/e749e16cbbd3b542cda3e727ee1efb16f597c8583a0ca0bbb457b500397c0b492ecdf07965a67cec3b4bfb25fc56caa01810b23b918939dd104eea759caa339a
+  languageName: node
+  linkType: hard
+
+"@metamask/eth-simple-keyring@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@metamask/eth-simple-keyring@npm:9.0.0"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/utils": "npm:^11.1.0"
     ethereum-cryptography: "npm:^2.1.2"
     randombytes: "npm:^2.1.0"
-  checksum: 10/8fa7193625bedb58dffefac5120a72cd5864c18f94fae76fbe13f999f2d7bf063e95818702615942d8c9c56ecd460353fb34102a149503bdf7fdeaabcaca7d68
+  checksum: 10/2f7062546288afcc986a7baf703fc518b1a26587d3675dddd97a0ea940b54020e8878b3aa94fc562bf96196e67aa5ff854b428de68eb8da65101868f4487d034
   languageName: node
   linkType: hard
 
-"@metamask/eth-snap-keyring@npm:^11.1.0":
-  version: 11.1.0
-  resolution: "@metamask/eth-snap-keyring@npm:11.1.0"
+"@metamask/eth-snap-keyring@npm:^12.0.0":
+  version: 12.0.0
+  resolution: "@metamask/eth-snap-keyring@npm:12.0.0"
   dependencies:
-    "@ethereumjs/tx": "npm:^4.2.0"
+    "@ethereumjs/tx": "npm:^5.4.0"
     "@metamask/base-controller": "npm:^7.1.1"
     "@metamask/eth-sig-util": "npm:^8.2.0"
-    "@metamask/keyring-api": "npm:^17.2.0"
-    "@metamask/keyring-internal-api": "npm:^4.0.3"
+    "@metamask/keyring-api": "npm:^17.2.1"
+    "@metamask/keyring-internal-api": "npm:^5.0.0"
     "@metamask/keyring-internal-snap-client": "npm:^4.0.1"
-    "@metamask/keyring-utils": "npm:^2.3.0"
+    "@metamask/keyring-utils": "npm:^3.0.0"
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^11.1.0"
     "@types/uuid": "npm:^9.0.8"
     uuid: "npm:^9.0.1"
   peerDependencies:
-    "@metamask/keyring-api": ^17.2.0
-  checksum: 10/b01abdcb2bd44c6fdf8fef3b897cdb78f99b5cf0a01d8c00d4fbad28b071c9073c9fdbfca974b452db6dddd44c6c0918b7bdb8705af0bc4393d1f9efa73ae33b
+    "@metamask/keyring-api": ^17.2.1
+  checksum: 10/9c57c618f4401b7a983daea3578090d763fcacdaf30431aaa3301360cda6537443534b37c191a3640891a9eee105e33b41a966187e5fb172f5022e1b40412222
   languageName: node
   linkType: hard
 
@@ -5369,18 +5416,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-trezor-keyring@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@metamask/eth-trezor-keyring@npm:6.0.0"
+"@metamask/eth-trezor-keyring@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "@metamask/eth-trezor-keyring@npm:8.0.0"
   dependencies:
-    "@ethereumjs/tx": "npm:^4.2.0"
-    "@ethereumjs/util": "npm:^8.1.0"
-    "@metamask/eth-sig-util": "npm:^8.0.0"
+    "@ethereumjs/tx": "npm:^5.4.0"
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
+    "@metamask/utils": "npm:^11.1.0"
     "@trezor/connect-plugin-ethereum": "npm:^9.0.3"
     "@trezor/connect-web": "npm:^9.1.11"
     hdkey: "npm:^2.1.0"
     tslib: "npm:^2.6.2"
-  checksum: 10/d5d799c60eeab963ef3e5533de472044b08b6f72652ecefbf26cec99784829bbcd706df57f6450ddb019c7dff7c41b0e0dad244aad62b7d03b51fc97755e2c4c
+  checksum: 10/6b4713887211db1c99997969c10f21502e49779746021cb6023d2d2b34a5e489976275befe94825fbac9c569e8b59d1e33cd69fc6f3989b13236c545aa04ed0c
   languageName: node
   linkType: hard
 
@@ -5565,25 +5613,47 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:^19.2.0, @metamask/keyring-controller@npm:^19.2.1":
-  version: 19.2.1
-  resolution: "@metamask/keyring-controller@npm:19.2.1"
+"@metamask/keyring-controller@npm:^20.0.0":
+  version: 20.0.0
+  resolution: "@metamask/keyring-controller@npm:20.0.0"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.14.1"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
-    "@metamask/eth-hd-keyring": "npm:^10.0.0"
+    "@metamask/eth-hd-keyring": "npm:^11.0.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
-    "@metamask/eth-simple-keyring": "npm:^8.1.0"
+    "@metamask/eth-simple-keyring": "npm:^9.0.0"
     "@metamask/keyring-api": "npm:^17.2.0"
-    "@metamask/keyring-internal-api": "npm:^4.0.3"
+    "@metamask/keyring-internal-api": "npm:^5.0.0"
     "@metamask/utils": "npm:^11.2.0"
     async-mutex: "npm:^0.5.0"
     ethereumjs-wallet: "npm:^1.0.1"
     immer: "npm:^9.0.6"
     ulid: "npm:^2.3.0"
-  checksum: 10/e9715a0743689c54843fd68f58ba1a577fd2f1a3ff104bd2e3d592c9246c56098f90288fab6c0d511e4a7115d2e9b835862885f37c3495aa2dd12db7df673326
+  checksum: 10/cfddaed8d1548086ef7f4fb8fe6788a799378efdc8c99cf8277600ce491229d8a64614981273d2d2dbaa7e3803302d474db4ae76af75605027ca1962dbb9c709
+  languageName: node
+  linkType: hard
+
+"@metamask/keyring-controller@npm:^21.0.0":
+  version: 21.0.0
+  resolution: "@metamask/keyring-controller@npm:21.0.0"
+  dependencies:
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@keystonehq/metamask-airgapped-keyring": "npm:^0.14.1"
+    "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/browser-passworder": "npm:^4.3.0"
+    "@metamask/eth-hd-keyring": "npm:^12.0.0"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
+    "@metamask/eth-simple-keyring": "npm:^10.0.0"
+    "@metamask/keyring-api": "npm:^17.2.0"
+    "@metamask/keyring-internal-api": "npm:^6.0.0"
+    "@metamask/utils": "npm:^11.2.0"
+    async-mutex: "npm:^0.5.0"
+    ethereumjs-wallet: "npm:^1.0.1"
+    immer: "npm:^9.0.6"
+    ulid: "npm:^2.3.0"
+  checksum: 10/aee572da64d757417397fee74a44be1c3f0ea3168c6880cb211d99d71b5e1b457d1684760b9d347820c0d90f0052783105e60697e9315ae257d3ae12c852190a
   languageName: node
   linkType: hard
 
@@ -5596,6 +5666,28 @@ __metadata:
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^11.1.0"
   checksum: 10/11a18a1179cfa710257319d42619f44984cfc6dae7060d9bb35019ce6869511a5bc14eea51db34535d2f9b844b8153dce231bb97e036387487dc6f7adb48fe86
+  languageName: node
+  linkType: hard
+
+"@metamask/keyring-internal-api@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "@metamask/keyring-internal-api@npm:5.0.0"
+  dependencies:
+    "@metamask/keyring-api": "npm:^17.2.1"
+    "@metamask/keyring-utils": "npm:^2.3.1"
+    "@metamask/superstruct": "npm:^3.1.0"
+  checksum: 10/1c691c6343691ef19c1cea6a353cbb325dbad7b10462d17139365151dc23a7f0aa74eecb9e8787a4472cc5d73424c1e050d0efb5a3b68c59c766adede40b9ea2
+  languageName: node
+  linkType: hard
+
+"@metamask/keyring-internal-api@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@metamask/keyring-internal-api@npm:6.0.0"
+  dependencies:
+    "@metamask/keyring-api": "npm:^17.2.1"
+    "@metamask/keyring-utils": "npm:^3.0.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+  checksum: 10/069945b3423e7b6bd0b8735d65e17c968e494bc3f8c06e585d6e27f09ced0027541440c9e90ffbcd59b1daf91d7848c09be010a8ceb547ed3c4f6465e810b7a8
   languageName: node
   linkType: hard
 
@@ -5636,6 +5728,18 @@ __metadata:
     "@metamask/utils": "npm:^11.1.0"
     bitcoin-address-validation: "npm:^2.2.3"
   checksum: 10/4a11b780621d82ab2d3fe39fbaed0ea87c01139c925c4c26cb25e2361bd855eae1c7c8cf01a84d2030de3bbef65590caecfe538f37490f75cad8a0a65b318c95
+  languageName: node
+  linkType: hard
+
+"@metamask/keyring-utils@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@metamask/keyring-utils@npm:3.0.0"
+  dependencies:
+    "@ethereumjs/tx": "npm:^5.4.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.1.0"
+    bitcoin-address-validation: "npm:^2.2.3"
+  checksum: 10/eff3c0b9a86d6a25c5dd443946ba3ff56cb94fcb915a4eb061089819805e1e78eba2ea5cfb12a47ec4606542870c417de422f755947389ab9f3a4f08e96742db
   languageName: node
   linkType: hard
 
@@ -6033,13 +6137,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:^8.1.1":
-  version: 8.1.1
-  resolution: "@metamask/profile-sync-controller@npm:8.1.1"
+"@metamask/profile-sync-controller@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@metamask/profile-sync-controller@npm:9.0.0"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/keyring-api": "npm:^17.2.0"
-    "@metamask/keyring-controller": "npm:^19.2.1"
+    "@metamask/keyring-controller": "npm:^20.0.0"
     "@metamask/network-controller": "npm:^22.2.1"
     "@metamask/snaps-sdk": "npm:^6.17.1"
     "@metamask/snaps-utils": "npm:^8.10.0"
@@ -6049,13 +6153,13 @@ __metadata:
     loglevel: "npm:^1.8.1"
     siwe: "npm:^2.3.2"
   peerDependencies:
-    "@metamask/accounts-controller": ^24.0.0
-    "@metamask/keyring-controller": ^19.0.0
+    "@metamask/accounts-controller": ^25.0.0
+    "@metamask/keyring-controller": ^20.0.0
     "@metamask/network-controller": ^22.0.0
     "@metamask/providers": ^18.1.0
     "@metamask/snaps-controllers": ^9.19.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/4b18a546c0d78f010fbf1cf16644001ba0139c60941ceb70b83c7850e2fafcd5d17b8148f8020dcfe0e8c3f897259480077fa6b4402f4d270ed68e248d628369
+  checksum: 10/bcfb112b5352ccb6d6534320084ce12a1e738e97ad683bb3fb9bc4672bfd570e76ff61dd714cb31482b77b9990eea688192db54c568ab83c1a909e1d2b07383c
   languageName: node
   linkType: hard
 
@@ -6422,10 +6526,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^1.10.0":
-  version: 1.10.0
-  resolution: "@metamask/solana-wallet-snap@npm:1.10.0"
-  checksum: 10/d7a1538fad9adf92f78334b5422aba81182bb70d06ddc3319b10df563f742d9df53ac2b7d501191fc2cb3ced8b405fe39e764c2d33e81fdc1596ff027e0e40f6
+"@metamask/solana-wallet-snap@npm:^1.11.0":
+  version: 1.11.0
+  resolution: "@metamask/solana-wallet-snap@npm:1.11.0"
+  checksum: 10/2d6e9a0ed37805a48cedbf3f7ff039223270e1e54abf0a942696356bdfb6c5623df56fe52cee8763a0cf35eacda23aab9810dcf61e5bb5ce64f2144c3075f63d
   languageName: node
   linkType: hard
 
@@ -6466,6 +6570,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/test-dapp-multichain@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@metamask/test-dapp-multichain@npm:0.6.0"
+  checksum: 10/23bb60422fa3986a648e487562697e7ca57dc97ac9ff693eeac391e673e5ebd838ad3a54160af8dbb195ab3eba497bf2a3767d76693bbbf6044ab6cdbd59b254
+  languageName: node
+  linkType: hard
+
 "@metamask/test-dapp@npm:9.0.0":
   version: 9.0.0
   resolution: "@metamask/test-dapp@npm:9.0.0"
@@ -6473,23 +6584,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:45.0.0":
-  version: 45.0.0
-  resolution: "@metamask/transaction-controller@npm:45.0.0"
+"@metamask/transaction-controller@npm:^48.1.0":
+  version: 48.1.0
+  resolution: "@metamask/transaction-controller@npm:48.1.0"
   dependencies:
-    "@ethereumjs/common": "npm:^3.2.0"
-    "@ethereumjs/tx": "npm:^4.2.0"
-    "@ethereumjs/util": "npm:^8.1.0"
+    "@ethereumjs/common": "npm:^4.4.0"
+    "@ethereumjs/tx": "npm:^5.4.0"
+    "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
-    "@metamask/base-controller": "npm:^7.1.1"
-    "@metamask/controller-utils": "npm:^11.5.0"
+    "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/controller-utils": "npm:^11.6.0"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/nonce-tracker": "npm:^6.0.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/utils": "npm:^11.1.0"
+    "@metamask/utils": "npm:^11.2.0"
     async-mutex: "npm:^0.5.0"
     bn.js: "npm:^5.2.1"
     eth-method-registry: "npm:^4.0.0"
@@ -6498,46 +6609,13 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@babel/runtime": ^7.0.0
-    "@metamask/accounts-controller": ^23.0.0
+    "@metamask/accounts-controller": ^26.0.0
     "@metamask/approval-controller": ^7.0.0
     "@metamask/eth-block-tracker": ">=9"
     "@metamask/gas-fee-controller": ^22.0.0
     "@metamask/network-controller": ^22.0.0
-  checksum: 10/42fc91e4ebb0ad83f8230c2060c392d0ba5fd555a2d3f407862c4574f195f1cb2b57ea025ea332e55a1196605602209219a828c565bd6a13d3135557d7427e24
-  languageName: node
-  linkType: hard
-
-"@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A45.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-45.0.0-010fef9da6.patch":
-  version: 45.0.0
-  resolution: "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A45.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-45.0.0-010fef9da6.patch::version=45.0.0&hash=e00dfe"
-  dependencies:
-    "@ethereumjs/common": "npm:^3.2.0"
-    "@ethereumjs/tx": "npm:^4.2.0"
-    "@ethereumjs/util": "npm:^8.1.0"
-    "@ethersproject/abi": "npm:^5.7.0"
-    "@ethersproject/contracts": "npm:^5.7.0"
-    "@ethersproject/providers": "npm:^5.7.0"
-    "@metamask/base-controller": "npm:^7.1.1"
-    "@metamask/controller-utils": "npm:^11.5.0"
-    "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/nonce-tracker": "npm:^6.0.0"
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/utils": "npm:^11.1.0"
-    async-mutex: "npm:^0.5.0"
-    bn.js: "npm:^5.2.1"
-    eth-method-registry: "npm:^4.0.0"
-    fast-json-patch: "npm:^3.1.1"
-    lodash: "npm:^4.17.21"
-    uuid: "npm:^8.3.2"
-  peerDependencies:
-    "@babel/runtime": ^7.0.0
-    "@metamask/accounts-controller": ^23.0.0
-    "@metamask/approval-controller": ^7.0.0
-    "@metamask/eth-block-tracker": ">=9"
-    "@metamask/gas-fee-controller": ^22.0.0
-    "@metamask/network-controller": ^22.0.0
-  checksum: 10/b65d8d04031c3bbba2f95dcf66d22bcd0ef83c66fb3b341943ff6d81befbf370f826e9b9f0d73fccf3686a6550c2c0d3e80ad394618273964cc5efc1cb1d31fe
+    "@metamask/remote-feature-flag-controller": ^1.5.0
+  checksum: 10/ecee87700a2b00189ad4c2a2422a650b3d315a127c60a136b6b4bf9d51584cfb33604461237781cfea8e359e605f813acea447edbd0a5969fb5822fdf3f6b2af
   languageName: node
   linkType: hard
 
@@ -6718,10 +6796,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:1.1.2":
-  version: 1.1.2
-  resolution: "@noble/hashes@npm:1.1.2"
-  checksum: 10/2826c94ea30b8d2447fda549f4ffa97a637a480eeef5c96702a2f932c305038465f7436caf5b2bad41eb43c08c270b921e101488b18165feebe3854091b56d91
+"@noble/hashes@npm:1.2.0, @noble/hashes@npm:~1.2.0":
+  version: 1.2.0
+  resolution: "@noble/hashes@npm:1.2.0"
+  checksum: 10/c295684a2799f4ddad10a855efd9b82c70c27ac5f7437642df9700e120087c796851dd95b12d2e7596802303fe6afbfdf0f8733b5c7453f70c4c080746dde6ff
   languageName: node
   linkType: hard
 
@@ -6746,13 +6824,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:~1.1.1":
-  version: 1.1.3
-  resolution: "@noble/hashes@npm:1.1.3"
-  checksum: 10/42e9883649abd85e6a65cfa528e72b2a81ebb601b44db1d71b6ba927cede0627d7d8c649df159a7f84a949dfe17fe268d4b664c5a36c7e0b2a3d4198bc19f5e4
-  languageName: node
-  linkType: hard
-
 "@noble/hashes@npm:~1.3.2":
   version: 1.3.3
   resolution: "@noble/hashes@npm:1.3.3"
@@ -6760,14 +6831,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/secp256k1@npm:1.6.3, @noble/secp256k1@npm:~1.6.0":
-  version: 1.6.3
-  resolution: "@noble/secp256k1@npm:1.6.3"
-  checksum: 10/e4f4b0cfa1c5d23fb1b9938fa3cce1a1160a76a89eb91f6dde98075bbdf328709d51771c85b6b4b118f8ce5a6c6554da6c9af7de7716aba56cef30f61a715bd7
-  languageName: node
-  linkType: hard
-
-"@noble/secp256k1@npm:^1.7.0":
+"@noble/secp256k1@npm:1.7.1, @noble/secp256k1@npm:^1.7.0, @noble/secp256k1@npm:~1.7.0":
   version: 1.7.1
   resolution: "@noble/secp256k1@npm:1.7.1"
   checksum: 10/214d4756c20ed20809d948d0cc161e95664198cb127266faf747fd7deffe5444901f05fe9f833787738f2c6e60b09e544c2f737f42f73b3699e3999ba15b1b63
@@ -7133,11 +7197,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@open-rpc/test-coverage@npm:^2.2.2":
-  version: 2.2.2
-  resolution: "@open-rpc/test-coverage@npm:2.2.2"
+"@open-rpc/test-coverage@npm:^2.2.4":
+  version: 2.2.4
+  resolution: "@open-rpc/test-coverage@npm:2.2.4"
   dependencies:
     "@open-rpc/html-reporter-react": "npm:^0.0.4"
+    "@open-rpc/meta-schema": "npm:^1.14.6"
     "@open-rpc/schema-utils-js": "npm:^1.16.2"
     "@types/isomorphic-fetch": "npm:0.0.35"
     "@types/lodash": "npm:^4.14.162"
@@ -7149,7 +7214,7 @@ __metadata:
     lodash: "npm:^4.17.20"
   bin:
     open-rpc-test-coverage: bin/cli.js
-  checksum: 10/fc764031d8395dca73187684143f07cd2f6be854bedbd943b086e46f94e5c4207942bf87f1d4ac66f4220f209d6d4a7d50b0eb70d4586e2d07a4e086f0e344b1
+  checksum: 10/4bde5b40404a2bdd9f5c2f37b8bdeb1afb21cf0c9a192b508dbf3efd2cf3d2334ed3a149b18bd6546c5754c6f3a78b26832be3677caf2fff9a87f722c7b721f1
   languageName: node
   linkType: hard
 
@@ -7917,14 +7982,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@scure/bip32@npm:1.1.0":
-  version: 1.1.0
-  resolution: "@scure/bip32@npm:1.1.0"
+"@scure/bip32@npm:1.1.5":
+  version: 1.1.5
+  resolution: "@scure/bip32@npm:1.1.5"
   dependencies:
-    "@noble/hashes": "npm:~1.1.1"
-    "@noble/secp256k1": "npm:~1.6.0"
+    "@noble/hashes": "npm:~1.2.0"
+    "@noble/secp256k1": "npm:~1.7.0"
     "@scure/base": "npm:~1.1.0"
-  checksum: 10/e58660fc96dc5c87d0047bf41150fa3b424617e6289ba522cc81bdeecaf1a26e34f01dcd9d76f3e5c2c570ced608a527733cc375abfce4dc9b8e2365719ea5d3
+  checksum: 10/4c83e943a66e7b212d18f47b4650ed9b1dfeb69d8bdd8b491b12ba70ca8635cda67fb1ac920d642d66c8a3c2c03303b623c1faceafe7141a6f20a7cd7f66191e
   languageName: node
   linkType: hard
 
@@ -7939,13 +8004,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@scure/bip39@npm:1.1.0":
-  version: 1.1.0
-  resolution: "@scure/bip39@npm:1.1.0"
+"@scure/bip39@npm:1.1.1":
+  version: 1.1.1
+  resolution: "@scure/bip39@npm:1.1.1"
   dependencies:
-    "@noble/hashes": "npm:~1.1.1"
+    "@noble/hashes": "npm:~1.2.0"
     "@scure/base": "npm:~1.1.0"
-  checksum: 10/d843be225dda4b6b2c0f90e52e00eef708df3cecbc944902298d487c669a6d219bd41877b20adaf72ba84aec2f0cb1e4567dafc6ce7295d9f132bdb0dcb375b3
+  checksum: 10/08908145e0890e481e3398191424961d9ebfb8913fed6e6cdfc63eb1281bd1895244d46c0e8762b0e30d8dc6f498ed296311382fecbf034253838e3a50f60ca1
   languageName: node
   linkType: hard
 
@@ -19510,14 +19575,14 @@ __metadata:
   linkType: hard
 
 "ethereum-cryptography@npm:^1.1.2":
-  version: 1.1.2
-  resolution: "ethereum-cryptography@npm:1.1.2"
+  version: 1.2.0
+  resolution: "ethereum-cryptography@npm:1.2.0"
   dependencies:
-    "@noble/hashes": "npm:1.1.2"
-    "@noble/secp256k1": "npm:1.6.3"
-    "@scure/bip32": "npm:1.1.0"
-    "@scure/bip39": "npm:1.1.0"
-  checksum: 10/abf9288086002a697e0ee0077d77d001c8e1306fa53ea8d7901f9744786f47d073caa6c266bd5b25a283a5c0fbc8beed9fa9cd90d842dc51339e6748aa1ab46a
+    "@noble/hashes": "npm:1.2.0"
+    "@noble/secp256k1": "npm:1.7.1"
+    "@scure/bip32": "npm:1.1.5"
+    "@scure/bip39": "npm:1.1.1"
+  checksum: 10/e8b2ab91e0237ed83a6e6ab1aa2a61ee081dea137ac994c7daa935b0b620e866f70e2ac7eb2fb8db2dec044fe22283d2bf940598417e4dccd15a2b704a817a1b
   languageName: node
   linkType: hard
 
@@ -25469,13 +25534,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsonschema@npm:1.2.2":
-  version: 1.2.2
-  resolution: "jsonschema@npm:1.2.2"
-  checksum: 10/aa778e23f1ff879345dabee968c2d7b36d39fe60bb0aa0d251e60d18aed7038499fb203be6c06f4185b0a301b5b187295a46a0a139f19be17b50b6c04b48193d
-  languageName: node
-  linkType: hard
-
 "jsonschema@npm:^1.4.1":
   version: 1.4.1
   resolution: "jsonschema@npm:1.4.1"
@@ -27214,7 +27272,7 @@ __metadata:
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch"
     "@blockaid/ppom_release": "npm:^1.5.3"
     "@ensdomains/content-hash": "npm:^2.5.7"
-    "@ethereumjs/tx": "npm:^4.1.1"
+    "@ethereumjs/tx": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch"
     "@ethersproject/abi": "npm:^5.6.4"
     "@ethersproject/bignumber": "npm:^5.7.0"
     "@ethersproject/bytes": "npm:^5.7.0"
@@ -27245,10 +27303,10 @@ __metadata:
     "@metamask-institutional/types": "npm:^1.2.0"
     "@metamask/abi-utils": "npm:^2.0.2"
     "@metamask/account-watcher": "npm:^4.1.2"
-    "@metamask/accounts-controller": "npm:^24.1.0"
+    "@metamask/accounts-controller": "npm:^26.0.0"
     "@metamask/address-book-controller": "npm:^6.0.3"
     "@metamask/announcement-controller": "npm:^7.0.3"
-    "@metamask/api-specs": "npm:^0.10.15"
+    "@metamask/api-specs": "npm:^0.11.0"
     "@metamask/approval-controller": "npm:^7.0.0"
     "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A51.0.2#~/.yarn/patches/@metamask-assets-controllers-npm-51.0.2-4dea2e3c06.patch"
     "@metamask/auto-changelog": "npm:^2.1.0"
@@ -27268,13 +27326,13 @@ __metadata:
     "@metamask/eslint-config-typescript": "npm:^9.0.1"
     "@metamask/eslint-plugin-design-tokens": "npm:^1.1.0"
     "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
-    "@metamask/eth-json-rpc-middleware": "npm:^15.1.2"
+    "@metamask/eth-json-rpc-middleware": "npm:^15.3.0"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
-    "@metamask/eth-ledger-bridge-keyring": "npm:^8.0.3"
+    "@metamask/eth-ledger-bridge-keyring": "npm:^10.0.0"
     "@metamask/eth-sig-util": "npm:^7.0.1"
-    "@metamask/eth-snap-keyring": "npm:^11.1.0"
+    "@metamask/eth-snap-keyring": "npm:^12.0.0"
     "@metamask/eth-token-tracker": "npm:^10.0.2"
-    "@metamask/eth-trezor-keyring": "npm:^6.0.0"
+    "@metamask/eth-trezor-keyring": "npm:^8.0.0"
     "@metamask/etherscan-link": "npm:^3.0.0"
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/gas-fee-controller": "npm:^22.0.3"
@@ -27282,8 +27340,8 @@ __metadata:
     "@metamask/json-rpc-engine": "npm:^10.0.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.4"
     "@metamask/keyring-api": "npm:^17.2.1"
-    "@metamask/keyring-controller": "npm:^19.2.0"
-    "@metamask/keyring-internal-api": "npm:^4.0.3"
+    "@metamask/keyring-controller": "npm:^21.0.0"
+    "@metamask/keyring-internal-api": "npm:^6.0.0"
     "@metamask/keyring-snap-client": "npm:^4.0.1"
     "@metamask/logging-controller": "npm:^6.0.4"
     "@metamask/logo": "npm:^4.0.0"
@@ -27307,7 +27365,7 @@ __metadata:
     "@metamask/ppom-validator": "npm:0.36.0"
     "@metamask/preferences-controller": "npm:^15.0.2"
     "@metamask/preinstalled-example-snap": "npm:^0.3.0"
-    "@metamask/profile-sync-controller": "npm:^8.1.1"
+    "@metamask/profile-sync-controller": "npm:^9.0.0"
     "@metamask/providers": "npm:^20.0.0"
     "@metamask/queued-request-controller": "npm:^7.0.1"
     "@metamask/rate-limit-controller": "npm:^6.0.3"
@@ -27323,10 +27381,11 @@ __metadata:
     "@metamask/snaps-rpc-methods": "npm:^11.13.1"
     "@metamask/snaps-sdk": "npm:^6.19.0"
     "@metamask/snaps-utils": "npm:^9.0.1"
-    "@metamask/solana-wallet-snap": "npm:^1.10.0"
+    "@metamask/solana-wallet-snap": "npm:^1.11.0"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.0.0"
-    "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm%3A45.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-45.0.0-010fef9da6.patch"
+    "@metamask/test-dapp-multichain": "npm:^0.6.0"
+    "@metamask/transaction-controller": "npm:^48.1.0"
     "@metamask/user-operation-controller": "npm:^24.0.1"
     "@metamask/utils": "npm:^11.1.0"
     "@ngraveio/bc-ur": "npm:^1.1.12"
@@ -27334,8 +27393,8 @@ __metadata:
     "@octokit/core": "npm:^3.6.0"
     "@open-rpc/meta-schema": "npm:^1.14.6"
     "@open-rpc/mock-server": "npm:^1.7.5"
-    "@open-rpc/schema-utils-js": "npm:^1.16.2"
-    "@open-rpc/test-coverage": "npm:^2.2.2"
+    "@open-rpc/schema-utils-js": "npm:^2.0.5"
+    "@open-rpc/test-coverage": "npm:^2.2.4"
     "@playwright/test": "npm:^1.39.0"
     "@pmmmwh/react-refresh-webpack-plugin": "npm:^0.5.11"
     "@popperjs/core": "npm:^2.4.0"
