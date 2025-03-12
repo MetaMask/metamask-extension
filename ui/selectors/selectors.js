@@ -3122,7 +3122,6 @@ export const getHdKeyringIndexByIdOrDefault = createSelector(
   getMetaMaskHdKeyrings,
   (_state, keyringId) => keyringId,
   (keyrings, keyringId) => {
-    console.log('getHdKeyringIndexByIdOrDefault', keyrings, keyringId);
     return (
       // 0 is the default hd keyring index.
       keyrings.findIndex((keyring) => keyring.metadata.id === keyringId) ?? 0
