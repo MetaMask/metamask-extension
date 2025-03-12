@@ -8,7 +8,7 @@ const {
 const {
   loginWithoutBalanceValidation,
 } = require('../../page-objects/flows/login.flow');
-
+const { TX_SENTINEL_URL }= require('../../../../shared/constants/transaction');
 const {
   mockMultiNetworkBalancePolling,
 } = require('../../mock-balance-polling/mock-balance-polling');
@@ -78,6 +78,7 @@ async function mockInfuraWithMaliciousResponses(mockServer) {
     description: '',
     features: ['Interaction with a known malicious address'],
   });
+  await mockServer.forGet(`${TX_SENTINEL_URL}/network`).thenJson(500, {});
 }
 
 async function mockInfuraWithFailedResponses(mockServer) {

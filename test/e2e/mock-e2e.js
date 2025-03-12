@@ -307,19 +307,6 @@ async function setupMocking(
     });
 
   // This endpoint returns metadata for "transaction simulation" supported networks.
-  await server.forGet(`${TX_SENTINEL_URL}/networks`).thenJson(200, {
-    1: {
-      name: 'Mainnet',
-      group: 'ethereum',
-      chainID: 1,
-      nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
-      network: 'ethereum-mainnet',
-      explorer: 'https://etherscan.io',
-      confirmations: true,
-      smartTransactions: true,
-      hidden: false,
-    }
-  });
   await server.forGet(`${TX_SENTINEL_URL}/network`).thenJson(200, {
     name: 'Mainnet',
     group: 'ethereum',
