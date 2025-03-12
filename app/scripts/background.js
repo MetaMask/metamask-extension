@@ -80,7 +80,10 @@ import rawFirstTimeState from './first-time-state';
 /* eslint-enable import/first */
 
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
-import { METAMASK_CAIP_PROVIDER } from './constants/stream';
+import {
+  METAMASK_CAIP_PROVIDER,
+  METAMASK_EIP_1193_PROVIDER,
+} from './constants/stream';
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
@@ -404,10 +407,6 @@ browser.runtime.onConnect.addListener(async (...args) => {
 
   // This is set in `setupController`, which is called as part of initialization
   connectRemote(...args);
-
-  if (process.env.MULTICHAIN_API && isFirefox) {
-    connectRemoteCaip(...args);
-  }
 });
 browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
@@ -1030,6 +1029,10 @@ export function setupController(
         });
       }
       connectExternalExtension(remotePort);
+
+      if (process.env.MULTICHAIN_API && isFirefox) {
+        connectRemoteCaip(remotePort);
+      }
     }
   };
 
@@ -1084,6 +1087,7 @@ export function setupController(
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
 
     const mux = setupMultiplex(portStream);
+    mux.ignoreStream(METAMASK_EIP_1193_PROVIDER);
 
     controller.setupUntrustedCommunicationCaip({
       connectionStream: mux.createStream(METAMASK_CAIP_PROVIDER),
