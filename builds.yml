@@ -18,7 +18,6 @@ buildTypes:
     features:
       - build-main
       - keyring-snaps
-      - multi-srp
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
@@ -41,6 +40,7 @@ buildTypes:
     features:
       - build-beta
       - keyring-snaps
+      - multi-srp
     env:
       - INFURA_BETA_PROJECT_ID
       - SEGMENT_BETA_WRITE_KEY
