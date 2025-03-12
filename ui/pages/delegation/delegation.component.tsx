@@ -151,6 +151,7 @@ export default function Delegation({
   }, [fetchGatorBalance, isDeployed, metaMaskSmartAccount]);
 
   useEffect(() => {
+    console.log('current account', selectedAccount.address);
     console.log('isHardwareWallet', isHardwareWallet);
     console.log('hardwareWalletType', hardwareWalletType);
     console.log('sepolia rpc url', SEPOLIA_RPC_URL);
@@ -166,6 +167,7 @@ export default function Delegation({
     transportStatus,
     webHidConnectedStatus,
     isLedgerWallet,
+    selectedAccount.address,
   ]);
 
   const deployMetaMaskAccount = async () => {
