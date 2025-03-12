@@ -48,7 +48,7 @@ function TokenList({ onTokenClick }: TokenListProps) {
 
   const sortedFilteredTokens = useMemo(() => {
     const balances = isEvm ? evmBalances : multichainAssets;
-    const filteredAssets: TokenWithFiatAmount[] = filterAssets(balances, [
+    const filteredAssets = filterAssets(balances as TokenWithFiatAmount[], [
       {
         key: 'chainId',
         opts: isEvm ? networkFilter : { [currentNetwork.chainId]: true },

@@ -26,6 +26,9 @@ import {
   getShouldHideZeroBalanceTokens,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
+import useSolanaBridgeTransactionMapping from '../../../hooks/bridge/useSolanaBridgeTransactionMapping';
+///: END:ONLY_INCLUDE_IF
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TransactionListItem from '../transaction-list-item';
 import SmartTransactionListItem from '../transaction-list-item/smart-transaction-list-item.component';
@@ -201,6 +204,10 @@ export default function TransactionList({
     getSelectedAccountMultichainTransactions,
   );
 
+  // Use our custom hook to map Solana bridge transactions with destination chain info
+  const modifiedNonEvmTransactions =
+    useSolanaBridgeTransactionMapping(nonEvmTransactions);
+
   const isSolanaAccount = useSelector(isSelectedInternalAccountSolana);
   ///: END:ONLY_INCLUDE_IF
 
@@ -327,12 +334,63 @@ export default function TransactionList({
     setSelectedTransaction(transaction);
   }, []);
 
+  const getTransactionDisplayAmount = (transaction, userAddress) => {
+    const userFromEntry = transaction.from?.find(
+      (entry) => entry.address === userAddress,
+    );
+
+    const userToEntry = transaction.to?.find(
+      (entry) => entry.address === userAddress,
+    );
+
+    // Amount of the token sent
+    if (userFromEntry?.asset?.amount) {
+      return `-${userFromEntry.asset.amount} ${userFromEntry.asset.unit || ''}`;
+    }
+
+    // Amount of the token received
+    if (userToEntry?.asset?.amount) {
+      return `${userToEntry.asset.amount} ${userToEntry.asset.unit || ''}`;
+    }
+
+    // Fallback: Amount of the token received
+    if (transaction.from?.[0]?.asset?.amount) {
+      return `${transaction.from?.[0]?.asset?.amount} ${
+        transaction.from?.[0]?.asset?.unit || ''
+      }`;
+    }
+
+    return '';
+  };
+
   const multichainNetwork = useMultichainSelector(
     getMultichainNetwork,
     selectedAccount,
   );
 
   const trackEvent = useContext(MetaMetricsContext);
+
+  const formatTransactionTitle = (transaction, userAddress) => {
+    switch (transaction.type) {
+      case TransactionType.swap: {
+        const userToEntry = transaction.to?.find(
+          (entry) => entry.address === userAddress,
+        );
+        const userFromEntry = transaction.from?.find(
+          (entry) => entry.address === userAddress,
+        );
+
+        if (userFromEntry && userToEntry) {
+          return `${t('swap')} ${userFromEntry.asset.unit} ${'to'} ${
+            userToEntry.asset.unit
+          }`;
+        }
+        return capitalize(transaction.type);
+      }
+      default:
+        return capitalize(transaction.type);
+    }
+  };
 
   if (!isEvmAccountType(selectedAccount.type)) {
     const addressLink = getMultichainAccountUrl(
@@ -347,6 +405,7 @@ export default function TransactionList({
           <MultichainTransactionDetailsModal
             transaction={selectedTransaction}
             onClose={() => toggleShowDetails(null)}
+            userAddress={selectedAccount.address}
           />
         )}
 
@@ -355,91 +414,122 @@ export default function TransactionList({
           <Box className="transaction-list__transactions">
             {nonEvmTransactions?.transactions.length > 0 ? (
               <Box className="transaction-list__completed-transactions">
-                {groupNonEvmTransactionsByDate(nonEvmTransactions).map(
-                  (dateGroup) => (
-                    <Fragment key={dateGroup.date}>
-                      <Text
-                        paddingTop={4}
-                        paddingInline={4}
-                        variant={TextVariant.bodyMd}
-                        color={TextColor.textDefault}
-                      >
-                        {dateGroup.date}
-                      </Text>
-                      {dateGroup.transactionGroups.map((transaction, index) => (
-                        <ActivityListItem
-                          key={`${transaction.account}:${index}`}
-                          className="custom-class"
-                          data-testid="activity-list-item"
-                          onClick={() => toggleShowDetails(transaction)}
-                          icon={
-                            <BadgeWrapper
-                              anchorElementShape="circular"
-                              badge={
-                                <AvatarNetwork
-                                  borderColor="background-default"
-                                  borderWidth={1}
-                                  className="activity-tx__network-badge"
-                                  data-testid="activity-tx-network-badge"
-                                  name={
-                                    isSolanaAccount
-                                      ? MULTICHAIN_PROVIDER_CONFIGS[
-                                          MultichainNetworks.SOLANA
-                                        ].nickname
-                                      : MULTICHAIN_PROVIDER_CONFIGS[
-                                          MultichainNetworks.BITCOIN
-                                        ].nickname
-                                  }
-                                  size="xs"
-                                  src={
-                                    isSolanaAccount
-                                      ? SOLANA_TOKEN_IMAGE_URL
-                                      : BITCOIN_TOKEN_IMAGE_URL
-                                  }
-                                />
-                              }
-                              display="block"
-                              positionObj={{ right: -4, top: -4 }}
-                            >
-                              <TransactionIcon
-                                category={transaction.type}
-                                status={transaction.status}
+                {groupNonEvmTransactionsByDate(
+                  modifiedNonEvmTransactions || nonEvmTransactions,
+                ).map((dateGroup) => (
+                  <Fragment key={dateGroup.date}>
+                    <Text
+                      paddingTop={4}
+                      paddingInline={4}
+                      variant={TextVariant.bodyMd}
+                      color={TextColor.textDefault}
+                    >
+                      {dateGroup.date}
+                    </Text>
+                    {dateGroup.transactionGroups.map((transaction, index) => (
+                      <ActivityListItem
+                        key={`${transaction.account}:${index}`}
+                        className="custom-class"
+                        data-testid="activity-list-item"
+                        onClick={() => toggleShowDetails(transaction)}
+                        icon={
+                          <BadgeWrapper
+                            anchorElementShape="circular"
+                            badge={
+                              <AvatarNetwork
+                                borderColor="background-default"
+                                borderWidth={1}
+                                className="activity-tx__network-badge"
+                                data-testid="activity-tx-network-badge"
+                                name={
+                                  isSolanaAccount
+                                    ? MULTICHAIN_PROVIDER_CONFIGS[
+                                        MultichainNetworks.SOLANA
+                                      ].nickname
+                                    : MULTICHAIN_PROVIDER_CONFIGS[
+                                        MultichainNetworks.BITCOIN
+                                      ].nickname
+                                }
+                                size="xs"
+                                src={
+                                  isSolanaAccount
+                                    ? SOLANA_TOKEN_IMAGE_URL
+                                    : BITCOIN_TOKEN_IMAGE_URL
+                                }
                               />
-                            </BadgeWrapper>
-                          }
-                          rightContent={
+                            }
+                            display="block"
+                            positionObj={{ right: -4, top: -4 }}
+                          >
+                            <TransactionIcon
+                              category={transaction.type}
+                              status={transaction.status}
+                            />
+                          </BadgeWrapper>
+                        }
+                        rightContent={
+                          <>
+                            <Text
+                              className="activity-list-item__primary-currency"
+                              color="text-default"
+                              data-testid="transaction-list-item-primary-currency"
+                              ellipsis
+                              fontWeight="medium"
+                              textAlign="right"
+                              title="Primary Currency"
+                              variant="body-lg-medium"
+                            >
+                              {getTransactionDisplayAmount(
+                                transaction,
+                                selectedAccount.address,
+                              )}
+                            </Text>
+                          </>
+                        }
+                        title={
+                          transaction.isBridgeTx
+                            ? t('bridge')
+                            : formatTransactionTitle(
+                                transaction,
+                                selectedAccount.address,
+                              )
+                        }
+                        // eslint-disable-next-line react/jsx-no-duplicate-props
+                        subtitle={
+                          transaction.isBridgeTx && transaction.bridgeInfo ? (
                             <>
+                              <TransactionStatusLabel
+                                date={formatTimestamp(transaction.timestamp)}
+                                error={{}}
+                                status={transaction.status}
+                                statusOnly
+                              />
                               <Text
-                                className="activity-list-item__primary-currency"
-                                color="text-default"
-                                data-testid="transaction-list-item-primary-currency"
-                                ellipsis
-                                fontWeight="medium"
-                                textAlign="right"
-                                title="Primary Currency"
-                                variant="body-lg-medium"
+                                variant={TextVariant.bodyMd}
+                                color={TextColor.textAlternative}
                               >
-                                {transaction.from?.[0]?.asset?.amount &&
-                                transaction.from[0]?.asset?.unit
-                                  ? `${transaction.from[0].asset.amount} ${transaction.from[0].asset.unit}`
-                                  : ''}
+                                {`${t('to')} ${
+                                  transaction.bridgeInfo.destAsset?.symbol
+                                } ${t('on')} ${
+                                  // Use the pre-computed chain name from our hook, or fall back to chain ID
+                                  transaction.bridgeInfo.destChainName ||
+                                  transaction.bridgeInfo.destChainId
+                                }`}
                               </Text>
                             </>
-                          }
-                          subtitle={
+                          ) : (
                             <TransactionStatusLabel
                               date={formatTimestamp(transaction.timestamp)}
                               error={{}}
                               status={transaction.status}
                               statusOnly
                             />
-                          }
-                          title={capitalize(transaction.type)}
-                        ></ActivityListItem>
-                      ))}
-                    </Fragment>
-                  ),
-                )}
+                          )
+                        }
+                      ></ActivityListItem>
+                    ))}
+                  </Fragment>
+                ))}
                 <Box className="transaction-list__view-on-block-explorer">
                   <Button
                     display={Display.Flex}
