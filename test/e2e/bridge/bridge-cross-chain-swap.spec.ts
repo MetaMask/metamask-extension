@@ -66,13 +66,12 @@ describe('Bridge tests', function (this: Suite) {
     await homePage.goToActivityList();
 
     const activityList = new ActivityListPage(driver);
+    await activityList.check_completedTxNumberDisplayedInActivity(1);
+    await activityList.check_waitForTransactionStatus('confirmed');
     await activityList.check_txAction(`Bridge to ${quote.toChain}`);
     await activityList.check_txAmountInActivity(
       `-0${quote.amount} ${quote.tokenFrom}`,
     );
-    await activityList.check_completedBridgeTransactionActivity(txCount++);
-
-    await sleep(500);
   }
 
   async function importAccount(driver: any, privateKey: any) {
