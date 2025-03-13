@@ -5265,26 +5265,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@file:.yalc/@metamask/eth-json-rpc-middleware::locator=metamask-crx%40workspace%3A.":
-  version: 16.0.0
-  resolution: "@metamask/eth-json-rpc-middleware@file:.yalc/@metamask/eth-json-rpc-middleware#.yalc/@metamask/eth-json-rpc-middleware::hash=230dfe&locator=metamask-crx%40workspace%3A."
-  dependencies:
-    "@metamask/eth-block-tracker": "npm:^11.0.4"
-    "@metamask/eth-json-rpc-provider": "npm:^4.1.7"
-    "@metamask/eth-sig-util": "npm:^8.1.2"
-    "@metamask/json-rpc-engine": "npm:^10.0.2"
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.1.0"
-    "@types/bn.js": "npm:^5.1.5"
-    bn.js: "npm:^5.2.1"
-    klona: "npm:^2.0.6"
-    pify: "npm:^5.0.0"
-    safe-stable-stringify: "npm:^2.4.3"
-  checksum: 10/5d00094894452ad31f2c2a2bcb1f2c1e93f72fe8568ba9d7a09241ed97d2211ebf1dbc47d81f0822f9a0a7d49f4df095244fd36803909fab1303c28ae59e0fd5
-  languageName: node
-  linkType: hard
-
 "@metamask/eth-json-rpc-middleware@npm:^15.0.1":
   version: 15.3.0
   resolution: "@metamask/eth-json-rpc-middleware@npm:15.3.0"
@@ -5302,6 +5282,26 @@ __metadata:
     pify: "npm:^5.0.0"
     safe-stable-stringify: "npm:^2.4.3"
   checksum: 10/09e595a064b5f45bf0597dad38d04aaa4f2eb09700c70c85ec06ec22a6f642adffdbd1120380fd4b1d485c0d39bfc4b354c39c2b75d7ffa96210a2003189c0db
+  languageName: node
+  linkType: hard
+
+"@metamask/eth-json-rpc-middleware@npm:^16.0.0":
+  version: 16.0.0
+  resolution: "@metamask/eth-json-rpc-middleware@npm:16.0.0"
+  dependencies:
+    "@metamask/eth-block-tracker": "npm:^11.0.4"
+    "@metamask/eth-json-rpc-provider": "npm:^4.1.7"
+    "@metamask/eth-sig-util": "npm:^8.1.2"
+    "@metamask/json-rpc-engine": "npm:^10.0.2"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.1.0"
+    "@types/bn.js": "npm:^5.1.5"
+    bn.js: "npm:^5.2.1"
+    klona: "npm:^2.0.6"
+    pify: "npm:^5.0.0"
+    safe-stable-stringify: "npm:^2.4.3"
+  checksum: 10/fc6e11dd8855262b3a3c42c2629e4ce7f020a640ab2e26b989c84b674bceb044d5613e91ac6e3d9a6511c9f4e4286552a5414f9f28b1c60877a825dfddb063a7
   languageName: node
   linkType: hard
 
@@ -6604,9 +6604,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@file:.yalc/@metamask/transaction-controller::locator=metamask-crx%40workspace%3A.":
-  version: 48.2.0
-  resolution: "@metamask/transaction-controller@file:.yalc/@metamask/transaction-controller#.yalc/@metamask/transaction-controller::hash=3143de&locator=metamask-crx%40workspace%3A."
+"@metamask/transaction-controller@npm:^49.0.0":
+  version: 49.0.0
+  resolution: "@metamask/transaction-controller@npm:49.0.0"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -6635,7 +6635,7 @@ __metadata:
     "@metamask/gas-fee-controller": ^22.0.0
     "@metamask/network-controller": ^22.0.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
-  checksum: 10/761e23205cb83125b97189e847c53a33a51e1629fcae1c947535a325824b9faea71a6548a79d2b302995bc5b059f2b5315f7b49a75d9d414f072c6ebfeeccbf6
+  checksum: 10/bbdd45eb42bd39b6774fe7f5e1f4b3a13300a7b58cfddb35c07c282b29f31026115de4ea887f6c60b10eb9887ea0d07225cf04bbe42ef3e3113b691ddeba447b
   languageName: node
   linkType: hard
 
@@ -27346,7 +27346,7 @@ __metadata:
     "@metamask/eslint-config-typescript": "npm:^9.0.1"
     "@metamask/eslint-plugin-design-tokens": "npm:^1.1.0"
     "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
-    "@metamask/eth-json-rpc-middleware": "file:.yalc/@metamask/eth-json-rpc-middleware"
+    "@metamask/eth-json-rpc-middleware": "npm:^16.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
     "@metamask/eth-ledger-bridge-keyring": "npm:^10.0.0"
     "@metamask/eth-sig-util": "npm:^7.0.1"
@@ -27405,7 +27405,7 @@ __metadata:
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.0.0"
     "@metamask/test-dapp-multichain": "npm:^0.6.0"
-    "@metamask/transaction-controller": "file:.yalc/@metamask/transaction-controller"
+    "@metamask/transaction-controller": "npm:^49.0.0"
     "@metamask/user-operation-controller": "npm:^24.0.1"
     "@metamask/utils": "npm:^11.1.0"
     "@ngraveio/bc-ur": "npm:^1.1.12"
