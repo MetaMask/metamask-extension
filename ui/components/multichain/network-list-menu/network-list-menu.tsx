@@ -301,7 +301,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     // the network changes.
     if (Object.keys(tokenNetworkFilter || {}).length <= 1) {
       dispatch(setTokenNetworkFilter({ [hexChainId]: true }));
-    } else if (process.env.PORTFOLIO_VIEW) {
+    } else {
       const allOpts = Object.keys(evmNetworks).reduce((acc, id) => {
         acc[id] = true;
         return acc;

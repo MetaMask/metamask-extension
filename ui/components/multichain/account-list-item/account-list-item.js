@@ -171,9 +171,7 @@ const AccountListItem = ({
   let balanceToTranslate;
   if (isEvmNetwork) {
     balanceToTranslate =
-      !shouldShowFiat || isTestnet || !process.env.PORTFOLIO_VIEW
-        ? account.balance
-        : totalFiatBalance;
+      !shouldShowFiat || isTestnet ? account.balance : totalFiatBalance;
   } else {
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     balanceToTranslate = multichainAggregatedBalance;
@@ -223,12 +221,10 @@ const AccountListItem = ({
     let isAggregatedFiatOverviewBalance;
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     isAggregatedFiatOverviewBalance =
-      (!isTestnet && process.env.PORTFOLIO_VIEW && shouldShowFiat) ||
-      !isEvmNetwork;
+      (!isTestnet && shouldShowFiat) || !isEvmNetwork;
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
-    isAggregatedFiatOverviewBalance =
-      !isTestnet && process.env.PORTFOLIO_VIEW && shouldShowFiat;
+    isAggregatedFiatOverviewBalance = !isTestnet && shouldShowFiat;
     ///: END:ONLY_INCLUDE_IF
     return isAggregatedFiatOverviewBalance;
   };

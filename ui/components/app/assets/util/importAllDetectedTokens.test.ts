@@ -2,12 +2,11 @@ import { NetworkConfiguration } from '@metamask/network-controller';
 import { Token } from '../types';
 import { importAllDetectedTokens } from './importAllDetectedTokens';
 
-describe('importAllDetectedTokens with PORTFOLIO_VIEW true', () => {
+describe('importAllDetectedTokens', () => {
   let addImportedTokensMock: jest.Mock;
   let trackTokenAddedEventMock: jest.Mock;
 
   beforeEach(() => {
-    process.env.PORTFOLIO_VIEW = 'true';
     addImportedTokensMock = jest.fn(() => Promise.resolve());
     trackTokenAddedEventMock = jest.fn();
   });
