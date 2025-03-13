@@ -5018,6 +5018,9 @@
   "spendingCap": {
     "message": "支出上限"
   },
+  "spendingCaps": {
+    "message": "支出上限"
+  },
   "srpInputNumberOfWords": {
     "message": "我有一个包含$1个单词的私钥助记词",
     "description": "This is the text for each option in the dropdown where a user selects how many words their secret recovery phrase has during import. The $1 is the number of words (either 12, 15, 18, 21, or 24)."

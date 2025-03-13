@@ -5018,6 +5018,9 @@
   "spendingCap": {
     "message": "지출 한도"
   },
+  "spendingCaps": {
+    "message": "지출 한도"
+  },
   "srpInputNumberOfWords": {
     "message": "제 구문은 $1개의 단어로 이루어져 있습니다",
     "description": "This is the text for each option in the dropdown where a user selects how many words their secret recovery phrase has during import. The $1 is the number of words (either 12, 15, 18, 21, or 24)."
