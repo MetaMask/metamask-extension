@@ -5588,16 +5588,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/key-tree@npm:^10.0.2":
-  version: 10.0.2
-  resolution: "@metamask/key-tree@npm:10.0.2"
+"@metamask/key-tree@npm:^10.0.2, @metamask/key-tree@npm:^10.1.0":
+  version: 10.1.0
+  resolution: "@metamask/key-tree@npm:10.1.0"
   dependencies:
     "@metamask/scure-bip39": "npm:^2.1.1"
     "@metamask/utils": "npm:^11.0.1"
-    "@noble/curves": "npm:^1.2.0"
+    "@noble/curves": "npm:^1.8.1"
     "@noble/hashes": "npm:^1.3.2"
     "@scure/base": "npm:^1.0.0"
-  checksum: 10/fd2e445c75dc3cd3976fdc38a5029ee71a6f4afcbbf5c9a17152bba70cf35df8095caa853ae62eef90a51b43f23eeb9546fc6eb7d93a099d82effe8dc7592259
+  checksum: 10/b1292de03257d52fe306a0a9131d17cad46bad1a1b36df15b09ca9fe0168fb1d2a0c4f33febe88cd03656ad585273ebfe54cd67ceeb12f5d69d85df6a2b57e99
   languageName: node
   linkType: hard
 
@@ -6321,22 +6321,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-controllers@npm:^10.0.1":
-  version: 10.0.1
-  resolution: "@metamask/snaps-controllers@npm:10.0.1"
+"@metamask/snaps-controllers@npm:^11.0.0":
+  version: 11.0.0
+  resolution: "@metamask/snaps-controllers@npm:11.0.0"
   dependencies:
     "@metamask/approval-controller": "npm:^7.1.3"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/json-rpc-engine": "npm:^10.0.2"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.7"
-    "@metamask/key-tree": "npm:^10.0.2"
+    "@metamask/key-tree": "npm:^10.1.0"
     "@metamask/object-multiplex": "npm:^2.1.0"
     "@metamask/permission-controller": "npm:^11.0.6"
     "@metamask/phishing-controller": "npm:^12.4.0"
     "@metamask/post-message-stream": "npm:^9.0.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/snaps-registry": "npm:^3.2.3"
-    "@metamask/snaps-rpc-methods": "npm:^11.13.0"
+    "@metamask/snaps-rpc-methods": "npm:^12.0.0"
     "@metamask/snaps-sdk": "npm:^6.19.0"
     "@metamask/snaps-utils": "npm:^9.0.1"
     "@metamask/utils": "npm:^11.2.0"
@@ -6358,7 +6358,7 @@ __metadata:
   peerDependenciesMeta:
     "@metamask/snaps-execution-environments":
       optional: true
-  checksum: 10/aa1e1b3da0edfba50e7c0ae78fa02479b6f345ae6e5e6ebf3fdaf072a52fede176d954ea99c25a468856b91331003920610b214fcf21f8e23328310b516e068b
+  checksum: 10/1068b4e59f7dac214fd5c5fe1d2677ecd66278560a84e330d57432c0508a4af6a76d91e6f5b349fc7bbabd8308adbad9c42312ba005536b6cee31b582fefe924
   languageName: node
   linkType: hard
 
@@ -6434,7 +6434,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-rpc-methods@npm:^11.11.0, @metamask/snaps-rpc-methods@npm:^11.13.0, @metamask/snaps-rpc-methods@npm:^11.13.1":
+"@metamask/snaps-rpc-methods@npm:^11.11.0":
   version: 11.13.1
   resolution: "@metamask/snaps-rpc-methods@npm:11.13.1"
   dependencies:
@@ -6448,6 +6448,23 @@ __metadata:
     "@noble/hashes": "npm:^1.3.1"
     luxon: "npm:^3.5.0"
   checksum: 10/72298b0cb5cf79ffaacb48368590513ec5befa10f9ffb84865ce1eab5dc2ff28f5b0e765a7fb55885e8e0583091af404e879fad8510e9c8cb49ee455cf7b9444
+  languageName: node
+  linkType: hard
+
+"@metamask/snaps-rpc-methods@npm:^12.0.0":
+  version: 12.0.0
+  resolution: "@metamask/snaps-rpc-methods@npm:12.0.0"
+  dependencies:
+    "@metamask/key-tree": "npm:^10.1.0"
+    "@metamask/permission-controller": "npm:^11.0.6"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/snaps-sdk": "npm:^6.19.0"
+    "@metamask/snaps-utils": "npm:^9.0.1"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.2.0"
+    "@noble/hashes": "npm:^1.7.1"
+    luxon: "npm:^3.5.0"
+  checksum: 10/2da67b475ac51997170573ce52cd18761c1c8fabb2279448e8ed2157ccd63b8eda409b6d2bda3a5027578f218f21c772d76e2f776d940ec758fa9e3efb5dd3e9
   languageName: node
   linkType: hard
 
@@ -6787,12 +6804,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/curves@npm:1.4.2, @noble/curves@npm:^1.2.0, @noble/curves@npm:^1.4.0, @noble/curves@npm:~1.4.0":
+"@noble/curves@npm:1.4.2, @noble/curves@npm:~1.4.0":
   version: 1.4.2
   resolution: "@noble/curves@npm:1.4.2"
   dependencies:
     "@noble/hashes": "npm:1.4.0"
   checksum: 10/f433a2e8811ae345109388eadfa18ef2b0004c1f79417553241db4f0ad0d59550be6298a4f43d989c627e9f7551ffae6e402a4edf0173981e6da95fc7cab5123
+  languageName: node
+  linkType: hard
+
+"@noble/curves@npm:^1.2.0, @noble/curves@npm:^1.4.0, @noble/curves@npm:^1.8.1":
+  version: 1.8.1
+  resolution: "@noble/curves@npm:1.8.1"
+  dependencies:
+    "@noble/hashes": "npm:1.7.1"
+  checksum: 10/e861db372cc0734b02a4c61c0f5a6688d4a7555edca3d8a9e7c846c9aa103ca52d3c3818e8bc333a1a95b5be7f370ff344668d5d759471b11c2d14c7f24b3984
   languageName: node
   linkType: hard
 
@@ -6817,10 +6843,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:^1.1.2, @noble/hashes@npm:^1.2.0, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:^1.3.2, @noble/hashes@npm:^1.3.3, @noble/hashes@npm:^1.4.0, @noble/hashes@npm:~1.5.0":
-  version: 1.5.0
-  resolution: "@noble/hashes@npm:1.5.0"
-  checksum: 10/da7fc7af52af7afcf59810a7eea6155075464ff462ffda2572dc6d57d53e2669b1ea2ec774e814f6273f1697e567f28d36823776c9bf7068cba2a2855140f26e
+"@noble/hashes@npm:1.7.1, @noble/hashes@npm:^1.1.2, @noble/hashes@npm:^1.2.0, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:^1.3.2, @noble/hashes@npm:^1.3.3, @noble/hashes@npm:^1.4.0, @noble/hashes@npm:^1.7.1":
+  version: 1.7.1
+  resolution: "@noble/hashes@npm:1.7.1"
+  checksum: 10/ca3120da0c3e7881d6a481e9667465cc9ebbee1329124fb0de442e56d63fef9870f8cc96f264ebdb18096e0e36cebc0e6e979a872d545deb0a6fed9353f17e05
   languageName: node
   linkType: hard
 
@@ -6828,6 +6854,13 @@ __metadata:
   version: 1.3.3
   resolution: "@noble/hashes@npm:1.3.3"
   checksum: 10/1025ddde4d24630e95c0818e63d2d54ee131b980fe113312d17ed7468bc18f54486ac86c907685759f8a7e13c2f9b9e83ec7b67d1cc20836f36b5e4a65bb102d
+  languageName: node
+  linkType: hard
+
+"@noble/hashes@npm:~1.5.0":
+  version: 1.5.0
+  resolution: "@noble/hashes@npm:1.5.0"
+  checksum: 10/da7fc7af52af7afcf59810a7eea6155075464ff462ffda2572dc6d57d53e2669b1ea2ec774e814f6273f1697e567f28d36823776c9bf7068cba2a2855140f26e
   languageName: node
   linkType: hard
 
@@ -27376,9 +27409,9 @@ __metadata:
     "@metamask/selected-network-controller": "npm:^19.0.0"
     "@metamask/signature-controller": "npm:^23.1.0"
     "@metamask/smart-transactions-controller": "npm:^16.1.0"
-    "@metamask/snaps-controllers": "npm:^10.0.1"
+    "@metamask/snaps-controllers": "npm:^11.0.0"
     "@metamask/snaps-execution-environments": "npm:^7.0.0"
-    "@metamask/snaps-rpc-methods": "npm:^11.13.1"
+    "@metamask/snaps-rpc-methods": "npm:^12.0.0"
     "@metamask/snaps-sdk": "npm:^6.19.0"
     "@metamask/snaps-utils": "npm:^9.0.1"
     "@metamask/solana-wallet-snap": "npm:^1.11.0"
