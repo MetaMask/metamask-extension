@@ -154,7 +154,9 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
               }
             }}
           >
-            {attemptingExport ? t('showPrivateKey') : avatar}
+            {attemptingExport === AttemptExportState.PrivateKey
+              ? t('showPrivateKey')
+              : avatar}
           </ModalHeader>
           <ModalBody>
             {attemptingExport === AttemptExportState.None && (
