@@ -45,6 +45,43 @@ export const getPermittedAccountsByOrigin = createSelector(
 );
 
 /**
+ * Get the permitted accounts for a given origin and scope.
+ *
+ * @param {Record<string, Record<string, unknown>>} state - The PermissionController state
+ * @param {string[]} scopes - The scopes to get the permitted accounts for
+ * @returns {Map<string, string[]>} A map of origins to permitted accounts for the given scope
+ */
+export const getPermittedAccountsForScopesByOrigin = (state, scopes) => {
+  const subjects = getSubjects(state);
+
+  return Object.values(subjects).reduce((originToAccountsMap, subject) => {
+    const caveats =
+      subject.permissions?.[Caip25EndowmentPermissionName]?.caveats || [];
+
+    const caveat = caveats.find(({ type }) => type === Caip25CaveatType);
+
+    // this part should probably be a helper in the multichain library
+    if (caveat) {
+      const scopeAccounts = [];
+
+      scopes.forEach((scope) => {
+        if (caveat.value.requiredScopes[scope]) {
+          scopeAccounts.push(...caveat.value.requiredScopes[scope].accounts);
+        }
+
+        if (caveat.value.optionalScopes[scope]) {
+          scopeAccounts.push(...caveat.value.optionalScopes[scope].accounts);
+        }
+      });
+
+      if (scopeAccounts.length > 0) {
+        originToAccountsMap.set(subject.origin, scopeAccounts);
+      }
+    }
+    return originToAccountsMap;
+  }, new Map());
+};
+/**
  * Get the authorized CAIP-25 scopes for each subject, keyed by origin.
  * The values of the returned map are immutable values from the
  * PermissionController state.
