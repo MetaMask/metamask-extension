@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<EditSpendingCapModal /> renders component 1`] = `
+exports[`EditSpendingCapModal renders component 1`] = `
 <div>
   <div
     class="mm-modal edit-spending-cap-modal"
