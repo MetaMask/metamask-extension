@@ -25,7 +25,8 @@ describe('Snap Account Contract interaction', function (this: Suite) {
           .build(),
         localNodeOptions: {
             hardfork: 'london',
-          },        smartContract,
+          },
+        smartContract,
         title: this.test?.fullTitle(),
       },
       async ({
