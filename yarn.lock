@@ -6293,9 +6293,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@npm:^16.0.1":
-  version: 16.0.1
-  resolution: "@metamask/smart-transactions-controller@npm:16.0.1"
+"@metamask/smart-transactions-controller@npm:^16.1.0":
+  version: 16.1.0
+  resolution: "@metamask/smart-transactions-controller@npm:16.1.0"
   dependencies:
     "@babel/runtime": "npm:^7.24.1"
     "@ethereumjs/tx": "npm:^5.2.1"
@@ -6317,7 +6317,7 @@ __metadata:
       optional: true
     "@metamask/approval-controller":
       optional: true
-  checksum: 10/9a4dba47e01c1e47f099faa74a9fdf3378c77e8ba6d699317f9b38df1d71893e5278d210f6f9cd0ff6d2641db502991f48f923e00847410be33ae1df0f69377c
+  checksum: 10/1b81adf30ee9b070cf36299110b15703941033cc8470943cbbda391a10c1b4d7014e30892d72b7620193a865c75a8251bc18034b3796f4597317d746554d38e5
   languageName: node
   linkType: hard
 
@@ -27375,7 +27375,7 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^19.0.0"
     "@metamask/signature-controller": "npm:^23.1.0"
-    "@metamask/smart-transactions-controller": "npm:^16.0.1"
+    "@metamask/smart-transactions-controller": "npm:^16.1.0"
     "@metamask/snaps-controllers": "npm:^10.0.1"
     "@metamask/snaps-execution-environments": "npm:^7.0.0"
     "@metamask/snaps-rpc-methods": "npm:^11.13.1"
