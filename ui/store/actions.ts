@@ -138,6 +138,7 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
+import { isSafeToAutoCloseThisPopup } from '../../shared/lib/isSafeToAutoCloseThisPopup';
 
 type CustomGasSettings = {
   gas?: string;
@@ -4828,13 +4829,12 @@ export function getGasFeeTimeEstimate(
 }
 
 export async function closeNotificationPopup() {
-  const currentWindow = await browser.windows?.getCurrent?.();
-  if (currentWindow?.type !== 'popup') {
-    console.warn('Not safe to close notification window running in a tab.');
-    return;
+  if (await isSafeToAutoCloseThisPopup()) {
+    await submitRequestToBackground(
+      'markNotificationPopupAsAutomaticallyClosed',
+    );
+    global.platform.closeCurrentWindow();
   }
-  await submitRequestToBackground('markNotificationPopupAsAutomaticallyClosed');
-  global.platform.closeCurrentWindow();
 }
 
 /**
