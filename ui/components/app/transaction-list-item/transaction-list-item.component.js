@@ -305,7 +305,7 @@ function TransactionListItemInner({
           !isApproval && (
             <>
               <Text
-                variant={TextVariant.bodyLgMedium}
+                variant={TextVariant.bodyMdMedium}
                 fontWeight={FontWeight.Medium}
                 color={Color.textDefault}
                 title={primaryCurrency}
@@ -317,7 +317,7 @@ function TransactionListItemInner({
                 {primaryCurrency}
               </Text>
               <Text
-                variant={TextVariant.bodyMd}
+                variant={TextVariant.bodySmMedium}
                 color={Color.textAlternative}
                 textAlign={TextAlign.Right}
                 data-testid="transaction-list-item-secondary-currency"
