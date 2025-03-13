@@ -109,19 +109,22 @@ class AnvilSeeder {
       SMART_CONTRACTS.VERIFYING_PAYMASTER,
     );
 
-    const { publicClient, walletClient } = this.provider;
+    const { publicClient, walletClient, testClient } = this.provider;
     const fromAddress = (await walletClient.getAddresses())[0];
 
-    const transaction = await walletClient.sendTransaction({
-      from: fromAddress,
-      data: contractConfiguration[
-        SMART_CONTRACTS.VERIFYING_PAYMASTER
-      ].abi.encodeFunctionData('deposit', []),
-      to: paymasterAddress,
+    const transaction = await walletClient.writeContract({
+      account: fromAddress,
+      abi: contractConfiguration[SMART_CONTRACTS.VERIFYING_PAYMASTER].abi,
+      functionName: 'deposit',
+      address: paymasterAddress,
       value: amount,
     });
 
-    await publicClient.getTransactionReceipt({ hash: transaction.hash });
+    await testClient.mine({
+      blocks: 1,
+    });
+
+    await publicClient.getTransactionReceipt({ hash: transaction });
 
     console.log('Completed paymaster deposit', { amount });
   }
