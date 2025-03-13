@@ -155,6 +155,21 @@ describe('EIP-5792', () => {
       ).toStrictEqual({ id: BATCH_ID_MOCK });
     });
 
+    it('throws if version not supported', async () => {
+      await expect(
+        processSendCalls(
+          {
+            addTransactionBatch: addTransactionBatchMock,
+            getDisabledAccountUpgradeChains:
+              getDisabledAccountUpgradeChainsMock,
+          },
+          messenger,
+          { ...SEND_CALLS_MOCK, version: '2.0' },
+          REQUEST_MOCK,
+        ),
+      ).rejects.toThrow(`Version not supported: Got 2.0, expected 1.0`);
+    });
+
     it('throws if chain ID does not match network client', async () => {
       await expect(
         processSendCalls(
