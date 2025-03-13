@@ -40,7 +40,7 @@ jobs:
               echo "NEEDS_BETA_BUILD=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Setup environment
+      - name: Checkout and setup high risk environment
         if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}
         uses: metamask/github-tools/.github/actions/setup-environment@1d657e262aea7e3f216754febb624831527d2565
 
