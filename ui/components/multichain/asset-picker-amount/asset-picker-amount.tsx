@@ -37,6 +37,7 @@ import { NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR } from '../../../pages/confirmatio
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import useGetAssetImageUrl from '../../../hooks/useGetAssetImageUrl';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { setActiveNetworkWithError } from '../../../store/actions';
 import MaxClearButton from './max-clear-button';
 import {
   AssetPicker,
@@ -44,10 +45,6 @@ import {
 } from './asset-picker/asset-picker';
 import { SwappableCurrencyInput } from './swappable-currency-input/swappable-currency-input';
 import { AssetBalance } from './asset-balance/asset-balance';
-import {
-  setActiveNetwork,
-  setActiveNetworkWithError,
-} from '../../../store/actions';
 
 type AssetPickerAmountProps = OverridingUnion<
   AssetPickerProps,
@@ -58,6 +55,7 @@ type AssetPickerAmountProps = OverridingUnion<
     isAmountLoading?: boolean;
     action?: 'send' | 'receive';
     error?: string;
+    showNetworkPicker?: boolean;
     /**
      * Callback for when the amount changes; disables the input when undefined
      */
@@ -100,7 +98,7 @@ export const AssetPickerAmount = ({
   const nonTestNetwork = useSelector(getAllEnabledNetworks);
   const allNetworks = Object.values(nonTestNetwork);
   const currentNetwork = useSelector(getCurrentNetwork);
-  // console.log(currentNetworkId, currentNetwork, nonTestNetwork);
+  const showNetworkPickerinModal = process.env.REMOVE_GNS && showNetworkPicker;
   useEffect(() => {
     // if this input is immutable – avoids double fire
     if (isDisabled) {
@@ -233,7 +231,7 @@ export const AssetPickerAmount = ({
           action={action}
           asset={standardizedAsset}
           networkProps={
-            showNetworkPicker
+            showNetworkPickerinModal
               ? {
                   network: currentNetwork,
                   networks: allNetworks,

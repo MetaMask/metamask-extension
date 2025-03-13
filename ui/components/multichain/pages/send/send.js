@@ -393,7 +393,7 @@ export const SendPage = () => {
             onAssetChange={handleSelectSendToken}
             onAmountChange={onAmountChange}
             onClick={() => handleAssetPickerClick(false)}
-            showNetworkPicker={true}
+            showNetworkPicker
           />
         )}
         <Box marginTop={6}>
