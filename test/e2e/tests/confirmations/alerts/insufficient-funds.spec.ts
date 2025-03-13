@@ -12,7 +12,6 @@ describe('Alert for insufficient funds', function () {
     const nftSmartContract = SMART_CONTRACTS.NFTS;
     const localNodeOptions = {
       mnemonic: 'test test test test test test test test test test test junk',
-      hardfork: 'london',
     };
     await withFixtures(
       {

@@ -23,9 +23,6 @@ describe('View ERC1155 NFT details', function () {
         fixtures: new FixtureBuilder().withNftControllerERC1155().build(),
         smartContract,
         title: this.test.fullTitle(),
-        localNodeOptions: {
-          hardfork: 'london',
-        },
         testSpecificMock: mockIPFSRequest,
       },
       async ({ driver }) => {

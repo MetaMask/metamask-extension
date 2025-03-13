@@ -17,19 +17,26 @@ class AnvilSeeder {
    * @param contractName
    */
 
-  async deploySmartContract(contractName) {
+  async deploySmartContract(contractName, hardfork) {
     const { publicClient, testClient, walletClient } = this.provider;
     const fromAddress = (await walletClient.getAddresses())[0];
 
     const contractConfig = contractConfiguration[contractName];
     const deployArgs = this.getDeployArgs(contractName, contractConfig);
 
-    const hash = await walletClient.deployContract({
+    const deployOptions = {
       abi: contractConfig.abi,
       account: fromAddress,
       args: deployArgs,
       bytecode: contractConfig.bytecode,
-    });
+    };
+
+    // Add gasPrice if hardfork is muirGlacier to indicate it's a legacy tx
+    if (hardfork === 'muirGlacier') {
+      deployOptions.gasPrice = 20000;
+    }
+
+    const hash = await walletClient.deployContract(deployOptions);
 
     await testClient.mine({
       blocks: 1,
@@ -43,23 +50,37 @@ class AnvilSeeder {
     });
 
     if (contractName === SMART_CONTRACTS.NFTS) {
-      await walletClient.writeContract({
+      const mintOptions = {
         address: receipt.contractAddress,
         abi: contractConfig.abi,
         functionName: 'mintNFTs',
         args: [1],
         account: fromAddress,
-      });
+      };
+
+    // Add gasPrice if hardfork is muirGlacier to indicate it's a legacy tx
+    if (hardfork === 'muirGlacier') {
+      mintOptions.gasPrice = 20000;
+    }
+
+      await walletClient.writeContract(mintOptions);
     }
 
     if (contractName === SMART_CONTRACTS.ERC1155) {
-      await walletClient.writeContract({
+      const mintBatchOptions = {
         address: receipt.contractAddress,
         abi: contractConfig.abi,
         functionName: 'mintBatch',
         args: [fromAddress, [1, 2, 3], [1, 1, 100000000000000], '0x'],
         account: fromAddress,
-      });
+      };
+
+      // Add gasPrice if hardfork is muirGlacier to indicate it's a legacy tx
+      if (hardfork === 'muirGlacier') {
+        mintBatchOptions.gasPrice = 20000;
+      }
+
+      await walletClient.writeContract(mintBatchOptions);
     }
 
     this.storeSmartContractAddress(contractName, receipt.contractAddress);

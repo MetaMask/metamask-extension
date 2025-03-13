@@ -43,9 +43,6 @@ describe('Remove NFT', function () {
           })
           .build(),
         smartContract,
-        localNodeOptions: {
-          hardfork: 'london',
-        },
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
