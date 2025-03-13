@@ -58,10 +58,10 @@ class AnvilSeeder {
         account: fromAddress,
       };
 
-    // Add gasPrice if hardfork is muirGlacier to indicate it's a legacy tx
-    if (hardfork === 'muirGlacier') {
-      mintOptions.gasPrice = 20000;
-    }
+      // Add gasPrice if hardfork is muirGlacier to indicate it's a legacy tx
+      if (hardfork === 'muirGlacier') {
+        mintOptions.gasPrice = 20000;
+      }
 
       await walletClient.writeContract(mintOptions);
     }

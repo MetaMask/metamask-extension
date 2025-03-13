@@ -93,7 +93,7 @@ describe('Swap-Send ETH', function () {
 
         await swapSendPage.verifyMaxButtonClick(
           ['ETH', 'ETH'],
-          ['24.99505215555143', '24.99505215555143'],
+          ['24.99725511955143', '24.99725511955143'],
         );
       },
     );

@@ -24,7 +24,6 @@ type Hardfork =
 
 const defaultOptions = {
   balance: 25,
-  blockTime: 2,
   chainId: 1337,
   gasLimit: 30000000,
   gasPrice: 2000000000,
@@ -33,13 +32,32 @@ const defaultOptions = {
   mnemonic:
     'spread raise short crane omit tent fringe mandate neglect detail suspect cradle',
   port: 8545,
+  noMining: false,
 };
 
 export class Anvil {
   #server: AnvilType | undefined;
 
-  async start(opts = defaultOptions): Promise<void> {
+  async start(
+    opts: {
+      balance?: number;
+      blockTime?: number;
+      chainId?: number;
+      gasLimit?: number;
+      gasPrice?: number;
+      hardfork?: Hardfork;
+      host?: string;
+      mnemonic?: string;
+      port?: number;
+      noMining?: boolean;
+    } = {},
+  ): Promise<void> {
     const options = { ...defaultOptions, ...opts };
+
+    // Set blockTime if noMining is disabled, as those 2 options are incompatible
+    if (!opts?.noMining) {
+      options.blockTime = 2;
+    }
 
     // Determine the path to the anvil binary directory
     const anvilBinaryDir = join(process.cwd(), 'node_modules', '.bin');
