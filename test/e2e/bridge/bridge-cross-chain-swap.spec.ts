@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import { ethers } from 'ethers';
 import { Suite } from 'mocha';
 import { unlockWallet, withFixtures } from '../helpers';
