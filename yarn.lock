@@ -6584,9 +6584,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^48.1.0":
-  version: 48.1.0
-  resolution: "@metamask/transaction-controller@npm:48.1.0"
+"@metamask/transaction-controller@npm:@metamask-previews/transaction-controller@48.2.0-preview-c37ee1c7":
+  version: 48.2.0-preview-c37ee1c7
+  resolution: "@metamask-previews/transaction-controller@npm:48.2.0-preview-c37ee1c7"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -6615,7 +6615,7 @@ __metadata:
     "@metamask/gas-fee-controller": ^22.0.0
     "@metamask/network-controller": ^22.0.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
-  checksum: 10/ecee87700a2b00189ad4c2a2422a650b3d315a127c60a136b6b4bf9d51584cfb33604461237781cfea8e359e605f813acea447edbd0a5969fb5822fdf3f6b2af
+  checksum: 10/840b525d760363201f000a61a02b9a099077d7ed03d468adedc8a0f8400b8a0b37c600cf9517851799f16cde3ae90c555f62caaf5864e6628f33baa7ddcabedf
   languageName: node
   linkType: hard
 

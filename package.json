@@ -228,7 +228,8 @@
     "tslib@npm:^2.6.2": "~2.6.0",
     "@ethersproject/signing-key/elliptic": "^6.6.1",
     "gridplus-sdk/elliptic": "^6.6.1",
-    "@ethereumjs/tx@npm:^5.4.0": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch"
+    "@ethereumjs/tx@npm:^5.4.0": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch",
+    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@48.2.0-preview-c37ee1c7"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
