@@ -21,6 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implement submission of multichain transactions ([#30416](https://github.com/MetaMask/metamask-extension/pull/30416))
 - Add modal to include metric ID before redirecting to the support page ([#30415](https://github.com/MetaMask/metamask-extension/pull/30415))
 - Add UI preparation changes for multichain connection flow ([#30164](https://github.com/MetaMask/metamask-extension/pull/30164))
+- Add support for Mega Testnet for new Users ([#30871](https://github.com/MetaMask/metamask-extension/pull/#30871))
+- Add support for Mega Testnet for existing Users ([#30895](https://github.com/MetaMask/metamask-extension/pull/#30895))
 
 ### Changed
 - Improve account sync with primary SRP filtering, bulk account creation, and removed synced accounts limit ([#30529](https://github.com/MetaMask/metamask-extension/pull/30529))
@@ -40,6 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refresh activity page upon specific events ([#30571](https://github.com/MetaMask/metamask-extension/pull/30571))
 - Exclude smart transaction status page from rate limiting ([#30537](https://github.com/MetaMask/metamask-extension/pull/30537))
 - Improve performance by preventing unnecessary AddressCopyButton re-renders ([#30289](https://github.com/MetaMask/metamask-extension/pull/30289))
+- Update Mega Testnet logo ([#30883](https://github.com/MetaMask/metamask-extension/pull/#30883))
 
 ### Fixed
 - Fix swap source token balance on multichain networks ([#30622](https://github.com/MetaMask/metamask-extension/pull/30622))
