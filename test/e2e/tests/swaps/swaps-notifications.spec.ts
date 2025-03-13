@@ -105,14 +105,14 @@ describe('Swaps - notifications', function () {
     );
   });
   it('tests a notification for not enough balance', async function () {
-    const lowBalanceOptions = {
+    const localNodeOptions = {
       mnemonic: 'test test test test test test test test test test test junk',
     };
 
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        localNodeOptions: lowBalanceOptions,
+        localNodeOptions,
         testSpecificMock: mockSwapsTransactionQuote,
         title: this.test?.fullTitle(),
       },
