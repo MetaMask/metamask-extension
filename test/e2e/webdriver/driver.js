@@ -670,23 +670,25 @@ class Driver {
   /**
    * @param {string} testTitle - The title of the test
    */
-  #getArtifactDir(testTitle) {
+  getArtifactDir(testTitle) {
     return `./test-artifacts/${this.browser}/${testTitle}`;
   }
 
   /**
    * @param {string} testTitle - The title of the test
    * @param {string} screenshotTitle - The title of the screenshot
-   * @returns {Promise<void>} Promise that resolves when the screenshot is taken
+   * @returns {Promise<string>} Promise that resolves to the path of the screenshot after it's saved
    */
   async takeScreenshot(testTitle, screenshotTitle) {
-    const artifactDir = this.#getArtifactDir(testTitle);
+    const artifactDir = this.getArtifactDir(testTitle);
     await fs.mkdir(artifactDir, { recursive: true });
-
     const screenshot = await this.driver.takeScreenshot();
-    await fs.writeFile(`${artifactDir}/${screenshotTitle}.png`, screenshot, {
+    const screenshotPath = `${artifactDir}/${screenshotTitle}.png`;
+    await fs.writeFile(screenshotPath, screenshot, {
       encoding: 'base64',
     });
+    console.log(`Screenshot saved to ${screenshotPath}`);
+    return screenshotPath;
   }
 
   /**
@@ -1268,8 +1270,8 @@ class Driver {
     );
     console.error(`${error}\n`);
 
-    const filepathBase = `${this.#getArtifactDir(testTitle)}/test-failure`;
-    await fs.mkdir(this.#getArtifactDir(testTitle), { recursive: true });
+    const filepathBase = `${this.getArtifactDir(testTitle)}/test-failure`;
+    await fs.mkdir(this.getArtifactDir(testTitle), { recursive: true });
 
     const windowHandles = await this.driver.getAllWindowHandles();
     // On occasion there may be a bug in the offscreen document which does
