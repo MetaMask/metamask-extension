@@ -5266,8 +5266,8 @@ __metadata:
   linkType: hard
 
 "@metamask/eth-json-rpc-middleware@file:.yalc/@metamask/eth-json-rpc-middleware::locator=metamask-crx%40workspace%3A.":
-  version: 15.3.0
-  resolution: "@metamask/eth-json-rpc-middleware@file:.yalc/@metamask/eth-json-rpc-middleware#.yalc/@metamask/eth-json-rpc-middleware::hash=8eac3c&locator=metamask-crx%40workspace%3A."
+  version: 16.0.0
+  resolution: "@metamask/eth-json-rpc-middleware@file:.yalc/@metamask/eth-json-rpc-middleware#.yalc/@metamask/eth-json-rpc-middleware::hash=230dfe&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/eth-block-tracker": "npm:^11.0.4"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.7"
@@ -5281,7 +5281,7 @@ __metadata:
     klona: "npm:^2.0.6"
     pify: "npm:^5.0.0"
     safe-stable-stringify: "npm:^2.4.3"
-  checksum: 10/74df040655230ed9aebd6f4782560b0ccadf5afcdf22ff91d5048269f192c8d4f3265ce08370e6b0c1ef2e71cb0399397ae54d0a53941dd51353f61b78c9d9f5
+  checksum: 10/5d00094894452ad31f2c2a2bcb1f2c1e93f72fe8568ba9d7a09241ed97d2211ebf1dbc47d81f0822f9a0a7d49f4df095244fd36803909fab1303c28ae59e0fd5
   languageName: node
   linkType: hard
 
@@ -6606,7 +6606,7 @@ __metadata:
 
 "@metamask/transaction-controller@file:.yalc/@metamask/transaction-controller::locator=metamask-crx%40workspace%3A.":
   version: 48.2.0
-  resolution: "@metamask/transaction-controller@file:.yalc/@metamask/transaction-controller#.yalc/@metamask/transaction-controller::hash=3c26ab&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/transaction-controller@file:.yalc/@metamask/transaction-controller#.yalc/@metamask/transaction-controller::hash=3143de&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -6635,7 +6635,7 @@ __metadata:
     "@metamask/gas-fee-controller": ^22.0.0
     "@metamask/network-controller": ^22.0.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
-  checksum: 10/b60c8134a92a0e6454dca1b5dbc8c85b6f60d6cf632006dccf115486f8976bed4dad261a4566d842a776fd18b7cb0d719507a693d64715ef9f5a885689840d2a
+  checksum: 10/761e23205cb83125b97189e847c53a33a51e1629fcae1c947535a325824b9faea71a6548a79d2b302995bc5b059f2b5315f7b49a75d9d414f072c6ebfeeccbf6
   languageName: node
   linkType: hard
 
