@@ -153,7 +153,7 @@ export class MockKeyring implements Keyring {
   removeAccount(address: Hex): void {
     console.log('MockKeyring - removeAccount', address);
     this.accounts = this.accounts.filter(({ address: a }) => a !== address);
-    setStorageItem(storageKey, this.accounts);
+    setStorageItem(storageKeyAccounts, this.accounts);
   }
 
   async signTransaction(
@@ -199,5 +199,7 @@ export class MockKeyring implements Keyring {
     address: Hex,
     authorization: [chainId: number, contractAddress: Hex, nonce: number],
     options?: Record<string, unknown>,
-  ): Promise<string>;
+  ): Promise<string> {
+    throw new Error('Method not implemented.');
+  }
 }
