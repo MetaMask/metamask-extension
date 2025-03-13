@@ -682,7 +682,7 @@ export async function loadStateFromPersistence() {
     }
   }
 
-  if (!preMigrationVersionedData.data && !preMigrationVersionedData.meta) {
+  if (!preMigrationVersionedData?.data && !preMigrationVersionedData?.meta) {
     const initialState = migrator.generateInitialState(firstTimeState);
     preMigrationVersionedData = {
       ...preMigrationVersionedData,
