@@ -55,7 +55,7 @@ export class Anvil {
     const options = { ...defaultOptions, ...opts };
 
     // Set blockTime if noMining is disabled, as those 2 options are incompatible
-    if (!opts?.noMining) {
+    if (!opts?.noMining && !opts?.blockTime) {
       options.blockTime = 2;
     }
 

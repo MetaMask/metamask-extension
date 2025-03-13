@@ -87,16 +87,19 @@ class AnvilSeeder {
   }
 
   async transfer(to, value) {
-    const { publicClient, walletClient } = this.provider;
+    const { publicClient, walletClient, testClient } = this.provider;
     const fromAddress = (await walletClient.getAddresses())[0];
 
     const transaction = await walletClient.sendTransaction({
-      from: fromAddress,
+      account: fromAddress,
       value,
       to,
     });
+    await testClient.mine({
+      blocks: 1,
+    });
 
-    await publicClient.getTransactionReceipt({ hash: transaction.hash });
+    await publicClient.getTransactionReceipt({ hash: transaction });
 
     console.log('Completed transfer', { to, value });
   }

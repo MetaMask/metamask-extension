@@ -216,7 +216,7 @@ async function withFixtures(options, testSuite) {
     await fixtureServer.start();
     fixtureServer.loadJsonState(fixtures, contractRegistry);
 
-    if (localNode && useBundler) {
+    if (localNodes[0] && useBundler) {
       await initBundler(bundlerServer, localNodes[0], usePaymaster);
     }
 
@@ -555,12 +555,6 @@ const multipleGanacheOptions = {
   ],
 };
 
-const multipleGanacheOptionsForType2Transactions = {
-  ...multipleGanacheOptions,
-  // EVM version that supports type 2 transactions (EIP1559)
-  hardfork: 'london',
-};
-
 // Edit priority gas fee form
 const editGasFeeForm = async (driver, gasLimit, gasPrice) => {
   const inputs = await driver.findElements('input[type="number"]');
@@ -872,23 +866,19 @@ async function getCleanAppState(driver) {
 
 async function initBundler(bundlerServer, localNodeServer, usePaymaster) {
   try {
-    const ganacheSeeder = new GanacheSeeder(localNodeServer.getProvider());
+    const seeder = new AnvilSeeder(localNodeServer.getProvider());
 
-    await ganacheSeeder.deploySmartContract(SMART_CONTRACTS.ENTRYPOINT);
+    await seeder.deploySmartContract(SMART_CONTRACTS.ENTRYPOINT);
 
-    await ganacheSeeder.deploySmartContract(
-      SMART_CONTRACTS.SIMPLE_ACCOUNT_FACTORY,
-    );
+    await seeder.deploySmartContract(SMART_CONTRACTS.SIMPLE_ACCOUNT_FACTORY);
 
     if (usePaymaster) {
-      await ganacheSeeder.deploySmartContract(
-        SMART_CONTRACTS.VERIFYING_PAYMASTER,
-      );
+      await seeder.deploySmartContract(SMART_CONTRACTS.VERIFYING_PAYMASTER);
 
-      await ganacheSeeder.paymasterDeposit(convertETHToHexGwei(1));
+      await seeder.paymasterDeposit(convertETHToHexGwei(1));
     }
 
-    await ganacheSeeder.transfer(ERC_4337_ACCOUNT, convertETHToHexGwei(10));
+    await seeder.transfer(ERC_4337_ACCOUNT, convertETHToHexGwei(10));
 
     await bundlerServer.start();
   } catch (error) {
@@ -935,7 +925,6 @@ module.exports = {
   connectToDapp,
   multipleGanacheOptions,
   defaultGanacheOptionsForType2Transactions,
-  multipleGanacheOptionsForType2Transactions,
   sendTransaction,
   sendScreenToConfirmScreen,
   unlockWallet,
