@@ -25,12 +25,25 @@ import {
 } from '../../../../helpers/constants/design-system';
 // eslint-disable-next-line import/no-restricted-paths
 import { t } from '../../../../../app/scripts/translate';
+// eslint-disable-next-line import/no-restricted-paths
+import { isEthAddress } from '../../../../../app/scripts/lib/multichain/address';
+import { isSolanaAddress } from '../../../../../shared/lib/multichain/accounts';
 import DestinationSelectedAccountListItem from './destination-selected-account-list-item';
 import DestinationAccountListItem from './destination-account-list-item';
+// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import/no-restricted-paths
+
+type ExternalAccount = {
+  address: string;
+  metadata: {
+    name: string;
+  };
+  isExternal: true;
+};
 
 type DestinationAccountPickerProps = {
-  onAccountSelect: (account: InternalAccount | null) => void;
-  selectedSwapToAccount: InternalAccount | null;
+  onAccountSelect: (account: InternalAccount | ExternalAccount | null) => void;
+  selectedSwapToAccount: InternalAccount | ExternalAccount | null;
   isDestinationSolana: boolean;
 };
 
@@ -43,12 +56,62 @@ export const DestinationAccountPicker = ({
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const accounts = useSelector(getInternalAccounts);
 
+  // Check if search query is a valid address
+  const isValidAddress = useMemo(() => {
+    const trimmedQuery = searchQuery.trim();
+    if (!trimmedQuery) {
+      return false;
+    }
+
+    return isDestinationSolana
+      ? isSolanaAddress(trimmedQuery)
+      : isEthAddress(trimmedQuery);
+  }, [searchQuery, isDestinationSolana]);
+
+  // Create an external account object if valid address is not in internal accounts
+  const externalAccount = useMemo(() => {
+    if (!isValidAddress) {
+      return null;
+    }
+
+    const trimmedQuery = searchQuery.trim();
+    const addressExists = accounts.some(
+      (account) => account.address.toLowerCase() === trimmedQuery.toLowerCase(),
+    );
+
+    if (addressExists) {
+      return null;
+    }
+
+    return {
+      address: trimmedQuery,
+      metadata: {
+        name: `${trimmedQuery.slice(0, 6)}...${trimmedQuery.slice(-4)}`,
+      },
+      isExternal: true,
+    } as ExternalAccount;
+  }, [accounts, isValidAddress, searchQuery]);
+
+  // Auto-select the external account if valid and not already selected
+  React.useEffect(() => {
+    if (externalAccount && !selectedSwapToAccount) {
+      onAccountSelect(externalAccount);
+      setSearchQuery(''); // Clear search after selection
+    }
+  }, [externalAccount, onAccountSelect, selectedSwapToAccount]);
+
   const filteredAccounts = useMemo(
     () =>
       accounts.filter((account) => {
-        const matchesSearch = account.metadata.name
+        const matchesSearchByName = account.metadata.name
           .toLowerCase()
           .includes(searchQuery.toLowerCase());
+
+        const matchesSearchByAddress = account.address
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase());
+
+        const matchesSearch = matchesSearchByName || matchesSearchByAddress;
 
         const matchesChain = isDestinationSolana
           ? isSolanaAccount(account)
