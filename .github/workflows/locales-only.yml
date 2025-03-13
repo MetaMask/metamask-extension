@@ -27,4 +27,5 @@ jobs:
         run: yarn tsx .circleci/scripts/validate-locales-only.ts
 
       - name: Run lint
-        uses: ./.github/workflows/test-lint.yml
+        if: always()
+        run: yarn lint && yarn verify-locales --quiet
