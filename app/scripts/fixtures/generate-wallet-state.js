@@ -1,10 +1,10 @@
 import { Messenger } from '@metamask/base-controller';
 import { KeyringController } from '@metamask/keyring-controller';
-import { convertMnemonicToWordlistIndices } from '../lib/mnemonic';
 import { UI_NOTIFICATIONS } from '../../../shared/notifications';
 import { E2E_SRP, defaultFixture } from '../../../test/e2e/default-fixture';
 import FixtureBuilder from '../../../test/e2e/fixture-builder';
 import { encryptorFactory } from '../lib/encryptor-factory';
+import MetamaskController from '../metamask-controller';
 import { FIXTURES_APP_STATE } from './with-app-state';
 import { FIXTURES_NETWORKS } from './with-networks';
 import { FIXTURES_PREFERENCES } from './with-preferences';
@@ -68,7 +68,7 @@ async function generateVaultAndAccount(encodedSeedPhrase, password) {
 
   await krCtrl.createNewVaultAndRestore(
     password,
-    convertMnemonicToWordlistIndices(seedPhraseAsUint8Array),
+    MetamaskController.convertMnemonicToWordlistIndices(seedPhraseAsUint8Array),
   );
 
   const accounts = [];

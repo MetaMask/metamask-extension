@@ -118,6 +118,7 @@ import { CustodyController } from '@metamask-institutional/custody-controller';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 ///: END:ONLY_INCLUDE_IF
 import { SignatureController } from '@metamask/signature-controller';
+import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
 import {
   NameController,
@@ -259,10 +260,6 @@ import {
   BridgeUserAction,
   BridgeBackgroundAction,
 } from '../../shared/types/bridge';
-import {
-  convertMnemonicToWordlistIndices,
-  convertEnglishWordlistIndicesToCodepoints,
-} from './lib/mnemonic';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -4476,7 +4473,9 @@ export default class MetamaskController extends EventEmitter {
         .getKeyringsByType(KeyringTypes.hd)
         .some((keyring) => {
           return isEqual(
-            convertEnglishWordlistIndicesToCodepoints(keyring.mnemonic),
+            MetamaskController.convertEnglishWordlistIndicesToCodepoints(
+              keyring.mnemonic,
+            ),
             seedPhraseAsUint8Array,
           );
         });
@@ -4574,7 +4573,9 @@ export default class MetamaskController extends EventEmitter {
       // create new vault
       await this.keyringController.createNewVaultAndRestore(
         password,
-        convertMnemonicToWordlistIndices(seedPhraseAsUint8Array),
+        MetamaskController.convertMnemonicToWordlistIndices(
+          seedPhraseAsUint8Array,
+        ),
       );
 
       if (completedOnboarding) {
@@ -4654,6 +4655,34 @@ export default class MetamaskController extends EventEmitter {
         true,
       );
     }
+  }
+
+  /**
+   * Encodes a BIP-39 mnemonic as the indices of words in the English BIP-39 wordlist.
+   *
+   * @param {Buffer} mnemonic - The BIP-39 mnemonic.
+   * @returns {Buffer} The Unicode code points for the seed phrase formed from the words in the wordlist.
+   */
+  static convertMnemonicToWordlistIndices(mnemonic) {
+    const indices = mnemonic
+      .toString()
+      .split(' ')
+      .map((word) => wordlist.indexOf(word));
+    return new Uint8Array(new Uint16Array(indices).buffer);
+  }
+
+  /**
+   * Converts a BIP-39 mnemonic stored as indices of words in the English wordlist to a buffer of Unicode code points.
+   *
+   * @param {Uint8Array} wordlistIndices - Indices to specific words in the BIP-39 English wordlist.
+   * @returns {Uint8Array} The BIP-39 mnemonic formed from the words in the English wordlist, encoded as a list of Unicode code points.
+   */
+  static convertEnglishWordlistIndicesToCodepoints(wordlistIndices) {
+    return new TextEncoder().encode(
+      Array.from(new Uint16Array(wordlistIndices.buffer))
+        .map((i) => wordlist[i])
+        .join(' '),
+    );
   }
 
   /**
@@ -5113,7 +5142,7 @@ export default class MetamaskController extends EventEmitter {
    * encoded as a Uint8Array.
    */
   async getSeedPhrase(password, _keyringId) {
-    return convertEnglishWordlistIndicesToCodepoints(
+    return MetamaskController.convertEnglishWordlistIndicesToCodepoints(
       await this.keyringController.exportSeedPhrase(
         password,
         ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
