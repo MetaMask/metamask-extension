@@ -242,6 +242,9 @@ import {
   BridgeUserAction,
   BridgeBackgroundAction,
 } from '../../shared/types/bridge';
+import { MockKeyring } from '../../shared/modules/mock-keyring';
+import { FakeKeyringBridge } from '../../test/stub/keyring-bridge';
+import { MockKeyringBridge } from '../../shared/modules/mock-keyring-bridge';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -379,8 +382,6 @@ import {
 } from './controller-init/snaps';
 import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
-
-import { MockKeyring } from '../../shared/modules/mock-keyring';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1098,6 +1099,10 @@ export default class MetamaskController extends EventEmitter {
           keyring: keyringOverrides?.ledger || LedgerKeyring,
           bridge: keyringOverrides?.ledgerBridge || LedgerIframeBridge,
         },
+        {
+          keyring: MockKeyring,
+          bridge: MockKeyringBridge,
+        },
       ];
 
       additionalKeyrings = additionalKeyringTypes.map((keyringType) =>
@@ -1123,6 +1128,7 @@ export default class MetamaskController extends EventEmitter {
           keyringOverrides?.ledgerBridge || LedgerOffscreenBridge,
         ),
         keyringBuilderFactory(LatticeKeyringOffscreen),
+        hardwareKeyringBuilderFactory(MockKeyring, MockKeyringBridge),
       );
     }
 
@@ -1180,6 +1186,15 @@ export default class MetamaskController extends EventEmitter {
     const keyringControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'KeyringController',
     });
+
+    console.log(
+      'MetamaskController:newKeyringController - additionalKeyrings',
+      additionalKeyrings,
+    );
+    console.log(
+      'MetamaskController:newKeyringController - state',
+      initState.KeyringController,
+    );
 
     this.keyringController = new KeyringController({
       cacheEncryptionKey: true,
@@ -4675,9 +4690,11 @@ export default class MetamaskController extends EventEmitter {
    * @returns [] accounts
    */
   async connectHardware(deviceName, page, hdPath) {
+    console.log('MetamaskController:connectHardware', deviceName, page, hdPath);
     return this.#withKeyringForDevice(
       { name: deviceName, hdPath },
       async (keyring) => {
+        console.log('MetamaskController:connectHardware callback', keyring);
         if (deviceName === HardwareDeviceNames.ledger) {
           await this.setLedgerTransportPreference(keyring);
         }
@@ -4697,6 +4714,12 @@ export default class MetamaskController extends EventEmitter {
         // Merge with existing accounts
         // and make sure addresses are not repeated
         const oldAccounts = await this.keyringController.getAccounts();
+
+        console.log('MetamaskController:connectHardware accounts', accounts);
+        console.log(
+          'MetamaskController:connectHardware oldAccounts',
+          oldAccounts,
+        );
 
         const accountsToTrack = [
           ...new Set(
@@ -4780,6 +4803,7 @@ export default class MetamaskController extends EventEmitter {
       case KeyringType.lattice:
       case KeyringType.qr:
       case KeyringType.ledger:
+      case KeyringType.mock:
         return 'hardware';
       case KeyringType.imported:
         return 'imported';
@@ -7545,13 +7569,17 @@ export default class MetamaskController extends EventEmitter {
         break;
       default:
         throw new Error(
-          'MetamaskController:#withKeyringForDevice - Unknown deviceeee',
+          'MetamaskController:#withKeyringForDevice - Unknown device',
         );
     }
+
+    const kstate = this.keyringController.state;
+    console.log('MetamaskController:allKeyrings', kstate.keyrings);
 
     return this.keyringController.withKeyring(
       { type: keyringType },
       async ({ keyring }) => {
+        console.log('MetamaskController:withKeyring', keyring);
         if (options.hdPath && keyring.setHdPath) {
           keyring.setHdPath(options.hdPath);
         }

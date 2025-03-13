@@ -15,6 +15,7 @@ export enum HardwareKeyringNames {
   trezor = 'Trezor',
   lattice = 'Lattice1',
   qr = 'QR',
+  mock = 'Mock',
 }
 
 export enum HardwareDeviceNames {

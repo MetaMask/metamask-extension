@@ -615,6 +615,7 @@ export function connectHardware(
   AnyAction
 > {
   log.debug(`background.connectHardware`, deviceName, page, hdPath);
+  console.log('background.connectHardware', deviceName, page, hdPath);
   return async (dispatch, getState) => {
     const { ledgerTransportType } = getState().metamask;
 
@@ -645,10 +646,12 @@ export function connectHardware(
         }
       }
 
+      console.log('background.connectHardware call', deviceName, page, hdPath);
       accounts = await submitRequestToBackground<{ address: string }[]>(
         'connectHardware',
         [deviceName, page, hdPath],
       );
+      console.log('background.connectHardware response', accounts);
     } catch (error) {
       logErrorWithMessage(error);
       const message = getErrorMessage(error);
