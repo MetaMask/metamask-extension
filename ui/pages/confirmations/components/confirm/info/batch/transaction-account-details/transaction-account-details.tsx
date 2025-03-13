@@ -41,7 +41,7 @@ export function TransactionAccountDetails() {
             <ConfirmInfoRowText text={t('confirmAccountTypeSmartContract')} />
           </ConfirmInfoRow>
           <ConfirmInfoRow label="New Type">
-            <ConfirmInfoRowText text="Standard account" />
+            <ConfirmInfoRowText text={t('confirmAccountTypeStandard')} />
           </ConfirmInfoRow>
         </>
       )}

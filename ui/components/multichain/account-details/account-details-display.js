@@ -38,6 +38,7 @@ import { useEIP7702Account } from '../../../pages/confirmations/hooks/useEIP7702
 import { useAsyncResult } from '../../../hooks/useAsyncResult';
 
 function SmartAccountPill({ address }) {
+  const t = useI18nContext();
   const { isUpgraded } = useEIP7702Account();
 
   const { value: isAccountUpgraded } = useAsyncResult(
@@ -69,13 +70,15 @@ function SmartAccountPill({ address }) {
         variant={TextVariant.bodyMd}
         color={TextColor.textAlternativeSoft}
       >
-        Smart account
+        {t('confirmAccountTypeSmartContract')}
       </Text>
     </Box>
   );
 }
 
 function DowngradeAccountButton({ address, onClose }) {
+  const t = useI18nContext();
+
   const { downgradeAccount, isUpgraded } = useEIP7702Account({
     onRedirect: onClose,
   });
@@ -101,7 +104,7 @@ function DowngradeAccountButton({ address, onClose }) {
       marginBottom={4}
       onClick={handleClick}
     >
-      Switch back to regular account
+      {t('accountDetailsRevokeDelegationButton')}
     </ButtonSecondary>
   );
 }
