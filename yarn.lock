@@ -4874,7 +4874,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/accounts-controller@npm:^26.0.0":
+"@metamask/accounts-controller@npm:26.0.0":
   version: 26.0.0
   resolution: "@metamask/accounts-controller@npm:26.0.0"
   dependencies:
@@ -4899,6 +4899,34 @@ __metadata:
     "@metamask/snaps-controllers": ^9.19.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
   checksum: 10/6b2c7d638cc335b0de62042ff62d65fec7c317b3a5dda2e8e8bb5db61c6ec428df322d2f214fa94863186ffcba0291542cb5930a0ee0b240a6aca4d785ba29d1
+  languageName: node
+  linkType: hard
+
+"@metamask/accounts-controller@patch:@metamask/accounts-controller@npm%3A26.0.0#~/.yarn/patches/@metamask-accounts-controller-npm-26.0.0-3f29826cc3.patch":
+  version: 26.0.0
+  resolution: "@metamask/accounts-controller@patch:@metamask/accounts-controller@npm%3A26.0.0#~/.yarn/patches/@metamask-accounts-controller-npm-26.0.0-3f29826cc3.patch::version=26.0.0&hash=34cd4b"
+  dependencies:
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/eth-snap-keyring": "npm:^12.0.0"
+    "@metamask/keyring-api": "npm:^17.2.0"
+    "@metamask/keyring-internal-api": "npm:^6.0.0"
+    "@metamask/keyring-utils": "npm:^3.0.0"
+    "@metamask/network-controller": "npm:^22.2.1"
+    "@metamask/snaps-sdk": "npm:^6.17.1"
+    "@metamask/snaps-utils": "npm:^8.10.0"
+    "@metamask/utils": "npm:^11.2.0"
+    deepmerge: "npm:^4.2.2"
+    ethereum-cryptography: "npm:^2.1.2"
+    immer: "npm:^9.0.6"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/keyring-controller": ^21.0.0
+    "@metamask/network-controller": ^22.0.0
+    "@metamask/providers": ^18.1.0
+    "@metamask/snaps-controllers": ^9.19.0
+    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
+  checksum: 10/de70b4e254c45043db92bf9ccd938234c2f0fee726cce5e277255e7b1c76601ae9b08eebaa398c784cf235ef3eb88d8c89e2580853e8d2de9812f4e9b2c93a4c
   languageName: node
   linkType: hard
 
@@ -27366,7 +27394,7 @@ __metadata:
     "@metamask-private/delegator-core-viem": "npm:^0.6.0"
     "@metamask/abi-utils": "npm:^2.0.2"
     "@metamask/account-watcher": "npm:^4.1.2"
-    "@metamask/accounts-controller": "npm:^26.0.0"
+    "@metamask/accounts-controller": "patch:@metamask/accounts-controller@npm%3A26.0.0#~/.yarn/patches/@metamask-accounts-controller-npm-26.0.0-3f29826cc3.patch"
     "@metamask/address-book-controller": "npm:^6.0.3"
     "@metamask/announcement-controller": "npm:^7.0.3"
     "@metamask/api-specs": "npm:^0.10.15"
