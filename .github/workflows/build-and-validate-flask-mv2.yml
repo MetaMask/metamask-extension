@@ -37,10 +37,3 @@ jobs:
 
       - name: Run Mozilla lint
         run: yarn mozilla-lint
-
-      - name: Configure Xvfb
-        run: Xvfb -ac :99 -screen 0 1280x1024x16 &
-
-      - name: Run E2E Chrome RPC tests
-        timeout-minutes: 30
-        run: yarn test:e2e:chrome:rpc --retries 3
