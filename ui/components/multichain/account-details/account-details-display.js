@@ -147,7 +147,7 @@ export const AccountDetailsDisplay = ({
         }}
         accounts={accounts}
       />
-      <SmartAccountPill />
+      <SmartAccountPill address={address} />
       <QrCodeView Qr={{ data: address }} />
       <DowngradeAccountButton address={address} onClose={onClose} />
       {exportPrivateKeyFeatureEnabled ? (
