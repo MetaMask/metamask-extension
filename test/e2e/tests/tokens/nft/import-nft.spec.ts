@@ -19,6 +19,9 @@ describe('Import NFT', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
+        localNodeOptions: {
+          hardfork: 'london',
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver, localNodes, contractRegistry }) => {
@@ -44,6 +47,9 @@ describe('Import NFT', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
+        localNodeOptions: {
+          hardfork: 'london',
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver, localNodes, contractRegistry }) => {
@@ -90,6 +96,9 @@ describe('Import NFT', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
+        localNodeOptions: {
+          hardfork: 'london',
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver, localNodes, contractRegistry }) => {

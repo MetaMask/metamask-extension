@@ -12,6 +12,9 @@ describe('Change assets', function () {
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC721().build(),
         smartContract,
+        localNodeOptions: {
+          hardfork: 'london',
+        },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -81,6 +84,9 @@ describe('Change assets', function () {
           .withNftControllerERC721()
           .build(),
         smartContract: [smartContract, tokenContract],
+        localNodeOptions: {
+          hardfork: 'london',
+        },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -154,6 +160,9 @@ describe('Change assets', function () {
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC721().build(),
         smartContract,
+        localNodeOptions: {
+          hardfork: 'london',
+        },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -241,6 +250,9 @@ describe('Change assets', function () {
           })
           .build(),
         smartContract,
+        localNodeOptions: {
+          hardfork: 'london',
+        },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

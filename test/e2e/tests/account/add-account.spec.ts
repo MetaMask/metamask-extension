@@ -15,7 +15,7 @@ import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 describe('Add account', function () {
   const localNodeOptions = {
     accounts: 1,
-  }
+  };
   it('should not affect public address when using secret recovery phrase to recover account with non-zero balance', async function () {
     await withFixtures(
       {

@@ -203,9 +203,11 @@ async function withFixtures(options, testSuite) {
       }
       const contracts =
         smartContract instanceof Array ? smartContract : [smartContract];
-      await Promise.all(
-        contracts.map((contract) => seeder.deploySmartContract(contract)),
-      );
+
+      for (const contract of contracts) {
+        await seeder.deploySmartContract(contract);
+      }
+
       contractRegistry = seeder.getContractRegistry();
     }
 

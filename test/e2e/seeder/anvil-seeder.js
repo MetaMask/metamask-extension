@@ -29,7 +29,6 @@ class AnvilSeeder {
       account: fromAddress,
       args: deployArgs,
       bytecode: contractConfig.bytecode,
-      gasPrice: 2000000000,
     });
 
     await testClient.mine({
