@@ -5,6 +5,7 @@ import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import TransactionDetailsPage from '../../page-objects/pages/home/transaction-details';
 import {
   commonSolanaTxConfirmedDetailsFixture,
+  commonSolanaTxFailedDetailsFixture,
   withSolanaAccountSnap,
 } from './common-solana';
 
@@ -79,31 +80,28 @@ describe.skip('Transaction activity list', function (this: Suite) {
         await homePage.goToActivityList();
 
         const activityList = new ActivityListPage(driver);
-        await activityList.check_confirmedTxNumberDisplayedInActivity(1);
-        await driver.delay(100000);
+        await activityList.check_failedTxNumberDisplayedInActivity(1);
         await activityList.check_txAction('Receive', 1);
-        await activityList.check_txAmountInActivity('0.00707856 SOL', 1);
-        await activityList.check_noFailedTransactions();
+        await activityList.check_txAmountInActivity('0.000000005 SOL', 1);
         await activityList.clickOnActivity(1);
         const transactionDetails = new TransactionDetailsPage(driver);
         await transactionDetails.check_transactionStatus(
-          commonSolanaTxConfirmedDetailsFixture.status,
+          commonSolanaTxFailedDetailsFixture.status,
         );
         await transactionDetails.check_transactionAmount(
-          commonSolanaTxConfirmedDetailsFixture.amount,
+          commonSolanaTxFailedDetailsFixture.amount,
         );
         await transactionDetails.check_transactionNetworkFee(
-          commonSolanaTxConfirmedDetailsFixture.networkFee,
+          commonSolanaTxFailedDetailsFixture.networkFee,
         );
-        /* Skipped due to https://consensyssoftware.atlassian.net/browse/SOL-171
         await transactionDetails.check_transactionFromToLink(
-          commonSolanaTxConfirmedDetailsFixture.fromAddress,
-        );*/
+          commonSolanaTxFailedDetailsFixture.fromAddress,
+        );
         await transactionDetails.check_transactionFromToLink(
-          commonSolanaTxConfirmedDetailsFixture.toAddress,
+          commonSolanaTxFailedDetailsFixture.toAddress,
         );
         await transactionDetails.check_transactionHashLink(
-          commonSolanaTxConfirmedDetailsFixture.txHash,
+          commonSolanaTxFailedDetailsFixture.txHash,
         );
         await transactionDetails.check_transactionViewDetailsLink();
       },
