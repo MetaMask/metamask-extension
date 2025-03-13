@@ -313,9 +313,6 @@
     "message": "وارد کردن",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "وارد سازی حساب"
-  },
   "importAccountMsg": {
     "message": "حساب های وارد شده با عبارت بازیاب حساب MetaMask ایجاد شده اصلی تان یکجا نمیباشد. در مورد حساب های وارد شده بیشتر بدانید"
   },

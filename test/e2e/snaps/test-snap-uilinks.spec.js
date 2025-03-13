@@ -3,11 +3,7 @@ const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap UI Links', function () {
-  // Skipping Mar 10, 2025, to get builds passing.
-  // This test has been fixed on main, but requires a solana package update,
-  // which we don't want and is unnecessary prior to v12.14.0
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('test link in confirmation snap_dialog type', async function () {
+  it('test link in confirmation snap_dialog type', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -116,7 +112,7 @@ describe('Test Snap UI Links', function () {
 
         // check that the correct page has been opened
         await driver.waitForSelector({
-          text: 'Most Popular',
+          text: 'Most popular',
           tag: 'h2',
         });
 

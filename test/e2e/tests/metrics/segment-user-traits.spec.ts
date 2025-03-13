@@ -164,7 +164,6 @@ describe('Segment User Traits', function () {
 
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.check_pageIsLoaded();
-        await privacySettings.toggleParticipateInMetaMetrics();
         await privacySettings.toggleDataCollectionForMarketing();
         events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 1);

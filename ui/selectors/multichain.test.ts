@@ -112,6 +112,9 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
           conversionRate: 100000,
         },
       },
+      conversionRates: {},
+      assetsMetadata: {},
+      accountsAssets: {},
     },
   };
 }
