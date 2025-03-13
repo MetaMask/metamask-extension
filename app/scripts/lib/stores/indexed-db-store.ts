@@ -39,9 +39,11 @@ export default class IndexedDBStore extends BaseStore {
         }
       };
 
-      request.onerror = () => {
+      request.onerror = (event) => {
         log.error('IndexedDB initialization failed.');
-        reject(new Error('Failed to open IndexedDB.'));
+        reject(
+          new Error('Failed to open IndexedDB.', { cause: event.target.error }),
+        );
       };
 
       request.onsuccess = (event) => {
