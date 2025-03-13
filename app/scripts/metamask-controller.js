@@ -2444,7 +2444,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   triggerNetworkrequests() {
-    console.log('triggerNetworkrequests :::::::');
     const filtredChainIds = this.#getAllAddedNetworks().filter(
       (networkId) =>
         this.preferencesController.state.incomingTransactionsPreferences[
@@ -2754,7 +2753,6 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       'PreferencesController:stateChange',
       previousValueComparator(async (prevState, currState) => {
-        console.log('preferencesController:stateChange :::::::');
         const { currentLocale } = currState;
 
         const filtredChainIds = this.#getAllAddedNetworks().filter(
@@ -2842,7 +2840,6 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       'NetworkController:networkDidChange',
       async () => {
-        console.log('networkDidChange :::::::');
         const filtredChainIds = this.#getAllAddedNetworks().filter(
           (networkId) =>
             this.preferencesController.state.incomingTransactionsPreferences[

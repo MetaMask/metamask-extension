@@ -48,7 +48,6 @@ export default function SmartTransactionListItem({
   const { time, status } = smartTransaction;
   const date = formatDateWithYearContext(time, 'MMM d, y', 'MMM d');
   let displayedStatusKey;
-  console.log('status +++++++++++', status);
   if (status === SmartTransactionStatus.pending) {
     displayedStatusKey = TransactionGroupStatus.pending;
   } else if (status?.startsWith(SmartTransactionStatus.cancelled)) {
