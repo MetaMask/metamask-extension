@@ -14,6 +14,7 @@ import { SOLANA_WALLET_SNAP_ID } from '../../../shared/lib/accounts/solana-walle
 import {
   handleSnapRequest,
   multichainUpdateBalance,
+  multichainUpdateTransactions,
 } from '../../store/actions';
 import {
   useMultichainWalletSnapClient,
@@ -23,10 +24,13 @@ import {
 jest.mock('../../store/actions', () => ({
   handleSnapRequest: jest.fn(),
   multichainUpdateBalance: jest.fn(),
+  multichainUpdateTransactions: jest.fn(),
 }));
 
 const mockHandleSnapRequest = handleSnapRequest as jest.Mock;
 const mockMultichainUpdateBalance = multichainUpdateBalance as jest.Mock;
+const mockMultichainUpdateTransactions =
+  multichainUpdateTransactions as jest.Mock;
 
 describe('useMultichainWalletSnapClient', () => {
   beforeEach(() => {
@@ -71,12 +75,21 @@ describe('useMultichainWalletSnapClient', () => {
 
       mockHandleSnapRequest.mockResolvedValue(mockAccount);
 
-      await multichainWalletSnapClient.createAccount(network);
+      await multichainWalletSnapClient.createAccount(
+        network,
+        'test-entropy-source',
+      );
       expect(mockHandleSnapRequest).toHaveBeenCalledWith({
         origin: 'metamask',
         snapId,
         handler: HandlerType.OnKeyringRequest,
-        request: expect.any(Object),
+        request: expect.objectContaining({
+          params: expect.objectContaining({
+            options: expect.objectContaining({
+              entropySource: 'test-entropy-source',
+            }),
+          }),
+        }),
       });
     });
 
@@ -90,6 +103,20 @@ describe('useMultichainWalletSnapClient', () => {
 
       await multichainWalletSnapClient.createAccount(network);
       expect(mockMultichainUpdateBalance).toHaveBeenCalledWith(mockAccount.id);
+    });
+
+    it(`force fetches the transactions after creating a ${clientType} account`, async () => {
+      const { result } = renderHook(() =>
+        useMultichainWalletSnapClient(clientType),
+      );
+      const multichainWalletSnapClient = result.current;
+
+      mockHandleSnapRequest.mockResolvedValue(mockAccount);
+
+      await multichainWalletSnapClient.createAccount(network);
+      expect(mockMultichainUpdateTransactions).toHaveBeenCalledWith(
+        mockAccount.id,
+      );
     });
   });
 });

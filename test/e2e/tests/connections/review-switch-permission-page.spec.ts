@@ -1,10 +1,6 @@
 import { strict as assert } from 'assert';
 import FixtureBuilder from '../../fixture-builder';
-import {
-  withFixtures,
-  WINDOW_TITLES,
-  defaultGanacheOptions,
-} from '../../helpers';
+import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
@@ -23,20 +19,22 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
           .withNetworkControllerDoubleGanache()
           .withSelectedNetworkControllerPerDomain()
           .build(),
-        localNodeOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         title: this.test?.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         // Open Dapp One and check the chainId
         const testDapp = new TestDapp(driver);
@@ -57,7 +55,7 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
         await switchToNetworkFlow(driver, 'Ethereum Mainnet');
-        await homePage.check_localNodeBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         const chainIdBeforeConnectAfterManualSwitch: string =
           await driver.executeScript(
