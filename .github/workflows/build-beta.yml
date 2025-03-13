@@ -51,7 +51,6 @@ jobs:
           INFURA_BETA_PROJECT_ID: ${{ vars.INFURA_BETA_PROJECT_ID }}
           SEGMENT_BETA_WRITE_KEY: 00000000000
           SENTRY_DSN: https://fake@sentry.io/0000000
-          ENABLE_MV3: true
         run: |
           yarn build --build-type beta --platform='chrome' dist
           yarn build --build-type beta --platform='chrome' prod
