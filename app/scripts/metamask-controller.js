@@ -397,7 +397,6 @@ import { UserStorageControllerInit } from './controller-init/identity/user-stora
 import {
   getCallsStatus,
   getCapabilities,
-  getTransactionReceiptsByBatchId,
   processSendCalls,
 } from './lib/transaction/eip5792';
 
