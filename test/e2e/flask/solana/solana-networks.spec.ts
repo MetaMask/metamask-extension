@@ -5,7 +5,7 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import { withSolanaAccountSnap } from './common-solana';
 
 describe('Solana network', function (this: Suite) {
-  it.skip('keeps the network selector enabled when the Solana network is selected', async function () {
+  it('keeps the network selector enabled when the Solana network is selected', async function () {
     await withSolanaAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver) => {
