@@ -1199,7 +1199,7 @@
     "@metamask/signature-controller>@metamask/eth-sig-util>@metamask/abi-utils": {
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/signature-controller>@metamask/eth-sig-util>@metamask/abi-utils>@metamask/utils": true
+        "@metamask/utils": true
       }
     },
     "@metamask/accounts-controller": {
@@ -1315,14 +1315,6 @@
       }
     },
     "@metamask/selected-network-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/signature-controller>@metamask/base-controller": {
       "globals": {
         "setTimeout": true
       },
@@ -1579,7 +1571,7 @@
         "@metamask/signature-controller>@metamask/eth-sig-util>@ethereumjs/rlp": true,
         "eth-lattice-keyring>@ethereumjs/util": true,
         "@metamask/signature-controller>@metamask/eth-sig-util>@metamask/abi-utils": true,
-        "@metamask/signature-controller>@metamask/eth-sig-util>@metamask/utils": true,
+        "@metamask/utils": true,
         "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
@@ -2179,12 +2171,12 @@
         "fetch": true
       },
       "packages": {
-        "@metamask/signature-controller>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/signature-controller>@metamask/eth-sig-util": true,
         "@metamask/keyring-controller": true,
         "@metamask/logging-controller": true,
-        "@metamask/signature-controller>@metamask/utils": true,
+        "@metamask/utils": true,
         "browserify>buffer": true,
         "webpack>events": true,
         "@metamask/multichain>jsonschema": true,
@@ -2480,21 +2472,6 @@
         "semver": true
       }
     },
-    "@metamask/signature-controller>@metamask/eth-sig-util>@metamask/abi-utils>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "@metamask/utils>pony-cause": true,
-        "semver": true
-      }
-    },
     "@metamask/browser-passworder>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
@@ -2540,21 +2517,6 @@
         "semver": true
       }
     },
-    "@metamask/signature-controller>@metamask/eth-sig-util>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "@metamask/utils>pony-cause": true,
-        "semver": true
-      }
-    },
     "@metamask/network-controller>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
@@ -2571,21 +2533,6 @@
       }
     },
     "@metamask/queued-request-controller>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "@metamask/utils>pony-cause": true,
-        "semver": true
-      }
-    },
-    "@metamask/signature-controller>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
