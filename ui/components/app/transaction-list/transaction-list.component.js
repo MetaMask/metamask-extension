@@ -245,6 +245,7 @@ export default function TransactionList({
   hideTokenTransactions,
   tokenAddress,
   boxProps,
+  hideNetworkFilter,
 }) {
   const [limit, setLimit] = useState(PAGE_INCREMENT);
   const t = useI18nContext();
@@ -413,6 +414,9 @@ export default function TransactionList({
   };
 
   const renderFilterButton = () => {
+    if (hideNetworkFilter) {
+      return null;
+    }
     return process.env.PORTFOLIO_VIEW && isEvmNetwork ? (
       <Box
         marginLeft={2}
@@ -776,6 +780,7 @@ TransactionList.propTypes = {
   tokenAddress: PropTypes.string,
   boxProps: PropTypes.object,
   tokenChainId: PropTypes.string,
+  hideNetworkFilter: PropTypes.bool,
 };
 
 TransactionList.defaultProps = {
