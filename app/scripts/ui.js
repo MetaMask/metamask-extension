@@ -111,8 +111,8 @@ async function start() {
     const method = message?.data?.method;
 
     if (method !== METHOD_START_UI_SYNC) {
-      const error = JSON.parse(message.error ?? '');
-      if (STATE_CORRUPTION_ERRORS.includes(error.message)) {
+      const error = message.error ? JSON.parse(message.error) : null;
+      if (STATE_CORRUPTION_ERRORS.includes(error?.message)) {
         displayStateCorruptionError(
           error,
           JSON.parse(message.metamaskState ?? ''),
