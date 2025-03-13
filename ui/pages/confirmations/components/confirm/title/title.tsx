@@ -95,6 +95,8 @@ const getTitle = (
         return t('confirmTitleSIWESignature');
       }
       return t('confirmTitleSignature');
+    case TransactionType.revokeDelegation:
+      return 'Revert';
     case TransactionType.signTypedData:
       if (primaryType === TypedSignSignaturePrimaryTypes.PERMIT) {
         if (tokenStandard === TokenStandard.ERC721) {
@@ -156,6 +158,8 @@ const getDescription = (
         return t('confirmTitleDescSIWESignature');
       }
       return t('confirmTitleDescSign');
+    case TransactionType.revokeDelegation:
+      return 'Test';
     case TransactionType.signTypedData:
       if (primaryType === TypedSignSignaturePrimaryTypes.PERMIT) {
         if (tokenStandard === TokenStandard.ERC721) {

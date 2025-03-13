@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   TransactionEnvelopeType,
   TransactionMeta,
+  TransactionType,
 } from '@metamask/transaction-controller';
 import { useConfirmationNavigation } from './useConfirmationNavigation';
 import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
@@ -30,16 +31,21 @@ export function useEIP7702Account({
   const downgradeAccount = useCallback(
     async (address: Hex) => {
       const transactionMeta = (await dispatch(
-        addTransactionAndRouteToConfirmationPage({
-          authorizationList: [
-            {
-              address: EIP_7702_REVOKE_ADDRESS,
-            },
-          ],
-          from: address,
-          to: address,
-          type: TransactionEnvelopeType.setCode,
-        }),
+        addTransactionAndRouteToConfirmationPage(
+          {
+            authorizationList: [
+              {
+                address: EIP_7702_REVOKE_ADDRESS,
+              },
+            ],
+            from: address,
+            to: address,
+            type: TransactionEnvelopeType.setCode,
+          },
+          {
+            type: TransactionType.revokeDelegation,
+          },
+        ),
       )) as unknown as TransactionMeta;
 
       setTransactionId(transactionMeta?.id);
