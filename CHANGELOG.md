@@ -55,6 +55,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix text visibility issues on the error page in dark mode ([#30408](https://github.com/MetaMask/metamask-extension/pull/30408))
 - Fix page reload issue during SRP creation ([#30178](https://github.com/MetaMask/metamask-extension/pull/30178))
 
+### Beta
+
+- Add UI preparation changes for multichain connection flow ([#30164](https://github.com/MetaMask/metamask-extension/pull/30164))
+- Integrate multichain assets rates controller to extension UI ([#30291](https://github.com/MetaMask/metamask-extension/pull/30291))
+- Refactor asset picker to support non-EVM tokens ([#30313](https://github.com/MetaMask/metamask-extension/pull/30313))
+- Integrate SPL tokens and rates from multichainAssetsRates ([#30389](https://github.com/MetaMask/metamask-extension/pull/30389))
+- Implement submission of multichain transactions ([#30416](https://github.com/MetaMask/metamask-extension/pull/30416))
+- Add fetching for Solana quotes, account picker, and quote card ([#30452](https://github.com/MetaMask/metamask-extension/pull/30452))
+- Fetch non-EVM token list and refreshed quote rates ([#30567](https://github.com/MetaMask/metamask-extension/pull/30567))
+- Convert non-EVM amounts to fiat ([#30568](https://github.com/MetaMask/metamask-extension/pull/30568))
+- Calculate Solana quote fees ([#30574](https://github.com/MetaMask/metamask-extension/pull/30574))
+- Enable switching between EVM and non-EVM networks within Bridge experience ([#30595](https://github.com/MetaMask/metamask-extension/pull/30595))
+- Fix Solana snap validation ([#30596](https://github.com/MetaMask/metamask-extension/pull/30596))
+- Track Solana bridge transactions ([#30619](https://github.com/MetaMask/metamask-extension/pull/30619))
+- Fix swap source token balance on multichain networks ([#30622](https://github.com/MetaMask/metamask-extension/pull/30622))
+
 ## [12.13.0]
 ### Added
 - Enable bsc for smart transactions ([#29747](https://github.com/MetaMask/metamask-extension/pull/29747))
