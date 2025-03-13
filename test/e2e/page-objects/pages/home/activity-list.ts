@@ -20,6 +20,7 @@ class ActivityListPage {
   };
 
   private readonly tooltip = '.tippy-tooltip-content';
+
   private readonly bridgeTransactionCompleted =
     '.bridge-transaction-details__segment--complete';
 
