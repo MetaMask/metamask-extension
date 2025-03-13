@@ -2444,13 +2444,19 @@ export default class MetamaskController extends EventEmitter {
   }
 
   triggerNetworkrequests() {
-    this.txController.stopIncomingTransactionPolling();
-
-    this.txController.stopIncomingTransactionPolling();
-
-    this.txController.startIncomingTransactionPolling(
-      this.#getAllAddedNetworks(),
+    console.log('triggerNetworkrequests :::::::');
+    const filtredChainIds = this.#getAllAddedNetworks().filter(
+      (networkId) =>
+        this.preferencesController.state.incomingTransactionsPreferences[
+          networkId
+        ],
     );
+
+    this.txController.stopIncomingTransactionPolling();
+
+    this.txController.stopIncomingTransactionPolling();
+
+    this.txController.startIncomingTransactionPolling(filtredChainIds);
 
     this.tokenDetectionController.enable();
     this.getInfuraFeatureFlags();
@@ -2748,6 +2754,7 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       'PreferencesController:stateChange',
       previousValueComparator(async (prevState, currState) => {
+        console.log('preferencesController:stateChange :::::::');
         const { currentLocale } = currState;
 
         const filtredChainIds = this.#getAllAddedNetworks().filter(
@@ -2836,14 +2843,18 @@ export default class MetamaskController extends EventEmitter {
       'NetworkController:networkDidChange',
       async () => {
         console.log('networkDidChange :::::::');
+        const filtredChainIds = this.#getAllAddedNetworks().filter(
+          (networkId) =>
+            this.preferencesController.state.incomingTransactionsPreferences[
+              networkId
+            ],
+        );
         await this.txController.stopIncomingTransactionPolling();
 
-        await this.txController.updateIncomingTransactions(
-          this.#getAllAddedNetworks(),
-        );
+        await this.txController.updateIncomingTransactions(filtredChainIds);
 
         await this.txController.startIncomingTransactionPolling(
-          this.#getAllAddedNetworks(),
+          filtredChainIds,
         );
       },
     );
