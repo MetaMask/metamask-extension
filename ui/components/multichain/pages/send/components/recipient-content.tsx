@@ -185,6 +185,7 @@ export const SendPageRecipientContent = ({
           amount={amount}
           isDisabled={!isSwapAllowed}
           onClick={onClick}
+          showNetworkPicker={false}
           visibleTabs={[TabName.TOKENS]}
         />
       </SendPageRow>
