@@ -1,11 +1,7 @@
 import { Hex } from '@metamask/utils';
 import { TypedTransaction, TypedTxData } from '@ethereumjs/tx';
 import { Keyring } from '@metamask/keyring-utils';
-import {
-  generatePrivateKey,
-  privateKeyToAccount,
-  privateKeyToAddress,
-} from 'viem/accounts';
+import { generatePrivateKey, privateKeyToAddress } from 'viem/accounts';
 import { getStorageItem, setStorageItem } from '../lib/storage-helpers';
 import { MockKeyringBridge } from './mock-keyring-bridge';
 

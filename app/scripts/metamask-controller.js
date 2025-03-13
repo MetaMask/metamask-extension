@@ -243,7 +243,6 @@ import {
   BridgeBackgroundAction,
 } from '../../shared/types/bridge';
 import { MockKeyring } from '../../shared/modules/mock-keyring';
-import { FakeKeyringBridge } from '../../test/stub/keyring-bridge';
 import { MockKeyringBridge } from '../../shared/modules/mock-keyring-bridge';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
