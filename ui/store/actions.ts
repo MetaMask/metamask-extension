@@ -4,6 +4,7 @@
 // @reduxjs/toolkit to be patched by our patch files. The patch is 6000+ lines.
 // I don't want to try to figure that one out.
 import { ReactFragment } from 'react';
+import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { capitalize, isEqual } from 'lodash';
@@ -4827,6 +4828,11 @@ export function getGasFeeTimeEstimate(
 }
 
 export async function closeNotificationPopup() {
+  const currentWindow = await browser.windows?.getCurrent?.();
+  if (currentWindow?.type !== 'popup') {
+    console.warn('Not safe to close notification window running in a tab.');
+    return;
+  }
   await submitRequestToBackground('markNotificationPopupAsAutomaticallyClosed');
   global.platform.closeCurrentWindow();
 }
