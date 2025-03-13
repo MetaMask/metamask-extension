@@ -13,6 +13,7 @@ const PORTFOLIO_ORIGINS: string[] = [
   'https://dev.portfolio.metamask.io',
   'https://stage.portfolio.metamask.io',
   'https://ramps-dev.portfolio.metamask.io',
+  'https://portfolio-builds.metafi-dev.codefi.network',
   ///: END:ONLY_INCLUDE_IF
 ];
 
@@ -32,6 +33,7 @@ const METAMASK_ALLOWED_METHODS: string[] = [
 
 /**
  * List of keyring methods a dapp can call.
+ * !NOTE: DO NOT INCLUDE `KeyringRpcMethod.SubmitRequest` IN THIS LIST.
  */
 const WEBSITE_ALLOWED_METHODS: string[] = [
   KeyringRpcMethod.ListAccounts,
@@ -45,7 +47,6 @@ const WEBSITE_ALLOWED_METHODS: string[] = [
   KeyringRpcMethod.GetRequest,
   KeyringRpcMethod.ApproveRequest,
   KeyringRpcMethod.RejectRequest,
-  KeyringRpcMethod.SubmitRequest,
 ];
 
 /**

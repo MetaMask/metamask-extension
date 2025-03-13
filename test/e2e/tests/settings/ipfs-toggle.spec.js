@@ -1,9 +1,5 @@
 const { strict: assert } = require('assert');
-const {
-  withFixtures,
-  defaultGanacheOptions,
-  unlockWallet,
-} = require('../../helpers');
+const { openMenuSafe, unlockWallet, withFixtures } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 
@@ -14,16 +10,13 @@ describe('Settings', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC1155().build(),
-        defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+        await openMenuSafe(driver);
 
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
 

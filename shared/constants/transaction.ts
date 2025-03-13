@@ -11,7 +11,6 @@ export const IN_PROGRESS_TRANSACTION_STATUSES = [
 ];
 
 export const SIGNING_METHODS = Object.freeze([
-  'eth_sign',
   'eth_signTypedData',
   'eth_signTypedData_v1',
   'eth_signTypedData_v3',
@@ -114,6 +113,11 @@ export enum TransactionGroupCategory {
    * Transaction group representing a token swap through MetaMask Swaps, where the final token is sent to another address.
    */
   swapAndSend = 'swapAndSend',
+  /**
+   * Transaction group representing a token bridge through MetaMask Bridge,
+   * where the final token is sent to another chain.
+   */
+  bridge = 'bridge',
 }
 
 /**
@@ -196,4 +200,9 @@ export enum TokenStandard {
   none = 'NONE',
 }
 
-export const EIP712_PRIMARY_TYPE_PERMIT = 'Permit';
+/**
+ * The hostname used for Ethereum Mainnet transaction simulations, and for
+ * retrieving metadata for transaction simulation supported networks.
+ */
+export const TX_SENTINEL_URL =
+  'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io';

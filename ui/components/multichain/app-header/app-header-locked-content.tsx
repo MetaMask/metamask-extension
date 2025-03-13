@@ -1,3 +1,4 @@
+import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -6,13 +7,10 @@ import MetafoxLogo from '../../ui/metafox-logo';
 import { PickerNetwork } from '../../component-library';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getTestNetworkBackgroundColor } from '../../../selectors';
-import {
-  MultichainProviderConfig,
-  ProviderConfigWithImageUrl,
-} from '../../../../shared/constants/multichain/networks';
+import { getNetworkIcon } from '../../../../shared/modules/network.utils';
 
 type AppHeaderLockedContentProps = {
-  currentNetwork: ProviderConfigWithImageUrl | MultichainProviderConfig;
+  currentNetwork: MultichainNetworkConfiguration;
   networkOpenCallback: () => void;
 };
 
@@ -24,6 +22,7 @@ export const AppHeaderLockedContent = ({
   const history = useHistory();
 
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
+  const networkIconSrc = getNetworkIcon(currentNetwork);
 
   return (
     <>
@@ -32,11 +31,11 @@ export const AppHeaderLockedContent = ({
           avatarNetworkProps={{
             backgroundColor: testNetworkBackgroundColor,
             role: 'img',
-            name: currentNetwork?.nickname ?? '',
+            name: currentNetwork.name,
           }}
-          aria-label={`${t('networkMenu')} ${currentNetwork?.nickname}`}
-          label={currentNetwork?.nickname ?? ''}
-          src={currentNetwork?.rpcPrefs?.imageUrl}
+          aria-label={`${t('networkMenu')} ${currentNetwork.name}`}
+          label={currentNetwork.name}
+          src={networkIconSrc}
           onClick={(e: React.MouseEvent<HTMLElement>) => {
             e.stopPropagation();
             e.preventDefault();

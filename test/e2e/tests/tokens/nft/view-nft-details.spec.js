@@ -1,9 +1,5 @@
 const { strict: assert } = require('assert');
-const {
-  defaultGanacheOptions,
-  withFixtures,
-  unlockWallet,
-} = require('../../../helpers');
+const { withFixtures, unlockWallet } = require('../../../helpers');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const FixtureBuilder = require('../../../fixture-builder');
 
@@ -15,7 +11,6 @@ describe('View NFT details', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC721().build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
@@ -44,7 +39,7 @@ describe('View NFT details', function () {
         assert.equal(await nftImage.isDisplayed(), true);
 
         await driver.findElement({
-          css: '.nft-details__nft-frame',
+          css: '.nft-details__addressButton',
           text: '0x581c3...45947',
         });
       },

@@ -42,7 +42,7 @@ const getTextColorByType = (type?: DelineatorType) => {
     case DelineatorType.Error:
       return TextColor.errorDefault;
     default:
-      return TextColor.textAlternative;
+      return TextColor.textDefault;
   }
 };
 

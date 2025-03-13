@@ -20,4 +20,4 @@ Step,Test steps,Test data,Expected result,Notes
 19,"Click ""Next"".",,"Metamask popup with the recipient's address, amount, gas and total fees is displayed. The ""Custom nonce"" field with the next suggested nonce value is shown on the confirmation screen.",
 20,Reduce the suggested nonce value by one.,,"In the ""Custom nonce"" field, enter the suggested value minus one.",
 21,Proceed to confirm the transaction with low nonce value.,,,
-22,Low nonce transaction   fails.,,"Popup notification  about failed transaction appears: ""Transaction *** failed! Nonce too low: next nonce ***, tx nonce ***."" Current transaction appears as ""Failed"" on the activity list.",Note that low nonce failed transaction is visible on the activity only in case when  previous successful  transaction with the same nonce is not shown on the Activity list.
+22,Low nonce transaction   fails.,,"Popup notification  about failed transaction appears: ""Transaction *** failed! Nonce too low: next nonce ***, tx nonce ***."",,

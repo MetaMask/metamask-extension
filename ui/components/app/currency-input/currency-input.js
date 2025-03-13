@@ -7,13 +7,13 @@ import UnitInput from '../../ui/unit-input';
 import CurrencyDisplay from '../../ui/currency-display';
 import {
   getNativeCurrency,
-  getProviderConfig,
+  getCurrentCurrency,
 } from '../../../ducks/metamask/metamask';
 import {
+  getProviderConfig,
   getCurrentChainId,
-  getCurrentCurrency,
-  getShouldShowFiat,
-} from '../../../selectors';
+} from '../../../../shared/modules/selectors/networks';
+import { getShouldShowFiat } from '../../../selectors';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
@@ -53,7 +53,9 @@ export default function CurrencyInput({
   isSkeleton,
   isMatchingUpstream,
 }) {
-  const assetDecimals = Number(asset?.decimals) || NATIVE_CURRENCY_DECIMALS;
+  const assetDecimals = isNaN(Number(asset?.decimals))
+    ? NATIVE_CURRENCY_DECIMALS
+    : Number(asset?.decimals);
 
   const preferredCurrency = useSelector(getNativeCurrency);
   const secondaryCurrency = useSelector(getCurrentCurrency);

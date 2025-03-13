@@ -199,9 +199,6 @@
   "delete": {
     "message": "Odstrániť"
   },
-  "deleteNetwork": {
-    "message": "Odstrániť sieť?"
-  },
   "details": {
     "message": "Podrobnosti"
   },
@@ -223,9 +220,6 @@
   "editContact": {
     "message": "Upraviť kontakt"
   },
-  "ensRegistrationError": {
-    "message": "Chyba pri registrácii názvu ENS"
-  },
   "enterPasswordContinue": {
     "message": "Pokračujte zadaním hesla"
   },
@@ -244,10 +238,6 @@
   "fast": {
     "message": "Rýchle"
   },
-  "fiat": {
-    "message": "FIAT",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Import souboru nefunguje? Klikněte sem!",
     "description": "Helps user import their account from a JSON file"
@@ -257,9 +247,6 @@
   },
   "from": {
     "message": "Od"
-  },
-  "functionType": {
-    "message": "Typ funkcie"
   },
   "gasLimit": {
     "message": "Limit paliva"
@@ -313,9 +300,6 @@
   "history": {
     "message": "História"
   },
-  "importAccount": {
-    "message": "Import účtu"
-  },
   "importAccountMsg": {
     "message": "Importované účty nebudou spojeny s vaší původní MetaMaskovou klíčovou frází. Zjistěte více o importovaných účtech "
   },
@@ -340,12 +324,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Adresa příjemce je neplatná"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Nie sieť ETH, nastaviť malé písmená"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Neplatné Block Explorer URI"
   },
   "invalidRPC": {
     "message": "Neplatné RPC URI"
@@ -383,9 +361,6 @@
   },
   "loading": {
     "message": "Načítám..."
-  },
-  "loadingTokens": {
-    "message": "Načítám tokeny..."
   },
   "lock": {
     "message": "Odhlásit"
@@ -434,14 +409,8 @@
   "next": {
     "message": "Další"
   },
-  "noAddressForName": {
-    "message": "Pro toto jméno nebyla nastavena žádná adresa."
-  },
   "noConversionRateAvailable": {
     "message": "Nie je k dispozícii žiadna sadzba konverzie"
-  },
-  "noTransactions": {
-    "message": "Žádné transakce"
   },
   "noWebcamFound": {
     "message": "Webová kamera vášho počítača sa nenašla. Skúste znova."
@@ -463,9 +432,6 @@
   },
   "origin": {
     "message": "Pôvod"
-  },
-  "parameters": {
-    "message": "Parametre"
   },
   "participateInMetaMetrics": {
     "message": "Zúčastnite sa na MetaMetrics"
@@ -495,12 +461,6 @@
   "prev": {
     "message": "Predchádzajúce"
   },
-  "primaryCurrencySetting": {
-    "message": "Primárna mena"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Vyberte natívne, ak chcete priorizovať zobrazovanie hodnôt v natívnej mene reťazca (napr. ETH). Ak chcete priorizovať zobrazovanie hodnôt vo svojej vybranej mene fiat, zvoľte možnosť Fiat."
-  },
   "privacyMsg": {
     "message": "Zásady ochrany osobních údajů"
   },
@@ -516,9 +476,6 @@
   },
   "readdToken": {
     "message": "Tento token můžete v budoucnu přidat zpět s „Přidat token“ v nastavení účtu."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Vyhľadávať verejnú adresu (0x) alebo ENS"
   },
   "reject": {
     "message": "Odmítnout"
@@ -543,9 +500,6 @@
   },
   "removeAccountDescription": {
     "message": "Tento účet bude odstránený z vašej peňaženky. Skôr ako budete pokračovať, skontrolujte, či máte pre tento importovaný účet pôvodnú seed frázu alebo súkromný kľúč. Z rozbaľovacieho menu účtu môžete znova importovať alebo vytvoriť účty."
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "žiadosti čakajúce na potvrdenie"
   },
   "required": {
     "message": "Povinné"
@@ -613,9 +567,6 @@
   },
   "showHexDataDescription": {
     "message": "Vyberte toto, ak chcete, aby sa na obrazovke odosielania zobrazilo hex dátové pole"
-  },
-  "sigRequest": {
-    "message": "Požadavek podpisu"
   },
   "sign": {
     "message": "Podepsat"
@@ -707,9 +658,6 @@
   "transactionErrored": {
     "message": "Pri transakcii sa vyskytla chyba."
   },
-  "transactionFee": {
-    "message": "Poplatok za transakciu"
-  },
   "transactionResubmitted": {
     "message": "Transakcia znovu odoslaná s poplatkom za GAS zvýšeným na $1 na $2"
   },
@@ -737,9 +685,6 @@
   "unknown": {
     "message": "Neznámé"
   },
-  "unknownNetwork": {
-    "message": "Neznámá soukromá síť"
-  },
   "unknownQrCode": {
     "message": "Chyba: Kód QR sa nepodarilo identifikovať"
   },
@@ -748,9 +693,6 @@
   },
   "unlockMessage": {
     "message": "Decentralizovaný web čaká"
-  },
-  "updatedWithDate": {
-    "message": "Aktualizované $1"
   },
   "urlErrorMsg": {
     "message": "URI vyžadují korektní HTTP/HTTPS prefix."
@@ -772,9 +714,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Ak chcete používať túto funkciu, musíte povoliť prístup k fotoaparátu."
-  },
-  "youSign": {
-    "message": "Podepisujete"
   },
   "yourPrivateSeedPhrase": {
     "message": "Vaša súkromná seed fráza"

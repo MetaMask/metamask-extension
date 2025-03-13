@@ -5,18 +5,17 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   useEnableProfileSyncing,
   useDisableProfileSyncing,
-  useSetIsProfileSyncingEnabled,
-} from '../../../../hooks/metamask-notifications/useProfileSyncing';
-import {
-  selectIsProfileSyncingEnabled,
-  selectIsProfileSyncingUpdateLoading,
-} from '../../../../selectors/metamask-notifications/profile-syncing';
-import { selectParticipateInMetaMetrics } from '../../../../selectors/metamask-notifications/authentication';
-import { showModal } from '../../../../store/actions';
+} from '../../../../hooks/identity/useProfileSyncing';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import {
+  selectIsProfileSyncingEnabled,
+  selectIsProfileSyncingUpdateLoading,
+} from '../../../../selectors/identity/profile-syncing';
+import { selectIsMetamaskNotificationsEnabled } from '../../../../selectors/metamask-notifications/metamask-notifications';
+import { showModal } from '../../../../store/actions';
 import { Box, Text } from '../../../../components/component-library';
 import ToggleButton from '../../../../components/ui/toggle-button';
 import {
@@ -29,68 +28,67 @@ import {
 import Preloader from '../../../../components/ui/icon/preloader/preloader-icon.component';
 import { getUseExternalServices } from '../../../../selectors';
 
-function ProfileSyncBasicFunctionalitySetting() {
-  const basicFunctionality: boolean = useSelector(getUseExternalServices);
-  const { setIsProfileSyncingEnabled } = useSetIsProfileSyncingEnabled();
-
-  // Effect - toggle profile syncing off when basic functionality is off
-  useEffect(() => {
-    if (basicFunctionality === false) {
-      setIsProfileSyncingEnabled(false);
-    }
-  }, [basicFunctionality, setIsProfileSyncingEnabled]);
-
-  return {
-    isProfileSyncDisabled: !basicFunctionality,
-  };
-}
-
 const ProfileSyncToggle = () => {
-  const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const t = useI18nContext();
   const dispatch = useDispatch();
+  const basicFunctionality: boolean = useSelector(getUseExternalServices);
   const { enableProfileSyncing, error: enableProfileSyncingError } =
     useEnableProfileSyncing();
   const { disableProfileSyncing, error: disableProfileSyncingError } =
     useDisableProfileSyncing();
 
-  const { isProfileSyncDisabled } = ProfileSyncBasicFunctionalitySetting();
+  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
 
   const error = enableProfileSyncingError || disableProfileSyncingError;
 
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
-  const participateInMetaMetrics = useSelector(selectParticipateInMetaMetrics);
   const isProfileSyncingUpdateLoading = useSelector(
     selectIsProfileSyncingUpdateLoading,
   );
+  const isMetamaskNotificationsEnabled = useSelector(
+    selectIsMetamaskNotificationsEnabled,
+  );
 
-  const handleUseProfileSync = async () => {
+  useEffect(() => {
+    if (basicFunctionality === false) {
+      disableProfileSyncing();
+    }
+  }, [basicFunctionality, disableProfileSyncing]);
+
+  const handleProfileSyncToggleSetValue = async () => {
     if (isProfileSyncingEnabled) {
       dispatch(
         showModal({
           name: 'CONFIRM_TURN_OFF_PROFILE_SYNCING',
           turnOffProfileSyncing: () => {
-            disableProfileSyncing();
             trackEvent({
               category: MetaMetricsEventCategory.Settings,
-              event: MetaMetricsEventName.TurnOffProfileSyncing,
+              event: MetaMetricsEventName.SettingsUpdated,
               properties: {
-                participateInMetaMetrics,
+                settings_group: 'security_privacy',
+                settings_type: 'profile_syncing',
+                old_value: true,
+                new_value: false,
+                was_notifications_on: isMetamaskNotificationsEnabled,
               },
             });
+            disableProfileSyncing();
           },
         }),
       );
     } else {
-      await enableProfileSyncing();
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.TurnOnProfileSyncing,
+        event: MetaMetricsEventName.SettingsUpdated,
         properties: {
-          isProfileSyncingEnabled,
-          participateInMetaMetrics,
+          settings_group: 'security_privacy',
+          settings_type: 'profile_syncing',
+          old_value: false,
+          new_value: true,
+          was_notifications_on: isMetamaskNotificationsEnabled,
         },
       });
+      await enableProfileSyncing();
     }
   };
 
@@ -133,9 +131,9 @@ const ProfileSyncToggle = () => {
         {!isProfileSyncingUpdateLoading && (
           <div className="settings-page__content-item-col">
             <ToggleButton
-              disabled={isProfileSyncDisabled}
+              disabled={!basicFunctionality}
               value={isProfileSyncingEnabled}
-              onToggle={handleUseProfileSync}
+              onToggle={handleProfileSyncToggleSetValue}
               offLabel={t('off')}
               onLabel={t('on')}
               dataTestId="toggleButton"

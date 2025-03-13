@@ -15,13 +15,13 @@ export default {
     toNetwork: {
       chainId: '0xa',
       ticker: 'OP',
-      nickname: 'Optimism',
+      name: 'Optimism',
       rpcUrl: 'https://optimism-mainnet.infura.io',
     },
     fromNetwork: {
       chainId: '1',
       ticker: 'ETH',
-      nickname: 'Ethereum Mainnet',
+      name: 'Ethereum Mainnet',
     },
   },
 };

@@ -4,7 +4,9 @@ const ChromeDriver = require('./chrome');
 const FirefoxDriver = require('./firefox');
 
 async function buildWebDriver({
+  responsive,
   openDevToolsForTabs,
+  constrainWindowSize,
   port,
   timeOut,
   proxyPort,
@@ -16,8 +18,10 @@ async function buildWebDriver({
     extensionId,
     extensionUrl,
   } = await buildBrowserWebDriver(browser, {
+    responsive,
     openDevToolsForTabs,
     port,
+    constrainWindowSize,
     proxyPort,
   });
   const driver = new Driver(seleniumDriver, browser, extensionUrl, timeOut);

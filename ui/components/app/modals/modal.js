@@ -2,22 +2,13 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import isMobileView from '../../../helpers/utils/is-mobile-view';
 import * as actions from '../../../store/actions';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { mmiActionsFactory } from '../../../store/institutional/institution-background';
-///: END:ONLY_INCLUDE_IF
 
-// Modal Components
-import AddNetworkModal from '../../../pages/onboarding-flow/add-network-modal';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import ConfirmRemoveJWT from '../../institutional/confirm-remove-jwt-modal';
-import CustodyConfirmLink from '../../institutional/custody-confirm-link-modal';
-import InteractiveReplacementTokenModal from '../../institutional/interactive-replacement-token-modal';
-import TransactionFailed from '../../institutional/transaction-failed-modal';
-///: END:ONLY_INCLUDE_IF
 import HideTokenConfirmationModal from './hide-token-confirmation-modal';
 import QRScanner from './qr-scanner';
 
@@ -29,7 +20,6 @@ import ConfirmDeleteNetwork from './confirm-delete-network';
 import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-to-nft-modal';
 import CustomizeNonceModal from './customize-nonce';
 import EditApprovalPermission from './edit-approval-permission';
-import EthSignModal from './eth-sign-modal/eth-sign-modal';
 import FadeModal from './fade-modal';
 import NewAccountModal from './new-account-modal';
 import RejectTransactions from './reject-transactions';
@@ -38,7 +28,6 @@ import TransactionAlreadyConfirmed from './transaction-already-confirmed';
 // Metamask Notifications
 import ConfirmTurnOffProfileSyncing from './confirm-turn-off-profile-syncing';
 import TurnOnMetamaskNotifications from './turn-on-metamask-notifications/turn-on-metamask-notifications';
-import ConfirmDeleteRpcUrlModal from './confirm-delete-rpc-url-modal/confirm-delete-rpc-url-modal';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -60,68 +49,7 @@ const modalContainerMobileStyle = {
   top: '12.5%',
 };
 
-const accountModalStyle = {
-  mobileModalStyle: {
-    width: '95%',
-    // top: isPopupOrNotification() === 'popup' ? '52vh' : '36.5vh',
-    boxShadow: 'var(--shadow-size-xs) var(--color-shadow-default)',
-    borderRadius: '4px',
-    top: '10%',
-    transform: 'none',
-    left: '0',
-    right: '0',
-    margin: '0 auto',
-  },
-  laptopModalStyle: {
-    width: '335px',
-    // top: 'calc(33% + 45px)',
-    boxShadow: 'var(--shadow-size-xs) var(--color-shadow-default)',
-    borderRadius: '4px',
-    top: '10%',
-    transform: 'none',
-    left: '0',
-    right: '0',
-    margin: '0 auto',
-  },
-  contentStyle: {
-    borderRadius: '4px',
-  },
-};
-
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-const custodyConfirmModalStyle = {
-  mobileModalStyle: {
-    width: '95%',
-    boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
-    borderRadius: '4px',
-    top: '30%',
-    transform: 'none',
-    left: '0',
-    right: '0',
-    margin: '0 auto',
-  },
-  laptopModalStyle: {
-    width: '360px',
-    boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
-    borderRadius: '4px',
-    top: '30%',
-    transform: 'none',
-    left: '0',
-    right: '0',
-    margin: '0 auto',
-  },
-  contentStyle: {
-    borderRadius: '4px',
-  },
-};
-///: END:ONLY_INCLUDE_IF
-
 const MODALS = {
-  ONBOARDING_ADD_NETWORK: {
-    contents: <AddNetworkModal />,
-    testId: 'add-network-modal',
-    ...accountModalStyle,
-  },
   NEW_ACCOUNT: {
     contents: <NewAccountModal />,
     mobileModalStyle: {
@@ -180,18 +108,6 @@ const MODALS = {
     },
   },
 
-  ETH_SIGN: {
-    contents: <EthSignModal />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
   CONFIRM_REMOVE_ACCOUNT: {
     contents: <ConfirmRemoveAccount />,
     mobileModalStyle: {
@@ -220,19 +136,6 @@ const MODALS = {
 
   CONFIRM_DELETE_NETWORK: {
     contents: <ConfirmDeleteNetwork />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
-  CONFIRM_DELETE_RPC_URL: {
-    contents: <ConfirmDeleteRpcUrlModal />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
@@ -334,53 +237,6 @@ const MODALS = {
     },
   },
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  CONFIRM_REMOVE_JWT: {
-    contents: <ConfirmRemoveJWT />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
-  TRANSACTION_FAILED: {
-    disableBackdropClick: true,
-    contents: <TransactionFailed />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
-  CUSTODY_CONFIRM_LINK: {
-    contents: <CustodyConfirmLink />,
-    ...custodyConfirmModalStyle,
-  },
-
-  INTERACTIVE_REPLACEMENT_TOKEN_MODAL: {
-    contents: <InteractiveReplacementTokenModal />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-  ///: END:ONLY_INCLUDE_IF
-
   CONFIRM_TURN_OFF_PROFILE_SYNCING: {
     contents: <ConfirmTurnOffProfileSyncing />,
     mobileModalStyle: {
@@ -426,9 +282,6 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const mmiActions = mmiActionsFactory();
-  ///: END:ONLY_INCLUDE_IF
   return {
     hideModal: (customOnHideOpts) => {
       dispatch(actions.hideModal());
@@ -439,10 +292,6 @@ function mapDispatchToProps(dispatch) {
     hideWarning: () => {
       dispatch(actions.hideWarning());
     },
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    setWaitForConfirmDeepLinkDialog: (wait) =>
-      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
-    ///: END:ONLY_INCLUDE_IF
   };
 }
 
@@ -459,9 +308,6 @@ class Modal extends Component {
     hideModal: PropTypes.func.isRequired,
     hideWarning: PropTypes.func.isRequired,
     modalState: PropTypes.object.isRequired,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    setWaitForConfirmDeepLinkDialog: PropTypes.func,
-    ///: END:ONLY_INCLUDE_IF
   };
 
   hide() {
@@ -492,11 +338,6 @@ class Modal extends Component {
         keyboard={false}
         onHide={() => {
           if (modal.onHide) {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            if (this.props.modalState.name === 'CUSTODY_CONFIRM_LINK') {
-              this.props.setWaitForConfirmDeepLinkDialog(false);
-            }
-            ///: END:ONLY_INCLUDE_IF
             modal.onHide({
               hideWarning: this.props.hideWarning,
             });

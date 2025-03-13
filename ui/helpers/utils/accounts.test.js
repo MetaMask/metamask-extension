@@ -105,7 +105,6 @@ describe('Accounts', () => {
       options: {},
       methods: [
         'personal_sign',
-        'eth_sign',
         'eth_signTransaction',
         'eth_signTypedData_v1',
         'eth_signTypedData_v3',
@@ -163,12 +162,13 @@ describe('Accounts', () => {
     });
 
     describe('Snap Account Label', () => {
+      const mockSnapName = 'Test Snap Name';
       const mockSnapAccountWithName = {
         ...mockAccount,
         metadata: {
           ...mockAccount.metadata,
           type: KeyringType.snap,
-          snap: { name: 'Test Snap Name' },
+          snap: { name: mockSnapName },
         },
       };
       const mockSnapAccountWithoutName = {
@@ -180,9 +180,13 @@ describe('Accounts', () => {
       };
 
       it('should return snap name with beta tag if snap name is provided', () => {
-        expect(getAccountLabel(KeyringType.snap, mockSnapAccountWithName)).toBe(
-          'Test Snap Name (Beta)',
-        );
+        expect(
+          getAccountLabel(
+            KeyringType.snap,
+            mockSnapAccountWithName,
+            mockSnapName,
+          ),
+        ).toBe('Test Snap Name (Beta)');
       });
 
       it('should return generic snap label with beta tag if snap name is not provided', () => {

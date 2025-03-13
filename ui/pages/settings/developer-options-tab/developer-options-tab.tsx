@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import {
@@ -19,7 +19,6 @@ import {
   JustifyContent,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import ToggleButton from '../../../components/ui/toggle-button';
 import { ONBOARDING_SECURE_YOUR_WALLET_ROUTE } from '../../../helpers/constants/routes';
 import {
   getNumberOfSettingRoutesInTab,
@@ -32,9 +31,24 @@ import {
   resetViewedNotifications,
   setServiceWorkerKeepAlivePreference,
 } from '../../../store/actions';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import { getRemoteFeatureFlags } from '../../../selectors';
+import ToggleRow from './developer-options-toggle-row-component';
+import SentryTest from './sentry-test';
+import { ProfileSyncDevSettings } from './profile-sync';
 
+/**
+ * Settings Page for Developer Options (internal-only)
+ *
+ * This page does not need i18n translation support because it's an internal settings page.
+ * We only support the t('developerOptions') translation because the general settings architecture
+ * utilizes the translation key to render.
+ *
+ * @returns
+ */
 const DeveloperOptionsTab = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -44,11 +58,6 @@ const DeveloperOptionsTab = () => {
   const [hasResetOnboarding, setHasResetOnboarding] = useState(false);
   const [isServiceWorkerKeptAlive, setIsServiceWorkerKeptAlive] =
     useState(true);
-  const [enableNetworkRedesign, setEnableNetworkRedesign] = useState(
-    // eslint-disable-next-line
-    /* @ts-expect-error: Avoids error from window property not existing */
-    window.metamaskFeatureFlags.networkMenuRedesign,
-  );
 
   const settingsRefs = Array(
     getNumberOfSettingRoutesInTab(t, t('developerOptions')),
@@ -102,9 +111,10 @@ const DeveloperOptionsTab = () => {
         gap={4}
       >
         <div className="settings-page__content-item">
-          <span>{t('announcements')}</span>
+          <span>Announcements</span>
           <div className="settings-page__content-description">
-            {t('developerOptionsResetStatesAnnouncementsDescription')}
+            Resets isShown boolean to false for all announcements. Announcements
+            are the notifications shown in the What&apos;s New popup modal.
           </div>
         </div>
 
@@ -113,7 +123,7 @@ const DeveloperOptionsTab = () => {
             variant={ButtonVariant.Primary}
             onClick={handleResetAnnouncementClick}
           >
-            {t('reset')}
+            Reset
           </Button>
         </div>
         <div className="settings-page__content-item-col">
@@ -151,9 +161,10 @@ const DeveloperOptionsTab = () => {
           className="settings-page__content-item"
           style={{ flex: '1 1 auto' }}
         >
-          <span>{t('onboarding')}</span>
+          <span>Onboarding</span>
           <div className="settings-page__content-description">
-            {t('developerOptionsResetStatesOnboarding')}
+            Resets various states related to onboarding and redirects to the
+            "Secure Your Wallet" onboarding page.
           </div>
         </div>
 
@@ -162,7 +173,7 @@ const DeveloperOptionsTab = () => {
             variant={ButtonVariant.Primary}
             onClick={handleResetOnboardingClick}
           >
-            {t('reset')}
+            Reset
           </Button>
         </div>
         <div className="settings-page__content-item-col">
@@ -188,40 +199,22 @@ const DeveloperOptionsTab = () => {
 
   const renderServiceWorkerKeepAliveToggle = () => {
     return (
-      <Box
-        ref={settingsRefs[3] as React.RefObject<HTMLDivElement>}
-        className="settings-page__content-row"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        gap={4}
-      >
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-description">
-            <span>{t('serviceWorkerKeepAlive')}</span>
-            <div className="settings-page__content-description">
-              {t('developerOptionsServiceWorkerKeepAlive')}
-            </div>
-          </div>
-        </div>
-
-        <div className="settings-page__content-item-col">
-          <ToggleButton
-            value={isServiceWorkerKeptAlive}
-            onToggle={(value) => handleToggleServiceWorkerAlive(!value)}
-            offLabel={t('off')}
-            onLabel={t('on')}
-            dataTestId="developer-options-service-worker-alive-toggle"
-          />
-        </div>
-      </Box>
+      <ToggleRow
+        title="Service Worker Keep Alive"
+        description="Results in a timestamp being continuously saved to session.storage"
+        isEnabled={isServiceWorkerKeptAlive}
+        onToggle={(value) => handleToggleServiceWorkerAlive(!value)}
+        dataTestId="developer-options-service-worker-alive-toggle"
+        settingsRef={settingsRefs[3] as React.RefObject<HTMLDivElement>}
+      />
     );
   };
 
-  const renderNetworkMenuRedesign = () => {
+  const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
+
+  const renderRemoteFeatureFlags = () => {
     return (
       <Box
-        ref={settingsRefs[4] as React.RefObject<HTMLDivElement>}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -229,27 +222,19 @@ const DeveloperOptionsTab = () => {
         gap={4}
       >
         <div className="settings-page__content-item">
+          <span>Remote feature flags</span>
           <div className="settings-page__content-description">
-            <span>{t('developerOptionsNetworkMenuRedesignTitle')}</span>
-            <div className="settings-page__content-description">
-              {t('developerOptionsNetworkMenuRedesignDescription')}
-            </div>
+            Remote feature flag values come from LaunchDarkly by default. If you
+            need to update feature flag values locally for development purposes,
+            you can change feature flag values in .manifest-overrides.json,
+            which will override values coming from LaunchDarkly.
           </div>
         </div>
-
-        <div className="settings-page__content-item-col">
-          <ToggleButton
-            value={enableNetworkRedesign}
-            onToggle={(value) => {
-              setEnableNetworkRedesign(!value);
-              // eslint-disable-next-line
-              /* @ts-expect-error: Avoids error from window property not existing */
-              window.metamaskFeatureFlags.networkMenuRedesign = !value;
-            }}
-            offLabel={t('off')}
-            onLabel={t('on')}
-            dataTestId="developer-options-network-redesign"
-          />
+        <div
+          className="settings-page__content-description"
+          data-testid="developer-options-remote-feature-flags"
+        >
+          {JSON.stringify(remoteFeatureFlags)}
         </div>
       </Box>
     );
@@ -258,23 +243,36 @@ const DeveloperOptionsTab = () => {
   return (
     <div className="settings-page__body">
       <Text className="settings-page__security-tab-sub-header__bold">
-        {t('states')}
+        States
       </Text>
+
       <Text
         className="settings-page__security-tab-sub-header"
         color={TextColor.textAlternative}
         paddingTop={6}
         ref={settingsRefs[0] as React.RefObject<HTMLDivElement>}
       >
-        {t('resetStates')}
+        Current States
       </Text>
-
+      <div className="settings-page__content-padded">
+        {renderRemoteFeatureFlags()}
+      </div>
+      <Text
+        className="settings-page__security-tab-sub-header"
+        color={TextColor.textAlternative}
+        paddingTop={6}
+        ref={settingsRefs[0] as React.RefObject<HTMLDivElement>}
+      >
+        Reset States
+      </Text>
       <div className="settings-page__content-padded">
         {renderAnnouncementReset()}
         {renderOnboardingReset()}
         {renderServiceWorkerKeepAliveToggle()}
-        {renderNetworkMenuRedesign()}
       </div>
+
+      <ProfileSyncDevSettings />
+      <SentryTest />
     </div>
   );
 };

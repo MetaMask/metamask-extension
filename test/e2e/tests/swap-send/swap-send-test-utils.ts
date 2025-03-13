@@ -2,7 +2,6 @@ import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import FixtureBuilder from '../../fixture-builder';
 import { SWAPS_API_V2_BASE_URL } from '../../../../shared/constants/swaps';
-import { generateGanacheOptions } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { SWAP_SEND_QUOTES_RESPONSE_ETH_TST } from './mocks/eth-data';
 
@@ -21,7 +20,7 @@ export class SwapSendPage {
 
   fillRecipientAddressInput = async (address: string) => {
     await this.driver.fill(
-      'input[placeholder="Enter public address (0x) or ENS name"]',
+      'input[placeholder="Enter public address (0x) or domain name"]',
       address,
     );
   };
@@ -266,9 +265,6 @@ export const getSwapSendFixtures = (
 ) => {
   const ETH_CONVERSION_RATE_USD = 3010;
   return {
-    driverOptions: {
-      openDevToolsForTabs: true,
-    },
     fixtures: new FixtureBuilder()
       .withPreferencesController({
         featureFlags: {},
@@ -299,7 +295,7 @@ export const getSwapSendFixtures = (
     smartContract: SMART_CONTRACTS.HST,
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
     testSpecificMock: mockSwapsApi(swapsQuotes, swapsQuery),
-    ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+    localNodeOptions: { hardfork: 'london' },
     title,
   };
 };

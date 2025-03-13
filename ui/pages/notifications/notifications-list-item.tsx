@@ -1,11 +1,11 @@
 import React, { useContext, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
+import { hasProperty } from '@metamask/utils';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-import type { Notification } from '../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
 import { Box } from '../../components/component-library';
 import {
   BlockSize,
@@ -14,10 +14,13 @@ import {
 } from '../../helpers/constants/design-system';
 import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
 import { useMarkNotificationAsRead } from '../../hooks/metamask-notifications/useNotifications';
+import { useSnapNotificationTimeouts } from '../../hooks/useNotificationTimeouts';
 import {
   NotificationComponents,
+  TRIGGER_TYPES,
   hasNotificationComponents,
 } from './notification-components';
+import { type Notification } from './notification-components/types/notifications/notifications';
 
 export function NotificationsListItem({
   notification,
@@ -26,19 +29,24 @@ export function NotificationsListItem({
 }) {
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
+  const { setNotificationTimeout } = useSnapNotificationTimeouts();
 
   const { markNotificationAsRead } = useMarkNotificationAsRead();
 
   const handleNotificationClick = useCallback(() => {
     trackEvent({
       category: MetaMetricsEventCategory.NotificationInteraction,
-      event: MetaMetricsEventName.NotificationItemClicked,
+      event: MetaMetricsEventName.NotificationClicked,
       properties: {
-        notificationId: notification.id,
-        notificationType: notification.type,
-        notificationIsRead: notification.isRead,
+        notification_id: notification.id,
+        notification_type: notification.type,
+        ...('chain_id' in notification && {
+          chain_id: notification.chain_id,
+        }),
+        previously_read: notification.isRead,
       },
     });
+
     markNotificationAsRead([
       {
         id: notification.id,
@@ -46,6 +54,15 @@ export function NotificationsListItem({
         isRead: notification.isRead,
       },
     ]);
+
+    if (
+      notification.type === TRIGGER_TYPES.SNAP &&
+      !hasProperty(notification.data, 'detailedView')
+    ) {
+      setNotificationTimeout(notification.id);
+      return;
+    }
+
     history.push(`${NOTIFICATIONS_ROUTE}/${notification.id}`);
   }, [notification, markNotificationAsRead, history]);
 
@@ -59,7 +76,6 @@ export function NotificationsListItem({
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       width={BlockSize.Full}
-      onClick={handleNotificationClick}
     >
       <ncs.item notification={notification} onClick={handleNotificationClick} />
     </Box>

@@ -4,8 +4,11 @@ import {
   Display,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
-import type { NotificationComponent } from '../../notifications/notification-components/types/notifications/notifications';
-import type { Notification } from '../../../../app/scripts/controllers/metamask-notifications/types/types';
+import {
+  Notification,
+  NotificationComponentType,
+  type NotificationComponent,
+} from '../../notifications/notification-components/types/notifications/notifications';
 
 type NotificationDetailsBodyProps = {
   body: NotificationComponent['details']['body'];
@@ -22,13 +25,13 @@ export const NotificationDetailsBody = ({
       flexDirection={FlexDirection.Column}
       padding={0}
     >
-      {body.type === 'body_feature_announcement' && (
+      {body.type === NotificationComponentType.AnnouncementBody && (
         <>
           <body.Image notification={notification} />
           <body.Description notification={notification} />
         </>
       )}
-      {body.type === 'body_onchain_notification' && (
+      {body.type === NotificationComponentType.OnChainBody && (
         <>
           {body.Image && <body.Image notification={notification} />}
           {body.From && <body.From notification={notification} />}
@@ -44,6 +47,9 @@ export const NotificationDetailsBody = ({
           {body.Provider && <body.Provider notification={notification} />}
           {body.NetworkFee && <body.NetworkFee notification={notification} />}
         </>
+      )}
+      {body.type === NotificationComponentType.SnapBody && (
+        <body.Content notification={notification} />
       )}
     </Box>
   );

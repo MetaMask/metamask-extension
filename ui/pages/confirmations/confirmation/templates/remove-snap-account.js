@@ -21,6 +21,11 @@ function getValues(pendingApproval, t, actions, _history, _data, contexts) {
     });
   };
 
+  const onCancel = () => {
+    trackSnapAccountEvent(MetaMetricsEventName.RemoveSnapAccountCanceled);
+    actions.resolvePendingApproval(pendingApproval.id, false);
+  };
+
   return {
     content: [
       {
@@ -30,6 +35,7 @@ function getValues(pendingApproval, t, actions, _history, _data, contexts) {
           snapId,
           snapName,
           publicAddress,
+          onCancel,
         },
       },
     ],
@@ -41,10 +47,7 @@ function getValues(pendingApproval, t, actions, _history, _data, contexts) {
       trackSnapAccountEvent(MetaMetricsEventName.RemoveSnapAccountConfirmed);
       actions.resolvePendingApproval(pendingApproval.id, true);
     },
-    onCancel: () => {
-      trackSnapAccountEvent(MetaMetricsEventName.RemoveSnapAccountCanceled);
-      actions.resolvePendingApproval(pendingApproval.id, false);
-    },
+    onCancel,
   };
 }
 

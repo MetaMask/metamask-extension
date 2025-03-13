@@ -25,7 +25,9 @@
       "args": [
         "${fileBasenameNoExtension}",
         "--config",
-        "jest.integration.config.js"
+        "jest.integration.config.js",
+        "--testTimeout",
+        "30000"
       ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",

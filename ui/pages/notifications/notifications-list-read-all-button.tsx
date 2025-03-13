@@ -1,35 +1,32 @@
 import React, { useContext } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import type { NotificationServicesController } from '@metamask/notification-services-controller';
+import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-import type {
-  Notification,
-  MarkAsReadNotificationsParam,
-} from '../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMarkNotificationAsRead } from '../../hooks/metamask-notifications/useNotifications';
-import { getUnreadNotifications } from '../../selectors';
-import { markNotificationsAsRead } from '../../store/actions';
 import { Box, Button, ButtonVariant } from '../../components/component-library';
 import { BlockSize } from '../../helpers/constants/design-system';
-import type { NotificationType } from './notifications';
-import { SNAP } from './snap/types/types';
+import { useSnapNotificationTimeouts } from '../../hooks/useNotificationTimeouts';
+
+type Notification = NotificationServicesController.Types.INotification;
+type MarkAsReadNotificationsParam =
+  NotificationServicesController.Types.MarkAsReadNotificationsParam;
 
 export type NotificationsListReadAllButtonProps = {
-  notifications: NotificationType[];
+  notifications: Notification[];
 };
 
 export const NotificationsListReadAllButton = ({
   notifications,
 }: NotificationsListReadAllButtonProps) => {
-  const dispatch = useDispatch();
   const t = useI18nContext();
   const { markNotificationAsRead } = useMarkNotificationAsRead();
   const trackEvent = useContext(MetaMetricsContext);
-  const unreadNotifications = useSelector(getUnreadNotifications);
+  const { setNotificationTimeout } = useSnapNotificationTimeouts();
 
   const handleOnClick = () => {
     let notificationsRead: MarkAsReadNotificationsParam = [];
@@ -38,14 +35,19 @@ export const NotificationsListReadAllButton = ({
       notificationsRead = notifications
         .filter(
           (notification): notification is Notification =>
-            (notification as Notification).id !== undefined &&
-            notification.type !== SNAP,
+            (notification as Notification).id !== undefined,
         )
         .map((notification: Notification) => ({
           id: notification.id,
           type: notification.type,
           isRead: notification.isRead,
         }));
+
+      notificationsRead
+        .filter((notification) => notification.type === TRIGGER_TYPES.SNAP)
+        .forEach((snapNotification) =>
+          setNotificationTimeout(snapNotification.id),
+        );
     }
 
     trackEvent({
@@ -55,10 +57,6 @@ export const NotificationsListReadAllButton = ({
 
     // Mark all metamask notifications as read
     markNotificationAsRead(notificationsRead);
-
-    // Mark all snap notifications as read
-    const unreadNotificationIds = unreadNotifications.map(({ id }) => id);
-    dispatch(markNotificationsAsRead(unreadNotificationIds));
   };
 
   return (
@@ -66,6 +64,7 @@ export const NotificationsListReadAllButton = ({
       paddingLeft={4}
       paddingRight={4}
       paddingTop={4}
+      paddingBottom={4}
       className="notifications__list__read__all__button"
     >
       <Button

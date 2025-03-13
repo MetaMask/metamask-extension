@@ -1,11 +1,9 @@
 import { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import type { InternalAccount } from '@metamask/keyring-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import log from 'loglevel';
-import type {
-  Notification,
-  MarkAsReadNotificationsParam,
-} from '../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
+
+import { type MarkAsReadNotificationsParam } from '@metamask/notification-services-controller/notification-services';
 import {
   createOnChainTriggers,
   fetchAndUpdateMetamaskNotifications,
@@ -13,6 +11,7 @@ import {
   enableMetamaskNotifications,
   disableMetamaskNotifications,
 } from '../../store/actions';
+import { type Notification } from '../../pages/notifications/notification-components/types/notifications/notifications';
 
 // Define KeyringType interface
 type KeyringType = {
@@ -52,8 +51,13 @@ export function useListNotifications(): {
     setLoading(true);
     setError(null);
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const previewToken = urlParams.get('previewToken');
+
     try {
-      const data = await dispatch(fetchAndUpdateMetamaskNotifications());
+      const data = await dispatch(
+        fetchAndUpdateMetamaskNotifications(previewToken ?? undefined),
+      );
       setNotificationsData(data as unknown as Notification[]);
       return data as unknown as Notification[];
     } catch (e) {

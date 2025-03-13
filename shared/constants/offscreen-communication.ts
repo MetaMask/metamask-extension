@@ -1,3 +1,6 @@
+export const OFFSCREEN_LEDGER_INIT_TIMEOUT = 4000;
+export const OFFSCREEN_LOAD_TIMEOUT = OFFSCREEN_LEDGER_INIT_TIMEOUT + 1000;
+
 /**
  * Defines legal targets for offscreen communication. These values are used to
  * filter and route messages to the correct target.
@@ -17,6 +20,7 @@ export enum OffscreenCommunicationTarget {
 export enum OffscreenCommunicationEvents {
   trezorDeviceConnect = 'trezor-device-connect',
   ledgerDeviceConnect = 'ledger-device-connect',
+  metamaskBackgroundReady = 'metamask-background-ready',
 }
 
 /**

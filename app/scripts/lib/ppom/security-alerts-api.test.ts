@@ -26,6 +26,8 @@ const RESPONSE_MOCK = {
   description: 'Test Description',
 };
 
+const BASE_URL = 'https://example.com';
+
 describe('Security Alerts API', () => {
   const fetchMock = jest.fn();
 
@@ -39,7 +41,7 @@ describe('Security Alerts API', () => {
       json: async () => RESPONSE_MOCK,
     });
 
-    process.env.SECURITY_ALERTS_API_URL = 'https://example.com';
+    process.env.SECURITY_ALERTS_API_URL = BASE_URL;
   });
 
   describe('validateWithSecurityAlertsAPI', () => {
@@ -53,8 +55,14 @@ describe('Security Alerts API', () => {
 
       expect(fetchMock).toHaveBeenCalledTimes(1);
       expect(fetchMock).toHaveBeenCalledWith(
-        `https://example.com/validate/${CHAIN_ID_MOCK}`,
-        expect.any(Object),
+        `${BASE_URL}/validate/${CHAIN_ID_MOCK}`,
+        expect.objectContaining({
+          method: 'POST',
+          body: JSON.stringify(REQUEST_MOCK),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }),
       );
     });
 

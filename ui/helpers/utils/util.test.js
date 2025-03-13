@@ -1,8 +1,11 @@
 import Bowser from 'bowser';
-import { BN, toChecksumAddress } from 'ethereumjs-util';
+import BN from 'bn.js';
+import { toChecksumAddress } from 'ethereumjs-util';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { addHexPrefixToObjectValues } from '../../../shared/lib/swaps-utils';
 import { toPrecisionWithoutTrailingZeros } from '../../../shared/lib/transactions-controller-utils';
+import { MinPermissionAbstractionDisplayCount } from '../../../shared/constants/permissions';
+import { createMockInternalAccount } from '../../../test/jest/mocks';
 import * as util from './util';
 
 describe('util', () => {
@@ -927,17 +930,6 @@ describe('util', () => {
     });
   });
 
-  describe('getNetworkNameFromProviderType()', () => {
-    it('should return providerConfig.type if the type is not rpc', () => {
-      expect(util.getNetworkNameFromProviderType('mainnet')).toStrictEqual(
-        'mainnet',
-      );
-    });
-    it('should return empty string if teh providerConfig.type is rpc', () => {
-      expect(util.getNetworkNameFromProviderType('rpc')).toStrictEqual('');
-    });
-  });
-
   describe('checkTokenIdExists()', () => {
     const data = {
       '0x2df920B180c58766951395c26ecF1EC2063490Fa': {
@@ -1043,15 +1035,15 @@ describe('util', () => {
     });
   });
 
-  describe('formatUTCDate', () => {
+  describe('formatUTCDateFromUnixTimestamp', () => {
     it('formats passed date string', () => {
-      expect(util.formatUTCDate(1633019124000)).toStrictEqual(
-        '30 September 2021, 16:25',
+      expect(util.formatUTCDateFromUnixTimestamp(2036528542)).toStrictEqual(
+        '14 July 2034, 22:22',
       );
     });
 
     it('returns empty string if empty string is passed', () => {
-      expect(util.formatUTCDate('')).toStrictEqual('');
+      expect(util.formatUTCDateFromUnixTimestamp('')).toStrictEqual('');
     });
   });
 
@@ -1080,6 +1072,280 @@ describe('util', () => {
           truncatedEndChars: 4,
         }),
       ).toStrictEqual('0x12...7890');
+    });
+
+    it('should shorten the string and remove all characters from the end if skipCharacterInEnd is true', () => {
+      expect(
+        util.shortenString('0x1234567890123456789012345678901234567890', {
+          truncatedCharLimit: 10,
+          truncatedStartChars: 4,
+          truncatedEndChars: 4,
+          skipCharacterInEnd: true,
+        }),
+      ).toStrictEqual('0x12...');
+    });
+  });
+
+  describe('getFilteredSnapPermissions', () => {
+    it('should return permission filtered by weight', () => {
+      const WEIGHT_THRESHOLD = 3;
+      const mockPermissions = [
+        {
+          label: 'Permission A',
+          weight: 4,
+        },
+        {
+          label: 'Permission B',
+          weight: 4,
+        },
+        {
+          label: 'Permission C',
+          weight: 1,
+        },
+        {
+          label: 'Permission D',
+          weight: 5,
+        },
+        {
+          label: 'Permission E',
+          weight: 2,
+        },
+      ];
+      expect(
+        util.getFilteredSnapPermissions(mockPermissions, WEIGHT_THRESHOLD, 2),
+      ).toStrictEqual([
+        {
+          label: 'Permission C',
+          weight: 1,
+        },
+        {
+          label: 'Permission E',
+          weight: 2,
+        },
+      ]);
+    });
+
+    it('should return the first three permissions because none matches the filter criteria', () => {
+      const WEIGHT_THRESHOLD = 3;
+      const mockPermissions = [
+        {
+          label: 'Permission A',
+          weight: 4,
+        },
+        {
+          label: 'Permission B',
+          weight: 4,
+        },
+        {
+          label: 'Permission C',
+          weight: 5,
+        },
+        {
+          label: 'Permission D',
+          weight: 5,
+        },
+        {
+          label: 'Permission E',
+          weight: 6,
+        },
+      ];
+      expect(
+        util.getFilteredSnapPermissions(
+          mockPermissions,
+          WEIGHT_THRESHOLD,
+          MinPermissionAbstractionDisplayCount,
+        ),
+      ).toStrictEqual([
+        {
+          label: 'Permission A',
+          weight: 4,
+        },
+        {
+          label: 'Permission B',
+          weight: 4,
+        },
+        {
+          label: 'Permission C',
+          weight: 5,
+        },
+      ]);
+    });
+
+    it('should return permissions filtered by weight and gap filled with other permissions', () => {
+      const WEIGHT_THRESHOLD = 3;
+      const mockPermissions = [
+        {
+          label: 'Permission A',
+          weight: 4,
+        },
+        {
+          label: 'Permission B',
+          weight: 4,
+        },
+        {
+          label: 'Permission C',
+          weight: 1,
+        },
+        {
+          label: 'Permission D',
+          weight: 5,
+        },
+        {
+          label: 'Permission E',
+          weight: 6,
+        },
+      ];
+      expect(
+        util.getFilteredSnapPermissions(
+          mockPermissions,
+          WEIGHT_THRESHOLD,
+          MinPermissionAbstractionDisplayCount,
+        ),
+      ).toStrictEqual([
+        {
+          label: 'Permission C',
+          weight: 1,
+        },
+        {
+          label: 'Permission A',
+          weight: 4,
+        },
+        {
+          label: 'Permission B',
+          weight: 4,
+        },
+      ]);
+    });
+  });
+
+  describe('getCalculatedTokenAmount1dAgo', () => {
+    it('should return successfully balance of token 1dago', () => {
+      const mockTokenFiatAmount = '10';
+      const mockTokenPercent1dAgo = 1;
+      const expectedRes = 9.900990099009901;
+      const result = util.getCalculatedTokenAmount1dAgo(
+        mockTokenFiatAmount,
+        mockTokenPercent1dAgo,
+      );
+      expect(result).toBe(expectedRes);
+    });
+
+    it('should return token balance if percentage is undefined', () => {
+      const mockTokenFiatAmount = '10';
+      const mockTokenPercent1dAgo = undefined;
+      const result = util.getCalculatedTokenAmount1dAgo(
+        mockTokenFiatAmount,
+        mockTokenPercent1dAgo,
+      );
+      expect(result).toBe(mockTokenFiatAmount);
+    });
+
+    it('should return zero if token amount is undefined', () => {
+      const mockTokenFiatAmount = undefined;
+      const mockTokenPercent1dAgo = 1;
+      const result = util.getCalculatedTokenAmount1dAgo(
+        mockTokenFiatAmount,
+        mockTokenPercent1dAgo,
+      );
+      expect(result).toBe(0);
+    });
+  });
+
+  describe('sortSelectedInternalAccounts', () => {
+    const account1 = createMockInternalAccount({ lastSelected: 1 });
+    const account2 = createMockInternalAccount({ lastSelected: 2 });
+    const account3 = createMockInternalAccount({ lastSelected: 3 });
+    // We use a big "gap" here to make sure we're not only sorting with sequential indexes
+    const accountWithBigSelectedIndexGap = createMockInternalAccount({
+      lastSelected: 108912379837,
+    });
+    // We wanna make sure that negative indexes are also being considered properly
+    const accountWithNegativeSelectedIndex = createMockInternalAccount({
+      lastSelected: -1,
+    });
+
+    const orderedAccounts = [account3, account2, account1];
+
+    it.each([
+      { accounts: [account1, account2, account3] },
+      { accounts: [account2, account3, account1] },
+      { accounts: [account3, account2, account1] },
+    ])('sorts accounts by descending order: $accounts', ({ accounts }) => {
+      const sortedAccount = util.sortSelectedInternalAccounts(accounts);
+      expect(sortedAccount).toStrictEqual(orderedAccounts);
+    });
+
+    it('sorts accounts with bigger gap', () => {
+      const accounts = [account1, accountWithBigSelectedIndexGap, account3];
+      const sortedAccount = util.sortSelectedInternalAccounts(accounts);
+      expect(sortedAccount.length).toBeGreaterThan(0);
+      expect(sortedAccount).toHaveLength(accounts.length);
+      expect(sortedAccount[0]).toStrictEqual(accountWithBigSelectedIndexGap);
+    });
+
+    it('sorts accounts with negative `lastSelected` index', () => {
+      const accounts = [account1, accountWithNegativeSelectedIndex, account3];
+      const sortedAccount = util.sortSelectedInternalAccounts(accounts);
+      expect(sortedAccount.length).toBeGreaterThan(0); // Required since we using `length - 1`
+      expect(sortedAccount).toHaveLength(accounts.length);
+      expect(sortedAccount[sortedAccount.length - 1]).toStrictEqual(
+        accountWithNegativeSelectedIndex,
+      );
+    });
+
+    it('succeed with no accounts', () => {
+      const sortedAccount = util.sortSelectedInternalAccounts([]);
+      expect(sortedAccount).toStrictEqual([]);
+    });
+  });
+
+  describe('isIpAddress', () => {
+    it('should return true for the IPv4 address', () => {
+      expect(util.isIpAddress('127.0.0.1')).toBe(true);
+    });
+
+    it('should return true for the IPv6 address', () => {
+      expect(util.isIpAddress('[fe80::1]')).toBe(true);
+    });
+
+    it('should return true for the invalid IP address', () => {
+      expect(util.isIpAddress('metamask')).toBe(false);
+    });
+
+    it('should return true for the invalid type of argument', () => {
+      expect(util.isIpAddress(1024)).toBe(false);
+    });
+  });
+
+  describe('transformOriginToTitle', () => {
+    it('should return the correct title for origin with domain', () => {
+      expect(util.transformOriginToTitle('https://metamask.io')).toBe(
+        'metamask.io',
+      );
+    });
+
+    it('should return the correct title for origin with subdomain', () => {
+      expect(
+        util.transformOriginToTitle('https://metamask.github.io/test-dapp/'),
+      ).toBe('github.io');
+    });
+
+    it('should return the correct title for localhost', () => {
+      expect(util.transformOriginToTitle('http://localhost:3000')).toBe(
+        'localhost',
+      );
+    });
+
+    it('should return the correct title for IPv4 address', () => {
+      expect(util.transformOriginToTitle('http://127.0.0.1:3000')).toBe(
+        '127.0.0.1',
+      );
+    });
+
+    it('should return the correct title for IPv6 address', () => {
+      expect(util.transformOriginToTitle('http://[fe80::1]:9011/')).toBe(
+        '[fe80::1]',
+      );
     });
   });
 });

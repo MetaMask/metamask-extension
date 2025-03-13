@@ -12,13 +12,16 @@ import {
 import txHelper from '../helpers/utils/tx-helper';
 import { SmartTransactionStatus } from '../../shared/constants/transaction';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
-import { getProviderConfig } from '../ducks/metamask/metamask';
-import { getCurrentChainId, getSelectedInternalAccount } from './selectors';
-import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
+import {
+  getProviderConfig,
+  getCurrentChainId,
+} from '../../shared/modules/selectors/networks';
 import {
   createDeepEqualSelector,
   filterAndShapeUnapprovedTransactions,
-} from './util';
+} from '../../shared/modules/selectors/util';
+import { getSelectedInternalAccount } from './accounts';
+import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
 
 const INVALID_INITIAL_TRANSACTION_TYPES = [
   TransactionType.cancel,
@@ -37,8 +40,6 @@ const allowedSwapsSmartTransactionStatusesForActivityList = [
   SmartTransactionStatuses.CANCELLED,
 ];
 
-export const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
-
 export const getTransactions = createDeepEqualSelector(
   (state) => {
     const { transactions } = state.metamask ?? {};
@@ -47,7 +48,7 @@ export const getTransactions = createDeepEqualSelector(
       return [];
     }
 
-    return transactions.sort((a, b) => a.time - b.time); // Ascending
+    return [...transactions].sort((a, b) => a.time - b.time); // Ascending
   },
   (transactions) => transactions,
 );
@@ -86,7 +87,10 @@ export const getAllUnapprovedTransactions = createDeepEqualSelector(
       return [];
     }
 
-    const sortedTransactions = transactions.sort((a, b) => a.time - b.time);
+    const sortedTransactions = [...transactions].sort(
+      (a, b) => a.time - b.time,
+    );
+
     return filterAndShapeUnapprovedTransactions(sortedTransactions);
   },
   (transactions) => transactions,
@@ -186,14 +190,12 @@ export const selectedAddressTxListSelector = createSelector(
 );
 
 export const unapprovedMessagesSelector = createSelector(
-  unapprovedMsgsSelector,
   unapprovedPersonalMsgsSelector,
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
   unapprovedTypedMessagesSelector,
   getCurrentChainId,
   (
-    unapprovedMsgs = {},
     unapprovedPersonalMsgs = {},
     unapprovedDecryptMsgs = {},
     unapprovedEncryptionPublicKeyMsgs = {},
@@ -202,7 +204,6 @@ export const unapprovedMessagesSelector = createSelector(
   ) =>
     txHelper(
       {},
-      unapprovedMsgs,
       unapprovedPersonalMsgs,
       unapprovedDecryptMsgs,
       unapprovedEncryptionPublicKeyMsgs,
@@ -225,7 +226,7 @@ export const transactionsSelector = createSelector(
   (subSelectorTxList = [], selectedAddressTxList = []) => {
     const txsToRender = selectedAddressTxList.concat(subSelectorTxList);
 
-    return txsToRender.sort((a, b) => b.time - a.time);
+    return [...txsToRender].sort((a, b) => b.time - a.time);
   },
 );
 
@@ -362,13 +363,8 @@ export const nonceSortedTransactionsSelector = createSelector(
       // Don't group transactions by nonce if:
       // 1. Tx nonce is undefined
       // 2. Tx is incoming (deposit)
-      // 3. Tx is custodial (mmi specific)
-      let shouldNotBeGrouped =
+      const shouldNotBeGrouped =
         typeof nonce === 'undefined' || type === TransactionType.incoming;
-
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      shouldNotBeGrouped = shouldNotBeGrouped || Boolean(transaction.custodyId);
-      ///: END:ONLY_INCLUDE_IF
 
       if (shouldNotBeGrouped) {
         const transactionGroup = {
@@ -646,7 +642,6 @@ export const submittedPendingTransactionsSelector = createSelector(
 const TRANSACTION_APPROVAL_TYPES = [
   ApprovalType.EthDecrypt,
   ApprovalType.EthGetEncryptionPublicKey,
-  ApprovalType.EthSign,
   ApprovalType.EthSignTypedData,
   ApprovalType.PersonalSign,
 ];

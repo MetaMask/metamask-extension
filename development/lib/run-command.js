@@ -1,5 +1,5 @@
 const fs = require('fs');
-const spawn = require('cross-spawn');
+const { spawn } = require('node:child_process');
 
 /**
  * Run a command to completion using the system shell.
@@ -96,7 +96,7 @@ async function runInShell(command, args, output) {
   const internalError = new Error('Internal');
   try {
     await new Promise((resolve, reject) => {
-      const childProcess = spawn(command, args);
+      const childProcess = spawn(command, args, { shell: true });
       childProcess.stdout.setEncoding('utf8');
       childProcess.stderr.setEncoding('utf8');
       childProcess.stdout.pipe(process.stdout);

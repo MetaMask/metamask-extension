@@ -5,6 +5,7 @@ const glob = require('fast-glob');
 
 const { loadBuildTypesConfig } = require('../lib/build-type');
 
+const { isManifestV3 } = require('../../shared/modules/mv3.utils');
 const { TASKS } = require('./constants');
 const { createTask, composeSeries } = require('./task');
 const { getPathInsideNodeModules } = require('./utils');
@@ -145,9 +146,7 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
     ...(shouldIncludeSnow
       ? [
           {
-            src: shouldIncludeSnow
-              ? `./node_modules/@lavamoat/snow/snow.prod.js`
-              : EMPTY_JS_FILE,
+            src: `./node_modules/@lavamoat/snow/snow.prod.js`,
             dest: `scripts/snow.js`,
           },
           {
@@ -165,10 +164,6 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
     {
       src: './app/scripts/init-globals.js',
       dest: 'scripts/init-globals.js',
-    },
-    {
-      src: './app/scripts/load-app.js',
-      dest: 'scripts/load-app.js',
     },
     {
       src: shouldIncludeLockdown
@@ -193,21 +188,11 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       pattern: '',
     },
     {
-      src: `./offscreen/`,
-      pattern: `*.html`,
-      dest: '',
-    },
-    {
       src: getPathInsideNodeModules('@blockaid/ppom_release', '/'),
       pattern: '*.wasm',
-      dest:
-        process.env.ENABLE_MV3 === 'true' ||
-        process.env.ENABLE_MV3 === undefined
-          ? 'scripts/'
-          : '',
+      dest: isManifestV3 ? 'scripts/' : '',
     },
-    ...(process.env.ENABLE_MV3 === 'true' ||
-    process.env.ENABLE_MV3 === undefined
+    ...(isManifestV3
       ? [
           {
             src: getPathInsideNodeModules(

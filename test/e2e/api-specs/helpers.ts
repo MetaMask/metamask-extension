@@ -1,5 +1,7 @@
 import { v4 as uuid } from 'uuid';
 import { ErrorObject } from '@open-rpc/meta-schema';
+import { Json, JsonRpcFailure, JsonRpcResponse } from '@metamask/utils';
+import { InternalScopeString } from '@metamask/multichain';
 import { Driver } from '../webdriver/driver';
 
 // eslint-disable-next-line @typescript-eslint/no-shadow, @typescript-eslint/no-explicit-any
@@ -47,7 +49,6 @@ export const pollForResult = async (
   generatedKey: string,
 ): Promise<unknown> => {
   let result;
-  // eslint-disable-next-line no-loop-func
   await new Promise((resolve, reject) => {
     addToQueue({
       name: 'pollResult',
@@ -58,78 +59,235 @@ export const pollForResult = async (
           `return window['${generatedKey}'];`,
         );
 
-        while (result === null) {
-          // Continue polling if result is not set
+        if (result !== undefined && result !== null) {
+          // clear the result
+          await driver.executeScript(`delete window['${generatedKey}'];`);
+        } else {
           await driver.delay(500);
-          result = await driver.executeScript(
-            `return window['${generatedKey}'];`,
-          );
         }
-
-        // clear the result
-        await driver.executeScript(`delete window['${generatedKey}'];`);
 
         return result;
       },
     });
   });
-  if (result !== undefined) {
+  if (result !== undefined && result !== null) {
     return result;
   }
   return pollForResult(driver, generatedKey);
 };
 
-export const createDriverTransport = (driver: Driver) => {
+export const createCaip27DriverTransport = (
+  driver: Driver,
+  scopeMap: Record<string, string>,
+  extensionId: string,
+) => {
+  // use externally_connectable to communicate with the extension
+  // https://developer.chrome.com/docs/extensions/mv3/messaging/
   return async (
-    _: string,
+    __: string,
     method: string,
     params: unknown[] | Record<string, unknown>,
   ) => {
     const generatedKey = uuid();
-    return new Promise((resolve, reject) => {
-      const execute = async () => {
-        await addToQueue({
-          name: 'transport',
-          resolve,
-          reject,
-          task: async () => {
-            // don't wait for executeScript to finish window.ethereum promise
-            // we need this because if we wait for the promise to resolve it
-            // will hang in selenium since it can only do one thing at a time.
-            // the workaround is to put the response on window.asyncResult and poll for it.
-            driver.executeScript(
-              ([m, p, g]: [
-                string,
-                unknown[] | Record<string, unknown>,
-                string,
-              ]) => {
-                window[g] = null;
-                window.ethereum
-                  .request({ method: m, params: p })
-                  .then((r: unknown) => {
-                    window[g] = { result: r };
-                  })
-                  .catch((e: ErrorObject) => {
-                    window[g] = {
-                      error: {
-                        code: e.code,
-                        message: e.message,
-                        data: e.data,
-                      },
-                    };
-                  });
+    addToQueue({
+      name: 'transport',
+      resolve: () => {
+        // noop
+      },
+      reject: () => {
+        // noop
+      },
+      task: async () => {
+        // don't wait for executeScript to finish window.ethereum promise
+        // we need this because if we wait for the promise to resolve it
+        // will hang in selenium since it can only do one thing at a time.
+        // the workaround is to put the response on window.asyncResult and poll for it.
+        driver.executeScript(
+          ([m, p, g, s, e]: [
+            string,
+            unknown[] | Record<string, unknown>,
+            string,
+            InternalScopeString,
+            string,
+          ]) => {
+            const extensionPort = chrome.runtime.connect(e);
+
+            const listener = ({
+              type,
+              data,
+            }: {
+              type: string;
+              data: JsonRpcResponse<Json>;
+            }) => {
+              if (type !== 'caip-x') {
+                return;
+              }
+              if (data?.id !== g) {
+                return;
+              }
+
+              if (data.id || (data as JsonRpcFailure).error) {
+                window[g] = data;
+                extensionPort.onMessage.removeListener(listener);
+              }
+            };
+
+            extensionPort.onMessage.addListener(listener);
+            const msg = {
+              type: 'caip-x',
+              data: {
+                jsonrpc: '2.0',
+                method: 'wallet_invokeMethod',
+                params: {
+                  request: {
+                    method: m,
+                    params: p,
+                  },
+                  scope: s,
+                },
+                id: g,
               },
-              method,
-              params,
-              generatedKey,
-            );
+            };
+            extensionPort.postMessage(msg);
           },
-        });
-      };
-      return execute();
-    }).then(async () => {
-      const response = await pollForResult(driver, generatedKey);
-      return response;
+          method,
+          params,
+          generatedKey,
+          scopeMap[method],
+          extensionId,
+        );
+      },
     });
+    return pollForResult(driver, generatedKey);
+  };
+};
+
+export const createMultichainDriverTransport = (
+  driver: Driver,
+  extensionId: string,
+) => {
+  // use externally_connectable to communicate with the extension
+  // https://developer.chrome.com/docs/extensions/mv3/messaging/
+  return async (
+    __: string,
+    method: string,
+    params: unknown[] | Record<string, unknown>,
+  ) => {
+    const generatedKey = uuid();
+    addToQueue({
+      name: 'transport',
+      resolve: () => {
+        // noop
+      },
+      reject: () => {
+        // noop
+      },
+      task: async () => {
+        // don't wait for executeScript to finish window.ethereum promise
+        // we need this because if we wait for the promise to resolve it
+        // will hang in selenium since it can only do one thing at a time.
+        // the workaround is to put the response on window.asyncResult and poll for it.
+        driver.executeScript(
+          ([m, p, g, e]: [
+            string,
+            unknown[] | Record<string, unknown>,
+            string,
+            string,
+          ]) => {
+            const extensionPort = chrome.runtime.connect(e);
+
+            const listener = ({
+              type,
+              data,
+            }: {
+              type: string;
+              data: JsonRpcResponse<Json>;
+            }) => {
+              if (type !== 'caip-x') {
+                return;
+              }
+              if (data?.id !== g) {
+                return;
+              }
+
+              if (data.id || (data as JsonRpcFailure).error) {
+                window[g] = data;
+                extensionPort.onMessage.removeListener(listener);
+              }
+            };
+
+            extensionPort.onMessage.addListener(listener);
+            const msg = {
+              type: 'caip-x',
+              data: {
+                jsonrpc: '2.0',
+                method: m,
+                params: p,
+                id: g,
+              },
+            };
+            extensionPort.postMessage(msg);
+          },
+          method,
+          params,
+          generatedKey,
+          extensionId,
+        );
+      },
+    });
+    return pollForResult(driver, generatedKey);
+  };
+};
+
+export const createDriverTransport = (driver: Driver) => {
+  return async (
+    __: string,
+    method: string,
+    params: unknown[] | Record<string, unknown>,
+  ) => {
+    const generatedKey = uuid();
+    addToQueue({
+      name: 'transport',
+      resolve: () => {
+        // noop
+      },
+      reject: () => {
+        // noop
+      },
+      task: async () => {
+        // don't wait for executeScript to finish window.ethereum promise
+        // we need this because if we wait for the promise to resolve it
+        // will hang in selenium since it can only do one thing at a time.
+        // the workaround is to put the response on window.asyncResult and poll for it.
+        driver.executeScript(
+          ([m, p, g]: [
+            string,
+            unknown[] | Record<string, unknown>,
+            string,
+          ]) => {
+            window[g] = null;
+            window.ethereum
+              .request({ method: m, params: p })
+              .then((r: unknown) => {
+                window[g] = { result: r };
+              })
+              .catch((e: ErrorObject) => {
+                window[g] = {
+                  id: g,
+                  error: {
+                    code: e.code,
+                    message: e.message,
+                    data: e.data,
+                  },
+                };
+              });
+          },
+          method,
+          params,
+          generatedKey,
+        );
+      },
+    });
+    return pollForResult(driver, generatedKey);
   };
 };

@@ -1,9 +1,11 @@
-import { RestrictedControllerMessenger } from '@metamask/base-controller';
+import { RestrictedMessenger } from '@metamask/base-controller';
 import { MaybeUpdateState, TestOrigin } from '@metamask/phishing-controller';
 import type { KeyringControllerGetAccountsAction } from '@metamask/keyring-controller';
 import { GetSubjectMetadata } from '@metamask/permission-controller';
 import {
   AccountsControllerGetAccountByAddressAction,
+  AccountsControllerListMultichainAccountsAction,
+  AccountsControllerSetAccountNameAction,
   AccountsControllerSetSelectedAccountAction,
 } from '@metamask/accounts-controller';
 import type {
@@ -15,8 +17,10 @@ import type {
   ShowSuccess,
   StartFlow,
 } from '@metamask/approval-controller';
+import { GetSnap, HandleSnapRequest } from '@metamask/snaps-controllers';
+import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 
-type SnapKeyringBuilderAllowActions =
+export type SnapKeyringBuilderAllowActions =
   | StartFlow
   | EndFlow
   | ShowSuccess
@@ -29,10 +33,15 @@ type SnapKeyringBuilderAllowActions =
   | KeyringControllerGetAccountsAction
   | GetSubjectMetadata
   | AccountsControllerSetSelectedAccountAction
-  | AccountsControllerGetAccountByAddressAction;
+  | AccountsControllerGetAccountByAddressAction
+  | AccountsControllerSetAccountNameAction
+  | AccountsControllerListMultichainAccountsAction
+  | HandleSnapRequest
+  | GetSnap
+  | PreferencesControllerGetStateAction;
 
-export type SnapKeyringBuilderMessenger = RestrictedControllerMessenger<
-  'SnapKeyringBuilder',
+export type SnapKeyringBuilderMessenger = RestrictedMessenger<
+  'SnapKeyring',
   SnapKeyringBuilderAllowActions,
   never,
   SnapKeyringBuilderAllowActions['type'],

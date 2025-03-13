@@ -1,5 +1,4 @@
 const {
-  defaultGanacheOptions,
   withFixtures,
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
@@ -17,17 +16,17 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         fixtures: new FixtureBuilder()
           .withPreferencesControllerPetnamesDisabled()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
+        localNodeOptions: 'anvil',
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, localNodes }) => {
+        await logInWithBalanceValidation(driver, localNodes[0]);
 
         // Send ETH
         await openActionMenuAndStartSendFlow(driver);
         // Paste address without hex prefix
         await driver.pasteIntoField(
-          'input[placeholder="Enter public address (0x) or ENS name"]',
+          'input[placeholder="Enter public address (0x) or domain name"]',
           nonHexPrefixedAddress,
         );
         await driver.findElement({
@@ -56,23 +55,24 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
       },
     );
   });
+
   it('should ensure the address is prefixed with 0x when typed and should send ETH to a valid hexadecimal address', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
           .withPreferencesControllerPetnamesDisabled()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
+        localNodeOptions: 'anvil',
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, localNodes }) => {
+        await logInWithBalanceValidation(driver, localNodes[0]);
 
         // Send ETH
         await openActionMenuAndStartSendFlow(driver);
         // Type address without hex prefix
         await driver.fill(
-          'input[placeholder="Enter public address (0x) or ENS name"]',
+          'input[placeholder="Enter public address (0x) or domain name"]',
           nonHexPrefixedAddress,
         );
         await driver.findElement({
@@ -113,24 +113,25 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           .withPreferencesControllerPetnamesDisabled()
           .withTokensControllerERC20()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
+        localNodeOptions: 'anvil',
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, localNodes }) => {
+        await logInWithBalanceValidation(driver, localNodes[0]);
 
         // Send TST
         await driver.clickElement(
           '[data-testid="account-overview__asset-tab"]',
         );
+
         await driver.clickElement(
           '[data-testid="multichain-token-list-button"]',
         );
         await driver.clickElement('[data-testid="coin-overview-send"]');
         // Paste address without hex prefix
         await driver.pasteIntoField(
-          'input[placeholder="Enter public address (0x) or ENS name"]',
+          'input[placeholder="Enter public address (0x) or domain name"]',
           nonHexPrefixedAddress,
         );
         await driver.findElement({
@@ -142,8 +143,8 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
 
         // Confirm transaction
         await driver.findElement({
-          css: '.confirm-page-container-summary__title',
-          text: '0',
+          css: 'h2',
+          text: '0 ETH',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.clickElement(
@@ -167,6 +168,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
       },
     );
   });
+
   it('should ensure the address is prefixed with 0x when typed and should send TST to a valid hexadecimal address', async function () {
     await withFixtures(
       {
@@ -175,12 +177,13 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           .withPreferencesControllerPetnamesDisabled()
           .withTokensControllerERC20()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
+        localNodeOptions: 'anvil',
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, localNodes }) => {
+        await logInWithBalanceValidation(driver, localNodes[0]);
+
         // Send TST
         await driver.clickElement(
           '[data-testid="account-overview__asset-tab"]',
@@ -192,7 +195,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
 
         // Type address without hex prefix
         await driver.fill(
-          'input[placeholder="Enter public address (0x) or ENS name"]',
+          'input[placeholder="Enter public address (0x) or domain name"]',
           nonHexPrefixedAddress,
         );
         await driver.findElement({
@@ -204,8 +207,8 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
 
         // Confirm transaction
         await driver.findElement({
-          css: '.confirm-page-container-summary__title',
-          text: '0',
+          css: 'h2',
+          text: '0 ETH',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.clickElement(

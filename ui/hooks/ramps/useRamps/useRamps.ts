@@ -1,8 +1,13 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { CaipChainId } from '@metamask/utils';
+import { CaipChainId, Hex } from '@metamask/utils';
 import { ChainId } from '../../../../shared/constants/network';
-import { getCurrentChainId, getMetaMetricsId } from '../../../selectors';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import {
+  getDataCollectionForMarketing,
+  getMetaMetricsId,
+  getParticipateInMetaMetrics,
+} from '../../../selectors';
 
 type IUseRamps = {
   openBuyCryptoInPdapp: (chainId?: ChainId | CaipChainId) => void;
@@ -17,22 +22,35 @@ export enum RampsMetaMaskEntry {
   BtcBanner = 'ext_buy_banner_btc',
 }
 
-const portfolioUrl = process.env.PORTFOLIO_URL;
 const useRamps = (
   metamaskEntry: RampsMetaMaskEntry = RampsMetaMaskEntry.BuySellButton,
 ): IUseRamps => {
   const chainId = useSelector(getCurrentChainId);
   const metaMetricsId = useSelector(getMetaMetricsId);
+  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const getBuyURI = useCallback(
-    (_chainId: ChainId | CaipChainId) => {
-      const params = new URLSearchParams();
-      params.set('metamaskEntry', metamaskEntry);
-      params.set('chainId', _chainId);
-      if (metaMetricsId) {
-        params.set('metametricsId', metaMetricsId);
+    (_chainId: Hex | CaipChainId) => {
+      try {
+        const params = new URLSearchParams();
+        params.set('metamaskEntry', metamaskEntry);
+        params.set('chainId', _chainId);
+        if (metaMetricsId) {
+          params.set('metametricsId', metaMetricsId);
+        }
+        params.set('metricsEnabled', String(isMetaMetricsEnabled));
+        if (isMarketingEnabled) {
+          params.set('marketingEnabled', String(isMarketingEnabled));
+        }
+
+        const url = new URL(process.env.PORTFOLIO_URL || '');
+        url.pathname = 'buy';
+        url.search = params.toString();
+        return url.toString();
+      } catch {
+        return 'https://portfolio.metamask.io/buy';
       }
-      return `${portfolioUrl}/buy?${params.toString()}`;
     },
     [metaMetricsId],
   );

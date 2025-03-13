@@ -16,7 +16,7 @@ import {
   FlexWrap,
 } from '../../../helpers/constants/design-system';
 
-import { Text } from '..';
+import { Text } from '../text';
 
 import { Box } from './box';
 
@@ -388,6 +388,11 @@ export const BackgroundColorStory = () => {
       <Box padding={3} backgroundColor={BackgroundColor.backgroundAlternative}>
         <Text color={TextColor.textDefault}>
           BackgroundColor.backgroundAlternative
+        </Text>
+      </Box>
+      <Box padding={3} backgroundColor={BackgroundColor.backgroundMuted}>
+        <Text color={TextColor.textDefault}>
+          BackgroundColor.backgroundMuted
         </Text>
       </Box>
       <Box padding={3} backgroundColor={BackgroundColor.overlayDefault}>

@@ -1,6 +1,7 @@
 import { configureStore, Store } from '@reduxjs/toolkit';
 import RampAPI from '../../helpers/ramps/rampApi/rampAPI';
-import { getCurrentChainId, getUseExternalServices } from '../../selectors';
+import { getUseExternalServices } from '../../selectors';
+import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { getMultichainIsBitcoin } from '../../selectors/multichain';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
@@ -15,9 +16,14 @@ import { defaultBuyableChains } from './constants';
 jest.mock('../../helpers/ramps/rampApi/rampAPI');
 const mockedRampAPI = RampAPI as jest.Mocked<typeof RampAPI>;
 
+jest.mock('../../../shared/modules/selectors/networks', () => ({
+  getCurrentChainId: jest.fn(),
+  getNetworkConfigurationsByChainId: jest.fn(),
+  getSelectedNetworkClientId: jest.fn(),
+}));
+
 jest.mock('../../selectors', () => ({
   ...jest.requireActual('../../selectors'),
-  getCurrentChainId: jest.fn(),
   getUseExternalServices: jest.fn(),
   getNames: jest.fn(),
 }));
@@ -205,7 +211,7 @@ describe('rampsSlice', () => {
     });
 
     it('should return true when Bitcoin is buyable and current chain is Bitcoin', () => {
-      getCurrentChainIdMock.mockReturnValue(MultichainNetworks.BITCOIN);
+      getCurrentChainIdMock.mockReturnValue(CHAIN_IDS.MAINNET);
       getMultichainIsBitcoinMock.mockReturnValue(true);
       const mockBuyableChains = [
         { chainId: MultichainNetworks.BITCOIN, active: true },
@@ -219,7 +225,7 @@ describe('rampsSlice', () => {
     });
 
     it('should return false when Bitcoin is not buyable and current chain is Bitcoin', () => {
-      getCurrentChainIdMock.mockReturnValue(MultichainNetworks.BITCOIN);
+      getCurrentChainIdMock.mockReturnValue(CHAIN_IDS.MAINNET);
       getMultichainIsBitcoinMock.mockReturnValue(true);
       const mockBuyableChains = [
         { chainId: MultichainNetworks.BITCOIN, active: false },

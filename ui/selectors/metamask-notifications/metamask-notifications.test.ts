@@ -1,5 +1,4 @@
-import { TRIGGER_TYPES } from '../../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
-import type { Notification } from '../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import {
   selectIsMetamaskNotificationsEnabled,
   getMetamaskNotifications,
@@ -8,34 +7,12 @@ import {
   selectIsFeatureAnnouncementsEnabled,
 } from './metamask-notifications';
 
+type Notification = NotificationServicesController.Types.INotification;
+
 const mockNotifications: Notification[] = [
-  {
-    type: TRIGGER_TYPES.ETH_RECEIVED,
-    id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-    trigger_id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-    chain_id: 1,
-    block_number: 17485840,
-    block_timestamp: '2022-03-01T00:00:00Z',
-    tx_hash: '0x881D40237659C251811CEC9c364ef91dC08D300C',
-    unread: true,
-    created_at: '2022-03-01T00:00:00Z',
-    createdAt: '2022-03-01T00:00:00Z',
-    isRead: false,
-    address: '0x881D40237659C251811CEC9c364ef91dC08D300C',
-    data: {
-      kind: 'eth_received',
-      network_fee: {
-        gas_price: '207806259583',
-        native_token_price_in_usd: '0.83',
-      },
-      from: '0x881D40237659C251811CEC9c364ef91dC08D300C',
-      to: '0x881D40237659C251811CEC9c364ef91dC08D300D',
-      amount: {
-        usd: '670.64',
-        eth: '808.000000000000000000',
-      },
-    },
-  },
+  NotificationServicesController.Processors.processNotification(
+    NotificationServicesController.Mocks.createMockNotificationEthReceived(),
+  ),
 ];
 
 describe('Metamask Notifications Selectors', () => {
@@ -43,7 +20,7 @@ describe('Metamask Notifications Selectors', () => {
     metamask: {
       subscriptionAccountsSeen: [],
       isMetamaskNotificationsFeatureSeen: true,
-      isMetamaskNotificationsEnabled: true,
+      isNotificationServicesEnabled: true,
       isFeatureAnnouncementsEnabled: true,
       metamaskNotificationsList: mockNotifications,
       metamaskNotificationsReadList: [],

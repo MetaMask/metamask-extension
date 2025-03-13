@@ -205,9 +205,6 @@
   "delete": {
     "message": "Poista"
   },
-  "deleteNetwork": {
-    "message": "Poistetaanko verkko?"
-  },
   "details": {
     "message": "Tiedot"
   },
@@ -229,9 +226,6 @@
   "editContact": {
     "message": "Muokkaa yhteystietoa"
   },
-  "ensRegistrationError": {
-    "message": "Virhe ENS-nimen rekisteröinnissä"
-  },
   "enterPasswordContinue": {
     "message": "Syötä salasana voidaksesi jatkaa"
   },
@@ -250,10 +244,6 @@
   "fast": {
     "message": "Nopea"
   },
-  "fiat": {
-    "message": "Kiinteä",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Eikö tiedoston tuominen onnistu? Klikkaa tästä!",
     "description": "Helps user import their account from a JSON file"
@@ -263,9 +253,6 @@
   },
   "from": {
     "message": "Alkaen"
-  },
-  "functionType": {
-    "message": "Funktion tyyppi"
   },
   "gasLimit": {
     "message": "Gas-raja"
@@ -326,9 +313,6 @@
     "message": "Tuo",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Tuo tili"
-  },
   "importAccountMsg": {
     "message": "Tuotuja tilejä ei liitetä alkuperäisen MetaMask-tilisi siemenlauseeseen. Lue lisää tuoduista tileistä"
   },
@@ -353,12 +337,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Vastaanottajan osoite on virheellinen"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Ei ole ETH-verkosto; vaihda pieniin kirjaimiin"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Virheellinen Block Explorer URL-osoite"
   },
   "invalidRPC": {
     "message": "Virheellinen RPC:n URL-osoite"
@@ -396,9 +374,6 @@
   },
   "loading": {
     "message": "Ladataan..."
-  },
-  "loadingTokens": {
-    "message": "Käyttötunnuksia ladataan..."
   },
   "localhost": {
     "message": "Paikallisjoukko 8545"
@@ -459,14 +434,8 @@
   "next": {
     "message": "Seuraava"
   },
-  "noAddressForName": {
-    "message": "Tälle nimelle ei ole määritetty osoitetta."
-  },
   "noConversionRateAvailable": {
     "message": "Vaihtokurssi ei saatavilla"
-  },
-  "noTransactions": {
-    "message": "Sinulla ei ole tapahtumia"
   },
   "noWebcamFound": {
     "message": "Tietokoneesi verkkokameraa ei löytynyt. Ole hyvä ja yritä uudestaan."
@@ -488,9 +457,6 @@
   },
   "origin": {
     "message": "Alkuperä"
-  },
-  "parameters": {
-    "message": "Parametrit"
   },
   "participateInMetaMetrics": {
     "message": "Osallistu MetaMetricsiin"
@@ -520,12 +486,6 @@
   "prev": {
     "message": "Aiemp."
   },
-  "primaryCurrencySetting": {
-    "message": "Ensisijainen valuutta"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Valitse natiivivaihtoehto näyttääksesi arvot ensisijaisesti ketjun natiivivaluutalla (esim. ETH). Valitse oletusmääräys asettaaksesi valitsemasi oletusvaluutan ensisijaiseksi."
-  },
   "privacyMsg": {
     "message": "Tietosuojakäytäntö"
   },
@@ -541,9 +501,6 @@
   },
   "readdToken": {
     "message": "Voit lisätä tämän tietueen myöhemmin takaisin siirtymällä tilisi vaihtoehtovalikon kohtaan ”Lisää tietue”."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Haku, julkinen osoite (0x) tai ENS"
   },
   "reject": {
     "message": "Hylkää"
@@ -568,9 +525,6 @@
   },
   "removeAccountDescription": {
     "message": "Tämä tili poistetaan kukkarostasi. Varmistathan ennen kuin jatkat, että sinulla on alkuperäinen salausteksti tai yksityinen avain tätä tuotua tiliä varten. Voit tuoda tai luoda tilejä uudestaan tilin pudotusvalikosta."
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "vahvistusta odottavaa pyyntöä"
   },
   "required": {
     "message": "Pakollinen"
@@ -638,9 +592,6 @@
   },
   "showHexDataDescription": {
     "message": "Näytä hex-tietokenttä lähetysnäytössä valitsemalla tämän"
-  },
-  "sigRequest": {
-    "message": "Allekirjoitus pyydetään"
   },
   "sign": {
     "message": "Allekirjoita"
@@ -738,9 +689,6 @@
   "transactionErrored": {
     "message": "Tapahtumissa tapahtui virhe."
   },
-  "transactionFee": {
-    "message": "Siirtomaksu"
-  },
   "transactionResubmitted": {
     "message": "Tapahtuma toimitettiin uudelleen bensataksan noustessa summaan $1 kohdassa $2."
   },
@@ -768,9 +716,6 @@
   "unknown": {
     "message": "Tuntematon"
   },
-  "unknownNetwork": {
-    "message": "Tuntematon yksityinen verkko"
-  },
   "unknownQrCode": {
     "message": "Virhe: Emme onnistuneet tunnistamaan kyseistä QR-koodia"
   },
@@ -779,9 +724,6 @@
   },
   "unlockMessage": {
     "message": "Hajautettu verkko odottaa"
-  },
-  "updatedWithDate": {
-    "message": "$1 päivitetty"
   },
   "urlErrorMsg": {
     "message": "URI:t vaativat asianmukaisen HTTP/HTTPS-etuliitteen."
@@ -803,9 +745,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Käyttääksesi tätä ominaisuutta sinun tarvitsee antaa kameralle käyttöoikeudet."
-  },
-  "youSign": {
-    "message": "Olet allekirjoittamassa"
   },
   "yourPrivateSeedPhrase": {
     "message": "Sinun yksityinen siemenlauseesi"

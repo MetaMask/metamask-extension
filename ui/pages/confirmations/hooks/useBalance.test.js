@@ -5,21 +5,14 @@ import { EthAccountType } from '@metamask/keyring-api';
 
 import configureStore from '../../../store/store';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import { useBalance } from './useBalance';
 
 const renderUseBalance = (fromAddress, stateVariables = {}) => {
   const mockState = {
     metamask: {
-      providerConfig: {
-        type: 'rpc',
-        chainId: '0x5',
-        ticker: 'ETH',
-      },
-      networkConfigurations: {
-        5: {
-          nickname: 'Goerli',
-        },
-      },
+      ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
       currentCurrency: 'ETH',
       tokenList: {},
       accountsByChainId: {

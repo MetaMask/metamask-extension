@@ -3,7 +3,7 @@ name: Add release label to PR and linked issues when PR gets merged
 on:
   pull_request:
     branches:
-      - develop
+      - main
     types:
       - closed
 
@@ -12,25 +12,11 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
     steps:
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Checkout and setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
         with:
-          node-version: 'lts/*'
-
-      - run: corepack enable
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-            fetch-depth: 0 # This is needed to checkout all branches
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
-
-      - name: Install dependencies
-        run: yarn --immutable
+          is-high-risk-environment: false
+          fetch-depth: 0 # This is needed to checkout all branches
 
       - name: Get the next semver version
         id: get-next-semver-version

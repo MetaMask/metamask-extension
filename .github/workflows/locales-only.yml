@@ -1,0 +1,33 @@
+name: Locales only
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+jobs:
+  locales-only:
+    # For the `pull_request` event, the branch is `github.head_ref``.
+    if: ${{ github.head_ref == 'l10n_crowdin_action' }}
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout and setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        with:
+          is-high-risk-environment: false
+          cache-node-modules: 'true'
+
+      - name: Get changed files with git diff
+        run: yarn tsx .github/scripts/git-diff-default-branch.ts
+
+      - name: Validate locales only
+        run: yarn tsx .circleci/scripts/validate-locales-only.ts
+
+  test-lint:
+    needs:
+      - locales-only
+    uses: ./.github/workflows/test-lint.yml

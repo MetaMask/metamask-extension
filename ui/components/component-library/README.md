@@ -4,7 +4,7 @@ This folder contains design system components that are built 1:1 with the Figma 
 
 ## Architecture
 
-All components are built on top of the `Box` component and accept all `Box` [component props](/docs/components-componentlibrary-box--docs#props).
+All components are built on top of the `Box` component and accept all `Box` component props.
 
 ### Layout
 

@@ -1,4 +1,5 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
+import classnames from 'classnames';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import {
   Display,
@@ -18,6 +19,7 @@ export type SnapUIDropdownProps = {
   error?: string;
   options: { name: string; value: string }[];
   form?: string;
+  disabled?: boolean;
 };
 
 export const SnapUIDropdown: FunctionComponent<SnapUIDropdownProps> = ({
@@ -25,16 +27,17 @@ export const SnapUIDropdown: FunctionComponent<SnapUIDropdownProps> = ({
   label,
   error,
   form,
+  disabled,
   ...props
 }) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 
-  const initialValue = getValue<string>(name, form);
+  const initialValue = getValue(name, form) as string;
 
   const [value, setValue] = useState(initialValue ?? '');
 
   useEffect(() => {
-    if (initialValue) {
+    if (initialValue !== undefined && initialValue !== null) {
       setValue(initialValue);
     }
   }, [initialValue]);
@@ -46,7 +49,9 @@ export const SnapUIDropdown: FunctionComponent<SnapUIDropdownProps> = ({
 
   return (
     <Box
-      className="snap-ui-renderer__dropdown"
+      className={classnames('snap-ui-renderer__dropdown', {
+        'snap-ui-renderer__field': label !== undefined,
+      })}
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
     >
@@ -55,6 +60,10 @@ export const SnapUIDropdown: FunctionComponent<SnapUIDropdownProps> = ({
         data-testid="snaps-dropdown"
         selectedOption={value}
         onChange={handleChange}
+        style={{
+          border: '1px solid var(--color-border-muted)',
+        }}
+        disabled={disabled}
         {...props}
       />
       {error && (

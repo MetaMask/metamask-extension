@@ -1,5 +1,10 @@
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+  getEthAccounts,
+  getPermittedEthChainIds,
+} from '@metamask/multichain';
 import { createSelector } from 'reselect';
-import { CaveatTypes } from '../../../../shared/constants/permissions';
 
 /**
  * This file contains selectors for PermissionController selector event
@@ -25,14 +30,14 @@ export const getPermittedAccountsByOrigin = createSelector(
   getSubjects,
   (subjects) => {
     return Object.values(subjects).reduce((originToAccountsMap, subject) => {
-      const caveats = subject.permissions?.eth_accounts?.caveats || [];
+      const caveats =
+        subject.permissions?.[Caip25EndowmentPermissionName]?.caveats || [];
 
-      const caveat = caveats.find(
-        ({ type }) => type === CaveatTypes.restrictReturnedAccounts,
-      );
+      const caveat = caveats.find(({ type }) => type === Caip25CaveatType);
 
       if (caveat) {
-        originToAccountsMap.set(subject.origin, caveat.value);
+        const ethAccounts = getEthAccounts(caveat.value);
+        originToAccountsMap.set(subject.origin, ethAccounts);
       }
       return originToAccountsMap;
     }, new Map());
@@ -40,47 +45,53 @@ export const getPermittedAccountsByOrigin = createSelector(
 );
 
 /**
- * Given the current and previous exposed accounts for each PermissionController
- * subject, returns a new map containing all accounts that have changed.
- * The values of each map must be immutable values directly from the
- * PermissionController state, or an empty array instantiated in this
- * function.
+ * Get the authorized CAIP-25 scopes for each subject, keyed by origin.
+ * The values of the returned map are immutable values from the
+ * PermissionController state.
  *
- * @param {Map<string, string[]>} newAccountsMap - The new origin:accounts[] map.
- * @param {Map<string, string[]>} [previousAccountsMap] - The previous origin:accounts[] map.
- * @returns {Map<string, string[]>} The origin:accounts[] map of changed accounts.
+ * @returns {Map<string, Caip25Authorization>} The current origin:authorization map.
  */
-export const getChangedAccounts = (newAccountsMap, previousAccountsMap) => {
-  if (previousAccountsMap === undefined) {
-    return newAccountsMap;
-  }
+export const getAuthorizedScopesByOrigin = createSelector(
+  getSubjects,
+  (subjects) => {
+    return Object.values(subjects).reduce(
+      (originToAuthorizationsMap, subject) => {
+        const caveats =
+          subject.permissions?.[Caip25EndowmentPermissionName]?.caveats || [];
 
-  const changedAccounts = new Map();
-  if (newAccountsMap === previousAccountsMap) {
-    return changedAccounts;
-  }
+        const caveat = caveats.find(({ type }) => type === Caip25CaveatType);
 
-  const newOrigins = new Set([...newAccountsMap.keys()]);
+        if (caveat) {
+          originToAuthorizationsMap.set(subject.origin, caveat.value);
+        }
+        return originToAuthorizationsMap;
+      },
+      new Map(),
+    );
+  },
+);
 
-  for (const origin of previousAccountsMap.keys()) {
-    const newAccounts = newAccountsMap.get(origin) ?? [];
+/**
+ * Get the permitted chains for each subject, keyed by origin.
+ * The values of the returned map are immutable values from the
+ * PermissionController state.
+ *
+ * @returns {Map<string, string[]>} The current origin:chainIds[] map.
+ */
+export const getPermittedChainsByOrigin = createSelector(
+  getSubjects,
+  (subjects) => {
+    return Object.values(subjects).reduce((originToChainsMap, subject) => {
+      const caveats =
+        subject.permissions?.[Caip25EndowmentPermissionName]?.caveats || [];
 
-    // The values of these maps are references to immutable values, which is why
-    // a strict equality check is enough for diffing. The values are either from
-    // PermissionController state, or an empty array initialized in the previous
-    // call to this function. `newAccountsMap` will never contain any empty
-    // arrays.
-    if (previousAccountsMap.get(origin) !== newAccounts) {
-      changedAccounts.set(origin, newAccounts);
-    }
+      const caveat = caveats.find(({ type }) => type === Caip25CaveatType);
 
-    newOrigins.delete(origin);
-  }
-
-  // By now, newOrigins is either empty or contains some number of previously
-  // unencountered origins, and all of their accounts have "changed".
-  for (const origin of newOrigins.keys()) {
-    changedAccounts.set(origin, newAccountsMap.get(origin));
-  }
-  return changedAccounts;
-};
+      if (caveat) {
+        const ethChainIds = getPermittedEthChainIds(caveat.value);
+        originToChainsMap.set(subject.origin, ethChainIds);
+      }
+      return originToChainsMap;
+    }, new Map());
+  },
+);

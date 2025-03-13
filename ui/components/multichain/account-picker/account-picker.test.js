@@ -17,9 +17,6 @@ const render = (props = {}, state = {}) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
-      providerConfig: {
-        chainId: '0x99',
-      },
       ...state,
     },
   });

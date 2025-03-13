@@ -1,8 +1,4 @@
-const {
-  defaultGanacheOptions,
-  withFixtures,
-  unlockWallet,
-} = require('../../../helpers');
+const { withFixtures, unlockWallet } = require('../../../helpers');
 
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const FixtureBuilder = require('../../../fixture-builder');
@@ -25,7 +21,6 @@ describe('View ERC1155 NFT details', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC1155().build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
         testSpecificMock: mockIPFSRequest,
@@ -53,7 +48,7 @@ describe('View ERC1155 NFT details', function () {
         await driver.findVisibleElement('.nft-item__container');
 
         await driver.findElement({
-          css: '.nft-details__nft-frame',
+          css: '.nft-details__addressButton',
           text: '0x581c3...45947',
         });
       },

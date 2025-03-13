@@ -1,4 +1,4 @@
-import { InternalAccount } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { TransactionParams } from '@metamask/eth-json-rpc-middleware';
 import {
   TransactionController,
@@ -15,8 +15,8 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
-import { SecurityAlertResponse } from '../ppom/types';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import {
   AddDappTransactionRequest,
   AddTransactionOptions,
@@ -39,6 +39,9 @@ jest.mock('uuid', () => {
 const SECURITY_ALERT_ID_MOCK = '123';
 
 const INTERNAL_ACCOUNT_ADDRESS = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
+const INTERNAL_ACCOUNT = createMockInternalAccount({
+  address: INTERNAL_ACCOUNT_ADDRESS,
+});
 
 const TRANSACTION_PARAMS_MOCK: TransactionParams = {
   from: '0x1',
@@ -46,6 +49,7 @@ const TRANSACTION_PARAMS_MOCK: TransactionParams = {
 
 const TRANSACTION_OPTIONS_MOCK: AddTransactionOptions = {
   actionId: 'mockActionId',
+  networkClientId: 'mockNetworkClientId',
   origin: 'mockOrigin',
   requireApproval: false,
   type: TransactionType.simpleSend,
@@ -73,11 +77,6 @@ const TRANSACTION_REQUEST_MOCK: AddTransactionRequest = {
   waitForSubmit: false,
   internalAccounts: [],
 } as unknown as AddTransactionRequest;
-
-const SECURITY_ALERT_RESPONSE_MOCK: SecurityAlertResponse = {
-  result_type: BlockaidResultType.Malicious,
-  reason: BlockaidReason.maliciousDomain,
-};
 
 function createTransactionControllerMock() {
   return {
@@ -148,23 +147,6 @@ describe('Transaction Utils', () => {
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
         });
-      });
-
-      it('adds transaction with networkClientId if process.env.TRANSACTION_MULTICHAIN is set', async () => {
-        process.env.TRANSACTION_MULTICHAIN = '1';
-
-        await addTransaction(request);
-
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
-          ...TRANSACTION_OPTIONS_MOCK,
-          networkClientId: 'mockNetworkClientId',
-        });
-        process.env.TRANSACTION_MULTICHAIN = '';
       });
 
       it('returns transaction meta', async () => {
@@ -399,10 +381,6 @@ describe('Transaction Utils', () => {
 
     describe('validates using security provider', () => {
       it('adds loading response to request options', async () => {
-        validateRequestWithPPOMMock.mockResolvedValue(
-          SECURITY_ALERT_RESPONSE_MOCK,
-        );
-
         await addTransaction({
           ...request,
           securityAlertsEnabled: true,
@@ -423,29 +401,6 @@ describe('Transaction Utils', () => {
             securityAlertId: SECURITY_ALERT_ID_MOCK,
           },
         });
-      });
-
-      it('updates response after validation', async () => {
-        validateRequestWithPPOMMock.mockResolvedValue(
-          SECURITY_ALERT_RESPONSE_MOCK,
-        );
-
-        await addTransaction({
-          ...request,
-          securityAlertsEnabled: true,
-          chainId: '0x1',
-        });
-
-        await flushPromises();
-
-        expect(request.updateSecurityAlertResponse).toHaveBeenCalledTimes(1);
-        expect(request.updateSecurityAlertResponse).toHaveBeenCalledWith(
-          'eth_sendTransaction',
-          SECURITY_ALERT_ID_MOCK,
-          SECURITY_ALERT_RESPONSE_MOCK,
-        );
-
-        expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(1);
       });
 
       it('unless blockaid is disabled', async () => {
@@ -469,7 +424,7 @@ describe('Transaction Utils', () => {
         expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(0);
       });
 
-      it('send to users own acccount', async () => {
+      it('send to users own account', async () => {
         const sendRequest = {
           ...request,
           transactionParams: {
@@ -481,9 +436,7 @@ describe('Transaction Utils', () => {
           ...sendRequest,
           securityAlertsEnabled: false,
           chainId: '0x1',
-          internalAccounts: {
-            address: INTERNAL_ACCOUNT_ADDRESS,
-          } as InternalAccount,
+          internalAccounts: [INTERNAL_ACCOUNT],
         });
 
         expect(
@@ -494,27 +447,6 @@ describe('Transaction Utils', () => {
           request.transactionController.addTransaction,
         ).toHaveBeenCalledWith(
           sendRequest.transactionParams,
-          TRANSACTION_OPTIONS_MOCK,
-        );
-
-        expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(0);
-      });
-
-      it('unless chain is not supported', async () => {
-        await addTransaction({
-          ...request,
-          securityAlertsEnabled: true,
-          chainId: '0xF',
-        });
-
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledTimes(1);
-
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(
-          TRANSACTION_PARAMS_MOCK,
           TRANSACTION_OPTIONS_MOCK,
         );
 
@@ -588,27 +520,6 @@ describe('Transaction Utils', () => {
           securityAlertResponse: DAPP_REQUEST_MOCK.securityAlertResponse,
           type: undefined,
         });
-      });
-
-      it('adds transaction with networkClientId if process.env.TRANSACTION_MULTICHAIN is set', async () => {
-        process.env.TRANSACTION_MULTICHAIN = '1';
-
-        await addDappTransaction(dappRequest);
-
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
-          ...TRANSACTION_OPTIONS_MOCK,
-          networkClientId: 'mockNetworkClientId',
-          method: DAPP_REQUEST_MOCK.method,
-          requireApproval: true,
-          securityAlertResponse: DAPP_REQUEST_MOCK.securityAlertResponse,
-          type: undefined,
-        });
-        process.env.TRANSACTION_MULTICHAIN = '';
       });
 
       it('returns transaction hash', async () => {

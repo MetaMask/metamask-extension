@@ -13,8 +13,8 @@ import {
   selectIsMetamaskNotificationsEnabled,
   getIsUpdatingMetamaskNotifications,
 } from '../../../../selectors/metamask-notifications/metamask-notifications';
-import { selectIsProfileSyncingEnabled } from '../../../../selectors/metamask-notifications/profile-syncing';
-import { useCreateNotifications } from '../../../../hooks/metamask-notifications/useNotifications';
+import { selectIsProfileSyncingEnabled } from '../../../../selectors/identity/profile-syncing';
+import { useEnableNotifications } from '../../../../hooks/metamask-notifications/useNotifications';
 import { NOTIFICATIONS_ROUTE } from '../../../../helpers/constants/routes';
 
 import {
@@ -51,32 +51,39 @@ export default function TurnOnMetamaskNotifications() {
   );
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
 
-  const [buttonState, setButtonState] = useState<boolean>(
+  const [isLoading, setIsLoading] = useState<boolean>(
     isUpdatingMetamaskNotifications,
   );
 
-  const { createNotifications, error } = useCreateNotifications();
+  const { enableNotifications, error } = useEnableNotifications();
 
   const handleTurnOnNotifications = async () => {
-    setButtonState(true);
-    await createNotifications();
+    setIsLoading(true);
     trackEvent({
-      category: MetaMetricsEventCategory.EnableNotifications,
-      event: MetaMetricsEventName.EnablingNotifications,
+      category: MetaMetricsEventCategory.NotificationsActivationFlow,
+      event: MetaMetricsEventName.NotificationsActivated,
       properties: {
-        isProfileSyncingEnabled,
+        is_profile_syncing_enabled: true,
+        action_type: 'activated',
       },
     });
+    await enableNotifications();
   };
 
   const handleHideModal = () => {
     hideModal();
-    trackEvent({
-      category: MetaMetricsEventCategory.EnableNotifications,
-      event: MetaMetricsEventName.DismissEnablingNotificationsFlow,
-      properties: {
-        isProfileSyncingEnabled,
-      },
+    setIsLoading((prevLoadingState) => {
+      if (!prevLoadingState) {
+        trackEvent({
+          category: MetaMetricsEventCategory.NotificationsActivationFlow,
+          event: MetaMetricsEventName.NotificationsActivated,
+          properties: {
+            is_profile_syncing_enabled: isProfileSyncingEnabled,
+            action_type: 'dismissed',
+          },
+        });
+      }
+      return prevLoadingState;
     });
   };
 
@@ -147,8 +154,8 @@ export default function TurnOnMetamaskNotifications() {
           }}
           submitButtonProps={{
             children: t('turnOnMetamaskNotificationsButton'),
-            loading: buttonState,
-            disabled: buttonState,
+            loading: isLoading,
+            disabled: isLoading,
             'data-testid': 'turn-on-notifications-button',
           }}
         />

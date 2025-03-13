@@ -39,8 +39,9 @@
       }
     }
 
-    &__terms-label {
-      display: flex;
+    // override Checkbox
+    .mm-checkbox__input-wrapper {
+      margin-top: 2px;
     }
 
     .form-field__input {

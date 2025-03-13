@@ -12,10 +12,13 @@ import {
 } from '../row';
 import { Box } from '../../../../../component-library';
 import { MultipleAlertModal } from '../../../../alert-system/multiple-alert-modal';
+import { useAlertMetrics } from '../../../../alert-system/contexts/alertMetricsContext';
 
 export type ConfirmInfoAlertRowProps = ConfirmInfoRowProps & {
   alertKey: string;
   ownerId: string;
+  /** Determines whether to display the row only when an alert is present. */
+  isShownWithAlertsOnly?: boolean;
 };
 
 function getAlertTextColors(
@@ -29,8 +32,6 @@ function getAlertTextColors(
     case Severity.Warning:
       return TextColor.warningDefault;
     case ConfirmInfoRowVariant.Default:
-    case Severity.Info:
-      return TextColor.infoDefault;
     default:
       return TextColor.textDefault;
   }
@@ -40,12 +41,15 @@ export const ConfirmInfoAlertRow = ({
   alertKey,
   ownerId,
   variant,
+  isShownWithAlertsOnly = false,
   ...rowProperties
 }: ConfirmInfoAlertRowProps) => {
+  const { trackInlineAlertClicked } = useAlertMetrics();
   const { getFieldAlerts } = useAlerts(ownerId);
   const fieldAlerts = getFieldAlerts(alertKey);
   const hasFieldAlert = fieldAlerts.length > 0;
   const selectedAlertSeverity = fieldAlerts[0]?.severity;
+  const selectedAlertKey = fieldAlerts[0]?.key;
 
   const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
 
@@ -55,6 +59,7 @@ export const ConfirmInfoAlertRow = ({
 
   const handleInlineAlertClick = () => {
     setAlertModalVisible(true);
+    trackInlineAlertClicked(selectedAlertKey);
   };
 
   const confirmInfoRowProps = {
@@ -63,6 +68,10 @@ export const ConfirmInfoAlertRow = ({
     color: getAlertTextColors(variant ?? selectedAlertSeverity),
     variant,
   };
+
+  if (isShownWithAlertsOnly && !hasFieldAlert) {
+    return null;
+  }
 
   const inlineAlert = hasFieldAlert ? (
     <Box marginLeft={1}>
@@ -77,10 +86,12 @@ export const ConfirmInfoAlertRow = ({
     <>
       {alertModalVisible && (
         <MultipleAlertModal
-          alertKey={fieldAlerts[0].key}
+          alertKey={selectedAlertKey}
           ownerId={ownerId}
           onFinalAcknowledgeClick={handleModalClose}
           onClose={handleModalClose}
+          showCloseIcon={false}
+          skipAlertNavigation={true}
         />
       )}
       <ConfirmInfoRow {...confirmInfoRowProps} labelChildren={inlineAlert} />

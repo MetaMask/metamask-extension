@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SensitiveText should render correctly 1`] = `
+<div>
+  <p
+    class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+  >
+    Sensitive Information
+  </p>
+</div>
+`;

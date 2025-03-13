@@ -10,7 +10,7 @@ jest.mock('../../../contexts/transaction-modal', () => ({
 }));
 
 const EXPECTED_BUY_URL =
-  'https://portfolio.test/buy?metamaskEntry=ext_buy_sell_button&chainId=0x5';
+  'https://portfolio.test/buy?metamaskEntry=ext_buy_sell_button&chainId=0x5&metricsEnabled=false';
 
 function processAlertActionKey(actionKey: string) {
   const { result } = renderHookWithProvider(

@@ -2,6 +2,8 @@ import { SubjectType } from '@metamask/permission-controller';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { isEvmAccountType } from '@metamask/keyring-api';
+import { Caip25EndowmentPermissionName } from '@metamask/multichain';
 import {
   getAccountsWithLabels,
   getLastConnectedInfo,
@@ -53,13 +55,15 @@ const mapStateToProps = (state, ownProps) => {
     (req) => req.metadata.id === permissionsRequestId,
   );
 
-  const isRequestingAccounts = Boolean(
-    permissionsRequest?.permissions?.eth_accounts,
-  );
-
-  const { metadata = {} } = permissionsRequest || {};
+  const { metadata = {}, diff = {} } = permissionsRequest || {};
   const { origin } = metadata;
   const nativeCurrency = getNativeCurrency(state);
+
+  const isRequestApprovalPermittedChains = Boolean(diff?.permissionDiffMap);
+  const isRequestingAccounts = Boolean(
+    permissionsRequest?.permissions?.[Caip25EndowmentPermissionName] &&
+      !isRequestApprovalPermittedChains,
+  );
 
   const targetSubjectMetadata = getTargetSubjectMetadata(state, origin) ?? {
     name: getURLHostName(origin) || origin,
@@ -84,7 +88,11 @@ const mapStateToProps = (state, ownProps) => {
 
   const requestState = getRequestState(state, permissionsRequestId) || {};
 
-  const accountsWithLabels = getAccountsWithLabels(state);
+  // We only consider EVM accounts.
+  // Connections with non-EVM accounts (Bitcoin only for now) are used implicitly and handled by the Bitcoin Snap itself.
+  const accountsWithLabels = getAccountsWithLabels(state).filter((account) =>
+    isEvmAccountType(account.type),
+  );
 
   const lastConnectedInfo = getLastConnectedInfo(state) || {};
   const addressLastConnectedMap = lastConnectedInfo[origin]?.accounts || {};

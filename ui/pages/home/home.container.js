@@ -1,32 +1,14 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { showCustodianDeepLink } from '@metamask-institutional/extension';
-import {
-  getMmiPortfolioEnabled,
-  getMmiPortfolioUrl,
-  getCustodianDeepLink,
-  getWaitForConfirmDeepLinkDialog,
-} from '../../selectors/institutional/selectors';
-import {
-  mmiActionsFactory,
-  setCustodianDeepLink,
-} from '../../store/institutional/institution-background';
-import { showCustodyConfirmLink } from '../../store/institutional/institution-actions';
-import { getInstitutionalConnectRequests } from '../../ducks/institutional/institutional';
-///: END:ONLY_INCLUDE_IF
+
 import {
   activeTabHasPermissions,
   getUseExternalServices,
-  getFirstPermissionRequest,
-  getFirstSnapInstallOrUpdateRequest,
   getIsMainnet,
   getOriginOfCurrentTab,
   getTotalUnapprovedCount,
-  getUnapprovedTemplatedConfirmations,
   getWeb3ShimUsageStateForOrigin,
-  getInfuraBlocked,
   getShowWhatsNewPopup,
   getSortedAnnouncementsToShow,
   getShowRecoveryPhraseReminder,
@@ -38,25 +20,15 @@ import {
   getNewTokensImported,
   getShouldShowSeedPhraseReminder,
   getRemoveNftMessage,
-  getSuggestedTokens,
-  getSuggestedNfts,
   getApprovalFlows,
   getNewTokensImportedError,
   hasPendingApprovals,
   getSelectedInternalAccount,
   getQueuedRequestCount,
   getEditedNetwork,
-  getPrioritizedUnapprovedTemplatedConfirmations,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  getAccountType,
-  ///: END:ONLY_INCLUDE_IF
+  selectPendingApprovalsForNavigation,
 } from '../../selectors';
-import {
-  getIsShowTokenAutodetectModal,
-  getIsSmartTransactionsOptInModalAvailable,
-  getIsShowNftAutodetectModal,
-} from '../../../shared/modules/selectors';
-
+import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
 import {
   closeNotificationPopup,
   setConnectedStatusPopoverHasBeenShown,
@@ -74,9 +46,6 @@ import {
   setActiveNetwork,
   setNewTokensImportedError,
   setDataCollectionForMarketing,
-  setShowTokenAutodetectModal,
-  setShowTokenAutodetectModalOnUpgrade,
-  setShowNftAutodetectModal,
   setEditedNetwork,
 } from '../../store/actions';
 import {
@@ -86,6 +55,8 @@ import {
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
 import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
 import { fetchBuyableChains } from '../../ducks/ramps';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { getIsBrowserDeprecated } from '../../helpers/utils/util';
 import {
@@ -99,7 +70,6 @@ import {
   AlertTypes,
   Web3ShimUsageAlertStates,
 } from '../../../shared/constants/alerts';
-import { hasTransactionPendingApprovals } from '../../selectors/transactions';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -109,6 +79,7 @@ const mapStateToProps = (state) => {
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
     swapsState,
+    bridgeState,
     dataCollectionForMarketing,
     participateInMetaMetrics,
     firstTimeFlowType,
@@ -121,27 +92,11 @@ const mapStateToProps = (state) => {
   const totalUnapprovedAndQueuedRequestCount =
     totalUnapprovedCount + queuedRequestCount;
   const swapsEnabled = getSwapsFeatureIsLive(state);
-  const pendingConfirmations = getUnapprovedTemplatedConfirmations(state);
-  const pendingConfirmationsPrioritized =
-    getPrioritizedUnapprovedTemplatedConfirmations(state);
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const institutionalConnectRequests = getInstitutionalConnectRequests(state);
-  ///: END:ONLY_INCLUDE_IF
+  const pendingApprovals = selectPendingApprovalsForNavigation(state);
 
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
-
-  let firstPermissionsRequest, firstPermissionsRequestId;
-  firstPermissionsRequest = getFirstPermissionRequest(state);
-  firstPermissionsRequestId = firstPermissionsRequest?.metadata.id || null;
-
-  // getFirstPermissionRequest should be updated with snap update logic once we hit main extension release
-
-  if (!firstPermissionsRequest) {
-    firstPermissionsRequest = getFirstSnapInstallOrUpdateRequest(state);
-    firstPermissionsRequestId = firstPermissionsRequest?.metadata.id || null;
-  }
 
   const originOfCurrentTab = getOriginOfCurrentTab(state);
   const shouldShowWeb3ShimUsageNotification =
@@ -151,19 +106,21 @@ const mapStateToProps = (state) => {
     getWeb3ShimUsageStateForOrigin(state, originOfCurrentTab) ===
       Web3ShimUsageAlertStates.recorded;
 
-  const hasWatchTokenPendingApprovals = getSuggestedTokens(state).length > 0;
-
-  const hasWatchNftPendingApprovals = getSuggestedNfts(state).length > 0;
-
   const hasAllowedPopupRedirectApprovals = hasPendingApprovals(state, [
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
     SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval,
+    SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
     SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
     ///: END:ONLY_INCLUDE_IF
   ]);
 
-  const TEMPORARY_DISABLE_WHATS_NEW = true;
+  let TEMPORARY_DISABLE_WHATS_NEW = true;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  TEMPORARY_DISABLE_WHATS_NEW = false;
+  ///: END:ONLY_INCLUDE_IF
+
   const showWhatsNewPopup = TEMPORARY_DISABLE_WHATS_NEW
     ? false
     : getShowWhatsNewPopup(state);
@@ -172,16 +129,12 @@ const mapStateToProps = (state) => {
     useExternalServices: getUseExternalServices(state),
     isBasicConfigurationModalOpen: appState.showBasicFunctionalityModal,
     forgottenPassword,
-    hasWatchTokenPendingApprovals,
-    hasWatchNftPendingApprovals,
     swapsEnabled,
-    hasTransactionPendingApprovals: hasTransactionPendingApprovals(state),
     shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
     isPopup,
     isNotification,
     dataCollectionForMarketing,
     selectedAddress,
-    firstPermissionsRequestId,
     totalUnapprovedCount,
     totalUnapprovedAndQueuedRequestCount,
     participateInMetaMetrics,
@@ -193,11 +146,11 @@ const mapStateToProps = (state) => {
     haveSwapsQuotes: Boolean(Object.values(swapsState.quotes || {}).length),
     swapsFetchParams: swapsState.fetchParams,
     showAwaitingSwapScreen: swapsState.routeState === 'awaiting',
+    haveBridgeQuotes: Boolean(Object.values(bridgeState?.quotes || {}).length),
     isMainnet: getIsMainnet(state),
     originOfCurrentTab,
     shouldShowWeb3ShimUsageNotification,
-    pendingConfirmations,
-    pendingConfirmationsPrioritized,
+    pendingApprovals,
     infuraBlocked: getInfuraBlocked(state),
     announcementsToShow: getSortedAnnouncementsToShow(state).length > 0,
     showWhatsNewPopup,
@@ -216,28 +169,11 @@ const mapStateToProps = (state) => {
     newNetworkAddedConfigurationId: appState.newNetworkAddedConfigurationId,
     onboardedInThisUISession: appState.onboardedInThisUISession,
     hasAllowedPopupRedirectApprovals,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    waitForConfirmDeepLinkDialog: getWaitForConfirmDeepLinkDialog(state),
-    institutionalConnectRequests,
-    modalOpen: state.appState.modal.open,
-    mmiPortfolioUrl: getMmiPortfolioUrl(state),
-    mmiPortfolioEnabled: getMmiPortfolioEnabled(state),
-    notificationsToShow: getSortedAnnouncementsToShow(state).length > 0,
-    custodianDeepLink: getCustodianDeepLink(state),
-    accountType: getAccountType(state),
-    ///: END:ONLY_INCLUDE_IF
-    isSmartTransactionsOptInModalAvailable:
-      getIsSmartTransactionsOptInModalAvailable(state),
-    isShowTokenAutodetectModal: getIsShowTokenAutodetectModal(state),
-    isShowNftAutodetectModal: getIsShowNftAutodetectModal(state),
+    showMultiRpcModal: state.metamask.preferences.showMultiRpcModal,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const mmiActions = mmiActionsFactory();
-  ///: END:ONLY_INCLUDE_IF
-
   return {
     setDataCollectionForMarketing: (val) =>
       dispatch(setDataCollectionForMarketing(val)),
@@ -283,43 +219,6 @@ const mapDispatchToProps = (dispatch) => {
     setActiveNetwork: (networkConfigurationId) => {
       dispatch(setActiveNetwork(networkConfigurationId));
     },
-    setTokenAutodetectModal: (val) => {
-      dispatch(setShowTokenAutodetectModal(val));
-    },
-    setShowTokenAutodetectModalOnUpgrade: (val) => {
-      dispatch(setShowTokenAutodetectModalOnUpgrade(val));
-    },
-    setNftAutodetectModal: (val) => {
-      dispatch(setShowNftAutodetectModal(val));
-    },
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    setWaitForConfirmDeepLinkDialog: (wait) =>
-      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
-    showCustodianDeepLink: ({
-      txId = undefined,
-      fromAddress,
-      custodyId,
-      onDeepLinkFetched = () => undefined,
-      onDeepLinkShown = () => undefined,
-      isSignature = false,
-      isNotification = false,
-    }) =>
-      showCustodianDeepLink({
-        dispatch,
-        mmiActions,
-        txId,
-        fromAddress,
-        custodyId,
-        closeNotification: isNotification,
-        onDeepLinkFetched,
-        onDeepLinkShown,
-        showCustodyConfirmLink,
-        isSignature,
-      }),
-    cleanCustodianDeepLink: () => {
-      dispatch(setCustodianDeepLink({}));
-    },
-    ///: END:ONLY_INCLUDE_IF
     setBasicFunctionalityModalOpen: () =>
       dispatch(openBasicFunctionalityModal()),
     fetchBuyableChains: () => dispatch(fetchBuyableChains()),

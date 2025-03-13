@@ -12,10 +12,13 @@ import {
   getDomainResolutions,
   resetDomainResolution,
 } from '../../../../ducks/domains';
+import { getAddressBook, getInternalAccounts } from '../../../../selectors';
 import AddContact from './add-contact.component';
 
 const mapStateToProps = (state) => {
   return {
+    addressBook: getAddressBook(state),
+    internalAccounts: getInternalAccounts(state),
     qrCodeData: getQrCodeData(state),
     domainError: getDomainError(state),
     domainResolutions: getDomainResolutions(state),

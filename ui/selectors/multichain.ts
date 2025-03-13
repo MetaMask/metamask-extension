@@ -1,56 +1,111 @@
 import PropTypes from 'prop-types';
-import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
-import { ProviderConfig } from '@metamask/network-controller';
-import type { RatesControllerState } from '@metamask/assets-controllers';
-import { CaipChainId, KnownCaipNamespace } from '@metamask/utils';
-import { ChainId } from '@metamask/controller-utils';
-import { createSelector } from '@reduxjs/toolkit';
+import { isEvmAccountType, Transaction } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
+import type {
+  MultichainBalancesControllerState,
+  RatesControllerState,
+  MultichainAssetsControllerState,
+  MultichainAssetsRatesControllerState,
+} from '@metamask/assets-controllers';
+import { CaipChainId, Hex, KnownCaipNamespace } from '@metamask/utils';
+import { createSelector } from 'reselect';
+import { NetworkType } from '@metamask/controller-utils';
+import { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
+import {
+  NetworkConfiguration,
+  RpcEndpointType,
+} from '@metamask/network-controller';
 import { Numeric } from '../../shared/modules/Numeric';
 import {
   MultichainProviderConfig,
   MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
+  MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET,
+  MULTICHAIN_TOKEN_IMAGE_MAP,
 } from '../../shared/constants/multichain/networks';
 import {
   getCompletedOnboarding,
   getConversionRate,
   getNativeCurrency,
-  getProviderConfig,
-} from '../ducks/metamask/metamask';
-import { BalancesControllerState } from '../../app/scripts/lib/accounts/BalancesController';
-import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
-import { AccountsState } from './accounts';
-import {
-  getAllNetworks,
-  getCurrentChainId,
   getCurrentCurrency,
+} from '../ducks/metamask/metamask';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  TEST_NETWORK_IDS,
+  CHAIN_IDS,
+} from '../../shared/constants/network';
+import {
+  getProviderConfig,
+  NetworkState,
+  getNetworkConfigurationsByChainId,
+  getCurrentChainId,
+} from '../../shared/modules/selectors/networks';
+// eslint-disable-next-line import/no-restricted-paths
+import { getConversionRatesForNativeAsset } from '../../app/scripts/lib/util';
+import {
+  AccountsState,
+  getInternalAccounts,
+  getSelectedInternalAccount,
+  isSolanaAccount,
+} from './accounts';
+import {
   getIsMainnet,
   getMaybeSelectedInternalAccount,
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
-  getSelectedInternalAccount,
   getShouldShowFiat,
-} from '.';
+  getShowFiatInTestnets,
+} from './selectors';
+
+export type AssetsState = {
+  metamask: MultichainAssetsControllerState;
+};
+
+export type AssetsRatesState = {
+  metamask: MultichainAssetsRatesControllerState;
+};
 
 export type RatesState = {
   metamask: RatesControllerState;
 };
 
 export type BalancesState = {
-  metamask: BalancesControllerState;
+  metamask: MultichainBalancesControllerState;
 };
 
-export type MultichainState = AccountsState & RatesState & BalancesState;
+export type TransactionsState = {
+  metamask: MultichainTransactionsControllerState;
+};
+
+export type MultichainState = AccountsState &
+  RatesState &
+  BalancesState &
+  TransactionsState &
+  NetworkState &
+  AssetsRatesState &
+  AssetsState;
+
+// TODO: Remove after updating to @metamask/network-controller 20.0.0
+export type ProviderConfigWithImageUrlAndExplorerUrl = {
+  rpcUrl?: string;
+  type: NetworkType;
+  chainId: Hex;
+  ticker: string;
+  nickname?: string;
+  id?: string;
+} & {
+  rpcPrefs?: { blockExplorerUrl?: string; imageUrl?: string };
+};
 
 export type MultichainNetwork = {
   nickname: string;
   isEvmNetwork: boolean;
   chainId: CaipChainId;
   network: // TODO: Maybe updates ProviderConfig to add rpcPrefs.imageUrl field
-  | (ProviderConfig & {
-        rpcPrefs?: { blockExplorerUrl?: string; imageUrl?: string };
-      })
-    | MultichainProviderConfig;
+  ProviderConfigWithImageUrlAndExplorerUrl | MultichainProviderConfig;
 };
 
 export const MultichainNetworkPropType = PropTypes.shape({
@@ -111,17 +166,27 @@ export function getMultichainNetwork(
 ): MultichainNetwork {
   const isEvm = getMultichainIsEvm(state, account);
 
-  // EVM networks
-  const evmNetworks: ProviderConfig[] = getAllNetworks(state);
-  const evmChainId: ChainId = getCurrentChainId(state);
-
   if (isEvm) {
-    const evmNetwork: ProviderConfig =
-      evmNetworks.find((provider) => provider.chainId === evmChainId) ??
-      getProviderConfig(state); // We fallback to the original selector otherwise
+    // EVM networks
+    const evmChainId: Hex = getCurrentChainId(state);
 
+    // TODO: Update to use network configurations when @metamask/network-controller is updated to 20.0.0
+    // ProviderConfig will be deprecated to use NetworkConfigurations
+    // When a user updates a network name its only updated in the NetworkConfigurations.
+    const evmNetwork: ProviderConfigWithImageUrlAndExplorerUrl =
+      getProviderConfig(state) as ProviderConfigWithImageUrlAndExplorerUrl;
+
+    const evmChainIdKey =
+      evmChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP;
+
+    evmNetwork.rpcPrefs = {
+      ...evmNetwork.rpcPrefs,
+      imageUrl: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[evmChainIdKey],
+    };
+
+    const networkConfigurations = getNetworkConfigurationsByChainId(state);
     return {
-      nickname: 'Ethereum',
+      nickname: networkConfigurations[evmChainId]?.name ?? evmNetwork.rpcUrl,
       isEvmNetwork: true,
       // We assume the chain ID is `string` or `number`, so we convert it to a
       // `Number` to be compliant with EIP155 CAIP chain ID
@@ -154,7 +219,6 @@ export function getMultichainNetwork(
     // TODO: Adapt this for other non-EVM networks
     nickname: nonEvmNetwork.nickname,
     isEvmNetwork: false,
-    // FIXME: We should use CAIP-2 chain ID here, and not only the reference part
     chainId: nonEvmNetwork?.chainId,
     network: nonEvmNetwork,
   };
@@ -189,6 +253,16 @@ export function getMultichainIsBitcoin(
   return !isEvm && symbol === 'BTC';
 }
 
+export function getMultichainIsSolana(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
+  const isEvm = getMultichainIsEvm(state, account);
+  const { symbol } = getMultichainDefaultToken(state, account);
+
+  return !isEvm && symbol === 'SOL';
+}
+
 /**
  * Retrieves the provider configuration for a multichain network.
  *
@@ -207,8 +281,11 @@ export function getMultichainProviderConfig(
   return getMultichainNetwork(state, account).network;
 }
 
-export function getMultichainCurrentNetwork(state: MultichainState) {
-  return getMultichainProviderConfig(state);
+export function getMultichainCurrentNetwork(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
+  return getMultichainProviderConfig(state, account);
 }
 
 export function getMultichainNativeCurrency(
@@ -221,18 +298,7 @@ export function getMultichainNativeCurrency(
 }
 
 export function getMultichainCurrentCurrency(state: MultichainState) {
-  const currentCurrency = getCurrentCurrency(state);
-
-  if (getMultichainIsEvm(state)) {
-    return currentCurrency;
-  }
-
-  // For non-EVM:
-  // To mimic `getCurrentCurrency` we only consider fiat values, otherwise we
-  // fallback to the current ticker symbol value
-  return currentCurrency && currentCurrency.toLowerCase() === 'usd'
-    ? 'usd'
-    : getMultichainProviderConfig(state).ticker;
+  return getCurrentCurrency(state);
 }
 
 export function getMultichainCurrencyImage(
@@ -261,10 +327,13 @@ export function getMultichainShouldShowFiat(
   state: MultichainState,
   account?: InternalAccount,
 ) {
-  return getMultichainIsEvm(state, account)
+  const selectedAccount = account ?? getSelectedInternalAccount(state);
+  const isTestnet = getMultichainIsTestnet(state, selectedAccount);
+  const isMainnet = !isTestnet;
+
+  return getMultichainIsEvm(state, selectedAccount)
     ? getShouldShowFiat(state)
-    : // For now we force this for non-EVM
-      true;
+    : isMainnet || (isTestnet && getShowFiatInTestnets(state));
 }
 
 export function getMultichainDefaultToken(
@@ -273,7 +342,7 @@ export function getMultichainDefaultToken(
 ) {
   const symbol = getMultichainIsEvm(state, account)
     ? // We fallback to 'ETH' to keep original behavior of `getSwapsDefaultToken`
-      getProviderConfig(state).ticker ?? 'ETH'
+      getProviderConfig(state)?.ticker ?? 'ETH'
     : getMultichainProviderConfig(state, account).ticker;
 
   return { symbol };
@@ -284,17 +353,45 @@ export function getMultichainCurrentChainId(state: MultichainState) {
   return chainId;
 }
 
+export function isChainIdMainnet(chainId: string) {
+  return chainId === CHAIN_IDS.MAINNET;
+}
+
 export function getMultichainIsMainnet(
   state: MultichainState,
   account?: InternalAccount,
 ) {
   const selectedAccount = account ?? getSelectedInternalAccount(state);
   const providerConfig = getMultichainProviderConfig(state, selectedAccount);
-  return getMultichainIsEvm(state)
-    ? getIsMainnet(state)
+
+  if (getMultichainIsEvm(state, account)) {
+    return getIsMainnet(state);
+  }
+
+  const mainnet = (
+    MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET as Record<string, string>
+  )[selectedAccount.type];
+  return providerConfig.chainId === mainnet ?? false;
+}
+
+export function getMultichainIsTestnet(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
+  // NOTE: Since there are 2 different implementations for `IsTestnet` and `IsMainnet` we follow
+  // the same pattern here too!
+  const selectedAccount = account ?? getSelectedInternalAccount(state);
+  const providerConfig = getMultichainProviderConfig(state, selectedAccount);
+  return getMultichainIsEvm(state, account)
+    ? // FIXME: There are multiple ways of checking for an EVM test network, but
+      // current implementation differ between each other. So we do not use
+      // `getIsTestnet` here and uses the actual `TEST_NETWORK_IDS` which seems
+      // more up-to-date
+      (TEST_NETWORK_IDS as string[]).includes(providerConfig.chainId)
     : // TODO: For now we only check for bitcoin, but we will need to
       // update this for other non-EVM networks later!
-      providerConfig.chainId === MultichainNetworks.BITCOIN;
+      (providerConfig as MultichainProviderConfig).chainId ===
+        MultichainNetworks.BITCOIN_TESTNET;
 }
 
 export function getMultichainBalances(
@@ -303,18 +400,67 @@ export function getMultichainBalances(
   return state.metamask.balances;
 }
 
+export function getMultichainTransactions(
+  state: MultichainState,
+): TransactionsState['metamask']['nonEvmTransactions'] {
+  return state.metamask.nonEvmTransactions;
+}
+
+export function getSelectedAccountMultichainTransactions(
+  state: MultichainState,
+):
+  | { transactions: Transaction[]; next: string | null; lastUpdated: number }
+  | undefined {
+  const selectedAccount = getSelectedInternalAccount(state);
+
+  if (isEvmAccountType(selectedAccount.type)) {
+    return undefined;
+  }
+
+  return state.metamask.nonEvmTransactions[selectedAccount.id];
+}
+
 export const getMultichainCoinRates = (state: MultichainState) => {
   return state.metamask.rates;
 };
 
-function getBtcCachedBalance(state: MultichainState) {
+function getNonEvmCachedBalance(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
   const balances = getMultichainBalances(state);
-  const account = getSelectedInternalAccount(state);
-  const asset = getMultichainIsMainnet(state)
-    ? MultichainNativeAssets.BITCOIN
-    : MultichainNativeAssets.BITCOIN_TESTNET;
+  const selectedAccount = account ?? getSelectedInternalAccount(state);
+  const network = getMultichainCurrentNetwork(state);
 
-  return balances?.[account.id]?.[asset]?.amount;
+  // We assume that there's at least one asset type in and that is the native
+  // token for that network.
+  const asset =
+    MULTICHAIN_NETWORK_TO_ASSET_TYPES[
+      network.chainId as MultichainNetworks
+    ]?.[0];
+
+  if (!asset) {
+    console.warn('Could not find asset type for network:', network);
+  }
+
+  const balancesForAccount = balances?.[selectedAccount.id];
+  if (!balancesForAccount) {
+    console.warn('Could not find balances for account:', selectedAccount);
+  }
+
+  const balanceOfAsset = balancesForAccount?.[asset];
+  if (!balanceOfAsset) {
+    console.warn('Could not find balance for asset:', asset);
+  }
+
+  return balanceOfAsset?.amount ?? 0;
+}
+
+export function getImageForChainId(chainId: string): string | undefined {
+  return {
+    ...CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+    ...MULTICHAIN_TOKEN_IMAGE_MAP,
+  }[chainId];
 }
 
 // This selector is not compatible with `useMultichainSelector` since it uses the selected
@@ -324,7 +470,7 @@ export function getMultichainSelectedAccountCachedBalance(
 ) {
   return getMultichainIsEvm(state)
     ? getSelectedAccountCachedBalance(state)
-    : getBtcCachedBalance(state);
+    : getNonEvmCachedBalance(state);
 }
 
 export const getMultichainSelectedAccountCachedBalanceIsZero = createSelector(
@@ -340,9 +486,56 @@ export function getMultichainConversionRate(
   state: MultichainState,
   account?: InternalAccount,
 ) {
-  const { ticker } = getMultichainProviderConfig(state, account);
+  const { conversionRates } = state.metamask;
+  const { chainId } = getMultichainNetwork(state, account);
+
+  const conversionRate = getConversionRatesForNativeAsset({
+    conversionRates,
+    chainId,
+  })?.rate;
 
   return getMultichainIsEvm(state, account)
     ? getConversionRate(state)
-    : getMultichainCoinRates(state)?.[ticker.toLowerCase()]?.conversionRate;
+    : conversionRate;
+}
+
+// TODO get this from the multichain network controller
+export const getMultichainNetworkConfigurationsByChainId = (
+  state: MultichainState,
+): Record<Hex | CaipChainId, NetworkConfiguration> => {
+  return {
+    ...getNetworkConfigurationsByChainId(state),
+    [MultichainNetworks.SOLANA]: {
+      ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
+      blockExplorerUrls: [],
+      name:
+        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA].nickname ?? '',
+      nativeCurrency: 'sol',
+      rpcEndpoints: [
+        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
+      ],
+      defaultRpcEndpointIndex: 0,
+      chainId: MultichainNetworks.SOLANA as unknown as Hex,
+    },
+  };
+};
+
+export function getLastSelectedNonEvmAccount(state: MultichainState) {
+  const nonEvmAccounts = getInternalAccounts(state);
+  const sortedNonEvmAccounts = nonEvmAccounts
+    .filter((account) => !isEvmAccountType(account.type))
+    .sort(
+      (a, b) => (b.metadata.lastSelected ?? 0) - (a.metadata.lastSelected ?? 0),
+    );
+  return sortedNonEvmAccounts.length > 0 ? sortedNonEvmAccounts[0] : undefined;
+}
+
+export function getLastSelectedSolanaAccount(state: MultichainState) {
+  const nonEvmAccounts = getInternalAccounts(state);
+  const sortedNonEvmAccounts = nonEvmAccounts
+    .filter((account) => isSolanaAccount(account))
+    .sort(
+      (a, b) => (b.metadata.lastSelected ?? 0) - (a.metadata.lastSelected ?? 0),
+    );
+  return sortedNonEvmAccounts.length > 0 ? sortedNonEvmAccounts[0] : undefined;
 }

@@ -1,13 +1,13 @@
 const FixtureBuilder = require('../../fixture-builder');
 const {
-  defaultGanacheOptions,
   logInWithBalanceValidation,
   openDapp,
-  switchToNotificationWindow,
   WINDOW_TITLES,
   withFixtures,
+  switchToNotificationWindow,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
+const { DAPP_URL } = require('../../constants');
 
 describe('Request Queue SwitchChain -> WatchAsset', function () {
   const smartContract = SMART_CONTRACTS.HST;
@@ -19,42 +19,76 @@ describe('Request Queue SwitchChain -> WatchAsset', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
-          .withPermissionControllerConnectedToTestDapp()
+
           .build(),
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         smartContract,
         title: this.test.fullTitle(),
       },
 
-      async ({ driver, contractRegistry, ganacheServer }) => {
+      async ({ driver, contractRegistry, localNodes }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await logInWithBalanceValidation(driver, ganacheServer);
+        await logInWithBalanceValidation(driver, localNodes[0]);
 
-        await openDapp(driver, contractAddress);
+        await openDapp(driver, contractAddress, DAPP_URL);
 
-        // Switch Ethereum Chain
-        await driver.clickElement('#switchEthereumChain');
+        await driver.findClickableElement({ text: 'Connect', tag: 'button' });
+        await driver.clickElement('#connectButton');
 
-        await driver.waitUntilXWindowHandles(3);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await switchToNotificationWindow(driver);
-        await driver.findElement({
-          text: 'Allow this site to switch the network?',
-          tag: 'h3',
+        const permissionsTab = await driver.findElement(
+          '[data-testid="permissions-tab"]',
+        );
+        await permissionsTab.click();
+
+        const editButtons = await driver.findElements('[data-testid="edit"]');
+
+        await editButtons[1].click();
+
+        // Disconnect Localhost 8545. By Default, this was the globally selected network
+        await driver.clickElement({
+          text: 'Localhost 8545',
+          tag: 'p',
         });
 
+        await driver.clickElement('[data-testid="connect-more-chains-button"]');
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Connect',
+          tag: 'button',
+        });
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+        // Switch Ethereum Chain
+        const switchEthereumChainRequest = JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: '0x539' }],
+        });
+
+        await driver.executeScript(
+          `window.ethereum.request(${switchEthereumChainRequest})`,
+        );
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.findElement({
+          text: 'Use your enabled networks',
+          tag: 'p',
+        });
         // Switch back to test dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
@@ -63,15 +97,14 @@ describe('Request Queue SwitchChain -> WatchAsset', function () {
           text: 'Add Token(s) to Wallet',
           tag: 'button',
         });
-
         await switchToNotificationWindow(driver);
 
         // Confirm Switch Network
         await driver.findClickableElement({
-          text: 'Switch network',
+          text: 'Confirm',
           tag: 'button',
         });
-        await driver.clickElement({ text: 'Switch network', tag: 'button' });
+        await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         await driver.waitUntilXWindowHandles(2);
       },

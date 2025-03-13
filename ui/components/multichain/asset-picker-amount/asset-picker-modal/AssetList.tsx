@@ -1,13 +1,10 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import {
-  getPreferences,
-  getSelectedAccountCachedBalance,
-} from '../../../../selectors';
-import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
-import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
-import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
+  AddNetworkFields,
+  NetworkConfiguration,
+} from '@metamask/network-controller';
+import type { CaipChainId } from '@metamask/utils';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { Box } from '../../../component-library';
@@ -19,68 +16,107 @@ import {
   FlexWrap,
 } from '../../../../helpers/constants/design-system';
 import { TokenListItem } from '../..';
-import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import { Asset, Token } from './types';
+import LoadingScreen from '../../../ui/loading-screen';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import {
+  getMultichainCurrentCurrency,
+  getMultichainCurrentChainId,
+  getImageForChainId,
+  getMultichainCurrentNetwork,
+  getMultichainNativeCurrency,
+  getMultichainSelectedAccountCachedBalance,
+} from '../../../../selectors/multichain';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import AssetComponent from './Asset';
+import { AssetWithDisplayData, ERC20Asset, NFT, NativeAsset } from './types';
 
 type AssetListProps = {
-  handleAssetChange: (token: Token) => void;
-  asset: Asset;
-  tokenList: Token[];
-  sendingAssetSymbol?: string;
-  memoizedSwapsBlockedTokens: Set<string>;
+  handleAssetChange: (
+    token: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
+  ) => void;
+  asset?:
+    | ERC20Asset
+    | NativeAsset
+    | Pick<NFT, 'type' | 'tokenId' | 'image' | 'symbol' | 'address'>;
+  tokenList: (
+    | AssetWithDisplayData<ERC20Asset>
+    | AssetWithDisplayData<NativeAsset>
+  )[];
+  isTokenDisabled?: (
+    token: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
+  ) => boolean;
+  network?:
+    | NetworkConfiguration
+    | AddNetworkFields
+    | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId });
+  isTokenListLoading?: boolean;
+  assetItemProps?: Pick<
+    React.ComponentProps<typeof TokenListItem>,
+    'isTitleNetworkName' | 'isTitleHidden'
+  >;
 };
 
 export default function AssetList({
   handleAssetChange,
   asset,
   tokenList,
-  sendingAssetSymbol,
-  memoizedSwapsBlockedTokens,
+  isTokenDisabled,
+  network,
+  isTokenListLoading = false,
+  assetItemProps = {},
 }: AssetListProps) {
-  const selectedToken = asset.details?.address;
+  const t = useI18nContext();
 
-  const nativeCurrency = useSelector(getNativeCurrency);
-  const balanceValue = useSelector(getSelectedAccountCachedBalance);
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
+  const currentNetwork = useMultichainSelector(getMultichainCurrentNetwork);
+  // If a network is provided, display tokens in that network
+  // Otherwise, assume tokens in the current network are displayed
+  const networkToUse = network ?? currentNetwork;
+  // This indicates whether tokens in the wallet's active network are displayed
+  const isSelectedNetworkActive =
+    networkToUse.chainId === currentNetwork.chainId;
 
-  const {
-    currency: primaryCurrency,
-    numberOfDecimals: primaryNumberOfDecimals,
-  } = useUserPreferencedCurrency(PRIMARY, { ethNumberOfDecimals: 4 });
+  const chainId = useMultichainSelector(getMultichainCurrentChainId);
+  const nativeCurrency = useMultichainSelector(getMultichainNativeCurrency);
+  const balanceValue = useMultichainSelector(
+    getMultichainSelectedAccountCachedBalance,
+  );
+  const currentCurrency = useMultichainSelector(getMultichainCurrentCurrency);
 
-  const {
-    currency: secondaryCurrency,
-    numberOfDecimals: secondaryNumberOfDecimals,
-  } = useUserPreferencedCurrency(SECONDARY, { ethNumberOfDecimals: 4 });
-
-  const [, primaryCurrencyProperties] = useCurrencyDisplay(balanceValue, {
-    numberOfDecimals: primaryNumberOfDecimals,
-    currency: primaryCurrency,
+  const [primaryCurrencyValue] = useCurrencyDisplay(balanceValue, {
+    currency: currentCurrency,
+    hideLabel: true,
   });
 
-  const [secondaryCurrencyDisplay, secondaryCurrencyProperties] =
-    useCurrencyDisplay(balanceValue, {
-      numberOfDecimals: secondaryNumberOfDecimals,
-      currency: secondaryCurrency,
-      hideLabel: true,
-    });
+  const [secondaryCurrencyValue] = useCurrencyDisplay(balanceValue, {
+    currency: nativeCurrency,
+  });
 
   return (
     <Box className="tokens-main-view-modal">
+      {isTokenListLoading && (
+        <LoadingScreen
+          loadingMessage={t('loadingTokenList')}
+          showLoadingSpinner
+        />
+      )}
       {tokenList.map((token) => {
         const tokenAddress = token.address?.toLowerCase();
-        const isSelected = tokenAddress === selectedToken?.toLowerCase();
-        const isDisabled = sendingAssetSymbol
-          ? !isEqualCaseInsensitive(sendingAssetSymbol, token.symbol) &&
-            memoizedSwapsBlockedTokens.has(tokenAddress as string)
-          : false;
+
+        const isMatchingChainId = token.chainId === networkToUse?.chainId;
+        const isMatchingAddress =
+          // the native asset can have an undefined, null, '', or zero address so compare symbols
+          (token.type === AssetType.native && token.symbol === asset?.symbol) ||
+          tokenAddress === asset?.address?.toLowerCase();
+        const isSelected = isMatchingChainId && isMatchingAddress;
+
+        const isDisabled = isTokenDisabled?.(token) ?? false;
+
         return (
           <Box
             padding={0}
             gap={0}
             margin={0}
-            key={token.symbol}
+            key={`${token.symbol}-${tokenAddress ?? ''}-${token.chainId}`}
             backgroundColor={
               isSelected
                 ? BackgroundColor.primaryMuted
@@ -112,31 +148,29 @@ export default function AssetList({
               flexWrap={FlexWrap.NoWrap}
               alignItems={AlignItems.center}
             >
-              <Box marginInlineStart={2}>
-                {token.type === AssetType.native ? (
+              <Box>
+                {token.type === AssetType.native &&
+                token.chainId === chainId &&
+                isSelectedNetworkActive ? (
+                  // Only use this component for the native token of the active network
                   <TokenListItem
-                    title={nativeCurrency}
-                    primary={
-                      primaryCurrencyProperties.value ??
-                      secondaryCurrencyProperties.value
-                    }
-                    tokenSymbol={
-                      useNativeCurrencyAsPrimaryCurrency
-                        ? primaryCurrency
-                        : secondaryCurrency
-                    }
-                    secondary={secondaryCurrencyDisplay}
+                    chainId={token.chainId}
+                    title={token.symbol}
+                    primary={primaryCurrencyValue}
+                    tokenSymbol={token.symbol}
+                    secondary={secondaryCurrencyValue}
                     tokenImage={token.image}
-                    isOriginalTokenSymbol
+                    isPrimaryTokenSymbolHidden
+                    tokenChainImage={getImageForChainId(token.chainId)}
+                    {...assetItemProps}
                   />
                 ) : (
                   <AssetComponent
-                    key={token.address}
                     {...token}
-                    decimalTokenAmount={token.string}
                     tooltipText={
                       isDisabled ? 'swapTokenNotAvailable' : undefined
                     }
+                    assetItemProps={assetItemProps}
                   />
                 )}
               </Box>

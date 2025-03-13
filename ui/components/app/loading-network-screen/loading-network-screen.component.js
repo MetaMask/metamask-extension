@@ -39,7 +39,7 @@ export default class LoadingNetworkScreen extends PureComponent {
     providerId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     showNetworkDropdown: PropTypes.func,
     setProviderArgs: PropTypes.array,
-    setProviderType: PropTypes.func,
+    setActiveNetwork: PropTypes.func,
     rollbackToPreviousProvider: PropTypes.func,
     isNetworkLoading: PropTypes.bool,
     showDeprecatedRpcUrlWarning: PropTypes.bool,
@@ -87,7 +87,7 @@ export default class LoadingNetworkScreen extends PureComponent {
   };
 
   renderConnectionFailureNotification = (message, showTryAgain = false) => {
-    const { showNetworkDropdown, setProviderArgs, setProviderType } =
+    const { showNetworkDropdown, setProviderArgs, setActiveNetwork } =
       this.props;
 
     return (
@@ -128,7 +128,7 @@ export default class LoadingNetworkScreen extends PureComponent {
             <ButtonPrimary
               onClick={() => {
                 this.setState({ showErrorScreen: false });
-                setProviderType(...setProviderArgs);
+                setActiveNetwork(...setProviderArgs);
                 window.clearTimeout(this.cancelCallTimeout);
                 this.cancelCallTimeout = setTimeout(
                   this.cancelCall,

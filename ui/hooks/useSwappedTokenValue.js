@@ -5,7 +5,7 @@ import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
 } from '../../shared/modules/swaps.utils';
-import { getCurrentChainId } from '../selectors';
+import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 
 /**

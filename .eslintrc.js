@@ -21,6 +21,36 @@ module.exports = {
   plugins: ['@metamask/design-tokens'],
   rules: {
     '@metamask/design-tokens/color-no-hex': 'warn',
+    'import/no-restricted-paths': [
+      'error',
+      {
+        basePath: './',
+        zones: [
+          {
+            target: './app',
+            from: './ui',
+            message:
+              'Should not import from UI in background, use shared directory instead',
+          },
+          {
+            target: './ui',
+            from: './app',
+            message:
+              'Should not import from background in UI, use shared directory instead',
+          },
+          {
+            target: './shared',
+            from: './app',
+            message: 'Should not import from background in shared',
+          },
+          {
+            target: './shared',
+            from: './ui',
+            message: 'Should not import from UI in shared',
+          },
+        ],
+      },
+    ],
   },
   overrides: [
     /**
@@ -250,6 +280,48 @@ module.exports = {
         },
       },
     },
+
+    /**
+     * TypeScript React-specific code
+     *
+     * Similar to above, but marks a majority of errors to warnings.
+     * TODO - combine rulesets and resolve errors
+     */
+    {
+      files: ['ui/**/*.ts', 'ui/**/*.tsx'],
+      extends: ['plugin:react/recommended', 'plugin:react-hooks/recommended'],
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+      plugins: ['react'],
+      rules: {
+        'react/no-unused-prop-types': 'warn',
+        'react/no-unused-state': 'warn',
+        'react/jsx-boolean-value': 'off',
+        'react/jsx-curly-brace-presence': 'off',
+        'react/no-deprecated': 'warn',
+        'react/default-props-match-prop-types': 'warn',
+        'react/jsx-no-duplicate-props': 'warn',
+        'react/display-name': 'off',
+        'react/no-unescaped-entities': 'warn',
+        'react/prop-types': 'off',
+        'react/no-children-prop': 'off',
+        'react/jsx-key': 'warn', // TODO - increase this into 'error' level
+        'react-hooks/rules-of-hooks': 'warn', // TODO - increase this into 'error' level
+      },
+      settings: {
+        react: {
+          // If this is set to 'detect', ESLint will import React in order to
+          // find its version. Because we run ESLint in the build system under
+          // LavaMoat, this means that detecting the React version requires a
+          // LavaMoat policy for all of React, in the build system. That's a
+          // no-go, so we grab it from React's package.json.
+          version: reactVersion,
+        },
+      },
+    },
     /**
      * Mocha tests
      *
@@ -257,7 +329,7 @@ module.exports = {
      * Mocha library.
      */
     {
-      files: ['test/e2e/**/*.spec.js', 'test/unit-global/*.test.js'],
+      files: ['test/e2e/**/*.spec.js'],
       extends: ['@metamask/eslint-config-mocha'],
       rules: {
         // In Mocha tests, it is common to use `this` to store values or do
@@ -277,15 +349,17 @@ module.exports = {
     {
       files: [
         '**/__snapshots__/*.snap',
-        'app/scripts/controllers/app-state.test.js',
-        'app/scripts/controllers/mmi-controller.test.ts',
+        'app/scripts/controllers/app-state-controller.test.ts',
+        'app/scripts/controllers/alert-controller.test.ts',
         'app/scripts/metamask-controller.actions.test.js',
         'app/scripts/detect-multiple-instances.test.js',
         'app/scripts/controllers/bridge.test.ts',
-        'app/scripts/controllers/swaps.test.js',
+        'app/scripts/controllers/swaps/**/*.test.js',
+        'app/scripts/controllers/swaps/**/*.test.ts',
         'app/scripts/controllers/metametrics.test.js',
         'app/scripts/controllers/permissions/**/*.test.js',
-        'app/scripts/controllers/preferences.test.js',
+        'app/scripts/controllers/preferences-controller.test.ts',
+        'app/scripts/controllers/account-tracker-controller.test.ts',
         'app/scripts/lib/**/*.test.js',
         'app/scripts/metamask-controller.test.js',
         'app/scripts/migrations/*.test.js',
@@ -298,6 +372,7 @@ module.exports = {
         'test/jest/*.js',
         'test/lib/timer-helpers.js',
         'test/e2e/helpers.test.js',
+        'test/unit-global/*.test.js',
         'ui/**/*.test.js',
         'ui/__mocks__/*.js',
         'shared/lib/error-utils.test.js',
@@ -366,7 +441,6 @@ module.exports = {
         'development/**/*.js',
         'test/e2e/benchmark.js',
         'test/helpers/setup-helper.js',
-        'test/run-unit-tests.js',
       ],
       rules: {
         'node/no-process-exit': 'off',
@@ -437,6 +511,31 @@ module.exports = {
       ],
       rules: {
         '@metamask/design-tokens/color-no-hex': 'off',
+      },
+    },
+    {
+      files: ['ui/pages/confirmations/**/*.{js,ts,tsx}'],
+      rules: {
+        'no-restricted-syntax': [
+          'error',
+          {
+            selector: `ImportSpecifier[imported.name=/${[
+              'getConversionRate',
+              'getCurrentChainId',
+              'getNativeCurrency',
+              'getNetworkIdentifier',
+              'getNftContracts',
+              'getNfts',
+              'getProviderConfig',
+              'getRpcPrefsForCurrentProvider',
+              'getUSDConversionRate',
+              'isCurrentProviderCustom',
+            ]
+              .map((method) => `(${method})`)
+              .join('|')}/]`,
+            message: 'Avoid using global network selectors in confirmations',
+          },
+        ],
       },
     },
   ],

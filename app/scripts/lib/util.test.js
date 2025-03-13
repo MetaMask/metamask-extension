@@ -25,6 +25,7 @@ import {
   getValidUrl,
   isWebUrl,
   getMethodDataName,
+  getBooleanFlag,
 } from './util';
 
 describe('app utils', () => {
@@ -369,21 +370,25 @@ describe('app utils', () => {
         name: 'Approve Tokens',
       },
     };
+
     it('return null if use4ByteResolution is not true', async () => {
       expect(
         await getMethodDataName(knownMethodData, false, '0x60806040'),
       ).toStrictEqual(null);
     });
+
     it('return null if prefixedData is not defined', async () => {
       expect(
         await getMethodDataName(knownMethodData, true, undefined),
       ).toStrictEqual(null);
     });
+
     it('return details from knownMethodData if defined', async () => {
       expect(
         await getMethodDataName(knownMethodData, true, '0x60806040'),
       ).toStrictEqual(knownMethodData['0x60806040']);
     });
+
     it('invoke getMethodDataAsync if details not available in knownMethodData', async () => {
       const DUMMY_METHOD_NAME = {
         name: 'Dummy Method Name',
@@ -392,9 +397,10 @@ describe('app utils', () => {
         .spyOn(FourBiteUtils, 'getMethodDataAsync')
         .mockResolvedValue(DUMMY_METHOD_NAME);
       expect(
-        await getMethodDataName(knownMethodData, true, '0x123'),
+        await getMethodDataName(knownMethodData, true, '0x123', jest.fn()),
       ).toStrictEqual(DUMMY_METHOD_NAME);
     });
+
     it('invoke addKnownMethodData if details not available in knownMethodData', async () => {
       const DUMMY_METHOD_NAME = {
         name: 'Dummy Method Name',
@@ -412,6 +418,37 @@ describe('app utils', () => {
         ),
       ).toStrictEqual(DUMMY_METHOD_NAME);
       expect(addKnownMethodData).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not invoke addKnownMethodData if no method data available', async () => {
+      const addKnownMethodData = jest.fn();
+
+      jest.spyOn(FourBiteUtils, 'getMethodDataAsync').mockResolvedValue({});
+
+      expect(
+        await getMethodDataName(
+          knownMethodData,
+          true,
+          '0x123',
+          addKnownMethodData,
+        ),
+      ).toStrictEqual({});
+
+      expect(addKnownMethodData).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  describe('getBooleanFlag', () => {
+    it('returns `true` for `true` and `"true"`', () => {
+      expect(getBooleanFlag(true)).toBe(true);
+      expect(getBooleanFlag('true')).toBe(true);
+    });
+
+    it('returns `false` for other values', () => {
+      expect(getBooleanFlag(false)).toBe(false);
+      expect(getBooleanFlag('false')).toBe(false);
+      expect(getBooleanFlag(undefined)).toBe(false);
+      expect(getBooleanFlag('foo')).toBe(false);
     });
   });
 });

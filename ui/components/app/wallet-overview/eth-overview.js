@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { EthMethod } from '@metamask/keyring-api';
 import { isEqual } from 'lodash';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
   isBalanceCached,
   getIsSwapsChain,
-  getCurrentChainId,
   getSelectedInternalAccount,
   getSelectedAccountCachedBalance,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -39,6 +39,7 @@ const EthOverview = ({ className }) => {
 
   return (
     <CoinOverview
+      account={account}
       balance={balance}
       balanceIsCached={balanceIsCached}
       className={className}

@@ -22,7 +22,13 @@ function getProxyServer(proxyPort) {
  * A wrapper around a {@code WebDriver} instance exposing Chrome-specific functionality
  */
 class ChromeDriver {
-  static async build({ openDevToolsForTabs, port, proxyPort }) {
+  static async build({
+    openDevToolsForTabs,
+    responsive,
+    constrainWindowSize,
+    port,
+    proxyPort,
+  }) {
     const args = [
       `--proxy-server=${getProxyServer(proxyPort)}`, // Set proxy in the way that doesn't interfere with Selenium Manager
       '--disable-features=OptimizationGuideModelDownloading,OptimizationHintsFetching,OptimizationTargetPrediction,OptimizationHints,NetworkTimeServiceQuerying', // Stop chrome from calling home so much (auto-downloads of AI models; time sync)
@@ -38,8 +44,14 @@ class ChromeDriver {
       args.push(`load-extension=${process.cwd()}/dist/chrome`);
     }
 
-    if (openDevToolsForTabs) {
+    // When "responsive" is enabled, open dev tools to force a smaller viewport
+    // The minimum window width on Chrome is too large, this is how we're forcing the viewport to be smaller
+    if (openDevToolsForTabs || responsive) {
       args.push('--auto-open-devtools-for-tabs');
+    }
+
+    if (constrainWindowSize) {
+      args.push('--window-size=320,600');
     }
 
     args.push('--log-level=3');
@@ -49,7 +61,7 @@ class ChromeDriver {
       args.push('--disable-gpu');
     }
 
-    if (isHeadless('SELENIUM')) {
+    if (process.env.GITHUB_ACTION || isHeadless('SELENIUM')) {
       // TODO: Remove notice and consider non-experimental when results are consistent
       console.warn(
         '*** Running e2e tests in headless mode is experimental and some tests are known to fail for unknown reasons',
@@ -62,6 +74,9 @@ class ChromeDriver {
     options.setUserPreferences({
       'download.default_directory': `${process.cwd()}/test-artifacts/downloads`,
     });
+
+    // Temporarily lock to version 126
+    options.setBrowserVersion('126');
 
     // Allow disabling DoT local testing
     if (process.env.SELENIUM_USE_SYSTEM_DN) {
@@ -94,6 +109,7 @@ class ChromeDriver {
 
     return {
       driver,
+      extensionId,
       extensionUrl: `chrome-extension://${extensionId}`,
     };
   }

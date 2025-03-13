@@ -3,14 +3,14 @@ const { ContractFactory, Contract } = require('@ethersproject/contracts');
 
 const { ENTRYPOINT, GANACHE_ACCOUNT } = require('../constants');
 const { SMART_CONTRACTS, contractConfiguration } = require('./smart-contracts');
-const GanacheContractAddressRegistry = require('./ganache-contract-address-registry');
+const ContractAddressRegistry = require('./contract-address-registry');
 
 /*
  * Ganache seeder is used to seed initial smart contract or set initial blockchain state.
  */
 class GanacheSeeder {
   constructor(ganacheProvider) {
-    this.smartContractRegistry = new GanacheContractAddressRegistry();
+    this.smartContractRegistry = new ContractAddressRegistry();
     this.ganacheProvider = ganacheProvider;
   }
 
@@ -125,7 +125,7 @@ class GanacheSeeder {
   /**
    * Return an instance of the currently used smart contract registry.
    *
-   * @returns GanacheContractAddressRegistry
+   * @returns ContractAddressRegistry
    */
   getContractRegistry() {
     return this.smartContractRegistry;

@@ -181,9 +181,6 @@
   "delete": {
     "message": "I-delete"
   },
-  "deleteNetwork": {
-    "message": "I-delete ang Network?"
-  },
   "details": {
     "message": "Mga Detalye"
   },
@@ -204,9 +201,6 @@
   },
   "editContact": {
     "message": "I-edit ang Contact"
-  },
-  "ensRegistrationError": {
-    "message": "May error sa pagrerehistro ng ENS name"
   },
   "enterPasswordContinue": {
     "message": "Ilagay ang password para magpatuloy"
@@ -232,9 +226,6 @@
   },
   "from": {
     "message": "Mula sa"
-  },
-  "functionType": {
-    "message": "Uri ng Function"
   },
   "gasLimit": {
     "message": "Limitasyon sa Gas"
@@ -283,9 +274,6 @@
     "message": "I-import",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Mag-import ng Account"
-  },
   "importAccountMsg": {
     "message": " Ang mga na-import na account ay hindi iuugnay sa orihinal na seedphrase na ginawa ng iyong MetaMask account. Matuto pa tungkol sa mga na-import na account "
   },
@@ -310,12 +298,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Hindi valid ang address ng recipient"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Hindi ito isang ETH network, i-set sa lowercase"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Hindi valid ang Block Explorer URL"
   },
   "invalidRPC": {
     "message": "Hindi valid ang RPC URL"
@@ -346,9 +328,6 @@
   },
   "loading": {
     "message": "Naglo-load..."
-  },
-  "loadingTokens": {
-    "message": "Naglo-load ng Mga Token..."
   },
   "lock": {
     "message": "Mag-log out"
@@ -393,14 +372,8 @@
   "next": {
     "message": "Susunod"
   },
-  "noAddressForName": {
-    "message": "Walang address na na-set para sa pangalang ito."
-  },
   "noConversionRateAvailable": {
     "message": "Walang Presyo ng Palitan na Available"
-  },
-  "noTransactions": {
-    "message": "Wala kang mga transaksyon"
   },
   "noWebcamFound": {
     "message": "Hindi nakita ang webcam ng iyong computer. Pakisubukang muli."
@@ -422,9 +395,6 @@
   },
   "origin": {
     "message": "Pinanggalingan"
-  },
-  "parameters": {
-    "message": "Mga Parameter"
   },
   "participateInMetaMetrics": {
     "message": "Makilahok sa MetaMetrics"
@@ -451,12 +421,6 @@
   "prev": {
     "message": "Nakaraan"
   },
-  "primaryCurrencySetting": {
-    "message": "Pangunahing Currency"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Piliin ang native para bigyang priyoridad ang pagpapakita ng mga halaga sa native currency ng chain (hal. ETH). Piliin ang Fiat para bigyang priyoridad ang pagpapakita ng mga halaga sa napili mong fiat currency."
-  },
   "privacyMsg": {
     "message": "Patakaran sa Privacy"
   },
@@ -468,9 +432,6 @@
   },
   "readdToken": {
     "message": "Puwede mong idagdag ulit ang token na ito sa hinaharap sa pamamagitan ng pagpunta sa “Magdagdag ng token” sa menu ng mga opsyon ng iyong mga accounts."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Maghanap, pampublikong address (0x), o ENS"
   },
   "reject": {
     "message": "Tanggihan"
@@ -495,9 +456,6 @@
   },
   "removeAccountDescription": {
     "message": "Tatanggalin ang account na ito sa iyong wallet. Pakitiyak na nasa iyo ang orihinal na seed phrase o private key para sa naka-import na account na ito bago magpatuloy. Maaari kang mag-import o gumawa ulit ng mga account mual sa drop-down ng account. "
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "naghihintay na matugunan ang mga request"
   },
   "required": {
     "message": "Kailangan"
@@ -653,9 +611,6 @@
   "transactionErrored": {
     "message": "Nagkaroon ng error ang transaksyon."
   },
-  "transactionFee": {
-    "message": "Fee sa Transaksyon"
-  },
   "transactionResubmitted": {
     "message": "Nasumite ulit ang transaksyon nang may gas fee na ginawang $1 sa ganap na $2"
   },
@@ -683,9 +638,6 @@
   "unknown": {
     "message": "Hindi Alam"
   },
-  "unknownNetwork": {
-    "message": "Hindi Kilalang Pribadong Network"
-  },
   "unknownQrCode": {
     "message": "Error: Hindi namin nakilala ang QR code na iyan"
   },
@@ -694,9 +646,6 @@
   },
   "unlockMessage": {
     "message": "Naghihintay ang decentralized web"
-  },
-  "updatedWithDate": {
-    "message": "Na-update ang $1"
   },
   "urlErrorMsg": {
     "message": "Kinakailangan ng mga URI ang naaangkop na HTTP/HTTPS prefix."
@@ -715,9 +664,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Kailangan mong payagan ang access sa camera para magamit ang feature na ito."
-  },
-  "youSign": {
-    "message": "Sina-sign mo ang"
   },
   "yourPrivateSeedPhrase": {
     "message": "Ang iyong pribadong seed phrase"

@@ -8,9 +8,6 @@ import { TransactionGroupStatus } from '../../../../shared/constants/transaction
 
 const QUEUED_PSEUDO_STATUS = 'queued';
 const SIGNING_PSUEDO_STATUS = 'signing';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-const CUSTODIAN_PSEUDO_STATUS = 'inCustody';
-///: END:ONLY_INCLUDE_IF
 
 /**
  * A note about status logic for this component:
@@ -35,9 +32,6 @@ const statusToClassNameHash = {
   [TransactionGroupStatus.cancelled]: 'transaction-status-label--cancelled',
   [QUEUED_PSEUDO_STATUS]: 'transaction-status-label--queued',
   [TransactionGroupStatus.pending]: 'transaction-status-label--pending',
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  [CUSTODIAN_PSEUDO_STATUS]: 'transaction-status--custodian',
-  ///: END:ONLY_INCLUDE_IF
 };
 
 function getStatusKey(status, isEarliestNonce) {
@@ -61,40 +55,18 @@ export default function TransactionStatusLabel({
   isEarliestNonce,
   className,
   statusOnly,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  custodyStatus,
-  custodyStatusDisplayText,
-  ///: END:ONLY_INCLUDE_IF
+  shouldShowTooltip,
 }) {
   const t = useI18nContext();
   const statusKey = getStatusKey(status, isEarliestNonce);
-  let tooltipText = error?.rpc?.message || error?.message;
+  const tooltipText = error?.rpc?.message || error?.message;
   let statusText = statusKey && t(statusKey);
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  statusText = custodyStatusDisplayText || t(statusKey);
-  ///: END:ONLY_INCLUDE_IF
 
   if (statusKey === TransactionStatus.confirmed && !statusOnly) {
     statusText = date;
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  if (custodyStatus) {
-    if (error) {
-      tooltipText = error.message;
-      statusText =
-        custodyStatus === 'aborted'
-          ? custodyStatusDisplayText
-          : t('snapResultError');
-    } else {
-      tooltipText = custodyStatusDisplayText || custodyStatus;
-      statusText = custodyStatusDisplayText || custodyStatus;
-    }
-  }
-  ///: END:ONLY_INCLUDE_IF
-
-  return (
+  return shouldShowTooltip ? (
     <Tooltip
       position="top"
       title={tooltipText}
@@ -107,6 +79,17 @@ export default function TransactionStatusLabel({
     >
       {statusText}
     </Tooltip>
+  ) : (
+    <div
+      data-testid="transaction-status-label"
+      className={classnames(
+        'transaction-status-label',
+        className,
+        statusToClassNameHash[statusKey],
+      )}
+    >
+      {statusText}
+    </div>
   );
 }
 
@@ -117,8 +100,9 @@ TransactionStatusLabel.propTypes = {
   error: PropTypes.object,
   isEarliestNonce: PropTypes.bool,
   statusOnly: PropTypes.bool,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  custodyStatus: PropTypes.string,
-  custodyStatusDisplayText: PropTypes.string,
-  ///: END:ONLY_INCLUDE_IF
+  shouldShowTooltip: PropTypes.bool,
+};
+
+TransactionStatusLabel.defaultProps = {
+  shouldShowTooltip: true,
 };

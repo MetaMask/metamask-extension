@@ -3,11 +3,33 @@ import { renderWithProvider, screen, fireEvent } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
 
+import { mockNetworkState } from '../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import DetectedToken from './detected-token';
 
 describe('DetectedToken', () => {
   it('should render the detected token found page', async () => {
-    const store = configureStore(testData);
+    const store = configureStore({
+      ...testData,
+      metamask: {
+        ...testData.metamask,
+        currencyRates: {
+          SepoliaETH: {
+            conversionDate: 1620710825.03,
+            conversionRate: 3910.28,
+            usdConversionRate: 3910.28,
+          },
+        },
+        ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
+        tokenBalances: {
+          '0x514910771af9ca656af840dff83e8264ecf986ca': {
+            [CHAIN_IDS.SEPOLIA]: {
+              '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': '0x25e4bc',
+            },
+          },
+        },
+      },
+    });
     const props = {
       setShowDetectedTokens: jest.fn(),
     };

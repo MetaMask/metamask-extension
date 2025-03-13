@@ -28,7 +28,7 @@ export const NoConnectionContent = () => {
       </Text>
 
       <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
-        {t('noConnectedAccountDescription')}
+        {t('noConnectionDescription')}
       </Text>
     </Box>
   );

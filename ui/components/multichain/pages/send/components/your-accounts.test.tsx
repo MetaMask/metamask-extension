@@ -1,7 +1,10 @@
 import React from 'react';
+import { BtcAccountType } from '@metamask/keyring-api';
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { fireEvent, renderWithProvider } from '../../../../../../test/jest';
+import { createMockInternalAccount } from '../../../../../../test/jest/mocks';
+import { MultichainNativeAssets } from '../../../../../../shared/constants/multichain/assets';
 import { SendPageYourAccounts } from '.';
 
 const mockUpdateRecipient = jest.fn();
@@ -14,11 +17,12 @@ jest.mock('../../../../../ducks/send', () => ({
   updateRecipientUserInput: () => mockUpdateRecipientUserInput,
 }));
 
-const render = (props = {}) => {
+const render = (props = {}, state = {}) => {
   const store = configureStore({
     ...mockState,
     metamask: {
       ...mockState.metamask,
+      ...state,
       permissionHistory: {
         'https://test.dapp': {
           eth_accounts: {
@@ -55,6 +59,50 @@ describe('SendPageYourAccounts', () => {
         expect(mockUpdateRecipient).toHaveBeenCalled();
         expect(mockUpdateRecipientUserInput).toHaveBeenCalled();
       }
+    });
+  });
+
+  describe('Multichain', () => {
+    it('does not render BTC accounts', () => {
+      const mockAccount = createMockInternalAccount();
+      const mockBtcAccount = createMockInternalAccount({
+        address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
+        type: BtcAccountType.P2wpkh,
+        name: 'Btc Account',
+      });
+      const { queryByText } = render(
+        {},
+        {
+          internalAccounts: {
+            accounts: {
+              [mockAccount.id]: mockAccount,
+              [mockBtcAccount.id]: mockBtcAccount,
+            },
+            selectedAccount: mockAccount.id,
+          },
+          keyrings: [
+            {
+              type: 'HD Key Tree',
+              accounts: [mockAccount.address],
+            },
+            {
+              type: 'Snap Keyring',
+              accounts: [mockBtcAccount.address],
+            },
+          ],
+          balances: {
+            [mockBtcAccount.id]: {
+              [MultichainNativeAssets.BITCOIN]: {
+                amount: '1.00000000',
+                unit: 'BTC',
+              },
+            },
+          },
+        },
+      );
+
+      expect(queryByText(mockAccount.metadata.name)).toBeInTheDocument();
+      expect(queryByText(mockBtcAccount.metadata.name)).not.toBeInTheDocument();
     });
   });
 });

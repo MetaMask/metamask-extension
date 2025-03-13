@@ -1,10 +1,18 @@
 import { Server, server } from 'ganache';
+import { BigNumber } from 'bignumber.js';
+import { DEFAULT_GANACHE_ETH_BALANCE_DEC } from '../constants';
+
+const PRIVATE_KEY =
+  '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
+
+const convertToHexValue = (val: number) =>
+  `0x${new BigNumber(val, 10).toString(16)}`;
+
+const convertETHToHexGwei = (eth: number) => convertToHexValue(eth * 10 ** 18);
 
 const defaultOptions = {
   blockTime: 2,
   network_id: 1337,
-  mnemonic:
-    'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
   port: 8545,
   vmErrorsOnRPCResponse: false,
   hardfork: 'muirGlacier',
@@ -17,10 +25,28 @@ export class Ganache {
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async start(opts: any) {
-    const options = { ...defaultOptions, ...opts };
+    let customOptions = {
+      ...defaultOptions,
+      ...opts,
+    };
+    // Check if mnemonic and custom accounts are provided in options
+    // and add a default account value if not
+    if (!customOptions.mnemonic && !customOptions.accounts) {
+      customOptions = {
+        ...customOptions,
+        accounts: [
+          {
+            secretKey: PRIVATE_KEY,
+            balance: convertETHToHexGwei(
+              Number(DEFAULT_GANACHE_ETH_BALANCE_DEC),
+            ),
+          },
+        ],
+      };
+    }
 
-    this.#server = server(options);
-    await this.#server.listen(options.port);
+    this.#server = server(customOptions);
+    await this.#server.listen(customOptions.port);
   }
 
   getProvider() {
@@ -34,18 +60,24 @@ export class Ganache {
     });
   }
 
-  async getBalance(): Promise<number> {
-    const accounts = await this.getAccounts();
+  async getBalance(address = null): Promise<number> {
     const provider = await this.getProvider();
 
-    if (!accounts?.[0] || !provider) {
+    if (!provider) {
+      console.log('No provider found');
+      return 0;
+    }
+
+    const accountToUse = address || (await this.getAccounts())?.[0];
+
+    if (!accountToUse) {
       console.log('No accounts found');
       return 0;
     }
 
     const balanceHex = await provider.request({
       method: 'eth_getBalance',
-      params: [accounts[0], 'latest'],
+      params: [accountToUse, 'latest'],
     });
     const balanceInt = parseInt(balanceHex, 16) / 10 ** 18;
 
@@ -61,6 +93,20 @@ export class Ganache {
     const fiatBalance = (balance * currencyConversionRate).toFixed(2);
 
     return Number(fiatBalance);
+  }
+
+  async setAccountBalance(address: string, balance: string) {
+    return await this.getProvider()?.request({
+      method: 'evm_setAccountBalance',
+      params: [address, balance],
+    });
+  }
+
+  async mineBlock() {
+    return await this.getProvider()?.request({
+      method: 'evm_mine',
+      params: [],
+    });
   }
 
   async quit() {

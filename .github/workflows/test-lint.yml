@@ -1,0 +1,20 @@
+name: Test lint
+
+on:
+  workflow_call:
+
+jobs:
+  test-lint:
+    name: Test lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout and setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        with:
+          is-high-risk-environment: false
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Verify locales
+        run: yarn verify-locales --quiet

@@ -12,12 +12,13 @@ import { DataTree } from '../dataTree';
 
 export const ConfirmInfoRowTypedSignData = ({
   data,
-  isPermit,
   tokenDecimals,
+  chainId,
 }: {
   data: string;
   isPermit?: boolean;
   tokenDecimals?: number;
+  chainId: string;
 }) => {
   const t = useI18nContext();
 
@@ -38,8 +39,9 @@ export const ConfirmInfoRowTypedSignData = ({
       <Box style={{ marginLeft: -8 }}>
         <DataTree
           data={sanitizedMessage.value}
-          isPermit={isPermit}
+          primaryType={primaryType}
           tokenDecimals={tokenDecimals}
+          chainId={chainId}
         />
       </Box>
     </Box>

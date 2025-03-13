@@ -1,16 +1,18 @@
-import { InternalAccount } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { renderHookWithProvider } from '../../test/lib/render-helpers';
-import { getSelectedNetworkClientId } from '../selectors';
+import { getSelectedNetworkClientId } from '../../shared/modules/selectors/networks';
 import { MultichainState, getMultichainIsEvm } from '../selectors/multichain';
+import { CHAIN_IDS } from '../../shared/constants/network';
+import { mockNetworkState } from '../../test/stub/networks';
 import { useMultichainSelector } from './useMultichainSelector';
 
 const mockAccount = createMockInternalAccount();
-const mockNetworkId = '0x1';
+const mockNetworkId = 'network-client-id';
 
 const mockState = {
   metamask: {
-    selectedNetworkClientId: mockNetworkId,
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET, id: mockNetworkId }),
     completedOnboarding: true,
     internalAccounts: {
       accounts: {
@@ -60,6 +62,7 @@ describe('useMultichainSelector', () => {
   });
 
   it('uses selectedAccount if account is not provided', () => {
+    // @ts-expect-error: intentionally testing without account
     const { result } = renderUseMultichainHook(getMultichainIsEvm, null);
 
     expect(result.current).toBe(true);

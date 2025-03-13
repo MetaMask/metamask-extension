@@ -11,6 +11,7 @@ import {
   SEPOLIA_DISPLAY_NAME,
   CHAIN_IDS,
 } from '../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import { AccountListItem, AccountListItemMenuTypes } from '.';
 
 const mockAccount = {
@@ -18,9 +19,6 @@ const mockAccount = {
     'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
   ],
   balance: '0x152387ad22c3f0',
-  keyring: {
-    type: 'HD Key Tree',
-  },
 };
 
 const mockNonEvmAccount = {
@@ -30,8 +28,43 @@ const mockNonEvmAccount = {
   type: 'bip122:p2wpkh',
 };
 
+const mockSnap = {
+  id: 'local:mock-snap',
+  origin: 'local:mock-snap',
+  version: '1.3.7',
+  iconUrl: null,
+  initialPermissions: {},
+  manifest: {
+    description: 'mock-description',
+    proposedName: 'mock-snap-name',
+    repository: {
+      type: 'git',
+      url: 'https://127.0.0.1',
+    },
+    source: {
+      location: {
+        npm: {
+          filePath: 'dist/bundle.js',
+          packageName: 'local:mock-snap',
+        },
+      },
+      shasum: 'L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU=',
+      locales: ['en'],
+    },
+    version: '1.3.7',
+  },
+  versionHistory: [
+    {
+      date: 1680686075921,
+      origin: 'https://metamask.github.io',
+      version: '1.3.7',
+    },
+  ],
+};
+
 const DEFAULT_PROPS = {
   account: mockAccount,
+  selected: false,
   onClick: jest.fn(),
 };
 
@@ -61,6 +94,15 @@ const render = (props = {}, state = {}) => {
           conversionDate: 0,
           conversionRate: '100000',
         },
+      },
+      conversionRates: {
+        'bip122:000000000019d6689c085ae165831e93/slip44:0': {
+          rate: '100000',
+        },
+      },
+      snaps: {
+        ...mockState.metamask.snaps,
+        [mockSnap.id]: mockSnap,
       },
     },
     activeTab: {
@@ -170,30 +212,25 @@ describe('AccountListItem', () => {
   });
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  it('renders the snap label for unnamed snap accounts', () => {
-    const { container } = render({
-      account: {
-        ...mockAccount,
-        balance: '0x0',
-        keyring: 'Snap Keyring',
-        label: 'Snaps (Beta)',
-      },
-    });
-    const tag = container.querySelector('.mm-tag');
-    expect(tag.textContent).toBe('Snaps (Beta)');
-  });
-
   it('renders the snap name for named snap accounts', () => {
     const { container } = render({
       account: {
         ...mockAccount,
+        metadata: {
+          ...mockAccount.metadata,
+          snap: {
+            id: mockSnap.id,
+          },
+          keyring: {
+            type: 'Snap Keyring',
+          },
+        },
+
         balance: '0x0',
-        keyring: 'Snap Keyring',
-        label: 'Test Snap Name (Beta)',
       },
     });
     const tag = container.querySelector('.mm-tag');
-    expect(tag.textContent).toBe('Test Snap Name (Beta)');
+    expect(tag.textContent).toBe(`${mockSnap.manifest.proposedName} (Beta)`);
   });
   ///: END:ONLY_INCLUDE_IF
 
@@ -206,9 +243,9 @@ describe('AccountListItem', () => {
           },
           {
             metamask: {
-              providerConfig: {
-                chainId: CHAIN_IDS.SEPOLIA,
-                nickname: SEPOLIA_DISPLAY_NAME,
+              ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
+              preferences: {
+                showFiatInTestnets: false,
               },
             },
           },
@@ -235,49 +272,19 @@ describe('AccountListItem', () => {
         expect(avatarGroup).not.toBeInTheDocument();
       });
 
-      it('renders fiat for EVM account', () => {
+      it('renders tokens for non-EVM account', () => {
         const { container } = render(
           {
-            account: mockAccount,
+            account: mockNonEvmAccount,
           },
           {
             metamask: {
-              providerConfig: {
-                chainId: CHAIN_IDS.SEPOLIA,
-                nickname: SEPOLIA_DISPLAY_NAME,
-              },
               preferences: {
-                showFiatInTestnets: true,
+                showFiatInTestnets: false,
               },
             },
           },
         );
-
-        const firstCurrencyDisplay = container.querySelector(
-          '[data-testid="first-currency-display"]',
-        );
-        const secondCurrencyDisplay = container.querySelector(
-          '[data-testid="second-currency-display"]',
-        );
-        const avatarGroup = container.querySelector(
-          '[data-testid="avatar-group"]',
-        );
-
-        const expectedBalance = '$0.00';
-
-        expect(firstCurrencyDisplay).toBeInTheDocument();
-        expect(firstCurrencyDisplay.firstChild.textContent).toContain(
-          expectedBalance,
-        );
-        expect(firstCurrencyDisplay.lastChild.textContent).toContain('USD');
-        expect(secondCurrencyDisplay.textContent).toContain('');
-        expect(avatarGroup).not.toBeInTheDocument();
-      });
-
-      it('renders fiat for non-EVM account', () => {
-        const { container } = render({
-          account: mockNonEvmAccount,
-        });
 
         const firstCurrencyDisplay = container.querySelector(
           '[data-testid="first-currency-display"]',
@@ -296,8 +303,83 @@ describe('AccountListItem', () => {
           expectedBalance,
         );
         expect(firstCurrencyDisplay.lastChild.textContent).toContain('USD');
-        expect(secondCurrencyDisplay).not.toBeInTheDocument();
-        expect(avatarGroup).toBeInTheDocument();
+        expect(secondCurrencyDisplay.textContent).toContain('BTC');
+        expect(avatarGroup).not.toBeInTheDocument();
+      });
+
+      it('renders fiat for EVM account', () => {
+        const { container } = render(
+          {
+            account: mockAccount,
+          },
+          {
+            metamask: {
+              ...mockNetworkState({
+                chainId: CHAIN_IDS.SEPOLIA,
+                nickname: SEPOLIA_DISPLAY_NAME,
+                ticker: 'ETH',
+              }),
+              preferences: {
+                showFiatInTestnets: true,
+              },
+            },
+          },
+        );
+
+        const firstCurrencyDisplay = container.querySelector(
+          '[data-testid="first-currency-display"]',
+        );
+        const secondCurrencyDisplay = container.querySelector(
+          '[data-testid="second-currency-display"]',
+        );
+        const avatarGroup = container.querySelector(
+          '[data-testid="avatar-group"]',
+        );
+
+        const expectedBalance = '$3.31';
+
+        expect(firstCurrencyDisplay).toBeInTheDocument();
+        expect(firstCurrencyDisplay.firstChild.textContent).toContain(
+          expectedBalance,
+        );
+        expect(firstCurrencyDisplay.lastChild.textContent).toContain('USD');
+        expect(secondCurrencyDisplay.textContent).toContain('');
+        expect(avatarGroup).not.toBeInTheDocument();
+      });
+
+      it('renders fiat and native balance for non-EVM account', () => {
+        const { container } = render(
+          {
+            account: mockNonEvmAccount,
+          },
+          {
+            metamask: {
+              preferences: {
+                showFiatInTestnets: true,
+              },
+            },
+          },
+        );
+
+        const firstCurrencyDisplay = container.querySelector(
+          '[data-testid="first-currency-display"]',
+        );
+        const secondCurrencyDisplay = container.querySelector(
+          '[data-testid="second-currency-display"]',
+        );
+        const avatarGroup = container.querySelector(
+          '[data-testid="avatar-group"]',
+        );
+
+        const expectedBalance = '$100,000.00';
+
+        expect(firstCurrencyDisplay).toBeInTheDocument();
+        expect(firstCurrencyDisplay.firstChild.textContent).toContain(
+          expectedBalance,
+        );
+        expect(firstCurrencyDisplay.lastChild.textContent).toContain('USD');
+        expect(secondCurrencyDisplay.textContent).toContain('1BTC');
+        expect(avatarGroup).not.toBeInTheDocument();
       });
     });
   });

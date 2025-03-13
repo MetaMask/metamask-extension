@@ -1,6 +1,5 @@
 const { strict: assert } = require('assert');
 const {
-  defaultGanacheOptions,
   withFixtures,
   openDapp,
   unlockWallet,
@@ -14,11 +13,10 @@ describe('Permissions', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        const addresses = await ganacheServer.getAccounts();
+      async ({ driver, localNodes }) => {
+        const addresses = await localNodes[0].getAccounts();
         const publicAddress = addresses[0];
         await unlockWallet(driver);
 
@@ -28,23 +26,15 @@ describe('Permissions', function () {
           tag: 'button',
         });
 
-        await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
-        const extension = windowHandles[0];
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
-        await driver.clickElement({
-          text: 'Next',
-          tag: 'button',
-        });
-        await driver.clickElement({
-          text: 'Confirm',
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Connect',
           tag: 'button',
         });
 
-        await driver.switchToWindow(extension);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         // shows connected sites
         await driver.clickElement(
@@ -53,10 +43,6 @@ describe('Permissions', function () {
         await driver.clickElement({
           text: 'All Permissions',
           tag: 'div',
-        });
-        await driver.clickElementAndWaitToDisappear({
-          text: 'Got it',
-          tag: 'button',
         });
         await driver.waitForSelector({
           text: '127.0.0.1:8080',
@@ -68,21 +54,17 @@ describe('Permissions', function () {
         assert.equal(domains.length, 1);
 
         // can get accounts within the dapp
-        await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         await driver.clickElement({
           text: 'eth_accounts',
           tag: 'button',
         });
 
-        const getAccountsResult = await driver.waitForSelector({
+        await driver.waitForSelector({
           css: '#getAccountsResult',
           text: publicAddress,
         });
-        assert.equal(
-          (await getAccountsResult.getText()).toLowerCase(),
-          publicAddress.toLowerCase(),
-        );
       },
     );
   });

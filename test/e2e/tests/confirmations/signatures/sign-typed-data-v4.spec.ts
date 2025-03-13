@@ -1,169 +1,138 @@
-import { strict as assert } from 'assert';
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
-import {
-  scrollAndConfirmAndAssertConfirm,
-  withRedesignConfirmationFixtures,
-} from '../helpers';
-import {
-  DAPP_HOST_ADDRESS,
-  WINDOW_TITLES,
-  openDapp,
-  switchToNotificationWindow,
-  unlockWallet,
-} from '../../../helpers';
-import { Ganache } from '../../../seeder/ganache';
+import { MockedEndpoint } from 'mockttp';
+import { WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
-import { Mockttp } from '../../../mock-e2e';
 import {
+  mockSignatureApproved,
+  mockSignatureRejected,
+  scrollAndConfirmAndAssertConfirm,
+  withTransactionEnvelopeTypeFixtures,
+} from '../helpers';
+import { TestSuiteArguments } from '../transactions/shared';
+import SignTypedData from '../../../page-objects/pages/confirmations/redesign/sign-typed-data-confirmation';
+import TestDapp from '../../../page-objects/pages/test-dapp';
+import {
+  assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
   assertPastedAddress,
+  assertRejectedSignature,
+  assertSignatureConfirmedMetrics,
+  assertSignatureRejectedMetrics,
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
-  assertSignatureMetrics,
-  assertAccountDetailsMetrics,
+  initializePages,
+  openDappAndTriggerSignature,
+  SignatureType,
 } from './signature-helpers';
 
 describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
-  if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
-    return;
-  }
-
   it('initiates and confirms', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
-        ganacheServer,
+        localNodes,
         mockedEndpoint: mockedEndpoints,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-        mockedEndpoint: Mockttp;
-      }) => {
-        const addresses = await ganacheServer.getAccounts();
+      }: TestSuiteArguments) => {
+        const addresses = await localNodes?.[0]?.getAccounts();
         const publicAddress = addresses?.[0] as string;
+        await initializePages(driver);
 
-        await unlockWallet(driver);
-        await openDapp(driver);
-        await driver.clickElement('#signTypedDataV4');
-        await switchToNotificationWindow(driver);
+        await openDappAndTriggerSignature(
+          driver,
+          SignatureType.SignTypedDataV4,
+        );
 
         await clickHeaderInfoBtn(driver);
-        await assertHeaderInfoBalance(driver);
+        await assertHeaderInfoBalance();
 
         await copyAddressAndPasteWalletAddress(driver);
-        await assertPastedAddress(driver);
-        await assertAccountDetailsMetrics(
-          driver,
-          mockedEndpoints,
-          'eth_signTypedData_v4',
-        );
+        await assertPastedAddress();
 
         await assertInfoValues(driver);
         await scrollAndConfirmAndAssertConfirm(driver);
-        await driver.delay(1000);
 
-        await assertSignatureMetrics(
+        await assertAccountDetailsMetrics(
           driver,
-          mockedEndpoints,
+          mockedEndpoints as MockedEndpoint[],
           'eth_signTypedData_v4',
-          'Mail',
         );
+
+        await assertSignatureConfirmedMetrics({
+          driver,
+          mockedEndpoints: mockedEndpoints as MockedEndpoint[],
+          signatureType: 'eth_signTypedData_v4',
+          primaryType: 'Mail',
+          withAnonEvents: true,
+        });
+
         await assertVerifiedResults(driver, publicAddress);
+      },
+      async (mockServer) => {
+        return await mockSignatureApproved(mockServer, true);
       },
     );
   });
 
   it('initiates and rejects', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
-      }: {
-        driver: Driver;
-        mockedEndpoint: Mockttp;
-      }) => {
-        await unlockWallet(driver);
-        await openDapp(driver);
-        await driver.clickElement('#signTypedDataV4');
-        await switchToNotificationWindow(driver);
+      }: TestSuiteArguments) => {
+        await initializePages(driver);
+        const confirmation = new SignTypedData(driver);
 
-        await driver.clickElement(
-          '[data-testid="confirm-footer-cancel-button"]',
-        );
-        await driver.delay(1000);
-
-        await assertSignatureMetrics(
+        await openDappAndTriggerSignature(
           driver,
-          mockedEndpoints,
-          'eth_signTypedData_v4',
-          'Mail',
+          SignatureType.SignTypedDataV4,
         );
 
-        await driver.waitUntilXWindowHandles(2);
+        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+
+        await assertSignatureRejectedMetrics({
+          driver,
+          mockedEndpoints: mockedEndpoints as MockedEndpoint[],
+          signatureType: 'eth_signTypedData_v4',
+          primaryType: 'Mail',
+          location: 'confirmation',
+        });
+
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        const rejectionResult = await driver.waitForSelector({
-          css: '#signTypedDataV4Result',
-          text: 'Error: User rejected the request.',
-        });
-        assert.ok(rejectionResult);
+        await assertRejectedSignature();
+      },
+      async (mockServer) => {
+        return await mockSignatureRejected(mockServer, true);
       },
     );
   });
 });
 
 async function assertInfoValues(driver: Driver) {
+  const signTypedData = new SignTypedData(driver);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
-  const contractPetName = driver.findElement({
-    css: '.name__value',
-    text: '0xCcCCc...ccccC',
-  });
-
-  const primaryType = driver.findElement({ text: 'Mail' });
-  const contents = driver.findElement({ text: 'Hello, Bob!' });
-  const fromName = driver.findElement({ text: 'Cow' });
-  const fromAddressNum0 = driver.findElement({
-    css: '.name__value',
-    text: '0xCD2a3...DD826',
-  });
-  const toName = driver.findElement({ text: 'Bob' });
-  const toAddressNum2 = driver.findElement({
-    css: '.name__value',
-    text: '0xB0B0b...00000',
-  });
-  const attachment = driver.findElement({ text: '0x' });
-
-  assert.ok(await origin, 'origin');
-  assert.ok(await contractPetName, 'contractPetName');
-  assert.ok(await primaryType, 'primaryType');
-  assert.ok(await contents, 'contents');
-  assert.ok(await fromName, 'fromName');
-  assert.ok(await fromAddressNum0, 'fromAddressNum0');
-  assert.ok(await toName, 'toName');
-  assert.ok(await toAddressNum2, 'toAddressNum2');
-  assert.ok(await attachment, 'attachment');
+  await signTypedData.verifyOrigin();
+  await signTypedData.verifyContractPetName();
+  await signTypedData.verifyPrimaryType();
+  await signTypedData.verifyFromName();
+  await signTypedData.verifyFromAddress();
+  await signTypedData.verifyToName();
+  await signTypedData.verifyToAddress();
+  await signTypedData.verifyContents();
+  await signTypedData.verifyAttachment();
+  await signTypedData.verifyToAddressNum2();
 }
 
 async function assertVerifiedResults(driver: Driver, publicAddress: string) {
+  const testDapp = new TestDapp(driver);
   await driver.waitUntilXWindowHandles(2);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement('#signTypedDataV4Verify');
-
-  const verifyResult = await driver.findElement('#signTypedDataV4Result');
-  await driver.waitForSelector({
-    css: '#signTypedDataV4VerifyResult',
-    text: publicAddress,
-  });
-  const verifyRecoverAddress = await driver.findElement(
-    '#signTypedDataV4VerifyResult',
-  );
-
-  assert.equal(
-    await verifyResult.getText(),
+  await testDapp.check_successSignTypedDataV4(publicAddress);
+  await testDapp.verify_successSignTypedDataV4Result(
     '0xcd2f9c55840f5e1bcf61812e93c1932485b524ca673b36355482a4fbdf52f692684f92b4f4ab6f6c8572dacce46bd107da154be1c06939b855ecce57a1616ba71b',
   );
-  assert.equal(await verifyRecoverAddress.getText(), publicAddress);
 }

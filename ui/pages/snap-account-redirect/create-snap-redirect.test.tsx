@@ -106,8 +106,8 @@ describe('<SnapAccountRedirect />', () => {
     const { queryByTestId } = renderWithProvider(
       <SnapAccountRedirect
         snapId={mockSnapId}
-        url={''}
-        snapName={''}
+        url=""
+        snapName=""
         isBlockedUrl={false}
         message=""
       />,

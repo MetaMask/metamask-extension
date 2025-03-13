@@ -20,7 +20,7 @@ import {
 } from '../../../../../../shared/constants/metametrics';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
-import { SendPageRow } from '.';
+import { SendPageRow } from './send-page-row';
 
 export const SendPageRecipientInput = () => {
   const t = useContext(I18nContext);
@@ -46,14 +46,17 @@ export const SendPageRecipientInput = () => {
             addHistoryEntry(`sendFlow - Valid address typed ${address}`),
           );
           await dispatch(updateRecipientUserInput(address));
-          trackEvent({
-            event: MetaMetricsEventName.sendRecipientSelected,
-            category: MetaMetricsEventCategory.Send,
-            properties: {
-              location: 'send page recipient input',
-              inputType: 'user input',
+          trackEvent(
+            {
+              event: MetaMetricsEventName.sendRecipientSelected,
+              category: MetaMetricsEventCategory.Send,
+              properties: {
+                location: 'send page recipient input',
+                inputType: 'user input',
+              },
             },
-          });
+            { excludeMetaMetricsId: false },
+          );
           dispatch(updateRecipient({ address, nickname: '' }));
         }}
         internalSearch={isUsingMyAccountsForRecipientSearch}

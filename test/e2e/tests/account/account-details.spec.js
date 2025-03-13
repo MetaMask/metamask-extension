@@ -1,10 +1,6 @@
 const { strict: assert } = require('assert');
 const { LavaDomeDebug } = require('@lavamoat/lavadome-core');
-const {
-  defaultGanacheOptions,
-  withFixtures,
-  unlockWallet,
-} = require('../../helpers');
+const { withFixtures, unlockWallet } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { tEn } = require('../../../lib/i18n-helpers');
 
@@ -48,7 +44,6 @@ describe('Show account details', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -60,8 +55,7 @@ describe('Show account details', function () {
         );
         await driver.clickElement('[data-testid="account-list-menu-details"');
 
-        const qrCode = await driver.findElement('.qr-code__wrapper');
-        assert.equal(await qrCode.isDisplayed(), true);
+        await driver.waitForSelector('.qr-code__wrapper');
       },
     );
   });
@@ -70,7 +64,6 @@ describe('Show account details', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -89,7 +82,6 @@ describe('Show account details', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -104,7 +96,7 @@ describe('Show account details', function () {
           '[data-testid="multichain-account-menu-popover-add-account"]',
         );
         await driver.fill('[placeholder="Account 2"]', '2nd account');
-        await driver.clickElement({ text: tEn('create'), tag: 'button' });
+        await driver.clickElement({ text: tEn('addAccount'), tag: 'button' });
         await driver.assertElementNotPresent({
           text: tEn('create'),
           tag: 'button',
@@ -123,7 +115,6 @@ describe('Show account details', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -142,7 +133,6 @@ describe('Show account details', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -157,7 +147,7 @@ describe('Show account details', function () {
           '[data-testid="multichain-account-menu-popover-add-account"]',
         );
         await driver.fill('[placeholder="Account 2"]', '2nd account');
-        await driver.clickElement({ text: tEn('create'), tag: 'button' });
+        await driver.clickElement({ text: tEn('addAccount'), tag: 'button' });
         await driver.assertElementNotPresent({
           text: tEn('create'),
           tag: 'button',
@@ -198,11 +188,10 @@ describe('Show account details', function () {
         await driver.press('#account-details-authenticate', driver.Key.ENTER);
 
         // Display error when password is incorrect
-        const passwordErrorIsDisplayed = await driver.isElementPresent({
+        await driver.waitForSelector({
           css: '.mm-help-text',
           text: 'Incorrect Password.',
         });
-        assert.equal(passwordErrorIsDisplayed, true);
       },
     );
   });

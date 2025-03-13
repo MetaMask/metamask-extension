@@ -1,157 +1,595 @@
-import { NameEntry, NameType } from '@metamask/name-controller';
-import { NftContract } from '@metamask/assets-controllers';
-import { getMemoizedMetadataContracts } from '../selectors';
-import { getNftContractsByAddressOnCurrentChain } from '../selectors/nft';
+import { NameType } from '@metamask/name-controller';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
+import { Hex } from '@metamask/utils';
+import { cloneDeep } from 'lodash';
+import {
+  EXPERIENCES_TYPE,
+  FIRST_PARTY_CONTRACT_NAMES,
+} from '../../shared/constants/first-party-contracts';
+import mockState from '../../test/data/mock-state.json';
+import { renderHookWithProvider } from '../../test/lib/render-helpers';
+import { getDomainResolutions } from '../ducks/domains';
 import { useDisplayName } from './useDisplayName';
 import { useNames } from './useName';
-import { useFirstPartyContractNames } from './useFirstPartyContractName';
+import { useNftCollectionsMetadata } from './useNftCollectionsMetadata';
 
-jest.mock('react-redux', () => ({
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  useSelector: (selector: any) => selector(),
+jest.mock('./useName');
+jest.mock('./useNftCollectionsMetadata');
+jest.mock('../ducks/domains', () => ({
+  getDomainResolutions: jest.fn(),
 }));
 
-jest.mock('./useName', () => ({
-  useNames: jest.fn(),
-}));
-
-jest.mock('./useFirstPartyContractName', () => ({
-  useFirstPartyContractNames: jest.fn(),
-}));
-
-jest.mock('../selectors', () => ({
-  getMemoizedMetadataContracts: jest.fn(),
-  getCurrentChainId: jest.fn(),
-}));
-
-jest.mock('../selectors/nft', () => ({
-  getNftContractsByAddressOnCurrentChain: jest.fn(),
-}));
-
-const VALUE_MOCK = '0xabc123';
-const TYPE_MOCK = NameType.ETHEREUM_ADDRESS;
-const NAME_MOCK = 'TestName';
-const CONTRACT_NAME_MOCK = 'TestContractName';
-const FIRST_PARTY_CONTRACT_NAME_MOCK = 'MetaMask Bridge';
-const WATCHED_NFT_NAME_MOCK = 'TestWatchedNFTName';
-
-const NO_PETNAME_FOUND_RETURN_VALUE = {
-  name: null,
-} as NameEntry;
-const NO_CONTRACT_NAME_FOUND_RETURN_VALUE = undefined;
-const NO_FIRST_PARTY_CONTRACT_NAME_FOUND_RETURN_VALUE = null;
-const NO_WATCHED_NFT_NAME_FOUND_RETURN_VALUE = {};
-
-const PETNAME_FOUND_RETURN_VALUE = {
-  name: NAME_MOCK,
-} as NameEntry;
-
-const WATCHED_NFT_FOUND_RETURN_VALUE = {
-  [VALUE_MOCK]: {
-    name: WATCHED_NFT_NAME_MOCK,
-  } as NftContract,
-};
+const VALUE_MOCK = 'testvalue';
+const VARIATION_MOCK = CHAIN_IDS.GOERLI;
+const PETNAME_MOCK = 'testName1';
+const ERC20_TOKEN_NAME_MOCK = 'testName2';
+const WATCHED_NFT_NAME_MOCK = 'testName3';
+const NFT_NAME_MOCK = 'testName4';
+const FIRST_PARTY_CONTRACT_NAME_MOCK = 'testName5';
+const ENS_NAME_MOCK = 'vitalik.eth';
+const SYMBOL_MOCK = 'tes';
+const NFT_IMAGE_MOCK = 'testNftImage';
+const ERC20_IMAGE_MOCK = 'testImage';
+const OTHER_NAME_TYPE = 'test' as NameType;
 
 describe('useDisplayName', () => {
   const useNamesMock = jest.mocked(useNames);
-  const getMemoizedMetadataContractsMock = jest.mocked(
-    getMemoizedMetadataContracts,
-  );
-  const useFirstPartyContractNamesMock = jest.mocked(
-    useFirstPartyContractNames,
-  );
-  const getNftContractsByAddressOnCurrentChainMock = jest.mocked(
-    getNftContractsByAddressOnCurrentChain,
-  );
+  const useNftCollectionsMetadataMock = jest.mocked(useNftCollectionsMetadata);
+  const domainResolutionsMock = jest.mocked(getDomainResolutions);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let state: any;
+
+  function mockPetname(name: string) {
+    useNamesMock.mockReturnValue([
+      {
+        name,
+        sourceId: null,
+        proposedNames: {},
+        origin: null,
+      },
+    ]);
+  }
+
+  function mockERC20Token(
+    value: string,
+    variation: string,
+    name: string,
+    symbol: string,
+    image: string,
+  ) {
+    state.metamask.tokensChainsCache = {
+      [variation]: {
+        data: {
+          [value]: {
+            name,
+            symbol,
+            iconUrl: image,
+          },
+        },
+      },
+    };
+  }
+
+  function mockWatchedNFTName(value: string, variation: string, name: string) {
+    state.metamask.allNftContracts = {
+      '0x123': {
+        [variation]: [{ address: value, name }],
+      },
+    };
+  }
+
+  function mockNFT(
+    value: string,
+    variation: string,
+    name: string,
+    image: string,
+    isSpam: boolean,
+  ) {
+    useNftCollectionsMetadataMock.mockReturnValue({
+      [variation]: {
+        [value]: { name, image, isSpam },
+      },
+    });
+  }
+
+  function mockDomainResolutions(address: string, ensName: string) {
+    domainResolutionsMock.mockReturnValue([
+      {
+        addressBookEntryName: undefined,
+        domainName: ensName,
+        protocol: 'Ethereum Name Service',
+        resolvedAddress: address,
+        resolvingSnap: 'Ethereum Name Service resolver',
+      },
+    ]);
+  }
+
+  function mockFirstPartyContractName(
+    value: string,
+    variation: string,
+    name: string,
+  ) {
+    FIRST_PARTY_CONTRACT_NAMES[name as EXPERIENCES_TYPE] = {
+      [variation as Hex]: value as Hex,
+    };
+  }
 
   beforeEach(() => {
     jest.resetAllMocks();
 
-    useNamesMock.mockReturnValue([NO_PETNAME_FOUND_RETURN_VALUE]);
-    useFirstPartyContractNamesMock.mockReturnValue([
-      NO_FIRST_PARTY_CONTRACT_NAME_FOUND_RETURN_VALUE,
-    ]);
-    getMemoizedMetadataContractsMock.mockReturnValue([
+    useNftCollectionsMetadataMock.mockReturnValue({});
+
+    useNamesMock.mockReturnValue([
       {
-        name: NO_CONTRACT_NAME_FOUND_RETURN_VALUE,
+        name: null,
+        sourceId: null,
+        proposedNames: {},
+        origin: null,
       },
     ]);
-    getNftContractsByAddressOnCurrentChainMock.mockReturnValue(
-      NO_WATCHED_NFT_NAME_FOUND_RETURN_VALUE,
-    );
+
+    state = cloneDeep(mockState);
+
+    delete FIRST_PARTY_CONTRACT_NAMES[
+      FIRST_PARTY_CONTRACT_NAME_MOCK as EXPERIENCES_TYPE
+    ];
   });
 
-  it('handles no name found', () => {
-    expect(useDisplayName(VALUE_MOCK, TYPE_MOCK)).toEqual({
+  it('returns no name if no defaults found', () => {
+    const { result } = renderHookWithProvider(
+      () =>
+        useDisplayName({
+          value: VALUE_MOCK,
+          type: NameType.ETHEREUM_ADDRESS,
+          variation: VARIATION_MOCK,
+        }),
+      mockState,
+    );
+
+    expect(result.current).toStrictEqual({
+      contractDisplayName: undefined,
+      hasPetname: false,
+      image: undefined,
       name: null,
-      hasPetname: false,
     });
   });
 
-  it('prioritizes a petname over all else', () => {
-    useNamesMock.mockReturnValue([PETNAME_FOUND_RETURN_VALUE]);
-    useFirstPartyContractNamesMock.mockReturnValue([
-      FIRST_PARTY_CONTRACT_NAME_MOCK,
-    ]);
-    getMemoizedMetadataContractsMock.mockReturnValue([
-      {
-        name: CONTRACT_NAME_MOCK,
-      },
-    ]);
-    getNftContractsByAddressOnCurrentChainMock.mockReturnValue(
-      WATCHED_NFT_FOUND_RETURN_VALUE,
-    );
+  describe('Petname', () => {
+    it('returns petname', () => {
+      mockPetname(PETNAME_MOCK);
 
-    expect(useDisplayName(VALUE_MOCK, TYPE_MOCK)).toEqual({
-      name: NAME_MOCK,
-      hasPetname: true,
-      contractDisplayName: CONTRACT_NAME_MOCK,
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
+          }),
+        state,
+      );
+
+      expect(result.current).toStrictEqual({
+        contractDisplayName: undefined,
+        hasPetname: true,
+        image: undefined,
+        name: PETNAME_MOCK,
+      });
     });
   });
 
-  it('prioritizes a first-party contract name over a contract name and watched NFT name', () => {
-    useFirstPartyContractNamesMock.mockReturnValue([
-      FIRST_PARTY_CONTRACT_NAME_MOCK,
-    ]);
-    getMemoizedMetadataContractsMock.mockReturnValue({
-      name: CONTRACT_NAME_MOCK,
-    });
-    getNftContractsByAddressOnCurrentChainMock.mockReturnValue(
-      WATCHED_NFT_FOUND_RETURN_VALUE,
-    );
+  describe('ERC-20 Token', () => {
+    it('returns ERC-20 token name and image', () => {
+      mockERC20Token(
+        VALUE_MOCK,
+        VARIATION_MOCK,
+        ERC20_TOKEN_NAME_MOCK,
+        SYMBOL_MOCK,
+        ERC20_IMAGE_MOCK,
+      );
 
-    expect(useDisplayName(VALUE_MOCK, TYPE_MOCK)).toEqual({
-      name: FIRST_PARTY_CONTRACT_NAME_MOCK,
-      hasPetname: false,
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
+          }),
+        state,
+      );
+
+      expect(result.current).toStrictEqual({
+        contractDisplayName: ERC20_TOKEN_NAME_MOCK,
+        hasPetname: false,
+        image: ERC20_IMAGE_MOCK,
+        name: ERC20_TOKEN_NAME_MOCK,
+      });
+    });
+
+    it('returns ERC-20 token symbol', () => {
+      mockERC20Token(
+        VALUE_MOCK,
+        VARIATION_MOCK,
+        ERC20_TOKEN_NAME_MOCK,
+        SYMBOL_MOCK,
+        ERC20_IMAGE_MOCK,
+      );
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: CHAIN_IDS.GOERLI,
+            preferContractSymbol: true,
+          }),
+        state,
+      );
+
+      expect(result.current).toStrictEqual({
+        contractDisplayName: SYMBOL_MOCK,
+        hasPetname: false,
+        image: ERC20_IMAGE_MOCK,
+        name: SYMBOL_MOCK,
+      });
+    });
+
+    it('returns no name if type not address', () => {
+      mockERC20Token(
+        VALUE_MOCK,
+        VARIATION_MOCK,
+        ERC20_TOKEN_NAME_MOCK,
+        SYMBOL_MOCK,
+        ERC20_IMAGE_MOCK,
+      );
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: OTHER_NAME_TYPE,
+            variation: CHAIN_IDS.GOERLI,
+            preferContractSymbol: true,
+          }),
+        state,
+      );
+
+      expect(result.current).toStrictEqual({
+        contractDisplayName: undefined,
+        hasPetname: false,
+        image: undefined,
+        name: null,
+      });
     });
   });
 
-  it('prioritizes a contract name over a watched NFT name', () => {
-    getMemoizedMetadataContractsMock.mockReturnValue([
-      {
-        name: CONTRACT_NAME_MOCK,
-      },
-    ]);
-    getNftContractsByAddressOnCurrentChainMock.mockReturnValue(
-      WATCHED_NFT_FOUND_RETURN_VALUE,
-    );
+  describe('First-party Contract', () => {
+    it('returns first-party contract name', () => {
+      mockFirstPartyContractName(
+        VALUE_MOCK,
+        VARIATION_MOCK,
+        FIRST_PARTY_CONTRACT_NAME_MOCK,
+      );
 
-    expect(useDisplayName(VALUE_MOCK, TYPE_MOCK)).toEqual({
-      name: CONTRACT_NAME_MOCK,
-      hasPetname: false,
-      contractDisplayName: CONTRACT_NAME_MOCK,
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
+          }),
+        mockState,
+      );
+
+      expect(result.current).toStrictEqual({
+        contractDisplayName: undefined,
+        hasPetname: false,
+        image: undefined,
+        name: FIRST_PARTY_CONTRACT_NAME_MOCK,
+      });
+    });
+
+    it('returns no name if type is not address', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value:
+              FIRST_PARTY_CONTRACT_NAMES[EXPERIENCES_TYPE.METAMASK_BRIDGE][
+                CHAIN_IDS.OPTIMISM
+              ],
+            type: OTHER_NAME_TYPE,
+            variation: CHAIN_IDS.OPTIMISM,
+          }),
+        mockState,
+      );
+
+      expect(result.current).toStrictEqual({
+        contractDisplayName: undefined,
+        hasPetname: false,
+        image: undefined,
+        name: null,
+      });
     });
   });
 
-  it('returns a watched NFT name if no other name is found', () => {
-    getNftContractsByAddressOnCurrentChainMock.mockReturnValue(
-      WATCHED_NFT_FOUND_RETURN_VALUE,
-    );
+  describe('Watched NFT', () => {
+    it('returns watched NFT name', () => {
+      mockWatchedNFTName(VALUE_MOCK, VARIATION_MOCK, WATCHED_NFT_NAME_MOCK);
 
-    expect(useDisplayName(VALUE_MOCK, TYPE_MOCK)).toEqual({
-      name: WATCHED_NFT_NAME_MOCK,
-      hasPetname: false,
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
+          }),
+        state,
+      );
+
+      expect(result.current).toStrictEqual({
+        contractDisplayName: undefined,
+        hasPetname: false,
+        image: undefined,
+        name: WATCHED_NFT_NAME_MOCK,
+      });
+    });
+
+    it('returns no name if type is not address', () => {
+      mockWatchedNFTName(VALUE_MOCK, VARIATION_MOCK, WATCHED_NFT_NAME_MOCK);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: OTHER_NAME_TYPE,
+            variation: VARIATION_MOCK,
+          }),
+        state,
+      );
+
+      expect(result.current).toStrictEqual({
+        contractDisplayName: undefined,
+        hasPetname: false,
+        image: undefined,
+        name: null,
+      });
+    });
+  });
+
+  describe('NFT', () => {
+    it('returns NFT name and image', () => {
+      mockNFT(VALUE_MOCK, VARIATION_MOCK, NFT_NAME_MOCK, NFT_IMAGE_MOCK, false);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
+          }),
+        mockState,
+      );
+
+      expect(result.current).toStrictEqual({
+        contractDisplayName: undefined,
+        hasPetname: false,
+        image: NFT_IMAGE_MOCK,
+        name: NFT_NAME_MOCK,
+      });
+    });
+
+    it('returns no name if NFT collection is spam', () => {
+      mockNFT(VALUE_MOCK, VARIATION_MOCK, NFT_NAME_MOCK, NFT_IMAGE_MOCK, true);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
+          }),
+        mockState,
+      );
+
+      expect(result.current).toStrictEqual({
+        contractDisplayName: undefined,
+        hasPetname: false,
+        image: undefined,
+        name: null,
+      });
+    });
+
+    it('returns no name if type not address', () => {
+      mockNFT(VALUE_MOCK, VARIATION_MOCK, NFT_NAME_MOCK, NFT_IMAGE_MOCK, false);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: OTHER_NAME_TYPE,
+            variation: VARIATION_MOCK,
+          }),
+        mockState,
+      );
+
+      expect(result.current).toStrictEqual({
+        contractDisplayName: undefined,
+        hasPetname: false,
+        image: undefined,
+        name: null,
+      });
+    });
+  });
+
+  describe('Domain Resolutions', () => {
+    it('returns ENS name if domain resolution for that address exists', () => {
+      mockDomainResolutions(VALUE_MOCK, ENS_NAME_MOCK);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
+          }),
+        mockState,
+      );
+
+      expect(result.current).toStrictEqual({
+        contractDisplayName: undefined,
+        hasPetname: false,
+        image: undefined,
+        name: ENS_NAME_MOCK,
+      });
+    });
+
+    it('returns no name if type not address', () => {
+      mockDomainResolutions(VALUE_MOCK, ENS_NAME_MOCK);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: OTHER_NAME_TYPE,
+            variation: VARIATION_MOCK,
+          }),
+        mockState,
+      );
+
+      expect(result.current).toStrictEqual({
+        contractDisplayName: undefined,
+        hasPetname: false,
+        image: undefined,
+        name: null,
+      });
+    });
+  });
+
+  describe('Priority', () => {
+    it('uses petname as first priority', () => {
+      mockPetname(PETNAME_MOCK);
+      mockFirstPartyContractName(
+        VALUE_MOCK,
+        VARIATION_MOCK,
+        FIRST_PARTY_CONTRACT_NAME_MOCK,
+      );
+      mockNFT(VALUE_MOCK, VARIATION_MOCK, NFT_NAME_MOCK, NFT_IMAGE_MOCK, false);
+      mockERC20Token(
+        VALUE_MOCK,
+        VARIATION_MOCK,
+        ERC20_TOKEN_NAME_MOCK,
+        SYMBOL_MOCK,
+        ERC20_IMAGE_MOCK,
+      );
+      mockWatchedNFTName(VALUE_MOCK, VARIATION_MOCK, WATCHED_NFT_NAME_MOCK);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
+          }),
+        state,
+      );
+
+      expect(result.current).toStrictEqual({
+        contractDisplayName: ERC20_TOKEN_NAME_MOCK,
+        hasPetname: true,
+        image: NFT_IMAGE_MOCK,
+        name: PETNAME_MOCK,
+      });
+    });
+
+    it('uses first-party contract name as second priority', () => {
+      mockFirstPartyContractName(
+        VALUE_MOCK,
+        VARIATION_MOCK,
+        FIRST_PARTY_CONTRACT_NAME_MOCK,
+      );
+      mockNFT(VALUE_MOCK, VARIATION_MOCK, NFT_NAME_MOCK, NFT_IMAGE_MOCK, false);
+      mockERC20Token(
+        VALUE_MOCK,
+        VARIATION_MOCK,
+        ERC20_TOKEN_NAME_MOCK,
+        SYMBOL_MOCK,
+        ERC20_IMAGE_MOCK,
+      );
+      mockWatchedNFTName(VALUE_MOCK, VARIATION_MOCK, WATCHED_NFT_NAME_MOCK);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
+          }),
+        state,
+      );
+
+      expect(result.current).toStrictEqual({
+        contractDisplayName: ERC20_TOKEN_NAME_MOCK,
+        hasPetname: false,
+        image: NFT_IMAGE_MOCK,
+        name: FIRST_PARTY_CONTRACT_NAME_MOCK,
+      });
+    });
+
+    it('uses NFT name as third priority', () => {
+      mockNFT(VALUE_MOCK, VARIATION_MOCK, NFT_NAME_MOCK, NFT_IMAGE_MOCK, false);
+      mockERC20Token(
+        VALUE_MOCK,
+        VARIATION_MOCK,
+        ERC20_TOKEN_NAME_MOCK,
+        SYMBOL_MOCK,
+        ERC20_IMAGE_MOCK,
+      );
+      mockWatchedNFTName(VALUE_MOCK, VARIATION_MOCK, WATCHED_NFT_NAME_MOCK);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
+          }),
+        state,
+      );
+
+      expect(result.current).toStrictEqual({
+        contractDisplayName: ERC20_TOKEN_NAME_MOCK,
+        hasPetname: false,
+        image: NFT_IMAGE_MOCK,
+        name: NFT_NAME_MOCK,
+      });
+    });
+
+    it('uses ERC-20 token name as fourth priority', () => {
+      mockERC20Token(
+        VALUE_MOCK,
+        VARIATION_MOCK,
+        ERC20_TOKEN_NAME_MOCK,
+        SYMBOL_MOCK,
+        ERC20_IMAGE_MOCK,
+      );
+      mockWatchedNFTName(VALUE_MOCK, VARIATION_MOCK, WATCHED_NFT_NAME_MOCK);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
+          }),
+        state,
+      );
+
+      expect(result.current).toStrictEqual({
+        contractDisplayName: ERC20_TOKEN_NAME_MOCK,
+        hasPetname: false,
+        image: ERC20_IMAGE_MOCK,
+        name: ERC20_TOKEN_NAME_MOCK,
+      });
     });
   });
 });

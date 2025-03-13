@@ -25,7 +25,7 @@ describe('IncomingTransactionToggle', () => {
           setIncomingTransactionsPreferences={
             setIncomingTransactionsPreferencesStub
           }
-          allNetworks={ALL_NETWORKS_DATA}
+          networkConfigurations={ALL_NETWORKS_DATA}
           incomingTransactionsPreferences={INCOMING_DATA}
         />
       </MetaMetricsContext.Provider>,
@@ -34,31 +34,31 @@ describe('IncomingTransactionToggle', () => {
     expect(container).toMatchSnapshot();
 
     const ethMainnetCheckbox = within(
-      getByTestId(`network-toggle-${ALL_NETWORKS_DATA[0].chainId}`),
+      getByTestId(`network-toggle-${ALL_NETWORKS_DATA['0x1'].chainId}`),
     ).getByRole('checkbox');
     expect(ethMainnetCheckbox.value).toStrictEqual('true');
     const lineaMainnetCheckbox = within(
-      getByTestId(`network-toggle-${ALL_NETWORKS_DATA[1].chainId}`),
+      getByTestId(`network-toggle-${ALL_NETWORKS_DATA['0xe708'].chainId}`),
     ).getByRole('checkbox');
     expect(lineaMainnetCheckbox.value).toStrictEqual('false');
     const fantomCheckbox = within(
-      getByTestId(`network-toggle-${ALL_NETWORKS_DATA[2].chainId}`),
+      getByTestId(`network-toggle-${ALL_NETWORKS_DATA['0xfa'].chainId}`),
     ).getByRole('checkbox');
     expect(fantomCheckbox.value).toStrictEqual('true');
     const goerliCheckbox = within(
-      getByTestId(`network-toggle-${ALL_NETWORKS_DATA[3].chainId}`),
+      getByTestId(`network-toggle-${ALL_NETWORKS_DATA['0x5'].chainId}`),
     ).getByRole('checkbox');
     expect(goerliCheckbox.value).toStrictEqual('false');
     const sepoliaCheckbox = within(
-      getByTestId(`network-toggle-${ALL_NETWORKS_DATA[4].chainId}`),
+      getByTestId(`network-toggle-${ALL_NETWORKS_DATA['0xaa36a7'].chainId}`),
     ).getByRole('checkbox');
     expect(sepoliaCheckbox.value).toStrictEqual('true');
     const lineaGoerliCheckbox = within(
-      getByTestId(`network-toggle-${ALL_NETWORKS_DATA[5].chainId}`),
+      getByTestId(`network-toggle-${ALL_NETWORKS_DATA['0xe704'].chainId}`),
     ).getByRole('checkbox');
     expect(lineaGoerliCheckbox.value).toStrictEqual('true');
     const lineaSepoliaCheckbox = within(
-      getByTestId(`network-toggle-${ALL_NETWORKS_DATA[6].chainId}`),
+      getByTestId(`network-toggle-${ALL_NETWORKS_DATA['0xe705'].chainId}`),
     ).getByRole('checkbox');
     expect(lineaSepoliaCheckbox.value).toStrictEqual('true');
   });
@@ -70,14 +70,14 @@ describe('IncomingTransactionToggle', () => {
           setIncomingTransactionsPreferences={
             setIncomingTransactionsPreferencesStub
           }
-          allNetworks={ALL_NETWORKS_DATA}
+          networkConfigurations={ALL_NETWORKS_DATA}
           incomingTransactionsPreferences={INCOMING_DATA}
         />
       </MetaMetricsContext.Provider>,
       mockStore,
     );
     const lineaMainnetCheckbox = within(
-      getByTestId(`network-toggle-${ALL_NETWORKS_DATA[1].chainId}`),
+      getByTestId(`network-toggle-${ALL_NETWORKS_DATA['0xe708'].chainId}`),
     ).getByRole('checkbox');
     fireEvent.click(lineaMainnetCheckbox);
     // set 1 false to true
@@ -91,7 +91,7 @@ describe('IncomingTransactionToggle', () => {
 
     // set 1 false to true
     const goerliCheckbox = within(
-      getByTestId(`network-toggle-${ALL_NETWORKS_DATA[3].chainId}`),
+      getByTestId(`network-toggle-${ALL_NETWORKS_DATA['0x5'].chainId}`),
     ).getByRole('checkbox');
     fireEvent.click(goerliCheckbox);
     expect(

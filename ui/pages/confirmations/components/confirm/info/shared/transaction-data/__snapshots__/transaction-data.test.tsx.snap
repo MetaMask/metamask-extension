@@ -4,42 +4,71 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="advanced-details-data-section"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+      <button
+        aria-label="copy-button"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+        style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/copy.svg');"
+        />
+      </button>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Data
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Data
+          </p>
+        </div>
       </div>
       <div
         class="mm-box"
       />
     </div>
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Function
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Function
+          </p>
+        </div>
       </div>
       <div
         class="mm-box mm-box--display-flex"
       >
+        <button
+          aria-label="expand"
+          class="mm-box mm-button-icon mm-button-icon--size-sm expandIcon expanded mm-box--margin-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-down.svg');"
+          />
+        </button>
         <div
           class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+          data-testid="advanced-details-data-function"
         >
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -48,15 +77,6 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             WRAP_ETH
           </p>
         </div>
-        <button
-          aria-label="expand"
-          class="mm-box mm-button-icon mm-button-icon--size-sm expandIcon expanded mm-box--margin-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
-        >
-          <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/arrow-left.svg');"
-          />
-        </button>
       </div>
     </div>
     <div
@@ -68,32 +88,39 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       >
         <div
           class="mm-box mm-box--padding-left-2"
+          data-testid="advanced-details-WRAP_ETH-params"
         >
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-0"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Recipient
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-4"
-                  class=""
-                  data-original-title="address - The recipient of the WETH"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Recipient
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-4"
+                    class=""
+                    data-original-title="address - The recipient of the WETH"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-0-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -104,10 +131,11 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                  class=""
                 >
                   <div
-                    class="mm-avatar-account__jazzicon"
+                    class="identicon"
+                    style="height: 16px; width: 16px; border-radius: 8px;"
                   />
                 </div>
                 <p
@@ -120,30 +148,36 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             </div>
           </div>
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-1"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Amount Min
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-5"
-                  class=""
-                  data-original-title="uint256 - The amount of ETH to wrap"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Amount Min
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-5"
+                    class=""
+                    data-original-title="uint256 - The amount of ETH to wrap"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-1-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -165,23 +199,37 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       style="height: 1px; margin-left: -8px; margin-right: -8px;"
     />
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Function
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Function
+          </p>
+        </div>
       </div>
       <div
         class="mm-box mm-box--display-flex"
       >
+        <button
+          aria-label="expand"
+          class="mm-box mm-button-icon mm-button-icon--size-sm expandIcon expanded mm-box--margin-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-down.svg');"
+          />
+        </button>
         <div
           class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+          data-testid="advanced-details-data-function"
         >
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -190,15 +238,6 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             V3_SWAP_EXACT_IN
           </p>
         </div>
-        <button
-          aria-label="expand"
-          class="mm-box mm-button-icon mm-button-icon--size-sm expandIcon expanded mm-box--margin-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
-        >
-          <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/arrow-left.svg');"
-          />
-        </button>
       </div>
     </div>
     <div
@@ -210,32 +249,39 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       >
         <div
           class="mm-box mm-box--padding-left-2"
+          data-testid="advanced-details-V3_SWAP_EXACT_IN-params"
         >
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-0"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Recipient
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-6"
-                  class=""
-                  data-original-title="address - The recipient of the output of the trade"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Recipient
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-6"
+                    class=""
+                    data-original-title="address - The recipient of the output of the trade"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-0-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -246,10 +292,11 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                  class=""
                 >
                   <div
-                    class="mm-avatar-account__jazzicon"
+                    class="identicon"
+                    style="height: 16px; width: 16px; border-radius: 8px;"
                   />
                 </div>
                 <p
@@ -262,30 +309,36 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             </div>
           </div>
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-1"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Amount In
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-7"
-                  class=""
-                  data-original-title="uint256 - The amount of input tokens for the trade"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Amount In
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-7"
+                    class=""
+                    data-original-title="uint256 - The amount of input tokens for the trade"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-1-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -301,30 +354,36 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             </div>
           </div>
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-2"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Amount Out Min
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-8"
-                  class=""
-                  data-original-title="uint256 - The minimum amount of output tokens the user wants"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Amount Out Min
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-8"
+                    class=""
+                    data-original-title="uint256 - The minimum amount of output tokens the user wants"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-2-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -340,30 +399,36 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             </div>
           </div>
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-3"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Path
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-9"
-                  class=""
-                  data-original-title="bytes - The UniswapV3 encoded path to trade along"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Path
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-9"
+                    class=""
+                    data-original-title="bytes - The UniswapV3 encoded path to trade along"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-3-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -377,10 +442,11 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                   class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                 >
                   <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                    class=""
                   >
                     <div
-                      class="mm-avatar-account__jazzicon"
+                      class="identicon"
+                      style="height: 16px; width: 16px; border-radius: 8px;"
                     />
                   </div>
                   <p
@@ -408,10 +474,11 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                   class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                 >
                   <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                    class=""
                   >
                     <div
-                      class="mm-avatar-account__jazzicon"
+                      class="identicon"
+                      style="height: 16px; width: 16px; border-radius: 8px;"
                     />
                   </div>
                   <p
@@ -439,10 +506,11 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                   class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                 >
                   <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                    class=""
                   >
                     <div
-                      class="mm-avatar-account__jazzicon"
+                      class="identicon"
+                      style="height: 16px; width: 16px; border-radius: 8px;"
                     />
                   </div>
                   <p
@@ -456,30 +524,36 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             </div>
           </div>
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-4"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Payer Is User
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-10"
-                  class=""
-                  data-original-title="bool - A flag for whether the input tokens should come from the msg.sender (through Permit2) or whether the funds are already in the UniversalRouter"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Payer Is User
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-10"
+                    class=""
+                    data-original-title="bool - A flag for whether the input tokens should come from the msg.sender (through Permit2) or whether the funds are already in the UniversalRouter"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-4-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -501,23 +575,37 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       style="height: 1px; margin-left: -8px; margin-right: -8px;"
     />
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Function
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Function
+          </p>
+        </div>
       </div>
       <div
         class="mm-box mm-box--display-flex"
       >
+        <button
+          aria-label="expand"
+          class="mm-box mm-button-icon mm-button-icon--size-sm expandIcon expanded mm-box--margin-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-down.svg');"
+          />
+        </button>
         <div
           class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+          data-testid="advanced-details-data-function"
         >
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -526,15 +614,6 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             PAY_PORTION
           </p>
         </div>
-        <button
-          aria-label="expand"
-          class="mm-box mm-button-icon mm-button-icon--size-sm expandIcon expanded mm-box--margin-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
-        >
-          <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/arrow-left.svg');"
-          />
-        </button>
       </div>
     </div>
     <div
@@ -546,32 +625,39 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       >
         <div
           class="mm-box mm-box--padding-left-2"
+          data-testid="advanced-details-PAY_PORTION-params"
         >
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-0"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Token
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-11"
-                  class=""
-                  data-original-title="address - The ERC20 token to transfer (or Constants.ETH for ETH)"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Token
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-11"
+                    class=""
+                    data-original-title="address - The ERC20 token to transfer (or Constants.ETH for ETH)"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-0-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -582,10 +668,11 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                  class=""
                 >
                   <div
-                    class="mm-avatar-account__jazzicon"
+                    class="identicon"
+                    style="height: 16px; width: 16px; border-radius: 8px;"
                   />
                 </div>
                 <p
@@ -598,30 +685,36 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             </div>
           </div>
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-1"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Recipient
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-12"
-                  class=""
-                  data-original-title="address - The recipient of the transfer"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Recipient
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-12"
+                    class=""
+                    data-original-title="address - The recipient of the transfer"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-1-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -632,10 +725,11 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                  class=""
                 >
                   <div
-                    class="mm-avatar-account__jazzicon"
+                    class="identicon"
+                    style="height: 16px; width: 16px; border-radius: 8px;"
                   />
                 </div>
                 <p
@@ -648,30 +742,36 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             </div>
           </div>
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-2"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Bips
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-13"
-                  class=""
-                  data-original-title="uint256 - In basis points, the percentage of the contract’s balance to transfer"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Bips
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-13"
+                    class=""
+                    data-original-title="uint256 - In basis points, the percentage of the contract’s balance to transfer"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-2-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -693,23 +793,37 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       style="height: 1px; margin-left: -8px; margin-right: -8px;"
     />
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Function
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Function
+          </p>
+        </div>
       </div>
       <div
         class="mm-box mm-box--display-flex"
       >
+        <button
+          aria-label="expand"
+          class="mm-box mm-button-icon mm-button-icon--size-sm expandIcon expanded mm-box--margin-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-down.svg');"
+          />
+        </button>
         <div
           class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+          data-testid="advanced-details-data-function"
         >
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -718,15 +832,6 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             SWEEP
           </p>
         </div>
-        <button
-          aria-label="expand"
-          class="mm-box mm-button-icon mm-button-icon--size-sm expandIcon expanded mm-box--margin-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
-        >
-          <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/arrow-left.svg');"
-          />
-        </button>
       </div>
     </div>
     <div
@@ -738,32 +843,39 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       >
         <div
           class="mm-box mm-box--padding-left-2"
+          data-testid="advanced-details-SWEEP-params"
         >
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-0"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Token
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-14"
-                  class=""
-                  data-original-title="address - The ERC20 token to sweep (or Constants.ETH for ETH)"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Token
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-14"
+                    class=""
+                    data-original-title="address - The ERC20 token to sweep (or Constants.ETH for ETH)"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-0-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -774,10 +886,11 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                  class=""
                 >
                   <div
-                    class="mm-avatar-account__jazzicon"
+                    class="identicon"
+                    style="height: 16px; width: 16px; border-radius: 8px;"
                   />
                 </div>
                 <p
@@ -790,30 +903,36 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             </div>
           </div>
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-1"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Recipient
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-15"
-                  class=""
-                  data-original-title="address - The recipient of the sweep"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Recipient
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-15"
+                    class=""
+                    data-original-title="address - The recipient of the sweep"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-1-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -824,10 +943,11 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                  class=""
                 >
                   <div
-                    class="mm-avatar-account__jazzicon"
+                    class="identicon"
+                    style="height: 16px; width: 16px; border-radius: 8px;"
                   />
                 </div>
                 <p
@@ -840,30 +960,36 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             </div>
           </div>
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-2"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Amount Min
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-16"
-                  class=""
-                  data-original-title="uint256 - The minimum required tokens to receive from the sweep"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Amount Min
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-16"
+                    class=""
+                    data-original-title="uint256 - The minimum required tokens to receive from the sweep"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-2-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -881,21 +1007,6 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
         </div>
       </div>
     </div>
-    <div
-      class="mm-box mm-box--padding-inline-2"
-    >
-      <div>
-        <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-        >
-          <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/copy.svg');"
-          />
-          Copy raw transaction data
-        </button>
-      </div>
-    </div>
   </div>
 </div>
 `;
@@ -904,36 +1015,56 @@ exports[`TransactionData renders decoded data with no names 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="advanced-details-data-section"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+      <button
+        aria-label="copy-button"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+        style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/copy.svg');"
+        />
+      </button>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Data
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Data
+          </p>
+        </div>
       </div>
       <div
         class="mm-box"
       />
     </div>
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="advanced-details-data-function"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Function
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Function
+          </p>
+        </div>
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -948,32 +1079,39 @@ exports[`TransactionData renders decoded data with no names 1`] = `
     </div>
     <div
       class="mm-box mm-box--padding-left-2"
+      data-testid="advanced-details-someFunction-params"
     >
       <div
-        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+        data-testid="advanced-details-data-param-0"
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          <div
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
           >
-            Param #1
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-1"
-              class=""
-              data-original-title="uint256"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
             >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
+              Param #1
+            </p>
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-1"
+                class=""
+                data-original-title="uint256"
+                data-tooltipped=""
+                style="display: flex;"
+                tabindex="0"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  data-testid="advanced-details-data-param-0-tooltip"
+                  style="mask-image: url('./images/icons/question.svg');"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -989,30 +1127,36 @@ exports[`TransactionData renders decoded data with no names 1`] = `
         </div>
       </div>
       <div
-        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+        data-testid="advanced-details-data-param-1"
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          <div
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
           >
-            Param #2
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-2"
-              class=""
-              data-original-title="address"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
             >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
+              Param #2
+            </p>
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-2"
+                class=""
+                data-original-title="address"
+                data-tooltipped=""
+                style="display: flex;"
+                tabindex="0"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  data-testid="advanced-details-data-param-1-tooltip"
+                  style="mask-image: url('./images/icons/question.svg');"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -1023,10 +1167,11 @@ exports[`TransactionData renders decoded data with no names 1`] = `
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
           >
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+              class=""
             >
               <div
-                class="mm-avatar-account__jazzicon"
+                class="identicon"
+                style="height: 16px; width: 16px; border-radius: 8px;"
               />
             </div>
             <p
@@ -1039,30 +1184,36 @@ exports[`TransactionData renders decoded data with no names 1`] = `
         </div>
       </div>
       <div
-        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+        data-testid="advanced-details-data-param-2"
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          <div
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
           >
-            Param #3
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-3"
-              class=""
-              data-original-title="bytes"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
             >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
+              Param #3
+            </p>
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-3"
+                class=""
+                data-original-title="bytes"
+                data-tooltipped=""
+                style="display: flex;"
+                tabindex="0"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  data-testid="advanced-details-data-param-2-tooltip"
+                  style="mask-image: url('./images/icons/question.svg');"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -1078,21 +1229,6 @@ exports[`TransactionData renders decoded data with no names 1`] = `
         </div>
       </div>
     </div>
-    <div
-      class="mm-box mm-box--padding-inline-2"
-    >
-      <div>
-        <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-        >
-          <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/copy.svg');"
-          />
-          Copy raw transaction data
-        </button>
-      </div>
-    </div>
   </div>
 </div>
 `;
@@ -1101,49 +1237,70 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="advanced-details-data-section"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+      <button
+        aria-label="copy-button"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+        style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/copy.svg');"
+        />
+      </button>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Data
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Data
+          </p>
+        </div>
       </div>
       <div
         class="mm-box"
       />
     </div>
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="advanced-details-data-function"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Function
-        </p>
-        <div>
-          <div
-            aria-describedby="tippy-tooltip-17"
-            class=""
-            data-original-title="Permit a spender to the signed amounts of the owners tokens via the owner's EIP-712 signature"
-            data-tooltipped=""
-            style="display: flex;"
-            tabindex="0"
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
+            Function
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-17"
+              class=""
+              data-original-title="Permit a spender to the signed amounts of the owners tokens via the owner's EIP-712 signature"
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="advanced-details-data-function-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -1160,32 +1317,39 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
     </div>
     <div
       class="mm-box mm-box--padding-left-2"
+      data-testid="advanced-details-permit-params"
     >
       <div
-        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+        data-testid="advanced-details-data-param-0"
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          <div
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
           >
-            Owner
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-18"
-              class=""
-              data-original-title="address - The owner of the tokens being approved"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
             >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
+              Owner
+            </p>
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-18"
+                class=""
+                data-original-title="address - The owner of the tokens being approved"
+                data-tooltipped=""
+                style="display: flex;"
+                tabindex="0"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  data-testid="advanced-details-data-param-0-tooltip"
+                  style="mask-image: url('./images/icons/question.svg');"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -1196,10 +1360,11 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
           >
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+              class=""
             >
               <div
-                class="mm-avatar-account__jazzicon"
+                class="identicon"
+                style="height: 16px; width: 16px; border-radius: 8px;"
               />
             </div>
             <p
@@ -1212,30 +1377,36 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         </div>
       </div>
       <div
-        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+        data-testid="advanced-details-data-param-1"
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          <div
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
           >
-            Permit Batch
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-19"
-              class=""
-              data-original-title="tuple - Data signed over by the owner specifying the terms of approval"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
             >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
+              Permit Batch
+            </p>
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-19"
+                class=""
+                data-original-title="tuple - Data signed over by the owner specifying the terms of approval"
+                data-tooltipped=""
+                style="display: flex;"
+                tabindex="0"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  data-testid="advanced-details-data-param-1-tooltip"
+                  style="mask-image: url('./images/icons/question.svg');"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -1244,30 +1415,36 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         class="mm-box mm-box--padding-left-2"
       >
         <div
-          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+          data-testid="advanced-details-data-param-0"
           style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+            <div
+              class="mm-box mm-box--display-flex mm-box--align-items-center"
             >
-              Details
-            </p>
-            <div>
-              <div
-                aria-describedby="tippy-tooltip-20"
-                class=""
-                data-original-title="tuple[]"
-                data-tooltipped=""
-                style="display: flex;"
-                tabindex="0"
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
               >
-                <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                  style="mask-image: url('./images/icons/question.svg');"
-                />
+                Details
+              </p>
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-20"
+                  class=""
+                  data-original-title="tuple[]"
+                  data-tooltipped=""
+                  style="display: flex;"
+                  tabindex="0"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-0-tooltip"
+                    style="mask-image: url('./images/icons/question.svg');"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -1276,30 +1453,36 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           class="mm-box mm-box--padding-left-2"
         >
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-0"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Item 1
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-21"
-                  class=""
-                  data-original-title="tuple"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Item 1
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-21"
+                    class=""
+                    data-original-title="tuple"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-0-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -1308,30 +1491,36 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             class="mm-box mm-box--padding-left-2"
           >
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="advanced-details-data-param-0"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Token
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-22"
-                    class=""
-                    data-original-title="address"
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Token
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-22"
+                      class=""
+                      data-original-title="address"
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        data-testid="advanced-details-data-param-0-tooltip"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1342,10 +1531,11 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                   class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                 >
                   <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                    class=""
                   >
                     <div
-                      class="mm-avatar-account__jazzicon"
+                      class="identicon"
+                      style="height: 16px; width: 16px; border-radius: 8px;"
                     />
                   </div>
                   <p
@@ -1358,30 +1548,36 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               </div>
             </div>
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="advanced-details-data-param-1"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Amount
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-23"
-                    class=""
-                    data-original-title="uint160"
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Amount
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-23"
+                      class=""
+                      data-original-title="uint160"
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        data-testid="advanced-details-data-param-1-tooltip"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1397,30 +1593,36 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               </div>
             </div>
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="advanced-details-data-param-2"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Expiration
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-24"
-                    class=""
-                    data-original-title="uint48"
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Expiration
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-24"
+                      class=""
+                      data-original-title="uint48"
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        data-testid="advanced-details-data-param-2-tooltip"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1436,30 +1638,36 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               </div>
             </div>
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="advanced-details-data-param-3"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Nonce
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-25"
-                    class=""
-                    data-original-title="uint48"
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Nonce
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-25"
+                      class=""
+                      data-original-title="uint48"
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        data-testid="advanced-details-data-param-3-tooltip"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1476,30 +1684,36 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             </div>
           </div>
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-1"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Item 2
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-26"
-                  class=""
-                  data-original-title="tuple"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Item 2
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-26"
+                    class=""
+                    data-original-title="tuple"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-1-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -1508,30 +1722,36 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             class="mm-box mm-box--padding-left-2"
           >
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="advanced-details-data-param-0"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Token
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-27"
-                    class=""
-                    data-original-title="address"
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Token
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-27"
+                      class=""
+                      data-original-title="address"
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        data-testid="advanced-details-data-param-0-tooltip"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1542,10 +1762,11 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                   class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                 >
                   <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                    class=""
                   >
                     <div
-                      class="mm-avatar-account__jazzicon"
+                      class="identicon"
+                      style="height: 16px; width: 16px; border-radius: 8px;"
                     />
                   </div>
                   <p
@@ -1558,30 +1779,36 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               </div>
             </div>
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="advanced-details-data-param-1"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Amount
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-28"
-                    class=""
-                    data-original-title="uint160"
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Amount
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-28"
+                      class=""
+                      data-original-title="uint160"
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        data-testid="advanced-details-data-param-1-tooltip"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1597,30 +1824,36 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               </div>
             </div>
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="advanced-details-data-param-2"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Expiration
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-29"
-                    class=""
-                    data-original-title="uint48"
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Expiration
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-29"
+                      class=""
+                      data-original-title="uint48"
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        data-testid="advanced-details-data-param-2-tooltip"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1636,30 +1869,36 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               </div>
             </div>
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="advanced-details-data-param-3"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Nonce
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-30"
-                    class=""
-                    data-original-title="uint48"
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Nonce
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-30"
+                      class=""
+                      data-original-title="uint48"
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        data-testid="advanced-details-data-param-3-tooltip"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1676,30 +1915,36 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             </div>
           </div>
           <div
-            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+            data-testid="advanced-details-data-param-2"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
               >
-                Item 3
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-31"
-                  class=""
-                  data-original-title="tuple"
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Item 3
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-31"
+                    class=""
+                    data-original-title="tuple"
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      data-testid="advanced-details-data-param-2-tooltip"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -1708,30 +1953,36 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             class="mm-box mm-box--padding-left-2"
           >
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="advanced-details-data-param-0"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Token
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-32"
-                    class=""
-                    data-original-title="address"
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Token
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-32"
+                      class=""
+                      data-original-title="address"
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        data-testid="advanced-details-data-param-0-tooltip"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1742,10 +1993,11 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                   class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                 >
                   <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                    class=""
                   >
                     <div
-                      class="mm-avatar-account__jazzicon"
+                      class="identicon"
+                      style="height: 16px; width: 16px; border-radius: 8px;"
                     />
                   </div>
                   <p
@@ -1758,30 +2010,36 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               </div>
             </div>
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="advanced-details-data-param-1"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Amount
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-33"
-                    class=""
-                    data-original-title="uint160"
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Amount
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-33"
+                      class=""
+                      data-original-title="uint160"
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        data-testid="advanced-details-data-param-1-tooltip"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1797,30 +2055,36 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               </div>
             </div>
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="advanced-details-data-param-2"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Expiration
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-34"
-                    class=""
-                    data-original-title="uint48"
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Expiration
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-34"
+                      class=""
+                      data-original-title="uint48"
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        data-testid="advanced-details-data-param-2-tooltip"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1836,30 +2100,36 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               </div>
             </div>
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="advanced-details-data-param-3"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Nonce
-                </p>
-                <div>
-                  <div
-                    aria-describedby="tippy-tooltip-35"
-                    class=""
-                    data-original-title="uint48"
-                    data-tooltipped=""
-                    style="display: flex;"
-                    tabindex="0"
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                      style="mask-image: url('./images/icons/question.svg');"
-                    />
+                    Nonce
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-35"
+                      class=""
+                      data-original-title="uint48"
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        data-testid="advanced-details-data-param-3-tooltip"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1877,30 +2147,36 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           </div>
         </div>
         <div
-          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+          data-testid="advanced-details-data-param-1"
           style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+            <div
+              class="mm-box mm-box--display-flex mm-box--align-items-center"
             >
-              Spender
-            </p>
-            <div>
-              <div
-                aria-describedby="tippy-tooltip-36"
-                class=""
-                data-original-title="address"
-                data-tooltipped=""
-                style="display: flex;"
-                tabindex="0"
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
               >
-                <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                  style="mask-image: url('./images/icons/question.svg');"
-                />
+                Spender
+              </p>
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-36"
+                  class=""
+                  data-original-title="address"
+                  data-tooltipped=""
+                  style="display: flex;"
+                  tabindex="0"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-1-tooltip"
+                    style="mask-image: url('./images/icons/question.svg');"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -1911,10 +2187,11 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
             >
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                class=""
               >
                 <div
-                  class="mm-avatar-account__jazzicon"
+                  class="identicon"
+                  style="height: 16px; width: 16px; border-radius: 8px;"
                 />
               </div>
               <p
@@ -1927,30 +2204,36 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           </div>
         </div>
         <div
-          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+          data-testid="advanced-details-data-param-2"
           style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+            <div
+              class="mm-box mm-box--display-flex mm-box--align-items-center"
             >
-              Sig Deadline
-            </p>
-            <div>
-              <div
-                aria-describedby="tippy-tooltip-37"
-                class=""
-                data-original-title="uint256"
-                data-tooltipped=""
-                style="display: flex;"
-                tabindex="0"
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
               >
-                <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                  style="mask-image: url('./images/icons/question.svg');"
-                />
+                Sig Deadline
+              </p>
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-37"
+                  class=""
+                  data-original-title="uint256"
+                  data-tooltipped=""
+                  style="display: flex;"
+                  tabindex="0"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    data-testid="advanced-details-data-param-2-tooltip"
+                    style="mask-image: url('./images/icons/question.svg');"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -1967,30 +2250,36 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         </div>
       </div>
       <div
-        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+        data-testid="advanced-details-data-param-2"
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          <div
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
           >
-            Signature
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-38"
-              class=""
-              data-original-title="bytes - The owner's signature over the permit data"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
             >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
+              Signature
+            </p>
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-38"
+                class=""
+                data-original-title="bytes - The owner's signature over the permit data"
+                data-tooltipped=""
+                style="display: flex;"
+                tabindex="0"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  data-testid="advanced-details-data-param-2-tooltip"
+                  style="mask-image: url('./images/icons/question.svg');"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -2006,21 +2295,6 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         </div>
       </div>
     </div>
-    <div
-      class="mm-box mm-box--padding-inline-2"
-    >
-      <div>
-        <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-        >
-          <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/copy.svg');"
-          />
-          Copy raw transaction data
-        </button>
-      </div>
-    </div>
   </div>
 </div>
 `;
@@ -2031,39 +2305,59 @@ exports[`TransactionData renders raw hexadecimal if no decoded data 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="advanced-details-data-section"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+      <button
+        aria-label="copy-button"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+        style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/copy.svg');"
+        />
+      </button>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Data
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Data
+          </p>
+        </div>
       </div>
       <div
         class="mm-box"
       />
     </div>
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Hex
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Hex
+          </p>
+        </div>
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        data-testid="advanced-details-transaction-hex"
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -2071,21 +2365,6 @@ exports[`TransactionData renders raw hexadecimal if no decoded data 1`] = `
         >
           0x123456
         </p>
-      </div>
-    </div>
-    <div
-      class="mm-box mm-box--padding-inline-2"
-    >
-      <div>
-        <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-        >
-          <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/copy.svg');"
-          />
-          Copy raw transaction data
-        </button>
       </div>
     </div>
   </div>

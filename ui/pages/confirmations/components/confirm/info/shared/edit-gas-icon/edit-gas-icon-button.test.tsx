@@ -9,7 +9,7 @@ describe('<EditGasIconButton />', () => {
   const middleware = [thunk];
 
   it('renders component', () => {
-    const state = { ...mockState, confirm: { currentConfirmation: null } };
+    const state = mockState;
     const mockStore = configureMockStore(middleware)(state);
     const { container } = renderWithProvider(
       <EditGasIconButton
