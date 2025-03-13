@@ -349,7 +349,7 @@ describe('IndexedDBStore', () => {
         result: {
           state: {
             data: { hello: 'world' },
-          }
+          },
         },
       };
       (mockObjectStore.get as jest.Mock).mockReturnValue(mockGetRequest);
@@ -431,7 +431,7 @@ describe('IndexedDBStore', () => {
       const mockGetRequest = {
         onerror: null as (() => void) | null,
         onsuccess: null as (() => void) | null,
-        result: {state: { data: { reInitCheck: true } } },
+        result: { state: { data: { reInitCheck: true } } },
       };
       (mockObjectStore.get as jest.Mock).mockReturnValue(mockGetRequest);
 
