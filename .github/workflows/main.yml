@@ -15,15 +15,6 @@ on:
   merge_group:
 
 jobs:
-  prep-deps:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
-        with:
-          is-high-risk-environment: false
-          cache-node-modules: 'true'
-
   lint-workflows:
     name: Lint workflows
     uses: metamask/github-tools/.github/workflows/lint-workflows.yml@1d657e262aea7e3f216754febb624831527d2565
@@ -33,7 +24,7 @@ jobs:
     uses: ./.github/workflows/test-lint-shellcheck.yml
 
   test-lint:
-    needs: prep-deps
+    name: Test lint
     uses: ./.github/workflows/test-lint.yml
 
   test-circular-deps:
@@ -49,24 +40,40 @@ jobs:
       - name: Check circular dependencies
         run: yarn circular-deps:check
 
-      - name: Check circular dependencies
-        run: yarn circular-deps:check
+  test-lint-changelog:
+    name: Test lint changelog
+    uses: ./.github/workflows/test-lint-changelog.yml
 
-  repository-health-checks:
-    needs: prep-deps
-    uses: ./.github/workflows/repository-health-checks.yml
+  test-lint-lockfile:
+    name: Test lint lockfile
+    uses: ./.github/workflows/test-lint-lockfile.yml
+
+  test-deps-audit:
+    name: Test deps audit
+    uses: ./.github/workflows/test-deps-audit.yml
+
+  test-yarn-dedupe:
+    name: Test yarn dedupe
+    uses: ./.github/workflows/test-yarn-dedupe.yml
+
+  test-deps-depcheck:
+    name: Test deps depcheck
+    uses: ./.github/workflows/test-deps-depcheck.yml
 
   test-storybook:
     name: Test storybook
-    needs: prep-deps
     uses: ./.github/workflows/test-storybook.yml
 
+  validate-lavamoat-allow-scripts:
+    name: Validate lavamoat allow scripts
+    uses: ./.github/workflows/validate-lavamoat-allow-scripts.yml
+
   validate-lavamoat-policy-build:
-    needs: prep-deps
+    name: Validate lavamoat policy build
     uses: ./.github/workflows/validate-lavamoat-policy-build.yml
 
   validate-lavamoat-policy-webapp:
-    needs: prep-deps
+    name: Validate lavamoat policy webapp
     uses: ./.github/workflows/validate-lavamoat-policy-webapp.yml
 
   prep-build-test-browserify:
@@ -107,7 +114,6 @@ jobs:
 
   run-tests:
     name: Run tests
-    needs: prep-deps
     uses: ./.github/workflows/run-tests.yml
 
   run-benchmarks:
@@ -165,9 +171,14 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - lint-workflows
+      - test-lint-shellcheck
       - test-lint
-      - repository-health-checks
+      - test-lint-changelog
+      - test-lint-lockfile
+      - test-yarn-dedupe
+      - test-deps-depcheck
       - test-storybook
+      - validate-lavamoat-allow-scripts
       - validate-lavamoat-policy-build
       - validate-lavamoat-policy-webapp
       - run-tests

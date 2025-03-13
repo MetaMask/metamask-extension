@@ -11,10 +11,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          is-high-risk-environment: false
           fetch-depth: 0 # This is needed to checkout all branches
 
       - name: Setup environment
