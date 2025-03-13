@@ -19,6 +19,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 
 const SIMPLEHASH_URL = 'https://api.simplehash.com';
 const QUICKNODE_URL_REGEX = /^https:\/\/.*\.btc.*\.quiknode\.pro(\/|$)/u;
+export const DEFAULT_ACCOUNT_NAME = 'Bitcoin Native SegWit';
 
 export function btcToSats(btc: number): number {
   // Watchout, we're not using BigNumber(s) here (but that's ok for test purposes)
