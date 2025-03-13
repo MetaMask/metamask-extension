@@ -51,7 +51,9 @@ module.exports = {
   },
 
   // eslint-disable-next-line no-empty-function
-  trackMetaMetricsEvent: () => { },
+  trackMetaMetricsEvent: () => {
+    // Intentionally empty
+  },
 
   decodeTransactionData: async (request) => {
     const { contractAddress } = request;

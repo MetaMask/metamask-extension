@@ -1,17 +1,17 @@
 import { useCallback, useEffect, useState } from 'react';
-import {
-  addTransactionAndRouteToConfirmationPage,
-  getCode,
-} from '../../../store/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   TransactionEnvelopeType,
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { useConfirmationNavigation } from './useConfirmationNavigation';
-import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
 import { Hex } from '@metamask/utils';
+import {
+  addTransactionAndRouteToConfirmationPage,
+  getCode,
+} from '../../../store/actions';
+import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
+import { useConfirmationNavigation } from './useConfirmationNavigation';
 
 export const EIP_7702_REVOKE_ADDRESS =
   '0x0000000000000000000000000000000000000000';

@@ -1,22 +1,16 @@
-import { renderHook } from '@testing-library/react-hooks';
-import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
-import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';
-import {
-  EIP_7702_REVOKE_ADDRESS,
-  useEIP7702Account,
-} from './useEIP7702Account';
+import { act } from '@testing-library/react';
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
+import { useDispatch } from 'react-redux';
 import {
   addTransactionAndRouteToConfirmationPage,
   getCode,
 } from '../../../store/actions';
-import { act } from '@testing-library/react';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
-import { TransactionEnvelopeType } from '@metamask/transaction-controller';
-import { ThunkAction } from 'redux-thunk';
 import { useConfirmationNavigation } from './useConfirmationNavigation';
-import { ApprovalRequest } from '@metamask/approval-controller';
-import { flushPromises } from '../../../../test/lib/timer-helpers';
-import { useDispatch } from 'react-redux';
+import {
+  EIP_7702_REVOKE_ADDRESS,
+  useEIP7702Account,
+} from './useEIP7702Account';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
