@@ -276,26 +276,6 @@ workflows:
           requires:
             - prep-deps
 
-  locales_only:
-    when:
-      matches:
-        pattern: /^l10n_crowdin_action$/
-        value: << pipeline.git.branch >>
-    jobs:
-      - prep-deps
-      - get-changed-files-with-git-diff
-      - validate-locales-only:
-          requires:
-            - prep-deps
-            - get-changed-files-with-git-diff
-      - test-lint:
-          requires:
-            - prep-deps
-      - all-tests-pass:
-          requires:
-            - test-lint
-            - validate-locales-only
-
 jobs:
   create_release_pull_request:
     executor: node-browsers-medium
@@ -368,7 +348,7 @@ jobs:
           at: .
       - run:
           name: Get changed files with git diff
-          command: yarn git-diff-default-branch
+          command: yarn tsx .circleci/scripts/git-diff-default-branch.ts
       - persist_to_workspace:
           root: .
           paths:
@@ -376,15 +356,6 @@ jobs:
       - store_artifacts:
           path: changed-files
           destination: changed-files
-
-  validate-locales-only:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run: yarn tsx .circleci/scripts/validate-locales-only.ts
 
   prep-build:
     executor: node-linux-medium
