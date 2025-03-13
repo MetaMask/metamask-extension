@@ -282,7 +282,6 @@ export default function PrepareSwapPage({
     shuffledTokensList,
     tokenBucketPriority: TokenBucketPriority.top,
   });
-  console.log('olha o to token', toToken);
   const selectedToToken =
     tokensToSearchSwapFrom.find(({ address }) =>
       isEqualCaseInsensitive(address, toToken?.address),
@@ -760,10 +759,11 @@ export default function PrepareSwapPage({
 
   // Set the default destination token for the swap
   useEffect(() => {
-    if (!selectedToToken?.address && defaultToToken) {
+    if (fromToken?.address && !selectedToToken?.address && defaultToToken) {
       dispatch(setSwapToToken(defaultToToken));
     }
-  }, [defaultToToken, dispatch, selectedToToken?.address]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fromToken?.address]);
 
   const onOpenImportTokenModalClick = (item) => {
     setTokenForImport(item);

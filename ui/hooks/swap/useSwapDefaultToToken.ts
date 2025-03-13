@@ -25,6 +25,10 @@ function useSwapDefaultToToken(): UseSwapDefaultToTokenReturnType {
   const fromToken = useSelector(getFromToken, isEqual);
 
   const defaultToToken = useMemo(() => {
+    if (!fromToken) {
+      return null;
+    }
+
     const chainIdDefaultToken =
       SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
         chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
