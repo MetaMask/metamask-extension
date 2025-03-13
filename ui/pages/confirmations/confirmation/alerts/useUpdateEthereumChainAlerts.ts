@@ -29,7 +29,6 @@ export function useUpdateEthereumChainAlerts(
   );
   const t = useI18nContext();
 
-  console.log(' pendingConfirmation = ', pendingConfirmation);
   return useMemo(() => {
     if (
       pendingConfirmationsFromOrigin?.length <= 1 ||
