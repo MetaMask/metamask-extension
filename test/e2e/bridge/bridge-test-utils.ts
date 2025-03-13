@@ -116,7 +116,7 @@ async function mockFeatureFlag(
   featureFlagOverrides: Partial<FeatureFlagResponse>,
 ) {
   return await mockServer
-    .forGet(/getAllFeatureFlags/)
+    .forGet(/getAllFeatureFlags/u)
     .withHeaders({ 'X-Client-Id': BRIDGE_CLIENT_ID })
     .always()
     .thenCallback(() => {
@@ -136,7 +136,7 @@ async function mockFeatureFlag(
 
 async function mockGetTxStatus(mockServer: Mockttp) {
   return await mockServer
-    .forGet(/getTxStatus/)
+    .forGet(/getTxStatus/u)
     .always()
     .thenCallback(async (req) => {
       const urlObj = new URL(req.url);
@@ -161,39 +161,6 @@ async function mockGetTxStatus(mockServer: Mockttp) {
         },
       };
     });
-}
-
-const GET_FEES_RESPONSE = {
-  blockNumber: 20728974,
-  id: '19d4eea3-8a49-463e-9e9c-099f9d9571ca',
-  txs: [
-    {
-      cancelFees: [],
-      return: '0x',
-      status: 1,
-      gasUsed: 190780,
-      gasLimit: 239420,
-      fees: [
-        {
-          maxFeePerGas: 4667609171,
-          maxPriorityFeePerGas: 1000000004,
-          gas: 239420,
-          balanceNeeded: 1217518987960240,
-          currentBalance: 751982303082919400,
-          error: '',
-        },
-      ],
-      feeEstimate: 627603309182220,
-      baseFeePerGas: 2289670348,
-      maxFeeEstimate: 1117518987720820,
-    },
-  ],
-};
-
-async function mockGetFees(mockServer: Mockttp) {
-  return await mockServer
-    .forPost('https://transaction.api.cx.metamask.io/networks/1/getFees')
-    .thenJson(200, GET_FEES_RESPONSE);
 }
 
 export const getBridgeFixtures = (

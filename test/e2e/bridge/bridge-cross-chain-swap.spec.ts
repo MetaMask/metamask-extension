@@ -1,12 +1,12 @@
 import { ethers } from 'ethers';
 import { Suite } from 'mocha';
-import { sleep } from '@metamask/test-bundler/dist/utils';
 import { unlockWallet, withFixtures } from '../helpers';
 import { Tenderly, addFundsToAccount } from '../tenderly-network';
 import AccountListPage from '../page-objects/pages/account-list-page';
 import AssetListPage from '../page-objects/pages/home/asset-list';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
 import HomePage from '../page-objects/pages/home/homepage';
+import { Driver } from '../webdriver/driver';
 import BridgeQuotePage, {
   BridgeQuote,
 } from '../page-objects/pages/bridge/quote-page';
@@ -14,10 +14,7 @@ import ActivityListPage from '../page-objects/pages/home/activity-list';
 import { DEFAULT_FEATURE_FLAGS_RESPONSE } from './constants';
 import { getBridgeFixtures } from './bridge-test-utils';
 
-const { strict: assert } = require('assert');
-
 describe('Bridge tests', function (this: Suite) {
-  const txCount = 1;
   it('Execute various bridge transactions', async function () {
     await withFixtures(
       getBridgeFixtures(
@@ -53,7 +50,7 @@ describe('Bridge tests', function (this: Suite) {
     );
   });
 
-  async function bridgeTransaction(driver: any, quote: BridgeQuote) {
+  async function bridgeTransaction(driver: Driver, quote: BridgeQuote) {
     // Navigate to Bridge page
     const homePage = new HomePage(driver);
     await homePage.startBridgeFlow();
@@ -75,7 +72,7 @@ describe('Bridge tests', function (this: Suite) {
     );
   }
 
-  async function importAccount(driver: any, privateKey: any) {
+  async function importAccount(driver: Driver, privateKey: string) {
     const headerNavbar = new HeaderNavbar(driver);
     await headerNavbar.openAccountMenu();
 
