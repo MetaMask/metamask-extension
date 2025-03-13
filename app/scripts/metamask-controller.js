@@ -4460,7 +4460,7 @@ export default class MetamaskController extends EventEmitter {
    * Imports a new mnemonic to the vault.
    *
    * @param {number[]} mnemonic
-   * @returns {object} new account address
+   * @returns {Promise<string>} new account address
    */
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   async importMnemonicToVault(mnemonic) {
@@ -4553,7 +4553,9 @@ export default class MetamaskController extends EventEmitter {
     try {
       const { completedOnboarding } = this.onboardingController.state;
 
-      const seedPhraseAsUint8Array = Uint8Array.from(encodedSeedPhrase);
+      const seedPhrase = new TextDecoder().decode(
+        Uint8Array.from(encodedSeedPhrase),
+      );
 
       // clear permissions
       this.permissionController.clearState();
@@ -4573,9 +4575,7 @@ export default class MetamaskController extends EventEmitter {
       // create new vault
       await this.keyringController.createNewVaultAndRestore(
         password,
-        MetamaskController.convertMnemonicToWordlistIndices(
-          seedPhraseAsUint8Array,
-        ),
+        MetamaskController.convertMnemonicToWordlistIndices(seedPhrase),
       );
 
       if (completedOnboarding) {
@@ -4660,14 +4660,11 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Encodes a BIP-39 mnemonic as the indices of words in the English BIP-39 wordlist.
    *
-   * @param {Buffer} mnemonic - The BIP-39 mnemonic.
-   * @returns {Buffer} The Unicode code points for the seed phrase formed from the words in the wordlist.
+   * @param {string} mnemonic - The BIP-39 mnemonic.
+   * @returns {Uint8Array} The Unicode code points for the seed phrase formed from the words in the wordlist.
    */
   static convertMnemonicToWordlistIndices(mnemonic) {
-    const indices = mnemonic
-      .toString()
-      .split(' ')
-      .map((word) => wordlist.indexOf(word));
+    const indices = mnemonic.split(' ').map((word) => wordlist.indexOf(word));
     return new Uint8Array(new Uint16Array(indices).buffer);
   }
 
@@ -5138,18 +5135,20 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {string} password
    * @param {string} _keyringId - This is the identifier for the hd keyring.
-   * @returns {Promise<Uint8Array>} The seed phrase to be confirmed by the user,
-   * encoded as a Uint8Array.
+   * @returns {Promise<number[]>} The seed phrase to be confirmed by the user,
+   * encoded as an array of UTF-8 bytes.
    */
   async getSeedPhrase(password, _keyringId) {
-    return MetamaskController.convertEnglishWordlistIndicesToCodepoints(
-      await this.keyringController.exportSeedPhrase(
-        password,
-        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-        _keyringId,
-        ///: END:ONLY_INCLUDE_IF
+    return [
+      ...MetamaskController.convertEnglishWordlistIndicesToCodepoints(
+        await this.keyringController.exportSeedPhrase(
+          password,
+          ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+          _keyringId,
+          ///: END:ONLY_INCLUDE_IF
+        ),
       ),
-    );
+    ];
   }
 
   /**

@@ -382,6 +382,9 @@ describe('MetaMaskController', () => {
   });
 
   describe('MetaMaskController Behaviour', () => {
+    /**
+     * @type {MetaMaskController}
+     */
     let metamaskController;
 
     async function simulatePreferencesChange(preferences) {
@@ -2338,6 +2341,9 @@ describe('MetaMaskController', () => {
     });
 
     describe('#setUpCookieHandlerCommunication', () => {
+      /**
+       * @type {MetaMaskController}
+       */
       let localMetaMaskController;
       beforeEach(() => {
         localMetaMaskController = new MetaMaskController({
@@ -2651,6 +2657,9 @@ describe('MetaMaskController', () => {
     });
 
     describe('#setupUntrustedCommunicationCaip', () => {
+      /**
+       * @type {MetaMaskController}
+       */
       let localMetamaskController;
       beforeEach(() => {
         process.env.MULTICHAIN_API = true;
@@ -3811,6 +3820,9 @@ describe('MetaMaskController', () => {
     });
 
     describe('RemoteFeatureFlagController', () => {
+      /**
+       * @type {MetaMaskController}
+       */
       let localMetamaskController;
 
       beforeEach(() => {
@@ -3986,7 +3998,9 @@ describe('MetaMaskController', () => {
           currentKeyrings.filter((kr) => kr.type === 'HD Key Tree'),
         ).toHaveLength(2);
         expect(currentKeyrings).toHaveLength(previousKeyrings.length + 1);
-        expect(newSRP).toStrictEqual(TEST_SEED_ALT);
+        expect(newSRP).toStrictEqual(
+          new TextDecoder().decode(Uint8Array.from(TEST_SEED_ALT)),
+        );
       });
 
       it('throws an error if a duplicate srp is added', async () => {

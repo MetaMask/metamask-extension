@@ -382,7 +382,7 @@ export async function getSeedPhrase(
   keyringId: string,
   ///: END:ONLY_INCLUDE_IF
 ) {
-  const encodedSeedPhrase = await submitRequestToBackground<string>(
+  const encodedSeedPhrase = await submitRequestToBackground<number[]>(
     'getSeedPhrase',
     [
       password,
@@ -391,7 +391,7 @@ export async function getSeedPhrase(
       ///: END:ONLY_INCLUDE_IF
     ],
   );
-  return Buffer.from(encodedSeedPhrase).toString('utf8');
+  return new TextDecoder().decode(Uint8Array.from(encodedSeedPhrase));
 }
 
 export function requestRevealSeedWords(

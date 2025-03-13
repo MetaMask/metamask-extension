@@ -50,11 +50,11 @@ export async function generateWalletState() {
 /**
  * Generates a new vault and account based on the provided seed phrase and password.
  *
- * @param {string} encodedSeedPhrase - The encoded seed phrase.
+ * @param {string} seedPhrase - The seed phrase.
  * @param {string} password - The password for the vault.
  * @returns {Promise<{vault: object, account: string}>} The generated vault and account.
  */
-async function generateVaultAndAccount(encodedSeedPhrase, password) {
+async function generateVaultAndAccount(seedPhrase, password) {
   const messenger = new Messenger();
   const keyringControllerMessenger = messenger.getRestricted({
     name: 'KeyringController',
@@ -64,11 +64,9 @@ async function generateVaultAndAccount(encodedSeedPhrase, password) {
     messenger: keyringControllerMessenger,
   });
 
-  const seedPhraseAsUint8Array = new TextEncoder().encode(encodedSeedPhrase);
-
   await krCtrl.createNewVaultAndRestore(
     password,
-    MetamaskController.convertMnemonicToWordlistIndices(seedPhraseAsUint8Array),
+    MetamaskController.convertMnemonicToWordlistIndices(seedPhrase),
   );
 
   const accounts = [];

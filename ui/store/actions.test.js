@@ -2737,9 +2737,11 @@ describe('Actions', () => {
       await store.dispatch(actions.importMnemonicToVault(mnemonic));
 
       expect(store.getActions()).toStrictEqual(expectedActions);
-      expect(importMnemonicToVaultStub.calledOnceWith(mnemonic)).toStrictEqual(
-        true,
-      );
+      expect(
+        importMnemonicToVaultStub.calledOnceWith([
+          ...new TextEncoder().encode(mnemonic),
+        ]),
+      ).toStrictEqual(true);
     });
   });
 });
