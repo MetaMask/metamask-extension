@@ -5,6 +5,7 @@ import { Driver } from '../webdriver/driver';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { completeSnapInstallSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
+import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 
 const { strict: assert } = require('assert');
 const { withFixtures, getEventPayloads } = require('../helpers');
@@ -63,13 +64,15 @@ describe('Test Snap installed', function () {
 
         // Open a new tab and navigate to test snaps page and click dialog snap
         const testSnaps = new TestSnaps(driver);
-        await testSnaps.openPage();
-        await testSnaps.clickConnectDialogsSnapButton();
-        await completeSnapInstallSwitchToTestSnap(driver);
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          'connectDialogsButton',
+          false,
+        );
 
         // Check installation success
         await testSnaps.check_installationComplete(
-          testSnaps.connectDialogsButton,
+          'connectDialogsButton',
           'Reconnect to Dialogs Snap',
         );
 
@@ -87,16 +90,18 @@ describe('Test Snap installed', function () {
         });
 
         // Click to connect to errors snap and validate the install snaps result
-        await testSnaps.clickConnectErrorsButton();
+        await testSnaps.scrollAndClickButtonTestSnapsPage(
+          'connectErrorsButton',
+        );
         await completeSnapInstallSwitchToTestSnap(driver);
         await testSnaps.check_installedSnapsResult(
           'npm:@metamask/dialog-example-snap, npm:@metamask/error-example-snap',
         );
 
         // Click Send error button and validate the message result
-        await testSnaps.clickSendErrorButton();
+        await testSnaps.scrollAndClickButtonTestSnapsPage('sendErrorButton');
         await testSnaps.check_messageResultSpan(
-          testSnaps.errorResultSpan,
+          'errorResultSpan',
           '"Hello, world!"',
         );
       },

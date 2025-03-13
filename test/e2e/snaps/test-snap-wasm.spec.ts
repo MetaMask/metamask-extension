@@ -2,7 +2,7 @@ import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { withFixtures } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
-import { completeSnapInstallSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
+import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 
 describe('Test Snap WASM', function () {
   it('can use webassembly inside a snap', async function () {
@@ -16,19 +16,18 @@ describe('Test Snap WASM', function () {
 
         const testSnaps = new TestSnaps(driver);
         // Navigate to test snaps page and connect to wasm snap
-        await testSnaps.openPage();
-        await testSnaps.clickConnectWasmButton();
-        await completeSnapInstallSwitchToTestSnap(driver);
+        await openTestSnapClickButtonAndInstall(driver, 'connectWasmButton');
 
         // Check installation success
         await testSnaps.check_installationComplete(
-          testSnaps.connectWasmButton,
+          'connectWasmButton',
           'Reconnect to WebAssembly Snap',
         );
 
         // Enter number for test to input field and validate the result
-        await testSnaps.fillWasmMessageAndSign('23');
-        await testSnaps.check_messageResultSpan(this.wasmResultSpan, '28657');
+        await testSnaps.fillMessageTestSnapsPage('wasmInput', '23');
+        await testSnaps.signTestSnapsPage('sendWasmMessageButton');
+        await testSnaps.check_messageResultSpan('wasmResultSpan', '28657');
       },
     );
   });

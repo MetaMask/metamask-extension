@@ -1,12 +1,11 @@
 import { Driver } from '../webdriver/driver';
-import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { switchToNetworkFlow } from '../page-objects/flows/network.flow';
 import HomePage from '../page-objects/pages/home/homepage';
 import SendTokenPage from '../page-objects/pages/send/send-token-page';
 import FixtureBuilder from '../fixture-builder';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { withFixtures, WINDOW_TITLES } from '../helpers';
-import { completeSnapInstallSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
+import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 
 describe('Name lookup', function () {
   it('validate the recipient address appears in the send flow', async function () {
@@ -18,14 +17,11 @@ describe('Name lookup', function () {
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
 
-        const testSnaps = new TestSnaps(driver);
         const homePage = new HomePage(driver);
         const sendTokenPage = new SendTokenPage(driver);
 
         // Open a new tab and navigate to test snaps page and click name lookup
-        await testSnaps.openPage();
-        await testSnaps.clickNameLookupButton();
-        await completeSnapInstallSwitchToTestSnap(driver);
+        await openTestSnapClickButtonAndInstall(driver, 'nameLookUpButton');
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );

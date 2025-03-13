@@ -4,7 +4,7 @@ import { Driver } from '../webdriver/driver';
 import { withFixtures, WINDOW_TITLES } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
-import { completeSnapInstallSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
+import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 
 describe('Test Snap update', function () {
   it('can install an old and then updated version', async function () {
@@ -20,16 +20,16 @@ describe('Test Snap update', function () {
         const snapInstall = new SnapInstall(driver);
 
         // Navigate to test snaps page, connect update, complete installation and validate
-        await testSnaps.openPage();
-        await testSnaps.clickConnectUpdateButton();
-        await completeSnapInstallSwitchToTestSnap(driver);
+        await openTestSnapClickButtonAndInstall(driver, 'connectUpdateButton');
         await testSnaps.check_installationComplete(
-          this.connectUpdateButton,
+          'connectUpdateButton',
           'Reconnect to Update Snap',
         );
 
         // Click update snap and check the installation status
-        await testSnaps.clickConnectUpdateNewButton();
+        await testSnaps.scrollAndClickButtonTestSnapsPage(
+          'connectUpdateNewButton',
+        );
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({ text: 'Update request' });
         await snapInstall.check_pageIsLoaded();
@@ -39,10 +39,7 @@ describe('Test Snap update', function () {
 
         // Switch to test snap page and validate the version text
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
-        await testSnaps.check_messageResultSpan(
-          testSnaps.updateVersionSpan,
-          '"2.1.3"',
-        );
+        await testSnaps.check_messageResultSpan('updateVersionSpan', '"2.1.3"');
       },
     );
   });

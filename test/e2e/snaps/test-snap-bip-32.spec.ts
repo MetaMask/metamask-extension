@@ -3,10 +3,8 @@ import { Driver } from '../webdriver/driver';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
 import { withFixtures } from '../helpers';
-import {
-  confirmPermissionSwitchToTestSnap,
-  switchAndApproveDialogSwitchToTestSnap,
-} from '../page-objects/flows/snap-permission.flow';
+import { switchAndApproveDialogSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
+import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 
 const bip32PublicKey =
   '"0x043e98d696ae15caef75fa8dd204a7c5c08d1272b2218ba3c20feeb4c691eec366606ece56791c361a2320e7fad8bcbb130f66d51c591fc39767ab2856e93f8dfb"';
@@ -35,53 +33,71 @@ describe('Test Snap bip-32', function () {
 
         const testSnaps = new TestSnaps(driver);
 
-        // Navigate to test snaps page, click bip32, connect and approve
-        await testSnaps.openPage();
-        await testSnaps.clickConnectBip32Button();
-        await confirmPermissionSwitchToTestSnap(driver, true);
+        // Navigate to `test-snaps` page, click bip32, connect and approve
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          'connectBip32Button',
+          true,
+        );
 
         // check the installation status
         await testSnaps.check_installationComplete(
-          testSnaps.reconnectBip32Button,
+          'connectBip32Button',
           'Reconnect to BIP-32 Snap',
         );
 
         // Click bip32 button to get private key and validate the result
-        await testSnaps.clickGetPublicKeyBip32Button();
+        await testSnaps.scrollAndClickButtonTestSnapsPage('getPublicKeyButton');
         await testSnaps.check_messageResultSpan(
-          testSnaps.bip32PublicKeyResultSpan,
+          'bip32PublicKeyResultSpan',
           bip32PublicKey,
         );
 
         // Click get compressed public key and validate the result
-        await testSnaps.clickGetCompressedPublicKeyBip32Button();
+        await testSnaps.scrollAndClickButtonTestSnapsPage(
+          'getCompressedKeyButton',
+        );
         await testSnaps.check_messageResultSpan(
-          testSnaps.bip32PublicKeyResultSpan,
+          'bip32PublicKeyResultSpan',
           bip32CompressedPublicKey,
         );
 
         // Enter secp256k1 signature message, click sign button, approve and validate the result
-        await testSnaps.fillMessageAndSignSecp256k1('foo bar');
+        await testSnaps.fillMessageTestSnapsPage(
+          'messageSecp256k1Input',
+          'foo bar',
+        );
+        await testSnaps.signTestSnapsPage('messageSecp256k1Button');
         await switchAndApproveDialogSwitchToTestSnap(driver);
         await testSnaps.check_messageResultSpan(
-          testSnaps.bip32MessageResultSecp256k1Span,
+          'bip32MessageResultSecp256k1Span',
           publicKeyGeneratedWithSecp256k1Message,
         );
 
         // Enter ed25519 signature message, click sign button, approve and validate the result
         await testSnaps.scrollToSignWithEd25519Button();
-        await testSnaps.fillMessageAndSignEd25519('foo bar');
+        await testSnaps.fillMessageTestSnapsPage(
+          'messageEd25519Input',
+          'foo bar',
+        );
+        await testSnaps.signTestSnapsPage('signEd25519MessageButton');
         await switchAndApproveDialogSwitchToTestSnap(driver);
         await testSnaps.check_messageResultSpan(
-          testSnaps.bip32MessageResultEd25519Span,
+          'bip32MessageResultEd25519Span',
           publicKeyGeneratedWithEd2551,
         );
 
         // Enter ed25519 signature message, click sign button, approve and validate the result
-        await testSnaps.fillMessageAndSignEd25519Bip32('foo bar');
+        await testSnaps.fillMessageTestSnapsPage(
+          'messageEd25519Bip32Input',
+          'foo bar',
+        );
+        await testSnaps.scrollAndClickButtonTestSnapsPage(
+          'signEd25519Bip32MessageButton',
+        );
         await switchAndApproveDialogSwitchToTestSnap(driver);
         await testSnaps.check_messageResultSpan(
-          testSnaps.messageResultEd25519SBip32Span,
+          'messageResultEd25519SBip32Span',
           publicKeyGeneratedWithEd25519Bip32,
         );
 
@@ -90,25 +106,38 @@ describe('Test Snap bip-32', function () {
           'bip32',
           'SRP 1 (primary)',
         );
-        await testSnaps.fillMessageAndSignSecp256k1('bar baz');
+
+        await testSnaps.fillMessageTestSnapsPage(
+          'messageSecp256k1Input',
+          'bar baz',
+        );
+        await testSnaps.signTestSnapsPage('messageSecp256k1Button');
         await switchAndApproveDialogSwitchToTestSnap(driver);
         await testSnaps.check_messageResultSpan(
-          testSnaps.bip32MessageResultSecp256k1Span,
+          'bip32MessageResultSecp256k1Span',
           publicKeyGeneratedWithEntropySourceSRP1,
         );
 
         // Select entropy source SRP 2, enter a message, sign, approve and validate the result
         await testSnaps.scrollAndSelectEntropySource('bip32', 'SRP 2');
-        await testSnaps.fillMessageAndSignSecp256k1('bar baz');
+        await testSnaps.fillMessageTestSnapsPage(
+          'messageSecp256k1Input',
+          'bar baz',
+        );
+        await testSnaps.signTestSnapsPage('messageSecp256k1Button');
         await switchAndApproveDialogSwitchToTestSnap(driver);
         await testSnaps.check_messageResultSpan(
-          testSnaps.bip32MessageResultSecp256k1Span,
+          'bip32MessageResultSecp256k1Span',
           publicKeyGeneratedWithEntropySourceSRP2,
         );
 
         // Select an invalid (non-existent) entropy source, enter a message, sign, approve and validate the result
         await testSnaps.scrollAndSelectEntropySource('bip32', 'Invalid');
-        await testSnaps.fillMessageAndSignSecp256k1('bar baz');
+        await testSnaps.fillMessageTestSnapsPage(
+          'messageSecp256k1Input',
+          'bar baz',
+        );
+        await testSnaps.signTestSnapsPage('messageSecp256k1Button');
 
         // Check the error message and close the alert.
         await driver.waitForAlert(

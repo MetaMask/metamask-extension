@@ -13,7 +13,7 @@ import TestDapp from '../../page-objects/pages/test-dapp';
 import { createDappTransaction } from '../../page-objects/flows/transaction';
 import { TestSnaps } from '../../page-objects/pages/test-snaps';
 import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
-import { completeSnapInstallSwitchToTestSnap } from '../../page-objects/flows/snap-permission.flow';
+import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
 import { withTransactionEnvelopeTypeFixtures } from './helpers';
 
 describe('Confirmation Navigation', function (this: Suite) {
@@ -135,10 +135,10 @@ describe('Confirmation Navigation', function (this: Suite) {
         await loginWithoutBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
-        await testSnaps.openPage();
-        await testSnaps.clickConnectDialogsSnapButton();
-        await completeSnapInstallSwitchToTestSnap(driver);
-        await testSnaps.clickDialogsSnapConfirmationButton();
+        await openTestSnapClickButtonAndInstall(driver, 'connectDialogsButton');
+        await testSnaps.scrollAndClickButtonTestSnapsPage(
+          'dialogsSnapConfirmationButton',
+        );
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();

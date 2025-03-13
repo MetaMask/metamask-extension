@@ -3,10 +3,8 @@ import { Driver } from '../webdriver/driver';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
 import { withFixtures } from '../helpers';
-import {
-  confirmPermissionSwitchToTestSnap,
-  switchAndApproveDialogSwitchToTestSnap,
-} from '../page-objects/flows/snap-permission.flow';
+import { switchAndApproveDialogSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
+import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 
 const publicKeyBip44 =
   '"0x86debb44fb3a984d93f326131d4c1db0bc39644f1a67b673b3ab45941a1cea6a385981755185ac4594b6521e4d1e08d1"';
@@ -30,28 +28,33 @@ describe('Test Snap bip-44', function () {
         const testSnaps = new TestSnaps(driver);
 
         // Navigate to `test-snaps` page, and install the Snap.
-        await testSnaps.openPage();
-        await testSnaps.clickConnectBip44Button();
-        await confirmPermissionSwitchToTestSnap(driver, true);
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          'connectBip44Button',
+          true,
+        );
 
         // check the installation status
         await testSnaps.check_installationComplete(
-          this.reconnectBip44Button,
+          'connectBip44Button',
           'Reconnect to BIP-44 Snap',
         );
 
         // Click bip44 button to get private key and validate the result
-        await testSnaps.clickPublicKeyBip44Button();
+        await testSnaps.scrollAndClickButtonTestSnapsPage(
+          'publicKeyBip44Button',
+        );
         await testSnaps.check_messageResultSpan(
-          testSnaps.bip44ResultSpan,
+          'bip44ResultSpan',
           publicKeyBip44,
         );
 
         // Enter message, click sign button, approve and validate the result
-        await testSnaps.fillBip44MessageAndSign('1234');
+        await testSnaps.fillMessageTestSnapsPage('messageBip44Input', '1234');
+        await testSnaps.signTestSnapsPage('signBip44MessageButton');
         await switchAndApproveDialogSwitchToTestSnap(driver);
         await testSnaps.check_messageResultSpan(
-          this.bip44SignResultSpan,
+          'bip44SignResultSpan',
           publicKeyBip44Sign,
         );
 
@@ -60,25 +63,37 @@ describe('Test Snap bip-44', function () {
           'bip44',
           'SRP 1 (primary)',
         );
-        await testSnaps.fillBip44MessageAndSign('foo bar');
+        await testSnaps.fillMessageTestSnapsPage(
+          'messageBip44Input',
+          'foo bar',
+        );
+        await testSnaps.signTestSnapsPage('signBip44MessageButton');
         await switchAndApproveDialogSwitchToTestSnap(driver);
         await testSnaps.check_messageResultSpan(
-          this.bip44SignResultSpan,
+          'bip44SignResultSpan',
           publicKeyGeneratedWithEntropySourceSRP1,
         );
 
         // Select entropy source SRP 2, enter a message, sign, approve and validate the result
         await testSnaps.scrollAndSelectEntropySource('bip44', 'SRP 2');
-        await testSnaps.fillBip44MessageAndSign('foo bar');
+        await testSnaps.fillMessageTestSnapsPage(
+          'messageBip44Input',
+          'foo bar',
+        );
+        await testSnaps.signTestSnapsPage('signBip44MessageButton');
         await switchAndApproveDialogSwitchToTestSnap(driver);
         await testSnaps.check_messageResultSpan(
-          this.bip44SignResultSpan,
+          'bip44SignResultSpan',
           publicKeyGeneratedWithEntropySourceSRP2,
         );
 
         // Select an invalid (non-existent) entropy source, enter a message, sign, approve and validate the result
         await testSnaps.scrollAndSelectEntropySource('bip44', 'Invalid');
-        await testSnaps.fillBip44MessageAndSign('foo bar');
+        await testSnaps.fillMessageTestSnapsPage(
+          'messageBip44Input',
+          'foo bar',
+        );
+        await testSnaps.signTestSnapsPage('signBip44MessageButton');
         await driver.waitForAlert(
           'Entropy source with ID "invalid" not found.',
         );

@@ -3,7 +3,7 @@ import { Driver } from '../webdriver/driver';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
 import { withFixtures } from '../helpers';
-import { completeSnapInstallSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
+import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 
 const jsonTextValidation = '"foo": "bar"';
 const base64TextFile = '"ewogICJmb28iOiAiYmFyIgp9Cg=="';
@@ -22,32 +22,36 @@ describe('Test Snap Get File', function () {
         const testSnaps = new TestSnaps(driver);
 
         // Navigate to test snaps page, connect to get-file snap, complete installation and validate
-        await testSnaps.openPage();
-        await testSnaps.clickConnectGetFileButton();
-        await completeSnapInstallSwitchToTestSnap(driver);
+        await openTestSnapClickButtonAndInstall(driver, 'connectGetFileButton');
         await testSnaps.check_installationComplete(
-          testSnaps.connectGetFileButton,
+          'connectGetFileButton',
           'Reconnect to Get File Snap',
         );
 
         // click on get file and check correct result
-        await testSnaps.clickGetFileTextButton();
+        await testSnaps.scrollAndClickButtonTestSnapsPage(
+          'sendGetFileTextButton',
+        );
         await testSnaps.check_messageResultSpan(
-          testSnaps.fileResultSpan,
+          'fileResultSpan',
           jsonTextValidation,
         );
 
         // click on get base64 and await correct result
-        await testSnaps.clickGetFileBase64Button();
+        await testSnaps.scrollAndClickButtonTestSnapsPage(
+          'sendGetFileBase64Button',
+        );
         await testSnaps.check_messageResultSpan(
-          testSnaps.fileResultSpan,
+          'fileResultSpan',
           base64TextFile,
         );
 
         // click on get hex text and await correct result
-        await testSnaps.clickGetFileTextHexButton();
+        await testSnaps.scrollAndClickButtonTestSnapsPage(
+          'sendGetFileHexButton',
+        );
         await testSnaps.check_messageResultSpan(
-          testSnaps.fileResultSpan,
+          'fileResultSpan',
           hexEncodedFileValidation,
         );
       },

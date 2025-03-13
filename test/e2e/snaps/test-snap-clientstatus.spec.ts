@@ -4,7 +4,7 @@ import HeaderNavbar from '../page-objects/pages/header-navbar';
 import FixtureBuilder from '../fixture-builder';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { withFixtures, WINDOW_TITLES } from '../helpers';
-import { completeSnapInstallSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
+import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 
 describe('Test Snap Client Status', function () {
   it('can properly show client status locked state', async function () {
@@ -20,10 +20,14 @@ describe('Test Snap Client Status', function () {
         const headerNavbar = new HeaderNavbar(driver);
 
         // Navigate to test snaps page and connect to client status snap and submit client status
-        await testSnaps.openPage();
-        await testSnaps.clickConnectClientStatusButton();
-        await completeSnapInstallSwitchToTestSnap(driver);
-        await testSnaps.clickSubmitClientStatusButton();
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          'connectClientStatusButton',
+          false,
+        );
+        await testSnaps.scrollAndClickButtonTestSnapsPage(
+          'submitClientStatusButton',
+        );
 
         // Validate the client status is false when the wallet is unlocked
         await testSnaps.check_clientStatus('false');
@@ -38,7 +42,9 @@ describe('Test Snap Client Status', function () {
         // Click submit client status on test snap page
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await testSnaps.check_pageIsLoaded();
-        await testSnaps.clickSubmitClientStatusButton();
+        await testSnaps.scrollAndClickButtonTestSnapsPage(
+          'submitClientStatusButton',
+        );
 
         // Validate the client status is true when the wallet is locked
         await testSnaps.check_clientStatus('true');
