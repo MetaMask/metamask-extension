@@ -11,6 +11,8 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { MOCK_ACCOUNT_SOLANA_MAINNET } from '../../../../test/data/mock-accounts';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import mockState from '../../../../test/data/mock-state.json';
+import configureStore from '../../../store/store';
 import { MultichainTransactionDetailsModal } from './multichain-transaction-details-modal';
 import {
   getAddressUrl,
@@ -133,10 +135,12 @@ describe('MultichainTransactionDetailsModal', () => {
       userAddress: string;
     } = mockProps,
   ) => {
+    const store = configureStore(mockState.metamask);
     return renderWithProvider(
       <MetaMetricsContext.Provider value={mockTrackEvent}>
         <MultichainTransactionDetailsModal {...props} />
       </MetaMetricsContext.Provider>,
+      store,
     );
   };
 
