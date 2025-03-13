@@ -101,7 +101,12 @@ describe('Ducks - Bridge', () => {
       expect(actions[0].type).toStrictEqual('bridge/setToToken');
       const newState = bridgeReducer(state, actions[0]);
       expect(newState.toToken).toStrictEqual(
-        expect.objectContaining({ ...actionPayload, chainId: 'eip155:10' }),
+        expect.objectContaining({
+          ...actionPayload,
+          balance: '0',
+          chainId: '0xa',
+          string: '0',
+        }),
       );
     });
   });
