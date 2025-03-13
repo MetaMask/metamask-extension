@@ -50,7 +50,7 @@ class BridgeQuotePage {
     await this.driver.clickElement(`[data-testid="${quote.toChain}"]`);
     await this.driver.fill(this.assetPrickerSearchInput, quote.tokenTo);
     await this.driver.clickElement(this.tokenButton);
-    //await this.driver.clickElement(this.serchedToken);
+    // await this.driver.clickElement(this.serchedToken);
   };
 
   submitQuote = async () => {

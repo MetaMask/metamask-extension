@@ -1,9 +1,7 @@
-const { strict: assert } = require('assert');
 import { ethers } from 'ethers';
 import { Suite } from 'mocha';
+import { sleep } from '@metamask/test-bundler/dist/utils';
 import { unlockWallet, withFixtures } from '../helpers';
-import { getBridgeFixtures } from './bridge-test-utils';
-import { DEFAULT_FEATURE_FLAGS_RESPONSE } from './constants';
 import { Tenderly, addFundsToAccount } from '../tenderly-network';
 import AccountListPage from '../page-objects/pages/account-list-page';
 import AssetListPage from '../page-objects/pages/home/asset-list';
@@ -13,10 +11,13 @@ import BridgeQuotePage, {
   BridgeQuote,
 } from '../page-objects/pages/bridge/quote-page';
 import ActivityListPage from '../page-objects/pages/home/activity-list';
-import { sleep } from '@metamask/test-bundler/dist/utils';
+import { DEFAULT_FEATURE_FLAGS_RESPONSE } from './constants';
+import { getBridgeFixtures } from './bridge-test-utils';
+
+const { strict: assert } = require('assert');
 
 describe('Bridge tests', function (this: Suite) {
-  let txCount = 1;
+  const txCount = 1;
   it('Execute various bridge transactions', async function () {
     await withFixtures(
       getBridgeFixtures(
