@@ -97,7 +97,6 @@ import {
   QUOTES_EXPIRED_ERROR,
   MAX_ALLOWED_SLIPPAGE,
   SWAPS_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
-  DEFAULT_TO_TOKEN_BY_NETWORK,
 } from '../../../../shared/constants/swaps';
 import {
   CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
@@ -148,6 +147,7 @@ import SelectedToken from '../selected-token/selected-token';
 import ListWithSearch from '../list-with-search/list-with-search';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import useBridging from '../../../hooks/bridge/useBridging';
+import useSwapDefaultToToken from '../../../hooks/swap/useSwapDefaultToToken';
 import { SmartTransactionsBannerAlert } from '../../confirmations/components/smart-transactions-banner-alert';
 import QuotesLoadingAnimation from './quotes-loading-animation';
 import ReviewQuote from './review-quote';
@@ -209,6 +209,8 @@ export default function PrepareSwapPage({
   const areQuotesPresent = numberOfQuotes > 0 && usedQuote;
   const swapsErrorKey = useSelector(getSwapsErrorKey);
   const aggregatorMetadata = useSelector(getAggregatorMetadata, shallowEqual);
+  const { defaultToToken } = useSwapDefaultToToken();
+
   const transactionSettingsOpened = useSelector(
     getTransactionSettingsOpened,
     shallowEqual,
@@ -280,6 +282,7 @@ export default function PrepareSwapPage({
     shuffledTokensList,
     tokenBucketPriority: TokenBucketPriority.top,
   });
+  console.log('olha o to token', toToken);
   const selectedToToken =
     tokensToSearchSwapFrom.find(({ address }) =>
       isEqualCaseInsensitive(address, toToken?.address),
@@ -757,12 +760,10 @@ export default function PrepareSwapPage({
 
   // Set the default destination token for the swap
   useEffect(() => {
-    if (!selectedToToken?.address && DEFAULT_TO_TOKEN_BY_NETWORK[chainId]) {
-      const defaultToken = DEFAULT_TO_TOKEN_BY_NETWORK[chainId];
-      defaultToken && dispatch(setSwapToToken(defaultToken));
+    if (!selectedToToken?.address && defaultToToken) {
+      dispatch(setSwapToToken(defaultToToken));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tokensToSearchSwapTo, chainId]);
+  }, [defaultToToken, dispatch, selectedToToken?.address]);
 
   const onOpenImportTokenModalClick = (item) => {
     setTokenForImport(item);

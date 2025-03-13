@@ -417,7 +417,11 @@ const SOLANA_USDC_TOKEN_OBJECT = {
 };
 ///: END:ONLY_INCLUDE_IF
 
-export const DEFAULT_TO_TOKEN_BY_NETWORK = {
+/**
+ * The most common token pair for each chain
+ * ex: for mainnet, the main token is ETH and the most common swap is USDC
+ */
+export const SWAPS_CHAINID_COMMON_TOKEN_PAIR = {
   [CHAIN_IDS.MAINNET]: ETH_USDC_TOKEN_OBJECT,
   [CHAIN_IDS.BSC]: BSC_USDT_TOKEN_OBJECT,
   [CHAIN_IDS.POLYGON]: POLYGON_USDT_TOKEN_OBJECT,
