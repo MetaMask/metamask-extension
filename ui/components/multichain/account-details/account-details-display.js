@@ -35,11 +35,17 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { useEIP7702Account } from '../../../pages/confirmations/hooks/useEIP7702Account';
+import { useAsyncResult } from '../../../hooks/useAsyncResult';
 
-function SmartAccountPill() {
+function SmartAccountPill({ address }) {
   const { isUpgraded } = useEIP7702Account();
 
-  if (!isUpgraded) {
+  const { value: isAccountUpgraded } = useAsyncResult(
+    () => isUpgraded(address),
+    [address],
+  );
+
+  if (!isAccountUpgraded) {
     return null;
   }
 
@@ -74,11 +80,16 @@ function DowngradeAccountButton({ address, onClose }) {
     onRedirect: onClose,
   });
 
-  const handleClick = useCallback(() => {
-    downgradeAccount(address);
+  const { value: isAccountUpgraded } = useAsyncResult(
+    () => isUpgraded(address),
+    [address],
+  );
+
+  const handleClick = useCallback(async () => {
+    await downgradeAccount(address);
   }, [address, downgradeAccount]);
 
-  if (!isUpgraded) {
+  if (!isAccountUpgraded) {
     return null;
   }
 
@@ -184,6 +195,13 @@ AccountDetailsDisplay.propTypes = {
    * Executes when closing the modal
    */
   onClose: PropTypes.func.isRequired,
+};
+
+SmartAccountPill.propTypes = {
+  /**
+   * Current address
+   */
+  address: PropTypes.string.isRequired,
 };
 
 DowngradeAccountButton.propTypes = {
