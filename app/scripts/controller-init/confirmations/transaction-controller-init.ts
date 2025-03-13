@@ -176,6 +176,7 @@ function getApi(
       controller.abortTransactionSigning.bind(controller),
     getLayer1GasFee: controller.getLayer1GasFee.bind(controller),
     getTransactions: controller.getTransactions.bind(controller),
+    updateAtomicBatchData: controller.updateAtomicBatchData.bind(controller),
     updateEditableParams: controller.updateEditableParams.bind(controller),
     updatePreviousGasParams:
       controller.updatePreviousGasParams.bind(controller),

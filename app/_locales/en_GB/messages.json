@@ -1042,6 +1042,9 @@
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
   },
+  "confirmSimulationApprove": {
+    "message": "You approve"
+  },
   "confirmTitleApproveTransactionNFT": {
     "message": "Withdrawal request"
   },
@@ -3733,6 +3736,10 @@
   },
   "pendingConfirmationAddNetworkAlertMessage": {
     "message": "Updating network will cancel $1 pending transactions from this site.",
+    "description": "Number of transactions."
+  },
+  "pendingConfirmationSwitchNetworkAlertMessage": {
+    "message": "Switching network will cancel $1 pending transactions from this site.",
     "description": "Number of transactions."
   },
   "pendingTransactionAlertMessage": {
