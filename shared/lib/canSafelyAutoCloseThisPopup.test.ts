@@ -1,5 +1,5 @@
 import browser from 'webextension-polyfill';
-import { isSafeToAutoCloseThisPopup } from './isSafeToAutoCloseThisPopup';
+import { canSafelyAutoCloseThisPopup } from './canSafelyAutoCloseThisPopup';
 
 const it = global.it as unknown as jest.It;
 
@@ -43,7 +43,7 @@ describe('isSafeToAutoCloseThisPopup', () => {
       // Setup mock implementation
       (browser.windows.getCurrent as jest.Mock).mockResolvedValue(windowData);
 
-      const result = await isSafeToAutoCloseThisPopup();
+      const result = await canSafelyAutoCloseThisPopup();
 
       expect(result).toBe(expectedResult);
       expect(browser.windows.getCurrent).toHaveBeenCalledTimes(1);
@@ -55,7 +55,7 @@ describe('isSafeToAutoCloseThisPopup', () => {
     const testError = new Error('Browser API error');
     (browser.windows.getCurrent as jest.Mock).mockRejectedValue(testError);
 
-    const result = await isSafeToAutoCloseThisPopup();
+    const result = await canSafelyAutoCloseThisPopup();
 
     expect(result).toBe(true);
     expect(browser.windows.getCurrent).toHaveBeenCalledTimes(1);

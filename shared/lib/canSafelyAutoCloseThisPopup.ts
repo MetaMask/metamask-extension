@@ -11,7 +11,7 @@ import browser from 'webextension-polyfill';
  * or if the window type cannot be determined – and `false` only if the
  * window is confirmed to not be a popup.
  */
-export const isSafeToAutoCloseThisPopup = async (): Promise<boolean> => {
+export const canSafelyAutoCloseThisPopup = async (): Promise<boolean> => {
   try {
     const currentWindow = await browser.windows.getCurrent();
     // Only return false if we know for sure it's not a popup

@@ -4,7 +4,6 @@
 // @reduxjs/toolkit to be patched by our patch files. The patch is 6000+ lines.
 // I don't want to try to figure that one out.
 import { ReactFragment } from 'react';
-import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { capitalize, isEqual } from 'lodash';
@@ -126,6 +125,7 @@ import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/con
 import { EndTraceRequest } from '../../shared/lib/trace';
 import { SortCriteria } from '../components/app/assets/util/sort';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
+import { canSafelyAutoCloseThisPopup } from '../../shared/lib/canSafelyAutoCloseThisPopup';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -138,7 +138,6 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
-import { isSafeToAutoCloseThisPopup } from '../../shared/lib/isSafeToAutoCloseThisPopup';
 
 type CustomGasSettings = {
   gas?: string;
@@ -4829,12 +4828,11 @@ export function getGasFeeTimeEstimate(
 }
 
 export async function closeNotificationPopup() {
-  if (await isSafeToAutoCloseThisPopup()) {
-    await submitRequestToBackground(
-      'markNotificationPopupAsAutomaticallyClosed',
-    );
-    global.platform.closeCurrentWindow();
+  if (!(await canSafelyAutoCloseThisPopup())) {
+    return;
   }
+  await submitRequestToBackground('markNotificationPopupAsAutomaticallyClosed');
+  global.platform.closeCurrentWindow();
 }
 
 /**
