@@ -16,7 +16,7 @@ import { getSelectedEvmInternalAccount } from '../../../selectors';
 /* eslint-disable jsdoc/require-param-name */
 // eslint-disable-next-line jsdoc/require-param
 /** @param {PropTypes.InferProps<typeof UserPreferencedCurrencyDisplayPropTypes>>} */
-export default function UserPreferencedCurrencyDisplay({
+function UserPreferencedCurrencyDisplayContainer({
   'data-testid': dataTestId,
   account: multichainAccount,
   ethNumberOfDecimals,
@@ -89,7 +89,13 @@ export default function UserPreferencedCurrencyDisplay({
   );
 }
 
-const UserPreferencedCurrencyDisplayPropTypes = {
+const UserPreferencedCurrencyDisplay = React.memo(
+  UserPreferencedCurrencyDisplayContainer,
+);
+
+export default UserPreferencedCurrencyDisplay;
+
+const UserPreferencedCurrencyDisplayContainerPropTypes = {
   className: PropTypes.string,
   account: PropTypes.object,
   'data-testid': PropTypes.string,
@@ -131,5 +137,5 @@ const UserPreferencedCurrencyDisplayPropTypes = {
   privacyMode: PropTypes.bool,
 };
 
-UserPreferencedCurrencyDisplay.propTypes =
-  UserPreferencedCurrencyDisplayPropTypes;
+UserPreferencedCurrencyDisplayContainer.propTypes =
+  UserPreferencedCurrencyDisplayContainerPropTypes;

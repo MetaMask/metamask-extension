@@ -1,4 +1,11 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
@@ -87,6 +94,9 @@ import { AccountListItemMenuTypes } from './account-list-item.types';
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
 
+const CONNECTED_STATUS_CONTAINER_DISPLAY = [Display.Flex, Display.None];
+const AVATAR_ACCOUNT_CONTAINER_DISPLAY = [Display.None, Display.Flex];
+
 const AccountListItem = ({
   account,
   selected,
@@ -109,8 +119,7 @@ const AccountListItem = ({
   const locale = useSelector(getIntlLocale);
   ///: END:ONLY_INCLUDE_IF
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
-  const [accountListItemMenuElement, setAccountListItemMenuElement] =
-    useState();
+  const accountListItemMenuElementRef = useRef(null);
   const snapMetadata = useSelector(getSnapsMetadata);
   const accountLabel = getAccountLabel(
     account.metadata.keyring.type,
@@ -122,9 +131,6 @@ const AccountListItem = ({
 
   const useBlockie = useSelector(getUseBlockie);
   const { isEvmNetwork } = useMultichainSelector(getMultichainNetwork, account);
-  const setAccountListItemMenuRef = (ref) => {
-    setAccountListItemMenuElement(ref);
-  };
 
   const isTestnet = useMultichainSelector(getMultichainIsTestnet, account);
   const isMainnet = !isTestnet;
@@ -163,12 +169,15 @@ const AccountListItem = ({
     formattedTokensWithBalancesPerChain,
   );
   // cross chain agg balance
+  // Yeah this is hacky... do we really need balances here just to grab icons?
+  const chainIconsStr = JSON.stringify(
+    accountTotalFiatBalances.orderedTokenList
+      .map((i) => i.iconUrl)
+      .filter(Boolean),
+  );
   const mappedOrderedTokenList = useMemo(
-    () =>
-      accountTotalFiatBalances.orderedTokenList.map((item) => ({
-        avatarValue: item.iconUrl,
-      })),
-    [accountTotalFiatBalances.orderedTokenList],
+    () => JSON.parse(chainIconsStr).map((url) => ({ avatarValue: url })),
+    [chainIconsStr],
   );
   let balanceToTranslate;
   if (isEvmNetwork) {
@@ -246,6 +255,19 @@ const AccountListItem = ({
     return value;
   };
 
+  const handleItemClick = useCallback(() => {
+    // Without this check, the account will be selected after
+    // the account options menu closes
+    if (!accountOptionsMenuOpen) {
+      onClick?.(account);
+    }
+  }, [account, accountOptionsMenuOpen, onClick]);
+
+  const handleAccountMenuClose = useCallback(
+    () => setAccountOptionsMenuOpen(false),
+    [],
+  );
+
   return (
     <Box
       display={Display.Flex}
@@ -257,13 +279,7 @@ const AccountListItem = ({
         'multichain-account-list-item--clickable': Boolean(onClick),
       })}
       ref={itemRef}
-      onClick={() => {
-        // Without this check, the account will be selected after
-        // the account options menu closes
-        if (!accountOptionsMenuOpen) {
-          onClick?.(account);
-        }
-      }}
+      onClick={handleItemClick}
     >
       {startAccessory ? (
         <Box marginInlineEnd={2} marginTop={1}>
@@ -280,12 +296,12 @@ const AccountListItem = ({
 
       <>
         <Box
-          display={[Display.Flex, Display.None]}
+          display={CONNECTED_STATUS_CONTAINER_DISPLAY}
           data-testid="account-list-item-badge"
         >
           <ConnectedStatus address={account.address} isActive={isActive} />
         </Box>
-        <Box display={[Display.None, Display.Flex]}>
+        <Box display={AVATAR_ACCOUNT_CONTAINER_DISPLAY}>
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
             <AvatarAccount
@@ -456,7 +472,7 @@ const AccountListItem = ({
           ariaLabel={`${account.metadata.name} ${t('options')}`}
           iconName={IconName.MoreVertical}
           size={IconSize.Sm}
-          ref={setAccountListItemMenuRef}
+          ref={accountListItemMenuElementRef}
           onClick={(e) => {
             e.stopPropagation();
             if (!accountOptionsMenuOpen) {
@@ -475,9 +491,9 @@ const AccountListItem = ({
       )}
       {menuType === AccountListItemMenuTypes.Account && (
         <AccountListItemMenu
-          anchorElement={accountListItemMenuElement}
+          anchorElement={accountListItemMenuElementRef.current}
           account={account}
-          onClose={() => setAccountOptionsMenuOpen(false)}
+          onClose={handleAccountMenuClose}
           isOpen={accountOptionsMenuOpen}
           isRemovable={account.metadata.keyring.type !== KeyringType.hdKeyTree}
           closeMenu={closeMenu}
@@ -488,9 +504,9 @@ const AccountListItem = ({
       )}
       {menuType === AccountListItemMenuTypes.Connection && (
         <ConnectedAccountsMenu
-          anchorElement={accountListItemMenuElement}
+          anchorElement={accountListItemMenuElementRef.current}
           account={account}
-          onClose={() => setAccountOptionsMenuOpen(false)}
+          onClose={handleAccountMenuClose}
           disableAccountSwitcher={isSingleAccount && selected}
           isOpen={accountOptionsMenuOpen}
           onActionClick={onActionClick}
