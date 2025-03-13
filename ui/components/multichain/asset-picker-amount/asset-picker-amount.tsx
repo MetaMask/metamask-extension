@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { TokenListMap } from '@metamask/assets-controllers';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Box, Text } from '../../component-library';
@@ -14,6 +14,8 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
+  getAllEnabledNetworks,
+  getCurrentNetwork,
   getIpfsGateway,
   getNativeCurrencyImage,
   getSelectedInternalAccount,
@@ -42,6 +44,10 @@ import {
 } from './asset-picker/asset-picker';
 import { SwappableCurrencyInput } from './swappable-currency-input/swappable-currency-input';
 import { AssetBalance } from './asset-balance/asset-balance';
+import {
+  setActiveNetwork,
+  setActiveNetworkWithError,
+} from '../../../store/actions';
 
 type AssetPickerAmountProps = OverridingUnion<
   AssetPickerProps,
@@ -69,12 +75,13 @@ export const AssetPickerAmount = ({
   onAmountChange,
   action,
   isAmountLoading,
+  showNetworkPicker,
   error: passedError,
   ...assetPickerProps
 }: AssetPickerAmountProps) => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const t = useI18nContext();
-
+  const dispatch = useDispatch();
   const { swapQuotesError, sendAsset, receiveAsset } = useSelector(
     getCurrentDraftTransaction,
   );
@@ -90,7 +97,10 @@ export const AssetPickerAmount = ({
   const tokenList = useSelector(getTokenList) as TokenListMap;
 
   const ipfsGateway = useSelector(getIpfsGateway);
-
+  const nonTestNetwork = useSelector(getAllEnabledNetworks);
+  const allNetworks = Object.values(nonTestNetwork);
+  const currentNetwork = useSelector(getCurrentNetwork);
+  // console.log(currentNetworkId, currentNetwork, nonTestNetwork);
   useEffect(() => {
     // if this input is immutable – avoids double fire
     if (isDisabled) {
@@ -222,6 +232,25 @@ export const AssetPickerAmount = ({
         <AssetPicker
           action={action}
           asset={standardizedAsset}
+          networkProps={
+            showNetworkPicker
+              ? {
+                  network: currentNetwork,
+                  networks: allNetworks,
+                  onNetworkChange: (networkConfig) => {
+                    console.log(networkConfig, 'networkClientId');
+                    dispatch(
+                      setActiveNetworkWithError(
+                        networkConfig.rpcEndpoints[
+                          networkConfig.defaultRpcEndpointIndex
+                        ].networkClientId || networkConfig.chainId,
+                      ),
+                    );
+                  },
+                  header: t('yourNetworks'),
+                }
+              : undefined
+          }
           {...assetPickerProps}
         />
         <SwappableCurrencyInput
