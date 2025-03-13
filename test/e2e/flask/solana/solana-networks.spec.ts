@@ -23,7 +23,7 @@ describe('Solana network', function (this: Suite) {
     );
   });
 
-  it('deletes previously selected EVM network when Solana network is selected', async function () {
+  it('can delete the previously selected EVM network when Solana network is selected', async function () {
     await withSolanaAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver) => {
