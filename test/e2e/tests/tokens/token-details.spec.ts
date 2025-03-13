@@ -3,11 +3,7 @@ import { Context } from 'mocha';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { formatCurrency } from '../../../../ui/helpers/utils/confirm-tx.util';
 import FixtureBuilder from '../../fixture-builder';
-import {
-  defaultGanacheOptions,
-  unlockWallet,
-  withFixtures,
-} from '../../helpers';
+import { unlockWallet, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
@@ -26,7 +22,6 @@ describe('Token Details', function () {
   const fixtures = {
     fixtures: new FixtureBuilder({ inputChainId: chainId }).build(),
     localNodeOptions: {
-      ...defaultGanacheOptions,
       chainId: parseInt(chainId, 16),
     },
   };

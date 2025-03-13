@@ -21,6 +21,7 @@ const addEthereumChain = {
     getCurrentChainIdForDomain: true,
     getCaveat: true,
     requestPermittedChainsPermissionIncrementalForOrigin: true,
+    rejectApprovalRequestsForOrigin: true,
   },
 };
 
@@ -40,6 +41,7 @@ async function addEthereumChainHandler(
     getCurrentChainIdForDomain,
     getCaveat,
     requestPermittedChainsPermissionIncrementalForOrigin,
+    rejectApprovalRequestsForOrigin,
   },
 ) {
   let validParams;
@@ -184,9 +186,11 @@ async function addEthereumChainHandler(
     updatedNetwork.rpcEndpoints[updatedNetwork.defaultRpcEndpointIndex];
 
   return switchChain(res, end, chainId, networkClientId, {
+    isAddFlow: true,
     autoApprove: shouldAddOrUpdateNetwork,
     setActiveNetwork,
     getCaveat,
     requestPermittedChainsPermissionIncrementalForOrigin,
+    rejectApprovalRequestsForOrigin,
   });
 }

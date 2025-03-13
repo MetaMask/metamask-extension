@@ -12,7 +12,6 @@ import { MultichainNetworks } from '../../constants/multichain/networks';
 import { ChainId } from '../../types/bridge';
 import { decimalToPrefixedHex, hexToDecimal } from '../conversion.utils';
 import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../constants/multichain/assets';
-import { isValidNumber } from './validators';
 
 // Returns true if the address looka like a native asset
 export const isNativeAddress = (address?: string | null) =>
@@ -71,14 +70,13 @@ export const formatChainIdToHex = (
   }
   if (isCaipChainId(chainId)) {
     const { reference } = parseCaipChainId(chainId);
-    if (isCaipReference(reference) && isValidNumber(reference)) {
+    if (isCaipReference(reference) && !isNaN(Number(reference))) {
       return decimalToPrefixedHex(reference);
     }
   }
-  // TODO handle non-evm chainIds
   // Throw an error if a non-evm chainId is passed to this function
   // This should never happen, but it's a sanity check
-  throw new Error('Invalid cross-chain swaps chainId');
+  throw new Error(`Invalid cross-chain swaps chainId: ${chainId}`);
 };
 
 // Converts an asset or account address to a string that can be used for bridge-api requests
@@ -98,4 +96,11 @@ export const formatAddressToString = (address: string) => {
     throw new Error('Invalid address');
   }
   return addressWithoutPrefix;
+};
+
+export const formatChainIdToHexOrCaip = (chainId: number) => {
+  if (chainId === ChainId.SOLANA) {
+    return MultichainNetworks.SOLANA;
+  }
+  return formatChainIdToHex(chainId);
 };
