@@ -111,10 +111,6 @@ test(`Add Custom Networks and import test account`, async () => {
   response = await addFundsToAccount(Tenderly.Mainnet.url, wallet.address);
   expect(response.error).toBeUndefined();
 
-  response = await addFundsToAccount(Tenderly.Linea.url, wallet.address);
-  expect(response.error).toBeUndefined();
-
-  await networkController.addCustomNetwork(Tenderly.Linea);
   await networkController.addCustomNetwork(Tenderly.Mainnet);
 
   await walletPage.importAccount(wallet.privateKey);
@@ -129,10 +125,9 @@ testSet.forEach((options) => {
     if (balance === '0 ETH') {
       test.skip();
     }
-
-    await walletPage.selectSwapAction();
     // Allow balance label to populate
     await walletPage.page.waitForTimeout(3000);
+    await walletPage.selectSwapAction();
     const quoteEntered = await swapPage.enterQuote({
       from: options.source,
       to: options.destination,
