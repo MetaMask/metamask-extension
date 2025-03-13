@@ -3738,6 +3738,10 @@
     "message": "Updating network will cancel $1 pending transactions from this site.",
     "description": "Number of transactions."
   },
+  "pendingConfirmationSwitchNetworkAlertMessage": {
+    "message": "Switching network will cancel $1 pending transactions from this site.",
+    "description": "Number of transactions."
+  },
   "pendingTransactionAlertMessage": {
     "message": "This transaction won't go through until a previous transaction is complete. $1",
     "description": "$1 represents the words 'how to cancel or speed up a transaction' in a hyperlink"
