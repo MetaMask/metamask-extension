@@ -51,6 +51,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix critical error message visibility in dark mode ([#30570](https://github.com/MetaMask/metamask-extension/pull/30570))
 - Fix text visibility issues on the error page in dark mode ([#30408](https://github.com/MetaMask/metamask-extension/pull/30408))
 - Fix page reload issue during SRP creation ([#30178](https://github.com/MetaMask/metamask-extension/pull/30178))
+## [12.13.1]
+### Uncategorized
+- fix: Remove previousUserTraits from metametrics controller state ([#30621](https://github.com/MetaMask/metamask-extension/pull/30621))
 
 ## [12.13.0]
 ### Added
@@ -5818,6 +5821,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.14.0...HEAD
 [12.14.0]: https://github.com/MetaMask/metamask-extension/compare/v12.13.0...v12.14.0
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.13.1...HEAD
+[12.13.1]: https://github.com/MetaMask/metamask-extension/compare/v12.13.0...v12.13.1
 [12.13.0]: https://github.com/MetaMask/metamask-extension/compare/v12.12.0...v12.13.0
 [12.12.0]: https://github.com/MetaMask/metamask-extension/compare/v12.11.0...v12.12.0
 [12.11.0]: https://github.com/MetaMask/metamask-extension/compare/v12.10.4...v12.11.0
