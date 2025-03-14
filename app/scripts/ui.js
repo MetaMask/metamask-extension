@@ -357,7 +357,11 @@ async function displayCriticalError(errorKey, err, metamaskState) {
 }
 
 async function displayStateCorruptionError(err, metamaskState) {
-  const html = await getStateCorruptionErrorHtml(SUPPORT_LINK, VAULT_RECOVERY_LINK, metamaskState);
+  const html = await getStateCorruptionErrorHtml(
+    SUPPORT_LINK,
+    VAULT_RECOVERY_LINK,
+    metamaskState,
+  );
   container.innerHTML = html;
 
   const button = document.getElementById('critical-error-button');

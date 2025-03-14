@@ -100,7 +100,11 @@ export async function getErrorHtml(errorKey, supportLink, metamaskState) {
     `);
 }
 
-export async function getStateCorruptionErrorHtml(supportLink, vaultRecoveryLink, metamaskState) {
+export async function getStateCorruptionErrorHtml(
+  supportLink,
+  vaultRecoveryLink,
+  metamaskState,
+) {
   let response, preferredLocale;
   if (metamaskState?.currentLocale) {
     preferredLocale = metamaskState.currentLocale;
