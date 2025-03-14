@@ -5950,12 +5950,29 @@ export function setConfirmationAdvancedDetailsOpen(value: boolean) {
   return setPreference('showConfirmationAdvancedDetails', value);
 }
 
-export async function getNextAvailableAccountName(
-  keyring?: KeyringTypes,
-): Promise<string> {
+type GetNextAvailableAccountNameParams = {
+  keyringType?: KeyringTypes;
+  accounts?: InternalAccount[];
+  entropySource?: string;
+  chainId?: string;
+};
+
+export async function getNextAvailableAccountName({
+  keyringType,
+  accounts,
+  entropySource,
+  chainId,
+}: GetNextAvailableAccountNameParams): Promise<string> {
   return await submitRequestToBackground<string>(
     'getNextAvailableAccountName',
-    [keyring],
+    [
+      {
+        keyringType,
+        accounts,
+        entropySource,
+        chainId,
+      },
+    ],
   );
 }
 

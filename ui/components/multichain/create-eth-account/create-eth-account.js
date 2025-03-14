@@ -33,7 +33,9 @@ export const CreateEthAccount = ({
   };
 
   const getNextAvailableAccountName = async () => {
-    return await getNextAvailableAccountNameFromController(KeyringTypes.hd);
+    return await getNextAvailableAccountNameFromController({
+      keyringType: KeyringTypes.hd,
+    });
   };
 
   return (
