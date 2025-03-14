@@ -13,8 +13,8 @@ import {
   getToToken,
   getBridgeQuotes,
   getValidationErrors,
-  getBridgeQuotesConfig,
   getWasTxDeclined,
+  getQuoteRefreshRate,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
@@ -40,8 +40,10 @@ import { isQuoteExpired as isQuoteExpiredUtil } from '../utils/quote';
 
 export const BridgeCTAButton = ({
   onFetchNewQuotes,
+  needsDestinationAddress = false,
 }: {
   onFetchNewQuotes: () => void;
+  needsDestinationAddress?: boolean;
 }) => {
   const t = useI18nContext();
 
@@ -54,7 +56,7 @@ export const BridgeCTAButton = ({
 
   const { isLoading, activeQuote, isQuoteGoingToRefresh, quotesLastFetchedMs } =
     useSelector(getBridgeQuotes);
-  const { refreshRate } = useSelector(getBridgeQuotesConfig);
+  const refreshRate = useSelector(getQuoteRefreshRate);
   const isQuoteExpired = isQuoteExpiredUtil(
     isQuoteGoingToRefresh,
     refreshRate,
@@ -73,8 +75,8 @@ export const BridgeCTAButton = ({
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
 
-  const { balanceAmount } = useLatestBalance(fromToken, fromChain?.chainId);
-  const { balanceAmount: nativeAssetBalance } = useLatestBalance(
+  const balanceAmount = useLatestBalance(fromToken, fromChain?.chainId);
+  const nativeAssetBalance = useLatestBalance(
     fromChain?.chainId
       ? SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
           fromChain.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
@@ -121,9 +123,17 @@ export const BridgeCTAButton = ({
 
     if (!fromAmount) {
       if (!toToken) {
-        return t('bridgeSelectTokenAndAmount');
+        return needsDestinationAddress
+          ? t('bridgeSelectTokenAmountAndAccount')
+          : t('bridgeSelectTokenAndAmount');
       }
-      return t('bridgeEnterAmount');
+      return needsDestinationAddress
+        ? t('bridgeEnterAmountAndSelectAccount')
+        : t('bridgeEnterAmount');
+    }
+
+    if (needsDestinationAddress) {
+      return t('bridgeSelectDestinationAccount');
     }
 
     if (isTxSubmittable) {
@@ -144,6 +154,7 @@ export const BridgeCTAButton = ({
     isInsufficientGasForQuote,
     wasTxDeclined,
     isQuoteExpired,
+    needsDestinationAddress,
   ]);
 
   // Label for the secondary button that re-starts quote fetching
@@ -161,7 +172,7 @@ export const BridgeCTAButton = ({
       variant={TextVariant.bodyMd}
       data-testid="bridge-cta-button"
       style={{ boxShadow: 'none' }}
-      onClick={() => {
+      onClick={async () => {
         if (activeQuote && isTxSubmittable && !isSubmitting) {
           try {
             // We don't need to worry about setting to false if the tx submission succeeds
@@ -179,14 +190,19 @@ export const BridgeCTAButton = ({
                   ...tradeProperties,
                 },
               });
-            submitBridgeTransaction(activeQuote);
+            await submitBridgeTransaction(activeQuote);
           } finally {
             setIsSubmitting(false);
           }
         }
       }}
       loading={isSubmitting}
-      disabled={!isTxSubmittable || isQuoteExpired || isSubmitting}
+      disabled={
+        !isTxSubmittable ||
+        isQuoteExpired ||
+        isSubmitting ||
+        needsDestinationAddress
+      }
     >
       {label}
     </ButtonPrimary>

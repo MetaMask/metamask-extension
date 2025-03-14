@@ -85,6 +85,12 @@ class PrivacySettings {
 
   private readonly revealSrpWrongPasswordMessage = '.mm-help-text';
 
+  private readonly participateInMetaMetricsToggle =
+    '[data-testid="participate-in-meta-metrics-toggle"] .toggle-button';
+
+  private readonly dataCollectionForMarketingToggle =
+    '[data-testid="data-collection-for-marketing-toggle"] .toggle-button';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -211,6 +217,20 @@ class PrivacySettings {
       css: this.displayedSrpText,
       text: expectedSrpText,
     });
+  }
+
+  async toggleParticipateInMetaMetrics(): Promise<void> {
+    console.log(
+      'Toggle participate in meta metrics in Security and Privacy settings page',
+    );
+    await this.driver.clickElement(this.participateInMetaMetricsToggle);
+  }
+
+  async toggleDataCollectionForMarketing(): Promise<void> {
+    console.log(
+      'Toggle data collection for marketing in Security and Privacy settings page',
+    );
+    await this.driver.clickElement(this.dataCollectionForMarketingToggle);
   }
 }
 

@@ -85,7 +85,8 @@ export const signTypedDataV3WithSnapAccount = async (
 ): Promise<void> => {
   const testDapp = new TestDapp(driver);
   await testDapp.check_pageIsLoaded();
-  await testDapp.signTypedDataV3();
+  await testDapp.signTypedDataV3Redesign();
+
   if (!isSyncFlow) {
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(

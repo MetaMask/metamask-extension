@@ -1,11 +1,6 @@
 const FixtureBuilder = require('../../fixture-builder');
 
-const {
-  WINDOW_TITLES,
-  defaultGanacheOptions,
-  unlockWallet,
-  withFixtures,
-} = require('../../helpers');
+const { WINDOW_TITLES, unlockWallet, withFixtures } = require('../../helpers');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
 const CONTRACT_ADDRESS = {
@@ -85,7 +80,7 @@ async function mockInfura(mockServer) {
   ]);
 }
 
-describe('PPOM Blockaid Alert - Set Trade farming order @no-mmi', function () {
+describe('PPOM Blockaid Alert - Set Trade farming order', function () {
   it('should show banner alert', async function () {
     // we need to use localhost instead of the ip
     // see issue: https://github.com/MetaMask/MetaMask-planning/issues/3560
@@ -101,7 +96,6 @@ describe('PPOM Blockaid Alert - Set Trade farming order @no-mmi', function () {
             securityAlertsEnabled: true,
           })
           .build(),
-        defaultGanacheOptions,
         testSpecificMock: mockInfura,
         title: this.test.title,
       },

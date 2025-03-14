@@ -1,5 +1,4 @@
 const {
-  defaultGanacheOptions,
   withFixtures,
   unlockWallet,
   WINDOW_TITLES,
@@ -13,7 +12,6 @@ describe('Test Snap Cronjob', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -51,6 +49,8 @@ describe('Test Snap Cronjob', function () {
           text: 'Connect',
           tag: 'button',
         });
+
+        await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         // wait for and click confirm
         await driver.waitForSelector({ text: 'Confirm' });

@@ -80,7 +80,7 @@ export default function NftFullImage() {
             <Box>
               <NftItem
                 src={isImageHosted ? image : nftImageURL}
-                alt={image ? nftImageAlt : ''}
+                alt={nftImageAlt}
                 name={name}
                 tokenId={tokenId}
                 networkName={currentChain.nickname ?? ''}

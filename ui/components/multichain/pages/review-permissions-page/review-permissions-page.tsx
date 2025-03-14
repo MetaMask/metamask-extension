@@ -15,7 +15,6 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   getConnectedSitesList,
-  getInternalAccounts,
   getPermissionSubjects,
   getPermittedAccountsForSelectedTab,
   getPermittedChainsForSelectedTab,
@@ -52,7 +51,6 @@ import {
   DisconnectType,
 } from '../../disconnect-all-modal/disconnect-all-modal';
 import { PermissionsHeader } from '../../permissions-header/permissions-header';
-import { mergeAccounts } from '../../account-list-menu/account-list-menu';
 import { MergedInternalAccount } from '../../../../selectors/selectors.types';
 import { TEST_CHAINS } from '../../../../../shared/constants/network';
 import { SiteCell } from './site-cell/site-cell';
@@ -148,12 +146,11 @@ export const ReviewPermissions = () => {
   };
 
   const accounts = useSelector(getUpdatedAndSortedAccounts);
-  const internalAccounts = useSelector(getInternalAccounts);
-  const mergedAccounts: MergedInternalAccount[] = useMemo(() => {
-    return mergeAccounts(accounts, internalAccounts).filter(
-      (account: InternalAccount) => isEvmAccountType(account.type),
+  const evmAccounts: MergedInternalAccount[] = useMemo(() => {
+    return accounts.filter((account: InternalAccount) =>
+      isEvmAccountType(account.type),
     );
-  }, [accounts, internalAccounts]);
+  }, [accounts]);
 
   const connectedAccountAddresses = useSelector((state) =>
     getPermittedAccountsForSelectedTab(state, activeTabOrigin),
@@ -196,7 +193,7 @@ export const ReviewPermissions = () => {
             <SiteCell
               nonTestNetworks={nonTestNetworks}
               testNetworks={testNetworks}
-              accounts={mergedAccounts}
+              accounts={evmAccounts}
               onSelectAccountAddresses={handleSelectAccountAddresses}
               onSelectChainIds={handleSelectChainIds}
               selectedAccountAddresses={connectedAccountAddresses}

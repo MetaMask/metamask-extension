@@ -7,6 +7,7 @@ import {
   TextColor,
   TextVariant,
   FontWeight,
+  BackgroundColor,
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { getSnapMetadata } from '../../../../../../selectors';
@@ -74,7 +75,7 @@ export const SnapInsight: React.FunctionComponent<SnapInsightProps> = ({
         snapId={snapId}
         interfaceId={interfaceId}
         isLoading={loading}
-        useDelineator={false}
+        contentBackgroundColor={BackgroundColor.backgroundDefault}
       />
     </Delineator>
   );

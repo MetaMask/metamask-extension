@@ -35,6 +35,15 @@ class ErrorPage {
   private readonly sentryFeedbackSuccessModal =
     '[data-testid="error-page-sentry-feedback-success-modal"]';
 
+  private readonly visitSupportDataConsentModal =
+    '[data-testid="visit-support-data-consent-modal"]';
+
+  private readonly visitSupportDataConsentModalAcceptButton =
+    '[data-testid="visit-support-data-consent-modal-accept-button"]';
+
+  private readonly visitSupportDataConsentModalRejectButton =
+    '[data-testid="visit-support-data-consent-modal-reject-button"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -78,11 +87,26 @@ class ErrorPage {
     );
   }
 
-  async contactAndValidateMetaMaskSupport(): Promise<void> {
+  async clickContactButton(): Promise<void> {
     console.log(`Contact metamask support form in a separate page`);
     await this.driver.waitUntilXWindowHandles(1);
     await this.driver.clickElement(this.contactSupportButton);
+  }
+
+  async consentDataToMetamaskSupport(): Promise<void> {
+    await this.driver.waitForSelector(this.visitSupportDataConsentModal);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.visitSupportDataConsentModalAcceptButton,
+    );
     // metamask, help page
+    await this.driver.waitUntilXWindowHandles(2);
+  }
+
+  async rejectDataToMetamaskSupport(): Promise<void> {
+    await this.driver.waitForSelector(this.visitSupportDataConsentModal);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.visitSupportDataConsentModalRejectButton,
+    );
     await this.driver.waitUntilXWindowHandles(2);
   }
 

@@ -3,6 +3,7 @@ import React, {
   useEffect,
   MouseEvent as ReactMouseEvent,
 } from 'react';
+import classnames from 'classnames';
 import {
   Box,
   ButtonBase,
@@ -33,7 +34,7 @@ import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 export type SnapUISelectorProps = {
   name: string;
   title: string;
-  options: string[];
+  options: { value: string; disabled: boolean }[];
   optionComponents: React.ReactNode[];
   form?: string;
   label?: string;
@@ -45,12 +46,14 @@ type SelectorItemProps = {
   value: string;
   children: React.ReactNode;
   onSelect: (value: string) => void;
+  disabled?: boolean;
 };
 
 const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
   value,
   children,
   onSelect,
+  disabled,
 }) => {
   const handleClick = () => {
     onSelect(value);
@@ -75,9 +78,10 @@ const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
         justifyContent: 'inherit',
         textAlign: 'inherit',
         height: 'inherit',
-        minHeight: '32px',
+        minHeight: '48px',
         maxHeight: '64px',
       }}
+      disabled={disabled}
     >
       {children}
     </ButtonBase>
@@ -121,14 +125,20 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
   };
 
   const selectedOptionIndex = options.findIndex(
-    (option) => option === selectedOptionValue,
+    (option) => option.value === selectedOptionValue,
   );
 
   const selectedOption = optionComponents[selectedOptionIndex];
 
   return (
     <>
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        className={classnames({
+          'snap-ui-renderer__field': label !== undefined,
+        })}
+      >
         {label && <Label htmlFor={name}>{label}</Label>}
         <ButtonBase
           className="snap-ui-renderer__selector"
@@ -155,7 +165,7 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
             justifyContent: 'inherit',
             textAlign: 'inherit',
             height: 'inherit',
-            minHeight: '32px',
+            minHeight: '48px',
             maxHeight: '64px',
           }}
         >
@@ -186,7 +196,11 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
               gap={2}
             >
               {optionComponents.map((component, index) => (
-                <SelectorItem value={options[index]} onSelect={handleSelect}>
+                <SelectorItem
+                  value={options[index].value}
+                  disabled={options[index]?.disabled}
+                  onSelect={handleSelect}
+                >
                   {component}
                 </SelectorItem>
               ))}

@@ -4,6 +4,11 @@ import {
   BtcMethod,
   BtcAccountType,
   isEvmAccountType,
+  EthScope,
+  BtcScope,
+  SolAccountType,
+  SolScope,
+  SolMethod,
 } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
@@ -17,6 +22,7 @@ import {
 } from '../../ui/ducks/send';
 import { MetaMaskReduxState } from '../../ui/store/store';
 import mockState from '../data/mock-state.json';
+import { isBtcMainnetAddress } from '../../shared/lib/multichain/accounts';
 
 export type MockState = typeof mockState;
 
@@ -186,7 +192,11 @@ export function createMockInternalAccount({
   type = EthAccountType.Eoa,
   keyringType = KeyringTypes.hd,
   lastSelected = 0,
-  snapOptions = undefined,
+  snapOptions = {
+    enabled: true,
+    id: 'npm:snap-id',
+    name: 'snap-name',
+  },
   options = undefined,
 }: {
   name?: string;
@@ -201,10 +211,12 @@ export function createMockInternalAccount({
   };
   options?: Record<string, Json>;
 } = {}) {
+  let scopes;
   let methods;
 
   switch (type) {
     case EthAccountType.Eoa:
+      scopes = [EthScope.Eoa];
       methods = [
         EthMethod.PersonalSign,
         EthMethod.SignTransaction,
@@ -214,14 +226,26 @@ export function createMockInternalAccount({
       ];
       break;
     case EthAccountType.Erc4337:
+      // NOTE: This is not really valid here, cause a SC account might not be deployed on
+      // every EVM chains, but for testing purposes we enable everything.
+      scopes = [EthScope.Testnet];
       methods = [
         EthMethod.PatchUserOperation,
         EthMethod.PrepareUserOperation,
         EthMethod.SignUserOperation,
       ];
       break;
-    case BtcAccountType.P2wpkh:
+    case BtcAccountType.P2wpkh: {
+      // If no address is given, we fallback to testnet
+      const isMainnet = Boolean(address) && isBtcMainnetAddress(address);
+
+      scopes = [isMainnet ? BtcScope.Mainnet : BtcScope.Testnet];
       methods = [BtcMethod.SendBitcoin];
+      break;
+    }
+    case SolAccountType.DataAccount:
+      scopes = [SolScope.Mainnet, SolScope.Testnet, SolScope.Devnet];
+      methods = [SolMethod.SendAndConfirmTransaction];
       break;
     default:
       throw new Error(`Unknown account type: ${type}`);
@@ -236,10 +260,11 @@ export function createMockInternalAccount({
       keyring: {
         type: keyringType,
       },
-      snap: snapOptions,
+      snap: keyringType === KeyringTypes.snap ? snapOptions : undefined,
       lastSelected,
     },
     options: options ?? {},
+    scopes,
     methods,
     type,
   };

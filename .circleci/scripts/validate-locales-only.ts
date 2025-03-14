@@ -1,4 +1,4 @@
-const { readChangedFiles } = require('../../test/e2e/changedFilesUtil.js');
+const { readChangedAndNewFilesWithStatus, getChangedAndNewFiles } = require('../../test/e2e/changedFilesUtil.js');
 
 /**
  * Verifies that all changed files are in the /_locales/ directory.
@@ -6,7 +6,8 @@ const { readChangedFiles } = require('../../test/e2e/changedFilesUtil.js');
  * Fails if no changed files are detected.
  */
 function validateLocalesOnlyChangedFiles() {
-  const changedFiles = readChangedFiles();
+  const changedAndNewFilesWithStatus = readChangedAndNewFilesWithStatus();
+  const changedFiles = getChangedAndNewFiles(changedAndNewFilesWithStatus);
   if (!changedFiles || changedFiles.length === 0) {
     console.error('Failure: No changed files detected.');
     process.exit(1);

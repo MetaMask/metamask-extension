@@ -14,7 +14,7 @@ import {
   getIsUpdatingMetamaskNotifications,
 } from '../../../../selectors/metamask-notifications/metamask-notifications';
 import { selectIsProfileSyncingEnabled } from '../../../../selectors/identity/profile-syncing';
-import { useCreateNotifications } from '../../../../hooks/metamask-notifications/useNotifications';
+import { useEnableNotifications } from '../../../../hooks/metamask-notifications/useNotifications';
 import { NOTIFICATIONS_ROUTE } from '../../../../helpers/constants/routes';
 
 import {
@@ -55,7 +55,7 @@ export default function TurnOnMetamaskNotifications() {
     isUpdatingMetamaskNotifications,
   );
 
-  const { createNotifications, error } = useCreateNotifications();
+  const { enableNotifications, error } = useEnableNotifications();
 
   const handleTurnOnNotifications = async () => {
     setIsLoading(true);
@@ -67,7 +67,7 @@ export default function TurnOnMetamaskNotifications() {
         action_type: 'activated',
       },
     });
-    await createNotifications();
+    await enableNotifications();
   };
 
   const handleHideModal = () => {

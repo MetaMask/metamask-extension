@@ -1,8 +1,3 @@
-async function rejectSignatureOrTransactionRequest(driver) {
-  await driver.clickElement({ text: 'Reject', tag: 'button' });
-  await driver.delay(3000);
-}
-
 async function rejectRedesignedSignatureOrTransactionRequest(driver) {
   await driver.clickElement({ text: 'Cancel', tag: 'button' });
   await driver.delay(3000);
@@ -53,7 +48,6 @@ async function saveName(driver, value, name, proposedName) {
 }
 
 module.exports = {
-  rejectSignatureOrTransactionRequest,
   rejectRedesignedSignatureOrTransactionRequest,
   focusTestDapp,
   expectName,

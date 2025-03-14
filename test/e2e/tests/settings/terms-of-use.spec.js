@@ -1,12 +1,8 @@
-const {
-  defaultGanacheOptions,
-  withFixtures,
-  unlockWallet,
-} = require('../../helpers');
+const { withFixtures, unlockWallet } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Terms of use', function () {
-  it('accepts the updated terms of use @no-mmi', async function () {
+  it('accepts the updated terms of use', async function () {
     const firstOfJan = 1672574400;
     await withFixtures(
       {
@@ -15,7 +11,6 @@ describe('Terms of use', function () {
             termsOfUseLastAgreed: firstOfJan,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

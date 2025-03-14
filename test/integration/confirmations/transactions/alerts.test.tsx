@@ -41,7 +41,6 @@ const getMetaMaskStateWithUnapprovedApproveTransaction = (
     ...mockMetaMaskState,
     preferences: {
       ...mockMetaMaskState.preferences,
-      redesignedConfirmationsEnabled: true,
     },
     pendingApprovals: {
       [pendingTransactionId]: {

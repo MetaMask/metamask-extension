@@ -11,7 +11,7 @@ import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import type { DataWithOptionalCause } from '@metamask/rpc-errors';
-import type { Hex, Json } from '@metamask/utils';
+import type { CaipChainId, Hex, Json } from '@metamask/utils';
 import {
   AssetsContractController,
   BalanceMap,
@@ -29,7 +29,6 @@ import {
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
 import {
-  GasFeeEstimates,
   TransactionMeta,
   TransactionParams,
   TransactionType,
@@ -44,7 +43,9 @@ import { KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { Patch } from 'immer';
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
+///: END:ONLY_INCLUDE_IF
 import switchDirection from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -67,7 +68,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getInternalAccountByAddress,
   getSelectedInternalAccount,
-  getInternalAccounts,
+  getMetaMaskHdKeyrings,
 } from '../selectors';
 import {
   getSelectedNetworkClientId,
@@ -123,15 +124,9 @@ import { DecodedTransactionDataResponse } from '../../shared/types/transaction-d
 import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
 import { EndTraceRequest } from '../../shared/lib/trace';
 import { SortCriteria } from '../components/app/assets/util/sort';
-import {
-  CaveatTypes,
-  EndowmentTypes,
-} from '../../shared/constants/permissions';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import * as actionConstants from './actionConstants';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { updateCustodyState } from './institutional/institution-actions';
-///: END:ONLY_INCLUDE_IF
+
 import {
   generateActionId,
   callBackgroundMethod,
@@ -238,6 +233,64 @@ export function createNewVaultAndRestore(
   };
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+export function importMnemonicToVault(
+  mnemonic: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.importMnemonicToVault`);
+
+    return new Promise<void>((resolve, reject) => {
+      callBackgroundMethod('importMnemonicToVault', [mnemonic], (err) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve();
+      });
+    })
+      .then(async () => {
+        dispatch(hideLoadingIndication());
+      })
+      .catch((err) => {
+        dispatch(displayWarning(err));
+        dispatch(hideLoadingIndication());
+        return Promise.reject(err);
+      });
+  };
+}
+
+export function generateNewMnemonicAndAddToVault(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.generateNewMnemonicAndAddToVault`);
+
+    return new Promise<void>((resolve, reject) => {
+      callBackgroundMethod('generateNewMnemonicAndAddToVault', [], (err) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve();
+      });
+    })
+      .then(async () => {
+        dispatch(hideLoadingIndication());
+      })
+      .catch((err) => {
+        dispatch(displayWarning(err));
+        dispatch(hideLoadingIndication());
+        return Promise.reject(err);
+      });
+  };
+}
+///: END:ONLY_INCLUDE_IF
 export function createNewVaultAndGetSeedPhrase(
   password: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -324,10 +377,20 @@ export function verifyPassword(password: string): Promise<boolean> {
   });
 }
 
-export async function getSeedPhrase(password: string) {
+export async function getSeedPhrase(
+  password: string,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  keyringId: string,
+  ///: END:ONLY_INCLUDE_IF
+) {
   const encodedSeedPhrase = await submitRequestToBackground<string>(
     'getSeedPhrase',
-    [password],
+    [
+      password,
+      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+      keyringId,
+      ///: END:ONLY_INCLUDE_IF
+    ],
   );
   return Buffer.from(encodedSeedPhrase).toString('utf8');
 }
@@ -450,24 +513,39 @@ export function importNewAccount(
   };
 }
 
-export function addNewAccount(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+export function addNewAccount(
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  keyringId?: string,
+  ///: END:ONLY_INCLUDE_IF
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.addNewAccount`);
   return async (dispatch, getState) => {
-    const oldAccounts = getInternalAccounts(getState()).filter(
-      (internalAccount) =>
-        internalAccount.metadata.keyring.type === KeyringTypes.hd,
-    );
+    const keyrings = getMetaMaskHdKeyrings(getState());
+    const [defaultPrimaryKeyring] = keyrings;
+
+    // The HD keyring to add the account for.
+    let hdKeyring = defaultPrimaryKeyring;
+    ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+    if (keyringId) {
+      hdKeyring = keyrings.find((keyring) => keyring.metadata.id === keyringId);
+    }
+    ///: END:ONLY_INCLUDE_IF
+    // Fail-safe in case we could not find the associated HD keyring.
+    if (!hdKeyring) {
+      console.error('Should never reach this. There is always a keyring');
+      throw new Error('Keyring not found');
+    }
+    const oldAccounts = hdKeyring.accounts;
+
     dispatch(showLoadingIndication());
 
     let addedAccountAddress;
     try {
       addedAccountAddress = await submitRequestToBackground('addNewAccount', [
-        Object.keys(oldAccounts).length,
+        oldAccounts.length,
+        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+        keyringId,
+        ///: END:ONLY_INCLUDE_IF
       ]);
     } catch (error) {
       dispatch(displayWarning(error));
@@ -505,33 +583,6 @@ export function checkHardwareStatus(
 
     await forceUpdateMetamaskState(dispatch);
     return unlocked;
-  };
-}
-
-export function getDeviceNameForMetric(
-  deviceName: HardwareDeviceNames,
-  hdPath: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  log.debug(`background.getDeviceNameForMetric`, deviceName, hdPath);
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-
-    let result: string;
-    try {
-      result = await submitRequestToBackground<string>(
-        'getDeviceNameForMetric',
-        [deviceName, hdPath],
-      );
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning(error));
-      throw error;
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-
-    await forceUpdateMetamaskState(dispatch);
-    return result;
   };
 }
 
@@ -1064,6 +1115,7 @@ export function addTransactionAndRouteToConfirmationPage(
  * @param options.swaps.hasApproveTx - Whether the swap required an approval transaction.
  * @param options.swaps.meta - Additional transaction metadata required by swaps.
  * @param options.type
+ * @param options.networkClientId - The network client id to use for the transaction.
  * @returns
  */
 export async function addTransactionAndWaitForPublish(
@@ -1073,6 +1125,7 @@ export async function addTransactionAndWaitForPublish(
     requireApproval?: boolean;
     swaps?: { hasApproveTx?: boolean; meta?: Record<string, unknown> };
     type?: TransactionType;
+    networkClientId?: string;
   },
 ): Promise<TransactionMeta> {
   log.debug('background.addTransactionAndWaitForPublish');
@@ -1105,6 +1158,7 @@ export async function addTransactionAndWaitForPublish(
  * @param options.swaps.hasApproveTx - Whether the swap required an approval transaction.
  * @param options.swaps.meta - Additional transaction metadata required by swaps.
  * @param options.type
+ * @param options.networkClientId - The network client id to use for the transaction.
  * @returns
  */
 export async function addTransaction(
@@ -1114,6 +1168,7 @@ export async function addTransaction(
     requireApproval?: boolean;
     swaps?: { hasApproveTx?: boolean; meta?: Record<string, unknown> };
     type?: TransactionType;
+    networkClientId?: string;
   },
 ): Promise<TransactionMeta> {
   log.debug('background.addTransaction');
@@ -1702,10 +1757,6 @@ export function updateMetamaskState(
 
       dispatch(initializeSendState({ chainHasChanged: true }));
     }
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    updateCustodyState(dispatch, newState, getState());
-    ///: END:ONLY_INCLUDE_IF
 
     return newState;
   };
@@ -2540,14 +2591,12 @@ export function updateNetwork(
 }
 
 export function setActiveNetwork(
-  networkConfigurationId: string,
+  id: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
-    log.debug(`background.setActiveNetwork: ${networkConfigurationId}`);
+    log.debug(`background.setActiveNetwork: ${id}`);
     try {
-      await submitRequestToBackground('setActiveNetwork', [
-        networkConfigurationId,
-      ]);
+      await submitRequestToBackground('setActiveNetwork', [id]);
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning('Had a problem changing networks!'));
@@ -3166,16 +3215,8 @@ export function setPetnamesEnabled(value: boolean) {
   return setPreference('petnamesEnabled', value);
 }
 
-export function setRedesignedConfirmationsEnabled(value: boolean) {
-  return setPreference('redesignedConfirmationsEnabled', value);
-}
-
 export function setPrivacyMode(value: boolean) {
   return setPreference('privacyMode', value, false);
-}
-
-export function setRedesignedTransactionsEnabled(value: boolean) {
-  return setPreference('redesignedTransactionsEnabled', value);
 }
 
 export function setFeatureNotificationsEnabled(value: boolean) {
@@ -3184,10 +3225,6 @@ export function setFeatureNotificationsEnabled(value: boolean) {
 
 export function setShowExtensionInFullSizeView(value: boolean) {
   return setPreference('showExtensionInFullSizeView', value);
-}
-
-export function setRedesignedConfirmationsDeveloperEnabled(value: boolean) {
-  return setPreference('isRedesignedConfirmationsDeveloperEnabled', value);
 }
 
 export function setTokenSortConfig(value: SortCriteria) {
@@ -3340,7 +3377,7 @@ export function toggleNetworkMenu(payload?: {
   };
 }
 
-export function setAccountDetailsAddress(address: string[]) {
+export function setAccountDetailsAddress(address: string) {
   return {
     type: actionConstants.SET_ACCOUNT_DETAILS_ADDRESS,
     payload: address,
@@ -3413,21 +3450,6 @@ export function setUseBlockie(
         dispatch(displayWarning(err));
       }
     });
-  };
-}
-
-export function setUseNonceField(
-  val: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`background.setUseNonceField`);
-    try {
-      await submitRequestToBackground('setUseNonceField', [val]);
-    } catch (error) {
-      dispatch(displayWarning(error));
-    }
-    dispatch(hideLoadingIndication());
   };
 }
 
@@ -3986,19 +4008,6 @@ export function setInitialGasEstimate(
 
 // Permissions
 
-export function requestAccountsPermissionWithId(
-  origin: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    const id = await submitRequestToBackground(
-      'requestAccountsPermissionWithId',
-      [origin],
-    );
-    await forceUpdateMetamaskState(dispatch);
-    return id;
-  };
-}
-
 export function requestAccountsAndChainPermissionsWithId(
   origin: string,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
@@ -4075,7 +4084,7 @@ export function removePermissionsFor(
  * @param chainIds - An array of hexadecimal chain IDs
  */
 export function updateNetworksList(
-  chainIds: Hex[],
+  chainIds: CaipChainId[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     await submitRequestToBackground('updateNetworksList', [chainIds]);
@@ -4128,12 +4137,10 @@ export function resolvePendingApproval(
     // Before closing the current window, check if any additional confirmations
     // are added as a result of this confirmation being accepted
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask,build-mmi)
     const { pendingApprovals } = await forceUpdateMetamaskState(_dispatch);
     if (Object.values(pendingApprovals).length === 0) {
       _dispatch(closeCurrentNotificationWindow());
     }
-    ///: END:ONLY_INCLUDE_IF
   };
 }
 
@@ -4184,6 +4191,18 @@ export function rejectAllMessages(
     if (Object.values(pendingApprovals).length === 0) {
       dispatch(closeCurrentNotificationWindow());
     }
+  };
+}
+
+export function updateThrottledOriginState(
+  origin: string,
+  throttledOriginState: ThrottledOrigin,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    await submitRequestToBackground('updateThrottledOriginState', [
+      origin,
+      throttledOriginState,
+    ]);
   };
 }
 
@@ -4578,14 +4597,6 @@ export function captureSingleException(
 
 export function estimateGas(params: TransactionParams): Promise<Hex> {
   return submitRequestToBackground('estimateGas', [params]);
-}
-
-export function estimateGasFee(request: {
-  transactionParams: TransactionParams;
-  chainId?: Hex;
-  networkClientId?: NetworkClientId;
-}): Promise<{ estimates: GasFeeEstimates }> {
-  return submitRequestToBackground('estimateGasFee', [request]);
 }
 
 export async function updateTokenType(
@@ -5084,6 +5095,9 @@ export function setSmartTransactionsRefreshInterval(
   refreshInterval: number,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
+    if (refreshInterval === undefined || refreshInterval === null) {
+      return;
+    }
     try {
       await submitRequestToBackground('setStatusRefreshInterval', [
         refreshInterval,
@@ -5187,6 +5201,7 @@ export async function setWatchEthereumAccountEnabled(value: boolean) {
   }
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 export async function setBitcoinSupportEnabled(value: boolean) {
   try {
     await submitRequestToBackground('setBitcoinSupportEnabled', [value]);
@@ -5198,15 +5213,6 @@ export async function setBitcoinSupportEnabled(value: boolean) {
 export async function setBitcoinTestnetSupportEnabled(value: boolean) {
   try {
     await submitRequestToBackground('setBitcoinTestnetSupportEnabled', [value]);
-  } catch (error) {
-    logErrorWithMessage(error);
-  }
-}
-
-///: BEGIN:ONLY_INCLUDE_IF(solana)
-export async function setSolanaSupportEnabled(value: boolean) {
-  try {
-    await submitRequestToBackground('setSolanaSupportEnabled', [value]);
   } catch (error) {
     logErrorWithMessage(error);
   }
@@ -5247,14 +5253,6 @@ export async function getSnapAccountsById(snapId: string): Promise<string[]> {
   return addresses;
 }
 ///: END:ONLY_INCLUDE_IF
-
-export function setUseRequestQueue(val: boolean): void {
-  try {
-    submitRequestToBackground('setUseRequestQueue', [val]);
-  } catch (error) {
-    logErrorWithMessage(error);
-  }
-}
 
 export function setUseExternalNameSources(val: boolean): void {
   try {
@@ -5948,25 +5946,6 @@ export function disableMetamaskNotifications(): ThunkAction<
   };
 }
 
-export function setIsProfileSyncingEnabled(
-  isProfileSyncingEnabled: boolean,
-): ThunkAction<void, unknown, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    try {
-      dispatch(showLoadingIndication());
-      await submitRequestToBackground('setIsProfileSyncingEnabled', [
-        isProfileSyncingEnabled,
-      ]);
-      dispatch(hideLoadingIndication());
-    } catch (error) {
-      logErrorWithMessage(error);
-      throw error;
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-  };
-}
-
 export function setConfirmationAdvancedDetailsOpen(value: boolean) {
   return setPreference('showConfirmationAdvancedDetails', value);
 }
@@ -5978,48 +5957,6 @@ export async function getNextAvailableAccountName(
     'getNextAvailableAccountName',
     [keyring],
   );
-}
-
-export async function grantPermittedChain(
-  selectedTabOrigin: string,
-  chainId?: string,
-): Promise<string> {
-  return await submitRequestToBackground<void>('grantPermissionsIncremental', [
-    {
-      subject: { origin: selectedTabOrigin },
-      approvedPermissions: {
-        [EndowmentTypes.permittedChains]: {
-          caveats: [
-            {
-              type: CaveatTypes.restrictNetworkSwitching,
-              value: [chainId],
-            },
-          ],
-        },
-      },
-    },
-  ]);
-}
-
-export async function grantPermittedChains(
-  selectedTabOrigin: string,
-  chainIds: string[],
-): Promise<string> {
-  return await submitRequestToBackground<void>('grantPermissions', [
-    {
-      subject: { origin: selectedTabOrigin },
-      approvedPermissions: {
-        [EndowmentTypes.permittedChains]: {
-          caveats: [
-            {
-              type: CaveatTypes.restrictNetworkSwitching,
-              value: chainIds,
-            },
-          ],
-        },
-      },
-    },
-  ]);
 }
 
 export async function decodeTransactionData({
@@ -6039,7 +5976,7 @@ export async function decodeTransactionData({
     },
   ]);
 }
-
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 export async function multichainUpdateBalance(
   accountId: string,
 ): Promise<void> {
@@ -6048,9 +5985,14 @@ export async function multichainUpdateBalance(
   ]);
 }
 
-export async function multichainUpdateBalances(): Promise<void> {
-  return await submitRequestToBackground<void>('multichainUpdateBalances', []);
+export async function multichainUpdateTransactions(
+  accountId: string,
+): Promise<void> {
+  return await submitRequestToBackground<void>('multichainUpdateTransactions', [
+    accountId,
+  ]);
 }
+///: END:ONLY_INCLUDE_IF
 
 export async function getLastInteractedConfirmationInfo(): Promise<
   LastInteractedConfirmationInfo | undefined
@@ -6111,6 +6053,7 @@ function applyPatches(
   return newState;
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 export async function sendMultichainTransaction(
   snapId: string,
   {
@@ -6133,4 +6076,11 @@ export async function sendMultichainTransaction(
       },
     },
   });
+}
+///: END:ONLY_INCLUDE_IF
+
+export async function disableAccountUpgradeForChain(chainId: string) {
+  return await submitRequestToBackground('disableAccountUpgradeForChain', [
+    chainId,
+  ]);
 }

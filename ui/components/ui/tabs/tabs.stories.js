@@ -1,5 +1,4 @@
 import React from 'react';
-import DropdownTab from './snaps/dropdown-tab';
 import Tab from './tab/tab.component';
 import Tabs from './tabs.component';
 
@@ -48,19 +47,3 @@ export const DefaultStory = (args) => {
 };
 
 DefaultStory.storyName = 'Default';
-
-export const DropdownStory = (args) => {
-  return (
-    <Tabs>
-      <DropdownTab
-        options={[
-          { name: 'Insight Snap', value: 'Insight Snap' },
-          { name: 'Tenderly Insight', value: 'Tenderly Insight' },
-        ]}
-        onChange={args.onChange}
-      >
-        This is a dropdown Tab
-      </DropdownTab>
-    </Tabs>
-  );
-};

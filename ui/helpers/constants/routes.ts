@@ -94,29 +94,6 @@ PATH_NAME_MAP[CONFIRM_ADD_SUGGESTED_NFT_ROUTE] =
 export const CONNECT_HARDWARE_ROUTE = '/new-account/connect';
 PATH_NAME_MAP[CONNECT_HARDWARE_ROUTE] = 'Connect Hardware Wallet Page';
 
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-export const CUSTODY_ACCOUNT_ROUTE = '/new-account/custody';
-PATH_NAME_MAP[CUSTODY_ACCOUNT_ROUTE] = 'Connect Custody';
-
-export const INSTITUTIONAL_FEATURES_DONE_ROUTE = '/institutional-features/done';
-PATH_NAME_MAP[INSTITUTIONAL_FEATURES_DONE_ROUTE] =
-  'Institutional Features Done Page';
-
-export const CUSTODY_ACCOUNT_DONE_ROUTE = '/new-account/custody/done';
-PATH_NAME_MAP[CUSTODY_ACCOUNT_DONE_ROUTE] = 'Connect Custody Account done';
-
-export const CONFIRM_ADD_CUSTODIAN_TOKEN = '/confirm-add-custodian-token';
-PATH_NAME_MAP[CONFIRM_ADD_CUSTODIAN_TOKEN] = 'Confirm Add Custodian Token';
-
-export const INTERACTIVE_REPLACEMENT_TOKEN_PAGE =
-  '/interactive-replacement-token-page';
-PATH_NAME_MAP[INTERACTIVE_REPLACEMENT_TOKEN_PAGE] =
-  'Interactive replacement token page';
-
-export const SRP_REMINDER = '/onboarding/remind-srp';
-PATH_NAME_MAP[SRP_REMINDER] = 'Secret Recovery Phrase Reminder';
-///: END:ONLY_INCLUDE_IF
-
 export const SEND_ROUTE = '/send';
 PATH_NAME_MAP[SEND_ROUTE] = 'Send Page';
 
@@ -267,7 +244,6 @@ export const ONBOARDING_CONFIRM_SRP_ROUTE =
   '/onboarding/confirm-recovery-phrase';
 export const ONBOARDING_CREATE_PASSWORD_ROUTE = '/onboarding/create-password';
 export const ONBOARDING_COMPLETION_ROUTE = '/onboarding/completion';
-export const MMI_ONBOARDING_COMPLETION_ROUTE = '/onboarding/account-completion';
 export const ONBOARDING_UNLOCK_ROUTE = '/onboarding/unlock';
 export const ONBOARDING_HELP_US_IMPROVE_ROUTE = '/onboarding/help-us-improve';
 export const ONBOARDING_IMPORT_WITH_SRP_ROUTE =

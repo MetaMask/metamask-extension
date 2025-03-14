@@ -1,6 +1,5 @@
 const FixtureBuilder = require('../../fixture-builder');
 const {
-  defaultGanacheOptions,
   logInWithBalanceValidation,
   openDapp,
   WINDOW_TITLES,
@@ -20,27 +19,29 @@ describe('Request Queue SwitchChain -> WatchAsset', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
+
           .build(),
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         smartContract,
         title: this.test.fullTitle(),
       },
 
-      async ({ driver, contractRegistry, ganacheServer }) => {
+      async ({ driver, contractRegistry, localNodes }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await logInWithBalanceValidation(driver, ganacheServer);
+        await logInWithBalanceValidation(driver, localNodes[0]);
 
         await openDapp(driver, contractAddress, DAPP_URL);
 
@@ -48,6 +49,12 @@ describe('Request Queue SwitchChain -> WatchAsset', function () {
         await driver.clickElement('#connectButton');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        const permissionsTab = await driver.findElement(
+          '[data-testid="permissions-tab"]',
+        );
+        await permissionsTab.click();
+
         const editButtons = await driver.findElements('[data-testid="edit"]');
 
         await editButtons[1].click();

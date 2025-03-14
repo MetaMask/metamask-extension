@@ -9,7 +9,6 @@ import {
   BackgroundColor,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
-
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
 
 type AssetListControlBarProps = {

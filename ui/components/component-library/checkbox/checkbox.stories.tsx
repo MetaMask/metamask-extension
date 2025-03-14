@@ -2,7 +2,6 @@ import { StoryFn, Meta } from '@storybook/react';
 import { useArgs } from '@storybook/client-api';
 import React from 'react';
 
-import { Box } from '..';
 import {
   BorderColor,
   Display,
@@ -10,7 +9,8 @@ import {
 } from '../../../helpers/constants/design-system';
 import README from './README.mdx';
 
-import { Checkbox } from '.';
+import { Checkbox } from './checkbox';
+import { Box } from '../box';
 
 export default {
   title: 'Components/ComponentLibrary/Checkbox',

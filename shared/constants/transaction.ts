@@ -199,3 +199,10 @@ export enum TokenStandard {
   /** Not a token, but rather the base asset of the selected chain. */
   none = 'NONE',
 }
+
+/**
+ * The hostname used for Ethereum Mainnet transaction simulations, and for
+ * retrieving metadata for transaction simulation supported networks.
+ */
+export const TX_SENTINEL_URL =
+  'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io';

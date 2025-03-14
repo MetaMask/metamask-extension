@@ -7,16 +7,39 @@ const { isManifestV3 } = require('../../shared/modules/mv3.utils');
 const baseManifest = isManifestV3
   ? require('../../app/manifest/v3/_base.json')
   : require('../../app/manifest/v2/_base.json');
-const baradDurManifest = isManifestV3
-  ? require('../../app/manifest/v3/_barad_dur.json')
-  : require('../../app/manifest/v2/_barad_dur.json');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 
 const { TASKS, ENVIRONMENT } = require('./constants');
 const { createTask, composeSeries } = require('./task');
 const { getEnvironment, getBuildName } = require('./utils');
+const { fromIniFile } = require('./config');
 
 module.exports = createManifestTasks;
+
+async function loadManifestFlags() {
+  const { definitions } = await fromIniFile(
+    path.resolve(__dirname, '..', '..', '.metamaskrc'),
+  );
+  const manifestOverridesPath = definitions.get('MANIFEST_OVERRIDES');
+  // default to undefined so that the manifest plugin can check if it was set
+  let manifestFlags;
+  if (manifestOverridesPath) {
+    try {
+      manifestFlags = await readJson(
+        path.resolve(process.cwd(), manifestOverridesPath),
+      );
+    } catch (error) {
+      // Only throw if error is not ENOENT (file not found) and manifestOverridesPath was provided
+      if (error.code === 'ENOENT') {
+        throw new Error(
+          `Manifest override file not found: ${manifestOverridesPath}`,
+        );
+      }
+    }
+  }
+
+  return manifestFlags;
+}
 
 function createManifestTasks({
   browserPlatforms,
@@ -28,6 +51,9 @@ function createManifestTasks({
 }) {
   // merge base manifest with per-platform manifests
   const prepPlatforms = async () => {
+    const isDevelopment =
+      getEnvironment({ buildTarget: entryTask }) === 'development';
+    const manifestFlags = isDevelopment ? await loadManifestFlags() : undefined;
     return Promise.all(
       browserPlatforms.map(async (platform) => {
         const platformModifications = await readJson(
@@ -42,13 +68,13 @@ function createManifestTasks({
         );
         const result = mergeWith(
           cloneDeep(baseManifest),
-          process.env.BARAD_DUR ? cloneDeep(baradDurManifest) : {},
           platformModifications,
           browserVersionMap[platform],
           await getBuildModifications(buildType, platform),
           customArrayMerge,
+          // Only include _flags if manifestFlags has content
+          manifestFlags,
         );
-
         modifyNameAndDescForNonProd(result);
 
         const dir = path.join('.', 'dist', platform);

@@ -158,7 +158,7 @@ describe('useFirstTimeInteractionAlert', () => {
     expect(alerts).toEqual([
       {
         actions: [],
-        field: RowAlertKey.FirstTimeInteraction,
+        field: RowAlertKey.InteractingWith,
         isBlocking: false,
         key: 'firstTimeInteractionTitle',
         message:
