@@ -1,6 +1,5 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import {
   getAddressBookEntryOrAccountName,
   getSettingsPageSnapsIds,
@@ -39,6 +38,7 @@ import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import { toggleNetworkMenu } from '../../store/actions';
 import { getSnapName } from '../../helpers/utils/util';
 import { decodeSnapIdFromPathname } from '../../helpers/utils/snaps';
+import withOptimisedRouter from '../../helpers/higher-order-components/withOptimisedRouter';
 import Settings from './settings.component';
 
 const ROUTES_TO_I18N_KEYS = {
@@ -143,6 +143,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default compose(
-  withRouter,
+  withOptimisedRouter,
   connect(mapStateToProps, mapDispatchToProps),
 )(Settings);

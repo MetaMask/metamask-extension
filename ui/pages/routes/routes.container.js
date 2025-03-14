@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import {
   getCurrentChainId,
@@ -51,6 +50,7 @@ import { getSendStage } from '../../ducks/send';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { selectSwitchedNetworkNeverShowMessage } from '../../components/app/toast-master/selectors';
+import withOptimisedRouter from '../../helpers/higher-order-components/withOptimisedRouter';
 import Routes from './routes.component';
 
 function mapStateToProps(state) {
@@ -146,7 +146,10 @@ function mapDispatchToProps(dispatch) {
     clearSwitchedNetworkDetails: () => dispatch(clearSwitchedNetworkDetails()),
     automaticallySwitchNetwork: (networkId, selectedTabOrigin) =>
       dispatch(automaticallySwitchNetwork(networkId, selectedTabOrigin)),
-    clearEditedNetwork: () => dispatch(setEditedNetwork()),
+    networkMenuClose: () => {
+      dispatch(toggleNetworkMenu());
+      dispatch(setEditedNetwork());
+    },
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     hideShowKeyringSnapRemovalResultModal: () =>
       dispatch(hideKeyringRemovalResultModal()),
@@ -155,6 +158,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default compose(
-  withRouter,
+  withOptimisedRouter,
   connect(mapStateToProps, mapDispatchToProps),
 )(Routes);
