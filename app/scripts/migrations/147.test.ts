@@ -32,6 +32,7 @@ describe(`migration #${version}`, () => {
       };
       const expectedData = {
         AuthenticationController: {
+          isSignedIn: false,
           sessionData: undefined,
         },
       };
