@@ -124,6 +124,7 @@ import {
 } from '@metamask/queued-request-controller';
 
 import { UserOperationController } from '@metamask/user-operation-controller';
+import { BridgeController } from '@metamask/bridge-controller';
 
 import {
   TransactionStatus,
@@ -251,6 +252,10 @@ import {
   BridgeBackgroundAction,
 } from '../../shared/types/bridge';
 import {
+  BRIDGE_API_BASE_URL,
+  BRIDGE_CLIENT_ID,
+} from '../../shared/constants/bridge';
+import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
   ///: END:ONLY_INCLUDE_IF
@@ -349,7 +354,6 @@ import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmM
 import { isEthAddress } from './lib/multichain/address';
 
 import { decodeTransactionData } from './lib/transaction/decode/util';
-import BridgeController from './controllers/bridge/bridge-controller';
 import { BRIDGE_CONTROLLER_NAME } from './controllers/bridge/constants';
 import {
   onPushNotificationClicked,
@@ -1771,18 +1775,28 @@ export default class MetamaskController extends EventEmitter {
     const bridgeControllerMessenger = this.controllerMessenger.getRestricted({
       name: BRIDGE_CONTROLLER_NAME,
       allowedActions: [
-        // 'AccountsController:getSelectedAccount',
         'AccountsController:getSelectedMultichainAccount',
         'SnapController:handleRequest',
-        'NetworkController:getSelectedNetworkClient',
+        'NetworkController:getState',
+        'NetworkController:getNetworkClientById',
         'NetworkController:findNetworkClientIdByChainId',
       ],
       allowedEvents: [],
     });
     this.bridgeController = new BridgeController({
       messenger: bridgeControllerMessenger,
+      clientId: BRIDGE_CLIENT_ID,
       // TODO: Remove once TransactionController exports this action type
       getLayer1GasFee: (...args) => this.txController.getLayer1GasFee(...args),
+      fetchFn: async (url, { headers, ...requestOptions }) =>
+        await fetchWithCache({
+          url,
+          fetchOptions: { method: 'GET', headers },
+          ...requestOptions,
+        }),
+      config: {
+        customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
+      },
     });
 
     const bridgeStatusControllerMessenger =

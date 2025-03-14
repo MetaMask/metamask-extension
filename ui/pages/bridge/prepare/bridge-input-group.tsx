@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
+import { isNativeAddress } from '@metamask/bridge-controller';
 import {
   Text,
   TextField,
@@ -14,7 +15,6 @@ import { TabName } from '../../../components/multichain/asset-picker-amount/asse
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
-import { isNativeAddress } from '../../../../shared/modules/bridge-utils/caip-formatters';
 import { Column, Row } from '../layout';
 import {
   Display,

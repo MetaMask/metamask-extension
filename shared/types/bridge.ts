@@ -95,7 +95,7 @@ export type QuoteRequest<
   srcTokenAddress: TokenAddressType;
   destTokenAddress: TokenAddressType;
   srcTokenAmount: string; // This is the amount sent
-  slippage: number;
+  slippage?: number;
   aggIds?: string[];
   bridgeIds?: string[];
   insufficientBal?: boolean;
