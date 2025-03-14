@@ -125,6 +125,7 @@ import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/con
 import { EndTraceRequest } from '../../shared/lib/trace';
 import { SortCriteria } from '../components/app/assets/util/sort';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
+import { canSafelyAutoCloseThisPopup } from '../../shared/lib/canSafelyAutoCloseThisPopup';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -4848,6 +4849,9 @@ export function getGasFeeTimeEstimate(
 }
 
 export async function closeNotificationPopup() {
+  if (!(await canSafelyAutoCloseThisPopup())) {
+    return;
+  }
   await submitRequestToBackground('markNotificationPopupAsAutomaticallyClosed');
   global.platform.closeCurrentWindow();
 }
