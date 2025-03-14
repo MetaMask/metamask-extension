@@ -98,7 +98,7 @@ export class TestSnaps {
     console.log('Test Snap Dapp page is loaded');
   }
 
-  async check_clientStatus(expectedStatus: boolean): Promise<void> {
+  async check_clientStatus(expectedStatus: string): Promise<void> {
     console.log(`Checking that the client status should be ${expectedStatus}`);
     await this.driver.waitForSelector({
       css: spanLocator.clientStatusResultSpan,
