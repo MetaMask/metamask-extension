@@ -21,7 +21,10 @@ describe('Name lookup', function () {
         const sendTokenPage = new SendTokenPage(driver);
 
         // Open a new tab and navigate to test snaps page and click name lookup
-        await openTestSnapClickButtonAndInstall(driver, 'nameLookUpButton');
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          'connectNameLookUpButton',
+        );
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );

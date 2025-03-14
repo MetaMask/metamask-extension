@@ -136,7 +136,7 @@ describe('Confirmation Navigation', function (this: Suite) {
 
         const testSnaps = new TestSnaps(driver);
         await openTestSnapClickButtonAndInstall(driver, 'connectDialogsButton');
-        await testSnaps.scrollAndClickButton('dialogsSnapConfirmationButton');
+        await testSnaps.scrollAndClickButton('confirmationButton');
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();

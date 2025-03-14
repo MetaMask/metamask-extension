@@ -16,21 +16,20 @@ export const buttonLocator = {
   connectClientStatusButton: '#connectclient-status',
   connectDialogsButton: '#connectdialogs',
   connectErrorsButton: '#connecterrors',
-  connectGetEntropySnapButton: '#connectGetEntropySnap',
+  connectGetEntropyButton: '#connectGetEntropySnap',
   connectGetFileButton: '#connectgetfile',
   connectHomePageButton: '#connecthomepage',
   connectImagesButton: '#connectimages',
   connectLifeCycleButton: '#connectlifecycle-hooks',
+  connectNameLookUpButton: '#connectname-lookup',
   connectTransactionInsightButton: '#connecttransaction-insights',
   connectUpdateButton: '#connectUpdate',
   connectUpdateNewButton: '#connectUpdateNew',
   connectWasmButton: '#connectwasm',
-  dialogsSnapConfirmationButton: '#sendConfirmationButton',
+  confirmationButton: '#sendConfirmationButton',
   getAccountButton: '#getAccounts',
-  getCompressedKeyButton: '#bip32GetCompressedPublic',
-  getPublicKeyButton: '#bip32GetPublic',
-  messageSecp256k1Button: '#sendBip32-secp256k1',
-  nameLookUpButton: '#connectname-lookup',
+  getBip32CompressedPublicKeyButton: '#bip32GetCompressedPublic',
+  getBip32PublicKeyButton: '#bip32GetPublic',
   publicKeyBip44Button: '#sendBip44Test',
   sendErrorButton: '#sendError',
   sendGetFileBase64Button: '#sendGetFileBase64Button',
@@ -38,6 +37,7 @@ export const buttonLocator = {
   sendGetFileTextButton: '#sendGetFileTextButton',
   sendInsightButton: '#sendInsights',
   sendWasmMessageButton: '#sendWasmMessage',
+  signBip32messageSecp256k1Button: '#sendBip32-secp256k1',
   signBip44MessageButton: '#signBip44Message',
   signEd25519Bip32MessageButton: '#sendBip32-ed25519Bip32',
   signEd25519MessageButton: '#sendBip32-ed25519',
@@ -117,12 +117,12 @@ export class TestSnaps {
   }
 
   async clickButton(buttonElement: keyof typeof buttonLocator) {
-    console.log(`Click button ${buttonElement}`);
+    console.log(`Clicking button ${buttonElement}`);
     await this.driver.clickElement(buttonLocator[buttonElement]);
   }
 
   async scrollToButton(buttonElement: keyof typeof buttonLocator) {
-    console.log(`Scroll to button ${buttonElement}`);
+    console.log(`Scrolling button ${buttonElement}`);
     const buttonSelector = await this.driver.findElement(
       buttonLocator[buttonElement],
     );

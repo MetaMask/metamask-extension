@@ -47,14 +47,16 @@ describe('Test Snap bip-32', function () {
         );
 
         // Click bip32 button to get private key and validate the result
-        await testSnaps.scrollAndClickButton('getPublicKeyButton');
+        await testSnaps.scrollAndClickButton('getBip32PublicKeyButton');
         await testSnaps.check_messageResultSpan(
           'bip32PublicKeyResultSpan',
           bip32PublicKey,
         );
 
         // Click get compressed public key and validate the result
-        await testSnaps.scrollAndClickButton('getCompressedKeyButton');
+        await testSnaps.scrollAndClickButton(
+          'getBip32CompressedPublicKeyButton',
+        );
         await testSnaps.check_messageResultSpan(
           'bip32PublicKeyResultSpan',
           bip32CompressedPublicKey,
@@ -62,7 +64,7 @@ describe('Test Snap bip-32', function () {
 
         // Enter secp256k1 signature message, click sign button, approve and validate the result
         await testSnaps.fillMessage('messageSecp256k1Input', 'foo bar');
-        await testSnaps.clickButton('messageSecp256k1Button');
+        await testSnaps.clickButton('signBip32messageSecp256k1Button');
         await switchAndApproveDialogSwitchToTestSnap(driver);
         await testSnaps.check_messageResultSpan(
           'bip32MessageResultSecp256k1Span',
@@ -95,7 +97,7 @@ describe('Test Snap bip-32', function () {
         );
 
         await testSnaps.fillMessage('messageSecp256k1Input', 'bar baz');
-        await testSnaps.clickButton('messageSecp256k1Button');
+        await testSnaps.clickButton('signBip32messageSecp256k1Button');
         await switchAndApproveDialogSwitchToTestSnap(driver);
         await testSnaps.check_messageResultSpan(
           'bip32MessageResultSecp256k1Span',
@@ -108,7 +110,7 @@ describe('Test Snap bip-32', function () {
           'SRP 2',
         );
         await testSnaps.fillMessage('messageSecp256k1Input', 'bar baz');
-        await testSnaps.clickButton('messageSecp256k1Button');
+        await testSnaps.clickButton('signBip32messageSecp256k1Button');
         await switchAndApproveDialogSwitchToTestSnap(driver);
         await testSnaps.check_messageResultSpan(
           'bip32MessageResultSecp256k1Span',
@@ -121,7 +123,7 @@ describe('Test Snap bip-32', function () {
           'Invalid',
         );
         await testSnaps.fillMessage('messageSecp256k1Input', 'bar baz');
-        await testSnaps.clickButton('messageSecp256k1Button');
+        await testSnaps.clickButton('signBip32messageSecp256k1Button');
 
         // Check the error message and close the alert.
         await driver.waitForAlert(
