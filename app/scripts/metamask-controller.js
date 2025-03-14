@@ -19,7 +19,17 @@ import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { debounce, throttle, memoize, wrap, pick, cloneDeep } from 'lodash';
+import {
+  debounce,
+  throttle,
+  memoize,
+  wrap,
+  pick,
+  cloneDeep,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  isEqual,
+  ///: END:ONLY_INCLUDE_IF
+} from 'lodash';
 import {
   KeyringController,
   KeyringTypes,
@@ -108,7 +118,6 @@ import { CustodyController } from '@metamask-institutional/custody-controller';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 ///: END:ONLY_INCLUDE_IF
 import { SignatureController } from '@metamask/signature-controller';
-import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
 import {
   NameController,
@@ -250,6 +259,10 @@ import {
   BridgeUserAction,
   BridgeBackgroundAction,
 } from '../../shared/types/bridge';
+import {
+  convertMnemonicToWordlistIndices,
+  convertEnglishWordlistIndicesToCodepoints,
+} from './lib/mnemonic';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -4477,8 +4490,8 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Imports a new mnemonic to the vault.
    *
-   * @param {string} mnemonic
-   * @returns {object} new account address
+   * @param {number[]} mnemonic
+   * @returns {Promise<string>} new account address
    */
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   async importMnemonicToVault(mnemonic) {
@@ -4489,10 +4502,9 @@ export default class MetamaskController extends EventEmitter {
       const alreadyImportedSrp = this.keyringController
         .getKeyringsByType(KeyringTypes.hd)
         .some((keyring) => {
-          return (
-            Buffer.from(
-              this._convertEnglishWordlistIndicesToCodepoints(keyring.mnemonic),
-            ).toString('utf8') === mnemonic
+          return isEqual(
+            convertEnglishWordlistIndicesToCodepoints(keyring.mnemonic),
+            mnemonic,
           );
         });
 
@@ -4569,7 +4581,9 @@ export default class MetamaskController extends EventEmitter {
     try {
       const { completedOnboarding } = this.onboardingController.state;
 
-      const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
+      const seedPhrase = new TextDecoder().decode(
+        Uint8Array.from(encodedSeedPhrase),
+      );
 
       // clear permissions
       this.permissionController.clearState();
@@ -4589,7 +4603,7 @@ export default class MetamaskController extends EventEmitter {
       // create new vault
       await this.keyringController.createNewVaultAndRestore(
         password,
-        this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer),
+        convertMnemonicToWordlistIndices(seedPhrase),
       );
 
       if (completedOnboarding) {
@@ -4669,34 +4683,6 @@ export default class MetamaskController extends EventEmitter {
         true,
       );
     }
-  }
-
-  /**
-   * Encodes a BIP-39 mnemonic as the indices of words in the English BIP-39 wordlist.
-   *
-   * @param {Buffer} mnemonic - The BIP-39 mnemonic.
-   * @returns {Buffer} The Unicode code points for the seed phrase formed from the words in the wordlist.
-   */
-  _convertMnemonicToWordlistIndices(mnemonic) {
-    const indices = mnemonic
-      .toString()
-      .split(' ')
-      .map((word) => wordlist.indexOf(word));
-    return new Uint8Array(new Uint16Array(indices).buffer);
-  }
-
-  /**
-   * Converts a BIP-39 mnemonic stored as indices of words in the English wordlist to a buffer of Unicode code points.
-   *
-   * @param {Uint8Array} wordlistIndices - Indices to specific words in the BIP-39 English wordlist.
-   * @returns {Buffer} The BIP-39 mnemonic formed from the words in the English wordlist, encoded as a list of Unicode code points.
-   */
-  _convertEnglishWordlistIndicesToCodepoints(wordlistIndices) {
-    return Buffer.from(
-      Array.from(new Uint16Array(wordlistIndices.buffer))
-        .map((i) => wordlist[i])
-        .join(' '),
-    );
   }
 
   /**
@@ -5170,7 +5156,7 @@ export default class MetamaskController extends EventEmitter {
    * encoded as an array of UTF-8 bytes.
    */
   async getSeedPhrase(password, _keyringId) {
-    return this._convertEnglishWordlistIndicesToCodepoints(
+    return convertEnglishWordlistIndicesToCodepoints(
       await this.keyringController.exportSeedPhrase(
         password,
         ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
