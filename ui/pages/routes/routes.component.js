@@ -163,7 +163,7 @@ export default class Routes extends Component {
     isAccountMenuOpen: PropTypes.bool,
     toggleAccountMenu: PropTypes.func,
     isNetworkMenuOpen: PropTypes.bool,
-    toggleNetworkMenu: PropTypes.func,
+    networkMenuClose: PropTypes.func,
     accountDetailsAddress: PropTypes.string,
     isImportNftsModalOpen: PropTypes.bool.isRequired,
     hideImportNftsModal: PropTypes.func.isRequired,
@@ -179,7 +179,6 @@ export default class Routes extends Component {
     automaticallySwitchNetwork: PropTypes.func.isRequired,
     totalUnapprovedConfirmationCount: PropTypes.number.isRequired,
     currentExtensionPopupId: PropTypes.number,
-    clearEditedNetwork: PropTypes.func.isRequired,
     oldestPendingApproval: PropTypes.object,
     pendingApprovals: PropTypes.arrayOf(PropTypes.object).isRequired,
     transactionsMetadata: PropTypes.object.isRequired,
@@ -387,7 +386,6 @@ export default class Routes extends Component {
       isAccountMenuOpen,
       toggleAccountMenu,
       isNetworkMenuOpen,
-      toggleNetworkMenu,
       accountDetailsAddress,
       isImportTokensModalOpen,
       isDeprecatedNetworkModalOpen,
@@ -400,7 +398,7 @@ export default class Routes extends Component {
       hideImportTokensModal,
       hideDeprecatedNetworkModal,
       clearSwitchedNetworkDetails,
-      clearEditedNetwork,
+      networkMenuClose,
       privacyMode,
       oldestPendingApproval,
       pendingApprovals,
@@ -468,11 +466,10 @@ export default class Routes extends Component {
           [`browser-${browser}`]: browser,
         })}
         dir={textDirection}
-        onMouseUp={
-          getShowAutoNetworkSwitchTest(this.props)
-            ? () => clearSwitchedNetworkDetails()
-            : undefined
-        }
+        onMouseUp={getShowAutoNetworkSwitchTest(
+          this.props,
+          clearSwitchedNetworkDetails,
+        )}
       >
         {shouldShowNetworkDeprecationWarning ? <DeprecatedNetworks /> : null}
         <QRHardwarePopover />
@@ -483,44 +480,35 @@ export default class Routes extends Component {
         {showOnboardingHeader(location) && <OnboardingAppHeader />}
         {isAccountMenuOpen ? (
           <AccountListMenu
-            onClose={() => toggleAccountMenu()}
+            onClose={toggleAccountMenu}
             privacyMode={privacyMode}
           />
         ) : null}
         {isNetworkMenuOpen ? (
-          <NetworkListMenu
-            onClose={() => {
-              toggleNetworkMenu();
-              clearEditedNetwork();
-            }}
-          />
+          <NetworkListMenu onClose={networkMenuClose} />
         ) : null}
         <NetworkConfirmationPopover />
         {accountDetailsAddress ? (
           <AccountDetails address={accountDetailsAddress} />
         ) : null}
         {isImportNftsModalOpen ? (
-          <ImportNftsModal onClose={() => hideImportNftsModal()} />
+          <ImportNftsModal onClose={hideImportNftsModal} />
         ) : null}
 
-        {isIpfsModalOpen ? (
-          <ToggleIpfsModal onClose={() => hideIpfsModal()} />
-        ) : null}
+        {isIpfsModalOpen ? <ToggleIpfsModal onClose={hideIpfsModal} /> : null}
         {isBasicConfigurationModalOpen ? <BasicConfigurationModal /> : null}
         {isImportTokensModalOpen ? (
-          <ImportTokensModal onClose={() => hideImportTokensModal()} />
+          <ImportTokensModal onClose={hideImportTokensModal} />
         ) : null}
         {isDeprecatedNetworkModalOpen ? (
-          <DeprecatedNetworkModal
-            onClose={() => hideDeprecatedNetworkModal()}
-          />
+          <DeprecatedNetworkModal onClose={hideDeprecatedNetworkModal} />
         ) : null}
         {
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           isShowKeyringSnapRemovalResultModal && (
             <KeyringSnapRemovalResult
               isOpen={isShowKeyringSnapRemovalResultModal}
-              onClose={() => hideShowKeyringSnapRemovalResultModal()}
+              onClose={hideShowKeyringSnapRemovalResultModal}
             />
           )
           ///: END:ONLY_INCLUDE_IF
@@ -540,6 +528,11 @@ export default class Routes extends Component {
 }
 
 // Will eventually delete this function
-function getShowAutoNetworkSwitchTest(props) {
-  return props.switchedNetworkDetails && !props.switchedNetworkNeverShowMessage;
+function getShowAutoNetworkSwitchTest(props, clearSwitchedNetworkDetails) {
+  const clearDetails =
+    props.switchedNetworkDetails && !props.switchedNetworkNeverShowMessage;
+  if (clearDetails) {
+    clearSwitchedNetworkDetails();
+  }
+  return undefined;
 }
