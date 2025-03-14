@@ -128,7 +128,9 @@ export default class IndexedDBStore extends BaseStore {
   ): Promise<IDBObjectStore> {
     try {
       const db = await this.ensureDbReady();
-      const transaction = db.transaction([this.storeName], mode);
+      const transaction = db.transaction([this.storeName], mode, {
+        durability: 'strict',
+      });
       return transaction.objectStore(this.storeName);
     } catch (error) {
       if (
@@ -143,7 +145,9 @@ export default class IndexedDBStore extends BaseStore {
 
         // Re-initialize the database connection
         const db = await this.ensureDbReady();
-        const transaction = db.transaction([this.storeName], mode);
+        const transaction = db.transaction([this.storeName], mode, {
+          durability: 'strict',
+        });
         return transaction.objectStore(this.storeName);
       }
       throw error; // Re-throw any other errors
