@@ -1,6 +1,5 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 
 import {
   activeTabHasPermissions,
@@ -70,6 +69,7 @@ import {
   AlertTypes,
   Web3ShimUsageAlertStates,
 } from '../../../shared/constants/alerts';
+import withOptimisedRouter from '../../helpers/higher-order-components/withOptimisedRouter';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -226,6 +226,6 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default compose(
-  withRouter,
+  withOptimisedRouter,
   connect(mapStateToProps, mapDispatchToProps),
 )(Home);

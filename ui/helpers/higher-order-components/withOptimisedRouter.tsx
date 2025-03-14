@@ -13,7 +13,7 @@ interface WithMemoizedMatchProps {
  * @param WrappedComponent
  * @returns WrappedComponent with routing props
  */
-const withOptimisedRouterProps = (
+const withOptimisedRouter = (
   WrappedComponent: ComponentType<WithMemoizedMatchProps>,
 ) => {
   return () => {
@@ -23,4 +23,4 @@ const withOptimisedRouterProps = (
   };
 };
 
-export default withOptimisedRouterProps;
+export default withOptimisedRouter;

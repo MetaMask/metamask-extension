@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import {
   setIncomingTransactionsPreferences,
@@ -29,6 +28,7 @@ import {
 } from '../../../selectors/selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
+import withOptimisedRouter from '../../../helpers/higher-order-components/withOptimisedRouter';
 import SecurityTab from './security-tab.component';
 
 const mapStateToProps = (state) => {
@@ -123,6 +123,6 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default compose(
-  withRouter,
+  withOptimisedRouter,
   connect(mapStateToProps, mapDispatchToProps),
 )(SecurityTab);

@@ -50,8 +50,8 @@ import { getSendStage } from '../../ducks/send';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { selectSwitchedNetworkNeverShowMessage } from '../../components/app/toast-master/selectors';
+import withOptimisedRouter from '../../helpers/higher-order-components/withOptimisedRouter';
 import Routes from './routes.component';
-import withOptimisedRouterProps from './withOptimisedRouterProps';
 
 function mapStateToProps(state) {
   const { activeTab, appState } = state;
@@ -158,6 +158,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default compose(
-  withOptimisedRouterProps,
+  withOptimisedRouter,
   connect(mapStateToProps, mapDispatchToProps),
 )(Routes);

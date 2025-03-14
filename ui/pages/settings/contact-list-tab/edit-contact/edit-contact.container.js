@@ -1,6 +1,5 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import {
   getAddressBook,
   getAddressBookEntry,
@@ -16,6 +15,7 @@ import {
   addToAddressBook,
   removeFromAddressBook,
 } from '../../../../store/actions';
+import withOptimisedRouter from '../../../../helpers/higher-order-components/withOptimisedRouter';
 import EditContact from './edit-contact.component';
 
 const mapStateToProps = (state, ownProps) => {
@@ -56,6 +56,6 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default compose(
-  withRouter,
+  withOptimisedRouter,
   connect(mapStateToProps, mapDispatchToProps),
 )(EditContact);

@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -14,6 +13,7 @@ import {
   markPasswordForgotten,
   forceUpdateMetamaskState,
 } from '../../store/actions';
+import withOptimisedRouter from '../../helpers/higher-order-components/withOptimisedRouter';
 import UnlockPage from './unlock-page.component';
 
 const mapStateToProps = (state) => {
@@ -68,6 +68,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 };
 
 export default compose(
-  withRouter,
+  withOptimisedRouter,
   connect(mapStateToProps, mapDispatchToProps, mergeProps),
 )(UnlockPage);

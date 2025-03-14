@@ -1,6 +1,5 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import { getAddressBook, getInternalAccounts } from '../../../selectors';
 
 import {
@@ -8,6 +7,7 @@ import {
   CONTACT_EDIT_ROUTE,
   CONTACT_VIEW_ROUTE,
 } from '../../../helpers/constants/routes';
+import withOptimisedRouter from '../../../helpers/higher-order-components/withOptimisedRouter';
 import ContactListTab from './contact-list-tab.component';
 
 const mapStateToProps = (state, ownProps) => {
@@ -35,4 +35,7 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default compose(withRouter, connect(mapStateToProps))(ContactListTab);
+export default compose(
+  withOptimisedRouter,
+  connect(mapStateToProps),
+)(ContactListTab);
