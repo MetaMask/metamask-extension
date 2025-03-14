@@ -21,6 +21,7 @@ import { useConfirmContext } from '../../../../../context/confirm';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { isSignatureTransactionType } from '../../../../../utils';
 import { TransactionData } from '../transaction-data/transaction-data';
+import { NestedTransactionData } from '../../batch/nested-transaction-data/nested-transaction-data';
 
 const NonceDetails = () => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -92,6 +93,7 @@ export const AdvancedDetails = ({
     <>
       <NonceDetails />
       <TransactionData />
+      <NestedTransactionData />
     </>
   );
 };

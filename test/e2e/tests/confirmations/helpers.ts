@@ -1,7 +1,6 @@
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import FixtureBuilder from '../../fixture-builder';
 import {
-  defaultGanacheOptions,
   defaultGanacheOptionsForType2Transactions,
   withFixtures,
 } from '../../helpers';
@@ -9,6 +8,7 @@ import { MockedEndpoint, Mockttp } from '../../mock-e2e';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
 import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
+import { MOCK_META_METRICS_ID } from '../../constants';
 
 export const DECODING_E2E_API_URL =
   'https://signature-insights.api.cx.metamask.io/v1';
@@ -37,13 +37,13 @@ export function withTransactionEnvelopeTypeFixtures(
       fixtures: new FixtureBuilder()
         .withPermissionControllerConnectedToTestDapp()
         .withMetaMetricsController({
-          metaMetricsId: 'fake-metrics-id',
+          metaMetricsId: MOCK_META_METRICS_ID,
           participateInMetaMetrics: true,
         })
         .build(),
       localNodeOptions:
         transactionEnvelopeType === TransactionEnvelopeType.legacy
-          ? defaultGanacheOptions
+          ? {}
           : defaultGanacheOptionsForType2Transactions,
       ...(smartContract && { smartContract }),
       ...(mocks && { testSpecificMock: mocks }),
@@ -150,4 +150,28 @@ export async function mockSignatureRejectedWithDecoding(
 
 export async function mockPermitDecoding(mockServer: Mockttp) {
   return [await createMockSignatureDecodingEvent(mockServer)];
+}
+
+export async function mockedSourcifyTokenSend(mockServer: Mockttp) {
+  return await mockServer
+    .forGet('https://www.4byte.directory/api/v1/signatures/')
+    .withQuery({ hex_signature: '0xa9059cbb' })
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        count: 1,
+        next: null,
+        previous: null,
+        results: [
+          {
+            bytes_signature: '©\u0005»',
+            created_at: '2016-07-09T03:58:28.234977Z',
+            hex_signature: '0xa9059cbb',
+            id: 145,
+            text_signature: 'transfer(address,uint256)',
+          },
+        ],
+      },
+    }));
 }

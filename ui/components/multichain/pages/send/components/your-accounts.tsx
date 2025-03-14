@@ -17,7 +17,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
-import { SendPageRow } from '.';
+import { SendPageRow } from './send-page-row';
 
 type SendPageYourAccountsProps = {
   allowedAccountTypes?: KeyringAccountType[];

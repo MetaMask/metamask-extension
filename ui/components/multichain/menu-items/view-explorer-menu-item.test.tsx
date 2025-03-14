@@ -5,9 +5,10 @@ import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import {
-  MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP,
+  MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP,
   MultichainNetworks,
 } from '../../../../shared/constants/multichain/networks';
+import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
 import { ViewExplorerMenuItem } from '.';
 
 const mockAccount = createMockInternalAccount({
@@ -52,9 +53,12 @@ describe('ViewExplorerMenuItem', () => {
   });
 
   it('renders "View on explorer" for non-EVM account', () => {
-    const expectedExplorerUrl = `${
-      MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP[MultichainNetworks.BITCOIN]
-    }/${mockNonEvmAccount.address}`;
+    const expectedExplorerUrl = formatBlockExplorerAddressUrl(
+      MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+        MultichainNetworks.BITCOIN
+      ],
+      mockNonEvmAccount.address,
+    );
     const expectedExplorerUrlHost = new URL(expectedExplorerUrl).host;
     global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
 
