@@ -97,3 +97,10 @@ export const formatAddressToString = (address: string) => {
   }
   return addressWithoutPrefix;
 };
+
+export const formatChainIdToHexOrCaip = (chainId: number) => {
+  if (chainId === ChainId.SOLANA) {
+    return MultichainNetworks.SOLANA;
+  }
+  return formatChainIdToHex(chainId);
+};
