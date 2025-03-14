@@ -1,13 +1,18 @@
 import { Mockttp } from 'mockttp';
+import {
+  DEFAULT_BTC_ADDRESS,
+  DEFAULT_BTC_BALANCE,
+  SATS_IN_1_BTC,
+} from '../../../constants';
 
 const ESPLORA_URL = 'https://blockstream.info/api';
 const ESPLORA_SCRIPTHASH_REGEX =
   /^https:\/\/blockstream\.info\/api\/scripthash\/[0-9a-f]{64}\/txs$/u;
-const SCRIPT_HASHES = [
-  '538c172f4f5ff9c24693359c4cdc8ee4666565326a789d5e4b2df1db7acb4721',
-  'd46079253e1fe44c9441e9927f3be4145e4634e1b8378cf6d5b0ebba98813216',
-  '98c2bcc9358f44e43b023f7b8fbe6571441b49e45d75bad63dba2dea834f19a7',
-];
+const FUNDING_SCRIPT_HASH =
+  '538c172f4f5ff9c24693359c4cdc8ee4666565326a789d5e4b2df1db7acb4721';
+const FUNDING_BLOCK_HEIGHT = 867936;
+const FUNDING_BLOCK_HASH =
+  '00000000000000000002ef0f9552a3bb1593e1cf85fc12e7eea1d96116281ba8';
 
 const mockBlocks = (mockServer: Mockttp) =>
   mockServer.forGet(`${ESPLORA_URL}/blocks`).thenCallback(() => ({
@@ -186,11 +191,71 @@ const mockBlocks = (mockServer: Mockttp) =>
     ],
   }));
 
-const mockGenesisHeight = (mockServer: Mockttp) =>
-  mockServer.forGet(`${ESPLORA_URL}/block-height/0`).thenCallback(() => ({
-    statusCode: 200,
-    json: '000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f',
-  }));
+const mockFundingTx = (mockServer: Mockttp) =>
+  mockServer
+    .forGet(`${ESPLORA_URL}/scripthash/${FUNDING_SCRIPT_HASH}/txs`)
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [
+        {
+          txid: '6e7ebcc607a83f7cf5659fb6fb70433c775017092302630f027ca728b4d06aba',
+          version: 2,
+          locktime: 0,
+          vin: [
+            {
+              txid: '7274041ef11904e40883b4e930e1e76e69a671f6a0e4f5b7c49df06a55373b6b',
+              vout: 1,
+              prevout: {
+                scriptpubkey: '001480198104d643031fb951787d24a79c04dc5086b2',
+                scriptpubkey_asm:
+                  'OP_0 OP_PUSHBYTES_20 80198104d643031fb951787d24a79c04dc5086b2',
+                scriptpubkey_type: 'v0_p2wpkh',
+                scriptpubkey_address:
+                  'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf',
+                value: 100356748,
+              },
+              scriptsig: '',
+              scriptsig_asm: '',
+              witness: [
+                '30440220459a41e0eef41b3b84225d00e62ca12a2f408ff65f5ce135ac688c6501d1705702202fba61d2b40d319b8a022ba67fedf55d64167f9dd26a6a1809549d6cf2fefeae01',
+                '0233f916944c2d3c2024d6e4038274e8f5af0d072d08411b2fc28bea04b521387a',
+              ],
+              is_coinbase: false,
+              sequence: 4294967293,
+            },
+          ],
+          vout: [
+            // This is the funding UTXO representing the amount of 1 BTC that we receive
+            {
+              scriptpubkey: '00148354e83f5f95e6a9696230b41df7d487e4d0cf3b',
+              scriptpubkey_asm:
+                'OP_0 OP_PUSHBYTES_20 8354e83f5f95e6a9696230b41df7d487e4d0cf3b',
+              scriptpubkey_type: 'v0_p2wpkh',
+              scriptpubkey_address: DEFAULT_BTC_ADDRESS,
+              value: DEFAULT_BTC_BALANCE * SATS_IN_1_BTC, // 1 BTC
+            },
+            {
+              scriptpubkey: '001480198104d643031fb951787d24a79c04dc5086b2',
+              scriptpubkey_asm:
+                'OP_0 OP_PUSHBYTES_20 80198104d643031fb951787d24a79c04dc5086b2',
+              scriptpubkey_type: 'v0_p2wpkh',
+              scriptpubkey_address:
+                'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf',
+              value: 346748,
+            },
+          ],
+          size: 222,
+          weight: 561,
+          fee: 10000,
+          status: {
+            confirmed: true,
+            block_height: FUNDING_BLOCK_HEIGHT,
+            block_hash: FUNDING_BLOCK_HASH,
+            block_time: 1730210935,
+          },
+        },
+      ],
+    }));
 
 const mockAnyTxs = (mockServer: Mockttp) =>
   mockServer.forGet(ESPLORA_SCRIPTHASH_REGEX).thenCallback(() => ({
@@ -198,12 +263,34 @@ const mockAnyTxs = (mockServer: Mockttp) =>
     json: [],
   }));
 
+const mockGenesisHeight = (mockServer: Mockttp) =>
+  mockServer.forGet(`${ESPLORA_URL}/block-height/0`).thenCallback(() => ({
+    statusCode: 200,
+    json: '000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f',
+  }));
+
+const mockFundingBlock = (mockServer: Mockttp) =>
+  mockServer
+    .forGet(`${ESPLORA_URL}/block-height/${FUNDING_BLOCK_HEIGHT}`)
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: FUNDING_BLOCK_HASH,
+    }));
+
 /**
- * Mocks the Esplora calls needed for an initial full scan for a bitcoin balance of 1 BTC
+ * Mocks the Esplora calls needed for the initial full scan.
+ * Consists of 1 transaction on the first address of the account.
  * @param mockServer The mock server
  */
 export async function mockInitialFullScan(mockServer: Mockttp) {
+  // Mock latest blocks
   await mockBlocks(mockServer);
+  // Mock the funding transaction setting the balance to default
+  await mockFundingTx(mockServer);
+  // Mock other calls to fetch txs given the stop gap (returns empty)
   await mockAnyTxs(mockServer);
+  // Mock genesis block hash
   await mockGenesisHeight(mockServer);
+  // Mock funding tx block hash
+  await mockFundingBlock(mockServer);
 }
