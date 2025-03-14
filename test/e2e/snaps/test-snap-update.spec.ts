@@ -27,9 +27,7 @@ describe('Test Snap update', function () {
         );
 
         // Click update snap and check the installation status
-        await testSnaps.scrollAndClickButtonTestSnapsPage(
-          'connectUpdateNewButton',
-        );
+        await testSnaps.scrollAndClickButton('connectUpdateNewButton');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({ text: 'Update request' });
         await snapInstall.check_pageIsLoaded();

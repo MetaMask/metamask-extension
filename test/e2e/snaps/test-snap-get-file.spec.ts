@@ -29,27 +29,21 @@ describe('Test Snap Get File', function () {
         );
 
         // click on get file and check correct result
-        await testSnaps.scrollAndClickButtonTestSnapsPage(
-          'sendGetFileTextButton',
-        );
+        await testSnaps.scrollAndClickButton('sendGetFileTextButton');
         await testSnaps.check_messageResultSpan(
           'fileResultSpan',
           jsonTextValidation,
         );
 
         // click on get base64 and await correct result
-        await testSnaps.scrollAndClickButtonTestSnapsPage(
-          'sendGetFileBase64Button',
-        );
+        await testSnaps.scrollAndClickButton('sendGetFileBase64Button');
         await testSnaps.check_messageResultSpan(
           'fileResultSpan',
           base64TextFile,
         );
 
         // click on get hex text and await correct result
-        await testSnaps.scrollAndClickButtonTestSnapsPage(
-          'sendGetFileHexButton',
-        );
+        await testSnaps.scrollAndClickButton('sendGetFileHexButton');
         await testSnaps.check_messageResultSpan(
           'fileResultSpan',
           hexEncodedFileValidation,

@@ -47,27 +47,22 @@ describe('Test Snap bip-32', function () {
         );
 
         // Click bip32 button to get private key and validate the result
-        await testSnaps.scrollAndClickButtonTestSnapsPage('getPublicKeyButton');
+        await testSnaps.scrollAndClickButton('getPublicKeyButton');
         await testSnaps.check_messageResultSpan(
           'bip32PublicKeyResultSpan',
           bip32PublicKey,
         );
 
         // Click get compressed public key and validate the result
-        await testSnaps.scrollAndClickButtonTestSnapsPage(
-          'getCompressedKeyButton',
-        );
+        await testSnaps.scrollAndClickButton('getCompressedKeyButton');
         await testSnaps.check_messageResultSpan(
           'bip32PublicKeyResultSpan',
           bip32CompressedPublicKey,
         );
 
         // Enter secp256k1 signature message, click sign button, approve and validate the result
-        await testSnaps.fillMessageTestSnapsPage(
-          'messageSecp256k1Input',
-          'foo bar',
-        );
-        await testSnaps.signTestSnapsPage('messageSecp256k1Button');
+        await testSnaps.fillMessage('messageSecp256k1Input', 'foo bar');
+        await testSnaps.clickButton('messageSecp256k1Button');
         await switchAndApproveDialogSwitchToTestSnap(driver);
         await testSnaps.check_messageResultSpan(
           'bip32MessageResultSecp256k1Span',
@@ -75,12 +70,9 @@ describe('Test Snap bip-32', function () {
         );
 
         // Enter ed25519 signature message, click sign button, approve and validate the result
-        await testSnaps.scrollToSignWithEd25519Button();
-        await testSnaps.fillMessageTestSnapsPage(
-          'messageEd25519Input',
-          'foo bar',
-        );
-        await testSnaps.signTestSnapsPage('signEd25519MessageButton');
+        await testSnaps.scrollToButton('signEd25519MessageButton');
+        await testSnaps.fillMessage('messageEd25519Input', 'foo bar');
+        await testSnaps.clickButton('signEd25519MessageButton');
         await switchAndApproveDialogSwitchToTestSnap(driver);
         await testSnaps.check_messageResultSpan(
           'bip32MessageResultEd25519Span',
@@ -88,13 +80,8 @@ describe('Test Snap bip-32', function () {
         );
 
         // Enter ed25519 signature message, click sign button, approve and validate the result
-        await testSnaps.fillMessageTestSnapsPage(
-          'messageEd25519Bip32Input',
-          'foo bar',
-        );
-        await testSnaps.scrollAndClickButtonTestSnapsPage(
-          'signEd25519Bip32MessageButton',
-        );
+        await testSnaps.fillMessage('messageEd25519Bip32Input', 'foo bar');
+        await testSnaps.scrollAndClickButton('signEd25519Bip32MessageButton');
         await switchAndApproveDialogSwitchToTestSnap(driver);
         await testSnaps.check_messageResultSpan(
           'messageResultEd25519SBip32Span',
@@ -103,15 +90,12 @@ describe('Test Snap bip-32', function () {
 
         // Select entropy source SRP 1, enter a message, sign, approve and validate the result
         await testSnaps.scrollAndSelectEntropySource(
-          'bip32',
+          'bip32EntropyDropDown',
           'SRP 1 (primary)',
         );
 
-        await testSnaps.fillMessageTestSnapsPage(
-          'messageSecp256k1Input',
-          'bar baz',
-        );
-        await testSnaps.signTestSnapsPage('messageSecp256k1Button');
+        await testSnaps.fillMessage('messageSecp256k1Input', 'bar baz');
+        await testSnaps.clickButton('messageSecp256k1Button');
         await switchAndApproveDialogSwitchToTestSnap(driver);
         await testSnaps.check_messageResultSpan(
           'bip32MessageResultSecp256k1Span',
@@ -119,12 +103,12 @@ describe('Test Snap bip-32', function () {
         );
 
         // Select entropy source SRP 2, enter a message, sign, approve and validate the result
-        await testSnaps.scrollAndSelectEntropySource('bip32', 'SRP 2');
-        await testSnaps.fillMessageTestSnapsPage(
-          'messageSecp256k1Input',
-          'bar baz',
+        await testSnaps.scrollAndSelectEntropySource(
+          'bip32EntropyDropDown',
+          'SRP 2',
         );
-        await testSnaps.signTestSnapsPage('messageSecp256k1Button');
+        await testSnaps.fillMessage('messageSecp256k1Input', 'bar baz');
+        await testSnaps.clickButton('messageSecp256k1Button');
         await switchAndApproveDialogSwitchToTestSnap(driver);
         await testSnaps.check_messageResultSpan(
           'bip32MessageResultSecp256k1Span',
@@ -132,12 +116,12 @@ describe('Test Snap bip-32', function () {
         );
 
         // Select an invalid (non-existent) entropy source, enter a message, sign, approve and validate the result
-        await testSnaps.scrollAndSelectEntropySource('bip32', 'Invalid');
-        await testSnaps.fillMessageTestSnapsPage(
-          'messageSecp256k1Input',
-          'bar baz',
+        await testSnaps.scrollAndSelectEntropySource(
+          'bip32EntropyDropDown',
+          'Invalid',
         );
-        await testSnaps.signTestSnapsPage('messageSecp256k1Button');
+        await testSnaps.fillMessage('messageSecp256k1Input', 'bar baz');
+        await testSnaps.clickButton('messageSecp256k1Button');
 
         // Check the error message and close the alert.
         await driver.waitForAlert(

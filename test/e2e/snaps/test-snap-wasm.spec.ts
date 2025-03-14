@@ -25,8 +25,8 @@ describe('Test Snap WASM', function () {
         );
 
         // Enter number for test to input field and validate the result
-        await testSnaps.fillMessageTestSnapsPage('wasmInput', '23');
-        await testSnaps.signTestSnapsPage('sendWasmMessageButton');
+        await testSnaps.fillMessage('wasmInput', '23');
+        await testSnaps.clickButton('sendWasmMessageButton');
         await testSnaps.check_messageResultSpan('wasmResultSpan', '28657');
       },
     );

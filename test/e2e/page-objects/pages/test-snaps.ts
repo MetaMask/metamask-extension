@@ -1,16 +1,16 @@
 import { Driver } from '../../webdriver/driver';
 import { TEST_SNAPS_WEBSITE_URL } from '../../snaps/enums';
 
-const inputLocator: { [key: string]: string } = {
+const inputLocator = {
   entropyMessageInput: '#entropyMessage',
   messageBip44Input: '#bip44Message',
   messageEd25519Bip32Input: '#bip32Message-ed25519Bip32',
   messageEd25519Input: '#bip32Message-ed25519',
   messageSecp256k1Input: '#bip32Message-secp256k1',
   wasmInput: '#wasmInput',
-};
+} satisfies Record<string, string>;
 
-const buttonLocator: { [key: string]: string } = {
+export const buttonLocator = {
   connectBip32Button: '#connectbip32',
   connectBip44Button: '#connectbip44',
   connectClientStatusButton: '#connectclient-status',
@@ -43,9 +43,9 @@ const buttonLocator: { [key: string]: string } = {
   signEd25519MessageButton: '#sendBip32-ed25519',
   signEntropyMessageButton: '#signEntropyMessage',
   submitClientStatusButton: '#sendClientStatusTest',
-};
+} satisfies Record<string, string>;
 
-const spanLocator: { [key: string]: string } = {
+const spanLocator = {
   bip32MessageResultEd25519Span: '#bip32MessageResult-ed25519',
   bip32MessageResultSecp256k1Span: '#bip32MessageResult-secp256k1',
   bip32PublicKeyResultSpan: '#bip32PublicKeyResult',
@@ -60,13 +60,13 @@ const spanLocator: { [key: string]: string } = {
   messageResultEd25519SBip32Span: '#bip32MessageResult-ed25519Bip32',
   updateVersionSpan: '#updateSnapVersion',
   wasmResultSpan: '#wasmResult',
-};
+} satisfies Record<string, string>;
 
-const dropDownLocator: { [key: string]: string } = {
+const dropDownLocator = {
   bip32EntropyDropDown: '#bip32-entropy-selector',
   bip44EntropyDropDown: '#bip44-entropy-selector',
   getEntropyDropDown: '#get-entropy-entropy-selector',
-};
+} satisfies Record<string, string>;
 export class TestSnaps {
   driver: Driver;
 
@@ -98,7 +98,7 @@ export class TestSnaps {
     console.log('Test Snap Dapp page is loaded');
   }
 
-  async check_clientStatus(expectedStatus: string): Promise<void> {
+  async check_clientStatus(expectedStatus: boolean): Promise<void> {
     console.log(`Checking that the client status should be ${expectedStatus}`);
     await this.driver.waitForSelector({
       css: spanLocator.clientStatusResultSpan,
@@ -106,40 +106,36 @@ export class TestSnaps {
     });
   }
 
-  async scrollAndClickButtonTestSnapsPage(buttonElement: string) {
-    const buttonSelector = buttonLocator[buttonElement];
-    if (!buttonSelector) {
-      throw new Error(`Button element ${buttonElement} not found`);
-    }
+  async scrollAndClickButton(buttonElement: keyof typeof buttonLocator) {
     console.log(`Finding, scrolling to, and clicking ${buttonElement}`);
-    await this.driver.findScrollToAndClickElement(buttonSelector);
+    await this.driver.findScrollToAndClickElement(buttonLocator[buttonElement]);
   }
 
-  async fillMessageTestSnapsPage(inputElement: string, message: string) {
+  async fillMessage(inputElement: keyof typeof inputLocator, message: string) {
     console.log(`Filling message in ${inputElement}`);
-    const inputField = inputLocator[inputElement];
-    await this.driver.fill(inputField, message);
+    await this.driver.fill(inputLocator[inputElement], message);
   }
 
-  async signTestSnapsPage(buttonElement: string) {
-    console.log(`Click sign button ${buttonElement}`);
-    const locator = buttonLocator[buttonElement];
-    await this.driver.clickElement(locator);
+  async clickButton(buttonElement: keyof typeof buttonLocator) {
+    console.log(`Click button ${buttonElement}`);
+    await this.driver.clickElement(buttonLocator[buttonElement]);
   }
 
-  async scrollToSignWithEd25519Button() {
-    console.log('Scrolling to sign with ed25519 button');
-    const sendEd25519 = await this.driver.findElement(
-      inputLocator.messageEd25519Input,
+  async scrollToButton(buttonElement: keyof typeof buttonLocator) {
+    console.log(`Scroll to button ${buttonElement}`);
+    const buttonSelector = await this.driver.findElement(
+      buttonLocator[buttonElement],
     );
-    await this.driver.scrollToElement(sendEd25519);
+    await this.driver.scrollToElement(buttonSelector);
   }
 
-  async check_installationComplete(selector: string, expectedMessage: string) {
-    const locator = buttonLocator[selector];
+  async check_installationComplete(
+    selector: keyof typeof buttonLocator,
+    expectedMessage: string,
+  ) {
     console.log(`Checking installation is complete - ${expectedMessage}`);
     await this.driver.waitForSelector({
-      css: locator,
+      css: buttonLocator[selector],
       text: expectedMessage,
     });
   }
@@ -153,15 +149,14 @@ export class TestSnaps {
   }
 
   async check_messageResultSpan(
-    spanSelectorId: string,
+    spanSelectorId: keyof typeof spanLocator,
     expectedMessage: string,
   ) {
-    const locator = spanLocator[spanSelectorId];
     console.log(
       `Checking the received result against the following expected result: ${expectedMessage}`,
     );
     await this.driver.waitForSelector({
-      css: locator,
+      css: spanLocator[spanSelectorId],
       text: expectedMessage,
     });
   }
@@ -172,21 +167,11 @@ export class TestSnaps {
    * @param dropDownName - The name of the dropdown locator to select the entropy source from.
    * @param name - The name of the entropy source to select.
    */
-  async scrollAndSelectEntropySource(dropDownName: string, name: string) {
-    let locator: string;
-    switch (dropDownName) {
-      case 'bip32':
-        locator = dropDownLocator.bip32EntropyDropDown;
-        break;
-      case 'bip44':
-        locator = dropDownLocator.bip44EntropyDropDown;
-        break;
-      case 'getEntropy':
-        locator = dropDownLocator.getEntropyDropDown;
-        break;
-      default:
-        throw new Error(`Unknown entropy source type: ${dropDownName}`);
-    }
+  async scrollAndSelectEntropySource(
+    dropDownName: keyof typeof dropDownLocator,
+    name: string,
+  ) {
+    const locator = dropDownLocator[dropDownName];
     console.log(`Select ${dropDownName} entropy source`);
     const selector = await this.driver.findElement(locator);
     await this.driver.scrollToElement(selector);

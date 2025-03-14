@@ -32,8 +32,8 @@ describe('Test Snap getEntropy', function (this: Suite) {
           'connectGetEntropySnapButton',
           false,
         );
-        await testSnaps.fillMessageTestSnapsPage('entropyMessageInput', '1234');
-        await testSnaps.signTestSnapsPage('signEntropyMessageButton');
+        await testSnaps.fillMessage('entropyMessageInput', '1234');
+        await testSnaps.clickButton('signEntropyMessageButton');
         await switchAndApproveDialogSwitchToTestSnap(driver);
 
         // check the results of the message signature
@@ -44,11 +44,11 @@ describe('Test Snap getEntropy', function (this: Suite) {
 
         // Select entropy source SRP 1, enter a message, sign, approve and validate the result
         await testSnaps.scrollAndSelectEntropySource(
-          'getEntropy',
+          'getEntropyDropDown',
           'SRP 1 (primary)',
         );
-        await testSnaps.fillMessageTestSnapsPage('entropyMessageInput', '5678');
-        await testSnaps.signTestSnapsPage('signEntropyMessageButton');
+        await testSnaps.fillMessage('entropyMessageInput', '5678');
+        await testSnaps.clickButton('signEntropyMessageButton');
         await switchAndApproveDialogSwitchToTestSnap(driver);
         await testSnaps.check_messageResultSpan(
           'entropySignResultSpan',
@@ -56,10 +56,11 @@ describe('Test Snap getEntropy', function (this: Suite) {
         );
 
         // Select entropy source SRP 2, enter a message, sign, approve and validate the result
-        await testSnaps.scrollAndSelectEntropySource('getEntropy', 'SRP 2');
-        await testSnaps.scrollAndClickButtonTestSnapsPage(
-          'signEntropyMessageButton',
+        await testSnaps.scrollAndSelectEntropySource(
+          'getEntropyDropDown',
+          'SRP 2',
         );
+        await testSnaps.scrollAndClickButton('signEntropyMessageButton');
         await switchAndApproveDialogSwitchToTestSnap(driver);
         await testSnaps.check_messageResultSpan(
           'entropySignResultSpan',
@@ -67,10 +68,11 @@ describe('Test Snap getEntropy', function (this: Suite) {
         );
 
         // Select entropy source invalid, enter a message, sign, approve and validate the result
-        await testSnaps.scrollAndSelectEntropySource('getEntropy', 'Invalid');
-        await testSnaps.scrollAndClickButtonTestSnapsPage(
-          'signEntropyMessageButton',
+        await testSnaps.scrollAndSelectEntropySource(
+          'getEntropyDropDown',
+          'Invalid',
         );
+        await testSnaps.scrollAndClickButton('signEntropyMessageButton');
         await switchAndApproveDialogSwitchToTestSnap(driver);
         await driver.waitForAlert(
           'Entropy source with ID "invalid" not found.',

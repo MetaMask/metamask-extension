@@ -90,16 +90,14 @@ describe('Test Snap installed', function () {
         });
 
         // Click to connect to errors snap and validate the install snaps result
-        await testSnaps.scrollAndClickButtonTestSnapsPage(
-          'connectErrorsButton',
-        );
+        await testSnaps.scrollAndClickButton('connectErrorsButton');
         await completeSnapInstallSwitchToTestSnap(driver);
         await testSnaps.check_installedSnapsResult(
           'npm:@metamask/dialog-example-snap, npm:@metamask/error-example-snap',
         );
 
         // Click Send error button and validate the message result
-        await testSnaps.scrollAndClickButtonTestSnapsPage('sendErrorButton');
+        await testSnaps.scrollAndClickButton('sendErrorButton');
         await testSnaps.check_messageResultSpan(
           'errorResultSpan',
           '"Hello, world!"',

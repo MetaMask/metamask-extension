@@ -1,7 +1,7 @@
 import { Driver } from '../../webdriver/driver';
 import SnapInstall from '../pages/dialog/snap-install';
 import SnapInstallWarning from '../pages/dialog/snap-install-warning';
-import { TestSnaps } from '../pages/test-snaps';
+import { TestSnaps, buttonLocator } from '../pages/test-snaps';
 import { WINDOW_TITLES } from '../../helpers';
 
 /**
@@ -15,14 +15,14 @@ import { WINDOW_TITLES } from '../../helpers';
  */
 export async function openTestSnapClickButtonAndInstall(
   driver: Driver,
-  buttonName: string,
+  buttonName: keyof typeof buttonLocator,
   withWarning = false,
 ) {
   const snapInstall = new SnapInstall(driver);
   const snapInstallWarning = new SnapInstallWarning(driver);
   const testSnaps = new TestSnaps(driver);
   await testSnaps.openPage();
-  await testSnaps.scrollAndClickButtonTestSnapsPage(buttonName);
+  await testSnaps.scrollAndClickButton(buttonName);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await snapInstall.check_pageIsLoaded();
   await snapInstall.clickNextButton();
