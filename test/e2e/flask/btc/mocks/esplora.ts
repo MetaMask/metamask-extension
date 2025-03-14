@@ -232,7 +232,7 @@ const mockFundingTx = (mockServer: Mockttp) =>
                 'OP_0 OP_PUSHBYTES_20 8354e83f5f95e6a9696230b41df7d487e4d0cf3b',
               scriptpubkey_type: 'v0_p2wpkh',
               scriptpubkey_address: DEFAULT_BTC_ADDRESS,
-              value: DEFAULT_BTC_BALANCE * SATS_IN_1_BTC, // 1 BTC
+              value: DEFAULT_BTC_BALANCE * SATS_IN_1_BTC,
             },
             {
               scriptpubkey: '001480198104d643031fb951787d24a79c04dc5086b2',
