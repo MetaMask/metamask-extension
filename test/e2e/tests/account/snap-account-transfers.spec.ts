@@ -1,5 +1,10 @@
 import { Suite } from 'mocha';
-import { PRIVATE_KEY_TWO, WINDOW_TITLES, withFixtures } from '../../helpers';
+import {
+  multipleGanacheOptions,
+  PRIVATE_KEY_TWO,
+  WINDOW_TITLES,
+  withFixtures,
+} from '../../helpers';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import AccountListPage from '../../page-objects/pages/account-list-page';
@@ -17,6 +22,7 @@ describe('Snap Account Transfers', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        localNodeOptions: multipleGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -57,6 +63,7 @@ describe('Snap Account Transfers', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        localNodeOptions: multipleGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -98,6 +105,7 @@ describe('Snap Account Transfers', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        localNodeOptions: multipleGanacheOptions,
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: ['Request rejected by user or snap.'],
       },
