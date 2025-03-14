@@ -14,11 +14,11 @@ enum DatabaseError {
 }
 
 export default class IndexedDBStore extends BaseStore {
-  storeName: string;
+  readonly storeName: string;
 
-  dbVersion: number;
+  readonly dbVersion: number;
 
-  dbReady?: Promise<IDBDatabase>;
+  private dbReady?: Promise<IDBDatabase>;
 
   constructor(storeName = 'ExtensionStore', dbVersion = 1) {
     super();
