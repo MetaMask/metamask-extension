@@ -20,7 +20,7 @@ import {
 
 const CHAIN_ID_MOCK = '0x123';
 const CHAIN_ID_2_MOCK = '0xabc';
-const BATCH_ID_MOCK = '123-456';
+const BATCH_ID_MOCK = '0x123456';
 const NETWORK_CLIENT_ID_MOCK = 'test-client';
 const FROM_MOCK = '0xabc123';
 const ORIGIN_MOCK = 'test.com';
@@ -99,7 +99,9 @@ describe('EIP-5792', () => {
       },
     } as unknown as AutoManagedNetworkClient<CustomNetworkClientConfiguration>);
 
-    addTransactionBatchMock.mockResolvedValue({ batchId: BATCH_ID_MOCK });
+    addTransactionBatchMock.mockResolvedValue({
+      batchId: BATCH_ID_MOCK,
+    });
     getDisabledAccountUpgradeChainsMock.mockReturnValue([]);
   });
 
