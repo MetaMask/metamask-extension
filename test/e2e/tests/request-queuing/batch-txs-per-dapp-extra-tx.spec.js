@@ -10,7 +10,7 @@ const {
   withFixtures,
 } = require('../../helpers');
 
-describe.skip('Request Queuing for Multiple Dapps and Txs on different networks', function () {
+describe('Request Queuing for Multiple Dapps and Txs on different networks', function () {
   it('should batch confirmation txs for different dapps on different networks adds extra tx after.', async function () {
     const port = 8546;
     const chainId = 1338;
