@@ -3851,9 +3851,6 @@
   "permitSimulationChange_receive": {
     "message": "Bạn nhận được"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Hạn mức chi tiêu"
-  },
   "permitSimulationChange_transfer": {
     "message": "Bạn gửi"
   },

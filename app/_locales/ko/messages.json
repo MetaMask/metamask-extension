@@ -3851,9 +3851,6 @@
   "permitSimulationChange_receive": {
     "message": "받음:"
   },
-  "permitSimulationChange_revoke": {
-    "message": "지출 한도"
-  },
   "permitSimulationChange_transfer": {
     "message": "보냄:"
   },

@@ -3851,9 +3851,6 @@
   "permitSimulationChange_receive": {
     "message": "Vous recevez"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Plafond de dépenses"
-  },
   "permitSimulationChange_transfer": {
     "message": "Vous envoyez"
   },

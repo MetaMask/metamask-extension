@@ -3851,9 +3851,6 @@
   "permitSimulationChange_receive": {
     "message": "Usted recibe"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Límite de gasto"
-  },
   "permitSimulationChange_transfer": {
     "message": "Usted envía"
   },
