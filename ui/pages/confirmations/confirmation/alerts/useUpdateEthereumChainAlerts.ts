@@ -6,7 +6,10 @@ import { useSelector } from 'react-redux';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { AlertActionKey } from '../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../helpers/constants/design-system';
-import { getApprovalsByOrigin } from '../../../../selectors';
+import {
+  ApprovalsMetaMaskState,
+  getApprovalsByOrigin,
+} from '../../../../selectors';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 const VALIDATED_APPROVAL_TYPES = [
@@ -14,11 +17,14 @@ const VALIDATED_APPROVAL_TYPES = [
   ApprovalType.SwitchEthereumChain,
 ];
 
-export function useAddEthereumChainAlerts(
+export function useUpdateEthereumChainAlerts(
   pendingConfirmation: ApprovalRequest<{ id: string }>,
 ): Alert[] {
   const pendingConfirmationsFromOrigin = useSelector((state) =>
-    getApprovalsByOrigin(state, pendingConfirmation?.origin),
+    getApprovalsByOrigin(
+      state as ApprovalsMetaMaskState,
+      pendingConfirmation?.origin,
+    ),
   );
 
   const t = useI18nContext();
@@ -41,9 +47,12 @@ export function useAddEthereumChainAlerts(
           },
         ],
         key: 'pendingConfirmationFromSameOrigin',
-        message: t('pendingConfirmationAddNetworkAlertMessage', [
-          pendingConfirmationsFromOrigin.length - 1,
-        ]),
+        message: t(
+          pendingConfirmation.type === ApprovalType.AddEthereumChain
+            ? 'pendingConfirmationAddNetworkAlertMessage'
+            : 'pendingConfirmationSwitchNetworkAlertMessage',
+          [pendingConfirmationsFromOrigin.length - 1],
+        ),
         reason: t('areYouSure'),
         severity: Severity.Warning,
       },
