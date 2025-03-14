@@ -5321,7 +5321,10 @@
     "message": "Stake"
   },
   "stateCorruptionDetectedErrorMessage": {
-    "message": "MetaMask's state file is damaged or missing. The files are possibly recoverable, so don't uninstall the MetaMask extension! You should contact MetaMask support."
+    "message": "MetaMask's state file is damaged or missing. The files are possibly recoverable, so don't uninstall the MetaMask extension!"
+  },
+  "stateCorruptionDetectedErrorMessageVaultRecoveryLink": {
+    "message": "If you want to try to recover your secret recovery phrase yourself, follow these instructions."
   },
   "stateLogError": {
     "message": "Error in retrieving state logs."
