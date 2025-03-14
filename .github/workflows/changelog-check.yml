@@ -3,12 +3,16 @@ name: ChangeLog Check
 on:
   pull_request:
     types: [opened, synchronize, labeled, unlabeled]
+  merge_group:
+    types: [checks_requested]
 
 jobs:
   check-changelog:
     uses: MetaMask/github-tools/.github/workflows/changelog-check.yml@changelog-checker
     with:
       base-branch: main
+      event-type: ${{ github.event_name }}
+      pr-number: ${{ github.event.pull_request.number }}
       feature-branch: ${{ github.head_ref }}
     secrets:
       gh-token: ${{ secrets.PR_TOKEN }}
