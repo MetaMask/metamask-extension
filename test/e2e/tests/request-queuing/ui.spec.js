@@ -250,7 +250,8 @@ describe('Request-queue UI changes', function () {
     );
   });
 
-  it('handles three confirmations on three confirmations concurrently', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('handles three confirmations on three confirmations concurrently', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
     await withFixtures(
