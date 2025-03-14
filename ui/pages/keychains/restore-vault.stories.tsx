@@ -8,6 +8,8 @@ const mockStore = configureStore([]);
 const store = mockStore({
   appState: {
     isLoading: false,
+    isSignedIn: true,
+    sessionData: undefined,
   },
 });
 
