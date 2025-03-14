@@ -664,9 +664,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfo": {
-    "message": "हम इस अनुरोध के साथ आगे बढ़ने का सुझाव नहीं देते।"
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "यदि आप इस रिक्वेस्ट को स्वीकार करते हैं, तो स्कैम के लिए मशहूर कोई थर्ड पार्टी आपके सारे एसेट चुरा सकती है।"
   },
@@ -1027,9 +1024,6 @@
   },
   "confirmationAlertDetails": {
     "message": "आपकी एसेट्स की सुरक्षा के लिए, हम आपको अनुरोध को रिजेक्ट करने का सुझाव देते हैं।"
-  },
-  "confirmationAlertModalTitle": {
-    "message": "यह अनुरोध संदिग्ध है"
   },
   "confirmed": {
     "message": "कन्फर्म किया गया"

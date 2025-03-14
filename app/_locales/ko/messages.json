@@ -664,9 +664,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfo": {
-    "message": "이 요청은 진행하지 않는 것이 좋습니다."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "이 요청을 승인하면 스캠으로 알려진 타사가 회원님의 모든 자산을 가져갈 수 있습니다."
   },
@@ -1027,9 +1024,6 @@
   },
   "confirmationAlertDetails": {
     "message": "자산을 보호하기 위해 요청을 거부하는 것이 좋습니다."
-  },
-  "confirmationAlertModalTitle": {
-    "message": "의심스러운 요청입니다"
   },
   "confirmed": {
     "message": "컨펌됨"
