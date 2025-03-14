@@ -67,6 +67,8 @@ class AccountListPage {
   private readonly currentSelectedAccount =
     '.multichain-account-list-item--selected';
 
+  private readonly firstCurrencyBalance = '[data-testid="first-currency-display"]';
+
   private readonly hiddenAccountOptionsMenuButton =
     '.multichain-account-menu-popover__list--menu-item-hidden-account [data-testid="account-list-item-menu-button"]';
 
@@ -658,6 +660,18 @@ class AccountListPage {
     await this.driver.waitForSelector({
       css: this.currentSelectedAccount,
       text: 'Imported',
+    });
+  }
+
+  async check_firstCurrencyBalanceIsDisplayed(
+    expectedBalance: string,
+  ): Promise<void> {
+    console.log(
+      `Check that first currency balance ${expectedBalance} is displayed in account list`,
+    );
+    await this.driver.waitForSelector({
+      css: this.firstCurrencyBalance,
+      text: expectedBalance,
     });
   }
 
