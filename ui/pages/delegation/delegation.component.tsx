@@ -36,9 +36,16 @@ import {
   Display,
   FlexDirection,
   TextColor,
+  TextVariant,
 } from '../../helpers/constants/design-system';
-import { addTransaction, newUnsignedTypedMessage } from '../../store/actions';
+import {
+  performSetStorage,
+  addTransaction,
+  newUnsignedTypedMessage,
+  performGetStorage,
+} from '../../store/actions';
 import { LEDGER_USB_VENDOR_ID } from '../../../shared/constants/hardware-wallets';
+import { Textarea } from '../../components/component-library/textarea';
 
 const SWAP_LIMIT = parseEther('0.1');
 const TRANSFER_AMOUNT = parseEther('0.001');
@@ -72,6 +79,9 @@ export default function Delegation({
   const [redelegation, setRedelegation] = useState<
     DelegationStruct | undefined
   >();
+  const [simpleDelegation, setSimpleDelegation] = useState<
+    DelegationStruct | undefined
+  >();
 
   const [metaMaskSmartAccount, setMetaMaskSmartAccount] = useState<
     MetaMaskSmartAccount<Implementation.Hybrid> | undefined
@@ -80,6 +90,7 @@ export default function Delegation({
     useState<boolean>(false);
   const [isDeployed, setIsDeployed] = useState<boolean>(false);
   const [gatorBalance, setGatorBalance] = useState<string>('0');
+  const [delegationData, setDelegationData] = useState<string>('');
   const ledgerTransportType = useSelector(getLedgerTransportType);
   const transportStatus = useSelector(getLedgerTransportStatus);
   const webHidConnectedStatus = useSelector(getLedgerWebHidConnectedStatus);
@@ -202,6 +213,16 @@ export default function Delegation({
     } finally {
       setLoading(false);
     }
+  };
+
+  const generateSimpleDelegation = async () => {
+    const delegation = createRootDelegation(
+      selectedAccount.address as `0x${string}`,
+      metaMaskSmartAccount?.address as `0x${string}`,
+      [],
+      BigInt(0),
+    );
+    return { ...delegation, salt: delegation.salt.toString() };
   };
 
   const generateRootDelegation = async () => {
@@ -419,6 +440,35 @@ export default function Delegation({
     }
   };
 
+  const saveDelegationData = async () => {
+    const delegation = await generateSimpleDelegation();
+    setSimpleDelegation(delegation);
+    const path = `accounts_v2.${selectedAccount.address}_delegation`;
+    await performSetStorage({
+      path,
+      value: JSON.stringify(delegation),
+    });
+    console.log('currentData', delegation);
+  };
+
+  const loadDelegationData = useCallback(async () => {
+    console.log('loading delegation data for account', selectedAccount.address);
+    const path = `accounts_v2.${selectedAccount.address}_delegation`;
+    const currentData = (await performGetStorage({ path })) as string;
+    console.log('currentData', currentData);
+    setSimpleDelegation(currentData ? JSON.parse(currentData) : undefined);
+  }, [selectedAccount.address]);
+
+  const clearDelegationData = async () => {
+    const path = `accounts_v2.${selectedAccount.address}_delegation`;
+    await performSetStorage({ path, value: '' });
+    setSimpleDelegation(undefined);
+  };
+
+  useEffect(() => {
+    loadDelegationData();
+  }, [loadDelegationData, selectedAccount.address]);
+
   return (
     <div className="main-container">
       <Box
@@ -428,8 +478,9 @@ export default function Delegation({
         paddingTop={2}
         width={BlockSize.Full}
       >
-        <Text as="h2">Delegation Demo</Text>
-
+        <Text as="h3" variant={TextVariant.headingMd}>
+          Delegation Demo
+        </Text>
         <Card>
           <Box
             display={Display.Flex}
@@ -570,6 +621,21 @@ export default function Delegation({
             </Box>
           </Card>
         )}
+        <Card>
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            gap={2}
+          >
+            <Text as="h3">Profile Sync storage</Text>
+            <Button onClick={saveDelegationData}>Save Delegation Data</Button>
+            <Button onClick={clearDelegationData}>Clear Delegation Data</Button>
+            <Textarea
+              value={simpleDelegation ? JSON.stringify(simpleDelegation) : ''}
+              readOnly
+            />
+          </Box>
+        </Card>
       </Box>
     </div>
   );
