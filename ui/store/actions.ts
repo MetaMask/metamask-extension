@@ -68,7 +68,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getInternalAccountByAddress,
   getSelectedInternalAccount,
-  getInternalAccounts,
+  getMetaMaskHdKeyrings,
 } from '../selectors';
 import {
   getSelectedNetworkClientId,
@@ -520,16 +520,29 @@ export function addNewAccount(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.addNewAccount`);
   return async (dispatch, getState) => {
-    const oldAccounts = getInternalAccounts(getState()).filter(
-      (internalAccount) =>
-        internalAccount.metadata.keyring.type === KeyringTypes.hd,
-    );
+    const keyrings = getMetaMaskHdKeyrings(getState());
+    const [defaultPrimaryKeyring] = keyrings;
+
+    // The HD keyring to add the account for.
+    let hdKeyring = defaultPrimaryKeyring;
+    ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+    if (keyringId) {
+      hdKeyring = keyrings.find((keyring) => keyring.metadata.id === keyringId);
+    }
+    ///: END:ONLY_INCLUDE_IF
+    // Fail-safe in case we could not find the associated HD keyring.
+    if (!hdKeyring) {
+      console.error('Should never reach this. There is always a keyring');
+      throw new Error('Keyring not found');
+    }
+    const oldAccounts = hdKeyring.accounts;
+
     dispatch(showLoadingIndication());
 
     let addedAccountAddress;
     try {
       addedAccountAddress = await submitRequestToBackground('addNewAccount', [
-        Object.keys(oldAccounts).length,
+        oldAccounts.length,
         ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
         keyringId,
         ///: END:ONLY_INCLUDE_IF

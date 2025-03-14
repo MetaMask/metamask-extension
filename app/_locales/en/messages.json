@@ -44,6 +44,20 @@
   "QRHardwareWalletSteps2Description": {
     "message": "Ngrave Zero"
   },
+  "SrpListHideAccounts": {
+    "message": "Hide $1 accounts",
+    "description": "$1 is the number of accounts"
+  },
+  "SrpListHideSingleAccount": {
+    "message": "Hide 1 account"
+  },
+  "SrpListShowAccounts": {
+    "message": "Show $1 accounts",
+    "description": "$1 is the number of accounts"
+  },
+  "SrpListShowSingleAccount": {
+    "message": "Show 1 account"
+  },
   "about": {
     "message": "About"
   },
@@ -1033,11 +1047,17 @@
   "confirmFieldTooltipPaymaster": {
     "message": "The fee for this transaction will be paid by the paymaster smart contract."
   },
+  "confirmNestedTransactionTitle": {
+    "message": "Transaction $1"
+  },
   "confirmPassword": {
     "message": "Confirm password"
   },
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
+  },
+  "confirmSimulationApprove": {
+    "message": "You approve"
   },
   "confirmTitleApproveTransactionNFT": {
     "message": "Withdrawal request"
@@ -1237,6 +1257,9 @@
   "connectionFailedDescription": {
     "message": "Fetching of $1 failed, check your network and try again.",
     "description": "$1 is the name of the snap being fetched."
+  },
+  "connectionPopoverDescription": {
+    "message": "To connect to a site, select the connect button. MetaMask can only connect to web3 sites."
   },
   "connectionRequest": {
     "message": "Connection request"
@@ -1966,6 +1989,9 @@
   },
   "experimental": {
     "message": "Experimental"
+  },
+  "exploreweb3": {
+    "message": "Explore web3"
   },
   "exportYourData": {
     "message": "Export your data"
@@ -2776,6 +2802,9 @@
   },
   "manageDefaultSettings": {
     "message": "Manage default privacy settings"
+  },
+  "managePermissions": {
+    "message": "Manage permissions"
   },
   "marketCap": {
     "message": "Market cap"
@@ -3732,6 +3761,10 @@
     "message": "Updating network will cancel $1 pending transactions from this site.",
     "description": "Number of transactions."
   },
+  "pendingConfirmationSwitchNetworkAlertMessage": {
+    "message": "Switching network will cancel $1 pending transactions from this site.",
+    "description": "Number of transactions."
+  },
   "pendingTransactionAlertMessage": {
     "message": "This transaction won't go through until a previous transaction is complete. $1",
     "description": "$1 represents the words 'how to cancel or speed up a transaction' in a hyperlink"
@@ -4519,6 +4552,10 @@
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
   },
+  "secretRecoveryPhrasePlusNumber": {
+    "message": "Secret Recovery Phrase $1",
+    "description": "The $1 is the order of the Secret Recovery Phrase"
+  },
   "secureWallet": {
     "message": "Secure wallet"
   },
@@ -4642,6 +4679,7 @@
   "selectRpcUrl": {
     "message": "Select RPC URL"
   },
+  "selectSecretRecoveryPhrase": { "message": "Select Secret Recovery Phrase" },
   "selectType": {
     "message": "Select Type"
   },
@@ -5237,6 +5275,22 @@
     "message": "I have a $1-word phrase",
     "description": "This is the text for each option in the dropdown where a user selects how many words their secret recovery phrase has during import. The $1 is the number of words (either 12, 15, 18, 21, or 24)."
   },
+  "srpListName": {
+    "message": "Secret Recovery Phrase $1",
+    "description": "$1 is the order of the Secret Recovery Phrase"
+  },
+  "srpListNumberOfAccounts": {
+    "message": "$1 accounts",
+    "description": "$1 is the number of accounts in the list"
+  },
+  "srpListSelectionDescription": {
+    "message": "The Secret Recovery Phrase your new account will be generated from"
+  },
+
+  "srpListSingleOrZero": {
+    "message": "$1 account",
+    "description": "$1 is the number of accounts in the list, it is either 1 or 0"
+  },
   "srpPasteFailedTooManyWords": {
     "message": "Paste failed because it contained over 24 words. A secret recovery phrase can have a maximum of 24 words.",
     "description": "Description of SRP paste error when the pasted content has too many words"
@@ -5398,8 +5452,8 @@
     "message": "Sudden market changes can cause failures. If the problem persists, please reach out to $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxOptInEthereumBnbDescription": {
-    "message": "Turn on Smart Transactions for more reliable and secure transactions on Ethereum Mainnet and BNB Smart Chain. $1"
+  "stxOptInSupportedNetworksDescription": {
+    "message": "Turn on Smart Transactions for more reliable and secure transactions on supported networks. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Privately submitting your Swap..."
