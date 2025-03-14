@@ -4,7 +4,11 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
+import { Json } from '@metamask/utils';
+import {
+  MESSAGE_TYPE,
+  ORIGIN_METAMASK,
+} from '../../../../shared/constants/app';
 import {
   GasRecommendations,
   PriorityLevels,
@@ -1003,6 +1007,7 @@ async function buildEventFragmentProperties({
     transaction_contract_method: transactionContractMethod,
     ...smartTransactionMetricsProperties,
     ...swapAndSendMetricsProperties,
+    ...getBatchProperties(transactionMeta),
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as Record<string, any>;
@@ -1145,4 +1150,28 @@ function allowanceAmountInRelationToTokenBalance(
       .round(2)}`;
   }
   return null;
+}
+
+function getBatchProperties(transactionMeta: TransactionMeta) {
+  const properties: Record<string, Json> = {};
+  const isExternal = origin && origin !== ORIGIN_METAMASK;
+  const { nestedTransactions, txParams } = transactionMeta;
+  const { authorizationList } = txParams;
+  const isBatch = Boolean(nestedTransactions?.length);
+  const isUpgrade = Boolean(authorizationList?.length);
+
+  if (isExternal) {
+    properties.api_method = isBatch
+      ? MESSAGE_TYPE.WALLET_SEND_CALLS
+      : MESSAGE_TYPE.ETH_SEND_TRANSACTION;
+  }
+
+  if (isBatch) {
+    properties.batch_transaction_count = nestedTransactions?.length as number;
+    properties.batch_transaction_method = 'eip7702';
+  }
+
+  properties.eip7702_upgrade_transaction = isUpgrade;
+
+  return properties;
 }
