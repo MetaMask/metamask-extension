@@ -44,14 +44,14 @@ export const AggregatedPercentageOverview = () => {
     getShouldHideZeroBalanceTokens,
   );
   // Get total balance (native + tokens)
-  const { totalFiatBalance, orderedTokenList } = useAccountTotalFiatBalance(
+  const { totalFiatBalance, tokensWithBalances } = useAccountTotalFiatBalance(
     selectedAccount,
     shouldHideZeroBalanceTokens,
   );
 
   // Memoize the calculation to avoid recalculating unless orderedTokenList or tokensMarketData changes
   const totalFiat1dAgo = useMemo(() => {
-    return orderedTokenList.reduce((total1dAgo, item) => {
+    return tokensWithBalances.reduce((total1dAgo, item) => {
       if (item.address) {
         // This is a regular ERC20 token
         // find the relevant pricePercentChange1d in tokensMarketData
@@ -59,7 +59,7 @@ export const AggregatedPercentageOverview = () => {
         const found = tokensMarketData?.[toChecksumAddress(item.address)];
 
         const tokenFiat1dAgo = getCalculatedTokenAmount1dAgo(
-          item.fiatBalance,
+          item.tokenFiatAmount,
           found?.pricePercentChange1d,
         );
         return total1dAgo + Number(tokenFiat1dAgo);
@@ -69,12 +69,12 @@ export const AggregatedPercentageOverview = () => {
         tokensMarketData?.[getNativeTokenAddress(currentChainId)]
           ?.pricePercentChange1d;
       const nativeFiat1dAgo = getCalculatedTokenAmount1dAgo(
-        item.fiatBalance,
+        item.tokenFiatAmount,
         nativePricePercentChange1d,
       );
       return total1dAgo + Number(nativeFiat1dAgo);
     }, 0); // Initial total1dAgo is 0
-  }, [orderedTokenList, tokensMarketData]); // Dependencies: recalculate if orderedTokenList or tokensMarketData changes
+  }, [tokensWithBalances, tokensMarketData]); // Dependencies: recalculate if orderedTokenList or tokensMarketData changes
 
   const totalBalance: number = Number(totalFiatBalance);
   const totalBalance1dAgo = totalFiat1dAgo;

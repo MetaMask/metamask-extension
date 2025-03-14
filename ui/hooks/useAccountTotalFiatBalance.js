@@ -7,8 +7,6 @@ import {
   getMetaMaskCachedBalances,
   getTokenExchangeRates,
   getConfirmationExchangeRates,
-  getNativeCurrencyImage,
-  getTokenList,
 } from '../selectors';
 import {
   getValueFromWeiHex,
@@ -17,7 +15,6 @@ import {
 } from '../../shared/modules/conversion.utils';
 import {
   getConversionRate,
-  getNativeCurrency,
   getCurrentCurrency,
 } from '../ducks/metamask/metamask';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
@@ -53,10 +50,6 @@ export const useAccountTotalFiatBalance = (
     () => detectedTokens?.[currentChainId]?.[account?.address] ?? [],
     [account?.address, currentChainId, detectedTokens],
   );
-  // This selector returns all the tokens, we need it to get the image of token
-  const allTokenList = useSelector(getTokenList);
-  const primaryTokenImage = useSelector(getNativeCurrencyImage);
-  const nativeCurrency = useSelector(getNativeCurrency);
 
   const loading = false;
   const { tokensWithBalances } = useTokenTracker({
@@ -93,63 +86,6 @@ export const useAccountTotalFiatBalance = (
         return totalFiatValue;
       }),
     [tokensWithBalances, mergedRates, conversionRate, currentCurrency],
-  );
-
-  // To match the list of detected tokens with the entire token list to find the image for tokens
-  const findMatchingTokens = (tokenList, _tokensWithBalances) => {
-    const result = [];
-
-    _tokensWithBalances.forEach((token) => {
-      const matchingToken = tokenList[token.address.toLowerCase()];
-
-      if (matchingToken) {
-        result.push({
-          ...matchingToken,
-          balance: token.balance,
-          string: token.string,
-          balanceError: token.balanceError,
-        });
-      }
-    });
-
-    return result;
-  };
-
-  const matchingTokens = useMemo(
-    () => findMatchingTokens(allTokenList, tokensWithBalances),
-    [allTokenList, tokensWithBalances],
-  );
-
-  // Combine native token, detected token with image in an array
-  const allTokensWithFiatValues = useMemo(() => {
-    const nativeTokenValues = {
-      iconUrl: primaryTokenImage,
-      symbol: nativeCurrency,
-      fiatBalance: nativeFiat,
-    };
-
-    return [
-      nativeTokenValues,
-      ...matchingTokens.map((item, index) => ({
-        ...item,
-        fiatBalance: tokenFiatBalances[index],
-      })),
-    ];
-  }, [
-    matchingTokens,
-    tokenFiatBalances,
-    primaryTokenImage,
-    nativeCurrency,
-    nativeFiat,
-  ]);
-
-  // Order of the tokens in this array is in decreasing order based on their fiatBalance
-  const orderedTokenList = useMemo(
-    () =>
-      allTokensWithFiatValues.sort(
-        (a, b) => parseFloat(b.fiatBalance) - parseFloat(a.fiatBalance),
-      ),
-    [allTokensWithFiatValues],
   );
 
   // Total native and token fiat balance as a string (ex: "8.90")
@@ -205,7 +141,6 @@ export const useAccountTotalFiatBalance = (
     totalFiatBalance,
     tokensWithBalances: formattedTokensWithBalances,
     loading,
-    orderedTokenList,
     mergedRates,
   };
 };

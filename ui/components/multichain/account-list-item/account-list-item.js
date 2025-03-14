@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
@@ -163,13 +163,6 @@ const AccountListItem = ({
     formattedTokensWithBalancesPerChain,
   );
   // cross chain agg balance
-  const mappedOrderedTokenList = useMemo(
-    () =>
-      accountTotalFiatBalances.orderedTokenList.map((item) => ({
-        avatarValue: item.iconUrl,
-      })),
-    [accountTotalFiatBalances.orderedTokenList],
-  );
   let balanceToTranslate;
   if (isEvmNetwork) {
     balanceToTranslate =
@@ -400,8 +393,8 @@ const AccountListItem = ({
               {shortenAddress(normalizeSafeAddress(account.address))}
             </Text>
           </Box>
-          {mappedOrderedTokenList.length > 1 ? (
-            <AvatarGroup members={mappedOrderedTokenList} limit={4} />
+          {false ? (
+            <AvatarGroup members={[]} limit={4} />
           ) : (
             <Box
               display={Display.Flex}
