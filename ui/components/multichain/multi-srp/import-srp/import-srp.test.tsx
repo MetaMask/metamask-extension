@@ -32,7 +32,7 @@ jest.mock('../../../../store/actions', () => ({
 const pasteSrpIntoFirstInput = (render: RenderResult, srp: string) => {
   const [firstWord] = srp.split(' ');
 
-  const firstSrpWordDiv = render.getByTestId('import-srp__srp-word-0');
+  const firstSrpWordDiv = render.getByTestId('import-multi-srp__srp-word-0');
   // This is safe because the input is always present in the word div.
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const firstSrpWordInput = firstSrpWordDiv.querySelector('input')!;
