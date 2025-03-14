@@ -1197,8 +1197,8 @@ export default class MetamaskController extends EventEmitter {
 
     additionalKeyrings.push(
       snapKeyringBuilder(snapKeyringBuildMessenger, {
-        persistKeyringHelper: () => persistAndUpdateAccounts(),
-        removeAccountHelper: (address) => this.removeAccount(address),
+        persistAccountsState: () => persistAndUpdateAccounts(),
+        removeAccount: (address) => this.removeAccount(address),
         trackEvent: (...args) => this.metaMetricsController.trackEvent(...args),
       }),
     );

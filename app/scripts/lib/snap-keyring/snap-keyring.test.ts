@@ -11,11 +11,11 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { snapKeyringBuilder } from './snap-keyring';
 import {
   showAccountCreationDialog,
   showAccountNameSuggestionDialog,
-  snapKeyringBuilder,
-} from './snap-keyring';
+} from './dialogs';
 import {
   SnapKeyringBuilderAllowActions,
   SnapKeyringBuilderMessenger,
@@ -30,10 +30,10 @@ const mockShowError = jest.fn();
 const mockGetAccounts = jest.fn();
 const mockSnapId = 'local:http://localhost:8080' as SnapId;
 const mockSnapName = 'mock-snap';
-const mockPersistKeyringHelper = jest.fn();
+const mockActionPersistAccountsState = jest.fn();
 const mockSetSelectedAccount = jest.fn();
 const mockSetAccountName = jest.fn();
-const mockRemoveAccountHelper = jest.fn();
+const mockActionRemoveAccount = jest.fn();
 const mockTrackEvent = jest.fn();
 const mockGetAccountByAddress = jest.fn();
 const mockLocale = 'en';
@@ -173,8 +173,8 @@ const createSnapKeyringBuilder = ({
   jest.mocked(getSnapName).mockReturnValue(snapName);
 
   return snapKeyringBuilder(createControllerMessenger(), {
-    persistKeyringHelper: mockPersistKeyringHelper,
-    removeAccountHelper: mockRemoveAccountHelper,
+    persistAccountsState: mockActionPersistAccountsState,
+    removeAccount: mockActionRemoveAccount,
     trackEvent: mockTrackEvent,
   });
 };
@@ -274,7 +274,7 @@ describe('Snap Keyring Methods', () => {
         },
         true,
       ]);
-      expect(mockPersistKeyringHelper).toHaveBeenCalledTimes(1);
+      expect(mockActionPersistAccountsState).toHaveBeenCalledTimes(1);
       expect(mockAddRequest).toHaveBeenNthCalledWith(2, [
         {
           origin: mockSnapId,
@@ -333,7 +333,7 @@ describe('Snap Keyring Methods', () => {
 
       expect(mockStartFlow).toHaveBeenCalledTimes(2);
       expect(mockAddRequest).toHaveBeenCalledTimes(1);
-      expect(mockPersistKeyringHelper).toHaveBeenCalledTimes(1);
+      expect(mockActionPersistAccountsState).toHaveBeenCalledTimes(1);
       expect(mockAddRequest).toHaveBeenNthCalledWith(1, [
         {
           origin: mockSnapId,
@@ -388,7 +388,7 @@ describe('Snap Keyring Methods', () => {
         },
         true,
       ]);
-      expect(mockPersistKeyringHelper).toHaveBeenCalledTimes(1);
+      expect(mockActionPersistAccountsState).toHaveBeenCalledTimes(1);
       expect(mockAddRequest).toHaveBeenNthCalledWith(2, [
         {
           origin: mockSnapId,
@@ -455,7 +455,7 @@ describe('Snap Keyring Methods', () => {
 
       expect(mockStartFlow).toHaveBeenCalledTimes(2);
       expect(mockAddRequest).toHaveBeenCalledTimes(1);
-      expect(mockPersistKeyringHelper).toHaveBeenCalledTimes(1);
+      expect(mockActionPersistAccountsState).toHaveBeenCalledTimes(1);
       expect(mockAddRequest).toHaveBeenNthCalledWith(1, [
         {
           origin: mockSnapId,
@@ -513,7 +513,7 @@ describe('Snap Keyring Methods', () => {
         },
         true,
       ]);
-      expect(mockPersistKeyringHelper).toHaveBeenCalledTimes(1);
+      expect(mockActionPersistAccountsState).toHaveBeenCalledTimes(1);
       expect(mockAddRequest).toHaveBeenNthCalledWith(2, [
         {
           origin: mockSnapId,
@@ -567,7 +567,7 @@ describe('Snap Keyring Methods', () => {
       const consoleSpy = jest.spyOn(console, 'error');
 
       const errorMessage = 'save error';
-      mockPersistKeyringHelper.mockRejectedValue(new Error(errorMessage));
+      mockActionPersistAccountsState.mockRejectedValue(new Error(errorMessage));
       mockSnapControllerHandleRequest.mockImplementation((params) => {
         expect(params).toStrictEqual([
           {
