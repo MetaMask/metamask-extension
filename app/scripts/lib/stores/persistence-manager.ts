@@ -3,8 +3,14 @@ import browser from 'webextension-polyfill';
 import { KeyringControllerState } from '@metamask/keyring-controller';
 import { captureException } from '@sentry/browser';
 import { isEmpty } from 'lodash';
+import { KeyringControllerState } from '@metamask/keyring-controller';
+import { PreferencesController } from '@metamask/preferences-controller';
+import { AppStateControllerState } from '../../controllers/app-state-controller';
+import OnboardingController from '../../controllers/onboarding';
 import { type MetaMaskStateType, MetaMaskStorageStructure } from './base-store';
 import ExtensionStore from './extension-store';
+import IndexDBStore from './IndexedDBStore';
+import LocalStorageWithOffScreenStore from './LocalStorageWithOffScreenStore';
 import ReadOnlyNetworkStore from './read-only-network-store';
 
 /**
@@ -67,13 +73,18 @@ export class PersistenceManager {
 
   #vaultReference: string | null;
 
+  #backupStores: (IndexDBStore | LocalStorageWithOffScreenStore)[];
+
   constructor({
     localStore,
+    backupStores = [],
   }: {
     localStore: ExtensionStore | ReadOnlyNetworkStore;
+    backupStores: (IndexDBStore | LocalStorageWithOffScreenStore)[];
   }) {
     this.#localStore = localStore;
     this.#vaultReference = null;
+    this.#backupStores = backupStores;
   }
 
   setMetadata(metadata: { version: number }) {
@@ -96,6 +107,7 @@ export class PersistenceManager {
         if (newVaultReference && this.#vaultReference === null) {
           browser.storage.local.remove('vaultHasNotYetBeenCreated');
         }
+        this.backupVault(state);
         this.#vaultReference = newVaultReference;
       }
       if (this.#dataPersistenceFailing) {
@@ -127,6 +139,43 @@ export class PersistenceManager {
 
   get mostRecentRetrievedState() {
     return this.#mostRecentRetrievedState;
+  }
+
+  backupVault(state: MetaMaskStateType) {
+    for (const store of this.#backupStores) {
+      store.set({
+        data: {
+          KeyringController: state.KeyringController,
+          OnboardingController: state.OnboardingController,
+          PreferencesController: state.PreferencesController,
+          AppStateController: state.AppStateController,
+        },
+      });
+    }
+  }
+
+  async restoreVaultFromBackup() {
+    if (!this.#metadata) {
+      throw new Error('MetaMask - metadata must be set restoring vault');
+    }
+    let backedUpVault;
+
+    for (const store of this.#backupStores) {
+      const backedUpState = await store.get();
+      if (backedUpState?.data) {
+        const appStateControllerState = backedUpState.data
+          .AppStateController as AppStateControllerState;
+        const newAppStateControllerState = {
+          ...appStateControllerState,
+          stateWasJustRestoredFromBackup: true,
+        };
+        backedUpState.data.AppStateController = newAppStateControllerState;
+        return await this.#localStore.set({
+          data: backedUpState.data,
+          meta: this.#metadata,
+        });
+      }
+    }
   }
 
   cleanUpMostRecentRetrievedState() {

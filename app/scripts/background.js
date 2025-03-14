@@ -50,6 +50,8 @@ import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { addNonceToCsp } from '../../shared/modules/add-nonce-to-csp';
 import { checkURLForProviderInjection } from '../../shared/modules/provider-injection';
 import { PersistenceManager } from './lib/stores/persistence-manager';
+import LocalStorageWithOffScreenStore from './lib/stores/local-storage-with-offscreen-store';
+import IndexedDBStore from './lib/stores/indexed-db-store';
 import ExtensionStore from './lib/stores/extension-store';
 import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
 import migrations from './migrations';
@@ -95,8 +97,13 @@ const migrator = new Migrator({
     : null,
 });
 
-const localStore = inTest ? new ReadOnlyNetworkStore() : new ExtensionStore();
-const persistenceManager = new PersistenceManager({ localStore });
+const indexedDBStore = new IndexedDBStore();
+const localStorageWithOffScreenStore = new LocalStorageWithOffScreenStore();
+const localStore = false ? new ReadOnlyNetworkStore() : new ExtensionStore();
+const persistenceManager = new PersistenceManager({
+  localStore,
+  backupStores: [indexedDBStore, localStorageWithOffScreenStore],
+});
 global.stateHooks.getMostRecentPersistedState = () =>
   persistenceManager.mostRecentRetrievedState;
 
@@ -170,7 +177,7 @@ if (isFirefox) {
  * called once initialization has completed, and that `rejectInitialization` is
  * called if initialization fails in an unrecoverable way.
  */
-const {
+let {
   promise: isInitialized,
   resolve: resolveInitialization,
   reject: rejectInitialization,
@@ -420,6 +427,26 @@ browser.runtime.onConnect.addListener(async (...args) => {
       target: 'ui',
       error: stringifyError(error),
       metamaskState: JSON.stringify(_state),
+    });
+    port.onMessage.addListener(async (msg) => {
+      const { data, target } = msg;
+      if (
+        data?.name === 'RESTORE_VAULT_FROM_BACKUP' &&
+        target === 'Background'
+      ) {
+        const initialState = migrator.generateInitialState();
+        persistenceManager.setMetadata(initialState.meta);
+        await persistenceManager.restoreVaultFromBackup();
+        const newDeferredPromise = deferredPromise();
+        isInitialized = newDeferredPromise.promise;
+        resolveInitialization = newDeferredPromise.resolve;
+        rejectInitialization = newDeferredPromise.reject;
+        initBackground();
+        port.postMessage({
+          target: 'ui',
+          name: 'RESTORE_VAULT_FROM_BACKUP',
+        });
+      }
     });
   }
 
@@ -1376,13 +1403,24 @@ async function onInstall() {
       : await global.sessionStorage.getItem('isFirstTimeInstall');
 
   const isFirstTimeInstall = sessionData?.isFirstTimeInstall;
+  let stateWasJustRestoredFromBackup;
 
-  if (process.env.IN_TEST) {
+  if (!isFirstTimeInstall) {
+    const state = await persistenceManager.get();
+    stateWasJustRestoredFromBackup =
+      state?.data?.AppStateController?.stateWasJustRestoredFromBackup;
+  }
+
+  const shouldOpenExtensionInBrowser =
+    isFirstTimeInstall || stateWasJustRestoredFromBackup;
+  const shouldTrackAppInstalledEvent =
+    process.env.IN_TEST || (!process.env.METAMASK_DEBUG && isFirstTimeInstall);
+
+  if (shouldTrackAppInstalledEvent) {
     addAppInstalledEvent();
-  } else if (!isFirstTimeInstall && !process.env.METAMASK_DEBUG) {
-    // If storeAlreadyExisted is true then this is a fresh installation
-    // and an app installed event should be tracked.
-    addAppInstalledEvent();
+  }
+
+  if (shouldOpenExtensionInBrowser) {
     platform.openExtensionInBrowser();
   }
   onNavigateToTab();
