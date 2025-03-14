@@ -33,6 +33,7 @@ async function measurePage(pageName) {
     {
       fixtures: new FixtureBuilder().build(),
       disableServerMochaToBackground: true,
+      title: `Profile page load of "${pageName}" page`,
     },
     async ({ driver }) => {
       await driver.delay(tinyDelayMs);
