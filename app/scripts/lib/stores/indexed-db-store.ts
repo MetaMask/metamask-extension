@@ -18,20 +18,18 @@ export default class IndexedDBStore extends BaseStore {
 
   dbVersion: number;
 
-  dbReady: Promise<IDBDatabase>;
+  dbReady?: Promise<IDBDatabase>;
 
   constructor(storeName = 'ExtensionStore', dbVersion = 1) {
     super();
 
     this.storeName = storeName;
     this.dbVersion = dbVersion;
-    this.dbReady = this._init();
   }
 
   private _init(): Promise<IDBDatabase> {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(this.storeName, this.dbVersion);
-
       request.onupgradeneeded = (event) => {
         const db = (event.target as IDBOpenDBRequest).result;
         if (!db.objectStoreNames.contains(this.storeName)) {
@@ -96,6 +94,13 @@ export default class IndexedDBStore extends BaseStore {
     }
   }
 
+  private ensureDbReady(): Promise<IDBDatabase> {
+    if (!this.dbReady) {
+      this.dbReady = this._init();
+    }
+    return this.dbReady;
+  }
+
   private async _writeToDB(data: Record<string, unknown>): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       this._getObjectStore(TransactionMode.READ_WRITE)
@@ -114,7 +119,7 @@ export default class IndexedDBStore extends BaseStore {
     mode: IDBTransactionMode = TransactionMode.READ_ONLY,
   ): Promise<IDBObjectStore> {
     try {
-      const db = await this.dbReady; // Wait for the DB to be ready
+      const db = await this.ensureDbReady();
       const transaction = db.transaction([this.storeName], mode);
       return transaction.objectStore(this.storeName);
     } catch (error) {
@@ -129,8 +134,7 @@ export default class IndexedDBStore extends BaseStore {
         );
 
         // Re-initialize the database connection
-        this.dbReady = this._init();
-        const db = await this.dbReady;
+        const db = await this.ensureDbReady();
         const transaction = db.transaction([this.storeName], mode);
         return transaction.objectStore(this.storeName);
       }

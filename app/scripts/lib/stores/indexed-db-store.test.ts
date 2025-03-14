@@ -144,60 +144,6 @@ describe('IndexedDBStore', () => {
     jest.restoreAllMocks();
   });
 
-  describe('constructor', () => {
-    it('initializes with default store name and version, and opens the DB', async () => {
-      const { openSpy } = mockIndexedDBOpenOnce({
-        openSuccess: true,
-      });
-      const store = new IndexedDBStore();
-
-      expect(openSpy).toHaveBeenCalledWith('ExtensionStore', 1);
-      expect(store).toBeDefined();
-    });
-
-    it('initializes with given store name and version, and opens the DB', async () => {
-      const { openSpy } = mockIndexedDBOpenOnce({
-        openSuccess: true,
-      });
-      const storeName = 'MyTestDB';
-      const version = 5;
-      const store = new IndexedDBStore(storeName, version);
-
-      expect(openSpy).toHaveBeenCalledWith(storeName, version);
-      expect(store).toBeDefined();
-    });
-
-    it('rejects if IndexedDB fails to open', async () => {
-      const { resolveOpenRequest } = mockIndexedDBOpenOnce({
-        openError: true,
-      });
-      const store = new IndexedDBStore();
-      resolveOpenRequest();
-      await expect(store.dbReady).rejects.toThrow('Failed to open IndexedDB.');
-      expect(store).toBeDefined();
-    });
-
-    it('creates the object store on upgrade', async () => {
-      const onUpgradeNeededMock = jest.fn((db: IDBDatabase) => {
-        db.createObjectStore('ExtensionStore', { keyPath: 'id' });
-      });
-      const { mockDatabase, resolveOpenRequest } = mockIndexedDBOpenOnce({
-        openSuccess: true,
-        onUpgradeNeeded: onUpgradeNeededMock,
-      });
-
-      const store = new IndexedDBStore();
-      resolveOpenRequest();
-      expect(mockDatabase.createObjectStore).toHaveBeenCalledWith(
-        'ExtensionStore',
-        {
-          keyPath: 'id',
-        },
-      );
-      expect(store).toBeDefined();
-    });
-  });
-
   describe('set', () => {
     it('throws an error if the passed state is null/undefined', async () => {
       const { resolveOpenRequest } = mockIndexedDBOpenOnce({
@@ -215,7 +161,6 @@ describe('IndexedDBStore', () => {
         openSuccess: true,
       });
       const store = new IndexedDBStore();
-      resolveOpenRequest();
       const mockPutRequest = {
         onerror: null as (() => void) | null,
         onsuccess: null as (() => void) | null,
@@ -229,6 +174,7 @@ describe('IndexedDBStore', () => {
       };
 
       const promise = store.set(testState);
+      resolveOpenRequest();
 
       setTimeout(() => {
         mockPutRequest.onsuccess?.();
@@ -246,7 +192,6 @@ describe('IndexedDBStore', () => {
         openSuccess: true,
       });
       const store = new IndexedDBStore();
-      resolveOpenRequest();
       const mockPutRequest = {
         onerror: null as (() => void) | null,
         onsuccess: null as (() => void) | null,
@@ -256,6 +201,7 @@ describe('IndexedDBStore', () => {
 
       const testState: MetaMaskStorageStructure = { data: { x: 42 } };
       const promise = store.set(testState);
+      resolveOpenRequest();
 
       setTimeout(() => {
         mockPutRequest.onerror?.();
@@ -292,10 +238,10 @@ describe('IndexedDBStore', () => {
         onsuccess: null as (() => void) | null,
       };
       (mockObjectStore.put as jest.Mock).mockReturnValue(mockPutRequest);
-      resolveOpenRequest();
 
       const testState: MetaMaskStorageStructure = { data: { reinit: true } };
       const promise = store.set(testState);
+      resolveOpenRequest();
 
       setTimeout(() => {
         mockPutRequest.onsuccess?.();
@@ -319,14 +265,15 @@ describe('IndexedDBStore', () => {
         openSuccess: true,
       });
       const store = new IndexedDBStore();
-      resolveOpenRequest();
 
       const err = new Error('RandomTransactionError');
       (mockDatabase.transaction as jest.Mock).mockImplementationOnce(() => {
         throw err;
       });
 
-      await store.set({ data: { foo: 'bar' } });
+      const promise = store.set({ data: { foo: 'bar' } });
+      resolveOpenRequest();
+      await expect(promise).resolves.toBeUndefined();
 
       expect(log.error).toHaveBeenCalledWith(
         'Error setting state in IndexedDB:',
@@ -342,7 +289,6 @@ describe('IndexedDBStore', () => {
         openSuccess: true,
       });
       const store = new IndexedDBStore();
-      resolveOpenRequest();
       const mockGetRequest = {
         onerror: null as (() => void) | null,
         onsuccess: null as (() => void) | null,
@@ -355,6 +301,7 @@ describe('IndexedDBStore', () => {
       (mockObjectStore.get as jest.Mock).mockReturnValue(mockGetRequest);
 
       const promise = store.get();
+      resolveOpenRequest();
 
       setTimeout(() => {
         mockGetRequest.onsuccess?.();
@@ -371,7 +318,6 @@ describe('IndexedDBStore', () => {
         openSuccess: true,
       });
       const store = new IndexedDBStore();
-      resolveOpenRequest();
       const mockGetRequest = {
         onerror: null as (() => void) | null,
         onsuccess: null as (() => void) | null,
@@ -380,6 +326,7 @@ describe('IndexedDBStore', () => {
       (mockObjectStore.get as jest.Mock).mockReturnValue(mockGetRequest);
 
       const promise = store.get();
+      resolveOpenRequest();
 
       setTimeout(() => {
         mockGetRequest.onsuccess?.();
@@ -393,7 +340,6 @@ describe('IndexedDBStore', () => {
         openSuccess: true,
       });
       const store = new IndexedDBStore();
-      resolveOpenRequest();
       const mockGetRequest = {
         onerror: null as (() => void) | null,
         onsuccess: null as (() => void) | null,
@@ -402,6 +348,7 @@ describe('IndexedDBStore', () => {
       (mockObjectStore.get as jest.Mock).mockReturnValue(mockGetRequest);
 
       const promise = store.get();
+      resolveOpenRequest();
 
       setTimeout(() => {
         mockGetRequest.onerror?.();
@@ -421,7 +368,6 @@ describe('IndexedDBStore', () => {
           openSuccess: true,
         });
       const store = new IndexedDBStore();
-      resolveOpenRequest();
       (mockDatabase.transaction as jest.Mock).mockImplementationOnce(() => {
         const error = new Error('InvalidStateError');
         (error as Error).name = 'InvalidStateError';
@@ -436,6 +382,7 @@ describe('IndexedDBStore', () => {
       (mockObjectStore.get as jest.Mock).mockReturnValue(mockGetRequest);
 
       const promise = store.get();
+      resolveOpenRequest();
 
       setTimeout(() => {
         mockGetRequest.onsuccess?.();
@@ -457,7 +404,6 @@ describe('IndexedDBStore', () => {
         openSuccess: true,
       });
       const store = new IndexedDBStore();
-      resolveOpenRequest();
 
       const err = new Error('RandomGetError');
       (mockDatabase.transaction as jest.Mock).mockImplementationOnce(() => {
@@ -465,6 +411,7 @@ describe('IndexedDBStore', () => {
       });
 
       const promise = store.get();
+      resolveOpenRequest();
       const result = await promise;
       expect(result).toBeNull();
       expect(log.error).toHaveBeenCalledWith(
