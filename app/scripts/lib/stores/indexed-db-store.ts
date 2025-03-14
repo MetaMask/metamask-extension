@@ -76,7 +76,7 @@ export default class IndexedDBStore extends BaseStore {
   /**
    * Retrieves the state from IndexedDB.
    *
-   * @returns A promise that resolves to the stored state, or `undefined` if not found.
+   * @returns A promise that resolves to the stored state, or `null` if not found.
    */
   async get(): Promise<MetaMaskStorageStructure | null> {
     try {
