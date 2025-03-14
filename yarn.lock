@@ -6313,7 +6313,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@npm:^16.1.0":
+"@metamask/smart-transactions-controller@npm:16.1.0":
   version: 16.1.0
   resolution: "@metamask/smart-transactions-controller@npm:16.1.0"
   dependencies:
@@ -6338,6 +6338,34 @@ __metadata:
     "@metamask/approval-controller":
       optional: true
   checksum: 10/1b81adf30ee9b070cf36299110b15703941033cc8470943cbbda391a10c1b4d7014e30892d72b7620193a865c75a8251bc18034b3796f4597317d746554d38e5
+  languageName: node
+  linkType: hard
+
+"@metamask/smart-transactions-controller@patch:@metamask/smart-transactions-controller@npm%3A16.1.0#~/.yarn/patches/@metamask-smart-transactions-controller-npm-16.1.0-ae236ab22b.patch":
+  version: 16.1.0
+  resolution: "@metamask/smart-transactions-controller@patch:@metamask/smart-transactions-controller@npm%3A16.1.0#~/.yarn/patches/@metamask-smart-transactions-controller-npm-16.1.0-ae236ab22b.patch::version=16.1.0&hash=339ab8"
+  dependencies:
+    "@babel/runtime": "npm:^7.24.1"
+    "@ethereumjs/tx": "npm:^5.2.1"
+    "@ethereumjs/util": "npm:^9.0.2"
+    "@ethersproject/bytes": "npm:^5.7.0"
+    "@metamask/base-controller": "npm:^7.0.1"
+    "@metamask/controller-utils": "npm:^11.0.0"
+    "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/polling-controller": "npm:^12.0.0"
+    bignumber.js: "npm:^9.0.1"
+    fast-json-patch: "npm:^3.1.0"
+    lodash: "npm:^4.17.21"
+  peerDependencies:
+    "@metamask/network-controller": ^22.0.0
+    "@metamask/transaction-controller": ^42.0.0
+  peerDependenciesMeta:
+    "@metamask/accounts-controller":
+      optional: true
+    "@metamask/approval-controller":
+      optional: true
+  checksum: 10/59e82bdff5b8d66fefe622bfcde8918e47f04d930a365f52940bf111fb02836600b25413aca79c36163bdbb0bf50de93142fec1432abfdb737f7030f7b8f0540
   languageName: node
   linkType: hard
 
@@ -27395,7 +27423,7 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^19.0.0"
     "@metamask/signature-controller": "npm:^23.1.0"
-    "@metamask/smart-transactions-controller": "npm:^16.1.0"
+    "@metamask/smart-transactions-controller": "patch:@metamask/smart-transactions-controller@npm%3A16.1.0#~/.yarn/patches/@metamask-smart-transactions-controller-npm-16.1.0-ae236ab22b.patch"
     "@metamask/snaps-controllers": "npm:^10.0.1"
     "@metamask/snaps-execution-environments": "npm:^7.0.0"
     "@metamask/snaps-rpc-methods": "npm:^11.13.1"
