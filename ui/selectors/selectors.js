@@ -2908,16 +2908,22 @@ export function getShouldShowSeedPhraseReminder(state) {
   const { tokens, seedPhraseBackedUp, dismissSeedBackUpReminder } =
     state.metamask;
 
+  const currentKeyring = getCurrentKeyring(state);
+  const isNativeAccount =
+    currentKeyring?.type && currentKeyring.type === KeyringType.hdKeyTree;
+
   // if there is no account, we don't need to show the seed phrase reminder
   const accountBalance = getSelectedInternalAccount(state)
     ? getCurrentEthBalance(state)
     : 0;
 
-  return (
+  const showMessage =
     seedPhraseBackedUp === false &&
     (parseInt(accountBalance, 16) > 0 || tokens.length > 0) &&
-    dismissSeedBackUpReminder === false
-  );
+    dismissSeedBackUpReminder === false &&
+    isNativeAccount;
+
+  return showMessage;
 }
 
 export function getUnconnectedAccounts(state, activeTab) {
