@@ -73,9 +73,7 @@ class AccountList extends Component {
       HardwareDeviceNames.lattice,
       HardwareDeviceNames.trezor,
       HardwareDeviceNames.oneKey,
-    ]
-      // TODO: check if we really need to compare lowercased values
-      .some((name) => name.toLowerCase() === device.toLowerCase());
+    ].includes(device);
     return (
       <div className="hw-connect">
         <h3 className="hw-connect__unlock-title">
