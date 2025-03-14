@@ -1158,11 +1158,14 @@ export function setupController(
    * @returns {Promise<void>} A promise that resolves when the remote feature flags have been updated.
    */
   async function initializeRemoteFeatureFlags() {
-    try {
-      // initialize the request to fetch remote feature flags
-      await controller.remoteFeatureFlagController.updateRemoteFeatureFlags();
-    } catch (error) {
-      log.error('Error initializing remote feature flags:', error);
+    const { useExternalServices } = controller.preferencesController.state;
+    if (useExternalServices) {
+      try {
+        // initialize the request to fetch remote feature flags
+        await controller.remoteFeatureFlagController.updateRemoteFeatureFlags();
+      } catch (error) {
+        log.error('Error initializing remote feature flags:', error);
+      }
     }
   }
 
