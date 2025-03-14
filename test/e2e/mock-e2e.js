@@ -1,9 +1,6 @@
 const fs = require('fs');
 
 const {
-  SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS_FALLBACK_LIST,
-} = require('../../shared/constants/security-provider');
-const {
   BRIDGE_DEV_API_BASE_URL,
   BRIDGE_PROD_API_BASE_URL,
 } = require('../../shared/constants/bridge');
@@ -163,15 +160,6 @@ async function setupMocking(
   });
 
   await server
-    .forGet(`${SECURITY_ALERTS_PROD_API_BASE_URL}/supportedChains`)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS_FALLBACK_LIST,
-      };
-    });
-
-  await server
     .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/${chainId}`)
     .thenCallback(() => {
       return {
@@ -328,6 +316,17 @@ async function setupMocking(
       smartTransactions: true,
       hidden: false,
     },
+  });
+  await server.forGet(`${TX_SENTINEL_URL}/network`).thenJson(200, {
+    name: 'Mainnet',
+    group: 'ethereum',
+    chainID: 1,
+    nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+    network: 'ethereum-mainnet',
+    explorer: 'https://etherscan.io',
+    confirmations: true,
+    smartTransactions: true,
+    hidden: false,
   });
 
   await server
@@ -640,6 +639,20 @@ async function setupMocking(
   await server
     .forGet('https://min-api.cryptocompare.com/data/pricemulti')
     .withQuery({ fsyms: 'ETH', tsyms: 'usd' })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          ETH: {
+            USD: ethConversionInUsd,
+          },
+        },
+      };
+    });
+
+  await server
+    .forGet('https://min-api.cryptocompare.com/data/pricemulti')
+    .withQuery({ fsyms: 'ETH,MegaETH', tsyms: 'usd' })
     .thenCallback(() => {
       return {
         statusCode: 200,

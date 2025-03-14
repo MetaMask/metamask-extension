@@ -704,7 +704,7 @@ class Driver {
    * @param rawLocator - Element locator
    * @param timeout - The maximum time in ms to wait for the element
    */
-  async clickElementSafe(rawLocator, timeout = 1000) {
+  async clickElementSafe(rawLocator, timeout = 2000) {
     try {
       const locator = this.buildLocator(rawLocator);
       const elements = await this.driver.wait(

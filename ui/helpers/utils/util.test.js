@@ -1298,4 +1298,54 @@ describe('util', () => {
       expect(sortedAccount).toStrictEqual([]);
     });
   });
+
+  describe('isIpAddress', () => {
+    it('should return true for the IPv4 address', () => {
+      expect(util.isIpAddress('127.0.0.1')).toBe(true);
+    });
+
+    it('should return true for the IPv6 address', () => {
+      expect(util.isIpAddress('[fe80::1]')).toBe(true);
+    });
+
+    it('should return true for the invalid IP address', () => {
+      expect(util.isIpAddress('metamask')).toBe(false);
+    });
+
+    it('should return true for the invalid type of argument', () => {
+      expect(util.isIpAddress(1024)).toBe(false);
+    });
+  });
+
+  describe('transformOriginToTitle', () => {
+    it('should return the correct title for origin with domain', () => {
+      expect(util.transformOriginToTitle('https://metamask.io')).toBe(
+        'metamask.io',
+      );
+    });
+
+    it('should return the correct title for origin with subdomain', () => {
+      expect(
+        util.transformOriginToTitle('https://metamask.github.io/test-dapp/'),
+      ).toBe('github.io');
+    });
+
+    it('should return the correct title for localhost', () => {
+      expect(util.transformOriginToTitle('http://localhost:3000')).toBe(
+        'localhost',
+      );
+    });
+
+    it('should return the correct title for IPv4 address', () => {
+      expect(util.transformOriginToTitle('http://127.0.0.1:3000')).toBe(
+        '127.0.0.1',
+      );
+    });
+
+    it('should return the correct title for IPv6 address', () => {
+      expect(util.transformOriginToTitle('http://[fe80::1]:9011/')).toBe(
+        '[fe80::1]',
+      );
+    });
+  });
 });

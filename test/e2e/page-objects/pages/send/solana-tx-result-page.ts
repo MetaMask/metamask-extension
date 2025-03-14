@@ -44,9 +44,10 @@ class SolanaTxresultPage {
   async check_TransactionStatusText(
     amount: string,
     sent: boolean,
+    tokenName: string = 'SOL',
   ): Promise<boolean> {
     const displayedText = sent
-      ? `${amount}  was successfully sent`
+      ? `${amount} ${tokenName} was successfully sent`
       : `Unable to send ${amount}`;
     const txStatusText = {
       text: displayedText,

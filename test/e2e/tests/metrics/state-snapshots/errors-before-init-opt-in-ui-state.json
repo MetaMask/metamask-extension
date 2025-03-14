@@ -153,9 +153,9 @@
           "extensionConfig": {
             "support": "boolean",
             "chains": {
-              "0x1": "object",
-              "0xa": "object",
-              "0xe708": "object"
+              "eip155:1": "object",
+              "eip155:10": "object",
+              "eip155:59144": "object"
             }
           }
         }

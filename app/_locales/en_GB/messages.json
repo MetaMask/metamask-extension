@@ -233,6 +233,14 @@
   "addNfts": {
     "message": "Add NFTs"
   },
+  "addNonEvmAccount": {
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana",
+    "message": "Add $1 account"
+  },
+  "addNonEvmAccountFromNetworkPicker": {
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana",
+    "message": "To enable the $1 network, you need to create a $1 account."
+  },
   "addRpcUrl": {
     "message": "Add RPC URL"
   },
@@ -744,8 +752,17 @@
   "bridgeConfirmTwoTransactions": {
     "message": "You'll need to confirm 2 transactions on your hardware wallet:"
   },
+  "bridgeCreateSolanaAccountDescription": {
+    "message": "To swap to the Solana network, you need an account and receiving address."
+  },
+  "bridgeCreateSolanaAccountTitle": {
+    "message": "You'll need a Solana account first."
+  },
   "bridgeEnterAmount": {
     "message": "Select amount"
+  },
+  "bridgeEnterAmountAndSelectAccount": {
+    "message": "Enter amount and select destination account"
   },
   "bridgeExplorerLinkViewOn": {
     "message": "View on $1"
@@ -769,8 +786,14 @@
   "bridgeQuoteExpired": {
     "message": "Your quote timed out."
   },
+  "bridgeSelectDestinationAccount": {
+    "message": "Select destination account"
+  },
   "bridgeSelectNetwork": {
     "message": "Select network"
+  },
+  "bridgeSelectTokenAmountAndAccount": {
+    "message": "Select token, amount and destination account"
   },
   "bridgeSelectTokenAndAmount": {
     "message": "Select token and amount"
@@ -1170,7 +1193,7 @@
     "message": "Connecting to Sepolia test network"
   },
   "connectionDescription": {
-    "message": "This site wants to"
+    "message": "Connect this website with MetaMask."
   },
   "connectionFailed": {
     "message": "Connection failed"
@@ -1491,6 +1514,15 @@
   "descriptionFromSnap": {
     "message": "Description from $1",
     "description": "$1 represents the name of the snap"
+  },
+  "destinationAccountPickerNoEligible": {
+    "message": "No eligible accounts found"
+  },
+  "destinationAccountPickerNoMatching": {
+    "message": "No matching accounts found"
+  },
+  "destinationAccountPickerSearchPlaceholder": {
+    "message": "Receiving address or SNS"
   },
   "details": {
     "message": "Details"
@@ -2778,6 +2810,15 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "You're adding this network to MetaMask and giving this site permission to use it."
+  },
+  "multichainQuoteCardBridgingLabel": {
+    "message": "Bridging"
+  },
+  "multichainQuoteCardQuoteLabel": {
+    "message": "Quote"
+  },
+  "multichainQuoteCardTimeLabel": {
+    "message": "Time"
   },
   "multipleSnapConnectionWarning": {
     "message": "$1 wants to use $2 Snaps",
@@ -4472,6 +4513,9 @@
   "select": {
     "message": "Select"
   },
+  "selectAccountToConnect": {
+    "message": "Select an account to connect"
+  },
   "selectAccounts": {
     "message": "Select the account(s) to use on this site"
   },
@@ -4763,13 +4807,13 @@
     "message": "Cash out with MetaMask"
   },
   "slideDebitCardDescription": {
-    "message": "Available in selected regions"
+    "message": "Available in select regions"
   },
   "slideDebitCardTitle": {
     "message": "MetaMask debit card"
   },
   "slideFundWalletDescription": {
-    "message": "Get started by adding funds"
+    "message": "Add or transfer tokens to get started"
   },
   "slideFundWalletTitle": {
     "message": "Fund your wallet"
@@ -4978,15 +5022,6 @@
   "snapsUIError": {
     "message": "Contact the creators of $1 for further support.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "solanaSupportSectionTitle": {
-    "message": "Solana"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "Turning on this feature will give you the option to add a Solana Account to your MetaMask Extension derived from your existing Secret Recovery Phrase. This is an experimental Beta feature, so you should use it at your own risk."
-  },
-  "solanaSupportToggleTitle": {
-    "message": "Enable \"Add a new Solana account (Beta)\""
   },
   "someNetworks": {
     "message": "$1 networks"
@@ -6198,6 +6233,18 @@
   },
   "visitSite": {
     "message": "Visit site"
+  },
+  "visitSupportDataConsentModalAccept": {
+    "message": "Confirm"
+  },
+  "visitSupportDataConsentModalDescription": {
+    "message": "Do you want to share your MetaMask Identifier and app version with our Support Center? This can help us better solve your problem, but is optional."
+  },
+  "visitSupportDataConsentModalReject": {
+    "message": "Don’t share"
+  },
+  "visitSupportDataConsentModalTitle": {
+    "message": "Share device details with support"
   },
   "visitWebSite": {
     "message": "Visit our website"
