@@ -74,8 +74,8 @@ class AccountList extends Component {
       HardwareDeviceNames.trezor,
       HardwareDeviceNames.oneKey,
     ]
-      .map((name) => name.toLowerCase())
-      .includes(device.toLowerCase());
+      // TODO: check if we really need to compare lowercased values
+      .some((name) => name.toLowerCase() === device.toLowerCase());
     return (
       <div className="hw-connect">
         <h3 className="hw-connect__unlock-title">
