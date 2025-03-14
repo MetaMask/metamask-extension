@@ -105,16 +105,20 @@ test.skip(`Get quote on Mainnet Network`, async () => {
 });
 
 test(`Add Custom Networks and import test account`, async () => {
-  let response;
   wallet = ethers.Wallet.createRandom();
 
-  response = await addFundsToAccount(Tenderly.Mainnet.url, wallet.address);
+  const response = await addFundsToAccount(
+    Tenderly.Mainnet.url,
+    wallet.address,
+  );
   expect(response.error).toBeUndefined();
 
   await networkController.addCustomNetwork(Tenderly.Mainnet);
 
   await walletPage.importAccount(wallet.privateKey);
   expect(walletPage.accountMenu).toHaveText('Account 2', { timeout: 30000 });
+  // Allow balance to be available
+  await walletPage.page.waitForTimeout(10000);
 });
 
 testSet.forEach((options) => {
@@ -125,8 +129,6 @@ testSet.forEach((options) => {
     if (balance === '0 ETH') {
       test.skip();
     }
-    // Allow balance label to populate
-    await walletPage.page.waitForTimeout(3000);
     await walletPage.selectSwapAction();
     const quoteEntered = await swapPage.enterQuote({
       from: options.source,
