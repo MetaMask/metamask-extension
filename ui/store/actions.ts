@@ -246,11 +246,10 @@ export function importMnemonicToVault(
     } catch (err) {
       dispatch(displayWarning(err));
       throw err;
-    }
-    finally {
+    } finally {
       dispatch(hideLoadingIndication());
     }
-    };
+  };
 }
 
 export function generateNewMnemonicAndAddToVault(): ThunkAction<
