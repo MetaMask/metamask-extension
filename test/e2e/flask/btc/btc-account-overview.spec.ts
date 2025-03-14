@@ -43,7 +43,7 @@ describe('BTC Account - Overview', function (this: Suite) {
 
   it('has balance', async function () {
     await withBtcAccountSnap(
-      { title: this.test?.fullTitle() },
+      { title: this.test?.fullTitle(), isFunded: true },
       async (driver) => {
         await driver.waitForSelector({
           testId: 'account-value-and-suffix',

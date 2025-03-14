@@ -11,13 +11,14 @@ import {
   mockInitialFullScan,
   mockInscriptions,
   mockRampsDynamicFeatureFlag,
-} from './mocks.ts';
+} from './mocks';
 
 export async function withBtcAccountSnap(
   {
     title,
     bitcoinSupportEnabled,
-  }: { title?: string; bitcoinSupportEnabled?: boolean },
+    isFunded,
+  }: { title?: string; bitcoinSupportEnabled?: boolean; isFunded?: boolean },
   test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
 ) {
   await withFixtures(
@@ -30,7 +31,7 @@ export async function withBtcAccountSnap(
       title,
       dapp: true,
       testSpecificMock: async (mockServer: Mockttp) => [
-        await mockInitialFullScan(mockServer),
+        await mockInitialFullScan(mockServer, isFunded),
         await mockExchangeRates(mockServer),
         await mockInscriptions(mockServer),
 

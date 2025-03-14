@@ -263,7 +263,7 @@ const mockAnyTxs = (mockServer: Mockttp) =>
     json: [],
   }));
 
-const mockGenesisHeight = (mockServer: Mockttp) =>
+const mockGenesisBlock = (mockServer: Mockttp) =>
   mockServer.forGet(`${ESPLORA_URL}/block-height/0`).thenCallback(() => ({
     statusCode: 200,
     json: '000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f',
@@ -282,15 +282,22 @@ const mockFundingBlock = (mockServer: Mockttp) =>
  * Consists of 1 transaction on the first address of the account.
  * @param mockServer The mock server
  */
-export async function mockInitialFullScan(mockServer: Mockttp) {
+export async function mockInitialFullScan(
+  mockServer: Mockttp,
+  isFunded?: boolean,
+) {
   // Mock latest blocks
   await mockBlocks(mockServer);
-  // Mock the funding transaction setting the balance to default
-  await mockFundingTx(mockServer);
+
+  if (isFunded) {
+    // Mock the funding transaction setting the balance to default
+    await mockFundingTx(mockServer);
+    // Mock funding tx block hash
+    await mockFundingBlock(mockServer);
+  }
+
   // Mock other calls to fetch txs given the stop gap (returns empty)
   await mockAnyTxs(mockServer);
   // Mock genesis block hash
-  await mockGenesisHeight(mockServer);
-  // Mock funding tx block hash
-  await mockFundingBlock(mockServer);
+  await mockGenesisBlock(mockServer);
 }
