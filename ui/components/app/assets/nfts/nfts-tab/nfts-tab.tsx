@@ -149,10 +149,13 @@ export default function NftsTab() {
 
   return (
     <>
-      <AssetListControlBar
-        showTokensLinks={false}
-        showTokenFiatBalance={false}
-      />
+      <Box marginTop={2}>
+        <AssetListControlBar
+          showTokensLinks={false}
+          showTokenFiatBalance={false}
+        />
+      </Box>
+
       <Box className="nfts-tab">
         {isMainnet && !useNftDetection ? (
           <Box paddingTop={4} paddingInlineStart={4} paddingInlineEnd={4}>
