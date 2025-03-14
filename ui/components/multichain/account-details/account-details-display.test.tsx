@@ -16,7 +16,17 @@ const ADDRESS_MOCK = Object.values(
 
 function renderComponent() {
   return renderWithProvider(
-    <AccountDetailsDisplay accounts={[]} address={ADDRESS_MOCK} />,
+    <AccountDetailsDisplay
+      accounts={[]}
+      accountName={''}
+      address={ADDRESS_MOCK}
+      onExportClick={() => {
+        // Intentionally empty
+      }}
+      onClose={() => {
+        // Intentionally empty
+      }}
+    />,
     configureStore(mockState),
   );
 }
@@ -87,7 +97,7 @@ describe('AccountDetailsDisplay', () => {
     });
 
     await act(async () => {
-      queryByText('Switch back to regular account').click();
+      queryByText('Switch back to regular account')?.click();
     });
 
     expect(downgradeAccountMock).toHaveBeenCalledTimes(1);
