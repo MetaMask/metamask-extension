@@ -15,6 +15,7 @@ import {
   TextVariant,
   IconColor,
   BackgroundColor,
+  TextColor,
 } from '../../../../helpers/constants/design-system';
 import {
   ModalOverlay,
@@ -37,6 +38,7 @@ import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
 import { getImageForChainId } from '../../../../selectors/multichain';
+import { TEST_CHAINS } from '../../../../../shared/constants/network';
 
 // TODO use MultichainNetworkConfiguration type
 type NetworkOption =
@@ -102,6 +104,21 @@ export const AssetPickerModalNetwork = ({
         (a, b) => balanceByChainId[b.chainId] - balanceByChainId[a.chainId],
       ),
     [],
+  );
+
+  const [nonTestNetworks, testNetworks] = useMemo(
+    () =>
+      networksList.reduce(
+        ([nonTestNetworksList, testNetworksList], networkInfo) => {
+          const isTest = (TEST_CHAINS as string[]).includes(
+            networkInfo.chainId,
+          );
+          (isTest ? testNetworksList : nonTestNetworksList).push(networkInfo);
+          return [nonTestNetworksList, testNetworksList];
+        },
+        [[] as NetworkConfiguration[], [] as NetworkConfiguration[]],
+      ),
+    [networksList],
   );
 
   // Tracks the selection/checked state of each network
@@ -221,63 +238,151 @@ export const AssetPickerModalNetwork = ({
         <Box
           className="multichain-asset-picker__network-list"
           display={Display.Flex}
+          flexDirection={FlexDirection.Column}
         >
+          {testNetworks.length > 0 ? (
+            <Box padding={4}>
+              <Text
+                variant={TextVariant.bodyMd}
+                color={TextColor.textAlternative}
+              >
+                {t('enabledNetworks')}
+              </Text>
+            </Box>
+          ) : null}
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
             width={BlockSize.Full}
           >
-            {networksList.map((networkConfig) => {
-              const { name, chainId } = networkConfig;
-              return (
-                <NetworkListItem
-                  key={chainId}
-                  name={
-                    NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-                      chainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
-                    ] ?? name
-                  }
-                  selected={
-                    // If multiselect is enabled, the checkbox indicates selection
-                    isMultiselectEnabled ? false : network?.chainId === chainId
-                  }
-                  onClick={() => {
-                    if (isMultiselectEnabled) {
-                      handleToggleNetwork(chainId);
-                      return;
+            {(testNetworks.length > 0 ? nonTestNetworks : networksList).map(
+              (networkConfig) => {
+                const { name, chainId } = networkConfig;
+                return (
+                  <NetworkListItem
+                    key={chainId}
+                    name={
+                      NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+                        chainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
+                      ] ?? name
                     }
-                    onNetworkChange(networkConfig);
-                    onBack();
-                  }}
-                  iconSrc={getImageForChainId(chainId)}
-                  iconSize={AvatarNetworkSize.Sm}
-                  focus={false}
-                  disabled={shouldDisableNetwork?.(networkConfig)}
-                  startAccessory={
-                    isMultiselectEnabled ? (
-                      <Checkbox
-                        isChecked={checkedChainIds[chainId]}
-                        name={chainId}
-                      />
-                    ) : undefined
-                  }
-                  showEndAccessory={isMultiselectEnabled}
-                  variant={TextVariant.bodyMdMedium}
-                  endAccessory={
-                    isMultiselectEnabled ? (
-                      <Text variant={TextVariant.bodyMdMedium}>
-                        {formatCurrency(
-                          balanceByChainId[chainId]?.toString(),
-                          currency,
-                        )}
-                      </Text>
-                    ) : undefined
-                  }
-                />
-              );
-            })}
+                    selected={
+                      // If multiselect is enabled, the checkbox indicates selection
+                      isMultiselectEnabled
+                        ? false
+                        : network?.chainId === chainId
+                    }
+                    onClick={() => {
+                      if (isMultiselectEnabled) {
+                        handleToggleNetwork(chainId);
+                        return;
+                      }
+                      onNetworkChange(networkConfig);
+                      onBack();
+                    }}
+                    iconSrc={getImageForChainId(chainId)}
+                    iconSize={AvatarNetworkSize.Sm}
+                    focus={false}
+                    disabled={shouldDisableNetwork?.(networkConfig)}
+                    startAccessory={
+                      isMultiselectEnabled ? (
+                        <Checkbox
+                          isChecked={checkedChainIds[chainId]}
+                          name={chainId}
+                        />
+                      ) : undefined
+                    }
+                    showEndAccessory={isMultiselectEnabled}
+                    variant={TextVariant.bodyMdMedium}
+                    endAccessory={
+                      isMultiselectEnabled ? (
+                        <Text variant={TextVariant.bodyMdMedium}>
+                          {formatCurrency(
+                            balanceByChainId[chainId]?.toString(),
+                            currency,
+                          )}
+                        </Text>
+                      ) : undefined
+                    }
+                  />
+                );
+              },
+            )}
           </Box>
         </Box>
+        {testNetworks.length > 0 ? (
+          <Box
+            className="multichain-asset-picker__network-list"
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+          >
+            <Box padding={4}>
+              <Text
+                variant={TextVariant.bodyMd}
+                color={TextColor.textAlternative}
+              >
+                {t('testNetworks')}
+              </Text>
+            </Box>
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              width={BlockSize.Full}
+            >
+              {testNetworks.map((networkConfig) => {
+                const { name, chainId } = networkConfig;
+                return (
+                  <NetworkListItem
+                    key={chainId}
+                    name={
+                      NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+                        chainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
+                      ] ?? name
+                    }
+                    selected={
+                      // If multiselect is enabled, the checkbox indicates selection
+                      isMultiselectEnabled
+                        ? false
+                        : network?.chainId === chainId
+                    }
+                    onClick={() => {
+                      if (isMultiselectEnabled) {
+                        handleToggleNetwork(chainId);
+                        return;
+                      }
+                      onNetworkChange(networkConfig);
+                      onBack();
+                    }}
+                    iconSrc={getImageForChainId(chainId)}
+                    iconSize={AvatarNetworkSize.Sm}
+                    focus={false}
+                    disabled={shouldDisableNetwork?.(networkConfig)}
+                    startAccessory={
+                      isMultiselectEnabled ? (
+                        <Checkbox
+                          isChecked={checkedChainIds[chainId]}
+                          name={chainId}
+                        />
+                      ) : undefined
+                    }
+                    showEndAccessory={isMultiselectEnabled}
+                    variant={TextVariant.bodyMdMedium}
+                    endAccessory={
+                      isMultiselectEnabled ? (
+                        <Text variant={TextVariant.bodyMdMedium}>
+                          {formatCurrency(
+                            balanceByChainId[chainId]?.toString(),
+                            currency,
+                          )}
+                        </Text>
+                      ) : undefined
+                    }
+                  />
+                );
+              })}
+            </Box>
+          </Box>
+        ) : null}
       </ModalContent>
     </Modal>
   );
