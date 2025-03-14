@@ -31,6 +31,14 @@ export default class IndexedDBStore extends BaseStore {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(this.storeName, this.dbVersion);
       request.onupgradeneeded = (event) => {
+        // This event handles the event whereby a new version of
+        // the database needs to be created. Either one has not
+        // been created before, or a new version number has been
+        // submitted via the window.indexedDB.open line above.
+        // If a new version is set in the future, we may need to
+        // mutate/update the object store here. For more, see
+        // https://developer.mozilla.org/en-US/docs/Web/API/IDBOpenDBRequest/upgradeneeded_event
+
         const db = (event.target as IDBOpenDBRequest).result;
         if (!db.objectStoreNames.contains(this.storeName)) {
           db.createObjectStore(this.storeName, { keyPath: 'id' });
