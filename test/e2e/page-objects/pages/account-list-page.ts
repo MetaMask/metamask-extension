@@ -145,7 +145,7 @@ class AccountListPage {
     tag: 'h4',
   };
 
-  private readonly importSrpInput = '#import-srp__srp-word-0';
+  private readonly importSrpInput = '#import-multi-srp__srp-word-0';
 
   private readonly importSrpConfirmButton = {
     text: 'Import wallet',
@@ -332,11 +332,11 @@ class AccountListPage {
 
     // Run if there are multiple srps
     if (accountType === ACCOUNT_TYPE.Ethereum && srpIndex) {
-      const srpName = `Secret Phrase ${srpIndex.toString()}`;
+      const srpName = `Secret Recovery Phrase ${srpIndex.toString()}`;
       // We click twice because, the first click is to go to the SRP List
       // from there we select the SRP that we want to add the account to
       await this.driver.clickElement({
-        text: 'Secret Phrase 1',
+        text: 'Secret Recovery Phrase 1',
       });
       await this.driver.clickElement({
         text: srpName,
