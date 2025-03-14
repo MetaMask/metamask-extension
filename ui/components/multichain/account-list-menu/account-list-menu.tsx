@@ -104,9 +104,7 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import {
   ACCOUNT_WATCHER_NAME,
   ACCOUNT_WATCHER_SNAP_ID,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../../app/scripts/lib/snap-keyring/account-watcher-snap';
+} from '../../../../shared/lib/accounts/account-watcher-snap';
 import {
   hasCreatedBtcMainnetAccount,
   hasCreatedBtcTestnetAccount,
