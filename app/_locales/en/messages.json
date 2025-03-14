@@ -4025,7 +4025,7 @@
   "permitSimulationChange_receive": {
     "message": "You receive"
   },
-  "permitSimulationChange_revoke": {
+  "permitSimulationChange_revoke2": {
     "message": "Revoke"
   },
   "permitSimulationChange_transfer": {

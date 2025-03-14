@@ -81,7 +81,7 @@ const PermitSimulation: React.FC<object> = () => {
 
   if (isRevoke) {
     descriptionKey = 'revokeSimulationDetailsDesc';
-    infoRowLabelKey = 'permitSimulationChange_revoke';
+    infoRowLabelKey = 'permitSimulationChange_revoke2';
   } else if (isNFT) {
     descriptionKey = 'simulationDetailsApproveDesc';
     infoRowLabelKey = 'simulationApproveHeading';
