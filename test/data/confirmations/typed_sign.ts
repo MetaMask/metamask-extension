@@ -203,7 +203,7 @@ export const seaportSignatureMsg = {
   networkClientId: 'mainnet',
   securityAlertResponse: {
     result_type: 'loading',
-    reason: 'CheckingChain',
+    reason: 'validation_in_progress',
     securityAlertId: 'def3b0ef-c96b-4c87-b1b1-c69cc02a0f78',
   },
   status: 'unapproved',

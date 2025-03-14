@@ -230,16 +230,3 @@ export const DefaultFirstPartyNameStory = {
     variation: VARIATION_MOCK,
   },
 };
-
-/**
- * Clicking the component will not display a modal to edit the name.
- */
-export const EditDisabledStory = {
-  name: 'Edit Disabled',
-  args: {
-    value: ADDRESS_MOCK,
-    type: NameType.ETHEREUM_ADDRESS,
-    variation: VARIATION_MOCK,
-    disableEdit: true,
-  },
-};

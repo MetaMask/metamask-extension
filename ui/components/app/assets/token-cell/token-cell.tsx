@@ -41,7 +41,7 @@ import {
   TokenCellSecondaryDisplay,
 } from './cells';
 
-type TokenCellProps = {
+export type TokenCellProps = {
   token: TokenWithFiatAmount;
   privacyMode?: boolean;
   onClick?: (chainId: string, address: string) => void;
@@ -101,7 +101,7 @@ export default function TokenCell({
         },
       });
     },
-    [onClick, token.chainId, token.address],
+    [onClick, token, showScamWarningModal, trackEvent],
   );
 
   const handleScamWarningModal = (arg: boolean) => {

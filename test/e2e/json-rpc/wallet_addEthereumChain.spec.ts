@@ -7,7 +7,6 @@ import FixtureBuilder from '../fixture-builder';
 import { Driver } from '../webdriver/driver';
 import {
   withFixtures,
-  defaultGanacheOptions,
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
@@ -44,10 +43,18 @@ describe('Add Ethereum Chain', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder().build(),
-          localNodeOptions: {
-            ...defaultGanacheOptions,
-            concurrent: [{ port: 8546, chainId: 1338 }],
-          },
+          localNodeOptions: [
+            {
+              type: 'anvil',
+            },
+            {
+              type: 'anvil',
+              options: {
+                port: 8546,
+                chainId: 1338,
+              },
+            },
+          ],
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
@@ -98,10 +105,18 @@ describe('Add Ethereum Chain', function () {
           fixtures: new FixtureBuilder()
             .withNetworkControllerDoubleGanache()
             .build(),
-          localNodeOptions: {
-            ...defaultGanacheOptions,
-            concurrent: [{ port: 8546, chainId: 1338 }],
-          },
+          localNodeOptions: [
+            {
+              type: 'anvil',
+            },
+            {
+              type: 'anvil',
+              options: {
+                port: 8546,
+                chainId: 1338,
+              },
+            },
+          ],
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
@@ -153,10 +168,18 @@ describe('Add Ethereum Chain', function () {
           fixtures: new FixtureBuilder()
             .withNetworkControllerDoubleGanache()
             .build(),
-          localNodeOptions: {
-            ...defaultGanacheOptions,
-            concurrent: [{ port: 8546, chainId: 1338 }],
-          },
+          localNodeOptions: [
+            {
+              type: 'anvil',
+            },
+            {
+              type: 'anvil',
+              options: {
+                port: 8546,
+                chainId: 1338,
+              },
+            },
+          ],
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
@@ -189,7 +212,6 @@ describe('Add Ethereum Chain', function () {
           await driver.executeScript(
             `window.ethereum.request(${addEthereumChainRequest})`,
           );
-
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await driver.findElement({ text: 'Use your enabled networks' });
           await driver.findElement({ text: 'Localhost 8546' });
@@ -320,10 +342,18 @@ describe('Add Ethereum Chain', function () {
               '0x53a',
             ])
             .build(),
-          localNodeOptions: {
-            ...defaultGanacheOptions,
-            concurrent: [{ port: 8546, chainId: 1338 }],
-          },
+          localNodeOptions: [
+            {
+              type: 'anvil',
+            },
+            {
+              type: 'anvil',
+              options: {
+                port: 8546,
+                chainId: 1338,
+              },
+            },
+          ],
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
@@ -384,10 +414,18 @@ describe('Add Ethereum Chain', function () {
               '0x53a',
             ])
             .build(),
-          localNodeOptions: {
-            ...defaultGanacheOptions,
-            concurrent: [{ port: 8546, chainId: 1338 }],
-          },
+          localNodeOptions: [
+            {
+              type: 'anvil',
+            },
+            {
+              type: 'anvil',
+              options: {
+                port: 8546,
+                chainId: 1338,
+              },
+            },
+          ],
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
@@ -440,7 +478,6 @@ describe('Add Ethereum Chain', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
             .build(),
-          localNodeOptions: defaultGanacheOptions,
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {

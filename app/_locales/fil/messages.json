@@ -274,9 +274,6 @@
     "message": "I-import",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Mag-import ng Account"
-  },
   "importAccountMsg": {
     "message": " Ang mga na-import na account ay hindi iuugnay sa orihinal na seedphrase na ginawa ng iyong MetaMask account. Matuto pa tungkol sa mga na-import na account "
   },

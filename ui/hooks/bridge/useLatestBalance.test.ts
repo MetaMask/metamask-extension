@@ -57,7 +57,7 @@ describe('useLatestBalance', () => {
     );
 
     await waitForNextUpdate();
-    expect(result.current.balanceAmount).toStrictEqual(new BigNumber('1'));
+    expect(result.current).toStrictEqual(new BigNumber('1'));
 
     expect(mockGetBalance).toHaveBeenCalledTimes(1);
     expect(mockGetBalance).toHaveBeenCalledWith(
@@ -76,7 +76,7 @@ describe('useLatestBalance', () => {
     );
 
     await waitForNextUpdate();
-    expect(result.current.balanceAmount).toStrictEqual(new BigNumber('15.39'));
+    expect(result.current).toStrictEqual(new BigNumber('15.39'));
 
     expect(mockFetchTokenBalance).toHaveBeenCalledTimes(1);
     expect(mockFetchTokenBalance).toHaveBeenCalledWith(

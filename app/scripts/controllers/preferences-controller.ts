@@ -142,11 +142,10 @@ export type PreferencesControllerState = Omit<
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   watchEthereumAccountEnabled: boolean;
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  solanaSupportEnabled: boolean;
-  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   bitcoinSupportEnabled: boolean;
   bitcoinTestnetSupportEnabled: boolean;
+  ///: END:ONLY_INCLUDE_IF
   addSnapAccountEnabled?: boolean;
   advancedGasFee: Record<string, Record<string, string>>;
   incomingTransactionsPreferences: Record<number, boolean>;
@@ -164,6 +163,7 @@ export type PreferencesControllerState = Omit<
   enableMV3TimestampSave: boolean;
   useExternalServices: boolean;
   textDirection?: string;
+  accountUpgradeDisabledChains?: string[];
 };
 
 /**
@@ -187,9 +187,6 @@ export const getDefaultPreferencesControllerState =
     openSeaEnabled: true,
     securityAlertsEnabled: true,
     watchEthereumAccountEnabled: false,
-    ///: BEGIN:ONLY_INCLUDE_IF(solana)
-    solanaSupportEnabled: false,
-    ///: END:ONLY_INCLUDE_IF
     bitcoinSupportEnabled: false,
     bitcoinTestnetSupportEnabled: false,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -340,10 +337,6 @@ const controllerMetadata = {
     persist: true,
     anonymous: false,
   },
-  solanaSupportEnabled: {
-    persist: true,
-    anonymous: false,
-  },
   bitcoinSupportEnabled: {
     persist: true,
     anonymous: false,
@@ -452,6 +445,7 @@ const controllerMetadata = {
   },
   isMultiAccountBalancesEnabled: { persist: true, anonymous: true },
   showIncomingTransactions: { persist: true, anonymous: true },
+  accountUpgradeDisabledChains: { persist: true, anonymous: false },
 };
 
 export class PreferencesController extends BaseController<
@@ -663,20 +657,7 @@ export class PreferencesController extends BaseController<
   }
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  /**
-   * Setter for the `solanaSupportEnabled` property.
-   *
-   * @param solanaSupportEnabled - Whether or not the user wants to
-   * enable the "Add a new Solana account" button.
-   */
-  setSolanaSupportEnabled(solanaSupportEnabled: boolean): void {
-    this.update((state) => {
-      state.solanaSupportEnabled = solanaSupportEnabled;
-    });
-  }
-  ///: END:ONLY_INCLUDE_IF
-
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   /**
    * Setter for the `bitcoinSupportEnabled` property.
    *
@@ -700,6 +681,7 @@ export class PreferencesController extends BaseController<
       state.bitcoinTestnetSupportEnabled = bitcoinTestnetSupportEnabled;
     });
   }
+  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Setter for the `useExternalNameSources` property
@@ -1013,6 +995,23 @@ export class PreferencesController extends BaseController<
   setServiceWorkerKeepAlivePreference(value: boolean): void {
     this.update((state) => {
       state.enableMV3TimestampSave = value;
+    });
+  }
+
+  getDisabledAccountUpgradeChains(): string[] {
+    return this.state.accountUpgradeDisabledChains ?? [];
+  }
+
+  disableAccountUpgradeForChain(chainId: string): void {
+    this.update((state) => {
+      const { accountUpgradeDisabledChains: existingDisabledChains } = state;
+
+      if (!existingDisabledChains?.includes(chainId)) {
+        state.accountUpgradeDisabledChains = [
+          ...(existingDisabledChains ?? []),
+          chainId,
+        ];
+      }
     });
   }
 

@@ -78,18 +78,18 @@ describe('MultiRpc:', function (this: Suite) {
         testSpecificMock: mockRPCURLAndChainId,
       },
 
-      async ({ driver, ganacheServer }) => {
+      async ({ driver }) => {
         await completeImportSRPOnboardingFlow({ driver });
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.check_localNodeBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localNodeBalanceIsDisplayed();
 
         await new HeaderNavbar(driver).clickSwitchNetworkDropDown();
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.check_pageIsLoaded();
 
         // check rpc number
-        await selectNetworkDialog.openNetworkRPC('0xa4b1');
+        await selectNetworkDialog.openNetworkRPC('eip155:42161');
         await selectNetworkDialog.check_networkRPCNumber(2);
       },
     );
@@ -182,7 +182,7 @@ describe('MultiRpc:', function (this: Suite) {
         await headerNavbar.clickSwitchNetworkDropDown();
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.check_pageIsLoaded();
-        await selectNetworkDialog.openNetworkRPC('0xa4b1');
+        await selectNetworkDialog.openNetworkRPC('eip155:42161');
         await selectNetworkDialog.check_networkRPCNumber(2);
 
         // select second rpc for Arbitrum network in the network dialog
@@ -258,15 +258,15 @@ describe('MultiRpc:', function (this: Suite) {
         testSpecificMock: mockRPCURLAndChainId,
       },
 
-      async ({ driver, ganacheServer }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.clickSwitchNetworkDropDown();
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.check_pageIsLoaded();
 
         // go to Edit Menu for Arbitrum network and select the second rpc
-        await selectNetworkDialog.openNetworkListOptions('0xa4b1');
+        await selectNetworkDialog.openNetworkListOptions('eip155:42161');
         await selectNetworkDialog.openEditNetworkModal();
 
         const editNetworkModal = new EditNetworkModal(driver);

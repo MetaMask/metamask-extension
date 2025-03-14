@@ -6,6 +6,7 @@ import { useMemo } from 'react';
 import {
   handleSnapRequest,
   multichainUpdateBalance,
+  multichainUpdateTransactions,
 } from '../../store/actions';
 import { BITCOIN_WALLET_SNAP_ID } from '../../../shared/lib/accounts/bitcoin-wallet-snap';
 import { SOLANA_WALLET_SNAP_ID } from '../../../shared/lib/accounts/solana-wallet-snap';
@@ -40,6 +41,14 @@ export class MultichainWalletSnapSender implements Sender {
   };
 }
 
+export function useMultichainWalletSnapSender(snapId: SnapId) {
+  const client = useMemo(() => {
+    return new MultichainWalletSnapSender(snapId);
+  }, [snapId]);
+
+  return client;
+}
+
 export class MultichainWalletSnapClient {
   readonly #client: KeyringClient;
 
@@ -51,10 +60,11 @@ export class MultichainWalletSnapClient {
     this.#client = new KeyringClient(new MultichainWalletSnapSender(snapId));
   }
 
-  async createAccount(scope: CaipChainId) {
+  async createAccount(scope: CaipChainId, entropySource?: string) {
     // This will trigger the Snap account creation flow (+ account renaming)
     const account = await this.#client.createAccount({
       scope,
+      ...(entropySource ? { entropySource } : {}),
     });
 
     // NOTE: The account's balance is going to be tracked automatically on when the new account
@@ -62,6 +72,8 @@ export class MultichainWalletSnapClient {
     // However, the balance won't be fetched right away. To workaround this, we trigger the
     // fetch explicitly here (since we are already in a `async` call) and wait for it to be updated!
     await multichainUpdateBalance(account.id);
+    // TODO: Remove this and the above line once Snap account creation flow is async
+    await multichainUpdateTransactions(account.id);
   }
 }
 

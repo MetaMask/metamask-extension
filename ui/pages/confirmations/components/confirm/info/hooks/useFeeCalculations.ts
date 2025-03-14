@@ -1,6 +1,6 @@
 import { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { add0x, Hex } from '@metamask/utils';
+import { Hex } from '@metamask/utils';
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { EtherDenomination } from '../../../../../../../shared/constants/common';
@@ -16,7 +16,7 @@ import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';
 import { useGasFeeEstimates } from '../../../../../../hooks/useGasFeeEstimates';
 import { getCurrentCurrency } from '../../../../../../ducks/metamask/metamask';
 import { selectConversionRateByChainId } from '../../../../../../selectors';
-import { getMultichainNetwork } from '../../../../../../selectors/multichain';
+import { getMultichainNetworkConfigurationsByChainId } from '../../../../../../selectors/multichain';
 import { HEX_ZERO } from '../shared/constants';
 import { useEIP1559TxFees } from './useEIP1559TxFees';
 import { useSupportsEIP1559 } from './useSupportsEIP1559';
@@ -38,8 +38,11 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
     selectConversionRateByChainId(state, chainId),
   );
 
-  const multichainNetwork = useSelector(getMultichainNetwork);
-  const ticker = multichainNetwork?.network?.ticker;
+  const multichainNetworkConfigurationsByChainId = useSelector(
+    getMultichainNetworkConfigurationsByChainId,
+  );
+  const ticker =
+    multichainNetworkConfigurationsByChainId[chainId].nativeCurrency;
 
   const getFeesFromHex = useCallback(
     (hexFee: string) => {
@@ -80,7 +83,6 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
         currentCurrencyFee,
         currentCurrencyFeeWith18SignificantDigits,
         nativeCurrencyFee,
-        preciseNativeFeeInHex: add0x(hexFee),
       };
     },
     [conversionRate, currentCurrency, fiatFormatter],
@@ -189,6 +191,5 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
     maxFeeFiat,
     maxFeeFiatWith18SignificantDigits,
     maxFeeNative,
-    preciseNativeFeeInHex: estimatedFees.preciseNativeFeeInHex,
   };
 }

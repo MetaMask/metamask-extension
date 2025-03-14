@@ -8,7 +8,6 @@ import {
 } from '../../../helpers';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { TRANSACTION_DATA_UNISWAP } from '../../../../data/confirmations/transaction-decode';
-import { Ganache } from '../../../seeder/ganache';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { TestSuiteArguments } from './shared';
@@ -129,8 +128,8 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         testSpecificMock: mockInfura,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, ganacheServer }: TestSuiteArguments) => {
-        const addresses = await (ganacheServer as Ganache).getAccounts();
+      async ({ driver, localNodes }: TestSuiteArguments) => {
+        const addresses = await localNodes?.[0]?.getAccounts();
         const publicAddress = addresses?.[0] as string;
 
         await unlockWallet(driver);

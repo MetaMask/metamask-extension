@@ -13,8 +13,10 @@ import { TransactionUpdateController } from '@metamask-institutional/transaction
 import { AccountsController } from '@metamask/accounts-controller';
 import {
   MultichainAssetsController,
+  MultichainAssetsRatesController,
   MultichainBalancesController,
 } from '@metamask/assets-controllers';
+import { MultichainNetworkController } from '@metamask/multichain-network-controller';
 import { MultichainTransactionsController } from '@metamask/multichain-transactions-controller';
 import {
   CronjobController,
@@ -28,6 +30,8 @@ import {
   RateLimitController,
   RateLimitedApiMap,
 } from '@metamask/rate-limit-controller';
+import { Controller as AuthenticationController } from '@metamask/profile-sync-controller/auth';
+import { Controller as UserStorageController } from '@metamask/profile-sync-controller/user-storage';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -36,14 +40,17 @@ import SwapsController from '../controllers/swaps';
  * Union of all controllers supporting or required by modular initialization.
  */
 export type Controller =
+  | AuthenticationController
   | CronjobController
   | ExecutionService
   | GasFeeController
   | JsonSnapsRegistry
   | KeyringController
   | MultichainAssetsController
+  | MultichainAssetsRatesController
   | MultichainBalancesController
   | MultichainTransactionsController
+  | MultichainNetworkController
   | NetworkController
   | OnboardingController
   | PermissionController<
@@ -61,20 +68,24 @@ export type Controller =
   | (TransactionUpdateController & {
       name: 'TransactionUpdateController';
       state: Record<string, unknown>;
-    });
+    })
+  | UserStorageController;
 
 /**
  * Flat state object for all controllers supporting or required by modular initialization.
  * e.g. `{ transactions: [] }`.
  */
 export type ControllerFlatState = AccountsController['state'] &
+  AuthenticationController['state'] &
   CronjobController['state'] &
   GasFeeController['state'] &
   JsonSnapsRegistry['state'] &
   KeyringController['state'] &
   MultichainAssetsController['state'] &
+  MultichainAssetsRatesController['state'] &
   MultichainBalancesController['state'] &
   MultichainTransactionsController['state'] &
+  MultichainNetworkController['state'] &
   NetworkController['state'] &
   OnboardingController['state'] &
   PermissionController<
@@ -88,4 +99,5 @@ export type ControllerFlatState = AccountsController['state'] &
   SnapInsightsController['state'] &
   SnapInterfaceController['state'] &
   TransactionController['state'] &
-  SwapsController['state'];
+  SwapsController['state'] &
+  UserStorageController['state'];

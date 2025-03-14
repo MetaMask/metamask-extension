@@ -1,9 +1,9 @@
-import { Hex } from '@metamask/utils';
+import { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
 
 // Common mixin for primary and secondary display values
 export type TokenDisplayValues = {
-  primary?: string;
-  secondary?: string;
+  primary: string;
+  secondary: number;
   string?: string;
 };
 
@@ -22,8 +22,18 @@ export type BaseToken = {
   isNative?: boolean;
 };
 
+// type created for non-evm tokens
+export type NonEvmBaseToken = {
+  address: CaipAssetType;
+  symbol: string;
+  image: string;
+  decimals: number;
+  chainId: CaipChainId;
+  isNative?: boolean;
+};
+
 // Token type with optional aggregators
-export type Token = BaseToken & {
+export type Token = (BaseToken | NonEvmBaseToken) & {
   aggregators?: string[];
 };
 
@@ -45,6 +55,7 @@ export type TokenWithFiatAmount = Token &
   TokenDisplayValues &
   TokenBalanceValues & {
     isStakeable?: boolean;
+    title: string;
   };
 
 export type TokenFiatDisplayInfo = TokenWithFiatAmount & TokenDisplayInfo;

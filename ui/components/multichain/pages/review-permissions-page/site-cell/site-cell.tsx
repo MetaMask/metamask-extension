@@ -100,7 +100,8 @@ export const SiteCell: React.FC<SiteCellProps> = ({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.ViewPermissionedAccounts,
       properties: {
-        location: 'Connect view, Permissions toast, Permissions (dapp)',
+        location:
+          'Connect view (permissions tab), Permissions toast, Permissions (dapp)',
       },
     });
   };
@@ -112,7 +113,8 @@ export const SiteCell: React.FC<SiteCellProps> = ({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.ViewPermissionedNetworks,
       properties: {
-        location: 'Connect view, Permissions toast, Permissions (dapp)',
+        location:
+          'Connect view (permissions tab), Permissions toast, Permissions (dapp)',
       },
     });
   };

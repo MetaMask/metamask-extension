@@ -30,10 +30,15 @@ import {
   ButtonLink,
   ButtonLinkSize,
 } from '../../component-library';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsEventLinkType,
+} from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
 import { ConfirmInfoRowDivider as Divider } from '../confirm/info/row';
-import { shortenAddress } from '../../../helpers/utils/util';
+import { getURLHostName, shortenAddress } from '../../../helpers/utils/util';
+import { useMultichainTransactionDisplay } from '../../../hooks/useMultichainTransactionDisplay';
 import {
   formatTimestamp,
   getTransactionUrl,
@@ -44,19 +49,32 @@ import {
 export type MultichainTransactionDetailsModalProps = {
   transaction: Transaction;
   onClose: () => void;
-  addressLink: string;
+  userAddress: string;
 };
 
 export function MultichainTransactionDetailsModal({
   transaction,
   onClose,
-  addressLink,
+  userAddress,
 }: MultichainTransactionDetailsModalProps) {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
+  const {
+    id,
+    type,
+    timestamp,
+    chain,
+    status,
+    from,
+    to,
+    baseFee,
+    priorityFee,
+    asset,
+  } = useMultichainTransactionDisplay({ transaction, userAddress });
+
+  const getStatusColor = (txStatus: string) => {
+    switch (txStatus.toLowerCase()) {
       case TransactionStatus.Confirmed:
         return TextColor.successDefault;
       case TransactionStatus.Unconfirmed:
@@ -67,36 +85,6 @@ export function MultichainTransactionDetailsModal({
         return TextColor.textDefault;
     }
   };
-
-  const getAssetDisplay = (asset: typeof fromAsset) => {
-    if (!asset) {
-      return null;
-    }
-    if (asset.fungible === true) {
-      return `${asset.amount} ${asset.unit}`;
-    }
-    if (asset.fungible === false) {
-      return asset.id;
-    }
-    return null;
-  };
-
-  if (!transaction?.from?.[0] || !transaction?.to?.[0]) {
-    return null;
-  }
-
-  // We only support 1 recipient for "from" and "to" for now:
-  const {
-    id: txId,
-    from: [{ address: fromAddress, asset: fromAsset }],
-    to: [{ address: toAddress }],
-    fees: [{ asset: feeAsset }],
-    fees,
-    timestamp,
-    status,
-    chain,
-    type,
-  } = transaction;
 
   return (
     <Modal
@@ -134,7 +122,7 @@ export function MultichainTransactionDetailsModal({
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
-            gap={3}
+            gap={4}
           >
             {/* Status */}
             <Box
@@ -170,9 +158,9 @@ export function MultichainTransactionDetailsModal({
                   }}
                   as="a"
                   externalLink
-                  href={getTransactionUrl(txId, chain)}
+                  href={getTransactionUrl(id, chain)}
                 >
-                  {shortenTransactionId(txId)}
+                  {shortenTransactionId(id)}
                   <Icon
                     marginLeft={2}
                     name={IconName.Export}
@@ -180,7 +168,7 @@ export function MultichainTransactionDetailsModal({
                     color={IconColor.primaryDefault}
                     onClick={() =>
                       navigator.clipboard.writeText(
-                        getTransactionUrl(txId, chain),
+                        getTransactionUrl(id, chain),
                       )
                     }
                   />
@@ -196,110 +184,125 @@ export function MultichainTransactionDetailsModal({
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
-            gap={3}
+            gap={4}
           >
             {/* From */}
-            <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.spaceBetween}
-            >
-              <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
-                {t('from')}
-              </Text>
+            {from?.address && (
               <Box
                 display={Display.Flex}
-                alignItems={AlignItems.center}
-                gap={1}
-              >
-                <ButtonLink
-                  size={ButtonLinkSize.Inherit}
-                  textProps={{
-                    variant: TextVariant.bodyMd,
-                    alignItems: AlignItems.flexStart,
-                  }}
-                  as="a"
-                  externalLink
-                  href={getTransactionUrl(txId, chain)}
-                >
-                  {shortenAddress(fromAddress)}
-                  <Icon
-                    marginLeft={2}
-                    name={IconName.Export}
-                    size={IconSize.Sm}
-                    color={IconColor.primaryDefault}
-                    onClick={() =>
-                      navigator.clipboard.writeText(
-                        getAddressUrl(fromAddress, chain),
-                      )
-                    }
-                  />
-                </ButtonLink>
-              </Box>
-            </Box>
-
-            {/* To */}
-            <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.spaceBetween}
-            >
-              <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
-                {t('to')}
-              </Text>
-              <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                gap={1}
-              >
-                <ButtonLink
-                  size={ButtonLinkSize.Inherit}
-                  textProps={{
-                    variant: TextVariant.bodyMd,
-                    alignItems: AlignItems.flexStart,
-                  }}
-                  as="a"
-                  externalLink
-                  href={getTransactionUrl(txId, chain)}
-                >
-                  {shortenAddress(toAddress)}
-                  <Icon
-                    marginLeft={2}
-                    name={IconName.Export}
-                    size={IconSize.Sm}
-                    color={IconColor.primaryDefault}
-                    onClick={() =>
-                      navigator.clipboard.writeText(
-                        getAddressUrl(toAddress, chain),
-                      )
-                    }
-                  />
-                </ButtonLink>
-              </Box>
-            </Box>
-
-            {/* Amount */}
-            <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.spaceBetween}
-            >
-              <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
-                {t('amount')}
-              </Text>
-              <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                alignItems={AlignItems.flexEnd}
+                justifyContent={JustifyContent.spaceBetween}
               >
                 <Text
                   variant={TextVariant.bodyMd}
-                  data-testid="transaction-amount"
+                  fontWeight={FontWeight.Medium}
                 >
-                  {getAssetDisplay(fromAsset)}
+                  {t('from')}
                 </Text>
+                <Box
+                  display={Display.Flex}
+                  alignItems={AlignItems.center}
+                  gap={1}
+                >
+                  <ButtonLink
+                    size={ButtonLinkSize.Inherit}
+                    textProps={{
+                      variant: TextVariant.bodyMd,
+                      alignItems: AlignItems.flexStart,
+                    }}
+                    as="a"
+                    externalLink
+                    href={getAddressUrl(from.address, chain)}
+                  >
+                    {shortenAddress(from.address)}
+                    <Icon
+                      marginLeft={2}
+                      name={IconName.Export}
+                      size={IconSize.Sm}
+                      color={IconColor.primaryDefault}
+                      onClick={() =>
+                        navigator.clipboard.writeText(
+                          getAddressUrl(from.address as string, chain),
+                        )
+                      }
+                    />
+                  </ButtonLink>
+                </Box>
               </Box>
-            </Box>
+            )}
 
-            {/* Network Fee */}
-            {fees?.length > 0 && (
+            {/* To */}
+            {to?.address && (
+              <Box
+                display={Display.Flex}
+                justifyContent={JustifyContent.spaceBetween}
+              >
+                <Text
+                  variant={TextVariant.bodyMd}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {t('to')}
+                </Text>
+                <Box
+                  display={Display.Flex}
+                  alignItems={AlignItems.center}
+                  gap={1}
+                >
+                  <ButtonLink
+                    size={ButtonLinkSize.Inherit}
+                    textProps={{
+                      variant: TextVariant.bodyMd,
+                      alignItems: AlignItems.flexStart,
+                    }}
+                    as="a"
+                    externalLink
+                    href={getAddressUrl(to.address, chain)}
+                  >
+                    {shortenAddress(to.address)}
+                    <Icon
+                      marginLeft={2}
+                      name={IconName.Export}
+                      size={IconSize.Sm}
+                      color={IconColor.primaryDefault}
+                      onClick={() =>
+                        navigator.clipboard.writeText(
+                          getAddressUrl(to.address as string, chain),
+                        )
+                      }
+                    />
+                  </ButtonLink>
+                </Box>
+              </Box>
+            )}
+
+            {/* Amount */}
+            {asset && (
+              <Box
+                display={Display.Flex}
+                justifyContent={JustifyContent.spaceBetween}
+              >
+                <Text
+                  variant={TextVariant.bodyMd}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {t('amount')}
+                </Text>
+                <Box
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Column}
+                  alignItems={AlignItems.flexEnd}
+                >
+                  <Text
+                    variant={TextVariant.bodyMd}
+                    data-testid="transaction-amount"
+                  >
+                    {asset?.amount} {asset?.unit}
+                  </Text>
+                </Box>
+              </Box>
+            )}
+
+            {/* Network Fees */}
+            {baseFee ? (
               <Box
                 display={Display.Flex}
                 justifyContent={JustifyContent.spaceBetween}
@@ -315,12 +318,41 @@ export function MultichainTransactionDetailsModal({
                   flexDirection={FlexDirection.Column}
                   alignItems={AlignItems.flexEnd}
                 >
-                  <Text variant={TextVariant.bodyMd}>
-                    {getAssetDisplay(feeAsset)}
+                  <Text
+                    variant={TextVariant.bodyMd}
+                    data-testid="transaction-base-fee"
+                  >
+                    {baseFee.amount} {baseFee.unit}
                   </Text>
                 </Box>
               </Box>
-            )}
+            ) : null}
+
+            {priorityFee ? (
+              <Box
+                display={Display.Flex}
+                justifyContent={JustifyContent.spaceBetween}
+              >
+                <Text
+                  variant={TextVariant.bodyMd}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {t('priorityFee')}
+                </Text>
+                <Box
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Column}
+                  alignItems={AlignItems.flexEnd}
+                >
+                  <Text
+                    variant={TextVariant.bodyMd}
+                    data-testid="transaction-priority-fee"
+                  >
+                    {priorityFee.amount} {priorityFee.unit}
+                  </Text>
+                </Box>
+              </Box>
+            ) : null}
           </Box>
         </Box>
 
@@ -334,7 +366,19 @@ export function MultichainTransactionDetailsModal({
             size={ButtonSize.Md}
             variant={ButtonVariant.Link}
             onClick={() => {
-              openBlockExplorer(addressLink, 'Transaction Details', trackEvent);
+              global.platform.openTab({
+                url: getTransactionUrl(id, chain),
+              });
+
+              trackEvent({
+                event: MetaMetricsEventName.ExternalLinkClicked,
+                category: MetaMetricsEventCategory.Navigation,
+                properties: {
+                  link_type: MetaMetricsEventLinkType.AccountTracker,
+                  location: 'Transaction Details',
+                  url_domain: getURLHostName(getTransactionUrl(id, chain)),
+                },
+              });
             }}
             endIconName={IconName.Export}
           >

@@ -30,12 +30,12 @@ class AccountListPage {
     '[data-testid="submit-add-account-with-name"]';
 
   private readonly addBtcAccountButton = {
-    text: messages.addNewBitcoinAccount.message,
+    text: messages.addBitcoinAccountLabel.message,
     tag: 'button',
   };
 
   private readonly addSolanaAccountButton = {
-    text: messages.addNewSolanaAccount.message,
+    text: messages.addNewSolanaAccountLabel.message,
     tag: 'button',
   };
 
@@ -46,7 +46,7 @@ class AccountListPage {
     '[data-testid="multichain-account-menu-popover-add-watch-only-account"]';
 
   private readonly addHardwareWalletButton = {
-    text: 'Add hardware wallet',
+    text: 'Hardware wallet',
     tag: 'button',
   };
 
@@ -131,6 +131,23 @@ class AccountListPage {
 
   private readonly selectAccountSelector =
     '.multichain-account-list-item__account-name';
+
+  private readonly importSrpButton = {
+    text: 'Secret Recovery Phrase',
+    tag: 'button',
+  };
+
+  private readonly importSrpModalTitle = {
+    text: 'Import Secret Recovery Phrase',
+    tag: 'h4',
+  };
+
+  private readonly importSrpInput = '#import-srp__srp-word-0';
+
+  private readonly importSrpConfirmButton = {
+    text: 'Import wallet',
+    tag: 'button',
+  };
 
   private readonly viewAccountOnExplorerButton = {
     text: 'View on explorer',
@@ -694,6 +711,15 @@ class AccountListPage {
       css: this.selectAccountSelector,
       text: accountLabel,
     });
+  }
+
+  async startImportSecretPhrase(srp: string): Promise<void> {
+    console.log(`Importing ${srp.split(' ').length} word srp`);
+    await this.driver.clickElement(this.createAccountButton);
+    await this.driver.clickElement(this.importSrpButton);
+    await this.driver.waitForSelector(this.importSrpModalTitle);
+    await this.driver.pasteIntoField(this.importSrpInput, srp);
+    await this.driver.clickElement(this.importSrpConfirmButton);
   }
 }
 

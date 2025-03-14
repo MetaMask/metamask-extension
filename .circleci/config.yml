@@ -159,6 +159,10 @@ workflows:
           requires:
             - prep-build-test
             - get-changed-files-with-git-diff
+      - test-api-specs-multichain:
+          requires:
+            - prep-build-test-flask
+            - get-changed-files-with-git-diff
       - test-e2e-chrome-multiple-providers:
           requires:
             - prep-build-test
@@ -272,26 +276,6 @@ workflows:
           requires:
             - prep-deps
 
-  locales_only:
-    when:
-      matches:
-        pattern: /^l10n_crowdin_action$/
-        value: << pipeline.git.branch >>
-    jobs:
-      - prep-deps
-      - get-changed-files-with-git-diff
-      - validate-locales-only:
-          requires:
-            - prep-deps
-            - get-changed-files-with-git-diff
-      - test-lint:
-          requires:
-            - prep-deps
-      - all-tests-pass:
-          requires:
-            - test-lint
-            - validate-locales-only
-
 jobs:
   create_release_pull_request:
     executor: node-browsers-medium
@@ -364,7 +348,7 @@ jobs:
           at: .
       - run:
           name: Get changed files with git diff
-          command: yarn git-diff-default-branch
+          command: yarn tsx .circleci/scripts/git-diff-default-branch.ts
       - persist_to_workspace:
           root: .
           paths:
@@ -372,15 +356,6 @@ jobs:
       - store_artifacts:
           path: changed-files
           destination: changed-files
-
-  validate-locales-only:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run: yarn tsx .circleci/scripts/validate-locales-only.ts
 
   prep-build:
     executor: node-linux-medium
@@ -702,6 +677,37 @@ jobs:
           destination: test-artifacts
       - store_test_results:
           path: test/test-results/e2e
+
+  test-api-specs-multichain:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone-and-enable-vnc
+      - run: sudo corepack enable
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-flask ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-flask ./builds
+      - gh/install
+      - run:
+          name: test:api-specs-multichain
+          command: .circleci/scripts/test-run-e2e.sh yarn test:api-specs-multichain
+          no_output_timeout: 5m
+      - run:
+          name: Comment on PR
+          command: |
+            if [  -f html-report-multichain/index.html ]; then
+              gh pr comment "${CIRCLE_PR_NUMBER}" --body ":x: Multichain API Spec Test Failed. View the report [here](https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/${CIRCLE_NODE_INDEX}/html-report-multichain/index.html)."
+            else
+              echo "Multichain API Spec Report not found!"
+            fi
+          when: on_fail
+      - store_artifacts:
+          path: html-report-multichain
+          destination: html-report-multichain
 
   test-api-specs:
     executor: node-browsers-medium-plus
@@ -1056,6 +1062,9 @@ jobs:
   job-publish-release:
     executor: node-browsers-small
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - 'SHA256:It7UdNvvXY8g5aN32yfbPKFxZSV9ny7K8ifDdlP53rQ'
       - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
@@ -1075,6 +1084,9 @@ jobs:
       - run:
           name: Create GitHub release
           command: .circleci/scripts/release-create-gh-release.sh
+      - run:
+          name: Push Firefox bundle script
+          command: .circleci/scripts/push-firefox-bundle-script.sh
 
   job-publish-ts-migration-dashboard:
     executor: node-browsers-small

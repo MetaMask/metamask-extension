@@ -1,4 +1,7 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -31,8 +34,13 @@ export function useNonContractAddressAlerts(): Alert[] {
   const isInteractingWithNonContractAddress =
     !pending && value?.isContractAddress === false;
 
+  const isContractDeploymentTx =
+    currentConfirmation?.type === TransactionType.deployContract;
+
   const isSendingHexDataWhileInteractingWithNonContractAddress =
-    isSendingHexData && isInteractingWithNonContractAddress;
+    isSendingHexData &&
+    isInteractingWithNonContractAddress &&
+    !isContractDeploymentTx;
 
   return useMemo(() => {
     if (!isSendingHexDataWhileInteractingWithNonContractAddress) {
@@ -41,7 +49,7 @@ export function useNonContractAddressAlerts(): Alert[] {
 
     return [
       {
-        field: RowAlertKey.To,
+        field: RowAlertKey.InteractingWith,
         isBlocking: false,
         key: 'hexDataWhileInteractingWithNonContractAddress',
         reason: t('nonContractAddressAlertTitle'),

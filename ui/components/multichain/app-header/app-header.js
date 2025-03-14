@@ -30,7 +30,11 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getIsUnlocked } from '../../../ducks/metamask/metamask';
 import { SEND_STAGES, getSendStage } from '../../../ducks/send';
-import { getMultichainNetwork } from '../../../selectors/multichain';
+import {
+  getSelectedMultichainNetworkConfiguration,
+  getIsEvmMultichainNetworkSelected,
+} from '../../../selectors/multichain/networks';
+import { getNetworkIcon } from '../../../../shared/modules/network.utils';
 import { MultichainMetaFoxLogo } from './multichain-meta-fox-logo';
 import { AppHeaderContainer } from './app-header-container';
 import { AppHeaderUnlockedContent } from './app-header-unlocked-content';
@@ -41,8 +45,13 @@ export const AppHeader = ({ location }) => {
   const menuRef = useRef(null);
   const isUnlocked = useSelector(getIsUnlocked);
 
-  const multichainNetwork = useSelector(getMultichainNetwork);
-  const { chainId, isEvmNetwork } = multichainNetwork;
+  const multichainNetwork = useSelector(
+    getSelectedMultichainNetworkConfiguration,
+  );
+  const isEvmNetwork = useSelector(getIsEvmMultichainNetworkSelected);
+
+  const { chainId, isEvm } = multichainNetwork;
+  const networkIconSrc = getNetworkIcon(chainId, isEvm);
 
   const dispatch = useDispatch();
 
@@ -77,8 +86,7 @@ export const AppHeader = ({ location }) => {
     isSwapsPage ||
     isTransactionEditPage ||
     isConfirmationPage ||
-    hasUnapprovedTransactions ||
-    !isEvmNetwork;
+    hasUnapprovedTransactions;
 
   // Callback for network dropdown
   const networkOpenCallback = useCallback(() => {
@@ -142,6 +150,7 @@ export const AppHeader = ({ location }) => {
                 popupStatus={popupStatus}
                 isEvmNetwork={isEvmNetwork}
                 currentNetwork={multichainNetwork}
+                networkIconSrc={networkIconSrc}
                 networkOpenCallback={networkOpenCallback}
                 disableNetworkPicker={disableNetworkPicker}
                 disableAccountPicker={disableAccountPicker}
@@ -150,6 +159,7 @@ export const AppHeader = ({ location }) => {
             ) : (
               <AppHeaderLockedContent
                 currentNetwork={multichainNetwork}
+                networkIconSrc={networkIconSrc}
                 networkOpenCallback={networkOpenCallback}
               />
             )}

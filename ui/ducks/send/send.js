@@ -2936,6 +2936,13 @@ export function signTransaction(history) {
         updateTransactionGasFees(draftTransaction.id, editingTx.txParams),
       );
 
+      await dispatch(
+        setMaxValueMode(
+          draftTransaction.id,
+          amountMode === AMOUNT_MODES.MAX &&
+            draftTransaction.sendAsset.type === AssetType.native,
+        ),
+      );
       history.push(CONFIRM_TRANSACTION_ROUTE);
     } else {
       let transactionType =

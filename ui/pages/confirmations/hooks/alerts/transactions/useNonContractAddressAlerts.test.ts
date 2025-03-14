@@ -264,7 +264,7 @@ describe('useNonContractAddressAlerts', () => {
     await waitFor(() => {
       expect(result.current).toEqual([
         {
-          field: RowAlertKey.To,
+          field: RowAlertKey.InteractingWith,
           isBlocking: false,
           key: 'hexDataWhileInteractingWithNonContractAddress',
           reason: 'nonContractAddressAlertTitle',
@@ -272,6 +272,57 @@ describe('useNonContractAddressAlerts', () => {
           content: 'NonContractAddressAlertMessage',
         },
       ]);
+    });
+  });
+
+  it('returns no alerts if the transaction has data and the recipient is not a contract, but it is a contract deployment confirmation', async () => {
+    const transactionWithData = {
+      ...TRANSACTION_META_MOCK,
+      type: TransactionType.deployContract,
+      txParams: {
+        ...TRANSACTION_META_MOCK.txParams,
+        data: '0xabcdef',
+      },
+    };
+    useContextMock.mockImplementation((context) => {
+      if (context === ConfirmContext) {
+        return { currentConfirmation: transactionWithData };
+      } else if (context === I18nContext) {
+        return (translationKey: string) => translationKey;
+      }
+      return undefined;
+    });
+    useSelectorMock.mockImplementation((selector) => {
+      if (selector === getNetworkConfigurationsByChainId) {
+        return {
+          '0x5': {
+            chainId: '0x5',
+            name: 'Mainnet',
+          },
+        };
+      } else if (selector === selectPendingApprovalsForNavigation) {
+        return [transactionWithData];
+      }
+
+      return undefined;
+    });
+
+    mockReadAddressAsContract.mockImplementation(async () => {
+      return {
+        isContractAddress: false,
+        contractCode: '',
+      };
+    });
+
+    const { result } = renderHookWithConfirmContextProvider(
+      useNonContractAddressAlerts,
+      {
+        currentConfirmation: transactionWithData,
+      },
+    );
+
+    await waitFor(() => {
+      expect(result.current).toEqual([]);
     });
   });
 });

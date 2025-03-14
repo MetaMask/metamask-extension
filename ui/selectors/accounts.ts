@@ -8,7 +8,7 @@ import { AccountsControllerState } from '@metamask/accounts-controller';
 import {
   isBtcMainnetAddress,
   isBtcTestnetAddress,
-} from '../../shared/lib/multichain';
+} from '../../shared/lib/multichain/accounts';
 
 export type AccountsState = {
   metamask: AccountsControllerState;
@@ -20,7 +20,7 @@ function isBtcAccount(account: InternalAccount) {
   return Boolean(account && account.type === P2wpkh);
 }
 
-function isSolanaAccount(account: InternalAccount) {
+export function isSolanaAccount(account: InternalAccount) {
   const { DataAccount } = SolAccountType;
 
   return Boolean(account && account.type === DataAccount);
@@ -66,4 +66,9 @@ export function hasCreatedBtcMainnetAccount(state: AccountsState) {
 
 export function hasCreatedBtcTestnetAccount(state: AccountsState) {
   return hasCreatedBtcAccount(state, isBtcTestnetAddress);
+}
+
+export function hasCreatedSolanaAccount(state: AccountsState) {
+  const accounts = getInternalAccounts(state);
+  return accounts.some((account) => isSolanaAccount(account));
 }
