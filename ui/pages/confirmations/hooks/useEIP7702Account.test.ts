@@ -1,5 +1,8 @@
 import { act } from '@testing-library/react';
-import { TransactionEnvelopeType } from '@metamask/transaction-controller';
+import {
+  TransactionEnvelopeType,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { useDispatch } from 'react-redux';
 import {
   addTransactionAndRouteToConfirmationPage,
@@ -97,6 +100,9 @@ describe('useEIP7702Account', () => {
           from: ADDRESS_MOCK,
           to: ADDRESS_MOCK,
           type: TransactionEnvelopeType.setCode,
+        },
+        {
+          type: TransactionType.revokeDelegation,
         },
       );
     });
