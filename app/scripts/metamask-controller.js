@@ -2653,6 +2653,37 @@ export default class MetamaskController extends EventEmitter {
               throw new Error(`Entropy source with ID "${source}" not found.`);
             }
           },
+          getMnemonicSeed: async (source) => {
+            if (!source) {
+              return this.getPrimaryKeyringMnemonicSeed();
+            }
+
+            try {
+              const { type, seed } = await this.controllerMessenger.call(
+                'KeyringController:withKeyring',
+                {
+                  id: source,
+                },
+                async ({ keyring }) => ({
+                  type: keyring.type,
+                  seed: keyring.seed,
+                }),
+              );
+
+              if (type !== KeyringTypes.hd || !seed) {
+                // The keyring isn't guaranteed to have a seed (e.g.,
+                // hardware wallets, which can't be used as entropy sources),
+                // so we throw an error if it doesn't.
+                throw new Error(
+                  `Entropy source with ID "${source}" not found.`,
+                );
+              }
+
+              return seed;
+            } catch {
+              throw new Error(`Entropy source with ID "${source}" not found.`);
+            }
+          },
           getUnlockPromise: this.appStateController.getUnlockPromise.bind(
             this.appStateController,
           ),
@@ -4824,6 +4855,20 @@ export default class MetamaskController extends EventEmitter {
     }
 
     return keyring.mnemonic;
+  }
+
+  /**
+   * Gets the mnemonic seed of the user's primary keyring.
+   */
+  getPrimaryKeyringMnemonicSeed() {
+    const [keyring] = this.keyringController.getKeyringsByType(
+      KeyringType.hdKeyTree,
+    );
+    if (!keyring.seed) {
+      throw new Error('Primary keyring mnemonic unavailable.');
+    }
+
+    return keyring.seed;
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
