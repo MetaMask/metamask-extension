@@ -46,7 +46,7 @@ export const commonSolanaAddress =
 
 export const commonSolanaTxConfirmedDetailsFixture = {
   status: 'Confirmed',
-  amount: '0.00707856 SOL',
+  amount: '0.00708 SOL',
   networkFee: '0.000005 SOL',
   fromAddress: 'HH9ZzgQvSVmznKcRfwHuEphuxk7zU5f92CkXFDQfVJcq',
   toAddress: 'AL9Z5JgZdeCKnaYg6jduy9PQGzo3moo7vZYVSTJwnSEq',
@@ -1611,9 +1611,6 @@ export async function withSolanaAccountSnap(
           mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
           mockList.push(await mockGetSuccessTransaction(mockServer));
         }
-        if (mockZeroBalance) {
-          mockList.push(await mockSolanaBalanceQuote(mockServer, true));
-        }
         if (mockCalls) {
           mockList.push([
             await mockSolanaBalanceQuote(mockServer),
@@ -1630,6 +1627,9 @@ export async function withSolanaAccountSnap(
             await mockGetTokenAccountInfo(mockServer),
             await mockGetAccountInfo(mockServer),
           ]);
+        }
+        if (mockZeroBalance) {
+          mockList.push(await mockSolanaBalanceQuote(mockServer, true));
         }
         if (mockSendTransaction) {
           mockList.push(await mockSendSolanaTransaction(mockServer));

@@ -92,6 +92,11 @@
         "conversionRate": 1700,
         "usdConversionRate": 1700
       },
+      "MegaETH": {
+        "conversionDate": null,
+        "conversionRate": null,
+        "usdConversionRate": null
+      },
       "SepoliaETH": {
         "conversionDate": "number",
         "conversionRate": 1700,
@@ -134,12 +139,11 @@
   "LoggingController": { "logs": "object" },
   "MetaMetricsController": {
     "participateInMetaMetrics": true,
-    "metaMetricsId": "fake-metrics-id",
+    "metaMetricsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
     "dataCollectionForMarketing": "boolean",
     "marketingCampaignCookieId": null,
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
-    "previousUserTraits": "object",
     "fragments": "object",
     "segmentApiCalls": "object"
   },
@@ -260,7 +264,11 @@
   },
   "QueuedRequestController": { "queuedRequestCount": 0 },
   "RemoteFeatureFlagController": {
-    "remoteFeatureFlags": {},
+    "remoteFeatureFlags": {
+      "feature1": true,
+      "feature2": false,
+      "feature3": { "name": "groupC", "value": "valueC" }
+    },
     "cacheTimestamp": "number"
   },
   "SelectedNetworkController": { "domains": "object" },

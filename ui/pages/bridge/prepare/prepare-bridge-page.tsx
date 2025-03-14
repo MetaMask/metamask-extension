@@ -20,6 +20,7 @@ import {
   setToToken,
   updateQuoteRequestParams,
   resetBridgeState,
+  setSlippage,
 } from '../../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
@@ -112,6 +113,8 @@ import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-car
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { formatChainIdToCaip } from '../../../../shared/modules/bridge-utils/caip-formatters';
+import { TokenFeatureType } from '../../../../shared/types/security-alerts-api';
+import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
 import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
@@ -196,6 +199,7 @@ const PrepareBridgePage = () => {
     fromChain?.chainId,
   );
 
+  const { tokenAlert } = useTokenAlerts();
   const srcTokenBalance = useLatestBalance(fromToken, fromChain?.chainId);
   const { selectedDestinationAccount, setSelectedDestinationAccount } =
     useDestinationAccount(isSwap);
@@ -215,6 +219,10 @@ const PrepareBridgePage = () => {
   // Resets the banner visibility when the estimated return is low
   const [isLowReturnBannerOpen, setIsLowReturnBannerOpen] = useState(true);
   useEffect(() => setIsLowReturnBannerOpen(true), [quotesRefreshCount]);
+
+  // Resets the banner visibility when new alerts found
+  const [isTokenAlertBannerOpen, setIsTokenAlertBannerOpen] = useState(true);
+  useEffect(() => setIsTokenAlertBannerOpen(true), [tokenAlert]);
 
   // Background updates are debounced when the switch button is clicked
   // To prevent putting the frontend in an unexpected state, prevent the user
@@ -268,6 +276,7 @@ const PrepareBridgePage = () => {
   // Scroll to bottom of the page when banners are shown
   const insufficientBalanceBannerRef = useRef<HTMLDivElement>(null);
   const isEstimatedReturnLowRef = useRef<HTMLDivElement>(null);
+  const tokenAlertBannerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (isInsufficientGasForQuote(nativeAssetBalance)) {
       insufficientBalanceBannerRef.current?.scrollIntoView({
@@ -317,7 +326,7 @@ const PrepareBridgePage = () => {
       // Otherwise quotes get filtered out by the bridge-api when the wallet's real
       // balance is less than the tenderly balance
       insufficientBal: Boolean(providerConfig?.rpcUrl?.includes('tenderly')),
-      slippage: isSwap ? 0 : slippage,
+      slippage,
       walletAddress: selectedAccount?.address ?? '',
       destWalletAddress: selectedDestinationAccount?.address,
     }),
@@ -411,11 +420,14 @@ const PrepareBridgePage = () => {
     }
   }, [fromChain, fromToken, fromTokens, search, isFromTokensLoading]);
 
-  // Set the default destination token for the swap
+  // Set the default destination token and slippage for swaps
   useEffect(() => {
-    if (isSwap && fromChain && !toToken) {
-      dispatch(setToChainId(fromChain.chainId));
-      dispatch(setToToken(SOLANA_USDC_ASSET));
+    if (isSwap) {
+      dispatch(setSlippage(undefined));
+      if (fromChain && !toToken) {
+        dispatch(setToChainId(fromChain.chainId));
+        dispatch(setToToken(SOLANA_USDC_ASSET));
+      }
     }
   }, []);
 
@@ -772,6 +784,26 @@ const PrepareBridgePage = () => {
             ])}
             textAlign={TextAlign.Left}
             onClose={() => setIsLowReturnBannerOpen(false)}
+          />
+        )}
+        {tokenAlert && isTokenAlertBannerOpen && (
+          <BannerAlert
+            ref={tokenAlertBannerRef}
+            marginInline={4}
+            marginBottom={3}
+            title={tokenAlert.titleId ? t(tokenAlert.titleId) : ''}
+            severity={
+              tokenAlert.type === TokenFeatureType.MALICIOUS
+                ? BannerAlertSeverity.Danger
+                : BannerAlertSeverity.Warning
+            }
+            description={
+              tokenAlert.descriptionId
+                ? t(tokenAlert.descriptionId)
+                : tokenAlert.description
+            }
+            textAlign={TextAlign.Left}
+            onClose={() => setIsTokenAlertBannerOpen(false)}
           />
         )}
         {!isLoading &&
