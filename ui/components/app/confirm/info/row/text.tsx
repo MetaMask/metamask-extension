@@ -8,6 +8,7 @@ import {
   IconColor,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
+import { escapeHiddenUnicode } from '../../../../../../shared/modules/string-utils';
 import {
   Box,
   ButtonIcon,
@@ -73,10 +74,10 @@ export const ConfirmInfoRowText: React.FC<ConfirmInfoRowTextProps> = ({
           wrapperStyle={{ minWidth: 0 }}
           interactive
         >
-          <InfoText text={text} />
+          <InfoText text={escapeHiddenUnicode(text)} />
         </Tooltip>
       ) : (
-        <InfoText text={text} />
+        <InfoText text={escapeHiddenUnicode(text)} />
       )}
     </Box>
   );

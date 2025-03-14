@@ -8,7 +8,6 @@ import {
 } from '../../../../../../shared/constants/signatures';
 import { isValidHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 
-import { sanitizeString } from '../../../../../helpers/utils/util';
 import { Box } from '../../../../../components/component-library';
 import { BlockSize } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -20,6 +19,7 @@ import {
   ConfirmInfoRowTextTokenUnits,
 } from '../../../../../components/app/confirm/info/row';
 import { useGetTokenStandardAndDetails } from '../../../hooks/useGetTokenStandardAndDetails';
+import { escapeHiddenUnicode } from '../../../../../../shared/modules/string-utils';
 
 type ValueType = string | Record<string, TreeData> | TreeData[];
 
@@ -113,7 +113,7 @@ export const DataTree = ({
     <Box width={BlockSize.Full}>
       {Object.entries(data).map(([label, { value, type }], i) => (
         <ConfirmInfoRow
-          label={`${sanitizeString(
+          label={`${escapeHiddenUnicode(
             label.charAt(0).toUpperCase() + label.slice(1),
           )}:`}
           style={{ paddingRight: 0 }}
@@ -205,6 +205,6 @@ const DataField = memo(
       return <ConfirmInfoRowText text={String(value)} />;
     }
 
-    return <ConfirmInfoRowText text={sanitizeString(value)} />;
+    return <ConfirmInfoRowText text={value} />;
   },
 );

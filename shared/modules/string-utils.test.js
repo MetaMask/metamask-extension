@@ -1,6 +1,22 @@
-import { isEqualCaseInsensitive, prependZero } from './string-utils';
+import {
+  escapeHiddenUnicode,
+  isEqualCaseInsensitive,
+  prependZero,
+} from './string-utils';
 
 describe('string-utils', () => {
+  describe('escapeHiddenUnicode', () => {
+    it('should return the same string when there are no hidden Unicode characters', () => {
+      expect(escapeHiddenUnicode('foo')).toBe('foo');
+    });
+
+    it('should escape hidden Unicode characters', () => {
+      expect(escapeHiddenUnicode('hello󠁶‮world\u2028hi∞')).toBe(
+        'hello󠁶U+202EworldU+2028hi∞',
+      );
+    });
+  });
+
   describe('isEqualCaseInsensitive', () => {
     it('should return true for FOO and foo', () => {
       expect(isEqualCaseInsensitive('FOO', 'foo')).toBeTruthy();
