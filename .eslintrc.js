@@ -13,7 +13,7 @@ const tsconfig = ts.parseJsonConfigFileContent(config, ts.sys, './');
 module.exports = {
   root: true,
   // Suggested addition from the storybook 6.5 update
-  extends: ['plugin:storybook/recommended'],
+  extends: ['plugin:storybook/recommended', 'plugin:react-perf/recommended'],
   // Ignore files which are also in .prettierignore
   ignorePatterns: readFileSync('.prettierignore', 'utf8').trim().split('\n'),
   // eslint's parser, esprima, is not compatible with ESM, so use the babel parser instead
