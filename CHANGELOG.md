@@ -9,25 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [12.14.0]
 ### Added
 - Add Unichain logo ([#30361](https://github.com/MetaMask/metamask-extension/pull/30361))
-- Integrate multichain assets rates controller to extension UI ([#30291](https://github.com/MetaMask/metamask-extension/pull/30291))
-- Integrate SPL tokens and rates from multichainAssetsRates ([#30389](https://github.com/MetaMask/metamask-extension/pull/30389))
-- Enable switching between EVM and non-EVM networks within Bridge experience ([#30595](https://github.com/MetaMask/metamask-extension/pull/30595))
-- Calculate Solana quote fees ([#30574](https://github.com/MetaMask/metamask-extension/pull/30574))
-- Track Solana bridge transactions ([#30619](https://github.com/MetaMask/metamask-extension/pull/30619))
-- Add fetching for Solana quotes, account picker, and quote card ([#30452](https://github.com/MetaMask/metamask-extension/pull/30452))
-- Fix Solana snap validation ([#30596](https://github.com/MetaMask/metamask-extension/pull/30596))
-- Convert non-EVM amounts to fiat ([#30568](https://github.com/MetaMask/metamask-extension/pull/30568))
-- Fetch non-EVM token list and refreshed quote rates ([#30567](https://github.com/MetaMask/metamask-extension/pull/30567))
-- Implement submission of multichain transactions ([#30416](https://github.com/MetaMask/metamask-extension/pull/30416))
 - Add modal to include metric ID before redirecting to the support page ([#30415](https://github.com/MetaMask/metamask-extension/pull/30415))
-- Add UI preparation changes for multichain connection flow ([#30164](https://github.com/MetaMask/metamask-extension/pull/30164))
+- Add support for Mega Testnet for new users ([#30871](https://github.com/MetaMask/metamask-extension/pull/#30871))
+- Add support for Mega Testnet for existing users ([#30895](https://github.com/MetaMask/metamask-extension/pull/#30895))
 
 ### Changed
 - Improve account sync with primary SRP filtering, bulk account creation, and removed synced accounts limit ([#30529](https://github.com/MetaMask/metamask-extension/pull/30529))
 - Bump Snaps dependencies ([#30396](https://github.com/MetaMask/metamask-extension/pull/30396))
 - Set swap input parameters ([#30284](https://github.com/MetaMask/metamask-extension/pull/30284))
 - Adjust swap input selection defaults ([#30600](https://github.com/MetaMask/metamask-extension/pull/30600))
-- Refactor asset picker to support non-EVM tokens ([#30313](https://github.com/MetaMask/metamask-extension/pull/30313))
 - Handle `displayAccountNameSuggestion` flag in Snap Keyring ([#30531](https://github.com/MetaMask/metamask-extension/pull/30531))
 - Remove supported chains check ([#29773](https://github.com/MetaMask/metamask-extension/pull/29773))
 - Revist list of supported currencies ([#30324](https://github.com/MetaMask/metamask-extension/pull/30324))
@@ -40,9 +30,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refresh activity page upon specific events ([#30571](https://github.com/MetaMask/metamask-extension/pull/30571))
 - Exclude smart transaction status page from rate limiting ([#30537](https://github.com/MetaMask/metamask-extension/pull/30537))
 - Improve performance by preventing unnecessary AddressCopyButton re-renders ([#30289](https://github.com/MetaMask/metamask-extension/pull/30289))
+- Update Mega Testnet logo ([#30883](https://github.com/MetaMask/metamask-extension/pull/#30883))
 
 ### Fixed
-- Fix swap source token balance on multichain networks ([#30622](https://github.com/MetaMask/metamask-extension/pull/30622))
 - Fix network switch issue on dApps ([#30211](https://github.com/MetaMask/metamask-extension/pull/30211))
 - Fix spinner display in NFT tab ([#30427](https://github.com/MetaMask/metamask-extension/pull/30427))
 - Fix chain ID inconsistency between NFT and global settings ([#30517](https://github.com/MetaMask/metamask-extension/pull/30517))
@@ -51,6 +41,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix critical error message visibility in dark mode ([#30570](https://github.com/MetaMask/metamask-extension/pull/30570))
 - Fix text visibility issues on the error page in dark mode ([#30408](https://github.com/MetaMask/metamask-extension/pull/30408))
 - Fix page reload issue during SRP creation ([#30178](https://github.com/MetaMask/metamask-extension/pull/30178))
+
+### Beta
+- Add UI preparation changes for multichain connection flow ([#30164](https://github.com/MetaMask/metamask-extension/pull/30164))
+- Integrate multichain assets rates controller to extension UI ([#30291](https://github.com/MetaMask/metamask-extension/pull/30291))
+- Refactor asset picker to support non-EVM tokens ([#30313](https://github.com/MetaMask/metamask-extension/pull/30313))
+- Integrate SPL tokens and rates from multichainAssetsRates ([#30389](https://github.com/MetaMask/metamask-extension/pull/30389))
+- Implement submission of multichain transactions ([#30416](https://github.com/MetaMask/metamask-extension/pull/30416))
+- Add fetching for Solana quotes, account picker, and quote card ([#30452](https://github.com/MetaMask/metamask-extension/pull/30452))
+- Fetch non-EVM token list and refreshed quote rates ([#30567](https://github.com/MetaMask/metamask-extension/pull/30567))
+- Convert non-EVM amounts to fiat ([#30568](https://github.com/MetaMask/metamask-extension/pull/30568))
+- Calculate Solana quote fees ([#30574](https://github.com/MetaMask/metamask-extension/pull/30574))
+- Enable switching between EVM and non-EVM networks within Bridge experience ([#30595](https://github.com/MetaMask/metamask-extension/pull/30595))
+- Fix Solana snap validation ([#30596](https://github.com/MetaMask/metamask-extension/pull/30596))
+- Track Solana bridge transactions ([#30619](https://github.com/MetaMask/metamask-extension/pull/30619))
+- Fix swap source token balance on multichain networks ([#30622](https://github.com/MetaMask/metamask-extension/pull/30622))
 
 ## [12.13.0]
 ### Added
