@@ -1,16 +1,12 @@
-#!/usr/bin/env node
-
-/* eslint-disable node/shebang */
-const path = require('path');
-const { promises: fs } = require('fs');
-const yargs = require('yargs/yargs');
-const { hideBin } = require('yargs/helpers');
-const {
-  isWritable,
+import { promises as fs } from 'fs';
+import path from 'path';
+import { hideBin } from 'yargs/helpers';
+import yargs from 'yargs/yargs';
+import { exitWithError } from '../../../development/lib/exit-with-error';
+import {
   getFirstParentDirectoryThatExists,
-} = require('../../helpers/file');
-
-const { exitWithError } = require('../../../development/lib/exit-with-error');
+  isWritable,
+} from '../../helpers/file';
 
 /**
  * The e2e test case is used to capture bundle time statistics for extension.

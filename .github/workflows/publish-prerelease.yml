@@ -50,15 +50,23 @@ jobs:
 
           echo "Getting artifacts from pipeline '${pipeline_id}', workflow '${workflow_id}', build number '${build_num}', job id '${job_id}'"
 
-      - name: Get CircleCI job artifacts
-        env:
-          CIRCLE_WORKFLOW_JOB_ID: ${{ steps.get-circleci-job-details.outputs.CIRCLE_WORKFLOW_JOB_ID }}
-        run: |
-          mkdir -p test-artifacts/chrome/benchmark
-          curl --silent --location "https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0/test-artifacts/chrome/benchmark/pageload.json" > "test-artifacts/chrome/benchmark/pageload.json"
+      - name: Get benchmark job artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./test-artifacts/benchmarks/
+          pattern: benchmark-*
+          merge-multiple: true
 
-          mkdir -p test-artifacts/chrome
-          curl --silent --location "https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0/test-artifacts/chrome/bundle_size.json" > "test-artifacts/chrome/bundle_size.json"
+      - name: Get bundle-size job artifact
+        uses: actions/download-artifact@v4
+        with:
+          path: ./test-artifacts/chrome/
+          pattern: bundle-size
+          merge-multiple: true
+
+      - run: |
+          echo "Benchmark artifacts:"
+          ls -R ./test-artifacts/
 
       - name: Publish prerelease
         env:
@@ -69,4 +77,4 @@ jobs:
           CIRCLE_BUILD_NUM: ${{ steps.get-circleci-job-details.outputs.CIRCLE_BUILD_NUM }}
           CIRCLE_WORKFLOW_JOB_ID: ${{ steps.get-circleci-job-details.outputs.CIRCLE_WORKFLOW_JOB_ID }}
           HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
-        run: ./development/metamaskbot-build-announce.js
+        run: yarn tsx ./development/metamaskbot-build-announce.mjs

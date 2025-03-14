@@ -10,25 +10,15 @@ then
     exit 1
 fi
 
-if [[ "${CIRCLECI:-}" != 'true' ]]
-then
-    printf '%s\n' 'CIRCLECI environment variable must be set to true'
-    exit 1
-fi
+# if [[ "${GITHUB_REF_NAME}" != "main" ]]
+# then
+#     printf 'This is not the main branch'
+#     exit 0
+# fi
 
-if [[ "${CIRCLE_BRANCH}" != "main" ]]
+if [[ -z "${EXTENSION_BUNDLESIZE_STATS_TOKEN:-}" ]]
 then
-    printf 'This is not main branch'
-    exit 0
-fi
-
-if [[ -z "${GITHUB_TOKEN:-}" ]]
-then
-    printf '%s\n' 'GITHUB_TOKEN environment variable must be set'
-    exit 1
-elif [[ -z "${GITHUB_TOKEN_USER:-}" ]]
-then
-    printf '%s\n' 'GITHUB_TOKEN_USER environment variable must be set'
+    printf '%s\n' 'EXTENSION_BUNDLESIZE_STATS_TOKEN environment variable must be set'
     exit 1
 fi
 
@@ -38,10 +28,10 @@ git config --global user.email "metamaskbot@users.noreply.github.com"
 
 git config --global user.name "MetaMask Bot"
 
-git clone git@github.com:MetaMask/extension_bundlesize_stats.git temp
+git clone https://github.com/MetaMask/extension_bundlesize_stats.git temp --depth 1
 
 {
-    echo " '${CIRCLE_SHA1}': ";
+    echo " '${GITHUB_SHA}': ";
     cat test-artifacts/chrome/bundle_size_stats.json;
     echo ", ";
 } >> temp/stats/bundle_size_data.temp.js
@@ -56,14 +46,14 @@ if [ -f temp/stats/bundle_size_data.json ]; then
 
   {
     echo "},";
-    echo "\"$CIRCLE_SHA1\":";
+    echo "\"$GITHUB_SHA\":";
     cat test-artifacts/chrome/bundle_size_stats.json;
     echo "}";
   } >> bundle_size_stats.temp.json
 else
   {
     echo "{";
-    echo "\"$CIRCLE_SHA1\":";
+    echo "\"$GITHUB_SHA\":";
     cat test-artifacts/chrome/bundle_size_stats.json;
     echo "}";
   } > bundle_size_stats.temp.json
@@ -76,10 +66,10 @@ cd temp
 
 git add .
 
-git commit --message "Adding bundle size at commit: ${CIRCLE_SHA1}"
+git commit --message "Adding bundle size at commit: ${GITHUB_SHA}"
 
-repo_slug="$CIRCLE_PROJECT_USERNAME/extension_bundlesize_stats"
-git push "https://$GITHUB_TOKEN_USER:$GITHUB_TOKEN@github.com/$repo_slug" main
+repo_slug="$GITHUB_REPOSITORY_OWNER/extension_bundlesize_stats"
+git push "https://metamaskbot:$EXTENSION_BUNDLESIZE_STATS_TOKEN@github.com/$repo_slug" main
 
 cd ..
 
