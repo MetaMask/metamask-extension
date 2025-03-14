@@ -89,7 +89,7 @@ test.beforeAll(
 );
 
 // TODO: Skipping test as it's failing in the pipeline for unknown reasons
-test.skip(`Get quote on Mainnet Network`, async () => {
+test(`Get quote on Mainnet Network`, async () => {
   await walletPage.selectSwapAction();
   await walletPage.page.waitForTimeout(3000);
   await swapPage.enterQuote({
@@ -117,8 +117,6 @@ test(`Add Custom Networks and import test account`, async () => {
 
   await walletPage.importAccount(wallet.privateKey);
   expect(walletPage.accountMenu).toHaveText('Account 2', { timeout: 30000 });
-  // Allow balance to be available
-  await walletPage.page.waitForTimeout(10000);
 });
 
 testSet.forEach((options) => {
