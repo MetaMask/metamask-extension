@@ -1,8 +1,8 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { DEFAULT_BTC_BALANCE } from '../../constants';
+import { DEFAULT_ACCOUNT_NAME, DEFAULT_BTC_BALANCE } from '../../constants';
 import BitcoinHomepage from '../../page-objects/pages/home/bitcoin-homepage';
-import { DEFAULT_ACCOUNT_NAME, withBtcAccountSnap } from './common-btc';
+import { withBtcAccountSnap } from './common-btc';
 
 describe('BTC Account - Overview', function (this: Suite) {
   it('has balance displayed and has portfolio button enabled for BTC accounts', async function () {

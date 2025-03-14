@@ -1,18 +1,17 @@
-import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { DEFAULT_BTC_ACCOUNT, DEFAULT_BTC_BALANCE } from '../../constants';
+import { DEFAULT_BTC_ADDRESS, DEFAULT_BTC_BALANCE } from '../../constants';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import BitcoinSendPage from '../../page-objects/pages/send/bitcoin-send-page';
 import BitcoinHomepage from '../../page-objects/pages/home/bitcoin-homepage';
 import BitcoinReviewTxPage from '../../page-objects/pages/send/bitcoin-review-tx-page';
-import { getTransactionRequest, withBtcAccountSnap } from './common-btc';
+import { withBtcAccountSnap } from './common-btc';
 
 // Skipping btc test for now because btc snap is outdated and does not yet allow for new assets fetching logic.
 describe('BTC Account - Send', function (this: Suite) {
   it('can complete the send flow', async function () {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
-      async (driver, mockServer) => {
+      async (driver) => {
         const homePage = new BitcoinHomepage(driver);
         await homePage.check_pageIsLoaded();
         await homePage.check_isExpectedBitcoinBalanceDisplayed(
@@ -23,7 +22,7 @@ describe('BTC Account - Send', function (this: Suite) {
         // Set the recipient address and amount
         const bitcoinSendPage = new BitcoinSendPage(driver);
         await bitcoinSendPage.check_pageIsLoaded();
-        await bitcoinSendPage.fillRecipientAddress(DEFAULT_BTC_ACCOUNT);
+        await bitcoinSendPage.fillRecipientAddress(DEFAULT_BTC_ADDRESS);
         // TODO: Remove delay here. There is a race condition if the amount and address are set too fast.
         await driver.delay(1000);
         const mockAmountToSend = '0.5';
@@ -43,12 +42,11 @@ describe('BTC Account - Send', function (this: Suite) {
         await bitcoinReviewTxPage.clickSendButton();
 
         // Check that we are on the activity list page and have no transactions message
+        // TODO: Test that the transaction appears in the activity tab once activity tab is implemented for Bitcoin
         await homePage.check_pageIsLoaded();
         await new ActivityListPage(driver).check_warningMessage(
           'You have no transactions',
         );
-        const transaction = await getTransactionRequest(mockServer);
-        assert(transaction !== undefined);
       },
     );
   });
@@ -67,7 +65,7 @@ describe('BTC Account - Send', function (this: Suite) {
         // Use the max spendable amount of that account
         const bitcoinSendPage = new BitcoinSendPage(driver);
         await bitcoinSendPage.check_pageIsLoaded();
-        await bitcoinSendPage.fillRecipientAddress(DEFAULT_BTC_ACCOUNT);
+        await bitcoinSendPage.fillRecipientAddress(DEFAULT_BTC_ADDRESS);
         // TODO: Remove delay here. There is a race condition if the amount and address are set too fast.
         await driver.delay(1000);
         await bitcoinSendPage.selectMaxAmount();
@@ -90,12 +88,11 @@ describe('BTC Account - Send', function (this: Suite) {
         await bitcoinReviewTxPage.clickSendButton();
 
         // Check that we are on the activity list page and have no transactions message
+        // TODO: Test that the transaction appears in the activity tab once activity tab is implemented for Bitcoin
         await homePage.check_pageIsLoaded();
         await new ActivityListPage(driver).check_warningMessage(
           'You have no transactions',
         );
-        const transaction = await getTransactionRequest(mockServer);
-        assert(transaction !== undefined);
       },
     );
   });

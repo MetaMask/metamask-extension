@@ -8,8 +8,8 @@ import LoginPage from '../../page-objects/pages/login-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import { ACCOUNT_TYPE } from '../../constants';
-import { DEFAULT_ACCOUNT_NAME, withBtcAccountSnap } from './common-btc';
+import { ACCOUNT_TYPE, DEFAULT_ACCOUNT_NAME } from '../../constants';
+import { withBtcAccountSnap } from './common-btc';
 
 describe('Create BTC Account', function (this: Suite) {
   it('create BTC account from the menu', async function () {
