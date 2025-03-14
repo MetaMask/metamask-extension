@@ -128,6 +128,10 @@ class HomePage {
     await this.driver.clickElement(this.sendButton);
   }
 
+  async startBridgeFlow(): Promise<void> {
+    await this.driver.clickElement(this.bridgeButton);
+  }
+
   async togglePrivacyBalance(): Promise<void> {
     await this.driver.clickElement(this.privacyBalanceToggle);
   }
