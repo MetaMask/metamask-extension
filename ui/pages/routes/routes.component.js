@@ -1,6 +1,6 @@
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { Component, Suspense } from 'react';
+import React, { PureComponent, Suspense } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 
@@ -135,7 +135,7 @@ const ReviewPermissions = mmLazy(() =>
 const Home = mmLazy(() => import('../home'));
 // End Lazy Routes
 
-export default class Routes extends Component {
+export default class Routes extends PureComponent {
   static propTypes = {
     currentCurrency: PropTypes.string,
     activeTabOrigin: PropTypes.string,

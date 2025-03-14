@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import {
   getCurrentChainId,
@@ -52,6 +51,7 @@ import { getIsUnlocked } from '../../ducks/metamask/metamask';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { selectSwitchedNetworkNeverShowMessage } from '../../components/app/toast-master/selectors';
 import Routes from './routes.component';
+import withOptimisedRouterProps from './withOptimisedRouterProps';
 
 function mapStateToProps(state) {
   const { activeTab, appState } = state;
@@ -158,6 +158,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default compose(
-  withRouter,
+  withOptimisedRouterProps,
   connect(mapStateToProps, mapDispatchToProps),
 )(Routes);
