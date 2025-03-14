@@ -18,7 +18,6 @@ import {
   getIsSigningQRHardwareTransaction,
   getNewNftAddedMessage,
   getNewTokensImported,
-  getShouldShowSeedPhraseReminder,
   getRemoveNftMessage,
   getApprovalFlows,
   getNewTokensImportedError,
@@ -70,6 +69,7 @@ import {
   AlertTypes,
   Web3ShimUsageAlertStates,
 } from '../../../shared/constants/alerts';
+import { getShouldShowSeedPhraseReminder } from '../../selectors/multi-srp/multi-srp';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -85,7 +85,8 @@ const mapStateToProps = (state) => {
     firstTimeFlowType,
     completedOnboarding,
   } = metamask;
-  const { address: selectedAddress } = getSelectedInternalAccount(state);
+  const selectedAccount = getSelectedInternalAccount(state);
+  const { address: selectedAddress } = selectedAccount;
   const { forgottenPassword } = metamask;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
   const queuedRequestCount = getQueuedRequestCount(state);
@@ -130,7 +131,10 @@ const mapStateToProps = (state) => {
     isBasicConfigurationModalOpen: appState.showBasicFunctionalityModal,
     forgottenPassword,
     swapsEnabled,
-    shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
+    shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(
+      state,
+      selectedAccount,
+    ),
     isPopup,
     isNotification,
     dataCollectionForMarketing,
