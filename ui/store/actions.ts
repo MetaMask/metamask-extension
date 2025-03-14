@@ -164,7 +164,7 @@ export function tryUnlockMetamask(
       await submitRequestToBackground('submitPassword', [password]);
       dispatch(unlockSucceeded());
       await forceUpdateMetamaskState(dispatch);
-    } catch(err) {
+    } catch (err) {
       dispatch(unlockFailed(getErrorMessage(err)));
       throw err;
     } finally {
