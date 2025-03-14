@@ -54,9 +54,10 @@ export function getApprovalFlows(state: ApprovalsMetaMaskState) {
   return state.metamask.approvalFlows;
 }
 
-export function getPendingApprovals(state: ApprovalsMetaMaskState) {
-  return Object.values(state.metamask.pendingApprovals ?? {});
-}
+export const getPendingApprovals = createSelector(
+  (state: ApprovalsMetaMaskState) => state.metamask.pendingApprovals,
+  (pendingApprovals) => Object.values(pendingApprovals ?? {}),
+);
 
 export function pendingApprovalsSortedSelector(state: ApprovalsMetaMaskState) {
   return getPendingApprovals(state).sort((a1, a2) => a1.time - a2.time);
