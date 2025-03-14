@@ -38,6 +38,7 @@ const render = () => {
 
 describe('SrpListItem', () => {
   beforeEach(() => {
+    // Reset mock implementations before each test
     mocks.useMultichainAccountTotalFiatBalance.mockReturnValue({
       totalFiatBalance: mockTotalFiatBalance,
     });

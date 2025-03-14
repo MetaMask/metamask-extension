@@ -530,24 +530,20 @@ export function addNewAccount(
   return async (dispatch, getState) => {
     const keyrings = getMetaMaskHdKeyrings(getState());
     const [defaultPrimaryKeyring] = keyrings;
-    let oldAccounts = defaultPrimaryKeyring.accounts;
 
+    // The HD keyring to add the account for.
+    let hdKeyring = defaultPrimaryKeyring;
     ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-    const hdKeyring = keyringId
-      ? keyrings.find(
-          (keyring) =>
-            keyring.type === KeyringTypes.hd &&
-            keyring.metadata.id === keyringId,
-        )
-      : keyrings[0];
-
+    if (keyringId) {
+      hdKeyring = keyrings.find((keyring) => keyring.metadata.id === keyringId);
+    }
+    ///: END:ONLY_INCLUDE_IF
+    // Fail-safe in case we could not find the associated HD keyring.
     if (!hdKeyring) {
-      console.log('Should never reach this. There is always a keyring');
+      console.error('Should never reach this. There is always a keyring');
       throw new Error('Keyring not found');
     }
-
-    oldAccounts = hdKeyring.accounts;
-    ///: END:ONLY_INCLUDE_IF
+    const oldAccounts = hdKeyring.accounts;
 
     dispatch(showLoadingIndication());
 
