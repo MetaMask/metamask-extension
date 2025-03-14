@@ -196,7 +196,7 @@ class PrivacySettings {
       await this.openSRPList();
       // We only pass in the srpIndex when there are multiple SRPs
       const srpSelector = {
-        text: `Secret Phrase ${srpIndex.toString()}`,
+        text: `Secret Recovery Phrase ${srpIndex.toString()}`,
         tag: 'p',
       };
       await this.driver.clickElement(srpSelector);
