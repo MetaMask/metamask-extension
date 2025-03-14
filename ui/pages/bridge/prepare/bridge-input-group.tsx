@@ -60,10 +60,12 @@ export const BridgeInputGroup = ({
   amountInFiat,
   onMaxButtonClick,
   isMultiselectEnabled,
+  buttonProps,
 }: {
   amountInFiat?: BigNumber;
   onAmountChange?: (value: string) => void;
   token: BridgeToken | null;
+  buttonProps: { testId: string };
   amountFieldProps: Pick<
     React.ComponentProps<typeof TextField>,
     'testId' | 'autoFocus' | 'value' | 'readOnly' | 'disabled' | 'className'
@@ -184,7 +186,7 @@ export const BridgeInputGroup = ({
           {(onClickHandler, networkImageSrc) =>
             isAmountReadOnly && !token ? (
               <Button
-                data-testid="bridge-destination-button"
+                data-testid={buttonProps.testId}
                 onClick={onClickHandler}
                 size={ButtonSize.Lg}
                 paddingLeft={6}
@@ -200,7 +202,7 @@ export const BridgeInputGroup = ({
                 networkImageSrc={networkImageSrc}
                 asset={(token as never) ?? undefined}
                 networkProps={networkProps}
-                data-testid="bridge-source-button"
+                data-testid={buttonProps.testId}
               />
             )
           }
