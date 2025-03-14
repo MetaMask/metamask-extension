@@ -6109,3 +6109,13 @@ export async function performSetStorage({
 export async function performGetStorage({ path }: { path: string }) {
   return await submitRequestToBackground('performGetStorage', [path]);
 }
+
+export async function upgradeHardwareAccount({
+  contractAddress,
+}: {
+  contractAddress: string;
+}): Promise<string> {
+  return await submitRequestToBackground('signEip7702Authorization', [
+    contractAddress,
+  ]);
+}

@@ -1,9 +1,15 @@
 import { Hex } from '@metamask/utils';
 import { TypedTransaction, TypedTxData } from '@ethereumjs/tx';
 import { Keyring } from '@metamask/keyring-utils';
-import { generatePrivateKey, privateKeyToAddress } from 'viem/accounts';
+import {
+  generatePrivateKey,
+  privateKeyToAccount,
+  privateKeyToAddress,
+} from 'viem/accounts';
 import { getStorageItem, setStorageItem } from '../lib/storage-helpers';
 import { MockKeyringBridge } from './mock-keyring-bridge';
+import { createWalletClient, http } from 'viem';
+import { eip7702Actions } from 'viem/experimental';
 
 const storageKeyHwAccounts = 'mock-hardware-internal-accounts';
 const storageKeyAccounts = 'mock-hardware-accounts';
@@ -195,11 +201,41 @@ export class MockKeyring implements Keyring {
     throw new Error('Method not implemented.');
   }
 
-  signEip7702Authorization?(
+  async signEip7702Authorization(
     address: Hex,
     authorization: [chainId: number, contractAddress: Hex, nonce: number],
-    options?: Record<string, unknown>,
+    _options?: Record<string, unknown>,
   ): Promise<string> {
-    throw new Error('Method not implemented.');
+    console.log('MockKeyring.signEip7702Authorization:', {
+      address,
+      authorization,
+    });
+    console.log('MockKeyring.accounts:', this.accounts);
+    const account = this.accounts.find(
+      (a) => a.address.toLowerCase() === address.toLowerCase(),
+    );
+    if (!account) {
+      throw new Error('Account not found lalala');
+    }
+    const walletClient = createWalletClient({
+      account: privateKeyToAccount(account.pk),
+      transport: http('http://127.0.0.1:8545'),
+    }).extend(eip7702Actions());
+
+    const res = await walletClient.signAuthorization({
+      chainId: authorization[0],
+      contractAddress: authorization[1],
+      nonce: authorization[2],
+    });
+    return Promise.resolve(
+      JSON.stringify({
+        chainId: res.chainId,
+        contractAddress: res.contractAddress,
+        nonce: res.nonce,
+        r: res.r,
+        s: res.s,
+        yParity: res.yParity,
+      }),
+    );
   }
 }

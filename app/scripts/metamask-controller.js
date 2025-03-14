@@ -4115,6 +4115,7 @@ export default class MetamaskController extends EventEmitter {
           this.metaMetricsDataDeletionController,
         ),
       // Trace
+      signEip7702Authorization: this.signEip7702Authorization.bind(this),
       endTrace,
     };
   }
@@ -4130,6 +4131,20 @@ export default class MetamaskController extends EventEmitter {
       approvalController: this.approvalController,
       deleteInterface,
       origin,
+    });
+  }
+
+  async signEip7702Authorization(contractAddress) {
+    const selectedAccount = this.accountsController.getSelectedAccount();
+    const nonce = await this.getNextNonce(
+      selectedAccount.address,
+      this.networkController.state.selectedNetworkClientId,
+    );
+    return this.keyringController.signEip7702Authorization({
+      chainId: 0,
+      from: selectedAccount.address,
+      nonce,
+      contractAddress,
     });
   }
 

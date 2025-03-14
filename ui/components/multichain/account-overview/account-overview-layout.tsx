@@ -3,7 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { isEqual } from 'lodash';
 ///: END:ONLY_INCLUDE_IF
-import { removeSlide, updateSlides } from '../../../store/actions';
+import {
+  addTransaction,
+  removeSlide,
+  updateSlides,
+  upgradeHardwareAccount,
+} from '../../../store/actions';
 import { Carousel } from '..';
 import {
   getSelectedAccountCachedBalance,
@@ -11,6 +16,8 @@ import {
   getSlides,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
+  getSelectedInternalAccount,
+  getInternalAccounts,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -22,6 +29,7 @@ import {
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
 import type { CarouselSlide } from '../../../../shared/constants/app-state';
+import { Button } from '../../component-library';
 import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
@@ -35,6 +43,7 @@ import {
   CASH_SLIDE,
   ZERO_BALANCE,
 } from './constants';
+import { isSmartContractAddress } from '../../../helpers/utils/transactions.util';
 
 export type AccountOverviewLayoutProps = AccountOverviewTabsProps & {
   children: React.ReactElement;
@@ -145,7 +154,89 @@ export const AccountOverviewLayout = ({
         onClose={handleRemoveSlide}
         onRenderSlides={handleRenderSlides}
       />
+      <UpgradeAccountButton />
       <AccountOverviewTabs {...tabsProps}></AccountOverviewTabs>
     </>
   );
 };
+
+export function UpgradeAccountButton() {
+  const [disabled, setDisabled] = useState(false);
+  const GATOR_7702_ADDRESS = '0x6BC560a993dadF0C228084dcCC49a59CEd4999BA';
+  const account = useSelector(getSelectedInternalAccount);
+  const accounts = useSelector(getInternalAccounts);
+  console.log('account', account);
+  console.log('accounts', accounts);
+
+  // get bytecode at account.address
+
+  const handleUpgradeAccount = useCallback(async () => {
+    console.log('handleUpgradeAccount');
+    const isSmartContract = await isSmartContractAddress(account.address);
+    console.log('isSmartContract', isSmartContract);
+    const spender = accounts[0].address as `0x${string}`;
+    const signature = await upgradeHardwareAccount({
+      contractAddress: GATOR_7702_ADDRESS,
+    });
+    console.log('signature', signature);
+    const parsed = JSON.parse(signature) as {
+      chainId: number;
+      contractAddress: `0x${string}`;
+      nonce: number;
+      r: `0x${string}`;
+      s: `0x${string}`;
+      yParity: number;
+    };
+    console.log('parsed', parsed);
+    console.log('submitting tx:', {
+      from: spender,
+      to: account.address,
+      value: '0x0',
+      authorizationList: [
+        {
+          // convert to Hex string format
+          chainId: `0x${parsed.chainId.toString(16)}`,
+          address: parsed.contractAddress,
+          nonce: `0x${parsed.nonce.toString(16)}`,
+          r: parsed.r,
+          s: parsed.s,
+          yParity: `0x${parsed.yParity.toString(16)}`,
+        },
+      ],
+    });
+    const txMeta = await addTransaction(
+      {
+        type: '0x4',
+        // from: spender,
+        from: account.address,
+        to: account.address,
+        value: '0x0',
+        authorizationList: [
+          {
+            // convert to Hex string format
+            chainId: `0x${parsed.chainId.toString(16)}`,
+            address: parsed.contractAddress,
+            nonce: `0x${parsed.nonce.toString(16)}`,
+            r: parsed.r,
+            s: parsed.s,
+            yParity: `0x${parsed.yParity.toString(16)}`,
+          },
+        ],
+      },
+      {
+        requireApproval: true,
+      },
+    );
+    console.log('txMeta', txMeta);
+  }, [account, accounts]);
+
+  if (account.metadata.keyring.type !== 'Mock Hardware') {
+    return null;
+  }
+
+  return (
+    <Button disabled={disabled} onClick={handleUpgradeAccount}>
+      {disabled ? 'Upgraded' : 'Upgrade Account'}
+    </Button>
+  );
+}
