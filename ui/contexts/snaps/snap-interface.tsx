@@ -20,6 +20,11 @@ import {
   updateInterfaceState,
   forceUpdateMetamaskState,
 } from '../../store/actions';
+import {
+  BackgroundColor,
+  IconColor,
+} from '../../helpers/constants/design-system';
+import { AvatarIcon, IconName } from '../../components/component-library';
 import { mergeValue } from './utils';
 
 export type HandleEvent = <Type extends State>(args: {
@@ -52,6 +57,8 @@ export type SnapInterfaceContextType = {
   setCurrentFocusedInput: SetCurrentInputFocus;
   focusedInput: string | null;
   snapId: string;
+  buttonsEnabled: boolean;
+  requireScroll: boolean;
 };
 
 export const SnapInterfaceContext =
@@ -62,6 +69,10 @@ export type SnapInterfaceContextProviderProps = {
   snapId: string;
   initialState: InterfaceState;
   context: Json;
+  requireScroll: boolean;
+  showArrow: boolean;
+  buttonsEnabled: boolean;
+  scrollToBottom: () => void;
 };
 
 /**
@@ -73,11 +84,25 @@ export type SnapInterfaceContextProviderProps = {
  * @param params.snapId - The Snap ID that requested the interface.
  * @param params.initialState - The initial state of the interface.
  * @param params.context - The context blob of the interface.
+ * @param params.requireScroll - Whether the interface requires scrolling.
+ * @param params.showArrow - Whether the scroll arrow button should be shown.
+ * @param params.buttonsEnabled - Whether the buttons should be enabled.
+ * @param params.scrollToBottom - The function to scroll to the bottom of the interface.
  * @returns The context provider.
  */
 export const SnapInterfaceContextProvider: FunctionComponent<
   SnapInterfaceContextProviderProps
-> = ({ children, interfaceId, snapId, initialState, context }) => {
+> = ({
+  children,
+  interfaceId,
+  snapId,
+  initialState,
+  context,
+  requireScroll,
+  showArrow,
+  buttonsEnabled,
+  scrollToBottom,
+}) => {
   const dispatch = useDispatch();
 
   // We keep an internal copy of the state to speed up the state update in the
@@ -255,9 +280,31 @@ export const SnapInterfaceContextProvider: FunctionComponent<
         setCurrentFocusedInput,
         focusedInput: focusedInput.current,
         snapId,
+        buttonsEnabled,
+        requireScroll,
       }}
     >
       {children}
+      {requireScroll && showArrow && (
+        <AvatarIcon
+          iconName={IconName.Arrow2Down}
+          data-testid="snap-ui-renderer__scroll-button"
+          backgroundColor={BackgroundColor.infoDefault}
+          color={IconColor.primaryInverse}
+          className="snap-ui-renderer__scroll-button"
+          onClick={scrollToBottom}
+          style={{
+            cursor: 'pointer',
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            zIndex: 'auto',
+            bottom: '84px',
+          }}
+        />
+      )}
     </SnapInterfaceContext.Provider>
   );
 };
