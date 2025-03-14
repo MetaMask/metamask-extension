@@ -6,7 +6,7 @@ import { getMockPersonalSignConfirmState } from '../../../../../test/data/confir
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import * as AlertActions from '../../../../ducks/confirm-alerts/confirm-alerts';
 
-import { useAddEthereumChainAlerts } from './useAddEthereumChainAlerts';
+import { useUpdateEthereumChainAlerts } from './useUpdateEthereumChainAlerts';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -35,11 +35,19 @@ const ADD_ETH_CHAIN_ALERT = [
   },
 ] as AlertActions.Alert[];
 
-describe('useAddEthereumChainAlerts', () => {
-  it('returns alert if there are pending confirmations', () => {
-    const state = getMockPersonalSignConfirmState();
+const SWITCH_ETH_CHAIN_ALERT = [
+  {
+    ...ADD_ETH_CHAIN_ALERT[0],
+    message:
+      'Switching network will cancel 1 pending transactions from this site.',
+  },
+] as AlertActions.Alert[];
+
+describe('useUpdateEthereumChainAlerts', () => {
+  const state = getMockPersonalSignConfirmState();
+  it('returns alert for approval type addEthereumChain if there are pending confirmations', () => {
     const { result } = renderHookWithProvider(
-      () => useAddEthereumChainAlerts(PENDING_APPROVAL_MOCK),
+      () => useUpdateEthereumChainAlerts(PENDING_APPROVAL_MOCK),
       {
         ...state,
         metamask: {
@@ -54,9 +62,42 @@ describe('useAddEthereumChainAlerts', () => {
     expect(result.current).toStrictEqual(ADD_ETH_CHAIN_ALERT);
   });
 
+  it('returns alert for approval type switchEthereumChain if there are pending confirmations', () => {
+    const { result } = renderHookWithProvider(
+      () =>
+        useUpdateEthereumChainAlerts({
+          ...PENDING_APPROVAL_MOCK,
+          type: ApprovalType.SwitchEthereumChain,
+        }),
+      {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          pendingApprovals: {
+            ...state.metamask.pendingApprovals,
+            [PENDING_APPROVAL_MOCK.id]: PENDING_APPROVAL_MOCK,
+          },
+        },
+      },
+    );
+    expect(result.current).toStrictEqual(SWITCH_ETH_CHAIN_ALERT);
+  });
+
   it('does not returns alert if there are no pending confirmations', () => {
     const { result } = renderHookWithProvider(
-      () => useAddEthereumChainAlerts(PENDING_APPROVAL_MOCK),
+      () => useUpdateEthereumChainAlerts(PENDING_APPROVAL_MOCK),
+      mockState,
+    );
+    expect(result.current).toStrictEqual([]);
+  });
+
+  it('does not returns alert for un-supported pending confirmation type', () => {
+    const { result } = renderHookWithProvider(
+      () =>
+        useUpdateEthereumChainAlerts({
+          ...PENDING_APPROVAL_MOCK,
+          type: ApprovalType.PersonalSign,
+        }),
       mockState,
     );
     expect(result.current).toStrictEqual([]);
