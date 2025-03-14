@@ -73,12 +73,17 @@ import {
   shouldEmitDappViewedEvent,
 } from './lib/util';
 import { createOffscreen } from './offscreen';
+import { setupMultiplex } from './lib/stream-utils';
 import { generateWalletState } from './fixtures/generate-wallet-state';
 import rawFirstTimeState from './first-time-state';
 
 /* eslint-enable import/first */
 
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
+import {
+  METAMASK_CAIP_PROVIDER,
+  METAMASK_EIP_1193_PROVIDER,
+} from './constants/stream';
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
@@ -394,6 +399,7 @@ function overrideContentSecurityPolicyHeader() {
 let connectRemote;
 let connectExternalExtension;
 let connectExternalCaip;
+let connectRemoteCaip;
 
 browser.runtime.onConnect.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
@@ -1023,6 +1029,10 @@ export function setupController(
         });
       }
       connectExternalExtension(remotePort);
+
+      if (process.env.MULTICHAIN_API && isFirefox) {
+        connectRemoteCaip(remotePort);
+      }
     }
   };
 
@@ -1055,6 +1065,32 @@ export function setupController(
 
     controller.setupUntrustedCommunicationCaip({
       connectionStream: portStream,
+      sender: remotePort.sender,
+    });
+  };
+
+  connectRemoteCaip = async (remotePort) => {
+    if (!process.env.MULTICHAIN_API) {
+      return;
+    }
+
+    if (metamaskBlockedPorts.includes(remotePort.name)) {
+      return;
+    }
+
+    // this is triggered when a new tab is opened, or origin(url) is changed
+    if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
+      trackDappView(remotePort);
+    }
+
+    const portStream =
+      overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+
+    const mux = setupMultiplex(portStream);
+    mux.ignoreStream(METAMASK_EIP_1193_PROVIDER);
+
+    controller.setupUntrustedCommunicationCaip({
+      connectionStream: mux.createStream(METAMASK_CAIP_PROVIDER),
       sender: remotePort.sender,
     });
   };
