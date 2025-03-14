@@ -8,9 +8,11 @@ const mockStore = configureStore([]);
 const store = mockStore({
   appState: {
     isLoading: false,
+  },
+  metamask: {
     isSignedIn: true,
     sessionData: undefined,
-  },
+  }
 });
 
 const meta: Meta<typeof RestoreVaultPage> = {
