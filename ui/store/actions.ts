@@ -612,6 +612,7 @@ export function connectHardware(
   deviceName: HardwareDeviceNames,
   page: string,
   hdPath: string,
+  loadHid: boolean,
   t: (key: string) => string,
 ): ThunkAction<
   Promise<{ address: string }[]>,
@@ -630,6 +631,7 @@ export function connectHardware(
     let accounts: { address: string }[];
     try {
       if (
+        loadHid &&
         deviceName === HardwareDeviceNames.ledger &&
         ledgerTransportType === LedgerTransportTypes.webhid
       ) {
