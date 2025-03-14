@@ -101,7 +101,7 @@ export default function TokenCell({
         },
       });
     },
-    [onClick, token.chainId, token.address],
+    [onClick, token, showScamWarningModal, trackEvent],
   );
 
   const handleScamWarningModal = (arg: boolean) => {
