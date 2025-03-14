@@ -29,6 +29,7 @@ import { section } from './section';
 import { avatar } from './avatar';
 import { banner } from './banner';
 import { skeleton } from './skeleton';
+import { addressInput } from './address-input';
 
 export const COMPONENT_MAPPING = {
   Box: box,
@@ -41,6 +42,7 @@ export const COMPONENT_MAPPING = {
   Copyable: copyable,
   Row: row,
   Address: address,
+  AddressInput: addressInput,
   Avatar: avatar,
   Button: button,
   FileInput: fileInput,
