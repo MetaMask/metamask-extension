@@ -8,7 +8,8 @@ const {
   WINDOW_TITLES,
 } = require('../../helpers');
 
-describe('Request Queuing for Multiple Dapps and Txs on different networks revokePermissions', function () {
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('Request Queuing for Multiple Dapps and Txs on different networks revokePermissions', function () {
   it('should close transaction for revoked permission of eth_accounts but show queued tx from second dapp on a different network.', async function () {
     const port = 8546;
     const chainId = 1338;

@@ -6,6 +6,7 @@ import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import FixtureBuilder from '../../fixture-builder';
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
 
+// eslint-disable-next-line mocha/no-skipped-tests
 describe('Request Queuing', function () {
   // TODO: add a new spec which checks that after revoking and connecting again
   // a pending tx is still closed when using revokePermissions.
