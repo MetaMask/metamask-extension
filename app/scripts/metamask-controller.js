@@ -2758,7 +2758,8 @@ export default class MetamaskController extends EventEmitter {
         const { currentLocale } = currState;
 
         const filtredChainIds = this.#getAllAddedNetworks().filter(
-          (networkId) => currState.incomingTransactionsPreferences[networkId],
+          (networkId) =>
+            currState?.incomingTransactionsPreferences?.[networkId],
         );
 
         await updateCurrentLocale(currentLocale);
