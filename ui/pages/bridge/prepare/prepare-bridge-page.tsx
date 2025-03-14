@@ -505,7 +505,7 @@ const PrepareBridgePage = () => {
           value: fromAmount || undefined,
         }}
         isTokenListLoading={isFromTokensLoading}
-        buttonProps={{ testId: 'bridge-source-button'}}
+        buttonProps={{ testId: 'bridge-source-button' }}
       />
 
       <Column
@@ -646,7 +646,7 @@ const PrepareBridgePage = () => {
               : 'amount-input',
           }}
           isTokenListLoading={isToTokensLoading}
-          buttonProps={{ testId: 'bridge-destination-button'}}
+          buttonProps={{ testId: 'bridge-destination-button' }}
         />
 
         {isSolanaBridgeEnabled && isToOrFromSolana && (
