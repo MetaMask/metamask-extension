@@ -251,7 +251,7 @@ describe('Request-queue UI changes', function () {
   });
 
   // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('handles three confirmations on three confirmations concurrently', async function () {
+  it('handles three confirmations on three confirmations concurrently', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
     await withFixtures(
@@ -327,7 +327,10 @@ describe('Request-queue UI changes', function () {
         });
 
         // Reject this transaction, wait for second confirmation window to close, third to display
-        await rejectTransactionRedesign(driver);
+        await driver.clickElement({
+          tag: 'button',
+          text: 'Cancel',
+        });
         await driver.delay(veryLargeDelayMs);
 
         if (!IS_FIREFOX) {
