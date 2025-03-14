@@ -69,3 +69,32 @@ jobs:
       build-artifact: dist-e2e-tests
       build-command: yarn build:test
       test-command: yarn test:e2e:chrome:rpc
+
+  test-report:
+    needs:
+      - test-e2e-chrome
+      - test-e2e-chrome-flask
+      - test-e2e-chrome-multiple-providers
+      - test-e2e-chrome-rpc
+    runs-on: ubuntu-22.04
+    if: always()
+    steps:
+      - name: Checkout and setup environment
+        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        with:
+          is-high-risk-environment: false
+
+      - name: Download test results
+        uses: actions/download-artifact@v4
+        with:
+          path: ./test-results
+          pattern: test-e2e-*
+          merge-multiple: true
+
+      - name: Test Report
+        uses: dorny/test-reporter@6e6a65b7a0bd2c9197df7d0ae36ac5cee784230c
+        with:
+          name: 📝 Consolidated E2E Tests Report
+          path: './test-results/test/test-results/e2e/**/*.xml'
+          reporter: jest-junit
+          fail-on-empty: 'false'

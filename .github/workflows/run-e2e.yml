@@ -95,7 +95,7 @@ jobs:
 
       - name: Run E2E tests
         timeout-minutes: ${{ inputs.test-timeout-minutes }}
-        run: ${{ inputs.test-command }}
+        run: ${{ inputs.test-command }} --retries 1
 
       - name: Upload test results and artifacts
         if: always()
@@ -105,28 +105,3 @@ jobs:
           path: |
             ./test-artifacts
             ./test/test-results/e2e
-
-  test-report:
-    needs: run-e2e
-    runs-on: ubuntu-22.04
-    if: success() || failure()
-    steps:
-      - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
-        with:
-          is-high-risk-environment: false
-
-      - name: Download test results
-        uses: actions/download-artifact@v4
-        with:
-          path: .
-          pattern: test-e2e-chrome-*
-          merge-multiple: true
-
-      - name: Test Report
-        uses: dorny/test-reporter@6e6a65b7a0bd2c9197df7d0ae36ac5cee784230c
-        with:
-          name: 📝 Tests report (${{ inputs.test-suite-name }})
-          path: ${{ inputs.tests_report_path }}
-          reporter: jest-junit
-          fail-on-empty: 'false'
