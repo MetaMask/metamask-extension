@@ -32,7 +32,7 @@ import {
 } from '../../shared/constants/errors';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
-import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
+import { SUPPORT_LINK, VAULT_RECOVERY_LINK } from '../../shared/lib/ui-utils';
 import {
   getErrorHtml,
   getStateCorruptionErrorHtml,
@@ -357,7 +357,7 @@ async function displayCriticalError(errorKey, err, metamaskState) {
 }
 
 async function displayStateCorruptionError(err, metamaskState) {
-  const html = await getStateCorruptionErrorHtml(SUPPORT_LINK, metamaskState);
+  const html = await getStateCorruptionErrorHtml(SUPPORT_LINK, VAULT_RECOVERY_LINK, metamaskState);
   container.innerHTML = html;
 
   const button = document.getElementById('critical-error-button');

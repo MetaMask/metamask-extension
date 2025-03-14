@@ -100,7 +100,7 @@ export async function getErrorHtml(errorKey, supportLink, metamaskState) {
     `);
 }
 
-export async function getStateCorruptionErrorHtml(supportLink, metamaskState) {
+export async function getStateCorruptionErrorHtml(supportLink, vaultRecoveryLink, metamaskState) {
   let response, preferredLocale;
   if (metamaskState?.currentLocale) {
     preferredLocale = metamaskState.currentLocale;
@@ -118,6 +118,15 @@ export async function getStateCorruptionErrorHtml(supportLink, metamaskState) {
     <p>
       ${t('stateCorruptionDetectedErrorMessage')}
     </p>
+    <p>
+      <a
+        href=${vaultRecoveryLink}
+        class="critical-error__link"
+        target="_blank"
+        rel="noopener noreferrer">
+          ${t('stateCorruptionDetectedErrorMessageVaultRecoveryLink')}
+      </a>
+    </p>
     <p class="critical-error__footer">
       <span>${t('unexpectedBehavior')}</span>
       <a
@@ -126,7 +135,7 @@ export async function getStateCorruptionErrorHtml(supportLink, metamaskState) {
         target="_blank"
         rel="noopener noreferrer">
           ${t('sendBugReport')}
-        </a>
+      </a>
     </p>
   `);
 }
