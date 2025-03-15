@@ -385,14 +385,18 @@ class AssetListPage {
    * This function checks if the specified number of token items is displayed in the token list.
    *
    * @param expectedNumber - The number of token items expected to be displayed. Defaults to 1.
+   * @param timeout - The timeout in milliseconds for the check. Defaults to 10000.
    * @returns A promise that resolves if the expected number of token items is displayed.
    */
-  async check_tokenItemNumber(expectedNumber: number = 1): Promise<void> {
+  async check_tokenItemNumber(
+    expectedNumber: number = 1,
+    timeout: number = 10000,
+  ): Promise<void> {
     console.log(`Waiting for ${expectedNumber} token items to be displayed`);
     await this.driver.wait(async () => {
       const tokenItemsNumber = await this.getNumberOfAssets();
       return tokenItemsNumber === expectedNumber;
-    }, 10000);
+    }, timeout);
     console.log(
       `Expected number of token items ${expectedNumber} is displayed.`,
     );
