@@ -2413,11 +2413,18 @@ export default class MetamaskController extends EventEmitter {
   }
 
   triggerNetworkrequests() {
+    const filtredChainIds = this.#getAllAddedNetworks().filter(
+      (networkId) =>
+        this.preferencesController.state.incomingTransactionsPreferences[
+          networkId
+        ],
+    );
+
     this.txController.stopIncomingTransactionPolling();
 
-    this.txController.startIncomingTransactionPolling([
-      this.#getGlobalChainId(),
-    ]);
+    this.txController.stopIncomingTransactionPolling();
+
+    this.txController.startIncomingTransactionPolling(filtredChainIds);
 
     this.tokenDetectionController.enable();
     this.getInfuraFeatureFlags();
@@ -2780,19 +2787,16 @@ export default class MetamaskController extends EventEmitter {
       'PreferencesController:stateChange',
       previousValueComparator(async (prevState, currState) => {
         const { currentLocale } = currState;
-        const chainId = this.#getGlobalChainId();
+
+        const filtredChainIds = this.#getAllAddedNetworks().filter(
+          (networkId) =>
+            currState?.incomingTransactionsPreferences?.[networkId],
+        );
 
         await updateCurrentLocale(currentLocale);
 
-        if (currState.incomingTransactionsPreferences?.[chainId]) {
-          this.txController.stopIncomingTransactionPolling();
-
-          this.txController.startIncomingTransactionPolling([
-            this.#getGlobalChainId(),
-          ]);
-        } else {
-          this.txController.stopIncomingTransactionPolling();
-        }
+        this.txController.stopIncomingTransactionPolling();
+        this.txController.startIncomingTransactionPolling(filtredChainIds);
 
         this.#checkTokenListPolling(currState, prevState);
       }, this.preferencesController.state),
@@ -2948,15 +2952,19 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       'NetworkController:networkDidChange',
       async () => {
+        const filtredChainIds = this.#getAllAddedNetworks().filter(
+          (networkId) =>
+            this.preferencesController.state.incomingTransactionsPreferences[
+              networkId
+            ],
+        );
         await this.txController.stopIncomingTransactionPolling();
 
-        await this.txController.updateIncomingTransactions([
-          this.#getGlobalChainId(),
-        ]);
+        await this.txController.updateIncomingTransactions(filtredChainIds);
 
-        await this.txController.startIncomingTransactionPolling([
-          this.#getGlobalChainId(),
-        ]);
+        await this.txController.startIncomingTransactionPolling(
+          filtredChainIds,
+        );
       },
     );
 
@@ -8131,6 +8139,14 @@ export default class MetamaskController extends EventEmitter {
     );
 
     return globalNetworkClient.configuration.chainId;
+  }
+
+  #getAllAddedNetworks() {
+    const networksConfig =
+      this.networkController.state.networkConfigurationsByChainId;
+    const chainIds = Object.keys(networksConfig);
+
+    return chainIds;
   }
 
   /**
