@@ -6,6 +6,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { exportAsFile } from '../../../helpers/utils/export-utils';
 import AdvancedTab from '.';
+import { setDefaultNetwork, getDefaultNetwork, MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 
 const mockSetAutoLockTimeLimit = jest.fn().mockReturnValue({ type: 'TYPE' });
 const mockSetShowTestNetworks = jest.fn();
@@ -160,6 +161,21 @@ describe('AdvancedTab Component', () => {
       await waitFor(() => {
         expect(mockDisplayErrorInSettings).toHaveBeenCalledTimes(1);
       });
+    });
+  });
+
+  describe('renderDefaultNetworkSetting', () => {
+    it('should render the default network setting', () => {
+      const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
+      const defaultNetworkSetting = queryByTestId('advanced-setting-default-network');
+      expect(defaultNetworkSetting).toBeInTheDocument();
+    });
+
+    it('should update the default network when a new network is selected', () => {
+      const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
+      const defaultNetworkSelect = queryByTestId('advanced-setting-default-network').querySelector('select');
+      fireEvent.change(defaultNetworkSelect, { target: { value: MultichainNetworks.SOLANA } });
+      expect(getDefaultNetwork()).toBe(MultichainNetworks.SOLANA);
     });
   });
 });
