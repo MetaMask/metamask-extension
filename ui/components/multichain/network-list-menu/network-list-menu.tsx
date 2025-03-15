@@ -500,9 +500,9 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
                   marginRight={4}
                   borderRadius={BorderRadius.LG}
                   padding={4}
-                  marginBottom={4}
                   marginTop={2}
-                  backgroundColor={BackgroundColor.backgroundAlternative}
+                  gap={4}
+                  backgroundColor={BackgroundColor.backgroundMuted}
                   startAccessory={
                     <Box
                       display={Display.Flex}
