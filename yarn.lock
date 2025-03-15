@@ -19165,6 +19165,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-plugin-react-perf@npm:^3.3.3":
+  version: 3.3.3
+  resolution: "eslint-plugin-react-perf@npm:3.3.3"
+  peerDependencies:
+    eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0 || ^9.0.0
+  checksum: 10/fc3446aa785714a1d6d06a52c0e6a28ca41c498185f0d3d7154c312d3d8b74059cb5c6ece4b2babb5cc0b3ad350870c84c098122c30a4d70098b58b819da555f
+  languageName: node
+  linkType: hard
+
 "eslint-plugin-react@npm:^7.23.1":
   version: 7.30.1
   resolution: "eslint-plugin-react@npm:7.30.1"
@@ -27528,6 +27537,7 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-react: "npm:^7.23.1"
     eslint-plugin-react-hooks: "npm:^4.2.0"
+    eslint-plugin-react-perf: "npm:^3.3.3"
     eslint-plugin-storybook: "npm:^0.6.15"
     eta: "npm:^3.2.0"
     eth-chainlist: "npm:~0.0.498"
