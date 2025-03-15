@@ -22,6 +22,18 @@ const PENDING_APPROVAL_MOCK = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as ApprovalRequest<any>;
 
+const PERMISSION_MOCK = {
+  id: 'testApprovalId',
+  requestData: {
+    testProperty: 'testValue',
+    metadata: { isSwitchEthereumChain: true },
+  },
+  type: ApprovalType.WalletRequestPermissions,
+  origin: 'https://metamask.github.io',
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+} as unknown as ApprovalRequest<any>;
+
 const ADD_ETH_CHAIN_ALERT = [
   {
     actions: [
@@ -76,6 +88,27 @@ describe('useUpdateEthereumChainAlerts', () => {
           pendingApprovals: {
             ...state.metamask.pendingApprovals,
             [PENDING_APPROVAL_MOCK.id]: PENDING_APPROVAL_MOCK,
+          },
+        },
+      },
+    );
+    expect(result.current).toStrictEqual(SWITCH_ETH_CHAIN_ALERT);
+  });
+
+  it('returns alert for permission request  with isLegacySwitchEthereumChain if there are pending confirmations', () => {
+    const { result } = renderHookWithProvider(
+      () =>
+        useUpdateEthereumChainAlerts({
+          ...PERMISSION_MOCK,
+          type: ApprovalType.SwitchEthereumChain,
+        }),
+      {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          pendingApprovals: {
+            ...state.metamask.pendingApprovals,
+            [PERMISSION_MOCK.id]: PERMISSION_MOCK,
           },
         },
       },

@@ -1534,6 +1534,7 @@ describe('MetaMaskController', () => {
         ).toHaveBeenCalledWith(
           { origin: 'test.com' },
           expectedCaip25Permission,
+          undefined,
         );
       });
 
