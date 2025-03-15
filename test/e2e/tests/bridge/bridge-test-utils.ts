@@ -140,7 +140,7 @@ export const getBridgeFixtures = (
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
     localNodeOptions: {
       hardfork: 'london',
-      chain: { chainId: CHAIN_IDS.MAINNET },
+      chainId: 1,
     },
     title,
   };

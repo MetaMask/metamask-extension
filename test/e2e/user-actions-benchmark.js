@@ -8,7 +8,6 @@ const {
   getFirstParentDirectoryThatExists,
 } = require('../helpers/file');
 const {
-  convertToHexValue,
   withFixtures,
   openActionMenuAndStartSendFlow,
   logInWithBalanceValidation,
@@ -16,23 +15,15 @@ const {
 } = require('./helpers');
 const FixtureBuilder = require('./fixture-builder');
 
-const ganacheOptions = {
-  accounts: [
-    {
-      secretKey:
-        '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-      balance: convertToHexValue(25000000000000000000),
-    },
-  ],
-};
-
 async function loadNewAccount() {
   let loadingTimes;
 
   await withFixtures(
     {
       fixtures: new FixtureBuilder().build(),
-      localNodeOptions: ganacheOptions,
+      localNodeOptions: {
+        accounts: 1,
+      },
       disableServerMochaToBackground: true,
     },
     async ({ driver }) => {
@@ -64,7 +55,9 @@ async function confirmTx() {
   await withFixtures(
     {
       fixtures: new FixtureBuilder().build(),
-      localNodeOptions: ganacheOptions,
+      localNodeOptions: {
+        accounts: 1,
+      },
       disableServerMochaToBackground: true,
     },
     async ({ driver }) => {
