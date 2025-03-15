@@ -68,6 +68,7 @@ describe('ConfirmInfoRowText', () => {
       </I18nContext.Provider>,
     );
 
-    expect(screen.getByText('HelloU+E0076U+202EworldU+2028hi∞')).toBeInTheDocument();
+    const element = screen.getByRole('paragraph');
+    expect(element).toHaveTextContent('HelloU+E0076U+202EworldU+2028hi∞');
   });
 });
