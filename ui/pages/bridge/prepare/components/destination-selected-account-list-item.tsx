@@ -24,9 +24,19 @@ import {
 import { getUseBlockie } from '../../../../selectors';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
+// eslint-disable-next-line import/no-restricted-paths
+import { t } from '../../../../../app/scripts/translate';
+
+type ExternalAccount = {
+  address: string;
+  metadata: {
+    name: string;
+  };
+  isExternal: true;
+};
 
 type DestinationSelectedAccountListItemProps = {
-  account: InternalAccount;
+  account: InternalAccount | ExternalAccount;
   selected: boolean;
   onClick?: () => void;
 };
@@ -35,6 +45,7 @@ const DestinationSelectedAccountListItem: React.FC<
   DestinationSelectedAccountListItemProps
 > = ({ account, selected, onClick }) => {
   const useBlockie = useSelector(getUseBlockie);
+  const isExternalAccount = 'isExternal' in account && account.isExternal;
 
   return (
     <Box
@@ -64,7 +75,7 @@ const DestinationSelectedAccountListItem: React.FC<
 
       <Box display={Display.Flex} style={{ flexDirection: 'column' }}>
         <Text variant={TextVariant.bodyMdMedium} marginBottom={1}>
-          {account.metadata.name}
+          {isExternalAccount ? t('externalAccount') : account.metadata.name}
         </Text>
 
         <Text
