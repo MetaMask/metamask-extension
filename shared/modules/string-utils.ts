@@ -23,8 +23,8 @@ export function escapeHiddenUnicode(str: string) {
         (code >= 0x200b && code <= 0x200f) || // Zero-width, RTL, LTR markers
         (code >= 0x202a && code <= 0x202e) || // Unicode directional controls
         (code >= 0x2066 && code <= 0x2069) || // Formatting characters
-        code === 0x2028 ||
-        code === 0x2029 || // Line separator, paragraph separator
+        code === 0x2028 || // Line separator
+        code === 0x2029 || // Paragraph separator
         code === 0xfeff || // Byte Order Mark (BOM)
         (code >= 0xe000 && code <= 0xf8ff) || // Private-use characters
         (code >= 0xe0020 && code <= 0xe007f) // Tags (Invisible characters)

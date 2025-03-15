@@ -11,7 +11,8 @@ describe('string-utils', () => {
     });
 
     it('should escape hidden Unicode characters', () => {
-      expect(escapeHiddenUnicode('hello󠁶‮world\u2028hi∞')).toBe(
+      // eslint-disable-next-line no-multi-str
+      expect(escapeHiddenUnicode('hello󠁶‮world hi∞')).toBe(
         'helloU+E0076U+202EworldU+2028hi∞',
       );
     });
