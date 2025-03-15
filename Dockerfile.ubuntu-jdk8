@@ -1,0 +1,35 @@
+# Use Ubuntu 18.04 as the base image
+FROM ubuntu:18.04
+
+# Set the working directory
+WORKDIR /usr
+
+# Install necessary dependencies
+RUN apt-get update && apt-get install -y \
+    nodejs \
+    npm \
+    curl
+
+# Create directory for Java
+RUN mkdir /usr/local/java
+
+# Add JDK 8
+ADD jdk-8u301-linux-x64.tar.gz /usr/local/java/
+
+# Set environment variables for Java
+ENV JAVA_HOME /usr/local/java/jdk1.8.0_301
+ENV JRE_HOME $JAVA_HOME/jre
+ENV CLASSPATH $JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:$JRE_HOME/lib:$CLASSPATH
+ENV PATH $JAVA_HOME/bin:$PATH
+
+# Copy the project files to the container
+COPY . .
+
+# Install project dependencies
+RUN npm install
+
+# Expose the port the app runs on
+EXPOSE 3000
+
+# Start the application
+CMD ["node", "server.js"]
