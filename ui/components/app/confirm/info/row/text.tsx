@@ -20,7 +20,7 @@ import Tooltip from '../../../../ui/tooltip';
 
 const InfoText = ({ text }: { text: string }) => (
   <Text color={TextColor.inherit} style={{ whiteSpace: 'pre-wrap' }}>
-    {text}
+    {escapeHiddenUnicode(text)}
   </Text>
 );
 
@@ -74,10 +74,10 @@ export const ConfirmInfoRowText: React.FC<ConfirmInfoRowTextProps> = ({
           wrapperStyle={{ minWidth: 0 }}
           interactive
         >
-          <InfoText text={escapeHiddenUnicode(text)} />
+          <InfoText text={text} />
         </Tooltip>
       ) : (
-        <InfoText text={escapeHiddenUnicode(text)} />
+        <InfoText text={text} />
       )}
     </Box>
   );
