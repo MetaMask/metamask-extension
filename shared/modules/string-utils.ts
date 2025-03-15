@@ -26,7 +26,8 @@ export function escapeHiddenUnicode(str: string) {
         code === 0x2028 ||
         code === 0x2029 || // Line separator, paragraph separator
         code === 0xfeff || // Byte Order Mark (BOM)
-        (code >= 0xe000 && code <= 0xf8ff) // Private-use characters
+        (code >= 0xe000 && code <= 0xf8ff) || // Private-use characters
+        (code >= 0xe0020 && code <= 0xe007f) // Tags (Invisible characters)
       ) {
         return `U+${code.toString(16).toUpperCase().padStart(4, '0')}`;
       }
