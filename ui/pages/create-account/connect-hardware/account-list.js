@@ -240,6 +240,16 @@ class AccountList extends Component {
   }
 
   render() {
+    console.log('AccountList - render');
+    console.log('AccountList - render, accounts:', this.props.accounts);
+    console.log(
+      'AccountList - render, connectedAccounts:',
+      this.props.connectedAccounts,
+    );
+    console.log(
+      'AccountList - render, selectedAccounts:',
+      this.props.selectedAccounts,
+    );
     return (
       <div className="new-external-account-form account-list">
         {this.renderHeader()}

@@ -1,0 +1,14 @@
+diff --git a/dist/utils.mjs b/dist/utils.mjs
+index 407fe8c531ffbd0c3fcc2af7ce89982d99f50cd9..d86823adaf3433500a5f8071abe585beb8787087 100644
+--- a/dist/utils.mjs
++++ b/dist/utils.mjs
+@@ -15,6 +15,9 @@ export function keyringTypeToName(keyringType) {
+         return 'Custody';
+     }
+     switch (keyringType) {
++        case 'Mock Hardware': {
++            return 'Mock';
++        }
+         case KeyringTypes.simple: {
+             return 'Account';
+         }

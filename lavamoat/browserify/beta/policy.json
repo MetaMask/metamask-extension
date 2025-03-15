@@ -1112,7 +1112,7 @@
         "@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
-        "@metamask/accounts-controller>@metamask/keyring-utils": true,
+        "@metamask/keyring-utils": true,
         "@metamask/utils": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "uuid": true
@@ -1510,7 +1510,7 @@
         "@metamask/eth-snap-keyring>@metamask/eth-sig-util": true,
         "@metamask/keyring-api": true,
         "@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client": true,
-        "@metamask/eth-snap-keyring>@metamask/keyring-utils": true,
+        "@metamask/keyring-utils": true,
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils": true,
         "webpack>events": true,
@@ -1692,22 +1692,12 @@
     "@metamask/keyring-snap-client": {
       "packages": {
         "@metamask/keyring-api": true,
-        "@metamask/keyring-api>@metamask/keyring-utils": true,
+        "@metamask/keyring-snap-client>@metamask/keyring-utils": true,
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/keyring-snap-client>uuid": true
       }
     },
-    "@metamask/accounts-controller>@metamask/keyring-utils": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "bitcoin-address-validation": true
-      }
-    },
-    "@metamask/eth-snap-keyring>@metamask/keyring-utils": {
+    "@metamask/keyring-utils": {
       "globals": {
         "URL": true
       },
@@ -1718,6 +1708,16 @@
       }
     },
     "@metamask/keyring-api>@metamask/keyring-utils": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "bitcoin-address-validation": true
+      }
+    },
+    "@metamask/keyring-snap-client>@metamask/keyring-utils": {
       "globals": {
         "URL": true
       },
