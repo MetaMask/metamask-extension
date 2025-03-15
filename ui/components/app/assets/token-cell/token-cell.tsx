@@ -45,12 +45,14 @@ export type TokenCellProps = {
   token: TokenWithFiatAmount;
   privacyMode?: boolean;
   onClick?: (chainId: string, address: string) => void;
+  showPrimaryDisplay?: boolean;
 };
 
 export default function TokenCell({
   token,
   privacyMode = false,
   onClick,
+  showPrimaryDisplay = true,
 }: TokenCellProps) {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -160,10 +162,12 @@ export default function TokenCell({
             justifyContent={JustifyContent.spaceBetween}
           >
             <TokenCellPercentChange token={{ ...token, ...tokenDisplayInfo }} />
-            <TokenCellPrimaryDisplay
-              token={{ ...token, ...tokenDisplayInfo }}
-              privacyMode={privacyMode}
-            />
+            {showPrimaryDisplay ? (
+              <TokenCellPrimaryDisplay // this is the component that is showing the token balance which is not needed for protocols tokens
+                token={{ ...token, ...tokenDisplayInfo }}
+                privacyMode={privacyMode}
+              />
+            ) : null}
           </Box>
         </Box>
       </Box>
