@@ -29,8 +29,10 @@ import { section } from './section';
 import { avatar } from './avatar';
 import { banner } from './banner';
 import { skeleton } from './skeleton';
+import { assetSelector } from './asset-selector';
 
 export const COMPONENT_MAPPING = {
+  AssetSelector: assetSelector,
   Box: box,
   Heading: heading,
   Text: text,

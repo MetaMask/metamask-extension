@@ -5098,6 +5098,9 @@
   "snapResultSuccessDescription": {
     "message": "$1 is ready to use"
   },
+  "snapUIAssetSelectorTitle": {
+    "message": "Select an asset"
+  },
   "snapUpdateAlertDescription": {
     "message": "Get the latest version of $1",
     "description": "Description used in Snap update alert banner when snap update is available. $1 is the Snap name."
