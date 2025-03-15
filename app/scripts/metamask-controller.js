@@ -19,7 +19,7 @@ import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { debounce, throttle, memoize, wrap, pick } from 'lodash';
+import { debounce, throttle, memoize, wrap, pick, cloneDeep } from 'lodash';
 import {
   KeyringController,
   KeyringTypes,
@@ -135,6 +135,7 @@ import { isSnapId } from '@metamask/snaps-utils';
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import { isEvmAccountType } from '@metamask/keyring-api';
+import { hasProperty, hexToBigInt, toCaipChainId } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 
 import {
@@ -162,7 +163,6 @@ import {
   walletRevokeSession,
   walletInvokeMethod,
 } from '@metamask/multichain';
-import { hexToBigInt, toCaipChainId } from '@metamask/utils';
 import {
   methodsRequiringNetworkSwitch,
   methodsThatCanSwitchNetworkWithoutApproval,
@@ -185,10 +185,8 @@ import {
   NETWORK_TYPES,
   NetworkStatus,
   MAINNET_DISPLAY_NAME,
+  DEFAULT_CUSTOM_TESTNET_MAP,
   UNSUPPORTED_RPC_METHODS,
-  MEGAETH_TESTNET_DISPLAY_NAME,
-  TEST_NETWORK_TICKER_MAP,
-  MEGAETH_TESTNET_IMAGE_URL,
 } from '../../shared/constants/network';
 import { getAllowedSmartTransactionsChainIds } from '../../shared/constants/smartTransactions';
 
@@ -396,6 +394,11 @@ import {
 } from './controller-init/snaps';
 import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
+import {
+  getCallsStatus,
+  getCapabilities,
+  processSendCalls,
+} from './lib/transaction/eip5792';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -601,27 +604,18 @@ export default class MetamaskController extends EventEmitter {
       networks[CHAIN_IDS.MAINNET].name = MAINNET_DISPLAY_NAME;
       delete networks[CHAIN_IDS.GOERLI];
       delete networks[CHAIN_IDS.LINEA_GOERLI];
-      // Add MegaETH Testnet as a default network
-      networks[CHAIN_IDS.MEGAETH_TESTNET] = {
-        chainId: CHAIN_IDS.MEGAETH_TESTNET,
-        name: MEGAETH_TESTNET_DISPLAY_NAME,
-        nativeCurrency: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MEGAETH_TESTNET],
-        blockExplorerUrls: ['https://www.megaexplorer.xyz'],
-        defaultRpcEndpointIndex: 0,
-        rpcEndpoints: [
-          {
-            networkClientId: 'megaeth-testnet',
-            url: 'https://carrot.megaeth.com/rpc',
-            type: 'custom',
-          },
-        ],
-        imageUrl: MEGAETH_TESTNET_IMAGE_URL,
-      };
+
+      // Due to the MegaETH Testnet not being included in getDefaultNetworkControllerState().
+      // and it is not using Infura as a provider, we need to add it manually.
+      networks[CHAIN_IDS.MEGAETH_TESTNET] = cloneDeep(
+        DEFAULT_CUSTOM_TESTNET_MAP[CHAIN_IDS.MEGAETH_TESTNET],
+      );
 
       Object.values(networks).forEach((network) => {
         const id = network.rpcEndpoints[0].networkClientId;
-        if (id !== 'megaeth-testnet') {
-          // Skip for our custom network
+        // Process only if the default network has a corresponding networkClientId in BlockExplorerUrl.
+        // Note: The MegaETH Testnet is currently the only network that is not included.
+        if (hasProperty(BlockExplorerUrl, id)) {
           network.blockExplorerUrls = [BlockExplorerUrl[id]];
         }
         network.defaultBlockExplorerUrlIndex = 0;
@@ -2152,6 +2146,31 @@ export default class MetamaskController extends EventEmitter {
           (meta) =>
             meta.hash === hash && meta.status === TransactionStatus.submitted,
         ),
+
+      // EIP-5792
+      processSendCalls: processSendCalls.bind(
+        null,
+        {
+          addTransactionBatch: this.txController.addTransactionBatch.bind(
+            this.txController,
+          ),
+          getDisabledAccountUpgradeChains:
+            this.preferencesController.getDisabledAccountUpgradeChains.bind(
+              this.preferencesController,
+            ),
+        },
+        this.controllerMessenger,
+      ),
+      getCallsStatus: getCallsStatus.bind(null, this.controllerMessenger),
+      getCapabilities: getCapabilities.bind(null, {
+        isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
+          this.txController,
+        ),
+        getDisabledAccountUpgradeChains:
+          this.preferencesController.getDisabledAccountUpgradeChains.bind(
+            this.preferencesController,
+          ),
+      }),
     });
 
     // ensure isClientOpenAndUnlocked is updated when memState updates
@@ -2623,6 +2642,37 @@ export default class MetamaskController extends EventEmitter {
               }
 
               return mnemonic;
+            } catch {
+              throw new Error(`Entropy source with ID "${source}" not found.`);
+            }
+          },
+          getMnemonicSeed: async (source) => {
+            if (!source) {
+              return this.getPrimaryKeyringMnemonicSeed();
+            }
+
+            try {
+              const { type, seed } = await this.controllerMessenger.call(
+                'KeyringController:withKeyring',
+                {
+                  id: source,
+                },
+                async ({ keyring }) => ({
+                  type: keyring.type,
+                  seed: keyring.seed,
+                }),
+              );
+
+              if (type !== KeyringTypes.hd || !seed) {
+                // The keyring isn't guaranteed to have a seed (e.g.,
+                // hardware wallets, which can't be used as entropy sources),
+                // so we throw an error if it doesn't.
+                throw new Error(
+                  `Entropy source with ID "${source}" not found.`,
+                );
+              }
+
+              return seed;
             } catch {
               throw new Error(`Entropy source with ID "${source}" not found.`);
             }
@@ -3526,6 +3576,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController,
       ),
       setTheme: preferencesController.setTheme.bind(preferencesController),
+      disableAccountUpgradeForChain:
+        preferencesController.disableAccountUpgradeForChain.bind(
+          preferencesController,
+        ),
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       setSnapsAddSnapAccountModalDismissed:
         preferencesController.setSnapsAddSnapAccountModalDismissed.bind(
@@ -4793,6 +4847,20 @@ export default class MetamaskController extends EventEmitter {
     }
 
     return keyring.mnemonic;
+  }
+
+  /**
+   * Gets the mnemonic seed of the user's primary keyring.
+   */
+  getPrimaryKeyringMnemonicSeed() {
+    const [keyring] = this.keyringController.getKeyringsByType(
+      KeyringType.hdKeyTree,
+    );
+    if (!keyring.seed) {
+      throw new Error('Primary keyring mnemonic unavailable.');
+    }
+
+    return keyring.seed;
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -6412,6 +6480,8 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController,
           origin,
         ),
+        hasApprovalRequestsForOrigin: () =>
+          this.approvalController.has({ origin }),
         rejectApprovalRequestsForOrigin: () =>
           this.rejectOriginPendingApprovals(origin),
 

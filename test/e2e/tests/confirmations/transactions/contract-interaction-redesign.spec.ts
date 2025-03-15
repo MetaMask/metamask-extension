@@ -129,7 +129,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             .build(),
           localNodeOptions: {
             ...defaultGanacheOptionsForType2Transactions,
-            network_id: hexToNumber(CHAIN_IDS.OPTIMISM),
             chainId: hexToNumber(CHAIN_IDS.OPTIMISM),
           },
           smartContract,
