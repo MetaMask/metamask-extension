@@ -2057,22 +2057,6 @@ describe('MetaMaskController', () => {
                 ).toHaveBeenCalledTimes(1);
               });
 
-              it('should call preferencesController.setAccountLabel', async () => {
-                jest.spyOn(
-                  metamaskController.preferencesController,
-                  'setAccountLabel',
-                );
-
-                await metamaskController.unlockHardwareWalletAccount(
-                  accountToUnlock,
-                  device,
-                );
-
-                expect(
-                  metamaskController.preferencesController.setAccountLabel,
-                ).toHaveBeenCalledTimes(1);
-              });
-
               it('should call accountsController.getAccountByAddress', async () => {
                 jest.spyOn(
                   metamaskController.accountsController,
@@ -2104,9 +2088,37 @@ describe('MetaMaskController', () => {
                   metamaskController.accountsController.setAccountName,
                 ).toHaveBeenCalledTimes(1);
               });
+
+              it('should call getNextAvailableLabel', async () => {
+                jest.spyOn(metamaskController, 'getNextAvailableLabel');
+                await metamaskController.unlockHardwareWalletAccount(
+                  accountToUnlock,
+                  device,
+                );
+                expect(
+                  metamaskController.getNextAvailableLabel,
+                ).toHaveBeenCalledTimes(1);
+              });
             });
           },
         );
+      });
+      describe('getNextAvailableLabel', () => {
+        it('should return next label if account name already exists', () => {
+          jest
+            .spyOn(metamaskController.accountsController, 'listAccounts')
+            .mockImplementationOnce(() => [
+              { metadata: { name: 'Ledger 4' } },
+              { metadata: { name: 'Ledger 6' } },
+            ]);
+          const nextLabel = metamaskController.getNextAvailableLabel(
+            3,
+            HardwareDeviceNames.ledger,
+            undefined,
+          );
+
+          expect(nextLabel).toStrictEqual('Ledger 5');
+        });
       });
     });
 
