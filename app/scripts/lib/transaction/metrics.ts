@@ -1,10 +1,14 @@
 import { BigNumber } from 'bignumber.js';
 import { isHexString } from 'ethereumjs-util';
 import {
+  NestedTransactionMetadata,
   TransactionMeta,
+  TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Json } from '@metamask/utils';
+import { Hex } from 'viem';
+import { errorCodes } from '@metamask/rpc-errors';
 import {
   MESSAGE_TYPE,
   ORIGIN_METAMASK,
@@ -977,6 +981,11 @@ async function buildEventFragmentProperties({
   const swapAndSendMetricsProperties =
     getSwapAndSendMetricsProps(transactionMeta);
 
+  const batchProperties = await getBatchProperties(
+    transactionMeta,
+    transactionMetricsRequest.getMethodData,
+  );
+
   /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
   let properties = {
     chain_id: chainId,
@@ -1004,10 +1013,12 @@ async function buildEventFragmentProperties({
     // ui_customizations must come after ...blockaidProperties
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
     transaction_advanced_view: isAdvancedDetailsOpen,
-    transaction_contract_method: transactionContractMethod,
+    transaction_contract_method: transactionContractMethod
+      ? [transactionContractMethod]
+      : [],
     ...smartTransactionMetricsProperties,
     ...swapAndSendMetricsProperties,
-    ...getBatchProperties(transactionMeta),
+    ...batchProperties,
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as Record<string, any>;
@@ -1034,7 +1045,9 @@ async function buildEventFragmentProperties({
     first_seen: time,
     gas_limit: gasLimit,
     transaction_replaced: transactionReplaced,
-    transaction_contract_address: transactionContractAddress,
+    transaction_contract_address: transactionContractAddress
+      ? [transactionContractAddress]
+      : [],
     transaction_contract_method_4byte: transactionContractMethod4Byte,
     ...extraParams,
     ...gasParamsInGwei,
@@ -1152,10 +1165,13 @@ function allowanceAmountInRelationToTokenBalance(
   return null;
 }
 
-function getBatchProperties(transactionMeta: TransactionMeta) {
-  const properties: Record<string, Json> = {};
+async function getBatchProperties(
+  transactionMeta: TransactionMeta,
+  getMethodData: (data: string) => Promise<{ name?: string } | undefined>,
+) {
+  const properties: Record<string, Json | undefined> = {};
   const isExternal = origin && origin !== ORIGIN_METAMASK;
-  const { nestedTransactions, txParams } = transactionMeta;
+  const { delegationAddress, nestedTransactions, txParams } = transactionMeta;
   const { authorizationList } = txParams;
   const isBatch = Boolean(nestedTransactions?.length);
   const isUpgrade = Boolean(authorizationList?.length);
@@ -1167,11 +1183,49 @@ function getBatchProperties(transactionMeta: TransactionMeta) {
   }
 
   if (isBatch) {
-    properties.batch_transaction_count = nestedTransactions?.length as number;
+    properties.batch_transaction_count = nestedTransactions?.length;
     properties.batch_transaction_method = 'eip7702';
+
+    properties.transaction_contract_method = await getNestedMethodNames(
+      nestedTransactions ?? [],
+      getMethodData,
+    );
+
+    properties.transaction_contract_address = nestedTransactions
+      ?.filter(
+        (tx) =>
+          tx.type === TransactionType.contractInteraction && tx.to?.length,
+      )
+      .map((tx) => tx.to as string);
+  }
+
+  if (transactionMeta.status === TransactionStatus.rejected) {
+    const { error } = transactionMeta;
+
+    properties.eip7702_upgrade_rejection =
+      isUpgrade &&
+      (error.code as unknown as number) === errorCodes.rpc.methodNotSupported;
   }
 
   properties.eip7702_upgrade_transaction = isUpgrade;
+  properties.account_eip7702_upgraded = delegationAddress;
 
   return properties;
+}
+
+async function getNestedMethodNames(
+  transactions: NestedTransactionMetadata[],
+  getMethodData: (data: string) => Promise<{ name?: string } | undefined>,
+): Promise<string[]> {
+  const allData = transactions
+    .filter((tx) => tx.type === TransactionType.contractInteraction && tx.data)
+    .map((tx) => tx.data as Hex);
+
+  const results = await Promise.all(allData.map((data) => getMethodData(data)));
+
+  const names = results
+    .map((result) => result?.name)
+    .filter((name) => name?.length) as string[];
+
+  return names;
 }
