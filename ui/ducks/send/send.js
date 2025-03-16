@@ -4,7 +4,7 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 import BigNumber from 'bignumber.js';
-import { addHexPrefix, zeroAddress } from 'ethereumjs-util';
+import { addHexPrefix, zeroAddress, isHexString } from 'ethereumjs-util';
 import { cloneDeep, debounce } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { providerErrors } from '@metamask/rpc-errors';
@@ -30,6 +30,7 @@ import {
   RECIPIENT_TYPES,
   SWAPS_NO_QUOTES,
   SWAPS_QUOTES_ERROR,
+  INVALID_HEX_DATA_ERROR,
 } from '../../pages/confirmations/send/send.constants';
 
 import {
@@ -1372,6 +1373,15 @@ const slice = createSlice({
         state.draftTransactions[state.currentTransactionUUID];
       draftTransaction.recipient.recipientWarningAcknowledged = true;
       slice.caseReducers.validateSendState(state);
+    },
+
+    updateUserInputHexDataError: (state, action) => {
+      const draftTransaction =
+        state.draftTransactions[state.currentTransactionUUID];
+      draftTransaction.hexData = {
+        ...draftTransaction.hexData,
+        error: action?.payload,
+      };
     },
 
     /**
@@ -2767,9 +2777,23 @@ export function updateSendHexData(hexData) {
     );
 
     await dispatch(actions.updateUserInputHexData(hexData));
+
+    console.log('isHexString', hexData, isHexString(hexData));
+    console.log(
+      hexData === '' || isHexString(hexData) ? null : INVALID_HEX_DATA_ERROR,
+    );
+
+    await dispatch(
+      actions.updateUserInputHexDataError(
+        hexData === '' || isHexString(hexData) ? null : INVALID_HEX_DATA_ERROR,
+      ),
+    );
+
     const state = getState();
     const draftTransaction =
       state[name].draftTransactions[state[name].currentTransactionUUID];
+
+    console.log('draftTransaction', draftTransaction);
 
     await dispatch(
       updateSendQuote(draftTransaction.sendAsset.type === AssetType.native),
@@ -3381,7 +3405,7 @@ export function getIsBalanceInsufficient(state) {
 }
 
 /**
- * Selector that returns the amoung send mode, either MAX or INPUT.
+ * Selector that returns the amount send mode, either MAX or INPUT.
  *
  * @type {Selector<boolean>}
  */
@@ -3463,7 +3487,7 @@ export function getRecipient(state) {
 }
 
 /**
- * Selector that returns the addres of the current draft transaction's
+ * Selector that returns the address of the current draft transaction's
  * recipient.
  *
  * @type {Selector<?string>}
@@ -3509,6 +3533,7 @@ export function getSendErrors(state) {
   return {
     gasFee: getCurrentDraftTransaction(state).gas?.error,
     amount: getCurrentDraftTransaction(state).amount?.error,
+    hexData: getCurrentDraftTransaction(state).hexData?.error,
   };
 }
 
