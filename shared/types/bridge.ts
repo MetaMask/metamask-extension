@@ -234,3 +234,11 @@ export type TokenV3Asset = {
   name: string;
   decimals: number;
 };
+
+export type ExternalAccount = {
+  address: string;
+  metadata: {
+    name: string;
+  };
+  isExternal: true;
+};

@@ -28,18 +28,9 @@ import { t } from '../../../../../app/scripts/translate';
 // eslint-disable-next-line import/no-restricted-paths
 import { isEthAddress } from '../../../../../app/scripts/lib/multichain/address';
 import { isSolanaAddress } from '../../../../../shared/lib/multichain/accounts';
+import { ExternalAccount } from '../../../../../shared/types/bridge';
 import DestinationSelectedAccountListItem from './destination-selected-account-list-item';
 import DestinationAccountListItem from './destination-account-list-item';
-// eslint-disable-next-line import/no-restricted-paths
-// eslint-disable-next-line import/no-restricted-paths
-
-type ExternalAccount = {
-  address: string;
-  metadata: {
-    name: string;
-  };
-  isExternal: true;
-};
 
 type DestinationAccountPickerProps = {
   onAccountSelect: (account: InternalAccount | ExternalAccount | null) => void;

@@ -26,14 +26,7 @@ import { getUseBlockie } from '../../../../selectors';
 import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
 // eslint-disable-next-line import/no-restricted-paths
 import { t } from '../../../../../app/scripts/translate';
-
-type ExternalAccount = {
-  address: string;
-  metadata: {
-    name: string;
-  };
-  isExternal: true;
-};
+import { ExternalAccount } from '../../../../../shared/types/bridge';
 
 type DestinationSelectedAccountListItemProps = {
   account: InternalAccount | ExternalAccount;
