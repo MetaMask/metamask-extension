@@ -330,7 +330,6 @@ export const SendPage = () => {
     sendErrors.amount !== INSUFFICIENT_FUNDS_ERROR;
 
   const isHexDataInvalid = sendErrors.hexData === INVALID_HEX_DATA_ERROR;
-  console.log('sendErrors.hexData', sendErrors, sendErrors.hexData);
 
   const submitDisabled =
     (isInvalidSendForm && !isGasTooLow) ||
