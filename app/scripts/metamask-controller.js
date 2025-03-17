@@ -260,8 +260,7 @@ import {
   BridgeBackgroundAction,
 } from '../../shared/types/bridge';
 import {
-  convertMnemonicToWordlistIndices,
-  convertEnglishWordlistIndicesToCodepoints,
+  MnemonicUtil
 } from './lib/mnemonic';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -462,6 +461,8 @@ export default class MetamaskController extends EventEmitter {
     super();
 
     const { isFirstMetaMaskControllerSetup } = opts;
+
+    this.mnemonicUtil = new MnemonicUtil();
 
     this.defaultMaxListeners = 20;
 
@@ -4475,7 +4476,7 @@ export default class MetamaskController extends EventEmitter {
         .getKeyringsByType(KeyringTypes.hd)
         .some((keyring) => {
           return isEqual(
-            convertEnglishWordlistIndicesToCodepoints(keyring.mnemonic),
+            this.mnemonicUtil.convertEnglishWordlistIndicesToCodepoints(keyring.mnemonic),
             mnemonic,
           );
         });
@@ -4575,7 +4576,7 @@ export default class MetamaskController extends EventEmitter {
       // create new vault
       await this.keyringController.createNewVaultAndRestore(
         password,
-        convertMnemonicToWordlistIndices(seedPhrase),
+        this.mnemonicUtil.convertMnemonicToWordlistIndices(seedPhrase),
       );
 
       if (completedOnboarding) {
@@ -5114,14 +5115,13 @@ export default class MetamaskController extends EventEmitter {
    * encoded as an array of UTF-8 bytes.
    */
   async getSeedPhrase(password, _keyringId) {
-    return convertEnglishWordlistIndicesToCodepoints(
-      await this.keyringController.exportSeedPhrase(
-        password,
-        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-        _keyringId,
-        ///: END:ONLY_INCLUDE_IF
-      ),
+    const srp = await this.keyringController.exportSeedPhrase(
+      password,
+      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+      _keyringId,
+      ///: END:ONLY_INCLUDE_IF
     );
+    return this.mnemonicUtil.convertEnglishWordlistIndicesToCodepoints(srp);
   }
 
   /**
