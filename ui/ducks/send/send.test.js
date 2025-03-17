@@ -2729,6 +2729,10 @@ describe('Send Slice', () => {
             payload: 'sendFlow - user added custom hexData 0x1',
           },
           { type: 'send/updateUserInputHexData', payload: hexData },
+          {
+            payload: null,
+            type: 'send/updateUserInputHexDataError',
+          },
         ];
 
         expect(actionResult).toHaveLength(3);
