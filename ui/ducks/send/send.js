@@ -2778,11 +2778,6 @@ export function updateSendHexData(hexData) {
 
     await dispatch(actions.updateUserInputHexData(hexData));
 
-    console.log('isHexString', hexData, isHexString(hexData));
-    console.log(
-      hexData === '' || isHexString(hexData) ? null : INVALID_HEX_DATA_ERROR,
-    );
-
     await dispatch(
       actions.updateUserInputHexDataError(
         hexData === '' || isHexString(hexData) ? null : INVALID_HEX_DATA_ERROR,
@@ -2792,8 +2787,6 @@ export function updateSendHexData(hexData) {
     const state = getState();
     const draftTransaction =
       state[name].draftTransactions[state[name].currentTransactionUUID];
-
-    console.log('draftTransaction', draftTransaction);
 
     await dispatch(
       updateSendQuote(draftTransaction.sendAsset.type === AssetType.native),
@@ -3525,9 +3518,9 @@ export function getRecipientWarningAcknowledgement(state) {
 // Overall validity and stage selectors
 
 /**
- * Selector that returns the gasFee and amount errors, if they exist.
+ * Selector that returns the gasFee, amount and hexData errors, if they exist.
  *
- * @type {Selector<{ gasFee?: string, amount?: string}>}
+ * @type {Selector<{ gasFee?: string, amount?: string, hexData?: string}>}
  */
 export function getSendErrors(state) {
   return {
@@ -3535,6 +3528,15 @@ export function getSendErrors(state) {
     amount: getCurrentDraftTransaction(state).amount?.error,
     hexData: getCurrentDraftTransaction(state).hexData?.error,
   };
+}
+
+/**
+ * Selector that returns the hexData error, if it exists.
+ *
+ * @type {Selector<string | null>}
+ */
+export function getSendHexDataError(state) {
+  return getCurrentDraftTransaction(state).hexData?.error ?? null;
 }
 
 /**
