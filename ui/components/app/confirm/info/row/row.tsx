@@ -146,7 +146,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.flexStart}
           color={color}
-          paddingRight={contentPaddingRight}
+          paddingRight={contentPaddingRight || null}
         >
           <Box display={Display.Flex} alignItems={AlignItems.center}>
             <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
