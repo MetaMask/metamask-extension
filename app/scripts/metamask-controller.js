@@ -335,6 +335,7 @@ import {
   getChangedAuthorizations,
   getAuthorizedScopesByOrigin,
   getPermittedAccountsForScopesByOrigin,
+  getOriginsWithSessionProperty,
 } from './controllers/permissions';
 import { MetaMetricsDataDeletionController } from './controllers/metametrics-data-deletion/metametrics-data-deletion';
 import { DataDeletionService } from './services/data-deletion-service';
@@ -2967,6 +2968,12 @@ export default class MetamaskController extends EventEmitter {
             ) {
               lastSelectedSolanaAccountAddress = account.address;
 
+              const originsWithSolanaAccountChangedNotifications =
+                getOriginsWithSessionProperty(
+                  this.permissionController.state,
+                  'solana_accountChanged_notifications',
+                );
+
               const solanaAccounts = getPermittedAccountsForScopesByOrigin(
                 this.permissionController.state,
                 [
@@ -2982,7 +2989,10 @@ export default class MetamaskController extends EventEmitter {
                   return address;
                 });
 
-                if (parsedSolanaAddresses.includes(account.address)) {
+                if (
+                  parsedSolanaAddresses.includes(account.address) &&
+                  originsWithSolanaAccountChangedNotifications[origin]
+                ) {
                   this._notifySolanaAccountChange(origin, account.address);
                 }
               }
@@ -6905,6 +6915,8 @@ export default class MetamaskController extends EventEmitter {
         }),
       );
     }
+
+    // TODO add a handler for solana accountChanged subscription ?
 
     engine.push(
       createMultichainMethodMiddleware({

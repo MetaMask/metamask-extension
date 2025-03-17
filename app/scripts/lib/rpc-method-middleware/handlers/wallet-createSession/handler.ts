@@ -94,6 +94,9 @@ async function walletCreateSessionHandler(
     };
   },
 ) {
+  // TODO: move to @metamask/chain-agnostic-permission
+  const knownSessionProperties = ['solana_accountChanged_notifications'];
+
   const { origin } = req;
   if (!isPlainObject(req.params)) {
     return end(invalidParams({ data: { request: req } }));
@@ -102,6 +105,15 @@ async function walletCreateSessionHandler(
 
   if (sessionProperties && Object.keys(sessionProperties).length === 0) {
     return end(new JsonRpcError(5302, 'Invalid sessionProperties requested'));
+  }
+
+  let filteredSessionProperties;
+  if (sessionProperties) {
+    filteredSessionProperties = Object.fromEntries(
+      Object.entries(sessionProperties).filter(([key]) =>
+        knownSessionProperties.includes(key),
+      ),
+    );
   }
 
   try {
@@ -161,6 +173,7 @@ async function walletCreateSessionHandler(
     const requestedCaip25CaveatValue = {
       requiredScopes: getInternalScopesObject(supportedRequiredScopes),
       optionalScopes: getInternalScopesObject(supportedOptionalScopes),
+      sessionProperties: filteredSessionProperties,
       isMultichainOrigin: true,
     };
 

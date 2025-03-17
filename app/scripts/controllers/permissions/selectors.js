@@ -95,6 +95,31 @@ export const getPermittedAccountsForScopesByOrigin = (state, scopes) => {
     return originToAccountsMap;
   }, new Map());
 };
+
+// TODO: move to @metamask/chain-agnostic-permission
+/**
+ * Get the origins with a given session property.
+ *
+ * @param state - The PermissionController state
+ * @param property - The property to check for
+ * @returns An object with keys of origins and values of session properties
+ */
+export const getOriginsWithSessionProperty = (state, property) => {
+  const subjects = getSubjects(state);
+  return Object.values(subjects).reduce((acc, subject) => {
+    const caveats =
+      subject.permissions?.[Caip25EndowmentPermissionName]?.caveats || [];
+
+    const caveat = caveats.find(({ type }) => type === Caip25CaveatType);
+    return caveat?.value?.sessionProperties?.[property]
+      ? {
+          ...acc,
+          [subject.origin]: caveat?.value?.sessionProperties?.[property],
+        }
+      : acc;
+  }, {});
+};
+
 /**
  * Get the authorized CAIP-25 scopes for each subject, keyed by origin.
  * The values of the returned map are immutable values from the
