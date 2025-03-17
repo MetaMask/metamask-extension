@@ -6,7 +6,6 @@
   $width-screen-lg-min: 62vw;
 
   box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
-  min-width: 320px;
 
   @include design-system.screen-sm-min {
     width: $width-screen-sm-min;

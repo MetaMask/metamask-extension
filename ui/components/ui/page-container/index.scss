@@ -13,8 +13,6 @@
   border-radius: 8px;
   overflow-y: auto;
 
-  min-width: 320px;
-
   @include design-system.screen-sm-min {
     width: $width-screen-sm-min;
   }
