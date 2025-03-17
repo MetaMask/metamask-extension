@@ -10,6 +10,7 @@ import {
   type BridgeToken,
   isNativeAddress,
   fetchBridgeTokens,
+  BridgeClientId,
 } from '@metamask/bridge-controller';
 import {
   getAllDetectedTokensForSelectedAddress,
@@ -37,6 +38,8 @@ import {
   type BridgeAppState,
   getTopAssetsFromFeatureFlags,
 } from '../../ducks/bridge/selectors';
+import fetchWithCache from '../../../shared/lib/fetch-with-cache';
+import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 
 type FilterPredicate = (
   symbol: string,
@@ -85,7 +88,20 @@ export const useTokensWithFiltering = (
         return cachedTokens[hexChainId]?.data;
       }
       // Otherwise fetch new token data
-      return await fetchBridgeTokens(hexChainId);
+      return await fetchBridgeTokens(
+        hexChainId,
+        BridgeClientId.EXTENSION,
+        async (url, options) => {
+          const { headers, ...requestOptions } = options ?? {};
+          return await fetchWithCache({
+            url: url as string,
+            ...requestOptions,
+            fetchOptions: { method: 'GET', headers },
+            functionName: 'fetchBridgeTokens',
+          });
+        },
+        BRIDGE_API_BASE_URL,
+      );
     }
     if (chainId && isSolanaChainId(chainId)) {
       return await fetchNonEvmTokens(formatChainIdToCaip(chainId));

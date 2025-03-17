@@ -41,7 +41,7 @@ const useLatestBalance = (
 
   const nonEvmBalances = nonEvmBalancesByAccountId?.[id];
 
-  const value = useAsyncResult<Numeric | undefined>(async () => {
+  const value = useAsyncResult<string | undefined>(async () => {
     if (
       token?.address &&
       // TODO check whether chainId is EVM when MultichainNetworkController is integrated
@@ -49,12 +49,14 @@ const useLatestBalance = (
       chainId &&
       currentChainId === chainId
     ) {
-      return await calcLatestSrcBalance(
-        global.ethereumProvider,
-        selectedAddress,
-        token.address,
-        chainId,
-      );
+      return (
+        await calcLatestSrcBalance(
+          global.ethereumProvider,
+          selectedAddress,
+          token.address,
+          chainId,
+        )
+      )?.toString();
     }
 
     // No need to fetch the balance for non-EVM tokens, use the balance provided by the
@@ -63,7 +65,9 @@ const useLatestBalance = (
       return Numeric.from(
         nonEvmBalances?.[token.address]?.amount ?? token?.string,
         10,
-      ).shiftedBy(-1 * token.decimals);
+      )
+        .shiftedBy(-1 * token.decimals)
+        .toString();
     }
 
     return undefined;
@@ -84,9 +88,7 @@ const useLatestBalance = (
 
   return useMemo(
     () =>
-      value?.value
-        ? calcTokenAmount(value.value.toString(), token?.decimals)
-        : undefined,
+      value?.value ? calcTokenAmount(value.value, token?.decimals) : undefined,
     [value.value, token?.decimals],
   );
 };
