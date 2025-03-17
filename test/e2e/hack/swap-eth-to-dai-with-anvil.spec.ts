@@ -1,16 +1,16 @@
 import { withFixtures } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
-import ActivityListPage from '../page-objects/pages/home/activity-list';
-import AssetListPage from '../page-objects/pages/home/asset-list';
 import HomePage from '../page-objects/pages/home/homepage';
-import SendTokenPage from '../page-objects/pages/send/send-token-page';
-import TokenOverviewPage from '../page-objects/pages/token-overview-page';
-import TokenTransferTransactionConfirmation from '../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
-import { buildQuote, checkActivityTransaction, reviewQuote, waitForTransactionToComplete } from '../tests/swaps/shared';
+import {
+  buildQuote,
+  checkActivityTransaction,
+  reviewQuote,
+  waitForTransactionToComplete,
+} from '../tests/swaps/shared';
 
-describe('Send ERC20', function () {
-  it('should send DAI', async function () {
+describe('Swap', function () {
+  it('TESTETH to DAI', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -40,12 +40,16 @@ describe('Send ERC20', function () {
               chainId: 1337,
               gasLimit: 30000000,
               gasPrice: 2000000000,
-            //  loadState: './test/e2e/seeder/network-states/with50Dai.json',
-              // forkUrl: `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
+              //  loadState: './test/e2e/seeder/network-states/with50Dai.json',
+              ...(process.env.INFURA_PROJECT_ID
+                ? {
+                    forkUrl: `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
+                  }
+                : {}),
               host: '127.0.0.1',
               mnemonic:
                 'spread raise short crane omit tent fringe mandate neglect detail suspect cradle',
-              port: 8545
+              port: 8545,
             },
           },
         ],
@@ -69,15 +73,19 @@ describe('Send ERC20', function () {
           skipCounter: true,
         });
 
-        await driver.waitForSelector({ text: 'Swap', tag: 'button' }, { state: 'enabled' });
+        await driver.waitForSelector(
+          { text: 'Swap', tag: 'button' },
+          { state: 'enabled' },
+        );
         await driver.clickElement({ text: 'Swap', tag: 'button' });
         await waitForTransactionToComplete(driver, { tokenName: 'DAI' });
         await checkActivityTransaction(driver, {
           index: 0,
-          amount: '4',
+          amount: '2',
           swapFrom: 'TESTETH',
           swapTo: 'DAI',
         });
+        await check
       },
     );
   });
