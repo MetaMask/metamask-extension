@@ -559,23 +559,22 @@ describe('BridgeController', function () {
     });
   });
 
-  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     [
       'should append l1GasFees if srcChain is 10 and srcToken is erc20',
-      mockBridgeQuotesErc20Native,
+      mockBridgeQuotesErc20Native as unknown as QuoteResponse[],
       add0x(decimalToHex(new BigNumber('2608710388388').mul(2).toFixed())),
       12,
     ],
     [
       'should append l1GasFees if srcChain is 10 and srcToken is native',
-      mockBridgeQuotesNativeErc20,
+      mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
       add0x(decimalToHex(new BigNumber('2608710388388').toFixed())),
       2,
     ],
     [
       'should not append l1GasFees if srcChain is not 10',
-      mockBridgeQuotesNativeErc20Eth,
+      mockBridgeQuotesNativeErc20Eth as unknown as QuoteResponse[],
       undefined,
       0,
     ],
@@ -584,7 +583,7 @@ describe('BridgeController', function () {
     async (
       _: string,
       quoteResponse: QuoteResponse[],
-      l1GasFeesInHexWei: string,
+      l1GasFeesInHexWei: string | undefined,
       getLayer1GasFeeMockCallCount: number,
     ) => {
       jest.useFakeTimers();

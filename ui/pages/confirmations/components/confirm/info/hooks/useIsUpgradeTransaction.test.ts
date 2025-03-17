@@ -25,10 +25,9 @@ describe('useIsUpgradeTransaction', () => {
     expect(result).toBe(true);
   });
 
-  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([undefined, null, []] as const)(
     'returns false if authorizationList is %s',
-    async (authorizationList: never) => {
+    async (authorizationList: AuthorizationList | undefined | null) => {
       const result = runHook(authorizationList);
       expect(result).toBe(false);
     },

@@ -10,7 +10,7 @@ type TestAddress = {
   checksumAddress: string;
 };
 
-const ETH_ADDRESSES = [
+const ETH_ADDRESSES: TestAddress[] = [
   // Lower-case address
   {
     address: '0x6431726eee67570bf6f0cf892ae0a3988f03903f',
@@ -32,11 +32,10 @@ const NON_EVM_ADDRESSES = [
   {
     address: 'bc1ql49ydapnjafl5t2cp9zqpjwe6pdgmxy98859v2',
   },
-];
+] as TestAddress[];
 
 describe('address', () => {
   describe('isEthAddress', () => {
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(ETH_ADDRESSES)(
       'returns true if address is an ethereum address: $address',
       ({ address }: TestAddress) => {
@@ -45,7 +44,6 @@ describe('address', () => {
       },
     );
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(NON_EVM_ADDRESSES)(
       'returns false if address is not an ethereum address: $address',
       ({ address }: TestAddress) => {
@@ -55,7 +53,6 @@ describe('address', () => {
   });
 
   describe('normalizeAddress', () => {
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(ETH_ADDRESSES)(
       'normalizes address: $address',
       ({ address, normalizedAddress }: TestAddress) => {
@@ -64,7 +61,6 @@ describe('address', () => {
       },
     );
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(NON_EVM_ADDRESSES)(
       'returns the original address if its a non-EVM address',
       ({ address }: TestAddress) => {
@@ -74,7 +70,6 @@ describe('address', () => {
   });
 
   describe('normalizeSafeAddress', () => {
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(ETH_ADDRESSES)(
       'normalizes address to its "safe" form: $address to: $checksumAddress',
       ({ address, checksumAddress }: TestAddress) => {
@@ -85,7 +80,6 @@ describe('address', () => {
       },
     );
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(NON_EVM_ADDRESSES)(
       'returns the original address if its a non-EVM address',
       ({ address }: TestAddress) => {
