@@ -85,7 +85,6 @@ describe('Swap', function () {
           swapFrom: 'TESTETH',
           swapTo: 'DAI',
         });
-        await check
       },
     );
   });
