@@ -1,5 +1,4 @@
-import { AssetSelectorElement, CardElement } from '@metamask/snaps-sdk/jsx';
-import { mapToTemplate } from '../utils';
+import { AssetSelectorElement } from '@metamask/snaps-sdk/jsx';
 import { UIComponentFactory } from './types';
 
 export const assetSelector: UIComponentFactory<AssetSelectorElement> = ({
@@ -13,7 +12,7 @@ export const assetSelector: UIComponentFactory<AssetSelectorElement> = ({
       addresses: element.props.addresses,
       chainIds: element.props.chainIds,
       disabled: element.props.disabled,
-      form: form,
+      form,
     },
   };
 };

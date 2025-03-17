@@ -34,6 +34,7 @@ import {
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 
 export type SnapUISelectorProps = {
+  className?: string;
   name: string;
   title: string;
   options: { key?: string; value: State; disabled: boolean }[];
@@ -86,7 +87,7 @@ const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
         textAlign: 'inherit',
         height: 'inherit',
         minHeight: '48px',
-        maxHeight: '64px',
+        maxHeight: '58px',
         position: 'relative',
       }}
       disabled={disabled}
@@ -111,6 +112,7 @@ const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
 };
 
 export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
+  className,
   name,
   title,
   options,
@@ -168,7 +170,11 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
       >
         {label && <Label htmlFor={name}>{label}</Label>}
         <ButtonBase
-          className="snap-ui-renderer__selector"
+          className={
+            className
+              ? classnames('snap-ui-renderer__selector', className)
+              : 'snap-ui-renderer__selector'
+          }
           backgroundColor={BackgroundColor.backgroundDefault}
           borderRadius={BorderRadius.LG}
           paddingTop={2}
@@ -193,7 +199,7 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
             textAlign: 'inherit',
             height: 'inherit',
             minHeight: '48px',
-            maxHeight: '64px',
+            maxHeight: '58px',
           }}
         >
           {selectedOption}
