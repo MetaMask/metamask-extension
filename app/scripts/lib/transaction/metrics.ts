@@ -320,12 +320,17 @@ export const createTransactionEventFragmentWithTxId = async (
  * @param transactionMetricsRequest - Contains controller actions
  * @param transactionMetricsRequest.getParticipateInMetrics - Returns whether the user has opted into metrics
  * @param transactionMetricsRequest.trackEvent - MetaMetrics track event function
+ * @param transactionMetricsRequest.getFeatureFlags - Returns the feature flags object
  * @param transactionEventPayload - The event payload
  * @param transactionEventPayload.transactionMeta - The updated transaction meta
  * @param transactionEventPayload.approvalTransactionMeta - The updated approval transaction meta
  */
 export const handlePostTransactionBalanceUpdate = async (
-  { getParticipateInMetrics, trackEvent, getFeatureFlags }: TransactionMetricsRequest,
+  {
+    getParticipateInMetrics,
+    trackEvent,
+    getFeatureFlags,
+  }: TransactionMetricsRequest,
   {
     transactionMeta,
     approvalTransactionMeta,
@@ -373,7 +378,7 @@ export const handlePostTransactionBalanceUpdate = async (
         approvalTransactionMeta,
       );
 
-      const sensitiveProperties: Record<string, any> = {
+      const sensitiveProperties: Record<string, string | number | null> = {
         ...transactionMeta.swapMetaData,
         token_to_amount_received: tokensReceived,
         quote_vs_executionRatio: quoteVsExecutionRatio,
@@ -387,8 +392,10 @@ export const handlePostTransactionBalanceUpdate = async (
       };
 
       // Add transaction hash if feature flag is enabled
-      if (getFeatureFlags?.()?.collectTransactionHashInAnalytics &&
-          transactionMeta.hash) {
+      if (
+        getFeatureFlags().collectTransactionHashInAnalytics &&
+        transactionMeta.hash
+      ) {
         sensitiveProperties.transaction_hash = transactionMeta.hash;
       }
 
@@ -1051,7 +1058,8 @@ async function buildEventFragmentProperties({
   }
 
   if (
-    transactionMetricsRequest.getFeatureFlags?.()?.collectTransactionHashInAnalytics &&
+    transactionMetricsRequest.getFeatureFlags?.()
+      ?.collectTransactionHashInAnalytics &&
     transactionMetricsRequest.getParticipateInMetrics?.()
   ) {
     if (transactionMeta.hash) {
