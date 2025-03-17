@@ -102,15 +102,16 @@ const mockServer =
             };
           }),
     );
-    const portfolioMock = await mockServer_
-      .forGet(`https://portfolio.metamask.io/bridge`)
-      .always()
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          body: emptyHtmlPage(),
-        };
-      });
+    const portfolioMock = async () =>
+      await mockServer_
+        .forGet(`https://portfolio.metamask.io/bridge`)
+        .always()
+        .thenCallback(() => {
+          return {
+            statusCode: 200,
+            body: emptyHtmlPage(),
+          };
+        });
     return Promise.all([...featureFlagMocks, portfolioMock]);
   };
 
