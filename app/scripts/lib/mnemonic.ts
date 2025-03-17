@@ -1,355 +1,346 @@
 import { wordlist } from '@scure/bip39/wordlists/english';
 
 /**
- * Combine a 16-bit parentId (upper bits) and 16-bit terminalIndex (lower bits).
- * terminalIndex is "wordIndex+1" or 0.
+ * Bit-packing utilities for compact trie storage.
+ */
+
+/**
+ * Packs a 16-bit terminalIndex and 16-bit parentId into a Uint32.
+ *
+ * @param terminalIndex - 0xffff if not terminal, else (wordIndex)
+ * @param parentId - 0 if root, else node ID of parent
+ * @returns 32-bit packed value
  */
 function packTermParent(terminalIndex: number, parentId: number): number {
-  // Each value must be < 65536 or things break
-  return ((parentId & 0xffff) << 16) | (terminalIndex & 0xffff);
+  return (parentId << 16) | terminalIndex;
 }
 
 /**
- * Extract parentId and terminalIndex from a 32-bit field.
+ * Unpacks a Uint32 into terminalIndex.
+ *
+ * @param value - packed value
+ * @returns 16-bit terminalIndex
  */
-function unpackTermParent(value: number): {
-  parentId: number;
-  terminalIndex: number;
-} {
-  const terminalIndex = value & 0xffff; // lower 16 bits
-  const parentId = (value >>> 16) & 0xffff; // upper 16 bits
-  return { parentId, terminalIndex };
+function unpackTerminalIndex(value: number): number {
+  return value & 0xffff;
 }
 
 /**
- * Combine letterFromParent (6 bits) and childMask (26 bits) into a 32-bit integer.
+ * Unpacks a Uint32 into parentId.
+ *
+ * @param value - packed value
+ * @returns 16-bit parentId
+ */
+function unpackParentId(value: number): number {
+  return value >>> 16;
+}
+
+/**
+ * Packs a 6-bit letterFromParent and 26-bit childMask into a Uint32.
+ *
+ * @param letterFromParent - 0 if root, else (charCode + 1)
+ * @param childMask - 1 bit per child presence
+ * @returns 32-bit packed value
  */
 function packMaskLetter(letterFromParent: number, childMask: number): number {
-  // letterFromParent in bits [31..26] (6 bits), childMask in [25..0]
   return ((letterFromParent & 0x3f) << 26) | (childMask & 0x03ffffff);
 }
 
 /**
- * Extract letterFromParent and childMask from a 32-bit field.
+ * Unpacks a Uint32 into childMask.
+ *
+ * @param value - packed value
+ * @returns 26-bit childMask
  */
-function unpackMaskLetter(value: number): {
-  letterFromParent: number;
-  childMask: number;
-} {
-  const letterFromParent = (value >>> 26) & 0x3f; // bits [31..26]
-  const childMask = value & 0x03ffffff; // bits [25..0]
-  return { letterFromParent, childMask };
+function unpackChildMask(value: number): number {
+  return value & 0x03ffffff;
 }
 
-function computeRequiredNodes(wordList: string[]): number {
+/**
+ * Unpacks a Uint32 into letterFromParent.
+ *
+ * @param value - packed value
+ * @returns 6-bit letterFromParent
+ */
+function unpackLetterFromParent(value: number): number {
+  return value >>> 26;
+}
+
+/**
+ * AKA popcount32. Counts the number of set bits (1s) in a 32-bit integer.
+ *
+ * @param v - The 32-bit integer to count set bits in.
+ * @returns The number of set bits in x.
+ */
+function countSetBits(v: number): number {
+  // counts the number of set bits in each pair of bits (2-bit groups) across the 32-bit integer.
+  v -= (v >>> 1) & 0x55555555;
+  // combines the counts from adjacent 2-bit groups into 4-bit groups.
+  v = (v & 0x33333333) + ((v >>> 2) & 0x33333333);
+  // combines the counts from adjacent 4-bit groups into 8-bit groups.
+  v = (v + (v >>> 4)) & 0x0f0f0f0f;
+  // each of the four bytes in x now holds a count of set bits for that byte (0 to 8)
+  return (v * 0x01010101) >>> 24;
+}
+
+/**
+ * Trie construction and operations.
+ */
+
+/**
+ * Builds a compact trie from the 2048 English wordlist, returning nodes and
+ * word-end mappings. Only works for the English wordlist, as it assumes
+ * 26 lowercase letters, and a resulting trie of limited depth.
+ *
+ * @param wordList - list of words to insert into the trie
+ * @returns { trieNodes, wordEndNodes }
+ */
+function buildTrie(wordList: string[]): {
+  trieNodes: Uint32Array;
+  wordEndNodes: Uint16Array;
+} {
+  // Temporary node structure for building the trie
   interface TempNode {
+    terminalIndex: number; // 0xffff if not terminal, else wordIndex
     children: Array<TempNode | null>;
+    parentId: number;
+    letterFromParent: number;
   }
-  const root: TempNode = { children: new Array(26).fill(null) };
-  let nodeCount = 1; // root
 
-  for (const word of wordList) {
-    let current = root;
-    for (let i = 0; i < word.length; i++) {
-      const c = word.charCodeAt(i) - 97; // 'a' => 97
-      if (!current.children[c]) {
-        current.children[c] = { children: new Array(26).fill(null) };
-        nodeCount++;
-      }
-      current = current.children[c]!;
-    }
-  }
-  return nodeCount;
-}
-
-function buildTypedArrayTrie(
-  wordList: string[],
-  totalNodes: number,
-): {
-  nodeArray: Uint32Array;
-  endNodeForIndex: Uint16Array; // node ID for each word
-} {
-  interface TrieNode {
-    terminalIndex: number; // 0 => not terminal, else (i+1)
-    children: Array<TrieNode | null>;
-    parentId: number; // we'll store BFS parent
-    letterFromParent: number; // which letter led here
-  }
-  // A) Build pointer-based trie
-  const root: TrieNode = {
-    terminalIndex: 0,
+  const root: TempNode = {
+    terminalIndex: 0xffff,
     children: new Array(26).fill(null),
     parentId: 0,
     letterFromParent: 0,
   };
 
-  // Insert words
-  for (let i = 0; i < wordList.length; i++) {
-    const word = wordList[i];
-    let cur = root;
-    for (let j = 0; j < word.length; j++) {
-      const c = word.charCodeAt(j) - 97;
-      if (!cur.children[c]) {
-        cur.children[c] = {
-          terminalIndex: 0,
+  // Insert all words into the trie
+  for (let wordIndex = 0; wordIndex < wordList.length; wordIndex++) {
+    const word = wordList[wordIndex];
+    let current = root;
+    for (let i = 0; i < word.length; i++) {
+      const charCode = word.charCodeAt(i) - 97; // 'a' -> 0, ..., 'z' -> 25
+      if (!current.children[charCode]) {
+        current.children[charCode] = {
+          terminalIndex: 0xffff,
           children: new Array(26).fill(null),
           parentId: 0,
           letterFromParent: 0,
         };
       }
-      cur = cur.children[c]!;
+      current = current.children[charCode]!;
     }
-    cur.terminalIndex = i + 1; // store (i+1) so 0 means "no word"
+    current.terminalIndex = wordIndex; // Mark as terminal (end of word)
   }
 
-  // B) BFS to assign node IDs
+  // Count total nodes via BFS
+  let totalNodes = 0;
+  const countQueue: TempNode[] = [root];
+  while (countQueue.length > 0) {
+    const node = countQueue.shift()!;
+    totalNodes++;
+    for (const child of node.children) {
+      if (child) countQueue.push(child);
+    }
+  }
+
+  // Allocate arrays
   const totalBytesForNodeArray = totalNodes * 3 * 4; // 4 bytes per Uint32
   const totalBytesForEndNode = wordList.length * 2; // 2 bytes per Uint16
   const totalBytes = totalBytesForNodeArray + totalBytesForEndNode;
   const buffer = new ArrayBuffer(totalBytes);
-  const nodeArray = new Uint32Array(buffer, 0, totalNodes * 3);
-  // store node ID for each word index
-  const endNodeForIndex = new Uint16Array(
+  const trieNodes = new Uint32Array(buffer, 0, totalNodes * 3);
+  const wordEndNodes = new Uint16Array(
     buffer,
     totalBytesForNodeArray,
     wordList.length,
   );
 
-  type QueueItem = { node: TrieNode; id: number };
-  const queue: QueueItem[] = [{ node: root, id: 0 }];
-  let nextId = 1; // root = ID=0
+  // Assign node IDs and populate arrays via BFS
+  const bfsQueue: { node: TempNode; id: number }[] = [{ node: root, id: 0 }];
+  let nextId = 1;
 
-  let maxBase = 0;
+  while (bfsQueue.length > 0) {
+    const { node, id } = bfsQueue.shift()!;
+    const baseOffset = id * 3;
 
-  while (queue.length > 0) {
-    const { node, id } = queue.shift()!;
-    // (1) determine parentId, terminalIndex from node
-    const parentId = node.parentId;
-    const termIndex = node.terminalIndex;
-    // if this node ends word i => endNodeForIndex[i] = id
-    if (termIndex > 0) {
-      const realIndex = termIndex - 1;
-      endNodeForIndex[realIndex] = id;
+    // Store terminalIndex and parentId
+    trieNodes[baseOffset] = packTermParent(node.terminalIndex, node.parentId);
+    if (node.terminalIndex !== 0xffff) {
+      wordEndNodes[node.terminalIndex] = id;
     }
 
-    // pack them
-    nodeArray[id * 3 + 0] = packTermParent(termIndex, parentId);
-
-    // (2) build childMask
-    let mask = 0;
+    // Build and store childMask and letterFromParent
+    let childMask = 0;
     let childCount = 0;
     for (let c = 0; c < 26; c++) {
       if (node.children[c]) {
-        mask |= 1 << c;
+        // there is another word with this same prefix, so we need to store it
+        // in the childMask.
+        childMask |= 1 << c;
         childCount++;
       }
     }
-    // letterFromParent is in node.letterFromParent
-    // for root, that might be 0 or any sentinel
-    nodeArray[id * 3 + 1] = packMaskLetter(node.letterFromParent, mask);
+    trieNodes[baseOffset + 1] = packMaskLetter(
+      node.letterFromParent,
+      childMask,
+    );
 
-    // (3) childBase => nextId if childCount>0
-    let base = 0;
+    // Set childBase and enqueue children
+    const childBase = childCount > 0 ? nextId : 0;
+    trieNodes[baseOffset + 2] = childBase;
     if (childCount > 0) {
-      base = nextId;
+      let assigned = 0;
+      for (let c = 0; c < 26; c++) {
+        const child = node.children[c];
+        if (child) {
+          child.parentId = id;
+          child.letterFromParent = c;
+          bfsQueue.push({ node: child, id: childBase + assigned });
+          assigned++;
+        }
+      }
       nextId += childCount;
     }
-    nodeArray[id * 3 + 2] = base;
-
-    // (4) assign IDs to children in alphabetical order
-    let assigned = 0;
-    for (let c = 0; c < 26; c++) {
-      const child = node.children[c];
-      if (child) {
-        const childId = base + assigned;
-        assigned++;
-        // store parent pointer
-        child.parentId = id;
-        child.letterFromParent = c;
-        queue.push({ node: child, id: childId });
-      }
-    }
   }
 
-  return { nodeArray, endNodeForIndex };
-}
-
-function popcount32(x: number): number {
-  // fast bit-twiddling
-  x -= (x >>> 1) & 0x55555555;
-  x = (x & 0x33333333) + ((x >>> 2) & 0x33333333);
-  x = (x + (x >>> 4)) & 0x0f0f0f0f;
-  x += x >>> 8;
-  x += x >>> 16;
-  return x & 0x3f;
+  return { trieNodes, wordEndNodes };
 }
 
 /**
- * Look up a word in the trie and return its original index (0-based), or -1 if not found.
+ * Finds the wordlist index of a word given as a UTF-8 byte array.
+ *
+ * @param trieNodes - trie node data
+ * @param word - UTF-8 byte array (e.g., "hello" as bytes)
+ * @returns wordlist index
+ * @throws If the word is not in the trie or contains invalid characters.
  */
-function findWordIndexInTrie(nodeArray: Uint32Array, word: Uint8Array): number {
-  let nodeId = 0; // root
+function findWordIndex(trieNodes: Uint32Array, word: Uint8Array): number {
+  let nodeId = 0; // Start at root
   for (let i = 0; i < word.length; i++) {
-    const c = word[i] - 97;
-    if (c < 0 || c >= 26) throw new Error('Invalid character in word');
-
-    const baseOff = nodeId * 3;
-    const maskLetter = nodeArray[baseOff + 1];
-    const { childMask } = unpackMaskLetter(maskLetter);
-
-    // check if bit c is set
-    if ((childMask & (1 << c)) === 0) {
-      throw new Error('Invalid word, letter not found at this position');
+    const charCode = word[i] - 97;
+    if (charCode < 0 || charCode >= 26) {
+      throw new Error('Invalid character in word');
     }
-    // rank => how many bits < c are set
-    const rank = popcount32(childMask & ((1 << c) - 1));
-    const childBase = nodeArray[baseOff + 2];
-    nodeId = childBase + rank;
+    const baseOffset = nodeId * 3;
+    const childMask = unpackChildMask(trieNodes[baseOffset + 1]);
+    // check if the next character is in the trie at this node
+    // the childMask is a 26-bit integer where each bit represents the presence
+    // of a child node for a given character. The bit at position N is set if
+    // the child node for the character with ASCII code N+97 is present.
+    // If it is not present, the word is not in the trie.
+    if (!(childMask & (1 << charCode))) {
+      throw new Error('Word not found in trie');
+    }
+    const rank = countSetBits(childMask & ((1 << charCode) - 1));
+    nodeId = trieNodes[baseOffset + 2] + rank;
   }
-  // check terminal
-  const termParent = nodeArray[nodeId * 3 + 0];
-  const { terminalIndex } = unpackTermParent(termParent);
-  if (terminalIndex === 0) throw new Error('Invalid word, not terminal');
-  return terminalIndex - 1;
+  const terminalIndex = unpackTerminalIndex(trieNodes[nodeId * 3]);
+  if (terminalIndex === 0xffff) {
+    // the word was found, but it is only a prefix of a longer word, so it is
+    // not a valid word in the wordlist.
+    throw new Error('Word not found in trie');
+  }
+  return terminalIndex;
 }
 
 /**
- * Reconstruct a single word from the trie, given a node ID.
- * We'll walk up to root, collecting letters.
+ * Reconstructs a word’s UTF-8 bytes from its trie node ID.
+ *
+ * @param trieNodes - trie node data
+ * @param nodeId - node ID of the word end
+ * @param result - array to append the word to
  */
-function reconstructWordInto(
-  chars: number[],
-  nodeArray: Uint32Array,
+function reconstructWord(
+  trieNodes: Uint32Array,
   nodeId: number,
-): void {
-  while (nodeId !== 0) {
-    // read the parent's ID from nodeArray[nodeId*3 + 0]
-    const termParent = nodeArray[nodeId * 3 + 0];
-    const { parentId } = unpackTermParent(termParent);
-
-    // read letterFromParent from nodeArray[nodeId*3 + 1]
-    const maskLetter = nodeArray[nodeId * 3 + 1];
-    const { letterFromParent } = unpackMaskLetter(maskLetter);
-
-    // letterFromParent in [0..25] => 'a'+ that letter
-    chars.push(97 + letterFromParent);
-
-    nodeId = parentId;
+  result: number[],
+) {
+  let currentId = nodeId;
+  while (currentId !== 0) {
+    const baseOffset = currentId * 3;
+    const letterFromParent = unpackLetterFromParent(trieNodes[baseOffset + 1]);
+    result.push(97 + letterFromParent);
+    currentId = unpackParentId(trieNodes[baseOffset]);
   }
 }
 
 /**
- * Given a list of word indices, reconstruct each word by going to
- * endNodeForIndex[index], walking up the parent pointers, collecting letters,
- * then joining all words with a space. Finally return a UTF-8 array.
+ * Converts wordlist indices to a UTF-8 byte array mnemonic.
+ *
+ * @param trieNodes - trie node data
+ * @param wordEndNodes - word end node IDs
+ * @param indices - Uint16Array of wordlist indices
+ * @returns UTF-8 byte array
  */
-function wordListIndicesToUtf8NumberArrayMnemonic(
-  nodeArray: Uint32Array,
-  endNodeForIndex: Uint16Array,
+function indicesToUtf8Array(
+  trieNodes: Uint32Array,
+  wordEndNodes: Uint16Array,
   indices: Uint16Array,
 ): number[] {
-  const reversedArray: number[] = [];
+  const result: number[] = [];
   for (let i = indices.length - 1; i >= 0; i--) {
-    const wordIdx = indices[i];
-    const nodeId = endNodeForIndex[wordIdx];
-    reconstructWordInto(reversedArray, nodeArray, nodeId);
-    if (i > 0) {
-      reversedArray.push(0x20); // space
-    }
+    const nodeId = wordEndNodes[indices[i]];
+    reconstructWord(trieNodes, nodeId, result);
+    if (i > 0) result.push(0x20); // Space separator after each word except the last
   }
-  return reversedArray.reverse();
+  return result.reverse();
 }
 
 /**
- * Handles mnemonic conversions without ever converting the mnemonic to a
- * string.
- *
- * It is important for the background process to never handle the
- * mnemonic as a string.
+ * Mnemonic utility class for BIP-39 conversions without strings in memory.
  */
 export class MnemonicUtil {
-  private endNodeForIndex: Uint16Array;
-  private wordlistTrie: Uint32Array;
+  private readonly trieNodes: Uint32Array;
+  private readonly wordEndNodes: Uint16Array;
 
   constructor() {
-    const totalNodes = 6246; // computeRequiredNodes(wordlist);
-    const { nodeArray, endNodeForIndex } = buildTypedArrayTrie(
-      wordlist,
-      totalNodes,
-    );
-    this.endNodeForIndex = endNodeForIndex;
-    this.wordlistTrie = nodeArray;
+    const { trieNodes, wordEndNodes } = buildTrie(wordlist);
+    this.trieNodes = trieNodes;
+    this.wordEndNodes = wordEndNodes;
   }
 
   /**
-   * Encodes a BIP-39 mnemonic as the indices of words in the English BIP-39
-   * wordlist.
+   * Converts a UTF-8 encoded mnemonic to wordlist indices.
    *
-   * Important: we avoid converting the mnemonic to a string to prevent the
-   * plaintext mnemonic from being exposed in memory.
-   *
-   * @param mnemonic - The BIP-39 mnemonic as a UTF-8 encoded Uint8Array.
-   * @returns A Uint8Array where each pair of bytes is a 16-bit index.
-   * @throws {Error} If a word is not found in the wordlist.
+   * @param mnemonic - UTF-8 byte array (e.g., "hello world" as bytes).
+   * @returns Uint8Array of 16-bit indices.
+   * @throws If a word isn’t in the wordlist or contains invalid characters.
    */
   convertMnemonicToWordlistIndices(mnemonic: Uint8Array): Uint8Array {
-    const indices = [];
+    const indices: number[] = [];
     let start = 0;
-
-    // Iterate through the input to find word boundaries
-    for (let i = 0, l = mnemonic.length; i < l; i++) {
-      // 0x20 is the Space character
+    for (let i = 0; i < mnemonic.length; i++) {
       if (mnemonic[i] === 0x20) {
         if (i > start) {
-          const index = findWordIndexInTrie(
-            this.wordlistTrie!,
-            mnemonic.subarray(start, i),
-          );
-          indices.push(index);
+          const word = mnemonic.subarray(start, i);
+          indices.push(findWordIndex(this.trieNodes, word));
         }
         start = i + 1;
       }
     }
-    // Handle the last word
     if (start < mnemonic.length) {
-      const index = findWordIndexInTrie(
-        this.wordlistTrie!,
-        mnemonic.subarray(start, mnemonic.length),
-      );
-      indices.push(index);
+      const word = mnemonic.subarray(start);
+      indices.push(findWordIndex(this.trieNodes, word));
     }
-
-    // Convert indices to Uint8Array via Uint16Array buffer
     const uint16Array = new Uint16Array(indices);
-    return new Uint8Array(
-      uint16Array.buffer,
-      uint16Array.byteOffset,
-      uint16Array.byteLength,
-    );
+    return new Uint8Array(uint16Array.buffer);
   }
 
   /**
-   * Converts a BIP-39 mnemonic stored as indices of words in the English wordlist to a buffer of Unicode code points.
+   * Converts wordlist indices to a UTF-8 encoded mnemonic.
    *
-   * Important: we avoid converting the mnemonic to a string to prevent the
-   * plaintext mnemonic from being exposed in memory.
-   *
-   * @param wordlistIndices - Indices to specific words in the BIP-39 English wordlist, each as 2 bytes.
-   * @returns The BIP-39 mnemonic formed from the words in the English wordlist, encoded as UTF-8.
+   * @param wordlistIndices - Uint8Array of 16-bit indices.
+   * @returns array of numbers representing UTF-8 bytes of the mnemonic.
    */
   convertEnglishWordlistIndicesToCodepoints(
     wordlistIndices: Uint8Array,
   ): number[] {
-    // Create a Uint16Array view of the input to read 16-bit indices
     const indices = new Uint16Array(
       wordlistIndices.buffer,
       wordlistIndices.byteOffset,
       wordlistIndices.byteLength / 2,
     );
-    return wordListIndicesToUtf8NumberArrayMnemonic(
-      this.wordlistTrie,
-      this.endNodeForIndex,
-      indices,
-    );
+    return indicesToUtf8Array(this.trieNodes, this.wordEndNodes, indices);
   }
 }
