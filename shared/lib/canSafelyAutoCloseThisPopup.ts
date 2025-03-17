@@ -15,7 +15,7 @@ export const canSafelyAutoCloseThisPopup = async (): Promise<boolean> => {
   try {
     const currentWindow = await browser.windows.getCurrent();
     // Only return false if we know for sure it's not a popup
-    if (currentWindow?.type && currentWindow.type !== 'popup') {
+    if (currentWindow.type && currentWindow.type !== 'popup') {
       console.warn('Not safe to close a window likely running in a tab.');
       return false;
     }

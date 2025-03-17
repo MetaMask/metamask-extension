@@ -1567,7 +1567,7 @@ export function cancelTxs(
       });
     } finally {
       if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-        closeNotificationPopup();
+        attemptCloseNotificationPopup();
       } else {
         dispatch(hideLoadingIndication());
       }
@@ -2805,7 +2805,7 @@ export function closeCurrentNotificationWindow(): ThunkAction<
       !getIsSigningQRHardwareTransaction(state) &&
       approvalFlows.length === 0
     ) {
-      closeNotificationPopup();
+      attemptCloseNotificationPopup();
     }
   };
 }
@@ -4827,12 +4827,19 @@ export function getGasFeeTimeEstimate(
   ]);
 }
 
-export async function closeNotificationPopup() {
-  if (!(await canSafelyAutoCloseThisPopup())) {
-    return;
-  }
+export async function attemptCloseNotificationPopup() {
   await submitRequestToBackground('markNotificationPopupAsAutomaticallyClosed');
-  global.platform.closeCurrentWindow();
+  try {
+    // Try closing this tab if possible.
+    // As of 2025-03-17, a "tab" in this context could be a popup window.
+    const tab = await browser.tabs.getCurrent();
+    await browser.tabs.remove(tab.id);
+  } catch (error) {
+    if (!(await canSafelyAutoCloseThisPopup())) {
+      return;
+    }
+    global.platform.closeCurrentWindow();
+  }
 }
 
 /**
