@@ -6106,3 +6106,13 @@ export async function performSetStorage({
 export async function performGetStorage({ path }: { path: string }) {
   return await submitRequestToBackground('performGetStorage', [path]);
 }
+
+export async function setDelegationData(
+  address: string,
+  delegation: DelegationStruct,
+) {
+  return await submitRequestToBackground('setDelegationData', [
+    address,
+    delegation,
+  ]);
+}

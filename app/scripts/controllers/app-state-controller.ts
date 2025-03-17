@@ -1,41 +1,41 @@
-import { v4 as uuid } from 'uuid';
-import log from 'loglevel';
-import { ApprovalType } from '@metamask/controller-utils';
-import { KeyringControllerQRKeyringStateChangeEvent } from '@metamask/keyring-controller';
+import {
+  AcceptRequest,
+  AddApprovalRequest,
+} from '@metamask/approval-controller';
 import {
   BaseController,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
   RestrictedMessenger,
 } from '@metamask/base-controller';
-import {
-  AcceptRequest,
-  AddApprovalRequest,
-} from '@metamask/approval-controller';
+import { ApprovalType } from '@metamask/controller-utils';
+import { KeyringControllerQRKeyringStateChangeEvent } from '@metamask/keyring-controller';
 import { Json } from '@metamask/utils';
+import log from 'loglevel';
+import { v4 as uuid } from 'uuid';
 import { Browser } from 'webextension-polyfill';
-import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
+import { MINUTE } from '../../../shared/constants/time';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { isBeta } from '../../../ui/helpers/utils/build-types';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
-  POLLING_TOKEN_ENVIRONMENT_TYPES,
   ORIGIN_METAMASK,
+  POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../../shared/constants/app';
-import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
-import { LastInteractedConfirmationInfo } from '../../../shared/types/confirm';
-import { SecurityAlertResponse } from '../lib/ppom/types';
 import {
   AccountOverviewTabKey,
   CarouselSlide,
 } from '../../../shared/constants/app-state';
+import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
+import { LastInteractedConfirmationInfo } from '../../../shared/types/confirm';
 import type {
-  ThrottledOrigins,
   ThrottledOrigin,
+  ThrottledOrigins,
 } from '../../../shared/types/origin-throttling';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { isBeta } from '../../../ui/helpers/utils/build-types';
+import { SecurityAlertResponse } from '../lib/ppom/types';
 import type {
   Preferences,
   PreferencesControllerGetStateAction,
@@ -86,6 +86,7 @@ export type AppStateControllerState = {
   custodianDeepLink?: { fromAddress: string; custodyId: string };
   slides: CarouselSlide[];
   throttledOrigins: ThrottledOrigins;
+  delegationData: Json;
 };
 
 const controllerName = 'AppStateController';
@@ -200,6 +201,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   slides: [],
   throttledOrigins: {},
   ...getInitialStateOverrides(),
+  delegationData: {},
 });
 
 function getInitialStateOverrides() {
@@ -367,6 +369,10 @@ const controllerMetadata = {
   },
   throttledOrigins: {
     persist: false,
+    anonymous: true,
+  },
+  delegationData: {
+    persist: true,
     anonymous: true,
   },
 };
@@ -1108,6 +1114,12 @@ export class AppStateController extends BaseController<
   ): void {
     this.update((state) => {
       state.throttledOrigins[origin] = throttledOriginState;
+    });
+  }
+
+  setDelegationData(address: string, delegationData: Json): void {
+    this.update((state) => {
+      state.delegationData[address] = delegationData;
     });
   }
 }

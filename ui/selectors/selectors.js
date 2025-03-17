@@ -3106,3 +3106,7 @@ export function getKeyringSnapAccounts(state) {
   return keyringAccounts;
 }
 ///: END:ONLY_INCLUDE_IF
+
+export function getDelegationData(state) {
+  return state.metamask.delegationData;
+}
