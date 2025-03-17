@@ -3469,6 +3469,7 @@ export default class MetamaskController extends EventEmitter {
       getOpenMetamaskTabsIds: this.getOpenMetamaskTabsIds,
       markNotificationPopupAsAutomaticallyClosed: () =>
         this.notificationManager.markAsAutomaticallyClosed(),
+      getCode: this.getCode.bind(this),
 
       // primary keyring management
       addNewAccount: this.addNewAccount.bind(this),
@@ -7662,6 +7663,16 @@ export default class MetamaskController extends EventEmitter {
     rejectAllApprovals({
       approvalController: this.approvalController,
       deleteInterface,
+    });
+  }
+
+  async getCode(address, networkClientId) {
+    const { provider } =
+      this.networkController.getNetworkClientById(networkClientId);
+
+    return await provider.request({
+      method: 'eth_getCode',
+      params: [address],
     });
   }
 
