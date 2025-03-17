@@ -13,12 +13,12 @@ import {
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { formatChainIdToCaip } from '../../../../shared/modules/bridge-utils/caip-formatters';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { ExternalAccount } from '../../../../shared/types/bridge';
+
+type DestinationAccount = InternalAccount | { address: string };
 
 export const useDestinationAccount = (isSwap = false) => {
-  const [selectedDestinationAccount, setSelectedDestinationAccount] = useState<
-    InternalAccount | ExternalAccount | null
-  >(null);
+  const [selectedDestinationAccount, setSelectedDestinationAccount] =
+    useState<DestinationAccount | null>(null);
 
   const isEvm = useMultichainSelector(getMultichainIsEvm);
   const selectedEvmAccount = useSelector(getSelectedEvmInternalAccount);
