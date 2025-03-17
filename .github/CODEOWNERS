@@ -137,4 +137,4 @@ ui/components/ui/deprecated-networks                  @MetaMask/metamask-assets
 ui/components/ui/nft-collection-image                 @MetaMask/metamask-assets
 
 # Wallet Platform
-yarnrc.yml   @MetaMask/extension-platform
+yarnrc.yml                                            @MetaMask/extension-platform
