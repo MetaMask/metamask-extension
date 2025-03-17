@@ -4836,6 +4836,7 @@ export async function attemptCloseNotificationPopup() {
     await browser.tabs.remove(tab.id);
   } catch (error) {
     if (!(await canSafelyAutoCloseThisPopup())) {
+      // In case we are running in a tab, we don't want to close the window.
       return;
     }
     global.platform.closeCurrentWindow();
