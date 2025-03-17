@@ -66,8 +66,10 @@ describe('Send ERC20', function () {
           amount: 2,
           swapFrom: 'TESTETH',
           swapTo: 'DAI',
+          skipCounter: true,
         });
 
+        await driver.waitForSelector({ text: 'Swap', tag: 'button' }, { state: 'enabled' });
         await driver.clickElement({ text: 'Swap', tag: 'button' });
         await waitForTransactionToComplete(driver, { tokenName: 'DAI' });
         await checkActivityTransaction(driver, {
@@ -76,7 +78,6 @@ describe('Send ERC20', function () {
           swapFrom: 'TESTETH',
           swapTo: 'DAI',
         });
-        await driver.delay(90000);
       },
     );
   });
