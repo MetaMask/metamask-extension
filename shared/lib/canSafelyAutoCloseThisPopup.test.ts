@@ -1,7 +1,7 @@
+// eslint-disable-next-line spaced-comment
+/// <reference types="jest" />
 import browser from 'webextension-polyfill';
 import { canSafelyAutoCloseThisPopup } from './canSafelyAutoCloseThisPopup';
-
-const it = global.it as unknown as jest.It;
 
 // Mock the browser.windows API
 jest.mock('webextension-polyfill', () => ({
@@ -14,8 +14,8 @@ describe('isSafeToAutoCloseThisPopup', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     // Silence console warnings and errors during test.
-    jest.spyOn(console, 'warn').mockImplementation(() => {});
-    jest.spyOn(console, 'error').mockImplementation(() => {});
+    jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+    jest.spyOn(console, 'error').mockImplementation(() => undefined);
   });
 
   // Normal window cases
@@ -39,7 +39,11 @@ describe('isSafeToAutoCloseThisPopup', () => {
     ['should return true when window is null', null, true],
   ])(
     '%s',
-    async (_description: string, windowData: any, expectedResult: boolean) => {
+    async (
+      _description: string,
+      windowData: { type?: string; id?: number } | null,
+      expectedResult: boolean,
+    ) => {
       // Setup mock implementation
       (browser.windows.getCurrent as jest.Mock).mockResolvedValue(windowData);
 
