@@ -5,6 +5,7 @@ import {
 } from '@metamask/transaction-controller';
 import type { NetworkConfiguration } from '@metamask/network-controller';
 import type { Hex } from '@metamask/utils';
+import { formatChainIdToHexOrCaip } from '@metamask/bridge-controller';
 import type { BridgeHistoryItem } from '../../../shared/types/bridge-status';
 import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
@@ -12,7 +13,6 @@ import {
 } from '../../../shared/constants/network';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../shared/constants/common';
 import { getMultichainNetworkConfigurationsByChainId } from '../../selectors';
-import { formatChainIdToHexOrCaip } from '../../../shared/modules/bridge-utils/caip-formatters';
 
 const getSourceAndDestChainIds = ({
   bridgeHistoryItem,

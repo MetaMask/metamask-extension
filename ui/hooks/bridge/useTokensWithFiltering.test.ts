@@ -12,7 +12,7 @@ const mockFetchBridgeTokens = jest.fn().mockResolvedValue({
   [NATIVE_TOKEN.address]: NATIVE_TOKEN,
   ...STATIC_MAINNET_TOKEN_LIST,
 });
-jest.mock('../../../shared/modules/bridge-utils/bridge.util', () => ({
+jest.mock('@metamask/bridge-controller', () => ({
   fetchBridgeTokens: (c: string) => mockFetchBridgeTokens(c),
 }));
 

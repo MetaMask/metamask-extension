@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import { isNativeAddress } from '@metamask/bridge-controller';
+import type { BridgeToken } from '@metamask/bridge-controller';
 import {
   Text,
   TextField,
@@ -30,7 +31,6 @@ import {
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { shortenString } from '../../../helpers/utils/util';
-import type { BridgeToken } from '../../../../shared/types/bridge';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';

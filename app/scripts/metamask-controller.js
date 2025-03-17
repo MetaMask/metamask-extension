@@ -127,6 +127,9 @@ import { UserOperationController } from '@metamask/user-operation-controller';
 import {
   BridgeController,
   BRIDGE_CONTROLLER_NAME,
+  BridgeUserAction,
+  BridgeBackgroundAction,
+  BridgeClientId,
 } from '@metamask/bridge-controller';
 
 import {
@@ -247,17 +250,10 @@ import {
 } from '../../shared/lib/transactions-controller-utils';
 import { getProviderConfig } from '../../shared/modules/selectors/networks';
 import { endTrace, trace } from '../../shared/lib/trace';
-import { BridgeStatusAction } from '../../shared/types/bridge-status';
 import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
-import {
-  BridgeUserAction,
-  BridgeBackgroundAction,
-} from '../../shared/types/bridge';
-import {
-  BRIDGE_API_BASE_URL,
-  BRIDGE_CLIENT_ID,
-} from '../../shared/constants/bridge';
+import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
+import { BridgeStatusAction } from '../../shared/types/bridge-status';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -1787,7 +1783,7 @@ export default class MetamaskController extends EventEmitter {
     });
     this.bridgeController = new BridgeController({
       messenger: bridgeControllerMessenger,
-      clientId: BRIDGE_CLIENT_ID,
+      clientId: BridgeClientId.EXTENSION,
       // TODO: Remove once TransactionController exports this action type
       getLayer1GasFee: (...args) => this.txController.getLayer1GasFee(...args),
       fetchFn: async (url, { headers, ...requestOptions }) =>

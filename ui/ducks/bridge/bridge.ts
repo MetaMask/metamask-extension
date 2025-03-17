@@ -7,9 +7,9 @@ import {
   type QuoteMetadata,
   type QuoteResponse,
   SortOrder,
-} from '../../../shared/types/bridge';
-import { BRIDGE_DEFAULT_SLIPPAGE } from '../../../shared/constants/bridge';
-import { formatChainIdToCaip } from '../../../shared/modules/bridge-utils/caip-formatters';
+  BRIDGE_DEFAULT_SLIPPAGE,
+  formatChainIdToCaip,
+} from '@metamask/bridge-controller';
 import { getTokenExchangeRate } from './utils';
 
 export type BridgeState = {

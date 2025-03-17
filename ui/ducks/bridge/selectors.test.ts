@@ -1,17 +1,17 @@
 import { BigNumber } from 'bignumber.js';
 import { zeroAddress } from 'ethereumjs-util';
+import {
+  type QuoteMetadata,
+  type QuoteResponse,
+  SortOrder,
+  formatChainIdToCaip,
+} from '@metamask/bridge-controller';
 import { createBridgeMockStore } from '../../../test/jest/mock-store';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { mockNetworkState } from '../../../test/stub/networks';
 import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20.json';
-import {
-  type QuoteMetadata,
-  type QuoteResponse,
-  SortOrder,
-} from '../../../shared/types/bridge';
-import { formatChainIdToCaip } from '../../../shared/modules/bridge-utils/caip-formatters';
 import {
   getAllBridgeableNetworks,
   getBridgeQuotes,

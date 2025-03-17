@@ -15,6 +15,8 @@ import { toChecksumAddress, zeroAddress } from 'ethereumjs-util';
 import {
   isSolanaChainId,
   isValidQuoteRequest,
+  BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
+  type GenericQuoteRequest,
 } from '@metamask/bridge-controller';
 import {
   setFromToken,
@@ -72,7 +74,6 @@ import {
   setActiveNetworkWithError,
   setSelectedAccount,
 } from '../../../store/actions';
-import type { GenericQuoteRequest } from '../../../../shared/types/bridge';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import {
   formatTokenAmount,
@@ -100,10 +101,7 @@ import {
 } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
-import {
-  BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
-  SOLANA_USDC_ASSET,
-} from '../../../../shared/constants/bridge';
+import { SOLANA_USDC_ASSET } from '../../../../shared/constants/bridge';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';

@@ -6,15 +6,18 @@ import {
   NetworkConfiguration,
 } from '@metamask/network-controller';
 import { toChecksumAddress } from 'ethereumjs-util';
-import { isSolanaChainId } from '@metamask/bridge-controller';
+import {
+  isSolanaChainId,
+  ChainId,
+  type TxData,
+  formatChainIdToHex,
+  BridgeClientId,
+} from '@metamask/bridge-controller';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../shared/modules/Numeric';
-import { ChainId, type TxData } from '../../../shared/types/bridge';
 import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util';
 import { fetchTokenExchangeRates as fetchTokenExchangeRatesUtil } from '../../helpers/utils/util';
-import { formatChainIdToHex } from '../../../shared/modules/bridge-utils/caip-formatters';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
-import { BRIDGE_CLIENT_ID } from '../../../shared/constants/bridge';
 
 type GasFeeEstimate = {
   suggestedMaxPriorityFeePerGas: string;
@@ -93,7 +96,7 @@ const fetchTokenExchangeRates = async (
       url,
       fetchOptions: {
         method: 'GET',
-        headers: { 'X-Client-Id': BRIDGE_CLIENT_ID },
+        headers: { 'X-Client-Id': BridgeClientId.EXTENSION },
       },
       cacheOptions: { cacheRefreshTime: 0 },
       functionName: 'fetchSolanaTokenExchangeRates',

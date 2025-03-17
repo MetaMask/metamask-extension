@@ -12,7 +12,22 @@ import type { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
 import { CaipChainId, Hex } from '@metamask/utils';
-import { isSolanaChainId } from '@metamask/bridge-controller';
+import {
+  isSolanaChainId,
+  type L1GasFees,
+  type BridgeToken,
+  type QuoteMetadata,
+  type QuoteResponse,
+  SortOrder,
+  BridgeFeatureFlagsKey,
+  RequestStatus,
+  type BridgeControllerState,
+  type SolanaFees,
+  isNativeAddress,
+  formatChainIdToCaip,
+  BRIDGE_PREFERRED_GAS_ESTIMATE,
+  BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
+} from '@metamask/bridge-controller';
 import {
   MultichainNetworks,
   ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
@@ -26,28 +41,11 @@ import {
   getUSDConversionRateByChainId,
   selectConversionRateByChainId,
 } from '../../selectors/selectors';
-import {
-  ALLOWED_BRIDGE_CHAIN_IDS,
-  BRIDGE_PREFERRED_GAS_ESTIMATE,
-  BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
-} from '../../../shared/constants/bridge';
-import type {
-  BridgeControllerState,
-  SolanaFees,
-} from '../../../shared/types/bridge';
+import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
 import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
 import { getConversionRate, getGasFeeEstimates } from '../metamask/metamask';
-import {
-  type L1GasFees,
-  type BridgeToken,
-  type QuoteMetadata,
-  type QuoteResponse,
-  SortOrder,
-  BridgeFeatureFlagsKey,
-  RequestStatus,
-} from '../../../shared/types/bridge';
 import {
   calcAdjustedReturn,
   calcCost,
@@ -58,10 +56,6 @@ import {
   calcEstimatedAndMaxTotalGasFee,
   calcSolanaTotalNetworkFee,
 } from '../../pages/bridge/utils/quote';
-import {
-  isNativeAddress,
-  formatChainIdToCaip,
-} from '../../../shared/modules/bridge-utils/caip-formatters';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import {
   CHAIN_ID_TOKEN_IMAGE_MAP,

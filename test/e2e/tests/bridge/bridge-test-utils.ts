@@ -1,14 +1,14 @@
 import { Mockttp } from 'mockttp';
-import FixtureBuilder from '../../fixture-builder';
+import type { FeatureFlagResponse } from '@metamask/bridge-controller';
 import {
-  BRIDGE_CLIENT_ID,
   BRIDGE_DEV_API_BASE_URL,
   BRIDGE_PROD_API_BASE_URL,
-} from '../../../../shared/constants/bridge';
+  BridgeClientId,
+} from '@metamask/bridge-controller';
+import FixtureBuilder from '../../fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Driver } from '../../webdriver/driver';
-import type { FeatureFlagResponse } from '../../../../shared/types/bridge';
 import { emptyHtmlPage } from '../../mock-e2e';
 import {
   DEFAULT_FEATURE_FLAGS_RESPONSE,
@@ -86,7 +86,7 @@ const mockServer =
       async (url) =>
         await mockServer_
           .forGet(url)
-          .withHeaders({ 'X-Client-Id': BRIDGE_CLIENT_ID })
+          .withHeaders({ 'X-Client-Id': BridgeClientId.EXTENSION })
           .always()
           .thenCallback(() => {
             return {

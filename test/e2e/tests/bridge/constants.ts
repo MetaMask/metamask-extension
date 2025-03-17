@@ -1,4 +1,4 @@
-import type { FeatureFlagResponse } from '../../../../shared/types/bridge';
+import type { FeatureFlagResponse } from '@metamask/bridge-controller';
 
 export const DEFAULT_FEATURE_FLAGS_RESPONSE: FeatureFlagResponse = {
   'extension-config': {

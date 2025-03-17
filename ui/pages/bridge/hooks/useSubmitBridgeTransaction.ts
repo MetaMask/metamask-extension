@@ -4,10 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { createProjectLogger, Hex } from '@metamask/utils';
 import { isSolanaChainId } from '@metamask/bridge-controller';
-import type {
-  QuoteMetadata,
-  QuoteResponse,
-} from '../../../../shared/types/bridge';
+import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import {
   AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,

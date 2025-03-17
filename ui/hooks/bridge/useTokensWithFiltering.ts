@@ -3,7 +3,14 @@ import { useSelector } from 'react-redux';
 import { ChainId } from '@metamask/controller-utils';
 import { type CaipChainId, isStrictHexString, type Hex } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
-import { isSolanaChainId } from '@metamask/bridge-controller';
+import {
+  isSolanaChainId,
+  formatChainIdToCaip,
+  formatChainIdToHex,
+  type BridgeToken,
+  isNativeAddress,
+  fetchBridgeTokens,
+} from '@metamask/bridge-controller';
 import {
   getAllDetectedTokensForSelectedAddress,
   selectERC20TokensByChain,
@@ -15,18 +22,12 @@ import {
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { AssetType } from '../../../shared/constants/transaction';
-import {
-  formatChainIdToCaip,
-  formatChainIdToHex,
-  isNativeAddress,
-} from '../../../shared/modules/bridge-utils/caip-formatters';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { Token } from '../../components/app/assets/types';
 import { useMultichainBalances } from '../useMultichainBalances';
 import { useAsyncResult } from '../useAsyncResult';
 import { fetchTopAssetsList } from '../../pages/swaps/swaps.util';
 import {
-  fetchBridgeTokens,
   fetchNonEvmTokens,
   getAssetImageUrl,
   isTokenV3Asset,
@@ -36,7 +37,6 @@ import {
   type BridgeAppState,
   getTopAssetsFromFeatureFlags,
 } from '../../ducks/bridge/selectors';
-import { type BridgeToken } from '../../../shared/types/bridge';
 
 type FilterPredicate = (
   symbol: string,
