@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { ConfirmInfoRowText } from './text';
 import { I18nContext } from '../../../../../contexts/i18n';
+import { ConfirmInfoRowText } from './text';
 
 describe('ConfirmInfoRowText', () => {
   const mockText = 'Test text content';
@@ -45,7 +45,9 @@ describe('ConfirmInfoRowText', () => {
         <ConfirmInfoRowText text={mockText} tooltip={tooltipText} />
       </I18nContext.Provider>,
     );
-    const tooltipElement = document.body.querySelector(`[data-original-title="${tooltipText}"]`);
+    const tooltipElement = document.body.querySelector(
+      `[data-original-title="${tooltipText}"]`,
+    );
     expect(tooltipElement).toBeTruthy();
   });
 
@@ -68,7 +70,7 @@ describe('ConfirmInfoRowText', () => {
       </I18nContext.Provider>,
     );
 
-    const element = screen.getByRole('paragraph');
-    expect(element).toHaveTextContent('HelloU+E0076U+202EworldU+2028hi∞');
+    const element = screen.getByText('HelloU+E0076U+202EworldU+2028hi∞');
+    expect(element).toBeInTheDocument();
   });
 });
