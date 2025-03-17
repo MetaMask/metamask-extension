@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import NumberFlow from '@number-flow/react';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { SensitiveText, Box } from '../../component-library';
@@ -10,7 +11,6 @@ import {
   FlexWrap,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import NumberFlow from '@number-flow/react';
 
 /* eslint-disable jsdoc/require-param-name */
 // eslint-disable-next-line jsdoc/require-param
@@ -80,9 +80,10 @@ export default function CurrencyDisplay({
         {...textProps}
       >
         {parts.prefix}
+        {/* TODO: Separate currency ticker from value to allow for dynamic currency symbols */}
         $
         <NumberFlow
-          value={Number(parts.value.replace(/[^0-9.-]/g, ''))}
+          value={Number(parts.value.replace(/[^0-9.-]/gu, ''))}
           trend={false}
         />
       </SensitiveText>
