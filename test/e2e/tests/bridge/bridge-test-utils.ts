@@ -102,7 +102,7 @@ const mockServer =
             };
           }),
     );
-    await mockServer_
+    const portfolioMock = mockServer_
       .forGet(`https://portfolio.metamask.io/bridge`)
       .always()
       .thenCallback(() => {
@@ -111,7 +111,7 @@ const mockServer =
           body: emptyHtmlPage(),
         };
       });
-    return Promise.all([...featureFlagMocks]);
+    return Promise.all([...featureFlagMocks, portfolioMock]);
   };
 
 export const getBridgeFixtures = (
