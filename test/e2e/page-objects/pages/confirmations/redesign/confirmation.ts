@@ -26,6 +26,8 @@ class Confirmation {
 
   private navigationTitle: RawLocator;
 
+  private rejectAllButton: RawLocator;
+
   constructor(driver: Driver) {
     this.driver = driver;
 
@@ -38,6 +40,10 @@ class Confirmation {
     this.previousPageButton =
       '[data-testid="confirm-nav__previous-confirmation"]';
     this.navigationTitle = '[data-testid="confirm-page-nav-position"]';
+    this.rejectAllButton = {
+      text: 'Reject all',
+      tag: 'button',
+    };
   }
 
   async clickScrollToBottomButton() {
@@ -75,6 +81,14 @@ class Confirmation {
 
   async clickPreviousPage(): Promise<void> {
     await this.driver.clickElement(this.previousPageButton);
+  }
+
+  async clickRejectAllButton() {
+    await this.driver.clickElement(this.rejectAllButton);
+  }
+
+  async waitForRejectAllButton() {
+    await this.driver.waitForSelector(this.rejectAllButton);
   }
 
   async check_pageNumbers(
