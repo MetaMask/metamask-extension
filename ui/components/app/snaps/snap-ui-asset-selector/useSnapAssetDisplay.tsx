@@ -41,14 +41,6 @@ export type SnapUIAsset = {
 };
 
 /**
- * A multichain asset. Derived from the EVM asset type.
- */
-type MultichainAsset = Omit<TokenWithFiatAmount, 'chainId' | 'address'> & {
-  chainId: CaipChainId;
-  address: CaipAssetType;
-};
-
-/**
  * The parameters for the hook.
  *
  * @param addresses - The addresses to get the assets for.
@@ -105,7 +97,7 @@ export const useSnapAssetSelectorData = ({
    * @param asset - The asset to format.
    * @returns The formatted asset.
    */
-  const formatAsset = (asset: MultichainAsset) => {
+  const formatAsset = (asset: TokenWithFiatAmount) => {
     const networkName =
       NETWORK_TO_SHORT_NETWORK_NAME_MAP[
         asset.chainId as AllowedBridgeChainIds
@@ -119,8 +111,8 @@ export const useSnapAssetSelectorData = ({
       networkName,
       networkIcon: getImageForChainId(asset.chainId),
       fiat: formatFiatBalance(asset.secondary),
-      chainId: asset.chainId,
-      address: asset.address,
+      chainId: asset.chainId as CaipChainId,
+      address: asset.address as CaipAssetType,
     };
   };
 

@@ -22,9 +22,22 @@ import {
   AvatarNetworkSize,
 } from '../../../component-library';
 
-import { SnapUIAsset, useSnapAssetSelectorData } from './useSnapAssetDisplay';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { SnapUIAsset, useSnapAssetSelectorData } from './useSnapAssetDisplay';
 
+/**
+ * An option for the SnapUIAssetSelector.
+ *
+ * @param props - The component props.
+ * @param props.icon - The asset icon.
+ * @param props.symbol - The asset symbol.
+ * @param props.name - The asset name.
+ * @param props.balance - The asset balance.
+ * @param props.fiat - The asset balance in fiat.
+ * @param props.networkName - The network name.
+ * @param props.networkIcon - The network icon.
+ * @returns The Asset Selector option.
+ */
 const SnapUIAssetSelectorOption: FunctionComponent<SnapUIAsset> = ({
   icon,
   symbol,
@@ -39,6 +52,7 @@ const SnapUIAssetSelectorOption: FunctionComponent<SnapUIAsset> = ({
     alignItems={AlignItems.center}
     width={BlockSize.Full}
     gap={4}
+    style={{ overflow: 'hidden' }}
   >
     <Box alignItems={AlignItems.center}>
       <BadgeWrapper
@@ -75,6 +89,7 @@ const SnapUIAssetSelectorOption: FunctionComponent<SnapUIAsset> = ({
       flexDirection={FlexDirection.Column}
       marginLeft={'auto'}
       textAlign={TextAlign.End}
+      className="snap-ui-renderer__asset-selector-option__balance"
     >
       <Text variant={TextVariant.bodySmMedium}>
         {balance} {symbol}
@@ -86,6 +101,9 @@ const SnapUIAssetSelectorOption: FunctionComponent<SnapUIAsset> = ({
   </Box>
 );
 
+/**
+ * The props for the SnapUIAssetSelector.
+ */
 type SnapUIAssetSelectorProps = {
   name: string;
   addresses: CaipAccountId[];
@@ -96,6 +114,15 @@ type SnapUIAssetSelectorProps = {
   error?: string;
 };
 
+/**
+ * The SnapUIAssetSelector component.
+ *
+ * @param props - The component props.
+ * @param props.addresses - The addresses to get the assets for.
+ * @param props.chainIds - The chainIds to filter the assets by.
+ * @param props.disabled - Whether the selector is disabled.
+ * @returns The AssetSelector component.
+ */
 export const SnapUIAssetSelector: FunctionComponent<
   SnapUIAssetSelectorProps
 > = ({ addresses, chainIds, disabled, ...props }) => {
@@ -114,6 +141,7 @@ export const SnapUIAssetSelector: FunctionComponent<
 
   return (
     <SnapUISelector
+      className="snap-ui-renderer__asset-selector"
       title={t('snapUIAssetSelectorTitle')}
       options={options}
       optionComponents={optionComponents}
