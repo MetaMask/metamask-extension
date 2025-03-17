@@ -4,11 +4,15 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { errorCodes } from '@metamask/rpc-errors';
 import {
   createTestProviderTools,
   getTestAccounts,
 } from '../../../../test/stub/provider';
-import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
+import {
+  MESSAGE_TYPE,
+  ORIGIN_METAMASK,
+} from '../../../../shared/constants/app';
 import {
   AssetType,
   TokenStandard,
@@ -144,10 +148,12 @@ describe('Transaction metrics', () => {
       account_snap_type: 'snaptype',
       account_snap_version: 'snapversion',
       account_type: undefined,
+      api_method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
       asset_type: AssetType.native,
       chain_id: mockChainId,
       device_model: undefined,
       eip_1559_version: '0',
+      eip7702_upgrade_transaction: false,
       gas_edit_attempted: 'none',
       gas_estimation_failed: false,
       is_smart_transaction: undefined,
@@ -161,7 +167,7 @@ describe('Transaction metrics', () => {
       transaction_type: TransactionType.simpleSend,
       ui_customizations: ['redesigned_confirmation'],
       transaction_advanced_view: undefined,
-      transaction_contract_method: undefined,
+      transaction_contract_method: [],
       transaction_internal_id: '1',
     };
 
@@ -172,7 +178,7 @@ describe('Transaction metrics', () => {
       first_seen: 1624408066355,
       gas_limit: '0x7b0d',
       gas_price: '2',
-      transaction_contract_address: undefined,
+      transaction_contract_address: [],
       transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
       transaction_replaced: undefined,
     };
@@ -785,8 +791,9 @@ describe('Transaction metrics', () => {
       };
       const sensitiveProperties = {
         ...expectedSensitiveProperties,
-        transaction_contract_address:
+        transaction_contract_address: [
           '0x1678a085c290ebd122dc42cba69373b5953b831d',
+        ],
         completion_time: expect.any(String),
         gas_used: '0.000000291',
         status: METRICS_STATUS_FAILED,
@@ -1152,6 +1159,30 @@ describe('Transaction metrics', () => {
       ).toBeCalledWith(expectedUniqueId, {
         abandoned: true,
       });
+    });
+
+    it('should include if upgrade was rejected', async () => {
+      await handleTransactionRejected(mockTransactionMetricsRequest, {
+        transactionMeta: {
+          ...mockTransactionMeta,
+          txParams: {
+            ...mockTransactionMeta.txParams,
+            authorizationList: [{}],
+          },
+          error: {
+            code: errorCodes.rpc.methodNotSupported,
+          },
+          status: TransactionStatus.rejected,
+        } as unknown as TransactionMeta,
+      });
+
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith(
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            eip7702_upgrade_rejection: true,
+          }),
+        }),
+      );
     });
   });
 
