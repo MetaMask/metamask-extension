@@ -41,7 +41,7 @@ describe('Send ERC20', function () {
               gasLimit: 30000000,
               gasPrice: 2000000000,
             //  loadState: './test/e2e/seeder/network-states/with50Dai.json',
-              forkUrl: `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
+              // forkUrl: `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
               host: '127.0.0.1',
               mnemonic:
                 'spread raise short crane omit tent fringe mandate neglect detail suspect cradle',
@@ -74,7 +74,7 @@ describe('Send ERC20', function () {
         await waitForTransactionToComplete(driver, { tokenName: 'DAI' });
         await checkActivityTransaction(driver, {
           index: 0,
-          amount: '2',
+          amount: '4',
           swapFrom: 'TESTETH',
           swapTo: 'DAI',
         });
