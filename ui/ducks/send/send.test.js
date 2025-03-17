@@ -2731,7 +2731,7 @@ describe('Send Slice', () => {
           { type: 'send/updateUserInputHexData', payload: hexData },
         ];
 
-        expect(actionResult).toHaveLength(2);
+        expect(actionResult).toHaveLength(3);
         expect(actionResult).toStrictEqual(expectActionResult);
       });
     });
