@@ -197,7 +197,7 @@ export async function fetchBridgeQuotes(
     srcTokenAddress: formatAddressToString(request.srcTokenAddress),
     destTokenAddress: formatAddressToString(request.destTokenAddress),
     srcTokenAmount: request.srcTokenAmount,
-    ...(ignoreSlippage ? {} : { slippage: request.slippage.toString() }),
+    ...(ignoreSlippage ? {} : { slippage: request.slippage?.toString() }),
     insufficientBal: request.insufficientBal ? 'true' : 'false',
     resetApproval: request.resetApproval ? 'true' : 'false',
   };

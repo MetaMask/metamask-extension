@@ -12,6 +12,7 @@ import type { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
 import { CaipChainId, Hex } from '@metamask/utils';
+import { isSolanaChainId } from '@metamask/bridge-controller';
 import {
   MultichainNetworks,
   ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
@@ -145,8 +146,7 @@ export const getFromChains = createDeepEqualSelector(
     const filteredNetworks = hasSolanaAccount
       ? allBridgeableNetworks
       : allBridgeableNetworks.filter(
-          // @ts-expect-error: gotta fix type here.
-          ({ chainId }) => chainId !== MultichainNetworks.SOLANA,
+          ({ chainId }) => !isSolanaChainId(chainId),
         );
 
     // Then apply the standard filter for active source chains
@@ -302,7 +302,7 @@ export const getFromTokenConversionRate = createSelector(
     fromTokenExchangeRate,
   ) => {
     if (fromChain?.chainId && fromToken) {
-      if (fromChain.chainId === MultichainNetworks.SOLANA) {
+      if (isSolanaChainId(fromChain.chainId)) {
         // For SOLANA tokens, we use the conversion rates provided by the multichain rates controller
         const tokenToNativeAssetRate = tokenPriceInNativeAsset(
           assetsRates[fromToken.address]?.rate,
@@ -368,7 +368,7 @@ export const getToTokenConversionRate = createDeepEqualSelector(
       };
     }
     if (toChain?.chainId && toToken) {
-      if (toChain.chainId === MultichainNetworks.SOLANA) {
+      if (isSolanaChainId(toChain.chainId)) {
         // For SOLANA tokens, we use the conversion rates provided by the multichain rates controller
         const tokenToNativeAssetRate = tokenPriceInNativeAsset(
           assetsRates[toToken.address]?.rate,
@@ -424,8 +424,7 @@ const _getQuotesWithMetadata = createSelector(
   ): (QuoteResponse & QuoteMetadata)[] => {
     const newQuotes = quotes.map((quote: QuoteResponse & SolanaFees) => {
       const isSolanaQuote =
-        formatChainIdToCaip(quote.quote.srcChainId) ===
-          MultichainNetworks.SOLANA && quote.solanaFeesInLamports;
+        isSolanaChainId(quote.quote.srcChainId) && quote.solanaFeesInLamports;
 
       const toTokenAmount = calcToAmount(
         quote.quote,
@@ -718,8 +717,7 @@ export const needsSolanaAccountForDestination = createDeepEqualSelector(
       return false;
     }
 
-    const isSolanaDestination =
-      formatChainIdToCaip(toChain.chainId) === MultichainNetworks.SOLANA;
+    const isSolanaDestination = isSolanaChainId(toChain.chainId);
 
     return isSolanaDestination && !hasSolanaAccount;
   },
@@ -733,10 +731,8 @@ export const getIsToOrFromSolana = createSelector(
       return false;
     }
 
-    const fromChainIsSolana =
-      formatChainIdToCaip(fromChain.chainId) === MultichainNetworks.SOLANA;
-    const toChainIsSolana =
-      formatChainIdToCaip(toChain.chainId) === MultichainNetworks.SOLANA;
+    const fromChainIsSolana = isSolanaChainId(fromChain.chainId);
+    const toChainIsSolana = isSolanaChainId(toChain.chainId);
 
     // Only return true if either chain is Solana and the other is EVM
     return toChainIsSolana !== fromChainIsSolana;

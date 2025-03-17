@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { isSolanaChainId } from '@metamask/bridge-controller';
 import {
   Text,
   PopoverPosition,
@@ -67,7 +68,7 @@ export const MultichainBridgeQuoteCard = () => {
   const [showAllQuotes, setShowAllQuotes] = useState(false);
 
   const getNetworkImage = (chainId: ChainId) => {
-    if (chainId === 1151111081099710) {
+    if (isSolanaChainId(chainId)) {
       return MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.SOLANA];
     }
     return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
@@ -78,7 +79,7 @@ export const MultichainBridgeQuoteCard = () => {
   };
 
   const getNetworkName = (chainId: ChainId) => {
-    if (chainId === 1151111081099710) {
+    if (isSolanaChainId(chainId)) {
       return 'Solana';
     }
     return NETWORK_TO_SHORT_NETWORK_NAME_MAP[

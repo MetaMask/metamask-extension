@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { ChainId } from '@metamask/controller-utils';
 import { type CaipChainId, isStrictHexString, type Hex } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
+import { isSolanaChainId } from '@metamask/bridge-controller';
 import {
   getAllDetectedTokensForSelectedAddress,
   selectERC20TokensByChain,
@@ -31,7 +32,6 @@ import {
   isTokenV3Asset,
 } from '../../../shared/modules/bridge-utils/bridge.util';
 import { MINUTE } from '../../../shared/constants/time';
-import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import {
   type BridgeAppState,
   getTopAssetsFromFeatureFlags,
@@ -77,7 +77,7 @@ export const useTokensWithFiltering = (
   const { value: tokenList, pending: isTokenListLoading } = useAsyncResult<
     Record<string, SwapsTokenObject>
   >(async () => {
-    if (chainId && chainId !== MultichainNetworks.SOLANA) {
+    if (chainId && !isSolanaChainId(chainId)) {
       const hexChainId = formatChainIdToHex(chainId);
       const timestamp = cachedTokens[hexChainId]?.timestamp;
       // Use cached token data if updated in the last 10 minutes
@@ -87,8 +87,8 @@ export const useTokensWithFiltering = (
       // Otherwise fetch new token data
       return await fetchBridgeTokens(hexChainId);
     }
-    if (chainId && formatChainIdToCaip(chainId) === MultichainNetworks.SOLANA) {
-      return await fetchNonEvmTokens(chainId);
+    if (chainId && isSolanaChainId(chainId)) {
+      return await fetchNonEvmTokens(formatChainIdToCaip(chainId));
     }
     return {};
   }, [chainId, cachedTokens]);
@@ -219,7 +219,7 @@ export const useTokensWithFiltering = (
         }
 
         // Yield tokens for solana from TokenApi V3 then return
-        if (chainId === MultichainNetworks.SOLANA) {
+        if (isSolanaChainId(chainId)) {
           // Yield topTokens from selected chain
           for (const { address: tokenAddress } of topTokens) {
             const assetId = `${chainId}/token:${tokenAddress}`;

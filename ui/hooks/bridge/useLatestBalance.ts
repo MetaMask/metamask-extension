@@ -1,5 +1,6 @@
 import { type Hex, type CaipChainId, isCaipChainId } from '@metamask/utils';
 import { useMemo } from 'react';
+import { isSolanaChainId } from '@metamask/bridge-controller';
 import { getSelectedInternalAccount } from '../../selectors';
 import { calcLatestSrcBalance } from '../../../shared/modules/bridge-utils/balance';
 import { useAsyncResult } from '../useAsyncResult';
@@ -10,7 +11,6 @@ import {
   getMultichainBalances,
   getMultichainCurrentChainId,
 } from '../../selectors/multichain';
-import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 
 /**
  * Custom hook to fetch and format the latest balance of a given token or native asset.
@@ -57,11 +57,7 @@ const useLatestBalance = (
 
     // No need to fetch the balance for non-EVM tokens, use the balance provided by the
     // multichain balances controller
-    if (
-      isCaipChainId(chainId) &&
-      chainId === MultichainNetworks.SOLANA &&
-      token?.decimals
-    ) {
+    if (chainId && isSolanaChainId(chainId) && token?.decimals) {
       return Numeric.from(
         nonEvmBalances?.[token.address]?.amount ?? token?.string,
         10,

@@ -12,7 +12,10 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { BigNumber } from 'bignumber.js';
 import { type TokenListMap } from '@metamask/assets-controllers';
 import { toChecksumAddress, zeroAddress } from 'ethereumjs-util';
-import { isValidQuoteRequest } from '@metamask/bridge-controller';
+import {
+  isSolanaChainId,
+  isValidQuoteRequest,
+} from '@metamask/bridge-controller';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -75,7 +78,6 @@ import {
   formatTokenAmount,
   isQuoteExpired as isQuoteExpiredUtil,
 } from '../utils/quote';
-import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import {
   CrossChainSwapsEventProperties,
   useCrossChainSwapsEventTracker,
@@ -111,8 +113,6 @@ import {
 } from '../../../selectors/multichain';
 import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { formatChainIdToCaip } from '../../../../shared/modules/bridge-utils/caip-formatters';
 import { TokenFeatureType } from '../../../../shared/types/security-alerts-api';
 import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
 import { useDestinationAccount } from '../hooks/useDestinationAccount';
@@ -144,7 +144,6 @@ const PrepareBridgePage = () => {
   const fromAmount = useSelector(getFromAmount);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
 
-  const providerConfig = useSelector(getProviderConfig);
   const slippage = useSelector(getSlippage);
 
   const quoteRequest = useSelector(getQuoteRequest);
@@ -302,7 +301,7 @@ const PrepareBridgePage = () => {
     if (!toChain?.chainId) {
       return false;
     }
-    return formatChainIdToCaip(toChain.chainId) === MultichainNetworks.SOLANA;
+    return isSolanaChainId(toChain.chainId);
   }, [toChain?.chainId]);
 
   const quoteParams = useMemo(
@@ -475,7 +474,7 @@ const PrepareBridgePage = () => {
               dispatch(setToToken(null));
             }
             if (
-              networkConfig.chainId === MultichainNetworks.SOLANA &&
+              isSolanaChainId(networkConfig.chainId) &&
               selectedSolanaAccount
             ) {
               dispatch(setSelectedAccount(selectedSolanaAccount.address));
@@ -573,8 +572,7 @@ const PrepareBridgePage = () => {
                     : undefined;
                 if (
                   toChain?.chainId &&
-                  formatChainIdToCaip(toChain.chainId) ===
-                    MultichainNetworks.SOLANA &&
+                  isSolanaChainId(toChain.chainId) &&
                   selectedSolanaAccount
                 ) {
                   // Switch accounts to switch to solana

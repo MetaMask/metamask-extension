@@ -6,13 +6,13 @@ import {
   NetworkConfiguration,
 } from '@metamask/network-controller';
 import { toChecksumAddress } from 'ethereumjs-util';
+import { isSolanaChainId } from '@metamask/bridge-controller';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { ChainId, type TxData } from '../../../shared/types/bridge';
 import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util';
 import { fetchTokenExchangeRates as fetchTokenExchangeRatesUtil } from '../../helpers/utils/util';
 import { formatChainIdToHex } from '../../../shared/modules/bridge-utils/caip-formatters';
-import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { BRIDGE_CLIENT_ID } from '../../../shared/constants/bridge';
 
@@ -82,7 +82,7 @@ const fetchTokenExchangeRates = async (
   ...tokenAddresses: string[]
 ) => {
   let exchangeRates;
-  if (chainId === MultichainNetworks.SOLANA) {
+  if (isSolanaChainId(chainId)) {
     const queryParams = new URLSearchParams({
       assetIds: tokenAddresses.join(','),
       includeMarketData: 'true',
@@ -137,7 +137,7 @@ export const getTokenExchangeRate = async (request: {
     currency,
     tokenAddress,
   );
-  if (chainId === MultichainNetworks.SOLANA) {
+  if (isSolanaChainId(chainId)) {
     return exchangeRates?.[tokenAddress];
   }
   // The exchange rate can be checksummed or not, so we need to check both
