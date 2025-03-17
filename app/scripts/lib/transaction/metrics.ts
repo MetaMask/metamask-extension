@@ -325,7 +325,7 @@ export const createTransactionEventFragmentWithTxId = async (
  * @param transactionEventPayload.approvalTransactionMeta - The updated approval transaction meta
  */
 export const handlePostTransactionBalanceUpdate = async (
-  { getParticipateInMetrics, trackEvent }: TransactionMetricsRequest,
+  { getParticipateInMetrics, trackEvent, getFeatureFlags }: TransactionMetricsRequest,
   {
     transactionMeta,
     approvalTransactionMeta,
@@ -373,26 +373,29 @@ export const handlePostTransactionBalanceUpdate = async (
         approvalTransactionMeta,
       );
 
+      const sensitiveProperties: Record<string, any> = {
+        ...transactionMeta.swapMetaData,
+        token_to_amount_received: tokensReceived,
+        quote_vs_executionRatio: quoteVsExecutionRatio,
+        estimated_vs_used_gasRatio: estimatedVsUsedGasRatio,
+        approval_gas_cost_in_eth: transactionsCost.approvalGasCostInEth,
+        trade_gas_cost_in_eth: transactionsCost.tradeGasCostInEth,
+        trade_and_approval_gas_cost_in_eth:
+          transactionsCost.tradeAndApprovalGasCostInEth,
+        token_to_amount:
+          transactionMeta.swapMetaData.token_to_amount.toString(10),
+      };
+
+      // Add transaction hash if feature flag is enabled
+      if (getFeatureFlags?.()?.collectTransactionHashInAnalytics &&
+          transactionMeta.hash) {
+        sensitiveProperties.transaction_hash = transactionMeta.hash;
+      }
+
       trackEvent({
         event: MetaMetricsEventName.SwapCompleted,
         category: MetaMetricsEventCategory.Swaps,
-        sensitiveProperties: {
-          ...transactionMeta.swapMetaData,
-          token_to_amount_received: tokensReceived,
-          quote_vs_executionRatio: quoteVsExecutionRatio,
-          estimated_vs_used_gasRatio: estimatedVsUsedGasRatio,
-          approval_gas_cost_in_eth: transactionsCost.approvalGasCostInEth,
-          trade_gas_cost_in_eth: transactionsCost.tradeGasCostInEth,
-          trade_and_approval_gas_cost_in_eth:
-            transactionsCost.tradeAndApprovalGasCostInEth,
-          // Firefox and Chrome have different implementations of the APIs
-          // that we rely on for communication accross the app. On Chrome big
-          // numbers are converted into number strings, on firefox they remain
-          // Big Number objects. As such, we convert them here for both
-          // browsers.
-          token_to_amount:
-            transactionMeta.swapMetaData.token_to_amount.toString(10),
-        },
+        sensitiveProperties,
       });
     }
   }
@@ -1045,6 +1048,15 @@ async function buildEventFragmentProperties({
       transaction_approval_amount_vs_proposed_ratio:
         transactionApprovalAmountVsProposedRatio,
     };
+  }
+
+  if (
+    transactionMetricsRequest.getFeatureFlags?.()?.collectTransactionHashInAnalytics &&
+    transactionMetricsRequest.getParticipateInMetrics?.()
+  ) {
+    if (transactionMeta.hash) {
+      sensitiveProperties.transaction_hash = transactionMeta.hash;
+    }
   }
 
   return { properties, sensitiveProperties };

@@ -7385,6 +7385,7 @@ export default class MetamaskController extends EventEmitter {
         return this.preferencesController.state.preferences
           .showConfirmationAdvancedDetails;
       },
+      getFeatureFlags: () => this.preferencesController.state.featureFlags,
     };
     return {
       ...controllerActions,

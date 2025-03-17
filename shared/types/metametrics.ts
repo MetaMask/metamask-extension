@@ -63,6 +63,10 @@ export type TransactionMetricsRequest = {
   ) => SmartTransaction;
   getMethodData: (data: string) => Promise<{ name: string }>;
   getIsConfirmationAdvancedDetailsOpen: () => boolean;
+  getFeatureFlags: () => {
+    collectTransactionHashInAnalytics?: boolean;
+    [key: string]: boolean | undefined;
+  };
 };
 
 export type TransactionEventPayload = {

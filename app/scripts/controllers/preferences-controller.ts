@@ -193,7 +193,9 @@ export const getDefaultPreferencesControllerState =
     addSnapAccountEnabled: false,
     ///: END:ONLY_INCLUDE_IF
     advancedGasFee: {},
-    featureFlags: {},
+    featureFlags: {
+      collectTransactionHashInAnalytics: false,
+    },
     incomingTransactionsPreferences: {
       ...mainNetworks,
       ...testNetworks,

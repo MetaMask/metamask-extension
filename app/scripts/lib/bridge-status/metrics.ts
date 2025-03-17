@@ -109,10 +109,38 @@ export const handleBridgeTransactionComplete = async (
     destination_transaction,
   };
 
+  // // Create sensitiveProperties to include transaction hash if feature flag is enabled
+  // const sensitiveProperties: Record<string, any> = {};
+
+  // // Try to get feature flags from backgroundState
+  // const collectTransactionHashEnabled =
+  //   backgroundState?.featureFlags?.collectTransactionHashInAnalytics ||
+  //   backgroundState?.preferences?.featureFlags?.collectTransactionHashInAnalytics;
+
+  // // Try to determine if user is participating in metrics
+  // const participateInMetrics =
+  //   backgroundState?.participateInMetaMetrics !== false;
+
+  // if (collectTransactionHashEnabled && participateInMetrics) {
+  //   // Look for transaction hash in different possible locations
+  //   const txHash =
+  //     bridgeHistoryItem.srcTxHash ||
+  //     bridgeHistoryItem.sourceTxHash ||
+  //     bridgeHistoryItem.status?.srcChain?.txHash ||
+  //     bridgeHistoryItem.status?.sourceChain?.txHash;
+
+  //   if (txHash) {
+  //     sensitiveProperties.transaction_hash = txHash;
+  //   }
+  // }
+
   trackEvent({
     category: MetaMetricsEventCategory.CrossChainSwaps,
     event: MetaMetricsEventName.ActionCompleted,
     properties,
+    // sensitiveProperties: Object.keys(sensitiveProperties).length > 0
+    //   ? sensitiveProperties
+    //   : undefined,
   });
 };
 
