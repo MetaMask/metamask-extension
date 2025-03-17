@@ -7,13 +7,13 @@ import SendTokenPage from '../page-objects/pages/send/send-token-page';
 import TokenOverviewPage from '../page-objects/pages/token-overview-page';
 import TokenTransferTransactionConfirmation from '../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { buildQuote, checkActivityTransaction, reviewQuote, waitForTransactionToComplete } from '../tests/swaps/shared';
 
 describe('Send ERC20', function () {
   it('should send DAI', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
           .withTokensController({
             allTokens: {
               '0x1': {
@@ -35,9 +35,17 @@ describe('Send ERC20', function () {
           {
             type: 'anvil',
             options: {
-              chainId: 1,
-              // loadState: './test/e2e/seeder/network-states/with50Dai.json',
+              balance: 25,
+              blockTime: 2,
+              chainId: 1337,
+              gasLimit: 30000000,
+              gasPrice: 2000000000,
+            //  loadState: './test/e2e/seeder/network-states/with50Dai.json',
               forkUrl: `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
+              host: '127.0.0.1',
+              mnemonic:
+                'spread raise short crane omit tent fringe mandate neglect detail suspect cradle',
+              port: 8545
             },
           },
         ],
@@ -46,35 +54,29 @@ describe('Send ERC20', function () {
         await loginWithBalanceValidation(driver, localNodes[0]);
 
         const homePage = new HomePage(driver);
-        const assetListPage = new AssetListPage(driver);
+
         await homePage.check_pageIsLoaded();
-        await assetListPage.clickOnAsset('DAI');
 
-        // Send DAI
-        const tokenOverviewPage = new TokenOverviewPage(driver);
-        await tokenOverviewPage.check_pageIsLoaded();
-        await tokenOverviewPage.clickSend();
+        await buildQuote(driver, {
+          amount: 2,
+          swapTo: 'DAI',
+        });
 
-        const sendTokenPage = new SendTokenPage(driver);
-        await sendTokenPage.check_pageIsLoaded();
-        await sendTokenPage.fillRecipient(
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-        );
-        await sendTokenPage.fillAmount('10');
-        await sendTokenPage.goToNextScreen();
+        await reviewQuote(driver, {
+          amount: 2,
+          swapFrom: 'TESTETH',
+          swapTo: 'DAI',
+        });
 
-        // Check transaction in the Activity list
-        const tokenTransferTransactionConfirmation =
-          new TokenTransferTransactionConfirmation(driver);
-        await tokenTransferTransactionConfirmation.check_walletInitiatedHeadingTitle();
-        await tokenTransferTransactionConfirmation.check_networkParagraph();
-        await tokenTransferTransactionConfirmation.check_networkFeeParagraph();
-
-        await tokenTransferTransactionConfirmation.clickFooterConfirmButton();
-        await homePage.check_pageIsLoaded();
-        const activityList = new ActivityListPage(driver);
-        await activityList.check_confirmedTxNumberDisplayedInActivity();
-        await activityList.check_txAmountInActivity('-10 DAI');
+        await driver.clickElement({ text: 'Swap', tag: 'button' });
+        await waitForTransactionToComplete(driver, { tokenName: 'DAI' });
+        await checkActivityTransaction(driver, {
+          index: 0,
+          amount: '2',
+          swapFrom: 'TESTETH',
+          swapTo: 'DAI',
+        });
+        await driver.delay(90000);
       },
     );
   });

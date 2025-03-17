@@ -32,7 +32,7 @@ const defaultOptions = {
   host: '127.0.0.1',
   mnemonic:
     'spread raise short crane omit tent fringe mandate neglect detail suspect cradle',
-  port: 8546,
+  port: 8545,
 };
 
 export class Anvil {
