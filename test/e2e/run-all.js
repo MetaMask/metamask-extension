@@ -134,6 +134,10 @@ async function main() {
             description: `run json-rpc specific e2e tests`,
             type: 'boolean',
           })
+          .option('hack', {
+            description: `run hack specific e2e tests`,
+            type: 'boolean',
+          })
           .option('multi-provider', {
             description: `run multi injected provider e2e tests`,
             type: 'boolean',
@@ -169,6 +173,7 @@ async function main() {
     debug,
     retries,
     rpc,
+    hack,
     buildType,
     updateSnapshot,
     updatePrivacySnapshot,
@@ -193,6 +198,9 @@ async function main() {
     ];
   } else if (rpc) {
     const testDir = path.join(__dirname, 'json-rpc');
+    testPaths = await getTestPathsForTestDir(testDir);
+  } else if (hack) {
+    const testDir = path.join(__dirname, 'hack');
     testPaths = await getTestPathsForTestDir(testDir);
   } else if (multiProvider) {
     // Copy dist/ to folder
