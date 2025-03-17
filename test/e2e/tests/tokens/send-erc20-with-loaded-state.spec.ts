@@ -37,6 +37,7 @@ describe('Send ERC20', function () {
             options: {
               chainId: 1,
               loadState: './test/e2e/seeder/network-states/with50Dai.json',
+              forkUrl: `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
             },
           },
         ],
