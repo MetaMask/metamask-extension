@@ -1,10 +1,22 @@
 @use "design-system";
 
 .multichain-send-page {
-  width: 408px;
+  $width-screen-sm-min: 85vw;
+  $width-screen-md-min: 80vw;
+  $width-screen-lg-min: 62vw;
 
-  @media (max-width: 371px) {
-    width: 100%;
+  min-width: 320px;
+
+  @include design-system.screen-sm-min {
+    width: $width-screen-sm-min;
+  }
+
+  @include design-system.screen-md-min {
+    width: $width-screen-md-min;
+  }
+
+  @include design-system.screen-lg-min {
+    width: $width-screen-lg-min;
   }
 
   &__account-picker {

@@ -1,9 +1,22 @@
 @use "design-system";
 
 .confirm_wrapper {
-  box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
+  $width-screen-sm-min: 85vw;
+  $width-screen-md-min: 80vw;
+  $width-screen-lg-min: 62vw;
 
-  @media screen and (min-width: design-system.$break-small) {
-    max-width: 62%;
+  box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
+  min-width: 320px;
+
+  @include design-system.screen-sm-min {
+    width: $width-screen-sm-min;
+  }
+
+  @include design-system.screen-md-min {
+    width: $width-screen-md-min;
+  }
+
+  @include design-system.screen-lg-min {
+    width: $width-screen-lg-min;
   }
 }
