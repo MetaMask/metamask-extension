@@ -981,11 +981,6 @@ async function buildEventFragmentProperties({
   const swapAndSendMetricsProperties =
     getSwapAndSendMetricsProps(transactionMeta);
 
-  const batchProperties = await getBatchProperties(
-    transactionMeta,
-    transactionMetricsRequest.getMethodData,
-  );
-
   /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
   let properties = {
     chain_id: chainId,
@@ -1018,7 +1013,6 @@ async function buildEventFragmentProperties({
       : [],
     ...smartTransactionMetricsProperties,
     ...swapAndSendMetricsProperties,
-    ...batchProperties,
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as Record<string, any>;
@@ -1064,6 +1058,13 @@ async function buildEventFragmentProperties({
         transactionApprovalAmountVsProposedRatio,
     };
   }
+
+  await addBatchProperties(
+    transactionMeta,
+    transactionMetricsRequest.getMethodData,
+    properties,
+    sensitiveProperties,
+  );
 
   return { properties, sensitiveProperties };
 }
@@ -1165,11 +1166,12 @@ function allowanceAmountInRelationToTokenBalance(
   return null;
 }
 
-async function getBatchProperties(
+async function addBatchProperties(
   transactionMeta: TransactionMeta,
   getMethodData: (data: string) => Promise<{ name?: string } | undefined>,
+  properties: Record<string, Json | undefined>,
+  sensitiveProperties: Record<string, Json | undefined>,
 ) {
-  const properties: Record<string, Json | undefined> = {};
   const isExternal = origin && origin !== ORIGIN_METAMASK;
   const { delegationAddress, nestedTransactions, txParams } = transactionMeta;
   const { authorizationList } = txParams;
@@ -1191,7 +1193,7 @@ async function getBatchProperties(
       getMethodData,
     );
 
-    properties.transaction_contract_address = nestedTransactions
+    sensitiveProperties.transaction_contract_address = nestedTransactions
       ?.filter(
         (tx) =>
           tx.type === TransactionType.contractInteraction && tx.to?.length,
@@ -1203,14 +1205,12 @@ async function getBatchProperties(
     const { error } = transactionMeta;
 
     properties.eip7702_upgrade_rejection =
-      isUpgrade &&
-      (error.code as unknown as number) === errorCodes.rpc.methodNotSupported;
+      // @ts-expect-error Code has string type in controller
+      isUpgrade && error.code === errorCodes.rpc.methodNotSupported;
   }
 
   properties.eip7702_upgrade_transaction = isUpgrade;
-  properties.account_eip7702_upgraded = delegationAddress;
-
-  return properties;
+  sensitiveProperties.account_eip7702_upgraded = delegationAddress;
 }
 
 async function getNestedMethodNames(

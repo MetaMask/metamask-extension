@@ -30,7 +30,10 @@ import {
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
 import { decimalToHex } from '../../../../shared/modules/conversion.utils';
-import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
+import {
+  TransactionMetaEventPayload,
+  TransactionMetricsRequest,
+} from '../../../../shared/types/metametrics';
 import {
   handleTransactionAdded,
   handleTransactionApproved,
@@ -41,6 +44,12 @@ import {
   handleTransactionSubmitted,
   METRICS_STATUS_FAILED,
 } from './metrics';
+
+const ADDRESS_MOCK = '0x1234567890123456789012345678901234567890';
+const ADDRESS_2_MOCK = '0x1234567890123456789012345678901234567891';
+const ADDRESS_3_MOCK = '0x1234567890123456789012345678901234567892';
+const METHOD_NAME_MOCK = 'testMethod1';
+const METHOD_NAME_2_MOCK = 'testMethod2';
 
 const providerResultStub = {
   eth_getCode: '0x123',
@@ -186,6 +195,72 @@ describe('Transaction metrics', () => {
     jest.clearAllMocks();
   });
 
+  async function includesBatchPropertiesTemplate(
+    handleFn: (
+      request: TransactionMetricsRequest,
+      args: { transactionMeta: TransactionMeta },
+    ) => Promise<void>,
+  ) {
+    const transactionMeta = {
+      ...mockTransactionMeta,
+      delegationAddress: ADDRESS_3_MOCK,
+      nestedTransactions: [
+        {
+          to: ADDRESS_MOCK,
+          data: '0x1',
+          type: TransactionType.contractInteraction,
+        },
+        {
+          to: ADDRESS_2_MOCK,
+          data: '0x2',
+          type: TransactionType.contractInteraction,
+        },
+      ],
+      txParams: {
+        ...mockTransactionMeta.txParams,
+        authorizationList: [
+          {
+            address: ADDRESS_3_MOCK,
+          },
+        ],
+      },
+    } as TransactionMeta;
+
+    jest
+      .mocked(mockTransactionMetricsRequest.getMethodData)
+      .mockResolvedValueOnce({
+        name: METHOD_NAME_MOCK,
+      })
+      .mockResolvedValueOnce({
+        name: METHOD_NAME_2_MOCK,
+      });
+
+    await handleFn(mockTransactionMetricsRequest, {
+      transactionMeta,
+    });
+
+    const { properties, sensitiveProperties } = jest.mocked(
+      mockTransactionMetricsRequest.createEventFragment,
+    ).mock.calls[0][0];
+
+    expect(properties).toStrictEqual(
+      expect.objectContaining({
+        api_method: MESSAGE_TYPE.WALLET_SEND_CALLS,
+        batch_transaction_count: 2,
+        batch_transaction_method: 'eip7702',
+        eip7702_upgrade_transaction: true,
+        transaction_contract_method: [METHOD_NAME_MOCK, METHOD_NAME_2_MOCK],
+      }),
+    );
+
+    expect(sensitiveProperties).toStrictEqual(
+      expect.objectContaining({
+        account_eip7702_upgraded: ADDRESS_3_MOCK,
+        transaction_contract_address: [ADDRESS_MOCK, ADDRESS_2_MOCK],
+      }),
+    );
+  }
+
   describe('handleTransactionAdded', () => {
     it('should return if transaction meta is not defined', async () => {
       // TODO: Replace `any` with type
@@ -288,6 +363,10 @@ describe('Transaction metrics', () => {
         },
         sensitiveProperties: expectedSensitiveProperties,
       });
+    });
+
+    it('includes batch properties', async () => {
+      await includesBatchPropertiesTemplate(handleTransactionAdded);
     });
   });
 
@@ -411,6 +490,10 @@ describe('Transaction metrics', () => {
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
       ).toBeCalledWith(expectedUniqueId);
+    });
+
+    it('includes batch properties', async () => {
+      await includesBatchPropertiesTemplate(handleTransactionApproved);
     });
   });
 
@@ -611,6 +694,10 @@ describe('Transaction metrics', () => {
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
       ).toBeCalledWith(expectedUniqueId);
+    });
+
+    it('includes batch properties', async () => {
+      await includesBatchPropertiesTemplate(handleTransactionFailed);
     });
   });
 
@@ -896,6 +983,15 @@ describe('Transaction metrics', () => {
         mockTransactionMetricsRequest.finalizeEventFragment,
       ).toBeCalledWith(expectedUniqueId);
     });
+
+    it('includes batch properties', async () => {
+      await includesBatchPropertiesTemplate((request, args) =>
+        handleTransactionConfirmed(
+          request,
+          args.transactionMeta as TransactionMetaEventPayload,
+        ),
+      );
+    });
   });
 
   describe('handleTransactionDropped', () => {
@@ -1033,6 +1129,10 @@ describe('Transaction metrics', () => {
         mockTransactionMetricsRequest.finalizeEventFragment,
       ).toBeCalledWith(expectedUniqueId);
     });
+
+    it('includes batch properties', async () => {
+      await includesBatchPropertiesTemplate(handleTransactionDropped);
+    });
   });
 
   describe('handleTransactionRejected', () => {
@@ -1161,7 +1261,11 @@ describe('Transaction metrics', () => {
       });
     });
 
-    it('should include if upgrade was rejected', async () => {
+    it('includes batch properties', async () => {
+      await includesBatchPropertiesTemplate(handleTransactionRejected);
+    });
+
+    it('includes if upgrade was rejected', async () => {
       await handleTransactionRejected(mockTransactionMetricsRequest, {
         transactionMeta: {
           ...mockTransactionMeta,
@@ -1227,6 +1331,10 @@ describe('Transaction metrics', () => {
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
       ).not.toBeCalled();
+    });
+
+    it('includes batch properties', async () => {
+      await includesBatchPropertiesTemplate(handleTransactionSubmitted);
     });
   });
 });
