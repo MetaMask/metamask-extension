@@ -1,6 +1,5 @@
 import { Mockttp } from 'mockttp';
 import FixtureBuilder from '../../fixture-builder';
-import { generateGanacheOptions } from '../../helpers';
 import {
   BRIDGE_CLIENT_ID,
   BRIDGE_DEV_API_BASE_URL,
@@ -139,10 +138,10 @@ export const getBridgeFixtures = (
     testSpecificMock: mockServer(featureFlags),
     smartContract: SMART_CONTRACTS.HST,
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
-    localNodeOptions: generateGanacheOptions({
+    localNodeOptions: {
       hardfork: 'london',
       chain: { chainId: CHAIN_IDS.MAINNET },
-    }),
+    },
     title,
   };
 };
