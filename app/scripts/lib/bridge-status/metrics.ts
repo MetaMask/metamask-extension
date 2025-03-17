@@ -32,14 +32,31 @@ type TrackEvent = (
   options?: MetaMetricsEventOptions,
 ) => void;
 
+/**
+ * Handles bridge transaction completion events and tracks analytics
+ *
+ * @param payload - The bridge transaction complete event payload
+ * @param options - The options object
+ * @param options.backgroundState - The background state
+ * @param options.trackEvent - Function to track analytics events
+ * @param options.getFeatureFlags - Function to get feature flags
+ * @param options.getParticipateInMetrics - Function to check if user has opted into metrics
+ */
 export const handleBridgeTransactionComplete = async (
   payload: BridgeStatusControllerBridgeTransactionCompleteEvent['payload'][0],
   {
     backgroundState,
     trackEvent,
+    getFeatureFlags,
+    getParticipateInMetrics,
   }: {
     backgroundState: MetricsBackgroundState;
     trackEvent: TrackEvent;
+    getFeatureFlags: () => {
+      collectTransactionHashInAnalytics?: boolean;
+      [key: string]: boolean | undefined;
+    };
+    getParticipateInMetrics: () => boolean;
   },
 ) => {
   const { bridgeHistoryItem } = payload;
@@ -109,38 +126,27 @@ export const handleBridgeTransactionComplete = async (
     destination_transaction,
   };
 
-  // // Create sensitiveProperties to include transaction hash if feature flag is enabled
-  // const sensitiveProperties: Record<string, any> = {};
+  // Create sensitiveProperties object for the transaction hash
+  const sensitiveProperties: Record<string, string> = {};
 
-  // // Try to get feature flags from backgroundState
-  // const collectTransactionHashEnabled =
-  //   backgroundState?.featureFlags?.collectTransactionHashInAnalytics ||
-  //   backgroundState?.preferences?.featureFlags?.collectTransactionHashInAnalytics;
-
-  // // Try to determine if user is participating in metrics
-  // const participateInMetrics =
-  //   backgroundState?.participateInMetaMetrics !== false;
-
-  // if (collectTransactionHashEnabled && participateInMetrics) {
-  //   // Look for transaction hash in different possible locations
-  //   const txHash =
-  //     bridgeHistoryItem.srcTxHash ||
-  //     bridgeHistoryItem.sourceTxHash ||
-  //     bridgeHistoryItem.status?.srcChain?.txHash ||
-  //     bridgeHistoryItem.status?.sourceChain?.txHash;
-
-  //   if (txHash) {
-  //     sensitiveProperties.transaction_hash = txHash;
-  //   }
-  // }
+  // Add transaction hash if feature flag is enabled and user has opted into metrics
+  if (
+    getFeatureFlags().collectTransactionHashInAnalytics &&
+    getParticipateInMetrics() &&
+    bridgeHistoryItem.status.srcChain.txHash
+  ) {
+    sensitiveProperties.transaction_hash =
+      bridgeHistoryItem.status.srcChain.txHash;
+  }
 
   trackEvent({
     category: MetaMetricsEventCategory.CrossChainSwaps,
     event: MetaMetricsEventName.ActionCompleted,
     properties,
-    // sensitiveProperties: Object.keys(sensitiveProperties).length > 0
-    //   ? sensitiveProperties
-    //   : undefined,
+    sensitiveProperties:
+      Object.keys(sensitiveProperties).length > 0
+        ? sensitiveProperties
+        : undefined,
   });
 };
 
