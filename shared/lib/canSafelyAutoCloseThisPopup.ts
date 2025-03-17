@@ -8,7 +8,7 @@ import browser from 'webextension-polyfill';
  * extension UIs running in tabs).
  *
  * @returns A Promise that resolves to `true` if the window is a popup
- * or if the window type cannot be determined – and `false` only if the
+ * or if the window type cannot be determined – and `false` only if the
  * window is confirmed to not be a popup.
  */
 export const canSafelyAutoCloseThisPopup = async (): Promise<boolean> => {
