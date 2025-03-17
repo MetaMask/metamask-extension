@@ -100,6 +100,7 @@ export const SENTRY_BACKGROUND_STATE = {
     throttledOrigins: false,
     timeoutMinutes: true,
     trezorModel: true,
+    delegationData: true,
   },
   MultichainBalancesController: {
     balances: false,

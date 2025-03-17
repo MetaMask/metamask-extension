@@ -20,8 +20,10 @@ import { useSelector } from 'react-redux';
 import { createPublicClient, formatEther, http, parseEther } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { sepolia } from 'viem/chains';
+import { LEDGER_USB_VENDOR_ID } from '../../../shared/constants/hardware-wallets';
 import { SEPOLIA_RPC_URL } from '../../../shared/constants/network';
 import { Box, Button, Text } from '../../components/component-library';
+import { Textarea } from '../../components/component-library/textarea';
 import Card from '../../components/ui/card';
 import {
   getLedgerTransportStatus,
@@ -39,13 +41,13 @@ import {
   TextVariant,
 } from '../../helpers/constants/design-system';
 import {
-  performSetStorage,
   addTransaction,
   newUnsignedTypedMessage,
   performGetStorage,
+  performSetStorage,
+  setDelegationData,
 } from '../../store/actions';
-import { LEDGER_USB_VENDOR_ID } from '../../../shared/constants/hardware-wallets';
-import { Textarea } from '../../components/component-library/textarea';
+import { getDelegationData } from '../../selectors';
 
 const SWAP_LIMIT = parseEther('0.1');
 const TRANSFER_AMOUNT = parseEther('0.001');
@@ -83,6 +85,8 @@ export default function Delegation({
     DelegationStruct | undefined
   >();
 
+  const appStateDelegationData = useSelector(getDelegationData);
+
   const [metaMaskSmartAccount, setMetaMaskSmartAccount] = useState<
     MetaMaskSmartAccount<Implementation.Hybrid> | undefined
   >();
@@ -90,7 +94,6 @@ export default function Delegation({
     useState<boolean>(false);
   const [isDeployed, setIsDeployed] = useState<boolean>(false);
   const [gatorBalance, setGatorBalance] = useState<string>('0');
-  const [delegationData, setDelegationData] = useState<string>('');
   const ledgerTransportType = useSelector(getLedgerTransportType);
   const transportStatus = useSelector(getLedgerTransportStatus);
   const webHidConnectedStatus = useSelector(getLedgerWebHidConnectedStatus);
@@ -99,7 +102,6 @@ export default function Delegation({
       selectedAccount.address &&
       isAddressLedger(state, selectedAccount.address),
   );
-
   // Get delegator (account 1) and delegate (account 2)
   const account1 = accounts[0];
   const account2 = accounts.length > 1 ? accounts[1] : null;
@@ -465,6 +467,15 @@ export default function Delegation({
     setSimpleDelegation(undefined);
   };
 
+  const saveDelegationDataToAppState = async () => {
+    const delegation = await generateSimpleDelegation();
+    setDelegationData(selectedAccount.address, delegation);
+  };
+
+  const clearDelegationDataFromAppState = async () => {
+    setDelegationData(selectedAccount.address, null);
+  };
+
   useEffect(() => {
     loadDelegationData();
   }, [loadDelegationData, selectedAccount.address]);
@@ -632,6 +643,31 @@ export default function Delegation({
             <Button onClick={clearDelegationData}>Clear Delegation Data</Button>
             <Textarea
               value={simpleDelegation ? JSON.stringify(simpleDelegation) : ''}
+              readOnly
+            />
+          </Box>
+        </Card>
+        <Card>
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            gap={2}
+          >
+            <Text as="h3">App State storage</Text>
+            <Button onClick={saveDelegationDataToAppState}>
+              Save Delegation Data
+            </Button>
+            <Button onClick={clearDelegationDataFromAppState}>
+              Clear Delegation Data
+            </Button>
+            <Textarea
+              value={
+                appStateDelegationData[selectedAccount.address]
+                  ? JSON.stringify(
+                      appStateDelegationData[selectedAccount.address],
+                    )
+                  : ''
+              }
               readOnly
             />
           </Box>
