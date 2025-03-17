@@ -7320,12 +7320,15 @@ export default class MetamaskController extends EventEmitter {
         ].includes(status);
 
         if (isBridgeTransaction && !isIncompleteTransactionCleanup) {
-          handleTransactionFailedTypeBridge(payload, {
-            backgroundState: this.getState(),
-            trackEvent: this.metaMetricsController.trackEvent.bind(
-              this.metaMetricsController,
-            ),
-          });
+          handleTransactionFailedTypeBridge(
+            { transactionMeta },
+            {
+              backgroundState: this.getState(),
+              trackEvent: this.metaMetricsController.trackEvent.bind(
+                this.metaMetricsController,
+              ),
+            },
+          );
         }
       },
     );
