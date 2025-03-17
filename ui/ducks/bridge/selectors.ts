@@ -133,7 +133,7 @@ export const getAllBridgeableNetworks = createDeepEqualSelector(
 
 export const getFromChains = createDeepEqualSelector(
   getAllBridgeableNetworks,
-  (state: BridgeAppState) => state.metamask.bridgeState?.bridgeFeatureFlags,
+  (state: BridgeAppState) => state.metamask.bridgeFeatureFlags,
   (state: BridgeAppState) => hasSolanaAccounts(state),
   (allBridgeableNetworks, bridgeFeatureFlags, hasSolanaAccount) => {
     // First filter out Solana from source chains if no Solana account exists
@@ -165,7 +165,7 @@ export const getFromChain = createDeepEqualSelector(
 
 export const getToChains = createDeepEqualSelector(
   getAllBridgeableNetworks,
-  (state: BridgeAppState) => state.metamask.bridgeState?.bridgeFeatureFlags,
+  (state: BridgeAppState) => state.metamask.bridgeFeatureFlags,
   (allBridgeableNetworks, bridgeFeatureFlags) =>
     uniqBy([...allBridgeableNetworks, ...FEATURED_RPCS], 'chainId').filter(
       ({ chainId }) =>
@@ -182,7 +182,7 @@ export const getTopAssetsFromFeatureFlags = (
   if (!chainId) {
     return undefined;
   }
-  const bridgeFeatureFlags = state.metamask.bridgeState?.bridgeFeatureFlags;
+  const { bridgeFeatureFlags } = state.metamask;
   return bridgeFeatureFlags?.[BridgeFeatureFlagsKey.EXTENSION_CONFIG].chains[
     formatChainIdToCaip(chainId)
   ]?.topAssets;
@@ -235,14 +235,13 @@ export const getFromAmount = (state: BridgeAppState): string | null =>
 export const getSlippage = (state: BridgeAppState) => state.bridge.slippage;
 
 export const getQuoteRequest = (state: BridgeAppState) => {
-  const { quoteRequest } = state.metamask.bridgeState;
+  const { quoteRequest } = state.metamask;
   return quoteRequest;
 };
 
 export const getBridgeQuotesConfig = (state: BridgeAppState) =>
-  state.metamask.bridgeState?.bridgeFeatureFlags[
-    BridgeFeatureFlagsKey.EXTENSION_CONFIG
-  ] ?? {};
+  state.metamask.bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG] ??
+  {};
 
 export const getQuoteRefreshRate = createSelector(
   getBridgeQuotesConfig,
@@ -396,7 +395,7 @@ export const getToTokenConversionRate = createDeepEqualSelector(
 );
 
 const _getQuotesWithMetadata = createSelector(
-  (state: BridgeAppState) => state.metamask.bridgeState.quotes,
+  (state: BridgeAppState) => state.metamask.quotes,
   getToTokenConversionRate,
   getFromTokenConversionRate,
   getConversionRate,
@@ -519,7 +518,7 @@ const _getQuoteIdentifier = ({ quote }: QuoteResponse & L1GasFees) =>
   `${quote.bridgeId}-${quote.bridges[0]}-${quote.steps.length}`;
 
 const _getSelectedQuote = createSelector(
-  (state: BridgeAppState) => state.metamask.bridgeState.quotesRefreshCount,
+  (state: BridgeAppState) => state.metamask.quotesRefreshCount,
   (state: BridgeAppState) => state.bridge.selectedQuote,
   _getSortedQuotesWithMetadata,
   (quotesRefreshCount, selectedQuote, sortedQuotesWithMetadata) =>
@@ -537,12 +536,11 @@ export const getBridgeQuotes = createSelector(
   [
     _getSortedQuotesWithMetadata,
     _getSelectedQuote,
-    (state) => state.metamask.bridgeState.quotesLastFetched,
-    (state) =>
-      state.metamask.bridgeState.quotesLoadingStatus === RequestStatus.LOADING,
-    (state: BridgeAppState) => state.metamask.bridgeState.quotesRefreshCount,
-    (state: BridgeAppState) => state.metamask.bridgeState.quotesInitialLoadTime,
-    (state: BridgeAppState) => state.metamask.bridgeState.quoteFetchError,
+    (state) => state.metamask.quotesLastFetched,
+    (state) => state.metamask.quotesLoadingStatus === RequestStatus.LOADING,
+    (state: BridgeAppState) => state.metamask.quotesRefreshCount,
+    (state: BridgeAppState) => state.metamask.quotesInitialLoadTime,
+    (state: BridgeAppState) => state.metamask.quoteFetchError,
     getBridgeQuotesConfig,
     getQuoteRequest,
   ],
@@ -583,8 +581,7 @@ export const getIsBridgeTx = createDeepEqualSelector(
 
 const _getValidatedSrcAmount = createSelector(
   getFromToken,
-  (state: BridgeAppState) =>
-    state.metamask.bridgeState.quoteRequest.srcTokenAmount,
+  (state: BridgeAppState) => state.metamask.quoteRequest.srcTokenAmount,
   (fromToken, srcTokenAmount) =>
     srcTokenAmount && fromToken?.decimals
       ? calcTokenAmount(srcTokenAmount, Number(fromToken.decimals)).toString()
@@ -686,7 +683,7 @@ export const getWasTxDeclined = (state: BridgeAppState): boolean => {
  * Checks if Solana is enabled as either a fromChain or toChain for bridging
  */
 export const isBridgeSolanaEnabled = createDeepEqualSelector(
-  (state: BridgeAppState) => state.metamask.bridgeState?.bridgeFeatureFlags,
+  (state: BridgeAppState) => state.metamask.bridgeFeatureFlags,
   (bridgeFeatureFlags) => {
     const solanaChainId = MultichainNetworks.SOLANA;
     const solanaChainIdCaip = formatChainIdToCaip(solanaChainId);

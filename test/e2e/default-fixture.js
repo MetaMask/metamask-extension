@@ -120,23 +120,21 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         snapsInstallPrivacyWarningShown: true,
       },
       BridgeController: {
-        bridgeState: {
-          bridgeFeatureFlags: {
-            extensionConfig: {
-              support: false,
-              chains: {
-                'eip155:1': {
-                  isActiveSrc: true,
-                  isActiveDest: true,
-                },
-                'eip155:10': {
-                  isActiveSrc: true,
-                  isActiveDest: true,
-                },
-                'eip155:59144': {
-                  isActiveSrc: true,
-                  isActiveDest: true,
-                },
+        bridgeFeatureFlags: {
+          extensionConfig: {
+            support: false,
+            chains: {
+              'eip155:1': {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+              'eip155:10': {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+              'eip155:59144': {
+                isActiveSrc: true,
+                isActiveDest: true,
               },
             },
           },

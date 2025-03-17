@@ -782,7 +782,7 @@ export const createBridgeMockStore = (
       },
       ...mockTokenData,
       ...metamaskStateOverrides,
-      bridgeState: {
+      ...{
         ...DEFAULT_BRIDGE_STATE,
         bridgeFeatureFlags: {
           ...featureFlagOverrides,
@@ -805,8 +805,8 @@ export const createBridgeMockStore = (
             },
           },
         },
-        ...bridgeStateOverrides,
       },
+      ...bridgeStateOverrides,
       bridgeStatusState: {
         ...DEFAULT_BRIDGE_STATUS_STATE,
         ...bridgeStatusStateOverrides,

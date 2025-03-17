@@ -1738,7 +1738,7 @@ export function getIsBridgeChain(state, overrideChainId) {
 }
 
 function getBridgeFeatureFlags(state) {
-  return state.metamask.bridgeState?.bridgeFeatureFlags;
+  return state.metamask.bridgeFeatureFlags;
 }
 
 export const getIsBridgeEnabled = createSelector(

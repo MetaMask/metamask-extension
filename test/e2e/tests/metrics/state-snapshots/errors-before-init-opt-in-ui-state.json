@@ -46,15 +46,13 @@
       "snapsInstallPrivacyWarningShown": true
     },
     "BridgeController": {
-      "bridgeState": {
-        "bridgeFeatureFlags": {
-          "extensionConfig": {
-            "support": "boolean",
-            "chains": {
-              "eip155:1": "object",
-              "eip155:10": "object",
-              "eip155:59144": "object"
-            }
+      "bridgeFeatureFlags": {
+        "extensionConfig": {
+          "support": "boolean",
+          "chains": {
+            "eip155:1": "object",
+            "eip155:10": "object",
+            "eip155:59144": "object"
           }
         }
       }
