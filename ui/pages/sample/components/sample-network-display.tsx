@@ -7,10 +7,10 @@ import {
   Box,
 } from '../../../components/component-library';
 
-interface SampleNetworkDisplayProps {
+type SampleNetworkDisplayProps = {
   name: string;
   imageUrl?: string;
-}
+};
 
 export const SampleNetworkDisplay: React.FC<SampleNetworkDisplayProps> = ({
   name,

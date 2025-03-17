@@ -37,7 +37,7 @@ describe('useForm', () => {
 
       if (!values.email) {
         errors.email = mockErrorMessages.requiredEmail;
-      } else if (!/\S+@\S+\.\S+/.test(values.email)) {
+      } else if (!/\S+@\S+\.\S+/u.test(values.email)) {
         errors.email = mockErrorMessages.invalidEmail;
       }
 
@@ -45,12 +45,11 @@ describe('useForm', () => {
     };
   };
 
-  // Setup options interface
-  interface SetupOptions {
+  type SetupOptions = {
     initialValues?: FormValues;
     validator?: (values: FormValues) => Record<string, string>;
     onSubmit?: jest.Mock;
-  }
+  };
 
   // Hook setup helper
   const setupHook = ({
@@ -258,7 +257,7 @@ describe('useForm', () => {
 
       // Complete submission
       await act(async () => {
-        resolveSubmit!(undefined);
+        resolveSubmit(undefined);
         await submitPromise;
       });
     });
@@ -332,7 +331,7 @@ describe('useForm', () => {
       expect(result.current.isSubmitting).toBe(true);
 
       await act(async () => {
-        resolveSubmit!(undefined);
+        resolveSubmit(undefined);
         await submitPromise;
       });
 

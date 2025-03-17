@@ -68,7 +68,7 @@ describe('useSamplePetnamesController', () => {
 
   describe('chainId', () => {
     it('should retrieve the current chain ID from the selector', () => {
-      const { result } = renderTestHook();
+      renderTestHook();
 
       expect(useSelector).toHaveBeenCalledWith(getCurrentChainId);
     });

@@ -1,53 +1,22 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+// eslint-disable-next-line spaced-comment
+/// <reference types="@types/jest" />
+
+import {
+  renderHook,
+  act,
+  RenderHookResult,
+} from '@testing-library/react-hooks';
 import { Hex } from '@metamask/utils';
-import { useSamplePetnamesForm } from './useSamplePetnamesForm';
+import { ChangeEvent } from 'react';
 import { useSamplePetnamesController } from '../../../ducks/metamask/sample-petnames-controller';
+import { useSamplePetnamesForm } from './useSamplePetnamesForm';
 import { useSamplePetnamesMetrics } from './useSamplePetnamesMetrics';
 import { useSamplePerformanceTrace } from './useSamplePerformanceTrace';
-import { ChangeEvent } from 'react';
 
 // Mock the dependencies
 jest.mock('../../../ducks/metamask/sample-petnames-controller');
 jest.mock('./useSamplePetnamesMetrics');
 jest.mock('./useSamplePerformanceTrace');
-jest.mock('../../../hooks/useForm', () => ({
-  useForm: jest
-    .fn()
-    .mockImplementation(({ initialValues, validate, onSubmit }) => {
-      let values = { ...initialValues };
-      const errors = validate ? validate(values) : {};
-
-      return {
-        values,
-        errors,
-        isSubmitting: false,
-        formState: 'default',
-        handleSubmit: async () => {
-          const validationErrors = validate(values);
-          const hasErrors = Object.values(validationErrors).some(
-            (error) => error,
-          );
-
-          if (hasErrors) {
-            // This will trigger the validation error tracking in the hook's handleSubmit
-            onSubmit(values).catch(() => {
-              // Ignore error, we'll throw it below
-            });
-            throw new Error('Validation failed');
-          }
-
-          return onSubmit(values);
-        },
-        handleInputChange:
-          (field: string) => (e: ChangeEvent<HTMLInputElement>) => {
-            values = { ...values, [field]: e.target.value };
-          },
-        handleBlur: jest.fn(),
-        getFieldProps: jest.fn(),
-        isFormValid: Object.values(validate(values)).every((error) => !error),
-      };
-    }),
-}));
 
 describe('useSamplePetnamesForm', () => {
   // Test helpers and constants
@@ -56,6 +25,12 @@ describe('useSamplePetnamesForm', () => {
   const VALID_PETNAME = 'Valid Name';
   const EMPTY_PETNAME = '';
   const TOO_LONG_PETNAME = 'This name is way too long and should be rejected';
+
+  // Type for the hook result to make testing easier
+  type HookResult = RenderHookResult<
+    unknown,
+    ReturnType<typeof useSamplePetnamesForm>
+  >;
 
   // Mock functions
   const mocks = {
@@ -74,10 +49,25 @@ describe('useSamplePetnamesForm', () => {
     ({ target: { value } } as ChangeEvent<HTMLInputElement>);
 
   // Helper function to set form values
-  const setFormValues = (result: any, address: string, petName: string) => {
+  const setFormValues = (
+    result: HookResult['result'],
+    address: string,
+    petName: string,
+  ) => {
     act(() => {
-      result.current.handleInputChange('address')(createChangeEvent(address));
-      result.current.handleInputChange('petName')(createChangeEvent(petName));
+      result.current
+        .getFieldProps('address')
+        .onChange(createChangeEvent(address));
+      result.current
+        .getFieldProps('petName')
+        .onChange(createChangeEvent(petName));
+    });
+  };
+
+  // Helper function to submit the form
+  const submitForm = async (result: HookResult['result']) => {
+    await act(async () => {
+      await result.current.handleSubmit();
     });
   };
 
@@ -126,41 +116,48 @@ describe('useSamplePetnamesForm', () => {
   });
 
   describe('Form validation', () => {
-    it('should reject invalid addresses', async () => {
-      const { result } = renderHook(() => useSamplePetnamesForm());
+    it.each([
+      {
+        scenario: 'invalid address',
+        address: INVALID_ADDRESS,
+        petName: VALID_PETNAME,
+        expectedFieldError: 'address',
+      },
+      {
+        scenario: 'empty pet name',
+        address: VALID_ADDRESS,
+        petName: EMPTY_PETNAME,
+        expectedFieldError: 'petName',
+      },
+      {
+        scenario: 'too long pet name',
+        address: VALID_ADDRESS,
+        petName: TOO_LONG_PETNAME,
+        expectedFieldError: 'petName',
+      },
+    ])(
+      'should reject $scenario',
+      async ({ address, petName, expectedFieldError }) => {
+        const { result } = renderHook(() => useSamplePetnamesForm());
 
-      setFormValues(result, INVALID_ADDRESS, VALID_PETNAME);
+        setFormValues(result, address, petName);
 
-      await act(async () => {
-        await expect(result.current.handleSubmit()).rejects.toThrow();
-      });
+        // Submit the form
+        await submitForm(result);
 
-      expect(mocks.assignPetname).not.toHaveBeenCalled();
-    });
+        // Check that validation errors are set
+        expect(
+          result.current.fieldErrors[
+            expectedFieldError as keyof typeof result.current.fieldErrors
+          ],
+        ).toBeTruthy();
+        expect(result.current.isFormValid).toBe(false);
+        expect(mocks.assignPetname).not.toHaveBeenCalled();
 
-    it('should reject empty pet names', async () => {
-      const { result } = renderHook(() => useSamplePetnamesForm());
-
-      setFormValues(result, VALID_ADDRESS, EMPTY_PETNAME);
-
-      await act(async () => {
-        await expect(result.current.handleSubmit()).rejects.toThrow();
-      });
-
-      expect(mocks.trackFormValidationError).toHaveBeenCalled();
-    });
-
-    it('should reject too long pet names', async () => {
-      const { result } = renderHook(() => useSamplePetnamesForm());
-
-      setFormValues(result, VALID_ADDRESS, TOO_LONG_PETNAME);
-
-      await act(async () => {
-        await expect(result.current.handleSubmit()).rejects.toThrow();
-      });
-
-      expect(mocks.trackFormValidationError).toHaveBeenCalled();
-    });
+        // Check that the form is in error state due to validation
+        expect(result.current.submitStatus).not.toBe('success');
+      },
+    );
   });
 
   describe('Form submission', () => {
@@ -170,10 +167,7 @@ describe('useSamplePetnamesForm', () => {
       const { result } = renderHook(() => useSamplePetnamesForm());
 
       setFormValues(result, VALID_ADDRESS, VALID_PETNAME);
-
-      await act(async () => {
-        await result.current.handleSubmit();
-      });
+      await submitForm(result);
 
       // Check tracing
       expect(mocks.startTrace).toHaveBeenCalled();
@@ -192,6 +186,10 @@ describe('useSamplePetnamesForm', () => {
         VALID_ADDRESS,
         VALID_PETNAME.length,
       );
+
+      // Check form state
+      expect(result.current.submitStatus).toBe('success');
+      expect(result.current.formError).toBeUndefined();
     });
 
     it('should handle submission errors correctly', async () => {
@@ -202,18 +200,88 @@ describe('useSamplePetnamesForm', () => {
 
       setFormValues(result, VALID_ADDRESS, VALID_PETNAME);
 
-      await act(async () => {
-        await expect(result.current.handleSubmit()).rejects.toThrow(
-          errorMessage,
-        );
-      });
+      // The form is valid but the submission will fail
+      expect(result.current.isFormValid).toBe(true);
+
+      // Submit the form and expect it to fail
+      await submitForm(result);
 
       // Check error handling
+      expect(result.current.formError).toBeTruthy();
+      expect(result.current.submitStatus).toBe('error');
       expect(mocks.trackFormSubmissionError).toHaveBeenCalledWith(errorMessage);
       expect(mocks.endTrace).toHaveBeenCalledWith(false, {
         success: false,
         error: errorMessage,
       });
     });
+  });
+
+  describe('Form field validation', () => {
+    // Test validateAddress function behavior
+    it.each([
+      {
+        scenario: 'empty address',
+        address: '',
+        expectedError: 'Address is required',
+      },
+      {
+        scenario: 'invalid address format',
+        address: INVALID_ADDRESS,
+        expectedError: 'Invalid Ethereum address',
+      },
+      {
+        scenario: 'valid address',
+        address: VALID_ADDRESS,
+        expectedError: undefined,
+      },
+    ])(
+      'should validate address: $scenario',
+      async ({ address, expectedError }) => {
+        const { result } = renderHook(() => useSamplePetnamesForm());
+
+        act(() => {
+          result.current
+            .getFieldProps('address')
+            .onChange(createChangeEvent(address));
+          result.current.getFieldProps('address').onBlur();
+        });
+
+        expect(result.current.fieldErrors.address).toBe(expectedError);
+      },
+    );
+
+    // Test validatePetname function behavior
+    it.each([
+      {
+        scenario: 'empty petname',
+        petName: EMPTY_PETNAME,
+        expectedError: 'Pet name is required',
+      },
+      {
+        scenario: 'too long petname',
+        petName: TOO_LONG_PETNAME,
+        expectedError: 'Pet name must be 12 characters or less',
+      },
+      {
+        scenario: 'valid petname',
+        petName: VALID_PETNAME,
+        expectedError: undefined,
+      },
+    ])(
+      'should validate petName: $scenario',
+      async ({ petName, expectedError }) => {
+        const { result } = renderHook(() => useSamplePetnamesForm());
+
+        act(() => {
+          result.current
+            .getFieldProps('petName')
+            .onChange(createChangeEvent(petName));
+          result.current.getFieldProps('petName').onBlur();
+        });
+
+        expect(result.current.fieldErrors.petName).toBe(expectedError);
+      },
+    );
   });
 });

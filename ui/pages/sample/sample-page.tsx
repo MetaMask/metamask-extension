@@ -63,12 +63,12 @@ export function SamplePage() {
           in MetaMask.
         </Text>
 
+        <SampleCounterPane />
+
         <SampleNetworkDisplay
           name={currentNetwork.nickname || 'Custom Network'}
           imageUrl={currentNetwork.rpcPrefs?.imageUrl}
         />
-
-        <SampleCounterPane />
         <SamplePetnamesForm />
       </Content>
     </Page>
