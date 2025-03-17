@@ -769,7 +769,6 @@ jobs:
 
   test-e2e-chrome-hack:
     executor: node-browsers-medium-plus
-    parallelism: 20
     steps:
       - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
