@@ -124,7 +124,10 @@ import {
 } from '@metamask/queued-request-controller';
 
 import { UserOperationController } from '@metamask/user-operation-controller';
-import { BridgeController } from '@metamask/bridge-controller';
+import {
+  BridgeController,
+  BRIDGE_CONTROLLER_NAME,
+} from '@metamask/bridge-controller';
 
 import {
   TransactionStatus,
@@ -354,7 +357,6 @@ import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmM
 import { isEthAddress } from './lib/multichain/address';
 
 import { decodeTransactionData } from './lib/transaction/decode/util';
-import { BRIDGE_CONTROLLER_NAME } from './controllers/bridge/constants';
 import {
   onPushNotificationClicked,
   onPushNotificationReceived,
