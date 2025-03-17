@@ -443,7 +443,7 @@
     "@metamask/eth-json-rpc-provider": "^4.1.6",
     "@metamask/forwarder": "^1.1.0",
     "@metamask/phishing-warning": "^4.1.0",
-    "@metamask/preferences-controller": "^15.0.2",
+    "@metamask/preferences-controller": "^17.0.0",
     "@metamask/test-bundler": "^1.0.0",
     "@metamask/test-dapp": "9.1.0",
     "@metamask/test-dapp-multichain": "^0.6.0",
