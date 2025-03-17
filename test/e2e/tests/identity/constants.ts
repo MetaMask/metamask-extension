@@ -4,6 +4,6 @@ export const IDENTITY_TEAM_SEED_PHRASE =
 export const IDENTITY_TEAM_PASSWORD = 'notify_password';
 // You can use the storage key below to generate mock data
 export const IDENTITY_TEAM_STORAGE_KEY =
-  '0d55d30da233959674d14076737198c05ae3fb8631a17e20d3c28c60dddd82f7';
+  '8e05e4135496f3ea56bd256e8d2a802e8a2d9e37fbdec6c1befd0e53f1114b16';
 export const IDENTITY_TEAM_IMPORTED_PRIVATE_KEY =
   '0179f7453ff337aba89d04b00085764092cf8c0cfe91d5614c39c2be902ad582';

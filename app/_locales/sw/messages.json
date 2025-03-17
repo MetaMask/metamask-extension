@@ -304,9 +304,6 @@
     "message": "Ingiza",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Ingiza Akaunti"
-  },
   "importAccountMsg": {
     "message": "Akaunti zilizoingizwa hazitahusishwa na kirai chako cha kianzio cha akaunti ya MetaMask iliyoundwa awali. Pata maelezo zaidi kuhusu akaunti zilizoingizwa"
   },

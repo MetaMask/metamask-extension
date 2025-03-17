@@ -1,3 +1,4 @@
+import * as Multichain from '@metamask/multichain';
 import { errorCodes, rpcErrors } from '@metamask/rpc-errors';
 import {
   Caip25CaveatType,
@@ -10,12 +11,18 @@ describe('Ethereum Chain Utils', () => {
   const createMockedSwitchChain = () => {
     const end = jest.fn();
     const mocks = {
+      origin: 'www.test.com',
+      isAddFlow: false,
       autoApprove: false,
       setActiveNetwork: jest.fn(),
       getCaveat: jest.fn(),
-      requestPermittedChainsPermissionForOrigin: jest.fn(),
       requestPermittedChainsPermissionIncrementalForOrigin: jest.fn(),
       setTokenNetworkFilter: jest.fn(),
+      rejectApprovalRequestsForOrigin: jest.fn(),
+      requestUserApproval: jest.fn(),
+      hasApprovalRequestsForOrigin: jest.fn(),
+      toNetworkConfiguration: {},
+      fromNetworkConfiguration: {},
     };
     const response: { result?: true } = {};
     const switchChain = (chainId: Hex, networkClientId: string) =>
@@ -40,6 +47,13 @@ describe('Ethereum Chain Utils', () => {
       });
     });
 
+    it('calls rejectApprovalRequestsForOrigin if passed', async () => {
+      const { mocks, switchChain } = createMockedSwitchChain();
+      await switchChain('0x1', 'mainnet');
+
+      expect(mocks.rejectApprovalRequestsForOrigin).toHaveBeenCalledTimes(1);
+    });
+
     describe('with no existing CAIP-25 permission', () => {
       it('requests a switch chain approval without autoApprove if autoApprove: false', async () => {
         const { mocks, switchChain } = createMockedSwitchChain();
@@ -47,7 +61,7 @@ describe('Ethereum Chain Utils', () => {
         await switchChain('0x1', 'mainnet');
 
         expect(
-          mocks.requestPermittedChainsPermissionForOrigin,
+          mocks.requestPermittedChainsPermissionIncrementalForOrigin,
         ).toHaveBeenCalledWith({ chainId: '0x1', autoApprove: false });
       });
 
@@ -61,14 +75,16 @@ describe('Ethereum Chain Utils', () => {
 
       it('should throw an error if the switch chain approval is rejected', async () => {
         const { mocks, end, switchChain } = createMockedSwitchChain();
-        mocks.requestPermittedChainsPermissionForOrigin.mockRejectedValueOnce({
-          code: errorCodes.provider.userRejectedRequest,
-        });
+        mocks.requestPermittedChainsPermissionIncrementalForOrigin.mockRejectedValueOnce(
+          {
+            code: errorCodes.provider.userRejectedRequest,
+          },
+        );
 
         await switchChain('0x1', 'mainnet');
 
         expect(
-          mocks.requestPermittedChainsPermissionForOrigin,
+          mocks.requestPermittedChainsPermissionIncrementalForOrigin,
         ).toHaveBeenCalled();
         expect(mocks.setActiveNetwork).not.toHaveBeenCalled();
         expect(end).toHaveBeenCalledWith({
@@ -114,6 +130,25 @@ describe('Ethereum Chain Utils', () => {
         ).toHaveBeenCalledWith({ chainId: '0x1', autoApprove: false });
         expect(mocks.setActiveNetwork).toHaveBeenCalledWith('mainnet');
         expect(mocks.setTokenNetworkFilter).toHaveBeenCalledWith('0x1');
+      });
+
+      it('check for user approval is user already has access on the chain', async () => {
+        jest
+          .spyOn(Multichain, 'getPermittedEthChainIds')
+          .mockReturnValue(['0x1']);
+        const { mocks, switchChain } = createMockedSwitchChain();
+        mocks.hasApprovalRequestsForOrigin.mockReturnValue(true);
+        mocks.autoApprove = false;
+        mocks.getCaveat.mockReturnValue({
+          value: {
+            requiredScopes: {},
+            optionalScopes: {},
+            isMultichainOrigin: false,
+          },
+        });
+        await switchChain('0x1', 'testnet');
+
+        expect(mocks.requestUserApproval).toHaveBeenCalledTimes(1);
       });
 
       it('should throw errors if the permittedChains grant fails', async () => {
