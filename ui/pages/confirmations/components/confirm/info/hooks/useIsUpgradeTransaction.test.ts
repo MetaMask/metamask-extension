@@ -27,8 +27,8 @@ describe('useIsUpgradeTransaction', () => {
 
   it.each([undefined, null, []] as const)(
     'returns false if authorizationList is %s',
-    async (authorizationList: AuthorizationList | undefined | null) => {
-      const result = runHook(authorizationList);
+    async (authorizationList) => {
+      const result = runHook(authorizationList as unknown as AuthorizationList);
       expect(result).toBe(false);
     },
   );

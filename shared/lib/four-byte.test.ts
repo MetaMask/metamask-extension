@@ -30,8 +30,8 @@ describe('Four Byte', () => {
 
     it.each([undefined, null, '', '0x', '0X'])(
       'returns undefined if four byte prefix is %s',
-      async (prefix: string) => {
-        expect(await getMethodFrom4Byte(prefix)).toBeUndefined();
+      async (prefix) => {
+        expect(await getMethodFrom4Byte(prefix as string)).toBeUndefined();
       },
     );
 

@@ -43,7 +43,7 @@ describe('formatAmount', () => {
       ],
     ])(
       'formats amount greater than or equal to 1 with appropriate decimal precision (%s => %s)',
-      (amount: number, expected: string) => {
+      (amount: number | string, expected: string) => {
         expect(formatAmount(locale, new BigNumber(amount))).toBe(expected);
       },
     );
