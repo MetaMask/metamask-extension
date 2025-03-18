@@ -217,7 +217,12 @@ async function withFixtures(options, testSuite) {
     fixtureServer.loadJsonState(fixtures, contractRegistry);
 
     if (localNodes[0] && useBundler) {
-      await initBundler(bundlerServer, localNodes[0], usePaymaster);
+      await initBundler(
+        bundlerServer,
+        localNodes[0],
+        usePaymaster,
+        localNodeOptsNormalized,
+      );
     }
 
     await phishingPageServer.start();
@@ -864,9 +869,18 @@ async function getCleanAppState(driver) {
   );
 }
 
-async function initBundler(bundlerServer, localNodeServer, usePaymaster) {
+async function initBundler(
+  bundlerServer,
+  localNodeServer,
+  usePaymaster,
+  localNodeOptsNormalized,
+) {
   try {
-    const seeder = new AnvilSeeder(localNodeServer.getProvider());
+    const nodeType = localNodeOptsNormalized[0].type;
+    const seeder =
+      nodeType === 'ganache'
+        ? new GanacheSeeder(localNodeServer.getProvider())
+        : new AnvilSeeder(localNodeServer.getProvider());
 
     await seeder.deploySmartContract(SMART_CONTRACTS.ENTRYPOINT);
 
