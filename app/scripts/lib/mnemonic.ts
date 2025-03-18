@@ -1,5 +1,31 @@
 /* eslint-disable no-bitwise, no-plusplus */
 
+/**
+ * @file Mnemonic utility for converting between BIP-39 mnemonics and wordlist
+ * indices without using strings in memory.
+ *
+ * This utility is designed to be used in environments where strings are not
+ * allowed in memory and where the process is long-running, such as the
+ * extension background process. It uses a compact trie to store the wordlist
+ * and convert between mnemonics and wordlist indices.
+ *
+ * The trie is built from the English wordlist, and can only be used with the
+ * English wordlist, as it assumes 26 lowercase letters and a resulting trie of
+ * limited depth.
+ *
+ * It has been optimized for memory size while maintaining reasonable search
+ * performance. It is typically 2x-5x faster than the string-based approach and
+ * uses only a little more memory (likely due to the application still importing
+ * the string-based wordlist elsewhere).
+ *
+ * This module is not suitable for using the UI, as it has considerable startup
+ * time.
+ *
+ * Additional startup improvements can be made by precomputing the trie and
+ * index. This would allow the trie to be used in the UI, but complicates
+ * maintenance.
+ */
+
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
 /**
