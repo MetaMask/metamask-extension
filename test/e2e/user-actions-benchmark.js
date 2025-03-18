@@ -21,9 +21,7 @@ async function loadNewAccount() {
   await withFixtures(
     {
       fixtures: new FixtureBuilder().build(),
-      localNodeOptions: {
-        accounts: 1,
-      },
+      localNodeOptions: 'ganache',
       disableServerMochaToBackground: true,
     },
     async ({ driver }) => {
