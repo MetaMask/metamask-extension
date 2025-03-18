@@ -55,7 +55,7 @@ export class MockKeyring implements Keyring {
 
   async init(): Promise<void> {
     console.log('MockKeyring - init');
-    await this.#initHwAccounts(10);
+    await this.#initHwAccounts(5);
     const storedAccounts = await getStorageItem(storageKeyAccounts);
     this.accounts = storedAccounts ?? [];
     console.log('MockKeyring - init', this.accounts);
@@ -80,6 +80,7 @@ export class MockKeyring implements Keyring {
   }
 
   setHdPath(path: string) {
+    console.debug('MockKeyring - setHdPath', path);
     this.hdPath = path;
   }
 
@@ -90,13 +91,27 @@ export class MockKeyring implements Keyring {
 
   async addAccounts(n: number): Promise<Hex[]> {
     console.debug('MockKeyring - addAccounts', n);
-    const alen = this.accounts.length;
-    const tlen = this.#hwAccounts.length;
-    if (alen + n > tlen) {
+    const available = this.#hwAccounts
+      .slice(this.unlockedAccount)
+      .filter(
+        ({ address }) =>
+          this.accounts.findIndex(({ address: a }) => a === address) === -1,
+      );
+    if (n > available.length) {
       throw new Error('Not enough accounts');
     }
-    const newAccounts = this.#hwAccounts.slice(alen, n);
+    console.debug('MockKeyring - addAccounts before', this.accounts);
+    const newAccounts = available.slice(0, n);
+    console.debug('MockKeyring - addAccounts newAccounts', newAccounts);
     this.accounts.push(...newAccounts);
+    console.debug('MockKeyring - addAccounts after', this.accounts);
+
+    // sort accounts the same way as the hwAccounts
+    this.accounts.sort(
+      (a, b) =>
+        this.#hwAccounts.findIndex(({ address: ha }) => ha === a.address) -
+        this.#hwAccounts.findIndex(({ address: hb }) => hb === b.address),
+    );
 
     await setStorageItem(storageKeyAccounts, this.accounts);
 
@@ -104,10 +119,12 @@ export class MockKeyring implements Keyring {
   }
 
   setAccountToUnlock(index: number) {
+    console.debug('MockKeyring - setAccountToUnlock', index);
     this.unlockedAccount = index;
   }
 
   async generateRandomMnemonic(): Promise<void> {
+    console.debug('MockKeyring - generateRandomMnemonic');
     return Promise.resolve();
   }
 
@@ -187,6 +204,7 @@ export class MockKeyring implements Keyring {
     _message: string,
     _options?: Record<string, unknown>,
   ): Promise<string> {
+    console.debug('MockKeyring - signMessage', address);
     throw new Error('Method not implemented.');
   }
 
@@ -195,6 +213,7 @@ export class MockKeyring implements Keyring {
     _message: string,
     _options?: Record<string, unknown>,
   ): Promise<string> {
+    console.debug('MockKeyring - signEip712Message', address);
     throw new Error('Method not implemented.');
   }
 
@@ -203,6 +222,7 @@ export class MockKeyring implements Keyring {
     _message: string,
     _options?: Record<string, unknown>,
   ): Promise<string> {
+    console.debug('MockKeyring - signPersonalMessage', address);
     throw new Error('Method not implemented.');
   }
 
