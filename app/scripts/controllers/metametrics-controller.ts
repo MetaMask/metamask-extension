@@ -213,6 +213,10 @@ const controllerMetadata = {
     persist: true,
     anonymous: false,
   },
+  previousUserTraits: {
+    persist: true,
+    anonymous: false,
+  },
   dataCollectionForMarketing: {
     persist: true,
     anonymous: false,
@@ -237,6 +241,7 @@ const controllerMetadata = {
  * @property fragments - Object keyed by UUID with stored fragments as values.
  * @property eventsBeforeMetricsOptIn - Array of queued events added before a user opts into metrics.
  * @property traits - Traits that are not derived from other state keys.
+ * @property previousUserTraits - The user traits the last time they were computed.
  * @property dataCollectionForMarketing - Flag to determine if data collection for marketing is enabled.
  * @property marketingCampaignCookieId - The marketing campaign cookie id.
  * @property segmentApiCalls - Object keyed by messageId with segment event type and payload as values.
@@ -248,6 +253,7 @@ export type MetaMetricsControllerState = {
   fragments: Record<string, MetaMetricsEventFragment>;
   eventsBeforeMetricsOptIn: MetaMetricsEventPayload[];
   traits: MetaMetricsUserTraits;
+  previousUserTraits?: MetaMetricsUserTraits;
   dataCollectionForMarketing: boolean | null;
   marketingCampaignCookieId: string | null;
   segmentApiCalls: Record<
@@ -334,6 +340,7 @@ export const getDefaultMetaMetricsControllerState =
     latestNonAnonymousEventTimestamp: 0,
     eventsBeforeMetricsOptIn: [],
     traits: {},
+    previousUserTraits: {},
     fragments: {},
     segmentApiCalls: {},
   });
@@ -348,8 +355,6 @@ export default class MetaMetricsController extends BaseController<
   chainId: Hex;
 
   locale: string;
-
-  previousUserTraits?: MetaMetricsUserTraits;
 
   version: MetaMetricsControllerOptions['version'];
 
@@ -1177,7 +1182,7 @@ export default class MetaMetricsController extends BaseController<
         ? Object.keys(metamaskState.custodyAccountDetails)[0]
         : null;
     ///: END:ONLY_INCLUDE_IF
-    const { traits } = this.state;
+    const { traits, previousUserTraits } = this.state;
 
     const currentTraits = {
       [MetaMetricsUserTrait.AddressBookEntries]: sum(
@@ -1243,23 +1248,24 @@ export default class MetaMetricsController extends BaseController<
         metamaskState.sessionData?.profile?.profileId,
     };
 
-    if (!this.previousUserTraits && metamaskState.participateInMetaMetrics) {
-      this.previousUserTraits = currentTraits;
+    if (!previousUserTraits && metamaskState.participateInMetaMetrics) {
+      this.update((state) => {
+        state.previousUserTraits = currentTraits;
+      });
       return currentTraits;
     }
 
-    if (
-      this.previousUserTraits &&
-      !isEqual(this.previousUserTraits, currentTraits)
-    ) {
+    if (previousUserTraits && !isEqual(previousUserTraits, currentTraits)) {
       const updates = pickBy(currentTraits, (v, k) => {
-        // @ts-expect-error It's okay that `k` may not be a key of `this.previousUserTraits`, because we assume `isEqual` can handle it
-        const previous = this.previousUserTraits[k];
+        // @ts-expect-error It's okay that `k` may not be a key of `previousUserTraits`, because we assume `isEqual` can handle it
+        const previous = previousUserTraits[k];
         return !isEqual(previous, v);
       });
 
       if (metamaskState.participateInMetaMetrics) {
-        this.previousUserTraits = currentTraits;
+        this.update((state) => {
+          state.previousUserTraits = currentTraits;
+        });
       }
 
       return updates;

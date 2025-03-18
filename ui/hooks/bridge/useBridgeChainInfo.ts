@@ -36,8 +36,9 @@ export default function useBridgeChainInfo({
   bridgeHistoryItem,
   srcTxMeta,
 }: UseBridgeChainInfoProps) {
-  const [networkConfigurationsByChainId] =
-    useSelector(getMultichainNetworkConfigurationsByChainId) ?? [];
+  const networkConfigurationsByChainId = useSelector(
+    getMultichainNetworkConfigurationsByChainId,
+  );
 
   if (srcTxMeta?.type !== TransactionType.bridge) {
     return {

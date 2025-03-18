@@ -186,7 +186,6 @@ import {
   NetworkStatus,
   MAINNET_DISPLAY_NAME,
   DEFAULT_CUSTOM_TESTNET_MAP,
-  UNSUPPORTED_RPC_METHODS,
 } from '../../shared/constants/network';
 import { getAllowedSmartTransactionsChainIds } from '../../shared/constants/smartTransactions';
 
@@ -438,7 +437,7 @@ const environmentMappingForRemoteFeatureFlag = {
 const buildTypeMappingForRemoteFeatureFlag = {
   flask: DistributionType.Flask,
   main: DistributionType.Main,
-  beta: DistributionType.Beta,
+  beta: 'beta',
 };
 
 export default class MetamaskController extends EventEmitter {

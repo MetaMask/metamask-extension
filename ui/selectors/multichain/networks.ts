@@ -113,10 +113,7 @@ export const getMultichainNetworkConfigurationsByChainId =
       nonEvmNetworkConfigurationsByChainId,
       ///: END:ONLY_INCLUDE_IF
       networkConfigurationsByChainId,
-    ): [
-      Record<CaipChainId, InternalMultichainNetworkConfiguration>,
-      Record<Hex, InternalNetworkConfiguration>,
-    ] => {
+    ): Record<CaipChainId, InternalMultichainNetworkConfiguration> => {
       ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       const filteredNonEvmNetworkConfigurationsByChainId: Record<
         CaipChainId,

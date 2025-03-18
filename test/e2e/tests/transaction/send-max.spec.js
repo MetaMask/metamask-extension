@@ -1,4 +1,4 @@
-const { withFixtures } = require('../../helpers');
+const { withFixtures, generateGanacheOptions } = require('../../helpers');
 const {
   createInternalTransactionWithMaxAmount,
   reviewTransaction,
@@ -25,7 +25,7 @@ describe('Sending with max amount', function () {
             },
           })
           .build(),
-        localNodeOptions: { hardfork: 'london' },
+        localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
         driverOptions: { timeOut: 15000 },
         title: this.test.fullTitle(),
       },
@@ -177,7 +177,7 @@ describe('Sending with max amount', function () {
             },
           })
           .build(),
-        localNodeOptions: { hardfork: 'london' },
+        localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
         driverOptions: { timeOut: 15000 },
         title: this.test.fullTitle(),
       },

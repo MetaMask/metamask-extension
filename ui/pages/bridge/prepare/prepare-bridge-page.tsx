@@ -113,8 +113,6 @@ import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-car
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { formatChainIdToCaip } from '../../../../shared/modules/bridge-utils/caip-formatters';
-import { TokenFeatureType } from '../../../../shared/types/security-alerts-api';
-import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
 import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';

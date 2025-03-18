@@ -225,7 +225,9 @@ const Footer = () => {
         return;
       }
 
-      rejectApproval({ location });
+      dispatch(
+        rejectPendingApproval(currentConfirmation.id, serializeError(error)),
+      );
       resetTransactionState();
     },
     [currentConfirmation, isUpgradeTransaction],
