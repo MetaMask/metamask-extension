@@ -8,16 +8,25 @@
 @import 'snaps/snaps-connect/index';
 
 .permissions-connect {
+  $height-screen-sm-min: 720px;
+
   $width-screen-sm-min: 85vw;
   $width-screen-md-min: 80vw;
   $width-screen-lg-min: 62vw;
 
   box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
-  height: 100%;
+  transition: margin-top 0.3s ease-in-out, margin-bottom 0.3s ease-in-out;
   position: relative;
   background: var(--color-background-default);
   display: flex;
   flex-direction: column;
+  height: auto;
+  width: 100%;
+
+  @media screen and (min-width: design-system.$screen-sm-min) and (min-height: $height-screen-sm-min) {
+    margin-top: 32px;
+    margin-bottom: 32px;
+  }
 
   @include design-system.screen-sm-min {
     width: $width-screen-sm-min;
