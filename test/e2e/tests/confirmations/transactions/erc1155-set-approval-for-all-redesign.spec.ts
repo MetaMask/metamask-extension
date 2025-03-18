@@ -7,9 +7,9 @@ import TestDapp from '../../../page-objects/pages/test-dapp';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { withTransactionEnvelopeTypeFixtures } from '../helpers';
-import { TestSuiteArguments } from './shared';
 import { openTestSnapClickButtonAndInstall } from '../../../page-objects/flows/install-test-snap.flow';
 import SnapInstall from '../../../page-objects/pages/dialog/snap-install';
+import { TestSuiteArguments } from './shared';
 
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 

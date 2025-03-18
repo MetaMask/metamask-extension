@@ -3,13 +3,13 @@ import { MockttpServer } from 'mockttp';
 import { WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
+import { openTestSnapClickButtonAndInstall } from '../../../page-objects/flows/install-test-snap.flow';
+import SnapInstall from '../../../page-objects/pages/dialog/snap-install';
 import {
   openDAppWithContract,
   TestSuiteArguments,
   toggleAdvancedDetails,
 } from './shared';
-import { openTestSnapClickButtonAndInstall } from '../../../page-objects/flows/install-test-snap.flow';
-import SnapInstall from '../../../page-objects/pages/dialog/snap-install';
 
 const {
   defaultGanacheOptionsForType2Transactions,
