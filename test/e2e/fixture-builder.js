@@ -394,6 +394,7 @@ class FixtureBuilder {
               image:
                 'ipfs://bafkreifvhjdf6ve4jfv6qytqtux5nd4nwnelioeiqx5x2ez5yrgrzk7ypi',
               standard: 'ERC1155',
+              chainId: 1337,
             },
           ],
         },
