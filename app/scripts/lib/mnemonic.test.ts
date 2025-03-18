@@ -71,7 +71,7 @@ describe('convertMnemonicToWordlistIndices', () => {
     // "abandon" is valid, but "INVALIDWORD" is not.
     const input = toUtf8Array(`${abandon} INVALIDWORD`);
     expect(() => mu.convertMnemonicToWordlistIndices(input)).toThrow(
-      'Invalid character in word',
+      'Invalid mnemonic phrase: The mnemonic phrase contains an unknown word.',
     );
   });
 
@@ -79,7 +79,7 @@ describe('convertMnemonicToWordlistIndices', () => {
     // "abando" is a prefix of "abandon" but not a valid word in the list
     const input = toUtf8Array('abando');
     expect(() => mu.convertMnemonicToWordlistIndices(input)).toThrow(
-      'Word not found',
+      'Invalid mnemonic phrase: The mnemonic phrase contains an unknown word.',
     );
   });
 
@@ -87,7 +87,7 @@ describe('convertMnemonicToWordlistIndices', () => {
     // no words start with "x"
     const input = toUtf8Array('xylophone');
     expect(() => mu.convertMnemonicToWordlistIndices(input)).toThrow(
-      'Word not found in trie',
+      'Invalid mnemonic phrase: The mnemonic phrase contains an unknown word.',
     );
   });
 
@@ -95,7 +95,7 @@ describe('convertMnemonicToWordlistIndices', () => {
     // aqua isn't a word in the wordlist at all
     const input = toUtf8Array('aqua');
     expect(() => mu.convertMnemonicToWordlistIndices(input)).toThrow(
-      'Word not found in trie',
+      'Invalid mnemonic phrase: The mnemonic phrase contains an unknown word.',
     );
   });
 });

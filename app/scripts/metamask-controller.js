@@ -4571,7 +4571,7 @@ export default class MetamaskController extends EventEmitter {
 
       const utf8ArraySeedPhrase = Uint8Array.from(encodedSeedPhrase);
       const seed =
-      this.mnemonicUtil.convertMnemonicToWordlistIndices(utf8ArraySeedPhrase);
+        this.mnemonicUtil.convertMnemonicToWordlistIndices(utf8ArraySeedPhrase);
       // create new vault
       await this.keyringController.createNewVaultAndRestore(password, seed);
 
