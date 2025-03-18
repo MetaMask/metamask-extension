@@ -12,7 +12,7 @@ import {
   NormalizedScopesObject,
   getSupportedScopeObjects,
   Caip25CaveatValue,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
 import {
   invalidParams,
   RequestedPermissions,

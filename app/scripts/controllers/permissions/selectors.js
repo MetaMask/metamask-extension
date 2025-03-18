@@ -3,7 +3,7 @@ import {
   Caip25EndowmentPermissionName,
   getEthAccounts,
   getPermittedEthChainIds,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
 import { createSelector } from 'reselect';
 
 /**

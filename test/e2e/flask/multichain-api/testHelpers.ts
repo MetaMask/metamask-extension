@@ -1,6 +1,9 @@
 import * as path from 'path';
 import { By } from 'selenium-webdriver';
-import { KnownRpcMethods, KnownNotifications } from '@metamask/multichain';
+import {
+  KnownRpcMethods,
+  KnownNotifications,
+} from '@metamask/chain-agnostic-permission';
 import {
   convertETHToHexGwei,
   multipleGanacheOptions,

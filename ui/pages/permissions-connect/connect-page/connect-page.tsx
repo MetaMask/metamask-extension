@@ -3,7 +3,10 @@ import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { NetworkConfiguration } from '@metamask/network-controller';
-import { getEthAccounts, getPermittedEthChainIds } from '@metamask/multichain';
+import {
+  getEthAccounts,
+  getPermittedEthChainIds,
+} from '@metamask/chain-agnostic-permission';
 import { Hex } from '@metamask/utils';
 import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
