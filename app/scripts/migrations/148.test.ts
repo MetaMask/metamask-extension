@@ -34,44 +34,56 @@ describe(`migration #${VERSION}`, () => {
     }
   });
 
-  it('does nothing if NetworkController is missing', async () => {
+  it('returns a new version of the data unchanged if NetworkController is missing', async () => {
     const oldVersionedData = {
       meta: { version: VERSION - 1 },
       data: {},
     };
+    const expectedVersionData = {
+      meta: { version: VERSION },
+      data: oldVersionedData.data,
+    };
 
     const newVersionedData = await migrate(oldVersionedData);
 
-    expect(newVersionedData).toBe(oldVersionedData);
+    expect(newVersionedData).toStrictEqual(expectedVersionData);
   });
 
-  it('does nothing if NetworkController is not an object', async () => {
+  it('returns a new version of the data unchanged if NetworkController is not an object', async () => {
     const oldVersionedData = {
       meta: { version: VERSION - 1 },
       data: {
         NetworkController: 'not-an-object',
       },
     };
+    const expectedVersionData = {
+      meta: { version: VERSION },
+      data: oldVersionedData.data,
+    };
 
     const newVersionedData = await migrate(oldVersionedData);
 
-    expect(newVersionedData).toBe(oldVersionedData);
+    expect(newVersionedData).toStrictEqual(expectedVersionData);
   });
 
-  it('does nothing if NetworkController.networkConfigurationsByChainId is missing', async () => {
+  it('returns a new version of the data unchanged if NetworkController.networkConfigurationsByChainId is missing', async () => {
     const oldVersionedData = {
       meta: { version: VERSION - 1 },
       data: {
         NetworkController: {},
       },
     };
+    const expectedVersionData = {
+      meta: { version: VERSION },
+      data: oldVersionedData.data,
+    };
 
     const newVersionedData = await migrate(oldVersionedData);
 
-    expect(newVersionedData).toBe(oldVersionedData);
+    expect(newVersionedData).toStrictEqual(expectedVersionData);
   });
 
-  it('does not change NetworkController if NetworkController.networkConfigurationsByChainId is not an object', async () => {
+  it('returns a new version of the data unchanged if NetworkController.networkConfigurationsByChainId is not an object', async () => {
     const oldVersionedData = {
       meta: { version: VERSION - 1 },
       data: {
@@ -80,13 +92,17 @@ describe(`migration #${VERSION}`, () => {
         },
       },
     };
+    const expectedVersionData = {
+      meta: { version: VERSION },
+      data: oldVersionedData.data,
+    };
 
     const newVersionedData = await migrate(oldVersionedData);
 
-    expect(newVersionedData).toBe(oldVersionedData);
+    expect(newVersionedData).toStrictEqual(expectedVersionData);
   });
 
-  it('does not change NetworkController.networkConfigurationsByChainId if it is empty', async () => {
+  it('returns a new version of the data unchanged if NetworkController.networkConfigurationsByChainId is empty', async () => {
     const oldVersionedData = {
       meta: { version: VERSION - 1 },
       data: {

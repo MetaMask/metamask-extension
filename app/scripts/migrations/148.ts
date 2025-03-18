@@ -79,11 +79,11 @@ export const INFURA_CHAINS_WITH_FAILOVERS: Map<
 export async function migrate(
   originalVersionedData: VersionedData,
 ): Promise<VersionedData> {
+  const versionedData = cloneDeep(originalVersionedData);
+  versionedData.meta.version = version;
+
   try {
-    const versionedData = cloneDeep(originalVersionedData);
-    versionedData.meta.version = version;
     transformState(versionedData.data);
-    return versionedData;
   } catch (error) {
     const newError = new Error(
       `Migration #${version}: ${getErrorMessage(error)}`,
@@ -91,8 +91,10 @@ export async function migrate(
     if (global.sentry) {
       global.sentry.captureException(newError);
     }
-    return originalVersionedData;
+    versionedData.data = originalVersionedData.data;
   }
+
+  return versionedData;
 }
 
 function transformState(state: Record<string, unknown>) {
