@@ -36,6 +36,7 @@ import { SNAPS_VIEW_ROUTE } from '../constants/routes';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
+import { isMultichainWalletSnap } from '../../../shared/lib/accounts';
 
 export function formatDate(date, format = "M/d/y 'at' T") {
   if (!date) {
@@ -722,9 +723,7 @@ export const isAbleToRevealSrp = (accountToExport, keyrings) => {
       keyring: { type },
       snap,
     },
-    options: {
-      entropySource,
-    },
+    options: { entropySource },
   } = accountToExport;
 
   // All hd keyrings can reveal their srp.
@@ -733,14 +732,18 @@ export const isAbleToRevealSrp = (accountToExport, keyrings) => {
   }
 
   // We only consider 1st-party Snaps that have an entropy source.
-  if (type === KeyringTypes.snap && isMultichainWalletSnap(snap.id) && entropySource) {
+  if (
+    type === KeyringTypes.snap &&
+    isMultichainWalletSnap(snap.id) &&
+    entropySource
+  ) {
     const keyringId = entropySource;
     return keyrings.some(
       (keyring) =>
         keyring.type === KeyringTypes.hd && keyring.metadata.id === keyringId,
     );
   }
-  
+
   return false;
 };
 

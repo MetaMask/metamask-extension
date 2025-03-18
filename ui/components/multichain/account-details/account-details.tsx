@@ -58,6 +58,7 @@ import { AttemptExportState } from '../../../../shared/constants/accounts';
 import { AccountDetailsAuthenticate } from './account-details-authenticate';
 import { AccountDetailsDisplay } from './account-details-display';
 import { AccountDetailsKey } from './account-details-key';
+import { isMultichainWalletSnap } from '../../../../shared/lib/accounts';
 
 type AccountDetailsProps = { address: string };
 
@@ -75,6 +76,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
       name,
       ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
       keyring: { type: keyringType },
+      snap: { id: snapId },
       ///: END:ONLY_INCLUDE_IF
     },
     ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
@@ -96,7 +98,9 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
 
   // Snap accounts have an entropy source that is the id of the hd keyring
   const keyringId =
-    keyringType === KeyringTypes.snap && entropySource
+    keyringType === KeyringTypes.snap &&
+    isMultichainWalletSnap(snapId) &&
+    entropySource
       ? entropySource
       : findKeyringId(keyrings, keyringsMetadata, {
           address,
@@ -172,6 +176,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
                   ///: END:ONLY_INCLUDE_IF
                   setAttemptingExport(attemptExportMode);
                 }}
+                onClose={onClose}
               />
             )}
             {attemptingExport === AttemptExportState.PrivateKey && (
@@ -232,7 +237,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
       />
       {
         ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-        displayExportSRPQuiz && (
+        displayExportSrpQuiz && (
           <SRPQuiz
             keyringId={keyringId}
             isOpen={srpQuizModalVisible}
