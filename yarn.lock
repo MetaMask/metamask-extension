@@ -5995,13 +5995,13 @@ __metadata:
   resolution: "@metamask/phishing-controller@npm:12.4.0"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/controller-utils": "npm:^11.5.0"
+    "@metamask/controller-utils": "npm:^11.6.0"
     "@noble/hashes": "npm:^1.4.0"
     "@types/punycode": "npm:^2.1.0"
     ethereum-cryptography: "npm:^2.1.2"
     fastest-levenshtein: "npm:^1.0.16"
     punycode: "npm:^2.1.1"
-  checksum: 10/1178705c744617fba43f4f0e96150fb3d17256e824b618091b8347ca7902d21d233a2d2f50688f39772d3e7d9f7501c834710dca49cc21fb2e038a39b3acd26d
+  checksum: 10/c849e5f6d379efd28ab766e533e36d55a168dcbe81987fa6b32e1278786b395faa8101be79a7de8a4740b53879b25b3bffab18efb48658b2ef6521753b014aba
   languageName: node
   linkType: hard
 
@@ -6280,9 +6280,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-controllers@npm:^11.0.0":
-  version: 11.0.0
-  resolution: "@metamask/snaps-controllers@npm:11.0.0"
+"@metamask/snaps-controllers@npm:^11.0.1":
+  version: 11.0.1
+  resolution: "@metamask/snaps-controllers@npm:11.0.1"
   dependencies:
     "@metamask/approval-controller": "npm:^7.1.3"
     "@metamask/base-controller": "npm:^8.0.0"
@@ -6291,7 +6291,7 @@ __metadata:
     "@metamask/key-tree": "npm:^10.1.0"
     "@metamask/object-multiplex": "npm:^2.1.0"
     "@metamask/permission-controller": "npm:^11.0.6"
-    "@metamask/phishing-controller": "npm:^12.4.0"
+    "@metamask/phishing-controller": "npm:^12.4.1"
     "@metamask/post-message-stream": "npm:^9.0.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/snaps-registry": "npm:^3.2.3"
@@ -6317,7 +6317,7 @@ __metadata:
   peerDependenciesMeta:
     "@metamask/snaps-execution-environments":
       optional: true
-  checksum: 10/1068b4e59f7dac214fd5c5fe1d2677ecd66278560a84e330d57432c0508a4af6a76d91e6f5b349fc7bbabd8308adbad9c42312ba005536b6cee31b582fefe924
+  checksum: 10/029a3cf81336028639c4a7fd6482713c1f5b7d741976993596e06d783ac9eecf0037a611215d961bac3e0f3ad398bc38b154e148e66cf565fa24d33d17046c89
   languageName: node
   linkType: hard
 
@@ -27311,7 +27311,7 @@ __metadata:
     "@metamask/selected-network-controller": "npm:^19.0.0"
     "@metamask/signature-controller": "npm:^26.0.0"
     "@metamask/smart-transactions-controller": "npm:^16.1.0"
-    "@metamask/snaps-controllers": "npm:^11.0.0"
+    "@metamask/snaps-controllers": "npm:^11.0.1"
     "@metamask/snaps-execution-environments": "npm:^7.0.0"
     "@metamask/snaps-rpc-methods": "npm:^12.0.0"
     "@metamask/snaps-sdk": "npm:^6.19.0"
