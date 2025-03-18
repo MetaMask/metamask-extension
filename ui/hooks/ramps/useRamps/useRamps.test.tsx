@@ -80,7 +80,6 @@ describe('useRamps', () => {
   });
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   it.each(['0x1', '0x38', '0xa'] as Hex[])(
     'should open the buy crypto URL with the currently connected chain ID',
     (mockChainId: Hex) => {
