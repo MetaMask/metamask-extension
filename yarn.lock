@@ -6560,9 +6560,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:@metamask-previews/transaction-controller@49.0.0-preview-4a9f2de":
-  version: 49.0.0-preview-4a9f2de
-  resolution: "@metamask-previews/transaction-controller@npm:49.0.0-preview-4a9f2de"
+"@metamask/transaction-controller@npm:@metamask-previews/transaction-controller@49.0.0-preview-0838a01":
+  version: 49.0.0-preview-0838a01
+  resolution: "@metamask-previews/transaction-controller@npm:49.0.0-preview-0838a01"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -6592,7 +6592,7 @@ __metadata:
     "@metamask/gas-fee-controller": ^22.0.0
     "@metamask/network-controller": ^22.0.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
-  checksum: 10/7dd4248820e0e19573a549d013f9aa0aea5e743bcf6b656fef2a12386cf8f10b400a228f0b499f134749db7a639c8599c7139814b2f9e7da5c4911f0ddbd5c9c
+  checksum: 10/b3238f932ccc0d33bb1a745a1db2c972c46ba06c969e9d009e3cf3f53723905dfe4e32470fca4c83461cf3dee590ec2e50436ea78bfd723f4e47cb9119893562
   languageName: node
   linkType: hard
 
@@ -27378,7 +27378,7 @@ __metadata:
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.1.0"
     "@metamask/test-dapp-multichain": "npm:^0.6.0"
-    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@49.0.0-preview-4a9f2de"
+    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@49.0.0-preview-0838a01"
     "@metamask/user-operation-controller": "npm:^24.0.1"
     "@metamask/utils": "npm:^11.1.0"
     "@ngraveio/bc-ur": "npm:^1.1.12"
