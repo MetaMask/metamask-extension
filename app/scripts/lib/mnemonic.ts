@@ -18,8 +18,8 @@
  * uses only a little more memory (likely due to the application still importing
  * the string-based wordlist elsewhere).
  *
- * This module is not suitable for using the UI, as it has considerable startup
- * time.
+ * This module is not suitable for using in the UI, as it has a non-trivial
+ * startup time.
  *
  * Additional startup improvements can be made by precomputing the trie and
  * index. This would allow the trie to be used in the UI, but complicates
