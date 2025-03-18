@@ -2,10 +2,20 @@ import { exec as execCallback } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
-import { context } from '@actions/github';
+import { context, getOctokit } from '@actions/github';
+import { GitHub } from '@actions/github/lib/utils';
 import * as core from '@actions/core';
+import { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods';
 
 const exec = promisify(execCallback);
+
+const githubToken = process.env.GITHUB_TOKEN;
+if (!githubToken) {
+  core.setFailed('GITHUB_TOKEN not found');
+  process.exit(1);
+}
+
+const octokit: InstanceType<typeof GitHub> = getOctokit(githubToken);
 
 // Get PR number from GitHub Actions environment variables
 const PR_NUMBER = context.payload.pull_request?.number;
@@ -15,37 +25,28 @@ const SOURCE_BRANCH = PR_NUMBER ? `refs/pull/${PR_NUMBER}/head` : '';
 
 const CHANGED_FILES_DIR = 'changed-files';
 
-type PRInfo = {
-  base: {
-    ref: string;
-  };
-  body: string;
-  labels: { name: string }[];
-};
+// Use Octokit's built-in type for pull request data
+type PullRequestData = RestEndpointMethodTypes['pulls']['get']['response']['data'];
 
 /**
  * Get JSON info about the given pull request using Octokit
  *
- * @returns PR information from GitHub
+ * @returns Pull request information from GitHub
  */
-async function getPrInfo(): Promise<PRInfo | null> {
+async function getPrInfo(): Promise<PullRequestData | null> {
   if (!PR_NUMBER) {
     return null;
   }
 
   const { owner, repo } = context.repo;
 
-  const response = await fetch(
-    `https://api.github.com/repos/${owner}/${repo}/pulls/${PR_NUMBER}`,
-    {
-      headers: {
-        Authorization: `token ${process.env.GITHUB_TOKEN}`,
-        Accept: 'application/vnd.github.v3+json',
-      },
-    },
-  );
+  const { data } = await octokit.rest.pulls.get({
+    owner,
+    repo,
+    pull_number: PR_NUMBER,
+  });
 
-  return await response.json();
+  return data;
 }
 
 /**
@@ -117,12 +118,15 @@ async function gitDiff(): Promise<string> {
   return diffResult;
 }
 
-function writePrBodyAndInfoToFile(prInfo: PRInfo) {
+function writePrBodyAndInfoToFile(prInfo: PullRequestData) {
   const prBodyPath = path.resolve(CHANGED_FILES_DIR, 'pr-body.txt');
-  const labels = prInfo.labels.map((label) => label.name).join(', ');
+  const labels = prInfo.labels
+    .map((label) => (typeof label === 'string' ? label : label.name))
+    .filter(Boolean)
+    .join(', ');
   const updatedPrBody = `PR labels: {${labels}}\nPR base: {${
     prInfo.base.ref
-  }}\n${prInfo.body.trim()}`;
+  }}\n${prInfo.body?.trim() || ''}`;
   fs.writeFileSync(prBodyPath, updatedPrBody);
   core.info(`PR body and info saved to ${prBodyPath}`);
 }
