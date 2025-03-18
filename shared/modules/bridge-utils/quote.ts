@@ -17,7 +17,12 @@ export const isValidQuoteRequest = (
   if (requireAmount) {
     STRING_FIELDS.push('srcTokenAmount');
   }
-  const NUMBER_FIELDS = ['slippage'];
+  const NUMBER_FIELDS = [];
+
+  // if slippage is defined, require it to be a number
+  if (partialRequest.slippage !== undefined) {
+    NUMBER_FIELDS.push('slippage');
+  }
 
   return (
     STRING_FIELDS.every(
