@@ -7,6 +7,7 @@ import {
   buildQuote,
   checkActivityTransaction,
   reviewQuote,
+  waitForSmartTransactionToComplete,
   waitForTransactionToComplete,
 } from '../tests/swaps/shared';
 import { mockSmartTransactionRequests } from '../tests/smart-transactions/mocks';
@@ -42,14 +43,30 @@ async function mockAccountApi(mockServer: MockttpServer) {
       })),
   ];
 }
+const infuraUrl: string =
+  'https://mainnet.infura.io/v3/00000000000000000000000000000000';
+async function mockInfura(mockServer: MockttpServer) {
+  await mockServer
+    .forPost(infuraUrl)
+    .withJsonBodyIncluding({ method: 'eth_getBalance' })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        jsonrpc: '2.0',
+        id: '1111111111111111',
+        result: '0x15AF1D78B58C40000',
+      },
+    }));
+}
 
 async function mockSwapRequests(mockServer: MockttpServer) {
-  await mockSmartTransactionRequests(mockServer);
+  await mockSmartTransactionRequests(mockServer, '0x15AF1D78B58C40000');
   await mockAccountApi(mockServer);
+  await mockInfura(mockServer);
 }
 
 describe('Swap', function () {
-  it.only('TESTETH to DAI MAINNET', async function () {
+  it('TESTETH to DAI MAINNET', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -97,7 +114,6 @@ describe('Swap', function () {
       },
       async ({ driver, localNodes }) => {
         await loginWithBalanceValidation(driver, localNodes[0]);
-
         const homePage = new HomePage(driver);
 
         await homePage.check_pageIsLoaded();
@@ -109,7 +125,7 @@ describe('Swap', function () {
 
         await reviewQuote(driver, {
           amount: 2,
-          swapFrom: 'TESTETH',
+          swapFrom: 'ETH',
           swapTo: 'DAI',
           skipCounter: true,
         });
@@ -119,11 +135,11 @@ describe('Swap', function () {
           { state: 'enabled' },
         );
         await driver.clickElement({ text: 'Swap', tag: 'button' });
-        await waitForTransactionToComplete(driver, { tokenName: 'DAI' });
+        await waitForSmartTransactionToComplete(driver, { tokenName: 'DAI' });
         await checkActivityTransaction(driver, {
           index: 0,
           amount: '2',
-          swapFrom: 'TESTETH',
+          swapFrom: 'ETH',
           swapTo: 'DAI',
         });
       },

@@ -105,6 +105,32 @@ export const reviewQuote = async (
   }
 };
 
+export const waitForSmartTransactionToComplete = async (
+  driver: Driver,
+  options: { tokenName: string },
+) => {
+  await driver.waitForSelector({
+    css: '[data-testid="swap-smart-transaction-status-header"]',
+    text: 'Privately submitting your Swap...',
+  });
+
+  await driver.waitForSelector(
+    {
+      css: '[data-testid="swap-smart-transaction-status-header"]',
+      text: 'Swap complete!',
+    },
+    { timeout: 30000 },
+  );
+
+  await driver.findElement({
+    css: '[data-testid="swap-smart-transaction-status-description"]',
+    text: `${options.tokenName}`,
+  });
+
+  await driver.clickElement({ text: 'Close', tag: 'button' });
+  await driver.waitForSelector('[data-testid="account-overview__asset-tab"]');
+};
+
 export const waitForTransactionToComplete = async (
   driver: Driver,
   options: { tokenName: string },

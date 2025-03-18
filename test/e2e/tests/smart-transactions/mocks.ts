@@ -261,8 +261,11 @@ const GET_BLOCK_BY_HASH_RESPONSE = {
   },
 };
 
-export async function mockSmartTransactionRequests(mockServer: MockttpServer) {
-  await mockMultiNetworkBalancePolling(mockServer);
+export async function mockSmartTransactionRequests(
+  mockServer: MockttpServer,
+  balance = '0x1158E460913D00000',
+) {
+  // await mockMultiNetworkBalancePolling(mockServer, balance);
 
   await mockServerJsonRpc(mockServer, [
     ['eth_blockNumber'],
