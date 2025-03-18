@@ -1,15 +1,18 @@
-import React from 'react';
 import { fireEvent } from '@testing-library/react';
+import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { Severity } from '../../../../helpers/constants/design-system';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import * as useAlertsModule from '../../../../hooks/useAlerts';
+import {
+  BlockaidReason,
+  SecurityProvider,
+} from '../../../../../shared/constants/security-provider';
 import mockState from '../../../../../test/data/mock-state.json';
-import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
-import { AlertModal } from './alert-modal';
-import { BlockaidReason } from '../../../../../shared/constants/security-provider';
-import { SecurityProvider } from '../../../../../shared/constants/security-provider';
 import { tEn } from '../../../../../test/lib/i18n-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
+import { Severity } from '../../../../helpers/constants/design-system';
+import * as useAlertsModule from '../../../../hooks/useAlerts';
+import { useConfirmContext } from '../../../../pages/confirmations/context/confirm';
+import { AlertModal } from './alert-modal';
 
 const onProcessActionMock = jest.fn();
 
@@ -307,10 +310,6 @@ describe('AlertModal', () => {
   });
 
   describe('BlockaidAlertDetails', () => {
-    const {
-      useConfirmContext,
-    } = require('../../../../pages/confirmations/context/confirm');
-
     beforeEach(() => {
       jest.clearAllMocks();
     });
