@@ -2,18 +2,26 @@ import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { createBridgeMockStore } from '../../../test/jest/mock-store';
-import { useTokenAlerts } from './useTokenAlerts';
+import { useTokenScan } from './useTokenScan';
 
-const renderUseSolanaAlerts = (mockStoreState: object) =>
-  renderHookWithProvider(() => useTokenAlerts(), mockStoreState);
+const renderUseTokenScan = (mockStoreState: object) =>
+  renderHookWithProvider(() => useTokenScan(), mockStoreState);
 
 const mockResponse = {
-  type: 'warning',
-  feature_id: 'UNSTABLE_TOKEN_PRICE',
-  description:
-    'The price of this token in USD is highly volatile, indicating a high risk of losing significant value by interacting with it.',
-  titleId: 'unstableTokenPriceTitle',
-  descriptionId: 'unstableTokenPriceDescription',
+  tokenAlert: {
+    type: 'warning',
+    feature_id: 'UNSTABLE_TOKEN_PRICE',
+    description:
+      'The price of this token in USD is highly volatile, indicating a high risk of losing significant value by interacting with it.',
+    titleId: 'unstableTokenPriceTitle',
+    descriptionId: 'unstableTokenPriceDescription',
+  },
+  fees: {
+    transfer: 0.99,
+    transfer_fee_max_amount: 2328306436538696000,
+    buy: null,
+    sell: null,
+  },
 };
 jest.mock(
   '../../../shared/modules/bridge-utils/security-alerts-api.util',
@@ -21,7 +29,7 @@ jest.mock(
     ...jest.requireActual(
       '../../../shared/modules/bridge-utils/security-alerts-api.util',
     ),
-    fetchTokenAlert: () => mockResponse,
+    fetchTokenScan: () => mockResponse,
   }),
 );
 
@@ -32,8 +40,8 @@ jest.mock('../../ducks/bridge/selectors', () => ({
   getToChain: () => mockGetToChain,
 }));
 
-describe('useTokenAlerts', () => {
-  it('should set token alert when toChain is Solana', async () => {
+describe('useTokenScan', () => {
+  it('should set token scan when toChain is Solana', async () => {
     const mockStoreState = createBridgeMockStore({
       bridgeSliceOverrides: {
         fromToken: {
@@ -51,9 +59,10 @@ describe('useTokenAlerts', () => {
       },
     });
 
-    const { result, waitForNextUpdate } = renderUseSolanaAlerts(mockStoreState);
+    const { result, waitForNextUpdate } = renderUseTokenScan(mockStoreState);
     await waitForNextUpdate();
 
     expect(result.current.tokenAlert).toBeTruthy();
+    expect(result.current.fees).toBeTruthy();
   });
 });

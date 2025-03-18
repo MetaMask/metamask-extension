@@ -53,6 +53,13 @@ export type TokenFeature = {
   description: string;
 };
 
+export type TokenFees = {
+  transfer: number | null;
+  transfer_fee_max_amount: number | null;
+  buy: number | null;
+  sell: number | null;
+};
+
 export type ScanTokenResponse = {
   result_type: string;
   malicious_score: string;
@@ -60,11 +67,7 @@ export type ScanTokenResponse = {
   chain: string;
   address: string;
   metadata: TokenMetadata | EvmTokenMetadata;
-  fees: {
-    transfer: number | null;
-    buy: number | null;
-    sell: number | null;
-  };
+  fees: TokenFees;
   features: TokenFeature[];
   trading_limits: {
     max_buy: {

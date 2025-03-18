@@ -114,7 +114,7 @@ import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { formatChainIdToCaip } from '../../../../shared/modules/bridge-utils/caip-formatters';
 import { TokenFeatureType } from '../../../../shared/types/security-alerts-api';
-import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
+import { useTokenScan } from '../../../hooks/bridge/useTokenScan';
 import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
@@ -199,7 +199,7 @@ const PrepareBridgePage = () => {
     fromChain?.chainId,
   );
 
-  const { tokenAlert } = useTokenAlerts();
+  const { tokenAlert } = useTokenScan();
   const srcTokenBalance = useLatestBalance(fromToken, fromChain?.chainId);
   const { selectedDestinationAccount, setSelectedDestinationAccount } =
     useDestinationAccount(isSwap);
