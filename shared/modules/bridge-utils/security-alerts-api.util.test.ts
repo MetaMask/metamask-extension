@@ -19,8 +19,8 @@ describe('Security alerts utils', () => {
 
       const tokenAlertWithLabelIds =
         getTokenFeatureTitleDescriptionIds(mockTokenAlert);
-      expect(tokenAlertWithLabelIds.titleId).toBeTruthy();
-      expect(tokenAlertWithLabelIds.descriptionId).toBeTruthy();
+      expect(tokenAlertWithLabelIds?.titleId).toBeTruthy();
+      expect(tokenAlertWithLabelIds?.descriptionId).toBeTruthy();
     });
 
     it('should correctly return title Id and Description Id null if not available', async () => {
@@ -32,8 +32,8 @@ describe('Security alerts utils', () => {
 
       const tokenAlertWithLabelIds =
         getTokenFeatureTitleDescriptionIds(mockTokenAlert);
-      expect(tokenAlertWithLabelIds.titleId).toBeNull();
-      expect(tokenAlertWithLabelIds.descriptionId).toBeNull();
+      expect(tokenAlertWithLabelIds?.titleId).toBeNull();
+      expect(tokenAlertWithLabelIds?.descriptionId).toBeNull();
     });
   });
 });
