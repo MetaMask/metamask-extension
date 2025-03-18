@@ -4,7 +4,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { RevealSrpList } from './reveal-srp-list';
 
-const mockKeyringId = 'hd-keyring-01JKAF3DSGM3AB87EM9N0K41AJ';
+const mockKeyringId = mockState.metamask.keyringsMetadata[0].id;
 
 const render = (newState: Partial<MetaMaskReduxState> = {}) => {
   const mockStore = configureStore({

@@ -386,8 +386,8 @@ describe('Reveal Seed Page', () => {
       });
     });
 
-    it('passes the keyringId if there is no param', async () => {
-      const keyringId = 'ULID01234567890ABCDEFGHIJKLMN';
+    it('passes undefined for keyringId if there is no param', async () => {
+      const keyringId = undefined;
       mockUseParams.mockReturnValue({ keyringId });
       const { queryByTestId, queryByText } = renderWithProvider(
         <RevealSeedPage />,
