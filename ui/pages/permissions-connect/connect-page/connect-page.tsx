@@ -6,8 +6,8 @@ import { NetworkConfiguration } from '@metamask/network-controller';
 import {
   getEthAccounts,
   getPermittedEthChainIds,
-  Caip25CaveatValue,
-} from '@metamask/multichain';
+  Caip25CaveatValue
+} from '@metamask/chain-agnostic-permission';
 import { Hex } from '@metamask/utils';
 import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';

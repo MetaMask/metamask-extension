@@ -7,7 +7,7 @@ import {
   Caip25CaveatType,
   caip25EndowmentBuilder,
   caip25CaveatBuilder,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
 import {
   EndowmentTypes,
   RestrictedMethods,

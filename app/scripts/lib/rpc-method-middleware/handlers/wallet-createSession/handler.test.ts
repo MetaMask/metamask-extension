@@ -4,8 +4,8 @@ import {
   Caip25EndowmentPermissionName,
   Caip25Authorization,
   NormalizedScopesObject,
-} from '@metamask/multichain';
-import * as Multichain from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
+import * as Multichain from '@metamask/chain-agnostic-permission';
 import { Json, JsonRpcRequest, JsonRpcSuccess } from '@metamask/utils';
 import * as Util from '../../../util';
 import { walletCreateSession } from './handler';
@@ -16,8 +16,8 @@ jest.mock('../../../util', () => ({
 }));
 const MockUtil = jest.mocked(Util);
 
-jest.mock('@metamask/multichain', () => ({
-  ...jest.requireActual('@metamask/multichain'),
+jest.mock('@metamask/chain-agnostic-permission', () => ({
+  ...jest.requireActual('@metamask/chain-agnostic-permission'),
   validateAndNormalizeScopes: jest.fn(),
   bucketScopes: jest.fn(),
   getSessionScopes: jest.fn(),
