@@ -409,6 +409,20 @@ export function checkExistingAddresses(address, list = []) {
   return list.some(matchesAddress);
 }
 
+export function checkExistingAllTokens(
+  address,
+  chainId,
+  accountAddress,
+  list = {},
+) {
+  if (!address) {
+    return false;
+  }
+  return list?.[chainId]?.[accountAddress]?.some(
+    (obj) => obj.address.toLowerCase() === address.toLowerCase(),
+  );
+}
+
 export function bnGreaterThan(a, b) {
   if (a === null || a === undefined || b === null || b === undefined) {
     return null;

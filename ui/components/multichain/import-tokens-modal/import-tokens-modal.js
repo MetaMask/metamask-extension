@@ -13,6 +13,7 @@ import { Tab, Tabs } from '../../ui/tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
+  getNetworkConfigurations,
   getSelectedNetworkClientId,
 } from '../../../../shared/modules/selectors/networks';
 import {
@@ -30,6 +31,8 @@ import {
   getTestNetworkBackgroundColor,
   getTokenExchangeRates,
   getPendingTokens,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
+  selectERC20TokensByChain,
 } from '../../../selectors';
 import {
   addImportedTokens,
@@ -97,7 +100,9 @@ import {
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
 } from '../../../../shared/constants/metametrics';
+import { NetworkFilterImportToken } from '../../app/import-token/network-filter-import-token';
 import { ImportTokensModalConfirm } from './import-tokens-modal-confirm';
+import { getMultichainNetworkConfigurationsByChainId } from '../../../selectors/multichain';
 
 export const ImportTokensModal = ({ onClose }) => {
   const t = useI18nContext();
@@ -121,11 +126,16 @@ export const ImportTokensModal = ({ onClose }) => {
     Boolean(process.env.IN_TEST);
 
   const tokenList = useSelector(getTokenList);
+  const tokenListByChain = useSelector(selectERC20TokensByChain);
+
   const useTokenDetection = useSelector(
     ({ metamask }) => metamask.useTokenDetection,
   );
   const networkName = useSelector(getTokenDetectionSupportNetworkByChainId);
   const nativeCurrency = useSelector(getNativeCurrency);
+  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
+    getIsTokenNetworkFilterEqualCurrentNetwork,
+  );
 
   // Custom token stuff
   const tokenDetectionInactiveOnNonMainnetSupportedNetwork = useSelector(
@@ -140,6 +150,9 @@ export const ImportTokensModal = ({ onClose }) => {
   const tokens = useSelector((state) => state.metamask.tokens);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const contractExchangeRates = useSelector(getTokenExchangeRates);
+  const networkConfigurations = useSelector(
+    getMultichainNetworkConfigurationsByChainId,
+  );
 
   const [customAddress, setCustomAddress] = useState('');
   const [customAddressError, setCustomAddressError] = useState(null);
@@ -183,7 +196,30 @@ export const ImportTokensModal = ({ onClose }) => {
   const handleAddTokens = useCallback(async () => {
     try {
       const addedTokenValues = Object.values(pendingTokens);
-      await dispatch(addImportedTokens(addedTokenValues, networkClientId));
+      if (isTokenNetworkFilterEqualCurrentNetwork) {
+        await dispatch(addImportedTokens(addedTokenValues, networkClientId));
+      } else {
+        const addedTokensByChain = addedTokenValues.reduce((groups, token) => {
+          if (!groups[token.chainId]) {
+            groups[token.chainId] = [];
+          }
+          groups[token.chainId].push(token);
+          return groups;
+        }, {});
+
+        const promiseAllImport = Object.keys(addedTokensByChain).map(
+          (networkId) => {
+            const clientId =
+              networkConfigurations[networkId]?.rpcEndpoints[
+                networkConfigurations[networkId]?.defaultRpcEndpointIndex
+              ]?.networkClientId;
+            return dispatch(
+              addImportedTokens(addedTokensByChain[networkId], clientId),
+            );
+          },
+        );
+        await Promise.all(promiseAllImport);
+      }
 
       addedTokenValues.forEach((pendingToken) => {
         trackEvent({
@@ -249,6 +285,10 @@ export const ImportTokensModal = ({ onClose }) => {
     setCustomSymbol(initialCustomToken.symbol);
     setCustomDecimals(initialCustomToken.decimals);
   }, [pendingTokens]);
+
+  useEffect(() => {
+    setSelectedTokens({});
+  }, [isTokenNetworkFilterEqualCurrentNetwork]);
 
   const handleCustomSymbolChange = (value) => {
     const symbol = value.trim();
@@ -559,13 +599,16 @@ export const ImportTokensModal = ({ onClose }) => {
                       </Box>
                     )}
                     <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+                      <NetworkFilterImportToken buttonDataTestId="test-import-tokens-drop-down" />
+                    </Box>
+                    <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
                       <TokenSearch
                         searchClassName="import-tokens-modal__button-search"
                         onSearch={({ results = [] }) =>
                           setSearchResults(results)
                         }
                         error={tokenSelectorError}
-                        tokenList={tokenList}
+                        tokenList={tokenListByChain}
                       />
                     </Box>
 
@@ -575,6 +618,9 @@ export const ImportTokensModal = ({ onClose }) => {
                       results={searchResults}
                       selectedTokens={selectedTokens}
                       onToggleToken={(token) => handleToggleToken(token)}
+                      isTokenNetworkFilterEqualCurrentNetwork={
+                        isTokenNetworkFilterEqualCurrentNetwork
+                      }
                     />
                   </Box>
                 </Tab>

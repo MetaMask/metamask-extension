@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import {
   getCurrentNetwork,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
   getPendingTokens,
   getTestNetworkBackgroundColor,
   getTokenList,
@@ -25,6 +26,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import TokenBalance from '../../ui/token-balance/token-balance';
 import { I18nContext } from '../../../contexts/i18n';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 
 export const ImportTokensModalConfirm = () => {
   const t = useContext(I18nContext);
@@ -32,6 +34,10 @@ export const ImportTokensModalConfirm = () => {
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
   const pendingTokens = useSelector(getPendingTokens);
   const tokenList = useSelector(getTokenList);
+  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
+    getIsTokenNetworkFilterEqualCurrentNetwork,
+  );
+
   return (
     <Box paddingTop={6}>
       <Text textAlign={TextAlign.Center}>
@@ -59,7 +65,13 @@ export const ImportTokensModalConfirm = () => {
                       <AvatarNetwork
                         size={AvatarNetworkSize.Xs}
                         name={currentNetwork?.nickname}
-                        src={currentNetwork?.rpcPrefs?.imageUrl}
+                        src={
+                          isTokenNetworkFilterEqualCurrentNetwork
+                            ? currentNetwork?.rpcPrefs?.imageUrl
+                            : CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                                pendingTokens[address]?.chainId
+                              ]
+                        }
                         backgroundColor={testNetworkBackgroundColor}
                       />
                     }
