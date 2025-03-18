@@ -141,6 +141,7 @@ export const AccountDetails = ({ address }) => {
                 accountName={name}
                 address={address}
                 onExportClick={() => setAttemptingExport(true)}
+                onClose={onClose}
               />
             )}
           </ModalBody>
