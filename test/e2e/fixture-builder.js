@@ -429,6 +429,7 @@ class FixtureBuilder {
               name: 'Test Dapp NFTs #1',
               standard: 'ERC721',
               tokenId: '1',
+              chainId: 1337,
             },
           ],
         },
