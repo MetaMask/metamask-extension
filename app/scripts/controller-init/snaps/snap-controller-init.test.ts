@@ -50,7 +50,7 @@ describe('SnapControllerInit', () => {
         requireAllowlist: false,
       },
       getFeatureFlags: expect.any(Function),
-      getMnemonic: expect.any(Function),
+      getMnemonicSeed: expect.any(Function),
       preinstalledSnaps: expect.any(Array),
     });
   });
