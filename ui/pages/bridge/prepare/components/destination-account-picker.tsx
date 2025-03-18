@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   TextField,
   Box,
@@ -28,14 +27,17 @@ import { t } from '../../../../../app/scripts/translate';
 // eslint-disable-next-line import/no-restricted-paths
 import { isEthAddress } from '../../../../../app/scripts/lib/multichain/address';
 import { isSolanaAddress } from '../../../../../shared/lib/multichain/accounts';
-import { ExternalAccount } from '../../../../../shared/types/bridge';
+import {
+  ExternalAccount,
+  DestinationAccount,
+} from '../../../../../shared/types/bridge';
 import DestinationSelectedAccountListItem from './destination-selected-account-list-item';
 import DestinationAccountListItem from './destination-account-list-item';
 import { ExternalAccountListItem } from './external-account-list-item';
 
 type DestinationAccountPickerProps = {
-  onAccountSelect: (account: InternalAccount | ExternalAccount | null) => void;
-  selectedSwapToAccount: InternalAccount | ExternalAccount | null;
+  onAccountSelect: (account: DestinationAccount | null) => void;
+  selectedSwapToAccount: DestinationAccount | null;
   isDestinationSolana: boolean;
 };
 
@@ -230,8 +232,8 @@ export const DestinationAccountPicker = ({
             account={externalAccount}
             selected={Boolean(
               selectedSwapToAccount &&
-                (selectedSwapToAccount as ExternalAccount | InternalAccount)
-                  .address === externalAccount.address,
+                (selectedSwapToAccount as DestinationAccount).address ===
+                  externalAccount.address,
             )}
             onClick={() => onAccountSelect(externalAccount)}
           />

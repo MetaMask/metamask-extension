@@ -1,3 +1,4 @@
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import type {
   CaipAccountId,
   CaipAssetId,
@@ -242,3 +243,5 @@ export type ExternalAccount = {
   };
   isExternal: true;
 };
+
+export type DestinationAccount = InternalAccount | ExternalAccount;

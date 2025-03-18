@@ -1,7 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
-import { InternalAccount } from '@metamask/keyring-internal-api';
 import { shortenAddress } from '../../../../helpers/utils/util';
 
 import {
@@ -26,10 +25,10 @@ import { getUseBlockie } from '../../../../selectors';
 import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
 // eslint-disable-next-line import/no-restricted-paths
 import { t } from '../../../../../app/scripts/translate';
-import { ExternalAccount } from '../../../../../shared/types/bridge';
+import { DestinationAccount } from '../../../../../shared/types/bridge';
 
 type DestinationSelectedAccountListItemProps = {
-  account: InternalAccount | ExternalAccount;
+  account: DestinationAccount;
   selected: boolean;
   onClick?: () => void;
 };
