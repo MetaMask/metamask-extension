@@ -160,7 +160,7 @@ export const escapeColon = (selector: string): string =>
  * @param params.description - The description of the test suite
  * @param params.callback - The callback function to execute the test suite
  * @param [params.timeout] - Optional timeout value to set for the test suite
-*/
+ */
 export const describeBrowserOnly = ({
   browser,
   description,
