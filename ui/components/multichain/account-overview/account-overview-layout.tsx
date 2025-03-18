@@ -31,6 +31,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import type { CarouselSlide } from '../../../../shared/constants/app-state';
 import { Button } from '../../component-library';
+import { isSmartContractAddress } from '../../../helpers/utils/transactions.util';
 import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
@@ -44,9 +45,6 @@ import {
   CASH_SLIDE,
   ZERO_BALANCE,
 } from './constants';
-import { isSmartContractAddress } from '../../../helpers/utils/transactions.util';
-import { linea } from 'viem/chains';
-import { parseSignature, toHex } from 'viem';
 
 export type AccountOverviewLayoutProps = AccountOverviewTabsProps & {
   children: React.ReactElement;
