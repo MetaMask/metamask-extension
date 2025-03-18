@@ -6135,7 +6135,7 @@ export async function upgradeHardwareAccount({
   contractAddress,
 }: {
   contractAddress: string;
-}): Promise<string> {
+}): Promise<{ signature: Hex; nonce: number }> {
   return await submitRequestToBackground('signEip7702Authorization', [
     contractAddress,
   ]);

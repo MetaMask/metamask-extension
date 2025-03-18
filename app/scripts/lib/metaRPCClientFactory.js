@@ -18,6 +18,7 @@ class MetaRPCClient {
   }
 
   send(id, payload, cb) {
+    console.debug('send', id, payload);
     this.requests.set(id, cb);
     this.connectionStream.write(payload);
     this.responseHandled[id] = false;
@@ -61,6 +62,7 @@ class MetaRPCClient {
 
   handleResponse(data) {
     const { id, result, error, method, params } = data;
+    console.debug('handleResponse:', data);
     const isNotification = id === undefined && error === undefined;
     const cb = this.requests.get(id);
 

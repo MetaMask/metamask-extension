@@ -1216,11 +1216,11 @@ export default class MetamaskController extends EventEmitter {
       name: 'KeyringController',
     });
 
-    console.log(
+    console.debug(
       'MetamaskController:newKeyringController - additionalKeyrings',
       additionalKeyrings,
     );
-    console.log(
+    console.debug(
       'MetamaskController:newKeyringController - state',
       initState.KeyringController,
     );
@@ -4358,12 +4358,17 @@ export default class MetamaskController extends EventEmitter {
       selectedAccount.address,
       this.networkController.state.selectedNetworkClientId,
     );
-    return this.keyringController.signEip7702Authorization({
+    const signature = await this.keyringController.signEip7702Authorization({
       chainId: 0,
       from: selectedAccount.address,
       nonce,
       contractAddress,
     });
+    console.log('MetaMaskController - signEip7702Authorization', {
+      signature,
+      nonce,
+    });
+    return { signature, nonce };
   }
 
   async exportAccount(address, password) {
@@ -4936,11 +4941,16 @@ export default class MetamaskController extends EventEmitter {
    * @returns [] accounts
    */
   async connectHardware(deviceName, page, hdPath) {
-    console.log('MetamaskController:connectHardware', deviceName, page, hdPath);
+    console.debug(
+      'MetamaskController:connectHardware',
+      deviceName,
+      page,
+      hdPath,
+    );
     return this.#withKeyringForDevice(
       { name: deviceName, hdPath },
       async (keyring) => {
-        console.log('MetamaskController:connectHardware callback', keyring);
+        console.debug('MetamaskController:connectHardware callback', keyring);
         if (deviceName === HardwareDeviceNames.ledger) {
           await this.setLedgerTransportPreference(keyring);
         }
@@ -4961,8 +4971,8 @@ export default class MetamaskController extends EventEmitter {
         // and make sure addresses are not repeated
         const oldAccounts = await this.keyringController.getAccounts();
 
-        console.log('MetamaskController:connectHardware accounts', accounts);
-        console.log(
+        console.debug('MetamaskController:connectHardware accounts', accounts);
+        console.debug(
           'MetamaskController:connectHardware oldAccounts',
           oldAccounts,
         );
@@ -8099,7 +8109,10 @@ export default class MetamaskController extends EventEmitter {
   async #withKeyringForDevice(options, callback) {
     const keyringOverrides = this.opts.overrides?.keyrings;
     let keyringType = null;
-    console.log('MetamaskController:#withKeyringForDevice - options', options);
+    console.debug(
+      'MetamaskController:#withKeyringForDevice - options',
+      options,
+    );
     switch (options.name) {
       case HardwareDeviceNames.trezor:
       case HardwareDeviceNames.oneKey:
@@ -8124,12 +8137,12 @@ export default class MetamaskController extends EventEmitter {
     }
 
     const kstate = this.keyringController.state;
-    console.log('MetamaskController:allKeyrings', kstate.keyrings);
+    console.debug('MetamaskController:allKeyrings', kstate.keyrings);
 
     return this.keyringController.withKeyring(
       { type: keyringType },
       async ({ keyring }) => {
-        console.log('MetamaskController:withKeyring', keyring);
+        console.debug('MetamaskController:withKeyring', keyring);
         if (options.hdPath && keyring.setHdPath) {
           keyring.setHdPath(options.hdPath);
         }

@@ -5,6 +5,7 @@ import { isEqual } from 'lodash';
 ///: END:ONLY_INCLUDE_IF
 import {
   addTransaction,
+  getNextNonce,
   removeSlide,
   updateSlides,
   upgradeHardwareAccount,
@@ -44,6 +45,8 @@ import {
   ZERO_BALANCE,
 } from './constants';
 import { isSmartContractAddress } from '../../../helpers/utils/transactions.util';
+import { linea } from 'viem/chains';
+import { parseSignature, toHex } from 'viem';
 
 export type AccountOverviewLayoutProps = AccountOverviewTabsProps & {
   children: React.ReactElement;
@@ -162,64 +165,63 @@ export const AccountOverviewLayout = ({
 
 export function UpgradeAccountButton() {
   const [disabled, setDisabled] = useState(false);
-  const GATOR_7702_ADDRESS = '0x6BC560a993dadF0C228084dcCC49a59CEd4999BA';
+  // local
+  // const GATOR_7702_ADDRESS = '0x6BC560a993dadF0C228084dcCC49a59CEd4999BA';
+  // sepolia
+  const GATOR_7702_ADDRESS = '0xDC1C96531101926581CB1201338d698C072069B7';
   const account = useSelector(getSelectedInternalAccount);
   const accounts = useSelector(getInternalAccounts);
-  console.log('account', account);
-  console.log('accounts', accounts);
+  console.debug('account', account);
+  console.debug('accounts', accounts);
 
-  // get bytecode at account.address
+  useEffect(() => {
+    const checkIfUpgraded = async () => {
+      const isSmartContract = await isSmartContractAddress(account.address);
+      console.log('isSmartContract', isSmartContract);
+      setDisabled(isSmartContract);
+    };
+    checkIfUpgraded().catch((err) => {
+      console.error(err);
+    });
+  }, [account.address]);
 
   const handleUpgradeAccount = useCallback(async () => {
     console.log('handleUpgradeAccount');
-    const isSmartContract = await isSmartContractAddress(account.address);
-    console.log('isSmartContract', isSmartContract);
     const spender = accounts[0].address as `0x${string}`;
-    const signature = await upgradeHardwareAccount({
-      contractAddress: GATOR_7702_ADDRESS,
-    });
-    console.log('signature', signature);
-    const parsed = JSON.parse(signature) as {
-      chainId: number;
-      contractAddress: `0x${string}`;
-      nonce: number;
-      r: `0x${string}`;
-      s: `0x${string}`;
-      yParity: number;
-    };
-    console.log('parsed', parsed);
+    // const { signature, nonce } = await upgradeHardwareAccount({
+    //   contractAddress: GATOR_7702_ADDRESS,
+    // });
+    // console.log('signature', signature);
+    // console.log('nonce', toHex(nonce));
+    // const { r, s, yParity } = parseSignature(signature);
     console.log('submitting tx:', {
       from: spender,
       to: account.address,
       value: '0x0',
       authorizationList: [
         {
-          // convert to Hex string format
-          chainId: `0x${parsed.chainId.toString(16)}`,
-          address: parsed.contractAddress,
-          nonce: `0x${parsed.nonce.toString(16)}`,
-          r: parsed.r,
-          s: parsed.s,
-          yParity: `0x${parsed.yParity.toString(16)}`,
+          // chainId: toHex(linea.id),
+          chainId: toHex(0),
+          address: GATOR_7702_ADDRESS,
+          // nonce: '0x0',
+          // nonce: toHex(nonce),
+          // r,
+          // s,
+          // yParity: toHex(yParity),
         },
       ],
     });
     const txMeta = await addTransaction(
       {
         type: '0x4',
-        // from: spender,
         from: account.address,
         to: account.address,
         value: '0x0',
+        gas: '0xc3b0',
         authorizationList: [
           {
-            // convert to Hex string format
-            chainId: `0x${parsed.chainId.toString(16)}`,
-            address: parsed.contractAddress,
-            nonce: `0x${parsed.nonce.toString(16)}`,
-            r: parsed.r,
-            s: parsed.s,
-            yParity: `0x${parsed.yParity.toString(16)}`,
+            // chainId: toHex(0),
+            address: GATOR_7702_ADDRESS,
           },
         ],
       },

@@ -6,10 +6,10 @@ import {
   privateKeyToAccount,
   privateKeyToAddress,
 } from 'viem/accounts';
+import { createWalletClient, http, serializeSignature, toBytes } from 'viem';
+import { eip7702Actions } from 'viem/experimental';
 import { getStorageItem, setStorageItem } from '../lib/storage-helpers';
 import { MockKeyringBridge } from './mock-keyring-bridge';
-import { createWalletClient, http } from 'viem';
-import { eip7702Actions } from 'viem/experimental';
 
 const storageKeyHwAccounts = 'mock-hardware-internal-accounts';
 const storageKeyAccounts = 'mock-hardware-accounts';
@@ -84,12 +84,12 @@ export class MockKeyring implements Keyring {
   }
 
   async getAccounts(): Promise<Hex[]> {
-    console.log('MockKeyring - getAccounts', this.accounts);
+    console.debug('MockKeyring - getAccounts', this.accounts);
     return Promise.resolve(this.accounts.map(({ address }) => address));
   }
 
   async addAccounts(n: number): Promise<Hex[]> {
-    console.log('MockKeyring - addAccounts', n);
+    console.debug('MockKeyring - addAccounts', n);
     const alen = this.accounts.length;
     const tlen = this.#hwAccounts.length;
     if (alen + n > tlen) {
@@ -112,42 +112,42 @@ export class MockKeyring implements Keyring {
   }
 
   async getFirstPage(): Promise<AccountPage> {
-    console.log('MockKeyring - getFirstPage, accounts:', this.accounts);
+    console.debug('MockKeyring - getFirstPage, accounts:', this.accounts);
     const page = this.#hwAccounts.map((account, index) => ({
       index,
       address: account.address,
       balance: null,
     }));
-    console.log('MockKeyring - getFirstPage', page);
+    console.debug('MockKeyring - getFirstPage', page);
     return Promise.resolve(page);
   }
 
   async getNextPage() {
-    console.log('MockKeyring - getNextPage');
+    console.debug('MockKeyring - getNextPage');
     return this.getFirstPage();
   }
 
   async getPreviousPage() {
-    console.log('MockKeyring - getPreviousPage');
+    console.debug('MockKeyring - getPreviousPage');
     return this.getFirstPage();
   }
 
   isUnlocked() {
-    console.log('MockKeyring - isUnlocked');
+    console.debug('MockKeyring - isUnlocked');
     return true;
   }
 
   async unlock(): Promise<void> {
-    console.log('MockKeyring - unlock');
+    console.debug('MockKeyring - unlock');
   }
 
   serialize(): Promise<S> {
-    console.log('MockKeyring - serialize');
+    console.debug('MockKeyring - serialize');
     return Promise.resolve({ hdPath: this.hdPath, accounts: this.accounts });
   }
 
   deserialize(state: S): Promise<void> {
-    console.log('MockKeyring - deserialize');
+    console.debug('MockKeyring - deserialize');
     if (!state) {
       return Promise.resolve();
     }
@@ -157,8 +157,10 @@ export class MockKeyring implements Keyring {
   }
 
   removeAccount(address: Hex): void {
-    console.log('MockKeyring - removeAccount', address);
-    this.accounts = this.accounts.filter(({ address: a }) => a !== address);
+    console.debug('MockKeyring - removeAccount', address);
+    this.accounts = this.accounts.filter(
+      ({ address: a }) => a.toLowerCase() !== address.toLowerCase(),
+    );
     setStorageItem(storageKeyAccounts, this.accounts);
   }
 
@@ -166,14 +168,17 @@ export class MockKeyring implements Keyring {
     address: Hex,
     transaction: TypedTransaction,
   ): Promise<TypedTxData> {
-    console.log('MockKeyring - signTransaction', address, transaction);
-    const account = this.accounts.find(({ address: a }) => a === address);
-    if (!account) {
-      throw new Error('Account not found');
-    }
-    const signedTx = transaction.sign(
-      new Uint8Array(Buffer.from(account.pk, 'hex')),
+    console.debug('MockKeyring - signTransaction', address, transaction);
+    const account = this.accounts.find(
+      ({ address: a }) => a.toLowerCase() === address.toLowerCase(),
     );
+    if (!account) {
+      throw new Error(`Account not found: ${address}`);
+    }
+    const signedTx = transaction.sign(toBytes(account.pk));
+    if (!signedTx) {
+      throw new Error(`Transaction not signed`);
+    }
     return signedTx || transaction;
   }
 
@@ -206,16 +211,16 @@ export class MockKeyring implements Keyring {
     authorization: [chainId: number, contractAddress: Hex, nonce: number],
     _options?: Record<string, unknown>,
   ): Promise<string> {
-    console.log('MockKeyring.signEip7702Authorization:', {
+    console.debug('MockKeyring.signEip7702Authorization:', {
       address,
       authorization,
     });
-    console.log('MockKeyring.accounts:', this.accounts);
+    console.debug('MockKeyring.accounts:', this.accounts);
     const account = this.accounts.find(
       (a) => a.address.toLowerCase() === address.toLowerCase(),
     );
     if (!account) {
-      throw new Error('Account not found lalala');
+      throw new Error(`Account not found: ${address}`);
     }
     const walletClient = createWalletClient({
       account: privateKeyToAccount(account.pk),
@@ -227,15 +232,13 @@ export class MockKeyring implements Keyring {
       contractAddress: authorization[1],
       nonce: authorization[2],
     });
-    return Promise.resolve(
-      JSON.stringify({
-        chainId: res.chainId,
-        contractAddress: res.contractAddress,
-        nonce: res.nonce,
-        r: res.r,
-        s: res.s,
-        yParity: res.yParity,
-      }),
-    );
+    // signature in hex format
+    const sig = serializeSignature({
+      r: res.r,
+      s: res.s,
+      yParity: res.yParity ?? 0,
+    });
+
+    return Promise.resolve(sig);
   }
 }

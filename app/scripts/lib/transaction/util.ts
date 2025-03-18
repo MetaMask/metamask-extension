@@ -129,6 +129,7 @@ export async function addTransaction(
 async function addTransactionOrUserOperation(
   request: FinalAddTransactionRequest,
 ) {
+  console.log('addTransactionOrUserOperation', request);
   const { selectedAccount } = request;
 
   const isSmartContractAccount =
