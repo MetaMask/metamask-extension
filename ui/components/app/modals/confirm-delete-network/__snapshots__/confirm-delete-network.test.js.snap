@@ -15,7 +15,7 @@ exports[`Confirm Delete Network should match snapshot 1`] = `
         <div
           class="modal-content__title"
         >
-          Delete Custom Mainnet RPC network?
+          Delete Goerli network?
         </div>
         <div
           class="modal-content__description"

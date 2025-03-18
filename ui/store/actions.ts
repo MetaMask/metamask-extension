@@ -2341,7 +2341,9 @@ export function automaticallySwitchNetwork(
   selectedTabOrigin: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await setActiveNetworkConfigurationId(networkClientIdForThisDomain);
+    await dispatch(
+      setActiveNetworkConfigurationId(networkClientIdForThisDomain),
+    );
     await dispatch(
       setSwitchedNetworkDetails({
         networkClientId: networkClientIdForThisDomain,
@@ -2623,15 +2625,21 @@ export function setActiveNetworkWithError(
   };
 }
 
-export async function setActiveNetworkConfigurationId(
+export function setActiveNetworkConfigurationId(
   networkConfigurationId: string,
-): Promise<undefined> {
-  log.debug(
-    `background.setActiveNetworkConfigurationId: ${networkConfigurationId}`,
-  );
-  await submitRequestToBackground('setActiveNetworkConfigurationId', [
-    networkConfigurationId,
-  ]);
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    log.debug(
+      `background.setActiveNetworkConfigurationId: ${networkConfigurationId}`,
+    );
+    try {
+      await submitRequestToBackground('setActiveNetworkConfigurationId', [
+        networkConfigurationId,
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+    }
+  };
 }
 
 export function rollbackToPreviousProvider(): ThunkAction<
@@ -6084,5 +6092,12 @@ export async function sendMultichainTransaction(
 export async function disableAccountUpgradeForChain(chainId: string) {
   return await submitRequestToBackground('disableAccountUpgradeForChain', [
     chainId,
+  ]);
+}
+
+export async function getCode(address: Hex, networkClientId: string) {
+  return await submitRequestToBackground<string>('getCode', [
+    address,
+    networkClientId,
   ]);
 }
