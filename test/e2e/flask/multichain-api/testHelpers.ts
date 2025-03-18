@@ -155,16 +155,29 @@ export const escapeColon = (selector: string): string =>
 /**
  * Wraps a describe call in a skip call if the SELENIUM_BROWSER environment variable is not the specified browser.
  *
- * @param browser - The browser environment of the current test, against which to conditionally run or skip the test.
- * @param description - The description of the test suite.
- * @param callback - The callback function to execute the test suite.
- */
-export const describeBrowserOnly = (
-  browser: string,
-  description: string,
-  callback: () => void,
-) => {
+ * @param params - The parameters for the browser-specific test suite
+ * @param params.browser - The browser environment of the current test, against which to conditionally run or skip the test
+ * @param params.description - The description of the test suite
+ * @param params.callback - The callback function to execute the test suite
+ * @param [params.timeout] - Optional timeout value to set for the test suite
+*/
+export const describeBrowserOnly = ({
+  browser,
+  description,
+  callback,
+  timeout,
+}: {
+  browser: string;
+  description: string;
+  callback: () => void;
+  timeout?: number;
+}) => {
   return process.env.SELENIUM_BROWSER === browser
-    ? describe(description, callback)
+    ? describe(description, function () {
+        if (timeout) {
+          this.timeout(timeout);
+        }
+        callback();
+      })
     : describe.skip(description, callback);
 };
