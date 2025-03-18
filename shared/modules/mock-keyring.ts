@@ -106,16 +106,9 @@ export class MockKeyring implements Keyring {
     this.accounts.push(...newAccounts);
     console.debug('MockKeyring - addAccounts after', this.accounts);
 
-    // sort accounts the same way as the hwAccounts
-    this.accounts.sort(
-      (a, b) =>
-        this.#hwAccounts.findIndex(({ address: ha }) => ha === a.address) -
-        this.#hwAccounts.findIndex(({ address: hb }) => hb === b.address),
-    );
-
     await setStorageItem(storageKeyAccounts, this.accounts);
 
-    return Promise.resolve(this.accounts.map(({ address }) => address));
+    return Promise.resolve(newAccounts.map(({ address }) => address));
   }
 
   setAccountToUnlock(index: number) {
