@@ -4835,7 +4835,7 @@
     "message": "Show private key"
   },
   "showSRP": {
-    "message": "Show secret recovery phrase"
+    "message": "Show Secret Recovery Phrase"
   },
   "showTestnetNetworks": {
     "message": "Show test networks"

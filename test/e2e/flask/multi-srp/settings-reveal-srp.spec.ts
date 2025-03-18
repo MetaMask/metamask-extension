@@ -5,9 +5,9 @@ import PrivacySettings from '../../page-objects/pages/settings/privacy-settings'
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { E2E_SRP as FIRST_TEST_E2E_SRP } from '../../default-fixture';
 import { WALLET_PASSWORD } from '../../helpers';
-import { SECOND_TEST_E2E_SRP, withMultiSRP } from './common-multi-srp';
+import { SECOND_TEST_E2E_SRP, withMultiSrp } from './common-multi-srp';
 
-const verifySRP = async (driver: Driver, srp: string, srpIndex: number) => {
+const verifySrp = async (driver: Driver, srp: string, srpIndex: number) => {
   await new HeaderNavbar(driver).openSettingsPage();
   const settingsPage = new SettingsPage(driver);
   await settingsPage.check_pageIsLoaded();
@@ -21,23 +21,23 @@ const verifySRP = async (driver: Driver, srp: string, srpIndex: number) => {
 };
 
 describe('Multi SRP - Reveal Imported SRP', function (this: Suite) {
-  const firstSRPIndex = 1;
-  const secondSRPIndex = 2;
+  const firstSrpIndex = 1;
+  const secondSrpIndex = 2;
 
   it('successfully exports the default SRP', async function () {
-    await withMultiSRP(
+    await withMultiSrp(
       { title: this.test?.fullTitle() },
       async (driver: Driver) => {
-        await verifySRP(driver, FIRST_TEST_E2E_SRP, firstSRPIndex);
+        await verifySrp(driver, FIRST_TEST_E2E_SRP, firstSrpIndex);
       },
     );
   });
 
   it('successfully exports the imported SRP', async function () {
-    await withMultiSRP(
+    await withMultiSrp(
       { title: this.test?.fullTitle() },
       async (driver: Driver) => {
-        await verifySRP(driver, SECOND_TEST_E2E_SRP, secondSRPIndex);
+        await verifySrp(driver, SECOND_TEST_E2E_SRP, secondSrpIndex);
       },
     );
   });

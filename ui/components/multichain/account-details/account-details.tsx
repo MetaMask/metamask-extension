@@ -53,9 +53,9 @@ import { AddressCopyButton } from '../address-copy-button';
 import SRPQuiz from '../../app/srp-quiz-modal';
 import { findKeyringId } from '../../../../shared/lib/keyring';
 import { isAbleToRevealSrp } from '../../../helpers/utils/util';
+import { isMultichainWalletSnap } from '../../../../shared/lib/accounts';
 ///: END:ONLY_INCLUDE_IF
 import { AttemptExportState } from '../../../../shared/constants/accounts';
-import { isMultichainWalletSnap } from '../../../../shared/lib/accounts';
 import { AccountDetailsAuthenticate } from './account-details-authenticate';
 import { AccountDetailsDisplay } from './account-details-display';
 import { AccountDetailsKey } from './account-details-key';
