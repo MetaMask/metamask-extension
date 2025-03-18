@@ -474,7 +474,7 @@ export default class Routes extends Component {
         {showOnboardingHeader(location) && <OnboardingAppHeader />}
         {isAccountMenuOpen ? (
           <AccountListMenu
-            onClose={() => toggleAccountMenu()}
+            onClose={toggleAccountMenu}
             privacyMode={privacyMode}
           />
         ) : null}

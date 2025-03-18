@@ -5,6 +5,7 @@ import TextField from '../../ui/text-field';
 import { ButtonVariant, Button, Checkbox } from '../../component-library';
 import SrpInput from '../srp-input';
 import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
+import { useSignOut } from '../../../hooks/identity/useAuthentication';
 
 export default function CreateNewVault({
   disabled = false,
@@ -18,6 +19,8 @@ export default function CreateNewVault({
   const [passwordError, setPasswordError] = useState('');
   const [seedPhrase, setSeedPhrase] = useState('');
   const [termsChecked, setTermsChecked] = useState(false);
+
+  const { signOut } = useSignOut();
 
   const t = useI18nContext();
 
@@ -73,9 +76,10 @@ export default function CreateNewVault({
         return;
       }
 
+      await signOut();
       await onSubmit(password, seedPhrase);
     },
-    [isValid, onSubmit, password, seedPhrase],
+    [isValid, onSubmit, password, seedPhrase, signOut],
   );
 
   const toggleTermsCheck = useCallback(() => {

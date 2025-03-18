@@ -74,7 +74,7 @@ export const AggregatedPercentageOverview = () => {
       );
       return total1dAgo + Number(nativeFiat1dAgo);
     }, 0); // Initial total1dAgo is 0
-  }, [orderedTokenList, tokensMarketData]); // Dependencies: recalculate if orderedTokenList or tokensMarketData changes
+  }, [orderedTokenList, tokensMarketData, currentChainId]); // Dependencies: recalculate if orderedTokenList or tokensMarketData changes
 
   const totalBalance: number = Number(totalFiatBalance);
   const totalBalance1dAgo = totalFiat1dAgo;

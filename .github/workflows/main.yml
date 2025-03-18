@@ -17,12 +17,13 @@ on:
 jobs:
   prep-deps:
     runs-on: ubuntu-latest
+    if: ${{ github.head_ref != 'l10n_crowdin_action' }}
     steps:
       - name: Checkout and setup environment
         uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
         with:
           is-high-risk-environment: false
-          cache-node-modules: 'true'
+          cache-node-modules: true
 
   lint-workflows:
     name: Lint workflows

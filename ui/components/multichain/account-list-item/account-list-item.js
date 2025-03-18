@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
@@ -163,10 +163,12 @@ const AccountListItem = ({
     formattedTokensWithBalancesPerChain,
   );
   // cross chain agg balance
-  const mappedOrderedTokenList = accountTotalFiatBalances.orderedTokenList.map(
-    (item) => ({
-      avatarValue: item.iconUrl,
-    }),
+  const mappedOrderedTokenList = useMemo(
+    () =>
+      accountTotalFiatBalances.orderedTokenList.map((item) => ({
+        avatarValue: item.iconUrl,
+      })),
+    [accountTotalFiatBalances.orderedTokenList],
   );
   let balanceToTranslate;
   if (isEvmNetwork) {
@@ -259,7 +261,7 @@ const AccountListItem = ({
         // Without this check, the account will be selected after
         // the account options menu closes
         if (!accountOptionsMenuOpen) {
-          onClick?.();
+          onClick?.(account);
         }
       }}
     >
@@ -338,7 +340,7 @@ const AccountListItem = ({
                 as="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onClick?.();
+                  onClick?.(account);
                 }}
                 variant={TextVariant.bodyMdMedium}
                 className="multichain-account-list-item__account-name__button"
