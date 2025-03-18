@@ -83,7 +83,7 @@ function packLetterAndMask(
   letterFromParent: number,
   childMask: number,
 ): number {
-  return ((letterFromParent & 0x3f) << 26) | (childMask & 0x03ffffff);
+  return (letterFromParent << 26) | (childMask & 0x03ffffff);
 }
 
 /**
