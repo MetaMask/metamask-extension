@@ -217,7 +217,7 @@ export const useTokensWithFiltering = (
                 chainId: token.chainId,
                 tokenFiatAmount: token.tokenFiatAmount,
                 decimals: token.decimals,
-                address: '', // token.address,
+                address: '',
                 type: AssetType.native,
                 balance: token.balance ?? '0',
                 string: token.string ?? undefined,
@@ -265,12 +265,7 @@ export const useTokensWithFiltering = (
           if (
             token &&
             !token.symbol.includes('$') &&
-            shouldAddToken(
-              token.symbol,
-              // useMultichainBalances returns the assetId for solana tokens
-              token.address ?? undefined,
-              chainId,
-            )
+            shouldAddToken(token.symbol, token.address ?? undefined, chainId)
           ) {
             if (token) {
               yield token;
