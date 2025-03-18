@@ -89,6 +89,39 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
         },
       })),
     await mockServer
+      .forGet('https://accounts.api.cx.metamask.io/v2/accounts/0x5cfe73b6021e818b776b421b1c4db2474086a7e1/balances')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+
+    "count": 4,
+    "balances": [
+        {
+            "object": "token",
+            "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
+            "name": "Dai Stablecoin",
+            "symbol": "DAI",
+            "decimals": 18,
+            "balance": "1.171534639562184532",
+            "chainId": 1
+        },
+        {
+            "object": "token",
+            "address": "0x0000000000000000000000000000000000000000",
+            "symbol": "ETH",
+            "name": "Ether",
+            "type": "native",
+            "timestamp": "2015-07-30T15:26:13.000Z",
+            "decimals": 18,
+            "chainId": 1,
+            "balance": "0.000038244165309000"
+        }
+      ],
+    "unprocessedNetworks": []
+        }
+      })),
+
+    await mockServer
       .forGet('https://token.api.cx.metamask.io/token/')
       .thenCallback(() => ({
         statusCode: 200,
@@ -153,6 +186,7 @@ describe('Swap', function () {
             type: 'anvil',
             options: {
               chainId: 1,
+              hardfork: 'london',
               loadState:
                 './test/e2e/seeder/network-states/swap-eth-dai/withSwapContracts.json',
             },
@@ -160,18 +194,25 @@ describe('Swap', function () {
         ],
       },
       async ({ driver, localNodes }) => {
+        await driver.delay(5000)
         await loginWithBalanceValidation(driver, localNodes[0]);
 
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
         await homePage.check_pageIsLoaded();
 
-        await assetListPage.clickOnAsset('DAI');
+        await assetListPage.clickOnAsset('ETH');
 
         // Swap ETH to DAI
         const tokenOverviewPage = new TokenOverviewPage(driver);
         await tokenOverviewPage.check_pageIsLoaded();
         await tokenOverviewPage.clickSwap();
+
+        await driver.delay(90000)
+        await driver.delay(90000)
+        await driver.delay(90000)
+        await driver.delay(90000)
+        await driver.delay(90000)
       },
     );
   });
