@@ -31,6 +31,7 @@ import { isSolanaAddress } from '../../../../../shared/lib/multichain/accounts';
 import { ExternalAccount } from '../../../../../shared/types/bridge';
 import DestinationSelectedAccountListItem from './destination-selected-account-list-item';
 import DestinationAccountListItem from './destination-account-list-item';
+import { ExternalAccountListItem } from './external-account-list-item';
 
 type DestinationAccountPickerProps = {
   onAccountSelect: (account: InternalAccount | ExternalAccount | null) => void;
@@ -82,14 +83,6 @@ export const DestinationAccountPicker = ({
       isExternal: true,
     } as ExternalAccount;
   }, [accounts, isValidAddress, searchQuery]);
-
-  // Auto-select the external account if valid and not already selected
-  React.useEffect(() => {
-    if (externalAccount && !selectedSwapToAccount) {
-      onAccountSelect(externalAccount);
-      setSearchQuery(''); // Clear search after selection
-    }
-  }, [externalAccount, onAccountSelect, selectedSwapToAccount]);
 
   const filteredAccounts = useMemo(
     () =>
@@ -231,8 +224,20 @@ export const DestinationAccountPicker = ({
             showOptions={false}
           />
         ))}
+        {externalAccount && (
+          <ExternalAccountListItem
+            key="external-account"
+            account={externalAccount}
+            selected={Boolean(
+              selectedSwapToAccount &&
+                (selectedSwapToAccount as ExternalAccount | InternalAccount)
+                  .address === externalAccount.address,
+            )}
+            onClick={() => onAccountSelect(externalAccount)}
+          />
+        )}
 
-        {filteredAccounts.length === 0 && (
+        {filteredAccounts.length === 0 && !externalAccount && (
           <Box
             display={Display.Flex}
             style={{
