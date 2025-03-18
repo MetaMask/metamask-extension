@@ -1,13 +1,13 @@
 import { Hex } from '@metamask/utils';
-import { MetaMaskReduxState } from '../../../store/store';
+import { MetaMaskReduxState } from '../../store/store';
 import {
   getSamplePetnamesByChainIdAndAddress,
-  getPetNamesForCurrentChain,
+  getPetnamesForCurrentChain,
 } from './selectors';
 
 const mockChainId = '0x1' as Hex;
 
-jest.mock('../../../../shared/modules/selectors/networks', () => ({
+jest.mock('../../../shared/modules/selectors/networks', () => ({
   getCurrentChainId: () => mockChainId,
 }));
 
@@ -38,7 +38,7 @@ describe('sample-petnames-controller selectors', () => {
     });
 
     it('should select pet names for the current chain', () => {
-      const result = getPetNamesForCurrentChain(mockState);
+      const result = getPetnamesForCurrentChain(mockState);
       expect(result).toEqual({
         [mockAddress1]: 'TestName1',
         [mockAddress2]: 'TestName2',

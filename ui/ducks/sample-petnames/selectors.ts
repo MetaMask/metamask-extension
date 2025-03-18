@@ -1,9 +1,9 @@
 import type { Hex } from '@metamask/utils';
 import { createSelector } from 'reselect';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-import type { MetaMaskReduxState } from '../../../store/store';
+import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
+import type { MetaMaskReduxState } from '../../store/store';
 // eslint-disable-next-line import/no-restricted-paths
-import { type SamplePetnamesControllerState } from '../../../../app/scripts/controllers/sample/sample-petnames-controller';
+import { type SamplePetnamesControllerState } from '../../../app/scripts/controllers/sample/sample-petnames-controller';
 
 // Selectors
 export const getSamplePetnamesByChainIdAndAddress = (
@@ -13,7 +13,7 @@ export const getSamplePetnamesByChainIdAndAddress = (
     | SamplePetnamesControllerState['samplePetnamesByChainIdAndAddress']
     | undefined;
 
-export const getPetNamesForCurrentChain = createSelector(
+export const getPetnamesForCurrentChain = createSelector(
   [getSamplePetnamesByChainIdAndAddress, getCurrentChainId],
   (petnamesByChainIdAndAddress, chainId): Record<Hex, string> =>
     petnamesByChainIdAndAddress?.[chainId] ?? {},

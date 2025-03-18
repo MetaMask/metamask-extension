@@ -8,13 +8,15 @@ import {
 } from '@testing-library/react-hooks';
 import { Hex } from '@metamask/utils';
 import { ChangeEvent } from 'react';
-import { useSamplePetnamesController } from '../../../ducks/metamask/sample-petnames-controller';
+import { useSamplePetnames } from '../../../ducks/sample-petnames';
 import { useSamplePetnamesForm } from './useSamplePetnamesForm';
 import { useSamplePetnamesMetrics } from './useSamplePetnamesMetrics';
 import { useSamplePerformanceTrace } from './useSamplePerformanceTrace';
 
+const it = global.it as unknown as jest.It;
+
 // Mock the dependencies
-jest.mock('../../../ducks/metamask/sample-petnames-controller');
+jest.mock('../../../ducks/sample-petnames');
 jest.mock('./useSamplePetnamesMetrics');
 jest.mock('./useSamplePerformanceTrace');
 
@@ -52,15 +54,15 @@ describe('useSamplePetnamesForm', () => {
   const setFormValues = (
     result: HookResult['result'],
     address: string,
-    petName: string,
+    petname: string,
   ) => {
     act(() => {
       result.current
         .getFieldProps('address')
         .onChange(createChangeEvent(address));
       result.current
-        .getFieldProps('petName')
-        .onChange(createChangeEvent(petName));
+        .getFieldProps('petname')
+        .onChange(createChangeEvent(petname));
     });
   };
 
@@ -81,7 +83,7 @@ describe('useSamplePetnamesForm', () => {
     });
 
     // Setup hook mocks
-    (useSamplePetnamesController as jest.Mock).mockReturnValue({
+    (useSamplePetnames as jest.Mock).mockReturnValue({
       namesForCurrentChain: {},
       assignPetname: mocks.assignPetname,
     });
@@ -104,7 +106,7 @@ describe('useSamplePetnamesForm', () => {
 
       expect(result.current.values).toEqual({
         address: '0x',
-        petName: '',
+        petname: '',
       });
     });
 
@@ -120,27 +122,27 @@ describe('useSamplePetnamesForm', () => {
       {
         scenario: 'invalid address',
         address: INVALID_ADDRESS,
-        petName: VALID_PETNAME,
+        petname: VALID_PETNAME,
         expectedFieldError: 'address',
       },
       {
         scenario: 'empty pet name',
         address: VALID_ADDRESS,
-        petName: EMPTY_PETNAME,
-        expectedFieldError: 'petName',
+        petname: EMPTY_PETNAME,
+        expectedFieldError: 'petname',
       },
       {
         scenario: 'too long pet name',
         address: VALID_ADDRESS,
-        petName: TOO_LONG_PETNAME,
-        expectedFieldError: 'petName',
+        petname: TOO_LONG_PETNAME,
+        expectedFieldError: 'petname',
       },
     ])(
       'should reject $scenario',
-      async ({ address, petName, expectedFieldError }) => {
+      async ({ address, petname, expectedFieldError }) => {
         const { result } = renderHook(() => useSamplePetnamesForm());
 
-        setFormValues(result, address, petName);
+        setFormValues(result, address, petname);
 
         // Submit the form
         await submitForm(result);
@@ -174,7 +176,7 @@ describe('useSamplePetnamesForm', () => {
       expect(mocks.endTrace).toHaveBeenCalledWith(true, {
         success: true,
         addressLength: VALID_ADDRESS.length,
-        petNameLength: VALID_PETNAME.length,
+        petnameLength: VALID_PETNAME.length,
       });
 
       // Check form submission
@@ -255,32 +257,32 @@ describe('useSamplePetnamesForm', () => {
     it.each([
       {
         scenario: 'empty petname',
-        petName: EMPTY_PETNAME,
+        petname: EMPTY_PETNAME,
         expectedError: 'Pet name is required',
       },
       {
         scenario: 'too long petname',
-        petName: TOO_LONG_PETNAME,
+        petname: TOO_LONG_PETNAME,
         expectedError: 'Pet name must be 12 characters or less',
       },
       {
         scenario: 'valid petname',
-        petName: VALID_PETNAME,
+        petname: VALID_PETNAME,
         expectedError: undefined,
       },
     ])(
-      'should validate petName: $scenario',
-      async ({ petName, expectedError }) => {
+      'should validate petname: $scenario',
+      async ({ petname, expectedError }) => {
         const { result } = renderHook(() => useSamplePetnamesForm());
 
         act(() => {
           result.current
-            .getFieldProps('petName')
-            .onChange(createChangeEvent(petName));
-          result.current.getFieldProps('petName').onBlur();
+            .getFieldProps('petname')
+            .onChange(createChangeEvent(petname));
+          result.current.getFieldProps('petname').onBlur();
         });
 
-        expect(result.current.fieldErrors.petName).toBe(expectedError);
+        expect(result.current.fieldErrors.petname).toBe(expectedError);
       },
     );
   });

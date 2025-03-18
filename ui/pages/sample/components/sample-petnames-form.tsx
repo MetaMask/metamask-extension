@@ -20,11 +20,11 @@ import {
   TextColor,
   BlockSize,
 } from '../../../helpers/constants/design-system';
-import { useSamplePetnamesController } from '../../../ducks/metamask/sample-petnames-controller';
+import { useSamplePetnames } from '../../../ducks/sample-petnames';
 import { useSamplePetnamesForm } from '../hooks/useSamplePetnamesForm';
 
 export function SamplePetnamesForm() {
-  const petNames = useSamplePetnamesController();
+  const petnames = useSamplePetnames();
   const {
     isSubmitting,
     submitStatus,
@@ -56,7 +56,7 @@ export function SamplePetnamesForm() {
           gap={2}
           width={BlockSize.Full}
         >
-          {Object.entries(petNames.namesForCurrentChain).length === 0 ? (
+          {Object.entries(petnames.namesForCurrentChain).length === 0 ? (
             <Text
               variant={TextVariant.bodyMd}
               color={TextColor.textAlternative}
@@ -65,7 +65,7 @@ export function SamplePetnamesForm() {
               No pet names added yet
             </Text>
           ) : (
-            Object.entries(petNames.namesForCurrentChain).map(
+            Object.entries(petnames.namesForCurrentChain).map(
               ([addr, name]) => (
                 <Box
                   key={addr}
@@ -111,10 +111,10 @@ export function SamplePetnamesForm() {
 
           <FormTextField
             label="Name"
-            id="petName"
+            id="petname"
             placeholder="Enter a nickname"
             required
-            {...getFieldProps('petName')}
+            {...getFieldProps('petname')}
           />
 
           {formError && (

@@ -1,25 +1,27 @@
 import React from 'react';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { useSamplePetnamesController } from '../../../ducks/metamask/sample-petnames-controller';
+import { useSamplePetnames } from '../../../ducks/sample-petnames';
 import { useSamplePetnamesMetrics } from '../hooks/useSamplePetnamesMetrics';
 import { useSamplePerformanceTrace } from '../hooks/useSamplePerformanceTrace';
-import { useSamplePetnamesForm } from '../hooks/useSamplePetnamesForm';
+import {
+  FormValues,
+  useSamplePetnamesForm,
+} from '../hooks/useSamplePetnamesForm';
 import { SamplePetnamesForm } from './sample-petnames-form';
+import { Hex } from '@metamask/utils';
 
 // Mock all external dependencies
-jest.mock('../../../ducks/metamask/sample-petnames-controller');
-jest.mock('../hooks/useSamplePetnamesMetrics');
-jest.mock('../hooks/useSamplePerformanceTrace');
+jest.mock('../../../ducks/sample-petnames');
 jest.mock('../hooks/useSamplePetnamesForm');
 
 describe('SamplePetnamesForm', () => {
   // Test data constants
   const TEST_DATA = {
-    validAddress: '0x1234567890abcdef1234567890abcdef12345678',
+    validAddress: '0x1234567890abcdef1234567890abcdef12345678' as Hex,
     validName: 'Valid Name',
-    secondAddress: '0xabcdef1234567890abcdef1234567890abcdef12',
+    secondAddress: '0xabcdef1234567890abcdef1234567890abcdef12' as Hex,
     secondName: 'TestName2',
     errorMessage: 'Something went wrong',
   };
@@ -50,120 +52,105 @@ describe('SamplePetnamesForm', () => {
     });
   };
 
-  // Form state variants for different test scenarios
-  type FormState = {
-    isSubmitting: boolean;
-    formStatus: string;
-    submissionError: string | undefined;
-    isFormValid: boolean;
-    values: { address: string; petName: string };
-    errors: Record<string, string>;
-  };
+  type UseSamplePetnamesFormResult = ReturnType<typeof useSamplePetnamesForm>;
+  const mockUseSamplePetnamesForm =
+    useSamplePetnamesForm as jest.Mock<UseSamplePetnamesFormResult>;
 
-  const FORM_STATES: Record<string, FormState> = {
-    default: {
-      isSubmitting: false,
-      formStatus: 'default',
-      submissionError: undefined,
-      isFormValid: false,
-      values: { address: '0x', petName: '' },
-      errors: {} as Record<string, string>,
-    },
-    valid: {
-      isSubmitting: false,
-      formStatus: 'default',
-      submissionError: undefined,
-      isFormValid: true,
-      values: { address: TEST_DATA.validAddress, petName: TEST_DATA.validName },
-      errors: {} as Record<string, string>,
-    },
-    submitting: {
-      isSubmitting: true,
-      formStatus: 'default',
-      submissionError: undefined,
-      isFormValid: false,
-      values: { address: '0x', petName: '' },
-      errors: {} as Record<string, string>,
-    },
-    success: {
-      isSubmitting: false,
-      formStatus: 'success',
-      submissionError: undefined,
-      isFormValid: false,
-      values: { address: '0x', petName: '' },
-      errors: {} as Record<string, string>,
-    },
-    error: {
-      isSubmitting: false,
-      formStatus: 'error',
-      submissionError: TEST_DATA.errorMessage,
-      isFormValid: false,
-      values: { address: '0x', petName: '' },
-      errors: {} as Record<string, string>,
-    },
-    validation_error: {
-      isSubmitting: false,
-      formStatus: 'default',
-      submissionError: undefined,
-      isFormValid: false,
-      values: { address: 'invalid', petName: '' },
-      errors: {
-        address: 'Invalid address',
-        petName: 'Name required',
-      } as Record<string, string>,
-    },
-  };
+  type UseSamplePetnamesFormResultPartial = Pick<
+    UseSamplePetnamesFormResult,
+    | 'values'
+    | 'fieldErrors'
+    | 'formError'
+    | 'isSubmitting'
+    | 'submitStatus'
+    | 'isFormValid'
+  >;
 
-  // Helper to setup form hook mock with different states
-  const setupFormMock = (formStatus = FORM_STATES.default) => {
-    (useSamplePetnamesForm as jest.Mock).mockReturnValue({
-      ...formStatus,
-      handleSubmit: mockFunctions.handleSubmit,
-      getFieldProps: jest.fn().mockImplementation((field: string) => ({
+  // Helper to create a sample petnames form result
+  const createSamplePetnamesFormResult = (
+    resultPartial: UseSamplePetnamesFormResultPartial,
+  ): UseSamplePetnamesFormResult => {
+    // Mock the getFieldProps function
+    const mockGetFieldProps = jest
+      .fn()
+      .mockImplementation((field: keyof FormValues) => ({
         name: field,
-        value:
-          field === 'address'
-            ? formStatus.values.address
-            : formStatus.values.petName,
+        value: resultPartial.values[field],
         onChange: mockFunctions.onChange,
         onBlur: mockFunctions.onBlur,
-        error: Boolean(formStatus.errors[field]),
-        helpText: formStatus.errors[field],
-      })),
-    });
+        error: Boolean(resultPartial.fieldErrors[field]),
+        helpText: resultPartial.fieldErrors[field],
+        disabled: false,
+      }));
+
+    return {
+      handleSubmit: jest.fn(),
+      touched: { address: false, petname: false },
+      getFieldProps: mockGetFieldProps,
+      ...resultPartial,
+    };
+  };
+
+  const USE_FORM_RESULTS: Record<string, UseSamplePetnamesFormResult> = {
+    default: createSamplePetnamesFormResult({
+      isSubmitting: false,
+      submitStatus: 'idle',
+      formError: undefined,
+      isFormValid: false,
+      values: { address: '0x', petname: '' },
+      fieldErrors: {},
+    }),
+    valid: createSamplePetnamesFormResult({
+      isSubmitting: false,
+      submitStatus: 'idle',
+      formError: undefined,
+      isFormValid: true,
+      values: { address: TEST_DATA.validAddress, petname: TEST_DATA.validName },
+      fieldErrors: {},
+    }),
+    submitting: createSamplePetnamesFormResult({
+      isSubmitting: true,
+      submitStatus: 'submitting',
+      formError: undefined,
+      isFormValid: false,
+      values: { address: '0x', petname: '' },
+      fieldErrors: {},
+    }),
+    success: createSamplePetnamesFormResult({
+      isSubmitting: false,
+      submitStatus: 'success',
+      formError: undefined,
+      isFormValid: false,
+      values: { address: '0x', petname: '' },
+      fieldErrors: {},
+    }),
+    error: createSamplePetnamesFormResult({
+      isSubmitting: false,
+      submitStatus: 'error',
+      formError: TEST_DATA.errorMessage,
+      isFormValid: false,
+      values: { address: '0x', petname: '' },
+      fieldErrors: {},
+    }),
+    validation_error: createSamplePetnamesFormResult({
+      isSubmitting: false,
+      submitStatus: 'idle',
+      formError: undefined,
+      isFormValid: false,
+      values: { address: 'invalid' as Hex, petname: '' },
+      fieldErrors: {
+        address: 'Invalid address',
+        petname: 'Name required',
+      },
+    }),
   };
 
   // Helper to setup controller mock with different states
-  const setupControllerMock = (namesForCurrentChain = {}) => {
-    (useSamplePetnamesController as jest.Mock).mockReturnValue({
+  const setupSamplePetnamesDuckMock = (namesForCurrentChain = {}) => {
+    (useSamplePetnames as jest.Mock).mockReturnValue({
       namesForCurrentChain,
       assignPetname: mockFunctions.assignPetname,
     });
-  };
-
-  // Helper to setup metrics mock
-  const setupMetricsMock = () => {
-    (useSamplePetnamesMetrics as jest.Mock).mockReturnValue({
-      trackPetnamesFormViewed: mockFunctions.trackPetnamesFormViewed,
-      trackPetnameAdded: mockFunctions.trackPetnameAdded,
-      trackFormValidationError: mockFunctions.trackFormValidationError,
-      trackFormSubmissionError: mockFunctions.trackFormSubmissionError,
-    });
-  };
-
-  // Helper to setup performance trace mock
-  const setupPerformanceTraceMock = () => {
-    (useSamplePerformanceTrace as jest.Mock).mockReturnValue({
-      traceFormSubmission: mockFunctions.traceFormSubmission,
-    });
-  };
-
-  // Helper to setup all mocks with default values
-  const setupAllMocks = () => {
-    setupControllerMock();
-    setupFormMock();
-    setupMetricsMock();
-    setupPerformanceTraceMock();
   };
 
   // Helper to get form elements
@@ -176,11 +163,13 @@ describe('SamplePetnamesForm', () => {
   // Reset mocks before each test
   beforeEach(() => {
     jest.clearAllMocks();
-    setupAllMocks();
+    setupSamplePetnamesDuckMock();
   });
 
   describe('Rendering', () => {
     it('renders with empty state when no pet names exist', () => {
+      mockUseSamplePetnamesForm.mockReturnValue(USE_FORM_RESULTS.default);
+
       renderWithProvider(<SamplePetnamesForm />, createStore());
 
       expect(screen.getByText('Pet Names on this network')).toBeInTheDocument();
@@ -199,7 +188,8 @@ describe('SamplePetnamesForm', () => {
         [TEST_DATA.secondAddress]: TEST_DATA.secondName,
       };
 
-      setupControllerMock(mockNames);
+      setupSamplePetnamesDuckMock(mockNames);
+      mockUseSamplePetnamesForm.mockReturnValue(USE_FORM_RESULTS.default);
 
       renderWithProvider(<SamplePetnamesForm />, createStore());
 
@@ -214,6 +204,8 @@ describe('SamplePetnamesForm', () => {
 
   describe('Form Interactions', () => {
     it('disables submit button with invalid form data', () => {
+      mockUseSamplePetnamesForm.mockReturnValue(USE_FORM_RESULTS.default);
+
       renderWithProvider(<SamplePetnamesForm />, createStore());
 
       const { submitButton } = getFormElements();
@@ -221,7 +213,7 @@ describe('SamplePetnamesForm', () => {
     });
 
     it('enables submit button when form is valid', () => {
-      setupFormMock(FORM_STATES.valid);
+      mockUseSamplePetnamesForm.mockReturnValue(USE_FORM_RESULTS.valid);
 
       renderWithProvider(<SamplePetnamesForm />, createStore());
 
@@ -230,7 +222,7 @@ describe('SamplePetnamesForm', () => {
     });
 
     it('calls handleSubmit when form is submitted', async () => {
-      setupFormMock(FORM_STATES.valid);
+      mockUseSamplePetnamesForm.mockReturnValue(USE_FORM_RESULTS.valid);
 
       renderWithProvider(<SamplePetnamesForm />, createStore());
 
@@ -245,7 +237,7 @@ describe('SamplePetnamesForm', () => {
 
   describe('Form States', () => {
     it('shows submission error when present', () => {
-      setupFormMock(FORM_STATES.error);
+      mockUseSamplePetnamesForm.mockReturnValue(USE_FORM_RESULTS.error);
 
       renderWithProvider(<SamplePetnamesForm />, createStore());
 
@@ -253,7 +245,7 @@ describe('SamplePetnamesForm', () => {
     });
 
     it('shows success message when form submission is successful', () => {
-      setupFormMock(FORM_STATES.success);
+      mockUseSamplePetnamesForm.mockReturnValue(USE_FORM_RESULTS.success);
 
       renderWithProvider(<SamplePetnamesForm />, createStore());
 
@@ -263,7 +255,9 @@ describe('SamplePetnamesForm', () => {
     });
 
     it('shows form validation errors', () => {
-      setupFormMock(FORM_STATES.validation_error);
+      mockUseSamplePetnamesForm.mockReturnValue(
+        USE_FORM_RESULTS.validation_error,
+      );
 
       renderWithProvider(<SamplePetnamesForm />, createStore());
 
@@ -272,7 +266,7 @@ describe('SamplePetnamesForm', () => {
     });
 
     it('displays correct button text when submitting', () => {
-      setupFormMock(FORM_STATES.submitting);
+      mockUseSamplePetnamesForm.mockReturnValue(USE_FORM_RESULTS.submitting);
 
       renderWithProvider(<SamplePetnamesForm />, createStore());
 
@@ -285,48 +279,25 @@ describe('SamplePetnamesForm', () => {
   describe('Integration', () => {
     it('works with form submission flow', async () => {
       // Create a custom handleSubmit that uses the assignPetname function
-      const customHandleSubmit = jest.fn().mockImplementation(async () => {
-        await mockFunctions.assignPetname(
-          TEST_DATA.validAddress,
-          TEST_DATA.validName,
-        );
-      });
-
-      // Setup specific mocks for this test
-      setupFormMock(FORM_STATES.valid);
+      const mockHandleSubmit = jest.fn();
 
       // Override the handleSubmit with our custom implementation
-      (useSamplePetnamesForm as jest.Mock).mockImplementationOnce(() => ({
-        ...FORM_STATES.valid,
-        handleSubmit: customHandleSubmit,
-        getFieldProps: jest.fn().mockImplementation((field: string) => ({
-          name: field,
-          value:
-            field === 'address' ? TEST_DATA.validAddress : TEST_DATA.validName,
-          onChange: mockFunctions.onChange,
-          onBlur: mockFunctions.onBlur,
-          error: false,
-          helpText: undefined,
-        })),
+      mockUseSamplePetnamesForm.mockImplementationOnce(() => ({
+        ...USE_FORM_RESULTS.valid,
+        handleSubmit: mockHandleSubmit,
       }));
 
       renderWithProvider(<SamplePetnamesForm />, createStore());
 
       // Submit the form
       const { submitButton } = getFormElements();
-      fireEvent.click(submitButton);
+      await act(async () => {
+        fireEvent.click(submitButton);
+      });
 
       // Verify the submit handler was called
       await waitFor(() => {
-        expect(customHandleSubmit).toHaveBeenCalled();
-      });
-
-      // Verify the assignPetname was called with correct args
-      await waitFor(() => {
-        expect(mockFunctions.assignPetname).toHaveBeenCalledWith(
-          TEST_DATA.validAddress,
-          TEST_DATA.validName,
-        );
+        expect(mockHandleSubmit).toHaveBeenCalled();
       });
     });
   });

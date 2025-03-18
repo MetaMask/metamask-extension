@@ -1,17 +1,17 @@
 import { Hex } from '@metamask/utils';
 import type { Dispatch } from 'redux';
-import type { MetaMaskReduxDispatch } from '../../../store/store';
+import type { MetaMaskReduxDispatch } from '../../store/store';
 import { assignPetname, ASSIGN_PET_NAME_METHOD } from './actions';
 
 const mockSubmitRequestToBackground = jest.fn().mockResolvedValue(undefined);
 const mockForceUpdateMetamaskStateAction = jest.fn().mockResolvedValue({});
 
-jest.mock('../../../store/actions', () => ({
+jest.mock('../../store/actions', () => ({
   forceUpdateMetamaskState: (dispatch: Dispatch) =>
     mockForceUpdateMetamaskStateAction(dispatch),
 }));
 
-jest.mock('../../../store/background-connection', () => ({
+jest.mock('../../store/background-connection', () => ({
   submitRequestToBackground: (...args: unknown[]) =>
     mockSubmitRequestToBackground(...args),
 }));
@@ -35,7 +35,7 @@ describe('sample-petnames-controller thunks', () => {
   describe('assignPetname', () => {
     it('should submit a request to the background and update state', async () => {
       const mockDispatch = createMockDispatch();
-      const name = 'NewPetName';
+      const name = 'NewPetname';
 
       const thunk = assignPetname(mockChainId, mockAddress1, name);
       await thunk(mockDispatch);

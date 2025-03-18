@@ -1,32 +1,32 @@
 import { Hex } from '@metamask/utils';
 import { useSelector, useDispatch } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-import { getPetNamesForCurrentChain } from './selectors';
+import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
+import { getPetnamesForCurrentChain } from './selectors';
 import { assignPetname } from './actions';
-import useSamplePetnamesController from './useSamplePetnamesController';
+import useSamplePetnames from './useSamplePetnames';
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
   useDispatch: jest.fn(),
 }));
 
-jest.mock('../../../../shared/modules/selectors/networks', () => ({
+jest.mock('../../../shared/modules/selectors/networks', () => ({
   getCurrentChainId: jest.fn(),
 }));
 
 jest.mock('./selectors', () => ({
-  getPetNamesForCurrentChain: jest.fn(),
+  getPetnamesForCurrentChain: jest.fn(),
 }));
 
 jest.mock('./actions', () => ({
   assignPetname: jest.fn(),
 }));
 
-describe('useSamplePetnamesController', () => {
+describe('useSamplePetnames', () => {
   const mockChainId = '0x1' as Hex;
   const mockAddress = '0x1234567890abcdef1234567890abcdef12345678' as Hex;
-  const mockPetNames = {
+  const mockPetnames = {
     [mockAddress]: 'TestName',
   };
   const mockDispatch = jest.fn();
@@ -36,15 +36,15 @@ describe('useSamplePetnamesController', () => {
    * Helper function to render the hook and return the results
    */
   const renderTestHook = () => {
-    return renderHook(() => useSamplePetnamesController());
+    return renderHook(() => useSamplePetnames());
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
 
     (useSelector as jest.Mock).mockImplementation((selector) => {
-      if (selector === getPetNamesForCurrentChain) {
-        return mockPetNames;
+      if (selector === getPetnamesForCurrentChain) {
+        return mockPetnames;
       }
       if (selector === getCurrentChainId) {
         return mockChainId;
@@ -60,9 +60,9 @@ describe('useSamplePetnamesController', () => {
     it('should return pet names for the current chain from the selector', () => {
       const { result } = renderTestHook();
 
-      expect(result.current.namesForCurrentChain).toEqual(mockPetNames);
+      expect(result.current.namesForCurrentChain).toEqual(mockPetnames);
 
-      expect(useSelector).toHaveBeenCalledWith(getPetNamesForCurrentChain);
+      expect(useSelector).toHaveBeenCalledWith(getPetnamesForCurrentChain);
     });
   });
 
@@ -77,14 +77,14 @@ describe('useSamplePetnamesController', () => {
   describe('assignPetname', () => {
     it('should create a function that dispatches the correct action with the right parameters', () => {
       const { result } = renderTestHook();
-      const petName = 'NewPetName';
+      const petname = 'NewPetname';
 
-      result.current.assignPetname(mockAddress, petName);
+      result.current.assignPetname(mockAddress, petname);
 
       expect(assignPetname).toHaveBeenCalledWith(
         mockChainId,
         mockAddress,
-        petName,
+        petname,
       );
 
       expect(mockDispatch).toHaveBeenCalledWith(mockAssignPetnameAction);

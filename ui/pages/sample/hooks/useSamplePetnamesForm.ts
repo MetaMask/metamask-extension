@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Hex } from '@metamask/utils';
-import { useSamplePetnamesController } from '../../../ducks/metamask/sample-petnames-controller';
+import { useSamplePetnames } from '../../../ducks/sample-petnames';
 import { useForm } from '../../../hooks/useForm';
 import {
   validateAddress,
@@ -10,14 +10,14 @@ import {
 import { useSamplePetnamesMetrics } from './useSamplePetnamesMetrics';
 import { useSamplePerformanceTrace } from './useSamplePerformanceTrace';
 
-type FormState = {
+export type FormValues = {
   address: Hex;
-  petName: string;
+  petname: string;
 };
 
-const validateForm = (values: FormState) => ({
+const validateForm = (values: FormValues) => ({
   address: validateAddress(values.address),
-  petName: validatePetname(values.petName),
+  petname: validatePetname(values.petname),
 });
 
 /**
@@ -26,7 +26,7 @@ const validateForm = (values: FormState) => ({
  * @returns Object containing form state, handlers, and validation
  */
 export function useSamplePetnamesForm() {
-  const petNames = useSamplePetnamesController();
+  const petnames = useSamplePetnames();
   const metrics = useSamplePetnamesMetrics();
   const { traceFormSubmission } = useSamplePerformanceTrace({
     componentName: 'SamplePetnamesForm',
@@ -38,27 +38,27 @@ export function useSamplePetnamesForm() {
     metrics.trackPetnamesFormViewed();
   }, [metrics]);
 
-  const handleSubmit = async (values: FormState) => {
+  const handleSubmit = async (values: FormValues) => {
     const formSubmissionTrace = traceFormSubmission();
     formSubmissionTrace.startTrace();
 
     // Check for validation errors first
     const validationErrors = validateForm(values);
     const hasAddressError = Boolean(validationErrors.address);
-    const hasPetNameError = Boolean(validationErrors.petName);
+    const hasPetnameError = Boolean(validationErrors.petname);
 
-    if (hasAddressError || hasPetNameError) {
+    if (hasAddressError || hasPetnameError) {
       // Track validation errors
       metrics.trackFormValidationError({
         addressError: hasAddressError,
-        nameError: hasPetNameError,
+        nameError: hasPetnameError,
       });
 
       // End trace with validation errors
       formSubmissionTrace.endTrace(false, {
         reason: 'validation_error',
         hasAddressError,
-        hasPetNameError,
+        hasPetnameError,
       });
 
       throw new Error(
@@ -67,12 +67,12 @@ export function useSamplePetnamesForm() {
     }
 
     try {
-      await petNames.assignPetname(values.address, values.petName);
-      metrics.trackPetnameAdded(values.address, values.petName.length);
+      await petnames.assignPetname(values.address, values.petname);
+      metrics.trackPetnameAdded(values.address, values.petname.length);
       formSubmissionTrace.endTrace(true, {
         success: true,
         addressLength: values.address.length,
-        petNameLength: values.petName.length,
+        petnameLength: values.petname.length,
       });
     } catch (error) {
       const errorMessage =
@@ -86,10 +86,10 @@ export function useSamplePetnamesForm() {
     }
   };
 
-  return useForm<FormState>({
+  return useForm<FormValues>({
     initialValues: {
       address: '0x',
-      petName: '',
+      petname: '',
     },
     validate: validateForm,
     onSubmit: handleSubmit,
