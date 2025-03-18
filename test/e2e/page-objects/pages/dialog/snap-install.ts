@@ -32,6 +32,21 @@ class SnapInstall {
     text: 'ERC-20',
   };
 
+  private readonly transactionInsight = {
+    css: 'p',
+    text: 'Unknown',
+  };
+
+  private readonly transactionFromAddress = {
+    css: 'p',
+    text: '0x5CfE7...6a7e1',
+  };
+
+  private readonly transactionToAddress = {
+    css: 'p',
+    text: '0x581c3...45947',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -119,6 +134,21 @@ class SnapInstall {
   async check_transactionInsightsType() {
     console.log('Checking transaction insights type');
     await this.driver.waitForSelector(this.transactionType);
+  }
+
+  async check_transactionInsights() {
+    console.log('Checking transaction insights');
+    await this.driver.waitForSelector(this.transactionInsight);
+  }
+
+  async check_transactionFromAddress() {
+    console.log('Checking transaction from address');
+    await this.driver.waitForSelector(this.transactionFromAddress);
+  }
+
+  async check_transactionToAddress() {
+    console.log('Checking transaction to address');
+    await this.driver.waitForSelector(this.transactionToAddress);
   }
 
   async check_messageResultSpan(

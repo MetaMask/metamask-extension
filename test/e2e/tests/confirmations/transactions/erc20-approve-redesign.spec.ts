@@ -3,6 +3,8 @@ import { MockttpServer } from 'mockttp';
 import { tinyDelayMs, veryLargeDelayMs, WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
+import { openTestSnapClickButtonAndInstall } from '../../../page-objects/flows/install-test-snap.flow';
+import SnapInstall from '../../../page-objects/pages/dialog/snap-install';
 import {
   mocked4BytesApprove,
   openDAppWithContract,
@@ -37,6 +39,12 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
 
           await importTST(driver);
 
+          // Navigate to test snaps page and click to the transaction-insights snap
+          await openTestSnapClickButtonAndInstall(
+            driver,
+            'connectTransactionInsightButton',
+          );
+
           await createERC20ApproveTransaction(driver);
 
           await assertApproveDetails(driver);
@@ -62,6 +70,12 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
           await importTST(driver);
+
+          // Navigate to test snaps page and click to the transaction-insights snap
+          await openTestSnapClickButtonAndInstall(
+            driver,
+            'connectTransactionInsightButton',
+          );
 
           await createERC20ApproveTransaction(driver);
 
@@ -171,6 +185,12 @@ async function assertApproveDetails(driver: Driver) {
     css: 'p',
     text: 'Spending cap',
   });
+
+  const snapInstall = new SnapInstall(driver);
+  await snapInstall.check_transactionInsightsTitle();
+  await snapInstall.check_transactionInsights();
+  await snapInstall.check_transactionFromAddress();
+  await snapInstall.check_transactionToAddress();
 }
 
 export async function confirmApproveTransaction(driver: Driver) {
@@ -178,7 +198,7 @@ export async function confirmApproveTransaction(driver: Driver) {
   await scrollAndConfirmAndAssertConfirm(driver);
 
   await driver.delay(veryLargeDelayMs);
-  await driver.waitUntilXWindowHandles(2);
+  await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
   await driver.clickElement({ text: 'Activity', tag: 'button' });

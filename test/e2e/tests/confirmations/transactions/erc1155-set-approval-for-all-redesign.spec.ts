@@ -8,6 +8,8 @@ import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { withTransactionEnvelopeTypeFixtures } from '../helpers';
 import { TestSuiteArguments } from './shared';
+import { openTestSnapClickButtonAndInstall } from '../../../page-objects/flows/install-test-snap.flow';
+import SnapInstall from '../../../page-objects/pages/dialog/snap-install';
 
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
@@ -85,6 +87,12 @@ async function createTransactionAssertDetailsAndConfirm(
 
   const testDapp = new TestDapp(driver);
 
+  // Navigate to test snaps page and click to the transaction-insights snap
+  await openTestSnapClickButtonAndInstall(
+    driver,
+    'connectTransactionInsightButton',
+  );
+
   await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await testDapp.clickERC1155SetApprovalForAllButton();
@@ -95,6 +103,12 @@ async function createTransactionAssertDetailsAndConfirm(
 
   await setApprovalForAllConfirmation.check_setApprovalForAllTitle();
   await setApprovalForAllConfirmation.check_setApprovalForAllSubHeading();
+
+  const snapInstall = new SnapInstall(driver);
+  await snapInstall.check_transactionInsightsTitle();
+  await snapInstall.check_transactionInsights();
+  await snapInstall.check_transactionFromAddress();
+  await snapInstall.check_transactionToAddress();
 
   await setApprovalForAllConfirmation.clickScrollToBottomButton();
   await setApprovalForAllConfirmation.clickFooterConfirmButton();
