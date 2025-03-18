@@ -1,5 +1,3 @@
-// eslint-disable-next-line spaced-comment
-/// <reference types="jest" />
 import browser from 'webextension-polyfill';
 import { canSafelyAutoCloseThisPopup } from './canSafelyAutoCloseThisPopup';
 
@@ -19,6 +17,7 @@ describe('isSafeToAutoCloseThisPopup', () => {
   });
 
   // Normal window cases
+  // @ts-expect-error mocha and jest types are conflicting
   it.each([
     // description, windowData, expectedResult
     [
