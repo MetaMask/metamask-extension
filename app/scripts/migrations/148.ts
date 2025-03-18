@@ -61,13 +61,13 @@ function transformState(state: Record<string, unknown>) {
   for (const [chainId, networkConfiguration] of Object.entries(
     networkConfigurationsByChainId,
   )) {
+    const chainIdAsHex = toHex(chainId);
+
     if (!isObject(networkConfiguration)) {
       throw new Error(
         `state.NetworkController.networkConfigurationsByChainId has a network configuration under '${chainId}' that must be an object but is: ${typeof networkConfiguration}`,
       );
     }
-
-    const chainIdAsHex = toHex(chainId);
 
     if (typeof networkConfiguration.chainId !== 'string') {
       throw new Error(
@@ -79,8 +79,8 @@ function transformState(state: Record<string, unknown>) {
 
     if (chainIdAsHex !== chainId) {
       delete networkConfigurationsByChainId[chainId];
+      networkConfigurationsByChainId[chainIdAsHex] = networkConfiguration;
     }
-    networkConfigurationsByChainId[chainIdAsHex] = networkConfiguration;
   }
 
   return newState;
