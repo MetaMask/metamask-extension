@@ -44,6 +44,20 @@
   "QRHardwareWalletSteps2Description": {
     "message": "Ngrave Zero"
   },
+  "SrpListHideAccounts": {
+    "message": "Hide $1 accounts",
+    "description": "$1 is the number of accounts"
+  },
+  "SrpListHideSingleAccount": {
+    "message": "Hide 1 account"
+  },
+  "SrpListShowAccounts": {
+    "message": "Show $1 accounts",
+    "description": "$1 is the number of accounts"
+  },
+  "SrpListShowSingleAccount": {
+    "message": "Show 1 account"
+  },
   "about": {
     "message": "About"
   },
@@ -75,6 +89,9 @@
   },
   "accountDetails": {
     "message": "Account details"
+  },
+  "accountDetailsRevokeDelegationButton": {
+    "message": " Switch back to regular account"
   },
   "accountIdenticon": {
     "message": "Account identicon"
@@ -1019,7 +1036,10 @@
     "message": "Type"
   },
   "confirmAccountTypeSmartContract": {
-    "message": "Smart contract account"
+    "message": "Smart account"
+  },
+  "confirmAccountTypeStandard": {
+    "message": "Standard account"
   },
   "confirmAlertModalAcknowledgeMultiple": {
     "message": "I have acknowledged the alerts and still want to proceed"
@@ -1063,6 +1083,9 @@
   "confirmTitleDescPermitSignature": {
     "message": "This site wants permission to spend your tokens."
   },
+  "confirmTitleDescRevokeDelegation": {
+    "message": "This site is requesting to switch back to a standard account."
+  },
   "confirmTitleDescSIWESignature": {
     "message": "A site wants you to sign in to prove you own this account."
   },
@@ -1074,6 +1097,9 @@
   },
   "confirmTitleRevokeApproveTransaction": {
     "message": "Remove permission"
+  },
+  "confirmTitleRevokeDelegation": {
+    "message": "Reset account"
   },
   "confirmTitleSIWESignature": {
     "message": "Sign-in request"
@@ -1243,6 +1269,9 @@
   "connectionFailedDescription": {
     "message": "Fetching of $1 failed, check your network and try again.",
     "description": "$1 is the name of the snap being fetched."
+  },
+  "connectionPopoverDescription": {
+    "message": "To connect to a site, select the connect button. MetaMask can only connect to web3 sites."
   },
   "connectionRequest": {
     "message": "Connection request"
@@ -1972,6 +2001,9 @@
   },
   "experimental": {
     "message": "Experimental"
+  },
+  "exploreweb3": {
+    "message": "Explore web3"
   },
   "exportYourData": {
     "message": "Export your data"
@@ -2782,6 +2814,9 @@
   },
   "manageDefaultSettings": {
     "message": "Manage default privacy settings"
+  },
+  "managePermissions": {
+    "message": "Manage permissions"
   },
   "marketCap": {
     "message": "Market cap"
@@ -4529,6 +4564,10 @@
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
   },
+  "secretRecoveryPhrasePlusNumber": {
+    "message": "Secret Recovery Phrase $1",
+    "description": "The $1 is the order of the Secret Recovery Phrase"
+  },
   "secureWallet": {
     "message": "Secure wallet"
   },
@@ -4651,6 +4690,9 @@
   },
   "selectRpcUrl": {
     "message": "Select RPC URL"
+  },
+  "selectSecretRecoveryPhrase": {
+    "message": "Select Secret Recovery Phrase"
   },
   "selectType": {
     "message": "Select Type"
@@ -5246,6 +5288,21 @@
   "srpInputNumberOfWords": {
     "message": "I have a $1-word phrase",
     "description": "This is the text for each option in the dropdown where a user selects how many words their secret recovery phrase has during import. The $1 is the number of words (either 12, 15, 18, 21, or 24)."
+  },
+  "srpListName": {
+    "message": "Secret Recovery Phrase $1",
+    "description": "$1 is the order of the Secret Recovery Phrase"
+  },
+  "srpListNumberOfAccounts": {
+    "message": "$1 accounts",
+    "description": "$1 is the number of accounts in the list"
+  },
+  "srpListSelectionDescription": {
+    "message": "The Secret Recovery Phrase your new account will be generated from"
+  },
+  "srpListSingleOrZero": {
+    "message": "$1 account",
+    "description": "$1 is the number of accounts in the list, it is either 1 or 0"
   },
   "srpPasteFailedTooManyWords": {
     "message": "Paste failed because it contained over 24 words. A secret recovery phrase can have a maximum of 24 words.",

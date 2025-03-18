@@ -379,7 +379,7 @@ export function getAccountTypeForKeyring(keyring) {
 /**
  * Get MetaMask accounts, including account name and balance.
  */
-export const getMetaMaskAccounts = createSelector(
+export const getMetaMaskAccounts = createDeepEqualSelector(
   getInternalAccounts,
   getMetaMaskAccountBalances,
   getMetaMaskCachedBalances,
@@ -504,7 +504,7 @@ export const getSelectedEvmInternalAccount = createSelector(
  * @param accounts - The object containing the accounts.
  * @returns The array of internal accounts sorted by keyring.
  */
-export const getInternalAccountsSortedByKeyring = createSelector(
+export const getInternalAccountsSortedByKeyring = createDeepEqualSelector(
   getMetaMaskKeyrings,
   getMetaMaskAccounts,
   (keyrings, accounts) => {
@@ -800,7 +800,7 @@ function getNativeTokenInfo(state, chainId) {
  *
  * @returns {InternalAccountWithBalance} An array of internal accounts with balance
  */
-export const getMetaMaskAccountsOrdered = createSelector(
+export const getMetaMaskAccountsOrdered = createDeepEqualSelector(
   getInternalAccountsSortedByKeyring,
   getMetaMaskAccounts,
   (internalAccounts, accounts) => {
@@ -2908,16 +2908,22 @@ export function getShouldShowSeedPhraseReminder(state) {
   const { tokens, seedPhraseBackedUp, dismissSeedBackUpReminder } =
     state.metamask;
 
+  const currentKeyring = getCurrentKeyring(state);
+  const isNativeAccount =
+    currentKeyring?.type && currentKeyring.type === KeyringType.hdKeyTree;
+
   // if there is no account, we don't need to show the seed phrase reminder
   const accountBalance = getSelectedInternalAccount(state)
     ? getCurrentEthBalance(state)
     : 0;
 
-  return (
+  const showMessage =
     seedPhraseBackedUp === false &&
     (parseInt(accountBalance, 16) > 0 || tokens.length > 0) &&
-    dismissSeedBackUpReminder === false
-  );
+    dismissSeedBackUpReminder === false &&
+    isNativeAccount;
+
+  return showMessage;
 }
 
 export function getUnconnectedAccounts(state, activeTab) {
@@ -3126,6 +3132,51 @@ export function getKeyringSnapAccounts(state) {
   return keyringAccounts;
 }
 ///: END:ONLY_INCLUDE_IF
+
+export const getSelectedKeyringByIdOrDefault = createSelector(
+  getMetaMaskKeyrings,
+  (_state, keyringId) => keyringId,
+  (keyrings, keyringId) => {
+    return (
+      keyrings.find((keyring) => keyring.metadata.id === keyringId) ??
+      keyrings[0]
+    );
+  },
+);
+
+export const getHdKeyringIndexByIdOrDefault = createSelector(
+  getMetaMaskHdKeyrings,
+  (_state, keyringId) => keyringId,
+  (keyrings, keyringId) => {
+    return (
+      // 0 is the default hd keyring index.
+      keyrings.findIndex((keyring) => keyring.metadata.id === keyringId) ?? 0
+    );
+  },
+);
+
+export const getKeyringOfSelectedAccount = createSelector(
+  getSelectedInternalAccount,
+  getMetaMaskKeyrings,
+  (selectedAccount, keyrings) => {
+    return keyrings.find((keyring) =>
+      keyring.accounts.some((account) =>
+        isEqualCaseInsensitive(account, selectedAccount.address),
+      ),
+    );
+  },
+);
+
+export const getHdKeyringOfSelectedAccountOrPrimaryKeyring = createSelector(
+  getKeyringOfSelectedAccount,
+  getMetaMaskHdKeyrings,
+  (keyringOfSelectedAccount, hdKeyrings) => {
+    if (keyringOfSelectedAccount.type === KeyringTypes.hd) {
+      return keyringOfSelectedAccount;
+    }
+    return hdKeyrings[0];
+  },
+);
 
 // #region permissions selectors
 
