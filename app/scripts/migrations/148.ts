@@ -100,8 +100,8 @@ export async function migrate(
 }
 
 function transformState(state: Record<string, unknown>) {
-  if (process.env.INFURA_PROJECT_ID === undefined) {
-    throw new Error('No INFURA_PROJECT_ID');
+  if (!process.env.INFURA_PROJECT_ID) {
+    throw new Error('No INFURA_PROJECT_ID set!');
   }
 
   if (!hasProperty(state, 'NetworkController')) {
@@ -116,7 +116,7 @@ function transformState(state: Record<string, unknown>) {
 
   if (!hasProperty(state.NetworkController, 'networkConfigurationsByChainId')) {
     throw new Error(
-      `Expected state.NetworkController.networkConfigurationsByChainId to exist, but does not`,
+      'Missing state.NetworkController.networkConfigurationsByChainId',
     );
   }
 

@@ -1,5 +1,4 @@
 import { RpcEndpointType } from '@metamask/network-controller';
-import { cloneDeep } from 'lodash';
 import { migrate } from './148';
 
 const VERSION = 148;
@@ -16,10 +15,14 @@ const QUICKNODE_BASE_URL = 'https://example.quicknode.com/base';
 
 describe(`migration #${VERSION}`, () => {
   let originalEnv: NodeJS.ProcessEnv;
+  let captureExceptionSpy: jest.SpyInstance<void, [unknown]>;
+  let previousSentry: unknown;
 
   beforeEach(() => {
     originalEnv = { ...process.env };
-    process.env.INFURA_PROJECT_ID = INFURA_PROJECT_ID;
+    captureExceptionSpy = jest.fn();
+    previousSentry = global.sentry;
+    global.sentry = { captureException: captureExceptionSpy };
   });
 
   afterEach(() => {
@@ -33,9 +36,10 @@ describe(`migration #${VERSION}`, () => {
         delete process.env[key];
       }
     }
+    global.sentry = previousSentry;
   });
 
-  it('returns a new version of the data unchanged if NetworkController is missing', async () => {
+  it('returns a new version of the data unchanged if INFURA_PROJECT_ID is not set', async () => {
     const oldVersionedData = {
       meta: { version: VERSION - 1 },
       data: {},
@@ -48,9 +52,36 @@ describe(`migration #${VERSION}`, () => {
     const newVersionedData = await migrate(oldVersionedData);
 
     expect(newVersionedData).toStrictEqual(expectedVersionData);
+    expect(captureExceptionSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'Migration #148: No INFURA_PROJECT_ID set!',
+      }),
+    );
   });
 
-  it('returns a new version of the data unchanged if NetworkController is not an object', async () => {
+  it('logs an error and returns a new version of the data unchanged if NetworkController is missing', async () => {
+    process.env.INFURA_PROJECT_ID = INFURA_PROJECT_ID;
+    const oldVersionedData = {
+      meta: { version: VERSION - 1 },
+      data: {},
+    };
+    const expectedVersionData = {
+      meta: { version: VERSION },
+      data: oldVersionedData.data,
+    };
+
+    const newVersionedData = await migrate(oldVersionedData);
+
+    expect(newVersionedData).toStrictEqual(expectedVersionData);
+    expect(captureExceptionSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'Migration #148: Missing NetworkController state',
+      }),
+    );
+  });
+
+  it('logs an error and returns a new version of the data unchanged if NetworkController is not an object', async () => {
+    process.env.INFURA_PROJECT_ID = INFURA_PROJECT_ID;
     const oldVersionedData = {
       meta: { version: VERSION - 1 },
       data: {
@@ -65,9 +96,16 @@ describe(`migration #${VERSION}`, () => {
     const newVersionedData = await migrate(oldVersionedData);
 
     expect(newVersionedData).toStrictEqual(expectedVersionData);
+    expect(captureExceptionSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message:
+          'Migration #148: Expected state.NetworkController to be an object, but is string',
+      }),
+    );
   });
 
-  it('returns a new version of the data unchanged if NetworkController.networkConfigurationsByChainId is missing', async () => {
+  it('logs an error and returns a new version of the data unchanged if NetworkController.networkConfigurationsByChainId is missing', async () => {
+    process.env.INFURA_PROJECT_ID = INFURA_PROJECT_ID;
     const oldVersionedData = {
       meta: { version: VERSION - 1 },
       data: {
@@ -82,9 +120,16 @@ describe(`migration #${VERSION}`, () => {
     const newVersionedData = await migrate(oldVersionedData);
 
     expect(newVersionedData).toStrictEqual(expectedVersionData);
+    expect(captureExceptionSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message:
+          'Migration #148: Missing state.NetworkController.networkConfigurationsByChainId',
+      }),
+    );
   });
 
-  it('returns a new version of the data unchanged if NetworkController.networkConfigurationsByChainId is not an object', async () => {
+  it('logs an error and returns a new version of the data unchanged if NetworkController.networkConfigurationsByChainId is not an object', async () => {
+    process.env.INFURA_PROJECT_ID = INFURA_PROJECT_ID;
     const oldVersionedData = {
       meta: { version: VERSION - 1 },
       data: {
@@ -101,9 +146,16 @@ describe(`migration #${VERSION}`, () => {
     const newVersionedData = await migrate(oldVersionedData);
 
     expect(newVersionedData).toStrictEqual(expectedVersionData);
+    expect(captureExceptionSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message:
+          'Migration #148: Expected state.NetworkController.networkConfigurationsByChainId to be an object, but is string',
+      }),
+    );
   });
 
   it('returns a new version of the data unchanged if NetworkController.networkConfigurationsByChainId is empty', async () => {
+    process.env.INFURA_PROJECT_ID = INFURA_PROJECT_ID;
     const oldVersionedData = {
       meta: { version: VERSION - 1 },
       data: {
@@ -123,6 +175,7 @@ describe(`migration #${VERSION}`, () => {
   });
 
   it('does not update any network configurations that are not objects', async () => {
+    process.env.INFURA_PROJECT_ID = INFURA_PROJECT_ID;
     process.env.QUICKNODE_LINEA_MAINNET_URL = QUICKNODE_LINEA_MAINNET_URL;
     const oldVersionedData = {
       meta: { version: VERSION - 1 },
@@ -168,6 +221,7 @@ describe(`migration #${VERSION}`, () => {
   });
 
   it('does not update any network configurations that do not have rpcEndpoints', async () => {
+    process.env.INFURA_PROJECT_ID = INFURA_PROJECT_ID;
     process.env.QUICKNODE_LINEA_MAINNET_URL = QUICKNODE_LINEA_MAINNET_URL;
     const oldVersionedData = {
       meta: { version: VERSION - 1 },
@@ -213,6 +267,7 @@ describe(`migration #${VERSION}`, () => {
   });
 
   it('assigns an empty set of failover URLs to custom RPC endpoints that use non-Infura URLs', async () => {
+    process.env.INFURA_PROJECT_ID = INFURA_PROJECT_ID;
     process.env.QUICKNODE_LINEA_MAINNET_URL = QUICKNODE_LINEA_MAINNET_URL;
     const oldVersionedData = {
       meta: { version: VERSION - 1 },
@@ -273,6 +328,7 @@ describe(`migration #${VERSION}`, () => {
   });
 
   it('assigns an empty set of failover URLs to custom RPC endpoints that contain an Infura URL but do not use our API key', async () => {
+    process.env.INFURA_PROJECT_ID = INFURA_PROJECT_ID;
     process.env.QUICKNODE_LINEA_MAINNET_URL = QUICKNODE_LINEA_MAINNET_URL;
     const oldVersionedData = {
       meta: { version: VERSION - 1 },
@@ -333,6 +389,7 @@ describe(`migration #${VERSION}`, () => {
   });
 
   it('assigns failover URLs to known Infura RPC endpoints', async () => {
+    process.env.INFURA_PROJECT_ID = INFURA_PROJECT_ID;
     process.env.QUICKNODE_MAINNET_URL = QUICKNODE_MAINNET_URL;
     process.env.QUICKNODE_LINEA_MAINNET_URL = QUICKNODE_LINEA_MAINNET_URL;
     process.env.QUICKNODE_ARBITRUM_URL = QUICKNODE_ARBITRUM_URL;
@@ -484,6 +541,7 @@ describe(`migration #${VERSION}`, () => {
   });
 
   it('assigns an empty set of failover URLs to any Infura endpoints for which the appropriate environment variable is not set', async () => {
+    process.env.INFURA_PROJECT_ID = INFURA_PROJECT_ID;
     const oldVersionedData = {
       meta: { version: VERSION - 1 },
       data: {
@@ -628,6 +686,7 @@ describe(`migration #${VERSION}`, () => {
   });
 
   it('does not update any Infura RPC endpoints that already have failover URLs defined', async () => {
+    process.env.INFURA_PROJECT_ID = INFURA_PROJECT_ID;
     process.env.QUICKNODE_LINEA_MAINNET_URL = QUICKNODE_LINEA_MAINNET_URL;
     const oldVersionedData = {
       meta: { version: VERSION - 1 },
@@ -689,6 +748,7 @@ describe(`migration #${VERSION}`, () => {
   });
 
   it('assigns failover URLs to custom RPC endpoints that are actually Infura RPC endpoints in disguise', async () => {
+    process.env.INFURA_PROJECT_ID = INFURA_PROJECT_ID;
     process.env.QUICKNODE_MAINNET_URL = QUICKNODE_MAINNET_URL;
     process.env.QUICKNODE_LINEA_MAINNET_URL = QUICKNODE_LINEA_MAINNET_URL;
     process.env.QUICKNODE_ARBITRUM_URL = QUICKNODE_ARBITRUM_URL;
@@ -840,6 +900,7 @@ describe(`migration #${VERSION}`, () => {
   });
 
   it('assigns an empty set of failover URLs to custom RPC endpoints that are actually Infura RPC endpoints in disguise but for which the appropriate environment variables are not set', async () => {
+    process.env.INFURA_PROJECT_ID = INFURA_PROJECT_ID;
     const oldVersionedData = {
       meta: { version: VERSION - 1 },
       data: {
@@ -984,6 +1045,7 @@ describe(`migration #${VERSION}`, () => {
   });
 
   it('does not update any in-disguise Infura RPC endpoints that already have failover URLs defined', async () => {
+    process.env.INFURA_PROJECT_ID = INFURA_PROJECT_ID;
     process.env.QUICKNODE_LINEA_MAINNET_URL = QUICKNODE_LINEA_MAINNET_URL;
     const oldVersionedData = {
       meta: { version: VERSION - 1 },
