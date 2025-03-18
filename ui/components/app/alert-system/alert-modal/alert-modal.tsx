@@ -142,7 +142,6 @@ function BlockaidAlertDetails() {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
   const { securityAlertResponse } = currentConfirmation;
-
   let copy;
   switch (securityAlertResponse?.reason) {
     case BlockaidReason.rawSignatureFarming:
