@@ -4554,10 +4554,6 @@ export default class MetamaskController extends EventEmitter {
     try {
       const { completedOnboarding } = this.onboardingController.state;
 
-      const seedPhrase = new TextDecoder().decode(
-        Uint8Array.from(encodedSeedPhrase),
-      );
-
       // clear permissions
       this.permissionController.clearState();
 
@@ -4573,11 +4569,11 @@ export default class MetamaskController extends EventEmitter {
         this.tokenDetectionController.enable();
       }
 
+      const utf8ArraySeedPhrase = Uint8Array.from(encodedSeedPhrase);
+      const seed =
+      this.mnemonicUtil.convertMnemonicToWordlistIndices(utf8ArraySeedPhrase);
       // create new vault
-      await this.keyringController.createNewVaultAndRestore(
-        password,
-        this.mnemonicUtil.convertMnemonicToWordlistIndices(seedPhrase),
-      );
+      await this.keyringController.createNewVaultAndRestore(password, seed);
 
       if (completedOnboarding) {
         await this._addAccountsWithBalance();

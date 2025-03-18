@@ -701,17 +701,32 @@ describe('MetaMaskController', () => {
 
     describe('#createNewVaultAndRestore', () => {
       it('should be able to call newVaultAndRestore despite a mistake.', async () => {
+        expect.assertions(5);
+
         const password = 'what-what-what';
         jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
 
-        await metamaskController
-          .createNewVaultAndRestore(password, TEST_SEED.slice(0, -1))
-          .catch(() => null);
-        await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+        // there should be no locks (tasks should be empty)
+        expect(metamaskController.createVaultMutex.tasks).toHaveLength(0);
 
-        expect(
-          metamaskController.keyringController.createNewVaultAndRestore,
-        ).toHaveBeenCalledTimes(2);
+        // invalid seed should throw
+        const createVault = metamaskController.createNewVaultAndRestore(
+          password,
+          TEST_SEED.slice(0, -1),
+        );
+        // a lock should be taken (tasks should not be empty)
+        expect(metamaskController.createVaultMutex.tasks).toHaveLength(1);
+
+        // eslint-disable-next-line jest/require-to-throw-message
+        await expect(createVault).rejects.toThrow();
+
+        // the lock should be released (tasks should be empty again)
+        expect(metamaskController.createVaultMutex.tasks).toHaveLength(0);
+
+        // and calling again should work
+        await expect(
+          metamaskController.createNewVaultAndRestore(password, TEST_SEED),
+        ).resolves.toBeUndefined(); // it doesn't return anything on success
       });
 
       it('should clear previous identities after vault restoration', async () => {

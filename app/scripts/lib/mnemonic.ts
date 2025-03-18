@@ -34,6 +34,9 @@ import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
  */
 const NOT_TERMINAL = 0xffff;
 
+const ERROR_MESSAGE =
+  'Invalid mnemonic phrase: The mnemonic phrase contains an unknown word.';
+
 /**
  * Bit-packing utilities for compact trie storage.
  */
@@ -273,7 +276,7 @@ function findWordIndex(trieNodes: Uint32Array, word: Uint8Array): number {
   for (const char of word) {
     const charCode = char - 0x61;
     if (charCode < 0 || charCode >= 26) {
-      throw new Error('Invalid character in word');
+      throw new Error(ERROR_MESSAGE);
     }
     const baseOffset = nodeId * 3;
     const childMask = unpackChildMask(trieNodes[baseOffset + 1]);
@@ -283,7 +286,7 @@ function findWordIndex(trieNodes: Uint32Array, word: Uint8Array): number {
     // the child node for the character with ASCII code N+97 is present.
     // If it is not present, the word is not in the trie.
     if (!(childMask & (1 << charCode))) {
-      throw new Error('Word not found in trie');
+      throw new Error(ERROR_MESSAGE);
     }
     const rank = countSetBits(childMask & ((1 << charCode) - 1));
     nodeId = trieNodes[baseOffset + 2] + rank;
@@ -292,7 +295,7 @@ function findWordIndex(trieNodes: Uint32Array, word: Uint8Array): number {
   if (terminalIndex === NOT_TERMINAL) {
     // the word was found, but it is only a prefix of a longer word, so it is
     // not a valid word in the wordlist.
-    throw new Error('Word not found in trie');
+    throw new Error(ERROR_MESSAGE);
   }
   return terminalIndex;
 }
