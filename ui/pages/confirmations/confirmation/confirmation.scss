@@ -4,8 +4,17 @@
 @import 'components/confirmation-network-switch/index';
 
 .confirmation-page {
+  $height-screen-sm-min: 720px;
+
+  $width-screen-sm-min: 85vw;
+  $width-screen-md-min: 80vw;
+  $width-screen-lg-min: 62vw;
+
+  box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
+  transition: margin-top 0.3s ease-in-out, margin-bottom 0.3s ease-in-out;
+
   width: 100%;
-  height: 100%;
+  height: auto;
   position: relative;
   background: var(--color-background-default);
   display: grid;
@@ -16,6 +25,23 @@
     'navigation'
     'content'
     'footer';
+
+  @media screen and (min-width: design-system.$screen-sm-min) and (min-height: $height-screen-sm-min) {
+    margin-top: 32px;
+    margin-bottom: 32px;
+  }
+
+  @include design-system.screen-sm-min {
+    width: $width-screen-sm-min;
+  }
+
+  @include design-system.screen-md-min {
+    width: $width-screen-md-min;
+  }
+
+  @include design-system.screen-lg-min {
+    width: $width-screen-lg-min;
+  }
 
   a {
     color: var(--color-primary-default);
