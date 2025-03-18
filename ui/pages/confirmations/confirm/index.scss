@@ -17,7 +17,7 @@
     width: $width-screen-lg-min;
   }
 
-  .multichain-page__inner-container {
+  &.multichain-page__inner-container {
     box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
   }
 }
