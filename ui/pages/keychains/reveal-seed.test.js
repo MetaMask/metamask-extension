@@ -27,7 +27,7 @@ const mockUnsuccessfulSrpReveal = () => {
 };
 const mockRequestRevealSeedWords = jest
   .fn()
-  .mockImplementation(mockSuccessfulSRPReveal);
+  .mockImplementation(mockSuccessfulSrpReveal);
 const mockShowModal = jest.fn();
 const mockUseParams = jest
   .fn()
@@ -112,7 +112,7 @@ describe('Reveal Seed Page', () => {
   });
 
   it('does not show modal on bad password', async () => {
-    mockRequestRevealSeedWords.mockImplementation(mockUnsuccessfulSRPReveal);
+    mockRequestRevealSeedWords.mockImplementation(mockUnsuccessfulSrpReveal);
 
     const { queryByTestId, queryByText } = renderWithProvider(
       <RevealSeedPage />,
@@ -131,7 +131,7 @@ describe('Reveal Seed Page', () => {
   });
 
   it('should show srp after hold to reveal', async () => {
-    mockRequestRevealSeedWords.mockImplementationOnce(mockSuccessfulSRPReveal);
+    mockRequestRevealSeedWords.mockImplementationOnce(mockSuccessfulSrpReveal);
     // need to use actual store because redux-mock-store does not execute actions
     const store = configureStore(mockState);
     const { queryByTestId, queryByText } = renderWithProvider(
@@ -152,15 +152,15 @@ describe('Reveal Seed Page', () => {
 
     await waitFor(() => {
       expect(mockRequestRevealSeedWords).toHaveBeenCalled();
-      expect(queryByText('Keep your SRP safe')).toBeInTheDocument();
+      expect(queryByText('Keep your Srp safe')).toBeInTheDocument();
     });
   });
 
   it('emits events when correct password is entered', async () => {
     const store = configureStore(mockState);
     mockRequestRevealSeedWords
-      .mockImplementationOnce(mockUnsuccessfulSRPReveal)
-      .mockImplementationOnce(mockSuccessfulSRPReveal);
+      .mockImplementationOnce(mockUnsuccessfulSrpReveal)
+      .mockImplementationOnce(mockSuccessfulSrpReveal);
 
     const mockTrackEvent = jest.fn();
     const { queryByTestId, queryByText, getByText, queryByLabelText } =
@@ -332,8 +332,8 @@ describe('Reveal Seed Page', () => {
 
   it('should emit event when cancel is clicked', async () => {
     mockRequestRevealSeedWords
-      .mockImplementationOnce(mockUnsuccessfulSRPReveal)
-      .mockImplementationOnce(mockSuccessfulSRPReveal);
+      .mockImplementationOnce(mockUnsuccessfulSrpReveal)
+      .mockImplementationOnce(mockSuccessfulSrpReveal);
     const mockTrackEvent = jest.fn();
     const { queryByText } = renderWithProvider(
       <MetaMetricsContext.Provider value={mockTrackEvent}>

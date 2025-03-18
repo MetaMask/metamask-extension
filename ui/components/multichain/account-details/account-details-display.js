@@ -192,7 +192,7 @@ export const AccountDetailsDisplay = ({
       ) : null}
       {
         ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-        exportSRPFeatureEnabled ? (
+        exportSrpFeatureEnabled ? (
           <ButtonSecondary
             data-testid="account-details-display-export-srp"
             block

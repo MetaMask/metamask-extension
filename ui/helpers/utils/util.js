@@ -734,7 +734,7 @@ export const isAbleToRevealSrp = (accountToExport, keyrings) => {
   // We only consider 1st-party Snaps that have an entropy source.
   if (
     type === KeyringTypes.snap &&
-    isMultichainWalletSnap(snap.id) &&
+    isMultichainWalletSnap(snap?.id) &&
     entropySource
   ) {
     const keyringId = entropySource;

@@ -55,10 +55,10 @@ import { findKeyringId } from '../../../../shared/lib/keyring';
 import { isAbleToRevealSrp } from '../../../helpers/utils/util';
 ///: END:ONLY_INCLUDE_IF
 import { AttemptExportState } from '../../../../shared/constants/accounts';
+import { isMultichainWalletSnap } from '../../../../shared/lib/accounts';
 import { AccountDetailsAuthenticate } from './account-details-authenticate';
 import { AccountDetailsDisplay } from './account-details-display';
 import { AccountDetailsKey } from './account-details-key';
-import { isMultichainWalletSnap } from '../../../../shared/lib/accounts';
 
 type AccountDetailsProps = { address: string };
 
@@ -76,13 +76,16 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
       name,
       ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
       keyring: { type: keyringType },
-      snap: { id: snapId },
       ///: END:ONLY_INCLUDE_IF
     },
     ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
     options: { entropySource },
     ///: END:ONLY_INCLUDE_IF
   } = account;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  const snapId = account.metadata.snap?.id;
+  ///: END:ONLY_INCLUDE_IF
 
   const [showHoldToReveal, setShowHoldToReveal] = useState(false);
   let showModal = !showHoldToReveal;
