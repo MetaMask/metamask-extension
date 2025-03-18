@@ -281,6 +281,10 @@ function indicesToUtf8Array(
   const result: number[] = [];
   for (let i = indices.length - 1; i >= 0; i--) {
     const nodeId = wordEndNodes[indices[i]];
+    // nodeId 0 would be the root node, so it will never be a word end
+    if (!nodeId) {
+      throw new Error('Invalid word index');
+    }
     reconstructWord(trieNodes, nodeId, result);
     if (i > 0) result.push(0x20); // Space separator after each word except the last
   }

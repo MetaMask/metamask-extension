@@ -1,8 +1,5 @@
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-import {
-  convertMnemonicToWordlistIndices,
-  convertEnglishWordlistIndicesToCodepoints,
-} from './mnemonic';
+import { MnemonicUtil } from './mnemonic';
 
 const abandon = wordlist[0];
 const ability = wordlist[1];
@@ -27,10 +24,12 @@ function fromUtf8Array(arr: Uint8Array): string {
   return new TextDecoder().decode(arr);
 }
 
+const mu = new MnemonicUtil();
+
 describe('convertMnemonicToWordlistIndices', () => {
   it(`converts a single valid word (e.g. "${abandon}") to the correct index`, () => {
     const input = toUtf8Array(abandon);
-    const indices = convertMnemonicToWordlistIndices(input);
+    const indices = mu.convertMnemonicToWordlistIndices(input);
 
     // indices is a Uint8Array view of 16-bit numbers (one word = one 16-bit index).
     // So we interpret indices as a Uint16Array, expecting a single value of 0.
@@ -40,7 +39,7 @@ describe('convertMnemonicToWordlistIndices', () => {
   it('converts multiple valid words (e.g. "abandon ability" -> [0, 1])', () => {
     // "abandon" -> index 0, "ability" -> index 1
     const input = toUtf8Array(`${abandon} ${ability}`);
-    const indices = convertMnemonicToWordlistIndices(input);
+    const indices = mu.convertMnemonicToWordlistIndices(input);
 
     const converted = new Uint16Array(indices.buffer);
     expect(converted).toHaveLength(2);
@@ -52,7 +51,7 @@ describe('convertMnemonicToWordlistIndices', () => {
     // "abandon" is index 0, "ability" is index 1
     // We add leading spaces, multiple spaces in between, and trailing spaces:
     const input = toUtf8Array(`   ${abandon}   ${ability}   `);
-    const indices = convertMnemonicToWordlistIndices(input);
+    const indices = mu.convertMnemonicToWordlistIndices(input);
     const converted = new Uint16Array(indices.buffer);
 
     expect(converted).toHaveLength(2);
@@ -62,7 +61,7 @@ describe('convertMnemonicToWordlistIndices', () => {
 
   it('returns an empty Uint8Array if the mnemonic is empty or only spaces', () => {
     const input = toUtf8Array('   ');
-    const indices = convertMnemonicToWordlistIndices(input);
+    const indices = mu.convertMnemonicToWordlistIndices(input);
 
     expect(indices).toBeInstanceOf(Uint8Array);
     expect(indices.length).toBe(0);
@@ -71,16 +70,32 @@ describe('convertMnemonicToWordlistIndices', () => {
   it('throws an error if any word is not in the BIP-39 English list', () => {
     // "abandon" is valid, but "INVALIDWORD" is not.
     const input = toUtf8Array(`${abandon} INVALIDWORD`);
-    expect(() => convertMnemonicToWordlistIndices(input)).toThrow(
-      'Word not found',
+    expect(() => mu.convertMnemonicToWordlistIndices(input)).toThrow(
+      'Invalid character in word',
     );
   });
 
   it('throws if we have a partial word that is only a prefix in the trie', () => {
     // "abando" is a prefix of "abandon" but not a valid word in the list
     const input = toUtf8Array('abando');
-    expect(() => convertMnemonicToWordlistIndices(input)).toThrow(
+    expect(() => mu.convertMnemonicToWordlistIndices(input)).toThrow(
       'Word not found',
+    );
+  });
+
+  it('throws when character in word is not found at depth during traversal, index 0', () => {
+    // no words start with "x"
+    const input = toUtf8Array('xylophone');
+    expect(() => mu.convertMnemonicToWordlistIndices(input)).toThrow(
+      'Word not found in trie',
+    );
+  });
+
+  it('throws when character in word is not found at depth during traversal, index > 0', () => {
+    // aqua isn't a word in the wordlist at all
+    const input = toUtf8Array('aqua');
+    expect(() => mu.convertMnemonicToWordlistIndices(input)).toThrow(
+      'Word not found in trie',
     );
   });
 });
@@ -93,7 +108,7 @@ describe('convertEnglishWordlistIndicesToCodepoints', () => {
     const input = new Uint8Array(indices.buffer);
 
     const result = Uint8Array.from(
-      convertEnglishWordlistIndicesToCodepoints(input),
+      mu.convertEnglishWordlistIndicesToCodepoints(input),
     );
     const decoded = fromUtf8Array(result);
 
@@ -106,7 +121,7 @@ describe('convertEnglishWordlistIndicesToCodepoints', () => {
     const input = new Uint8Array(indices.buffer);
 
     const result = Uint8Array.from(
-      convertEnglishWordlistIndicesToCodepoints(input),
+      mu.convertEnglishWordlistIndicesToCodepoints(input),
     );
     const decoded = fromUtf8Array(result);
 
@@ -117,19 +132,17 @@ describe('convertEnglishWordlistIndicesToCodepoints', () => {
     const indices = new Uint16Array([]);
     const input = new Uint8Array(indices.buffer);
 
-    const result = convertEnglishWordlistIndicesToCodepoints(input);
+    const result = mu.convertEnglishWordlistIndicesToCodepoints(input);
     expect(result.length).toBe(0);
   });
 
   it('throws an error if an index is out of range (e.g., 999999)', () => {
     // The wordlist has 2048 words. Any index >= 2048 is invalid.
-    // The code tries to look up wordlistBuffers[index], which will be `undefined`.
-    // Accessing `.length` on undefined will throw a TypeError at runtime.
     const indices = new Uint16Array([999999]);
     const input = new Uint8Array(indices.buffer);
 
     expect(() => {
-      convertEnglishWordlistIndicesToCodepoints(input);
+      mu.convertEnglishWordlistIndicesToCodepoints(input);
     }).toThrow();
   });
 });
@@ -139,9 +152,9 @@ describe('Round-trip tests', () => {
     const originalMnemonic = `${abandon} ${ability} ${able}`; // indexes [0, 1, 2]
     const input = toUtf8Array(originalMnemonic);
 
-    const indices = convertMnemonicToWordlistIndices(input);
+    const indices = mu.convertMnemonicToWordlistIndices(input);
     const roundTripped = Uint8Array.from(
-      convertEnglishWordlistIndicesToCodepoints(indices),
+      mu.convertEnglishWordlistIndicesToCodepoints(indices),
     );
     const finalMnemonic = fromUtf8Array(roundTripped);
 
@@ -154,9 +167,9 @@ describe('Round-trip tests', () => {
     // Check it round-trips properly.
     const input = toUtf8Array(originalMnemonic);
 
-    const indices = convertMnemonicToWordlistIndices(input);
+    const indices = mu.convertMnemonicToWordlistIndices(input);
     const roundTripped = Uint8Array.from(
-      convertEnglishWordlistIndicesToCodepoints(indices),
+      mu.convertEnglishWordlistIndicesToCodepoints(indices),
     );
     const finalMnemonic = fromUtf8Array(roundTripped);
 
