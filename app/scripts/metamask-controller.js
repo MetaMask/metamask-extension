@@ -259,9 +259,7 @@ import {
   BridgeUserAction,
   BridgeBackgroundAction,
 } from '../../shared/types/bridge';
-import {
-  MnemonicUtil
-} from './lib/mnemonic';
+import { getMnemonicUtil } from './lib/mnemonic';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -462,7 +460,7 @@ export default class MetamaskController extends EventEmitter {
 
     const { isFirstMetaMaskControllerSetup } = opts;
 
-    this.mnemonicUtil = new MnemonicUtil();
+    this.mnemonicUtil = getMnemonicUtil();
 
     this.defaultMaxListeners = 20;
 
@@ -4476,7 +4474,9 @@ export default class MetamaskController extends EventEmitter {
         .getKeyringsByType(KeyringTypes.hd)
         .some((keyring) => {
           return isEqual(
-            this.mnemonicUtil.convertEnglishWordlistIndicesToCodepoints(keyring.mnemonic),
+            this.mnemonicUtil.convertEnglishWordlistIndicesToCodepoints(
+              keyring.mnemonic,
+            ),
             mnemonic,
           );
         });

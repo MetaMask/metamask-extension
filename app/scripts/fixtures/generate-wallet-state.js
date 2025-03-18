@@ -4,7 +4,7 @@ import { UI_NOTIFICATIONS } from '../../../shared/notifications';
 import { E2E_SRP, defaultFixture } from '../../../test/e2e/default-fixture';
 import FixtureBuilder from '../../../test/e2e/fixture-builder';
 import { encryptorFactory } from '../lib/encryptor-factory';
-import { convertMnemonicToWordlistIndices } from '../lib/mnemonic';
+import { getMnemonicUtil } from '../lib/mnemonic';
 import { FIXTURES_APP_STATE } from './with-app-state';
 import { FIXTURES_NETWORKS } from './with-networks';
 import { FIXTURES_PREFERENCES } from './with-preferences';
@@ -66,7 +66,7 @@ async function generateVaultAndAccount(seedPhrase, password) {
 
   await krCtrl.createNewVaultAndRestore(
     password,
-    convertMnemonicToWordlistIndices(seedPhrase),
+    getMnemonicUtil().convertMnemonicToWordlistIndices(seedPhrase),
   );
 
   const accounts = [];

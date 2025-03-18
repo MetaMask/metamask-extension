@@ -1,4 +1,12 @@
-import { wordlist } from '@scure/bip39/wordlists/english';
+/* eslint-disable no-bitwise, no-plusplus */
+
+import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
+
+/**
+ * 0xffff is the max uint16 value. we use it to represent a node that is not a
+ * terminal node, i.e., not the last character of a word.
+ */
+const NOT_TERMINAL = 0xffff;
 
 /**
  * Bit-packing utilities for compact trie storage.
@@ -11,7 +19,7 @@ import { wordlist } from '@scure/bip39/wordlists/english';
  * @param parentId - 0 if root, else node ID of parent
  * @returns 32-bit packed value
  */
-function packTermParent(terminalIndex: number, parentId: number): number {
+function packTermAndParent(terminalIndex: number, parentId: number): number {
   return (parentId << 16) | terminalIndex;
 }
 
@@ -42,7 +50,10 @@ function unpackParentId(value: number): number {
  * @param childMask - 1 bit per child presence
  * @returns 32-bit packed value
  */
-function packMaskLetter(letterFromParent: number, childMask: number): number {
+function packLetterAndMask(
+  letterFromParent: number,
+  childMask: number,
+): number {
   return ((letterFromParent & 0x3f) << 26) | (childMask & 0x03ffffff);
 }
 
@@ -73,14 +84,17 @@ function unpackLetterFromParent(value: number): number {
  * @returns The number of set bits in x.
  */
 function countSetBits(v: number): number {
-  // counts the number of set bits in each pair of bits (2-bit groups) across the 32-bit integer.
-  v -= (v >>> 1) & 0x55555555;
+  let n = v;
+  // counts the number of set bits in each pair of bits (2-bit groups) across
+  // the 32-bit integer.
+  n -= (n >>> 1) & 0x55555555;
   // combines the counts from adjacent 2-bit groups into 4-bit groups.
-  v = (v & 0x33333333) + ((v >>> 2) & 0x33333333);
+  n = (n & 0x33333333) + ((n >>> 2) & 0x33333333);
   // combines the counts from adjacent 4-bit groups into 8-bit groups.
-  v = (v + (v >>> 4)) & 0x0f0f0f0f;
-  // each of the four bytes in x now holds a count of set bits for that byte (0 to 8)
-  return (v * 0x01010101) >>> 24;
+  n = (n + (n >>> 4)) & 0x0f0f0f0f;
+  // each of the four bytes in v now holds a count of set bits for that byte (0
+  // to 8)
+  return (n * 0x01010101) >>> 24;
 }
 
 /**
@@ -93,22 +107,22 @@ function countSetBits(v: number): number {
  * 26 lowercase letters, and a resulting trie of limited depth.
  *
  * @param wordList - list of words to insert into the trie
- * @returns { trieNodes, wordEndNodes }
+ * @returns
  */
 function buildTrie(wordList: string[]): {
   trieNodes: Uint32Array;
   wordEndNodes: Uint16Array;
 } {
   // Temporary node structure for building the trie
-  interface TempNode {
+  type TempNode = {
     terminalIndex: number; // 0xffff if not terminal, else wordIndex
-    children: Array<TempNode | null>;
+    children: (TempNode | null)[];
     parentId: number;
     letterFromParent: number;
-  }
+  };
 
   const root: TempNode = {
-    terminalIndex: 0xffff,
+    terminalIndex: NOT_TERMINAL,
     children: new Array(26).fill(null),
     parentId: 0,
     letterFromParent: 0,
@@ -119,28 +133,37 @@ function buildTrie(wordList: string[]): {
     const word = wordList[wordIndex];
     let current = root;
     for (let i = 0; i < word.length; i++) {
-      const charCode = word.charCodeAt(i) - 97; // 'a' -> 0, ..., 'z' -> 25
-      if (!current.children[charCode]) {
-        current.children[charCode] = {
-          terminalIndex: 0xffff,
+      // make: 'a' -> 0, ..., 'z' -> 25
+      const charCode = word.charCodeAt(i) - 0x61;
+      const { children } = current;
+      let next = children[charCode];
+      if (next === null) {
+        next = {
+          // if this is the last character in the word `terminalIndex` will
+          // be overwritten with the wordIndex
+          terminalIndex: NOT_TERMINAL,
           children: new Array(26).fill(null),
           parentId: 0,
           letterFromParent: 0,
         };
+        children[charCode] = next;
       }
-      current = current.children[charCode]!;
+      current = next;
     }
-    current.terminalIndex = wordIndex; // Mark as terminal (end of word)
+    // Mark as terminal (end of word)
+    current.terminalIndex = wordIndex;
   }
 
   // Count total nodes via BFS
   let totalNodes = 0;
   const countQueue: TempNode[] = [root];
   while (countQueue.length > 0) {
-    const node = countQueue.shift()!;
+    const node = countQueue.shift() as TempNode;
     totalNodes++;
     for (const child of node.children) {
-      if (child) countQueue.push(child);
+      if (child !== null) {
+        countQueue.push(child);
+      }
     }
   }
 
@@ -157,16 +180,20 @@ function buildTrie(wordList: string[]): {
   );
 
   // Assign node IDs and populate arrays via BFS
-  const bfsQueue: { node: TempNode; id: number }[] = [{ node: root, id: 0 }];
+  type BFSEntry = { node: TempNode; id: number };
+  const bfsQueue: BFSEntry[] = [{ node: root, id: 0 }];
   let nextId = 1;
 
   while (bfsQueue.length > 0) {
-    const { node, id } = bfsQueue.shift()!;
+    const { node, id } = bfsQueue.shift() as BFSEntry;
     const baseOffset = id * 3;
 
     // Store terminalIndex and parentId
-    trieNodes[baseOffset] = packTermParent(node.terminalIndex, node.parentId);
-    if (node.terminalIndex !== 0xffff) {
+    trieNodes[baseOffset] = packTermAndParent(
+      node.terminalIndex,
+      node.parentId,
+    );
+    if (node.terminalIndex !== NOT_TERMINAL) {
       wordEndNodes[node.terminalIndex] = id;
     }
 
@@ -181,7 +208,7 @@ function buildTrie(wordList: string[]): {
         childCount++;
       }
     }
-    trieNodes[baseOffset + 1] = packMaskLetter(
+    trieNodes[baseOffset + 1] = packLetterAndMask(
       node.letterFromParent,
       childMask,
     );
@@ -217,8 +244,8 @@ function buildTrie(wordList: string[]): {
  */
 function findWordIndex(trieNodes: Uint32Array, word: Uint8Array): number {
   let nodeId = 0; // Start at root
-  for (let i = 0; i < word.length; i++) {
-    const charCode = word[i] - 97;
+  for (const char of word) {
+    const charCode = char - 0x61;
     if (charCode < 0 || charCode >= 26) {
       throw new Error('Invalid character in word');
     }
@@ -236,7 +263,7 @@ function findWordIndex(trieNodes: Uint32Array, word: Uint8Array): number {
     nodeId = trieNodes[baseOffset + 2] + rank;
   }
   const terminalIndex = unpackTerminalIndex(trieNodes[nodeId * 3]);
-  if (terminalIndex === 0xffff) {
+  if (terminalIndex === NOT_TERMINAL) {
     // the word was found, but it is only a prefix of a longer word, so it is
     // not a valid word in the wordlist.
     throw new Error('Word not found in trie');
@@ -260,7 +287,7 @@ function reconstructWord(
   while (currentId !== 0) {
     const baseOffset = currentId * 3;
     const letterFromParent = unpackLetterFromParent(trieNodes[baseOffset + 1]);
-    result.push(97 + letterFromParent);
+    result.push(0x61 + letterFromParent);
     currentId = unpackParentId(trieNodes[baseOffset]);
   }
 }
@@ -286,7 +313,10 @@ function indicesToUtf8Array(
       throw new Error('Invalid word index');
     }
     reconstructWord(trieNodes, nodeId, result);
-    if (i > 0) result.push(0x20); // Space separator after each word except the last
+    // Space separator after each word except the last
+    if (i > 0) {
+      result.push(0x20);
+    }
   }
   return result.reverse();
 }
@@ -294,8 +324,9 @@ function indicesToUtf8Array(
 /**
  * Mnemonic utility class for BIP-39 conversions without strings in memory.
  */
-export class MnemonicUtil {
+class MnemonicUtil {
   private readonly trieNodes: Uint32Array;
+
   private readonly wordEndNodes: Uint16Array;
 
   constructor() {
@@ -348,3 +379,11 @@ export class MnemonicUtil {
     return indicesToUtf8Array(this.trieNodes, this.wordEndNodes, indices);
   }
 }
+
+let singletonMnemonicUtil: MnemonicUtil | undefined;
+export const getMnemonicUtil = () => {
+  if (!singletonMnemonicUtil) {
+    singletonMnemonicUtil = new MnemonicUtil();
+  }
+  return singletonMnemonicUtil;
+};
