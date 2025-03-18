@@ -611,6 +611,22 @@ export default class MetamaskController extends EventEmitter {
         DEFAULT_CUSTOM_TESTNET_MAP[CHAIN_IDS.MEGAETH_TESTNET],
       );
 
+      networks['1337'] = {
+        chainId: '1337',
+        name: 'Localhost',
+        nativeCurrency: 'ETH',
+        blockExplorerUrls: ['http://example.com'],
+        defaultRpcEndpointIndex: 0,
+        defaultBlockExplorerUrlIndex: 0,
+        rpcEndpoints: [
+          {
+            networkClientId: 'AAAA-BBBB-CCCC-DDDD',
+            url: 'http://localhost:8545',
+            type: 'custom',
+          },
+        ],
+      };
+
       Object.values(networks).forEach((network) => {
         const id = network.rpcEndpoints[0].networkClientId;
         // Process only if the default network has a corresponding networkClientId in BlockExplorerUrl.
@@ -642,7 +658,8 @@ export default class MetamaskController extends EventEmitter {
         process.env.METAMASK_DEBUG ||
         process.env.METAMASK_ENVIRONMENT === 'test'
       ) {
-        network = networks[CHAIN_IDS.SEPOLIA];
+        // network = networks[CHAIN_IDS.SEPOLIA];
+        network = networks['1337'];
       } else {
         network = networks[CHAIN_IDS.MAINNET];
       }
