@@ -40,13 +40,13 @@ describe('TransactionAccountDetails', () => {
       authorizationList: [{ address: DELEGATION_MOCK }],
     });
 
-    expect(getByText('Smart contract account')).toBeInTheDocument();
+    expect(getByText('Smart account')).toBeInTheDocument();
   });
 
   it('does not render if no authorization list', () => {
     const { queryByText } = render({});
 
     expect(queryByText('0x12345...67890')).toBeNull();
-    expect(queryByText('Smart contract account')).toBeNull();
+    expect(queryByText('Smart account')).toBeNull();
   });
 });

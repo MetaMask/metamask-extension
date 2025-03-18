@@ -3477,6 +3477,7 @@ export default class MetamaskController extends EventEmitter {
       getOpenMetamaskTabsIds: this.getOpenMetamaskTabsIds,
       markNotificationPopupAsAutomaticallyClosed: () =>
         this.notificationManager.markAsAutomaticallyClosed(),
+      getCode: this.getCode.bind(this),
 
       // primary keyring management
       addNewAccount: this.addNewAccount.bind(this),
@@ -7318,14 +7319,25 @@ export default class MetamaskController extends EventEmitter {
     // Putting these TransactionController listeners here to keep it colocated with the other bridge events
     this.controllerMessenger.subscribe(
       'TransactionController:transactionFailed',
-      (payload) => {
-        if (payload.transactionMeta.type === TransactionType.bridge) {
-          handleTransactionFailedTypeBridge(payload, {
-            backgroundState: this.getState(),
-            trackEvent: this.metaMetricsController.trackEvent.bind(
-              this.metaMetricsController,
-            ),
-          });
+      ({ transactionMeta }) => {
+        const { type, status } = transactionMeta;
+
+        const isBridgeTransaction = type === TransactionType.bridge;
+        const isIncompleteTransactionCleanup = [
+          TransactionStatus.approved,
+          TransactionStatus.signed,
+        ].includes(status);
+
+        if (isBridgeTransaction && !isIncompleteTransactionCleanup) {
+          handleTransactionFailedTypeBridge(
+            { transactionMeta },
+            {
+              backgroundState: this.getState(),
+              trackEvent: this.metaMetricsController.trackEvent.bind(
+                this.metaMetricsController,
+              ),
+            },
+          );
         }
       },
     );
@@ -7669,6 +7681,16 @@ export default class MetamaskController extends EventEmitter {
     rejectAllApprovals({
       approvalController: this.approvalController,
       deleteInterface,
+    });
+  }
+
+  async getCode(address, networkClientId) {
+    const { provider } =
+      this.networkController.getNetworkClientById(networkClientId);
+
+    return await provider.request({
+      method: 'eth_getCode',
+      params: [address],
     });
   }
 
