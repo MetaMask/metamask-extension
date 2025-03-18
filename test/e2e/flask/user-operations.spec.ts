@@ -295,7 +295,7 @@ describe('User Operations', function () {
     );
   });
 
-  it.only('with paymaster', async function (this: Mocha.Context) {
+  it('with paymaster', async function (this: Mocha.Context) {
     await withAccountSnap(
       {
         title: this.test?.fullTitle(),
