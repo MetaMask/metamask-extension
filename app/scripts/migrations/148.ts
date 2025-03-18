@@ -91,6 +91,8 @@ export async function migrate(
     if (global.sentry) {
       global.sentry.captureException(newError);
     }
+    // Even though we encountered an error, we need the migration to pass for
+    // the migrator tests for work
     versionedData.data = originalVersionedData.data;
   }
 
@@ -106,12 +108,23 @@ function transformState(state: Record<string, unknown>) {
     throw new Error('Missing NetworkController state');
   }
 
-  if (
-    !isObject(state.NetworkController) ||
-    !hasProperty(state.NetworkController, 'networkConfigurationsByChainId') ||
-    !isObject(state.NetworkController.networkConfigurationsByChainId)
-  ) {
-    throw new Error('Invalid NetworkController state');
+  if (!isObject(state.NetworkController)) {
+    throw new Error(
+      `Expected state.NetworkController to be an object, but is ${typeof state.NetworkController}`,
+    );
+  }
+
+  if (!hasProperty(state.NetworkController, 'networkConfigurationsByChainId')) {
+    throw new Error(
+      `Expected state.NetworkController.networkConfigurationsByChainId to exist, but does not`,
+    );
+  }
+
+  if (!isObject(state.NetworkController.networkConfigurationsByChainId)) {
+    throw new Error(
+      `Expected state.NetworkController.networkConfigurationsByChainId to be an object, but is ${typeof state
+        .NetworkController.networkConfigurationsByChainId}`,
+    );
   }
 
   for (const [
@@ -154,16 +167,13 @@ function transformState(state: Record<string, unknown>) {
             'u',
           ),
         );
+        const isInfuraLike = match && match[1] === subdomain;
 
         const failoverUrl = getFailoverUrl();
 
-        if (failoverUrl === undefined) {
-          throw new Error('No failover URL to set');
-        }
-
         const failoverUrls =
-          rpcEndpoint.type === RpcEndpointType.Infura ||
-          (match && match[1] === subdomain)
+          failoverUrl &&
+          (rpcEndpoint.type === RpcEndpointType.Infura || isInfuraLike)
             ? [failoverUrl]
             : [];
         return {
