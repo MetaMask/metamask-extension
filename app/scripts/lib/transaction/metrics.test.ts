@@ -78,6 +78,7 @@ const mockTransactionMetricsRequest = {
   getSmartTransactionByMinedTxHash: jest.fn(),
   getMethodData: jest.fn(),
   getIsConfirmationAdvancedDetailsOpen: jest.fn(),
+  getFeatureFlags: jest.fn().mockReturnValue({}), // Add this line
 } as TransactionMetricsRequest;
 
 describe('Transaction metrics', () => {
