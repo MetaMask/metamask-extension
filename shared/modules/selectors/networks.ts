@@ -54,7 +54,7 @@ export type ProviderConfigState = NetworkConfigurationsByChainIdState &
     };
     metamask: {
       domains: Record<string, string>;
-    }
+    };
   };
 
 export type MultichainNetworkConfigurationsByChainIdState = {
@@ -226,12 +226,14 @@ export const getAllNetworkConfigurationsByCaipChainId = createSelector(
  * @throws `new Error('Provider configuration not found')` If the provider configuration is not found.
  */
 export const getProviderConfig = createDeepEqualSelector(
-  (state: ProviderConfigState) => ({
-    networkConfigurationsByChainId: getNetworkConfigurationsByChainId(state),
-    selectedNetworkClientId: getSelectedNetworkClientId(state),
-    metamask: state.metamask,
-    activeTabOrigin: state.activeTab?.origin || ORIGIN_METAMASK,
-  }),
+  (state: ProviderConfigState) => {
+    return {
+      networkConfigurationsByChainId: getNetworkConfigurationsByChainId(state),
+      selectedNetworkClientId: getSelectedNetworkClientId(state),
+      metamask: state.metamask,
+      activeTabOrigin: state.activeTab?.origin || ORIGIN_METAMASK,
+    };
+  },
   ({
     networkConfigurationsByChainId,
     selectedNetworkClientId,
@@ -244,7 +246,9 @@ export const getProviderConfig = createDeepEqualSelector(
       for (const rpcEndpoint of network.rpcEndpoints) {
         if (rpcEndpoint.networkClientId === networkClientIdToUse) {
           const blockExplorerUrl =
-            network.blockExplorerUrls?.[network.defaultBlockExplorerUrlIndex ?? 0];
+            network.blockExplorerUrls?.[
+              network.defaultBlockExplorerUrlIndex ?? 0
+            ];
 
           return {
             chainId: network.chainId,
