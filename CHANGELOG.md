@@ -55,6 +55,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Beta] Fix Solana snap validation ([#30596](https://github.com/MetaMask/metamask-extension/pull/30596))
 - [Beta] Fix swap source token balance on multichain networks ([#30622](https://github.com/MetaMask/metamask-extension/pull/30622))
 
+## [12.13.1]
+### Fixed
+- fix: Remove previousUserTraits from metametrics controller state ([#30621](https://github.com/MetaMask/metamask-extension/pull/30621))
+
 ## [12.13.0]
 ### Added
 - Enable bsc for smart transactions ([#29747](https://github.com/MetaMask/metamask-extension/pull/29747))
@@ -5820,7 +5824,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.14.0...HEAD
-[12.14.0]: https://github.com/MetaMask/metamask-extension/compare/v12.13.0...v12.14.0
+[12.14.0]: https://github.com/MetaMask/metamask-extension/compare/v12.13.1...v12.14.0
+[12.13.1]: https://github.com/MetaMask/metamask-extension/compare/v12.13.0...v12.13.1
 [12.13.0]: https://github.com/MetaMask/metamask-extension/compare/v12.12.0...v12.13.0
 [12.12.0]: https://github.com/MetaMask/metamask-extension/compare/v12.11.0...v12.12.0
 [12.11.0]: https://github.com/MetaMask/metamask-extension/compare/v12.10.4...v12.11.0
