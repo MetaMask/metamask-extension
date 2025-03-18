@@ -349,7 +349,8 @@ export function useTransactionDisplayData(transactionGroup) {
     subtitleContainsOrigin = true;
   } else if (
     type === TransactionType.contractInteraction ||
-    type === TransactionType.batch
+    type === TransactionType.batch ||
+    type === TransactionType.revokeDelegation
   ) {
     category = TransactionGroupCategory.interaction;
     const transactionTypeTitle = getTransactionTypeTitle(t, type);
