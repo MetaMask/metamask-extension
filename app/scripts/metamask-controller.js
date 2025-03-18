@@ -6762,6 +6762,7 @@ export default class MetamaskController extends EventEmitter {
         this.appStateController,
         this.accountsController,
         this.updateSecurityAlertResponse.bind(this),
+        this.selectedNetworkController,
       ),
     );
 
