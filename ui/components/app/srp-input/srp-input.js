@@ -125,6 +125,26 @@ export default function SrpInput({ onChange, srpText }) {
     });
   }
 
+  const handleNumberOfWordsChange = useCallback(
+    (newSelectedOption) => {
+      const newNumberOfWords = parseInt(newSelectedOption, 10);
+      if (Number.isNaN(newNumberOfWords)) {
+        throw new Error('Unable to parse option as integer');
+      }
+
+      let newDraftSrp = draftSrp.slice(0, newNumberOfWords);
+      if (newDraftSrp.length < newNumberOfWords) {
+        newDraftSrp = newDraftSrp.concat(
+          new Array(newNumberOfWords - newDraftSrp.length).fill(''),
+        );
+      }
+      setNumberOfWords(newNumberOfWords);
+      setShowSrp(new Array(newNumberOfWords).fill(false));
+      onSrpChange(newDraftSrp);
+    },
+    [draftSrp, onSrpChange],
+  );
+
   return (
     <div className="import-srp__container">
       <div className="import-srp__dropdown-container">
@@ -147,22 +167,7 @@ export default function SrpInput({ onChange, srpText }) {
         />
         <Dropdown
           className="import-srp__number-of-words-dropdown"
-          onChange={(newSelectedOption) => {
-            const newNumberOfWords = parseInt(newSelectedOption, 10);
-            if (Number.isNaN(newNumberOfWords)) {
-              throw new Error('Unable to parse option as integer');
-            }
-
-            let newDraftSrp = draftSrp.slice(0, newNumberOfWords);
-            if (newDraftSrp.length < newNumberOfWords) {
-              newDraftSrp = newDraftSrp.concat(
-                new Array(newNumberOfWords - newDraftSrp.length).fill(''),
-              );
-            }
-            setNumberOfWords(newNumberOfWords);
-            setShowSrp(new Array(newNumberOfWords).fill(false));
-            onSrpChange(newDraftSrp);
-          }}
+          onChange={handleNumberOfWordsChange}
           options={numberOfWordsOptions}
           selectedOption={`${numberOfWords}`}
         />
