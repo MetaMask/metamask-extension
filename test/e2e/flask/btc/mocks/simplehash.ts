@@ -11,7 +11,4 @@ export const mockInscriptions = (mockServer: Mockttp) =>
       wallet_addresses: DEFAULT_BTC_ADDRESS,
       limit: 50,
     })
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: { next_cursor: null, next: null, previous: null, nfts: [] },
-    }));
+    .thenJson(200, { next_cursor: null, next: null, previous: null, nfts: [] });

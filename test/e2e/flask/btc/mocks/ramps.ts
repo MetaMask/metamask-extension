@@ -12,19 +12,16 @@ export async function mockRampsDynamicFeatureFlag(
     .withQuery({
       context: 'extension',
     })
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        networks: [
-          {
-            active: true,
-            chainId: MultichainNetworks.BITCOIN,
-            chainName: 'Bitcoin',
-            shortName: 'Bitcoin',
-            nativeTokenSupported: true,
-            isEvm: false,
-          },
-        ],
-      },
-    }));
+    .thenJson(200, {
+      networks: [
+        {
+          active: true,
+          chainId: MultichainNetworks.BITCOIN,
+          chainName: 'Bitcoin',
+          shortName: 'Bitcoin',
+          nativeTokenSupported: true,
+          isEvm: false,
+        },
+      ],
+    });
 }

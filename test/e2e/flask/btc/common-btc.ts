@@ -17,7 +17,6 @@ export async function withBtcAccountSnap(
   {
     title,
     bitcoinSupportEnabled,
-    isFunded,
   }: { title?: string; bitcoinSupportEnabled?: boolean; isFunded?: boolean },
   test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
 ) {
@@ -31,7 +30,7 @@ export async function withBtcAccountSnap(
       title,
       dapp: true,
       testSpecificMock: async (mockServer: Mockttp) => [
-        await mockInitialFullScan(mockServer, isFunded),
+        await mockInitialFullScan(mockServer),
         await mockExchangeRates(mockServer),
         await mockInscriptions(mockServer),
 

@@ -55,8 +55,8 @@ export const DEFAULT_ACCOUNT_NAME = 'Bitcoin Native SegWit';
 /* Default (mocked) BTC balance used by the Bitcoin RPC provider */
 export const DEFAULT_BTC_BALANCE = 1; // BTC
 
-/* Default BTC fees rate */
-export const DEFAULT_BTC_FEES_RATE = 5.0; // sat/vB
+/* Default BTC fee rate */
+export const DEFAULT_BTC_FEE_RATE = 2.0060000000000002; // sat/vB
 
 /* Default BTC conversion rate to USD */
 export const DEFAULT_BTC_CONVERSION_RATE = 82000; // USD
