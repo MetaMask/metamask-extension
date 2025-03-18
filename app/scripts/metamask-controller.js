@@ -4333,7 +4333,6 @@ export default class MetamaskController extends EventEmitter {
           this.metaMetricsDataDeletionController,
         ),
       // Trace
-      signEip7702Authorization: this.signEip7702Authorization.bind(this),
       endTrace,
     };
   }
@@ -4350,25 +4349,6 @@ export default class MetamaskController extends EventEmitter {
       deleteInterface,
       origin,
     });
-  }
-
-  async signEip7702Authorization(contractAddress) {
-    const selectedAccount = this.accountsController.getSelectedAccount();
-    const nonce = await this.getNextNonce(
-      selectedAccount.address,
-      this.networkController.state.selectedNetworkClientId,
-    );
-    const signature = await this.keyringController.signEip7702Authorization({
-      chainId: 0,
-      from: selectedAccount.address,
-      nonce,
-      contractAddress,
-    });
-    console.log('MetaMaskController - signEip7702Authorization', {
-      signature,
-      nonce,
-    });
-    return { signature, nonce };
   }
 
   async exportAccount(address, password) {

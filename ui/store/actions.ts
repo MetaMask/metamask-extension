@@ -6131,16 +6131,6 @@ export async function performGetStorage({ path }: { path: string }) {
   return await submitRequestToBackground('performGetStorage', [path]);
 }
 
-export async function upgradeHardwareAccount({
-  contractAddress,
-}: {
-  contractAddress: string;
-}): Promise<{ signature: Hex; nonce: number }> {
-  return await submitRequestToBackground('signEip7702Authorization', [
-    contractAddress,
-  ]);
-}
-
 export async function enableAccountUpgradeForChain(chainId: string) {
   return await submitRequestToBackground('enableAccountUpgradeForChain', [
     chainId,

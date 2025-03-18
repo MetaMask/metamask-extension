@@ -187,30 +187,7 @@ export function UpgradeAccountButton() {
 
   const handleUpgradeAccount = useCallback(async () => {
     console.log('handleUpgradeAccount');
-    const spender = accounts[0].address as `0x${string}`;
-    // const { signature, nonce } = await upgradeHardwareAccount({
-    //   contractAddress: GATOR_7702_ADDRESS,
-    // });
-    // console.log('signature', signature);
-    // console.log('nonce', toHex(nonce));
-    // const { r, s, yParity } = parseSignature(signature);
-    console.log('submitting tx:', {
-      from: spender,
-      to: account.address,
-      value: '0x0',
-      authorizationList: [
-        {
-          // chainId: toHex(linea.id),
-          chainId: toHex(0),
-          address: GATOR_7702_ADDRESS,
-          // nonce: '0x0',
-          // nonce: toHex(nonce),
-          // r,
-          // s,
-          // yParity: toHex(yParity),
-        },
-      ],
-    });
+    // const spender = accounts[0].address as `0x${string}`;
     const txMeta = await addTransaction(
       {
         type: '0x4',
@@ -230,7 +207,7 @@ export function UpgradeAccountButton() {
       },
     );
     console.log('txMeta', txMeta);
-  }, [account, accounts]);
+  }, [account]);
 
   if (account.metadata.keyring.type !== 'Mock Hardware') {
     return null;
