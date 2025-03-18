@@ -4,8 +4,8 @@ import {
   type NetworkState as InternalNetworkState,
 } from '@metamask/network-controller';
 import { NetworkStatus } from '../../constants/network';
-import { createDeepEqualSelector } from './util';
 import { ORIGIN_METAMASK } from '../../constants/app';
+import { createDeepEqualSelector } from './util';
 
 export type NetworkState = {
   metamask: InternalNetworkState;
