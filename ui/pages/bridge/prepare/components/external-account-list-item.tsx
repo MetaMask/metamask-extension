@@ -15,12 +15,14 @@ import {
   BackgroundColor,
   BorderColor,
   Display,
+  FlexDirection,
   TextColor,
   TextVariant,
-  FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import { getUseBlockie } from '../../../../selectors';
+// eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
+// eslint-disable-next-line import/no-restricted-paths
 import { t } from '../../../../../app/scripts/translate';
 
 type ExternalAccountListItemProps = {
