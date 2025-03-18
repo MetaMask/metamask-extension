@@ -294,7 +294,6 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     dispatch(setActiveNetwork(networkClientId));
     dispatch(updateCustomNonce(''));
     dispatch(setNextNonce(''));
-    // TODO check if allChainIds includes chainId
     dispatch(detectNfts(allChainIds));
 
     dispatch(toggleNetworkMenu());
