@@ -74,43 +74,6 @@ export class BridgePage {
   };
 }
 
-const mockServer =
-  (featureFlagOverrides: Partial<FeatureFlagResponse>) =>
-  async (mockServer_: Mockttp) => {
-    const featureFlagMocks = [
-      `${BRIDGE_DEV_API_BASE_URL}/getAllFeatureFlags`,
-      `${BRIDGE_PROD_API_BASE_URL}/getAllFeatureFlags`,
-    ].map(
-      async (url) =>
-        await mockServer_
-          .forGet(url)
-          .withHeaders({ 'X-Client-Id': BRIDGE_CLIENT_ID })
-          .always()
-          .thenCallback(() => {
-            return {
-              statusCode: 200,
-              json: {
-                ...DEFAULT_FEATURE_FLAGS_RESPONSE,
-                ...featureFlagOverrides,
-                'extension-config': {
-                  ...DEFAULT_FEATURE_FLAGS_RESPONSE['extension-config'],
-                  ...featureFlagOverrides['extension-config'],
-                },
-              },
-            };
-          }),
-    );
-    const portfolioMock = mockServer_
-      .forGet(`https://portfolio.metamask.io/bridge`)
-      .always()
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          body: emptyHtmlPage(),
-        };
-      });
-    return Promise.all([...featureFlagMocks, portfolioMock]);
-  };
 async function mockFeatureFlag(
   mockServer: Mockttp,
   featureFlagOverrides: Partial<FeatureFlagResponse>,
@@ -130,6 +93,18 @@ async function mockFeatureFlag(
             ...featureFlagOverrides['extension-config'],
           },
         },
+      };
+    });
+}
+
+async function mockPortfolioPage(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(`https://portfolio.metamask.io/bridge`)
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: emptyHtmlPage(),
       };
     });
 }
@@ -188,6 +163,7 @@ export const getBridgeFixtures = (
     testSpecificMock: async (mockServer: Mockttp) => [
       await mockFeatureFlag(mockServer, featureFlags),
       await mockGetTxStatus(mockServer),
+      await mockPortfolioPage(mockServer),
     ],
     smartContract: SMART_CONTRACTS.HST,
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
