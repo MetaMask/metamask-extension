@@ -186,6 +186,7 @@ async function addEthereumChainHandler(
     updatedNetwork.rpcEndpoints[updatedNetwork.defaultRpcEndpointIndex];
 
   return switchChain(res, end, chainId, networkClientId, {
+    isAddFlow: true,
     autoApprove: shouldAddOrUpdateNetwork,
     setActiveNetwork,
     getCaveat,

@@ -15,6 +15,7 @@ import type { TransactionParams } from '@metamask/transaction-controller';
 import type { Provider } from '@metamask/network-controller';
 
 import { Hex } from '@metamask/utils';
+import { BigNumber } from 'bignumber.js';
 import { AssetType, TokenStandard } from '../constants/transaction';
 import { readAddressAsContract } from './contract-utils';
 import { isEqualCaseInsensitive } from './string-utils';
@@ -325,4 +326,38 @@ export function hasTransactionData(transactionData?: Hex): boolean {
   return Boolean(
     transactionData?.length && transactionData?.toLowerCase?.() !== '0x',
   );
+}
+
+export function parseApprovalTransactionData(data: Hex):
+  | {
+      amountOrTokenId?: BigNumber;
+      isApproveAll?: boolean;
+      isRevokeAll?: boolean;
+    }
+  | undefined {
+  const transactionDescription = parseStandardTokenTransactionData(data);
+  const { args, name } = transactionDescription ?? {};
+
+  if (
+    !['approve', 'increaseAllowance', 'setApprovalForAll'].includes(name ?? '')
+  ) {
+    return undefined;
+  }
+
+  const rawAmountOrTokenId =
+    args?._value ?? // ERC-20 - approve
+    args?.increment; // Fiat Token V2 - increaseAllowance
+
+  const amountOrTokenId = rawAmountOrTokenId
+    ? new BigNumber(rawAmountOrTokenId?.toString())
+    : undefined;
+
+  const isApproveAll = name === 'setApprovalForAll' && args?._approved === true;
+  const isRevokeAll = name === 'setApprovalForAll' && args?._approved === false;
+
+  return {
+    amountOrTokenId,
+    isApproveAll,
+    isRevokeAll,
+  };
 }
