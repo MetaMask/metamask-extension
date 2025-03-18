@@ -20,10 +20,10 @@ import {
   describeBrowserOnly,
 } from './testHelpers';
 
-describeBrowserOnly({
-  browser: Browser.CHROME,
-  description: 'Multichain API',
-  callback() {
+describeBrowserOnly(
+  Browser.CHROME,
+  'Multichain API',
+  function () {
     describe('Connect wallet to the multichain dapp via `externally_connectable`, call `wallet_createSession` with requested EVM scope that does NOT match one of the user’s enabled networks', function () {
       it("the specified EVM scopes that do not match the user's configured networks should be treated as if they were not requested", async function () {
         await withFixtures(
@@ -445,5 +445,5 @@ describeBrowserOnly({
       });
     });
   },
-  timeout: 200000,
-});
+  200000,
+);
