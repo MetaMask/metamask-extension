@@ -161,7 +161,6 @@ const WalletDetails = mmLazy(() =>
 export default class Routes extends Component {
   static propTypes = {
     currentCurrency: PropTypes.string,
-    activeTabOrigin: PropTypes.string,
     setCurrentCurrencyToUSD: PropTypes.func,
     isLoading: PropTypes.bool,
     loadingMessage: PropTypes.string,
@@ -206,9 +205,6 @@ export default class Routes extends Component {
       }),
     ]),
     switchedNetworkNeverShowMessage: PropTypes.bool,
-    networkToAutomaticallySwitchTo: PropTypes.object,
-    automaticallySwitchNetwork: PropTypes.func.isRequired,
-    totalUnapprovedConfirmationCount: PropTypes.number.isRequired,
     currentExtensionPopupId: PropTypes.number,
     oldestPendingApproval: PropTypes.object,
     pendingApprovals: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -227,14 +223,7 @@ export default class Routes extends Component {
   };
 
   componentDidUpdate(prevProps) {
-    const {
-      theme,
-      networkToAutomaticallySwitchTo,
-      activeTabOrigin,
-      totalUnapprovedConfirmationCount,
-      isUnlocked,
-      currentExtensionPopupId,
-    } = this.props;
+    const { theme, currentExtensionPopupId } = this.props;
     if (theme !== prevProps.theme) {
       setTheme(theme);
     }
