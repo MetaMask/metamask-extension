@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '@metamask/bridge-controller';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   getBridgeQuotes,
@@ -10,7 +11,6 @@ import {
   getQuoteRequest,
   getValidationErrors,
 } from '../../ducks/bridge/selectors';
-import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
 import { useCrossChainSwapsEventTracker } from './useCrossChainSwapsEventTracker';
 import useLatestBalance from './useLatestBalance';
 import { useRequestMetadataProperties } from './events/useRequestMetadataProperties';

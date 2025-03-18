@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '@metamask/bridge-controller';
 import {
   ButtonLink,
   ButtonPrimary,
@@ -33,7 +34,6 @@ import { useRequestProperties } from '../../../hooks/bridge/events/useRequestPro
 import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
 import { useTradeProperties } from '../../../hooks/bridge/events/useTradeProperties';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
-import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/swaps';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { Row } from '../layout';
 import { isQuoteExpired as isQuoteExpiredUtil } from '../utils/quote';

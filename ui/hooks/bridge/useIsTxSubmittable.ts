@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
+import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '@metamask/bridge-controller';
 import {
   getBridgeQuotes,
   getFromAmount,

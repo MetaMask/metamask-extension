@@ -17,6 +17,7 @@ import {
   isValidQuoteRequest,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
   type GenericQuoteRequest,
+  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
 } from '@metamask/bridge-controller';
 import {
   setFromToken,
@@ -67,7 +68,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/swaps';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
 import {
   setActiveNetwork,
