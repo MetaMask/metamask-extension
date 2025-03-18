@@ -138,7 +138,6 @@ const Home = mmLazy(() => import('../home'));
 export default class Routes extends Component {
   static propTypes = {
     currentCurrency: PropTypes.string,
-    activeTabOrigin: PropTypes.string,
     setCurrentCurrencyToUSD: PropTypes.func,
     isLoading: PropTypes.bool,
     loadingMessage: PropTypes.string,
@@ -175,9 +174,6 @@ export default class Routes extends Component {
     isDeprecatedNetworkModalOpen: PropTypes.bool.isRequired,
     hideDeprecatedNetworkModal: PropTypes.func.isRequired,
     clearSwitchedNetworkDetails: PropTypes.func.isRequired,
-    networkToAutomaticallySwitchTo: PropTypes.object,
-    automaticallySwitchNetwork: PropTypes.func.isRequired,
-    totalUnapprovedConfirmationCount: PropTypes.number.isRequired,
     currentExtensionPopupId: PropTypes.number,
     clearEditedNetwork: PropTypes.func.isRequired,
     oldestPendingApproval: PropTypes.object,
@@ -196,14 +192,7 @@ export default class Routes extends Component {
   };
 
   componentDidUpdate(prevProps) {
-    const {
-      theme,
-      networkToAutomaticallySwitchTo,
-      activeTabOrigin,
-      totalUnapprovedConfirmationCount,
-      isUnlocked,
-      currentExtensionPopupId,
-    } = this.props;
+    const { theme, currentExtensionPopupId } = this.props;
     if (theme !== prevProps.theme) {
       setTheme(theme);
     }
