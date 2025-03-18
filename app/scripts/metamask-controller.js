@@ -889,10 +889,10 @@ export default class MetamaskController extends EventEmitter {
       'NetworkController:rpcEndpointUnavailable',
       async ({ chainId, rpcEndpointUrl, failoverRpcEndpointUrl }) => {
         this.metaMetricsController.trackEvent({
-          event: 'RPC Endpoint Unavailable',
-          category: 'Network',
+          category: MetaMetricsEventCategory.Network,
+          event: MetaMetricsEventName.RpcServiceUnavailable,
           properties: {
-            chain_id: chainId,
+            caip_chain_id: `eip155:${chainId}`,
             rpc_endpoint_url: rpcEndpointUrl,
             failover_endpoint_url: failoverRpcEndpointUrl,
           },
@@ -903,8 +903,8 @@ export default class MetamaskController extends EventEmitter {
       'NetworkController:rpcEndpointDegraded',
       async ({ rpcEndpointUrl }) => {
         this.metaMetricsController.trackEvent({
-          event: 'RPC Endpoint Degraded',
-          category: 'Network',
+          category: MetaMetricsEventCategory.Network,
+          event: MetaMetricsEventName.RpcServiceDegraded,
           properties: {
             endpoint_url: rpcEndpointUrl,
           },
