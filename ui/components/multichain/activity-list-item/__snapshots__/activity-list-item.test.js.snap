@@ -13,7 +13,7 @@ exports[`ActivityListItem should match snapshot with no props 1`] = `
         class="mm-box activity-list-item__content-container mm-box--display-inline-flex mm-box--justify-content-space-between mm-box--width-full"
       >
         <div
-          class="mm-box activity-list-item__detail-container mm-box--display-inline-flex mm-box--flex-direction-column"
+          class="mm-box activity-list-item__detail-container mm-box--display-inline-flex mm-box--flex-direction-column mm-box--min-width-0"
         >
           <p
             class="mm-box mm-text mm-text--body-lg-medium mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
@@ -55,7 +55,7 @@ exports[`ActivityListItem should match snapshot with props 1`] = `
         class="mm-box activity-list-item__content-container mm-box--display-inline-flex mm-box--justify-content-space-between mm-box--width-full"
       >
         <div
-          class="mm-box activity-list-item__detail-container mm-box--display-inline-flex mm-box--flex-direction-column"
+          class="mm-box activity-list-item__detail-container mm-box--display-inline-flex mm-box--flex-direction-column mm-box--min-width-0"
         >
           <p
             class="mm-box mm-text mm-text--body-lg-medium mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"

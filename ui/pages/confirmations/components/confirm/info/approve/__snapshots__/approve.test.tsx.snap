@@ -73,6 +73,16 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
+          <button
+            aria-label="Edit"
+            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
+            data-testid="edit-spending-cap-icon"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/edit.svg');"
+            />
+          </button>
           <div
             class="mm-box mm-box--margin-inline-end-1 mm-box--display-inline mm-box--min-width-0"
           >
@@ -251,10 +261,10 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       data-testid="transaction-details-recipient-row"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -344,98 +354,6 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
-    data-testid="confirmation__approve-spending-cap-section"
-  >
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Account balance
-          </p>
-        </div>
-      </div>
-      <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-      >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
-        >
-          0 
-        </p>
-      </div>
-    </div>
-    <div
-      style="height: 1px; margin-left: -8px; margin-right: -8px;"
-    />
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      data-testid="confirmation__approve-spending-cap-group"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Spending cap
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-5"
-              class=""
-              data-original-title="This is the amount of tokens the spender will be able to access on your behalf."
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                data-testid="confirmation__approve-spending-cap-group-tooltip"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-      >
-        <button
-          aria-label="Edit"
-          class="mm-box mm-button-icon mm-button-icon--size-sm edit-spending-cap-btn mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
-          data-testid="edit-spending-cap-icon"
-          style="margin-right: -4px;"
-        >
-          <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/edit.svg');"
-          />
-        </button>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
-        >
-          1000 
-        </p>
-      </div>
-    </div>
-  </div>
-  <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
     data-testid="gas-fee-section"
   >
     <div
@@ -456,7 +374,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-6"
+              aria-describedby="tippy-tooltip-5"
               class=""
               data-original-title="Amount paid to process the transaction on network."
               data-tooltipped=""
@@ -562,7 +480,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-7"
+              aria-describedby="tippy-tooltip-6"
               class=""
               data-original-title="A maximum fee provided to pay for the transaction."
               data-tooltipped=""
@@ -615,7 +533,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-8"
+              aria-describedby="tippy-tooltip-7"
               class=""
               data-original-title="This is the transaction number of an account. Nonce for the first transaction is 0 and it increases in sequential order."
               data-tooltipped=""
@@ -738,7 +656,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
             </p>
             <div>
               <div
-                aria-describedby="tippy-tooltip-9"
+                aria-describedby="tippy-tooltip-8"
                 class=""
                 data-original-title="address"
                 data-tooltipped=""
@@ -831,7 +749,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
             </p>
             <div>
               <div
-                aria-describedby="tippy-tooltip-10"
+                aria-describedby="tippy-tooltip-9"
                 class=""
                 data-original-title="uint256"
                 data-tooltipped=""

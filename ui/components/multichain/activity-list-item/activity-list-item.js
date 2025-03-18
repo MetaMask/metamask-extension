@@ -77,6 +77,7 @@ export const ActivityListItem = ({
             display={Display.InlineFlex}
             flexDirection={FlexDirection.Column}
             className="activity-list-item__detail-container"
+            minWidth="0"
           >
             <Text
               ellipsis

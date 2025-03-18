@@ -55,7 +55,7 @@ describe('Sending with max amount', function () {
               },
             })
             .build(),
-          localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
+          localNodeOptions: { hardfork: 'london' },
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
@@ -122,7 +122,7 @@ describe('Sending with max amount', function () {
               },
             })
             .build(),
-          localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
+          localNodeOptions: { hardfork: 'london' },
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
@@ -252,7 +252,7 @@ describe('Sending with max amount', function () {
             },
           })
           .build(),
-        localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: { hardfork: 'london' },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

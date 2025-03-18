@@ -197,6 +197,7 @@ const PrepareBridgePage = () => {
     fromChain?.chainId,
   );
 
+  const { tokenAlert } = useTokenAlerts();
   const srcTokenBalance = useLatestBalance(fromToken, fromChain?.chainId);
   const { selectedDestinationAccount, setSelectedDestinationAccount } =
     useDestinationAccount(isSwap);
@@ -216,6 +217,10 @@ const PrepareBridgePage = () => {
   // Resets the banner visibility when the estimated return is low
   const [isLowReturnBannerOpen, setIsLowReturnBannerOpen] = useState(true);
   useEffect(() => setIsLowReturnBannerOpen(true), [quotesRefreshCount]);
+
+  // Resets the banner visibility when new alerts found
+  const [isTokenAlertBannerOpen, setIsTokenAlertBannerOpen] = useState(true);
+  useEffect(() => setIsTokenAlertBannerOpen(true), [tokenAlert]);
 
   // Background updates are debounced when the switch button is clicked
   // To prevent putting the frontend in an unexpected state, prevent the user
@@ -269,6 +274,7 @@ const PrepareBridgePage = () => {
   // Scroll to bottom of the page when banners are shown
   const insufficientBalanceBannerRef = useRef<HTMLDivElement>(null);
   const isEstimatedReturnLowRef = useRef<HTMLDivElement>(null);
+  const tokenAlertBannerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (isInsufficientGasForQuote(nativeAssetBalance)) {
       insufficientBalanceBannerRef.current?.scrollIntoView({
@@ -776,6 +782,26 @@ const PrepareBridgePage = () => {
             ])}
             textAlign={TextAlign.Left}
             onClose={() => setIsLowReturnBannerOpen(false)}
+          />
+        )}
+        {tokenAlert && isTokenAlertBannerOpen && (
+          <BannerAlert
+            ref={tokenAlertBannerRef}
+            marginInline={4}
+            marginBottom={3}
+            title={tokenAlert.titleId ? t(tokenAlert.titleId) : ''}
+            severity={
+              tokenAlert.type === TokenFeatureType.MALICIOUS
+                ? BannerAlertSeverity.Danger
+                : BannerAlertSeverity.Warning
+            }
+            description={
+              tokenAlert.descriptionId
+                ? t(tokenAlert.descriptionId)
+                : tokenAlert.description
+            }
+            textAlign={TextAlign.Left}
+            onClose={() => setIsTokenAlertBannerOpen(false)}
           />
         )}
         {!isLoading &&

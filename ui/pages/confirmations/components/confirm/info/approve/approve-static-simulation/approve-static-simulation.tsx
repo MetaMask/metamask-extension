@@ -3,7 +3,13 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row';
 import Name from '../../../../../../../components/app/name';
-import { Box, Text } from '../../../../../../../components/component-library';
+import {
+  Box,
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+  Text,
+} from '../../../../../../../components/component-library';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import {
   AlignItems,
@@ -11,6 +17,7 @@ import {
   BlockSize,
   BorderRadius,
   Display,
+  IconColor,
   TextAlign,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
@@ -21,7 +28,11 @@ import { Container } from '../../shared/transaction-data/transaction-data';
 import { useApproveTokenSimulation } from '../hooks/use-approve-token-simulation';
 import { useIsNFT } from '../hooks/use-is-nft';
 
-export const ApproveStaticSimulation = () => {
+export const ApproveStaticSimulation = ({
+  setIsOpenEditSpendingCapModal,
+}: {
+  setIsOpenEditSpendingCapModal: (newValue: boolean) => void;
+}) => {
   const t = useI18nContext();
 
   const { currentConfirmation: transactionMeta } =
@@ -73,6 +84,16 @@ export const ApproveStaticSimulation = () => {
     >
       <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
         <Box display={Display.Flex} alignItems={AlignItems.center}>
+          {!isNFT && (
+            <ButtonIcon
+              color={IconColor.primaryDefault}
+              ariaLabel={t('edit')}
+              iconName={IconName.Edit}
+              onClick={() => setIsOpenEditSpendingCapModal(true)}
+              size={ButtonIconSize.Sm}
+              data-testid="edit-spending-cap-icon"
+            />
+          )}
           <Box
             display={Display.Inline}
             marginInlineEnd={1}

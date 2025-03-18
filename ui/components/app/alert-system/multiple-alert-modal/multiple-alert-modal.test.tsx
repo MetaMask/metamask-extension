@@ -199,6 +199,61 @@ describe('MultipleAlertModal', () => {
     expect(getByText(alertsMock[0].message)).toBeInTheDocument();
   });
 
+  describe('FieldAlerts not present', () => {
+    const alertsMockWithoutField = [
+      {
+        key: FROM_ALERT_KEY_MOCK,
+        severity: Severity.Warning,
+        message: 'Alert 1',
+        reason: 'Reason 1',
+        alertDetails: ['Detail 1', 'Detail 2'],
+      },
+      {
+        key: DATA_ALERT_KEY_MOCK,
+        severity: Severity.Danger,
+        message: 'Alert 2',
+      },
+      {
+        key: CONTRACT_ALERT_KEY_MOCK,
+        severity: Severity.Info,
+        message: 'Alert 3',
+      },
+    ];
+
+    const mockStoreWithAlertsWithoutField = configureMockStore([])({
+      ...STATE_MOCK,
+      confirmAlerts: {
+        alerts: { [OWNER_ID_MOCK]: alertsMockWithoutField },
+        confirmed: {},
+      },
+    });
+
+    it('does not render if displayAllAlerts is false', () => {
+      const { queryByText } = renderWithProvider(
+        <MultipleAlertModal
+          {...defaultProps}
+          alertKey={CONTRACT_ALERT_KEY_MOCK}
+        />,
+        mockStoreWithAlertsWithoutField,
+      );
+
+      expect(queryByText('alert-modal-button')).toBeNull();
+    });
+
+    it('renders alerts if displayAllAlerts is true', () => {
+      const { getByTestId } = renderWithProvider(
+        <MultipleAlertModal
+          {...defaultProps}
+          alertKey={CONTRACT_ALERT_KEY_MOCK}
+          displayAllAlerts
+        />,
+        mockStoreWithAlertsWithoutField,
+      );
+
+      expect(getByTestId('alert-modal-button')).toBeInTheDocument();
+    });
+  });
+
   describe('Navigation', () => {
     it('calls next alert when the next button is clicked', () => {
       const { getByTestId, getByText } = renderWithProvider(

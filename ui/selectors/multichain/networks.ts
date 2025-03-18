@@ -5,7 +5,8 @@ import {
   toMultichainNetworkConfiguration,
 } from '@metamask/multichain-network-controller';
 import { type NetworkConfiguration as InternalNetworkConfiguration } from '@metamask/network-controller';
-import { type CaipChainId, BtcScope, SolScope } from '@metamask/keyring-api';
+import { BtcScope, SolScope } from '@metamask/keyring-api';
+import { type CaipChainId, type Hex } from '@metamask/utils';
 
 import {
   type ProviderConfigState,
@@ -156,7 +157,7 @@ export const getMultichainNetworkConfigurationsByChainId =
         ...evmNetworks,
       };
 
-      return networks;
+      return [networks, networkConfigurationsByChainId];
     },
   );
 
@@ -179,7 +180,7 @@ export const getSelectedMultichainNetworkConfiguration = (
   state: MultichainNetworkConfigState,
 ) => {
   const chainId = getSelectedMultichainNetworkChainId(state);
-  const networkConfigurationsByChainId =
+  const [networkConfigurationsByChainId] =
     getMultichainNetworkConfigurationsByChainId(state);
   return networkConfigurationsByChainId[chainId];
 };
