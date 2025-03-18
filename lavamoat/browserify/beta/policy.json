@@ -1717,11 +1717,8 @@
       "packages": {
         "@metamask/scure-bip39": true,
         "@metamask/utils": true,
-<<<<<<< HEAD
         "viem>@noble/curves": true,
-=======
         "viem>webauthn-p256>@noble/curves": true,
->>>>>>> origin/main
         "@noble/hashes": true,
         "@metamask/utils>@scure/base": true
       }
@@ -2235,11 +2232,8 @@
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils": true,
-<<<<<<< HEAD
         "viem>@noble/curves": true,
-=======
         "viem>webauthn-p256>@noble/curves": true,
->>>>>>> origin/main
         "@noble/hashes": true
       }
     },
@@ -2643,12 +2637,10 @@
         "TextEncoder": true
       },
       "packages": {
-<<<<<<< HEAD
         "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true
       }
     },
     "viem>@noble/curves": {
-=======
         "viem>@scure/bip32>@noble/hashes": true
       }
     },
@@ -2661,7 +2653,6 @@
       }
     },
     "viem>webauthn-p256>@noble/curves": {
->>>>>>> origin/main
       "globals": {
         "TextEncoder": true
       },
@@ -2681,15 +2672,12 @@
         "crypto": true
       }
     },
-<<<<<<< HEAD
-=======
     "viem>@scure/bip32>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
       }
     },
->>>>>>> origin/main
     "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
