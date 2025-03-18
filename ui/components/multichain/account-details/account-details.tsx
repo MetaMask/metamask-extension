@@ -102,8 +102,8 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
           address,
         });
 
-  const isAbleToExportSRP = isAbleToRevealSrp(account, keyrings);
-  const displayExportSRPQuiz = keyringId && isAbleToExportSRP;
+  const isAbleToExportSrp = isAbleToRevealSrp(account, keyrings);
+  const displayExportSrpQuiz = keyringId && isAbleToExportSrp;
 
   ///: END:ONLY_INCLUDE_IF
   const [attemptingExport, setAttemptingExport] = useState<AttemptExportState>(

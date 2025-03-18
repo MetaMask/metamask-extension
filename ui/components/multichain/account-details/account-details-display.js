@@ -58,7 +58,7 @@ export const AccountDetailsDisplay = ({
   const exportPrivateKeyFeatureEnabled = isAbleToExportAccount(keyring?.type);
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   const keyrings = useSelector(getMetaMaskKeyrings);
-  const exportSRPFeatureEnabled = isAbleToRevealSrp(account, keyrings);
+  const exportSrpFeatureEnabled = isAbleToRevealSrp(account, keyrings);
   ///: END:ONLY_INCLUDE_IF
 
   const chainId = useSelector(getCurrentChainId);

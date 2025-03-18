@@ -152,7 +152,7 @@ class AccountListPage {
     tag: 'button',
   };
 
-  private readonly exportSRPButton = {
+  private readonly exportSrpButton = {
     text: 'Show secret recovery phrase',
     tag: 'button',
   };
@@ -333,11 +333,11 @@ class AccountListPage {
     // Run if there are multiple srps
     if (accountType === ACCOUNT_TYPE.Ethereum && srpIndex) {
       const srpName = `Secret Recovery Phrase ${srpIndex.toString()}`;
-      // We click twice because, the first click is to go to the SRP List
-      // from there we select the SRP that we want to add the account to
+      // First, we first click here to go to the SRP List.
       await this.driver.clickElement({
         text: 'Secret Recovery Phrase 1',
       });
+      // Then, we select the SRP that we want to add the account to.
       await this.driver.clickElement({
         text: srpName,
       });
@@ -752,14 +752,14 @@ class AccountListPage {
     await this.driver.clickElement(this.importSrpConfirmButton);
   }
 
-  async startExportSRPForAccount(accountLabel: string): Promise<void> {
+  async startExportSrpForAccount(accountLabel: string): Promise<void> {
     console.log(`Exporting SRP for account ${accountLabel}`);
     await this.openAccountDetailsModal(accountLabel);
     await this.driver.delay(500);
     await this.driver.clickElement(this.exportSRPButton);
   }
 
-  async check_accountBelongsToSRP(
+  async check_accountBelongsToSrp(
     accountName: string,
     srpIndex: number,
   ): Promise<void> {
@@ -772,6 +772,9 @@ class AccountListPage {
     const privacySettings = new PrivacySettings(this.driver);
     await privacySettings.openSRPList();
 
+    if (srpIndex === 0) {
+      throw new Error('SRP index must be > 0');
+    }
     const srps = await this.driver.findElements('.select-srp__container');
     const selectedSrp = srps[srpIndex - 1];
 

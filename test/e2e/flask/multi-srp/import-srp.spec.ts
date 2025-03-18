@@ -7,6 +7,7 @@ import { SECOND_TEST_E2E_SRP, withMultiSRP } from './common-multi-srp';
 
 describe('Multi SRP - Import SRP', function (this: Suite) {
   const testPassword = 'correct horse battery staple';
+  
   it('successfully imports a new srp', async function () {
     await withMultiSRP(
       { title: this.test?.fullTitle() },
@@ -23,6 +24,7 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
       async (driver: Driver) => {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
+        
         const accountListPage = new AccountListPage(driver);
         await accountListPage.check_pageIsLoaded();
         await accountListPage.startExportSRPForAccount('Account 2');

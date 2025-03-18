@@ -183,7 +183,7 @@ class PrivacySettings {
     return (await this.driver.findElement(this.displayedSrpText)).getText();
   }
 
-  async openSRPList(): Promise<void> {
+  async openSrpList(): Promise<void> {
     // THe e2e clicks the reveal SRP too quickly before the component checks if there are multiple SRPs
     await this.driver.delay(1000);
     await this.driver.clickElement(this.revealSrpButton);

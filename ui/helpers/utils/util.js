@@ -720,23 +720,28 @@ export const isAbleToRevealSrp = (accountToExport, keyrings) => {
   const {
     metadata: {
       keyring: { type },
+      snap,
+    },
+    options: {
+      entropySource,
     },
   } = accountToExport;
-  if (type !== KeyringTypes.hd && type !== KeyringTypes.snap) {
-    return false;
-  }
 
   // All hd keyrings can reveal their srp.
   if (type === KeyringTypes.hd) {
     return true;
   }
 
-  // Not all snaps have an entropy source
-  const keyringId = accountToExport.options?.entropySource;
-  return keyrings.some(
-    (keyring) =>
-      keyring.type === KeyringTypes.hd && keyring.metadata.id === keyringId,
-  );
+  // We only consider 1st-party Snaps that have an entropy source.
+  if (type === KeyringTypes.snap && isMultichainWalletSnap(snap.id) && entropySource) {
+    const keyringId = entropySource;
+    return keyrings.some(
+      (keyring) =>
+        keyring.type === KeyringTypes.hd && keyring.metadata.id === keyringId,
+    );
+  }
+  
+  return false;
 };
 
 /**

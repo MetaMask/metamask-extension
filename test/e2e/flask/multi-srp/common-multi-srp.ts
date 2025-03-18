@@ -9,7 +9,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 export const SECOND_TEST_E2E_SRP =
   'bench top weekend buyer spoon side resist become detect gauge eye feed';
 
-export async function withMultiSRP(
+export async function withMultiSrp(
   { title }: { title?: string },
   test: (driver: Driver) => Promise<void>,
   srpToUse: string = SECOND_TEST_E2E_SRP,

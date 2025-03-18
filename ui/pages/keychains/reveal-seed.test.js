@@ -14,13 +14,13 @@ import { Modal } from '../../components/app/modals';
 import configureStore from '../../store/store';
 import RevealSeedPage from './reveal-seed';
 
-const mockSuccessfulSRPReveal = () => {
+const mockSuccessfulSrpReveal = () => {
   return (dispatch) => {
     dispatch({ type: 'MOCK_REQUEST_REVEAL_SEED_WORDS' });
     return Promise.resolve('test srp');
   };
 };
-const mockUnsuccessfulSRPReveal = () => {
+const mockUnsuccessfulSrpReveal = () => {
   return () => {
     return Promise.reject(new Error('bad password'));
   };
