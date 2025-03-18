@@ -2380,6 +2380,20 @@ export default class MetamaskController extends EventEmitter {
     if (this.onboardingController.state.completedOnboarding) {
       this.postOnboardingInitialization();
     }
+
+    /**
+     * For this PoC, place the websocket connection here
+     * And you can call this to refresh token balances:
+     * this.tokenBalancesController.updateBalancesByChainId({ chainId: '0x1' })
+     *
+     * TODO (outside of PoC):
+     * - closing connection
+     * - handling refresh on multiple chains
+     * - validating that a user has a chain active before performing refresh
+     * - network switching
+     * - account switching
+     * - fallback polling for non-supported chains, or if Basic Functionality is off (where we cannot talk to our APIs)
+     */
   }
 
   // Provides a method for getting feature flags for the multichain
@@ -3293,7 +3307,6 @@ export default class MetamaskController extends EventEmitter {
       nftController,
       nftDetectionController,
       currencyRateController,
-      tokenBalancesController,
       tokenDetectionController,
       ensController,
       tokenListController,
@@ -4110,13 +4123,10 @@ export default class MetamaskController extends EventEmitter {
       tokenListStopPollingByPollingToken:
         tokenListController.stopPollingByPollingToken.bind(tokenListController),
 
-      tokenBalancesStartPolling: tokenBalancesController.startPolling.bind(
-        tokenBalancesController,
-      ),
-      tokenBalancesStopPollingByPollingToken:
-        tokenBalancesController.stopPollingByPollingToken.bind(
-          tokenBalancesController,
-        ),
+      // eslint-disable-next-line no-empty-function, no-unused-vars
+      tokenBalancesStartPolling: (...args) => {}, // no-op
+      // eslint-disable-next-line no-empty-function, no-unused-vars
+      tokenBalancesStopPollingByPollingToken: (...args) => {}, // no-op,
 
       // GasFeeController
       gasFeeStartPolling: gasFeeController.startPolling.bind(gasFeeController),
@@ -7707,6 +7717,9 @@ export default class MetamaskController extends EventEmitter {
     await this._createTransactionNotifcation(transactionMeta);
     await this._updateNFTOwnership(transactionMeta);
     this._trackTransactionFailure(transactionMeta);
+
+    // interesting that we already refetch on transactions.
+    // We can probably remove this once we have a socket impl.
     await this.tokenBalancesController.updateBalancesByChainId({
       chainId: transactionMeta.chainId,
     });
