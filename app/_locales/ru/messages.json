@@ -5962,9 +5962,6 @@
   "twelveHrTitle": {
     "message": "12 ч:"
   },
-  "typeYourSRP": {
-    "message": "Введите секретную фразу для восстановления"
-  },
   "u2f": {
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
