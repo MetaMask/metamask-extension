@@ -134,8 +134,8 @@ async function setupMocking(
       ) {
         // If the URL is whitelisted, we pass the request as it is, to the live server.
         return {};
-      };
-      console.log('URL not whitelisted ===============', url)
+      }
+      console.log('URL not whitelisted ===============', url);
       return {
         // If the URL is not whitelisted nor blacklisted, we send the request to a mocked endpoint.
         url: 'https://mock.all',

@@ -133,6 +133,7 @@ const WHITE_LISTED_URLS = [
   'https://swap.metaswap.codefi.network/networks/1/topAssets',
   'https://tokens.api.cx.metamask.io/v3/assets?assetIds=solana%3A5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp%2Fslip44%3A501',
   'https://tokens.api.cx.metamask.io/v3/assets?assetIds=solana%3A5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp%2Fslip44%3A501%2Csolana%3A5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp%2Ftoken%3A2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
+  'https://tokens.api.cx.metamask.io/v3/assets?assetIds=solana%3AEtWTRABZaYq6iMfeYKouRu166VU2xqa1%2Fslip44%3A501',
   'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/',
   'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/networks',
   'https://unresponsive-rpc.test/',
