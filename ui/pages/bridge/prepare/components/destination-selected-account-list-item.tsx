@@ -23,9 +23,8 @@ import {
 import { getUseBlockie } from '../../../../selectors';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
-// eslint-disable-next-line import/no-restricted-paths
-import { t } from '../../../../../app/scripts/translate';
-import { DestinationAccount } from '../../../../../shared/types/bridge';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { DestinationAccount } from './types';
 
 type DestinationSelectedAccountListItemProps = {
   account: DestinationAccount;
@@ -37,6 +36,7 @@ const DestinationSelectedAccountListItem: React.FC<
   DestinationSelectedAccountListItemProps
 > = ({ account, selected, onClick }) => {
   const useBlockie = useSelector(getUseBlockie);
+  const t = useI18nContext();
   const isExternalAccount = 'isExternal' in account && account.isExternal;
 
   return (

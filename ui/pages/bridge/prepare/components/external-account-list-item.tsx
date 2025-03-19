@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
-import { ExternalAccount } from '../../../../../shared/types/bridge';
+import { ExternalAccount } from '../types';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import {
   AvatarAccount,
@@ -20,10 +20,8 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { getUseBlockie } from '../../../../selectors';
-// eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
-// eslint-disable-next-line import/no-restricted-paths
-import { t } from '../../../../../app/scripts/translate';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 type ExternalAccountListItemProps = {
   account: ExternalAccount;
@@ -35,14 +33,13 @@ export const ExternalAccountListItem: React.FC<
   ExternalAccountListItemProps
 > = ({ account, selected, onClick }) => {
   const useBlockie = useSelector(getUseBlockie);
+  const t = useI18nContext();
 
   return (
     <Box
       display={Display.Flex}
       padding={4}
-      backgroundColor={
-        selected ? BackgroundColor.primaryMuted : BackgroundColor.transparent
-      }
+      backgroundColor={BackgroundColor.transparent}
       className={classnames('multichain-account-list-item', {
         'multichain-account-list-item--selected': selected,
       })}

@@ -27,10 +27,7 @@ import { t } from '../../../../../app/scripts/translate';
 // eslint-disable-next-line import/no-restricted-paths
 import { isEthAddress } from '../../../../../app/scripts/lib/multichain/address';
 import { isSolanaAddress } from '../../../../../shared/lib/multichain/accounts';
-import {
-  ExternalAccount,
-  DestinationAccount,
-} from '../../../../../shared/types/bridge';
+import { DestinationAccount } from '../types';
 import DestinationSelectedAccountListItem from './destination-selected-account-list-item';
 import DestinationAccountListItem from './destination-account-list-item';
 import { ExternalAccountListItem } from './external-account-list-item';
@@ -83,7 +80,7 @@ export const DestinationAccountPicker = ({
         name: `${trimmedQuery.slice(0, 6)}...${trimmedQuery.slice(-4)}`,
       },
       isExternal: true,
-    } as ExternalAccount;
+    };
   }, [accounts, isValidAddress, searchQuery]);
 
   const filteredAccounts = useMemo(

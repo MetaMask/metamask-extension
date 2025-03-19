@@ -12,7 +12,7 @@ import {
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { formatChainIdToCaip } from '../../../../shared/modules/bridge-utils/caip-formatters';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { DestinationAccount } from '../../../../shared/types/bridge';
+import { DestinationAccount } from '../prepare/types';
 
 export const useDestinationAccount = (isSwap = false) => {
   const [selectedDestinationAccount, setSelectedDestinationAccount] =

@@ -1,4 +1,3 @@
-import { InternalAccount } from '@metamask/keyring-internal-api';
 import type {
   CaipAccountId,
   CaipAssetId,
@@ -235,13 +234,3 @@ export type TokenV3Asset = {
   name: string;
   decimals: number;
 };
-
-export type ExternalAccount = {
-  address: string;
-  metadata: {
-    name: string;
-  };
-  isExternal: true;
-};
-
-export type DestinationAccount = InternalAccount | ExternalAccount;
