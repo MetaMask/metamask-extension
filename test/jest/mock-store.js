@@ -1,6 +1,6 @@
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import {
-  DEFAULT_BRIDGE_STATE,
+  getDefaultBridgeControllerState,
   BRIDGE_PREFERRED_GAS_ESTIMATE,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
@@ -783,7 +783,7 @@ export const createBridgeMockStore = (
       ...mockTokenData,
       ...metamaskStateOverrides,
       ...{
-        ...DEFAULT_BRIDGE_STATE,
+        ...getDefaultBridgeControllerState(),
         bridgeFeatureFlags: {
           ...featureFlagOverrides,
           extensionConfig: {

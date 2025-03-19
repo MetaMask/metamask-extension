@@ -5046,9 +5046,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@npm:@metamask-previews/bridge-controller@8.0.0-preview-03c4c9c3":
-  version: 8.0.0-preview-03c4c9c3
-  resolution: "@metamask-previews/bridge-controller@npm:8.0.0-preview-03c4c9c3"
+"@metamask/bridge-controller@npm:@metamask-previews/bridge-controller@9.0.0-preview-8c783cb1":
+  version: 9.0.0-preview-8c783cb1
+  resolution: "@metamask-previews/bridge-controller@npm:9.0.0-preview-8c783cb1"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -5058,13 +5058,13 @@ __metadata:
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/controller-utils": "npm:^11.6.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/polling-controller": "npm:^12.0.3"
+    "@metamask/polling-controller": "npm:^13.0.0"
     "@metamask/utils": "npm:^11.2.0"
   peerDependencies:
-    "@metamask/accounts-controller": ^26.0.0
-    "@metamask/network-controller": ^22.0.0
-    "@metamask/transaction-controller": ^50.0.0
-  checksum: 10/59f2bb6baad0e0fc11081a70eed0cd3d6bceafc3c9cea7c344655602aee0c3dd40910fdaee4c3b227cf419165def93ae5426fa7a2816082a34d3adb1b398f4e5
+    "@metamask/accounts-controller": ^27.0.0
+    "@metamask/network-controller": ^23.0.0
+    "@metamask/transaction-controller": ^51.0.0
+  checksum: 10/76f89331075da63eb1472ed8d054835bf934f0ed87e26e300db2d4490cb1e5db3bd4418701a03bf2dee17a6c18decdddc284ad231405a78b8ea1bf9d002d38c2
   languageName: node
   linkType: hard
 
@@ -6055,6 +6055,22 @@ __metadata:
   peerDependencies:
     "@metamask/network-controller": ^22.0.0
   checksum: 10/4eb410beaa6f8ff2e089f9aa9eee9ad730d70a596c839df2f4c1aa873466722f4dc95e9cf1c68c055d89c7222d4476241c1d1c45d9b2583ac245cd8fa08144ab
+  languageName: node
+  linkType: hard
+
+"@metamask/polling-controller@npm:^13.0.0":
+  version: 13.0.0
+  resolution: "@metamask/polling-controller@npm:13.0.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/controller-utils": "npm:^11.6.0"
+    "@metamask/utils": "npm:^11.2.0"
+    "@types/uuid": "npm:^8.3.0"
+    fast-json-stable-stringify: "npm:^2.1.0"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/network-controller": ^23.0.0
+  checksum: 10/9d3750fe55f7d5829fd5cd6f1750558f66bb8449341d368a34e110b8bc2ba3f43e6805358d0d90fa9c8a8255ea38c4d8063ef0a4bd7702ed75b0251e4002d9ab
   languageName: node
   linkType: hard
 
