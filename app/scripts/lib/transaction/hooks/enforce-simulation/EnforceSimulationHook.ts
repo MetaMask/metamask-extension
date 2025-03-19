@@ -68,6 +68,7 @@ export class EnforceSimulationHook {
       accountAddress: from,
       gatorEnv: GATOR_ENV,
       simulationData: simulationData as SimulationData,
+      txValue: BigInt(txParams.value ?? '0x0'),
     });
 
     log('Delegation', delegation);
