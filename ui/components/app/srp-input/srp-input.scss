@@ -4,11 +4,11 @@
   &__container {
     display: grid;
     grid-template-areas:
-    'title'
-    'paste-tip'
-    'input'
-    'error'
-    'too-many-words-error'
+      'title'
+      'paste-tip'
+      'input'
+      'error'
+      'too-many-words-error';
   }
 
   &__dropdown-container {
