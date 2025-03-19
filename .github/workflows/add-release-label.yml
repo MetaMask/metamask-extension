@@ -18,7 +18,7 @@ jobs:
           fetch-depth: 0 # This is needed to checkout all branches
 
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+        uses: metamask/github-tools/.github/actions/setup-environment@4f594ca7d90378da66b7efce987eff379934524b
 
       - name: Get the next semver version
         id: get-next-semver-version

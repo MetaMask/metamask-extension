@@ -59,7 +59,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+        uses: metamask/github-tools/.github/actions/setup-environment@4f594ca7d90378da66b7efce987eff379934524b
       - name: Get commit SHA
         id: commit-sha
         run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
@@ -78,7 +78,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+        uses: metamask/github-tools/.github/actions/setup-environment@4f594ca7d90378da66b7efce987eff379934524b
       - name: Update LavaMoat build policy
         run: yarn lavamoat:build:auto
       - name: Cache build policy
@@ -107,7 +107,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+        uses: metamask/github-tools/.github/actions/setup-environment@4f594ca7d90378da66b7efce987eff379934524b
       - name: Restore build policy
         uses: actions/cache/restore@v4
         with:
