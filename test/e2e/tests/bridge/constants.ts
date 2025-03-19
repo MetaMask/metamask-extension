@@ -11,6 +11,14 @@ export const DEFAULT_FEATURE_FLAGS_RESPONSE: FeatureFlagResponse = {
       '59144': { isActiveSrc: true, isActiveDest: true },
     },
   },
+  'mobile-config': {
+    refreshRate: 30,
+    maxRefreshCount: 5,
+    support: false,
+    chains: {
+      '1': { isActiveSrc: true, isActiveDest: true },
+    },
+  },
 };
 
 export const LOCATOR = {
