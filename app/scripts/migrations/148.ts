@@ -75,7 +75,7 @@ function transformState(state: Record<string, unknown>) {
       );
     }
 
-    networkConfiguration.chainId = toHex(networkConfiguration.chainId);
+    networkConfiguration.chainId = chainIdAsHex;
 
     if (chainIdAsHex !== chainId) {
       delete networkConfigurationsByChainId[chainId];

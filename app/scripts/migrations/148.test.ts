@@ -116,13 +116,54 @@ describe(`migration #${expectedVersion}`, () => {
     expect(newVersionedData).toStrictEqual(expectedVersionedData);
   });
 
-  it('does nothing if state.NetworkController.networkConfigurationsByChainId contains any properties that cannot be converted to hex strings', async () => {
+  it('does nothing if state.NetworkController.networkConfigurationsByChainId contains any keys that cannot be converted to hex strings', async () => {
     const oldVersionedData = {
       meta: { version: previousVersion },
       data: {
         NetworkController: {
           networkConfigurationsByChainId: {
             'unconvertable-string': {
+              chainId: '0x1',
+            },
+            '2': {
+              chainId: '2',
+            },
+          },
+        },
+      },
+    };
+    const expectedVersionedData = {
+      meta: { version: expectedVersion },
+      data: oldVersionedData.data,
+    };
+
+    const newVersionedData = await migrate(oldVersionedData);
+
+    expect(newVersionedData).toStrictEqual(expectedVersionedData);
+  });
+
+  it('corrects a chainId property so it matches the key of the network configuration, even after converting the key', async () => {
+    const oldVersionedData = {
+      meta: { version: previousVersion },
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            '1': {
+              chainId: '2345',
+            },
+            '0x2': {
+              chainId: '0x2',
+            },
+          },
+        },
+      },
+    };
+    const expectedVersionedData = {
+      meta: { version: expectedVersion },
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            '0x1': {
               chainId: '0x1',
             },
             '0x2': {
@@ -132,43 +173,13 @@ describe(`migration #${expectedVersion}`, () => {
         },
       },
     };
-    const expectedVersionedData = {
-      meta: { version: expectedVersion },
-      data: oldVersionedData.data,
-    };
 
     const newVersionedData = await migrate(oldVersionedData);
 
     expect(newVersionedData).toStrictEqual(expectedVersionedData);
   });
 
-  it('does nothing if any value in state.NetworkController.networkConfigurationsByChainId contains a chainId that cannot be converted to a hex string', async () => {
-    const oldVersionedData = {
-      meta: { version: previousVersion },
-      data: {
-        NetworkController: {
-          networkConfigurationsByChainId: {
-            '0x1': {
-              chainId: 'unconvertable-string',
-            },
-            '0x2': {
-              chainId: '0x2',
-            },
-          },
-        },
-      },
-    };
-    const expectedVersionedData = {
-      meta: { version: expectedVersion },
-      data: oldVersionedData.data,
-    };
-
-    const newVersionedData = await migrate(oldVersionedData);
-
-    expect(newVersionedData).toStrictEqual(expectedVersionedData);
-  });
-
-  it('returns a new version of the data with decimal properties in state.NetworkController.networkConfigurationsByChainId converted to hex strings', async () => {
+  it('returns a new version of the data with decimal keys in state.NetworkController.networkConfigurationsByChainId converted to hex strings', async () => {
     const oldVersionedData = {
       meta: { version: previousVersion },
       data: {
