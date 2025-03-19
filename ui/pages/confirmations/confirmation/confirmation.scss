@@ -5,14 +5,12 @@
 
 .confirmation-page {
   $height-screen-sm-min: 720px;
-
   $width-screen-sm-min: 85vw;
   $width-screen-md-min: 80vw;
   $width-screen-lg-min: 62vw;
 
   box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
   transition: margin-top 0.3s ease-in-out, margin-bottom 0.3s ease-in-out;
-
   width: 100%;
   height: auto;
   position: relative;

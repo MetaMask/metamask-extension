@@ -1,10 +1,11 @@
 @use "design-system";
+
 @import 'components/';
 
 .multichain-page {
   // TODO: Add page sizes
-
   $height-screen-sm-min: 720px;
+
   transition: padding-top 0.3s ease-in-out, padding-bottom 0.3s ease-in-out;
 
   @media screen and (min-width: design-system.$screen-sm-min) and (min-height: $height-screen-sm-min) {
@@ -18,7 +19,8 @@
     }
 
     &__inner-container {
-      box-shadow: var(--shadow-size-lg) var(--color-shadow-default),
+      box-shadow:
+        var(--shadow-size-lg) var(--color-shadow-default),
         calc(var(--shadow-size-lg) * -1) var(--color-shadow-default),
         0 var(--shadow-size-lg) var(--color-shadow-default);
     }
