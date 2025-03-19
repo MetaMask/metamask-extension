@@ -2305,6 +2305,7 @@ export async function getTokenStandardAndDetails(
   address: string,
   userAddress?: string,
   tokenId?: string,
+  networkClientId?: string,
 ): Promise<
   Awaited<
     ReturnType<AssetsContractController['getTokenStandardAndDetails']>
@@ -2314,6 +2315,7 @@ export async function getTokenStandardAndDetails(
     address,
     userAddress,
     tokenId,
+    networkClientId,
   ]);
 }
 

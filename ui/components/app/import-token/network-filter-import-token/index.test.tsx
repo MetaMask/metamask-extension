@@ -66,7 +66,11 @@ describe('NetworkFilterImportToken', () => {
       }
       return undefined;
     });
-    render(<NetworkFilterImportToken {...props} />);
-    expect(screen.getByText('Current network')).not.toBeInTheDocument();
+    const { container } = renderWithProvider(
+      <NetworkFilterImportToken {...props} />,
+      store,
+    );
+    expect(screen.getByText('Popular networks')).toBeInTheDocument();
+    expect(container).toMatchSnapshot();
   });
 });

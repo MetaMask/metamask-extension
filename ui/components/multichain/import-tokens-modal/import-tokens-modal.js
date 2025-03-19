@@ -13,7 +13,6 @@ import { Tab, Tabs } from '../../ui/tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
-  getNetworkConfigurations,
   getSelectedNetworkClientId,
 } from '../../../../shared/modules/selectors/networks';
 import {
@@ -33,6 +32,7 @@ import {
   getPendingTokens,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   selectERC20TokensByChain,
+  getNetworkConfigurationIdByChainId,
 } from '../../../selectors';
 import {
   addImportedTokens,
@@ -101,8 +101,8 @@ import {
   MetaMetricsTokenEventSource,
 } from '../../../../shared/constants/metametrics';
 import { NetworkFilterImportToken } from '../../app/import-token/network-filter-import-token';
+import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
 import { ImportTokensModalConfirm } from './import-tokens-modal-confirm';
-import { getMultichainNetworkConfigurationsByChainId } from '../../../selectors/multichain';
 
 export const ImportTokensModal = ({ onClose }) => {
   const t = useI18nContext();
@@ -150,9 +150,7 @@ export const ImportTokensModal = ({ onClose }) => {
   const tokens = useSelector((state) => state.metamask.tokens);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const contractExchangeRates = useSelector(getTokenExchangeRates);
-  const networkConfigurations = useSelector(
-    getMultichainNetworkConfigurationsByChainId,
-  );
+  const networkConfigurations = useSelector(getNetworkConfigurationIdByChainId);
 
   const [customAddress, setCustomAddress] = useState('');
   const [customAddressError, setCustomAddressError] = useState(null);
@@ -429,6 +427,51 @@ export const ImportTokensModal = ({ onClose }) => {
     setMode('confirm');
   };
 
+  const handleCustomNetworkChangeAllChains = async (value) => {
+    const address = value.trim();
+
+    setCustomAddress(address);
+    setCustomAddressError(null);
+    setNftAddressError(null);
+    setDecimalAutoFilled(false);
+    setMainnetTokenWarning(null);
+    setShowSymbolAndDecimals(false);
+
+    const addressIsValid = isValidHexAddress(address, {
+      allowNonPrefixed: false,
+    });
+
+    const standardAddress = addHexPrefix(address).toLowerCase();
+
+    // const isMainnetToken = Object.keys(STATIC_MAINNET_TOKEN_LIST).some(
+    //   (key) => key.toLowerCase() === address.toLowerCase(),
+    // );
+
+    console.log('handleCustomNetworkChange ....', value);
+
+    const chainIds = Object.keys(networkConfigurations);
+
+    for (const networkId of chainIds) {
+      let standard;
+      console.log('networkId ..........', networkId);
+      if (addressIsValid) {
+        try {
+          ({ standard } = await getTokenStandardAndDetails(
+            standardAddress,
+            selectedAccount.address,
+            null,
+            networkConfigurations[networkId]?.rpcEndpoints[
+              networkConfigurations[networkId]?.defaultRpcEndpointIndex
+            ]?.networkClientId,
+          ));
+          console.log('standard ..........', standard, networkId);
+        } catch (error) {
+          // ignore
+        }
+      }
+    }
+  };
+
   const handleCustomAddressChange = async (value) => {
     const address = value.trim();
 
@@ -598,9 +641,15 @@ export const ImportTokensModal = ({ onClose }) => {
                         </BannerAlert>
                       </Box>
                     )}
-                    <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-                      <NetworkFilterImportToken buttonDataTestId="test-import-tokens-drop-down" />
-                    </Box>
+
+                    {FEATURED_NETWORK_CHAIN_IDS.some(
+                      (networkId) => networkId === currentNetwork.chainId,
+                    ) && (
+                      <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+                        <NetworkFilterImportToken buttonDataTestId="test-import-tokens-drop-down" />
+                      </Box>
+                    )}
+
                     <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
                       <TokenSearch
                         searchClassName="import-tokens-modal__button-search"
@@ -698,6 +747,14 @@ export const ImportTokensModal = ({ onClose }) => {
                           </BannerAlert>
                         </Box>
                       )}
+                      {FEATURED_NETWORK_CHAIN_IDS.some(
+                        (networkId) => networkId === currentNetwork.chainId,
+                      ) && (
+                        <Box padding={4}>
+                          <NetworkFilterImportToken buttonDataTestId="test-import-tokens-drop-down" />
+                        </Box>
+                      )}
+
                       <Box>
                         <FormTextField
                           paddingLeft={4}
@@ -706,7 +763,11 @@ export const ImportTokensModal = ({ onClose }) => {
                           label={t('tokenContractAddress')}
                           value={customAddress}
                           onChange={(e) =>
-                            handleCustomAddressChange(e.target.value)
+                            isTokenNetworkFilterEqualCurrentNetwork
+                              ? handleCustomAddressChange(e.target.value)
+                              : handleCustomNetworkChangeAllChains(
+                                  e.target.value,
+                                )
                           }
                           helpText={
                             customAddressError ||
