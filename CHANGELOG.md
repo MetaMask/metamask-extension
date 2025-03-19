@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.12.1]
-### Uncategorized
-- Fix: Disable CSP override feature that is breaking sites
+### Fixed
+- Disable CSP override feature that is breaking certain sites ([#31107](https://github.com/MetaMask/metamask-extension/pull/31107))
 
 ## [12.12.0]
 ### Added
