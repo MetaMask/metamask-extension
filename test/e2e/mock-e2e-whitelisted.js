@@ -101,6 +101,7 @@ const WHITE_LISTED_URLS = [
   'https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD',
   'https://min-api.cryptocompare.com/data/price?fsym=MATIC&tsyms=USD',
   'https://min-api.cryptocompare.com/data/price?fsym=TEST&tsyms=USD',
+  'https://min-api.cryptocompare.com/data/pricemulti?fsyms=btc%2Csol&tsyms=usd',
   'https://nft.api.cx.metamask.io/collections?contract=0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85&chainId=1',
   'https://nft.api.cx.metamask.io/collections?chainId=0x539&contract=0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947',
   'https://o1377931.ingest.sentry.io/api/6689755/envelope/?sentry_key=be397d53390141cda058e18f3749c8e4&sentry_version=7&sentry_client=sentry.javascript.react%2F7.102.1',
@@ -162,10 +163,12 @@ const WHITE_LISTED_HOSTS = [
   'price.api.cx.metamask.io',
   'registry.npmjs.org',
   'sentry.io',
-  'snaps.metamask.io/',
+  'solana-devnet.infura.io',
+  'snaps.metamask.io',
   'shavar.services.mozilla.com',
   'start.metamask.io',
   'token.api.cx.metamask.io',
+  'tokens.api.cx.metamask.',
   'widget.intercom.io',
 ];
 
