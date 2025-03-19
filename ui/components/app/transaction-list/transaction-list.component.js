@@ -39,6 +39,7 @@ import SmartTransactionListItem from '../transaction-list-item/smart-transaction
 import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
   getSelectedInternalAccount,
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -91,7 +92,6 @@ import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-men
 import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
 import { ActivityListItem } from '../../multichain';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
