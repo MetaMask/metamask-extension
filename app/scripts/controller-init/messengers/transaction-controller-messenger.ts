@@ -26,6 +26,7 @@ import {
 import { SmartTransactionsControllerSmartTransactionEvent } from '@metamask/smart-transactions-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { KeyringControllerSignEip7702AuthorizationAction } from '@metamask/keyring-controller';
+import { SignatureControllerActions } from '@metamask/signature-controller';
 import {
   SwapsControllerSetApproveTxIdAction,
   SwapsControllerSetTradeTxIdAction,
@@ -40,6 +41,7 @@ type MessengerActions =
   | NetworkControllerGetEIP1559CompatibilityAction
   | NetworkControllerGetNetworkClientByIdAction
   | RemoteFeatureFlagControllerGetStateAction
+  | SignatureControllerActions
   | SwapsControllerSetApproveTxIdAction
   | SwapsControllerSetTradeTxIdAction;
 
@@ -104,6 +106,7 @@ export function getTransactionControllerInitMessenger(
       'ApprovalController:updateRequestState',
       'NetworkController:getEIP1559Compatibility',
       'RemoteFeatureFlagController:getState',
+      'SignatureController:signDelegation',
       'SwapsController:setApproveTxId',
       'SwapsController:setTradeTxId',
     ],

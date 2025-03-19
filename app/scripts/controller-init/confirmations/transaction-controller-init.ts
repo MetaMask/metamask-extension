@@ -45,6 +45,7 @@ import {
 import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import { ControllerFlatState } from '../controller-list';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
+import { EnforceSimulationHook } from '../../lib/transaction/hooks/enforce-simulation/EnforceSimulationHook';
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
@@ -153,6 +154,9 @@ export const TransactionControllerInit: ControllerInitFunction<
           transactionMeta,
           rawTx,
         ),
+      beforeSign: new EnforceSimulationHook({
+        messenger: initMessenger,
+      }).getHook(),
     },
     // @ts-expect-error Keyring controller expects TxData returned but TransactionController expects TypedTransaction
     sign: (...args) => keyringController().signTransaction(...args),

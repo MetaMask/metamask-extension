@@ -4814,6 +4814,45 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask-private/delegation-abis@file:.yalc/@metamask-private/delegation-abis::locator=metamask-crx%40workspace%3A.":
+  version: 0.6.1
+  resolution: "@metamask-private/delegation-abis@file:.yalc/@metamask-private/delegation-abis#.yalc/@metamask-private/delegation-abis::hash=3f25fc&locator=metamask-crx%40workspace%3A."
+  checksum: 10/dbc27ff22ba39ea1e21f0b2eeaa437fd10b32f6bffc5af9b9f7f23eaec2a0d7884df04abe5aadc22f7ac720129a4131b437c96747c31c58d2cde6b8dfb31408e
+  languageName: node
+  linkType: hard
+
+"@metamask-private/delegation-deployments@file:.yalc/@metamask-private/delegation-deployments::locator=metamask-crx%40workspace%3A.":
+  version: 0.6.1
+  resolution: "@metamask-private/delegation-deployments@file:.yalc/@metamask-private/delegation-deployments#.yalc/@metamask-private/delegation-deployments::hash=60f609&locator=metamask-crx%40workspace%3A."
+  checksum: 10/f427a1bbf954f74dd449e605624dfa3afda77afae60f9a71f38a1a18104a173580323c2f20e67dfe958fd585c463c81141dd1e061b498dc3af05f1b14eced9a3
+  languageName: node
+  linkType: hard
+
+"@metamask-private/delegation-utils@file:.yalc/@metamask-private/delegation-utils::locator=metamask-crx%40workspace%3A.":
+  version: 0.6.1
+  resolution: "@metamask-private/delegation-utils@file:.yalc/@metamask-private/delegation-utils#.yalc/@metamask-private/delegation-utils::hash=1d07eb&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@metamask-private/delegation-abis": "npm:^0.6.1"
+    "@metamask-private/delegation-deployments": "npm:^0.6.1"
+    buffer: "npm:^6.0.3"
+  peerDependencies:
+    viem: ">=2.18.2 <3.0.0"
+  checksum: 10/9c77f05f9f5e6e1b62bf4691b2b49a16ea3e0a7bfbb62ae5cf244b89938a669c6d18fef1e0f94e5a13e71a5c46b75517c4edf2fb757ff534cc03d4e5550319b1
+  languageName: node
+  linkType: hard
+
+"@metamask-private/delegator-core-viem@file:.yalc/@metamask-private/delegator-core-viem::locator=metamask-crx%40workspace%3A.":
+  version: 0.6.1
+  resolution: "@metamask-private/delegator-core-viem@file:.yalc/@metamask-private/delegator-core-viem#.yalc/@metamask-private/delegator-core-viem::hash=0c360d&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@metamask-private/delegation-utils": "npm:^0.6.1"
+    webauthn-p256: "npm:^0.0.5"
+  peerDependencies:
+    viem: ">=2.18.2 <3.0.0"
+  checksum: 10/16789f98ffe204a803e54baaff62893e4d524043894fc33dbcee19136d6a91d2982fd210c16a69091aef1c17ddbbfb454aea88674a32041306c0325ed5cdc2be
+  languageName: node
+  linkType: hard
+
 "@metamask/abi-utils@npm:^2.0.2, @metamask/abi-utils@npm:^2.0.3, @metamask/abi-utils@npm:^2.0.4":
   version: 2.0.4
   resolution: "@metamask/abi-utils@npm:2.0.4"
@@ -6225,24 +6264,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@npm:^26.0.0":
-  version: 26.0.0
-  resolution: "@metamask/signature-controller@npm:26.0.0"
+"@metamask/signature-controller@file:.yalc/@metamask/signature-controller::locator=metamask-crx%40workspace%3A.":
+  version: 24.0.0
+  resolution: "@metamask/signature-controller@file:.yalc/@metamask/signature-controller#.yalc/@metamask/signature-controller::hash=a2bbf6&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/controller-utils": "npm:^11.6.0"
+    "@metamask/controller-utils": "npm:^11.5.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/utils": "npm:^11.2.0"
     jsonschema: "npm:^1.4.1"
     lodash: "npm:^4.17.21"
     uuid: "npm:^8.3.2"
   peerDependencies:
-    "@metamask/accounts-controller": ^26.0.0
     "@metamask/approval-controller": ^7.0.0
-    "@metamask/keyring-controller": ^21.0.0
+    "@metamask/keyring-controller": ^20.0.0
     "@metamask/logging-controller": ^6.0.0
     "@metamask/network-controller": ^22.0.0
-  checksum: 10/bdde18b1c9462eb0eda1f1f3d5c59e4f08e7aa2763c4530f4188e05c9415d8465a7aedaf0c3f3265095950b109d3a55024342f8e57964f6661aa51c0b7ae935e
+  checksum: 10/4a5c1c7042a21d707f8d4d3eb6da7434562df65335ee5ad7b8e22449e8ee9bfbf542bd8810f881fbc89642b02ab4408e20a39e6a297091fa734926a4af51017d
   languageName: node
   linkType: hard
 
@@ -6561,9 +6599,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^50.0.0":
+"@metamask/transaction-controller@file:.yalc/@metamask/transaction-controller::locator=metamask-crx%40workspace%3A.":
   version: 50.0.0
-  resolution: "@metamask/transaction-controller@npm:50.0.0"
+  resolution: "@metamask/transaction-controller@file:.yalc/@metamask/transaction-controller#.yalc/@metamask/transaction-controller::hash=7e83a8&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -6593,7 +6631,7 @@ __metadata:
     "@metamask/gas-fee-controller": ^22.0.0
     "@metamask/network-controller": ^22.0.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
-  checksum: 10/7882a57f04552b47ad8755076d95d6256db4cc76918aa9775f6b0dac7b574479f218e7d7eac2b10facbb2468c43b38554bdce578a561ff6e442ec9f481b56b9a
+  checksum: 10/a9408510f8246b6265578e925b6206bdaa2d65bac2d9797560c5d3fbb155e3cef33af6423a80652b7bd0a2746403b23edf01b63f2c9a38eb0f7001e02c0f1ddd
   languageName: node
   linkType: hard
 
@@ -27295,6 +27333,10 @@ __metadata:
     "@metamask-institutional/sdk": "npm:^0.2.0"
     "@metamask-institutional/transaction-update": "npm:^0.2.6"
     "@metamask-institutional/types": "npm:^1.2.0"
+    "@metamask-private/delegation-abis": "file:.yalc/@metamask-private/delegation-abis"
+    "@metamask-private/delegation-deployments": "file:.yalc/@metamask-private/delegation-deployments"
+    "@metamask-private/delegation-utils": "file:.yalc/@metamask-private/delegation-utils"
+    "@metamask-private/delegator-core-viem": "file:.yalc/@metamask-private/delegator-core-viem"
     "@metamask/abi-utils": "npm:^2.0.2"
     "@metamask/account-watcher": "npm:^4.1.2"
     "@metamask/accounts-controller": "npm:^26.0.0"
@@ -27368,7 +27410,7 @@ __metadata:
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^19.0.0"
-    "@metamask/signature-controller": "npm:^26.0.0"
+    "@metamask/signature-controller": "file:.yalc/@metamask/signature-controller"
     "@metamask/smart-transactions-controller": "npm:^16.1.0"
     "@metamask/snaps-controllers": "npm:^11.0.0"
     "@metamask/snaps-execution-environments": "npm:^7.0.0"
@@ -27379,7 +27421,7 @@ __metadata:
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.1.0"
     "@metamask/test-dapp-multichain": "npm:^0.6.0"
-    "@metamask/transaction-controller": "npm:^50.0.0"
+    "@metamask/transaction-controller": "file:.yalc/@metamask/transaction-controller"
     "@metamask/user-operation-controller": "npm:^24.0.1"
     "@metamask/utils": "npm:^11.1.0"
     "@ngraveio/bc-ur": "npm:^1.1.12"
@@ -38141,7 +38183,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webauthn-p256@npm:0.0.5":
+"webauthn-p256@npm:0.0.5, webauthn-p256@npm:^0.0.5":
   version: 0.0.5
   resolution: "webauthn-p256@npm:0.0.5"
   dependencies:
