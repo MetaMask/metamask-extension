@@ -10,6 +10,7 @@ import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Driver } from '../../webdriver/driver';
 import type { FeatureFlagResponse } from '../../../../shared/types/bridge';
+import { emptyHtmlPage } from '../../mock-e2e';
 import {
   DEFAULT_FEATURE_FLAGS_RESPONSE,
   ETH_CONVERSION_RATE_USD,
@@ -63,7 +64,7 @@ export class BridgePage {
   };
 
   verifyPortfolioTab = async () => {
-    await this.driver.switchToWindowWithTitle('MetaMask Portfolio - Bridge');
+    await this.driver.switchToWindowWithTitle('E2E Test Page');
     await this.driver.waitForUrlContaining({
       url: 'portfolio.metamask.io/bridge',
     });
@@ -102,16 +103,15 @@ const mockServer =
             };
           }),
     );
-    const portfolioMock = async () =>
-      await mockServer_
-        .forGet('https://portfolio.metamask.io/bridge')
-        .always()
-        .thenCallback(() => {
-          return {
-            statusCode: 200,
-            json: {},
-          };
-        });
+    const portfolioMock = mockServer_
+      .forGet(`https://portfolio.metamask.io/bridge`)
+      .always()
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          body: emptyHtmlPage(),
+        };
+      });
     return Promise.all([...featureFlagMocks, portfolioMock]);
   };
 

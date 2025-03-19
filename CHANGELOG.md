@@ -6,7 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [12.14.0]
+## [12.14.1]
+### Fixed
+- Remove `previousUserTraits` property from metametrics controller state ([#30621](https://github.com/MetaMask/metamask-extension/pull/30621))
+
+## [12.14.0] [DEPRECATED]
 ### Added
 - Add Unichain logo ([#30361](https://github.com/MetaMask/metamask-extension/pull/30361))
 - Add modal to include metric ID before redirecting to the support page ([#30415](https://github.com/MetaMask/metamask-extension/pull/30415))
@@ -54,6 +58,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix page reload issue during SRP creation ([#30178](https://github.com/MetaMask/metamask-extension/pull/30178))
 - [Beta] Fix Solana snap validation ([#30596](https://github.com/MetaMask/metamask-extension/pull/30596))
 - [Beta] Fix swap source token balance on multichain networks ([#30622](https://github.com/MetaMask/metamask-extension/pull/30622))
+
+## [12.13.1]
+### Fixed
+- fix: Remove previousUserTraits from metametrics controller state ([#30621](https://github.com/MetaMask/metamask-extension/pull/30621))
 
 ## [12.13.0]
 ### Added
@@ -5819,8 +5827,10 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.14.0...HEAD
-[12.14.0]: https://github.com/MetaMask/metamask-extension/compare/v12.13.0...v12.14.0
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.14.1...HEAD
+[12.14.1]: https://github.com/MetaMask/metamask-extension/compare/v12.14.0...v12.14.1
+[12.14.0]: https://github.com/MetaMask/metamask-extension/compare/v12.13.1...v12.14.0
+[12.13.1]: https://github.com/MetaMask/metamask-extension/compare/v12.13.0...v12.13.1
 [12.13.0]: https://github.com/MetaMask/metamask-extension/compare/v12.12.0...v12.13.0
 [12.12.0]: https://github.com/MetaMask/metamask-extension/compare/v12.11.0...v12.12.0
 [12.11.0]: https://github.com/MetaMask/metamask-extension/compare/v12.10.4...v12.11.0
