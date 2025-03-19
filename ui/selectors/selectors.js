@@ -2909,8 +2909,6 @@ export function getShouldShowSeedPhraseReminder(state) {
     state.metamask;
 
   const [primaryKeyring] = getMetaMaskHdKeyrings(state);
-  const isNativeAccount =
-    primaryKeyring?.type && primaryKeyring.type === KeyringType.hdKeyTree;
 
   if (!isUnlocked || !primaryKeyring) {
     return false;
@@ -2928,8 +2926,7 @@ export function getShouldShowSeedPhraseReminder(state) {
     isAccountFromPrimarySrp &&
     seedPhraseBackedUp === false &&
     (parseInt(accountBalance, 16) > 0 || tokens.length > 0) &&
-    dismissSeedBackUpReminder === false &&
-    isNativeAccount;
+    dismissSeedBackUpReminder === false;
 
   return showMessage;
 }
