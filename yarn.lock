@@ -6224,23 +6224,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@npm:^23.1.0":
-  version: 23.1.0
-  resolution: "@metamask/signature-controller@npm:23.1.0"
+"@metamask/signature-controller@npm:^26.0.0":
+  version: 26.0.0
+  resolution: "@metamask/signature-controller@npm:26.0.0"
   dependencies:
-    "@metamask/base-controller": "npm:^7.0.2"
-    "@metamask/controller-utils": "npm:^11.4.4"
-    "@metamask/eth-sig-util": "npm:^8.0.0"
-    "@metamask/utils": "npm:^10.0.0"
+    "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/controller-utils": "npm:^11.6.0"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
+    "@metamask/utils": "npm:^11.2.0"
     jsonschema: "npm:^1.4.1"
     lodash: "npm:^4.17.21"
     uuid: "npm:^8.3.2"
   peerDependencies:
+    "@metamask/accounts-controller": ^26.0.0
     "@metamask/approval-controller": ^7.0.0
-    "@metamask/keyring-controller": ^19.0.0
+    "@metamask/keyring-controller": ^21.0.0
     "@metamask/logging-controller": ^6.0.0
     "@metamask/network-controller": ^22.0.0
-  checksum: 10/2f97e6412bc3a3a13aa2106dfd679500680881918a6e3e2621d4e225e6380df7a01218f7ce26747575b09c85d8ac8be2f5029240339b28fc6d849fad480c5b72
+  checksum: 10/bdde18b1c9462eb0eda1f1f3d5c59e4f08e7aa2763c4530f4188e05c9415d8465a7aedaf0c3f3265095950b109d3a55024342f8e57964f6661aa51c0b7ae935e
   languageName: node
   linkType: hard
 
@@ -6501,9 +6502,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^49.0.0":
-  version: 49.0.0
-  resolution: "@metamask/transaction-controller@npm:49.0.0"
+"@metamask/transaction-controller@npm:^50.0.0":
+  version: 50.0.0
+  resolution: "@metamask/transaction-controller@npm:50.0.0"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -6511,6 +6512,7 @@ __metadata:
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
+    "@ethersproject/wallet": "npm:^5.7.0"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/controller-utils": "npm:^11.6.0"
     "@metamask/eth-query": "npm:^4.0.0"
@@ -6532,7 +6534,7 @@ __metadata:
     "@metamask/gas-fee-controller": ^22.0.0
     "@metamask/network-controller": ^22.0.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
-  checksum: 10/bbdd45eb42bd39b6774fe7f5e1f4b3a13300a7b58cfddb35c07c282b29f31026115de4ea887f6c60b10eb9887ea0d07225cf04bbe42ef3e3113b691ddeba447b
+  checksum: 10/7882a57f04552b47ad8755076d95d6256db4cc76918aa9775f6b0dac7b574479f218e7d7eac2b10facbb2468c43b38554bdce578a561ff6e442ec9f481b56b9a
   languageName: node
   linkType: hard
 
@@ -27307,7 +27309,7 @@ __metadata:
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^19.0.0"
-    "@metamask/signature-controller": "npm:^23.1.0"
+    "@metamask/signature-controller": "npm:^26.0.0"
     "@metamask/smart-transactions-controller": "npm:^16.1.0"
     "@metamask/snaps-controllers": "npm:^11.0.0"
     "@metamask/snaps-execution-environments": "npm:^7.0.0"
@@ -27318,7 +27320,7 @@ __metadata:
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.1.0"
     "@metamask/test-dapp-multichain": "npm:^0.6.0"
-    "@metamask/transaction-controller": "npm:^49.0.0"
+    "@metamask/transaction-controller": "npm:^50.0.0"
     "@metamask/user-operation-controller": "npm:^24.0.1"
     "@metamask/utils": "npm:^11.1.0"
     "@ngraveio/bc-ur": "npm:^1.1.12"
