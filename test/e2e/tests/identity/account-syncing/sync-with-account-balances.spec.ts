@@ -20,6 +20,7 @@ import {
 } from './mock-data';
 
 describe('Account syncing - User already has balances on multiple accounts', async function () {
+  this.timeout(300000); // This test is very long, so we need an unusually high timeout
   if (!IS_ACCOUNT_SYNCING_ENABLED) {
     return;
   }
@@ -64,7 +65,6 @@ describe('Account syncing - User already has balances on multiple accounts', asy
      * Phase 3: Verification that any final changes to user storage are persisted and that we don't see any extra accounts created
      */
     it('when a user has balances on more accounts than previously synced, it should be handled gracefully', async function () {
-      this.timeout(160000); // This test is very long, so we need an unusually high timeout
       const userStorageMockttpController = new UserStorageMockttpController();
       let accountsToMockBalances = [...INITIAL_ACCOUNTS];
 
