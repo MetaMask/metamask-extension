@@ -46,9 +46,11 @@ export const DestinationAccountPicker = ({
   const filteredAccounts = useMemo(
     () =>
       accounts.filter((account) => {
-        const matchesSearch = account.metadata.name
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase());
+        const matchesSearch =
+          account.metadata.name
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          account.address.toLowerCase().includes(searchQuery.toLowerCase());
 
         const matchesChain = isDestinationSolana
           ? isSolanaAccount(account)
