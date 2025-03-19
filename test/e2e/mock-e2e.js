@@ -129,8 +129,7 @@ async function setupMocking(
         };
       } else if (
         WHITE_LISTED_URLS.includes(url) ||
-        WHITE_LISTED_HOSTS.includes(host) ||
-        host.includes('gvt1.com')
+        WHITE_LISTED_HOSTS.includes(host)
       ) {
         // If the URL is whitelisted, we pass the request as it is, to the live server.
         return {};
