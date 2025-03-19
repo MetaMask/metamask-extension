@@ -44,7 +44,6 @@ buildTypes:
       - multichain
       - solana
       - solana-swaps
-      - multi-srp
     env:
       - INFURA_BETA_PROJECT_ID
       - SEGMENT_BETA_WRITE_KEY
