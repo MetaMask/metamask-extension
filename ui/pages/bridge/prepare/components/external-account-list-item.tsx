@@ -20,6 +20,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { getUseBlockie } from '../../../../selectors';
+// eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
