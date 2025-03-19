@@ -1,5 +1,5 @@
 import {
-  BeforeSignHook,
+  AfterSimulateHook,
   SimulationData,
   TransactionMeta,
 } from '@metamask/transaction-controller';
@@ -25,13 +25,13 @@ export class EnforceSimulationHook {
     this.#messenger = messenger;
   }
 
-  getHook(): BeforeSignHook {
+  getHook(): AfterSimulateHook {
     return this.#hook.bind(this);
   }
 
   async #hook(request: {
     transactionMeta: TransactionMeta;
-  }): ReturnType<BeforeSignHook> {
+  }): ReturnType<AfterSimulateHook> {
     const { transactionMeta } = request;
 
     const {
