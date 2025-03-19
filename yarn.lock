@@ -4814,42 +4814,42 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-private/delegation-abis@file:.yalc/@metamask-private/delegation-abis::locator=metamask-crx%40workspace%3A.":
+"@metamask-private/delegation-abis@npm:^0.6.1":
   version: 0.6.1
-  resolution: "@metamask-private/delegation-abis@file:.yalc/@metamask-private/delegation-abis#.yalc/@metamask-private/delegation-abis::hash=3f25fc&locator=metamask-crx%40workspace%3A."
-  checksum: 10/dbc27ff22ba39ea1e21f0b2eeaa437fd10b32f6bffc5af9b9f7f23eaec2a0d7884df04abe5aadc22f7ac720129a4131b437c96747c31c58d2cde6b8dfb31408e
+  resolution: "@metamask-private/delegation-abis@npm:0.6.1"
+  checksum: 10/4c01dd9ad3d3e9d4be60bd4c6295aaec27c4652276a903fe00a2b77ecf6f9fd03e850f4356d29ce11b1c66ca670e5b8517f6514b68a3b7654ae5bc2cc201440b
   languageName: node
   linkType: hard
 
-"@metamask-private/delegation-deployments@file:.yalc/@metamask-private/delegation-deployments::locator=metamask-crx%40workspace%3A.":
+"@metamask-private/delegation-deployments@npm:^0.6.1":
   version: 0.6.1
-  resolution: "@metamask-private/delegation-deployments@file:.yalc/@metamask-private/delegation-deployments#.yalc/@metamask-private/delegation-deployments::hash=60f609&locator=metamask-crx%40workspace%3A."
-  checksum: 10/f427a1bbf954f74dd449e605624dfa3afda77afae60f9a71f38a1a18104a173580323c2f20e67dfe958fd585c463c81141dd1e061b498dc3af05f1b14eced9a3
+  resolution: "@metamask-private/delegation-deployments@npm:0.6.1"
+  checksum: 10/3a653fd38555cc3694282c150732f6d614fcd197c80a0cfba28626d97159a9455885f38cf5e546ef861c460a29a14478cd82d5709e15cfee4075cf705f3c5002
   languageName: node
   linkType: hard
 
-"@metamask-private/delegation-utils@file:.yalc/@metamask-private/delegation-utils::locator=metamask-crx%40workspace%3A.":
+"@metamask-private/delegation-utils@npm:^0.6.1":
   version: 0.6.1
-  resolution: "@metamask-private/delegation-utils@file:.yalc/@metamask-private/delegation-utils#.yalc/@metamask-private/delegation-utils::hash=1d07eb&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask-private/delegation-utils@npm:0.6.1"
   dependencies:
     "@metamask-private/delegation-abis": "npm:^0.6.1"
     "@metamask-private/delegation-deployments": "npm:^0.6.1"
     buffer: "npm:^6.0.3"
   peerDependencies:
     viem: ">=2.18.2 <3.0.0"
-  checksum: 10/9c77f05f9f5e6e1b62bf4691b2b49a16ea3e0a7bfbb62ae5cf244b89938a669c6d18fef1e0f94e5a13e71a5c46b75517c4edf2fb757ff534cc03d4e5550319b1
+  checksum: 10/312ab2d914e1cdc54a9a5d2cb9ff025dd858fab99cf9bbfbf9a9514a74d57d902daae1e399d3dd0470bd75b35abba2887a34b5e0a6f020f60717f19c212d3dff
   languageName: node
   linkType: hard
 
-"@metamask-private/delegator-core-viem@file:.yalc/@metamask-private/delegator-core-viem::locator=metamask-crx%40workspace%3A.":
+"@metamask-private/delegator-core-viem@npm:^0.6.1":
   version: 0.6.1
-  resolution: "@metamask-private/delegator-core-viem@file:.yalc/@metamask-private/delegator-core-viem#.yalc/@metamask-private/delegator-core-viem::hash=0c360d&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask-private/delegator-core-viem@npm:0.6.1"
   dependencies:
     "@metamask-private/delegation-utils": "npm:^0.6.1"
     webauthn-p256: "npm:^0.0.5"
   peerDependencies:
     viem: ">=2.18.2 <3.0.0"
-  checksum: 10/16789f98ffe204a803e54baaff62893e4d524043894fc33dbcee19136d6a91d2982fd210c16a69091aef1c17ddbbfb454aea88674a32041306c0325ed5cdc2be
+  checksum: 10/f3a42e6271cb4f2189e51195684a2f19eccf0a94799cf95dc7e9ba70a8cb1293c93d78534adca0d9fd02ca9445f3fc38dfab115313b93237b93e302f863c3d35
   languageName: node
   linkType: hard
 
@@ -27334,10 +27334,10 @@ __metadata:
     "@metamask-institutional/sdk": "npm:^0.2.0"
     "@metamask-institutional/transaction-update": "npm:^0.2.6"
     "@metamask-institutional/types": "npm:^1.2.0"
-    "@metamask-private/delegation-abis": "file:.yalc/@metamask-private/delegation-abis"
-    "@metamask-private/delegation-deployments": "file:.yalc/@metamask-private/delegation-deployments"
-    "@metamask-private/delegation-utils": "file:.yalc/@metamask-private/delegation-utils"
-    "@metamask-private/delegator-core-viem": "file:.yalc/@metamask-private/delegator-core-viem"
+    "@metamask-private/delegation-abis": "npm:^0.6.1"
+    "@metamask-private/delegation-deployments": "npm:^0.6.1"
+    "@metamask-private/delegation-utils": "npm:^0.6.1"
+    "@metamask-private/delegator-core-viem": "npm:^0.6.1"
     "@metamask/abi-utils": "npm:^2.0.2"
     "@metamask/account-watcher": "npm:^4.1.2"
     "@metamask/accounts-controller": "npm:^26.0.0"
