@@ -45,13 +45,12 @@ jobs:
         run: yarn tsx .github/scripts/git-diff-default-branch.ts
 
       - name: Upload changed files artifact
-        if: ${{ steps.needs-e2e.outputs.NEEDS_E2E == 'true' && env.BRANCH != 'master' }}
         uses: actions/upload-artifact@v4
         with:
           name: changed-files
           path: ./changed-files/
 
-  test-e2e-chrome:
+  chrome-tests:
     needs:
       - needs-e2e
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
