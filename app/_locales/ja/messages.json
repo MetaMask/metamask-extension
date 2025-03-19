@@ -664,9 +664,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfo": {
-    "message": "この要求を承諾することはお勧めしません。"
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "このリクエストを承認すると、詐欺が判明しているサードパーティに資産をすべて奪われる可能性があります。"
   },
@@ -1027,9 +1024,6 @@
   },
   "confirmationAlertDetails": {
     "message": "資産を守るため、リクエストを拒否することをお勧めします。"
-  },
-  "confirmationAlertModalTitle": {
-    "message": "この要求は不審です"
   },
   "confirmed": {
     "message": "確認されました"
