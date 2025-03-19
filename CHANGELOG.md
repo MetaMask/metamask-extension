@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.14.1]
+### Uncategorized
+- Bring changelog up-to-date with v12.14.0
+- fix: add missing mock for portfolio site in e2e testing ([#31034](https://github.com/MetaMask/metamask-extension/pull/31034))
+- fix: Remove previousUserTraits from metametrics controller state ([#30621](https://github.com/MetaMask/metamask-extension/pull/30621))
+
 ## [12.14.0]
 ### Added
 - Add Unichain logo ([#30361](https://github.com/MetaMask/metamask-extension/pull/30361))
@@ -5819,7 +5825,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.14.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.14.1...HEAD
+[12.14.1]: https://github.com/MetaMask/metamask-extension/compare/v12.14.0...v12.14.1
 [12.14.0]: https://github.com/MetaMask/metamask-extension/compare/v12.13.0...v12.14.0
 [12.13.0]: https://github.com/MetaMask/metamask-extension/compare/v12.12.0...v12.13.0
 [12.12.0]: https://github.com/MetaMask/metamask-extension/compare/v12.11.0...v12.12.0
