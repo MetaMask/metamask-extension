@@ -27368,7 +27368,7 @@ __metadata:
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^19.0.0"
-   "@metamask/signature-controller": "npm:^26.0.0"
+    "@metamask/signature-controller": "npm:^26.0.0"
     "@metamask/smart-transactions-controller": "npm:^16.2.0"
     "@metamask/snaps-controllers": "npm:^11.0.0"
     "@metamask/snaps-execution-environments": "npm:^7.0.0"
