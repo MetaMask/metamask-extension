@@ -11,7 +11,6 @@ import {
   fetchBridgeTokens,
   BridgeClientId,
   type BridgeAsset,
-  formatChainIdToHexOrCaip,
 } from '@metamask/bridge-controller';
 import {
   getAllDetectedTokensForSelectedAddress,
@@ -143,7 +142,9 @@ export const useTokensWithFiltering = (
     // Only tokens on the active chain are processed here here
     const sharedFields = {
       ...token,
-      chainId: formatChainIdToHexOrCaip(chainId),
+      chainId: isSolanaChainId(chainId)
+        ? formatChainIdToCaip(chainId)
+        : formatChainIdToHex(chainId),
       assetId: token.assetId,
     };
 
