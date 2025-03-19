@@ -387,6 +387,7 @@ describe('wallet_createSession', () => {
                 },
               },
               isMultichainOrigin: true,
+              sessionProperties: {},
             },
           },
         ],
@@ -430,7 +431,7 @@ describe('wallet_createSession', () => {
     });
   });
 
-  it('returns the session ID, properties, and session scopes', async () => {
+  it('returns the known sessionProperties and approved session scopes', async () => {
     const { handler, response } = createMockedHandler();
     MockMultichain.getSessionScopes.mockReturnValue({
       'eip155:5': {
@@ -452,10 +453,7 @@ describe('wallet_createSession', () => {
     await handler(baseRequest);
 
     expect(response.result).toStrictEqual({
-      sessionProperties: {
-        expiry: 'date',
-        foo: 'bar',
-      },
+      sessionProperties: {},
       sessionScopes: {
         'eip155:5': {
           methods: ['eth_chainId', 'net_version'],
@@ -471,6 +469,121 @@ describe('wallet_createSession', () => {
           methods: [],
           notifications: [],
           accounts: ['wallet:eip155:0x1', 'wallet:eip155:0x2'],
+        },
+      },
+    });
+  });
+
+  it('filters out unknown session properties', async () => {
+    const { handler, requestPermissionsForOrigin, listAccounts } =
+      createMockedHandler();
+    listAccounts.mockReturnValue([
+      { address: '0x1' },
+      { address: '0x3' },
+      { address: '0x4' },
+    ]);
+    MockMultichain.bucketScopes
+      .mockReturnValueOnce({
+        supportedScopes: {
+          'eip155:1337': {
+            methods: [],
+            notifications: [],
+            accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+          },
+        },
+        supportableScopes: {},
+        unsupportableScopes: {},
+      })
+      .mockReturnValueOnce({
+        supportedScopes: {
+          'eip155:100': {
+            methods: [],
+            notifications: [],
+            accounts: ['eip155:2:0x1', 'eip155:2:0x3', 'eip155:2:0xdeadbeef'],
+          },
+        },
+        supportableScopes: {},
+        unsupportableScopes: {},
+      });
+    await handler(baseRequest);
+    expect(requestPermissionsForOrigin).toHaveBeenCalledWith({
+      [Caip25EndowmentPermissionName]: {
+        caveats: [
+          {
+            type: Caip25CaveatType,
+            value: {
+              requiredScopes: {
+                'eip155:1337': {
+                  accounts: ['eip155:1337:0x1', 'eip155:1337:0x3'],
+                },
+              },
+              optionalScopes: {
+                'eip155:100': {
+                  accounts: ['eip155:100:0x1', 'eip155:100:0x3'],
+                },
+              },
+              isMultichainOrigin: true,
+              sessionProperties: {},
+            },
+          },
+        ],
+      },
+    });
+  });
+
+  it('preserves known session properties', async () => {
+    const { handler, response, requestPermissionsForOrigin } =
+      createMockedHandler();
+    // mock requestPermissionsForOrigin hook to return a valid permission
+    requestPermissionsForOrigin.mockReturnValue([
+      {
+        [Caip25EndowmentPermissionName]: {
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: {
+                optionalScopes: {
+                  'eip155:5': {
+                    accounts: ['eip155:5:0x1', 'eip155:5:0x2'],
+                    methods: ['eth_chainId', 'net_version'],
+                    notifications: ['accountsChanged', 'chainChanged'],
+                  },
+                },
+                sessionProperties: {
+                  solana_accountChanged_notifications: true,
+                },
+              },
+            },
+          ],
+        },
+      },
+    ]);
+    MockMultichain.getSessionScopes.mockReturnValue({
+      'eip155:5': {
+        methods: ['eth_chainId', 'net_version'],
+        notifications: ['accountsChanged', 'chainChanged'],
+        accounts: ['eip155:5:0x1', 'eip155:5:0x2'],
+      },
+    });
+    await handler({
+      ...baseRequest,
+      params: {
+        ...baseRequest.params,
+        sessionProperties: {
+          solana_accountChanged_notifications: true,
+        },
+      },
+    });
+
+    expect(response.result).toStrictEqual({
+      sessionProperties: {
+        solana_accountChanged_notifications: true,
+      },
+      sessionScopes: {
+        'eip155:5': {
+          accounts: ['eip155:5:0x1', 'eip155:5:0x2'],
+          methods: ['eth_chainId', 'net_version'],
+          notifications: ['accountsChanged', 'chainChanged'],
         },
       },
     });

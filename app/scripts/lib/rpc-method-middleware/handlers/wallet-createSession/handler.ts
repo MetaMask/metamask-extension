@@ -175,9 +175,7 @@ async function walletCreateSessionHandler(
       requiredScopes: getInternalScopesObject(supportedRequiredScopes),
       optionalScopes: getInternalScopesObject(supportedOptionalScopes),
       isMultichainOrigin: true,
-      ...(Object.keys(filteredSessionProperties).length > 0 && {
-        sessionProperties: filteredSessionProperties,
-      }),
+      sessionProperties: filteredSessionProperties,
     };
 
     const requestedCaip25CaveatValueWithSupportedEthAccounts = setEthAccounts(
@@ -216,6 +214,9 @@ async function walletCreateSessionHandler(
       getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods,
     });
 
+    const { sessionProperties: approvedSessionProperties = {} } =
+      approvedCaip25CaveatValue;
+
     // TODO: Contact analytics team for how they would prefer to track this
     // first time connection to dapp will lead to no log in the permissionHistory
     // and if user has connected to dapp before, the dapp origin will be included in the permissionHistory state
@@ -243,7 +244,7 @@ async function walletCreateSessionHandler(
 
     res.result = {
       sessionScopes,
-      sessionProperties,
+      sessionProperties: approvedSessionProperties,
     };
     return end();
   } catch (err) {
