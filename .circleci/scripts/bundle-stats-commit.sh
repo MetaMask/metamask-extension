@@ -66,15 +66,6 @@ jq --arg sha "$CIRCLE_SHA1" --argjson data "$(cat "$BUNDLE_SIZE_FILE")" \
 # Overwrite the original JSON file with the corrected version
 mv "$TEMP_FILE" "$STATS_FILE"
 
-{
-    echo " '${CIRCLE_SHA1}': ";
-    cat "$BUNDLE_SIZE_FILE";
-    echo ", ";
-} >> temp/stats/bundle_size_data.temp.js
-
-cp temp/stats/bundle_size_data.temp.js temp/stats/bundle_size_data.js
-echo " }" >> temp/stats/bundle_size_data.js
-
 cd temp
 
 # Only add the JSON file
