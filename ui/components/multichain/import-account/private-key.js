@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types';
-import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   FormTextField,
   TextFieldSize,
   TextFieldType,
 } from '../../component-library';
+import { hideWarning } from '../../../store/actions';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import * as actions from '../../../store/actions';
@@ -20,6 +21,14 @@ export default function PrivateKeyImportView({
   const dispatch = useDispatch();
   const [privateKey, setPrivateKey] = useState('');
   const [showPrivateKey, setShowPrivateKey] = useState(false);
+
+  // Since MetaMask still uses a global warning state,
+  // hide the "invalid" warning when the private key import view is unmounted
+  useEffect(() => {
+    return () => {
+      dispatch(hideWarning());
+    };
+  }, [dispatch]);
 
   const warning = useSelector((state) => state.appState.warning);
 
