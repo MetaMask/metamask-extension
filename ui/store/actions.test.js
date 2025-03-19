@@ -85,7 +85,12 @@ describe('Actions', () => {
 
   const currentChainId = '0x5';
 
+  let originalNavigator;
+
   beforeEach(async () => {
+    // Save original navigator for restoring after tests
+    originalNavigator = global.navigator;
+
     background = sinon.createStubInstance(MetaMaskController, {
       getState: sinon.stub().callsFake((cb) => cb(null, [])),
     });
@@ -100,6 +105,27 @@ describe('Actions', () => {
     background.requestAccountsAndChainPermissionsWithId = sinon.stub();
     background.grantPermissions = sinon.stub();
     background.grantPermissionsIncremental = sinon.stub();
+
+    // Make sure navigator.hid is defined for WebHID tests
+    if (!global.navigator) {
+      global.navigator = {};
+    }
+
+    if (!global.navigator.hid) {
+      global.navigator.hid = {
+        requestDevice: sinon.stub(),
+      };
+    }
+  });
+
+  afterEach(() => {
+    // Restore original window.navigator after each test
+    Object.defineProperty(window, 'navigator', {
+      value: originalNavigator,
+      writable: true,
+    });
+
+    sinon.restore();
   });
 
   describe('#tryUnlockMetamask', () => {
@@ -620,6 +646,264 @@ describe('Actions', () => {
         store.dispatch(actions.connectHardware(HardwareDeviceNames.ledger)),
       ).rejects.toThrow('error');
 
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+
+    it('handles WebHID connection when loadHid=true for Ledger devices', async () => {
+      const store = mockStore({
+        ...defaultState,
+        metamask: {
+          ...defaultState.metamask,
+          ledgerTransportType: 'webhid',
+        },
+      });
+
+      const mockHidDevice = { vendorId: 11415 };
+      const mockRequestDevice = sinon.stub().resolves([mockHidDevice]);
+
+      Object.defineProperty(window, 'navigator', {
+        value: {
+          ...window.navigator,
+          hid: {
+            requestDevice: mockRequestDevice,
+          },
+        },
+        writable: true,
+      });
+
+      const connectHardware = background.connectHardware.callsFake(
+        (_, __, ___, cb) => cb(null, [{ address: '0xLedgerAddress' }]),
+      );
+
+      setBackgroundConnection(background);
+
+      const expectedActions = [
+        {
+          type: 'SHOW_LOADING_INDICATION',
+          payload: 'Looking for your Ledger...',
+        },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      const accounts = await store.dispatch(
+        actions.connectHardware(
+          HardwareDeviceNames.ledger,
+          0,
+          `m/44'/60'/0'/0`,
+          true,
+          (key) => `translated_${key}`,
+        ),
+      );
+
+      expect(connectHardware.callCount).toStrictEqual(1);
+      expect(mockRequestDevice.callCount).toStrictEqual(1);
+      expect(accounts).toStrictEqual([{ address: '0xLedgerAddress' }]);
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+
+    it('throws a specific error when user denies WebHID permissions with loadHid=true', async () => {
+      const store = mockStore({
+        ...defaultState,
+        metamask: {
+          ...defaultState.metamask,
+          ledgerTransportType: 'webhid',
+        },
+      });
+
+      const mockRequestDevice = sinon.stub();
+      mockRequestDevice.resolves([]);
+      Object.defineProperty(window, 'navigator', {
+        value: {
+          ...window.navigator,
+          hid: {
+            requestDevice: mockRequestDevice,
+          },
+        },
+        writable: true,
+      });
+
+      setBackgroundConnection(background);
+
+      const expectedActions = [
+        {
+          type: 'SHOW_LOADING_INDICATION',
+          payload: 'Looking for your Ledger...',
+        },
+        {
+          type: 'DISPLAY_WARNING',
+          payload: 'translated_ledgerWebHIDNotConnectedErrorMessage',
+        },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      const mockTranslation = (key) => `translated_${key}`;
+
+      await expect(
+        store.dispatch(
+          actions.connectHardware(
+            HardwareDeviceNames.ledger,
+            0,
+            `m/44'/60'/0'/0`,
+            true,
+            mockTranslation,
+          ),
+        ),
+      ).rejects.toThrow('translated_ledgerWebHIDNotConnectedErrorMessage');
+
+      expect(mockRequestDevice.callCount).toStrictEqual(1);
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+
+    it('handles loadHid=false and skips WebHID request process', async () => {
+      const store = mockStore({
+        ...defaultState,
+        metamask: {
+          ...defaultState.metamask,
+          ledgerTransportType: 'webhid',
+        },
+      });
+
+      const mockRequestDevice = sinon.spy();
+      Object.defineProperty(window, 'navigator', {
+        value: {
+          ...window.navigator,
+          hid: {
+            requestDevice: mockRequestDevice,
+          },
+        },
+        writable: true,
+      });
+
+      const connectHardware = background.connectHardware.callsFake(
+        (_, __, ___, cb) => cb(null, [{ address: '0xLedgerAddress' }]),
+      );
+
+      setBackgroundConnection(background);
+
+      const expectedActions = [
+        {
+          type: 'SHOW_LOADING_INDICATION',
+          payload: 'Looking for your Ledger...',
+        },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      const accounts = await store.dispatch(
+        actions.connectHardware(
+          HardwareDeviceNames.ledger,
+          0,
+          `m/44'/60'/0'/0`,
+          false,
+          (key) => `translated_${key}`,
+        ),
+      );
+
+      expect(connectHardware.callCount).toStrictEqual(1);
+      expect(mockRequestDevice.callCount).toStrictEqual(0);
+      expect(accounts).toStrictEqual([{ address: '0xLedgerAddress' }]);
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+
+    it('handles specific Ledger WebHID device open failure error', async () => {
+      const store = mockStore({
+        ...defaultState,
+        metamask: {
+          ...defaultState.metamask,
+          ledgerTransportType: 'webhid',
+        },
+      });
+
+      const mockHidDevice = { vendorId: 11415 };
+      const mockRequestDevice = sinon.stub();
+      mockRequestDevice.resolves([mockHidDevice]);
+      Object.defineProperty(window, 'navigator', {
+        value: {
+          ...window.navigator,
+          hid: {
+            requestDevice: mockRequestDevice,
+          },
+        },
+        writable: true,
+      });
+
+      const deviceOpenError = new Error('Failed to open the device');
+      background.connectHardware.callsFake((_, __, ___, cb) =>
+        cb(deviceOpenError),
+      );
+
+      setBackgroundConnection(background);
+
+      const expectedActions = [
+        {
+          type: 'SHOW_LOADING_INDICATION',
+          payload: 'Looking for your Ledger...',
+        },
+        {
+          type: 'DISPLAY_WARNING',
+          payload: 'translated_ledgerDeviceOpenFailureMessage',
+        },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      const mockTranslation = (key) => `translated_${key}`;
+
+      await expect(
+        store.dispatch(
+          actions.connectHardware(
+            HardwareDeviceNames.ledger,
+            0,
+            `m/44'/60'/0'/0`,
+            true,
+            mockTranslation,
+          ),
+        ),
+      ).rejects.toThrow('translated_ledgerDeviceOpenFailureMessage');
+
+      expect(mockRequestDevice.callCount).toStrictEqual(1);
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+
+    it('handles non-Ledger hardware devices', async () => {
+      const store = mockStore();
+
+      const mockRequestDevice = sinon.spy();
+      Object.defineProperty(window, 'navigator', {
+        value: {
+          ...window.navigator,
+          hid: {
+            requestDevice: mockRequestDevice,
+          },
+        },
+        writable: true,
+      });
+
+      const connectHardware = background.connectHardware.callsFake(
+        (_, __, ___, cb) => cb(null, [{ address: '0xTrezorAddress' }]),
+      );
+
+      setBackgroundConnection(background);
+
+      const expectedActions = [
+        {
+          type: 'SHOW_LOADING_INDICATION',
+          payload: 'Looking for your Trezor...',
+        },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      const accounts = await store.dispatch(
+        actions.connectHardware(
+          HardwareDeviceNames.trezor,
+          0,
+          `m/44'/60'/0'/0`,
+          true,
+          (key) => `translated_${key}`,
+        ),
+      );
+
+      expect(connectHardware.callCount).toStrictEqual(1);
+      expect(mockRequestDevice.callCount).toStrictEqual(0);
+      expect(accounts).toStrictEqual([{ address: '0xTrezorAddress' }]);
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
