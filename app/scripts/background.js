@@ -396,17 +396,17 @@ function overrideContentSecurityPolicyHeader() {
 }
 
 // These are set after initialization
-let connectRemote;
-let connectExternalExtension;
-let connectExternalCaip;
-let connectRemoteCaip;
+let connectEip1193WindowPostMessage;
+let connectEip1193ExternallyConnectable;
+let connectCaipMultichainExternallyConnectable;
+let connectCaipMultichainWindowPostMessage;
 
 browser.runtime.onConnect.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
 
   // This is set in `setupController`, which is called as part of initialization
-  connectRemote(...args);
+  connectEip1193WindowPostMessage(...args);
 });
 browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
@@ -416,9 +416,9 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
   const port = args[0];
   const isDappConnecting = port.sender.tab?.id;
   if (isDappConnecting && process.env.MULTICHAIN_API) {
-    connectExternalCaip(...args);
+    connectCaipMultichainExternallyConnectable(...args);
   } else {
-    connectExternalExtension(...args);
+    connectEip1193ExternallyConnectable(...args);
   }
 });
 
@@ -921,7 +921,7 @@ export function setupController(
    *
    * @param {Port} remotePort - The port provided by a new context.
    */
-  connectRemote = async (remotePort) => {
+  connectEip1193WindowPostMessage = async (remotePort) => {
     const processName = remotePort.name;
 
     if (metamaskBlockedPorts.includes(remotePort.name)) {
@@ -1028,16 +1028,16 @@ export function setupController(
           connectionStream: portStreamForCookieHandlerPage,
         });
       }
-      connectExternalExtension(remotePort);
+      connectEip1193ExternallyConnectable(remotePort);
 
       if (process.env.MULTICHAIN_API && isFirefox) {
-        connectRemoteCaip(remotePort);
+        connectCaipMultichainWindowPostMessage(remotePort);
       }
     }
   };
 
   // communication with page or other extension
-  connectExternalExtension = (remotePort) => {
+  connectEip1193ExternallyConnectable = (remotePort) => {
     const portStream =
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
     controller.setupUntrustedCommunicationEip1193({
@@ -1046,7 +1046,7 @@ export function setupController(
     });
   };
 
-  connectExternalCaip = async (remotePort) => {
+  connectCaipMultichainExternallyConnectable = async (remotePort) => {
     if (!process.env.MULTICHAIN_API) {
       return;
     }
@@ -1069,7 +1069,7 @@ export function setupController(
     });
   };
 
-  connectRemoteCaip = async (remotePort) => {
+  connectCaipMultichainWindowPostMessage = async (remotePort) => {
     if (!process.env.MULTICHAIN_API) {
       return;
     }
@@ -1096,7 +1096,7 @@ export function setupController(
   };
 
   if (overrides?.registerConnectListeners) {
-    overrides.registerConnectListeners(connectRemote, connectExternalExtension);
+    overrides.registerConnectListeners(connectEip1193WindowPostMessage, connectEip1193ExternallyConnectable);
   }
 
   //
