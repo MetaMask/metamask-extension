@@ -3,7 +3,7 @@ import React, {
   useState,
   useCallback,
   Fragment,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   useContext,
   ///: END:ONLY_INCLUDE_IF
   useEffect,
@@ -39,14 +39,22 @@ import SmartTransactionListItem from '../transaction-list-item/smart-transaction
 import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+// eslint-disable-next-line import/no-duplicates
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
+// eslint-disable-next-line import/no-duplicates
+import { isSelectedInternalAccountSolana } from '../../../selectors/accounts';
+// eslint-disable-next-line import/no-duplicates
+import { getSelectedAccountMultichainTransactions } from '../../../selectors/multichain';
+// eslint-disable-next-line import/no-duplicates
+import { getMultichainNetwork } from '../../../selectors/multichain';
 import {
   Box,
   Button,
   Text,
-  IconName,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   ButtonSize,
   ButtonVariant,
+  IconName,
   BadgeWrapper,
   AvatarNetwork,
   ///: END:ONLY_INCLUDE_IF
@@ -59,7 +67,7 @@ import { formatTimestamp } from '../multichain-transaction-details-modal/helpers
 ///: END:ONLY_INCLUDE_IF
 
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   Display,
   ///: END:ONLY_INCLUDE_IF
   TextColor,
@@ -73,20 +81,17 @@ import {
   RampsCard,
 } from '../../multichain/ramps-card/ramps-card';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
-// eslint-disable-next-line import/no-duplicates
-import { getSelectedInternalAccount } from '../../../selectors/accounts';
-// eslint-disable-next-line import/no-duplicates
-import { getMultichainNetwork } from '../../../selectors/multichain';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
 import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
 import { ActivityListItem } from '../../multichain';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-// eslint-disable-next-line import/no-duplicates
-import { getSelectedAccountMultichainTransactions } from '../../../selectors/multichain';
-// eslint-disable-next-line import/no-duplicates
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import {
+  getMultichainNetwork,
+  getSelectedAccountMultichainTransactions,
+} from '../../../selectors/multichain';
 import { isSelectedInternalAccountSolana } from '../../../selectors/accounts';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
@@ -96,16 +101,9 @@ import {
 } from '../../../../shared/constants/multichain/networks';
 import { useMultichainTransactionDisplay } from '../../../hooks/useMultichainTransactionDisplay';
 ///: END:ONLY_INCLUDE_IF
-// eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import {
-  ENVIRONMENT_TYPE_NOTIFICATION,
-  ENVIRONMENT_TYPE_POPUP,
-} from '../../../../shared/constants/app';
 
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
-import { NetworkFilterComponent } from '../../multichain/network-filter-menu';
 
 const PAGE_INCREMENT = 10;
 
@@ -277,7 +275,7 @@ export default function TransactionList({
 
   const isTestNetwork = useMemo(() => {
     return TEST_CHAINS.includes(currentNetworkConfig.chainId);
-  }, [currentNetworkConfig.chainId, TEST_CHAINS]);
+  }, [currentNetworkConfig.chainId]);
 
   const unfilteredCompletedTransactionsCurrentChain = useSelector(
     nonceSortedCompletedTransactionsSelector,
