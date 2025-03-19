@@ -1208,7 +1208,7 @@ export default class MetaMetricsController extends BaseController<
       ),
       [MetaMetricsUserTrait.NumberOfHDEntropies]:
         this.#getNumberOfHDEntropies(metamaskState) ??
-        previousUserTraits?.number_of_hd_entropies,
+        this.previousUserTraits?.number_of_hd_entropies,
       [MetaMetricsUserTrait.OpenSeaApiEnabled]: metamaskState.openSeaEnabled,
       [MetaMetricsUserTrait.ThreeBoxEnabled]: false, // deprecated, hard-coded as false
       [MetaMetricsUserTrait.Theme]: metamaskState.theme || 'default',
