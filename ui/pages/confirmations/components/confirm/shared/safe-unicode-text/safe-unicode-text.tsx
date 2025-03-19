@@ -1,26 +1,41 @@
 import React from 'react';
 import { isString } from 'lodash';
-import { t } from '../../../../../../../app/scripts/translate';
 import { Text } from '../../../../../../components/component-library';
 import { TextStyleUtilityProps } from '../../../../../../components/component-library/text';
 import Tooltip from '../../../../../../components/ui/tooltip';
 import { TextColor } from '../../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 
-interface SafeUnicodeTextProps extends TextStyleUtilityProps {
+type SafeUnicodeTextProps = {
   text: string;
   style?: React.CSSProperties;
-}
+} & TextStyleUtilityProps;
 
+/**
+ * Hidden unicode characters that we want to display.
+ * The following characters are allowed:
+ * - Line separator (\n)
+ * - Paragraph separator (\r)
+ */
 const UNICODE_CODES = new Set([
-  0x2028,         // Line separator
-  10,             // Line separator (\n)
-  0x2029,         // Paragraph separator
-  13,             // Paragraph separator (\r)
-  0xfeff,         // Byte Order Mark (BOM)
-  0x061C,         // Arabic Letter Mark (ALM)
-  0x180E,         // Mongolian Vowel Separator (MVS)
+  // 10, // Line separator (\n) - allowed
+  // 13, // Paragraph separator (\r) - allowed
+
+  // TODO: Verify
+  0xfeff, // Byte Order Mark (BOM)
+  0x061c, // Arabic Letter Mark (ALM)
+  0x180e, // Mongolian Vowel Separator (MVS)
+
+  0x2060, // Word Joiner
+  0x2062, // Invisible Times
+  0x2063, // Invisible Separator
+  0x2064, // Invisible Plus
+  0xffa0, // Halfwidth Hangul Filler
+  0x1160, // Hangul Jungseong Filler
+  0x3164, // Hangul Filler
 ]);
 
+// TODO: Verify
 const UNICODE_RANGES = {
   ZERO_WIDTH_MARKERS: { start: 0x200b, end: 0x200f }, // includes RTL, LTR markers
   DIRECTIONAL_CONTROLS: { start: 0x202a, end: 0x202e },
@@ -48,7 +63,11 @@ const formatCodePoint = (code: number) => {
   return `U+${code.toString(16).toUpperCase().padStart(4, '0')}`;
 };
 
-function renderCharacter(char: string, index: number): React.ReactElement {
+function renderCharacter(
+  char: string,
+  index: number,
+  t: ReturnType<typeof useI18nContext>,
+): React.ReactElement {
   const code = char.codePointAt(0);
 
   if (code !== undefined && isSpecialHiddenCode(code)) {
@@ -57,13 +76,13 @@ function renderCharacter(char: string, index: number): React.ReactElement {
         key={index}
         position="top"
         title={t('safeUnicodeTextTooltipWarning')}
-        style={{ display: 'inline' }}
-        wrapperStyle={{ display: 'inline' }}
+        style={{ display: 'inline', whiteSpace: 'pre-wrap' }}
+        wrapperStyle={{ display: 'inline', whiteSpace: 'pre-wrap' }}
       >
         <Text
           color={TextColor.warningDefault}
           key={index}
-          style={{ display: 'inline' }}
+          style={{ display: 'inline', whiteSpace: 'pre-wrap' }}
         >
           {formatCodePoint(code)}
         </Text>
@@ -76,6 +95,7 @@ function renderCharacter(char: string, index: number): React.ReactElement {
 
 /**
  * Renders text with decoded hidden unicode characters and tooltip warnings
+ *
  * @param {string} text - The text to render
  * @param {TextStyleUtilityProps} props - Additional Text component props
  * @returns {React.ReactElement}
@@ -83,11 +103,18 @@ function renderCharacter(char: string, index: number): React.ReactElement {
 
 export default function SafeUnicodeText({
   text,
+  style,
   ...props
 }: SafeUnicodeTextProps) {
+  const t = useI18nContext();
+
   if (!text || !isString(text)) {
     return null;
   }
 
-  return <Text {...props}>{[...text].map(renderCharacter)}</Text>;
+  return (
+    <Text style={{ whiteSpace: 'pre-wrap', ...style }} {...props}>
+      {[...text].map((char, index) => renderCharacter(char, index, t))}
+    </Text>
+  );
 }
