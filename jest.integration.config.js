@@ -18,6 +18,7 @@ module.exports = {
   ],
   restoreMocks: true,
   setupFiles: [
+    'jest-canvas-mock',
     '<rootDir>/test/integration/config/setup.js',
     '<rootDir>/test/integration/config/env.js',
   ],
@@ -34,4 +35,13 @@ module.exports = {
     customExportConditions: ['node', 'node-addons'],
   },
   workerIdleMemoryLimit: '500MB',
+  transform: {
+    // Use babel-jest to transpile tests with the next/babel preset
+    // https://jestjs.io/docs/configuration#transform-objectstring-pathtotransformer--pathtotransformer-object
+    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
+    '^.+\\.(css|scss|sass|less)$': 'jest-preview/transforms/css',
+    '^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)':
+      'jest-preview/transforms/file',
+  },
+  transformIgnorePatterns: ['/node_modules/'],
 };

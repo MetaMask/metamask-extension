@@ -1,24 +1,60 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { act } from 'react-dom/test-utils';
 
-import mockState from '../../../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../../../test/lib/render-helpers';
-import { permitSignatureMsg } from '../../../../../../../../test/data/confirmations/typed_sign';
+import { getMockTypedSignConfirmStateForRequest } from '../../../../../../../../test/data/confirmations/helper';
+import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
+import {
+  permitNFTSignatureMsg,
+  permitSignatureMsg,
+} from '../../../../../../../../test/data/confirmations/typed_sign';
+import { memoizedGetTokenStandardAndDetails } from '../../../../../utils/token';
 import PermitSimulation from './permit-simulation';
 
+jest.mock('../../../../../../../store/actions', () => {
+  return {
+    getTokenStandardAndDetails: jest
+      .fn()
+      .mockResolvedValue({ decimals: 2, standard: 'ERC20' }),
+  };
+});
+
 describe('PermitSimulation', () => {
-  it('renders component correctly', () => {
-    const state = {
-      ...mockState,
-      confirm: {
-        currentConfirmation: permitSignatureMsg,
-      },
-    };
+  afterEach(() => {
+    jest.clearAllMocks();
+
+    /** Reset memoized function using getTokenStandardAndDetails for each test */
+    memoizedGetTokenStandardAndDetails?.cache?.clear?.();
+  });
+
+  it('renders component correctly', async () => {
+    const state = getMockTypedSignConfirmStateForRequest(permitSignatureMsg);
     const mockStore = configureMockStore([])(state);
-    const { container } = renderWithProvider(
-      <PermitSimulation tokenDecimals={2} />,
-      mockStore,
-    );
-    expect(container).toMatchSnapshot();
+
+    await act(async () => {
+      const { container, findByText } = renderWithConfirmContextProvider(
+        <PermitSimulation />,
+        mockStore,
+      );
+
+      expect(await findByText('30')).toBeInTheDocument();
+      expect(container).toMatchSnapshot();
+    });
+  });
+
+  it('renders correctly for NFT permit', async () => {
+    const state = getMockTypedSignConfirmStateForRequest(permitNFTSignatureMsg);
+    const mockStore = configureMockStore([])(state);
+
+    await act(async () => {
+      const { container, findByText } = renderWithConfirmContextProvider(
+        <PermitSimulation />,
+        mockStore,
+      );
+
+      expect(await findByText('Withdraw')).toBeInTheDocument();
+      expect(await findByText('#3606393')).toBeInTheDocument();
+      expect(container).toMatchSnapshot();
+    });
   });
 });

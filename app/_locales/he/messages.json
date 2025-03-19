@@ -205,9 +205,6 @@
   "delete": {
     "message": "מחיקה"
   },
-  "deleteNetwork": {
-    "message": "למחוק את הרשת?"
-  },
   "details": {
     "message": "פרטים"
   },
@@ -229,9 +226,6 @@
   "editContact": {
     "message": "ערוך איש קשר"
   },
-  "ensRegistrationError": {
-    "message": "שגיאה ברישום שם ENS"
-  },
   "enterPasswordContinue": {
     "message": "יש להזין ססמה כדי להמשיך"
   },
@@ -249,10 +243,6 @@
   },
   "fast": {
     "message": "מהיר"
-  },
-  "fiat": {
-    "message": "פיאט",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "ייבוא הקובץ לא עובד? לחצ/י כאן!",
@@ -354,12 +344,6 @@
   "invalidAddressRecipient": {
     "message": "כתובת הנמען אינה חוקית"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "לא רשת ETH, מוגדר במצב אותיות קטנות"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "כתובת URL לא חוקית של Block Explorer"
-  },
   "invalidRPC": {
     "message": "כתובת URL לא חוקית של RPC"
   },
@@ -456,9 +440,6 @@
   "next": {
     "message": "הבא"
   },
-  "noAddressForName": {
-    "message": "לא הוגדרה כתובת עבור שם זה."
-  },
   "noConversionRateAvailable": {
     "message": "אין שער המרה זמין"
   },
@@ -520,12 +501,6 @@
   "prev": {
     "message": "הקודם"
   },
-  "primaryCurrencySetting": {
-    "message": "מטבע ראשי"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "בחר/י 'מקומי' כדי לתעדף הצגת ערכים במטבע המקומי של הצ'יין (למשל ETH). בחר/י פיאט כדי לתעדף הצגת ערכים במטבע הפיאט שבחרת."
-  },
   "privacyMsg": {
     "message": "מדיניות הפרטיות"
   },
@@ -541,9 +516,6 @@
   },
   "readdToken": {
     "message": "באפשרותך להוסיף טוקן זה בחזרה בעתיד על ידי מעבר אל \"הוסף טוקן\" בתפריט אפשרויות החשבונות שלך."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "חיפוש, כתובת ציבורית (0x), או ENS"
   },
   "reject": {
     "message": "דחה"
@@ -779,9 +751,6 @@
   },
   "unlockMessage": {
     "message": "הרשת המבוזרת מחכה"
-  },
-  "updatedWithDate": {
-    "message": "עודכן $1"
   },
   "urlErrorMsg": {
     "message": "כתובות URI דורשות את קידומת HTTP/HTTPS המתאימה."

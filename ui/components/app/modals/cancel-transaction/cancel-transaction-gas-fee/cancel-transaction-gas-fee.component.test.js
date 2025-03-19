@@ -11,9 +11,7 @@ describe('CancelTransactionGasFee Component', () => {
     metamask: {
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
       currencyRates: {},
-      preferences: {
-        useNativeCurrencyAsPrimaryCurrency: false,
-      },
+      preferences: {},
       completedOnboarding: true,
       internalAccounts: mockState.metamask.internalAccounts,
     },

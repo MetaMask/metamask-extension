@@ -6,7 +6,7 @@ exports[`IncomingTransactionToggle should render existing incoming transaction p
     class="mm-box mm-incoming-transaction-toggle"
   >
     <p
-      class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+      class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
     >
       Show incoming transactions
     </p>
@@ -199,7 +199,11 @@ exports[`IncomingTransactionToggle should render existing incoming transaction p
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
         >
-          F
+          <img
+            alt="FANTOM logo"
+            class="mm-avatar-network__network-image"
+            src="./images/fantom-opera.svg"
+          />
         </div>
         <div
           class="mm-box network-toggle-wrapper__overflow-container mm-box--display-flex mm-box--flex-direction-column"

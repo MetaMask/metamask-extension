@@ -11,9 +11,7 @@ describe('Confirm Detail Row Component', () => {
     metamask: {
       currencyRates: {},
       ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
-      preferences: {
-        useNativeCurrencyAsPrimaryCurrency: true,
-      },
+      preferences: {},
       internalAccounts: defaultMockState.metamask.internalAccounts,
     },
   };

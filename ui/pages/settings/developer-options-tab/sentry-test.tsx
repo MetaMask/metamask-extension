@@ -1,8 +1,9 @@
 import React, { useState, useCallback, ReactElement } from 'react';
-import { ButtonVariant } from '@metamask/snaps-sdk';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
   Button,
+  ButtonVariant,
   Icon,
   IconName,
   IconSize,
@@ -15,9 +16,24 @@ import {
   IconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { trace } from '../../../../shared/lib/trace';
+import { trace, TraceName } from '../../../../shared/lib/trace';
+import { ButtonSize } from '../../../components/component-library/button/button.types';
 
-export function SentryTest() {
+import {
+  forceUpdateMetamaskState,
+  setCurrentLocale,
+} from '../../../store/actions';
+import { FALLBACK_LOCALE, fetchLocale } from '../../../../shared/modules/i18n';
+import { getCurrentLocale } from '../../../ducks/locale/locale';
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+const SentryTest = () => {
+  const currentLocale: string =
+    useSelector(getCurrentLocale) || FALLBACK_LOCALE;
+
   return (
     <>
       <Text className="settings-page__security-tab-sub-header__bold">
@@ -27,10 +43,11 @@ export function SentryTest() {
         <GenerateUIError />
         <GenerateBackgroundError />
         <GenerateTrace />
+        <GeneratePageCrash currentLocale={currentLocale} />
       </div>
     </>
   );
-}
+};
 
 function GenerateUIError() {
   const handleClick = useCallback(async () => {
@@ -74,14 +91,14 @@ function GenerateTrace() {
   const handleClick = useCallback(async () => {
     await trace(
       {
-        name: 'Developer Test',
+        name: TraceName.DeveloperTest,
         data: { 'test.data.number': 123 },
         tags: { 'test.tag.number': 123 },
       },
       async (context) => {
         await trace(
           {
-            name: 'Nested Test 1',
+            name: TraceName.NestedTest1,
             data: { 'test.data.boolean': true },
             tags: { 'test.tag.boolean': true },
             parentContext: context,
@@ -91,7 +108,7 @@ function GenerateTrace() {
 
         await trace(
           {
-            name: 'Nested Test 2',
+            name: TraceName.NestedTest2,
             data: { 'test.data.string': 'test' },
             tags: { 'test.tag.string': 'test' },
             parentContext: context,
@@ -115,16 +132,48 @@ function GenerateTrace() {
   );
 }
 
+function GeneratePageCrash({ currentLocale }: { currentLocale: string }) {
+  const dispatch = useDispatch();
+  const handleClick = async () => {
+    const localeMessages = await fetchLocale(currentLocale);
+    await dispatch(
+      setCurrentLocale(currentLocale, {
+        ...localeMessages,
+        // @ts-expect-error - remove a language string in this page to trigger a page crash
+        developerOptions: undefined,
+      }),
+    );
+    await forceUpdateMetamaskState(dispatch);
+  };
+
+  return (
+    <TestButton
+      name="Generate A Page Crash"
+      description={
+        <span>
+          Trigger the crash on extension to send user feedback to sentry. You
+          can click "Try again" to reload extension
+        </span>
+      }
+      onClick={handleClick}
+      expectError
+      testId="developer-options-generate-page-crash-button"
+    />
+  );
+}
+
 function TestButton({
   name,
   description,
   onClick,
   expectError,
+  testId,
 }: {
   name: string;
   description: ReactElement;
   onClick: () => Promise<void>;
   expectError?: boolean;
+  testId?: string;
 }) {
   const [isComplete, setIsComplete] = useState(false);
 
@@ -155,7 +204,12 @@ function TestButton({
         <div className="settings-page__content-description">{description}</div>
       </div>
       <div className="settings-page__content-item-col">
-        <Button variant={ButtonVariant.Primary} onClick={handleClick}>
+        <Button
+          variant={ButtonVariant.Primary}
+          onClick={handleClick}
+          size={ButtonSize.Lg}
+          data-testid={testId}
+        >
           {name}
         </Button>
       </div>
@@ -180,6 +234,4 @@ function TestButton({
   );
 }
 
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+export default SentryTest;

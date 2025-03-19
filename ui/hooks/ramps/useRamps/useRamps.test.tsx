@@ -38,6 +38,7 @@ describe('useRamps', () => {
       ...mockStoreState,
       metamask: {
         ...mockStoreState.metamask,
+        ...mockNetworkState({ chainId: mockChainId }),
       },
     };
 
@@ -60,6 +61,7 @@ describe('useRamps', () => {
       ...mockStoreState,
       metamask: {
         ...mockStoreState.metamask,
+        ...mockNetworkState({ chainId: mockChainId }),
       },
     };
 

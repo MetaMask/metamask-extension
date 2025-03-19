@@ -196,9 +196,6 @@
   "delete": {
     "message": "ሰርዝ"
   },
-  "deleteNetwork": {
-    "message": "አውታረ መረብ ይሰረዝ?"
-  },
   "details": {
     "message": "ዝርዝሮች"
   },
@@ -220,9 +217,6 @@
   "editContact": {
     "message": "ዕውቂያን አርትዕ"
   },
-  "ensRegistrationError": {
-    "message": "በ ENS የስም ምዝገባ ላይ የተፈጠረ ስህተት"
-  },
   "enterPasswordContinue": {
     "message": "ለመቀጠል የይለፍ ቃል ያስገቡ"
   },
@@ -240,10 +234,6 @@
   },
   "fast": {
     "message": "ፈጣን"
-  },
-  "fiat": {
-    "message": "ፊያት",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "ፋይል ማስመጣት እየሰራ አይደለም? እዚህ ላይ ጠቅ ያድርጉ!",
@@ -345,12 +335,6 @@
   "invalidAddressRecipient": {
     "message": "የተቀባይ አድራሻ ትክክል አይደለም"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "ETH አውታረ መረብ አይደለም፣ ወደ ትናንሽ ፊደላት ቀይር"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "ልክ ያልሆነ Block Explorer ዩአርኤል"
-  },
   "invalidRPC": {
     "message": "ልክ ያልሆነ RPC ዩአርኤል"
   },
@@ -444,9 +428,6 @@
   "next": {
     "message": "ቀጣይ"
   },
-  "noAddressForName": {
-    "message": "በዚህ ስም የተሞላ አድራሻ የለም።"
-  },
   "noConversionRateAvailable": {
     "message": "ምንም የልወጣ ተመን አይገኝም"
   },
@@ -508,12 +489,6 @@
   "prev": {
     "message": "የቀደመ"
   },
-  "primaryCurrencySetting": {
-    "message": "ተቀዳሚ የገንዘብ ዓይነት"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "ዋጋዎች በራሳቸው የሰንሰለት ገንዘብ ዓይነት (ለምሳሌ ETH) በቅድሚያ እንዲታዪ ይምረጡ። ዋጋዎች በተመረጠ የፊያት ገንዘብ ዓይነት እንዲታዩ ደግሞ ፊያትን ይምረጡ።"
-  },
   "privacyMsg": {
     "message": "የግለኝነት መጠበቂያ ህግ"
   },
@@ -529,9 +504,6 @@
   },
   "readdToken": {
     "message": "በመለያ አማራጮችዎ ምናሌ ውስጥ ወደ “ተለዋጭ ስም አክል” በመግባት ለወደፊቱ ይህን ተለዋጭ ስም መልሰው ማከል ይችላሉ።"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "ፍለጋ፣ ለሕዝብ ክፍት የሆነ አድራሻ (0x), ወይም ENS"
   },
   "reject": {
     "message": "አይቀበሉ"
@@ -767,9 +739,6 @@
   },
   "unlockMessage": {
     "message": "ያልተማከለ ድር ይጠባበቃል"
-  },
-  "updatedWithDate": {
-    "message": "የዘመነ $1"
   },
   "urlErrorMsg": {
     "message": "URIs አግባብነት ያለው የ HTTP/HTTPS ቅድመ ቅጥያ ይፈልጋል።"

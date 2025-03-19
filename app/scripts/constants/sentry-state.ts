@@ -98,10 +98,27 @@ export const SENTRY_BACKGROUND_STATE = {
   BridgeController: {
     bridgeState: {
       bridgeFeatureFlags: {
+        extensionConfig: false,
         extensionSupport: false,
         destNetworkAllowlist: [],
         srcNetworkAllowlist: [],
       },
+      destTokens: {},
+      destTopAssets: [],
+      srcTokens: {},
+      srcTopAssets: [],
+      quoteRequest: {
+        walletAddress: false,
+        srcTokenAddress: true,
+        slippage: true,
+        srcChainId: true,
+        destChainId: true,
+        destTokenAddress: true,
+        srcTokenAmount: true,
+      },
+      quotes: [],
+      quotesLastFetched: true,
+      quotesLoadingStatus: true,
     },
   },
   CronjobController: {
@@ -158,6 +175,12 @@ export const SENTRY_BACKGROUND_STATE = {
     segmentApiCalls: false,
     traits: false,
     dataCollectionForMarketing: false,
+    marketingCampaignCookieId: true,
+    latestNonAnonymousEventTimestamp: true,
+  },
+  MetaMetricsDataDeletionController: {
+    metaMetricsDataDeletionId: true,
+    metaMetricsDataDeletionTimestamp: true,
   },
   NameController: {
     names: false,
@@ -200,6 +223,7 @@ export const SENTRY_BACKGROUND_STATE = {
     advancedGasFee: true,
     currentLocale: true,
     dismissSeedBackUpReminder: true,
+    overrideContentSecurityPolicyHeader: true,
     featureFlags: true,
     forgottenPassword: true,
     identities: false,
@@ -220,9 +244,10 @@ export const SENTRY_BACKGROUND_STATE = {
       showFiatInTestnets: true,
       showTestNetworks: true,
       smartTransactionsOptInStatus: true,
-      useNativeCurrencyAsPrimaryCurrency: true,
+      showNativeTokenAsMainBalance: true,
       petnamesEnabled: true,
       showConfirmationAdvancedDetails: true,
+      privacyMode: false,
     },
     useExternalServices: false,
     selectedAddress: false,
@@ -273,8 +298,6 @@ export const SENTRY_BACKGROUND_STATE = {
     },
   },
   SnapController: {
-    unencryptedSnapStates: false,
-    snapStates: false,
     snaps: false,
   },
   SnapInterfaceController: {

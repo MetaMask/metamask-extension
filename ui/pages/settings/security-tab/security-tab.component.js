@@ -4,6 +4,8 @@ import React, { PureComponent } from 'react';
 import {
   addUrlProtocolPrefix,
   getEnvironmentType,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import {
@@ -50,8 +52,10 @@ import {
 } from '../../../helpers/utils/settings-search';
 
 import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
-import ProfileSyncToggle from './profile-sync-toggle';
+import { updateDataDeletionTaskStatus } from '../../../store/actions';
 import MetametricsToggle from './metametrics-toggle';
+import ProfileSyncToggle from './profile-sync-toggle';
+import DeleteMetametricsDataButton from './delete-metametrics-data-button';
 
 export default class SecurityTab extends PureComponent {
   static contextTypes = {
@@ -60,7 +64,6 @@ export default class SecurityTab extends PureComponent {
   };
 
   static propTypes = {
-    warning: PropTypes.string,
     history: PropTypes.object,
     openSeaEnabled: PropTypes.bool,
     setOpenSeaEnabled: PropTypes.func,
@@ -71,7 +74,7 @@ export default class SecurityTab extends PureComponent {
     participateInMetaMetrics: PropTypes.bool.isRequired,
     setParticipateInMetaMetrics: PropTypes.func.isRequired,
     incomingTransactionsPreferences: PropTypes.object.isRequired,
-    allNetworks: PropTypes.array.isRequired,
+    networkConfigurations: PropTypes.object.isRequired,
     setIncomingTransactionsPreferences: PropTypes.func.isRequired,
     setUsePhishDetect: PropTypes.func.isRequired,
     usePhishDetect: PropTypes.bool.isRequired,
@@ -100,6 +103,7 @@ export default class SecurityTab extends PureComponent {
     useExternalServices: PropTypes.bool,
     toggleExternalServices: PropTypes.func.isRequired,
     setSecurityAlertsEnabled: PropTypes.func,
+    metaMetricsDataDeletionId: PropTypes.string,
   };
 
   state = {
@@ -136,9 +140,12 @@ export default class SecurityTab extends PureComponent {
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { t } = this.context;
     handleSettingsRefs(t, t('securityAndPrivacy'), this.settingsRefs);
+    if (this.props.metaMetricsDataDeletionId) {
+      await updateDataDeletionTaskStatus();
+    }
   }
 
   toggleSetting(value, eventName, eventAction, toggleMethod) {
@@ -161,7 +168,7 @@ export default class SecurityTab extends PureComponent {
     return (
       <>
         <div
-          ref={this.settingsRefs[0]}
+          ref={this.settingsRefs[1]}
           className="settings-page__security-tab-sub-header"
         >
           {t('secretRecoveryPhrase')}
@@ -211,14 +218,14 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <>
-        <div ref={this.settingsRefs[15]}>
+        <div ref={this.settingsRefs[16]}>
           <span className="settings-page__security-tab-sub-header">
             {t('securityAlerts')}
           </span>
         </div>
         <div className="settings-page__content-padded">
           <Box
-            ref={this.settingsRefs[2]}
+            ref={this.settingsRefs[3]}
             className="settings-page__content-row"
             display={Display.Flex}
             flexDirection={FlexDirection.Row}
@@ -259,14 +266,14 @@ export default class SecurityTab extends PureComponent {
   renderIncomingTransactionsOptIn() {
     const {
       incomingTransactionsPreferences,
-      allNetworks,
+      networkConfigurations,
       setIncomingTransactionsPreferences,
     } = this.props;
 
     return (
       <IncomingTransactionToggle
-        wrapperRef={this.settingsRefs[1]}
-        allNetworks={allNetworks}
+        wrapperRef={this.settingsRefs[2]}
+        networkConfigurations={networkConfigurations}
         setIncomingTransactionsPreferences={setIncomingTransactionsPreferences}
         incomingTransactionsPreferences={incomingTransactionsPreferences}
       />
@@ -279,7 +286,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[2]}
+        ref={this.settingsRefs[3]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -313,7 +320,7 @@ export default class SecurityTab extends PureComponent {
     const { use4ByteResolution, setUse4ByteResolution } = this.props;
     return (
       <Box
-        ref={this.settingsRefs[3]}
+        ref={this.settingsRefs[4]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -353,7 +360,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[4]}
+        ref={this.settingsRefs[19]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -454,7 +461,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[13]}
+        ref={this.settingsRefs[14]}
         className="settings-page__content-row"
         data-testid="setting-safe-chains-validation"
         display={Display.Flex}
@@ -533,7 +540,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[6]}
+        ref={this.settingsRefs[7]}
         className="settings-page__content-row"
         data-testid="setting-ipfs-gateway"
         display={Display.Flex}
@@ -598,7 +605,7 @@ export default class SecurityTab extends PureComponent {
           flexDirection={FlexDirection.Row}
           justifyContent={JustifyContent.spaceBetween}
           gap={4}
-          ref={this.settingsRefs[10]}
+          ref={this.settingsRefs[11]}
           marginTop={3}
           id="ens-domains"
         >
@@ -660,7 +667,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[7]}
+        ref={this.settingsRefs[8]}
         className="settings-page__content-row"
         data-testid="advanced-setting-gas-fee-estimation"
         display={Display.Flex}
@@ -715,7 +722,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[8]}
+        ref={this.settingsRefs[9]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -757,7 +764,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[9]}
+        ref={this.settingsRefs[10]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -822,7 +829,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[11]}
+        ref={this.settingsRefs[12]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -875,7 +882,7 @@ export default class SecurityTab extends PureComponent {
     } = this.props;
     return (
       <Box
-        ref={this.settingsRefs[12]}
+        ref={this.settingsRefs[13]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -923,7 +930,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[14]}
+        ref={this.settingsRefs[15]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -959,7 +966,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[18]}
+        ref={this.settingsRefs[17]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -1025,7 +1032,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[3]}
+        ref={this.settingsRefs[0]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -1058,6 +1065,20 @@ export default class SecurityTab extends PureComponent {
                 setBasicFunctionalityModalOpen();
               } else {
                 toggleExternalServices(true);
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Settings,
+                  event: MetaMetricsEventName.SettingsUpdated,
+                  properties: {
+                    settings_group: 'security_privacy',
+                    settings_type: 'basic_functionality',
+                    old_value: false,
+                    new_value: true,
+                    // these values will always be set to false
+                    // when basic functionality is re-enabled
+                    was_notifications_on: false,
+                    was_profile_syncing_on: false,
+                  },
+                });
               }
             }}
             offLabel={t('off')}
@@ -1109,7 +1130,6 @@ export default class SecurityTab extends PureComponent {
 
   render() {
     const {
-      warning,
       petnamesEnabled,
       dataCollectionForMarketing,
       setDataCollectionForMarketing,
@@ -1122,8 +1142,6 @@ export default class SecurityTab extends PureComponent {
         {showDataCollectionDisclaimer
           ? this.renderDataCollectionWarning()
           : null}
-
-        {warning && <div className="settings-tab__error">{warning}</div>}
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('security')}
         </span>
@@ -1166,7 +1184,7 @@ export default class SecurityTab extends PureComponent {
 
         <span
           className="settings-page__security-tab-sub-header"
-          ref={this.settingsRefs[5]}
+          ref={this.settingsRefs[6]}
         >
           {this.context.t('networkProvider')}
         </span>
@@ -1206,6 +1224,7 @@ export default class SecurityTab extends PureComponent {
             setDataCollectionForMarketing={setDataCollectionForMarketing}
           />
           {this.renderDataCollectionForMarketing()}
+          <DeleteMetametricsDataButton ref={this.settingsRefs[20]} />
         </div>
       </div>
     );

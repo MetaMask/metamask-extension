@@ -1,0 +1,69 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SelectRpcUrlModal Component renders select rpc url 1`] = `
+<div>
+  <div
+    class="mm-box"
+  >
+    <div
+      class="mm-box mm-box--display-flex"
+    >
+      <div
+        class="mm-box mm-box--margin-auto mm-box--padding-top-1 mm-box--padding-bottom-8 mm-box--display-flex mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-right-1 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+        >
+          <img
+            alt="Ethereum Mainnet logo"
+            class="mm-avatar-network__network-image"
+            src="./images/eth_logo.svg"
+          />
+        </div>
+        <p
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        >
+          Ethereum Mainnet
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box select-rpc-url__item select-rpc-url__item--selected mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--align-items-center"
+    >
+      <div
+        class="mm-box select-rpc-url__item-selected-pill mm-box--background-color-primary-default mm-box--rounded-pill"
+      />
+      <div
+        class="mm-box rpc-list-item mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--border-style-solid mm-box--border-color-transparent mm-box--border-width-2"
+      >
+        <div
+          class="mm-box"
+        >
+          <button
+            class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--padding-0 mm-box--width-full mm-box--color-text-alternative mm-box--background-color-transparent"
+          >
+            mainnet.infura.io/v3/
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box select-rpc-url__item mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--align-items-center"
+    >
+      <div
+        class="mm-box rpc-list-item mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--border-style-solid mm-box--border-color-transparent mm-box--border-width-2"
+      >
+        <div
+          class="mm-box"
+        >
+          <button
+            class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--padding-0 mm-box--width-full mm-box--color-text-alternative mm-box--background-color-transparent"
+          >
+            rpc.flashbots.net
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

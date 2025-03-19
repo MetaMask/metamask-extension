@@ -51,36 +51,39 @@ export default function TurnOnMetamaskNotifications() {
   );
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
 
-  const [buttonState, setButtonState] = useState<boolean>(
+  const [isLoading, setIsLoading] = useState<boolean>(
     isUpdatingMetamaskNotifications,
   );
 
   const { createNotifications, error } = useCreateNotifications();
 
   const handleTurnOnNotifications = async () => {
-    setButtonState(true);
-    await createNotifications();
+    setIsLoading(true);
     trackEvent({
-      category: MetaMetricsEventCategory.NotificationInteraction,
-      event: MetaMetricsEventName.NotificationMenuOpened,
+      category: MetaMetricsEventCategory.NotificationsActivationFlow,
+      event: MetaMetricsEventName.NotificationsActivated,
       properties: {
-        is_profile_syncing_enabled: isProfileSyncingEnabled,
-        is_notifications_enabled: isNotificationEnabled,
-        action_type: 'enabled',
+        is_profile_syncing_enabled: true,
+        action_type: 'activated',
       },
     });
+    await createNotifications();
   };
 
   const handleHideModal = () => {
     hideModal();
-    trackEvent({
-      category: MetaMetricsEventCategory.NotificationInteraction,
-      event: MetaMetricsEventName.NotificationMenuOpened,
-      properties: {
-        is_profile_syncing_enabled: isProfileSyncingEnabled,
-        is_notifications_enabled: isNotificationEnabled,
-        action_type: 'dismissed',
-      },
+    setIsLoading((prevLoadingState) => {
+      if (!prevLoadingState) {
+        trackEvent({
+          category: MetaMetricsEventCategory.NotificationsActivationFlow,
+          event: MetaMetricsEventName.NotificationsActivated,
+          properties: {
+            is_profile_syncing_enabled: isProfileSyncingEnabled,
+            action_type: 'dismissed',
+          },
+        });
+      }
+      return prevLoadingState;
     });
   };
 
@@ -151,8 +154,8 @@ export default function TurnOnMetamaskNotifications() {
           }}
           submitButtonProps={{
             children: t('turnOnMetamaskNotificationsButton'),
-            loading: buttonState,
-            disabled: buttonState,
+            loading: isLoading,
+            disabled: isLoading,
             'data-testid': 'turn-on-notifications-button',
           }}
         />

@@ -1,5 +1,7 @@
 import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { t } from '../../../../../app/scripts/translate';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
@@ -232,6 +234,7 @@ export const components: NotificationComponent<StakeNotification> = {
           detail={t('notificationItemConfirmed') || ''}
           action={
             <NotificationDetailCopyButton
+              notification={notification}
               text={notification.tx_hash}
               displayText={t('notificationItemTransactionId') || ''}
             />

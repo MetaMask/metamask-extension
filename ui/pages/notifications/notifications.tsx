@@ -17,7 +17,7 @@ import {
 import { NotificationsPage } from '../../components/multichain';
 import { Content, Header } from '../../components/multichain/pages/page';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
-import { useCounter } from '../../hooks/metamask-notifications/useCounter';
+import { useUnreadNotificationsCounter } from '../../hooks/metamask-notifications/useCounter';
 import { getNotifications, getNotifySnaps } from '../../selectors';
 import {
   selectIsFeatureAnnouncementsEnabled,
@@ -135,7 +135,7 @@ const useCombinedNotifications = () => {
   return combinedNotifications;
 };
 
-const filterNotifications = (
+export const filterNotifications = (
   activeTab: TAB_KEYS,
   notifications: NotificationType[],
 ) => {
@@ -167,7 +167,7 @@ export default function Notifications() {
 
   const [activeTab, setActiveTab] = useState<TAB_KEYS>(TAB_KEYS.ALL);
   const combinedNotifications = useCombinedNotifications();
-  const { notificationsCount } = useCounter();
+  const { notificationsUnreadCount } = useUnreadNotificationsCounter();
   const filteredNotifications = useMemo(
     () => filterNotifications(activeTab, combinedNotifications),
     [activeTab, combinedNotifications],
@@ -206,7 +206,7 @@ export default function Notifications() {
       >
         {t('notifications')}
       </Header>
-      <Content paddingLeft={0} paddingRight={0} paddingTop={0}>
+      <Content padding={0}>
         {hasNotifySnaps && (
           <Tabs
             defaultActiveTabKey={activeTab}
@@ -246,12 +246,13 @@ export default function Notifications() {
             />
           </Tabs>
         )}
+
         <NotificationsList
           activeTab={activeTab}
           notifications={filteredNotifications}
           isLoading={isLoading}
           isError={Boolean(error)}
-          notificationsCount={notificationsCount}
+          notificationsCount={notificationsUnreadCount}
         />
       </Content>
     </NotificationsPage>

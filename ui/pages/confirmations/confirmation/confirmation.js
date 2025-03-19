@@ -14,8 +14,8 @@ import { produce } from 'immer';
 import log from 'loglevel';
 import { ApprovalType } from '@metamask/controller-utils';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
+import { CHAIN_SPEC_URL } from '../../../../shared/constants/network';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
-import Box from '../../../components/ui/box';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -32,10 +32,11 @@ import {
   getTotalUnapprovedCount,
   useSafeChainsListValidationSelector,
   getSnapsMetadata,
+  getNetworkConfigurationsByChainId,
+  getHideSnapBranding,
 } from '../../../selectors';
-import NetworkDisplay from '../../../components/app/network-display/network-display';
 import Callout from '../../../components/ui/callout';
-import { Icon, IconName } from '../../../components/component-library';
+import { Box, Icon, IconName } from '../../../components/component-library';
 import Loading from '../../../components/ui/loading-screen';
 import SnapAuthorshipHeader from '../../../components/app/snaps/snap-authorship-header';
 import { SnapUIRenderer } from '../../../components/app/snaps/snap-ui-renderer';
@@ -43,7 +44,10 @@ import { SnapUIRenderer } from '../../../components/app/snaps/snap-ui-renderer';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 ///: END:ONLY_INCLUDE_IF
 import { DAY } from '../../../../shared/constants/time';
-import { BlockSize } from '../../../helpers/constants/design-system';
+import {
+  BlockSize,
+  BackgroundColor,
+} from '../../../helpers/constants/design-system';
 import ConfirmationFooter from './components/confirmation-footer';
 import {
   getTemplateValues,
@@ -207,18 +211,24 @@ export default function ConfirmationPage({
   const useSafeChainsListValidation = useSelector(
     useSafeChainsListValidationSelector,
   );
+  const networkConfigurationsByChainId = useSelector(
+    getNetworkConfigurationsByChainId,
+  );
   const [approvalFlowLoadingText, setApprovalFlowLoadingText] = useState(null);
 
-  const [currentPendingConfirmation, setCurrentPendingConfirmation] =
-    useState(0);
   const { id } = useParams();
-  const pendingRoutedConfirmation = pendingConfirmations.find(
+  const pendingRoutedConfirmation = pendingConfirmations.findIndex(
     (confirmation) => confirmation.id === id,
   );
-  // Confirmations that are directly routed to get priority and will be shown above the current queue.
-  const pendingConfirmation =
-    pendingRoutedConfirmation ??
-    pendingConfirmations[currentPendingConfirmation];
+
+  const isRoutedConfirmation = id && pendingRoutedConfirmation !== -1;
+
+  const [currentPendingConfirmation, setCurrentPendingConfirmation] = useState(
+    // Confirmations that are directly routed to get priority and will be initially shown above the current queue.
+    isRoutedConfirmation ? pendingRoutedConfirmation : 0,
+  );
+
+  const pendingConfirmation = pendingConfirmations[currentPendingConfirmation];
 
   const [matchedChain, setMatchedChain] = useState({});
   const [chainFetchComplete, setChainFetchComplete] = useState(false);
@@ -247,6 +257,10 @@ export default function ConfirmationPage({
   const [submitAlerts, setSubmitAlerts] = useState([]);
 
   const snapsMetadata = useSelector(getSnapsMetadata);
+
+  const hideSnapBranding = useSelector((state) =>
+    getHideSnapBranding(state, pendingConfirmation?.origin),
+  );
 
   const name = snapsMetadata[pendingConfirmation?.origin]?.name;
 
@@ -291,6 +305,10 @@ export default function ConfirmationPage({
           {
             matchedChain,
             currencySymbolWarning,
+            existingNetworkConfiguration:
+              networkConfigurationsByChainId?.[
+                pendingConfirmation.requestData?.chainId
+              ],
           },
           // Passing `t` in the contexts object is a bit redundant but since it's a
           // context too, it makes sense (for completeness)
@@ -307,6 +325,7 @@ export default function ConfirmationPage({
     trackEvent,
     isSnapDialog,
     snapName,
+    networkConfigurationsByChainId,
   ]);
 
   useEffect(() => {
@@ -352,7 +371,8 @@ export default function ConfirmationPage({
       try {
         if (useSafeChainsListValidation) {
           const response = await fetchWithCache({
-            url: 'https://chainid.network/chains.json',
+            url: CHAIN_SPEC_URL,
+            allowStale: true,
             cacheOptions: { cacheRefreshTime: DAY },
             functionName: 'getSafeChainsList',
           });
@@ -467,10 +487,25 @@ export default function ConfirmationPage({
       ? handleSubmit
       : null);
 
+  const NAVIGATION_CONTROLS_HEIGHT = 32;
+  const SNAP_DIALOG_HEADER_HEIGHT = 64;
+
+  let contentMargin = 0;
+  if (pendingConfirmations.length > 1) {
+    contentMargin += NAVIGATION_CONTROLS_HEIGHT;
+  }
+  if (isSnapCustomUIDialog && !hideSnapBranding) {
+    contentMargin += SNAP_DIALOG_HEADER_HEIGHT;
+  }
+
   return (
     <div className="confirmation-page">
       {pendingConfirmations.length > 1 && (
-        <div className="confirmation-page__navigation">
+        <Box
+          className="confirmation-page__navigation"
+          style={{ position: 'fixed', zIndex: 1 }}
+          width={BlockSize.Screen}
+        >
           <p>
             {t('xOfYPending', [
               currentPendingConfirmation + 1,
@@ -498,22 +533,31 @@ export default function ConfirmationPage({
           >
             <Icon name={IconName.ArrowRight} />
           </button>
-        </div>
+        </Box>
       )}
-      <div className="confirmation-page__content">
-        {isSnapCustomUIDialog && (
-          <Box width={BlockSize.Screen}>
-            <SnapAuthorshipHeader
-              snapId={pendingConfirmation?.origin}
-              onCancel={handleSnapDialogCancel}
-            />
-          </Box>
-        )}
-        {templatedValues.networkDisplay ? (
-          <Box justifyContent="center" marginTop={2}>
-            <NetworkDisplay />
-          </Box>
-        ) : null}
+      {isSnapCustomUIDialog && !hideSnapBranding && (
+        <Box
+          width={BlockSize.Screen}
+          style={{
+            position: 'fixed',
+            zIndex: 1,
+            marginTop: pendingConfirmations.length > 1 ? '32px' : 'initial',
+          }}
+        >
+          <SnapAuthorshipHeader
+            snapId={pendingConfirmation?.origin}
+            onCancel={handleSnapDialogCancel}
+          />
+        </Box>
+      )}
+      <Box
+        className="confirmation-page__content"
+        padding={isSnapCustomUIDialog ? 0 : 4}
+        style={{
+          marginTop: `${contentMargin}px`,
+          overflowY: 'auto',
+        }}
+      >
         {isSnapCustomUIDialog ? (
           <SnapUIRenderer
             snapId={pendingConfirmation?.origin}
@@ -527,6 +571,7 @@ export default function ConfirmationPage({
             useDelineator={false}
             onCancel={handleSnapDialogCancel}
             useFooter={isSnapDefaultDialog}
+            contentBackgroundColor={BackgroundColor.backgroundAlternative}
           />
         ) : (
           <MetaMaskTemplateRenderer sections={templatedValues.content} />
@@ -542,7 +587,7 @@ export default function ConfirmationPage({
             onCancel={templatedValues.onCancel}
           />
         )}
-      </div>
+      </Box>
       {!isSnapDefaultDialog && (
         <ConfirmationFooter
           alerts={

@@ -120,7 +120,7 @@ export async function mockRequest(
 ) {
   await server
     .forPost(TX_SENTINEL_URL)
-    .withJsonBody(request)
+    .withJsonBodyIncluding(request)
     .thenJson(200, response);
 }
 
@@ -215,7 +215,7 @@ describe('Simulation Details', () => {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.findElement({
           css: '[data-testid="simulation-details-layout"]',
-          text: 'No changes predicted for your wallet',
+          text: 'No changes',
         });
       },
     );
@@ -276,7 +276,7 @@ describe('Simulation Details', () => {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.findElement({
           css: '[data-testid="simulation-details-layout"]',
-          text: 'There was an error loading your estimation',
+          text: 'Unavailable',
         });
       },
     );

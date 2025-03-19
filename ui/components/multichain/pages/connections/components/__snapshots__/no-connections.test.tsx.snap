@@ -13,7 +13,7 @@ exports[`No Connections Content should render correctly 1`] = `
     <p
       class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-default"
     >
-      Select an account you want to use on this site to continue.
+      To connect to a site, find and select the "connect" button. Remember MetaMask can only connect to sites on web3
     </p>
   </div>
 </div>

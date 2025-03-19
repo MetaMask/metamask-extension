@@ -1,0 +1,135 @@
+name: Run tests
+
+on:
+  workflow_call:
+    outputs:
+      current-coverage:
+        description: Current coverage
+        value: ${{ jobs.report-coverage.outputs.current-coverage }}
+      stored-coverage:
+        description: Stored coverage
+        value: ${{ jobs.report-coverage.outputs.stored-coverage }}
+
+jobs:
+  test-unit:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
+      - name: test:unit:coverage
+        run: yarn test:unit:coverage --shard=${{ matrix.shard }}/${{ strategy.job-total }}
+
+      - name: Rename coverage
+        run: mv coverage/unit/coverage-final.json coverage/unit/coverage-unit-${{matrix.shard}}.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage-unit-${{matrix.shard}}
+          path: coverage/unit/coverage-unit-${{matrix.shard}}.json
+
+  test-webpack:
+    name: Webpack tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
+      - name: test:unit:webpack:coverage
+        run: yarn test:unit:webpack:coverage
+
+      - name: Rename coverage
+        run: mv coverage/webpack/coverage-final.json coverage/webpack/coverage-webpack.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage-webpack
+          path: coverage/webpack/coverage-webpack.json
+
+  test-integration:
+    name: Integration tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
+      - name: test:integration:coverage
+        run: yarn test:integration:coverage
+
+      - name: Rename coverage
+        run: mv coverage/integration/coverage-final.json coverage/integration/coverage-integration.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage-integration
+          path: coverage/integration/coverage-integration.json
+
+  report-coverage:
+    name: Report coverage
+    runs-on: ubuntu-latest
+    needs:
+      - test-unit
+      - test-webpack
+      - test-integration
+    outputs:
+      current-coverage: ${{ steps.get-current-coverage.outputs.CURRENT_COVERAGE }}
+      stored-coverage: ${{ steps.get-stored-coverage.outputs.STORED_COVERAGE }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: coverage
+          merge-multiple: true
+
+      - name: Merge coverage reports
+        run: yarn nyc merge coverage .nyc_output/coverage-final.json && yarn nyc report --reporter lcov
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lcov.info
+          path: coverage/lcov.info
+
+      - name: Get current coverage
+        id: get-current-coverage
+        run: |
+          current_coverage=$(yarn nyc report --reporter=text-summary | grep 'Lines' | awk '{gsub(/%/, ""); print int($3)}')
+          echo "The current coverage is $current_coverage%."
+          echo 'CURRENT_COVERAGE='"$current_coverage" >> "$GITHUB_OUTPUT"
+
+      - name: Get stored coverage
+        id: get-stored-coverage
+        run: |
+          stored_coverage=$(jq ".coverage" coverage.json)
+          echo "The stored coverage is $stored_coverage%."
+          echo 'STORED_COVERAGE='"$stored_coverage" >> "$GITHUB_OUTPUT"
+
+      - name: Validate test coverage
+        env:
+          CURRENT_COVERAGE: ${{ steps.get-current-coverage.outputs.CURRENT_COVERAGE }}
+          STORED_COVERAGE: ${{ steps.get-stored-coverage.outputs.STORED_COVERAGE }}
+        run: |
+          if (( $(echo "$CURRENT_COVERAGE < $STORED_COVERAGE" | bc -l) )); then
+            echo "::error::Quality gate failed for test coverage. Current coverage is $CURRENT_COVERAGE%, please increase coverage to at least $STORED_COVERAGE%."
+            exit 1
+          else
+            echo "The current coverage is $CURRENT_COVERAGE%, stored coverage is $STORED_COVERAGE%. Quality gate passed."
+          fi

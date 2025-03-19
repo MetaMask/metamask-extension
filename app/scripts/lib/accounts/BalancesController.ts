@@ -274,6 +274,8 @@ export class BalancesController extends BaseController<
    * @param accountId - The account ID.
    */
   async updateBalance(accountId: string) {
+    // NOTE: No need to track the account here, since we start tracking those when
+    // the "AccountsController:accountAdded" is fired.
     await this.#tracker.updateBalance(accountId);
   }
 
@@ -311,6 +313,13 @@ export class BalancesController extends BaseController<
     }
 
     this.#tracker.track(account.id, BTC_AVG_BLOCK_TIME);
+    // NOTE: Unfortunately, we cannot update the balance right away here, because
+    // messenger's events are running synchronously and fetching the balance is
+    // asynchronous.
+    // Updating the balance here would resume at some point but the event emitter
+    // will not `await` this (so we have no real control "when" the balance will
+    // really be updated), see:
+    // - https://github.com/MetaMask/core/blob/v213.0.0/packages/accounts-controller/src/AccountsController.ts#L1036-L1039
   }
 
   /**

@@ -1,0 +1,83 @@
+@use "design-system";
+
+.quote-card {
+  flex-direction: column;
+  display: flex;
+  text-align: center;
+
+  p {
+    font-size: 12px;
+  }
+
+
+  &__content {
+    padding: 16px;
+    gap: 4px;
+  }
+
+  &__timer {
+    height: 32px;
+
+    p {
+      color: var(--color-text-alternative);
+    }
+  }
+
+  .bridge-box > &__footer {
+    gap: 0;
+
+    p {
+      color: var(--color-text-alternative);
+    }
+  }
+
+  &__info-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    &__label {
+      display: inline-flex;
+      gap: 4px;
+
+      p {
+        font-weight: var(--font-weight-medium);
+        font-size: 14px;
+        white-space: nowrap;
+      }
+
+      &__tooltip {
+        align-items: center;
+        height: 100%;
+      }
+    }
+
+    &__description {
+      display: inline-flex;
+      gap: 4px;
+
+      &__secondary {
+        color: var(--color-text-alternative);
+      }
+    }
+  }
+}
+
+.quotes-modal {
+  &__column-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  &__quotes {
+    display: flex;
+    flex-direction: column;
+
+    &__row {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+}

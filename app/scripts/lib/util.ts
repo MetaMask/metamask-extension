@@ -411,7 +411,7 @@ export const getMethodDataName = async (
     provider,
   );
 
-  if (addKnownMethodData) {
+  if (methodData?.name) {
     addKnownMethodData(fourBytePrefix, methodData as MethodData);
   }
 

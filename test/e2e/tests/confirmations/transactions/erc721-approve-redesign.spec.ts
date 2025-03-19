@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
-import { veryLargeDelayMs, WINDOW_TITLES } from '../../../helpers';
+import { MockttpServer } from 'mockttp';
+import { WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import {
@@ -35,6 +36,7 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
             .build(),
           ganacheOptions: defaultGanacheOptions,
           smartContract,
+          testSpecificMock: mocks,
           title: this.test?.fullTitle(),
         },
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
@@ -66,6 +68,7 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
             .build(),
           ganacheOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
+          testSpecificMock: mocks,
           title: this.test?.fullTitle(),
         },
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
@@ -83,14 +86,39 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
   });
 });
 
+async function mocked4Bytes(mockServer: MockttpServer) {
+  return await mockServer
+    .forGet('https://www.4byte.directory/api/v1/signatures/')
+    .withQuery({ hex_signature: '0x095ea7b3' })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        count: 1,
+        next: null,
+        previous: null,
+        results: [
+          {
+            id: 149,
+            created_at: '2016-07-09T03:58:29.617584Z',
+            text_signature: 'approve(address,uint256)',
+            hex_signature: '0x095ea7b3',
+            bytes_signature: '\t^§³',
+          },
+        ],
+      },
+    }));
+}
+
+async function mocks(server: MockttpServer) {
+  return [await mocked4Bytes(server)];
+}
+
 async function createMintTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await driver.clickElement('#mintButton');
 }
 
 export async function confirmMintTransaction(driver: Driver) {
-  await driver.waitUntilXWindowHandles(3);
-
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.waitForSelector({
@@ -99,6 +127,12 @@ export async function confirmMintTransaction(driver: Driver) {
   });
 
   await scrollAndConfirmAndAssertConfirm(driver);
+
+  // Verify Mint Transaction is Confirmed before proceeding
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+  await driver.clickElement('[data-testid="account-overview__activity-tab"]');
+  await driver.waitForSelector('.transaction-status-label--confirmed');
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 }
 
 async function createApproveTransaction(driver: Driver) {
@@ -107,8 +141,6 @@ async function createApproveTransaction(driver: Driver) {
 }
 
 async function assertApproveDetails(driver: Driver) {
-  await driver.delay(veryLargeDelayMs);
-  await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.waitForSelector({
@@ -121,7 +153,27 @@ async function assertApproveDetails(driver: Driver) {
     text: 'This site wants permission to withdraw your NFTs',
   });
 
+  await driver.waitForSelector({
+    css: 'p',
+    text: 'Estimated changes',
+  });
+
+  await driver.waitForSelector({
+    css: 'p',
+    text: 'Withdraw',
+  });
+
+  await driver.waitForSelector({
+    css: 'p',
+    text: '#1',
+  });
+
   await toggleAdvancedDetails(driver);
+
+  await driver.waitForSelector({
+    css: 'p',
+    text: 'Spender',
+  });
 
   await driver.waitForSelector({
     css: 'p',
@@ -141,8 +193,6 @@ async function assertApproveDetails(driver: Driver) {
 
 async function confirmApproveTransaction(driver: Driver) {
   await scrollAndConfirmAndAssertConfirm(driver);
-
-  await driver.delay(veryLargeDelayMs);
   await driver.waitUntilXWindowHandles(2);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 

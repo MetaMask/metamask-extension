@@ -11,8 +11,9 @@ exports[`ConfirmNav should match snapshot 1`] = `
     >
       <button
         aria-label="Previous Confirmation"
-        class="mm-box mm-button-icon mm-button-icon--size-sm confirm_nav__left_btn mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-button-icon--disabled confirm_nav__left_btn mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
         data-testid="confirm-nav__previous-confirmation"
+        disabled=""
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -22,7 +23,7 @@ exports[`ConfirmNav should match snapshot 1`] = `
       <p
         class="mm-box mm-text mm-text--body-sm mm-box--margin-inline-2 mm-box--color-text-alternative"
       >
-        2
+        1
          of 
         3
       </p>
@@ -40,6 +41,7 @@ exports[`ConfirmNav should match snapshot 1`] = `
     <button
       class="mm-box mm-text mm-button-base mm-button-base--size-md confirm_nav__reject_all mm-button-primary mm-text--body-md-medium mm-text--font-weight-normal mm-box--padding-0 mm-box--padding-right-3 mm-box--padding-left-3 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
       data-testid="confirm-nav__reject-all"
+      data-theme="light"
       type="secondary"
     >
       <span

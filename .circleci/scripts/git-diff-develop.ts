@@ -1,10 +1,44 @@
-import { hasProperty } from '@metamask/utils';
 import { exec as execCallback } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
 
 const exec = promisify(execCallback);
+
+// The CIRCLE_PR_NUMBER variable is only available on forked Pull Requests
+const PR_NUMBER =
+  process.env.CIRCLE_PR_NUMBER ||
+  process.env.CIRCLE_PULL_REQUEST?.split('/').pop();
+
+const MAIN_BRANCH = 'develop';
+const SOURCE_BRANCH = `refs/pull/${PR_NUMBER}/head`;
+
+const CHANGED_FILES_DIR = 'changed-files';
+
+type PRInfo = {
+  base: {
+    ref: string;
+  };
+  body: string;
+  labels: { name: string }[];
+};
+
+/**
+ * Get JSON info about the given pull request
+ *
+ * @returns JSON info from GitHub
+ */
+async function getPrInfo(): Promise<PRInfo | null> {
+  if (!PR_NUMBER) {
+    return null;
+  }
+
+  return await (
+    await fetch(
+      `https://api.github.com/repos/${process.env.CIRCLE_PROJECT_USERNAME}/${process.env.CIRCLE_PROJECT_REPONAME}/pulls/${PR_NUMBER}`,
+    )
+  ).json();
+}
 
 /**
  * Fetches the git repository with a specified depth.
@@ -14,8 +48,10 @@ const exec = promisify(execCallback);
  */
 async function fetchWithDepth(depth: number): Promise<boolean> {
   try {
-    await exec(`git fetch --depth ${depth} origin develop`);
-    await exec(`git fetch --depth ${depth} origin ${process.env.CIRCLE_BRANCH}`);
+    await exec(`git fetch --depth ${depth} origin "${MAIN_BRANCH}"`);
+    await exec(
+      `git fetch --depth ${depth} origin "${SOURCE_BRANCH}:${SOURCE_BRANCH}"`,
+    );
     return true;
   } catch (error: unknown) {
     console.error(`Failed to fetch with depth ${depth}:`, error);
@@ -39,18 +75,16 @@ async function fetchUntilMergeBaseFound() {
       await exec(`git merge-base origin/HEAD HEAD`);
       return;
     } catch (error: unknown) {
-      if (
-        error instanceof Error &&
-        hasProperty(error, 'code') &&
-        error.code === 1
-      ) {
-        console.error(`Error 'no merge base' encountered with depth ${depth}. Incrementing depth...`);
+      if (error instanceof Error && 'code' in error) {
+        console.error(
+          `Error 'no merge base' encountered with depth ${depth}. Incrementing depth...`,
+        );
       } else {
         throw error;
       }
     }
   }
-  await exec(`git fetch --unshallow origin develop`);
+  await exec(`git fetch --unshallow origin "${MAIN_BRANCH}"`);
 }
 
 /**
@@ -62,33 +96,67 @@ async function fetchUntilMergeBaseFound() {
  */
 async function gitDiff(): Promise<string> {
   await fetchUntilMergeBaseFound();
-  const { stdout: diffResult } = await exec(`git diff --name-only origin/HEAD...${process.env.CIRCLE_BRANCH}`);
+  const { stdout: diffResult } = await exec(
+    `git diff --name-only "origin/HEAD...${SOURCE_BRANCH}"`,
+  );
   if (!diffResult) {
-      throw new Error('Unable to get diff after full checkout.');
+    throw new Error('Unable to get diff after full checkout.');
   }
   return diffResult;
 }
 
+function writePrBodyToFile(prBody: string) {
+  const prBodyPath = path.resolve(CHANGED_FILES_DIR, 'pr-body.txt');
+  fs.writeFileSync(prBodyPath, prBody.trim());
+  console.log(`PR body saved to ${prBodyPath}`);
+}
+
 /**
- * Stores the output of git diff to a file.
+ * Main run function, stores the output of git diff and the body of the matching PR to a file.
  *
- * @returns Returns a promise that resolves when the git diff output is successfully stored.
+ * @returns Returns a promise that resolves when the git diff output and PR body is successfully stored.
  */
-async function storeGitDiffOutput() {
+async function storeGitDiffOutputAndPrBody() {
   try {
-    console.log("Attempting to get git diff...");
+    // Create the directory
+    // This is done first because our CirleCI config requires that this directory is present,
+    // even if we want to skip this step.
+    fs.mkdirSync(CHANGED_FILES_DIR, { recursive: true });
+
+    console.log(
+      `Determining whether to run git diff...`,
+    );
+    if (!PR_NUMBER) {
+      console.log('Not a PR, skipping git diff');
+      return;
+    }
+
+    const prInfo = await getPrInfo();
+
+    const baseRef = prInfo?.base.ref;
+    if (!baseRef) {
+      console.log('Not a PR, skipping git diff');
+      return;
+    } else if (baseRef !== MAIN_BRANCH) {
+      console.log(`This is for a PR targeting '${baseRef}', skipping git diff`);
+      writePrBodyToFile(prInfo.body);
+      return;
+    } else if (prInfo.labels.some(label => label.name === 'skip-e2e-quality-gate')) {
+      console.log('PR has the skip-e2e-quality-gate label, skipping git diff');
+      return;
+    }
+
+    console.log('Attempting to get git diff...');
     const diffOutput = await gitDiff();
     console.log(diffOutput);
 
-    // Create the directory
-    const outputDir = 'changed-files';
-    fs.mkdirSync(outputDir, { recursive: true });
-
     // Store the output of git diff
-    const outputPath = path.resolve(outputDir, 'changed-files.txt');
+    const outputPath = path.resolve(CHANGED_FILES_DIR, 'changed-files.txt');
     fs.writeFileSync(outputPath, diffOutput.trim());
-
     console.log(`Git diff results saved to ${outputPath}`);
+
+    writePrBodyToFile(prInfo.body);
+
     process.exit(0);
   } catch (error: any) {
     console.error('An error occurred:', error.message);
@@ -96,4 +164,4 @@ async function storeGitDiffOutput() {
   }
 }
 
-storeGitDiffOutput();
+storeGitDiffOutputAndPrBody();

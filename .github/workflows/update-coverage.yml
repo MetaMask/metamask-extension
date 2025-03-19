@@ -1,0 +1,46 @@
+name: Update coverage
+
+on:
+  schedule:
+    # Once per day at midnight UTC
+    - cron: 0 0 * * *
+  workflow_dispatch:
+
+jobs:
+  run-tests:
+    name: Run tests
+    uses: ./.github/workflows/run-tests.yml
+
+  update-coverage:
+    if: ${{ needs.run-tests.outputs.current-coverage > needs.run-tests.outputs.stored-coverage }}
+    name: Update coverage
+    runs-on: ubuntu-latest
+    needs:
+      - run-tests
+    env:
+      CURRENT_COVERAGE: ${{ needs.run-tests.outputs.current-coverage }}
+      STORED_COVERAGE: ${{ needs.run-tests.outputs.stored-coverage }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+
+      - name: Update coverage
+        run: |
+          echo "{ \"coverage\": $CURRENT_COVERAGE }" > coverage.json
+
+      - name: Checkout/create branch, commit, and force push
+        run: |
+          git config user.name "MetaMask Bot"
+          git config user.email "metamaskbot@users.noreply.github.com"
+          git checkout -b metamaskbot/update-coverage
+          git add coverage.json
+          git commit -m "chore: Update coverage.json"
+          git push -f origin metamaskbot/update-coverage
+
+      - name: Create/update pull request
+        env:
+          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+        run: |
+          gh pr create --title "chore: Update coverage.json" --body "This PR is automatically opened to update the coverage.json file when test coverage increases. Coverage increased from $STORED_COVERAGE% to $CURRENT_COVERAGE%." --base develop --head metamaskbot/update-coverage || gh pr edit --body "This PR is automatically opened to update the coverage.json file when test coverage increases. Coverage increased from $STORED_COVERAGE% to $CURRENT_COVERAGE%."

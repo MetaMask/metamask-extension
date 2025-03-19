@@ -6,11 +6,11 @@
   align-items: center;
   background-color: unset;
   text-align: center;
-  width: 60px;
+  width: 64px;
 
   @include design-system.H7;
 
-  font-size: 13px;
+  font-size: 12px;
   cursor: pointer;
   color: var(--color-primary-default);
 
@@ -21,9 +21,9 @@
     height: 36px;
     width: 36px;
     background: var(--color-primary-default);
-    border-radius: 18px;
+    border-radius: 99px;
     margin-top: 6px;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
     margin-inline: auto;
   }
 

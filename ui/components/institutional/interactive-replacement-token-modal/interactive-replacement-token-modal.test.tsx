@@ -48,9 +48,7 @@ describe('Interactive Replacement Token Modal', function () {
         oldRefreshToken: 'abc',
         url: 'https://saturn-custody-ui.dev.metamask-institutional.io',
       },
-      preferences: {
-        useNativeCurrencyAsPrimaryCurrency: true,
-      },
+      preferences: {},
     },
   };
 

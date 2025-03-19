@@ -52,11 +52,11 @@ describe('AssetList Ramps Card', () => {
       '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
       '0x0',
     );
-    expect(queryByText('Fund your wallet')).toBeInTheDocument();
+    expect(queryByText('Tips for using a wallet')).toBeInTheDocument();
   });
 
   it('does not show the ramp card when the account has a balance', () => {
     const { queryByText } = render();
-    expect(queryByText('Fund your wallet')).not.toBeInTheDocument();
+    expect(queryByText('Tips for using a wallet')).not.toBeInTheDocument();
   });
 });

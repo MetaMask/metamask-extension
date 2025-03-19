@@ -98,8 +98,7 @@ describe('Token detection event @no-mmi', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'fullscreen',
-          is_profile_syncing_enabled: null,
-          is_signed_in: false,
+          is_profile_syncing_enabled: true,
         });
         assert.deepStrictEqual(events[2].properties, {
           token_detection_enabled: true,

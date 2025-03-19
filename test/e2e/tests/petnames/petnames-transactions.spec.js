@@ -22,7 +22,7 @@ async function createDappSendTransaction(driver) {
 async function createWalletSendTransaction(driver, recipientAddress) {
   await openActionMenuAndStartSendFlow(driver);
   await driver.fill(
-    'input[placeholder="Enter public address (0x) or ENS name"]',
+    'input[placeholder="Enter public address (0x) or domain name"]',
     recipientAddress,
   );
 

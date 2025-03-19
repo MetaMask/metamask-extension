@@ -33,7 +33,7 @@ export const ConfirmInfoRowValueDouble = ({
       flexDirection={FlexDirection.Row}
       alignItems={AlignItems.center}
       flexWrap={FlexWrap.Wrap}
-      gap={2}
+      gap={1}
     >
       <Text color={LEFT_TEXT_COLORS[variant] as TextColor}>{left}</Text>
       <Text color={TextColor.inherit}>{right}</Text>

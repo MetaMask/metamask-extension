@@ -15,6 +15,7 @@ import {
 import Box from '../../../../components/ui/box';
 import { Text } from '../../../../components/component-library';
 import CopyRawData from '../transaction-decoding/components/ui/copy-raw-data';
+import { hasTransactionData } from '../../../../../shared/modules/transaction.utils';
 
 const ConfirmHexData = ({ txData, dataHexComponent }) => {
   const t = useI18nContext();
@@ -28,7 +29,7 @@ const ConfirmHexData = ({ txData, dataHexComponent }) => {
     return dataHexComponent;
   }
 
-  if (!txParams.data || !txParams.to) {
+  if (!hasTransactionData(txParams.data) || !txParams.to) {
     return null;
   }
 

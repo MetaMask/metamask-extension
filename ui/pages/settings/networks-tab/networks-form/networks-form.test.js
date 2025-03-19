@@ -1,19 +1,30 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent, screen } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import nock from 'nock';
+import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
-import { defaultNetworksData } from '../networks-tab.constants';
 import {
+  CHAIN_IDS,
+  MAINNET_DISPLAY_NAME,
   NETWORK_TYPES,
   getRpcUrl,
 } from '../../../../../shared/constants/network';
 import * as fetchWithCacheModule from '../../../../../shared/lib/fetch-with-cache';
-import NetworksForm from '.';
+import { mockNetworkState } from '../../../../../test/stub/networks';
+import { addNetwork, updateNetwork } from '../../../../store/actions';
+import { NetworksForm } from './networks-form';
+
+jest.mock('../../../../../ui/store/actions', () => ({
+  ...jest.requireActual('../../../../../ui/store/actions'),
+  updateNetwork: jest.fn().mockReturnValue(jest.fn().mockResolvedValue()),
+  addNetwork: jest.fn().mockReturnValue(jest.fn().mockResolvedValue()),
+}));
 
 const renderComponent = (props) => {
-  const store = configureMockStore([])({
+  const store = configureMockStore([thunk])({
     metamask: {
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
       useSafeChainsListValidation: true,
       orderedNetworkList: {
         networkId: '0x1',
@@ -24,33 +35,34 @@ const renderComponent = (props) => {
   return renderWithProvider(<NetworksForm {...props} />, store);
 };
 
-jest.mock('../../../../helpers/utils/feature-flags', () => ({
-  getLocalNetworkMenuRedesignFeatureFlag: jest.fn(() => false),
-}));
-
-const defaultNetworks = defaultNetworksData.map((network) => ({
-  ...network,
-  viewOnly: true,
-}));
-
-const propNewNetwork = {
-  networksToRender: defaultNetworks,
-  addNewNetwork: true,
-};
-
 const propNetworkDisplay = {
-  selectedNetwork: {
-    rpcUrl: 'http://localhost:8545',
-    chainId: '1337',
+  networkFormState: {
+    chainId: '100',
+    blockExplorers: {
+      blockExplorerUrls: [],
+    },
+    clear: () => ({}),
+    name: MAINNET_DISPLAY_NAME,
+    rpcUrls: {
+      defaultRpcEndpointIndex: 0,
+      rpcEndpoints: [
+        {
+          url: getRpcUrl({
+            network: NETWORK_TYPES.MAINNET,
+            excludeProjectId: true,
+          }),
+        },
+      ],
+    },
+    setBlockExplorers: () => ({}),
+    setChainId: () => ({}),
+    setName: () => ({}),
+    setRpcUrls: () => ({}),
+    setTicker: () => ({}),
     ticker: 'ETH',
-    label: 'LocalHost',
-    blockExplorerUrl: '',
-    viewOnly: false,
-    rpcPrefs: {},
   },
-  isCurrentRpcTarget: false,
-  networksToRender: defaultNetworks,
-  addNewNetwork: false,
+  onRpcAdd: () => ({}),
+  onBlockExplorerAdd: () => ({}),
 };
 
 describe('NetworkForm Component', () => {
@@ -105,41 +117,44 @@ describe('NetworkForm Component', () => {
   });
 
   it('should render add new network form correctly', async () => {
-    const { queryByText, getByTestId } = renderComponent(propNewNetwork);
-    expect(
-      queryByText(
-        'A malicious network provider can lie about the state of the blockchain and record your network activity. Only add custom networks you trust.',
-      ),
-    ).toBeInTheDocument();
+    const { queryByText } = renderComponent({
+      ...propNetworkDisplay,
+      networkFormState: {
+        chainId: '1',
+        blockExplorers: {
+          blockExplorerUrls: [],
+        },
+        clear: () => ({}),
+        name: MAINNET_DISPLAY_NAME,
+        rpcUrls: {
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: getRpcUrl({
+                network: NETWORK_TYPES.MAINNET,
+                excludeProjectId: true,
+              }),
+            },
+          ],
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: 'ETH',
+      },
+    });
     expect(queryByText('Network name')).toBeInTheDocument();
-    expect(queryByText('New RPC URL')).toBeInTheDocument();
+    expect(queryByText('Default RPC URL')).toBeInTheDocument();
     expect(queryByText('Chain ID')).toBeInTheDocument();
     expect(queryByText('Currency symbol')).toBeInTheDocument();
-    expect(queryByText('Block explorer URL (Optional)')).toBeInTheDocument();
-    expect(queryByText('Cancel')).toBeInTheDocument();
+    expect(queryByText('Block explorer URL')).toBeInTheDocument();
     expect(queryByText('Save')).toBeInTheDocument();
 
-    const chainIdField = getByTestId('network-form-chain-id');
-
-    fireEvent.change(chainIdField, {
-      target: { value: '1' },
-    });
-
     expect(
       await screen.findByText(
-        'This Chain ID is currently used by the mainnet network.',
-      ),
-    ).toBeInTheDocument();
-
-    await fireEvent.change(
-      screen.getByRole('textbox', { name: 'New RPC URL' }),
-      {
-        target: { value: 'test' },
-      },
-    );
-    expect(
-      await screen.findByText(
-        'URLs require the appropriate HTTP/HTTPS prefix.',
+        'This Chain ID is currently used by the Ethereum Mainnet network.',
       ),
     ).toBeInTheDocument();
   });
@@ -148,188 +163,132 @@ describe('NetworkForm Component', () => {
     const { queryByText, getByDisplayValue } =
       renderComponent(propNetworkDisplay);
     expect(queryByText('Network name')).toBeInTheDocument();
-    expect(queryByText('New RPC URL')).toBeInTheDocument();
+    expect(queryByText('Default RPC URL')).toBeInTheDocument();
     expect(queryByText('Chain ID')).toBeInTheDocument();
     expect(queryByText('Currency symbol')).toBeInTheDocument();
-    expect(queryByText('Block explorer URL (Optional)')).toBeInTheDocument();
-    expect(queryByText('Delete')).toBeInTheDocument();
-    expect(queryByText('Cancel')).toBeInTheDocument();
+    expect(queryByText('Block explorer URL')).toBeInTheDocument();
     expect(queryByText('Save')).toBeInTheDocument();
 
     expect(
-      getByDisplayValue(propNetworkDisplay.selectedNetwork.label),
+      getByDisplayValue(propNetworkDisplay.networkFormState.chainId),
     ).toBeInTheDocument();
     expect(
-      getByDisplayValue(propNetworkDisplay.selectedNetwork.rpcUrl),
+      getByDisplayValue(propNetworkDisplay.networkFormState.ticker),
     ).toBeInTheDocument();
     expect(
-      getByDisplayValue(propNetworkDisplay.selectedNetwork.chainId),
-    ).toBeInTheDocument();
-    expect(
-      getByDisplayValue(propNetworkDisplay.selectedNetwork.ticker),
-    ).toBeInTheDocument();
-    expect(
-      getByDisplayValue(propNetworkDisplay.selectedNetwork.blockExplorerUrl),
-    ).toBeInTheDocument();
-  });
-
-  it('should validate RPC URL field correctly', async () => {
-    const { getByTestId } = renderComponent(propNewNetwork);
-
-    const rpcUrlField = screen.getByRole('textbox', { name: 'New RPC URL' });
-    await fireEvent.change(rpcUrlField, {
-      target: { value: 'test' },
-    });
-
-    const chainIdField = getByTestId('network-form-chain-id');
-
-    fireEvent.change(chainIdField, {
-      target: { value: '1' },
-    });
-    expect(
-      await screen.findByText(
-        'URLs require the appropriate HTTP/HTTPS prefix.',
-      ),
-    ).toBeInTheDocument();
-
-    await fireEvent.change(rpcUrlField, {
-      target: { value: '  ' },
-    });
-    expect(await screen.findByText('Invalid RPC URL')).toBeInTheDocument();
-
-    await fireEvent.change(rpcUrlField, {
-      target: {
-        value: getRpcUrl({
-          network: NETWORK_TYPES.MAINNET,
-          excludeProjectId: true,
-        }),
-      },
-    });
-
-    expect(
-      await screen.findByText(
-        'This URL is currently used by the mainnet network.',
-      ),
-    ).toBeInTheDocument();
-  });
-
-  it('should convert rpcUrl field to lowercase when not in input mode', async () => {
-    const networkDisplay = {
-      ...propNetworkDisplay,
-      selectedNetwork: {
-        ...propNetworkDisplay.suggestedNetwork,
-        rpcUrl: 'http://LOCALHOST:8545',
-        viewOnly: true,
-      },
-    };
-    const { getByDisplayValue } = renderComponent(networkDisplay);
-
-    expect(
-      getByDisplayValue(
-        propNetworkDisplay.selectedNetwork.rpcUrl.toLowerCase(),
-      ),
+      getByDisplayValue(propNetworkDisplay.networkFormState.name),
     ).toBeInTheDocument();
   });
 
   it('should validate chain id field correctly', async () => {
-    const { getByTestId } = renderComponent(propNewNetwork);
-    const chainIdField = getByTestId('network-form-chain-id');
-
-    const rpcUrlField = screen.getByRole('textbox', { name: 'New RPC URL' });
-    const currencySymbolField = getByTestId('network-form-ticker-input');
-
-    fireEvent.change(chainIdField, {
-      target: { value: '1' },
-    });
-
-    fireEvent.change(currencySymbolField, {
-      target: { value: 'test' },
-    });
-
-    fireEvent.change(rpcUrlField, {
-      target: { value: 'https://rpc.flashbots.net' },
+    renderComponent({
+      ...propNetworkDisplay,
+      networkFormState: {
+        chainId: '1',
+        blockExplorers: {
+          blockExplorerUrls: [],
+        },
+        clear: () => ({}),
+        name: MAINNET_DISPLAY_NAME,
+        rpcUrls: {
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'https://bsc-dataseed.binance.org/',
+              type: 'custom',
+              name: undefined,
+            },
+          ],
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: 'ETH',
+      },
     });
 
     expect(
       await screen.findByText(
-        'This Chain ID is currently used by the mainnet network.',
+        'This Chain ID is currently used by the Ethereum Mainnet network.',
       ),
     ).toBeInTheDocument();
 
-    expect(screen.getByText('Save')).not.toBeDisabled();
-
-    fireEvent.change(rpcUrlField, {
-      target: { value: 'https://bsc-dataseed.binance.org/' },
-    });
-
     const expectedWarning =
-      'The RPC URL you have entered returned a different chain ID (56). Please update the Chain ID to match the RPC URL of the network you are trying to add.';
+      'The RPC URL you have entered returned a different chain ID (56).';
     expect(await screen.findByText(expectedWarning)).toBeInTheDocument();
 
     expect(screen.getByText('Save')).toBeDisabled();
+  });
 
-    fireEvent.change(chainIdField, {
-      target: { value: 'a' },
+  it('should chainID be a valid number', async () => {
+    renderComponent({
+      ...propNetworkDisplay,
+      networkFormState: {
+        chainId: 'a',
+        blockExplorers: {
+          blockExplorerUrls: [],
+        },
+        clear: () => ({}),
+        name: MAINNET_DISPLAY_NAME,
+        rpcUrls: {
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'https://bsc-dataseed.binance.org/',
+              type: 'custom',
+              name: undefined,
+            },
+          ],
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: 'ETH',
+      },
     });
 
     expect(
-      await screen.findByText('Invalid hexadecimal number.'),
+      await screen.findByText(
+        "Invalid number. Enter a decimal or '0x'-prefixed hexadecimal number.",
+      ),
     ).toBeInTheDocument();
+  });
 
-    // reset RCP URL field
-    fireEvent.change(rpcUrlField, {
-      target: { value: '' },
-    });
-
-    fireEvent.change(chainIdField, {
-      target: { value: '00000012314' },
+  it('should chainID not be leading zeros', async () => {
+    renderComponent({
+      ...propNetworkDisplay,
+      networkFormState: {
+        chainId: '00000012314',
+        blockExplorers: {
+          blockExplorerUrls: [],
+        },
+        clear: () => ({}),
+        name: MAINNET_DISPLAY_NAME,
+        rpcUrls: {
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'https://bsc-dataseed.binance.org/',
+              type: 'custom',
+              name: undefined,
+            },
+          ],
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: 'ETH',
+      },
     });
 
     expect(
       await screen.findByText('Invalid number. Remove any leading zeros.'),
-    ).toBeInTheDocument();
-  });
-
-  it('should validate currency symbol field correctly', async () => {
-    const { getByTestId } = renderComponent(propNewNetwork);
-
-    const chainIdField = getByTestId('network-form-chain-id');
-    const currencySymbolField = getByTestId('network-form-ticker-input');
-
-    fireEvent.change(chainIdField, {
-      target: { value: '1234' },
-    });
-
-    fireEvent.change(currencySymbolField, {
-      target: { value: 'abcd' },
-    });
-
-    const expectedWarning =
-      'Ticker symbol verification data is currently unavailable, make sure that the symbol you have entered is correct. It will impact the conversion rates that you see for this network';
-    expect(await screen.findByText(expectedWarning)).toBeInTheDocument();
-
-    fireEvent.change(chainIdField, {
-      target: { value: '137' },
-    });
-    expect(
-      await screen.findByTestId('network-form-ticker-warning'),
-    ).toBeInTheDocument();
-  });
-
-  it('should validate block explorer URL field correctly', async () => {
-    const { getByTestId } = renderComponent(propNewNetwork);
-
-    const blockExplorerUrlField = getByTestId(
-      'network-form-block-explorer-url',
-    );
-
-    fireEvent.change(blockExplorerUrlField, {
-      target: { value: '1234' },
-    });
-    expect(
-      await screen.findByText(
-        'URLs require the appropriate HTTP/HTTPS prefix.',
-      ),
     ).toBeInTheDocument();
   });
 
@@ -348,33 +307,42 @@ describe('NetworkForm Component', () => {
       .spyOn(fetchWithCacheModule, 'default')
       .mockResolvedValue(safeChainsList);
 
-    const { getByTestId } = renderComponent(propNewNetwork);
-
-    const chainIdField = getByTestId('network-form-chain-id');
-    const currencySymbolField = getByTestId('network-form-ticker-input');
-
-    fireEvent.change(chainIdField, {
-      target: { value: '42161' },
+    renderComponent({
+      ...propNetworkDisplay,
+      networkFormState: {
+        chainId: '42161',
+        blockExplorers: {
+          blockExplorerUrls: [],
+        },
+        clear: () => ({}),
+        name: MAINNET_DISPLAY_NAME,
+        rpcUrls: {
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'https://bsc-dataseed.binance.org/',
+              type: 'custom',
+              name: undefined,
+            },
+          ],
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: 'abcd',
+      },
     });
 
-    fireEvent.change(currencySymbolField, {
-      target: { value: 'abcd' },
-    });
-
-    const expectedSymbolWarning = 'Suggested ticker symbol:';
+    const expectedSymbolWarning = 'Suggested currency symbol:';
     expect(await screen.findByText(expectedSymbolWarning)).toBeInTheDocument();
 
     expect(
-      await screen.findByTestId('network-form-ticker-warning'),
+      await screen.findByText(
+        "This token symbol doesn't match the network name or chain ID entered. Many popular tokens use similar symbols, which scammers can use to trick you into sending them a more valuable token in return. Verify everything before you continue.",
+      ),
     ).toBeInTheDocument();
-
-    fireEvent.change(currencySymbolField, {
-      target: { value: 'ETH' },
-    });
-
-    expect(
-      await screen.findByTestId('network-form-ticker-warning'),
-    ).not.toBeInTheDocument();
   });
 
   it('should validate currency symbol field for ZYN network', async () => {
@@ -392,44 +360,88 @@ describe('NetworkForm Component', () => {
       .spyOn(fetchWithCacheModule, 'default')
       .mockResolvedValue(safeChainsList);
 
-    const { getByTestId } = renderComponent(propNewNetwork);
-
-    const chainIdField = getByTestId('network-form-chain-id');
-    const currencySymbolField = screen.getByTestId('network-form-ticker-input');
-
-    fireEvent.change(chainIdField, {
-      target: { value: '78' },
-    });
-
-    fireEvent.change(currencySymbolField, {
-      target: { value: 'ZYN' },
-    });
-
-    expect(
-      await screen.queryByTestId('network-form-ticker-suggestion'),
-    ).not.toBeInTheDocument();
-
-    fireEvent.change(currencySymbolField, {
-      target: { value: 'ETH' },
-    });
-
-    expect(
-      await screen.queryByTestId('network-form-ticker-suggestion'),
-    ).toBeInTheDocument();
-
-    const expectedSymbolWarning = 'Suggested ticker symbol:';
-    expect(await screen.findByText(expectedSymbolWarning)).toBeInTheDocument();
-
-    fireEvent.change(currencySymbolField, {
-      target: { value: 'PETH' },
+    renderComponent({
+      ...propNetworkDisplay,
+      networkFormState: {
+        chainId: '78',
+        blockExplorers: {
+          blockExplorerUrls: [],
+        },
+        clear: () => ({}),
+        name: MAINNET_DISPLAY_NAME,
+        rpcUrls: {
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'https://bsc-dataseed.binance.org/',
+              type: 'custom',
+              name: undefined,
+            },
+          ],
+        },
+        setBlockExplorers: () => ({}),
+        setChainId: () => ({}),
+        setName: () => ({}),
+        setRpcUrls: () => ({}),
+        setTicker: () => ({}),
+        ticker: 'ZYN',
+      },
     });
 
     expect(
       await screen.queryByTestId('network-form-ticker-suggestion'),
     ).not.toBeInTheDocument();
+  });
 
-    expect(
-      await screen.queryByText(expectedSymbolWarning),
-    ).not.toBeInTheDocument();
+  it('should call addNetwork when saving a new network', async () => {
+    const { getByText } = renderComponent(propNetworkDisplay);
+    const saveButton = getByText('Save');
+    fireEvent.click(saveButton);
+    await waitFor(() => {
+      expect(addNetwork).toHaveBeenCalledTimes(1);
+      expect(addNetwork).toHaveBeenCalledWith({
+        chainId: '0x64',
+        name: 'Ethereum Mainnet',
+        nativeCurrency: 'ETH',
+        rpcEndpoints: [
+          {
+            url: 'https://mainnet.infura.io/v3/',
+          },
+        ],
+        defaultRpcEndpointIndex: 0,
+        blockExplorerUrls: [],
+        defaultBlockExplorerUrlIndex: undefined,
+      });
+    });
+  });
+
+  it('should call updateNetwork when saving an existing network', async () => {
+    const { getByText } = renderComponent({
+      ...propNetworkDisplay,
+      existingNetwork: {},
+    });
+    const saveButton = getByText('Save');
+    fireEvent.click(saveButton);
+    await waitFor(() => {
+      expect(updateNetwork).toHaveBeenCalledTimes(1);
+      expect(updateNetwork).toHaveBeenCalledWith(
+        {
+          chainId: '0x64',
+          name: 'Ethereum Mainnet',
+          nativeCurrency: 'ETH',
+          rpcEndpoints: [
+            {
+              url: 'https://mainnet.infura.io/v3/',
+            },
+          ],
+          defaultRpcEndpointIndex: 0,
+          blockExplorerUrls: [],
+          defaultBlockExplorerUrlIndex: undefined,
+        },
+        {
+          replacementSelectedRpcEndpointIndex: undefined,
+        },
+      );
+    });
   });
 });

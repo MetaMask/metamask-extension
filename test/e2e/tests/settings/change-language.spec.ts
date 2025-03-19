@@ -16,8 +16,8 @@ const selectors = {
   ethOverviewSend: '[data-testid="eth-overview-send"]',
   ensInput: '[data-testid="ens-input"]',
   nftsTab: '[data-testid="account-overview__nfts-tab"]',
-  labelSpanish: { tag: 'span', text: 'Idioma actual' },
-  currentLanguageLabel: { tag: 'span', text: 'Current language' },
+  labelSpanish: { tag: 'p', text: 'Idioma actual' },
+  currentLanguageLabel: { tag: 'p', text: 'Current language' },
   advanceText: { text: 'Avanceret', tag: 'div' },
   waterText: '[placeholder="Søg"]',
   headerTextDansk: { text: 'Indstillinger', tag: 'h3' },
@@ -145,7 +145,11 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
         await changeLanguage(driver, languageIndex);
         await driver.navigate();
         await driver.clickElement(selectors.ethOverviewSend);
-        await driver.fill(selectors.ensInput, 'test');
+        await driver.pasteIntoField(
+          selectors.ensInput,
+          // use wrong checksum address; other inputs don't show error until snaps name-lookup has happened
+          '0xAAAA6BF26964aF9D7eEd9e03E53415D37aA96045',
+        );
 
         // Validate the language change is reflected in the dialog message
         const isDialogMessageChanged = await driver.isElementPresent(

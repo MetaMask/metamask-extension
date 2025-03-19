@@ -10,7 +10,7 @@
       "512": "images/icon-512.png"
     },
     "default_title": "MetaMask",
-    "default_popup": "popup.html"
+    "default_popup": "popup-init.html"
   },
   "author": "https://metamask.io",
   "background": {
@@ -40,7 +40,7 @@
       "all_frames": true
     },
     {
-      "matches": ["*://connect.trezor.io/*/popup.html"],
+      "matches": ["*://connect.trezor.io/*/popup.html*"],
       "js": ["vendor/trezor/content-script.js"]
     }
   ],

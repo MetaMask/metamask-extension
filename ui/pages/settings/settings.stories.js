@@ -5,7 +5,6 @@ import { MemoryRouter, withRouter } from 'react-router-dom';
 import {
   ABOUT_US_ROUTE,
   ADVANCED_ROUTE,
-  ALERTS_ROUTE,
   CONTACT_ADD_ROUTE,
   CONTACT_EDIT_ROUTE,
   CONTACT_LIST_ROUTE,
@@ -33,7 +32,6 @@ export default {
 const ROUTES_TO_I18N_KEYS = {
   [ABOUT_US_ROUTE]: 'about',
   [ADVANCED_ROUTE]: 'advanced',
-  [ALERTS_ROUTE]: 'alerts',
   [CONTACT_ADD_ROUTE]: 'newContact',
   [CONTACT_EDIT_ROUTE]: 'editContact',
   [CONTACT_LIST_ROUTE]: 'contacts',

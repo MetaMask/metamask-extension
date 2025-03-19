@@ -1,8 +1,11 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { TransactionMetricsRequest } from '../../app/scripts/lib/transaction/metrics';
 
 type SmartTransactionMetricsProperties = {
   is_smart_transaction: boolean;
+  gas_included: boolean;
   smart_transaction_duplicated?: boolean;
   smart_transaction_timed_out?: boolean;
   smart_transaction_proxied?: boolean;
@@ -19,6 +22,7 @@ export const getSmartTransactionMetricsProperties = (
   if (!isSmartTransaction) {
     return properties;
   }
+  properties.gas_included = transactionMeta.swapMetaData?.gas_included;
   const smartTransaction =
     transactionMetricsRequest.getSmartTransactionByMinedTxHash(
       transactionMeta.hash,

@@ -2,6 +2,8 @@ import React from 'react';
 import { screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
+import { mockNetworkState } from '../../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import SnapPermissionAdapter from './snap-permission-adapter';
 
 describe('Snap Permission Adapter', () => {
@@ -17,6 +19,7 @@ describe('Snap Permission Adapter', () => {
   };
   const mockState = {
     metamask: {
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
       subjectMetadata: {
         'npm:@metamask/notifications-example-snap': {
           name: 'Notifications Example Snap',

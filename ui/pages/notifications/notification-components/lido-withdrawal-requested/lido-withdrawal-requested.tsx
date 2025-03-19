@@ -20,6 +20,8 @@ import {
   getNetworkDetailsByChainId,
   getUsdAmount,
 } from '../../../../helpers/utils/notification.util';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { t } from '../../../../../app/scripts/translate';
 import {
   TextVariant,
@@ -125,6 +127,7 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
             detail={t('notificationItemConfirmed') || ''}
             action={
               <NotificationDetailCopyButton
+                notification={notification}
                 text={notification.tx_hash}
                 displayText={t('notificationItemTransactionId') || ''}
               />

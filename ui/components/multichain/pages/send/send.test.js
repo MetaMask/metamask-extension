@@ -167,7 +167,6 @@ const baseStore = {
     }),
     tokens: [],
     preferences: {
-      useNativeCurrencyAsPrimaryCurrency: false,
       showFiatInTestnets: true,
     },
     currentCurrency: 'USD',
@@ -274,7 +273,7 @@ describe('SendPage', () => {
       // Ensure that the send flow renders on the add recipient screen when
       // there is no draft transaction.
       expect(
-        getByPlaceholderText('Enter public address (0x) or ENS name'),
+        getByPlaceholderText('Enter public address (0x) or domain name'),
       ).toBeTruthy();
 
       expect(container).toMatchSnapshot();

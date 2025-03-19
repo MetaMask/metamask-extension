@@ -1,7 +1,13 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import { Severity } from '../../../../../helpers/constants/design-system';
-import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
+
+import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import {
+  getMockPersonalSignConfirmState,
+  getMockPersonalSignConfirmStateForRequest,
+} from '../../../../../../test/data/confirmations/helper';
 import mockState from '../../../../../../test/data/mock-state.json';
+import { Severity } from '../../../../../helpers/constants/design-system';
+import { SignatureRequestType } from '../../../types/confirm';
 import useDomainMismatchAlert from './useDomainMismatchAlerts';
 
 const MOCK_ORIGIN = 'https://example-dapp.example';
@@ -40,26 +46,9 @@ const mockCurrentConfirmation = {
   },
 };
 
-const mockExpectedState = {
-  ...mockState,
-  metamask: {
-    ...mockState.metamask,
-    unapprovedPersonalMsgs: {
-      '1': { ...mockCurrentConfirmation },
-    },
-    pendingApprovals: {
-      '1': {
-        ...mockCurrentConfirmation,
-        // origin: MOCK_ORIGIN,
-        requestData: {},
-        requestState: null,
-        expectsResult: false,
-      },
-    },
-    preferences: { redesignedConfirmationsEnabled: true },
-  },
-  confirm: { currentConfirmation: mockCurrentConfirmation },
-};
+const mockExpectedState = getMockPersonalSignConfirmStateForRequest(
+  mockCurrentConfirmation as unknown as SignatureRequestType,
+);
 
 describe('useDomainMismatchAlert', () => {
   beforeAll(() => {
@@ -72,7 +61,7 @@ describe('useDomainMismatchAlert', () => {
 
   describe('returns an empty array', () => {
     it('when there is no current confirmation', () => {
-      const { result } = renderHookWithProvider(
+      const { result } = renderHookWithConfirmContextProvider(
         () => useDomainMismatchAlert(),
         mockState,
       );
@@ -80,23 +69,9 @@ describe('useDomainMismatchAlert', () => {
     });
 
     it('when the current confirmation is not a SIWE request', () => {
-      const { result } = renderHookWithProvider(
+      const { result } = renderHookWithConfirmContextProvider(
         () => useDomainMismatchAlert(),
-        {
-          ...mockExpectedState,
-          confirm: {
-            currentConfirmation: {
-              ...mockCurrentConfirmation,
-              msgParams: {
-                ...mockCurrentConfirmation.msgParams,
-                siwe: {
-                  isSIWEMessage: false,
-                  parsedMessage: mockSiwe.parsedMessage,
-                },
-              },
-            },
-          },
-        },
+        getMockPersonalSignConfirmState(),
       );
       expect(result.current).toEqual([]);
     });
@@ -105,7 +80,7 @@ describe('useDomainMismatchAlert', () => {
       const originalDomain = mockSiwe.parsedMessage.domain;
       mockSiwe.parsedMessage.domain = MOCK_ORIGIN;
 
-      const { result } = renderHookWithProvider(
+      const { result } = renderHookWithConfirmContextProvider(
         () => useDomainMismatchAlert(),
         mockExpectedState,
       );
@@ -124,7 +99,7 @@ describe('useDomainMismatchAlert', () => {
       reason: 'Suspicious sign-in request',
       severity: Severity.Danger,
     };
-    const { result } = renderHookWithProvider(
+    const { result } = renderHookWithConfirmContextProvider(
       () => useDomainMismatchAlert(),
       mockExpectedState,
     );

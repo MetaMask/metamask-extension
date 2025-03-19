@@ -2,7 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../../../test/lib/render-helpers';
+import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { ApproveDetails } from './approve-details';
 
 describe('<ApproveDetails />', () => {
@@ -11,8 +11,20 @@ describe('<ApproveDetails />', () => {
   it('renders component for approve details', () => {
     const state = mockState;
     const mockStore = configureMockStore(middleware)(state);
-    const { container } = renderWithProvider(<ApproveDetails />, mockStore);
+    const { container } = renderWithConfirmContextProvider(
+      <ApproveDetails />,
+      mockStore,
+    );
+    expect(container).toMatchSnapshot();
+  });
 
+  it('renders component for approve details for setApprovalForAll', () => {
+    const state = mockState;
+    const mockStore = configureMockStore(middleware)(state);
+    const { container } = renderWithConfirmContextProvider(
+      <ApproveDetails isSetApprovalForAll />,
+      mockStore,
+    );
     expect(container).toMatchSnapshot();
   });
 });

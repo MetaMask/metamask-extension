@@ -205,9 +205,6 @@
   "delete": {
     "message": "ಅಳಿಸಿ"
   },
-  "deleteNetwork": {
-    "message": "ನೆಟ್‌ವರ್ಕ್ ಅಳಿಸುವುದೇ?"
-  },
   "details": {
     "message": "ವಿವರಗಳು"
   },
@@ -229,9 +226,6 @@
   "editContact": {
     "message": "ಸಂಪರ್ಕವನ್ನು ಸಂಪಾದಿಸಿ"
   },
-  "ensRegistrationError": {
-    "message": "ENS ಹೆಸರಿನ ನೋಂದಣಿಯಲ್ಲಿ ದೋಷ"
-  },
   "enterPasswordContinue": {
     "message": "ಮುಂದುವರೆಯಲು ಪಾಸ್‌ವರ್ಡ್ ನಮೂದಿಸಿ"
   },
@@ -249,10 +243,6 @@
   },
   "fast": {
     "message": "ವೇಗ"
-  },
-  "fiat": {
-    "message": "ಫಿಯೆಟ್",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "ಫೈಲ್ ಆಮದು ಮಾಡುವಿಕೆ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತಿಲ್ಲವೇ? ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ!",
@@ -354,12 +344,6 @@
   "invalidAddressRecipient": {
     "message": "ಸ್ವೀಕೃತಿದಾರರ ವಿಳಾಸವು ಅಮಾನ್ಯವಾಗಿದೆ"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "ETH ನೆಟ್‌ವರ್ಕ್‌ಗಳಿಲ್ಲ, ಸಣ್ಣಕ್ಷರಕ್ಕೆ ಹೊಂದಿಸಲಾಗಿದೆ"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "ಅಮಾನ್ಯವಾದ Block Explorer URL"
-  },
   "invalidRPC": {
     "message": "ಅಮಾನ್ಯವಾದ RPC URL"
   },
@@ -459,9 +443,6 @@
   "next": {
     "message": "ಮುಂದೆ"
   },
-  "noAddressForName": {
-    "message": "ಈ ಹೆಸರಿಗೆ ಯಾವುದೇ ವಿಳಾಸವನ್ನು ಹೊಂದಿಸಲಾಗಿಲ್ಲ."
-  },
   "noConversionRateAvailable": {
     "message": "ಯಾವುದೇ ಪರಿವರ್ತನೆ ದರ ಲಭ್ಯವಿಲ್ಲ"
   },
@@ -523,12 +504,6 @@
   "prev": {
     "message": "ಹಿಂದಿನ"
   },
-  "primaryCurrencySetting": {
-    "message": "ಪ್ರಾಥಮಿಕ ಕರೆನ್ಸಿ"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "ಸರಪಳಿಯ ಸ್ಥಳೀಯ ಕರೆನ್ಸಿಯಲ್ಲಿ ಮೌಲ್ಯಗಳನ್ನು ಪ್ರದರ್ಶಿಸಲು ಆದ್ಯತೆ ನೀಡಲು ಸ್ಥಳೀಯವನ್ನು ಆಯ್ಕೆಮಾಡಿ (ಉದಾ. ETH). ನಿಮ್ಮ ಆಯ್ಕೆಮಾಡಿದ ಫಿಯೆಟ್ ಕರೆನ್ಸಿಯಲ್ಲಿ ಮೌಲ್ಯಗಳನ್ನು ಪ್ರದರ್ಶಿಸಲು ಆದ್ಯತೆ ನೀಡಲು ಫಿಯೆಟ್ ಆಯ್ಕೆಮಾಡಿ."
-  },
   "privacyMsg": {
     "message": "ಗೌಪ್ಯತೆ ನೀತಿ"
   },
@@ -544,9 +519,6 @@
   },
   "readdToken": {
     "message": "ನಿಮ್ಮ ಖಾತೆಗಳ ಆಯ್ಕೆಗಳ ಮೆನುವಿನಲ್ಲಿ \"ಟೋಕನ್ ಸೇರಿಸು\" ಗೆ ಹೋಗುವ ಮೂಲಕ ನೀವು ಈ ಟೋಕನ್ ಅನ್ನು ಭವಿಷ್ಯದಲ್ಲಿ ಮರಳಿ ಸೇರಿಸಬಹುದು."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "ಸಾರ್ವಜನಿಕ ವಿಳಾಸ (0x) ಅಥವಾ ENS ಹುಡುಕಿ"
   },
   "reject": {
     "message": "ತಿರಸ್ಕರಿಸಿ"
@@ -782,9 +754,6 @@
   },
   "unlockMessage": {
     "message": "ವಿಕೇಂದ್ರೀಕೃತ ವೆಬ್ ನಿರೀಕ್ಷಿಸುತ್ತಿದೆ"
-  },
-  "updatedWithDate": {
-    "message": "$1 ನವೀಕರಿಸಲಾಗಿದೆ"
   },
   "urlErrorMsg": {
     "message": "URI ಗಳಿಗೆ ಸೂಕ್ತವಾದ HTTP/HTTPS ಪೂರ್ವಪ್ರತ್ಯಯದ ಅಗತ್ಯವಿದೆ."

@@ -7,9 +7,8 @@ import {
   getLastInteractedConfirmationInfo,
   setLastInteractedConfirmationInfo,
 } from '../../../../../store/actions';
-import { getCurrentChainId } from '../../../../../selectors';
-import { NETWORK_TO_NAME_MAP } from '../../../../../../shared/constants/network';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { selectNetworkConfigurationByChainId } from '../../../../../selectors';
 
 const CHAIN_CHANGE_THRESHOLD_MILLISECONDS = 60 * 1000; // 1 Minute
 const TOAST_TIMEOUT_MILLISECONDS = 5 * 1000; // 5 Seconds
@@ -19,9 +18,13 @@ const NetworkChangeToastLegacy = ({
 }: {
   confirmation: { id: string; chainId: string };
 }) => {
-  const chainId = useSelector(getCurrentChainId);
+  const newChainId = confirmation?.chainId;
   const [toastVisible, setToastVisible] = useState(false);
   const t = useI18nContext();
+
+  const network = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, newChainId),
+  );
 
   const hideToast = useCallback(() => {
     setToastVisible(false);
@@ -29,14 +32,15 @@ const NetworkChangeToastLegacy = ({
 
   useEffect(() => {
     let isMounted = true;
+
     if (!confirmation) {
       return undefined;
     }
+
     (async () => {
       const lastInteractedConfirmationInfo =
         await getLastInteractedConfirmationInfo();
       const currentTimestamp = new Date().getTime();
-      const newChainId = confirmation.chainId ?? chainId;
       if (
         lastInteractedConfirmationInfo &&
         lastInteractedConfirmationInfo.chainId !== newChainId &&
@@ -66,19 +70,17 @@ const NetworkChangeToastLegacy = ({
     return () => {
       isMounted = false;
     };
-  }, [confirmation?.id, chainId]);
+  }, [confirmation?.id]);
 
   if (!toastVisible) {
     return null;
   }
 
-  const networkName = (NETWORK_TO_NAME_MAP as Record<string, string>)[chainId];
-
   return (
     <Box className="toast_wrapper">
       <Toast
         onClose={hideToast}
-        text={t('networkSwitchMessage', [networkName ?? ''])}
+        text={t('networkSwitchMessage', [network.name ?? ''])}
         startAdornment={null}
       />
     </Box>

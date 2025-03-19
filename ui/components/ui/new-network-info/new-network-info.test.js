@@ -108,7 +108,12 @@ describe('NewNetworkInfo', () => {
         .get('/tokens/0x3?occurrenceFloor=100&includeNativeAssets=false')
         .reply(200, '{"error":"ChainId 0x3 is not supported"}');
 
-      const store = configureMockStore()(state);
+      const store = configureMockStore()({
+        metamask: {
+          ...state.metamask,
+          ...mockNetworkState({ chainId: '0x3', ticker: undefined }),
+        },
+      });
       const { container, getByTestId } = renderWithProvider(
         <NewNetworkInfo />,
         store,

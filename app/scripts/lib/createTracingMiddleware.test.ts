@@ -19,8 +19,8 @@ describe('createTracingMiddleware', () => {
 
     request = { ...REQUEST_MOCK };
 
-    global.sentry = {
-      getMetaMetricsEnabled: () => Promise.resolve(true),
+    globalThis.sentry = {
+      withIsolationScope: jest.fn().mockReturnValue({}),
     };
   });
 
@@ -31,7 +31,7 @@ describe('createTracingMiddleware', () => {
   });
 
   it('does not add trace context to request if method not supported', async () => {
-    request.method = MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4;
+    request.method = 'unsupportedMethod';
 
     await createTracingMiddleware()(request, RESPONSE_MOCK, NEXT_MOCK);
 

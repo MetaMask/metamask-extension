@@ -1,5 +1,9 @@
 const { strict: assert } = require('assert');
 const {
+  createInternalTransaction,
+} = require('../../page-objects/flows/transaction');
+
+const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
@@ -11,22 +15,23 @@ describe('Editing Confirm Transaction', function () {
   it('goes back from confirm page to edit eth value, gas price and gas limit', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withTransactionControllerTypeOneTransaction()
-          .build(),
+        fixtures: new FixtureBuilder().withConversionRateDisabled().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
-        const transactionAmounts = await driver.findElements(
-          '.currency-display-component__text',
-        );
-        const transactionAmount = transactionAmounts[0];
-        assert.equal(await transactionAmount.getText(), '1');
+        await createInternalTransaction(driver);
 
-        const transactionFee = transactionAmounts[1];
-        assert.equal(await transactionFee.getText(), '0.00025');
+        await driver.findElement({
+          css: '.currency-display-component__text',
+          text: '1',
+        });
+
+        await driver.findElement({
+          css: '.currency-display-component__text',
+          text: '1.000042',
+        });
 
         await driver.clickElement(
           '.confirm-page-container-header__back-button',
@@ -85,22 +90,23 @@ describe('Editing Confirm Transaction', function () {
   it('goes back from confirm page to edit eth value, baseFee, priorityFee and gas limit - 1559 V2', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withTransactionControllerTypeTwoTransaction()
-          .build(),
+        fixtures: new FixtureBuilder().withConversionRateDisabled().build(),
         ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
-        const transactionAmounts = await driver.findElements(
-          '.currency-display-component__text',
-        );
-        const transactionAmount = transactionAmounts[0];
-        assert.equal(await transactionAmount.getText(), '1');
+        await createInternalTransaction(driver);
 
-        const transactionFee = transactionAmounts[1];
-        assert.equal(await transactionFee.getText(), '0.0000375');
+        await driver.findElement({
+          css: '.currency-display-component__text',
+          text: '1',
+        });
+
+        await driver.findElement({
+          css: '.currency-display-component__text',
+          text: '1.00043983',
+        });
 
         await driver.clickElement(
           '.confirm-page-container-header__back-button',

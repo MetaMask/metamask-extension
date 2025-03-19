@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Created with Vectornator (http://vectornator.io/) -->
+<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" version="1.1" viewBox="0 0 80 80" width="100%" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:vectornator="http://vectornator.io" xmlns:xlink="http://www.w3.org/1999/xlink">
+<defs>
+<linearGradient gradientTransform="matrix(101.11 17.264 -17.264 101.11 10.0103 46.2899)" gradientUnits="userSpaceOnUse" id="LinearGradient" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0.0696236" stop-color="#77fe9e"/>
+<stop offset="0.368551" stop-color="#72a7ff"/>
+<stop offset="1" stop-color="#ec02d5"/>
+</linearGradient>
+<linearGradient gradientTransform="matrix(101.11 17.264 -17.264 101.11 10.0112 46.2918)" gradientUnits="userSpaceOnUse" id="LinearGradient_2" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0.0696236" stop-color="#77fe9e"/>
+<stop offset="0.368551" stop-color="#72a7ff"/>
+<stop offset="1" stop-color="#ec02d5"/>
+</linearGradient>
+<linearGradient gradientTransform="matrix(101.109 17.264 -17.264 101.109 10.0098 46.2938)" gradientUnits="userSpaceOnUse" id="LinearGradient_3" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0.0696236" stop-color="#77fe9e"/>
+<stop offset="0.368551" stop-color="#72a7ff"/>
+<stop offset="1" stop-color="#ec02d5"/>
+</linearGradient>
+<linearGradient gradientTransform="matrix(101.11 17.264 -17.264 101.11 10.0112 46.2918)" gradientUnits="userSpaceOnUse" id="LinearGradient_4" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0.0696236" stop-color="#77fe9e"/>
+<stop offset="0.368551" stop-color="#72a7ff"/>
+<stop offset="1" stop-color="#ec02d5"/>
+</linearGradient>
+<linearGradient gradientTransform="matrix(101.109 17.264 -17.264 101.109 10.0098 46.2899)" gradientUnits="userSpaceOnUse" id="LinearGradient_5" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0.0696236" stop-color="#77fe9e"/>
+<stop offset="0.368551" stop-color="#72a7ff"/>
+<stop offset="1" stop-color="#ec02d5"/>
+</linearGradient>
+<linearGradient gradientTransform="matrix(101.11 17.264 -17.264 101.11 10.0112 46.2899)" gradientUnits="userSpaceOnUse" id="LinearGradient_6" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0.0696236" stop-color="#77fe9e"/>
+<stop offset="0.368551" stop-color="#72a7ff"/>
+<stop offset="1" stop-color="#ec02d5"/>
+</linearGradient>
+<linearGradient gradientTransform="matrix(101.109 17.264 -17.264 101.109 10.0107 46.2918)" gradientUnits="userSpaceOnUse" id="LinearGradient_7" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0.0696236" stop-color="#77fe9e"/>
+<stop offset="0.368551" stop-color="#72a7ff"/>
+<stop offset="1" stop-color="#ec02d5"/>
+</linearGradient>
+<linearGradient gradientTransform="matrix(101.109 17.264 -17.264 101.109 10.0098 46.2918)" gradientUnits="userSpaceOnUse" id="LinearGradient_8" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0.0696236" stop-color="#77fe9e"/>
+<stop offset="0.368551" stop-color="#72a7ff"/>
+<stop offset="1" stop-color="#ec02d5"/>
+</linearGradient>
+<linearGradient gradientTransform="matrix(101.11 17.264 -17.264 101.11 10.0103 46.2938)" gradientUnits="userSpaceOnUse" id="LinearGradient_9" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0.0696236" stop-color="#77fe9e"/>
+<stop offset="0.368551" stop-color="#72a7ff"/>
+<stop offset="1" stop-color="#ec02d5"/>
+</linearGradient>
+<linearGradient gradientTransform="matrix(101.11 17.264 -17.264 101.11 10.0103 46.2918)" gradientUnits="userSpaceOnUse" id="LinearGradient_10" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0.0696236" stop-color="#77fe9e"/>
+<stop offset="0.368551" stop-color="#72a7ff"/>
+<stop offset="1" stop-color="#ec02d5"/>
+</linearGradient>
+<linearGradient gradientTransform="matrix(101.11 17.264 -17.264 101.11 10.0122 46.2918)" gradientUnits="userSpaceOnUse" id="LinearGradient_11" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0.0696236" stop-color="#77fe9e"/>
+<stop offset="0.368551" stop-color="#72a7ff"/>
+<stop offset="1" stop-color="#ec02d5"/>
+</linearGradient>
+<linearGradient gradientTransform="matrix(101.109 17.264 -17.264 101.109 10.0107 46.2918)" gradientUnits="userSpaceOnUse" id="LinearGradient_12" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0.0696236" stop-color="#77fe9e"/>
+<stop offset="0.368551" stop-color="#72a7ff"/>
+<stop offset="1" stop-color="#ec02d5"/>
+</linearGradient>
+<linearGradient gradientTransform="matrix(101.11 17.264 -17.264 101.11 10.0122 46.2899)" gradientUnits="userSpaceOnUse" id="LinearGradient_13" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0.0696236" stop-color="#77fe9e"/>
+<stop offset="0.368551" stop-color="#72a7ff"/>
+<stop offset="1" stop-color="#ec02d5"/>
+</linearGradient>
+<linearGradient gradientTransform="matrix(101.109 17.264 -17.264 101.109 10.0107 46.2938)" gradientUnits="userSpaceOnUse" id="LinearGradient_14" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0.0696236" stop-color="#77fe9e"/>
+<stop offset="0.368551" stop-color="#72a7ff"/>
+<stop offset="1" stop-color="#ec02d5"/>
+</linearGradient>
+<linearGradient gradientTransform="matrix(101.109 17.264 -17.264 101.109 10.0107 46.2918)" gradientUnits="userSpaceOnUse" id="LinearGradient_15" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0.0696236" stop-color="#77fe9e"/>
+<stop offset="0.368551" stop-color="#72a7ff"/>
+<stop offset="1" stop-color="#ec02d5"/>
+</linearGradient>
+<linearGradient gradientTransform="matrix(101.11 17.264 -17.264 101.11 10.0103 46.2918)" gradientUnits="userSpaceOnUse" id="LinearGradient_16" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0.0696236" stop-color="#77fe9e"/>
+<stop offset="0.368551" stop-color="#72a7ff"/>
+<stop offset="1" stop-color="#ec02d5"/>
+</linearGradient>
+<linearGradient gradientTransform="matrix(101.11 17.264 -17.264 101.11 10.0112 46.2899)" gradientUnits="userSpaceOnUse" id="LinearGradient_17" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0.0696236" stop-color="#77fe9e"/>
+<stop offset="0.368551" stop-color="#72a7ff"/>
+<stop offset="1" stop-color="#ec02d5"/>
+</linearGradient>
+<linearGradient gradientTransform="matrix(101.11 17.264 -17.264 101.11 10.0103 46.2938)" gradientUnits="userSpaceOnUse" id="LinearGradient_18" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0.0696236" stop-color="#77fe9e"/>
+<stop offset="0.368551" stop-color="#72a7ff"/>
+<stop offset="1" stop-color="#ec02d5"/>
+</linearGradient>
+<linearGradient gradientTransform="matrix(101.11 17.264 -17.264 101.11 10.0122 46.2938)" gradientUnits="userSpaceOnUse" id="LinearGradient_19" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0.0696236" stop-color="#77fe9e"/>
+<stop offset="0.368551" stop-color="#72a7ff"/>
+<stop offset="1" stop-color="#ec02d5"/>
+</linearGradient>
+<linearGradient gradientTransform="matrix(101.11 17.264 -17.264 101.11 10.0103 46.2938)" gradientUnits="userSpaceOnUse" id="LinearGradient_20" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0.0696236" stop-color="#77fe9e"/>
+<stop offset="0.368551" stop-color="#72a7ff"/>
+<stop offset="1" stop-color="#ec02d5"/>
+</linearGradient>
+<linearGradient gradientTransform="matrix(101.11 17.264 -17.264 101.11 10.0112 46.2938)" gradientUnits="userSpaceOnUse" id="LinearGradient_21" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0.0696236" stop-color="#77fe9e"/>
+<stop offset="0.368551" stop-color="#72a7ff"/>
+<stop offset="1" stop-color="#ec02d5"/>
+</linearGradient>
+<linearGradient gradientTransform="matrix(101.11 17.264 -17.264 101.11 10.0103 46.2918)" gradientUnits="userSpaceOnUse" id="LinearGradient_22" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0.0696236" stop-color="#77fe9e"/>
+<stop offset="0.368551" stop-color="#72a7ff"/>
+<stop offset="1" stop-color="#ec02d5"/>
+</linearGradient>
+<linearGradient gradientTransform="matrix(101.11 17.264 -17.264 101.11 10.0103 46.2938)" gradientUnits="userSpaceOnUse" id="LinearGradient_23" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0.0696236" stop-color="#77fe9e"/>
+<stop offset="0.368551" stop-color="#72a7ff"/>
+<stop offset="1" stop-color="#ec02d5"/>
+</linearGradient>
+<linearGradient gradientTransform="matrix(101.11 17.264 -17.264 101.11 10.0112 46.2918)" gradientUnits="userSpaceOnUse" id="LinearGradient_24" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0.0696236" stop-color="#77fe9e"/>
+<stop offset="0.368551" stop-color="#72a7ff"/>
+<stop offset="1" stop-color="#ec02d5"/>
+</linearGradient>
+</defs>
+<path d="M0 0L80 0L80 80L0 80L0 0Z" fill="#ffffff" fill-rule="nonzero" opacity="1" stroke="none" vectornator:artboardBackground="true"/>
+<g id="Layer-1" vectornator:layerName="Layer 1">
+<path d="M0 0L80 0L80 80L0 80L0 0Z" fill="#110f1c" fill-rule="nonzero" opacity="1" stroke="none" vectornator:layerName="Rectangle 1"/>
+</g>
+<g id="Untitled" vectornator:layerName="Untitled">
+<g opacity="1" vectornator:layerName="path">
+<clipPath clip-rule="nonzero" id="ClipPath">
+<path d="M48.4053 2L48.4053 20.2024L64.2021 11.1147L48.4053 2Z"/>
+</clipPath>
+<g clip-path="url(#ClipPath)">
+<path d="M-1.21777-2.24414L84.8637-2.24414L84.8637-2.24414L84.8637 82.551L84.8637 82.551L-1.21777 82.551L-1.21777 82.551L-1.21777-2.24414L-1.21777-2.24414Z" fill="url(#LinearGradient)" fill-rule="nonzero" opacity="1" stroke="none" vectornator:layerName="rect"/>
+</g>
+</g>
+<g opacity="0.9" vectornator:layerName="path">
+<clipPath clip-rule="nonzero" id="ClipPath_2">
+<path d="M64.2026 11.1133L64.2026 29.3156L79.9995 20.2023L64.2026 11.1133Z"/>
+</clipPath>
+<g clip-path="url(#ClipPath_2)">
+<path d="M-1.2168-2.24219L84.8647-2.24219L84.8647-2.24219L84.8647 82.5529L84.8647 82.5529L-1.2168 82.5529L-1.2168 82.5529L-1.2168-2.24219L-1.2168-2.24219Z" fill="url(#LinearGradient_2)" fill-rule="nonzero" opacity="1" stroke="none" vectornator:layerName="rect"/>
+</g>
+</g>
+<g opacity="0.8" vectornator:layerName="path">
+<clipPath clip-rule="nonzero" id="ClipPath_3">
+<path d="M48.4043 20.2031L48.4043 38.4041L64.2012 29.3165L48.4043 20.2031Z"/>
+</clipPath>
+<g clip-path="url(#ClipPath_3)">
+<path d="M-1.21826-2.24023L84.8632-2.24023L84.8632-2.24023L84.8632 82.5549L84.8632 82.5549L-1.21826 82.5549L-1.21826 82.5549L-1.21826-2.24023L-1.21826-2.24023Z" fill="url(#LinearGradient_3)" fill-rule="nonzero" opacity="1" stroke="none" vectornator:layerName="rect"/>
+</g>
+</g>
+<g opacity="0.8" vectornator:layerName="path">
+<clipPath clip-rule="nonzero" id="ClipPath_4">
+<path d="M64.2026 29.3145L64.2026 47.5155L79.9995 38.4021L64.2026 29.3145Z"/>
+</clipPath>
+<g clip-path="url(#ClipPath_4)">
+<path d="M-1.2168-2.24219L84.8647-2.24219L84.8647-2.24219L84.8647 82.5529L84.8647 82.5529L-1.2168 82.5529L-1.2168 82.5529L-1.2168-2.24219L-1.2168-2.24219Z" fill="url(#LinearGradient_4)" fill-rule="nonzero" opacity="1" stroke="none" vectornator:layerName="rect"/>
+</g>
+</g>
+<g opacity="0.8" vectornator:layerName="path">
+<clipPath clip-rule="nonzero" id="ClipPath_5">
+<path d="M48.4043 38.4062L48.4043 56.6073L64.2012 47.5196L48.4043 38.4062Z"/>
+</clipPath>
+<g clip-path="url(#ClipPath_5)">
+<path d="M-1.21826-2.24414L84.8632-2.24414L84.8632-2.24414L84.8632 82.551L84.8632 82.551L-1.21826 82.551L-1.21826 82.551L-1.21826-2.24414L-1.21826-2.24414Z" fill="url(#LinearGradient_5)" fill-rule="nonzero" opacity="1" stroke="none" vectornator:layerName="rect"/>
+</g>
+</g>
+<g opacity="1" vectornator:layerName="path">
+<clipPath clip-rule="nonzero" id="ClipPath_6">
+<path d="M64.2026 47.5117L64.2026 65.7127L79.9995 56.5994L64.2026 47.5117Z"/>
+</clipPath>
+<g clip-path="url(#ClipPath_6)">
+<path d="M-1.2168-2.24414L84.8647-2.24414L84.8647-2.24414L84.8647 82.551L84.8647 82.551L-1.2168 82.551L-1.2168 82.551L-1.2168-2.24414L-1.2168-2.24414Z" fill="url(#LinearGradient_6)" fill-rule="nonzero" opacity="1" stroke="none" vectornator:layerName="rect"/>
+</g>
+</g>
+<g opacity="0.4" vectornator:layerName="path">
+<clipPath clip-rule="nonzero" id="ClipPath_7">
+<path d="M7.57422 19.5859L7.57422 37.7869L23.3711 28.6736L7.57422 19.5859Z"/>
+</clipPath>
+<g clip-path="url(#ClipPath_7)">
+<path d="M-1.21729-2.24219L84.8642-2.24219L84.8642-2.24219L84.8642 82.5529L84.8642 82.5529L-1.21729 82.5529L-1.21729 82.5529L-1.21729-2.24219L-1.21729-2.24219Z" fill="url(#LinearGradient_7)" fill-rule="nonzero" opacity="1" stroke="none" vectornator:layerName="rect"/>
+</g>
+</g>
+<g opacity="0.2" vectornator:layerName="path">
+<clipPath clip-rule="nonzero" id="ClipPath_8">
+<path d="M27.5083 26.3555L27.5083 44.5565L43.2782 35.4688L27.5083 26.3555Z"/>
+</clipPath>
+<g clip-path="url(#ClipPath_8)">
+<path d="M-1.21826-2.24219L84.8632-2.24219L84.8632-2.24219L84.8632 82.5529L84.8632 82.5529L-1.21826 82.5529L-1.21826 82.5529L-1.21826-2.24219L-1.21826-2.24219Z" fill="url(#LinearGradient_8)" fill-rule="nonzero" opacity="1" stroke="none" vectornator:layerName="rect"/>
+</g>
+</g>
+<g opacity="0.3" vectornator:layerName="path">
+<clipPath clip-rule="nonzero" id="ClipPath_9">
+<path d="M15.7939 37.8691L15.7939 56.0701L31.5908 46.9568L15.7939 37.8691Z"/>
+</clipPath>
+<g clip-path="url(#ClipPath_9)">
+<path d="M-1.21777-2.24023L84.8637-2.24023L84.8637-2.24023L84.8637 82.5549L84.8637 82.5549L-1.21777 82.5549L-1.21777 82.5549L-1.21777-2.24023L-1.21777-2.24023Z" fill="url(#LinearGradient_9)" fill-rule="nonzero" opacity="1" stroke="none" vectornator:layerName="rect"/>
+</g>
+</g>
+<g opacity="0.9" vectornator:layerName="path">
+<clipPath clip-rule="nonzero" id="ClipPath_10">
+<path d="M26.2061 51.6035L26.2061 69.8045L41.9759 60.6912L26.2061 51.6035Z"/>
+</clipPath>
+<g clip-path="url(#ClipPath_10)">
+<path d="M-1.21777-2.24219L84.8637-2.24219L84.8637-2.24219L84.8637 82.5529L84.8637 82.5529L-1.21777 82.5529L-1.21777 82.5529L-1.21777-2.24219L-1.21777-2.24219Z" fill="url(#LinearGradient_10)" fill-rule="nonzero" opacity="1" stroke="none" vectornator:layerName="rect"/>
+</g>
+</g>
+<g opacity="0.7" vectornator:layerName="path">
+<clipPath clip-rule="nonzero" id="ClipPath_11">
+<path d="M48.2803 59.4355L48.2803 77.6338L64.0501 68.5205L48.2803 59.4355Z"/>
+</clipPath>
+<g clip-path="url(#ClipPath_11)">
+<path d="M-1.21582-2.24219L84.8657-2.24219L84.8657-2.24219L84.8657 82.5529L84.8657 82.5529L-1.21582 82.5529L-1.21582 82.5529L-1.21582-2.24219L-1.21582-2.24219Z" fill="url(#LinearGradient_11)" fill-rule="nonzero" opacity="1" stroke="none" vectornator:layerName="rect"/>
+</g>
+</g>
+<g opacity="0.9" vectornator:layerName="path">
+<clipPath clip-rule="nonzero" id="ClipPath_12">
+<path d="M30.1353 17.3691L30.1353 35.5701L45.9051 26.4825L30.1353 17.3691Z"/>
+</clipPath>
+<g clip-path="url(#ClipPath_12)">
+<path d="M-1.21729-2.24219L84.8642-2.24219L84.8642-2.24219L84.8642 82.5529L84.8642 82.5529L-1.21729 82.5529L-1.21729 82.5529L-1.21729-2.24219L-1.21729-2.24219Z" fill="url(#LinearGradient_12)" fill-rule="nonzero" opacity="1" stroke="none" vectornator:layerName="rect"/>
+</g>
+</g>
+<g opacity="0.8" vectornator:layerName="path">
+<clipPath clip-rule="nonzero" id="ClipPath_13">
+<path d="M48.4082 2L48.4082 20.2024L32.6113 11.1147L48.4082 2Z"/>
+</clipPath>
+<g clip-path="url(#ClipPath_13)">
+<path d="M-1.21582-2.24414L84.8657-2.24414L84.8657-2.24414L84.8657 82.551L84.8657 82.551L-1.21582 82.551L-1.21582 82.551L-1.21582-2.24414L-1.21582-2.24414Z" fill="url(#LinearGradient_13)" fill-rule="nonzero" opacity="1" stroke="none" vectornator:layerName="rect"/>
+</g>
+</g>
+<g opacity="0.6" vectornator:layerName="path">
+<clipPath clip-rule="nonzero" id="ClipPath_14">
+<path d="M30.1387 9.73633L30.1387 27.9333L14.3418 18.824L30.1387 9.73633Z"/>
+</clipPath>
+<g clip-path="url(#ClipPath_14)">
+<path d="M-1.21729-2.24023L84.8642-2.24023L84.8642-2.24023L84.8642 82.5549L84.8642 82.5549L-1.21729 82.5549L-1.21729 82.5549L-1.21729-2.24023L-1.21729-2.24023Z" fill="url(#LinearGradient_14)" fill-rule="nonzero" opacity="1" stroke="none" vectornator:layerName="rect"/>
+</g>
+</g>
+<g opacity="0.6" vectornator:layerName="path">
+<clipPath clip-rule="nonzero" id="ClipPath_15">
+<path d="M45.9316 18.748L45.9316 36.949L30.1348 27.8357L45.9316 18.748Z"/>
+</clipPath>
+<g clip-path="url(#ClipPath_15)">
+<path d="M-1.21729-2.24219L84.8642-2.24219L84.8642-2.24219L84.8642 82.5529L84.8642 82.5529L-1.21729 82.5529L-1.21729 82.5529L-1.21729-2.24219L-1.21729-2.24219Z" fill="url(#LinearGradient_15)" fill-rule="nonzero" opacity="1" stroke="none" vectornator:layerName="rect"/>
+</g>
+</g>
+<g opacity="0.95" vectornator:layerName="path">
+<clipPath clip-rule="nonzero" id="ClipPath_16">
+<path d="M27.4331 26.3555L27.4331 44.5565L11.6362 35.4688L27.4331 26.3555Z"/>
+</clipPath>
+<g clip-path="url(#ClipPath_16)">
+<path d="M-1.21777-2.24219L84.8637-2.24219L84.8637-2.24219L84.8637 82.5529L84.8637 82.5529L-1.21777 82.5529L-1.21777 82.5529L-1.21777-2.24219L-1.21777-2.24219Z" fill="url(#LinearGradient_16)" fill-rule="nonzero" opacity="1" stroke="none" vectornator:layerName="rect"/>
+</g>
+</g>
+<g opacity="0.6" vectornator:layerName="path">
+<clipPath clip-rule="nonzero" id="ClipPath_17">
+<path d="M48.4056 38.4062L48.4056 56.6073L32.6357 47.5196L48.4056 38.4062Z"/>
+</clipPath>
+<g clip-path="url(#ClipPath_17)">
+<path d="M-1.2168-2.24414L84.8647-2.24414L84.8647-2.24414L84.8647 82.551L84.8647 82.551L-1.2168 82.551L-1.2168 82.551L-1.2168-2.24414L-1.2168-2.24414Z" fill="url(#LinearGradient_17)" fill-rule="nonzero" opacity="1" stroke="none" vectornator:layerName="rect"/>
+</g>
+</g>
+<g opacity="0.55" vectornator:layerName="path">
+<clipPath clip-rule="nonzero" id="ClipPath_18">
+<path d="M15.7955 42.6426L15.7955 60.8436L0 51.7289L15.7955 42.6426Z"/>
+</clipPath>
+<g clip-path="url(#ClipPath_18)">
+<path d="M-1.21777-2.24023L84.8637-2.24023L84.8637-2.24023L84.8637 82.5549L84.8637 82.5549L-1.21777 82.5549L-1.21777 82.5549L-1.21777-2.24023L-1.21777-2.24023Z" fill="url(#LinearGradient_18)" fill-rule="nonzero" opacity="1" stroke="none" vectornator:layerName="rect"/>
+</g>
+</g>
+<g opacity="1" vectornator:layerName="path">
+<clipPath clip-rule="nonzero" id="ClipPath_19">
+<path d="M79.998 20.2031L79.998 38.4041L64.2012 29.3165L79.998 20.2031Z"/>
+</clipPath>
+<g clip-path="url(#ClipPath_19)">
+<path d="M-1.21582-2.24023L84.8657-2.24023L84.8657-2.24023L84.8657 82.5549L84.8657 82.5549L-1.21582 82.5549L-1.21582 82.5549L-1.21582-2.24023L-1.21582-2.24023Z" fill="url(#LinearGradient_19)" fill-rule="nonzero" opacity="1" stroke="none" vectornator:layerName="rect"/>
+</g>
+</g>
+<g opacity="0.95" vectornator:layerName="path">
+<clipPath clip-rule="nonzero" id="ClipPath_20">
+<path d="M64.2007 29.3145L64.2007 47.5155L48.4038 38.4021L64.2007 29.3145Z"/>
+</clipPath>
+<g clip-path="url(#ClipPath_20)">
+<path d="M-1.21777-2.24023L84.8637-2.24023L84.8637-2.24023L84.8637 82.5549L84.8637 82.5549L-1.21777 82.5549L-1.21777 82.5549L-1.21777-2.24023L-1.21777-2.24023Z" fill="url(#LinearGradient_20)" fill-rule="nonzero" opacity="1" stroke="none" vectornator:layerName="rect"/>
+</g>
+</g>
+<g opacity="0.9" vectornator:layerName="path">
+<clipPath clip-rule="nonzero" id="ClipPath_21">
+<path d="M79.997 38.4062L79.997 56.6073L64.2002 47.5196L79.997 38.4062Z"/>
+</clipPath>
+<g clip-path="url(#ClipPath_21)">
+<path d="M-1.2168-2.24023L84.8647-2.24023L84.8647-2.24023L84.8647 82.5549L84.8647 82.5549L-1.2168 82.5549L-1.2168 82.5549L-1.2168-2.24023L-1.2168-2.24023Z" fill="url(#LinearGradient_21)" fill-rule="nonzero" opacity="1" stroke="none" vectornator:layerName="rect"/>
+</g>
+</g>
+<g opacity="0.7" vectornator:layerName="path">
+<clipPath clip-rule="nonzero" id="ClipPath_22">
+<path d="M64.2007 47.5137L64.2007 65.7147L48.4038 56.6013L64.2007 47.5137Z"/>
+</clipPath>
+<g clip-path="url(#ClipPath_22)">
+<path d="M-1.21777-2.24219L84.8637-2.24219L84.8637-2.24219L84.8637 82.5529L84.8637 82.5529L-1.21777 82.5529L-1.21777 82.5529L-1.21777-2.24219L-1.21777-2.24219Z" fill="url(#LinearGradient_22)" fill-rule="nonzero" opacity="1" stroke="none" vectornator:layerName="rect"/>
+</g>
+</g>
+<g opacity="0.4" vectornator:layerName="path">
+<clipPath clip-rule="nonzero" id="ClipPath_23">
+<path d="M44.9111 55.0996L44.9111 73.3006L29.1143 64.213L44.9111 55.0996Z"/>
+</clipPath>
+<g clip-path="url(#ClipPath_23)">
+<path d="M-1.21777-2.24023L84.8637-2.24023L84.8637-2.24023L84.8637 82.5549L84.8637 82.5549L-1.21777 82.5549L-1.21777 82.5549L-1.21777-2.24023L-1.21777-2.24023Z" fill="url(#LinearGradient_23)" fill-rule="nonzero" opacity="1" stroke="none" vectornator:layerName="rect"/>
+</g>
+</g>
+<g opacity="1" vectornator:layerName="path">
+<clipPath clip-rule="nonzero" id="ClipPath_24">
+<path d="M64.2016 11.1133L64.2016 29.3156L48.4048 20.2023L64.2016 11.1133Z"/>
+</clipPath>
+<g clip-path="url(#ClipPath_24)">
+<path d="M-1.2168-2.24219L84.8647-2.24219L84.8647-2.24219L84.8647 82.5529L84.8647 82.5529L-1.2168 82.5529L-1.2168 82.5529L-1.2168-2.24219L-1.2168-2.24219Z" fill="url(#LinearGradient_24)" fill-rule="nonzero" opacity="1" stroke="none" vectornator:layerName="rect"/>
+</g>
+</g>
+</g>
+</svg>

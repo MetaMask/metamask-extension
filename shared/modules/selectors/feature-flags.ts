@@ -1,3 +1,5 @@
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getCurrentChainId } from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
 import { getNetworkNameByChainId } from '../feature-flags';
 

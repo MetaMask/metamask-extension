@@ -37,7 +37,8 @@
     "showNetworkBanner": true,
     "showAccountBanner": true,
     "trezorModel": null,
-    "onboardingDate": "object",
+    "onboardingDate": null,
+    "lastViewedUserSurvey": null,
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
@@ -48,7 +49,7 @@
     "snapsInstallPrivacyWarningShown": true,
     "surveyLinkLastClickedOrClosed": "object",
     "signatureSecurityAlertResponses": "object",
-    "switchedNetworkDetails": "object",
+    "switchedNetworkDetails": null,
     "switchedNetworkNeverShowMessage": "boolean",
     "currentExtensionPopupId": "number"
   },
@@ -61,24 +62,36 @@
   "BridgeController": {
     "bridgeState": {
       "bridgeFeatureFlags": {
+        "extensionConfig": "object",
         "extensionSupport": "boolean",
-        "srcNetworkAllowlist": {
-          "0": "string",
-          "1": "string",
-          "2": "string"
-        },
-        "destNetworkAllowlist": {
-          "0": "string",
-          "1": "string",
-          "2": "string"
-        }
-      }
+        "srcNetworkAllowlist": { "0": "string", "1": "string", "2": "string" },
+        "destNetworkAllowlist": { "0": "string", "1": "string", "2": "string" }
+      },
+      "destTokens": {},
+      "destTopAssets": {},
+      "quoteRequest": {
+        "slippage": 0.5,
+        "srcTokenAddress": "0x0000000000000000000000000000000000000000"
+      },
+      "quotes": {},
+      "srcTokens": {},
+      "srcTopAssets": {}
     }
   },
   "CronjobController": { "jobs": "object" },
   "CurrencyController": {
     "currencyRates": {
       "ETH": {
+        "conversionDate": "number",
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
+      },
+      "LineaETH": {
+        "conversionDate": "number",
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
+      },
+      "SepoliaETH": {
         "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
@@ -117,16 +130,21 @@
     "participateInMetaMetrics": true,
     "metaMetricsId": "fake-metrics-id",
     "dataCollectionForMarketing": "boolean",
+    "marketingCampaignCookieId": null,
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
     "previousUserTraits": "object",
     "fragments": "object",
     "segmentApiCalls": "object"
   },
+  "MetaMetricsDataDeletionController": {
+    "metaMetricsDataDeletionId": null,
+    "metaMetricsDataDeletionTimestamp": 0
+  },
   "MultichainBalancesController": { "balances": "object" },
   "MultichainRatesController": {
     "fiatCurrency": "usd",
-    "rates": { "btc": { "conversionDate": 0, "conversionRate": "0" } },
+    "rates": { "btc": { "conversionDate": 0, "conversionRate": 0 } },
     "cryptocurrencies": ["btc"]
   },
   "NameController": { "names": "object", "nameSources": "object" },
@@ -138,10 +156,10 @@
         "status": "available"
       }
     },
-    "networkConfigurations": "object"
+    "networkConfigurationsByChainId": "object"
   },
   "NetworkOrderController": {
-    "orderedNetworkList": { "0": "object", "1": "object", "2": "object" }
+    "orderedNetworkList": { "0": "object", "1": "object" }
   },
   "NftController": {
     "allNftContracts": "object",
@@ -175,13 +193,15 @@
     "permissionActivityLog": "object"
   },
   "PreferencesController": {
+    "selectedAddress": "string",
     "useBlockie": false,
     "useNonceField": false,
     "usePhishDetect": true,
     "dismissSeedBackUpReminder": true,
+    "overrideContentSecurityPolicyHeader": true,
     "useMultiAccountBalanceChecker": true,
     "useSafeChainsListValidation": "boolean",
-    "useTokenDetection": false,
+    "useTokenDetection": true,
     "useNftDetection": false,
     "use4ByteResolution": true,
     "useCurrencyRateCheck": true,
@@ -205,12 +225,15 @@
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": false,
-      "smartTransactionsOptInStatus": false,
-      "useNativeCurrencyAsPrimaryCurrency": true,
+      "smartTransactionsOptInStatus": true,
+      "showNativeTokenAsMainBalance": true,
       "petnamesEnabled": true,
+      "showMultiRpcModal": "boolean",
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "redesignedConfirmationsEnabled": true,
-      "redesignedTransactionsEnabled": "boolean"
+      "redesignedTransactionsEnabled": "boolean",
+      "tokenSortConfig": "object",
+      "shouldShowAggregatedBalancePopover": "boolean"
     },
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
@@ -223,11 +246,13 @@
     "useTransactionSimulations": true,
     "enableMV3TimestampSave": true,
     "useExternalServices": "boolean",
-    "selectedAddress": "string"
+    "isMultiAccountBalancesEnabled": "boolean",
+    "showIncomingTransactions": "object"
   },
   "QueuedRequestController": { "queuedRequestCount": 0 },
   "SelectedNetworkController": { "domains": "object" },
   "SignatureController": {
+    "signatureRequests": "object",
     "unapprovedPersonalMsgs": "object",
     "unapprovedTypedMessages": "object",
     "unapprovedPersonalMsgCount": 0,
@@ -236,7 +261,9 @@
   "SmartTransactionsController": {
     "smartTransactionsState": {
       "fees": {},
+      "feesByChainId": "object",
       "liveness": true,
+      "livenessByChainId": "object",
       "smartTransactions": "object"
     }
   },
@@ -248,8 +275,8 @@
   "SnapInsightsController": { "insights": "object" },
   "SnapInterfaceController": { "interfaces": "object" },
   "SnapsRegistry": {
-    "database": "object",
-    "lastUpdated": "object",
+    "database": null,
+    "lastUpdated": null,
     "databaseUnavailable": "boolean"
   },
   "SubjectMetadataController": { "subjectMetadata": "object" },
@@ -258,9 +285,9 @@
       "quotes": "object",
       "quotesPollingLimitEnabled": false,
       "fetchParams": null,
-      "tokens": "object",
-      "tradeTxId": "object",
-      "approveTxId": "object",
+      "tokens": null,
+      "tradeTxId": null,
+      "approveTxId": null,
       "quotesLastFetched": null,
       "customMaxGas": "",
       "customGasPrice": null,
@@ -270,7 +297,7 @@
       "selectedAggId": null,
       "customApproveTxData": "string",
       "errorKey": "",
-      "topAggId": "object",
+      "topAggId": null,
       "routeState": "",
       "swapsFeatureIsLive": true,
       "saveFetchedQuotes": false,
@@ -299,8 +326,10 @@
   },
   "TxController": {
     "methodData": "object",
+    "submitHistory": "object",
     "transactions": "object",
-    "lastFetchedBlockNumbers": "object"
+    "lastFetchedBlockNumbers": "object",
+    "submitHistory": "object"
   },
   "UserOperationController": { "userOperations": "object" },
   "UserStorageController": {

@@ -1,5 +1,6 @@
-import { ethErrors } from 'eth-rpc-errors';
-import type { JsonRpcMiddleware } from 'json-rpc-engine';
+import type { JsonRpcMiddleware } from '@metamask/json-rpc-engine';
+import type { JsonRpcParams } from '@metamask/utils';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { UNSUPPORTED_RPC_METHODS } from '../../../../shared/constants/network';
 
 /**
@@ -7,12 +8,12 @@ import { UNSUPPORTED_RPC_METHODS } from '../../../../shared/constants/network';
  * appropriate error.
  */
 export function createUnsupportedMethodMiddleware(): JsonRpcMiddleware<
-  unknown,
-  void
+  JsonRpcParams,
+  null
 > {
   return async function unsupportedMethodMiddleware(req, _res, next, end) {
     if ((UNSUPPORTED_RPC_METHODS as Set<string>).has(req.method)) {
-      return end(ethErrors.rpc.methodNotSupported());
+      return end(rpcErrors.methodNotSupported());
     }
     return next();
   };

@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
   withFixtures,
@@ -84,15 +83,10 @@ describe('Check the toggle for hex data', function () {
         await sendTransactionAndVerifyHexData(driver);
 
         // Verify hex data in the container content
-        const pageContentContainer = await driver.findElement(
-          selectors.containerContent,
-        );
-        const pageContentContainerText = await pageContentContainer.getText();
-        assert.equal(
-          pageContentContainerText.includes(inputData.hexDataText),
-          true,
-          'Hex data is incorrect',
-        );
+        await driver.waitForSelector({
+          tag: 'p',
+          text: '0x0abc',
+        });
       },
     );
   });

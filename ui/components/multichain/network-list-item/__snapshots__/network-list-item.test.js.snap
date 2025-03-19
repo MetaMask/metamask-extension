@@ -3,35 +3,41 @@
 exports[`NetworkListItem renders properly 1`] = `
 <div>
   <div
-    class="mm-box multichain-network-list-item mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+    class="mm-box multichain-network-list-item mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
   >
     <div
-      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
     >
       <img
         alt="Polygon logo"
         class="mm-avatar-network__network-image"
-        src="./images/matic-token.svg"
+        src="./images/pol-token.svg"
       />
     </div>
     <div
-      class="mm-box multichain-network-list-item__network-name mm-box--display-flex mm-box--align-items-center"
-      data-testid="Polygon"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
+      style="overflow: hidden;"
     >
-      <p
-        class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
-        tabindex="0"
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        data-testid="Polygon"
       >
-        Polygon
-      </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+          tabindex="0"
+        >
+          Polygon
+        </p>
+      </div>
     </div>
     <button
-      aria-label="[deleteNetwork]"
-      class="mm-box mm-button-icon mm-button-icon--size-sm multichain-network-list-item__delete mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-error-default mm-box--background-color-transparent mm-box--rounded-lg"
+      aria-label="[networkOptions]"
+      class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+      data-testid="network-list-item-options-button-0x1"
     >
       <span
         class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-        style="mask-image: url('./images/icons/trash.svg');"
+        style="mask-image: url('./images/icons/more-vertical.svg');"
       />
     </button>
   </div>

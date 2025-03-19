@@ -1,8 +1,9 @@
 const { strict: assert } = require('assert');
 const {
-  withFixtures,
   defaultGanacheOptions,
+  openMenuSafe,
   unlockWallet,
+  withFixtures,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
@@ -20,10 +21,8 @@ describe('Settings', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+        await openMenuSafe(driver);
 
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
 

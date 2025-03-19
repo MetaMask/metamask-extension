@@ -1,0 +1,13 @@
+diff --git a/dist/wallet.js b/dist/wallet.js
+index fce8272ab926443df4c5971c811664f849791425..9237ffcaaea2260e01182feecec667b10edd35a0 100644
+--- a/dist/wallet.js
++++ b/dist/wallet.js
+@@ -293,7 +293,7 @@ exports.createWalletMiddleware = createWalletMiddleware;
+  */
+ function validateVerifyingContract(data) {
+     const { domain: { verifyingContract } = {} } = (0, normalize_1.parseTypedMessage)(data);
+-    if (verifyingContract && !(0, utils_1.isValidHexAddress)(verifyingContract)) {
++    if (verifyingContract && verifyingContract !== 'cosmos' && !(0, utils_1.isValidHexAddress)(verifyingContract)) {
+         throw rpc_errors_1.rpcErrors.invalidInput();
+     }
+ }

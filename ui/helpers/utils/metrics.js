@@ -26,6 +26,16 @@ export function formatAccountType(accountType) {
 }
 
 /**
+ * Generates a unique identifier utilizing the original request id for signature event fragments
+ *
+ * @param {number} requestId
+ * @returns {string}
+ */
+export function generateSignatureUniqueId(requestId) {
+  return `signature-${requestId}`;
+}
+
+/**
  * Returns the ui_customization string value based on the result type
  *
  * @param {BlockaidResultType} resultType

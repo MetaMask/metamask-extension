@@ -29,10 +29,8 @@ import { PageContainerFooter } from '../../../components/ui/page-container';
 import ContractDetailsModal from '../components/contract-details-modal/contract-details-modal';
 import {
   getCustomTokenAmount,
-  getNetworkIdentifier,
   transactionFeeSelector,
   getKnownMethodData,
-  getRpcPrefsForCurrentProvider,
   getUnapprovedTxCount,
   getUnapprovedTransactions,
   getUseCurrencyRateCheck,
@@ -77,7 +75,14 @@ import FeeDetailsComponent from '../components/fee-details-component/fee-details
 import { BlockaidResultType } from '../../../../shared/constants/security-provider';
 import { QueuedRequestsBannerAlert } from '../confirmation/components/queued-requests-banner-alert/queued-requests-banner-alert';
 
+import {
+  selectNetworkConfigurationByChainId,
+  selectNetworkIdentifierByChainId,
+  // eslint-disable-next-line import/no-duplicates
+} from '../../../selectors/selectors';
+
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+// eslint-disable-next-line import/no-duplicates
 import { getAccountType } from '../../../selectors/selectors';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import { showCustodyConfirmLink } from '../../../store/institutional/institution-actions';
@@ -142,8 +147,19 @@ export default function TokenAllowance({
   const fromAccount = useSelector((state) =>
     getTargetAccountWithSendEtherInfo(state, userAddress),
   );
-  const networkIdentifier = useSelector(getNetworkIdentifier);
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+
+  const { chainId } = txData;
+
+  const networkIdentifier = useSelector((state) =>
+    selectNetworkIdentifierByChainId(state, chainId),
+  );
+
+  const { blockExplorerUrls } =
+    useSelector((state) =>
+      selectNetworkConfigurationByChainId(state, chainId),
+    ) ?? {};
+
+  const blockExplorerUrl = blockExplorerUrls?.[0];
   const unapprovedTxCount = useSelector(getUnapprovedTxCount);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
@@ -212,7 +228,9 @@ export default function TokenAllowance({
   }
 
   const fee = useSelector((state) => transactionFeeSelector(state, fullTxData));
-  const methodData = useSelector((state) => getKnownMethodData(state, data));
+  const methodData = useSelector(
+    (state) => getKnownMethodData(state, data) ?? {},
+  );
 
   const { balanceError } = useGasFeeContext();
 
@@ -345,12 +363,12 @@ export default function TokenAllowance({
   };
 
   const handleNextNonce = useCallback(() => {
-    dispatch(getNextNonce());
-  }, [getNextNonce, dispatch]);
+    dispatch(getNextNonce(txData.txParams.from));
+  }, [dispatch, txData.txParams.from]);
 
   useEffect(() => {
-    dispatch(getNextNonce());
-  }, [getNextNonce, dispatch]);
+    dispatch(getNextNonce(txData.txParams.from));
+  }, [dispatch, txData.txParams.from]);
 
   const handleUpdateCustomNonce = (value) => {
     dispatch(updateCustomNonce(value));
@@ -385,7 +403,7 @@ export default function TokenAllowance({
         tokenName={tokenSymbol}
         address={tokenAddress}
         chainId={fullTxData.chainId}
-        rpcPrefs={rpcPrefs}
+        blockExplorerUrl={blockExplorerUrl}
       />
     </Box>
   );
@@ -708,7 +726,7 @@ export default function TokenAllowance({
           tokenAddress={tokenAddress}
           toAddress={toAddress}
           chainId={fullTxData.chainId}
-          rpcPrefs={rpcPrefs}
+          blockExplorerUrl={blockExplorerUrl}
         />
       )}
     </Box>

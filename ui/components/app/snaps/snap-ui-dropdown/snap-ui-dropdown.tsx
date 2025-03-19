@@ -34,7 +34,7 @@ export const SnapUIDropdown: FunctionComponent<SnapUIDropdownProps> = ({
   const [value, setValue] = useState(initialValue ?? '');
 
   useEffect(() => {
-    if (initialValue) {
+    if (initialValue !== undefined && initialValue !== null) {
       setValue(initialValue);
     }
   }, [initialValue]);
@@ -55,6 +55,9 @@ export const SnapUIDropdown: FunctionComponent<SnapUIDropdownProps> = ({
         data-testid="snaps-dropdown"
         selectedOption={value}
         onChange={handleChange}
+        style={{
+          border: '1px solid var(--color-border-muted)',
+        }}
         {...props}
       />
       {error && (

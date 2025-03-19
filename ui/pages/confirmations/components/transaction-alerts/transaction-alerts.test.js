@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import sinon from 'sinon';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../../shared/constants/security-provider';
 import { renderWithProvider } from '../../../../../test/jest';
 import { submittedPendingTransactionsSelector } from '../../../../selectors/transactions';
@@ -9,6 +10,7 @@ import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import * as txUtil from '../../../../../shared/modules/transaction.utils';
 import * as metamaskControllerUtils from '../../../../../shared/lib/metamask-controller-utils';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import TransactionAlerts from './transaction-alerts';
 
 jest.mock('../../../../selectors/transactions', () => {
@@ -22,17 +24,28 @@ jest.mock('../../../../contexts/gasFee');
 
 jest.mock('../../../../selectors/account-abstraction');
 
+const CHAIN_ID_MOCK = CHAIN_IDS.MAINNET;
+
+const STATE_MOCK = {
+  ...mockState,
+  metamask: {
+    ...mockState.metamask,
+    ...mockNetworkState({
+      chainId: CHAIN_ID_MOCK,
+    }),
+  },
+};
+
 function render({
   componentProps = {},
   useGasFeeContextValue = {},
   submittedPendingTransactionsSelectorValue = null,
-  mockedStore = mockState,
 }) {
   useGasFeeContext.mockReturnValue(useGasFeeContextValue);
   submittedPendingTransactionsSelector.mockReturnValue(
     submittedPendingTransactionsSelectorValue,
   );
-  const store = configureStore(mockedStore);
+  const store = configureStore(STATE_MOCK);
   return renderWithProvider(<TransactionAlerts {...componentProps} />, store);
 }
 
@@ -41,6 +54,7 @@ describe('TransactionAlerts', () => {
     const { getByText } = render({
       componentProps: {
         txData: {
+          chainId: CHAIN_ID_MOCK,
           securityAlertResponse: {
             resultType: 'Malicious',
             reason: 'blur_farming',
@@ -64,6 +78,7 @@ describe('TransactionAlerts', () => {
     const { queryByText } = render({
       componentProps: {
         txData: {
+          chainId: CHAIN_ID_MOCK,
           securityProviderResponse: {
             flagAsDangerous: '?',
             reason: 'Some reason...',
@@ -89,6 +104,7 @@ describe('TransactionAlerts', () => {
     const { queryByText } = render({
       componentProps: {
         txData: {
+          chainId: CHAIN_ID_MOCK,
           securityProviderResponse: {
             flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS,
           },
@@ -118,6 +134,7 @@ describe('TransactionAlerts', () => {
           },
           componentProps: {
             txData: {
+              chainId: CHAIN_ID_MOCK,
               txParams: {
                 value: '0x1',
               },
@@ -141,6 +158,7 @@ describe('TransactionAlerts', () => {
             },
             componentProps: {
               txData: {
+                chainId: CHAIN_ID_MOCK,
                 txParams: {
                   value: '0x1',
                 },
@@ -160,6 +178,7 @@ describe('TransactionAlerts', () => {
             componentProps: {
               setUserAcknowledgedGasMissing,
               txData: {
+                chainId: CHAIN_ID_MOCK,
                 txParams: {
                   value: '0x1',
                 },
@@ -181,6 +200,7 @@ describe('TransactionAlerts', () => {
             componentProps: {
               userAcknowledgedGasMissing: true,
               txData: {
+                chainId: CHAIN_ID_MOCK,
                 txParams: {
                   value: '0x1',
                 },
@@ -199,6 +219,7 @@ describe('TransactionAlerts', () => {
         const { queryByText } = render({
           componentProps: {
             txData: {
+              chainId: CHAIN_ID_MOCK,
               txParams: {
                 value: '0x1',
               },
@@ -220,6 +241,7 @@ describe('TransactionAlerts', () => {
           submittedPendingTransactionsSelectorValue: [{ some: 'transaction' }],
           componentProps: {
             txData: {
+              chainId: CHAIN_ID_MOCK,
               txParams: {
                 value: '0x1',
               },
@@ -242,6 +264,7 @@ describe('TransactionAlerts', () => {
           ],
           componentProps: {
             txData: {
+              chainId: CHAIN_ID_MOCK,
               txParams: {
                 value: '0x1',
               },
@@ -261,6 +284,7 @@ describe('TransactionAlerts', () => {
           submittedPendingTransactionsSelectorValue: [],
           componentProps: {
             txData: {
+              chainId: CHAIN_ID_MOCK,
               txParams: {
                 value: '0x1',
               },
@@ -282,6 +306,7 @@ describe('TransactionAlerts', () => {
           },
           componentProps: {
             txData: {
+              chainId: CHAIN_ID_MOCK,
               txParams: {
                 value: '0x1',
               },
@@ -301,6 +326,7 @@ describe('TransactionAlerts', () => {
           },
           componentProps: {
             txData: {
+              chainId: CHAIN_ID_MOCK,
               txParams: {
                 value: '0x1',
               },
@@ -322,6 +348,7 @@ describe('TransactionAlerts', () => {
           },
           componentProps: {
             txData: {
+              chainId: CHAIN_ID_MOCK,
               txParams: {
                 value: '0x1',
               },
@@ -345,6 +372,7 @@ describe('TransactionAlerts', () => {
           },
           componentProps: {
             txData: {
+              chainId: CHAIN_ID_MOCK,
               txParams: {
                 value: '0x1',
               },
@@ -367,6 +395,7 @@ describe('TransactionAlerts', () => {
           submittedPendingTransactionsSelectorValue: [{ some: 'transaction' }],
           componentProps: {
             txData: {
+              chainId: CHAIN_ID_MOCK,
               txParams: {
                 value: '0x1',
               },
@@ -388,6 +417,7 @@ describe('TransactionAlerts', () => {
           },
           componentProps: {
             txData: {
+              chainId: CHAIN_ID_MOCK,
               txParams: {
                 value: '0x1',
               },
@@ -407,6 +437,7 @@ describe('TransactionAlerts', () => {
           },
           componentProps: {
             txData: {
+              chainId: CHAIN_ID_MOCK,
               txParams: {
                 value: '0x1',
               },
@@ -445,6 +476,7 @@ describe('TransactionAlerts', () => {
       const { getByText } = render({
         componentProps: {
           txData: {
+            chainId: CHAIN_ID_MOCK,
             txParams: {
               value: '0x0',
             },
@@ -461,6 +493,7 @@ describe('TransactionAlerts', () => {
       const { getByText } = render({
         componentProps: {
           txData: {
+            chainId: CHAIN_ID_MOCK,
             txParams: {
               value: '0x0',
             },
@@ -478,6 +511,7 @@ describe('TransactionAlerts', () => {
       const { queryByText } = render({
         componentProps: {
           txData: {
+            chainId: CHAIN_ID_MOCK,
             txParams: {
               value: '0x5af3107a4000',
             },
@@ -492,6 +526,7 @@ describe('TransactionAlerts', () => {
       const { queryByText } = render({
         componentProps: {
           txData: {
+            chainId: CHAIN_ID_MOCK,
             txParams: {
               value: '0x0',
             },
@@ -508,6 +543,7 @@ describe('TransactionAlerts', () => {
       const { getByText } = render({
         componentProps: {
           txData: {
+            chainId: CHAIN_ID_MOCK,
             txParams: {
               value: '0x1',
             },

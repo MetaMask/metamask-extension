@@ -45,6 +45,7 @@ export class Auth0Page {
       .locator('#password')
       .fill(process.env.MMI_E2E_E2E_AUTH0_PASSWORD as string);
     await this.page.getByRole('button', { name: /continue/iu }).click();
+    await this.page.getByRole('button', { name: /E2E Organization/iu }).click();
     await expect(this.page).toHaveURL(portfolio);
   }
 }

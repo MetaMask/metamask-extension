@@ -40,6 +40,7 @@ export const ButtonPrimary: ButtonPrimaryComponent = React.forwardRef(
         }}
         size={size}
         ref={ref}
+        data-theme="light"
         {...{ disabled, ...(props as ButtonBaseProps<C>) }}
       />
     );

@@ -1,4 +1,4 @@
-import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -30,11 +30,9 @@ import {
   SIGNATURE_REQUEST_PATH,
 } from '../../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
-  currentConfirmationSelector,
-  pendingConfirmationsSortedSelector,
-} from '../../../../../selectors';
+import { pendingConfirmationsSortedSelector } from '../../../../../selectors';
 import { rejectPendingApproval } from '../../../../../store/actions';
+import { useConfirmContext } from '../../../context/confirm';
 import { useQueuedConfirmationsEvent } from '../../../hooks/useQueuedConfirmationEvents';
 import { isSignatureApprovalRequest } from '../../../utils';
 
@@ -43,7 +41,7 @@ const Nav = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const { currentConfirmation } = useConfirmContext();
 
   const pendingConfirmations = useSelector(pendingConfirmationsSortedSelector);
 
@@ -80,7 +78,7 @@ const Nav = () => {
       dispatch(
         rejectPendingApproval(
           conf.id,
-          serializeError(ethErrors.provider.userRejectedRequest()),
+          serializeError(providerErrors.userRejectedRequest()),
         ),
       );
     });

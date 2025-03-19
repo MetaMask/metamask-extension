@@ -2,7 +2,8 @@ import React from 'react';
 import * as Redux from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { render, fireEvent } from '@testing-library/react';
-import * as ProfileSyncingHook from '../../../../hooks/metamask-notifications/useProfileSyncing';
+import { MetamaskNotificationsProvider } from '../../../../contexts/metamask-notifications';
+import * as ProfileSyncingHook from '../../../../hooks/metamask-notifications/useProfileSyncing/profileSyncing';
 import ProfileSyncToggle from './profile-sync-toggle';
 
 const mockStore = configureMockStore();
@@ -20,7 +21,9 @@ describe('ProfileSyncToggle', () => {
   it('renders correctly', () => {
     const { getByTestId } = render(
       <Redux.Provider store={mockStore(initialStore())}>
-        <ProfileSyncToggle />
+        <MetamaskNotificationsProvider>
+          <ProfileSyncToggle />
+        </MetamaskNotificationsProvider>
       </Redux.Provider>,
     );
     expect(getByTestId('profileSyncToggle')).toBeInTheDocument();

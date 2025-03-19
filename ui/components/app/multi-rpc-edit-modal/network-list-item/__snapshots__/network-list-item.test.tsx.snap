@@ -1,0 +1,56 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NetworkListItem renders correctly with required props 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center"
+  >
+    <div
+      class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-8/12"
+    >
+      <div
+        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+      >
+        <img
+          alt="Ethereum Mainnet logo"
+          class="mm-avatar-network__network-image"
+          src="./images/eth_logo.svg"
+        />
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-11/12"
+      >
+        <div
+          class="mm-box mm-box--margin-left-4"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+          >
+            Ethereum Mainnet
+          </p>
+        </div>
+        <div
+          class="mm-box mm-box--margin-left-4 mm-box--display-flex mm-box--align-items-center"
+        >
+          <button
+            class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-text--text-align-left mm-box--padding-0 mm-box--color-text-alternative mm-box--background-color-transparent"
+            style="width: 220px;"
+          >
+            Infura Mainnet
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box mm-box--margin-left-1 mm-box--display-flex mm-box--align-items-center"
+    >
+      <button
+        class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+        type="button"
+      >
+        [edit]
+      </button>
+    </div>
+  </div>
+</div>
+`;

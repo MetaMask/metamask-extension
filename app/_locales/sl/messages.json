@@ -205,9 +205,6 @@
   "delete": {
     "message": "Izbriši"
   },
-  "deleteNetwork": {
-    "message": "Izbrišem to omrežje?"
-  },
   "details": {
     "message": "Podrobnosti"
   },
@@ -229,9 +226,6 @@
   "editContact": {
     "message": "Uredi stik"
   },
-  "ensRegistrationError": {
-    "message": "Napaka pri registraciji imena ENS"
-  },
   "enterPasswordContinue": {
     "message": "Za nadaljevanje vnesite geslo"
   },
@@ -249,10 +243,6 @@
   },
   "fast": {
     "message": "Hiter"
-  },
-  "fiat": {
-    "message": "Klasične",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "Uvoz z datoteko ne deluje? Kliknite tukaj!",
@@ -348,12 +338,6 @@
   "invalidAddressRecipient": {
     "message": "Neveljaven nasklov prejemnika"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Ni omrežja ETH, nastavljene so male črke"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Neveljaven Block Explorer URL"
-  },
   "invalidRPC": {
     "message": "Neveljaven RPC URL"
   },
@@ -447,9 +431,6 @@
   "next": {
     "message": "Naprej"
   },
-  "noAddressForName": {
-    "message": "Za to ime ni naslovov."
-  },
   "noConversionRateAvailable": {
     "message": "Menjalni tečaj ni na voljo"
   },
@@ -511,12 +492,6 @@
   "prev": {
     "message": "Prej"
   },
-  "primaryCurrencySetting": {
-    "message": "Glavna valuta"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Izberite Native za prikaz vrednosti v privzeti valuti verige (npr. ETH). Izberite Klasične za prikaz vrednosti v izbrani klasični valuti."
-  },
   "privacyMsg": {
     "message": "Zasebnost"
   },
@@ -532,9 +507,6 @@
   },
   "readdToken": {
     "message": "Ta žeton lahko dodate tudi kasneje z uporabo gumba “Dodaj žeton” v možnostih vašega računa."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Iskanje, javni naslov (0x) ali ENS"
   },
   "reject": {
     "message": "Zavrni"
@@ -770,9 +742,6 @@
   },
   "unlockMessage": {
     "message": "Decentralizirana spletna denarnica"
-  },
-  "updatedWithDate": {
-    "message": "Posodobljeno $1"
   },
   "urlErrorMsg": {
     "message": "URI zahtevajo ustrezno HTTP/HTTPS predpono."

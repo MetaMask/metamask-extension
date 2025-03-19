@@ -214,7 +214,7 @@ export default class TransactionListItemDetails extends PureComponent {
       primaryTransaction: transaction,
       initialTransaction: { type },
     } = transactionGroup;
-    const { hash } = transaction;
+    const { chainId, hash } = transaction;
 
     return (
       <Popover title={title} onClose={onClose}>
@@ -332,6 +332,7 @@ export default class TransactionListItemDetails extends PureComponent {
                 recipientMetadataName={recipientMetadataName}
                 senderName={senderNickname}
                 senderAddress={senderAddress}
+                chainId={chainId}
                 onRecipientClick={() => {
                   this.context.trackEvent({
                     category: MetaMetricsEventCategory.Navigation,

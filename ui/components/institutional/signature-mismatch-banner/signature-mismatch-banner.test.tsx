@@ -5,7 +5,9 @@ import {
   signatureRequestSIWE,
 } from '../../../../test/data/confirmations/personal_sign';
 import mockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { getMockPersonalSignConfirmStateForRequest } from '../../../../test/data/confirmations/helper';
+import { renderWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
+import { SignatureRequestType } from '../../../pages/confirmations/types/confirm';
 import { shortenAddress } from '../../../helpers/utils/util';
 import configureStore from '../../../store/store';
 import { MMISignatureMismatchBanner } from '.';
@@ -39,21 +41,26 @@ const render = ({ currentConfirmationProps = {} } = {}) => {
     selectedAccount: selectedAccount.id,
   };
 
-  const store = configureStore({
-    metamask: {
-      ...mockState.metamask,
-      internalAccounts,
-    },
-    confirm: {
-      currentConfirmation: {
+  const store = configureStore(
+    getMockPersonalSignConfirmStateForRequest(
+      {
         ...unapprovedPersonalSignMsg,
         msgParams: { ...unapprovedPersonalSignMsg.msgParams, from: address },
         ...currentConfirmationProps,
+      } as SignatureRequestType,
+      {
+        metamask: {
+          ...mockState.metamask,
+          internalAccounts,
+        },
       },
-    },
-  });
+    ),
+  );
 
-  return renderWithProvider(<MMISignatureMismatchBanner />, store);
+  return renderWithConfirmContextProvider(
+    <MMISignatureMismatchBanner />,
+    store,
+  );
 };
 
 describe('MMISignatureMismatchBanner', () => {

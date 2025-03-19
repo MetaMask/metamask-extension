@@ -74,9 +74,10 @@ export function useGasFeeEstimates(_networkClientId) {
   }, [networkClientId]);
 
   usePolling({
-    startPollingByNetworkClientId: gasFeeStartPollingByNetworkClientId,
+    startPolling: (input) =>
+      gasFeeStartPollingByNetworkClientId(input.networkClientId),
     stopPollingByPollingToken: gasFeeStopPollingByPollingToken,
-    networkClientId,
+    input: { networkClientId },
   });
 
   return {

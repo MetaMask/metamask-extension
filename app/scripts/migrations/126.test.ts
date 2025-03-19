@@ -1,69 +1,50 @@
-import { AccountsControllerState } from '@metamask/accounts-controller';
-import { createMockInternalAccount } from '../../../test/jest/mocks';
 import { migrate, version } from './126';
 
 const oldVersion = 125;
 
-const mockInternalAccount = createMockInternalAccount();
-const mockAccountsControllerState: AccountsControllerState = {
-  internalAccounts: {
-    accounts: {
-      [mockInternalAccount.id]: mockInternalAccount,
-    },
-    selectedAccount: mockInternalAccount.id,
-  },
-};
-
-describe('migration #126', () => {
-  afterEach(() => jest.resetAllMocks());
-
+describe(`migration #${version}`, () => {
   it('updates the version metadata', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
-      data: {
-        AccountsController: mockAccountsControllerState,
-      },
+      data: {},
     };
 
     const newStorage = await migrate(oldStorage);
+
     expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  it('updates selected account if it is not found in the list of accounts', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        AccountsController: {
-          ...mockAccountsControllerState,
-          internalAccounts: {
-            ...mockAccountsControllerState.internalAccounts,
-            selectedAccount: 'unknown id',
-          },
-        },
+  it('Does nothing if `providerConfig` is not in the network controller state', async () => {
+    const oldState = {
+      NetworkController: {
+        selectedNetworkClientId: 'mainnet',
       },
     };
 
-    const newStorage = await migrate(oldStorage);
-    const {
-      internalAccounts: { selectedAccount },
-    } = newStorage.data.AccountsController as AccountsControllerState;
-    expect(selectedAccount).toStrictEqual(mockInternalAccount.id);
-    expect(newStorage.data.AccountsController).toStrictEqual(
-      mockAccountsControllerState,
-    );
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
+    });
+
+    expect(transformedState.data).toStrictEqual(oldState);
   });
 
-  it('does nothing if the selectedAccount is found in the list of accounts', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        AccountsController: mockAccountsControllerState,
+  it('Removes providerConfig from the network controller state', async () => {
+    const oldState = {
+      NetworkController: {
+        selectedNetworkClientId: 'mainnet',
+        providerConfig: {
+          chainId: '0x1',
+          ticker: 'ETH',
+        } as object | undefined,
       },
     };
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
+    });
 
-    const newStorage = await migrate(oldStorage);
-    expect(newStorage.data.AccountsController).toStrictEqual(
-      mockAccountsControllerState,
-    );
+    delete oldState.NetworkController.providerConfig;
+    expect(transformedState.data).toStrictEqual(oldState);
   });
 });

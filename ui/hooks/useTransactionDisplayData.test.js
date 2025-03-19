@@ -11,6 +11,8 @@ import {
 import mockState from '../../test/data/mock-state.json';
 import configureStore from '../store/store';
 import transactions from '../../test/data/transaction-data.json';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import messages from '../../app/_locales/en/messages.json';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../helpers/constants/routes';
 import { TransactionGroupCategory } from '../../shared/constants/transaction';
@@ -209,7 +211,6 @@ const renderHookWithRouter = (cb, tokenAddress) => {
       currentCurrency: 'ETH',
       useCurrencyRateCheck: false, // to force getShouldShowFiat to return false
       preferences: {
-        useNativeCurrencyAsPrimaryCurrency: true,
         getShowFiatInTestnets: false,
       },
       allNfts: [],

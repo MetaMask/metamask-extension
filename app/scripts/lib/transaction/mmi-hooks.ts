@@ -54,18 +54,6 @@ export function getAdditionalSignArguments(
 }
 
 /**
- * Whether or not should run the logic before approve the transaction when transaction controller is rebooted.
- *
- * @param txMeta - The transaction meta.
- */
-
-export function beforeTransactionApproveOnInit(
-  txMeta: TransactionMeta,
-): boolean {
-  return !txMeta?.custodyStatus;
-}
-
-/**
  * Whether or not should run the logic before checking the transaction when checking pending transactions.
  *
  * @param txMeta - The transaction meta.

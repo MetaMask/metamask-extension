@@ -2,7 +2,10 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { useCounter } from '../../../hooks/metamask-notifications/useCounter';
+import {
+  useUnreadNotificationsCounter,
+  useReadNotificationsCounter,
+} from '../../../hooks/metamask-notifications/useCounter';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
 import { NewFeatureTag } from '../../../pages/notifications/NewFeatureTag';
 import {
@@ -30,6 +33,8 @@ import {
 } from '../../component-library';
 
 import { MenuItem } from '../../ui/menu';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
@@ -80,7 +85,8 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
 
   const history = useHistory();
 
-  const { notificationsCount } = useCounter();
+  const { notificationsUnreadCount } = useUnreadNotificationsCounter();
+  const { notificationsReadCount } = useReadNotificationsCounter();
 
   const account = useSelector(getSelectedInternalAccount);
 
@@ -144,11 +150,11 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
 
     if (shouldShowEnableModal) {
       trackEvent({
-        category: MetaMetricsEventCategory.NotificationInteraction,
-        event: MetaMetricsEventName.NotificationMenuOpened,
+        category: MetaMetricsEventCategory.NotificationsActivationFlow,
+        event: MetaMetricsEventName.NotificationsActivated,
         properties: {
+          action_type: 'started',
           is_profile_syncing_enabled: isProfileSyncingEnabled,
-          is_notifications_enabled: isMetamaskNotificationsEnabled,
         },
       });
       dispatch(showConfirmTurnOnMetamaskNotifications());
@@ -160,10 +166,10 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
     // Otherwise we can navigate to the notifications page
     trackEvent({
       category: MetaMetricsEventCategory.NotificationInteraction,
-      event: MetaMetricsEventName.NotificationMenuOpened,
+      event: MetaMetricsEventName.NotificationsMenuOpened,
       properties: {
-        is_profile_syncing_enabled: isProfileSyncingEnabled,
-        is_notifications_enabled: isMetamaskNotificationsEnabled,
+        unread_count: notificationsUnreadCount,
+        read_count: notificationsReadCount,
       },
     });
     history.push(NOTIFICATIONS_ROUTE);
@@ -190,6 +196,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
           <MenuItem
             iconName={IconName.Notification}
             onClick={() => handleNotificationsClick()}
+            data-testid="notifications-menu-item"
           >
             <Box
               display={Display.Flex}
@@ -198,7 +205,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
               justifyContent={JustifyContent.spaceBetween}
             >
               {t('notifications')}
-              {notificationsCount === 0 &&
+              {notificationsUnreadCount === 0 &&
                 !isMetamaskNotificationFeatureSeen && <NewFeatureTag />}
               <NotificationsTagCounter />
             </Box>

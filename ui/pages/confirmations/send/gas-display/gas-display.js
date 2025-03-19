@@ -27,14 +27,11 @@ import {
   getIsTestnet,
   getUseCurrencyRateCheck,
   getUnapprovedTransactions,
+  selectNetworkConfigurationByChainId,
 } from '../../../../selectors';
 
 import { INSUFFICIENT_TOKENS_ERROR } from '../send.constants';
 import { getCurrentDraftTransaction } from '../../../../ducks/send';
-import {
-  getNativeCurrency,
-  getProviderConfig,
-} from '../../../../ducks/metamask/metamask';
 import { showModal } from '../../../../store/actions';
 import {
   addHexes,
@@ -48,29 +45,30 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import useRamps from '../../../../hooks/ramps/useRamps/useRamps';
 import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 
+// This function is no longer used in codebase, to be deleted.
 export default function GasDisplay({ gasError }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
-  const { estimateUsed } = useGasFeeContext();
+  const { estimateUsed, transaction } = useGasFeeContext();
+  const { chainId } = transaction;
   const trackEvent = useContext(MetaMetricsContext);
-
   const { openBuyCryptoInPdapp } = useRamps();
 
-  const providerConfig = useSelector(getProviderConfig);
+  const { name: networkNickname, nativeCurrency } = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, chainId),
+  );
+
   const isTestnet = useSelector(getIsTestnet);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const draftTransaction = useSelector(getCurrentDraftTransaction);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
-  const { showFiatInTestnets, useNativeCurrencyAsPrimaryCurrency } =
-    useSelector(getPreferences);
+  const { showFiatInTestnets } = useSelector(getPreferences);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
-  const nativeCurrency = useSelector(getNativeCurrency);
-  const { chainId } = providerConfig;
   const networkName = NETWORK_TO_NAME_MAP[chainId];
   const isInsufficientTokenError =
     draftTransaction?.amount?.error === INSUFFICIENT_TOKENS_ERROR;
   const editingTransaction = unapprovedTxs[draftTransaction.id];
-  const currentNetworkName = networkName || providerConfig.nickname;
+  const currentNetworkName = networkName || networkNickname;
 
   const transactionData = {
     txParams: {
@@ -132,7 +130,6 @@ export default function GasDisplay({ gasError }) {
           type={PRIMARY}
           key="total-detail-value"
           value={hexTransactionTotal}
-          hideLabel={!useNativeCurrencyAsPrimaryCurrency}
         />
       </Box>
     );
@@ -144,10 +141,9 @@ export default function GasDisplay({ gasError }) {
           draftTransaction.amount.value,
           hexMaximumTransactionFee,
         )}
-        hideLabel={!useNativeCurrencyAsPrimaryCurrency}
       />
     );
-  } else if (useNativeCurrencyAsPrimaryCurrency) {
+  } else {
     detailTotal = primaryTotalTextOverrideMaxAmount;
     maxAmount = primaryTotalTextOverrideMaxAmount;
   }
@@ -177,7 +173,7 @@ export default function GasDisplay({ gasError }) {
                         type={SECONDARY}
                         key="total-detail-text"
                         value={hexTransactionTotal}
-                        hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+                        hideLabel
                       />
                     </Box>
                   )

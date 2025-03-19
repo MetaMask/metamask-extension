@@ -7,6 +7,8 @@ import Confirmation from '../confirmation';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../../shared/constants/app';
 import mockState from '../../../../../test/data/mock-state.json';
+import { mockNetworkState } from '../../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 
 const middleware = [thunk];
 
@@ -39,6 +41,7 @@ const mockBaseStore = {
     },
     approvalFlows: [],
     subjectMetadata: {},
+    ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
   },
 };
 

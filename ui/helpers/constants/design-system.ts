@@ -54,6 +54,8 @@ export enum Color {
 export enum BackgroundColor {
   backgroundDefault = 'background-default',
   backgroundAlternative = 'background-alternative',
+  backgroundHover = 'background-hover',
+  backgroundPressed = 'background-pressed',
   overlayDefault = 'overlay-default',
   overlayAlternative = 'overlay-alternative',
   primaryDefault = 'primary-default',

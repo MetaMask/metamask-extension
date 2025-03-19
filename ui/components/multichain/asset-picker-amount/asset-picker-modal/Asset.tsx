@@ -7,12 +7,9 @@ import { TokenListItem } from '../../token-list-item';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { formatAmount } from '../../../../pages/confirmations/components/simulation-details/formatAmount';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
+import { AssetWithDisplayData, ERC20Asset } from './types';
 
-type AssetProps = {
-  address?: string | null;
-  image?: string;
-  symbol: string;
-  decimalTokenAmount?: string;
+type AssetProps = AssetWithDisplayData<ERC20Asset> & {
   tooltipText?: string;
 };
 
@@ -20,7 +17,7 @@ export default function Asset({
   address,
   image,
   symbol,
-  decimalTokenAmount,
+  string: decimalTokenAmount,
   tooltipText,
 }: AssetProps) {
   const locale = useSelector(getIntlLocale);
@@ -43,18 +40,22 @@ export default function Asset({
     {},
     true,
   );
+  const formattedAmount = decimalTokenAmount
+    ? `${formatAmount(
+        locale,
+        new BigNumber(decimalTokenAmount || '0', 10),
+      )} ${symbol}`
+    : undefined;
 
   return (
     <TokenListItem
       tokenSymbol={symbol}
       tokenImage={tokenImage}
-      primary={formatAmount(
-        locale,
-        new BigNumber(decimalTokenAmount || '0', 10),
-      )}
-      secondary={formattedFiat}
+      secondary={formattedAmount}
+      primary={formattedFiat}
       title={title}
       tooltipText={tooltipText}
+      isPrimaryTokenSymbolHidden
     />
   );
 }

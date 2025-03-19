@@ -4,6 +4,7 @@ import { Route, Switch, useHistory, useParams } from 'react-router-dom';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ORIGIN_METAMASK,
+  TRACE_ENABLED_SIGN_METHODS,
 } from '../../../../shared/constants/app';
 import Loading from '../../../components/ui/loading-screen';
 import {
@@ -47,8 +48,11 @@ import ConfirmSignatureRequest from '../confirm-signature-request';
 import ConfirmTransactionSwitch from '../confirm-transaction-switch';
 import Confirm from '../confirm/confirm';
 import useCurrentConfirmation from '../hooks/useCurrentConfirmation';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { useAsyncResult } from '../../../hooks/useAsyncResult';
+import { TraceName } from '../../../../shared/lib/trace';
 import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
 
 const ConfirmTransaction = () => {
@@ -102,8 +106,15 @@ const ConfirmTransaction = () => {
       return undefined;
     }
 
-    return await endBackgroundTrace({ name: 'Notification Display', id });
-  }, [id, isNotification]);
+    const traceId = TRACE_ENABLED_SIGN_METHODS.includes(type)
+      ? transaction.msgParams?.requestId?.toString()
+      : id;
+
+    return await endBackgroundTrace({
+      name: TraceName.NotificationDisplay,
+      id: traceId,
+    });
+  }, [id, isNotification, type, transaction.msgParams]);
 
   const transactionId = id;
   const isValidTokenMethod = isTokenMethodAction(type);
@@ -115,9 +126,10 @@ const ConfirmTransaction = () => {
   const prevTransactionId = usePrevious(transactionId);
 
   usePolling({
-    startPollingByNetworkClientId: gasFeeStartPollingByNetworkClientId,
+    startPolling: (input) =>
+      gasFeeStartPollingByNetworkClientId(input.networkClientId),
     stopPollingByPollingToken: gasFeeStopPollingByPollingToken,
-    networkClientId: transaction.networkClientId ?? networkClientId,
+    input: { networkClientId: transaction.networkClientId ?? networkClientId },
   });
 
   useEffect(() => {
