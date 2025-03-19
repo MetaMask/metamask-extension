@@ -5046,9 +5046,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@portal:./../core/packages/bridge-controller::locator=metamask-crx%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@metamask/bridge-controller@portal:./../core/packages/bridge-controller::locator=metamask-crx%40workspace%3A."
+"@metamask/bridge-controller@npm:@metamask-previews/bridge-controller@8.0.0-preview-03c4c9c3":
+  version: 8.0.0-preview-03c4c9c3
+  resolution: "@metamask-previews/bridge-controller@npm:8.0.0-preview-03c4c9c3"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -5064,8 +5064,9 @@ __metadata:
     "@metamask/accounts-controller": ^26.0.0
     "@metamask/network-controller": ^22.0.0
     "@metamask/transaction-controller": ^50.0.0
+  checksum: 10/59f2bb6baad0e0fc11081a70eed0cd3d6bceafc3c9cea7c344655602aee0c3dd40910fdaee4c3b227cf419165def93ae5426fa7a2816082a34d3adb1b398f4e5
   languageName: node
-  linkType: soft
+  linkType: hard
 
 "@metamask/browser-passworder@npm:^4.3.0":
   version: 4.3.0
