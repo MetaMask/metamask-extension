@@ -154,7 +154,7 @@ export const TransactionControllerInit: ControllerInitFunction<
           transactionMeta,
           rawTx,
         ),
-      beforeSign: new EnforceSimulationHook({
+      afterSimulate: new EnforceSimulationHook({
         messenger: initMessenger,
       }).getHook(),
     },
