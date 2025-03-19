@@ -613,11 +613,11 @@ export default class MetamaskController extends EventEmitter {
 
       // Add failovers for default Infura RPC endpoints
       networks[CHAIN_IDS.MAINNET].rpcEndpoints[0].failoverUrls = [
-        process.env.QUICKNODE_MAINNET_URL,
-      ];
+        process.env.QUICKNODE_MAINNET_URL ?? '',
+      ].filter(Boolean);
       networks[CHAIN_IDS.LINEA_MAINNET].rpcEndpoints[0].failoverUrls = [
-        process.env.QUICKNODE_LINEA_MAINNET_URL,
-      ];
+        process.env.QUICKNODE_LINEA_MAINNET_URL ?? '',
+      ].filter(Boolean);
 
       Object.values(networks).forEach((network) => {
         const id = network.rpcEndpoints[0].networkClientId;
@@ -887,26 +887,26 @@ export default class MetamaskController extends EventEmitter {
 
     networkControllerMessenger.subscribe(
       'NetworkController:rpcEndpointUnavailable',
-      async ({ chainId, rpcEndpointUrl, failoverRpcEndpointUrl }) => {
+      async ({ chainId, endpointUrl, failoverEndpointUrl }) => {
         this.metaMetricsController.trackEvent({
           category: MetaMetricsEventCategory.Network,
           event: MetaMetricsEventName.RpcServiceUnavailable,
           properties: {
             caip_chain_id: `eip155:${chainId}`,
-            rpc_endpoint_url: rpcEndpointUrl,
-            failover_endpoint_url: failoverRpcEndpointUrl,
+            rpc_endpoint_url: endpointUrl,
+            failover_endpoint_url: failoverEndpointUrl,
           },
         });
       },
     );
     networkControllerMessenger.subscribe(
       'NetworkController:rpcEndpointDegraded',
-      async ({ rpcEndpointUrl }) => {
+      async ({ endpointUrl }) => {
         this.metaMetricsController.trackEvent({
           category: MetaMetricsEventCategory.Network,
           event: MetaMetricsEventName.RpcServiceDegraded,
           properties: {
-            endpoint_url: rpcEndpointUrl,
+            rpc_endpoint_url: endpointUrl,
           },
         });
       },
