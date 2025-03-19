@@ -108,8 +108,8 @@ async function walletCreateSessionHandler(
   }
 
   // TODO: add caveat validation in the `@metamask/chain-agnostic-permission` package
-  let filteredSessionProperties;
-  if (sessionProperties) {
+  let filteredSessionProperties = {};
+  if (sessionProperties && Object.keys(sessionProperties).length > 0) {
     filteredSessionProperties = Object.fromEntries(
       Object.entries(sessionProperties).filter(([key]) =>
         knownSessionProperties.includes(key),
@@ -174,8 +174,10 @@ async function walletCreateSessionHandler(
     const requestedCaip25CaveatValue = {
       requiredScopes: getInternalScopesObject(supportedRequiredScopes),
       optionalScopes: getInternalScopesObject(supportedOptionalScopes),
-      sessionProperties: filteredSessionProperties,
       isMultichainOrigin: true,
+      ...(Object.keys(filteredSessionProperties).length > 0 && {
+        sessionProperties: filteredSessionProperties,
+      }),
     };
 
     const requestedCaip25CaveatValueWithSupportedEthAccounts = setEthAccounts(
