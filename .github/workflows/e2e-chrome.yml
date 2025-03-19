@@ -70,7 +70,7 @@ jobs:
       build-command: yarn build:test
       test-command: yarn test:e2e:chrome:rpc
 
-  test-report:
+  test-e2e-report-chrome:
     needs:
       - test-e2e-chrome
       - test-e2e-chrome-flask
