@@ -271,7 +271,6 @@
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^11.4.0",
     "@metamask/design-tokens": "^5.0.0",
-    "@metamask/eip1193-permission-middleware": "^0.1.0",
     "@metamask/ens-controller": "^15.0.2",
     "@metamask/ens-resolver-snap": "^0.1.2",
     "@metamask/eth-json-rpc-filters": "^9.0.0",
