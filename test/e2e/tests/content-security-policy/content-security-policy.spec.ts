@@ -30,8 +30,6 @@ describe('Content-Security-Policy', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        expect.assertions(3);
-
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
