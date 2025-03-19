@@ -1,14 +1,16 @@
 import { IconName } from '@metamask/snaps-sdk/jsx';
 import React, { useRef } from 'react';
-import { TextColor } from '../../../helpers/constants/design-system';
-import { BackgroundColor } from '../../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  JustifyContent,
+  TextColor,
+} from '../../../helpers/constants/design-system';
 import {
   ButtonBase,
   ButtonBaseSize,
 } from '../../component-library/button-base';
 import { Popover, PopoverPosition } from '../../component-library/popover';
 import { Box } from '../../component-library';
-import { JustifyContent } from '../../../helpers/constants/design-system';
 import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
 import NetworkFilter from '../../app/assets/asset-list/network-filter';
 import { useI18nContext } from '../../../hooks/useI18nContext';
