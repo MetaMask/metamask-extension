@@ -1,6 +1,6 @@
 import { act } from '@testing-library/react-hooks';
-import { useShouldShowSpeedUp } from './useShouldShowSpeedUp';
 import { renderHookWithProvider } from '../../test/lib/render-helpers';
+import { useShouldShowSpeedUp } from './useShouldShowSpeedUp';
 import mockState from '../../test/data/mock-state.json';
 
 describe('useShouldShowSpeedUp', () => {
