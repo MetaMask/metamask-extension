@@ -17,7 +17,7 @@ import {
   isValidQuoteRequest,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
   type GenericQuoteRequest,
-  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
+  getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
 import {
   setFromToken,
@@ -190,9 +190,7 @@ const PrepareBridgePage = () => {
   const { openBuyCryptoInPdapp } = useRamps();
 
   const nativeAssetBalance = useLatestBalance(
-    SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
-      fromChain?.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
-    ],
+    fromChain?.chainId ? getNativeAssetForChainId(fromChain.chainId) : null,
     fromChain?.chainId,
   );
 

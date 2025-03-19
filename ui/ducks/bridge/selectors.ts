@@ -27,7 +27,7 @@ import {
   formatChainIdToCaip,
   BRIDGE_PREFERRED_GAS_ESTIMATE,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
-  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
+  getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
 import {
   MultichainNetworks,
@@ -211,9 +211,7 @@ export const getFromToken = createSelector(
       return fromToken;
     }
     return {
-      ...SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
-        fromChain.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
-      ],
+      ...getNativeAssetForChainId(fromChain.chainId),
       chainId: formatChainIdToCaip(fromChain.chainId),
       image:
         CHAIN_ID_TOKEN_IMAGE_MAP[

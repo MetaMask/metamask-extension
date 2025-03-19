@@ -1,4 +1,4 @@
-import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '@metamask/bridge-controller';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import { createBridgeMockStore } from '../../../test/jest/mock-store';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
@@ -6,7 +6,7 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import { MINUTE } from '../../../shared/constants/time';
 import { useTokensWithFiltering } from './useTokensWithFiltering';
 
-const NATIVE_TOKEN = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CHAIN_IDS.MAINNET];
+const NATIVE_TOKEN = getNativeAssetForChainId(CHAIN_IDS.MAINNET);
 
 const mockFetchBridgeTokens = jest.fn().mockResolvedValue({
   [NATIVE_TOKEN.address]: NATIVE_TOKEN,

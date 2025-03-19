@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '@metamask/bridge-controller';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import {
   getBridgeQuotes,
   getFromAmount,
@@ -30,11 +30,7 @@ export const useIsTxSubmittable = () => {
 
   const balanceAmount = useLatestBalance(fromToken, fromChainId);
   const nativeAssetBalance = useLatestBalance(
-    fromChainId
-      ? SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
-          fromChainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
-        ]
-      : null,
+    fromChainId ? getNativeAssetForChainId(fromChainId) : null,
     fromChainId,
   );
 

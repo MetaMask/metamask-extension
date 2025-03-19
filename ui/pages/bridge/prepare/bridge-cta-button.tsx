@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '@metamask/bridge-controller';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import {
   ButtonLink,
   ButtonPrimary,
@@ -77,11 +77,7 @@ export const BridgeCTAButton = ({
 
   const balanceAmount = useLatestBalance(fromToken, fromChain?.chainId);
   const nativeAssetBalance = useLatestBalance(
-    fromChain?.chainId
-      ? SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
-          fromChain.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
-        ]
-      : null,
+    fromChain?.chainId ? getNativeAssetForChainId(fromChain.chainId) : null,
     fromChain?.chainId,
   );
 
