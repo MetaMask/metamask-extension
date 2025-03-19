@@ -7,10 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.14.1]
-### Added
-- Add `profile_id` as a metametrics user trait ([#30552](https://github.com/MetaMask/metamask-extension/pull/30552))
-
-## Fixed
+### Fixed
 - Remove `previousUserTraits` property from metametrics controller state ([#30621](https://github.com/MetaMask/metamask-extension/pull/30621))
 
 ## [12.14.0] [DEPRECATED]
