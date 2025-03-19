@@ -664,9 +664,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfo": {
-    "message": "Мы не рекомендуем продолжать выполнение этого запроса."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Если вы одобрите этот запрос, третья сторона, известная мошенничеством, может похитить все ваши активы."
   },
@@ -1027,9 +1024,6 @@
   },
   "confirmationAlertDetails": {
     "message": "Чтобы защитить свои активы, рекомендуем отклонить запрос."
-  },
-  "confirmationAlertModalTitle": {
-    "message": "Этот запрос подозрительный"
   },
   "confirmed": {
     "message": "Подтвержден(-а/о)"
