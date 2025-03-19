@@ -413,7 +413,7 @@ export default function TransactionList({
     return dateGroup;
   };
 
-  const renderFilterButton = () => {
+  const renderFilterButton = useCallback(() => {
     if (hideNetworkFilter) {
       return null;
     }
@@ -430,7 +430,17 @@ export default function TransactionList({
         }
       />
     ) : null;
-  };
+  }, [
+    hideNetworkFilter,
+    isEvmNetwork,
+    isFullScreen,
+    isNetworkFilterPopoverOpen,
+    currentNetworkConfig,
+    isTokenNetworkFilterEqualCurrentNetwork,
+    toggleNetworkFilterPopover,
+    closePopover,
+    isTestNetwork,
+  ]);
 
   // Remove transaction groups with no transactions
   const removeTxGroupsWithNoTx = (dateGroup) => {
