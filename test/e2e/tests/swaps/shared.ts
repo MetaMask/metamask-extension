@@ -61,6 +61,24 @@ export const buildQuote = async (driver: Driver, options: SwapOptions) => {
   );
 };
 
+export const validation = async (
+  driver: Driver,
+  options: {
+    messageTitle: string;
+    messageText: string;
+  },
+) => {
+  let element = await driver.findElement('[data-testid="swaps-banner-title"]');
+  let text = await element.getText();
+  assert.equal(text, options.messageTitle, 'Invalid message title');
+
+  element = await driver.findElement(
+    '[data-testid="mm-banner-alert-notification-text"]',
+  );
+  text = await element.getText();
+  assert.equal(text, options.messageText, 'Invalid message text');
+};
+
 export const reviewQuote = async (
   driver: Driver,
   options: {
