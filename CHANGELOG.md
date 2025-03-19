@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.12.1]
+### Fixed
+- Disable CSP override feature that is breaking certain sites ([#31107](https://github.com/MetaMask/metamask-extension/pull/31107))
+
 ## [12.12.0]
 ### Added
 - [FLASK] Added scopes field to Keyring Account for improved account permissions management ([#29195](https://github.com/MetaMask/metamask-extension/pull/29195))
@@ -5710,7 +5714,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.12.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.12.1...HEAD
+[12.12.1]: https://github.com/MetaMask/metamask-extension/compare/v12.12.0...v12.12.1
 [12.12.0]: https://github.com/MetaMask/metamask-extension/compare/v12.11.0...v12.12.0
 [12.11.0]: https://github.com/MetaMask/metamask-extension/compare/v12.10.4...v12.11.0
 [12.10.4]: https://github.com/MetaMask/metamask-extension/compare/v12.10.3...v12.10.4

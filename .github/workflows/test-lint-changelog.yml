@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+        uses: metamask/github-tools/.github/actions/setup-environment@4f594ca7d90378da66b7efce987eff379934524b
 
       - name: Validate changelog
         # For a `pull_request` event, the branch is `github.head_ref``.

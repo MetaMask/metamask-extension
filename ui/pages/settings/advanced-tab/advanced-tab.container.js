@@ -7,7 +7,6 @@ import {
   backupUserData,
   setAutoLockTimeLimit,
   setDismissSeedBackUpReminder,
-  setOverrideContentSecurityPolicyHeader,
   setFeatureFlag,
   setShowExtensionInFullSizeView,
   setShowFiatConversionOnTestnetsPreference,
@@ -32,7 +31,6 @@ export const mapStateToProps = (state) => {
     featureFlags: { sendHexData } = {},
     useNonceField,
     dismissSeedBackUpReminder,
-    overrideContentSecurityPolicyHeader,
   } = metamask;
   const {
     showFiatInTestnets,
@@ -51,7 +49,6 @@ export const mapStateToProps = (state) => {
     autoLockTimeLimit,
     useNonceField,
     dismissSeedBackUpReminder,
-    overrideContentSecurityPolicyHeader,
   };
 };
 
@@ -83,9 +80,6 @@ export const mapDispatchToProps = (dispatch) => {
     },
     setDismissSeedBackUpReminder: (value) => {
       return dispatch(setDismissSeedBackUpReminder(value));
-    },
-    setOverrideContentSecurityPolicyHeader: (value) => {
-      return dispatch(setOverrideContentSecurityPolicyHeader(value));
     },
   };
 };

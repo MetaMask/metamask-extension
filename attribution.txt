@@ -5631,13 +5631,6 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 ******************************
 
 elliptic
-6.5.4 <https://github.com/indutny/elliptic>
-license: MIT
-authors: Fedor Indutny <fedor@indutny.com>
-
-******************************
-
-elliptic
 6.6.1 <https://github.com/indutny/elliptic>
 license: MIT
 authors: Fedor Indutny <fedor@indutny.com>

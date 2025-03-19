@@ -105,6 +105,8 @@ workflows:
             branches:
               ignore:
                 - master
+                # Backport branch created for v12.12.1
+                - stable-v12.12.x
           requires:
             - prep-deps
       - prep-build:
@@ -243,7 +245,10 @@ workflows:
       - job-publish-release:
           filters:
             branches:
-              only: master
+              only:
+              - master
+              # Backport branch created for v12.12.1
+              - stable-v12.12.x
           requires:
             - prep-deps
             - prep-build
@@ -385,7 +390,7 @@ jobs:
           condition:
             not:
               matches:
-                pattern: /^master$/
+                pattern: /^master|stable-v12\.12\.x$/
                 value: << pipeline.git.branch >>
           steps:
             - run:
@@ -394,7 +399,7 @@ jobs:
       - when:
           condition:
             matches:
-              pattern: /^master$/
+              pattern: /^master|stable-v12\.12\.x$/
               value: << pipeline.git.branch >>
           steps:
             - run:
@@ -422,7 +427,7 @@ jobs:
           condition:
             not:
               matches:
-                pattern: /^master$/
+                pattern: /^master|stable-v12\.12\.x$/
                 value: << pipeline.git.branch >>
           steps:
             - run:
@@ -431,7 +436,7 @@ jobs:
       - when:
           condition:
             matches:
-              pattern: /^master$/
+              pattern: /^master|stable-v12\.12\.x$/
               value: << pipeline.git.branch >>
           steps:
             - run:
@@ -465,7 +470,7 @@ jobs:
           condition:
             not:
               matches:
-                pattern: /^master$/
+                pattern: /^master|stable-v12\.12\.x$/
                 value: << pipeline.git.branch >>
           steps:
             - run:
@@ -474,7 +479,7 @@ jobs:
       - when:
           condition:
             matches:
-              pattern: /^master$/
+              pattern: /^master|stable-v12\.12\.x$/
               value: << pipeline.git.branch >>
           steps:
             - run:
@@ -506,7 +511,7 @@ jobs:
           condition:
             not:
               matches:
-                pattern: /^master$/
+                pattern: /^master|stable-v12\.12\.x$/
                 value: << pipeline.git.branch >>
           steps:
             - run:
@@ -515,7 +520,7 @@ jobs:
       - when:
           condition:
             matches:
-              pattern: /^master$/
+              pattern: /^master|stable-v12\.12\.x$/
               value: << pipeline.git.branch >>
           steps:
             - run:
