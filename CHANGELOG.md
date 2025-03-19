@@ -7,10 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.14.1]
-### Uncategorized
-- Bring changelog up-to-date with v12.14.0
-- fix: add missing mock for portfolio site in e2e testing ([#31034](https://github.com/MetaMask/metamask-extension/pull/31034))
-- fix: Remove previousUserTraits from metametrics controller state ([#30621](https://github.com/MetaMask/metamask-extension/pull/30621))
+### Added
+- Add `profile_id` as a metametrics user trait ([#30552](https://github.com/MetaMask/metamask-extension/pull/30552))
+
+## Fixed
+- Remove `previousUserTraits` property from metametrics controller state ([#30621](https://github.com/MetaMask/metamask-extension/pull/30621))
 
 ## [12.14.0] [DEPRECATED]
 ### Added
