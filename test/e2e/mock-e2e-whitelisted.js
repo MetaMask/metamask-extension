@@ -109,6 +109,7 @@ const WHITE_LISTED_URLS = [
   'https://nft.api.cx.metamask.io/collections?chainId=0x1&contract=0x0000000000000000000000000000000000000002',
   'https://nft.api.cx.metamask.io/collections?chainId=0x539&contract=0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947',
   'https://nft.api.cx.metamask.io/collections?chainId=0x539&contract=0x5fbdb2315678afecb367f032d93f642f64180aa3',
+  'https://nft.api.cx.metamask.io/users/0x5cfe73b6021e818b776b421b1c4db2474086a7e1/tokens?chainIds=1&limit=50&includeTopBid=true&continuation=',
   'https://o1377931.ingest.sentry.io/api/6689755/envelope/?sentry_key=be397d53390141cda058e18f3749c8e4&sentry_version=7&sentry_client=sentry.javascript.react%2F7.102.1',
   'https://on-ramp-content.api.cx.metamask.io/regions/networks?context=extension',
   'https://on-ramp.api.cx.metamask.io/eligibility/mm-card?id=',
