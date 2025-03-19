@@ -24,7 +24,7 @@ import { getUseBlockie } from '../../../../selectors';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { DestinationAccount } from './types';
+import { DestinationAccount } from '../types';
 
 type DestinationSelectedAccountListItemProps = {
   account: DestinationAccount;
