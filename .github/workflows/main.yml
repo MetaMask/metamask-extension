@@ -99,7 +99,7 @@ jobs:
 
       - run: yarn webpack --test --no-lavamoat --no-cache --browser=chrome --lockdown --sentry --snow --env production
         env:
-          SEGMENT_PROD_WRITE_KEY: ${{ secrets.SEGMENT_PROD_WRITE_KEY }}
+          SEGMENT_PROD_WRITE_KEY: "-"
 
       - name: Upload artifact prep-build-test-webpack
         uses: actions/upload-artifact@v4
