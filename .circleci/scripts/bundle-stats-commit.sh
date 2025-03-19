@@ -38,7 +38,7 @@ git config --global user.email "metamaskbot@users.noreply.github.com"
 
 git config --global user.name "MetaMask Bot"
 
-git clone git@github.com:MetaMask/extension_bundlesize_stats.git temp
+git clone --depth=1 git@github.com:MetaMask/extension_bundlesize_stats.git temp
 
 BUNDLE_SIZE_FILE="test-artifacts/chrome/bundle_size_stats.json"
 STATS_FILE="temp/stats/bundle_size_data.json"
