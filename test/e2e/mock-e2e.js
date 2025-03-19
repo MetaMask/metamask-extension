@@ -134,16 +134,13 @@ async function setupMocking(
       ) {
         // If the URL is whitelisted, we pass the request as it is, to the live server.
         return {};
-        }
-      else {
-        console.log("URL NOT WHITLISTED DEBUG===============", url)
-        return {
-          // If the URL is not whitelisted nor blacklisted, we send the request to a mocked endpoint.
-          url: 'https://mock.all',
-          method: 'GET',
-        };
-      }
-
+      };
+      console.log('URL not whitelisted ===============', url)
+      return {
+        // If the URL is not whitelisted nor blacklisted, we send the request to a mocked endpoint.
+        url: 'https://mock.all',
+        method: 'GET',
+      };
     },
   });
 
