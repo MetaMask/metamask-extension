@@ -153,7 +153,7 @@ class AccountListPage {
   };
 
   private readonly exportSrpButton = {
-    text: 'Show secret recovery phrase',
+    text: 'Show Secret Recovery Phrase',
     tag: 'button',
   };
 
