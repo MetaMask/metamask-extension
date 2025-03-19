@@ -31,16 +31,31 @@ import { UniswapPathPool } from '../../../../../../../../app/scripts/lib/transac
 import { useConfirmContext } from '../../../../../context/confirm';
 import { hasTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
 
-export const TransactionData = () => {
+export const TransactionData = ({
+  data,
+  noPadding,
+  to,
+}: { data?: Hex; noPadding?: boolean; to?: Hex } = {}) => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { nestedTransactions, txParams } = currentConfirmation ?? {};
+  const { data: currentData, to: currentTo } = txParams ?? {};
+  const transactionData = data ?? (currentData as Hex);
+  const transactionTo = to ?? (currentTo as Hex);
 
-  const transactionData = currentConfirmation?.txParams?.data as Hex;
-  const decodeResponse = useDecodedTransactionData();
+  const decodeResponse = useDecodedTransactionData({
+    data: transactionData,
+    to: transactionTo,
+  });
 
   const { value, pending } = decodeResponse;
 
+  // Don't show root transaction data if this is a batch transaction
+  if (nestedTransactions?.length && !data) {
+    return null;
+  }
+
   if (pending) {
-    return <Container isLoading />;
+    return <Container isLoading noPadding={noPadding} />;
   }
 
   if (!hasTransactionData(transactionData)) {
@@ -49,20 +64,20 @@ export const TransactionData = () => {
 
   if (!value) {
     return (
-      <Container transactionData={transactionData}>
+      <Container noPadding={noPadding} transactionData={transactionData}>
         <RawDataRow transactionData={transactionData} />
       </Container>
     );
   }
 
-  const { data, source } = value;
-  const isExpandable = data.length > 1;
+  const { data: decodeData, source } = value;
+  const isExpandable = decodeData.length > 1;
   const { chainId } = currentConfirmation;
 
   return (
-    <Container transactionData={transactionData}>
+    <Container transactionData={transactionData} noPadding={noPadding}>
       <>
-        {data.map((method, index) => (
+        {decodeData.map((method, index) => (
           <React.Fragment key={index}>
             <FunctionContainer
               method={method}
@@ -70,7 +85,7 @@ export const TransactionData = () => {
               isExpandable={isExpandable}
               chainId={chainId}
             />
-            {index < data.length - 1 && <ConfirmInfoRowDivider />}
+            {index < decodeData.length - 1 && <ConfirmInfoRowDivider />}
           </React.Fragment>
         ))}
       </>
@@ -81,17 +96,22 @@ export const TransactionData = () => {
 export function Container({
   children,
   isLoading,
+  noPadding,
   transactionData,
 }: {
   children?: React.ReactNode;
   isLoading?: boolean;
+  noPadding?: boolean;
   transactionData?: string;
 }) {
   const t = useI18nContext();
 
   return (
     <>
-      <ConfirmInfoSection data-testid="advanced-details-data-section">
+      <ConfirmInfoSection
+        noPadding={noPadding}
+        data-testid="advanced-details-data-section"
+      >
         <ConfirmInfoRow
           label={t('advancedDetailsDataDesc')}
           copyEnabled={Boolean(transactionData)}

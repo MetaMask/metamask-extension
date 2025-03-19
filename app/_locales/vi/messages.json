@@ -664,9 +664,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfo": {
-    "message": "Chúng tôi khuyên bạn không nên tiếp tục với yêu cầu này."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Nếu bạn chấp thuận yêu cầu này, một bên thứ ba nổi tiếng là lừa đảo có thể lấy hết tài sản của bạn."
   },
@@ -1027,9 +1024,6 @@
   },
   "confirmationAlertDetails": {
     "message": "Để bảo vệ tài sản của bạn, chúng tôi đề nghị bạn từ chối yêu cầu này."
-  },
-  "confirmationAlertModalTitle": {
-    "message": "Yêu cầu này có dấu hiệu đáng ngờ"
   },
   "confirmed": {
     "message": "Đã xác nhận"

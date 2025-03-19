@@ -7,6 +7,10 @@ on:
         required: true
         type: string
         description: The name of the E2E test suite
+      build-artifact:
+        type: string
+        default: ''
+        description: The build artifact to download
       build-command:
         required: true
         type: string
@@ -19,6 +23,10 @@ on:
         type: number
         default: 30
         description: The timeout in minutes for the test command
+      tests_report_path:
+        type: string
+        default: './test/test-results/e2e/**/*.xml'
+        description: The path to the test report files
       matrix-index:
         type: number
         default: 0
@@ -30,10 +38,11 @@ on:
 
 jobs:
   run-e2e:
-    name: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' (Matrix Job {0})', inputs.matrix-index) || '' }}
-    runs-on: ubuntu-22.04
+    name: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
+    runs-on: ubuntu-latest
     container:
       image: cimg/node:22.13-browsers
+    continue-on-error: true # soft launch
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # For a `pull_request` event, the branch is `github.head_ref``.
@@ -56,23 +65,44 @@ jobs:
       - name: Install anvil
         run: yarn foundryup
 
+      - name: Download build artifact
+        if: ${{ inputs.build-artifact != '' }}
+        id: download-build-artifact
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.build-artifact }}
+          path: ./dist/
+
+      # if there is no build artifact, or the specified artifact does not exist, we run the build command
       - run: ${{ inputs.build-command }}
+        if: ${{ inputs.build-artifact == '' || steps.download-build-artifact.outcome == 'failure' }}
 
       - name: Configure Xvfb
         run: Xvfb -ac :99 -screen 0 1280x1024x16 &
 
+      - name: Download changed-files artifact
+        if: ${{ env.BRANCH != 'main' }}
+        id: download-changed-files
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: changed-files
+          path: ./changed-files/
+
+      # if the changed-files artifact does not exist, we get the diff
       - run: yarn tsx .github/scripts/git-diff-default-branch.ts
-        if: ${{ env.BRANCH != 'master' }}
+        if: ${{ steps.download-changed-files.outcome == 'failure' }}
 
       - name: Run E2E tests
         timeout-minutes: ${{ inputs.test-timeout-minutes }}
-        run: ${{ inputs.test-command }} --retries 3
+        run: ${{ inputs.test-command }} --retries 1
 
       - name: Upload test results and artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.test-suite-name }}${{ env.MATRIX_TOTAL > 1 && format('-{0}', env.MATRIX_INDEX) || '' }}
+          name: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format('-{0}', inputs.matrix-index) || '' }}
           path: |
             ./test-artifacts
             ./test/test-results/e2e

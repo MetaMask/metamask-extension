@@ -142,16 +142,32 @@ workflows:
           requires:
             - prep-build-test-webpack
             - get-changed-files-with-git-diff
+      - test-e2e-chrome:
+          requires:
+            - prep-build-test
+            - get-changed-files-with-git-diff
       - test-e2e-firefox:
           <<: *main_master_rc_only
           requires:
             - prep-build-test-mv2
+            - get-changed-files-with-git-diff
+      - test-e2e-chrome-rpc:
+          requires:
+            - prep-build-test
             - get-changed-files-with-git-diff
       - test-api-specs:
           requires:
             - prep-build-test
             - get-changed-files-with-git-diff
       - test-api-specs-multichain:
+          requires:
+            - prep-build-test-flask
+            - get-changed-files-with-git-diff
+      - test-e2e-chrome-multiple-providers:
+          requires:
+            - prep-build-test
+            - get-changed-files-with-git-diff
+      - test-e2e-chrome-flask:
           requires:
             - prep-build-test-flask
             - get-changed-files-with-git-diff
@@ -196,7 +212,10 @@ workflows:
             - validate-source-maps-flask
             - test-mozilla-lint-mv2
             - test-mozilla-lint-flask-mv2
+            - test-e2e-chrome
+            - test-e2e-chrome-multiple-providers
             - test-e2e-firefox
+            - test-e2e-chrome-flask
             - test-e2e-firefox-flask
             - test-e2e-chrome-vault-decryption
             - test-e2e-chrome-webpack
@@ -256,26 +275,6 @@ workflows:
               only: main
           requires:
             - prep-deps
-
-  locales_only:
-    when:
-      matches:
-        pattern: /^l10n_crowdin_action$/
-        value: << pipeline.git.branch >>
-    jobs:
-      - prep-deps
-      - get-changed-files-with-git-diff
-      - validate-locales-only:
-          requires:
-            - prep-deps
-            - get-changed-files-with-git-diff
-      - test-lint:
-          requires:
-            - prep-deps
-      - all-tests-pass:
-          requires:
-            - test-lint
-            - validate-locales-only
 
 jobs:
   create_release_pull_request:
@@ -349,7 +348,7 @@ jobs:
           at: .
       - run:
           name: Get changed files with git diff
-          command: yarn git-diff-default-branch
+          command: yarn tsx .circleci/scripts/git-diff-default-branch.ts
       - persist_to_workspace:
           root: .
           paths:
@@ -357,15 +356,6 @@ jobs:
       - store_artifacts:
           path: changed-files
           destination: changed-files
-
-  validate-locales-only:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run: yarn tsx .circleci/scripts/validate-locales-only.ts
 
   prep-build:
     executor: node-linux-medium
@@ -750,6 +740,78 @@ jobs:
           path: html-report
           destination: html-report
 
+  test-e2e-chrome:
+    executor: node-browsers-medium-plus
+    parallelism: 20
+    steps:
+      - run: *shallow-git-clone-and-enable-vnc
+      - run: sudo corepack enable
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test ./builds
+      - run:
+          name: test:e2e:chrome
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:chrome
+          no_output_timeout: 5m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e
+
+  test-e2e-chrome-rpc:
+    executor: node-browsers-medium
+    parallelism: 1
+    steps:
+      - run: *shallow-git-clone-and-enable-vnc
+      - run: sudo corepack enable
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test ./builds
+      - run:
+          name: test:e2e:chrome:rpc
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:chrome:rpc
+          no_output_timeout: 5m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e
+
+  test-e2e-chrome-multiple-providers:
+    executor: node-browsers-small
+    parallelism: 1
+    steps:
+      - run: *shallow-git-clone-and-enable-vnc
+      - run: sudo corepack enable
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test ./builds
+      - run:
+          name: test:e2e:chrome:multi-provider
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:chrome:multi-provider
+          no_output_timeout: 5m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e
+
   test-e2e-chrome-vault-decryption:
     executor: node-browsers-medium-plus
     steps:
@@ -784,6 +846,30 @@ jobs:
       - run:
           name: test:e2e:firefox:flask
           command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:firefox:flask
+          no_output_timeout: 5m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e
+
+  test-e2e-chrome-flask:
+    executor: node-browsers-medium-plus
+    parallelism: 8
+    steps:
+      - run: *shallow-git-clone-and-enable-vnc
+      - run: sudo corepack enable
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-flask ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-flask ./builds
+      - run:
+          name: test:e2e:chrome:flask
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:chrome:flask
           no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts

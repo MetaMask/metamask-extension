@@ -44,6 +44,20 @@
   "QRHardwareWalletSteps2Description": {
     "message": "Ngrave Zero"
   },
+  "SrpListHideAccounts": {
+    "message": "Hide $1 accounts",
+    "description": "$1 is the number of accounts"
+  },
+  "SrpListHideSingleAccount": {
+    "message": "Hide 1 account"
+  },
+  "SrpListShowAccounts": {
+    "message": "Show $1 accounts",
+    "description": "$1 is the number of accounts"
+  },
+  "SrpListShowSingleAccount": {
+    "message": "Show 1 account"
+  },
   "about": {
     "message": "About"
   },
@@ -75,6 +89,9 @@
   },
   "accountDetails": {
     "message": "Account details"
+  },
+  "accountDetailsRevokeDelegationButton": {
+    "message": " Switch back to regular account"
   },
   "accountIdenticon": {
     "message": "Account identicon"
@@ -693,8 +710,26 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfo": {
-    "message": "We don't recommend proceeding with this request."
+  "blockaidAlertInfoDescription": {
+    "message": "A third party known for scams has access to this site. If you proceed, you'll lose assets."
+  },
+  "blockaidAlertInfoDescription2": {
+    "message": "The site may look safe, but a third party might have access to its information. If you sign in, your assets could get stolen."
+  },
+  "blockaidAlertInfoDescription3": {
+    "message": "If you confirm, you could lose all your funds and assets."
+  },
+  "blockaidAlertInfoDescription4": {
+    "message": "If you sign in, any or all assets you've listed on OpenSea are at risk."
+  },
+  "blockaidAlertInfoDescription5": {
+    "message": "If you sign in, any or all assets you've listed on Blur are at risk."
+  },
+  "blockaidAlertInfoDescription6": {
+    "message": "This site is recognized as a malicious domain. If you sign in, you will lose funds and assets. We strongly suggest you cancel this request."
+  },
+  "blockaidAlertInfoDescription7": {
+    "message": "If you sign in, you could lose all your assets. We recommend you cancel this request."
   },
   "blockaidDescriptionApproveFarming": {
     "message": "If you approve this request, a third party known for scams might take all your assets."
@@ -757,6 +792,12 @@
   },
   "bridgeConfirmTwoTransactions": {
     "message": "You'll need to confirm 2 transactions on your hardware wallet:"
+  },
+  "bridgeCreateSolanaAccountDescription": {
+    "message": "To swap to the Solana network, you need an account and receiving address."
+  },
+  "bridgeCreateSolanaAccountTitle": {
+    "message": "You'll need a Solana account first."
   },
   "bridgeEnterAmount": {
     "message": "Select amount"
@@ -1009,6 +1050,15 @@
   "confirm": {
     "message": "Confirm"
   },
+  "confirmAccountType": {
+    "message": "Type"
+  },
+  "confirmAccountTypeSmartContract": {
+    "message": "Smart account"
+  },
+  "confirmAccountTypeStandard": {
+    "message": "Standard account"
+  },
   "confirmAlertModalAcknowledgeMultiple": {
     "message": "I have acknowledged the alerts and still want to proceed"
   },
@@ -1021,11 +1071,17 @@
   "confirmFieldTooltipPaymaster": {
     "message": "The fee for this transaction will be paid by the paymaster smart contract."
   },
+  "confirmNestedTransactionTitle": {
+    "message": "Transaction $1"
+  },
   "confirmPassword": {
     "message": "Confirm password"
   },
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
+  },
+  "confirmSimulationApprove": {
+    "message": "You approve"
   },
   "confirmTitleApproveTransactionNFT": {
     "message": "Withdrawal request"
@@ -1045,6 +1101,9 @@
   "confirmTitleDescPermitSignature": {
     "message": "This site wants permission to spend your tokens."
   },
+  "confirmTitleDescRevokeDelegation": {
+    "message": "This site is requesting to switch back to a standard account."
+  },
   "confirmTitleDescSIWESignature": {
     "message": "A site wants you to sign in to prove you own this account."
   },
@@ -1056,6 +1115,9 @@
   },
   "confirmTitleRevokeApproveTransaction": {
     "message": "Remove permission"
+  },
+  "confirmTitleRevokeDelegation": {
+    "message": "Reset account"
   },
   "confirmTitleSIWESignature": {
     "message": "Sign-in request"
@@ -1069,11 +1131,26 @@
   "confirmTitleTransaction": {
     "message": "Transaction request"
   },
+  "confirmUpgradeAcknowledge": {
+    "message": "If you confirm this request, your account will be updated to a smart account."
+  },
+  "confirmUpgradeCancelModalButtonCancelTransaction": {
+    "message": "Cancel transaction"
+  },
+  "confirmUpgradeCancelModalButtonCancelUpgrade": {
+    "message": "Cancel update & transaction"
+  },
+  "confirmUpgradeCancelModalDescription": {
+    "message": "If you don't want to update your account, you can cancel it here.\n\nTo finish this transaction without an update, you'll need to make this request again on the site. $1."
+  },
+  "confirmUpgradeCancelModalTitle": {
+    "message": "Cancel transaction"
+  },
   "confirmationAlertDetails": {
     "message": "To protect your assets, we suggest you reject the request."
   },
-  "confirmationAlertModalTitle": {
-    "message": "This request is suspicious"
+  "confirmationAlertModalTitleDescription": {
+    "message": "Your assets may be at risk"
   },
   "confirmed": {
     "message": "Confirmed"
@@ -1210,6 +1287,9 @@
   "connectionFailedDescription": {
     "message": "Fetching of $1 failed, check your network and try again.",
     "description": "$1 is the name of the snap being fetched."
+  },
+  "connectionPopoverDescription": {
+    "message": "To connect to a site, select the connect button. MetaMask can only connect to web3 sites."
   },
   "connectionRequest": {
     "message": "Connection request"
@@ -1939,6 +2019,9 @@
   },
   "experimental": {
     "message": "Experimental"
+  },
+  "exploreweb3": {
+    "message": "Explore web3"
   },
   "exportYourData": {
     "message": "Export your data"
@@ -2749,6 +2832,9 @@
   },
   "manageDefaultSettings": {
     "message": "Manage default privacy settings"
+  },
+  "managePermissions": {
+    "message": "Manage permissions"
   },
   "marketCap": {
     "message": "Market cap"
@@ -3705,6 +3791,10 @@
     "message": "Updating network will cancel $1 pending transactions from this site.",
     "description": "Number of transactions."
   },
+  "pendingConfirmationSwitchNetworkAlertMessage": {
+    "message": "Switching network will cancel $1 pending transactions from this site.",
+    "description": "Number of transactions."
+  },
   "pendingTransactionAlertMessage": {
     "message": "This transaction won't go through until a previous transaction is complete. $1",
     "description": "$1 represents the words 'how to cancel or speed up a transaction' in a hyperlink"
@@ -4492,6 +4582,10 @@
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
   },
+  "secretRecoveryPhrasePlusNumber": {
+    "message": "Secret Recovery Phrase $1",
+    "description": "The $1 is the order of the Secret Recovery Phrase"
+  },
   "secureWallet": {
     "message": "Secure wallet"
   },
@@ -4615,6 +4709,7 @@
   "selectRpcUrl": {
     "message": "Select RPC URL"
   },
+  "selectSecretRecoveryPhrase": { "message": "Select Secret Recovery Phrase" },
   "selectType": {
     "message": "Select Type"
   },
@@ -5210,6 +5305,22 @@
     "message": "I have a $1-word phrase",
     "description": "This is the text for each option in the dropdown where a user selects how many words their secret recovery phrase has during import. The $1 is the number of words (either 12, 15, 18, 21, or 24)."
   },
+  "srpListName": {
+    "message": "Secret Recovery Phrase $1",
+    "description": "$1 is the order of the Secret Recovery Phrase"
+  },
+  "srpListNumberOfAccounts": {
+    "message": "$1 accounts",
+    "description": "$1 is the number of accounts in the list"
+  },
+  "srpListSelectionDescription": {
+    "message": "The Secret Recovery Phrase your new account will be generated from"
+  },
+
+  "srpListSingleOrZero": {
+    "message": "$1 account",
+    "description": "$1 is the number of accounts in the list, it is either 1 or 0"
+  },
   "srpPasteFailedTooManyWords": {
     "message": "Paste failed because it contained over 24 words. A secret recovery phrase can have a maximum of 24 words.",
     "description": "Description of SRP paste error when the pasted content has too many words"
@@ -5371,8 +5482,8 @@
     "message": "Sudden market changes can cause failures. If the problem persists, please reach out to $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxOptInEthereumBnbDescription": {
-    "message": "Turn on Smart Transactions for more reliable and secure transactions on Ethereum Mainnet and BNB Smart Chain. $1"
+  "stxOptInSupportedNetworksDescription": {
+    "message": "Turn on Smart Transactions for more reliable and secure transactions on supported networks. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Privately submitting your Swap..."
