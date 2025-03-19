@@ -384,13 +384,13 @@ export default function TransactionList({
     [],
   );
 
-  const toggleNetworkFilterPopover = () => {
+  const toggleNetworkFilterPopover = useCallback(() => {
     setIsNetworkFilterPopoverOpen(!isNetworkFilterPopoverOpen);
-  };
+  }, [isNetworkFilterPopoverOpen]);
 
-  const closePopover = () => {
+  const closePopover = useCallback(() => {
     setIsNetworkFilterPopoverOpen(false);
-  };
+  }, []);
 
   // Remove transactions within each date group that are incoming transactions
   // to a user that not the current one.
