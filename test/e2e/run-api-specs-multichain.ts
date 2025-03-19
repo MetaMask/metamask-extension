@@ -10,7 +10,7 @@ import { MethodObject, OpenrpcDocument } from '@open-rpc/meta-schema';
 import JsonSchemaFakerRule from '@open-rpc/test-coverage/build/rules/json-schema-faker-rule';
 import ExamplesRule from '@open-rpc/test-coverage/build/rules/examples-rule';
 import { Call, IOptions } from '@open-rpc/test-coverage/build/coverage';
-import { InternalScopeString } from '@metamask/multichain';
+import { InternalScopeString } from '@metamask/chain-agnostic-permission';
 import { Mockttp } from 'mockttp';
 import { Driver, PAGES } from './webdriver/driver';
 

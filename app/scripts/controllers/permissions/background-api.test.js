@@ -5,7 +5,7 @@ import {
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
 import { getPermissionBackgroundApiMethods } from './background-api';
 

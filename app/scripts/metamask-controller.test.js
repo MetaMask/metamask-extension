@@ -34,7 +34,7 @@ import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
 import { PermissionDoesNotExistError } from '@metamask/permission-controller';
 import { createTestProviderTools } from '../../test/stub/provider';
 import {

@@ -5,7 +5,7 @@ import {
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
 import { Json, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 import {
   CaveatTypes,
