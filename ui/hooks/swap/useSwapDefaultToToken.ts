@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
-import {
-  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
-  type SwapsTokenObject,
-} from '@metamask/bridge-controller';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
-import { SWAPS_CHAINID_COMMON_TOKEN_PAIR } from '../../../shared/constants/swaps';
+import {
+  SWAPS_CHAINID_COMMON_TOKEN_PAIR,
+  type SwapsTokenObject,
+  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
+} from '../../../shared/constants/swaps';
 import { getFromToken } from '../../ducks/swaps/swaps';
 
 type UseSwapDefaultToTokenReturnType = {
