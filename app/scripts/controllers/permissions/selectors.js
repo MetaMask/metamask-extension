@@ -96,7 +96,6 @@ export const getPermittedAccountsForScopesByOrigin = (state, scopes) => {
   }, new Map());
 };
 
-// TODO: move to @metamask/chain-agnostic-permission
 /**
  * Get the origins with a given session property.
  *

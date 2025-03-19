@@ -534,7 +534,6 @@ describe('wallet_createSession', () => {
   it('preserves known session properties', async () => {
     const { handler, response, requestPermissionsForOrigin } =
       createMockedHandler();
-    // mock requestPermissionsForOrigin hook to return a valid permission
     requestPermissionsForOrigin.mockReturnValue([
       {
         [Caip25EndowmentPermissionName]: {
