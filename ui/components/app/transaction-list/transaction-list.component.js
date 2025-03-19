@@ -39,14 +39,19 @@ import SmartTransactionListItem from '../transaction-list-item/smart-transaction
 import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-// eslint-disable-next-line import/no-duplicates
-import { getSelectedInternalAccount } from '../../../selectors/accounts';
-// eslint-disable-next-line import/no-duplicates
-import { isSelectedInternalAccountSolana } from '../../../selectors/accounts';
-// eslint-disable-next-line import/no-duplicates
-import { getSelectedAccountMultichainTransactions } from '../../../selectors/multichain';
-// eslint-disable-next-line import/no-duplicates
-import { getMultichainNetwork } from '../../../selectors/multichain';
+import {
+  getSelectedInternalAccount,
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  isSelectedInternalAccountSolana,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../selectors/accounts';
+import {
+  getMultichainNetwork,
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  getSelectedAccountMultichainTransactions,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../selectors/multichain';
+
 import {
   Box,
   Button,
@@ -65,7 +70,6 @@ import TransactionStatusLabel from '../transaction-status-label/transaction-stat
 import { MultichainTransactionDetailsModal } from '../multichain-transaction-details-modal';
 import { formatTimestamp } from '../multichain-transaction-details-modal/helpers';
 ///: END:ONLY_INCLUDE_IF
-
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   Display,
@@ -89,11 +93,6 @@ import { ActivityListItem } from '../../multichain';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
-  getMultichainNetwork,
-  getSelectedAccountMultichainTransactions,
-} from '../../../selectors/multichain';
-import { isSelectedInternalAccountSolana } from '../../../selectors/accounts';
-import {
   MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
   SOLANA_TOKEN_IMAGE_URL,
@@ -104,6 +103,13 @@ import { useMultichainTransactionDisplay } from '../../../hooks/useMultichainTra
 
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
+// eslint-disable-next-line import/no-restricted-paths
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+} from '../../../../shared/constants/app';
+import { NetworkFilterComponent } from '../../multichain/network-filter-menu';
 
 const PAGE_INCREMENT = 10;
 
