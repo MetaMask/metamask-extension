@@ -146,7 +146,6 @@ import { Controller as NotificationServicesPushController } from '@metamask/noti
 import {
   createRegToken,
   deleteRegToken,
-  createSubscribeToPushNotifications,
 } from '@metamask/notification-services-controller/push-services/web';
 import {
   Caip25CaveatMutators,
@@ -399,6 +398,7 @@ import {
   getCapabilities,
   processSendCalls,
 } from './lib/transaction/eip5792';
+import { createSubscription } from './controllers/push-notifications/push-utils';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1334,7 +1334,7 @@ export default class MetamaskController extends EventEmitter {
           pushService: {
             createRegToken,
             deleteRegToken,
-            subscribeToPushNotifications: createSubscribeToPushNotifications({
+            subscribeToPushNotifications: createSubscription({
               messenger: notificationServicesPushControllerMessenger,
               onReceivedHandler: onPushNotificationReceived,
               onClickHandler: onPushNotificationClicked,
@@ -1344,15 +1344,10 @@ export default class MetamaskController extends EventEmitter {
       });
     notificationServicesPushControllerMessenger.subscribe(
       'NotificationServicesPushController:onNewNotifications',
-      (notification) => {
-        this.metaMetricsController.trackEvent({
-          category: MetaMetricsEventCategory.PushNotifications,
-          event: MetaMetricsEventName.PushNotificationReceived,
-          properties: {
-            notification_id: notification.id,
-            notification_type: notification.type,
-            chain_id: notification?.chain_id,
-          },
+      () => {
+        // TODO - we should be able to capture the chain from the webhook and correctly update chain that changed
+        this.tokenBalancesController.updateBalancesByChainId({
+          chainId: '0x89',
         });
       },
     );
@@ -1507,6 +1502,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       useAccountsAPI: true,
       platform: 'extension',
+      disabled: true,
     });
 
     const addressBookControllerMessenger =
@@ -4126,26 +4122,22 @@ export default class MetamaskController extends EventEmitter {
           accountTrackerController,
         ),
 
-      tokenDetectionStartPolling: tokenDetectionController.startPolling.bind(
-        tokenDetectionController,
-      ),
-      tokenDetectionStopPollingByPollingToken:
-        tokenDetectionController.stopPollingByPollingToken.bind(
-          tokenDetectionController,
-        ),
+      // eslint-disable-next-line no-empty-function, no-unused-vars
+      tokenDetectionStartPolling: (...args) => {}, // no-op,
+      // eslint-disable-next-line no-empty-function, no-unused-vars
+      tokenDetectionStopPollingByPollingToken: (...args) => {}, // no-op,
 
       tokenListStartPolling:
         tokenListController.startPolling.bind(tokenListController),
       tokenListStopPollingByPollingToken:
         tokenListController.stopPollingByPollingToken.bind(tokenListController),
 
-      tokenBalancesStartPolling: tokenBalancesController.startPolling.bind(
-        tokenBalancesController,
-      ),
-      tokenBalancesStopPollingByPollingToken:
-        tokenBalancesController.stopPollingByPollingToken.bind(
-          tokenBalancesController,
-        ),
+      // eslint-disable-next-line no-empty-function, no-unused-vars
+      tokenBalancesStartPolling: (chainIdObjs) => {
+        tokenBalancesController.updateBalancesByChainId(chainIdObjs[0]);
+      },
+      // eslint-disable-next-line no-empty-function, no-unused-vars
+      tokenBalancesStopPollingByPollingToken: (...args) => {}, // no-op,
 
       // GasFeeController
       gasFeeStartPolling: gasFeeController.startPolling.bind(gasFeeController),
