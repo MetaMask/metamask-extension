@@ -360,8 +360,8 @@ function maybeDetectPhishing(theController) {
 }
 
 // These are set after initialization
-let connectEip1193WindowPostMessage;
-let connectEip1193ExternallyConnectable;
+let connectWindowPostMessage;
+let connectEip1193;
 let connectCaipMultichainExternallyConnectable;
 let connectCaipMultichainWindowPostMessage;
 
@@ -370,7 +370,7 @@ browser.runtime.onConnect.addListener(async (...args) => {
   await isInitialized;
 
   // This is set in `setupController`, which is called as part of initialization
-  connectEip1193WindowPostMessage(...args);
+  connectWindowPostMessage(...args);
 });
 browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
@@ -382,7 +382,7 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
   if (isDappConnecting && process.env.MULTICHAIN_API) {
     connectCaipMultichainExternallyConnectable(...args);
   } else {
-    connectEip1193ExternallyConnectable(...args);
+    connectEip1193(...args);
   }
 });
 
@@ -875,12 +875,12 @@ export function setupController(
    */
 
   /**
-   * Connects a Port to the MetaMask controller via a multiplexed duplex stream.
+   * Connects a WindowPostMessage Port to the MetaMask controller via a multiplexed duplex stream.
    * This method identifies trusted (MetaMask) interfaces, and connects them differently from untrusted (web pages).
    *
    * @param {Port} remotePort - The port provided by a new context.
    */
-  connectEip1193WindowPostMessage = async (remotePort) => {
+  connectWindowPostMessage = async (remotePort) => {
     const processName = remotePort.name;
 
     if (metamaskBlockedPorts.includes(remotePort.name)) {
@@ -987,7 +987,7 @@ export function setupController(
           connectionStream: portStreamForCookieHandlerPage,
         });
       }
-      connectEip1193ExternallyConnectable(remotePort);
+      connectEip1193(remotePort);
 
       if (process.env.MULTICHAIN_API && isFirefox) {
         connectCaipMultichainWindowPostMessage(remotePort);
@@ -995,8 +995,12 @@ export function setupController(
     }
   };
 
-  // communication with page or other extension
-  connectEip1193ExternallyConnectable = (remotePort) => {
+  /**
+   * Connects a Port to the MetaMask controller EIP-1193 API via a multiplexed duplex stream.
+   *
+   * @param {Port} remotePort - The port provided by a new context.
+   */
+  connectEip1193 = (remotePort) => {
     const portStream =
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
     controller.setupUntrustedCommunicationEip1193({
@@ -1005,6 +1009,11 @@ export function setupController(
     });
   };
 
+  /**
+   * Connects a externally_connectable Port to the MetaMask controller Caip Multichain API.
+   *
+   * @param {Port} remotePort - The port provided by a new context.
+   */
   connectCaipMultichainExternallyConnectable = async (remotePort) => {
     if (!process.env.MULTICHAIN_API) {
       return;
@@ -1028,6 +1037,11 @@ export function setupController(
     });
   };
 
+  /**
+   * Connects a externally_connectable Port to the MetaMask controller Caip Multichain API via a multiplexed duplex stream.
+   *
+   * @param {Port} remotePort - The port provided by a new context.
+   */
   connectCaipMultichainWindowPostMessage = async (remotePort) => {
     if (!process.env.MULTICHAIN_API) {
       return;
@@ -1055,7 +1069,7 @@ export function setupController(
   };
 
   if (overrides?.registerConnectListeners) {
-    overrides.registerConnectListeners(connectEip1193WindowPostMessage, connectEip1193ExternallyConnectable);
+    overrides.registerConnectListeners(connectWindowPostMessage, connectEip1193);
   }
 
   //
