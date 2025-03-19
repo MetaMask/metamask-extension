@@ -13,6 +13,7 @@ import type {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
+import { SelectedNetworkController } from '@metamask/selected-network-controller';
 import {
   EXPERIENCES_TO_VERIFY,
   getExperience,
@@ -35,11 +36,13 @@ export type TxParams = {
  * Portfolio.
  *
  * @param networkController - The network controller instance.
+ * @param selectedNetworkController - The selected network controller instance to get the domains.
  * @param trustedSigners
  * @returns The middleware function.
  */
 export function createTxVerificationMiddleware(
   networkController: NetworkController,
+  selectedNetworkController: SelectedNetworkController,
   trustedSigners = TRUSTED_SIGNERS,
 ) {
   return function txVerificationMiddleware(
@@ -61,7 +64,12 @@ export function createTxVerificationMiddleware(
     const chainId =
       typeof params.chainId === 'string'
         ? (params.chainId.toLowerCase() as Hex)
-        : getCurrentChainId({ metamask: networkController.state });
+        : getCurrentChainId({
+            metamask: {
+              ...networkController.state,
+              ...selectedNetworkController,
+            },
+          });
 
     const experienceType = getExperience(
       params.to.toLowerCase() as Hex,
