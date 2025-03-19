@@ -28,6 +28,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useIsRedeemDelegationTransaction } from '../../hooks/useIsRedeemDelegationTransaction';
 import { BalanceChangeList } from './balance-change-list';
 import { useBalanceChanges } from './useBalanceChanges';
 import { useSimulationMetrics } from './useSimulationMetrics';
@@ -107,13 +108,22 @@ const EmptyContent: React.FC = () => {
 
 const HeaderWithAlert = ({ transactionId }: { transactionId: string }) => {
   const t = useI18nContext();
+  const isRedeemDelegation = useIsRedeemDelegationTransaction();
+
+  const label = isRedeemDelegation
+    ? t('simulationDetailsTitleEnforced')
+    : t('simulationDetailsTitle');
+
+  const tooltip = isRedeemDelegation
+    ? t('simulationDetailsTitleTooltipEnforced')
+    : t('simulationDetailsTitleTooltip');
 
   return (
     <ConfirmInfoAlertRow
       alertKey={RowAlertKey.Resimulation}
-      label={t('simulationDetailsTitle')}
+      label={label}
       ownerId={transactionId}
-      tooltip={t('simulationDetailsTitleTooltip')}
+      tooltip={tooltip}
       style={{
         paddingLeft: 0,
         paddingRight: 0,

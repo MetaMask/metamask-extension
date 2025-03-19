@@ -381,6 +381,9 @@
   "alertMessageChangeInSimulationResults": {
     "message": "Estimated changes for this transaction have been updated. Review them closely before proceeding."
   },
+  "alertMessageEnforceSimulation": {
+    "message": "This transaction is protected by your upgraded delegator account."
+  },
   "alertMessageFirstTimeInteraction": {
     "message": "You're interacting with this address for the first time. Make sure that it's correct before you continue."
   },
@@ -4909,8 +4912,14 @@
   "simulationDetailsTitle": {
     "message": "Estimated changes"
   },
+  "simulationDetailsTitleEnforced": {
+    "message": "Actual changes"
+  },
   "simulationDetailsTitleTooltip": {
     "message": "Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
+  },
+  "simulationDetailsTitleTooltipEnforced": {
+    "message": "These changes are guaranteed using your upgraded EIP-7702 delegator account. If these changes do not occur, the transaction will fail."
   },
   "simulationDetailsTotalFiat": {
     "message": "Total = $1",

@@ -20,6 +20,7 @@ import useBlockaidAlerts from './alerts/useBlockaidAlerts';
 import { useNetworkAndOriginSwitchingAlerts } from './alerts/useNetworkAndOriginSwitchingAlerts';
 import { useSelectedAccountAlerts } from './alerts/useSelectedAccountAlerts';
 import { useNonContractAddressAlerts } from './alerts/transactions/useNonContractAddressAlerts';
+import { useEnforceSimulationAlert } from './alerts/transactions/useEnforceSimulationAlert';
 
 function useSignatureAlerts(): Alert[] {
   const accountMismatchAlerts = useAccountMismatchAlerts();
@@ -46,6 +47,7 @@ function useTransactionAlerts(): Alert[] {
   ///: END:ONLY_INCLUDE_IF
   const queuedConfirmationsAlerts = useQueuedConfirmationsAlerts();
   const nonContractAddressAlerts = useNonContractAddressAlerts();
+  const enforceSimulationAlerts = useEnforceSimulationAlert();
 
   return useMemo(
     () => [
@@ -63,6 +65,7 @@ function useTransactionAlerts(): Alert[] {
       ///: END:ONLY_INCLUDE_IF
       ...queuedConfirmationsAlerts,
       ...nonContractAddressAlerts,
+      ...enforceSimulationAlerts,
     ],
     [
       gasEstimateFailedAlerts,
@@ -79,6 +82,7 @@ function useTransactionAlerts(): Alert[] {
       ///: END:ONLY_INCLUDE_IF
       queuedConfirmationsAlerts,
       nonContractAddressAlerts,
+      enforceSimulationAlerts,
     ],
   );
 }
