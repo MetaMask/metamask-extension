@@ -39,7 +39,6 @@ import {
   RestrictedMessenger,
 } from '@metamask/base-controller';
 import { AddressBookControllerState } from '@metamask/address-book-controller';
-import { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
@@ -170,7 +169,6 @@ export type MetaMaskState = {
     privacyMode: PreferencesControllerState['preferences']['privacyMode'];
     tokenNetworkFilter: string[];
   };
-  sessionData: AuthenticationControllerState['sessionData'];
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   custodyAccountDetails: {
     [address: string]: {
@@ -1239,8 +1237,6 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.NetworkFilterPreference]: Object.keys(
         metamaskState.preferences.tokenNetworkFilter || {},
       ),
-      [MetaMetricsUserTrait.ProfileId]:
-        metamaskState.sessionData?.profile?.profileId,
     };
 
     if (!this.previousUserTraits && metamaskState.participateInMetaMetrics) {
