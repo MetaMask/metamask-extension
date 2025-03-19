@@ -756,7 +756,7 @@ class AccountListPage {
     console.log(`Exporting SRP for account ${accountLabel}`);
     await this.openAccountDetailsModal(accountLabel);
     await this.driver.delay(500);
-    await this.driver.clickElement(this.exportSRPButton);
+    await this.driver.clickElement(this.exportSrpButton);
   }
 
   async check_accountBelongsToSrp(
@@ -770,7 +770,7 @@ class AccountListPage {
     await settingsPage.goToPrivacySettings();
 
     const privacySettings = new PrivacySettings(this.driver);
-    await privacySettings.openSRPList();
+    await privacySettings.openSrpList();
 
     if (srpIndex === 0) {
       throw new Error('SRP index must be > 0');

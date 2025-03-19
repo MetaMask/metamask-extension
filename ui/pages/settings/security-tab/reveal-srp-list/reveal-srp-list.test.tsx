@@ -26,13 +26,13 @@ describe('RevealSrpList', () => {
   it('displays a list of hd keyrings', async () => {
     const { getByTestId } = render();
 
-    expect(getByTestId(mockKeyringId)).toBeInTheDocument();
+    expect(getByTestId(`hd-keyring-${mockKeyringId}`)).toBeInTheDocument();
   });
 
   it('displays the SRP Quiz when a HD keyring is selected', async () => {
     const { getByTestId } = render();
 
-    const hdKeyring = getByTestId(mockKeyringId);
+    const hdKeyring = getByTestId(`hd-keyring-${mockKeyringId}`);
 
     hdKeyring.click();
 
