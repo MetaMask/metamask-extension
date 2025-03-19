@@ -227,6 +227,7 @@
     "tslib@npm:^2.6.2": "~2.6.0",
     "@ethersproject/signing-key/elliptic": "^6.6.1",
     "gridplus-sdk/elliptic": "^6.6.1",
+    "@metamask/eth-ledger-bridge-keyring@npm:^10.0.0": "npm:@metamask-previews/eth-ledger-bridge-keyring@10.0.0-9d37a15",
     "@ethereumjs/tx@npm:^5.4.0": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch"
   },
   "dependencies": {
