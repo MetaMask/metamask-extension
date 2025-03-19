@@ -664,9 +664,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfo": {
-    "message": "Wir empfehlen nicht, mit dieser Anfrage fortzufahren."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Wenn Sie diese Anfrage genehmigen, könnte eine dritte Partei, die für Betrügereien bekannt ist, Ihre gesamten Assets an sich reißen."
   },
@@ -1027,9 +1024,6 @@
   },
   "confirmationAlertDetails": {
     "message": "Um Ihre Assets zu schützen, empfehlen wir die Ablehnung der Anfrage."
-  },
-  "confirmationAlertModalTitle": {
-    "message": "Diese Anfrage scheint verdächtig"
   },
   "confirmed": {
     "message": "Bestätigt"
