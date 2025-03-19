@@ -1633,6 +1633,7 @@ export default class MetamaskController extends EventEmitter {
       messenger: this.controllerMessenger.getRestricted({
         name: 'SignatureController',
         allowedActions: [
+          `${this.accountsController.name}:getState`,
           `${this.approvalController.name}:addRequest`,
           `${this.keyringController.name}:signMessage`,
           `${this.keyringController.name}:signPersonalMessage`,
