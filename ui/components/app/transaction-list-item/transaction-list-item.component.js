@@ -98,8 +98,8 @@ function TransactionListItemInner({
       isEarliestNonce,
     });
 
-  const getTestNetworkBackgroundColor = (networkId) => {
-    switch (true) {
+  const getTestNetworkBackgroundColor = useCallback((networkId) => {
+    switch (networkId) {
       case networkId === CHAIN_IDS.GOERLI:
         return BackgroundColor.goerli;
       case networkId === CHAIN_IDS.SEPOLIA:
@@ -107,7 +107,7 @@ function TransactionListItemInner({
       default:
         return undefined;
     }
-  };
+  }, []);
 
   const {
     initialTransaction: { id },

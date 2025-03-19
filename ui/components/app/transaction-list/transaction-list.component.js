@@ -116,6 +116,7 @@ import {
   FEATURED_NETWORK_CHAIN_IDS,
   TEST_CHAINS,
 } from '../../../../shared/constants/network';
+import NetworkFilterComponent from '../../multichain/network-filter-menu';
 
 const PAGE_INCREMENT = 10;
 
@@ -416,56 +417,18 @@ export default function TransactionList({
     if (hideNetworkFilter) {
       return null;
     }
-    return process.env.PORTFOLIO_VIEW && isEvmNetwork ? (
-      <Box
-        marginLeft={2}
-        marginRight={2}
-        justifyContent={
-          isFullScreen ? JustifyContent.flexStart : JustifyContent.spaceBetween
+    return isEvmNetwork ? (
+      <NetworkFilterComponent
+        isFullScreen={isFullScreen}
+        toggleNetworkFilterPopover={toggleNetworkFilterPopover}
+        isTestNetwork={isTestNetwork}
+        currentNetworkConfig={currentNetworkConfig}
+        isNetworkFilterPopoverOpen={isNetworkFilterPopoverOpen}
+        closePopover={closePopover}
+        isTokenNetworkFilterEqualCurrentNetwork={
+          isTokenNetworkFilterEqualCurrentNetwork
         }
-        ref={popoverRef}
-      >
-        <ButtonBase
-          data-testid="sort-by-popover-toggle"
-          className="asset-list-control-bar__button asset-list-control-bar__network_control"
-          onClick={toggleNetworkFilterPopover}
-          size={ButtonBaseSize.Sm}
-          disabled={
-            isTestNetwork ||
-            !FEATURED_NETWORK_CHAIN_IDS.includes(currentNetworkConfig.chainId)
-          }
-          endIconName={IconName.ArrowDown}
-          backgroundColor={
-            isNetworkFilterPopoverOpen
-              ? BackgroundColor.backgroundPressed
-              : BackgroundColor.backgroundDefault
-          }
-          color={TextColor.textDefault}
-          marginRight={isFullScreen ? 2 : null}
-          ellipsis
-        >
-          {isTokenNetworkFilterEqualCurrentNetwork
-            ? currentNetworkConfig?.nickname ?? t('currentNetwork')
-            : t('popularNetworks')}
-        </ButtonBase>
-
-        <Popover
-          onClickOutside={closePopover}
-          isOpen={isNetworkFilterPopoverOpen}
-          position={PopoverPosition.BottomStart}
-          referenceElement={popoverRef.current}
-          matchWidth={!isFullScreen}
-          style={{
-            zIndex: 10,
-            display: 'flex',
-            flexDirection: 'column',
-            padding: 0,
-            minWidth: isFullScreen ? '325px' : '',
-          }}
-        >
-          <NetworkFilter handleClose={closePopover} />
-        </Popover>
-      </Box>
+      />
     ) : null;
   };
 
