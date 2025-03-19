@@ -28,10 +28,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../../helpers/constants/design-system';
-import {
-  hexToText,
-  sanitizeString,
-} from '../../../../../../helpers/utils/util';
+import { hexToText } from '../../../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../context/confirm';
 import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
@@ -46,7 +43,7 @@ const getMessageText = (hexString?: string) => {
   if (!hexString) {
     return hexString;
   }
-  const messageText = sanitizeString(hexToText(hexString));
+  const messageText = hexToText(hexString);
   return isValidUTF8(messageText) ? messageText : hexString;
 };
 

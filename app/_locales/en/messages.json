@@ -4522,6 +4522,9 @@
   "safeTransferFrom": {
     "message": "Safe transfer from"
   },
+  "safeUnicodeTextTooltipWarning": {
+    "message": "Hidden character detected (shown in Unicode format)"
+  },
   "save": {
     "message": "Save"
   },

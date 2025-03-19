@@ -1,0 +1,1 @@
+export { default as SafeUnicodeText } from './safe-unicode-text';

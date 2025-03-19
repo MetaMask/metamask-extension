@@ -8,20 +8,21 @@ import {
   IconColor,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
-import { escapeHiddenUnicode } from '../../../../../../shared/modules/string-utils';
 import {
   Box,
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  Text,
 } from '../../../../component-library';
 import Tooltip from '../../../../ui/tooltip';
+import { SafeUnicodeText } from '../../../../../pages/confirmations/components/confirm/shared/safe-unicode-text';
 
 const InfoText = ({ text }: { text: string }) => (
-  <Text color={TextColor.inherit} style={{ whiteSpace: 'pre-wrap' }}>
-    {escapeHiddenUnicode(text)}
-  </Text>
+  <SafeUnicodeText
+    color={TextColor.inherit}
+    style={{ whiteSpace: 'pre-wrap' }}
+    text={text}
+  />
 );
 
 export type ConfirmInfoRowTextProps = {
