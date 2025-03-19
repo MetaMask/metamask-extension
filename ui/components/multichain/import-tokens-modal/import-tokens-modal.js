@@ -102,6 +102,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { NetworkFilterImportToken } from '../../app/import-token/network-filter-import-token';
 import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
+import { NetworkSelectorCustomImport } from '../../app/import-token/network-selector-custom-import';
 import { ImportTokensModalConfirm } from './import-tokens-modal-confirm';
 
 export const ImportTokensModal = ({ onClose }) => {
@@ -114,6 +115,9 @@ export const ImportTokensModal = ({ onClose }) => {
   const [tokenSelectorError, setTokenSelectorError] = useState(null);
   const [selectedTokens, setSelectedTokens] = useState({});
   const [searchResults, setSearchResults] = useState([]);
+  const networkClientId = useSelector(getSelectedNetworkClientId);
+  const [selectedNetworkForCustomImport, setSelectedNetworkForCustomImport] =
+    useState(networkClientId);
 
   // Determine if we should show the search tab
   const isTokenDetectionSupported = useSelector(getIsTokenDetectionSupported);
@@ -189,7 +193,6 @@ export const ImportTokensModal = ({ onClose }) => {
   // CONFIRMATION MODE
   const trackEvent = useContext(MetaMetricsContext);
   const pendingTokens = useSelector(getPendingTokens);
-  const networkClientId = useSelector(getSelectedNetworkClientId);
 
   const handleAddTokens = useCallback(async () => {
     try {
@@ -454,7 +457,10 @@ export const ImportTokensModal = ({ onClose }) => {
     for (const networkId of chainIds) {
       let standard;
       console.log('networkId ..........', networkId);
+      console.log('addressIsValid ..........', addressIsValid);
+
       if (addressIsValid) {
+        console.log('inside if .......');
         try {
           ({ standard } = await getTokenStandardAndDetails(
             standardAddress,
@@ -754,7 +760,12 @@ export const ImportTokensModal = ({ onClose }) => {
                           <NetworkFilterImportToken buttonDataTestId="test-import-tokens-drop-down" />
                         </Box>
                       )}
-
+                      {/* // TODO : NETWORK SELECTOR HERE .... */}
+                      <NetworkSelectorCustomImport
+                        title="Select Network"
+                        buttonDataTestId="test-import-tokens-drop-down-custom-import"
+                        chainIds="0x1"
+                      />
                       <Box>
                         <FormTextField
                           paddingLeft={4}
