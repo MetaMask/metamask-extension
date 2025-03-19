@@ -3,7 +3,6 @@ import React, {
   useState,
   useCallback,
   Fragment,
-  useRef,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   useContext,
   ///: END:ONLY_INCLUDE_IF
@@ -316,7 +315,6 @@ export default function TransactionList({
   const showRampsCard = isBuyableChain && balanceIsZero;
   ///: END:ONLY_INCLUDE_IF
 
-  const popoverRef = useRef(null);
   const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
     useState(false);
 
