@@ -149,7 +149,7 @@ class ConnectHardwareForm extends Component {
     }
 
     // Default values
-    this.getPage(device, 0, this.props.defaultHdPaths[device]);
+    this.getPage(device, 0, this.props.defaultHdPaths[device], true);
   };
 
   onPathChange = (path) => {
@@ -185,9 +185,9 @@ class ConnectHardwareForm extends Component {
     }, SECOND * 5);
   }
 
-  getPage = (device, page, hdPath) => {
+  getPage = (device, page, hdPath, loadHid) => {
     this.props
-      .connectHardware(device, page, hdPath, this.context.t)
+      .connectHardware(device, page, hdPath, loadHid, this.context.t)
       .then((accounts) => {
         if (accounts.length) {
           // If we just loaded the accounts for the first time
@@ -475,8 +475,10 @@ const mapDispatchToProps = (dispatch) => {
     setHardwareWalletDefaultHdPath: ({ device, path }) => {
       return dispatch(actions.setHardwareWalletDefaultHdPath({ device, path }));
     },
-    connectHardware: (deviceName, page, hdPath, t) => {
-      return dispatch(actions.connectHardware(deviceName, page, hdPath, t));
+    connectHardware: (deviceName, page, hdPath, loadHid, t) => {
+      return dispatch(
+        actions.connectHardware(deviceName, page, hdPath, loadHid, t),
+      );
     },
     checkHardwareStatus: (deviceName, hdPath) => {
       return dispatch(actions.checkHardwareStatus(deviceName, hdPath));
