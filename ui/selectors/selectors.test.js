@@ -2403,7 +2403,7 @@ describe('#getConnectedSitesList', () => {
 describe('getShouldShowSeedPhraseReminder', () => {
   const mockAccount = createMockInternalAccount();
   const mockAccount2 = createMockInternalAccount({ address: 'mockAddress2' });
-  
+
   it('shows reminder for seed phrase if the primary srp is not backed up', () => {
     const state = {
       ...mockState,

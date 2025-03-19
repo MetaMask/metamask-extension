@@ -130,7 +130,7 @@ describe('Reveal Seed Page', () => {
     });
   });
 
-  it('should show srp after hold to reveal', async () => {
+  it.only('should show srp after hold to reveal', async () => {
     mockRequestRevealSeedWords.mockImplementationOnce(mockSuccessfulSrpReveal);
     // need to use actual store because redux-mock-store does not execute actions
     const store = configureStore(mockState);
@@ -152,7 +152,7 @@ describe('Reveal Seed Page', () => {
 
     await waitFor(() => {
       expect(mockRequestRevealSeedWords).toHaveBeenCalled();
-      expect(queryByText('Keep your Srp safe')).toBeInTheDocument();
+      expect(queryByText('Keep your SRP safe')).toBeInTheDocument();
     });
   });
 

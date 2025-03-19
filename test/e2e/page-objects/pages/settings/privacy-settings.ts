@@ -193,7 +193,7 @@ class PrivacySettings {
     console.log('Open reveal SRP quiz on privacy settings page');
 
     if (srpIndex) {
-      await this.openSRPList();
+      await this.openSrpList();
       // We only pass in the srpIndex when there are multiple SRPs
       const srpSelector = {
         text: `Secret Recovery Phrase ${srpIndex.toString()}`,
