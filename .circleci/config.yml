@@ -585,29 +585,29 @@ jobs:
     #             - dist-test
     #             - builds-test
 
-    prep-build-test-mv2:
-      executor: node-linux-medium
-      steps:
-        - run: *shallow-git-clone-and-enable-vnc
-        - run: corepack enable
-        - attach_workspace:
-            at: .
-        - run:
-            name: Build extension for testing
-            command: yarn build:test:mv2
-        - run:
-            name: Move test build to 'dist-test-mv2' to avoid conflict with production build
-            command: mv ./dist ./dist-test-mv2
-        - run:
-            name: Move test zips to 'builds-test-mv2' to avoid conflict with production build
-            command: mv ./builds ./builds-test-mv2
-        - store_artifacts:
-            path: builds-test-mv2
-        - persist_to_workspace:
-            root: .
-            paths:
-              - dist-test-mv2
-              - builds-test-mv2
+  prep-build-test-mv2:
+    executor: node-linux-medium
+    steps:
+      - run: *shallow-git-clone-and-enable-vnc
+      - run: corepack enable
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build extension for testing
+          command: yarn build:test:mv2
+      - run:
+          name: Move test build to 'dist-test-mv2' to avoid conflict with production build
+          command: mv ./dist ./dist-test-mv2
+      - run:
+          name: Move test zips to 'builds-test-mv2' to avoid conflict with production build
+          command: mv ./builds ./builds-test-mv2
+      - store_artifacts:
+          path: builds-test-mv2
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-test-mv2
+            - builds-test-mv2
 
   #   prep-build-test-webpack:
   #     executor: node-linux-medium
