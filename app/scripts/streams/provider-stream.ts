@@ -98,7 +98,9 @@ export const setupExtensionStreams = () => {
     ),
   );
 
-  extensionCaipChannel = extensionMux.createStream(METAMASK_CAIP_MULTICHAIN_PROVIDER);
+  extensionCaipChannel = extensionMux.createStream(
+    METAMASK_CAIP_MULTICHAIN_PROVIDER,
+  );
   pipeline(caipChannel, extensionCaipChannel, caipChannel, (error: Error) =>
     console.debug(
       `MetaMask: Muxed traffic for channel "${METAMASK_CAIP_MULTICHAIN_PROVIDER}" failed.`,

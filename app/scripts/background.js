@@ -985,18 +985,21 @@ export function setupController(
       const portStream =
         overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
 
-      connectEip1193(portStream);
+      connectEip1193(portStream, remotePort.sender);
 
       if (process.env.MULTICHAIN_API && isFirefox) {
-
         const mux = setupMultiplex(portStream);
         mux.ignoreStream(METAMASK_EIP_1193_PROVIDER);
 
-        connectCaipMultichain(mux.createStream(METAMASK_CAIP_MULTICHAIN_PROVIDER));
+        connectCaipMultichain(
+          mux.createStream(
+            METAMASK_CAIP_MULTICHAIN_PROVIDER,
+            remotePort.sender,
+          ),
+        );
       }
     }
   };
-
 
   /**
    * Connects a externally_connecatable Port to the MetaMask controller.
@@ -1007,6 +1010,7 @@ export function setupController(
   connectExternallyConnectable = (remotePort) => {
     const portStream =
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+
     const isDappConnecting = remotePort.sender.tab?.id;
     if (isDappConnecting && process.env.MULTICHAIN_API) {
       if (metamaskBlockedPorts.includes(remotePort.name)) {
@@ -1018,9 +1022,9 @@ export function setupController(
         trackDappView(remotePort);
       }
 
-      connectCaipMultichain(portStream);
+      connectCaipMultichain(portStream, remotePort.sender);
     } else {
-      connectEip1193(portStream);
+      connectEip1193(portStream, remotePort.sender);
     }
   };
 
@@ -1028,11 +1032,12 @@ export function setupController(
    * Connects a Duplexstream to the MetaMask controller EIP-1193 API (via a multiplexed duplex stream).
    *
    * @param {DuplexStream} connectionStream - The duplex stream.
+   * @param sender - The remote port sender.
    */
-  connectEip1193 = (connectionStream) => {
+  connectEip1193 = (connectionStream, sender) => {
     controller.setupUntrustedCommunicationEip1193({
       connectionStream,
-      sender: remotePort.sender,
+      sender,
     });
   };
 
@@ -1040,20 +1045,24 @@ export function setupController(
    * Connects a DuplexStream to the MetaMask controller Caip Multichain API.
    *
    * @param {DuplexStream} connectionStream - The duplex stream.
+   * @param sender - The remote port sender.
    */
-  connectCaipMultichain = (connectionStream) => {
+  connectCaipMultichain = (connectionStream, sender) => {
     if (!process.env.MULTICHAIN_API) {
       return;
     }
 
     controller.setupUntrustedCommunicationCaip({
       connectionStream,
-      sender: remotePort.sender,
+      sender,
     });
   };
 
   if (overrides?.registerConnectListeners) {
-    overrides.registerConnectListeners(connectWindowPostMessage, connectEip1193);
+    overrides.registerConnectListeners(
+      connectWindowPostMessage,
+      connectEip1193,
+    );
   }
 
   //
