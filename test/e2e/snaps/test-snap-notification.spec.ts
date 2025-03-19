@@ -51,7 +51,7 @@ describe('Test Snap Notification', function () {
     );
   });
 
-  it.only('can send in-app notification with expanded view', async function () {
+  it('can send in-app notification with expanded view', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
