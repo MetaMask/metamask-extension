@@ -6003,9 +6003,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-controller@npm:^12.3.2, @metamask/phishing-controller@npm:^12.4.0":
-  version: 12.4.0
-  resolution: "@metamask/phishing-controller@npm:12.4.0"
+"@metamask/phishing-controller@npm:^12.3.2, @metamask/phishing-controller@npm:^12.4.1":
+  version: 12.4.1
+  resolution: "@metamask/phishing-controller@npm:12.4.1"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/controller-utils": "npm:^11.6.0"
