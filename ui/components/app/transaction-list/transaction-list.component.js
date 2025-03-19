@@ -43,11 +43,7 @@ import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils'
 import {
   Box,
   Button,
-  ButtonBase,
-  ButtonBaseSize,
   Text,
-  Popover,
-  PopoverPosition,
   IconName,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   ButtonSize,
@@ -64,8 +60,6 @@ import { formatTimestamp } from '../multichain-transaction-details-modal/helpers
 ///: END:ONLY_INCLUDE_IF
 
 import {
-  BackgroundColor,
-  JustifyContent,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   Display,
   ///: END:ONLY_INCLUDE_IF
@@ -109,14 +103,10 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../../shared/constants/app';
-import NetworkFilter from '../assets/asset-list/network-filter/network-filter';
 
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
-import {
-  FEATURED_NETWORK_CHAIN_IDS,
-  TEST_CHAINS,
-} from '../../../../shared/constants/network';
-import NetworkFilterComponent from '../../multichain/network-filter-menu';
+import { TEST_CHAINS } from '../../../../shared/constants/network';
+import { NetworkFilterComponent } from '../../multichain/network-filter-menu';
 
 const PAGE_INCREMENT = 10;
 
