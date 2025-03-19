@@ -80,6 +80,9 @@ export function generateDelegation({
       caveats = caveats.addCaveat('nativeBalanceGte', accountAddress, delta);
       log('Caveat - Native Balance GTE', { accountAddress, delta });
     }
+  } else {
+    // put guardrails around native token to prevent loss
+    caveats = caveats.addCaveat('nativeTokenMaxLoss', accountAddress, 0n);
   }
 
   for (const tokenBalanceChange of simulationData.tokenBalanceChanges) {
