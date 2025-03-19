@@ -19,7 +19,6 @@ import {
   ConfirmInfoRowTextTokenUnits,
 } from '../../../../../components/app/confirm/info/row';
 import { useGetTokenStandardAndDetails } from '../../../hooks/useGetTokenStandardAndDetails';
-import { escapeHiddenUnicode } from '../../../../../../shared/modules/string-utils';
 
 type ValueType = string | Record<string, TreeData> | TreeData[];
 
@@ -113,9 +112,7 @@ export const DataTree = ({
     <Box width={BlockSize.Full}>
       {Object.entries(data).map(([label, { value, type }], i) => (
         <ConfirmInfoRow
-          label={`${escapeHiddenUnicode(
-            label.charAt(0).toUpperCase() + label.slice(1),
-          )}:`}
+          label={`${label.charAt(0).toUpperCase() + label.slice(1)}:`}
           style={{ paddingRight: 0 }}
           key={`tree-data-${label}-index-${i}`}
           data-testid={`confirmation_data-${label}-index-${i}`}
