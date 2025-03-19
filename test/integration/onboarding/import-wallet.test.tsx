@@ -14,6 +14,7 @@ import {
   waitForElementByText,
 } from '../helpers';
 import { BridgeBackgroundAction } from '../../../shared/types/bridge';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 
 jest.mock('../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../ui/store/background-connection'),
@@ -43,22 +44,9 @@ const setupSubmitRequestToBackgroundMocks = (
   );
 };
 
-export function mockSurveyLink() {
-  const mockEndpoint = nock('https://accounts.api.cx.metamask.io')
-    .persist()
-    .get(
-      '/v1/users/0x4d6d78a255217af6411a5bbd39e31b5e46e0e920bdf7e979470f316cbe8c00eb/surveys',
-    )
-    .reply(200, {
-      surveys: {},
-    });
-  return mockEndpoint;
-}
-
-describe('Wallet Created Events', () => {
+describe('Import Wallet Events', () => {
   beforeEach(() => {
     jest.resetAllMocks();
-    mockSurveyLink();
     setupSubmitRequestToBackgroundMocks();
   });
 
@@ -67,19 +55,23 @@ describe('Wallet Created Events', () => {
   });
 
   it('are sent when onboarding user who chooses to opt in metrics', async () => {
-    await integrationTestRender({
-      preloadedState: mockMetaMaskState,
+    const { findByTestId } = await integrationTestRender({
+      preloadedState: {
+        ...mockMetaMaskState,
+        firstTimeFlowType: 'import',
+        completedOnboarding: false,
+        isProfileSyncingEnabled: true,
+      },
       backgroundConnection: backgroundConnectionMocked,
     });
-
-    await waitForElementByText('Congratulations!');
 
     const completeOnboardingBtnId = 'onboarding-complete-done';
     const pinExtensionNextBtnId = 'pin-extension-next';
     const pinExtensionDoneBtnId = 'pin-extension-done';
-
+    expect(await findByTestId(completeOnboardingBtnId)).toBeInTheDocument();
     await waitForElementById(completeOnboardingBtnId);
     await clickElementById(completeOnboardingBtnId);
+    await waitForElementById(pinExtensionNextBtnId);
 
     let confirmAccountDetailsModalMetricsEvent;
 
@@ -100,13 +92,13 @@ describe('Wallet Created Events', () => {
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.OnboardingWalletCreationComplete,
           properties: {
-            method: mockMetaMaskState.firstTimeFlowType,
+            method: FirstTimeFlowType.import,
+            is_profile_syncing_enabled: true,
           },
         }),
       ]),
     );
 
-    await waitForElementById(pinExtensionNextBtnId);
     await clickElementById(pinExtensionNextBtnId);
 
     let onboardingPinExtensionMetricsEvent;
@@ -125,8 +117,8 @@ describe('Wallet Created Events', () => {
       `Pin MetaMask on your browser so it's accessible and easy to view transaction confirmations.`,
     );
 
-    await waitForElementById(pinExtensionDoneBtnId);
     await clickElementById(pinExtensionDoneBtnId);
+
     await waitFor(() => {
       const completeOnboardingBackgroundRequest =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
