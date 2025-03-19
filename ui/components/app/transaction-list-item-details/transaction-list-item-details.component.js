@@ -26,6 +26,11 @@ import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 
+// Temporarily disabling the error banner.
+// Note: This banner was added in PR #29338 but needs to be properly removed.
+// Direct reversion is blocked due to merge conflicts from PR #29884's MMI UI removal.
+const NO_ERROR_BANNER = false;
+
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
@@ -185,7 +190,7 @@ export default class TransactionListItemDetails extends PureComponent {
       <Popover title={title} onClose={onClose}>
         <div className="transaction-list-item-details">
           <div className="transaction-list-item-details__operations">
-            {showErrorBanner && (
+            {NO_ERROR_BANNER && showErrorBanner && (
               <BannerAlert severity={BannerAlertSeverity.Warning}>
                 <Text
                   variant={TextVariant.bodyMd}
