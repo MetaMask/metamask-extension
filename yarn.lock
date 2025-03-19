@@ -4112,7 +4112,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@keystonehq/base-eth-keyring@npm:^0.14.1":
+"@keystonehq/base-eth-keyring@npm:0.14.1":
   version: 0.14.1
   resolution: "@keystonehq/base-eth-keyring@npm:0.14.1"
   dependencies:
@@ -4123,6 +4123,20 @@ __metadata:
     rlp: "npm:^3.0.0"
     uuid: "npm:^8.3.2"
   checksum: 10/07516e967fc5c618ef0ce67b155ba69c04f8fd84d5a6fd35f025f989c41256c9e6fa0375cfb0318da42876a61c64839e312d910e4b9fa801f86179df826adc69
+  languageName: node
+  linkType: hard
+
+"@keystonehq/base-eth-keyring@patch:@keystonehq/base-eth-keyring@npm%3A0.14.1#~/.yarn/patches/@keystonehq-base-eth-keyring-npm-0.14.1-f95d2717de.patch":
+  version: 0.14.1
+  resolution: "@keystonehq/base-eth-keyring@patch:@keystonehq/base-eth-keyring@npm%3A0.14.1#~/.yarn/patches/@keystonehq-base-eth-keyring-npm-0.14.1-f95d2717de.patch::version=0.14.1&hash=1fb68b"
+  dependencies:
+    "@ethereumjs/tx": "npm:^4.0.2"
+    "@ethereumjs/util": "npm:^8.0.0"
+    "@keystonehq/bc-ur-registry-eth": "npm:^0.19.1"
+    hdkey: "npm:^2.0.1"
+    rlp: "npm:^3.0.0"
+    uuid: "npm:^8.3.2"
+  checksum: 10/125f8b36893cdb54db49f4592a0b82d016fa87020ecc4ec92d89477b2e2b2fd43ed5b611261902cb28a6f7139a734cbc90e390c9d6e5d5cf4d01225015a635af
   languageName: node
   linkType: hard
 
