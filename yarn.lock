@@ -5912,22 +5912,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/notification-services-controller@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/notification-services-controller@npm:1.0.0"
+"@metamask/notification-services-controller@npm:@metamask-previews/notification-services-controller@3.0.0-preview-c2a9ad3c":
+  version: 3.0.0-preview-c2a9ad3c
+  resolution: "@metamask-previews/notification-services-controller@npm:3.0.0-preview-c2a9ad3c"
   dependencies:
     "@contentful/rich-text-html-renderer": "npm:^16.5.2"
     "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/controller-utils": "npm:^11.5.0"
+    "@metamask/controller-utils": "npm:^11.6.0"
     "@metamask/utils": "npm:^11.2.0"
     bignumber.js: "npm:^9.1.2"
     firebase: "npm:^11.2.0"
     loglevel: "npm:^1.8.1"
     uuid: "npm:^8.3.2"
   peerDependencies:
-    "@metamask/keyring-controller": ^19.0.0
-    "@metamask/profile-sync-controller": ^8.0.0
-  checksum: 10/9cb7cee622ee8485d4424dcf42ffbd4c932572c2c21dc723d6e3e5204fb24f37c01a9080a1826bfd9cfea986233e757cb0630004512415ee966b3110db80f3e9
+    "@metamask/keyring-controller": ^21.0.0
+    "@metamask/profile-sync-controller": ^10.0.0
+  checksum: 10/1beee6d7f82a0f5fa63a749b55bea82df3478ebf952a0b4dcf84dd582728efad328ecc5c9ac110ef0480e458f039633591904f9ae8ea86ca56b72656f90de4e1
   languageName: node
   linkType: hard
 
@@ -27345,7 +27345,7 @@ __metadata:
     "@metamask/multichain-transactions-controller": "npm:^0.7.1"
     "@metamask/name-controller": "npm:^8.0.3"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A22.1.1#~/.yarn/patches/@metamask-network-controller-npm-22.1.1-09b6510f1e.patch"
-    "@metamask/notification-services-controller": "npm:^1.0.0"
+    "@metamask/notification-services-controller": "npm:@metamask-previews/notification-services-controller@3.0.0-preview-c2a9ad3c"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^11.0.6"

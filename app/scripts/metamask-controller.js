@@ -1376,7 +1376,7 @@ export default class MetamaskController extends EventEmitter {
       this.controllerMessenger.getRestricted({
         name: 'NotificationServicesController',
         allowedActions: [
-          'KeyringController:getAccounts',
+          'KeyringController:withKeyring',
           'KeyringController:getState',
           'AuthenticationController:getBearerToken',
           'AuthenticationController:isSignedIn',
