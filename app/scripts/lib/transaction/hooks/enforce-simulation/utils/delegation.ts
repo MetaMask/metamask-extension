@@ -60,10 +60,12 @@ export function generateDelegation({
   accountAddress,
   gatorEnv,
   simulationData,
+  txValue,
 }: {
   accountAddress: Address;
   gatorEnv: DeleGatorEnvironment;
   simulationData: SimulationData;
+  txValue: bigint;
 }): DelegationStruct {
   const caveateBuilder = createCaveatBuilder(gatorEnv)
     .extend('nativeTokenMaxLoss', nativeTokenMaxLossBuilder)
@@ -80,8 +82,9 @@ export function generateDelegation({
       caveats = caveats.addCaveat('nativeBalanceGte', accountAddress, delta);
       log('Caveat - Native Balance GTE', { accountAddress, delta });
     }
-  } else {
-    // put guardrails around native token to prevent loss
+  } else if (txValue > 0n) {
+    // If tx has value but no nativeBalanceChange, then we add a guardrail
+    // to prevent native token loss
     caveats = caveats.addCaveat('nativeTokenMaxLoss', accountAddress, 0n);
   }
 
