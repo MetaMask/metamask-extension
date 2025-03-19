@@ -355,259 +355,259 @@ jobs:
           path: changed-files
           destination: changed-files
 
-  #   prep-build:
-  #     executor: node-linux-medium
-  #     steps:
-  #       - run: *shallow-git-clone-and-enable-vnc
-  #       - run: corepack enable
-  #       - attach_workspace:
-  #           at: .
-  #       - when:
-  #           condition:
-  #             not:
-  #               matches:
-  #                 pattern: /^master$/
-  #                 value: << pipeline.git.branch >>
-  #           steps:
-  #             - run:
-  #                 name: build:dist
-  #                 command: yarn build dist
-  #       - when:
-  #           condition:
-  #             matches:
-  #               pattern: /^master$/
-  #               value: << pipeline.git.branch >>
-  #           steps:
-  #             - run:
-  #                 name: build:prod
-  #                 command: yarn build prod
-  #       - run:
-  #           name: build:debug
-  #           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
-  #       - store_artifacts:
-  #           path: builds
-  #       - persist_to_workspace:
-  #           root: .
-  #           paths:
-  #             - dist
-  #             - builds
+    #   prep-build:
+    #     executor: node-linux-medium
+    #     steps:
+    #       - run: *shallow-git-clone-and-enable-vnc
+    #       - run: corepack enable
+    #       - attach_workspace:
+    #           at: .
+    #       - when:
+    #           condition:
+    #             not:
+    #               matches:
+    #                 pattern: /^master$/
+    #                 value: << pipeline.git.branch >>
+    #           steps:
+    #             - run:
+    #                 name: build:dist
+    #                 command: yarn build dist
+    #       - when:
+    #           condition:
+    #             matches:
+    #               pattern: /^master$/
+    #               value: << pipeline.git.branch >>
+    #           steps:
+    #             - run:
+    #                 name: build:prod
+    #                 command: yarn build prod
+    #       - run:
+    #           name: build:debug
+    #           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
+    #       - store_artifacts:
+    #           path: builds
+    #       - persist_to_workspace:
+    #           root: .
+    #           paths:
+    #             - dist
+    #             - builds
 
-  prep-build-mv2:
-    executor: node-linux-medium
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: corepack enable
-      - attach_workspace:
-          at: .
-      - when:
-          condition:
-            not:
-              matches:
-                pattern: /^master$/
-                value: << pipeline.git.branch >>
-          steps:
-            - run:
-                name: build:dist
-                command: ENABLE_MV3=false yarn build dist
-      - when:
-          condition:
-            matches:
-              pattern: /^master$/
-              value: << pipeline.git.branch >>
-          steps:
-            - run:
-                name: build:prod
-                command: ENABLE_MV3=false yarn build prod
-      - run:
-          name: build:debug
-          command: find dist/ -type f -exec md5sum {} \; | sort -k 2
-      - run:
-          name: Move mm build to 'dist-mv2' to avoid conflict with production build
-          command: mv ./dist ./dist-mv2
-      - run:
-          name: Move mm zips to 'builds-mv2' to avoid conflict with production build
-          command: mv ./builds ./builds-mv2
-      - store_artifacts:
-          path: builds-mv2
-      - persist_to_workspace:
-          root: .
-          paths:
-            - dist-mv2
-            - builds-mv2
+    # prep-build-mv2:
+    #   executor: node-linux-medium
+    #   steps:
+    #     - run: *shallow-git-clone-and-enable-vnc
+    #     - run: corepack enable
+    #     - attach_workspace:
+    #         at: .
+    #     - when:
+    #         condition:
+    #           not:
+    #             matches:
+    #               pattern: /^master$/
+    #               value: << pipeline.git.branch >>
+    #         steps:
+    #           - run:
+    #               name: build:dist
+    #               command: ENABLE_MV3=false yarn build dist
+    #     - when:
+    #         condition:
+    #           matches:
+    #             pattern: /^master$/
+    #             value: << pipeline.git.branch >>
+    #         steps:
+    #           - run:
+    #               name: build:prod
+    #               command: ENABLE_MV3=false yarn build prod
+    #     - run:
+    #         name: build:debug
+    #         command: find dist/ -type f -exec md5sum {} \; | sort -k 2
+    #     - run:
+    #         name: Move mm build to 'dist-mv2' to avoid conflict with production build
+    #         command: mv ./dist ./dist-mv2
+    #     - run:
+    #         name: Move mm zips to 'builds-mv2' to avoid conflict with production build
+    #         command: mv ./builds ./builds-mv2
+    #     - store_artifacts:
+    #         path: builds-mv2
+    #     - persist_to_workspace:
+    #         root: .
+    #         paths:
+    #           - dist-mv2
+    #           - builds-mv2
 
-  #   prep-build-flask:
-  #     executor: node-linux-medium
-  #     steps:
-  #       - run: *shallow-git-clone-and-enable-vnc
-  #       - run: corepack enable
-  #       - attach_workspace:
-  #           at: .
-  #       - when:
-  #           condition:
-  #             not:
-  #               matches:
-  #                 pattern: /^master$/
-  #                 value: << pipeline.git.branch >>
-  #           steps:
-  #             - run:
-  #                 name: build:dist
-  #                 command: yarn build --build-type flask dist
-  #       - when:
-  #           condition:
-  #             matches:
-  #               pattern: /^master$/
-  #               value: << pipeline.git.branch >>
-  #           steps:
-  #             - run:
-  #                 name: build:prod
-  #                 command: yarn build --build-type flask prod
-  #       - run:
-  #           name: build:debug
-  #           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
-  #       - run:
-  #           name: Move flask build to 'dist-flask' to avoid conflict with production build
-  #           command: mv ./dist ./dist-flask
-  #       - run:
-  #           name: Move flask zips to 'builds-flask' to avoid conflict with production build
-  #           command: mv ./builds ./builds-flask
-  #       - persist_to_workspace:
-  #           root: .
-  #           paths:
-  #             - dist-flask
-  #             - builds-flask
+    #   prep-build-flask:
+    #     executor: node-linux-medium
+    #     steps:
+    #       - run: *shallow-git-clone-and-enable-vnc
+    #       - run: corepack enable
+    #       - attach_workspace:
+    #           at: .
+    #       - when:
+    #           condition:
+    #             not:
+    #               matches:
+    #                 pattern: /^master$/
+    #                 value: << pipeline.git.branch >>
+    #           steps:
+    #             - run:
+    #                 name: build:dist
+    #                 command: yarn build --build-type flask dist
+    #       - when:
+    #           condition:
+    #             matches:
+    #               pattern: /^master$/
+    #               value: << pipeline.git.branch >>
+    #           steps:
+    #             - run:
+    #                 name: build:prod
+    #                 command: yarn build --build-type flask prod
+    #       - run:
+    #           name: build:debug
+    #           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
+    #       - run:
+    #           name: Move flask build to 'dist-flask' to avoid conflict with production build
+    #           command: mv ./dist ./dist-flask
+    #       - run:
+    #           name: Move flask zips to 'builds-flask' to avoid conflict with production build
+    #           command: mv ./builds ./builds-flask
+    #       - persist_to_workspace:
+    #           root: .
+    #           paths:
+    #             - dist-flask
+    #             - builds-flask
 
-  #   prep-build-flask-mv2:
-  #     executor: node-linux-medium
-  #     steps:
-  #       - run: *shallow-git-clone-and-enable-vnc
-  #       - run: corepack enable
-  #       - attach_workspace:
-  #           at: .
-  #       - when:
-  #           condition:
-  #             not:
-  #               matches:
-  #                 pattern: /^master$/
-  #                 value: << pipeline.git.branch >>
-  #           steps:
-  #             - run:
-  #                 name: build:dist
-  #                 command: ENABLE_MV3=false yarn build --build-type flask dist
-  #       - when:
-  #           condition:
-  #             matches:
-  #               pattern: /^master$/
-  #               value: << pipeline.git.branch >>
-  #           steps:
-  #             - run:
-  #                 name: build:prod
-  #                 command: ENABLE_MV3=false yarn build --build-type flask prod
-  #       - run:
-  #           name: build:debug
-  #           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
-  #       - run:
-  #           name: Move flask build to 'dist-flask' to avoid conflict with production build
-  #           command: mv ./dist ./dist-flask-mv2
-  #       - run:
-  #           name: Move flask zips to 'builds-flask' to avoid conflict with production build
-  #           command: mv ./builds ./builds-flask-mv2
-  #       - persist_to_workspace:
-  #           root: .
-  #           paths:
-  #             - dist-flask-mv2
-  #             - builds-flask-mv2
+    #   prep-build-flask-mv2:
+    #     executor: node-linux-medium
+    #     steps:
+    #       - run: *shallow-git-clone-and-enable-vnc
+    #       - run: corepack enable
+    #       - attach_workspace:
+    #           at: .
+    #       - when:
+    #           condition:
+    #             not:
+    #               matches:
+    #                 pattern: /^master$/
+    #                 value: << pipeline.git.branch >>
+    #           steps:
+    #             - run:
+    #                 name: build:dist
+    #                 command: ENABLE_MV3=false yarn build --build-type flask dist
+    #       - when:
+    #           condition:
+    #             matches:
+    #               pattern: /^master$/
+    #               value: << pipeline.git.branch >>
+    #           steps:
+    #             - run:
+    #                 name: build:prod
+    #                 command: ENABLE_MV3=false yarn build --build-type flask prod
+    #       - run:
+    #           name: build:debug
+    #           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
+    #       - run:
+    #           name: Move flask build to 'dist-flask' to avoid conflict with production build
+    #           command: mv ./dist ./dist-flask-mv2
+    #       - run:
+    #           name: Move flask zips to 'builds-flask' to avoid conflict with production build
+    #           command: mv ./builds ./builds-flask-mv2
+    #       - persist_to_workspace:
+    #           root: .
+    #           paths:
+    #             - dist-flask-mv2
+    #             - builds-flask-mv2
 
-  #   prep-build-test-flask:
-  #     executor: node-linux-medium
-  #     steps:
-  #       - run: *shallow-git-clone-and-enable-vnc
-  #       - run: corepack enable
-  #       - attach_workspace:
-  #           at: .
-  #       - run:
-  #           name: Build extension for testing
-  #           command: yarn build:test:flask
-  #       - run:
-  #           name: Move test build to 'dist-test-flask' to avoid conflict with production build
-  #           command: mv ./dist ./dist-test-flask
-  #       - run:
-  #           name: Move test zips to 'builds-test-flask' to avoid conflict with production build
-  #           command: mv ./builds ./builds-test-flask
-  #       - persist_to_workspace:
-  #           root: .
-  #           paths:
-  #             - dist-test-flask
-  #             - builds-test-flask
+    #   prep-build-test-flask:
+    #     executor: node-linux-medium
+    #     steps:
+    #       - run: *shallow-git-clone-and-enable-vnc
+    #       - run: corepack enable
+    #       - attach_workspace:
+    #           at: .
+    #       - run:
+    #           name: Build extension for testing
+    #           command: yarn build:test:flask
+    #       - run:
+    #           name: Move test build to 'dist-test-flask' to avoid conflict with production build
+    #           command: mv ./dist ./dist-test-flask
+    #       - run:
+    #           name: Move test zips to 'builds-test-flask' to avoid conflict with production build
+    #           command: mv ./builds ./builds-test-flask
+    #       - persist_to_workspace:
+    #           root: .
+    #           paths:
+    #             - dist-test-flask
+    #             - builds-test-flask
 
-  #   prep-build-test-flask-mv2:
-  #     executor: node-linux-medium
-  #     steps:
-  #       - run: *shallow-git-clone-and-enable-vnc
-  #       - run: corepack enable
-  #       - attach_workspace:
-  #           at: .
-  #       - run:
-  #           name: Build extension for testing
-  #           command: yarn build:test:flask:mv2
-  #       - run:
-  #           name: Move test build to 'dist-test-flask-mv2' to avoid conflict with production build
-  #           command: mv ./dist ./dist-test-flask-mv2
-  #       - run:
-  #           name: Move test zips to 'builds-test-flask-mv2' to avoid conflict with production build
-  #           command: mv ./builds ./builds-test-flask-mv2
-  #       - persist_to_workspace:
-  #           root: .
-  #           paths:
-  #             - dist-test-flask-mv2
-  #             - builds-test-flask-mv2
+    #   prep-build-test-flask-mv2:
+    #     executor: node-linux-medium
+    #     steps:
+    #       - run: *shallow-git-clone-and-enable-vnc
+    #       - run: corepack enable
+    #       - attach_workspace:
+    #           at: .
+    #       - run:
+    #           name: Build extension for testing
+    #           command: yarn build:test:flask:mv2
+    #       - run:
+    #           name: Move test build to 'dist-test-flask-mv2' to avoid conflict with production build
+    #           command: mv ./dist ./dist-test-flask-mv2
+    #       - run:
+    #           name: Move test zips to 'builds-test-flask-mv2' to avoid conflict with production build
+    #           command: mv ./builds ./builds-test-flask-mv2
+    #       - persist_to_workspace:
+    #           root: .
+    #           paths:
+    #             - dist-test-flask-mv2
+    #             - builds-test-flask-mv2
 
-  #   prep-build-test:
-  #     executor: node-linux-medium
-  #     steps:
-  #       - run: *shallow-git-clone-and-enable-vnc
-  #       - run: corepack enable
-  #       - attach_workspace:
-  #           at: .
-  #       - run:
-  #           name: Build extension for testing
-  #           command: yarn build:test
-  #       - run:
-  #           name: Move test build to 'dist-test' to avoid conflict with production build
-  #           command: mv ./dist ./dist-test
-  #       - run:
-  #           name: Move test zips to 'builds-test' to avoid conflict with production build
-  #           command: mv ./builds ./builds-test
-  #       - store_artifacts:
-  #           path: builds-test
-  #       - persist_to_workspace:
-  #           root: .
-  #           paths:
-  #             - dist-test
-  #             - builds-test
+    #   prep-build-test:
+    #     executor: node-linux-medium
+    #     steps:
+    #       - run: *shallow-git-clone-and-enable-vnc
+    #       - run: corepack enable
+    #       - attach_workspace:
+    #           at: .
+    #       - run:
+    #           name: Build extension for testing
+    #           command: yarn build:test
+    #       - run:
+    #           name: Move test build to 'dist-test' to avoid conflict with production build
+    #           command: mv ./dist ./dist-test
+    #       - run:
+    #           name: Move test zips to 'builds-test' to avoid conflict with production build
+    #           command: mv ./builds ./builds-test
+    #       - store_artifacts:
+    #           path: builds-test
+    #       - persist_to_workspace:
+    #           root: .
+    #           paths:
+    #             - dist-test
+    #             - builds-test
 
-  #   prep-build-test-mv2:
-  #     executor: node-linux-medium
-  #     steps:
-  #       - run: *shallow-git-clone-and-enable-vnc
-  #       - run: corepack enable
-  #       - attach_workspace:
-  #           at: .
-  #       - run:
-  #           name: Build extension for testing
-  #           command: yarn build:test:mv2
-  #       - run:
-  #           name: Move test build to 'dist-test-mv2' to avoid conflict with production build
-  #           command: mv ./dist ./dist-test-mv2
-  #       - run:
-  #           name: Move test zips to 'builds-test-mv2' to avoid conflict with production build
-  #           command: mv ./builds ./builds-test-mv2
-  #       - store_artifacts:
-  #           path: builds-test-mv2
-  #       - persist_to_workspace:
-  #           root: .
-  #           paths:
-  #             - dist-test-mv2
-  #             - builds-test-mv2
+    prep-build-test-mv2:
+      executor: node-linux-medium
+      steps:
+        - run: *shallow-git-clone-and-enable-vnc
+        - run: corepack enable
+        - attach_workspace:
+            at: .
+        - run:
+            name: Build extension for testing
+            command: yarn build:test:mv2
+        - run:
+            name: Move test build to 'dist-test-mv2' to avoid conflict with production build
+            command: mv ./dist ./dist-test-mv2
+        - run:
+            name: Move test zips to 'builds-test-mv2' to avoid conflict with production build
+            command: mv ./builds ./builds-test-mv2
+        - store_artifacts:
+            path: builds-test-mv2
+        - persist_to_workspace:
+            root: .
+            paths:
+              - dist-test-mv2
+              - builds-test-mv2
 
   #   prep-build-test-webpack:
   #     executor: node-linux-medium
