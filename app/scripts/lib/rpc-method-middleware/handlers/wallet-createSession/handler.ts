@@ -107,6 +107,7 @@ async function walletCreateSessionHandler(
     return end(new JsonRpcError(5302, 'Invalid sessionProperties requested'));
   }
 
+  // TODO: add caveat validation in the `@metamask/chain-agnostic-permission` package
   let filteredSessionProperties;
   if (sessionProperties) {
     filteredSessionProperties = Object.fromEntries(

@@ -6916,8 +6916,6 @@ export default class MetamaskController extends EventEmitter {
       );
     }
 
-    // TODO add a handler for solana accountChanged subscription ?
-
     engine.push(
       createMultichainMethodMiddleware({
         subjectType,
