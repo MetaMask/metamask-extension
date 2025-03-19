@@ -22,6 +22,10 @@ const READY_STATE = {
   READY: 'READY',
 };
 
+const ethereumPrefix = 'ethereum:';
+// A 0x-prefixed Ethereum address is 42 characters (2 prefix + 40 address)
+const addressLength = 42;
+
 const parseContent = (content) => {
   let type = 'unknown';
   let values = {};
@@ -31,12 +35,18 @@ const parseContent = (content) => {
   // For ex. EIP-681 (https://eips.ethereum.org/EIPS/eip-681)
 
   // Ethereum address links - fox ex. ethereum:0x.....1111
-  if (content.split('ethereum:').length > 1) {
+  if (
+    content.split(ethereumPrefix).length > 1 &&
+    content.length === ethereumPrefix.length + addressLength
+  ) {
     type = 'address';
-    // uses regex capture groups to match and extract address while ignoring everything else
+    // uses regex capture groups to match and extract address
     values = { address: parseScanContent(content) };
     // Regular ethereum addresses - fox ex. 0x.....1111
-  } else if (content.substring(0, 2).toLowerCase() === '0x') {
+  } else if (
+    content.substring(0, 2).toLowerCase() === '0x' &&
+    content.length === addressLength
+  ) {
     type = 'address';
     values = { address: content };
   }

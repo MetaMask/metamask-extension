@@ -1,6 +1,5 @@
 const { strict: assert } = require('assert');
 const {
-  defaultGanacheOptions,
   withFixtures,
   openDapp,
   unlockWallet,
@@ -14,11 +13,10 @@ describe('Permissions', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        const addresses = await ganacheServer.getAccounts();
+      async ({ driver, localNodes }) => {
+        const addresses = await localNodes[0].getAccounts();
         const publicAddress = addresses[0];
         await unlockWallet(driver);
 
@@ -45,10 +43,6 @@ describe('Permissions', function () {
         await driver.clickElement({
           text: 'All Permissions',
           tag: 'div',
-        });
-        await driver.clickElementAndWaitToDisappear({
-          text: 'Got it',
-          tag: 'button',
         });
         await driver.waitForSelector({
           text: '127.0.0.1:8080',

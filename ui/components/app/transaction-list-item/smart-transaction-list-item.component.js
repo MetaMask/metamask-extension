@@ -68,7 +68,6 @@ export default function SmartTransactionListItem({
         icon={
           <BadgeWrapper
             anchorElementShape={BadgeWrapperAnchorElementShape.circular}
-            positionObj={{ top: -4, right: -4 }}
             display={Display.Block}
             badge={
               <AvatarNetwork
@@ -77,7 +76,6 @@ export default function SmartTransactionListItem({
                 size={AvatarNetworkSize.Xs}
                 name={currentChain?.nickname}
                 src={currentChain?.rpcPrefs?.imageUrl}
-                borderWidth={1}
                 borderColor={BackgroundColor.backgroundDefault}
               />
             }
@@ -127,6 +125,7 @@ export default function SmartTransactionListItem({
               date={date}
               status={displayedStatusKey}
               statusOnly
+              shouldShowTooltip={false}
             />
           )}
         />

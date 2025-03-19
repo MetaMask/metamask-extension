@@ -3,8 +3,10 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { screen, fireEvent } from '@testing-library/react';
 import { RpcEndpointType } from '@metamask/network-controller';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-send-state.json';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
 import { AssetPickerModalNetwork } from './asset-picker-modal-network';
 
 const mockOnClose = jest.fn();
@@ -26,7 +28,7 @@ describe('AssetPickerModalNetwork', () => {
 
   const networkProps = {
     network: {
-      chainId: '0x1',
+      chainId: CHAIN_IDS.MAINNET,
       nativeCurrency: 'ETH',
       defaultBlockExplorerUrlIndex: 0,
       blockExplorerUrls: ['https://explorerurl'],
@@ -43,7 +45,7 @@ describe('AssetPickerModalNetwork', () => {
     } as any,
     networks: [
       {
-        chainId: '0x1',
+        chainId: CHAIN_IDS.MAINNET,
         nativeCurrency: 'ETH',
         defaultBlockExplorerUrlIndex: 0,
         blockExplorerUrls: ['https://explorerurl'],
@@ -58,7 +60,7 @@ describe('AssetPickerModalNetwork', () => {
         name: 'Network name 3',
       },
       {
-        chainId: '0xa',
+        chainId: CHAIN_IDS.OPTIMISM,
         nativeCurrency: 'ETH',
         defaultBlockExplorerUrlIndex: 0,
         blockExplorerUrls: ['https://explorerurl'],
@@ -110,7 +112,10 @@ describe('AssetPickerModalNetwork', () => {
   });
 
   it('should call onClose and onBack when header buttons are clicked', () => {
-    renderWithProvider(<AssetPickerModalNetwork {...defaultProps} />, store);
+    renderWithProvider(
+      <AssetPickerModalNetwork {...defaultProps} {...networkProps} />,
+      store,
+    );
 
     fireEvent.click(screen.getByLabelText('Close'));
     expect(mockOnClose).toHaveBeenCalledTimes(1);
@@ -125,7 +130,9 @@ describe('AssetPickerModalNetwork', () => {
       store,
     );
 
-    fireEvent.click(screen.getByText('Network name 3'));
+    fireEvent.click(
+      screen.getByText(NETWORK_TO_SHORT_NETWORK_NAME_MAP[CHAIN_IDS.MAINNET]),
+    );
     expect(mockOnBack).toHaveBeenCalledTimes(1);
     expect(mockOnNetworkChange).toHaveBeenCalledTimes(1);
   });

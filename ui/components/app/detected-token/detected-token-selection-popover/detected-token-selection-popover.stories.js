@@ -11,6 +11,11 @@ const store = configureStore({
   ...testData,
   metamask: {
     ...testData.metamask,
+    currencyRates: {
+      SepoliaETH: {
+        conversionRate: 3910.28,
+      },
+    },
     ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
   },
 });

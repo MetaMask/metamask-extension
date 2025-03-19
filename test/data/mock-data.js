@@ -1049,6 +1049,31 @@ const NETWORKS_2_API_MOCK_RESULT = {
   },
 };
 
+const MOCK_ADDRESS_BOOK = [
+  {
+    address: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+    chainId: '0x1',
+    isEns: false,
+    memo: '',
+    name: 'Contact 1',
+  },
+  {
+    address: '0x43c9159B6251f3E205B9113A023C8256cDD40D91',
+    chainId: '0x1',
+    isEns: true,
+    memo: '',
+    name: 'example.eth',
+  },
+];
+
+const MOCK_DOMAIN_RESOLUTION = {
+  addressBookEntryName: 'example.eth',
+  domainName: 'example.eth',
+  protocol: 'Ethereum Name Service',
+  resolvedAddress: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+  resolvingSnap: 'Ethereum Name Service resolver',
+};
+
 module.exports = {
   TOKENS_API_MOCK_RESULT,
   TOP_ASSETS_API_MOCK_RESULT,
@@ -1059,4 +1084,6 @@ module.exports = {
   SWAP_TEST_ETH_DAI_TRADES_MOCK,
   SWAP_TEST_ETH_USDC_TRADES_MOCK,
   NETWORKS_2_API_MOCK_RESULT,
+  MOCK_ADDRESS_BOOK,
+  MOCK_DOMAIN_RESOLUTION,
 };

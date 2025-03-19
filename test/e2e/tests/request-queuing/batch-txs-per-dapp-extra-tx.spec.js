@@ -3,14 +3,12 @@ const FixtureBuilder = require('../../fixture-builder');
 const {
   DAPP_ONE_URL,
   DAPP_URL,
-  defaultGanacheOptions,
   largeDelayMs,
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
   withFixtures,
 } = require('../../helpers');
-const { PAGES } = require('../../webdriver/driver');
 
 describe('Request Queuing for Multiple Dapps and Txs on different networks', function () {
   it('should batch confirmation txs for different dapps on different networks adds extra tx after.', async function () {
@@ -21,27 +19,25 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         title: this.test.fullTitle(),
       },
 
       async ({ driver }) => {
         await unlockWallet(driver);
-
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
 
         // Open Dapp One
         await openDapp(driver, undefined, DAPP_URL);
@@ -127,13 +123,10 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.waitForSelector(
-          By.xpath("//div[normalize-space(.)='1 of 2']"),
+          By.xpath("//p[normalize-space(.)='1 of 2']"),
         );
 
         // Reject All Transactions
-        await driver.clickElement('.page-container__footer-secondary a');
-
-        // TODO: Do we want to confirm here?
         await driver.clickElementAndWaitForWindowToClose({
           text: 'Reject all',
           tag: 'button',
@@ -148,18 +141,16 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.waitForSelector(
-          By.xpath("//div[normalize-space(.)='1 of 2']"),
+          By.xpath("//p[normalize-space(.)='1 of 2']"),
         );
 
         // Check correct network on confirm tx.
         await driver.findElement({
-          css: '[data-testid="network-display"]',
+          css: 'p',
           text: 'Localhost 8546',
         });
 
         // Reject All Transactions
-        await driver.clickElement('.page-container__footer-secondary a');
-
         await driver.clickElementAndWaitForWindowToClose({
           text: 'Reject all',
           tag: 'button',

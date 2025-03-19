@@ -1,16 +1,25 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
-import { getTokenList } from '../../../../selectors';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { TokenListItem } from '../../token-list-item';
-import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { formatAmount } from '../../../../pages/confirmations/components/simulation-details/formatAmount';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
-import { AssetWithDisplayData, ERC20Asset } from './types';
+import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
+import {
+  getMultichainNetworkConfigurationsByChainId,
+  getImageForChainId,
+} from '../../../../selectors/multichain';
+import { selectERC20TokensByChain } from '../../../../selectors/selectors';
+import { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
 
-type AssetProps = AssetWithDisplayData<ERC20Asset> & {
+type AssetProps = AssetWithDisplayData<NativeAsset | ERC20Asset> & {
   tooltipText?: string;
+  assetItemProps?: Pick<
+    React.ComponentProps<typeof TokenListItem>,
+    'isTitleNetworkName' | 'isTitleHidden'
+  >;
 };
 
 export default function Asset({
@@ -19,20 +28,20 @@ export default function Asset({
   symbol,
   string: decimalTokenAmount,
   tooltipText,
+  tokenFiatAmount,
+  chainId,
+  assetItemProps = {},
 }: AssetProps) {
   const locale = useSelector(getIntlLocale);
 
-  const tokenList = useSelector(getTokenList);
-  const tokenData = address
-    ? Object.values(tokenList).find(
-        (token) =>
-          isEqualCaseInsensitive(token.symbol, symbol) &&
-          isEqualCaseInsensitive(token.address, address),
-      )
-    : undefined;
+  const currency = useSelector(getCurrentCurrency);
+  const allNetworks = useSelector(getMultichainNetworkConfigurationsByChainId);
+  const isTokenChainIdInWallet = Boolean(
+    chainId ? allNetworks[chainId as keyof typeof allNetworks] : true,
+  );
 
-  const title = tokenData?.name || symbol;
-  const tokenImage = tokenData?.iconUrl || image;
+  const cachedTokens = useSelector(selectERC20TokensByChain);
+
   const formattedFiat = useTokenFiatAmount(
     address ?? undefined,
     decimalTokenAmount,
@@ -43,19 +52,31 @@ export default function Asset({
   const formattedAmount = decimalTokenAmount
     ? `${formatAmount(
         locale,
-        new BigNumber(decimalTokenAmount || '0', 10),
+        new BigNumber(decimalTokenAmount.toString(), 10),
       )} ${symbol}`
     : undefined;
+  const primaryAmountToUse = tokenFiatAmount
+    ? formatCurrency(tokenFiatAmount.toString(), currency, 2)
+    : formattedFiat;
 
   return (
     <TokenListItem
+      key={`${chainId}-${symbol}-${address}`}
+      chainId={chainId}
       tokenSymbol={symbol}
-      tokenImage={tokenImage}
-      secondary={formattedAmount}
-      primary={formattedFiat}
-      title={title}
+      tokenImage={
+        image ??
+        cachedTokens?.[chainId]?.data?.[
+          ((address as string) ?? '').toLowerCase()
+        ]?.iconUrl
+      }
+      secondary={isTokenChainIdInWallet ? formattedAmount : undefined}
+      primary={isTokenChainIdInWallet ? primaryAmountToUse : undefined}
+      title={symbol}
       tooltipText={tooltipText}
+      tokenChainImage={getImageForChainId(chainId)}
       isPrimaryTokenSymbolHidden
+      {...assetItemProps}
     />
   );
 }

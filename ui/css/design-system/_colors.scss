@@ -1,6 +1,7 @@
 $color-map: (
   'background-default': --color-background-default,
   'background-alternative': --color-background-alternative,
+  'background-muted': --color-background-muted,
   'background-hover': --color-background-hover,
   'background-pressed': --color-background-pressed,
   'text-default': --color-text-default,
@@ -31,7 +32,6 @@ $color-map: (
   'info-default': --color-info-default,
   'info-muted': --color-info-muted,
   'info-inverse': --color-info-inverse,
-  'mainnet': --mainnet,
   'goerli': --color-network-goerli-default,
   'sepolia': --color-network-sepolia-default,
   'goerli-inverse':--color-network-goerli-inverse,

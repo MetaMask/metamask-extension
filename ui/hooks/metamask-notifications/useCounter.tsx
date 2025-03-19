@@ -6,15 +6,15 @@ import {
   getFeatureAnnouncementsUnreadCount,
   getOnChainMetamaskNotificationsReadCount,
   getOnChainMetamaskNotificationsUnreadCount,
+  getSnapNotificationsReadCount,
+  getSnapNotificationsUnreadCount,
 } from '../../selectors/metamask-notifications/metamask-notifications';
-import {
-  getReadNotificationsCount,
-  getUnreadNotificationsCount,
-} from '../../selectors';
 
-const useSnapNotificationdCount = () => {
-  const unreadSnapNotificationsCount = useSelector(getUnreadNotificationsCount);
-  const readSnapNotificationsCount = useSelector(getReadNotificationsCount);
+const useSnapNotificationsCount = () => {
+  const unreadSnapNotificationsCount = useSelector(
+    getSnapNotificationsUnreadCount,
+  );
+  const readSnapNotificationsCount = useSelector(getSnapNotificationsReadCount);
   return { unreadSnapNotificationsCount, readSnapNotificationsCount };
 };
 
@@ -61,7 +61,7 @@ const useWalletNotificationCount = () => {
 };
 
 export function useUnreadNotificationsCounter() {
-  const { unreadSnapNotificationsCount } = useSnapNotificationdCount();
+  const { unreadSnapNotificationsCount } = useSnapNotificationsCount();
   const { featureAnnouncementsUnreadCount } = useFeatureAnnouncementCount();
   const { onChainMetamaskNotificationsUnreadCount } =
     useWalletNotificationCount();
@@ -77,7 +77,7 @@ export function useUnreadNotificationsCounter() {
 }
 
 export function useReadNotificationsCounter() {
-  const { readSnapNotificationsCount } = useSnapNotificationdCount();
+  const { readSnapNotificationsCount } = useSnapNotificationsCount();
   const { featureAnnouncementsReadCount } = useFeatureAnnouncementCount();
   const { onChainMetamaskNotificationsReadCount } =
     useWalletNotificationCount();

@@ -83,9 +83,14 @@ class ServerMochaToBackground {
     if (message.command === 'openTabs' && message.tabs) {
       this.eventEmitter.emit('openTabs', message.tabs);
     } else if (message.command === 'notFound') {
-      throw new Error(
+      const error = new Error(
         `No window found by background script with ${message.property}: ${message.value}`,
       );
+      if (this.eventEmitter.listenerCount('error') > 0) {
+        this.eventEmitter.emit('error', error);
+      } else {
+        throw error;
+      }
     }
   }
 
@@ -108,8 +113,15 @@ class ServerMochaToBackground {
 
   // This is a way to wait for an event async, without timeouts or polling
   async waitForResponse() {
-    return new Promise((resolve) => {
-      this.eventEmitter.once('openTabs', resolve);
+    return new Promise((resolve, reject) => {
+      this.eventEmitter.once('error', (error) => {
+        this.eventEmitter.removeListener('openTabs', resolve);
+        reject(error);
+      });
+      this.eventEmitter.once('openTabs', (result) => {
+        this.eventEmitter.removeListener('error', reject);
+        resolve(result);
+      });
     });
   }
 }

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 26.3.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.1" id="Symbol" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 384 383" style="enable-background:new 0 0 384 383;" xml:space="preserve">
-<path d="M383.5,0H0.5v383h383V249.3h-63.6C298,298.1,248.7,332,192.3,332c-77.8,0-140.8-63.6-140.8-140.8
-	C51.4,114,114.5,51,192.3,51C249.8,51,299.1,86,321,135.9h62.5V0z"/>
+<svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="400" height="400" fill="#FCFF52"/>
+<path d="M300 100H100V300H299.996V230.187H266.805C255.363 255.655 229.611 273.393 200.14 273.393C159.51 273.393 126.607 240.206 126.607 199.86C126.607 159.514 159.51 126.611 200.14 126.611C230.183 126.611 255.935 144.924 267.38 170.96H300V100Z" fill="black"/>
 </svg>

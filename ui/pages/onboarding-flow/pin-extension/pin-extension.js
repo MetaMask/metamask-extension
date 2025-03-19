@@ -10,7 +10,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
 import {
   setCompletedOnboarding,
-  performSignIn,
   toggleExternalServices,
 } from '../../../store/actions';
 ///: END:ONLY_INCLUDE_IF
@@ -25,14 +24,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   DEFAULT_ROUTE,
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  MMI_ONBOARDING_COMPLETION_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import Box from '../../../components/ui/box';
-import OnboardingPinMmiBillboard from '../../institutional/pin-mmi-billboard/pin-mmi-billboard';
-///: END:ONLY_INCLUDE_IF
 import { Text } from '../../../components/component-library';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -40,8 +32,6 @@ import {
   getFirstTimeFlowType,
   getExternalServicesOnboardingToggleState,
 } from '../../../selectors';
-import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
-import { selectParticipateInMetaMetrics } from '../../../selectors/metamask-notifications/authentication';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -62,21 +52,15 @@ export default function OnboardingPinExtension() {
   const externalServicesOnboardingToggleState = useSelector(
     getExternalServicesOnboardingToggleState,
   );
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
-  const participateInMetaMetrics = useSelector(selectParticipateInMetaMetrics);
 
   const handleClick = async () => {
     if (selectedIndex === 0) {
       setSelectedIndex(1);
     } else {
-      dispatch(toggleExternalServices(externalServicesOnboardingToggleState));
+      await dispatch(
+        toggleExternalServices(externalServicesOnboardingToggleState),
+      );
       await dispatch(setCompletedOnboarding());
-
-      if (externalServicesOnboardingToggleState) {
-        if (!isProfileSyncingEnabled || participateInMetaMetrics) {
-          await dispatch(performSignIn());
-        }
-      }
 
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
@@ -149,36 +133,6 @@ export default function OnboardingPinExtension() {
               onClick={handleClick}
             >
               {selectedIndex === 0 ? t('next') : t('done')}
-            </Button>
-          </div>
-        </>
-        ///: END:ONLY_INCLUDE_IF
-      }
-
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        <>
-          <div>
-            <Box textAlign={TextAlign.Center}>
-              <Text
-                variant={TextVariant.headingLg}
-                align={TextAlign.Center}
-                fontWeight={FontWeight.Bold}
-              >
-                {t('pinExtensionTitle')}
-              </Text>
-              <Text marginTop={3} marginBottom={3}>
-                {t('pinExtensionDescription')}
-              </Text>
-              <OnboardingPinMmiBillboard />
-            </Box>
-          </div>
-          <div className="onboarding-pin-extension__buttons">
-            <Button
-              type="primary"
-              onClick={() => history.push(MMI_ONBOARDING_COMPLETION_ROUTE)}
-            >
-              {t('continue')}
             </Button>
           </div>
         </>

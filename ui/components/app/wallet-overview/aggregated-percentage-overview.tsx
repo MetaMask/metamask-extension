@@ -1,14 +1,16 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { zeroAddress, toChecksumAddress } from 'ethereumjs-util';
+import { toChecksumAddress } from 'ethereumjs-util';
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
-  getCurrentCurrency,
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
   getTokensMarketData,
   getPreferences,
 } from '../../../selectors';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 // TODO: Remove restricted import
@@ -37,6 +39,7 @@ export const AggregatedPercentageOverview = () => {
   const fiatCurrency = useSelector(getCurrentCurrency);
   const { privacyMode } = useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedAccount);
+  const currentChainId = useSelector(getCurrentChainId);
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
@@ -63,14 +66,15 @@ export const AggregatedPercentageOverview = () => {
       }
       // native token
       const nativePricePercentChange1d =
-        tokensMarketData?.[zeroAddress()]?.pricePercentChange1d;
+        tokensMarketData?.[getNativeTokenAddress(currentChainId)]
+          ?.pricePercentChange1d;
       const nativeFiat1dAgo = getCalculatedTokenAmount1dAgo(
         item.fiatBalance,
         nativePricePercentChange1d,
       );
       return total1dAgo + Number(nativeFiat1dAgo);
     }, 0); // Initial total1dAgo is 0
-  }, [orderedTokenList, tokensMarketData]); // Dependencies: recalculate if orderedTokenList or tokensMarketData changes
+  }, [orderedTokenList, tokensMarketData, currentChainId]); // Dependencies: recalculate if orderedTokenList or tokensMarketData changes
 
   const totalBalance: number = Number(totalFiatBalance);
   const totalBalance1dAgo = totalFiat1dAgo;

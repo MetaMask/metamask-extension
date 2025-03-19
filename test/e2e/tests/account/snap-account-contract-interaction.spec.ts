@@ -1,8 +1,9 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
+import { Anvil } from '../../seeder/anvil';
 import { Ganache } from '../../seeder/ganache';
-import GanacheContractAddressRegistry from '../../seeder/ganache-contract-address-registry';
+import ContractAddressRegistry from '../../seeder/contract-address-registry';
 import {
   multipleGanacheOptionsForType2Transactions,
   PRIVATE_KEY_TWO,
@@ -10,14 +11,15 @@ import {
   WINDOW_TITLES,
 } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import HomePage from '../../page-objects/pages/homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-describe('Snap Account Contract interaction @no-mmi', function (this: Suite) {
+describe('Snap Account Contract interaction', function (this: Suite) {
   const smartContract = SMART_CONTRACTS.PIGGYBANK;
   it('deposits to piggybank contract', async function () {
     await withFixtures(
@@ -25,27 +27,21 @@ describe('Snap Account Contract interaction @no-mmi', function (this: Suite) {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerSnapAccountConnectedToTestDapp()
-          .withPreferencesController({
-            preferences: {
-              redesignedConfirmationsEnabled: true,
-              isRedesignedConfirmationsDeveloperEnabled: true,
-            },
-          })
           .build(),
-        ganacheOptions: multipleGanacheOptionsForType2Transactions,
+        localNodeOptions: multipleGanacheOptionsForType2Transactions,
         smartContract,
         title: this.test?.fullTitle(),
       },
       async ({
         driver,
         contractRegistry,
-        ganacheServer,
+        localNodes,
       }: {
         driver: Driver;
-        contractRegistry: GanacheContractAddressRegistry;
-        ganacheServer?: Ganache;
+        contractRegistry: ContractAddressRegistry;
+        localNodes: Anvil[] | Ganache[] | undefined[];
       }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver, localNodes[0]);
         await installSnapSimpleKeyring(driver);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
 
@@ -62,7 +58,7 @@ describe('Snap Account Contract interaction @no-mmi', function (this: Suite) {
         // Open Dapp with contract
         const testDapp = new TestDapp(driver);
         const contractAddress = await (
-          contractRegistry as GanacheContractAddressRegistry
+          contractRegistry as ContractAddressRegistry
         ).getContractAddress(smartContract);
         await testDapp.openTestDappPage({ contractAddress });
         await testDapp.check_pageIsLoaded();
@@ -75,8 +71,9 @@ describe('Snap Account Contract interaction @no-mmi', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
         await homePage.goToActivityList();
-        await homePage.check_confirmedTxNumberDisplayedInActivity();
-        await homePage.check_txAmountInActivity('-4 ETH');
+        const activityList = new ActivityListPage(driver);
+        await activityList.check_confirmedTxNumberDisplayedInActivity();
+        await activityList.check_txAmountInActivity('-4 ETH');
       },
     );
   });

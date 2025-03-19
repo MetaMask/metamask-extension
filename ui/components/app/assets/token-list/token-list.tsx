@@ -1,99 +1,91 @@
-import React, { ReactNode, useMemo } from 'react';
-import { shallowEqual, useSelector } from 'react-redux';
+import React, { useEffect, useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
 import TokenCell from '../token-cell';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Box } from '../../../component-library';
 import {
-  AlignItems,
-  Display,
-  JustifyContent,
-} from '../../../../helpers/constants/design-system';
-import { TokenWithBalance } from '../asset-list/asset-list';
-import { sortAssets } from '../util/sort';
-import {
+  getChainIdsToPoll,
+  getNewTokensImported,
   getPreferences,
   getSelectedAccount,
-  getShouldHideZeroBalanceTokens,
-  getTokenExchangeRates,
 } from '../../../../selectors';
-import { useAccountTotalFiatBalance } from '../../../../hooks/useAccountTotalFiatBalance';
-import { getConversionRate } from '../../../../ducks/metamask/metamask';
-import { useNativeTokenBalance } from '../asset-list/native-token/use-native-token-balance';
+import { endTrace, TraceName } from '../../../../../shared/lib/trace';
+import { useTokenBalances as pollAndUpdateEvmBalances } from '../../../../hooks/useTokenBalances';
+import { useNetworkFilter } from '../hooks';
+import { TokenWithFiatAmount } from '../types';
+import { filterAssets } from '../util/filter';
+import { sortAssets } from '../util/sort';
+import useMultiChainAssets from '../hooks/useMultichainAssets';
+import {
+  getMultichainIsEvm,
+  getMultichainNetwork,
+} from '../../../../selectors/multichain';
+import { getTokenBalancesEvm } from '../../../../selectors/assets';
 
 type TokenListProps = {
-  onTokenClick: (arg: string) => void;
-  nativeToken: ReactNode;
+  onTokenClick: (chainId: string, address: string) => void;
 };
 
-export default function TokenList({
-  onTokenClick,
-  nativeToken,
-}: TokenListProps) {
-  const t = useI18nContext();
-  const { tokenSortConfig, tokenNetworkFilter, privacyMode } =
-    useSelector(getPreferences);
+function TokenList({ onTokenClick }: TokenListProps) {
+  const isEvm = useSelector(getMultichainIsEvm);
+  const chainIdsToPoll = useSelector(getChainIdsToPoll);
+  const newTokensImported = useSelector(getNewTokensImported);
+  const currentNetwork = useSelector(getMultichainNetwork);
+  const { tokenSortConfig, privacyMode } = useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedAccount);
-  const conversionRate = useSelector(getConversionRate);
-  const nativeTokenWithBalance = useNativeTokenBalance();
-  const shouldHideZeroBalanceTokens = useSelector(
-    getShouldHideZeroBalanceTokens,
+  const evmBalances = useSelector((state) =>
+    getTokenBalancesEvm(state, selectedAccount.address),
   );
-  const contractExchangeRates = useSelector(
-    getTokenExchangeRates,
-    shallowEqual,
-  );
-  const { tokensWithBalances, loading } = useAccountTotalFiatBalance(
-    selectedAccount,
-    shouldHideZeroBalanceTokens,
-  ) as {
-    tokensWithBalances: TokenWithBalance[];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    mergedRates: any;
-    loading: boolean;
-  };
+  // EVM specific tokenBalance polling, updates state via polling loop per chainId
+  pollAndUpdateEvmBalances({
+    chainIds: chainIdsToPoll as Hex[],
+  });
 
-  const sortedTokens = useMemo(() => {
-    // TODO filter assets by networkTokenFilter before sorting
-    return sortAssets(
-      [nativeTokenWithBalance, ...tokensWithBalances],
-      tokenSortConfig,
-    );
+  const multichainAssets = useMultiChainAssets();
+
+  // network filter to determine which tokens to show in list
+  // on EVM we want to filter based on network filter controls, on non-evm we only want tokens from that chain identifier
+  const { networkFilter } = useNetworkFilter();
+
+  const sortedFilteredTokens = useMemo(() => {
+    const balances = isEvm ? evmBalances : multichainAssets;
+    const filteredAssets = filterAssets(balances as TokenWithFiatAmount[], [
+      {
+        key: 'chainId',
+        opts: isEvm ? networkFilter : { [currentNetwork.chainId]: true },
+        filterCallback: 'inclusive',
+      },
+    ]);
+
+    // sort filtered tokens based on the tokenSortConfig in state
+    return sortAssets([...filteredAssets], tokenSortConfig);
   }, [
-    tokensWithBalances,
     tokenSortConfig,
-    tokenNetworkFilter,
-    conversionRate,
-    contractExchangeRates,
+    networkFilter,
+    currentNetwork,
+    selectedAccount,
+    newTokensImported,
+    evmBalances,
+    multichainAssets,
   ]);
 
-  return loading ? (
-    <Box
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.center}
-      padding={7}
-      data-testid="token-list-loading-message"
-    >
-      {t('loadingTokens')}
-    </Box>
-  ) : (
-    <div>
-      {sortedTokens.map((tokenData) => {
-        if (tokenData?.isNative) {
-          // we need cloneElement so that we can pass the unique key
-          return React.cloneElement(nativeToken as React.ReactElement, {
-            key: `${tokenData.symbol}-${tokenData.address}`,
-          });
-        }
-        return (
-          <TokenCell
-            key={`${tokenData.symbol}-${tokenData.address}`}
-            {...tokenData}
-            privacyMode={privacyMode}
-            onClick={onTokenClick}
-          />
-        );
-      })}
-    </div>
+  useEffect(() => {
+    if (sortedFilteredTokens) {
+      endTrace({ name: TraceName.AccountOverviewAssetListTab });
+    }
+  }, [sortedFilteredTokens]);
+
+  return (
+    <>
+      {sortedFilteredTokens.map((token: TokenWithFiatAmount) => (
+        <TokenCell
+          key={`${token.chainId}-${token.symbol}-${token.address}`}
+          token={token}
+          privacyMode={privacyMode}
+          onClick={onTokenClick}
+        />
+      ))}
+    </>
   );
 }
+
+export default React.memo(TokenList);

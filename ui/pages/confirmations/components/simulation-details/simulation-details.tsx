@@ -4,6 +4,9 @@ import {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import React from 'react';
+import { ConfirmInfoAlertRow } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
+import { ConfirmInfoSection } from '../../../../components/app/confirm/info/row/section';
 import {
   Box,
   Icon,
@@ -25,15 +28,21 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { ConfirmInfoAlertRow } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
-import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { BalanceChangeList } from './balance-change-list';
 import { useBalanceChanges } from './useBalanceChanges';
 import { useSimulationMetrics } from './useSimulationMetrics';
+import { BalanceChange } from './types';
+
+export type StaticRow = {
+  label: string;
+  balanceChanges: BalanceChange[];
+};
 
 export type SimulationDetailsProps = {
   enableMetrics?: boolean;
   isTransactionsRedesign?: boolean;
+  metricsOnly?: boolean;
+  staticRows?: StaticRow[];
   transaction: TransactionMeta;
 };
 
@@ -109,10 +118,7 @@ const HeaderWithAlert = ({ transactionId }: { transactionId: string }) => {
         paddingLeft: 0,
         paddingRight: 0,
       }}
-    >
-      {/* Intentional fragment */}
-      <></>
-    </ConfirmInfoAlertRow>
+    />
   );
 };
 
@@ -191,31 +197,58 @@ const SimulationDetailsLayout: React.FC<{
   inHeader?: React.ReactNode;
   isTransactionsRedesign: boolean;
   transactionId: string;
-}> = ({ inHeader, isTransactionsRedesign, transactionId, children }) => (
-  <Box
-    data-testid="simulation-details-layout"
-    className="simulation-details-layout"
-    display={Display.Flex}
-    flexDirection={FlexDirection.Column}
-    borderRadius={BorderRadius.LG}
-    borderColor={
-      isTransactionsRedesign
-        ? BorderColor.transparent
-        : BorderColor.borderDefault
-    }
-    padding={3}
-    margin={isTransactionsRedesign ? null : 4}
-    gap={3}
-  >
-    <HeaderLayout
-      isTransactionsRedesign={isTransactionsRedesign}
-      transactionId={transactionId}
+}> = ({ inHeader, isTransactionsRedesign, transactionId, children }) =>
+  isTransactionsRedesign ? (
+    <ConfirmInfoSection noPadding>
+      <Box
+        data-testid="simulation-details-layout"
+        className="simulation-details-layout"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        borderRadius={BorderRadius.LG}
+        borderColor={
+          isTransactionsRedesign
+            ? BorderColor.transparent
+            : BorderColor.borderDefault
+        }
+        padding={3}
+        margin={isTransactionsRedesign ? null : 4}
+        gap={3}
+      >
+        <HeaderLayout
+          isTransactionsRedesign={isTransactionsRedesign}
+          transactionId={transactionId}
+        >
+          {inHeader}
+        </HeaderLayout>
+        {children}
+      </Box>
+    </ConfirmInfoSection>
+  ) : (
+    <Box
+      data-testid="simulation-details-layout"
+      className="simulation-details-layout"
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      borderRadius={BorderRadius.LG}
+      borderColor={
+        isTransactionsRedesign
+          ? BorderColor.transparent
+          : BorderColor.borderDefault
+      }
+      padding={3}
+      margin={isTransactionsRedesign ? null : 4}
+      gap={3}
     >
-      {inHeader}
-    </HeaderLayout>
-    {children}
-  </Box>
-);
+      <HeaderLayout
+        isTransactionsRedesign={isTransactionsRedesign}
+        transactionId={transactionId}
+      >
+        {inHeader}
+      </HeaderLayout>
+      {children}
+    </Box>
+  );
 
 /**
  * Preview of a transaction's effects using simulation data.
@@ -225,16 +258,24 @@ const SimulationDetailsLayout: React.FC<{
  * @param props.enableMetrics - Whether to enable simulation metrics.
  * @param props.isTransactionsRedesign - Whether or not the component is being
  * used inside the transaction redesign flow.
+ * @param props.metricsOnly - Whether to only track metrics and not render the UI.
+ * @param props.staticRows - Optional static rows to display.
  */
 export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   transaction,
   enableMetrics = false,
   isTransactionsRedesign = false,
+  metricsOnly = false,
+  staticRows = [],
 }: SimulationDetailsProps) => {
   const t = useI18nContext();
   const { chainId, id: transactionId, simulationData } = transaction;
   const balanceChangesResult = useBalanceChanges({ chainId, simulationData });
   const loading = !simulationData || balanceChangesResult.pending;
+
+  const hasStaticData =
+    staticRows?.length > 0 &&
+    staticRows.some((row) => row.balanceChanges?.length > 0);
 
   useSimulationMetrics({
     enableMetrics,
@@ -243,6 +284,10 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
     simulationData,
     transactionId,
   });
+
+  if (metricsOnly) {
+    return null;
+  }
 
   if (loading) {
     return (
@@ -260,12 +305,13 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
     [
       SimulationErrorCode.ChainNotSupported,
       SimulationErrorCode.Disabled,
-    ].includes(error?.code as SimulationErrorCode)
+    ].includes(error?.code as SimulationErrorCode) &&
+    !hasStaticData
   ) {
     return null;
   }
 
-  if (error) {
+  if (error && !hasStaticData) {
     const inHeaderProp = error.code !== SimulationErrorCode.Reverted && {
       inHeader: <ErrorContent error={error} />,
     };
@@ -284,7 +330,7 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   }
 
   const balanceChanges = balanceChangesResult.value;
-  const empty = balanceChanges.length === 0;
+  const empty = balanceChanges.length === 0 && !hasStaticData;
   if (empty) {
     return (
       <SimulationDetailsLayout
@@ -297,6 +343,7 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
 
   const outgoing = balanceChanges.filter((bc) => bc.amount.isNegative());
   const incoming = balanceChanges.filter((bc) => !bc.amount.isNegative());
+
   return (
     <SimulationDetailsLayout
       isTransactionsRedesign={isTransactionsRedesign}
@@ -313,6 +360,13 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
           balanceChanges={incoming}
           testId="simulation-rows-incoming"
         />
+        {staticRows.map((staticRow, index) => (
+          <BalanceChangeList
+            key={index}
+            heading={staticRow.label}
+            balanceChanges={staticRow.balanceChanges}
+          />
+        ))}
       </Box>
     </SimulationDetailsLayout>
   );

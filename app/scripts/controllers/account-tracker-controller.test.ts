@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
-import { ControllerMessenger } from '@metamask/base-controller';
-import { InternalAccount } from '@metamask/keyring-api';
+import { Messenger } from '@metamask/base-controller';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { BlockTracker, Provider } from '@metamask/network-controller';
 
 import { flushPromises } from '../../../test/lib/timer-helpers';
@@ -107,16 +107,13 @@ async function withController<ReturnValue>(
   });
   const blockTrackerStub = buildMockBlockTracker();
 
-  const controllerMessenger = new ControllerMessenger<
-    AllowedActions,
-    AllowedEvents
-  >();
+  const messenger = new Messenger<AllowedActions, AllowedEvents>();
   const getSelectedAccountStub = () =>
     ({
       id: 'accountId',
       address: SELECTED_ADDRESS,
     } as InternalAccount);
-  controllerMessenger.registerActionHandler(
+  messenger.registerActionHandler(
     'AccountsController:getSelectedAccount',
     getSelectedAccount || getSelectedAccountStub,
   );
@@ -134,7 +131,7 @@ async function withController<ReturnValue>(
   const getNetworkStateStub = jest.fn().mockReturnValue({
     selectedNetworkClientId: 'selectedNetworkClientId',
   });
-  controllerMessenger.registerActionHandler(
+  messenger.registerActionHandler(
     'NetworkController:getState',
     getNetworkStateStub,
   );
@@ -147,7 +144,7 @@ async function withController<ReturnValue>(
     blockTracker: blockTrackerFromHookStub,
     provider: providerFromHook,
   });
-  controllerMessenger.registerActionHandler(
+  messenger.registerActionHandler(
     'NetworkController:getNetworkClientById',
     getNetworkClientById || getNetworkClientByIdStub,
   );
@@ -155,7 +152,7 @@ async function withController<ReturnValue>(
   const getOnboardingControllerState = jest.fn().mockReturnValue({
     completedOnboarding,
   });
-  controllerMessenger.registerActionHandler(
+  messenger.registerActionHandler(
     'OnboardingController:getState',
     getOnboardingControllerState,
   );
@@ -163,7 +160,7 @@ async function withController<ReturnValue>(
   const getPreferencesControllerState = jest.fn().mockReturnValue({
     useMultiAccountBalanceChecker,
   });
-  controllerMessenger.registerActionHandler(
+  messenger.registerActionHandler(
     'PreferencesController:getState',
     getPreferencesControllerState,
   );
@@ -173,7 +170,7 @@ async function withController<ReturnValue>(
     provider: provider as Provider,
     blockTracker: blockTrackerStub as unknown as BlockTracker,
     getNetworkIdentifier: jest.fn(),
-    messenger: controllerMessenger.getRestricted({
+    messenger: messenger.getRestricted({
       name: 'AccountTrackerController',
       allowedActions: [
         'AccountsController:getSelectedAccount',
@@ -196,7 +193,7 @@ async function withController<ReturnValue>(
     blockTrackerFromHookStub,
     blockTrackerStub,
     triggerAccountRemoved: (address: string) => {
-      controllerMessenger.publish('KeyringController:accountRemoved', address);
+      messenger.publish('KeyringController:accountRemoved', address);
     },
   });
 }
@@ -368,6 +365,23 @@ describe('AccountTrackerController', () => {
       });
     });
 
+    it('should gracefully handle unknown polling tokens', async () => {
+      await withController(({ controller, blockTrackerFromHookStub }) => {
+        jest.spyOn(controller, 'updateAccounts').mockResolvedValue();
+
+        const pollingToken =
+          controller.startPollingByNetworkClientId('mainnet');
+
+        controller.stopPollingByPollingToken('unknown-token');
+        controller.stopPollingByPollingToken(pollingToken);
+
+        expect(blockTrackerFromHookStub.removeListener).toHaveBeenCalledWith(
+          'latest',
+          expect.any(Function),
+        );
+      });
+    });
+
     it('should not unsubscribe from the block tracker if called with one of multiple active polling tokens for a given networkClient', async () => {
       await withController(({ controller, blockTrackerFromHookStub }) => {
         jest.spyOn(controller, 'updateAccounts').mockResolvedValue();
@@ -389,14 +403,6 @@ describe('AccountTrackerController', () => {
         expect(() => {
           controller.stopPollingByPollingToken(undefined);
         }).toThrow('pollingToken required');
-      });
-    });
-
-    it('should error if no matching pollingToken is found', async () => {
-      await withController(({ controller }) => {
-        expect(() => {
-          controller.stopPollingByPollingToken('potato');
-        }).toThrow('pollingToken not found');
       });
     });
   });

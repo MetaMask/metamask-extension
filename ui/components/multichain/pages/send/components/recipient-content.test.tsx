@@ -21,7 +21,7 @@ jest.mock('reselect', () => ({
   createSelector: jest.fn(),
 }));
 
-jest.mock('../../../../../selectors/util', () => ({
+jest.mock('../../../../../../shared/modules/selectors/util', () => ({
   createDeepEqualSelector: jest.fn(),
 }));
 
@@ -55,10 +55,16 @@ jest.mock('../../..', () => ({
   AssetPickerAmount: jest.fn(() => <div>AssetPickerAmount</div>),
 }));
 
-jest.mock('.', () => ({
+jest.mock('./hex', () => ({
   SendHexData: jest.fn(() => <div>SendHexData</div>),
-  SendPageRow: jest.fn(({ children }) => <div>{children}</div>),
+}));
+
+jest.mock('./quote-card', () => ({
   QuoteCard: jest.fn(() => <div>QuoteCard</div>),
+}));
+
+jest.mock('./send-page-row', () => ({
+  SendPageRow: jest.fn(({ children }) => <div>{children}</div>),
 }));
 
 describe('SendPageRecipientContent', () => {

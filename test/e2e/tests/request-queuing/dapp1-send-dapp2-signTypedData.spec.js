@@ -6,14 +6,12 @@ const {
   DAPP_URL,
   DAPP_ONE_URL,
   regularDelayMs,
-  defaultGanacheOptions,
-  tempToggleSettingRedesignedConfirmations,
   WINDOW_TITLES,
   largeDelayMs,
 } = require('../../helpers');
 
 describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
-  it('should queue signTypedData tx after eth_sendTransaction confirmation and signTypedData confirmation should target the correct network after eth_sendTransaction is confirmed @no-mmi', async function () {
+  it('should queue signTypedData tx after eth_sendTransaction confirmation and signTypedData confirmation should target the correct network after eth_sendTransaction is confirmed', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -21,30 +19,32 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerTripleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
           .withSelectedNetworkControllerPerDomain()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-            {
+          },
+          {
+            type: 'anvil',
+            options: {
               port: 7777,
               chainId: 1000,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
-        await tempToggleSettingRedesignedConfirmations(driver);
 
         // Open and connect Dapp One
         await openDapp(driver, undefined, DAPP_URL);
@@ -134,7 +134,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         // Check correct network on the send confirmation.
         await driver.waitForSelector({
-          css: '[data-testid="network-display"]',
+          css: 'p',
           text: 'Localhost 7777',
         });
 
@@ -146,11 +146,11 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         // Check correct network on the signTypedData confirmation.
         await driver.waitForSelector({
-          css: '[data-testid="signature-request-network-display"]',
+          css: 'p',
           text: 'Localhost 8546',
         });
 
-        await driver.clickElement({ text: 'Reject', tag: 'button' });
+        await driver.clickElement({ text: 'Cancel', tag: 'button' });
       },
     );
   });

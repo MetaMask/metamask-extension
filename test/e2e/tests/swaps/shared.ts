@@ -1,8 +1,6 @@
 import { strict as assert } from 'assert';
-import { ServerOptions } from 'ganache';
 import { MockttpServer } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
 import { regularDelayMs, veryLargeDelayMs } from '../../helpers';
 import { SWAP_TEST_ETH_DAI_TRADES_MOCK } from '../../../data/mock-data';
 
@@ -18,25 +16,6 @@ export async function mockEthDaiTrade(mockServer: MockttpServer) {
       }),
   ];
 }
-
-export const ganacheOptions: ServerOptions & { miner: { blockTime?: number } } =
-  {
-    wallet: {
-      accounts: [
-        {
-          secretKey:
-            '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: 25000000000000000000n,
-        },
-      ],
-    },
-    miner: {},
-  };
-
-export const withFixturesOptions = {
-  fixtures: new FixtureBuilder().build(),
-  ganacheOptions,
-};
 
 type SwapOptions = {
   amount: number;
@@ -216,9 +195,21 @@ export const checkNotification = async (
 };
 
 export const changeExchangeRate = async (driver: Driver) => {
+  // Ensure quote view button is present
+  await driver.waitForSelector('[data-testid="review-quote-view-all-quotes"]');
+
+  // Scroll button into view before clicking
+  await driver.executeScript(`
+    const element = document.querySelector('[data-testid="review-quote-view-all-quotes"]');
+    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  `);
+
+  // Add small delay allowing for smooth scroll
+  await driver.delay(500);
+
+  // Try to click the element
   await driver.clickElement('[data-testid="review-quote-view-all-quotes"]');
   await driver.waitForSelector({ text: 'Quote details', tag: 'h2' });
-
   const networkFees = await driver.findElements(
     '[data-testid*="select-quote-popover-row"]',
   );

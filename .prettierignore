@@ -6,7 +6,6 @@ node_modules/**/*
 /app/vendor/**
 /builds/**/*
 /coverage/**/*
-/development/charts/**
 /development/chromereload.js
 /development/ts-migration-dashboard/filesToConvert.json
 /development/ts-migration-dashboard/build/**
@@ -16,3 +15,4 @@ node_modules/**/*
 /test-artifacts/**/*
 /test/test-results/**/*
 /test/e2e/send-eth-with-private-key-test/**/*
+/CHANGELOG.md

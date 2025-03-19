@@ -5,7 +5,10 @@ import { NotificationServicesController } from '@metamask/notification-services-
 import { t } from '../../../../../app/scripts/translate';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
-import type { NotificationComponent } from '../types/notifications/notifications';
+import {
+  NotificationComponentType,
+  type NotificationComponent,
+} from '../types/notifications/notifications';
 
 import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 import { shortenAddress } from '../../../../helpers/utils/util';
@@ -120,7 +123,7 @@ export const components: NotificationComponent<ETHNotification> = {
       );
     },
     body: {
-      type: 'body_onchain_notification',
+      type: NotificationComponentType.OnChainBody,
       From: ({ notification }) => (
         <NotificationDetailAddress
           side={`${t('notificationItemFrom')}${
@@ -203,7 +206,7 @@ export const components: NotificationComponent<ETHNotification> = {
     },
   },
   footer: {
-    type: 'footer_onchain_notification',
+    type: NotificationComponentType.OnChainFooter,
     ScanLink: ({ notification }) => {
       return (
         <NotificationDetailBlockExplorerButton

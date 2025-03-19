@@ -1,4 +1,4 @@
-import { EthAccountType } from '@metamask/keyring-api';
+import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import {
   MOCK_ACCOUNTS,
@@ -34,6 +34,12 @@ describe('Accounts Selectors', () => {
         Object.values(mockState.metamask.internalAccounts.accounts),
       );
     });
+
+    it('returns the same object', () => {
+      const result1 = getInternalAccounts(mockState as AccountsState);
+      const result2 = getInternalAccounts(mockState as AccountsState);
+      expect(result1 === result2).toBe(true);
+    });
   });
 
   describe('#getSelectedInternalAccount', () => {
@@ -58,7 +64,8 @@ describe('Accounts Selectors', () => {
           'eth_signTypedData_v3',
           'eth_signTypedData_v4',
         ],
-        type: 'eip155:eoa',
+        type: EthAccountType.Eoa,
+        scopes: [EthScope.Eoa],
       });
     });
 
@@ -88,6 +95,7 @@ describe('Accounts Selectors', () => {
         },
         options: {},
         methods: ETH_EOA_METHODS,
+        scopes: [EthScope.Eoa],
         type: EthAccountType.Eoa,
       };
       expect(

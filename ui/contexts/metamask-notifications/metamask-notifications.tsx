@@ -1,14 +1,14 @@
 import React, { createContext, useContext, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import type { NotificationServicesController } from '@metamask/notification-services-controller';
-import { useListNotifications } from '../../hooks/metamask-notifications/useNotifications';
-import { useAccountSyncingEffect } from '../../hooks/metamask-notifications/useProfileSyncing';
-import { selectIsProfileSyncingEnabled } from '../../selectors/metamask-notifications/profile-syncing';
+import {
+  useDisableNotifications,
+  useListNotifications,
+} from '../../hooks/metamask-notifications/useNotifications';
 import { selectIsMetamaskNotificationsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
 import { getUseExternalServices } from '../../selectors';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
-
-type Notification = NotificationServicesController.Types.INotification;
+import { type Notification } from '../../pages/notifications/notification-components/types/notifications/notifications';
+import { selectIsSignedIn } from '../../selectors/identity/authentication';
 
 type MetamaskNotificationsContextType = {
   listNotifications: () => void;
@@ -32,30 +32,45 @@ export const useMetamaskNotificationsContext = () => {
 };
 
 export const MetamaskNotificationsProvider: React.FC = ({ children }) => {
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
   const isNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
-  const basicFunctionality = useSelector(getUseExternalServices);
+  const isBasicFunctionalityEnabled = useSelector(getUseExternalServices);
   const isUnlocked = useSelector(getIsUnlocked);
+  const isSignedIn = useSelector(selectIsSignedIn);
+
   const { listNotifications, notificationsData, isLoading, error } =
     useListNotifications();
+  const { disableNotifications } = useDisableNotifications();
+
+  // Basic functionality effect
+  useEffect(() => {
+    if (!isBasicFunctionalityEnabled && isNotificationsEnabled) {
+      // Disable notifications
+      disableNotifications();
+      // list notifications to reset the counter
+      listNotifications();
+    }
+  }, [
+    isBasicFunctionalityEnabled,
+    isNotificationsEnabled,
+    disableNotifications,
+    listNotifications,
+  ]);
 
   const shouldFetchNotifications = useMemo(
-    () => isProfileSyncingEnabled && isNotificationsEnabled,
-    [isProfileSyncingEnabled, isNotificationsEnabled],
+    () => isNotificationsEnabled && isSignedIn,
+    [isNotificationsEnabled, isSignedIn],
   );
 
-  useAccountSyncingEffect();
-
   useEffect(() => {
-    if (basicFunctionality && shouldFetchNotifications && isUnlocked) {
+    if (isBasicFunctionalityEnabled && shouldFetchNotifications && isUnlocked) {
       listNotifications();
     }
   }, [
     shouldFetchNotifications,
     listNotifications,
-    basicFunctionality,
+    isBasicFunctionalityEnabled,
     isUnlocked,
   ]);
 

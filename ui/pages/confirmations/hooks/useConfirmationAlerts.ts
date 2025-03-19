@@ -11,11 +11,15 @@ import { useNoGasPriceAlerts } from './alerts/transactions/useNoGasPriceAlerts';
 import { usePendingTransactionAlerts } from './alerts/transactions/usePendingTransactionAlerts';
 import { useQueuedConfirmationsAlerts } from './alerts/transactions/useQueuedConfirmationsAlerts';
 import { useResimulationAlert } from './alerts/transactions/useResimulationAlert';
+import { useFirstTimeInteractionAlert } from './alerts/transactions/useFirstTimeInteractionAlert';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useSigningOrSubmittingAlerts } from './alerts/transactions/useSigningOrSubmittingAlerts';
 ///: END:ONLY_INCLUDE_IF
 import useConfirmationOriginAlerts from './alerts/useConfirmationOriginAlerts';
 import useBlockaidAlerts from './alerts/useBlockaidAlerts';
+import { useNetworkAndOriginSwitchingAlerts } from './alerts/useNetworkAndOriginSwitchingAlerts';
+import { useSelectedAccountAlerts } from './alerts/useSelectedAccountAlerts';
+import { useNonContractAddressAlerts } from './alerts/transactions/useNonContractAddressAlerts';
 
 function useSignatureAlerts(): Alert[] {
   const accountMismatchAlerts = useAccountMismatchAlerts();
@@ -36,10 +40,13 @@ function useTransactionAlerts(): Alert[] {
   const noGasPriceAlerts = useNoGasPriceAlerts();
   const pendingTransactionAlerts = usePendingTransactionAlerts();
   const resimulationAlert = useResimulationAlert();
+  const firstTimeInteractionAlert = useFirstTimeInteractionAlert();
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const signingOrSubmittingAlerts = useSigningOrSubmittingAlerts();
   ///: END:ONLY_INCLUDE_IF
   const queuedConfirmationsAlerts = useQueuedConfirmationsAlerts();
+  const nonContractAddressAlerts = useNonContractAddressAlerts();
+
   return useMemo(
     () => [
       ...gasEstimateFailedAlerts,
@@ -50,10 +57,12 @@ function useTransactionAlerts(): Alert[] {
       ...noGasPriceAlerts,
       ...pendingTransactionAlerts,
       ...resimulationAlert,
+      ...firstTimeInteractionAlert,
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       ...signingOrSubmittingAlerts,
       ///: END:ONLY_INCLUDE_IF
       ...queuedConfirmationsAlerts,
+      ...nonContractAddressAlerts,
     ],
     [
       gasEstimateFailedAlerts,
@@ -64,10 +73,12 @@ function useTransactionAlerts(): Alert[] {
       noGasPriceAlerts,
       pendingTransactionAlerts,
       resimulationAlert,
+      firstTimeInteractionAlert,
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       signingOrSubmittingAlerts,
       ///: END:ONLY_INCLUDE_IF
       queuedConfirmationsAlerts,
+      nonContractAddressAlerts,
     ],
   );
 }
@@ -77,6 +88,8 @@ export default function useConfirmationAlerts(): Alert[] {
   const confirmationOriginAlerts = useConfirmationOriginAlerts();
   const signatureAlerts = useSignatureAlerts();
   const transactionAlerts = useTransactionAlerts();
+  const selectedAccountAlerts = useSelectedAccountAlerts();
+  const networkAndOriginSwitchingAlerts = useNetworkAndOriginSwitchingAlerts();
 
   return useMemo(
     () => [
@@ -84,12 +97,16 @@ export default function useConfirmationAlerts(): Alert[] {
       ...confirmationOriginAlerts,
       ...signatureAlerts,
       ...transactionAlerts,
+      ...selectedAccountAlerts,
+      ...networkAndOriginSwitchingAlerts,
     ],
     [
       blockaidAlerts,
       confirmationOriginAlerts,
       signatureAlerts,
       transactionAlerts,
+      selectedAccountAlerts,
+      networkAndOriginSwitchingAlerts,
     ],
   );
 }

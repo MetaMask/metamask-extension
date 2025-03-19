@@ -1,13 +1,17 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { BtcAccountType, EthAccountType } from '@metamask/keyring-api';
+import {
+  BtcAccountType,
+  EthAccountType,
+  SolAccountType,
+} from '@metamask/keyring-api';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BannerAlert, BannerAlertSeverity } from '../../component-library';
 import { getSelectedInternalAccount } from '../../../selectors';
 import { AccountOverviewEth } from './account-overview-eth';
-import { AccountOverviewBtc } from './account-overview-btc';
 import { AccountOverviewUnknown } from './account-overview-unknown';
 import { AccountOverviewCommonProps } from './common';
+import { AccountOverviewNonEvm } from './account-overview-non-evm';
 
 export type AccountOverviewProps = AccountOverviewCommonProps & {
   useExternalServices: boolean;
@@ -25,7 +29,8 @@ export function AccountOverview(props: AccountOverviewProps) {
       case EthAccountType.Erc4337:
         return <AccountOverviewEth {...props}></AccountOverviewEth>;
       case BtcAccountType.P2wpkh:
-        return <AccountOverviewBtc {...props}></AccountOverviewBtc>;
+      case SolAccountType.DataAccount:
+        return <AccountOverviewNonEvm {...props}></AccountOverviewNonEvm>;
       default:
         return <AccountOverviewUnknown {...props}></AccountOverviewUnknown>;
     }

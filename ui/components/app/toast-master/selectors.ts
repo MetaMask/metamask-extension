@@ -1,4 +1,5 @@
-import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
+import { isEvmAccountType } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { getAlertEnabledness } from '../../../ducks/metamask/metamask';
 import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
 import {
@@ -14,6 +15,9 @@ import { getIsPrivacyToastRecent } from './utils';
 type State = Omit<MetaMaskReduxState, 'appState'> & {
   appState: {
     showNftDetectionEnablementToast?: boolean;
+    ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+    showNewSrpAddedToast?: boolean;
+    ///: END:ONLY_INCLUDE_IF
   };
   metamask: {
     newPrivacyPolicyToastClickedOrClosed?: boolean;
@@ -106,3 +110,15 @@ export function selectShowConnectAccountToast(
 export function selectSwitchedNetworkNeverShowMessage(state: State): boolean {
   return Boolean(state.metamask.switchedNetworkNeverShowMessage);
 }
+
+/**
+ * Retrieves user preference to see the "New SRP Added" toast
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+export function selectNewSrpAdded(state: State): boolean {
+  return Boolean(state.appState.showNewSrpAddedToast);
+}
+///: END:ONLY_INCLUDE_IF

@@ -24,7 +24,7 @@ import {
   selectIsMetamaskNotificationsEnabled,
   selectIsMetamaskNotificationsFeatureSeen,
 } from '../../../selectors/metamask-notifications/metamask-notifications';
-import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
+import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
 import {
   Box,
   IconName,
@@ -48,16 +48,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+
 import {
-  getMmiPortfolioEnabled,
-  getMmiPortfolioUrl,
-} from '../../../selectors/institutional/selectors';
-///: END:ONLY_INCLUDE_IF
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  getMetaMetricsId,
-  ///: END:ONLY_INCLUDE_IF(build-mmi)
   getSelectedInternalAccount,
   getUnapprovedTransactions,
   getAnySnapUpdateAvailable,
@@ -103,12 +95,6 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
 
   const hasUnapprovedTransactions =
     Object.keys(unapprovedTransactions).length > 0;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
-  const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
-  ///: END:ONLY_INCLUDE_IF
 
   let hasNotifySnaps = false;
   const snapsUpdatesAvailable = useSelector(getAnySnapUpdateAvailable);
@@ -255,29 +241,6 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
         {t('allPermissions')}
       </MenuItem>
 
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        mmiPortfolioEnabled && (
-          <MenuItem
-            iconName={IconName.Diagram}
-            onClick={() => {
-              trackEvent({
-                category: MetaMetricsEventCategory.Navigation,
-                event: MetaMetricsEventName.MMIPortfolioButtonClicked,
-              });
-              window.open(
-                `${mmiPortfolioUrl}?metametricsId=${metaMetricsId}`,
-                '_blank',
-              );
-              closeMenu();
-            }}
-            data-testid="global-menu-mmi-portfolio"
-          >
-            {t('portfolioDashboard')}
-          </MenuItem>
-        )
-        ///: END:ONLY_INCLUDE_IF
-      }
       {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? null : (
         <MenuItem
           iconName={IconName.Expand}

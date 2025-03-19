@@ -251,9 +251,6 @@
   "from": {
     "message": "থেকে"
   },
-  "functionType": {
-    "message": "কার্যকারিতার ধরণ"
-  },
   "gasLimit": {
     "message": "গ্যাসের সীমা"
   },
@@ -313,9 +310,6 @@
     "message": "আমদানি",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "অ্যাকাউন্ট আমদানি করুন"
-  },
   "importAccountMsg": {
     "message": "আমদানি করা অ্যাকাউন্টগুলি আপনার গোড়ায় তৈরি করা MetaMask অ্যাকাউন্ট সীডফ্রেজের সাথে সংযুক্ত হবে না। আমদানি করা অ্যাকাউন্টগুলি সম্পর্কে আরও জানুন "
   },
@@ -374,9 +368,6 @@
   },
   "loading": {
     "message": "লোড হচ্ছে..."
-  },
-  "loadingTokens": {
-    "message": "টোকেনগুলি লোড করছে..."
   },
   "localhost": {
     "message": "লোকালহোস্ট 8545"
@@ -440,9 +431,6 @@
   "noConversionRateAvailable": {
     "message": "কোনো বিনিময় হার উপলভ্য নয়"
   },
-  "noTransactions": {
-    "message": "আপনার কোনো লেনদেন নেই"
-  },
   "noWebcamFound": {
     "message": "আপনার কম্পিউটারের ওয়েবক্যাম খুঁজে পাওয়া যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।"
   },
@@ -466,9 +454,6 @@
   },
   "origin": {
     "message": "উৎস"
-  },
-  "parameters": {
-    "message": "প্যারামিটারসমূহ"
   },
   "participateInMetaMetrics": {
     "message": "MetaMetrics এ অংশগ্রহণ করুন"
@@ -538,9 +523,6 @@
   "removeAccountDescription": {
     "message": "এই অ্যাকাউন্টটি আপনার ওয়ালেট থেকে অপসারণ করা হবে। অবিরত রাখার আগে অনুগ্রহ করে নিশ্চিত করুন যে এই আমদানি করা অ্যাকাউন্টটির জন্য আপনার মূল সীড ফ্রেজ বা গোপন কী আছে। আপনি অ্যাকাউন্ট ড্রপ-ডাউন থেকে অ্যাকাউন্টগুলি আবার আমদানি বা তৈরি করতে পারবেন।"
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "অনুরোধগুলি স্বীকৃতির জন্য অপেক্ষা করছে"
-  },
   "required": {
     "message": "প্রয়োজন"
   },
@@ -607,9 +589,6 @@
   },
   "showHexDataDescription": {
     "message": "পাঠাবার স্ক্রিনে হেক্স ডেটা ফিল্ডটি দেখাবার জন্য এটি নির্বাচন করুন"
-  },
-  "sigRequest": {
-    "message": "স্বাক্ষরের অনুরোধ"
   },
   "sign": {
     "message": "স্বাক্ষর করুন"
@@ -707,9 +686,6 @@
   "transactionErrored": {
     "message": "লেনদেনে একটি ত্রুটি হয়েছে।"
   },
-  "transactionFee": {
-    "message": "লেনদেন ফী"
-  },
   "transactionResubmitted": {
     "message": "$2 এ গ্যাস ফী $1 তে বাড়িয়ে লেনদেন আবার জমা করা হয়েছে"
   },
@@ -736,9 +712,6 @@
   },
   "unknown": {
     "message": "অজানা"
-  },
-  "unknownNetwork": {
-    "message": "অজানা ব্যক্তিগত নেটওয়ার্ক"
   },
   "unknownQrCode": {
     "message": "ত্রুটি: আমরা ওই QR কোডটি সনাক্ত করতে পারিনি"
@@ -769,9 +742,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "এই বৈশিষ্ট্যটি ব্যবহার করতে আপনাকে ক্যামেরা অ্যাক্সেস করার অনুমতি দিতে হবে।"
-  },
-  "youSign": {
-    "message": "আপনি স্বাক্ষর করছেন"
   },
   "yourPrivateSeedPhrase": {
     "message": "আপনার ব্যক্তিগত সীড ফ্রেজ"

@@ -22,17 +22,11 @@ export function useTransactionGasFeeEstimate(
     ?.estimatedBaseFee;
 
   // override with values from `dappSuggestedGasFees` if they exist
-  gasLimit = transactionMeta.dappSuggestedGasFees?.gas || gasLimit || HEX_ZERO;
-  gasPrice =
-    transactionMeta.dappSuggestedGasFees?.gasPrice || gasPrice || HEX_ZERO;
+  gasLimit = gasLimit || HEX_ZERO;
+  gasPrice = gasPrice || HEX_ZERO;
   const maxPriorityFeePerGas =
-    transactionMeta.dappSuggestedGasFees?.maxPriorityFeePerGas ||
-    transactionMeta.txParams?.maxPriorityFeePerGas ||
-    HEX_ZERO;
-  const maxFeePerGas =
-    transactionMeta.dappSuggestedGasFees?.maxFeePerGas ||
-    transactionMeta.txParams?.maxFeePerGas ||
-    HEX_ZERO;
+    transactionMeta.txParams?.maxPriorityFeePerGas || HEX_ZERO;
+  const maxFeePerGas = transactionMeta.txParams?.maxFeePerGas || HEX_ZERO;
 
   let gasEstimate: Hex;
   if (supportsEIP1559) {

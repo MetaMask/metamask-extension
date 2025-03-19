@@ -8,11 +8,17 @@ import {
   WINDOW_TITLES,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { withRedesignConfirmationFixtures } from './helpers';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import TestDapp from '../../page-objects/pages/test-dapp';
+import { createDappTransaction } from '../../page-objects/flows/transaction';
+import { TestSnaps } from '../../page-objects/pages/test-snaps';
+import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
+import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
+import { withTransactionEnvelopeTypeFixtures } from './helpers';
 
-describe('Navigation Signature - Different signature types', function (this: Suite) {
+describe('Confirmation Navigation', function (this: Suite) {
   it('initiates and queues multiple signatures and confirms', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({ driver }: { driver: Driver }) => {
@@ -52,7 +58,7 @@ describe('Navigation Signature - Different signature types', function (this: Sui
   });
 
   it('initiates and queues a mix of signatures and transactions and navigates', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({ driver }: { driver: Driver }) => {
@@ -100,7 +106,7 @@ describe('Navigation Signature - Different signature types', function (this: Sui
   });
 
   it('initiates multiple signatures and rejects all', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({ driver }: { driver: Driver }) => {
@@ -117,6 +123,47 @@ describe('Navigation Signature - Different signature types', function (this: Sui
         await verifyRejectionResults(driver, '#signTypedDataResult');
         await verifyRejectionResults(driver, '#signTypedDataV3Result');
         await verifyRejectionResults(driver, '#signTypedDataV4Result');
+      },
+    );
+  });
+
+  it('navigates between transactions, signatures, and snap dialogs', async function () {
+    await withTransactionEnvelopeTypeFixtures(
+      this.test?.fullTitle(),
+      TransactionEnvelopeType.feeMarket,
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithoutBalanceValidation(driver);
+
+        const testSnaps = new TestSnaps(driver);
+        await openTestSnapClickButtonAndInstall(driver, 'connectDialogsButton');
+        await testSnaps.scrollAndClickButton('confirmationButton');
+
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.clickSignTypedDatav4();
+
+        await createDappTransaction(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        const confirmation = new Confirmation(driver);
+        await confirmation.check_pageNumbers(1, 3);
+        await driver.waitForSelector({ text: 'Confirmation Dialog' });
+
+        await confirmation.clickNextPage();
+        await confirmation.check_pageNumbers(2, 3);
+        await driver.waitForSelector({ text: 'Signature request' });
+
+        await confirmation.clickNextPage();
+        await confirmation.check_pageNumbers(3, 3);
+        await driver.waitForSelector({ text: 'Transfer request' });
+
+        await confirmation.clickPreviousPage();
+        await confirmation.check_pageNumbers(2, 3);
+        await driver.waitForSelector({ text: 'Signature request' });
+
+        await confirmation.clickPreviousPage();
+        await confirmation.check_pageNumbers(1, 3);
+        await driver.waitForSelector({ text: 'Confirmation Dialog' });
       },
     );
   });

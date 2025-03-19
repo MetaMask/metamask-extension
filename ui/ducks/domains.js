@@ -7,11 +7,11 @@ import {
 } from '@metamask/snaps-rpc-methods';
 import {
   getAddressBookEntry,
-  getCurrentChainId,
   getNameLookupSnapsIds,
   getPermissionSubjects,
   getSnapMetadata,
 } from '../selectors';
+import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { handleSnapRequest } from '../store/actions';
 import { NO_RESOLUTION_FOR_DOMAIN } from '../pages/confirmations/send/send.constants';
 import { CHAIN_CHANGED } from '../store/actionConstants';

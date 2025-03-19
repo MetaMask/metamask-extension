@@ -1,15 +1,16 @@
 import path from 'path';
+import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import AccountListPage from '../../page-objects/pages/account-list-page';
+import AccountDetailsModal from '../../page-objects/pages/dialog/account-details-modal';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import HomePage from '../../page-objects/pages/homepage';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import HomePage from '../../page-objects/pages/home/homepage';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 
-describe('Import flow @no-mmi', function () {
+describe('Import flow', function () {
   it('Import wallet using Secret Recovery Phrase with pasting word by word', async function () {
-    const testAddress = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
@@ -32,8 +33,10 @@ describe('Import flow @no-mmi', function () {
         const accountListPage = new AccountListPage(driver);
         await accountListPage.check_pageIsLoaded();
         await accountListPage.openAccountDetailsModal('Account 1');
-        await accountListPage.check_addressInAccountDetailsModal(
-          testAddress.toLowerCase(),
+        const accountDetailsModal = new AccountDetailsModal(driver);
+        await accountDetailsModal.check_pageIsLoaded();
+        await accountDetailsModal.check_addressInAccountDetailsModal(
+          DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
         );
       },
     );
@@ -50,7 +53,7 @@ describe('Import flow @no-mmi', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
 
         // Wait until account list is loaded to mitigate race condition
         const headerNavbar = new HeaderNavbar(driver);
@@ -74,7 +77,7 @@ describe('Import flow @no-mmi', function () {
         // Check new imported account has correct name and label
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.check_expectedBalanceIsDisplayed('0');
         await headerNavbar.check_accountLabel('Account 4');
 
         await headerNavbar.openAccountMenu();
@@ -96,7 +99,7 @@ describe('Import flow @no-mmi', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.check_accountLabel('Account 1');

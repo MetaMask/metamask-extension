@@ -423,6 +423,10 @@ export type MetaMetricsUserTraits = {
    */
   number_of_tokens?: number;
   /**
+   * The number of HD Entropies the user has.
+   */
+  number_of_hd_entropies?: number;
+  /**
    * Does the user have the OpenSea API enabled?
    */
   opensea_api_enabled?: boolean;
@@ -490,6 +494,10 @@ export type MetaMetricsUserTraits = {
    * The number of petname addresses
    */
   petname_addresses_count?: number;
+  /**
+   * The profile ID of the user if they have been signed in
+   */
+  profile_id?: string;
 };
 
 export enum MetaMetricsUserTrait {
@@ -541,6 +549,10 @@ export enum MetaMetricsUserTrait {
    * Identified when the number of tokens change.
    */
   NumberOfTokens = 'number_of_tokens',
+  /**
+   * Identified when the user has HD Entropies.
+   */
+  NumberOfHDEntropies = 'number_of_hd_entropies',
   /**
    * Identified when the OpenSea API is enabled.
    */
@@ -594,6 +606,14 @@ export enum MetaMetricsUserTrait {
    * Identifies if the Privacy Mode is enabled
    */
   PrivacyModeEnabled = 'privacy_mode_toggle',
+  /**
+   * Identified when the user prefers to see all tokens or current network tokens in wallet list
+   */
+  NetworkFilterPreference = 'selected_network_filter',
+  /**
+   * Identified when the user signs in
+   */
+  ProfileId = 'profile_id',
 }
 
 /**
@@ -631,18 +651,23 @@ export enum MetaMetricsEventName {
   AccountRenamed = 'Account Renamed',
   AccountsSyncAdded = 'Accounts Sync Added',
   AccountsSyncNameUpdated = 'Accounts Sync Name Updated',
+  AccountsSyncErroneousSituation = 'Accounts Sync Erroneous Situation',
   ActivityDetailsOpened = 'Activity Details Opened',
   ActivityDetailsClosed = 'Activity Details Closed',
   AnalyticsPreferenceSelected = 'Analytics Preference Selected',
   AppInstalled = 'App Installed',
+  AppOpened = 'App Opened',
   AppUnlocked = 'App Unlocked',
   AppUnlockedFailed = 'App Unlocked Failed',
   AppLocked = 'App Locked',
   AppWindowExpanded = 'App Window Expanded',
+  BannerDisplay = 'Banner Display',
+  BannerCloseAll = 'Banner Close All',
+  BannerSelect = 'Banner Select',
+  BannerNavigated = 'Banner Navigated',
   BridgeLinkClicked = 'Bridge Link Clicked',
   BitcoinSupportToggled = 'Bitcoin Support Toggled',
   BitcoinTestnetSupportToggled = 'Bitcoin Testnet Support Toggled',
-  SolanaSupportToggled = 'Solana Support Toggled',
   CurrentCurrency = 'Current Currency',
   DappViewed = 'Dapp Viewed',
   DecryptionApproved = 'Decryption Approved',
@@ -650,6 +675,7 @@ export enum MetaMetricsEventName {
   DecryptionRequested = 'Decryption Requested',
   DisablingNotifications = 'Notifications Disabled',
   EmptyBuyBannerDisplayed = 'Empty Buy Banner Displayed',
+  EmptyBuyBannerClosed = 'Empty Buy Banner Closed',
   EmptyBuyBannerClicked = 'Empty Buy Banner Clicked',
   EmptyReceiveBannerDisplayed = 'Empty Receive Banner Displayed',
   EmptyReceiveBannerClicked = 'Empty Receive Banner Clicked',
@@ -760,6 +786,7 @@ export enum MetaMetricsEventName {
   TokenAdded = 'Token Added',
   TokenRemoved = 'Token Removed',
   TokenSortPreference = 'Token Sort Preference',
+  TokenListRefreshed = 'Token List Refreshed',
   NFTRemoved = 'NFT Removed',
   TokenDetected = 'Token Detected',
   TokenHidden = 'Token Hidden',
@@ -856,7 +883,6 @@ export enum MetaMetricsEventName {
   NotificationsActivated = 'Notifications Activated',
   PushNotificationReceived = 'Push Notification Received',
   PushNotificationClicked = 'Push Notification Clicked',
-
   // Send
   sendAssetSelected = 'Send Asset Selected',
   sendFlowExited = 'Send Flow Exited',
@@ -865,6 +891,19 @@ export enum MetaMetricsEventName {
   sendSwapQuoteRequested = 'Send Swap Quote Requested',
   sendSwapQuoteReceived = 'Send Swap Quote Received',
   sendTokenModalOpened = 'Send Token Modal Opened',
+  // Cross Chain Swaps
+  ActionCompleted = 'Action Completed',
+  ActionFailed = 'Action Failed',
+  ActionOpened = 'Action Opened',
+  ActionSubmitted = 'Action Submitted',
+  AllQuotesOpened = 'All Quotes Opened',
+  AllQuotesSorted = 'All Quotes Sorted',
+  InputChanged = 'Input Changed',
+  InputSourceDestinationFlipped = 'Source and Destination Flipped',
+  CrossChainSwapsQuoteError = 'Cross-chain Quote Error',
+  QuoteSelected = 'Quote Selected',
+  CrossChainSwapsQuotesReceived = 'Cross-chain Quotes Received',
+  CrossChainSwapsQuotesRequested = 'Cross-chain Quotes Requested',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -893,6 +932,7 @@ export enum MetaMetricsEventCategory {
   App = 'App',
   Auth = 'Auth',
   Background = 'Background',
+  Banner = 'Banner',
   // The TypeScript ESLint rule is incorrectly marking this line.
   /* eslint-disable-next-line @typescript-eslint/no-shadow */
   Error = 'Error',
@@ -926,6 +966,7 @@ export enum MetaMetricsEventCategory {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   MMI = 'Institutional',
   ///: END:ONLY_INCLUDE_IF
+  CrossChainSwaps = 'Cross Chain Swaps',
 }
 
 export enum MetaMetricsEventLinkType {
@@ -951,6 +992,7 @@ export enum MetaMetricsNetworkEventSource {
   Dapp = 'dapp',
   DeprecatedNetworkModal = 'deprecated_network_modal',
   NewAddNetworkFlow = 'new_add_network_flow',
+  Bridge = 'bridge',
 }
 
 export enum MetaMetricsSwapsEventSource {
@@ -973,6 +1015,7 @@ export enum MetaMetricsTransactionEventSource {
 export enum MetaMetricsEventLocation {
   AlertFrictionModal = 'alert_friction_modal',
   Confirmation = 'confirmation',
+  OriginThrottleModal = 'origin_throttle_modal',
   SignatureConfirmation = 'signature_confirmation',
   TokenDetails = 'token_details',
   TokenDetection = 'token_detection',
@@ -1013,4 +1056,9 @@ export enum DeleteRegulationStatus {
   PartialSuccess = 'PARTIAL_SUCCESS',
   Running = 'RUNNING',
   Unknown = 'UNKNOWN',
+}
+
+export enum MetaMetricsEventTransactionEstimateType {
+  DappProposed = 'dapp_proposed',
+  DefaultEstimate = 'default_estimate',
 }

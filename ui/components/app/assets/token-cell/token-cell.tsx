@@ -1,59 +1,201 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { getTokenList } from '../../../../selectors';
-import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
-import { TokenListItem } from '../../../multichain';
-import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
-import { getIntlLocale } from '../../../../ducks/locale/locale';
+import React, { useCallback, useContext, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { useTokenDisplayInfo } from '../hooks';
+import {
+  BlockSize,
+  Display,
+  FlexDirection,
+  JustifyContent,
+} from '../../../../helpers/constants/design-system';
+import {
+  Box,
+  ButtonSecondary,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+} from '../../../component-library';
+import { getMultichainIsEvm } from '../../../../selectors/multichain';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
+import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
+import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
+import { setEditedNetwork } from '../../../../store/actions';
+import {
+  SafeChain,
+  useSafeChains,
+} from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import { TokenWithFiatAmount } from '../types';
+import {
+  TokenCellBadge,
+  TokenCellTitle,
+  TokenCellPercentChange,
+  TokenCellPrimaryDisplay,
+  TokenCellSecondaryDisplay,
+} from './cells';
 
-type TokenCellProps = {
-  address: string;
-  symbol: string;
-  string?: string;
-  image: string;
+export type TokenCellProps = {
+  token: TokenWithFiatAmount;
   privacyMode?: boolean;
-  onClick?: (arg: string) => void;
+  onClick?: (chainId: string, address: string) => void;
 };
 
 export default function TokenCell({
-  address,
-  image,
-  symbol,
-  string,
+  token,
   privacyMode = false,
   onClick,
 }: TokenCellProps) {
-  const tokenList = useSelector(getTokenList);
-  const tokenData = Object.values(tokenList).find(
-    (token) =>
-      isEqualCaseInsensitive(token.symbol, symbol) &&
-      isEqualCaseInsensitive(token.address, address),
-  );
-  const title = tokenData?.name || symbol;
-  const tokenImage = tokenData?.iconUrl || image;
-  const formattedFiat = useTokenFiatAmount(address, string, symbol, {}, false);
-  const locale = useSelector(getIntlLocale);
-  const primary = new Intl.NumberFormat(locale, {
-    minimumSignificantDigits: 1,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-  }).format(string.toString());
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const t = useI18nContext();
+  const isEvm = useSelector(getMultichainIsEvm);
+  const trackEvent = useContext(MetaMetricsContext);
+  const { safeChains } = useSafeChains();
+  const [showScamWarningModal, setShowScamWarningModal] = useState(false);
 
-  const isOriginalTokenSymbol = useIsOriginalTokenSymbol(address, symbol);
+  const decimalChainId = isEvm && parseInt(hexToDecimal(token.chainId), 10);
+
+  const safeChainDetails: SafeChain | undefined = safeChains?.find((chain) => {
+    if (typeof decimalChainId === 'number') {
+      return chain.chainId === decimalChainId.toString();
+    }
+    return undefined;
+  });
+
+  const tokenDisplayInfo = useTokenDisplayInfo({
+    token,
+  });
+
+  const handleClick = useCallback(
+    (e?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      e?.preventDefault();
+
+      // If the scam warning modal is open, do nothing
+      if (showScamWarningModal) {
+        return;
+      }
+
+      // Ensure token has a valid chainId before proceeding
+      if (!onClick || !token.chainId) {
+        return;
+      }
+
+      // Call the onClick handler with chainId and address if needed
+      onClick(token.chainId, token.address);
+
+      // Track the event
+      trackEvent({
+        category: MetaMetricsEventCategory.Tokens,
+        event: MetaMetricsEventName.TokenDetailsOpened,
+        properties: {
+          location: 'Home',
+          chain_id: token.chainId, // FIXME: Ensure this is a number for EVM accounts
+          token_symbol: token.symbol,
+        },
+      });
+    },
+    [onClick, token, showScamWarningModal, trackEvent],
+  );
+
+  const handleScamWarningModal = (arg: boolean) => {
+    setShowScamWarningModal(arg);
+  };
+
+  if (!token.chainId) {
+    return null;
+  }
 
   return (
-    <TokenListItem
-      onClick={onClick ? () => onClick(address) : undefined}
-      tokenSymbol={symbol}
-      tokenImage={tokenImage}
-      primary={`${primary || 0}`}
-      secondary={isOriginalTokenSymbol ? formattedFiat : null}
-      title={title}
-      isOriginalTokenSymbol={isOriginalTokenSymbol}
-      address={address}
-      showPercentage
-      privacyMode={privacyMode}
-    />
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      width={BlockSize.Full}
+      height={BlockSize.Full}
+      gap={4}
+    >
+      <Box
+        as="a"
+        onClick={handleClick}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        paddingTop={2}
+        paddingBottom={2}
+        paddingLeft={4}
+        paddingRight={4}
+        width={BlockSize.Full}
+        style={{ height: 62, cursor: onClick ? 'pointer' : 'auto' }}
+        data-testid="multichain-token-list-button"
+      >
+        <TokenCellBadge token={{ ...token, ...tokenDisplayInfo }} />
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          width={BlockSize.Full}
+          style={{ flexGrow: 1, overflow: 'hidden' }}
+          justifyContent={JustifyContent.center}
+        >
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            justifyContent={JustifyContent.spaceBetween}
+          >
+            <TokenCellTitle token={{ ...token, ...tokenDisplayInfo }} />
+            <TokenCellSecondaryDisplay
+              token={{ ...token, ...tokenDisplayInfo }}
+              handleScamWarningModal={handleScamWarningModal}
+              privacyMode={privacyMode}
+            />
+          </Box>
+
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            justifyContent={JustifyContent.spaceBetween}
+          >
+            <TokenCellPercentChange token={{ ...token, ...tokenDisplayInfo }} />
+            <TokenCellPrimaryDisplay
+              token={{ ...token, ...tokenDisplayInfo }}
+              privacyMode={privacyMode}
+            />
+          </Box>
+        </Box>
+      </Box>
+      {/* scam warning modal, this should be higher up in the component tree */}
+      {isEvm && showScamWarningModal ? (
+        <Modal isOpen onClose={() => setShowScamWarningModal(false)}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader onClose={() => setShowScamWarningModal(false)}>
+              {t('nativeTokenScamWarningTitle')}
+            </ModalHeader>
+            <ModalBody marginTop={4} marginBottom={4}>
+              {t('nativeTokenScamWarningDescription', [
+                token.symbol,
+                safeChainDetails?.nativeCurrency?.symbol ||
+                  t('nativeTokenScamWarningDescriptionExpectedTokenFallback'), // never render "undefined" string value
+              ])}
+            </ModalBody>
+            <ModalFooter>
+              <ButtonSecondary
+                onClick={() => {
+                  dispatch(setEditedNetwork({ chainId: token.chainId }));
+                  history.push(NETWORKS_ROUTE);
+                }}
+                block
+              >
+                {t('nativeTokenScamWarningConversion')}
+              </ButtonSecondary>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      ) : null}
+    </Box>
   );
 }

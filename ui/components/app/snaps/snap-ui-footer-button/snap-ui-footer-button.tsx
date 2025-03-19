@@ -4,12 +4,15 @@ import {
   ButtonVariant,
   UserInputEventType,
 } from '@metamask/snaps-sdk';
+import type { ButtonProps as SnapButtonProps } from '@metamask/snaps-sdk/jsx';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import {
   Button,
   ButtonProps,
   ButtonSize,
+  Icon,
+  IconName,
   IconSize,
 } from '../../../component-library';
 import {
@@ -24,6 +27,7 @@ import { getHideSnapBranding } from '../../../../selectors';
 type SnapUIFooterButtonProps = {
   name?: string;
   variant?: ButtonVariant;
+  snapVariant?: SnapButtonProps['variant'];
   isSnapAction?: boolean;
   onCancel?: () => void;
 };
@@ -35,9 +39,11 @@ export const SnapUIFooterButton: FunctionComponent<
   name,
   children,
   disabled = false,
+  loading = false,
   isSnapAction = false,
   type,
   variant = ButtonVariant.Primary,
+  snapVariant,
   form,
   ...props
 }) => {
@@ -84,11 +90,20 @@ export const SnapUIFooterButton: FunctionComponent<
         alignItems: AlignItems.center,
         flexDirection: FlexDirection.Row,
       }}
+      data-theme={null}
+      danger={snapVariant === 'destructive'}
     >
-      {isSnapAction && !hideSnapBranding && (
+      {isSnapAction && !hideSnapBranding && !loading && (
         <SnapIcon snapId={snapId} avatarSize={IconSize.Sm} marginRight={2} />
       )}
-      {children}
+      {loading ? (
+        <Icon
+          name={IconName.Loading}
+          style={{ animation: 'spin 1.2s linear infinite' }}
+        />
+      ) : (
+        children
+      )}
     </Button>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -7,7 +7,6 @@ import EditableLabel from '../../ui/editable-label/editable-label';
 
 import { setAccountLabel } from '../../../store/actions';
 import {
-  getCurrentChainId,
   getHardwareWalletType,
   getInternalAccountByAddress,
 } from '../../../selectors';
@@ -16,11 +15,15 @@ import {
   Box,
   ButtonSecondary,
   ButtonSecondarySize,
+  Text,
 } from '../../component-library';
 import {
   AlignItems,
+  BackgroundColor,
+  BorderRadius,
   Display,
   FlexDirection,
+  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -30,12 +33,88 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { useEIP7702Account } from '../../../pages/confirmations/hooks/useEIP7702Account';
+import { useAsyncResult } from '../../../hooks/useAsyncResult';
+
+function SmartAccountPill({ address }) {
+  const t = useI18nContext();
+  const { isUpgraded } = useEIP7702Account();
+
+  const { value: isAccountUpgraded } = useAsyncResult(
+    () => isUpgraded(address),
+    [address],
+  );
+
+  if (!isAccountUpgraded) {
+    return null;
+  }
+
+  return (
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      backgroundColor={BackgroundColor.backgroundAlternative}
+      alignItems={AlignItems.center}
+      borderRadius={BorderRadius.pill}
+      margin={4}
+      style={{
+        padding: '0px 8px',
+        flexShrink: 1,
+        flexBasis: 'auto',
+        minWidth: 0,
+      }}
+    >
+      <Text
+        ellipsis
+        variant={TextVariant.bodyMd}
+        color={TextColor.textAlternativeSoft}
+      >
+        {t('confirmAccountTypeSmartContract')}
+      </Text>
+    </Box>
+  );
+}
+
+function DowngradeAccountButton({ address, onClose }) {
+  const t = useI18nContext();
+
+  const { downgradeAccount, isUpgraded } = useEIP7702Account({
+    onRedirect: onClose,
+  });
+
+  const { value: isAccountUpgraded } = useAsyncResult(
+    () => isUpgraded(address),
+    [address],
+  );
+
+  const handleClick = useCallback(async () => {
+    await downgradeAccount(address);
+  }, [address, downgradeAccount]);
+
+  if (!isAccountUpgraded) {
+    return null;
+  }
+
+  return (
+    <ButtonSecondary
+      block
+      size={ButtonSecondarySize.Lg}
+      variant={TextVariant.bodyMd}
+      marginBottom={4}
+      onClick={handleClick}
+    >
+      {t('accountDetailsRevokeDelegationButton')}
+    </ButtonSecondary>
+  );
+}
 
 export const AccountDetailsDisplay = ({
   accounts,
   accountName,
   address,
   onExportClick,
+  onClose,
 }) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
@@ -71,7 +150,9 @@ export const AccountDetailsDisplay = ({
         }}
         accounts={accounts}
       />
+      <SmartAccountPill address={address} />
       <QrCodeView Qr={{ data: address }} />
+      <DowngradeAccountButton address={address} onClose={onClose} />
       {exportPrivateKeyFeatureEnabled ? (
         <ButtonSecondary
           block
@@ -113,4 +194,26 @@ AccountDetailsDisplay.propTypes = {
    * Executes upon Export button click
    */
   onExportClick: PropTypes.func.isRequired,
+  /**
+   * Executes when closing the modal
+   */
+  onClose: PropTypes.func.isRequired,
+};
+
+SmartAccountPill.propTypes = {
+  /**
+   * Current address
+   */
+  address: PropTypes.string.isRequired,
+};
+
+DowngradeAccountButton.propTypes = {
+  /**
+   * Current address
+   */
+  address: PropTypes.string.isRequired,
+  /**
+   * Executes when closing the modal
+   */
+  onClose: PropTypes.func.isRequired,
 };

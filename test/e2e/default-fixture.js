@@ -54,6 +54,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
                 'eth_signTypedData_v4',
               ],
               type: 'eip155:eoa',
+              scopes: ['eip155:0'],
             },
           },
         },
@@ -113,27 +114,32 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
         showTestnetMessageInDropdown: true,
         trezorModel: null,
+        isRampCardClosed: false,
         newPrivacyPolicyToastClickedOrClosed: true,
         newPrivacyPolicyToastShownDate: Date.now(),
-        usedNetworks: {
-          [CHAIN_IDS.MAINNET]: true,
-          [CHAIN_IDS.LINEA_MAINNET]: true,
-          [CHAIN_IDS.GOERLI]: true,
-          [CHAIN_IDS.LOCALHOST]: true,
-        },
         snapsInstallPrivacyWarningShown: true,
       },
       BridgeController: {
         bridgeState: {
           bridgeFeatureFlags: {
-            extensionSupport: false,
-            srcNetworkAllowlist: ['0x1', '0xa', '0xe708'],
-            destNetworkAllowlist: ['0x1', '0xa', '0xe708'],
+            extensionConfig: {
+              support: false,
+              chains: {
+                'eip155:1': {
+                  isActiveSrc: true,
+                  isActiveDest: true,
+                },
+                'eip155:10': {
+                  isActiveSrc: true,
+                  isActiveDest: true,
+                },
+                'eip155:59144': {
+                  isActiveSrc: true,
+                  isActiveDest: true,
+                },
+              },
+            },
           },
-          destTokens: {},
-          destTopAssets: [],
-          srcTokens: {},
-          srcTopAssets: [],
         },
       },
       CurrencyController: {
@@ -217,7 +223,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           showNativeTokenAsMainBalance: true,
           petnamesEnabled: true,
           showMultiRpcModal: false,
-          isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
           tokenSortConfig: {
             key: 'tokenFiatAmount',
@@ -225,17 +230,16 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             sortCallback: 'stringNumeric',
           },
           shouldShowAggregatedBalancePopover: true,
+          tokenNetworkFilter: {},
         },
         selectedAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         theme: 'light',
         useBlockie: false,
         useNftDetection: false,
-        useNonceField: false,
         usePhishDetect: true,
         useTokenDetection: false,
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
-        useRequestQueue: true,
         isMultiAccountBalancesEnabled: true,
         showIncomingTransactions: {
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.MAINNET]: true,

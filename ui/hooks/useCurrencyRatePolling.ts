@@ -1,19 +1,23 @@
 import { useSelector } from 'react-redux';
-import {
-  getNetworkConfigurationsByChainId,
-  getUseCurrencyRateCheck,
-} from '../selectors';
+import { getUseCurrencyRateCheck } from '../selectors';
+import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
 import {
   currencyRateStartPolling,
   currencyRateStopPollingByPollingToken,
 } from '../store/actions';
-import { getCompletedOnboarding } from '../ducks/metamask/metamask';
+import {
+  getCompletedOnboarding,
+  getIsUnlocked,
+} from '../ducks/metamask/metamask';
 import usePolling from './usePolling';
 
 const useCurrencyRatePolling = () => {
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const completedOnboarding = useSelector(getCompletedOnboarding);
+  const isUnlocked = useSelector(getIsUnlocked);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+
+  const enabled = completedOnboarding && isUnlocked && useCurrencyRateCheck;
 
   const nativeCurrencies = [
     ...new Set(
@@ -25,7 +29,7 @@ const useCurrencyRatePolling = () => {
     startPolling: currencyRateStartPolling,
     stopPollingByPollingToken: currencyRateStopPollingByPollingToken,
     input: nativeCurrencies,
-    enabled: useCurrencyRateCheck && completedOnboarding,
+    enabled,
   });
 };
 

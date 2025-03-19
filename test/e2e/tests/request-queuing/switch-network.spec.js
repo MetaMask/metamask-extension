@@ -6,7 +6,6 @@ const {
   DAPP_URL,
   regularDelayMs,
   WINDOW_TITLES,
-  defaultGanacheOptions,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 
@@ -20,18 +19,19 @@ describe('Request Queuing Switch Network on Dapp Send Tx while on different netw
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesControllerUseRequestQueueEnabled()
           .build(),
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -65,7 +65,7 @@ describe('Request Queuing Switch Network on Dapp Send Tx while on different netw
 
         // Confirm Transaction
         await driver.findClickableElement({ text: 'Confirm', tag: 'button' });
-        await driver.clickElement('[data-testid="page-container-footer-next"]');
+        await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         await driver.delay(regularDelayMs);
 

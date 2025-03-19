@@ -4,16 +4,13 @@ export const SECONDARY = 'SECONDARY';
 const _contractAddressLink =
   'https://support.metamask.io/managing-my-tokens/moving-your-tokens/why-am-i-being-warned-about-sending-tokens-to-a-contract/';
 
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-const _mmiWebSite = 'https://metamask.io/institutions/';
-export const MMI_WEB_SITE = _mmiWebSite;
-///: END:ONLY_INCLUDE_IF
-
 // eslint-disable-next-line prefer-destructuring
 export const METAMETRICS_SETTINGS_LINK =
   'https://support.metamask.io/privacy-and-security/how-to-manage-your-metametrics-settings';
 // eslint-disable-next-line prefer-destructuring
 export const SUPPORT_REQUEST_LINK = process.env.SUPPORT_REQUEST_LINK;
+// eslint-disable-next-line prefer-destructuring
+export const SUPPORT_LINK = process.env.SUPPORT_LINK;
 export const CONTRACT_ADDRESS_LINK = _contractAddressLink;
 export const PASSWORD_MIN_LENGTH = 8;
 export const OUTDATED_BROWSER_VERSIONS = {

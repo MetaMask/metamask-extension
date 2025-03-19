@@ -8,7 +8,10 @@ import {
   updateOnChainTriggersByAccount,
   hideLoadingIndication,
 } from '../../store/actions';
-import { getIsUpdatingMetamaskNotificationsAccount } from '../../selectors/metamask-notifications/metamask-notifications';
+import {
+  getIsUpdatingMetamaskNotificationsAccount,
+  selectIsMetamaskNotificationsEnabled,
+} from '../../selectors/metamask-notifications/metamask-notifications';
 
 export function useSwitchFeatureAnnouncementsChange(): {
   onChange: (state: boolean) => Promise<void>;
@@ -28,7 +31,6 @@ export function useSwitchFeatureAnnouncementsChange(): {
         const errorMessage =
           e instanceof Error ? e.message : JSON.stringify(e ?? '');
         setError(errorMessage);
-        throw e;
       }
     },
     [dispatch],
@@ -41,44 +43,6 @@ export function useSwitchFeatureAnnouncementsChange(): {
 }
 
 export type UseSwitchAccountNotificationsData = { [address: string]: boolean };
-
-export function useSwitchAccountNotifications(): {
-  switchAccountNotifications: (
-    accounts: string[],
-  ) => Promise<UseSwitchAccountNotificationsData | undefined>;
-  isLoading: boolean;
-  error: string | null;
-} {
-  const dispatch = useDispatch();
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const switchAccountNotifications = useCallback(
-    async (
-      accounts: string[],
-    ): Promise<UseSwitchAccountNotificationsData | undefined> => {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const data = await dispatch(checkAccountsPresence(accounts));
-        return data as unknown as UseSwitchAccountNotificationsData;
-      } catch (e) {
-        const errorMessage =
-          e instanceof Error ? e.message : JSON.stringify(e ?? '');
-        setError(errorMessage);
-        log.error(errorMessage);
-        throw e;
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [dispatch],
-  );
-
-  return { switchAccountNotifications, isLoading, error };
-}
 
 export function useSwitchAccountNotificationsChange(): {
   onChange: (addresses: string[], state: boolean) => Promise<void>;
@@ -103,7 +67,6 @@ export function useSwitchAccountNotificationsChange(): {
           e instanceof Error ? e.message : JSON.stringify(e ?? '');
         log.error(errorMessage);
         setError(errorMessage);
-        throw e;
       }
       dispatch(hideLoadingIndication());
     },
@@ -146,6 +109,7 @@ export function useAccountSettingsProps(accounts: string[]) {
   const accountsBeingUpdated = useSelector(
     getIsUpdatingMetamaskNotificationsAccount,
   );
+  const isEnabled = useSelector(selectIsMetamaskNotificationsEnabled);
   const fetchAccountSettings = useRefetchAccountSettings();
   const [data, setData] = useState<UseSwitchAccountNotificationsData>({});
   const [loading, setLoading] = useState<boolean>(false);
@@ -169,15 +133,12 @@ export function useAccountSettingsProps(accounts: string[]) {
 
   // Effect - async get if accounts are enabled/disabled
   useEffect(() => {
-    try {
-      const memoAccounts: string[] = JSON.parse(jsonAccounts);
-      update(memoAccounts);
-    } catch {
-      setError('Failed to get account settings');
-    } finally {
-      setLoading(false);
+    if (!isEnabled) {
+      return;
     }
-  }, [jsonAccounts, fetchAccountSettings]);
+    const memoAccounts: string[] = JSON.parse(jsonAccounts);
+    update(memoAccounts);
+  }, [jsonAccounts, fetchAccountSettings, isEnabled]);
 
   return {
     data,

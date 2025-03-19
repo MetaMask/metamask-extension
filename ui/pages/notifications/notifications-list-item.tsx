@@ -1,6 +1,6 @@
 import React, { useContext, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
-import { NotificationServicesController } from '@metamask/notification-services-controller';
+import { hasProperty } from '@metamask/utils';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -14,12 +14,13 @@ import {
 } from '../../helpers/constants/design-system';
 import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
 import { useMarkNotificationAsRead } from '../../hooks/metamask-notifications/useNotifications';
+import { useSnapNotificationTimeouts } from '../../hooks/useNotificationTimeouts';
 import {
   NotificationComponents,
+  TRIGGER_TYPES,
   hasNotificationComponents,
 } from './notification-components';
-
-type Notification = NotificationServicesController.Types.INotification;
+import { type Notification } from './notification-components/types/notifications/notifications';
 
 export function NotificationsListItem({
   notification,
@@ -28,6 +29,7 @@ export function NotificationsListItem({
 }) {
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
+  const { setNotificationTimeout } = useSnapNotificationTimeouts();
 
   const { markNotificationAsRead } = useMarkNotificationAsRead();
 
@@ -44,6 +46,7 @@ export function NotificationsListItem({
         previously_read: notification.isRead,
       },
     });
+
     markNotificationAsRead([
       {
         id: notification.id,
@@ -51,6 +54,15 @@ export function NotificationsListItem({
         isRead: notification.isRead,
       },
     ]);
+
+    if (
+      notification.type === TRIGGER_TYPES.SNAP &&
+      !hasProperty(notification.data, 'detailedView')
+    ) {
+      setNotificationTimeout(notification.id);
+      return;
+    }
+
     history.push(`${NOTIFICATIONS_ROUTE}/${notification.id}`);
   }, [notification, markNotificationAsRead, history]);
 
