@@ -213,6 +213,7 @@ export const ImportSrp = ({
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       height={BlockSize.Max}
+      data-testid="import-srp-container"
     >
       <Text variant={TextVariant.bodyMd} marginTop={2}>
         {t('importSRPDescription')}
@@ -228,7 +229,7 @@ export const ImportSrp = ({
               flexDirection={FlexDirection.Row}
             >
               <Label
-                className="import-srp__srp-label"
+                className="import-srp__multi-srp-label"
                 variant={TextVariant.bodyMdMedium}
                 marginRight={4}
               >

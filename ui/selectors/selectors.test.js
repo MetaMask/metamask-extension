@@ -296,6 +296,46 @@ describe('Selectors', () => {
     });
   });
 
+  describe('#getShouldShowSeedPhraseReminder', () => {
+    it('returns true if the account is a native account', () => {
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          seedPhraseBackedUp: false,
+        },
+      };
+      expect(selectors.getShouldShowSeedPhraseReminder(state)).toBe(true);
+    });
+
+    it('returns false if the account is not native', () => {
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          seedPhraseBackedUp: false,
+          internalAccounts: {
+            ...mockState.metamask.internalAccounts,
+            accounts: {
+              ...mockState.metamask.internalAccounts.accounts,
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                ...mockState.metamask.internalAccounts.accounts[
+                  'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+                ],
+                metadata: {
+                  keyring: {
+                    type: KeyringType.imported,
+                  },
+                },
+              },
+            },
+          },
+        },
+      };
+      expect(selectors.getShouldShowSeedPhraseReminder(state)).toBe(false);
+    });
+  });
+
   describe('#getNetworkToAutomaticallySwitchTo', () => {
     const SELECTED_ORIGIN = 'https://portfolio.metamask.io';
     const SELECTED_ORIGIN_NETWORK_ID = NETWORK_TYPES.LINEA_SEPOLIA;
