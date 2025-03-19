@@ -1,7 +1,7 @@
 import { act } from '@testing-library/react-hooks';
 import { renderHookWithProvider } from '../../test/lib/render-helpers';
-import { useShouldShowSpeedUp } from './useShouldShowSpeedUp';
 import mockState from '../../test/data/mock-state.json';
+import { useShouldShowSpeedUp } from './useShouldShowSpeedUp';
 
 describe('useShouldShowSpeedUp', () => {
   const currentChainId = '0x1';
