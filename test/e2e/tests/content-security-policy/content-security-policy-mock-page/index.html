@@ -1,9 +1,13 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <title>Mock CSP header testing</title>
-</head>
-<body>
-	<div>Mock Page for Content-Security-Policy header testing</div>
-</body>
+  <head>
+    <title>Mock CSP header testing</title>
+  </head>
+  <body>
+    <div>Mock Page for Content-Security-Policy header testing</div>
+    <script>
+      window.inlineScriptLoaded = true;
+    </script>
+    <script src="/main.js"></script>
+  </body>
 </html>
