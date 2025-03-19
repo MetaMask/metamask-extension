@@ -2414,19 +2414,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   triggerNetworkrequests() {
-    const filtredChainIds = this.#getAllAddedNetworks().filter(
-      (networkId) =>
-        this.preferencesController.state.incomingTransactionsPreferences[
-          networkId
-        ],
-    );
-
-    this.txController.stopIncomingTransactionPolling();
-
-    this.txController.stopIncomingTransactionPolling();
-
-    this.txController.startIncomingTransactionPolling(filtredChainIds);
-
+    this.#restartSmartTransactionPoller();
     this.tokenDetectionController.enable();
     this.getInfuraFeatureFlags();
   }
@@ -2788,17 +2776,9 @@ export default class MetamaskController extends EventEmitter {
       'PreferencesController:stateChange',
       previousValueComparator(async (prevState, currState) => {
         const { currentLocale } = currState;
-
-        const filtredChainIds = this.#getAllAddedNetworks().filter(
-          (networkId) =>
-            currState?.incomingTransactionsPreferences?.[networkId],
-        );
+        this.#restartSmartTransactionPoller();
 
         await updateCurrentLocale(currentLocale);
-
-        this.txController.stopIncomingTransactionPolling();
-        this.txController.startIncomingTransactionPolling(filtredChainIds);
-
         this.#checkTokenListPolling(currState, prevState);
       }, this.preferencesController.state),
     );
@@ -2953,19 +2933,22 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       'NetworkController:networkDidChange',
       async () => {
-        const filtredChainIds = this.#getAllAddedNetworks().filter(
+        const filteredChainIds = this.#getAllAddedNetworks().filter(
           (networkId) =>
             this.preferencesController.state.incomingTransactionsPreferences[
               networkId
             ],
         );
-        await this.txController.stopIncomingTransactionPolling();
 
-        await this.txController.updateIncomingTransactions(filtredChainIds);
+        if (filteredChainIds.length > 0) {
+          await this.txController.stopIncomingTransactionPolling();
 
-        await this.txController.startIncomingTransactionPolling(
-          filtredChainIds,
-        );
+          await this.txController.updateIncomingTransactions(filteredChainIds);
+
+          await this.txController.startIncomingTransactionPolling(
+            filteredChainIds,
+          );
+        }
       },
     );
 
@@ -8170,6 +8153,20 @@ export default class MetamaskController extends EventEmitter {
     const chainIds = Object.keys(networksConfig);
 
     return chainIds;
+  }
+
+  #restartSmartTransactionPoller() {
+    const filteredChainIds = this.#getAllAddedNetworks().filter(
+      (networkId) =>
+        this.preferencesController.state.incomingTransactionsPreferences[
+          networkId
+        ],
+    );
+
+    if (filteredChainIds.length > 0) {
+      this.txController.stopIncomingTransactionPolling();
+      this.txController.startIncomingTransactionPolling(filteredChainIds);
+    }
   }
 
   /**

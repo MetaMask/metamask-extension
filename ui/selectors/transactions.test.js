@@ -901,6 +901,59 @@ describe('Transaction Selectors', () => {
 
       expect(result).toStrictEqual(transactions);
     });
+
+    it('returns the same reference when called multiple times with the same state', () => {
+      const transactions = [
+        {
+          id: 1,
+          chainId: CHAIN_IDS.MAINNET,
+          status: TransactionStatus.submitted,
+          txParams: {
+            from: '0xAddress1',
+            to: '0xRecipient1',
+          },
+        },
+      ];
+      const state = {
+        metamask: { transactions },
+      };
+
+      const firstResult = getAllNetworkTransactions(state);
+      const secondResult = getAllNetworkTransactions(state);
+
+      // Both calls should return the same reference since the input hasn't changed.
+      expect(firstResult).toBe(secondResult);
+    });
+
+    it('returns the same result reference even when a new but deeply equal state is provided', () => {
+      const transactions = [
+        {
+          id: 1,
+          chainId: CHAIN_IDS.MAINNET,
+          status: TransactionStatus.submitted,
+          txParams: {
+            from: '0xAddress1',
+            to: '0xRecipient1',
+          },
+        },
+      ];
+      const state1 = {
+        metamask: { transactions },
+      };
+
+      // Create a new transactions array that is deeply equal to the original.
+      const newTransactions = JSON.parse(JSON.stringify(transactions));
+      const state2 = {
+        metamask: { transactions: newTransactions },
+      };
+
+      const result1 = getAllNetworkTransactions(state1);
+      const result2 = getAllNetworkTransactions(state2);
+
+      // If using deep equality in the selector, the result should be memoized
+      // and both references should be equal.
+      expect(result1).toBe(result2);
+    });
   });
 
   describe('incomingTxListSelectorAllChains', () => {

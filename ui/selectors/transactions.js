@@ -55,19 +55,18 @@ export const getTransactions = createDeepEqualSelector(
 );
 
 export const getAllNetworkTransactions = createDeepEqualSelector(
-  (state) => {
-    const transactions = getTransactions(state);
-
-    const popularNetworks = FEATURED_NETWORK_CHAIN_IDS;
-
+  // Input Selector: Retrieve all transactions from the state.
+  getTransactions,
+  // Output Selector: Filter transactions by popular networks.
+  (transactions) => {
     if (!transactions.length) {
       return [];
     }
+    const popularNetworks = FEATURED_NETWORK_CHAIN_IDS;
     return transactions.filter((transaction) =>
       popularNetworks.includes(transaction.chainId),
     );
   },
-  (transactions) => transactions,
 );
 
 export const getCurrentNetworkTransactions = createDeepEqualSelector(

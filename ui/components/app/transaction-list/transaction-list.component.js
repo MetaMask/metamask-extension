@@ -654,6 +654,9 @@ export default function TransactionList({
                                 smartTransaction={
                                   transactionGroup.initialTransaction
                                 }
+                                chainId={
+                                  transactionGroup.initialTransaction.chainId
+                                }
                               />
                             ) : (
                               <TransactionListItem
