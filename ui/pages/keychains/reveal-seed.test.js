@@ -130,7 +130,7 @@ describe('Reveal Seed Page', () => {
     });
   });
 
-  it.only('should show srp after hold to reveal', async () => {
+  it('should show srp after hold to reveal', async () => {
     mockRequestRevealSeedWords.mockImplementationOnce(mockSuccessfulSrpReveal);
     // need to use actual store because redux-mock-store does not execute actions
     const store = configureStore(mockState);
