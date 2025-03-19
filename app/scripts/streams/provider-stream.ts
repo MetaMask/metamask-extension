@@ -12,7 +12,7 @@ import {
   LEGACY_INPAGE,
   LEGACY_PROVIDER,
   LEGACY_PUBLIC_CONFIG,
-  METAMASK_CAIP_PROVIDER,
+  METAMASK_CAIP_MULTICHAIN_PROVIDER,
   METAMASK_COOKIE_HANDLER,
   METAMASK_INPAGE,
   METAMASK_EIP_1193_PROVIDER,
@@ -58,7 +58,7 @@ const setupPageStreams = () => {
   );
 
   pageChannel = pageMux.createStream(METAMASK_EIP_1193_PROVIDER);
-  caipChannel = pageMux.createStream(METAMASK_CAIP_PROVIDER);
+  caipChannel = pageMux.createStream(METAMASK_CAIP_MULTICHAIN_PROVIDER);
 
   pageMux.ignoreStream(METAMASK_COOKIE_HANDLER);
   pageMux.ignoreStream(LEGACY_PROVIDER);
@@ -98,10 +98,10 @@ export const setupExtensionStreams = () => {
     ),
   );
 
-  extensionCaipChannel = extensionMux.createStream(METAMASK_CAIP_PROVIDER);
+  extensionCaipChannel = extensionMux.createStream(METAMASK_CAIP_MULTICHAIN_PROVIDER);
   pipeline(caipChannel, extensionCaipChannel, caipChannel, (error: Error) =>
     console.debug(
-      `MetaMask: Muxed traffic for channel "${METAMASK_CAIP_PROVIDER}" failed.`,
+      `MetaMask: Muxed traffic for channel "${METAMASK_CAIP_MULTICHAIN_PROVIDER}" failed.`,
       error,
     ),
   );
@@ -156,7 +156,7 @@ const setupLegacyPageStreams = () => {
 
   legacyPageMux.ignoreStream(METAMASK_COOKIE_HANDLER);
   legacyPageMux.ignoreStream(METAMASK_EIP_1193_PROVIDER);
-  legacyPageMux.ignoreStream(METAMASK_CAIP_PROVIDER);
+  legacyPageMux.ignoreStream(METAMASK_CAIP_MULTICHAIN_PROVIDER);
   legacyPageMux.ignoreStream(PHISHING_SAFELIST);
   legacyPageMux.ignoreStream(PHISHING_STREAM);
 };
@@ -202,7 +202,7 @@ const setupLegacyExtensionStreams = () => {
         error,
       ),
   );
-  legacyExtMux.ignoreStream(METAMASK_CAIP_PROVIDER);
+  legacyExtMux.ignoreStream(METAMASK_CAIP_MULTICHAIN_PROVIDER);
   legacyExtMux.ignoreStream(METAMASK_COOKIE_HANDLER);
   legacyExtMux.ignoreStream(LEGACY_PROVIDER);
   legacyExtMux.ignoreStream(PHISHING_SAFELIST);
