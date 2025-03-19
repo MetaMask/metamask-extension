@@ -127,12 +127,13 @@ function transformState(state: Record<string, unknown>) {
     );
   }
 
+  const { networkConfigurationsByChainId } = state.NetworkController;
+
   for (const [
     chainId,
     { subdomain, getFailoverUrl },
   ] of INFURA_CHAINS_WITH_FAILOVERS) {
-    const networkConfiguration =
-      state.NetworkController.networkConfigurationsByChainId[chainId];
+    const networkConfiguration = networkConfigurationsByChainId[chainId];
 
     if (!networkConfiguration) {
       continue;

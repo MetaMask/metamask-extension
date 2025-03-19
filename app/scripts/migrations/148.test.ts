@@ -15,14 +15,14 @@ const QUICKNODE_BASE_URL = 'https://example.quicknode.com/base';
 
 describe(`migration #${VERSION}`, () => {
   let originalEnv: NodeJS.ProcessEnv;
-  let captureExceptionSpy: jest.SpyInstance<void, [unknown]>;
+  let captureExceptionMock: jest.SpyInstance<void, [unknown]>;
   let previousSentry: unknown;
 
   beforeEach(() => {
     originalEnv = { ...process.env };
-    captureExceptionSpy = jest.fn();
+    captureExceptionMock = jest.fn();
     previousSentry = global.sentry;
-    global.sentry = { captureException: captureExceptionSpy };
+    global.sentry = { captureException: captureExceptionMock };
   });
 
   afterEach(() => {
@@ -39,7 +39,7 @@ describe(`migration #${VERSION}`, () => {
     global.sentry = previousSentry;
   });
 
-  it('returns a new version of the data unchanged if INFURA_PROJECT_ID is not set', async () => {
+  it('logs an error and returns a new version of the data unchanged if INFURA_PROJECT_ID is not set', async () => {
     const oldVersionedData = {
       meta: { version: VERSION - 1 },
       data: {},
@@ -52,7 +52,7 @@ describe(`migration #${VERSION}`, () => {
     const newVersionedData = await migrate(oldVersionedData);
 
     expect(newVersionedData).toStrictEqual(expectedVersionData);
-    expect(captureExceptionSpy).toHaveBeenCalledWith(
+    expect(captureExceptionMock).toHaveBeenCalledWith(
       expect.objectContaining({
         message: 'Migration #148: No INFURA_PROJECT_ID set!',
       }),
@@ -73,7 +73,7 @@ describe(`migration #${VERSION}`, () => {
     const newVersionedData = await migrate(oldVersionedData);
 
     expect(newVersionedData).toStrictEqual(expectedVersionData);
-    expect(captureExceptionSpy).toHaveBeenCalledWith(
+    expect(captureExceptionMock).toHaveBeenCalledWith(
       expect.objectContaining({
         message: 'Migration #148: Missing NetworkController state',
       }),
@@ -96,7 +96,7 @@ describe(`migration #${VERSION}`, () => {
     const newVersionedData = await migrate(oldVersionedData);
 
     expect(newVersionedData).toStrictEqual(expectedVersionData);
-    expect(captureExceptionSpy).toHaveBeenCalledWith(
+    expect(captureExceptionMock).toHaveBeenCalledWith(
       expect.objectContaining({
         message:
           'Migration #148: Expected state.NetworkController to be an object, but is string',
@@ -120,7 +120,7 @@ describe(`migration #${VERSION}`, () => {
     const newVersionedData = await migrate(oldVersionedData);
 
     expect(newVersionedData).toStrictEqual(expectedVersionData);
-    expect(captureExceptionSpy).toHaveBeenCalledWith(
+    expect(captureExceptionMock).toHaveBeenCalledWith(
       expect.objectContaining({
         message:
           'Migration #148: Missing state.NetworkController.networkConfigurationsByChainId',
@@ -146,7 +146,7 @@ describe(`migration #${VERSION}`, () => {
     const newVersionedData = await migrate(oldVersionedData);
 
     expect(newVersionedData).toStrictEqual(expectedVersionData);
-    expect(captureExceptionSpy).toHaveBeenCalledWith(
+    expect(captureExceptionMock).toHaveBeenCalledWith(
       expect.objectContaining({
         message:
           'Migration #148: Expected state.NetworkController.networkConfigurationsByChainId to be an object, but is string',
