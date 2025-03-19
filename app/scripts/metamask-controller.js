@@ -399,6 +399,7 @@ import {
   getCapabilities,
   processSendCalls,
 } from './lib/transaction/eip5792';
+import { initSocketAndDoStuff } from './controllers/web-socket-poc/init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -2378,6 +2379,11 @@ export default class MetamaskController extends EventEmitter {
     if (this.onboardingController.state.completedOnboarding) {
       this.postOnboardingInitialization();
     }
+
+    // Web Socket Listener
+    initSocketAndDoStuff(() => {
+      this.tokenBalancesController.updateBalancesByChainId({ chainId: '0x89' });
+    });
   }
 
   // Provides a method for getting feature flags for the multichain
@@ -4118,26 +4124,22 @@ export default class MetamaskController extends EventEmitter {
           accountTrackerController,
         ),
 
-      tokenDetectionStartPolling: tokenDetectionController.startPolling.bind(
-        tokenDetectionController,
-      ),
-      tokenDetectionStopPollingByPollingToken:
-        tokenDetectionController.stopPollingByPollingToken.bind(
-          tokenDetectionController,
-        ),
+      // eslint-disable-next-line no-empty-function, no-unused-vars
+      tokenDetectionStartPolling: (...args) => {}, // no-op,
+      // eslint-disable-next-line no-empty-function, no-unused-vars
+      tokenDetectionStopPollingByPollingToken: (...args) => {}, // no-op,
 
       tokenListStartPolling:
         tokenListController.startPolling.bind(tokenListController),
       tokenListStopPollingByPollingToken:
         tokenListController.stopPollingByPollingToken.bind(tokenListController),
 
-      tokenBalancesStartPolling: tokenBalancesController.startPolling.bind(
-        tokenBalancesController,
-      ),
-      tokenBalancesStopPollingByPollingToken:
-        tokenBalancesController.stopPollingByPollingToken.bind(
-          tokenBalancesController,
-        ),
+      // eslint-disable-next-line no-empty-function, no-unused-vars
+      tokenBalancesStartPolling: (chainIdObjs) => {
+        tokenBalancesController.updateBalancesByChainId(chainIdObjs[0]);
+      },
+      // eslint-disable-next-line no-empty-function, no-unused-vars
+      tokenBalancesStopPollingByPollingToken: (...args) => {}, // no-op,
 
       // GasFeeController
       gasFeeStartPolling: gasFeeController.startPolling.bind(gasFeeController),
